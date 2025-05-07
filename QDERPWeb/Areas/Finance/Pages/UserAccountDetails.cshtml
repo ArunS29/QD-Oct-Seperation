@@ -51,7 +51,7 @@
                         .ValueExpr("DepartmentCode")
                         .ShowClearButton(true)
                         .Placeholder("Select Department")
-                        .AcceptCustomValue(false)
+                        //.AcceptCustomValue(false)
                         //.Label("Department")
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%")
@@ -66,159 +66,174 @@
 
                     <div class="form-group">
                         <label>Company Branch :</label>
-                            @(Html.DevExtreme().DropDownBox()
-                            .ID("ddCompany")
-                            .DataSource(d => d.WebApi()
-                            .Controller("utility") 
-                            .LoadAction("GetCompanies")
-                            .LoadMode(DataSourceLoadMode.Raw)
-                            .Key("CompanyID")
-                            )
-                            .DisplayExpr("Company Name")
-                            .ValueExpr("CompanyID")
-                            .ShowClearButton(true)
-                            .Placeholder("Select Company")
-                            .AcceptCustomValue(false)
-                            .LabelMode(EditorLabelMode.Outside)
-                            .Width("100%")
-                            .DropDownOptions(d => d.Width("100%"))
-                            .ContentTemplate(new TemplateName("CompanyContentTemplate"))
-                            .ValidationRules(rules =>
-                            {
-                            rules.AddRequired().Message("Please select a company.");
-                            })
-                            )
+                        @(Html.DevExtreme().DropDownBox()
+                        .DataSource(d => d.WebApi().Controller("utility").LoadAction("GetCompanies").LoadMode(DataSourceLoadMode.Raw).Key("CompanyID"))
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ID("ddCompany")
+                        .ValidationRules(rules => {
+                        rules.AddRequired().Message("Please select a company.");
+                        })
+                        .ShowClearButton(true)
+                        .AcceptCustomValue(true)
+                        .OpenOnFieldClick(false)
+                        .ValueChangeEvent("input")
+                        .HoverStateEnabled(true)
+                        .Value(null)
+                        .ValueExpr("CompanyID")
+                        .DisplayExpr("CompanyName")
+                        .Width("100%")
+                        .TabIndex(1)
+                        .DropDownOptions(o => o
+                        //.Width("100%") // Set the desired width for the dropdown content*@
+                        .Width(1000)
+                        )
+                        // .OnKeyDown("onKeyDown")
+                        .ContentTemplate(new TemplateName("CompanyContentTemplate")))
+
                     </div>
+
+
+
 
                     <div class="form-group">
                         <label>Company Division :</label>
-                            @(Html.DevExtreme().DropDownBox()
-                            .ID("ddBranch")
-                            .DataSource(d => d.WebApi()
-                            .Controller("utility")
-                            .LoadAction("GetBranches") 
-                            .LoadMode(DataSourceLoadMode.Raw)
-                            .Key("BranchCode")
-                            )
-                            .DisplayExpr("BranchName")
-                            .ValueExpr("BranchCode")
-                            .ShowClearButton(true)
-                            .Placeholder("Select Branch")
-                            .AcceptCustomValue(false)
-                            .LabelMode(EditorLabelMode.Outside)
-                            .Width("100%")
-                            .DropDownOptions(d => d.Width("100%"))
-                            .ContentTemplate(new TemplateName("BranchContentTemplate"))
-                            .ValidationRules(rules =>
-                            {
-                            rules.AddRequired().Message("Please select a Division.");
-                            })
-                            )
+                        @(Html.DevExtreme().DropDownBox()
+                        .DataSource(d => d.WebApi().Controller("utility").LoadAction("GetBranches").LoadMode(DataSourceLoadMode.Raw).Key("BranchCode"))
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ID("ddBranch")
+                        .ValidationRules(rules => {
+                        rules.AddRequired().Message("Please select a Division.");
+                        })
+                        .ShowClearButton(true)
+                        .AcceptCustomValue(true)
+                        .OpenOnFieldClick(false)
+                        .ValueChangeEvent("input")
+                        .HoverStateEnabled(true)
+                        .Value(null)
+                        .ValueExpr("BranchCode")
+                        .DisplayExpr("BranchName")
+                        .Width("100%")
+                        .TabIndex(1)
+                        .DropDownOptions(o => o
+                        //.Width("100%") // Set the desired width for the dropdown content*@
+                        .Width(1000)
+                        )
+                        // .OnKeyDown("onKeyDown")
+                        .ContentTemplate(new TemplateName("BranchContentTemplate")))
+
                     </div>
 
                     <div class="form-group">
                         <label>User Level :</label>
-                                @(Html.DevExtreme().DropDownBox()
-                                .ID("ddUserLevel")
-                                .DataSource(d => d.WebApi()
-                                .Controller("utility")
-                                .LoadAction("GetUserLevels")
-                                .LoadMode(DataSourceLoadMode.Raw)
-                                .Key("UserLevelID")
-                                )
-                                .DisplayExpr("UserLevelDesc")
-                                .ValueExpr("UserLevelID")
-                                .ShowClearButton(true)
-                                .Placeholder("Select User Level")
-                                .AcceptCustomValue(false)
-                                .LabelMode(EditorLabelMode.Outside)
-                            .Width("100%")
-                            .DropDownOptions(d => d.Width("100%"))
-                                .ContentTemplate(new TemplateName("UserLevelContentTemplate"))
-                                .ValidationRules(rules =>
-                                {
-                                rules.AddRequired().Message("Please select a user level.");
-                                })
-                                )
+                        @(Html.DevExtreme().DropDownBox()
+                        .DataSource(d => d.WebApi().Controller("utility").LoadAction("GetUserLevels").LoadMode(DataSourceLoadMode.Raw).Key("UserLevelID"))
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ID("ddUserLevel")
+                        .ValidationRules(rules => {
+                        rules.AddRequired().Message("Please select a user level.");
+                        })
+                        .ShowClearButton(true)
+                        .AcceptCustomValue(true)
+                        .OpenOnFieldClick(false)
+                        .ValueChangeEvent("input")
+                        .HoverStateEnabled(true)
+                        .Value(null)
+                        .ValueExpr("UserLevelID")
+                        .DisplayExpr("UserLevelDesc")
+                        .Width("100%")
+                        .TabIndex(1)
+                        .DropDownOptions(o => o
+                        //.Width("100%") // Set the desired width for the dropdown content*@
+                        .Width(1000)
+                        )
+                        // .OnKeyDown("onKeyDown")
+                        .ContentTemplate(new TemplateName("UserLevelContentTemplate")))
+
                     </div>
 
                     <div class="form-group">
                         <label>Employee File Access Group :</label>
-                                @(Html.DevExtreme().DropDownBox()
-                                .ID("ddEmployeeGroup")
-                                .DataSource(d => d.WebApi()
-                                .Controller("utility")
-                                .LoadAction("GetEmployeeGroups") 
-                                .LoadMode(DataSourceLoadMode.Raw)
-                                .Key("EmpGroupID")
-                                )
-                                .DisplayExpr("EmployeeGroup")
-                                .ValueExpr("EmpGroupID")
-                                .ShowClearButton(true)
-                                .Placeholder("Select Employee Group")
-                                .AcceptCustomValue(false)
-                                .LabelMode(EditorLabelMode.Outside)
-                                .Width("100%")
-                                .DropDownOptions(d => d.Width("100%"))
-                                .ContentTemplate(new TemplateName("EmployeeGroupContentTemplate"))
-                                .ValidationRules(rules =>
-                                {
-                                rules.AddRequired().Message("Please select an employee group.");
-                                })
-                                )
+                        @(Html.DevExtreme().DropDownBox()
+                        .DataSource(d => d.WebApi().Controller("utility").LoadAction("GetEmployeeGroups").LoadMode(DataSourceLoadMode.Raw).Key("EmpGroupID"))
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ID("ddEmployeeGroup")
+                        .ValidationRules(rules => {
+                        rules.AddRequired().Message("Please select an employee group.");
+                        })
+                        .ShowClearButton(true)
+                        .AcceptCustomValue(true)
+                        .OpenOnFieldClick(false)
+                        .ValueChangeEvent("input")
+                        .HoverStateEnabled(true)
+                        .Value(null)
+                        .DisplayExpr("EmployeeGroup")
+                        .ValueExpr("EmpGroupID")
+                        .Width("100%")
+                        .TabIndex(1)
+                        .DropDownOptions(o => o
+                        //.Width("100%") // Set the desired width for the dropdown content*@
+                        .Width(1000)
+                        )
+                        // .OnKeyDown("onKeyDown")
+                        .ContentTemplate(new TemplateName("EmployeeGroupContentTemplate")))
+
                     </div>
+
 
                     <div class="form-group">
                         <label>Inventory Master Access:</label>
-                            @(Html.DevExtreme().DropDownBox()
-                            .ID("ddInventoryMasterGroup")
-                            .DataSource(d => d.WebApi()
-                            .Controller("utility")
-                            .LoadAction("GetInventoryGroups") 
-                            .LoadMode(DataSourceLoadMode.Raw)
-                            .Key("InventoryMasterGroupID")
-                            )
-                            .DisplayExpr("InventoryMasterGroup")
-                            .ValueExpr("InventoryMasterGroupID")
-                            .ShowClearButton(true)
-                            .Placeholder("Select Inventory Group")
-                            .AcceptCustomValue(false)
-                            .LabelMode(EditorLabelMode.Outside)
+                        @(Html.DevExtreme().DropDownBox()
+                        .ID("ddInventoryMasterGroup")
+                        .DataSource(d => d.WebApi()
+                        .Controller("utility")
+                        .LoadAction("GetInventoryGroups")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("InventoryMasterGroupID")
+                        )
+                        .DisplayExpr("InventoryMasterGroup")
+                        .ValueExpr("InventoryMasterGroupID")
+                        .ShowClearButton(true)
+                        .Placeholder("Select Inventory Group")
+                        .AcceptCustomValue(false)
+                        .LabelMode(EditorLabelMode.Outside)
                         .Width("100%")
                         .DropDownOptions(d => d.Width("100%"))
-                            .ContentTemplate(new TemplateName("InventoryGroupContentTemplate"))
-                            .ValidationRules(rules =>
-                            {
-                            rules.AddRequired().Message("Please select an inventory group.");
-                            })
-                            )
+                        .ContentTemplate(new TemplateName("InventoryGroupContentTemplate"))
+                        .ValidationRules(rules =>
+                        {
+                        rules.AddRequired().Message("Please select an inventory group.");
+                        })
+                        )
                     </div>
 
                     <div class="form-group">
                         <label>Petty Cash Account(Finance Module) :</label>
-                            @(Html.DevExtreme().DropDownBox()
-                            .ID("ddFilteredAccountHead")
-                            .DataSource(d => d.WebApi()
-                            .Controller("utility")
-                            .LoadAction("GetFilteredAccountHead") 
-                            .LoadMode(DataSourceLoadMode.Raw)
-                            .Key("AccountId")
-                            )
-                            .ValueExpr("AccountId")
-                            .DisplayExpr("AccountHead")
-                            .ShowClearButton(true)
-                            .Placeholder("Select FilteredAccount Head")
-                            .AcceptCustomValue(false)
-                            .LabelMode(EditorLabelMode.Outside)
-                            .Width("100%")
-                            .DropDownOptions(o => o.Width("100%"))
-                            .ContentTemplate(new TemplateName("FilteredAccountHeadContentTemplate"))
-                            .ValidationRules(rules => {
-                            rules.AddRequired().Message("Ledger Account should be entered");
-                            })
-                            
-                            )
-                        </div>
+                        @(Html.DevExtreme().DropDownBox()
+                        .DataSource(d => d.WebApi().Controller("utility").LoadAction("GetFilteredAccountHead").LoadMode(DataSourceLoadMode.Raw).Key("AccountId"))
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ID("ddFilteredAccountHead")
+                        .ValidationRules(rules => {
+                        rules.AddRequired().Message("Ledger Account should be entered.");
+                        })
+                        .ShowClearButton(true)
+                        .AcceptCustomValue(true)
+                        .OpenOnFieldClick(false)
+                        .ValueChangeEvent("input")
+                        .HoverStateEnabled(true)
+                        .Value(null)
+                        .ValueExpr("AccountId")
+                        .DisplayExpr("AccountHead")
+                        .Width("100%")
+                        .TabIndex(1)
+                        .DropDownOptions(o => o
+                        //.Width("100%") // Set the desired width for the dropdown content*@
+                        .Width(1000)
+                        )
+                        // .OnKeyDown("onKeyDown")
+                        .ContentTemplate(new TemplateName("FilteredAccountHeadContentTemplate")))
+
+                    </div>
+
 
                     <div class="form-group">
                         <label>Equipment Sales Person Access :</label>
@@ -226,8 +241,8 @@
                         .Label(new JS("formatMessage('User Level')"))
                         .ID("ddHRUserLevel")
                         .DataSource(d => d.WebApi()
-                        .Controller("Utility") 
-                        .LoadAction("GetHRUserLevels") 
+                        .Controller("Utility")
+                        .LoadAction("GetHRUserLevels")
                         .LoadMode(DataSourceLoadMode.Raw)
                         .Key("HruserLevelId")
                         )
@@ -249,22 +264,29 @@
                     <div class="form-group">
                         <label>Inventory Sales Person Access :</label>
                         @(Html.DevExtreme().DropDownBox()
+                        .DataSource(d => d.WebApi().Controller("utility").LoadAction("GetSalesPersonAccessLevels").LoadMode(DataSourceLoadMode.Raw).Key("SalesPersonID"))
+                        .LabelMode(EditorLabelMode.Outside)
                         .ID("ddSalesPerson")
+                        .ValidationRules(rules => {
+                        rules.AddRequired().Message("Ledger Account should be entered.");
+                        })
+                        .ShowClearButton(true)
+                        .AcceptCustomValue(true)
+                        .OpenOnFieldClick(false)
+                        .ValueChangeEvent("input")
+                        .HoverStateEnabled(true)
+                        .Value(null)
                         .ValueExpr("SalesPersonID")
                         .DisplayExpr("SalesPersonAccessLevelId")
-                        .Placeholder("Select Sales Person")
-                        .ShowClearButton(true)
-                        .AcceptCustomValue(false)
                         .Width("100%")
-                        .DataSource(d => d.WebApi()
-                        .Controller("Utility")
-                        .LoadAction("GetSalesPersonAccessLevels")
-                        .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("SalesPersonAccessLevelId")
+                        .TabIndex(1)
+                        .DropDownOptions(o => o
+                        //.Width("100%") // Set the desired width for the dropdown content*@
+                        .Width(1000)
                         )
-                        .ContentTemplate(new TemplateName("SalesPersonDropDownTemplate"))
-                        .OnValueChanged("onSalesPersonValueChanged")
-                        )
+                        // .OnKeyDown("onKeyDown")
+                        .ContentTemplate(new TemplateName("SalesPersonDropDownTemplate")))
+
                     </div>
 
                     <div class="form-group">
@@ -295,6 +317,7 @@
                             )
                         </div>
                     </div>
+
 
 
                     <div class="form-group">
@@ -443,7 +466,7 @@
                     <!-- Tab Content -->
                     <div class="dx-fieldset">
                         <!-- Tab 1: Master Module -->
-                        <div id="tab-content-1" class="tab-content" style="display: none;">
+                        <div id="tab-content-1" class="tab-content">
                             <div id="tab1-content">
                                 @await Html.PartialAsync("~/Pages/Shared/Finance/MasterModules.cshtml")
                             </div>
@@ -534,540 +557,685 @@
 @using (Html.DevExtreme().NamedTemplate("DepartmentContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-            .ID("department-datagrid")
-            .DataSource(d => d.WebApi()
-                .Controller("utility")
-                .LoadAction("GetDepartments")
-                .LoadMode(DataSourceLoadMode.Raw)
-                .Key("DepartmentCode"))
-            .Selection(s => s.Mode(SelectionMode.Single))
-            .ShowBorders(true)
-            .SearchPanel(s => s.Visible(true).HighlightSearchText(true))
-            .Paging(p => p.PageSize(10))
-            .FilterRow(f => f.Visible(true))
-            .Height(300)
-            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-            .OnSelectionChanged("onDepartmentSelectionChanged")
-            .Columns(columns =>
-            {
-                columns.Add().DataField("DepartmentCode").Caption("Code").Width(100);
-                columns.Add().DataField("Department").Caption("Department Name");
-            }))
+                                    .ID("department-datagrid")
+                                    .DataSource(d => d.WebApi()
+                                        .Controller("utility")
+                                        .LoadAction("GetDepartments")
+                                        .LoadMode(DataSourceLoadMode.Raw)
+                                        .Key("DepartmentCode"))
+                                    .Selection(s => s.Mode(SelectionMode.Single))
+                                    .ShowBorders(true)
+                                    .SearchPanel(s => s.Visible(true).HighlightSearchText(true))
+                                    .Paging(p => p.PageSize(10))
+                                    .FilterRow(f => f.Visible(true))
+                                    .Height(300)
+                                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                    .OnSelectionChanged("onDepartmentSelectionChanged")
+                                    .Columns(columns =>
+                                    {
+                                        columns.Add().DataField("DepartmentCode").Caption("Code").Width(100);
+                                        columns.Add().DataField("Department").Caption("Department Name");
+                                    }))
 }
+
 @using (Html.DevExtreme().NamedTemplate("CompanyContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-            .ID("company-datagrid")
-            .DataSource(d => d.WebApi()
-                .Controller("utility")
-                .LoadAction("GetCompanies")
-                .LoadMode(DataSourceLoadMode.Raw)
-                .Key("CompanyID")
-            )
-            .Selection(s => s.Mode(SelectionMode.Single))
-            .ShowBorders(true)
-            .SearchPanel(s => s.Visible(true).HighlightSearchText(true))
-            .Paging(p => p.PageSize(10))
-            .FilterRow(f => f.Visible(true))
-            .Height(300)
-            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-            .OnSelectionChanged("onCompanySelectionChanged")
-            .Columns(columns =>
-            {
-                columns.Add().DataField("CompanyID").Caption("ID").Width(100);
-                columns.Add().DataField("CompanyName").Caption("Company Name");
-            })
-        )
+                                                    .ID("company-datagrid")
+                                                .DataSource(d => d.WebApi()
+                                                    .Controller("utility")
+                                                    .LoadAction("GetCompanies")
+                                                .LoadMode(DataSourceLoadMode.Raw)
+                                                    .Key("CompanyID")
+                                                )
+                                                .WordWrapEnabled(true)
+                                                .ShowBorders(true)
+                                                .ShowColumnHeaders(true)
+                                                .FilterRow(f => f.Visible(false))
+                                                .SearchPanel(sp => sp.HighlightSearchText(false))
+                                                .Selection(sl => sl.Mode(SelectionMode.Single))
+                                                    .OnSelectionChanged("onCompanySelectionChanged")
+                                                    .OnInitialized("onCompanydataGridInitialized")
+                                                .HeaderFilter(p => p.Visible(false))
+                                                .ShowBorders(true)
+                                                .HoverStateEnabled(true)
+                                                .Paging(p => p.PageSize(15))
+
+                                                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                                .Height(200)
+                                                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                                .Columns(columns =>
+                                                {
+                                                    columns.Add().DataField("CompanyID").Caption("ID").Width(100);
+                                                    columns.Add().DataField("CompanyName").Caption("Company Name");
+
+
+                                                })
+                                                )
 }
+
 @using (Html.DevExtreme().NamedTemplate("BranchContentTemplate"))
 {
-    @(Html.DevExtreme().DataGrid()
-            .ID("branch-datagrid")
-            .DataSource(d => d.WebApi()
-                .Controller("utility")
-                .LoadAction("GetBranches") 
-                .LoadMode(DataSourceLoadMode.Raw)
-                .Key("BranchCode")
-            )
-            .Selection(s => s.Mode(SelectionMode.Single))
-            .ShowBorders(true)
-            .SearchPanel(s => s.Visible(true).HighlightSearchText(true))
-            .Paging(p => p.PageSize(10))
-            .FilterRow(f => f.Visible(true))
-            .Height(300)
-            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-            .OnSelectionChanged("onBranchSelectionChanged")
-            .Columns(columns =>
-            {
-                columns.Add().DataField("BranchCode").Caption("Code").Width(100);
-                columns.Add().DataField("BranchName").Caption("Branch Name");
-            })
-        )
+    @(
+            Html.DevExtreme().DataGrid()
+                                                           .ID("Branch-datagrid")
+                                                    .DataSource(d => d.WebApi()
+                                                        .Controller("utility")
+                                                        .LoadAction("GetBranches")
+                                                        .LoadMode(DataSourceLoadMode.Raw)
+                                                        .Key("BranchCode")
+                                                    )
+
+                                                         .WordWrapEnabled(true)
+                                                                    .ShowBorders(true)
+                                                                    .ShowColumnHeaders(true)
+                                                                    .FilterRow(f => f.Visible(false))
+                                                                    .SearchPanel(sp => sp.HighlightSearchText(false))
+                                                                    .Selection(sl => sl.Mode(SelectionMode.Single))
+                                                                            .OnSelectionChanged("onBranchSelectionChanged")
+                                                                            .OnInitialized("onBranchdataGridInitialized")
+                                                                    .HeaderFilter(p => p.Visible(false))
+                                                                    .ShowBorders(true)
+                                                                    .HoverStateEnabled(true)
+                                                                    .Paging(p => p.PageSize(15))
+
+                                                                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                                                    .Height(200)
+                                                                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                                                    .Columns(columns =>
+                                                                        {
+                                                                            columns.Add().DataField("BranchCode").Caption("Code").Width(100);
+                                                                            columns.Add().DataField("BranchName").Caption("Branch Name");
+
+
+                                                                        })
+                                                                    )
 }
 @using (Html.DevExtreme().NamedTemplate("UserLevelContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-            .ID("userlevel-datagrid")
-            .DataSource(d => d.WebApi()
-                .Controller("utility")
-                .LoadAction("GetUserLevels")
-                .LoadMode(DataSourceLoadMode.Raw)
-                .Key("UserLevelID")
-            )
-            .Selection(s => s.Mode(SelectionMode.Single))
-            .ShowBorders(true)
-            .SearchPanel(s => s.Visible(true).HighlightSearchText(true))
-            .Paging(p => p.PageSize(10))
-            .FilterRow(f => f.Visible(true))
-            .Height(300)
-            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-            .OnSelectionChanged("onUserLevelSelectionChanged")
-            .Columns(columns =>
-            {
-                columns.Add().DataField("UserLevelID").Caption("ID").Width(100);
-                columns.Add().DataField("UserLevelDesc").Caption("Description");
-            })
-        )
+                                                            .ID("UserLevel-datagrid")
+                                                    .DataSource(d => d.WebApi()
+                                                        .Controller("utility")
+                                                        .LoadAction("GetUserLevels")
+                                                    .LoadMode(DataSourceLoadMode.Raw)
+                                                        .Key("UserLevelID")
+                                                    )
+                                                    .WordWrapEnabled(true)
+                                                    .ShowBorders(true)
+                                                    .ShowColumnHeaders(true)
+                                                    .FilterRow(f => f.Visible(false))
+                                                    .SearchPanel(sp => sp.HighlightSearchText(false))
+                                                    .Selection(sl => sl.Mode(SelectionMode.Single))
+                                                        .OnSelectionChanged("onUserLevelSelectionChanged")
+                                                        .OnInitialized("onUserLeveldataGridInitialized")
+                                                    .HeaderFilter(p => p.Visible(false))
+                                                    .ShowBorders(true)
+                                                    .HoverStateEnabled(true)
+                                                    .Paging(p => p.PageSize(15))
+
+                                                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                                    .Height(200)
+                                                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                                     .Columns(columns =>
+                                {
+                                    columns.Add().DataField("UserLevelID").Caption("ID").Width(100);
+                                    columns.Add().DataField("UserLevelDesc").Caption("Description");
+                                })
+                            )
 }
 @using (Html.DevExtreme().NamedTemplate("EmployeeGroupContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-            .ID("employee-group-datagrid")
-            .DataSource(d => d.WebApi()
-                .Controller("utility")
-                .LoadAction("GetEmployeeGroups")
-                .LoadMode(DataSourceLoadMode.Raw)
-                .Key("EmpGroupID")
-            )
-            .Selection(s => s.Mode(SelectionMode.Single))
-            .ShowBorders(true)
-            .SearchPanel(s => s.Visible(true).HighlightSearchText(true))
-            .Paging(p => p.PageSize(10))
-            .FilterRow(f => f.Visible(true))
-            .Height(300)
-            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-            .OnSelectionChanged("onEmployeeGroupSelectionChanged")
-            .Columns(columns =>
-            {
-                columns.Add().DataField("EmpGroupID").Caption("Group ID").Width(100);
-                columns.Add().DataField("EmployeeGroup").Caption("Group Name");
-            })
-        )
+                                                            .ID("EmployeeGroup-datagrid")
+                                                    .DataSource(d => d.WebApi()
+                                                        .Controller("utility")
+                                                        .LoadAction("GetEmployeeGroups")
+                                                    .LoadMode(DataSourceLoadMode.Raw)
+                                                        .Key("EmpGroupID")
+                                                    )
+                                                    .WordWrapEnabled(true)
+                                                    .ShowBorders(true)
+                                                    .ShowColumnHeaders(true)
+                                                    .FilterRow(f => f.Visible(false))
+                                                    .SearchPanel(sp => sp.HighlightSearchText(false))
+                                                    .Selection(sl => sl.Mode(SelectionMode.Single))
+                                                        .OnSelectionChanged("onEmployeeGroupSelectionChanged")
+                                                        .OnInitialized("onEmployeeGroupdataGridInitialized")
+                                                    .HeaderFilter(p => p.Visible(false))
+                                                    .ShowBorders(true)
+                                                    .HoverStateEnabled(true)
+                                                    .Paging(p => p.PageSize(15))
+
+                                                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                                    .Height(200)
+                                                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                                   .Columns(columns =>
+                                {
+                                    columns.Add().DataField("EmpGroupID").Caption("Group ID").Width(100);
+                                    columns.Add().DataField("EmployeeGroup").Caption("Group Name");
+                                })
+                            )
 }
 @using (Html.DevExtreme().NamedTemplate("InventoryGroupContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-            .ID("inventory-group-datagrid")
-            .DataSource(d => d.WebApi()
-                .Controller("utility")
-                    .LoadAction("GetInventoryGroups")
-                .LoadMode(DataSourceLoadMode.Raw)
-                .Key("InventoryMasterGroupID")
-            )
-            .Selection(s => s.Mode(SelectionMode.Single))
-            .ShowBorders(true)
-            .SearchPanel(s => s.Visible(true).HighlightSearchText(true))
-            .Paging(p => p.PageSize(10))
-            .FilterRow(f => f.Visible(true))
-            .Height(300)
-            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-            .OnSelectionChanged("onInventoryGroupSelectionChanged")
-            .Columns(columns =>
-            {
-                columns.Add().DataField("InventoryMasterGroupID").Caption("Group ID").Width(100);
-                columns.Add().DataField("InventoryMasterGroup").Caption("Group Name");
-            })
-        )
+                                .ID("inventory-group-datagrid")
+                                .DataSource(d => d.WebApi()
+                                    .Controller("utility")
+                                        .LoadAction("GetInventoryGroups")
+                                    .LoadMode(DataSourceLoadMode.Raw)
+                                    .Key("InventoryMasterGroupID")
+                                )
+                                .Selection(s => s.Mode(SelectionMode.Single))
+                                .ShowBorders(true)
+                                .SearchPanel(s => s.Visible(true).HighlightSearchText(true))
+                                .Paging(p => p.PageSize(10))
+                                .FilterRow(f => f.Visible(true))
+                                .Height(300)
+                                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                .OnSelectionChanged("onInventoryGroupSelectionChanged")
+                                .Columns(columns =>
+                                {
+                                    columns.Add().DataField("InventoryMasterGroupID").Caption("Group ID").Width(100);
+                                    columns.Add().DataField("InventoryMasterGroup").Caption("Group Name");
+                                })
+                            )
 }
 
 @using (Html.DevExtreme().NamedTemplate("FilteredAccountHeadContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-            .ID("filtered-accounthead-datagrid")
-            .DataSource(d => d.WebApi()
-                .Controller("Utility")
-                    .LoadAction("GetFilteredAccountHead") // Again, use the filtered endpoint
-                .LoadMode(DataSourceLoadMode.Raw)
-                .Key("AccountId")
-            )
-            .Selection(sl => sl.Mode(SelectionMode.Single))
-            .OnSelectionChanged("onFilteredAccountSelectionChanged")
-            .Columns(columns =>
-            {
-                columns.Add().DataField("AccountId").Caption("Account ID").Visible(true);
-                columns.Add().DataField("AccountHead").Caption("Account Head").Visible(true);
-                columns.Add().DataField("AccountGroup").Caption("Account Group").Visible(true);
-                columns.Add().DataField("IsRestricted").Caption("Restricted").DataType(GridColumnDataType.Boolean);
-                columns.Add().DataField("MasterGroup").Caption("Master Group");
-                columns.Add().DataField("AccountHeadArabic").Caption("Account Head Arabic");
-            })
-            .Paging(p => p.PageSize(15))
-            .FilterRow(f => f.Visible(true))
-            .SearchPanel(s => s.Visible(true))
-            .Height(350)
-            .ShowBorders(true)
-            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-        )
+                                                            .ID("FilteredAccountHead-datagrid")
+                                                    .DataSource(d => d.WebApi()
+                                                        .Controller("utility")
+                                                        .LoadAction("GetFilteredAccountHead")
+                                                    .LoadMode(DataSourceLoadMode.Raw)
+                                                        .Key("AccountId")
+                                                    )
+                                                    .WordWrapEnabled(true)
+                                                    .ShowBorders(true)
+                                                    .ShowColumnHeaders(true)
+                                                    .FilterRow(f => f.Visible(false))
+                                                    .SearchPanel(sp => sp.HighlightSearchText(false))
+                                                    .Selection(sl => sl.Mode(SelectionMode.Single))
+                                                        .OnSelectionChanged("onFilteredAccountSelectionChanged")
+                                                        .OnInitialized("onFilteredAccountGridInitialized")
+                                                    .HeaderFilter(p => p.Visible(false))
+                                                    .ShowBorders(true)
+                                                    .HoverStateEnabled(true)
+                                                    .Paging(p => p.PageSize(15))
+
+                                                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                                    .Height(200)
+                                                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                                   .Columns(columns =>
+                                {
+                                    columns.Add().DataField("AccountId").Caption("Account ID").Visible(true);
+                                    columns.Add().DataField("AccountHead").Caption("Account Head").Visible(true);
+                                    columns.Add().DataField("AccountGroup").Caption("Account Group").Visible(true);
+                                    columns.Add().DataField("IsRestricted").Caption("Restricted").DataType(GridColumnDataType.Boolean);
+                                    columns.Add().DataField("MasterGroup").Caption("Master Group");
+                                    columns.Add().DataField("AccountHeadArabic").Caption("Account Head Arabic");
+                                })
+                            @*     .Paging(p => p.PageSize(15))
+                        .FilterRow(f => f.Visible(true))
+                        .SearchPanel(s => s.Visible(true))
+                        .Height(350)
+                        .ShowBorders(true)
+                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual)) *@
+                            )
 }
 @using (Html.DevExtreme().NamedTemplate("HRUserLevelContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-            .ID("hruserlevel-datagrid")
-            .DataSource(d => d.WebApi()
-                .Controller("Utility")
-                .LoadAction("GetHRUserLevels")
-                .LoadMode(DataSourceLoadMode.Raw)
-                    .Key("HruserLevelId")
-            )
-            .Selection(s => s.Mode(SelectionMode.Single))
-            .OnSelectionChanged("onHRUserLevelSelectionChanged")
-            .Columns(columns =>
-            {
-                    columns.Add().DataField("HruserLevelId").Caption("ID").Visible(true);
-                    columns.Add().DataField("HruserLevelDesc").Caption("Description").Visible(true);
-            })
-            .Paging(p => p.PageSize(10))
-            .Height(300)
-            .ShowBorders(true)
-        )
+                                .ID("hruserlevel-datagrid")
+                                .DataSource(d => d.WebApi()
+                                    .Controller("Utility")
+                                    .LoadAction("GetHRUserLevels")
+                                    .LoadMode(DataSourceLoadMode.Raw)
+                                        .Key("HruserLevelId")
+                                )
+                                .Selection(s => s.Mode(SelectionMode.Single))
+                                .OnSelectionChanged("onHRUserLevelSelectionChanged")
+                                .Columns(columns =>
+                                {
+                                    columns.Add().DataField("HruserLevelId").Caption("ID").Visible(true);
+                                    columns.Add().DataField("HruserLevelDesc").Caption("Description").Visible(true);
+                                })
+                                .Paging(p => p.PageSize(10))
+                                .Height(300)
+                                .ShowBorders(true)
+                            )
 }
 @using (Html.DevExtreme().NamedTemplate("SalesPersonDropDownTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-            .ID("salesPersonGrid")
-            .DataSource(d => d.WebApi()
-                .Controller("Utility")
-                    .LoadAction("GetSalesPersonAccessLevels")
-                .LoadMode(DataSourceLoadMode.Raw)
-                    .Key("SalesPersonAccessLevelId")
-            )
-            .Selection(s => s.Mode(SelectionMode.Single))
-            .OnSelectionChanged("onSalesPersonGridSelectionChanged")
-            .Columns(columns =>
-            {
-                    columns.Add().DataField("SalesPersonAccessLevelId").Caption("Sales Person");
-                columns.Add().DataField("SalesPersonAccessDesc").Caption("Access Level");
-            })
-            .Height(300)
-            .Paging(p => p.PageSize(10))
-            .SearchPanel(sp => sp.Visible(true))
-        )
+                                                            .ID("SalesPerson-datagrid")
+                                                    .DataSource(d => d.WebApi()
+                                                        .Controller("utility")
+                                                        .LoadAction("GetSalesPersonAccessLevels")
+                                                    .LoadMode(DataSourceLoadMode.Raw)
+                                                                .Key("SalesPersonAccessLevelId")
+                                                    )
+                                                    .WordWrapEnabled(true)
+                                                    .ShowBorders(true)
+                                                    .ShowColumnHeaders(true)
+                                                    .FilterRow(f => f.Visible(false))
+                                                    .SearchPanel(sp => sp.HighlightSearchText(false))
+                                                    .Selection(sl => sl.Mode(SelectionMode.Single))
+                                                        .OnSelectionChanged("onSalesPersonGridSelectionChanged")
+                                                        .OnInitialized("onSalesPersonGridInitialized")
+                                                    .HeaderFilter(p => p.Visible(false))
+                                                    .ShowBorders(true)
+                                                    .HoverStateEnabled(true)
+                                                    .Paging(p => p.PageSize(15))
+
+                                                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                                    .Height(200)
+                                                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                                       .Columns(columns =>
+                                {
+
+                                    columns.Add().DataField("SalesPersonAccessLevelId").Caption("Sales Person");
+                                    columns.Add().DataField("SalesPersonAccessDesc").Caption("Access Level");
+                                })@* 
+                        .Height(300)
+                        .Paging(p => p.PageSize(10))
+                        .SearchPanel(sp => sp.Visible(true)) *@
+                            )
 }
 
 @using (Html.DevExtreme().NamedTemplate("ProjectGroupContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-            .ID("projectgroup-datagrid")
-            .DataSource(d => d.WebApi()
-                .Controller("Utility")
-                    .LoadAction("GetProjectGroups")
-                .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("ProjectGroupID")
-            )
-            .ShowBorders(true)
-            .Selection(s => s.Mode(SelectionMode.Single))
-            .SearchPanel(sp => sp.Visible(true).HighlightSearchText(true))
-            .Paging(p => p.PageSize(10))
-            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-            .HoverStateEnabled(true)
-            .Height(300)
-            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-            .OnSelectionChanged("projectGroupSelectionChanged")
-            .Columns(columns =>
-            {
-                    columns.Add().DataField("ProjectGroupID").Caption("Project Group ID").Visible(true).Width(120);
-                columns.Add().DataField("ProjectGroupName").Caption("Project Group Name").Visible(true);
-            })
-        )
+                                .ID("projectgroup-datagrid")
+                                .DataSource(d => d.WebApi()
+                                    .Controller("Utility")
+                                        .LoadAction("GetProjectGroups")
+                                    .LoadMode(DataSourceLoadMode.Raw)
+                                            .Key("ProjectGroupID")
+                                )
+                                .ShowBorders(true)
+                                .Selection(s => s.Mode(SelectionMode.Single))
+                                .SearchPanel(sp => sp.Visible(true).HighlightSearchText(true))
+                                .Paging(p => p.PageSize(10))
+                                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                .HoverStateEnabled(true)
+                                .Height(300)
+                                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                .OnSelectionChanged("projectGroupSelectionChanged")
+                                .Columns(columns =>
+                                {
+                                    columns.Add().DataField("ProjectGroupID").Caption("Project Group ID").Visible(true).Width(120);
+                                    columns.Add().DataField("ProjectGroupName").Caption("Project Group Name").Visible(true);
+                                })
+                            )
 }
+
 
 
 
 @section Scripts {
     <script>
-            $(document).ready(function () {
-            const urlParams = new URLSearchParams(window.location.search);
-            const userId = urlParams.get("userId");
-            const tenantName = urlParams.get("tenantName");
+              $(document).ready(function () {
+              const urlParams = new URLSearchParams(window.location.search);
+              const userId = urlParams.get("userId");
+              const tenantName = urlParams.get("tenantName");
 
-            if (userId) {
-                loadUserDetails(userId);
-            } else {
-                DevExpress.ui.notify("User ID not found in URL", "error", 3000);
-            }
-        });
+              if (userId) {
+                  loadUserDetails(userId);
+              } else {
+                  DevExpress.ui.notify("User ID not found in URL", "error", 3000);
+              }
+          });
 
-        function loadUserDetails(userId) {
-            $.ajax({
-                url: "/api/Utility/GetUserID", 
-                method: "GET",
-                data: { userId: userId },
-                success: function (response) {
-                    if (!response.success || !response.data) {
-                        $("#userProfileContainer").html("<div>User not found.</div>");
-                        return;
-                    }
+          function loadUserDetails(userId) {
+              $.ajax({
+                  url: "/api/Utility/GetUserID",
+                  method: "GET",
+                  data: { userId: userId },
+                  success: function (response) {
+                      if (!response.success || !response.data) {
+                          $("#userProfileContainer").html("<div>User not found.</div>");
+                          return;
+                      }
 
-                    const user = response.data;
+                      const user = response.data;
 
-                    $("#UserId").dxTextBox("instance").option("value", user.UserId);
-                    $("#UserName").dxTextBox("instance").option("value", user.UserName);
-                    $("#Password").dxTextBox("instance").option("value", user.Password);
-                    $("#UserEmailAddress").dxTextBox("instance").option("value", user.EmailAddress);
-                    $("#UserMobileNo").dxTextBox("instance").option("value", user.MobileNo);
-                    $("#UserLastLoggedInTime").dxDateBox("instance").option("value", user.LastLogOnTime);
-                    $("#UserLastLoggedOffTime").dxDateBox("instance").option("value", user.LastLogOffTime);
+                      $("#UserId").dxTextBox("instance").option("value", user.UserId);
+                      $("#UserName").dxTextBox("instance").option("value", user.UserName);
+                      $("#Password").dxTextBox("instance").option("value", user.Password);
+                      $("#UserEmailAddress").dxTextBox("instance").option("value", user.EmailAddress);
+                      $("#UserMobileNo").dxTextBox("instance").option("value", user.MobileNo);
+                      $("#UserLastLoggedInTime").dxDateBox("instance").option("value", user.LastLogOnTime);
+                      $("#UserLastLoggedOffTime").dxDateBox("instance").option("value", user.LastLogOffTime);
 
-                    // DropDown values
-                    $("#ddDepartment").dxDropDownBox("instance").option("value", user.DeptCode);
-                    $("#ddCompany").dxDropDownBox("instance").option("value", user.CompanyId);
-                    $("#ddBranch").dxDropDownBox("instance").option("value", user.BranchCode);
-                    $("#ddUserLevel").dxDropDownBox("instance").option("value", user.UserLevel);
-                    $("#ddEmployeeGroup").dxDropDownBox("instance").option("value", user.HrlevelCode);
-                    $("#ddInventoryMasterGroup").dxDropDownBox("instance").option("value", user.InventoryAccess);
-                    $("#ddFilteredAccountHead").dxDropDownBox("instance").option("value", user.PettyCashAccount);
-                    $("#ddHRUserLevel").dxDropDownBox("instance").option("value", user.EqptQuotationAccess);
-                    $("#ddSalesPerson").dxDropDownBox("instance").option("value", user.InventoryMpraccess);
-                    $("#ddProjectGroup").dxDropDownBox("instance").option("value", user.HrtimeSheetProjectGroup);
-                },
-                error: function () {
-                    DevExpress.ui.notify("Failed to load user info", "error", 3000);
-                }
-            });
-        }
 
-             function onDepartmentSelectionChanged(e) {
-            const selectedKey = e.selectedRowKeys[0];
-            const ddbInstance = $("#ddDepartment").dxDropDownBox("instance");
-
-            if (selectedKey) {
-                ddbInstance.option("value", selectedKey);
-                if (ddbInstance.option("opened")) {
-                    ddbInstance.close();
-                }
-
-                const selectedRowData = e.selectedRowsData[0];
-                if (selectedRowData) {
-                    console.log("Selected:", selectedRowData.Department);
-                }
-            }
-        }
-
-              function onCompanySelectionChanged(e) {
-            const selectedKey = e.selectedRowKeys[0];
-            const ddbInstance = $("#ddCompany").dxDropDownBox("instance");
-
-            if (selectedKey) {
-                ddbInstance.option("value", selectedKey);
-                if (ddbInstance.option("opened")) {
-                    ddbInstance.close();
-                }
-
-                const selectedRowData = e.selectedRowsData[0];
-                if (selectedRowData) {
-                    console.log("Selected company:", selectedRowData.CompanyName);
-                   
-                }
-            }
-        }
-
-         function onDepartmentsChanged(e) {
-            $.ajax({
-                url: "/api/Utility/GetDepartments",
-                method: "GET",
-                data: { module: selectedModule },
-                success: function (data) {
-                    prefixBox.option({
-                        items: data.data || data,
-                        value: null,
-                        disabled: false
-                    });
-                },
-            });
-        }
-
-             function onBranchSelectionChanged(e) {
-            const selectedKey = e.selectedRowKeys[0];
-            const ddbInstance = $("#ddBranch").dxDropDownBox("instance");
-
-            if (selectedKey) {
-                ddbInstance.option("value", selectedKey);
-                if (ddbInstance.option("opened")) {
-                    ddbInstance.close();
-                }
-
-                const selectedRowData = e.selectedRowsData[0];
-                if (selectedRowData) {
-                    console.log("Selected Branch:", selectedRowData.BranchName);
-                }
-            }
-        }
-
-            function onUserLevelSelectionChanged(e) {
-            const selectedKey = e.selectedRowKeys[0];
-            const ddbInstance = $("#ddUserLevel").dxDropDownBox("instance");
-
-            if (selectedKey) {
-                ddbInstance.option("value", selectedKey);
-                if (ddbInstance.option("opened")) {
-                    ddbInstance.close();
-                }
-
-                const selectedRowData = e.selectedRowsData[0];
-                if (selectedRowData) {
-                    console.log("User Level Selected:", selectedRowData.UserLevelDesc);
-                }
-            }
-        }
-
-             function onEmployeeGroupSelectionChanged(e) {
-            const selectedKey = e.selectedRowKeys[0];
-            const ddbInstance = $("#ddEmployeeGroup").dxDropDownBox("instance");
-
-            if (selectedKey) {
-                ddbInstance.option("value", selectedKey);
-                if (ddbInstance.option("opened")) {
-                    ddbInstance.close();
-                }
-
-                const selectedRowData = e.selectedRowsData[0];
-                if (selectedRowData) {
-                    console.log("Selected Group:", selectedRowData.EmployeeGroup);
-                }
-            }
-        }
-
-             function onInventoryGroupSelectionChanged(e) {
-            const selectedKey = e.selectedRowKeys[0];
-            const ddbInstance = $("#ddInventoryMasterGroup").dxDropDownBox("instance");
-
-            if (selectedKey) {
-                ddbInstance.option("value", selectedKey);
-                if (ddbInstance.option("opened")) {
-                    ddbInstance.close();
-                }
-
-                const selectedRowData = e.selectedRowsData[0];
-                if (selectedRowData) {
-                    console.log("Selected Inventory Group:", selectedRowData.InventoryMasterGroup);
-                }
-            }
-        }
-
-                function onFilteredAccountSelectionChanged(e) {
-            const selectedKey = e.selectedRowKeys[0];
-            const dropDown = $("#ddFilteredAccountHead").dxDropDownBox("instance");
-
-            if (selectedKey) {
-                dropDown.option("value", selectedKey);
-                dropDown.close();
-
-                const selectedRowData = e.selectedRowsData[0];
-                console.log("Selected Account:", selectedRowData.AccountHead);
-            }
-        }
-
-                function onHRUserLevelSelectionChanged(e) {
-            const selectedKey = e.selectedRowKeys[0];
-            const ddbInstance = $("#ddHRUserLevel").dxDropDownBox("instance");
-
-            if (selectedKey) {
-                ddbInstance.option("value", selectedKey);
-                 if (ddbInstance.option("opened")) {
-                    ddbInstance.close();
-                }
-                 const selectedRowData = e.selectedRowsData[0];
-                if (selectedRowData) {
-                    console.log("User Level Selected:", selectedRowData.UserLevelDesc);
-                }
-            }
-        }
-
-                function onSalesPersonGridSelectionChanged(e) {
-            const selected = e.selectedRowKeys[0];
-            const dropDownBox = $("#ddSalesPerson").dxDropDownBox("instance");
-
-            if (selected) {
-                dropDownBox.option("value", selected);
-                dropDownBox.close();
-            }
-        }
-
-             function projectGroupSelectionChanged(e) {
-            const selectedKey = e.selectedRowKeys[0];
-            const ddbInstance = $("#ddProjectGroup").dxDropDownBox("instance");
-
-            if (selectedKey) {
-                ddbInstance.option("value", selectedKey);
-                if (ddbInstance.option("opened")) {
-                    ddbInstance.close();
-                }
-
-                const selectedRowData = e.selectedRowsData[0];
-                console.log("Selected Project Group:", selectedRowData.ProjectGroupName);
-
-                window.selectedProjectGroupId = selectedRowData.ProjectGroupID;
-                window.selectedProjectGroupName = selectedRowData.ProjectGroupName;
-            } else {
-                DevExpress.ui.notify("Please select a Project Group from the grid", "error", 2000);
-            }
-        }
-
-        
-
-        function saveUserDetails() {
-            const user = {
-                UserId: $("#UserId").dxTextBox("instance").option("value"),
-                UserName:$("#UserName").dxTextBox("instance").option("value"),
-                Password:  $("#Password").dxTextBox("instance").option("value"),
-                 DeptCode: $("#ddCompany").dxDropDownBox("instance").option("value"),
-                 // BranchCode: $("#ddBranch").dxSelectBox("instance").option("value"),
-                 // Division: $("#Division").dxSelectBox("instance").option("value"),
-                 // UserLevel: $("#UserLevel").dxSelectBox("instance").option("value"),
-                 // AccessGroup: $("#AccessGroup").dxSelectBox("instance").option("value"),
-                 // InventoryAccess: $("#InventoryAccess").dxSelectBox("instance").option("value"),
-                 // PettyCashAccount: $("#PettyCashAccount").dxSelectBox("instance").option("value"),
-                 // EquipmentSalesPerson: $("#EquipmentSalesPerson").dxSelectBox("instance").option("value"),
-                 // InventorySalesPerson: $("#InventorySalesPerson").dxSelectBox("instance").option("value"),
-                 // HRTimesheetGroup: $("#HRTimesheetGroup").dxSelectBox("instance").option("value"),
-                 MobileNo: $("#UserMobileNo").dxTextBox("instance").option("value"),
-                 EmailAddress: $("#UserEmailAddress").dxTextBox("instance").option("value"),
-                 LastLogOnTime: $("#UserLastLoggedInTime").dxDateBox("instance").option("value"),
-                 LastLogOffTime: $("#UserLastLoggedOffTime").dxDateBox("instance").option("value")
-            };
-
-            $.ajax({
-                url: "/api/Utility/SaveUserDetails", 
-                method: "POST",
-                contentType: "application/json",
-                data: JSON.stringify(user),
-                success: function (response) {
-                    DevExpress.ui.notify("User details saved successfully!", "success", 3000);
-                },
-                error: function () {
-                    DevExpress.ui.notify("Failed to save user details", "error", 3000);
-                }
-            });
-        }
+                      // DropDown values
+                      $("#ddDepartment").dxDropDownBox("instance").option("value", user.DeptCode);
+                     // $("#ddCompany").dxDropDownBox("instance").option("value", user.CompanyId);
+                     // $("#ddBranch").dxDropDownBox("instance").option("value", user.BranchCode);
+                     // $("#ddUserLevel").dxDropDownBox("instance").option("value", user.UserLevel);
+                     // $("#ddEmployeeGroup").dxDropDownBox("instance").option("value", user.HrlevelCode);
+                      $("#ddInventoryMasterGroup").dxDropDownBox("instance").option("value", user.InventoryAccess);
+                     // $("#ddFilteredAccountHead").dxDropDownBox("instance").option("value", user.PettyCashAccount);
+                      $("#ddHRUserLevel").dxDropDownBox("instance").option("value", user.EqptQuotationAccess);
+                     // $("#ddSalesPerson").dxDropDownBox("instance").option("value", user.InventoryMpraccess);
+                      $("#ddProjectGroup").dxDropDownBox("instance").option("value", user.HrtimeSheetProjectGroup);
+                      //alert(user.CompanyId)
+                       onCompanySelectionChanged({selectedRowKeys:[user.CompanyName]});
+                       onBranchSelectionChanged({selectedRowKeys:[user.BranchName]});
+                       onUserLevelSelectionChanged({selectedRowKeys:[user.UserLevelDesc]});
+                       onEmployeeGroupSelectionChanged({selectedRowKeys:[user.HruserLevelDesc]});
+                       onFilteredAccountSelectionChanged({selectedRowKeys:[user.AccountHead]});
+                       onSalesPersonGridSelectionChanged({selectedRowKeys:[user.UserLevelDesc]});
 
 
 
 
 
-        function onSalesPersonValueChanged(e) {
-        }
-        function formatDate(dateStr) {
-            if (!dateStr) return "-";
-            const date = new Date(dateStr);
-            return date.toLocaleString();
-        }
+                  },
+                  error: function () {
+                      DevExpress.ui.notify("Failed to load user info", "error", 3000);
+                  }
+              });
+          }
 
+               function onDepartmentSelectionChanged(e) {
+              const selectedKey = e.selectedRowKeys[0];
+              const ddbInstance = $("#ddDepartment").dxDropDownBox("instance");
+
+              if (selectedKey) {
+                  ddbInstance.option("value", selectedKey);
+                  if (ddbInstance.option("opened")) {
+                      ddbInstance.close();
+                  }
+
+                  const selectedRowData = e.selectedRowsData[0];
+                  if (selectedRowData) {
+                      console.log("Selected:", selectedRowData.Department);
+                  }
+              }
+          }
+                   function onCompanySelectionChanged(e) {
+
+             // const selectedKey = e.selectedRowKeys && e.selectedRowKeys[0];
+             const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+
+              const ddbInstance = $("#ddCompany").dxDropDownBox("instance");
+
+              if (selectedKey) {
+
+                  ddbInstance.option("value", selectedKey);
+                //  ddbInstance.repaint(); // Ensure UI refreshes
+                  if (ddbInstance.option("opened")) {
+                      ddbInstance.close();
+                  }
+
+                  const selectedRowData = e.selectedRowsData && e.selectedRowsData[0];
+                  if (selectedRowData) {
+                      console.log("Selected company:", selectedRowData.CompanyName);
+                  }
+              }
+          }
+
+                 function onBranchSelectionChanged(e) {
+
+             // const selectedKey = e.selectedRowKeys && e.selectedRowKeys[0];
+             const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+
+              const ddbInstance = $("#ddBranch").dxDropDownBox("instance");
+
+              if (selectedKey) {
+
+                  ddbInstance.option("value", selectedKey);
+                //  ddbInstance.repaint(); // Ensure UI refreshes
+                  if (ddbInstance.option("opened")) {
+                      ddbInstance.close();
+                  }
+
+                  const selectedRowData = e.selectedRowsData && e.selectedRowsData[0];
+                  if (selectedRowData) {
+                      console.log("Selected Branch:", selectedRowData.BranchName);
+                  }
+              }
+          }
+
+           function onDepartmentsChanged(e) {
+              $.ajax({
+                  url: "/api/Utility/GetDepartments",
+                  method: "GET",
+                  data: { module: selectedModule },
+                  success: function (data) {
+                      prefixBox.option({
+                          items: data.data || data,
+                          value: null,
+                          disabled: false
+                      });
+                  },
+              });
+          }
+
+                          function onUserLevelSelectionChanged(e) {
+
+             // const selectedKey = e.selectedRowKeys && e.selectedRowKeys[0];
+             const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+
+              const ddbInstance = $("#ddUserLevel").dxDropDownBox("instance");
+
+              if (selectedKey) {
+
+                  ddbInstance.option("value", selectedKey);
+                //  ddbInstance.repaint(); // Ensure UI refreshes
+                  if (ddbInstance.option("opened")) {
+                      ddbInstance.close();
+                  }
+
+                  const selectedRowData = e.selectedRowsData && e.selectedRowsData[0];
+                  if (selectedRowData) {
+                      console.log("User Level Selected:", selectedRowData.UserLevelDesc);
+                  }
+              }
+          }
+
+
+
+                   function onEmployeeGroupSelectionChanged(e) {
+
+             // const selectedKey = e.selectedRowKeys && e.selectedRowKeys[0];
+             const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+
+              const ddbInstance = $("#ddEmployeeGroup").dxDropDownBox("instance");
+
+              if (selectedKey) {
+
+                  ddbInstance.option("value", selectedKey);
+                //  ddbInstance.repaint(); // Ensure UI refreshes
+                  if (ddbInstance.option("opened")) {
+                      ddbInstance.close();
+                  }
+
+                  const selectedRowData = e.selectedRowsData && e.selectedRowsData[0];
+                  if (selectedRowData) {
+                      console.log("Selected Group:", selectedRowData.HruserLevelDesc);
+                  }
+              }
+          }
+
+               function onInventoryGroupSelectionChanged(e) {
+              const selectedKey = e.selectedRowKeys[0];
+              const ddbInstance = $("#ddInventoryMasterGroup").dxDropDownBox("instance");
+
+              if (selectedKey) {
+                  ddbInstance.option("value", selectedKey);
+                  if (ddbInstance.option("opened")) {
+                      ddbInstance.close();
+                  }
+
+                  const selectedRowData = e.selectedRowsData[0];
+                  if (selectedRowData) {
+                      console.log("Selected Inventory Group:", selectedRowData.InventoryMasterGroup);
+                  }
+              }
+          }
+
+                        function onFilteredAccountSelectionChanged(e) {
+
+             // const selectedKey = e.selectedRowKeys && e.selectedRowKeys[0];
+             const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+
+              const ddbInstance = $("#ddFilteredAccountHead").dxDropDownBox("instance");
+
+              if (selectedKey) {
+
+                  ddbInstance.option("value", selectedKey);
+                //  ddbInstance.repaint(); // Ensure UI refreshes
+                  if (ddbInstance.option("opened")) {
+                      ddbInstance.close();
+                  }
+
+                  const selectedRowData = e.selectedRowsData && e.selectedRowsData[0];
+                  if (selectedRowData) {
+                      console.log("Selected Account:", selectedRowData.AccountHead);
+                  }
+              }
+          }
+
+                  function onHRUserLevelSelectionChanged(e) {
+              const selectedKey = e.selectedRowKeys[0];
+              const ddbInstance = $("#ddHRUserLevel").dxDropDownBox("instance");
+
+              if (selectedKey) {
+                  ddbInstance.option("value", selectedKey);
+                   if (ddbInstance.option("opened")) {
+                      ddbInstance.close();
+                  }
+                   const selectedRowData = e.selectedRowsData[0];
+                  if (selectedRowData) {
+                      console.log("User Level Selected:", selectedRowData.UserLevelDesc);
+                  }
+              }
+          }
+
+
+                   function onSalesPersonGridSelectionChanged(e) {
+
+             // const selectedKey = e.selectedRowKeys && e.selectedRowKeys[0];
+             const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+
+              const ddbInstance = $("#ddSalesPerson").dxDropDownBox("instance");
+
+              if (selectedKey) {
+
+                  ddbInstance.option("value", selectedKey);
+                //  ddbInstance.repaint(); // Ensure UI refreshes
+                  if (ddbInstance.option("opened")) {
+                      ddbInstance.close();
+                  }
+
+                  const selectedRowData = e.selectedRowsData && e.selectedRowsData[0];
+                  if (selectedRowData) {
+                      console.log("Selected SalesPerson:", selectedRowData.InventoryMprAccessDesc);
+                  }
+              }
+          }
+
+               function projectGroupSelectionChanged(e) {
+              const selectedKey = e.selectedRowKeys[0];
+              const ddbInstance = $("#ddProjectGroup").dxDropDownBox("instance");
+
+              if (selectedKey) {
+                  ddbInstance.option("value", selectedKey);
+                  if (ddbInstance.option("opened")) {
+                      ddbInstance.close();
+                  }
+
+                  const selectedRowData = e.selectedRowsData[0];
+                  console.log("Selected Project Group:", selectedRowData.ProjectGroupName);
+
+                  window.selectedProjectGroupId = selectedRowData.ProjectGroupID;
+                  window.selectedProjectGroupName = selectedRowData.ProjectGroupName;
+              } else {
+                  DevExpress.ui.notify("Please select a Project Group from the grid", "error", 2000);
+              }
+          }
+
+
+
+          function saveUserDetails() {
+
+              debugger;
+              const user = {
+                  UserId: $("#UserId").dxTextBox("instance").option("value"),
+                  UserName:$("#UserName").dxTextBox("instance").option("value"),
+                  Password:  $("#Password").dxTextBox("instance").option("value"),
+                   DeptCode: $("#ddDepartment").dxDropDownBox("instance").option("value"),
+                  CompanyId: $("#ddCompany").dxDropDownBox("instance").option("value"),
+                  BranchCode: $("#ddBranch").dxDropDownBox("instance").option("value"),
+                   UserLevel: $("#ddUserLevel").dxDropDownBox("instance").option("value"),
+
+                   HrlevelCode: $("#ddEmployeeGroup").dxDropDownBox("instance").option("value"),
+                    InventoryAccess: $("#ddInventoryMasterGroup ").dxDropDownBox("instance").option("value"),
+                    PettyCashAccount: $("#ddFilteredAccountHead ").dxDropDownBox("instance").option("value"),
+                    EqptQuotationAccess: $("#ddHRUserLevel ").dxDropDownBox("instance").option("value"),
+                    InventoryMpraccess    : $("#ddSalesPerson ").dxDropDownBox("instance").option("value"),
+                   HrtimeSheetProjectGroup: $("#ddProjectGroup ").dxDropDownBox("instance").option("value"),
+                   // HRTimesheetGroup: $("#HRTimesheetGroup").dxSelectBox("instance").option("value"),
+                   MobileNo: $("#UserMobileNo").dxTextBox("instance").option("value"),
+                   EmailAddress: $("#UserEmailAddress").dxTextBox("instance").option("value"),
+                   LastLogOnTime: $("#UserLastLoggedInTime").dxDateBox("instance").option("value"),
+                   LastLogOffTime: $("#UserLastLoggedOffTime").dxDateBox("instance").option("value")
+              };
+
+              $.ajax({
+                  url: "/api/Utility/SaveUserDetails",
+                  method: "POST",
+                  contentType: "application/json",
+                  data: JSON.stringify(user),
+                  success: function (response) {
+                      DevExpress.ui.notify("User details saved successfully!", "success", 3000);
+                  },
+                  error: function () {
+                      DevExpress.ui.notify("Failed to save user details", "error", 3000);
+                  }
+              });
+          }
+
+
+          function onCompanydataGridInitialized(e) {
+              dataGrid = e.component;
+          }
+
+          function onBranchdataGridInitialized(e) {
+              dataGrid2 = e.component;
+          }
+
+          function onUserLeveldataGridInitialized(e) {
+              dataGrid3 = e.component;
+          }
+
+           function onEmployeeGroupdataGridInitialized(e) {
+              dataGrid4 = e.component;
+          }
+           function onFilteredAccountGridInitialized(e) {
+              dataGrid5 = e.component;
+          }
+           function onSalesPersonGridInitialized(e) {
+              dataGrid6 = e.component;
+          }
+
+
+
+          function onSalesPersonValueChanged(e) {
+          }
+          function formatDate(dateStr) {
+              if (!dateStr) return "-";
+              const date = new Date(dateStr);
+              return date.toLocaleString();
+          }
          function onTabSelectionChanged(e) {
           // Hide all tab content
           $(".tab-content").hide();

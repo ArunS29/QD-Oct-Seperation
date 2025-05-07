@@ -355,10 +355,95 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
+        public async Task<IActionResult> GetUserID(byte userId)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var user = await (from u in dbContext.TblUserMasters
+                                      where u.UserId == userId
+
+                                      join c in dbContext.Tbl901CompanyDetails
+                                      on u.CompanyId equals c.CompanyId into userCompany
+                                      from uc in userCompany.DefaultIfEmpty()
+
+                                      join b in dbContext.Tbl20115CompanyBranches
+                                      on u.BranchCode.ToString() equals b.BranchCode into userBranch
+                                      from ub in userBranch.DefaultIfEmpty()
+
+                                      join ul in dbContext.Tbl901UserLevelMasters
+                                      on u.UserLevel equals ul.UserLevelId into UserLevelDesc
+                                      from ulm in UserLevelDesc.DefaultIfEmpty()
+
+                                      join hr in dbContext.Tbl901HruserLevelMasters
+                                      on u.HrlevelCode equals hr.HruserLevelId into HruserLevelDesc
+                                      from hrm in HruserLevelDesc.DefaultIfEmpty()
+
+                                      join a in dbContext.Qry201ListOfAccounts
+                                      on u.PettyCashAccount equals a.AccountId into AccountHead
+                                      from aj in AccountHead.DefaultIfEmpty()
+
+                                      join sp in dbContext.Tbl901SalesPersonAccessLevelMasters
+                                      on u.InventoryMpraccess equals sp.SalesPersonAccessLevelId into salesPersonJoin
+                                      from spm in salesPersonJoin.DefaultIfEmpty()
+
+                                      select new
+                                      {
+                                          u.UserId,
+                                          u.UserName,
+                                          u.Password,
+                                          u.EmailAddress,
+                                          u.MobileNo,
+                                          u.LastLogOnTime,
+                                          u.LastLogOffTime,
+                                          u.DeptCode,
+                                          u.CompanyId,
+                                          CompanyName = uc.CompanyName,
+                                          u.BranchCode,
+                                          BranchName = ub.BranchName,
+                                          u.UserLevel,
+                                          UserLevelDesc = ulm.UserLevelDesc,
+                                          u.HrlevelCode,
+                                          HruserLevelDesc = hrm.HruserLevelDesc,
+                                          u.InventoryAccess,
+                                          u.PettyCashAccount,
+                                          AccountHead = aj.AccountHead,
+                                          u.EqptQuotationAccess,
+                                          u.InventoryMpraccess,
+                                          InventoryMprAccessDesc = spm.SalesPersonAccessDesc,
+                                          u.HrtimeSheetProjectGroup
+                                      }).FirstOrDefaultAsync();
+
+                    if (user == null)
+                    {
+                        return NotFound(new { success = false, message = "User not found." });
+                    }
+
+                    return Json(new { success = true, data = user });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetUserID: {ex.Message}");
+                    return StatusCode(500, new
+                    {
+                        success = false,
+                        message = "An error occurred while fetching the user.",
+                        error = ex.Message
+                    });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+
+
+
         //krish
 
         [HttpGet]
-        public async Task<IActionResult> GetUserID(byte userId)
+        public async Task<IActionResult> GetUserID_Test(byte userId)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
@@ -757,17 +842,16 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         // Update existing user
                         existingUser.UserName = user.UserName;
                         existingUser.Password = user.Password;
-                        // existingUser.Department = user.Department;
                         existingUser.DeptCode = user.DeptCode;
-                        //existingUser.CompanyId = user.CompanyId;
-                        //  existingUser.Division = user.Division;
-                        // existingUser.UserLevel = user.UserLevel;
-                        // existingUser.AccessGroup = user.AccessGroup;
-                        // existingUser.InventoryAccess = user.InventoryAccess;
-                        //existingUser.PettyCashAccount = user.PettyCashAccount;
-                        // existingUser.EquipmentSalesPerson = user.EquipmentSalesPerson;
-                        //  existingUser.InventorySalesPerson = user.InventorySalesPerson;
-                        //  existingUser.HRTimesheetGroup = user.HRTimesheetGroup;
+                        existingUser.CompanyId = user.CompanyId;
+                        existingUser.BranchCode = user.BranchCode;
+                        existingUser.UserLevel = user.UserLevel;
+                        existingUser.HrlevelCode = user.HrlevelCode;
+                        existingUser.InventoryAccess = user.InventoryAccess;
+                        existingUser.PettyCashAccount = user.PettyCashAccount;
+                        existingUser.EqptQuotationAccess = user.EqptQuotationAccess;
+                        existingUser.InventoryMpraccess = user.InventoryMpraccess;
+                        existingUser.HrtimeSheetProjectGroup = user.HrtimeSheetProjectGroup;
                         existingUser.MobileNo = user.MobileNo;
                         existingUser.EmailAddress = user.EmailAddress;
                         existingUser.LastLogOnTime = user.LastLogOnTime;
@@ -783,8 +867,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             UserName = user.UserName,
                             Password = user.Password,
                             //  Department = user.Department,
-                            DeptCode = user.DeptCode,
-                            //   Branch = user.Branch,
+                            CompanyId = user.CompanyId,
+                            BranchCode = user.BranchCode,
                             //   Division = user.Division,
                             UserLevel = user.UserLevel,
                             //   AccessGroup = user.AccessGroup,
