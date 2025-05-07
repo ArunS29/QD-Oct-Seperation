@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QD.ERP.Web.DAL.Entities;
+using QD.ERP.Web.Service;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
@@ -8,14 +9,18 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
     [ApiController]
     public class EmployeeAllocationController : Controller
     {
-        private ERPMasterWtDataContext _context;
+		private ERPMasterWtDataContext _context;
+		private readonly TenantDbContextHelper _tenantDbContextHelper;
+		private readonly ILogger<EmployeeAllocationController> _logger;
 
-        public EmployeeAllocationController(ERPMasterWtDataContext context)
-        {
-            _context = context;
-        }
+		public EmployeeAllocationController(ILogger<EmployeeAllocationController> logger, TenantDbContextHelper tenantDbContextHelper, ERPMasterWtDataContext context)
+		{
+			_tenantDbContextHelper = tenantDbContextHelper;
+			_logger = logger;
+			_context = context;
+		}
 
-        public IActionResult EmployeeAllocation(string voucherNo, string accountHead, string voucherAmount, string drCr, string effectiveDate)
+		public IActionResult EmployeeAllocation(string voucherNo, string accountHead, string voucherAmount, string drCr, string effectiveDate)
         {
             // Log or debug the incoming parameters
             ViewBag.VoucherNo = voucherNo;
@@ -31,7 +36,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpGet]
         public IActionResult GetEmployeeName()
         {
-            var data = _context.Tbl101Employees
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+			var data = dbContext.Tbl101Employees
                 .Select(c => new
                 {
                     c.EmployeeId,
@@ -64,17 +73,21 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpPost]
         public IActionResult Delete(List<int> rowKeys)
         {
-            try
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+			try
             {
                 foreach (var id in rowKeys)
                 {
-                    var item = _context.Tbl20129JournalRegisterEmployeeAllocations.Find(id);
+                    var item = dbContext.Tbl20129JournalRegisterEmployeeAllocations.Find(id);
                     if (item != null)
                     {
-                        _context.Tbl20129JournalRegisterEmployeeAllocations.Remove(item);
+						dbContext.Tbl20129JournalRegisterEmployeeAllocations.Remove(item);
                     }
                 }
-                _context.SaveChanges();
+				dbContext.SaveChanges();
                 return Json(new { success = true });
 
             }

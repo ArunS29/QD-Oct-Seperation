@@ -191,16 +191,16 @@
 	<!-- DataGrid Section -->
 	<div class="dx-field ledgerResult" style="padding-top:20px">
 		@(
-					Html.DevExtreme().DataGrid<Tbl20104EmployeeAllocationMaster>()
+					Html.DevExtreme().DataGrid<Tbl20129JournalRegisterEmployeeAllocation>()
 					.ID("AEdataGrid")
 					.RemoteOperations(false)
 					.RowAlternationEnabled(true)
 					.DataSource(new object[] { })
 					.Columns(columns =>
 					{
-						columns.Add().Caption("Dr/Cr").DataField("DrCr").Width(100).AllowEditing(false);
-						columns.Add()
-					.DataField("EmployeeName")
+						columns.AddFor(m => m.EmpAllocDrCr).Caption("Dr/Cr").DataField("DrCr").Width(100).AllowEditing(false);
+						columns.AddFor(m => m.EmployeeNo)
+					.DataField("EmployeeId")
 					.Caption("Employee Name")
 					.Width(500)
 					.AllowEditing(true)
@@ -248,7 +248,7 @@
 				.Placeholder("Select Employee Allocation")
 				.Width(350)
 				.DropDownOptions(o => o.Width(800))
-				.Value(new JS("data.EmployeeName"))
+				.Value(new JS("data.EmployeeId"))
 				.ContentTemplate(new TemplateName("JournalEmployeeAllocationDropdownContentTemplate"))
 				)
 
@@ -271,7 +271,7 @@
 			</div>
 
 		</text>);
-						columns.Add()
+						columns.AddFor(m => m.EffectiveDate)
 					.Caption("Effective Date")
 					.DataField("EffectiveDate").DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
 					.AllowEditing(true)
@@ -291,8 +291,8 @@
 			)
 		</text>);
 
-						columns.Add().Caption("Amount").DataField("VoucherAmount").DataType(GridColumnDataType.Number).Format("#,##0.00").AllowEditing(true);
-						columns.Add().Caption("Remarks").DataField("Remarks").AllowEditing(true);
+						columns.AddFor(m => m.AmountAllocated).Caption("Amount").DataField("VoucherAmount").DataType(GridColumnDataType.Number).Format("#,##0.00").AllowEditing(true);
+						columns.AddFor(m => m.CostAllocRemarks).Caption("Remarks").DataField("Remarks").AllowEditing(true);
 						columns.AddFor(m => m.EnteredOn).Caption("Add Loan Schedule");
 						columns.AddFor(m => m.LoanId).Caption("Loan Doc ID");
 					})
@@ -376,7 +376,8 @@
 					.SelectedRowKeys(new JS(@"component.option(""value"")"))
 					.OnSelectionChanged(@<text>
 			function(selectedItems) {
-			var keys = selectedItems.selectedRowKeys;
+				debugger;
+			var keys = selectedItems.selectedRowsData;
 			component.option("value", keys);
 			console.log(keys);
 			}
@@ -710,72 +711,58 @@
 	// 		dataGrid.clearSelection();
 	// 	}
 	// }
-
-			  $("#AEbtnSave").on("click", function (e) {
-		e.preventDefault();
-
-		// Get the DataGrid instance
-		const AEdataGrid = $("#AEdataGrid").dxDataGrid("instance");
-
-		if (!AEdataGrid) {
-			DevExpress.ui.notify("DataGrid instance not found.", "error", 2000);
-			return;
-		}
-
-		// Get the data from the first row of the DataGrid
-		const dataGridData = AEdataGrid.getDataSource().items();
-		if (!dataGridData || dataGridData.length === 0) {
-			DevExpress.ui.notify("No data in the grid to save.", "error", 2000);
-			return;
-		}
-
-		// Extract values from the first row (you can adjust logic for multiple rows if needed)
-		const firstRowData = dataGridData[0];
-
-		const remarks = firstRowData.Remarks || null; // Remarks column value
+	$("#AEbtnSave").dxButton("instance").option("onClick", function () {
+		let grid = $("#AEdataGrid").dxDataGrid("instance");
+		let allRowsData = grid.getDataSource().items();
+		let journalchildno = parseInt('@voucherEntryNo'.trim(), 10);
+		let voucherno = '@VoucherNo';
+		let Accountid = '@accountId';
 
 
-		// Construct the ViewModel object
-		const VM = {
+		// Append voucherEntryNo to each row
+		let costAllocations = allRowsData.map(row => ({
+			EmpAllocDrCr: row.DrCr,
+			EmployeeNo: row.EmployeeID,
+			EffectiveDate: row.EffectiveDate ? new Date(row.EffectiveDate).toISOString() : null,
+			AmountAllocated: row.VoucherAmount,
+			CostAllocRemarks: row.Remarks,
+			JournalChildNo: journalchildno,
+			VoucherNo: voucherno,
+			LedgerAccountNo: Accountid
+		}));
 
-			EmployeeNo: employeeId,
-			EffectiveDate: new Date().toISOString().split('T')[0],
-			AmountAllocated: VocuherAmount, // Ensure server-side value is correctly populated
-			CostAllocRemarks: remarks,
-			VoucherNo:'@VoucherNo',
-			EmpAllocDrCr:'@drCr'
-		};
+		// Optional: validate before sending
 
-		// Debug to ensure VM is correctly populated
-		console.log("VM to be sent:", VM);
+		$.ajax({
+			type: "POST",
+			url: "/api/JournalEntryEdit/SaveemployeeAllocations", // adjust area/controller path if needed
+			contentType: "application/json",
+			data: JSON.stringify(costAllocations),
+			success: function (response) {
 				debugger;
-				$.ajax({
-					type: "POST",
-					url: "/api/EmployeeAllocation/SaveEmployeeAllocation",
-					contentType: "application/json",
-					data: JSON.stringify(VM),
-					dataType: "json",
-					success: function (response) {
-						if (response.success) {
-								DevExpress.ui.notify("Employee Allocation Details updated Successfully.", "success", 2000);
-
-								let popupInstance = $("#EmployeeAllocationPopup").dxPopup("instance");
-								popupInstance.hide();
-
-
-
-						} else {
-							alert("Update failed: " + response.message);
-						}
-					},
-					error: function (xhr, status, error) {
-						DevExpress.ui.notify("Voucher has no line items to be saved, please enter transaction to save.!", "error", 2000);
+				// Closepopup();
+				DevExpress.ui.dialog.alert(
+					"Employee Allocation Details updated Successfully.",
+					"Update Successful"
+				).then(function () {
+					setTimeout(function () {
+						loadLedgerGridData('@VoucherNo');
+					}, 500);
+					if (popupInstances[journalchildno]) {
+						popupInstances[journalchildno].hide();
 					}
-
 				});
 
+				//     window.location.reload();
+				// CostAllocationPopup.hide();
+				// Hide the popup
 
-			});
+			},
+			error: function (xhr) {
+				DevExpress.ui.notify("Error saving data: " + xhr.responseText, "error", 4000);
+			}
+		});
+	});
 
 	function gridBoxEmployeevalueChanged(e) {
 		var $dataGrid = $("#AEdataGrid");
@@ -793,12 +780,14 @@
 			let selectedRowData = costAllocationDropdownGrid.getSelectedRowsData()[0]; // Get first selected row
 
 			if (selectedRowData) {
-				employeeId = selectedRowData.EmployeeId; // Store the correct ID
-
+				debugger;
+				rowData.EmployeeID = selectedRowData.EmployeeId;
+				rowData.EmployeeName = selectedRowData.EmployeeName; // Update AccountHead
+				grid.cellValue(rowIndex, "EmployeeID", selectedRowData.EmployeeID);
+				grid.cellValue(rowIndex, "EmployeeName", selectedRowData.EmployeeName); // Reflect change
 			}
 
-			rowData.EmployeeName = e.value; // Update the row data
-			grid.cellValue(rowIndex, "EmployeeName", e.value); // Ensure it reflects in the grid
+			 // Ensure it reflects in the grid
 
 		}
 

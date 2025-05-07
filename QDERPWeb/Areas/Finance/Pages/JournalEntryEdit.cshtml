@@ -211,7 +211,7 @@
                 .HeaderCellTemplate(@<text>
                 <div class="headerBolder">...</div>
             </text>);
-                        columns.Add().DataField("EmpAllocated").Caption("Employees Allocation").Width(150);
+                        columns.Add().DataField("EmployeeCostDescription").Caption("Employees Allocation").Width(150);
                         columns.Add().DataField("TotalEmpAllocated").Caption("Total Employee Allocation").Width(150).Visible(true);
                         columns.Add().Caption("...").Width(100).Visible(true).CellTemplate(@<text>
                 <div class="text-center">
@@ -231,7 +231,7 @@
                         columns.Add().DataField("JournalRefNo").Caption("Journal Ref No").Width(200).Visible(false);
                         columns.Add().DataField("LineOrderNo").Caption("Line Order No").Width(120).Visible(false);
                         columns.Add().DataField("AccountId").Caption("Account ID").Width(150).Visible(false);
-                        columns.Add().DataField("EmployeeCostDescription").Caption("Employee Cost Desc").Width(200).Visible(false);
+                        
                         columns.Add().DataField("PropertyCostDescription").Caption("Property Cost Desc").Width(200).Visible(false);
                         columns.Add().DataField("FormattedAmount").Caption("Formatted Amount").Format("currency").Width(150).Alignment(HorizontalAlignment.Right).Visible(false);
                         columns.Add().DataField("TotalEqpAllocted").Caption("Total Equipment Allocated").Format("currency").Width(180).Alignment(HorizontalAlignment.Right).Visible(false);
