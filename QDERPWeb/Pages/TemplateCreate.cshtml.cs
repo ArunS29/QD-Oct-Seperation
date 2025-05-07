@@ -5,20 +5,23 @@ using QD.ERP.Web.DAL.Entities;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using QD.ERP.Web.Service; // Ensure this namespace includes TenantDbContextHelper
 
 public class TemplateCreateModel : PageModel
 {
     private readonly ERPMasterWtDataContext _context;
+    private readonly TenantDbContextHelper _tenantDbContextHelper;
 
-    public TemplateCreateModel(ERPMasterWtDataContext context)
+    public TemplateCreateModel(ERPMasterWtDataContext context, TenantDbContextHelper tenantDbContextHelper)
     {
         _context = context;
+        _tenantDbContextHelper = tenantDbContextHelper;
     }
 
     [BindProperty]
     public EmailTemplate Template { get; set; } = new EmailTemplate();
 
-    public bool IsSuccess { get; set; } = false; // New property to track success
+    public bool IsSuccess { get; set; } = false; 
 
     public void OnGet() { }
 
@@ -31,16 +34,25 @@ public class TemplateCreateModel : PageModel
 
         try
         {
-            Template.TemplateName = Template.TemplateName?.Trim();
-            Template.Subject = Template.Subject?.Trim();
-            Template.Body = Template.Body?.Trim();
-            Template.Status = Template.Status?.Trim() ?? "Active";
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out var _, out var dbContext))
+            {
+                // Trim input values
+                Template.TemplateName = Template.TemplateName?.Trim();
+                Template.Subject = Template.Subject?.Trim();
+                Template.Body = Template.Body?.Trim();
+                Template.Status = Template.Status?.Trim() ?? "Active";
 
-            _context.EmailTemplates.Add(Template);
-            await _context.SaveChangesAsync();
+                // Save the template to the tenant-specific database
+                dbContext.EmailTemplates.Add(Template);
+                await dbContext.SaveChangesAsync();
 
-            IsSuccess = true; // Indicate success
-            return Page(); // Stay on the same page to show the popup
+                IsSuccess = true;
+                return Page(); // JS will alert and go back
+            }
+            else
+            {
+                throw new Exception("Unable to retrieve tenant context.");
+            }
         }
         catch (Exception ex)
         {
@@ -49,4 +61,6 @@ public class TemplateCreateModel : PageModel
             return Page();
         }
     }
+
+
 }
