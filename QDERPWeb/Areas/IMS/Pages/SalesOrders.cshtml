@@ -2,556 +2,422 @@
 @model QD.ERP.Web.Areas.IMS.Pages.SalesOrdersModel
 @{
 }
+<style>
+	.overlay {
+		display: none;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.5);
+		z-index: 1000;
+	}
 
+	.overlay-content {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 100%;
+		height: 80%;
+		background: #fff;
+		box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+		border-radius: 8px;
+		overflow: hidden;
+	}
 
+	.limited-footer .btn-containerIvoiceEdit:not(:has(#ddButtonLayout,#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#btntoggleGroupPanel,#btnColumnChooser,#btnInvoiceDetails,#ddReports,#ddButtonPayment)) {
+		display: none !important
+	}
 
-@using DevExtreme.AspNet.Mvc
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<!-- Add SweetAlert CSS and JS CDN -->
-<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+	#overlay-frame {
+		width: 100%;
+		height: 100%;
+	}
 
+	.dx-datagrid-headers {
+		border: 1px solid #686868 !important;
+		width: 100%; /* Adjust to fit the container */
+		overflow-x: auto; /* Enable horizontal scrolling */
+		white-space: nowrap; /* Prevent wrapping of headings */
+		overflow-y: hidden;
+	}
 
-<style type="text/css">
-    /* Card container styling */
-    .card-container {
-        background-color: white; /* Set background color for the card */
-        padding: 20px; /* Add some padding inside the card */
-        border-radius: 8px; /* Rounded corners */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for the card */
-    }
+		.dx-datagrid-headers .dx-row > td {
+			border: 1px solid #686868 !important;
+			text-align: center !important;
+			/* 	width:1000px; */
+		}
 
-        /* Label text color blue */
-        .card-container label {
-            color: blue; /* Set label text color to blue */
-        }
+	.dx-datagrid .dx-header-row .dx-datagrid-text-content {
+		font-size: 12px !important;
+		white-space: nowrap !important; /* Prevent wrapping of text */
+		text-align: center !important;
+		font-weight: bold;
+		color: black;
+	}
 
+	.close-btn {
+		position: absolute;
+		top: 10px;
+		right: 20px;
+		font-size: 30px;
+		cursor: pointer;
+	}
 
-    /* Style for the textboxes */
-    .dx-datagrid .dx-row {
-        border-bottom: 1px solid #ccc; /* Border between rows */
-    }
+	.custom-toolbar {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
 
-    /* Grid Column Header Text Color */
-    .dx-datagrid-headers .dx-header-row .dx-datagrid-text-content {
-        color: #2d5799; /* Set header text color */
-    }
+	.filter-btn {
+		background-color: #007bff;
+		color: white;
+		border: none;
+		padding: 6px 12px;
+		border-radius: 5px;
+		cursor: pointer;
+		font-family: 'Inter', sans-serif;
+	}
 
-    /* Grid Column Header Background Color */
-    .dx-datagrid-headers .dx-header-row {
-        background-color: white; /* Set background color for column headers */
-    }
+		.filter-btn:hover {
+			background-color: #0056b3;
+		}
 
-    /* Button customization */
-    .dx-button-add {
-        background-color: #f5f8fb !important; /* Set background color to #cfddee */
-        color: red !important; /* Set text color to red */
-        border: 1px solid #b0c4de; /* Light border around the button */
-    }
+	.dx-texteditor {
+		background-color: transparent !important;
+		border: 1px solid #d6e4f0 !important;
+		border-radius: 4px !important;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+		font-size: 14px !important;
+		transition: all 0.2s ease-in-out !important;
+		height: 39px !important;
+	}
 
-        .dx-button-add .dx-icon {
-            color: green !important; /* Set icon color to green */
-        }
+		.dx-texteditor:hover,
+		.dx-texteditor.dx-state-hover,
+		.dx-button:hover {
+			box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important;
+			border-color: #86b7fe !important;
+		}
 
-    .horizontal-container {
-        display: flex;
-        gap: 10px; /* Adds spacing between buttons */
-        justify-content: start; /* Aligns buttons to the left */
-        align-items: center; /* Vertically centers the buttons */
-        margin: 15px;
-    }
+		.dx-texteditor.dx-state-focused {
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+			border-color: #508ae1 !important;
+		}
 
-    .dx-selectbox .dx-texteditor-input {
-        text-align: center; /* Centers the text inside the input */
-    }
+	.no-border-input {
+		border: none !important;
+		outline: none !important;
+		box-shadow: none !important;
+		background: transparent !important;
+		font-weight: bold;
+		font-size: 16px;
+		color: black;
+		pointer-events: none;
+	}
 
-    .backgroundcolor {
-        background-color: white;
-    }
+	.context-menuInvoice {
+		position: absolute;
+		background: #fff;
+		border-radius: 8px;
+		box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+		width: 200px;
+		display: none;
+		flex-direction: column;
+		padding: 5px 0;
+		z-index: 1000;
+	}
 
-    .button-alignment-down {
-        margin-bottom: 10px;
-    }
+	.context-menu-itemInvoice {
+		display: flex;
+		align-items: center;
+		padding: 10px 15px;
+		font-size: 14px;
+		cursor: pointer;
+		transition: background 0.2s ease-in-out;
+		color: #333;
+	}
 
-    /* Style for the Save and Refresh buttons */
-    .action-buttons-container {
-        display: flex;
-        justify-content: center;
-        margin-top: 20px;
-    }
+		.context-menu-itemInvoice i {
+			margin-right: 10px;
+			font-size: 16px;
+			color: #007bff;
+		}
 
-        .action-buttons-container .dx-button {
-            margin-right: 10px; /* Space between buttons */
-        }
+		.context-menu-itemInvoice:hover {
+			background: #f0f0f0;
+		}
 
-    .content-container-top {
-        padding: 15px;
-    }
+		.context-menu-itemInvoice:not(:last-child) {
+			border-bottom: 1px solid #e0e0e0;
+		}
 
-    .container {
-        display: none !important;
-    }
+	.ledgerResult{
+		overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
+		width: 100%;
+	}
 
-    .frame {
-        display: none !important;
-    }
-
-    .footerContainer {
-        display: none !important;
-    }
-
-    .bodyContainer {
-        display: flex;
-        justify-content: center;
-    }
-
-    .mainContainer {
-        margin-top: 1em;
-        width: 100%;
-    }
-
-    .playIcon {
-        display: none;
-    }
+	.mainContainer {
+		width: 100%;
+		overflow: hidden;
+	}
 </style>
 
+<input id="formId" value="frm201LedgerView" type="hidden" />
 <div class="title">
-    <div class="header-container">
-        <div id="salesOrdersTitle" class="no-border-title"></div>
-    </div>
+	<div class="header-container">
+		<div id="SalesOrders" class="no-border-input"></div>
+	</div>
 </div>
-@* <div class="sathish-container-top"> *@
-<div class="content-container-top">
-    <div class="row">
-        <div class="col-md-4">
-            @(Html.DevExtreme().SelectBox()
-                        .ID("subGroupCode")
-                        .DataSource(d => d.WebApi()
-                        .Controller("Assetview")
-                        .LoadAction("GetddlAssetlocation")
-                        .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("AssetLocation")
-                        )
-                        .DisplayExpr("Name")
-                        .ValueExpr("ID")
-                        .Label(new JS("formatMessage('Sub Group Code')"))
-                        .LabelMode(EditorLabelMode.Outside)
-                        )
-        </div>
-
-        <div class="col-md-4">
-            @(Html.DevExtreme().TextBox()
-                        .ID("quotationNo")
-                        .Label(new JS("formatMessage('Quotation No')"))
-                        .LabelMode(EditorLabelMode.Outside)
-                        )
-        </div>
-
-        <div class="col-md-4">
-            @(Html.DevExtreme().TextBox()
-                        .ID("mprNo")
-                        .Label(new JS("formatMessage('MPR No')"))
-                        .LabelMode(EditorLabelMode.Outside)
-                        .Value("AIC-ENQ-2025-00001") // example value
-                        )
-        </div>
-    </div>
-
-    <div class="row mt-2" style="display: flex;align-items: baseline;">
-        <div class="col-md-8">
-            @(Html.DevExtreme().SelectBox()
-                        .ID("subGroupName")
-                        .DataSource(d => d.WebApi()
-                        .Controller("Assetview")
-                        .LoadAction("GetddlAssetlocation")
-                        .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("AssetLocation")
-                        )
-                        .DisplayExpr("Name")
-                        .ValueExpr("ID")
-                        .Label(new JS("formatMessage('Sub Group Name')"))
-                        .LabelMode(EditorLabelMode.Outside)
-                        )
-        </div>
-
-        <div class="col-md-4">
-            @(Html.DevExtreme().CheckBox()
-                        .ID("showPriceDetails")
-                        .Text(new JS("formatMessage('Show Price Details')"))
-                        )
-        </div>
-    </div>
-
-    <div class="row mt-2" style="display: flex;align-items: baseline;">
-        <div class="col-md-8">
-            @(Html.DevExtreme().TextBox()
-                        .ID("subGroupRemarks")
-                        .Label(new JS("formatMessage('Sub Group Remarks / Notes')"))
-                        .LabelMode(EditorLabelMode.Outside)
-                        )
-        </div>
-        <div class="col-md-4">
-            @(Html.DevExtreme().Button()
-                        .ID("btnAddSubGroup")
-                        .Text(new JS("formatMessage('Add')"))
-                        .Icon("plus")
-                        .Height(40)
-                        .Width(120)
-                        .OnClick("function() { addSubGroup(); }")
-                        )
-        </div>
-    </div>
-    <div id="gridContainer"></div>
 
 
+<div class="Head">
+	<div class="limited-footer">
+		@await Html.PartialAsync("InventoryModuleFooter")
+	</div>
+</div>
+
+<div class="dx-fieldset horizontal-container">
+	@(Html.DevExtreme().DateBox()
+		.ID("frmdateBox")
+		.Label(new JS("formatMessage('Start Date')"))
+		.LabelMode(EditorLabelMode.Outside)
+		.InputAttr("aria-label", "Date")
+		.Type(DateBoxType.Date)
+		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)) // First day of the month
+		.DisplayFormat("dd-MMM-yyyy")
+		.TabIndex(2)
+		)
+
+	@(Html.DevExtreme().DateBox()
+		.ID("todateBox")
+		.Label(new JS("formatMessage('End Date')"))
+		.LabelMode(EditorLabelMode.Outside)
+		.InputAttr("aria-label", "Date")
+		.Type(DateBoxType.Date)
+		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))) // Last day of the month
+		.DisplayFormat("dd-MMM-yyyy")
+		.TabIndex(3)
+		)
+
+
+	@(Html.DevExtreme().DropDownButton()
+		.ID("ddBtnShowRecords")
+		.Text(new JS("formatMessage('Show Records')"))
+		.Icon("smalliconslayout")
+		.Width(180)
+		.ElementAttr("class", "button-alignment-down")
+		.TabIndex(4)
+		.DropDownOptions(options => options.Width(230))
+		.Items(items =>
+		{
+			items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
+			items.Add().Text(new JS("formatMessage('Today')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
+			items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+			items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
+			items.Add().Text(new JS("formatMessage('This Month Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+			items.Add().Text(new JS("formatMessage('This Month (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+			items.Add().Text(new JS("formatMessage('This Year Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+			items.Add().Text(new JS("formatMessage('This Year (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+			items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+			items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+		})
+		)
 
 </div>
-@* </div> *@
+<div class="dx-field ledgerResult">
+	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201607vatinvoiceRegisterMainView>()
+		.ID("dataGrid")
+		.RemoteOperations(false)
+		.DataSource(new JS("[]"))
+		.Columns(columns =>
+		{
+			columns.Add().Caption("Sales Orders Details").Columns(subColumns =>
+			{
+				subColumns.AddFor(m => m.InvoiceZatcaStatus).Caption("Invoice Zatca Status").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.InvoiceType).Caption("Invoice Type").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.InvoiceNo).Caption("Invoice No").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.InvoiceDate).Caption("Invoice Date").Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
+				subColumns.AddFor(m => m.InvoiceEffectiveDate).Caption("Invoice Effective Date").Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
+				subColumns.AddFor(m => m.AccountHead).Caption("Account Head").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.InvoiceStatus).Caption("Invoice Status").Alignment(HorizontalAlignment.Center).Visible(true);
+			});
+			columns.Add().Caption("No Of Items").Columns(subColumns =>
+			{
+				subColumns.AddFor(m => m.CalcLineAmount)
+			.Caption("Amount Before Tax")
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.AllowEditing(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+
+				subColumns.AddFor(m => m.CalcTaxAmount)
+			.Caption("Total VAT Amount")
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+
+				subColumns.AddFor(m => m.TotalInvoiceAmount)
+			.Caption("Invoiced Amount")
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			});
+
+			columns.Add().Caption("Revenue Classified").Columns(revenueColumns =>
+			{
+				revenueColumns.Add().Caption("Domestic").Columns(subColumns =>
+			{
+				subColumns.AddFor(m => m.DomesticStandartRatedRevenue)
+			.Caption("Domestic Revenue @5%")
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+
+				subColumns.AddFor(m => m.TotalRevenueOf10Perc)
+			.Caption("Domestic Revenue @10%")
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+
+				subColumns.AddFor(m => m.TotalRevenueOf15Perc)
+			.Caption("Domestic Revenue @15%")
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+
+				subColumns.AddFor(m => m.DomesticZeroRatedRevenue)
+			.Caption("Domestic Zero Rated Revenue")
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+
+				subColumns.AddFor(m => m.DomesticExemptedRevenue)
+			.Caption("Domestic Exempted Revenue")
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			});
+
+				revenueColumns.Add().Caption("GCC Countries").Columns(subColumns =>
+			{
+				subColumns.AddFor(m => m.GccstandardRatedRevenue)
+			.Caption("GCC Revenue")
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			});
+
+				revenueColumns.Add().Caption("Other Countries").Columns(subColumns =>
+			{
+				subColumns.AddFor(m => m.ExportsRevenue)
+			.Caption("Exports Revenue")
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			});
+			});
+
+			columns.Add().Caption("VAT Amount Classified").Columns(vatColumns =>
+			{
+				vatColumns.Add().Caption("Domestic VAT").Columns(subColumns =>
+			{
+				subColumns.AddFor(m => m.DomesticStandartRatedTax)
+			.Caption("Domestic VAT @5%")
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+
+				subColumns.AddFor(m => m.TotalTaxOf10Perc)
+			.Caption("Domestic VAT @10%")
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+
+				subColumns.AddFor(m => m.TotalTaxOf15Perc)
+			.Caption("Domestic VAT @15%")
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+
+				subColumns.AddFor(m => m.DomesticZeroRatedTax)
+			.Caption("Domestic Zero Rated VAT")
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+
+				subColumns.AddFor(m => m.DomesticExemptedTax)
+			.Caption("Domestic Exempted VAT")
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			});
+
+				vatColumns.Add().Caption("GCC VAT").Columns(subColumns =>
+			{
+				subColumns.AddFor(m => m.GccstandardRatedTax)
+			.Caption("GCC Tax")
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			});
+
+				vatColumns.Add().Caption("Exports VAT").Columns(subColumns =>
+			{
+				subColumns.AddFor(m => m.ExportsTax)
+			.Caption("Exports Tax")
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			});
+			});
+		})
+		.Height(680) // Fixed height for the grid
+		.ColumnAutoWidth(true)
+		.Width("98%")
+		.WordWrapEnabled(true)
+		.OnCellClick("function(e) {handleCellClick(e);}")
+		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+		.AllowColumnReordering(true)
+		.AllowColumnResizing(true)
+		.ColumnFixing(fixing => fixing.Enabled(true))
+		.HeaderFilter(filter => filter.Visible(false))
+		.Paging(p => p.Enabled(false))
+		.Pager(pager => pager.Visible(false))
+		.GroupPanel(groupPanel => groupPanel.Visible(false))
+		.ShowBorders(true)
+		.ShowRowLines(true)
+		
+		
+		.FilterRow(filterRow => filterRow.Visible(false))
+		.GroupPanel(groupPanel => groupPanel.Visible(false))
+		.ShowBorders(true)
+		.StateStoring(stateStoring =>
+		{
+			stateStoring
+			.Enabled(true)
+			.Type(StateStoringType.LocalStorage)
+			.StorageKey("gridContainerState");
+		})
+		.OnInitialized("function(e) { loadGridState(); }")
+		)
 
 
-<script type="text/javascript">
-    $(function () {
-        var updatedRows = []; // To store the updated rows
-        var searchPanelVisible = false; // Track the visibility of the search panel
 
-        // Initialize DevExtreme DataGrid with CustomStore
-        $("#gridContainer").dxDataGrid({
-            dataSource: new DevExpress.data.CustomStore({
-                key: "ClientCategoryCode",
-                load: function () {
-                    return $.getJSON('/api/ClientCategory1/GetBranches'); // Fetch data from the API
-                },
-                update: function (key, values) {
-                    var updatedBranch = {
-                        ClientCategoryCode: key, // Use the key for the branch to identify it
-                        ClientCategory: values.ClientCategory,
-                        CategoryCode: values.CategoryCode
-                    };
+</div>
+<div id="invoiceErrorPopup"></div>
 
-                    // Add the updated branch to the updatedRows array
-                    updatedRows.push(updatedBranch);
-
-                    // Send the updated data to the backend via AJAX
-                    return $.ajax({
-                        type: "POST",
-                        url: "/api/ClientCategory1/UpdateBranch",
-                        data: JSON.stringify(updatedBranch),
-                        contentType: "application/json",
-                        success: function (response) {
-                            // SweetAlert on success
-                            Swal.fire({
-                                icon: 'success',
-                                title: formatMessage('Branch Updated'),
-                                text: formatMessage('The branch has been successfully updated.'),
-                                confirmButtonText: 'OK'
-                            });
-                        },
-                        error: function (xhr) {
-                            // Check if the error is due to a duplicate branch name
-                            var errorMessage = xhr.responseJSON?.message || "An error occurred.";
-
-                            if (xhr.status === 400 && errorMessage.includes("Branch Name already exists")) {
-
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: formatMessage('Duplicate Branch Name'),
-                                    text: formatMessage('This branch name already exists! Please choose a different name.'),
-                                    confirmButtonText: 'OK'
-                                }).then(() => {
-                                    // Trigger the cancel action on the DataGrid after alert is closed
-                                    var dataGrid = $("#gridContainer").dxDataGrid("instance");
-                                    dataGrid.cancelEditData();  // Cancel the current edit
-                                });
-
-
-                            } else {
-                                // Handle other errors
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error',
-                                    text: errorMessage,
-                                    confirmButtonText: 'OK'
-                                });
-                            }
-                        }
-                    });
-                }
-            }),
-            editing: {
-                mode: "batch", // Enable batch edit mode for multiple row editing
-                allowUpdating: true,  // Allow cell updates
-                allowAdding: false,   // No new rows
-                allowDeleting: true, // Prevent row deletion
-                useIcons: true, // Use icons for save/cancel
-                texts: {
-                    saveAll: "Update", // Custom text for save button
-                    cancelAll: "Cancel All Changes" // Custom text for cancel button
-                }
-            },
-            columns: [
-                { dataField: "ClientCategoryCode", caption: formatMessage("Client Category Code"), width: 100, editorOptions: { readOnly: true } },
-                { dataField: "ClientCategory", caption: formatMessage("Client Category") },
-                { dataField: "CategoryCode", caption: formatMessage("Category Code") },
-                {
-                    type: "buttons",
-                    width: 100,
-                    buttons: [
-                        {
-                            icon: "trash",
-                            hint: "Delete",
-                            onClick: function (e) {
-                                var dataGrid = $("#gridContainer").dxDataGrid("instance");
-                                var selectedData = e.row.data;
-                               var clientCategoryCode = selectedData.ClientCategoryCode;
-
-                                // Send delete request to the API
-                                $.ajax({
-                                    type: "POST",
-                                    url: "/api/ClientCategory1/DeleteBranchMaster",
-                                    data: JSON.stringify({ ClientCategoryCode: clientCategoryCode }),
-                                    contentType: "application/json",
-                                    success: function (response) {
-                                        if (response.success) {
-                                            dataGrid.refresh(); // Refresh the grid
-                                            Swal.fire({
-                                                icon: 'success',
-                                                title: 'Success',
-                                                text: formatMessage(' deleted successfully.'),
-                                                confirmButtonText: 'OK'
-                                            });
-                                        } else {
-                                            Swal.fire({
-                                                icon: 'error',
-                                                title: 'Error',
-                                                text: response.message,
-                                                confirmButtonText: 'OK'
-                                            });
-                                        }
-                                    },
-                                    error: function (xhr) {
-                                        Swal.fire({
-                                            icon: 'error',
-                                            title: 'Error',
-                                            text: xhr.responseText,
-                                            confirmButtonText: 'OK'
-                                        });
-                                    }
-                                });
-                            }
-                        }
-                    ]
-                }
-            ],
-            showBorders: true,
-            paging: {
-                pageSize: 10
-            },
-            pager: {
-                showPageSizeSelector: true,
-                allowedPageSizes: [5, 10, 20],
-                showInfo: true
-            },
-            filterRow: {
-                visible: searchPanelVisible, // Set initial visibility of the filter row
-                applyFilter: "auto"
-            },
-            toolbar: {
-                items: [
-                    {
-                        widget: "dxButton",
-                        options: {
-                            icon: "save",  // Icon for the Save button
-                            text: formatMessage("Update"),  // Text alongside the icon
-                            onClick: function () {
-                                $("#gridContainer").dxDataGrid("instance").saveEditData();  // Save all changes
-                            }
-                        },
-                        location: "after"
-                    },
-                    {
-                        widget: "dxButton",  // Adding Cancel button
-                        options: {
-                            icon: "close",  // Icon for Cancel button
-                            text: formatMessage("Cancel"),  // Text for Cancel button
-                            onClick: function () {
-                                $("#gridContainer").dxDataGrid("instance").cancelEditData();  // Cancel all edits
-                            },
-                            visible: false // Initially hide the cancel button
-                        },
-                        location: "after",
-                        name: "cancelButton"
-                    },
-                    {
-                        widget: "dxButton",  // Adding Search Toggle button
-                        options: {
-                            icon: "search",  // Icon for Search button
-                            text: formatMessage("Toggle Search"),  // Text for Search button
-                            onClick: function () {
-                                searchPanelVisible = !searchPanelVisible; // Toggle the visibility
-                                $("#gridContainer").dxDataGrid("instance").option("filterRow.visible", searchPanelVisible); // Update the grid
-                            }
-                        },
-                        location: "after"
-                    }
-                ]
-            },
-            onEditingStart: function (e) {
-                var dataGrid = $("#gridContainer").dxDataGrid("instance");
-                var toolbarItems = dataGrid.option("toolbar.items");
-                var cancelButton = toolbarItems.find(item => item.name === "cancelButton");
-                cancelButton.options.visible = true; // Show the cancel button when editing starts
-                dataGrid.option("toolbar.items", toolbarItems);
-            },
-            onSaved: function (e) {
-                var dataGrid = $("#gridContainer").dxDataGrid("instance");
-                var toolbarItems = dataGrid.option("toolbar.items");
-                var cancelButton = toolbarItems.find(item => item.name === "cancelButton");
-                cancelButton.options.visible = false; // Hide the cancel button when editing ends
-                dataGrid.option("toolbar.items", toolbarItems);
-            },
-            onEditCanceling: function (e) {
-                var dataGrid = $("#gridContainer").dxDataGrid("instance");
-                var toolbarItems = dataGrid.option("toolbar.items");
-                var cancelButton = toolbarItems.find(item => item.name === "cancelButton");
-                cancelButton.options.visible = false; // Hide the cancel button when editing is canceled
-                dataGrid.option("toolbar.items", toolbarItems);
-            },
-
-            onRowUpdated: function (e) {
-                // SweetAlert when a row is updated
-                Swal.fire({
-                    icon: 'success',
-                    title: formatMessage('Row Updated'),
-                    text: formatMessage('The row data was successfully updated.'),
-                    confirmButtonText: 'OK'
-                });
-            },
-            onRowInserted: function (e) {
-                // SweetAlert when a new row is inserted
-                Swal.fire({
-                    icon: 'success',
-                    title: formatMessage('Row Inserted'),
-                    text: formatMessage('A new row was added successfully.'),
-                    confirmButtonText: 'OK'
-                });
-            },
-            onRowRemoved: function (e) {
-                // SweetAlert when a row is removed
-                Swal.fire({
-                    icon: 'info',
-                    title: formatMessage('Row Removed'),
-                    text: formatMessage('The row has been removed from the grid.'),
-                    confirmButtonText: 'OK'
-                });
-            },
-
-            // Enable vertical and horizontal scrolling
-            scrolling: {
-                mode: "virtual", // This makes the scrolling virtual, loading rows as you scroll
-                rowRenderingMode: "virtual", // Optimizes row rendering
-                useNative: true // Use native scrolling for better performance
-            },
-            height: 400, // Set a fixed height for the grid (this helps in showing vertical scrollbar)
-            width: "100%" // Make grid responsive and take full width of the container
-        });
-    });
-
-
-    function adddivmaster() {
-        debugger;
-        // Get the values from the text boxes
-        var clientCategory = $("#txtClientCategory").dxTextBox("instance").option("value");
-        var categoryCode = $("#txtCategoryCode").dxTextBox("instance").option("value");
-
-        // Get the branch name validator instance
-        var clientCategoryvalidator = $("#txtClientCategory").dxValidator("instance");
-
-        // Validate the branch name input
-        var clientCategoryvalidation = clientCategoryvalidator.validate();
-
-        // If the branch name is valid, proceed with the AJAX request
-        if (clientCategoryvalidation.isValid) {
-
-            // Get the data array from the grid's data source
-            var existingBranches = $("#gridContainer").dxDataGrid("instance").getDataSource().items();
-
-            // Check if the branch name already exists in the grid data
-            var duplicate = existingBranches.some(function (item) {
-                return item.ClientCategory && clientCategory &&
-                    item.ClientCategory.toLowerCase() === clientCategory.toLowerCase();
-            });
-
-            if (duplicate) {
-                Swal.fire({
-                    icon: 'error',
-                    title: formatMessage('Duplicate ClientCategory'),
-                    text: formatMessage('This branch already exists!'),
-                    confirmButtonText: 'OK'
-                });
-                return;
-            }
-
-            // Create the data object to send to the API
-            var branchData = {
-                ClientCategory: clientCategory,
-                CategoryCode: categoryCode
-            };
-
-            // Send the data to the AddBranch API using AJAX
-            $.ajax({
-                url: '/api/ClientCategory1/AddBranch',  // The API endpoint for adding a branch
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(branchData),  // Convert the data object to JSON string
-                success: function (response) {
-                    if (response.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: formatMessage('Branch Added'),
-                            text: response.message,
-                            confirmButtonText: 'OK'
-                        });
-                        // Clear the text inputs after success
-                        $("#txtClientCategory").dxTextBox("instance").option("value", "");
-                        $("#txtCategoryCode").dxTextBox("instance").option("value", "");
-
-                        // Optionally, you can reload the data grid to reflect the newly added branch
-                        $("#gridContainer").dxDataGrid("instance").refresh();
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: formatMessage('Error'),
-                            text: response.message,
-                            confirmButtonText: 'OK'
-                        });
-                    }
-                },
-                error: function (xhr) {
-                    var errorMessage = xhr.status === 500
-                        ? "Server error: Please try again later."
-                        : "Validation error: " + xhr.responseText;
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: errorMessage,
-                        confirmButtonText: 'OK'
-                    });
-                }
-            });
-        } else {
-            // If validation fails, show a notification
-            DevExpress.ui.notify(formatMessage('Please fill required details!'), "error", 2000);
-        }
-    }
-
-    $(function () {
-        $("#salesOrdersTitle").dxTextBox({
-            text: formatMessage("Sales Orders"),
-            readOnly: true,
-            onContentReady: function (e) {
-                $(e.element).addClass("dx-textbox-heading");
-            }
-        });
-    });
+<script>
+		 $(function () {
+	$("#SalesOrders").dxTextBox({
+	text: formatMessage("Sales Orders"),
+		readOnly: true,
+		onContentReady: function (e) {
+		$(e.element).addClass("dx-textbox-heading");
+		}
+		});
+	});
 </script>
-

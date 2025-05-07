@@ -2389,9 +2389,20 @@
         "Unit of Measure": "Unit of Measure",
         "Goods and Services": "Goods and Services",
         "Quotation": "Quotation",
+        "Request for Quotation List": "Request for Quotation List",
+        "Purchase Orders": "Purchase Orders",
+        "MPR No": "MPR No",
+        "Show Price Details": "Show Price Details",
+        "Sub Group Remarks / Notes": "Sub Group Remarks / Notes",
+        "Quotation Line Item": "Quotation Line Item"
     },
     "ar": {
-
+        "Purchase Orders": "طلبات الشراء",
+        "Request for Quotation List": "طلب قائمة عروض الأسعار",
+        "Sub Group Remarks / Notes": "ملاحظات/ملاحظات المجموعة الفرعية",
+        "Show Price Details": "عرض تفاصيل السعر",
+        "MPR No": "رقم MPR",
+        "Quotation Line Item": "بند عرض الأسعار",
         "Quotation": "اقتباس",
         "Invoice Date:": "تاريخ الفاتورة:",
         "Project Request": "طلب مشروع",

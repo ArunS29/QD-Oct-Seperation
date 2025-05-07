@@ -1,5 +1,5 @@
 ﻿@page
-@model QD.ERP.Web.Areas.IMS.Pages.MaterialReceiptsModel
+@model QD.ERP.Web.Areas.IMS.Pages.RequestforQuotationListModel
 @{
 }
 <style>
@@ -169,7 +169,7 @@
 <input id="formId" value="frm201LedgerView" type="hidden" />
 <div class="title">
 	<div class="header-container">
-		<div id="MaterialReceipts" class="no-border-input"></div>
+		<div id="RequestforQuotationList" class="no-border-input"></div>
 	</div>
 </div>
 
@@ -235,7 +235,7 @@
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
-			columns.Add().Caption("Materia lReceipts Details").Columns(subColumns =>
+			columns.Add().Caption("RFQ Details").Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.InvoiceZatcaStatus).Caption("Invoice Zatca Status").Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.InvoiceType).Caption("Invoice Type").Alignment(HorizontalAlignment.Center).Visible(true);
@@ -412,8 +412,8 @@
 
 <script>
 		 $(function () {
-	$("#MaterialReceipts").dxTextBox({
-	text: formatMessage("Material Receipts"),
+	$("#RequestforQuotationList").dxTextBox({
+	text: formatMessage("Request for Quotation List"),
 		readOnly: true,
 		onContentReady: function (e) {
 		$(e.element).addClass("dx-textbox-heading");
