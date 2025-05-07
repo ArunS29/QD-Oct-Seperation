@@ -304,12 +304,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         DrAmount = item.DrAmount,
                         CrAmount = item.CrAmount,
                         EntryNarration = item.EntryNarration,
-                        AccountId = item.AccountId,
-                        CostAllocationDescription = item.CostAllocationDescription,
-                        TotalCostAllocated = item.TotalCostAllocated,
-                        EmployeeCostDescription = item.EmployeeCostDescription,
-                        TotalEmpAllocated = item.TotalEmpAllocated,
-                        PropertyCostDescription =item.PropertyCostDescription
+                        AccountId = item.AccountId
+                        //CostAllocationDescription = item.CostAllocationDescription,
+                        //TotalCostAllocated = item.TotalCostAllocated,
+                        //EmployeeCostDescription = item.EmployeeCostDescription,
+                        //TotalEmpAllocated = item.TotalEmpAllocated,
+                        //PropertyCostDescription =item.PropertyCostDescription
                         
                     };
 
