@@ -332,8 +332,198 @@
                     items.Add()
                 .Title("User Access Details")
                 .Template(@<text>
-            <div style="padding: 20px;">
-                <p>Not Yet Initialized...</p>
+            <div>
+                <div class="containerInventoryStock">
+
+                    <div class="content-container-top">
+                        <div class="dx-fieldset horizontal-container">
+                            <table class="form-tablee">
+                                <tr>
+                                    <td>
+                                        @(Html.DevExtreme().Button()
+                                        .ID("btnGenerateAccessList")
+                                        .Text("Generate Access List")
+                                        .Icon("key")
+                                        .Width("100%")
+                                        .ElementAttr("class", "inline-icon")
+                                        .OnClick("StockGroup")
+                                        )
+                                    </td>
+                                    <td>
+                                        <div style="display: flex; align-items: center;">
+                                            @(Html.DevExtreme().Button()
+                                            .ID("btnReplicateUserAccessMain")
+                                            .Text("Replicate User Access")
+                                            .Icon("group")
+                                            .Width(200)
+                                            .OnClick("ReplicateAccess")
+                                            )
+                                            @(Html.DevExtreme().Button()
+                                            .ID("btnReplicateUserAccessDropdown")
+                                            .Icon("chevrondown") // dropdown arrow
+                                            .Width(50)
+                                            .OnClick("onDropdownIconClick")
+                                            )
+                                        </div>
+                                    </td>
+
+
+                                </tr>
+                            </table>
+
+
+                        </div>
+
+                    </div>
+                    <div class="dx-fieldset horizontal-container">
+                        @(
+                        Html.DevExtreme().Tabs()
+                        .Items(items =>
+                        {
+                        // tab-content-1
+                        items.Add()
+                        .Icon("preferences") // Master Module
+                        .Text("Master Module");
+
+                        // tab-content-2
+                        items.Add()
+                        .Icon("chart") // Finance
+                        .Text("Finance");
+
+                        // tab-content-3
+                        items.Add()
+                        .Icon("image") // VAT
+                        .Text("VAT");
+
+                        // tab-content-4
+                        items.Add()
+                        .Icon("money") // Human Resources
+                        .Text("Human Resources");
+
+                        // tab-content-5
+                        items.Add()
+                        .Icon("repeat") // Equipment Rental
+                        .Text("Equipment Rental");
+
+                        // tab-content-6
+                        items.Add()
+                        .Icon("tags") // Inventory Management
+                        .Text("Inventory Management");
+
+                        // tab-content-7
+                        items.Add()
+                        .Icon("cart") // Camp Management
+                        .Text("Camp Management");
+
+                        // tab-content-8
+                        items.Add()
+                        .Icon("runner") // Project Control
+                        .Text("Project Control");
+
+                        // tab-content-9
+                        items.Add()
+                        .Icon("check") // Scaffolding Rental Solution
+                        .Text("Scaffolding Rental Solution");
+
+                        // tab-content-10
+                        items.Add()
+                        .Icon("repeat") // Alert Notification
+                        .Text("Alert Notification");
+
+                        // tab-content-11
+                        items.Add()
+                        .Icon("doc") // Finance Ledger Access
+                        .Text("Finance Ledger Access");
+                        })
+                        .SelectedIndex(0) // Default selected tab is the first one
+                        .OnSelectionChanged("onTabSelectionChanged") // Event handler for tab selection changes
+                        )
+                    </div>
+
+                    <!-- Tab Content -->
+                    <div class="dx-fieldset">
+                        <!-- Tab 1: Master Module -->
+                        <div id="tab-content-1" class="tab-content" style="display: none;">
+                            <div id="tab1-content">
+                                @await Html.PartialAsync("~/Pages/Shared/Finance/MasterModules.cshtml")
+                            </div>
+                        </div>
+
+                        <!-- Tab 2: Finance -->
+                        <div id="tab-content-2" class="tab-content" style="display: none;">
+                            <div>
+                                @await Html.PartialAsync("~/Pages/Shared/Finance/Finance.cshtml")
+                            </div>
+                        </div>
+
+                        <!-- Tab 3: VAT -->
+                        <div id="tab-content-3" class="tab-content" style="display: none;">
+                            @await Html.PartialAsync("~/Pages/Shared/Finance/VAT.cshtml")
+                        </div>
+
+                        <!-- Tab 4: Human Resources -->
+                        <div id="tab-content-4" class="tab-content" style="display: none;">
+                            <div class="background">
+                                @await Html.PartialAsync("~/Pages/Shared/Finance/HumanResources.cshtml")
+                            </div>
+                        </div>
+
+                        <!-- Tab 5: Equipment Rental -->
+                        <div id="tab-content-5" class="tab-content" style="display: none;">
+                            <div class="background">
+                                @await Html.PartialAsync("~/Pages/Shared/Finance/EquipmentRental.cshtml")
+                            </div>
+                        </div>
+
+                        <!-- Tab 6: Inventory Management -->
+                        <div id="tab-content-6" class="tab-content" style="display: none;">
+                            <div class="background">
+                                @await Html.PartialAsync("~/Pages/Shared/Finance/InventoryManagement.cshtml")
+                            </div>
+                        </div>
+
+                        <!-- Tab 7: Camp Management -->
+                        <div id="tab-content-7" class="tab-content" style="display: none;">
+                            <div class="background">
+                                @await Html.PartialAsync("~/Pages/Shared/Finance/CampManagement.cshtml")
+                            </div>
+                        </div>
+
+                        <!-- Tab 8: Project Control -->
+                        <div id="tab-content-8" class="tab-content" style="display: none;">
+                            <div class="background">
+                                @await Html.PartialAsync("~/Pages/Shared/Finance/ProjectControls.cshtml")
+                            </div>
+                        </div>
+
+                        <!-- Tab 9: Scaffolding Rental Solution -->
+                        <div id="tab-content-9" class="tab-content" style="display: none;">
+                            <div class="background">
+                                @await Html.PartialAsync("~/Pages/Shared/Finance/ScaffoldingRentalSolutions.cshtml")
+                            </div>
+                        </div>
+
+                        <!-- Tab 10: Alert Notification -->
+                        <div id="tab-content-10" class="tab-content" style="display: none;">
+                            <div class="background">
+                                @await Html.PartialAsync("~/Pages/Shared/Finance/AlertNotification.cshtml")
+                            </div>
+                        </div>
+
+                        <!-- Tab 11: Finance Ledger Access -->
+                        <div id="tab-content-11" class="tab-content" style="display: none;">
+                            <div class="background">
+                                @await Html.PartialAsync("~/Pages/Shared/Finance/FinanceLedgerAccess.cshtml")
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+
+
             </div>
         </text>);
                 })
@@ -878,6 +1068,129 @@
             return date.toLocaleString();
         }
 
+         function onTabSelectionChanged(e) {
+          // Hide all tab content
+          $(".tab-content").hide();
+
+          // Show the content of the selected tab
+          var selectedTabIndex = e.component.option("selectedIndex");
+          $("#tab-content-" + (selectedTabIndex + 1)).show();
+      }
+        function ItemStore(){
+                  const url = `/${tenantName}/IMS/StockDetails_ItemStore`;
+                const title = "";
+                    openModal(url, title);
+            }
+              function StockGroup(){
+                  const url = `/${tenantName}/IMS/StockDetails_StockGroup`;
+                const title = "";
+                    openModal(url, title);
+            }
+
+              function ItemClassification(){
+                  const url = `/${tenantName}/IMS/StockDetails_ItemClassification`;
+                const title = "";
+                    openModal(url, title);
+            }
+              $(document).ready(function () {
+            // Ensure dxTabs has loaded, then get the selected index
+            const tabsInstance = DevExpress.ui.dxTabs.getInstance($(".dx-tabs")[0]);
+            const selectedTabIndex = tabsInstance.option("selectedIndex");
+
+            // Show the corresponding content
+            $("#tab-content-" + (selectedTabIndex + 1)).show();
+        });
+
+
+           $(function () {
+              $("#InventoryStockDetails").dxTextBox({
+                  text: formatMessage("Inventory Stock Details"),
+                readOnly: true,
+                onContentReady: function(e) {
+                            $(e.element).addClass("dx-textbox-heading");
+                    }
+
+            });
+        });
+
+       var contextMenuInstance;
+
+      $(function () {
+          $("<div style='margin-top: 60px;' id='addOrRemoveContextMenu'></div>").appendTo("body");
+
+          contextMenuInstance = $("#addOrRemoveContextMenu").dxContextMenu({
+              items: [
+                  {
+                      text: "Add or Remove Buttons",
+                      items: [
+                          {
+                              text: "User Access",
+                              template: function () {
+                                  return `
+                                      <div style="padding:5px;min-width:200px;">
+                                          <div>
+                                              <input type="checkbox" id="chkGenerate" />
+                                              <label for="chkGenerate"> Generate Access List</label>
+                                          </div>
+                                          <div style="margin-top:5px;">
+                                              <input type="checkbox" id="chkReplicate" />
+                                              <label for="chkReplicate"> Replicate User Access</label>
+                                          </div>
+                                          <div style="margin-top:5px;">
+                                              <button onclick="ResetToolbar()" style="width:100%;padding:5px;">Reset Toolbar</button>
+                                          </div>
+                                      </div>
+                                  `;
+                              }
+                          }
+                      ]
+                  },
+                  {
+                      template: function () {
+                          return `
+                              <div style="padding:5px;min-width:220px;">
+                                  <button onclick="CustomizeToolbar()" style="width:100%;padding:5px;">Customize...</button>
+                              </div>
+                          `;
+                      }
+                  }
+              ],
+              target: "#btnReplicateUserAccessDropdown", // or your dropdown button ID
+              width: 250,
+              showSubmenuMode: { name: "onHover", delay: { show: 0, hide: 0 } },
+              submenuDirection: "right",
+              closeOnOutsideClick: false,
+              onItemClick: function (e) {
+                  e.event.stopPropagation();
+              }
+          }).dxContextMenu("instance");
+      });
+
+
+      function onDropdownIconClick(e) {
+          e.event.preventDefault();
+          e.event.stopPropagation();
+          const contextMenu = $("#addOrRemoveContextMenu").dxContextMenu("instance");
+          contextMenu.show();
+      }
+
+      function ReplicateAccess() {
+          const url = `/${tenantName}/Finance/ReplicateUserAccount`;
+          const title = "";
+          openModal(url, title);
+      }
+
+      function ResetToolbar() {
+          alert("Reset Toolbar clicked");
+      }
+
+      function CustomizeToolbar() {
+          alert("Customize clicked");
+      }
+
+
+
+
     </script>
 }
 
@@ -897,5 +1210,9 @@
         display: block;
         font-weight: 600;
         margin-bottom: 5px;
+    }
+
+    .mainContainer {
+        width: 96%;
     }
 </style>
