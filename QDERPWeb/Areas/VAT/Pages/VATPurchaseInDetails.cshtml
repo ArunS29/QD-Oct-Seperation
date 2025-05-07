@@ -229,6 +229,7 @@
 				bill.AddFor(m => m.PurchaseBillDate).Caption("Bill Date").Format("dd-MMM-yyyy").Alignment(HorizontalAlignment.Center);
 				bill.AddFor(m => m.SupplierName).Caption("Supplier").Alignment(HorizontalAlignment.Left);
 				bill.AddFor(m => m.SupplierVatnumber).Caption("VAT Number").Alignment(HorizontalAlignment.Center);
+				bill.AddFor(m => m.CostCenterCode).Caption("CostCenterCode").Alignment(HorizontalAlignment.Right);
 			});
 
 			columns.Add().Caption("Item Details").Columns(item =>
@@ -242,6 +243,7 @@
 				item.AddFor(m => m.LineAmountBeforeDiscount).Caption("Amount Before Discount").Alignment(HorizontalAlignment.Right);
 				item.AddFor(m => m.TaxAmount).Caption("VAT Amount").Alignment(HorizontalAlignment.Right);
 				item.AddFor(m => m.CalcLineWithTax).Caption("Total Amount").Alignment(HorizontalAlignment.Right);
+			
 			});
 
 			columns.Add().Caption("Goods In Transit").Columns(transit =>
@@ -267,6 +269,7 @@
 				transit.AddFor(m => m.GoodsInTransitPurchaseVoucherNo)
 			.Caption("Linked Purchase Voucher")
 			.Alignment(HorizontalAlignment.Center);
+				
 			});
 
 
