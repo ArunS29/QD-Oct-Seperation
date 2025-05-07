@@ -36,7 +36,10 @@
 
 	.dx-datagrid-headers {
 		border: 1px solid #686868 !important;
-		width: 5000px;
+		width: 100%; /* Adjust to fit the container */
+		overflow-x: auto; /* Enable horizontal scrolling */
+		white-space: nowrap; /* Prevent wrapping of headings */
+		overflow-y:hidden;
 	}
 
 		.dx-datagrid-headers .dx-row > td {
@@ -47,12 +50,16 @@
 
 	.dx-datagrid .dx-header-row .dx-datagrid-text-content {
 		font-size: 12px !important;
-		white-space: normal !important;
+		white-space: nowrap !important; /* Prevent wrapping of text */
 		text-align: center !important;
 		font-weight: bold;
 		color: black;
 	}
 
+	.ledgerResult {
+		overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
+		width: 100%;
+	}
 	.close-btn {
 		position: absolute;
 		top: 10px;
@@ -151,7 +158,8 @@
 		}
 
 	.mainContainer {
-			width: 97%; 
+			width: 97%;
+			overflow:hidden;
 	}
 </style>
 
@@ -241,7 +249,7 @@
 		.ElementAttr("class", "mt-4 ml-4") // Adjust margin as needed
 		)
 </div>
-<div class="dx-field ledgerResult" style="overflow-x: auto; width: 100%;" >
+<div class="dx-field ledgerResult">
 	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201607vatinvoiceRegisterMainView>()
 		.ID("dataGrid")
 		.RemoteOperations(false)
@@ -391,7 +399,7 @@
 		})
 		.Height(680) // <<< fixed height
 		.ColumnAutoWidth(true)
-		.Width("100%")
+		.Width("98%")
 		.WordWrapEnabled(true)
 		.OnCellClick("function(e) {handleCellClick(e);}")
 		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
