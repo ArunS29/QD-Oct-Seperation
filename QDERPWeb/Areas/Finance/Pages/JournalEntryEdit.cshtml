@@ -200,11 +200,11 @@
                         columns.Add().Caption("...").Width(100).CellTemplate(@<text>
                 <div class="text-center">
                     @(Html.DevExtreme().Button()
-
+                   
                     .Type(ButtonType.Default)
                     .Icon("money")
                     .ElementAttr("class", "money-button")
-
+                    .OnClick("onGridCostButtonClick")
                     )
                 </div>
             </text>)
@@ -216,10 +216,11 @@
                         columns.Add().Caption("...").Width(100).Visible(true).CellTemplate(@<text>
                 <div class="text-center">
                     @(Html.DevExtreme().Button()
-
+                    
                     .Type(ButtonType.Default)
                     .Icon("card")
                     .ElementAttr("class", "card-button")
+                    .OnClick("onGridEmployeeButtonClick")
                     )
                 </div>
             </text>)
@@ -1262,16 +1263,15 @@
     }
 
     function ClosePropertyModel() {
-        let popupInstance = $("#PropertyAllocationPopup").dxPopup("instance");
-        popupInstance.hide();
+        if (popupInstances[journalchildno]) {
+            popupInstances[journalchildno].hide();
+        }
     }
-    function closeBill() {
-        let popupInstance = $("#BillsReceivablePopup").dxPopup("instance");
-        popupInstance.hide();
-    }
+    
     function CloseEmployeeModel() {
-        let popupInstance = $("#EmployeeAllocationPopup").dxPopup("instance");
-        popupInstance.hide();
+        if (popupInstances[journalchildno]) {
+            popupInstances[journalchildno].hide();
+        }
     }
     function Closepopup() {
         var dataGrid = $("#dataGrid").dxDataGrid("instance");
@@ -1324,6 +1324,104 @@
         }
 
     }
+    function onGridCostButtonClick(e) {
+        const button = $(e.element);
+        const $dataRow = button.closest(".dx-data-row");
+        const $dataGrid = $("#dataGrid").dxDataGrid("instance");
 
+        const rowIndex = $dataRow.index();
+        const rowData = $dataGrid.getVisibleRows()[rowIndex].data;
+        const journalChildNo = rowData.JournalChildNo;
+
+        // If a detail row already exists below this, remove it
+        const $nextRow = $dataRow.next();
+        if ($nextRow.hasClass("detail-row")) {
+            $nextRow.remove();
+            return;
+        }
+
+        // Remove any other open detail rows
+        $(".detail-row").remove();
+
+        // Get column count to span the full width
+        const columnCount = $dataRow.find("td").length;
+
+        // Insert a new row after the current one
+        const $detailRow = $(`
+            <tr class="detail-row">
+                <td colspan="${columnCount}" style="padding: 0;" class="bg-light">
+                    <div class="inline-detail-grid" style="padding: 10px;"></div>
+                </td>
+            </tr>
+        `);
+        $dataRow.after($detailRow);
+
+        // Render the nested grid inside the new row
+        $detailRow.find(".inline-detail-grid").dxDataGrid({
+            dataSource: DevExpress.data.AspNet.createStore({
+               
+                loadUrl: `/api/JournalEntryEdit/GetCostAllocationByJournalChildNo`,
+                loadParams: { journalChildNo: journalChildNo }
+            }),
+            showBorders: true,
+            height: 250,
+            columns: [
+                { dataField: "CostCode", caption: "Cost Code", width: 150 },
+                { dataField: "CostUnit", caption: "Cost Unit", width: 300 },
+                { dataField: "Amount", caption: "Amount", format: "#,##0.00", width: 100, alignment: "right" },
+                { dataField: "DrCr", caption: "Dr/Cr", width: 80, alignment: "center" }
+            ]
+        });
+    }
+
+    function onGridEmployeeButtonClick(e) {
+        const button = $(e.element);
+        const $dataRow = button.closest(".dx-data-row");
+        const $dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+        const rowIndex = $dataRow.index();
+        const rowData = $dataGrid.getVisibleRows()[rowIndex].data;
+        const journalChildNo = rowData.JournalChildNo;
+
+        // If a detail row already exists below this, remove it
+        const $nextRow = $dataRow.next();
+        if ($nextRow.hasClass("detail-row")) {
+            $nextRow.remove();
+            return;
+        }
+
+        // Remove any other open detail rows
+        $(".detail-row").remove();
+
+        // Get column count to span the full width
+        const columnCount = $dataRow.find("td").length;
+
+        // Insert a new row after the current one
+        const $detailRow = $(`
+                <tr class="detail-row">
+                    <td colspan="${columnCount}" style="padding: 0;" class="bg-light">
+                        <div class="inline-detail-grid" style="padding: 10px;"></div>
+                    </td>
+                </tr>
+            `);
+        $dataRow.after($detailRow);
+
+        // Render the nested grid inside the new row
+        $detailRow.find(".inline-detail-grid").dxDataGrid({
+            dataSource: DevExpress.data.AspNet.createStore({
+
+                loadUrl: `/api/JournalEntryEdit/GetEmployeeAllocationByJournalChildNo`,
+                loadParams: { journalChildNo: journalChildNo }
+            }),
+            showBorders: true,
+            height: 250,
+            columns: [
+                { dataField: "EmpNo", caption: "Emp No", width: 150 },
+                { dataField: "EmployeeId", caption: "Employee Name", width: 300 },
+                { dataField: "VoucherAmount", caption: "Amount", format: "#,##0.00", width: 100, alignment: "right" },
+                { dataField: "DrCr", caption: "Dr/Cr", width: 80, alignment: "center" }
+            ]
+        });
+    }
 
 </script>
