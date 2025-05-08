@@ -27,9 +27,28 @@ var builder = WebApplication.CreateBuilder(args);
 
 // **1.1 Add DevExpress Reporting Services**
 builder.Services.AddDevExpressControls();
-builder.Services.AddDbContext<ReportDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DBConnection")));
+
+// Registering ReportDbContext with tenant-specific connection string
+builder.Services.AddScoped<ReportDbContext>(serviceProvider =>
+{
+    var tenantDbContextHelper = serviceProvider.GetRequiredService<TenantDbContextHelper>();
+
+    if (tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out _))
+    {
+        // Use tenant's connection string dynamically
+        var options = new DbContextOptionsBuilder<ReportDbContext>()
+            .UseSqlServer(tenant.ConnectionString) // Using tenant's connection string here
+            .Options;
+
+        return new ReportDbContext(options, tenant.ConnectionString); // Passing connection string to the constructor
+    }
+
+    throw new InvalidOperationException("Tenant or DbContext could not be resolved.");
+});
+
 builder.Services.AddScoped<DevExpress.XtraReports.Web.Extensions.ReportStorageWebExtension, ReportStorageWebExtension>();
+
+// Configuring Reporting Services
 builder.Services.ConfigureReportingServices(configurator =>
 {
     configurator.ConfigureWebDocumentViewer(viewerConfigurator =>
@@ -37,6 +56,7 @@ builder.Services.ConfigureReportingServices(configurator =>
         viewerConfigurator.UseCachedReportSourceBuilder();
     });
 });
+
 
 var DBConnection = builder.Configuration.GetConnectionString("DBConnection");
 builder.Services.AddDbContext<QD.ERP.Web.DAL.Entities.ERPMasterWtDataContext>(options =>
@@ -104,9 +124,9 @@ string mySetting = configurationHelper.GetConfigurationValue("MySetting");
 Console.WriteLine($"MySetting Value: {mySetting}");
 
 builder.Services.AddSingleton(new ClientFilesStorageHelper(
-	configurationHelper.GetConfigurationValue("AzureBlobStorage:ClientFilesContainerUri"),
-	configurationHelper.GetConfigurationValue("AzureBlobStorage:ClientFilesConnectionString"),
-	configurationHelper.GetConfigurationValue("AzureBlobStorage:ClientFilesContainerName")
+    configurationHelper.GetConfigurationValue("AzureBlobStorage:ClientFilesContainerUri"),
+    configurationHelper.GetConfigurationValue("AzureBlobStorage:ClientFilesConnectionString"),
+    configurationHelper.GetConfigurationValue("AzureBlobStorage:ClientFilesContainerName")
 ));
 
 

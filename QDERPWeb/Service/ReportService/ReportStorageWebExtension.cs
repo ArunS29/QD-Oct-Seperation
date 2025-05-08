@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks; // For async
+using System.Threading.Tasks;
 using DevExpress.XtraReports.UI;
 using DevExpress.XtraReports.Web.Extensions;
 using QD.ERP.Web.DAL.Entities;
@@ -12,12 +12,29 @@ namespace QD.ERP.Web.Service.ReportService
 {
     public class ReportStorageWebExtension : DevExpress.XtraReports.Web.Extensions.ReportStorageWebExtension
     {
-        protected ReportDbContext DbContext { get; set; }
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
 
-        public ReportStorageWebExtension(ReportDbContext dbContext)
+        public ReportStorageWebExtension(TenantDbContextHelper tenantDbContextHelper)
         {
-            DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext), "DbContext cannot be null.");
+            _tenantDbContextHelper = tenantDbContextHelper ?? throw new ArgumentNullException(nameof(tenantDbContextHelper), "TenantDbContextHelper cannot be null.");
         }
+
+        // This method gets the correct DbContext based on the tenant's database context.
+        private ReportDbContext GetReportDbContext()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+            {
+                // Use the tenant's connection string to create the DbContextOptions.
+                var options = new DbContextOptionsBuilder<ReportDbContext>()
+                    .UseSqlServer(tenant.ConnectionString) // Use the tenant's connection string
+                    .Options;
+
+                // Now, pass both the options and the connection string to the ReportDbContext constructor.
+                return new ReportDbContext(options, tenant.ConnectionString);
+            }
+            throw new InvalidOperationException("Tenant or DbContext could not be resolved.");
+        }
+
 
         public override bool CanSetData(string url)
         {
@@ -27,7 +44,6 @@ namespace QD.ERP.Web.Service.ReportService
             }
             catch (Exception ex)
             {
-                // Log error
                 Console.Error.WriteLine($"Error in CanSetData: {ex.Message}");
                 throw new InvalidOperationException("An error occurred while determining if the data can be set.", ex);
             }
@@ -41,7 +57,6 @@ namespace QD.ERP.Web.Service.ReportService
             }
             catch (Exception ex)
             {
-                // Log error
                 Console.Error.WriteLine($"Error in IsValidUrl: {ex.Message}");
                 throw new InvalidOperationException("An error occurred while validating the URL.", ex);
             }
@@ -58,7 +73,8 @@ namespace QD.ERP.Web.Service.ReportService
 
                 Console.WriteLine($"Requested report: {url}");
 
-                var reportData = await DbContext.ReportAttributes
+                var dbContext = GetReportDbContext();
+                var reportData = await dbContext.ReportAttributes
                     .Where(x => x.ReportName == url)
                     .Select(x => x.ReportXML)
                     .FirstOrDefaultAsync();
@@ -78,7 +94,7 @@ namespace QD.ERP.Web.Service.ReportService
                     return ms.ToArray();
                 }
 
-                var reportFromDb = ReportsFactory.GetReportFromDatabase(url, DbContext);
+                var reportFromDb = ReportsFactory.GetReportFromDatabase(url, dbContext);
                 if (reportFromDb != null)
                 {
                     Console.WriteLine($"Found report '{url}' in the database via fallback.");
@@ -93,12 +109,10 @@ namespace QD.ERP.Web.Service.ReportService
             }
             catch (Exception ex)
             {
-                // Log error
                 Console.Error.WriteLine($"Error in GetDataAsync: {ex.Message}");
                 throw new InvalidOperationException("An error occurred while retrieving report data.", ex);
             }
         }
-
 
         public override async Task SetDataAsync(XtraReport report, string url)
         {
@@ -112,7 +126,8 @@ namespace QD.ERP.Web.Service.ReportService
                 using var stream = new MemoryStream();
                 report.SaveLayoutToXml(stream);
 
-                var reportData = await DbContext.ReportAttributes
+                var dbContext = GetReportDbContext();
+                var reportData = await dbContext.ReportAttributes
                     .FirstOrDefaultAsync(x => x.ReportName == url);
 
                 if (reportData == null)
@@ -129,18 +144,17 @@ namespace QD.ERP.Web.Service.ReportService
                     }
 
                     reportData.ReportNo = GenerateReportNo();
-                    await DbContext.ReportAttributes.AddAsync(reportData);
+                    await dbContext.ReportAttributes.AddAsync(reportData);
                 }
                 else
                 {
                     reportData.ReportXML = stream.ToArray();
                 }
 
-                await DbContext.SaveChangesAsync();
+                await dbContext.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                // Log error
                 Console.Error.WriteLine($"Error in SetDataAsync: {ex.Message}");
                 throw new InvalidOperationException("An error occurred while saving report data.", ex);
             }
@@ -155,7 +169,6 @@ namespace QD.ERP.Web.Service.ReportService
             }
             catch (Exception ex)
             {
-                // Log error
                 Console.Error.WriteLine($"Error in SetNewDataAsync: {ex.Message}");
                 throw new InvalidOperationException("An error occurred while setting new report data.", ex);
             }
@@ -170,7 +183,6 @@ namespace QD.ERP.Web.Service.ReportService
             }
             catch (Exception ex)
             {
-                // Log error
                 Console.Error.WriteLine($"Error in GenerateReportNo: {ex.Message}");
                 throw new InvalidOperationException("An error occurred while generating a report number.", ex);
             }
@@ -180,7 +192,8 @@ namespace QD.ERP.Web.Service.ReportService
         {
             try
             {
-                var reportNames = await DbContext.ReportAttributes
+                var dbContext = GetReportDbContext();
+                var reportNames = await dbContext.ReportAttributes
                     .Select(x => x.ReportName)
                     .ToListAsync();
 
@@ -190,7 +203,6 @@ namespace QD.ERP.Web.Service.ReportService
             }
             catch (Exception ex)
             {
-                // Log error
                 Console.Error.WriteLine($"Error in GetUrlsAsync: {ex.Message}");
                 throw new InvalidOperationException("An error occurred while retrieving report URLs.", ex);
             }

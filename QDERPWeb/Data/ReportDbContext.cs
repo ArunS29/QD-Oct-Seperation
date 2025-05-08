@@ -41,13 +41,19 @@ namespace QD.ERP.Web
         public DbSet<DataConnection> DataConnections { get; set; }
         public DbSet<ReportAttribute> ReportAttributes { get; set; }
 
-        public ReportDbContext(DbContextOptions<ReportDbContext> options) : base(options)
+        private readonly string _connectionString;
+
+        public ReportDbContext(DbContextOptions<ReportDbContext> options, string connectionString) : base(options)
         {
+            _connectionString = connectionString;
         }
 
-        public void InitializeDatabase()
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            Database.Migrate(); // Apply pending migrations to ensure the schema is up to date
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer(_connectionString);  // Adjust the DB provider as necessary
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -59,18 +65,14 @@ namespace QD.ERP.Web
                 .HasValue<SqlDataConnectionDescription>("Sql")
                 .HasValue<JsonDataConnectionDescription>("Json");
 
-            // Map the ReportAttribute entity to the tbl90112ReportAttributes table
             modelBuilder.Entity<ReportAttribute>()
                 .ToTable("tbl90112ReportAttributes");
 
-            // Define ReportNo as the primary key
             modelBuilder.Entity<ReportAttribute>()
                 .HasKey(r => r.ReportNo);
-
-            // Additional configuration can be done for other entities if needed
         }
     }
 
 
- 
+
 }
