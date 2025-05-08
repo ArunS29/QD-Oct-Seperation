@@ -1,4 +1,4 @@
-﻿@page
+@page
 @model QD.ERP.Web.Areas.IMS.Pages.QuotationModel
 @{
 }
@@ -229,7 +229,8 @@
 
 </div>
 <div class="dx-field ledgerResult">
-	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201607vatinvoiceRegisterMainView>()
+	@(
+		Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60104quotationViewMaster>()
 		.ID("dataGrid")
 		.RemoteOperations(false)
 		.DataSource(new JS("[]"))
@@ -237,142 +238,54 @@
 		{
 			columns.Add().Caption("Quotation Details").Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.InvoiceZatcaStatus).Caption("Invoice Zatca Status").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.InvoiceType).Caption("Invoice Type").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.InvoiceNo).Caption("Invoice No").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.InvoiceDate).Caption("Invoice Date").Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
-				subColumns.AddFor(m => m.InvoiceEffectiveDate).Caption("Invoice Effective Date").Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
-				subColumns.AddFor(m => m.AccountHead).Caption("Account Head").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.InvoiceStatus).Caption("Invoice Status").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.QuoteNo).Caption(" Quote No").Alignment(HorizontalAlignment.Center).Visible(true);
+
+				subColumns.AddFor(m => m.QuoteDate).Caption("Quote Date").Alignment(HorizontalAlignment.Center).Visible(true).Format("dd-MMM-yyyy");
+				subColumns.AddFor(m => m.ClientName).Caption("Client Name").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Mprno).Caption("Mpr no").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.ClientRefNo).Caption("Client Ref No").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.SalesOrderNo).Caption("Sales Order No").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.SalesPersonName).Caption("Sales Person Name").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.IsSubmitted).Caption(" IsSubmitted ").Alignment(HorizontalAlignment.Center)
+			.CellTemplate(@<text>
+		<div class="dx-icon">
+			<%= data.IsSubmitted ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+		</div>
+	</text>).Visible(true);
+				subColumns.AddFor(m => m.IsVerified).Caption(" IsVerified ").Alignment(HorizontalAlignment.Center)
+			.CellTemplate(@<text>
+		<div class="dx-icon">
+			<%= data.IsVerified ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+		</div>
+	</text>).Visible(true);
+				subColumns.AddFor(m => m.IsApproved).Caption(" IsApproved ").Alignment(HorizontalAlignment.Center)
+			.CellTemplate(@<text>
+		<div class="dx-icon">
+			<%= data.IsApproved ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+		</div>
+	</text>).Visible(true);
+
+
 			});
 			columns.Add().Caption("No Of Items").Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.CalcLineAmount)
-			.Caption("Amount Before Tax")
-			.Alignment(HorizontalAlignment.Right)
-			.Visible(true)
-			.AllowEditing(true)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				subColumns.AddFor(m => m.NoOfItems).Caption("No Of Items").Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
 
-				subColumns.AddFor(m => m.CalcTaxAmount)
-			.Caption("Total VAT Amount")
-			.Alignment(HorizontalAlignment.Right)
-			.Visible(true)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
-				subColumns.AddFor(m => m.TotalInvoiceAmount)
-			.Caption("Invoiced Amount")
-			.Alignment(HorizontalAlignment.Right)
-			.Visible(true)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+
 			});
 
-			columns.Add().Caption("Revenue Classified").Columns(revenueColumns =>
+
+			columns.Add().Caption("Quoted Amount").Columns(subColumns =>
 			{
-				revenueColumns.Add().Caption("Domestic").Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.DomesticStandartRatedRevenue)
-			.Caption("Domestic Revenue @5%")
-			.Alignment(HorizontalAlignment.Right)
-			.Visible(true)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				subColumns.AddFor(m => m.TotalBeforeDiscount).Caption("Total Before Discount").Alignment(HorizontalAlignment.Center).Visible(true);
 
-				subColumns.AddFor(m => m.TotalRevenueOf10Perc)
-			.Caption("Domestic Revenue @10%")
-			.Alignment(HorizontalAlignment.Right)
-			.Visible(true)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				subColumns.AddFor(m => m.TotalAfterDiscount).Caption("Discount ").Alignment(HorizontalAlignment.Center).Visible(true);
 
-				subColumns.AddFor(m => m.TotalRevenueOf15Perc)
-			.Caption("Domestic Revenue @15%")
-			.Alignment(HorizontalAlignment.Right)
-			.Visible(true)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				subColumns.AddFor(m => m.TotalTaxAmount).Caption("Total Tax Amount").Alignment(HorizontalAlignment.Center).Visible(true);
 
-				subColumns.AddFor(m => m.DomesticZeroRatedRevenue)
-			.Caption("Domestic Zero Rated Revenue")
-			.Alignment(HorizontalAlignment.Right)
-			.Visible(true)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				subColumns.AddFor(m => m.TotalWithTax).Caption("Total With Tax").Alignment(HorizontalAlignment.Center).Visible(true);
 
-				subColumns.AddFor(m => m.DomesticExemptedRevenue)
-			.Caption("Domestic Exempted Revenue")
-			.Alignment(HorizontalAlignment.Right)
-			.Visible(true)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-			});
-
-				revenueColumns.Add().Caption("GCC Countries").Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.GccstandardRatedRevenue)
-			.Caption("GCC Revenue")
-			.Alignment(HorizontalAlignment.Right)
-			.Visible(true)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-			});
-
-				revenueColumns.Add().Caption("Other Countries").Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.ExportsRevenue)
-			.Caption("Exports Revenue")
-			.Alignment(HorizontalAlignment.Right)
-			.Visible(true)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-			});
-			});
-
-			columns.Add().Caption("VAT Amount Classified").Columns(vatColumns =>
-			{
-				vatColumns.Add().Caption("Domestic VAT").Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.DomesticStandartRatedTax)
-			.Caption("Domestic VAT @5%")
-			.Alignment(HorizontalAlignment.Right)
-			.Visible(true)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
-				subColumns.AddFor(m => m.TotalTaxOf10Perc)
-			.Caption("Domestic VAT @10%")
-			.Alignment(HorizontalAlignment.Right)
-			.Visible(true)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
-				subColumns.AddFor(m => m.TotalTaxOf15Perc)
-			.Caption("Domestic VAT @15%")
-			.Alignment(HorizontalAlignment.Right)
-			.Visible(true)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
-				subColumns.AddFor(m => m.DomesticZeroRatedTax)
-			.Caption("Domestic Zero Rated VAT")
-			.Alignment(HorizontalAlignment.Right)
-			.Visible(true)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
-				subColumns.AddFor(m => m.DomesticExemptedTax)
-			.Caption("Domestic Exempted VAT")
-			.Alignment(HorizontalAlignment.Right)
-			.Visible(true)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-			});
-
-				vatColumns.Add().Caption("GCC VAT").Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.GccstandardRatedTax)
-			.Caption("GCC Tax")
-			.Alignment(HorizontalAlignment.Right)
-			.Visible(true)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-			});
-
-				vatColumns.Add().Caption("Exports VAT").Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.ExportsTax)
-			.Caption("Exports Tax")
-			.Alignment(HorizontalAlignment.Right)
-			.Visible(true)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-			});
 			});
 		})
 		.Height(680) // Fixed height for the grid
@@ -390,8 +303,8 @@
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
 		.ShowRowLines(true)
-		
-		
+
+
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
@@ -405,7 +318,7 @@
 		.OnInitialized("function(e) { loadGridState(); }")
 		)
 
-
+	)
 
 </div>
 <div id="invoiceErrorPopup"></div>
@@ -420,4 +333,84 @@
 		}
 		});
 	});
+	function ddBtnShowRecords_click(duration) {
+		 var frmDateBox = $("#frmdateBox").dxDateBox("instance");
+			var toDateBox = $("#todateBox").dxDateBox("instance");
+			var frmDate = new Date(frmDateBox.option("value"));
+			var toDate = new Date(toDateBox.option("value"));
+			var currentDate = new Date();
+			switch (duration) {
+				case 'today':
+					frmDate = toDate = currentDate;
+					break;
+				case 'yesterday':
+					var dateObj = new Date();
+					// Subtract one day from current time
+					dateObj.setDate(dateObj.getDate() - 1);
+					frmDate = toDate = dateObj;
+					break;
+				case 'week':
+					var dayOfWeek = currentDate.getDay(); // Sunday is 0, Monday is 1, ..., Saturday is 6
+
+					// Calculate the start of the week (Saturday)
+					var startOfWeek = currentDate.getDate() - (dayOfWeek + 1) % 7; // Adjust to get Saturday
+
+					// Calculate the start date (7 days before Saturday) and end date (the day before Saturday)
+				frmDate = new Date(currentDate.setDate(startOfWeek)); // 7 days before Saturday
+					toDate = new Date(currentDate.setDate(startOfWeek + 6));
+					break;
+				case 'tillmonth':
+					// Get the first and last day of the current month
+					frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1); // First day of month
+					toDate = currentDate; //Today
+					break;
+				case 'fullmonth':
+					// Get the first and last day of the current month
+					frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1); // First day of month
+					toDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0); // Last day of month
+					break;
+				case 'tillyear':
+					// Get the first and last day of the current year
+					frmDate = new Date(currentDate.getFullYear(), 0, 1); // First day of year (January 1)
+					toDate = currentDate;// Today
+					break;
+					// Get the first and last day of the current year
+					frmDate = new Date(currentDate.getFullYear(), 0, 1); // First day of year (January 1)
+					toDate = new Date(currentDate.getFullYear(), 11, 31); // Last day of month
+					break;
+				case 'lastyear':
+					// Get the first and last day of the last year
+					frmDate = new Date(currentDate.getFullYear() - 1, 0, 1); // First day of year (January 1)
+					toDate = new Date(currentDate.getFullYear() - 1, 11, 31); // Last day of month
+					break;
+				case 'lastmonth':
+					// Get the first and last day of the current month
+					frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1); // First day of month
+					toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); // Last day of month
+					break;
+			}
+				frmDate = frmDate.toISOString().split('T')[0];
+	toDate = toDate.toISOString().split('T')[0];
+
+				$.ajax({
+		url: '/api/Quotation/GetQuotation',
+		type: 'GET',
+		data: {
+			fromDate: frmDate,
+			toDate: toDate
+		},
+		success: function (data) {
+			console.log("Returned Data: ", data); // debug
+			$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+		},
+		error: function (xhr) {
+			console.log("AJAX Error", xhr.responseText); // debug
+			DevExpress.ui.notify("Error while loading data", "error", 2000);
+		}
+	});
+
+
+
+	}
+
 </script>
