@@ -821,7 +821,7 @@
                 items.Add().Text("Upload Items From Excel").Icon("chart");
                
             })
-            @* .OnItemClick("addPrintButton_click") *@
+            .OnItemClick("addPrintButton_click")
             )
     </div>
     <!-- Hidden anchor for submenu positioning -->
@@ -1963,6 +1963,15 @@
                 case "Design 02 (With Signatories)":
                     reportName = "TAXINVOICE_DESIGN02_WSIGN";
                     break;
+                case "Preview Invoices in (Foreign Currency)":
+                    reportName = "proformaInvoiceforegincurrency";
+                    break;
+                case "Preview Invoices in Foreign Currency(English)":
+                    reportName = "ProformaInvoiceForeignEnglish";
+                    break;
+                case "Preview Invoice(English)":
+                    reportName = "PreviewInvoiceEnglish";
+                    break;
                 default:
                     alert("Invalid report format selected.");
                     return;
@@ -2023,7 +2032,10 @@
         // Supported standard formats
         const standardFormats = [
             "Print Regular TAX Invoice",
-            "Print Simplified TAX Invoice"
+            "Print Simplified TAX Invoice",
+            "Preview Invoices in (Foreign Currency)",
+            "Preview Invoices in Foreign Currency(English)",
+            "Preview Invoice(English)"
         ];
 
         if (standardFormats.includes(itemText)) {
