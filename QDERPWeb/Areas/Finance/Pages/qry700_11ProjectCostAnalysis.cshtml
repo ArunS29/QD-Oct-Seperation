@@ -225,7 +225,7 @@
         let lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
 
         $.ajax({
-            url: '/api/UCCostAnalysis/GetTrialBalance',
+            url: '/api/TransactionDetails/GetTrialBalance',
             type: 'GET',
             data: {
                 startDate: firstDay.toISOString().split('T')[0],

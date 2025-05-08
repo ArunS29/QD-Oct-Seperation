@@ -2394,9 +2394,13 @@
         "MPR No": "MPR No",
         "Show Price Details": "Show Price Details",
         "Sub Group Remarks / Notes": "Sub Group Remarks / Notes",
-        "Quotation Line Item": "Quotation Line Item"
+        "Quotation Line Item": "Quotation Line Item",
+        "Invoice Details // تفاصيل الفاتورة": "Invoice Details // تفاصيل الفاتورة",
+        "Other Details // تفاصيل أخرى": "Other Details // تفاصيل أخرى"
     },
     "ar": {
+        "Other Details // تفاصيل أخرى": "Other Details // تفاصيل أخرى",
+        "Invoice Details // تفاصيل الفاتورة":"Invoice Details // تفاصيل الفاتورة",
         "Purchase Orders": "طلبات الشراء",
         "Request for Quotation List": "طلب قائمة عروض الأسعار",
         "Sub Group Remarks / Notes": "ملاحظات/ملاحظات المجموعة الفرعية",
@@ -2616,6 +2620,7 @@
         "Exports VAT": "ضريبة القيمة المضافة للصادرات",
         "Exports Tax": "ضريبة الصادرات",
         "Invoice Details": "تفاصيل الفاتورة",
+
         "Proforma Invoice No": "رقم الفاتورة المبدئية",
         "Proforma Invoice Date": "تاريخ الفاتورة المبدئية",
         "Invoice Effective Date": "تاريخ سريان الفاتورة",

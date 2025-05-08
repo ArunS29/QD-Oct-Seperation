@@ -103,7 +103,7 @@
                 .Columns(columns =>
                 {
                     columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('AccountGroup')")).GroupIndex(0);
-                    columns.Add().DataField("AccountID").Visible(false);
+                    columns.Add().DataField("AccountID").Visible(true);
                     columns.Add().Caption(new JS("formatMessage('AssetDetails')")).Columns(group =>
                     {
                         group.Add().DataField("AccountID").Caption(new JS("formatMessage('AssetLedgerNo')"));
@@ -118,11 +118,16 @@
                     columns.Add().Caption(new JS("formatMessage('DepreciationDetails')")).Columns(group =>
                     {
                         group.Add().DataField("DepreciationMethod").Caption(new JS("formatMessage('DepreciationMethod')"));
-                        group.Add().DataField("ScrapValueOfProperty").Caption(new JS("formatMessage('ScrapValue')")).Alignment(HorizontalAlignment.Right);
+@*                         group.Add().DataField("ScrapValueOfProperty").Caption(new JS("formatMessage('ScrapValue')")).Alignment(HorizontalAlignment.Right);
+ *@              
+                group.Add().DataField("ScrapValueOfProperty")
+              .Caption(new JS("formatMessage('ScrapValue')"))
+              .Alignment(HorizontalAlignment.Right)
+              .CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
                         group.Add().DataField("LifeSpanOfProperty").Caption(new JS("formatMessage('LifeSpanOfProperty')")).Alignment(HorizontalAlignment.Right);
-                        group.Add().DataField("DepreciationPercentage").Caption(new JS("formatMessage('Depreciation')")).Alignment(HorizontalAlignment.Right);
-                        group.Add().DataField("OpeningTotal").Caption(new JS("formatMessage('OpeningTotal')")).Alignment(HorizontalAlignment.Right);
-                        group.Add().DataField("TotalDebit").Caption(new JS("formatMessage('TotalDebit')")).Alignment(HorizontalAlignment.Right);
+                group.Add().DataField("DepreciationPercentage").Caption(new JS("formatMessage('Depreciation')")).Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
+                group.Add().DataField("OpeningTotal").Caption(new JS("formatMessage('OpeningTotal')")).Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
+                group.Add().DataField("TotalDebit").Caption(new JS("formatMessage('TotalDebit')")).Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
 
                         group.Add().DataField("TotalCredit").Caption(new JS("formatMessage('TotalCredit')")).Alignment(HorizontalAlignment.Right) // Ensure right alignment
                     .CustomizeText(@"
@@ -136,9 +141,9 @@
             return value < 0 ? formattedValue + 'Cr' : formattedValue;
             }");
 
-                        group.Add().DataField("ClosingBalance").Caption(new JS("formatMessage('ClosingBalance')")).Alignment(HorizontalAlignment.Right);
-                        group.Add().DataField("TotalDepreciatedAmount").Caption(new JS("formatMessage('TotalDepreciated')")).Alignment(HorizontalAlignment.Right);
-                        group.Add().DataField("NetBookValue").Caption(new JS("formatMessage('NetBookValue')")).Alignment(HorizontalAlignment.Right);
+                group.Add().DataField("ClosingBalance").Caption(new JS("formatMessage('ClosingBalance')")).Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
+                group.Add().DataField("TotalDepreciatedAmount").Caption(new JS("formatMessage('TotalDepreciated')")).Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
+                group.Add().DataField("NetBookValue").Caption(new JS("formatMessage('NetBookValue')")).Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
                     });
 
                     columns.Add().Caption(new JS("formatMessage('Specifications')")).Columns(group =>
@@ -151,7 +156,7 @@
                         group.Add().DataField("Year").Caption(new JS("formatMessage('Year')"));
                         group.Add().DataField("Ownership").Caption(new JS("formatMessage('Ownership')"));
                         group.Add().DataField("PurchaseDate").Caption(new JS("formatMessage('PurchaseDate')"));
-                        group.Add().DataField("ValueOfProperty").Caption(new JS("formatMessage('PurchasedValue')")).Alignment(HorizontalAlignment.Right);
+                        group.Add().DataField("ValueOfProperty").Caption(new JS("formatMessage('PurchasedValue')")).Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
                         group.Add().DataField("PurchasedAs").Caption(new JS("formatMessage('PurchasedAs')"));
                     });
 
@@ -490,6 +495,7 @@
             }
         });
     });
+
       function showDepreciationSchedule() {
             $("#DepreciationContent").load(`/${tenantName}/Finance/DepreciationMaster ` , function () {
             $("#DepreciationModal").modal('show');

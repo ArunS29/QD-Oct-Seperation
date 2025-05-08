@@ -962,7 +962,7 @@
 															.LabelMode(EditorLabelMode.Outside)
 															.ID("ddlGoodsGroup1")
 															.ShowClearButton(true)
-															.Value("Common Overheads")
+														.Value("ADMIN-0001")
 															.AcceptCustomValue(false)
 															.OpenOnFieldClick(false)
 															.ValueChangeEvent("input")
@@ -1190,6 +1190,7 @@
 																				.Icon("edit")
 																				.Hint("Edit Description")
 																				.Width(60)
+																			    .OnClick("CurrencyClick") 
 																				)
 									</div>
 								</td>
@@ -1222,12 +1223,13 @@
 																				@* .Disabled(true) *@
 																				.ContentTemplate(new TemplateName("TaxCurrencyTemplate"))
 																				.Width("75%"))
-										@(Html.DevExtreme().Button()
+										@(Html.DevExtreme().Button()	
 																				.ID("EditClient1")
 																				.Icon("edit")
 																				.Hint("Edit Description")
 																				.Width(60)
-																				)
+																			.OnClick("CurrencySClick")
+																			)
 									</div>
 								</td>
 							</tr>
@@ -1467,7 +1469,8 @@
 
 							<!-- Row 2: Credit Note Submitted On, Sales Person -->
 						<tr>
-							<td style="display: flex; align-items: end;gap:5px">
+							<td colspan="2">
+								<div style="display: flex; align-items: flex-end; gap: 4px; width: 100%;">
 									
 																@(Html.DevExtreme().DropDownBox()
 																					.Label(new JS("formatMessage('Sales Person/Co-ordinator')"))
@@ -1491,8 +1494,10 @@
 																				.Hint("Add Sales Person")
 																				.Width(40)
 																				.ElementAttr("style", "display: flex; justify-content: center; align-items:bottom;")
-																				)										
-								</td>
+																			.OnClick("onAddSalesPersonClick")
+																			)
+								</div>
+							</td>
 							</tr>
 
 
@@ -7735,5 +7740,22 @@
 			function onSetDefaultClick() {
 			DevExpress.ui.dialog.alert("Invoice Notes has been set as default.", "Set as default");
 		}
+	function onAddSalesPersonClick() {
+		// Replace with the actual tenant name dynamically
+		var url = `/${tenantName}/VAT/SalesPersonMaster`;
+		window.location.href = url; // Navigate to the page
+	}
+
+
+	function CurrencyClick() {
+	// Replace with the actual tenant name dynamically
+	var url = `/${tenantName}/VAT/VATMasterModule`;
+	window.location.href = url; // Navigate to the page
+}
+	function CurrencySClick() {
+		// Replace with the actual tenant name dynamically
+		var url = `/${tenantName}/VAT/VATMasterModule`;
+		window.location.href = url; // Navigate to the page
+	}
 </script>
 

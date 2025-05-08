@@ -882,7 +882,7 @@
 																					.LabelMode(EditorLabelMode.Outside)
 																					.ID("ddlGoodsGroup1")
 																					.ShowClearButton(true)
-																					.Value("Common Overheads")
+																					.Value("ADMIN-0001")
 																					.AcceptCustomValue(false)
 																					.OpenOnFieldClick(false)
 																					.ValueChangeEvent("input")
@@ -1316,12 +1316,21 @@
 																					.ContentTemplate(new TemplateName("SalesPersonTemplate"))
 																					.Width("100%")
 																					)
+																		
 							</td>
 							<td>
-								@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Credit Note Submitted On:')")).ID("CreditNoteSubmittedOn").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Disabled(false)
-								.LabelMode(EditorLabelMode.Outside).Width("100%")
-															)
-							</td>
+    @(Html.DevExtreme().DateBox()
+        .Label(new JS("formatMessage('Credit Note Submitted On:')"))
+        .ID("CreditNoteSubmittedOn")
+        .Type(DateBoxType.Date)
+        .DisplayFormat("dd-MMM-yyyy")
+        .Value(DateTime.Today) 
+        .Disabled(false)
+        .LabelMode(EditorLabelMode.Outside)
+        .Width("100%")
+    )
+</td>
+
 							<td>
 								@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Credit Note Submitted By:')")).LabelMode(EditorLabelMode.Outside)
 								.ID("CreditNoteSubmittedBy").Width("100%")

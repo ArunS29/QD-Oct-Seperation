@@ -70,7 +70,10 @@
 
 	.dx-datagrid-headers {
 		border: 1px solid #686868 !important;
-		width: 5000px;
+		width: 100%; /* Adjust to fit the container */
+		overflow-x: auto; /* Enable horizontal scrolling */
+		white-space: nowrap; /* Prevent wrapping of headings */
+		overflow-y:hidden;
 	}
 
 		.dx-datagrid-headers .dx-row > td {
@@ -81,12 +84,16 @@
 
 	.dx-datagrid .dx-header-row .dx-datagrid-text-content {
 		font-size: 12px !important;
-		white-space: normal !important;
+		white-space: nowrap !important; /* Prevent wrapping of text */
 		text-align: center !important;
 		font-weight: bold;
 		color: black;
 	}
 
+	.ledgerResult {
+		overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
+		width: 100%;
+	}
 	.close-btn {
 		position: absolute;
 		top: 10px;
@@ -201,12 +208,16 @@
 		display: block;
 	}
 
+	.mainContainer {
+		width: 96%;
+		overflow:hidden;
+	}
 </style>
 
 <input id="formId" value="frm201LedgerView" type="hidden" />
 <div class="title">
 	<div class="header-container">
-		<div id="VATInvoiceRegister" class="no-border-input"></div>
+		<div id="MaterialRequest" class="no-border-input"></div>
 	</div>
 </div>
 
@@ -284,7 +295,7 @@
 		)
 
 </div>
-<div class="dx-field ledgerResult" style="width: 98%; overflow: hidden;">
+<div class="dx-field ledgerResult" >
 	@(
 		Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60604purchaseRequestViewMaster>()
 				.ID("dataGrid")
@@ -414,27 +425,26 @@
 				columns.AddFor(m => m.CancelledOn).Caption("CancelledOn").Format("dd-MMM-yyyy").Visible(false);
 
 			})
-
-			@* 	.Editing(editing => editing
-		.Mode(GridEditMode.Row)
-		.AllowUpdating(true)
-		) *@
 		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
 		.OnToolbarPreparing("onToolbarPreparing")
-		//.OnCellClick("function(e) { handleCellClick(e); }")
 		.ColumnChooser(cc => cc.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
+		.Height(680) // <<< fixed height
+		.ColumnAutoWidth(true)
+		.Width("99%")
+		.WordWrapEnabled(true)
+		.OnCellClick("function(e) {handleCellClick(e);}")
+		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
-		.ColumnFixing(f => f.Enabled(true))
-		.HeaderFilter(f => f.Visible(false))
-		.Height(600)
-		.FilterRow(f => f.Visible(false))
+		.ColumnFixing(fixing => fixing.Enabled(true))
+		.HeaderFilter(filter => filter.Visible(false))
+		.Paging(p => p.Enabled(false))
+		.Pager(pager => pager.Visible(false))
 		.Grouping(grouping => grouping.AutoExpandAll(true))
+		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
 		.ShowRowLines(true)
-		.Width("100%")
-		.OnContextMenuPreparing("onContextMenuPreparing")
 		@* .Summary(summary =>
 		{
 			summary.TotalItems(totalItems =>
@@ -539,107 +549,6 @@
 		    window.location.href = url;
 		//	openModal(url, title);
 		}
-
-
-
-	// $(document).ready(function () {
-	// 	console.log('Start permission handling AccountingLedgers');
-	// 	var formId = "frm201LedgerView";
-	// 	$.ajax({
-	// 		url: '/api/Permissions/GetAccessDetails?formId=' + formId,
-	// 		type: 'GET',
-	// 		contentType: 'application/json',
-	// 		success: function (response) {
-	// 			console.log("API Response:", response);
-
-	// 			if (response.success && response.permissions) {
-	// 				var controlStates = {
-	// 					"ddBtnShowRecords": { "Visible": false, "Enabled": false },
-
-	// 				};
-	// 				var fullAccess = response.permissions.find(p =>
-	// 					p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
-	// 				);
-
-	// 				if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
-	// 					Object.keys(controlStates).forEach(key => {
-	// 						controlStates[key] = { "Visible": true, "Enabled": true };
-	// 					});
-	// 				} else {
-	// 					Object.keys(controlStates).forEach(key => {
-	// 						var controlPermission = response.permissions.find(p =>
-	// 							p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
-	// 						);
-	// 						if (controlPermission) {
-	// 							controlStates[key] = {
-	// 								"Visible": controlPermission.ItemVisible || false,
-	// 								"Enabled": controlPermission.ItemEnabled || false
-	// 							};
-	// 						}
-	// 					});
-	// 				}
-	// 				console.log("Control States:", controlStates);
-	// 				Object.keys(controlStates).forEach(key => {
-	// 					var button = document.getElementById(key);
-	// 					if (button) {
-
-	// 						button.style.display = controlStates[key].Visible ? "inline-block" : "none";
-
-	// 						button.disabled = !controlStates[key].Enabled;
-	// 						console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
-	// 					} else {
-	// 						console.warn(`Button with ID "${key}" not found in the DOM.`);
-	// 					}
-	// 				});
-	// 			} else {
-	// 				console.warn("Failed to fetch permissions or no permissions available.");
-	// 			}
-	// 		},
-	// 		error: function (xhr, status, error) {
-	// 			console.error("Error fetching permissions:", error);
-	// 			alert('An error occurred while fetching permissions. Please try again.');
-	// 		}
-	// 	});
-	// 	console.log('End permission handling');
-	// });
-	// let selectedVoucherNo = null;
-	// $(function () {
-	// 	$("#VATInvoiceRegister").dxTextBox({
-	// 		text: formatMessage("VAT Invoice Register"),
-	// 		readOnly: true,
-	// 		onContentReady: function (e) {
-	// 			$(e.element).addClass("dx-textbox-heading");
-	// 		}
-	// 	});
-	// });
-	// $(function () {
-	// 	var inputPopupInstance = $("#inputPopupContainer").dxPopup({
-	// 		width: 600,
-	// 		height: 400,
-	// 		showTitle: true,
-	// 		title: "Details",
-	// 		visible: false,
-	// 		dragEnabled: true,
-	// 		closeOnOutsideClick: true,
-	// 		contentTemplate: function () {
-	// 			return $("<div>").attr("id", "popupFormContent");
-	// 		}
-	// 	}).dxPopup("instance");
-	// 	var contextMenu = $("#contextMenu");
-	// 	$(document).on("click", function () {
-	// 		contextMenu.hide();
-	// 	});
-	// 	$("#dataGrid").customizeGridContextMenu();
-	// 	$("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
-	// 		e.preventDefault();
-	// 		var rowIndex = $(this).index();
-	// 		var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex];
-	// 				CreditNoteNo = rowData.CreditNoteNo;
-	// 		console.log(rowData);
-	// 		contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
-	// 	});
-	// });
-
 	function ddBtnShowRecords_click(duration) {
 		debugger;
 		var frmDateBox = $("#frmdateBox").dxDateBox("instance");
@@ -843,7 +752,15 @@
 			];
 		}
 	}
-
+		$(function () {
+				$("#MaterialRequest").dxTextBox({
+					text: formatMessage("Material Request"),
+				readOnly: true,
+				onContentReady: function (e) {
+					$(e.element).addClass("dx-textbox-heading");
+				}
+			});
+		});
 // 	$(document).ready(function () {
 //     $('#btnAddNew1').on('click', function (e) {
 //         e.stopPropagation(); // prevent click from bubbling up
