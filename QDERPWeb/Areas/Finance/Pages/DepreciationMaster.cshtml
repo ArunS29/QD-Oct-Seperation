@@ -64,7 +64,7 @@
                 )
         </div>
         <div class="dx-field ledgerResult">
-            @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201205depreciationMasterView>()
+          @*   @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201205depreciationMasterView>()
                 .ID("DepreciationdataGrid")
                 .KeyExpr("ClaimRefNo")
                 .RemoteOperations(false)
@@ -127,8 +127,76 @@
                 .GroupPanel(groupPanel => groupPanel.Visible(false))
                 .Grouping(grouping => grouping.AutoExpandAll(true))
                 .ShowBorders(true)
-                .Width("100%"))
+                .Width("100%")) *@
+
+    @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201205depreciationMasterView>()
+        .ID("DepreciationdataGrid")
+        .KeyExpr("ClaimRefNo")
+        .RemoteOperations(false)
+        .DataSource(ds => ds.Mvc()
+        .Controller("DepreciationMaster")
+        .LoadAction("GetExpenseClaims"))
+            .Columns(columns =>
+            {
+
+                columns.Add().Caption(new JS("formatMessage('Depreciation Register Details')")).Columns(band =>
+            {
+
+                band.Add().DataField("Postedon").Caption("Posted")
+            .CellTemplate(@<text>
+        <input type="checkbox" class="row-checkbox" data-claimrefno="<%= data.ClaimRefNo %>" onclick="highlightRow(this)" />
+    </text>).Width(200);
+
+                band.Add().DataField("JournalVoucherNo").Caption(new JS("formatMessage('Voucher No')")).Width(200);
+                band.Add().DataField("DepreciationDocNo").Caption(new JS("formatMessage('Depreciation Doc No')")).Width(200);
+                band.Add().DataField("DeprStartDate").Caption(new JS("formatMessage('Start Date')")).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy").Width(200);
+                band.Add().DataField("DeprEndDate").Caption(new JS("formatMessage('End Date')")).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy").Width(200);
+
+
+            });
+                columns.Add().Caption("No of Assets").Columns(band =>
+    {
+
+                band.Add().DataField("NoOfAssets").Caption("No of Assets").Width(200);
+
+            });
+                columns.Add().Caption(new JS("formatMessage('Depreciation Amount')")).Columns(band =>
+    {
+
+                band.Add().DataField("AssetOpeningBalance").Caption(new JS("formatMessage('Opening Balance')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
+                band.Add().DataField("AssetTotalDebitTrans").Caption(new JS("formatMessage('Debit Transactions')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
+                band.Add().DataField("AssetTotalCreditTrans").Caption(new JS("formatMessage('Credit Transactions')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
+                band.Add().DataField("AssetClosingBalance").Caption(new JS("formatMessage('Closing Balance')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
+                band.Add().DataField("AccumulatedOpeningBalance").Caption(new JS("formatMessage('Accumulated Opening Balance')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
+                band.Add().DataField("TotalDepreciationAmount").Caption(new JS("formatMessage('Total Depreciation Amount')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
+                band.Add().DataField("AccumulatedTotalBalance").Caption(new JS("formatMessage('Accumulated Closing Balance')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
+                band.Add().DataField("TotalBookValue").Caption(new JS("formatMessage('Total Book Value')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
+
+            });
+            })
+
+        .Paging(paging => paging.Enabled(false))
+        .AllowColumnReordering(true)
+        .AllowColumnResizing(true)
+        .ColumnFixing(fixing => fixing.Enabled(true))
+        .HeaderFilter(filter => filter.Visible(true))
+        .Height(401)
+        .Width("100%")
+        .ColumnAutoWidth(false) // Important: allows columns to overflow and scroll
+        .Scrolling(scrolling => scrolling
+        .Mode(GridScrollingMode.Standard) // or "virtual" if you want virtual scrolling
+        .UseNative(true)
+        .ShowScrollbar(ShowScrollbarMode.Always) // Always show scrollbar
+        )
+        .FilterRow(filterRow => filterRow.Visible(false))
+        .GroupPanel(groupPanel => groupPanel.Visible(false))
+        .Grouping(grouping => grouping.AutoExpandAll(true))
+        .ShowBorders(true)
+        )
+
         </div>
+
+
 
     <script>
         $(function () {
@@ -142,7 +210,7 @@
     });
         
         function ddBtnShowRecords_click(filterType) {
-            const dataGrid = $("#dataGrid").dxDataGrid("instance");
+            const dataGrid = $("#DepreciationdataGrid").dxDataGrid("instance");
 
             const today = new Date();
             let startDate = null, endDate = null;
@@ -212,7 +280,7 @@
                     dataGrid.option("dataSource", {
                         load: function () {
                             return $.ajax({
-                                url: "/api/ExpensesClaim/GetExpensesClaims",
+                                url: "/api/DepreciationMaster/GetExpensesClaims",
                                 type: "GET"
                             });
                         }
@@ -230,7 +298,7 @@
                 dataGrid.option("dataSource", {
                     load: function () {
                         return $.ajax({
-                            url: "/api/ExpensesClaim/GetExpensesClaims",
+                            url: "/api/DepreciationMaster/GetExpensesClaims",
                             data: {
                                 startDate: startDate.toISOString(),
                                 endDate: endDate.toISOString()

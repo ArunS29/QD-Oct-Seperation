@@ -140,17 +140,18 @@
             .Width(180)
             )
     </div>
-<div class="btn-container">
-    @(Html.DevExtreme().Button()
-        .ID("btnShowFields")
-        .Type(ButtonType.Normal)
-        .StylingMode(ButtonStylingMode.Outlined)
-        .Icon("doc")
-        .Text(new JS("formatMessage('Show Fields')"))
-        .Width(180)
-       
-        )
-</div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnShowFields")
+            .Type(ButtonType.Normal)
+            .StylingMode(ButtonStylingMode.Outlined)
+            .Icon("doc")
+            .Text(new JS("formatMessage('Show Fields')"))
+            .Width(180)
+            .OnClick("onShowFieldsClick") // Attach the JS function here
+            )
+    </div>
+
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnFinancialReports")
@@ -211,9 +212,10 @@
                 items.Add().Text("Clear All wrong Allocation of Cost");
             })
             .ShowArrowIcon(true)
+            .OnItemClick("onDifferencesItemClick") // Bind to JS function
             )
-
     </div>
+
 
 <div class="btn-container">
     @(Html.DevExtreme().Menu()
@@ -697,6 +699,10 @@
             console.warn('No report mapping found for:', selectedText);
         }
     }
+
+           
+
+
 
 
 

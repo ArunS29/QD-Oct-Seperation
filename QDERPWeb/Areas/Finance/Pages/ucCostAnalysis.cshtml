@@ -218,31 +218,40 @@
 
     $(document).ready(function () {
         // Load all records on page load (ignore default date values)
-            initializePivotGrid([]);
+           // initializePivotGrid([]);
+           loadAllRecords();
     });
 
-    function loadAllRecords() {
-        console.log("Loading records for the current month...");
+        function loadAllRecords() {
+        console.log("Loading trial balance records...");
 
-        let today = new Date();
-        let firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-        let lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+        const today = new Date();
+
+        // Define date range: Jan 1st of last year to end of current month
+        const firstDay = new Date(today.getFullYear() - 1, 0, 1); // Jan 1 last year
+        const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0); // End of current month
 
         $.ajax({
-            url: '/api/UCCostAnalysis/GetTrialBalance',
+            url: '/api/TransactionDetails/GetTrialBalance',
             type: 'GET',
             data: {
                 startDate: firstDay.toISOString().split('T')[0],
-                endDate: lastDay.toISOString().split('T')[0]
+                endDate: lastDay.toISOString().split('T')[0],
+                accountGroup: "" // include this if your API expects it
             },
             success: function (data) {
-                initializePivotGrid(data);
+                if (Array.isArray(data)) {
+                    initializePivotGrid(data);
+                } else {
+                    console.error("Unexpected response format", data);
+                }
             },
             error: function (xhr, status, error) {
-                console.error("Error fetching records for the current month: ", error);
+                console.error("Error fetching trial balance records:", xhr.responseText || error);
             }
         });
     }
+
 
     function ddBtnShowRecords_click(option) {
         var startDate, endDate;
@@ -313,7 +322,7 @@
         });
 
         $.ajax({
-            url: '/api/UCCostAnalysis/GetTrialBalance',
+            url: '/api/TransactionDetails/GetTrialBalance',
             type: 'GET',
             data: {
                 startDate: startDate ? startDate.toISOString().split('T')[0] : null,
@@ -322,6 +331,7 @@
             },
             success: function (data) {
                 initializePivotGrid(data);
+                console.log("response",data)
             },
             error: function (xhr, status, error) {
                 console.error("Error fetching filtered records: ", error);
@@ -333,12 +343,12 @@
         $("#pivotGridContainer").dxPivotGrid({
             dataSource: {
                 fields: [
-                    { dataField: "CostGroup", area: "row", caption: "Cost Group" },
-                    { dataField: "CostCenter", area: "row", caption: "Cost Center" },
-                    { dataField: "IncomeExpense", area: "column", caption: "Income / Expense" },
+                    { dataField: "CostAllocationUnit", area: "row", caption: "Cost Group" },
+                    { dataField: "CostAllocationGroup", area: "row", caption: "Cost Center" },
+                    { dataField: "PL", area: "column", caption: "Income / Expense" },
                     { dataField: "Income", area: "data", summaryType: "sum", caption: "Income" },
                     { dataField: "Expenses", area: "data", summaryType: "sum", caption: "Expenses" },
-                    { dataField: "GrandTotal", area: "data", summaryType: "sum", caption: "Grand Total" }
+                    { dataField: "CostAmount", area: "data", summaryType: "sum", caption: "Grand Total" }
                 ],
                 store: data
             },
@@ -395,6 +405,159 @@
             $(this).css("background-color", "");
         });
     }
+
+        function onDifferencesItemClick(e) {
+        const selectedText = e.itemData.text;
+
+        if (selectedText === "Clear All wrong Allocation of Cost") {
+            DevExpress.ui.dialog.custom({
+                title: "Confirm Action",
+                message: "You are about to clear all wrong cost posting in the system. Click yes if you would like to continue.",
+                buttons: [
+                    { text: "Yes", onClick: () => true },
+                    { text: "No", onClick: () => false }
+                ],
+                showTitle: true
+            }).show().done(function (dialogResult) {
+
+                if (dialogResult) {
+                    // Proceed with AJAX call
+                    $.ajax({
+                        url: '/api/ucCostAnalysis/DeleteWronglyAllocatedEntries',
+                        type: 'POST',
+                        success: function (response) {
+                            DevExpress.ui.dialog.custom({
+                                title: "Deleted Successfully",
+                                message: "All cost entries have been successfully cleared from the database.",
+                                buttons: [
+                                    { text: "Ok", onClick: () => true }
+                                ],
+                                showTitle: true
+                            }).show();
+
+                            // Refresh the pivot grid
+                               const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
+    if (pivotGrid) {
+        pivotGrid.refresh();
+        window.location.reload(); // Correct method to reload the page
+    }
+
+                        },
+                        error: function (xhr) {
+                            const msg = xhr.responseText || "An error occurred";
+                            DevExpress.ui.notify(msg, "error", 3000);
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+    //         function onShowFieldsClick(e) {
+    //     const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
+    //     const dataSource = pivotGrid.getDataSource();
+
+    //     dataSource.fields([
+    //         { dataField: "CostAllocationUnit", area: "row", caption: "Cost Group" },
+    //         { dataField: "CostAllocationGroup", area: "row", caption: "Cost Center" },
+    //         { dataField: "PL", area: "column", caption: "Income / Expense" },
+    //         { dataField: "Income", area: "data", summaryType: "sum", caption: "Income" },
+    //         { dataField: "Expenses", area: "data", summaryType: "sum", caption: "Expenses" },
+    //         { dataField: "CostAmount", area: "data", summaryType: "sum", caption: "Grand Total" },
+
+    //         // Extra fields
+    //         { dataField: "MasterGroup", area: "filter", caption: "Account Master" },
+    //         { dataField: "AccountGroup", area: "filter", caption: "Account Group" },
+    //         { dataField: "AccountHead", area: "filter", caption: "Ledger Account Name" },
+    //         { dataField: "CostCenterIncharge", area: "filter", caption: "Cost Center Incharge" },
+    //         { dataField: "CostAllocationUnit", area: "filter", caption: "Cost Unit ID" },
+    //         { dataField: "VoucherType", area: "filter", caption: "Voucher Type" },
+    //         { dataField: "VoucherNo", area: "filter", caption: "Voucher No" },
+    //         { dataField: "EffectiveDate", area: "filter", caption: "Effective Date" },
+    //         { dataField: "VoucherDate", area: "filter", caption: "Voucher Date" },
+    //         { dataField: "VoucherEntryID", area: "filter", caption: "Voucher Entry ID" },
+    //         { dataField: "VoucherMonth", area: "filter", caption: "Voucher Month" },
+    //         { dataField: "VoucherYear", area: "filter", caption: "Voucher Year" },
+    //         { dataField: "EffectiveMonth", area: "filter", caption: "Effective Month" },
+    //         { dataField: "EffectiveYear", area: "filter", caption: "Effective Year" },
+    //         { dataField: "AllocationEffectiveMonth", area: "filter", caption: "Allocation Effective Month" },
+    //         { dataField: "AllocationEffectiveDate", area: "filter", caption: "Allocation Effective Date" },
+    //         { dataField: "AllocationEffectiveYear", area: "filter", caption: "Allocation Effective Year" },
+    //         { dataField: "VoucherNarration", area: "filter", caption: "Voucher Narration" },
+    //         { dataField: "VoucherRefNo", area: "filter", caption: "Voucher Ref No" },
+    //         { dataField: "EntryNarration", area: "filter", caption: "Entry Narration" },
+    //         { dataField: "SysRemarks", area: "filter", caption: "Remarks" },
+    //         { dataField: "BranchName", area: "filter", caption: "Branch Name" },
+    //         { dataField: "BranchCode", area: "filter", caption: "Branch Code" },
+    //         { dataField: "ProjectMasterCode", area: "filter", caption: "Project Master Code" }
+           
+
+    //     ]);
+
+    //     dataSource.load(); // Apply the changes
+    // }
+
+
+        let extraFieldsVisible = false; // Flag to track toggle state
+
+    function onShowFieldsClick(e) {
+        const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
+        const dataSource = pivotGrid.getDataSource();
+
+        // Base fields (always visible)
+        const baseFields = [
+            { dataField: "CostAllocationUnit", area: "row", caption: "Cost Group" },
+            { dataField: "CostAllocationGroup", area: "row", caption: "Cost Center" },
+            { dataField: "PL", area: "column", caption: "Income / Expense" },
+            { dataField: "Income", area: "data", summaryType: "sum", caption: "Income" },
+            { dataField: "Expenses", area: "data", summaryType: "sum", caption: "Expenses" },
+            { dataField: "CostAmount", area: "data", summaryType: "sum", caption: "Grand Total" }
+        ];
+
+        // Extra filter fields
+        const extraFields = [
+            { dataField: "MasterGroup", area: "filter", caption: "Account Master" },
+            { dataField: "AccountGroup", area: "filter", caption: "Account Group" },
+            { dataField: "AccountHead", area: "filter", caption: "Ledger Account Name" },
+            { dataField: "CostCenterIncharge", area: "filter", caption: "Cost Center Incharge" },
+            { dataField: "CostAllocationUnit", area: "filter", caption: "Cost Unit ID" },
+            { dataField: "VoucherType", area: "filter", caption: "Voucher Type" },
+            { dataField: "VoucherNo", area: "filter", caption: "Voucher No" },
+            { dataField: "EffectiveDate", area: "filter", caption: "Effective Date" },
+            { dataField: "VoucherDate", area: "filter", caption: "Voucher Date" },
+            { dataField: "VoucherEntryID", area: "filter", caption: "Voucher Entry ID" },
+            { dataField: "VoucherMonth", area: "filter", caption: "Voucher Month" },
+            { dataField: "VoucherYear", area: "filter", caption: "Voucher Year" },
+            { dataField: "EffectiveMonth", area: "filter", caption: "Effective Month" },
+            { dataField: "EffectiveYear", area: "filter", caption: "Effective Year" },
+            { dataField: "AllocationEffectiveMonth", area: "filter", caption: "Allocation Effective Month" },
+            { dataField: "AllocationEffectiveDate", area: "filter", caption: "Allocation Effective Date" },
+            { dataField: "AllocationEffectiveYear", area: "filter", caption: "Allocation Effective Year" },
+            { dataField: "VoucherNarration", area: "filter", caption: "Voucher Narration" },
+            { dataField: "VoucherRefNo", area: "filter", caption: "Voucher Ref No" },
+            { dataField: "EntryNarration", area: "filter", caption: "Entry Narration" },
+            { dataField: "SysRemarks", area: "filter", caption: "Remarks" },
+            { dataField: "BranchName", area: "filter", caption: "Branch Name" },
+            { dataField: "BranchCode", area: "filter", caption: "Branch Code" },
+            { dataField: "ProjectMasterCode", area: "filter", caption: "Project Master Code" }
+        ];
+
+        if (!extraFieldsVisible) {
+            // Show extra fields
+            dataSource.fields([...baseFields, ...extraFields]);
+            extraFieldsVisible = true;
+            //e.component.option("text", "Hide Extra Fields"); // Optional: update button text
+        } else {
+            // Hide extra fields
+            dataSource.fields(baseFields);
+            extraFieldsVisible = false;
+           // e.component.option("text", "Show Extra Fields"); // Optional: update button text
+        }
+
+        dataSource.load();
+    }
+
+
 
 </script>
 
