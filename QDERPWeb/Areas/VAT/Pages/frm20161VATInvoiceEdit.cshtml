@@ -1467,7 +1467,8 @@
 
 							<!-- Row 2: Credit Note Submitted On, Sales Person -->
 						<tr>
-							<td style="display: flex; align-items: end;gap:5px">
+							<td colspan="2">
+								<div style="display: flex; align-items: flex-end; gap: 4px; width: 100%;">
 									
 																@(Html.DevExtreme().DropDownBox()
 																					.Label(new JS("formatMessage('Sales Person/Co-ordinator')"))
@@ -1491,8 +1492,9 @@
 																				.Hint("Add Sales Person")
 																				.Width(40)
 																				.ElementAttr("style", "display: flex; justify-content: center; align-items:bottom;")
-																				)										
-								</td>
+																			)
+								</div>
+							</td>
 							</tr>
 
 

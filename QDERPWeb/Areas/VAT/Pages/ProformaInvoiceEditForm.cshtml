@@ -756,9 +756,18 @@
 						</td>
 
 
-						<td style="display: flex; align-items: end;">
+						<td style="display: flex; align-items: end;gap: 4px;">
 
+							@(
+														Html.DevExtreme().Button()
+														.ID("InvoiceNotesconvertToArabic")
+														.Width("60")
+														.Height(50)
+														.Icon("fas fa-language") // Ensure Font Awesome class is correct
+														.ElementAttr(new { @class = "input-button" })
+														.OnClick("function() { convertToArabic(); }")
 
+														)
 
 
 							@(Html.DevExtreme().TextArea()
@@ -772,16 +781,7 @@
 
 
 														)
-							@(
-														Html.DevExtreme().Button()
-														.ID("InvoiceNotesconvertToArabic")
-														.Width("100")
-														.Height(50)
-														.Icon("fas fa-language") // Ensure Font Awesome class is correct
-														.ElementAttr(new { @class = "input-button" })
-														.OnClick("function() { convertToArabic(); }")
 
-														)
 						</td>
 
 
@@ -946,7 +946,7 @@
 
 							</tr>
 							<tr>
-								<td>
+								<td colspan="2">
 									@(Html.DevExtreme().CheckBox()
 																			.Text(new JS("formatMessage('Verified By')"))
 																			.ID("VerifiedBy")
@@ -972,7 +972,7 @@
 																			)
 								</td>
 
-								<td colspan="3">
+								<td colspan="2">
 
 									@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Approved By')"))
 																			.ID("ApprovedBy")
@@ -984,7 +984,7 @@
 																			.ID("ApprovedBytext")
 																			.Value(null) // Default value
 																			.Disabled(true)
-																			.Width("90%")
+																			.Width("100%")
 																			@* .Disabled(true) *@
 																			)
 									@(Html.DevExtreme().TextBox()
@@ -993,7 +993,7 @@
 																			.ID("ApprovedOntext")
 																			.Value(null) // Default value
 																			.Disabled(true)
-																			.Width("90%")
+																			.Width("100%")
 																			)
 								</td>
 							</tr>
