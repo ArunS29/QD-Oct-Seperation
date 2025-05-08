@@ -65,7 +65,10 @@
 
 	.dx-datagrid-headers {
 		border: 1px solid #686868 !important;
-		width: 5000px;
+		width: 100%; /* Adjust to fit the container */
+		overflow-x: auto; /* Enable horizontal scrolling */
+		white-space: nowrap; /* Prevent wrapping of headings */
+		overflow:hidden;
 	}
 
 		.dx-datagrid-headers .dx-row > td {
@@ -76,12 +79,16 @@
 
 	.dx-datagrid .dx-header-row .dx-datagrid-text-content {
 		font-size: 12px !important;
-		white-space: normal !important;
+		white-space: nowrap !important; /* Prevent wrapping of text */
 		text-align: center !important;
 		font-weight: bold;
 		color: black;
 	}
 
+	.ledgerResult {
+		overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
+		width: 100%;
+	}
 	.close-btn {
 		position: absolute;
 		top: 10px;
@@ -194,7 +201,10 @@
 		display: block;
 	}
 
-</style>
+	.mainContainer {
+		width: 97%;
+	}</style>
+
 
 <input id="formId" value="frm201LedgerView" type="hidden" />
 <div class="title">
@@ -234,9 +244,6 @@
 		</div>
 	</div>
 </div>
-
-
-
 
 <div class="dx-fieldset horizontal-container">
 	@(Html.DevExtreme().DateBox()
@@ -464,20 +471,23 @@
 		.Mode(GridEditMode.Row)
 		.AllowUpdating(true)
 		) *@
-		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
-		.OnToolbarPreparing("onToolbarPreparing")
-		.OnCellClick("function(e) { handleCellClick(e); }")
-		.ColumnChooser(cc => cc.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
+		.Height(680) // <<< fixed height
+		.ColumnAutoWidth(true)
+		.Width("98%")
+		.WordWrapEnabled(true)
+		.OnCellClick("function(e) {handleCellClick(e);}")
+		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
-		.ColumnFixing(f => f.Enabled(true))
-		.HeaderFilter(f => f.Visible(false))
-		.Height(600)
-		.FilterRow(f => f.Visible(false))
-		.GroupPanel(p => p.Visible(false))
+		.ColumnFixing(fixing => fixing.Enabled(true))
+		.HeaderFilter(filter => filter.Visible(false))
+		.Paging(p => p.Enabled(false))
+		.Pager(pager => pager.Visible(false))
+		.Grouping(grouping => grouping.AutoExpandAll(true))
+		.FilterRow(filterRow => filterRow.Visible(false))
+		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
 		.ShowRowLines(true)
-		.Width("100%")
 		.Summary(summary =>
 		{
 			summary.TotalItems(totalItems =>
