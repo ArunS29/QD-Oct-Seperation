@@ -61,6 +61,15 @@
             height: auto;
             margin: 10px auto;
         }
+
+          .fade-out {
+        animation: fadeOut 0.5s ease forwards;
+    }
+
+    @@keyframes fadeOut {
+        from { opacity: 1; }
+        to { opacity: 0; }
+    }
     </style>
 </head>
 <body>
@@ -146,14 +155,20 @@
 
                 if (selectedCategory === "insert") {
                     if (confirm("Do you want to open a new template creation page?")) {
-                        window.open(
-                            "/Pages/TemplateCreate",
-                            "TemplateWindow",
-                            "width=900,height=700,resizable=yes,scrollbars=yes,status=no,location=no,toolbar=no,menubar=no,left=100,top=100"
-                        );
+                        document.body.classList.add("fade-out");
+
+                        // Delay to allow fade-out before opening the window
+                        setTimeout(() => {
+                            window.open(
+                                "/Pages/TemplateCreate",
+                                "TemplateWindow",
+                                "width=900,height=700,resizable=yes,scrollbars=yes,status=no,location=no,toolbar=no,menubar=no,left=100,top=100"
+                            );
+                        }, 500); // match animation duration
                     }
                     return;
                 }
+
             
 
 
