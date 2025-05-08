@@ -3607,6 +3607,30 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
 			return new JsonResult(new { success = false, message = "Invalid tenant." });
 		}
+
+		[HttpGet]
+		public async Task<IActionResult> Getcountrycode()
+		{
+			try
+			{
+				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+				{
+					var result = await dbContext.Tbl00107CountryCodes
+					.Select(g => new
+					{
+						g.CountryCodeNumeric,
+						g.CountryName,
+						g.CountryCodeAlpha2
+					})
+					.ToListAsync();
+
+					return Ok(result);
+				}
+			}
+			catch (Exception ex) { throw ex; }
+			return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+		}
 	}
 }
 
