@@ -1,4 +1,4 @@
-﻿@page
+@page
 @model QD.ERP.Web.Areas.IMS.Pages.MaterialRequestEnquiriesDetailsModel
 @{
 }
@@ -316,28 +316,28 @@
 				band.AddFor(m => m.IsSubmitted).Caption(new JS("formatMessage('Is Submitted')")).Alignment(HorizontalAlignment.Center).AllowEditing(true)
 			.CellTemplate(@<text>
 		<div class="dx-icon">
-			<%= data.IsSubmitted ? '<i style="color:red" class="fa fa-toggle-on"></i>' : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
+			<%= data.IsSubmitted ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
 		</div>
 	</text>)
 		.Visible(true);
 				band.AddFor(m => m.IsVerified).Caption(new JS("formatMessage('Is Verified')")).Alignment(HorizontalAlignment.Center).AllowEditing(true)
 			.CellTemplate(@<text>
 		<div class="dx-icon">
-			<%= data.IsVerified ? '<i style="color:red" class="fa fa-toggle-on"></i>' : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
+			<%= data.IsVerified ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
 		</div>
 	</text>)
 		.Visible(true);
 				band.AddFor(m => m.IsApproved).Caption(new JS("formatMessage('Is Approved')")).Alignment(HorizontalAlignment.Center).AllowEditing(true)
 			.CellTemplate(@<text>
 		<div class="dx-icon">
-			<%= data.IsApproved ? '<i style="color:red" class="fa fa-toggle-on"></i>' : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
+			<%= data.IsApproved ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
 		</div>
 	</text>)
 		.Visible(true);
 				band.AddFor(m => m.IsCancelled).Caption(new JS("formatMessage('Is Cancelled')")).Alignment(HorizontalAlignment.Center).AllowEditing(true)
 			.CellTemplate(@<text>
 		<div class="dx-icon">
-			<%= data.IsCancelled ? '<i style="color:red" class="fa fa-toggle-on"></i>' : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
+			<%= data.IsCancelled ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
 		</div>
 	</text>
 		)
@@ -512,7 +512,7 @@
 </ul>
 <div id="overlay" class="overlay">
 	<div class="overlay-content">
-		<span class="close-btn" onclick="closeOverlay()">×</span>
+		<span class="close-btn" onclick="closeOverlay()">&times;</span>
 		<iframe id="overlay-frame" src="" frameborder="0"></iframe>
 	</div>
 </div>

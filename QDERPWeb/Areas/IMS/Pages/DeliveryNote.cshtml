@@ -242,7 +242,7 @@
 				subColumns.AddFor(m => m.DeliveryNoteNo).Caption("Delivery Note No").Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.DeliveryDate).Caption("Delivery Date").Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
 				subColumns.AddFor(m => m.DeliveryIssuedTo).Caption("Delivery Issued To").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Mprno).Caption("Mpr no").Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
+				subColumns.AddFor(m => m.Mprno).Caption("Mpr no").Alignment(HorizontalAlignment.Center).Visible(true);
 			});
 			columns.Add().Caption("Delivery To Client").Columns(subColumns =>
 			{
