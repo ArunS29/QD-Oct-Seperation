@@ -748,28 +748,31 @@
                     .Width("100%"))
             </td>
 			
-			<td>
-    @(Html.DevExtreme().DropDownBox()
-        .ID("CountryCode")
-        .Label(new JS("formatMessage('Country Code:')"))
-        .LabelMode(EditorLabelMode.Outside)
-        .DataSource(d => d.WebApi()
-            .Controller("VATModule")
-            .LoadAction("Getcountrycode")
-            .LoadMode(DataSourceLoadMode.Raw)
-            .Key("CountryCodeNumeric")
-        )
-        .ValueExpr("CountryCodeNumeric")
-        .DisplayExpr("CountryName")
-        .ShowClearButton(true)
-        .AcceptCustomValue(false) 
-        .OpenOnFieldClick(false)
-        .Value(null)
-        .DropDownOptions(o => o.Width(1000))
-        .ContentTemplate(new TemplateName("countrycode"))
-        .Width("100%")
-    )
-</td>
+	<td>
+@* 									@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Other ID Type')")).ID("OtherIDType").LabelMode(EditorLabelMode.Outside))
+ *@								
+ 	@(Html.DevExtreme().DropDownBox()
+																	.Label(new JS("formatMessage('Country Code:')"))
+																	.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("Getcountrycode").LoadMode(DataSourceLoadMode.Raw).Key("CountryCodeAlpha2"))
+																	.LabelMode(EditorLabelMode.Outside)
+																	.ID("CountryCodeNumeric")
+																	.ShowClearButton(true)
+																	.AcceptCustomValue(true)
+																	.OpenOnFieldClick(false)
+																	.ValueChangeEvent("input")
+																	.HoverStateEnabled(true)
+																	.Value(null)
+																	.ValueExpr("CountryCodeAlpha2")
+																	.DisplayExpr("CountryCodeAlpha2")
+																	.Width("100%")
+																	.TabIndex(1)
+																	.DropDownOptions(o => o.Width(1000))
+																	.OnKeyDown("onKeyDown")
+																	.ContentTemplate(new TemplateName("countrycode"))
+																	)
+								</td>
+
+
 
         </tr>
 
@@ -2858,23 +2861,36 @@
             .Controller("VATModule")
             .LoadAction("Getcountrycode")
             .LoadMode(DataSourceLoadMode.Raw)
-            .Key("CountryCodeNumeric") // Must match DropDownBox Key
+            .Key("CountryCodeAlpha2")
         )
+        .WordWrapEnabled(true)
+        .ShowBorders(true)
+        .ShowColumnHeaders(true)
+        .FilterRow(f => f.Visible(true))
+        .SearchPanel(sp => sp.HighlightSearchText(true))
+        .Selection(sl => sl.Mode(SelectionMode.Single))
+        .HeaderFilter(p => p.Visible(false))
+        .ShowBorders(true)
+        .HoverStateEnabled(true)
+        .Paging(p => p.PageSize(15))
+        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+        .Height(200)
         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
         .Columns(columns =>
         {
-            columns.Add().DataField("CountryName")
+						 columns.Add().DataField("CountryName")
                 .Caption(new JS("formatMessage('CountryName')"))
                 .Alignment(HorizontalAlignment.Center);
 
             columns.Add().DataField("CountryCodeAlpha2")
                 .Caption(new JS("formatMessage('CountryCodeAlpha2')"))
                 .Alignment(HorizontalAlignment.Center);
-        })
-        .OnSelectionChanged("dataGridSelectionChanged") // Updated handler name
-        .OnInitialized("dataGridInitialized") 
+					})
+        .OnSelectionChanged("dataGridSelectionabc")   
+       @*  .OnInitialized("onCountryGridInitialized")   *@
     )
 }
+
 
 
 @using (Html.DevExtreme().NamedTemplate("CreditNoteContentTemplate"))
@@ -5111,6 +5127,29 @@
 
 			}
 
+
+			 function dataGridSelectionabc(e) {
+				const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+				const ddbInstance = $("#CountryCodeNumeric").dxDropDownBox("instance");
+
+				if (selectedKey) {
+					ddbInstance.option("value", selectedKey);
+						ddbInstance.close();
+				}
+			  if(IsCurrent!="true")
+				{
+				var selectedRowData = $("#clientname").dxDataGrid("instance").getSelectedRowsData();
+				  if (selectedRowData.length > 0) {
+								paymentmeanstypecode = selectedRowData[0].PaymentMeansTypeCode;
+
+							} else {
+								DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
+								return;
+							}
+				}
+
+			}
+
 					// Function to handle initialization of the DataGrid (optional)
 	function dataReasonforIssuranceOfGridInitialized(e) {
 		console.log("DataGrid Initialized");
@@ -6007,7 +6046,35 @@
 				// Account Ledger Dropdown Events
 				let dataGrid;
 
+// function onCountryGridInitialized(e) {
+//     console.log("Country grid initialized.");
+// }
+// debugger
 
+// function onCountryGridSelectionChanged(e) {
+//     const selectedKey = e.selectedRowKeys[0]; // The selected value will be CountryCodeAlpha2
+    
+//     // Delay execution slightly to ensure DOM is ready
+//     setTimeout(() => {
+//         const ddbInstance = $("#CountryCode").dxDropDownBox("instance");
+
+//         if (!ddbInstance) {
+//             console.warn("DropDownBox not initialized.");
+//             return;
+//         }
+
+//         if (selectedKey) {
+//             const keyToSet = selectedKey; // Use the CountryCodeAlpha2 directly
+//             ddbInstance.getDataSource().load().done((items) => {
+//                 const match = items.find(x => x.CountryCodeAlpha2 === keyToSet); // Match Alpha2 code
+//                 if (match) {
+//                     ddbInstance.option("value", match.CountryCodeAlpha2); // Bind to CountryCodeAlpha2
+//                     ddbInstance.close();
+//                 }
+//             });
+//         }
+//     }, 100); // Short delay to ensure initialization
+// }
 
 
 
@@ -7443,33 +7510,6 @@ $(function () {
 //     }
 // }
 				// Function to handle initialization of the DataGrid (optional)
-	function dataGridInitialized(e) {
-    console.log("DataGrid Initialized");
-}
-
-function dataGridSelectionChanged(e) {
-    const selectedKey = e.selectedRowKeys[0]; // Get the first selected key
-    const ddbInstance = $("#CountryCode").dxDropDownBox("instance");
-
-    if (selectedKey) {
-        // Ensure the DropDownBox data is loaded before setting value
-        ddbInstance.getDataSource().load().done(() => {
-            ddbInstance.option("value", selectedKey);
-            ddbInstance.close();
-        });
-    }
-
-    // Only run this block if IsCurrent is not "true"
-    if (IsCurrent !== "true") {
-        const selectedRowData = $("#clientname").dxDataGrid("instance").getSelectedRowsData();
-        if (selectedRowData.length > 0) {
-            paymentmeanstypecode = selectedRowData[0].PaymentMeansTypeCode;
-        } else {
-            DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
-            return;
-        }
-    }
-}
 
 
 </script>
