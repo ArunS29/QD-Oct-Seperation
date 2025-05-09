@@ -22,6 +22,9 @@
 		<Content Remove="Areas\Finance\Pages\CreditNoteEditForm.cshtml" />
 		<Content Remove="Areas\Finance\Pages\frm20161VATInvoiceEdit.cshtml" />
 		<Content Remove="Areas\Finance\Pages\frmVATInvoiceEditB2C.cshtml" />
+		<Content Remove="Areas\Finance\Pages\InventoryListtoUpload.cshtml" />
+		<Content Remove="Areas\Finance\Pages\InvoiceCostPosting.cshtml" />
+		<Content Remove="Areas\Finance\Pages\InvoiceProfitorLossSummary.cshtml" />
 		<Content Remove="Areas\Finance\Pages\SalesPersonMaster.cshtml" />
 		<Content Remove="Areas\Finance\Pages\SalesPersonorProjectList.cshtml" />
 		<Content Remove="Areas\Finance\Pages\SalesRegisterVAT.cshtml" />

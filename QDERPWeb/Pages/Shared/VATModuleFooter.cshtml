@@ -794,9 +794,13 @@
                 items.Add().Text("Print Simplified TAX Invoice").Icon("file");
                 items.Add().Text("Additional Formats").Icon("folder");
                 items.Add().Text("Edit Sales Voucher").Icon("edit");
-                items.Add().Text("Upload Items from Excel").Icon("upload");
-                items.Add().Text("Profit On Sale").Icon("chart");
-                items.Add().Text("Invoice Cost Posting").Icon("money");
+                items.Add().Text("Upload Items from Excel").Icon("upload").OnClick("navigateInventoryListtoUpload");
+                items.Add()
+                .Text("Profit On Sale")
+                .Icon("chart")
+                .OnClick("navigateToLoss");
+
+                items.Add().Text("Invoice Cost Posting").Icon("money").OnClick("navigateToInvoiceCostPosting");
                 items.Add().Text("Advance / Prepayment Adjustments").Icon("wallet");
             })
             .OnItemClick("addPrintButton_click") 
@@ -941,6 +945,24 @@
                 var url = `/${tenantName}/VAT/VATInvoiceWithDetails`;
             window.location.href = url; // Navigate to the page
         }
+
+    function navigateToLoss() {
+        var invoiceNo = $("#InvoiceNo").dxTextBox("instance").option("value");
+        var url = `/${tenantName}/VAT/InvoiceProfitorLossSummary?invoiceNo=${invoiceNo}`;
+        window.location.href = url;
+    }
+
+    function navigateInventoryListtoUpload() {
+        // Replace with the actual tenant name dynamically
+        var url = `/${tenantName}/VAT/InventoryListtoUpload`;
+        window.location.href = url; // Navigate to the page
+    }
+ 
+    function navigateToInvoiceCostPosting() {
+        var invoiceNo = $("#InvoiceNo").dxTextBox("instance").option("value");
+        var url = `/${tenantName}/VAT/InvoiceCostPosting?invoiceNo=${invoiceNo}`;
+        window.location.href = url;
+    }
 
     function navigateToPurchaseDetails() {
         // Replace with the actual tenant name dynamically
