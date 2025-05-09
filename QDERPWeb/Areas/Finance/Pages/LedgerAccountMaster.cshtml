@@ -1321,10 +1321,11 @@ $("#btnDelete").on("click", function (e) {
 });
 
 
-  function closeForm() {
+    $("#btnmasterBack").on("click", function (e) {
+        e.preventDefault();
       // Hide the form container. You can also use .remove() if you want to remove it from the DOM.
    window.parent.document.getElementById("ledgerAccountMasterModal").style.display = "none";
-  }
+    });
 
 
 </script>

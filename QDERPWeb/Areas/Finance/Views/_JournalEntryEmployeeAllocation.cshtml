@@ -198,6 +198,7 @@
 					.DataSource(new object[] { })
 					.Columns(columns =>
 					{
+						columns.AddFor(m => m.EmployeeAllocationId).Caption("EmployeeAllocation Id").DataField("EmployeeAllocationId").Width(100).AllowEditing(false);
 						columns.AddFor(m => m.EmpAllocDrCr).Caption("Dr/Cr").DataField("DrCr").Width(100).AllowEditing(false);
 						columns.AddFor(m => m.EmployeeNo)
 					.DataField("EmployeeId")
@@ -414,48 +415,33 @@
 
 
 	$(document).ready(function () {
-	// 	// Make an AJAX request to check the condition
-	// 	$.ajax({
-	// 		url: '/api/VoucherEntryReceipts/CheckEmployeeAllocation',
-	// 		method: 'GET',
-	// 		data: { AccountHead: '@accountHead', AccountID: '@accountId' }, // Pass accountHead as a parameter
-	// 		success: function (response) {
-	// 			if (response.isAllocated) {  // Assuming API returns { allowExecution: true/false }
-	// 				employeeinitializePage();  // Call function to execute the necessary logic
-	// 			}
-	// 		},
-	// 		error: function (xhr, status, error) {
-	// 			console.error('Error checking employee allocation:', error);
-	// 		}
-	// 	});
-	// });
-
-	// function employeeinitializePage() {
-		// Capture the initial value of the NumberBox
+		const journalChildNo = parseInt('@voucherEntryNo'.trim(), 10);
 		const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
-
-		// Sample data with initial value of VoucherAmount
-		const costData = [
-			{
-				DrCr: '@drCr',
-				EffectiveDate: new Date().toLocaleDateString('en-GB', {
-					day: 'numeric',
-					month: 'short',
-					year: 'numeric',
-				}),
-				VoucherAmount: initialVoucherAmount.toFixed(2),
-				Remarks: ''
-			}
-		];
-
-		// console.log('Cost Data:', costData);
-
-		// Get the DataGrid instance
+		const drCr = '@drCr';
 		const costdataGrid = $('#AEdataGrid').dxDataGrid('instance');
 
-		if (costdataGrid) {
-			costdataGrid.option('dataSource', costData);
-		}
+		$.ajax({
+			url: `/api/JournalEntryEdit/GetEmployeeAllocationsBydatagrid?journalChildNo=${journalChildNo}`,
+			type: 'GET',
+			success: function (data) {
+				if (data && data.length > 0) {
+					costdataGrid.option('dataSource', data);
+				} else {
+					// No data found – insert a default row
+					const defaultRow = [{
+						DrCr: drCr,
+						EffectiveDate: new Date().toISOString(),
+						VoucherAmount: initialVoucherAmount.toFixed(2),
+						Remarks: '',
+						// default fallback value
+					}];
+					costdataGrid.option('dataSource', defaultRow);
+				}
+			},
+			error: function () {
+				DevExpress.ui.notify("Failed to load cost allocation data.", "error", 4000);
+			}
+		});
 
 		// Function to handle changes to the NumberBox value
 		$('#vAmount').dxNumberBox({
@@ -722,6 +708,7 @@
 		// Append voucherEntryNo to each row
 		let costAllocations = allRowsData.map(row => ({
 			EmpAllocDrCr: row.DrCr,
+			EmployeeAllocationId: row.EmployeeAllocationId || 0,
 			EmployeeNo: row.EmployeeID,
 			EffectiveDate: row.EffectiveDate ? new Date(row.EffectiveDate).toISOString() : null,
 			AmountAllocated: row.VoucherAmount,
@@ -739,8 +726,8 @@
 			contentType: "application/json",
 			data: JSON.stringify(costAllocations),
 			success: function (response) {
-				debugger;
-				// Closepopup();
+				
+				Closepopup();
 				DevExpress.ui.dialog.alert(
 					"Employee Allocation Details updated Successfully.",
 					"Update Successful"
@@ -958,7 +945,7 @@
 					let balanceAmount = oldAmount - newAmount; // Calculate the remaining balance
 
 					// Add new row with the balance amount
-					let newRow = { ...e.oldData, EmployeeName: null, VoucherAmount: balanceAmount };
+					let newRow = { ...e.oldData, EmployeeName: null, VoucherAmount: balanceAmount,EmployeeAllocationId: 0,Remarks:" ",EffectiveDate:new Date() };
 
 					// Add the new row to the grid
 					dataSource.push(newRow);

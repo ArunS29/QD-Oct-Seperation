@@ -839,7 +839,7 @@
                     let balanceAmount = oldAmount - newAmount; // Calculate the remaining balance
 
                     // Add new row with the balance amount
-                    let newRow = { ...e.oldData, CostAllocationUnit: "Common Overheads", VoucherAmount: balanceAmount,CostAllocationId: 0,CostAllocRemarks:null,EffectiveDate:new Date()   };
+                    let newRow = { ...e.oldData, CostAllocationUnit: "Common Overheads", VoucherAmount: balanceAmount,CostAllocationId: 0,Remarks:null,EffectiveDate:new Date()   };
 
                     // Add the new row to the grid
                     dataSource.push(newRow);

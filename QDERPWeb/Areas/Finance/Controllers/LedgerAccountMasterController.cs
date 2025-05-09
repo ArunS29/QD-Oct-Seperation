@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
+using QD.ERP.Web.Service;
 
 //using static DevExpress.Xpo.Helpers.AssociatedCollectionCriteriaHelper;
 
@@ -17,25 +18,33 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
     [ApiController]
     public class LedgerAccountMasterController : Controller
     {
-        private ERPMasterWtDataContext _context;
+		private ERPMasterWtDataContext _context;
+		private readonly TenantDbContextHelper _tenantDbContextHelper;
+		private readonly ILogger<LedgerAccountMasterController> _logger;
 
-        public LedgerAccountMasterController(ERPMasterWtDataContext context)
-        {
-            _context = context;
-        }
+		public LedgerAccountMasterController(ILogger<LedgerAccountMasterController> logger, TenantDbContextHelper tenantDbContextHelper, ERPMasterWtDataContext context)
+		{
+			_tenantDbContextHelper = tenantDbContextHelper;
+			_logger = logger;
+			_context = context;
+		}
 
-        [HttpPost]
+		[HttpPost]
         public async Task<ActionResult> SaveLedgerMasterDetails([FromBody] Tbl201AccountGroup AG)
         {
-            if (AG == null)
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+			if (AG == null)
             {
                 return BadRequest(new { success = false, message = "Invalid data received." });
             }
 
             try
             {
-                _context.Tbl201AccountGroups.Add(AG);
-                await _context.SaveChangesAsync();
+				dbContext.Tbl201AccountGroups.Add(AG);
+                await dbContext.SaveChangesAsync();
                 //return Json(new { VoucherEntryNo = VE.VoucherNo });
                 return Ok(new { success = true, message = "Data inserted successfully!" });
             }
@@ -50,14 +59,18 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpPut]
         public async Task<ActionResult> UpdateLedgerMasterDetails([FromBody] Tbl201AccountGroup AG)
         {
-            if (AG == null || AG.AccountGroupId == null)
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+			if (AG == null || AG.AccountGroupId == null)
             {
                 return BadRequest(new { success = false, message = "Invalid data received." });
             }
 
             try
             {
-                var existingRecord = await _context.Tbl201AccountGroups.FindAsync(AG.AccountGroupId);
+                var existingRecord = await dbContext.Tbl201AccountGroups.FindAsync(AG.AccountGroupId);
 
                 if (existingRecord == null)
                 {
@@ -77,8 +90,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 existingRecord.RecordModifiedBy = AG.RecordModifiedBy;
                 existingRecord.RecordModifiedOn = AG.RecordModifiedOn;
 
-                _context.Tbl201AccountGroups.Update(existingRecord);
-                await _context.SaveChangesAsync();
+                dbContext.Tbl201AccountGroups.Update(existingRecord);
+                await dbContext.SaveChangesAsync();
 
                 return Ok(new { success = true, message = "Data updated successfully!" });
             }
@@ -92,8 +105,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpGet]
         public async Task<ActionResult> GetAccountMaster(DataSourceLoadOptions loadOptions)
         {
-
-            var qryListOfAccountlists = _context.Tbl201MasterGroups.Select(i => new
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+			var qryListOfAccountlists = dbContext.Tbl201MasterGroups.Select(i => new
 
             {
                 i.MasterGroupId,
@@ -112,8 +128,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpGet]
         public async Task<ActionResult> GetAccountMasterArabic(DataSourceLoadOptions loadOptions)
         {
-
-            var qryListOfAccountlists = _context.Tbl201MasterGroups.Select(i => new
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+			var qryListOfAccountlists = dbContext.Tbl201MasterGroups.Select(i => new
 
             {
                 i.MasterGroupId,
@@ -175,7 +194,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpGet]
         public async Task<ActionResult> GetAccountGroupId(DataSourceLoadOptions loadOptions)
         {
-            string voucherString = "A";
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+			string voucherString = "A";
             string strNewReceiptNo;
 
             string likePattern = voucherString + "%";
@@ -183,7 +206,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             try
             {
                 // Execute the raw SQL query with interpolated parameters
-                var result = await _context.Set<AccountMasterResult>()
+                var result = await dbContext.Set<AccountMasterResult>()
                     .FromSqlInterpolated($@"
                 SELECT MAX(CAST(RIGHT(AccountGroupID, 3) AS INT)) AS MaxAccountGroupID
                 FROM tbl201AccountGroups
@@ -215,12 +238,16 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpGet]
         public async Task<ActionResult> GetAccountMasterAR(string MasterGroup)
         {
-            try
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+			try
             {
                 if (string.IsNullOrEmpty(MasterGroup))
                     return BadRequest("MasterGroup parameter is required.");
 
-                var result = await _context.Tbl201MasterGroups
+                var result = await dbContext.Tbl201MasterGroups
                     .Where(x => x.MasterGroup == MasterGroup)
                     .Select(x => new {
                         x.MasterGroupId,
@@ -244,8 +271,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpGet]
         public async Task<ActionResult> GetDocumentType(DataSourceLoadOptions loadOptions)
         {
-
-            var qryListOfAccountlists = _context.Tbl101DocumentTypes.Select(i => new
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+			var qryListOfAccountlists = dbContext.Tbl101DocumentTypes.Select(i => new
 
             {
                 i.DocumentTypeId,
@@ -260,9 +290,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpGet]
         public async Task<ActionResult> GetPaymentAccounts(DataSourceLoadOptions loadOptions)
         {
-
-            //var qryListOfAccountlists = _context.QryCashAndBankAccounts.Where(p => p.AccountGroupId != null).Select(i => new
-            var qryListOfAccountlists = _context.Qry201ListOfAccounts.Where(p => p.AccountId != null).Select(i => new
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+			//var qryListOfAccountlists = _context.QryCashAndBankAccounts.Where(p => p.AccountGroupId != null).Select(i => new
+			var qryListOfAccountlists = dbContext.Qry201ListOfAccounts.Where(p => p.AccountId != null).Select(i => new
             {
                 i.MasterGroupId,
                 i.MasterGroup,
@@ -281,10 +314,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpGet]
         public async Task<ActionResult> GetEmployeeDetails(DataSourceLoadOptions loadOptions)
         {
-
-            //var qryListOfAccountlists = _context.QryCashAndBankAccounts.Where(p => p.AccountGroupId != null).Select(i => new
-            var result = (from balance in _context.Qry20167SalaryLedgerPayableBalances
-                          join employee in _context.Tbl101Employees
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+			//var qryListOfAccountlists = _context.QryCashAndBankAccounts.Where(p => p.AccountGroupId != null).Select(i => new
+			var result = (from balance in dbContext.Qry20167SalaryLedgerPayableBalances
+                          join employee in dbContext.Tbl101Employees
                           on balance.EmployeeNo equals employee.EmployeeId into empGroup
                           from emp in empGroup.DefaultIfEmpty() // LEFT OUTER JOIN
                           group new { balance, emp } by new { balance.EmployeeNo, balance.EmployeeName, emp.NationalId } into grouped
@@ -306,7 +342,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpPost]
         public async Task<ActionResult> AddDocumentsEntry(DataSourceLoadOptions loadOptions, [FromBody] Tbl20116LedgerDocument documentdetails, string DocumentType)
         {
-            if (documentdetails == null)
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+			if (documentdetails == null)
             {
                 return BadRequest(new { success = false, message = "Invalid data received." });
             }
@@ -317,12 +357,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 var newDocumentNo = await GenerateDocumentNoAsync();
                 documentdetails.DocumentNo = newDocumentNo;
 
-                // Add the new document entry to the database.
-                _context.Tbl20116LedgerDocuments.Add(documentdetails);
-                await _context.SaveChangesAsync();
+				// Add the new document entry to the database.
+				dbContext.Tbl20116LedgerDocuments.Add(documentdetails);
+                await dbContext.SaveChangesAsync();
 
                 // Query to fetch and return the newly added document details.
-                var qryListOfAccountlists = _context.Tbl20116LedgerDocuments
+                var qryListOfAccountlists = dbContext.Tbl20116LedgerDocuments
                     .Where(p => p.DocumentRefNo == documentdetails.DocumentRefNo)
                     .Select(i => new
                     {
@@ -347,7 +387,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpPost]
         public async Task<ActionResult> AddAssetDocumentsEntry(DataSourceLoadOptions loadOptions, [FromBody] Tbl20108AssetDocument documentdetails, string DocumentType)
         {
-            const string voucherPrefix = "L00"; // Constant for the voucher prefix
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+			const string voucherPrefix = "L00"; // Constant for the voucher prefix
             if (documentdetails == null)
             {
                 return BadRequest(new { success = false, message = "Invalid data received." });
@@ -360,7 +404,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 documentdetails.DocumentNo = newDocumentNo;
 
                 // SQL query with interpolated string to fetch the max voucher number
-                var result = await _context.VoucherResults
+                var result = await dbContext.VoucherResults
       .FromSqlInterpolated($@"
         SELECT CAST(RIGHT(AssetLedgerNo, 3) AS INT) AS MaxVoucherNo
         FROM Tbl20108AssetDocuments
@@ -378,13 +422,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 documentdetails.AssetLedgerNo = voucherPrefix + newVoucherNo;
 
                 // Add the new document entry to the database
-                _context.Tbl20108AssetDocuments.Add(documentdetails);
-                await _context.SaveChangesAsync();
+                dbContext.Tbl20108AssetDocuments.Add(documentdetails);
+                await dbContext.SaveChangesAsync();
 
-                var qryListOfAccountlists = _context.Tbl20108AssetDocuments
+                var qryListOfAccountlists = dbContext.Tbl20108AssetDocuments
           .Where(p => p.DocumentRefNo == documentdetails.DocumentRefNo)
           .Join(
-              _context.Tbl101DocumentTypes,
+              dbContext.Tbl101DocumentTypes,
               document => document.DocumentType,
               docType => docType.DocumentTypeId,
               (document, docType) => new
@@ -415,7 +459,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateDocument(DataSourceLoadOptions loadOptions, [FromBody] Tbl20116LedgerDocument updatedDocument)
         {
-            try
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+			try
             {
 
 
@@ -426,7 +474,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
                 //  Find the existing document by DocumentNo
-                var document = await _context.Tbl20116LedgerDocuments
+                var document = await dbContext.Tbl20116LedgerDocuments
                     .FirstOrDefaultAsync(d => d.DocumentNo == updatedDocument.DocumentNo);
 
                 //if (document == null)
@@ -445,7 +493,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 //// Save changes to the database
                 //await _context.SaveChangesAsync();
 
-                var qryListOfAccountlists = _context.Tbl20116LedgerDocuments.Where(p => p.DocumentNo == document.DocumentNo).Select(i => new
+                var qryListOfAccountlists = dbContext.Tbl20116LedgerDocuments.Where(p => p.DocumentNo == document.DocumentNo).Select(i => new
                 {
                     i.DocumentNo,
                     i.DocumentType,
@@ -471,7 +519,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateAssetDocument(DataSourceLoadOptions loadOptions, [FromBody] Tbl20116LedgerDocument updatedDocument)
         {
-            try
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+			try
             {
                 if (updatedDocument == null)
                 {
@@ -479,7 +531,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 }
 
                 // Find the existing document by DocumentNo
-                var document = await _context.Tbl20108AssetDocuments
+                var document = await dbContext.Tbl20108AssetDocuments
                     .FirstOrDefaultAsync(d => d.DocumentNo == updatedDocument.DocumentNo);
 
                 // Check if the document exists
@@ -489,7 +541,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 }
 
                 // Query the list of account lists
-                var qryListOfAccountlists = _context.Tbl20108AssetDocuments
+                var qryListOfAccountlists = dbContext.Tbl20108AssetDocuments
                     .Where(p => p.DocumentNo == document.DocumentNo)
                     .Select(i => new
                     {
@@ -555,7 +607,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpPost]
         public async Task<ActionResult> AddEmployeeEntry(DataSourceLoadOptions loadOptions, [FromBody] Tbl20114SalaryPayableMaster salarydetails, string EmployeeName)
         {
-            if (salarydetails == null)
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+			if (salarydetails == null)
             {
                 return BadRequest(new { success = false, message = "Invalid data received." });
             }
@@ -563,7 +619,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             try
             {
                 // Validate EmployeeNo
-                var employeeInfo = _context.Qry20167SalaryLedgerPayableBalances
+                var employeeInfo = dbContext.Qry20167SalaryLedgerPayableBalances
                     .Where(s => s.EmployeeNo == EmployeeName)
                     .Select(s => new
                     {
@@ -583,13 +639,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 salarydetails.ReferenceNo = employeeInfo.ReferenceNo;
 
                 // Add entries to the database
-                _context.Tbl20114SalaryPayableMasters.Add(salarydetails);
+                dbContext.Tbl20114SalaryPayableMasters.Add(salarydetails);
 
                 // Save changes
-                await _context.SaveChangesAsync();
+                await dbContext.SaveChangesAsync();
 
                 // Query the updated list
-                var qryListOfAccountlists = _context.Tbl20114SalaryPayableMasters
+                var qryListOfAccountlists = dbContext.Tbl20114SalaryPayableMasters
                     .Where(p => p.EmployeeNo == salarydetails.EmployeeNo
                                 && p.ReferenceNo == salarydetails.ReferenceNo
                                 && p.ReferenceType == salarydetails.ReferenceType
@@ -619,14 +675,18 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAgainstPayable([FromQuery] string inputParameter)
         {
-            if (string.IsNullOrEmpty(inputParameter))
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+			if (string.IsNullOrEmpty(inputParameter))
             {
                 Console.WriteLine("Error: inputParameter is null or empty.");
                 return BadRequest("inputParameter cannot be null or empty");
             }
             try
             {
-                var result = _context.Qry20167SalaryLedgerPayableBalances
+                var result = dbContext.Qry20167SalaryLedgerPayableBalances
                     .Where(s => s.EmployeeNo == inputParameter)
                     .Select(s => new
                     {
@@ -650,7 +710,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadFile(IFormFile file)
         {
-            try
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+			try
             {
                 if (file == null || file.Length == 0)
                 {
@@ -718,7 +782,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
         private async Task<string> GenerateDocumentNoAsync()
         {
-            string documentNo = "1"; // Default value if no records exist.
+			
+			string documentNo = "1"; // Default value if no records exist.
             int newAccountGroupID;
 
             try
@@ -789,9 +854,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpGet]
         public IActionResult GetAccountLedgerUnder(string AccountGroupUnder)
         {
-            try
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+			try
             {
-                var masterGroup = _context.Tbl201MasterGroups
+                var masterGroup = dbContext.Tbl201MasterGroups
                                 .Where(m => m.MasterGroupId == AccountGroupUnder)
                                 .Select(m => m.MasterGroup)
                                 .FirstOrDefault();
@@ -816,11 +885,15 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpGet]
         public IActionResult GetAccountGroupUnderID(string id)
         {
-            try
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+			try
             {
 
                 // Query the database for the specified AccountGroupID
-                var accountGroupUnder = _context.Tbl201AccountGroups
+                var accountGroupUnder = dbContext.Tbl201AccountGroups
                     .Where(ag => ag.AccountGroupId == id)
                     .Select(ag => ag.AccountGroupUnder)
                     .FirstOrDefaultAsync();
@@ -843,8 +916,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpPost]
         public async Task<ActionResult> DeleteLedgerMasterDetails(string accountGroupId)
         {
-            // Look up the record in your DbContext
-            var record = await _context.Tbl201AccountGroups.FindAsync(accountGroupId);
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+			// Look up the record in your DbContext
+			var record = await dbContext.Tbl201AccountGroups.FindAsync(accountGroupId);
             if (record == null)
             {
                 return NotFound(new { success = false, message = "Record not found." });
@@ -852,8 +929,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             try
             {
-                _context.Tbl201AccountGroups.Remove(record);
-                await _context.SaveChangesAsync();
+				dbContext.Tbl201AccountGroups.Remove(record);
+                await dbContext.SaveChangesAsync();
                 return Ok(new { success = true, message = "Record deleted successfully!" });
             }
             catch (Exception ex)
@@ -866,9 +943,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpGet]
         public IActionResult GetAccountGroups()
         {
-            try
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+			try
             {
-                var accountGroups = _context.Tbl201AccountGroups
+                var accountGroups = dbContext.Tbl201AccountGroups
                     .Select(a => new
                     {
                         a.AccountGroupId,
@@ -892,9 +973,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpGet]
         public IActionResult GetAccountGroupsData(string AccountGroupId)
         {
-            try
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+			try
             {
-                var accountGroup = _context.Tbl201AccountGroups
+                var accountGroup = dbContext.Tbl201AccountGroups
                     .Where(a => a.AccountGroupId == AccountGroupId)
                     .Select(a => new
                     {

@@ -4920,9 +4920,17 @@ function syncSupVATNumbers(e) {
 
       function PageClose() {
 
-            window.parent.$("#ledgerAccountPopup").dxPopup("instance").hide();
-          window.parent.$("#popupContainer").dxPopup("instance").hide();
-         window.parent.$("#ledgerEditAccountPopup").dxPopup("instance").hide();
+        var ledgerAccountPopup = window.parent.$("#ledgerAccountPopup").dxPopup("instance");
+        if (ledgerAccountPopup) {
+            ledgerAccountPopup.hide();
+        }
+
+        var ledgerEditAccountPopup = window.parent.$("#ledgerEditAccountPopup").dxPopup("instance");
+        if (ledgerEditAccountPopup) {
+            ledgerEditAccountPopup.hide();
+        }
+
+        window.parent.$("#popupContainer").dxPopup("instance").hide();
       }
         
 

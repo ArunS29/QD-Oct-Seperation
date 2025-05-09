@@ -251,23 +251,7 @@
             .OnClick("toggleGroupPanel")
             )
     </div>
-    <div>
-    @(Html.DevExtreme().DropDownButton()
-        .ID("btnReport")
-        .Text("Report")
-        .Icon("report")
-        .Width(180)
-        .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text("ShowAllCreditors").Icon("search");
-                items.Add().Text("ShowAllDebtors").Icon("search");
-            })
-            .OnItemClick("handleReportClick")
-        .ShowArrowIcon(true)
-            
-        )
-</div>
+   
 </div>
 
 

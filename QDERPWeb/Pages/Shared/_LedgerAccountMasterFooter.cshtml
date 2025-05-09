@@ -82,11 +82,11 @@
         )
 
     @(Html.DevExtreme().Button()
-        .ID("btnBack")
+        .ID("btnmasterBack")
     .Text("Close")
     .Icon("arrowleft")
     .ElementAttr(new { @class = "bold-button" })
-    .OnClick("closeForm")  // Attach the click event handler
+     // Attach the click event handler
 )
 
   @*   @(Html.DevExtreme().Button()
@@ -297,6 +297,9 @@
             reader.readAsText(file);
         }
     });
-
+    function closeForm() {
+        // Hide the form container. You can also use .remove() if you want to remove it from the DOM.
+        window.parent.document.getElementById("ledgerAccountMasterModal").style.display = "none";
+    }
   
 </script>

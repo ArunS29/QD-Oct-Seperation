@@ -634,7 +634,7 @@
         });
 
         function editVoucher() {
-            if (selectedVoucherNos.length !== 1) {
+            if (selectedVoucherNos.length === 0) {
                 DevExpress.ui.notify("Please select exactly one voucher to edit.", 2000);
                 return;
             }
