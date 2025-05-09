@@ -1,4 +1,4 @@
-﻿namespace QD.ERP.Web.Areas.VAT.PERFORMINVOICES
+﻿namespace QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices
 {
     partial class PreviewInvoice
     {

@@ -114,6 +114,10 @@ namespace QD.ERP.Web.Pages
                 {
                     Report = new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.PreviewInvoiceEnglish(invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
                 }
+                else if (reportName == "PreviewInvoice")
+                {
+                    Report = new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.PreviewInvoice(invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
+                }
 
                 return Page();
             }
