@@ -15,6 +15,7 @@ using System.IO;
 using System.Linq;
 using QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims;
 using ERPMasterWtDataContext = QD.ERP.Web.DAL.Entities.ERPMasterWtDataContext;
+using QD.ERP.Web.Areas.VAT.Reports.VATCreditNote;
 
 
 namespace QD.ERP.Web.Pages
@@ -33,7 +34,7 @@ namespace QD.ERP.Web.Pages
         public string VoucherNo { get; private set; }
         public string ReportName { get; private set; }
 
-        public IActionResult OnGet(string reportName, string voucherNo, string invoiceNo, bool isApproved)
+        public IActionResult OnGet(string reportName, string voucherNo, string invoiceNo, bool isApproved, string CreditNoteNo, string DebitNoteNo)
         {
             if (string.IsNullOrEmpty(reportName))
             {
@@ -118,6 +119,48 @@ namespace QD.ERP.Web.Pages
                 {
                     Report = new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.PreviewInvoice(invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
                 }
+
+                return Page();
+            }
+
+            if (reportName == "CreditForeignCurrency")
+            {
+                if (string.IsNullOrEmpty(CreditNoteNo))
+                {
+                    return BadRequest("Invoice No is required for invoice reports.");
+                }
+
+                CreditNoteNo = CreditNoteNo;
+
+                if (reportName == "CreditForeignCurrency")
+                {
+                    Report = new QD.ERP.Web.Areas.VAT.Reports.VATCreditNote.CreditForeignCurrency(
+                        CreditNoteNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
+                }
+               
+       
+
+                return Page();
+            }
+
+
+
+            if (reportName == "DebitNoteView")
+            {
+                if (string.IsNullOrEmpty(DebitNoteNo))
+                {
+                    return BadRequest("Invoice No is required for invoice reports.");
+                }
+
+                DebitNoteNo = DebitNoteNo;
+
+                if (reportName == "DebitNoteView")
+                {
+                    Report = new QD.ERP.Web.Areas.VAT.Reports.VATDebitNote.DebitNoteView(
+                        CreditNoteNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
+                }
+
+
 
                 return Page();
             }

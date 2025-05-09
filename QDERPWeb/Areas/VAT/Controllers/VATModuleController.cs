@@ -3586,66 +3586,61 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
 			return Unauthorized("Unable to fetch tenant information.");
 		}
-        //[HttpGet("{debitNoteNo}")]
-        //public async Task<ActionResult> GetDebitNoteApprovalStatus(string debitNoteNo)
-        //{
-        //    if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-        //    {
-        //        try
-        //        {
-        //            // Query the approval status from Tbl20172VatdebitNoteMasters
-        //            var debitNote = await dbContext.Tbl20172VatdebitNoteMasters
-        //                .Where(dn => dn.DebitNoteNo == debitNoteNo)
-        //                .FirstOrDefaultAsync();
-
-        //            if (debitNote == null)
-        //            {
-        //                return Ok(new { isApproved = false }); // Return false if not found
-        //            }
-
-        //            // Return the approval status
-        //            return Ok(new { isApproved = debitNote.IsApproved ?? false });
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            _logger.LogError($"Error fetching approval status for debit note {debitNoteNo}: {ex.Message}");
-        //            return StatusCode(500, $"Internal server error: {ex.Message}");
-        //        }
-        //    }
-
-        //    return Unauthorized("Unable to fetch tenant information.");
-        //}
-
-        [HttpGet("{debitNoteNo}")]
-        public async Task<IActionResult> GetDebitNoteApprovalStatus(string debitNoteNo)
+        [HttpGet("{CreditNoteNo}")]
+        public async Task<ActionResult> GetCreditNoteApprovalStatus(string CreditNoteNo)
         {
-            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                _logger.LogWarning("Tenant context could not be resolved.");
-                return Unauthorized("Unable to fetch tenant information.");
-            }
-
-            try
-            {
-                var debitNote = await dbContext.Tbl20172VatdebitNoteMasters
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(d => d.DebitNoteNo == debitNoteNo);
-
-                if (debitNote == null)
+                try
                 {
-                    _logger.LogInformation($"Debit note not found: {debitNoteNo}");
-                    return NotFound(new { message = "Debit note not found", isApproved = false });
-                }
+                    var invoice = await dbContext.Tbl20170VatcreditNoteMasters
+                        .Where(i => i.CreditNoteNo == CreditNoteNo)
+                        .FirstOrDefaultAsync();
 
-                bool isApproved = debitNote.IsApproved ?? false;
-                return Ok(new { isApproved });
+                    if (invoice == null)
+                    {
+                        return Ok(new { isApproved = false }); // Safe fallback
+                    }
+
+                    return Ok(new { isApproved = invoice.IsApproved ?? false });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error fetching approval status for CreditNoteNo {CreditNoteNo}: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error fetching approval status for debit note {debitNoteNo}");
-                return StatusCode(500, new { message = "Internal server error", error = ex.Message });
-            }
+
+            return Unauthorized("Unable to fetch tenant information.");
         }
+        [HttpGet("{DebitNoteNo}")]
+        public async Task<ActionResult> GetDebitNoteApprovalStatus(string DebitNoteNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var invoice = await dbContext.Tbl20172VatdebitNoteMasters
+                        .Where(i => i.DebitNoteNo == DebitNoteNo)
+                        .FirstOrDefaultAsync();
+
+                    if (invoice == null)
+                    {
+                        return Ok(new { isApproved = false }); // Safe fallback
+                    }
+
+                    return Ok(new { isApproved = invoice.IsApproved ?? false });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error fetching approval status for CreditNoteNo {DebitNoteNo}: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized("Unable to fetch tenant information.");
+        }
+
 
 
         [HttpGet]
