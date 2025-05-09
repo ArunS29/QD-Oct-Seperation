@@ -916,7 +916,7 @@
             this.xrLabel96.StylePriority.UseForeColor = false;
             this.xrLabel96.StylePriority.UseTextAlignment = false;
             this.xrLabel96.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft;
-            this.xrLabel96.BeforePrint += new DevExpress.XtraReports.UI.BeforePrintEventHandler(this.xrLabel96_BeforePrint);
+            //this.xrLabel96.BeforePrint += new DevExpress.XtraReports.UI.BeforePrintEventHandler(this.xrLabel96_BeforePrint);
             // 
             // xrLabel95
             // 
