@@ -90,27 +90,52 @@
     <table class="form-table">
         <tr>
             <td>
-                <h6 class="highlight">Copy User Access Permissions From One User Account to Other User Account</h6>
+                <h6 class="highlight"><u>Copy User Access Permissions From One User Account to Other User Account</u></h6>
             </td>
 
         </tr>
         <tr>
             <td>
-                @(Html.DevExtreme().TextBox()
+                @(Html.DevExtreme().SelectBox()
                     .ID("ReplicateUserPermissions")
                     .Label("Replicate User Access Permissions From the User")
-                    .Width("100%")
-                    .LabelMode(EditorLabelMode.Outside))
+                    .DataSource(ds => ds.WebApi()
+                    .Controller("Utility")
+                    .LoadAction("Getuserdetails")
+                    .LoadMode(DataSourceLoadMode.Raw))
+                    .DisplayExpr("UserName")
+                    .ValueExpr("UserId")
+                    .SearchEnabled(true)
+                    .ShowClearButton(true)
+                    .Placeholder("Select User")
+                    .Label("User")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Width(400)
+                    )
+
+               
             </td>
             
         </tr>
         <tr>
             <td>
-                @(Html.DevExtreme().TextBox()
+                @(Html.DevExtreme().SelectBox()
                     .ID("ToThisUserAccount")
                     .Label("To This User Account")
-                    .Width("100%")
-                    .LabelMode(EditorLabelMode.Outside))
+                    .DataSource(ds => ds.WebApi()
+                    .Controller("Utility")
+                    .LoadAction("Getuserdetails")
+                    .LoadMode(DataSourceLoadMode.Raw))
+                    .DisplayExpr("UserName")
+                    .ValueExpr("UserId")
+                    .SearchEnabled(true)
+                    .ShowClearButton(true)
+                    .Placeholder("Select User")
+                    .Label("User")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Width(400)
+                    )
+
             </td>
         </tr>
         <tr>

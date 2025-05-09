@@ -17,6 +17,7 @@ public partial class ERPMasterWtDataContext : DbContext
     public virtual DbSet<CurrencyMaster> CurrencyMasters { get; set; }
 
     public virtual DbSet<Language> Languages { get; set; }
+    public virtual DbSet<TblUserAccessWeb> TblUserAccessWebs { get; set; }
 
     public virtual DbSet<A01CheckIfAnyCostEntriesOrphan> A01CheckIfAnyCostEntriesOrphans { get; set; }
 
@@ -51683,6 +51684,24 @@ public partial class ERPMasterWtDataContext : DbContext
             entity.Property(e => e.SplOvertimeRate).HasColumnType("money");
             entity.Property(e => e.SupplierCommissionRate).HasColumnType("money");
             entity.Property(e => e.TransportAllowance).HasColumnType("money");
+        });
+        modelBuilder.Entity<TblUserAccessWeb>(entity =>
+        {
+            entity.HasKey(e => e.SlNo);  
+
+            entity.ToTable("tblUserAccessWeb");
+
+            entity.Property(e => e.SlNo).ValueGeneratedOnAdd();
+            entity.Property(e => e.UserId).HasColumnName("UserID");
+            entity.Property(e => e.ItemDescription).IsUnicode(false);
+            entity.Property(e => e.ItemForm).IsUnicode(false);
+            entity.Property(e => e.ItemName).IsUnicode(false);
+            entity.Property(e => e.ItemNotes).IsUnicode(false);
+            entity.Property(e => e.ItemRemarks).IsUnicode(false);
+            entity.Property(e => e.Module).IsUnicode(false);
+            entity.Property(e => e.GroupSlNo).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.ItemSlNo).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.MasterSlNo).HasColumnType("decimal(18, 0)");
         });
 
         modelBuilder.Entity<Tbl101ContractPeriod>(entity =>

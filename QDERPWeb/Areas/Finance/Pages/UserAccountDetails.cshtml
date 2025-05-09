@@ -1,4 +1,4 @@
-﻿@page
+﻿ @page
 @using DevExtreme.AspNet.Mvc
 
 @{
@@ -344,7 +344,7 @@
                 <div id="userProfileContainer" style="margin-top: 30px;"></div>
 
                 <div class="form-actions">
-                   
+
                     <button type="button" id="btnSave" class="btn btn-success" onclick="saveUserDetails()">Save</button>
                     @* <button type="button" id="btnResetPassword" class="btn btn-warning" onclick="resetPassword()">Reset Password</button> *@
                 </div>
@@ -398,148 +398,106 @@
                         </div>
 
                     </div>
-                    <div class="dx-fieldset horizontal-container">
-                        @(
-                        Html.DevExtreme().Tabs()
-                        .Items(items =>
-                        {
-                        // tab-content-1
-                        items.Add()
-                        .Icon("preferences") // Master Module
-                        .Text("Master Module");
+                    <div class="tab-layout">
+                        <div class="tab-menu">
+                            @(
+                            Html.DevExtreme().Tabs()
+                            .Items(items =>
+                            {
+                            items.Add().Icon("preferences").Text("Master Module");
+                            items.Add().Icon("chart").Text("Finance");
+                            items.Add().Icon("image").Text("VAT");
+                            items.Add().Icon("money").Text("Human Resources");
+                            items.Add().Icon("repeat").Text("Equipment Rental");
+                            items.Add().Icon("tags").Text("Inventory Management");
+                            items.Add().Icon("cart").Text("Camp Management");
+                            items.Add().Icon("runner").Text("Project Control");
+                            items.Add().Icon("check").Text("Scaffolding Rental Solution");
+                            items.Add().Icon("repeat").Text("Alert Notification");
+                            items.Add().Icon("doc").Text("Finance Ledger Access");
+                            })
+                            .SelectedIndex(0)
+                            .Orientation(DevExtreme.AspNet.Mvc.Orientation.Vertical)
+                            .OnSelectionChanged("onTabSelectionChanged")
+                            )
+                        </div>
 
-                        // tab-content-2
-                        items.Add()
-                        .Icon("chart") // Finance
-                        .Text("Finance");
-
-                        // tab-content-3
-                        items.Add()
-                        .Icon("image") // VAT
-                        .Text("VAT");
-
-                        // tab-content-4
-                        items.Add()
-                        .Icon("money") // Human Resources
-                        .Text("Human Resources");
-
-                        // tab-content-5
-                        items.Add()
-                        .Icon("repeat") // Equipment Rental
-                        .Text("Equipment Rental");
-
-                        // tab-content-6
-                        items.Add()
-                        .Icon("tags") // Inventory Management
-                        .Text("Inventory Management");
-
-                        // tab-content-7
-                        items.Add()
-                        .Icon("cart") // Camp Management
-                        .Text("Camp Management");
-
-                        // tab-content-8
-                        items.Add()
-                        .Icon("runner") // Project Control
-                        .Text("Project Control");
-
-                        // tab-content-9
-                        items.Add()
-                        .Icon("check") // Scaffolding Rental Solution
-                        .Text("Scaffolding Rental Solution");
-
-                        // tab-content-10
-                        items.Add()
-                        .Icon("repeat") // Alert Notification
-                        .Text("Alert Notification");
-
-                        // tab-content-11
-                        items.Add()
-                        .Icon("doc") // Finance Ledger Access
-                        .Text("Finance Ledger Access");
-                        })
-                        .SelectedIndex(0) // Default selected tab is the first one
-                        .OnSelectionChanged("onTabSelectionChanged") // Event handler for tab selection changes
-                        )
-                    </div>
-
-                    <!-- Tab Content -->
-                    <div class="dx-fieldset">
-                        <!-- Tab 1: Master Module -->
-                        <div id="tab-content-1" class="tab-content">
-                            <div id="tab1-content">
-                                @await Html.PartialAsync("~/Pages/Shared/Finance/MasterModules.cshtml")
+                        <div class="tab-content-area">
+                            <!-- Container + Card Panels -->
+                            <div class="container-fluid tab-container" style="display: block;">
+                                <div class="card">
+                                    <div class="card-body">Content for Master Module</div>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Tab 2: Finance -->
-                        <div id="tab-content-2" class="tab-content" style="display: none;">
-                            <div>
-                                @await Html.PartialAsync("~/Pages/Shared/Finance/Finance.cshtml")
+                            <div class="container-fluid tab-container" id="finance-content">
+                                loadFinanceData
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div id="gridContainer"></div> <!-- DataGrid placeholder -->
+                                    </div>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Tab 3: VAT -->
-                        <div id="tab-content-3" class="tab-content" style="display: none;">
-                            @await Html.PartialAsync("~/Pages/Shared/Finance/VAT.cshtml")
-                        </div>
 
-                        <!-- Tab 4: Human Resources -->
-                        <div id="tab-content-4" class="tab-content" style="display: none;">
-                            <div class="background">
-                                @await Html.PartialAsync("~/Pages/Shared/Finance/HumanResources.cshtml")
+                            <div class="container-fluid tab-container">
+                                <div class="card">
+                                    <div class="card-body">Content for VAT</div>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Tab 5: Equipment Rental -->
-                        <div id="tab-content-5" class="tab-content" style="display: none;">
-                            <div class="background">
-                                @await Html.PartialAsync("~/Pages/Shared/Finance/EquipmentRental.cshtml")
+                            <div class="container-fluid tab-container">
+                                <div class="card">
+                                    <div class="card-body">Content for Human Resources</div>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Tab 6: Inventory Management -->
-                        <div id="tab-content-6" class="tab-content" style="display: none;">
-                            <div class="background">
-                                @await Html.PartialAsync("~/Pages/Shared/Finance/InventoryManagement.cshtml")
+                            <div class="container-fluid tab-container">
+                                <div class="card">
+                                    <div class="card-body">Content for Equipment Rental</div>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Tab 7: Camp Management -->
-                        <div id="tab-content-7" class="tab-content" style="display: none;">
-                            <div class="background">
-                                @await Html.PartialAsync("~/Pages/Shared/Finance/CampManagement.cshtml")
+                            <div class="container-fluid tab-container">
+                                <div class="card">
+                                    <div class="card-body">Content for Inventory Management</div>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Tab 8: Project Control -->
-                        <div id="tab-content-8" class="tab-content" style="display: none;">
-                            <div class="background">
-                                @await Html.PartialAsync("~/Pages/Shared/Finance/ProjectControls.cshtml")
+                            <div class="container-fluid tab-container">
+                                <div class="card">
+                                    <div class="card-body">Content for Camp Management</div>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Tab 9: Scaffolding Rental Solution -->
-                        <div id="tab-content-9" class="tab-content" style="display: none;">
-                            <div class="background">
-                                @await Html.PartialAsync("~/Pages/Shared/Finance/ScaffoldingRentalSolutions.cshtml")
+                            <div class="container-fluid tab-container">
+                                <div class="card">
+                                    <div class="card-body">Content for Project Control</div>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Tab 10: Alert Notification -->
-                        <div id="tab-content-10" class="tab-content" style="display: none;">
-                            <div class="background">
-                                @await Html.PartialAsync("~/Pages/Shared/Finance/AlertNotification.cshtml")
+                            <div class="container-fluid tab-container">
+                                <div class="card">
+                                    <div class="card-body">Content for Scaffolding Rental Solution</div>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Tab 11: Finance Ledger Access -->
-                        <div id="tab-content-11" class="tab-content" style="display: none;">
-                            <div class="background">
-                                @await Html.PartialAsync("~/Pages/Shared/Finance/FinanceLedgerAccess.cshtml")
+                            <div class="container-fluid tab-container">
+                                <div class="card">
+                                    <div class="card-body">Content for Alert Notification</div>
+                                </div>
+                            </div>
+
+                            <div class="container-fluid tab-container">
+                                <div class="card">
+                                    <div class="card-body">Content for Finance Ledger Access</div>
+                                </div>
                             </div>
                         </div>
                     </div>
+
+
+
 
 
 
@@ -557,12 +515,177 @@
 @using (Html.DevExtreme().NamedTemplate("DepartmentContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                                    .ID("department-datagrid")
+                                        .ID("department-datagrid")
+                                        .DataSource(d => d.WebApi()
+                                            .Controller("utility")
+                                            .LoadAction("GetDepartments")
+                                            .LoadMode(DataSourceLoadMode.Raw)
+                                            .Key("DepartmentCode"))
+                                        .Selection(s => s.Mode(SelectionMode.Single))
+                                        .ShowBorders(true)
+                                        .SearchPanel(s => s.Visible(true).HighlightSearchText(true))
+                                        .Paging(p => p.PageSize(10))
+                                        .FilterRow(f => f.Visible(true))
+                                        .Height(300)
+                                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                        .OnSelectionChanged("onDepartmentSelectionChanged")
+                                        .Columns(columns =>
+                                        {
+                                            columns.Add().DataField("DepartmentCode").Caption("Code").Width(100);
+                                            columns.Add().DataField("Department").Caption("Department Name");
+                                        }))
+}
+
+@using (Html.DevExtreme().NamedTemplate("CompanyContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                                                        .ID("company-datagrid")
+                                                    .DataSource(d => d.WebApi()
+                                                        .Controller("utility")
+                                                        .LoadAction("GetCompanies")
+                                                    .LoadMode(DataSourceLoadMode.Raw)
+                                                        .Key("CompanyID")
+                                                    )
+                                                    .WordWrapEnabled(true)
+                                                    .ShowBorders(true)
+                                                    .ShowColumnHeaders(true)
+                                                    .FilterRow(f => f.Visible(false))
+                                                    .SearchPanel(sp => sp.HighlightSearchText(false))
+                                                    .Selection(sl => sl.Mode(SelectionMode.Single))
+                                                        .OnSelectionChanged("onCompanySelectionChanged")
+                                                        .OnInitialized("onCompanydataGridInitialized")
+                                                    .HeaderFilter(p => p.Visible(false))
+                                                    .ShowBorders(true)
+                                                    .HoverStateEnabled(true)
+                                                    .Paging(p => p.PageSize(15))
+
+                                                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                                    .Height(200)
+                                                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                                    .Columns(columns =>
+                                                    {
+                                                        columns.Add().DataField("CompanyID").Caption("ID").Width(100);
+                                                        columns.Add().DataField("CompanyName").Caption("Company Name");
+
+
+                                                    })
+                                                    )
+}
+
+@using (Html.DevExtreme().NamedTemplate("BranchContentTemplate"))
+{
+    @(
+                Html.DevExtreme().DataGrid()
+                                                               .ID("Branch-datagrid")
+                                                        .DataSource(d => d.WebApi()
+                                                            .Controller("utility")
+                                                            .LoadAction("GetBranches")
+                                                            .LoadMode(DataSourceLoadMode.Raw)
+                                                            .Key("BranchCode")
+                                                        )
+
+                                                             .WordWrapEnabled(true)
+                                                                        .ShowBorders(true)
+                                                                        .ShowColumnHeaders(true)
+                                                                        .FilterRow(f => f.Visible(false))
+                                                                        .SearchPanel(sp => sp.HighlightSearchText(false))
+                                                                        .Selection(sl => sl.Mode(SelectionMode.Single))
+                                                                                .OnSelectionChanged("onBranchSelectionChanged")
+                                                                                .OnInitialized("onBranchdataGridInitialized")
+                                                                        .HeaderFilter(p => p.Visible(false))
+                                                                        .ShowBorders(true)
+                                                                        .HoverStateEnabled(true)
+                                                                        .Paging(p => p.PageSize(15))
+
+                                                                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                                                        .Height(200)
+                                                                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                                                        .Columns(columns =>
+                                                                            {
+                                                                                columns.Add().DataField("BranchCode").Caption("Code").Width(100);
+                                                                                columns.Add().DataField("BranchName").Caption("Branch Name");
+
+
+                                                                            })
+                                                                        )
+}
+@using (Html.DevExtreme().NamedTemplate("UserLevelContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                                                                .ID("UserLevel-datagrid")
+                                                        .DataSource(d => d.WebApi()
+                                                            .Controller("utility")
+                                                            .LoadAction("GetUserLevels")
+                                                        .LoadMode(DataSourceLoadMode.Raw)
+                                                            .Key("UserLevelID")
+                                                        )
+                                                        .WordWrapEnabled(true)
+                                                        .ShowBorders(true)
+                                                        .ShowColumnHeaders(true)
+                                                        .FilterRow(f => f.Visible(false))
+                                                        .SearchPanel(sp => sp.HighlightSearchText(false))
+                                                        .Selection(sl => sl.Mode(SelectionMode.Single))
+                                                            .OnSelectionChanged("onUserLevelSelectionChanged")
+                                                            .OnInitialized("onUserLeveldataGridInitialized")
+                                                        .HeaderFilter(p => p.Visible(false))
+                                                        .ShowBorders(true)
+                                                        .HoverStateEnabled(true)
+                                                        .Paging(p => p.PageSize(15))
+
+                                                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                                        .Height(200)
+                                                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                                         .Columns(columns =>
+                                    {
+                                        columns.Add().DataField("UserLevelID").Caption("ID").Width(100);
+                                        columns.Add().DataField("UserLevelDesc").Caption("Description");
+                                    })
+                                )
+}
+@using (Html.DevExtreme().NamedTemplate("EmployeeGroupContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                                                                .ID("EmployeeGroup-datagrid")
+                                                        .DataSource(d => d.WebApi()
+                                                            .Controller("utility")
+                                                            .LoadAction("GetEmployeeGroups")
+                                                        .LoadMode(DataSourceLoadMode.Raw)
+                                                            .Key("EmpGroupID")
+                                                        )
+                                                        .WordWrapEnabled(true)
+                                                        .ShowBorders(true)
+                                                        .ShowColumnHeaders(true)
+                                                        .FilterRow(f => f.Visible(false))
+                                                        .SearchPanel(sp => sp.HighlightSearchText(false))
+                                                        .Selection(sl => sl.Mode(SelectionMode.Single))
+                                                            .OnSelectionChanged("onEmployeeGroupSelectionChanged")
+                                                            .OnInitialized("onEmployeeGroupdataGridInitialized")
+                                                        .HeaderFilter(p => p.Visible(false))
+                                                        .ShowBorders(true)
+                                                        .HoverStateEnabled(true)
+                                                        .Paging(p => p.PageSize(15))
+
+                                                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                                        .Height(200)
+                                                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                                       .Columns(columns =>
+                                    {
+                                        columns.Add().DataField("EmpGroupID").Caption("Group ID").Width(100);
+                                        columns.Add().DataField("EmployeeGroup").Caption("Group Name");
+                                    })
+                                )
+}
+@using (Html.DevExtreme().NamedTemplate("InventoryGroupContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                                    .ID("inventory-group-datagrid")
                                     .DataSource(d => d.WebApi()
                                         .Controller("utility")
-                                        .LoadAction("GetDepartments")
+                                            .LoadAction("GetInventoryGroups")
                                         .LoadMode(DataSourceLoadMode.Raw)
-                                        .Key("DepartmentCode"))
+                                        .Key("InventoryMasterGroupID")
+                                    )
                                     .Selection(s => s.Mode(SelectionMode.Single))
                                     .ShowBorders(true)
                                     .SearchPanel(s => s.Visible(true).HighlightSearchText(true))
@@ -571,308 +694,143 @@
                                     .Height(300)
                                     .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                                     .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                                    .OnSelectionChanged("onDepartmentSelectionChanged")
+                                    .OnSelectionChanged("onInventoryGroupSelectionChanged")
                                     .Columns(columns =>
                                     {
-                                        columns.Add().DataField("DepartmentCode").Caption("Code").Width(100);
-                                        columns.Add().DataField("Department").Caption("Department Name");
-                                    }))
-}
-
-@using (Html.DevExtreme().NamedTemplate("CompanyContentTemplate"))
-{
-    @(Html.DevExtreme().DataGrid()
-                                                    .ID("company-datagrid")
-                                                .DataSource(d => d.WebApi()
-                                                    .Controller("utility")
-                                                    .LoadAction("GetCompanies")
-                                                .LoadMode(DataSourceLoadMode.Raw)
-                                                    .Key("CompanyID")
-                                                )
-                                                .WordWrapEnabled(true)
-                                                .ShowBorders(true)
-                                                .ShowColumnHeaders(true)
-                                                .FilterRow(f => f.Visible(false))
-                                                .SearchPanel(sp => sp.HighlightSearchText(false))
-                                                .Selection(sl => sl.Mode(SelectionMode.Single))
-                                                    .OnSelectionChanged("onCompanySelectionChanged")
-                                                    .OnInitialized("onCompanydataGridInitialized")
-                                                .HeaderFilter(p => p.Visible(false))
-                                                .ShowBorders(true)
-                                                .HoverStateEnabled(true)
-                                                .Paging(p => p.PageSize(15))
-
-                                                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                                                .Height(200)
-                                                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                                                .Columns(columns =>
-                                                {
-                                                    columns.Add().DataField("CompanyID").Caption("ID").Width(100);
-                                                    columns.Add().DataField("CompanyName").Caption("Company Name");
-
-
-                                                })
-                                                )
-}
-
-@using (Html.DevExtreme().NamedTemplate("BranchContentTemplate"))
-{
-    @(
-            Html.DevExtreme().DataGrid()
-                                                           .ID("Branch-datagrid")
-                                                    .DataSource(d => d.WebApi()
-                                                        .Controller("utility")
-                                                        .LoadAction("GetBranches")
-                                                        .LoadMode(DataSourceLoadMode.Raw)
-                                                        .Key("BranchCode")
-                                                    )
-
-                                                         .WordWrapEnabled(true)
-                                                                    .ShowBorders(true)
-                                                                    .ShowColumnHeaders(true)
-                                                                    .FilterRow(f => f.Visible(false))
-                                                                    .SearchPanel(sp => sp.HighlightSearchText(false))
-                                                                    .Selection(sl => sl.Mode(SelectionMode.Single))
-                                                                            .OnSelectionChanged("onBranchSelectionChanged")
-                                                                            .OnInitialized("onBranchdataGridInitialized")
-                                                                    .HeaderFilter(p => p.Visible(false))
-                                                                    .ShowBorders(true)
-                                                                    .HoverStateEnabled(true)
-                                                                    .Paging(p => p.PageSize(15))
-
-                                                                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                                                                    .Height(200)
-                                                                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                                                                    .Columns(columns =>
-                                                                        {
-                                                                            columns.Add().DataField("BranchCode").Caption("Code").Width(100);
-                                                                            columns.Add().DataField("BranchName").Caption("Branch Name");
-
-
-                                                                        })
-                                                                    )
-}
-@using (Html.DevExtreme().NamedTemplate("UserLevelContentTemplate"))
-{
-    @(Html.DevExtreme().DataGrid()
-                                                            .ID("UserLevel-datagrid")
-                                                    .DataSource(d => d.WebApi()
-                                                        .Controller("utility")
-                                                        .LoadAction("GetUserLevels")
-                                                    .LoadMode(DataSourceLoadMode.Raw)
-                                                        .Key("UserLevelID")
-                                                    )
-                                                    .WordWrapEnabled(true)
-                                                    .ShowBorders(true)
-                                                    .ShowColumnHeaders(true)
-                                                    .FilterRow(f => f.Visible(false))
-                                                    .SearchPanel(sp => sp.HighlightSearchText(false))
-                                                    .Selection(sl => sl.Mode(SelectionMode.Single))
-                                                        .OnSelectionChanged("onUserLevelSelectionChanged")
-                                                        .OnInitialized("onUserLeveldataGridInitialized")
-                                                    .HeaderFilter(p => p.Visible(false))
-                                                    .ShowBorders(true)
-                                                    .HoverStateEnabled(true)
-                                                    .Paging(p => p.PageSize(15))
-
-                                                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                                                    .Height(200)
-                                                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                                                     .Columns(columns =>
-                                {
-                                    columns.Add().DataField("UserLevelID").Caption("ID").Width(100);
-                                    columns.Add().DataField("UserLevelDesc").Caption("Description");
-                                })
-                            )
-}
-@using (Html.DevExtreme().NamedTemplate("EmployeeGroupContentTemplate"))
-{
-    @(Html.DevExtreme().DataGrid()
-                                                            .ID("EmployeeGroup-datagrid")
-                                                    .DataSource(d => d.WebApi()
-                                                        .Controller("utility")
-                                                        .LoadAction("GetEmployeeGroups")
-                                                    .LoadMode(DataSourceLoadMode.Raw)
-                                                        .Key("EmpGroupID")
-                                                    )
-                                                    .WordWrapEnabled(true)
-                                                    .ShowBorders(true)
-                                                    .ShowColumnHeaders(true)
-                                                    .FilterRow(f => f.Visible(false))
-                                                    .SearchPanel(sp => sp.HighlightSearchText(false))
-                                                    .Selection(sl => sl.Mode(SelectionMode.Single))
-                                                        .OnSelectionChanged("onEmployeeGroupSelectionChanged")
-                                                        .OnInitialized("onEmployeeGroupdataGridInitialized")
-                                                    .HeaderFilter(p => p.Visible(false))
-                                                    .ShowBorders(true)
-                                                    .HoverStateEnabled(true)
-                                                    .Paging(p => p.PageSize(15))
-
-                                                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                                                    .Height(200)
-                                                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                                                   .Columns(columns =>
-                                {
-                                    columns.Add().DataField("EmpGroupID").Caption("Group ID").Width(100);
-                                    columns.Add().DataField("EmployeeGroup").Caption("Group Name");
-                                })
-                            )
-}
-@using (Html.DevExtreme().NamedTemplate("InventoryGroupContentTemplate"))
-{
-    @(Html.DevExtreme().DataGrid()
-                                .ID("inventory-group-datagrid")
-                                .DataSource(d => d.WebApi()
-                                    .Controller("utility")
-                                        .LoadAction("GetInventoryGroups")
-                                    .LoadMode(DataSourceLoadMode.Raw)
-                                    .Key("InventoryMasterGroupID")
+                                        columns.Add().DataField("InventoryMasterGroupID").Caption("Group ID").Width(100);
+                                        columns.Add().DataField("InventoryMasterGroup").Caption("Group Name");
+                                    })
                                 )
-                                .Selection(s => s.Mode(SelectionMode.Single))
-                                .ShowBorders(true)
-                                .SearchPanel(s => s.Visible(true).HighlightSearchText(true))
-                                .Paging(p => p.PageSize(10))
-                                .FilterRow(f => f.Visible(true))
-                                .Height(300)
-                                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                                .OnSelectionChanged("onInventoryGroupSelectionChanged")
-                                .Columns(columns =>
-                                {
-                                    columns.Add().DataField("InventoryMasterGroupID").Caption("Group ID").Width(100);
-                                    columns.Add().DataField("InventoryMasterGroup").Caption("Group Name");
-                                })
-                            )
 }
 
 @using (Html.DevExtreme().NamedTemplate("FilteredAccountHeadContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                                                            .ID("FilteredAccountHead-datagrid")
-                                                    .DataSource(d => d.WebApi()
-                                                        .Controller("utility")
-                                                        .LoadAction("GetFilteredAccountHead")
-                                                    .LoadMode(DataSourceLoadMode.Raw)
-                                                        .Key("AccountId")
-                                                    )
-                                                    .WordWrapEnabled(true)
-                                                    .ShowBorders(true)
-                                                    .ShowColumnHeaders(true)
-                                                    .FilterRow(f => f.Visible(false))
-                                                    .SearchPanel(sp => sp.HighlightSearchText(false))
-                                                    .Selection(sl => sl.Mode(SelectionMode.Single))
-                                                        .OnSelectionChanged("onFilteredAccountSelectionChanged")
-                                                        .OnInitialized("onFilteredAccountGridInitialized")
-                                                    .HeaderFilter(p => p.Visible(false))
-                                                    .ShowBorders(true)
-                                                    .HoverStateEnabled(true)
-                                                    .Paging(p => p.PageSize(15))
+                                                                .ID("FilteredAccountHead-datagrid")
+                                                        .DataSource(d => d.WebApi()
+                                                            .Controller("utility")
+                                                            .LoadAction("GetFilteredAccountHead")
+                                                        .LoadMode(DataSourceLoadMode.Raw)
+                                                            .Key("AccountId")
+                                                        )
+                                                        .WordWrapEnabled(true)
+                                                        .ShowBorders(true)
+                                                        .ShowColumnHeaders(true)
+                                                        .FilterRow(f => f.Visible(false))
+                                                        .SearchPanel(sp => sp.HighlightSearchText(false))
+                                                        .Selection(sl => sl.Mode(SelectionMode.Single))
+                                                            .OnSelectionChanged("onFilteredAccountSelectionChanged")
+                                                            .OnInitialized("onFilteredAccountGridInitialized")
+                                                        .HeaderFilter(p => p.Visible(false))
+                                                        .ShowBorders(true)
+                                                        .HoverStateEnabled(true)
+                                                        .Paging(p => p.PageSize(15))
 
-                                                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                                                    .Height(200)
-                                                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                                                   .Columns(columns =>
-                                {
-                                    columns.Add().DataField("AccountId").Caption("Account ID").Visible(true);
-                                    columns.Add().DataField("AccountHead").Caption("Account Head").Visible(true);
-                                    columns.Add().DataField("AccountGroup").Caption("Account Group").Visible(true);
-                                    columns.Add().DataField("IsRestricted").Caption("Restricted").DataType(GridColumnDataType.Boolean);
-                                    columns.Add().DataField("MasterGroup").Caption("Master Group");
-                                    columns.Add().DataField("AccountHeadArabic").Caption("Account Head Arabic");
-                                })
-                            @*     .Paging(p => p.PageSize(15))
+                                                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                                        .Height(200)
+                                                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                                       .Columns(columns =>
+                                    {
+                                        columns.Add().DataField("AccountId").Caption("Account ID").Visible(true);
+                                        columns.Add().DataField("AccountHead").Caption("Account Head").Visible(true);
+                                        columns.Add().DataField("AccountGroup").Caption("Account Group").Visible(true);
+                                        columns.Add().DataField("IsRestricted").Caption("Restricted").DataType(GridColumnDataType.Boolean);
+                                        columns.Add().DataField("MasterGroup").Caption("Master Group");
+                                        columns.Add().DataField("AccountHeadArabic").Caption("Account Head Arabic");
+                                    })
+                                @*     .Paging(p => p.PageSize(15))
                         .FilterRow(f => f.Visible(true))
                         .SearchPanel(s => s.Visible(true))
                         .Height(350)
                         .ShowBorders(true)
                         .Scrolling(s => s.Mode(GridScrollingMode.Virtual)) *@
-                            )
+                                )
 }
 @using (Html.DevExtreme().NamedTemplate("HRUserLevelContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                                .ID("hruserlevel-datagrid")
-                                .DataSource(d => d.WebApi()
-                                    .Controller("Utility")
-                                    .LoadAction("GetHRUserLevels")
-                                    .LoadMode(DataSourceLoadMode.Raw)
-                                        .Key("HruserLevelId")
+                                    .ID("hruserlevel-datagrid")
+                                    .DataSource(d => d.WebApi()
+                                        .Controller("Utility")
+                                        .LoadAction("GetHRUserLevels")
+                                        .LoadMode(DataSourceLoadMode.Raw)
+                                            .Key("HruserLevelId")
+                                    )
+                                    .Selection(s => s.Mode(SelectionMode.Single))
+                                    .OnSelectionChanged("onHRUserLevelSelectionChanged")
+                                    .Columns(columns =>
+                                    {
+                                        columns.Add().DataField("HruserLevelId").Caption("ID").Visible(true);
+                                        columns.Add().DataField("HruserLevelDesc").Caption("Description").Visible(true);
+                                    })
+                                    .Paging(p => p.PageSize(10))
+                                    .Height(300)
+                                    .ShowBorders(true)
                                 )
-                                .Selection(s => s.Mode(SelectionMode.Single))
-                                .OnSelectionChanged("onHRUserLevelSelectionChanged")
-                                .Columns(columns =>
-                                {
-                                    columns.Add().DataField("HruserLevelId").Caption("ID").Visible(true);
-                                    columns.Add().DataField("HruserLevelDesc").Caption("Description").Visible(true);
-                                })
-                                .Paging(p => p.PageSize(10))
-                                .Height(300)
-                                .ShowBorders(true)
-                            )
 }
 @using (Html.DevExtreme().NamedTemplate("SalesPersonDropDownTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                                                            .ID("SalesPerson-datagrid")
-                                                    .DataSource(d => d.WebApi()
-                                                        .Controller("utility")
-                                                        .LoadAction("GetSalesPersonAccessLevels")
-                                                    .LoadMode(DataSourceLoadMode.Raw)
-                                                                .Key("SalesPersonAccessLevelId")
-                                                    )
-                                                    .WordWrapEnabled(true)
-                                                    .ShowBorders(true)
-                                                    .ShowColumnHeaders(true)
-                                                    .FilterRow(f => f.Visible(false))
-                                                    .SearchPanel(sp => sp.HighlightSearchText(false))
-                                                    .Selection(sl => sl.Mode(SelectionMode.Single))
-                                                        .OnSelectionChanged("onSalesPersonGridSelectionChanged")
-                                                        .OnInitialized("onSalesPersonGridInitialized")
-                                                    .HeaderFilter(p => p.Visible(false))
-                                                    .ShowBorders(true)
-                                                    .HoverStateEnabled(true)
-                                                    .Paging(p => p.PageSize(15))
+                                                                .ID("SalesPerson-datagrid")
+                                                        .DataSource(d => d.WebApi()
+                                                            .Controller("utility")
+                                                            .LoadAction("GetSalesPersonAccessLevels")
+                                                        .LoadMode(DataSourceLoadMode.Raw)
+                                                                    .Key("SalesPersonAccessLevelId")
+                                                        )
+                                                        .WordWrapEnabled(true)
+                                                        .ShowBorders(true)
+                                                        .ShowColumnHeaders(true)
+                                                        .FilterRow(f => f.Visible(false))
+                                                        .SearchPanel(sp => sp.HighlightSearchText(false))
+                                                        .Selection(sl => sl.Mode(SelectionMode.Single))
+                                                            .OnSelectionChanged("onSalesPersonGridSelectionChanged")
+                                                            .OnInitialized("onSalesPersonGridInitialized")
+                                                        .HeaderFilter(p => p.Visible(false))
+                                                        .ShowBorders(true)
+                                                        .HoverStateEnabled(true)
+                                                        .Paging(p => p.PageSize(15))
 
-                                                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                                                    .Height(200)
-                                                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                                                       .Columns(columns =>
-                                {
+                                                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                                        .Height(200)
+                                                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                                           .Columns(columns =>
+                                    {
 
-                                    columns.Add().DataField("SalesPersonAccessLevelId").Caption("Sales Person");
-                                    columns.Add().DataField("SalesPersonAccessDesc").Caption("Access Level");
-                                })@* 
+                                        columns.Add().DataField("SalesPersonAccessLevelId").Caption("Sales Person");
+                                        columns.Add().DataField("SalesPersonAccessDesc").Caption("Access Level");
+                                    })@*
                         .Height(300)
                         .Paging(p => p.PageSize(10))
                         .SearchPanel(sp => sp.Visible(true)) *@
-                            )
+                                )
 }
 
 @using (Html.DevExtreme().NamedTemplate("ProjectGroupContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                                .ID("projectgroup-datagrid")
-                                .DataSource(d => d.WebApi()
-                                    .Controller("Utility")
-                                        .LoadAction("GetProjectGroups")
-                                    .LoadMode(DataSourceLoadMode.Raw)
-                                            .Key("ProjectGroupID")
+                                    .ID("projectgroup-datagrid")
+                                    .DataSource(d => d.WebApi()
+                                        .Controller("Utility")
+                                            .LoadAction("GetProjectGroups")
+                                        .LoadMode(DataSourceLoadMode.Raw)
+                                                .Key("ProjectGroupID")
+                                    )
+                                    .ShowBorders(true)
+                                    .Selection(s => s.Mode(SelectionMode.Single))
+                                    .SearchPanel(sp => sp.Visible(true).HighlightSearchText(true))
+                                    .Paging(p => p.PageSize(10))
+                                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                    .HoverStateEnabled(true)
+                                    .Height(300)
+                                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                    .OnSelectionChanged("projectGroupSelectionChanged")
+                                    .Columns(columns =>
+                                    {
+                                        columns.Add().DataField("ProjectGroupID").Caption("Project Group ID").Visible(true).Width(120);
+                                        columns.Add().DataField("ProjectGroupName").Caption("Project Group Name").Visible(true);
+                                    })
                                 )
-                                .ShowBorders(true)
-                                .Selection(s => s.Mode(SelectionMode.Single))
-                                .SearchPanel(sp => sp.Visible(true).HighlightSearchText(true))
-                                .Paging(p => p.PageSize(10))
-                                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                                .HoverStateEnabled(true)
-                                .Height(300)
-                                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                                .OnSelectionChanged("projectGroupSelectionChanged")
-                                .Columns(columns =>
-                                {
-                                    columns.Add().DataField("ProjectGroupID").Caption("Project Group ID").Visible(true).Width(120);
-                                    columns.Add().DataField("ProjectGroupName").Caption("Project Group Name").Visible(true);
-                                })
-                            )
 }
 
 
@@ -880,387 +838,539 @@
 
 @section Scripts {
     <script>
-              $(document).ready(function () {
-              const urlParams = new URLSearchParams(window.location.search);
-              const userId = urlParams.get("userId");
-              const tenantName = urlParams.get("tenantName");
-
-              if (userId) {
-                  loadUserDetails(userId);
-              } else {
-                  DevExpress.ui.notify("User ID not found in URL", "error", 3000);
-              }
-          });
-
-          function loadUserDetails(userId) {
-              $.ajax({
-                  url: "/api/Utility/GetUserID",
-                  method: "GET",
-                  data: { userId: userId },
-                  success: function (response) {
-                      if (!response.success || !response.data) {
-                          $("#userProfileContainer").html("<div>User not found.</div>");
-                          return;
-                      }
-
-                      const user = response.data;
-
-                      $("#UserId").dxTextBox("instance").option("value", user.UserId);
-                      $("#UserName").dxTextBox("instance").option("value", user.UserName);
-                      $("#Password").dxTextBox("instance").option("value", user.Password);
-                      $("#UserEmailAddress").dxTextBox("instance").option("value", user.EmailAddress);
-                      $("#UserMobileNo").dxTextBox("instance").option("value", user.MobileNo);
-                      $("#UserLastLoggedInTime").dxDateBox("instance").option("value", user.LastLogOnTime);
-                      $("#UserLastLoggedOffTime").dxDateBox("instance").option("value", user.LastLogOffTime);
-
-
-                      // DropDown values
-                      $("#ddDepartment").dxDropDownBox("instance").option("value", user.DeptCode);
-                     // $("#ddCompany").dxDropDownBox("instance").option("value", user.CompanyId);
-                     // $("#ddBranch").dxDropDownBox("instance").option("value", user.BranchCode);
-                     // $("#ddUserLevel").dxDropDownBox("instance").option("value", user.UserLevel);
-                     // $("#ddEmployeeGroup").dxDropDownBox("instance").option("value", user.HrlevelCode);
-                      $("#ddInventoryMasterGroup").dxDropDownBox("instance").option("value", user.InventoryAccess);
-                     // $("#ddFilteredAccountHead").dxDropDownBox("instance").option("value", user.PettyCashAccount);
-                      $("#ddHRUserLevel").dxDropDownBox("instance").option("value", user.EqptQuotationAccess);
-                     // $("#ddSalesPerson").dxDropDownBox("instance").option("value", user.InventoryMpraccess);
-                      $("#ddProjectGroup").dxDropDownBox("instance").option("value", user.HrtimeSheetProjectGroup);
-                      //alert(user.CompanyId)
-                       onCompanySelectionChanged({selectedRowKeys:[user.CompanyName]});
-                       onBranchSelectionChanged({selectedRowKeys:[user.BranchName]});
-                       onUserLevelSelectionChanged({selectedRowKeys:[user.UserLevelDesc]});
-                       onEmployeeGroupSelectionChanged({selectedRowKeys:[user.HruserLevelDesc]});
-                       onFilteredAccountSelectionChanged({selectedRowKeys:[user.AccountHead]});
-                       onSalesPersonGridSelectionChanged({selectedRowKeys:[user.UserLevelDesc]});
-
-
-
-
-
-                  },
-                  error: function () {
-                      DevExpress.ui.notify("Failed to load user info", "error", 3000);
-                  }
-              });
-          }
-
-               function onDepartmentSelectionChanged(e) {
-              const selectedKey = e.selectedRowKeys[0];
-              const ddbInstance = $("#ddDepartment").dxDropDownBox("instance");
-
-              if (selectedKey) {
-                  ddbInstance.option("value", selectedKey);
-                  if (ddbInstance.option("opened")) {
-                      ddbInstance.close();
-                  }
-
-                  const selectedRowData = e.selectedRowsData[0];
-                  if (selectedRowData) {
-                      console.log("Selected:", selectedRowData.Department);
-                  }
-              }
-          }
-                   function onCompanySelectionChanged(e) {
-
-             // const selectedKey = e.selectedRowKeys && e.selectedRowKeys[0];
-             const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-
-              const ddbInstance = $("#ddCompany").dxDropDownBox("instance");
-
-              if (selectedKey) {
-
-                  ddbInstance.option("value", selectedKey);
-                //  ddbInstance.repaint(); // Ensure UI refreshes
-                  if (ddbInstance.option("opened")) {
-                      ddbInstance.close();
-                  }
-
-                  const selectedRowData = e.selectedRowsData && e.selectedRowsData[0];
-                  if (selectedRowData) {
-                      console.log("Selected company:", selectedRowData.CompanyName);
-                  }
-              }
-          }
-
-                 function onBranchSelectionChanged(e) {
-
-             // const selectedKey = e.selectedRowKeys && e.selectedRowKeys[0];
-             const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-
-              const ddbInstance = $("#ddBranch").dxDropDownBox("instance");
-
-              if (selectedKey) {
-
-                  ddbInstance.option("value", selectedKey);
-                //  ddbInstance.repaint(); // Ensure UI refreshes
-                  if (ddbInstance.option("opened")) {
-                      ddbInstance.close();
-                  }
-
-                  const selectedRowData = e.selectedRowsData && e.selectedRowsData[0];
-                  if (selectedRowData) {
-                      console.log("Selected Branch:", selectedRowData.BranchName);
-                  }
-              }
-          }
-
-           function onDepartmentsChanged(e) {
-              $.ajax({
-                  url: "/api/Utility/GetDepartments",
-                  method: "GET",
-                  data: { module: selectedModule },
-                  success: function (data) {
-                      prefixBox.option({
-                          items: data.data || data,
-                          value: null,
-                          disabled: false
-                      });
-                  },
-              });
-          }
-
-                          function onUserLevelSelectionChanged(e) {
-
-             // const selectedKey = e.selectedRowKeys && e.selectedRowKeys[0];
-             const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-
-              const ddbInstance = $("#ddUserLevel").dxDropDownBox("instance");
-
-              if (selectedKey) {
-
-                  ddbInstance.option("value", selectedKey);
-                //  ddbInstance.repaint(); // Ensure UI refreshes
-                  if (ddbInstance.option("opened")) {
-                      ddbInstance.close();
-                  }
-
-                  const selectedRowData = e.selectedRowsData && e.selectedRowsData[0];
-                  if (selectedRowData) {
-                      console.log("User Level Selected:", selectedRowData.UserLevelDesc);
-                  }
-              }
-          }
-
-
-
-                   function onEmployeeGroupSelectionChanged(e) {
-
-             // const selectedKey = e.selectedRowKeys && e.selectedRowKeys[0];
-             const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-
-              const ddbInstance = $("#ddEmployeeGroup").dxDropDownBox("instance");
-
-              if (selectedKey) {
-
-                  ddbInstance.option("value", selectedKey);
-                //  ddbInstance.repaint(); // Ensure UI refreshes
-                  if (ddbInstance.option("opened")) {
-                      ddbInstance.close();
-                  }
-
-                  const selectedRowData = e.selectedRowsData && e.selectedRowsData[0];
-                  if (selectedRowData) {
-                      console.log("Selected Group:", selectedRowData.HruserLevelDesc);
-                  }
-              }
-          }
-
-               function onInventoryGroupSelectionChanged(e) {
-              const selectedKey = e.selectedRowKeys[0];
-              const ddbInstance = $("#ddInventoryMasterGroup").dxDropDownBox("instance");
-
-              if (selectedKey) {
-                  ddbInstance.option("value", selectedKey);
-                  if (ddbInstance.option("opened")) {
-                      ddbInstance.close();
-                  }
-
-                  const selectedRowData = e.selectedRowsData[0];
-                  if (selectedRowData) {
-                      console.log("Selected Inventory Group:", selectedRowData.InventoryMasterGroup);
-                  }
-              }
-          }
-
-                        function onFilteredAccountSelectionChanged(e) {
-
-             // const selectedKey = e.selectedRowKeys && e.selectedRowKeys[0];
-             const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-
-              const ddbInstance = $("#ddFilteredAccountHead").dxDropDownBox("instance");
-
-              if (selectedKey) {
-
-                  ddbInstance.option("value", selectedKey);
-                //  ddbInstance.repaint(); // Ensure UI refreshes
-                  if (ddbInstance.option("opened")) {
-                      ddbInstance.close();
-                  }
-
-                  const selectedRowData = e.selectedRowsData && e.selectedRowsData[0];
-                  if (selectedRowData) {
-                      console.log("Selected Account:", selectedRowData.AccountHead);
-                  }
-              }
-          }
-
-                  function onHRUserLevelSelectionChanged(e) {
-              const selectedKey = e.selectedRowKeys[0];
-              const ddbInstance = $("#ddHRUserLevel").dxDropDownBox("instance");
-
-              if (selectedKey) {
-                  ddbInstance.option("value", selectedKey);
-                   if (ddbInstance.option("opened")) {
-                      ddbInstance.close();
-                  }
-                   const selectedRowData = e.selectedRowsData[0];
-                  if (selectedRowData) {
-                      console.log("User Level Selected:", selectedRowData.UserLevelDesc);
-                  }
-              }
-          }
-
-
-                   function onSalesPersonGridSelectionChanged(e) {
-
-             // const selectedKey = e.selectedRowKeys && e.selectedRowKeys[0];
-             const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-
-              const ddbInstance = $("#ddSalesPerson").dxDropDownBox("instance");
-
-              if (selectedKey) {
-
-                  ddbInstance.option("value", selectedKey);
-                //  ddbInstance.repaint(); // Ensure UI refreshes
-                  if (ddbInstance.option("opened")) {
-                      ddbInstance.close();
-                  }
-
-                  const selectedRowData = e.selectedRowsData && e.selectedRowsData[0];
-                  if (selectedRowData) {
-                      console.log("Selected SalesPerson:", selectedRowData.InventoryMprAccessDesc);
-                  }
-              }
-          }
-
-               function projectGroupSelectionChanged(e) {
-              const selectedKey = e.selectedRowKeys[0];
-              const ddbInstance = $("#ddProjectGroup").dxDropDownBox("instance");
-
-              if (selectedKey) {
-                  ddbInstance.option("value", selectedKey);
-                  if (ddbInstance.option("opened")) {
-                      ddbInstance.close();
-                  }
-
-                  const selectedRowData = e.selectedRowsData[0];
-                  console.log("Selected Project Group:", selectedRowData.ProjectGroupName);
-
-                  window.selectedProjectGroupId = selectedRowData.ProjectGroupID;
-                  window.selectedProjectGroupName = selectedRowData.ProjectGroupName;
-              } else {
-                  DevExpress.ui.notify("Please select a Project Group from the grid", "error", 2000);
-              }
-          }
-
-
-
-          function saveUserDetails() {
-
-              debugger;
-              const user = {
-                  UserId: $("#UserId").dxTextBox("instance").option("value"),
-                  UserName:$("#UserName").dxTextBox("instance").option("value"),
-                  Password:  $("#Password").dxTextBox("instance").option("value"),
-                   DeptCode: $("#ddDepartment").dxDropDownBox("instance").option("value"),
-                  CompanyId: $("#ddCompany").dxDropDownBox("instance").option("value"),
-                  BranchCode: $("#ddBranch").dxDropDownBox("instance").option("value"),
-                   UserLevel: $("#ddUserLevel").dxDropDownBox("instance").option("value"),
-
-                   HrlevelCode: $("#ddEmployeeGroup").dxDropDownBox("instance").option("value"),
-                    InventoryAccess: $("#ddInventoryMasterGroup ").dxDropDownBox("instance").option("value"),
-                    PettyCashAccount: $("#ddFilteredAccountHead ").dxDropDownBox("instance").option("value"),
-                    EqptQuotationAccess: $("#ddHRUserLevel ").dxDropDownBox("instance").option("value"),
-                    InventoryMpraccess    : $("#ddSalesPerson ").dxDropDownBox("instance").option("value"),
-                   HrtimeSheetProjectGroup: $("#ddProjectGroup ").dxDropDownBox("instance").option("value"),
-                   // HRTimesheetGroup: $("#HRTimesheetGroup").dxSelectBox("instance").option("value"),
-                   MobileNo: $("#UserMobileNo").dxTextBox("instance").option("value"),
-                   EmailAddress: $("#UserEmailAddress").dxTextBox("instance").option("value"),
-                   LastLogOnTime: $("#UserLastLoggedInTime").dxDateBox("instance").option("value"),
-                   LastLogOffTime: $("#UserLastLoggedOffTime").dxDateBox("instance").option("value")
-              };
-
-              $.ajax({
-                  url: "/api/Utility/SaveUserDetails",
-                  method: "POST",
-                  contentType: "application/json",
-                  data: JSON.stringify(user),
-                  success: function (response) {
-                      DevExpress.ui.notify("User details saved successfully!", "success", 3000);
-                  },
-                  error: function () {
-                      DevExpress.ui.notify("Failed to save user details", "error", 3000);
-                  }
-              });
-          }
-
-
-          function onCompanydataGridInitialized(e) {
-              dataGrid = e.component;
-          }
-
-          function onBranchdataGridInitialized(e) {
-              dataGrid2 = e.component;
-          }
-
-          function onUserLeveldataGridInitialized(e) {
-              dataGrid3 = e.component;
-          }
-
-           function onEmployeeGroupdataGridInitialized(e) {
-              dataGrid4 = e.component;
-          }
-           function onFilteredAccountGridInitialized(e) {
-              dataGrid5 = e.component;
-          }
-           function onSalesPersonGridInitialized(e) {
-              dataGrid6 = e.component;
-          }
-
-
-
-          function onSalesPersonValueChanged(e) {
-          }
-          function formatDate(dateStr) {
-              if (!dateStr) return "-";
-              const date = new Date(dateStr);
-              return date.toLocaleString();
-          }
-         function onTabSelectionChanged(e) {
-          // Hide all tab content
-          $(".tab-content").hide();
-
-          // Show the content of the selected tab
-          var selectedTabIndex = e.component.option("selectedIndex");
-          $("#tab-content-" + (selectedTabIndex + 1)).show();
-      }
-        function ItemStore(){
-                  const url = `/${tenantName}/IMS/StockDetails_ItemStore`;
-                const title = "";
-                    openModal(url, title);
+        $(document).ready(function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get("userId");
+            const tenantName = urlParams.get("tenantName");
+
+            if (userId) {
+                loadUserDetails(userId);
+            } else {
+                DevExpress.ui.notify("User ID not found in URL", "error", 3000);
             }
-              function StockGroup(){
-                  const url = `/${tenantName}/IMS/StockDetails_StockGroup`;
-                const title = "";
-                    openModal(url, title);
+        });
+
+        function loadUserDetails(userId) {
+            $.ajax({
+                url: "/api/Utility/GetUserID",
+                method: "GET",
+                data: { userId: userId },
+                success: function (response) {
+                    if (!response.success || !response.data) {
+                        $("#userProfileContainer").html("<div>User not found.</div>");
+                        return;
+                    }
+
+                    const user = response.data;
+
+                    $("#UserId").dxTextBox("instance").option("value", user.UserId);
+                    $("#UserName").dxTextBox("instance").option("value", user.UserName);
+                    $("#Password").dxTextBox("instance").option("value", user.Password);
+                    $("#UserEmailAddress").dxTextBox("instance").option("value", user.EmailAddress);
+                    $("#UserMobileNo").dxTextBox("instance").option("value", user.MobileNo);
+                    $("#UserLastLoggedInTime").dxDateBox("instance").option("value", user.LastLogOnTime);
+                    $("#UserLastLoggedOffTime").dxDateBox("instance").option("value", user.LastLogOffTime);
+
+
+                    // DropDown values
+                    $("#ddDepartment").dxDropDownBox("instance").option("value", user.DeptCode);
+                    // $("#ddCompany").dxDropDownBox("instance").option("value", user.CompanyId);
+                    // $("#ddBranch").dxDropDownBox("instance").option("value", user.BranchCode);
+                    // $("#ddUserLevel").dxDropDownBox("instance").option("value", user.UserLevel);
+                    // $("#ddEmployeeGroup").dxDropDownBox("instance").option("value", user.HrlevelCode);
+                    $("#ddInventoryMasterGroup").dxDropDownBox("instance").option("value", user.InventoryAccess);
+                    // $("#ddFilteredAccountHead").dxDropDownBox("instance").option("value", user.PettyCashAccount);
+                    $("#ddHRUserLevel").dxDropDownBox("instance").option("value", user.EqptQuotationAccess);
+                    // $("#ddSalesPerson").dxDropDownBox("instance").option("value", user.InventoryMpraccess);
+                    $("#ddProjectGroup").dxDropDownBox("instance").option("value", user.HrtimeSheetProjectGroup);
+                    //alert(user.CompanyId)
+                    onCompanySelectionChanged({ selectedRowKeys: [user.CompanyName] });
+                    onBranchSelectionChanged({ selectedRowKeys: [user.BranchName] });
+                    onUserLevelSelectionChanged({ selectedRowKeys: [user.UserLevelDesc] });
+                    onEmployeeGroupSelectionChanged({ selectedRowKeys: [user.HruserLevelDesc] });
+                    onFilteredAccountSelectionChanged({ selectedRowKeys: [user.AccountHead] });
+                    onSalesPersonGridSelectionChanged({ selectedRowKeys: [user.UserLevelDesc] });
+
+
+
+
+
+                },
+                error: function () {
+                    DevExpress.ui.notify("Failed to load user info", "error", 3000);
+                }
+            });
+        }
+
+        function onDepartmentSelectionChanged(e) {
+            const selectedKey = e.selectedRowKeys[0];
+            const ddbInstance = $("#ddDepartment").dxDropDownBox("instance");
+
+            if (selectedKey) {
+                ddbInstance.option("value", selectedKey);
+                if (ddbInstance.option("opened")) {
+                    ddbInstance.close();
+                }
+
+                const selectedRowData = e.selectedRowsData[0];
+                if (selectedRowData) {
+                    console.log("Selected:", selectedRowData.Department);
+                }
+            }
+        }
+        function onCompanySelectionChanged(e) {
+
+            // const selectedKey = e.selectedRowKeys && e.selectedRowKeys[0];
+            const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+
+            const ddbInstance = $("#ddCompany").dxDropDownBox("instance");
+
+            if (selectedKey) {
+
+                ddbInstance.option("value", selectedKey);
+                //  ddbInstance.repaint(); // Ensure UI refreshes
+                if (ddbInstance.option("opened")) {
+                    ddbInstance.close();
+                }
+
+                const selectedRowData = e.selectedRowsData && e.selectedRowsData[0];
+                if (selectedRowData) {
+                    console.log("Selected company:", selectedRowData.CompanyName);
+                }
+            }
+        }
+
+        function onBranchSelectionChanged(e) {
+
+            // const selectedKey = e.selectedRowKeys && e.selectedRowKeys[0];
+            const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+
+            const ddbInstance = $("#ddBranch").dxDropDownBox("instance");
+
+            if (selectedKey) {
+
+                ddbInstance.option("value", selectedKey);
+                //  ddbInstance.repaint(); // Ensure UI refreshes
+                if (ddbInstance.option("opened")) {
+                    ddbInstance.close();
+                }
+
+                const selectedRowData = e.selectedRowsData && e.selectedRowsData[0];
+                if (selectedRowData) {
+                    console.log("Selected Branch:", selectedRowData.BranchName);
+                }
+            }
+        }
+
+        function onDepartmentsChanged(e) {
+            $.ajax({
+                url: "/api/Utility/GetDepartments",
+                method: "GET",
+                data: { module: selectedModule },
+                success: function (data) {
+                    prefixBox.option({
+                        items: data.data || data,
+                        value: null,
+                        disabled: false
+                    });
+                },
+            });
+        }
+
+        function onUserLevelSelectionChanged(e) {
+
+            // const selectedKey = e.selectedRowKeys && e.selectedRowKeys[0];
+            const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+
+            const ddbInstance = $("#ddUserLevel").dxDropDownBox("instance");
+
+            if (selectedKey) {
+
+                ddbInstance.option("value", selectedKey);
+                //  ddbInstance.repaint(); // Ensure UI refreshes
+                if (ddbInstance.option("opened")) {
+                    ddbInstance.close();
+                }
+
+                const selectedRowData = e.selectedRowsData && e.selectedRowsData[0];
+                if (selectedRowData) {
+                    console.log("User Level Selected:", selectedRowData.UserLevelDesc);
+                }
+            }
+        }
+
+
+
+        function onEmployeeGroupSelectionChanged(e) {
+
+            // const selectedKey = e.selectedRowKeys && e.selectedRowKeys[0];
+            const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+
+            const ddbInstance = $("#ddEmployeeGroup").dxDropDownBox("instance");
+
+            if (selectedKey) {
+
+                ddbInstance.option("value", selectedKey);
+                //  ddbInstance.repaint(); // Ensure UI refreshes
+                if (ddbInstance.option("opened")) {
+                    ddbInstance.close();
+                }
+
+                const selectedRowData = e.selectedRowsData && e.selectedRowsData[0];
+                if (selectedRowData) {
+                    console.log("Selected Group:", selectedRowData.HruserLevelDesc);
+                }
+            }
+        }
+
+        function onInventoryGroupSelectionChanged(e) {
+            const selectedKey = e.selectedRowKeys[0];
+            const ddbInstance = $("#ddInventoryMasterGroup").dxDropDownBox("instance");
+
+            if (selectedKey) {
+                ddbInstance.option("value", selectedKey);
+                if (ddbInstance.option("opened")) {
+                    ddbInstance.close();
+                }
+
+                const selectedRowData = e.selectedRowsData[0];
+                if (selectedRowData) {
+                    console.log("Selected Inventory Group:", selectedRowData.InventoryMasterGroup);
+                }
+            }
+        }
+
+        function onFilteredAccountSelectionChanged(e) {
+
+            // const selectedKey = e.selectedRowKeys && e.selectedRowKeys[0];
+            const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+
+            const ddbInstance = $("#ddFilteredAccountHead").dxDropDownBox("instance");
+
+            if (selectedKey) {
+
+                ddbInstance.option("value", selectedKey);
+                //  ddbInstance.repaint(); // Ensure UI refreshes
+                if (ddbInstance.option("opened")) {
+                    ddbInstance.close();
+                }
+
+                const selectedRowData = e.selectedRowsData && e.selectedRowsData[0];
+                if (selectedRowData) {
+                    console.log("Selected Account:", selectedRowData.AccountHead);
+                }
+            }
+        }
+
+        function onHRUserLevelSelectionChanged(e) {
+            const selectedKey = e.selectedRowKeys[0];
+            const ddbInstance = $("#ddHRUserLevel").dxDropDownBox("instance");
+
+            if (selectedKey) {
+                ddbInstance.option("value", selectedKey);
+                if (ddbInstance.option("opened")) {
+                    ddbInstance.close();
+                }
+                const selectedRowData = e.selectedRowsData[0];
+                if (selectedRowData) {
+                    console.log("User Level Selected:", selectedRowData.UserLevelDesc);
+                }
+            }
+        }
+
+
+        function onSalesPersonGridSelectionChanged(e) {
+
+            // const selectedKey = e.selectedRowKeys && e.selectedRowKeys[0];
+            const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+
+            const ddbInstance = $("#ddSalesPerson").dxDropDownBox("instance");
+
+            if (selectedKey) {
+
+                ddbInstance.option("value", selectedKey);
+                //  ddbInstance.repaint(); // Ensure UI refreshes
+                if (ddbInstance.option("opened")) {
+                    ddbInstance.close();
+                }
+
+                const selectedRowData = e.selectedRowsData && e.selectedRowsData[0];
+                if (selectedRowData) {
+                    console.log("Selected SalesPerson:", selectedRowData.InventoryMprAccessDesc);
+                }
+            }
+        }
+
+        function projectGroupSelectionChanged(e) {
+            const selectedKey = e.selectedRowKeys[0];
+            const ddbInstance = $("#ddProjectGroup").dxDropDownBox("instance");
+
+            if (selectedKey) {
+                ddbInstance.option("value", selectedKey);
+                if (ddbInstance.option("opened")) {
+                    ddbInstance.close();
+                }
+
+                const selectedRowData = e.selectedRowsData[0];
+                console.log("Selected Project Group:", selectedRowData.ProjectGroupName);
+
+                window.selectedProjectGroupId = selectedRowData.ProjectGroupID;
+                window.selectedProjectGroupName = selectedRowData.ProjectGroupName;
+            } else {
+                DevExpress.ui.notify("Please select a Project Group from the grid", "error", 2000);
+            }
+        }
+
+
+
+        function saveUserDetails() {
+
+            debugger;
+            const user = {
+                UserId: $("#UserId").dxTextBox("instance").option("value"),
+                UserName: $("#UserName").dxTextBox("instance").option("value"),
+                Password: $("#Password").dxTextBox("instance").option("value"),
+                DeptCode: $("#ddDepartment").dxDropDownBox("instance").option("value"),
+                CompanyId: $("#ddCompany").dxDropDownBox("instance").option("value"),
+                BranchCode: $("#ddBranch").dxDropDownBox("instance").option("value"),
+                UserLevel: $("#ddUserLevel").dxDropDownBox("instance").option("value"),
+
+                HrlevelCode: $("#ddEmployeeGroup").dxDropDownBox("instance").option("value"),
+                InventoryAccess: $("#ddInventoryMasterGroup ").dxDropDownBox("instance").option("value"),
+                PettyCashAccount: $("#ddFilteredAccountHead ").dxDropDownBox("instance").option("value"),
+                EqptQuotationAccess: $("#ddHRUserLevel ").dxDropDownBox("instance").option("value"),
+                InventoryMpraccess: $("#ddSalesPerson ").dxDropDownBox("instance").option("value"),
+                HrtimeSheetProjectGroup: $("#ddProjectGroup ").dxDropDownBox("instance").option("value"),
+                // HRTimesheetGroup: $("#HRTimesheetGroup").dxSelectBox("instance").option("value"),
+                MobileNo: $("#UserMobileNo").dxTextBox("instance").option("value"),
+                EmailAddress: $("#UserEmailAddress").dxTextBox("instance").option("value"),
+                LastLogOnTime: $("#UserLastLoggedInTime").dxDateBox("instance").option("value"),
+                LastLogOffTime: $("#UserLastLoggedOffTime").dxDateBox("instance").option("value")
+            };
+
+            $.ajax({
+                url: "/api/Utility/SaveUserDetails",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(user),
+                success: function (response) {
+                    DevExpress.ui.notify("User details saved successfully!", "success", 3000);
+                },
+                error: function () {
+                    DevExpress.ui.notify("Failed to save user details", "error", 3000);
+                }
+            });
+        }
+
+
+        function onCompanydataGridInitialized(e) {
+            dataGrid = e.component;
+        }
+
+        function onBranchdataGridInitialized(e) {
+            dataGrid2 = e.component;
+        }
+
+        function onUserLeveldataGridInitialized(e) {
+            dataGrid3 = e.component;
+        }
+
+        function onEmployeeGroupdataGridInitialized(e) {
+            dataGrid4 = e.component;
+        }
+        function onFilteredAccountGridInitialized(e) {
+            dataGrid5 = e.component;
+        }
+        function onSalesPersonGridInitialized(e) {
+            dataGrid6 = e.component;
+        }
+
+
+
+        function onSalesPersonValueChanged(e) {
+        }
+        function formatDate(dateStr) {
+            if (!dateStr) return "-";
+            const date = new Date(dateStr);
+            return date.toLocaleString();
+        }
+        function onTabSelectionChanged(e) {
+            var selectedIndex = e.component.option('selectedIndex');
+            var selectedText = e.component.option('items')[selectedIndex].text;
+
+            // Hide all tab containers
+            $('.tab-container').hide();
+
+            // Show the container matching the tab
+            $('.tab-container').eq(selectedIndex).show();
+
+            // Check if Finance tab is selected (index 1 as per your tab list)
+            if (selectedText === "Finance") {
+                loadFinanceData();
+            }
+        }
+        function loadFinanceData() {
+            // Get the userId from the URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get("userId");
+
+            $("#gridContainer").dxDataGrid({
+                dataSource: new DevExpress.data.CustomStore({
+                    key: "SlNo",
+                    load: function () {
+                        // Pass the userId as a query parameter to the API
+                        return $.getJSON(`/api/Utility/GetUserAccessWebs?userId=${userId}`)
+                            .then(function (result) {
+                                return {
+                                    data: result.data,
+                                    totalCount: result.totalCount
+                                };
+                            });
+                    }
+                }),
+                remoteOperations: false,
+                height: 500,
+                columnAutoWidth: true,
+                scrolling: {
+                    mode: "virtual",
+                    showScrollbar: "always"
+                },
+                columns: [
+                    { dataField: "SlNo", caption: "Serial No", visible: false },
+                    { dataField: "ItemForm", caption: "Item Name" },
+                    { dataField: "ItemDescription", caption: "Action Name" },
+                    {
+                        dataField: "ItemVisible",
+                        caption: "Visible",
+                        dataType: "boolean",
+                        cellTemplate: function (container, options) {
+                            $("<div>")
+                                .dxCheckBox({
+                                    value: options.value,
+                                    onValueChanged: function (e) {
+                                        const items = [{
+                                            SlNo: options.data.SlNo,
+                                            ItemVisible: e.value
+                                        }];
+                                        updateItemVisibility(items, function () {
+                                            $("#gridContainer").dxDataGrid("instance").refresh();
+                                        });
+                                    }
+                                })
+                                .appendTo(container);
+                        }
+                    }
+                ],
+                sorting: {
+                    mode: "multiple"
+                },
+                selection: {
+                    mode: "multiple"
+                },
+                showBorders: true
+            });
+        }
+
+
+
+
+
+
+            function updateItemVisibility(items) {
+                $.ajax({
+                url: "/api/Utility/UpdateUserAccessWeb",
+                    method: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(items),
+                    success: function (data) {
+                        if (data.success) {
+                            DevExpress.ui.notify(data.message, "success", 3000);
+                        } else {
+                            DevExpress.ui.notify(data.message, "error", 3000);
+                        }
+                    },
+                    error: function () {
+                        DevExpress.ui.notify("Failed to update item visibility.", "error", 3000);
+                    }
+                });
             }
 
-              function ItemClassification(){
-                  const url = `/${tenantName}/IMS/StockDetails_ItemClassification`;
-                const title = "";
-                    openModal(url, title);
-            }
-              $(document).ready(function () {
+
+         
+         
+
+
+        // Example functions for each tab
+        function loadMasterModuleData() {
+            console.log("Loading Master Module data...");
+            // Add your logic here
+        }
+
+        // function loadFinanceData() {
+        //     console.log("Loading Finance data...");
+        //     // Add your logic here
+        // }
+
+        function loadVATData() {
+            console.log("Loading VAT data...");
+            // Add your logic here
+        }
+
+        function loadHRData() {
+            console.log("Loading Human Resources data...");
+            // Add your logic here
+        }
+        function ItemStore() {
+            const url = `/${tenantName}/IMS/StockDetails_ItemStore`;
+            const title = "";
+            openModal(url, title);
+        }
+        function StockGroup() {
+           
+            
+
+            DevExpress.ui.dialog.confirm(
+                "You are about to Generate User Access Permissions for the user. Click Yes if you would like to continue.",
+                "Grant User Access Permission"
+            ).done(function (dialogResult) {
+                if (dialogResult) {
+                    // Get the userId from the query string
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const userId = urlParams.get("userId");
+
+                    if (userId) {
+                        $.ajax({
+                            url: "/api/Utility/GrantUserAccessPermissions", // API endpoint
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify({ userId: parseInt(userId) }), // Pass userId as JSON
+                            success: function (response) {
+                                DevExpress.ui.dialog.alert(
+                                    "User access permission has been successfully granted.",
+                                    "Success"
+                                );
+                            },
+                            error: function (xhr) {
+                                DevExpress.ui.dialog.alert(
+                                    "An error occurred while granting user access permissions.",
+                                    "Error"
+                                );
+                            }
+                        });
+                    } else {
+                        DevExpress.ui.dialog.alert("User ID is missing.", "Error");
+                    }
+                }
+
+            });
+        }
+
+        function ItemClassification() {
+            const url = `/${tenantName}/IMS/StockDetails_ItemClassification`;
+            const title = "";
+            openModal(url, title);
+        }
+        $(document).ready(function () {
             // Ensure dxTabs has loaded, then get the selected index
             const tabsInstance = DevExpress.ui.dxTabs.getInstance($(".dx-tabs")[0]);
             const selectedTabIndex = tabsInstance.option("selectedIndex");
@@ -1270,91 +1380,91 @@
         });
 
 
-           $(function () {
-              $("#InventoryStockDetails").dxTextBox({
-                  text: formatMessage("Inventory Stock Details"),
+        $(function () {
+            $("#InventoryStockDetails").dxTextBox({
+                text: formatMessage("Inventory Stock Details"),
                 readOnly: true,
-                onContentReady: function(e) {
-                            $(e.element).addClass("dx-textbox-heading");
-                    }
+                onContentReady: function (e) {
+                    $(e.element).addClass("dx-textbox-heading");
+                }
 
             });
         });
 
-       var contextMenuInstance;
+        var contextMenuInstance;
 
-      $(function () {
-          $("<div style='margin-top: 60px;' id='addOrRemoveContextMenu'></div>").appendTo("body");
+        $(function () {
+            $("<div style='margin-top: 60px;' id='addOrRemoveContextMenu'></div>").appendTo("body");
 
-          contextMenuInstance = $("#addOrRemoveContextMenu").dxContextMenu({
-              items: [
-                  {
-                      text: "Add or Remove Buttons",
-                      items: [
-                          {
-                              text: "User Access",
-                              template: function () {
-                                  return `
-                                      <div style="padding:5px;min-width:200px;">
-                                          <div>
-                                              <input type="checkbox" id="chkGenerate" />
-                                              <label for="chkGenerate"> Generate Access List</label>
-                                          </div>
-                                          <div style="margin-top:5px;">
-                                              <input type="checkbox" id="chkReplicate" />
-                                              <label for="chkReplicate"> Replicate User Access</label>
-                                          </div>
-                                          <div style="margin-top:5px;">
-                                              <button onclick="ResetToolbar()" style="width:100%;padding:5px;">Reset Toolbar</button>
-                                          </div>
+            contextMenuInstance = $("#addOrRemoveContextMenu").dxContextMenu({
+                items: [
+                    {
+                        text: "Add or Remove Buttons",
+                        items: [
+                            {
+                                text: "User Access",
+                                template: function () {
+                                    return `
+                                              <div style="padding:5px;min-width:200px;">
+                                                  <div>
+                                                      <input type="checkbox" id="chkGenerate" />
+                                                      <label for="chkGenerate"> Generate Access List</label>
+                                                  </div>
+                                                  <div style="margin-top:5px;">
+                                                      <input type="checkbox" id="chkReplicate" />
+                                                      <label for="chkReplicate"> Replicate User Access</label>
+                                                  </div>
+                                                  <div style="margin-top:5px;">
+                                                      <button onclick="ResetToolbar()" style="width:100%;padding:5px;">Reset Toolbar</button>
+                                                  </div>
+                                              </div>
+                                          `;
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        template: function () {
+                            return `
+                                      <div style="padding:5px;min-width:220px;">
+                                          <button onclick="CustomizeToolbar()" style="width:100%;padding:5px;">Customize...</button>
                                       </div>
                                   `;
-                              }
-                          }
-                      ]
-                  },
-                  {
-                      template: function () {
-                          return `
-                              <div style="padding:5px;min-width:220px;">
-                                  <button onclick="CustomizeToolbar()" style="width:100%;padding:5px;">Customize...</button>
-                              </div>
-                          `;
-                      }
-                  }
-              ],
-              target: "#btnReplicateUserAccessDropdown", // or your dropdown button ID
-              width: 250,
-              showSubmenuMode: { name: "onHover", delay: { show: 0, hide: 0 } },
-              submenuDirection: "right",
-              closeOnOutsideClick: false,
-              onItemClick: function (e) {
-                  e.event.stopPropagation();
-              }
-          }).dxContextMenu("instance");
-      });
+                        }
+                    }
+                ],
+                target: "#btnReplicateUserAccessDropdown", // or your dropdown button ID
+                width: 250,
+                showSubmenuMode: { name: "onHover", delay: { show: 0, hide: 0 } },
+                submenuDirection: "right",
+                closeOnOutsideClick: false,
+                onItemClick: function (e) {
+                    e.event.stopPropagation();
+                }
+            }).dxContextMenu("instance");
+        });
 
 
-      function onDropdownIconClick(e) {
-          e.event.preventDefault();
-          e.event.stopPropagation();
-          const contextMenu = $("#addOrRemoveContextMenu").dxContextMenu("instance");
-          contextMenu.show();
-      }
+        function onDropdownIconClick(e) {
+            e.event.preventDefault();
+            e.event.stopPropagation();
+            const contextMenu = $("#addOrRemoveContextMenu").dxContextMenu("instance");
+            contextMenu.show();
+        }
 
-      function ReplicateAccess() {
-          const url = `/${tenantName}/Finance/ReplicateUserAccount`;
-          const title = "";
-          openModal(url, title);
-      }
+        function ReplicateAccess() {
+            const url = `/${tenantName}/Finance/ReplicateUserAccount`;
+            const title = "";
+            openModal(url, title);
+        }
 
-      function ResetToolbar() {
-          alert("Reset Toolbar clicked");
-      }
+        function ResetToolbar() {
+            alert("Reset Toolbar clicked");
+        }
 
-      function CustomizeToolbar() {
-          alert("Customize clicked");
-      }
+        function CustomizeToolbar() {
+            alert("Customize clicked");
+        }
 
 
 
@@ -1370,7 +1480,7 @@
     }
 
     .form-group {
-        flex: 1 1 calc(33.333% - 20px); 
+        flex: 1 1 calc(33.333% - 20px);
         min-width: 250px;
     }
 
@@ -1382,5 +1492,22 @@
 
     .mainContainer {
         width: 96%;
+    }
+
+    .tab-layout {
+        display: flex;
+        gap: 20px;
+    }
+
+    .tab-menu {
+        min-width: 250px;
+    }
+
+    .tab-content-area {
+        flex-grow: 1;
+    }
+
+    .tab-container {
+        display: none;
     }
 </style>

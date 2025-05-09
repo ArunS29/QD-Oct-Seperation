@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Org.BouncyCastle.Bcpg;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -194,6 +195,169 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        [HttpPost]
+        public IActionResult GrantUserAccessPermissions([FromBody] int userId)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    // Execute the stored procedure with the userId parameter
+                    dbContext.Database.ExecuteSqlRaw("EXEC stPro901_03InsertUserAccessPermissionsforweb @ToUser = {0}", userId);
+
+                    return Ok(new { success = true, message = "User access permissions granted successfully." });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GrantUserAccessPermissions: {ex.Message}");
+                    return StatusCode(500, new { success = false, message = "An error occurred.", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { success = false, message = "Invalid tenant." });
+        }
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetUserAccessWebs(DataSourceLoadOptions loadOptions, int userId)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    // Filter the data based on the userId
+                    var accessData = dbContext.TblUserAccessWebs.Where(x => x.UserId == userId);
+                    return Json(await DataSourceLoader.LoadAsync(accessData, loadOptions));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetUserAccessWebs: {ex.Message}");
+                    return StatusCode(500, new
+                    {
+                        success = false,
+                        message = "An error occurred while fetching the user access records.",
+                        error = ex.Message
+                    });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+
+        //[HttpPost]
+        //public async Task<IActionResult> UpdateUserAccessWeb(int key, [FromBody] Dictionary<string, object> values)
+        //{
+        //    if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //    {
+        //        try
+        //        {
+        //            var accessRecord = await dbContext.TblUserAccessWebs.FindAsync(key);
+        //            if (accessRecord == null)
+        //            {
+        //                return NotFound();
+        //            }
+
+        //            // Log incoming values for debugging
+        //            _logger.LogInformation("UpdateUserAccessWeb received values: " + System.Text.Json.JsonSerializer.Serialize(values));
+
+        //            // Apply changes using reflection
+        //            foreach (var item in values)
+        //            {
+        //                var property = typeof(TblUserAccessWeb).GetProperty(item.Key);
+        //                if (property != null && property.CanWrite)
+        //                {
+        //                    try
+        //                    {
+        //                        var targetType = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
+
+        //                        object safeValue;
+
+        //                        if (targetType == typeof(bool))
+        //                        {
+        //                            // Handle different types of boolean representations
+        //                            if (item.Value is string strVal)
+        //                            {
+        //                                safeValue = bool.Parse(strVal);
+        //                            }
+        //                            else
+        //                            {
+        //                                safeValue = Convert.ToBoolean(item.Value);
+        //                            }
+        //                        }
+        //                        else
+        //                        {
+        //                            safeValue = Convert.ChangeType(item.Value, targetType);
+        //                        }
+
+        //                        property.SetValue(accessRecord, safeValue);
+        //                    }
+        //                    catch (Exception e)
+        //                    {
+        //                        _logger.LogWarning($"Failed to update property {item.Key}: {e.Message}");
+        //                    }
+        //                }
+        //            }
+
+        //            await dbContext.SaveChangesAsync();
+        //            return Ok();
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            _logger.LogError($"Error updating user access: {ex.Message}");
+        //            return StatusCode(500, new { message = "Error updating record.", error = ex.Message });
+        //        }
+        //    }
+
+        //    return Unauthorized(new { message = "Invalid tenant." });
+        //}
+        [HttpPost]
+        public async Task<IActionResult> UpdateUserAccessWeb([FromBody] List<ItemVisibilityUpdate> items)
+        {
+            _logger.LogInformation($"Received request to update visibility for items: {string.Join(", ", items.Select(i => $"SlNo={i.SlNo}, ItemVisible={i.ItemVisible}"))}");
+
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    foreach (var item in items)
+                    {
+                        var userAccess = await dbContext.TblUserAccessWebs.FirstOrDefaultAsync(u => u.SlNo == item.SlNo);
+
+                        if (userAccess == null)
+                        {
+                            _logger.LogWarning($"User access with SlNo {item.SlNo} not found.");
+                            return NotFound(new { success = false, message = $"User access with SlNo {item.SlNo} not found." });
+                        }
+
+                        _logger.LogInformation($"Current ItemVisible for SlNo {item.SlNo}: {userAccess.ItemVisible}");
+                        userAccess.ItemVisible = item.ItemVisible;
+                        _logger.LogInformation($"Updated ItemVisible for SlNo {item.SlNo} to: {item.ItemVisible}");
+
+                        dbContext.TblUserAccessWebs.Update(userAccess);
+                    }
+
+                    await dbContext.SaveChangesAsync();
+                    _logger.LogInformation("Item visibility updated successfully for all items.");
+                    return Ok(new { success = true, message = "Item visibility updated successfully for all items." });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in UpdateItemVisible: {ex.Message}");
+                    return StatusCode(500, new
+                    {
+                        success = false,
+                        message = "An error occurred while updating the item visibility.",
+                        error = ex.Message
+                    });
+                }
+            }
+
+            _logger.LogWarning("Invalid tenant.");
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
         [HttpGet]
         public async Task<IActionResult> Getuserdetails(DataSourceLoadOptions loadOptions)
         {
@@ -916,6 +1080,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         {
             public int SlNo { get; set; }
             public bool ItemVisible { get; set; }
+
         }
 
     }
