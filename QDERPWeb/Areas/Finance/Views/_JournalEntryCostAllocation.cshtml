@@ -176,6 +176,7 @@
                     .DataSource(new object[] { })
                     .Columns(columns =>
                     {
+                        columns.AddFor(m => m.CostAllocationId).Caption("CostAllocation Id").DataField("CostAllocationId").Width(100).Visible(true).AllowEditing(false);
                         columns.AddFor(m => m.CostAllocDrCr).Caption("Dr/Cr").DataField("DrCr").Width(100).AllowEditing(false);
                         columns.AddFor(m => m.CostAllocationUnitId)
                     .DataField("CostAllocationUnit")
@@ -439,60 +440,44 @@
 
 
     $(document).ready(function () {
-        // Check if accountHead starts with "Cost"
-        var accountHead = '@accountHead';
-        // if (!accountHead.startsWith("Cost")) {
-        //     return; // Exit if condition is not met
-        // }
-        // Capture the initial value of the NumberBox
+        const journalChildNo = parseInt('@voucherEntryNo'.trim(), 10);
         const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
-
-        // Sample data with initial value of VoucherAmount
-        const costData = [
-            {
-                DrCr: '@drCr',  // Ensure @drCr is correctly rendered as a string value
-
-                EffectiveDate: new Date().toLocaleDateString('en-GB', {
-                    day: 'numeric',
-                    month: 'short',
-                    year: 'numeric',
-                }),
-                VoucherAmount: initialVoucherAmount.toFixed(2),
-                Remarks: ''
-            }
-        ];
-
-        // console.log('Cost Data:', costData);
-
-        // Get the DataGrid instance
+        const drCr = '@drCr';
         const costdataGrid = $('#costdataGrid').dxDataGrid('instance');
 
-        if (costdataGrid) {
-            costdataGrid.option('dataSource', costData);
-        }
+        $.ajax({
+            url: `/api/JournalEntryEdit/GetCostAllocationsBydatagrid?journalChildNo=${journalChildNo}`,
+            type: 'GET',
+            success: function (data) {
+                if (data && data.length > 0) {
+                    costdataGrid.option('dataSource', data);
+                } else {
+                    // No data found – insert a default row
+                    const defaultRow = [{
+                        DrCr: drCr,
+                        EffectiveDate: new Date().toISOString(),
+                        VoucherAmount: initialVoucherAmount.toFixed(2),
+                        Remarks: '',
+                        // default fallback value
+                    }];
+                    costdataGrid.option('dataSource', defaultRow);
+                }
+            },
+            error: function () {
+                DevExpress.ui.notify("Failed to load cost allocation data.", "error", 4000);
+            }
+        });
 
-        // Function to handle changes to the NumberBox value
         $('#CostAmount').dxNumberBox({
             valueChanged: function (e) {
                 const newVoucherAmount = e.value.toFixed(2);
-
-                // Update the data in the DataGrid
-                if (costdataGrid) {
-                    // Find the first row (assuming only one row in this case)
-                    const updatedData = [{
-                        DrCr: '@drCr', // Make sure @drCr is a valid string
-                        CostAllocated: '',
-                        EffectiveDate: new Date().toLocaleDateString('en-GB', {
-                            day: 'numeric',
-                            month: 'short',
-                            year: 'numeric',
-                        }),
-                        VoucherAmount: newVoucherAmount,
-                        Remarks: 'N/A'
-                    }];
-
-                    costdataGrid.option('dataSource', updatedData);
-                }
+                const updatedData = [{
+                    DrCr: drCr,
+                    EffectiveDate: new Date().toISOString(),
+                    VoucherAmount: newVoucherAmount,
+                    Remarks: ''
+                }];
+                costdataGrid.option('dataSource', updatedData);
             }
         });
 
@@ -612,16 +597,17 @@
         let voucherno = '@voucherNo';
         
 
-        // Append voucherEntryNo to each row
         let costAllocations = allRowsData.map(row => ({
+            CostAllocationId: row.CostAllocationId || 0, // 0 if it's a new record
             CostAllocDrCr: row.DrCr,
             CostAllocationUnitId: row.CostAllocationUnitId,
             EffectiveDate: row.EffectiveDate ? new Date(row.EffectiveDate).toISOString() : null,
             AmountAllocated: row.VoucherAmount,
             CostAllocRemarks: row.Remarks,
-            JournalChildNo:journalchildno,
-            VoucherNo:voucherno
+            JournalChildNo: journalchildno,
+            VoucherNo: voucherno
         }));
+
 
         // Optional: validate before sending
 
@@ -632,7 +618,7 @@
             data: JSON.stringify(costAllocations),
             success: function (response) {
                 debugger;
-                // Closepopup();
+                Closepopup();
                 DevExpress.ui.dialog.alert(
                     "Cost Allocation Details updated Successfully.",
                     "Update Successful"
@@ -853,7 +839,7 @@
                     let balanceAmount = oldAmount - newAmount; // Calculate the remaining balance
 
                     // Add new row with the balance amount
-                    let newRow = { ...e.oldData, CostAllocationUnit: "Common Overheads", VoucherAmount: balanceAmount };
+                    let newRow = { ...e.oldData, CostAllocationUnit: "Common Overheads", VoucherAmount: balanceAmount,CostAllocationId: 0,CostAllocRemarks:null,EffectiveDate:new Date()   };
 
                     // Add the new row to the grid
                     dataSource.push(newRow);

@@ -8,12 +8,12 @@ using QD.ERP.Web.Service;
 
 namespace QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices
 {
-    public partial class proformaInvoiceforegincurrency : XtraReport
+    public partial class PreviewInvoice : XtraReport
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private bool _isApproved;
 
-        public proformaInvoiceforegincurrency(
+        public PreviewInvoice(
             string invoiceNo,
             string tenantName,
             string companyName,
@@ -159,6 +159,6 @@ namespace QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices
             this.Bands[BandKind.Detail].Controls.Add(noDataLabel);
         }
 
-        
+
     }
 }

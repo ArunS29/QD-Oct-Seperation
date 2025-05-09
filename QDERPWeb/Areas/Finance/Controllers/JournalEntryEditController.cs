@@ -367,65 +367,61 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 return BadRequest("No cost allocation data received.");
             }
+            string userName = HttpContext.Session.GetString("UserName");
+            DateTime now = DateTime.Now;
+            var journalChildNo = allocations.First().JournalChildNo;
+
+            // Fetch all existing allocations for the JournalChildNo
+            var existingAllocations = dbContext.Tbl20128JournalRegisterCostAllocations
+                .Where(x => x.JournalChildNo == journalChildNo)
+                .ToList();
 
             foreach (var allocation in allocations)
             {
-                var entity = new Tbl20128JournalRegisterCostAllocation
+                var existing = dbContext.Tbl20128JournalRegisterCostAllocations
+                    .FirstOrDefault(x => x.CostAllocationId == allocation.CostAllocationId);
+
+                if (existing != null && allocation.CostAllocationId > 0)
                 {
-                    CostAllocDrCr = allocation.CostAllocDrCr,
-                    CostAllocationUnitId = allocation.CostAllocationUnitId,
-                    EffectiveDate = allocation.EffectiveDate,
-                    AmountAllocated = decimal.Parse(allocation.AmountAllocated.ToString()),
-                    CostAllocRemarks = allocation.CostAllocRemarks,
-                    JournalChildNo = allocation.JournalChildNo,
-                    VoucherNo = allocation.VoucherNo
-                };
-
-                dbContext.Tbl20128JournalRegisterCostAllocations.Add(entity);
-            }
-
-            dbContext.SaveChanges();
-
-            // Group allocations by JournalChildNo to create descriptions
-            var journalChildNos = allocations.Select(a => a.JournalChildNo).Distinct();
-
-            foreach (var journalChildNo in journalChildNos)
-            {
-                var relatedAllocations = dbContext.Tbl20128JournalRegisterCostAllocations
-                    .Where(x => x.JournalChildNo == journalChildNo)
-                    .Join(dbContext.Tbl201CostAllocationUnits,
-                        alloc => alloc.CostAllocationUnitId,
-                        unit => unit.CostAllocationUnitId,
-                        (alloc, unit) => new
-                        {
-                            alloc.CostAllocationUnitId,
-                            unit.CostAllocationUnit,
-                            alloc.AmountAllocated,
-                            alloc.CostAllocDrCr
-                        })
-                    .ToList();
-
-                var descriptionParts = relatedAllocations.Select(x =>
-                    $"{x.CostAllocationUnitId} | {x.CostAllocationUnit.Substring(0, Math.Min(25, x.CostAllocationUnit.Length))} | ({x.AmountAllocated} {x.CostAllocDrCr}) ::"
-                );
-
-                string costAllocationDescription = string.Join(" ", descriptionParts);
-
-                var journalChildRecord = dbContext.Qry202101journalRegisterChildren
-                    .FirstOrDefault(x => x.JournalChildNo == journalChildNo);
-
-                if (journalChildRecord != null)
+                    // Update existing record
+                    existing.CostAllocDrCr = allocation.CostAllocDrCr;
+                    existing.CostAllocationUnitId = allocation.CostAllocationUnitId;
+                    existing.EffectiveDate = allocation.EffectiveDate;
+                    existing.AmountAllocated = allocation.AmountAllocated;
+                    existing.CostAllocRemarks = allocation.CostAllocRemarks;
+                    existing.VoucherNo = allocation.VoucherNo;
+                    existing.ModifiedBy = userName;
+                    existing.ModifiedOn = now;
+                }
+                else
                 {
-                    journalChildRecord.CostAllocationDescription = costAllocationDescription;
+                    // New insert
+                    dbContext.Tbl20128JournalRegisterCostAllocations.Add(new Tbl20128JournalRegisterCostAllocation
+                    {
+                        CostAllocDrCr = allocation.CostAllocDrCr,
+                        CostAllocationUnitId = allocation.CostAllocationUnitId,
+                        EffectiveDate = allocation.EffectiveDate,
+                        AmountAllocated = allocation.AmountAllocated,
+                        CostAllocRemarks = allocation.CostAllocRemarks,
+                        JournalChildNo = allocation.JournalChildNo,
+                        VoucherNo = allocation.VoucherNo,
+                        EnteredBy = userName,
+                        EnteredOn = now
+                    });
                 }
             }
 
+
             dbContext.SaveChanges();
+
+            
 
             return Ok();
         }
 
-		[HttpPost]
+
+
+        [HttpPost]
 		public IActionResult SaveemployeeAllocations([FromBody] List<Tbl20129JournalRegisterEmployeeAllocation> allocations)
 		{
 			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
@@ -565,7 +561,82 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 			return Ok();
 		}
-	}
+
+        [HttpGet]
+        public IActionResult GetCostAllocationByJournalChildNo(long journalChildNo)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            var result = (from alloc in dbContext.Tbl20128JournalRegisterCostAllocations
+                          join unit in dbContext.Tbl201CostAllocationUnits
+                              on alloc.CostAllocationUnitId equals unit.CostAllocationUnitId
+                          where alloc.JournalChildNo == journalChildNo
+                          select new
+                          {
+                              CostCode = alloc.CostAllocationUnitId,
+                              CostUnit = unit.CostAllocationUnit,
+                              Amount = alloc.AmountAllocated,
+                              DrCr = alloc.CostAllocDrCr
+                          }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpGet]
+        public IActionResult GetEmployeeAllocationByJournalChildNo(long journalChildNo)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            var result = (from alloc in dbContext.Tbl20129JournalRegisterEmployeeAllocations
+                          join unit in dbContext.Tbl101Employees
+                              on alloc.EmployeeNo equals unit.EmployeeId
+                          where alloc.JournalChildNo == journalChildNo
+                          select new
+                          {
+                              EmpNo = alloc.EmployeeNo,
+                              EmployeeId = unit.EmployeeName,
+                              VoucherAmount = alloc.AmountAllocated,
+                              DrCr = alloc.EmpAllocDrCr
+                          }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpGet]
+        public IActionResult GetCostAllocationsBydatagrid(long journalChildNo)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            var result = (from alloc in dbContext.Tbl20128JournalRegisterCostAllocations
+                          join unit in dbContext.Tbl201CostAllocationUnits
+                              on alloc.CostAllocationUnitId equals unit.CostAllocationUnitId into gj
+                          from unit in gj.DefaultIfEmpty()
+                          where alloc.JournalChildNo == journalChildNo
+                          select new
+                          {
+                              CostAllocationId = alloc.CostAllocationId,
+                              DrCr = alloc.CostAllocDrCr,
+                              CostAllocationUnit = unit != null ? unit.CostAllocationUnit : "Common Overheads",
+                              CostAllocationUnitId = alloc.CostAllocationUnitId,
+                              EffectiveDate = alloc.EffectiveDate,
+                              VoucherAmount = alloc.AmountAllocated,
+                              Remarks = alloc.CostAllocRemarks
+                          }).ToList();
+
+            return Json(result);
+        }
+
+
+    }
 }
 
 

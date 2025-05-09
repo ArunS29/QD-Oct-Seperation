@@ -2046,9 +2046,61 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 			return Unauthorized(new { message = "Invalid tenant.", success = false });
 
 		}
+        [HttpPost]
+        public async Task<ActionResult> DebitApproveVoucher(string DebitNoteNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var UserName = HttpContext.Session.GetString("UserName");
+
+                    if (string.IsNullOrEmpty(DebitNoteNo))
+                    {
+                        return BadRequest(new { Message = "CreditNoteNo number is required." });
+                    }
+
+                    var voucher = dbContext.Tbl20172VatdebitNoteMasters.FirstOrDefault(v => v.DebitNoteNo == DebitNoteNo);
+
+                    if (voucher == null)
+                    {
+                        return NotFound(new { Message = "CreditNoteNo not found." });
+                    }
+
+                    // Update the fields
+                    voucher.IsApproved = true;
+                    voucher.ApprovedOn = DateTime.Now;
+                    voucher.ApprovedBy = UserName;
+
+                    //if (IsDirect == false)
+                    //{
+                    //    voucher.IsVerified = true;
+                    //    voucher.VoucherVerifiedOn = DateTime.Now;
+                    //    voucher.VoucherVerifiedBy = UserName;
+
+                    //}
+
+                    dbContext.SaveChanges();
+
+                    return Ok(new
+                    {
+                        Message = "CreditNoteNo approved successfully.",
+                        VoucherApprovedBy = UserName,  // Example, replace with actual data if needed
+                                                       //VoucherVerifiedOn = voucher.VoucherApprovedOn.ToString("dd-MMM-yyyy")
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+        }
 
 
-		[HttpPost]
+        [HttpPost]
 		public async Task<ActionResult> CreditPostInvoice(string CreditNoteNo, bool IsDirect)
 		{
 			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
@@ -3534,8 +3586,69 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
 			return Unauthorized("Unable to fetch tenant information.");
 		}
+        //[HttpGet("{debitNoteNo}")]
+        //public async Task<ActionResult> GetDebitNoteApprovalStatus(string debitNoteNo)
+        //{
+        //    if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //    {
+        //        try
+        //        {
+        //            // Query the approval status from Tbl20172VatdebitNoteMasters
+        //            var debitNote = await dbContext.Tbl20172VatdebitNoteMasters
+        //                .Where(dn => dn.DebitNoteNo == debitNoteNo)
+        //                .FirstOrDefaultAsync();
 
-		[HttpGet]
+        //            if (debitNote == null)
+        //            {
+        //                return Ok(new { isApproved = false }); // Return false if not found
+        //            }
+
+        //            // Return the approval status
+        //            return Ok(new { isApproved = debitNote.IsApproved ?? false });
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            _logger.LogError($"Error fetching approval status for debit note {debitNoteNo}: {ex.Message}");
+        //            return StatusCode(500, $"Internal server error: {ex.Message}");
+        //        }
+        //    }
+
+        //    return Unauthorized("Unable to fetch tenant information.");
+        //}
+
+        [HttpGet("{debitNoteNo}")]
+        public async Task<IActionResult> GetDebitNoteApprovalStatus(string debitNoteNo)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                _logger.LogWarning("Tenant context could not be resolved.");
+                return Unauthorized("Unable to fetch tenant information.");
+            }
+
+            try
+            {
+                var debitNote = await dbContext.Tbl20172VatdebitNoteMasters
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(d => d.DebitNoteNo == debitNoteNo);
+
+                if (debitNote == null)
+                {
+                    _logger.LogInformation($"Debit note not found: {debitNoteNo}");
+                    return NotFound(new { message = "Debit note not found", isApproved = false });
+                }
+
+                bool isApproved = debitNote.IsApproved ?? false;
+                return Ok(new { isApproved });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error fetching approval status for debit note {debitNoteNo}");
+                return StatusCode(500, new { message = "Internal server error", error = ex.Message });
+            }
+        }
+
+
+        [HttpGet]
 		public async Task<ActionResult<IEnumerable<Tbl00109ReasonsForCreditNote>>> GetCreditNoteReasons()
 		{
 			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))

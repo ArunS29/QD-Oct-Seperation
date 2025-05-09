@@ -5330,7 +5330,7 @@
 			$('input, select, textarea').prop('disabled', true);
 
 			$('.dx-button').each(function () {
-				const allowedButtons = ['btnMoveDown',  'btnMoveUp', 'btnSave','btnSaveAndClose','btnPostToLedgers','btnPostTag'];
+				const allowedButtons = ['btnMoveDown', 'btnMoveUp', 'btnSave','btnSaveAndClose','btnPostToLedgers','btnPostTag','btnPrint3'];
 				if (!allowedButtons.includes($(this).attr('id'))) {
 					$(this).dxButton('option', 'disabled', true);
 				}
@@ -5484,7 +5484,7 @@
 			// Set ApprovedBy checkbox to true
 			$("#ApprovedBy").dxCheckBox("instance").option("value", true);
 
-			const vno = $("#CreditNoteNo").dxTextBox("instance").option("value");
+			const vno = $("#DebitNoteNo").dxTextBox("instance").option("value");
 
 			if (!vno) {
 				DevExpress.ui.notify("Invoice number is required!", "error", 2000);
@@ -5500,10 +5500,10 @@
 				month: "short",
 				year: "numeric"
 			}).replace(/ /g, '-');
-
+			debugger
 			$.ajax({
 				type: "POST",
-				url: `/api/VATModule/CreditApproveVoucher?CreditNoteNo=${encodeURIComponent(vno)}`,
+				url: `/api/VATModule/DebitApproveVoucher?DebitNoteNo=${encodeURIComponent(vno)}`,
 				contentType: "application/json",
 				dataType: "json",
 				// Uncomment the following line if the API expects data in the request body:
@@ -5514,7 +5514,7 @@
 							"VAT InvoiceNo has been Approved.",
 							"Approved"
 						).done(() => {
-							disableEditing();
+							
 							$("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
 							$("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate || "N/A");
 

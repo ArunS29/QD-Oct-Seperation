@@ -75,7 +75,7 @@ namespace QD.ERP.Web.Pages
             }
 
             // 👉 New CASE 2: If it is Invoice-related
-            if (reportName == "TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS" || reportName == "RegulartaxinvoicewithoutSignatoriesFormat05" || reportName == "SimplifiedTaxInvoice" || reportName == "PrintRegularInvoiceFormat02"|| reportName == "ForeignCurrency")
+            if (reportName == "TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS" || reportName == "RegulartaxinvoicewithoutSignatoriesFormat05" || reportName == "SimplifiedTaxInvoice" || reportName == "PrintRegularInvoiceFormat02"|| reportName == "ForeignCurrency"|| reportName== "proformaInvoiceforegincurrency"|| reportName == "ProformaInvoiceForeignEnglish" || reportName == "PreviewInvoiceEnglish")
             {
                 if (string.IsNullOrEmpty(invoiceNo))
                 {
@@ -101,6 +101,22 @@ namespace QD.ERP.Web.Pages
                 else if (reportName == "RegulartaxinvoicewithoutSignatoriesFormat05")
                 {
                     Report = new QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE.RegulartaxinvoicewithoutSignatoriesFormat05(invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
+                }
+                else if (reportName == "proformaInvoiceforegincurrency")
+                {
+                    Report = new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.proformaInvoiceforegincurrency(invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
+                }
+                else if (reportName == "ProformaInvoiceForeignEnglish")
+                {
+                    Report = new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.ProformaInvoiceForeignEnglish(invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
+                }
+                else if (reportName == "PreviewInvoiceEnglish")
+                {
+                    Report = new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.PreviewInvoiceEnglish(invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
+                }
+                else if (reportName == "PreviewInvoice")
+                {
+                    Report = new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.PreviewInvoice(invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
                 }
 
                 return Page();
