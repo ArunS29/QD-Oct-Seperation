@@ -749,16 +749,32 @@
             </td>
 			
 			<td>
-                @(Html.DevExtreme().SelectBox()
-                    .ID("CountryCode")
-                    .Label(new JS("formatMessage('Country Code:')"))
-                    .LabelMode(EditorLabelMode.Outside)
-                    .Items(new[] { "US", "UK", "IN", "SA", "UAE" })
-                    .Value("IN")
-                    .SearchEnabled(true)
-                    .Width("100%"))
-            </td>
+    @(Html.DevExtreme().DropDownBox()
+        .ID("CountryCode")
+        .Label(new JS("formatMessage('Country Code:')"))
+        .LabelMode(EditorLabelMode.Outside)
+        .DataSource(d => d.WebApi()
+            .Controller("VATModule")
+            .LoadAction("Getcountrycode")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("CountryCodeNumeric")
+        )
+        .ValueExpr("CountryCodeNumeric")
+        .DisplayExpr("CountryName")
+        .ShowClearButton(true)
+        .AcceptCustomValue(false) 
+        .OpenOnFieldClick(false)
+        .Value(null)
+        .DropDownOptions(o => o.Width(1000))
+        .ContentTemplate(new TemplateName("countrycode"))
+        .Width("100%")
+    )
+</td>
+
         </tr>
+
+
+	
         <tr>
             
             <td>
@@ -2833,6 +2849,33 @@
         .OnInitialized("dataGridInitialized")  
     )
 }
+
+@using (Html.DevExtreme().NamedTemplate("countrycode"))
+{
+    @(Html.DevExtreme().DataGrid()
+        .ID("clientname")
+        .DataSource(d => d.WebApi()
+            .Controller("VATModule")
+            .LoadAction("Getcountrycode")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("CountryCodeNumeric") // Must match DropDownBox Key
+        )
+        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+        .Columns(columns =>
+        {
+            columns.Add().DataField("CountryName")
+                .Caption(new JS("formatMessage('CountryName')"))
+                .Alignment(HorizontalAlignment.Center);
+
+            columns.Add().DataField("CountryCodeAlpha2")
+                .Caption(new JS("formatMessage('CountryCodeAlpha2')"))
+                .Alignment(HorizontalAlignment.Center);
+        })
+        .OnSelectionChanged("dataGridSelectionChanged") // Updated handler name
+        .OnInitialized("dataGridInitialized") 
+    )
+}
+
 
 @using (Html.DevExtreme().NamedTemplate("CreditNoteContentTemplate"))
 {
@@ -7386,5 +7429,48 @@ $(function () {
 				function onSetDefaultClick() {
 				DevExpress.ui.dialog.alert("Invoice Notes has been set as default.", "Set as default");
 			}
+
+			
+// 		function dataGridCodes(e) {
+//     const selectedRowData = e.selectedRowsData[0];
+//     const ddbInstance = $("#CountryCode").dxDropDownBox("instance");
+
+//     if (selectedRowData) {
+//         ddbInstance.option("value", selectedRowData.CountryCodeNumeric); // <--- Set value from numeric code
+//         ddbInstance.close();
+//     } else {
+//         DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
+//     }
+// }
+				// Function to handle initialization of the DataGrid (optional)
+	function dataGridInitialized(e) {
+    console.log("DataGrid Initialized");
+}
+
+function dataGridSelectionChanged(e) {
+    const selectedKey = e.selectedRowKeys[0]; // Get the first selected key
+    const ddbInstance = $("#CountryCode").dxDropDownBox("instance");
+
+    if (selectedKey) {
+        // Ensure the DropDownBox data is loaded before setting value
+        ddbInstance.getDataSource().load().done(() => {
+            ddbInstance.option("value", selectedKey);
+            ddbInstance.close();
+        });
+    }
+
+    // Only run this block if IsCurrent is not "true"
+    if (IsCurrent !== "true") {
+        const selectedRowData = $("#clientname").dxDataGrid("instance").getSelectedRowsData();
+        if (selectedRowData.length > 0) {
+            paymentmeanstypecode = selectedRowData[0].PaymentMeansTypeCode;
+        } else {
+            DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
+            return;
+        }
+    }
+}
+
+
 </script>
 
