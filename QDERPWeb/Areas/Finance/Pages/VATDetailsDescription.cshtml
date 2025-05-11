@@ -1,17 +1,15 @@
 ﻿@page
 @model QD.ERP.Web.Areas.Finance.Pages.VATDetailsDescriptionModel
 @{
-    ViewData["Title"] = "VAT Details Description";
+    // ViewData["Title"] = "VAT Details Description";
 }
 <style>
-    .form-wrapper {
-        /* background-color: #3b80b1; */
+    .form-wrapper {   
         padding: 20px;
         border-radius: 6px;
-        width: 250%;
-        height:540px;
-        max-width: 1170px; 
-        padding:10px;
+        width: 250%;  
+        max-width: 1170px;     
+        max-width: 1170px;     
     }
 
     .form-group {
@@ -50,19 +48,11 @@
         margin: 0;
         height: 100px !important;
     }
-    .arabic-button {
-        position: absolute;
-        top: 75px;
-        right: 10px;
-        z-index: 2;
+    .arabic-button {  
         background: transparent;
         border: none;
         cursor: pointer;
     }
-
-        /* .arabic-button:hover { */
-        /*     color: #ddd; */
-        /* } */
 
     .top-buttons {
         position: absolute;
@@ -94,17 +84,27 @@
         display: none !important;
     }
 
-  /*   .bodyContainer {
+    .bodyContainer {
         display: flex;
         justify-content: center;
-        background-color: aliceblue;
-    } */
+     
+    }
 
     .mainContainer {
         margin-top: 1em;
+        width:100%;
+    }
+    .playIcon {
+        display: none;
     }
 </style>
 
+
+<div class="title">
+    <div class="header-container">
+        <div id="DetailsDescription1" class="no-border-title"></div>
+    </div>
+</div>
 <div class="form-wrapper">
 
     <!-- Row 1: Detailed Description + 2 Buttons -->
@@ -117,121 +117,142 @@
                 )
             @(Html.DevExtreme().Button()
                 .ID("btnUseItemDesc")
-                .Text("Use Item Desc.")
+                .Text("Use Item Description")
                 .Type(ButtonType.Default)
                 )
-        </div>
-        <label>Detailed Description / Specification:</label>
-        @(Html.DevExtreme().TextArea()
-            .ID("DetailedDescription")
-            .Height(100)
-            )
+        </div> 
     </div>
 
     <!-- Row 2: Arabic Description + Convert Button -->
-    <div class="form-group arabic-textbox-wrapper">
-        <label>Detailed Description / Specification (In Arabic):</label>
-        @(Html.DevExtreme().TextArea()
-            .ID("DetailedDescriptionArabic")
-            .Height(100)
-            )
-        @(Html.DevExtreme().Button()
-            .ID("btnConvertDescription")
-            .Icon("fas fa-language")
-            .ElementAttr(new { @class = "arabic-button" })
-            .OnClick("function() { convertToArabic('DetailedDescription', 'DetailedDescriptionArabic'); }")
-            )
-    </div>
+    <table style="width: 100%;">
+    <tr>
+        <td colspan="4">
+                @(Html.DevExtreme().TextBox()
+                    .Label(new JS("formatMessage('Detailed Description / Specification:')"))
+                    .LabelMode(EditorLabelMode.Outside)
+                    .ID("DetailedDescription")
+                @*     .Height("100% !important") *@
+                    .Width("100%")
+                    )
+        </td>
+        </tr>
+        <tr>
 
-    <!-- Row 3: Cost Allocations -->
-    <div class="form-row">
-        <div class="form-group" style="flex: 1;">
+            <td colspan="3">
+                <div style="display: flex; align-items: end;">
+            @(Html.DevExtreme().TextBox()
+                .Label(new JS("formatMessage('Detailed Description / Specification (In Arabic):')"))
+                .LabelMode(EditorLabelMode.Outside)
+                .ID("DetailedDescriptionArabic")
+                .Height(100)
+                .Width("100%")
+            )
+            
+            @(Html.DevExtreme().Button()
+                .ID("btnConvertDescription")
+                .Icon("fas fa-language")
+                .ElementAttr(new { @class = "arabic-button" })
+                .OnClick("function() { convertToArabic('DetailedDescription', 'DetailedDescriptionArabic'); }")
+            )
+            </div>
+        </td>
+    </tr>
+        <tr>
+            <td>
+                @(Html.DevExtreme().DateBox()
+                    .ID("ServiceStartDate")
+                    .Label("Service Start Date:")
+                    .LabelMode(EditorLabelMode.Outside)
+                    )
+            </td>
+            <td>
+                @(Html.DevExtreme().DateBox()
+                    .ID("ServiceEndDate")
+                    .Label("Service End Date:")
+                    .LabelMode(EditorLabelMode.Outside)
+                    )
+            </td>
+            <td>
+                @(Html.DevExtreme().DateBox()
+                    .ID("ExpiryDate")
+                    .Label("Expiry Date:")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Width("100%")
+                    )
+            </td>
+        </tr>
+    <tr>
+        <td>
             @(Html.DevExtreme().SelectBox()
                 .ID("CostAllocationEmployees")
                 .Placeholder("Select Employees")
                 .Label("Cost Allocation for Employees:")
                 .LabelMode(EditorLabelMode.Outside)
-                )
-        </div>
-        <div class="form-group" style="flex: 1;">
+                .Width("100%")
+            )
+        </td>
+            <td>
             @(Html.DevExtreme().SelectBox()
                 .ID("CostAllocationProperty")
                 .Placeholder("Select Property/Equipments")
                 .Label("Cost Allocation for Property/Equipments:")
                 .LabelMode(EditorLabelMode.Outside)
-                )
-        </div>
-    </div>
+                .Width("100%")
+            )
+        </td>
+            <td>
+                @(Html.DevExtreme().TextBox()
+                    .ID("BatchLotNo")
+                    .Label("Batch/Lot No:")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Width("100%")
+                    )
+            </td>
+    </tr>
 
-    <!-- Row 4: Batch, Expiry, Discount -->
-    <div class="form-row">
-        <div class="form-group" style="flex: 1;">
-            @(Html.DevExtreme().TextBox()
-                .ID("BatchLotNo")
-                .Label("Batch/Lot No:")
-                .LabelMode(EditorLabelMode.Outside)
-                )
-        </div>
-        <div class="form-group" style="flex: 1;">
-            @(Html.DevExtreme().DateBox()
-                .ID("ExpiryDate")
-                .Label("Expiry Date:")
-                .LabelMode(EditorLabelMode.Outside)
-                )
-        </div>
-        <div class="form-group" style="flex: 1;">
+    <tr>
+        
+       
+        <td>
             @(Html.DevExtreme().TextBox()
                 .ID("DiscountText")
                 .Label("Discount Text:")
                 .LabelMode(EditorLabelMode.Outside)
-                )
-        </div>
-    </div>
+                    .Width("100%")
+            )
+        </td>
+            <td>
+                <div style="display: flex; align-items: end;">
+                    @(Html.DevExtreme().Button()
+                        .ID("btnConvertDiscount")
+                        .Icon("fas fa-language")
+                        .ElementAttr(new { @class = "arabic-button" })
+                        .OnClick("function() { convertToArabic('DiscountText', 'DiscountTextArabic'); }")
+                        )
+                    @(Html.DevExtreme().TextBox()
+                        .ID("DiscountTextArabic")
+                        .Label("Discount Text: (Arabic)")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%")
+                        )
+                    
+                </div>
+            </td>
+            <td>
+                @(Html.DevExtreme().TextBox()
+                    .ID("Remarks")
+                    .Label("Remarks:")
+                    .LabelMode(EditorLabelMode.Outside)
+                    )
+            </td>
+    </tr>
 
-    <!-- Row 5: Remarks + Arabic Discount -->
-    <div class="form-row">
-        <div class="form-group" style="flex: 1;">
-            @(Html.DevExtreme().TextBox()
-                .ID("Remarks")
-                .Label("Remarks:")
-                .LabelMode(EditorLabelMode.Outside)
-                )
-        </div>
-        <div class="form-group arabic-textbox-wrapper" style="flex: 1;">
-            @(Html.DevExtreme().TextBox()
-                .ID("DiscountTextArabic")
-                .Label("Discount Text: (Arabic)")
-                .LabelMode(EditorLabelMode.Outside)
-                )
-            @(Html.DevExtreme().Button()
-                .ID("btnConvertDiscount")
-                .Icon("fas fa-language")
-                .ElementAttr(new { @class = "arabic-button" })
-                .OnClick("function() { convertToArabic('DiscountText', 'DiscountTextArabic'); }")
-                )
-        </div>
-    </div>
+    
+    
+</table>
 
-    <!-- Row 6: Service Dates -->
-    <div class="form-row">
-        <div class="form-group" style="flex: 1;">
-            @(Html.DevExtreme().DateBox()
-                .ID("ServiceStartDate")
-                .Label("Service Start Date:")
-                .LabelMode(EditorLabelMode.Outside)
-                )
-        </div>
-        <div class="form-group" style="flex: 1;">
-            @(Html.DevExtreme().DateBox()
-                .ID("ServiceEndDate")
-                .Label("Service End Date:")
-                .LabelMode(EditorLabelMode.Outside)
-                )
-        </div>
-    </div>
 </div>
 
-@section Scripts {
     <script>
         function convertToArabic(sourceId, targetId) {
             const sourceValue = $("#" + sourceId).dxTextBox("instance")?.option("value") || $("#" + sourceId).dxTextArea("instance")?.option("value");
@@ -241,5 +262,14 @@
                 targetInstance.option("value", arabicText);
             }
         }
+            $(function () {
+                    $("#DetailsDescription1").dxTextBox({
+                        text: formatMessage("Details Description"),
+                        readOnly: true,
+                                    onContentReady: function(e) {
+                                    $(e.element).addClass("dx-textbox-heading");
+                            }
+
+                    });
+                });
     </script>
-}
