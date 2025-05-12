@@ -2422,9 +2422,11 @@
         "Client City(Arabic):": "Client City(Arabic):",
         "District/Neighbourhood: *":"District/Neighbourhood: *",
         "District/Neighborhood (Arabic):": "District/Neighborhood (Arabic):",
-        "Add New Quotation":"Add New Quotation",
+        "Add New Quotation": "Add New Quotation",
+        "Bills Receivable/Payable":"Bills Receivable/Payable"
     },
     "ar": {
+        "Bills Receivable/Payable":"الفواتير المستحقة القبض/الدفع",
         "Add New Quotation":"إضافة عرض أسعار جديد",
         "Supplier Other ID: *":"معرف المورد الآخر: *",
         "District/Neighborhood (Arabic):":"المنطقة/الحي (العربية):",
