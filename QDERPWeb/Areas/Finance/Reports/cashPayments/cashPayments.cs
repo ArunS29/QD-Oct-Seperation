@@ -95,14 +95,61 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
                 this.DataMember = "";
 
                 decimal totalAmount = Convert.ToDecimal(dt.Compute("SUM(DrAmount)", ""));
+                int currencyId = Convert.ToInt32(dt.Rows[0]["currencyId"]);
+                string currencySymbol = GetCurrencySymbol(currencyId);
 
+                // Use currencySymbol in amount-in-words labels
                 if (FindControl("xrLabel9", true) is XRLabel labelEnglish)
-                    labelEnglish.Text = "Amount in Words: " + NumberToWordsHelper.ToEnglishWords(totalAmount);
+                {
+                    // Assuming currencySymbol is already defined and available
+                    labelEnglish.Text = $"Amount in Words: {NumberToWordsHelper.ToEnglishWords(totalAmount, currencySymbol)}";
+                }
+
 
                 if (FindControl("xrLabel10", true) is XRLabel labelArabic)
-                    labelArabic.Text = "المبلغ كتابةً: " + NumberToWordsHelper.ToArabicWords(totalAmount);
+                    labelArabic.Text = $"المبلغ كتابةً: {NumberToWordsHelper.ToArabicWords(totalAmount)}";
 
+                // Optionally: Set a label on the report to show just the currency symbol
+                if (FindControl("xrLabel6", true) is XRLabel currencySymbolLabel)
+                    currencySymbolLabel.Text = currencySymbol;
+                if (FindControl("xrLabel17", true) is XRLabel currencySymbolLabel1)
+                    currencySymbolLabel1.Text = currencySymbol;
+                if (FindControl("xrLabel18", true) is XRLabel currencySymbolLabel2)
+                    currencySymbolLabel2.Text = currencySymbol;
+                if (FindControl("xrLabel19", true) is XRLabel currencySymbolLabel3)
+                    currencySymbolLabel3.Text = currencySymbol;
             }
+        }
+        private string GetCurrencySymbol(int currencyId)
+        {
+            string symbol = "";
+
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
+                    throw new Exception("Unable to retrieve tenant context.");
+
+                string connectionString = tenant.ConnectionString;
+
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    string query = "SELECT CurrencyCode FROM Tbl20169CurrencyExchange WHERE CurrencyExchangeId = @currencyId";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@currencyId", currencyId);
+                        conn.Open();
+                        object result = cmd.ExecuteScalar();
+                        if (result != null)
+                            symbol = result.ToString();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error retrieving currency symbol: {ex.Message}");
+            }
+
+            return symbol;
         }
 
 
@@ -151,15 +198,15 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
 
         public static class NumberToWordsHelper
         {
-            public static string ToEnglishWords(decimal number)
+            public static string ToEnglishWords(decimal number, string currencySymbol)
             {
                 var integer = (int)number;
                 var fraction = (int)((number - integer) * 100);
 
-                string result = NumberToWords(integer) + " Riyals";
+                string result = NumberToWords(integer) + " " + currencySymbol;
 
                 if (fraction > 0)
-                    result += " and " + NumberToWords(fraction) + " Halalas";
+                    result += " and " + NumberToWords(fraction) + " " + currencySymbol;
 
                 return result + " Only";
             }
