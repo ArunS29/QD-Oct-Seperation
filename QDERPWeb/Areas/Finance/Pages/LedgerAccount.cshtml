@@ -2129,28 +2129,28 @@
              style="display: flex; gap: 20px; align-items: center; justify-content: space-evenly; width: 100%;">
              
             <div style="display: flex; align-items: center; gap: 5px;">
-                <strong>Created By:</strong>
+                <strong id="CreatedBy1">Created By:</strong>
                 <div class="col-md-4"> 
                     @Html.DevExtreme().TextBox().ID("CreatedBy").Value(null).Width("180%").ReadOnly(true)
                 </div>
             </div>
 
             <div style="display: flex; align-items: center; gap: 5px;">
-                <strong>Created On:</strong>
+                <strong id="CreatedOn1">Created On:</strong>
                 <div class="col-md-4">
                     @Html.DevExtreme().TextBox().ID("CreatedOn").Value(null).Width("180%").ReadOnly(true)
                 </div>
             </div>
 
             <div style="display: flex; align-items: center; gap: 5px;">
-                <strong>Modified By:</strong>
+                <strong id="ModifiedBy1">Modified By:</strong>
                 <div class="col-md-4">
                     @Html.DevExtreme().TextBox().ID("ModifiedBy").Value(null).Width("180%").ReadOnly(true)
                 </div>
             </div>
 
             <div style="display: flex; align-items: center; gap: 5px;">
-                <strong>Modified On:</strong>
+                <strong id="ModifiedOn1">Modified On:</strong>
                 <div class="col-md-3">
                     @Html.DevExtreme().TextBox().ID("ModifiedOn").Value(null).Width("240%").ReadOnly(true)
                 </div>
@@ -6216,7 +6216,21 @@ function syncSupVATNumbers(e) {
     // alert(getidfromCOA);
     //Get datas and Bind from ChartOfAccounts
 
-
-
+        $(function () {
+            $("#CreatedBy1").text(
+                     formatMessage("Created By:"));
+        });
+         $(function () {
+            $("#CreatedOn1").text(
+                     formatMessage("Created On:"));
+        });
+         $(function () {
+            $("#ModifiedBy1").text(
+                     formatMessage("Modified By:"));
+        });
+             $(function () {
+                $("#ModifiedOn1").text(
+                         formatMessage("Modified On:"));
+            });
 </script>
 

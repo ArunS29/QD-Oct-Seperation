@@ -119,7 +119,7 @@
 <div class="form-container1">
 
     <div class="col-md-12">
-        <div class="outline-container p-3"  ">
+        <div class="outline-container p-3">
 
             <div class="row">
 
@@ -137,7 +137,7 @@
 
 
                 <!-- Asset Category Dropdown -->
-                <div class="col-md-2 ">
+                <div class="col-md-2">
                     <div class="form-label">
                         <label for="AssetCategory">Asset Category</label>
                     </div>
@@ -837,7 +837,7 @@
                         .Min(0)//                        .Max(1000)
                         .Step(1))
                     </div>
-                   @*  <div class="form-group">
+                    <div class="form-group">
                         <label for="maintenanceTypes" class="button-alignment-down">Select Maintenance Type:</label>
                         @(Html.DevExtreme().SelectBox()
                         .ID("ddlMaintenanceTypes")
@@ -855,7 +855,7 @@
                         .Placeholder("Select Maintenance Type")
                       //  .Width(400)
                         )
-                    </div> *@
+                    </div>
 
 
                     <div class="form-group" style="display: flex; justify-content: flex-end; width: 100%;">
@@ -1044,48 +1044,209 @@
         grid.refresh();
     }
 
+
+        var dataGridInstance;
+    var rowData = []; // Store the grid data
+
+    $(function () {
+        dataGridInstance = $("#mdataGrid").dxDataGrid({
+            dataSource: rowData,
+            keyExpr: "SNo",
+            columns: [
+                {
+                    dataField: "MaintenanceRefNo",
+                    caption: formatMessage('Maintenance Id'),
+                    width: 200
+                },
+                {
+                    dataField: "MaintenanceTypeId",
+                    caption: formatMessage('Maintenance Type'),
+                    width: 550,
+                    sortOrder: "asc",
+                    editCellTemplate: function (cellElement, cellInfo) {
+                        getDropdownData().done(function (dropdownData) {
+                            let $container = $("<div>").css({
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "5px",
+                                width: "100%"
+                            }).appendTo(cellElement);
+
+                            $("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
+                                dataSource: dropdownData,
+                                valueExpr: "GSCode",
+                                displayExpr: "GSDescrpition",
+                                value: cellInfo.value,
+                                dropDownOptions: { width: 800 },
+                                onValueChanged: function (e) {
+                                    let selectedItem = dropdownData.find(item => item.GSCode === e.value);
+
+                                    if (selectedItem) {
+                                        cellInfo.setValue(selectedItem.GSCode); // Set value as GSCode
+
+                                        let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+                                        let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
+
+                                        if (rowIndex !== -1) {
+                                            dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
+                                            dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
+                                            dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
+
+                                            ItemNo = selectedItem.GSCode;
+                                            Gsdescrpition = selectedItem.GSDescrpition;
+                                            GsdescriptionAr = selectedItem.GsdescriptionAr;
+                                            ItemPartNo = selectedItem.ItemPartNo;
+                                            CostPrice = selectedItem.CostPrice;
+                                            GssellingRate = selectedItem.GSSellingRate;
+                                            ReorderQty = selectedItem.ReorderQty;
+                                        }
+
+                                        let unitprice = dataGrid.cellValue(rowIndex, "Unit Price");
+                                    }
+                                },
+                                contentTemplate: function (e) {
+                                    return $("<div>").dxDataGrid({
+                                        dataSource: dropdownData,
+                                        selection: { mode: "single" },
+                                        keyExpr: "GSCode",
+                                        height: 300,
+                                        scrolling: { mode: "virtual" },
+                                        columns: [
+                                            { dataField: "GSCode", caption: "Code", width: 80 },
+                                            { dataField: "GSDescrpition", caption: "Description", width: 200 },
+                                            { dataField: "GsdescriptionAr", caption: "Description In Arabic", width: 200 },
+                                            { dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
+                                            { dataField: "CostPrice", caption: "Cost Price", width: 100 },
+                                            { dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
+                                            { dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+                                        ],
+                                        onSelectionChanged: function (selectedItems) {
+                                            let selectedItem = selectedItems.selectedRowsData[0];
+
+                                            if (selectedItem) {
+                                                e.component.option("value", selectedItem.GSCode);
+                                                cellInfo.setValue(selectedItem.GSCode); // Set value as GSCode
+
+                                                let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+                                                let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
+
+                                                if (rowIndex !== -1) {
+                                                    dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
+                                                    dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
+                                                    dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
+                                                    dataGrid.cellValue(rowIndex, "Qty", 1);
+                                                    dataGrid.cellValue(rowIndex, "VAT%", "15%");
+                                                }
+
+                                                e.component.close();
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+                        });
+                    }
+                },
+                { dataField: "MaintenanceReading", caption: formatMessage('Maintenance Reading'), width: 150 },
+                { dataField: "MaintenanceDate", caption: formatMessage('Maintenance Scheduled On'), width: 150 },
+                { dataField: "ReminderDate", caption: formatMessage('Reminder Date'), width: 150 },
+                { dataField: "MaintenanceRemarks", caption: formatMessage('Remarks'), width: 185 },
+                { dataField: "IsMaintenanceDone", caption: formatMessage('Maintenance Done?'), width: 150 }, // ✅ Fixed comma
+                { dataField: "ActualMaintenanceDoneOn", caption: formatMessage('ActualMaintenanceDoneOn'), width: 150 }
+            ],
+            editing: {
+                mode: "cell"
+            },
+            onInitNewRow: function (e) {
+                e.data.SNo = rowData.length + 1;
+            },
+            columnAutoWidth: true,
+            showBorders: true
+        }).dxDataGrid("instance");
+    });
+
     function addScheduledTypeRow() {
-        // Get the dxNumberBox and dxSelectBox instances
         var readingBox = $("#txtMaintenanceReading").dxNumberBox("instance");
         var typeBox = $("#ddlMaintenanceTypes").dxSelectBox("instance");
 
-        // Validate instances
         if (!readingBox || !typeBox) {
             console.error("dxNumberBox or dxSelectBox not initialized properly.");
             return;
         }
 
-        // Get values
         var maintenanceReading = readingBox.option("value");
-        var maintenanceType = typeBox.option("text");
+        var maintenanceTypeId = typeBox.option("value"); // GSCode
+        var maintenanceTypeText = typeBox.option("text");
 
-        // Validate inputs
-        if (!maintenanceType || maintenanceReading === null) {
-            alert("Please select a maintenance type and enter a valid reading.");
-            return;
-        }
-        // Prepare data
+   
+
         var today = new Date();
         var formattedDate = today.toLocaleDateString("en-GB", {
             day: "2-digit",
             month: "short",
-            year: "numeric",
+            year: "numeric"
         });
 
-        // Add row to grid
-        var grid = $("#MaintenanceGrid").dxDataGrid("instance");
-        var store = grid.getDataSource().store();
-        store.insert({
-            MaintenanceType: maintenanceType,
+        var newRow = {
+            SNo: rowData.length + 1,
+            MaintenanceRefNo: "",
+            MaintenanceTypeId: maintenanceTypeId,
             MaintenanceReading: maintenanceReading,
-            ScheduledOn: formattedDate,
-            ReminderDate: formattedDate,
-            MaintenanceDone: false,
-            Remarks: "",
-        }).then(() => {
-            grid.getDataSource().reload();
-        });
+            MaintenanceDate: formattedDate,
+            ReminderDate: "",
+            MaintenanceRemarks: "",
+            IsMaintenanceDone: false,
+            ActualMaintenanceDoneOn: ""
+        };
+
+        rowData.push(newRow);
+        dataGridInstance.option("dataSource", rowData);
+        dataGridInstance.refresh();
     }
+
+
+         @* function addScheduledTypeRow() {
+            // Get the dxNumberBox and dxSelectBox instances
+            var readingBox = $("#txtMaintenanceReading").dxNumberBox("instance");
+            var typeBox = $("#ddlMaintenanceTypes").dxSelectBox("instance");
+
+            // Validate instances
+            if (!readingBox || !typeBox) {
+                console.error("dxNumberBox or dxSelectBox not initialized properly.");
+                return;
+            }
+
+            // Get values
+            var maintenanceReading = readingBox.option("value");
+            var maintenanceType = typeBox.option("text");
+
+            // Validate inputs
+            if (!maintenanceType || maintenanceReading === null) {
+                alert("Please select a maintenance type and enter a valid reading.");
+                return;
+            }
+            // Prepare data
+            var today = new Date();
+            var formattedDate = today.toLocaleDateString("en-GB", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+            });
+
+            // Add row to grid
+            var grid = $("#MaintenanceGrid").dxDataGrid("instance");
+            var store = grid.getDataSource().store();
+            store.insert({
+                MaintenanceType: maintenanceType,
+                MaintenanceReading: maintenanceReading,
+                ScheduledOn: formattedDate,
+                ReminderDate: formattedDate,
+                MaintenanceDone: false,
+                Remarks: "",
+            }).then(() => {
+                grid.getDataSource().reload();
+            });
+        } *@
 
 
     function fetchAssetData(assetLedgerNo) {
@@ -1172,7 +1333,7 @@
                 } *@
 
 
-                   }
+          }         
     }
 
     $("#txtScarpValue").on("dxready", function () {
