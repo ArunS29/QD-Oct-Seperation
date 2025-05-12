@@ -1,4 +1,4 @@
-﻿@page
+@page
 @using QD.ERP.Web.DAL.Entities
 @model QD.ERP.Web.Areas.IMS.Pages.ClientLeadsModel
 @{
@@ -52,7 +52,7 @@
 <div>
     @(
         Html.DevExtreme().DataGrid<Qry30101ClientList>()
-        .ID("clientsGrid")
+            .ID("dataGrid")
         .DataSource(ds => ds.Mvc()
         .Controller("ClientLeads")
         .LoadAction("Get"))
