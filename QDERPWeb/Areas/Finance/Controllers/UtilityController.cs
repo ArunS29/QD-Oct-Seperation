@@ -1052,18 +1052,17 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             //  TenantId = tenant.TenantId,
                             UserId = user.UserId,
                             UserName = user.UserName,
-                            Password = user.Password,
-                            //  Department = user.Department,
+                            Password = string.IsNullOrWhiteSpace(user.Password) ? "123" : user.Password,
+                            DeptCode = user.DeptCode,
                             CompanyId = user.CompanyId,
                             BranchCode = user.BranchCode,
-                            //   Division = user.Division,
                             UserLevel = user.UserLevel,
-                            //   AccessGroup = user.AccessGroup,
+                            HrlevelCode = user.HrlevelCode,
                             InventoryAccess = user.InventoryAccess,
                             PettyCashAccount = user.PettyCashAccount,
-                            //  EquipmentSalesPerson = user.EquipmentSalesPerson,
-                            // InventorySalesPerson = user.InventorySalesPerson,
-                            // HRTimesheetGroup = user.HRTimesheetGroup,
+                            EqptQuotationAccess = user.EqptQuotationAccess,
+                            InventoryMpraccess = user.InventoryMpraccess,
+                            HrtimeSheetProjectGroup = user.HrtimeSheetProjectGroup,
                             MobileNo = user.MobileNo,
                             EmailAddress = user.EmailAddress,
                             LastLogOnTime = user.LastLogOnTime,
@@ -1083,6 +1082,19 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
 
             return Unauthorized(new { success = false, message = "Invalid tenant context." });
+        }
+
+        //userid K
+        [HttpGet]
+        public IActionResult GetNextUserId()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var maxUserId = dbContext.TblUserMasters.Max(u => (int?)u.UserId) ?? 0;
+                var nextUserId = maxUserId + 1;
+                return Ok(new { success = true, nextUserId });
+            }
+            return Unauthorized(new { success = false, message = "Invalid tenant." });
         }
 
         public class UserAccessReplicationRequest
