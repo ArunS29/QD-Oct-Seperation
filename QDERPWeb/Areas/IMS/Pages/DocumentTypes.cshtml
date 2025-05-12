@@ -351,13 +351,12 @@
                         name: "cancelButton"
                     },
                     {
-                        widget: "dxButton",  // Adding Search Toggle button
+                        widget: "dxButton", // Add the Back button
                         options: {
-                            icon: "search",  // Icon for Search button
-                            text: formatMessage("Toggle Search"),  // Text for Search button
+                            icon: "arrowleft", // You can choose another icon if you'd like
+                            text: "Back",
                             onClick: function () {
-                                searchPanelVisible = !searchPanelVisible; // Toggle the visibility
-                                $("#gridContainer").dxDataGrid("instance").option("filterRow.visible", searchPanelVisible); // Update the grid
+                                window.parent.closeModal(); // This closes the current window/tab
                             }
                         },
                         location: "after"
