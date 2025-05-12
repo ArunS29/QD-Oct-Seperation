@@ -928,13 +928,19 @@
 
     function handleFileSelection(isMultiple) {
 
+                
+            // make sure this is available in the view
+                const url = `/${tenantName}/Finance/LedgerDocuments`;
+                const title = "";
+                    openModal(url, title); // opens in modal instead of new window
+            
         // Configure the file input
 
-        const fileInput = document.getElementById("fileInput");
 
-        fileInput.multiple = isMultiple; // Allow multiple files if selected
 
-        fileInput.click(); // Trigger file input click
+         //   masterFormWindow.multiple = isMultiple; // Allow multiple files if selected
+
+         //   masterFormWindow.click(); // Trigger file input click
 
     }
 
