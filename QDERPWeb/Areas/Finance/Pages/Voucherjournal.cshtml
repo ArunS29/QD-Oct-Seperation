@@ -1220,8 +1220,7 @@
                         ? "Voucher saved successfully with matching Debit and Credit amounts."
                         : "Voucher updated successfully!";
                     DevExpress.ui.notify(successMessage, "success", 2000);
-                    $("#TemporaryNo").dxTextBox("instance").option("value",""); 
-                     disableFields();
+                       disableFields();
                      // Enable after save
                   $("#btnPrint").dxButton("instance").option("disabled", false);
                    $("#btnPreview1").dxDropDownButton("instance").option("disabled", false);
