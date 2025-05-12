@@ -248,12 +248,17 @@
             .ElementAttr(new { style = "display: none;" })
             .OnClick("showColumnChooser")
             )
-   
-    
-    
-  
-  
  </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnShowRecords")
+            .Icon("show")
+            .Text(new JS("formatMessage('Show Records')"))
+            .ElementAttr(new { style = "display: none;" })
+            .Width(50)
+            .OnClick("function() { btnUserEntryLog_ItemClick(); }")
+            )
+    </div>
 </div>
 <script type="text/javascript">
 
@@ -1074,7 +1079,11 @@
         }
     }
     function onCreateNewClick() {
-            window.location.href = `/${tenantName}/Finance/UserAccessDetails`;
+            window.location.href = `/${tenantName}/Finance/UserAccountDetails`;
     }
+         function btnUserEntryLog_ItemClick()
+            {
+                    window.location.href = `/${tenantName}/Finance/frm90112UserEntryLogSheet`;
+            }
 
 </script>
