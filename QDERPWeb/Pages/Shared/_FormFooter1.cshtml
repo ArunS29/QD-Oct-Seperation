@@ -81,10 +81,11 @@
         .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
         )
 
-   @*  @(Html.DevExtreme().DropDownButton()
-        .ID("btnPreview1")
-        .Text("Preview")
+    @(Html.DevExtreme().DropDownButton()
+        .ID("btnPreview2")
+        .Text(new JS("formatMessage('Preview')"))
         .Icon("fullscreen")
+        .Hint("Click to Preview")
         .ElementAttr(new { @class = "bold-button" })
         .Width(180)
         .DropDownOptions(options => options.Width(220))
@@ -94,8 +95,8 @@
             items.Add().Text(new JS("formatMessage('Preview Format 2')")).Icon("textdocument");
 
         })
-        .OnItemClick("handlePreviewClick")
-        ) *@
+        .OnItemClick("handlePreviewClick1")
+        )
 
     @(Html.DevExtreme().Button()
         .ID("btnAddLine")
@@ -951,7 +952,9 @@
 
 
 
-    function handlePreviewClick(e) {
+    
+
+    function handlePreviewClick1(e) {
         var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
         var voucherNo = voucherNoBox.option("value");
 
@@ -968,9 +971,9 @@
         // Determine the report name based on the selected text
         var reportName = "";
         if (selectedText === formatMessage('Preview Format 1')) {
-            reportName = "cashPayments";
+            reportName = "SalesVoucherReport";
         } else if (selectedText === formatMessage('Preview Format 2')) {
-            reportName = "cashPaymentformat2";
+            reportName = "SalesReport2";
         }
 
         // Ensure a valid report is selected
@@ -986,7 +989,6 @@
             'width=1200,height=800,scrollbars=yes,resizable=yes'
         );
     }
-
 
 
 

@@ -582,8 +582,7 @@
             this.xrLabel11.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel11.BorderWidth = 0.5F;
             this.xrLabel11.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Sum(Iif([VoucherAmountFormatted] > 0, [VoucherAmountFormatted], 0)) - Sum([CrAmou" +
-                    "nt])")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", resources.GetString("xrLabel11.ExpressionBindings"))});
             this.xrLabel11.Font = new DevExpress.Drawing.DXFont("Arial", 10F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel11.LocationFloat = new DevExpress.Utils.PointFloat(710.2008F, 45.49999F);
             this.xrLabel11.Name = "xrLabel11";
@@ -665,6 +664,8 @@
             this.xrLabel3.Text = "                                                           Closing Balance/لختامى" +
     " الرصيد";
             this.xrLabel3.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            this.xrLabel3.TextFormatString = "{0: Iif([DrAmount] == 0, \'- \' , Iif([DrAmount] < 0, - [DrAmount] , Iif([DrAmount]" +
+    " > 0, [DrAmount] , \'-\' ) ))}";
             // 
             // xrLabelTotal
             // 
