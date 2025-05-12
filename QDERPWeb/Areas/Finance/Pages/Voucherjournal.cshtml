@@ -637,7 +637,7 @@
 
 
 <div>
-    @await Html.PartialAsync("_FormFooter")
+    @await Html.PartialAsync("PurchaseVoucherFooter")
 </div>
 
 
@@ -2357,33 +2357,48 @@
         });
 
         let dialogContainer = dialog.show(); // Show the dialog
-
+        const style = document.createElement("style");
+        style.innerHTML = `
+          .dx-dialog-custom-close:hover {
+            color: red;
+          }
+        `;
+        document.head.appendChild(style);
         setTimeout(() => {
-            // Find the dialog title and append a close button
-            let titleElement = document.querySelector(".dx-dialog .dx-popup-title");
-            if (titleElement) {
-                let closeButton = document.createElement("span");
-                closeButton.innerHTML = "&times;";
-                closeButton.classList.add("dx-dialog-custom-close");
+        let titleElement = document.querySelector(".dx-dialog .dx-popup-title");
+        if (titleElement) {
+            // Apply flex styling to title bar
+            titleElement.style.display = "flex";
+            titleElement.style.justifyContent = "space-between";
+            titleElement.style.alignItems = "center";
 
-                titleElement.style.position = "relative"; // Ensure positioning works
-                titleElement.appendChild(closeButton);
+            // Create the close button
+            let closeButton = document.createElement("span");
+            closeButton.innerHTML = "&times;";
+            closeButton.classList.add("dx-dialog-custom-close");
 
-                // Close the dialog without triggering button events
-                closeButton.addEventListener("click", () => {
-                    let dialogElement = document.querySelector(".dx-dialog");
-                    if (dialogElement) {
-                        dialogElement.remove(); // Removes the dialog from the DOM
-                    }
-                });
-            }
+            // Optional styling for the close button
+            closeButton.style.cursor = "pointer";
+            closeButton.style.fontSize = "20px";
+            closeButton.style.marginLeft = "auto";
+            closeButton.style.padding = "0 10px";
 
-            // Disable Dragging
-            let dialogPopup = document.querySelector(".dx-dialog");
-            if (dialogPopup) {
-                dialogPopup.classList.remove("dx-draggable"); // Prevent dragging without affecting clicks
-            }
-        }, 0);
+            titleElement.appendChild(closeButton);
+
+            closeButton.addEventListener("click", () => {
+                let dialogElement = document.querySelector(".dx-dialog");
+                if (dialogElement) {
+                    dialogElement.remove();
+                }
+            });
+        }
+
+        let dialogPopup = document.querySelector(".dx-dialog");
+        if (dialogPopup) {
+            dialogPopup.classList.remove("dx-draggable");
+        }
+    }, 0);
+
     }
 
     function handleFileSelection(isMultiple) {

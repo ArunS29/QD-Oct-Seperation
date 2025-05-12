@@ -70,7 +70,7 @@
         color: black;
     }
 
-    .limited-footer .btn-container:not(:has(#btnPrint, #btnToggleSearch, #btntoggleGroupPanel, #btnCreateNew, #ddButtonLayout)) {
+    .limited-footer .btn-container:not(:has(#btnPrint, #btnToggleSearch, #btntoggleGroupPanel, #btnCreateNew, #ddButtonLayout,#ddReports)) {
         display: none !important;
     }
     .mainContainer{
@@ -206,10 +206,10 @@
             .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
             )
         @(Html.DevExtreme().Button()
-        .Text("Show All Submission")
+            .Text("Show All Submission")
             .Type(ButtonType.Normal)
             .StylingMode(ButtonStylingMode.Contained)
-            .Width(180)
+            .Width(200)
             .ElementAttr("class", "button-alignment-down button-alignment-left")
             .OnClick("getAllSubmissionJournal")
             )

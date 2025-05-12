@@ -105,7 +105,7 @@
     @await Html.PartialAsync("FooterLedgerToSubLedgerMapping")
 </div>
 </br>
-        <div class="dx-fieldset horizontal-container" style="margin-bottom: 0px">
+<div class="dx-fieldset horizontal-container" style="margin-bottom: 0px ; align-items: baseline;">
 
             <div>
                 @(Html.DevExtreme().TextBox()
@@ -411,25 +411,25 @@
         }
     }
 
+     $(function () {
+        $("#LedgerToSubLedgerMapping").dxTextBox({
+            text: formatMessage("Bills Receivable/Payable"),
+                        readOnly: true,
+                        onContentReady: function(e) {
+                        $(e.element).addClass("dx-textbox-heading");
+                }
+
+                });
+        });
+
 
 </script>
 
 
 
 
-
    @*  <script>
-        $(function () {
-        $("#LedgerToSubLedgerMapping").dxTextBox({
-            text: formatMessage("Ledger To SubLedger Mapping"),
-                        readOnly: true,
-                        width:"510px",
-						onContentReady: function(e) {
-						$(e.element).addClass("dx-textbox-heading");
-				}
-
-                });
-        });
+       
                 $(document).ready(function () {
                 // Function to get URL parameters
                 function getQueryParam(name) {

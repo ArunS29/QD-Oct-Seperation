@@ -1,5 +1,4 @@
-
-
+﻿
 
 <style type="text/css">
     #dataGrid .dx-datagrid-headers .dx-datagrid-action {
@@ -32,7 +31,7 @@
         display: none;
         position: absolute;
         /* background-color: aliceblue;
-                border: 1px solid aliceblue; */
+                        border: 1px solid aliceblue; */
         box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
         z-index: 1000;
     }
@@ -54,8 +53,8 @@
     }
 
     /* #previewModal {
-                border: 1px solid aliceblue;
-            } */
+                        border: 1px solid aliceblue;
+                    } */
 
     .bold-button .dx-button-text {
         font-weight: bold;
@@ -84,7 +83,7 @@
         )
 
     @(Html.DevExtreme().DropDownButton()
-        .ID("btnPreview1")
+        .ID("btnPreview2")
         .Text(new JS("formatMessage('Preview')"))
         .Icon("fullscreen")
         .Hint("Click to Preview")
@@ -97,10 +96,11 @@
             items.Add().Text(new JS("formatMessage('Preview Format 2')")).Icon("textdocument");
 
         })
-        .OnItemClick("handlePreviewClick")
+        .OnItemClick("handlePreviewClick1")
         )
 
-      
+
+
 
 
 
@@ -655,14 +655,14 @@
         $('input, select, textarea').prop('disabled', true);
 
         $('.dx-button').each(function () {
-            const allowedButtons = ['btnBack',  'btnPrint', 'btnAttach','btnAttachment','btnEditAHead','btnAddAHead','btncostBack'];
+            const allowedButtons = ['btnBack', 'btnPrint', 'btnAttach', 'btnAttachment', 'btnEditAHead', 'btnAddAHead', 'btncostBack'];
             if (!allowedButtons.includes($(this).attr('id'))) {
                 $(this).dxButton('option', 'disabled', true);
             }
         });
         // Enable the DropDownButton explicitly
         const previewButton = $("#btnPreview1").dxDropDownButton("instance");
-       
+
         if (previewButton) {
             previewButton.option("disabled", false);
             previewButton.repaint();  // Force UI refresh
@@ -670,93 +670,93 @@
             console.error("btnPreview1 instance not found");
         }
         // Modify context menu items
-    $("#EditCostAllocation").text("View Cost Allocation");
-    $("#EditBillReceivable").text("View Bill Receivable");
-    $("#EditSalaryPayable").text("View Salary Payable");
-    $("#EditEmployeeAllocation").text("View Employee Allocation");
-    $("#EditPropertyAllocation").text("View Property Allocation");
+        $("#EditCostAllocation").text("View Cost Allocation");
+        $("#EditBillReceivable").text("View Bill Receivable");
+        $("#EditSalaryPayable").text("View Salary Payable");
+        $("#EditEmployeeAllocation").text("View Employee Allocation");
+        $("#EditPropertyAllocation").text("View Property Allocation");
 
-    // Completely disable DeleteAllLineEntries
-    $("#DeleteAllLineEntries").parent().css({
-        "pointer-events": "none",  // Disables interaction
-        "opacity": "0.5",  // Makes it look disabled
-        "cursor": "default"  // Prevents pointer cursor
-    }).attr("aria-disabled", "true");
+        // Completely disable DeleteAllLineEntries
+        $("#DeleteAllLineEntries").parent().css({
+            "pointer-events": "none",  // Disables interaction
+            "opacity": "0.5",  // Makes it look disabled
+            "cursor": "default"  // Prevents pointer cursor
+        }).attr("aria-disabled", "true");
 
-    // Disable DevExtreme DateBox components
-    $("#VoucherDate").dxDateBox("instance").option("disabled", true);
-    $("#VoucherEffectiveDate").dxDateBox("instance").option("disabled", true);
-    
+        // Disable DevExtreme DateBox components
+        $("#VoucherDate").dxDateBox("instance").option("disabled", true);
+        $("#VoucherEffectiveDate").dxDateBox("instance").option("disabled", true);
 
-    // Disable DevExtreme DropDownBox component
-    $("#accountDropDownBox").dxDropDownBox("instance").option("disabled", true);
 
-    // Disable DataGrid Editing and Deleting
-    var dataGrid = $("#dataGrid").dxDataGrid("instance");
-    if (dataGrid) {
-        dataGrid.option("editing.allowUpdating", false);
-        dataGrid.option("editing.allowDeleting", false);
+        // Disable DevExtreme DropDownBox component
+        $("#accountDropDownBox").dxDropDownBox("instance").option("disabled", true);
+
+        // Disable DataGrid Editing and Deleting
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        if (dataGrid) {
+            dataGrid.option("editing.allowUpdating", false);
+            dataGrid.option("editing.allowDeleting", false);
+        }
+
     }
 
+
+    function onApproveButtonClick() {
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+        if (!dataGrid) {
+            console.error("DataGrid instance not found.");
+            return;
+        }
+
+        const rowCount = dataGrid.getVisibleRows().length;
+
+        if (rowCount === 0) {
+            DevExpress.ui.dialog.custom({
+                title: "Voucher approval has failed.",
+                message: "Voucher has not been Approved. Please enter transactions to proceed with approval.",
+                buttons: [{ text: "Ok", onClick: () => false }],
+                showTitle: true
+            }).show();
+            return;
+        }
+
+        // Assume verification status is fetched from a field or variable, update accordingly
+        const isVerified = $("#VerifiedBy").dxCheckBox("instance").option("value"); // or fetch it based on your model
+
+        if (!isVerified) {
+            DevExpress.ui.dialog.custom({
+                title: "Voucher Not Verified",
+                message: "Voucher has not been verified. Click Yes if you want to verify and approve this voucher.",
+                buttons: [
+                    { text: "Yes", onClick: () => true },
+                    { text: "No", onClick: () => false }
+                ],
+                showTitle: true
+            }).show().done(function (dialogResult) {
+                if (dialogResult) {
+                    // Mark as verified
+                    $("#VerifiedBy").dxCheckBox("instance").option("value", true);
+                    // Now proceed with approval
+                    proceedWithApproval();
+                }
+            });
+        } else {
+            DevExpress.ui.dialog.custom({
+                title: "Confirm Approval",
+                message: "Are you sure you want to approve this voucher?",
+                buttons: [
+                    { text: "Yes", onClick: () => true },
+                    { text: "No", onClick: () => false }
+                ],
+                showTitle: true
+            }).show().done(function (dialogResult) {
+                if (dialogResult) {
+                    proceedWithApproval();
+                }
+            });
+        }
     }
-
-
-   function onApproveButtonClick() {
-    const dataGrid = $("#dataGrid").dxDataGrid("instance");
-
-    if (!dataGrid) {
-        console.error("DataGrid instance not found.");
-        return;
-    }
-
-    const rowCount = dataGrid.getVisibleRows().length;
-
-    if (rowCount === 0) {
-        DevExpress.ui.dialog.custom({
-            title: "Voucher approval has failed.",
-            message: "Voucher has not been Approved. Please enter transactions to proceed with approval.",
-            buttons: [{ text: "Ok", onClick: () => false }],
-            showTitle: true
-        }).show();
-        return;
-    }
-
-    // Assume verification status is fetched from a field or variable, update accordingly
-    const isVerified = $("#VerifiedBy").dxCheckBox("instance").option("value"); // or fetch it based on your model
-
-    if (!isVerified) {
-        DevExpress.ui.dialog.custom({
-            title: "Voucher Not Verified",
-            message: "Voucher has not been verified. Click Yes if you want to verify and approve this voucher.",
-            buttons: [
-                { text: "Yes", onClick: () => true },
-                { text: "No", onClick: () => false }
-            ],
-            showTitle: true
-        }).show().done(function (dialogResult) {
-            if (dialogResult) {
-                // Mark as verified
-                $("#VerifiedBy").dxCheckBox("instance").option("value", true);
-                // Now proceed with approval
-                proceedWithApproval();
-            }
-        });
-    } else {
-        DevExpress.ui.dialog.custom({
-            title: "Confirm Approval",
-            message: "Are you sure you want to approve this voucher?",
-            buttons: [
-                { text: "Yes", onClick: () => true },
-                { text: "No", onClick: () => false }
-            ],
-            showTitle: true
-        }).show().done(function (dialogResult) {
-            if (dialogResult) {
-                proceedWithApproval();
-            }
-        });
-    }
-}
 
 
     //          function proceedWithApproval() {
@@ -960,7 +960,7 @@
             return;
         }
 
-        var reportName = "cashPayments"; // Modify as needed
+        var reportName = "SalesVoucherReport"; // Modify as needed
 
         // **Use the new API URL**
         var url = `/api/Report/Download?reportName=${encodeURIComponent(reportName)}&voucherNo=${encodeURIComponent(voucherNo)}`;
@@ -972,8 +972,7 @@
 
 
 
-
-    function handlePreviewClick(e) {
+    function handlePreviewClick1(e) {
         var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
         var voucherNo = voucherNoBox.option("value");
 
@@ -990,9 +989,9 @@
         // Determine the report name based on the selected text
         var reportName = "";
         if (selectedText === formatMessage('Preview Format 1')) {
-            reportName = "cashPayments";
+            reportName = "SalesVoucherReport";
         } else if (selectedText === formatMessage('Preview Format 2')) {
-            reportName = "cashPaymentformat2";
+            reportName = "SalesReport2";
         }
 
         // Ensure a valid report is selected
@@ -1002,13 +1001,13 @@
         }
 
         // Open the XtraReport with Voucher No as a parameter
-       window.open(
+        window.open(
             `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&voucherNo=${encodeURIComponent(voucherNo)}&skipPreview=true`,
             '_blank',
             'width=1200,height=800,scrollbars=yes,resizable=yes'
         );
     }
-   
+
 
 
 
