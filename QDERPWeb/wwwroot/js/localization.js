@@ -2421,9 +2421,11 @@
         "Client Address - Street Name: *":"Client Address - Street Name: *",
         "Client City(Arabic):": "Client City(Arabic):",
         "District/Neighbourhood: *":"District/Neighbourhood: *",
-        "District/Neighborhood (Arabic):":"District/Neighborhood (Arabic):"
+        "District/Neighborhood (Arabic):": "District/Neighborhood (Arabic):",
+        "Add New Quotation":"Add New Quotation",
     },
     "ar": {
+        "Add New Quotation":"إضافة عرض أسعار جديد",
         "Supplier Other ID: *":"معرف المورد الآخر: *",
         "District/Neighborhood (Arabic):":"المنطقة/الحي (العربية):",
         "District/Neighbourhood: *":"المنطقة/الحي: *",
