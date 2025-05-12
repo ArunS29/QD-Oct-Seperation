@@ -158,6 +158,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 on t1.VoucherNo equals t2.VoucherNo
                                 where t1.AccountHead == accid
                                 && (t1.BankClearedOn == null)
+                                && (t1.SysRemarks != "System Generated Opening Balance")
                                 select new
                                 {
                                     t1.VoucherEntryNo,

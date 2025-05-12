@@ -138,7 +138,7 @@
                 </text>);
 
                         columns.Add().DataField("BankClearedOn").Caption(new JS("formatMessage('Cleared On')"));
-                        columns.Add().DataField("PaymentStatus").Caption(new JS("formatMessage('Status')"));
+                    columns.Add().DataField("PaymentStatus").Caption(new JS("formatMessage('Status')")).AllowEditing(true);
                     columns.Add().DataField("DrAmount").Caption(new JS("formatMessage('Receipts')")).CustomizeText(
                 "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
 
@@ -170,15 +170,23 @@
                     .AllowColumnResizing(true)
                     .ColumnFixing(fixing => fixing.Enabled(true))
                     .HeaderFilter(filter => filter.Visible(true))
-                    .Height(300)
+                    .Height(420)
                     .ColumnAutoWidth(true)
                     .FilterRow(filterRow => filterRow.Visible(false))
                     .GroupPanel(groupPanel => groupPanel.Visible(false))
-                    .ShowBorders(true)
+                    //.ShowBorders(true)
                     .Width("100%")
                     .Selection(s => s.Mode(SelectionMode.Multiple).ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always))
                     .OnSelectionChanged("getSelectedVoucherEntryNo")
-                    )
+                   
+        .Editing(editing => editing
+        .Mode(GridEditMode.Cell) // or use .Batch(), .Cell(), or .Popup() depending on your requirement
+        .AllowUpdating(true)   // Enable editing of existing rows
+       @*  .AllowDeleting(true)   // Enable deleting rows
+        .UseIcons(true) // Enables icons for editing buttons *@
+        )
+       // .OnEditorPreparing("onEditorPreparing")
+        )
 </div>
 <div class="dx-fieldset vertical-container" style="display: flex;flex-direction: row;justify-content: space-around;">
     <div>
@@ -285,7 +293,7 @@ function onNextButtonClick(button) {
             dataGrid.cellValue(rowIndex, "BankClearedOn", formattedDate);
 
             // Refresh the grid to reflect the changes
-            dataGrid.refresh();
+            //dataGrid.refresh();
         }
     }
 }
@@ -558,7 +566,10 @@ $(document).ready(function () {
         url: `/api/SalaryPayableMapping/UpdateBankClearedOn?VoucherEntryNo=${encodeURIComponent(voucherEntryNo)}&BankClearedOn=${encodeURIComponent(formattedDate)}`,
         type: "POST",
         success: function (response) {
-            alert("BankClearedOn updated successfully!");
+                DevExpress.ui.dialog.alert(
+                                "Bank Reconciliation updated Successfully.",
+                            "Update Successful"
+                        );
             // Refresh the DataGrid after a successful update
             var dataGrid = $("#dataGrid").dxDataGrid("instance");
             dataGrid.refresh();
@@ -570,6 +581,71 @@ $(document).ready(function () {
 }
 
 
+    // function onEditorPreparing(e) {
+
+    //                 if (e.dataField === 'PaymentStatus') {
+    //           alert("1")
+
+    //             e.cancel = true; // Prevent the default editor behavior
+
+    //             const dataGridInstance = e.component; // Get the DataGrid instance
+    //             const rowIndex = e.row.rowIndex; // Get the row index of the clicked cell
+    //             const fieldName = e.dataField; // Dynamic field name (EntryNarration or SysRemarks)
+    //             const initialValue = e.row.data[fieldName] || ""; // Get the current value of the cell
+
+    //             // Show Swal modal
+    //             Swal.fire({
+    //                 title: `<i class="fas fa-edit" style="color:#007bff"></i> Edit ${fieldName.replace(/([A-Z])/g, ' $1')}`, // Format field name for title
+    //                 html: `
+    //                 <textarea id="swal-field-editor"
+    //                                           style="width:100%; height:100px; font-size:16px; padding:10px; border-radius:8px; border:1px solid #ddd;"
+    //                                           placeholder="Enter ${fieldName.replace(/([A-Z])/g, ' $1')}...">${initialValue}</textarea>
+    //                             `,
+    //                 showCancelButton: true,
+    //                 confirmButtonText: 'OK',
+    //                 cancelButtonText: 'Cancel',
+    //                 focusConfirm: false,
+    //                 didOpen: () => {
+    //                     // Focus the textarea and move the cursor to the end
+    //                     const textarea = document.getElementById('swal-field-editor');
+    //                     textarea.focus();
+    //                     textarea.setSelectionRange(initialValue.length, initialValue.length);
+    //                 },
+    //                 preConfirm: () => {
+    //                     const newValue = document.getElementById('swal-field-editor').value.trim();
+    //                     return newValue; // Return the new value from the modal
+    //                 }
+    //             }).then((result) => {
+    //                 if (result.isConfirmed) {
+    //                     const newValue = result.value;
+
+    //                     if (newValue !== initialValue) {
+    //                         isUpdatingCell = true; // Set the flag before updating the cell
+    //                         dataGridInstance.cellValue(rowIndex, fieldName, newValue); // Update the specific cell dynamically
+    //                         dataGridInstance.saveEditData(); // Save the edit data
+    //                         dataGridInstance.refresh(); // Refresh the grid to reflect changes
+    //                         isUpdatingCell = false; // Reset the flag after updating
+    //                     }
+    //                 } else if (result.isDismissed) {
+    //                     console.log('Edit cancelled');
+    //                 }
+    //             });
+    //         }
+    //     }
+
+
+    //     function onEditorPreparing(e) {
+    //     if (e.dataField === "PaymentStatus" && e.parentType === "dataRow") {
+    //         e.editorName = "dxSelectBox";
+    //         e.editorOptions = {
+    //             acceptCustomValue: true,
+    //             showClearButton: true,
+    //             onCustomItemCreating: function(args) {
+    //                 args.customItem = args.text;
+    //             }
+    //         };
+    //     }
+    // }
 
     
     

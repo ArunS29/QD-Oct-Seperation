@@ -1,4 +1,4 @@
-﻿<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+ <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style type="text/css">
     #dataGrid .dx-datagrid-headers .dx-datagrid-action {
         text-align: center !important;
@@ -135,7 +135,9 @@
             display: inline-block;
         }
 
-
+    #btnAddNewQuotation:hover{
+        width: 210px !important; /* Expand to fit text */
+    }
 
 </style>
 
@@ -217,7 +219,7 @@
             .OnClick("showColumnChooser")
             )
     </div>
-    <div class="btn-containerIvoiceEdit">
+    <div class="btn-container">
 
         @(Html.DevExtreme().Button()
             .ID("btnBack")
@@ -265,6 +267,17 @@
             .Icon("preferences")
             .Width(50)
             .Text(new JS("formatMessage('Request/Enquiry Details')"))
+            .ElementAttr(new { style = "display: none;" })
+            // .OnClick("toggleGroupPanel")
+            )
+
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnAddNewQuotation")
+            .Icon("add")
+            .Width(50)
+            .Text(new JS("formatMessage('Add New Quotation')"))
             .ElementAttr(new { style = "display: none;" })
             // .OnClick("toggleGroupPanel")
             )
@@ -391,6 +404,7 @@
                                 "btnAddSuppliers": { "Visible": false, "Enabled": false },
                                   "btnRequestEnquiry": { "Visible": false, "Enabled": false },
                              "btnAddMaterialRequest": { "Visible": false, "Enabled": false },
+                             "btnAddNewQuotation": { "Visible": false, "Enabled": false },
                           //  "btnSave":{ "Visible": false, "Enabled": false }
                         };
 
