@@ -1498,6 +1498,16 @@
 
         function populateFields(assetData) {
 
+            $.ajax({
+                url: "/api/AccountLedgerMaster/getUserName",
+                type: 'GET',//
+                dataType: 'json',  // Expecting JSON response
+                success: function (response) {
+                    getUN = response.UserName;
+                    //   $("#CreatedBy").dxTextBox("instance").option("value", getUN);
+                    console.log("userN:", getUN);
+                }
+            });
                           console.log("Data received from API2:", assetData.AddedOn);
             console.log("AddedBy:", assetData.AddedBy);
             $("#txtacctledno").dxTextBox("instance").option("value", assetData.AssetLedgerNo);
