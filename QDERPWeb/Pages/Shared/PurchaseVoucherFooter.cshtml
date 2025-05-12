@@ -926,17 +926,25 @@
 
 
 
-    function handleFileSelection(isMultiple) {
 
-        // Configure the file input
+        function handleFileSelection(isMultiple) {
 
-        const fileInput = document.getElementById("fileInput");
+            // Configure the file input
+            if (isMultiple) {
+               openModal(`/${tenantName}/Finance/LedgerDocuments`, "")
 
-        fileInput.multiple = isMultiple; // Allow multiple files if selected
+            } 
+            else if(!isMultiple) {
+                 const fileInput = document.getElementById("fileInput");
 
-        fileInput.click(); // Trigger file input click
+            fileInput.multiple = isMultiple; // Allow multiple files if selected
 
-    }
+            fileInput.click(); // Trigger file input click
+            }
+
+            
+
+        }
 
     // File Input Change Handler (Optional: Log or Process Files)
 

@@ -131,28 +131,18 @@
         )
     </div>
     <div class="btn-container">
-    @(Html.DevExtreme().Button()
-        .ID("btnPrint")
-        .Text(new JS("formatMessage('Print')"))
-        .Type(ButtonType.Normal)
-        .StylingMode(ButtonStylingMode.Outlined)
-        .Icon("print") // Correct icon for printing
-        .Width(180)
+        @(Html.DevExtreme().Button()
+            .ID("btnExportPDF")
+            .Text("Export PDF")
+            .Icon("exportpdf")
+            .Type(ButtonType.Normal)
+            .StylingMode(ButtonStylingMode.Outlined)
+            .Width(180)
             .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
-    )
+            )
     </div>
-    <div class="btn-container">
-    @(Html.DevExtreme().Button()
-        .ID("btnPrintGrid")
-        .Text(new JS("formatMessage('Print Grid')"))
-        .Type(ButtonType.Normal)
-        .StylingMode(ButtonStylingMode.Outlined)
-        .Icon("print") // Correct icon for printing
-        .Width(180)
-            .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
 
-    )
-    </div>
+
     <div class="btn-container">
     @(Html.DevExtreme().Button()
         .ID("btnToggleSearch")

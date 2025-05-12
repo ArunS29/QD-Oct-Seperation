@@ -691,5 +691,14 @@
 				}
 			});
 	}
+	  $(function () {
+					$("#VATPurchase").dxTextBox({
+						text: formatMessage("Purchase Master View"),
+						readOnly: true,
+									onContentReady: function(e) {
+									$(e.element).addClass("dx-textbox-heading");
+							}
 
+					});
+				});
 </script>

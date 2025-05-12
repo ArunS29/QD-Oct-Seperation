@@ -1,0 +1,809 @@
+﻿@page
+@model QD.ERP.Web.Areas.IMS.Pages.AddNewQuotationModel
+@{
+}
+<style>
+    .dx-datagrid-headers {
+        border: 1px solid #686868 !important;
+        width: 100%; /* Adjust to fit the container */
+        overflow-x: auto; /* Enable horizontal scrolling */
+        white-space: nowrap; /* Prevent wrapping of headings */
+        overflow-y: hidden;
+    }
+
+    .dx-datagrid .dx-header-row .dx-datagrid-text-content {
+        font-size: 12px !important;
+        white-space: nowrap !important; /* Prevent wrapping of text */
+        text-align: center !important;
+        font-weight: bold;
+        color: black;
+    }
+
+    .ledgerResult {
+        overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
+        width: 100%;
+    }
+    .dx-tabpanel .dx-tab {
+        color: black !important;
+        font-weight: bold; 
+        font-size: 14px;
+        padding: 10px 15px; 
+    }
+
+       
+        .dx-tabpanel .dx-tab.dx-selection {
+            background-color: lightblue;
+            color: white !important;
+        }
+    .dx-tabpanel {
+    }
+
+
+    .mainContainer {
+        overflow-x: hidden;
+    }
+
+    .form-container1 {
+        margin: 15px;
+        width: 99%;
+        padding: 5px;
+        border-radius: 1px; 
+    }
+
+    .form-container {
+        width: 100%;
+        border-radius: 1px; 
+    }
+
+    .form-row {
+        display: flex;
+        gap: 10px;
+        padding: 10px;
+        margin-bottom: 15px;
+        width: 100%;
+    }
+
+
+    .form-label {
+        color: black;
+        padding: 5px;
+        font-weight: bold;
+        width: 200px;
+        text-align: Left;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+ 
+    .dx-textbox .dx-texteditor-input,
+    .dx-numberbox .dx-texteditor-input,
+    .dx-selectbox .dx-texteditor-input {
+      
+    }
+
+    .dx-button {
+        margin-left: 5px;
+    }
+
+    .dx-selectbox {
+        width: 100%;
+    }
+
+    .footer-buttons .row {
+        margin-top: 20px;
+    }
+
+    .form-control-with-border {
+        border-radius: 4px;
+        padding: 8px;
+        width: 100%;
+    }
+
+
+    .horizontal-container {
+        display: flex;
+        gap: 20px;
+        justify-content: start;
+        align-items: center; 
+        margin: 15px;
+    }
+
+    .button-group {
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+    }
+    .form-row.border-outline {
+        border: 1px solid gray;
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+    }
+    
+    .select-box {
+        width: 20vh;
+    }
+
+    .imagecontainer {
+        background-color: #e0f7fa;
+        border: 1px solid #90caf9;
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        overflow: hidden;
+        position: relative;
+    }
+
+        .imagecontainer img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .imagecontainer span {
+            color: #555;
+            font-style: italic;
+            position: absolute;
+        }
+
+    .flex-row {
+        display: flex;
+        align-items: end;
+    }
+
+    .form-container{
+      
+        gap: 20px;
+        font-family: Arial, sans-serif;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .form-card1 {
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        padding: 1%;
+    }
+
+    .form-row1 {
+        display: flex;
+        gap: 20px;
+    }
+
+    .form-group1 {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    label {
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .containers{
+        display:flex;
+    }
+
+    .dx-card{ 
+        background: var(--background-color);
+    }
+</style>
+<meta charset="UTF-8">
+<div class="title">
+    <div class="header-container">
+        <div id="AddNewQuotation" class="no-border-title"></div>
+    </div>
+</div>
+<div class="form-container1">
+    <div class="form-container">
+        <!-- Tab Menu -->
+        @(
+                Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%")
+                .Items(item =>
+                {
+                    item.Add()
+                .Title("Quotation Details")
+                .Icon("folder")
+                .Text("Quotation Details")
+                .Template(@<text>
+            <div class="dx-card p-3">
+                <div class="row g-2">
+
+                    <!-- Row 1 -->
+                    <div class="col-md-2">
+                        @(Html.DevExtreme().TextBox()
+                        .ID("QuotationNo")
+                        .Value("AIC-QTN-2025-00001")
+                        .Label("Quotation No:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ReadOnly(true)
+                        .Width("100%")
+                        )
+                    </div>
+                    <div class="col-md-1">
+                        @(Html.DevExtreme().TextBox()
+                        .ID("RevisionNo")
+                        .Label("Revision #:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%")
+                        )
+                    </div>
+                    <div class="col-md-2">
+                        @(Html.DevExtreme().DateBox()
+                        .ID("QuotationDate")
+                        .Value(DateTime.Now)
+                        .Label("Quotation Date:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%")
+                        )
+                    </div>
+                    <div class="col-md-6" style="display:flex; align-items:end;">
+                        @(Html.DevExtreme().SelectBox()
+                        .ID("ClientName")
+                        .DataSource(new[] { "Client A", "Client B" })
+                        .Label("Client Name:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("calc(100% - 40px)")
+                        )
+                            @(Html.DevExtreme().Button()
+                            .ID("AddClient")
+                            .Icon("plus")
+                            .Hint("Add Client")
+                            .Width(35)
+                            .ElementAttr("style", "margin-left: 5px; vertical-align: top;")
+                            )
+                  
+                    </div>
+
+                    <!-- Row 2 -->
+                    <div class="col-md-2" style="display:flex; align-items:end;">
+                        @(Html.DevExtreme().SelectBox()
+                        .ID("SalesPerson")
+                        .DataSource(new[] { "John Doe", "Jane Smith" })
+                        .Label("Sales Person:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%")
+                        )
+                        @(Html.DevExtreme().Button()
+                        .ID("SalesPerson1")
+                        .Icon("plus")
+                        .Hint("Add Client")
+                        .ElementAttr("style", "margin-left: 5px; vertical-align: top;")
+                        )
+
+                    </div>
+                    <div class="col-md-2">
+                        @(Html.DevExtreme().TextBox()
+                        .ID("MprNumber")
+                        .Label("MPR / Enquiry No:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%")
+                        )
+                    </div>
+                    <div class="col-md-3">
+                        @(Html.DevExtreme().TextBox()
+                        .ID("ClientRefName")
+                        .Label("Client Ref. Name / Attention To:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%")
+                        )
+                    </div>
+                    <div class="col-md-2">
+                        @(Html.DevExtreme().TextBox()
+                        .ID("ClientEmail")
+                        .Mode(TextBoxMode.Email)
+                        .Label("Client Email:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%")
+                        )
+                    </div>
+                    <div class="col-md-3">
+                        @(Html.DevExtreme().TextBox()
+                        .ID("ClientContactNo")
+                        .Label("Client Contact No:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%")
+                        )
+                    </div>
+
+                    <!-- Row 3 -->
+                    <div class="col-md-2" style="display:flex; align-items:end;">
+                        @(Html.DevExtreme().SelectBox()
+                        .ID("ModeOfRequest")
+                        .DataSource(new[] { "Email", "Phone", "In-Person" })
+                        .Label("Mode of Request:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%")
+                        )
+                        @(Html.DevExtreme().Button()
+                        .ID("ModeRequestType")
+                        .Icon("plus")
+                        .Hint("Add Type")
+                        .ElementAttr("style", "margin-left: 5px; vertical-align: top;")
+                        )
+                    </div>
+                    <div class="col-md-3" style="display:flex; align-items:end;">
+                        @(Html.DevExtreme().SelectBox()
+                        .ID("TypeOfRequest")
+                        .DataSource(new[] { "Quotation", "Proposal", "Follow-up" })
+                        .Label("Type of Request:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("50%)")
+                        )
+                     
+                            @(Html.DevExtreme().Button()
+                            .ID("AddRequestType")
+                            .Icon("plus")
+                            .Hint("Add Type")
+                            .ElementAttr("style", "margin-left: 5px; vertical-align: top;")
+                            )
+                        </div>
+               
+                    <div class="col-md-3">
+                        @(Html.DevExtreme().SelectBox()
+                        .ID("Project")
+                        .DataSource(new[] { "Project A", "Project B" })
+                        .Label("Project:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%")
+                        )
+                    </div>
+                    <div class="col-md-4">
+                        @(Html.DevExtreme().TextBox()
+                        .ID("ClientProjectRef")
+                        .Label("Client Project (Ref):")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%")
+                        )
+                    </div>
+
+                </div>
+            </div>
+
+        </text>);
+
+                    item.Add().Title("Quote Text").Icon("detailslayout").Text("Quote Text").Template(@<text>
+            <div class="dx-card p-3">
+                <div class="row g-3">
+
+                    <!-- Row 1: Subject and Quote Summary -->
+                    <div class="dx-card p-3">
+                        <div class="row g-2">
+
+                            <!-- Subject -->
+                            <div class="col-md-6">
+                                <div class="d-flex flex-column">
+                                    @(Html.DevExtreme().TextBox()
+                                    .ID("Subject")
+                                    .Value("Quotation for Materials")
+                                    .Label("Subject:")
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .Width("100%")
+                                    )
+                                    <div class="d-flex gap-1 mt-1">
+                                        <button class="btn btn-secondary btn-sm">Set Default</button>
+                                        <button class="btn btn-outline-secondary btn-sm">
+                                            <i class="fa fa-font"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Quote Summary -->
+                            <div class="col-md-6">
+                                <div class="d-flex flex-column">
+                                    @(Html.DevExtreme().TextArea()
+                                    .ID("QuoteSummary")
+                                    .Value("We hope that our offer is in line with your requirements. Please indicate in your purchase order our Quotation Reference and acceptance to the terms & conditions.")
+                                    .Height(80)
+                                    .Label("Quote Summary:")
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .Width("100%")
+                                    )
+                                    <div class="d-flex gap-1 mt-1">
+                                        <button class="btn btn-secondary btn-sm">Set Default</button>
+                                        <button class="btn btn-outline-secondary btn-sm">
+                                            <i class="fa fa-font"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Quote Introduction -->
+                            <div class="col-md-6">
+                                <div class="d-flex flex-column">
+                                    @(Html.DevExtreme().TextArea()
+                                    .ID("QuoteIntro")
+                                    .Value("With reference to your enquiry, please find our competitive Quotation as follows:")
+                                    .Height(100)
+                                    .Label("Quote Introduction:")
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .Width("100%")
+                                    )
+                                    <div class="d-flex gap-1 mt-1">
+                                        <button class="btn btn-secondary btn-sm">Set Default</button>
+                                        <button class="btn btn-outline-secondary btn-sm">
+                                            <i class="fa fa-font"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Quote Thanks Notes -->
+                            <div class="col-md-6">
+                                <div class="d-flex flex-column">
+                                    @(Html.DevExtreme().TextArea()
+                                    .ID("QuoteThanks")
+                                    .Height(100)
+                                    .Label("Quote Thanks Notes:")
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .Width("100%")
+                                    )
+                                    <div class="d-flex gap-1 mt-1">
+                                        <button class="btn btn-secondary btn-sm">Set Default</button>
+                                        <button class="btn btn-outline-secondary btn-sm">
+                                            <i class="fa fa-font"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    </div>
+                    </div>
+
+        </text>);
+                    item.Add().Text("Branch / Division").Icon("home").Title("Branch / Division").Template(@<text>
+            <div class="dx-card p-3">
+                <div class="row g-2">
+
+                    <!-- Column 1 -->
+                    <div class="col-md-4">
+                        <div class="mb-3 border p-2">
+                            @(Html.DevExtreme().SelectBox()
+                            .ID("CompanyBranch")
+                            .DataSource(new[] { "Al Injaz Contracting Establishment", "Another Branch" })
+                            .Value("")
+                            .Label("Company Branch / Division")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .Width("100%")
+                            )
+
+                            @(Html.DevExtreme().SelectBox()
+                            .ID("InventoryGroup")
+                            .DataSource(new[] { "Inventory Master Group", "Alternate Group" })
+                            .Value("Inventory Master Group")
+                            .Label("Inventory Group Master: *")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .Width("100%")
+                            )
+
+                            @(Html.DevExtreme().TextBox()
+                            .ID("ReferenceNo")
+                            .Label("Reference No:")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .Width("100%")
+                            )
+                        </div>
+                    </div>
+
+                    <!-- Column 2 -->
+                    <div class="col-md-5">
+                        <div class="mb-3 border p-2">
+                            @(Html.DevExtreme().TextBox()
+                            .ID("SubmittedBy")
+                            .Value("Administrator")
+                            .Label("Quote Submitted By:")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .Width("100%")
+                            .Disabled(true)
+                            )
+
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    @(Html.DevExtreme().DateBox()
+                                    .ID("SubmittedOn")
+                                    .Value(DateTime.Now)
+                                    .Label("Quote Submitted On:")
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .Width("100%")
+                                    )
+                                </div>
+                                <div class="col-md-6">
+                                    @(Html.DevExtreme().DateBox()
+                                    .ID("BidClosingDate")
+                                    .Label("Bid Closing Date:")
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .Width("100%")
+                                    )
+                                </div>
+                            </div>
+
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    @(Html.DevExtreme().SelectBox()
+                                    .ID("TransportationScope")
+                                    .DataSource(new[] { "Scope A", "Scope B" })
+                                    .Label("Transportation Scope:")
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .Width("100%")
+                                    )
+                                </div>
+                                <div class="col-md-6">
+                                    @(Html.DevExtreme().SelectBox()
+                                    .ID("QuoteValidity")
+                                    .DataSource(new[] { "30 Days", "60 Days" })
+                                    .Label("Quote Validity:")
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .Width("100%")
+                                    )
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Column 3 -->
+                    <div class="col-md-3">
+                        <div class="mb-3 border p-2">
+                            <div class="row">
+                                <div class="col-6">
+                                    @(Html.DevExtreme().SelectBox()
+                                    .ID("SomeSelect1")
+                                    .DataSource(new[] { "Option A", "Option B" })
+                                    .Label("Select 1")
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .Width("100%")
+                                    )
+                                </div>
+                                <div class="col-6">
+                                    @(Html.DevExtreme().SelectBox()
+                                    .ID("SomeSelect2")
+                                    .DataSource(new[] { "Option 1", "Option 2" })
+                                    .Label("Select 2")
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .Width("100%")
+                                    )
+                                </div>
+                            </div>
+
+                            <div class="row mt-3">
+                                <div class="col-6">
+                                    @(Html.DevExtreme().SelectBox()
+                                    .ID("QuotationStatus")
+                                    .DataSource(new[] { "Open", "Submitted", "Won", "Lost" })
+                                    .Label("Quotation Status:")
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .Width("100%")
+                                    )
+                                </div>
+                                <div class="col-6 d-flex align-items-end">
+                                    <button class="btn btn-success btn-sm ms-2">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            @(Html.DevExtreme().TextArea()
+                            .ID("Remarks")
+                            .Label("Remarks:")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .Height(50)
+                            .Width("100%")
+                            )
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+        </text>);
+                    item.Add().Text("Signatories").Icon("user").Title("Signatories").Template(@<text>
+            <div class="form-container">
+                <div class="dx-card p-3">
+                    <table class=" table-borderless w-100">
+                        <thead>
+                            <tr>
+                                <th>Prepared By</th>
+                                <th>Verified By</th>
+                                <th>Approved By</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <!-- Prepared By SelectBox -->
+                                <td>
+                                    @(Html.DevExtreme().SelectBox()
+                                    .ID("preparedBy")
+                                    .DataSource(new[] { "User 1", "User 2", "User 3" })
+                                    .ShowClearButton(true)
+                                    .ShowDropDownButton(true)
+                                    .Width("100%")
+                                    )
+                                </td>
+
+                                <!-- Verified By SelectBox -->
+                                <td>
+                                    @(Html.DevExtreme().SelectBox()
+                                    .ID("verifiedBy")
+                                    .DataSource(new[] { "Verifier 1", "Verifier 2", "Verifier 3" })
+                                    .ShowClearButton(true)
+                                    .ShowDropDownButton(true)
+                                    .Width("100%")
+                                    )
+                                </td>
+
+                                <!-- Approved By SelectBox -->
+                                <td>
+                                    @(Html.DevExtreme().SelectBox()
+                                    .ID("approvedBy")
+                                    .DataSource(new[] { "Approver 1", "Approver 2", "Approver 3" })
+                                    .ShowClearButton(true)
+                                    .ShowDropDownButton(true)
+                                    .Width("100%")
+                                    )
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <!-- Prepared By Checkboxes -->
+                                <td>
+                                    @(Html.DevExtreme().CheckBox().ID("showSeal").Value(true).Text("Show Company Seal"))
+                                    <br />
+                                    @(Html.DevExtreme().CheckBox().ID("showSignature").Value(true).Text("Show Signature"))
+                                    <br />
+                                    @(Html.DevExtreme().CheckBox().ID("printLetterhead").Value(true).Text("Print in Letter Head"))
+                                </td>
+
+                                <!-- Verified By Checkboxes -->
+                                <td>
+                                    @(Html.DevExtreme().CheckBox().ID("pageBreakBefore").Text("Page Break before Terms"))
+                                    <br />
+                                    @(Html.DevExtreme().CheckBox().ID("pageBreakAfter").Text("Page Break after Terms"))
+                                    <br />
+                                    @(Html.DevExtreme().CheckBox().ID("clientAcknowledgement").Text("Print Client Acknowledgement"))
+                                </td>
+
+                                <!-- Approved By Checkboxes -->
+                                <td>
+                                    @(Html.DevExtreme().CheckBox().ID("printItemCodeDesc").Text("Print Item Code with Description"))
+                                    <br />
+                                    @(Html.DevExtreme().CheckBox().ID("printItemPartNoDesc").Text("Print Item Part No with Description"))
+                                    <br />
+                                    @(Html.DevExtreme().CheckBox().ID("printItemPartArabicDesc").Text("Print Item Part No with Arabic Desc."))
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </text>);
+                })
+            )
+
+    </div>
+    @(Html.DevExtreme().DataGrid()
+        .ID("itemGrid")
+        .Height("600px")
+        .Selection(s => s
+        .Mode(SelectionMode.Multiple)
+        .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)
+        )
+        .Columns(columns =>
+        {
+            columns.Add().Caption("#").CellTemplate(@<text>
+        @(ViewData["rowIndex"] = ((int)(ViewData["rowIndex"] ?? 0)) + 1)
+        @ViewData["rowIndex"]
+    </text>).Width(100);
+            columns.Add().DataField("ItemCode").Caption("Item Code");
+            columns.Add().DataField("Description").Caption("Description");
+            columns.Add().DataField("...").Caption("...");
+            columns.Add().DataField("UnitRateMethod").Caption("Unit Rate Method");
+            columns.Add().DataField("Qty").Caption("Qty");
+            columns.Add().DataField("UnitCostPrice").Caption("Unit Cost Price").Format("currency");
+            columns.Add().DataField("...").Caption("...").Format("currency");
+            columns.Add().DataField("UnitPrice").Caption("Unit Price");
+            columns.Add().DataField("QuotedDiscount").Caption("Quoted Discount");
+            columns.Add().DataField("...").Caption("...");
+            columns.Add().DataField("VATDesc").Caption("VAT Desc");
+            columns.Add().DataField("VAT").Caption("VAT");
+            columns.Add().DataField("Total").Caption("Total");
+            columns.Add().DataField("TotalCost").Caption("Total Cost");
+            columns.Add().DataField("ProfitOrLose").Caption("Profit Or Lose");
+        })
+    .ColumnAutoWidth(true)
+    .Width("100%")
+    .WordWrapEnabled(true)
+    .OnCellClick("function(e) {handleCellClick(e);}")
+    .ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+    .AllowColumnReordering(true)
+    .AllowColumnResizing(true)
+    .ColumnFixing(fixing => fixing.Enabled(true))
+    .HeaderFilter(filter => filter.Visible(false))
+    .Paging(p => p.Enabled(false))
+    .Pager(pager => pager.Visible(false))
+    .Grouping(grouping => grouping.AutoExpandAll(true))
+    .FilterRow(filterRow => filterRow.Visible(false))
+    .GroupPanel(groupPanel => groupPanel.Visible(false))
+    .ShowBorders(true)
+    .ShowRowLines(true)
+    )
+</div>
+      
+<div class="form-container">
+    <div class="footer-buttons">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-2">
+        @(Html.DevExtreme()
+            .Button()
+            .ID("btnSave")
+            .Text("Save")
+            .Icon("check")
+            .OnClick("onSaveSupplierMasterClick"))
+                </div>
+                <div class="col-md-2">
+        @(Html.DevExtreme()
+            .Button()
+            .ID("btnSaveClose")
+            .Text("Save & Close")
+            .Icon("check"))
+                </div>
+                <div class="col-md-2">
+        @(Html.DevExtreme()
+            .Button()
+            .ID("btnDelete")
+            .Text("Delete")
+            .Icon("trash")) 
+                </div>
+                <div class="col-md-2">
+        @(Html.DevExtreme()
+            .Button()
+            .ID("btnBack")
+            .Text("Back")
+            .Icon("arrowleft"))
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+        function openEntityModal(entity) {
+        const url = `/${tenantName}/IMS/${entity}`;
+        const title = "";
+        openModal(url, title);
+    }
+
+    function PreparedBy() {
+        openEntityModal("Signatories");
+    }
+
+    function AddInventoryGroup() {
+        openEntityModal("ProjectSubUnits");
+    }
+
+    function ModeOfRequest() {
+        openEntityModal("QuotationModeOfRequest");
+    }
+
+    function TypeOfRequest() {
+        openEntityModal("QuotationTypeOfRequest");
+    }
+         $(function () {
+    $("#AddNewQuotation").dxTextBox({
+    text: formatMessage("Add New Quotation"),
+        readOnly: true,
+        onContentReady: function (e) {
+        $(e.element).addClass("dx-textbox-heading");
+        }
+        });
+    });
+</script>

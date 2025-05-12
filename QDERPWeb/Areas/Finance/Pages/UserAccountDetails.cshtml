@@ -25,17 +25,23 @@
 
                     <div class="form-group">
                         <label>User ID:</label>
-                        @(Html.DevExtreme().TextBox().ID("UserId").Width("100%"))
+                        @(Html.DevExtreme().TextBox().ID("UserId").Width("100%").ReadOnly(true))
                     </div>
 
                     <div class="form-group">
                         <label>User Name:</label>
-                        @(Html.DevExtreme().TextBox().ID("UserName").Width("100%"))
+                        @(Html.DevExtreme().TextBox()
+                        .ID("UserName")
+                        .Width("100%")
+                        .Placeholder("Enter your email")
+                        .OnValueChanged("validateEmail")
+                        )
+                        <div id="emailValidationMessage" style="color: red; display: none;">Please enter a valid email address.</div>
                     </div>
 
                     <div class="form-group">
                         <label>Password:</label>
-                        @(Html.DevExtreme().TextBox().ID("Password").Mode(TextBoxMode.Password).Width("100%"))
+                        @(Html.DevExtreme().TextBox().ID("Password").Mode(TextBoxMode.Password).Width("100%").Placeholder("***").ReadOnly(true))
                     </div>
 
                     <div class="form-group">
@@ -47,7 +53,7 @@
                         .LoadAction("GetDepartments")
                         .LoadMode(DataSourceLoadMode.Raw)
                         .Key("DepartmentCode"))
-                        .DisplayExpr("Department")
+                        .DisplayExpr("Department")  
                         .ValueExpr("DepartmentCode")
                         .ShowClearButton(true)
                         .Placeholder("Select Department")
@@ -74,6 +80,7 @@
                         rules.AddRequired().Message("Please select a company.");
                         })
                         .ShowClearButton(true)
+                        .Placeholder("Select Company Branch")
                         .AcceptCustomValue(true)
                         .OpenOnFieldClick(false)
                         .ValueChangeEvent("input")
@@ -88,8 +95,12 @@
                         .Width(1000)
                         )
                         // .OnKeyDown("onKeyDown")
-                        .ContentTemplate(new TemplateName("CompanyContentTemplate")))
-
+                        .ContentTemplate(new TemplateName("CompanyContentTemplate"))
+                        .ValidationRules(rules =>
+                        {
+                        rules.AddRequired().Message("Please select a Company Branch.");
+                        })
+                        )
                     </div>
 
 
@@ -105,6 +116,7 @@
                         rules.AddRequired().Message("Please select a Division.");
                         })
                         .ShowClearButton(true)
+                        .Placeholder("Select Company Division")
                         .AcceptCustomValue(true)
                         .OpenOnFieldClick(false)
                         .ValueChangeEvent("input")
@@ -119,7 +131,11 @@
                         .Width(1000)
                         )
                         // .OnKeyDown("onKeyDown")
-                        .ContentTemplate(new TemplateName("BranchContentTemplate")))
+                        .ContentTemplate(new TemplateName("BranchContentTemplate"))
+                        .ValidationRules(rules =>
+                        {
+                        rules.AddRequired().Message("Please select a Company Division.");
+                        }))
 
                     </div>
 
@@ -133,6 +149,7 @@
                         rules.AddRequired().Message("Please select a user level.");
                         })
                         .ShowClearButton(true)
+                        .Placeholder("Select User Level")
                         .AcceptCustomValue(true)
                         .OpenOnFieldClick(false)
                         .ValueChangeEvent("input")
@@ -147,7 +164,11 @@
                         .Width(1000)
                         )
                         // .OnKeyDown("onKeyDown")
-                        .ContentTemplate(new TemplateName("UserLevelContentTemplate")))
+                        .ContentTemplate(new TemplateName("UserLevelContentTemplate"))
+                        .ValidationRules(rules =>
+                        {
+                        rules.AddRequired().Message("Please select a User Level.");
+                        }))
 
                     </div>
 
@@ -161,6 +182,7 @@
                         rules.AddRequired().Message("Please select an employee group.");
                         })
                         .ShowClearButton(true)
+                        .Placeholder("Select Employee File Access Group")
                         .AcceptCustomValue(true)
                         .OpenOnFieldClick(false)
                         .ValueChangeEvent("input")
@@ -175,7 +197,11 @@
                         .Width(1000)
                         )
                         // .OnKeyDown("onKeyDown")
-                        .ContentTemplate(new TemplateName("EmployeeGroupContentTemplate")))
+                        .ContentTemplate(new TemplateName("EmployeeGroupContentTemplate"))
+                        .ValidationRules(rules =>
+                        {
+                        rules.AddRequired().Message("Please select a Employee File Access Group.");
+                        }))
 
                     </div>
 
@@ -216,6 +242,7 @@
                         rules.AddRequired().Message("Ledger Account should be entered.");
                         })
                         .ShowClearButton(true)
+                        .Placeholder("Select Petty Cash Account(Finance Module)")
                         .AcceptCustomValue(true)
                         .OpenOnFieldClick(false)
                         .ValueChangeEvent("input")
@@ -230,7 +257,11 @@
                         .Width(1000)
                         )
                         // .OnKeyDown("onKeyDown")
-                        .ContentTemplate(new TemplateName("FilteredAccountHeadContentTemplate")))
+                        .ContentTemplate(new TemplateName("FilteredAccountHeadContentTemplate"))
+                        .ValidationRules(rules =>
+                        {
+                        rules.AddRequired().Message("Please select a Petty Cash Account(Finance Module).");
+                        }))
 
                     </div>
 
@@ -258,6 +289,10 @@
                         .Width("100%")
                         .DropDownOptions(o => o.Width("100%"))
                         .ContentTemplate(new TemplateName("HRUserLevelContentTemplate"))
+                        .ValidationRules(rules =>
+                        {
+                        rules.AddRequired().Message("Please select a Equipment Sales Person Access.");
+                        })
                         )
                     </div>
 
@@ -271,6 +306,7 @@
                         rules.AddRequired().Message("Ledger Account should be entered.");
                         })
                         .ShowClearButton(true)
+                        .Placeholder("Select Inventory Sales Person Access")
                         .AcceptCustomValue(true)
                         .OpenOnFieldClick(false)
                         .ValueChangeEvent("input")
@@ -285,7 +321,11 @@
                         .Width(1000)
                         )
                         // .OnKeyDown("onKeyDown")
-                        .ContentTemplate(new TemplateName("SalesPersonDropDownTemplate")))
+                        .ContentTemplate(new TemplateName("SalesPersonDropDownTemplate"))
+                        .ValidationRules(rules =>
+                        {
+                        rules.AddRequired().Message("Please select a Inventory Sales Person Access.");
+                        }))
 
                     </div>
 
@@ -314,6 +354,10 @@
                             .Width("100%")
                             .DropDownOptions(o => o.Width("100%"))
                             .ContentTemplate(new TemplateName("ProjectGroupContentTemplate"))
+                            .ValidationRules(rules =>
+                            {
+                            rules.AddRequired().Message("HR Employee Timesheet Group.");
+                            })
                             )
                         </div>
                     </div>
@@ -839,14 +883,35 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
+            debugger;
+
             const urlParams = new URLSearchParams(window.location.search);
             const userId = urlParams.get("userId");
             const tenantName = urlParams.get("tenantName");
 
-            if (userId) {
+           if (userId !== null && userId.trim() !== "") {
                 loadUserDetails(userId);
             } else {
-                DevExpress.ui.notify("User ID not found in URL", "error", 3000);
+                // Fetch next UserId from the server
+                $.ajax({
+                    url: window.location.origin + "/api/Utility/GetNextUserId",
+                    method: "GET",
+                    cache: false,
+                    dataType: "json",
+                    success: function (response) {
+                        if (response.success && response.nextUserId) {
+                            const userIdBox = $("#UserId").dxTextBox("instance");
+                            if (userIdBox) {
+                                userIdBox.option("value", response.nextUserId);
+                            }
+                        } else {
+                            DevExpress.ui.notify("Failed to generate User ID", "error", 3000);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        DevExpress.ui.notify("Failed to generate User ID", "error", 3000);
+                    }
+                });
             }
         });
 
@@ -1466,10 +1531,21 @@
             alert("Customize clicked");
         }
 
+           // Email validation for User Name field
+        function validateEmail(e) {
+            var value = e.value || "";
+            var emailPattern = /^[^\s]+[^\s]+\.[^\s]+$/;
+            if (!emailPattern.test(value)) {
+                $("#emailValidationMessage").show();
+            } else {
+                $("#emailValidationMessage").hide();
+            }
+        }
 
-
-
+        // ... (rest of your JavaScript code remains unchanged) ...
+        
     </script>
+
 }
 
 <style>
