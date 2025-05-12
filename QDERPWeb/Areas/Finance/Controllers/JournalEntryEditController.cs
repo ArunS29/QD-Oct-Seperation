@@ -655,8 +655,91 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 			return Json(result);
 		}
+        [HttpPost]
+        public IActionResult DeleteJournalChild([FromBody] long journalChildNo)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
 
-	}
+            try
+            {
+                var record = dbContext.Tbl20127JournalRegisterChildren.FirstOrDefault(x => x.JournalChildNo == journalChildNo);
+                if (record != null)
+                {
+                    var costList = dbContext.Tbl20128JournalRegisterCostAllocations
+                    .Where(c => c.JournalChildNo == journalChildNo)
+                    .ToList();
+                    var employeeList = dbContext.Tbl20129JournalRegisterEmployeeAllocations
+                        .Where(c => c.JournalChildNo == journalChildNo)
+                        .ToList();
+                    var propertyList = dbContext.Tbl20130JournalRegisterPropertyAllocations
+                        .Where(c => c.JournalChildNo == journalChildNo)
+                        .ToList();
+                    dbContext.Tbl20127JournalRegisterChildren.Remove(record);
+                    dbContext.Tbl20128JournalRegisterCostAllocations.RemoveRange(costList);
+                    dbContext.Tbl20129JournalRegisterEmployeeAllocations.RemoveRange(employeeList);
+                    dbContext.Tbl20130JournalRegisterPropertyAllocations.RemoveRange(propertyList);
+                    dbContext.SaveChanges();
+                    return Ok(new { success = true });
+                }
+
+                return NotFound(new { success = false, message = "Record not found." });
+            }
+            catch (Exception ex)
+            {
+                // Optionally log exception
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult DeleteSelectedJournalChildren([FromBody] List<long> journalChildNos)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+            if (journalChildNos == null || !journalChildNos.Any())
+            {
+                return Json(new { success = false, message = "No journal child numbers received." });
+            }
+
+            try
+            {
+                
+
+                var journalChildren = dbContext.Tbl20127JournalRegisterChildren
+                    .Where(j => journalChildNos.Contains(j.JournalChildNo)).ToList();
+
+                var costAllocations = dbContext.Tbl20128JournalRegisterCostAllocations
+                    .Where(c => journalChildNos.Contains(c.JournalChildNo)).ToList();
+
+                var employeeAllocations = dbContext.Tbl20129JournalRegisterEmployeeAllocations
+                    .Where(e => journalChildNos.Contains(e.JournalChildNo)).ToList();
+
+                var propertyAllocations = dbContext.Tbl20130JournalRegisterPropertyAllocations
+                    .Where(p => journalChildNos.Contains(p.JournalChildNo)).ToList();
+
+                dbContext.Tbl20128JournalRegisterCostAllocations.RemoveRange(costAllocations);
+                dbContext.Tbl20129JournalRegisterEmployeeAllocations.RemoveRange(employeeAllocations);
+                dbContext.Tbl20130JournalRegisterPropertyAllocations.RemoveRange(propertyAllocations);
+                dbContext.Tbl20127JournalRegisterChildren.RemoveRange(journalChildren);
+
+                dbContext.SaveChanges();
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                // Log error
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+
+    }
 }
 
 

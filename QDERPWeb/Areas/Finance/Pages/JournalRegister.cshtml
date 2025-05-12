@@ -1,12 +1,13 @@
 ﻿@page
 @using DevExtreme.AspNet.Mvc
 @{
-    ViewData["journalClaimerUserName"] = HttpContext.Session.GetString("UserName");
+    
     var userIdString = HttpContext.Session.GetString("UserId");
     byte requesterIdByte = 0;
     if (byte.TryParse(userIdString, out var byteVal))
     {
         requesterIdByte = byteVal;
+        ViewData["journalClaimerUserName"] = byteVal;
     }
 }
 <style>
@@ -126,13 +127,13 @@
         .LoadMode(DataSourceLoadMode.Raw)
         .Key("UserId")
         )
-
         .LabelMode(EditorLabelMode.Outside)
         .ID("requestedBy")
         .ShowClearButton(true)
-        .AcceptCustomValue(true)
-        .OpenOnFieldClick(false)
-        .ValueChangeEvent("input")
+
+        .AcceptCustomValue(false) // ✅ Disallow typing custom values
+        .OpenOnFieldClick(true)   // ✅ Optional: better UX
+
         .HoverStateEnabled(true)
         .ValueExpr("UserId")
         .DisplayExpr("UserName")
@@ -141,11 +142,8 @@
         .OnOpened("onOpened")
         .Width(300)
         .TabIndex(1)
-        .DropDownOptions(o => o
-        .Width(300)
-        )
+        .DropDownOptions(o => o.Width(300))
         .OnKeyDown("onKeyDown")
-        //.OnValueChanged("dropDownBoxValueChanged")
         .ContentTemplate(new TemplateName("AccountHeadContentTemplate"))
         )
     @using (Html.DevExtreme().NamedTemplate("AccountHeadContentTemplate"))
@@ -158,7 +156,7 @@
             .LoadAction("GetUser")
             .LoadMode(DataSourceLoadMode.Raw)
             ///   .Key("AccountHead") //salary paid entry
-            .Key("UserName")
+            .Key("UserId")
 
             )
 
@@ -302,7 +300,13 @@
                 })
                 .Width("100%")
             .Height(600)
-            .Paging(p => p.PageSize(10))
+        .Scrolling(scrolling => scrolling
+        .Mode(GridScrollingMode.Virtual) // Enables virtual scrolling
+        .UseNative(false)                // Optional: false for custom scrollbars
+        )
+        .Paging(paging => paging
+        .Enabled(false) // Disables pagination
+        )
         .Selection(selection => selection.Mode(SelectionMode.Single))
         //.WordWrapEnabled(true)
              .ColumnAutoWidth(true)
@@ -428,8 +432,9 @@
                                                 
                                                 success: function (deleteResponse) {
                                                     if (deleteResponse.success) {
+                                                        getAllSubmissionJournal();
                                                         DevExpress.ui.notify("Journal Entry deleted successfully.", "success", 2000);
-                                                        Refreshgrid(); // Refresh the grid to reflect deletion
+                                                         // Refresh the grid to reflect deletion
                                                     } else {
                                                         DevExpress.ui.notify("Failed to delete Journal Entry.", "error", 2000);
                                                     }
@@ -566,7 +571,7 @@
             url: '/api/JournalRegister/GetJournalview',  // API endpoint
             type: 'GET',
             data: {
-                RequesterID: accheadid, // Set this according to your logic
+                RequesterID: accheadid || '@requesterIdByte', // Set this according to your logic
                 StartDate: startDate, // Start date
                 EndDate: endDate, // End date
                 IfShowAll: true
@@ -586,6 +591,12 @@
 
     // This function used to call API to get records for the selected values.
     function ddBtnShowRecords_click(duration) {
+        var requestedByInstance = $("#requestedBy").dxDropDownBox("instance");
+        var selectedUserName = requestedByInstance.option("value");
+
+       
+
+        var requesterId = accheadid || '@requesterIdByte';
 
         
         var frmDateBox = $("#startDate").dxDateBox("instance");
@@ -660,7 +671,7 @@
             url: '/api/JournalRegister/GetJournalview',  // API endpoint
             type: 'GET',
             data: {
-                RequesterID: accheadid, // Set this according to your logic
+                RequesterID: requesterId, // Set this according to your logic
                 StartDate: frmDate, // Start date
                 EndDate: toDate, // End date
                 IfShowAll: false // Set to

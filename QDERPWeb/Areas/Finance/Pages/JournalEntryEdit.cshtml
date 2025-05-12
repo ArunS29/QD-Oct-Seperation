@@ -277,6 +277,7 @@
                     });
                 })
                 .OnRowUpdating("onLedgerRowUpdating")
+                .OnRowRemoving("onjournalrowremoving")
                 )
         </div>
 
@@ -905,6 +906,12 @@
         onItemClick: function () {
             openAllocationPopup("Employee",params);
         }
+    },
+    {
+        text: "Delete All Selected Line Items",
+        onItemClick: function () {
+            Deleteallrecords();
+        }
     }
 ];
 
@@ -1253,6 +1260,43 @@
         // Store the popup instance globally
         popupInstances[voucherEntryNo] = popup;
     }
+    function Deleteallrecords() {
+        debugger;
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        const selectedRows = dataGrid.getSelectedRowsData();
+
+        if (!selectedRows.length) {
+            DevExpress.ui.notify("No rows selected!", "warning", 2000);
+            return;
+        }
+
+        const journalChildNos = selectedRows.map(row => Number(row.JournalChildNo));
+
+        // Confirm before deletion
+        DevExpress.ui.dialog.confirm("Are you sure you want to delete the selected line items?", "Confirm Delete")
+            .done(function (dialogResult) {
+                if (dialogResult) {
+                    $.ajax({
+                        url: '/api/JournalEntryEdit/DeleteSelectedJournalChildren', // Adjust to your route
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ journalChildNos }),
+                        success: function (response) {
+                            if (response.success) {
+                                DevExpress.ui.notify("Selected rows deleted successfully.", "success", 2000);
+                                dataGrid.refresh();
+                            } else {
+                                DevExpress.ui.notify(response.message || "Deletion failed.", "error", 3000);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            DevExpress.ui.notify("Server error occurred.", "error", 3000);
+                            console.error(error);
+                        }
+                    });
+                }
+            });
+    }
 
 
     function closeParentModal() {
@@ -1423,5 +1467,35 @@
             ]
         });
     }
+
+    function onjournalrowremoving(e) {
+        const journalChildNo = e.data.JournalChildNo;
+
+        if (journalChildNo) {
+            e.cancel = true; // Prevent default DevExtreme behavior
+
+            $.ajax({
+                url: '/api/JournalEntryEdit/DeleteJournalChild', // adjust path based on your area/controller
+                type: 'POST',
+                data: JSON.stringify(journalChildNo),
+                contentType: 'application/json',
+                success: function (response) {
+                    if (response.success) {
+                        var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+                        loadLedgerGridData(voucherNo);
+                       
+                       
+                    } else {
+                        DevExpress.ui.notify(response.message || "Delete failed", "error", 2000);
+                    }
+                },
+                error: function () {
+                    DevExpress.ui.notify("Server error during delete", "error", 2000);
+                }
+            });
+        }
+    }
+
+
 
 </script>

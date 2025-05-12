@@ -37,13 +37,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             RequesterID, StartDate, EndDate, IfShowAll)
                         .ToListAsync();
 
-                    if (result != null && result.Any())
-                    {
+                   
                         return Json(result); // 200 OK
-                    }
+                    
 
                     // Return 400 Bad Request if no data found
-                    return BadRequest(new { success = false, message = "No journal entries found for the given filters." });
+                    
                 }
                 catch (Exception ex)
                 {
@@ -181,10 +180,23 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 var childList = dbContext.Tbl20127JournalRegisterChildren
                     .Where(c => c.JournalRefNo == journalRefNo)
                     .ToList();
+				var costList = dbContext.Tbl20128JournalRegisterCostAllocations
+					.Where(c => c.VoucherNo == journalRefNo)
+					.ToList();
+				var employeeList = dbContext.Tbl20129JournalRegisterEmployeeAllocations
+					.Where(c => c.VoucherNo == journalRefNo)
+					.ToList();
+				var propertyList = dbContext.Tbl20130JournalRegisterPropertyAllocations
+					.Where(c => c.VoucherNo == journalRefNo)
+					.ToList();
 
-                dbContext.Tbl20127JournalRegisterChildren.RemoveRange(childList);
+
+				dbContext.Tbl20127JournalRegisterChildren.RemoveRange(childList);
                 dbContext.Tbl20126JournalRegisterMasters.Remove(master);
-                dbContext.SaveChanges();
+				dbContext.Tbl20128JournalRegisterCostAllocations.RemoveRange(costList);
+				dbContext.Tbl20129JournalRegisterEmployeeAllocations.RemoveRange(employeeList);
+				dbContext.Tbl20130JournalRegisterPropertyAllocations.RemoveRange(propertyList);
+				dbContext.SaveChanges();
 
                 return Json(new { success = true });
             }
