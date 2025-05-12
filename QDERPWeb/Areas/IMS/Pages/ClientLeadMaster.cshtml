@@ -598,13 +598,13 @@
 
                     </div>
        <div class="col-md-2">
-                    @(Html.DevExtreme().Button().ID("btnSaveClose").Text("Save & Close").Icon("check").OnClick("function() { saveAndClose(); }"))
+        @(Html.DevExtreme().Button().ID("btnSaveClose").Text("Save & Close").Icon("check").OnClick("function() { onSaveandCloseClientMasterClick(); }"))
                     </div> 
                     <div class="col-md-2">
         @(Html.DevExtreme().Button().ID("btnDelete").Text("Delete").Icon("trash"))
                     </div>
                     <div class="col-md-2">
-        @(Html.DevExtreme().Button().ID("btnBack").Text("Back").Icon("arrowleft"))
+        @(Html.DevExtreme().Button().ID("btnBack").Text("Back").Icon("arrowleft").OnClick("back"))
                     </div>
                 </div>
             </div>
@@ -947,8 +947,7 @@ function generateNextClientCode(categoryCode) {
 
 let businessCard1Base64 = null;
 let businessCard2Base64 = null;
-function onSaveClientMasterClick(e) {
-    debugger;
+    function onSaveClientMasterClick(onSuccessCallback) {
     // Collecting form data from client master form
     var clientCode = $('#txtClientCode').dxTextBox("instance").option("value");
     var clientName = $('#txtClientName').dxTextBox("instance").option("value");
@@ -1018,10 +1017,7 @@ ContactRemarks:clientRemarks,
             success: function (response) {
                 if (response.success) {
                     DevExpress.ui.notify(response.message, "success", 3000);
-                    // Close the form or popup if needed
-                    // setTimeout(function () {
-                    //     $("#clientMasterPopup").dxPopup("instance").hide();
-                    // }, 2000);
+                       onSuccessCallback();
                 } else {
                     DevExpress.ui.notify("Error: " + response.message, "error", 3000);
                 }
@@ -1035,6 +1031,22 @@ ContactRemarks:clientRemarks,
         DevExpress.ui.notify("Please fill all required fields", "error", 3000);
     }
 }
+    function onSaveandCloseClientMasterClick() {
+                onSaveClientMasterClick(function () {
+                // Show message before closing/reloading
+                setTimeout(function () {
+                    window.parent.closeModal(); // OR window.location.reload();
+                }, 1000); // delay allows user to see the notification
+                setTimeout(function () {
+                    location.reload();
+                }, 1000);
+                $("#dataGrid").dxDataGrid("instance").refresh();
+            });
+        }
+
+        function back() {
+            window.parent.closeModal();
+        }
 
 //delete
  $("#btnDelete").on("click", function (e) {

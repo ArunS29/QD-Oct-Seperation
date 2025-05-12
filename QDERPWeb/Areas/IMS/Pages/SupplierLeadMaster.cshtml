@@ -649,13 +649,13 @@
         @* .OnClick("onSaveClientMasterClick")  .OnClick("function() { saveAndClose(); }") *@
                 </div>
                 <div class="col-md-2">
-        @(Html.DevExtreme().Button().ID("btnSaveClose").Text("Save & Close").Icon("check"))
+        @(Html.DevExtreme().Button().ID("btnSaveClose").Text("Save & Close").Icon("check").OnClick("onSaveandCloseSupplierMasterClick"))
                 </div>
                 <div class="col-md-2">
         @(Html.DevExtreme().Button().ID("btnDelete").Text("Delete").Icon("trash"))
                 </div>
                 <div class="col-md-2">
-        @(Html.DevExtreme().Button().ID("btnBack").Text("Back").Icon("arrowleft"))
+        @(Html.DevExtreme().Button().ID("btnBack").Text("Back").Icon("arrowleft").OnClick("back"))
                 </div>
             </div>
         </div>
@@ -821,8 +821,7 @@
 
     let businessCard1Base64 = null;
     let businessCard2Base64 = null;
-    function onSaveSupplierMasterClick(e) {
-        debugger;
+    function onSaveSupplierMasterClick(onSuccessCallback) {
         // Collecting form data from client master form
         var supplierCode = $('#txtSupplierCode').dxTextBox("instance").option("value");
         var supplierName = $('#txtSupplierName').dxTextBox("instance").option("value");
@@ -890,10 +889,9 @@
                 success: function (response) {
                     if (response.success) {
                         DevExpress.ui.notify(response.message, "success", 3000);
-                        // Close the form or popup if needed
-                        // setTimeout(function () {
-                        //     $("#clientMasterPopup").dxPopup("instance").hide();
-                        // }, 2000);
+                        if (typeof onSuccessCallback === 'function') {
+                            onSuccessCallback();
+                        }
                     } else {
                         DevExpress.ui.notify("Error: " + response.message, "error", 3000);
                     }
@@ -907,6 +905,32 @@
             DevExpress.ui.notify("Please fill all required fields", "error", 3000);
         }
     }
+
+    // function onSaveandCloseSupplierMasterClick() {
+    //     onSaveSupplierMasterClick(function () {
+    //     window.parent.closeModal();
+    //     });
+    // }
+    //     function back() {
+    //         window.parent.closeModal()
+    //     }
+    function onSaveandCloseSupplierMasterClick() {
+        onSaveSupplierMasterClick(function () {
+            // Show message before closing/reloading
+            setTimeout(function () {
+                window.parent.closeModal(); // OR window.location.reload();
+            }, 1000); // delay allows user to see the notification
+            setTimeout(function () {
+                location.reload();
+            }, 1000);
+            $("#dataGrid").dxDataGrid("instance").refresh();
+        });
+    }
+
+    function back() {
+        window.parent.closeModal();
+    }
+
     //delete
     $("#btnDelete").on("click", function (e) {
         e.preventDefault();
@@ -980,32 +1004,6 @@
             ];
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     function addContactList() {
         var supplierCode = $('#txtSupplierCode').dxTextBox("instance").option("value");
