@@ -2428,8 +2428,10 @@
         "Detailed Description / Specification:": "Detailed Description / Specification:",
         "Details Description": "Details Description",
         "Purchase Master View": "Purchase Master View",
+        "Ledger Documents": "Ledger Documents"
     },
     "ar": {
+        "Ledger Documents": "وثائق دفتر الأستاذ",
         "Purchase Invoice Register": "سجل فاتورة الشراء",
         "Sales Invoice Register": "سجل فاتورة المبيعات",
         "Purchase Master View": "عرض سجل المشتريات الرئيسي",
