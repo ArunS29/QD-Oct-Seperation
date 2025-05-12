@@ -196,20 +196,43 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
         [HttpPost]
-        public IActionResult GrantUserAccessPermissions([FromBody] int userId)
+        public IActionResult GrantUserAccessPermissions([FromBody] UserAccessRequest request)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 try
                 {
-                    // Execute the stored procedure with the userId parameter
-                    dbContext.Database.ExecuteSqlRaw("EXEC stPro901_03InsertUserAccessPermissionsforweb @ToUser = {0}", userId);
+                    dbContext.Database.ExecuteSqlRaw(
+                        "EXEC stPro901_03InsertUserAccessPermissionsforweb @ToUser = {0}", request.UserId);
 
                     return Ok(new { success = true, message = "User access permissions granted successfully." });
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError($"Error in GrantUserAccessPermissions: {ex.Message}");
+                    return StatusCode(500, new { success = false, message = "An error occurred.", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { success = false, message = "Invalid tenant." });
+        }
+        [HttpPost]
+        public IActionResult ReplicateUserAccessPermissions([FromBody] UserAccessReplicationRequest request)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    // Call stored procedure with both parameters
+                    dbContext.Database.ExecuteSqlRaw(
+                        "EXEC stPro901_04ReplicateUserAccessPermissionsWeb @FromUser = {0}, @ToUser = {1}",
+                        request.FromUserId, request.ToUserId);
+
+                    return Ok(new { success = true, message = "User access permissions replicated successfully." });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in ReplicateUserAccessPermissions: {ex.Message}");
                     return StatusCode(500, new { success = false, message = "An error occurred.", error = ex.Message });
                 }
             }
@@ -1062,8 +1085,17 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { success = false, message = "Invalid tenant context." });
         }
 
+        public class UserAccessReplicationRequest
+        {
+            public int FromUserId { get; set; }
+            public int ToUserId { get; set; }
+        }
 
 
+        public class UserAccessRequest
+        {
+            public int UserId { get; set; }
+        }
 
         public class ProjectGroupDto
         {

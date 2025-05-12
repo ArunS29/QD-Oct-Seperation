@@ -1337,7 +1337,7 @@
                     // Get the userId from the query string
                     const urlParams = new URLSearchParams(window.location.search);
                     const userId = urlParams.get("userId");
-
+                    debugger;
                     if (userId) {
                         $.ajax({
                             url: "/api/Utility/GrantUserAccessPermissions", // API endpoint
