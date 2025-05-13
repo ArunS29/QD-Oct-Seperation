@@ -545,7 +545,21 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 try
                 {
+                    string userIdStr = HttpContext.Session.GetString("UserId");
+                    byte currentUserId = Convert.ToByte(userIdStr);
+
+                    var currentUser = await dbContext.TblUserMasters
+                        .Where(u => u.UserId == currentUserId)
+                        .Select(u => new { u.UserId, u.UserLevel })
+                        .FirstOrDefaultAsync();
+
+                    if (currentUser == null)
+                    {
+                        return Unauthorized(new { message = "User not found.", success = false });
+                    }
+
                     var usersQuery = dbContext.TblUserMasters
+                        .Where(u => currentUser.UserLevel == 99 || u.UserId == currentUser.UserId)
                         .Select(u => new
                         {
                             u.UserId,

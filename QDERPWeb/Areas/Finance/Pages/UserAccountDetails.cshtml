@@ -31,12 +31,17 @@
                     <div class="form-group">
                         <label>User Name:</label>
                         @(Html.DevExtreme().TextBox()
+                        .LabelMode(EditorLabelMode.Outside)
                         .ID("UserName")
-                        .Width("100%")
-                        .Placeholder("Enter your email")
-                        .OnValueChanged("validateEmail")
+                        .OnChange("validateEmail")
+                        .Value(null)
+                        .ValidationRules(rules =>
+                        {
+                        rules.AddRequired()
+
+                        .Message(new JS("formatMessage('Email Address Cannot be Empty')"));
+                        })
                         )
-                        <div id="emailValidationMessage" style="color: red; display: none;">Please enter a valid email address.</div>
                     </div>
 
                     <div class="form-group">
@@ -1599,13 +1604,34 @@
         }
 
            // Email validation for User Name field
-        function validateEmail(e) {
-            var value = e.value || "";
-            var emailPattern = /^[^\s]+[^\s]+\.[^\s]+$/;
-            if (!emailPattern.test(value)) {
-                $("#emailValidationMessage").show();
+         // Function to validate email format
+        function validateEmail() {
+            // Get the email value from the DevExtreme TextBox
+            const email = $("#UserId").dxTextBox("instance").option("value");
+
+            // Create a temporary input element to validate the email
+            const tempInput = document.createElement("input");
+            tempInput.type = "email";
+            tempInput.value = email;
+
+            // Check if the email is valid
+            if (!tempInput.checkValidity()) {
+                DevExpress.ui.notify({
+                    message: formatMessage("Your Email ID is Invalid"),
+                    type: "error",
+                    displayTime: 3000
+
+                });
+
+                // Clear the email input field
+                $("#UserId").dxTextBox("instance").option("value", "");
             } else {
-                $("#emailValidationMessage").hide();
+                DevExpress.ui.notify({
+                    message: formatMessage("Your Email ID is valid"),
+                    type: "success",
+                    displayTime: 3000,
+                    position: { my: "top right", at: "top right", of: window, offset: "0 30" }
+                });
             }
         }
 
