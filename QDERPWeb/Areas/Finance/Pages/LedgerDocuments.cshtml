@@ -1,36 +1,17 @@
 ﻿@page
 @using QD.ERP.Web.DAL.Entities
 @{
-    ViewData["Title"] = "Accounting Ledger Groups//";
+    ViewData["Title"] = null;
 
 }
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
 <style>
-    .cards-container-title {
-        text-align: left;
-        font-size: 2rem;
-        margin-bottom: 0px;
-        color: black;
-        background-color: #f5f5f5;
-        padding: 5px;
-    }
 
-    
 
-    /* Override Bootstrap padding/margin if necessary */
-    /* Apply bold text to all DevExtreme buttons */
-    .dx-button .dx-button-text {
-        font-weight: bold;
-    }
 
-    /* Optionally, apply bold text only to specific buttons using their IDs */
-    #btnUpdate .dx-button-text,
-    #btnAllAttachments .dx-button-text,
-    #btnBack .dx-button-text {
-        font-weight: bold;
-    }
+
 
     .container {
         display: none !important;
@@ -50,7 +31,7 @@
     }
 
     .mainContainer {
-        margin-top:1em;
+        margin-top:0em;
         width: 100%;
     }
 
@@ -60,19 +41,28 @@
 
 
 </style>
+<div id="LedgerDocuments" class="no-border-title cards-container-title"></div>
 
-<div class="my-3" style="max-width:2000px;">
-    <div class="row g-3">
+
+
+
+<div class="mainContainer">
+    <div class="title">
+        <div class="header-container">
+            <div id="ledgerdocumentsTitle1" class="no-border-input"></div>
+        </div>
+    </div>
         <!-- Card -->
-        <div class="col-12">
-            <div class=" p-3 ">
+        <div style="padding:15px;" >
+            <div style="margin-bottom:10px;">
 
                 <!-- First Row -->
-                <div id="EnteraNewDocument&AddtotheExistingList" class="no-border-input cards-container-title"></div>
+                <div id="EnteraNewDocumentAddtotheExistingList1" class="no-border-input"></div>
                 <div class="row mb-3">
                     <div class="col-12 col-md-4">
-                        @(Html.DevExtreme().TextBox()
+                    @(Html.DevExtreme().TextBox()
                             .Label(new JS("formatMessage('Document No')"))
+                            .LabelMode(EditorLabelMode.Outside)
                             .ID("DocumentNo")
                             .Value(null)
                             .Width("100%")
@@ -81,7 +71,7 @@
                             )
                     </div>
                     <div class="col-12 col-md-6">
-                        @(Html.DevExtreme().SelectBox()
+                    @(Html.DevExtreme().SelectBox()
                             .Label(new JS("formatMessage('Type of the Document Attached')"))
                             .DataSource(d => d.WebApi()
                             .Controller("LedgerAccountMaster")
@@ -102,15 +92,15 @@
                             )
                     </div>
                     <div class="col-6 col-md-1 mt-4">
-                        @(Html.DevExtreme().Button()
+                    @(Html.DevExtreme().Button()
                             .ID("btnAddAHead")
                             .Icon("plus")
                             .Width("100%")
-                      @*       .OnClick("redirecttoledgersubgrou") *@
+                            @*       .OnClick("redirecttoledgersubgrou") *@
                             )
                     </div>
                     <div class="col-6 col-md-1 mt-4">
-                        @(Html.DevExtreme().Button()
+                    @(Html.DevExtreme().Button()
                             .ID("btnEditAHead")
                             .Icon("edit")
                             .Width("100%")
@@ -121,8 +111,9 @@
                 <!-- Second Row -->
                 <div class="row mb-3">
                     <div class="col-12 col-md-4">
-                        @(Html.DevExtreme().TextBox()
+                    @(Html.DevExtreme().TextBox()
                             .Label(new JS("formatMessage('Reference No')"))
+                            .LabelMode(EditorLabelMode.Outside)
                             .ID("ReferenceNo")
                             .Value(null)
                             .ValidationRules(rules =>
@@ -135,14 +126,15 @@
                             )
                     </div>
                     <div class="col-12 col-md-6">
-                        @(Html.DevExtreme().TextBox()
+                    @(Html.DevExtreme().TextBox()
                             .Label(new JS("formatMessage('Remarks/Notes')"))
+                            .LabelMode(EditorLabelMode.Outside)
                             .ID("Remarks")
                             .Value(null)
                             .Width("100%"))
                     </div>
                     <div class="col-12 col-md-2 mt-4">
-                        @(Html.DevExtreme().Button()
+                    @(Html.DevExtreme().Button()
                             .ID("btnAttachment")
                             .Icon("fa fa-paperclip")
                             .Width("100%")
@@ -153,7 +145,7 @@
                 </div>
                 <!-- Third Row -->
                 <div class="row mb-3">
-                    @* <div class="col-12 col-md-4">
+                @* <div class="col-12 col-md-4">
                         <label>Document Expiry Date:</label>
                         @(Html.DevExtreme().DropDownBox()
                                     .DataSource(d => d.WebApi()
@@ -167,7 +159,7 @@
                                     .Width("100%"))
                     </div> *@
                     <div class="col-12 col-md-4">
-                        @(Html.DevExtreme().DateBox()
+                    @(Html.DevExtreme().DateBox()
                             .Label(new JS("formatMessage('Document Expiry Date')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .Type(DateBoxType.Date)
@@ -182,14 +174,15 @@
 
 
                     <div class="col-10 col-md-3">
-                        @(Html.DevExtreme().TextBox()
+                    @(Html.DevExtreme().TextBox()
                             .Label(new JS("formatMessage('Expiry Date (Hijri)')"))
+                            .LabelMode(EditorLabelMode.Outside)
                             .ID("ExpiryDate")
                             .Value(null)
                             .Width("100%"))
                     </div>
                     <div class="col-10 col-md-3">
-                        @(Html.DevExtreme().DateBox()
+                    @(Html.DevExtreme().DateBox()
                             .Label(new JS("formatMessage('Notification Date')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .Type(DateBoxType.Date)
@@ -202,7 +195,7 @@
                             .Width("100%"))
                     </div>
                     <div class="col-6 col-md-2">
-                        @(Html.DevExtreme().Button()
+                    @(Html.DevExtreme().Button()
                             .ID("btnVoucherEntry")
                             .Text(new JS("formatMessage('ADD')"))
                             .Height(50)
@@ -213,14 +206,14 @@
                 </div>
 
                 <!-- Third Row - Button -->
-                @*   <div class="row">
+            @*   <div class="row">
 
                 </div> *@
             </div>
         </div>
         <div class="col-12">
             <div class="dx-field ledgerResult">
-                @(
+            @(
                         Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl20116LedgerDocument>()
                         .ID("dataGrid")
                         .RemoteOperations(false)
@@ -255,32 +248,32 @@
                     .GroupPanel(groupPanel => groupPanel.Visible(false))
                     .ShowBorders(true)
                     .Width("100%")
-         @*            .OnCellClick("onDocumentNoClick") // Add the click event *@
+                    @*            .OnCellClick("onDocumentNoClick") // Add the click event *@
                     )
             </div>
         </div>
 
         <div class="dx-fieldset horizontal-container mt-2">
-            @(Html.DevExtreme().Button()
+        @(Html.DevExtreme().Button()
                 .ID("btnUpdate")
                 .Text(new JS("formatMessage('Update')"))
                 .Icon("save")
                 .OnClick("function() { UpdateVoucherEntry(); }")
                 )
-            @(Html.DevExtreme().Button()
+        @(Html.DevExtreme().Button()
                 .ID("btnAllAttachments")
                 .Text(new JS("formatMessage('Show All Documents')"))
                 .Icon("save")
                 )
-            @(Html.DevExtreme().Button()
+        @(Html.DevExtreme().Button()
                 .ID("btnBack")
                 .Text("Back")
                 .Icon("arrowleft")
                 )
         </div>
-        @using (Html.DevExtreme().NamedTemplate("DocumentAttachedContentTemplate"))
-        {
-            @(Html.DevExtreme().DataGrid()
+    @using (Html.DevExtreme().NamedTemplate("DocumentAttachedContentTemplate"))
+    {
+        @(Html.DevExtreme().DataGrid()
 
                 .ID("accountpaymentamount-datagrid")
                 .DataSource(d => d.WebApi()
@@ -311,30 +304,24 @@
 
                 })
                 )
-             }
 
-    </div>
+    }
+
+
 </div>
+
 
 
 <!-- Add more cards here following the same structure -->
 <!-- DataGrid -->
 <script>
-    $(function () {
-                                $("#LedgerDocuments").dxTextBox({
-                                            text:formatMessage("Ledger Documents"),
-                                            readOnly: true,
-						onContentReady: function(e) {
-						$(e.element).addClass("dx-textbox-heading");
-				}
 
-                            });
-    $(function () {
-                                $("#EnteraNewDocument&AddtotheExistingList").dxTextBox({
-                                            text:formatMessage("Enter a New Document & Add to the Existing List:"),
-                                            readOnly: true
+        $(function () {
+        $("#EnteraNewDocumentAddtotheExistingList1").text(
+            formatMessage("Enter a New Document & Add to the Existing List:")
+        );
+    });
 
-                            });
 
         var mARkey = null;
         let mARresponse = null;
@@ -827,4 +814,16 @@
                     console.error("Error: fileInput element not found on page load!");
                 }
             });
+
+            $(function () {
+
+                                            $("#ledgerdocumentsTitle1").dxTextBox({
+                                                        text:formatMessage("Ledger Documents"),
+                                                            readOnly: true,
+                                                        onContentReady: function(e) {
+                    $(e.element).addClass("dx-textbox-heading");
+            }
+
+                                        });
+                                        });
 </script>
