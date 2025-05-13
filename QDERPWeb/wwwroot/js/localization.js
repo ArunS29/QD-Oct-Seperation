@@ -2476,6 +2476,10 @@
         "Posting Of Cost Prices": "نشر أسعار التكلفة",
         "Delivery Note Posting": "نشر مذكرة التسليم",
         "Add New Sales Order": "إضافة أمر مبيعات جديد",
+        "Invoice With Details":"Invoice With Details"
+    },
+    "ar": {
+        "Invoice With Details": "فاتورة مع التفاصيل",
         "Ledger Documents": "وثائق دفتر الأستاذ",
         "Purchase Invoice Register": "سجل فاتورة الشراء",
         "Sales Invoice Register": "سجل فاتورة المبيعات",
