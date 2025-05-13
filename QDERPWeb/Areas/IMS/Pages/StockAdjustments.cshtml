@@ -1,4 +1,4 @@
-﻿@page
+@page
 @model QD.ERP.Web.Areas.IMS.Pages.StockAdjustmentsModel
 @{
 }
@@ -27,9 +27,7 @@
 		overflow: hidden;
 	}
 
-	.limited-footer .btn-containerIvoiceEdit:not(:has(#ddButtonLayout,#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#btntoggleGroupPanel,#btnColumnChooser,#btnInvoiceDetails,#ddReports,#ddButtonPayment)) {
-		display: none !important
-	}
+
 
 	#overlay-frame {
 		width: 100%;
@@ -163,6 +161,10 @@
 	.mainContainer {
 		width: 100%;
 		overflow: hidden;
+	}
+
+	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnColumnChooser,#btnStockAdjustmentDetails,#btnAddNewStockAdjustment)) {
+		display: none !important
 	}
 </style>
 

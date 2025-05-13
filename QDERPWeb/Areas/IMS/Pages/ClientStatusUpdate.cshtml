@@ -225,7 +225,7 @@
                 .Width("60")
                 .Hint(new JS("formatMessage('Add New Status')"))
                 .ElementAttr(new { @class = "inline-plus-button dx-button-mode-contained dx-button-normal" })
-               // .OnClick("onAddStatusClicked")
+                 .OnClick("redirectToClientStatusCode")
                 )
         </div>
     </div>
@@ -321,6 +321,12 @@
 
 <!-- JavaScript handler -->
 <script>
+        function redirectToClientStatusCode() {
+            let url = `/${tenantName}/IMS/ClientStatusCode`;
+            let title = "";
+            openModal(url, title);
+            refreshClientCategorySelectBox()
+        }
        
     $(document).ready(function () {
         const urlParams = new URLSearchParams(window.location.search);

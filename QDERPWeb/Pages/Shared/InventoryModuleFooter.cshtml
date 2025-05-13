@@ -136,7 +136,57 @@
         }
 
     #btnAddNewQuotation:hover{
+        width: 240px !important; /* Expand to fit text */
+    }
+
+    #btnDeliveryNoteDetails:hover {
         width: 210px !important; /* Expand to fit text */
+    }
+    #btnDeliveryNotePosting:hover {
+        width: 210px !important; /* Expand to fit text */
+    }
+    #btnDeliveryNoteDetails:hover {
+        width: 220px !important; /* Expand to fit text */
+    }
+
+    #btnAddDeliverynote:hover {
+        width: 210px !important; /* Expand to fit text */
+    }
+
+    #btnAddSalesOrder:hover {
+        width: 220px !important; /* Expand to fit text */
+    }
+
+    #btnSalesOrderDetails:hover {
+        width: 210px !important; /* Expand to fit text */
+    }
+
+    #btnCreateQuotations:hover {
+        width: 240px !important; /* Expand to fit text */
+    }
+
+    #btnPurchaseOrderDetails:hover {
+        width: 230px !important; /* Expand to fit text */
+    }
+
+    #btnNewPurchaseOrder:hover {
+        width: 230px !important; /* Expand to fit text */
+    }
+
+    #btnAddNewStockAdjustment:hover {
+        width: 30px !important; /* Expand to fit text */
+    }
+
+    #btnAddNewJobOrder:hover {
+        width: 230px !important; /* Expand to fit text */
+    }
+    
+    #btnStockAdjustmentDetails:hover {
+        width: 250px !important; /* Expand to fit text */
+    }
+
+    #btnMaterialReceiptDetails:hover {
+        width: 250px !important; /* Expand to fit text */
     }
 
 </style>
@@ -274,14 +324,203 @@
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
+            .ID("btnAddNewStockAdjustment")
+            .Icon("add")
+            .Width(50)
+            .Text(new JS("formatMessage('Add New Stock Adjustment Entry')"))
+            .ElementAttr(new { style = "display: none;" })
+            // .OnClick("toggleGroupPanel")
+            )
+
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
             .ID("btnAddNewQuotation")
             .Icon("add")
             .Width(50)
             .Text(new JS("formatMessage('Add New Quotation')"))
             .ElementAttr(new { style = "display: none;" })
+           .OnClick("AddNewQuotation")
+            )
+
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnAddSalesOrder")
+            .Icon("folder")
+            .Width(50)
+            .Text(new JS("formatMessage('Add New Sales Order')"))
+            .ElementAttr(new { style = "display: none;" })
+            // .OnClick("toggleGroupPanel")
+            )
+                
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnSalesOrderDetails")
+            .Icon("overflow")
+            .Width(50)
+            .Text(new JS("formatMessage('Sales Order Details')"))
+            .ElementAttr(new { style = "display: none;" })
             // .OnClick("toggleGroupPanel")
             )
 
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnStockAdjustmentDetails")
+            .Icon("overflow")
+            .Width(50)
+            .Text(new JS("formatMessage('Stock Adjustment Details')"))
+            .ElementAttr(new { style = "display: none;" })
+            // .OnClick("toggleGroupPanel")
+            )
+
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnPurchaseOrderDetails")
+            .Icon("overflow")
+            .Width(50)
+            .Text(new JS("formatMessage('Purchase Order Details')"))
+            .ElementAttr(new { style = "display: none;" })
+            // .OnClick("toggleGroupPanel")
+            )
+
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnMaterialReceiptDetails")
+            .Icon("overflow")
+            .Width(50)
+            .Text(new JS("formatMessage('Material Receipt Details')"))
+            .ElementAttr(new { style = "display: none;" })
+            // .OnClick("toggleGroupPanel")
+            )
+
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnNewPurchaseOrder")
+            .Icon("plus")
+            .Width(50)
+            .Text(new JS("formatMessage('Add Purchase Order')"))
+            .ElementAttr(new { style = "display: none;" })
+            // .OnClick("toggleGroupPanel")
+            )
+
+    </div>
+
+   
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnDeliveryNoteDetails")
+            .Icon("overflow")
+            .Width(50)
+            .Text(new JS("formatMessage('Delivery Note Details')"))
+            .ElementAttr(new { style = "display: none;" })
+            // .OnClick("toggleGroupPanel")
+            )
+
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnRfqDetails")
+            .Icon("add")
+            .Width(50)
+            .Text(new JS("formatMessage('RFQ Details')"))
+            .ElementAttr(new { style = "display: none;" })
+            // .OnClick("toggleGroupPanel")
+            )
+
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnAddNewRFQ")
+            .Icon("add")
+            .Width(50)
+            .Text(new JS("formatMessage('Add New RFQ')"))
+            .ElementAttr(new { style = "display: none;" })
+            // .OnClick("toggleGroupPanel")
+            )
+
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnCreateQuotations")
+            .Icon("add")
+            .Width(50)
+            .Text(new JS("formatMessage('Create New Quotations')"))
+            .ElementAttr(new { style = "display: none;" })
+            // .OnClick("toggleGroupPanel")
+            )
+
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnAddNewJobOrder")
+            .Icon("add")
+            .Width(50)
+            .Text(new JS("formatMessage('Add New Job Order')"))
+            .ElementAttr(new { style = "display: none;" })
+            // .OnClick("toggleGroupPanel")
+            )
+
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("btnDeliveryNotePosting")
+            .Icon("upload")
+            .Width(50)
+            .Text(new JS("formatMessage('Delivery Note Posting')"))
+            .ElementAttr(new { style = "display: none;" })
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add().Text(new JS("formatMessage('Posting Of Cost Prices')"));
+                items.Add().Text(new JS("formatMessage('Posting of DN to Journal Books')"));
+            })
+            .OnItemClick("addNewMaterialRequest")
+            .ShowArrowIcon(false)
+            )
+    </div>
+    
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("btnAddNewReceipt")
+            .Icon("plus")
+            .Width(50)
+            .Text(new JS("formatMessage('Add New Receipt')"))
+            .ElementAttr(new { style = "display: none;" })
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add().Text(new JS("formatMessage('Add New Material Receipt-From Supplier')"));
+                items.Add().Text(new JS("formatMessage('Add New Material Receipt-Returned From Project')"));
+            })
+            .OnItemClick("addNewMaterialRequest")
+            .ShowArrowIcon(false)
+            )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("btnAddDeliverynote")
+            .Icon("add")
+            .Width(50)
+            .Text(new JS("formatMessage('Add')"))
+            .ElementAttr(new { style = "display: none;" })
+            .DropDownOptions(options => options.Width(325))
+            .Items(items =>
+            {
+                items.Add().Text(new JS("formatMessage('Add New Delivery to Client ')"));
+                items.Add().Text(new JS("formatMessage('Add Material Issued To Store(Consumption)')"));
+                items.Add().Text(new JS("formatMessage('Add Material Issued To Project(Consumption)')"));
+                items.Add().Text(new JS("formatMessage('Add Store Transfers')"));
+
+            })
+            .OnItemClick("addNewMaterialRequest")
+            .ShowArrowIcon(false)
+            )
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
@@ -405,6 +644,21 @@
                                   "btnRequestEnquiry": { "Visible": false, "Enabled": false },
                              "btnAddMaterialRequest": { "Visible": false, "Enabled": false },
                              "btnAddNewQuotation": { "Visible": false, "Enabled": false },
+                             "btnAddSalesOrder": { "Visible": false, "Enabled": false },
+                             "btnDeliveryNotePosting": { "Visible": false, "Enabled": false },
+                             "btnDeliveryNoteDetails": { "Visible": false, "Enabled": false },
+                             "btnAddDeliverynote": { "Visible": false, "Enabled": false },
+                             "btnSalesOrderDetails": { "Visible": false, "Enabled": false },
+                             "btnRfqDetails": { "Visible": false, "Enabled": false },
+                             "btnAddNewRFQ": { "Visible": false, "Enabled": false },
+                             "btnCreateQuotations": { "Visible": false, "Enabled": false },
+                             "btnPurchaseOrderDetails": { "Visible": false, "Enabled": false },
+                             "btnNewPurchaseOrder": { "Visible": false, "Enabled": false },
+                             "btnMaterialReceiptDetails": { "Visible": false, "Enabled": false },
+                             "btnAddNewReceipt": { "Visible": false, "Enabled": false },
+                             "btnAddNewJobOrder": { "Visible": false, "Enabled": false },
+                             "btnAddNewStockAdjustment": { "Visible": false, "Enabled": false },
+                             "btnStockAdjustmentDetails": { "Visible": false, "Enabled": false },
                           //  "btnSave":{ "Visible": false, "Enabled": false }
                         };
 
@@ -882,6 +1136,12 @@
         }
          function supplierMaster(){
             const url = `/${tenantName}/IMS/SupplierLeadMaster`;
+            const title = "";
+                openModal(url, title);
+        }
+
+        function AddNewQuotation(){
+            const url = `/${tenantName}/IMS/AddNewQuotation`;
             const title = "";
                 openModal(url, title);
         }
