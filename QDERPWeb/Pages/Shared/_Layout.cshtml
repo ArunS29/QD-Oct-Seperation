@@ -95,7 +95,10 @@
     <script src="https://cdn3.devexpress.com/jslib/23.1.4/js/dx.all.js"></script>
 
     <!-- jsPDF and plugins -->
-   
+    <script src="/libs/jspdf.umd.min.js"></script>
+    <script src="/libs/jspdf.plugin.autotable.min.js"></script>
+    <script src="/libs/jspdf-arabic.min.js"></script>
+    <script src="/libs/Amiri-Regular.js"></script>
 
 
 
@@ -2252,7 +2255,7 @@
                                 </a>
                                 <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATPurchaseMasterView">
                                     <i class="fas fa-book"></i>
-                                    <div class="text">${formatMessage("VAT Purchase Invoice Register")}</div>
+                                    <div class="text">${formatMessage("Purchase Invoice Register")}</div>
                                 </a>
                                 <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATDebitNotRegister">
                                     <i class="fas fa-book"></i>
@@ -2869,7 +2872,7 @@
 
         // Report Mappings for Ageing Reports
         const ageingReportMappings = {
-            "Receivables Ageing Report": "BillsReceivableAgeingReport",
+            "Receivables Ageing Report": "AgeingReport",
             "Receivables Ageing Report (By Sales Person)": "XtraReportBillsReceivableAgeingReport",
             "Receivables Ageing Report (Customizable)": "XtraReportAgeingCustomizable",
             "Receivables Ageing Summary": "XtraReportAgeingreportsummary",

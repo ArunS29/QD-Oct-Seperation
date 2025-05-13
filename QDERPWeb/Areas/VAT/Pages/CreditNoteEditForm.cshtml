@@ -72,26 +72,50 @@
 	background-color: transparent !important;
 	}
 
-.address-form-table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-}
+.address-form-container {
+		/* max-height: 250px; */
+		overflow-y: auto;
+		padding: 5px;
+		box-sizing: border-box;
+		width: 100%;
+		font-size: 11px;
+	}
 
-.address-form-table td {
-    padding: 6px;
-    vertical-align: top;
-    width: 33.33%; /* already good for 3-column layout */
-}
 
-	.address-form-table label {
-    display: block;
-    font-weight: bold;
-    font-size: 11px;
-    margin-bottom: 3px;
-    white-space: nowrap;
-    color: black;
-}
+
+	.address-form-table {
+		border-collapse: collapse;
+		table-layout: fixed;
+		width: 100%;
+	}
+
+		.address-form-table td {
+			padding: 4px;
+			vertical-align: top;
+			width: 33.33%;
+		}
+
+		.address-form-table label {
+			display: block;
+			font-weight: bold;
+			font-size: 11px;
+			margin-bottom: 2px;
+			color: black;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			overflow: hidden;
+		}
+
+		.address-form-table input[type="text"],
+		.address-form-table select {
+			width: 100%;
+			border: 1px solid #aaa;
+			border-radius: 3px;
+			box-sizing: border-box;
+			font-size: 11px;
+			padding: 3px;
+		}
+
 
 
 	
@@ -658,7 +682,7 @@
 												.ContentTemplate(@<text>
 
 
-										<div class="dx-viewport address-form-container">
+										<div class="address-form-container">
     <table class="address-form-table">
         <tr>
             <td>
