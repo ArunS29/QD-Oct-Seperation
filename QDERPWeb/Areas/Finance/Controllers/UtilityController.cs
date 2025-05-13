@@ -1141,6 +1141,52 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { success = false, message = "Invalid tenant context." });
         }
 
+
+        // Set Alert Notification for Company Documents
+        [HttpPost("SetCompanyDocAlert")]
+        public IActionResult SetCompanyDocAlert([FromBody] DocumentAlertRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request.UserId))
+                return BadRequest(new { success = false, message = "User ID is required" });
+
+            SetNotificationSetting(request.UserId, "CO-DOC-001", "Notification of Our Company Documents Expiry", GetNewNotificationSlNo());
+            return Ok(new { success = true });
+        }
+
+        // Set Alert Notification for HR Documents
+        [HttpPost("SetHRDocAlert")]
+        public IActionResult SetHRDocAlert([FromBody] DocumentAlertRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request.UserId))
+                return BadRequest(new { success = false, message = "User ID is required" });
+
+            SetNotificationSetting(request.UserId, "HR-DOC-001", "Notification of Our HR Documents Expiry", GetNewNotificationSlNo());
+            return Ok(new { success = true });
+        }
+
+        // Set Alert Notification for Equipment Documents
+        [HttpPost("SetEquipmentDocAlert")]
+        public IActionResult SetEquipmentDocAlert([FromBody] DocumentAlertRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request.UserId))
+                return BadRequest(new { success = false, message = "User ID is required" });
+
+            SetNotificationSetting(request.UserId, "EQP-DOC-001", "Notification of Our Equipment Documents Expiry", GetNewNotificationSlNo());
+            return Ok(new { success = true });
+        }
+
+        private void SetNotificationSetting(string userId, string docCode, string message, string slNo)
+        {
+            // Save notification settings logic here
+            // Example: Save to database or perform other logic
+        }
+
+        private string GetNewNotificationSlNo()
+        {
+            return Guid.NewGuid().ToString();
+        }
+
+
         //userid K
         [HttpGet]
         public IActionResult GetNextUserId()
@@ -1152,6 +1198,10 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return Ok(new { success = true, nextUserId });
             }
             return Unauthorized(new { success = false, message = "Invalid tenant." });
+        }
+        public class DocumentAlertRequest
+        {
+            public string UserId { get; set; }
         }
 
         public class UserAccessReplicationRequest

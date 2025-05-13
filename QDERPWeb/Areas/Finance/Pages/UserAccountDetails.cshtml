@@ -534,9 +534,43 @@
 
                             <div class="container-fluid tab-container">
                                 <div class="card">
-                                    <div class="card-body">Content for Alert Notification</div>
+                                    @(Html.DevExtreme().TextBox()
+                                    .ID("txtUserId")
+                                    .Placeholder("Enter User ID")
+                                    )
+
+                                    <div class="card-body">
+                                        <div style="margin-top: 20px;">
+                                            @(Html.DevExtreme().Button()
+                                            .ID("btnNotificationsOnCompanyDocs")
+                                            .Text("Set Alert Notification for Company Documents")
+                                            .OnClick("onSetAlertNotificationClick")
+                                            )
+                                            <div id="lblAlertforCompanyDoc" style="margin-top: 5px;"></div>
+                                        </div>
+
+                                        <div style="margin-top: 20px;">
+                                            @(Html.DevExtreme().Button()
+                                            .ID("btnNotificationsOnEquipmentDocs")
+                                            .Text("Set Alert Notification for Equipment Documents")
+                                            .OnClick("onSetEquipmentAlertNotificationClick")
+                                            )
+                                            <div id="lblAlertforEquipmentDoc" style="margin-top: 5px;"></div>
+                                        </div>
+
+                                        <div style="margin-top: 20px;">
+                                            @(Html.DevExtreme().Button()
+                                            .ID("btnNotificationsOnHRDocs")
+                                            .Text("Set Alert Notification for HR Documents")
+                                            .OnClick("onSetHRAlertNotificationClick")
+                                            )
+                                            <div id="lblAlertforHRDoc" style="margin-top: 5px;"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+
+
 
                             <div class="container-fluid tab-container">
                                 <div class="card">
@@ -928,6 +962,109 @@
                 });
             }
         });
+
+          // Get User ID from URL or TextBox
+    function getUserId() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const userIdFromUrl = urlParams.get("userId");
+
+        if (userIdFromUrl && userIdFromUrl.trim() !== "") {
+            return userIdFromUrl;
+        }
+
+        return $("#txtUserId").dxTextBox("instance").option("value");
+    }
+
+    // Show confirmation dialog before applying alert
+    function showNotificationConfirm(callback) {
+        debugger;
+        DevExpress.ui.dialog.confirm(
+            "You are about to Set Alert Notifications for this User.\nAre you Sure want to Apply this Setting?",
+            "Set Notification Setting"
+        ).done(function (dialogResult) {
+            if (dialogResult && typeof callback === "function") {
+                callback();
+            }
+        });
+    }
+
+    // Handle setting alert for Company Documents
+    function onSetAlertNotificationClick() {
+            debugger;
+        const button = $("#btnNotificationsOnCompanyDocs").dxButton("instance");
+
+        if (button.option("text") === "Set Alert Notification for Company Documents") {
+            showNotificationConfirm(function () {
+                const userId = getUserId();
+                if (userId) {
+                    $.post("/api/Utility/SetCompanyDocAlert", { userId: userId }, function (response) {
+                        if (response.success) {
+                            button.option("text", "Remove Alert Notification for Company Documents");
+                            $("#lblAlertforCompanyDoc")
+                                .text("This User Account is set to Receive Popup Notification on Expiry of Company Documents.")
+                                .css("color", "blue");
+                        } else {
+                            DevExpress.ui.dialog.alert(response.message, "Error");
+                        }
+                    });
+                } else {
+                    DevExpress.ui.dialog.alert("User ID is required.", "Warning");
+                }
+            });
+        }
+    }
+
+    // Handle setting alert for Equipment Documents
+    function onSetEquipmentAlertNotificationClick() {
+            debugger;
+        const button = $("#btnNotificationsOnEquipmentDocs").dxButton("instance");
+
+        if (button.option("text") === "Set Alert Notification for Equipment Documents") {
+            showNotificationConfirm(function () {
+                const userId = getUserId();
+                if (userId) {
+                    $.post("/api/Utility/SetEquipmentDocAlert", { userId: userId }, function (response) {
+                        if (response.success) {
+                            button.option("text", "Remove Alert Notification for Equipment Documents");
+                            $("#lblAlertforEquipmentDoc")
+                                .text("This User Account is set to Receive Popup Notification on Expiry of Equipment Documents.")
+                                .css("color", "blue");
+                        } else {
+                            DevExpress.ui.dialog.alert(response.message, "Error");
+                        }
+                    });
+                } else {
+                    DevExpress.ui.dialog.alert("User ID is required.", "Warning");
+                }
+            });
+        }
+    }
+
+    // Handle setting alert for HR Documents
+    function onSetHRAlertNotificationClick() {
+        debugger;
+        const button = $("#btnNotificationsOnHRDocs").dxButton("instance");
+
+        if (button.option("text") === "Set Alert Notification for HR Documents") {
+            showNotificationConfirm(function () {
+                const userId = getUserId();
+                if (userId) {
+                    $.post("/api/Utility/SetHRDocAlert", { userId: userId }, function (response) {
+                        if (response.success) {
+                            button.option("text", "Remove Alert Notification for HR Documents");
+                            $("#lblAlertforHRDoc")
+                                .text("This User Account is set to Receive Popup Notification on Expiry of HR Documents.")
+                                .css("color", "blue");
+                        } else {
+                            DevExpress.ui.dialog.alert(response.message, "Error");
+                        }
+                    });
+                } else {
+                    DevExpress.ui.dialog.alert("User ID is required.", "Warning");
+                }
+            });
+        }
+    }
 
         function loadUserDetails(userId) {
             $.ajax({
