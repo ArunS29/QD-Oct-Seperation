@@ -468,9 +468,10 @@
 
                         <div class="tab-content-area">
                             <!-- Container + Card Panels -->
-                            <div class="container-fluid tab-container" style="display: block;">
+                            <div class="container-fluid tab-container" id="Master-content" >
+                                loadMAsterData
                                 <div class="card">
-                                    <div class="card-body">Content for Master Module</div>
+                                    <div id="gridContainer1"></div>
                                 </div>
                             </div>
 
@@ -478,7 +479,7 @@
                                 loadFinanceData
                                 <div class="card">
                                     <div class="card-body">
-                                        <div id="gridContainer"></div> <!-- DataGrid placeholder -->
+                                        <div id="gridContainer"></div> 
                                     </div>
                                 </div>
                             </div>
@@ -883,6 +884,14 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
+
+            // Hide all tabs and show the first one
+            $('.tab-container').hide();
+            $('.tab-container').eq(0).show();
+
+            // Load Master Module data by default
+            loadMasterModuleData("Master Module");
+
             debugger;
 
             const urlParams = new URLSearchParams(window.location.search);
@@ -1259,23 +1268,27 @@
             const date = new Date(dateStr);
             return date.toLocaleString();
         }
+
         function onTabSelectionChanged(e) {
             var selectedIndex = e.component.option('selectedIndex');
             var selectedText = e.component.option('items')[selectedIndex].text;
 
-            // Hide all tab containers
+            // Hide all containers
             $('.tab-container').hide();
 
-            // Show the container matching the tab
+            // Show the correct container
             $('.tab-container').eq(selectedIndex).show();
 
-            // Check if Finance tab is selected (index 1 as per your tab list)
             if (selectedText === "Finance") {
-                loadFinanceData();
+                loadFinanceData(selectedText);
+            }
+
+            if (selectedText === "Master Module") {
+                loadMasterModuleData(selectedText);
             }
         }
-        function loadFinanceData() {
-            // Get the userId from the URL
+
+        function loadFinanceData(selectedText) {
             const urlParams = new URLSearchParams(window.location.search);
             const userId = urlParams.get("userId");
 
@@ -1283,8 +1296,7 @@
                 dataSource: new DevExpress.data.CustomStore({
                     key: "SlNo",
                     load: function () {
-                        // Pass the userId as a query parameter to the API
-                        return $.getJSON(`/api/Utility/GetUserAccessWebs?userId=${userId}`)
+                        return $.getJSON(`/api/Utility/GetUserAccessWebs?userId=${userId}&selectedText=${selectedText}`)
                             .then(function (result) {
                                 return {
                                     data: result.data,
@@ -1336,6 +1348,65 @@
             });
         }
 
+        function loadMasterModuleData(selectedText) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get("userId");
+            debugger;
+            $("#gridContainer1").dxDataGrid({
+                dataSource: new DevExpress.data.CustomStore({
+                    key: "SlNo",
+                    load: function () {
+                        return $.getJSON(`/api/Utility/GetUserAccessWebs?userId=${userId}&selectedText=${selectedText}`)
+                            .then(function (result) {
+                                return {
+                                    data: result.data,
+                                    totalCount: result.totalCount
+                                };
+                            });
+                    }
+                }),
+                remoteOperations: false,
+                height: 500,
+                columnAutoWidth: true,
+                scrolling: {
+                    mode: "virtual",
+                    showScrollbar: "always"
+                },
+                columns: [
+                    { dataField: "SlNo", caption: "Serial No", visible: false },
+                    { dataField: "ItemForm", caption: "Item Name" },
+                    { dataField: "ItemDescription", caption: "Action Name" },
+                    {
+                        dataField: "ItemVisible",
+                        caption: "Visible",
+                        dataType: "boolean",
+                        cellTemplate: function (container, options) {
+                            $("<div>")
+                                .dxCheckBox({
+                                    value: options.value,
+                                    onValueChanged: function (e) {
+                                        const items = [{
+                                            SlNo: options.data.SlNo,
+                                            ItemVisible: e.value
+                                        }];
+                                        updateItemVisibility(items, function () {
+                                            $("#gridContainer1").dxDataGrid("instance").refresh();
+                                        });
+                                    }
+                                })
+                                .appendTo(container);
+                        }
+                    }
+                ],
+                sorting: {
+                    mode: "multiple"
+                },
+                selection: {
+                    mode: "multiple"
+                },
+                showBorders: true
+            });
+        }
 
 
 
@@ -1365,11 +1436,7 @@
          
 
 
-        // Example functions for each tab
-        function loadMasterModuleData() {
-            console.log("Loading Master Module data...");
-            // Add your logic here
-        }
+     
 
         // function loadFinanceData() {
         //     console.log("Loading Finance data...");

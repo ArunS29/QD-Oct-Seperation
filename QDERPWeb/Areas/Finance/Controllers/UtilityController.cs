@@ -243,14 +243,56 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetUserAccessWebs(DataSourceLoadOptions loadOptions, int userId)
+        public async Task<IActionResult> GetUserAccessWebs(DataSourceLoadOptions loadOptions, int userId, string selectedText)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 try
                 {
-                    // Filter the data based on the userId
-                    var accessData = dbContext.TblUserAccessWebs.Where(x => x.UserId == userId);
+                    IQueryable<TblUserAccessWeb> accessData;
+
+                    if (selectedText == "Master Module")
+                    {
+                        // Filter the data for "Master"
+                        accessData = dbContext.TblUserAccessWebs
+                                              .Where(x => x.UserId == userId && x.ItemForm == "ERP Module Access");
+                    }
+                    else
+                    {
+                        // Filter the data for other selectedText values
+                        accessData = dbContext.TblUserAccessWebs
+                                              .Where(x => x.UserId == userId && x.Module == selectedText && x.ItemForm != "ERP Module Access");
+                    }
+
+                    return Json(await DataSourceLoader.LoadAsync(accessData, loadOptions));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetModuleaccessweb: {ex.Message}");
+                    return StatusCode(500, new
+                    {
+                        success = false,
+                        message = "An error occurred while fetching the user access records.",
+                        error = ex.Message
+                    });
+                }
+
+              
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetModuleaccessweb(DataSourceLoadOptions loadOptions, int userId, string selectedText)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    // Filter the data based on the userId and selectedText
+                    var accessData = dbContext.TblUserAccessWebs
+                                              .Where(x => x.UserId == userId  && x.ItemForm == "ERP Module Access");
                     return Json(await DataSourceLoader.LoadAsync(accessData, loadOptions));
                 }
                 catch (Exception ex)
@@ -267,6 +309,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
 
 
         //[HttpPost]

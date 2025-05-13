@@ -22,8 +22,8 @@ namespace QD.ERP.Web.Service
             {
                 using (dbContext)
                 {
-                    return dbContext.TblUserAccesses
-                                    .Where(ua => ua.UserId == userId)
+                    return dbContext.TblUserAccessWebs
+                                    .Where(ua => ua.UserId == userId && ua.ItemForm == "ERP Module Access" && ua.ItemVisible == true)
                                     .Select(ua => ua.Module)
                                     .Distinct()
                                     .ToList();
