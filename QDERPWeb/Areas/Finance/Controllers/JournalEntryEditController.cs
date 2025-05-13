@@ -242,7 +242,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return Unauthorized(new { success = false, message = "Invalid tenant." });
             }
 
-            if (model == null || model.JournalDetails == null || !model.JournalDetails.Any())
+            if (model == null)
             {
                 return BadRequest(new { success = false, message = "No data received" });
             }
@@ -737,8 +737,97 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
+        [HttpPost]
+        public IActionResult SubmitToFinance(string voucherNo)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
 
+            var username = HttpContext.Session.GetString("UserName");
+            var now = DateTime.Now;
 
+            if (string.IsNullOrEmpty(username))
+            {
+                return Json(new { success = false, message = "User not logged in." });
+            }
+
+            try
+            {
+                var entry = dbContext.Tbl20126JournalRegisterMasters
+                    .FirstOrDefault(x => x.JournalRefNo == voucherNo);
+
+                if (entry == null)
+                {
+                    return Json(new { success = false, message = "Entry not found." });
+                }
+
+                entry.IsSubmittedToFinance = true;
+                entry.SubmittedBy = username;
+                entry.SubmittedOn = now;
+
+                dbContext.SaveChanges();
+
+                return Json(new
+                {
+                    success = true,
+                    submittedBy = username,
+                    submittedOn = now.ToString("dd-MMM-yyyy")
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while submitting to finance.");
+                return Json(new { success = false, message = "Server error occurred." });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult VerifyJournal(string voucherNo)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            var username = HttpContext.Session.GetString("UserName");
+            var now = DateTime.Now;
+
+            if (string.IsNullOrEmpty(username))
+            {
+                return Json(new { success = false, message = "User not logged in." });
+            }
+
+            try
+            {
+                var entry = dbContext.Tbl20126JournalRegisterMasters
+                    .FirstOrDefault(x => x.JournalRefNo == voucherNo);
+
+                if (entry == null)
+                {
+                    return Json(new { success = false, message = "Entry not found." });
+                }
+
+                entry.IsVerified = true;
+                entry.VerifiedBy = username;
+                entry.VerifiedOn = now;
+
+                dbContext.SaveChanges();
+
+                return Json(new
+                {
+                    success = true,
+                    verifiedBy = username,
+                    verifedOn = now.ToString("dd-MMM-yyyy")
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while submitting to finance.");
+                return Json(new { success = false, message = "Server error occurred." });
+            }
+        }
     }
 }
 

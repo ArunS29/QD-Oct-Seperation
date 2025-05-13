@@ -2293,12 +2293,10 @@
                 AccountHead: accountHead,
                 VoucherAmount: amount
             };
-            debugger;
-            if (openedPopups[popupId]) {
-                openedPopups[popupId].show();
-            } else {
-                openCostAllocationPopup(params);
-            }
+            
+            if (params) {
+                 openCostAllocationPopup(params);
+            } 
         };
 
 
@@ -2540,34 +2538,24 @@
             .join('&');
         debugger;
         $.ajax({
-            url: `/api/VoucherEntryCashReceipts/CostAllocation?${queryString}`,
+            url: `/api/VoucherEntryReceipts/CostAllocation?${queryString}`,
             type: "GET",
             dataType: "html",
             success: function (data) {
                 // Get the popup's unique identifier, for example, use the voucher number
-                const popupId = `CostAllocationPopup-${params.VoucherEntryNo}`;
+                
                 debugger;
                 // Check if the popup is already opened
-                if (!openedPopups[popupId]) {
+              
                     // Create and store the popup instance
                     let popupInstance = $("#CostAllocationPopup").dxPopup("instance");
                     popupInstance.option("contentTemplate", function () {
                         return $("<div>").html(data);
                     });
 
-                    // Store the popup instance in the openedPopups map
-                    openedPopups[popupId] = popupInstance;
-                    // popupInstance.popupId = popupId;
-                    console.log(openedPopups);
-                    // Check if the button is disabled, and call disableEditing() if true
-                if ($("#btnaddCostAllocation").dxButton("instance").option("disabled")) {
-                    disablecost();
-                }
+                   
                     popupInstance.show();
-                } else {
-                    // If the popup is already opened, just show it
-                    openedPopups[popupId].show();
-                }
+               
             },
             error: function (xhr, status, error) {
                 console.error("Error loading Cost Allocation view:", error);

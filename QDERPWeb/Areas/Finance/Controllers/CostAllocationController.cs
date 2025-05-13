@@ -55,24 +55,93 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> SaveCostAllocation([FromBody] Tbl201CostAllocationMaster CM)
+        public IActionResult SaveCostAllocations([FromBody] List<Tbl201CostAllocationMaster> allocations)
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                try
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            if (allocations == null || !allocations.Any())
+            {
+                return BadRequest("No cost allocation data received.");
+            }
+            string userName = HttpContext.Session.GetString("UserName");
+            DateTime now = DateTime.Now;
+            var journalChildNo = allocations.First().VoucherEntryId;
+
+            // Fetch all existing allocations for the JournalChildNo
+            var existingAllocations = dbContext.Tbl201CostAllocationMasters
+                .Where(x => x.VoucherEntryId == journalChildNo)
+                .ToList();
+
+            foreach (var allocation in allocations)
+            {
+                var existing = dbContext.Tbl201CostAllocationMasters
+                    .FirstOrDefault(x => x.CostAllocationId == allocation.CostAllocationId);
+
+                if (existing != null && allocation.CostAllocationId > 0)
                 {
-                    dbContext.Tbl201CostAllocationMasters.Add(CM);
-                    await dbContext.SaveChangesAsync();
-                    return Ok(new { success = true, message = "Data inserted successfully!" });
+                    // Update existing record
+                    existing.CostAllocDrCr = allocation.CostAllocDrCr;
+                    existing.CostAllocationUnitId = allocation.CostAllocationUnitId;
+                    existing.EffectiveDate = allocation.EffectiveDate;
+                    existing.AmountAllocated = allocation.AmountAllocated;
+                    existing.CostAllocRemarks = allocation.CostAllocRemarks;
+                    existing.VoucherNo = allocation.VoucherNo;
+                    existing.ModifiedBy = userName;
+                    existing.ModifiedOn = now;
                 }
-                catch (Exception ex)
+                else
                 {
-                    _logger.LogError($"Error in SaveCostAllocation: {ex.Message}");
-                    return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+                    // New insert
+                    dbContext.Tbl201CostAllocationMasters.Add(new Tbl201CostAllocationMaster
+                    {
+                        CostAllocDrCr = allocation.CostAllocDrCr,
+                        CostAllocationUnitId = allocation.CostAllocationUnitId,
+                        EffectiveDate = allocation.EffectiveDate,
+                        AmountAllocated = allocation.AmountAllocated,
+                        CostAllocRemarks = allocation.CostAllocRemarks,
+                        VoucherEntryId = allocation.VoucherEntryId,
+                        VoucherNo = allocation.VoucherNo,
+                        EnteredBy = userName,
+                        EnteredOn = now
+                    });
                 }
             }
 
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+            dbContext.SaveChanges();
+
+
+
+            return Ok();
+        }
+        [HttpGet]
+        public IActionResult GetCostAllocationsBydatagrid(long voucherEntryId)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            var result = (from alloc in dbContext.Tbl201CostAllocationMasters
+                          join unit in dbContext.Tbl201CostAllocationUnits
+                              on alloc.CostAllocationUnitId equals unit.CostAllocationUnitId into gj
+                          from unit in gj.DefaultIfEmpty()
+                          where alloc.VoucherEntryId == voucherEntryId
+                          select new
+                          {
+                              CostAllocationId = alloc.CostAllocationId,
+                              DrCr = alloc.CostAllocDrCr,
+                              CostAllocationUnit = unit != null ? unit.CostAllocationUnit : "Common Overheads",
+                              CostAllocationUnitId = alloc.CostAllocationUnitId,
+                              EffectiveDate = alloc.EffectiveDate,
+                              VoucherAmount = alloc.AmountAllocated,
+                              Remarks = alloc.CostAllocRemarks
+                          }).ToList();
+
+            return Json(result);
         }
     }
 }
