@@ -685,41 +685,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 		}
 
 
-		[HttpPost]
-		public async Task<IActionResult> SubmitMPR1(string mprNo)
-		{
-			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				return Unauthorized(new { success = false, message = "Invalid tenant context." });
-			}
-
-			if (string.IsNullOrEmpty(mprNo))
-			{
-				return BadRequest(new { success = false, message = "MPR No. is required." });
-			}
-
-			var master = await dbContext.Tbl60601purchaseRequestMasters.FirstOrDefaultAsync(x => x.Mprno == mprNo);
-			if (master == null)
-			{
-				return NotFound(new { success = false, message = "MPR not found." });
-			}
-
-			var userName = HttpContext.Session.GetString("UserName");
-			var userId = HttpContext.Session.GetInt32("UserId");
-			var userIds = HttpContext.Session.GetString("UserId");
-
-			master.IsSubmitted = true;
-			master.SubmittedBy = userName;
-			master.SubmittedOn = DateTime.Now;
-			master.ModifiedBy = userName;
-			master.ModifiedOn = DateTime.Now;
-			master.RequestSignatory =(byte?) await GetSignatoryIDfromUserID(userId);
-			master.PurchaseRequestStatusId = 31; // Enquiry/Request Submitted
-
-			await dbContext.SaveChangesAsync();
-
-			return Ok(new { success = true, message = "MPR submitted successfully." });
-		}
+		
 		[HttpPost]
 		public async Task<IActionResult> SubmitMPR(string mprNo)
 		{
@@ -776,6 +742,157 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 			await dbContext.SaveChangesAsync();
 
 			return Ok(new { success = true, message = "MPR submitted successfully." });
+		}
+		[HttpPost]
+		public async Task<IActionResult> VerifyMPR(string mprNo)
+		{
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { message = "Invalid tenant context." });
+			}
+
+			if (string.IsNullOrEmpty(mprNo))
+			{
+				return BadRequest(new { message = "Mprno is required." });
+			}
+
+			var voucher = await dbContext.Tbl60601purchaseRequestMasters
+				.FirstOrDefaultAsync(v => v.Mprno == mprNo);
+
+			if (voucher == null)
+			{
+				return NotFound(new { message = "Credit note not found." });
+			}
+
+			var userName = HttpContext.Session.GetString("UserName");
+			var userIdString = HttpContext.Session.GetString("UserId");
+
+			if (!int.TryParse(userIdString, out int userId))
+			{
+				return Unauthorized(new { message = "Invalid or missing UserId in session." });
+			}
+
+			// Update voucher fields
+			voucher.IsVerified = true;
+			voucher.VerifiedOn = DateTime.Now;
+			voucher.VerifiedBy = userName;
+			voucher.PurchaseRequestStatusId = 32; // Enquiry/Request Verified
+
+			var signatoryId = await GetSignatoryIDfromUserID(userId);
+			if (signatoryId.HasValue)
+			{
+				voucher.MprverifiedSign = (byte)signatoryId.Value;
+			}
+
+			await dbContext.SaveChangesAsync();
+
+			return Ok(new
+			{
+				message = "Material Purchase Request has been Verified and processed for Approval."
+			});
+		}
+		[HttpPost]
+		public async Task<ActionResult> ApproveMPR(string mprNo)
+		{
+			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				try
+				{
+					var userName = HttpContext.Session.GetString("UserName");
+					var userIdString = HttpContext.Session.GetString("UserId");
+					if (!int.TryParse(userIdString, out int userId))
+					{
+						return Unauthorized(new { message = "Invalid or missing UserId in session." });
+					}
+
+
+					if (string.IsNullOrEmpty(mprNo))
+					{
+						return BadRequest(new { Message = "Mprno number is required." });
+					}
+
+					var voucher = dbContext.Tbl60601purchaseRequestMasters
+										   .FirstOrDefault(v => v.Mprno == mprNo);
+
+					if (voucher == null)
+					{
+						return NotFound(new { Message = "CreditNoteNo not found." });
+					}
+
+					// Update approval details
+					voucher.IsApproved = true;
+					voucher.ApprovedOn = DateTime.Now;
+					voucher.ApprovedBy = userName;
+					voucher.PurchaseRequestStatusId = 33; // Status: Enquiry/Request Approved
+					var signatoryId = await GetSignatoryIDfromUserID(userId);
+					if (signatoryId.HasValue)
+					{
+						voucher.MprapprovedSign = (byte)signatoryId.Value;
+					}
+
+					
+
+					dbContext.SaveChanges();
+
+					return Ok(new
+					{
+						Message = "Material Purchase Request has been Approved.",
+						VoucherApprovedBy = userName
+					});
+				}
+				catch (Exception ex)
+				{
+					return BadRequest(new { Message = ex.Message });
+				}
+			}
+
+			return Unauthorized(new { Message = "Invalid tenant.", Success = false });
+		}
+
+		[HttpPost]
+		public async Task<ActionResult> CancelMPR(string mprNo)
+		{
+			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				try
+				{
+					var userName = HttpContext.Session.GetString("UserName");
+					var userIdString = HttpContext.Session.GetString("UserId");
+
+					if (string.IsNullOrEmpty(mprNo))
+					{
+						return BadRequest(new { Message = "Mprno is required." });
+					}
+
+					var voucher = dbContext.Tbl60601purchaseRequestMasters
+										   .FirstOrDefault(v => v.Mprno == mprNo);
+
+					if (voucher == null)
+					{
+						return NotFound(new { Message = "CreditNoteNo not found." });
+					}
+
+					// Update cancellation details
+					voucher.IsCancelled = true;
+					voucher.CancelledOn = DateTime.Now;
+					voucher.CancelledBy = userName;
+					voucher.PurchaseRequestStatusId = 35; // Status: Enquiry/Request Cancelled
+
+					dbContext.SaveChanges();
+
+					return Ok(new
+					{
+						Message = "Material Purchase Request has been Cancelled.",
+						VoucherCancelledBy = userName
+					});
+				}
+				catch (Exception ex)
+				{
+					return BadRequest(new { Message = ex.Message });
+				}
+			}
+
+			return Unauthorized(new { Message = "Invalid tenant.", Success = false });
 		}
 
 	}
