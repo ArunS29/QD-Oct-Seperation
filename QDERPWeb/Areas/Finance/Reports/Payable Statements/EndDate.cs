@@ -29,7 +29,6 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
             InitializeComponent();
             SetReportParameters(accountId, frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressArb);
             ConfigureDataSource(accountId);
-            AddNoDataLabel(); // NEW: add "no data" label only once
         }
 
         public EndDate()
@@ -47,8 +46,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
 
             var query = new CustomSqlQuery
             {
-                Name = "qry205_017AgeingBillsPayableWtColumns",
-                Sql = "SELECT * FROM qry205_017AgeingBillsPayableWtColumns WHERE AccountHeadNo = @AccountID"
+                Name = "qry205_017AgeingBillsPayableWtColumns ", // Change this to match your actual SQL query or view name
+                Sql = "SELECT * FROM qry205_017AgeingBillsPayableWtColumns  WHERE AccountHeadNo = @AccountID"
             };
 
             query.Parameters.Add(new QueryParameter
@@ -60,11 +59,12 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
 
             sqlDataSource1.Queries.Clear();
             sqlDataSource1.Queries.Add(query);
+
             sqlDataSource1.RebuildResultSchema();
             sqlDataSource1.Fill();
 
             this.DataSource = sqlDataSource1;
-            this.DataMember = "qry205_017AgeingBillsPayableWtColumns";
+            this.DataMember = "qry205_017AgeingBillsPayableWtColumns ";
         }
 
         private void SetReportParameters(
@@ -125,38 +125,6 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
                 logoPictureBox.Image = logoImage;
         }
 
-        // New: Adds a red "No records found" label once
-        private void AddNoDataLabel()
-        {
-            XRLabel noDataLabel = new XRLabel
-            {
-                Name = "xrLabelNoData",
-                Text = "No records found to display.",
-                BoundsF = new RectangleF(0, 0, 850, 50),
-                TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter,
-                Font = new Font("Arial", 14, FontStyle.Bold),
-                ForeColor = Color.Red,
-                Visible = false // Initially hidden
-            };
-
-            this.Bands[BandKind.Detail].Controls.Add(noDataLabel);
-        }
-
-        // New: Determine data availability after binding
-        protected override void OnDataSourceDemanded(EventArgs e)
-        {
-            base.OnDataSourceDemanded(e);
-
-            var dataTable = sqlDataSource1?.Result[DataMember] as System.Data.DataTable;
-            bool hasData = dataTable != null && dataTable.Rows.Count > 0;
-
-            if (FindControl("xrLabelNoData", true) is XRLabel noDataLabel)
-            {
-                noDataLabel.Visible = !hasData;
-            }
-
-            // Optional: hide the Detail band if no data
-            this.Bands[BandKind.Detail].Visible = hasData;
-        }
+     
     }
 }
