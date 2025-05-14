@@ -2278,7 +2278,7 @@
             // Selecting VoucherEntryNo based on DrCr value
             let voucherEntryNo = drCr === "Cr" ? rowData.VoucherEntryNo : rowData.VoucherEntryNo;
 
-            let popupId = `CostAllocationPopup-${voucherEntryNo}`;
+            
             let params = {
                 VoucherNo: voucherNo, // Keep VoucherEntryNo as VoucherNo
                 VoucherEntryNo: voucherEntryNo, // Pass Dr/Cr-specific row's VoucherEntryNo
@@ -2286,12 +2286,10 @@
                 AccountHead: accountHead,
                 VoucherAmount: amount
             };
-            debugger;
-            if (openedPopups[popupId]) {
-                openedPopups[popupId].show();
-            } else {
-                openCostAllocationPopup(params);
-            }
+        
+            if (params) {
+                 openCostAllocationPopup(params);
+            } 
         };
 
 
@@ -2531,68 +2529,24 @@
             .join('&');
         debugger;
         $.ajax({
-            url: `/api/VoucherEntryCashReceipts/CostAllocation?${queryString}`,
+            url: `/api/VoucherEntryReceipts/CostAllocation?${queryString}`,
             type: "GET",
             dataType: "html",
             success: function (data) {
                 // Get the popup's unique identifier, for example, use the voucher number
-                const popupId = `CostAllocationPopup-${params.VoucherEntryNo}`;
+                
                 debugger;
                 // Check if the popup is already opened
-                if (!openedPopups[popupId]) {
+              
                     // Create and store the popup instance
                     let popupInstance = $("#CostAllocationPopup").dxPopup("instance");
                     popupInstance.option("contentTemplate", function () {
                         return $("<div>").html(data);
                     });
 
-                    // Store the popup instance in the openedPopups map
-                    openedPopups[popupId] = popupInstance;
-                    // popupInstance.popupId = popupId;
-                    console.log(openedPopups);
+                   
                     popupInstance.show();
-                } else {
-                    // If the popup is already opened, just show it
-                    openedPopups[popupId].show();
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error("Error loading Cost Allocation view:", error);
-                alert("Failed to load cost allocation details.");
-            }
-        });
-    }
-
-    function openPropertyAllocationPopup(params) {
-        const queryString = Object.keys(params)
-            .map(key => `${key}=${params[key]}`)
-            .join('&');
-
-        $.ajax({
-            url: `/api/VoucherEntryCashReceipts/PropertyAllocation?${queryString}`,
-            type: "GET",
-            dataType: "html",
-            success: function (data) {
-                // Get the popup's unique identifier, for example, use the voucher number
-                const popupId = `PropertyAllocationPopup-${params.VoucherEntryNo}`;
-                debugger;
-                // Check if the popup is already opened
-                if (!openedPopups[popupId]) {
-                    // Create and store the popup instance
-                    let popupInstance = $("#PropertyAllocationPopup").dxPopup("instance");
-                    popupInstance.option("contentTemplate", function () {
-                        return $("<div>").html(data);
-                    });
-
-                    // Store the popup instance in the openedPopups map
-                    openedPopups[popupId] = popupInstance;
-                    // popupInstance.popupId = popupId;
-                    console.log(openedPopups);
-                    popupInstance.show();
-                } else {
-                    // If the popup is already opened, just show it
-                    openedPopups[popupId].show();
-                }
+               
             },
             error: function (xhr, status, error) {
                 console.error("Error loading Cost Allocation view:", error);

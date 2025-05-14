@@ -15,10 +15,19 @@
         width:100%;
 
     }
+
+    .limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnColumnChooser,#btnCreateQuotations)) {
+        display: none !important
+    }
+
 </style>
 @using DevExtreme.AspNet.Mvc
 @using DevExtreme.AspNet.Mvc.Builders
-
+<div class="Head">
+    <div class="limited-footer">
+        @await Html.PartialAsync("InventoryModuleFooter")
+    </div>
+</div>
 <div style="padding: 10px; background-color: #c7cfdd;">
     <div style="display: flex; align-items: center; gap: 10px;">
         <label style="font-weight: bold;">Select a Request / Enquiry:</label>

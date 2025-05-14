@@ -7,14 +7,18 @@ using DevExpress.XtraPrinting.Drawing;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace QD.ERP.Web.Areas.VAT.Reports.VATDebitNote
+namespace QD.ERP.Web.Areas.VAT.Reports.VATCreditNote
 {
-	public partial class DebitNoteView : DevExpress.XtraReports.UI.XtraReport
-    {
+	public partial class PreviewCreditNote : DevExpress.XtraReports.UI.XtraReport
+	{
+
+
+
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private bool _isApproved;
 
-        public DebitNoteView(string DebitNoteNo,
+        public PreviewCreditNote(
+            string creditNoteNo,
             string tenantName,
             string companyName,
             string companyAddress,
@@ -28,16 +32,11 @@ namespace QD.ERP.Web.Areas.VAT.Reports.VATDebitNote
             _isApproved = isApproved;
 
             InitializeComponent();
-            SetReportParameters(DebitNoteNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
-            LoadReportData(DebitNoteNo);
+            SetReportParameters(creditNoteNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
+            LoadReportData(creditNoteNo);
         }
 
-        public DebitNoteView()
-		{
-			InitializeComponent();
-		}
-
-        private void SetReportParameters(string DebitNoteNo, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressAr)
+        private void SetReportParameters(string creditNoteNo, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressAr)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -48,17 +47,17 @@ namespace QD.ERP.Web.Areas.VAT.Reports.VATDebitNote
                         Name = name,
                         Type = type,
                         Value = value,
-                        Visible = false
+                        Visible = visible
                     });
                 }
                 else
                 {
                     Parameters[name].Value = value;
-                    Parameters[name].Visible = false;
+                    Parameters[name].Visible = visible;
                 }
             }
 
-            AddOrUpdateParameter("DebitNoteNo", DebitNoteNo, typeof(string));
+            AddOrUpdateParameter("CreditNoteNo", creditNoteNo, typeof(string));
             AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string));
             AddOrUpdateParameter("CompanyName", companyName ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddress", companyAddress ?? "", typeof(string));
@@ -84,9 +83,9 @@ namespace QD.ERP.Web.Areas.VAT.Reports.VATDebitNote
                 logoPictureBox.Image = logoImage;
         }
 
-        private void LoadReportData(string DebitNoteNo)
+        private void LoadReportData(string creditNoteNo)
         {
-            DataTable dt = GetReportData(DebitNoteNo);
+            DataTable dt = GetReportData(creditNoteNo);
 
             if (dt.Rows.Count == 0)
             {
@@ -97,13 +96,11 @@ namespace QD.ERP.Web.Areas.VAT.Reports.VATDebitNote
             {
                 this.DataSource = dt;
                 this.DataMember = "";
+                SetWatermark();
             }
-
-            SetWatermark(); // Always called
         }
 
-
-        private DataTable GetReportData(string DebitNoteNo)
+        private DataTable GetReportData(string creditNoteNo)
         {
             DataTable dt = new DataTable();
 
@@ -115,12 +112,12 @@ namespace QD.ERP.Web.Areas.VAT.Reports.VATDebitNote
 
                     using (SqlConnection conn = new SqlConnection(connectionString))
                     {
-                        string query = "SELECT * FROM qry201_602VATInvoiceReport WHERE DebitNoteNo = @DebitNoteNo";
+                        string query = "SELECT * FROM  WHERE qry201_802VATCreditNoteReport CreditNoteNo = @CreditNoteNo";
 
                         using (SqlCommand cmd = new SqlCommand(query, conn))
                         {
                             cmd.CommandType = CommandType.Text;
-                            cmd.Parameters.AddWithValue("@DebitNoteNo", DebitNoteNo);
+                            cmd.Parameters.AddWithValue("@CreditNoteNo", creditNoteNo);
 
                             SqlDataAdapter da = new SqlDataAdapter(cmd);
                             conn.Open();
@@ -166,9 +163,5 @@ namespace QD.ERP.Web.Areas.VAT.Reports.VATDebitNote
             this.Bands[BandKind.Detail].Controls.Add(noDataLabel);
         }
 
-        private void ForeignCurrency_BeforePrint(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            // Optional: Add logic if you need to re-check conditions before printing
-        }
     }
 }

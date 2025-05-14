@@ -125,7 +125,7 @@
         )
 
     </text>);
-                items.Add()
+           @*      items.Add()
             .Title("Module")
             .Template(@<text>
         <div style="padding: 20px;">
@@ -224,7 +224,7 @@
 
             <div id="gridContainer" style="margin-top: 20px;"></div>
         </div>
-    </text>);
+    </text>); *@
             })
         .Width("100%")
         )
@@ -458,23 +458,35 @@
             });
         }
 
-                  function onUserIdCellClick(e) {
-                    //  alert('Openeing the UserAccountDetails')
-            if (e.column && e.column.dataField === "UserId") {
-                const userId = e.data.UserId;
+                        function onUserIdCellClick(e) {
 
+                            debugger;
+
+            // Ensure the click is on the UserId column
+            if (e.column && e.column.dataField === "UserId") {
+                 debugger;
+
+                const userId = e.data.UserId;
+                const userLevel = e.data.UserLevel;
+
+                // Check if the user's level is 99
+                if (userLevel !== 99) {
+                    DevExpress.ui.notify("You do not have permission to view this user's details.", "warning", 2000);
+                    return;
+                }
+
+                // Get tenant name from session storage
                 const tenantName = sessionStorage.getItem('tenantName');
 
-                   // alert(tenantName);
-
                 if (!tenantName) {
-                   // alert('Tenant name not found in session storage.');
+                    DevExpress.ui.notify("Tenant name not found in session storage.", "error", 2000);
                     return;
                 }
 
                 const encodedTenant = encodeURIComponent(tenantName);
-                const url = `/${encodedTenant}/Finance/UserAccountDetails?userId=${userId}`;
+                const url = `/${encodedTenant}/Finance/UserAccountDetails?userId=${encodeURIComponent(userId)}`;
 
+                // Redirect to the UserAccountDetails page
                 window.location.href = url;
             }
         }

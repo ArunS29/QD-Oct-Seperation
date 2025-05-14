@@ -30,7 +30,18 @@
 
                     <div class="form-group">
                         <label>User Name:</label>
-                        @(Html.DevExtreme().TextBox().ID("UserName").Width("100%"))
+                        @(Html.DevExtreme().TextBox()
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ID("UserName")
+                        .OnChange("validateEmail")
+                        .Value(null)
+                        .ValidationRules(rules =>
+                        {
+                        rules.AddRequired()
+
+                        .Message(new JS("formatMessage('Email Address Cannot be Empty')"));
+                        })
+                        )
                     </div>
 
                     <div class="form-group">
@@ -424,9 +435,10 @@
 
                         <div class="tab-content-area">
                             <!-- Container + Card Panels -->
-                            <div class="container-fluid tab-container" style="display: block;">
+                            <div class="container-fluid tab-container" id="Master-content" >
+                                loadMAsterData
                                 <div class="card">
-                                    <div class="card-body">Content for Master Module</div>
+                                    <div id="gridContainer1"></div>
                                 </div>
                             </div>
 
@@ -434,7 +446,7 @@
                                 loadFinanceData
                                 <div class="card">
                                     <div class="card-body">
-                                        <div id="gridContainer"></div> <!-- DataGrid placeholder -->
+                                        <div id="gridContainer"></div> 
                                     </div>
                                 </div>
                             </div>
@@ -484,9 +496,43 @@
 
                             <div class="container-fluid tab-container">
                                 <div class="card">
-                                    <div class="card-body">Content for Alert Notification</div>
+                                    @(Html.DevExtreme().TextBox()
+                                    .ID("txtUserId")
+                                    .Placeholder("Enter User ID")
+                                    )
+
+                                    <div class="card-body">
+                                        <div style="margin-top: 20px;">
+                                            @(Html.DevExtreme().Button()
+                                            .ID("btnNotificationsOnCompanyDocs")
+                                            .Text("Set Alert Notification for Company Documents")
+                                            .OnClick("onSetAlertNotificationClick")
+                                            )
+                                            <div id="lblAlertforCompanyDoc" style="margin-top: 5px;"></div>
+                                        </div>
+
+                                        <div style="margin-top: 20px;">
+                                            @(Html.DevExtreme().Button()
+                                            .ID("btnNotificationsOnEquipmentDocs")
+                                            .Text("Set Alert Notification for Equipment Documents")
+                                            .OnClick("onSetEquipmentAlertNotificationClick")
+                                            )
+                                            <div id="lblAlertforEquipmentDoc" style="margin-top: 5px;"></div>
+                                        </div>
+
+                                        <div style="margin-top: 20px;">
+                                            @(Html.DevExtreme().Button()
+                                            .ID("btnNotificationsOnHRDocs")
+                                            .Text("Set Alert Notification for HR Documents")
+                                            .OnClick("onSetHRAlertNotificationClick")
+                                            )
+                                            <div id="lblAlertforHRDoc" style="margin-top: 5px;"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+
+
 
                             <div class="container-fluid tab-container">
                                 <div class="card">
@@ -839,6 +885,16 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
+
+            // Hide all tabs and show the first one
+            $('.tab-container').hide();
+            $('.tab-container').eq(0).show();
+
+            // Load Master Module data by default
+            loadMasterModuleData("Master Module");
+
+            debugger;
+
             const urlParams = new URLSearchParams(window.location.search);
             const userId = urlParams.get("userId");
             const tenantName = urlParams.get("tenantName");
@@ -846,9 +902,131 @@
             if (userId) {
                 loadUserDetails(userId);
             } else {
-                DevExpress.ui.notify("User ID not found in URL", "error", 3000);
+                // Fetch next UserId from the server
+                $.ajax({
+                    url: window.location.origin + "/api/Utility/GetNextUserId",
+                    method: "GET",
+                    cache: false,
+                    dataType: "json",
+                    success: function (response) {
+                        if (response.success && response.nextUserId) {
+                            const userIdBox = $("#UserId").dxTextBox("instance");
+                            if (userIdBox) {
+                                userIdBox.option("value", response.nextUserId);
+                            }
+                        } else {
+                            DevExpress.ui.notify("Failed to generate User ID", "error", 3000);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        DevExpress.ui.notify("Failed to generate User ID", "error", 3000);
+                    }
+                });
             }
         });
+
+          // Get User ID from URL or TextBox
+    function getUserId() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const userIdFromUrl = urlParams.get("userId");
+
+        if (userIdFromUrl && userIdFromUrl.trim() !== "") {
+            return userIdFromUrl;
+        }
+
+        return $("#txtUserId").dxTextBox("instance").option("value");
+    }
+
+    // Show confirmation dialog before applying alert
+    function showNotificationConfirm(callback) {
+        debugger;
+        DevExpress.ui.dialog.confirm(
+            "You are about to Set Alert Notifications for this User.\nAre you Sure want to Apply this Setting?",
+            "Set Notification Setting"
+        ).done(function (dialogResult) {
+            if (dialogResult && typeof callback === "function") {
+                callback();
+            }
+        });
+    }
+
+    // Handle setting alert for Company Documents
+    function onSetAlertNotificationClick() {
+            debugger;
+        const button = $("#btnNotificationsOnCompanyDocs").dxButton("instance");
+
+        if (button.option("text") === "Set Alert Notification for Company Documents") {
+            showNotificationConfirm(function () {
+                const userId = getUserId();
+                if (userId) {
+                    $.post("/api/Utility/SetCompanyDocAlert", { userId: userId }, function (response) {
+                        if (response.success) {
+                            button.option("text", "Remove Alert Notification for Company Documents");
+                            $("#lblAlertforCompanyDoc")
+                                .text("This User Account is set to Receive Popup Notification on Expiry of Company Documents.")
+                                .css("color", "blue");
+                        } else {
+                            DevExpress.ui.dialog.alert(response.message, "Error");
+                        }
+                    });
+                } else {
+                    DevExpress.ui.dialog.alert("User ID is required.", "Warning");
+                }
+            });
+        }
+    }
+
+    // Handle setting alert for Equipment Documents
+    function onSetEquipmentAlertNotificationClick() {
+            debugger;
+        const button = $("#btnNotificationsOnEquipmentDocs").dxButton("instance");
+
+        if (button.option("text") === "Set Alert Notification for Equipment Documents") {
+            showNotificationConfirm(function () {
+                const userId = getUserId();
+                if (userId) {
+                    $.post("/api/Utility/SetEquipmentDocAlert", { userId: userId }, function (response) {
+                        if (response.success) {
+                            button.option("text", "Remove Alert Notification for Equipment Documents");
+                            $("#lblAlertforEquipmentDoc")
+                                .text("This User Account is set to Receive Popup Notification on Expiry of Equipment Documents.")
+                                .css("color", "blue");
+                        } else {
+                            DevExpress.ui.dialog.alert(response.message, "Error");
+                        }
+                    });
+                } else {
+                    DevExpress.ui.dialog.alert("User ID is required.", "Warning");
+                }
+            });
+        }
+    }
+
+    // Handle setting alert for HR Documents
+    function onSetHRAlertNotificationClick() {
+        debugger;
+        const button = $("#btnNotificationsOnHRDocs").dxButton("instance");
+
+        if (button.option("text") === "Set Alert Notification for HR Documents") {
+            showNotificationConfirm(function () {
+                const userId = getUserId();
+                if (userId) {
+                    $.post("/api/Utility/SetHRDocAlert", { userId: userId }, function (response) {
+                        if (response.success) {
+                            button.option("text", "Remove Alert Notification for HR Documents");
+                            $("#lblAlertforHRDoc")
+                                .text("This User Account is set to Receive Popup Notification on Expiry of HR Documents.")
+                                .css("color", "blue");
+                        } else {
+                            DevExpress.ui.dialog.alert(response.message, "Error");
+                        }
+                    });
+                } else {
+                    DevExpress.ui.dialog.alert("User ID is required.", "Warning");
+                }
+            });
+        }
+    }
 
         function loadUserDetails(userId) {
             $.ajax({
@@ -1194,23 +1372,27 @@
             const date = new Date(dateStr);
             return date.toLocaleString();
         }
+
         function onTabSelectionChanged(e) {
             var selectedIndex = e.component.option('selectedIndex');
             var selectedText = e.component.option('items')[selectedIndex].text;
 
-            // Hide all tab containers
+            // Hide all containers
             $('.tab-container').hide();
 
-            // Show the container matching the tab
+            // Show the correct container
             $('.tab-container').eq(selectedIndex).show();
 
-            // Check if Finance tab is selected (index 1 as per your tab list)
             if (selectedText === "Finance") {
-                loadFinanceData();
+                loadFinanceData(selectedText);
+            }
+
+            if (selectedText === "Master Module") {
+                loadMasterModuleData(selectedText);
             }
         }
-        function loadFinanceData() {
-            // Get the userId from the URL
+
+        function loadFinanceData(selectedText) {
             const urlParams = new URLSearchParams(window.location.search);
             const userId = urlParams.get("userId");
 
@@ -1218,8 +1400,7 @@
                 dataSource: new DevExpress.data.CustomStore({
                     key: "SlNo",
                     load: function () {
-                        // Pass the userId as a query parameter to the API
-                        return $.getJSON(`/api/Utility/GetUserAccessWebs?userId=${userId}`)
+                        return $.getJSON(`/api/Utility/GetUserAccessWebs?userId=${userId}&selectedText=${selectedText}`)
                             .then(function (result) {
                                 return {
                                     data: result.data,
@@ -1271,6 +1452,65 @@
             });
         }
 
+        function loadMasterModuleData(selectedText) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get("userId");
+            debugger;
+            $("#gridContainer1").dxDataGrid({
+                dataSource: new DevExpress.data.CustomStore({
+                    key: "SlNo",
+                    load: function () {
+                        return $.getJSON(`/api/Utility/GetUserAccessWebs?userId=${userId}&selectedText=${selectedText}`)
+                            .then(function (result) {
+                                return {
+                                    data: result.data,
+                                    totalCount: result.totalCount
+                                };
+                            });
+                    }
+                }),
+                remoteOperations: false,
+                height: 500,
+                columnAutoWidth: true,
+                scrolling: {
+                    mode: "virtual",
+                    showScrollbar: "always"
+                },
+                columns: [
+                    { dataField: "SlNo", caption: "Serial No", visible: false },
+                    { dataField: "ItemForm", caption: "Item Name" },
+                    { dataField: "ItemDescription", caption: "Action Name" },
+                    {
+                        dataField: "ItemVisible",
+                        caption: "Visible",
+                        dataType: "boolean",
+                        cellTemplate: function (container, options) {
+                            $("<div>")
+                                .dxCheckBox({
+                                    value: options.value,
+                                    onValueChanged: function (e) {
+                                        const items = [{
+                                            SlNo: options.data.SlNo,
+                                            ItemVisible: e.value
+                                        }];
+                                        updateItemVisibility(items, function () {
+                                            $("#gridContainer1").dxDataGrid("instance").refresh();
+                                        });
+                                    }
+                                })
+                                .appendTo(container);
+                        }
+                    }
+                ],
+                sorting: {
+                    mode: "multiple"
+                },
+                selection: {
+                    mode: "multiple"
+                },
+                showBorders: true
+            });
+        }
 
 
 
@@ -1300,11 +1540,7 @@
          
 
 
-        // Example functions for each tab
-        function loadMasterModuleData() {
-            console.log("Loading Master Module data...");
-            // Add your logic here
-        }
+     
 
         // function loadFinanceData() {
         //     console.log("Loading Finance data...");
@@ -1466,10 +1702,42 @@
             alert("Customize clicked");
         }
 
+           // Email validation for User Name field
+         // Function to validate email format
+        function validateEmail() {
+            // Get the email value from the DevExtreme TextBox
+            const email = $("#UserId").dxTextBox("instance").option("value");
 
+            // Create a temporary input element to validate the email
+            const tempInput = document.createElement("input");
+            tempInput.type = "email";
+            tempInput.value = email;
 
+            // Check if the email is valid
+            if (!tempInput.checkValidity()) {
+                DevExpress.ui.notify({
+                    message: formatMessage("Your Email ID is Invalid"),
+                    type: "error",
+                    displayTime: 3000
 
+                });
+
+                // Clear the email input field
+                $("#UserId").dxTextBox("instance").option("value", "");
+            } else {
+                DevExpress.ui.notify({
+                    message: formatMessage("Your Email ID is valid"),
+                    type: "success",
+                    displayTime: 3000,
+                    position: { my: "top right", at: "top right", of: window, offset: "0 30" }
+                });
+            }
+        }
+
+        // ... (rest of your JavaScript code remains unchanged) ...
+        
     </script>
+
 }
 
 <style>

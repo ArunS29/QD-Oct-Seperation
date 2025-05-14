@@ -34,7 +34,7 @@ namespace QD.ERP.Web.Pages
         public string VoucherNo { get; private set; }
         public string ReportName { get; private set; }
 
-        public IActionResult OnGet(string reportName, string voucherNo, string invoiceNo, bool isApproved, string CreditNoteNo, string DebitNoteNo)
+        public IActionResult OnGet(string reportName, string voucherNo, string invoiceNo, bool isApproved, string debitNoteNo,string CreditNoteNo)
         {
             if (string.IsNullOrEmpty(reportName))
             {
@@ -74,7 +74,19 @@ namespace QD.ERP.Web.Pages
                     Console.WriteLine("Error processing company logo: " + ex.Message);
                 }
             }
+            if (reportName == "DebitNoteView")
+            {
+                if (string.IsNullOrEmpty(debitNoteNo))
+                {
+                    return BadRequest("Debit Note No is required for debit note reports.");
+                }
+                debitNoteNo = debitNoteNo;
 
+                Report = new QD.ERP.Web.Areas.VAT.Reports.VATDebitNote.DebitNoteView(
+                    debitNoteNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
+
+                return Page();
+            }
             // 👉 New CASE 2: If it is Invoice-related
             if (reportName == "TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS" || reportName == "RegulartaxinvoicewithoutSignatoriesFormat05" || reportName == "SimplifiedTaxInvoice" || reportName == "PrintRegularInvoiceFormat02"|| reportName == "ForeignCurrency"|| reportName== "proformaInvoiceforegincurrency"|| reportName == "ProformaInvoiceForeignEnglish" || reportName == "PreviewInvoiceEnglish")
             {
@@ -123,7 +135,7 @@ namespace QD.ERP.Web.Pages
                 return Page();
             }
 
-            if (reportName == "CreditForeignCurrency")
+            if (reportName == "CreditForeignCurrency" || reportName == "PreviewCreditNote")
             {
                 if (string.IsNullOrEmpty(CreditNoteNo))
                 {
@@ -136,27 +148,9 @@ namespace QD.ERP.Web.Pages
                 {
                     Report = new QD.ERP.Web.Areas.VAT.Reports.VATCreditNote.CreditForeignCurrency(
                         CreditNoteNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
-                }
-               
-       
-
-                return Page();
-            }
-
-
-
-            if (reportName == "DebitNoteView")
-            {
-                if (string.IsNullOrEmpty(DebitNoteNo))
+                } else if(reportName == "PreviewCreditNote")
                 {
-                    return BadRequest("Invoice No is required for invoice reports.");
-                }
-
-                DebitNoteNo = DebitNoteNo;
-
-                if (reportName == "DebitNoteView")
-                {
-                    Report = new QD.ERP.Web.Areas.VAT.Reports.VATDebitNote.DebitNoteView(
+                    Report = new QD.ERP.Web.Areas.VAT.Reports.VATCreditNote.PreviewCreditNote(
                         CreditNoteNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
                 }
 
@@ -164,6 +158,30 @@ namespace QD.ERP.Web.Pages
 
                 return Page();
             }
+
+
+
+            //if (reportName == "DebitNoteView")
+            //{
+            //    if (string.IsNullOrEmpty(DebitNoteNo))
+            //    {
+            //        return BadRequest("Invoice No is required for invoice reports.");
+            //    }
+
+            //    DebitNoteNo = DebitNoteNo;
+
+            //    if (reportName == "DebitNoteView")
+            //    {
+            //        Report = new QD.ERP.Web.Areas.VAT.Reports.VATDebitNote.DebitNoteView(
+            //           DebitNoteNo , tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
+            //    }
+
+
+
+            //    return Page();
+            //}
+
+
 
             // 👉 Existing CASE 1: Old voucher reports
             if (string.IsNullOrEmpty(voucherNo))

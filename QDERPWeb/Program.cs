@@ -153,6 +153,18 @@ var app = builder.Build();
 
 app.UseDevExpressControls();
 app.UseRouting();
+app.UseStatusCodePages("text/plain", "Status Code: {0}");
+app.UseStatusCodePagesWithRedirects("/Error/{0}");
+app.Use(async (context, next) =>
+{
+    await next();
+
+    if (context.Response.StatusCode == 404)
+    {
+        context.Response.Redirect("/Error/404");
+    }
+});
+
 
 app.Use(async (context, next) =>
 {
@@ -169,7 +181,12 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
-
+// Use exception handling for non-development environments
+//if (!app.Environment.IsDevelopment())
+//{
+//    app.UseExceptionHandler("/Test/Finance/Error");
+//    app.UseStatusCodePagesWithReExecute("/Test/Finance/PageNotFound");
+//}
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSession();

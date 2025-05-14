@@ -10,8 +10,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
 {
     public partial class RegulartaxinvoicewithoutSignatoriesFormat05 : XtraReport
     {
-        private readonly TenantDbContextHelper _tenantDbContextHelper;
-        private bool _isApproved;
+        private readonly TenantDbContextHelper _tenantDbContextHelper; private bool _isApproved;
 
         public RegulartaxinvoicewithoutSignatoriesFormat05(
             string invoiceNo,

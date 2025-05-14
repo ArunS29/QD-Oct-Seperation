@@ -170,7 +170,7 @@
         </div>
         <div class="dx-field ledgerResult" style="padding-top:20px">
             @(
-                    Html.DevExtreme().DataGrid()
+                    Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl201CostAllocationMaster>()
                     .ID("costdataGrid")
 
                     .RemoteOperations(false)
@@ -178,8 +178,9 @@
                     .DataSource(new object[] { })
                     .Columns(columns =>
                     {
-                        columns.Add().Caption("Dr/Cr").DataField("DrCr").Width(100).AllowEditing(false);
-                        columns.Add()
+                        columns.AddFor(m => m.CostAllocationId).Caption("CostAllocation Id").DataField("CostAllocationId").Width(100).Visible(false).AllowEditing(false);
+                        columns.AddFor(m => m.CostAllocDrCr).Caption("Dr/Cr").DataField("DrCr").Width(100).AllowEditing(false);
+                        columns.AddFor(m => m.CostAllocationUnitId)
                     .DataField("CostAllocationUnit")
                     .Caption("Cost Allocated (Projects/Jobs)")
                     .Width(500)
@@ -194,14 +195,14 @@
                         @(Html.DevExtreme().Button()
                         .ID("btnAddcost_" + new JS("data.rowIndex"))
                         .Icon("plus")
-                            @* .OnClick("onAddCost") *@
+                        @* .OnClick("onAddCost") *@
                         .Hint("Add Cost Allocation")
                         .Width(40)
                         )
                         @(Html.DevExtreme().Button()
                         .ID("btnEditcost_" + new JS("data.rowIndex"))
                         .Icon("edit")
-                            @* .OnClick("onEditCost") *@
+                        @* .OnClick("onEditCost") *@
                         .Hint("Edit Cost Allocation")
                         .Width(40)
                         )
@@ -228,7 +229,7 @@
                     .Placeholder("Select Cost Allocation")
                     .Width(350)
                     .DropDownOptions(o => o.Width(800))
-                    .Value(new JS("data.CostAllocationUnit || 'Common Overheads'"))
+                    .Value(new JS("data.CostAllocationUnitId || 'ADMIN-0001'"))
                     .ContentTemplate(new TemplateName("JournalcostAllocationDropdownContentTemplate"))
                     )
 
@@ -236,14 +237,14 @@
                         @(Html.DevExtreme().Button()
                         .ID("btnAddcost_" + new JS("data.rowIndex"))
                         .Icon("plus")
-                            @* .OnClick("onAddCost") *@
+                        @* .OnClick("onAddCost") *@
                         .Hint("Add Cost Allocation")
                         .Width(40)
                         )
                         @(Html.DevExtreme().Button()
                         .ID("btnEditcost_" + new JS("data.rowIndex"))
                         .Icon("edit")
-                            @* .OnClick("onEditCost") *@
+                        @* .OnClick("onEditCost") *@
                         .Hint("Edit Cost Allocation")
                         .Width(40)
                         )
@@ -251,7 +252,7 @@
                 </div>
 
             </text>);
-                        columns.Add()
+                        columns.AddFor(m => m.EffectiveDate)
                     .Caption("Effective Date")
                     .DataField("EffectiveDate").DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
                     .AllowEditing(true)
@@ -270,8 +271,8 @@
                 .DisplayFormat("dd-MMM-yyyy")
                 )
             </text>);
-                        columns.Add().Caption("Amount").DataField("VoucherAmount").DataType(GridColumnDataType.Number).Format("#,##0.00").AllowEditing(true);
-                        columns.Add().Caption("Remarks").DataField("Remarks").AllowEditing(true);
+                        columns.AddFor(m => m.AmountAllocated).Caption("Amount").DataField("VoucherAmount").DataType(GridColumnDataType.Number).Format("#,##0.00").AllowEditing(true);
+                        columns.AddFor(m => m.CostAllocRemarks).Caption("Remarks").DataField("Remarks").AllowEditing(true);
 
                     })
                 //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
@@ -331,7 +332,7 @@
 
 
             @(Html.DevExtreme().Button()
-                .ID("btnCostSaveAndClose")
+                .ID("btnCostmasterSaveAndClose")
                 .Text("Save and Close")
                 .Type(ButtonType.Normal)
                 .StylingMode(ButtonStylingMode.Outlined)
@@ -437,76 +438,66 @@
     //     }
     // });
 
-
-
-
     $(document).ready(function () {
-        // Check if accountHead starts with "Cost"
+
+    const VoucherEntryId = parseInt('@voucherEntryNo'.trim(), 10);
+    const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
+    const drCr = '@drCr';
+    const costdataGrid = $('#costdataGrid').dxDataGrid('instance');
+
+    $.ajax({
+        url: `/api/CostAllocation/GetCostAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
+        type: 'GET',
+        success: function (data) {
+            if (data && data.length > 0) {
+                costdataGrid.option('dataSource', data);
+            } else {
+                 // Check if accountHead starts with "Cost"
         var accountHead = '@accountHead';
         if (!accountHead.startsWith("Cost")) {
             return; // Exit if condition is not met
         }
-        // Capture the initial value of the NumberBox
-        const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
-
-        // Sample data with initial value of VoucherAmount
-        const costData = [
-            {
-                DrCr: '@drCr',  // Ensure @drCr is correctly rendered as a string value
-
-                EffectiveDate: new Date().toLocaleDateString('en-GB', {
-                    day: 'numeric',
-                    month: 'short',
-                    year: 'numeric',
-                }),
-                VoucherAmount: initialVoucherAmount.toFixed(2),
-                Remarks: ''
+                // No data found – insert a default row
+                const defaultRow = [{
+                    DrCr: drCr,
+                    EffectiveDate: new Date().toISOString(),
+                    VoucherAmount: initialVoucherAmount.toFixed(2),
+                    Remarks: '',
+                    // default fallback value
+                }];
+                costdataGrid.option('dataSource', defaultRow);
             }
-        ];
-
-        // console.log('Cost Data:', costData);
-
-        // Get the DataGrid instance
-        const costdataGrid = $('#costdataGrid').dxDataGrid('instance');
-
-        if (costdataGrid) {
-            costdataGrid.option('dataSource', costData);
-        }
-
-        // Function to handle changes to the NumberBox value
-        $('#CostAmount').dxNumberBox({
-            valueChanged: function (e) {
-                const newVoucherAmount = e.value.toFixed(2);
-
-                // Update the data in the DataGrid
-                if (costdataGrid) {
-                    // Find the first row (assuming only one row in this case)
-                    const updatedData = [{
-                        DrCr: '@drCr', // Make sure @drCr is a valid string
-                        CostAllocated: '',
-                        EffectiveDate: new Date().toLocaleDateString('en-GB', {
-                            day: 'numeric',
-                            month: 'short',
-                            year: 'numeric',
-                        }),
-                        VoucherAmount: newVoucherAmount,
-                        Remarks: 'N/A'
-                    }];
-
-                    costdataGrid.option('dataSource', updatedData);
-                }
-            }
-        });
-
-        // Function to format the EffectiveDate
-        function formatEffectiveDate(dateString) {
-            if (!dateString) return 'N/A'; // Handle null or empty dates
-
-            const dateObj = new Date(dateString);
-            const options = { day: 'numeric', month: 'short', year: 'numeric' };
-            return dateObj.toLocaleDateString('en-GB', options).replace(/ /g, '-');
+        },
+        error: function () {
+            DevExpress.ui.notify("Failed to load cost allocation data.", "error", 4000);
         }
     });
+
+    $('#CostAmount').dxNumberBox({
+        valueChanged: function (e) {
+            const newVoucherAmount = e.value.toFixed(2);
+            const updatedData = [{
+                DrCr: drCr,
+                EffectiveDate: new Date().toISOString(),
+                VoucherAmount: newVoucherAmount,
+                Remarks: ''
+            }];
+            costdataGrid.option('dataSource', updatedData);
+        }
+    });
+
+    // Function to format the EffectiveDate
+    function formatEffectiveDate(dateString) {
+        if (!dateString) return 'N/A'; // Handle null or empty dates
+
+        const dateObj = new Date(dateString);
+        const options = { day: 'numeric', month: 'short', year: 'numeric' };
+        return dateObj.toLocaleDateString('en-GB', options).replace(/ /g, '-');
+    }
+});
+
+
+    
 
 
 
@@ -562,12 +553,13 @@
             let selectedRowData = costAllocationDropdownGrid.getSelectedRowsData()[0]; // Get first selected row
 
             if (selectedRowData) {
-                selectedCostAllocationUnitID = selectedRowData.CostAllocationUnitId; // Store the correct ID
-
+                rowData.CostAllocationUnitId = selectedRowData.CostAllocationUnitId;
+                rowData.CostAllocationUnit = selectedRowData.CostAllocationUnit; // Update AccountHead
+                grid.cellValue(rowIndex, "CostAllocationUnitId", selectedRowData.CostAllocationUnitId);
+                grid.cellValue(rowIndex, "CostAllocationUnit", selectedRowData.CostAllocationUnit); // Reflect change
             }
 
-            rowData.CostAllocationUnit = e.value; // Update the row data
-            grid.cellValue(rowIndex, "CostAllocationUnit", e.value); // Ensure it reflects in the grid
+           
 
         }
 
@@ -604,74 +596,54 @@
     //           e.component.collapseAll();
     //       }
     //   }
+    $("#btnCostmasterSaveAndClose").dxButton("instance").option("onClick", function () {
+        let grid = $("#costdataGrid").dxDataGrid("instance");
+        let allRowsData = grid.getDataSource().items();
+        let voucherchildno = parseInt('@voucherEntryNo'.trim(), 10);
+        let voucherno = '@voucherNo';
+        
+
+        let costAllocations = allRowsData.map(row => ({
+            CostAllocationId: row.CostAllocationId || 0, // 0 if it's a new record
+            CostAllocDrCr: row.DrCr,
+            CostAllocationUnitId: row.CostAllocationUnitId,
+            EffectiveDate: row.EffectiveDate ? new Date(row.EffectiveDate).toISOString() : null,
+            AmountAllocated: row.VoucherAmount,
+            CostAllocRemarks: row.Remarks,
+            VoucherEntryId: voucherchildno,
+            VoucherNo: voucherno
+        }));
 
 
-    $("#btnCostSaveAndClose").on("click", function (e) {
-        e.preventDefault();
+        // Optional: validate before sending
 
-        // Get the DataGrid instance
-        const costdataGrid = $("#costdataGrid").dxDataGrid("instance");
-
-        if (!costdataGrid) {
-            DevExpress.ui.notify("DataGrid instance not found.", "error", 2000);
-            return;
-        }
-
-        // Get the data from the first row of the DataGrid
-        const dataGridData = costdataGrid.getDataSource().items();
-        if (!dataGridData || dataGridData.length === 0) {
-            DevExpress.ui.notify("No data in the grid to save.", "error", 2000);
-            return;
-        }
-
-        // Extract values from the first row (you can adjust logic for multiple rows if needed)
-        const firstRowData = dataGridData[0];
-        const selectedCostAllocUnit = selectedCostAllocationUnitID || "ADMIN-0001"; // From dropdown column
-        const remarks = firstRowData.Remarks || null; // Remarks column value
-        const effectiveDate = firstRowData.EffectiveDate; // Ensure this is populated from server-side Request.Query["EffectiveDate"]
-
-
-
-        // Construct the ViewModel object
-        const VM = {
-
-            CostAllocationUnitID: selectedCostAllocUnit,
-            EffectiveDate: new Date().toISOString().split('T')[0],
-            AmountAllocated: '@voucherAmountParsed', // Ensure server-side value is correctly populated
-            CostAllocRemarks: remarks,
-            VoucherNo: '@voucherNo',
-            CostAllocDrCr: '@drCr'
-        };
-
-        // Debug to ensure VM is correctly populated
-        console.log("VM to be sent:", VM);
-        // debugger;
         $.ajax({
             type: "POST",
-            url: "/api/CostAllocation/SaveCostAllocation",
+            url: "/api/CostAllocation/SaveCostAllocations", // adjust area/controller path if needed
             contentType: "application/json",
-            data: JSON.stringify(VM),
-            dataType: "json",
+            data: JSON.stringify(costAllocations),
             success: function (response) {
-                if (response.success) {
-                    DevExpress.ui.notify("Cost Allocation Details updated Successfully.", "success", 2000);
-                    //     window.location.reload();
-                    // CostAllocationPopup.hide();
-                    let popupInstance = $("#CostAllocationPopup").dxPopup("instance");
+               
+                DevExpress.ui.dialog.alert(
+                    "Cost Allocation Details updated Successfully.",
+                    "Update Successful"
+                ).then(function () {
+                   let popupInstance = $("#CostAllocationPopup").dxPopup("instance");
                     popupInstance.hide();
+                });
 
-                } else {
-                    alert("Update failed: " + response.message);
-                }
+                //     window.location.reload();
+                // CostAllocationPopup.hide();
+                // Hide the popup
+                
             },
-            error: function (xhr, status, error) {
-                DevExpress.ui.notify("Voucher has no line items to be saved, please enter transaction to save.!", "error", 2000);
+            error: function (xhr) {
+                DevExpress.ui.notify("Error saving data: " + xhr.responseText, "error", 4000);
             }
-
         });
-
-
     });
+
+    
 
     // function dropDownBoxOnInput(e) {
     //     const ddbInstance = e.component;
@@ -869,8 +841,7 @@
                     let balanceAmount = oldAmount - newAmount; // Calculate the remaining balance
 
                     // Add new row with the balance amount
-                    let newRow = { ...e.oldData, CostAllocationUnit: "Common Overheads", VoucherAmount: balanceAmount };
-
+                    let newRow = { ...e.oldData, CostAllocationUnit: "Common Overheads",CostAllocationUnitId:"ADMIN-0001", VoucherAmount: balanceAmount,CostAllocationId: 0,Remarks:null,EffectiveDate:new Date()   };
                     // Add the new row to the grid
                     dataSource.push(newRow);
                     $("#costdataGrid").dxDataGrid("instance").option("dataSource", dataSource);

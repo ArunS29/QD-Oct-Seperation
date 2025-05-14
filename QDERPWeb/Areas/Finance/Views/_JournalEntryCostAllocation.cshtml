@@ -176,7 +176,7 @@
                     .DataSource(new object[] { })
                     .Columns(columns =>
                     {
-                        columns.AddFor(m => m.CostAllocationId).Caption("CostAllocation Id").DataField("CostAllocationId").Width(100).Visible(true).AllowEditing(false);
+                        columns.AddFor(m => m.CostAllocationId).Caption("CostAllocation Id").DataField("CostAllocationId").Width(100).Visible(false).AllowEditing(false);
                         columns.AddFor(m => m.CostAllocDrCr).Caption("Dr/Cr").DataField("DrCr").Width(100).AllowEditing(false);
                         columns.AddFor(m => m.CostAllocationUnitId)
                     .DataField("CostAllocationUnit")
@@ -839,7 +839,7 @@
                     let balanceAmount = oldAmount - newAmount; // Calculate the remaining balance
 
                     // Add new row with the balance amount
-                    let newRow = { ...e.oldData, CostAllocationUnit: "Common Overheads", VoucherAmount: balanceAmount,CostAllocationId: 0,Remarks:null,EffectiveDate:new Date()   };
+                    let newRow = { ...e.oldData, CostAllocationUnit: "Common Overheads", CostAllocationUnitId: "ADMIN-0001", VoucherAmount: balanceAmount, CostAllocationId: 0, Remarks: null, EffectiveDate: new Date() };
 
                     // Add the new row to the grid
                     dataSource.push(newRow);

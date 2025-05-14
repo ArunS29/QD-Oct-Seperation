@@ -127,7 +127,7 @@
         .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
         )
     @(Html.DevExtreme().Button()
-        .ID("btnBack")
+        .ID("btnjournalBack")
         .Text(new JS("formatMessage('Back')"))
         .Icon("arrowleft")
         .OnClick("onBackButtonClick")
@@ -137,7 +137,7 @@
         .ID("btnVerify")
         .Text(new JS("formatMessage('Verify')"))
         .Icon("check")
-        .OnClick("onVerifyButtonClick")
+        
         .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
 
         )
@@ -145,7 +145,7 @@
         .ID("btnApprove")
         .Text(new JS("formatMessage('Approve')"))
         .Icon("exportselected")
-        .OnClick("onApproveButtonClick")
+        
         .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
 
         )

@@ -243,14 +243,56 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetUserAccessWebs(DataSourceLoadOptions loadOptions, int userId)
+        public async Task<IActionResult> GetUserAccessWebs(DataSourceLoadOptions loadOptions, int userId, string selectedText)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 try
                 {
-                    // Filter the data based on the userId
-                    var accessData = dbContext.TblUserAccessWebs.Where(x => x.UserId == userId);
+                    IQueryable<TblUserAccessWeb> accessData;
+
+                    if (selectedText == "Master Module")
+                    {
+                        // Filter the data for "Master"
+                        accessData = dbContext.TblUserAccessWebs
+                                              .Where(x => x.UserId == userId && x.ItemForm == "ERP Module Access");
+                    }
+                    else
+                    {
+                        // Filter the data for other selectedText values
+                        accessData = dbContext.TblUserAccessWebs
+                                              .Where(x => x.UserId == userId && x.Module == selectedText && x.ItemForm != "ERP Module Access");
+                    }
+
+                    return Json(await DataSourceLoader.LoadAsync(accessData, loadOptions));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetModuleaccessweb: {ex.Message}");
+                    return StatusCode(500, new
+                    {
+                        success = false,
+                        message = "An error occurred while fetching the user access records.",
+                        error = ex.Message
+                    });
+                }
+
+              
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetModuleaccessweb(DataSourceLoadOptions loadOptions, int userId, string selectedText)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    // Filter the data based on the userId and selectedText
+                    var accessData = dbContext.TblUserAccessWebs
+                                              .Where(x => x.UserId == userId  && x.ItemForm == "ERP Module Access");
                     return Json(await DataSourceLoader.LoadAsync(accessData, loadOptions));
                 }
                 catch (Exception ex)
@@ -267,6 +309,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
 
 
         //[HttpPost]
@@ -502,7 +545,21 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 try
                 {
+                    string userIdStr = HttpContext.Session.GetString("UserId");
+                    byte currentUserId = Convert.ToByte(userIdStr);
+
+                    var currentUser = await dbContext.TblUserMasters
+                        .Where(u => u.UserId == currentUserId)
+                        .Select(u => new { u.UserId, u.UserLevel })
+                        .FirstOrDefaultAsync();
+
+                    if (currentUser == null)
+                    {
+                        return Unauthorized(new { message = "User not found.", success = false });
+                    }
+
                     var usersQuery = dbContext.TblUserMasters
+                        .Where(u => currentUser.UserLevel == 99 || u.UserId == currentUser.UserId)
                         .Select(u => new
                         {
                             u.UserId,
@@ -1083,6 +1140,69 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
 
             return Unauthorized(new { success = false, message = "Invalid tenant context." });
+        }
+
+
+        // Set Alert Notification for Company Documents
+        [HttpPost("SetCompanyDocAlert")]
+        public IActionResult SetCompanyDocAlert([FromBody] DocumentAlertRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request.UserId))
+                return BadRequest(new { success = false, message = "User ID is required" });
+
+            SetNotificationSetting(request.UserId, "CO-DOC-001", "Notification of Our Company Documents Expiry", GetNewNotificationSlNo());
+            return Ok(new { success = true });
+        }
+
+        // Set Alert Notification for HR Documents
+        [HttpPost("SetHRDocAlert")]
+        public IActionResult SetHRDocAlert([FromBody] DocumentAlertRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request.UserId))
+                return BadRequest(new { success = false, message = "User ID is required" });
+
+            SetNotificationSetting(request.UserId, "HR-DOC-001", "Notification of Our HR Documents Expiry", GetNewNotificationSlNo());
+            return Ok(new { success = true });
+        }
+
+        // Set Alert Notification for Equipment Documents
+        [HttpPost("SetEquipmentDocAlert")]
+        public IActionResult SetEquipmentDocAlert([FromBody] DocumentAlertRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request.UserId))
+                return BadRequest(new { success = false, message = "User ID is required" });
+
+            SetNotificationSetting(request.UserId, "EQP-DOC-001", "Notification of Our Equipment Documents Expiry", GetNewNotificationSlNo());
+            return Ok(new { success = true });
+        }
+
+        private void SetNotificationSetting(string userId, string docCode, string message, string slNo)
+        {
+            // Save notification settings logic here
+            // Example: Save to database or perform other logic
+        }
+
+        private string GetNewNotificationSlNo()
+        {
+            return Guid.NewGuid().ToString();
+        }
+
+
+        //userid K
+        [HttpGet]
+        public IActionResult GetNextUserId()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var maxUserId = dbContext.TblUserMasters.Max(u => (int?)u.UserId) ?? 0;
+                var nextUserId = maxUserId + 1;
+                return Ok(new { success = true, nextUserId });
+            }
+            return Unauthorized(new { success = false, message = "Invalid tenant." });
+        }
+        public class DocumentAlertRequest
+        {
+            public string UserId { get; set; }
         }
 
         public class UserAccessReplicationRequest

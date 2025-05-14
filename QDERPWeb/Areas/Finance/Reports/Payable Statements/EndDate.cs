@@ -29,7 +29,6 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
             InitializeComponent();
             SetReportParameters(accountId, frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressArb);
             ConfigureDataSource(accountId);
-            CheckForEmptyData();
         }
 
         public EndDate()
@@ -47,7 +46,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
 
             var query = new CustomSqlQuery
             {
-                Name = "qry205_017AgeingBillsPayableWtColumns ", // Change this to match your actual SQL query or view name
+                Name = "qry205_017AgeingBillsPayableWtColumns", // Change this to match your actual SQL query or view name
                 Sql = "SELECT * FROM qry205_017AgeingBillsPayableWtColumns  WHERE AccountHeadNo = @AccountID"
             };
 
@@ -126,26 +125,6 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
                 logoPictureBox.Image = logoImage;
         }
 
-        private void CheckForEmptyData()
-        {
-            if (sqlDataSource1?.Result != null && !string.IsNullOrEmpty(DataMember))
-            {
-                var resultTable = sqlDataSource1.Result[DataMember] as System.Data.DataTable;
-                if (resultTable == null || resultTable.Rows.Count == 0)
-                {
-                    XRLabel noDataLabel = new XRLabel()
-                    {
-                        Text = "No records found to display.",
-                        BoundsF = new RectangleF(0, 0, 850, 50),
-                        TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter,
-                        Font = new Font("Arial", 14, FontStyle.Bold),
-                        ForeColor = Color.Red
-                    };
-
-                    this.Bands[BandKind.Detail].Controls.Clear();
-                    this.Bands[BandKind.Detail].Controls.Add(noDataLabel);
-                }
-            }
-        }
+     
     }
 }

@@ -5,6 +5,7 @@ using System.Drawing;
 using DevExpress.XtraReports.UI;
 using DevExpress.XtraPrinting.Drawing;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.DAL.Entities;
 
 namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
 {
@@ -108,6 +109,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
 
                     using (SqlConnection conn = new SqlConnection(connectionString))
                     {
+                       
                         string query = "SELECT * FROM qry201_602VATInvoiceReport WHERE InvoiceNo = @InvoiceNo";
 
                         using (SqlCommand cmd = new SqlCommand(query, conn))
