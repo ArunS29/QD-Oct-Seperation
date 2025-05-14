@@ -1,10 +1,8 @@
-﻿using System;
+﻿using DevExpress.XtraPrinting.Drawing;
+using DevExpress.XtraReports.UI;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
-using DevExpress.XtraReports.UI;
-using DevExpress.XtraPrinting.Drawing;
-using QD.ERP.Web.Service;
 
 namespace QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices
 {

@@ -46,7 +46,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
 
             var query = new CustomSqlQuery
             {
-                Name = "qry205_017AgeingBillsPayableWtColumns ", // Change this to match your actual SQL query or view name
+                Name = "qry205_017AgeingBillsPayableWtColumns", // Change this to match your actual SQL query or view name
                 Sql = "SELECT * FROM qry205_017AgeingBillsPayableWtColumns  WHERE AccountHeadNo = @AccountID"
             };
 

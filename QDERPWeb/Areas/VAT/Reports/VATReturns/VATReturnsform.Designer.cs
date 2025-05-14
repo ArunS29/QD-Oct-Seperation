@@ -190,6 +190,8 @@
             this.xrLabel11 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel10 = new DevExpress.XtraReports.UI.XRLabel();
             this.BottomMargin = new DevExpress.XtraReports.UI.BottomMarginBand();
+            this.xrLabel145 = new DevExpress.XtraReports.UI.XRLabel();
+            this.xrLabel146 = new DevExpress.XtraReports.UI.XRLabel();
             this.pageInfo2 = new DevExpress.XtraReports.UI.XRPageInfo();
             this.Detail = new DevExpress.XtraReports.UI.DetailBand();
             this.sqlDataSource1 = new DevExpress.DataAccess.Sql.SqlDataSource(this.components);
@@ -198,8 +200,6 @@
             this.DetailData1 = new DevExpress.XtraReports.UI.XRControlStyle();
             this.DetailData3_Odd = new DevExpress.XtraReports.UI.XRControlStyle();
             this.PageInfo = new DevExpress.XtraReports.UI.XRControlStyle();
-            this.xrLabel146 = new DevExpress.XtraReports.UI.XRLabel();
-            this.xrLabel145 = new DevExpress.XtraReports.UI.XRLabel();
             ((System.ComponentModel.ISupportInitialize)(this.xrTable1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             // 
@@ -634,7 +634,7 @@
             this.xrLabel128.Multiline = true;
             this.xrLabel128.Name = "xrLabel128";
             this.xrLabel128.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel128.SizeF = new System.Drawing.SizeF(326.2059F, 22.99969F);
+            this.xrLabel128.SizeF = new System.Drawing.SizeF(326.2059F, 24.91656F);
             this.xrLabel128.StylePriority.UseBackColor = false;
             this.xrLabel128.StylePriority.UseBorders = false;
             this.xrLabel128.StylePriority.UseTextAlignment = false;
@@ -2927,6 +2927,36 @@
             this.BottomMargin.HeightF = 22.81211F;
             this.BottomMargin.Name = "BottomMargin";
             // 
+            // xrLabel145
+            // 
+            this.xrLabel145.BorderColor = System.Drawing.Color.Transparent;
+            this.xrLabel145.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", " [Parameters.UserName]")});
+            this.xrLabel145.Font = new DevExpress.Drawing.DXFont("Arial", 8F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel145.ForeColor = System.Drawing.Color.DarkGray;
+            this.xrLabel145.LocationFloat = new DevExpress.Utils.PointFloat(704.2427F, 2.000005F);
+            this.xrLabel145.Name = "xrLabel145";
+            this.xrLabel145.SizeF = new System.Drawing.SizeF(342.8535F, 20.66685F);
+            this.xrLabel145.StylePriority.UseBorderColor = false;
+            this.xrLabel145.StylePriority.UseFont = false;
+            this.xrLabel145.StylePriority.UseForeColor = false;
+            this.xrLabel145.StylePriority.UseTextAlignment = false;
+            this.xrLabel145.Text = "Reported By : [Parameters.UserName]";
+            this.xrLabel145.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
+            // 
+            // xrLabel146
+            // 
+            this.xrLabel146.BorderColor = System.Drawing.Color.Transparent;
+            this.xrLabel146.Font = new DevExpress.Drawing.DXFont("Arial", 8F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel146.ForeColor = System.Drawing.Color.DarkGray;
+            this.xrLabel146.LocationFloat = new DevExpress.Utils.PointFloat(0F, 4.515822F);
+            this.xrLabel146.Name = "xrLabel146";
+            this.xrLabel146.SizeF = new System.Drawing.SizeF(270.3535F, 18.29628F);
+            this.xrLabel146.StylePriority.UseBorderColor = false;
+            this.xrLabel146.StylePriority.UseFont = false;
+            this.xrLabel146.StylePriority.UseForeColor = false;
+            this.xrLabel146.Text = "Quickdice ERP Solutions";
+            // 
             // pageInfo2
             // 
             this.pageInfo2.LocationFloat = new DevExpress.Utils.PointFloat(450.0003F, 2.000005F);
@@ -3012,36 +3042,6 @@
             this.PageInfo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.PageInfo.Name = "PageInfo";
             this.PageInfo.Padding = new DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100F);
-            // 
-            // xrLabel146
-            // 
-            this.xrLabel146.BorderColor = System.Drawing.Color.Transparent;
-            this.xrLabel146.Font = new DevExpress.Drawing.DXFont("Arial", 8F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel146.ForeColor = System.Drawing.Color.DarkGray;
-            this.xrLabel146.LocationFloat = new DevExpress.Utils.PointFloat(0F, 4.515822F);
-            this.xrLabel146.Name = "xrLabel146";
-            this.xrLabel146.SizeF = new System.Drawing.SizeF(270.3535F, 18.29628F);
-            this.xrLabel146.StylePriority.UseBorderColor = false;
-            this.xrLabel146.StylePriority.UseFont = false;
-            this.xrLabel146.StylePriority.UseForeColor = false;
-            this.xrLabel146.Text = "Quickdice ERP Solutions";
-            // 
-            // xrLabel145
-            // 
-            this.xrLabel145.BorderColor = System.Drawing.Color.Transparent;
-            this.xrLabel145.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", " [Parameters.UserName]")});
-            this.xrLabel145.Font = new DevExpress.Drawing.DXFont("Arial", 8F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel145.ForeColor = System.Drawing.Color.DarkGray;
-            this.xrLabel145.LocationFloat = new DevExpress.Utils.PointFloat(704.2427F, 2.000005F);
-            this.xrLabel145.Name = "xrLabel145";
-            this.xrLabel145.SizeF = new System.Drawing.SizeF(342.8535F, 20.66685F);
-            this.xrLabel145.StylePriority.UseBorderColor = false;
-            this.xrLabel145.StylePriority.UseFont = false;
-            this.xrLabel145.StylePriority.UseForeColor = false;
-            this.xrLabel145.StylePriority.UseTextAlignment = false;
-            this.xrLabel145.Text = "Reported By : [Parameters.UserName]";
-            this.xrLabel145.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             // 
             // VATReturnsform
             // 

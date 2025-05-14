@@ -2115,7 +2115,7 @@
 
             switch (itemText) {
                 case "Preview Credit Note":
-                    reportName = "LocalCurrency"; // Replace with actual report key
+                        reportName = "PreviewCreditNote"; // Replace with actual report key
                     break;
                 case "Preview Credit Note(Foreign Currency)":
                     reportName = "CreditForeignCurrency";
@@ -2202,6 +2202,89 @@
             return false;
         }
     }
+
+        function onPrintButtonClick(e) {
+        const itemText = e.itemData?.text;
+
+        if (itemText === "Preview DebitNote Invoice") {
+            handleDebitNotePrinting(itemText); // Or call handleReportPrinting with a suitable key
+        } else {
+            console.warn("Unknown print option selected.");
+        }
+    }
+
+    // Example handler function for debit note
+    // function handleDebitNotePrinting(itemText) {
+    //         const DebitNoBox = $("#DebitNoteNo").dxTextBox("instance");
+    //         const debitNoteNo = DebitNoBox.option("value");
+
+    //         if (!debitNoteNo) {
+    //             alert("debitNoteNo is required.");
+    //         return;
+    //     }
+
+    //     Assume all debit notes are not approved or apply same logic as other reports
+    //     window.open(
+    //             `/${tenantName}/VoucherViewer?reportName=DebitNoteInvoice&invoiceNo=${encodeURIComponent(debitNoteNo)}&skipPreview=true&watermark=Draft Copy&isApproved=false`,
+    //         '_blank',
+    //         'width=1200,height=800,scrollbars=yes,resizable=yes'
+    //     );
+    // }
+        // <script>
+        // Handles all report printing logic
+    function handleReportPrinting2(e) {
+        const debitNoteBox = $("#DebitNoteNo").dxTextBox("instance");
+        const debitNoteNo = debitNoteBox.option("value");
+
+        if (!debitNoteNo) {
+            alert("Debit Note No is required.");
+            return;
+        }
+
+        const itemText = e.itemData?.text;
+
+        if (itemText !== "Preview DebitNote Invoice") {
+            alert("Invalid report format selected.");
+            return;
+        }
+
+        GetDebitNoteApprovalStatus(debitNoteNo).then(function (status) {
+            const reportName = "DebitNoteView";
+
+            // Show "Draft Copy" watermark for any status other than "Approved"
+            const watermarkText = (status === "Approved") ? "" : "Draft Copy";
+
+            window.open(
+                `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&debitNoteNo=${encodeURIComponent(debitNoteNo)}&skipPreview=true&watermark=${encodeURIComponent(watermarkText)}&isApproved=${status === "Approved"}`,
+                '_blank',
+                'width=1200,height=800,scrollbars=yes,resizable=yes'
+            );
+        }).catch(function (error) {
+            console.error("Error checking invoice approval status:", error);
+            alert("Failed to check invoice approval status.");
+        });
+    }
+
+                    async function GetDebitNoteApprovalStatus(debitNoteNo) {
+            try {
+                const response = await $.ajax({
+                        url: `/api/VATModule/GetDebitNoteApprovalStatus/${encodeURIComponent(debitNoteNo)}`,
+                    method: 'GET',
+                    dataType: 'json',
+                });
+
+                if (response && response.status) {
+                    console.log("Invoice Status:", response.status);
+                    return response.status; "Saved", "Updated", "Verified", "Approved"
+                } else {
+                    console.log("Invalid response from server.");
+                    return "Saved"; fallback
+                }
+            } catch (error) {
+                console.log("Error fetching approval status:", error);
+                return "Saved";
+            }
+        }
 
 
 
