@@ -1772,7 +1772,7 @@
             this.xrLabel12,
             this.xrLabel11,
             this.xrLabel10});
-            this.ReportHeader.HeightF = 135F;
+            this.ReportHeader.HeightF = 122.5F;
             this.ReportHeader.Name = "ReportHeader";
             // 
             // xrPictureBox2
@@ -1792,7 +1792,8 @@
             this.xrLabel13.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
             this.xrLabel13.SizeF = new System.Drawing.SizeF(1450F, 22.99999F);
             this.xrLabel13.StylePriority.UseTextAlignment = false;
-            this.xrLabel13.Text = " from [Parameters.StartDate!dd MMM yyyy] to [Parameters.EndDate!dd MMM yyyy]";
+            this.xrLabel13.Text = " for the period starting [Parameters.StartDate!dd MMM yyyy] to [Parameters.EndDat" +
+    "e!dd MMM yyyy]";
             this.xrLabel13.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
             // 
             // xrLine1
@@ -1828,7 +1829,7 @@
             this.xrLabel11.Multiline = true;
             this.xrLabel11.Name = "xrLabel11";
             this.xrLabel11.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel11.SizeF = new System.Drawing.SizeF(1450F, 23F);
+            this.xrLabel11.SizeF = new System.Drawing.SizeF(1450F, 27.66667F);
             this.xrLabel11.StylePriority.UseFont = false;
             this.xrLabel11.StylePriority.UseTextAlignment = false;
             this.xrLabel11.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;

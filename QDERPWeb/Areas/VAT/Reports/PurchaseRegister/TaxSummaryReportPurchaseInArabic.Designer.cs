@@ -1834,7 +1834,7 @@
             this.xrLabel47.SizeF = new System.Drawing.SizeF(1400F, 22.99999F);
             this.xrLabel47.StylePriority.UseFont = false;
             this.xrLabel47.StylePriority.UseTextAlignment = false;
-            this.xrLabel47.Text = " from [Parameters.StartDate!dd MMM yyyy] to [Parameters.EndDate!dd MMM yyyy]";
+            this.xrLabel47.Text = " من [Parameters.StartDate!dd MMM yyyy]  إلى [Parameters.EndDate!dd MMM yyyy]";
             this.xrLabel47.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
             // 
             // xrLine1

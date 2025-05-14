@@ -913,7 +913,8 @@
             this.xrLabel69.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
             this.xrLabel69.SizeF = new System.Drawing.SizeF(1584.487F, 23.00003F);
             this.xrLabel69.StylePriority.UseTextAlignment = false;
-            this.xrLabel69.Text = " from [Parameters.StartDate!dd MMM yyyy] to [Parameters.EndDate!dd MMM yyyy]";
+            this.xrLabel69.Text = "For the period Starting  from [Parameters.StartDate!dd MMM yyyy] to [Parameters.E" +
+    "ndDate!dd MMM yyyy]";
             this.xrLabel69.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
             // 
             // xrLine1
@@ -943,7 +944,7 @@
             this.xrLabel68.StylePriority.UseFont = false;
             this.xrLabel68.StylePriority.UseForeColor = false;
             this.xrLabel68.StylePriority.UseTextAlignment = false;
-            this.xrLabel68.Text = "V A T  P U R C H A S E  S U M M A R Y  R E P O R T";
+            this.xrLabel68.Text = "V A T   P U R C H A S E   S U M M A R Y   R E P O R T";
             this.xrLabel68.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
             // 
             // xrLabel67
@@ -1000,7 +1001,7 @@
             this.xrLabel3,
             this.xrLabel2,
             this.xrLabel1});
-            this.PageHeader.HeightF = 70.51376F;
+            this.PageHeader.HeightF = 56.14394F;
             this.PageHeader.Name = "PageHeader";
             // 
             // xrLabel10
@@ -1763,7 +1764,6 @@
             // 
             this.GroupHeader1.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
             this.xrLabel71});
-            this.GroupHeader1.Expanded = false;
             this.GroupHeader1.HeightF = 24.13024F;
             this.GroupHeader1.Name = "GroupHeader1";
             this.GroupHeader1.StylePriority.UseTextAlignment = false;
