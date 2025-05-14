@@ -439,6 +439,36 @@ namespace QD.ERP.Web.Areas.Finance.Models
 
         public List<Tbl20127JournalRegisterChild> JournalDetails { get; set; }
     }
+	public class PurchaseRequestViewModel
+	{
+		public string Mprno { get; set; }
+		public DateTime? Mprdate { get; set; }
+		public string ClientCode { get; set; }
+		public string RequestedBy { get; set; }
+		public string RequesterContactEmail { get; set; }
+		public string RequesterContact { get; set; }
+		public byte? ModeOfRequest { get; set; }
+		public byte? TypeOfRequest { get; set; }
+		public string SalesPersonCode { get; set; }
+		public string ClientRefNo { get; set; }
+		public string PurposeOfRequest { get; set; }
+		public string Priority { get; set; }
+		public string CostCenterText { get; set; }
+		public DateTime? ExpectedDate { get; set; }
+		public byte? ExpectedVatrate { get; set; }
+		public string Remarks { get; set; }
+		public byte? CompanyBranch { get; set; }
+		public short? PurchaseRequestStatusId { get; set; }
+		public short? InventoryMasterGroupId { get; set; }
+		public string ProjectMasterCode { get; set; }
+		public DateTime? BidClosingDate { get; set; }
+		public DateTime? BidReminderOn { get; set; }
+		public string ClientProject { get; set; }
+
+		public List<Tbl60602purchaseRequestChild> PurchaseRequestDetails { get; set; }
+		
+	}
+
 
 }
 
