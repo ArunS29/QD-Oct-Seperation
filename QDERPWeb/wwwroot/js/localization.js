@@ -1,5 +1,9 @@
 ﻿var dictionary = {
     "en": {
+        "Submit":"Submit",
+        "MprchildSlNo": "MprchildSlNo",
+        "Expected Price": "Expected Price",
+        " Line Total":" Line Total",
         "Signatory Id": "Signatory Id",
         "Signatory Name": "Signatory Name",
         "txtRequestNo":"txtRequestNo",
