@@ -3407,16 +3407,19 @@ public partial class ERPMasterWtDataContext : DbContext
 
     public virtual DbSet<JournalRegisterView> JournalRegisterViews { get; set; }
     public virtual DbSet<VoucherViewModel> VoucherViewModels { get; set; }
-// public virtual DbSet<ClientCategoryDisplayDTO> ClientCategoryDisplayDTOs { get; set; }
+    //public virtual DbSet<ClientCategoryDisplayDTO> ClientCategoryDisplayDTOs { get; set; }
     public virtual DbSet<RegisterVoucherViewModel> RegisterVoucherViewModels { get; set; }
     public virtual DbSet<DashBoardBankAccount> DashBoardBankAccounts { get; set; }
+    public virtual DbSet<PurchaseRequestViewModel> PurchaseRequestViewModels { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+
+
+	protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+     
         // modelBuilder.Entity<VoucherViewModel>().HasNoKey();
-      //  modelBuilder.Entity<ClientCategoryDisplayDTO>.HasNoKey();
-        modelBuilder.Entity<RegisterVoucherViewModel>().HasNoKey();
-        modelBuilder.UseCollation("SQL_Latin1_General_CP1_CI_AS");
+   
+       
         modelBuilder.Entity<RegisterVoucherViewModel>().HasNoKey();
         modelBuilder.Entity<VoucherResult>().HasNoKey(); // Mark as keyless
         modelBuilder.Entity<AccountMasterResult>().HasNoKey(); // Mark as keyless
@@ -3430,8 +3433,9 @@ public partial class ERPMasterWtDataContext : DbContext
         modelBuilder.Entity<ExpenseClaimViews>().HasNoKey();
         modelBuilder.Entity<DashBoardBankAccount>().HasNoKey();// Mark as keyless
         modelBuilder.Entity<VATFinalReturnsSummary>().HasNoKey();// Mark as keyless
+        modelBuilder.Entity<PurchaseRequestViewModel>().HasNoKey(); // ✅ If you're querying with it
 
-
+        //modelBuilder.Entity<ClientCategoryDisplayDTO>.HasNoKey();
         modelBuilder.Entity<A01CheckIfAnyCostEntriesOrphan>(entity =>
         {
             entity

@@ -88,13 +88,14 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 try
                 {
-                    var currencyList = dbContext.CurrencyMasters.Select(c => new
+                    var currencyList = dbContext.Tbl20169CurrencyExchanges.Select(c => new
                     {
-                        c.CurrencyID,
+                        c.CurrencyExchangeId,
                         c.CurrencyName,
-                        c.CurrencySymbol,
-                        c.CurrencyUnicode,
-                        c.IsDefault
+                        c.CurrencyCode,
+                        c.ExchangeRate,
+                        c.CurrencyMasterCode,
+                        c.CurrencyPoints,
                     });
 
                     return Json(await DataSourceLoader.LoadAsync(currencyList, loadOptions));

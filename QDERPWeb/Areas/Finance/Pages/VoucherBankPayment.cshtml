@@ -311,7 +311,7 @@
             .Controller("Utility") // Use same controller or change if needed
             .LoadAction("GetCurrencyList")
             .LoadMode(DataSourceLoadMode.Raw)
-            .Key("CurrencyID")
+            .Key("CurrencyExchangeId")
         )
         .ValidationRules(rules =>
         {
@@ -324,7 +324,7 @@
         .AcceptCustomValue(false)
         .OpenOnFieldClick(true)
         .Value(1) // Change default value if needed
-        .ValueExpr("CurrencyID")
+        .ValueExpr("CurrencyExchangeId")
         .DisplayExpr("CurrencyName")
         .OnInput("dropDownBoxOnInput") // Reuse or define separate handler if needed
         .OnOpened("onOpened")
@@ -345,7 +345,7 @@
             .Controller("Utility")
             .LoadAction("GetCurrencyList")
             .LoadMode(DataSourceLoadMode.Raw)
-            .Key("CurrencyID")
+            .Key("CurrencyExchangeId")
         )
         .WordWrapEnabled(true)
         .ShowBorders(true)
@@ -353,15 +353,16 @@
         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
         .SearchPanel(sp => sp.HighlightSearchText(true).Visible(true))
         .OnSelectionChanged("onBaseCurrencySelectionChanged") // Define this JS function
-        .Paging(p => p.PageSize(10))
         .Height(300)
         .Columns(columns =>
         {
-                        columns.Add().DataField("CurrencyID").Caption(new JS("formatMessage('ID')")).Visible(false);
+                        columns.Add().DataField("CurrencyExchangeId").Caption(new JS("formatMessage('ID')")).Visible(true);
                         columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency Name')"));
-                        columns.Add().DataField("CurrencySymbol").Caption(new JS("formatMessage('Symbol')"));
-                        columns.Add().DataField("CurrencyUnicode").Caption(new JS("formatMessage('Unicode')"));
-                        columns.Add().DataField("IsDefault").Caption(new JS("formatMessage('Default')")).DataType(GridColumnDataType.Boolean);
+                        columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Symbol')"));
+                        columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('Unicode')"));
+                        columns.Add().DataField("CurrencyMasterCode").Caption(new JS("formatMessage('Default')")).DataType(GridColumnDataType.Boolean);
+                        columns.Add().DataField("CurrencyPoints").Caption(new JS("formatMessage('Default')")).DataType(GridColumnDataType.Boolean);
+
         })
     )
 }
@@ -373,7 +374,7 @@
                     .Controller("Utility") // Adjust if needed
                     .LoadAction("GetCurrencyList")
                     .LoadMode(DataSourceLoadMode.Raw)
-                    .Key("CurrencyID")
+                    .Key("CurrencyExchangeId")
                     )
                     .ValidationRules(rules =>
                     {
@@ -386,7 +387,7 @@
                     .AcceptCustomValue(false)
                     .OpenOnFieldClick(true)
                     .Value(1)
-                    .ValueExpr("CurrencyID")
+                    .ValueExpr("CurrencyExchangeId")
                     .DisplayExpr("CurrencyName")
                     .OnInput("dropDownBoxOnInput")
                     .OnOpened("onOpened")
@@ -416,7 +417,7 @@
                     .Controller("Utility")
                     .LoadAction("GetCurrencyList")
                     .LoadMode(DataSourceLoadMode.Raw)
-                    .Key("CurrencyID")
+                    .Key("CurrencyExchangeId")
                     )
                     .WordWrapEnabled(true)
                     .ShowBorders(true)
@@ -428,11 +429,13 @@
                     .Height(300)
                     .Columns(columns =>
                     {
-                        columns.Add().DataField("CurrencyID").Caption(new JS("formatMessage('ID')")).Visible(false);
+                        columns.Add().DataField("CurrencyExchangeId").Caption(new JS("formatMessage('ID')")).Visible(true);
                         columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency Name')"));
-                        columns.Add().DataField("CurrencySymbol").Caption(new JS("formatMessage('Symbol')"));
-                        columns.Add().DataField("CurrencyUnicode").Caption(new JS("formatMessage('Unicode')"));
-                        columns.Add().DataField("IsDefault").Caption(new JS("formatMessage('Default')")).DataType(GridColumnDataType.Boolean);
+                        columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Symbol')"));
+                        columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('Unicode')"));
+                        columns.Add().DataField("CurrencyMasterCode").Caption(new JS("formatMessage('Default')")).DataType(GridColumnDataType.Boolean);
+                        columns.Add().DataField("CurrencyPoints").Caption(new JS("formatMessage('Default')")).DataType(GridColumnDataType.Boolean);
+
                     })
                     )
             }
@@ -1284,7 +1287,7 @@
                         "VoucherEffectiveDate": $("#VoucherEffectiveDate").dxDateBox("instance").option("value"),
 
                     "basecurrencyid": $("#ddlBaseCurrency").dxDropDownBox("instance").option("value"),
-                "currencyid": $("#ddCurrency").dxDropDownBox("instance").option("value"),
+                    "Currencyid": $("#ddCurrency").dxDropDownBox("instance").option("value"),
                 "currencyrate": $("#txtCurrencyRate").dxTextBox("instance").option("value"),
 
                         // "PaymentAccount": $("#accountDropDownBox").dxSelectBox("instance").option("value"),
@@ -4001,7 +4004,7 @@ function fetchUpdatedData(voucherEntryNo) {
             }
 
             const selectedRow = e.selectedRowsData[0];
-            console.log("Selected Currency:", selectedRow.CurrencyName);
+                console.log("Selected Currency:", selectedRow.CurrencyExchangeId);
         } else {
             DevExpress.ui.notify("Please select a currency", "warning", 2000);
         }
