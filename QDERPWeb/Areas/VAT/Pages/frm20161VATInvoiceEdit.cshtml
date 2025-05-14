@@ -2591,13 +2591,24 @@
 												.FilterRow(f => f.Visible(true))
 												.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 												.Height(345)
+												.Disabled(false)
 												.Selection(s => s.Mode(SelectionMode.Single))
 												.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 												.Columns(columns =>
 												{
 													columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Code')")).Alignment(HorizontalAlignment.Center);
 													columns.Add().DataField("IncomeLedger").Caption(new JS("formatMessage('Revenue Ledger')")).Alignment(HorizontalAlignment.Center);
-														columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('Is Ledger Obselete')")).Alignment(HorizontalAlignment.Center);
+													columns.Add()
+	.DataField("IsLedgerObselete")
+	.Caption(new JS("formatMessage('Is Ledger Obselete')"))
+	.Alignment(HorizontalAlignment.Center)
+	.EditCellTemplate(@<text>
+	@(Html.DevExtreme().CheckBox()
+	.Value(new JS("data.IsLedgerObselete"))
+	.OnValueChanged("function(e) { data.IsLedgerObselete = e.value; }")
+	)
+</text>);
+
 
 
 												})
@@ -2635,8 +2646,8 @@
 									.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 									.Columns(columns =>
 									{
-										columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('Cost Center Code')")).Alignment(HorizontalAlignment.Center);
-									    columns.Add().DataField("CostAllocationUnit").Caption(new JS("formatMessage('Cost Center')")).Alignment(HorizontalAlignment.Center);
+										columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('Cost Center Code')")).Alignment(HorizontalAlignment.Left);
+									    columns.Add().DataField("CostAllocationUnit").Caption(new JS("formatMessage('Cost Center')")).Alignment(HorizontalAlignment.Left);
 
 
 									})

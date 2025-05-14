@@ -203,13 +203,14 @@
 
 	.mainContainer {
 		width: 97%;
+		overflow: hidden;
 	}</style>
 
 
 <input id="formId" value="frm201LedgerView" type="hidden" />
 <div class="title">
 	<div class="header-container">
-		<div id="VATInvoiceRegister" class="no-border-input"></div>
+		<div id="CreditNoteRegister" class="no-border-input"></div>
 	</div>
 </div>
 
@@ -657,8 +658,8 @@
 	});
 	let selectedVoucherNo = null;
 	$(function () {
-		$("#VATInvoiceRegister").dxTextBox({
-			text: formatMessage("VAT Invoice Register"),
+		$("#CreditNoteRegister").dxTextBox({
+			text: formatMessage("Credit Note Register"),
 			readOnly: true,
 			onContentReady: function (e) {
 				$(e.element).addClass("dx-textbox-heading");
