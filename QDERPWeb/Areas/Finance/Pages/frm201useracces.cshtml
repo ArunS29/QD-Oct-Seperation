@@ -102,14 +102,41 @@
         .OnCellClick("onUserIdCellClick")
         .Columns(columns =>
         {
+
         columns.Add().DataField("IsDisabled").Caption("Is Disabled").DataType(GridColumnDataType.Boolean).Width(100);
         columns.Add().DataField("UserId").Caption("User ID").CssClass("text-link").Width(100);
         columns.Add().DataField("UserName").Caption("User Name");
+        columns.Add().DataField("UserLevel").Caption("User Level")
+        .Lookup(lookup => lookup
+        .DataSource(new JS("userLevels"))
+        .ValueExpr("UserLevelID")
+        .DisplayExpr("UserLevelDesc")
+        );
+        columns.Add().DataField("EqptQuotationAccess").Caption("Employee Group")
+        .Lookup(lookup => lookup
+        .DataSource(new JS("employeeGroups"))
+        .ValueExpr("EmpGroupID")
+        .DisplayExpr("EmployeeGroup")
+        );
+        columns.Add().DataField("DeptCode").Caption("Department")
+        .Lookup(lookup => lookup
+        .DataSource(new JS("departments"))
+        .ValueExpr("DepartmentCode")
+        .DisplayExpr("Department")
+        );
+        columns.Add().DataField("MobileNo").Caption("UserMobileNo");
+        columns.Add().DataField("EmailAddress").Caption("EmailAddress");
+        columns.Add().DataField("IsDisabled").Caption("Currently Logged In").DataType(GridColumnDataType.Boolean).Width(100);
+        columns.Add().DataField("LogTerminal").Caption("Last Logged In Terminal");
+        columns.Add().DataField("LastLogOnTime").Caption("UserLastLoggedInTime");
+        columns.Add().DataField("LastLogOffTime").Caption("UserLastLoggedOffTime");
+
+
+@* 
         columns.Add().DataField("Password").Caption("Password");
         columns.Add().DataField("DeptCode").Caption("Department");
         columns.Add().DataField("CompanyId").Caption("Company");
         columns.Add().DataField("BranchCode").Caption("BranchCode");
-        columns.Add().DataField("UserLevel").Caption("UserLevel");
         columns.Add().DataField("HrlevelCode").Caption("HrlevelCode");
         columns.Add().DataField("InventoryAccess").Caption("InventoryAccess");
         columns.Add().DataField("PettyCashAccount").Caption("PettyCashAccount");
@@ -119,9 +146,9 @@
         columns.Add().DataField("EmailAddress").Caption("EmailAddress");
         columns.Add().DataField("MobileNo").Caption("UserMobileNo");
         columns.Add().DataField("LastLogOnTime").Caption("UserLastLoggedInTime");
-        columns.Add().DataField("LastLogOffTime").Caption("UserLastLoggedOffTime");
-        // Add more fields as per TblUserMasters
-        })
+        columns.Add().DataField("LastLogOffTime").Caption("UserLastLoggedOffTime"); *@
+        
+    })
         )
 
     </text>);
@@ -457,6 +484,87 @@
                 }
             });
         }
+
+        var userLevels = [];
+        // Fetch user levels for lookup
+        function loadUserLevels() {
+
+            debugger;
+
+            return $.ajax({
+                url: "/api/Utility/GetUserLevels",
+                dataType: "json",
+                method: "GET",
+                data: { skip: 0, take: 1000 }, // adjust as needed
+                success: function (data) {
+                    userLevels = data.data || data;
+                }
+            });
+        }
+
+        var employeeGroups = [];
+
+        // Fetch employee groups for lookup
+        function loadEmployeeGroups() {
+            return $.ajax({
+                url: "/api/Utility/GetEmployeeGroups",
+                dataType: "json",
+                method: "GET",
+                data: { skip: 0, take: 1000 }, // adjust as needed
+                success: function (data) {
+                    employeeGroups = data.data || data;
+                }
+            });
+        }
+          $(document).ready(function () {
+            // Load employee groups first, then set the lookup data source
+            loadEmployeeGroups().then(function () {
+                // Find the EqptQuotationAccess column index (adjust if needed)
+                var grid = $("#DataGrid").dxDataGrid("instance");
+                var columns = grid.option("columns");
+                var eqptColIndex = columns.findIndex(c => c.dataField === "EqptQuotationAccess");
+                if (eqptColIndex >= 0) {
+                    grid.option("columns[" + eqptColIndex + "].lookup.dataSource", employeeGroups);
+                }
+            });
+        });
+
+         var departments = [];
+
+        // Fetch departments for lookup
+        function loadDepartments() {
+            return $.ajax({
+                url: "/api/Utility/GetDepartments",
+                dataType: "json",
+                method: "GET",
+                data: { skip: 0, take: 1000 }, // adjust as needed
+                success: function (data) {
+                    departments = data.data || data;
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            // Load departments first, then set the lookup data source
+            loadDepartments().then(function () {
+                var grid = $("#DataGrid").dxDataGrid("instance");
+                var columns = grid.option("columns");
+                var deptColIndex = columns.findIndex(c => c.dataField === "DeptCode");
+                if (deptColIndex >= 0) {
+                    grid.option("columns[" + deptColIndex + "].lookup.dataSource", departments);
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            // Load user levels first, then initialize the grid
+            loadUserLevels().then(function () {
+                $("#DataGrid").dxDataGrid("instance").option("columns[3].lookup.dataSource", userLevels);
+            });
+        });
+
+
+
 
                         function onUserIdCellClick(e) {
 
