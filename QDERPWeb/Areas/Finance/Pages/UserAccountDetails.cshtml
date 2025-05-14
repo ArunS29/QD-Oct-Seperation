@@ -884,6 +884,12 @@
 
 @section Scripts {
     <script>
+            let UserlevID=null,IsUserlevelflag=false;
+             let CompanyID=null,IsCompanyflag=false;
+             let BranchID=null,IsBranchflag=false;
+             let HrlevelD=null,IsHrlevelflag=false;
+             let InventoryMpraccessID=null,IsInventoryMpraccessflag=false;
+             let PettyCashAccountID=null,IsPettyCashAccountflag=false;
         $(document).ready(function () {
 
             // Hide all tabs and show the first one
@@ -1029,6 +1035,8 @@
     }
 
         function loadUserDetails(userId) {
+
+            debugger;
             $.ajax({
                 url: "/api/Utility/GetUserID",
                 method: "GET",
@@ -1040,6 +1048,23 @@
                     }
 
                     const user = response.data;
+                                     UserlevID=user.UserLevel;
+                                     console.log("UserlevelID",UserlevID)
+
+                                     CompanyID=user.CompanyId;
+                                             console.log("CompanyID",CompanyID)
+
+                                     BranchID=user.BranchCode;
+                                     console.log("BranchCode",BranchID)
+
+                                     HrlevelD=user.HrlevelCode;
+                                         console.log("HrlevelD",HrlevelD)
+
+                                                 InventoryMpraccessID=user.UserLevel;
+                                         console.log("InventoryMpraccessID",InventoryMpraccessID)
+
+                                         PettyCashAccountID=user.PettyCashAccount;
+                                         console.log("PettyCashAccount",PettyCashAccountID)
 
                     $("#UserId").dxTextBox("instance").option("value", user.UserId);
                     $("#UserName").dxTextBox("instance").option("value", user.UserName);
@@ -1088,6 +1113,7 @@
                 ddbInstance.option("value", selectedKey);
                 if (ddbInstance.option("opened")) {
                     ddbInstance.close();
+                      IsUserlevelflag=true;
                 }
 
                 const selectedRowData = e.selectedRowsData[0];
@@ -1109,6 +1135,7 @@
                 //  ddbInstance.repaint(); // Ensure UI refreshes
                 if (ddbInstance.option("opened")) {
                     ddbInstance.close();
+                              IsCompanyflag=true;
                 }
 
                 const selectedRowData = e.selectedRowsData && e.selectedRowsData[0];
@@ -1131,6 +1158,7 @@
                 //  ddbInstance.repaint(); // Ensure UI refreshes
                 if (ddbInstance.option("opened")) {
                     ddbInstance.close();
+                        IsBranchflag=true;
                 }
 
                 const selectedRowData = e.selectedRowsData && e.selectedRowsData[0];
@@ -1168,12 +1196,15 @@
                 //  ddbInstance.repaint(); // Ensure UI refreshes
                 if (ddbInstance.option("opened")) {
                     ddbInstance.close();
+                      IsUserlevelflag=true;
                 }
 
                 const selectedRowData = e.selectedRowsData && e.selectedRowsData[0];
                 if (selectedRowData) {
                     console.log("User Level Selected:", selectedRowData.UserLevelDesc);
                 }
+               
+                    
             }
         }
 
@@ -1301,24 +1332,70 @@
 
 
 
-        function saveUserDetails() {
-
+               function saveUserDetails() {
             debugger;
+             
+             let userLevelValue=null;
+                        if(IsUserlevelflag==false) {
+                                userLevelValue=UserlevID;
+                        }
+                        else{
+                                userLevelValue=$("#ddUserLevel").dxDropDownBox("instance").option("value");
+                        }
+
+                 let companyValue=null;
+                            if(IsCompanyflag==false){
+                                        companyValue=CompanyID;
+                            }
+                            else
+                            {
+                                   companyValue=$("#ddCompany").dxDropDownBox("instance").option("value");
+                            }
+                     let BranchValue=null;
+                         if(IsBranchflag==false){
+                                         BranchValue=BranchID;
+                         }
+                                     else{
+
+                                          BranchValue=$("#ddBranch").dxDropDownBox("instance").option("value");
+                                     }
+
+                                         let HrlevelDValue=null;
+                                             if(IsHrlevelflag==false){
+                                                         HrlevelDValue=HrlevelD;
+                                             }
+                                             else{
+                                                         HrlevelDValue=$("#ddEmployeeGroup").dxDropDownBox("instance").option("value");
+                                             }
+                                                 let InventoryMpraccessIDvalue=null;
+                                                     if(IsInventoryMpraccessflag==false){
+                                                                 InventoryMpraccessIDvalue=InventoryMpraccessID;
+                                                     }
+                                                     else{
+                                                                         InventoryMpraccessIDvalue=$("#ddSalesPerson").dxDropDownBox("instance").option("value");
+                                                     }
+                                                         let PettyCashAccountIDvalue=null;
+                                                             if(IsPettyCashAccountflag==false){
+                                                                         PettyCashAccountIDvalue=PettyCashAccountID;
+                                                             }
+                                                             else{
+                                                                         PettyCashAccountIDvalue=$("#ddFilteredAccountHead").dxDropDownBox("instance").option("value");
+                                                             }
+
             const user = {
                 UserId: $("#UserId").dxTextBox("instance").option("value"),
                 UserName: $("#UserName").dxTextBox("instance").option("value"),
                 Password: $("#Password").dxTextBox("instance").option("value"),
                 DeptCode: $("#ddDepartment").dxDropDownBox("instance").option("value"),
-                CompanyId: $("#ddCompany").dxDropDownBox("instance").option("value"),
-                BranchCode: $("#ddBranch").dxDropDownBox("instance").option("value"),
-                UserLevel: $("#ddUserLevel").dxDropDownBox("instance").option("value"),
-
-                HrlevelCode: $("#ddEmployeeGroup").dxDropDownBox("instance").option("value"),
-                InventoryAccess: $("#ddInventoryMasterGroup ").dxDropDownBox("instance").option("value"),
-                PettyCashAccount: $("#ddFilteredAccountHead ").dxDropDownBox("instance").option("value"),
-                EqptQuotationAccess: $("#ddHRUserLevel ").dxDropDownBox("instance").option("value"),
-                InventoryMpraccess: $("#ddSalesPerson ").dxDropDownBox("instance").option("value"),
-                HrtimeSheetProjectGroup: $("#ddProjectGroup ").dxDropDownBox("instance").option("value"),
+                    CompanyId: companyValue,
+                    BranchCode: BranchValue,
+                UserLevel: userLevelValue,
+                    HrlevelCode: HrlevelDValue,
+                        InventoryAccess: $("#ddInventoryMasterGroup").dxDropDownBox("instance").option("value"),
+                    PettyCashAccount: PettyCashAccountIDvalue,
+                EqptQuotationAccess: $("#ddHRUserLevel").dxDropDownBox("instance").option("value"),
+                    InventoryMpraccess: InventoryMpraccessIDvalue,
+                HrtimeSheetProjectGroup: $("#ddProjectGroup").dxDropDownBox("instance").option("value"),
                 // HRTimesheetGroup: $("#HRTimesheetGroup").dxSelectBox("instance").option("value"),
                 MobileNo: $("#UserMobileNo").dxTextBox("instance").option("value"),
                 EmailAddress: $("#UserEmailAddress").dxTextBox("instance").option("value"),
@@ -1339,6 +1416,7 @@
                 }
             });
         }
+
 
 
         function onCompanydataGridInitialized(e) {

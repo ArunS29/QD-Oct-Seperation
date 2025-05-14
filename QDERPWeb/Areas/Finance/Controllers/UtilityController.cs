@@ -579,7 +579,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             u.PettyCashAccount,
                             u.EqptQuotationAccess,
                             u.InventoryMpraccess,
-                            u.HrtimeSheetProjectGroup
+                            u.HrtimeSheetProjectGroup,
+                            u.LogTerminal
                         });
 
                     var result = await DataSourceLoader.LoadAsync(usersQuery, loadOptions);
