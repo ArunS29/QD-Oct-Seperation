@@ -359,7 +359,7 @@
                 .Controller("Utility") // Use same controller or change if needed
                 .LoadAction("GetCurrencyList")
                 .LoadMode(DataSourceLoadMode.Raw)
-                .Key("CurrencyID")
+                .Key("CurrencyExchangeId")
                 )
                 .ValidationRules(rules =>
                 {
@@ -393,7 +393,7 @@
                 .Controller("Utility")
                 .LoadAction("GetCurrencyList")
                 .LoadMode(DataSourceLoadMode.Raw)
-                .Key("CurrencyID")
+                .Key("CurrencyExchangeId")
                 )
                 .WordWrapEnabled(true)
                 .ShowBorders(true)
@@ -405,11 +405,12 @@
                 .Height(300)
                 .Columns(columns =>
                 {
-                    columns.Add().DataField("CurrencyID").Caption("ID").Visible(false);
-                    columns.Add().DataField("CurrencyName").Caption("Currency Name");
-                    columns.Add().DataField("CurrencySymbol").Caption("Symbol");
-                    columns.Add().DataField("CurrencyUnicode").Caption("Unicode");
-                    columns.Add().DataField("IsDefault").Caption("Default").DataType(GridColumnDataType.Boolean);
+                    columns.Add().DataField("CurrencyExchangeId").Caption(new JS("formatMessage('ID')")).Visible(true);
+                    columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency Name')"));
+                    columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Symbol')"));
+                    columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('Exchange Rate')"));
+                    columns.Add().DataField("CurrencyMasterCode").Caption(new JS("formatMessage('unicode')")).DataType(GridColumnDataType.Boolean);
+                    columns.Add().DataField("CurrencyPoints").Caption(new JS("formatMessage('point')")).DataType(GridColumnDataType.Boolean);
                 })
                 )
         }
@@ -420,7 +421,7 @@
                 .Controller("Utility") // Adjust if needed
                 .LoadAction("GetCurrencyList")
                 .LoadMode(DataSourceLoadMode.Raw)
-                .Key("CurrencyID")
+                .Key("CurrencyExchangeId")
                 )
                 .ValidationRules(rules =>
                 {
@@ -433,7 +434,7 @@
                 .AcceptCustomValue(false)
                 .OpenOnFieldClick(true)
                 .Value(1)
-                .ValueExpr("CurrencyID")
+                .ValueExpr("CurrencyExchangeId")
                 .DisplayExpr("CurrencyName")
                 .OnInput("dropDownBoxOnInput")
                 .OnOpened("onOpened")
@@ -463,7 +464,7 @@
                 .Controller("Utility")
                 .LoadAction("GetCurrencyList")
                 .LoadMode(DataSourceLoadMode.Raw)
-                .Key("CurrencyID")
+                .Key("CurrencyExchangeId")
                 )
                 .WordWrapEnabled(true)
                 .ShowBorders(true)
@@ -475,11 +476,12 @@
                 .Height(300)
                 .Columns(columns =>
                 {
-                    columns.Add().DataField("CurrencyID").Caption(new JS("formatMessage('ID')")).Visible(false);
+                    columns.Add().DataField("CurrencyExchangeId").Caption(new JS("formatMessage('ID')")).Visible(true);
                     columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency Name')"));
-                    columns.Add().DataField("CurrencySymbol").Caption(new JS("formatMessage('Symbol')"));
-                    columns.Add().DataField("CurrencyUnicode").Caption(new JS("formatMessage('Unicode')"));
-                    columns.Add().DataField("IsDefault").Caption(new JS("formatMessage('Default')")).DataType(GridColumnDataType.Boolean);
+                    columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Symbol')"));
+                    columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('Exchange Rate')"));
+                    columns.Add().DataField("CurrencyMasterCode").Caption(new JS("formatMessage('unicode')")).DataType(GridColumnDataType.Boolean);
+                    columns.Add().DataField("CurrencyPoints").Caption(new JS("formatMessage('point')")).DataType(GridColumnDataType.Boolean);
                 })
                 )
         }
