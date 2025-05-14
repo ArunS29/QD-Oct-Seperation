@@ -1,5 +1,6 @@
 ﻿var dictionary = {
     "en": {
+        "Cancel":"Cancel",
         "Submit":"Submit",
         "MprchildSlNo": "MprchildSlNo",
         "Expected Price": "Expected Price",
