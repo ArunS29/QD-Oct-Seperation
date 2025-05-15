@@ -119,41 +119,29 @@
 	pointer-events: none;
 	}
 
-	.context-menuInvoice {
-	position: absolute;
-	background: #fff;
-	border-radius: 8px;
-	box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-	width: 200px;
-	display: none;
-	flex-direction: column;
-	padding: 5px 0;
-	z-index: 1000;
+
+
+	.context-menu {
+		display: none;
+		position: relative;
+		background-color: white;
+		border: 1px solid #ccc;
+		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+		list-style: none;
+		padding: 8px 0;
+		z-index: 1000;
 	}
 
-	.context-menu-itemInvoice {
-	display: flex;
-	align-items: center;
-	padding: 10px 15px;
-	font-size: 14px;
-	cursor: pointer;
-	transition: background 0.2s ease-in-out;
-	color: #333;
-	}
+		.context-menu li {
+			padding: 8px 16px;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+		}
 
-	.context-menu-itemInvoice i {
-	margin-right: 10px;
-	font-size: 16px;
-	color: #007bff;
-	}
-
-	.context-menu-itemInvoice:hover {
-	background: #f0f0f0;
-	}
-
-	.context-menu-itemInvoice:not(:last-child) {
-	border-bottom: 1px solid #e0e0e0;
-	}
+			.context-menu li:hover {
+				background-color: #f0f0f0;
+			}
 
 	.ledgerResult{
 	overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
@@ -301,12 +289,33 @@
 	.OnInitialized("function(e) { loadGridState(); }")
 			)
 
-		)
+		
+	<ul id="contextMenu" class="context-menu" style="display: none;">
+		<li onclick="editCostAllocation()">
+			<i class="fas fa-edit" style="margin-right: 8px;"></i><div id="EditCostAllocation">Edit Cost Allocation</div>
+		</li>
+		<li onclick="editBillsReceivable()">
+			<i class="fas fa-file-invoice" style="margin-right: 8px;"></i><div id="EditBillReceivable">Edit Bill Receivable</div>
+		</li>
+
+		<li onclick="editEmployeeAllocation()">
+			<i class="fas fa-file-invoice" style="margin-right: 8px;"></i> <div id="EditEmployeeAllocation">Edit Employee Allocation</div>
+		</li>
+		<li onclick="editPropertyAllocation()">
+			<i class="fas fa-cogs" style="margin-right: 8px;"></i><div id="EditPropertyAllocation">Edit Property Allocation</div>
+		</li>
+
+		<li onclick="onAllRowRemoving()">
+			<i class="fas fa-trash-alt" style="margin-right: 8px;"></i> <div id="DeleteAllLineEntries">Delete All Line Entries</div>
+		</li>
+	</ul>
 
 </div>
 <div id="invoiceErrorPopup"></div>
 
 <script>
+
+
 		 $(function () {
 	$("#SalesOrders").dxTextBox({
 	text: formatMessage("Sales Orders"),
@@ -316,6 +325,62 @@
 		}
 		});
 	});
+	
+	document.addEventListener("DOMContentLoaded", function () {
+	const gridElement = document.getElementById("dataGrid");
+	const contextMenu = document.getElementById("contextMenu");
+
+	// Add context menu listener to the grid
+	gridElement.addEventListener("contextmenu", function (e) {
+		e.preventDefault();
+
+		// Find the data row that was right-clicked
+		const rowElement = e.target.closest(".dx-data-row");
+
+		if (rowElement) {
+			// Select the clicked row in the DataGrid instance
+			const dxGrid = $("#dataGrid").dxDataGrid("instance");
+			const rowIndex = parseInt(rowElement.getAttribute("aria-rowindex"), 10) - 1;
+
+			dxGrid.selectRowsByIndexes([rowIndex]);
+			contextMenu.dataset.rowIndex = rowIndex;
+
+			// Temporarily show context menu (hidden) to measure dimensions
+			contextMenu.style.visibility = "hidden";
+			contextMenu.style.display = "block";
+
+			const menuWidth = contextMenu.offsetWidth;
+			const menuHeight = contextMenu.offsetHeight;
+			const windowWidth = window.innerWidth;
+			const windowHeight = window.innerHeight;
+
+			let mouseX = e.clientX;
+			let mouseY = e.clientY;
+
+			// Boundary check
+			if (mouseX + menuWidth > windowWidth) {
+				mouseX = windowWidth - menuWidth - 10;
+			}
+			if (mouseY + menuHeight > windowHeight) {
+				mouseY = windowHeight - menuHeight - 10;
+			}
+
+			// Final position and make visible
+			contextMenu.style.left = `${mouseX}px`;
+			contextMenu.style.top = `${mouseY}px`;
+			contextMenu.style.visibility = "visible";
+		}
+	});
+
+	// Hide context menu when clicking elsewhere
+	document.addEventListener("click", function (e) {
+		if (!e.target.closest("#contextMenu")) {
+			contextMenu.style.display = "none";
+		}
+	});
+});
+
+
 
 	function ddBtnShowRecords_click(duration) {
 		 var frmDateBox = $("#frmdateBox").dxDateBox("instance");
