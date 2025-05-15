@@ -39,6 +39,13 @@ namespace QD.ERP.Web.Middlewares
                 throw new ArgumentNullException(nameof(context));
             }
 
+            if (exception is UnauthorizedAccessException)
+            {
+                // Handle unauthorized access by redirecting to the login page
+                context.Response.Redirect("http://localhost:60232/test/Security/Login");
+                return;
+            }
+
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
@@ -65,5 +72,6 @@ namespace QD.ERP.Web.Middlewares
                 Console.WriteLine($"Failed to write error response: {writeEx.Message}");
             }
         }
+
     }
 }
