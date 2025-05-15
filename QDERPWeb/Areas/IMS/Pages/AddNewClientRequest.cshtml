@@ -455,16 +455,17 @@
      .Width("100%")
      .OnKeyDown("onKeyDown")
      //.OnValueChanged("dropDownBoxValueChanged")
-     .ContentTemplate(new TemplateName("GetProjectContentTemplate"))
+     .ContentTemplate(new TemplateName("GetClientContentTemplate"))
      )
 
 							@(Html.DevExtreme().Button()
-								.ID("AddDebits")
-								.Icon("plus")
-								.Hint("Add Description")
-								.Width(40)
-								.ElementAttr("style", "margin-top: 20px;")
-								)
+							.ID("AddClient")
+							.Icon("plus")
+							.Hint("Add Client")
+							.Width(35)
+							.ElementAttr("style", "margin-left: 5px; vertical-align: top;")
+							.OnClick("redirecttoClientLeadmaster")
+							)
 
 							@(Html.DevExtreme().Button()
 								.ID("EditDebits")
@@ -1412,7 +1413,7 @@
 			</div>
 		</div>
 
-		@using (Html.DevExtreme().NamedTemplate("GetProjectContentTemplate"))
+		@using (Html.DevExtreme().NamedTemplate("GetClientContentTemplate"))
 		{
 			@(Html.DevExtreme().DataGrid()
 					.ID("GetProject-datagrid")
@@ -6687,6 +6688,10 @@ LineTotal: 0
 		});
 	});
 
-
+		function redirecttoClientLeadmaster(){
+			const url = `/${tenantName}/IMS/ClientLeadMaster`;
+			const title = "";
+				openModal(url, title);
+		}
 		
 </script>
