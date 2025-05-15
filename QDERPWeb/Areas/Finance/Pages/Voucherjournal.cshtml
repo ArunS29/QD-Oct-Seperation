@@ -641,7 +641,7 @@
 
 
 <div>
-    @await Html.PartialAsync("PurchaseVoucherFooter")
+    @await Html.PartialAsync("_Formfooter")
 </div>
 
 
@@ -1783,18 +1783,38 @@
 
                     const data = response.data[0];
                     if (data) {
-
+                        debugger;
                         $("#VoucherDate").dxDateBox("instance").option("value", data.VoucherDate);
                         $("#EffectiveDate").dxDateBox("instance").option("value", data.VoucherEffectiveDate);
                         // $("#BillDate").dxDateBox("instance").option("value", data.BillDate || "");
                         $("#VoucherNarration").dxTextBox("instance").option("value", data.VoucherNarration || "");
                         $("#Remarks").dxTextBox("instance").option("value", data.BillRemarks || "");
                         $("#VerifiedBy").dxCheckBox("instance").option("value", data.IsVerified || false);
-                        $("#ApprovedBy").dxCheckBox("instance").option("value", data.IsApproved || false);
-                        $("#VerifiedBytext").dxTextBox("instance").option("value", data.VoucherVerifiedBy || null);
-                        $("#ApprovedBytext").dxTextBox("instance").option("value", data.VoucherApprovedBy || "");
-                        $("#VerifiedOnDate").dxTextBox("instance").option("value", data.VoucherVerifiedOn || false);
-                        $("#ApprovedOntext").dxTextBox("instance").option("value", data.VoucherApprovedOn || "");
+                     $("#VerifiedBytext").dxTextBox("instance").option("value", data.VoucherVerifiedBy || "");
+                     $("#ApprovedBy").dxCheckBox("instance").option("value", data.IsApproved || false);
+                     $("#ApprovedBytext").dxTextBox("instance").option("value", data.VoucherApprovedBy || "");
+                   
+
+                    var ddCurrency = $("#ddCurrency").dxDropDownBox("instance");
+                    ddCurrency.option("value", data.currencyid || "");
+
+                     var verifiedDate = data.VoucherVerifiedOn ? new Date(data.VoucherVerifiedOn) : null;
+                    var formattedDate = verifiedDate
+                        ? verifiedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+                        : "";
+
+                    $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate);
+                    var approvedDate = data.VoucherApprovedOn ? new Date(data.VoucherApprovedOn) : null;
+                    var formattedApprovedDate = approvedDate
+                        ? approvedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+                        : "";
+
+                    $("#ApprovedOntext").dxTextBox("instance").option("value", formattedApprovedDate);
+
+                    // Check if both VerifiedOnDate and ApprovedOntext have values
+                    if (formattedDate && formattedApprovedDate) {
+                        disableEditing();
+                    }
 
 
 
