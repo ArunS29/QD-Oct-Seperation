@@ -15,6 +15,7 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
@@ -75,6 +76,38 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             return Unauthorized(new { message = "Invalid tenant." });
         }
+
+        [HttpGet]
+        public IActionResult SalesOrderNoIncrease()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var lastOrderNo = dbContext.Qry60204salesOrderViewMasters
+                    .OrderByDescending(x => x.SalesOrderNo)
+                    .Select(x => x.SalesOrderNo)
+                    .FirstOrDefault();
+
+                string nextOrderNo = GenerateNextOrderNo(lastOrderNo);
+
+                return Ok(new { salesOrderNo = nextOrderNo });
+            }
+
+            return Unauthorized(new { message = "Invalid tenant." });
+        }
+
+        private string GenerateNextOrderNo(string lastOrderNo)
+        {
+            if (string.IsNullOrWhiteSpace(lastOrderNo))
+                return "AIC-RFQ-2025-00001";
+
+            var match = Regex.Match(lastOrderNo, @"(.*-)(\d+)$");
+            if (!match.Success) return lastOrderNo + "-00001";
+
+            var prefix = match.Groups[1].Value;
+            var number = int.Parse(match.Groups[2].Value);
+            return $"{prefix}{(number + 1):D5}";
+        }
+
 
 
     }
