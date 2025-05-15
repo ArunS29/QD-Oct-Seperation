@@ -1,0 +1,1047 @@
+﻿@page
+@model QD.ERP.Web.Areas.IMS.Pages.CompanyDetailsModel
+@{
+}
+<style>
+
+    .dx-tabpanel .dx-tab {
+        color: black !important;
+        font-weight: bold;
+        font-size: 14px;
+        padding: 10px 15px;
+    }
+
+
+        .dx-tabpanel .dx-tab.dx-selection {
+            background-color: lightblue;
+            color: white !important;
+        }
+
+    .dx-tabpanel {
+    }
+
+
+    .mainContainer {
+        overflow-x: hidden;
+    }
+
+    .form-container1 {
+        margin: 15px;
+        width: 99%;
+        padding: 5px;
+        border-radius: 1px;
+    }
+
+    .form-container {
+        width: 100%;
+        border-radius: 1px;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 10px;
+        padding: 10px;
+        margin-bottom: 15px;
+        width: 100%;
+    }
+
+
+    .form-label {
+        color: black;
+        padding: 5px;
+        font-weight: bold;
+        width: 200px;
+        text-align: Left;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .dx-textbox .dx-texteditor-input,
+    .dx-numberbox .dx-texteditor-input,
+    .dx-selectbox .dx-texteditor-input {
+    }
+
+    .dx-button {
+        margin-left: 5px;
+    }
+
+    .dx-selectbox {
+        width: 100%;
+    }
+
+    .footer-buttons .row {
+        margin-top: 20px;
+    }
+
+    .form-control-with-border {
+        border-radius: 4px;
+        padding: 8px;
+        width: 100%;
+    }
+
+
+    .horizontal-container {
+        display: flex;
+        gap: 20px;
+        justify-content: start;
+        align-items: center;
+        margin: 15px;
+    }
+
+    .button-group {
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+    }
+
+    .form-row.border-outline {
+        border: 1px solid gray;
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+    }
+
+    .select-box {
+        width: 20vh;
+    }
+
+    .imagecontainer {
+        background-color: #e0f7fa;
+        border: 1px solid #90caf9;
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        overflow: hidden;
+        position: relative;
+    }
+
+        .imagecontainer img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .imagecontainer span {
+            color: #555;
+            font-style: italic;
+            position: absolute;
+        }
+
+    .flex-row {
+        display: flex;
+        align-items: end;
+    }
+
+    .form-container3 {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .column4 {
+        flex: 1;
+        min-width: 300px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .form-container {
+        gap: 20px;
+        font-family: Arial, sans-serif;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .form-card1 {
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        padding: 1%;
+    }
+
+    .form-row1 {
+        display: flex;
+        gap: 20px;
+    }
+
+    .form-group1 {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .containers {
+        display: flex;
+    }
+
+    .dx-card {
+        background: var(--background-color);
+    }
+    #goToTopBtn{
+    z-index:100;
+    }
+
+    .mainContainer {
+        width: 100%;
+    }
+
+    .dx-button-text{
+        color: black;
+    }
+    </style>
+<meta charset="UTF-8">
+<div class="title">
+    <div class="header-container">
+        <div id="CompanyDetails" class="no-border-title"></div>
+    </div>
+</div>
+<div class="form-container1">
+    <div class="form-container">
+        <!-- Tab Menu -->
+        @(
+                Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%")
+                .Items(item =>
+                {
+                    item.Add()
+                .Title("Company Details//تفاصيل الشركة")
+                .Icon("folder")
+                .Text("Company Details//تفاصيل الشركة")
+                .Template(@<text>
+            <div style="display: flex; gap: 30px; justify-content: space-between; width:50%; padding: 20px; ">
+
+                <!-- Left Side (English) -->
+                <div style="flex: 1;">
+                    @(Html.DevExtreme().TextBox()
+                    .ID("CompanyID")
+                    .Value("1")
+                    .Label("Company ID:")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .ReadOnly(true)
+                    .StylingMode(EditorStylingMode.Outlined)
+                    .Width("100%"))
+
+                    @(Html.DevExtreme().TextBox()
+                    .ID("CompanyName")
+                    .Value("Al Injaz Contracting Establishment")
+                    .Label("Company Name:")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .StylingMode(EditorStylingMode.Outlined)
+                    .Width("100%"))
+
+                    @(Html.DevExtreme().TextBox()
+                    .ID("StreetName")
+                    .Label("Our Address - Street Name: *")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .StylingMode(EditorStylingMode.Outlined)
+                    .Width("100%"))
+
+                    @(Html.DevExtreme().TextBox()
+                    .ID("AdditionalAddress")
+                    .Label("Our Address - Additional Address:")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .StylingMode(EditorStylingMode.Outlined)
+                    .Width("100%"))
+
+                    <div style="display: flex; gap: 10px;">
+                        <div style="flex: 1;">
+                            @(Html.DevExtreme().TextBox()
+                            .ID("BuildingNumber")
+                            .Label("Building Number:")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .StylingMode(EditorStylingMode.Outlined)
+                            .Width("100%"))
+                        </div>
+                        <div style="flex: 1;">
+                            @(Html.DevExtreme().TextBox()
+                            .ID("City")
+                            .Label("City: *")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .StylingMode(EditorStylingMode.Outlined)
+                            .Width("100%"))
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 10px;">
+                        <div style="flex: 1;">
+                            @(Html.DevExtreme().TextBox()
+                            .ID("AdditionalNumber")
+                            .Label("Additional Number:")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .StylingMode(EditorStylingMode.Outlined)
+                            .Width("100%"))
+                        </div>
+                        <div style="flex: 1;">
+                            @(Html.DevExtreme().TextBox()
+                            .ID("Province")
+                            .Label("Province / State:")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .StylingMode(EditorStylingMode.Outlined)
+                            .Width("100%"))
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 10px;">
+                        <div style="flex: 1;">
+                            @(Html.DevExtreme().TextBox()
+                            .ID("PostalCode")
+                            .Label("Postal Code:")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .StylingMode(EditorStylingMode.Outlined)
+                            .Width("100%"))
+                        </div>
+                        <div style="flex: 1;">
+                            @(Html.DevExtreme().TextBox()
+                            .ID("District")
+                            .Label("District/Neighborhood: *")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .StylingMode(EditorStylingMode.Outlined)
+                            .Width("100%"))
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 10px;">
+                        <div style="flex: 1;">
+                            @(Html.DevExtreme().SelectBox()
+                            .ID("CountryCode")
+                            .Label("Country Code: *")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .StylingMode(EditorStylingMode.Outlined)
+                            .Width("100%"))
+                        </div>
+                        <div style="flex: 1;">
+                            @(Html.DevExtreme().TextBox()
+                            .ID("ShortName")
+                            .Value("Aicon")
+                            .Label("Company Short Name:")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .StylingMode(EditorStylingMode.Outlined)
+                            .Width("100%"))
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Side (Arabic) -->
+                <div style="flex: 1; direction: rtl;">
+                  
+                   
+                    @(Html.DevExtreme().TextBox()
+                    .ID("ar_CompanyID")
+                    .Value("1")
+                    .Label("هوية الشركة")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .ReadOnly(true)
+                    .StylingMode(EditorStylingMode.Outlined)
+                    .Width("100%"))
+
+                    <div style="direction: rtl; display:flex; align-items:end;">
+                    
+                  @(Html.DevExtreme().TextBox()
+                    .ID("ar_CompanyName")
+                    .Value("مؤسسة إنجاز للمقاولات")
+                    .Label("اسم الشركة")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .StylingMode(EditorStylingMode.Outlined)
+                    .Width("100%"))
+                  @(Html.DevExtreme().Button()
+                        .ID("ar_CompanyName1")
+                    .Height(30)
+                    .Icon("fas fa-language") // Ensure Font Awesome class is correct
+                    .ElementAttr(new { @class = "input-button" })
+                    .OnClick("function() { RetentionconvertToArabic(); }")
+                    )
+                 </div>
+
+              <div style="direction: rtl; display:flex; align-items:end;">
+                 @(Html.DevExtreme().TextBox()
+                    .ID("ar_StreetName")
+                    .Label("العنوان 1: (اسم الشارع)")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .StylingMode(EditorStylingMode.Outlined)
+                    .Width("100%"))
+                    @(Html.DevExtreme().Button()
+                        .ID("ar_StreetName1")
+                    .Height(30)
+                    .Icon("fas fa-language") // Ensure Font Awesome class is correct
+                    .ElementAttr(new { @class = "input-button" })
+                    .OnClick("function() { RetentionconvertToArabic(); }")
+                    )
+                    </div>
+
+                    <div style="direction: rtl; display:flex; align-items:end;">
+
+                    @(Html.DevExtreme().TextBox()
+                    .ID("ar_AdditionalAddress")
+                    .Label("العنوان 2: إضافي")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .StylingMode(EditorStylingMode.Outlined)
+                    .Width("100%"))
+                    @(Html.DevExtreme().Button()
+                        .ID("ar_AdditionalAddress1")
+                    .Height(30)
+                    .Icon("fas fa-language") // Ensure Font Awesome class is correct
+                    .ElementAttr(new { @class = "input-button" })
+                    .OnClick("function() { RetentionconvertToArabic(); }")
+                    )
+                    </div>
+
+                    <div style="direction: rtl; display:flex; align-items:end;">
+
+                   @(Html.DevExtreme().TextBox()
+                    .ID("ar_BuildingNumber")
+                    .Label("رقم المبنى")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .StylingMode(EditorStylingMode.Outlined)
+                    .Width("100%"))
+                    @(Html.DevExtreme().Button()
+                        .ID("ar_BuildingNumber1")
+                    .Height(30)
+                    .Icon("fas fa-language") // Ensure Font Awesome class is correct
+                    .ElementAttr(new { @class = "input-button" })
+                    .OnClick("function() { RetentionconvertToArabic(); }")
+                    )
+                    </div>
+
+                    <div style="direction: rtl; display:flex; align-items:end;">
+                        @(Html.DevExtreme().TextBox()
+                    .ID("ar_AdditionalNumber")
+                    .Label("رقم إضافي")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .StylingMode(EditorStylingMode.Outlined)
+                    .Width("100%"))
+                    @(Html.DevExtreme().Button()
+                    .ID("ar_AdditionalNumber1")
+                    .Height(30)
+                    .Icon("fas fa-language") // Ensure Font Awesome class is correct
+                    .ElementAttr(new { @class = "input-button" })
+                    .OnClick("function() { RetentionconvertToArabic(); }")
+                    )
+                    </div>
+
+                    <div style="direction: rtl; display:flex; align-items:end;">
+                  @(Html.DevExtreme().TextBox()
+                    .ID("ar_PostalCode")
+                    .Label("الرمز البريدي")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .StylingMode(EditorStylingMode.Outlined)
+                    .Width("100%")) 
+                    @(Html.DevExtreme().Button()
+                        .ID("ar_PostalCode1")
+                    .Height(30)
+                    .Icon("fas fa-language") // Ensure Font Awesome class is correct
+                    .ElementAttr(new { @class = "input-button" })
+                    .OnClick("function() { RetentionconvertToArabic(); }")
+                    )
+                    </div>
+
+                    <div style="direction: rtl; display:flex; align-items:end;">
+                   @(Html.DevExtreme().TextBox()
+                    .ID("ar_CountryCode")
+                    .Label("رمز الدولة")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .StylingMode(EditorStylingMode.Outlined)
+                    .Width("100%"))
+                        @(
+                        Html.DevExtreme().Button()
+                        .ID("ar_CountryCode1")
+                        .Height(30)
+                        .Icon("fas fa-language") // Ensure Font Awesome class is correct
+                        .ElementAttr(new { @class = "input-button" })
+                        .OnClick("function() { RetentionconvertToArabic(); }")
+                        )
+                    </div>
+                </div>
+
+            </div>
+
+         
+        </text>);
+
+                    item.Add().Title("ID Details").Icon("detailslayout").Text("ID Details").Template(@<text>
+
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; padding: 15px;">
+                <!-- Left Section -->
+                <div style="flex: 1; min-width: 500px;">
+                    <!-- Full Address -->
+                    @(Html.DevExtreme().TextBox()
+                    .ID("FullAddress")
+                    .Label("Full Address")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Width("100%"))
+
+                    <!-- Full Address Arabic -->
+                    @(Html.DevExtreme().TextBox()
+                    .ID("FullAddressArabic")
+                    .Label("Full Address (Arabic)")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Width("100%"))
+
+                    <!-- Product Name and Company Slogan -->
+                    <div style="display: flex; gap: 10px;">
+                        @(Html.DevExtreme().TextBox()
+                        .ID("ProductName")
+                        .Value("QuickDice ERP Solutions")
+                        .Label("Product Name")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%"))
+
+                        @(Html.DevExtreme().TextBox()
+                        .ID("CompanySlogan")
+                        .Value("General Contracting & Industrial Services")
+                        .Label("Company Slogan")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%"))
+                    </div>
+
+                    <!-- Phone / Fax -->
+                    <div style="display: flex; gap: 10px;">
+                        @(Html.DevExtreme().TextBox()
+                        .ID("Phone")
+                        .Label("Company Phone")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%"))
+
+                        @(Html.DevExtreme().TextBox()
+                        .ID("Fax")
+                        .Value("00966 3 361 8032")
+                        .Label("Company Fax")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%"))
+                    </div>
+
+                    <!-- Email / Website -->
+                    <div style="display: flex; gap: 10px;">
+                        @(Html.DevExtreme().TextBox()
+                        .ID("Email")
+                        .Value("business@aiconsolutions.com")
+                        .Label("Email Address")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%"))
+
+                        @(Html.DevExtreme().TextBox()
+                        .ID("Website")
+                        .Value("www.aiconsolutions.com")
+                        .Label("Website")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%"))
+                    </div>
+
+                    <!-- VAT / Group VAT / TIN -->
+                    <div style="display: flex; gap: 10px;">
+                        @(Html.DevExtreme().TextBox()
+                        .ID("VAT")
+                        .Value("300000000000003")
+                        .Label("VAT Registration No *")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%"))
+
+                        @(Html.DevExtreme().TextBox()
+                        .ID("GroupVAT")
+                        .Label("Group VAT No")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%"))
+
+                        @(Html.DevExtreme().TextBox()
+                        .ID("TIN")
+                        .Label("TIN")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%"))
+                    </div>
+
+                    <!-- ID Type / ID Number / Commercial Reg -->
+                    <div style="display: flex; gap: 10px;">
+                        @(Html.DevExtreme().SelectBox()
+                        .ID("IDType")
+                        .Items(new[] { "National", "Iqama", "Passport" })
+                        .Label("ID Type *")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%"))
+
+                        @(Html.DevExtreme().TextBox()
+                        .ID("IDNumber")
+                        .Label("ID Number *")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%"))
+
+                        @(Html.DevExtreme().TextBox()
+                        .ID("CRNumber")
+                        .Label("Commercial Registration No")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%"))
+                    </div>
+
+                    <!-- Print Button -->
+                    <div style="text-align: right; margin-top: 10px;">
+                        @(Html.DevExtreme().Button()
+                        .Text("Print Company Info")
+                        .Icon("print")
+                        .Type(ButtonType.Normal)
+                        .Width(250))
+                    </div>
+                </div>
+
+                <!-- Right Section: Logo & Stamp -->
+                <div style="flex: 1; min-width: 220px;">
+                    <div style="margin-bottom: 20px;">
+                        <label><b>Company Logo:</b></label>
+                        <div style="width: 230px; height: 180px; background-color: white; border: 1px solid #ccc;"> <img src="https://mir-s3-cdn-cf.behance.net/projects/230/23712f70311213.Y3JvcCwxNDAwLDEwOTUsMCwxNTI.jpg" alt="Alternate Text" /></div>
+                    </div>
+                    <div>
+                        <label><b>Company Seal/Stamp:</b></label>
+                        <div style="width: 200px; height: 200px; background-color: white; border: 1px solid #ccc;"><img src="https://i.pinimg.com/236x/c6/7b/82/c67b821d8cf64103e281a845679fe86e.jpg" alt="Alternate Text" /> </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+        </text>);
+                    item.Add().Text("Other//آخر").Icon("home").Title("Other//آخر").Template(@<text>
+
+            <div style=" padding: 20px; width:50%">
+
+                <!-- Auditor Section -->
+                <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 25px;">
+                    <div style="flex: 1 1 45%;">
+                        @(Html.DevExtreme().TextBox()
+                        .ID("AuditorName")
+                        .Label("Auditor's Name:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%")
+                        )
+                    </div>
+                    <div style="flex: 1 1 45%;">
+                        @(Html.DevExtreme().TextBox()
+                        .ID("AuditorFax")
+                        .Label("Auditor's Fax Number:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%")
+                        )
+                    </div>
+                    <div style="flex: 1 1 100%;">
+                        @(Html.DevExtreme().TextArea()
+                        .ID("AuditorAddress")
+                        .Label("Auditor's Address:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Height(70)
+                        .Width("100%")
+                        )
+                    </div>
+                    <div style="flex: 1 1 45%;">
+                        @(Html.DevExtreme().TextBox()
+                        .ID("AuditorEmail")
+                        .Label("Auditor's Email:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%")
+                        )
+                    </div>
+                </div>
+
+                <!-- Backup Info Section -->
+                <div style="display: flex; flex-wrap: wrap; gap: 15px;">
+                    <div style="flex: 3 1 65%;">
+                        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                            <div style="flex: 1;">
+                                @(Html.DevExtreme().TextBox()
+                                .ID("ERPDBLocation")
+                                .Label("ERP Database Location")
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Value(@"C:\ERP Database\Database")
+                                .Width("100%")
+                                )
+                            </div>
+                            <div style="flex: 1;">
+                                @(Html.DevExtreme().TextBox()
+                                .ID("DMSLocation")
+                                .Label("ERP DMS Location")
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Value(@"E:\QuickDiceDMS")
+                                .Width("100%")
+                                )
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                            <div style="flex: 1;">
+                                @(Html.DevExtreme().TextBox()
+                                .ID("AutoBackupLocation")
+                                .Label("ERP Auto Backup Location")
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Value(@"E:\BackupDMS")
+                                .Width("100%")
+                                )
+                            </div>
+                            <div style="flex: 1;">
+                                @(Html.DevExtreme().TextBox()
+                                .ID("ReceivableLocation")
+                                .Label("Bills Receivable Location")
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Value(@"E:\BillsReceivable")
+                                .Width("100%")
+                                )
+                            </div>
+                        </div>
+
+                  
+                       <div style="width:140%;">
+                            <div style="margin-bottom: 10px; display: flex;">
+                            @(Html.DevExtreme().TextBox()
+                            .ID("BackupEmail")
+                            .Label("Backup Operator Email")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .Value("sajujoy@hotmail.com")
+                            .Width("100%")
+                            )
+                                    <div style="display: flex; gap: 15px; margin-bottom: 10px; width:540px;">
+                                        @(Html.DevExtreme().CheckBox()
+                                        .ID("SendSuccess")
+                                        .Text("Send Success Email")
+                                        .Value(true)
+                                        )
+                                        @(Html.DevExtreme().CheckBox()
+                                        .ID("SendFailed")
+                                        .Text("Send Failed Email")
+                                        .Value(true)
+                                        )
+                                    </div>
+                        </div>
+
+                        <div style="margin-bottom: 10px; display: flex; ">
+                            @(Html.DevExtreme().TextBox()
+                            .ID("OnlineBackup")
+                            .Label("Online Backup Location")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .Value(@"C:\Users\Saju\Dropbox\QuickDice_DataBackup")
+                            .Width("100%")
+                            )
+                            <div style="display: flex; gap: 15px;">
+                                    @(Html.DevExtreme().CheckBox()
+                                    .ID("CloudBackup")
+                                    .Text("Backup in Cloud")
+                                    .Value(true)
+                                    .Width(120)
+                                    )
+                                    @(Html.DevExtreme().CheckBox()
+                                    .ID("OnlyDB")
+                                    .Text("Backup Only the Database (No Need to Backup DMS Folder)")
+                                    .Value(false)
+                                    .Width(210)
+                                    )
+                                </div>
+                            </div>
+                    </div>
+                    
+                 </div>
+
+                    <!-- Right Buttons -->
+                    <div style="flex: 1 1 25%; display: flex; flex-direction: column; gap: 20px;">
+                        @(Html.DevExtreme().Button()
+                        .ID("btnBackupDB")
+                        .Text("Backup Database")
+                        .Icon("save")
+                        .Type(ButtonType.Default)
+                        .Width("100%")
+                        )
+                        @(Html.DevExtreme().Button()
+                        .ID("btnBackupDMS")
+                        .Text("Backup DMS")
+                        .Icon("save")
+                        .Type(ButtonType.Default)
+                        .Width("100%")
+                        )
+                    </div>
+                </div>
+
+            </div>
+
+        </text>);
+                    item.Add().Text("Letter Head (Full)").Icon("user").Title("Letter Head (Full)").Template(@<text>
+            <div class="form-group">
+                <div class="dx-fieldset" style="width: 375px;">
+                    <div class="imagecontainer" id="imgBox1" style="width: 430%; height: 540px; background-color: white;">
+                        <span>No Image Data</span>
+                    </div>
+                    <input type="file" id="imageInput" accept="image/*" style="display:none;" />
+                </div>
+            </div>
+        </text>);
+                    item.Add().Text("Company Documents").Icon("user").Title("Company Documents").Template(@<text>
+            <div style="display: flex; gap: 20px; padding: 15px;">
+                <!-- Layout Button -->
+                @(Html.DevExtreme().Button()
+                .ID("btnLayout")
+                .Text("Layout")
+                .Icon("smalliconslayout")
+                .Type(ButtonType.Default)
+                .StylingMode(ButtonStylingMode.Contained)
+                .Width(140)
+                )
+
+                <!-- Add & Attach Files Button -->
+                @(Html.DevExtreme().Button()
+                .ID("btnAttach")
+                .Text("Add & Attach Files")
+                .Icon("attach") // use a clip icon or custom one
+                .Type(ButtonType.Default)
+                .StylingMode(ButtonStylingMode.Contained)
+                .Width(280)
+                )
+
+                <!-- Merge PDF Button -->
+                @(Html.DevExtreme().Button()
+                .ID("btnMergePDF")
+                .Text("Merge Selected Files")
+                .Icon("file") // Replace with pdf icon if available
+                .Type(ButtonType.Default)
+                .StylingMode(ButtonStylingMode.Contained)
+                .Width(280)
+                )
+
+                <!-- Save Separate PDF Files Button -->
+                @(Html.DevExtreme().Button()
+                .ID("btnSavePDF")
+                .Text("Save Separated PDF Files")
+                .Icon("save") // Replace with appropriate icon
+                .Type(ButtonType.Default)
+                .StylingMode(ButtonStylingMode.Contained)
+                .Width(300)
+                )
+
+                <!-- Print Button -->
+                @(Html.DevExtreme().Button()
+                .ID("btnPrint")
+                .Text("Print")
+                .Icon("print")
+                .Type(ButtonType.Default)
+                .StylingMode(ButtonStylingMode.Contained)
+                .Width(200)
+                )
+
+            </div>
+                <div>
+           @(Html.DevExtreme().DataGrid()
+        .ID("itemGrid")
+        .Height("600px")
+        .Selection(s => s
+        .Mode(SelectionMode.Multiple)
+        .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)
+        )
+        .Columns(columns =>
+        {
+            columns.Add().Caption("#").Width(100);
+            columns.Add().DataField("DocumentType").Caption("DocumentType");
+            columns.Add().DataField("DocumentRefNumber").Caption("Document Ref Number");
+            columns.Add().DataField("ExpiryOn").Caption("Expiry On");
+            columns.Add().DataField("NotifyOn").Caption("Notify On");
+        })
+        .ColumnAutoWidth(true)
+        .Width("100%")
+        .WordWrapEnabled(true)
+        .OnCellClick("function(e) {handleCellClick(e);}")
+        .ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+        .AllowColumnReordering(true)
+        .AllowColumnResizing(true)
+        .ColumnFixing(fixing => fixing.Enabled(true))
+        .HeaderFilter(filter => filter.Visible(false))
+        .Paging(p => p.Enabled(false))
+        .Pager(pager => pager.Visible(false))
+        .Grouping(grouping => grouping.AutoExpandAll(true))
+        .FilterRow(filterRow => filterRow.Visible(false))
+        .GroupPanel(groupPanel => groupPanel.Visible(false))
+        .ShowBorders(true)
+        .ShowRowLines(true)
+        )
+            </div>
+        </text>);
+                    item.Add().Text("Data Locking").Icon("user").Title("Data Locking").Template(@<text>
+            <div>
+            <div style="display: flex; align-items: center; gap: 15px; padding: 15px; width: fit-content;">
+                <!-- Date Picker -->
+                @(Html.DevExtreme().DateBox()
+                .ID("lockedDate")
+                .DisplayFormat("yyyy-MM-dd")
+                .Placeholder("Select Date to be Locked")
+                .Width(220)
+                .ElementAttr("style", "font-size: 14px;")
+                .ShowClearButton(true)
+                )
+
+                <!-- Set All Dates Button -->
+                @(Html.DevExtreme().Button()
+                .ID("btnSetAllDates")
+                .Text("Set All Dates")
+                .Icon("event") 
+                .Type(ButtonType.Default)
+                .StylingMode(ButtonStylingMode.Contained)
+                .Width(220)
+                )
+
+                <!-- Update Date Locked Button -->
+                @(Html.DevExtreme().Button()
+                .ID("btnUpdateDateLocked")
+                .Text("Update Date Locked")
+                .Icon("save") 
+                .Type(ButtonType.Default)
+                .StylingMode(ButtonStylingMode.Contained)
+                .Width(220)
+                )
+
+            </div>
+            <div style="padding:20px;">
+                @(Html.DevExtreme().DataGrid()
+                .ID("itemGrid1")
+                .Height("600px")
+                .ColumnAutoWidth(true)
+                .Width("100%")
+                .WordWrapEnabled(true)
+                .OnCellClick("function(e) {handleCellClick(e);}")
+                .ColumnChooser(columnChooser => columnChooser
+                .Enabled(true)
+                .Title(new JS("formatMessage('Show/Hide Column')"))
+                .Mode(GridColumnChooserMode.Select))
+                .AllowColumnReordering(true)
+                .AllowColumnResizing(true)
+                .ColumnFixing(fixing => fixing.Enabled(true))
+                .HeaderFilter(filter => filter.Visible(false))
+                .Paging(p => p.Enabled(false))
+                .Pager(pager => pager.Visible(false))
+                .Grouping(grouping => grouping.AutoExpandAll(true))
+                .FilterRow(filterRow => filterRow.Visible(false))
+                .GroupPanel(groupPanel => groupPanel.Visible(false))
+                .ShowBorders(true)
+                .ShowRowLines(true)
+                .Columns(columns =>
+                {
+                columns.Add().DataField("Code").Caption("Code");
+                columns.Add().DataField("VoucherEntryType").Caption("Voucher // Entry Type");
+                columns.Add().DataField("VoucherDateLocked").Caption("Voucher Date Locked");
+                })
+                )
+            </div>
+            </div>
+        </text>);
+                    item.Add().Text("Obselete").Icon("user").Title("Obselete").Template(@<text>
+    
+
+            <div class="form-container3" style="width:50%; padding: 20px;">
+                <!-- English Column -->
+                <div class="column4">
+                    @(Html.DevExtreme().TextBox()
+                    .ID("CompanyID1")
+                    .Value("1")
+                    .Label("Company ID:")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .ReadOnly(true)
+                    .StylingMode(EditorStylingMode.Outlined)
+                    .Width("100%"))
+
+                    @(Html.DevExtreme().TextBox()
+                    .ID("CompanyName1")
+                    .Value("Al Injaz Contracting Establishment")
+                    .Label("Company Name:")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .StylingMode(EditorStylingMode.Outlined)
+                    .Width("100%"))
+
+                    @(Html.DevExtreme().TextBox()
+                    .ID("StreetName1")
+                    .Label("Our Address - Street Name:")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .StylingMode(EditorStylingMode.Outlined)
+                    .Width("100%"))
+
+                    @(Html.DevExtreme().TextBox()
+                    .ID("AdditionalAddress1")
+                    .Label("Our Address - Additional Address:")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .StylingMode(EditorStylingMode.Outlined)
+                    .Width("100%"))
+
+                    @(Html.DevExtreme().TextBox()
+                    .ID("ShortName1")
+                    .Value("Aicon")
+                    .Label("Company Name Short:")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .StylingMode(EditorStylingMode.Outlined)
+                    .Width("100%"))
+
+                    @(Html.DevExtreme().TextBox()
+                    .ID("CompanyCity")
+                    .Label("Company City:")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .StylingMode(EditorStylingMode.Outlined)
+                    .Width("100%"))
+                </div>
+
+                <!-- Arabic Column -->
+           <div style="flex: 1; direction: rtl;">
+                <div class="column4">
+                    @(Html.DevExtreme().TextBox()
+                    .ID("CompanyID_Ar")
+                    .Value("1")
+                    .Label("هوية الشركة")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .ReadOnly(true)
+                    .StylingMode(EditorStylingMode.Outlined)
+                    .Width("100%"))
+
+                    @(Html.DevExtreme().TextBox()
+                    .ID("CompanyName_Ar")
+                    .Value("مؤسسة إنجاز للمقاولات")
+                    .Label("اسم الشركة")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .StylingMode(EditorStylingMode.Outlined)
+                    .Width("100%"))
+
+                    @(Html.DevExtreme().TextBox()
+                    .ID("StreetName_Ar")
+                    .Label("خط عنوان الشركة 1")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .StylingMode(EditorStylingMode.Outlined)
+                    .Width("100%"))
+
+                    @(Html.DevExtreme().TextBox()
+                    .ID("AdditionalAddress_Ar")
+                    .Label("خط عنوان الشركة 2")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .StylingMode(EditorStylingMode.Outlined)
+                    .Width("100%"))
+
+                    @(Html.DevExtreme().TextBox()
+                    .ID("ShortName_Ar")
+                    .Label("اسم الشركة القصير")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .StylingMode(EditorStylingMode.Outlined)
+                    .Width("100%"))
+
+                    @(Html.DevExtreme().TextBox()
+                    .ID("CompanyCity_Ar")
+                    .Label("مدينة الشركة")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .StylingMode(EditorStylingMode.Outlined)
+                    .Width("100%"))
+                </div>
+                </div>
+            </div>
+
+
+        </text>);
+                })
+            )
+    </div>
+</div>
+<script>
+    $(function () {
+    $("#CompanyDetails").dxTextBox({
+    text: formatMessage("Company Details"),
+        readOnly: true,
+        onContentReady: function (e) {
+        $(e.element).addClass("dx-textbox-heading");
+        }
+        });
+    });
+</script>
