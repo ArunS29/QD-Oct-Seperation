@@ -1,5 +1,5 @@
 ﻿@page
-@model QD.ERP.Web.Areas.Finance.Pages.frm201useraccesModel
+@model QD.ERP.Web.Areas.General.Pages.frm201useraccesModel
 
 <style>
 
@@ -594,7 +594,7 @@
                         if (response.success && response.userLevel === 99) {
                             // If UserLevel is 99, navigate to the UserAccountDetails page
                             const encodedTenant = encodeURIComponent(tenantName);
-                            const url = `/${encodedTenant}/Finance/UserAccountDetails?userId=${encodeURIComponent(userId)}`;
+                            const url = `/${encodedTenant}/General/UserAccountDetails?userId=${encodeURIComponent(userId)}`;
                             window.location.href = url;
                         } else {
                             // Notify the user that navigation is not allowed

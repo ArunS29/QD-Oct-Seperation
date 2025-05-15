@@ -972,7 +972,7 @@
                 <i class="fa-solid fa-user img" onclick="toggleDropdown()"></i>
                 <div id="userDropdown" class="dropdown-menu">
                     <div class="userName">
-                        <a href="javascript:void(0);" onclick="window.location.href = '/@tenantName/Finance/frm201useracces';"><span id="userWelcome"></span> @userName &#128513;!</a>
+                        <a href="javascript:void(0);" onclick="window.location.href = '/@tenantName/General/frm201useracces';"><span id="userWelcome"></span> @userName &#128513;!</a>
                     </div>
                     <a href="#" onclick="logout()" id="userLogout"></a>
                 </div>
@@ -2080,9 +2080,8 @@
             }
         }
         function handleInfoClick() {
-            console.log("handleInfoClick");
-            console.log("handleInfoClick1111111");
-            window.location.href = `/${tenantName}/Finance/LedgerDocuments`;
+            
+            window.location.href = `/${tenantName}/General/CompanyDetails`;
         }
         // Function for Avatar click - show user profile
         function handleAvatarClick() {
