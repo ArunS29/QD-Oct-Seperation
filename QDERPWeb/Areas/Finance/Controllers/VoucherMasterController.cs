@@ -2287,9 +2287,9 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
 
         }
-        public IActionResult TargetAction(int defaultCurrencyID)
+        public IActionResult TargetAction(int CurrencyExchangeId)
         {
-            ViewData["DefaultCurrencyID"] = defaultCurrencyID;
+            ViewData["CurrencyExchangeId"] = CurrencyExchangeId;
             return View();
         }
 

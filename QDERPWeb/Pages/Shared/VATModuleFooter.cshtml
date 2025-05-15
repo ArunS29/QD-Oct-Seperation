@@ -862,6 +862,16 @@
             .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
             )
     </div>
+    <div class="btn-containerIvoiceEdit">
+        @(Html.DevExtreme().Button()
+            .ID("btnSubmit")
+            .Text(new JS("formatMessage('Submit')"))
+            .Icon("check")
+            // .OnClick("onVerifyButtonClick")
+            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+
+            )
+    </div>
          <div class="btn-containerIvoiceEdit">
         @(Html.DevExtreme().Button()
                         .ID("btnVerify")
@@ -881,6 +891,16 @@
                         .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
                         )
                         </div>
+    <div class="btn-containerIvoiceEdit">
+        @(Html.DevExtreme().Button()
+            .ID("btnCancel")
+            .Text(new JS("formatMessage('Cancel')"))
+            .Icon("close")
+            // .OnClick("onVerifyButtonClick")
+            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+
+            )
+    </div>
                         <div class="btn-containerIvoiceEdit">
         @(Html.DevExtreme().Button()
                         .ID("btnAttach")

@@ -445,6 +445,7 @@
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
 		.ShowRowLines(true)
+		.OnContextMenuPreparing("onContextMenuPreparing")
 		@* .Summary(summary =>
 		{
 			summary.TotalItems(totalItems =>
@@ -660,16 +661,20 @@
 			}
 		});
 	});
-
+	
 
 	function onContextMenuPreparing(e) {
-		if (e.row && e.row.rowType === "data") {
+		if (e.target === "content" && e.row) {
 			e.items = [
 				{
 					text: "Edit Request / Enquiry",
 					icon: "edit",
 					onItemClick: function () {
-						onEditRequest(e.row.data);
+						let Mprno = e.row.data.Mprno;
+						let tenantName = window.tenantName || "defaultTenant"; // replace with dynamic tenant logic if needed
+						let url = `/${tenantName}/IMS/AddNewClientRequest?Mprno=${Mprno}`;
+						let title = "";
+						openModal(url, title);
 					}
 				},
 				{
