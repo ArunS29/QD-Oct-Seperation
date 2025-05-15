@@ -577,12 +577,7 @@
                 const userId = e.data.UserId;
                 const userLevel = e.data.UserLevel;
 
-                // Check if the user's level is 99
-                if (userLevel !== 99) {
-                    DevExpress.ui.notify("You do not have permission to view this user's details.", "warning", 2000);
-                    return;
-                }
-
+              
                 // Get tenant name from session storage
                 const tenantName = sessionStorage.getItem('tenantName');
 
@@ -591,11 +586,25 @@
                     return;
                 }
 
-                const encodedTenant = encodeURIComponent(tenantName);
-                const url = `/${encodedTenant}/Finance/UserAccountDetails?userId=${encodeURIComponent(userId)}`;
-
-                // Redirect to the UserAccountDetails page
-                window.location.href = url;
+                // Make an AJAX call to check the current user's UserLevel
+                $.ajax({
+                    url: "/api/utility/CheckUserLevel", // Server-side endpoint to check UserLevel
+                    method: "GET",
+                    success: function (response) {
+                        if (response.success && response.userLevel === 99) {
+                            // If UserLevel is 99, navigate to the UserAccountDetails page
+                            const encodedTenant = encodeURIComponent(tenantName);
+                            const url = `/${encodedTenant}/Finance/UserAccountDetails?userId=${encodeURIComponent(userId)}`;
+                            window.location.href = url;
+                        } else {
+                            // Notify the user that navigation is not allowed
+                            DevExpress.ui.notify("You do not have permission to view this page.", "error", 2000);
+                        }
+                    },
+                    error: function () {
+                        DevExpress.ui.notify("Failed to check user level.", "error", 2000);
+                    }
+                });
             }
         }
 
