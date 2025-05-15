@@ -1,5 +1,6 @@
 ﻿var dictionary = {
     "en": {
+        "Cancel":"Cancel",
         "Submit":"Submit",
         "MprchildSlNo": "MprchildSlNo",
         "Expected Price": "Expected Price",
@@ -2456,8 +2457,15 @@
         "Add New Job Order": "Add New Job Order",
         "Stock Adjustment Details": "Stock Adjustment Details",
         "Add New Stock Adjustment Entry": "Add New Stock Adjustment Entry",
+        "Debit Note Register": "Debit Note Register",
+        "Invoice With Details": "Invoice With Details",
+        "Sales Reporting":"Sales Reporting",
+   
     },
     "ar": {
+        "Sales Reporting": "تقرير المبيعات",
+        "Debit Note Register": "سجل إشعار الخصم",
+        "Credit Note Register": "سجل إشعار الدائن",
         "Add New Stock Adjustment Entry": "إضافة إدخال تعديل مخزون جديد",
         "Stock Adjustment Details": "تفاصيل تعديل المخزون",
         "Add New Job Order": "إضافة طلب عمل جديد",
@@ -2482,9 +2490,7 @@
         "Posting Of Cost Prices": "نشر أسعار التكلفة",
         "Delivery Note Posting": "نشر مذكرة التسليم",
         "Add New Sales Order": "إضافة أمر مبيعات جديد",
-        "Invoice With Details":"Invoice With Details"
-    },
-    "ar": {
+   
         "Invoice With Details": "فاتورة مع التفاصيل",
         "Ledger Documents": "وثائق دفتر الأستاذ",
         "Purchase Invoice Register": "سجل فاتورة الشراء",

@@ -330,7 +330,7 @@
 		padding: 20px;
 	}
 
-	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
+	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnCancel,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
 		display: none !important;
 	}
 
@@ -2407,7 +2407,7 @@
 
 			$(".limited-footer .btn-containerIvoiceEdit").each(function () {
 
-				if (!$(this).find("#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag").length) {
+				if (!$(this).find("#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnCancel,#btnAttach,#btnPostToLedgers,#btnPostTag").length) {
 
 					$(this).remove();
 
@@ -5864,6 +5864,8 @@ LineTotal: 0
 
 
 			$("#btnSubmit").on("click", function () {
+		var $btn = $(this);
+		$btn.prop('disabled', true);
     const mprNo = $('#txtRequestNo').dxTextBox("instance").option("value");
 
     if (!mprNo) {
@@ -5891,6 +5893,7 @@ LineTotal: 0
                     // Update UI elements as needed
                 },
                 error: function (xhr, status, error) {
+						$btn.prop('disabled', false);
                     DevExpress.ui.notify("Submission failed.", "error", 2000);
                 }
             });
@@ -5922,8 +5925,8 @@ LineTotal: 0
 				// Check if DataGrid contains rows
 				if (rowCount === 0) {
 					DevExpress.ui.dialog.custom({
-						title: "Invoice verification has failed.",
-						message: "Invoice has not been Verified. Please enter transactions to proceed with verification.",
+						title: "Material Purchase Request verification has failed.",
+				message: "Material Purchase Request has not been Verified. Please enter transactions to proceed with verification.",
 						buttons: [{ text: "Ok", onClick: () => false }],
 						showTitle: true
 					}).show();
@@ -5931,7 +5934,7 @@ LineTotal: 0
 					DevExpress.ui.dialog.custom({
 						title: "Confirm Verification",
 						// message: "Voucher has not been Verified. Click Yes if you want to Verify this Voucher.",
-						message: "Are you sure want to verify this Invoice?",
+				message: "Are you sure want to verify this Material Purchase Request?",
 						buttons: [
 							{ text: "Yes", onClick: () => true },
 							{ text: "No", onClick: () => false }
@@ -5944,6 +5947,40 @@ LineTotal: 0
 					});
 				}
 			});
+	function proceedWithVerification() {
+		const VerifyButton = $("#btnVerify").dxButton("instance");
+		VerifyButton.option("disabled", true);
+
+		const mprNo = $('#txtRequestNo').dxTextBox("instance").option("value");
+
+		if (!mprNo) {
+			DevExpress.ui.notify("Voucher number is required!", "error", 2000);
+			return;
+		}
+
+		$.ajax({
+			type: "POST",
+			url: `/api/AddNewClientRequest/VerifyMPR?mprNo=${encodeURIComponent(mprNo)}`,
+			contentType: "application/json",
+			success: function (response) {
+				if (response && response.message) {
+					DevExpress.ui.dialog.alert(
+						response.message,
+						"Verified"
+					);
+				} else {
+					DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
+				}
+			},
+			error: function (xhr, status, error) {
+				VerifyButton.option("disabled", false);
+				let errorMessage = xhr.responseJSON && xhr.responseJSON.message
+					? xhr.responseJSON.message
+					: "An error occurred.";
+				DevExpress.ui.notify(errorMessage, "error", 2000);
+			}
+		});
+	}
 
 
 
@@ -5964,15 +6001,15 @@ LineTotal: 0
 				// Check if DataGrid contains rows
 				if (rowCount === 0) {
 					DevExpress.ui.dialog.custom({
-						title: "Invoice approval has failed.",
-						message: "Invoice has not been Approved. Please enter transactions to proceed with approval.",
+				title: "Material Purchase Request approval has failed.",
+				message: "Material Purchase Request has not been Approved. Please enter transactions to proceed with approval.",
 						buttons: [{ text: "Ok", onClick: () => false }],
 						showTitle: true
 					}).show();
 				} else {
 					DevExpress.ui.dialog.custom({
 						title: "Confirm Approval",
-						message: "Are you sure want to approve this Invoice?",
+				message: "Are you sure want to approve this Material Purchase Request?",
 						buttons: [
 							{ text: "Yes", onClick: () => true },
 							{ text: "No", onClick: () => false }
@@ -5987,62 +6024,106 @@ LineTotal: 0
 			});
 
 
-			  function proceedWithApproval() {
-				// Set ApprovedBy checkbox to true
-				$("#ApprovedBy").dxCheckBox("instance").option("value", true);
+	function proceedWithApproval() {
 
-				const vno = $("#InvoiceNo").dxTextBox("instance").option("value");
+		const mprNo = $('#txtRequestNo').dxTextBox("instance").option("value");
 
-				if (!vno) {
-					DevExpress.ui.notify("Invoice number is required!", "error", 2000);
-					return;
+		if (!mprNo) {
+			DevExpress.ui.notify("Invoice number is required!", "error", 2000);
+			return;
+		}
+
+		$.ajax({
+			type: "POST",
+			url: `/api/AddNewClientRequest/ApproveMPR?mprNo=${encodeURIComponent(mprNo)}`,
+			contentType: "application/json",
+				success: function (response) {
+				if (response && response.Message) {
+					DevExpress.ui.dialog.alert(
+						response.Message,
+						"Approved"
+					).done(() => {
+						disableEditing(); // Function to disable editing controls
+					});
+				} else {
+					DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
 				}
-
-				// Define IsDirect if not already defined (adjust as needed)
-				const IsDirect = true; // or false, depending on your logic
-
-				const currentDate = new Date();
-				const formattedDate = currentDate.toLocaleDateString("en-GB", {
-					day: "2-digit",
-					month: "short",
-					year: "numeric"
-				}).replace(/ /g, '-');
-
-				$.ajax({
-					type: "POST",
-					url: `/api/VATModule/ApproveVoucher?InvoiceNo=${encodeURIComponent(vno)}`,
-					contentType: "application/json",
-					dataType: "json",
-					// Uncomment the following line if the API expects data in the request body:
-					// data: JSON.stringify({ voucherNo: vno }),
-					success: function (response) {
-						if (response && response.Message) {
-							DevExpress.ui.dialog.alert(
-								"VAT InvoiceNo has been Approved.",
-								"Approved"
-							).done(() => {
-								disableEditing();
-								$("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
-								$("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate || "N/A");
-
-								if (IsDirect === true) {
-									$("#VerifiedBy").dxCheckBox("instance").option("value", true);
-									$("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
-									$("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
-								}
-							});
-						} else {
-							DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
-						}
-					},
-					error: function (xhr, status, error) {
-						let errorMessage = (xhr.responseJSON && xhr.responseJSON.Message)
-							? xhr.responseJSON.Message
-							: "An error occurred.";
-						DevExpress.ui.notify(errorMessage, "error", 2000);
-					}
-				});
+			},
+			error: function (xhr, status, error) {
+				let errorMessage = (xhr.responseJSON && xhr.responseJSON.Message)
+					? xhr.responseJSON.Message
+					: "An error occurred.";
+				DevExpress.ui.notify(errorMessage, "error", 2000);
 			}
+		});
+	}
+	$("#btnCancel").on("click", function (e) {
+		const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+
+		// Ensure dataGrid exists
+		if (!dataGrid) {
+			console.error("DataGrid instance not found.");
+			return;
+		}
+
+		const rowCount = dataGrid.getVisibleRows().length;
+
+		// Check if DataGrid contains rows
+		if (rowCount === 0) {
+			DevExpress.ui.dialog.custom({
+				title: "Material Purchase Request cancellation has failed.",
+				message: "Material Purchase Request has not been Cancelled. Please enter transactions to proceed with cancellation.",
+				buttons: [{ text: "Ok", onClick: () => false }],
+				showTitle: true
+			}).show();
+		} else {
+			DevExpress.ui.dialog.custom({
+				title: "Confirm Cancellation",
+				message: "Are you sure you want to cancel this Material Purchase Request?",
+				buttons: [
+					{ text: "Yes", onClick: () => true },
+					{ text: "No", onClick: () => false }
+				],
+				showTitle: true
+			}).show().done(function (dialogResult) {
+				if (dialogResult) {
+					proceedWithCancellation(); // Proceed if user clicks Yes
+				}
+			});
+		}
+	});
+	function proceedWithCancellation() {
+		const mprNo = $('#txtRequestNo').dxTextBox("instance").option("value");
+
+		if (!mprNo) {
+			DevExpress.ui.notify("Invoice number is required!", "error", 2000);
+			return;
+		}
+
+		$.ajax({
+			type: "POST",
+			url: `/api/AddNewClientRequest/CancelMPR?mprNo=${encodeURIComponent(mprNo)}`,
+			contentType: "application/json",
+				success: function (response) {
+				if (response && response.Message) {
+					DevExpress.ui.dialog.alert(
+						response.Message,
+						"Cancelled"
+					).done(() => {
+						disableEditing(); // Function to disable editing controls
+					});
+				} else {
+					DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
+				}
+			},
+			error: function (xhr, status, error) {
+				let errorMessage = (xhr.responseJSON && xhr.responseJSON.Message)
+					? xhr.responseJSON.Message
+					: "An error occurred.";
+				DevExpress.ui.notify(errorMessage, "error", 2000);
+			}
+		});
+	}
 
 
 			$("#btnPostToLedgers").on("click", function (e) {

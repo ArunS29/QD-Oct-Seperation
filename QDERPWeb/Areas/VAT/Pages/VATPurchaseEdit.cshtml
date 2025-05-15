@@ -429,43 +429,36 @@
 					<tr>
 						<!-- 1. Purchase Voucher No -->
 						<td>
-							<label style="display: flex; justify-content: space-between; width: 100%;">
-								<span>Purchase Voucher No</span>
-								<span style="direction: rtl;">رقم فاتورة الشراء</span>
-								
-							</label>
+							
 							@(Html.DevExtreme().TextBox()
 														.ID("InvoiceNo")
 														.Label("")
-														.LabelMode(EditorLabelMode.Hidden)
-														.Disabled(true))
+														.Label(new JS("formatMessage('Purchase Voucher No')"))
+														.LabelMode(EditorLabelMode.Outside)
+														@* .Disabled(true) *@)
 						</td>
 
 						<!-- 2. Voucher Date -->
 						<td>
-							<label style="display: flex; justify-content: space-between; width: 100%;">
-								<span>Voucher Date</span>
-								<span style="direction: rtl;">تاريخ القسيمة</span>
-						
-							</label>
+							
 							@(Html.DevExtreme().DateBox()
 														.ID("InvoiceDate")
 														.Type(DateBoxType.Date)
 														.DisplayFormat("dd-MMM-yyyy")
 														.Value(DateTime.Now)
-														.Label("")
-														.LabelMode(EditorLabelMode.Hidden))
+														.Label(new JS("formatMessage('Voucher Date')"))
+														.LabelMode(EditorLabelMode.Outside))
 						</td>
 					</tr>
 
 					<tr>
 						<!-- 3. Supplier Invoice No -->
 						<td>
-							<label style="display: flex; justify-content: space-between; width: 100%;">
+							@* <label style="display: flex; justify-content: space-between; width: 100%;">
 								<span>Supplier Invoice No</span>
 								<span style="direction: rtl;">رقم فاتورة المورد</span>
 								
-							</label>
+							</label> *@
 							@(Html.DevExtreme().DropDownBox()
 														.ID("SupplierInvoiceNo")
 														.DataSource(ds => ds.WebApi()
@@ -475,8 +468,8 @@
 														.Key("InvoiceNo"))
 														.DisplayExpr("InvoiceNo")
 														.ValueExpr("InvoiceNo")
-														.Label("")
-														.LabelMode(EditorLabelMode.Hidden)
+														.Label(new JS("formatMessage('Supplier Invoice No')"))
+														.LabelMode(EditorLabelMode.Outside)
 														.ShowClearButton(true)
 														.AcceptCustomValue(true)
 														.OpenOnFieldClick(false)
@@ -486,82 +479,62 @@
 
 						<!-- 5. Invoice Date -->
 						<td>
-							<label style="display: flex; justify-content: space-between; width: 100%;">
-								<span>Invoice Date</span>
-								<span style="direction: rtl;">تاريخ الفاتورة</span>
-						
-							</label>
+							
 							@(Html.DevExtreme().DateBox()
 														.ID("SupplyDate")
 														.Type(DateBoxType.Date)
 														.DisplayFormat("dd-MMM-yyyy")
-														.Label("")
-														.LabelMode(EditorLabelMode.Hidden))
+														.Label(new JS("formatMessage('Invoice Date')"))
+														.LabelMode(EditorLabelMode.Outside))
 						</td>
 					</tr>
 
 					<tr>
 						<!-- 4. Order No -->
 						<td>
-							<label style="display: flex; justify-content: space-between; width: 100%;">
-								<span>Order No</span>
-								<span style="direction: rtl;">رقم الطلب</span>
 							
-							</label>
 							@(Html.DevExtreme().TextBox()
 														.ID("VATInvoiceType")
-														.Label("")
-														.LabelMode(EditorLabelMode.Hidden)
+														.Label(new JS("formatMessage('Order No')"))
+														.LabelMode(EditorLabelMode.Outside)
 														.Value("")
 														.Disabled(true))
 						</td>
 
 						<!-- 6. Order Date -->
 						<td>
-							<label style="display: flex; justify-content: space-between; width: 100%;">
-								<span>Order Date</span>
-								<span style="direction: rtl;">تاريخ الطلب</span>
 							
-							</label>
 							@(Html.DevExtreme().DateBox()
 														.ID("OrderDate")
 														.Type(DateBoxType.Date)
 														.DisplayFormat("dd-MMM-yyyy")
 														.Value(DateTime.Now)
-														.Label("")
-														.LabelMode(EditorLabelMode.Hidden))
+														.Label(new JS("formatMessage('Order Date')"))
+														.LabelMode(EditorLabelMode.Outside))
 						</td>
 					</tr>
 
 					<tr>
 						<!-- 7. Material Receipt -->
 						<td>
-							<label style="display: flex; justify-content: space-between; width: 100%;">
-								<span>Material Receipt</span>
-								<span style="direction: rtl;">استلام المواد</span>
-								
-							</label>
+							
 							@(Html.DevExtreme().TextBox()
 														.ID("MaterialReceipt")
-														.Label("")
-														.LabelMode(EditorLabelMode.Hidden)
+														.Label(new JS("formatMessage('Material Receipt')"))
+														.LabelMode(EditorLabelMode.Outside)
 														.Placeholder(""))
 						</td>
 
 						<!-- 8. Supply Date -->
 						<td>
-							<label style="display: flex; justify-content: space-between; width: 100%;">
-								<span>Supply Date</span>
-								<span style="direction: rtl;">تاريخ التوريد</span>
-								
-							</label>
+						
 							@(Html.DevExtreme().DateBox()
 														.ID("SupplyDates")
 														.Type(DateBoxType.Date)
 														.DisplayFormat("dd-MMM-yyyy")
 														.Value(DateTime.Now)
-														.Label("")
-														.LabelMode(EditorLabelMode.Hidden))
+														.Label(new JS("formatMessage('Supply Date')"))
+														.LabelMode(EditorLabelMode.Outside))
 						</td>
 					</tr>
 				</table>
@@ -832,26 +805,20 @@
 					<tr>
 						<!-- 17. Invoice Period -->
 						<td colspan="2">
-							<label style="display: flex; justify-content: space-between; width: 100%;">
-								<span>Invoice Period</span>
-								<span style="direction: rtl;">فترة الفاتورة</span>
-							</label>
+							
 							@(Html.DevExtreme().TextBox()
 														.ID("InvoiceCounterValue")
-														.Label("")
-														.LabelMode(EditorLabelMode.Hidden))
+														.Label(new JS("formatMessage('Invoice Period')"))
+														.LabelMode(EditorLabelMode.Outside))
 						</td>
 
 						<!-- 18. Reference No -->
 						<td colspan="2">
-							<label style="display: flex; justify-content: space-between; width: 100%;">
-								<span>Reference No</span>
-								<span style="direction: rtl;">الرقم المرجعي</span>
-							</label>
+							
 							@(Html.DevExtreme().TextBox()
 														.ID("UUID")
-														.Label("")
-														.LabelMode(EditorLabelMode.Hidden))
+														.Label(new JS("formatMessage('Reference No')"))
+														.LabelMode(EditorLabelMode.Outside))
 						</td>
 					</tr>
 

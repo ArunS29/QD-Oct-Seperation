@@ -1,4 +1,4 @@
-﻿@page
+@page
 @model QD.ERP.Web.Areas.IMS.Pages.AddNewSalesOrderModel
 @{
 }
@@ -224,12 +224,14 @@
                         <td>
                             @(Html.DevExtreme().TextBox()
                             .ID("SalesOrderNO")
-                            .Value("AIC-RFQ-2025-00002")
                             .Label("Sales Order NO:")
                             .LabelMode(EditorLabelMode.Outside)
                             .ReadOnly(true)
                             .StylingMode(EditorStylingMode.Outlined)
-                            .Width("100%"))
+                            .Width("100%")
+                            )
+
+
                         </td>
                         <td>
                             @(Html.DevExtreme().DateBox()
@@ -243,19 +245,31 @@
                         <td>
                             <div style="display: flex; align-items: flex-end;">
                                 <div style="flex: 1;">
-                                    @(Html.DevExtreme().SelectBox()
-                                    .ID("ClientName")
-                                    .DataSource(new[] { "Client A", "Client B" })
+                                    @(Html.DevExtreme().DropDownBox()
+                                    .ID("ClientNames")
+                                    .ValueExpr("ClientCode")
+                                    .DisplayExpr("ClientName")
+                                    .DataSource(ds => ds
+                                    .Mvc()
+                                    .Controller("ClientLeads")
+                                    .LoadAction("Get")
+                                    .LoadMode(DataSourceLoadMode.Raw)
+                                    .   Key("ClientCode")
+                                    )
                                     .Label("Client Name")
                                     .LabelMode(EditorLabelMode.Outside)
-                                    .StylingMode(EditorStylingMode.Outlined)
-                                    .Width("100%"))
+                                    .Width("100%")
+                                    .ContentTemplate(new TemplateName("ClientDropDownTemplate"))
+                                    )
+
+
                                 </div>
                                 <div style="margin-left: 5px;">
                                     @(Html.DevExtreme().Button()
                                     .ID("AddClient")
                                     .Icon("plus")
                                     .Hint("Add Client")
+                                    .OnClick("AddClients")
                                    )
                                 </div>
                             </div>
@@ -647,12 +661,54 @@
         </div>
     </div>
 </div>
+
 <div class="Head">
     <div class="limited-footer">
         @await Html.PartialAsync("VATModuleFooter")
     </div>
 </div>
+@using (Html.DevExtreme().NamedTemplate("ClientDropDownTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+            .ID("clientGrid")
+            .DataSource(ds => ds
+                .Mvc()
+                .Controller("ClientLeads")
+                .LoadAction("Get")
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("ClientCode")
+            )
+            .Height(300)
+            .ShowBorders(true)
+            .FilterRow(f => f.Visible(true))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Selection(s => s.Mode(SelectionMode.Single))  // Single selection
+            .Columns(columns =>
+            {
+                columns.Add().DataField("ClientCode").Caption("Client Code");
+                columns.Add().DataField("ClientName").Caption("Client Name");
+            })
+            .OnSelectionChanged("onClientSelected")  // Trigger onClientSelected on row selection
+        )
+}
+
+
 <script>
+             function onClientSelected(e) {
+        const selected = e.selectedRowsData[0];
+        if (selected) {
+            const dropDownBox = $("#ClientNames").dxDropDownBox("instance");
+            if (dropDownBox) {
+                // Set the value to ClientCode, not ClientName
+                dropDownBox.option("value", selected.ClientCode);
+                dropDownBox.close();
+            } else {
+                console.error("DropDownBox instance not found.");
+            }
+        }
+    }
+
+
     //     function openEntityModal(entity) {
     //     const url = `/${tenantName}/IMS/${entity}`;
     //     const title = "";
@@ -682,5 +738,26 @@
         $(e.element).addClass("dx-textbox-heading");
         }
         });
+    });
+    //add new client
+     function AddClients(){
+            const url = `/${tenantName}/IMS/ClientLeadMaster`;
+            const title = "";
+                openModal(url, title);
+        }
+     $(function () {
+    $.get("/api/SalesOrders/SalesOrderNoIncrease")
+                .done(function (response) {
+                if (response && response.salesOrderNo) {
+                    const salesOrderTextBox = $("#SalesOrderNO").dxTextBox("instance");
+                    salesOrderTextBox.option("value", response.salesOrderNo);
+                } else {
+                    DevExpress.ui.notify("Sales order number not found", "warning", 2000);
+                }
+            })
+            .fail(function (jqXHR, textStatus, errorThrown) {
+                DevExpress.ui.notify("Failed to fetch Sales Order NO", "error", 2000);
+                console.error("AJAX Error:", jqXHR.responseText, errorThrown);
+            });
     });
 </script>
