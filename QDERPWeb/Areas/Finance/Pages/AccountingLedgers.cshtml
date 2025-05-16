@@ -227,6 +227,7 @@
 				.ValueExpr("AccountId")
 				.DisplayExpr("AccountHead")
 				.OnInput("dropDownBoxOnInput")
+				.OnClosed("onDropDownBoxClosed")
 				.OnOpened("onOpened")
 				.Width(500)
 				.TabIndex(1)
@@ -1130,7 +1131,7 @@
 	function ddBtnShowRecords_click(duration) {
 		var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
 		if (dropDownBox.option("value") === null) {
-			alert("Please select a ledger account.");
+			DevExpress.ui.notify("Please select a ledger account.", "error", 3000);
 			return;
 		}
 		var frmDateBox = $("#frmdateBox").dxDateBox("instance");
@@ -1297,7 +1298,7 @@
 	function ddBtnGenerateReport_click(duration) {
 		var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
 		if (dropDownBox.option("value") === null) {
-			alert("Please select a ledger account.");
+			DevExpress.ui.notify("Please select a ledger account.", "error", 3000);
 			return;
 		}
 		var frmDateBox = $("#frmdateBox").dxDateBox("instance");
@@ -1470,7 +1471,7 @@
 			alert("Invalid voucher details.");
 			return;
 		}
-
+		debugger;
 		let formattedVoucher = voucherNo.trim().toUpperCase(); // Convert to uppercase for consistency
 		let formattedVoucherType = voucherType.trim(); // Trim to avoid leading/trailing spaces
 
@@ -1494,6 +1495,8 @@
 			let targetUrl = `${baseUrl}?argsledno=${encodeURIComponent(formattedVoucher)}&vouchertype=${encodeURIComponent(formattedVoucherType)}`;
 			console.log("Navigating to:", targetUrl); // Debugging
 			window.location.href = targetUrl; // Navigate
+		} else if (formattedVoucherType == "Opening Balance") {
+			DevExpress.ui.notify("Unable to Navigate because of you choosed Opening Balance.", "warning", 3000);
 		} else {
 			alert("Unknown voucher type: " + voucherType);
 		}
@@ -1541,7 +1544,21 @@
 			alert("No voucher selected.");
 		}
 	});
+	function onDropDownBoxClosed(e) {
+		const typedText = e.component.option("text");
+		const grid = $(e.component.content()).find("#ledgeraccount-datagrid").first().dxDataGrid("instance");
 
+		if (!grid) return;
+
+		const visibleRows = grid.getVisibleRows();
+		const match = visibleRows.find(r => r.data.AccountHead === typedText);
+
+		if (!match) {
+			// Clear the value if not valid
+			e.component.option("value", null);
+
+		}
+	}
 
 
 </script>

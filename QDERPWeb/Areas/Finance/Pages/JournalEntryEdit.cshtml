@@ -231,7 +231,7 @@
                     // ✅ Additional columns from entity
                     columns.Add().DataField("JournalChildNo").Caption("Journal Child No").Width(150).Visible(true);
                     columns.Add().DataField("JournalRefNo").Caption("Journal Ref No").Width(200).Visible(false);
-                    columns.Add().DataField("LineOrderNo").Caption("Line Order No").Width(120).Visible(false);
+                    
                     columns.Add().DataField("AccountId").Caption("Account ID").Width(150).Visible(false);
 
                     columns.Add().DataField("PropertyCostDescription").Caption("Property Cost Desc").Width(200).Visible(false);
@@ -1481,21 +1481,48 @@
 
 
     function closeParentModal() {
-        // Hide the popup
-        if (popupInstances[journalchildno]) {
-            popupInstances[journalchildno].hide();
+        const voucherEntryNo = $("#CurrentVoucherEntryNo").val();
+        if (!voucherEntryNo) {
+            console.warn("VoucherEntryNo not found in hidden field.");
+            return;
+        }
+
+        const popup = popupInstances[voucherEntryNo];
+        if (popup) {
+            popup.hide();
+        } else {
+            console.warn("No popup instance found for VoucherEntryNo:", voucherEntryNo);
         }
     }
 
     function ClosePropertyModel() {
-        if (popupInstances[journalchildno]) {
-            popupInstances[journalchildno].hide();
+        const voucherEntryNo = $("#CurrentVoucherEntryNo").val();
+        if (!voucherEntryNo) {
+            console.warn("VoucherEntryNo not found in hidden field.");
+            return;
+        }
+
+        const popup = popupInstances[voucherEntryNo];
+        if (popup) {
+            popup.hide();
+        } else {
+            console.warn("No popup instance found for VoucherEntryNo:", voucherEntryNo);
         }
     }
 
+
     function CloseEmployeeModel() {
-        if (popupInstances[journalchildno]) {
-            popupInstances[journalchildno].hide();
+        const voucherEntryNo = $("#CurrentVoucherEntryNo").val();
+        if (!voucherEntryNo) {
+            console.warn("VoucherEntryNo not found in hidden field.");
+            return;
+        }
+
+        const popup = popupInstances[voucherEntryNo];
+        if (popup) {
+            popup.hide();
+        } else {
+            console.warn("No popup instance found for VoucherEntryNo:", voucherEntryNo);
         }
     }
     function Closepopup() {
@@ -1701,6 +1728,15 @@
                 $btn.dxButton("instance").option("disabled", true);
             }
         });
+        // 🔒 Wait for grid content to be rendered and disable cell buttons
+        setTimeout(function () {
+            $("#dataGrid").find(".dx-button").each(function () {
+                const instance = $(this).dxButton("instance");
+                if (instance) {
+                    instance.option("disabled", true);
+                }
+            });
+        }, 100);
 
     }
 
@@ -1834,6 +1870,14 @@
     }
 
     async function onPostJournalClick() {
+        const approve = await $("#ApprovedBytext").dxTextBox("instance").option("value");
+        if (!approve) {
+            DevExpress.ui.dialog.alert(
+                "This Journal Entry is not yet Approved,Please get it approved<br>and continue for Payment",
+                "Journal Entry Not Approved"
+            );
+            return;
+        }
     const result = await DevExpress.ui.dialog.confirm(
         "You are about to Create Voucher,<br>Click yes if you would like to continue.",
         "Confirmation"
