@@ -2459,7 +2459,10 @@
         "Add New Stock Adjustment Entry": "Add New Stock Adjustment Entry",
         "Debit Note Register": "Debit Note Register",
         "Invoice With Details": "Invoice With Details",
-        "Sales Reporting":"Sales Reporting",
+        "Sales Reporting": "Sales Reporting",
+        "Show Items In Use": "Show Items In Use",
+        "Show All Items": "Show All Items:",
+        "Show Items Discontinued": "Show Items Discontinued"
    
     },
     "ar": {

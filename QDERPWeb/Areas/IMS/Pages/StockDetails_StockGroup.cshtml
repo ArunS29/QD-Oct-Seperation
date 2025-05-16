@@ -1,4 +1,8 @@
 ﻿@page
+@using QD.ERP.Web.DAL.Entities;
+@using System.ComponentModel.DataAnnotations;
+@using DevExtreme.AspNet.Mvc
+
 @model QD.ERP.Web.Areas.IMS.Pages.StockDetails_StockGroupModel
 @{
 }
@@ -172,7 +176,7 @@
                     )
             </td>
             <td>
-                @(Html.DevExtreme().SelectBox()
+                @(Html.DevExtreme().TextBox()
                     .ID("Category")
                     .LabelMode(EditorLabelMode.Outside)
                     .Label(new JS("formatMessage('Category')"))
@@ -181,10 +185,22 @@
             <td>
                 @(Html.DevExtreme().SelectBox()
                     .ID("InventoryMasterGroups")
+                    .DataSource(ds => ds.WebApi()
+                    .Controller("StockInventory")
+                    .LoadAction("GetInventoryMasterGroups")
+                    )
+                    .ValueExpr("InventoryMasterGroupId")
+                    .DisplayExpr("InventoryMasterGroup") // selected item shows only the name
+                    
                     .LabelMode(EditorLabelMode.Outside)
-                    .Label(new JS("formatMessage('Inventory Master Groups')"))
-                )
+                    .Label("Inventory Master Groups")
+                    )
             </td>
+
+
+
+
+
         </tr>
         <tr class="flex-row" style="width:100%;">
             <td>
@@ -192,16 +208,31 @@
                     .ID("InventoryLedgerAccount")
                     .LabelMode(EditorLabelMode.Outside)
                     .Label(new JS("formatMessage('Inventory Ledger Account')"))
-                )
+                    .DataSource(d => d.Mvc()
+                    .Controller("StockInventory")
+                    .LoadAction("GetInventoryLedgerAccounts")
+                    )
+                    .DisplayExpr("DisplayText") 
+                    .ValueExpr("AccountId")   
+                    .Width(370)
+                    )
             </td>
+
 
             <td>
                 @(Html.DevExtreme().SelectBox()
                     .ID("CostLedgerAccount")
                     .LabelMode(EditorLabelMode.Outside)
                     .Label(new JS("formatMessage('Cost Ledger Account')"))
-                )
+                    .DataSource(d => d.Mvc()
+                    .Controller("StockInventory") // Replace with your actual controller name
+                    .LoadAction("GetCostLedgerAccounts")
+                    )
+                    .DisplayExpr("DisplayText") // Shows "AccountHead | AccountGroup"
+                    .ValueExpr("AccountId")     // Submits AccountId
+                    )
             </td>
+
             <td style="padding: 10px; margin-top: 20px;">
                 <div  style="display: flex; width:400px;">
                    
@@ -240,65 +271,83 @@
 </div>
 
 
+
 <div class="dx-field ledgerResult" style="margin-bottom: 100px">
     <table style="width:100%; margin-top: 15px;">
         <tr>
             <td>
-                @(Html.DevExtreme().DataGrid()
-                    .DataSource(new object[] { })
+                @(Html.DevExtreme().DataGrid<Tbl20165GoodsAndServicesGroup>()
+                    .ID("dataGrid")
+                    .DataSource(ds => ds.Mvc()
+                    .Controller("StockInventory")
+                    .LoadAction("GoodsServicesData")
+                    .UpdateAction("UpdateGoodsService")
+                    .Key("GsgroupId")
+                    )
+                    .RemoteOperations(false)
                     .Height(400)
+                    .Editing(editing =>
+                    {
+                        editing.Mode(GridEditMode.Row);
+                        editing.AllowUpdating(true);
+                        editing.UseIcons(true);
+                    })
                     .Columns(columns =>
                     {
-                        columns.Add().DataField("Code")
+                        columns.AddFor(m => m.GsgroupCode)
                         .Caption(new JS("formatMessage('Code')"))
+                        .Alignment(HorizontalAlignment.Center)
+                        .AllowEditing(false); // Optional
+
+                        columns.AddFor(m => m.GsgroupName)
+                        .Caption(new JS("formatMessage('GS Group')"))
                         .Alignment(HorizontalAlignment.Center);
 
-                        columns.Add().DataField("GSGroup")
-                        .Caption(new JS("formatMessage('Code')"))
+                        columns.AddFor(m => m.GsgroupNameAr)
+                        .Caption(new JS("formatMessage('GS Group (In Arabic)')"))
                         .Alignment(HorizontalAlignment.Center);
 
-                        columns.Add().DataField("GSGroupArabic")
-                        .Caption(new JS("formatMessage('GS Group (In Arabic')"))
-                        .Alignment(HorizontalAlignment.Center);
-
-                        columns.Add().DataField("Category")
+                        columns.AddFor(m => m.Gscategory)
                         .Caption(new JS("formatMessage('Category')"))
                         .Alignment(HorizontalAlignment.Center);
 
-                        columns.Add().DataField("InventoryMasterGroup")
+                        columns.AddFor(m => m.InventoryMasterGroupId)
                         .Caption(new JS("formatMessage('Inventory Master Group')"))
                         .Alignment(HorizontalAlignment.Center);
 
-                            columns.Add().DataField("IsServices")
+                        columns.AddFor(m => m.IsServicesGroup)
                         .Caption(new JS("formatMessage('Is Services?')"))
                         .Alignment(HorizontalAlignment.Center)
-                        .CellTemplate(@<text>
-                    
-                    
-                </text>);
-
-                       
-
+                        .DataType(GridColumnDataType.Boolean)
+                        .CellTemplate(new JS(
+                    @"function(container, options) {
+                var data = options.data;
+                $('<input>', {
+                type: 'checkbox',
+                checked: data.IsServicesGroup,
+                change: function(e) {
+                onIsServicesChanged(data.GsgroupId, e.target.checked);
+                }
+                }).appendTo(container);
+                }"));
                     })
-
                     .ShowColumnLines(true)
                     .ShowRowLines(true)
                     .RowAlternationEnabled(true)
                     .ShowColumnHeaders(true)
                     .ColumnAutoWidth(true)
-                    .AllowColumnReordering(true) // Enable column reordering
-                    .AllowColumnResizing(true)   // Enable column resizing
-                    .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
-                    .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
+                    .AllowColumnReordering(true)
+                    .AllowColumnResizing(true)
+                    .ColumnFixing(fixing => fixing.Enabled(true))
+                    .GroupPanel(groupPanel => groupPanel.Visible(false))
                     .ShowBorders(true)
                     )
-
 
             </td>
         </tr>
     </table>
-
 </div>
+
 
 <script>
     function printReport() {
@@ -313,6 +362,59 @@
              formatMessage("Choose the Group is Services Group ?"));
     });
 
+    function onIsServicesChanged(gsgroupId, isChecked) {
+        alert(isChecked)
+        $.ajax({
+            url: '/api/StockInventory/UpdateIsServices',
+            method: 'POST',
+            data: JSON.stringify({ GsgroupId: gsgroupId, IsServicesGroup: isChecked }),
+            contentType: 'application/json',
+            success: function () {
+                DevExpress.ui.notify('Updated successfully', 'success', 2000);
+                // optionally refresh grid here
+                $('#dataGrid').dxDataGrid('instance').refresh();
+            },
+            error: function () {
+                DevExpress.ui.notify('Update failed', 'error', 2000);
+            }
+        });
+    }
+        $(function () {
+            $("#btnAdd").dxButton("instance").option("onClick", function () {
+                const groupCode = $("#GroupCode").dxTextBox("instance").option("value");
+            const category = $("#Category").dxTextBox("instance").option("value");
+                const inventoryGroupId = $("#InventoryMasterGroups").dxSelectBox("instance").option("value");
+                const inventoryLedger = $("#InventoryLedgerAccount").dxSelectBox("instance").option("value");
+                const costLedger = $("#CostLedgerAccount").dxSelectBox("instance").option("value");
+                const isServiceGroup = $("#ServicesGroup").dxCheckBox("instance").option("value");
+                const gsgroupName = $("#NewStockServicesGroups").dxTextArea("instance").option("value");
+                const gsgroupNameAr = $("#StockServicesGroups").dxTextArea("instance").option("value");
 
+                const data = {
+                    GsgroupCode: groupCode,
+                    Gscategory: category,
+                    InventoryMasterGroupId: inventoryGroupId,
+                    GsgroupInventoryLedger: inventoryLedger,
+                    GsgroupExpenseLedger: costLedger,
+                    IsServicesGroup: isServiceGroup,
+                    GsgroupName: gsgroupName,
+                    GsgroupNameAr: gsgroupNameAr
+                };
+
+                $.ajax({
+                url: '/api/StockInventory/AddGoodsServiceGroup',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function () {
+                        DevExpress.ui.notify('Saved successfully', 'success', 2000);
+                        $("#dataGrid").dxDataGrid("instance").refresh();
+                    },
+                    error: function () {
+                        DevExpress.ui.notify('Save failed', 'error', 2000);
+                    }
+                });
+            });
+        });
 
 </script>

@@ -136,6 +136,10 @@
         pointer-events: none; /* Prevents hover and click effects */
     }
 
+    .dx-dropdownlist-popup-wrapper .dx-list .dx-list-item {
+        color: #000 !important;
+        background-color: #fff !important;
+    }
 
    
 </style>
@@ -161,15 +165,25 @@
                             .ID("StockNoItemCode")
                             .Label(new JS("formatMessage('Stock No / Item Code')"))
                             .LabelMode(EditorLabelMode.Outside)
+                            .ReadOnly(true)
                             .Width("90%"))
                     </td>
                     <td>
                         <div style="display:flex;align-items:end;">
-                        @(Html.DevExtreme().SelectBox()
-                            .ID("StockGroup")
-                            .Label(new JS("formatMessage('Stock Group')"))
-                            .LabelMode(EditorLabelMode.Outside)
-                            .Width("90%"))
+                            @(Html.DevExtreme().SelectBox()
+                                .ID("StockGroup")
+                                .DisplayExpr("GsgroupName")
+                                .ValueExpr("GsgroupName")
+
+                                .DataSource(d => d.WebApi()
+                                .Controller("StockInventory")
+                                .LoadAction("GetStockGroups")
+                                )
+                                .Label(new JS("formatMessage('Stock Group')"))
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Width("90%")
+                                .OnValueChanged("onStockGroupChange")
+                                )
                         @(Html.DevExtreme().Button()
                             .ID("btnAddStockGroup")
                             .Icon("plus")
@@ -455,6 +469,18 @@
 
           });
       });
+
+      //////
+
+    function onStockGroupChange(e) {
+        var groupName = e.value;
+        if (groupName) {
+            $.get('/api/StockInventory/GetNextStockNumber', { groupName: groupName }, function (data) {
+                $("#StockNoItemCode").dxTextBox("instance").option("value", data);
+            });
+        }
+    }
+
 
       
 </script>
