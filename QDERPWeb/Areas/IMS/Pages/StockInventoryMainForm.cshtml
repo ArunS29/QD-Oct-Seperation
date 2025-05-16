@@ -1,0 +1,222 @@
+﻿@page
+@using DevExtreme.AspNet.Mvc
+@using QD.ERP.Web.DAL.Entities;
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<script src="~/js/global/print.js"></script>
+
+
+<style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background-color: #f9fbfd;
+        color: #2c3e50;
+    }
+
+    .title {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        font-size: 28px;
+        font-weight: 600;
+        color: linen;
+        border-bottom: 2px solid #d1e3f8;
+        padding-bottom: 10px;
+    }
+
+    .custom-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        align-items: flex-end;
+        margin-bottom: 25px;
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .toolbar-item {
+        min-width: 260px;
+        flex: 1;
+    }
+
+    .dx-field-label,
+    .dx-texteditor-label {
+        font-weight: 600 !important;
+        font-size: 14px;
+        color: #34495e;
+        margin-bottom: 5px;
+    }
+
+    .dx-texteditor,
+    .dx-dropdownbutton {
+        border-radius: 8px !important;
+    }
+
+    .dx-dropdownbutton {
+        background-color: #e6f0ff !important;
+    }
+
+    .dx-button {
+        font-weight: 500;
+        border-radius: 8px !important;
+        transition: background-color 0.3s ease;
+    }
+
+    .dx-button:hover {
+        background-color: #d0e2ff !important;
+    }
+
+    .button-alignment-down {
+        margin-top: 8px;
+    }
+
+    #dataGrid {
+        background-color: #fff;
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+        height: 370px;
+    }
+
+    .limited-footer {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #ffffff;
+        border-top: 1px solid #e0e0e0;
+        border-radius: 0 0 12px 12px;
+    }
+
+
+
+    /* Responsive Tweaks */
+    @@media screen and (max-width: 768px) {
+        .toolbar-item {
+            min-width: 100%;
+        }
+
+        h2 {
+            font-size: 22px;
+        }
+
+        #dataGrid {
+            padding: 10px;
+        }
+    }
+</style>
+
+<div class="container-fluid"></div>
+
+<div class="title">
+    <div class="header-container">
+        <div id="StockInventoryMainForm" class="no-border-title">
+            <h2 >
+                Stock Inventory
+            </h2>
+        </div>
+    </div>
+</div>
+<div class="Footer">
+    @await Html.PartialAsync("/Pages/Shared/IMS/StockInventoryFooter.cshtml")
+</div>
+
+<div id="printSection">
+    <div class="dx-field ledgerResult" >
+        @(Html.DevExtreme().DataGrid<Qry60001inventoryStockView>()
+            .ID("dataGrid")
+            .DataSource(ds => ds.Mvc()
+            .Controller("StockInventory")
+            .LoadAction("Get"))
+            .RemoteOperations(false)
+            .Columns(columns =>
+            {
+                columns.AddFor(m => m.Gscode)
+                .Caption("Stock Code")
+                .Width(120);
+
+                columns.AddFor(m => m.Gsdescrpition)
+                .Caption("Description")
+                .Width(280);
+
+                columns.AddFor(m => m.GsgroupName)
+                .Caption("Stock Group")
+                .Width(180)
+                .GroupIndex(0); // group by this column
+
+                columns.AddFor(m => m.ItemPartNo)
+                .Caption("Item Part No")
+                .Width(150);
+
+                columns.AddFor(m => m.UnitType)
+                .Caption("Unit")
+                .Width(100);
+
+                columns.AddFor(m => m.GssellingRate)
+                .Caption("Selling Price")
+                .Format("fixedPoint")
+                .Alignment(HorizontalAlignment.Right)
+                .Width(120);
+
+                columns.AddFor(m => m.CostPrice)
+                .Caption("Cost Price")
+                .Format("fixedPoint")
+                .Alignment(HorizontalAlignment.Right)
+                .Width(120);
+
+                columns.AddFor(m => m.OpeningBalance)
+                .Caption("Opening Balance")
+                .Format("fixedPoint")
+                .Alignment(HorizontalAlignment.Right)
+                .Width(120);
+
+                columns.AddFor(m => m.TotalReceived)
+                .Caption("Received")
+                .Format("fixedPoint")
+                .Alignment(HorizontalAlignment.Right)
+                .Width(120);
+
+                columns.AddFor(m => m.TotalIssues)
+                .Caption("Issues")
+                .Format("fixedPoint")
+                .Alignment(HorizontalAlignment.Right)
+                .Width(120);
+
+                columns.AddFor(m => m.ClosingBalance)
+                .Caption("Closing Balance")
+                .Format("fixedPoint")
+                .Alignment(HorizontalAlignment.Right)
+                .Width(120);
+
+                columns.AddFor(m => m.MaxQty)
+                .Caption("Inventory Value (FIFO)")
+                .Format("fixedPoint")
+                .Alignment(HorizontalAlignment.Right)
+                .Width(150);
+
+                columns.AddFor(m => m.IsDiscontinued)
+                .Caption("IsDiscontinued")
+                .Visible(false)
+                .Width(150);
+            })
+            .Paging(p => p.PageSize(20))
+            .AllowColumnReordering(true)
+            .AllowColumnResizing(true)
+            .ColumnAutoWidth(false)
+            .WordWrapEnabled(true)
+            .FilterRow(f => f.Visible(false))
+            .Grouping(g => g.AutoExpandAll(true))
+            .GroupPanel(gp => gp.Visible(false))
+            .ShowBorders(true)
+            .Height("100%")
+            .Width("100%")
+            )
+    </div>
+</div>
+
+<script>
+    let dataGrid;
+
+    function dataGridInitialized(e) {
+        dataGrid = e.component;
+    }
+</script>
