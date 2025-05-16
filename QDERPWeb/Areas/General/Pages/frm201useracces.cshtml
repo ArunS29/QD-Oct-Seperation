@@ -39,11 +39,9 @@
         }
 
 </style>
-
-
 <div class="title">
     <div class="header-container">
-        <h2>Access Management</h2>
+        <div id="AccessManagement" class="no-border-input"></div>
     </div>
 </div>
 <div style="display: flex; gap: 10px; margin: 20px;">
@@ -81,7 +79,7 @@
             .Items(items =>
             {
                 items.Add()
-            .Title("Welcome")
+            .Title(new JS("formatMessage('Welcome')"))
             .Template(@<text>
 
         @(Html.DevExtreme().DataGrid()
@@ -103,50 +101,50 @@
         .Columns(columns =>
         {
 
-        columns.Add().DataField("IsDisabled").Caption("Is Disabled").DataType(GridColumnDataType.Boolean).Width(100);
-        columns.Add().DataField("UserId").Caption("User ID").CssClass("text-link").Width(100);
-        columns.Add().DataField("UserName").Caption("User Name");
-        columns.Add().DataField("UserLevel").Caption("User Level")
+        columns.Add().DataField("IsDisabled").Caption(new JS("formatMessage('Is Disabled')")).DataType(GridColumnDataType.Boolean).Width(100);
+        columns.Add().DataField("UserId").Caption(new JS("formatMessage('User ID')")).CssClass("text-link").Width(100);
+        columns.Add().DataField("UserName").Caption(new JS("formatMessage('User Name')"));
+        columns.Add().DataField("UserLevel").Caption(new JS("formatMessage('User Level')"))
         .Lookup(lookup => lookup
         .DataSource(new JS("userLevels"))
         .ValueExpr("UserLevelID")
         .DisplayExpr("UserLevelDesc")
         );
-        columns.Add().DataField("EqptQuotationAccess").Caption("Employee Group")
+        columns.Add().DataField("EqptQuotationAccess").Caption(new JS("formatMessage('Employee Group')"))
         .Lookup(lookup => lookup
         .DataSource(new JS("employeeGroups"))
         .ValueExpr("EmpGroupID")
         .DisplayExpr("EmployeeGroup")
         );
-        columns.Add().DataField("DeptCode").Caption("Department")
+        columns.Add().DataField("DeptCode").Caption(new JS("formatMessage('Department')"))
         .Lookup(lookup => lookup
         .DataSource(new JS("departments"))
         .ValueExpr("DepartmentCode")
         .DisplayExpr("Department")
         );
-        columns.Add().DataField("MobileNo").Caption("UserMobileNo");
-        columns.Add().DataField("EmailAddress").Caption("EmailAddress");
-        columns.Add().DataField("IsDisabled").Caption("Currently Logged In").DataType(GridColumnDataType.Boolean).Width(100);
-        columns.Add().DataField("LogTerminal").Caption("Last Logged In Terminal");
-        columns.Add().DataField("LastLogOnTime").Caption("UserLastLoggedInTime");
-        columns.Add().DataField("LastLogOffTime").Caption("UserLastLoggedOffTime");
+        columns.Add().DataField("MobileNo").Caption(new JS("formatMessage('UserMobileNo')"));
+        columns.Add().DataField("EmailAddress").Caption(new JS("formatMessage('EmailAddress')"));
+        columns.Add().DataField("IsDisabled").Caption(new JS("formatMessage('Currently Logged In')")).DataType(GridColumnDataType.Boolean).Width(100);
+        columns.Add().DataField("LogTerminal").Caption(new JS("formatMessage('Last Logged In Terminal')"));
+        columns.Add().DataField("LastLogOnTime").Caption(new JS("formatMessage('UserLastLoggedInTime')"));
+        columns.Add().DataField("LastLogOffTime").Caption(new JS("formatMessage('UserLastLoggedOffTime')"));
 
 
 @* 
-        columns.Add().DataField("Password").Caption("Password");
-        columns.Add().DataField("DeptCode").Caption("Department");
-        columns.Add().DataField("CompanyId").Caption("Company");
-        columns.Add().DataField("BranchCode").Caption("BranchCode");
-        columns.Add().DataField("HrlevelCode").Caption("HrlevelCode");
-        columns.Add().DataField("InventoryAccess").Caption("InventoryAccess");
-        columns.Add().DataField("PettyCashAccount").Caption("PettyCashAccount");
-        columns.Add().DataField("EqptQuotationAccess").Caption("EqptQuotationAccess");
-        columns.Add().DataField("InventoryMpraccess").Caption("InventoryMpraccess");
-        columns.Add().DataField("HrtimeSheetProjectGroup").Caption("HrtimeSheetProjectGroup");
-        columns.Add().DataField("EmailAddress").Caption("EmailAddress");
-        columns.Add().DataField("MobileNo").Caption("UserMobileNo");
-        columns.Add().DataField("LastLogOnTime").Caption("UserLastLoggedInTime");
-        columns.Add().DataField("LastLogOffTime").Caption("UserLastLoggedOffTime"); *@
+        columns.Add().DataField("Password").Caption(new JS("formatMessage('Password");
+        columns.Add().DataField("DeptCode").Caption(new JS("formatMessage('Department");
+        columns.Add().DataField("CompanyId").Caption(new JS("formatMessage('Company");
+        columns.Add().DataField("BranchCode").Caption(new JS("formatMessage('BranchCode");
+        columns.Add().DataField("HrlevelCode").Caption(new JS("formatMessage('HrlevelCode");
+        columns.Add().DataField("InventoryAccess").Caption(new JS("formatMessage('InventoryAccess");
+        columns.Add().DataField("PettyCashAccount").Caption(new JS("formatMessage('PettyCashAccount");
+        columns.Add().DataField("EqptQuotationAccess").Caption(new JS("formatMessage('EqptQuotationAccess");
+        columns.Add().DataField("InventoryMpraccess").Caption(new JS("formatMessage('InventoryMpraccess");
+        columns.Add().DataField("HrtimeSheetProjectGroup").Caption(new JS("formatMessage('HrtimeSheetProjectGroup");
+        columns.Add().DataField("EmailAddress").Caption(new JS("formatMessage('EmailAddress");
+        columns.Add().DataField("MobileNo").Caption(new JS("formatMessage('UserMobileNo");
+        columns.Add().DataField("LastLogOnTime").Caption(new JS("formatMessage('UserLastLoggedInTime");
+        columns.Add().DataField("LastLogOffTime").Caption(new JS("formatMessage('UserLastLoggedOffTime"); *@
         
     })
         )
@@ -607,6 +605,16 @@
                 });
             }
         }
+             $(function () {
+        $("#AccessManagement").dxTextBox({
+        text: formatMessage("Access Management"),
+            readOnly: true,
+            onContentReady: function (e) {
+            $(e.element).addClass("dx-textbox-heading");
+            }
+            });
+        });
+
 
         //       $(document).ready(function () {
         //     $(".limited-footer .btn-containerIvoiceEdit").each(function () {

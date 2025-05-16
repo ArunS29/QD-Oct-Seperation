@@ -8,29 +8,28 @@
 <form id="userForm">
     <div class="title">
         <div class="header-container">
-            <h2>User Account Details</h2>
+            <div id="UserAccountDetails" class="no-border-input"></div>
         </div>
     </div>
-
     <div id="tabPanelContainer">
         @(Html.DevExtreme().TabPanel()
                 .ID("accessTabPanel")
                 .Items(items =>
                 {
                     items.Add()
-                .Title("User Account Details")
+              .Title(new JS("formatMessage('User Account Details')"))
                 .Template(@<text>
             <div class="dx-form" style="padding: 20px; max-width: 1200px;">
                 <div class="form-grid">
 
                     <div class="form-group">
-                        <label>User ID:</label>
-                        @(Html.DevExtreme().TextBox().ID("UserId").Width("100%"))
+                        @(Html.DevExtreme().TextBox().ID("UserId")  .Label(new JS("formatMessage('User ID')"))
+                        .LabelMode(EditorLabelMode.Outside).Width("100%"))
                     </div>
 
                     <div class="form-group">
-                        <label>User Name:</label>
                         @(Html.DevExtreme().TextBox()
+                        .Label(new JS("formatMessage('User Name')"))
                         .LabelMode(EditorLabelMode.Outside)
                         .ID("UserName")
                         .OnChange("validateEmail")
@@ -45,14 +44,15 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Password:</label>
-                        @(Html.DevExtreme().TextBox().ID("Password").Mode(TextBoxMode.Password).Width("100%"))
+                        @(Html.DevExtreme().TextBox().ID("Password") .Label(new JS("formatMessage('Password')"))
+                        .LabelMode(EditorLabelMode.Outside).Mode(TextBoxMode.Password).Width("100%"))
                     </div>
 
                     <div class="form-group">
-                        <label>Department :</label>
                         @(Html.DevExtreme().DropDownBox()
                         .ID("ddDepartment")
+                        .Label(new JS("formatMessage('Department')"))
+                        .LabelMode(EditorLabelMode.Outside)
                         .DataSource(d => d.WebApi()
                         .Controller("utility")
                         .LoadAction("GetDepartments")
@@ -63,8 +63,6 @@
                         .ShowClearButton(true)
                         .Placeholder("Select Department")
                         //.AcceptCustomValue(false)
-                        //.Label("Department")
-                        .LabelMode(EditorLabelMode.Outside)
                         .Width("100%")
                         .DropDownOptions(d => d.Width("100%"))
                         .ContentTemplate(new TemplateName("DepartmentContentTemplate"))
@@ -76,10 +74,10 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Company Branch :</label>
                         @(Html.DevExtreme().DropDownBox()
-                        .DataSource(d => d.WebApi().Controller("utility").LoadAction("GetCompanies").LoadMode(DataSourceLoadMode.Raw).Key("CompanyID"))
+                        .Label(new JS("formatMessage('Company Branch')"))
                         .LabelMode(EditorLabelMode.Outside)
+                        .DataSource(d => d.WebApi().Controller("utility").LoadAction("GetCompanies").LoadMode(DataSourceLoadMode.Raw).Key("CompanyID"))
                         .ID("ddCompany")
                         .ValidationRules(rules => {
                         rules.AddRequired().Message("Please select a company.");
@@ -107,10 +105,10 @@
 
 
                     <div class="form-group">
-                        <label>Company Division :</label>
                         @(Html.DevExtreme().DropDownBox()
-                        .DataSource(d => d.WebApi().Controller("utility").LoadAction("GetBranches").LoadMode(DataSourceLoadMode.Raw).Key("BranchCode"))
+                        .Label(new JS("formatMessage('Company Division')"))
                         .LabelMode(EditorLabelMode.Outside)
+                        .DataSource(d => d.WebApi().Controller("utility").LoadAction("GetBranches").LoadMode(DataSourceLoadMode.Raw).Key("BranchCode"))
                         .ID("ddBranch")
                         .ValidationRules(rules => {
                         rules.AddRequired().Message("Please select a Division.");
@@ -135,10 +133,10 @@
                     </div>
 
                     <div class="form-group">
-                        <label>User Level :</label>
                         @(Html.DevExtreme().DropDownBox()
-                        .DataSource(d => d.WebApi().Controller("utility").LoadAction("GetUserLevels").LoadMode(DataSourceLoadMode.Raw).Key("UserLevelID"))
+                        .Label(new JS("formatMessage('User Level')"))
                         .LabelMode(EditorLabelMode.Outside)
+                        .DataSource(d => d.WebApi().Controller("utility").LoadAction("GetUserLevels").LoadMode(DataSourceLoadMode.Raw).Key("UserLevelID"))
                         .ID("ddUserLevel")
                         .ValidationRules(rules => {
                         rules.AddRequired().Message("Please select a user level.");
@@ -163,10 +161,10 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Employee File Access Group :</label>
                         @(Html.DevExtreme().DropDownBox()
-                        .DataSource(d => d.WebApi().Controller("utility").LoadAction("GetEmployeeGroups").LoadMode(DataSourceLoadMode.Raw).Key("EmpGroupID"))
+                        .Label(new JS("formatMessage('Employee File Access Group')"))
                         .LabelMode(EditorLabelMode.Outside)
+                        .DataSource(d => d.WebApi().Controller("utility").LoadAction("GetEmployeeGroups").LoadMode(DataSourceLoadMode.Raw).Key("EmpGroupID"))
                         .ID("ddEmployeeGroup")
                         .ValidationRules(rules => {
                         rules.AddRequired().Message("Please select an employee group.");
@@ -192,9 +190,10 @@
 
 
                     <div class="form-group">
-                        <label>Inventory Master Access:</label>
                         @(Html.DevExtreme().DropDownBox()
                         .ID("ddInventoryMasterGroup")
+                        .Label(new JS("formatMessage('Inventory Master Access')"))
+                        .LabelMode(EditorLabelMode.Outside)
                         .DataSource(d => d.WebApi()
                         .Controller("utility")
                         .LoadAction("GetInventoryGroups")
@@ -218,8 +217,9 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Petty Cash Account(Finance Module) :</label>
                         @(Html.DevExtreme().DropDownBox()
+                        .Label(new JS("formatMessage('Petty Cash Account(Finance Module)')"))
+                        .LabelMode(EditorLabelMode.Outside)
                         .DataSource(d => d.WebApi().Controller("utility").LoadAction("GetFilteredAccountHead").LoadMode(DataSourceLoadMode.Raw).Key("AccountId"))
                         .LabelMode(EditorLabelMode.Outside)
                         .ID("ddFilteredAccountHead")
@@ -247,10 +247,11 @@
 
 
                     <div class="form-group">
-                        <label>Equipment Sales Person Access :</label>
                         @(Html.DevExtreme().DropDownBox()
                         .Label(new JS("formatMessage('User Level')"))
                         .ID("ddHRUserLevel")
+                        .Label(new JS("formatMessage('Equipment Sales Person Access:')"))
+                        .LabelMode(EditorLabelMode.Outside)
                         .DataSource(d => d.WebApi()
                         .Controller("Utility")
                         .LoadAction("GetHRUserLevels")
@@ -273,11 +274,12 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Inventory Sales Person Access :</label>
                         @(Html.DevExtreme().DropDownBox()
                         .DataSource(d => d.WebApi().Controller("utility").LoadAction("GetSalesPersonAccessLevels").LoadMode(DataSourceLoadMode.Raw).Key("SalesPersonID"))
                         .LabelMode(EditorLabelMode.Outside)
                         .ID("ddSalesPerson")
+                        .Label(new JS("formatMessage('Inventory Sales Person Access:')"))
+                        .LabelMode(EditorLabelMode.Outside)
                         .ValidationRules(rules => {
                         rules.AddRequired().Message("Ledger Account should be entered.");
                         })
@@ -301,8 +303,10 @@
                     </div>
 
                     <div class="form-group">
-                        <label>HR Employee Timesheet Group :</label><div class="form-group">
+                       <div class="form-group">
                             @(Html.DevExtreme().DropDownBox()
+                            .Label(new JS("formatMessage('HR Employee Timesheet Group:')"))
+                            .LabelMode(EditorLabelMode.Outside)
                             .DataSource(d => d.WebApi()
                             .Controller("Utility")
                             .LoadAction("GetProjectGroups")
@@ -332,23 +336,23 @@
 
 
                     <div class="form-group">
-                        <label>User Mobile No:</label>
-                        @(Html.DevExtreme().TextBox().ID("UserMobileNo").Width("100%"))
+                        @(Html.DevExtreme().TextBox().ID("UserMobileNo") .Label(new JS("formatMessage('User Mobile No:')"))
+                        .LabelMode(EditorLabelMode.Outside).Width("100%"))
                     </div>
 
                     <div class="form-group">
-                        <label>User Email Address:</label>
-                        @(Html.DevExtreme().TextBox().ID("UserEmailAddress").Width("100%"))
+                        @(Html.DevExtreme().TextBox().ID("UserEmailAddress") .Label(new JS("formatMessage('User Email Address:')"))
+                        .LabelMode(EditorLabelMode.Outside).Width("100%"))
                     </div>
 
                     <div class="form-group">
-                        <label>User Last Logged In Time:</label>
-                        @(Html.DevExtreme().DateBox().ID("UserLastLoggedInTime").Width("100%"))
+                        @(Html.DevExtreme().DateBox().ID("UserLastLoggedInTime") .Label(new JS("formatMessage('User Last Logged In Time:')"))
+                        .LabelMode(EditorLabelMode.Outside).Width("100%"))
                     </div>
 
                     <div class="form-group">
-                        <label>User Last Logged Off Time:</label>
-                        @(Html.DevExtreme().DateBox().ID("UserLastLoggedOffTime").Width("100%"))
+                        @(Html.DevExtreme().DateBox().ID("UserLastLoggedOffTime") .Label(new JS("formatMessage('User Last Logged Off Time:')"))
+                        .LabelMode(EditorLabelMode.Outside).Width("100%"))
                     </div>
 
                 </div>
@@ -356,15 +360,15 @@
 
                 <div class="form-actions">
 
-                    <button type="button" id="btnSave" class="btn btn-success" onclick="saveUserDetails()">Save</button>
+                    <button type="button" id="btnSave" class="btn btn-success" onclick="saveUserDetails()"></button>
                     @* <button type="button" id="btnResetPassword" class="btn btn-warning" onclick="resetPassword()">Reset Password</button> *@
                 </div>
             </div>
 
         </text>);
 
-                    items.Add()
-                .Title("User Access Details")
+                 items.Add()
+                .Title(new JS("formatMessage('User Access Details')"))
                 .Template(@<text>
             <div>
                 <div class="containerInventoryStock">
@@ -376,7 +380,7 @@
                                     <td>
                                         @(Html.DevExtreme().Button()
                                         .ID("btnGenerateAccessList")
-                                        .Text("Generate Access List")
+                                        .Text(new JS("formatMessage('Generate Access List')"))
                                         .Icon("key")
                                         .Width("100%")
                                         .ElementAttr("class", "inline-icon")
@@ -387,7 +391,7 @@
                                         <div style="display: flex; align-items: center;">
                                             @(Html.DevExtreme().Button()
                                             .ID("btnReplicateUserAccessMain")
-                                            .Text("Replicate User Access")
+                                            .Text(new JS("formatMessage('Replicate User Access')"))
                                             .Icon("group")
                                             .Width(200)
                                             .OnClick("ReplicateAccess")
@@ -415,17 +419,17 @@
                             Html.DevExtreme().Tabs()
                             .Items(items =>
                             {
-                            items.Add().Icon("preferences").Text("Master Module");
-                            items.Add().Icon("chart").Text("Finance");
-                            items.Add().Icon("image").Text("VAT");
-                            items.Add().Icon("money").Text("Human Resources");
-                            items.Add().Icon("repeat").Text("Equipment Rental");
-                            items.Add().Icon("tags").Text("Inventory Management");
-                            items.Add().Icon("cart").Text("Camp Management");
-                            items.Add().Icon("runner").Text("Project Control");
-                            items.Add().Icon("check").Text("Scaffolding Rental Solution");
-                            items.Add().Icon("repeat").Text("Alert Notification");
-                            items.Add().Icon("doc").Text("Finance Ledger Access");
+                            items.Add().Icon("preferences").Text(new JS("formatMessage('Master Module')"));
+                            items.Add().Icon("chart").Text(new JS("formatMessage('Finance')"));
+                            items.Add().Icon("image").Text(new JS("formatMessage('VAT')"));
+                            items.Add().Icon("money").Text(new JS("formatMessage('Human Resources')"));
+                            items.Add().Icon("repeat").Text(new JS("formatMessage('Equipment Rental')"));
+                            items.Add().Icon("tags").Text(new JS("formatMessage('Inventory Management')"));
+                            items.Add().Icon("cart").Text(new JS("formatMessage('Camp Management')"));
+                            items.Add().Icon("runner").Text(new JS("formatMessage('Project Control')"));
+                            items.Add().Icon("check").Text(new JS("formatMessage('Scaffolding Rental Solution')"));
+                            items.Add().Icon("repeat").Text(new JS("formatMessage('Alert Notification')"));
+                            items.Add().Icon("doc").Text(new JS("formatMessage('Finance Ledger Access')"));
                             })
                             .SelectedIndex(0)
                             .Orientation(DevExtreme.AspNet.Mvc.Orientation.Vertical)
@@ -472,25 +476,25 @@
 
                             <div class="container-fluid tab-container">
                                 <div class="card">
-                                    <div class="card-body">Content for Inventory Management</div>
+                                    <div class="card-body" id="ContentforInventoryManagement">Content for Inventory Management</div>
                                 </div>
                             </div>
 
                             <div class="container-fluid tab-container">
                                 <div class="card">
-                                    <div class="card-body">Content for Camp Management</div>
+                                    <div class="card-body" id="ContentforCampManagement">Content for Camp Management</div>
                                 </div>
                             </div>
 
                             <div class="container-fluid tab-container">
                                 <div class="card">
-                                    <div class="card-body">Content for Project Control</div>
+                                    <div class="card-body" id="ContentforProjectControl">Content for Project Control</div>
                                 </div>
                             </div>
 
                             <div class="container-fluid tab-container">
                                 <div class="card">
-                                    <div class="card-body">Content for Scaffolding Rental Solution</div>
+                                    <div class="card-body" id="RentalSolution">Content for Scaffolding Rental Solution</div>
                                 </div>
                             </div>
 
@@ -505,7 +509,7 @@
                                         <div style="margin-top: 20px;">
                                             @(Html.DevExtreme().Button()
                                             .ID("btnNotificationsOnCompanyDocs")
-                                            .Text("Set Alert Notification for Company Documents")
+                                            .Text(new JS("formatMessage('Set Alert Notification for Company Documents')"))
                                             .OnClick("onSetAlertNotificationClick")
                                             )
                                             <div id="lblAlertforCompanyDoc" style="margin-top: 5px;"></div>
@@ -514,7 +518,7 @@
                                         <div style="margin-top: 20px;">
                                             @(Html.DevExtreme().Button()
                                             .ID("btnNotificationsOnEquipmentDocs")
-                                            .Text("Set Alert Notification for Equipment Documents")
+                                            .Text(new JS("formatMessage('Set Alert Notification for Equipment Documents')"))
                                             .OnClick("onSetEquipmentAlertNotificationClick")
                                             )
                                             <div id="lblAlertforEquipmentDoc" style="margin-top: 5px;"></div>
@@ -523,7 +527,7 @@
                                         <div style="margin-top: 20px;">
                                             @(Html.DevExtreme().Button()
                                             .ID("btnNotificationsOnHRDocs")
-                                            .Text("Set Alert Notification for HR Documents")
+                                            .Text(new JS("formatMessage('Set Alert Notification for HR Documents')"))
                                             .OnClick("onSetHRAlertNotificationClick")
                                             )
                                             <div id="lblAlertforHRDoc" style="margin-top: 5px;"></div>
@@ -1511,11 +1515,11 @@
                 },
                 columns: [
                     { dataField: "SlNo", caption: "Serial No", visible: false },
-                    { dataField: "ItemForm", caption: "Item Name" },
-                    { dataField: "ItemDescription", caption: "Action Name" },
+                    { dataField: "ItemForm", caption: formatMessage("Item Name") },
+                    { dataField: "ItemDescription", caption: formatMessage("Action Name") },
                     {
                         dataField: "ItemVisible",
-                        caption: "Visible",
+                        caption: formatMessage("Visible"),
                         dataType: "boolean",
                         cellTemplate: function (container, options) {
                             $("<div>")
@@ -1826,8 +1830,20 @@
                 });
             }
         }
-
-        // ... (rest of your JavaScript code remains unchanged) ...
+            $(function () {
+                $("#btnSave").text(
+                 formatMessage("Save"));
+        });
+                 $(function () {
+                $("#UserAccountDetails").dxTextBox({
+                text: formatMessage("User Account Details"),
+            readOnly: true,
+            onContentReady: function (e) {
+            $(e.element).addClass("dx-textbox-heading");
+            }
+            });
+        });
+    
         
     </script>
 
