@@ -219,33 +219,36 @@ namespace QDWEB.Areas.Finance.Controllers
             {
                 using (var transaction = await dbContext.Database.BeginTransactionAsync())
                 {
-                    string currentDate = DateTime.Now.ToString("dd");
-                    string currentMonth = DateTime.Now.ToString("MM");
-                    string currentYear = DateTime.Now.ToString("yy");
-                    // Get last used VoucherNo for the same date
-                    var lastVoucher = await dbContext.Tbl201VoucherEntries
-                        .Where(v => v.VoucherNo.StartsWith($"JV-{currentDate}-{currentMonth}-"))
-                        .OrderByDescending(v => v.VoucherNo)
-                        .FirstOrDefaultAsync();
+                        DateTime currentDate = DateTime.Now;
+                        string currentYear = currentDate.Year.ToString();
+                        string currentMonth = currentDate.Month.ToString("00");
+                        string voucherString = "JV-" + currentYear.Substring(currentYear.Length - 2, 2) + "-" + currentMonth + "-";
+                        string strNewReceiptNo;
 
-                    int nextSequence = 1;
-                    if (lastVoucher != null)
-                    {
-                        string lastNumberPart = lastVoucher.VoucherNo.Substring(9);
-                        if (int.TryParse(lastNumberPart, out int lastNumber))
-                        {
-                            nextSequence = lastNumber + 1;
-                        }
-                    }
+                        // SQL query with interpolated string
+                        string likePattern = voucherString + "%";
 
-                    string newVoucherNo = $"JV-{currentYear}-{currentMonth}-{nextSequence:D3}";
+                        
+                            // Use raw SQL query to fetch the maximum voucher number
+                            var result = await dbContext.VoucherResults
+                                .FromSqlInterpolated($@"
+                SELECT MAX(CAST(RIGHT(VoucherNo, 3) AS INT)) AS MaxVoucherNo
+                FROM Tbl201VoucherEntry
+                WHERE VoucherNo LIKE {likePattern}")
+                                .ToListAsync();
 
-                    while (await dbContext.Tbl201VoucherEntries.AnyAsync(v => v.VoucherNo == newVoucherNo))
-                    {
-                        nextSequence++;
-                        newVoucherNo = $"JV-{currentYear}-{currentMonth}-{nextSequence:D3}";
-                    }
+                            int maxVoucherNo = result.FirstOrDefault()?.MaxVoucherNo ?? 0;
 
+                            int journalNo = maxVoucherNo + 1;
+
+                            // Format the new voucher number with leading zeros
+                            strNewReceiptNo = "000" + journalNo.ToString();
+                            strNewReceiptNo = strNewReceiptNo.Substring(strNewReceiptNo.Length - 3);
+
+                            // Concatenate with the voucher string
+                            strNewReceiptNo = voucherString + strNewReceiptNo;
+
+                        var newVoucherNo = strNewReceiptNo;
                     // Assign `VoucherNo` and fetch `AccountId`
                     foreach (var entry in VM.VoucherEntries)
                     {

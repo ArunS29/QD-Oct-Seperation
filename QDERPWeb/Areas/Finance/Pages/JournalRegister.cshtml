@@ -1,12 +1,13 @@
 ﻿@page
 @using DevExtreme.AspNet.Mvc
 @{
-    ViewData["journalClaimerUserName"] = HttpContext.Session.GetString("UserName");
+
     var userIdString = HttpContext.Session.GetString("UserId");
     byte requesterIdByte = 0;
     if (byte.TryParse(userIdString, out var byteVal))
     {
         requesterIdByte = byteVal;
+        ViewData["journalClaimerUserName"] = byteVal;
     }
 }
 <style>
@@ -63,7 +64,7 @@
         border: 1px solid #ccc;
         box-shadow: 0 2px 5px rgba(0,0,0,0.15);
         padding: 10px;
-    } 
+    }
 
     #dataGrid .dx-header-row .dx-datagrid-text-content {
         font-weight: bold;
@@ -73,12 +74,13 @@
     .limited-footer .btn-container:not(:has(#btnPrint, #btnToggleSearch, #btntoggleGroupPanel, #btnCreateNew, #ddButtonLayout,#ddReports)) {
         display: none !important;
     }
-    .mainContainer{
-        width:100%;
+
+    .mainContainer {
+        width: 100%;
     }
 </style>
 <input id="formId" value="frm20128JournalRegisterMain" type="hidden" />
-<div class="title" >
+<div class="title">
     <div class="header-container">
         <div id="JournalRegister" class="no-border-input"></div>
     </div>
@@ -115,9 +117,9 @@
 
 
 
-    <div class="dx-fieldset horizontal-container ">
+<div class="dx-fieldset horizontal-container ">
 
-       
+
     @(Html.DevExtreme().DropDownBox()
         .Label(new JS("formatMessage('Requested By')"))
         .DataSource(d => d.WebApi()
@@ -126,13 +128,13 @@
         .LoadMode(DataSourceLoadMode.Raw)
         .Key("UserId")
         )
-
         .LabelMode(EditorLabelMode.Outside)
         .ID("requestedBy")
         .ShowClearButton(true)
-        .AcceptCustomValue(true)
-        .OpenOnFieldClick(false)
-        .ValueChangeEvent("input")
+
+        .AcceptCustomValue(false) // ✅ Disallow typing custom values
+        .OpenOnFieldClick(true)   // ✅ Optional: better UX
+
         .HoverStateEnabled(true)
         .ValueExpr("UserId")
         .DisplayExpr("UserName")
@@ -141,11 +143,8 @@
         .OnOpened("onOpened")
         .Width(300)
         .TabIndex(1)
-        .DropDownOptions(o => o
-        .Width(300)
-        )
+        .DropDownOptions(o => o.Width(300))
         .OnKeyDown("onKeyDown")
-        //.OnValueChanged("dropDownBoxValueChanged")
         .ContentTemplate(new TemplateName("AccountHeadContentTemplate"))
         )
     @using (Html.DevExtreme().NamedTemplate("AccountHeadContentTemplate"))
@@ -158,7 +157,7 @@
             .LoadAction("GetUser")
             .LoadMode(DataSourceLoadMode.Raw)
             ///   .Key("AccountHead") //salary paid entry
-            .Key("UserName")
+            .Key("UserId")
 
             )
 
@@ -187,145 +186,151 @@
     }
 
 
-        @(Html.DevExtreme().DateBox()
-            .ID("startDate")
-            .InputAttr("aria-label", "Date")
-            .Label(new JS("formatMessage('Start Date')"))
-            .LabelMode(EditorLabelMode.Outside)
-            .Type(DateBoxType.Date)
-            .DisplayFormat("dd-MMM-yyyy")
-            .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
-            )
-        @(Html.DevExtreme().DateBox()
-            .ID("endDate")
-            .InputAttr("aria-label", "Date")
-            .Label(new JS("formatMessage('End Date')"))
-            .LabelMode(EditorLabelMode.Outside)
-            .Type(DateBoxType.Date)
-            .DisplayFormat("dd-MMM-yyyy")
-            .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
-            )
-        @(Html.DevExtreme().Button()
-            .Text("Show All Submission")
-            .Type(ButtonType.Normal)
-            .StylingMode(ButtonStylingMode.Contained)
-            .Width(200)
-            .ElementAttr("class", "button-alignment-down button-alignment-left")
-            .OnClick("getAllSubmissionJournal")
-            )
+    @(Html.DevExtreme().DateBox()
+        .ID("startDate")
+        .InputAttr("aria-label", "Date")
+        .Label(new JS("formatMessage('Start Date')"))
+        .LabelMode(EditorLabelMode.Outside)
+        .Type(DateBoxType.Date)
+        .DisplayFormat("dd-MMM-yyyy")
+        .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+        )
+    @(Html.DevExtreme().DateBox()
+        .ID("endDate")
+        .InputAttr("aria-label", "Date")
+        .Label(new JS("formatMessage('End Date')"))
+        .LabelMode(EditorLabelMode.Outside)
+        .Type(DateBoxType.Date)
+        .DisplayFormat("dd-MMM-yyyy")
+        .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
+        )
+    @(Html.DevExtreme().Button()
+        .Text("Show All Submission")
+        .Type(ButtonType.Normal)
+        .StylingMode(ButtonStylingMode.Contained)
+        .Width(200)
+        .ElementAttr("class", "button-alignment-down button-alignment-left")
+        .OnClick("getAllSubmissionJournal")
+        )
 
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddBtnShowRecords")
-            .Text(new JS("formatMessage('Show Records')"))
-            .Icon("smalliconslayout")
-            .Width(180)
-            .ElementAttr("class", "button-alignment-down")
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event")
+    @(Html.DevExtreme().DropDownButton()
+        .ID("ddBtnShowRecords")
+        .Text(new JS("formatMessage('Show Records')"))
+        .Icon("smalliconslayout")
+        .Width(180)
+        .ElementAttr("class", "button-alignment-down")
+        .DropDownOptions(options => options.Width(230))
+        .Items(items =>
+        {
+            items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event")
 
 
-                .OnClick("function() { ddBtnShowRecords_click('range'); }");
-                items.Add().Text(new JS("formatMessage('Today')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
-                items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-                items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
-                items.Add().Text(new JS("formatMessage('This Month Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-                items.Add().Text(new JS("formatMessage('This Month (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-                items.Add().Text(new JS("formatMessage('This Year Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-                items.Add().Text(new JS("formatMessage('This Year (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-                items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-                items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+            .OnClick("function() { ddBtnShowRecords_click('range'); }");
+            items.Add().Text(new JS("formatMessage('Today')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
+            items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+            items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
+            items.Add().Text(new JS("formatMessage('This Month Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+            items.Add().Text(new JS("formatMessage('This Month (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+            items.Add().Text(new JS("formatMessage('This Year Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+            items.Add().Text(new JS("formatMessage('This Year (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+            items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+            items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
 
-            })
-            )
-    </div>
-    <div class="dx-field ledgerResult">
-        @(
+        })
+        )
+</div>
+<div class="dx-field ledgerResult">
+    @(
             Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.sp20201JournalRegisterViewResult>() // Replace with your model
-                    .ID("dataGrid")
-                    .RemoteOperations(false)
-                    .ShowBorders(true)
-                    .Columns(columns =>
-                    {
-                    columns.AddFor(m => m.RequesterID).Caption(new JS("formatMessage('Requester ID')")).Alignment(HorizontalAlignment.Center).Visible(true);
-                    columns.AddFor(m => m.JournalRefNo).Caption(new JS("formatMessage('Journal Ref No')")).Alignment(HorizontalAlignment.Center).Visible(true);
-                    columns.AddFor(m => m.ApprovedBy).Caption(new JS("formatMessage('Approved By')")).Alignment(HorizontalAlignment.Center).Visible(false);
-                    columns.AddFor(m => m.ApprovedOn).Caption(new JS("formatMessage('Approved On')")).Alignment(HorizontalAlignment.Center).Visible(false);
-                    columns.AddFor(m => m.JournalCreatedBy).Caption(new JS("formatMessage('Journal Created By')")).Alignment(HorizontalAlignment.Center).Visible(false);
-                    columns.AddFor(m => m.JournalCreatedOn).Caption(new JS("formatMessage('Journal Created On')")).Alignment(HorizontalAlignment.Center).Visible(false);
-                    columns.AddFor(m => m.JournalEffectiveDate).Caption(new JS("formatMessage('Journal Effective Date')")).Alignment(HorizontalAlignment.Center).Visible(false);
-                    columns.AddFor(m => m.JournalModifiedBy).Caption(new JS("formatMessage('Journal Modified By')")).Alignment(HorizontalAlignment.Center).Visible(false);
-                    columns.AddFor(m => m.JournalModifiedOn).Caption(new JS("formatMessage('Journal Modified On')")).Alignment(HorizontalAlignment.Center).Visible(false);
-                    columns.AddFor(m => m.PostedBy).Caption(new JS("formatMessage('Posted By')")).Alignment(HorizontalAlignment.Center).Visible(false);
-                    columns.AddFor(m => m.PostedOn).Caption(new JS("formatMessage('Posted On')")).Alignment(HorizontalAlignment.Center).Visible(false);
-                    columns.AddFor(m => m.PostedVoucherNo).Caption(new JS("formatMessage('Posted Voucher No')")).Alignment(HorizontalAlignment.Center).Visible(false);
-                    columns.AddFor(m => m.SubmittedBy).Caption(new JS("formatMessage('Submitted By')")).Alignment(HorizontalAlignment.Center).Visible(false);
-                    columns.AddFor(m => m.SubmittedOn).Caption(new JS("formatMessage('Submitted On')")).Alignment(HorizontalAlignment.Center).Visible(false);
-                    columns.AddFor(m => m.VerifiedBy).Caption(new JS("formatMessage('Verified By')")).Alignment(HorizontalAlignment.Center).Visible(false);
-                    columns.AddFor(m => m.VerifiedOn).Caption(new JS("formatMessage('Verified On')")).Alignment(HorizontalAlignment.Center).Visible(false);
-                        columns.AddFor(m => m.JournalEntryDate)
-                .Caption(new JS("formatMessage('Journal Entry Date')")).Alignment(HorizontalAlignment.Center).Format(format => format
-                    .Type(Format.ShortDate)    // Custom type format
-                .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }")).Visible(true);
-                    columns.AddFor(m => m.JournalVoucherNarration).Caption(new JS("formatMessage('Journal Voucher Narration')")).Alignment(HorizontalAlignment.Center).Visible(true);
-                    columns.AddFor(m => m.DrAmountTotal).Caption(new JS("formatMessage('Dr Amount Total')")).Alignment(HorizontalAlignment.Right).Visible(true);
-                    columns.AddFor(m => m.CrAmountTotal).Caption(new JS("formatMessage('Cr Amount Total')")).Alignment(HorizontalAlignment.Right).Visible(true);
-                    columns.AddFor(m => m.IsSubmittedToFinance).Caption(new JS("formatMessage('Is Submitted To Finance')")).Alignment(HorizontalAlignment.Center)
-                .CellTemplate(@<text>
-            <div class="dx-icon">
-                <%= data.IsSubmittedToFinance ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-            </div>
-        </text>).Visible(true);
-                    columns.AddFor(m => m.IsVerified).Caption(new JS("formatMessage('Verified')")).Alignment(HorizontalAlignment.Center)
-                
-                .Alignment(HorizontalAlignment.Center)
-                .CellTemplate(@<text>
-            <div class="dx-icon">
-                <%= data.IsVerified ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-            </div>
-        </text>).Visible(true);
-                    columns.AddFor(m => m.IsApproved).Caption(new JS("formatMessage('Is Approved')")).Alignment(HorizontalAlignment.Center)
-                .CellTemplate(@<text>
-            <div class="dx-icon">
-                <%= data.IsApproved ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-            </div>
-        </text>).Visible(true);
-                    columns.AddFor(m => m.IsPosted).Caption(new JS("formatMessage('Is Posted')")).Alignment(HorizontalAlignment.Center)
-                .CellTemplate(@<text>
-            <div class="dx-icon">
-                <%= data.IsPosted ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-            </div>
-        </text>
-            ).Visible(true);
-                    columns.AddFor(m => m.PostedVoucherNo).Caption(new JS("formatMessage('Posted Voucher No')")).Alignment(HorizontalAlignment.Center).Visible(true);
-                })
-                .Width("100%")
-            .Height(600)
-            .Paging(p => p.PageSize(10))
+            .ID("dataGrid")
+            .RemoteOperations(false)
+            .ShowBorders(true)
+            .Columns(columns =>
+            {
+                columns.AddFor(m => m.RequesterID).Caption(new JS("formatMessage('Requester ID')")).Alignment(HorizontalAlignment.Center).Visible(true);
+                columns.AddFor(m => m.JournalRefNo).Caption(new JS("formatMessage('Journal Ref No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+                columns.AddFor(m => m.ApprovedBy).Caption(new JS("formatMessage('Approved By')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                columns.AddFor(m => m.ApprovedOn).Caption(new JS("formatMessage('Approved On')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                columns.AddFor(m => m.JournalCreatedBy).Caption(new JS("formatMessage('Journal Created By')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                columns.AddFor(m => m.JournalCreatedOn).Caption(new JS("formatMessage('Journal Created On')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                columns.AddFor(m => m.JournalEffectiveDate).Caption(new JS("formatMessage('Journal Effective Date')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                columns.AddFor(m => m.JournalModifiedBy).Caption(new JS("formatMessage('Journal Modified By')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                columns.AddFor(m => m.JournalModifiedOn).Caption(new JS("formatMessage('Journal Modified On')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                columns.AddFor(m => m.PostedBy).Caption(new JS("formatMessage('Posted By')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                columns.AddFor(m => m.PostedOn).Caption(new JS("formatMessage('Posted On')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                columns.AddFor(m => m.PostedVoucherNo).Caption(new JS("formatMessage('Posted Voucher No')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                columns.AddFor(m => m.SubmittedBy).Caption(new JS("formatMessage('Submitted By')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                columns.AddFor(m => m.SubmittedOn).Caption(new JS("formatMessage('Submitted On')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                columns.AddFor(m => m.VerifiedBy).Caption(new JS("formatMessage('Verified By')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                columns.AddFor(m => m.VerifiedOn).Caption(new JS("formatMessage('Verified On')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                columns.AddFor(m => m.JournalEntryDate)
+            .Caption(new JS("formatMessage('Journal Entry Date')")).Alignment(HorizontalAlignment.Center).Format(format => format
+            .Type(Format.ShortDate)    // Custom type format
+            .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }")).Visible(true);
+                columns.AddFor(m => m.JournalVoucherNarration).Caption(new JS("formatMessage('Journal Voucher Narration')")).Alignment(HorizontalAlignment.Center).Visible(true);
+                columns.AddFor(m => m.DrAmountTotal).Caption(new JS("formatMessage('Dr Amount Total')")).Alignment(HorizontalAlignment.Right).Visible(true);
+                columns.AddFor(m => m.CrAmountTotal).Caption(new JS("formatMessage('Cr Amount Total')")).Alignment(HorizontalAlignment.Right).Visible(true);
+                columns.AddFor(m => m.IsSubmittedToFinance).Caption(new JS("formatMessage('Is Submitted To Finance')")).Alignment(HorizontalAlignment.Center)
+            .CellTemplate(@<text>
+        <div class="dx-icon">
+            <%= data.IsSubmittedToFinance ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+        </div>
+    </text>).Visible(true);
+                columns.AddFor(m => m.IsVerified).Caption(new JS("formatMessage('Verified')")).Alignment(HorizontalAlignment.Center)
+
+            .Alignment(HorizontalAlignment.Center)
+            .CellTemplate(@<text>
+        <div class="dx-icon">
+            <%= data.IsVerified ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+        </div>
+    </text>).Visible(true);
+                columns.AddFor(m => m.IsApproved).Caption(new JS("formatMessage('Is Approved')")).Alignment(HorizontalAlignment.Center)
+            .CellTemplate(@<text>
+        <div class="dx-icon">
+            <%= data.IsApproved ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+        </div>
+    </text>).Visible(true);
+                columns.AddFor(m => m.IsPosted).Caption(new JS("formatMessage('Is Posted')")).Alignment(HorizontalAlignment.Center)
+            .CellTemplate(@<text>
+        <div class="dx-icon">
+            <%= data.IsPosted ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+        </div>
+    </text>
+        ).Visible(true);
+                columns.AddFor(m => m.PostedVoucherNo).Caption(new JS("formatMessage('Posted Voucher No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+            })
+        .Width("100%")
+        .Height(600)
+        .Scrolling(scrolling => scrolling
+        .Mode(GridScrollingMode.Virtual) // Enables virtual scrolling
+        .UseNative(false)                // Optional: false for custom scrollbars
+        )
+        .Paging(paging => paging
+        .Enabled(false) // Disables pagination
+        )
         .Selection(selection => selection.Mode(SelectionMode.Single))
         //.WordWrapEnabled(true)
-             .ColumnAutoWidth(true)
-            .AllowColumnReordering(true) // Enable column reordering
-            .AllowColumnResizing(true)   // Enable column resizing
-            .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
-            .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
-            .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
-            @*  .Editing(editing => editing
-        .AllowUpdating(true)    // Allow updating of existing rows
-        .AllowAdding(false)     // Disable adding new records
-        .AllowDeleting(false)   // Disable deleting records
-        .UseIcons(true))        // Enable edit icons (like pencil) *@
-            .ColumnChooser(c => c.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
-            .ShowBorders(true)
-           @*  .Summary(s => s
-            .TotalItems(totalItems =>
-            {
-                totalItems.AddFor(m => m.RequesterID).SummaryType(SummaryType.Count);
-            })) *@
-            )
-    </div>
-    
+        .ColumnAutoWidth(true)
+        .AllowColumnReordering(true) // Enable column reordering
+        .AllowColumnResizing(true)   // Enable column resizing
+        .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
+        .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
+        .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
+        @*  .Editing(editing => editing
+    .AllowUpdating(true)    // Allow updating of existing rows
+    .AllowAdding(false)     // Disable adding new records
+    .AllowDeleting(false)   // Disable deleting records
+    .UseIcons(true))        // Enable edit icons (like pencil) *@
+        .ColumnChooser(c => c.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+        .ShowBorders(true)
+        @*  .Summary(s => s
+    .TotalItems(totalItems =>
+    {
+    totalItems.AddFor(m => m.RequesterID).SummaryType(SummaryType.Count);
+    })) *@
+        )
+</div>
+
 
 
 <script type="text/javascript">
@@ -364,114 +369,223 @@
         $(document).on("click", function () {
             contextMenu.hide();
         });
-        $('.spneditJournal').click(function () {
-            let dataGrid = $("#dataGrid").dxDataGrid("instance");
-            let selectedRow = dataGrid.getSelectedRowsData();
+            $(".context-menu").on("click", ".menu-item", function () {
+                const actionLabel = $(this).find(".spnRightClickGride").text().trim();
 
-            if (selectedRow.length > 0) {
-                let journalRefNo = selectedRow[0].JournalRefNo;
-
-                if (journalRefNo && journalRefNo.toString().trim() !== "") {
-                    // Proceed only with JournalRefNo
-                    let targetUrl = `/${tenantName}/Finance/JournalEntryEdit?journalRefNo=${encodeURIComponent(journalRefNo)}`;
-                    console.log("Navigating to:", targetUrl);
-                    window.location.href = targetUrl;
-                } else {
-                    alert("Journal Reference Number is missing.");
+                switch (actionLabel) {
+                    case "Edit Journal Entry Form":
+                        handleEditJournalEntry();
+                        break;
+                    case "Delete Journal Entry Form":
+                        handleDeleteJournalEntry();
+                        break;
+                    case "Unlock Journal Entry Form":
+                        handleUnlockJournalEntry();
+                        break;
+                    case "Clone Journal Entry Form":
+                        handleCloneJournalEntry();
+                        break;
+                    default:
+                        DevExpress.ui.notify("Unknown action.", "warning", 2000);
                 }
-            } else {
-                alert("Please select a row to edit.");
+            });
+
+            function handleEditJournalEntry() {
+                const dataGrid = $("#dataGrid").dxDataGrid("instance");
+                const selectedRow = dataGrid.getSelectedRowsData();
+
+                if (selectedRow.length > 0) {
+                    const journalRefNo = selectedRow[0].JournalRefNo;
+                    if (journalRefNo && journalRefNo.trim() !== "") {
+                        const targetUrl = `/${tenantName}/Finance/JournalEntryEdit?journalRefNo=${encodeURIComponent(journalRefNo)}`;
+                        window.location.href = targetUrl;
+                    } else {
+                        alert("Journal Reference Number is missing.");
+                    }
+                } else {
+                    alert("Please select a row to edit.");
+                }
             }
-        });
-        $('.spnRightClickGride:contains("Delete Journal Entry Form")').click(function () {
-            let dataGrid = $("#dataGrid").dxDataGrid("instance");
-            let selectedRow = dataGrid.getSelectedRowsData();
 
-            if (selectedRow.length > 0) {
-                let journalRefNo = selectedRow[0].JournalRefNo;
+            function handleDeleteJournalEntry() {
+                const dataGrid = $("#dataGrid").dxDataGrid("instance");
+                const selectedRow = dataGrid.getSelectedRowsData();
 
-                if (journalRefNo && journalRefNo.toString().trim() !== "") {
-                    // Now call backend to get IsSubmitted, IsApproved, IsPosted
-                    $.ajax({
-                        type: "GET",
-                        url: "/api/JournalRegister/GetJournalStatus", // Adjust the URL to your controller and action
-                        contentType: "application/json",
-                       
-                        data: { journalRefNo: journalRefNo },
-                        success: function (response) {
-                            if (response) {
-                                let { isSubmitted, isApproved, isPosted } = response;
+                if (selectedRow.length > 0) {
+                    const journalRefNo = selectedRow[0].JournalRefNo;
 
-                                if (isSubmitted && !isApproved && !isPosted) {
-                                    DevExpress.ui.dialog.alert("Journal Entry is already Submitted,<br/>You cannot delete the Submitted JV.", "Warning");
-                                }
-                                else if (isSubmitted && isApproved && !isPosted) {
-                                    DevExpress.ui.dialog.alert("Journal Entry is already Approved,<br/>You cannot delete the Approved JV.", "Warning");
-                                }
-                                else if (isSubmitted && isApproved && isPosted) {
-                                    DevExpress.ui.dialog.alert("Journal Entry is already Paid,<br/>You cannot delete the Posted JV.", "Warning");
-                                }
-                                else if (!isSubmitted && !isApproved && !isPosted) {
-                                    let result = DevExpress.ui.dialog.confirm(
-                                        "You are about to delete the Journal Entry from the Register,<br/>Click Yes if you would like to continue.",
-                                        "Confirm Deletion"
-                                    );
-                                    result.done(function (dialogResult) {
-                                        if (dialogResult) {
+                    if (journalRefNo && journalRefNo.trim() !== "") {
+                        $.ajax({
+                            type: "GET",
+                            url: "/api/JournalRegister/GetJournalStatus",
+                            contentType: "application/json",
+                            data: { journalRefNo: journalRefNo },
+                            success: function (response) {
+                                if (response) {
+                                    const { isSubmitted, isApproved, isPosted } = response;
 
-                                            // User clicked Yes, so proceed to delete
-                                            $.ajax({
-                                                type: "POST",
-                                                url: `/api/JournalRegister/DeleteJournalEntry?journalRefNo=${encodeURIComponent(journalRefNo)}`,
-                                                contentType: "application/json",
-                                               
-                                                
-                                                success: function (deleteResponse) {
-                                                    if (deleteResponse.success) {
-                                                        DevExpress.ui.notify("Journal Entry deleted successfully.", "success", 2000);
-                                                        Refreshgrid(); // Refresh the grid to reflect deletion
-                                                    } else {
-                                                        DevExpress.ui.notify("Failed to delete Journal Entry.", "error", 2000);
+                                    if (isSubmitted) {
+                                        DevExpress.ui.dialog.alert("Journal Entry is already Submitted, You cannot delete the Submitted JV.", "JV is submitted already");
+                                    } else if (!isSubmitted && isApproved || isPosted) {
+                                        DevExpress.ui.dialog.alert("Journal Entry is already Approved, You cannot delete the Approved JV.", "JV is Approved already");
+                                    } else if (isSubmitted && isApproved && isPosted) {
+                                        DevExpress.ui.dialog.alert("Journal Entry is already Paid, You cannot delete the Posted JV.", "Warning");
+                                    } else if (!isSubmitted && !isApproved && !isPosted) {
+                                        let result = DevExpress.ui.dialog.confirm(
+                                            "You are about to delete the Journal Entry from the Register,<br/>Click Yes if you would like to continue.",
+                                            "Confirm Deletion"
+                                        );
+                                        result.done(function (dialogResult) {
+                                            if (dialogResult) {
+                                                $.ajax({
+                                                    type: "POST",
+                                                    url: `/api/JournalRegister/DeleteJournalEntry?journalRefNo=${encodeURIComponent(journalRefNo)}`,
+                                                    contentType: "application/json",
+                                                    success: function (deleteResponse) {
+                                                        if (deleteResponse.success) {
+                                                            getAllSubmissionJournal();
+                                                            DevExpress.ui.notify("Journal Entry deleted successfully.", "success", 2000);
+                                                        } else {
+                                                            DevExpress.ui.notify("Failed to delete Journal Entry.", "error", 2000);
+                                                        }
+                                                    },
+                                                    error: function () {
+                                                        DevExpress.ui.notify("Error occurred during deletion.", "error", 2000);
                                                     }
-                                                },
-                                                error: function () {
-                                                    DevExpress.ui.notify("Error occurred during deletion.", "error", 2000);
-                                                }
-                                            });
-                                        }
-                                    });
+                                                });
+                                            }
+                                        });
+                                    }
+                                } else {
+                                    DevExpress.ui.notify("Failed to fetch journal status.", "error", 2000);
                                 }
-                            } else {
-                                DevExpress.ui.notify("Failed to fetch journal status.", "error", 2000);
+                            },
+                            error: function () {
+                                DevExpress.ui.notify("Error fetching journal status.", "error", 2000);
                             }
-                        },
-                        error: function () {
-                            DevExpress.ui.notify("Error fetching journal status.", "error", 2000);
-                        }
-                    });
-
+                        });
+                    } else {
+                        DevExpress.ui.dialog.alert("Journal Reference Number is missing.", "Error");
+                    }
                 } else {
-                    DevExpress.ui.dialog.alert("Journal Reference Number is missing.", "Error");
+                    DevExpress.ui.dialog.alert("Please select a row to delete.", "Error");
                 }
-            } else {
-                DevExpress.ui.dialog.alert("Please select a row to delete.", "Error");
             }
-        });
+            
+
+            function handleUnlockJournalEntry() {
+                const dataGrid = $("#dataGrid").dxDataGrid("instance");
+                const selectedRow = dataGrid.getSelectedRowsData();
+                if (!selectedRow || selectedRow.length === 0) {
+                    DevExpress.ui.notify("Please select a row to unlock.", "warning", 2000);
+                     return;
+                 }
+    
+
+                   const journalRefNo = selectedRow[0].JournalRefNo;
+                    const isPosted = selectedRow[0].IsPosted;
+
+                  if (isPosted) {
+                         DevExpress.ui.dialog.alert("Claim is already Posted, You can't unlock the Posted JV.", "JV is posted already");
+                         return;
+                   }
+
+                   DevExpress.ui.dialog.confirm(
+                        "You are about to unlock the JV.</br>Click Yes if you would like to continue.",
+                        "Unlock Confirmation"
+                    ).done(function (dialogResult) {
+                 if (dialogResult) {
+                  // Perform AJAX request to update the database
+                   $.ajax({
+                   url:  `/api/JournalRegister/UnlockJournalEntry?journalRefNo=${encodeURIComponent(journalRefNo)}`,
+                   type: 'POST',
+                   contentType: "application/json",
+                
+                    success: function (response) {
+                    if (response.success) {
+                        getAllSubmissionJournal();
+                        DevExpress.ui.notify("Journal Entry unlocked successfully.", "success", 2000);
+                        // Optionally refresh your DataGrid here
+                    } else {
+                        DevExpress.ui.notify("Failed to unlock Journal Entry: " + response.message, "error", 3000);
+                    }
+                   },
+                     error: function () {
+                    DevExpress.ui.notify("An error occurred while unlocking the Journal Entry.", "error", 3000);
+                      }
+                   });
+                    }
+                  });
+            }
+                 function handleCloneJournalEntry() {
+                     const dataGrid = $("#dataGrid").dxDataGrid("instance");
+                const selectedRow = dataGrid.getSelectedRowsData();
+    if (!selectedRow || selectedRow.length === 0) {
+        DevExpress.ui.notify("No Journal Entry selected.", "warning", 2000);
+        return;
+    }
+
+    DevExpress.ui.dialog.confirm(
+        "You are about to clone the Journal Entry.</br>Click Yes if you would like to continue.",
+        "Confirm Clone"
+    ).done(function (dialogResult) {
+        if (dialogResult) {
+            const journalRefNo = selectedRow[0].JournalRefNo;
+            const requesterId = selectedRow[0].RequesterID;
+
+            // Step 1: Get new voucher number
+            $.get('/api/JournalEntryEdit/GetNewVoucherNo', function (newVoucherNo) {
+                // Step 2: Call clone action
+                $.ajax({
+                    url: '/api/JournalRegister/CloneJournalEntry',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        fromJournalRefNo: journalRefNo,
+                        toJournalRefNo: newVoucherNo,
+                        requesterId: requesterId
+                    }),
+                    success: function (response) {
+                        if (response.success) {
+                            getAllSubmissionJournal();
+                            DevExpress.ui.notify("Journal Entry cloned successfully.", "success", 2000);
+                            // Optionally refresh DataGrid
+                        } else {
+                            DevExpress.ui.notify("Clone failed: " + response.message, "error", 3000);
+                        }
+                    },
+                    error: function (xhr) {
+                        DevExpress.ui.notify("Error: " + xhr.statusText, "error", 3000);
+                    }
+                });
+            });
+        }
+    });
+}
 
 
-        // Handle right-click event on the DataGrid rows
-        $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
-            e.preventDefault(); // Prevent the default context menu
-            var rowIndex = $(this).index(); // Get the row index
-            var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex]; // Get the data for the row
-            console.log(rowData); // Log or use the row data as needed
-            // Clear previous content
-            contextMenuContent.empty();
-            // Add column titles and values to the context menu
-            contextMenuContent.append("<div style='display:none'><strong>Voucher No:</strong> " + rowData.VoucherNo + "</div>");
-            // Show custom context menu
-            contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
-        });
+            $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
+                e.preventDefault(); // Prevent the default browser context menu
+                e.stopPropagation(); // Stop the event from bubbling to document
+
+                const rowIndex = $(this).index();
+                const rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex];
+
+                console.log(rowData);
+
+                // Clear previous context
+                $("#contextMenuContent").empty();
+
+                // Optionally display key info in hidden input or div
+                $("#contextMenuContent").append("<div style='display:none'><strong>Voucher No:</strong> " + rowData.VoucherNo + "</div>");
+
+                // Show context menu at cursor position
+                $("#contextMenu").css({
+                    top: e.pageY + "px",
+                    left: e.pageX + "px"
+                }).show();
+            });
+
         $("#dataGrid").dxDataGrid({
             onRowUpdating: function (e) {
                 console.log("Row is updating", e);
@@ -566,7 +680,7 @@
             url: '/api/JournalRegister/GetJournalview',  // API endpoint
             type: 'GET',
             data: {
-                RequesterID: accheadid, // Set this according to your logic
+                RequesterID: accheadid || '@requesterIdByte', // Set this according to your logic
                 StartDate: startDate, // Start date
                 EndDate: endDate, // End date
                 IfShowAll: true
@@ -586,8 +700,14 @@
 
     // This function used to call API to get records for the selected values.
     function ddBtnShowRecords_click(duration) {
+        var requestedByInstance = $("#requestedBy").dxDropDownBox("instance");
+        var selectedUserName = requestedByInstance.option("value");
 
-        
+
+
+        var requesterId = accheadid || '@requesterIdByte';
+
+
         var frmDateBox = $("#startDate").dxDateBox("instance");
         var toDateBox = $("#endDate").dxDateBox("instance");
         var frmDate = new Date(frmDateBox.option("value"));
@@ -660,7 +780,7 @@
             url: '/api/JournalRegister/GetJournalview',  // API endpoint
             type: 'GET',
             data: {
-                RequesterID: accheadid, // Set this according to your logic
+                RequesterID: requesterId, // Set this according to your logic
                 StartDate: frmDate, // Start date
                 EndDate: toDate, // End date
                 IfShowAll: false // Set to
@@ -680,6 +800,10 @@
 
 
     $(document).ready(function () {
+        if (sessionStorage.getItem("refreshPage") === "true") {
+            sessionStorage.removeItem("refreshPage"); // Clear flag
+            location.reload(); // Refresh the page
+        }
         $(".limited-footer .btn-containerIvoiceEdit").each(function () {
             if (!$(this).find("#btnPrint, #btnToggleSearch, #btntoggleGroupPanel, #btnCreateNew, #ddButtonLayout").length) {
                 $(this).remove();
