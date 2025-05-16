@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.AzureAppConfiguration;
 
-namespace qd.utilities
+namespace QD.ERP.Web.Service
 {
     public class ConfigurationHelper
     {
@@ -53,4 +53,5 @@ namespace qd.utilities
             return value;
         }
     }
+
 }
