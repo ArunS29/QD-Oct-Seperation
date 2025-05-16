@@ -88,41 +88,58 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
             {
                 this.DataSource = null;
                 CreateNoDataLabel();
+                return;
             }
-            else
+
+            this.DataSource = dt;
+            this.DataMember = "";
+
+            decimal totalAmount = Convert.ToDecimal(dt.Compute("SUM(DrAmount)", ""));
+            int currencyId = Convert.ToInt32(dt.Rows[0]["currencyId"]);
+
+            var currencyInfo = GetCurrencySymbolOrImageStatus(currencyId);
+
+            // Amount in words
+            if (FindControl("xrLabel9", true) is XRLabel labelEnglish)
+                labelEnglish.Text = $"Amount in Words: {NumberToWordsHelper.ToEnglishWords(totalAmount, currencyInfo.Symbol)}";
+
+            if (FindControl("xrLabel10", true) is XRLabel labelArabic)
+                labelArabic.Text = $"المبلغ كتابةً: {NumberToWordsHelper.ToArabicWords(totalAmount)}";
+
+            if (!string.IsNullOrEmpty(currencyInfo.Symbol))
             {
-                this.DataSource = dt;
-                this.DataMember = "";
-
-                decimal totalAmount = Convert.ToDecimal(dt.Compute("SUM(DrAmount)", ""));
-                int currencyId = Convert.ToInt32(dt.Rows[0]["currencyId"]);
-                string currencySymbol = GetCurrencySymbol(currencyId);
-
-                // Use currencySymbol in amount-in-words labels
-                if (FindControl("xrLabel9", true) is XRLabel labelEnglish)
+                // Show symbol in all labels
+                foreach (string labelName in new[] { "xrLabel6", "xrLabel17", "xrLabel18", "xrLabel19" })
                 {
-                    // Assuming currencySymbol is already defined and available
-                    labelEnglish.Text = $"Amount in Words: {NumberToWordsHelper.ToEnglishWords(totalAmount, currencySymbol)}";
+                    if (FindControl(labelName, true) is XRLabel label)
+                        label.Text = currencyInfo.Symbol;
                 }
-
-
-                if (FindControl("xrLabel10", true) is XRLabel labelArabic)
-                    labelArabic.Text = $"المبلغ كتابةً: {NumberToWordsHelper.ToArabicWords(totalAmount)}";
-
-                // Optionally: Set a label on the report to show just the currency symbol
-                if (FindControl("xrLabel6", true) is XRLabel currencySymbolLabel)
-                    currencySymbolLabel.Text = currencySymbol;
-                if (FindControl("xrLabel17", true) is XRLabel currencySymbolLabel1)
-                    currencySymbolLabel1.Text = currencySymbol;
-                if (FindControl("xrLabel18", true) is XRLabel currencySymbolLabel2)
-                    currencySymbolLabel2.Text = currencySymbol;
-                if (FindControl("xrLabel19", true) is XRLabel currencySymbolLabel3)
-                    currencySymbolLabel3.Text = currencySymbol;
             }
+            else if (currencyInfo.HasImage)
+            {
+                // Show image in all picture boxes if symbol is not present
+                byte[] imageBytes = GetCurrencyImage(currencyId);
+                if (imageBytes != null)
+                {
+                    foreach (string pictureBoxName in new[] { "xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5" })
+                    {
+                        if (FindControl(pictureBoxName, true) is XRPictureBox pictureBox)
+                        {
+                            using (var ms = new MemoryStream(imageBytes))
+                            {
+                                pictureBox.Image = Image.FromStream(ms);
+                            }
+                        }
+                    }
+                }
+            }
+
         }
-        private string GetCurrencySymbol(int currencyId)
+
+        private (string Symbol, bool HasImage) GetCurrencySymbolOrImageStatus(int currencyId)
         {
             string symbol = "";
+            bool hasImage = false;
 
             try
             {
@@ -133,23 +150,66 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
 
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    string query = "SELECT CurrencyCode FROM Tbl20169CurrencyExchange WHERE CurrencyExchangeId = @currencyId";
+                    string query = @"
+                SELECT CurrencySymbole, CurrencyImage 
+                FROM Tbl20169CurrencyExchange 
+                WHERE CurrencyExchangeId = @currencyId";
+
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@currencyId", currencyId);
                         conn.Open();
-                        object result = cmd.ExecuteScalar();
-                        if (result != null)
-                            symbol = result.ToString();
+
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                symbol = reader["CurrencySymbole"]?.ToString();
+                                hasImage = reader["CurrencyImage"] != DBNull.Value;
+                            }
+                        }
                     }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error retrieving currency symbol: {ex.Message}");
+                Console.WriteLine($"Error retrieving currency info: {ex.Message}");
             }
 
-            return symbol;
+            return (symbol?.Trim() ?? "", hasImage);
+        }
+
+
+        private byte[] GetCurrencyImage(int currencyId)
+        {
+            byte[] imageBytes = null;
+
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
+                    throw new Exception("Unable to retrieve tenant context.");
+
+                string connectionString = tenant.ConnectionString;
+
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    string query = "SELECT CurrencyImage FROM Tbl20169CurrencyExchange WHERE CurrencyExchangeId = @currencyId";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@currencyId", currencyId);
+                        conn.Open();
+                        object result = cmd.ExecuteScalar();
+                        if (result != null && result != DBNull.Value)
+                            imageBytes = (byte[])result;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error retrieving currency image: {ex.Message}");
+            }
+
+            return imageBytes;
         }
 
 

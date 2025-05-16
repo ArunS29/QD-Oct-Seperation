@@ -468,7 +468,24 @@ namespace QD.ERP.Web.Areas.Finance.Models
 		public List<Tbl60602purchaseRequestChild> PurchaseRequestDetails { get; set; }
 		
 	}
-
+    public class CloneJournalEntryRequest
+    {
+        public string FromJournalRefNo { get; set; }
+        public string ToJournalRefNo { get; set; }
+        public int RequesterId { get; set; }
+    }
+    public class InsertVoucherFromJournalRequest
+    {
+        public string JournalRefNo { get; set; }
+        public string PostingVoucherNo { get; set; }
+        public string AddedBy { get; set; }
+        public DateTime AddedOn { get; set; }
+    }
+    public class JournalPostRequest
+    {
+        public string VoucherNo { get; set; }
+        public string NewVoucherNo { get; set; }
+    }
 
 }
 
