@@ -8,6 +8,7 @@ using QD.ERP.Web.Service;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using QD.ERP.Web.Areas.Finance.Models;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
@@ -37,13 +38,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             RequesterID, StartDate, EndDate, IfShowAll)
                         .ToListAsync();
 
-                    if (result != null && result.Any())
-                    {
-                        return Json(result); // 200 OK
-                    }
+
+                    return Json(result); // 200 OK
+
 
                     // Return 400 Bad Request if no data found
-                    return BadRequest(new { success = false, message = "No journal entries found for the given filters." });
+
                 }
                 catch (Exception ex)
                 {
@@ -116,7 +116,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 try
                 {
                     var result = await dbContext.Qry202101journalRegisterChildren
-                                    .Where(x => x.JournalRefNo== journalRefNo)
+                                    .Where(x => x.JournalRefNo == journalRefNo)
                                     .ToListAsync();
 
                     if (result != null && result.Any())
@@ -135,6 +135,35 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
+        [HttpGet]
+        public async Task<ActionResult> GetJournalmaster(string journalRefNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var result = await dbContext.Tbl20126JournalRegisterMasters
+                                    .Where(x => x.JournalRefNo == journalRefNo)
+                                    .ToListAsync();
+
+                    if (result != null && result.Any())
+                    {
+                        return Json(result);
+                    }
+
+                    return Json(new { success = false, message = "No child records found." });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetJournalChild: {ex.Message}");
+                    return Json(new { success = false, message = "An error occurred while fetching child records." });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
         // GET: /Finance/GetJournalStatus
         [HttpGet]
         public IActionResult GetJournalStatus(string journalRefNo)
@@ -181,9 +210,22 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 var childList = dbContext.Tbl20127JournalRegisterChildren
                     .Where(c => c.JournalRefNo == journalRefNo)
                     .ToList();
+                var costList = dbContext.Tbl20128JournalRegisterCostAllocations
+                    .Where(c => c.VoucherNo == journalRefNo)
+                    .ToList();
+                var employeeList = dbContext.Tbl20129JournalRegisterEmployeeAllocations
+                    .Where(c => c.VoucherNo == journalRefNo)
+                    .ToList();
+                var propertyList = dbContext.Tbl20130JournalRegisterPropertyAllocations
+                    .Where(c => c.VoucherNo == journalRefNo)
+                    .ToList();
+
 
                 dbContext.Tbl20127JournalRegisterChildren.RemoveRange(childList);
                 dbContext.Tbl20126JournalRegisterMasters.Remove(master);
+                dbContext.Tbl20128JournalRegisterCostAllocations.RemoveRange(costList);
+                dbContext.Tbl20129JournalRegisterEmployeeAllocations.RemoveRange(employeeList);
+                dbContext.Tbl20130JournalRegisterPropertyAllocations.RemoveRange(propertyList);
                 dbContext.SaveChanges();
 
                 return Json(new { success = true });
@@ -191,6 +233,79 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return StatusCode(500, "Tenant context could not be loaded.");
         }
+
+        [HttpPost]
+        public IActionResult UnlockJournalEntry(string journalRefNo)
+        {
+            if (string.IsNullOrEmpty(journalRefNo))
+                return BadRequest(new { success = false, message = "JournalRefNo is required." });
+
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            var entry = dbContext.Tbl20126JournalRegisterMasters
+                .FirstOrDefault(j => j.JournalRefNo == journalRefNo);
+
+            if (entry == null)
+                return NotFound(new { success = false, message = "Journal entry not found." });
+
+           
+
+            // Reset fields
+            entry.IsSubmittedToFinance = false;
+            entry.SubmittedBy = null;
+            entry.SubmittedOn = null;
+            entry.IsVerified = false;
+            entry.VerifiedBy = null;
+            entry.VerifiedOn = null;
+            entry.IsApproved = false;
+            entry.ApprovedBy = null;
+            entry.ApprovedOn = null;
+
+            dbContext.SaveChanges();
+
+            return Ok(new { success = true });
+        }
+        [HttpPost]
+        public IActionResult CloneJournalEntry([FromBody] CloneJournalEntryRequest model)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            if (string.IsNullOrEmpty(model.FromJournalRefNo) || string.IsNullOrEmpty(model.ToJournalRefNo))
+            {
+                return BadRequest(new { success = false, message = "Invalid input data." });
+            }
+
+            var addedBy = HttpContext.Session.GetString("UserName") ?? "System";
+            var addedOn = DateTime.Now;
+            var journalDate = DateTime.Now;
+
+            try
+            {
+                dbContext.Database.ExecuteSqlRaw(
+                    "EXEC sp20204CloneJournalEntry @FromJournalRefNo = {0}, @ToJournalRefNo = {1}, @JournalEntryDate = {2}, @RequesterID = {3}, @AddedBy = {4}, @AddedOn = {5}",
+                    model.FromJournalRefNo,
+                    model.ToJournalRefNo,
+                    journalDate,
+                    model.RequesterId,
+                    addedBy,
+                    addedOn
+                );
+
+                return Ok(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error cloning journal entry: {ex.Message}");
+                return BadRequest(new { success = false, message = "Failed to clone journal entry." });
+            }
+        }
+
 
     }
 }
