@@ -455,17 +455,16 @@
      .Width("100%")
      .OnKeyDown("onKeyDown")
      //.OnValueChanged("dropDownBoxValueChanged")
-     .ContentTemplate(new TemplateName("GetClientContentTemplate"))
+     .ContentTemplate(new TemplateName("GetProjectContentTemplate"))
      )
 
 							@(Html.DevExtreme().Button()
-							.ID("AddClient")
-							.Icon("plus")
-							.Hint("Add Client")
-							.Width(35)
-							.ElementAttr("style", "margin-left: 5px; vertical-align: top;")
-							.OnClick("redirecttoClientLeadmaster")
-							)
+								.ID("AddDebits")
+								.Icon("plus")
+								.Hint("Add Description")
+								.Width(40)
+								.ElementAttr("style", "margin-top: 20px;")
+								)
 
 							@(Html.DevExtreme().Button()
 								.ID("EditDebits")
@@ -1413,7 +1412,7 @@
 			</div>
 		</div>
 
-		@using (Html.DevExtreme().NamedTemplate("GetClientContentTemplate"))
+		@using (Html.DevExtreme().NamedTemplate("GetProjectContentTemplate"))
 		{
 			@(Html.DevExtreme().DataGrid()
 					.ID("GetProject-datagrid")
@@ -2465,6 +2464,9 @@ function loadClientDetails(mprno) {
                 $("#ddBitCls").dxDateBox("instance").option("value", response.BidClosingDate);
                 $("#ddReminder").dxDateBox("instance").option("value", response.BidReminderOn);
                 $('#txtClientProject').dxTextBox("instance").option("value", response.ClientProject);
+				$("#ddPreparedby").dxDropDownBox("instance").option("value",response.RequestSignatory);
+				$("#ddVerifiedby").dxDropDownBox("instance").option("value", response.MPRVerifiedSign);
+				$("#ddApprovedby").dxDropDownBox("instance").option("value", response.MPRApprovedSign);
 
                // Fetch and initialize the data grid with invoice details
                 $.ajax({
@@ -5410,6 +5412,9 @@ LineTotal: 0
 				BidClosingDate: $("#ddBitCls").dxDateBox("instance").option("value") || null,
 			BidReminderOn: $("#ddReminder").dxDateBox("instance").option("value") || null,
 			ClientProject: $('#txtClientProject').dxTextBox("instance").option("value") || null,
+			RequestSignatory: $("#ddPreparedby").dxDropDownBox("instance").option("value") || null,
+			MPRVerifiedSign: $("#ddVerifiedby").dxDropDownBox("instance").option("value") || null,
+			MPRApprovedSign: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null,
 		};
 
 		let children = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
@@ -6688,10 +6693,6 @@ LineTotal: 0
 		});
 	});
 
-		function redirecttoClientLeadmaster(){
-			const url = `/${tenantName}/IMS/ClientLeadMaster`;
-			const title = "";
-				openModal(url, title);
-		}
+
 		
 </script>
