@@ -304,7 +304,8 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 						i.ClientProvinceAr,
 						i.ClientPostalCode,
 						i.ClientNeighborhoodAr,
-						i.ClientCountryCode
+						i.ClientCountryCode,
+						i.AccountHeadArabic
 
 					});
 

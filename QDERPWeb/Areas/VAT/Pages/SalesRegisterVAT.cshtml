@@ -595,6 +595,7 @@
 			alert("InvoiceNo is required.");
 			return;
 		}
+		let IsAmend=true;
 
 		$.ajax({
 			url: `/api/VATModule/InsertAmendEInvoice?InvoiceNo=${encodeURIComponent(invoiceNo)}`,
@@ -602,7 +603,7 @@
 			success: function (response) {
 				console.log("Clone success:", response);
 				// You can redirect to the Credit Note Edit page now
-				window.location.href = `/${tenantName}/VAT/CreditNoteEditForm?InvoiceNo=${encodeURIComponent(invoiceNo)}`;
+				window.location.href = `/${tenantName}/VAT/CreditNoteEditForm?InvoiceNo=${encodeURIComponent(invoiceNo)}&IsAmend=${encodeURIComponent(IsAmend)}`;
 
 			},
 			error: function (xhr) {
