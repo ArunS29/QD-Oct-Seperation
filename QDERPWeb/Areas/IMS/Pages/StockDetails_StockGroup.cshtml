@@ -143,7 +143,12 @@
                 @(Html.DevExtreme().TextArea()
                     .ID("NewStockServicesGroups")
                     .Label(new JS("formatMessage('Type a New Stock or Services Group & Add to the Eisting List:')"))
-                    .LabelMode(EditorLabelMode.Outside))
+                    .LabelMode(EditorLabelMode.Outside)
+                    .ValidationRules(rules =>
+                    {
+                        rules.AddRequired()
+                        .Message(new JS("formatMessage('It should be entered')"));
+                    }))
 
             </td>
 
@@ -155,12 +160,19 @@
                     .ID("StockServicesGroups")
                     .Label(new JS("formatMessage('Stock / Service Group (In Arabic):')"))
                     .Width("100%")
-                    .LabelMode(EditorLabelMode.Outside))
+                    .LabelMode(EditorLabelMode.Outside)
+                    .ValidationRules(rules =>
+                    {
+                        rules.AddRequired()
+                        .Message(new JS("formatMessage('It should be entered')"));
+                    })
+                    )
                 @(Html.DevExtreme().Button()
                     .ID("convertToArabic1")
                     .Width(50)
                     .Icon("fas fa-language")
                     .ElementAttr("style", "margin-top: 25px;")
+
                     )
             </td>
         </tr>
@@ -173,6 +185,11 @@
                     .ID("GroupCode")
                     .LabelMode(EditorLabelMode.Outside)
                     .Label(new JS("formatMessage('Group Code *')"))
+                    .ValidationRules(rules =>
+                    {
+                        rules.AddRequired()
+                        .Message(new JS("formatMessage('Group Code should be entered')"));
+                    })
                     )
             </td>
             <td>
@@ -180,6 +197,11 @@
                     .ID("Category")
                     .LabelMode(EditorLabelMode.Outside)
                     .Label(new JS("formatMessage('Category')"))
+                    .ValidationRules(rules =>
+                    {
+                        rules.AddRequired()
+                        .Message(new JS("formatMessage('It should be entered')"));
+                    })
                     )
             </td>
             <td>
@@ -194,6 +216,11 @@
                     
                     .LabelMode(EditorLabelMode.Outside)
                     .Label("Inventory Master Groups")
+                    .ValidationRules(rules =>
+                    {
+                        rules.AddRequired()
+                        .Message(new JS("formatMessage('Master Groups  should be entered')"));
+                    })
                     )
             </td>
 
@@ -215,6 +242,11 @@
                     .DisplayExpr("DisplayText") 
                     .ValueExpr("AccountId")   
                     .Width(370)
+                    .ValidationRules(rules =>
+                    {
+                        rules.AddRequired()
+                        .Message(new JS("formatMessage('It should be entered')"));
+                    })
                     )
             </td>
 
@@ -230,6 +262,11 @@
                     )
                     .DisplayExpr("DisplayText") // Shows "AccountHead | AccountGroup"
                     .ValueExpr("AccountId")     // Submits AccountId
+                    .ValidationRules(rules =>
+                    {
+                        rules.AddRequired()
+                        .Message(new JS("formatMessage('It should be entered')"));
+                    })
                     )
             </td>
 
@@ -258,10 +295,6 @@
 
         </tr>
 
-       
-        
-       
-        <!-- Footer Entry Info -->
 
     </table>
 
@@ -379,10 +412,39 @@
             }
         });
     }
-        $(function () {
-            $("#btnAdd").dxButton("instance").option("onClick", function () {
+    $(function () {
+        $("#btnAdd").dxButton("instance").option("onClick", function () {
+            // Get validator instances for each field
+            var groupCodeValidator = $("#GroupCode").dxValidator("instance");
+            var categoryValidator = $("#Category").dxValidator("instance");
+            var inventoryGroupValidator = $("#InventoryMasterGroups").dxValidator("instance");
+            var inventoryLedgerValidator = $("#InventoryLedgerAccount").dxValidator("instance");
+            var costLedgerValidator = $("#CostLedgerAccount").dxValidator("instance");
+            var gsgroupNameValidator = $("#NewStockServicesGroups").dxValidator("instance");
+            var gsgroupNameArValidator = $("#StockServicesGroups").dxValidator("instance");
+
+            // Validate all fields
+            var groupCodeValid = groupCodeValidator.validate().isValid;
+            var categoryValid = categoryValidator.validate().isValid;
+            var inventoryGroupValid = inventoryGroupValidator.validate().isValid;
+            var inventoryLedgerValid = inventoryLedgerValidator.validate().isValid;
+            var costLedgerValid = costLedgerValidator.validate().isValid;
+            var gsgroupNameValid = gsgroupNameValidator.validate().isValid;
+            var gsgroupNameArValid = gsgroupNameArValidator.validate().isValid;
+
+            // Check if all fields are valid
+            if (
+                groupCodeValid &&
+                categoryValid &&
+                inventoryGroupValid &&
+                inventoryLedgerValid &&
+                costLedgerValid &&
+                gsgroupNameValid &&
+                gsgroupNameArValid
+            ) {
+                // If all valid, collect values and send ajax
                 const groupCode = $("#GroupCode").dxTextBox("instance").option("value");
-            const category = $("#Category").dxTextBox("instance").option("value");
+                const category = $("#Category").dxTextBox("instance").option("value");
                 const inventoryGroupId = $("#InventoryMasterGroups").dxSelectBox("instance").option("value");
                 const inventoryLedger = $("#InventoryLedgerAccount").dxSelectBox("instance").option("value");
                 const costLedger = $("#CostLedgerAccount").dxSelectBox("instance").option("value");
@@ -402,7 +464,7 @@
                 };
 
                 $.ajax({
-                url: '/api/StockInventory/AddGoodsServiceGroup',
+                    url: '/api/StockInventory/AddGoodsServiceGroup',
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify(data),
@@ -414,7 +476,19 @@
                         DevExpress.ui.notify('Save failed', 'error', 2000);
                     }
                 });
-            });
+            } else {
+                // If validation failed, notify user
+                DevExpress.ui.notify('Please fill all required fields correctly.', 'error', 3000);
+            }
         });
+    });
 
+    $(function () {
+        var grid = $("#dataGrid").dxDataGrid("instance");
+        if (grid) {
+            grid.option("onRowUpdated", function (e) {
+                DevExpress.ui.notify(" updated successfully.", "success", 2000);
+            });
+        }
+    });
 </script>

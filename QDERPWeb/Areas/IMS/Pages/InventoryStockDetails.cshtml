@@ -173,7 +173,7 @@
                             @(Html.DevExtreme().SelectBox()
                                 .ID("StockGroup")
                                 .DisplayExpr("GsgroupName")
-                                .ValueExpr("GsgroupName")
+                                .ValueExpr("GsgroupId")
 
                                 .DataSource(d => d.WebApi()
                                 .Controller("StockInventory")
@@ -204,11 +204,19 @@
                 <tr>
                     <td>
                         <div style="display:flex;align-items:end;" ;>
-                        @(Html.DevExtreme().SelectBox()
-                            .ID("ItemStore")
-                            .Label(new JS("formatMessage('Item Store')"))
-                            .LabelMode(EditorLabelMode.Outside)
-                            .Width("90%"))
+                            @(Html.DevExtreme().SelectBox()
+                                .ID("ItemStore")
+                                .DisplayExpr("StoreName")
+                                .ValueExpr("StoreId")
+                                .DataSource(d => d.WebApi()
+                                .Controller("StockInventory")
+                                .LoadAction("GetStores")
+                                )
+                                .Label(new JS("formatMessage('Item Store')"))
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Width("90%")
+                                )
+
                         @(Html.DevExtreme().Button()
                             .ID("btnAddStore")
                             .Icon("plus")
@@ -220,11 +228,19 @@
                     </td>
                     <td>
                         <div style="display:flex;align-items:end;">
-                        @(Html.DevExtreme().SelectBox()
-                            .ID("ItemClassification")
-                            .Label(new JS("formatMessage('Item Classification')"))
-                            .LabelMode(EditorLabelMode.Outside)
-                            .Width("90%"))
+                            @(Html.DevExtreme().SelectBox()
+                                .ID("ItemClassification")
+                                .DisplayExpr("StockClassification")
+                                .ValueExpr("StockClassId")
+                                .DataSource(d => d.WebApi()
+                                .Controller("StockInventory")
+                                .LoadAction("GetItemClassifications")
+                                )
+                                .Label(new JS("formatMessage('Item Classification')"))
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Width("90%")
+                                )
+
                         @(Html.DevExtreme().Button()
                             .ID("btnAddClassification")
                             .Icon("plus")
@@ -327,10 +343,466 @@
 
 
             <div id="tab1-content">
-                @* @await Html.PartialAsync("StockDetails_StockControl") *@
-             
-                @* @await Html.PartialAsync("~/Pages/Shared/IMS/MusFooter1.cshtml") *@
-                @await Html.PartialAsync("~/Pages/Shared/IMS/ItemAttributes.cshtml")
+
+
+                <style>
+                    .form-table {
+                        width: 100%;
+                        margin: 30px;
+                        border-spacing: 10px;
+                        font-family: Segoe UI, sans-serif;
+                    }
+
+                        .form-table th {
+                            text-align: left;
+                            font-weight: bold;
+                            padding-top: 10px;
+                        }
+
+                        .form-table td {
+                            width: 100%;
+                            vertical-align: top;
+                        }
+
+                    .highlight-red {
+                        color: red;
+                        font-weight: bold;
+                    }
+
+                    .muted-text {
+                        color: gray;
+                        font-size: 12px;
+                        padding-top: 10px;
+                    }
+
+                    .flex-row {
+                        display: flex;
+                        align-items: center;
+                    }
+
+                    .mainContainer {
+                        width: 100%;
+                    }
+
+
+                    .maindiv {
+                        display: flex;
+                    }
+
+                    .audit-row {
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                    }
+
+                    .audit-label {
+                        text-align: right;
+                        font-style: italic;
+                        font-size: 12px;
+                    }
+
+                    .audit-field {
+                        flex: 1;
+                        width: 40vh;
+                    }
+
+                    .audit-box {
+                        padding: 8px;
+                        font-size: 12px;
+                    }
+
+                    .audit-left,
+                    .audit-right {
+                        width: 100%;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 6px;
+                    }
+
+                    .audit {
+                        gap: 50px;
+                        display: flex;
+                    }
+
+                    .avg-cost-container {
+                        display: flex;
+                        align-items: center;
+                        gap: 15px;
+                        margin-left: 50px
+                    }
+
+
+                    .item-discontinued-label {
+                        font-weight: bold;
+                        color: red;
+                        margin-top: 12px;
+                        padding: 10px 10px 10px 0px;
+                    }
+                </style>
+
+
+                <div class="title">
+                    <div class="header-container">
+                        <div id="ItemAttributes" class="no-border-input"></div>
+                    </div>
+                </div>
+
+                <div class="maindiv">
+                    <table class="form-table">
+                        <!-- Detailed Description -->
+                        <tr>
+                            <th colspan="6" style="padding-bottom: 23px; padding-top: 30px;" id="DetailedDescriptionLabel"></th>
+                        </tr>
+                        <tr>
+                            <td colspan="6">
+                            @(Html.DevExtreme().TextArea()
+                                .ID("DetailedDescription")
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Width("100%"))
+                            </td>
+                        </tr>
+
+                        <!-- Item Size & Measurements Section -->
+                        <tr>
+                            <th colspan="6" id="ItemSizeMeasurements"></th>
+                        </tr>
+                        <tr class="flex-row">
+
+                            <td>
+                                <div style="display:flex;">
+                                @(Html.DevExtreme().SelectBox()
+                                    .ID("UnitOfMeasure")
+                                    .DisplayExpr("UnitType")
+                                    .ValueExpr("UnitCode")
+                                    .DataSource(d => d.WebApi()
+                                    .Controller("StockInventory")
+                                    .LoadAction("GetUnitCodes")
+                                    )
+                                    .Label(new JS("formatMessage('Unit of Measure : *')"))
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .Width("140")
+                                    )
+                                @(Html.DevExtreme().Button()
+                                    .ID("btnAddUOM")
+                                    .Icon("plus")
+                                    .Width("45")
+                                    .ElementAttr("style", "margin-top:23px")
+                                    .OnClick("UnitOfMeasure")
+                                    )
+                                </div>
+                            </td>
+
+                            <td>
+                            @(Html.DevExtreme().NumberBox()
+                                .ID("PackingUnit")
+                                .Value(1)
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Label(new JS("formatMessage('Packing Unit : ')")))
+                            </td>
+
+                            <td>
+                            @(Html.DevExtreme().SelectBox()
+                                .ID("ItemSize")
+                                .SearchEnabled(true)
+                                .AcceptCustomValue(true) 
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Label(new JS("formatMessage('Item Size : ')"))
+                                )
+                            </td>
+                        </tr>
+                        <tr class="flex-row">
+                            <td>
+                            @(Html.DevExtreme().SelectBox()
+                                .ID("ItemThickness")
+                                .SearchEnabled(true)
+                                .AcceptCustomValue(true) 
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Label(new JS("formatMessage('Item Thickness : ')"))
+                                )
+                            </td>
+
+                            <td>
+                            @(Html.DevExtreme().SelectBox()
+                                .ID("ItemDimension")
+                                .SearchEnabled(true)
+                                .AcceptCustomValue(true) 
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Label(new JS("formatMessage('Item Dimension : ')"))
+                                )
+                            </td>
+
+                            <td>
+                            @(Html.DevExtreme().TextBox()
+                                .ID("ActualSize")
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Label(new JS("formatMessage('Act. Size : ')"))
+                                )
+                            </td>
+
+
+
+                        </tr>
+
+                        <tr>
+                            <th colspan="6" id="ItemCostPriceDetails"></th>
+                        </tr>
+
+                        <tr class="flex-row">
+                            <td>
+                            @(Html.DevExtreme().NumberBox()
+                                .ID("OpeningBalance")
+                                .Value(0.00)
+                                .Format("#,##0.00")
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Label(new JS("formatMessage('Opening Balance : ')")))
+                            </td>
+
+                            <td>
+                            @(Html.DevExtreme().NumberBox()
+                                .ID("CostPrice")
+                                .Value(0)
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Label(new JS("formatMessage('Cost Price : ')")))
+                            </td>
+
+                            <td>
+                            @(Html.DevExtreme().NumberBox()
+                                .ID("ExFactoryPrice")
+                                .Value(0)
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Label(new JS("formatMessage('Ex-Factory Price : ')")))
+                            </td>
+                        </tr>
+                        <tr class="flex-row">
+                            <td>
+                            @(Html.DevExtreme().NumberBox()
+                                .ID("SellingPrice")
+                                .Value(0)
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Label(new JS("formatMessage('Selling Price : ')")))
+                            </td>
+
+                            <td>
+                            @(Html.DevExtreme().NumberBox()
+                                .ID("MinSellingPrice")
+                                .Value(0)
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Label(new JS("formatMessage('Min Selling Price : ')")))
+                            </td>
+
+                            <td>
+                            @(Html.DevExtreme().NumberBox()
+                                .ID("MaxSellingPrice")
+                                .Value(0)
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Label(new JS("formatMessage('Max Selling Price : ')")))
+                            </td>
+                        </tr>
+
+
+                    </table>
+
+
+                    <table class="form-table">
+
+                        <!-- Detailed Description Arabic -->
+                        <tr class="flex-row" style="padding-bottom: 0px;">
+                            <th colspan="6" class="flex-row" id="DetailedDescriptionInArabic"></th>
+                            <th>
+                            @(Html.DevExtreme().Button()
+                                .ID("convertToArabic1")
+                                .Width(50)
+                                .Icon("fas fa-language")
+                                .ElementAttr("style", "padding:10px; color:black;margin-right:10px;")
+                                )
+                            </th>
+
+
+
+
+                        </tr>
+
+                        <tr>
+                            <td colspan="6" style="display:flex;">
+
+                            @(Html.DevExtreme().TextArea()
+                                .ID("ArabicDescription")
+                                .Width("100%")
+                                .LabelMode(EditorLabelMode.Outside)
+                                )
+
+                            </td>
+                        </tr>
+
+                        <!-- Item Code & Attributes -->
+                        <tr class="flex-row" style="margin-top: 15px;">
+                            <td>
+                            @(Html.DevExtreme().TextBox()
+                                .ID("ItemPartNo")
+                                .Label(new JS("formatMessage('Item Part No : ')"))
+                                .LabelMode(EditorLabelMode.Outside))
+                            </td>
+                            <td>
+                            @(Html.DevExtreme().TextBox()
+                                .ID("ItemHSCode")
+                                .Label(new JS("formatMessage('Item HS Code : ')"))
+                                .LabelMode(EditorLabelMode.Outside))
+                            </td>
+                            
+                        </tr>
+                        <tr class="flex-row">
+                            <td>
+                            @(Html.DevExtreme().SelectBox()
+                                .ID("ItemColor")
+                                .SearchEnabled(true)
+                                .AcceptCustomValue(true) 
+                                .Label(new JS("formatMessage('Item Color : ')"))
+                                .LabelMode(EditorLabelMode.Outside))
+                            </td>
+
+
+                           
+                            <td>
+                            @(Html.DevExtreme().SelectBox()
+                                .ID("ItemBrand")
+                                .SearchEnabled(true)
+                                .AcceptCustomValue(true)
+                                .Label(new JS("formatMessage('Item Brand : ')"))
+                                .LabelMode(EditorLabelMode.Outside))
+                            </td>
+                        </tr>
+                        <tr class="flex-row">
+                           
+                            <td>
+                                @(Html.DevExtreme().SelectBox()
+                                    .ID("ItemManufacturer")
+                                    .SearchEnabled(true)
+                                    .AcceptCustomValue(true)
+                                    .Label(new JS("formatMessage('Item Make / Manufacturer : ')"))
+                                    .LabelMode(EditorLabelMode.Outside))
+                            </td>
+
+
+
+                            <td>
+                            @(Html.DevExtreme().TextBox()
+                                .ID("CountryOfOrigin")
+                                .Label(new JS("formatMessage('Country Of Origin : ')"))
+                                .LabelMode(EditorLabelMode.Outside))
+                            </td>
+
+                        </tr>
+
+
+                    </table>
+
+                </div>
+                <div style="width:100%">
+                    <table>
+                        <tr>
+                            <td colspan="4" class="audit-box">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <!-- Left Audit Info -->
+                                    <div class="audit">
+                                        <div class="audit-left">
+                                            <div class="audit-row">
+                                                <div class="audit-label" id="EnteredByLabel"></div>
+                                                <div class="audit-field">
+                                                @(Html.DevExtreme().TextArea()
+                                                    .ID("EnteredBy")
+                                                    .Height(40)
+                                                    .Width("90%"))
+                                                </div>
+                                            </div>
+                                            <div class="audit-row">
+                                                <div class="audit-label" id="EnteredOnLabel"></div>
+                                                <div class="audit-field">
+                                                @(Html.DevExtreme().TextArea()
+                                                    .ID("EnteredOn")
+                                                    .Height(40)
+                                                    .Width("90%"))
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Right Audit Info -->
+                                        <div class="audit-right">
+                                            <div class="audit-row">
+                                                <div class="audit-label" id="ModifiedByLabel"></div>
+                                                <div class="audit-field">
+                                                        @(Html.DevExtreme().TextArea()
+                                                            .ID("ModifiedBy")
+                                                            .Height(40)
+                                                            .Width("90%"))
+                                                </div>
+                                            </div>
+                                            <div class="audit-row">
+                                                <div class="audit-label" id="ModifiedOnLabel"></div>
+                                                <div class="audit-field">
+                                                @(Html.DevExtreme().TextArea()
+                                                    .ID("ModifiedOn")
+                                                    .Height(40)
+                                                    .Width("90%"))
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="audit-right">
+                                        <div class="audit-row">
+                                        </div>
+                                        <div class="flex-row" style="width: 100%">
+                                            <label class="item-discontinued-label" id="ItemDiscontinuedLabel"></label>
+
+                                            @(Html.DevExtreme().CheckBox()
+                                                .ID("ItemDiscontinued")
+                                                .Value(false))
+
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </td>
+                        </tr>
+                        
+                    </table>
+                </div>
+            
+
+
+                <script>
+
+                    $(function () {
+                        $("#DetailedDescriptionLabel").text(formatMessage("Detailed Description : "));
+                        $("#ItemSizeMeasurements").text(formatMessage("Item Size & Measurements : "));
+                        $("#ItemCostPriceDetails").text(formatMessage("Item Cost & Price Details : "));
+                        $("#DetailedDescriptionInArabic").text(formatMessage("Detailed Description: (in Arabic) "));
+                        $("#EnteredByLabel").text(formatMessage("Entered By : "));
+                        $("#ModifiedByLabel").text(formatMessage("Modified By : "));
+                        $("#ModifiedOnLabel").text(formatMessage("Modified On : "));
+                        $("#AvgCostPriceLabel").text(formatMessage("Avg Cost Price :"));
+                        $("#EnteredOnLabel").text(formatMessage("Entered On : "));
+                        $("#ItemDiscontinuedLabel").text(formatMessage("Item Discontinued : "));
+                    });
+
+                    $(function () {
+                        $("#ItemAttributes").dxTextBox({
+                            text: formatMessage("Item Attributes"),
+                            readOnly: true,
+                            onContentReady: function (e) {
+                                $(e.element).addClass("dx-textbox-heading");
+                            }
+                        });
+                    });
+                    function UnitOfMeasure() {
+                        const url = `/${tenantName}/IMS/UnitOfMeasure`;
+                        const title = "";
+                        openModal(url, title);
+                    }
+
+
+                </script>
             </div>
             </div>
 
@@ -414,7 +886,9 @@
 
             </div>
         </div>
-        
+        <div class="Footer">
+        @await Html.PartialAsync("~/Pages/Shared/IMS/StockEditFooter.cshtml")
+        </div>
         </div>
 
         
@@ -473,13 +947,16 @@
       //////
 
     function onStockGroupChange(e) {
-        var groupName = e.value;
-        if (groupName) {
-            $.get('/api/StockInventory/GetNextStockNumber', { groupName: groupName }, function (data) {
+        var GsgroupId = e.value;
+        if (GsgroupId) {
+            $.get('/api/StockInventory/GetNextStockNumber', { GsgroupId: GsgroupId }, function (data) {
                 $("#StockNoItemCode").dxTextBox("instance").option("value", data);
             });
         }
     }
+
+
+    
 
 
       

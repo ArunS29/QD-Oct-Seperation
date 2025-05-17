@@ -35,7 +35,7 @@ public partial class Tbl20164GoodsAndServicesMaster
 
     public decimal? CostPrice { get; set; }
 
-    public byte? StoreId { get; set; }
+    public string StoreId { get; set; }
 
     public string Remarks { get; set; }
 

@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace QD.ERP.Web.Areas.IMS.Pages.IMS
+namespace QD.ERP.Web.Pages.Shared.IMS
 {
-    public class ItemAttributesModel : PageModel
+    public class StockEditFooterModel : PageModel
     {
         public void OnGet()
         {
