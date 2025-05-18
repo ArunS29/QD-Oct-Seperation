@@ -703,6 +703,46 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, new { message = "Error saving record: " + ex.Message, success = false });
             }
         }
+        [HttpPost]
+        public async Task<IActionResult> DeleteStockItem([FromBody] string code)
+        {
+            if (string.IsNullOrEmpty(code))
+                return BadRequest(new { message = "Invalid stock code", success = false });
+
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { message = "Unauthorized access or invalid tenant", success = false });
+            }
+
+            try
+            {
+                var stockItem = await dbContext.Tbl20164GoodsAndServicesMasters
+                    .FirstOrDefaultAsync(x => x.Gscode == code);
+
+                if (stockItem == null)
+                {
+                    return NotFound(new { message = "Stock item not found", success = false });
+                }
+
+                // Optional: load from Tbl20164GoodsAndServicesMaster if deletion should occur from that table
+                var itemToDelete = await dbContext.Tbl20164GoodsAndServicesMasters
+                    .FirstOrDefaultAsync(x => x.Gscode == code);
+
+                if (itemToDelete == null)
+                {
+                    return NotFound(new { message = "Stock item master record not found", success = false });
+                }
+
+                dbContext.Tbl20164GoodsAndServicesMasters.Remove(itemToDelete);
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { message = "Stock item deleted successfully", success = true });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while deleting the stock item: " + ex.Message, success = false });
+            }
+        }
 
     }
 }

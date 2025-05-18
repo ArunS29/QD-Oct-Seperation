@@ -122,101 +122,139 @@
 
 <div id="printSection">
     <div class="dx-field ledgerResult" >
-        @(Html.DevExtreme().DataGrid<Qry60001inventoryStockView>()
-            .ID("dataGrid")
-            .DataSource(ds => ds.Mvc()
-            .Controller("StockInventory")
-            .LoadAction("GetInventory"))
-            .RemoteOperations(false)
-            .Columns(columns =>
-            {
-                columns.AddFor(m => m.Gscode)
-                .Caption("Stock Code")
-                .Width(120);
+      @(Html.DevExtreme().DataGrid<Qry60001inventoryStockView>()
+    .ID("dataGrid")
+    .DataSource(ds => ds.Mvc()
+        .Controller("StockInventory")
+        .LoadAction("GetInventory"))
+    .RemoteOperations(false)
+    .Columns(columns =>
+    {
+        columns.AddFor(m => m.Gscode)
+            .Caption("Stock Code")
+            .Width(120);
+        columns.AddFor(m => m.Gsdescrpition)
+            .Caption("Description")
+            .Width(280);
+        columns.AddFor(m => m.GsgroupName)
+            .Caption("Stock Group")
+            .Width(180)
+            .GroupIndex(0);
+        columns.AddFor(m => m.ItemPartNo)
+            .Caption("Item Part No")
+            .Width(150);
+        columns.AddFor(m => m.UnitType)
+            .Caption("Unit")
+            .Width(100);
+        columns.AddFor(m => m.GssellingRate)
+            .Caption("Selling Price")
+            .Format("fixedPoint")
+            .Alignment(HorizontalAlignment.Right)
+            .Width(120);
+        columns.AddFor(m => m.CostPrice)
+            .Caption("Cost Price")
+            .Format("fixedPoint")
+            .Alignment(HorizontalAlignment.Right)
+            .Width(120);
+        columns.AddFor(m => m.OpeningBalance)
+            .Caption("Opening Balance")
+            .Format("fixedPoint")
+            .Alignment(HorizontalAlignment.Right)
+            .Width(120);
+        columns.AddFor(m => m.TotalReceived)
+            .Caption("Received")
+            .Format("fixedPoint")
+            .Alignment(HorizontalAlignment.Right)
+            .Width(120);
+        columns.AddFor(m => m.TotalIssues)
+            .Caption("Issues")
+            .Format("fixedPoint")
+            .Alignment(HorizontalAlignment.Right)
+            .Width(120);
+        columns.AddFor(m => m.ClosingBalance)
+            .Caption("Closing Balance")
+            .Format("fixedPoint")
+            .Alignment(HorizontalAlignment.Right)
+            .Width(120);
+        columns.AddFor(m => m.MaxQty)
+            .Caption("Inventory Value (FIFO)")
+            .Format("fixedPoint")
+            .Alignment(HorizontalAlignment.Right)
+            .Width(150);
+        columns.AddFor(m => m.IsDiscontinued)
+            .Caption("IsDiscontinued")
+            .Visible(false)
+            .Width(150);
+    })
+    .Paging(p => p.PageSize(20))
+    .AllowColumnReordering(true)
+    .AllowColumnResizing(true)
+    .ColumnAutoWidth(false)
+    .WordWrapEnabled(true)
+    .FilterRow(f => f.Visible(false))
+    .Grouping(g => g.AutoExpandAll(true))
+    .GroupPanel(gp => gp.Visible(false))
+    .ShowBorders(true)
+    .Height("100%")
+    .Width("100%")
+)
 
-                columns.AddFor(m => m.Gsdescrpition)
-                .Caption("Description")
-                .Width(280);
-
-                columns.AddFor(m => m.GsgroupName)
-                .Caption("Stock Group")
-                .Width(180)
-                .GroupIndex(0); // group by this column
-
-                columns.AddFor(m => m.ItemPartNo)
-                .Caption("Item Part No")
-                .Width(150);
-
-                columns.AddFor(m => m.UnitType)
-                .Caption("Unit")
-                .Width(100);
-
-                columns.AddFor(m => m.GssellingRate)
-                .Caption("Selling Price")
-                .Format("fixedPoint")
-                .Alignment(HorizontalAlignment.Right)
-                .Width(120);
-
-                columns.AddFor(m => m.CostPrice)
-                .Caption("Cost Price")
-                .Format("fixedPoint")
-                .Alignment(HorizontalAlignment.Right)
-                .Width(120);
-
-                columns.AddFor(m => m.OpeningBalance)
-                .Caption("Opening Balance")
-                .Format("fixedPoint")
-                .Alignment(HorizontalAlignment.Right)
-                .Width(120);
-
-                columns.AddFor(m => m.TotalReceived)
-                .Caption("Received")
-                .Format("fixedPoint")
-                .Alignment(HorizontalAlignment.Right)
-                .Width(120);
-
-                columns.AddFor(m => m.TotalIssues)
-                .Caption("Issues")
-                .Format("fixedPoint")
-                .Alignment(HorizontalAlignment.Right)
-                .Width(120);
-
-                columns.AddFor(m => m.ClosingBalance)
-                .Caption("Closing Balance")
-                .Format("fixedPoint")
-                .Alignment(HorizontalAlignment.Right)
-                .Width(120);
-
-                columns.AddFor(m => m.MaxQty)
-                .Caption("Inventory Value (FIFO)")
-                .Format("fixedPoint")
-                .Alignment(HorizontalAlignment.Right)
-                .Width(150);
-
-                columns.AddFor(m => m.IsDiscontinued)
-                .Caption("IsDiscontinued")
-                .Visible(false)
-                .Width(150);
-            })
-            .Paging(p => p.PageSize(20))
-            .AllowColumnReordering(true)
-            .AllowColumnResizing(true)
-            .ColumnAutoWidth(false)
-            .WordWrapEnabled(true)
-            .FilterRow(f => f.Visible(false))
-            .Grouping(g => g.AutoExpandAll(true))
-            .GroupPanel(gp => gp.Visible(false))
-            .ShowBorders(true)
-            .Height("100%")
-            .Width("100%")
-            )
     </div>
+    <div id="contextMenu"></div>
 </div>
-
 <script>
-    let dataGrid;
+    let selectedRowData = null;
+    const tenantName = "@ViewBag.TenantName" || "default";
 
-    function dataGridInitialized(e) {
-        dataGrid = e.component;
-    }
+    $(function () {
+        const grid = $("#dataGrid").dxDataGrid("instance");
+
+        grid.option("onContextMenuPreparing", function (e) {
+            if (e.row && e.row.rowType === "data") {
+                e.event.preventDefault(); // Prevent browser default context menu
+                selectedRowData = e.row.data;
+
+                const contextMenu = $("#contextMenu").dxContextMenu("instance");
+                contextMenu.option("target", e.event.target);
+                contextMenu.show();
+            }
+        });
+
+        $("#contextMenu").dxContextMenu({
+            items: [
+                { text: "Edit Stock Item", icon: "edit", id: "edit" },
+                { text: "Delete Stock Item", icon: "remove", id: "delete", cssClass: "text-danger" },
+                { text: "View Stock Item Details", icon: "info", id: "view" }
+            ],
+            onItemClick: function (e) {
+                if (!selectedRowData) return;
+
+                const code = selectedRowData.Gscode;
+
+                switch (e.itemData.id) {
+                    case "edit":
+                    case "view":
+                        window.location.href = `/${tenantName}/IMS/InventoryStockDetails?code=${code}`;
+                        break;
+
+                    case "delete":
+                        if (confirm(`Are you sure you want to delete stock item: ${code}?`)) {
+                            $.post("/StockInventory/DeleteStockItem", { code }, function (result) {
+                                DevExpress.ui.notify(result.message, result.success ? "success" : "error", 2000);
+                                if (result.success) {
+                                    grid.refresh();
+                                }
+                            });
+                        }
+                        break;
+                }
+            },
+            showEvent: "", // manual trigger only
+            visible: true,
+            hideOnOutsideClick: true
+        });
+    });
 </script>
+
+
+
