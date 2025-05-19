@@ -57,10 +57,18 @@
         display: none !important;
     }
 
+    .mainContainer {
+        width: 96%;
+        overflow-x: hidden;
+    }
 </style>
 
 <!-- Client Header Box -->
-
+<div class="title">
+    <div class="header-container">
+        <div id="ClientLeads" class="no-border-input"></div>
+    </div>
+</div>
 <div class="Head">
     <div class="limited-footer">
         @await Html.PartialAsync("InventoryModuleFooter")
@@ -79,21 +87,22 @@
             .ColumnAutoWidth(true)
             .ShowColumnLines(true)
             .ShowRowLines(true)
-        .OnContextMenuPreparing("onSuppliersGridContextMenu")
+            .Width("100%")
+            .OnContextMenuPreparing("onSuppliersGridContextMenu")
             .AllowColumnResizing(true) // Enable column resizing
             .ColumnResizingMode(ColumnResizingMode.NextColumn) // Optional: can be "Widget" or "NextColumn"
             .AllowColumnReordering(true) // Optional: allow dragging columns
             .ColumnChooser(chooser => chooser
-            .Enabled(false)
+            .Enabled(true)
             .Mode(GridColumnChooserMode.Select) // You can also use "DragAndDrop"
             )
-            .HeaderFilter(filter => filter.Visible(true))
-        .FilterRow(filterRow => filterRow.Visible(true).ApplyFilter(GridApplyFilterMode.Auto)) // ✅ Enables inline filter inputs
+            .HeaderFilter(filter => filter.Visible(false))
+        .FilterRow(filterRow => filterRow.Visible(false).ApplyFilter(GridApplyFilterMode.Auto)) // ✅ Enables inline filter inputs
 
             .Paging(p => p.Enabled(false))
             .Columns(columns =>
             {
-            columns.Add().DataField("SupplierCategory").Caption("Supplier Category").Visible(true).GroupIndex(0);
+                columns.Add().DataField("SupplierCategory").Caption("Supplier Category").Visible(true).GroupIndex(0);
                 columns.Add().DataField("SupplierCode").Caption("Supplier Code").Visible(true);
                 columns.Add().DataField("SupplierName").Caption("Supplier Name").Visible(true);
                 columns.Add().DataField("ContactPerson").Caption("Contact Person").Visible(true);
@@ -102,18 +111,14 @@
                 columns.Add().DataField("ContactPersonTitle").Caption("Contact Person Title").Visible(true);
                 columns.Add().DataField("SupplierAccountLedgerNo").Caption("Supplier AccountLedger No").Visible(true);
           
-
             })
-
-        .Summary(s => s.TotalItems(items =>
-        {
-            // Count for ClientName column
-            items.Add().Column("SupplierCode")
-            .SummaryType(SummaryType.Count)
-            .DisplayFormat(" Totan no.of Suppliers: {0}");
-
-        }))
-
+            .Summary(s => s.TotalItems(items =>
+            {
+                // Count for ClientName column
+                items.Add().Column("SupplierCode")
+                .SummaryType(SummaryType.Count)
+                .DisplayFormat(" Totan no.of Suppliers: {0}");
+            }))
         )
 
 </div>
@@ -152,7 +157,15 @@
                 }];
             }
         }
-   
+        $(function () {
+        $("#ClientLeads").dxTextBox({
+            text: formatMessage("Suppliers"),
+            readOnly: true,
+            onContentReady: function (e) {
+                $(e.element).addClass("dx-textbox-heading");
+            }
+        });
+    });s
 </script>
 
 

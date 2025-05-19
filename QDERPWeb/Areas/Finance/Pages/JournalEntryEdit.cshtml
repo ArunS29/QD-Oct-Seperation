@@ -50,6 +50,29 @@
         margin-top: 3%; /* only works in flex layout */
     }
 
+    .floating-dropdown-form {
+        position: absolute;
+        background: #fff;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        border-radius: 6px;
+    }
+
+    .dropdown-inner {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .dx-button.active {
+        background-color: #e0f3ff;
+    }
+
+    .floating-dropdown {
+        position: absolute;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
 </style>
 <div class="title">
     <div class="header-container">
@@ -231,7 +254,7 @@
                     // ✅ Additional columns from entity
                     columns.Add().DataField("JournalChildNo").Caption("Journal Child No").Width(150).Visible(true);
                     columns.Add().DataField("JournalRefNo").Caption("Journal Ref No").Width(200).Visible(false);
-                    columns.Add().DataField("LineOrderNo").Caption("Line Order No").Width(120).Visible(false);
+                    
                     columns.Add().DataField("AccountId").Caption("Account ID").Width(150).Visible(false);
 
                     columns.Add().DataField("PropertyCostDescription").Caption("Property Cost Desc").Width(200).Visible(false);
@@ -389,7 +412,7 @@
                 .Width(250)
                 )
         </div>
-        <div class="class="col-md-2 me-3"">
+        <div class="col-md-2 me-3">
             @(Html.DevExtreme().TextBox()
 
                 .LabelMode(EditorLabelMode.Outside)
@@ -1481,21 +1504,48 @@
 
 
     function closeParentModal() {
-        // Hide the popup
-        if (popupInstances[journalchildno]) {
-            popupInstances[journalchildno].hide();
+        const voucherEntryNo = $("#CurrentVoucherEntryNo").val();
+        if (!voucherEntryNo) {
+            console.warn("VoucherEntryNo not found in hidden field.");
+            return;
+        }
+
+        const popup = popupInstances[voucherEntryNo];
+        if (popup) {
+            popup.hide();
+        } else {
+            console.warn("No popup instance found for VoucherEntryNo:", voucherEntryNo);
         }
     }
 
     function ClosePropertyModel() {
-        if (popupInstances[journalchildno]) {
-            popupInstances[journalchildno].hide();
+        const voucherEntryNo = $("#CurrentVoucherEntryNo").val();
+        if (!voucherEntryNo) {
+            console.warn("VoucherEntryNo not found in hidden field.");
+            return;
+        }
+
+        const popup = popupInstances[voucherEntryNo];
+        if (popup) {
+            popup.hide();
+        } else {
+            console.warn("No popup instance found for VoucherEntryNo:", voucherEntryNo);
         }
     }
 
+
     function CloseEmployeeModel() {
-        if (popupInstances[journalchildno]) {
-            popupInstances[journalchildno].hide();
+        const voucherEntryNo = $("#CurrentVoucherEntryNo").val();
+        if (!voucherEntryNo) {
+            console.warn("VoucherEntryNo not found in hidden field.");
+            return;
+        }
+
+        const popup = popupInstances[voucherEntryNo];
+        if (popup) {
+            popup.hide();
+        } else {
+            console.warn("No popup instance found for VoucherEntryNo:", voucherEntryNo);
         }
     }
     function Closepopup() {
@@ -1549,42 +1599,51 @@
         }
 
     }
-    function onGridCostButtonClick(e) {
+        function onGridCostButtonClick(e) {
         const button = $(e.element);
         const $dataRow = button.closest(".dx-data-row");
         const $dataGrid = $("#dataGrid").dxDataGrid("instance");
-
         const rowIndex = $dataRow.index();
         const rowData = $dataGrid.getVisibleRows()[rowIndex].data;
         const journalChildNo = rowData.JournalChildNo;
 
-        // If a detail row already exists below this, remove it
-        const $nextRow = $dataRow.next();
-        if ($nextRow.hasClass("detail-row")) {
-            $nextRow.remove();
+        // Remove any existing dropdowns
+        $(".floating-dropdown-form").remove();
+
+        // Toggle dropdown: if already opened for this row, remove and exit
+        if (button.hasClass("active")) {
+            button.removeClass("active");
             return;
         }
+        $(".dx-button").removeClass("active");
+        button.addClass("active");
 
-        // Remove any other open detail rows
-        $(".detail-row").remove();
+        // Create floating form container
+        const $dropdown = $(`
+            <div class="floating-dropdown-form">
+                <div class="dropdown-inner">
+                    <div class="inline-detail-grid"></div>
+                </div>
+            </div>
+        `);
 
-        // Get column count to span the full width
-        const columnCount = $dataRow.find("td").length;
+        $("body").append($dropdown);
 
-        // Insert a new row after the current one
-        const $detailRow = $(`
-                <tr class="detail-row">
-                    <td colspan="${columnCount}" style="padding: 0;" class="bg-light">
-                        <div class="inline-detail-grid" style="padding: 10px;"></div>
-                    </td>
-                </tr>
-            `);
-        $dataRow.after($detailRow);
+        // Position it under the clicked button
+        const offset = button.offset();
+        const height = button.outerHeight();
+        const dropdownWidth = 650; // keep it same as in CSS
+        $dropdown.css({
+            top: offset.top + height + 4,
+            left: offset.left - dropdownWidth + button.outerWidth(), // aligns right edge of dropdown with button
+            width: dropdownWidth,
+            zIndex: 1500
+        });
 
-        // Render the nested grid inside the new row
-        $detailRow.find(".inline-detail-grid").dxDataGrid({
+
+        // Render the inner grid inside the dropdown
+        $dropdown.find(".inline-detail-grid").dxDataGrid({
             dataSource: DevExpress.data.AspNet.createStore({
-
                 loadUrl: `/api/JournalEntryEdit/GetCostAllocationByJournalChildNo`,
                 loadParams: { journalChildNo: journalChildNo }
             }),
@@ -1597,9 +1656,19 @@
                 { dataField: "DrCr", caption: "Dr/Cr", width: 80, alignment: "center" }
             ]
         });
+
+        // Hide dropdown on outside click
+        $(document).on("click.floatingDropdown", function (event) {
+            if (!$(event.target).closest(".floating-dropdown-form, .dx-button").length) {
+                $(".floating-dropdown-form").remove();
+                $(".dx-button").removeClass("active");
+                $(document).off("click.floatingDropdown");
+            }
+        });
     }
 
-    function onGridEmployeeButtonClick(e) {
+
+        function onGridEmployeeButtonClick(e) {
         const button = $(e.element);
         const $dataRow = button.closest(".dx-data-row");
         const $dataGrid = $("#dataGrid").dxDataGrid("instance");
@@ -1608,33 +1677,43 @@
         const rowData = $dataGrid.getVisibleRows()[rowIndex].data;
         const journalChildNo = rowData.JournalChildNo;
 
-        // If a detail row already exists below this, remove it
-        const $nextRow = $dataRow.next();
-        if ($nextRow.hasClass("detail-row")) {
-            $nextRow.remove();
-            return;
-        }
+        // Remove any existing dropdown
+        $(".floating-dropdown").remove();
 
-        // Remove any other open detail rows
-        $(".detail-row").remove();
+        // Create dropdown container
+        const $dropdown = $(`
+            <div class="floating-dropdown shadow">
+                <div class="inline-detail-grid" style="padding: 10px;"></div>
+            </div>
+        `).appendTo("body");
 
-        // Get column count to span the full width
-        const columnCount = $dataRow.find("td").length;
+        // Set position (left offset)
+        const offset = button.offset();
+        const height = button.outerHeight();
+        const dropdownWidth = 650;
+        const screenWidth = $(window).width();
 
-        // Insert a new row after the current one
-        const $detailRow = $(`
-                    <tr class="detail-row">
-                        <td colspan="${columnCount}" style="padding: 0;" class="bg-light">
-                            <div class="inline-detail-grid" style="padding: 10px;"></div>
-                        </td>
-                    </tr>
-                `);
-        $dataRow.after($detailRow);
+        const leftPosition = Math.max(0, offset.left - dropdownWidth + button.outerWidth());
 
-        // Render the nested grid inside the new row
-        $detailRow.find(".inline-detail-grid").dxDataGrid({
+        $dropdown.css({
+            top: offset.top + height + 4,
+            left: leftPosition,
+            width: dropdownWidth,
+            zIndex: 1500
+        });
+
+        // Close on outside click
+        $(document).on("mousedown.dropdownClose", function (event) {
+            if (!$(event.target).closest(".floating-dropdown, .dx-button").length) {
+                $(".floating-dropdown").remove();
+                $(".dx-button").removeClass("active");
+                $(document).off("mousedown.dropdownClose");
+            }
+        });
+
+        // Render nested DataGrid
+        $dropdown.find(".inline-detail-grid").dxDataGrid({
             dataSource: DevExpress.data.AspNet.createStore({
-
                 loadUrl: `/api/JournalEntryEdit/GetEmployeeAllocationByJournalChildNo`,
                 loadParams: { journalChildNo: journalChildNo }
             }),
@@ -1701,6 +1780,15 @@
                 $btn.dxButton("instance").option("disabled", true);
             }
         });
+        // 🔒 Wait for grid content to be rendered and disable cell buttons
+        setTimeout(function () {
+            $("#dataGrid").find(".dx-button").each(function () {
+                const instance = $(this).dxButton("instance");
+                if (instance) {
+                    instance.option("disabled", true);
+                }
+            });
+        }, 100);
 
     }
 
@@ -1834,6 +1922,14 @@
     }
 
     async function onPostJournalClick() {
+        const approve = await $("#ApprovedBytext").dxTextBox("instance").option("value");
+        if (!approve) {
+            DevExpress.ui.dialog.alert(
+                "This Journal Entry is not yet Approved,Please get it approved<br>and continue for Payment",
+                "Journal Entry Not Approved"
+            );
+            return;
+        }
     const result = await DevExpress.ui.dialog.confirm(
         "You are about to Create Voucher,<br>Click yes if you would like to continue.",
         "Confirmation"
