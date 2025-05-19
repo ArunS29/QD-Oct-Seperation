@@ -2469,9 +2469,9 @@
         "New Standard Tax Invoice(B2C)": "New Standard Tax Invoice(B2C)",
         "New e-Invoice Credit Note": "New e-Invoice Credit Note",
         "New e-Invoice Debit Note": "New e-Invoice Debit Note",
-        "New VAT Purchase Bill":"New VAT Purchase Bill"
+        "New VAT Purchase Bill":"New VAT Purchase Bill",
 
-        "Sales Reporting":"Sales Reporting",
+        "Sales Reporting":"Sales Reporting"
    
     },
     "ar": {
@@ -2524,7 +2524,7 @@
         "Access Management":"Access Management",
         "Item Name":"Item Name",
         "Action Name": "Action Name",
-        "Visible":"Visible",
+        "Visible":"Visible"
 
 
 
