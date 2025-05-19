@@ -4747,8 +4747,10 @@
 										  // DevExtreme widgets
 	$("#GroupVATNo").dxTextBox("instance").option("value", selectedRowData[0].ClientGroupVatnumber);
 	$("#ClientVATNo").dxTextBox("instance").option("value", selectedRowData[0].VatregistrationNo);
+    $("#ClientNameArabic").dxTextBox("instance").option("value", selectedRowData[0].AccountHeadArabic);
 	$("#ClientOtherID").dxTextBox("instance").option("value", selectedRowData[0].ClientOtherId);
-	$("#OtherIDType").dxDropDownBox("instance").option("value", selectedRowData[0].ClientOtherIdtype);
+	dataGridOtherIDTypeHeadSelectionChanged({ selectedRowKeys: [selectedRowData[0].ClientOtherIdtype]});
+
 
 	// Assuming these are standard inputs
 	$("#StreetName").val(selectedRowData[0].ClientAddressStreet);
@@ -6682,7 +6684,7 @@ function dataGridSelectionChanged(e) {
 					 BuyerVatnumber: $("#ClientVATNo").dxTextBox("instance").option("value")|| null,
 						 BuyerOtherIdtype: $("#OtherIDType").dxDropDownBox("instance").option("value")|| null,
 					BuyerOtherId: $("#ClientOtherID").dxTextBox("instance").option("value")|| null,
-				   InvoiceCounterValue: $("#InvoiceCounterValue").dxTextBox("instance").option("value"),
+					InvoiceCounterValue: $("#InvoiceCounterValue").dxTextBox("instance").option("value"),
 					InvoiceUuid: $("#UUID").dxTextBox("instance").option("value")|| null,
 
 				//OtherDetails
@@ -6711,14 +6713,14 @@ function dataGridSelectionChanged(e) {
 				//TaxCurrencyCode: TaxCurrencyExchangeId|| null,
 				ExchangeRate:$("#currencyexchangerate").dxNumberBox("instance").option("value")|| null,
 				AdvanceText:$("#LessAdvance").dxTextBox("instance").option("value")|| null,
-				AdvanceAmount:$("#numLessAdvance").dxNumberBox("instance").option("value")|| null,
-				AdvanceTextAr:$("#AccountGroup1").dxTextBox("instance").option("value")|| null,
+				AdvanceAmount:$("#currencyexchangerate3").dxNumberBox("instance").option("value")|| null,
+				AdvanceTextAr:$("#LessAdvanceAr").dxTextBox("instance").option("value")|| null,
 				OtherDeductionText:$("#LessOtherDeductions").dxTextBox("instance").option("value")|| null,
-				OtherDeductionAmount:$("#numLessOtherDeductions").dxNumberBox("instance").option("value")|| null,
-				OtherDeductionTextAr:$("#AccountGroup2").dxTextBox("instance").option("value")|| null,
+				OtherDeductionAmount:$("#currencyexchangerate4").dxNumberBox("instance").option("value")|| null,
+				OtherDeductionTextAr:$("#LessAdvanceAr1").dxTextBox("instance").option("value")|| null,
 				RetentionText:$("#LessRetention").dxTextBox("instance").option("value")|| null,
-				RetentionAmount:$("#numLessRetention").dxNumberBox("instance").option("value")|| null,
-				RetentionTextAr:$("#AccountGroup3").dxTextBox("instance").option("value")|| null,
+				RetentionAmount:$("#currencyexchangerate5").dxNumberBox("instance").option("value")|| null,
+				RetentionTextAr:$("#LessAdvanceAr2").dxTextBox("instance").option("value")|| null,
 
 				//Branch/DivisionDetails
 				BranchCode: branchcode|| null,
@@ -6737,16 +6739,22 @@ function dataGridSelectionChanged(e) {
 			InvoiceCheckedBy: ChkbySignatoryID|| null,
 			InvoiceApprovedBy: ApproedbySignatoryID|| null
 
-
-
-
-
-
-
 				};
 
+				// var InvoiceChildren=null;
+
+				//  if(IsCurrent!="true")
+				//  {
+				//  }
+				//  else{
+				//        InvoiceChildren = $("#B2BUpdatedataGrid").dxDataGrid("instance").option("dataSource");
+				//  }
+
+				  InvoiceChildren = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
+
+
 				// Create JSON array for child records
-				var InvoiceChildren = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
+
 
 				// Add InvoiceNo to each item
 			let updatedDataSource = InvoiceChildren.map(item => ({
@@ -6784,7 +6792,7 @@ function dataGridSelectionChanged(e) {
 							"Invoice Details updated Successfully.",
 							"Update successful"
 						);
-						history.back();
+							history.back();
 							},
 							error: function (xhr) {
 								DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
@@ -6805,6 +6813,7 @@ function dataGridSelectionChanged(e) {
 				}
 
 			 });
+
 
 
 		 $(document).ready(function () {

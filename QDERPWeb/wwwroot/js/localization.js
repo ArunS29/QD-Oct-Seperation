@@ -1,5 +1,6 @@
 ﻿var dictionary = {
     "en": {
+
         "Stores":"Stores",
         "Type a newStore & Add to the Existing List":"Type a newStore & Add to the Existing List",
         "Cancel":"Cancel",
@@ -2461,6 +2462,12 @@
         "Add New Stock Adjustment Entry": "Add New Stock Adjustment Entry",
         "Debit Note Register": "Debit Note Register",
         "Invoice With Details": "Invoice With Details",
+
+        "Sales Reporting":"Sales Reporting",
+   
+    },
+    "ar": {
+
         "Sales Reporting": "Sales Reporting",
         "User ID":"User ID",
         "Password":"Password",
@@ -2569,6 +2576,7 @@
         "Department":"قسم",
         "Password":"كلمة المرور",
         "User ID":"معرف المستخدم",
+
         "Sales Reporting": "تقرير المبيعات",
         "Debit Note Register": "سجل إشعار الخصم",
         "Credit Note Register": "سجل إشعار الدائن",
