@@ -260,13 +260,14 @@
                         .ID("AccountHeadDropDown")
                         .ShowClearButton(true)
                         .AcceptCustomValue(true)
-                .AcceptCustomValue(false)
+             
                         .OpenOnFieldClick(false)
                         .ValueChangeEvent("input")
                         .HoverStateEnabled(true)
                         .ValueExpr("AccountId")
                         .DisplayExpr("AccountHead")
                         .OnInput("dropDownBoxOnInput")
+                        .OnClosed("onDropDownBoxClosed")
                         .OnOpened("onOpened")
                         @* .OnOpened("onDropDownBoxOpened") *@
                         .Width(315)
@@ -1579,7 +1580,21 @@
             dataGrid.option("searchPanel.text", text);
         }
     }
+    function onDropDownBoxClosed(e) {
+        const typedText = e.component.option("text");
+        const grid = $(e.component.content()).find("#accounthead-datagrid").first().dxDataGrid("instance");
 
+        if (!grid) return;
+
+        const visibleRows = grid.getVisibleRows();
+        const match = visibleRows.find(r => r.data.AccountHead === typedText);
+
+        if (!match) {
+            // Clear the value if not valid
+            e.component.option("value", null);
+
+        }
+    }
     function onOpened(e) {
         setTimeout(() => {
             e.component.focus();

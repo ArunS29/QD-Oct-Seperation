@@ -31,6 +31,7 @@
 
 }
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<input type="hidden" id="CurrentVoucherEntryNo" value="@ViewBag.VoucherEntryNo" />
 
 
 <style type="text/css">
@@ -244,6 +245,7 @@
 					.Columns(columns =>
 					{
 
+						columns.AddFor(m => m.PropertyAllocationId).Caption("PropertyAllocationId").Width(100).AllowEditing(false);
 						columns.AddFor(m => m.PropertyNo)
 					.DataField("PropertyDescription")
 					.Caption("Property Name")
@@ -403,8 +405,8 @@
 								.ID("btnPropertyBack")
 								.Text("Back")
 								.Icon("arrowleft")
-								.OnClick("ClosePropertyModel")
-								)
+								.OnClick("ClosePropertyModel"))
+								
 				@(Html.DevExtreme().Button()
 								.ID("btnpropertyDelete")
 								.Text("Delete")
@@ -469,48 +471,33 @@
 <script>
 
 	$(document).ready(function () {
-	// 	// Make an AJAX request to check the condition
-	// 	$.ajax({
-	// 		url: '/api/VoucherEntryReceipts/CheckPropertyAllocation',
-	// 		method: 'GET',
-	// 		data: { AccountHead: '@accountHead',AccountID : '@accountId' }, // Pass accountHead as a parameter
-	// 		success: function (response) {
-	// 			if (response.isAllocated) {  // Assuming API returns { allowExecution: true/false }
-	// 				initializePage();  // Call function to execute the necessary logic
-	// 			}
-	// 		},
-	// 		error: function (xhr, status, error) {
-	// 			console.error('Error checking employee allocation:', error);
-	// 		}
-	// 	});
-	// });
-
-	// function initializePage() {
-		// Capture the initial value of the NumberBox
+		const journalChildNo = parseInt('@voucherEntryNo'.trim(), 10);
 		const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
-
-		// Sample data with initial value of VoucherAmount
-		const costData = [
-			{
-				DrCr: '@drCr',
-				EffectiveDate: new Date().toLocaleDateString('en-GB', {
-					day: 'numeric',
-					month: 'short',
-					year: 'numeric',
-				}),
-				VoucherAmount: initialVoucherAmount.toFixed(2),
-				Remarks: ''
-			}
-		];
-
-		// console.log('Cost Data:', costData);
-
-		// Get the DataGrid instance
+		const drCr = '@drCr';
 		const costdataGrid = $('#propertydataGrid').dxDataGrid('instance');
 
-		if (costdataGrid) {
-			costdataGrid.option('dataSource', costData);
-		}
+		$.ajax({
+			url: `/api/JournalEntryEdit/GetPropertyAllocationsBydatagrid?journalChildNo=${journalChildNo}`,
+			type: 'GET',
+			success: function (data) {
+				if (data && data.length > 0) {
+					costdataGrid.option('dataSource', data);
+				} else {
+					// No data found – insert a default row
+					const defaultRow = [{
+						DrCr: drCr,
+						EffectiveDate: new Date().toISOString(),
+						VoucherAmount: initialVoucherAmount.toFixed(2),
+						Remarks: '',
+						// default fallback value
+					}];
+					costdataGrid.option('dataSource', defaultRow);
+				}
+			},
+			error: function () {
+				DevExpress.ui.notify("Failed to load cost allocation data.", "error", 4000);
+			}
+		});
 
 		// Function to handle changes to the NumberBox value
 		$('#propertyAmount').dxNumberBox({
@@ -631,6 +618,7 @@
 
 		// Append voucherEntryNo to each row
 		let costAllocations = allRowsData.map(row => ({
+			PropertyAllocationId: row.PropertyAllocationId || 0,
 			PropertyAllocDrCr: row.DrCr,
 			PropertyNo: row.PropertyNo,
 			EffectiveDate: row.EffectiveDate ? new Date(row.EffectiveDate).toISOString() : null,
@@ -816,10 +804,7 @@
 		}
 	}
 
-	function ClosePropertyModel() {
-		let popupInstance = $("#EmployeeAllocationPopup").dxPopup("instance");
-		popupInstance.hide();
-	}
+	
 
 
 
@@ -843,7 +828,7 @@
 					let balanceAmount = oldAmount - newAmount; // Calculate the remaining balance
 
 					// Add new row with the balance amount
-					let newRow = { ...e.oldData, PropertyDescription:null, VoucherAmount: balanceAmount };
+					let newRow = { ...e.oldData, PropertyDescription:null,PropertyNo:null,PropertyAllocationId:0, VoucherAmount: balanceAmount,Remarks:null,EffectiveDate:new Date() };
 
 					// Add the new row to the grid
 					dataSource.push(newRow);
@@ -853,4 +838,20 @@
 			}
 		}).dxDataGrid("instance");
 	});
+
+	function ClosePropertyModel() {
+		const voucherEntryNo = $("#CurrentVoucherEntryNo").val();
+		if (!voucherEntryNo) {
+			console.warn("VoucherEntryNo not found in hidden field.");
+			return;
+		}
+
+		const popup = popupInstances[voucherEntryNo];
+		if (popup) {
+			popup.hide();
+		} else {
+			console.warn("No popup instance found for VoucherEntryNo:", voucherEntryNo);
+		}
+	}
+
 </script>
