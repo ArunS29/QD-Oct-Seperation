@@ -1,5 +1,7 @@
 ﻿var dictionary = {
     "en": {
+        "Stores":"Stores",
+        "Type a newStore & Add to the Existing List":"Type a newStore & Add to the Existing List",
         "Cancel":"Cancel",
         "Submit":"Submit",
         "MprchildSlNo": "MprchildSlNo",
