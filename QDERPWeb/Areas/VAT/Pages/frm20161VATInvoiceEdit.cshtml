@@ -5,6 +5,7 @@
 @{
 }
 <style>
+
 	.toggle-switch {
 		position: relative;
 		display: inline-block;
@@ -21,55 +22,57 @@
 		}
 
 	.toggle-switch {
-	position: relative;
-	display: inline-block;
-	width: 40px;
-	height: 20px;
-}
+		position: relative;
+		display: inline-block;
+		width: 40px;
+		height: 20px;
+	}
 
-.toggle-switch input {
-	opacity: 0;
-	width: 0;
-	height: 0;
-}
+		.toggle-switch input {
+			opacity: 0;
+			width: 0;
+			height: 0;
+		}
 
-.slider {
-	position: absolute;
-	cursor: pointer;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background-color: #e53935; /* Red by default */
-	transition: 0.4s;
-	border-radius: 20px;
-}
+	.slider {
+		position: absolute;
+		cursor: pointer;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: #e53935; /* Red by default */
 
-.slider:before {
-	position: absolute;
-	content: "";
-	height: 16px;
-	width: 16px;
-	left: 2px;
-	bottom: 2px;
-	background-color: white;
-	transition: 0.4s;
-	border-radius: 50%;
-}
+		transition: 0.4s;
+		border-radius: 20px;
+	}
 
-.toggle-switch input:checked + .slider {
-	background-color: #4CAF50; /* Green when checked */
-}
+		.slider:before {
+			position: absolute;
+			content: "";
+			height: 16px;
+			width: 16px;
+			left: 2px;
+			bottom: 2px;
+			background-color: white;
+			transition: 0.4s;
+			border-radius: 50%;
+		}
 
-.toggle-switch input:checked + .slider:before {
-	transform: translateX(20px);
-}
+	.toggle-switch input:checked + .slider {
+		background-color: #4CAF50; /* Green when checked */
+	}
+
+		.toggle-switch input:checked + .slider:before {
+			transform: translateX(20px);
+		}
 
 	.vat-item {
 		display: flex;
 		align-items: center;
 		padding: 6px 10px;
 		color: #666666; /* grey text */
+
 		background-color: transparent !important; /* remove any background */
 	}
 
@@ -79,6 +82,7 @@
 	}
 
 	/* Remove list background */
+
 	#vatTransactionList {
 		background-color: transparent !important;
 	}
@@ -88,14 +92,49 @@
 		box-sizing: border-box;
 		width: 100%;
 		height: 100%;
-		font-size: 11px;
-		
+		font-size: 12px;
+	}
+
+	/* .dx-overlay-content dx-popup-normal dx-resizable{
+
+			max-height: 369.13px ! important;
+
+			width: 600px;
+
+			height: 550px;
+
+			z-index: 1501;
+
+			left: 0px;
+
+			top: 0px;
+
+			transform: translate(-366px, -329px);
+
+			transition: all;
+
+			opacity: 1;
+
+			visibility: visible;
+
+		} */
+
+	.dx-overlay-content dx-popup-normal dx-resizable dx-dropdowneditor-overlay-flipped {
+		max-height: 378.13px !important;
+		width: 600px;
+		height: 550px;
+		z-index: 1501;
+		left: 0px;
+		top: 0px;
+		transform: translate(-366px, -379px);
+		transition: all;
+		opacity: 1;
+		visibility: visible;
 	}
 
 	.address-form-table {
 		border-collapse: collapse;
 		table-layout: fixed;
-		
 	}
 
 		.address-form-table td {
@@ -107,7 +146,6 @@
 		.address-form-table label {
 			display: block;
 			font-weight: bold;
-			font-size: 11px;
 			margin-bottom: 2px;
 			white-space: nowrap;
 			color: black;
@@ -115,7 +153,7 @@
 
 		.address-form-table input[type="text"],
 		.address-form-table select {
-			width: 100%;		
+			width: 100%;
 			border: 1px solid #aaa;
 			border-radius: 3px;
 			box-sizing: border-box;
@@ -132,8 +170,10 @@
 	.icon-btn {
 		background-color: #ffffff;
 		border: 1px solid #d1d5db; /* soft gray border */
+
 		border-radius: 6px;
 		margin-top: 24px; /* aligns with DevExtreme label */
+
 		padding: 0;
 		height: 38px;
 		width: 38px;
@@ -147,6 +187,7 @@
 
 		.icon-btn:hover {
 			background-color: #f3f4f6; /* light hover */
+
 			border-color: #9ca3af;
 		}
 
@@ -156,14 +197,18 @@
 		}
 
 
-	
+
+
 	/* Custom CSS to adjust the height of tab headers */
+
 	.dx-tabpanel .dx-tab {
 		padding: 10px 15px; /* Adjust padding to change height */
+
 		font-size: 16px; /* Adjust font size to change header height */
 	}
 
 	/* Ensuring the content area also adjusts in height */
+
 	.dx-tabpanel .dx-tab-content {
 		padding: 20px;
 		min-height: 200px; /* Minimum height for the tab content */
@@ -216,14 +261,17 @@
 	}
 
 	/*     .dx-editor-outlined .dx-label span {
-		font-weight:bold !important;
-		} */
+
+			font-weight:bold !important;
+
+			} */
 
 	.custom-textbox input {
 		font-weight: bold !important;
 		color: black !important; /* Use !important to override DevExtreme styles */
 		/*   border: 3px solid #282222;
-		border-radius: 8px !important; */
+
+			border-radius: 8px !important; */
 	}
 
 	.custom-textbox1 input {
@@ -275,32 +323,48 @@
 	}
 
 	/* .container {
-		display: none !important;
-	}
 
-	.frame {
-		display: none !important;
-	}
+			display: none !important;
 
-	.footerContainer {
-		display: none !important;
-	}
+		}
 
-	.bodyContainer {
-		display: flex;
-		justify-content: center;
-	} */
+		.frame {
+
+			display: none !important;
+
+		}
+
+		.footerContainer {
+
+			display: none !important;
+
+		}
+
+		.bodyContainer {
+
+			display: flex;
+
+			justify-content: center;
+
+		} */
 
 	/* .mainContainer {
-		margin-top: 1em;
-		width: 100%;
-	} */
+
+			margin-top: 1em;
+
+			width: 100%;
+
+		} */
 
 	/* .card-container {
-		display: flex;
-		justify-content: space-between;
-		gap: 20px;
-		} */
+
+			display: flex;
+
+			justify-content: space-between;
+
+			gap: 20px;
+
+			} */
 
 	.card {
 		flex: 1;
@@ -319,8 +383,8 @@
 		background: #fff;
 	}
 
-	
-	
+
+
 
 
 	.card-container {
@@ -353,7 +417,7 @@
 	}
 
 	.content-container-top {
-		width: 100%; 
+		width: 100%;
 	}
 
 	.context-menuInvoice {
@@ -399,9 +463,12 @@
 		justify-content: center;
 	}
 
-
-
+	.dx-popup-content {
+		-webkit-user-drag: none;
+		padding: 1px;
+	}
 </style>
+
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
 <input id="formId" value="frm201LedgerAccount1" type="hidden" />
@@ -760,7 +827,7 @@
 									<div class="address-form-container">
 										
 										
-												<table class="address-form-table" cellpadding="5">
+												<table class="address-form-table" cellpadding="2">
 													<tr>
 														<td>
 															@(Html.DevExtreme().TextBox()
@@ -882,7 +949,7 @@
 															.LabelMode(EditorLabelMode.Outside)
 															.Width("100%"))
 														</td>
-														<td>
+														<td colspan="2">
 															@(Html.DevExtreme().TextBox()
 															.Label(new JS("formatMessage('District / Neighborhood: (Arabic)')"))
 															.ID("DistrictArabic")
@@ -1641,7 +1708,7 @@
 																			.LoadAction("getVATInvoiceTypes")
 																			.LoadMode(DataSourceLoadMode.Raw)
 																			.Key("InvoiceType"))
-																			.DropDownOptions(o => o.Width(900).Height(600))
+																			.DropDownOptions(o => o.Width(600).Height(600))
 																			.LabelMode(EditorLabelMode.Outside)
 																			.ContentTemplate(@<text>
 									<div class="address-form-container">
@@ -1756,7 +1823,7 @@
 													.LabelMode(EditorLabelMode.Outside)
 													.Width("100%"))
 												</td>
-												<td>
+												<td colspan="2">
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('District / Neighborhood: (Arabic)')"))
 													.ID("DistrictArabic")
