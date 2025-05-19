@@ -61,7 +61,7 @@
         background-color: #fff;
     }
 
-    .limited-footer .btn-container:not(:has(#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
+    .limited-footer .btn-container:not(:has(#btnUpdate,#btnBack)) {
         display: none !important;
     }
     
@@ -294,13 +294,13 @@
 
 </div>
 <div class="limited-footer">
-    @await Html.PartialAsync("VATModuleFooter")
+    @await Html.PartialAsync("InventoryModuleFooter")
 </div>
  <script>
 
     $(document).ready(function () {
 
-          $(".limited-footer .btn-containerIvoiceEdit").each(function () {
+          $(".limited-footer .btn-container").each(function () {
 
               if (!$(this).find("#btnUpdate,#btnBack").length) {
 
