@@ -411,7 +411,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 			{
 				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
 				{
-					string yearSuffix = DateTime.Now.ToString("yy"); // Get last two digits of the year
+					string yearSuffix = DateTime.Now.ToString("yyyy"); // Get last two digits of the year
 
 					// Get invoice abbreviation
 					var invoiceAbbrv = await dbContext.Tbl901CompanyDetails
@@ -422,13 +422,19 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 						return BadRequest("Invoice abbreviation not found.");
 
 					// Get last invoice number
-					var lastInvoiceNumber = await dbContext.Tbl20161VatinvoiceMasters
-						.Where(i => i.InvoiceNo.StartsWith($"{invoiceAbbrv}{yearSuffix}-"))
-						.OrderByDescending(i => i.InvoiceNo)
-						.Select(i => i.InvoiceNo)
-						.FirstOrDefaultAsync();
+					//var lastInvoiceNumber = await dbContext.Tbl20161VatinvoiceMasters
+					//	.Where(i => i.InvoiceNo.StartsWith($"{invoiceAbbrv}{yearSuffix}-"))
+					//	.OrderByDescending(i => i.InvoiceNo)
+					//	.Select(i => i.InvoiceNo)
+					//	.FirstOrDefaultAsync();
 
-					int newNumber = 1; // Default if no previous invoices exist
+                    var lastInvoiceNumber = await dbContext.Tbl20161VatinvoiceMasters
+                        .Where(i => i.InvoiceNo.StartsWith($"{yearSuffix}-"))
+                        .OrderByDescending(i => i.InvoiceNo)
+                        .Select(i => i.InvoiceNo)
+                        .FirstOrDefaultAsync();
+
+                    int newNumber = 1; // Default if no previous invoices exist
 					if (!string.IsNullOrEmpty(lastInvoiceNumber))
 					{
 						var match = Regex.Match(lastInvoiceNumber, @"-(\d+)$");
@@ -438,11 +444,12 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 						}
 					}
 
-					// Generate new invoice number
-					string newInvoiceNumber = $"{invoiceAbbrv}{yearSuffix}-{newNumber:D5}";
+                    // Generate new invoice number
+                    //string newInvoiceNumber = $"{invoiceAbbrv}{yearSuffix}-{newNumber:D5}";
+                    string newInvoiceNumber = $"{yearSuffix}-{newNumber:D5}";
 
-					//  return Ok(new { InvoiceNumber = newInvoiceNumber });
-					return Json(newInvoiceNumber);
+                    //  return Ok(new { InvoiceNumber = newInvoiceNumber });
+                    return Json(newInvoiceNumber);
 				}
 
 			}
@@ -3740,7 +3747,31 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 			return Unauthorized(new { message = "Invalid tenant.", success = false });
 
 		}
-	}
+
+        [HttpGet]
+        public async Task<IActionResult> GetInvoiceSubTypes()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var result = await dbContext.Tbl00108InvoiceSubTypeCodes
+                .Select(x => new
+                {
+                    x.InvoiceSubTypeCode,
+                    x.InvoiceSubType
+                })
+                .ToListAsync();
+
+            return Ok(result);
+                }
+            }
+            catch (Exception ex) { throw ex; }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+        }
+
+    }
 }
 
 
