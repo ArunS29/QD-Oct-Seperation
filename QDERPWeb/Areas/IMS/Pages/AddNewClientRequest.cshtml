@@ -2464,6 +2464,9 @@ function loadClientDetails(mprno) {
                 $("#ddBitCls").dxDateBox("instance").option("value", response.BidClosingDate);
                 $("#ddReminder").dxDateBox("instance").option("value", response.BidReminderOn);
                 $('#txtClientProject').dxTextBox("instance").option("value", response.ClientProject);
+				$("#ddPreparedby").dxDropDownBox("instance").option("value",response.RequestSignatory);
+				$("#ddVerifiedby").dxDropDownBox("instance").option("value", response.MPRVerifiedSign);
+				$("#ddApprovedby").dxDropDownBox("instance").option("value", response.MPRApprovedSign);
 
                // Fetch and initialize the data grid with invoice details
                 $.ajax({
@@ -5409,6 +5412,9 @@ LineTotal: 0
 				BidClosingDate: $("#ddBitCls").dxDateBox("instance").option("value") || null,
 			BidReminderOn: $("#ddReminder").dxDateBox("instance").option("value") || null,
 			ClientProject: $('#txtClientProject').dxTextBox("instance").option("value") || null,
+			RequestSignatory: $("#ddPreparedby").dxDropDownBox("instance").option("value") || null,
+			MPRVerifiedSign: $("#ddVerifiedby").dxDropDownBox("instance").option("value") || null,
+			MPRApprovedSign: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null,
 		};
 
 		let children = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");

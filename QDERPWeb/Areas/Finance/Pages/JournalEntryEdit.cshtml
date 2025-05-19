@@ -36,17 +36,41 @@
     .custom-modal .modal-body iframe {
         height: 500px; /* Adjust iframe height */
     }
-    .mainContainer{
-        width:97%;
+
+    .mainContainer {
+        width: 97%;
         overflow-x: hidden;
     }
 
     .footerform {
-       
         margin-top: 4%; /* only works in flex layout */
     }
-    .row{
+
+    .row {
         margin-top: 3%; /* only works in flex layout */
+    }
+
+    .floating-dropdown-form {
+        position: absolute;
+        background: #fff;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        border-radius: 6px;
+    }
+
+    .dropdown-inner {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .dx-button.active {
+        background-color: #e0f3ff;
+    }
+
+    .floating-dropdown {
+        position: absolute;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
 </style>
@@ -56,412 +80,421 @@
     </div>
 </div>
 
-    
-    <div class="container-fluid">
-        <div class="d-flex align-items-center justify-content-between flex-wrap">
-            <div class="form-group me-3">
-                <label for="VoucherNo" class="form-label">Journal Reference No</label>
-                @(Html.DevExtreme().TextBox()
-                    .ID("VoucherNo")
-                    .Placeholder("Generating...")
-                    .ReadOnly(true)
-                    )
-            </div>
 
-            <div class="form-group me-3">
-                <label for="VoucherDate" class="form-label">Voucher Date</label>
-                @(Html.DevExtreme().DateBox()
-                    .ID("VoucherDate")
-                    .Value(DateTime.Now)
-                    .DisplayFormat("dd-MMM-yyyy") // Example: 31-Aug-2024
-                    .UseMaskBehavior(true) // Ensures proper date input handling
-                    )
-            </div>
-
-            <div class="form-group me-3">
-                <label for="EffectiveDate" class="form-label">Effective Date</label>
-                @(Html.DevExtreme().DateBox()
-                    .ID("EffectiveDate")
-                    .Value(DateTime.Now)
-                    .DisplayFormat("dd-MMM-yyyy") // Example: 31-Aug-2024
-                    .UseMaskBehavior(true)
-                    )
-            </div>
-
-            <div class="form-group flex-grow-1">
-                <label for="VoucherNarration" class="form-label">Voucher Narration</label>
-                @(Html.DevExtreme().TextArea()
-                    .ID("VoucherNarration")
-                    .Width(800)
-                    )
-            </div>
-        </div>
-
-        <div class="form-group mt-3">
-            <label for="ClaimName" class="form-label">Claim Name</label>
-            <div class="col-md-5">
-                @(
-                    Html.DevExtreme().DropDownBox()
-                    .ID("ClaimNameDropdown")
-                    .ValueExpr("CostAllocationDescription")
-                    .DisplayExpr("CostAllocationDescription")
-                    .DataSource(ds => ds.Mvc().Key("JournalChildNo"))
-                    .ContentTemplate(@<text>
-                    @* @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry202111costAllocationDescription>() *@
-                    .ID("ClaimNameGrid")
-                    .Columns(columns =>
-                    {
-                    columns.Add().DataField("JournalChildNo").Caption("Journal Child No");
-                    columns.Add().DataField("CostAllocationUnitId").Caption("Unit ID");
-                    })
-                    )
-                </text>)
-                    @* .Width("100%") *@
-                    )
-            </div>
-        </div>
-
-        <div id="customModal" class="modal fade" tabindex="-1" role="dialog">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Allocation Details</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <!-- Dynamic content will be loaded here -->
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="dx-field ledgerResult">
-            @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry202101journalRegisterChild>()
-                    .ID("dataGrid")
-
-                    .Columns(columns =>
-                    {
-                        columns.Add().Caption("#").DataField("LineOrderNo").Width(50).Alignment(HorizontalAlignment.Center).AllowEditing(false)
-                    .CellTemplate(@<text>
-                <div>
-                    <%= row.rowIndex + 1 %>
-                </div>
-            </text>);
-                        columns.Add().DataField("AccountID").Caption("Account Ledger").Width(300).AllowEditing(true)
-                    .CellTemplate(@<text>
-                <%- data.AccountHead ? data.AccountHead : " " %>
-            </text>)
-                // Edit Mode
-                .EditCellTemplate(@<text>
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    @(Html.DevExtreme().DropDownBox()
-                    .DataSource(d => d.WebApi().Controller("JournalEntryEdit")
-                    .LoadAction("GetCostAllocationUnits")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                    .Key("AccountId"))
-                    .LabelMode(EditorLabelMode.Outside)
-                    .ID("accountDropDownBoxEdit")
-                    .ShowClearButton(false)
-                    .AcceptCustomValue(true)
-                    .OpenOnFieldClick(false)
-                    .HoverStateEnabled(true)
-                    .OnValueChanged("gridLedger_valueChanged")
-                    .ValueExpr("AccountId")
-                    .DisplayExpr("AccountHead")
-                    .Placeholder("Select AccountHead")
-                    .Width("100%")
-                    .DropDownOptions(o => o.Width(800))
-                    .Value(new JS("data.AccountId"))
-                    .ContentTemplate(new TemplateName("ReceivingAccountDropdownContentTemplate"))
-                    )
-
-
-                </div>
-
-            </text>);
-
-
-
-                        columns.Add().DataField("EntryNarration").Caption("Entry Narration").Width(200);
-                        columns.Add().DataField("DrCr").Caption("Dr/Cr").Width(80).Alignment(HorizontalAlignment.Center).DataType(GridColumnDataType.String).Lookup(lookup => lookup
-                    .DataSource(new[] { "Dr", "Cr" })
-                    .ValueExpr("this")
-                    .DisplayExpr("this")
-                    );
-                        columns.Add().DataField("DrAmount").Caption("Dr Amount").Width(120).Alignment(HorizontalAlignment.Right)
-                    .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-                        columns.Add().DataField("CrAmount").Caption("Cr Amount").Width(120).Alignment(HorizontalAlignment.Right)
-                    .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-                        columns.Add().DataField("CostAllocationDescription").Caption("Cost Allocation").Width(200);
-                        columns.Add().DataField("TotalCostAllocated").Caption("Total Cost Allocated").Width(150);
-                        columns.Add().Caption("...").Width(100).CellTemplate(@<text>
-                <div class="text-center">
-                    @(Html.DevExtreme().Button()
-                   
-                    .Type(ButtonType.Default)
-                    .Icon("money")
-                    .ElementAttr("class", "money-button")
-                    .OnClick("onGridCostButtonClick")
-                    )
-                </div>
-            </text>)
-                .HeaderCellTemplate(@<text>
-                <div class="headerBolder">...</div>
-            </text>);
-                        columns.Add().DataField("EmployeeCostDescription").Caption("Employees Allocation").Width(150);
-                        columns.Add().DataField("TotalEmpAllocated").Caption("Total Employee Allocation").Width(150).Visible(true);
-                        columns.Add().Caption("...").Width(100).Visible(true).CellTemplate(@<text>
-                <div class="text-center">
-                    @(Html.DevExtreme().Button()
-                    
-                    .Type(ButtonType.Default)
-                    .Icon("card")
-                    .ElementAttr("class", "card-button")
-                    .OnClick("onGridEmployeeButtonClick")
-                    )
-                </div>
-            </text>)
-                .HeaderCellTemplate(@<text>
-                <div class="headerBolder">...</div>
-            </text>);
-                        // ✅ Additional columns from entity
-                        columns.Add().DataField("JournalChildNo").Caption("Journal Child No").Width(150).Visible(true);
-                        columns.Add().DataField("JournalRefNo").Caption("Journal Ref No").Width(200).Visible(false);
-                        columns.Add().DataField("LineOrderNo").Caption("Line Order No").Width(120).Visible(false);
-                        columns.Add().DataField("AccountId").Caption("Account ID").Width(150).Visible(false);
-                        
-                        columns.Add().DataField("PropertyCostDescription").Caption("Property Cost Desc").Width(200).Visible(false);
-                        columns.Add().DataField("FormattedAmount").Caption("Formatted Amount").Format("currency").Width(150).Alignment(HorizontalAlignment.Right).Visible(false);
-                        columns.Add().DataField("TotalEqpAllocted").Caption("Total Equipment Allocated").Format("currency").Width(180).Alignment(HorizontalAlignment.Right).Visible(false);
-                    })
-                .DataSource(new List<object>())
-                .AllowColumnReordering(true)
-                .AllowColumnResizing(true)
-                .Height(300)
-                .ColumnAutoWidth(true)
-                .Selection(s => s.Mode(SelectionMode.Multiple).ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always))
-                .ShowBorders(true)
-                .Editing(editing => editing
-                .Mode(GridEditMode.Cell)
-                .AllowUpdating(true)
-                .AllowDeleting(true)
-                .UseIcons(true)
-                )
-                .Summary(summary =>
-                {
-                    summary.TotalItems(totalItems =>
-                    {
-                        totalItems.Add()
-                    .Column("AccountID") // Count of VoucherNo
-                    .SummaryType(SummaryType.Count)
-                    .DisplayFormat(new JS("formatMessage('Count: {0}')")); // Customize the display format
-                    
-                        totalItems.Add()
-                    .Column("DrAmount") // Sum of DrAmount
-                    .SummaryType(SummaryType.Sum)
-                    .CustomizeText(
-                    "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
-
-                    );
-
-                        totalItems.Add()
-                    .Column("CrAmount") // Sum of CrAmount
-                    .SummaryType(SummaryType.Sum)
-                    .CustomizeText(
-                    "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
-
-                    );      // Customize the display format to currency
-                    });
-                })
-                .OnRowUpdating("onLedgerRowUpdating")
+<div class="container-fluid">
+    <div class="d-flex align-items-center justify-content-between flex-wrap">
+        <div class="form-group me-3">
+            <label for="VoucherNo" class="form-label">Journal Reference No</label>
+            @(Html.DevExtreme().TextBox()
+                .ID("VoucherNo")
+                .Placeholder("Generating...")
+                .ReadOnly(true)
                 )
         </div>
 
-
-        <div class="row">
-            <div class="col-md-2 me-3">
-                <div>
-                    @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Submitted By')"))
-                        .ID("SubmittedBy")
-                        .Value(null) // Default value
-                        .ReadOnly(true)
-
-                        )
-                    @(Html.DevExtreme().TextBox()
-                        
-                        .LabelMode(EditorLabelMode.Outside)
-                        .ID("SubmittedBytext")
-                        .Value(null) // Default value
-                        .Disabled(true)
-                        .Width(250)
-                        )
-                </div>
-                @(Html.DevExtreme().TextBox()
-                    .Label(new JS("formatMessage('Submitted On')"))
-                    .LabelMode(EditorLabelMode.Outside)
-                    .ID("SubmittedOnDate")
-                    .Value(null) // Default value
-                    .Disabled(true)
-                    .Width(250)
-                    )
-            </div>
-
-            <div class="col-md-2 me-3">
-                <div>
-                    @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Verified By')"))
-                        .ID("VerifiedBy")
-                        .Value(null) // Default value
-                        .ReadOnly(true)
-                        )
-                    @(Html.DevExtreme().TextBox()
-                        
-                        .LabelMode(EditorLabelMode.Outside)
-                        .ID("VerifiedBytext")
-                        .Value(null) // Default value
-                        .Disabled(true)
-                        .Width(250)
-                        )
-                </div>
-                @(Html.DevExtreme().TextBox()
-                    .Label(new JS("formatMessage('Verified On')"))
-                    .LabelMode(EditorLabelMode.Outside)
-                    .ID("VerifiedOnDate")
-                    .Value(null) // Default value
-                    .Disabled(true)
-                    .Width(250)
-                    )
-            </div>
-            <div class="col-md-2 me-3">
-                <div>
-                    @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Approved By')"))
-                        .ID("ApprovedBy")
-                        .Value(null) // Default value
-                        .ReadOnly(true)
-                        )
-                    @(Html.DevExtreme().TextBox()
-                        
-                        .LabelMode(EditorLabelMode.Outside)
-                        .ID("ApprovedBytext")
-                        .Value(null) // Default value
-                        .Disabled(true)
-                        .Width(250)
-                        )
-                </div>
-                @(Html.DevExtreme().TextBox()
-                    .Label(new JS("formatMessage('Approved On')"))
-                    .LabelMode(EditorLabelMode.Outside)
-                    .ID("ApprovedOntext")
-                    .Value(null) // Default value
-                    .Disabled(true)
-                    .Width(250)
-                    )
-            </div>
-
-
-
-            <div class="col-md-2 me-3">
-                <div>
-                    @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Posted By')"))
-                        .ID("PostedBy")
-                        .Value(null) // Default value
-                        .ReadOnly(true)
-                        )
-                    @(Html.DevExtreme().TextBox()
-                        
-                        .LabelMode(EditorLabelMode.Outside)
-                        .ID("PostedBytext")
-                        .Value(null) // Default value
-                        .Disabled(true)
-                        .Width(250)
-                        )
-                </div>
-                @(Html.DevExtreme().TextBox()
-                    .Label(new JS("formatMessage('Posted On')"))
-                    .LabelMode(EditorLabelMode.Outside)
-                    .ID("PostedOnDate")
-                    .Value(null) // Default value
-                    .Disabled(true)
-                    .Width(250)
-                    )
-            </div>
-            <div class="col-md-1 d-flex align-items-center justify-content-center">
-                @(Html.DevExtreme().Button()
-                    .ID("btnPostJournal")
-                    .Text(new JS("formatMessage('Post the Journal')"))
-                    .Icon("fa fa-book")
-                    .Height(100)
-                    .Width(100)
-                    //.OnClick("onAttachButtonClickss")
-                    )
-            </div>
-
-
+        <div class="form-group me-3">
+            <label for="VoucherDate" class="form-label">Voucher Date</label>
+            @(Html.DevExtreme().DateBox()
+                .ID("VoucherDate")
+                .Value(DateTime.Now)
+                .DisplayFormat("dd-MMM-yyyy") // Example: 31-Aug-2024
+                .UseMaskBehavior(true) // Ensures proper date input handling
+                )
         </div>
 
-        @using (Html.DevExtreme().NamedTemplate("ReceivingAccountDropdownContentTemplate"))
-        {
-            @(
-                Html.DevExtreme().DataGrid()
-                .ID("accountDropDownBoxeditGrid")
-                .DataSource(d => d.WebApi()
-                .Controller("JournalEntryEdit")
-                .LoadAction("GetCostAllocationUnits")
-                .LoadMode(DataSourceLoadMode.Raw)
-                .Key("AccountHead")
+        <div class="form-group me-3">
+            <label for="EffectiveDate" class="form-label">Effective Date</label>
+            @(Html.DevExtreme().DateBox()
+                .ID("EffectiveDate")
+                .Value(DateTime.Now)
+                .DisplayFormat("dd-MMM-yyyy") // Example: 31-Aug-2024
+                .UseMaskBehavior(true)
                 )
-                .WordWrapEnabled(true)
-                .ShowBorders(true)
-                .SearchPanel(sp => sp.HighlightSearchText(true))
-                .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+        </div>
 
-                .SelectedRowKeys(new JS(@"component.option(""value"")"))
-                .OnSelectionChanged(@<text>
-            function(selectedItems) {
-            var keys = selectedItems.selectedRowKeys;
-            component.option("value", keys);
-            console.log(keys);
-            }
-        </text>)
-
-
-                    .HeaderFilter(p => p.Visible(true))
-                    .ShowBorders(true)
-                    .HoverStateEnabled(true)
-                    .Paging(p => p.PageSize(15))
-                    .FilterRow(f => f.Visible(true))
-                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                    .Height(345)
-                    .Selection(s => s.Mode(SelectionMode.Single))
-                    .Columns(columns =>
-                    {
-                        columns.Add().Caption("Account ID").DataField("AccountId");
-                        columns.Add().Caption("Account").DataField("AccountHead");
-                        columns.Add().Caption("Account Group").DataField("AccountGroup");
-                        columns.Add().Caption("AccountHead Arabic").DataField("AccountHeadArabic");
-                        columns.Add().Caption("Reference No").DataField("ReferenceNo");
-                        columns.Add().DataField("IsLedgerObselete")
-
-
-                    .Alignment(HorizontalAlignment.Center)
-                    .CellTemplate(@<text>
-            <div class="dx-icon">
-                <%= data.IsLedgerObselete ? '<i style="color:red" class="fa fa-toggle-on"></i>' : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
-            </div>
-        </text>);
-
-                    })
-                .OnRowPrepared("onAccountHeadRowPrepared")
+        <div class="form-group flex-grow-1">
+            <label for="VoucherNarration" class="form-label">Voucher Narration</label>
+            @(Html.DevExtreme().TextArea()
+                .ID("VoucherNarration")
+                .Width(800)
                 )
-        }
-
-
-        <div class="footerform">
-            @await Html.PartialAsync("_FormFooter1")
         </div>
     </div>
+
+    <div class="form-group mt-3">
+        <label for="ClaimName" class="form-label">Claim Name</label>
+        <div class="col-md-5">
+            @(
+                Html.DevExtreme().DropDownBox()
+                .ID("ClaimNameDropdown")
+                .ValueExpr("CostAllocationDescription")
+                .DisplayExpr("CostAllocationDescription")
+                .DataSource(ds => ds.Mvc().Key("JournalChildNo"))
+                .ContentTemplate(@<text>
+                @* @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry202111costAllocationDescription>() *@
+                .ID("ClaimNameGrid")
+                .Columns(columns =>
+                {
+                columns.Add().DataField("JournalChildNo").Caption("Journal Child No");
+                columns.Add().DataField("CostAllocationUnitId").Caption("Unit ID");
+                })
+                )
+            </text>)
+                @* .Width("100%") *@
+                )
+        </div>
+    </div>
+
+    <div id="customModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Allocation Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Dynamic content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="dx-field ledgerResult">
+        @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry202101journalRegisterChild>()
+                .ID("dataGrid")
+
+                .Columns(columns =>
+                {
+                    columns.Add().Caption("#").DataField("LineOrderNo").Width(50).Alignment(HorizontalAlignment.Center).AllowEditing(false)
+                .CellTemplate(@<text>
+            <div>
+                <%= row.rowIndex + 1 %>
+            </div>
+        </text>);
+                    columns.Add().DataField("AccountID").Caption("Account Ledger").Width(300).AllowEditing(true)
+                .CellTemplate(@<text>
+            <%- data.AccountHead ? data.AccountHead : " " %>
+        </text>)
+            // Edit Mode
+            .EditCellTemplate(@<text>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                @(Html.DevExtreme().DropDownBox()
+                .DataSource(d => d.WebApi().Controller("JournalEntryEdit")
+                .LoadAction("GetCostAllocationUnits")
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("AccountId"))
+                .LabelMode(EditorLabelMode.Outside)
+                .ID("accountDropDownBoxEdit")
+                .ShowClearButton(false)
+                .AcceptCustomValue(true)
+                .OpenOnFieldClick(false)
+                .HoverStateEnabled(true)
+                .OnValueChanged("gridLedger_valueChanged")
+                .ValueExpr("AccountId")
+                .DisplayExpr("AccountHead")
+                .Placeholder("Select AccountHead")
+                .Width("100%")
+                .DropDownOptions(o => o.Width(800))
+                .Value(new JS("data.AccountId"))
+                .ContentTemplate(new TemplateName("ReceivingAccountDropdownContentTemplate"))
+                )
+
+
+            </div>
+
+        </text>);
+
+
+
+                    columns.Add().DataField("EntryNarration").Caption("Entry Narration").Width(200);
+                    columns.Add().DataField("DrCr").Caption("Dr/Cr").Width(80).Alignment(HorizontalAlignment.Center).DataType(GridColumnDataType.String).Lookup(lookup => lookup
+            .DataSource(new[] { "Dr", "Cr" })
+            .ValueExpr("this")
+            .DisplayExpr("this")
+            );
+                    columns.Add().DataField("DrAmount").Caption("Dr Amount").Width(120).Alignment(HorizontalAlignment.Right)
+            .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+                    columns.Add().DataField("CrAmount").Caption("Cr Amount").Width(120).Alignment(HorizontalAlignment.Right)
+            .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+                    columns.Add().DataField("CostAllocationDescription").Caption("Cost Allocation").Width(200);
+                    columns.Add().DataField("TotalCostAllocated").Caption("Total Cost Allocated").Width(150);
+                    columns.Add().Caption("...").Width(100).CellTemplate(@<text>
+            <div class="text-center">
+                @(Html.DevExtreme().Button()
+
+                .Type(ButtonType.Default)
+                .Icon("money")
+                .ElementAttr("class", "money-button")
+                .OnClick("onGridCostButtonClick")
+                )
+            </div>
+        </text>)
+        .HeaderCellTemplate(@<text>
+            <div class="headerBolder">...</div>
+        </text>);
+                    columns.Add().DataField("EmployeeCostDescription").Caption("Employees Allocation").Width(150);
+                    columns.Add().DataField("TotalEmpAllocated").Caption("Total Employee Allocation").Width(150).Visible(true);
+                    columns.Add().Caption("...").Width(100).Visible(true).CellTemplate(@<text>
+            <div class="text-center">
+                @(Html.DevExtreme().Button()
+
+                .Type(ButtonType.Default)
+                .Icon("card")
+                .ElementAttr("class", "card-button")
+                .OnClick("onGridEmployeeButtonClick")
+                )
+            </div>
+        </text>)
+        .HeaderCellTemplate(@<text>
+            <div class="headerBolder">...</div>
+        </text>);
+                    // ✅ Additional columns from entity
+                    columns.Add().DataField("JournalChildNo").Caption("Journal Child No").Width(150).Visible(true);
+                    columns.Add().DataField("JournalRefNo").Caption("Journal Ref No").Width(200).Visible(false);
+                    
+                    columns.Add().DataField("AccountId").Caption("Account ID").Width(150).Visible(false);
+
+                    columns.Add().DataField("PropertyCostDescription").Caption("Property Cost Desc").Width(200).Visible(false);
+                    columns.Add().DataField("FormattedAmount").Caption("Formatted Amount").Format("currency").Width(150).Alignment(HorizontalAlignment.Right).Visible(false);
+                    columns.Add().DataField("TotalEqpAllocted").Caption("Total Equipment Allocated").Format("currency").Width(180).Alignment(HorizontalAlignment.Right).Visible(false);
+                })
+            .DataSource(new List<object>())
+            .AllowColumnReordering(true)
+            .AllowColumnResizing(true)
+            .Height(300)
+            .ColumnAutoWidth(true)
+            .Selection(s => s.Mode(SelectionMode.Multiple).ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always))
+            .ShowBorders(true)
+            .Editing(editing => editing
+            .Mode(GridEditMode.Cell)
+            .AllowUpdating(true)
+            .AllowDeleting(true)
+            .UseIcons(true)
+            )
+            .Summary(summary =>
+            {
+                summary.TotalItems(totalItems =>
+                {
+                    totalItems.Add()
+                .Column("AccountID") // Count of VoucherNo
+                .SummaryType(SummaryType.Count)
+                .DisplayFormat(new JS("formatMessage('Count: {0}')")); // Customize the display format
+
+                    totalItems.Add()
+                .Column("DrAmount") // Sum of DrAmount
+                .SummaryType(SummaryType.Sum)
+                .CustomizeText(
+                "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
+
+                );
+
+                    totalItems.Add()
+                .Column("CrAmount") // Sum of CrAmount
+                .SummaryType(SummaryType.Sum)
+                .CustomizeText(
+                "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
+
+                );      // Customize the display format to currency
+                });
+            })
+            .OnRowUpdating("onLedgerRowUpdating")
+            .OnRowRemoving("onjournalrowremoving")
+            )
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-2 me-3">
+            <div>
+                @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Submitted By')"))
+                    .ID("SubmittedBy")
+                    .Value(null) // Default value
+                    .ReadOnly(true)
+
+                    )
+                @(Html.DevExtreme().TextBox()
+
+                    .LabelMode(EditorLabelMode.Outside)
+                    .ID("SubmittedBytext")
+                    .Value(null) // Default value
+                    .Disabled(true)
+                    .Width(250)
+                    )
+            </div>
+            @(Html.DevExtreme().TextBox()
+                .Label(new JS("formatMessage('Submitted On')"))
+                .LabelMode(EditorLabelMode.Outside)
+                .ID("SubmittedOnDate")
+                .Value(null) // Default value
+                .Disabled(true)
+                .Width(250)
+                )
+        </div>
+
+        <div class="col-md-2 me-3">
+            <div>
+                @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Verified By')"))
+                    .ID("VerifiedBy")
+                    .Value(null) // Default value
+                    .ReadOnly(true)
+                    )
+                @(Html.DevExtreme().TextBox()
+
+                    .LabelMode(EditorLabelMode.Outside)
+                    .ID("VerifiedBytext")
+                    .Value(null) // Default value
+                    .Disabled(true)
+                    .Width(250)
+                    )
+            </div>
+            @(Html.DevExtreme().TextBox()
+                .Label(new JS("formatMessage('Verified On')"))
+                .LabelMode(EditorLabelMode.Outside)
+                .ID("VerifiedOnDate")
+                .Value(null) // Default value
+                .Disabled(true)
+                .Width(250)
+                )
+        </div>
+        <div class="col-md-2 me-3">
+            <div>
+                @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Approved By')"))
+                    .ID("ApprovedBy")
+                    .Value(null) // Default value
+                    .ReadOnly(true)
+                    )
+                @(Html.DevExtreme().TextBox()
+
+                    .LabelMode(EditorLabelMode.Outside)
+                    .ID("ApprovedBytext")
+                    .Value(null) // Default value
+                    .Disabled(true)
+                    .Width(250)
+                    )
+            </div>
+            @(Html.DevExtreme().TextBox()
+                .Label(new JS("formatMessage('Approved On')"))
+                .LabelMode(EditorLabelMode.Outside)
+                .ID("ApprovedOntext")
+                .Value(null) // Default value
+                .Disabled(true)
+                .Width(250)
+                )
+        </div>
+
+
+
+        <div class="col-md-2 me-3">
+            <div>
+                @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Posted By')"))
+                    .ID("PostedBy")
+                    .Value(null) // Default value
+                    .ReadOnly(true)
+                    )
+                @(Html.DevExtreme().TextBox()
+
+                    .LabelMode(EditorLabelMode.Outside)
+                    .ID("PostedBytext")
+                    .Value(null) // Default value
+                    .Disabled(true)
+                    .Width(250)
+                    )
+            </div>
+            @(Html.DevExtreme().TextBox()
+                .Label(new JS("formatMessage('Posted On')"))
+                .LabelMode(EditorLabelMode.Outside)
+                .ID("PostedOnDate")
+                .Value(null) // Default value
+                .Disabled(true)
+                .Width(250)
+                )
+        </div>
+        <div class="col-md-2 me-3">
+            @(Html.DevExtreme().TextBox()
+
+                .LabelMode(EditorLabelMode.Outside)
+                .ID("journalvoucher")
+                .Value(null) // Default value
+                .Disabled(true)
+                .Width(250)
+                )
+            @(Html.DevExtreme().Button()
+                .ID("btnPostJournal")
+                .Text(new JS("formatMessage('Post the Journal')"))
+                .Icon("fa fa-book")
+                .Height(100)
+                .Width(100)
+                .OnClick("onPostJournalClick")
+                )
+        </div>
+
+
+    </div>
+
+    @using (Html.DevExtreme().NamedTemplate("ReceivingAccountDropdownContentTemplate"))
+    {
+        @(
+            Html.DevExtreme().DataGrid()
+            .ID("accountDropDownBoxeditGrid")
+            .DataSource(d => d.WebApi()
+            .Controller("JournalEntryEdit")
+            .LoadAction("GetCostAllocationUnits")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("AccountHead")
+            )
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+            .SearchPanel(sp => sp.HighlightSearchText(true))
+            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+
+            .SelectedRowKeys(new JS(@"component.option(""value"")"))
+            .OnSelectionChanged(@<text>
+        function(selectedItems) {
+        var keys = selectedItems.selectedRowKeys;
+        component.option("value", keys);
+        console.log(keys);
+        }
+    </text>)
+
+
+                .HeaderFilter(p => p.Visible(true))
+                .ShowBorders(true)
+                .HoverStateEnabled(true)
+                .Paging(p => p.PageSize(15))
+                .FilterRow(f => f.Visible(true))
+                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                .Height(345)
+                .Selection(s => s.Mode(SelectionMode.Single))
+                .Columns(columns =>
+                {
+                    columns.Add().Caption("Account ID").DataField("AccountId");
+                    columns.Add().Caption("Account").DataField("AccountHead");
+                    columns.Add().Caption("Account Group").DataField("AccountGroup");
+                    columns.Add().Caption("AccountHead Arabic").DataField("AccountHeadArabic");
+                    columns.Add().Caption("Reference No").DataField("ReferenceNo");
+                    columns.Add().DataField("IsLedgerObselete")
+
+
+                .Alignment(HorizontalAlignment.Center)
+                .CellTemplate(@<text>
+        <div class="dx-icon">
+            <%= data.IsLedgerObselete ? '<i style="color:red" class="fa fa-toggle-on"></i>' : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
+        </div>
+    </text>);
+
+                })
+            .OnRowPrepared("onAccountHeadRowPrepared")
+            )
+    }
+
+
+    <div class="footerform">
+        @await Html.PartialAsync("_FormFooter1")
+    </div>
+</div>
 
 <script>
     let selectedVoucherNo = null;
@@ -563,7 +596,7 @@
         $("#dataGrid").dxDataGrid({
 
             onCellPrepared: function (e) {
-                
+
                 if (e.column.dataField === "DrAmount") {
                     e.cellElement.css({ "color": "red", "font-weight": "bold" });
                 }
@@ -571,7 +604,7 @@
                     e.cellElement.css({ "color": "green", "font-weight": "bold" });
                 }
             },
-           
+
 
         });
     });
@@ -635,7 +668,7 @@
         var dataGrid = $("#dataGrid").dxDataGrid("instance");
         var rowCount = dataGrid.getVisibleRows().length;
 
-        if (rowCount !== 0) {
+        if (rowCount >= 0) {
             var gridData = dataGrid.getDataSource().items(); // Gets all current grid data
 
             var VM = {
@@ -658,7 +691,7 @@
                             "Journal Register Details updated Successfully.",
                             "Update Successful"
                         );
-                       
+
                     } else {
                         alert("Update failed: " + response.message);
                     }
@@ -693,7 +726,7 @@
         var dataGrid = $("#dataGrid").dxDataGrid("instance");
         var rowCount = dataGrid.getVisibleRows().length;
 
-        if (rowCount !== 0) {
+        if (rowCount >= 0) {
             var gridData = dataGrid.getDataSource().items(); // Gets all current grid data
 
             var VM = {
@@ -712,13 +745,13 @@
                 dataType: "json",
                 success: function (response) {
                     if (response.success) {
-                       
+
                         DevExpress.ui.dialog.alert("Journal Register Details updated Successfully.", "Update Successful")
                             .done(function () {
                                 history.back();
-                            
+
                             });
-                       
+
                     } else {
                         alert("Update failed: " + response.message);
                     }
@@ -748,7 +781,18 @@
 
     $("#btnSubmit").on("click", function (e) {
         e.preventDefault();
+        // Get the dataGrid instance
         var dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+        // Get the summary values from the grid
+        var summary = dataGrid.getTotalSummaryValue("DrAmount") - dataGrid.getTotalSummaryValue("CrAmount");
+
+        // Check if DrAmount equals CrAmount
+        if (Math.abs(summary) > 0.01) { // using small threshold to avoid float precision issues
+            DevExpress.ui.dialog.alert("Please Check your Journal Entry,Debit Amount doesn't match <br/>with Credit Amount, to submit the Journal Entry.", "Amount Mismatch");
+            return;
+        }
+
         var rowCount = dataGrid.getVisibleRows().length;
 
         if (rowCount >= 0) {
@@ -796,12 +840,22 @@
                 );
             }
         }
-        
+
     });
 
     $("#btnVerify").on("click", function (e) {
         e.preventDefault();
+        // Get the dataGrid instance
         var dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+        // Get the summary values from the grid
+        var summary = dataGrid.getTotalSummaryValue("DrAmount") - dataGrid.getTotalSummaryValue("CrAmount");
+
+        // Check if DrAmount equals CrAmount
+        if (Math.abs(summary) > 0.01) { // using small threshold to avoid float precision issues
+            DevExpress.ui.dialog.alert("Please Check your Journal Entry,Debit Amount doesn't match <br/>with Credit Amount, to submit the Journal Entry.", "Amount Mismatch");
+            return;
+        }
         var rowCount = dataGrid.getVisibleRows().length;
 
         if (rowCount >= 0) {
@@ -852,7 +906,68 @@
 
     });
 
+    $("#btnApprove").on("click", function (e) {
+        e.preventDefault();
+        // Get the dataGrid instance
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
 
+        // Get the summary values from the grid
+        var summary = dataGrid.getTotalSummaryValue("DrAmount") - dataGrid.getTotalSummaryValue("CrAmount");
+
+        // Check if DrAmount equals CrAmount
+        if (Math.abs(summary) > 0.01) { // using small threshold to avoid float precision issues
+            DevExpress.ui.dialog.alert("Please Check your Journal Entry,Debit Amount doesn't match <br/>with Credit Amount, to submit the Journal Entry.", "Amount Mismatch");
+            return;
+        }
+        var rowCount = dataGrid.getVisibleRows().length;
+
+        if (rowCount >= 0) {
+            var gridData = dataGrid.getDataSource().items(); // Gets all current grid data
+
+            var VM = {
+                JournalRefNo: $("#VoucherNo").dxTextBox("instance").option("value"),
+                JournalEntryDate: $("#VoucherDate").dxDateBox("instance").option("value"),
+                JournalEffectiveDate: $("#EffectiveDate").dxDateBox("instance").option("value"),
+                JournalVoucherNarration: $("#VoucherNarration").dxTextArea("instance").option("value"),
+                JournalDetails: gridData // 🔁 Add the grid rows here
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/api/JournalEntryEdit/UpdateVoucher",
+                contentType: "application/json",
+                data: JSON.stringify(VM),
+                dataType: "json",
+                success: function (response) {
+                    if (response.success) {
+                        approve();
+
+                    } else {
+                        alert("Update failed: " + response.message);
+                    }
+                },
+                error: function () {
+                    DevExpress.ui.dialog.alert(
+                        "Voucher has no line items to be saved, please enter transaction to save.!",
+                        "No Line Items"
+                    );
+                }
+            });
+        } else {
+            if (IsNotification === true) {
+                DevExpress.ui.dialog.alert(
+                    "Cannot continue saving with errors, please clear the errors and continue.",
+                    "Clear Errors"
+                );
+            } else {
+                DevExpress.ui.dialog.alert(
+                    "Voucher has no line items to be saved, please enter transaction to save.!",
+                    "No Line Items"
+                );
+            }
+        }
+
+    });
 
     $(document).ready(function () {
         let dataGrid = $("#dataGrid").dxDataGrid("instance");
@@ -881,34 +996,40 @@
                 } // Fetch from input field
                 let voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
                 const params = {
-                           VoucherNo: voucherNo,
-    VoucherEntryNo: SelectedEntryNo,
-    AccountId: selectedAccountId,
-    AccountHead: selectedAccountHead,
-    VoucherAmount: selectedAmount,
-    DrCr: selectedDrCr
-        };
+                    VoucherNo: voucherNo,
+                    VoucherEntryNo: SelectedEntryNo,
+                    AccountId: selectedAccountId,
+                    AccountHead: selectedAccountHead,
+                    VoucherAmount: selectedAmount,
+                    DrCr: selectedDrCr
+                };
                 // Define context menu options
                 let menuItems = [
-    {
-        text: "Cost Allocation",
-        onItemClick: function () {
-            openAllocationPopup("Cost",params);
-        }
-    },
-    {
-        text: "Property Allocation",
-        onItemClick: function () {
-            openAllocationPopup("Property",params);
-        }
-    },
-    {
-        text: "Employee Allocation",
-        onItemClick: function () {
-            openAllocationPopup("Employee",params);
-        }
-    }
-];
+                    {
+                        text: "Cost Allocation",
+                        onItemClick: function () {
+                            openAllocationPopup("Cost", params);
+                        }
+                    },
+                    {
+                        text: "Property Allocation",
+                        onItemClick: function () {
+                            openAllocationPopup("Property", params);
+                        }
+                    },
+                    {
+                        text: "Employee Allocation",
+                        onItemClick: function () {
+                            openAllocationPopup("Employee", params);
+                        }
+                    },
+                    {
+                        text: "Delete All Selected Line Items",
+                        onItemClick: function () {
+                            Deleteallrecords();
+                        }
+                    }
+                ];
 
                 // Create context menu and attach it to the clicked cell
                 let contextMenu = $("<div>").appendTo("body").dxContextMenu({
@@ -934,20 +1055,20 @@
     // Function to open modal and load the URL with passed data
     function openModalPopup(url) {
         let modalHtml = `
-                         <div class="modal fade custom-modal" id="contextModal" tabindex="-1" aria-labelledby="contextModalLabel" aria-hidden="true">
-                             <div class="modal-dialog modal-fullscreen">
-                                 <div class="modal-content">
-                                     <div class="modal-header">
-                                         <h5 class="modal-title" id="contextModalLabel">Allocation Details</h5>
-                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                     </div>
-                                     <div class="modal-body">
-                                         <iframe src="${url}" width="100%" height="100%" frameborder="0"></iframe>
+                             <div class="modal fade custom-modal" id="contextModal" tabindex="-1" aria-labelledby="contextModalLabel" aria-hidden="true">
+                                 <div class="modal-dialog modal-fullscreen">
+                                     <div class="modal-content">
+                                         <div class="modal-header">
+                                             <h5 class="modal-title" id="contextModalLabel">Allocation Details</h5>
+                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                         </div>
+                                         <div class="modal-body">
+                                             <iframe src="${url}" width="100%" height="100%" frameborder="0"></iframe>
+                                         </div>
                                      </div>
                                  </div>
                              </div>
-                         </div>
-                     `;
+                         `;
 
         // Remove existing modal if it exists
         $("#contextModal").remove();
@@ -973,18 +1094,102 @@
 
         if (journalRefNo) {
             $.ajax({
+                url: '/api/JournalRegister/GetJournalmaster',
+                type: 'GET',
+                data: { journalRefNo: journalRefNo },
+                success: function (data) {
+                    const entry = data.find(d => d.JournalRefNo === journalRefNo); // optional check
+                    debugger;
+                    if (entry) {
+                        $("#VoucherNo").dxTextBox("instance").option("value", entry.JournalRefNo);
+                        $("#VoucherDate").dxDateBox("instance").option("value", entry.JournalEntryDate);
+                        $("#EffectiveDate").dxDateBox("instance").option("value", entry.JournalEffectiveDate);
+                        $("#VoucherNarration").dxTextArea("instance").option("value", entry.JournalVoucherNarration);
+                        $("#ClaimNameDropdown").dxDropDownBox("instance").option("value", entry.ClaimName);
+                        $("#SubmittedBy").dxCheckBox("instance").option("value", entry.IsSubmittedToFinance || false);
+                        $("#SubmittedBytext").dxTextBox("instance").option("value", entry.SubmittedBy || "");
+                        $("#VerifiedBy").dxCheckBox("instance").option("value", entry.IsVerified || false);
+                        $("#VerifiedBytext").dxTextBox("instance").option("value", entry.VerifiedBy || "");
+                        $("#ApprovedBy").dxCheckBox("instance").option("value", entry.IsApproved || false);
+                        $("#ApprovedBytext").dxTextBox("instance").option("value", entry.ApprovedBy || "");
+                         $("#PostedBy").dxCheckBox("instance").option("value", entry.IsPosted || false);
+                        $("#PostedBytext").dxTextBox("instance").option("value", entry.PostedBy || "");
+                        var submittedDate = entry.SubmittedOn ? new Date(entry.SubmittedOn) : null;
+                        var formattedsubmittedDate = submittedDate
+                            ? submittedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+                            : "";
+
+                        $("#SubmittedOnDate").dxTextBox("instance").option("value", formattedsubmittedDate);
+                        var verifiedDate = entry.VerifiedOn ? new Date(entry.VerifiedOn) : null;
+                        var formattedDate = verifiedDate
+                            ? verifiedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+                            : "";
+
+                        $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate);
+                        var approvedDate = entry.ApprovedOn ? new Date(entry.ApprovedOn) : null;
+                        var formattedApprovedDate = approvedDate
+                            ? approvedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+                            : "";
+
+                        $("#ApprovedOntext").dxTextBox("instance").option("value", formattedApprovedDate);
+                        var postedDate = entry.PostedOn ? new Date(entry.PostedOn) : null;
+                        var formattedPostedDate = postedDate
+                            ? approvedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+                            : "";
+
+                        $("#PostedOnDate").dxTextBox("instance").option("value", formattedPostedDate);
+                        $("#journalvoucher").dxTextBox("instance").option("value", entry.PostedVoucherNo);
+                        // Disable DevExtreme buttons based on submission and verification date
+                        const btnSubmit = $("#btnSubmit").dxButton("instance");
+                        const btnVerify = $("#btnVerify").dxButton("instance");
+                        const btnPostJournal = $("#btnPostJournal").dxButton("instance");
+
+                        if (formattedsubmittedDate) {
+                            btnSubmit.option("disabled", true);
+                            btnPostJournal.option("disabled", true);
+                        }
+
+                        if (formattedDate) {
+                            btnSubmit.option("disabled", true);
+                            btnVerify.option("disabled", true);
+                            btnPostJournal.option("disabled", true);
+                        }
+                        if (formattedApprovedDate) {
+                            disable();
+                            btnPostJournal.option("disabled", false);
+                        }
+                        if (formattedPostedDate) {
+                            disable();
+                            
+                        }
+
+
+                        getchilddatas();
+                    } else {
+                        DevExpress.ui.notify("No entry found with the given reference number.", "warning", 3000);
+                    }
+                },
+                error: function () {
+                    DevExpress.ui.notify("Failed to load journal entry from URL.", "error", 3000);
+                }
+            });
+        } else {
+            // DevExpress.ui.notify("Journal Reference Number is missing in the URL.", "error", 3000);
+        }
+    });
+
+    function getchilddatas() {
+        journalRefNo = getUrlParameter('journalRefNo');
+        if (journalRefNo) {
+            $.ajax({
                 url: '/api/JournalRegister/GetJournalChild',
                 type: 'GET',
                 data: { journalRefNo: journalRefNo },
                 success: function (data) {
                     const entry = data.find(d => d.JournalRefNo === journalRefNo); // optional check
-
+                    debugger;
                     if (entry) {
-                        $("#VoucherNo").dxTextBox("instance").option("value", entry.JournalRefNo);
-                        $("#VoucherDate").dxDateBox("instance").option("value", entry.VoucherDate);
-                        $("#EffectiveDate").dxDateBox("instance").option("value", entry.EffectiveDate);
-                        $("#VoucherNarration").dxTextArea("instance").option("value", entry.VoucherNarration);
-                        $("#ClaimNameDropdown").dxDropDownBox("instance").option("value", entry.ClaimName);
+
 
                         const gridInstance = $("#dataGrid").dxDataGrid("instance");
                         gridInstance.option("dataSource", data);
@@ -999,92 +1204,90 @@
         } else {
             // DevExpress.ui.notify("Journal Reference Number is missing in the URL.", "error", 3000);
         }
+    }
+
+    $("#btnjournalBack").on("click", function (e) {
+        e.preventDefault();
+        sessionStorage.setItem("refreshPage", "true");
+        history.back();
     });
-
-    function onApproveButtonClick() {
-        const dataGrid = $("#dataGrid").dxDataGrid("instance");
-        const rowCount = dataGrid.getVisibleRows().length;
-
-        if (rowCount == 0) {
-            Swal.fire({
-                title: "Voucher is not Approved",
-                text: "Voucher has not been Approved, Click Yes if you want to Verify and Approve this Voucher.",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Yes",
-                cancelButtonText: "No"
-            })
-        } else {
-            proceedWithApproval();
-        }
-    }
-
-    function proceedWithApproval() {
-        $("#ApprovedBy").dxCheckBox("instance").option("value", true);
-        var vno = $("#VoucherNo").dxTextBox("instance").option("value");
-
-        const currentDate = new Date();
-        const formattedDate = currentDate.toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric"
-        }).replace(/ /g, '-');
-
-        $.ajax({
-            success: function () {
-                Swal.fire({
-                    title: "Success!",
-                    text: "Voucher has been Approved.",
-                    icon: "success",
-                    confirmButtonText: "OK"
-                }).then(() => {
-                    disableEditing();
-                    $("#ApprovedBytext").dxTextBox("instance").option("value", "Admin");
-                    $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate);
-                });
-            },
-            error: function () {
-                Swal.fire({
-                    title: "Error",
-                    text: "Please save the transactions after proceeding!",
-                    icon: "error",
-                    confirmButtonText: "OK"
-                });
-            }
-        });
-    }
 
 
 
     $("#btnDelete").on("click", function (e) {
         e.preventDefault();
-        onDeleteButtonClick();
-    });
-    function onDeleteButtonClick(e) {
-        var journalRefNo = $("#VoucherNo").dxTextBox("instance").option("value");
+        let journalRefNo = $("#VoucherNo").dxTextBox("instance").option("value");
 
-        if (!journalRefNo) {
-            DevExpress.ui.notify("Please enter or select a Journal Entry to delete.", "warning", 3000);
-            return;
+        if (journalRefNo && journalRefNo.toString().trim() !== "") {
+            // Now call backend to get IsSubmitted, IsApproved, IsPosted
+            $.ajax({
+                type: "GET",
+                url: "/api/JournalRegister/GetJournalStatus", // Adjust the URL to your controller and action
+                contentType: "application/json",
+
+                data: { journalRefNo: journalRefNo },
+                success: function (response) {
+                    if (response) {
+                        let { isSubmitted, isApproved, isPosted } = response;
+
+                        if (isSubmitted) {
+                            DevExpress.ui.dialog.alert("Journal Entry is already Submitted,You cannot delete the Submitted JV.", "JV is submitted already");
+                        }
+                        else if (!isSubmitted && isApproved || isPosted) {
+                            DevExpress.ui.dialog.alert("Journal Entry is already Approved,You cannot delete the Approved JV.", "JV is Approved already");
+                        }
+                        else if (isSubmitted && isApproved && isPosted) {
+                            DevExpress.ui.dialog.alert("Journal Entry is already Paid,<br/>You cannot delete the Posted JV.", "Warning");
+                        }
+                        else if (!isSubmitted && !isApproved && !isPosted) {
+                            let result = DevExpress.ui.dialog.confirm(
+                                "You are about to delete the Journal Entry from the Register,<br/>Click Yes if you would like to continue.",
+                                "Confirm Deletion"
+                            );
+                            result.done(function (dialogResult) {
+                                if (dialogResult) {
+
+                                    // User clicked Yes, so proceed to delete
+                                    $.ajax({
+                                        type: "POST",
+                                        url: `/api/JournalRegister/DeleteJournalEntry?journalRefNo=${encodeURIComponent(journalRefNo)}`,
+                                        contentType: "application/json",
+
+
+                                        success: function (deleteResponse) {
+                                            if (deleteResponse.success) {
+                                                DevExpress.ui.dialog.alert("Journal Entry sucesfully removed from the database", "Success")
+                                                    .done(function () {
+                                                        sessionStorage.setItem("refreshPage", "true");
+                                                        history.back();
+                                                    });
+
+
+                                            } else {
+                                                DevExpress.ui.notify("Failed to delete Journal Entry.", "error", 2000);
+                                            }
+                                        },
+                                        error: function () {
+                                            DevExpress.ui.notify("Error occurred during deletion.", "error", 2000);
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    } else {
+                        DevExpress.ui.notify("Failed to fetch journal status.", "error", 2000);
+                    }
+                },
+                error: function () {
+                    DevExpress.ui.notify("Error fetching journal status.", "error", 2000);
+                }
+            });
+
+        } else {
+            DevExpress.ui.dialog.alert("Journal Reference Number is missing.", "Error");
         }
+    });
 
-        $.ajax({
-            url: "/api/JournalEntryEdit/DeleteJournalEntry",
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(journalRefNo), // 👈 plain string
-            success: function (response) {
-                DevExpress.ui.notify(response.message, 'success', 3000);
-                setTimeout(function () {
-                    location.reload();
-                }, 1000);
-            },
-            error: function (xhr) {
-                const msg = xhr.responseJSON?.message || xhr.responseText || 'Error occurred while deleting.';
-                DevExpress.ui.notify(msg, 'error', 3000);
-            }
-        });
-    }
 
 
     function onAccountHeadRowPrepared(e) {
@@ -1125,7 +1328,7 @@
         const drCr = e.newData.DrCr || e.oldData.DrCr;
         if (drCr === "Dr") {
             if ("CrAmount" in e.newData) {
-                
+
                 DevExpress.ui.dialog.alert(
                     "Selected Entry has to be Dedit Amount,Please Check the Dr/Cr and try again.!",
                     "Debit/Credit Entry not Matching"
@@ -1137,7 +1340,7 @@
         // If DrCr is "Cr", allow only CrAmount to update
         if (drCr === "Cr") {
             if ("DrAmount" in e.newData) {
-                
+
                 DevExpress.ui.dialog.alert(
                     "Selected Entry has to be Credit Amount,Please Check the Dr/Cr and try again.!",
                     "Debit/Credit Entry not Matching"
@@ -1283,9 +1486,9 @@
                                     .done(function () {
                                         var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
                                         loadLedgerGridData(voucherNo);
-                                    
+
                                     });
-                                
+
                             } else {
                                 DevExpress.ui.notify(response.message || "Deletion failed.", "error", 3000);
                             }
@@ -1301,21 +1504,48 @@
 
 
     function closeParentModal() {
-        // Hide the popup
-        if (popupInstances[journalchildno]) {
-            popupInstances[journalchildno].hide();
+        const voucherEntryNo = $("#CurrentVoucherEntryNo").val();
+        if (!voucherEntryNo) {
+            console.warn("VoucherEntryNo not found in hidden field.");
+            return;
+        }
+
+        const popup = popupInstances[voucherEntryNo];
+        if (popup) {
+            popup.hide();
+        } else {
+            console.warn("No popup instance found for VoucherEntryNo:", voucherEntryNo);
         }
     }
 
     function ClosePropertyModel() {
-        if (popupInstances[journalchildno]) {
-            popupInstances[journalchildno].hide();
+        const voucherEntryNo = $("#CurrentVoucherEntryNo").val();
+        if (!voucherEntryNo) {
+            console.warn("VoucherEntryNo not found in hidden field.");
+            return;
+        }
+
+        const popup = popupInstances[voucherEntryNo];
+        if (popup) {
+            popup.hide();
+        } else {
+            console.warn("No popup instance found for VoucherEntryNo:", voucherEntryNo);
         }
     }
-    
+
+
     function CloseEmployeeModel() {
-        if (popupInstances[journalchildno]) {
-            popupInstances[journalchildno].hide();
+        const voucherEntryNo = $("#CurrentVoucherEntryNo").val();
+        if (!voucherEntryNo) {
+            console.warn("VoucherEntryNo not found in hidden field.");
+            return;
+        }
+
+        const popup = popupInstances[voucherEntryNo];
+        if (popup) {
+            popup.hide();
+        } else {
+            console.warn("No popup instance found for VoucherEntryNo:", voucherEntryNo);
         }
     }
     function Closepopup() {
@@ -1341,7 +1571,7 @@
                 dataType: "json",
                 success: function (response) {
                     if (response.success) {
-                        
+
 
                     } else {
                         alert("Update failed: " + response.message);
@@ -1369,42 +1599,51 @@
         }
 
     }
-    function onGridCostButtonClick(e) {
+        function onGridCostButtonClick(e) {
         const button = $(e.element);
         const $dataRow = button.closest(".dx-data-row");
         const $dataGrid = $("#dataGrid").dxDataGrid("instance");
-
         const rowIndex = $dataRow.index();
         const rowData = $dataGrid.getVisibleRows()[rowIndex].data;
         const journalChildNo = rowData.JournalChildNo;
 
-        // If a detail row already exists below this, remove it
-        const $nextRow = $dataRow.next();
-        if ($nextRow.hasClass("detail-row")) {
-            $nextRow.remove();
+        // Remove any existing dropdowns
+        $(".floating-dropdown-form").remove();
+
+        // Toggle dropdown: if already opened for this row, remove and exit
+        if (button.hasClass("active")) {
+            button.removeClass("active");
             return;
         }
+        $(".dx-button").removeClass("active");
+        button.addClass("active");
 
-        // Remove any other open detail rows
-        $(".detail-row").remove();
-
-        // Get column count to span the full width
-        const columnCount = $dataRow.find("td").length;
-
-        // Insert a new row after the current one
-        const $detailRow = $(`
-            <tr class="detail-row">
-                <td colspan="${columnCount}" style="padding: 0;" class="bg-light">
-                    <div class="inline-detail-grid" style="padding: 10px;"></div>
-                </td>
-            </tr>
+        // Create floating form container
+        const $dropdown = $(`
+            <div class="floating-dropdown-form">
+                <div class="dropdown-inner">
+                    <div class="inline-detail-grid"></div>
+                </div>
+            </div>
         `);
-        $dataRow.after($detailRow);
 
-        // Render the nested grid inside the new row
-        $detailRow.find(".inline-detail-grid").dxDataGrid({
+        $("body").append($dropdown);
+
+        // Position it under the clicked button
+        const offset = button.offset();
+        const height = button.outerHeight();
+        const dropdownWidth = 650; // keep it same as in CSS
+        $dropdown.css({
+            top: offset.top + height + 4,
+            left: offset.left - dropdownWidth + button.outerWidth(), // aligns right edge of dropdown with button
+            width: dropdownWidth,
+            zIndex: 1500
+        });
+
+
+        // Render the inner grid inside the dropdown
+        $dropdown.find(".inline-detail-grid").dxDataGrid({
             dataSource: DevExpress.data.AspNet.createStore({
-               
                 loadUrl: `/api/JournalEntryEdit/GetCostAllocationByJournalChildNo`,
                 loadParams: { journalChildNo: journalChildNo }
             }),
@@ -1417,9 +1656,19 @@
                 { dataField: "DrCr", caption: "Dr/Cr", width: 80, alignment: "center" }
             ]
         });
+
+        // Hide dropdown on outside click
+        $(document).on("click.floatingDropdown", function (event) {
+            if (!$(event.target).closest(".floating-dropdown-form, .dx-button").length) {
+                $(".floating-dropdown-form").remove();
+                $(".dx-button").removeClass("active");
+                $(document).off("click.floatingDropdown");
+            }
+        });
     }
 
-    function onGridEmployeeButtonClick(e) {
+
+        function onGridEmployeeButtonClick(e) {
         const button = $(e.element);
         const $dataRow = button.closest(".dx-data-row");
         const $dataGrid = $("#dataGrid").dxDataGrid("instance");
@@ -1428,33 +1677,43 @@
         const rowData = $dataGrid.getVisibleRows()[rowIndex].data;
         const journalChildNo = rowData.JournalChildNo;
 
-        // If a detail row already exists below this, remove it
-        const $nextRow = $dataRow.next();
-        if ($nextRow.hasClass("detail-row")) {
-            $nextRow.remove();
-            return;
-        }
+        // Remove any existing dropdown
+        $(".floating-dropdown").remove();
 
-        // Remove any other open detail rows
-        $(".detail-row").remove();
+        // Create dropdown container
+        const $dropdown = $(`
+            <div class="floating-dropdown shadow">
+                <div class="inline-detail-grid" style="padding: 10px;"></div>
+            </div>
+        `).appendTo("body");
 
-        // Get column count to span the full width
-        const columnCount = $dataRow.find("td").length;
+        // Set position (left offset)
+        const offset = button.offset();
+        const height = button.outerHeight();
+        const dropdownWidth = 650;
+        const screenWidth = $(window).width();
 
-        // Insert a new row after the current one
-        const $detailRow = $(`
-                <tr class="detail-row">
-                    <td colspan="${columnCount}" style="padding: 0;" class="bg-light">
-                        <div class="inline-detail-grid" style="padding: 10px;"></div>
-                    </td>
-                </tr>
-            `);
-        $dataRow.after($detailRow);
+        const leftPosition = Math.max(0, offset.left - dropdownWidth + button.outerWidth());
 
-        // Render the nested grid inside the new row
-        $detailRow.find(".inline-detail-grid").dxDataGrid({
+        $dropdown.css({
+            top: offset.top + height + 4,
+            left: leftPosition,
+            width: dropdownWidth,
+            zIndex: 1500
+        });
+
+        // Close on outside click
+        $(document).on("mousedown.dropdownClose", function (event) {
+            if (!$(event.target).closest(".floating-dropdown, .dx-button").length) {
+                $(".floating-dropdown").remove();
+                $(".dx-button").removeClass("active");
+                $(document).off("mousedown.dropdownClose");
+            }
+        });
+
+        // Render nested DataGrid
+        $dropdown.find(".inline-detail-grid").dxDataGrid({
             dataSource: DevExpress.data.AspNet.createStore({
-
                 loadUrl: `/api/JournalEntryEdit/GetEmployeeAllocationByJournalChildNo`,
                 loadParams: { journalChildNo: journalChildNo }
             }),
@@ -1484,8 +1743,8 @@
                     if (response.success) {
                         var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
                         loadLedgerGridData(voucherNo);
-                       
-                       
+
+
                     } else {
                         DevExpress.ui.notify(response.message || "Delete failed", "error", 2000);
                     }
@@ -1521,13 +1780,24 @@
                 $btn.dxButton("instance").option("disabled", true);
             }
         });
-    
+        // 🔒 Wait for grid content to be rendered and disable cell buttons
+        setTimeout(function () {
+            $("#dataGrid").find(".dx-button").each(function () {
+                const instance = $(this).dxButton("instance");
+                if (instance) {
+                    instance.option("disabled", true);
+                }
+            });
+        }, 100);
+
     }
 
 
     function submit() {
         // Get value from VoucherNo TextBox
         var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+
+
 
         $.ajax({
 
@@ -1555,8 +1825,8 @@
                             disable();
 
                         });
-                    
-                   
+
+
 
                 } else {
                     DevExpress.ui.notify(response.message, "error", 3000);
@@ -1609,5 +1879,125 @@
             }
         });
     }
+    function approve() {
+        // Get value from VoucherNo TextBox
+        var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+
+        $.ajax({
+
+            url: `/api/JournalEntryEdit/ApproveJournal?VoucherNo=${encodeURIComponent(voucherNo)}`,
+            type: 'POST',
+
+            success: function (response) {
+                if (response.success) {
+                    DevExpress.ui.dialog.alert("Journal Entry Form has been verified for Approval.", "Verification Successfull")
+                        .done(function () {
+                            const submittedBy = response.approvedBy;
+                            const submittedOn = new Date(response.approvedOn);
+
+                            // Format to dd-MMM-yyyy
+                            const formattedDate = submittedOn.toLocaleDateString('en-GB', {
+                                day: '2-digit',
+                                month: 'short',
+                                year: 'numeric'
+                            }).replace(/ /g, '-');
+
+                            $("#ApprovedBy").dxCheckBox("instance").option("value", true);
+                            $("#ApprovedBytext").dxTextBox("instance").option("value", submittedBy);
+                            $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate);
+
+                            disable();
+
+                        });
+
+
+                } else {
+                    DevExpress.ui.notify(response.message, "error", 3000);
+                }
+            },
+            error: function () {
+                DevExpress.ui.notify("Error occurred during submission.", "error", 3000);
+            }
+        });
+    }
+
+    async function onPostJournalClick() {
+        const approve = await $("#ApprovedBytext").dxTextBox("instance").option("value");
+        if (!approve) {
+            DevExpress.ui.dialog.alert(
+                "This Journal Entry is not yet Approved,Please get it approved<br>and continue for Payment",
+                "Journal Entry Not Approved"
+            );
+            return;
+        }
+    const result = await DevExpress.ui.dialog.confirm(
+        "You are about to Create Voucher,<br>Click yes if you would like to continue.",
+        "Confirmation"
+    );
+
+    if (!result) return;
+
+    const username = '@HttpContext.Session.GetString("UserName")';
+    const now = new Date();
+    // Format to dd-MMM-yyyy
+                            const formattedDate = now.toLocaleDateString('en-GB', {
+                                day: '2-digit',
+                                month: 'short',
+                                year: 'numeric'
+                            }).replace(/ /g, '-');
+    const voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+
+    // Step 1: Get new voucher number
+    const voucherResponse = await $.get('/api/JournalEntryEdit/GetGeneratedVoucherNo');
+
+    if (!voucherResponse || (!voucherResponse.success && voucherResponse.error)) {
+        DevExpress.ui.notify("Error fetching new voucher number: " + (voucherResponse.error || ""), "error", 3000);
+        return;
+    }
+
+    const newVoucherNo = typeof voucherResponse === "string" ? voucherResponse : voucherResponse.result;
+    $("#journalvoucher").dxTextBox("instance").option("value", newVoucherNo);
+
+    // Step 2: Mark journal as posted with newVoucherNo
+    const postResponse = await $.ajax({
+        url: `/api/JournalEntryEdit/PostJournal`,
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            voucherNo: voucherNo,
+            newVoucherNo: newVoucherNo
+        })
+    });
+
+    if (!postResponse.success) {
+        DevExpress.ui.notify("Failed to post journal: " + postResponse.message, "error", 3000);
+        return;
+    }
+
+    // Update UI
+    $("#PostedBy").dxCheckBox("instance").option("value", true);
+    $("#PostedBytext").dxTextBox("instance").option("value", username);
+    $("#PostedOnDate").dxTextBox("instance").option("value", formattedDate);
+
+    // Step 3: Call stored procedure to insert voucher
+    const spResponse = await $.ajax({
+        url: '/api/JournalEntryEdit/InsertVoucherFromJournal',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            journalRefNo: voucherNo,
+            postingVoucherNo: newVoucherNo,
+            addedBy: username,
+            addedOn: now
+        })
+    });
+
+    if (spResponse.success) {
+        DevExpress.ui.dialog.alert("Journal Entry added to the database.", "Successful");
+    } else {
+        DevExpress.ui.notify("Failed to create voucher: " + spResponse.message, "error", 3000);
+    }
+}
+
 
 </script>

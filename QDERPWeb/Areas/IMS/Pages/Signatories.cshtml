@@ -322,7 +322,7 @@
         .Editing(editing => editing
         .Mode(GridEditMode.Batch)
         .AllowUpdating(true)
-
+            .AllowDeleting(true)
         )
         .Toolbar(toolbar =>
         {
@@ -349,20 +349,19 @@
     }
     }
     ")).Width(150);
-                @* columns.Add().Caption("Signature Image").AllowEditing(false)
-            .CellTemplate(@<text>
-        function(cellElement, cellInfo) {
-        if (cellInfo.data?.SignatureImageBase64) {
-        $("<img>")
-        .attr("src", "data:image/png;base64," + cellInfo.data.SignatureImageBase64)
-        .css({ height: "40px", borderRadius: "4px" })
-        .appendTo(cellElement);
-        } else {
-        cellElement.text("No image");
-        }
-        }
-    </text>); *@
-            })
+                // Add delete button column
+                columns.Add()
+                .Type(GridCommandColumnType.Buttons)
+                .Buttons(buttons =>
+                {
+                    buttons.Add()
+                .Name(GridColumnButtonName.Delete)
+                .Icon("trash") // Use a trash icon
+                .Hint("Delete Row") // Tooltip
+                .OnClick("onDeleteButtonClick");
+                });
+               
+  })
         .Height(500)
         .ColumnAutoWidth(true)
         .AllowColumnReordering(true)
@@ -514,15 +513,18 @@
 
 
     function onSignatoryUpdating(e) {
+        const updatedSignatureImage = businessCard1Base64 ? businessCard1Base64.split(',')[1] : e.oldData.SignatureImage;
+
         const data = {
             SignatoryID: e.oldData.SignatoryID,
             SignatoryName: e.newData.SignatoryName ?? e.oldData.SignatoryName,
             SignatoryPosition: e.newData.SignatoryPosition ?? e.oldData.SignatoryPosition,
             SignatoryContact: e.newData.SignatoryContact ?? e.oldData.SignatoryContact,
-            SignatoryEmail: e.newData.SignatoryEmail ?? e.oldData.SignatoryEmail
+            SignatoryEmail: e.newData.SignatoryEmail ?? e.oldData.SignatoryEmail,
+            SignatureImage: updatedSignatureImage
         };
 
-        e.cancel = true; // prevents grid from doing its own update
+        e.cancel = true;
 
         return $.ajax({
             url: '/api/Signatories/SaveOrUpdateSignatory',
@@ -537,6 +539,28 @@
                 DevExpress.ui.notify("Failed to save.", "error", 1500);
             }
         });
+    }
+
+    function onDeleteButtonClick(e) {
+        e.event.preventDefault(); // prevent default delete
+
+        var grid = $("#SignatoryGrid").dxDataGrid("instance");
+        var key = e.row.data.SignatoryID; // get the ID of the row
+
+        if (confirm("Are you sure you want to delete this row?")) {
+            $.ajax({
+                url: '/api/Signatories/Delete?key=' + key,
+                type: 'DELETE',
+                success: function () {
+                    // Refresh the grid after delete
+                    grid.refresh();
+                    DevExpress.ui.notify("Deleted successfully", "success", 2000);
+                },
+                error: function () {
+                    DevExpress.ui.notify("Delete failed", "error", 2000);
+                }
+            });
+        }
     }
 
 

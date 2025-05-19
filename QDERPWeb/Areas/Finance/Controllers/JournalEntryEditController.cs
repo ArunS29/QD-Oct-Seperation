@@ -2,6 +2,7 @@
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using QD.ERP.Web.Areas.Finance.Models;
@@ -9,6 +10,7 @@ using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
 using SkiaSharp;
 using System;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -163,7 +165,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-        
+
 
         [HttpPost]
         public IActionResult SaveJournalRegisterChild([FromBody] Tbl20127JournalRegisterChild newEntry)
@@ -171,13 +173,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 if (ModelState.IsValid)
-            {
+                {
                     // Save to DB
                     dbContext.Tbl20127JournalRegisterChildren.Add(newEntry);
                     dbContext.SaveChanges();
-                return Ok();
-            }
-            return BadRequest(ModelState);
+                    return Ok();
+                }
+                return BadRequest(ModelState);
             }
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
@@ -210,7 +212,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                    jr.TotalCostAllocated,
                                    jr.TotalEmpAllocated,
                                    jr.TotalEqpAllocted,
-                                   
+
                                }).ToList();
 
                 return Json(records);
@@ -228,7 +230,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 var count = dbContext.Tbl20127JournalRegisterChildren
                 .Count(j => j.JournalRefNo == voucherNo);
 
-            return Ok(count + 1); // Next LineOrderNo
+                return Ok(count + 1); // Next LineOrderNo
             }
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
@@ -414,7 +416,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             dbContext.SaveChanges();
 
-            
+
 
             return Ok();
         }
@@ -422,8 +424,72 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
         [HttpPost]
-		public IActionResult SaveemployeeAllocations([FromBody] List<Tbl20129JournalRegisterEmployeeAllocation> allocations)
-		{
+        public IActionResult SaveemployeeAllocations([FromBody] List<Tbl20129JournalRegisterEmployeeAllocation> allocations)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            if (allocations == null || !allocations.Any())
+            {
+                return BadRequest("No cost allocation data received.");
+            }
+
+            string userName = HttpContext.Session.GetString("UserName");
+            DateTime now = DateTime.Now;
+            var journalChildNo = allocations.First().JournalChildNo;
+
+            // Fetch all existing allocations for the JournalChildNo
+            var existingAllocations = dbContext.Tbl20129JournalRegisterEmployeeAllocations
+                .Where(x => x.JournalChildNo == journalChildNo)
+                .ToList();
+
+            foreach (var allocation in allocations)
+            {
+                var existing = dbContext.Tbl20129JournalRegisterEmployeeAllocations
+                    .FirstOrDefault(x => x.EmployeeAllocationId == allocation.EmployeeAllocationId);
+
+                if (existing != null && allocation.EmployeeAllocationId > 0)
+                {
+                    // Update existing record
+                    existing.EmpAllocDrCr = allocation.EmpAllocDrCr;
+                    existing.EmployeeNo = allocation.EmployeeNo;
+                    existing.EffectiveDate = allocation.EffectiveDate;
+                    existing.AmountAllocated = allocation.AmountAllocated;
+                    existing.CostAllocRemarks = allocation.CostAllocRemarks;
+                    existing.VoucherNo = allocation.VoucherNo;
+                    existing.ModifiedBy = userName;
+                    existing.ModifiedOn = now;
+                }
+                else
+                {
+                    // New insert
+                    dbContext.Tbl20129JournalRegisterEmployeeAllocations.Add(new Tbl20129JournalRegisterEmployeeAllocation
+                    {
+                        EmpAllocDrCr = allocation.EmpAllocDrCr,
+                        EmployeeNo = allocation.EmployeeNo,
+                        EffectiveDate = allocation.EffectiveDate,
+                        AmountAllocated = allocation.AmountAllocated,
+                        CostAllocRemarks = allocation.CostAllocRemarks,
+                        JournalChildNo = allocation.JournalChildNo,
+                        VoucherNo = allocation.VoucherNo,
+                        EnteredBy = userName,
+                        EnteredOn = now
+                    });
+                }
+            }
+
+
+            dbContext.SaveChanges();
+
+
+
+            return Ok();
+        }
+        [HttpPost]
+        public IActionResult SavepropertyAllocations([FromBody] List<Tbl20130JournalRegisterPropertyAllocation> allocations)
+        {
 			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
 			{
 				return Unauthorized(new { success = false, message = "Invalid tenant." });
@@ -433,29 +499,28 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 			{
 				return BadRequest("No cost allocation data received.");
 			}
-
 			string userName = HttpContext.Session.GetString("UserName");
 			DateTime now = DateTime.Now;
 			var journalChildNo = allocations.First().JournalChildNo;
 
 			// Fetch all existing allocations for the JournalChildNo
-			var existingAllocations = dbContext.Tbl20129JournalRegisterEmployeeAllocations
+			var existingAllocations = dbContext.Tbl20130JournalRegisterPropertyAllocations
 				.Where(x => x.JournalChildNo == journalChildNo)
 				.ToList();
 
 			foreach (var allocation in allocations)
 			{
-				var existing = dbContext.Tbl20129JournalRegisterEmployeeAllocations
-					.FirstOrDefault(x => x.EmployeeAllocationId == allocation.EmployeeAllocationId);
+				var existing = dbContext.Tbl20130JournalRegisterPropertyAllocations
+					.FirstOrDefault(x => x.PropertyAllocationId == allocation.PropertyAllocationId);
 
-				if (existing != null && allocation.EmployeeAllocationId > 0)
+				if (existing != null && allocation.PropertyAllocationId > 0)
 				{
 					// Update existing record
-					existing.EmpAllocDrCr = allocation.EmpAllocDrCr;
-					existing.EmployeeNo = allocation.EmployeeNo;
+					existing.PropertyAllocDrCr = allocation.PropertyAllocDrCr;
+					existing.PropertyNo = allocation.PropertyNo;
 					existing.EffectiveDate = allocation.EffectiveDate;
 					existing.AmountAllocated = allocation.AmountAllocated;
-					existing.CostAllocRemarks = allocation.CostAllocRemarks;
+					existing.PropertyAllocRemarks = allocation.PropertyAllocRemarks;
 					existing.VoucherNo = allocation.VoucherNo;
 					existing.ModifiedBy = userName;
 					existing.ModifiedOn = now;
@@ -463,13 +528,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 				else
 				{
 					// New insert
-					dbContext.Tbl20129JournalRegisterEmployeeAllocations.Add(new Tbl20129JournalRegisterEmployeeAllocation
+					dbContext.Tbl20130JournalRegisterPropertyAllocations.Add(new Tbl20130JournalRegisterPropertyAllocation
 					{
-						EmpAllocDrCr = allocation.EmpAllocDrCr,
-						EmployeeNo = allocation.EmployeeNo,
+						PropertyAllocDrCr = allocation.PropertyAllocDrCr,
+						PropertyNo = allocation.PropertyNo,
 						EffectiveDate = allocation.EffectiveDate,
 						AmountAllocated = allocation.AmountAllocated,
-						CostAllocRemarks = allocation.CostAllocRemarks,
+						PropertyAllocRemarks = allocation.PropertyAllocRemarks,
 						JournalChildNo = allocation.JournalChildNo,
 						VoucherNo = allocation.VoucherNo,
 						EnteredBy = userName,
@@ -482,76 +547,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 			dbContext.SaveChanges();
 
 
-
-			return Ok();
-		}
-		[HttpPost]
-		public IActionResult SavepropertyAllocations([FromBody] List<Tbl20130JournalRegisterPropertyAllocation> allocations)
-		{
-			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				return Unauthorized(new { success = false, message = "Invalid tenant." });
-			}
-
-			if (allocations == null || !allocations.Any())
-			{
-				return BadRequest("No cost allocation data received.");
-			}
-
-			foreach (var allocation in allocations)
-			{
-				var entity = new Tbl20130JournalRegisterPropertyAllocation
-				{
-					PropertyAllocDrCr = allocation.PropertyAllocDrCr,
-					PropertyNo = allocation.PropertyNo,
-					EffectiveDate = allocation.EffectiveDate,
-					AmountAllocated = decimal.Parse(allocation.AmountAllocated.ToString()),
-					PropertyAllocRemarks = allocation.PropertyAllocRemarks,
-					JournalChildNo = allocation.JournalChildNo,
-					VoucherNo = allocation.VoucherNo,
-					LedgerAccountNo = allocation.LedgerAccountNo
-				};
-
-				dbContext.Tbl20130JournalRegisterPropertyAllocations.Add(entity);
-			}
-
-			dbContext.SaveChanges();
-
-			//// Group allocations by JournalChildNo to create descriptions
-			//var journalChildNos = allocations.Select(a => a.JournalChildNo).Distinct();
-
-			//foreach (var journalChildNo in journalChildNos)
-			//{
-			//	var relatedAllocations = dbContext.Tbl20129JournalRegisterEmployeeAllocations
-			//		.Where(x => x.JournalChildNo == journalChildNo)
-			//		.Join(dbContext.Tbl101Employees,
-			//			alloc => alloc.EmployeeNo,
-			//			unit => unit.EmployeeId,
-			//			(alloc, unit) => new
-			//			{
-			//				alloc.EmployeeNo,
-			//				unit.EmployeeName,
-			//				alloc.AmountAllocated,
-			//				alloc.EmpAllocDrCr
-			//			})
-			//		.ToList();
-
-			//	var descriptionParts = relatedAllocations.Select(x =>
-			//		$"{x.EmployeeNo} | {x.EmployeeName.Substring(0, Math.Min(25, x.EmployeeName.Length))} | ({x.AmountAllocated} {x.EmpAllocDrCr}) ::"
-			//	);
-
-			//	string costAllocationDescription = string.Join(" ", descriptionParts);
-
-			//	var journalChildRecord = dbContext.Qry202101journalRegisterChildren
-			//		.FirstOrDefault(x => x.JournalChildNo == journalChildNo);
-
-			//	if (journalChildRecord != null)
-			//	{
-			//		journalChildRecord.EmployeeCostDescription = costAllocationDescription;
-			//	}
-			//}
-
-			//dbContext.SaveChanges();
 
 			return Ok();
 		}
@@ -628,34 +623,60 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Json(result);
         }
+        [HttpGet]
+        public IActionResult GetEmployeeAllocationsBydatagrid(long journalChildNo)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            var result = (from alloc in dbContext.Tbl20129JournalRegisterEmployeeAllocations
+                          join unit in dbContext.Tbl101Employees
+                              on alloc.EmployeeNo equals unit.EmployeeId into gj
+                          from unit in gj.DefaultIfEmpty()
+                          where alloc.JournalChildNo == journalChildNo
+                          select new
+                          {
+                              EmployeeNo = unit.EmployeeId,
+                              EmployeeID = alloc.EmployeeNo,
+                              DrCr = alloc.EmpAllocDrCr,
+                              EmployeeName = unit.EmployeeName,
+                              EmployeeAllocationId = alloc.EmployeeAllocationId,
+                              EffectiveDate = alloc.EffectiveDate,
+                              VoucherAmount = alloc.AmountAllocated,
+                              Remarks = alloc.CostAllocRemarks
+                          }).ToList();
+
+            return Json(result);
+        }
 		[HttpGet]
-		public IActionResult GetEmployeeAllocationsBydatagrid(long journalChildNo)
+		public IActionResult GetPropertyAllocationsBydatagrid(long journalChildNo)
 		{
 			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
 			{
 				return Unauthorized(new { success = false, message = "Invalid tenant." });
 			}
 
-			var result = (from alloc in dbContext.Tbl20129JournalRegisterEmployeeAllocations
-						  join unit in dbContext.Tbl101Employees
-							  on alloc.EmployeeNo equals unit.EmployeeId into gj
+			var result = (from alloc in dbContext.Tbl20130JournalRegisterPropertyAllocations
+						  join unit in dbContext.Tbl40101PropertyMasters
+							  on alloc.PropertyNo equals unit.PropertyNo into gj
 						  from unit in gj.DefaultIfEmpty()
 						  where alloc.JournalChildNo == journalChildNo
 						  select new
 						  {
-							  EmployeeNo = unit.EmployeeId,
-                              EmployeeID = alloc.EmployeeNo,
-							  DrCr = alloc.EmpAllocDrCr,
-							  EmployeeName = unit.EmployeeName,
-							  EmployeeAllocationId = alloc.EmployeeAllocationId,
+							  PropertyAllocationId = alloc.PropertyAllocationId,
+							  DrCr = alloc.PropertyAllocDrCr,
+							  PropertyDescription = unit != null ? unit.PropertyDescription : " ",
+							  PropertyNo = alloc.PropertyNo,
 							  EffectiveDate = alloc.EffectiveDate,
 							  VoucherAmount = alloc.AmountAllocated,
-							  Remarks = alloc.CostAllocRemarks
+							  Remarks = alloc.PropertyAllocRemarks
 						  }).ToList();
 
 			return Json(result);
 		}
-        [HttpPost]
+		[HttpPost]
         public IActionResult DeleteJournalChild([FromBody] long journalChildNo)
         {
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
@@ -708,7 +729,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             try
             {
-                
+
 
                 var journalChildren = dbContext.Tbl20127JournalRegisterChildren
                     .Where(j => journalChildNos.Contains(j.JournalChildNo)).ToList();
@@ -828,6 +849,175 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return Json(new { success = false, message = "Server error occurred." });
             }
         }
+        [HttpPost]
+        public IActionResult ApproveJournal(string voucherNo)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            var username = HttpContext.Session.GetString("UserName");
+            var now = DateTime.Now;
+
+            if (string.IsNullOrEmpty(username))
+            {
+                return Json(new { success = false, message = "User not logged in." });
+            }
+
+            try
+            {
+                var entry = dbContext.Tbl20126JournalRegisterMasters
+                    .FirstOrDefault(x => x.JournalRefNo == voucherNo);
+
+                if (entry == null)
+                {
+                    return Json(new { success = false, message = "Entry not found." });
+                }
+
+                entry.IsApproved = true;
+                entry.ApprovedBy = username;
+                entry.ApprovedOn = now;
+
+                dbContext.SaveChanges();
+
+                return Json(new
+                {
+                    success = true,
+                    approvedBy = username,
+                    approvedOn = now.ToString("dd-MMM-yyyy")
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while submitting to finance.");
+                return Json(new { success = false, message = "Server error occurred." });
+            }
+        }
+        [HttpPost]
+        public IActionResult PostJournal([FromBody] JournalPostRequest request)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            var username = HttpContext.Session.GetString("UserName");
+            var now = DateTime.Now;
+
+            if (string.IsNullOrEmpty(username))
+            {
+                return Json(new { success = false, message = "User not logged in." });
+            }
+
+            try
+            {
+                var entry = dbContext.Tbl20126JournalRegisterMasters
+                    .FirstOrDefault(x => x.JournalRefNo == request.VoucherNo);
+
+                if (entry == null)
+                {
+                    return Json(new { success = false, message = "Entry not found." });
+                }
+
+                entry.IsPosted = true;
+                entry.PostedBy = username;
+                entry.PostedOn = now;
+                entry.PostedVoucherNo = request.NewVoucherNo;
+
+                dbContext.SaveChanges();
+
+                return Json(new
+                {
+                    success = true,
+                    postedBy = username,
+                    postedOn = now.ToString("dd-MMM-yyyy")
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while submitting to finance.");
+                return Json(new { success = false, message = "Server error occurred." });
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetGeneratedVoucherNo(DataSourceLoadOptions loadOptions)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                DateTime currentDate = DateTime.Now;
+                string currentYear = currentDate.Year.ToString();
+                string currentMonth = currentDate.Month.ToString("00");
+                string voucherString = "JV-" + currentYear.Substring(currentYear.Length - 2, 2) + "-" + currentMonth + "-";
+                string strNewReceiptNo;
+
+                // SQL query with interpolated string
+                string likePattern = voucherString + "%";
+
+                try
+                {
+                    // Use raw SQL query to fetch the maximum voucher number
+                    var result = await dbContext.VoucherResults
+                        .FromSqlInterpolated($@"
+                SELECT MAX(CAST(RIGHT(VoucherNo, 3) AS INT)) AS MaxVoucherNo
+                FROM Tbl201VoucherEntry
+                WHERE VoucherNo LIKE {likePattern}")
+                        .ToListAsync();
+
+                    int maxVoucherNo = result.FirstOrDefault()?.MaxVoucherNo ?? 0;
+
+                    int newVoucherNo = maxVoucherNo + 1;
+
+                    // Format the new voucher number with leading zeros
+                    strNewReceiptNo = "000" + newVoucherNo.ToString();
+                    strNewReceiptNo = strNewReceiptNo.Substring(strNewReceiptNo.Length - 3);
+
+                    // Concatenate with the voucher string
+                    strNewReceiptNo = voucherString + strNewReceiptNo;
+                }
+                catch (Exception)
+                {
+                    // Handle cases where there's no existing voucher number
+                    strNewReceiptNo = voucherString + "001";
+                }
+
+                return Json(strNewReceiptNo);
+            }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpPost]
+        public IActionResult InsertVoucherFromJournal([FromBody] InsertVoucherFromJournalRequest model)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            try
+            {
+                
+
+                dbContext.Database.ExecuteSqlRaw(
+                    "EXEC sp20203InsertJournalEntryToVoucher @JournalRefNo = {0}, @PostingVoucherNo = {1}, @AddedBy = {2}, @AddedOn = {3}, @JustAddedVoucherEntryNo = 0",
+                    model.JournalRefNo,
+                    model.PostingVoucherNo,
+                    model.AddedBy,
+                    model.AddedOn
+                   
+                );
+
+                return Ok(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error inserting voucher: {ex.Message}");
+                return BadRequest(new { success = false, message = "Failed to insert voucher." });
+            }
+        }
+
+
     }
 }
 
