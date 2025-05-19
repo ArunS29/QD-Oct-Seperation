@@ -166,6 +166,7 @@
                             .Label(new JS("formatMessage('Stock No / Item Code')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .ReadOnly(true)
+                            .OnValueChanged("onGscodeChanged")
                             .Width("90%"))
                     </td>
                     <td>
@@ -808,8 +809,338 @@
 
             <div id="tab-content-2" class="tab-content" style="display: none;">
                 <div>
-                  
-                @await Html.PartialAsync("~/Pages/Shared/IMS/StockDetails_StockControl.cshtml")
+
+
+                <style type="text/css">
+
+
+                    .overlay {
+                        display: none;
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: rgba(0, 0, 0, 0.5); /* Transparent background */
+
+                        z-index: 1000;
+                    }
+                    /* Ensure word wrap and center alignment for grid headers */
+                    .header-wrap {
+                        white-space: normal !important; /* Enable word wrap */
+                        text-align: center !important; /* Center align text */
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        font-weight: bold;
+                    }
+
+                    /* Ensure text in grid headers is always centered */
+                    .dx-datagrid .dx-header-row .dx-datagrid-text-content {
+                        white-space: normal !important;
+                        text-align: center !important;
+                    }
+
+                    /* Ensure column headers text aligns to center */
+                    .dx-datagrid-headers .dx-datagrid-table .dx-row > td {
+                        text-align: center !important;
+                    }
+
+                    .overlay-content {
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        width: 100%;
+                        height: 80%;
+                        background: #fff;
+                        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+                        border-radius: 8px;
+                        overflow: hidden;
+                    }
+
+                    #overlay-frame {
+                        width: 100%;
+                        height: 100%;
+                    }
+
+                    .Maincontainer.Maincontainer {
+                        background-color: white;
+                    }
+
+                    .close-btn {
+                        position: absolute;
+                        top: 10px;
+                        right: 20px;
+                        font-size: 30px;
+                        cursor: pointer;
+                    }
+
+
+
+
+                    /* Toolbar Styling */
+                    .custom-toolbar {
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                    }
+
+                    .filter-btn {
+                        background-color: #007bff;
+                        color: white;
+                        border: none;
+                        padding: 6px 12px;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        font-family: 'Inter', sans-serif;
+                    }
+
+                        .filter-btn:hover {
+                            background-color: #0056b3;
+                        }
+
+                    /* Text Editor Styling */
+                    .dx-texteditor {
+                        background-color: #909ead00 !important; /* Light background */
+                        border: 1px solid #d6e4f0 !important; /* Soft border */
+                        border-radius: 4px !important; /* Smaller rounded corners */
+
+                        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important; /* Reduced shadow */
+                        font-size: 14px !important; /* Slightly smaller font */
+                        transition: all 0.2s ease-in-out !important;
+                        height: 39px !important; /* Fixed height */
+                    }
+
+                        /* Hover and Focus States */
+                        .dx-texteditor:hover,
+                        .dx-texteditor.dx-state-hover,
+                        .dx-button:hover {
+                            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important; /* Slightly reduced hover effect */
+                            border-color: #86b7fe !important; /* Highlight border */
+                        }
+
+                        .dx-texteditor.dx-state-focused {
+                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important; /* Softer focus effect */
+                            border-color: #508ae1 !important;
+                        }
+
+                    #dataGrid .dx-header-row .dx-datagrid-text-content {
+                        font-weight: bold;
+                        color: black;
+                    }
+
+
+                    .dx-datagrid-header-panel {
+                        background-color: #909ead00;
+                        /* display:none; */
+                    }
+
+                    .no-border-input {
+                        border: none !important;
+                        outline: none !important;
+                        box-shadow: none !important;
+                        background: transparent !important;
+                        font-weight: bold;
+                        font-size: 16px;
+                        color: black;
+                        pointer-events: none; /* Prevents hover and click effects */
+                    }
+                </style>
+
+
+                <!-- Filter/Info Section -->
+                <div class="dx-fieldset horizontal-container ">
+
+                    <table style="width:100%; margin-bottom: 15px;">
+                        <tr>
+                            <td>
+                            <td>
+                                @(Html.DevExtreme()
+                                    .NumberBox()
+                                    .ID("MinQty")
+                                    .Label(new JS("formatMessage('Minimum Quantity')"))
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .Width(200)
+                                    .ShowSpinButtons(true))
+                            </td>
+                            <td>
+                                @(Html.DevExtreme()
+                                    .NumberBox()
+                                    .ID("MaxQty")
+                                    .Label(new JS("formatMessage('Maximum Quantity')"))
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .Width(200)
+                                    .ShowSpinButtons(true))
+                            </td>
+                            <td>
+                                @(Html.DevExtreme()
+                                    .NumberBox()
+                                    .ID("ReorderLevel")
+                                    .Label(new JS("formatMessage('Reorder Level')"))
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .Width(200)
+                                    .ShowSpinButtons(true))
+                            </td>
+                            <td>
+                                @(Html.DevExtreme()
+                                    .NumberBox()
+                                    .ID("ReorderQty")
+                                    .Label(new JS("formatMessage('Reorder Quantity/EOQ')"))
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .Width(200)
+                                    .ShowSpinButtons(true))
+                            </td>
+                            <td>
+                                @(Html.DevExtreme()
+                                    .NumberBox()
+                                    .ID("ReorderLeadTime")
+                                    .Label(new JS("formatMessage('Reorder Lead Time')"))
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .Width(200)
+                                    .ShowSpinButtons(true))
+                            </td>
+
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+                <table style="margin-left: 13px;">
+                    <tr>
+
+                        <td>
+
+                        @(Html.DevExtreme().Button()
+                            .ID("btnPrint")
+                            .Text(new JS("formatMessage('Print')"))
+                            .Icon("print") // DevExtreme built-in icon
+                            .Width(160)
+                           
+                            )
+
+                        </td>
+                        <td>
+                        @(Html.DevExtreme().DropDownButton()
+                            .Text(new JS("formatMessage('View Stock Movement Report')"))
+                            .Icon("cart") // You can change to your preferred icon
+                            .Width(290)
+                            .DisplayExpr("text")
+                            )
+
+                        </td>
+                    </tr>
+
+                </table>
+
+
+
+                <div class="dx-field ledgerResult" style="margin-bottom: 100px">
+                    <table style="width:100%; margin-top: 15px;">
+                        <tr>
+                            <td>
+                            @(Html.DevExtreme().DataGrid()
+                                .ID("stockCardGrid")
+                                .OnInitialized("onStockGridInitialized")
+                                .Height(400)
+                                .Columns(columns =>
+                                {
+                                    columns.Add().DataField("ReceiptNo").Caption("Document No").Alignment(HorizontalAlignment.Center);
+                                    columns.Add().DataField("TypeOfEntry").Caption("Transaction Type").Alignment(HorizontalAlignment.Center);
+                                    columns.Add().DataField("TransactionDate").Caption("Transaction Date").Alignment(HorizontalAlignment.Center)
+                                    .DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy");
+                                    columns.Add().DataField("InventoryEffectiveDate").Caption("Inventory Effective Date")
+                                    .Alignment(HorizontalAlignment.Center).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy");
+                                    columns.Add().DataField("OpeningBalanceQty").Caption("Opening Balance").Alignment(HorizontalAlignment.Center).Format("fixedPoint");
+                                    columns.Add().DataField("ReceivedQty").Caption("Received").Alignment(HorizontalAlignment.Center).Format("fixedPoint");
+                                    columns.Add().DataField("IssuedQty").Caption("Issued").Alignment(HorizontalAlignment.Center).Format("fixedPoint");
+                                    columns.Add().DataField("StockReceiptAndOpnBalQty").Caption("Balance").Alignment(HorizontalAlignment.Center).Format("fixedPoint");
+                                })
+                                .Summary(summary =>
+                                {
+                                    summary.TotalItems(totalItems =>
+                                    {
+                                        totalItems.Add().Column("OpeningBalanceQty").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value.toFixed(2); }");
+                                        totalItems.Add().Column("ReceivedQty").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value.toFixed(2); }");
+                                        totalItems.Add().Column("IssuedQty").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value.toFixed(2); }");
+                                        totalItems.Add().Column("StockReceiptAndOpnBalQty").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value.toFixed(2); }");
+                                    });
+                                })
+                                .ShowColumnLines(true)
+                                .ShowRowLines(true)
+                                .RowAlternationEnabled(true)
+                                .ShowColumnHeaders(true)
+                                .ColumnAutoWidth(true)
+                                .AllowColumnReordering(true)
+                                .AllowColumnResizing(true)
+                                .ColumnFixing(fixing => fixing.Enabled(true))
+                                .GroupPanel(panel => panel.Visible(false))
+                                .ShowBorders(true)
+                                )
+
+
+
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+
+                <script>
+                 let stockGridInstance = null;
+
+                    function onStockGridInitialized(e) {
+                      stockGridInstance = e.component;
+                      console.log("Grid initialized", stockGridInstance);
+                    }
+
+                    function onGscodeChanged(e) {
+                      const gscode = e.value;
+                      if (stockGridInstance && gscode) {
+                        loadStockCardGrid(gscode);
+                      } else {
+                        console.warn("Grid not initialized or invalid GsCode", gscode);
+                      }
+                    }
+
+                    function loadStockCardGrid(gscode) {
+                      console.log("Preparing to load grid for GsCode:", gscode);
+
+                      if (!stockGridInstance) {
+                        console.error("Grid not initialized");
+                        return;
+                      }
+
+                      const dataStore = new DevExpress.data.CustomStore({
+                        load: function () {
+                          console.log("Calling API for GsCode:", gscode);
+
+                          return $.getJSON(`/api/StockInventory/GetStockCardData`, { gscode })
+                            .then(data => {
+                              console.log(" Data loaded", data);
+                              return data;
+                            })
+                            .fail((jqXHR, textStatus, errorThrown) => {
+                              console.error("API call failed:", textStatus, errorThrown);
+                              
+                              alert("API call failed: " + textStatus + ", " + errorThrown);
+                              
+                              throw new Error(`API call failed: ${textStatus}`);
+                            });
+                        }
+                      });
+
+                      stockGridInstance.option("dataSource", dataStore);
+                    }
+
+
+
+                    function printReport() {
+                        alert("Print report clicked");
+                    }
+
+
+                </script>
                 </div>
             </div>
 
@@ -899,15 +1230,21 @@
     
 <script>
 
-
-  function onTabSelectionChanged(e) {
-        // Hide all tab content
+    function onTabSelectionChanged(e) {
         $(".tab-content").hide();
-
-        // Show the content of the selected tab
         var selectedTabIndex = e.component.option("selectedIndex");
         $("#tab-content-" + (selectedTabIndex + 1)).show();
+
+        if (selectedTabIndex === 1) { // Assuming tab 2 is "Stock Control"
+            const gscode = $("#StockNoItemCode").dxTextBox("instance").option("value");
+            if (gscode) {
+                loadStockCardGrid(gscode);
+            } else {
+                console.warn("GsCode is empty when switching to Stock Control tab.");
+            }
+        }
     }
+
       function ItemStore(){
                 const url = `/${tenantName}/IMS/StockDetails_ItemStore`;
               const title = "";
@@ -955,6 +1292,72 @@
         }
     }
 
+          document.addEventListener("DOMContentLoaded", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+
+        if (code) {
+            setTimeout(() => {  // small delay to ensure widgets ready
+                fetch(`/api/StockInventory/GetByCode?code=${encodeURIComponent(code)}`)
+                    .then(response => {
+                        if (!response.ok) throw new Error("Failed to load");
+                        return response.json();
+                    })
+                      .then(data => {
+        if (data) {
+            $("#StockNoItemCode").dxTextBox("instance").option("value", data.Gscode);
+            $("#ItemName").dxTextBox("instance").option("value", data.Gsdescrpition);
+            $("#ItemNameArabic").dxTextBox("instance").option("value", data.GsdescriptionAr);
+            $("#StockGroup").dxSelectBox("instance").option("value", data.GsgroupId);
+            $("#ItemStore").dxSelectBox("instance").option("value", data.StoreId);
+            $("#ItemClassification").dxSelectBox("instance").option("value", data.ItemClassificationId);
+            $("#DetailedDescription").dxTextArea("instance").option("value", data.GsdetailedDesc);
+            $("#ArabicDescription").dxTextArea("instance").option("value", data.GsdetailedDescAr);
+            $("#UnitOfMeasure").dxSelectBox("instance").option("value", data.GsuoM);
+            $("#PackingUnit").dxNumberBox("instance").option("value", data.GspackingUnit);
+            $("#ItemSize").dxSelectBox("instance").option("value", data.ItemSize);
+            $("#ItemThickness").dxSelectBox("instance").option("value", data.ItemThickness);
+            $("#ItemDimension").dxSelectBox("instance").option("value", data.ItemDimension);
+            $("#ActualSize").dxTextBox("instance").option("value", data.ActualSize);
+            $("#OpeningBalance").dxNumberBox("instance").option("value", data.OpeningBalance);
+            $("#CostPrice").dxNumberBox("instance").option("value", data.CostPrice);
+            $("#ExFactoryPrice").dxNumberBox("instance").option("value", data.ExFactoryCostPrice);
+            $("#SellingPrice").dxNumberBox("instance").option("value", data.GssellingRate);
+            $("#MinSellingPrice").dxNumberBox("instance").option("value", data.MinSellingPrice);
+            $("#MaxSellingPrice").dxNumberBox("instance").option("value", data.MaxSellingPrice);
+            $("#ItemPartNo").dxTextBox("instance").option("value", data.ItemPartNo);
+            $("#ItemHSCode").dxTextBox("instance").option("value", data.Hscode);
+            $("#ItemColor").dxSelectBox("instance").option("value", data.ItemColor);
+            $("#ItemBrand").dxSelectBox("instance").option("value", data.ItemBrand);
+            $("#ItemManufacturer").dxSelectBox("instance").option("value", data.ItemMake);
+            $("#CountryOfOrigin").dxTextBox("instance").option("value", data.CountryOfOrigin);
+            $("#EnteredBy").dxTextArea("instance").option("value", data.CreatedBy);
+            // $("#EnteredOn").dxTextArea("instance").option("value", new Date(data.CreatedOn).toLocaleString());
+            $("#ModifiedBy").dxTextArea("instance").option("value", data.ModifiedBy);
+            // $("#ModifiedOn").dxTextArea("instance").option("value", new Date(data.ModifiedOn).toLocaleString());
+            $("#ItemDiscontinued").dxCheckBox("instance").option("value", data.IsDiscontinued);
+                            }
+                    })
+                    .catch(error => {
+                        console.error("Error loading record:", error);
+                        alert("Failed to load item details.");
+                    });
+            }, 100);  // 100ms delay usually enough
+        }
+    });
+        let selectedGsCode = "";
+
+      $(() => {
+          const stockNoBox = $("#StockNoItemCode").dxTextBox("instance");
+
+          // Set initial value to the global variable
+          selectedGsCode = stockNoBox.option("value");
+
+          // Update global variable when value changes
+          stockNoBox.option("onValueChanged", function(e) {
+              selectedGsCode = e.value;
+          });
+      });
 
     
 

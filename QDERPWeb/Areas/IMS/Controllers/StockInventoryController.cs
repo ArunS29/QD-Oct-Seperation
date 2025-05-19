@@ -659,7 +659,6 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 }
                 else
                 {
-                    // Update existing item properties
                     existingItem.Gsdescrpition = model.Gsdescrpition;
                     existingItem.GsdescriptionAr = model.GsdescriptionAr;
                     existingItem.GsgroupId = model.GsgroupId;
@@ -687,6 +686,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     existingItem.ItemBrand = model.ItemBrand;
                     existingItem.ItemMake = model.ItemMake;
                     existingItem.CountryOfOrigin = model.CountryOfOrigin;
+                    existingItem.MaxQty = model.MaxQty;
+                    existingItem.MinQty = model.MinQty;
+                    existingItem.ReorderQty = model.ReorderQty;
+                    existingItem.ReorderLevel = model.ReorderLevel;
+                    existingItem.ReorderLeadTime = model.ReorderLeadTime;
 
                     // Optionally update ModifiedBy and ModifiedOn here
                     existingItem.ModifiedBy = User.Identity?.Name ?? "Unknown";
@@ -743,6 +747,53 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, new { message = "An error occurred while deleting the stock item: " + ex.Message, success = false });
             }
         }
+        [HttpGet]
+        public async Task<IActionResult> GetByCode(string code)
+        {
+            if (string.IsNullOrWhiteSpace(code))
+                return BadRequest(new { message = "Code is required", success = false });
+
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { message = "Invalid tenant", success = false });
+            }
+
+            var item = await dbContext.Tbl20164GoodsAndServicesMasters
+                .FirstOrDefaultAsync(x => x.Gscode == code);
+
+            if (item == null)
+                return NotFound(new { message = "Item not found", success = false });
+
+            return Ok(item);
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetStockCardData(string gscode)
+        {
+            if (string.IsNullOrEmpty(gscode))
+                return BadRequest("GsCode is required.");
+
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    return Unauthorized("Invalid tenant.");
+                }
+
+
+                var stockCardData = await dbContext.Qry65111stockCardForStockMasterEdits
+                    .Where(x => x.Gscode == gscode)
+                    .ToListAsync();
+
+
+                return Ok(stockCardData);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("🔥 Exception occurred: " + ex.Message);
+                return StatusCode(500, "An error occurred: " + ex.Message);
+            }
+        }
+
 
     }
 }

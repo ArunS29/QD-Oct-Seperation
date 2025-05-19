@@ -87,7 +87,41 @@
         border-radius: 0 0 12px 12px;
     }
 
+    .context-menuInvoice {
+        position: absolute;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        width: 200px;
+        display: none;
+        flex-direction: column;
+        padding: 5px 0;
+        z-index: 1000;
+    }
 
+    .context-menu-itemInvoice {
+        display: flex;
+        align-items: center;
+        padding: 10px 15px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background 0.2s ease-in-out;
+        color: #333;
+    }
+
+        .context-menu-itemInvoice i {
+            margin-right: 10px;
+            font-size: 16px;
+            color: #007bff;
+        }
+
+        .context-menu-itemInvoice:hover {
+            background: #f0f0f0;
+        }
+
+        .context-menu-itemInvoice:not(:last-child) {
+            border-bottom: 1px solid #e0e0e0;
+        }
 
     /* Responsive Tweaks */
     @@media screen and (max-width: 768px) {
@@ -118,6 +152,17 @@
 </div>
 <div class="Footer">
     @await Html.PartialAsync("/Pages/Shared/IMS/StockInventoryFooter.cshtml")
+</div>
+<div class="context-menuInvoice" id="contextMenu">
+    <div class="context-menu-itemInvoice" onclick="viewRecord()">
+        <i class="dx-icon-search"></i> View
+    </div>
+    <div class="context-menu-itemInvoice" onclick="editRecord()">
+        <i class="dx-icon-edit"></i> Edit
+    </div>
+    <div class="context-menu-itemInvoice" onclick="deleteRecord()">
+        <i class="dx-icon-trash"></i> Delete
+    </div>
 </div>
 
 <div id="printSection">
@@ -195,66 +240,80 @@
     .Grouping(g => g.AutoExpandAll(true))
     .GroupPanel(gp => gp.Visible(false))
     .ShowBorders(true)
+    .OnCellClick("function(e) {handleCellClick(e);}")
     .Height("100%")
     .Width("100%")
 )
 
     </div>
-    <div id="contextMenu"></div>
 </div>
+
 <script>
     let selectedRowData = null;
-    const tenantName = "@ViewBag.TenantName" || "default";
 
     $(function () {
-        const grid = $("#dataGrid").dxDataGrid("instance");
+        const contextMenu = $("#contextMenu");
 
-        grid.option("onContextMenuPreparing", function (e) {
-            if (e.row && e.row.rowType === "data") {
-                e.event.preventDefault(); // Prevent browser default context menu
-                selectedRowData = e.row.data;
-
-                const contextMenu = $("#contextMenu").dxContextMenu("instance");
-                contextMenu.option("target", e.event.target);
-                contextMenu.show();
-            }
+        $(document).on("click", function () {
+            contextMenu.hide();
         });
 
-        $("#contextMenu").dxContextMenu({
-            items: [
-                { text: "Edit Stock Item", icon: "edit", id: "edit" },
-                { text: "Delete Stock Item", icon: "remove", id: "delete", cssClass: "text-danger" },
-                { text: "View Stock Item Details", icon: "info", id: "view" }
-            ],
-            onItemClick: function (e) {
-                if (!selectedRowData) return;
+       $("#dataGrid").customizeGridContextMenu();
+          $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
+        e.preventDefault();
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        const rowIndex = $(this).index();
+        selectedRowData = dataGrid.getVisibleRows()[rowIndex].data;
 
-                const code = selectedRowData.Gscode;
-
-                switch (e.itemData.id) {
-                    case "edit":
-                    case "view":
-                        window.location.href = `/${tenantName}/IMS/InventoryStockDetails?code=${code}`;
-                        break;
-
-                    case "delete":
-                        if (confirm(`Are you sure you want to delete stock item: ${code}?`)) {
-                            $.post("/StockInventory/DeleteStockItem", { code }, function (result) {
-                                DevExpress.ui.notify(result.message, result.success ? "success" : "error", 2000);
-                                if (result.success) {
-                                    grid.refresh();
-                                }
-                            });
-                        }
-                        break;
-                }
-            },
-            showEvent: "", // manual trigger only
-            visible: true,
-            hideOnOutsideClick: true
-        });
+        $("#contextMenu").css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
     });
+
+    });
+
+    function viewRecord() {
+        if (selectedRowData) {
+            const code = selectedRowData.Gscode;
+            window.location.href = `/${tenantName}/IMS/InventoryStockDetails?code=${encodeURIComponent(code)}`;
+        }
+    }
+
+    function editRecord() {
+        if (selectedRowData) {
+            alert(selectedRowData)
+            const code = selectedRowData.Gscode;
+            window.location.href = `/${tenantName}/IMS/InventoryStockDetails?code=${encodeURIComponent(code)}`;
+        }
+    }
+
+       function deleteRecord() {
+        if (selectedRowData) {
+            const code = selectedRowData.Gscode;
+            if (confirm(`Are you sure you want to delete stock item: ${code}?`)) {
+                $.ajax({
+                    url: "/api/StockInventory/DeleteStockItem",
+                    method: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(code),
+                    success: function (result) {
+                        DevExpress.ui.notify(result.message, result.success ? "success" : "error", 2000);
+                        if (result.success) {
+                            const grid = $("#dataGrid").dxDataGrid("instance");
+                            grid.refresh();
+                        }
+                    },
+                    error: function (xhr) {
+                        DevExpress.ui.notify("Error deleting stock item", "error", 2000);
+                        console.error(xhr);
+                    }
+                });
+            }
+        }
+    }
+
 </script>
+
+
+
 
 
 
