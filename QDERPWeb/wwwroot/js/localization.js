@@ -2517,15 +2517,16 @@
         "Item Name":"Item Name",
         "Action Name": "Action Name",
         "Visible":"Visible",
-
+        "Quotation Status:":"Quotation Status:",
+        "Quotation Status": "Quotation Status",
+        "Type new Quotation Status & Add to the Existing List:":"Type new Quotation Status & Add to the Existing List:",
 
 
     },
     "ar": {
-
-
-
-
+        "Quotation Status:":"حالة الاقتباس:",
+        "Quotation Status": "حالة الاقتباس",
+        "Type new Quotation Status & Add to the Existing List:": "اكتب حالة عرض الأسعار الجديدة وأضفها إلى القائمة الموجودة:",
         "Visible":"مرئي",
         "Action Name":"اسم الإجراء",
         "Item Name":"اسم العنصر",

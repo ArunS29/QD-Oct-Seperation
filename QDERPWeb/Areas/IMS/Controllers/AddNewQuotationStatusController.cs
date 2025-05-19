@@ -56,7 +56,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     var existing = await dbContext.Tbl60107quotationStatuses
                         .FirstOrDefaultAsync(x => x.QuoteStatusId == model.QuoteStatusId
-);
+                    );
 
                     if (existing != null)
                     {
@@ -90,5 +90,35 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             return Unauthorized(new { success = false, message = "Invalid tenant" });
         }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteQuotationStatus(byte id)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var existing = await dbContext.Tbl60107quotationStatuses
+                        .FirstOrDefaultAsync(x => x.QuoteStatusId == id);
+
+                    if (existing == null)
+                    {
+                        return NotFound(new { success = false, message = "Status not found" });
+                    }
+
+                    dbContext.Tbl60107quotationStatuses.Remove(existing);
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(new { success = true, message = "Deleted successfully" });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in DeleteStatus: {ex}");
+                    return StatusCode(500, new { success = false, message = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { success = false, message = "Invalid tenant" });
+        }
+
     }
 }
