@@ -1,10 +1,10 @@
 using DevExpress.XtraRichEdit.Fields;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using qd.utilities;
+
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
-using qd.utilities;
+
 
 namespace QD.ERP.Web.Areas.Finance.Pages
 {
