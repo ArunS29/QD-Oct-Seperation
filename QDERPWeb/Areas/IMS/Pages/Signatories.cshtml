@@ -61,7 +61,7 @@
         background-color: #fff;
     }
 
-    .limited-footer .btn-container:not(:has(#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
+    .limited-footer .btn-container:not(:has(#btnUpdate,#btnBack)) {
         display: none !important;
     }
     
@@ -296,19 +296,7 @@
   
 
         
-    <!-- ✅ Business Card Upload Section -->
- @*    <div class="form-row">
-        <div class="form-row-btn">
-            <label><b>Business Card</b></label>
-            <div class="dx-fieldset" style="display:flex;flex-direction:column;gap:10px;width:50%;">
-                <div class="imagecontainer" id="imgBox1">
-                    <span>Upload Signature </span>
-                </div>
-              
-                <input type="file" id="imageInput" accept="image/*" style="display:none;" />
-            </div>
-        </div>
-    </div> *@
+    
 <div class="dx-field ledgerResult">
     @(Html.DevExtreme().DataGrid()
             .ID("SignatoryGrid")
@@ -384,13 +372,13 @@
 
 </div>
 <div class="limited-footer">
-    @await Html.PartialAsync("VATModuleFooter")
+    @await Html.PartialAsync("InventoryModuleFooter")
 </div>
  <script>
 
     $(document).ready(function () {
 
-          $(".limited-footer .btn-containerIvoiceEdit").each(function () {
+        $(".limited-footer .btn-container").each(function () {
 
               if (!$(this).find("#btnUpdate,#btnBack").length) {
 
