@@ -164,6 +164,7 @@
 <div class="ledgerResult" id="pivotGridContainer"></div>
 
 <script type="text/javascript">
+    let pivotData = [];
 
     function onCostCenterSelected(e) {
         const selectedData = e.selectedRowsData[0];
@@ -241,6 +242,7 @@
             },
             success: function (data) {
                 if (Array.isArray(data)) {
+                    pivotData = data; // Set global
                     initializePivotGrid(data);
                 } else {
                     console.error("Unexpected response format", data);
@@ -555,6 +557,61 @@
         }
 
         dataSource.load();
+    }
+
+        $('#btnShowRowTotals').click(function () {
+        showrowtotal(pivotData); // Correctly passing the data array
+    });
+
+
+            function showrowtotal(pivotData) {
+
+        console.log("pivotData", pivotData);
+
+        // Group by CostAllocationUnit (Cost Group)
+        const grouped = {};
+        pivotData.forEach(item => {
+            const groupKey = item.CostAllocationUnit;
+            if (!groupKey) return; // Skip if no group key
+            if (!grouped[groupKey]) grouped[groupKey] = [];
+            grouped[groupKey].push(item);
+        });
+
+        console.log("Grouped:", pivotData);
+
+        // Create total rows for each Cost Group
+        const totalRows = Object.entries(grouped).map(([groupName, rows]) => {
+            const totalIncome = rows.reduce((sum, r) => sum + (r.Income || 0), 0);
+            const totalExpenses = rows.reduce((sum, r) => sum + (r.Expenses || 0), 0);
+            const totalCostAmount = rows.reduce((sum, r) => sum + (r.CostAmount || 0), 0);
+
+            return {
+                CostAllocationUnit: groupName + " Total",
+                CostAllocationGroup: "", // Optional
+                PL: "", // Leave blank
+                Income: totalIncome,
+                Expenses: totalExpenses,
+                CostAmount: totalCostAmount
+            };
+        });
+
+        // Debug: Check totals
+        console.log("Total Rows:", totalRows);
+
+        const updatedData = [...pivotData, ...totalRows];
+
+        // Refresh PivotGrid with updated data
+        pivotGrid.option("dataSource", {
+            fields: [
+                { dataField: "CostAllocationUnit", area: "row", caption: "Cost Group" },
+                { dataField: "CostAllocationGroup", area: "row", caption: "Cost Center" },
+                { dataField: "PL", area: "column", caption: "Income / Expense" },
+                { dataField: "Income", area: "data", summaryType: "sum", caption: "Total Income" },
+                { dataField: "Expenses", area: "data", summaryType: "sum", caption: "Total Expenses" },
+                { dataField: "CostAmount", area: "data", summaryType: "sum", caption: "Grand Total" }
+            ],
+            store: updatedData
+        });
     }
 
 

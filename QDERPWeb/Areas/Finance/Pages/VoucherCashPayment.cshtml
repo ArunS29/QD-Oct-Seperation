@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{handler?}"
 @using QD.ERP.Web.DAL.Entities
 @using QD.ERP.Web.Service
 
@@ -7,6 +7,14 @@
     ViewData["Title"] = "Payment Voucher Details";
     var popvno = "";
 }
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Message"]
+    </div>
+}
+
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 <!-- SweetAlert2 CSS -->
@@ -98,7 +106,9 @@
     </div>
 </div>
 
-
+<form method="post" enctype="multipart/form-data">
+    <input type="file" id="fileUpload" name="UploadedFile" style="display:none;" onchange="uploadFile()" />
+</form>
 <div class="content-container-top" style="background-color:#909ead00;">
 
     <div class="content-container">
@@ -215,13 +225,14 @@
                     .ID("ddAccountHead")
                     .ShowClearButton(true)
                     .AcceptCustomValue(true)
-                    .AcceptCustomValue(false)
+                    
                     .OpenOnFieldClick(false)
                     .ValueChangeEvent("input")
                     .HoverStateEnabled(true)
                     .ValueExpr("AccountId")
                     .DisplayExpr("AccountHead")
                     .OnInput("dropDownBoxOnInput")
+                    .OnClosed("onDropDownBoxClosed")
                     .OnOpened("onOpened")
                     .Width(315)
                     .TabIndex(1)
@@ -1129,7 +1140,6 @@
 @* </div> *@
 
 
-
 <script>
     $(function () {
         $("#EditCostAllocation").dxTextBox({
@@ -1193,6 +1203,15 @@
             }
         });
     });
+
+    function onAttachButtonClick() {
+        document.getElementById('fileUpload').click();
+    }
+
+    function uploadFile() {
+        document.forms[0].submit(); // Submits the form and triggers OnPostUploadAsync
+    }
+
     $("#btnAttach").on("click", function (e) {
         e.preventDefault();
         var aVoucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
@@ -1479,6 +1498,22 @@
             dataGrid.option("searchPanel.text", text);
         }
     }
+    function onDropDownBoxClosed(e) {
+        const typedText = e.component.option("text");
+        const grid = $(e.component.content()).find("#accounthead-datagrid").first().dxDataGrid("instance");
+
+        if (!grid) return;
+
+        const visibleRows = grid.getVisibleRows();
+        const match = visibleRows.find(r => r.data.AccountHead === typedText);
+
+        if (!match) {
+            // Clear the value if not valid
+            e.component.option("value", null);
+
+        }
+    }
+
 
     function onOpened(e) {
         setTimeout(() => {

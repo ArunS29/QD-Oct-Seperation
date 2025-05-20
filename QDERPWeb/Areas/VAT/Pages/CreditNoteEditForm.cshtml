@@ -3023,7 +3023,11 @@
 			var urlParams = new URLSearchParams(window.location.search);
 					var CreditNoteNo = urlParams.get('CreditNoteNo');
 			var IsEditflag = urlParams.get('IsEditflag');
+			var InvNo = urlParams.get('InvoiceNo');
+			var IsAmend = urlParams.get('IsAmend');
 
+
+			
 				IsCurrent=IsEditflag.toString();
 
 				// console.log("Iseditflag",IsEditflag)
@@ -3101,6 +3105,91 @@
 									// let rowData = response;
 
 									// ✅ Now safely initialize the grid here
+									initializeDataGrid(rowData);
+								},
+								error: function (xhr, status, error) {
+									console.error("Error fetching grid data:", error);
+								}
+							});
+						} else {
+							console.warn("No account details found in the response.");
+						}
+					},
+					error: function (xhr, status, error) {
+						console.error("Error fetching invoice details:", error);
+					}
+				});
+			}
+			else if(InvNo!=null)
+			{
+				alert("1")
+				$.ajax({
+					url: `/api/VATModule/GetInvoiceDetails?InvoiceNo=${encodeURIComponent(InvNo)}`,
+					type: 'GET',
+					dataType: 'json',
+					success: function (response) {
+						console.log("InvoiceDetails", response);
+
+						if (response && response.length > 0) {
+							var account = response[0];
+
+							$('#CreditNoteNo').dxTextBox("instance")?.option("value", account.CreditNoteNo);
+							ClientCodedataGridSelectionChanged({ selectedRowKeys: [account.ClientCode] });
+							// ClientNamedataGridSelectionChanged({ selectedRowKeys: [account.BuyerName] });
+							$('#ddclientname').dxTextBox("instance")?.option("value", account.BuyerName);
+
+					     	$('#GroupVATNo').dxTextBox("instance")?.option("value", account.BuyerGroupVatnumber);
+							$('#ClientVATNo').dxTextBox("instance")?.option("value", account.BuyerVatnumber);
+						    $('#ClientNameArabic').dxTextBox("instance")?.option("value", account.BuyerNameAr);
+							// dataGridSelectionChanged({ selectedRowKeys: [account.BuyerOtherIdtype] });
+							 $('#ClientOtherID').dxTextBox("instance")?.option("value", account.BuyerOtherId);
+							 $('#InvoiceCounterValue').dxTextBox("instance")?.option("value", account.InvoiceCounterValue);
+						     //$('#InvoiceNo').dxTextBox("instance")?.option("value", account.InvoiceNo);
+								dataGridRevenueAccountSelectionChanged({ selectedRowKeys: [account.RevenueAccount]});
+								dataGridCostCenterAccountHeadSelectionChanged({ selectedRowKeys: [account.CostCenterCode]});
+
+									$('#txtInvoiceNotes').dxTextArea("instance")?.option("value", account.RemarksInEn);
+									$('#txtNotesinArabic').dxTextArea("instance")?.option("value", account.RemarksInAr);
+									  $('#ClientPONo').dxTextBox("instance")?.option("value", account.Pono);
+
+							// 		   $('#PODate').dxDateBox("instance")?.option("value", account.Podate);
+										 $('#ProjectRef').dxTextBox("instance")?.option("value", account.ReferenceNo);
+							 			 $('#SESReference').dxTextBox("instance")?.option("value", account.SesreferenceNo);
+							//  		 $('#PaymentTerms').dxTextBox("instance")?.option("value", account.PaymentTerms);
+							// 			 $('#QuotationNo').dxTextBox("instance")?.option("value", account.ReferenceNo);
+							// 			 $('#DeliveryNotes').dxTextBox("instance")?.option("value", account.DeliveryNoteNos);
+							// 				 $('#ClientGRNReference').dxTextBox("instance")?.option("value", account.ClientGrnreferenceNo);
+											 $('#OurCompanyRegisteredName').dxTextBox("instance")?.option("value", account.SellerName);
+							         		 $('#OurVATNo').dxTextBox("instance")?.option("value", account.SellerVATNumber);
+						        			 $('#OurGroupVATNo').dxTextBox("instance")?.option("value", account.SellerGroupVatnumber);
+							 				 $('#OurCompanyNameinArabic').dxTextBox("instance")?.option("value", account.SellerNameAr);
+											 $('#SellerOtherSellerId').dxTextBox("instance")?.option("value", account.SellerOtherSellerId);
+							// 				//dataGridInvoiceCurrencyHeadSelectionChanged({ selectedRowKeys: [account.InvoiceCurrencyExchangeId]});
+							// 				//dataGridTaxCurrencyHeadSelectionChanged({ selectedRowKeys: [account.TaxCurrencyCode]});
+											dataGridDivisionHeadSelectionChanged({ selectedRowKeys: [account.BranchCode]});
+											//dataGridSalesPersonHeadSelectionChanged({ selectedRowKeys: [account.InvoiceSalesPerson]});
+							     			dataGridCompanyBranchHeadSelectionChanged({ selectedRowKeys: [account.CompanyId]});
+											dataGridOtherIDTypeHeadSelectionChanged({ selectedRowKeys: [account.SellerOtherIdtype]});
+							 				dataGridPreparedByHeadSelectionChanged({ selectedRowKeys: [account.InvoicePreparedBy]});
+							// 				dataGridCheckedByHeadSelectionChanged({ selectedRowKeys: [account.InvoiceCheckedBy]});
+							// 				dataGridApprovedByHeadSelectionChanged({ selectedRowKeys: [account.InvoiceApprovedBy]});
+
+											if(account.IsApproved==true)
+											{
+												disableEditing();
+											}
+								
+							$.ajax({
+								type: "GET",
+								url: `/api/VATModule/GetGridInvoiceDetails?InvoiceNo=${encodeURIComponent(InvoiceNo)}`,
+									dataType: 'json',
+								success: function (response) {
+										console.log("Grid",response)
+										let rowData = response.map((item, index) => ({
+			SNo: index + 1,
+			...item
+		}));
+									
 									initializeDataGrid(rowData);
 								},
 								error: function (xhr, status, error) {
@@ -5406,7 +5495,7 @@
 				});
 				$(function () {
 					$("#CreditNoteEditForm").dxTextBox({
-						text: formatMessage("Credit Note Edit Form"),
+						text: formatMessage("New e-Invoice Credit Note"),
 						readOnly: true,
 									onContentReady: function(e) {
 									$(e.element).addClass("dx-textbox-heading");

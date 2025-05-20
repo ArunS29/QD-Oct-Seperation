@@ -163,6 +163,7 @@
                         .ValueExpr("AccountId")
                         .DisplayExpr("AccountHead")
                         .OnInput("dropDownBoxOnInput")
+                        
                         .OnOpened("onOpened")
                         .Width(720)
                         .TabIndex(1)
@@ -214,13 +215,14 @@
                         .ID("ddAccountHead")
                         .ShowClearButton(true)
                         .AcceptCustomValue(true)
-                        .AcceptCustomValue(false)
+                        
                         .OpenOnFieldClick(false)
                         .ValueChangeEvent("input")
                         .HoverStateEnabled(true)
                         .ValueExpr("AccountId")
                         .DisplayExpr("AccountHead")
-                        .OnInput("dropDownBoxOnInput")
+                        .OnInput("dropDownBoxInput")
+                        .OnClosed("onDropDownBoxClosed")
                         .OnOpened("onOpened")
                         .Width(315)
                         .TabIndex(1)
@@ -949,7 +951,7 @@
                         )
                         .WordWrapEnabled(true)
                         .ShowBorders(true)
-
+                        .SearchPanel(sp => sp.Visible(true))
                         .SearchPanel(sp => sp.HighlightSearchText(true))
                         .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
                         .OnSelectionChanged("dataGridSelectionChanged")
@@ -1461,16 +1463,44 @@
             });
 
 
-            function dropDownBoxOnInput(e) {
-                const ddbInstance = e.component;
-                if (!ddbInstance.option("opened")) ddbInstance.open();
+    function dropDownBoxOnInput(e) {
+        const dropDownBoxInstance = e.component;
+        const typedText = dropDownBoxInstance.option("text");
+
+        if (!dropDownBoxInstance.option("opened")) {
+            dropDownBoxInstance.open();
+        }
+    }
+    function dropDownBoxInput(e) {
+        const dropDownBoxInstance = e.component;
+        const typedText = dropDownBoxInstance.option("text");
+
+        if (!dropDownBoxInstance.option("opened")) {
+            dropDownBoxInstance.open();
+        }
+        const grid = $(e.component.content()).find("#accounthead-datagrid").first().dxDataGrid("instance");
+        if (grid) {
+            grid.option("searchPanel.text", typedText);
+        }
+    }
+
+    function onDropDownBoxClosed(e) {
+        const typedText = e.component.option("text");
+        const grid = $(e.component.content()).find("#accounthead-datagrid").first().dxDataGrid("instance");
+
+        if (!grid) return;
+
+        const visibleRows = grid.getVisibleRows();
+        const match = visibleRows.find(r => r.data.AccountHead === typedText);
+
+        if (!match) {
+            // Clear the value if not valid
+            e.component.option("value", null);
+           
+        }
+    }
 
 
-                const text = ddbInstance.option("text");
-                if (dataGrid) {
-                    dataGrid.option("searchPanel.text", text);
-                }
-            }
 
             function onOpened(e) {
                 setTimeout(() => {

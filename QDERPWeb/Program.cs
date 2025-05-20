@@ -18,7 +18,7 @@ using Microsoft.ApplicationInsights.Extensibility;
 using QD.ERP.Web.Service.ReportService;
 using QD.ERP.Web.Middlewares;
 using DevExpress.XtraCharts;
-using qd.utilities;
+
 //using qd.utilities;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -109,7 +109,6 @@ var loggerConfiguration = new LoggerConfiguration()
     .Enrich.FromLogContext()
     .WriteTo.Console();
 
-
 // Load local configuration from appsettings.json
 IConfiguration localConfig = builder.Configuration;
 
@@ -123,11 +122,28 @@ var configurationHelper = new ConfigurationHelper(localConfig, azureConnectionSt
 string mySetting = configurationHelper.GetConfigurationValue("MySetting");
 Console.WriteLine($"MySetting Value: {mySetting}");
 
-builder.Services.AddSingleton(new ClientFilesStorageHelper(
-    configurationHelper.GetConfigurationValue("AzureBlobStorage:ClientFilesContainerUri"),
-    configurationHelper.GetConfigurationValue("AzureBlobStorage:ClientFilesConnectionString"),
-    configurationHelper.GetConfigurationValue("AzureBlobStorage:ClientFilesContainerName")
-));
+
+var containerUri = configurationHelper.GetConfigurationValue("AzureBlobStorage:ClientFilesContainerUri");
+if (string.IsNullOrWhiteSpace(containerUri))
+{
+    throw new Exception("AzureBlobStorage:ClientFilesContainerUri is missing in configuration.");
+}
+
+builder.Services.AddSingleton<ClientFilesStorageHelper>(provider =>
+{
+    var logger = provider.GetRequiredService<ILogger<ClientFilesStorageHelper>>();
+    var config = provider.GetRequiredService<IConfiguration>();
+
+    var containerUri = config["AzureBlobStorage:ClientFilesContainerUri"];
+    var connectionString = config["AzureBlobStorage:ClientFilesConnectionString"];
+    var containerName = config["AzureBlobStorage:ClientFilesContainerName"];
+
+    if (string.IsNullOrEmpty(containerUri))
+        throw new Exception("AzureBlobStorage:ClientFilesContainerUri is missing.");
+
+    return new ClientFilesStorageHelper(containerUri, connectionString, containerName, logger);
+});
+
 
 
 if (builder.Environment.IsDevelopment())
@@ -153,17 +169,17 @@ var app = builder.Build();
 
 app.UseDevExpressControls();
 app.UseRouting();
-app.UseStatusCodePages("text/plain", "Status Code: {0}");
-app.UseStatusCodePagesWithRedirects("/Error/{0}");
-app.Use(async (context, next) =>
-{
-    await next();
+//app.UseStatusCodePages("text/plain", "Status Code: {0}");
+//app.UseStatusCodePagesWithRedirects("/Error/{0}");
+//app.Use(async (context, next) =>
+//{
+//    await next();
 
-    if (context.Response.StatusCode == 404)
-    {
-        context.Response.Redirect("/Error/404");
-    }
-});
+//    if (context.Response.StatusCode == 404)
+//    {
+//        context.Response.Redirect("/Error/404");
+//    }
+//});
 
 
 app.Use(async (context, next) =>
