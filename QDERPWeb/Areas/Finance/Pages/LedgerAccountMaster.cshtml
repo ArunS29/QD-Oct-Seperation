@@ -13,20 +13,6 @@
         color: navy; /* Navy for text to ensure readability */
     }
 
-    /* DataGrid styling */
-    .dx-datagrid {
-        background-color: white; /* Keep the grid background white for contrast */
-        border: 1px solid navy; /* Navy border for the grid */
-    }
-
-        .dx-datagrid .dx-row {
-            border-bottom: 1px solid #ccc; /* Keep the row borders subtle */
-        }
-
-        .dx-datagrid .dx-header-row {
-            background-color: navy; /* Navy for header background */
-            color: white; /* White text for headers */
-        }
 
     /* Cards container and cards styling */
     .cards-container {
@@ -198,6 +184,11 @@
 
     .playIcon {
         display: none;
+    }
+
+    .rtl-text {
+        direction: rtl !important;
+        text-align: right !important;
     }
 
 </style>
@@ -604,42 +595,38 @@
             })
             )
     }
-    @using (Html.DevExtreme().NamedTemplate("AccountMasterContentTemplate1"))
-    {
-        @(Html.DevExtreme().DataGrid()
-
+@using (Html.DevExtreme().NamedTemplate("AccountMasterContentTemplate1"))
+{
+    @(Html.DevExtreme().DataGrid()
             .ID("accounthead-datagridAr")
             .DataSource(d => d.WebApi()
-            .Controller("LedgerAccountMaster")
-            .LoadAction("GetAccountMasterArabic")
-            .LoadMode(DataSourceLoadMode.Raw)
-            .Key("MasterGroupAr")
+                .Controller("LedgerAccountMaster")
+                .LoadAction("GetAccountMasterArabic")
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("MasterGroupAr")
             )
             .WordWrapEnabled(true)
             .ShowBorders(true)
             .SearchPanel(sp => sp.HighlightSearchText(true))
-            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+            .Selection(sl => sl.Mode(SelectionMode.Single))
             .OnSelectionChanged("dataGridAccountMasterSelectionChangedAr")
             .OnInitialized("dataGridAccountMasterInitializedAr")
-            //.HeaderFilter(p => p.Visible(true))
-            .ShowBorders(true)
             .HoverStateEnabled(true)
             .Paging(p => p.PageSize(15))
-            //  .FilterRow(f => f.Visible(true))
             .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
             .Height(250)
             .Selection(s => s.Mode(SelectionMode.Single))
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-            //  .ShowColumnHeaders(false)
             .Columns(columns =>
             {
                 columns.Add().DataField("MasterGroupAr")
-                .Caption(new JS("formatMessage('Master Group Ar')")) // This removes the header name
-                .AllowSorting(false);
+                    .Caption(new JS("formatMessage('Master Group Ar')"))
+                    .AllowSorting(false)
+                    .CssClass("rtl-text"); // ✅ Apply RTL class
             })
-            )
-    }
-</div>
+        )
+}
+
 
 <script>
         $(function () {
