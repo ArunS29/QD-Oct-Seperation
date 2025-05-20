@@ -141,6 +141,28 @@
         background-color: #fff !important;
     }
 
+    .context-menu {
+        display: none;
+        position: absolute;
+        background-color: white;
+        border: 1px solid #ccc;
+        box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+        z-index: 1000;
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        min-width: 120px;
+    }
+
+        .context-menu li {
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+            .context-menu li:hover {
+                background-color: #eee;
+            }
+
    
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
@@ -946,6 +968,30 @@
                         color: black;
                         pointer-events: none; /* Prevents hover and click effects */
                     }
+
+                    .context-menu {
+                        display: none;
+                        position: absolute;
+                        background-color: white;
+                        border: 1px solid #ccc;
+                        box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+                        z-index: 1000;
+                        list-style-type: none;
+                        padding: 0;
+                        margin: 0;
+                        min-width: 120px;
+                        font-family: sans-serif;
+                    }
+
+                        .context-menu li {
+                            padding: 8px 12px;
+                            cursor: pointer;
+                        }
+
+                            .context-menu li:hover {
+                                background-color: #eee;
+                            }
+
                 </style>
 
 
@@ -1150,6 +1196,121 @@
                     <span>No image data</span>
                 </div>
                 </div>
+            <!-- Custom Context Menu -->
+            <!-- Add this in your body -->
+            <ul id="customMenu" class="context-menu">
+                <li onclick="handleAction('cut')">Cut</li>
+                <li onclick="handleAction('copy')">Copy</li>
+                <li onclick="handleAction('load')">Load</li>
+                <li onclick="handleAction('paste')">Paste</li>
+                <li onclick="handleAction('edit')">Edit</li>
+            </ul>
+
+            <script>
+                let copiedImageData = null;
+                const imgBox = document.getElementById("imgBox1");
+                const menu = document.getElementById("customMenu");
+
+                // Right-click to show custom menu
+                imgBox.addEventListener("contextmenu", function (e) {
+                  e.preventDefault();
+                  menu.style.top = `${e.pageY}px`;
+                  menu.style.left = `${e.pageX}px`;
+                  menu.style.display = "block";
+                });
+
+                // Hide menu on click
+                document.addEventListener("click", function () {
+                  menu.style.display = "none";
+                });
+
+                // Handle context menu actions
+                function handleAction(action) {
+                  switch (action) {
+                    case 'cut':
+                      cutImage();
+                      break;
+                    case 'copy':
+                      copyImage();
+                      break;
+                    case 'load':
+                      loadImage();
+                      break;
+                    case 'paste':
+                      pasteImage();
+                      break;
+                    case 'edit':
+                      editImage();
+                      break;
+                  }
+                  menu.style.display = "none";
+                }
+
+                // CUT: Remove image and store
+                function cutImage() {
+                  const img = imgBox.querySelector("img");
+                  if (img) {
+                    copiedImageData = img.src;
+                    img.remove();
+                  } else {
+                    alert("No image to cut.");
+                  }
+                }
+
+                // COPY: Store image src
+                function copyImage() {
+                  const img = imgBox.querySelector("img");
+                  if (img) {
+                    copiedImageData = img.src;
+                    alert("Image copied.");
+                  } else {
+                    alert("No image to copy.");
+                  }
+                }
+
+                // LOAD: Open file picker and load image
+                function loadImage() {
+                  const input = document.createElement("input");
+                  input.type = "file";
+                  input.accept = "image/*";
+                  input.onchange = function (event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onload = function (e) {
+                        const img = document.createElement("img");
+                        img.src = e.target.result;
+                        img.style.maxWidth = "100%";
+                        img.style.maxHeight = "100%";
+                        imgBox.innerHTML = ''; // Clear previous content
+                        imgBox.appendChild(img);
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  };
+                  input.click();
+                }
+
+                // PASTE: Add previously copied/cut image
+                function pasteImage() {
+                  if (copiedImageData) {
+                    const img = document.createElement("img");
+                    img.src = copiedImageData;
+                    img.style.maxWidth = "100%";
+                    img.style.maxHeight = "100%";
+                    imgBox.innerHTML = '';
+                    imgBox.appendChild(img);
+                  } else {
+                    alert("Nothing to paste.");
+                  }
+                }
+
+                // EDIT: Just a placeholder – you can extend it
+                function editImage() {
+                  alert("Edit image – implement your logic (e.g., open modal or use canvas)");
+                }
+            </script>
+
             </div>
 
             <div id="tab-content-4" class="tab-content">

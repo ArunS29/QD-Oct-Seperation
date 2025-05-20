@@ -777,7 +777,7 @@
             // 
             // xrLabel11
             // 
-            this.xrLabel11.BackColor = System.Drawing.Color.DarkGray;
+            this.xrLabel11.BackColor = System.Drawing.Color.Transparent;
             this.xrLabel11.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel11.BorderDashStyle = DevExpress.XtraPrinting.BorderDashStyle.Solid;
             this.xrLabel11.Borders = DevExpress.XtraPrinting.BorderSide.None;
