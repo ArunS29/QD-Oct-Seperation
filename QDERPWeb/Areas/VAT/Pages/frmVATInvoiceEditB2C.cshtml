@@ -734,7 +734,7 @@
 															.LabelMode(EditorLabelMode.Outside)
 															.ID("OtherIDType")
 															.ShowClearButton(true)
-															.AcceptCustomValue(false)
+															.AcceptCustomValue(true)
 															.OpenOnFieldClick(false)
 															.ValueChangeEvent("input")
 															.HoverStateEnabled(true)
@@ -6188,8 +6188,8 @@
 
 	function dataGridSelectionChanged(e) {
 		const selectedKey = e.selectedRowKeys[0]; // Get the first selected key
-		const ddbInstance = $("#CountryCode").dxDropDownBox("instance");
-
+		const ddbInstance = $("#OtherIDType").dxDropDownBox("instance");
+		
 		if (selectedKey) {
 			// Ensure the DropDownBox data is loaded before setting value
 			ddbInstance.getDataSource().load().done(() => {
