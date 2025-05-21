@@ -128,11 +128,11 @@ string mySetting = configurationHelper.GetConfigurationValue("MySetting");
 Console.WriteLine($"MySetting Value: {mySetting}");
 
 
-var containerUri = configurationHelper.GetConfigurationValue("AzureBlobStorage:ClientFilesContainerUri");
-if (string.IsNullOrWhiteSpace(containerUri))
-{
-    throw new Exception("AzureBlobStorage:ClientFilesContainerUri is missing in configuration.");
-}
+//var containerUri = configurationHelper.GetConfigurationValue("AzureBlobStorage:ClientFilesContainerUri");
+//if (string.IsNullOrWhiteSpace(containerUri))
+//{
+//    throw new Exception("AzureBlobStorage:ClientFilesContainerUri is missing in configuration.");
+//}
 
 builder.Services.AddSingleton<ClientFilesStorageHelper>(provider =>
 {
