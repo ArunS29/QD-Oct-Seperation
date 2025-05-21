@@ -6918,7 +6918,7 @@
 			// Get current row values
 			let qty = grid.cellValue(rowIndex, "Qty") || 0;
 
-			alert("1")
+	
 			let unitPrice = grid.cellValue(rowIndex, "UnitPrice") || 0;
 			let vatRateStr = newValue || "0%";
 
@@ -7480,7 +7480,7 @@
 				const ddbInstance = $("#OtherIDType").dxDropDownBox("instance");
 					//alert(selectedKey)
 				if (selectedKey) {
-					alert(selectedKey)
+				
 					ddbInstance.option("value", selectedKey);
 						ddbInstance.close();
 				}
@@ -7826,7 +7826,7 @@
 	// Update toggle color
 	$(".vat-checkbox").each(function () {
 		const id = parseInt($(this).val());
-		alert(id)
+		
 		const isChecked = selectedIds.includes(id);
 		$(this).prop("checked", isChecked);
 	});
