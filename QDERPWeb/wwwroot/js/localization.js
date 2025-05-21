@@ -1,6 +1,6 @@
 ﻿var dictionary = {
     "en": {
-
+        "Save And Close": "Save And Close",
         "Stores":"Stores",
         "Type a newStore & Add to the Existing List":"Type a newStore & Add to the Existing List",
         "Cancel":"Cancel",

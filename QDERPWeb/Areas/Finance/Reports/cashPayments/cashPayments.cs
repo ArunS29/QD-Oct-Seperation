@@ -2,9 +2,13 @@
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Text;
+using DevExpress.XtraPrinting;
 using DevExpress.XtraReports.UI;
 using Microsoft.Extensions.Configuration;
 using QD.ERP.Web.Service;
+using Svg;
+
 
 namespace QD.ERP.Web.Areas.Finance.Reports.test
 {
@@ -108,7 +112,6 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
 
             if (!string.IsNullOrEmpty(currencyInfo.Symbol))
             {
-                // Show symbol in all labels
                 foreach (string labelName in new[] { "xrLabel6", "xrLabel17", "xrLabel18", "xrLabel19" })
                 {
                     if (FindControl(labelName, true) is XRLabel label)
@@ -117,24 +120,36 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
             }
             else if (currencyInfo.HasImage)
             {
-                // Show image in all picture boxes if symbol is not present
-                byte[] imageBytes = GetCurrencyImage(currencyId);
-                if (imageBytes != null)
+                string svgXml = GetCurrencySvgXml(currencyId);
+                if (!string.IsNullOrEmpty(svgXml))
                 {
                     foreach (string pictureBoxName in new[] { "xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5" })
                     {
                         if (FindControl(pictureBoxName, true) is XRPictureBox pictureBox)
                         {
-                            using (var ms = new MemoryStream(imageBytes))
+                            try
                             {
-                                pictureBox.Image = Image.FromStream(ms);
+                                using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(svgXml)))
+                                {
+                                    SvgDocument svgDoc = SvgDocument.Open<SvgDocument>(stream);
+                                    Bitmap bitmap = svgDoc.Draw(); // original quality
+
+                                    pictureBox.Image = bitmap;
+                                    pictureBox.Sizing = ImageSizeMode.Normal; // Best for scaling inside the box
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"Failed to render SVG: {ex.Message}");
                             }
                         }
                     }
+
                 }
             }
-
+            
         }
+
 
         private (string Symbol, bool HasImage) GetCurrencySymbolOrImageStatus(int currencyId)
         {
@@ -165,7 +180,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
                             if (reader.Read())
                             {
                                 symbol = reader["CurrencySymbole"]?.ToString();
-                                hasImage = reader["CurrencyImage"] != DBNull.Value;
+                                hasImage = reader["CurrencyImage"] != DBNull.Value && !string.IsNullOrWhiteSpace(reader["CurrencyImage"]?.ToString());
                             }
                         }
                     }
@@ -180,9 +195,9 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
         }
 
 
-        private byte[] GetCurrencyImage(int currencyId)
+        private string GetCurrencySvgXml(int currencyId)
         {
-            byte[] imageBytes = null;
+            string svgXml = null;
 
             try
             {
@@ -194,23 +209,26 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     string query = "SELECT CurrencyImage FROM Tbl20169CurrencyExchange WHERE CurrencyExchangeId = @currencyId";
+
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@currencyId", currencyId);
                         conn.Open();
+
                         object result = cmd.ExecuteScalar();
                         if (result != null && result != DBNull.Value)
-                            imageBytes = (byte[])result;
+                            svgXml = result.ToString(); // Raw SVG XML as string
                     }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error retrieving currency image: {ex.Message}");
+                Console.WriteLine($"Error retrieving currency SVG: {ex.Message}");
             }
 
-            return imageBytes;
+            return svgXml;
         }
+
 
 
         private DataTable GetReportData(string voucherNo)

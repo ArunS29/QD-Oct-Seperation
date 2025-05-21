@@ -17,7 +17,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.AccountStatement
             Image logoImage, Image sealImage,
             string Company_Name_Ar, string company_address_arb,
             TenantDbContextHelper tenantDbContextHelper,
-            string auditorName = "", string auditorAddress = "", string auditorEmail = "")
+            string auditorName = "", string auditorAddress = "", string auditorEmail = "", string auditorFaxNo = "")
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             InitializeComponent();
@@ -26,7 +26,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.AccountStatement
                 accountId, frmDate, toDate, tenantName,
                 company_Name, company_address, logoImage, sealImage,
                 Company_Name_Ar, company_address_arb,
-                auditorName, auditorAddress, auditorEmail
+                auditorName, auditorAddress, auditorEmail, auditorFaxNo
             );
 
             try
@@ -42,14 +42,14 @@ namespace QD.ERP.Web.Areas.Finance.Reports.AccountStatement
         public AccountDebtors()
         {
             InitializeComponent();
-            SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, null, "", "", "", "", "");
+            SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, null, "", "", "", "", "","");
         }
 
         private void SetReportParameters(string accountId, DateTime frmDate, DateTime toDate,
             string tenantName, string company_Name, string company_address,
             Image logoImage, Image sealImage,
             string Company_Name_Ar, string company_address_arb,
-            string auditorName, string auditorAddress, string auditorEmail)
+            string auditorName, string auditorAddress, string auditorEmail,string auditorFaxNo)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -84,6 +84,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports.AccountStatement
             AddOrUpdateParameter("AuditorName", auditorName ?? "", typeof(string));
             AddOrUpdateParameter("AuditorAddress", auditorAddress ?? "", typeof(string));
             AddOrUpdateParameter("AuditorEmail", auditorEmail ?? "", typeof(string));
+            AddOrUpdateParameter("AuditorFax", auditorFaxNo ?? "", typeof(string));
+
 
             // Assign controls (if they exist in .repx)
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)

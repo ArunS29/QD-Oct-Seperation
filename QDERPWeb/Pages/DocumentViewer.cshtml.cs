@@ -540,6 +540,7 @@ namespace QD.ERP.Web.Pages
                 var auditorName = ERPCompany_details?.AuditorName ?? string.Empty;
                 var auditorAddress = ERPCompany_details?.AuditorAddress ?? string.Empty;
                 var auditorEmail = ERPCompany_details?.AuditorEmail ?? string.Empty;
+                var auditorFaxNo = ERPCompany_details?.AuditorFaxNo ?? string.Empty;
 
                 Image logoImage = null;
                 Image companySealImage = null;
@@ -571,7 +572,7 @@ namespace QD.ERP.Web.Pages
                     AccountId, FrmDate, ToDate, tenantName,
                     companyName, companyAddress, logoImage, companySealImage,
                     companyNameAr, companyAddressAr, _tenantDbContextHelper,
-                    auditorName, auditorAddress, auditorEmail
+                    auditorName, auditorAddress, auditorEmail, auditorFaxNo
                 );
             }
 
