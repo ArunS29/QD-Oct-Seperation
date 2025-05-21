@@ -2531,9 +2531,12 @@
         "Cost Center Code: (Finance Module)":"Cost Center Code: (Finance Module)",
         "Project Description:":"Project Description:",
         "Category:": "Category:",
-        "Quotation Items Sub Group":"Quotation Items Sub Group",
+        "Quotation Items Sub Group": "Quotation Items Sub Group",
+        "Business Card 1":"Business Card 1",
     },
     "ar": {
+        "Business Card 2": "بطاقة العمل 2",
+        "Business Card 1":"بطاقة العمل 1",
         "Quotation Status:":"حالة الاقتباس:",
         "Quotation Status": "حالة الاقتباس",
         "Type new Quotation Status & Add to the Existing List:": "اكتب حالة عرض الأسعار الجديدة وأضفها إلى القائمة الموجودة:",
