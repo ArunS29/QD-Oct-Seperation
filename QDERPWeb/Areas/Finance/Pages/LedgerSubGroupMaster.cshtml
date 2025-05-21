@@ -147,6 +147,7 @@
 <div id="gridContainer"></div>
 </div>
 <script type="text/javascript">
+
     $(function () {
         $("#LedgerSubGroupMaster").dxTextBox({
             text: formatMessage("Ledger Sub Group Master"),
@@ -157,6 +158,18 @@
 
         });
     });
+        async function translateToArabic(text) {
+        try {
+            const response = await fetch(
+                `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`
+            );
+            const data = await response.json();
+            return data.responseData.translatedText;
+        } catch (error) {
+            DevExpress.ui.notify("Translation failed", "error", 1500);
+            throw error;
+        }
+    }
     $(function () {
         var updatedRows = []; // To store the updated rows
         var searchPanelVisible = false; // Track the visibility of the search panel
@@ -211,18 +224,105 @@
                 mode: "batch",
                 allowUpdating: true,
                 allowAdding: false,
-                allowDeleting: false,
+                allowDeleting: true,
                 useIcons: true,
                 texts: {
                     saveAll: "Update",
                     cancelAll: "Cancel All Changes"
                 }
             },
-            columns: [
-                { dataField: "LedgerSubGroupCode", caption: formatMessage("Sub Group Code"), width: 100, editorOptions: { readOnly: true } },
-                { dataField: "SubGroupName", caption: formatMessage("Sub Group Name") },
-                { dataField: "SubGroupNameAr", caption: formatMessage("Sub Group Name (Arabic)") }
+           columns: [
+
+        {
+            dataField: "LedgerSubGroupCode",
+            caption: formatMessage("Sub Group Code"),
+            width: 100,
+            editorOptions: { readOnly: true }
+        },
+        {
+            dataField: "SubGroupName",
+            caption: formatMessage("Sub Group Name")
+        },
+           {
+        dataField: "SubGroupNameAr",
+        caption: formatMessage("Sub Group Name (Arabic)"),
+        cellTemplate: function (container, options) {
+            const rowData = options.data;
+            const rowIndex = options.rowIndex;
+
+            // Display span for Arabic text
+            const textContainer = $("<span>")
+                .text(options.value || "")
+                .css({
+                    "margin-right": "10px",
+                    "direction": "rtl",
+                    "text-align": "right",
+                    "flex-grow": "1"
+                });
+
+            // Translation button
+            const iconButton = $("<div>")
+                .dxButton({
+                    icon: "fas fa-language",
+                    stylingMode: "text",
+                    onClick: async function () {
+                        const originalText = rowData.SubGroupName;
+
+                        if (!originalText || originalText.trim() === "") {
+                            DevExpress.ui.notify("Please enter text to translate.", "warning", 1500);
+                            return;
+                        }
+
+                        try {
+                            const translatedText = await translateToArabic(originalText);
+
+                            // Update the text in the span
+                            textContainer.text(translatedText);
+
+                            // Update grid's internal value using cellValue
+                            const grid = $("#gridContainer").dxDataGrid("instance");
+                            grid.cellValue(rowIndex, "SubGroupNameAr", translatedText);
+
+                            DevExpress.ui.notify("تم الترجمة إلى العربية", "success", 1500);
+                        } catch (error) {
+                            DevExpress.ui.notify("Translation failed", "error", 1500);
+                        }
+                    }
+                })
+                .css({
+                    "margin-left": "auto",
+                    "cursor": "pointer"
+                });
+
+            // Combine elements in a flex container
+            $("<div>")
+                .css({
+                    "display": "flex",
+                    "align-items": "center",
+                    "justify-content": "flex-end",
+                    "width": "100%"
+                })
+                .append(textContainer)
+                .append(iconButton)
+                .appendTo(container);
+        }
+    },
+
+        {
+            type: "buttons",
+            width: 60,
+            buttons: [
+                {
+                    hint: "Delete Row",
+                    icon: "trash",
+                    onClick: function(e) {
+                        onDeleteButtonClick(e); // your custom handler
+                    }
+                }
+            ]
+        }
             ],
+
             showBorders: true,
             paging: {
                 pageSize: 10
@@ -364,6 +464,25 @@
                         text: formatMessage('An error occurred while adding the subgroup.'),
                         confirmButtonText: 'OK'
                     });
+                }
+            });
+        }
+    }
+    function onDeleteButtonClick(e) {
+        e.event.preventDefault();
+        const grid = $("#gridContainer").dxDataGrid("instance");
+        const key = e.row.data.LedgerSubGroupCode;
+
+        if (confirm("Are you sure you want to delete this row?")) {
+            $.ajax({
+                url: '/api/Master/DeleteLedgerSubGroup?ledgerSubGroupCode='+key,
+                type: 'POST',
+                success: function () {
+                    grid.refresh();
+                    DevExpress.ui.notify("Deleted successfully", "success", 2000);
+                },
+                error: function () {
+                    DevExpress.ui.notify("Delete failed", "error", 2000);
                 }
             });
         }

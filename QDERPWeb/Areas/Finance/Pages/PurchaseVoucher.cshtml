@@ -249,18 +249,15 @@
 			<div class="form-group">
 				<div style="display:flex;">
 					@(Html.DevExtreme().NumberBox()
-												.Label(new JS("formatMessage('No. Of Days')"))
-												.LabelMode(EditorLabelMode.Outside)
-																			.ID("InvoiceNoOfDays")
-																			.Value(0)
-																			.ShowSpinButtons(true)
-																			.Min(0)
-																			.Max(1000)
-																			.Step(1)
-
-																				)
-						<label id="Days" class="no-border-input" style="margin-top:10px;" for="InvoiceNoOfDays"></label>
-
+							.Label(new JS("formatMessage('No. Of Days')"))
+							.LabelMode(EditorLabelMode.Outside)
+														.ID("InvoiceNoOfDays")
+														.Value(0)
+														.ShowSpinButtons(true)
+														.Min(0)
+														.Max(1000)
+														.Step(1)
+													)
 				</div>
 			</div>
 		</div>
@@ -304,11 +301,11 @@
 									.OpenOnFieldClick(false)
 									.ValueChangeEvent("input")
 									.HoverStateEnabled(true)
-									.ValueExpr("AccountId")
+									.ValueExpr("AccountId")	
 									.DisplayExpr("AccountHead")
 									.OnInput("dropDownBoxOnInput")
 									.OnOpened("onOpened")
-									.Width(650)
+									.Width(580)
 									.TabIndex(1)
 									.DropDownOptions(o => o
 									.Width(1000)
@@ -425,7 +422,7 @@
 						.DisplayExpr("CurrencyName")
 						.OnInput("dropDownBoxOnInput") // Reuse or define separate handler if needed
 						.OnOpened("onOpened")
-						.Width(160)
+						.Width(210)
 						.TabIndex(2) // Different tabindex to separate from the first
 						.DropDownOptions(o => o.Width(700))
 						.OnKeyDown("onKeyDown")
@@ -489,7 +486,7 @@
 						.DisplayExpr("CurrencyName")
 						.OnInput("dropDownBoxOnInput")
 						.OnOpened("onOpened")
-						.Width(160)
+						.Width(210)
 						.TabIndex(1)
 						.DropDownOptions(o => o.Width(700))
 						.OnKeyDown("onKeyDown")
