@@ -667,13 +667,13 @@
 											.ContentTemplate(new TemplateName("CostCenterAccountTemplate"))
 											.Width("100%"))
 								</td>
-							</tr>
+							@* </tr>
 						
 
 				<!-- Card 2: Remarks & Arabic Notes -->
 
 					<tr width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5"
-						colspan="2">
+						colspan="2"> *@
 						<td>
 							@(Html.DevExtreme().TextArea()
 														.Label(new JS("formatMessage('Invoice Notes')"))
@@ -724,7 +724,7 @@
 			<div id="tab-content-3" class="tab-content">
 				
 				
-					<div style="margin-right: 30%">
+				
 						<table width="100%" style="font-size:14px; margin:10px;" cellpadding="5">
 					
 							<tr>
@@ -781,13 +781,13 @@
 							</tr>
 					</table>
 					
-				</div>
+				
 			</div>
 
 
 			<div id="tab-content-4" class="tab-content">
 				<div>
-					<table width="50%" style="font-size:14px; margin:10px 0;" cellpadding="5">
+					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 						<tr>
 							<td >
 								
@@ -2002,9 +2002,9 @@
 
 										  // Replace or fetch dynamically
 
-											let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example add page
-
-											window.location.href = url;
+											let url = `/${tenantName}/VAT/VATGoodsandServices`; // ✅ No query parameters
+									let title = "Goods and Services";
+									openModal(url, title);
 
 										},
 
@@ -2026,9 +2026,9 @@
 
 										  // Replace or fetch dynamically
 
-											let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example edit page
-
-											window.location.href = url;
+											let url = `/${tenantName}/VAT/VATGoodsandServices`; // ✅ No query parameters
+									let title = "Goods and Services";
+									openModal(url, title);
 
 										},
 
@@ -2044,7 +2044,31 @@
 
 						},
 
-						{ dataField: "Descriptions", caption: "...", width: 50 },
+						// { dataField: "Descriptions", caption: "...", width: 50 },
+						{
+	dataField: "Descriptions",
+	caption: "...",
+	width: 150,
+	allowEditing: true,
+			cellTemplate: function (container, options) {
+			$("<div>").dxButton({
+				icon: "user", // Built-in DevExtreme icon
+				hint: "Edit VAT Details Description",
+				stylingMode: "text",
+				width: 60,
+				onClick: function () {
+					// Save context
+					window.currentDescriptionCell = options;
+
+					// Open modal
+					let url = `/${tenantName}/VAT/CreditDetailDescription`;
+					let title = "VAT Details Description";
+					openModal(url, title);
+				}
+			}).appendTo(container);
+		}
+		},
+
 
 						{
 
@@ -2157,8 +2181,8 @@
 										onClick: function () {
 
 											let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
-
-											window.location.href = url;
+									 let title = "Unit of Measure";
+									openModal(url, title);
 
 										},
 
@@ -2465,9 +2489,9 @@
 
 									  // Replace or fetch dynamically
 
-										let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example add page
-
-										window.location.href = url;
+									let url = `/${tenantName}/VAT/VATGoodsandServices`; // ✅ No query parameters
+									let title = "Goods and Services";
+									openModal(url, title);
 
 									},
 
@@ -2489,9 +2513,9 @@
 
 									  // Replace or fetch dynamically
 
-										let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example edit page
-
-										window.location.href = url;
+										let url = `/${tenantName}/VAT/VATGoodsandServices`; // ✅ No query parameters
+									let title = "Goods and Services";
+									openModal(url, title);
 
 									},
 
@@ -2507,7 +2531,31 @@
 
 					},
 
-					{ dataField: "Descriptions", caption: "...", width: 50 },
+					{
+			dataField: "Descriptions",
+			caption: "...",
+			width: 150,
+			allowEditing: true,
+			cellTemplate: function (container, options) {
+			$("<div>").dxButton({
+				icon: "user", // Built-in DevExtreme icon
+				hint: "Edit VAT Details Description",
+				stylingMode: "text",
+				width: 60,
+				onClick: function () {
+					// Save context
+					window.currentDescriptionCell = options;
+
+					// Open modal
+					let url = `/${tenantName}/VAT/CreditDetailDescription`;
+					let title = "VAT Details Description";
+					openModal(url, title);
+				}
+			}).appendTo(container);
+		}
+		},
+
+					// { dataField: "Descriptions", caption: "...", width: 50 },
 
 					{
 
@@ -2619,9 +2667,9 @@
 
 									onClick: function () {
 
-										let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
-
-										window.location.href = url;
+											let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
+	 let title = "Unit of Measure";
+	openModal(url, title);
 
 									},
 

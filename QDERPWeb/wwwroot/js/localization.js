@@ -2535,11 +2535,23 @@
         "Business Card 1":"Business Card 1",
         "Type new Quotation Status & Add to the Existing List:": "Type new Quotation Status & Add to the Existing List:",
         "Statement of Account Order By VocuherNo (Without Narration)": "Statement of Account Order By VocuherNo (Without Narration)",
+        "Type new Quotation Status & Add to the Existing List:": "Type new Quotation Status & Add to the Existing List:",
+        "Invoice Date:": "Invoice Date:",
+        "VAT Description": "VAT Description",
+        "Invoice Type (Arabic)": "Invoice Type (Arabic)",
+
     },
     "ar": {
         "Business Card 2": "بطاقة العمل 2",
         "Business Card 1":"بطاقة العمل 1",
         "Statement of Account Order By VocuherNo (Without Narration)":"طلب كشف حساب حسب رقم الفاتورة (بدون شرح)",
+       
+    //},
+    //"ar": {
+        
+    "VAT Description": "وصف ضريبة القيمة المضافة",
+
+        "Invoice Type (Arabic)": "نوع الفاتورة (بالعربية)",
         "Quotation Status:":"حالة الاقتباس:",
         "Quotation Status": "حالة الاقتباس",
         "Type new Quotation Status & Add to the Existing List:": "اكتب حالة عرض الأسعار الجديدة وأضفها إلى القائمة الموجودة:",

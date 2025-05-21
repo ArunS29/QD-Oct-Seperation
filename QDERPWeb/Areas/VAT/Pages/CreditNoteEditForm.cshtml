@@ -3398,9 +3398,9 @@
 
 										  // Replace or fetch dynamically
 
-											let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example add page
-
-											window.location.href = url;
+											let url = `/${tenantName}/VAT/VATGoodsandServices`; // ✅ No query parameters
+									let title = "Goods and Services";
+									openModal(url, title);
 
 										},
 
@@ -3420,11 +3420,9 @@
 
 										onClick: function () {
 
-										  // Replace or fetch dynamically
-
-											let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example edit page
-
-											window.location.href = url;
+										  let url = `/${tenantName}/VAT/VATGoodsandServices`; // ✅ No query parameters
+									let title = "Goods and Services";
+									openModal(url, title);
 
 										},
 
@@ -3447,7 +3445,7 @@
 			allowEditing: true,
 			editCellTemplate: function (cellElement, cellInfo) {
 				// Open the modal form in a popup
-				let url = `/${tenantName}/Finance/VATDetailsDescription`;
+				let url = `/${tenantName}/VAT/CreditDetailDescription`;
 				let title = "VAT Details Description";
 
 				// Pass cellInfo to the modal context
@@ -3600,7 +3598,9 @@
 
 											let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
 
-											window.location.href = url;
+																
+											let title = "Unit of Measure";
+											openModal(url, title);
 
 										},
 
@@ -3914,9 +3914,9 @@
 
 									  // Replace or fetch dynamically
 
-										let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example add page
-
-										window.location.href = url;
+									let url = `/${tenantName}/VAT/VATGoodsandServices`; // ✅ No query parameters
+									let title = "Goods and Services";
+									openModal(url, title);
 
 									},
 
@@ -3938,9 +3938,10 @@
 
 									  // Replace or fetch dynamically
 
-										let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example edit page
-
-										window.location.href = url;
+											
+									let url = `/${tenantName}/VAT/VATGoodsandServices`; 
+											let title = "Goods and Services";
+													openModal(url, title);
 
 									},
 
@@ -3959,19 +3960,26 @@
 										{
 	dataField: "Descriptions",
 	caption: "...",
-	width: 50,
+	width: 90,
 	allowEditing: true,
-	editCellTemplate: function (cellElement, cellInfo) {
-		// Open the modal form in a popup
-		let url = `/${tenantName}/Finance/VATDetailsDescription`;
-		let title = "VAT Details Description";
+			cellTemplate: function (container, options) {
+			$("<div>").dxButton({
+				icon: "user", // Built-in DevExtreme icon
+				hint: "Edit VAT Details Description",
+				stylingMode: "text",
+				width: 60,
+				onClick: function () {
+					// Save context
+					window.currentDescriptionCell = options;
 
-		// Pass cellInfo to the modal context
-		window.currentDescriptionCell = cellInfo;
-
-		openModal(url, title);
-	}
-},
+					// Open modal
+					let url = `/${tenantName}/VAT/CreditDetailDescription`;
+					let title = "VAT Details Description";
+					openModal(url, title);
+				}
+			}).appendTo(container);
+		}
+		},
 
 // {
 //     dataField: "Descriptions",
@@ -4117,7 +4125,9 @@
 
 										let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
 
-										window.location.href = url;
+																	
+let title = "Unit of Measure";
+openModal(url, title);
 
 									},
 
@@ -4146,6 +4156,29 @@
     dataField: "DiscountDetails",
     caption: "...",
     width: 100,
+	allowEditing: true,
+				cellTemplate: function (container, options) {
+		container.empty();
+
+		$("<div>")
+			.dxButton({
+				icon: "percent", // DevExtreme built-in icon
+				hint: "Apply percentage discount", // Tooltip
+				type: "normal", // Keeps styling neutral
+				stylingMode: "outlined", // Ensures border is visible
+				onClick: function (e) {
+					// Your button click logic here
+					console.log("Percent button clicked", options.data);
+				}
+			})
+			.css({
+				width: "70%",
+				border: "1px solid #add8e6",  // Light blue border
+				backgroundColor: "#ffffff",   // White background
+				borderRadius: "3px"
+			})
+			.appendTo(container);
+	},
     editCellTemplate: function (cellElement, cellInfo) {
         
         // Create Popup content
@@ -4172,7 +4205,7 @@
         let $discountRow = $("<div>").css({
             display: "flex",
             gap: "10px",
-            alignItems: "center"
+            alignItems: "end"
         }).appendTo($popupContent);
 
         let discountEditor = $("<div>").appendTo($discountRow).dxNumberBox({
@@ -4299,11 +4332,11 @@
 
 					mode: "cell",
 
-					allowUpdating: true,
+					// allowUpdating: true,
 
-					allowAdding: false, // We'll add manually
+					// allowAdding: false, // We'll add manually
 
-					allowDeleting: true
+					// allowDeleting: true
 
 				},
 				onCellValueChanged: function (e) {
