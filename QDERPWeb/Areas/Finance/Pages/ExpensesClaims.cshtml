@@ -220,7 +220,7 @@
             </div>
         </text>).Visible(true);
 
-                    columns.AddFor(m => m.PaymentVoucherNo).Caption(new JS("formatMessage('Payment Voucher No')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                    
                     columns.AddFor(m => m.ApprovedBy).Caption(new JS("formatMessage('Approved By')")).Alignment(HorizontalAlignment.Center).Visible(false);
                     columns.AddFor(m => m.ApprovedOn).Caption(new JS("formatMessage('Approved On')")).Alignment(HorizontalAlignment.Center).Format(format => format
                 .Type(Format.ShortDate)    // Custom type format
@@ -255,7 +255,7 @@ columns.Add()
                     columns.AddFor(m => m.ClaimModifiedOn).Caption(new JS("formatMessage('Claim Modified On')")).Alignment(HorizontalAlignment.Center).Format(format => format
                 .Type(Format.ShortDate)    // Custom type format
                 .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }")).Visible(false);
-                    columns.AddFor(m => m.ClaimRemarks).Caption(new JS("formatMessage('Claim Remarks')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                   
                     columns.AddFor(m => m.PaidBy).Caption(new JS("formatMessage('Paid By')")).Alignment(HorizontalAlignment.Center).Visible(false);
                     columns.AddFor(m => m.PaidOn).Caption(new JS("formatMessage('Paid On')")).Alignment(HorizontalAlignment.Center).Format(format => format
                 .Type(Format.ShortDate)    // Custom type format
@@ -327,6 +327,7 @@ columns.Add()
             .DisplayFormat("dd-MMM-yyyy")
             )
         </text>); 
+                    
                     columns.AddFor(m => m.ClaimRemarks).Caption(new JS("formatMessage('Claim Remarks')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
                     columns.AddFor(m => m.ClaimedAmountTotal)
                 .Caption(new JS("formatMessage('Claimed Amount')"))
@@ -787,7 +788,7 @@ columns.Add()
         // Close the dropdown after selection
         e.component.option("opened", false);
     }
-
+    let isUpdatingCell = false;
     function onEditorPreparing(e) {
         if (e.dataField === 'ClaimRemarks') {
             if (isUpdatingCell) {

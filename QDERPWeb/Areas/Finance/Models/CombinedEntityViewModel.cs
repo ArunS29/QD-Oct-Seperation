@@ -424,6 +424,7 @@ namespace QD.ERP.Web.Areas.Finance.Models
     {
         public string ClaimRefNo { get; set; }
         public DateTime? ClaimDate { get; set; }
+        public DateTime? ClaimEffectiveDate { get; set; }
         public string ProjectClaimedFor { get; set; }
         public string ClaimRemarks { get; set; }
 
