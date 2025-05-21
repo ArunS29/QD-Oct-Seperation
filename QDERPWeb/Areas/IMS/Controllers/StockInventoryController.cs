@@ -691,10 +691,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     existingItem.ReorderQty = model.ReorderQty;
                     existingItem.ReorderLevel = model.ReorderLevel;
                     existingItem.ReorderLeadTime = model.ReorderLeadTime;
-
-                    // Optionally update ModifiedBy and ModifiedOn here
                     existingItem.ModifiedBy = User.Identity?.Name ?? "Unknown";
                     existingItem.ModifiedOn = DateTime.Now;
+                    existingItem.ItemImage = model.ItemImage;
+
                 }
 
                 await dbContext.SaveChangesAsync();
@@ -789,11 +789,165 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine("🔥 Exception occurred: " + ex.Message);
+                return StatusCode(500, "An error occurred: " + ex.Message);
+            }
+        }
+        public async Task<IActionResult> GetInvoiceGridData(string gscode)
+        {
+            if (string.IsNullOrEmpty(gscode))
+                return BadRequest("GsCode is required.");
+
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    return Unauthorized("Invalid tenant.");
+                }
+
+                var invoiceData = await dbContext.Qry60003stockInvoiceDetails
+                    .Where(x => x.ItemCode == gscode)   // Assuming you want to filter by ItemCode or GsCode? Adjust accordingly
+                    .ToListAsync();
+
+                return Ok(invoiceData);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred: " + ex.Message);
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetQuotationGridData(string gscode)
+        {
+            if (string.IsNullOrEmpty(gscode))
+                return BadRequest("GsCode is required.");
+
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    return Unauthorized("Invalid tenant.");
+                }
+
+                var data = await dbContext.Qry60106quotationDetails
+                    .Where(q => q.Gscode == gscode)
+                    .ToListAsync();
+
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred: " + ex.Message);
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetPurchaseOrderGridData(string gscode)
+        {
+            if (string.IsNullOrEmpty(gscode))
+                return BadRequest("GsCode is required.");
+
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    return Unauthorized("Invalid tenant.");
+                }
+
+                var data = await dbContext.Qry60406purchaseOrderDetails
+                    .Where(p => p.Gscode == gscode) // Change this field name if needed
+                    .ToListAsync();
+
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred: " + ex.Message);
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetItemDeliversGridData(string gscode)
+        {
+            if (string.IsNullOrEmpty(gscode))
+                return BadRequest("GsCode is required.");
+
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    return Unauthorized("Invalid tenant.");
+                }
+
+                var data = await dbContext.Qry60306deliveryNoteDetails
+                    .Where(d => d.Gscode == gscode) // Adjust 'Gscode' property name if necessary
+                    .ToListAsync();
+
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
                 return StatusCode(500, "An error occurred: " + ex.Message);
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetItemReceivedGridData(string gscode)
+        {
+            if (string.IsNullOrEmpty(gscode))
+                return BadRequest("GsCode is required.");
+
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized("Invalid tenant.");
+
+                var data = await dbContext.Qry60506materailReceiptDetails
+                    .Where(x => x.Gscode == gscode)
+                    .ToListAsync();
+
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetUnitConversionGridData(string gscode)
+        {
+            if (string.IsNullOrWhiteSpace(gscode))
+                return BadRequest("GsCode is required.");
+
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized("Invalid tenant context.");
+
+                var data = await dbContext.Tbl60003unitConversionMasters
+                    .Where(x => x.Gscode == gscode)
+                    .ToListAsync();
+
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetUnitCodeOptions()
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized("Invalid tenant context.");
+
+            var unitCodes = await dbContext.Tbl40111PropertyUnitCodes
+                .Select(u => new {
+                    u.UnitCode,
+                    u.UnitType,
+                    u.UnitDesc
+                }).ToListAsync();
+
+            return Ok(unitCodes);
+        }
 
     }
 }

@@ -441,6 +441,8 @@
             ReorderLevel: $("#ReorderLevel").dxNumberBox("instance").option("value"),
             ReorderQty: $("#ReorderQty").dxNumberBox("instance").option("value"),
             ReorderLeadTime: $("#ReorderLeadTime").dxNumberBox("instance").option("value"),
+            ItemImage: imageBase64
+
         };
 
         $.ajax({
@@ -491,7 +493,18 @@
             ItemColor: $("#ItemColor").dxSelectBox("instance").option("value"),
             ItemBrand: $("#ItemBrand").dxSelectBox("instance").option("value"),
             ItemMake: $("#ItemManufacturer").dxSelectBox("instance").option("value"),
-            CountryOfOrigin: $("#CountryOfOrigin").dxTextBox("instance").option("value")
+            CountryOfOrigin: $("#CountryOfOrigin").dxTextBox("instance").option("value"),
+              CreatedBy: $("#EnteredBy").dxTextArea("instance").option("value"),
+            // CreatedOn: new Date($("#EnteredOn").dxTextArea("instance").option("value")).toISOString(),
+            ModifiedBy: $("#ModifiedBy").dxTextArea("instance").option("value"),
+            // ModifiedOn: new Date($("#ModifiedOn").dxTextArea("instance").option("value")).toISOString(),
+            IsDiscontinued: $("#ItemDiscontinued").dxCheckBox("instance").option("value"),
+             MinQty: $("#MinQty").dxNumberBox("instance").option("value"),
+            MaxQty: $("#MaxQty").dxNumberBox("instance").option("value"),
+            ReorderLevel: $("#ReorderLevel").dxNumberBox("instance").option("value"),
+            ReorderQty: $("#ReorderQty").dxNumberBox("instance").option("value"),
+            ReorderLeadTime: $("#ReorderLeadTime").dxNumberBox("instance").option("value"),
+            ItemImage: imageBase64
         };
 
         $.ajax({
