@@ -51,6 +51,11 @@ builder.Services.AddScoped<DevExpress.XtraReports.Web.Extensions.ReportStorageWe
 // Configuring Reporting Services
 builder.Services.ConfigureReportingServices(configurator =>
 {
+    configurator.ConfigureReportDesigner(designerConfigurator =>
+    {
+        // Correct method to allow custom SQL queries
+        designerConfigurator.EnableCustomSql();
+    });
     configurator.ConfigureWebDocumentViewer(viewerConfigurator =>
     {
         viewerConfigurator.UseCachedReportSourceBuilder();

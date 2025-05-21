@@ -4320,25 +4320,29 @@
 					}
 
 				},
+	{
+			dataField: "Descriptions",
+			caption: "...",
+			width: 80,
+			allowEditing: true,
+			cellTemplate: function (container, options) {
+			$("<div>").dxButton({
+				icon: "user", // Built-in DevExtreme icon
+				hint: "Edit VAT Details Description",
+				stylingMode: "text",
+				width: 60,
+				onClick: function () {
+					// Save context
+					window.currentDescriptionCell = options;
 
-				//{ dataField: "Descriptions", caption: "...", width: 50 },
-
-					{
-		dataField: "Descriptions",
-		caption: "...",
-		width: 50,
-		allowEditing: true,
-		editCellTemplate: function (cellElement, cellInfo) {
-			// Open the modal form in a popup
-			let url = `/${tenantName}/Finance/VATDetailsDescription`;
-			let title = "";
-
-			// Pass cellInfo to the modal context
-			window.currentDescriptionCell = cellInfo;
-
-			openModal(url, title);
+					// Open modal
+					let url = `/${tenantName}/Finance/VATDetailsDescription`;
+					let title = "VAT Details Description";
+					openModal(url, title);
+				}
+			}).appendTo(container);
 		}
-	},
+		},
 
 
 				{
