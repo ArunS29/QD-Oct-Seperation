@@ -138,10 +138,10 @@ namespace QD.ERP.Web.Pages
                     Report = new Report4(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "", "", _tenantDbContextHelper);
                     break;
                 case "rpt201BillsPayable":
-                    Report = new rpt201BillsPayable(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "", _tenantDbContextHelper);
+                    Report = new rpt201BillsPayable(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "","", _tenantDbContextHelper);
                     break;
                 case "rpt201BillsPayableWithVchNo":
-                    Report = new rpt201BillsPayableWithVchNo(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "", _tenantDbContextHelper);
+                    Report = new rpt201BillsPayableWithVchNo(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "","", _tenantDbContextHelper);
                     break;
                 case "EndDate":
                     Report = new EndDate(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "", _tenantDbContextHelper);
@@ -156,7 +156,10 @@ namespace QD.ERP.Web.Pages
                     Report = new Balance(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "", _tenantDbContextHelper);
                     break;
                 case "BillsPayablePaid":
-                    Report = new BillsPayablePaid(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "", _tenantDbContextHelper);
+                    Report = new BillsPayablePaid(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "","", _tenantDbContextHelper);
+                    break;
+                case "AgeingToday":
+                    Report = new AgeingToday(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "","",_tenantDbContextHelper);
                     break;
                 case "XtraReportBillsReceivableAgeingReport":
                     Report = new XtraReportBillsReceivableAgeingReport();

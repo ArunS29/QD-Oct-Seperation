@@ -1,17 +1,17 @@
 ﻿using System;
+using System.Drawing;
 using System.Collections;
 using System.ComponentModel;
-using System.Data;
-using System.Data.SqlClient;
-using System.Drawing;
 using DevExpress.XtraReports.UI;
+using System.Data.SqlClient;
+using System.Data;
 
-namespace QD.ERP.Web.Areas.Finance.Reports.journalEntry
+namespace QD.ERP.Web.Areas.Finance.Reports.Journal_Register
 {
-    public partial class journalRegisterEmployeecost : DevExpress.XtraReports.UI.XtraReport
-    {
+	public partial class employeecostJournalRegister : DevExpress.XtraReports.UI.XtraReport
+	{
         private readonly TenantDbContextHelper _tenantDbContextHelper;
-        public journalRegisterEmployeecost(string voucherNo,
+        public employeecostJournalRegister(string voucherNo,
             string tenantName,
             string company_Name,
             string company_address,
@@ -91,87 +91,14 @@ namespace QD.ERP.Web.Areas.Finance.Reports.journalEntry
             this.DataSource = dt;
             this.DataMember = "";
 
-        
+
 
 
         }
 
-        private (string Symbol, bool HasImage) GetCurrencySymbolOrImageStatus(int currencyId)
-        {
-            string symbol = "";
-            bool hasImage = false;
+       
 
-            try
-            {
-                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
-                    throw new Exception("Unable to retrieve tenant context.");
-
-                string connectionString = tenant.ConnectionString;
-
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    string query = @"
-                SELECT CurrencySymbole, CurrencyImage 
-                FROM Tbl20169CurrencyExchange 
-                WHERE CurrencyExchangeId = @currencyId";
-
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@currencyId", currencyId);
-                        conn.Open();
-
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            if (reader.Read())
-                            {
-                                symbol = reader["CurrencySymbole"]?.ToString();
-                                hasImage = reader["CurrencyImage"] != DBNull.Value;
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error retrieving currency info: {ex.Message}");
-            }
-
-            return (symbol?.Trim() ?? "", hasImage);
-        }
-
-
-        private byte[] GetCurrencyImage(int currencyId)
-        {
-            byte[] imageBytes = null;
-
-            try
-            {
-                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
-                    throw new Exception("Unable to retrieve tenant context.");
-
-                string connectionString = tenant.ConnectionString;
-
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    string query = "SELECT CurrencyImage FROM Tbl20169CurrencyExchange WHERE CurrencyExchangeId = @currencyId";
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@currencyId", currencyId);
-                        conn.Open();
-                        object result = cmd.ExecuteScalar();
-                        if (result != null && result != DBNull.Value)
-                            imageBytes = (byte[])result;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error retrieving currency image: {ex.Message}");
-            }
-
-            return imageBytes;
-        }
-
+       
 
         private DataTable GetReportData(string voucherNo)
         {
@@ -187,7 +114,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.journalEntry
 
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    string query = "SELECT * FROM [qry201MainVoucherEntriesWithMaster] WHERE voucherno = @VoucherNo";
+                    string query = "SELECT * FROM qry202_106JournalRegisterReport WHERE voucherno = @VoucherNo";
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@VoucherNo", voucherNo);
@@ -216,7 +143,6 @@ namespace QD.ERP.Web.Areas.Finance.Reports.journalEntry
             this.Bands[BandKind.Detail].Controls.Add(noDataLabel);
         }
 
-    
 
 
 
