@@ -107,30 +107,31 @@
     <div class="container2">
         <div class="dx-fieldset horizontal-container ">
 
-            <label for="DrCr">Dr/Cr</label>
             @(Html.DevExtreme().SelectBox()
                 .ID("DrCr")
+                .Label(new JS("formatMessage('Dr/Cr')"))
+                .LabelMode(EditorLabelMode.Outside)
                 .DataSource(new[] { drCr })
                 .Value(drCr)
                 .Width(150)
                 .ReadOnly(true)
                 )
-            <label for="CostAllocationExpense">
-                Cost Allocation for the Expenses:
-            </label>
 
             <!-- DevExtreme Popup -->
             @(Html.DevExtreme().TextBox()
                 .ID("Textbox")
+                .Label(new JS("formatMessage('Cost Allocation for the Expenses')"))
+                .LabelMode(EditorLabelMode.Outside)
                 .Value(voucherNo)
-                .Width(150)
+                .Width(250)
                 .ReadOnly(true)
                 )
 
             
-            <label for="Amount">Amount</label>
             @(Html.DevExtreme().NumberBox()
                 .ID("CostAmount")
+                .Label(new JS("formatMessage('Amount')"))
+                .LabelMode(EditorLabelMode.Outside)
                 .Value(voucherAmountParsed)
                 .ShowSpinButtons(true)
                 .ReadOnly(true)
@@ -159,9 +160,10 @@
 
         </div>
         <div class="dx-fieldset horizontal-container ">
-            <label for="Account Head">Account Head</label>
             @(Html.DevExtreme().SelectBox()
                 .ID("CostAllocationExpense")
+                .Label(new JS("formatMessage('Account Head')"))
+                .LabelMode(EditorLabelMode.Outside)
                 .DataSource(new[] { accountHead }) // Only the selected AccountHead
                 .Value(accountHead) // Pre-selected value
                 .ReadOnly(true) // Make the dropdown read-onlyr
@@ -197,14 +199,14 @@
                         .Icon("plus")
                         @* .OnClick("onAddCost") *@
                         .Hint("Add Cost Allocation")
-                        .Width(40)
+                        .Width(60)
                         )
                         @(Html.DevExtreme().Button()
                         .ID("btnEditcost_" + new JS("data.rowIndex"))
                         .Icon("edit")
                         @* .OnClick("onEditCost") *@
                         .Hint("Edit Cost Allocation")
-                        .Width(40)
+                        .Width(60)
                         )
                     </div>
                 </div>
@@ -227,7 +229,7 @@
                     .ValueExpr("CostAllocationUnitId")
                     .DisplayExpr("CostAllocationUnit")
                     .Placeholder("Select Cost Allocation")
-                    .Width(350)
+                    .Width(400)
                     .DropDownOptions(o => o.Width(800))
                     .Value(new JS("data.CostAllocationUnitId || 'ADMIN-0001'"))
                     .ContentTemplate(new TemplateName("JournalcostAllocationDropdownContentTemplate"))
@@ -239,14 +241,14 @@
                         .Icon("plus")
                         @* .OnClick("onAddCost") *@
                         .Hint("Add Cost Allocation")
-                        .Width(40)
+                        .Width(70)
                         )
                         @(Html.DevExtreme().Button()
                         .ID("btnEditcost_" + new JS("data.rowIndex"))
                         .Icon("edit")
                         @* .OnClick("onEditCost") *@
                         .Hint("Edit Cost Allocation")
-                        .Width(40)
+                        .Width(70)
                         )
                     </div>
                 </div>
@@ -802,7 +804,6 @@
             dataGrid.selectRows(e.value, false);
         }
         if (e.value) {
-            debugger;
             let grid = $("#costdataGrid").dxDataGrid("instance");
             let rowIndex = e.element.closest("tr").index(); // Get the edited row index
             let rowData = grid.getVisibleRows()[rowIndex].data;
