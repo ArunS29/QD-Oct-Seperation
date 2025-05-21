@@ -1265,27 +1265,165 @@
             e.rowElement.css("background-color", "rgb(255, 192, 192)"); // Light Red Color
         }
     }
+    function getUrlParameter(name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        let regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+        let results = regex.exec(location.search);
+        return results === null ? null : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+
     $(document).ready(function () {
-      $(function () {
-    $.ajax({
-        url: "/api/ExpenseClaim/GetNewClaimNo",
-        type: 'GET',
-        success: function (data) {
-            // Set the value in the VoucherNo TextBox
-            $("#VoucherNo").dxTextBox("instance").option("value", data);
+        const voucherNoField = $("#VoucherNo").dxTextBox("instance");
+        const voucherNoFromUrl = getUrlParameter('claimRefNo');
 
-            // Retrieve the value from the TextBox
-            var popvno = $("#VoucherNo").dxTextBox("instance").option("value");
+        if (voucherNoFromUrl) {
+            // ✅ Bind voucher number from URL
+            voucherNoField.option("value", voucherNoFromUrl);
+        } else {
+            // ❌ If not available, generate new one
+            $.ajax({
+                url: '@Url.Action("GetNewClaimNo", "ExpenseClaim")',
+                type: 'GET',
+                success: function (data) {
+                    voucherNoField.option("value", data);
+                },
+                error: function () {
+                    alert("Error generating voucher number.");
+                }
+            });
+        }
 
-        },
-        error: function (xhr, status, error) {
-            console.error("Error loading Voucher No:", error);
+        // Helper to extract URL parameter
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            const results = regex.exec(window.location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
         }
     });
-});
+    // let claimRefNo = null;
+    // $(document).ready(function () {
+    //     claimRefNo = getUrlParameter('journalRefNo');
+    //     var button = $("#btnSave").dxButton("instance");
+    //     if (claimRefNo) {
+    //         button.option("text", "Update");
+    //     }
+
+    //     if (claimRefNo) {
+    //         $.ajax({
+    //             url: '/api/JournalRegister/GetJournalmaster',
+    //             type: 'GET',
+    //             data: { claimRefNo: claimRefNo },
+    //             success: function (data) {
+    //                 const entry = data.find(d => d.claimRefNo === claimRefNo); // optional check
+    //                 debugger;
+    //                 if (entry) {
+    //                     $("#VoucherNo").dxTextBox("instance").option("value", entry.JournalRefNo);
+    //                     $("#VoucherDate").dxDateBox("instance").option("value", entry.JournalEntryDate);
+    //                     $("#EffectiveDate").dxDateBox("instance").option("value", entry.JournalEffectiveDate);
+    //                     $("#VoucherNarration").dxTextArea("instance").option("value", entry.JournalVoucherNarration);
+    //                     $("#ClaimNameDropdown").dxDropDownBox("instance").option("value", entry.ClaimName);
+    //                     $("#SubmittedBy").dxCheckBox("instance").option("value", entry.IsSubmittedToFinance || false);
+    //                     $("#SubmittedBytext").dxTextBox("instance").option("value", entry.SubmittedBy || "");
+    //                     $("#VerifiedBy").dxCheckBox("instance").option("value", entry.IsVerified || false);
+    //                     $("#VerifiedBytext").dxTextBox("instance").option("value", entry.VerifiedBy || "");
+    //                     $("#ApprovedBy").dxCheckBox("instance").option("value", entry.IsApproved || false);
+    //                     $("#ApprovedBytext").dxTextBox("instance").option("value", entry.ApprovedBy || "");
+    //                     $("#PostedBy").dxCheckBox("instance").option("value", entry.IsPosted || false);
+    //                     $("#PostedBytext").dxTextBox("instance").option("value", entry.PostedBy || "");
+    //                     var submittedDate = entry.SubmittedOn ? new Date(entry.SubmittedOn) : null;
+    //                     var formattedsubmittedDate = submittedDate
+    //                         ? submittedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+    //                         : "";
+
+    //                     $("#SubmittedOnDate").dxTextBox("instance").option("value", formattedsubmittedDate);
+    //                     var verifiedDate = entry.VerifiedOn ? new Date(entry.VerifiedOn) : null;
+    //                     var formattedDate = verifiedDate
+    //                         ? verifiedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+    //                         : "";
+
+    //                     $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate);
+    //                     var approvedDate = entry.ApprovedOn ? new Date(entry.ApprovedOn) : null;
+    //                     var formattedApprovedDate = approvedDate
+    //                         ? approvedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+    //                         : "";
+
+    //                     $("#ApprovedOntext").dxTextBox("instance").option("value", formattedApprovedDate);
+    //                     var postedDate = entry.PostedOn ? new Date(entry.PostedOn) : null;
+    //                     var formattedPostedDate = postedDate
+    //                         ? approvedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+    //                         : "";
+
+    //                     $("#PostedOnDate").dxTextBox("instance").option("value", formattedPostedDate);
+    //                     $("#journalvoucher").dxTextBox("instance").option("value", entry.PostedVoucherNo);
+    //                     // Disable DevExtreme buttons based on submission and verification date
+    //                     const btnSubmit = $("#btnSubmit").dxButton("instance");
+    //                     const btnVerify = $("#btnVerify").dxButton("instance");
+    //                     const btnPostJournal = $("#btnPostJournal").dxButton("instance");
+
+    //                     if (formattedsubmittedDate) {
+    //                         btnSubmit.option("disabled", true);
+    //                         btnPostJournal.option("disabled", true);
+    //                     }
+
+    //                     if (formattedDate) {
+    //                         btnSubmit.option("disabled", true);
+    //                         btnVerify.option("disabled", true);
+    //                         btnPostJournal.option("disabled", true);
+    //                     }
+    //                     if (formattedApprovedDate) {
+    //                         disable();
+    //                         btnPostJournal.option("disabled", false);
+    //                     }
+    //                     if (formattedPostedDate) {
+    //                         disable();
+
+    //                     }
+
+
+    //                     getchilddatas();
+    //                 } else {
+    //                     DevExpress.ui.notify("No entry found with the given reference number.", "warning", 3000);
+    //                 }
+    //             },
+    //             error: function () {
+    //                 DevExpress.ui.notify("Failed to load journal entry from URL.", "error", 3000);
+    //             }
+    //         });
+    //     } else {
+    //         // DevExpress.ui.notify("Journal Reference Number is missing in the URL.", "error", 3000);
+    //     }
+    // });
+
+    // function getchilddatas() {
+    //     journalRefNo = getUrlParameter('journalRefNo');
+    //     if (journalRefNo) {
+    //         $.ajax({
+    //             url: '/api/JournalRegister/GetJournalChild',
+    //             type: 'GET',
+    //             data: { journalRefNo: journalRefNo },
+    //             success: function (data) {
+    //                 const entry = data.find(d => d.JournalRefNo === journalRefNo); // optional check
+    //                 debugger;
+    //                 if (entry) {
+
+
+    //                     const gridInstance = $("#dataGrid").dxDataGrid("instance");
+    //                     gridInstance.option("dataSource", data);
+    //                 } else {
+    //                     DevExpress.ui.notify("No entry found with the given reference number.", "warning", 3000);
+    //                 }
+    //             },
+    //             error: function () {
+    //                 DevExpress.ui.notify("Failed to load journal entry from URL.", "error", 3000);
+    //             }
+    //         });
+    //     } else {
+    //         // DevExpress.ui.notify("Journal Reference Number is missing in the URL.", "error", 3000);
+    //     }
+    // }
     
     
-    });
     function onRadioGroupValueChanged(e) {
     let selectedValue = e.value;
     let loadAction = selectedValue === "Cash Payment" ? "GetCPPaymentAccounts" : "GetBPPaymentAccounts";

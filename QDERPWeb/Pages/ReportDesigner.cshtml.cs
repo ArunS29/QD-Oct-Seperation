@@ -57,12 +57,14 @@ namespace QD.ERP.Web.Pages
             string companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
             string companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
 
+            // Load logoImage
+            Image logoImage = null;
             if (ERPCompany_details?.CompanyLogo is byte[] logoBytes && logoBytes.Length > 0)
             {
                 try
                 {
                     using var ms = new MemoryStream(logoBytes);
-                    _ = Image.FromStream(ms); // No need to store the logo unless you use it later
+                    logoImage = Image.FromStream(ms);
                 }
                 catch (Exception ex)
                 {
@@ -73,44 +75,59 @@ namespace QD.ERP.Web.Pages
             switch (reportName)
             {
                 case "StatementOfAccountReport":
-                    Report = new StatementOfAccountReport(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "", "", _tenantDbContextHelper);
+                    Report = new StatementOfAccountReport(accountId, frmDate.Value, toDate.Value,
+                        tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
                     break;
+
                 case "AccountWithNarration":
-                    Report = new AccountWithNarration(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "", "", _tenantDbContextHelper);
+                    Report = new AccountWithNarration(accountId, frmDate.Value, toDate.Value,
+                        tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
                     break;
                 case "AccountDetails":
-                    Report = new AccountDetails(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "", "", _tenantDbContextHelper);
+                    Report = new AccountDetails(accountId, frmDate.Value, toDate.Value,
+                        tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
                     break;
                 case "AccountOrderByVoucherNo":
-                    Report = new AccountOrderByVoucherNo(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "", "", _tenantDbContextHelper);
+                    Report = new AccountOrderByVoucherNo(accountId, frmDate.Value, toDate.Value,
+                        tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
                     break;
                 case "AccountExportFromatReport":
-                    Report = new AccountExportFromatReport(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "", "", _tenantDbContextHelper);
+                    Report = new AccountExportFromatReport(accountId, frmDate.Value, toDate.Value,
+                        tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
                     break;
                 case "AccountExportLandscapeReport":
-                    Report = new AccountExportLandscapeReport(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "", "", _tenantDbContextHelper);
+                    Report = new AccountExportLandscapeReport(accountId, frmDate.Value, toDate.Value,
+                        tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
                     break;
                 case "AccountStatementFormat2Report":
-                    Report = new AccountStatementFormat2Report(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "", "", _tenantDbContextHelper);
+                    Report = new AccountStatementFormat2Report(accountId, frmDate.Value, toDate.Value,
+                        tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
                     break;
                 case "AccountOrderbyVchNoWONarrationReport":
-                    Report = new AccountOrderbyVchNoWONarrationReport(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "", "", _tenantDbContextHelper);
+                    Report = new AccountOrderbyVchNoWONarrationReport(accountId, frmDate.Value, toDate.Value,
+                        tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
                     break;
                 case "BillsReceivablelandscapeformat":
-                    Report = new BillsReceivablelandscapeformat(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "", "", _tenantDbContextHelper);
+                    Report = new BillsReceivablelandscapeformat(accountId, frmDate.Value, toDate.Value,
+                        tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
                     break;
                 case "BillsReceivableLedgerBalance":
-                    Report = new BillsReceivableLedgerBalance(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "", "", _tenantDbContextHelper);
+                    Report = new BillsReceivableLedgerBalance(accountId, frmDate.Value, toDate.Value,
+                        tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
                     break;
                 case "BillsReceivableRentation":
-                    Report = new BillsReceivableRentation(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "", "", _tenantDbContextHelper);
+                    Report = new BillsReceivableRentation(accountId, frmDate.Value, toDate.Value,
+                        tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
                     break;
                 case "BillsReceivableAgeingToday":
-                    Report = new BillsReceivableAgeingToday(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "", "", _tenantDbContextHelper);
+                    Report = new BillsReceivableAgeingToday(accountId, frmDate.Value, toDate.Value,
+                        tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
                     break;
                 case "BillsReceivableByAccount":
-                    Report = new BillsReceivableByAccount(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "", "", _tenantDbContextHelper);
+                    Report = new BillsReceivableByAccount(accountId, frmDate.Value, toDate.Value,
+                        tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
                     break;
+
                 case "BillsReceivableAll":
                     Report = new BillsReceivableAll(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "", "", _tenantDbContextHelper);
                     break;

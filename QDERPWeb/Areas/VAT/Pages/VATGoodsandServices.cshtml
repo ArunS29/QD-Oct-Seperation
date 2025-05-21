@@ -167,17 +167,18 @@
                 {
                     rules.AddRequired().Message("Goods Description is required");
                 }))
-
-            @(Html.DevExtreme().Button()
-                .ID("convertToArabicDesc")
-                .Icon("fas fa-language")
-                .ElementAttr(new { @class = "input-button" })
-                .OnClick("function() { convertDescriptionToArabic(); }")
-                )
         </div>
-                            
-<div class="col" style="width:50%;">
-    @(Html.DevExtreme().TextArea()
+
+
+        <div class="col" style="width:50%; display: flex;align-items: center;gap: 18px;">
+            @(Html.DevExtreme().Button()
+                        .ID("convertToArabicDesc")
+                        .Icon("fas fa-language")
+                        .ElementAttr(new { @class = "input-button" })
+                        .OnClick("function() { convertDescriptionToArabic(); }")
+                        )
+
+            @(Html.DevExtreme().TextArea()
         .Label(new JS("formatMessage('Goods & Services Description (in Arabic):')"))
         .LabelMode(EditorLabelMode.Outside)
         .ID("txtDescriptionArabic").Width("100%")
@@ -236,28 +237,40 @@
 
         <div class="col" style="width:25%">
             @(Html.DevExtreme().NumberBox()
-                .ID("packingUnit")
-                .Label("Packing Unit:")
-                .LabelMode(EditorLabelMode.Outside)
-                .Value(1)
-                .Width("100%"))
+                        .ID("packingUnit")
+                        .Label("Packing Unit:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Value(1)
+                        .Min(1)            // Prevents zero or negative
+                        .Max(1000)         // Arbitrary upper limit
+                        .ShowSpinButtons(true) // Optional for UI
+                        .Width("100%"))
         </div>
+
         <div class="col" style="width:25%">
             @(Html.DevExtreme().NumberBox()
-                .ID("sellingRate")
-                .Label("Selling Rate:")
-                .LabelMode(EditorLabelMode.Outside)
-                .Value(1)
-                .Width("100%"))
+                        .ID("sellingRate")
+                        .Label("Selling Rate:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Value(1.00)
+                        .Min(0)                 // Prevents negative rates
+                        .Format("#,##0.00")     // Ensures 2 decimal places
+                        .ShowSpinButtons(true)
+                        .Width("100%"))
         </div>
+
         <div class="col" style="width:25%">
             @(Html.DevExtreme().NumberBox()
-                .ID("txtCostPrice3")
-                .Label("Cost Price:")
-                .LabelMode(EditorLabelMode.Outside)
-                .Value(1)
-                .Width("100%"))
+                        .ID("txtCostPrice3")
+                        .Label("Cost Price:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Value(1.00)
+                        .Min(0)
+                        .Format("#,##0.00")
+                        .ShowSpinButtons(true)
+                        .Width("100%"))
         </div>
+
     </div>
 
                    
@@ -271,15 +284,16 @@
                 .LabelMode(EditorLabelMode.Outside)
                 .ElementAttr("style", "height:150px !important;")
                 .Width("100%"))
-            @(Html.DevExtreme().Button()
-                .ID("convertToArabicDesc1")
-                .Icon("fas fa-language")
-                .ElementAttr(new { @class = "input-button" })
-                .OnClick("function() { convertDetailedDescToArabic(); }")
-                )
+            
         </div>
 
-        <div class="col" style="width:50%">
+        <div class="col" style="width:50%;display: flex;align-items: center;gap: 18px;">
+            @(Html.DevExtreme().Button()
+                        .ID("convertToArabicDesc1")
+                        .Icon("fas fa-language")
+                        .ElementAttr(new { @class = "input-button" })
+                        .OnClick("function() { convertDetailedDescToArabic(); }")
+                        )
             @(Html.DevExtreme().TextArea()
                 .Label(new JS("formatMessage('Detailed Description (in Arabic):')"))
                 .LabelMode(EditorLabelMode.Outside)
@@ -589,29 +603,37 @@
         }
         });
     });
-    $(document).ready(function () {
-        const $form = $("#goodsServicesForm");
+    // $(document).ready(function () {
+    //     const $form = $("#goodsServicesForm");
 
-        $form.find("#btnSave").on("click", function () {
-            onSaveClicked($form, false);
-        });
+    //     $form.find("#btnSave").on("click", function () {
+    //         onSaveClicked($form, false);
+    //     });
 
-        $form.find("#btnSaveAndClose").on("click", function () {
-            onSaveClicked($form, true);
-        });
+    //     $form.find("#btnSaveAndClose").on("click", function () {
+    //         onSaveClicked($form, true);
+    //     });
 
      
-        $form.find("#btnBack").on("click", function () {
-            goBackToPreviousPage();
-        });
+    //     $form.find("#btnBack").on("click", function () {
+    //         goBackToPreviousPage();
+    //     });
 
        
-        $form.find(".limited-footer .btn-containerIvoiceEdit").each(function () {
-            if (!$(this).find("#btnSave,#btnSaveAndClose,#btnPrint1,#btnDelete,#btnBack").length) {
+    //     $form.find(".limited-footer .btn-containerIvoiceEdit").each(function () {
+    //         if (!$(this).find("#btnUpdate,#btnSaveAndClose,#btnPrint1,#btnDelete,#btnBack").length) {
+    //             $(this).remove();
+    //         }
+    //     });
+    // });
+    $(document).ready(function () {
+        $(".limited-footer .btn-containerIvoiceEdit").each(function () {
+            if (!$(this).find("#btnUpdate,#btnSaveAndClose,#btnPrint1,#btnDelete,#btnBack").length) {
                 $(this).remove();
             }
         });
     });
+
 
     function goBackToPreviousPage() {
         window.history.back();

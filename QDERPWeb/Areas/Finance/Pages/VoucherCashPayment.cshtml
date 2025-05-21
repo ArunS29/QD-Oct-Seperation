@@ -339,7 +339,7 @@
         .DisplayExpr("CurrencyName")
         .OnInput("dropDownBoxOnInput") // Reuse or define separate handler if needed
         .OnOpened("onOpened")
-        .Width(160)
+        .Width(210)
         .TabIndex(2) // Different tabindex to separate from the first
         .DropDownOptions(o => o.Width(700))
         .OnKeyDown("onKeyDown")
@@ -403,7 +403,7 @@
                     .DisplayExpr("CurrencyName")
                     .OnInput("dropDownBoxOnInput")
                     .OnOpened("onOpened")
-                    .Width(160)
+                    .Width(210)
                     .TabIndex(1)
                     .DropDownOptions(o => o.Width(700))
                     .OnKeyDown("onKeyDown")
@@ -3645,7 +3645,15 @@
                     // DevExpress.ui.notify("No voucher entries found.", "warning", 2000);
                     return;
                 }
+                debugger;
+                var lastRow = response.data[response.data.length - 1]; // Get the last row
+                var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
 
+                if (dropDownBox) {
+                    // Set selected value based on what the DropDownBox expects
+                    // Assuming ValueExpr is "AccountId", and AccountId is present in `lastRow`
+                    dropDownBox.option("value", lastRow.AccountHead); // or lastRow.AccountId if available
+                }
                 var dataGrid = $("#dataGrid").dxDataGrid("instance");
                 if (dataGrid) {
                     dataGrid.option("dataSource", response.data);

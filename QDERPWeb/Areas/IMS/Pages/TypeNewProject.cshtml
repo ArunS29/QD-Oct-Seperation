@@ -1,0 +1,232 @@
+﻿@page
+@model QD.ERP.Web.Areas.IMS.Pages.TypeNewProjectModel
+@{
+}
+<style>
+    .dx-datagrid-column-chooser-button {
+        display: none !important;
+    }
+
+    .dx-fieldset {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 15px;
+        padding: 20px;
+        background-color: transparent;
+        width: 250px;
+        height: 10%;
+    }
+
+
+    .dx-field {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        margin-left: 10px;
+    }
+
+    .field-label {
+        font-weight: bold;
+    }
+
+    .aligned-input {
+        width: 100%;
+    }
+
+    .input-group {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .dx-textarea {
+        width: 100%;
+        height: 60px;
+    }
+
+    .dx-card {
+        width: 1000px;
+        background: var(--background-color);
+    }
+
+    .limited-footer .btn-container:not(:has(#btnSave,#btnBack)) {
+        display: none !important;
+    }
+
+    .container {
+        display: none !important;
+    }
+
+    .dx-button-text {
+        color: black;
+    }
+
+    .input-button{
+        color:black;
+    }
+
+    .dx-button-mode-contained.dx-button-success .dx-icon {
+        color: black;
+    }
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .playIcon {
+        display: none;
+    }
+
+    .maincontainer {
+        width: 97%;
+    }
+</style>
+<div class="title">
+    <div class="header-container">
+        <div id="Project" class="no-border-input"></div>
+    </div>
+</div>
+<div class="dx-card" style="margin: auto; padding:15px; width:100%; ">
+    <!-- Input Fields -->
+    <div class="row mb-2" style="display: flex; gap: 10px; align-items: flex-end; flex-direction: row; flex-wrap: nowrap;">
+        <div style="width: 21%;">
+            @(Html.DevExtreme().TextBox()
+                .ID("PrjCode")
+                .Label(new JS("formatMessage('Project Code:')"))
+                .LabelMode(EditorLabelMode.Outside)
+                .Width("100%"))
+
+        </div>
+
+        <div style="display: flex; gap: 10px; align-items: flex-end;">
+            @(Html.DevExtreme().SelectBox()
+                .ID("ProjectGrp")
+                .Label(new JS("formatMessage('Project Group')"))
+                .LabelMode(EditorLabelMode.Outside)
+                .Width(400))
+
+            @(Html.DevExtreme().Button()
+                .ID("btnAdd1")
+                .Icon("plus")
+                .Type(ButtonType.Success)
+                .ElementAttr(new { @class = "input-button" }))
+        </div>
+    </div>
+
+
+    <div class="row mb-3">
+        <div class="col-md-6" style="display:flex; align-items:end;">
+            @(Html.DevExtreme().TextBox().ID("ProjectGrpArabic").Label(new JS("formatMessage('Project Description:')"))
+                .LabelMode(EditorLabelMode.Outside).Width("100%"))
+            <div>
+                @(Html.DevExtreme().Button()
+                    .ID("convertToCaptialORSmall3")
+                    .Height(30)
+                    .Icon("fas fa-text-height") // Ensure Font Awesome class is correct
+                    .Hint("Toggle Uppercase/Lowercase")
+                    .OnClick("toggleCase")
+                    )
+                    
+            </div>  
+        </div>
+    </div>
+    <div style="display:flex; align-items:end; gap:730px;">
+        @(Html.DevExtreme().SelectBox()
+            .ID("Costcentercode")
+            .Label(new JS("formatMessage('Cost Center Code: (Finance Module)')"))
+            .LabelMode(EditorLabelMode.Outside)
+            .ShowDropDownButton(true)
+            .Width("50%"))
+
+
+        @(Html.DevExtreme().Button()
+            .ID("btnAdd")
+            .Text("Add")
+            .Icon("plus")
+            .Type(ButtonType.Success)
+            .Width(120))
+
+    </div>
+
+<!-- DataGrid -->
+    <div class="dx-card" style="margin: auto; width:100%; margin-top: 30px;">
+    <!-- DataGrid Only -->
+    @(Html.DevExtreme().DataGrid()
+        .ID("Projectgroup")
+        .KeyExpr("ProjectUnitCode")
+        .Columns(columns =>
+        {
+            columns.Add().DataField("ProjectCode").Caption("Project ID").AllowEditing(false);
+            columns.Add().DataField("Group").Caption("Project Description");
+            columns.Add().DataField("ProjectSubUnitName").Caption("Cost Center Code)");
+        })
+        .Height(400)
+        .ShowBorders(true)
+        .ShowRowLines(true)
+        .ColumnAutoWidth(true)
+        .ColumnResizingMode(ColumnResizingMode.Widget)
+        .ColumnFixing(fix => fix.Enabled(true))
+        .Scrolling(s => s.Mode(GridScrollingMode.Standard))
+        .Paging(p => p.PageSize(10))
+        .Selection(s => s.Mode(SelectionMode.Single))
+        )
+</div>
+
+<!-- Action Buttons -->
+<div class="mt-3 d-flex justify-content-between">
+    @(Html.DevExtreme().Button()
+        .ID("btnUpdate1")
+        .Text("Update")
+        .Icon("save")
+        .Type(ButtonType.Default)
+        .Width(200))
+
+    @(Html.DevExtreme().Button()
+        .ID("btnBack1")
+        .Text("Back")
+        .OnClick("Goback")
+        .Icon("arrowleft")
+        .Type(ButtonType.Normal)
+        .Width(120))
+</div>
+</div>
+
+ <script>
+     $(function () {
+    $("#Project").dxTextBox({
+    text: formatMessage("Project"),
+        readOnly: true,
+        onContentReady: function (e) {
+        $(e.element).addClass("dx-textbox-heading");
+        }
+        });
+    });
+     function Goback() {
+        window.history.back();
+    }
+     let isUppercase = false;
+
+    function toggleCase() {
+        const textBox = $("#ProjectGrpArabic").dxTextBox("instance");
+
+        if (!textBox) {
+            console.warn("TextBox instance not found");
+            return;
+        }
+
+        let value = textBox.option("value") || "";
+
+        if (!value) return;
+
+        if (isUppercase) {
+            textBox.option("value", value.toLowerCase());
+        } else {
+            textBox.option("value", value.toUpperCase());
+        }
+
+        isUppercase = !isUppercase;
+    }
+ </script>

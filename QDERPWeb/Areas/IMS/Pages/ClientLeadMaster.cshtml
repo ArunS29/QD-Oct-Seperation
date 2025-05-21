@@ -178,7 +178,7 @@
 <meta charset="UTF-8">
 <div class="title">
     <div class="header-container">
-        <div id="ClientMaster" class="no-border-title"></div>
+        <div id="ClientMaster" class="no-border-input"></div>
     </div>
 </div>
 <div class="form-container1">
@@ -200,11 +200,11 @@
 
 
                 <!-- Asset Category Dropdown -->
-                <div class="col-md-8 ">
+                <div class="col-md-8 " >
                     <div class="form-label">
                         <label for="ClientCategory">Client Category</label>
                     </div>
-                    <div class="form-group-row">
+                    <div class="form-group-row" style="display:flex;">
         @(Html.DevExtreme().DropDownBox()
      .DataSource(d => d.WebApi()
      .Controller("ClientLeadMaster")
@@ -604,7 +604,7 @@
         @(Html.DevExtreme().Button().ID("btnDelete").Text("Delete").Icon("trash"))
                     </div>
                     <div class="col-md-2">
-        @(Html.DevExtreme().Button().ID("btnBack").Text("Back").Icon("arrowleft"))
+        @(Html.DevExtreme().Button().ID("btnBack").Text("Back").Icon("arrowleft").OnClick("GoBack"))
                     </div>
                 </div>
             </div>
@@ -1255,7 +1255,20 @@ ContactRemarks:clientRemarks,
         }
     });
 });
+      $(function () {
+                $("#ClientMaster").dxTextBox({
+                    text: formatMessage("Client Master"),
+                readOnly: true,
+                onContentReady: function (e) {
+                    $(e.element).addClass("dx-textbox-heading");
+                }
 
+            });
+        });
+           
+     function GoBack() {
+        window.parent.closeModal(); // This closes the current window/tab
+    }
 </script>
 
 

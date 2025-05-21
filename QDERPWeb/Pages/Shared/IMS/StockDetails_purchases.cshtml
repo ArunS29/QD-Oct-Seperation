@@ -1,15 +1,7 @@
-﻿@using DevExtreme.AspNet.Mvc
-@using DevExtreme.AspNet.Mvc.Builders
+﻿
 @{
     ViewBag.Title = "Purchases Grid";
 }
-@{
-    var dummyData = new[] {
-    new { InvoiceNo = "INV001", InvoiceDate = DateTime.Now.AddDays(-3), ClientName = "John Doe", Qty = 3, UnitDesc = "Product A", UnitRate = 100m, Discount = 10m, VatAmount = 5m, Total = 295m },
-     new { InvoiceNo = "INV002", InvoiceDate = DateTime.Now.AddDays(-2), ClientName = "Jane Smith", Qty = 2, UnitDesc = "Product B", UnitRate = 200m, Discount = 20m, VatAmount = 10m, Total = 390m },
-     new { InvoiceNo = "INV003", InvoiceDate = DateTime.Now.AddDays(-1), ClientName = "Acme Corp", Qty = 5, UnitDesc = "Product C", UnitRate = 150m, Discount = 15m, VatAmount = 7.5m, Total = 732.5m }
- }; 
-}  
 
 
 <style>
@@ -38,8 +30,8 @@
     @(Html.DevExtreme().DataGrid()
             .ID("PurchaseGrid")
             .Height(620)
-            .DataSource(dummyData)
-            .ShowBorders(true)
+@*             .DataSource(dummyData)
+ *@            .ShowBorders(true)
             .ShowColumnLines(true)
             .ShowRowLines(true)
             .RowAlternationEnabled(true)
