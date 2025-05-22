@@ -167,6 +167,14 @@
         background-color: #007BFF;
         border: 1px solid #007BFF; /* optional: add a border for visibility */
     }
+
+    #calculateVATButton .dx-button-text {
+        color: black !important;
+    }
+
+    #saveEntryButton .dx-button-text {
+        color: black !important;
+    }
 </style>
 
 <div class="title">
@@ -481,7 +489,7 @@
             <div class="col-md-2">
                 <div class="row">
                     <div class="displayFlex">
-                        @(Html.DevExtreme().CheckBox()
+                        @(Html.DevExtreme().CheckBox().Disabled(true)
                             .ID("IsVerified")
                             )<span style="margin-left:5px">Verified By:</span>
                         @(Html.DevExtreme().TextBox()
@@ -522,7 +530,7 @@
 
                             @(
                                 Html.DevExtreme().TextBox()
-                                .ID("ClaimRefNo11")
+                                .ID("Voucher")
                                 .Value(null)
                                 //.OnValueChanged("onVoucherNoChanged")
                                 .ReadOnly(true)
@@ -566,7 +574,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="displayFlex">
-                            @(Html.DevExtreme().CheckBox()
+                            @(Html.DevExtreme().CheckBox().Disabled(true)
                                 .ID("IsPaid")
                                 )<span style="margin-left:5px">Paid By:</span>
                             @(Html.DevExtreme().TextBox()
@@ -854,15 +862,15 @@
                            
                         )
 }
-<div id = "floatingDropdownForm" class="dropdown-box" style="display: none;">
+<div id="floatingDropdownForm" class="dropdown-box" style="display: none;">
     <div class="form-container">
         <table>
             <tr>
                 <td>
-                    <button class="btn">Calculate VAT</button>
+                    <div id="calculateVATButton"></div>
                 </td>
                 <td>
-                    <button class="btn">Save Entry</button>
+                    <div id="saveEntryButton"></div>
                 </td>
                 <td colspan="2">
                     <div class="input-group">
@@ -876,31 +884,31 @@
                 <td>
                     <div class="input-group">
                         <label>Taxable Amount</label>
-                        <input type="text" />
+                        <div id="taxableAmount"></div>
                     </div>
                 </td>
                 <td>
                     <div class="input-group">
                         <label>VAT Amount</label>
-                        <input type="text" />
+                        <div id="vatAmount"></div>
                     </div>
                 </td>
                 <td>
                     <div class="input-group">
                         <label>Round Off</label>
-                        <input type="text" class="highlight" />
+                        <div id="roundOff" class="highlight"></div>
                     </div>
                 </td>
                 <td>
                     <div class="input-group">
                         <label>Bill Amount</label>
-                        <input type="text" />
+                        <div id="billAmount"></div>
                     </div>
                 </td>
             </tr>
 
             <tr>
-                <td colspan="2>
+                <td colspan="2">
                     <div class="input-group">
                         <label>Supplier Name</label>
                         <div id="supplierName"></div>
@@ -909,7 +917,7 @@
                 <td colspan="2">
                     <div class="input-group">
                         <label>Supplier Name In Arabic</label>
-                        <input type="text" />
+                        <div id="supplierArabic"></div>
                     </div>
                 </td>
             </tr>
@@ -918,7 +926,7 @@
                 <td colspan="2">
                     <div class="input-group">
                         <label>Supplier VAT No</label>
-                        <input type="text" />
+                        <div id="supplierVAT"></div>
                     </div>
                 </td>
                 <td colspan="2">
@@ -931,16 +939,16 @@
 
             <tr>
                 <td colspan="2">
-                        <label>Line Narration</label>
+                    <label>Line Narration</label>
                 </td>
                 <td colspan="2">
                     <a href="#">Use Expense Description</a>
-                    <button class="add-btn">+</button>
+                    <div id="addLineNarrationBtn"></div>
                 </td>
             </tr>
             <tr>
                 <td colspan="4" class="narration-cell">
-                    <textarea rows="3"></textarea>
+                    <div id="lineNarration"></div>
                 </td>
             </tr>
 
@@ -959,8 +967,9 @@
                 </td>
             </tr>
         </table>
+    </div>
 </div>
-</div>
+
 
 <script>
         function onCardClick(e) {
@@ -981,37 +990,53 @@
             function closeDropdownForm() {
                 $("#floatingDropdownForm").hide();
             }
+    $(function () {
+        $("#calculateVATButton").dxButton({
+            text: "Calculate VAT",
+            icon: "fa fa-calculator",
+            type: "default",
+            onClick: function () {
+                // Your logic
+            }
+        });
 
-                $(function() {
-                $("#taxPercentage").dxSelectBox({
-                    dataSource: ["5%", "10%", "15%"],
-                    showClearButton: true
-                });
+        $("#saveEntryButton").dxButton({
+            text: "Save Entry",
+            icon: "save",
+            type: "success",
+            onClick: function () {
+                // Your logic
+            }
+        });
 
-                $("#supplierName").dxSelectBox({
-                    dataSource: ["Supplier A", "Supplier B", "Supplier C"],
-                    searchEnabled: true,
-                    showClearButton: true
-                });
+        $("#taxPercentage").dxNumberBox({ value: 5, min: 0, max: 100, showSpinButtons: true });
+        $("#taxableAmount").dxNumberBox({ value: 0 });
+        $("#vatAmount").dxNumberBox({ value: 0 });
+        $("#roundOff").dxNumberBox({ value: 0 });
+        $("#billAmount").dxNumberBox({ value: 0 });
+        $("#supplierArabic").dxTextBox({ value: "" });
+        $("#supplierVAT").dxTextBox({ value: "" });
 
-                $("#purchaserName").dxSelectBox({
-                    dataSource: ["Purchaser X", "Purchaser Y"],
-                    searchEnabled: true,
-                    showClearButton: true
-                });
+        $("#addLineNarrationBtn").dxButton({
+            icon: "plus",
+            type: "default",
+            onClick: function () {
+                // Add narration logic
+            }
+        });
 
-                $("#costEmployees").dxSelectBox({
-                    dataSource: ["Employee 1", "Employee 2"],
-                    searchEnabled: true,
-                    showClearButton: true
-                });
+        $("#lineNarration").dxTextArea({
+            height: 80,
+            placeholder: "Enter narration..."
+        });
 
-                $("#costProperty").dxSelectBox({
-                    dataSource: ["Equipment A", "Equipment B"],
-                    searchEnabled: true,
-                    showClearButton: true
-                });
-            });
+        // These can be dxDropDownBox, dxSelectBox, or custom templates
+        $("#supplierName").dxDropDownBox({ placeholder: "Select Supplier", contentTemplate: function () { return $("<div>").text("Dropdown content"); } });
+        $("#purchaserName").dxDropDownBox({ placeholder: "Select Purchaser", contentTemplate: function () { return $("<div>").text("Dropdown content"); } });
+        $("#costEmployees").dxDropDownBox({ placeholder: "Select Employee", contentTemplate: function () { return $("<div>").text("Dropdown content"); } });
+        $("#costProperty").dxDropDownBox({ placeholder: "Select Property", contentTemplate: function () { return $("<div>").text("Dropdown content"); } });
+    });
+
             $(document).on("click", function (e) {
                 if (!$(e.target).closest(".dropdown-box, .dx-button").length) {
                     closeDropdownForm();
@@ -1301,127 +1326,127 @@
             return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
         }
     });
-    // let claimRefNo = null;
-    // $(document).ready(function () {
-    //     claimRefNo = getUrlParameter('journalRefNo');
-    //     var button = $("#btnSave").dxButton("instance");
-    //     if (claimRefNo) {
-    //         button.option("text", "Update");
-    //     }
+    let claimRefNo = null;
+    $(document).ready(function () {
+        claimRefNo = getUrlParameter('claimRefNo');
+        var button = $("#btnSave").dxButton("instance");
+        if (claimRefNo) {
+            button.option("text", "Update");
+        }
 
-    //     if (claimRefNo) {
-    //         $.ajax({
-    //             url: '/api/JournalRegister/GetJournalmaster',
-    //             type: 'GET',
-    //             data: { claimRefNo: claimRefNo },
-    //             success: function (data) {
-    //                 const entry = data.find(d => d.claimRefNo === claimRefNo); // optional check
-    //                 debugger;
-    //                 if (entry) {
-    //                     $("#VoucherNo").dxTextBox("instance").option("value", entry.JournalRefNo);
-    //                     $("#VoucherDate").dxDateBox("instance").option("value", entry.JournalEntryDate);
-    //                     $("#EffectiveDate").dxDateBox("instance").option("value", entry.JournalEffectiveDate);
-    //                     $("#VoucherNarration").dxTextArea("instance").option("value", entry.JournalVoucherNarration);
-    //                     $("#ClaimNameDropdown").dxDropDownBox("instance").option("value", entry.ClaimName);
-    //                     $("#SubmittedBy").dxCheckBox("instance").option("value", entry.IsSubmittedToFinance || false);
-    //                     $("#SubmittedBytext").dxTextBox("instance").option("value", entry.SubmittedBy || "");
-    //                     $("#VerifiedBy").dxCheckBox("instance").option("value", entry.IsVerified || false);
-    //                     $("#VerifiedBytext").dxTextBox("instance").option("value", entry.VerifiedBy || "");
-    //                     $("#ApprovedBy").dxCheckBox("instance").option("value", entry.IsApproved || false);
-    //                     $("#ApprovedBytext").dxTextBox("instance").option("value", entry.ApprovedBy || "");
-    //                     $("#PostedBy").dxCheckBox("instance").option("value", entry.IsPosted || false);
-    //                     $("#PostedBytext").dxTextBox("instance").option("value", entry.PostedBy || "");
-    //                     var submittedDate = entry.SubmittedOn ? new Date(entry.SubmittedOn) : null;
-    //                     var formattedsubmittedDate = submittedDate
-    //                         ? submittedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
-    //                         : "";
+        if (claimRefNo) {
+            $.ajax({
+                url: '/api/ExpenseClaim/GetClaimmaster',
+                type: 'GET',
+                data: { claimRefNo: claimRefNo },
+                success: function (data) {
+                    const entry = data.find(d => d.ClaimRefNo === claimRefNo); // optional check
+                    debugger;
+                    if (entry) {
+                        $("#VoucherNo").dxTextBox("instance").option("value", entry.ClaimRefNo);
+                        $("#claimerdate").dxDateBox("instance").option("value", entry.ClaimDate);
+                        $("#claimerEffectiveDate").dxDateBox("instance").option("value", entry.ClaimEffectiveDate ? new Date(entry.ClaimEffectiveDate) : new Date());
+                        $("#txtEntryNarration").dxTextArea("instance").option("value", entry.ClaimRemarks);
+                        $("#accountDropDownBox").dxDropDownBox("instance").option("value", entry.ProjectClaimedFor);
+                        $("#IsSubmitted").dxCheckBox("instance").option("value", entry.IsSubmittedToFinance || false);
+                        $("#SubmittedBytext").dxTextBox("instance").option("value", entry.SubmittedBy || "");
+                        $("#IsVerified").dxCheckBox("instance").option("value", entry.IsVerified || false);
+                        $("#VerifiedBytext").dxTextBox("instance").option("value", entry.VerifiedBy || "");
+                        $("#IsApproved").dxCheckBox("instance").option("value", entry.IsApproved || false);
+                        $("#ApprovedBytext").dxTextBox("instance").option("value", entry.ApprovedBy || "");
+                        $("#IsPaid").dxCheckBox("instance").option("value", entry.IsPosted || false);
+                        $("#paidBytext").dxTextBox("instance").option("value", entry.PostedBy || "");
+                        var submittedDate = entry.SubmittedOn ? new Date(entry.SubmittedOn) : null;
+                        var formattedsubmittedDate = submittedDate
+                            ? submittedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+                            : "";
 
-    //                     $("#SubmittedOnDate").dxTextBox("instance").option("value", formattedsubmittedDate);
-    //                     var verifiedDate = entry.VerifiedOn ? new Date(entry.VerifiedOn) : null;
-    //                     var formattedDate = verifiedDate
-    //                         ? verifiedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
-    //                         : "";
+                        $("#SubmittedOnDate").dxTextBox("instance").option("value", formattedsubmittedDate);
+                        var verifiedDate = entry.VerifiedOn ? new Date(entry.VerifiedOn) : null;
+                        var formattedDate = verifiedDate
+                            ? verifiedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+                            : "";
 
-    //                     $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate);
-    //                     var approvedDate = entry.ApprovedOn ? new Date(entry.ApprovedOn) : null;
-    //                     var formattedApprovedDate = approvedDate
-    //                         ? approvedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
-    //                         : "";
+                        $("#VerifiedOntext").dxTextBox("instance").option("value", formattedDate);
+                        var approvedDate = entry.ApprovedOn ? new Date(entry.ApprovedOn) : null;
+                        var formattedApprovedDate = approvedDate
+                            ? approvedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+                            : "";
 
-    //                     $("#ApprovedOntext").dxTextBox("instance").option("value", formattedApprovedDate);
-    //                     var postedDate = entry.PostedOn ? new Date(entry.PostedOn) : null;
-    //                     var formattedPostedDate = postedDate
-    //                         ? approvedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
-    //                         : "";
+                        $("#ApprovedOntext").dxTextBox("instance").option("value", formattedApprovedDate);
+                        var postedDate = entry.PostedOn ? new Date(entry.PostedOn) : null;
+                        var formattedPostedDate = postedDate
+                            ? approvedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+                            : "";
 
-    //                     $("#PostedOnDate").dxTextBox("instance").option("value", formattedPostedDate);
-    //                     $("#journalvoucher").dxTextBox("instance").option("value", entry.PostedVoucherNo);
-    //                     // Disable DevExtreme buttons based on submission and verification date
-    //                     const btnSubmit = $("#btnSubmit").dxButton("instance");
-    //                     const btnVerify = $("#btnVerify").dxButton("instance");
-    //                     const btnPostJournal = $("#btnPostJournal").dxButton("instance");
+                        $("#paidOntext").dxTextBox("instance").option("value", formattedPostedDate);
+                        $("#GeneratedVoucher").dxTextBox("instance").option("value", entry.PaymentVoucherNo);
+                        // Disable DevExtreme buttons based on submission and verification date
+                        const btnSubmit = $("#btnSubmit").dxButton("instance");
+                        const btnVerify = $("#btnExpenseVerify").dxButton("instance");
+                        const btnPostJournal = $("#btnPaytheClaim").dxButton("instance");
 
-    //                     if (formattedsubmittedDate) {
-    //                         btnSubmit.option("disabled", true);
-    //                         btnPostJournal.option("disabled", true);
-    //                     }
+                        if (formattedsubmittedDate) {
+                            btnSubmit.option("disabled", true);
+                            btnPostJournal.option("disabled", true);
+                        }
 
-    //                     if (formattedDate) {
-    //                         btnSubmit.option("disabled", true);
-    //                         btnVerify.option("disabled", true);
-    //                         btnPostJournal.option("disabled", true);
-    //                     }
-    //                     if (formattedApprovedDate) {
-    //                         disable();
-    //                         btnPostJournal.option("disabled", false);
-    //                     }
-    //                     if (formattedPostedDate) {
-    //                         disable();
+                        if (formattedDate) {
+                            btnSubmit.option("disabled", true);
+                            btnVerify.option("disabled", true);
+                            btnPostJournal.option("disabled", true);
+                        }
+                        if (formattedApprovedDate) {
+                            disableclaim();
+                            btnPostJournal.option("disabled", false);
+                        }
+                        if (formattedPostedDate) {
+                            disableclaim();
 
-    //                     }
-
-
-    //                     getchilddatas();
-    //                 } else {
-    //                     DevExpress.ui.notify("No entry found with the given reference number.", "warning", 3000);
-    //                 }
-    //             },
-    //             error: function () {
-    //                 DevExpress.ui.notify("Failed to load journal entry from URL.", "error", 3000);
-    //             }
-    //         });
-    //     } else {
-    //         // DevExpress.ui.notify("Journal Reference Number is missing in the URL.", "error", 3000);
-    //     }
-    // });
-
-    // function getchilddatas() {
-    //     journalRefNo = getUrlParameter('journalRefNo');
-    //     if (journalRefNo) {
-    //         $.ajax({
-    //             url: '/api/JournalRegister/GetJournalChild',
-    //             type: 'GET',
-    //             data: { journalRefNo: journalRefNo },
-    //             success: function (data) {
-    //                 const entry = data.find(d => d.JournalRefNo === journalRefNo); // optional check
-    //                 debugger;
-    //                 if (entry) {
+                        }
 
 
-    //                     const gridInstance = $("#dataGrid").dxDataGrid("instance");
-    //                     gridInstance.option("dataSource", data);
-    //                 } else {
-    //                     DevExpress.ui.notify("No entry found with the given reference number.", "warning", 3000);
-    //                 }
-    //             },
-    //             error: function () {
-    //                 DevExpress.ui.notify("Failed to load journal entry from URL.", "error", 3000);
-    //             }
-    //         });
-    //     } else {
-    //         // DevExpress.ui.notify("Journal Reference Number is missing in the URL.", "error", 3000);
-    //     }
-    // }
+                        getchilddatas();
+                    } else {
+                        DevExpress.ui.notify("No entry found with the given reference number.", "warning", 3000);
+                    }
+                },
+                error: function () {
+                    DevExpress.ui.notify("Failed to load journal entry from URL.", "error", 3000);
+                }
+            });
+        } else {
+            // DevExpress.ui.notify("Journal Reference Number is missing in the URL.", "error", 3000);
+        }
+    });
+
+    function getchilddatas() {
+        claimRefNo = getUrlParameter('claimRefNo');
+        if (claimRefNo) {
+            $.ajax({
+                url: '/api/ExpenseClaim/GetClaimChild',
+                type: 'GET',
+                data: { claimRefNo: claimRefNo },
+                success: function (data) {
+                    const entry = data.find(d => d.ClaimRefNo === claimRefNo); // optional check
+                    debugger;
+                    if (entry) {
+
+
+                        const gridInstance = $("#dataGrid").dxDataGrid("instance");
+                        gridInstance.option("dataSource", data);
+                    } else {
+                        DevExpress.ui.notify("No entry found with the given reference number.", "warning", 3000);
+                    }
+                },
+                error: function () {
+                    DevExpress.ui.notify("Failed to load journal entry from URL.", "error", 3000);
+                }
+            });
+        } else {
+            // DevExpress.ui.notify("Journal Reference Number is missing in the URL.", "error", 3000);
+        }
+    }
     
     
     function onRadioGroupValueChanged(e) {
@@ -1454,7 +1479,8 @@
 
         var VM = {
             ClaimRefNo: $("#VoucherNo").dxTextBox("instance").option("value"),
-            ClaimDate: $("#claimerdate").dxDateBox("instance").option("value"),
+            ClaimDate: $("#claimerdate").dxDateBox("instance").option("value")|| new Date(),
+            ClaimEffectiveDate:$("#claimerEffectiveDate").dxDateBox("instance").option("value")|| new Date(),
             ProjectClaimedFor: paymentaccheadId,
             ClaimRemarks: $("#txtEntryNarration").dxTextArea("instance").option("value"),
             ExpenseDetails: gridData // 🔁 Add the grid rows here
@@ -1695,10 +1721,15 @@ function proceedWithSubmit() {
         contentType: "application/json; charset=utf-8",
         success: function (response) {
             if (response.success) {
-                $("#SubmittedBytext").dxTextBox("instance").option("value", response.submittedBy);
-                $("#SubmittedOnDate").dxTextBox("instance").option("value", response.submittedOn);
-                $("#IsSubmitted").dxCheckBox("instance").option("value", true);
-                DevExpress.ui.notify("Claim submitted successfully.", "success", 2000);
+                    DevExpress.ui.dialog.alert("Claim has been submitted to finance for Approval.", "Submit Successfull")
+                        .done(function () {
+                            $("#SubmittedBytext").dxTextBox("instance").option("value", response.submittedBy);
+                            $("#SubmittedOnDate").dxTextBox("instance").option("value", response.submittedOn);
+                            $("#IsSubmitted").dxCheckBox("instance").option("value", true);
+
+                            disableclaim();
+
+                        });
             } else {
                 DevExpress.ui.notify("Submission failed.", "error", 2000);
             }
@@ -1780,6 +1811,40 @@ function generateVoucherNo() {
     });
 }
 
+    function disableclaim() {
+        // 🔒 Disable DateBoxes and TextArea
+        $("#claimerdate").dxDateBox("instance").option("disabled", true);
+        $("#claimerEffectiveDate").dxDateBox("instance").option("disabled", true);
+        $("#txtEntryNarration").dxTextArea("instance").option("disabled", true);
 
+        // 🔒 Disable DataGrid editing
+        $("#dataGrid").dxDataGrid("instance").option("editing", {
+            allowUpdating: false,
+            allowDeleting: false,
+            mode: "cell",
+            useIcons: true
+        });
+
+        // 🔒 Disable all buttons except #btnjournalBack
+        $("button").not("#btnExpenceBack").prop("disabled", true);
+
+        // If your DevExtreme buttons are not native <button> elements, use this instead:
+        $(".dx-button").each(function () {
+            const $btn = $(this);
+            if (!$btn.closest("#btnExpenceBack").length) {
+                $btn.dxButton("instance").option("disabled", true);
+            }
+        });
+        // 🔒 Wait for grid content to be rendered and disable cell buttons
+        setTimeout(function () {
+            $("#dataGrid").find(".dx-button").each(function () {
+                const instance = $(this).dxButton("instance");
+                if (instance) {
+                    instance.option("disabled", true);
+                }
+            });
+        }, 100);
+
+    }
 
 </script>

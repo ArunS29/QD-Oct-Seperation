@@ -268,6 +268,52 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
+        [HttpGet]
+        public async Task<ActionResult> GetNewPaymentNo()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                string userId = HttpContext.Session.GetString("UserId") ?? "000";
+                string voucherString = "SRQ-" + userId + "-";
+                string strNewReceiptNo;
+
+                // SQL query with interpolated string
+                string likePattern = voucherString + "%";
+
+                try
+                {
+                    // Use raw SQL query to fetch the maximum voucher number
+                    var result = await dbContext.VoucherResults
+                        .FromSqlInterpolated($@"
+     SELECT MAX(CAST(RIGHT(ClaimRefNo, 5) AS INT)) AS MaxVoucherNo
+     FROM tbl20103ExpenseClaimChild
+     WHERE ClaimRefNo LIKE {likePattern}")
+                        .ToListAsync();
+
+                    int maxVoucherNo = result.FirstOrDefault()?.MaxVoucherNo ?? 0;
+
+                    int newVoucherNo = maxVoucherNo + 1;
+
+                    // Format the new voucher number with leading zeros
+                    strNewReceiptNo = "00000" + newVoucherNo.ToString();
+                    strNewReceiptNo = strNewReceiptNo.Substring(strNewReceiptNo.Length - 5);
+
+                    // Concatenate with the voucher string
+                    strNewReceiptNo = voucherString + strNewReceiptNo;
+                }
+                catch (Exception)
+                {
+                    // Handle cases where there's no existing voucher number
+                    strNewReceiptNo = voucherString + "00001";
+                }
+
+                return Json(strNewReceiptNo);
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
         [HttpGet]
         public IActionResult GetSupplierpayment()
         {
@@ -353,6 +399,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 {
                     // ✅ Update master record
                     existingMaster.ClaimDate = model.ClaimDate;
+                    existingMaster.ClaimEffectiveDate = model.ClaimEffectiveDate;
                     existingMaster.ProjectClaimedFor = model.ProjectClaimedFor;
                     existingMaster.ClaimRemarks = model.ClaimRemarks;
                     existingMaster.ClaimModifiedBy = userName;
@@ -366,6 +413,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     {
                         ClaimRefNo = model.ClaimRefNo,
                         ClaimDate = model.ClaimDate,
+                        ClaimEffectiveDate = model.ClaimEffectiveDate,
                         ProjectClaimedFor = model.ProjectClaimedFor,
                         ClaimRemarks = model.ClaimRemarks,
                         ClaimerId = claimerId,
@@ -632,8 +680,79 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Json(new { exists = false });
         }
-        
+        [HttpGet]
+        public async Task<ActionResult> GetClaimmaster(string claimRefNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var result = await dbContext.Tbl20102ExpenseClaimMasters
+                                    .Where(x => x.ClaimRefNo == claimRefNo)
+                                    .ToListAsync();
 
+                    if (result != null && result.Any())
+                    {
+                        return Json(result);
+                    }
+
+                    return Json(new { success = false, message = "No child records found." });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetJournalChild: {ex.Message}");
+                    return Json(new { success = false, message = "An error occurred while fetching child records." });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpGet]
+        public async Task<ActionResult> GetClaimChild(string claimRefNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var result = await dbContext.Tbl20103ExpenseClaimChildren
+    .Where(x => x.ClaimRefNo == claimRefNo)
+    .Select(x => new {
+        x.ClaimRefNo,
+        x.ExpenseDescription,
+        x.BillRefNo,
+        x.BillDate,
+        x.ClaimedAmount,
+        x.ApprovedAmount,
+        x.AccountId,
+        x.CostCenterCode,
+        AccountHead = dbContext.Tbl201ChartOfAccounts
+                        .Where(a => a.AccountId == x.AccountId)
+                        .Select(a => a.AccountHead)
+                        .FirstOrDefault(),
+        CostAllocationUnit = dbContext.Tbl201CostAllocationUnits
+                        .Where(c => c.CostAllocationUnitId == x.CostCenterCode)
+                        .Select(c => c.CostAllocationUnit)
+                        .FirstOrDefault()
+    })
+    .ToListAsync();
+
+
+                    if (result != null && result.Any())
+                    {
+                        return Json(result);
+                    }
+
+                    return Json(new { success = false, message = "No child records found." });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetJournalChild: {ex.Message}");
+                    return Json(new { success = false, message = "An error occurred while fetching child records." });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
 
     }
 }

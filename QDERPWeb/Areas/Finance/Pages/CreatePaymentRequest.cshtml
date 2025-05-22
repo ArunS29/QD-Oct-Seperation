@@ -1,5 +1,5 @@
 ﻿@page
-@model QD.ERP.Web.Areas.Finance.Pages.PettyCashRequestModel
+@model QD.ERP.Web.Areas.Finance.Pages.CreatePaymentRequestModel
 @{
 }
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
@@ -7,6 +7,137 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <style>
+    .dx-button-mode-contained.dx-button-default .dx-icon{
+        color: var(--title-background-color);
+    }
+    .form-container {
+        padding: 5px;
+        border-radius: 8px;
+        background-color: white;
+        max-width: 900px;
+        margin: auto;
+        color:black;
+    }
+
+    table {
+        width: 100%;
+        border-spacing: 5px;
+    }
+
+        table td, th {
+            vertical-align: top;
+            padding: 3px;
+        }
+
+    input[type="text"], textarea {
+        width: 100%;
+        padding: 2px;
+        box-sizing: border-box;
+        border-radius: 2px;
+        border: 1px solid #ccc;
+        color: black;
+    }
+
+    textarea {
+        resize: none;
+    }
+
+    .btn {
+        background-color: #d4e6fb;
+        color: #000;
+        padding: 8px 16px;
+        margin-right: 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        width:100%;
+    }
+
+    .add-btn {
+        background-color: #d4e6fb;
+        color: #000;
+        padding: 5px 12px;
+        border: none;
+        margin-left: 10px;
+        cursor: pointer;
+        font-size: 20px;
+        vertical-align: top;
+    }
+
+    .narration-cell {
+        position: relative;
+    }
+
+    /* .narration-cell a { */
+    /*     a {
+                    position: absolute;
+                    right: 70px;
+                    top: 8px;
+                    color: white;
+                    text-decoration: underline;
+                    font-size: 14px;
+                    cursor: pointer;
+                } */
+
+    .highlight {
+        background-color: #ffffb3;
+    }
+
+    /* New styles for labels above inputs */
+    .input-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+        .input-group label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: black;
+        }
+
+    flex-row {
+        display: flex;
+        align-items: end;
+    }
+    .dropdown-box {
+        position: absolute;
+        background-color: #ffffff;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 16px;
+        width: 50%;
+        z-index: 9999;
+    }
+
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+    }
+
+    .col {
+        flex: 1;
+        padding: 0 8px;
+        min-width: 180px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 4px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .actions {
+        justify-content: flex-end;
+    }
+
+        .actions .col {
+            text-align: right;
+        }
+
     .overlay {
         display: none;
         position: fixed;
@@ -27,15 +158,20 @@
     #dataGrid .dx-row.dx-data-row:last-child {
         background-color: #f9f9f9; /* Light background to highlight empty row */
     }
+    .displayFlex{
+        display:flex;
+    }
 
-    .displayFlex {
-        display: flex;
+    .card-button .dx-icon {
+        color: white; /* Bootstrap primary blue */
+        background-color: #007BFF;
+        border: 1px solid #007BFF; /* optional: add a border for visibility */
     }
 </style>
 
 <div class="title">
     <div class="header-container">
-        <div id="PettyCashRequest" class="no-border-title"></div>
+        <div id="ExpensesClaimRequest" class="no-border-title"></div>
     </div>
 </div>
 
@@ -76,10 +212,10 @@
                 .Label("Claim Remarks:")
                 .LabelMode(EditorLabelMode.Outside)
                 .ID("txtEntryNarration")
-                .Value("Petty Cash Request for the month of ")
+                .Value("")
                 .Height(150)
                 .Width(720)
-                
+                .Placeholder("Enter your comments here...")
                 .MaxLength(500)
                 )
         </div>
@@ -180,14 +316,24 @@
             .OnValueChanged("onApprovedAmountChanged")
             .Format("#,##0.00")
             )
-        </text>); // ✅ Fix applied
+        </text>);
+                columns.Add().Caption("Action").Width(120)
+            .CellTemplate(@<text>
+            <div class="dropdown-wrapper">
+                @(Html.DevExtreme().Button()
+                .Icon("card")
+                .Type(ButtonType.Default)
+                .OnClick("onCardClick"))
+            </div>
+        </text>);
+
                 columns.AddFor(m => m.AccountId).DataField("AccountHead").Caption("Account Ledger").Width(300)
             .CellTemplate(@<text>
             <span>
                 <% if (data.AccountHead) { %>
                 <%= data.AccountHead %>
                 <% } else { %>
-                <span style="color: black;">&lt;select Petty Cash&gt;</span>
+                <span style="color: black;">&lt;select Account Ledger&gt;</span>
                 <% } %>
             </span>
         </text>)
@@ -196,7 +342,7 @@
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 @(Html.DevExtreme().DropDownBox()
                 .DataSource(d => d.WebApi().Controller("VoucherEntryCashReceipts")
-                .LoadAction("GetReceivingAccount")
+                .LoadAction("GetEditAccountHead")
                 .LoadMode(DataSourceLoadMode.Raw)
                 .Key("AccountId"))
                 .LabelMode(EditorLabelMode.Outside)
@@ -208,7 +354,7 @@
                 .OnValueChanged("gridLedger_valueChanged")
                 .ValueExpr("AccountId")
                 .DisplayExpr("AccountHead")
-                .Placeholder("Select Petty Cash")
+                .Placeholder("Select AccountHead")
                 .Width(350)
                 .DropDownOptions(o => o.Width(800))
                 .Value(new JS("data.AccountId"))
@@ -265,6 +411,7 @@
             .AllowColumnResizing(true)
             .ColumnFixing(fixing => fixing.Enabled(true))
             .Height(250)
+            .Width("100%")
             .ColumnAutoWidth(true)
             .ShowBorders(true)
             .RowAlternationEnabled(true)
@@ -294,7 +441,7 @@
                 <div class="row">
                     <div class="displayFlex">
                         @(Html.DevExtreme().CheckBox()
-                            .ID("IsSubmitted")
+                            .ID("IsSubmitted").Disabled(true)
                             )<span style="margin-left:5px">Submitted By:</span>
                         @(Html.DevExtreme().TextBox()
                             .ID("SubmittedBytext")
@@ -314,7 +461,7 @@
 
                 <div class="displayFlex">
                     @(Html.DevExtreme().CheckBox()
-                        .ID("IsApproved")
+                        .ID("IsApproved").Disabled(true)
                         )<span style="margin-left:5px">Approved By:</span>
                     @(Html.DevExtreme().TextBox()
                         .ID("ApprovedBytext")
@@ -361,8 +508,8 @@
                                 .Label("Type of Claim:")
                                 .ID("ClaimType")
                                 .LabelMode(EditorLabelMode.Outside)
-                                .DataSource(new[] { "Petty Cash Request" })
-                                .Value("Petty Cash Request")
+                                .DataSource(new[] { "Expenses Claim Request" })
+                                .Value("Expenses Claim Request")
                                 .Disabled(true)
                                 .Width(200)
 
@@ -376,7 +523,7 @@
 
                             @(
                                 Html.DevExtreme().TextBox()
-                                .ID("ClaimRefNo11")
+                                .ID("GeneratedVoucher")
                                 .Value(null)
                                 //.OnValueChanged("onVoucherNoChanged")
                                 .ReadOnly(true)
@@ -411,10 +558,10 @@
                             <label for="SalesInvoiceNo"></label>
                             @(
                                 Html.DevExtreme().TextBox()
-                                .ID("VoucherNo1")
+                                .ID("GenerateVoucher")
                                 .Value(null)
-                                @* .OnValueChanged("onVoucherNoChanged") *@
-                                .Disabled(true)
+
+                                .ReadOnly(true)
                                 )
                         </div>
                     </div>
@@ -471,21 +618,15 @@
             </div>
             <div class="col-md-3">
                 <div class="form-group" style="padding-top:40px;">
-                    @*  @(Html.DevExtreme().Button()
-                    .ID("btnAttachment")
-                    .Icon("fa fa-book")
-                    .Text("Pay the Claim")
-                    .Height(100)
-                    .Width(130)
-                    ) *@
+
                     @(Html.DevExtreme().Button()
                         .ID("btnPaytheClaim")
                         .Text("Pay the Claim")
                         .Icon("money")
                         .ElementAttr(new { @class = "bold-button" })
-                        .OnClick("addRow")
                         .Height(300)
                         .Width(170)
+                        .OnClick("generateVoucherNo")
                         )
                 </div>
             </div>
@@ -619,7 +760,7 @@
                         .ID("accountDropDownBoxeditGrid")
                         .DataSource(d => d.WebApi()
                         .Controller("VoucherEntryCashReceipts")
-                        .LoadAction("GetReceivingAccount")
+                        .LoadAction("GetEditAccountHead")
                         .LoadMode(DataSourceLoadMode.Raw)
                         .Key("AccountHead")
                         )
@@ -714,8 +855,170 @@
 
                             )
 }
+<div id="floatingDropdownForm" class="dropdown-box" style="display: none;">
+    <div class="form-container">
+        <table>
+            <tr>
+                <td>
+                    <button class="btn">Calculate VAT</button>
+                </td>
+                <td>
+                    <button class="btn">Save Entry</button>
+                </td>
+                <td colspan="2">
+                    <div class="input-group">
+                        <label>Tax Percentage</label>
+                        <div id="taxPercentage"></div>
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <div class="input-group">
+                        <label>Taxable Amount</label>
+                        <input type="text" />
+                    </div>
+                </td>
+                <td>
+                    <div class="input-group">
+                        <label>VAT Amount</label>
+                        <input type="text" />
+                    </div>
+                </td>
+                <td>
+                    <div class="input-group">
+                        <label>Round Off</label>
+                        <input type="text" class="highlight" />
+                    </div>
+                </td>
+                <td>
+                    <div class="input-group">
+                        <label>Bill Amount</label>
+                        <input type="text" />
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="2>
+                    <div class="input-group">
+                        <label>Supplier Name</label>
+                        <div id="supplierName"></div>
+                    </div>
+                </td>
+                <td colspan="2">
+                    <div class="input-group">
+                        <label>Supplier Name In Arabic</label>
+                        <input type="text" />
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="2">
+                    <div class="input-group">
+                        <label>Supplier VAT No</label>
+                        <input type="text" />
+                    </div>
+                </td>
+                <td colspan="2">
+                    <div class="input-group">
+                        <label>Purchaser Name</label>
+                        <div id="purchaserName"></div>
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="2">
+                    <label>Line Narration</label>
+                </td>
+                <td colspan="2">
+                    <a href="#">Use Expense Description</a>
+                    <button class="add-btn">+</button>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4" class="narration-cell">
+                    <textarea rows="3"></textarea>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="2">
+                    <div class="input-group">
+                        <label>Cost Allocation for Employees</label>
+                        <div id="costEmployees"></div>
+                    </div>
+                </td>
+                <td colspan="2">
+                    <div class="input-group">
+                        <label>Cost Allocation for Property/Equipments</label>
+                        <div id="costProperty"></div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
 <script>
-    let paymentaccheadId;
+            function onCardClick(e) {
+                    const $dropdown = $("#floatingDropdownForm");
+
+                    const buttonOffset = $(e.element).offset();
+                    const buttonHeight = $(e.element).outerHeight();
+
+                    $dropdown.css({
+                        top: buttonOffset.top + buttonHeight + 5,
+                        left: buttonOffset.left
+                    });
+
+                    $(".dropdown-box").not($dropdown).hide(); // hide other dropdowns
+                    $dropdown.show();
+                }
+
+                function closeDropdownForm() {
+                    $("#floatingDropdownForm").hide();
+                }
+
+                    $(function() {
+                    $("#taxPercentage").dxSelectBox({
+                        dataSource: ["5%", "10%", "15%"],
+                        showClearButton: true
+                    });
+
+                    $("#supplierName").dxSelectBox({
+                        dataSource: ["Supplier A", "Supplier B", "Supplier C"],
+                        searchEnabled: true,
+                        showClearButton: true
+                    });
+
+                    $("#purchaserName").dxSelectBox({
+                        dataSource: ["Purchaser X", "Purchaser Y"],
+                        searchEnabled: true,
+                        showClearButton: true
+                    });
+
+                    $("#costEmployees").dxSelectBox({
+                        dataSource: ["Employee 1", "Employee 2"],
+                        searchEnabled: true,
+                        showClearButton: true
+                    });
+
+                    $("#costProperty").dxSelectBox({
+                        dataSource: ["Equipment A", "Equipment B"],
+                        searchEnabled: true,
+                        showClearButton: true
+                    });
+                });
+                $(document).on("click", function (e) {
+                    if (!$(e.target).closest(".dropdown-box, .dx-button").length) {
+                        closeDropdownForm();
+                    }
+                });
+        let paymentaccheadId;
         function dropDownBoxOnInput(e) {
             const ddbInstance = e.component;
             if (!ddbInstance.option("opened")) ddbInstance.open();
@@ -787,20 +1090,7 @@
             }
 
         }
-        function addRow() {
-            Swal.fire({
-                title: 'Confirm Payment',
-                text: "Are you sure you want to pay the claim?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, pay it!',
-                cancelButtonText: 'No, cancel!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire('Paid!', 'The claim has been paid.', 'success');
-                }
-            });
-        }
+
         function dropDownBoxOnInput(e) {
             const ddbInstance = e.component;
             if (!ddbInstance.option("opened")) ddbInstance.open();
@@ -976,27 +1266,165 @@
                 e.rowElement.css("background-color", "rgb(255, 192, 192)"); // Light Red Color
             }
         }
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            let regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+            let results = regex.exec(location.search);
+            return results === null ? null : decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+
         $(document).ready(function () {
-          $(function () {
-        $.ajax({
-            url: "/api/ExpenseClaim/GetNewPettyNo",
-            type: 'GET',
-            success: function (data) {
-                // Set the value in the VoucherNo TextBox
-                $("#VoucherNo").dxTextBox("instance").option("value", data);
+            const voucherNoField = $("#VoucherNo").dxTextBox("instance");
+            const voucherNoFromUrl = getUrlParameter('claimRefNo');
 
-                // Retrieve the value from the TextBox
-                var popvno = $("#VoucherNo").dxTextBox("instance").option("value");
+            if (voucherNoFromUrl) {
+                // ✅ Bind voucher number from URL
+                voucherNoField.option("value", voucherNoFromUrl);
+            } else {
+                // ❌ If not available, generate new one
+                $.ajax({
+                    url: '@Url.Action("GetNewPaymentNo", "ExpenseClaim")',
+                    type: 'GET',
+                    success: function (data) {
+                        voucherNoField.option("value", data);
+                    },
+                    error: function () {
+                        alert("Error generating voucher number.");
+                    }
+                });
+            }
 
-            },
-            error: function (xhr, status, error) {
-                console.error("Error loading Voucher No:", error);
+            // Helper to extract URL parameter
+            function getUrlParameter(name) {
+                name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+                const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+                const results = regex.exec(window.location.search);
+                return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
             }
         });
-    });
+        let claimRefNo = null;
+        $(document).ready(function () {
+            claimRefNo = getUrlParameter('claimRefNo');
+            var button = $("#btnSave").dxButton("instance");
+            if (claimRefNo) {
+                button.option("text", "Update");
+            }
+
+            if (claimRefNo) {
+                $.ajax({
+                    url: '/api/ExpenseClaim/GetClaimmaster',
+                    type: 'GET',
+                    data: { claimRefNo: claimRefNo },
+                    success: function (data) {
+                        const entry = data.find(d => d.ClaimRefNo === claimRefNo); // optional check
+                        debugger;
+                        if (entry) {
+                            $("#VoucherNo").dxTextBox("instance").option("value", entry.ClaimRefNo);
+                            $("#claimerdate").dxDateBox("instance").option("value", entry.ClaimDate);
+                            $("#claimerEffectiveDate").dxDateBox("instance").option("value", entry.ClaimEffectiveDate ? new Date(entry.ClaimEffectiveDate) : new Date());
+                            $("#txtEntryNarration").dxTextArea("instance").option("value", entry.ClaimRemarks);
+                            $("#accountDropDownBox").dxDropDownBox("instance").option("value", entry.ProjectClaimedFor);
+                            $("#IsSubmitted").dxCheckBox("instance").option("value", entry.IsSubmittedToFinance || false);
+                            $("#SubmittedBytext").dxTextBox("instance").option("value", entry.SubmittedBy || "");
+                            $("#IsVerified").dxCheckBox("instance").option("value", entry.IsVerified || false);
+                            $("#VerifiedBytext").dxTextBox("instance").option("value", entry.VerifiedBy || "");
+                            $("#IsApproved").dxCheckBox("instance").option("value", entry.IsApproved || false);
+                            $("#ApprovedBytext").dxTextBox("instance").option("value", entry.ApprovedBy || "");
+                            $("#IsPaid").dxCheckBox("instance").option("value", entry.IsPosted || false);
+                            $("#paidBytext").dxTextBox("instance").option("value", entry.PostedBy || "");
+                            var submittedDate = entry.SubmittedOn ? new Date(entry.SubmittedOn) : null;
+                            var formattedsubmittedDate = submittedDate
+                                ? submittedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+                                : "";
+
+                            $("#SubmittedOnDate").dxTextBox("instance").option("value", formattedsubmittedDate);
+                            var verifiedDate = entry.VerifiedOn ? new Date(entry.VerifiedOn) : null;
+                            var formattedDate = verifiedDate
+                                ? verifiedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+                                : "";
+
+                            $("#VerifiedOntext").dxTextBox("instance").option("value", formattedDate);
+                            var approvedDate = entry.ApprovedOn ? new Date(entry.ApprovedOn) : null;
+                            var formattedApprovedDate = approvedDate
+                                ? approvedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+                                : "";
+
+                            $("#ApprovedOntext").dxTextBox("instance").option("value", formattedApprovedDate);
+                            var postedDate = entry.PostedOn ? new Date(entry.PostedOn) : null;
+                            var formattedPostedDate = postedDate
+                                ? approvedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+                                : "";
+
+                            $("#paidOntext").dxTextBox("instance").option("value", formattedPostedDate);
+                            $("#GeneratedVoucher").dxTextBox("instance").option("value", entry.PaymentVoucherNo);
+                            // // Disable DevExtreme buttons based on submission and verification date
+                            // const btnSubmit = $("#btnSubmit").dxButton("instance");
+                            // const btnVerify = $("#btnVerify").dxButton("instance");
+                            // const btnPostJournal = $("#btnPostJournal").dxButton("instance");
+
+                            // if (formattedsubmittedDate) {
+                            //     btnSubmit.option("disabled", true);
+                            //     btnPostJournal.option("disabled", true);
+                            // }
+
+                            // if (formattedDate) {
+                            //     btnSubmit.option("disabled", true);
+                            //     btnVerify.option("disabled", true);
+                            //     btnPostJournal.option("disabled", true);
+                            // }
+                            // if (formattedApprovedDate) {
+                            //     disable();
+                            //     btnPostJournal.option("disabled", false);
+                            // }
+                            // if (formattedPostedDate) {
+                            //     disable();
+
+                            // }
 
 
+                            getchilddatas();
+                        } else {
+                            DevExpress.ui.notify("No entry found with the given reference number.", "warning", 3000);
+                        }
+                    },
+                    error: function () {
+                        DevExpress.ui.notify("Failed to load journal entry from URL.", "error", 3000);
+                    }
+                });
+            } else {
+                // DevExpress.ui.notify("Journal Reference Number is missing in the URL.", "error", 3000);
+            }
         });
+
+        function getchilddatas() {
+            claimRefNo = getUrlParameter('claimRefNo');
+            if (claimRefNo) {
+                $.ajax({
+                    url: '/api/ExpenseClaim/GetClaimChild',
+                    type: 'GET',
+                    data: { claimRefNo: claimRefNo },
+                    success: function (data) {
+                        const entry = data.find(d => d.ClaimRefNo === claimRefNo); // optional check
+                        debugger;
+                        if (entry) {
+
+
+                            const gridInstance = $("#dataGrid").dxDataGrid("instance");
+                            gridInstance.option("dataSource", data);
+                        } else {
+                            DevExpress.ui.notify("No entry found with the given reference number.", "warning", 3000);
+                        }
+                    },
+                    error: function () {
+                        DevExpress.ui.notify("Failed to load journal entry from URL.", "error", 3000);
+                    }
+                });
+            } else {
+                // DevExpress.ui.notify("Journal Reference Number is missing in the URL.", "error", 3000);
+            }
+        }
+
+
         function onRadioGroupValueChanged(e) {
         let selectedValue = e.value;
         let loadAction = selectedValue === "Cash Payment" ? "GetCPPaymentAccounts" : "GetBPPaymentAccounts";
@@ -1015,16 +1443,8 @@
             loadUrl: "/api/VoucherMaster/" + loadAction
         }));
     }
-     $(function () {
-                $("#PettyCashRequest").dxTextBox({
-                    text: formatMessage("Petty Cash Request"),
-                readOnly: true,
-                onContentReady: function (e) {
-                    $(e.element).addClass("dx-textbox-heading");
-                }
-            });
-        });
-    $("#btnSave").on("click", function (e) {
+
+             $("#btnSave").on("click", function (e) {
         e.preventDefault();
 
         var dataGrid = $("#dataGrid").dxDataGrid("instance");
@@ -1035,8 +1455,8 @@
 
             var VM = {
                 ClaimRefNo: $("#VoucherNo").dxTextBox("instance").option("value"),
-                ClaimDate: $("#claimerdate").dxDateBox("instance").option("value"),
-                ClaimEffectiveDate: $("#claimerEffectiveDate").dxDateBox("instance").option("value") || new Date(),
+                ClaimDate: $("#claimerdate").dxDateBox("instance").option("value")|| new Date(),
+                ClaimEffectiveDate:$("#claimerEffectiveDate").dxDateBox("instance").option("value")|| new Date(),
                 ProjectClaimedFor: paymentaccheadId,
                 ClaimRemarks: $("#txtEntryNarration").dxTextArea("instance").option("value"),
                 ExpenseDetails: gridData // 🔁 Add the grid rows here
@@ -1051,11 +1471,11 @@
                 success: function (response) {
                     if (response.success) {
                         DevExpress.ui.dialog.alert(
-                            "Petty Cash Request Details updated Successfully.",
+                            "Expense Claim Request Details updated Successfully.",
                             "Update Successful"
                         );
                         var button = $("#btnSave").dxButton("instance");
-                        button.option("text", "Update");
+                            button.option("text", "Update");
                     } else {
                         alert("Update failed: " + response.message);
                     }
@@ -1108,11 +1528,11 @@
                 success: function (response) {
                     if (response.success) {
                         DevExpress.ui.dialog.alert(
-                            "Petty Cash Request Details Updated Sucessfully.",
-                            "Data Saved Successfully"
-                        ).done(function () {
-                            history.back(); // Go back to the previous page
-                        });
+                                "Expenses Claim Request Details Updated Sucessfully.",
+                                "Data Saved Successfully"
+                            ).done(function () {
+                                history.back(); // Go back to the previous page
+                            });
                     } else {
                         alert("Update failed: " + response.message);
                     }
@@ -1139,7 +1559,7 @@
         }
     });
 
-    function onClaimedAmountChanged(e) {
+           function onClaimedAmountChanged(e) {
 
         const grid = $("#dataGrid").dxDataGrid("instance");
 
@@ -1180,8 +1600,9 @@
     }
     $("#btnSubmit").on("click", function (e) {
         e.preventDefault();
+
         const voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
-        const grid = $("#dataGrid").dxDataGrid("instance");
+         const grid = $("#dataGrid").dxDataGrid("instance");
         const data = grid.getDataSource().items();
 
         const hasValidAmounts = data.some(row => {
@@ -1189,7 +1610,7 @@
         });
 
         if (!hasValidAmounts) {
-            DevExpress.ui.dialog.alert("Please check your Claim Request, no amount to submit the claim", "Warning");
+            DevExpress.ui.dialog.alert("Please check your Claim Request, no amount to submit the claim", "Claim Amount Invalid");
             return;
         }
         // Step 1: Check if ClaimRefNo exists in the DB
@@ -1197,15 +1618,15 @@
             url: '/api/ExpenseClaim/CheckClaimRefNo',
             method: 'POST',
             data: JSON.stringify({ ClaimRefNo: voucherNo }),
-            contentType: "application/json; charset=utf-8",
+        contentType: "application/json; charset=utf-8",
             success: function (response) {
                 if (!response.exists) {
 
 
-                    // Optional delay to allow save to complete before proceeding
 
-                    savedetails(); // Step 3: Call actual submit
-                    // Adjust time if needed
+
+                        savedetails();
+                     // Adjust time if needed
                 } else {
                     // If exists, go straight to submit
                     proceedWithSubmit();
@@ -1216,8 +1637,8 @@
             }
         });
     });
-    function savedetails() {
-        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        function savedetails(){
+            var dataGrid = $("#dataGrid").dxDataGrid("instance");
         var rowCount = dataGrid.getVisibleRows().length;
 
         if (rowCount !== 0) {
@@ -1239,7 +1660,7 @@
                 dataType: "json",
                 success: function (response) {
                     if (response.success) {
-                        proceedWithSubmit();
+                         proceedWithSubmit();
                     } else {
                         alert("Update failed: " + response.message);
                     }
@@ -1264,19 +1685,21 @@
                 );
             }
         }
-    }
+        }
     function proceedWithSubmit() {
+
         const voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
 
         $.ajax({
             url: '/api/ExpenseClaim/SubmitClaim',
             method: 'POST',
-            data: JSON.stringify({ ClaimRefNo: voucherNo }),
+             data: JSON.stringify({ ClaimRefNo: voucherNo }),
             contentType: "application/json; charset=utf-8",
             success: function (response) {
                 if (response.success) {
                     $("#SubmittedBytext").dxTextBox("instance").option("value", response.submittedBy);
                     $("#SubmittedOnDate").dxTextBox("instance").option("value", response.submittedOn);
+                    $("#IsSubmitted").dxCheckBox("instance").option("value", true);
                     DevExpress.ui.notify("Claim submitted successfully.", "success", 2000);
                 } else {
                     DevExpress.ui.notify("Submission failed.", "error", 2000);
@@ -1287,4 +1710,78 @@
             }
         });
     }
+
+    function generateVoucherNo() {
+        const selectedPaymentType = $("#radioGroup").dxRadioGroup("instance").option("value");
+        const grid = $("#dataGrid").dxDataGrid("instance");
+        const data = grid.getDataSource().items();
+        const claimRefNo = $("#VoucherNo").dxTextBox("instance").option("value");
+
+        const hasValidAmounts = data.some(row => {
+            return (row.ClaimedAmount && row.ClaimedAmount > 0) || (row.ApprovedAmount && row.ApprovedAmount > 0);
+        });
+        const hasValidAccount = data.some(row => {
+            return (row.AccountId);
+        });
+        const hasValidCost = data.some(row => {
+            return (row.CostCenterCode);
+        });
+        if (!hasValidAmounts) {
+            DevExpress.ui.dialog.alert("Please check your Claim Request, no amount to submit the claim", "Claim Amount Invalid");
+            return;
+        }
+
+        if (!claimRefNo) {
+            DevExpress.ui.dialog.alert("Claim Reference No. is missing.", "Missing Reference");
+            return;
+        }
+
+        // Step 1: Check if IsApproved = true using API
+        $.ajax({
+            url: `/api/ExpenseClaim/IsClaimApproved?claimRefNo=${encodeURIComponent(claimRefNo)}`,
+            method: "GET",
+            success: function (isApproved) {
+                if (!isApproved) {
+                    DevExpress.ui.dialog.alert("Claim is not yet Approved , Please get it approved and continue for Payment.", "Approval Required");
+                    return;
+                }
+                if (!hasValidAccount) {
+            DevExpress.ui.dialog.alert("Please review the Claim, Some Ledger Account is not chosen", "Choose Ledger Accounts");
+            return;
+        }
+        if (!hasValidCost) {
+            DevExpress.ui.dialog.alert("Please review the Claim, Some Cost Center Code is not chosen", "Choose Cost Center");
+            return;
+        }
+                // Step 2: Proceed with voucher number generation
+                let apiUrl = "";
+                if (selectedPaymentType === "Cash Payment") {
+                    apiUrl = "/api/ExpenseClaim/GetNewCPVoucherNo";
+                } else if (selectedPaymentType === "Bank Payment") {
+                    apiUrl = "/api/ExpenseClaim/GetNewBPVoucherNo";
+                } else {
+                    DevExpress.ui.notify("Please select a payment type.", "warning", 2000);
+                    return;
+                }
+
+                $.ajax({
+                    url: apiUrl,
+                    method: "GET",
+                    success: function (data) {
+                        $("#GenerateVoucher").dxTextBox("instance").option("value", data);
+
+                    },
+                    error: function () {
+                        DevExpress.ui.notify("Failed to generate voucher number.", "error", 2000);
+                    }
+                });
+            },
+            error: function () {
+                DevExpress.ui.dialog.alert("Failed to check claim approval status.", "Error");
+            }
+        });
+    }
+
+
+
 </script>

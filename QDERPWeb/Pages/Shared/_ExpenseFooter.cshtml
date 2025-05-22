@@ -502,10 +502,15 @@
             contentType: "application/json; charset=utf-8",
             success: function (response) {
                 if (response.success) {
-                                $("#VerifiedOntext").dxTextBox("instance").option("value", response.verifiedBy);
-                                $("#VerifiedBytext").dxTextBox("instance").option("value", response.verifiedOn);
-                                $("#IsVerified").dxCheckBox("instance").option("value", true);
-                    DevExpress.ui.notify("Claim Verified successfully.", "success", 2000);
+                    DevExpress.ui.dialog.alert("Claim has been Verified for Approval.", "Verified Successfull")
+                        .done(function () {
+                            $("#VerifiedOntext").dxTextBox("instance").option("value", response.verifiedBy);
+                            $("#VerifiedBytext").dxTextBox("instance").option("value", response.verifiedOn);
+                            $("#IsVerified").dxCheckBox("instance").option("value", true);
+
+                            disableclaim();
+
+                        });
                 } else {
                     DevExpress.ui.notify("Submission failed.", "error", 2000);
                 }
@@ -615,10 +620,15 @@
                 contentType: "application/json; charset=utf-8",
                 success: function (response) {
                     if (response.success) {
-                                            $("#ApprovedOntext").dxTextBox("instance").option("value", response.approvedBy);
-                                            $("#ApprovedBytext").dxTextBox("instance").option("value", response.approvedOn);
-                                            $("#IsApproved").dxCheckBox("instance").option("value", true);
-                        DevExpress.ui.notify("Claim Approved successfully.", "success", 2000);
+                    DevExpress.ui.dialog.alert("Claim has been Approved Successfully.", "Approved Successfull")
+                        .done(function () {
+                            $("#ApprovedOntext").dxTextBox("instance").option("value", response.approvedBy);
+                            $("#ApprovedBytext").dxTextBox("instance").option("value", response.approvedOn);
+                            $("#IsApproved").dxCheckBox("instance").option("value", true);
+
+                            disableclaim();
+
+                        });
                     } else {
                         DevExpress.ui.notify("Submission failed.", "error", 2000);
                     }
