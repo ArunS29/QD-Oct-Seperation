@@ -754,7 +754,7 @@
             // 
             // TopMargin
             // 
-            this.TopMargin.HeightF = 28.83331F;
+            this.TopMargin.HeightF = 30.49998F;
             this.TopMargin.Name = "TopMargin";
             this.TopMargin.Padding = new DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100F);
             this.TopMargin.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopLeft;
@@ -2135,7 +2135,7 @@
             this.DataMember = "qry201_807VATCreditNoteRegisterMainView";
             this.DataSource = this.sqlDataSource1;
             this.Font = new DevExpress.Drawing.DXFont("Cambria", 10F);
-            this.Margins = new DevExpress.Drawing.DXMargins(24F, 24F, 28.83331F, 62.5F);
+            this.Margins = new DevExpress.Drawing.DXMargins(24F, 24F, 30.49998F, 62.5F);
             this.PageWidth = 1500;
             this.PaperKind = DevExpress.Drawing.Printing.DXPaperKind.Custom;
             this.Version = "24.1";

@@ -1,26 +1,36 @@
-﻿using System.Data;
+﻿using DevExpress.Charts.Model;
+using System;
+using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using DevExpress.XtraReports.UI;
 using DevExpress.XtraPrinting.Drawing;
 using QD.ERP.Web.Service;
 
-namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
+
+namespace QD.ERP.Web.Areas.VAT.Reports.B2B
 {
-    public partial class PrintRegularInvoiceFormat02 : XtraReport
+    public partial class RegularTaxInvoiceSignatoriesFormat005 : DevExpress.XtraReports.UI.XtraReport
     {
-        private readonly TenantDbContextHelper _tenantDbContextHelper;
+
+        private readonly TenantDbContextHelper _tenantDbContextHelper; 
         private bool _isApproved;
 
-        public PrintRegularInvoiceFormat02(
-            string invoiceNo,
+
+        public RegularTaxInvoiceSignatoriesFormat005()
+        {
+            InitializeComponent();
+        }
+
+        public RegularTaxInvoiceSignatoriesFormat005(
+        string invoiceNo,
             string tenantName,
             string companyName,
             string companyAddress,
             Image logoImage,
             string companyNameAr,
             string companyAddressAr,
-              string companyPhone,
+            string companyPhone,
             string companyEmail,
             string companyWebsite,
             bool isApproved,
@@ -30,12 +40,11 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
             _isApproved = isApproved;
 
             InitializeComponent();
-            SetReportParameters(invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr,companyPhone, companyEmail, companyWebsite);
-            LoadReportData(invoiceNo);
+        SetReportParameters(invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, companyPhone, companyEmail, companyWebsite);
+        LoadReportData(invoiceNo);
         }
 
-        private void SetReportParameters(string invoiceNo, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressAr, string companyPhone,
-            string companyEmail,string companyWebsite)
+        private void SetReportParameters(string invoiceNo, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressAr, string companyPhone, string companyEmail, string companyWebsite)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -101,7 +110,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
             if (dt.Rows.Count == 0)
             {
                 this.DataSource = null;
-                CreateNoDataLabel();
+           
             }
             else
             {
@@ -156,22 +165,14 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
                 this.Watermark.Text = "DRAFT COPY";
                 this.Watermark.Font = new Font("Arial", 70, FontStyle.Bold);
                 this.Watermark.ForeColor = Color.FromArgb(80, 173, 216, 230);
-                this.Watermark.TextDirection = DirectionMode.ForwardDiagonal;
+                this.Watermark.TextDirection = DevExpress.XtraPrinting.Drawing.DirectionMode.ForwardDiagonal;
                 this.Watermark.ShowBehind = true;
                 this.Watermark.ImageTiling = false;
                 this.Watermark.ImageViewMode = ImageViewMode.Stretch;
             }
         }
 
-        private void CreateNoDataLabel()
-        {
-            XRLabel noDataLabel = new XRLabel
-            {
-                Text = "No records found.",
-                BoundsF = new RectangleF(0, 0, PageWidth - Margins.Left - Margins.Right, 50),
-                TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter
-            };
-            this.Bands[BandKind.Detail].Controls.Add(noDataLabel);
-        }
+      
+
     }
 }

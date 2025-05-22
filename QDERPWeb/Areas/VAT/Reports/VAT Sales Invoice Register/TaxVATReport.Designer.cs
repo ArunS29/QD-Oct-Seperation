@@ -429,6 +429,8 @@
             this.tableCell34 = new DevExpress.XtraReports.UI.XRTableCell();
             this.tableCell35 = new DevExpress.XtraReports.UI.XRTableCell();
             this.bottomMarginBand1 = new DevExpress.XtraReports.UI.BottomMarginBand();
+            this.xrLabel20 = new DevExpress.XtraReports.UI.XRLabel();
+            this.xrLabel18 = new DevExpress.XtraReports.UI.XRLabel();
             this.pageInfo2 = new DevExpress.XtraReports.UI.XRPageInfo();
             this.pageInfo1 = new DevExpress.XtraReports.UI.XRPageInfo();
             this.xrLabel26 = new DevExpress.XtraReports.UI.XRLabel();
@@ -476,8 +478,6 @@
             this.xrLabel2 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel1 = new DevExpress.XtraReports.UI.XRLabel();
             this.sqlDataSource1 = new DevExpress.DataAccess.Sql.SqlDataSource(this.components);
-            this.xrLabel18 = new DevExpress.XtraReports.UI.XRLabel();
-            this.xrLabel20 = new DevExpress.XtraReports.UI.XRLabel();
             ((System.ComponentModel.ISupportInitialize)(this.table2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.table1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
@@ -544,9 +544,11 @@
             this.tableCell21.StylePriority.UseBorders = false;
             this.tableCell21.StylePriority.UseBorderWidth = false;
             this.tableCell21.StylePriority.UseFont = false;
+            this.tableCell21.StylePriority.UseTextAlignment = false;
             xrSummary1.Running = DevExpress.XtraReports.UI.SummaryRunning.Group;
             this.tableCell21.Summary = xrSummary1;
-            this.tableCell21.Weight = 0.02134514768759227D;
+            this.tableCell21.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
+            this.tableCell21.Weight = 0.025025484896131784D;
             // 
             // tableCell22
             // 
@@ -563,7 +565,7 @@
             this.tableCell22.StylePriority.UseBorders = false;
             this.tableCell22.StylePriority.UseBorderWidth = false;
             this.tableCell22.StylePriority.UseFont = false;
-            this.tableCell22.Weight = 0.045595717885399942D;
+            this.tableCell22.Weight = 0.041915380676860431D;
             // 
             // tableCell23
             // 
@@ -895,6 +897,29 @@
             this.xrLabel26});
             this.bottomMarginBand1.HeightF = 85.33335F;
             this.bottomMarginBand1.Name = "bottomMarginBand1";
+            // 
+            // xrLabel20
+            // 
+            this.xrLabel20.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[VATRegistrationNo]")});
+            this.xrLabel20.Font = new DevExpress.Drawing.DXFont("Cambria", 10F);
+            this.xrLabel20.LocationFloat = new DevExpress.Utils.PointFloat(100.5296F, 10F);
+            this.xrLabel20.Multiline = true;
+            this.xrLabel20.Name = "xrLabel20";
+            this.xrLabel20.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
+            this.xrLabel20.SizeF = new System.Drawing.SizeF(144.1667F, 23F);
+            this.xrLabel20.StylePriority.UseFont = false;
+            // 
+            // xrLabel18
+            // 
+            this.xrLabel18.Font = new DevExpress.Drawing.DXFont("Cambria", 10F);
+            this.xrLabel18.LocationFloat = new DevExpress.Utils.PointFloat(32.05546F, 9.999949F);
+            this.xrLabel18.Multiline = true;
+            this.xrLabel18.Name = "xrLabel18";
+            this.xrLabel18.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
+            this.xrLabel18.SizeF = new System.Drawing.SizeF(68.47417F, 23F);
+            this.xrLabel18.StylePriority.UseFont = false;
+            this.xrLabel18.Text = "VAT No :";
             // 
             // pageInfo2
             // 
@@ -2529,29 +2554,6 @@
             this.sqlDataSource1.Queries.AddRange(new DevExpress.DataAccess.Sql.SqlQuery[] {
             selectQuery1});
             this.sqlDataSource1.ResultSchemaSerializable = resources.GetString("sqlDataSource1.ResultSchemaSerializable");
-            // 
-            // xrLabel18
-            // 
-            this.xrLabel18.Font = new DevExpress.Drawing.DXFont("Cambria", 10F);
-            this.xrLabel18.LocationFloat = new DevExpress.Utils.PointFloat(32.05546F, 9.999949F);
-            this.xrLabel18.Multiline = true;
-            this.xrLabel18.Name = "xrLabel18";
-            this.xrLabel18.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 96F);
-            this.xrLabel18.SizeF = new System.Drawing.SizeF(68.47417F, 23F);
-            this.xrLabel18.StylePriority.UseFont = false;
-            this.xrLabel18.Text = "VAT No :";
-            // 
-            // xrLabel20
-            // 
-            this.xrLabel20.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[VATRegistrationNo]")});
-            this.xrLabel20.Font = new DevExpress.Drawing.DXFont("Cambria", 10F);
-            this.xrLabel20.LocationFloat = new DevExpress.Utils.PointFloat(100.5296F, 10F);
-            this.xrLabel20.Multiline = true;
-            this.xrLabel20.Name = "xrLabel20";
-            this.xrLabel20.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 96F);
-            this.xrLabel20.SizeF = new System.Drawing.SizeF(144.1667F, 23F);
-            this.xrLabel20.StylePriority.UseFont = false;
             // 
             // TaxVATReport
             // 

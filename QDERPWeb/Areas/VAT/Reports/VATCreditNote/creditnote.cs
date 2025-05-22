@@ -1,28 +1,33 @@
-﻿using System.Data;
-using System.Data.SqlClient;
+﻿using System;
 using System.Drawing;
+using System.Collections;
+using System.ComponentModel;
 using DevExpress.XtraReports.UI;
 using DevExpress.XtraPrinting.Drawing;
-using QD.ERP.Web.Service;
+using System.Data;
+using System.Data.SqlClient;
 
-namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
+namespace QD.ERP.Web.Areas.VAT.Reports.VATCreditNote
 {
-    public partial class PrintRegularInvoiceFormat02 : XtraReport
-    {
+	public partial class creditnote : DevExpress.XtraReports.UI.XtraReport
+	{	
+		public creditnote()
+		{
+			InitializeComponent();
+		}
+
+
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private bool _isApproved;
 
-        public PrintRegularInvoiceFormat02(
-            string invoiceNo,
+        public creditnote(
+            string creditNoteNo,
             string tenantName,
             string companyName,
             string companyAddress,
-            Image logoImage,
+   
             string companyNameAr,
             string companyAddressAr,
-              string companyPhone,
-            string companyEmail,
-            string companyWebsite,
             bool isApproved,
             TenantDbContextHelper tenantDbContextHelper)
         {
@@ -30,12 +35,11 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
             _isApproved = isApproved;
 
             InitializeComponent();
-            SetReportParameters(invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr,companyPhone, companyEmail, companyWebsite);
-            LoadReportData(invoiceNo);
+            SetReportParameters(creditNoteNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr);
+            LoadReportData(creditNoteNo);
         }
 
-        private void SetReportParameters(string invoiceNo, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressAr, string companyPhone,
-            string companyEmail,string companyWebsite)
+        private void SetReportParameters(string creditNoteNo, string tenantName, string companyName, string companyAddress,  string companyNameAr, string companyAddressAr)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -56,16 +60,12 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
                 }
             }
 
-            AddOrUpdateParameter("InvoiceNo", invoiceNo, typeof(string));
+            AddOrUpdateParameter("CreditNoteNo", creditNoteNo, typeof(string));
             AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string));
             AddOrUpdateParameter("CompanyName", companyName ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddress", companyAddress ?? "", typeof(string));
             AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddressAr", companyAddressAr ?? "", typeof(string));
-            AddOrUpdateParameter("CompanyPhone", companyPhone ?? "", typeof(string));
-            AddOrUpdateParameter("CompanyEmailAddress", companyEmail ?? "", typeof(string));
-
-            AddOrUpdateParameter("CompanyWebsite", companyWebsite ?? "", typeof(string));
 
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
@@ -82,21 +82,12 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
             if (FindControl("xrLabelCompanyAddressAr", true) is XRLabel addressArLabel)
                 addressArLabel.Text = companyAddressAr;
 
-            if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
-                logoPictureBox.Image = logoImage;
-            if (FindControl("xrLabelCompanyPhone", true) is XRLabel companyphoneLabel)
-                companyphoneLabel.Text = companyPhone;
-
-            if (FindControl("xrLabelCompanyEmailAddress", true) is XRLabel emailLabel)
-                emailLabel.Text = companyEmail;
-
-            if (FindControl("xrLabelCompanyWebsite", true) is XRLabel websiteLabel)
-                websiteLabel.Text = companyWebsite;
+         
         }
 
-        private void LoadReportData(string invoiceNo)
+        private void LoadReportData(string creditNoteNo)
         {
-            DataTable dt = GetReportData(invoiceNo);
+            DataTable dt = GetReportData(creditNoteNo);
 
             if (dt.Rows.Count == 0)
             {
@@ -111,7 +102,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
             }
         }
 
-        private DataTable GetReportData(string invoiceNo)
+        private DataTable GetReportData(string creditNoteNo)
         {
             DataTable dt = new DataTable();
 
@@ -123,12 +114,12 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
 
                     using (SqlConnection conn = new SqlConnection(connectionString))
                     {
-                        string query = "SELECT * FROM qry201_602VATInvoiceReport WHERE InvoiceNo = @InvoiceNo";
+                        string query = "SELECT * FROM  WHERE qry201_802VATCreditNoteReport CreditNoteNo = @CreditNoteNo";
 
                         using (SqlCommand cmd = new SqlCommand(query, conn))
                         {
                             cmd.CommandType = CommandType.Text;
-                            cmd.Parameters.AddWithValue("@InvoiceNo", invoiceNo);
+                            cmd.Parameters.AddWithValue("@CreditNoteNo", creditNoteNo);
 
                             SqlDataAdapter da = new SqlDataAdapter(cmd);
                             conn.Open();

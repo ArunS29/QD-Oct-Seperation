@@ -1,17 +1,21 @@
-﻿using DevExpress.XtraPrinting.Drawing;
+﻿using System;
+using System.Drawing;
+using System.Collections;
+using System.ComponentModel;
 using DevExpress.XtraReports.UI;
+using DevExpress.XtraPrinting.Drawing;
 using System.Data;
 using System.Data.SqlClient;
-using System.Drawing;
 
 namespace QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices
 {
-    public partial class ProformaInvoiceForeignEnglish : XtraReport
-    {
+	public partial class ForeignEnglishProforma : DevExpress.XtraReports.UI.XtraReport
+	{
+       
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private bool _isApproved;
 
-        public ProformaInvoiceForeignEnglish(
+        public ForeignEnglishProforma(
             string invoiceNo,
             string tenantName,
             string companyName,
@@ -29,12 +33,12 @@ namespace QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices
             _isApproved = isApproved;
 
             InitializeComponent();
-            SetReportParameters(invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr,companyPhone, companyEmail,companyWebsite);
+            SetReportParameters(invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, companyPhone, companyEmail, companyWebsite);
             LoadReportData(invoiceNo);
         }
 
         private void SetReportParameters(string invoiceNo, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressAr,
-    string companyPhone , string companyEmail, string companyWebsite)
+    string companyPhone, string companyEmail, string companyWebsite)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -62,8 +66,8 @@ namespace QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices
             AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddressAr", companyAddressAr ?? "", typeof(string));
             AddOrUpdateParameter("CompanyPhone", companyPhone ?? "", typeof(string));
-            AddOrUpdateParameter("CompanyEmailAddress", companyEmail?? "", typeof(string));
-           
+            AddOrUpdateParameter("CompanyEmailAddress", companyEmail ?? "", typeof(string));
+
             AddOrUpdateParameter("CompanyWebsite", companyWebsite ?? "", typeof(string));
 
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
@@ -85,7 +89,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices
 
             if (FindControl("xrLabelCompanyEmailAddress", true) is XRLabel emailLabel)
                 emailLabel.Text = companyEmail;
-        
+
             if (FindControl("xrLabelCompanyWebsite", true) is XRLabel websiteLabel)
                 websiteLabel.Text = companyWebsite;
 
@@ -101,7 +105,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices
             if (dt.Rows.Count == 0)
             {
                 this.DataSource = null;
-                CreateNoDataLabel();
+               
             }
             else
             {
@@ -115,7 +119,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices
                     labelEnglish.Text = "Amount in Words: " + NumberToWordsHelper.ToEnglishWords(totalAmount);
 
                 if (FindControl("xrLabel10", true) is XRLabel labelArabic)
-                   labelArabic.Text = "المبلغ كتابةً: " + NumberToWordsHelper.ToArabicWords(totalAmount);
+                    labelArabic.Text = "المبلغ كتابةً: " + NumberToWordsHelper.ToArabicWords(totalAmount);
             }
         }
 
@@ -171,16 +175,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices
             }
         }
 
-        private void CreateNoDataLabel()
-        {
-            XRLabel noDataLabel = new XRLabel
-            {
-                Text = "No records found.",
-                BoundsF = new RectangleF(0, 0, PageWidth - Margins.Left - Margins.Right, 50),
-                TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter
-            };
-            this.Bands[BandKind.Detail].Controls.Add(noDataLabel);
-        }
+       
 
         public static class NumberToWordsHelper
         {
@@ -298,5 +293,6 @@ namespace QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices
                 return words.Trim();
             }
         }
+
     }
 }
