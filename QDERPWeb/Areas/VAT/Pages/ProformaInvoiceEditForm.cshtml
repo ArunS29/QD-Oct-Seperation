@@ -597,7 +597,7 @@
 
 							<td style="width: 50%;">
 								@(Html.DevExtreme().DropDownBox()
-															.Label(new JS("formatMessage('Invoice Type Arabic')"))
+																.Label(new JS("formatMessage('Invoice Type (Arabic)')"))
 															.DataSource(d => d.WebApi()
 															.Controller("VATModule")
 															.LoadAction("GetVATInvoiceMaster")
@@ -2848,9 +2848,9 @@
 
 										  // Replace or fetch dynamically
 
-											let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example add page
-
-											window.location.href = url;
+												let url = `/${tenantName}/VAT/VATGoodsandServices`; // ✅ No query parameters
+												let title = "Goods and Services";
+												openModal(url, title);
 
 										},
 
@@ -2872,9 +2872,9 @@
 
 										  // Replace or fetch dynamically
 
-											let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example edit page
-
-											window.location.href = url;
+												let url = `/${tenantName}/VAT/VATGoodsandServices`; // ✅ No query parameters
+												let title = "Goods and Services";
+												openModal(url, title);
 
 										},
 
@@ -2890,7 +2890,23 @@
 
 						},
 
-						{ dataField: "Descriptions", caption: "...", width: 50 },
+						{
+			dataField: "Descriptions",
+			caption: "...",
+			width: 150,
+			allowEditing: true,
+			editCellTemplate: function (cellElement, cellInfo) {
+				// Open the modal form in a popup
+				let url = `/${tenantName}/VAT/ProformaDetailDescription`;
+				let title = "";
+
+				// Pass cellInfo to the modal context
+				window.currentDescriptionCell = cellInfo;
+
+				openModal(url, title);
+			}
+		},
+
 
 						{
 
@@ -3002,9 +3018,9 @@
 
 										onClick: function () {
 
-											let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
-
-											window.location.href = url;
+												let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
+	 let title = "Unit of Measure";
+	openModal(url, title);
 
 										},
 
@@ -3351,9 +3367,9 @@
 
 									// Replace or fetch dynamically
 
-									let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example add page
-
-									window.location.href = url;
+										let url = `/${tenantName}/VAT/VATGoodsandServices`; // ✅ No query parameters
+	let title = "Goods and Services";
+	openModal(url, title);
 
 								},
 
@@ -3375,9 +3391,9 @@
 
 									// Replace or fetch dynamically
 
-									let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example edit page
-
-									window.location.href = url;
+										let url = `/${tenantName}/VAT/VATGoodsandServices`; // ✅ No query parameters
+	let title = "Goods and Services";
+	openModal(url, title);
 
 								},
 
@@ -3393,7 +3409,30 @@
 
 				},
 
-				{ dataField: "Descriptions", caption: "...", width: 50 },
+			{
+			dataField: "Descriptions",
+			caption: "...",
+			width: 150,
+			allowEditing: true,
+			cellTemplate: function (container, options) {
+			$("<div>").dxButton({
+				icon: "user", // Built-in DevExtreme icon
+				hint: "Edit VAT Details Description",
+				stylingMode: "text",
+				width: 60,
+				onClick: function () {
+					// Save context
+					window.currentDescriptionCell = options;
+
+					// Open modal
+					let url = `/${tenantName}/VAT/ProformaDetailDescription`;
+					let title = "VAT Details Description";
+					openModal(url, title);
+				}
+			}).appendTo(container);
+		}
+		},
+
 
 				{
 
@@ -3505,9 +3544,9 @@
 
 								onClick: function () {
 
-									let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
-
-									window.location.href = url;
+										let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
+	 let title = "Unit of Measure";
+	openModal(url, title);
 
 								},
 

@@ -4504,6 +4504,29 @@
 		dataField: "DiscountDetails",
 		caption: "...",
 		width: 100,
+		allowEditing: true,
+				cellTemplate: function (container, options) {
+		container.empty();
+
+		$("<div>")
+			.dxButton({
+				icon: "percent", // DevExtreme built-in icon
+				hint: "Apply percentage discount", // Tooltip
+				type: "normal", // Keeps styling neutral
+				stylingMode: "outlined", // Ensures border is visible
+				onClick: function (e) {
+					// Your button click logic here
+					console.log("Percent button clicked", options.data);
+				}
+			})
+			.css({
+				width: "70%",
+				border: "1px solid #add8e6",  // Light blue border
+				backgroundColor: "#ffffff",   // White background
+				borderRadius: "3px"
+			})
+			.appendTo(container);
+	},
 		editCellTemplate: function (cellElement, cellInfo) {
 
 			// Create Popup content
@@ -4530,7 +4553,7 @@
 			let $discountRow = $("<div>").css({
 				display: "flex",
 				gap: "10px",
-				alignItems: "center"
+				alignItems: "end"
 			}).appendTo($popupContent);
 
 			let discountEditor = $("<div>").appendTo($discountRow).dxNumberBox({

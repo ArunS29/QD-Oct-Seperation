@@ -12,6 +12,35 @@
 		z-index: 1000;
 	}
 
+	.custom-submenu {
+		display: none;
+		position: absolute;
+		background-color: #ffffff;
+		border: 1px solid #ddd;
+		border-radius: 8px;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+		list-style: none;
+		padding: 10px 0;
+		min-width: 160px;
+		z-index: 999;
+	}
+
+		.custom-submenu li {
+			padding: 8px 16px;
+			transition: background-color 0.3s ease;
+		}
+
+			.custom-submenu li a {
+				text-decoration: none;
+				color: #333;
+				font-size: 14px;
+				display: block;
+			}
+
+			.custom-submenu li:hover {
+				background-color: #f0f0f0;
+				cursor: pointer;
+			}
 	.overlay-content {
 		position: absolute;
 		top: 50%;
@@ -25,9 +54,9 @@
 		overflow: hidden;
 	}
 
-	.limited-footer .btn-containerIvoiceEdit:not(:has(#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#ddButtonLayout,#btntoggleGroupPanel,#btnColumnChooser,#btnAddNewPayment,#btnPurchaseDetails,#ddReport1)) {
+	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddReport12)) {
 		display: none !important;
-	}
+	}  
 
 	#overlay-frame {
 		width: 100%;
@@ -432,14 +461,15 @@
 </div>
 
 
-
+<ul id="submenu" class="custom-submenu">
+	<li id="addCreditNote">Add New VAT Purchase Bill</li>
+</ul>
 <div id="overlay" class="overlay">
 	<div class="overlay-content">
 		<span class="close-btn" onclick="closeOverlay()">×</span>
 		<iframe id="overlay-frame" src="" frameborder="0"></iframe>
 	</div>
 </div>
-
 
 <script>
 
@@ -658,8 +688,8 @@
 		return [day, strmonth, year].join('-');
 	}
 	$(document).ready(function () {
-		$(".limited-footer .btn-container").each(function () {
-			if (!$(this).find("#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#ddButtonLayout,#btntoggleGroupPanel,#btnColumnChooser,#btnAddNewPayment,#btnPurchaseDetails,#ddReport1").length) {
+		$(".limited-footer .btn-containerIvoiceEdit").each(function () {
+				if (!$(this).find("#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddButtonPayment,#ddReport12").length) {
 				$(this).remove();
 			}
 		});
@@ -695,6 +725,25 @@
 				}
 			});
 	}
+
+		$(document).ready(function () {
+		$('#btnAddNew1').on('click', function (e) {
+			e.stopPropagation(); // prevent click from bubbling up
+			$('#submenu').toggle(); // toggle visibility
+			const offset = $(this).offset();
+			$('#submenu').css({ top: offset.top + $(this).outerHeight(), left: offset.left });
+		});
+
+		// Hide submenu when clicking outside
+		$(document).on('click', function () {
+			$('#submenu').hide();
+		});
+		$(document).on('click', '#addCreditNote', function (e) {
+		e.stopPropagation();
+				const url = `/${tenantName}/VAT/VATPurchaseEdit`;
+		window.location.href = url;
+	});
+	});
 	  $(function () {
 					$("#VATPurchase").dxTextBox({
 						text: formatMessage("Purchase Master View"),
