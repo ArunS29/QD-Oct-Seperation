@@ -273,6 +273,15 @@
                                 )
                         </div>
                     </td>
+                    <th>
+                        @(Html.DevExtreme().Button()
+                            .ID("convertToArabic2")
+                            .Width(50)
+                            .Icon("fas fa-language")
+                            .ElementAttr("style", "padding:10px; color:black;margin-right:10px;")
+                            .OnClick("convertToArabic1")
+                            )
+                    </th>
                     <td colspan="2">
                         @(Html.DevExtreme().TextBox()
                             .ID("ItemNameArabic")
@@ -637,6 +646,7 @@
                                 .Width(50)
                                 .Icon("fas fa-language")
                                 .ElementAttr("style", "padding:10px; color:black;margin-right:10px;")
+                                 .OnClick("convertToArabic")
                                 )
                             </th>
 
@@ -1390,13 +1400,12 @@
                         let invoiceGridInstance = null;
 
                         function onInvoiceGridInitialized(e) {
-                            alert('1')
+                            
                             invoiceGridInstance = e.component;
                             console.log("Invoice Grid initialized", invoiceGridInstance);
                         }
 
                         function loadInvoiceGrid(gscode) {
-                            alert('2')
                             if (!invoiceGridInstance) {
                                 console.error("Invoice Grid not initialized");
                                 return;
@@ -2005,14 +2014,428 @@
         <div id="tab-content-10" class="tab-content">
             <div class="background">
 
-                @await Html.PartialAsync("~/Pages/Shared/IMS/StockDetails_Document.cshtml")
+
+                <style type="text/css">
+
+
+                    .overlay {
+                        display: none;
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: rgba(0, 0, 0, 0.5); /* Transparent background */
+                        z-index: 1000;
+                    }
+                    /* Ensure word wrap and center alignment for grid headers */
+                    .header-wrap {
+                        white-space: normal !important; /* Enable word wrap */
+                        text-align: center !important; /* Center align text */
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        font-weight: bold;
+                    }
+
+                    /* Ensure text in grid headers is always centered */
+                    .dx-datagrid .dx-header-row .dx-datagrid-text-content {
+                        white-space: normal !important;
+                        text-align: center !important;
+                    }
+
+                    /* Ensure column headers text aligns to center */
+                    .dx-datagrid-headers .dx-datagrid-table .dx-row > td {
+                        text-align: center !important;
+                    }
+
+                    .overlay-content {
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        width: 100%;
+                        height: 80%;
+                        background: #fff;
+                        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+                        border-radius: 8px;
+                        overflow: hidden;
+                    }
+
+                    #overlay-frame {
+                        width: 100%;
+                        height: 100%;
+                    }
+
+                    .Maincontainer.Maincontainer {
+                        background-color: white;
+                    }
+
+                    .close-btn {
+                        position: absolute;
+                        top: 10px;
+                        right: 20px;
+                        font-size: 30px;
+                        cursor: pointer;
+                    }
+
+
+
+
+                    /* Toolbar Styling */
+                    .custom-toolbar {
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                    }
+
+                    .filter-btn {
+                        background-color: #007bff;
+                        color: white;
+                        border: none;
+                        padding: 6px 12px;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        font-family: 'Inter', sans-serif;
+                    }
+
+                        .filter-btn:hover {
+                            background-color: #0056b3;
+                        }
+
+                    /* Text Editor Styling */
+                    .dx-texteditor {
+                        background-color: #909ead00 !important; /* Light background */
+                        border: 1px solid #d6e4f0 !important; /* Soft border */
+                        border-radius: 4px !important; /* Smaller rounded corners */
+
+                        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important; /* Reduced shadow */
+                        font-size: 14px !important; /* Slightly smaller font */
+                        transition: all 0.2s ease-in-out !important;
+                        height: 39px !important; /* Fixed height */
+                    }
+
+                        /* Hover and Focus States */
+                        .dx-texteditor:hover,
+                        .dx-texteditor.dx-state-hover,
+                        .dx-button:hover {
+                            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important; /* Slightly reduced hover effect */
+                            border-color: #86b7fe !important; /* Highlight border */
+                        }
+
+                        .dx-texteditor.dx-state-focused {
+                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important; /* Softer focus effect */
+                            border-color: #508ae1 !important;
+                        }
+
+                    #dataGrid .dx-header-row .dx-datagrid-text-content {
+                        font-weight: bold;
+                        color: black;
+                    }
+
+
+                    .dx-datagrid-header-panel {
+                        background-color: #909ead00;
+                        /* display:none; */
+                    }
+
+                    .no-border-input {
+                        border: none !important;
+                        outline: none !important;
+                        box-shadow: none !important;
+                        background: transparent !important;
+                        font-weight: bold;
+                        font-size: 16px;
+                        color: black;
+                        pointer-events: none; /* Prevents hover and click effects */
+                    }
+
+                    .dx-button-mode-contained.dx-button-default {
+                        color: black;
+                    }
+
+                    .dx-button-mode-contained.dx-button-success {
+                        color: black;
+                    }
+
+                    .toolbar-container {
+                        display: flex;
+                        gap: 10px;
+                        padding: 1% 1% 1% 1%;
+                    }
+
+                </style>
+                <!-- Filter/Info Section -->
+                <div class="toolbar-container">
+                @(Html.DevExtreme().Button()
+                    .Text(new JS("formatMessage('Add & Attach Files')"))
+                    .Icon("attach")
+                    .Type(ButtonType.Default)
+                    .Width(250)
+                    )
+                @(Html.DevExtreme().Button()
+                    .Text(new JS("formatMessage('Merge Selected Files')"))
+                    .Icon("fas fa-file-pdf")
+                    .Type(ButtonType.Default)
+                    .Width(250)
+                    .OnClick("mergeSelectedFiles") // ✅
+                    )
+
+                @(Html.DevExtreme().Button()
+                    .Text(new JS("formatMessage('Save Separated PDF Files')"))
+                    .Icon("save")
+                    .Type(ButtonType.Default)
+                    .Width(280)
+                    .OnClick("saveSeparatedFiles") // ✅
+                    )
+
+                </div>
+
+                <br />
+                <div>
+                @(Html.DevExtreme().DataGrid()
+                    .ID("documentGrid")
+                    .Height(500)
+                    .Width("100%")
+                    .ShowBorders(true)
+                    .ShowColumnLines(true)
+                    .ShowRowLines(true)
+                    .RowAlternationEnabled(true)
+                    .ColumnAutoWidth(true)
+                    .ShowColumnHeaders(true)
+                    .AllowColumnReordering(true)
+                    .AllowColumnResizing(true)
+                    .ColumnFixing(c => c.Enabled(true))
+                    .GroupPanel(p => p.Visible(false))
+                    .OnInitialized("onDocumentGridInitialized")
+
+                    .Selection(s => s
+                    .Mode(SelectionMode.Multiple)
+                    .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)
+                    )
+
+                    .Columns(columns =>
+                    {
+                        columns.Add().DataField("Total").Caption(new JS("formatMessage('Total')")).Alignment(HorizontalAlignment.Center).Width(100);
+                        columns.Add().DataField("DocumentType").Caption(new JS("formatMessage('Document Type')")).Alignment(HorizontalAlignment.Center).Width(200);
+                        columns.Add().DataField("DocumentRefNo").Caption(new JS("formatMessage('Document Ref No')")).Alignment(HorizontalAlignment.Center).Width(200);
+                        columns.Add().DataField("ExpiryOn").Caption(new JS("formatMessage('Expiry On')")).Alignment(HorizontalAlignment.Center).Width(150).DataType(GridColumnDataType.Date);
+                        columns.Add().DataField("NotifyOn").Caption(new JS("formatMessage('Notify On')")).Alignment(HorizontalAlignment.Center).Width(150).DataType(GridColumnDataType.Date);
+                    })
+
+                    .Summary(s => s
+                    .TotalItems(items =>
+                    {
+                        items.Add().SummaryType(SummaryType.Count).Column("Total").DisplayFormat("Total: {0}");
+                    })
+                    )
+                    )
+
+
+                </div>
+                <script>
+                    let DocumentGridInstance = null;
+
+                    function onDocumentGridInitialized(e) {
+                        DocumentGridInstance = e.component;
+                        console.log("DocumentGrid initialized", DocumentGridInstance);
+                    }
+
+                    function loadDocumentGrid(gscode) {
+                        if (!DocumentGridInstance) {
+                            console.error("DocumentGrid not initialized");
+                            return;
+                        }
+
+                        const dataStore = new DevExpress.data.CustomStore({
+                            key: "DocumentRefNo", // Ensure this is unique per row
+                            load: function () {
+                                return $.getJSON("/api/StockInventory/GetDocumentGridData", { gscode: gscode })
+                                    .then(data => {
+                                        console.log("Document Grid Data Loaded", data);
+                                        return data;
+                                    })
+                                    .fail((jqXHR, textStatus, errorThrown) => {
+                                        console.error("API call failed:", textStatus, errorThrown);
+                                        alert("Failed to load data: " + textStatus);
+                                        throw new Error("API call failed: " + textStatus);
+                                    });
+                            }
+                        });
+
+                        DocumentGridInstance.option("dataSource", dataStore);
+                    }
+
+                                        function getSelectedDocumentNos() {
+                        const selectedRows = DocumentGridInstance.getSelectedRowsData();
+                        if (!selectedRows || selectedRows.length === 0) {
+                            alert("Please select at least one document.");
+                            return [];
+                        }
+                        return selectedRows.map(row => row.DocumentRefNo);
+                    }
+
+                    function mergeSelectedFiles() {
+                        const selectedDocs = getSelectedDocumentNos();
+                        if (selectedDocs.length === 0) return;
+
+                        fetch("/api/StockInventory/MergeSelectedDocuments", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(selectedDocs)
+                        })
+                        .then(response => {
+                            if (!response.ok) throw new Error("Failed to merge PDFs.");
+                            return response.blob();
+                        })
+                        .then(blob => {
+                            const url = window.URL.createObjectURL(blob);
+                            const link = document.createElement("a");
+                            link.href = url;
+                            link.download = "MergedDocument.pdf";
+                            link.click();
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            alert("Merging documents failed.");
+                        });
+                    }
+
+                    function saveSeparatedFiles() {
+                        const selectedDocs = getSelectedDocumentNos();
+                        if (selectedDocs.length === 0) return;
+
+                        fetch("/api/StockInventory/DownloadMultipleDocuments", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(selectedDocs)
+                        })
+                        .then(response => {
+                            if (!response.ok) throw new Error("Failed to download documents.");
+                            return response.blob();
+                        })
+                        .then(blob => {
+                            const url = window.URL.createObjectURL(blob);
+                            const link = document.createElement("a");
+                            link.href = url;
+                            link.download = "Documents.zip";
+                            link.click();
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            alert("Downloading documents failed.");
+                        });
+                    }
+
+                </script>
+
+
 
             </div>
         </div>
         <div id="tab-content-11" class="tab-content">
             <div class="background">
 
-                @await Html.PartialAsync("~/Pages/Shared/IMS/StockDetails_purchases.cshtml")
+
+            @{
+                ViewBag.Title = "Purchases Grid";
+            }
+
+
+                <style>
+
+                </style>
+            @(Html.DevExtreme().DropDownButton()
+                .ID("purchaseDropdown")
+                .Text(new JS("formatMessage('Print')"))
+                .Icon("print")
+                .ElementAttr("style", "padding:10px")
+                .DisplayExpr("Text")
+                .KeyExpr("Text")
+                .ItemTemplate(@<text>
+                    <div style="display: flex; align-items: center;">
+                        <i class="dx-icon-<%- Icon %>" style="padding:10px;"></i>
+                        <span><%- Text %></span>
+                    </div>
+                </text>)
+
+                )
+
+
+                <div class="dx-card " style="background-color:transparent; border:none;padding:10px;">
+
+
+                @(Html.DevExtreme().DataGrid()
+                    .ID("PurchaseGrid")
+                    .Height(620)
+                    .DataSource(Enumerable.Empty<object>()) 
+                    .ShowBorders(true)
+                    .ShowColumnLines(true)
+                    .ShowRowLines(true)
+                    .RowAlternationEnabled(true)
+                    .ColumnAutoWidth(true)
+                    .OnInitialized("onPurchaseGridInitialized")
+                    .Columns(columns =>
+                    {
+                        columns.Add().DataField("Gscode").Caption("Item Code");
+                        columns.Add().DataField("Pono").Caption("Purchase Voucher No");
+                        columns.Add().DataField("Podate").Caption("Purchase Voucher Date").DataType(GridColumnDataType.Date);
+                        columns.Add().DataField("QuotedQuantity").Caption("Quantity Invoiced");
+                        columns.Add().DataField("UnitDesc").Caption("Unit Desc");
+                        columns.Add().DataField("UnitPrice").Caption("Unit Rate");
+                        columns.Add().DataField("ItemDiscount").Caption("Discount").Format("##,##0.00");
+                        columns.Add().DataField("LineTotalAfterDisc").Caption("Total After Disc").Format("##,##0.00");
+                        columns.Add().DataField("LineTaxAmount").Caption("Tax Amount").Format("##,##0.00");
+                        columns.Add().DataField("LineTotalWithTax").Caption("Total With Tax").Format("##,##0.00");
+                    })
+                    .Summary(summary =>
+                    {
+                        summary.TotalItems(items =>
+                        {
+                            items.Add().Column("LineTaxAmount").SummaryType(SummaryType.Count).DisplayFormat("{0}");
+                            items.Add().Column("LineTotalAfterDisc").SummaryType(SummaryType.Sum).ValueFormat("##,##0");
+                            items.Add().Column("ItemDiscount").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
+                            items.Add().Column("LineTotalWithTax").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
+                        });
+                    })
+                    )
+
+                </div>
+                <script>
+                    let PurchaseGridInstance = null;
+
+                    function onPurchaseGridInitialized(e) {
+                        PurchaseGridInstance = e.component;
+                        console.log("PurchaseGrid initialized", PurchaseGridInstance);
+                    }
+
+                    function loadPurchaseGrid(gscode) {
+                        if (!PurchaseGridInstance) {
+                            console.error("PurchaseGrid not initialized");
+                            return;
+                        }
+
+                        const dataStore = new DevExpress.data.CustomStore({
+                            key: "PurchaseVoucherNo", // Ensure this key is unique
+                            load: function () {
+                                console.log("Fetching Purchase Grid Data for GsCode:", gscode);
+                                return $.getJSON("/api/StockInventory/GetPurchaseGridData", { gscode: gscode })
+                                    .then(data => {
+                                        console.log("Purchase Grid Data Loaded", data);
+                                        return data;
+                                    })
+                                    .fail((jqXHR, textStatus, errorThrown) => {
+                                        console.error("API call failed:", textStatus, errorThrown);
+                                        alert("Failed to load data: " + textStatus);
+                                        throw new Error("API call failed: " + textStatus);
+                                    });
+                            }
+                        });
+
+                        PurchaseGridInstance.option("dataSource", dataStore);
+                    }
+                </script>
+
 
             </div>
         </div>
@@ -2079,6 +2502,12 @@
               case 8:
             loadUnitConversionGrid(gscode);
             break;
+            case 9:
+            loadDocumentGrid(gscode);
+            break;
+            case 10:
+            loadPurchaseGrid(gscode);
+            break;
             // case 2 or 0 can be used similarly for Stock Images, Item Attributes if needed
             default:
                 console.log("No grid loading required for this tab.");
@@ -2124,74 +2553,130 @@
       });
 
       //////
-      let isEditMode = false;
+    let isEditMode = false;
+    let isViewMode = false;
 
-        function onStockGroupChange(e) {
+    function onStockGroupChange(e) {
         var GsgroupId = e.value;
 
-        // Only generate new code if NOT in edit mode
-        if (!isEditMode && GsgroupId) {
+        if (!isViewMode && !isEditMode && GsgroupId) {
             $.get('/api/StockInventory/GetNextStockNumber', { GsgroupId: GsgroupId }, function (data) {
                 $("#StockNoItemCode").dxTextBox("instance").option("value", data);
             });
         }
     }
 
-
-          document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function () {
         const urlParams = new URLSearchParams(window.location.search);
-           const code = urlParams.get('code');
+        const code = urlParams.get('code');
+        const mode = urlParams.get('mode');
 
         if (code) {
-        isEditMode = true;  // <--- SET THIS
-        setTimeout(() => {
-            fetch(`/api/StockInventory/GetByCode?code=${encodeURIComponent(code)}`)
+            isEditMode = mode === "edit";
+            isViewMode = mode === "view";
+
+            setTimeout(() => {
+                fetch(`/api/StockInventory/GetByCode?code=${encodeURIComponent(code)}`)
                     .then(response => {
                         if (!response.ok) throw new Error("Failed to load");
                         return response.json();
                     })
-                      .then(data => {
-        if (data) {
-            $("#StockNoItemCode").dxTextBox("instance").option("value", data.Gscode);
-            $("#ItemName").dxTextBox("instance").option("value", data.Gsdescrpition);
-            $("#ItemNameArabic").dxTextBox("instance").option("value", data.GsdescriptionAr);
-            $("#StockGroup").dxSelectBox("instance").option("value", data.GsgroupId);
-            $("#ItemStore").dxSelectBox("instance").option("value", data.StoreId);
-            $("#ItemClassification").dxSelectBox("instance").option("value", data.ItemClassificationId);
-            $("#DetailedDescription").dxTextArea("instance").option("value", data.GsdetailedDesc);
-            $("#ArabicDescription").dxTextArea("instance").option("value", data.GsdetailedDescAr);
-            $("#UnitOfMeasure").dxSelectBox("instance").option("value", data.GsuoM);
-            $("#PackingUnit").dxNumberBox("instance").option("value", data.GspackingUnit);
-            $("#ItemSize").dxSelectBox("instance").option("value", data.ItemSize);
-            $("#ItemThickness").dxSelectBox("instance").option("value", data.ItemThickness);
-            $("#ItemDimension").dxSelectBox("instance").option("value", data.ItemDimension);
-            $("#ActualSize").dxTextBox("instance").option("value", data.ActualSize);
-            $("#OpeningBalance").dxNumberBox("instance").option("value", data.OpeningBalance);
-            $("#CostPrice").dxNumberBox("instance").option("value", data.CostPrice);
-            $("#ExFactoryPrice").dxNumberBox("instance").option("value", data.ExFactoryCostPrice);
-            $("#SellingPrice").dxNumberBox("instance").option("value", data.GssellingRate);
-            $("#MinSellingPrice").dxNumberBox("instance").option("value", data.MinSellingPrice);
-            $("#MaxSellingPrice").dxNumberBox("instance").option("value", data.MaxSellingPrice);
-            $("#ItemPartNo").dxTextBox("instance").option("value", data.ItemPartNo);
-            $("#ItemHSCode").dxTextBox("instance").option("value", data.Hscode);
-            $("#ItemColor").dxSelectBox("instance").option("value", data.ItemColor);
-            $("#ItemBrand").dxSelectBox("instance").option("value", data.ItemBrand);
-            $("#ItemManufacturer").dxSelectBox("instance").option("value", data.ItemMake);
-            $("#CountryOfOrigin").dxTextBox("instance").option("value", data.CountryOfOrigin);
-            $("#EnteredBy").dxTextArea("instance").option("value", data.CreatedBy);
-            // $("#EnteredOn").dxTextArea("instance").option("value", new Date(data.CreatedOn).toLocaleString());
-            $("#ModifiedBy").dxTextArea("instance").option("value", data.ModifiedBy);
-            // $("#ModifiedOn").dxTextArea("instance").option("value", new Date(data.ModifiedOn).toLocaleString());
-            $("#ItemDiscontinued").dxCheckBox("instance").option("value", data.IsDiscontinued);
+                    .then(data => {
+                        if (data) {
+                            $("#StockNoItemCode").dxTextBox("instance").option("value", data.Gscode);
+                            $("#ItemName").dxTextBox("instance").option("value", data.Gsdescrpition);
+                            $("#ItemNameArabic").dxTextBox("instance").option("value", data.GsdescriptionAr);
+                            $("#StockGroup").dxSelectBox("instance").option("value", data.GsgroupId);
+                            $("#ItemStore").dxSelectBox("instance").option("value", data.StoreId);
+                            $("#ItemClassification").dxSelectBox("instance").option("value", data.ItemClassificationId);
+                            $("#DetailedDescription").dxTextArea("instance").option("value", data.GsdetailedDesc);
+                            $("#ArabicDescription").dxTextArea("instance").option("value", data.GsdetailedDescAr);
+                            $("#UnitOfMeasure").dxSelectBox("instance").option("value", data.GsuoM);
+                            $("#PackingUnit").dxNumberBox("instance").option("value", data.GspackingUnit);
+                            $("#ItemSize").dxSelectBox("instance").option("value", data.ItemSize);
+                            $("#ItemThickness").dxSelectBox("instance").option("value", data.ItemThickness);
+                            $("#ItemDimension").dxSelectBox("instance").option("value", data.ItemDimension);
+                            $("#ActualSize").dxTextBox("instance").option("value", data.ActualSize);
+                            $("#OpeningBalance").dxNumberBox("instance").option("value", data.OpeningBalance);
+                            $("#CostPrice").dxNumberBox("instance").option("value", data.CostPrice);
+                            $("#ExFactoryPrice").dxNumberBox("instance").option("value", data.ExFactoryCostPrice);
+                            $("#SellingPrice").dxNumberBox("instance").option("value", data.GssellingRate);
+                            $("#MinSellingPrice").dxNumberBox("instance").option("value", data.MinSellingPrice);
+                            $("#MaxSellingPrice").dxNumberBox("instance").option("value", data.MaxSellingPrice);
+                            $("#ItemPartNo").dxTextBox("instance").option("value", data.ItemPartNo);
+                            $("#ItemHSCode").dxTextBox("instance").option("value", data.Hscode);
+                            $("#ItemColor").dxSelectBox("instance").option("value", data.ItemColor);
+                            $("#ItemBrand").dxSelectBox("instance").option("value", data.ItemBrand);
+                            $("#ItemManufacturer").dxSelectBox("instance").option("value", data.ItemMake);
+                            $("#CountryOfOrigin").dxTextBox("instance").option("value", data.CountryOfOrigin);
+                            $("#EnteredBy").dxTextArea("instance").option("value", data.CreatedBy);
+                            $("#ModifiedBy").dxTextArea("instance").option("value", data.ModifiedBy);
+                            $("#ItemDiscontinued").dxCheckBox("instance").option("value", data.IsDiscontinued);
+
+                            if (data.ImageUrl) {
+                                $("#imgBox1").html(`<img src="${data.ImageUrl}" alt="Item Image" style="max-width:100px; max-height:100px;" />`);
+                            } else {
+                                $("#imgBox1").html(`<span>No image data</span>`);
                             }
+
+                            $("#MinQty").dxNumberBox("instance").option("value", data.MinQty);
+                            $("#MaxQty").dxNumberBox("instance").option("value", data.MaxQty);
+                            $("#ReorderLevel").dxNumberBox("instance").option("value", data.ReorderLevel);
+                            $("#ReorderQty").dxNumberBox("instance").option("value", data.ReorderQty);
+                            $("#ReorderLeadTime").dxNumberBox("instance").option("value", data.ReorderLeadTime);
+
+                            if (isViewMode) {
+                                setTimeout(setReadOnlyMode, 500); 
+                            }
+                        }
                     })
                     .catch(error => {
                         console.error("Error loading record:", error);
                         alert("Failed to load item details.");
                     });
-            }, 100);  // 100ms delay usually enough
+            }, 100);
         }
     });
+
+        function setReadOnlyMode() {
+        const ids = [
+            "StockNoItemCode", "ItemName", "ItemNameArabic", "StockGroup", "ItemStore", "ItemClassification",
+            "DetailedDescription", "ArabicDescription", "UnitOfMeasure", "PackingUnit", "ItemSize",
+            "ItemThickness", "ItemDimension", "ActualSize", "OpeningBalance", "CostPrice", "ExFactoryPrice",
+            "SellingPrice", "MinSellingPrice", "MaxSellingPrice", "ItemPartNo", "ItemHSCode", "ItemColor",
+            "ItemBrand", "ItemManufacturer", "CountryOfOrigin", "EnteredBy", "ModifiedBy", "ItemDiscontinued",
+            "MinQty", "MaxQty", "ReorderLevel", "ReorderQty", "ReorderLeadTime"
+        ];
+
+        ids.forEach(id => {
+            const $el = $(`#${id}`);
+            if (!$el.length) return;
+
+            const types = [
+                "dxTextBox",
+                "dxNumberBox",
+                "dxTextArea",
+                "dxSelectBox",
+                "dxCheckBox"
+            ];
+
+            for (const type of types) {
+                try {
+                    if ($el[type]) {
+                        const instance = $el[type]("instance");
+                        if (instance) {
+                            instance.option("disabled", true);
+                            break;
+                        }
+                    }
+                } catch (e) {
+                    // Ignore errors if component not initialized
+                }
+            }
+        });
+    }
+
+
         let selectedGsCode = "";
 
       $(() => {
@@ -2206,8 +2691,121 @@
           });
       });
 
-    
 
+          //english text convert to arabic
+
+    async function translateToArabic(text) {
+
+         try {
+
+             const response = await fetch(
+
+                 `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`
+
+             );
+
+             const data = await response.json();
+
+             return data.responseData.translatedText;
+
+         } catch (error) {
+
+             console.error("Translation failed:", error);
+
+             return "Translation Error";
+
+         }
+
+    }
+
+    async function convertToArabic() {
+
+         // Get the TextBox1 (input) instance
+
+         const textBox1Instance = $("#DetailedDescription").dxTextArea("instance");
+
+         // Get the TextBox2 (output) instance
+
+         const textBox2Instance = $("#ArabicDescription").dxTextArea("instance");
+
+         // Ensure both instances are initialized
+
+         if (!textBox1Instance || !textBox2Instance) {
+
+             console.error("TextBox instances are not properly initialized.");
+
+             return;
+
+         }
+
+
+         // Get the value from TextBox1
+
+         const englishText = textBox1Instance.option("value");
+
+         // Validate input
+
+         if (!englishText || englishText.trim() === "") {
+
+             alert("Please enter text to translate.");
+
+             return;
+
+         }
+
+         // Perform translation
+
+         const arabicTranslation = await translateToArabic(englishText);
+
+         // Update TextBox2 with the Arabic translation
+
+         textBox2Instance.option("value", arabicTranslation);
+
+    }
+      async function convertToArabic1() {
+
+         // Get the TextBox1 (input) instance
+
+         const textBox1Instance = $("#ItemName").dxTextBox("instance");
+
+         // Get the TextBox2 (output) instance
+
+         const textBox2Instance = $("#ItemNameArabic").dxTextBox("instance");
+
+         // Ensure both instances are initialized
+
+         if (!textBox1Instance || !textBox2Instance) {
+
+             console.error("TextBox instances are not properly initialized.");
+
+             return;
+
+         }
+
+
+         // Get the value from TextBox1
+
+         const englishText = textBox1Instance.option("value");
+
+         // Validate input
+
+         if (!englishText || englishText.trim() === "") {
+
+             alert("Please enter text to translate.");
+
+             return;
+
+         }
+
+         // Perform translation
+
+         const arabicTranslation = await translateToArabic(englishText);
+
+         // Update TextBox2 with the Arabic translation
+
+         textBox2Instance.option("value", arabicTranslation);
+
+    }
 
       
 </script>
