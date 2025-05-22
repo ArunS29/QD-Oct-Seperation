@@ -503,7 +503,7 @@
 
 	// Format Effective Date
 	function formatEffectiveDate(dateString) {
-		debugger;
+		
 		if (!dateString) return 'N/A';
 		let dateObj = new Date(dateString);
 		let options = { day: 'numeric', month: 'short', year: 'numeric' };
@@ -662,7 +662,7 @@
 
 	// Function to reset the DataGrid and reinitialize it
 	function resetCostDataGrid() {
-		debugger;
+		
 		const costdataGrid = $('#propertydataGrid').dxDataGrid('instance');
 
 		if (costdataGrid) {
@@ -742,7 +742,7 @@
 			dataGrid.selectRows(e.value, false);
 		}
 		if (e.value) {
-			debugger;
+			
 			let grid = $("#propertydataGrid").dxDataGrid("instance");
 			let rowIndex = e.element.closest("tr").index(); // Get the edited row index
 			let rowData = grid.getVisibleRows()[rowIndex].data;

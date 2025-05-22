@@ -752,7 +752,6 @@
 	// // Function to fetch and bind data to the DataGrid
 	// function fetchAndBindDatas(accountHeadNo, frmDate, toDate) {
 	// 	alert("hi");
-	// 	debugger;
 	// 	$.ajax({
 	// 		url: '/api/AccountingLedgers/GetVouchers',
 	// 		type: 'GET',
@@ -1476,7 +1475,7 @@
 			alert("Invalid voucher details.");
 			return;
 		}
-		debugger;
+		
 		let formattedVoucher = voucherNo.trim().toUpperCase(); // Convert to uppercase for consistency
 		let formattedVoucherType = voucherType.trim(); // Trim to avoid leading/trailing spaces
 

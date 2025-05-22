@@ -781,7 +781,7 @@
     });
 
     function loadClientDetails(cleanClientCode) {
-        debugger;
+        
     $.ajax({
         url: `/api/ClientLeadMaster/GetClientByCode?clientCode=${cleanClientCode}`,
         type: 'GET',
@@ -948,7 +948,7 @@ function generateNextClientCode(categoryCode) {
 let businessCard1Base64 = null;
 let businessCard2Base64 = null;
 function onSaveClientMasterClick(e) {
-    debugger;
+    
     // Collecting form data from client master form
     var clientCode = $('#txtClientCode').dxTextBox("instance").option("value");
     var clientName = $('#txtClientName').dxTextBox("instance").option("value");
@@ -1042,7 +1042,7 @@ ContactRemarks:clientRemarks,
      onDeleteButtonClick();
  });
  function onDeleteButtonClick(e) {
-     debugger;
+     
      var ClientCode = $("#txtClientCode").dxTextBox("instance").option("value");
 
      if (!ClientCode) {

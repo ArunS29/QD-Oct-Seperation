@@ -489,7 +489,7 @@
         // Fetch user levels for lookup
         function loadUserLevels() {
 
-            debugger;
+            
 
             return $.ajax({
                 url: "/api/Utility/GetUserLevels",
@@ -568,11 +568,11 @@
 
                         function onUserIdCellClick(e) {
 
-                            debugger;
+                            
 
             // Ensure the click is on the UserId column
             if (e.column && e.column.dataField === "UserId") {
-                 debugger;
+                 
 
                 const userId = e.data.UserId;
                 const userLevel = e.data.UserLevel;

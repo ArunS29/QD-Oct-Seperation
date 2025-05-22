@@ -348,7 +348,7 @@
     });
 
     function bindSupplierContactData(supplierContactSlNo) {
-        debugger;
+        
         $.ajax({
             url: `/api/SupplierContactList/GetContactBySlNo?supplierContactSlNo=${supplierContactSlNo}`,
             type: 'GET',
@@ -386,7 +386,7 @@
     });
 
     function saveOrUpdateSupplierContact() {
-        debugger;
+        
         const supplierContactSlNo = $("#txtSupplierHidden").dxTextBox("instance").option("value"); // hidden ID
 
         const data = {
