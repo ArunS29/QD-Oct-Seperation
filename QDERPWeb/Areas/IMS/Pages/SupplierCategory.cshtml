@@ -140,7 +140,7 @@
 
 <div class="title">
     <div class="header-container">
-        <div id="BranchMaster" class="no-border-title"></div>
+        <div id="SupplierCategory" class="no-border-title"></div>
     </div>
 </div>
 <div class="content-container-top">
@@ -172,6 +172,7 @@
                 )
         </div>
     </div>
+    <br />  
     <div class="col-md-4">
         <div class="form-group">
             @(Html.DevExtreme().Button()
@@ -531,8 +532,8 @@
     }
 
     $(function () {
-        $("#BranchMaster").dxTextBox({
-            text: formatMessage("Branch Master"),
+        $("#SupplierCategory").dxTextBox({
+            text: formatMessage("Supplier Category"),
             readOnly: true,
             onContentReady: function (e) {
                 $(e.element).addClass("dx-textbox-heading");

@@ -34,16 +34,18 @@
         display: none !important;
     }
 
+    .mainContainer {
+        width:96%;
+        overflow-x:hidden;
+    }
+
 </style>
-<div class="mainContainer">
-
-
 <div class="title" >
     <div class="header-container">
         <div id="ClientLeads" class="no-border-input"></div>
     </div>
 </div>
-    <div class="Head" style="margin-top:5%;">
+    <div class="Head">
     <div class="limited-footer">
         @await Html.PartialAsync("InventoryModuleFooter")
     </div>
@@ -59,6 +61,7 @@
         .KeyExpr("ClientCode")
         .ElementAttr("class", "datagrid")
         .ShowBorders(true)
+        .Width("100%")
         .ColumnAutoWidth(true)
         .ShowColumnLines(true)
         .ShowRowLines(true)
@@ -122,7 +125,6 @@
 
         )
 
-</div>
 </div>
 <!-- Bottom Toolbar -->
 

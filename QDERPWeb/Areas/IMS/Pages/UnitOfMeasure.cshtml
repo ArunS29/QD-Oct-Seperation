@@ -200,10 +200,7 @@
                     toolbar.Items(items => { }); // hide default toolbar
                 })
                 .OnRowUpdating("onUnitRowUpdating")
-                .Toolbar(toolbar =>
-                {
-                    toolbar.Items(items => { }); // this disables default toolbar items
-                })
+               
             .AllowColumnReordering(true)
             .AllowColumnResizing(true)
             .Paging(p => p.Enabled(false))
@@ -226,7 +223,7 @@
 
     <div class="Head">
         <div class="limited-footer">
-            @await Html.PartialAsync("VATModuleFooter")
+            @await Html.PartialAsync("InventoryModuleFooter")
         </div>
     </div>
 </body>
@@ -234,7 +231,7 @@
 <script>
      $(document).ready(function () {
 
-        $(".limited-footer .btn-containerIvoiceEdit").each(function () {
+        $(".limited-footer .btn-container").each(function () {
 
             if (!$(this).find("#btnSave, #btnBack").length) {
                 $(this).remove();

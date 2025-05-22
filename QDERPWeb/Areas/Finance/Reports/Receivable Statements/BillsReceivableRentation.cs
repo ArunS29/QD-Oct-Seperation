@@ -12,7 +12,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
 {
     public partial class BillsReceivableRentation : XtraReport
     {
-        private const string QueryName = "qry201SubLedgerReceivablesMaster  ";
+        private const string QueryName = "qry201SubLedgerReceivablesMaster";
         private readonly TenantDbContextHelper _tenantDbContextHelper;
 
         public BillsReceivableRentation(
@@ -51,34 +51,36 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
             string username,
             string company_address_arb)
         {
-            void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
+            void AddOrUpdateParameter(string paramName, object paramValue, Type paramType, bool visible)
             {
-                if (Parameters[name] == null)
+                var parameter = Parameters[paramName];
+                if (parameter == null)
                 {
-                    Parameters.Add(new DevExpress.XtraReports.Parameters.Parameter()
+                    Parameters.Add(new DevExpress.XtraReports.Parameters.Parameter
                     {
-                        Name = name,
-                        Type = type,
-                        Value = value,
+                        Name = paramName,
+                        Type = paramType,
+                        Value = paramValue,
                         Visible = visible
                     });
                 }
                 else
                 {
-                    Parameters[name].Value = value;
-                    Parameters[name].Visible = visible;
+                    parameter.Value = paramValue;
+                    parameter.Visible = visible;
                 }
-            }
 
-            AddOrUpdateParameter("AccountID", accountId ?? "", typeof(string));
-            AddOrUpdateParameter("StartDate", frmDate == DateTime.MinValue ? DateTime.Today : frmDate, typeof(DateTime));
-            AddOrUpdateParameter("EndDate", toDate == DateTime.MinValue ? DateTime.Today : toDate, typeof(DateTime));
-            AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string));
-            AddOrUpdateParameter("CompanyName", company_Name ?? "", typeof(string));
-            AddOrUpdateParameter("CompanyAddress", company_address ?? "", typeof(string));
-            AddOrUpdateParameter("CompanyNameAr", Company_Name_Ar ?? "", typeof(string));
-            AddOrUpdateParameter("CompanyAddressArb", company_address_arb ?? "", typeof(string));
-            AddOrUpdateParameter("UserName", username ?? "", typeof(string));
+            }
+            AddOrUpdateParameter("AccountID", accountId, typeof(string), false);
+            AddOrUpdateParameter("StartDate", frmDate, typeof(DateTime), false);
+            AddOrUpdateParameter("EndDate", toDate, typeof(DateTime), false);
+            AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string), false);
+            AddOrUpdateParameter("CompanyName", company_Name ?? "", typeof(string), false);
+            AddOrUpdateParameter("CompanyAddress", company_address ?? "", typeof(string), false);
+            AddOrUpdateParameter("CompanyNameAr", Company_Name_Ar ?? "", typeof(string), false);
+            AddOrUpdateParameter("CompanyAddressArb", company_address_arb ?? "", typeof(string), false);
+            AddOrUpdateParameter("UserName", username ?? "", typeof(string), false);
+
 
 
             if (this.FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
@@ -105,6 +107,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
 
         private void AddSqlQueryParameters(string accountId, DateTime frmDate, DateTime toDate)
         {
+            sqlDataSource1.Queries.Clear();
+
             if (_tenantDbContextHelper == null || !_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
                 throw new Exception("Unable to get tenant context. Please check session and cache.");
 
@@ -165,6 +169,11 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
 
                 this.Bands[BandKind.Detail].Controls.Add(noDataLabel);
             }
+        }
+
+        private void BillsReceivableRentation_BeforePrint(object sender, CancelEventArgs e)
+        {
+
         }
     }
 }

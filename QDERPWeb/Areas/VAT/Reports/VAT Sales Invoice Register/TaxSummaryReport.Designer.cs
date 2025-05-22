@@ -169,11 +169,11 @@
             // 
             this.xrLabel14.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel14.ForeColor = System.Drawing.Color.DimGray;
-            this.xrLabel14.LocationFloat = new DevExpress.Utils.PointFloat(80.7929F, 10F);
+            this.xrLabel14.LocationFloat = new DevExpress.Utils.PointFloat(24.95956F, 9.999949F);
             this.xrLabel14.Multiline = true;
             this.xrLabel14.Name = "xrLabel14";
             this.xrLabel14.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel14.SizeF = new System.Drawing.SizeF(175F, 23F);
+            this.xrLabel14.SizeF = new System.Drawing.SizeF(213.3333F, 23F);
             this.xrLabel14.StylePriority.UseFont = false;
             this.xrLabel14.StylePriority.UseForeColor = false;
             this.xrLabel14.Text = "QuickDice ERP Solution";
@@ -220,7 +220,7 @@
             this.xrLabel12,
             this.xrLabel11,
             this.xrLabel10});
-            this.ReportHeader.HeightF = 124.1667F;
+            this.ReportHeader.HeightF = 118.3334F;
             this.ReportHeader.Name = "ReportHeader";
             // 
             // xrPictureBox2
@@ -234,7 +234,7 @@
             // 
             // xrLabel13
             // 
-            this.xrLabel13.LocationFloat = new DevExpress.Utils.PointFloat(0F, 99.50001F);
+            this.xrLabel13.LocationFloat = new DevExpress.Utils.PointFloat(0F, 92.50001F);
             this.xrLabel13.Multiline = true;
             this.xrLabel13.Name = "xrLabel13";
             this.xrLabel13.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
@@ -256,7 +256,7 @@
             // 
             this.xrLabel12.Font = new DevExpress.Drawing.DXFont("Cambria", 16F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel12.ForeColor = System.Drawing.Color.DodgerBlue;
-            this.xrLabel12.LocationFloat = new DevExpress.Utils.PointFloat(0F, 50.66668F);
+            this.xrLabel12.LocationFloat = new DevExpress.Utils.PointFloat(0F, 48.66668F);
             this.xrLabel12.Multiline = true;
             this.xrLabel12.Name = "xrLabel12";
             this.xrLabel12.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);

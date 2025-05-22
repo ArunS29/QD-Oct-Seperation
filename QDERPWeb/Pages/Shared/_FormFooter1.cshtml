@@ -115,7 +115,7 @@
         .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
         )
 
-    
+
 
     @(Html.DevExtreme().Button()
         .ID("btnAddLine")
@@ -998,10 +998,10 @@
 
         // Determine the report name based on the selected text
         var reportName = "";
-        if (selectedText === formatMessage('Preview Format 1')) {
-            reportName = "SalesVoucherReport";
-        } else if (selectedText === formatMessage('Preview Format 2')) {
-            reportName = "SalesReport2";
+        if (selectedText === formatMessage('Preview Journal EntryForm')) {
+            reportName = "journalEntryForm1";
+        } else if (selectedText === formatMessage('Preview Journal EntryForm(with Employee Cost)')) {
+            reportName = "employeecostJournalRegister";
         }
 
         // Ensure a valid report is selected

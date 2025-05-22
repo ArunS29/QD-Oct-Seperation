@@ -1,4 +1,5 @@
-﻿using DevExtreme.AspNet.Data;
+﻿using DevExpress.DataProcessing.InMemoryDataProcessor;
+using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
 using SkiaSharp;
 using System.Dynamic;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
@@ -372,6 +374,58 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 			return Unauthorized(new { message = "Invalid tenant.", success = false });
 		}
+		[HttpGet]
+		public async Task<IActionResult> GetMPRRequesterBy(DataSourceLoadOptions loadOptions)
+		{
+			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				try
+				{
+
+					var RequestedBy = dbContext.Tbl60002requestedBies.Select(i => new
+					{
+						i.RequestedByCode,
+						i.RequestedBy
+
+					});
+
+					return Json(await DataSourceLoader.LoadAsync(RequestedBy, loadOptions));
+				}
+				catch (Exception ex)
+				{
+					_logger.LogError($"Error in GetProject: {ex.Message}");
+					return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+				}
+			}
+
+			return Unauthorized(new { message = "Invalid tenant.", success = false });
+		}
+		[HttpGet]
+		public async Task<IActionResult> GetProject(DataSourceLoadOptions loadOptions)
+		{
+			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				try
+				{
+
+					var Project = dbContext.Qry70002projectsViewMasters.Select(i => new
+					{
+						i.ProjectId,
+						i.ProjectDescription
+
+					});
+
+					return Json(await DataSourceLoader.LoadAsync(Project, loadOptions));
+				}
+				catch (Exception ex)
+				{
+					_logger.LogError($"Error in GetProject: {ex.Message}");
+					return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+				}
+			}
+
+			return Unauthorized(new { message = "Invalid tenant.", success = false });
+		}
 		[HttpPost]
 		public async Task<ActionResult> UpdateInvoiceMasterDetails(Tbl60601purchaseRequestMaster InvoiceMaster)
 		{
@@ -437,8 +491,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 				if (existingMaster != null)
 				{
-					// Update existing master with manual property mapping
-					existingMaster.Mprdate = VM.Mprdate;
+					//Update existing master with manual property mapping
+
+			existingMaster.Mprdate = VM.Mprdate;
 					existingMaster.ClientCode = VM.ClientCode;
 					existingMaster.RequestedBy = VM.RequestedBy;
 					existingMaster.RequesterContactEmail = VM.RequesterContactEmail;
@@ -454,14 +509,18 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 					existingMaster.BidClosingDate = VM.BidClosingDate;
 					existingMaster.BidReminderOn = VM.BidReminderOn;
 					existingMaster.ClientProject = VM.ClientProject;
-					// Explicit casting from short to byte with range validation
-					existingMaster.ModeOfRequest = VM.ModeOfRequest.HasValue ? (byte)VM.ModeOfRequest.Value : default(byte);
-					existingMaster.TypeOfRequest = VM.TypeOfRequest.HasValue ? (byte)VM.TypeOfRequest.Value : default(byte);
-					existingMaster.ExpectedVatrate = VM.ExpectedVatrate.HasValue ? (byte)VM.ExpectedVatrate.Value : default(byte);
-					existingMaster.CompanyBranch = VM.CompanyBranch.HasValue ? (byte)VM.CompanyBranch.Value : default(byte);
-					existingMaster.PurchaseRequestStatusId = VM.PurchaseRequestStatusId.HasValue ? (byte)VM.PurchaseRequestStatusId.Value : default(byte);
-					existingMaster.InventoryMasterGroupId = VM.InventoryMasterGroupId.HasValue ? (byte)VM.InventoryMasterGroupId.Value : default(byte);
-
+					existingMaster.ProjectSubUnitCode = VM.ProjectSubUnitCode.HasValue ? (byte?)VM.ProjectSubUnitCode.Value : null;
+					existingMaster.StoreCode = VM.StoreCode;
+					existingMaster.TypeOfMpr = VM.TypeOfMpr.HasValue ? (byte?)VM.TypeOfMpr.Value : null;
+					existingMaster.ModeOfRequest = VM.ModeOfRequest.HasValue ? (byte?)VM.ModeOfRequest.Value : null;
+					existingMaster.TypeOfRequest = VM.TypeOfRequest.HasValue ? (byte?)VM.TypeOfRequest.Value : null;
+					existingMaster.ExpectedVatrate = VM.ExpectedVatrate.HasValue ? (byte?)VM.ExpectedVatrate.Value : null;
+					existingMaster.CompanyBranch = VM.CompanyBranch.HasValue ? (byte?)VM.CompanyBranch.Value : null;
+					existingMaster.PurchaseRequestStatusId = VM.PurchaseRequestStatusId.HasValue ? (byte?)VM.PurchaseRequestStatusId.Value : null;
+					existingMaster.InventoryMasterGroupId = VM.InventoryMasterGroupId.HasValue ? (byte?)VM.InventoryMasterGroupId.Value : null;
+					existingMaster.RequestSignatory = VM.RequestSignatory.HasValue ? (byte?)VM.RequestSignatory.Value : null;
+					existingMaster.MprverifiedSign = VM.MprverifiedSign.HasValue ? (byte?)VM.MprverifiedSign.Value : null;
+					existingMaster.MprapprovedSign = VM.MprapprovedSign.HasValue ? (byte?)VM.MprapprovedSign.Value : null;
 
 
 				}
@@ -492,7 +551,16 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 						ProjectMasterCode = VM.ProjectMasterCode,
 						BidClosingDate = VM.BidClosingDate,
 						BidReminderOn = VM.BidReminderOn,
-						ClientProject = VM.ClientProject
+						ClientProject = VM.ClientProject,
+						RequestSignatory=VM.RequestSignatory,
+						MprverifiedSign=VM.MprverifiedSign,
+						MprapprovedSign=VM.MprapprovedSign,
+						ProjectSubUnitCode= Convert.ToByte(VM.ProjectSubUnitCode),
+						StoreCode = VM.StoreCode,
+						TypeOfMpr=Convert.ToByte(VM.TypeOfMpr)
+			
+,
+
 					};
 
 					await dbContext.Tbl60601purchaseRequestMasters.AddAsync(newMaster);

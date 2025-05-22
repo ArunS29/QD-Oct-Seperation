@@ -1,4 +1,4 @@
-﻿@using System.IdentityModel.Tokens.Jwt
+@using System.IdentityModel.Tokens.Jwt
 @using System.Linq
 @using Microsoft.AspNetCore.Http
 @using QD.ERP.Web.DAL.Entities
@@ -94,11 +94,7 @@
     <!-- DevExpress PDF Exporter -->
     <script src="https://cdn3.devexpress.com/jslib/23.1.4/js/dx.all.js"></script>
 
-    <!-- jsPDF and plugins -->
-    <script src="/libs/jspdf.umd.min.js"></script>
-    <script src="/libs/jspdf.plugin.autotable.min.js"></script>
-    <script src="/libs/jspdf-arabic.min.js"></script>
-    <script src="/libs/Amiri-Regular.js"></script>
+   
 
 
 
@@ -1104,7 +1100,7 @@
                 </div>
                 <div class="submenu-item" onclick="handleClick('Account Ledger - Statement of Account OrderByVocuherNo(Without Narration)')">
                     <i class="fa fa-th-list"></i>
-                    <span id="StatementOfAccountOrderByVoucherNoWithoutNarration" class="no-border-input"></span>
+                    <span id="StatementOfAccountOrderByVoucherNoWithNarration" class="no-border-input"></span>
                 </div>
                 <div class="submenu-item" onclick="handleClick('Account Ledger - Statement of Account Export Format(Landscape)')">
                     <i class="fa fa-th-list"></i>
@@ -1573,7 +1569,7 @@
                 readOnly: true
             });
             $("#BillsReceivablelandscapeformat").dxTextBox({
-                text: formatMessage("BillsReceivablelandscapeformat"),
+                text: formatMessage("Bills Receivables (Landscape format)"),
                 width:400,
                 readOnly: true
             });
@@ -1702,7 +1698,7 @@
                 readOnly: true
             });
             $("#StatementOfAccountOrderByVoucherNoWithoutNarration").dxTextBox({
-                text: formatMessage("Statement of Account OrderByVocuherNo(Without Narration)"),
+                text: formatMessage("Statement of Account Order By VocuherNo (Without Narration)"),
                 width:410,
                 readOnly: true
             });
@@ -2080,9 +2076,25 @@
             }
         }
         function handleInfoClick() {
-            
-            window.location.href = `/${tenantName}/General/CompanyDetails`;
+
+                $.ajax({
+                    url: "/api/utility/CheckUserLevel", // Server-side endpoint to check UserLevel
+                    method: "GET",
+                    success: function (response) {
+                        if (response.success && response.userLevel === 99) {
+                                       window.location.href = `/${tenantName}/General/CompanyDetails`;
+
+                        } else {
+                            // Notify the user that navigation is not allowed
+                            DevExpress.ui.notify("You do not have permission to view this page.", "error", 2000);
+                        }
+                    },
+                    error: function () {
+                        DevExpress.ui.notify("Failed to check user level.", "error", 2000);
+                    }
+                });
         }
+
         // Function for Avatar click - show user profile
         function handleAvatarClick() {
             const profilePopup = document.getElementById('profilePopup');
@@ -2296,7 +2308,7 @@
                                     </a>
                                 </div>
 
-                               <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/IMS/InventoryStockDetails">
+                               <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/IMS/StockInventoryMainForm">
                                     <i class="fas fa-boxes"></i> 
                                     <div class="text">${formatMessage("Stock Inventory")}</div>
                                 </a>
@@ -2560,7 +2572,7 @@
                 "XtraReportBillsReceivableAgeingReport": "XtraReportBillsReceivableAgeingReport",
                 "XtraReportAgeingreportsummary": "XtraReportAgeingreportsummary",
                 "AccountDebtors": "AccountDebtors",
-                "AccountConfirmationLetter": "AccountDebtorsReport"
+                "AccountConfirmationLetter": "AccountDebtors"
             };
 
             // Check if selectedText matches any report name

@@ -192,23 +192,20 @@
 				<div>
 				<label id="TypenewStockClassification" class="form-label"></label>
 					<div style="display:flex;">
-						@(Html.DevExtreme().SelectBox()
-													.Width("70%")
-													.Placeholder("Select Cost Center")
-													@* .DataSource(new[] { "", "" }) *@
-													.ValueExpr("this")	
-													.DisplayExpr("this"))
-						@* @(Html.DevExtreme().Button() *@
-						@* 				.Text("Add") *@
-						@* 				.Type(ButtonType.Success) *@
-						@* 				.Icon("plus") *@
-						@* 				.Width("10%")) *@
-						<div class="add-button-wrap" style="margin-left:50%;">
-							@(Html.DevExtreme().Button()
-														.Text(new JS("formatMessage('Add')"))
-														.Type(ButtonType.Success)
-														.Icon("plus")
-														.Width("100%"))
+					@(Html.DevExtreme().TextBox()
+												.ID("stockClassificationInput")
+												.Width("70%")
+												.Placeholder("Type new Stock Classification")
+												)
+
+					<div class="add-button-wrap" style="margin-left:50%; margin-top:10px;">
+						@(Html.DevExtreme().Button()
+													.ID("addStockClassBtn")
+													.Text(new JS("formatMessage('Add')"))
+													.Type(ButtonType.Success)
+													.Icon("plus")
+													.Width("100%")
+													)
 						</div>
 					</div>
 				</div>
@@ -218,33 +215,47 @@
 		<!-- Data Grid -->
 		<br />
 		<div>
-			@(Html.DevExtreme().DataGrid()
-						.ID("storeGrid")
-						.Height(540)
-						.Width("100%")
-						.ShowBorders(true)
-						.ColumnAutoWidth(true)
-						.ShowColumnLines(true)
-						.ShowRowLines(true)
-						.RowAlternationEnabled(true)
-						.Columns(columns =>
-						{
-					columns.Add().DataField("StoreName").Caption(new JS("formatMessage('Code')")).Width(300)
-							.Alignment(HorizontalAlignment.Center);
-					columns.Add().DataField("CostCenter").Caption(new JS("formatMessage('Stock Classification')")).Width(200)
-							.Alignment(HorizontalAlignment.Center);
-						})
-						.ShowColumnLines(true)
-						.ShowRowLines(true)
-						.RowAlternationEnabled(true)
-						.ShowColumnHeaders(true)
-						.ColumnAutoWidth(true)
-						.AllowColumnReordering(true) // Enable column reordering
-						.AllowColumnResizing(true)   // Enable column resizing
-						.ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
-						.GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
-						.ShowBorders(true)
-						)
+		@(Html.DevExtreme().DataGrid()
+				.ID("storeGrid")
+				.Height(540)
+				.Width("100%")
+				.ShowBorders(true)
+				.ColumnAutoWidth(true)
+				.ShowColumnLines(true)
+				.ShowRowLines(true)
+				.RowAlternationEnabled(true)
+				.DataSource(d => d.WebApi()
+				.LoadAction("GetAll")
+				.UpdateAction("UpdateStockClassification") // Add update action
+				.UpdateMethod("PUT")
+				.Controller("StockInventory")
+				.Key("StockClassId") // Primary key
+				)
+				.Editing(editing => editing
+				.Mode(GridEditMode.Row) // or .Form, .Popup
+				.AllowUpdating(true)
+				.UseIcons(true) // Show edit/save icons
+				)
+				.Columns(columns =>
+				{
+					columns.Add().DataField("StockClassId")
+					.Caption("ID")
+					.Width(100)
+					.Alignment(HorizontalAlignment.Center)
+					.AllowEditing(false); // Read-only
+
+					columns.Add().DataField("StockClassification")
+					.Caption("Stock Classification")
+					.Width(300)
+					.Alignment(HorizontalAlignment.Center);
+				})
+				.AllowColumnReordering(true)
+				.AllowColumnResizing(true)
+				.ColumnFixing(fixing => fixing.Enabled(true))
+				.GroupPanel(groupPanel => groupPanel.Visible(false))
+				.ShowColumnHeaders(true)
+				)
+
 		</div>
 		<br />
 		<!-- Buttons -->
@@ -278,5 +289,42 @@
 	$(function () {
 		$("#TypenewStockClassification").text(
 			 formatMessage("Type new Stock Classification By & Add to the Existing List"));
+	});
+		$(function () {
+			$("#addStockClassBtn").dxButton({
+				onClick: function () {
+					var newStockClass = $("#stockClassificationInput").dxTextBox("instance").option("value");
+
+					if (!newStockClass || newStockClass.trim() === "") {
+						DevExpress.ui.notify("Please enter a Stock Classification.", "error", 2000);
+						return;
+					}
+
+					$.ajax({
+					url: '/api/StockInventory/AddStockClassification',
+						type: 'POST',
+						contentType: 'application/json',
+						data: JSON.stringify({ StockClassification: newStockClass }),
+						success: function (res) {
+							DevExpress.ui.notify("Stock Classification added successfully!", "success", 2000);
+							// Clear input box
+							$("#stockClassificationInput").dxTextBox("instance").option("value", "");
+							// Optionally reload any grid or list showing the data
+							// $("#yourGridId").dxDataGrid("instance").refresh();
+						},
+						error: function (err) {
+							DevExpress.ui.notify("Failed to add Stock Classification.", "error", 3000);
+						}
+					});
+				}
+			});
+		});
+	$(function () {
+		var grid = $("#storeGrid").dxDataGrid("instance");
+		if (grid) {
+			grid.option("onRowUpdated", function (e) {
+				DevExpress.ui.notify("Store updated successfully.", "success", 2000);
+			});
+		}
 	});
 </script>

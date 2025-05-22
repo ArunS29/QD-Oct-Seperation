@@ -101,7 +101,7 @@
                             )
                             .LabelMode(EditorLabelMode.Outside)
                             .ID("accountMasterDropDownBox")
-                            .Width(900)
+                            .Width(770)
                             @*  .ShowClearButton(true)
                         .AcceptCustomValue(true) *@
                             .OpenOnFieldClick(false)//
@@ -324,6 +324,7 @@
                 .ID("btnBack")
                 .Text("Back")
                 .Icon("arrowleft")
+                .OnClick("Goback")
                 )
         </div>
         @using (Html.DevExtreme().NamedTemplate("DocumentAttachedContentTemplate"))
@@ -401,8 +402,6 @@
 
 
     function addVoucherEntry() {
-        debugger;
-
         // Ensure the validator instances are initialized properly
         // var accountMasterDropDownBoxValidator = $("#accountMasterDropDownBox").dxValidator("instance");
         // var expiryIdValidator = $("#expiryId").dxDateBox("instance").dxValidator("instance");  // Correct instance reference
@@ -491,7 +490,7 @@
     }
     // Function to reset form fields
     function resetFormFields() {
-        alert("hiiiii");
+        
         $("#accountMasterDropDownBox").dxDropDownBox("instance").option("value", "-");
         $("#Remarks").dxTextBox("instance").option("value", "");
         $("#ReferenceNo").dxTextBox("instance").option("value", "");
@@ -500,7 +499,7 @@
     }
     // Function to fetch the new DocumentNo
     function fetchNewDocumentNo() {
-        alert("hyyy");
+       
         $.ajax({
             url: "/api/LedgerDocuments/GetNewDocumentNo", // Your API endpoint
             type: 'GET',
@@ -598,4 +597,7 @@
                     }
                 });
             });
+                function Goback() {
+        window.parent.closeModal(); // This closes the current window/tab
+    }
 </script>

@@ -465,6 +465,87 @@ namespace QD.ERP.Web.Areas.Finance.Models
 		public DateTime? BidClosingDate { get; set; }
 		public DateTime? BidReminderOn { get; set; }
 		public string ClientProject { get; set; }
+		public byte? RequestSignatory { get; set; }
+		public byte? MprverifiedSign { get; set; }
+		public byte? MprapprovedSign { get; set; }
+		
+
+		public byte? TypeOfMpr { get; set; }
+
+		
+
+		public string StoreCode { get; set; }
+
+		
+		public string Mprremarks { get; set; }
+
+		public bool? IsApproved { get; set; }
+
+		public string PreparedBy { get; set; }
+
+		public DateTime? PreparedOn { get; set; }
+
+		public string ApprovedBy { get; set; }
+
+		public DateTime? ApprovedOn { get; set; }
+
+		public string AddedBy { get; set; }
+
+		public DateTime? AddedOn { get; set; }
+
+		public string ModifiedBy { get; set; }
+
+		public DateTime? ModifiedOn { get; set; }
+
+	
+
+		public string Project { get; set; }
+
+	
+		public short? DepartmentId { get; set; }
+
+		
+
+		public bool? IsSubmitted { get; set; }
+
+		public string SubmittedBy { get; set; }
+
+		public DateTime? SubmittedOn { get; set; }
+
+		public bool? IsVerified { get; set; }
+
+		public string VerifiedBy { get; set; }
+
+		public DateTime? VerifiedOn { get; set; }
+
+		public string RequesterName { get; set; }
+
+	
+		public short? ProjectSubUnitCode { get; set; }
+
+		
+
+		public string MaterialQuoteNo { get; set; }
+
+		public byte? MprrevisionId { get; set; }
+
+		public bool? IsObseleteVersion { get; set; }
+
+		public string MprrevisedBy { get; set; }
+
+		public DateTime? MprrevisedOn { get; set; }
+
+		public string MprrevisionNo { get; set; }
+
+		public bool? IsCancelled { get; set; }
+
+		public string CancelledBy { get; set; }
+
+		public DateTime? CancelledOn { get; set; }
+
+		public string RemarksByApprover { get; set; }
+
+		public string RemarksByVerifier { get; set; }
 
 		public List<Tbl60602purchaseRequestChild> PurchaseRequestDetails { get; set; }
 		
