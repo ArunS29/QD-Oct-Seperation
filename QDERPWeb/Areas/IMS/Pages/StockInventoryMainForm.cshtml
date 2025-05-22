@@ -240,7 +240,7 @@
     .Grouping(g => g.AutoExpandAll(true))
     .GroupPanel(gp => gp.Visible(false))
     .ShowBorders(true)
-    .OnCellClick("function(e) {handleCellClick(e);}")
+    
     .Height("100%")
     .Width("100%")
 )
@@ -269,21 +269,20 @@
     });
 
     });
-
     function viewRecord() {
         if (selectedRowData) {
             const code = selectedRowData.Gscode;
-            window.location.href = `/${tenantName}/IMS/InventoryStockDetails?code=${encodeURIComponent(code)}`;
+            window.location.href = `/${tenantName}/IMS/InventoryStockDetails?code=${encodeURIComponent(code)}&mode=view`;
         }
     }
 
     function editRecord() {
         if (selectedRowData) {
-            alert(selectedRowData)
             const code = selectedRowData.Gscode;
-            window.location.href = `/${tenantName}/IMS/InventoryStockDetails?code=${encodeURIComponent(code)}`;
+            window.location.href = `/${tenantName}/IMS/InventoryStockDetails?code=${encodeURIComponent(code)}&mode=edit`;
         }
     }
+
 
        function deleteRecord() {
         if (selectedRowData) {

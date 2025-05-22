@@ -138,6 +138,9 @@
             .Type(ButtonType.Normal)
             .StylingMode(ButtonStylingMode.Outlined)
             .Width(180)
+            .OnClick("printGrid")
+
+
             )
     </div>
     <div class="btn-container">
@@ -703,6 +706,17 @@
     }
 
 
+        function printGrid() {
+        const gridContainer = $("#costcenter-datagrid").closest('.some-container');
+        const wasHidden = gridContainer.is(":hidden");
+        if (wasHidden) {
+            gridContainer.show();
+        }
+        exportDataGridToPDF('costcenter-datagrid');
+        if (wasHidden) {
+            gridContainer.hide();
+        }
+    }
 
     // function handleReportsClick(e) {
         

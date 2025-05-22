@@ -87,9 +87,10 @@
     <script src="~/js/jwt-decode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
-    <script src="~/js/global/print.js"></script>
     <!-- jsPDF Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="@Url.Content("~/js/global/print.js?v=20250522")"></script>
+
 
     <!-- DevExpress PDF Exporter -->
     <script src="https://cdn3.devexpress.com/jslib/23.1.4/js/dx.all.js"></script>
@@ -1156,10 +1157,7 @@
                     <i class="fa fa-file"></i>
                     <span id="BillsReceivableFormat" class="no-border-input"></span>
                 </div>
-                <div class="submenu-item" onclick="handleClick('AccountOrderByVoucherNo')">
-                    <i class="fa fa-file"></i>
-                    <span id="StatementOfAccountOrderByVoucherNo1" class="no-border-input"></span>
-                </div>
+                
             </div>
         </div>
 

@@ -389,6 +389,13 @@
                 .Icon("plus")
                 .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
                 )
+            @(Html.DevExtreme().Button()
+                .ID("btnPrint")
+                .Text("Print")
+                .Icon("print")
+                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
+                )
         </div>
         @using (Html.DevExtreme().NamedTemplate("JournalcostAllocationDropdownContentTemplate"))
         {
