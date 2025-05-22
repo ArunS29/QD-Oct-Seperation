@@ -393,11 +393,25 @@
     var Gsdescrpition = urlParams.get('Gsdescrpition') ?? '';
     var GsdescriptionAr = urlParams.get('GsdescriptionAr') ?? '';
     var ItemPartNo = urlParams.get('ItemPartNo') ?? '';
-    var CostPrice = urlParams.get('CostPrice') ?? '';
-    var GssellingRate = urlParams.get('GssellingRate') ?? '';
-    var ReorderQty = urlParams.get('ReorderQty') ?? '';
+    var CostPrice = urlParams.get('CostPrice') ?? 1;
+    var GssellingRate = urlParams.get('GssellingRate') ?? 1;
+    var ReorderQty = urlParams.get('ReorderQty') ?? 1;
               // var IsEditflag = urlParams.get('IsEditflag');
    
+    if(ReorderQty=="null")
+    {
+       ReorderQty = 1
+    }
+    else if(CostPrice=="null")
+    {
+        CostPrice = 1
+
+    }
+    else if(GssellingRate=="null")
+    {
+        GssellingRate = 1
+
+    }
                 // IsCurrent=IsEditflag.toString();
 
                 // // console.log("Iseditflag",IsEditflag)
@@ -408,10 +422,12 @@
                      $("#txtDescription8").dxTextArea("instance").option("value",Gsdescrpition);
                       $("#txtDescriptionArabic").dxTextArea("instance").option("value",GsdescriptionAr);
 
-                       $("#packingUnit").dxNumberBox("instance").option("value",ReorderQty);
-                        $("#sellingRate").dxNumberBox("instance").option("value",GssellingRate);
-                         $("#txtCostPrice3").dxNumberBox("instance").option("value",CostPrice);
+                           $("#packingUnit").dxNumberBox("instance").option("value", ReorderQty ?? 1);
+                           $("#sellingRate").dxNumberBox("instance").option("value", GssellingRate ?? 1);
+                           $("#txtCostPrice3").dxNumberBox("instance").option("value", CostPrice ?? 1);
+
                      
+               
                      //dataGridAccountHeadSelectionChanged({ selectedRowKeys: [Gsdescrpition]});
 
            // }
