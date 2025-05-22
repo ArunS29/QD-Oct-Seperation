@@ -753,7 +753,37 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        [HttpGet]
+        public JsonResult GetPurchaseTaxSlabs()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var result = dbContext.Tbl20168VatpurchaseTaxSlabs
+            .Select(x => new
+            {
+                x.PurchaseTaxSlabCode,
+                x.PurchaseTaxSlab
+            }).ToList();
 
+
+                    if (result != null && result.Any())
+                    {
+                        return Json(result);
+                    }
+
+                    return Json(new { success = false, message = "No child records found." });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetJournalChild: {ex.Message}");
+                    return Json(new { success = false, message = "An error occurred while fetching child records." });
+                }
+            }
+
+            return Json(new { message = "Invalid tenant.", success = false });
+        }
     }
 }
 
