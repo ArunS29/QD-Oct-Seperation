@@ -12,6 +12,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using ERPMasterWtDataContext = QD.ERP.Web.DAL.Entities.ERPMasterWtDataContext;
+using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis;
 
 namespace QD.ERP.Web.Pages
 {
@@ -28,8 +29,9 @@ namespace QD.ERP.Web.Pages
             _tenantDbContextHelper = tenantDbContextHelper;
         }
 
-        public IActionResult OnGet(string reportName, string voucherType, DateTime? frmDate, DateTime? toDate)
+        public IActionResult OnGet(string reportName, string voucherType, DateTime? frmDate, DateTime? toDate,string requestedBy)
         {
+
             if (string.IsNullOrEmpty(reportName))
                 return BadRequest("Report name is required.");
 
@@ -68,8 +70,12 @@ namespace QD.ERP.Web.Pages
             // Instantiate reports
             if (!string.IsNullOrEmpty(voucherType) && frmDate.HasValue && toDate.HasValue)
             {
+               
                 switch (reportName)
                 {
+
+                 
+
                     case "PreviewRegister":
                         Report = new PreviewRegister(voucherType, frmDate.Value, toDate.Value,
                             tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
@@ -98,6 +104,20 @@ namespace QD.ERP.Web.Pages
                     default:
                         return NotFound("Report not found.");
                 }
+            }
+            else if (!string.IsNullOrEmpty(requestedBy) && frmDate.HasValue && toDate.HasValue)
+            {
+                switch (reportName)
+                {
+
+                    case "CostCenterReport":
+                        Report = new CostcenterRepoer(requestedBy, frmDate.Value, toDate.Value,
+                            tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
+                    case "SummaryReport":
+                        Report = new CostCenterSummaryReport(requestedBy, frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
+                }   
             }
             else
             {

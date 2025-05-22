@@ -646,7 +646,8 @@
                 items.Add().Text("UploadItems Form Excel").Icon("edit");
                
             })
-            
+            .OnItemClick("addPrintButton_click")
+            .ShowArrowIcon(false)
             
             )
     </div>
@@ -1905,7 +1906,7 @@
                     "Tax Summary Report -Purchases":"VATPurchasesAndExpReport",
                     "Tax Summary Report-Purchases(in Arabic)":"TaxSummaryReportPurchaseInArabic",
                      "Tax Summary Report-Debit Notes":"DebitNoteSummary",
-                             "VAT Returns Form":"VATReturnsform"
+                                 "VAT Returns Form":"VATReturnsform" 
                       
      }
 
@@ -1987,10 +1988,10 @@
                     reportName = "SimplifiedTaxInvoice";
                     break;
                 case "Print Regular Tax Invoice - Format 02":
-                    reportName = "PrintRegularInvoiceFormat02";
+                        reportName = "regularInvoiceformat02";
                     break;
                 case "Print Tax Invoice - (Foreign Currency)":
-                    reportName = "ForeignCurrency";
+                        reportName = "Foreigncurrency1";
                     break;
                 case "Print Regular Tax Invoice - Without Signatories (Format 05)":
                     reportName = "RegulartaxinvoicewithoutSignatoriesFormat05";
@@ -2005,17 +2006,28 @@
                     reportName = "TAXINVOICE_DESIGN02_WSIGN";
                     break;
                 case "Preview Invoices in (Foreign Currency)":
-                    reportName = "proformaInvoiceforegincurrency";
+                        reportName = "ForeignCurrencyProforma";
                     break;
                 case "Preview Invoices in Foreign Currency(English)":
-                    reportName = "ProformaInvoiceForeignEnglish";
+                    reportName = "ForeignEnglishProforma";
                     break;
                 case "Preview Invoice(English)":
-                    reportName = "PreviewInvoiceEnglish";
+                    reportName = "ProformaInvoiceEnglish";
                     break;
-                case "Preview Invoice":
-                    reportName = "PreviewInvoice";
-                    break;
+                 case "Preview Proforma Invoice(NewFormat)":
+                       reportName = "ProformaNewFormat";
+                        break;
+                 case "Preview Invoice":
+                        reportName = "ProformaPreviewInvoice";
+                        break;
+                 case "Preview VAT Purchase Bill ":
+                         reportName = "BillsPurchases";
+                         break;
+
+
+               
+
+
                 default:
                     alert("Invalid report format selected.");
                     return;
@@ -2079,7 +2091,10 @@
             "Print Simplified TAX Invoice",
             "Preview Invoices in (Foreign Currency)",
             "Preview Invoices in Foreign Currency(English)",
-            "Preview Invoice(English)"
+            "Preview Invoice(English)",
+            "Preview Proforma Invoice(NewFormat)",
+            "Preview Invoice",
+           
         ];
 
         if (standardFormats.includes(itemText)) {
@@ -2132,13 +2147,13 @@
             const isApproved = await checkInvoiceApprovalStatus1(creditNoteNo);
             const watermarkText = isApproved ? "" : "Draft Copy";
             let reportName = "";
-
+             alert(isApproved);
             switch (itemText) {
                 case "Preview Credit Note":
-                        reportName = "PreviewCreditNote"; // Replace with actual report key
+                                reportName = "CreditNote"; // Replace with actual report key
                     break;
                 case "Preview Credit Note(Foreign Currency)":
-                    reportName = "CreditForeignCurrency";
+                        reportName = "Foreigncurrencycredit";
                     break;
                 case "Credit Note Posting":
                     reportName = "CreditNotePosting"; // Replace with actual report key
@@ -2188,6 +2203,8 @@
             const isApproved = await checkInvoiceApprovalStatus2(DebitNoteNo);
             const watermarkText = isApproved ? "" : "Draft Copy";
             let reportName = "";
+
+                alert(isApproved);
 
             switch (itemText) {
                 case "Preview DebitNote Invoice":
