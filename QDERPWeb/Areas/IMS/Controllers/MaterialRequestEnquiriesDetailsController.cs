@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DevExtreme.AspNet.Data;
+using DevExtreme.AspNet.Mvc;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
 using System.Globalization;
+using System.Net;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
@@ -74,6 +77,39 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 			return Unauthorized(new { message = "Invalid tenant." });
 		}
+        [HttpGet]
+        public IActionResult Get(DataSourceLoadOptions loadOptions, string Mprno)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+            {
+                var data = dbContext.Qry60604purchaseRequestViewMasters.AsQueryable();
 
-	}
+                if (!string.IsNullOrEmpty(Mprno))
+                {
+                    data = data.Where(item => item.Mprno == Mprno);
+                }
+
+                var result = DataSourceLoader.Load(data, loadOptions);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception details here as needed
+
+                // Return a JSON response with error details and a 500 status code
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                return Json(new
+                {
+                    error = "An error occurred while processing your request.",
+                    details = ex.Message
+                });
+            }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant." });
+        }
+
+    }
 }

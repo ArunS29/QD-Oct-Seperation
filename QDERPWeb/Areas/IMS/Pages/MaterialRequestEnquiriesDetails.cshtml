@@ -720,7 +720,12 @@
 					text: "View Revision History",
 					icon: "clock",
 					onItemClick: function () {
-						onViewRevisionHistory(e.row.data);
+						let Mprno = e.row.data.Mprno;
+						let tenantName = window.tenantName || "defaultTenant"; // replace with dynamic tenant logic if needed
+						let url = `/${tenantName}/IMS/MPRRevisionHistory?Mprno=${Mprno}`;
+						let title = `MPRRevisionHistory - ${Mprno}`;
+						openModal(url, title);
+						
 					}
 				}
 			];
