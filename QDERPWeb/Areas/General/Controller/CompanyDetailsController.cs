@@ -25,6 +25,42 @@ namespace QD.ERP.Web.Areas.General.Controller
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
+
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword( string newPassword)
+        {
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized();
+
+                string userIdStr = HttpContext.Session.GetString("UserId");
+                if (!byte.TryParse(userIdStr, out byte currentUserId))
+                    return Unauthorized("Invalid or missing UserId in session.");
+
+                var user = await dbContext.TblUserMasters.FirstOrDefaultAsync(u => u.UserId == currentUserId);
+                if (user == null)
+                    return NotFound("User not found.");
+
+                // TODO: Hash the password before storing it!
+                user.Password = newPassword;
+                user.ModifiedOn = DateTime.UtcNow;
+                user.ModifiedBy = user.UserName; // or get from session if you store the current username
+
+                await dbContext.SaveChangesAsync();
+
+                return Ok("Password reset successful.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error resetting password.");
+                return StatusCode(500, "Internal server error.");
+            }
+        }
+
+
+
         [HttpGet]
         public IActionResult GetMaxCompanyID()
         {
