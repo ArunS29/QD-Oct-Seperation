@@ -1890,7 +1890,7 @@
 
             success: function (response) {
                 if (response.success) {
-                    DevExpress.ui.dialog.alert("Journal Entry Form has been verified for Approval.", "Verification Successfull")
+                    DevExpress.ui.dialog.alert("Journal Entry Form has been Approved Sucessfully.", "Approval Successfull")
                         .done(function () {
                             const submittedBy = response.approvedBy;
                             const submittedOn = new Date(response.approvedOn);

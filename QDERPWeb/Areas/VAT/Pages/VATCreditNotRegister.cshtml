@@ -237,7 +237,7 @@
 </div> *@
 
 <div class="context-menu" id="contextMenu">
-	<div class="context-menu-item">
+	<div class="context-menu-item" onclick="viewInvoiceCreditNote()">
 		<i class="dx-icon-search"></i> View e-Invoice Credit Note
 	</div>
 
@@ -580,7 +580,7 @@
 		let IsEdit = false;
 
 		// Assuming tenantName is already defined globally
-		function viewInvoice() {
+			function viewInvoiceCreditNote() {
 			if (!CreditNoteNo) {
 					alert("CreditNoteNo is not set.");
 				return;
@@ -827,4 +827,7 @@
     window.location.href = url;
 });
 });
+
+
+		
 </script>

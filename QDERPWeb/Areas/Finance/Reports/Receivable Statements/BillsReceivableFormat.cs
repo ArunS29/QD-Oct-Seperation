@@ -24,7 +24,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
             string company_address,
             Image logoImage,
             string Company_Name_Ar,
-            string company_address_arb, string username,
+            string company_address_arb, 
+            string username,
             TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
@@ -46,8 +47,9 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
             string company_Name,
             string company_address,
             Image logoImage,
-            string Company_Name_Ar, string username,
-            string company_address_arb)
+            string Company_Name_Ar,
+            string company_address_arb,
+            string username)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -78,10 +80,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
             AddOrUpdateParameter("CompanyAddressArb", company_address_arb ?? "", typeof(string));
             AddOrUpdateParameter("UserName", username ?? "", typeof(string));
 
-            if (this.FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
-                tenantLabel.Text = tenantName;
-            if (this.FindControl("xrLabelUserName", true) is XRLabel userNameLabel)
-                userNameLabel.Text = username;
+       
             if (this.FindControl("xrLabelCompanyAddress", true) is XRLabel companyNameLabel)
                 companyNameLabel.Text = company_Name;
 
@@ -96,6 +95,12 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
 
             if (this.FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
                 addressArbLabel.Text = company_address_arb;
+
+            if (this.FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
+                tenantLabel.Text = tenantName;
+
+            if (this.FindControl("xrLabelUserName", true) is XRLabel userNameLabel)
+                userNameLabel.Text = username;
 
             AddSqlQueryParameters(accountId, frmDate, toDate);
         }

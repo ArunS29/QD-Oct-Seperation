@@ -1036,6 +1036,7 @@
             var VM = {
                 ClaimRefNo: $("#VoucherNo").dxTextBox("instance").option("value"),
                 ClaimDate: $("#claimerdate").dxDateBox("instance").option("value"),
+                ClaimEffectiveDate: $("#claimerEffectiveDate").dxDateBox("instance").option("value") || new Date(),
                 ProjectClaimedFor: paymentaccheadId,
                 ClaimRemarks: $("#txtEntryNarration").dxTextArea("instance").option("value"),
                 ExpenseDetails: gridData // 🔁 Add the grid rows here

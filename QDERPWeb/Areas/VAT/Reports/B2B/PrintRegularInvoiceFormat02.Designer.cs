@@ -921,16 +921,18 @@
             // 
             // xrPictureBox5
             // 
-            this.xrPictureBox5.LocationFloat = new DevExpress.Utils.PointFloat(740F, 718.0179F);
+            this.xrPictureBox5.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "ImageSource", "[InvoiceCheckedBySign]")});
+            this.xrPictureBox5.LocationFloat = new DevExpress.Utils.PointFloat(726.5999F, 697.1672F);
             this.xrPictureBox5.Name = "xrPictureBox5";
-            this.xrPictureBox5.SizeF = new System.Drawing.SizeF(160.443F, 72.14929F);
+            this.xrPictureBox5.SizeF = new System.Drawing.SizeF(186.8676F, 103.8333F);
             this.xrPictureBox5.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
             // 
             // xrPictureBox4
             // 
-            this.xrPictureBox4.LocationFloat = new DevExpress.Utils.PointFloat(561.9191F, 718.0179F);
+            this.xrPictureBox4.LocationFloat = new DevExpress.Utils.PointFloat(553.0658F, 697.1669F);
             this.xrPictureBox4.Name = "xrPictureBox4";
-            this.xrPictureBox4.SizeF = new System.Drawing.SizeF(160.443F, 72.14929F);
+            this.xrPictureBox4.SizeF = new System.Drawing.SizeF(173.5341F, 103.8336F);
             this.xrPictureBox4.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
             // 
             // xrPictureBox3

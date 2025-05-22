@@ -606,9 +606,42 @@
 			url: `/api/VATModule/InsertAmendEInvoice?InvoiceNo=${encodeURIComponent(invoiceNo)}`,
 			type: 'POST',
 			success: function (response) {
+				
+					if (response.IsPosted == null) {
+		DevExpress.ui.dialog.alert(
+			"Invoice is not Posted. You must post the invoice before cancelling or amending the invoice.",
+			"Invoice is not Posted"
+		);
+	}
+	else if (response.CreditInvoiceNo!=null && response.IsPosted === true)
+	{
+		DevExpress.ui.dialog.alert(
+			"Invoice is already Issued with full Credit Note,Please review the Invoice & Credit Note Details.",
+			"Invoice is already Credit Note Issued."
+		);
+	}
+		else if (response.IsPosted === true) {
+		DevExpress.ui.dialog.custom({
+			title: "Cancel/Amend Confirmation",
+	        message: "You are about to Cancel/Amend this VAT Invoice.<br>This will create a new CREDIT NOTE for Invoice Amendment.<br>Click Yes if you would like to continue.",
+				buttons: [
+				{ text: "Yes", onClick: () => true },
+				{ text: "No", onClick: () => false }
+			],
+			showTitle: true
+		}).show().done(function (dialogResult) {
+			if (dialogResult) {
+				DevExpress.ui.dialog.alert(
+					"Credit Note has been added to the database.",
+					"Data Insertion Successful"
+				).done(function () {
+					window.location.href = `/${tenantName}/VAT/CreditNoteEditForm?InvoiceNo=${encodeURIComponent(invoiceNo)}&IsAmend=${encodeURIComponent(IsAmend)}`;
+				});
+			}
+		});
+	}
 				console.log("Clone success:", response);
 				// You can redirect to the Credit Note Edit page now
-				window.location.href = `/${tenantName}/VAT/CreditNoteEditForm?InvoiceNo=${encodeURIComponent(invoiceNo)}&IsAmend=${encodeURIComponent(IsAmend)}`;
 
 			},
 			error: function (xhr) {

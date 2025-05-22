@@ -105,8 +105,11 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
 
         private void AddSqlQueryParameters(string accountId, DateTime frmDate, DateTime toDate)
         {
-            if (_tenantDbContextHelper == null || !_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
-                throw new Exception("Unable to get tenant context. Please check session and cache.");
+            if (_tenantDbContextHelper == null)
+                throw new Exception("TenantDbContextHelper is not initialized.");
+
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
+                throw new Exception("Unable to get tenant context. Please ensure the tenant session or cache is set correctly.");
 
             var connectionParams = new CustomStringConnectionParameters(tenant.ConnectionString);
             sqlDataSource1 = new SqlDataSource(connectionParams);
@@ -115,8 +118,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
             {
                 Name = QueryName,
                 Sql = @"SELECT * FROM qry201SubLedgerReceivablesMaster  
-                        WHERE (@AccountID IS NULL OR AccountHeadNo = @AccountID)
-                        AND VoucherDate BETWEEN @StartDate AND @EndDate"
+                WHERE (@AccountID IS NULL OR AccountHeadNo = @AccountID)
+                AND VoucherDate BETWEEN @StartDate AND @EndDate"
             };
 
             query.Parameters.Add(new QueryParameter
@@ -150,6 +153,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
 
             CheckForEmptyData();
         }
+
 
         private void CheckForEmptyData()
         {

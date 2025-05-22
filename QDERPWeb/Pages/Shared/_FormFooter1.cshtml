@@ -83,7 +83,7 @@
 
     @(Html.DevExtreme().DropDownButton()
         .ID("btnPreview2")
-        .Text(new JS("formatMessage('Preview')"))
+        .Text(new JS("formatMessage('Print')"))
         .Icon("fullscreen")
         .Hint("Click to Preview")
         .ElementAttr(new { @class = "bold-button" })
@@ -91,9 +91,9 @@
         .DropDownOptions(options => options.Width(220))
         .Items(items =>
         {
-            items.Add().Text(new JS("formatMessage('Preview Format 1')")).Icon("textdocument");
-            items.Add().Text(new JS("formatMessage('Preview Format 2')")).Icon("textdocument");
-
+            items.Add().Text(new JS("formatMessage('Preview Journal EntryForm')")).Icon("textdocument");
+            items.Add().Text(new JS("formatMessage('Preview Journal EntryForm(with Employee Cost)')")).Icon("textdocument");
+            items.Add().Text(new JS("formatMessage('Edit Posted Voucher')")).Icon("textdocument");
         })
         .OnItemClick("handlePreviewClick1")
         )
@@ -970,10 +970,10 @@
 
         // Determine the report name based on the selected text
         var reportName = "";
-        if (selectedText === formatMessage('Preview Format 1')) {
-            reportName = "SalesVoucherReport";
-        } else if (selectedText === formatMessage('Preview Format 2')) {
-            reportName = "SalesReport2";
+        if (selectedText === formatMessage('Preview Journal EntryForm')) {
+            reportName = "journalEntryForm1";
+        } else if (selectedText === formatMessage('Preview Journal EntryForm(with Employee Cost)')) {
+            reportName = "employeecostJournalRegister";
         }
 
         // Ensure a valid report is selected
