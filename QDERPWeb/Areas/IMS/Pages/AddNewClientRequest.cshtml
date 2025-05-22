@@ -1228,7 +1228,7 @@
 			.Caption(new JS("formatMessage('Item Code')"))
 			.Width(200)
 			.AllowEditing(false);
-				columns.Add()
+			columns.Add()
 			.DataField("Description")
 			.Caption("Description")
 			.Width(500)
@@ -1255,7 +1255,7 @@
 					</div>
 				</div>
 			</text>)
-									.EditCellTemplate(@<text>
+			.EditCellTemplate(@<text>
 				<div style="display: flex; justify-content: space-between; align-items:end;">
 					@(Html.DevExtreme().DropDownBox()
 					.DataSource(d => d.WebApi()
@@ -2598,7 +2598,16 @@ function loadClientDetails(mprno) {
 							caption: formatMessage('Sub Group'),
 
 							width: 200,
-
+							cellTemplate: function (container, options) {
+								getUnitRateMethods1().done(function (unitRates1) {
+									const selectedItem = unitRates1.find(item => item.QuoteGroupItemSlNo === options.value);
+									if (selectedItem) {
+										$("<span>").text(selectedItem.GroupName).appendTo(container);
+									} else {
+										$("<span>").text("").appendTo(container);
+									}
+								});
+							},
 							editCellTemplate: function (cellElement, cellInfo) {
 
 								getUnitRateMethods1().done(function (unitRates1) {
@@ -2732,7 +2741,12 @@ function loadClientDetails(mprno) {
 				caption: formatMessage('Description'),
 
 				width: 550,
-
+				cellTemplate: function (container, options) {
+					getDropdownData().done(function (dropdownData) {
+						const selectedItem = dropdownData.find(item => item.GSCode === options.value);
+						$("<span>").text(selectedItem ? selectedItem.GSDescrpition : "").appendTo(container);
+					});
+				},
 				  editCellTemplate: function (cellElement, cellInfo) {
 
 								getDropdownData().done(function (dropdownData) {
@@ -2924,7 +2938,12 @@ function loadClientDetails(mprno) {
 							caption: formatMessage('Unit Rate Method'),
 
 							width: 200,
-
+							cellTemplate: function (container, options) {
+								getUnitRateMethods().done(function (unitRates) {
+									const selectedItem = unitRates.find(item => item.UnitCode === options.value);
+									$("<span>").text(selectedItem ? selectedItem.UnitDesc : "").appendTo(container);
+								});
+							},
 							editCellTemplate: function (cellElement, cellInfo) {
 
 								getUnitRateMethods().done(function (unitRates) {
@@ -3160,7 +3179,16 @@ function loadClientDetails(mprno) {
 					caption: formatMessage('Sub Group'),
 
 					width: 200,
-
+					cellTemplate: function (container, options) {
+						getUnitRateMethods1().done(function (unitRates1) {
+							const selectedItem = unitRates1.find(item => item.QuoteGroupItemSlNo === options.value);
+							if (selectedItem) {
+								$("<span>").text(selectedItem.GroupName).appendTo(container);
+							} else {
+								$("<span>").text("").appendTo(container);
+							}
+						});
+					},
 				editCellTemplate: function (cellElement, cellInfo) {
     getUnitRateMethods1().done(function (unitRates1) {
         let $container = $("<div>").css({
@@ -3237,7 +3265,12 @@ function loadClientDetails(mprno) {
 					caption: formatMessage('Description'),
 
 					width: 550,
-
+					cellTemplate: function (container, options) {
+						getDropdownData().done(function (dropdownData) {
+							const selectedItem = dropdownData.find(item => item.GSCode === options.value);
+							$("<span>").text(selectedItem ? selectedItem.GSDescrpition : "").appendTo(container);
+						});
+					},
 					editCellTemplate: function (cellElement, cellInfo) {
 
 						getDropdownData().done(function (dropdownData) {
@@ -3429,7 +3462,12 @@ function loadClientDetails(mprno) {
 					caption: formatMessage('Unit Rate Method'),
 
 					width: 200,
-
+					cellTemplate: function (container, options) {
+						getUnitRateMethods().done(function (unitRates) {
+							const selectedItem = unitRates.find(item => item.UnitCode === options.value);
+							$("<span>").text(selectedItem ? selectedItem.UnitDesc : "").appendTo(container);
+						});
+					},
 					editCellTemplate: function (cellElement, cellInfo) {
 
 						getUnitRateMethods().done(function (unitRates) {

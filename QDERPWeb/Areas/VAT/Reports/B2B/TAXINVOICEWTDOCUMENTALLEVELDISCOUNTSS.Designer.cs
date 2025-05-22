@@ -957,7 +957,7 @@
             this.xrLabel1,
             this.xrLabel141,
             this.xrLabel140});
-            this.TopMargin.HeightF = 1115.683F;
+            this.TopMargin.HeightF = 1059.021F;
             this.TopMargin.Name = "TopMargin";
             // 
             // xrPictureBox4
@@ -1116,7 +1116,7 @@
             // xrLabel164
             // 
             this.xrLabel164.BorderWidth = 5F;
-            this.xrLabel164.LocationFloat = new DevExpress.Utils.PointFloat(5F, 1071.149F);
+            this.xrLabel164.LocationFloat = new DevExpress.Utils.PointFloat(5F, 1051.154F);
             this.xrLabel164.Multiline = true;
             this.xrLabel164.Name = "xrLabel164";
             this.xrLabel164.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
@@ -4625,7 +4625,7 @@
             // 
             this.BottomMargin.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
             this.pageInfo2});
-            this.BottomMargin.HeightF = 30F;
+            this.BottomMargin.HeightF = 25.00002F;
             this.BottomMargin.Name = "BottomMargin";
             // 
             // pageInfo2
@@ -4639,6 +4639,7 @@
             // 
             // Detail
             // 
+            this.Detail.Expanded = false;
             this.Detail.HeightF = 0F;
             this.Detail.Name = "Detail";
             // 
@@ -5878,7 +5879,7 @@
             this.DataMember = "qry201_602VATInvoiceReport";
             this.DataSource = this.sqlDataSource1;
             this.Font = new DevExpress.Drawing.DXFont("Arial", 9.75F);
-            this.Margins = new DevExpress.Drawing.DXMargins(30F, 30F, 1115.683F, 30F);
+            this.Margins = new DevExpress.Drawing.DXMargins(30F, 30F, 1059.021F, 25.00002F);
             this.PageHeight = 1169;
             this.PageWidth = 1000;
             this.PaperKind = DevExpress.Drawing.Printing.DXPaperKind.Custom;

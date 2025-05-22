@@ -36,6 +36,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
 
         private void ConfigureDataSource(string accountId)
         {
+            sqlDataSource1.Queries.Clear();
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
                 throw new Exception("Unable to get tenant context. Please check session and cache.");
 
@@ -76,28 +77,29 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
             string companyNameAr,
             string companyAddressArb)
         {
-            void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
+            void AddOrUpdateParameter(string paramName, object paramValue, Type paramType, bool visible)
             {
-                if (Parameters[name] == null)
+                var parameter = Parameters[paramName];
+                if (parameter == null)
                 {
-                    Parameters.Add(new DevExpress.XtraReports.Parameters.Parameter()
+                    Parameters.Add(new DevExpress.XtraReports.Parameters.Parameter
                     {
-                        Name = name,
-                        Type = type,
-                        Value = value,
+                        Name = paramName,
+                        Type = paramType,
+                        Value = paramValue,
                         Visible = visible
                     });
                 }
                 else
                 {
-                    Parameters[name].Value = value;
-                    Parameters[name].Visible = visible;
+                    parameter.Value = paramValue;
+                    parameter.Visible = visible;
                 }
-            }
 
-            AddOrUpdateParameter("AccountID", accountId ?? "", typeof(string));
-            AddOrUpdateParameter("StartDate", frmDate == DateTime.MinValue ? DateTime.Today : frmDate, typeof(DateTime));
-            AddOrUpdateParameter("EndDate", toDate == DateTime.MinValue ? DateTime.Today : toDate, typeof(DateTime));
+            }
+            AddOrUpdateParameter("AccountID", accountId, typeof(string), false);
+            AddOrUpdateParameter("StartDate", frmDate, typeof(DateTime), false);
+            AddOrUpdateParameter("EndDate", toDate, typeof(DateTime), false);
             AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string), false);
             AddOrUpdateParameter("CompanyName", companyName ?? "", typeof(string), false);
             AddOrUpdateParameter("CompanyAddress", companyAddress ?? "", typeof(string), false);

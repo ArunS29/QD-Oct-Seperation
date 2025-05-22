@@ -389,7 +389,8 @@
             this.xrLabel13.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
             this.xrLabel13.SizeF = new System.Drawing.SizeF(1540F, 22.99999F);
             this.xrLabel13.StylePriority.UseTextAlignment = false;
-            this.xrLabel13.Text = " from [Parameters.StartDate!dd MMM yyyy] to [Parameters.EndDate!dd MMM yyyy]";
+            this.xrLabel13.Text = "For the period starting  from [Parameters.StartDate!dd MMM yyyy] to [Parameters.E" +
+    "ndDate!dd MMM yyyy]";
             this.xrLabel13.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
             // 
             // xrLine1
@@ -1918,6 +1919,7 @@
             this.xrLabel3,
             this.xrLabel2,
             this.xrLabel1});
+            this.GroupFooter1.HeightF = 50.9167F;
             this.GroupFooter1.Name = "GroupFooter1";
             // 
             // xrLabel22
