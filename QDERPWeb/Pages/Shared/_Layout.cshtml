@@ -1,4 +1,4 @@
-﻿@using System.IdentityModel.Tokens.Jwt
+@using System.IdentityModel.Tokens.Jwt
 @using System.Linq
 @using Microsoft.AspNetCore.Http
 @using QD.ERP.Web.DAL.Entities
@@ -2076,9 +2076,25 @@
             }
         }
         function handleInfoClick() {
-            
-            window.location.href = `/${tenantName}/General/CompanyDetails`;
+
+                $.ajax({
+                    url: "/api/utility/CheckUserLevel", // Server-side endpoint to check UserLevel
+                    method: "GET",
+                    success: function (response) {
+                        if (response.success && response.userLevel === 99) {
+                                       window.location.href = `/${tenantName}/General/CompanyDetails`;
+
+                        } else {
+                            // Notify the user that navigation is not allowed
+                            DevExpress.ui.notify("You do not have permission to view this page.", "error", 2000);
+                        }
+                    },
+                    error: function () {
+                        DevExpress.ui.notify("Failed to check user level.", "error", 2000);
+                    }
+                });
         }
+
         // Function for Avatar click - show user profile
         function handleAvatarClick() {
             const profilePopup = document.getElementById('profilePopup');
