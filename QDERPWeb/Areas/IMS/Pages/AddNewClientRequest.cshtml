@@ -330,7 +330,7 @@
 		padding: 20px;
 	}
 
-	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnCancel,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
+	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnCancel,#btnAttach,#btnUpload)) {
 		display: none !important;
 	}
 
@@ -859,25 +859,32 @@
 
 									</div>
 									<div class="col-6">
-										@(Html.DevExtreme().DropDownBox()
-											.Label(new JS("formatMessage('Requested By(MPR Type):')"))
-											.ID("ddRequestedBy")
-											.DataSource(d => d.WebApi()
-											.Controller("AccountLedgerMaster")
-											.LoadAction("getVATInvoiceTypes")
-											.LoadMode(DataSourceLoadMode.Raw)
-											.Key("InvoiceType"))
-											.AcceptCustomValue(true)
-											.OpenOnFieldClick(false)
-											.ValueChangeEvent("input")
-											.HoverStateEnabled(true)
-											.Value("Tax Invoice")
-											.ValueExpr("InvoiceType")
-											.DisplayExpr("InvoiceType")
-															.Disabled(true)
-
-											.LabelMode(EditorLabelMode.Outside)
-											)
+									@(Html.DevExtreme().DropDownBox()
+															.Label(new JS("formatMessage('Requested By(MPR Type):')"))
+															.DataSource(d => d.WebApi()
+															.Controller("AddNewClientRequest")
+															.LoadAction("GetMPRRequesterBy")
+															.LoadMode(DataSourceLoadMode.Raw)
+															.Key("RequestedByCode")
+															)
+															.LabelMode(EditorLabelMode.Outside)
+															.ID("ddRequestedBy")
+															.Width(900)
+															@*  .ShowClearButton(true)
+								.AcceptCustomValue(true) *@
+															.OpenOnFieldClick(false)//
+															.ValueChangeEvent("input")
+															.HoverStateEnabled(true)
+															.ValueExpr("RequestedByCode")
+															.DisplayExpr("RequestedBy")
+															.OnInput("dropDownBoxOnInput")
+															.OnOpened("onOpened")
+															.TabIndex(1)
+															.Width("100%")
+															.OnKeyDown("onKeyDown")
+															//.OnValueChanged("dropDownBoxValueChanged")
+															.ContentTemplate(new TemplateName("GetMPRRequesterByContentTemplate"))
+															)
 
 									</div>
 									<div class="col-6">
@@ -1221,7 +1228,7 @@
 			.Caption(new JS("formatMessage('Item Code')"))
 			.Width(200)
 			.AllowEditing(false);
-				columns.Add()
+			columns.Add()
 			.DataField("Description")
 			.Caption("Description")
 			.Width(500)
@@ -1248,7 +1255,7 @@
 					</div>
 				</div>
 			</text>)
-									.EditCellTemplate(@<text>
+			.EditCellTemplate(@<text>
 				<div style="display: flex; justify-content: space-between; align-items:end;">
 					@(Html.DevExtreme().DropDownBox()
 					.DataSource(d => d.WebApi()
@@ -1408,7 +1415,7 @@
 
 		<div class="Head">
 			<div class="limited-footer">
-				@await Html.PartialAsync("VATModuleFooter")
+				@await Html.PartialAsync("InventoryModuleFooter")
 			</div>
 		</div>
 
@@ -1820,7 +1827,39 @@
 					})
 					)
 		}
+		@using (Html.DevExtreme().NamedTemplate("GetMPRRequesterByContentTemplate"))
+		{
+			@(Html.DevExtreme().DataGrid()
+					.ID("GetMPRRequesterBy-datagrid")
+					.DataSource(d => d.WebApi()
+					.Controller("AddNewClientRequest")
+					.LoadAction("GetMPRRequesterBy")
+					.LoadMode(DataSourceLoadMode.Raw)
+					.Key("RequestedByCode")
+					)
+					.WordWrapEnabled(true)
+					.ShowBorders(true)
+					@* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+					.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+					.OnSelectionChanged("dataGridSelectionChanged14")
+					.OnInitialized("dataGridInitialized14")
+					.HeaderFilter(p => p.Visible(true))
+					.ShowBorders(true)
+					.HoverStateEnabled(true)
+					.Paging(p => p.PageSize(15))
+					.FilterRow(f => f.Visible(false))//
+					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+					.Height(345)
+					.Selection(s => s.Mode(SelectionMode.Single))
+					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+					.Columns(columns =>
+					{
+						columns.Add().Caption(new JS("formatMessage('RequestedByCode')")).DataField("RequestedByCode");
+						columns.Add().Caption(new JS("formatMessage('RequestedBy')")).DataField("RequestedBy");
 
+					})
+					)
+		}
 
 
 
@@ -2133,30 +2172,7 @@
 </div>
 
 <script>
-	//Auto generate RequestNo
-	$(document).ready(function () {
-		if (IsCurrent !== "true") {
-			$.ajax({
-				url: "/api/AddNewClientRequest/GetNewDebitNoteNoApi",
-				type: "GET",
-				success: function (data) {
-					console.log("Success:", data);
-
-					const invoiceBox = $("#txtRequestNo").dxTextBox("instance");
-					if (invoiceBox) {
-						invoiceBox.option("value", data || "");
-					} else {
-						console.warn("Invoice TextBox not initialized.");
-					}
-				},
-				error: function (xhr, status, error) {
-					console.error("Error loading Payment Accounts:", error);
-					DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
-				}
-			});
-		}
-	});
-
+	
 	  function onOpened(e) {
         setTimeout(() => {
             e.component.focus();
@@ -2372,7 +2388,20 @@
 	function dataGridInitialized12(e) {
 		dataGrid = e.component;
 	}
+	function dataGridSelectionChanged14(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+		const ddbInstance = $("#ddRequestedBy").dxDropDownBox("instance");
 
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
+    function dataGridInitialized14(e) {
+        dataGrid = e.component;
+    }
 
 
 
@@ -2407,7 +2436,7 @@
 
 			$(".limited-footer .btn-containerIvoiceEdit").each(function () {
 
-				if (!$(this).find("#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnCancel,#btnAttach,#btnPostToLedgers,#btnPostTag").length) {
+			if (!$(this).find("#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnCancel,#btnAttach,#btnUpload").length) {
 
 					$(this).remove();
 
@@ -2421,15 +2450,38 @@
 
 
 	//View e-Invoice
+
 	$(document).ready(function () {
-    const urlParams = new URLSearchParams(window.location.search);
-    const mprnos = urlParams.get('Mprno');
-	 const mprno = mprnos ? mprnos.split("?")[0] : null;
-    if (mprno) {
-        alert('Mprno: ' + mprno);
-        loadClientDetails(mprno);
-    }
-});
+		const urlParams = new URLSearchParams(window.location.search);
+		const mprnos = urlParams.get('Mprno');
+		const mprno = mprnos ? mprnos.split("?")[0] : null;
+
+		if (mprno) {
+			// If Mprno is present, load client details
+			loadClientDetails(mprno);
+		} else  {
+			// If Mprno is not present and IsCurrent is not "true", generate a Autogenerate request number
+			$.ajax({
+				url: "/api/AddNewClientRequest/GetNewDebitNoteNoApi",
+				type: "GET",
+				success: function (data) {
+					console.log("Success:", data);
+
+					const invoiceBox = $("#txtRequestNo").dxTextBox("instance");
+					if (invoiceBox) {
+						invoiceBox.option("value", data || "");
+					} else {
+						console.warn("Invoice TextBox not initialized.");
+					}
+				},
+				error: function (xhr, status, error) {
+					console.error("Error loading Payment Accounts:", error);
+					DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+				}
+			});
+		}
+	});
+
 
 function loadClientDetails(mprno) {
     $.ajax({
@@ -2437,11 +2489,14 @@ function loadClientDetails(mprno) {
         type: 'GET',
         dataType: 'json',
         success: function (response) {
-            console.log("ClientDetails", response);
-			 $("#btnSave").dxButton("instance").option("text", "Update");
+            
+
             if (response) {
+				console.log("res",response);
+					$("#btnSave").dxButton("instance").option("text", "Update");
                 // Populate DevExtreme controls with the response data
                 $('#txtRequestNo').dxTextBox("instance").option("value", response.Mprno);
+					
                 $("#InvoiceDueDate").dxDateBox("instance").option("value", response.Mprdate);
                 $("#GetProjectDropDown").dxDropDownBox("instance").option("value", response.ClientCode);
                 $('#txtContactName').dxTextBox("instance").option("value", response.RequestedBy);
@@ -2460,13 +2515,17 @@ function loadClientDetails(mprno) {
                 $("#ddGetCompany").dxDropDownBox("instance").option("value", response.CompanyBranch);
                 $("#ddGetEnquiry").dxDropDownBox("instance").option("value", response.PurchaseRequestStatusId);
                 $("#ddGetInventoryGroup").dxDropDownBox("instance").option("value", response.InventoryMasterGroupId);
-                $("#ddGetRequesstingUnit").dxDropDownBox("instance").option("value", response.ProjectMasterCode);
+                $("#ddGetRequesstingUnit").dxDropDownBox("instance").option("value", response.ProjectSubUnitCode);
                 $("#ddBitCls").dxDateBox("instance").option("value", response.BidClosingDate);
                 $("#ddReminder").dxDateBox("instance").option("value", response.BidReminderOn);
                 $('#txtClientProject').dxTextBox("instance").option("value", response.ClientProject);
 				$("#ddPreparedby").dxDropDownBox("instance").option("value",response.RequestSignatory);
-				$("#ddVerifiedby").dxDropDownBox("instance").option("value", response.MPRVerifiedSign);
-				$("#ddApprovedby").dxDropDownBox("instance").option("value", response.MPRApprovedSign);
+				$("#ddVerifiedby").dxDropDownBox("instance").option("value", response.MprverifiedSign);
+					$("#ddApprovedby").dxDropDownBox("instance").option("value", response.MprapprovedSign);
+					$("#ddApprovedby").dxDropDownBox("instance").option("value", response.MprapprovedSign);
+					$("#ddRequestedBy").dxDropDownBox("instance").option("value", response.TypeOfMpr);
+					
+               
 
                // Fetch and initialize the data grid with invoice details
                 $.ajax({
@@ -2539,7 +2598,16 @@ function loadClientDetails(mprno) {
 							caption: formatMessage('Sub Group'),
 
 							width: 200,
-
+							cellTemplate: function (container, options) {
+								getUnitRateMethods1().done(function (unitRates1) {
+									const selectedItem = unitRates1.find(item => item.QuoteGroupItemSlNo === options.value);
+									if (selectedItem) {
+										$("<span>").text(selectedItem.GroupName).appendTo(container);
+									} else {
+										$("<span>").text("").appendTo(container);
+									}
+								});
+							},
 							editCellTemplate: function (cellElement, cellInfo) {
 
 								getUnitRateMethods1().done(function (unitRates1) {
@@ -2673,7 +2741,12 @@ function loadClientDetails(mprno) {
 				caption: formatMessage('Description'),
 
 				width: 550,
-
+				cellTemplate: function (container, options) {
+					getDropdownData().done(function (dropdownData) {
+						const selectedItem = dropdownData.find(item => item.GSCode === options.value);
+						$("<span>").text(selectedItem ? selectedItem.GSDescrpition : "").appendTo(container);
+					});
+				},
 				  editCellTemplate: function (cellElement, cellInfo) {
 
 								getDropdownData().done(function (dropdownData) {
@@ -2814,7 +2887,7 @@ function loadClientDetails(mprno) {
 
 										  // Replace or fetch dynamically
 
-											let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example add page
+											let url = `/${tenantName}/IMS/GoodsAndService`; // Example add page
 
 											openModal(url, "");
 
@@ -2838,7 +2911,7 @@ function loadClientDetails(mprno) {
 
 										  // Replace or fetch dynamically
 
-											let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example edit page
+											let url = `/${tenantName}/IMS/GoodsAndService`; // Example edit page
 
 											openModal(url, "");
 
@@ -2865,7 +2938,12 @@ function loadClientDetails(mprno) {
 							caption: formatMessage('Unit Rate Method'),
 
 							width: 200,
-
+							cellTemplate: function (container, options) {
+								getUnitRateMethods().done(function (unitRates) {
+									const selectedItem = unitRates.find(item => item.UnitCode === options.value);
+									$("<span>").text(selectedItem ? selectedItem.UnitDesc : "").appendTo(container);
+								});
+							},
 							editCellTemplate: function (cellElement, cellInfo) {
 
 								getUnitRateMethods().done(function (unitRates) {
@@ -2934,7 +3012,7 @@ function loadClientDetails(mprno) {
 
 														e.component.option("value", selectedItem.UnitCode);
 
-														cellInfo.setValue(selectedItem.UnitDesc);
+												cellInfo.setValue(selectedItem.UnitCode);
 
 														let grid = $("#B2BdataGrid").dxDataGrid("instance");
 
@@ -3101,7 +3179,16 @@ function loadClientDetails(mprno) {
 					caption: formatMessage('Sub Group'),
 
 					width: 200,
-
+					cellTemplate: function (container, options) {
+						getUnitRateMethods1().done(function (unitRates1) {
+							const selectedItem = unitRates1.find(item => item.QuoteGroupItemSlNo === options.value);
+							if (selectedItem) {
+								$("<span>").text(selectedItem.GroupName).appendTo(container);
+							} else {
+								$("<span>").text("").appendTo(container);
+							}
+						});
+					},
 				editCellTemplate: function (cellElement, cellInfo) {
     getUnitRateMethods1().done(function (unitRates1) {
         let $container = $("<div>").css({
@@ -3178,7 +3265,12 @@ function loadClientDetails(mprno) {
 					caption: formatMessage('Description'),
 
 					width: 550,
-
+					cellTemplate: function (container, options) {
+						getDropdownData().done(function (dropdownData) {
+							const selectedItem = dropdownData.find(item => item.GSCode === options.value);
+							$("<span>").text(selectedItem ? selectedItem.GSDescrpition : "").appendTo(container);
+						});
+					},
 					editCellTemplate: function (cellElement, cellInfo) {
 
 						getDropdownData().done(function (dropdownData) {
@@ -3319,7 +3411,7 @@ function loadClientDetails(mprno) {
 
 									// Replace or fetch dynamically
 
-									let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example add page
+									let url = `/${tenantName}/IMS/GoodsAndService`; // Example add page
 
 									openModal(url, "");
 
@@ -3343,7 +3435,7 @@ function loadClientDetails(mprno) {
 
 									// Replace or fetch dynamically
 
-									let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example edit page
+									let url = `/${tenantName}/IMS/GoodsAndService`; // Example edit page
 
 									openModal(url, "");
 
@@ -3370,7 +3462,12 @@ function loadClientDetails(mprno) {
 					caption: formatMessage('Unit Rate Method'),
 
 					width: 200,
-
+					cellTemplate: function (container, options) {
+						getUnitRateMethods().done(function (unitRates) {
+							const selectedItem = unitRates.find(item => item.UnitCode === options.value);
+							$("<span>").text(selectedItem ? selectedItem.UnitDesc : "").appendTo(container);
+						});
+					},
 					editCellTemplate: function (cellElement, cellInfo) {
 
 						getUnitRateMethods().done(function (unitRates) {
@@ -3421,6 +3518,7 @@ function loadClientDetails(mprno) {
 
 										columns: [
 
+
 											{ dataField: "UnitCode", caption: "Code", width: 80 },
 
 											{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
@@ -3432,29 +3530,15 @@ function loadClientDetails(mprno) {
 										],
 
 										onSelectionChanged: function (selectedItems) {
-
 											let selectedItem = selectedItems.selectedRowsData[0];
-
 											if (selectedItem) {
-
+												// Set the value of the DropDownBox
 												e.component.option("value", selectedItem.UnitCode);
-
+												// Update the cell value in the grid
 												cellInfo.setValue(selectedItem.UnitCode);
-
-												let grid = $("#B2BdataGrid").dxDataGrid("instance");
-
-												let rowIndex = grid.getRowIndexByKey(cellInfo.key);
-
-												if (rowIndex !== -1) {
-
-													grid.cellValue(rowIndex, "DescriptionDetailsText", selectedItem.UnitDesc);
-
-												}
-
+												// Close the DropDownBox
 												e.component.close();
-
 											}
-
 										}
 
 									});
@@ -5007,7 +5091,7 @@ LineTotal: 0
 					   window.location.href = `/${tenantName}/Finance/LedgerDocuments`;
 				   }
 					function onPostButtonClick(e) {
-					debugger;
+				
 					var sAccountID = $('#txtAccountId').dxTextBox("instance").option("value");
 
 					// Format the AccountId with the desired prefix
@@ -5387,7 +5471,7 @@ LineTotal: 0
 	
 
 	$("#btnSave").on("click", function (e) {
-		debugger;
+	
 		let master = {
 			Mprno: $('#txtRequestNo').dxTextBox("instance").option("value") || null,
 			Mprdate: $("#InvoiceDueDate").dxDateBox("instance").option("value") || null,
@@ -5408,13 +5492,14 @@ LineTotal: 0
 			CompanyBranch: $("#ddGetCompany").dxDropDownBox("instance").option("value") || null,
 			PurchaseRequestStatusId: $("#ddGetEnquiry").dxDropDownBox("instance").option("value") || null,
 			InventoryMasterGroupId: $("#ddGetInventoryGroup").dxDropDownBox("instance").option("value") || null,
-			ProjectMasterCode: String($("#ddGetRequesstingUnit").dxDropDownBox("instance").option("value") || ""),
+			ProjectSubUnitCode:$("#ddGetRequesstingUnit").dxDropDownBox("instance").option("value") || null,
 				BidClosingDate: $("#ddBitCls").dxDateBox("instance").option("value") || null,
 			BidReminderOn: $("#ddReminder").dxDateBox("instance").option("value") || null,
 			ClientProject: $('#txtClientProject').dxTextBox("instance").option("value") || null,
 			RequestSignatory: $("#ddPreparedby").dxDropDownBox("instance").option("value") || null,
-			MPRVerifiedSign: $("#ddVerifiedby").dxDropDownBox("instance").option("value") || null,
-			MPRApprovedSign: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null,
+			MprverifiedSign: $("#ddVerifiedby").dxDropDownBox("instance").option("value") || null,
+			MprapprovedSign: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null,
+			TypeOfMpr: $("#ddRequestedBy").dxDropDownBox("instance").option("value") || null,
 		};
 
 		let children = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
@@ -5436,6 +5521,14 @@ LineTotal: 0
 			data: JSON.stringify(model),
 			success: function (response) {
 				DevExpress.ui.notify(response.message, "success", 3000);
+				// Refresh parent DataGrid (ensure the correct selector is used)
+				if (window.parent && window.parent.$("#dataGrid").length) {
+					let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+					if (dataGrid) {
+						dataGrid.refresh();
+					}
+				}
+
 
 			},
 			error: function (xhr) {
@@ -5448,7 +5541,7 @@ LineTotal: 0
         onDeleteButtonClick();
     });
     function onDeleteButtonClick(e) {
-		debugger;
+	
 		var Mprno= $('#txtRequestNo').dxTextBox("instance").option("value");
 
         if (!Mprno) {

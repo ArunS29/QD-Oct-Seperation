@@ -1,7 +1,13 @@
 ﻿@page
 @using DevExtreme.AspNet.Mvc
 @{
-    ViewData["ClaimerUserName"] = HttpContext.Session.GetString("UserName");
+    var userIdString = HttpContext.Session.GetString("UserId");
+    byte requesterIdByte = 0;
+    if (byte.TryParse(userIdString, out var byteVal))
+    {
+        requesterIdByte = byteVal;
+        ViewData["ClaimerUserName"] = byteVal;
+    }
 
 }
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -206,13 +212,15 @@
                     columns.AddFor(m => m.ClaimerID).Caption(new JS("formatMessage('Claimer ID')")).Alignment(HorizontalAlignment.Center).Visible(false);
                 columns.AddFor(m => m.ClaimRefNo).Caption(new JS("formatMessage('Claim Ref No')")).Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
             <div>
-                <a href="javascript:void(0);" style="color: #007bff; font-weight: bold;"
-                   onclick="">
+                <a href="javascript:void(0);"
+                   style="color: #007bff; font-weight: bold;"
+                   onclick="onClaimRefNoClick('<%- data.ClaimRefNo %>')">
                     <%- data.ClaimRefNo %>
                 </a>
             </div>
         </text>).Visible(true);
-                    columns.AddFor(m => m.PaymentVoucherNo).Caption(new JS("formatMessage('Payment Voucher No')")).Alignment(HorizontalAlignment.Center).Visible(false);
+
+                    
                     columns.AddFor(m => m.ApprovedBy).Caption(new JS("formatMessage('Approved By')")).Alignment(HorizontalAlignment.Center).Visible(false);
                     columns.AddFor(m => m.ApprovedOn).Caption(new JS("formatMessage('Approved On')")).Alignment(HorizontalAlignment.Center).Format(format => format
                 .Type(Format.ShortDate)    // Custom type format
@@ -221,12 +229,33 @@
                     columns.AddFor(m => m.ClaimCreatedOn).Caption(new JS("formatMessage('Claim Created On')")).Alignment(HorizontalAlignment.Center).Format(format => format
                 .Type(Format.ShortDate)    // Custom type format
                 .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }")).Visible(false);
-                    columns.AddFor(m => m.ClaimerName).Caption(new JS("formatMessage('Claimer Name')")).Alignment(HorizontalAlignment.Center).Visible(false);
+               
+
+columns.AddFor(m => m.ClaimerName)
+.Caption("Claimer Name")
+.GroupIndex(0)
+.SortOrder(SortOrder.Asc)
+.Visible(true);
+
+
+columns.Add()
+.Caption("Total Consumed Amount")
+.DataField("TotalConsumedAmount")
+.CalculateCellValue("function(data) { return (data.ClaimedAmountTotal || 0) + (data.ApprovedAmountTotal || 0); }")
+.Format(f => f.Type(Format.FixedPoint).Precision(2))
+.Visible(false); // optional if you don't want it shown in detail rows
+
+
+
+
+
+
+
                     columns.AddFor(m => m.ClaimModifiedBy).Caption(new JS("formatMessage('Claim Modified By')")).Alignment(HorizontalAlignment.Center).Visible(false);
                     columns.AddFor(m => m.ClaimModifiedOn).Caption(new JS("formatMessage('Claim Modified On')")).Alignment(HorizontalAlignment.Center).Format(format => format
                 .Type(Format.ShortDate)    // Custom type format
                 .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }")).Visible(false);
-                    columns.AddFor(m => m.ClaimRemarks).Caption(new JS("formatMessage('Claim Remarks')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                   
                     columns.AddFor(m => m.PaidBy).Caption(new JS("formatMessage('Paid By')")).Alignment(HorizontalAlignment.Center).Visible(false);
                     columns.AddFor(m => m.PaidOn).Caption(new JS("formatMessage('Paid On')")).Alignment(HorizontalAlignment.Center).Format(format => format
                 .Type(Format.ShortDate)    // Custom type format
@@ -298,6 +327,7 @@
             .DisplayFormat("dd-MMM-yyyy")
             )
         </text>); 
+                    
                     columns.AddFor(m => m.ClaimRemarks).Caption(new JS("formatMessage('Claim Remarks')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
                     columns.AddFor(m => m.ClaimedAmountTotal)
                 .Caption(new JS("formatMessage('Claimed Amount')"))
@@ -362,23 +392,40 @@
 
                 })
             .Height(600)
+            .Grouping(grouping => grouping.AutoExpandAll(true)) // Optional
+            .GroupPanel(groupPanel => groupPanel.Visible(false))
+            .Scrolling(scrolling => scrolling
+            .Mode(GridScrollingMode.Virtual)
+            .UseNative(false)
+            )
+            .Paging(paging => paging.Enabled(false))
+
             .ColumnAutoWidth(true)
             .AllowColumnReordering(true) // Enable column reordering
             .AllowColumnResizing(true)   // Enable column resizing
             .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
             .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
-            .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
+            // Display group panel
             @*  .Editing(editing => editing
         .AllowUpdating(true)    // Allow updating of existing rows
         .AllowAdding(false)     // Disable adding new records
         .AllowDeleting(false)   // Disable deleting records
         .UseIcons(true))        // Enable edit icons (like pencil) *@
-            //.Paging(paging => paging.Enabled(false))
+            
             .ShowBorders(true)
             .Editing(editing => editing.Mode(GridEditMode.Cell).AllowAdding(false).AllowUpdating(true))
             .ColumnChooser(c => c.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
             .OnEditorPreparing("onEditorPreparing")
             .Summary(s => s
+            .GroupItems(groupItems =>
+            {
+                groupItems.Add()
+                .Column("TotalConsumedAmount")
+                .SummaryType(SummaryType.Sum)
+                .ShowInGroupFooter(false)
+                .AlignByColumn(false)
+                .CustomizeText("function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+            })
             .TotalItems(totalItems =>
             {
                 totalItems.Add()
@@ -533,7 +580,7 @@
         return formattedDate;
     }
     function getJournalOnLoad() {
-        var requesterID = 102;
+        var requesterId = accheadid || '@requesterIdByte';
         // Get the current date
         var currentDate = new Date();
         // Get the start date of the current month
@@ -547,7 +594,7 @@
             url: '/api/ExpenseClaim/GetExpenseClaim',  // API endpoint
             type: 'GET',
             data: {
-                RequesterID: requesterID, // Set this according to your logic
+                RequesterID: requesterId, // Set this according to your logic
                 StartDate: startDate, // Start date
                 EndDate: endDate, // End date
                 IfShowAll: false // Set to
@@ -564,6 +611,9 @@
 
     }
     function getAllSubmissionJournal() {
+
+        var requesterId = accheadid || '@requesterIdByte';
+
         var startDateInstance = $("#startDate").dxDateBox("instance");
         var startDateval = startDateInstance.option("value");
         var startDate = formatedate(startDateval);
@@ -576,7 +626,7 @@
             url: '/api/ExpenseClaim/GetExpenseClaim',  // API endpoint
             type: 'GET',
             data: {
-                RequesterID: "", // Set this according to your logic
+                RequesterID: requesterId, // Set this according to your logic
                 StartDate: startDate, // Start date
                 EndDate: endDate, // End date
                 IfShowAll: true
@@ -595,13 +645,9 @@
     // This function used to call API to get records for the selected values.
     function ddBtnShowRecords_click(duration) {
         debugger;
-        var requester = parseInt(accheadid, 10); // Ensure it's a number
+        var requesterId = accheadid || '@requesterIdByte';// Ensure it's a number
 
-        // Ensure requester is within the valid byte range (0-255)
-        if (isNaN(requester) || requester < 0 || requester > 255) {
-            DevExpress.ui.notify("Invalid Requester ID", "error", 2000);
-            return;
-        }
+        
         var frmDateBox = $("#startDate").dxDateBox("instance");
         var toDateBox = $("#endDate").dxDateBox("instance");
         var frmDate = new Date(frmDateBox.option("value"));
@@ -674,7 +720,7 @@
             url: '/api/ExpenseClaim/GetExpenseClaim',  // API endpoint
             type: 'GET',
             data: {
-                ClaimerID: requester, // Set this according to your logic
+                ClaimerID: requesterId, // Set this according to your logic
                 StartDate: frmDate, // Start date
                 EndDate: toDate, // End date
                 IfShowAll: false // Set to
@@ -742,7 +788,7 @@
         // Close the dropdown after selection
         e.component.option("opened", false);
     }
-
+    let isUpdatingCell = false;
     function onEditorPreparing(e) {
         if (e.dataField === 'ClaimRemarks') {
             if (isUpdatingCell) {
@@ -840,5 +886,27 @@
     function dataGridAccountHeadInitialized(e) {
         dataGrid = e.component;
     }
+   
+        function onClaimRefNoClick(claimRefNo) {
+            debugger;
+            if (!claimRefNo) return;
+
+       
+        let targetUrl = '';
+
+        if (claimRefNo.startsWith('EXP')) {
+            targetUrl = `/${tenantName}/finance/ExpensesClaimRequest?claimRefNo=${encodeURIComponent(claimRefNo)}`;
+            } else if (claimRefNo.startsWith('PCQ')) {
+            targetUrl = `/${tenantName}/finance/PettyCashRequest?claimRefNo=${encodeURIComponent(claimRefNo)}`;
+            } else if (claimRefNo.startsWith('SRQ')) {
+            targetUrl = `/${tenantName}/finance/SupplierPaymentRequest?claimRefNo=${encodeURIComponent(claimRefNo)}`;
+            }
+
+        if (targetUrl) {
+            window.location.href = targetUrl;
+            }
+        }
+
+
 
 </script>

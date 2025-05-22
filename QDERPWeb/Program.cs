@@ -51,6 +51,11 @@ builder.Services.AddScoped<DevExpress.XtraReports.Web.Extensions.ReportStorageWe
 // Configuring Reporting Services
 builder.Services.ConfigureReportingServices(configurator =>
 {
+    configurator.ConfigureReportDesigner(designerConfigurator =>
+    {
+        // Correct method to allow custom SQL queries
+        designerConfigurator.EnableCustomSql();
+    });
     configurator.ConfigureWebDocumentViewer(viewerConfigurator =>
     {
         viewerConfigurator.UseCachedReportSourceBuilder();
@@ -123,11 +128,11 @@ string mySetting = configurationHelper.GetConfigurationValue("MySetting");
 Console.WriteLine($"MySetting Value: {mySetting}");
 
 
-var containerUri = configurationHelper.GetConfigurationValue("AzureBlobStorage:ClientFilesContainerUri");
-if (string.IsNullOrWhiteSpace(containerUri))
-{
-    throw new Exception("AzureBlobStorage:ClientFilesContainerUri is missing in configuration.");
-}
+//var containerUri = configurationHelper.GetConfigurationValue("AzureBlobStorage:ClientFilesContainerUri");
+//if (string.IsNullOrWhiteSpace(containerUri))
+//{
+//    throw new Exception("AzureBlobStorage:ClientFilesContainerUri is missing in configuration.");
+//}
 
 builder.Services.AddSingleton<ClientFilesStorageHelper>(provider =>
 {

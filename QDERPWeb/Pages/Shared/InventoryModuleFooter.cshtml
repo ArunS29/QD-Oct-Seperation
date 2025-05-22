@@ -287,6 +287,16 @@
             )
     </div>
     <div class="btn-container">
+    @(Html.DevExtreme().Button()
+        .ID("btnUpdate")
+        .Text(new JS("formatMessage('Update')"))
+        .Icon("save") // Icon similar to a floppy/save
+        //.Type(ButtonType.Normal)
+       // .StylingMode(ButtonStylingMode.Contained)
+        .ElementAttr(new { @class = "update-button" }) // Custom CSS class
+        )
+</div>
+    <div class="btn-container">
 
         @(Html.DevExtreme().Button()
             .ID("btnBack")
@@ -433,7 +443,7 @@
             .Width(50)
             .Text(new JS("formatMessage('Add New Supplier')"))
             .ElementAttr(new { style = "display: none;" })
-            // .OnClick("toggleGroupPanel")
+            .OnClick("supplierMaster")
             )
 
     </div>
@@ -796,6 +806,7 @@
                         "btnSaveAndClose": { "Visible": false, "Enabled": false },
                         "btnAddNew": { "Visible": false, "Enabled": false },
                         "btnDelete": { "Visible": false, "Enabled": false },
+                         "btnUpdate": { "Visible": false, "Enabled": false },                       
                         "btnBack": { "Visible": false, "Enabled": false },
                         "btnSubmit": { "Visible": false, "Enabled": false },
                         "btnVerify": { "Visible": false, "Enabled": false },

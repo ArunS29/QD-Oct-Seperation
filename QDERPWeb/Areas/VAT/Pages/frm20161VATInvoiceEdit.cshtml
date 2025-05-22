@@ -798,7 +798,7 @@
 																			.LabelMode(EditorLabelMode.Outside)
 																			.ID("OtherIDType")
 																			.ShowClearButton(true)
-																			.AcceptCustomValue(false)
+																			.AcceptCustomValue(true)
 																			.OpenOnFieldClick(false)
 																			.ValueChangeEvent("input")
 																			.HoverStateEnabled(true)
@@ -3418,7 +3418,7 @@
 		}
 
 			  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null,revaccheadid=null,InvoiceCurrencyExchangeId=null,TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
-					  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null,Gsdescrpition=null,GsdescriptionAr=null,ItemPartNo=null,CostPrice=null,GssellingRate=null,ReorderQty=null;
+					  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null,Gsdescrpition=null,GsdescriptionAr=null,ItemPartNo=null,CostPrice=null,GssellingRate=null,ReorderQty=null,IsDirectApproval=true,IsDirectVerify=true;
 			  let dropDownInstance;
 			  let vatListInstance;
 
@@ -4184,15 +4184,6 @@
 
 											dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
 
-											ItemNo = selectedItem.GSCode;
-
-											Gsdescrpition = selectedItem.GSDescrpition;
-									//ItemNo = selectedRowData[0].GsgroupId;
-											GsdescriptionAr = selectedItem.GsdescriptionAr;
-											ItemPartNo = selectedItem.ItemPartNo;
-									       	CostPrice = selectedItem.CostPrice;
-											GssellingRate = selectedItem.GSSellingRate;
-									        ReorderQty = selectedItem.ReorderQty;
 
 										}
 
@@ -4250,6 +4241,7 @@
 
 												if (rowIndex !== -1) {
 													
+
 													dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
 
 													dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
@@ -4259,6 +4251,15 @@
 													dataGrid.cellValue(rowIndex, "Qty", 1);
 
 													dataGrid.cellValue(rowIndex, "VAT%", "15%");
+
+												ItemNo = selectedItem.GSCode;
+												Gsdescrpition = selectedItem.GSDescrpition;
+												GsdescriptionAr = selectedItem.GsdescriptionAr;
+												ItemPartNo = selectedItem.ItemPartNo;
+												CostPrice = selectedItem.CostPrice;
+												GssellingRate = selectedItem.GSSellingRate;
+												ReorderQty = selectedItem.ReorderQty;
+												  
 
 												}
 
@@ -4298,9 +4299,6 @@
 
 								onClick: function () {
 
-									// Replace or fetch dynamically
-
-										
 									//let url = `/${tenantName}/VAT/VATGoodsandServices?AccountHeadID=${encodeURIComponent(acchedid)}`; // Example edit page
 						          let url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}`; // Example add page
 											let title = "Goods and Services";
@@ -4320,25 +4318,29 @@
 					}
 
 				},
+	{
+			dataField: "Descriptions",
+			caption: "...",
+			width: 80,
+			allowEditing: true,
+			cellTemplate: function (container, options) {
+			$("<div>").dxButton({
+				icon: "user", // Built-in DevExtreme icon
+				hint: "Edit VAT Details Description",
+				stylingMode: "text",
+				width: 60,
+				onClick: function () {
+					// Save context
+					window.currentDescriptionCell = options;
 
-				//{ dataField: "Descriptions", caption: "...", width: 50 },
-
-					{
-		dataField: "Descriptions",
-		caption: "...",
-		width: 50,
-		allowEditing: true,
-		editCellTemplate: function (cellElement, cellInfo) {
-			// Open the modal form in a popup
-			let url = `/${tenantName}/Finance/VATDetailsDescription`;
-			let title = "";
-
-			// Pass cellInfo to the modal context
-			window.currentDescriptionCell = cellInfo;
-
-			openModal(url, title);
+					// Open modal
+					let url = `/${tenantName}/Finance/VATDetailsDescription`;
+					let title = "VAT Details Description";
+					openModal(url, title);
+				}
+			}).appendTo(container);
 		}
-	},
+		},
 
 
 				{
@@ -4484,6 +4486,30 @@
     dataField: "DiscountDetails",
     caption: "...",
     width: 100,
+		allowEditing: true,
+				cellTemplate: function (container, options) {
+		container.empty();
+
+		$("<div>")
+			.dxButton({
+				icon: "percent", // DevExtreme built-in icon
+				hint: "Apply percentage discount", // Tooltip
+				type: "normal", // Keeps styling neutral
+				stylingMode: "outlined", // Ensures border is visible
+				onClick: function (e) {
+					// Your button click logic here
+					console.log("Percent button clicked", options.data);
+				}
+			})
+			.css({
+				width: "70%",
+				border: "1px solid #add8e6",  // Light blue border
+				backgroundColor: "#ffffff",   // White background
+				borderRadius: "3px"
+			})
+			.appendTo(container);
+	},
+
     editCellTemplate: function (cellElement, cellInfo) {
         
         // Create Popup content
@@ -4510,7 +4536,7 @@
         let $discountRow = $("<div>").css({
             display: "flex",
             gap: "10px",
-            alignItems: "center"
+            alignItems: "end"
         }).appendTo($popupContent);
 
         let discountEditor = $("<div>").appendTo($discountRow).dxNumberBox({
@@ -5707,7 +5733,7 @@
 				$(function () {
 					$("#OtherType").dxTextBox({
 						text: formatMessage("Other ID Type: *"),
-						readOnly: true
+						readOnly: true  
 
 					});
 				});
@@ -6141,34 +6167,31 @@
 				let dataGrid;
 
 
-	
 
 
+// function dataGridSelectionChanged(e) {
+//     const selectedKey = e.selectedRowKeys[0]; // Get the first selected key
+// 		const ddbInstance = $("#OtherIDType").dxDropDownBox("instance");
+// 			alert("1")
+//     if (selectedKey) {
+//         // Ensure the DropDownBox data is loaded before setting value
+//         ddbInstance.getDataSource().load().done(() => {
+//             ddbInstance.option("value", selectedKey);
+//             ddbInstance.close();
+//         });
+//     }
 
-
-function dataGridSelectionChanged(e) {
-    const selectedKey = e.selectedRowKeys[0]; // Get the first selected key
-    const ddbInstance = $("#CountryCode").dxDropDownBox("instance");
-
-    if (selectedKey) {
-        // Ensure the DropDownBox data is loaded before setting value
-        ddbInstance.getDataSource().load().done(() => {
-            ddbInstance.option("value", selectedKey);
-            ddbInstance.close();
-        });
-    }
-
-    // Only run this block if IsCurrent is not "true"
-    if (IsCurrent !== "true") {
-        const selectedRowData = $("#clientname").dxDataGrid("instance").getSelectedRowsData();
-        if (selectedRowData.length > 0) {
-            paymentmeanstypecode = selectedRowData[0].PaymentMeansTypeCode;
-        } else {
-            DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
-            return;
-        }
-    }
-}
+//     // Only run this block if IsCurrent is not "true"
+//     if (IsCurrent !== "true") {
+//         const selectedRowData = $("#clientname").dxDataGrid("instance").getSelectedRowsData();
+//         if (selectedRowData.length > 0) {
+//             paymentmeanstypecode = selectedRowData[0].PaymentMeansTypeCode;
+//         } else {
+//             DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
+//             return;
+//         }
+//     }
+// }
 
 </script>
 
@@ -6919,7 +6942,7 @@ function dataGridSelectionChanged(e) {
 			// Get current row values
 			let qty = grid.cellValue(rowIndex, "Qty") || 0;
 
-
+	
 			let unitPrice = grid.cellValue(rowIndex, "UnitPrice") || 0;
 			let vatRateStr = newValue || "0%";
 
@@ -6936,7 +6959,7 @@ function dataGridSelectionChanged(e) {
 						// Update values in the grid
 					grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
 					grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
-						grid.cellValue(rowIndex, "Unit Price",amount.toFixed(2));
+						grid.cellValue(rowIndex, "Unit Price",amount);
 					grid.cellValue(rowIndex, "Qty",qty);
 					grid.cellValue(rowIndex, "VAT%",vatRateStr);
 					 grid.cellValue(rowIndex, "TaxSlabCode",TaxSlabCode);
@@ -6967,7 +6990,7 @@ function dataGridSelectionChanged(e) {
 							// Update values in the grid
 						grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
 						grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
-							grid.cellValue(rowIndex, "Unit Price",amount.toFixed(2));
+							grid.cellValue(rowIndex, "Unit Price",amount);
 						grid.cellValue(rowIndex, "Qty",qty);
 						grid.cellValue(rowIndex, "VAT%",vatRateStr);
 						 grid.cellValue(rowIndex, "TaxSlabCode",TaxSlabCode);
@@ -7171,7 +7194,7 @@ function dataGridSelectionChanged(e) {
 
 			const vno = $("#InvoiceNo").dxTextBox("instance").option("value");
 
-
+			IsDirectVerify=false;
 			if (!vno) {
 				DevExpress.ui.notify("Voucher number is required!", "error", 2000);
 				return;
@@ -7261,16 +7284,13 @@ function dataGridSelectionChanged(e) {
 		  function proceedWithApproval() {
 			// Set ApprovedBy checkbox to true
 			$("#ApprovedBy").dxCheckBox("instance").option("value", true);
-
+			IsDirectApproval=false;
 			const vno = $("#InvoiceNo").dxTextBox("instance").option("value");
 
 			if (!vno) {
 				DevExpress.ui.notify("Invoice number is required!", "error", 2000);
 				return;
 			}
-
-			// Define IsDirect if not already defined (adjust as needed)
-			const IsDirect = true; // or false, depending on your logic
 
 			const currentDate = new Date();
 			const formattedDate = currentDate.toLocaleDateString("en-GB", {
@@ -7281,7 +7301,7 @@ function dataGridSelectionChanged(e) {
 
 			$.ajax({
 				type: "POST",
-				url: `/api/VATModule/ApproveVoucher?InvoiceNo=${encodeURIComponent(vno)}`,
+							url: `/api/VATModule/ApproveVoucher?InvoiceNo=${encodeURIComponent(vno)}&IsDirectVerify=${encodeURIComponent(IsDirectVerify)}`,
 				contentType: "application/json",
 				dataType: "json",
 				// Uncomment the following line if the API expects data in the request body:
@@ -7376,17 +7396,37 @@ function dataGridSelectionChanged(e) {
 
 			$.ajax({
 				type: "POST",
-				url: `/api/VATModule/PostInvoice?InvoiceNo=${encodeURIComponent(vno)}`,
+				url: `/api/VATModule/PostInvoice?InvoiceNo=${encodeURIComponent(vno)}&IsDirectApproval=${encodeURIComponent(IsDirectApproval)}`,
 				contentType: "application/json",
 				dataType: "json",
 				// Uncomment the following line if the API expects data in the request body:
 				// data: JSON.stringify({ voucherNo: vno }),
 				success: function (response) {
 					if (response && response.Message) {
-						DevExpress.ui.dialog.alert(
-							"VAT Invoice has been posted to the Accounting Books.",
-							"Invoice Posted Successfully."
-						)
+					    if(response.IsDirect == true)
+						{
+	                        DevExpress.ui.dialog.alert(
+								"VAT Invoice has been posted to the Accounting Books.",
+								"Invoice Posted Successfully."
+							)
+						}
+						else
+						{
+								   DevExpress.ui.dialog.custom({
+						title: "Voucher is not Approved",
+						message: "Invoice has been Approved,Click Yes if you want to Approve this voucher.",
+						buttons: [
+							{ text: "Yes", onClick: () => true },
+							{ text: "No", onClick: () => false }
+						],
+						showTitle: true
+					}).show().done(function (dialogResult) {
+						if (dialogResult) {
+							proceedWithApproval();
+						}
+					});
+						}
+						
 						// .done(() => {
 						// 	disableEditing();
 						// 	$("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
@@ -7460,10 +7500,11 @@ function dataGridSelectionChanged(e) {
 
 
 		  function dataGridSelectionChanged(e) {
-				const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+				const selectedKey = e.selectedRowKeys[0]; // Get the first selectsed key, if any
 				const ddbInstance = $("#OtherIDType").dxDropDownBox("instance");
-
+					//alert(selectedKey)
 				if (selectedKey) {
+				
 					ddbInstance.option("value", selectedKey);
 						ddbInstance.close();
 				}
@@ -7809,7 +7850,7 @@ function dataGridSelectionChanged(e) {
 	// Update toggle color
 	$(".vat-checkbox").each(function () {
 		const id = parseInt($(this).val());
-		alert(id)
+		
 		const isChecked = selectedIds.includes(id);
 		$(this).prop("checked", isChecked);
 	});

@@ -734,7 +734,7 @@
 															.LabelMode(EditorLabelMode.Outside)
 															.ID("OtherIDType")
 															.ShowClearButton(true)
-															.AcceptCustomValue(false)
+															.AcceptCustomValue(true)
 															.OpenOnFieldClick(false)
 															.ValueChangeEvent("input")
 															.HoverStateEnabled(true)
@@ -875,6 +875,20 @@
 													.ContentTemplate(new TemplateName("countrycode"))
 													)
 												</td>
+														<td>
+															@(Html.DevExtreme().TextBox()
+															.Label(new JS("formatMessage('District / Neighborhood:')"))
+															.ID("District")
+															.LabelMode(EditorLabelMode.Outside)
+															.Width("100%"))
+														</td>
+														<td colspan="2">
+															@(Html.DevExtreme().TextBox()
+															.Label(new JS("formatMessage('District / Neighborhood: (Arabic)')"))
+															.ID("DistrictArabic")
+															.LabelMode(EditorLabelMode.Outside)
+															.Width("100%"))
+														</td>
 
 											</tr>
 											<tr>
@@ -1637,17 +1651,17 @@
 							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Other ID')")).ID("OtherID1").LabelMode(EditorLabelMode.Outside).Width("95%"))</td>
 							<td>
 								@(Html.DevExtreme().DropDownBox()
-															.Label(new JS("formatMessage('Our Address Details')"))
-															.Width("100%")
-															.ID("OurAddressDetails")
-															.DataSource(d => d.WebApi()
-															.Controller("AccountLedgerMaster")
-															.LoadAction("getVATInvoiceTypes")
-															.LoadMode(DataSourceLoadMode.Raw)
-															.Key("InvoiceType"))
-															.DropDownOptions(o => o.Width(900).Height(600))
-															.LabelMode(EditorLabelMode.Outside)
-															.ContentTemplate(@<text>
+																												.Label(new JS("formatMessage('Our Address Details')"))
+																												.Width("95%")
+																												.ID("OurAddressDetails")
+																												.DataSource(d => d.WebApi()
+																												.Controller("AccountLedgerMaster")
+																												.LoadAction("getVATInvoiceTypes")
+																												.LoadMode(DataSourceLoadMode.Raw)
+																												.Key("InvoiceType"))
+																												.DropDownOptions(o => o.Width(600).Height(600))
+																												.LabelMode(EditorLabelMode.Outside)
+																												.ContentTemplate(@<text>
 									<div class="address-form-container">
 
 
@@ -1760,7 +1774,7 @@
 													.LabelMode(EditorLabelMode.Outside)
 													.Width("100%"))
 												</td>
-												<td>
+												<td colspan="2">
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('District / Neighborhood: (Arabic)')"))
 													.ID("DistrictArabic")
@@ -4322,23 +4336,28 @@
 
 					},
 
-					//{ dataField: "Descriptions", caption: "...", width: 50 },
-
-						{
+					{
 			dataField: "Descriptions",
 			caption: "...",
-			width: 50,
+			width: 80,
 			allowEditing: true,
-			editCellTemplate: function (cellElement, cellInfo) {
-				// Open the modal form in a popup
-				let url = `/${tenantName}/Finance/VATDetailsDescription`;
-				let title = "";
+			cellTemplate: function (container, options) {
+			$("<div>").dxButton({
+				icon: "user", // Built-in DevExtreme icon
+				hint: "Edit VAT Details Description",
+				stylingMode: "text",
+				width: 60,
+				onClick: function () {
+					// Save context
+					window.currentDescriptionCell = options;
 
-				// Pass cellInfo to the modal context
-				window.currentDescriptionCell = cellInfo;
-
-				openModal(url, title);
-			}
+					// Open modal
+					let url = `/${tenantName}/Finance/VATDetailsDescription`;
+					let title = "VAT Details Description";
+					openModal(url, title);
+				}
+			}).appendTo(container);
+		}
 		},
 
 
@@ -4485,6 +4504,29 @@
 		dataField: "DiscountDetails",
 		caption: "...",
 		width: 100,
+		allowEditing: true,
+				cellTemplate: function (container, options) {
+		container.empty();
+
+		$("<div>")
+			.dxButton({
+				icon: "percent", // DevExtreme built-in icon
+				hint: "Apply percentage discount", // Tooltip
+				type: "normal", // Keeps styling neutral
+				stylingMode: "outlined", // Ensures border is visible
+				onClick: function (e) {
+					// Your button click logic here
+					console.log("Percent button clicked", options.data);
+				}
+			})
+			.css({
+				width: "70%",
+				border: "1px solid #add8e6",  // Light blue border
+				backgroundColor: "#ffffff",   // White background
+				borderRadius: "3px"
+			})
+			.appendTo(container);
+	},
 		editCellTemplate: function (cellElement, cellInfo) {
 
 			// Create Popup content
@@ -4511,7 +4553,7 @@
 			let $discountRow = $("<div>").css({
 				display: "flex",
 				gap: "10px",
-				alignItems: "center"
+				alignItems: "end"
 			}).appendTo($popupContent);
 
 			let discountEditor = $("<div>").appendTo($discountRow).dxNumberBox({
@@ -6169,8 +6211,8 @@
 
 	function dataGridSelectionChanged(e) {
 		const selectedKey = e.selectedRowKeys[0]; // Get the first selected key
-		const ddbInstance = $("#CountryCode").dxDropDownBox("instance");
-
+		const ddbInstance = $("#OtherIDType").dxDropDownBox("instance");
+		
 		if (selectedKey) {
 			// Ensure the DropDownBox data is loaded before setting value
 			ddbInstance.getDataSource().load().done(() => {

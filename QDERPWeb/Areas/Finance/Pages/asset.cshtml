@@ -137,25 +137,34 @@
 
 
                 <!-- Asset Category Dropdown -->
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div class="form-label">
                         <label for="AssetCategory">Asset Category</label>
                     </div>
                     <div class="form-group-row">
 
-                        @(Html.DevExtreme().SelectBox().ID("ddassetCategory")
-                            .LabelMode(EditorLabelMode.Outside).ValueExpr("AssetCategoryCode")
-                            .InputAttr("aria-label", "Owner")
+                        @(Html.DevExtreme().SelectBox()
+                            .ID("ddassetCategory")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .ValueExpr("AssetCategoryCode")
                             .DisplayExpr("AssetCategory")
-                            .DataSource(d => d.WebApi().Controller("assetview")
+                            .Placeholder("🔍 Select Asset Category") // 👈 Add placeholder here
+                            .InputAttr("aria-label", "Owner")
+                            .DataSource(d => d.WebApi()
+                            .Controller("assetview")
                             .LoadAction("GetAssetCategoriesByCode")
                             .LoadMode(DataSourceLoadMode.Raw)
-                            .Key("AssetCategory")).SearchEnabled(true).ShowClearButton(true).TabIndex(1)
-                              .ValidationRules(rules =>
-  {
-      rules.AddRequired().Message("Asset Category is required");
-  })
+                            .Key("AssetCategory"))
+                            .SearchEnabled(true)
+                            .ShowClearButton(true)
+                            .TabIndex(1)
+                            .Width("100%")
+                            .ValidationRules(rules =>
+                            {
+                                rules.AddRequired().Message("Asset Category is required");
+                            })
                             )
+
 
                         @(Html.DevExtreme().Button().ID("btnAddAccount").Icon("plus").ElementAttr("class", "button-alignment-down button-group").OnClick("redirectToAssetCategoryView"))
                     </div>
@@ -212,7 +221,7 @@
                 </div>
 
                 <!-- Property No (Property Modules) Dropdown -->
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-label">
                         <label for="PropertyNo">Property No(Modules)</label>
                     </div>
