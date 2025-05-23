@@ -6000,7 +6000,7 @@ openModal(url, title);
 			   window.location.href = `/${tenantName}/Finance/LedgerDocuments`;
 		   }
 			function onPostButtonClick(e) {
-			debugger;
+			
 			var sAccountID = $('#txtAccountId').dxTextBox("instance").option("value");
 
 			// Format the AccountId with the desired prefix
@@ -6381,7 +6381,7 @@ openModal(url, title);
 
 		var clientnameValidator = $("#ddclientname").dxValidator("instance");
 		var clientnameValidation = clientnameValidator.validate();
-		debugger;
+		
 		if(clientnameValidation.isValid)
 		{
 	// Create JSON object for master invoice

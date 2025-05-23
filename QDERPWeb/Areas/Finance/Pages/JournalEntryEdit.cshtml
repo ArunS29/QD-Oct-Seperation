@@ -1032,7 +1032,7 @@
         dataGrid.option("onContextMenuPreparing", function (e) {
             if (e.row && e.row.rowType === "data") {
                 e.event.preventDefault();
-                debugger;
+                
                 // Get selected row data
                 let rowData = e.row.data;
                 let selectedAccountHead = rowData.AccountHead;
@@ -1156,7 +1156,7 @@
                 data: { journalRefNo: journalRefNo },
                 success: function (data) {
                     const entry = data.find(d => d.JournalRefNo === journalRefNo); // optional check
-                    debugger;
+                    
                     if (entry) {
                         $("#VoucherNo").dxTextBox("instance").option("value", entry.JournalRefNo);
                         $("#VoucherDate").dxDateBox("instance").option("value", entry.JournalEntryDate);
@@ -1251,7 +1251,7 @@
                 data: { journalRefNo: journalRefNo },
                 success: function (data) {
                     const entry = data.find(d => d.JournalRefNo === journalRefNo); // optional check
-                    debugger;
+                    
                     if (entry) {
 
 
@@ -1523,7 +1523,7 @@
         popupInstances[voucherEntryNo] = popup;
     }
     function Deleteallrecords() {
-        debugger;
+        
         const dataGrid = $("#dataGrid").dxDataGrid("instance");
         const selectedRows = dataGrid.getSelectedRowsData();
 

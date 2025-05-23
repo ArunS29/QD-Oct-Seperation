@@ -1264,7 +1264,7 @@
             dataGrid.selectRows(e.value, false);
         }
         if (e.value) {
-            debugger;
+            
             let grid = $("#dataGrid").dxDataGrid("instance");
             let rowIndex = e.element.closest("tr").index(); // Get the edited row index
             let rowData = grid.getVisibleRows()[rowIndex].data;
@@ -1386,7 +1386,7 @@
                 data: { claimRefNo: claimRefNo },
                 success: function (data) {
                     const entry = data.find(d => d.ClaimRefNo === claimRefNo); // optional check
-                    debugger;
+                    
                     if (entry) {
                         $("#VoucherNo").dxTextBox("instance").option("value", entry.ClaimRefNo);
                         $("#claimerdate").dxDateBox("instance").option("value", entry.ClaimDate);
@@ -1474,7 +1474,7 @@
                 data: { claimRefNo: claimRefNo },
                 success: function (data) {
                     const entry = data.find(d => d.ClaimRefNo === claimRefNo); // optional check
-                    debugger;
+                    
                     if (entry) {
 
 

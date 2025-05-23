@@ -686,7 +686,7 @@
         }
     });
     function loadSupplierDetails(cleanSupplierCode) {
-        debugger;
+        
         $.ajax({
             url: `/api/SupplierMaster/GetSupplierByCode?supplierCode=${cleanSupplierCode}`,
             type: 'GET',
@@ -830,7 +830,7 @@
     let businessCard1Base64 = null;
     let businessCard2Base64 = null;
     function onSaveSupplierMasterClick(e) {
-        debugger;
+        
         // Collecting form data from client master form
         var supplierCode = $('#txtSupplierCode').dxTextBox("instance").option("value");
         var supplierName = $('#txtSupplierName').dxTextBox("instance").option("value");
@@ -923,7 +923,7 @@
         window.parent.closeModal();
     });
     function onDeleteButtonClick(e) {
-        debugger;
+        
         var SupplierCode = $("#txtSupplierCode").dxTextBox("instance").option("value");
 
         if (!SupplierCode) {

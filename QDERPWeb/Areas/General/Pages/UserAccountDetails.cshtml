@@ -903,7 +903,7 @@
             // Load Master Module data by default
             loadMasterModuleData("Master Module");
 
-            debugger;
+            
 
             const urlParams = new URLSearchParams(window.location.search);
             const userId = urlParams.get("userId");
@@ -949,7 +949,7 @@
 
     // Show confirmation dialog before applying alert
     function showNotificationConfirm(callback) {
-        debugger;
+        
         DevExpress.ui.dialog.confirm(
             "You are about to Set Alert Notifications for this User.\nAre you Sure want to Apply this Setting?",
             "Set Notification Setting"
@@ -962,7 +962,7 @@
 
     // Handle setting alert for Company Documents
     function onSetAlertNotificationClick() {
-            debugger;
+            
         const button = $("#btnNotificationsOnCompanyDocs").dxButton("instance");
 
         if (button.option("text") === "Set Alert Notification for Company Documents") {
@@ -988,7 +988,7 @@
 
     // Handle setting alert for Equipment Documents
     function onSetEquipmentAlertNotificationClick() {
-            debugger;
+            
         const button = $("#btnNotificationsOnEquipmentDocs").dxButton("instance");
 
         if (button.option("text") === "Set Alert Notification for Equipment Documents") {
@@ -1014,7 +1014,7 @@
 
     // Handle setting alert for HR Documents
     function onSetHRAlertNotificationClick() {
-        debugger;
+        
         const button = $("#btnNotificationsOnHRDocs").dxButton("instance");
 
         if (button.option("text") === "Set Alert Notification for HR Documents") {
@@ -1040,7 +1040,7 @@
 
         function loadUserDetails(userId) {
 
-            debugger;
+            
             $.ajax({
                 url: "/api/Utility/GetUserID",
                 method: "GET",
@@ -1337,7 +1337,7 @@
 
 
                function saveUserDetails() {
-            debugger;
+            
              
              let userLevelValue=null;
                         if(IsUserlevelflag==false) {
@@ -1552,7 +1552,7 @@
         function loadMasterModuleData(selectedText) {
             const urlParams = new URLSearchParams(window.location.search);
             const userId = urlParams.get("userId");
-            debugger;
+            
             $("#gridContainer1").dxDataGrid({
                 dataSource: new DevExpress.data.CustomStore({
                     key: "SlNo",
@@ -1670,7 +1670,7 @@
                     // Get the userId from the query string
                     const urlParams = new URLSearchParams(window.location.search);
                     const userId = urlParams.get("userId");
-                    debugger;
+                    
                     if (userId) {
                         $.ajax({
                             url: "/api/Utility/GrantUserAccessPermissions", // API endpoint
