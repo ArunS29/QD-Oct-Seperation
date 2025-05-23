@@ -1539,17 +1539,6 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 				   .FirstOrDefault();
 
 
-
-
-
-						//var qty = gridDetails.UnitsToBill;
-						//var unitPrice = gridDetails.UnitRate;
-						//var vatRate = decimal.TryParse(taxRateInWord.Replace("%", ""), out decimal rate) ? rate / 100 : 0;
-
-						//var amount = qty * unitPrice;
-						//var vatValue = amount * vatRate;
-						//var totalValue = amount + vatValue;
-
 						// Add new dynamic column
 						dict["UnitRateMethodDesc"] = UnitRateMethodDesc;
 						dict["VATPercentage"] = taxRateInWord;
@@ -2149,7 +2138,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 					// 🔁 Call the stored procedure sp201_62InsertVATtoVoucher
 					// var result = dbContext.Database.ExecuteSqlRaw("EXEC sp201_82InsertVATCreditNotetoVoucher @p0,@p1,@p2", CreditNoteNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc);
 
-					var result = dbContext.Database.ExecuteSqlRaw("EXEC sp201_62InsertVATtoVoucher_BHD @p0,@p1,@p2", CreditNoteNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc);
+					var result = dbContext.Database.ExecuteSqlRaw("EXEC sp201_82InsertVATCreditNotetoVoucher_BHD @p0,@p1,@p2", CreditNoteNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc);
 
 
 					//   var result1 = dbContext.Database.ExecuteSqlRaw("EXEC  sp201_82InsertVATCreditNotetoVoucher_BHD @p0,@p1,@p2,@p3", InvoiceNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc, IsCashOrBankAccount);
@@ -2710,7 +2699,8 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                         Message = "Invoice Amended successfully.",
                         VoucherVerifiedBy = User.Identity?.Name ?? "System",
                         IsPosted = IsPosted,
-                        CreditInvoiceNo= CreditInvoiceNo
+                        CreditInvoiceNo= CreditInvoiceNo,
+                        CreditNoteNo = CreditNoteNo
                     });
                 }
                 catch (Exception ex)
@@ -3341,6 +3331,8 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
 
 
+
+
         private string GetNewDebitNoteNo(string invoiceAbbrv, int yearInDigit, DateTime invoiceDate, bool isResetByYear, ERPMasterWtDataContext dbContext)
 		{
 			try
@@ -3794,6 +3786,181 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                 }
             }
             catch (Exception ex) { throw ex; }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> PurchaseApproveVoucher(string InvoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var UserName = HttpContext.Session.GetString("UserName");
+
+                    if (string.IsNullOrEmpty(InvoiceNo))
+                    {
+                        return BadRequest(new { Message = "InvoiceNo number is required." });
+                    }
+
+                    var voucher = dbContext.Tbl20166VatpurchaseMasters.FirstOrDefault(v => v.PurchaseVoucherNo == InvoiceNo);
+
+                    if (voucher == null)
+                    {
+                        return NotFound(new { Message = "InvoiceNo not found." });
+                    }
+
+                    // Update the fields
+                    voucher.IsApproved = true;
+                    voucher.ApprovedOn = DateTime.Now;
+                    voucher.ApprovedBy = UserName;
+
+                    //if (IsDirectApproval == false)
+                    //{
+                    //    voucher.IsVerified = true;
+                    //    voucher.VerifiedOn = DateTime.Now;
+                    //    voucher.VerifiedBy = UserName;
+
+                    //}
+
+                    dbContext.SaveChanges();
+
+                    return Ok(new
+                    {
+                        Message = "InvoiceNo verified successfully.",
+                        VoucherApprovedBy = UserName,  // Example, replace with actual data if needed
+                                                       //VoucherVerifiedOn = voucher.VoucherApprovedOn.ToString("dd-MMM-yyyy")
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> PurchasePostInvoice(string InvoiceNo, bool IsDirectApproval)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    bool IsDirect = false;
+
+                    var UserName = HttpContext.Session.GetString("UserName");
+
+                    if (string.IsNullOrEmpty(InvoiceNo))
+                    {
+                        return BadRequest(new { Message = "Invoice number is required." });
+                    }
+
+                    var voucher = dbContext.Tbl20166VatpurchaseMasters.FirstOrDefault(v => v.PurchaseVoucherNo == InvoiceNo);
+
+                    if (voucher == null)
+                    {
+                        return NotFound(new { Message = "Invoice not found." });
+                    }
+
+                    // Update the fields
+                    voucher.IsPosted = true;
+                    voucher.PostedOn = DateTime.Now;
+                    voucher.PostedBy = UserName;
+
+                    int JustAddedVoucherEntryNoSubLedger = 0;
+                    int JustAddedVoucherEntryNoCostAlloc = 0;
+                    bool IsCashOrBankAccount = false;
+					bool IsExpensesAccount = false;
+
+                    // 🔁 Call the stored procedure sp201_62InsertVATtoVoucher
+                    var result = dbContext.Database.ExecuteSqlRaw("EXEC sp201_72InsertVATPurchasetoVoucher_BHD @p0,@p1,@p2,@p3,@p4", InvoiceNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc, IsCashOrBankAccount, IsExpensesAccount);
+
+                    //   var result1 = dbContext.Database.ExecuteSqlRaw("EXEC sp201_62InsertVATtoVoucher_BHD @p0,@p1,@p2,@p3", InvoiceNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc, IsCashOrBankAccount);
+
+                    dbContext.SaveChanges();
+                    IsDirect = true;
+
+                    if (IsDirectApproval == true)
+                    {
+                        IsDirect = false;
+                    }
+
+
+                    return Ok(new
+                    {
+                        Message = "Invoice posted successfully.",
+                        VoucherVerifiedBy = UserName,
+                        IsDirect = IsDirect
+                        // Example, replace with actual data if needed
+                        //VoucherVerifiedOn = voucher.VoucherApprovedOn.ToString("dd-MMM-yyyy")
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+            }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> DebitPostInvoice(string DebitNoteNo, bool IsDirect)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var UserName = HttpContext.Session.GetString("UserName");
+
+                    if (string.IsNullOrEmpty(DebitNoteNo))
+                    {
+                        return BadRequest(new { Message = "Debit number is required." });
+                    }
+
+                    var voucher = dbContext.Tbl20172VatdebitNoteMasters.FirstOrDefault(v => v.DebitNoteNo == DebitNoteNo);
+
+                    if (voucher == null)
+                    {
+                        return NotFound(new { Message = "DebitNoteNo not found." });
+                    }
+
+                    // Update the fields
+                    voucher.IsPosted = true;
+                    voucher.PostedOn = DateTime.Now;
+                    voucher.PostedBy = UserName;
+
+                    int JustAddedVoucherEntryNoSubLedger = 0;
+                    int JustAddedVoucherEntryNoCostAlloc = 0;
+                    bool IsCashOrBankAccount = false;
+
+                    // 🔁 Call the stored procedure sp201_62InsertVATtoVoucher
+                    var result = dbContext.Database.ExecuteSqlRaw("EXEC sp201_92InsertVATDebitNotetoVoucher_BHD @p0,@p1,@p2,@p3", DebitNoteNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc, IsCashOrBankAccount);
+
+
+
+                    //   var result1 = dbContext.Database.ExecuteSqlRaw("EXEC  sp201_82InsertVATCreditNotetoVoucher_BHD @p0,@p1,@p2,@p3", InvoiceNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc, IsCashOrBankAccount);
+
+
+
+                    dbContext.SaveChanges();
+
+                    return Ok(new
+                    {
+                        Message = "Invoice posted successfully.",
+                        VoucherVerifiedBy = UserName,  // Example, replace with actual data if needed
+                                                       //VoucherVerifiedOn = voucher.VoucherApprovedOn.ToString("dd-MMM-yyyy")
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+            }
             return Unauthorized(new { message = "Invalid tenant.", success = false });
 
         }
