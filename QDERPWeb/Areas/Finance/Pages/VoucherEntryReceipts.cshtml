@@ -1399,7 +1399,7 @@
                         };
                         openCostAllocationPopup(params); // Open DevExtreme Popup with dynamic content
                     } else if (accheadname) {
-                        debugger;
+                        
 
                         // Function to check allocation
                         function checkAllocation(url, successCallback) {
@@ -2345,7 +2345,7 @@
                 VoucherAmount: amount,
                 AccountID: accountid
             };
-            debugger;
+            
             if (openedPopups[popupId]) {
                 openedPopups[popupId].show();
             } else {
@@ -2387,7 +2387,7 @@
                 VoucherAmount: amount,
                 AccountID: accountid
             };
-            debugger;
+            
             if (openedPopups[popupId]) {
                 openedPopups[popupId].show();
             } else {
@@ -2427,7 +2427,7 @@
                 AccountHead: accountHead,
                 VoucherAmount: amount
             };
-            debugger;
+            
             if (openedPopups[popupId]) {
                 openedPopups[popupId].show();
             } else {
@@ -2544,7 +2544,7 @@
         const queryString = Object.keys(params)
             .map(key => `${key}=${params[key]}`)
             .join('&');
-        debugger;
+        
         $.ajax({
             url: `/api/VoucherEntryReceipts/CostAllocation?${queryString}`,
             type: "GET",
@@ -2552,7 +2552,7 @@
             success: function (data) {
                 // Get the popup's unique identifier, for example, use the voucher number
                 
-                debugger;
+                
                 // Check if the popup is already opened
               
                     // Create and store the popup instance
@@ -2583,7 +2583,7 @@
             success: function (data) {
                 // Get the popup's unique identifier, for example, use the voucher number
                 const popupId = `EmployeeAllocationPopup-${params.VoucherEntryNo}`;
-                debugger;
+                
                 // Check if the popup is already opened
                 if (!openedPopups[popupId]) {
                     // Create and store the popup instance
@@ -2622,7 +2622,7 @@
             success: function (data) {
                 // Get the popup's unique identifier, for example, use the voucher number
                 const popupId = `BillsReceivablePopup-${params.VoucherEntryNo}`;
-                debugger;
+                
                 // Check if the popup is already opened
                 if (!openedPopups[popupId]) {
                     // Create and store the popup instance
@@ -2857,7 +2857,7 @@
                             // DevExpress.ui.notify("No voucher entries found.", "warning", 2000);
                             return;
                         }
-                            debugger;
+                            
 var lastRow = response.data[response.data.length - 1]; // Get the last row
 var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
 
@@ -2988,7 +2988,7 @@ if (dropDownBox) {
    
 
     if (oldRowData.DrCr === "Cr") {
-    debugger;
+    
     // Find all corresponding "Cr" rows
     let drRows = allData.filter(row => row.DrCr === "Dr" && row.SysRemarks.includes(oldAccountHead));
 
@@ -3029,7 +3029,7 @@ if (dropDownBox) {
     
 
     if (oldRowData.DrCr === "Dr") {
-    debugger;
+    
     // Find all corresponding "Cr" rows
     let crRows = allData.filter(row => row.DrCr === "Cr" && row.SysRemarks.includes(`Received by : ${oldAccountHead}`));
 

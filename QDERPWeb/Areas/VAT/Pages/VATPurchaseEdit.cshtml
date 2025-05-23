@@ -1099,7 +1099,10 @@
 
 				<tr>
 					<td>
-						
+						@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Verified By')"))
+													                      .ID("VerifiedBy")
+																			.Value(null) // Default value
+															.Disabled(true))
 
 						@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Verified By')"))
@@ -1118,7 +1121,11 @@
 													)
 					</td>
 
-					<td colspan="3">																			
+					<td colspan="3">		
+							@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Approved By')"))
+																			.ID("ApprovedBy")
+																			.Value(null) // Default value
+															.Disabled(true))
 						@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Approved By')"))
 													.LabelMode(EditorLabelMode.Outside)
@@ -2517,7 +2524,7 @@
 		}
 
 			  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null,revaccheadid=null,InvoiceCurrencyExchangeId=null,TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
-			  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false";
+			  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",IsDirectApproval=true,IsDirectVerify=true;
 
 			$(document).ready(function () {
 
@@ -5058,7 +5065,7 @@
 				   window.location.href = `/${tenantName}/Finance/LedgerDocuments`;
 			   }
 				function onPostButtonClick(e) {
-				debugger;
+				
 				var sAccountID = $('#txtAccountId').dxTextBox("instance").option("value");
 
 				// Format the AccountId with the desired prefix
@@ -5459,7 +5466,7 @@
 				     PurchaseDeliveryDate: $("#SupplyDates").dxDateBox("instance").option("value") || null,       // Matches PurchaseDeliveryDate
 
 					// Second Card (Right side)
-					//SupplierCode: accheadid || null,                                                            // Matches SupplierCode
+					SupplierCode: accheadid || null,                                                            // Matches SupplierCode
 					// SupplierName: $("#ddclientname").dxDropDownBox("instance").option("value") || null,          // Matches SupplierName
 					// SupplierGroupVatnumber: $("#GroupVATNo").dxTextBox("instance").option("value") || null,      // Matches SupplierGroupVatnumber
 					// SupplierVatnumber: $("#ClientVATNo").dxTextBox("instance").option("value") || null,          // Matches SupplierVatnumber
@@ -5621,7 +5628,7 @@
 						 PurchaseDeliveryDate: $("#SupplyDates").dxDateBox("instance").option("value") || null,       // Matches PurchaseDeliveryDate
 
 						// Second Card (Right side)
-						//SupplierCode: accheadid || null,                                                            // Matches SupplierCode
+						SupplierCode: accheadid || null,                                                            // Matches SupplierCode
 						// SupplierName: $("#ddclientname").dxDropDownBox("instance").option("value") || null,          // Matches SupplierName
 						// SupplierGroupVatnumber: $("#GroupVATNo").dxTextBox("instance").option("value") || null,      // Matches SupplierGroupVatnumber
 						// SupplierVatnumber: $("#ClientVATNo").dxTextBox("instance").option("value") || null,          // Matches SupplierVatnumber
@@ -6139,7 +6146,7 @@
 		  function proceedWithApproval() {
 			// Set ApprovedBy checkbox to true
 			$("#ApprovedBy").dxCheckBox("instance").option("value", true);
-
+				IsDirectApproval=false;
 			const vno = $("#InvoiceNo").dxTextBox("instance").option("value");
 
 			if (!vno) {
@@ -6159,7 +6166,7 @@
 
 			$.ajax({
 				type: "POST",
-				url: `/api/VATModule/ApproveVoucher?InvoiceNo=${encodeURIComponent(vno)}`,
+				url: `/api/VATModule/PurchaseApproveVoucher?InvoiceNo=${encodeURIComponent(vno)}`,
 				contentType: "application/json",
 				dataType: "json",
 				// Uncomment the following line if the API expects data in the request body:
@@ -6193,101 +6200,120 @@
 			});
 		}
 
+	$("#btnPostToLedgers").on("click", function (e) {
+				const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 
-		$("#btnPostToLedgers").on("click", function (e) {
-			const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+				// Ensure dataGrid exists
+				if (!dataGrid) {
+					console.error("DataGrid instance not found.");
+					return;
+				}
 
-			// Ensure dataGrid exists
-			if (!dataGrid) {
-				console.error("DataGrid instance not found.");
-				return;
-			}
+				const rowCount = dataGrid.getVisibleRows().length;
 
-			const rowCount = dataGrid.getVisibleRows().length;
+				// Check if DataGrid contains rows
+				if (rowCount === 0) {
+					DevExpress.ui.dialog.custom({
+						title: "Invoice postal has failed.",
+						message: "Invoice has not been posted. Please enter transactions to proceed with postal.",
+						buttons: [{ text: "Ok", onClick: () => false }],
+						showTitle: true
+					}).show();
+				} else {
+					DevExpress.ui.dialog.custom({
+						title: "Confirm Post To Ledger",
+						message: "Are you sure want to post this Invoice?",
+						buttons: [
+							{ text: "Yes", onClick: () => true },
+							{ text: "No", onClick: () => false }
+						],
+						showTitle: true
+					}).show().done(function (dialogResult) {
+						if (dialogResult) {
+							proceedWithPost(); // Proceed if user clicks Yes
+						}
+					});
+				}
+			});
 
-			// Check if DataGrid contains rows
-			if (rowCount === 0) {
-				DevExpress.ui.dialog.custom({
-					title: "Invoice postal has failed.",
-					message: "Invoice has not been posted. Please enter transactions to proceed with postal.",
-					buttons: [{ text: "Ok", onClick: () => false }],
-					showTitle: true
-				}).show();
-			} else {
-				DevExpress.ui.dialog.custom({
-					title: "Confirm Post To Ledger",
-					message: "Are you sure want to post this Invoice?",
-					buttons: [
-						{ text: "Yes", onClick: () => true },
-						{ text: "No", onClick: () => false }
-					],
-					showTitle: true
-				}).show().done(function (dialogResult) {
-					if (dialogResult) {
-						proceedWithPost(); // Proceed if user clicks Yes
+
+			  function proceedWithPost() {
+				// Set ApprovedBy checkbox to true
+			//	$("#ApprovedBy").dxCheckBox("instance").option("value", true);
+
+				const vno = $("#InvoiceNo").dxTextBox("instance").option("value");
+
+				if (!vno) {
+					DevExpress.ui.notify("Invoice number is required!", "error", 2000);
+					return;
+				}
+
+				// Define IsDirect if not already defined (adjust as needed)
+				const IsDirect = true; // or false, depending on your logic
+
+				const currentDate = new Date();
+				const formattedDate = currentDate.toLocaleDateString("en-GB", {
+					day: "2-digit",
+					month: "short",
+					year: "numeric"
+				}).replace(/ /g, '-');
+
+				$.ajax({
+					type: "POST",
+					url: `/api/VATModule/PurchasePostInvoice?InvoiceNo=${encodeURIComponent(vno)}&IsDirectApproval=${encodeURIComponent(IsDirectApproval)}`,
+					contentType: "application/json",
+					dataType: "json",
+					// Uncomment the following line if the API expects data in the request body:
+					// data: JSON.stringify({ voucherNo: vno }),
+					success: function (response) {
+						if (response && response.Message) {
+							if(response.IsDirect == true)
+							{
+								DevExpress.ui.dialog.alert(
+									"VAT Invoice has been posted to the Accounting Books.",
+									"Invoice Posted Successfully."
+								)
+							}
+							else
+							{
+									   DevExpress.ui.dialog.custom({
+							title: "Voucher is not Approved",
+							message: "Invoice has been Approved,Click Yes if you want to Approve this voucher.",
+							buttons: [
+								{ text: "Yes", onClick: () => true },
+								{ text: "No", onClick: () => false }
+							],
+							showTitle: true
+						}).show().done(function (dialogResult) {
+							if (dialogResult) {
+								proceedWithApproval();
+							}
+						});
+							}
+
+							// .done(() => {
+							// 	disableEditing();
+							// 	$("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
+							// 	$("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate || "N/A");
+
+							// 	if (IsDirect === true) {
+							// 		$("#VerifiedBy").dxCheckBox("instance").option("value", true);
+							// 		$("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
+							// 		$("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
+							// 	}
+							// });
+						} else {
+							DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
+						}
+					},
+					error: function (xhr, status, error) {
+						let errorMessage = (xhr.responseJSON && xhr.responseJSON.Message)
+							? xhr.responseJSON.Message
+							: "An error occurred.";
+						DevExpress.ui.notify(errorMessage, "error", 2000);
 					}
 				});
 			}
-		});
-
-
-		  function proceedWithPost() {
-			// Set ApprovedBy checkbox to true
-		//	$("#ApprovedBy").dxCheckBox("instance").option("value", true);
-
-			const vno = $("#InvoiceNo").dxTextBox("instance").option("value");
-
-			if (!vno) {
-				DevExpress.ui.notify("Invoice number is required!", "error", 2000);
-				return;
-			}
-
-			// Define IsDirect if not already defined (adjust as needed)
-			const IsDirect = true; // or false, depending on your logic
-
-			const currentDate = new Date();
-			const formattedDate = currentDate.toLocaleDateString("en-GB", {
-				day: "2-digit",
-				month: "short",
-				year: "numeric"
-			}).replace(/ /g, '-');
-
-			$.ajax({
-				type: "POST",
-				url: `/api/VATModule/PostInvoice?InvoiceNo=${encodeURIComponent(vno)}`,
-				contentType: "application/json",
-				dataType: "json",
-				// Uncomment the following line if the API expects data in the request body:
-				// data: JSON.stringify({ voucherNo: vno }),
-				success: function (response) {
-					if (response && response.Message) {
-						DevExpress.ui.dialog.alert(
-							"VAT Invoice has been posted to the Accounting Books.",
-							"Invoice Posted Successfully."
-						)
-						// .done(() => {
-						// 	disableEditing();
-						// 	$("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
-						// 	$("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate || "N/A");
-
-						// 	if (IsDirect === true) {
-						// 		$("#VerifiedBy").dxCheckBox("instance").option("value", true);
-						// 		$("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
-						// 		$("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
-						// 	}
-						// });
-					} else {
-						DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
-					}
-				},
-				error: function (xhr, status, error) {
-					let errorMessage = (xhr.responseJSON && xhr.responseJSON.Message)
-						? xhr.responseJSON.Message
-						: "An error occurred.";
-					DevExpress.ui.notify(errorMessage, "error", 2000);
-				}
-			});
-		}
 		// $(function () {
 		// 	const dropDown = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
 

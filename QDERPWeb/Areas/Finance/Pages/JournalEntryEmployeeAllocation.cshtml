@@ -711,7 +711,7 @@
 
 		// Debug to ensure VM is correctly populated
 		console.log("VM to be sent:", VM);
-				debugger;
+				
 				$.ajax({
 					type: "POST",
 					url: "/api/JournalEntryEmployeeAllocation/SaveEmployeeAllocation",
@@ -817,7 +817,7 @@
 
 	// Function to reset the DataGrid and reinitialize it
 	function resetCostDataGrid() {
-		debugger;
+		
 		const costdataGrid = $('#AEdataGrid').dxDataGrid('instance');
 
 		if (costdataGrid) {
@@ -896,7 +896,7 @@
 			dataGrid.selectRows(e.value, false);
 		}
 		if (e.value) {
-			debugger;
+			
 			let grid = $("#AEdataGrid").dxDataGrid("instance");
 			let rowIndex = e.element.closest("tr").index(); // Get the edited row index
 			let rowData = grid.getVisibleRows()[rowIndex].data;
