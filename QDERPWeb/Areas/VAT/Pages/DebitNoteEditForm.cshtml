@@ -275,7 +275,7 @@
 	background: #fff;
 	} */
 
-	.limited-footer .btn-container:not(:has(#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint3,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
+	.limited-footer .btn-container:not(:has(#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint3,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag,#ddButtonLayout)) {
 	display: none !important;
 	}
 
@@ -963,7 +963,7 @@
 									.CellTemplate(@<text>
 				<%- data.DescriptionDetailsText ? data.DescriptionDetailsText : "No Selection" %>
 			</text>);
-											columns.Add().DataField("Qty")
+											columns.Add().DataField("Units To Bill")
 								.Caption(new JS("formatMessage('Units Till Bill')"))
 								.Width(200);
 
@@ -976,17 +976,17 @@
 								.Caption(new JS("formatMessage('Unit Price')"))
 								.Width(200);
 
-											columns.Add().DataField("TotalBeforeDiscount")
+											@* columns.Add().DataField("TotalBeforeDiscount")
 								.Caption(new JS("formatMessage('Amount')"))
-								.Width(200);
-
+								.Width(200); *@
+@* 
 											columns.Add().DataField("Discount")
 								.Caption(new JS("formatMessage('VAT Desc')"))
 								.Width(200);
 
 											columns.Add().DataField("Amount")
 								.Caption(new JS("formatMessage('Amount')"))
-								.Width(200);
+								.Width(200); *@
 
 											columns.Add().DataField("VATPercentage")
 								.Caption("VAT%")
@@ -1024,17 +1024,17 @@
 				</div>
 			</text>);
 
-											columns.Add().DataField("ExcemptionCode")
+											@* columns.Add().DataField("ExcemptionCode")
 								.Caption(new JS("formatMessage('Excemption Code')"))
-								.Width(200);
+								.Width(200); *@
 
 											columns.Add().DataField("VAT")
 								.Caption(new JS("formatMessage('VAT')"))
 								.Width(200);
 
-											columns.Add().DataField("Total")
+											@* columns.Add().DataField("Total")
 								.Caption(new JS("formatMessage('Total')"))
-								.Width(200);
+								.Width(200); *@
 											columns.Add().DataField("TaxSlabCode")
 								.Caption(new JS("formatMessage('TaxSlabCode')"))
 								.Width(200)
@@ -1697,7 +1697,7 @@
 
 			$(".limited-footer .btn-containerIvoiceEdit").each(function () {
 
-				if (!$(this).find("#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint3,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag").length) {
+				if (!$(this).find("#btnSave,#btnSaveAndClose,#btnPrint3,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#ddButtonLayout").length) {
 
 					$(this).remove();
 
@@ -2197,17 +2197,17 @@
 							}
 
 						},
-
+						{ dataField: "Units Till Bill", caption: "Units To Bill", width: 150 },
 
 						{ dataField: "QuantityInvoiced", caption: "Qty", width: 150 },
 
 						{ dataField: "UnitRate", caption: "Unit Price", width: 150 },
 
-						{ dataField: "CalcLineAmountBeforeDiscount", caption: "Total Before Discount", width: 185 },
+						// { dataField: "CalcLineAmountBeforeDiscount", caption: "Total Before Discount", width: 185 },
 
-						{ dataField: "Discount", caption: "Discount", width: 150 },
+						// { dataField: "Discount", caption: "Discount", width: 150 },
 
-						{ dataField: "DiscountDetails", caption: "...", width: 50 },
+						// { dataField: "DiscountDetails", caption: "...", width: 50 },
 
 						{ dataField: "CalcLineAmount", caption: "Amount", width: 150 },
 
@@ -2215,7 +2215,7 @@
 
 						{
 			dataField: "VATPercentage",
-			caption: "VAT%",
+			caption: "VAT Description",
 			width: 150,
 			editCellTemplate: function(cellElement, cellInfo) {
 				getTaxSlabData().done(function (dropdownData) {
@@ -2265,11 +2265,11 @@
 			}
 		},
 
-						{ dataField: "ExcemptionCode", caption: "Excemption Code", width: 150 },
+						// { dataField: "ExcemptionCode", caption: "Excemption Code", width: 150 },
 
 						{ dataField: "CalcTaxAmount", caption: "VAT", width: 150 },
 
-						{ dataField: "LineTotal", caption: "Total", width: 150 },
+						// { dataField: "LineTotal", caption: "Total", width: 150 },
 
 						 { dataField: "TaxSlabCode", caption: "TaxSlabCode", width: 150 ,allowEditing: false,visible: false}
 
@@ -2685,16 +2685,16 @@
 
 					},
 
-
+						{ dataField: "Units Till Bill", caption: "Units To Bill", width: 150 },
 					{ dataField: "Qty", caption: "Qty", width: 150 },
 
 					{ dataField: "UnitPrice", caption: "Unit Price", width: 150 },
 
-					{ dataField: "TotalBeforeDiscount", caption: "Total Before Discount", width: 150 },
+					// { dataField: "TotalBeforeDiscount", caption: "Total Before Discount", width: 150 },
 
-					{ dataField: "Discount", caption: "Discount", width: 150 },
+					// { dataField: "Discount", caption: "Discount", width: 150 },
 
-					{ dataField: "DiscountDetails", caption: "...", width: 50 },
+					// { dataField: "DiscountDetails", caption: "...", width: 50 },
 
 					{ dataField: "Amount", caption: "Amount", width: 150 },
 
@@ -2702,7 +2702,7 @@
 
 					{
 		dataField: "VATPercentage",
-		caption: "VAT%",
+		caption: "VAT Description",
 		width: 150,
 		editCellTemplate: function(cellElement, cellInfo) {
 			getTaxSlabData().done(function (dropdownData) {
@@ -2770,11 +2770,11 @@
 		}
 	},
 
-					{ dataField: "ExcemptionCode", caption: "Excemption Code", width: 150 },
+					// { dataField: "ExcemptionCode", caption: "Excemption Code", width: 150 },
 
 					{ dataField: "VAT", caption: "VAT", width: 150 },
 
-					{ dataField: "Total", caption: "Total", width: 150 },
+					// { dataField: "Total", caption: "Total", width: 150 },
 
 					 { dataField: "TaxSlabCode", caption: "TaxSlabCode", width: 150 ,allowEditing: false,visible: false}
 

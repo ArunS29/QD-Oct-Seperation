@@ -1,0 +1,381 @@
+﻿@page
+@model QD.ERP.Web.Areas.VAT.Pages.VATSalesCOGSPostingModel
+@{
+}
+<style>
+	.overlay {
+		display: none;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.5);
+		z-index: 1000;
+	}
+
+	.custom-submenu {
+		display: none;
+		position: absolute;
+		background-color: #ffffff;
+		border: 1px solid #ddd;
+		border-radius: 8px;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+		list-style: none;
+		padding: 10px 0;
+		min-width: 160px;
+		z-index: 999;
+	}
+
+		.custom-submenu li {
+			padding: 8px 16px;
+			transition: background-color 0.3s ease;
+		}
+
+			.custom-submenu li a {
+				text-decoration: none;
+				color: #333;
+				font-size: 14px;
+				display: block;
+			}
+
+			.custom-submenu li:hover {
+				background-color: #f0f0f0;
+				cursor: pointer;
+			}
+
+	.overlay-content {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 100%;
+		height: 80%;
+		background: #fff;
+		box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+		border-radius: 8px;
+		overflow: hidden;
+	}
+
+	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddReport12)) {
+		display: none !important;
+	}
+
+	#overlay-frame {
+		width: 100%;
+		height: 100%;
+	}
+
+	.dx-datagrid-headers {
+		border: 1px solid #686868 !important;
+		width: 100%; /* Adjust to fit the container */
+		overflow-x: auto; /* Enable horizontal scrolling */
+		white-space: nowrap; /* Prevent wrapping of headings */
+		overflow: hidden;
+	}
+
+		.dx-datagrid-headers .dx-row > td {
+			border: 1px solid #686868 !important;
+			text-align: center !important;
+			/* 	width:1000px; */
+		}
+
+	.dx-datagrid .dx-header-row .dx-datagrid-text-content {
+		font-size: 12px !important;
+		white-space: nowrap !important; /* Prevent wrapping of text */
+		text-align: center !important;
+		font-weight: bold;
+		color: black;
+	}
+
+	.ledgerResult {
+		overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
+		width: 100%;
+	}
+
+	.close-btn {
+		position: absolute;
+		top: 10px;
+		right: 20px;
+		font-size: 30px;
+		cursor: pointer;
+	}
+
+	.custom-toolbar {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.filter-btn {
+		background-color: #007bff;
+		color: white;
+		border: none;
+		padding: 6px 12px;
+		border-radius: 5px;
+		cursor: pointer;
+		font-family: 'Inter', sans-serif;
+	}
+
+		.filter-btn:hover {
+			background-color: #0056b3;
+		}
+
+	.dx-texteditor {
+		background-color: transparent !important;
+		border: 1px solid #d6e4f0 !important;
+		border-radius: 4px !important;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+		font-size: 14px !important;
+		transition: all 0.2s ease-in-out !important;
+		height: 39px !important;
+	}
+
+		.dx-texteditor:hover,
+		.dx-texteditor.dx-state-hover,
+		.dx-button:hover {
+			box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important;
+			border-color: #86b7fe !important;
+		}
+
+		.dx-texteditor.dx-state-focused {
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+			border-color: #508ae1 !important;
+		}
+
+	.no-border-input {
+		border: none !important;
+		outline: none !important;
+		box-shadow: none !important;
+		background: transparent !important;
+		font-weight: bold;
+		font-size: 16px;
+		color: black;
+		pointer-events: none;
+	}
+
+	.context-menu {
+		position: absolute;
+		background: #fff;
+		border-radius: 8px;
+		box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+		width: 200px;
+		display: none;
+		flex-direction: column;
+		padding: 5px 0;
+		z-index: 1000;
+	}
+
+	.context-menu-item {
+		/* display: flex; */
+		align-items: center;
+		padding: 10px 15px;
+		font-size: 14px;
+		cursor: pointer;
+		transition: background 0.2s ease-in-out;
+		color: #333;
+	}
+
+		.context-menu-item i {
+			margin-right: 10px;
+			font-size: 16px;
+			color: #007bff;
+		}
+
+		.context-menu-item:hover {
+			background: #f0f0f0;
+		}
+
+		.context-menu-item:not(:last-child) {
+			border-bottom: 1px solid #e0e0e0;
+		}
+
+	.mainContainer {
+		width: 97%;
+	}
+
+	.dx-fieldset.horizontal-container {
+		margin-top: 10px;
+	}
+
+	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnpostcogsvoucher,btngetcostofgoodssold,#btnBack)) {
+        display: none !important;
+    }
+</style>
+
+<input id="formId" value="frm201LedgerView" type="hidden" />
+<div class="title">
+    <div class="header-container">
+        <div id="VATSalesReportCOGSPosting" class="no-border-input"></div>
+    </div>
+</div>
+
+<div class="dx-fieldset horizontal-container">
+    @(Html.DevExtreme().DateBox()
+        .ID("frmdateBox")
+        .Label(new JS("formatMessage('Start Date')"))
+        .LabelMode(EditorLabelMode.Outside)
+        .InputAttr("aria-label", "Date")
+        .Type(DateBoxType.Date)
+        .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)) // First day of the month
+        .DisplayFormat("dd-MMM-yyyy")
+        .TabIndex(2)
+        )
+
+    @(Html.DevExtreme().DateBox()
+        .ID("todateBox")
+        .Label(new JS("formatMessage('End Date')"))
+        .LabelMode(EditorLabelMode.Outside)
+        .InputAttr("aria-label", "Date")
+        .Type(DateBoxType.Date)
+        .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))) // Last day of the month
+        .DisplayFormat("dd-MMM-yyyy")
+        .TabIndex(3)
+        )
+
+
+    @(Html.DevExtreme().DropDownButton()
+        .ID("ddBtnShowRecords")
+        .Text(new JS("formatMessage('Show Records')"))
+        .Icon("smalliconslayout")
+        .Width(180)
+        .ElementAttr("class", "button-alignment-down")
+        .TabIndex(4)
+        .DropDownOptions(options => options.Width(230))
+        .Items(items =>
+        {
+            items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
+            items.Add().Text(new JS("formatMessage('Today')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
+            items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+            items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
+            items.Add().Text(new JS("formatMessage('This Month Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+            items.Add().Text(new JS("formatMessage('This Month (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+            items.Add().Text(new JS("formatMessage('This Year Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+            items.Add().Text(new JS("formatMessage('This Year (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+            items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+            items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+        })
+        )
+
+</div>
+<div class="dx-field ledgerResult">
+@(
+		Html.DevExtreme().DataGrid()<Qry201625InvoiceListForBulkCostPosting>()
+   .ID("dataGrid")
+   .RemoteOperations(false)
+   .DataSource(new JS("[]"))
+    .ShowBorders(true)
+    .Selection(s => s
+    .Mode(SelectionMode.Multiple) // Or SelectionMode.Single
+    .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always))
+
+		.Columns(columns =>
+		{
+   @*  columns.Command(command =>
+    {
+        command.Select().Text(""); // Optional: leave empty text for checkboxes
+    })
+    .Width(50)
+    .Alignment(HorizontalAlignment.Center); *@
+
+
+
+    columns.Add().DataField("InvoiceNo")
+        .Caption("Invoice No")
+        .Width(150)
+        .Alignment(HorizontalAlignment.Center);
+    columns.Add().DataField("Invoice")
+        .Caption("Invoice")
+        .Width(150)
+        .Alignment(HorizontalAlignment.Center);
+
+    columns.Add().DataField("InvoiceDate")
+        .Caption("Invoice Date")
+        .DataType(GridColumnDataType.Date)
+        .Format("dd-MMM-yyyy")
+        .Alignment(HorizontalAlignment.Center);
+
+    columns.Add().DataField("ClientName")
+        .Caption("Client Name")
+        .Alignment(HorizontalAlignment.Center);
+
+    columns.Add().DataField("StatusForPosting")
+        .Caption("Status For Posting")
+        .Alignment(HorizontalAlignment.Center);
+
+    columns.Add().DataField("IsPosted")
+        .Caption("Is Posted")
+        .Alignment(HorizontalAlignment.Center);
+
+    columns.Add().DataField("IsCogsPosted")
+        .Caption("Is Cogs Posted")
+        .Alignment(HorizontalAlignment.Center);
+
+
+
+})
+.Height(680) // <<< fixed height
+        .ColumnAutoWidth(true)
+        .Width("98%")
+        .WordWrapEnabled(true)
+        .OnCellClick("function(e) {handleCellClick(e);}")
+        .ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+        .AllowColumnReordering(true)
+        .AllowColumnResizing(true)
+        .ColumnFixing(fixing => fixing.Enabled(true))
+        .HeaderFilter(filter => filter.Visible(false))
+        .Paging(p => p.Enabled(false))
+        .Pager(pager => pager.Visible(false))
+        .Grouping(grouping => grouping.AutoExpandAll(true))
+        .FilterRow(filterRow => filterRow.Visible(false))
+        .GroupPanel(groupPanel => groupPanel.Visible(false))
+ .ShowColumnHeaders(false) // Optional: Hide headers if you want only checkboxes
+    .ShowBorders(true)
+)
+
+</div>
+<div class="Head">
+	<div class="limited-footer">
+		@await Html.PartialAsync("VATModuleFooter")
+	</div>
+</div>
+<div id="overlay" class="overlay">
+	<div class="overlay-content">
+		<span class="close-btn" onclick="closeOverlay()">×</span>
+		<iframe id="overlay-frame" src="" frameborder="0"></iframe>
+	</div>
+</div>
+<script>
+        function showRecords() {
+            // Call to backend to reload data based on fromDate and toDate
+            DevExpress.ui.notify("Showing records...", "info", 1500);
+        }
+
+        function postAverageCost() {
+            DevExpress.ui.notify("Posting average cost...", "success", 2000);
+        }
+
+        function postCogsToLedger() {
+            DevExpress.ui.notify("Posting COGS to ledger...", "success", 2000);
+        }
+        $(document).ready(function () {
+        $(".limited-footer .btn-containerIvoiceEdit").each(function () {
+				if (!$(this).find("#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btngetcostofgoodssold,#btnpostcogsvoucher,#btnBack").length) {
+                $(this).remove();
+            }
+        });
+    });
+
+    $(function () {
+                    $("#VATSalesReportCOGSPosting").dxTextBox({
+                        text: formatMessage("Average Cost Posting"),
+                        width:480,
+                        readOnly: true,
+                                    onContentReady: function(e) {
+                                    $(e.element).addClass("dx-textbox-heading");
+                            }
+
+                    });
+                });
+
+</script>
