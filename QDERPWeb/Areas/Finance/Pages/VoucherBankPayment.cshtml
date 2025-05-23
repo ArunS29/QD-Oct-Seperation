@@ -3840,7 +3840,7 @@ function fetchUpdatedData(voucherEntryNo) {
             }
         }
         const chequeboxNo = $("#ChequeNoReferenceNo").dxTextBox("instance").option("value");
-
+        const voucherno = $("#VoucherNo").dxTextBox("instance").option("value");
         
 	     const currencyInstance = $("#ddCurrency").dxDropDownBox("instance");
      const currencyId = currencyInstance.option("value"); // Current CurrencyID
@@ -3880,16 +3880,10 @@ function fetchUpdatedData(voucherEntryNo) {
 
                     }
                     $("#ChequeIssuedinfavourof").dxTextBox("instance").option("value", paymentaccheadname);
-                    $.ajax({
-                        url: "/api/VoucherMaster/GetNewCPVoucherNo",
-                        type: 'GET',
-                        success: function (data) {
-                            $("#PopVoucherNo").dxTextBox("instance").option("value", data);
-                        },
-                        error: function (xhr, status, error) {
-                            console.error("Error loading Voucher No:", error);
-                        }
-                    });
+                    const popvoucher = $("#PopVoucherNo").dxTextBox("instance");
+                    if (popvoucher) {
+                        popvoucher.option("value", voucherno);
+                    }
                 },
                 error: function (xhr, status, error) {
                     console.error("Error loading cheque popup:", error);
