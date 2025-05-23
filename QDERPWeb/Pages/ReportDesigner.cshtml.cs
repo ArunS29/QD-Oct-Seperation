@@ -13,6 +13,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Identity.Client;
 
 namespace QD.ERP.Web.Pages
 {
@@ -45,9 +46,9 @@ namespace QD.ERP.Web.Pages
 
             _eRPMasterWtDataContext = dbContext;
             ReportName = reportName;
-
-            string tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
             string username = HttpContext.Session.GetString("UserName") ?? "Default User";
+            string tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+            
 
             ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                 .FirstOrDefault(x => x.CompanyNameShort == tenantName);
@@ -121,7 +122,7 @@ namespace QD.ERP.Web.Pages
                     break;
                 case "BillsReceivableAgeingToday":
                     Report = new BillsReceivableAgeingToday(accountId, frmDate.Value, toDate.Value,
-                        tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
+                        tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, username, _tenantDbContextHelper);
                     break;
                 case "BillsReceivableByAccount":
                     Report = new BillsReceivableByAccount(accountId, frmDate.Value, toDate.Value,
@@ -129,37 +130,49 @@ namespace QD.ERP.Web.Pages
                     break;
 
                 case "BillsReceivableAll":
-                    Report = new BillsReceivableAll(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "", "", _tenantDbContextHelper);
+                    Report = new BillsReceivableAll(accountId, frmDate.Value, toDate.Value,
+                        tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
                     break;
                 case "BillsReceivableFormat":
-                    Report = new BillsReceivableFormat(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "", "", _tenantDbContextHelper);
+                    Report = new BillsReceivableFormat(accountId, frmDate.Value, toDate.Value,
+                        tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
                     break;
                 case "Report4":
-                    Report = new Report4(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "", "", _tenantDbContextHelper);
+                    Report = new Report4(accountId, frmDate.Value, toDate.Value,
+                        tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
                     break;
                 case "rpt201BillsPayable":
-                    Report = new rpt201BillsPayable(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "","", _tenantDbContextHelper);
+                    Report = new rpt201BillsPayable(accountId, frmDate.Value, toDate.Value,
+                        tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
                     break;
                 case "rpt201BillsPayableWithVchNo":
-                    Report = new rpt201BillsPayableWithVchNo(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "","", _tenantDbContextHelper);
+                    Report = new rpt201BillsPayableWithVchNo(accountId, frmDate.Value, toDate.Value,
+                        tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
                     break;
                 case "EndDate":
-                    Report = new EndDate(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "", _tenantDbContextHelper);
+                    Report = new EndDate(accountId, frmDate.Value, toDate.Value,tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr, username, _tenantDbContextHelper);
                     break;
                 case "Payablelandscape":
-                    Report = new Payablelandscape(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "", _tenantDbContextHelper);
+                    Report = new Payablelandscape(accountId, frmDate.Value, toDate.Value,
+                         tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper);
                     break;
                 case "payableRetention":
-                    Report = new payableRetention(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "", _tenantDbContextHelper);
+                    Report = new payableRetention(accountId, frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr,username, _tenantDbContextHelper);
                     break;
                 case "Balance":
-                    Report = new Balance(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "", _tenantDbContextHelper);
+                    Report = new Balance(accountId, frmDate.Value, toDate.Value,tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr,username, _tenantDbContextHelper);
                     break;
                 case "BillsPayablePaid":
-                    Report = new BillsPayablePaid(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "","", _tenantDbContextHelper);
+                    Report = new BillsPayablePaid(accountId, frmDate.Value, toDate.Value,
+                        tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
                     break;
                 case "AgeingToday":
-                    Report = new AgeingToday(accountId, frmDate.Value, toDate.Value, "", "", "", null, "", "","",_tenantDbContextHelper);
+                    Report = new AgeingToday(accountId, frmDate.Value, toDate.Value,
+                        tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
                     break;
                 case "XtraReportBillsReceivableAgeingReport":
                     Report = new XtraReportBillsReceivableAgeingReport();
@@ -171,7 +184,7 @@ namespace QD.ERP.Web.Pages
                     return NotFound("Report not found.");
             }
 
-            return Report == null ? NotFound("Report not found.") : Page();
+            return Page();
         }
     }
 }

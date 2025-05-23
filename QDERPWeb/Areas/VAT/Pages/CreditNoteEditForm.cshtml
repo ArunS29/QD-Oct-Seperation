@@ -3017,25 +3017,7 @@
 
 		});
 
-		$(document).ready(function () {
-			if (IsCurrent !== "true" && IsAmend !=="true") {
-			$.ajax({
-			url: "/api/VATModule/GetVATCreditNoteNo",
-				type: 'GET',
-				success: function (data) {
-					console.log("Success:", data);
-					
-				$("#CreditNoteNo").dxTextBox("instance").option("value", data);
-				CrNoteNo=data;
-				alert(CrNoteNo)
-				},
-				error: function (xhr, status, error) {
-					console.error("Error loading Payment Accounts:", error);
-					DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
-				}
-			});
-			}
-		});
+		
 
 		//View e-Invoice
 
@@ -3046,11 +3028,12 @@
 			var InvNo = urlParams.get('InvoiceNo');
 		     IsAmend = urlParams.get('IsAmend');
 			
+			
 	
-				var IsCurrent = (IsEditflag || "").toString();
+				 IsCurrent = (IsEditflag || "").toString();
 			
 				if (IsCurrent === "true") {
-					alert("2")
+					
 				$.ajax({
 					url: `/api/VATModule/GetCreditNoteDetails?CreditNoteNo=${encodeURIComponent(CreditNoteNo)}`,
 					type: 'GET',
@@ -3061,11 +3044,8 @@
 						if (response && response.length > 0) {
 							var account = response[0];
 
-							console.log(account)
-
 							$('#CreditNoteNo').dxTextBox("instance")?.option("value", account.CreditNoteNo);
 							ClientCodedataGridSelectionChanged({ selectedRowKeys: [account.ClientCode] });
-							// ClientNamedataGridSelectionChanged({ selectedRowKeys: [account.BuyerName] });
 							$('#ddclientname').dxTextBox("instance")?.option("value", account.BuyerName);
 
 					     	$('#GroupVATNo').dxTextBox("instance")?.option("value", account.BuyerGroupVatnumber);
@@ -3142,7 +3122,9 @@
 			else if(IsAmend ==="true")
 			{
 				$.ajax({
-					url: `/api/VATModule/GetInvoiceDetails?InvoiceNo=${encodeURIComponent(InvNo)}`,
+					url: `/api/VATModule/GetCreditNoteDetails?CreditNoteNo=${encodeURIComponent(CreditNoteNo)}`,
+
+					//url: `/api/VATModule/GetInvoiceDetails?InvoiceNo=${encodeURIComponent(InvNo)}`,
 					type: 'GET',
 					dataType: 'json',
 					success: function (response) {
@@ -3150,10 +3132,9 @@
 						
 						if (response && response.length > 0) {
 							var account = response[0];
-							alert(account.ClientCode)
-							$('#CreditNoteNo').dxTextBox("instance")?.option("value",CrNoteNo);
+						
+							$('#CreditNoteNo').dxTextBox("instance")?.option("value",account.CreditNoteNo);
 							ClientCodedataGridSelectionChanged({ selectedRowKeys: [account.ClientCode] });
-							// ClientNamedataGridSelectionChanged({ selectedRowKeys: [account.BuyerName] });
 							$('#ddclientname').dxTextBox("instance")?.option("value", account.BuyerName);
 
 					     	$('#GroupVATNo').dxTextBox("instance")?.option("value", account.BuyerGroupVatnumber);
@@ -3195,13 +3176,16 @@
 								
 							$.ajax({
 								type: "GET",
-								url: `/api/VATModule/GetGridInvoiceDetails?InvoiceNo=${encodeURIComponent(InvNo)}`,
+								  url: `/api/VATModule/GetGridCreditNoteDetails?CreditNoteNo=${encodeURIComponent(CreditNoteNo)}`,
+
+								//url: `/api/VATModule/GetGridInvoiceDetails?InvoiceNo=${encodeURIComponent(InvNo)}`,
 									dataType: 'json',
 								success: function (response) {
-										console.log("Grid",response)
+										console.log("AmendGrid",response)
 										let rowData = response.map((item, index) => ({
 			SNo: index + 1,
 			...item
+			//InvoiceChildSLNo: 0
 		}));
 									
 									initializeDataGrid(rowData);
@@ -3233,10 +3217,10 @@
 				// Just make sure to close all functions properly
 				// For brevity, I'm skipping repeating all the column config here
 					columns: [
-						{
+						   {
 
-								dataField: "InvoiceChildSLNo",
-								caption: "InvoiceChildSLNo",
+								dataField: "CreditNoteChildSlNo",
+								caption: "CreditNoteChildSlNo",
 								width: 100,
 								allowEditing: false, // Prevent manual editing
 								visible: false // Hide the column
@@ -3468,36 +3452,6 @@
 				openModal(url, title);
 			}
 		},
-// 		{
-//     dataField: "Descriptions",
-//     caption: "...",
-//     width: 150,
-//     allowEditing: true,
-//     editCellTemplate: function (cellElement, cellInfo) {
-//         const url = `/${tenantName}/Finance/VATDetailsDescription`;
-
-//         // Create a container div
-//         const $container = $("<div>").addClass("inline-description-template");
-
-//         // Load the content from the URL
-//         $.get(url, function (response) {
-//             $container.html(response);
-
-//             // // Optionally, bind any dynamic behavior in the loaded content
-//             // // For example, pass value to a field
-//             // $container.find("textarea, input").val(cellInfo.value || "");
-
-//             // // On change, update grid data
-//             // $container.find("textarea, input").on("input", function () {
-//             //     cellInfo.setValue($(this).val());
-//             // });
-//         });
-
-//         // Append container to the cell
-//         $(cellElement).append($container);
-//     }
-// },
-
 
 
 						{
@@ -4373,7 +4327,27 @@ openModal(url, title);
 
 		});
 
-
+		$(document).ready(function () {
+			if (IsCurrent !== "true" && IsAmend !=="true") {
+				
+			$.ajax({
+			url: "/api/VATModule/GetVATCreditNoteNo",
+				type: 'GET',
+				success: function (data) {
+					console.log("Success:", data);
+					
+				$("#CreditNoteNo").dxTextBox("instance").option("value", data);
+				CrNoteNo=data;
+		
+				
+				},
+				error: function (xhr, status, error) {
+					console.error("Error loading Payment Accounts:", error);
+					DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+				}
+			});
+			}
+		});
 
 
 			// Fetch dropdown data (same API can be used if needed)
@@ -4554,10 +4528,12 @@ openModal(url, title);
 				if (selectedKey) {
 					ddbInstance.option("value", selectedKey);
 					 ddbInstance.close();
+					 accid=selectedKey;
 				}
+				
 					if(IsCurrent!="true" && IsAmend !="true")
 					{
-
+						
 						 var selectedRowData = $("#clientcode-datagrid").dxDataGrid("instance").getSelectedRowsData();
 							// Get ReferenceNo from selected row
 							if (selectedRowData.length > 0) {
@@ -6359,7 +6335,7 @@ openModal(url, title);
 			e.editorOptions.onValueChanged = function (args) {
 				let grid = $("#B2BdataGrid").dxDataGrid("instance");
 				let rowIndex = e.row.rowIndex;
-
+				
 
 				// Get the updated value from the input field
 				let newValue = args.value;
@@ -7022,6 +6998,7 @@ openModal(url, title);
 			$("#ApprovedBy").dxCheckBox("instance").option("value", true);
 
 			const vno = $("#CreditNoteNo").dxTextBox("instance").option("value");
+			
 
 			if (!vno) {
 				DevExpress.ui.notify("Invoice number is required!", "error", 2000);
