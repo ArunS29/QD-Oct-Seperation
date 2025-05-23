@@ -223,13 +223,16 @@
         }
 
     </style>
-<meta charset="UTF-8">
 <div class="title">
     <div class="header-container">
-        <div id="CompanyDetails" class="no-border-title"></div>
+        <h2>Company Details</h2>
     </div>
 </div>
+
+<meta charset="UTF-8">
+
 <div class="form-container1">
+
     <div class="form-container">
         <!-- Tab Menu -->
         @(
@@ -279,6 +282,9 @@
                         <div style="flex: 1;">
                             @(Html.DevExtreme().TextBox()
                             .ID("BuildingNumber")
+                            .MaxLength(4)
+                            .Mask("0000") // Accept only 4 digits
+                         @* .InputAttr("pattern", "[0-9]{4}") // HTML5 pattern for client-side validation *@
                             .Label("Building Number:")
                             .LabelMode(EditorLabelMode.Outside)
                             .StylingMode(EditorStylingMode.Outlined)
@@ -289,6 +295,11 @@
                             .ID("City")
                             .Label("City: *")
                             .LabelMode(EditorLabelMode.Outside)
+                            .ValidationRules(rules =>
+                            {
+                            rules.AddRequired()
+                            .Message("City is required");
+                            })
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
                         </div>
@@ -298,6 +309,8 @@
                         <div style="flex: 1;">
                             @(Html.DevExtreme().TextBox()
                             .ID("AdditionalNumber")
+                            .MaxLength(4)
+                            .Mask("0000")
                             .Label("Additional Number:")
                             .LabelMode(EditorLabelMode.Outside)
                             .StylingMode(EditorStylingMode.Outlined)
@@ -317,6 +330,8 @@
                         <div style="flex: 1;">
                             @(Html.DevExtreme().TextBox()
                             .ID("PostalCode")
+                            .MaxLength(5)
+                            .Mask("00000")
                             .Label("Postal Code:")
                             .LabelMode(EditorLabelMode.Outside)
                             .StylingMode(EditorStylingMode.Outlined)
@@ -326,6 +341,11 @@
                             @(Html.DevExtreme().TextBox()
                             .ID("District")
                             .Label("District/Neighborhood: *")
+                            .ValidationRules(rules =>
+                            {
+                            rules.AddRequired()
+                            .Message("District is required");
+                            })
                             .LabelMode(EditorLabelMode.Outside)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -334,16 +354,39 @@
 
                     <div style="display: flex; gap: 10px;">
                         <div style="flex: 1;">
-                            @(Html.DevExtreme().SelectBox()
+                            @(Html.DevExtreme().DropDownBox()
                             .ID("CountryCode")
                             .Label("Country Code: *")
+                            .ValidationRules(rules =>
+                            {
+                            rules.AddRequired()
+                            .Message("Country Code is required");
+                            })
+                            .ValueExpr("CountryCodeAlpha2")
+                            .DisplayExpr("CountryName")
+                            .DataSource(ds => ds
+                            .Mvc()
+                            .Controller("CompanyDetails")
+                            .LoadAction("GetCountryCode")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .   Key("CountryCodeAlpha2")
+                            )
+                            .DropDownOptions(d => d.Width(280)) // Make dropdown wide enough for the grid
+
                             .LabelMode(EditorLabelMode.Outside)
                             .StylingMode(EditorStylingMode.Outlined)
-                            .Width("100%"))
+                            .Width("100%")
+                            .ContentTemplate(new TemplateName("CodeDropDownTemplate"))
+                            )
                         </div>
                         <div style="flex: 1;">
                             @(Html.DevExtreme().TextBox()
                             .ID("ShortName")
+                            .ValidationRules(rules =>
+                            {
+                            rules.AddRequired()
+                            .Message("Company Short Name is required");
+                            })
                             .Label("Company Short Name:")
                             .LabelMode(EditorLabelMode.Outside)
                             .StylingMode(EditorStylingMode.Outlined)
@@ -418,13 +461,13 @@
                     <div style="direction: rtl; display:flex; align-items:end;">
 
                    @(Html.DevExtreme().TextBox()
-                    .ID("ar_BuildingNumber")
+                        .ID("ar_City")
                     .Label("رقم المبنى")
                     .LabelMode(EditorLabelMode.Outside)
                     .StylingMode(EditorStylingMode.Outlined)
                     .Width("100%"))
                     @(Html.DevExtreme().Button()
-                        .ID("ar_BuildingNumber1")
+                        .ID("ar_City1")
                     .Height(30)
                     .Icon("fas fa-language") // Ensure Font Awesome class is correct
                     .ElementAttr(new { @class = "input-button" })
@@ -434,13 +477,13 @@
 
                     <div style="direction: rtl; display:flex; align-items:end;">
                         @(Html.DevExtreme().TextBox()
-                    .ID("ar_AdditionalNumber")
+                        .ID("ar_Province")
                     .Label("رقم إضافي")
                     .LabelMode(EditorLabelMode.Outside)
                     .StylingMode(EditorStylingMode.Outlined)
                     .Width("100%"))
                     @(Html.DevExtreme().Button()
-                    .ID("ar_AdditionalNumber1")
+                        .ID("ar_Province1")
                     .Height(30)
                     .Icon("fas fa-language") // Ensure Font Awesome class is correct
                     .ElementAttr(new { @class = "input-button" })
@@ -450,13 +493,13 @@
 
                     <div style="direction: rtl; display:flex; align-items:end;">
                   @(Html.DevExtreme().TextBox()
-                    .ID("ar_PostalCode")
+                        .ID("ar_District")
                     .Label("الرمز البريدي")
                     .LabelMode(EditorLabelMode.Outside)
                     .StylingMode(EditorStylingMode.Outlined)
                     .Width("100%")) 
                     @(Html.DevExtreme().Button()
-                        .ID("ar_PostalCode1")
+                        .ID("ar_District1")
                     .Height(30)
                     .Icon("fas fa-language") // Ensure Font Awesome class is correct
                     .ElementAttr(new { @class = "input-button" })
@@ -466,14 +509,14 @@
 
                     <div style="direction: rtl; display:flex; align-items:end;">
                    @(Html.DevExtreme().TextBox()
-                    .ID("ar_CountryCode")
+                    .ID("ar_ShortName")
                     .Label("رمز الدولة")
                     .LabelMode(EditorLabelMode.Outside)
                     .StylingMode(EditorStylingMode.Outlined)
                     .Width("100%"))
                         @(
                         Html.DevExtreme().Button()
-                        .ID("ar_CountryCode1")
+                        .ID("ar_ShortName1")
                         .Height(30)
                         .Icon("fas fa-language") // Ensure Font Awesome class is correct
                         .ElementAttr(new { @class = "input-button" })
@@ -556,34 +599,63 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("VAT")
                         .Label("VAT Registration No *")
+                        .ValidationRules(rules =>
+                        {
+                        rules.AddRequired()
+                        .Message("VAT NO is required");
+                        })
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%"))
 
                         @(Html.DevExtreme().TextBox()
                         .ID("GroupVAT")
                         .Label("Group VAT No")
+                        .MaxLength(10)
+                        .Mask("0000000000")
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%"))
 
                         @(Html.DevExtreme().TextBox()
                         .ID("TIN")
                         .Label("TIN")
+                        .MaxLength(10)
+                        .Mask("0000000000")
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%"))
                     </div>
 
                     <!-- ID Type / ID Number / Commercial Reg -->
                     <div style="display: flex; gap: 10px;">
-                        @(Html.DevExtreme().SelectBox()
+                        @(Html.DevExtreme().DropDownBox()
                         .ID("IDType")
-                        .Items(new[] { "National", "Iqama", "Passport" })
                         .Label("ID Type *")
+                        .ValidationRules(rules =>
+                        {
+                        rules.AddRequired()
+                        .Message("ID Type is required");
+                        })
+                        .ValueExpr("SellerOtherIdtype")
+                        .DisplayExpr("SellerIdtypeName")
+                        .DataSource(ds => ds
+                        .Mvc()
+                        .Controller("CompanyDetails")
+                        .LoadAction("GetIdType")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .   Key("SellerOtherIdtype")
+                        )
                         .LabelMode(EditorLabelMode.Outside)
-                        .Width("100%"))
+                        .Width("70%")
+                        .ContentTemplate(new TemplateName("IDDropDownTemplate"))
+                        )
 
                         @(Html.DevExtreme().TextBox()
                         .ID("IDNumber")
                         .Label("ID Number *")
+                        .ValidationRules(rules =>
+                        {
+                        rules.AddRequired()
+                        .Message("ID Number is required");
+                        })
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%"))
 
@@ -616,7 +688,7 @@
 
 
 
-
+         </div>
 
         </text>);
                     item.Add().Text("Other//آخر").Icon("home").Title("Other//آخر").Template(@<text>
@@ -1056,7 +1128,57 @@
         .Icon("check")
         .OnClick("onSaveCompanyClick"))
 </div>
+@using (Html.DevExtreme().NamedTemplate("CodeDropDownTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                    .ID("clientGrid")
+                    .DataSource(ds => ds
+                        .Mvc()
+                            .Controller("CompanyDetails")
+                         .LoadAction("GetCountryCode")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("CountryCodeAlpha2")
+                    )
+                    .Height(180)
+                    .Width(250)
+                    .ShowBorders(true)
+                    .FilterRow(f => f.Visible(true))
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                    .Selection(s => s.Mode(SelectionMode.Single))  // Single selection
+                    .Columns(columns =>
+                    {
+                        columns.Add().DataField("CountryCodeAlpha2").Caption("Country Code");
+                        columns.Add().DataField("CountryName").Caption("Country Name");
+                    })
+                    .OnSelectionChanged("onCodeSelected")  // Trigger onClientSelected on row selection
+                )
+}
 
+@using (Html.DevExtreme().NamedTemplate("IDDropDownTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                        .ID("clientGrid")
+                        .DataSource(ds => ds
+                            .Mvc()
+                                .Controller("CompanyDetails")
+                                 .LoadAction("GetIdType")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                                    .Key("SellerOtherIdtype")
+                        )
+                        .Height(180)
+                        .Width(300)
+                        .ShowBorders(true)
+                        .FilterRow(f => f.Visible(true))
+                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                        .Selection(s => s.Mode(SelectionMode.Single))  // Single selection
+                        .Columns(columns =>
+                        {
+                                columns.Add().DataField("SellerOtherIdtype").Caption("Code");
+                                columns.Add().DataField("SellerIdtypeName").Caption("Company ID Type");
+                        })
+                            .OnSelectionChanged("onIDSelected")  // Trigger onClientSelected on row selection
+                    )
+}
 <script>
     // $(function () {
     // $("#CompanyDetails").dxTextBox({
@@ -1068,6 +1190,34 @@
     //     });
     // });
 
+    //CountryCode
+        function onCodeSelected(e) {
+        const selected = e.selectedRowsData[0];
+        if (selected) {
+            const dropDownBox = $("#CountryCode").dxDropDownBox("instance");
+            if (dropDownBox) {
+                // Set the value to ClientCode, not ClientName
+                dropDownBox.option("value", selected.CountryCodeAlpha2);
+                dropDownBox.close();
+            } else {
+                console.error("DropDownBox instance not found.");
+            }
+        }
+    }  
+   //IDtype 
+    function onIDSelected(e) {
+        const selected = e.selectedRowsData[0];
+        if (selected) {
+             const dropDownBox = $("#IDType").dxDropDownBox("instance");
+            if (dropDownBox) {
+                // Set the value to ClientCode, not ClientName
+                 dropDownBox.option("value", selected.SellerOtherIdtype);
+                dropDownBox.close();
+            } else {
+                console.error("DropDownBox instance not found.");
+            }
+        }
+    }
 
      // Fetch translated Arabic text using MyMemory API
     async function translateToArabic(text) {
@@ -1118,8 +1268,22 @@
     $("#ar_AdditionalAddress1").off("click").on("click", function () {
         translateFieldToArabic("AdditionalAddress", "ar_AdditionalAddress");
     });
+    $("#ar_City1").off("click").on("click", function () {
+        translateFieldToArabic("City", "ar_City");
+    });
+    $("#ar_Province1").off("click").on("click", function () {
+        translateFieldToArabic("Province", "ar_Province");
+    });
+    $("#ar_District1").off("click").on("click", function () {
+        translateFieldToArabic("District", "ar_District");
+    })
+    $("#ar_ShortName1").off("click").on("click", function () {
+        translateFieldToArabic("ShortName", "ar_ShortName");
+    }); 
+    
 
     });
+
 
     /////////////////
         $(function () {
@@ -1129,7 +1293,6 @@
                 DevExpress.ui.notify("❌ Company short name does not match the tenant name. No data found.", "error", 4000);
                 return;
             }
-
             $("#CompanyID").dxTextBox("instance").option("value", company.CompanyId);
             $("#CompanyName").dxTextBox("instance").option("value", company.CompanyName);
             $("#StreetName").dxTextBox("instance").option("value", company.CompanyAddress1);
@@ -1140,7 +1303,7 @@
             $("#Province").dxTextBox("instance").option("value", company.SellerProvince);
             $("#PostalCode").dxTextBox("instance").option("value", company.SellerPostalCode);
             $("#District").dxTextBox("instance").option("value", company.SellerNeighborhood);
-            $("#CountryCode").dxSelectBox("instance").option("value", company.SellerCountryCode);
+            $("#CountryCode").dxDropDownBox("instance").option("value", company.SellerCountryCode);
             $("#ShortName").dxTextBox("instance").option("value", company.CompanyNameShort);
             $("#FullAddress").dxTextBox("instance").option("value", company.CompanyFullAddress);
             $("#ProductName").dxTextBox("instance").option("value", company.ProductName);
@@ -1152,7 +1315,7 @@
             $("#VAT").dxTextBox("instance").option("value", company.CompanyVatno);
             $("#GroupVAT").dxTextBox("instance").option("value", company.SellerGroupVatnumber);
             $("#TIN").dxTextBox("instance").option("value", company.CompanyTin);
-            $("#IDType").dxSelectBox("instance").option("value", company.SellerOtherIdtype);
+             $("#IDType").dxDropDownBox("instance").option("value", company.SellerOtherIdtype);
             $("#IDNumber").dxTextBox("instance").option("value", company.SellerOtherSellerId);
             // $("#CRNumber").dxTextBox("instance").option("value", company.CRNumber);
 
@@ -1187,10 +1350,10 @@
             $("#ar_CompanyName").dxTextBox("instance").option("value", company.CompanyNameAr);
             $("#ar_StreetName").dxTextBox("instance").option("value", company.CompanyAddress1Ar);
             $("#ar_AdditionalAddress").dxTextBox("instance").option("value", company.CompanyAddress2Ar);
-            $("#ar_BuildingNumber").dxTextBox("instance").option("value", company.SellerBuildingNumber);
-            $("#ar_AdditionalNumber").dxTextBox("instance").option("value", company.SellerAdditionalNumber);
-            $("#ar_PostalCode").dxTextBox("instance").option("value", company.SellerPostalCode);
-            $("#ar_CountryCode").dxTextBox("instance").option("value", company.SellerCountryCode);
+            $("#ar_City").dxTextBox("instance").option("value", company.CompanyCityAr);
+            $("#ar_Province").dxTextBox("instance").option("value", company.SellerProvinceAr);
+            $("#ar_District").dxTextBox("instance").option("value", company.SellerNeighborhoodAr);
+            $("#ar_ShortName").dxTextBox("instance").option("value", company.CompanyShortNameAr);
            
 
             // $("#CompanyID1").dxTextBox("instance").option("value", company.CompanyId);
@@ -1317,7 +1480,7 @@
         SellerProvince: $("#Province").dxTextBox("instance").option("value"),
         SellerPostalCode: $("#PostalCode").dxTextBox("instance").option("value"),
         SellerNeighborhood: $("#District").dxTextBox("instance").option("value"),
-        SellerCountryCode: $("#CountryCode").dxSelectBox("instance").option("value"),
+        SellerCountryCode: $("#CountryCode").dxDropDownBox("instance").option("value"),
         CompanyNameShort: $("#ShortName").dxTextBox("instance").option("value"),
         CompanyFullAddress: $("#FullAddress").dxTextBox("instance").option("value"),
         ProductName: $("#ProductName").dxTextBox("instance").option("value"),
@@ -1331,7 +1494,7 @@
         CompanyVatno: $("#VAT").dxTextBox("instance").option("value"),
         SellerGroupVatnumber: $("#GroupVAT").dxTextBox("instance").option("value"),
         CompanyTin: $("#TIN").dxTextBox("instance").option("value"),
-        SellerOtherIdtype: $("#IDType").dxSelectBox("instance").option("value"),
+         SellerOtherIdtype: $("#IDType").dxDropDownBox("instance").option("value"),
         SellerOtherSellerId: $("#IDNumber").dxTextBox("instance").option("value"),
 
         // Auditor Info
@@ -1352,6 +1515,8 @@
         IsOnlineBackup: $("#CloudBackup").dxCheckBox("instance").option("value"),
         IsBackupDatabaseOnly: $("#OnlyDB").dxCheckBox("instance").option("value"),
 
+                   
+
         // Arabic Fields
         CompanyNameAr: $("#CompanyName_Ar").dxTextBox("instance").option("value"),
         CompanyNameAr: $("#ar_CompanyName").dxTextBox("instance").option("value"),
@@ -1362,8 +1527,15 @@
         CompanyShortNameAr: $("#ShortName_Ar").dxTextBox("instance").option("value"),
         CompanyCityAr: $("#CompanyCity_Ar").dxTextBox("instance").option("value"),
         CompanyFullAddressAr: $("#FullAddressArabic").dxTextBox("instance").option("value"),
+        CompanyCityAr: $("#ar_City").dxTextBox("instance").option("value"),
+        SellerProvinceAr: $("#ar_Province").dxTextBox("instance").option("value"),
+        SellerNeighborhoodAr: $("#ar_District").dxTextBox("instance").option("value"),
+        CompanyShortNameAr: $("#ar_ShortName").dxTextBox("instance").option("value"),
 
         // Images
+
+
+
         CompanyLogoBase64: uploadedLogoBase64,
         CompanySealBase64: uploadedSealBase64,
         LetterHeadBase64: uploadedLetterHeadBase64
