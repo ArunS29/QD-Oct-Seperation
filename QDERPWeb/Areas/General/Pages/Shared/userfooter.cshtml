@@ -456,7 +456,7 @@
         }
     });
     function saveLayoutClick(e) {
-        debugger;
+        
         var grid = $("#dataGrid").dxDataGrid("instance");
         var layout = grid.state();
         const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
@@ -479,7 +479,7 @@
         //DevExpress.ui.notify("Layout", "success", 600);
     }
     function openLayoutClick(e) {
-        debugger;
+        
         // Create an input element dynamically
         const input = document.createElement("input");
         input.type = "file";
@@ -1049,7 +1049,7 @@
                 window.location.href = `/${tenantName}/Finance/PettyCashRequest`;
                 break;
             case 'Supplier Payment Request':
-                debugger;
+                
                 $.ajax({
                     
                     url: `/api/ExpenseClaim/GetSupplierpayment`,

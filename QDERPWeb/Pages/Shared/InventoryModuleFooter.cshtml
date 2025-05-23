@@ -579,7 +579,7 @@
             .Width(50)
             .Text(new JS("formatMessage('Add New RFQ')"))
             .ElementAttr(new { style = "display: none;" })
-            // .OnClick("toggleGroupPanel")
+            .OnClick("AddNewRFQ")
             )
 
     </div>
@@ -1299,9 +1299,12 @@
             // const title = "";
             window.location.href = url;
         }
-          function AddNewSalesOrder() {
-        window.location.href = `/${tenantName}/IMS/AddNewSalesOrder`;
-    }
+        function AddNewSalesOrder() {
+            window.location.href = `/${tenantName}/IMS/AddNewSalesOrder`;
+        }
+        function AddNewRFQ() {
+            window.location.href = `/${tenantName}/IMS/AddNewRFQ`;
+        }
         function addPaymentButton_click(e) {
         let url = "";
         let title = "Payments";

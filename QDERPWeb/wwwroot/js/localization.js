@@ -1,6 +1,14 @@
 ﻿var dictionary = {
     "en": {
         "Save And Close": "Save And Close",
+        "MPRNo": "MPRNo",
+        "MPR Date": "MPR Date",
+        "MPR Revised By": "MPR Revised By",
+        "MPR Revised On": "MPR Revised On",
+        "Requested Name Ref": "Requested Name Ref",
+        "Request Enquiry": "Request Enquiry",
+        "Type Of Request":"Type Of Request",
+        "Material Request Revised History":"Material Request Revised History",
         "Stores":"Stores",
         "Type a newStore & Add to the Existing List":"Type a newStore & Add to the Existing List",
         "Cancel":"Cancel",
@@ -4637,7 +4645,15 @@
         "New Standard Tax Invoice(B2C)": "فاتورة ضريبية قياسية جديدة (منشأة إلى مستهلك)",
         "New e-Invoice Credit Note": "إشعار دائن جديد للفاتورة الإلكترونية",
         "New e-Invoice Debit Note": "إشعار مدين جديد للفاتورة الإلكترونية",
-        "New VAT Purchase Bill": "فاتورة شراء ضريبة القيمة المضافة الجديدة"
+        "New VAT Purchase Bill": "فاتورة شراء ضريبة القيمة المضافة الجديدة",
+        "MPRNo": "رقم طلب المواد",
+        "MPR Date": "تاريخ طلب المواد",
+        "MPR Revised By": "تم التعديل بواسطة",
+        "MPR Revised On": "تم التعديل في",
+        "Requested Name Ref": "المرجع باسم الطالب",
+        "Request Enquiry": "استعلام الطلب",
+        "Type Of Request": "نوع الطلب",
+        "Material Request Revised History": "سجل تعديل طلب المواد"
     }
 };
 

@@ -1671,7 +1671,7 @@
 						 };
 						 openCostAllocationPopup(params); // Open DevExtreme Popup with dynamic content
 					 } else if (accheadname) {
-						 debugger;
+						 
 
 						 // Function to check allocation
 						 function checkAllocation(url, successCallback) {
@@ -2057,7 +2057,7 @@
 				AccountHead: accountHead,
 				VoucherAmount: amount
 			};
-			debugger;
+			
 			if (openedPopups[popupId]) {
 				openedPopups[popupId].show();
 			} else {
@@ -2101,7 +2101,7 @@
 				VoucherAmount: amount,
 				AccountID: accountid
 			};
-			debugger;
+			
 			if (openedPopups[popupId]) {
 				openedPopups[popupId].show();
 			} else {
@@ -2143,7 +2143,7 @@
 				VoucherAmount: amount,
 				AccountID: accountid
 			};
-			debugger;
+			
 			if (openedPopups[popupId]) {
 				openedPopups[popupId].show();
 			} else {
@@ -2183,7 +2183,7 @@
 				AccountHead: accountHead,
 				VoucherAmount: amount
 			};
-			debugger;
+			
 			if (openedPopups[popupId]) {
 				openedPopups[popupId].show();
 			} else {
@@ -2225,7 +2225,7 @@
 				VoucherAmount: amount,
 				AccountID: accountid
 			};
-			debugger;
+			
 			if (openedPopups[popupId]) {
 				openedPopups[popupId].show();
 			} else {
@@ -2944,7 +2944,7 @@
 
 
 		if (oldRowData.DrCr === "Dr") {
-		debugger;
+		
 		// Find all corresponding "Cr" rows
 		let drRows = allData.filter(row => row.DrCr === "Cr" && row.SysRemarks.includes(oldAccountHead));
 
@@ -2985,7 +2985,7 @@
 
 
 		if (oldRowData.DrCr === "Cr") {
-		debugger;
+		
 		// Find all corresponding "Cr" rows
 		let crRows = allData.filter(row => row.DrCr === "Dr" && row.SysRemarks.includes(`Paid thru: ${oldAccountHead}`));
 
@@ -3193,7 +3193,7 @@
 		const queryString = Object.keys(params)
 			.map(key => `${key}=${params[key]}`)
 			.join('&');
-		debugger;
+		
 		$.ajax({
 			url: `/api/VoucherEntryReceipts/CostAllocation?${queryString}`,
 			type: "GET",
@@ -3201,7 +3201,7 @@
 			success: function (data) {
 				// Get the popup's unique identifier, for example, use the voucher number
 				const popupId = `CostAllocationPopup-${params.VoucherEntryNo}`;
-				debugger;
+				
 				// Check if the popup is already opened
 				if (!openedPopups[popupId]) {
 					// Create and store the popup instance
@@ -3228,7 +3228,7 @@
 	}
 
 	function openPropertyAllocationPopup(params) {
-		debugger;
+		
 		const queryString = Object.keys(params)
 			.map(key => `${key}=${params[key]}`)
 			.join('&');
@@ -3240,7 +3240,7 @@
 			success: function (data) {
 				// Get the popup's unique identifier, for example, use the voucher number
 				const popupId = `PropertyAllocationPopup-${params.VoucherEntryNo}`;
-				debugger;
+				
 				// Check if the popup is already opened
 				if (!openedPopups[popupId]) {
 					// Create and store the popup instance
@@ -3277,7 +3277,7 @@
 			success: function (data) {
 				// Get the popup's unique identifier, for example, use the voucher number
 				const popupId = `EmployeeAllocationPopup-${params.VoucherEntryNo}`;
-				debugger;
+				
 				// Check if the popup is already opened
 				if (!openedPopups[popupId]) {
 					// Create and store the popup instance
@@ -3314,7 +3314,7 @@
 			success: function (data) {
 				// Get the popup's unique identifier, for example, use the voucher number
 				const popupId = `BillsReceivablePopup-${params.VoucherEntryNo}`;
-				debugger;
+				
 				// Check if the popup is already opened
 				if (!openedPopups[popupId]) {
 					// Create and store the popup instance

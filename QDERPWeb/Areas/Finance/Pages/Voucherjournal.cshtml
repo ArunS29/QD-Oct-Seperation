@@ -931,7 +931,7 @@
     //     const totalCreditTextbox = $("#totalCreditTextbox").dxTextBox("instance");
 
     //     function calculateTotals() {
-    //         debugger;
+    
     //         const data = dataGrid.option("dataSource") || [];
 
     //         const totalDebit = data.reduce((sum, row) => sum + (row.DrCr === "Dr" ? row.VoucherAmount || 0 : 0), 0);
@@ -1142,7 +1142,7 @@
     });
 
     function saveVoucher() {
-        debugger;
+        
         var button = $("#btnSave").dxButton("instance");
         var finalVoucherNo = globalVoucherNo || argsledno || "";
 
@@ -1260,7 +1260,7 @@
 
     $("#btnSaveAndClose").on("click", function (e) {
         e.preventDefault();
-        debugger;
+        
 
         var dataGrid = $("#dataGrid").dxDataGrid("instance");
         var gridData = dataGrid.option("dataSource");
@@ -1509,7 +1509,7 @@
 
 
     $(document).ready(function () {
-        debugger;
+        
         $("#btnPrint").dxButton("instance").option("disabled", true);
        $("#btnPreview1").dxDropDownButton("instance").option("disabled", true);
 
@@ -1786,7 +1786,7 @@
 
                     const data = response.data[0];
                     if (data) {
-                        debugger;
+                        
                         $("#VoucherDate").dxDateBox("instance").option("value", data.VoucherDate);
                         $("#EffectiveDate").dxDateBox("instance").option("value", data.VoucherEffectiveDate);
                         // $("#BillDate").dxDateBox("instance").option("value", data.BillDate || "");
@@ -2273,7 +2273,7 @@
     }
 
     function onDeleteButtonClick() {
-        debugger;
+        
         var dataGrid = $("#dataGrid").dxDataGrid("instance");
         var rowCount = dataGrid.getVisibleRows().length;
 
@@ -2515,7 +2515,7 @@
         const queryString = Object.keys(params)
             .map(key => `${key}=${params[key]}`)
             .join('&');
-        debugger;
+        
         $.ajax({
             url: `/api/VoucherEntryReceipts/CostAllocation?${queryString}`,
             type: "GET",
@@ -2523,7 +2523,7 @@
             success: function (data) {
                 // Get the popup's unique identifier, for example, use the voucher number
                 const popupId = `CostAllocationPopup-${params.VoucherEntryNo}`;
-                debugger;
+                
                 // Check if the popup is already opened
                 if (!openedPopups[popupId]) {
                     // Create and store the popup instance
@@ -2550,7 +2550,7 @@
     }
 
     function openPropertyAllocationPopup(params) {
-        debugger;
+        
         const queryString = Object.keys(params)
             .map(key => `${key}=${params[key]}`)
             .join('&');
@@ -2562,7 +2562,7 @@
             success: function (data) {
                 // Get the popup's unique identifier, for example, use the voucher number
                 const popupId = `PropertyAllocationPopup-${params.VoucherEntryNo}`;
-                debugger;
+                
                 // Check if the popup is already opened
                 if (!openedPopups[popupId]) {
                     // Create and store the popup instance
@@ -2599,7 +2599,7 @@
             success: function (data) {
                 // Get the popup's unique identifier, for example, use the voucher number
                 const popupId = `EmployeeAllocationPopup-${params.VoucherEntryNo}`;
-                debugger;
+                
                 // Check if the popup is already opened
                 if (!openedPopups[popupId]) {
                     // Create and store the popup instance
@@ -2636,7 +2636,7 @@
             success: function (data) {
                 // Get the popup's unique identifier, for example, use the voucher number
                 const popupId = `BillsReceivablePopup-${params.VoucherEntryNo}`;
-                debugger;
+                
                 // Check if the popup is already opened
                 if (!openedPopups[popupId]) {
                     // Create and store the popup instance
@@ -2663,7 +2663,7 @@
     }
 
     function openSalaryPopup(params) {
-        debugger;
+        
         const queryString = Object.keys(params)
             .map(key => `${key}=${params[key]}`)
             .join('&');
@@ -2675,7 +2675,7 @@
             success: function (data) {
                 // Get the popup's unique identifier, for example, use the voucher number
                 const popupId = `SalaryPaidEntryPopup-${params.VoucherEntryNo}`;
-                debugger;
+                
                 // Check if the popup is already opened
                 if (!openedPopups[popupId]) {
                     // Create and store the popup instance
@@ -2839,7 +2839,7 @@
                 AccountHead: accountHead,
                 VoucherAmount: amount
             };
-            debugger;
+            
             if (openedPopups[popupId]) {
                 openedPopups[popupId].show();
             } else {
@@ -2883,7 +2883,7 @@
                 VoucherAmount: amount,
                 AccountID: accountHead
             };
-            debugger;
+            
             if (openedPopups[popupId]) {
                 openedPopups[popupId].show();
             } else {
@@ -2965,7 +2965,7 @@
                 AccountHead: accountHead,
                 VoucherAmount: amount
             };
-            debugger;
+            
             if (openedPopups[popupId]) {
                 openedPopups[popupId].show();
             } else {
@@ -3007,7 +3007,7 @@
                 VoucherAmount: amount,
                 AccountID: accountHead
             };
-            debugger;
+            
             if (openedPopups[popupId]) {
                 openedPopups[popupId].show();
             } else {

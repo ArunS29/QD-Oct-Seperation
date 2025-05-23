@@ -175,6 +175,10 @@
     #saveEntryButton .dx-button-text {
         color: black !important;
     }
+
+    .dx-overlay-wrapper {
+        z-index: 1050 !important; /* Or higher if necessary */
+    }
 </style>
 
 <div class="title">
@@ -221,7 +225,7 @@
                 .LabelMode(EditorLabelMode.Outside)
                 .ID("txtEntryNarration")
                 .Value("")
-                .Height(150)
+                .Height(100)
                 .Width(720)
                 .Placeholder("Enter your comments here...")
                 .MaxLength(500)
@@ -631,8 +635,8 @@
                         .Text("Pay the Claim")
                         .Icon("money")
                         .ElementAttr(new { @class = "bold-button" })
-                        .Height(300)
-                        .Width(170)
+                        .Height(100)
+                        .Width(100)
                         .OnClick("generateVoucherNo")
                         )
                 </div>
@@ -862,7 +866,8 @@
                            
                         )
 }
-<div id="floatingDropdownForm" class="dropdown-box" style="display: none;">
+<div id="cardPopoverContent" style="display: none;">
+    <!-- Move your floatingDropdownForm contents here -->
     <div class="form-container">
         <table>
             <tr>
@@ -969,28 +974,33 @@
         </table>
     </div>
 </div>
+<div id="cardPopover"></div>
+
 
 
 <script>
-        function onCardClick(e) {
-                const $dropdown = $("#floatingDropdownForm");
+    function onCardClick(e) {
+        $("#cardPopover").dxPopover("instance").show();
+    }
 
-                const buttonOffset = $(e.element).offset();
-                const buttonHeight = $(e.element).outerHeight();
-
-                $dropdown.css({
-                    top: buttonOffset.top + buttonHeight + 5,
-                    left: buttonOffset.left
-                });
-
-                $(".dropdown-box").not($dropdown).hide(); // hide other dropdowns
-                $dropdown.show();
-            }
 
             function closeDropdownForm() {
                 $("#floatingDropdownForm").hide();
             }
     $(function () {
+
+        $("#cardPopover").dxPopover({
+            target: ".dropdown-wrapper",
+            contentTemplate: function () {
+                return $("#cardPopoverContent").clone().show();
+            },
+            width: 800,
+            position: "bottom",
+            showEvent: "",
+            hideEvent: "",
+            hideOnOutsideClick: true
+        });
+
         $("#calculateVATButton").dxButton({
             text: "Calculate VAT",
             icon: "fa fa-calculator",
@@ -1009,7 +1019,42 @@
             }
         });
 
-        $("#taxPercentage").dxNumberBox({ value: 5, min: 0, max: 100, showSpinButtons: true });
+        $(function () {
+            $("#taxPercentage").dxDropDownBox({
+                valueExpr: "PurchaseTaxSlabCode",
+                displayExpr: function (item) {
+                    return item ? item.PurchaseTaxSlab : "";
+                },
+                placeholder: "Select Tax Percentage",
+                contentTemplate: function (e) {
+                    const $dataGrid = $("<div>").dxDataGrid({
+                        dataSource: {
+                            load: function () {
+                                return $.getJSON("/ExpenseClaim/GetPurchaseTaxSlabs");
+                            }
+                        },
+                        columns: [
+                            { dataField: "PurchaseTaxSlabCode", caption: "Tax Code" },
+                            { dataField: "PurchaseTaxSlab", caption: "Tax Slab" }
+                        ],
+                        height: 250,
+                        selection: { mode: "single" },
+                        hoverStateEnabled: true,
+                        paging: { pageSize: 10 },
+                        onSelectionChanged: function (selectedItems) {
+                            const selected = selectedItems.selectedRowsData[0];
+                            if (selected) {
+                                e.component.option("value", selected.PurchaseTaxSlabCode);
+                                e.component.close();
+                            }
+                        }
+                    });
+
+                    return $dataGrid;
+                }
+            });
+        });
+
         $("#taxableAmount").dxNumberBox({ value: 0 });
         $("#vatAmount").dxNumberBox({ value: 0 });
         $("#roundOff").dxNumberBox({ value: 0 });
@@ -1219,7 +1264,7 @@
             dataGrid.selectRows(e.value, false);
         }
         if (e.value) {
-            debugger;
+            
             let grid = $("#dataGrid").dxDataGrid("instance");
             let rowIndex = e.element.closest("tr").index(); // Get the edited row index
             let rowData = grid.getVisibleRows()[rowIndex].data;
@@ -1341,7 +1386,7 @@
                 data: { claimRefNo: claimRefNo },
                 success: function (data) {
                     const entry = data.find(d => d.ClaimRefNo === claimRefNo); // optional check
-                    debugger;
+                    
                     if (entry) {
                         $("#VoucherNo").dxTextBox("instance").option("value", entry.ClaimRefNo);
                         $("#claimerdate").dxDateBox("instance").option("value", entry.ClaimDate);
@@ -1380,7 +1425,7 @@
                             : "";
 
                         $("#paidOntext").dxTextBox("instance").option("value", formattedPostedDate);
-                        $("#GeneratedVoucher").dxTextBox("instance").option("value", entry.PaymentVoucherNo);
+                        // $("#GeneratedVoucher").dxTextBox("instance").option("value", entry.PaymentVoucherNo);
                         // Disable DevExtreme buttons based on submission and verification date
                         const btnSubmit = $("#btnSubmit").dxButton("instance");
                         const btnVerify = $("#btnExpenseVerify").dxButton("instance");
@@ -1429,7 +1474,7 @@
                 data: { claimRefNo: claimRefNo },
                 success: function (data) {
                     const entry = data.find(d => d.ClaimRefNo === claimRefNo); // optional check
-                    debugger;
+                    
                     if (entry) {
 
 

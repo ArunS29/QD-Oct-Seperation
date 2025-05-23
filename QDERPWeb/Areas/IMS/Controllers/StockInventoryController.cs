@@ -6,6 +6,8 @@ using QD.ERP.Web.Service;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using DevExpress.Printing.Utils.DocumentStoring;
+using DevExpress.Pdf;
+using System.IO;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
@@ -653,18 +655,26 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 if (existingItem == null)
                 {
-                   
-
+                    // Add new item in main table
                     dbContext.Tbl20164GoodsAndServicesMasters.Add(model);
+
+                    // Insert opening balance using SP
+                    await dbContext.Database.ExecuteSqlRawAsync(
+                        "EXEC sp600_18InsertStockOpeningBalance @StockNo = {0}, @QtyReceived = {1}, @UnitPrice = {2}, @UnitRateMethod = {3}",
+                        model.Gscode,
+                        model.OpeningBalance,
+                        model.CostPrice,
+                        model.CostPrice  // or some other value if you want a different method
+                    );
                 }
                 else
                 {
+                    // Update fields
                     existingItem.Gsdescrpition = model.Gsdescrpition;
                     existingItem.GsdescriptionAr = model.GsdescriptionAr;
                     existingItem.GsgroupId = model.GsgroupId;
                     existingItem.StoreId = model.StoreId;
                     existingItem.ItemClassificationId = model.ItemClassificationId;
-
                     existingItem.GsdetailedDesc = model.GsdetailedDesc;
                     existingItem.GsdetailedDescAr = model.GsdetailedDescAr;
                     existingItem.GsuoM = model.GsuoM;
@@ -695,6 +705,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     existingItem.ModifiedOn = DateTime.Now;
                     existingItem.ItemImage = model.ItemImage;
 
+                    // Update opening balance using SP
+                    await dbContext.Database.ExecuteSqlRawAsync(
+                        "EXEC sp600_17UpdateStockOpeningBalance @StockNo = {0}, @QtyReceived = {1}, @UnitPrice = {2}",
+                        model.Gscode,
+                        model.OpeningBalance,
+                        model.CostPrice
+                    );
                 }
 
                 await dbContext.SaveChangesAsync();
@@ -703,10 +720,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception somewhere, then:
                 return StatusCode(500, new { message = "Error saving record: " + ex.Message, success = false });
             }
         }
+
+
         [HttpPost]
         public async Task<IActionResult> DeleteStockItem([FromBody] string code)
         {
@@ -948,6 +966,133 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             return Ok(unitCodes);
         }
+        [HttpGet]
+        public async Task<IActionResult> GetPurchaseGridData(string gscode)
+        {
+            if (string.IsNullOrWhiteSpace(gscode))
+                return BadRequest("GsCode is required.");
+
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized("Invalid tenant context.");
+
+                var data = await dbContext.Qry60406purchaseOrderDetails
+                    .Where(x => x.Gscode == gscode)
+                    .ToListAsync();
+
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetDocumentGridData(string gscode)
+        {
+            if (string.IsNullOrWhiteSpace(gscode))
+                return BadRequest("GsCode is required.");
+
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized("Invalid tenant context.");
+
+                var data = await dbContext.Tbl60007inventoryStockDocuments
+                    .Where(x => x.Gscode == gscode)
+                    .ToListAsync();
+
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        //[HttpPost("MergeSelectedDocuments")]
+        //public IActionResult MergeSelectedDocuments([FromBody] List<string> filePaths)
+        //{
+        //    using var outputStream = new MemoryStream();
+        //    var outputDocument = new PdfDocumentProcessor();
+
+        //    foreach (var path in filePaths)
+        //    {
+        //        if (!System.IO.File.Exists(path))
+        //            continue;
+
+        //        var tempDocument = new PdfDocumentProcessor();
+        //        tempDocument.LoadDocument(path);
+
+        //        for (int i = 0; i < tempDocument.Document.Pages.Count; i++)
+        //        {
+        //            outputDocument.Document.Pages.Add(tempDocument.Document.Pages[i]);
+        //        }
+        //    }
+
+            
+        //    outputDocument.SaveDocument(outputStream);
+        //    outputStream.Position = 0;
+
+        //    return File(outputStream.ToArray(), "application/pdf", "MergedDocument.pdf");
+        //}
+
+        [HttpPost("DownloadMultipleDocuments")]
+        public async Task<IActionResult> DownloadMultipleDocuments([FromBody] List<string> filePaths)
+        {
+            using var zipStream = new MemoryStream();
+            using var archive = new System.IO.Compression.ZipArchive(zipStream, System.IO.Compression.ZipArchiveMode.Create, true);
+
+            foreach (var fullPath in filePaths)
+            {
+                if (!System.IO.File.Exists(fullPath)) continue;
+
+                var fileName = Path.GetFileName(fullPath);
+                var entry = archive.CreateEntry(fileName);
+                using var entryStream = entry.Open();
+                using var fileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read);
+                await fileStream.CopyToAsync(entryStream);
+            }
+
+            zipStream.Position = 0;
+            return File(zipStream.ToArray(), "application/zip", "Documents.zip");
+        }
+        [HttpDelete]
+        public async Task<IActionResult> DeleteByCode(string code)
+        {
+            if (string.IsNullOrWhiteSpace(code))
+                return BadRequest(new { success = false, message = "Invalid stock code." });
+
+            // Get tenant and DB context
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Unauthorized access or invalid tenant." });
+            }
+
+            try
+            {
+                var item = await dbContext.Tbl20164GoodsAndServicesMasters
+                    .FirstOrDefaultAsync(x => x.Gscode == code);
+
+                if (item == null)
+                    return NotFound(new { success = false, message = "Stock item not found." });
+
+                dbContext.Tbl20164GoodsAndServicesMasters.Remove(item);
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Stock item deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "An error occurred while deleting the stock item.",
+                    details = ex.Message
+                });
+            }
+        }
+
 
     }
 }

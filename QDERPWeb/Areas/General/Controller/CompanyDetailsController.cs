@@ -8,6 +8,7 @@ using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
 using SkiaSharp;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -25,6 +26,42 @@ namespace QD.ERP.Web.Areas.General.Controller
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
+
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword( string newPassword)
+        {
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized();
+
+                string userIdStr = HttpContext.Session.GetString("UserId");
+                if (!byte.TryParse(userIdStr, out byte currentUserId))
+                    return Unauthorized("Invalid or missing UserId in session.");
+
+                var user = await dbContext.TblUserMasters.FirstOrDefaultAsync(u => u.UserId == currentUserId);
+                if (user == null)
+                    return NotFound("User not found.");
+
+                // TODO: Hash the password before storing it!
+                user.Password = newPassword;
+                user.ModifiedOn = DateTime.UtcNow;
+                user.ModifiedBy = user.UserName; // or get from session if you store the current username
+
+                await dbContext.SaveChangesAsync();
+
+                return Ok("Password reset successful.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error resetting password.");
+                return StatusCode(500, "Internal server error.");
+            }
+        }
+
+
+
         [HttpGet]
         public IActionResult GetMaxCompanyID()
         {
@@ -41,8 +78,12 @@ namespace QD.ERP.Web.Areas.General.Controller
             public string CompanyName { get; set; }
             public string CompanyAddress1 { get; set; }
             public string CompanyAddress2 { get; set; }
+
+            [Required]
             public string CompanyCity { get; set; }
             public string CompanyPhone { get; set; }
+
+            [Required]
             public string CompanyNameShort { get; set; }
             public string CompanyFax { get; set; }
             public string EmailAddress { get; set; }
@@ -52,16 +93,26 @@ namespace QD.ERP.Web.Areas.General.Controller
             public string CompanyFullAddressAr { get; set; }
             public string ProductName { get; set; }
             public string CompanySlogan { get; set; }
+
+            [Required]
             public string CompanyVatno { get; set; }
             public string SellerGroupVatnumber { get; set; }
             public string CompanyTin { get; set; }
+
+            [Required]
             public string SellerOtherIdtype { get; set; }
+
+            [Required]
             public string SellerOtherSellerId { get; set; }
             public string SellerBuildingNumber { get; set; }
             public string SellerAdditionalNumber { get; set; }
             public string SellerProvince { get; set; }
+            public string SellerProvinceAr { get; set; }
             public string SellerPostalCode { get; set; }
+
+            [Required]
             public string SellerNeighborhood { get; set; }
+            public string SellerNeighborhoodAr { get; set; }
             public string SellerCountryCode { get; set; }
             public string AuditorName { get; set; }
             public string AuditorFaxNo { get; set; }
@@ -121,25 +172,28 @@ namespace QD.ERP.Web.Areas.General.Controller
                         c.CompanyAddress2Ar,
                         c.CompanyName,
                         c.CompanyCityAr,
+                        c.SellerNeighborhoodAr,
                         c.CompanyAddress1,
                         c.CompanyAddress2,
                         c.CompanyCity,
                         c.CompanyPhone,
                         c.CompanyNameShort,
                         c.CompanyFax,
+                        c.SellerCountryCode,
                         c.CompanyVatno,
                         c.SellerBuildingNumber,
                         c.SellerAdditionalNumber,
                         c.SellerProvince,
+                        c.SellerProvinceAr,
                         c.SellerPostalCode,
                         c.SellerNeighborhood,
-                        c.SellerCountryCode,
                         c.EmailAddress,
                         c.Website,
                         c.CurrencyAbbr,
                         c.CompanyFullAddress,
                         c.ProductName,
                         c.CompanySlogan,
+                        c.CompanyShortNameAr,
                         c.SellerGroupVatnumber,
                         c.CompanyTin,
                         c.SellerOtherIdtype,
@@ -232,8 +286,10 @@ namespace QD.ERP.Web.Areas.General.Controller
                 company.SellerBuildingNumber = updatedCompany.SellerBuildingNumber;
                 company.SellerAdditionalNumber = updatedCompany.SellerAdditionalNumber;
                 company.SellerProvince = updatedCompany.SellerProvince;
+                company.SellerProvinceAr = updatedCompany.SellerProvinceAr;
                 company.SellerPostalCode = updatedCompany.SellerPostalCode;
                 company.SellerNeighborhood = updatedCompany.SellerNeighborhood;
+                company.SellerNeighborhoodAr = updatedCompany.SellerNeighborhoodAr;
                 company.SellerCountryCode = updatedCompany.SellerCountryCode;
 
                 // Auditor Info
@@ -342,8 +398,110 @@ namespace QD.ERP.Web.Areas.General.Controller
                 return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCountryCode()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var countrycode = await dbContext.Tbl00107CountryCodes
+                        .Select(i => new
+                        {
+                            i.CountryCodeAlpha2,
+                            i.CountryName,
+                           
+
+
+                        })
+                        .ToListAsync();
+
+                    return Ok(countrycode); // return raw data, paging/sorting done on client-side
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
+            }
+        } 
+
+        [HttpGet]
+        public async Task<IActionResult> GetIdType()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var idType = await dbContext.Tbl00104SellerIdtypes
+                        .Select(i => new
+                        {
+                            i.SellerIdtypeName,
+                            i.SellerOtherIdtype,
+
+
+
+                        })
+                        .ToListAsync();
+
+                    return Ok(idType); 
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetUserEntryLog(DateTime? fromDate, DateTime? toDate)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var query = dbContext.Tbl90116UserEntryLogSheets.AsQueryable();
+
+
+                // Default dates if not provided
+                if (!fromDate.HasValue)
+                {
+                    fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1); // Start of the current month
+                }
+
+                if (!toDate.HasValue)
+                {
+                    toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)); // End of the current month
+                }
+
+                // Filtering by date range
+                query = query.Where(i => i.LogCreatedOn >= fromDate && i.LogCreatedOn <= toDate);
+
+                // Fetching the data
+                var data = await query.Select(i => new
+                {
+                    i.UserEntryLogNo,
+                    i.EntryLogFor,
+                    i.EntryLogDetails,
+                    i.LogCreatedOn,
+                    i.LogCreatedBy,
+                    i.LogDocumentNo,
+
+                }).ToListAsync();
+
+
+                return Ok(data);
+            }
+
+            return Unauthorized(new { message = "Invalid tenant." });
+        }
+
     }
 
 
 
 }
+
+
