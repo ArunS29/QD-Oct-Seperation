@@ -547,7 +547,7 @@
 <script>
 
 		let invoiceNo = null;
-	let IsEdit = false;
+	let IsEdit = false,CreditNoteNo=null;
 
 	// Assuming tenantName is already defined globally
 	function viewInvoice() {
@@ -568,7 +568,6 @@
 		const title = "VAT Invoice Edit(B2B)";
 		//openModal(url, title);
 		 window.location.href = url; // Navigate to the page
-
 	}
 
 
@@ -606,7 +605,7 @@
 			url: `/api/VATModule/InsertAmendEInvoice?InvoiceNo=${encodeURIComponent(invoiceNo)}`,
 			type: 'POST',
 			success: function (response) {
-				
+				CreditNoteNo=response.CreditNoteNo;
 					if (response.IsPosted == null) {
 		DevExpress.ui.dialog.alert(
 			"Invoice is not Posted. You must post the invoice before cancelling or amending the invoice.",
@@ -635,7 +634,7 @@
 					"Credit Note has been added to the database.",
 					"Data Insertion Successful"
 				).done(function () {
-					window.location.href = `/${tenantName}/VAT/CreditNoteEditForm?InvoiceNo=${encodeURIComponent(invoiceNo)}&IsAmend=${encodeURIComponent(IsAmend)}`;
+					window.location.href = `/${tenantName}/VAT/CreditNoteEditForm?InvoiceNo=${encodeURIComponent(invoiceNo)}&IsAmend=${encodeURIComponent(IsAmend)}&CreditNoteNo=${encodeURIComponent(CreditNoteNo)}`;
 				});
 			}
 		});
