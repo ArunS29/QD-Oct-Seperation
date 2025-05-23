@@ -8,6 +8,10 @@ using Newtonsoft.Json;
 using DevExpress.Printing.Utils.DocumentStoring;
 using DevExpress.Pdf;
 using System.IO;
+using PdfSharpCore.Pdf.IO;
+using PdfSharpCore.Pdf;
+using System.Collections.Generic;
+using System.IO;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
@@ -1010,34 +1014,33 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
-        //[HttpPost("MergeSelectedDocuments")]
-        //public IActionResult MergeSelectedDocuments([FromBody] List<string> filePaths)
-        //{
-        //    using var outputStream = new MemoryStream();
-        //    var outputDocument = new PdfDocumentProcessor();
+        [HttpPost]
+        public IActionResult MergeSelectedDocuments([FromBody] List<string> filePaths)
+        {
+            var outputDocument = new PdfSharpCore.Pdf.PdfDocument();
 
-        //    foreach (var path in filePaths)
-        //    {
-        //        if (!System.IO.File.Exists(path))
-        //            continue;
+            foreach (var filePath in filePaths)
+            {
+                if (!System.IO.File.Exists(filePath)) continue;
 
-        //        var tempDocument = new PdfDocumentProcessor();
-        //        tempDocument.LoadDocument(path);
+                using var inputDocument = PdfSharpCore.Pdf.IO.PdfReader.Open(filePath, PdfSharpCore.Pdf.IO.PdfDocumentOpenMode.Import);
+                for (int idx = 0; idx < inputDocument.PageCount; idx++)
+                {
+                    var page = inputDocument.Pages[idx];
+                    outputDocument.AddPage(page);
+                }
+            }
 
-        //        for (int i = 0; i < tempDocument.Document.Pages.Count; i++)
-        //        {
-        //            outputDocument.Document.Pages.Add(tempDocument.Document.Pages[i]);
-        //        }
-        //    }
+            using var stream = new MemoryStream();
+            outputDocument.Save(stream, false);
+            stream.Position = 0;
 
-            
-        //    outputDocument.SaveDocument(outputStream);
-        //    outputStream.Position = 0;
+            return File(stream.ToArray(), "application/pdf", "MergedDocument.pdf");
+        }
 
-        //    return File(outputStream.ToArray(), "application/pdf", "MergedDocument.pdf");
-        //}
 
-        [HttpPost("DownloadMultipleDocuments")]
+
+        [HttpPost]
         public async Task<IActionResult> DownloadMultipleDocuments([FromBody] List<string> filePaths)
         {
             using var zipStream = new MemoryStream();
@@ -1048,7 +1051,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 if (!System.IO.File.Exists(fullPath)) continue;
 
                 var fileName = Path.GetFileName(fullPath);
-                var entry = archive.CreateEntry(fileName);
+                var entry = archive.CreateEntry(fileName, System.IO.Compression.CompressionLevel.Fastest);
+
                 using var entryStream = entry.Open();
                 using var fileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read);
                 await fileStream.CopyToAsync(entryStream);
@@ -1057,6 +1061,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             zipStream.Position = 0;
             return File(zipStream.ToArray(), "application/zip", "Documents.zip");
         }
+
         [HttpDelete]
         public async Task<IActionResult> DeleteByCode(string code)
         {
@@ -1091,8 +1096,126 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     details = ex.Message
                 });
             }
+
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetDocumentTypes()
+        {
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized("Invalid tenant context.");
+
+                var docTypes = await dbContext.Tbl101DocumentTypes
+                    .Select(d => new { id = d.DocumentTypeId, text = d.DocumentType })
+                    .ToListAsync();
+
+                return Ok(docTypes);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> SaveDocument([FromBody] Tbl70003projectDocument model)
+        {
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized("Invalid tenant context.");
+
+                if (string.IsNullOrEmpty(model.DocumentNo))
+                {
+                    
+                    dbContext.Tbl70003projectDocuments.Add(model);
+                }
+                else
+                {
+                    var existing = await dbContext.Tbl70003projectDocuments
+                        .FirstOrDefaultAsync(d => d.DocumentNo == model.DocumentNo);
+
+                    if (existing == null)
+                    {
+                        dbContext.Tbl70003projectDocuments.Add(model);
+                    }
+                    else
+                    {
+                        existing.DocumentType = model.DocumentType;
+                        existing.DocumentRefNo = model.DocumentRefNo;
+                        existing.DocumentRemarks = model.DocumentRemarks;
+                        existing.DocumentExpDate = model.DocumentExpDate;
+                        existing.DocumentExpDateAr = model.DocumentExpDateAr;
+                        existing.DocumentNotificationDate = model.DocumentNotificationDate;
+                        existing.DocumentStatus = model.DocumentStatus;
+                        existing.DocumentStatusRemarks = model.DocumentStatusRemarks;
+                    }
+                }
+
+                await dbContext.SaveChangesAsync();
+                return Json(new { success = true, documentNo = model.DocumentNo });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> GenerateNewDocumentNo()
+        {
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized("Invalid tenant context.");
+
+                var lastDoc = await dbContext.Tbl70003projectDocuments
+                    .OrderByDescending(d => d.DocumentNo)
+                    .FirstOrDefaultAsync();
+
+                if (lastDoc == null || string.IsNullOrEmpty(lastDoc.DocumentNo))
+                    return Ok("1"); 
+
+                // Try to parse and increment
+                if (int.TryParse(lastDoc.DocumentNo, out int lastNumber))
+                    return Ok((lastNumber + 1).ToString());
+
+                return Ok(""); 
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error generating document number: {ex.Message}");
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetDocuments()
+        {
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized("Invalid tenant context.");
+
+                var documents = await dbContext.Tbl70003projectDocuments
+                    .Select(d => new
+                    {
+                        DocumentNo = d.DocumentNo,
+                        DocumentType = d.DocumentType,
+                        DocumentRefNo = d.DocumentRefNo,
+                        DocumentRemarks = d.DocumentRemarks,
+                        DocumentExpDate = d.DocumentExpDate,
+                        DocumentExpDateAr = d.DocumentExpDateAr,
+                        DocumentNotificationDate = d.DocumentNotificationDate,
+                        ProjectId = d.ProjectId
+                    })
+                    .ToListAsync();
+
+                return Json(documents);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
 
     }
 }

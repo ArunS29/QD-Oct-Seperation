@@ -1,257 +1,333 @@
 ﻿@page
 @model QD.ERP.Web.Areas.IMS.Pages.InventoryDocumentModel
-@{
-}<
-    <style>
-    /* Style for the textboxes */
-    .dx-datagrid .dx-row {
-        border-bottom: 1px solid #ccc; /* Border between rows */
+@using DevExtreme.AspNet.Mvc
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<style>
+    /* Container for the entire page */
+    .page-container {
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    /* Grid Column Header Text Color */
-    .dx-datagrid-headers .dx-header-row .dx-datagrid-text-content {
-        color: #2d5799; /* Set header text color */
+    /* Title heading */
+    .title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #2d5799;
+        margin-bottom: 25px;
+        text-align: center;
     }
 
-    /* Grid Column Header Background Color */
-    .dx-datagrid-headers .dx-header-row {
-        background-color: white; /* Set background color for column headers */
+    /* Form container with two columns */
+    .form-wrapper {
+        display: flex;
+        gap: 30px;
+        flex-wrap: wrap;
+        margin-bottom: 40px;
     }
 
-    /* Button customization */
-    .dx-button-add {
-        background-color: #f5f8fb !important; /* Set background color to #cfddee */
-        color: red !important; /* Set text color to red */
-        border: 1px solid #b0c4de; /* Light border around the button */
+    .left-column {
+        flex: 2;
+        min-width: 320px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
     }
 
-        .dx-button-add .dx-icon {
-            color: green !important; /* Set icon color to green */
+    .right-column {
+        flex: 1;
+        min-width: 250px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 20px;
+        text-align: center;
+    }
+
+    /* Align elements inside left column rows */
+    .form-row {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+        .form-row > div {
+            flex: 1;
+            min-width: 140px;
         }
 
-    .horizontal-container {
+    /* Align document type and add button in one line */
+    .doc-type-row {
         display: flex;
-        gap: 10px; /* Adds spacing between buttons */
-        justify-content: start; /* Aligns buttons to the left */
-        align-items: center; /* Vertically centers the buttons */
-        margin: 15px;
+        align-items: flex-end;
+        gap: 10px;
+        flex-wrap: nowrap;
     }
 
-    .dx-selectbox .dx-texteditor-input {
-        text-align: center; /* Centers the text inside the input */
-    }
-
-    .backgroundcolor {
-        background-color: white;
-    }
-
-    .button-alignment-down {
-        margin-bottom: 10px;
-    }
-
-    /* Style for the Save and Refresh buttons */
-    .action-buttons-container {
+    /* Align bottom buttons */
+    .bottom-buttons {
         display: flex;
-        justify-content: center;
+        justify-content: space-between;
+        align-items: center;
         margin-top: 20px;
     }
 
-        .action-buttons-container .dx-button {
-            margin-right: 10px; /* Space between buttons */
-        }
-
-    .content-container-top {
-        padding:15px;
-    }
-    .container {
-        display: none !important;
-    }
-
-    .frame {
-        display: none !important;
-    }
-
-    .footerContainer {
-        display: none !important;
-    }
-
-    .bodyContainer {
+    /* Buttons group on the right bottom */
+    .right-buttons {
         display: flex;
-        justify-content: center;
+        gap: 15px;
     }
 
-    .mainContainer {
-        margin-top: 1em;
-        width: 100%;
+    /* Notification info text */
+    .notification-text {
+        font-size: 14px;
+        color: #666;
+        text-align: right;
+        margin-top: 5px;
     }
 
-    .playIcon {
-        display: none;
-    }
-
-    .dx-button-text{
-        color:black;
-    }
-
-    .dx-button-mode-contained.dx-button-success .dx-icon {
-        color: #000000;
+    /* DataGrid section */
+    .grid-section {
+        margin-top: 30px;
     }
 </style>
 
-<div class="title">
-    <div class="header-container">
-        <div id="InvnetoryDoc" class="no-border-input"></div>
-    </div>
-</div> 
 
-<div style="padding: 20px;">
-    <div>Enter a New Document & Add to the Existing List:</div>
+<div class="page-container">
+
+    <div class="title">Inventory Document</div>
+    <script>
+        window.getDocumentTypes = function() {
+            return $.getJSON("/api/StockInventory/GetDocumentTypes")
+                .fail(function(jqXHR, textStatus, errorThrown) {
+                    console.error("Failed to load document types:", textStatus, errorThrown);
+                });
+        };
+    </script>
+
     <!-- Form Section -->
-    <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
-        <!-- Left Column -->
-        <div style="flex: 2; min-width: 300px;">
-            <div style="display:flex;">
-            <div style="margin-bottom: 10px;">
-                @(Html.DevExtreme().TextBox()
-                    .ID("DocumentNo")
-                    .Label("Document No:")
-                    .LabelMode(EditorLabelMode.Outside)
-                    .Value("1")
-                    .Width("365%"))
-            </div>
+    <div class="form-wrapper">
 
-            <div style="margin-left:510px; display:flex; align-items:end;">
-                @(Html.DevExtreme().SelectBox()
-                    .ID("DocType")
-                    .Label("Type of the Document Attached:")
-                    .LabelMode(EditorLabelMode.Outside)
-                    .DataSource(new[] { "Passport", "Visa", "ID", "Work Permit" })
-                    .Width(620))
+        <!-- Left Column -->
+        <div class="left-column">
+            <div class="form-row">
+                <div>
+                    @(Html.DevExtreme().TextBox()
+                        .ID("DocumentNo")
+                        .Label("Document No:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%")
+                        .ReadOnly(true)
+                        )
+                </div>
+
+                <div class="doc-type-row" style="flex: 2;">
+                    @(Html.DevExtreme().SelectBox()
+                        .ID("DocType")
+                        .Label("Type of the Document Attached:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .DataSource(new JS("getDocumentTypes"))
+                        .ValueExpr("id")
+                        .DisplayExpr("text")
+                        .SearchEnabled(true)
+                        .DropDownOptions(o => o.Width(400))
+                        .Placeholder("Select Document Type")
+                        .Width("100%")
+                        )
+
 
                     @(Html.DevExtreme().Button()
                         .ID("btnAdd")
                         .Icon("plus")
                         .Type(ButtonType.Success)
+                        .Width(60)
+                        .OnClick("onAddDocType")
                         )
-            </div>
-             </div>
-            <div style="margin-bottom: 10px; display: flex; gap: 10px;">
-                @(Html.DevExtreme().TextBox()
-                    .ID("ReferenceNo")
-                    .Label("Reference No:")
-                    .LabelMode(EditorLabelMode.Outside)
-                    .Width("100%"))
-                @(Html.DevExtreme().TextBox()
-                    .ID("Remarks")
-                    .Label("Remarks / Notes:")
-                    .LabelMode(EditorLabelMode.Outside)
-                    .Width("100%"))
+                </div>
             </div>
 
-            <div style="margin-bottom: 10px; display: flex; gap: 10px;">
-                @(Html.DevExtreme().DateBox()
-                    .ID("DocumentExpiryDate")
-                    .Label("Document Expiry Date:")
-                    .LabelMode(EditorLabelMode.Outside)
-                    .Width("100%"))
-                @(Html.DevExtreme().DateBox()
-                    .ID("HijriExpiryDate")
-                    .Label("Expiry Date (Hijri):")
-                    .LabelMode(EditorLabelMode.Outside)
-                    .DisplayFormat("dd-MMM-yyyy")
-                    .Width("100%"))
-                @(Html.DevExtreme().DateBox()
-                    .ID("NotificationDate")
-                    .Label("Notification Date:")
-                    .LabelMode(EditorLabelMode.Outside)
-                    .DisplayFormat("dd-MMM-yyyy")
-                    .Value("01-Jan-0001")
-                    .Width("100%"))
+            <div class="form-row">
+                <div>
+                    @(Html.DevExtreme().TextBox()
+                        .ID("ReferenceNo")
+                        .Label("Reference No:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%")
+                        )
+                </div>
+
+                <div>
+                    @(Html.DevExtreme().TextBox()
+                        .ID("Remarks")
+                        .Label("Remarks / Notes:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%")
+                        )
+                </div>
             </div>
 
-            <p style="font-size: 15px; margin-left: 770px;">
+            <div class="form-row">
+                <div>
+                    @(Html.DevExtreme().DateBox()
+                        .ID("DocumentExpiryDate")
+                        .Label("Document Expiry Date:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%")
+                        )
+                </div>
+
+                <div>
+                    @(Html.DevExtreme().DateBox()
+                        .ID("HijriExpiryDate")
+                        .Label("Expiry Date (Hijri):")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .DisplayFormat("dd-MMM-yyyy")
+                        .Width("100%")
+                        )
+                </div>
+
+                <div>
+                    @(Html.DevExtreme().DateBox()
+                        .ID("NotificationDate")
+                        .Label("Notification Date:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .DisplayFormat("dd-MMM-yyyy")
+                        .Value(DateTime.Now.AddDays(7)) 
+                        .Width("100%")
+                        )
+                </div>
+            </div>
+
+            <div class="notification-text">
                 * A Notification will be issued to corresponding user at this date.
-            </p>
+            </div>
         </div>
 
-        <!-- Right Column (Document Upload & Add Button) -->
-        <div style="flex: 1; min-width: 200px; margin-bottom:10px; ">
-            <div style="padding:40px; text-align: center; ">
+        <!-- Right Column -->
+        <div class="right-column">
+            <div>
                 @(Html.DevExtreme().Button()
                     .Text("Attach a Document")
                     .Icon("fas fa-paperclip")
                     .Type(ButtonType.Normal)
                     .Width("100%")
-                    .StylingMode(ButtonStylingMode.Outlined))
+                    .StylingMode(ButtonStylingMode.Outlined)
+                    )
             </div>
-            <div style="text-align: center;">
+
+            <div>
                 @(Html.DevExtreme().Button()
                     .Text("Add")
                     .Icon("fas fa-plus")
                     .Type(ButtonType.Success)
-                    .Width("88%"))
+                    .Width("100%")
+                    .OnClick("onSaveDocument")
+                    )
             </div>
         </div>
     </div>
 
     <!-- Grid Section -->
-    <div style="text-align-last:center;">
+    <div class="grid-section">
         @(Html.DevExtreme().DataGrid()
             .ID("documentsGrid")
-            .Height(630)
+            .Height(600)
             .ShowBorders(true)
             .ColumnAutoWidth(true)
+            .DataSource(d => d.Mvc()
+            .Controller("StockInventory")
+            .LoadAction("GetDocuments")
+            )
             .Columns(columns =>
             {
-                columns.Add().Caption("Doc No").DataField("DocNo");
-                columns.Add().Caption("Document Type").DataField("DocType");
-                columns.Add().Caption("Document Ref No").DataField("ReferenceNo");
-                columns.Add().Caption("Document Remarks").DataField("Remarks");
-                columns.Add().Caption("Expiry On").DataField("ExpiryDate");
-                columns.Add().Caption("Expiry Arabic").DataField("HijriExpiry");
-                columns.Add().Caption("Notify On").DataField("NotifyDate");
+                columns.Add().DataField("DocumentNo").Caption("Doc No").AllowEditing(false);
+                columns.Add().DataField("DocumentType").Caption("Document Type");
+                columns.Add().DataField("DocumentRefNo").Caption("Reference No");
+                columns.Add().DataField("DocumentRemarks").Caption("Remarks");
+                columns.Add().DataField("DocumentExpDate").Caption("Expiry On");
+                columns.Add().DataField("DocumentExpDateAr").Caption("Expiry (Hijri)");
+                columns.Add().DataField("DocumentNotificationDate").Caption("Notify On");
+                columns.Add().DataField("DocumentStatus").Caption("Status");
+                columns.Add().DataField("DocumentStatusRemarks").Caption("Status Remarks");
             })
             .Paging(p => p.Enabled(false))
             .HeaderFilter(f => f.Visible(false))
             .ShowRowLines(true)
+            .Editing(e =>
+            {
+                e.Mode(GridEditMode.Row);
+                e.AllowUpdating(true);
+                e.AllowAdding(false);
+                e.AllowDeleting(false);
+            })
+            .OnRowUpdating("onGridRowUpdating")
             )
     </div>
 
     <!-- Bottom Buttons -->
-    <div style="margin-top: 20px; display: flex; justify-content: space-between;">
+    <div class="bottom-buttons">
         @(Html.DevExtreme().Button()
-            .Text("Update")
-            .Icon("save")
-            .Type(ButtonType.Default)
-            .Width(150))
+            .Text("Add")
+            .Icon("fas fa-plus")
+            .Type(ButtonType.Success)
+            .Width(120)
+            .OnClick("onSaveDocument")
+            )
 
-        <div style="display: flex; gap: 10px;">
+        <div class="right-buttons">
             @(Html.DevExtreme().Button()
                 .Text("Show All Documents")
                 .Type(ButtonType.Normal)
                 .Icon("fas fa-folder-open")
-                .Width(270))
+                .Width(180)
+                )
 
             @(Html.DevExtreme().Button()
                 .Text("Back")
                 .Icon("fas fa-arrow-left")
                 .Type(ButtonType.Normal)
+                .Width(120)
                 .OnClick("Goback")
-                .Width(120))
+                )
         </div>
     </div>
 </div>
+
 <script>
-        $(function () {
-    $("#InvnetoryDoc").dxTextBox({
-    text: formatMessage("Inventory Document"),
-        readOnly: true,
-        onContentReady: function (e) {
-        $(e.element).addClass("dx-textbox-heading");
-        }
-        });
+    // Call API to load Document No on page load
+    $(function () {
+        loadInitialDocumentNo();
     });
-     function Goback() {
+
+    function loadInitialDocumentNo() {
+        $.get("/api/StockInventory/GenerateNewDocumentNo", function (data) {
+            $("#DocumentNo").dxTextBox("instance").option("value", data);
+        });
+    }
+
+       
+
+
+    // Dummy button actions
+    function onAddDocType() {
+        DevExpress.ui.notify("Add new document type logic here", "info", 2000);
+    }
+
+    function onSaveDocument() {
+        DevExpress.ui.notify("Save logic not implemented yet", "info", 2000);
+    }
+
+    function onGridRowUpdating(e) {
+        // Your logic to save updates
+    }
+
+    function Goback() {
         window.history.back();
     }
 </script>
