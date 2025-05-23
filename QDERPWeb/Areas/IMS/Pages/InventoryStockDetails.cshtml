@@ -571,13 +571,21 @@
                         </tr>
 
                         <tr class="flex-row">
-                            <td>
+                            <td style="align-items:end; display:flex;" >
                             @(Html.DevExtreme().NumberBox()
                                 .ID("OpeningBalance")
                                 .Value(0.00)
                                 .Format("#,##0.00")
                                 .LabelMode(EditorLabelMode.Outside)
+                                .Width("80%")
                                 .Label(new JS("formatMessage('Opening Balance : ')")))
+                            @(Html.DevExtreme().Button()
+                                .ID("btnAddOPB")
+                                .Icon("fa fa-dollar-sign")
+                                .Width("45")
+                                .ElementAttr("style", "margin-top:23px")
+                                .OnClick("OpeningBalanceOPB")
+                                )
                             </td>
 
                             <td>
@@ -2206,8 +2214,9 @@
           });
       });
 
-    
-
-
-      
+        function OpeningBalanceOPB(){
+        const url = `/${tenantName}/IMS/OpeningBalance`;
+        const title = "";
+            openModal(url, title);
+    }
 </script>

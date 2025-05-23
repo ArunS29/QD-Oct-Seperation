@@ -2541,9 +2541,11 @@
         "Invoice Type (Arabic)": "Invoice Type (Arabic)",
         "Inventory Document": "Inventory Document",
         "Purchase Order Category": "Purchase Order Category",
-        "Type new Purchase Order Category & Add to the Existing List:":"Type new Purchase Order Category & Add to the Existing List:",
+        "Type new Purchase Order Category & Add to the Existing List:": "Type new Purchase Order Category & Add to the Existing List:",
+        "Opening Balance Entries":"Opening Balance Entries",
     },
     "ar": {
+        "Opening Balance Entries":"إدخالات الرصيد الافتتاحي",
         "Type new Purchase Order Category & Add to the Existing List:":"اكتب فئة طلب الشراء الجديدة وأضفها إلى القائمة الموجودة:",
         "Purchase Order Category": "فئة أمر الشراء",
         "Inventory Document":"وثيقة الجرد",
