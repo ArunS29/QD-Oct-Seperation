@@ -21,11 +21,12 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
             Image logoImage,
             string companyNameAr,
             string companyAddressArb,
+            string username,
             TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             InitializeComponent();
-            SetReportParameters(accountId, frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressArb);
+            SetReportParameters(accountId, frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressArb,  username);
             ConfigureDataSource(accountId);
         }
 
@@ -75,7 +76,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
             string companyAddress,
             Image logoImage,
             string companyNameAr,
-            string companyAddressArb)
+            string companyAddressArb,
+            string username)
         {
             void AddOrUpdateParameter(string paramName, object paramValue, Type paramType, bool visible)
             {
@@ -105,7 +107,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
             AddOrUpdateParameter("CompanyAddress", companyAddress ?? "", typeof(string), false);
             AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string), false);
             AddOrUpdateParameter("CompanyAddressArb", companyAddressArb ?? "", typeof(string), false);
-
+            AddOrUpdateParameter("UserName", username ?? "", typeof(string), false);
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
 
@@ -120,7 +122,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
 
             if (FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
                 addressArbLabel.Text = companyAddressArb;
-
+            if (this.FindControl("xrLabelUserName", true) is XRLabel userNameLabel)
+                userNameLabel.Text = username;
             if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox && logoImage != null)
                 logoPictureBox.Image = logoImage;
         }

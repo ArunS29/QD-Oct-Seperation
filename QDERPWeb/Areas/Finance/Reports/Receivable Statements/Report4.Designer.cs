@@ -1222,9 +1222,9 @@
             this.xrLabel13.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([Less30])")});
             this.xrLabel13.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
-            this.xrLabel13.LocationFloat = new DevExpress.Utils.PointFloat(798.2845F, 0F);
+            this.xrLabel13.LocationFloat = new DevExpress.Utils.PointFloat(800.3256F, 0F);
             this.xrLabel13.Name = "xrLabel13";
-            this.xrLabel13.SizeF = new System.Drawing.SizeF(113.389F, 50.17113F);
+            this.xrLabel13.SizeF = new System.Drawing.SizeF(111.348F, 50.17113F);
             this.xrLabel13.StylePriority.UseBackColor = false;
             this.xrLabel13.StylePriority.UseBorderColor = false;
             this.xrLabel13.StylePriority.UseBorderDashStyle = false;
@@ -1303,9 +1303,9 @@
             this.xrLabel10.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([More365])")});
             this.xrLabel10.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
-            this.xrLabel10.LocationFloat = new DevExpress.Utils.PointFloat(1334.962F, 0F);
+            this.xrLabel10.LocationFloat = new DevExpress.Utils.PointFloat(1334.085F, 0F);
             this.xrLabel10.Name = "xrLabel10";
-            this.xrLabel10.SizeF = new System.Drawing.SizeF(111.038F, 50.17113F);
+            this.xrLabel10.SizeF = new System.Drawing.SizeF(111.9148F, 50.17113F);
             this.xrLabel10.StylePriority.UseBackColor = false;
             this.xrLabel10.StylePriority.UseBorderColor = false;
             this.xrLabel10.StylePriority.UseBorderDashStyle = false;
@@ -1330,9 +1330,9 @@
             this.xrLabel6.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([Less180to365])")});
             this.xrLabel6.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
-            this.xrLabel6.LocationFloat = new DevExpress.Utils.PointFloat(1227.698F, 0F);
+            this.xrLabel6.LocationFloat = new DevExpress.Utils.PointFloat(1229.115F, 0F);
             this.xrLabel6.Name = "xrLabel6";
-            this.xrLabel6.SizeF = new System.Drawing.SizeF(106.3872F, 50.17113F);
+            this.xrLabel6.SizeF = new System.Drawing.SizeF(104.9698F, 50.17113F);
             this.xrLabel6.StylePriority.UseBackColor = false;
             this.xrLabel6.StylePriority.UseBorderColor = false;
             this.xrLabel6.StylePriority.UseBorderDashStyle = false;

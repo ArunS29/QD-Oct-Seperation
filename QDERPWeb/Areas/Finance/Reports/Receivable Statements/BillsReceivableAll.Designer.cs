@@ -200,7 +200,6 @@
             this.xrLabel10 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel9 = new DevExpress.XtraReports.UI.XRLabel();
             this.GroupFooter1 = new DevExpress.XtraReports.UI.GroupFooterBand();
-            this.xrLabel39 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel8 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel13 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLine3 = new DevExpress.XtraReports.UI.XRLine();
@@ -213,6 +212,7 @@
             this.cal61to90 = new DevExpress.XtraReports.UI.CalculatedField();
             this.cal91to180 = new DevExpress.XtraReports.UI.CalculatedField();
             this.calmore180 = new DevExpress.XtraReports.UI.CalculatedField();
+            this.xrLabel39 = new DevExpress.XtraReports.UI.XRLabel();
             ((System.ComponentModel.ISupportInitialize)(this.table1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.table2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
@@ -632,7 +632,7 @@
             this.tableCell8.StylePriority.UseBorderColor = false;
             this.tableCell8.StylePriority.UseBorderDashStyle = false;
             this.tableCell8.StylePriority.UseBorders = false;
-            this.tableCell8.TextFormatString = "{0:dd-MMM-yy}";
+            this.tableCell8.TextFormatString = "{0:dd-MMM-yyyy}";
             this.tableCell8.Weight = 0.098379905258481934D;
             // 
             // tableCell9
@@ -665,7 +665,7 @@
             this.tableCell10.StylePriority.UseBorders = false;
             this.tableCell10.StylePriority.UseTextAlignment = false;
             this.tableCell10.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
-            this.tableCell10.TextFormatString = "{0:dd-MMM-yy}";
+            this.tableCell10.TextFormatString = "{0:dd-MMM-yyyy}";
             this.tableCell10.Weight = 0.0859813779499672D;
             // 
             // tableCell11
@@ -1545,16 +1545,6 @@
             this.GroupFooter1.HeightF = 350.7916F;
             this.GroupFooter1.Name = "GroupFooter1";
             // 
-            // xrLabel39
-            // 
-            this.xrLabel39.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Parameters.UserName]")});
-            this.xrLabel39.LocationFloat = new DevExpress.Utils.PointFloat(350.9486F, 319.7915F);
-            this.xrLabel39.Multiline = true;
-            this.xrLabel39.Name = "xrLabel39";
-            this.xrLabel39.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel39.SizeF = new System.Drawing.SizeF(162.1345F, 15.66682F);
-            // 
             // xrLabel8
             // 
             this.xrLabel8.Font = new DevExpress.Drawing.DXFont("Arial", 9F, DevExpress.Drawing.DXFontStyle.Bold);
@@ -1655,6 +1645,16 @@
             this.calmore180.DataMember = "qry201SubLedgerReceivablesMaster";
             this.calmore180.Expression = " Iif([OverdueDays] >= 181, [Balance], 0 )";
             this.calmore180.Name = "calmore180";
+            // 
+            // xrLabel39
+            // 
+            this.xrLabel39.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Parameters.UserName]")});
+            this.xrLabel39.LocationFloat = new DevExpress.Utils.PointFloat(350.9486F, 319.7915F);
+            this.xrLabel39.Multiline = true;
+            this.xrLabel39.Name = "xrLabel39";
+            this.xrLabel39.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
+            this.xrLabel39.SizeF = new System.Drawing.SizeF(162.1345F, 15.66682F);
             // 
             // BillsReceivableAll
             // 
@@ -1785,7 +1785,7 @@
         private DevExpress.XtraReports.UI.CalculatedField calmore180;
         private DevExpress.XtraReports.UI.XRLabel xrLabel13;
         private DevExpress.XtraReports.UI.XRLabel xrLabel8;
-        private DevExpress.XtraReports.UI.XRLabel xrLabel39;
         private DevExpress.XtraReports.UI.XRLabel xrLabel1;
+        private DevExpress.XtraReports.UI.XRLabel xrLabel39;
     }
 }
