@@ -1068,7 +1068,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             if (string.IsNullOrWhiteSpace(code))
                 return BadRequest(new { success = false, message = "Invalid stock code." });
 
-            // Get tenant and DB context
+            
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 return Unauthorized(new { success = false, message = "Unauthorized access or invalid tenant." });
@@ -1176,7 +1176,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 if (lastDoc == null || string.IsNullOrEmpty(lastDoc.DocumentNo))
                     return Ok("1"); 
 
-                // Try to parse and increment
+                
                 if (int.TryParse(lastDoc.DocumentNo, out int lastNumber))
                     return Ok((lastNumber + 1).ToString());
 
@@ -1210,6 +1210,27 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     .ToListAsync();
 
                 return Json(documents);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> SaveProjectDocument([FromBody] Tbl70003projectDocument model)
+        {
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized("Invalid tenant context.");
+
+                model.DocumentStatus = 1; 
+                model.DocumentStatusRemarks = "Active"; 
+
+                dbContext.Tbl70003projectDocuments.Add(model);
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Document saved successfully." });
             }
             catch (Exception ex)
             {

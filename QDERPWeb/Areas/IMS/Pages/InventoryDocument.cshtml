@@ -1,10 +1,30 @@
 ﻿@page
 @model QD.ERP.Web.Areas.IMS.Pages.InventoryDocumentModel
 @using DevExtreme.AspNet.Mvc
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-
+@{
+    ViewData["Title"] = "Inventory Document";
+}
 <style>
-    /* Container for the entire page */
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+    }
     .page-container {
         max-width: 1200px;
         margin: 20px auto;
@@ -15,7 +35,6 @@
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    /* Title heading */
     .title {
         font-size: 24px;
         font-weight: 700;
@@ -24,7 +43,6 @@
         text-align: center;
     }
 
-    /* Form container with two columns */
     .form-wrapper {
         display: flex;
         gap: 30px;
@@ -50,7 +68,6 @@
         text-align: center;
     }
 
-    /* Align elements inside left column rows */
     .form-row {
         display: flex;
         gap: 15px;
@@ -62,7 +79,6 @@
             min-width: 140px;
         }
 
-    /* Align document type and add button in one line */
     .doc-type-row {
         display: flex;
         align-items: flex-end;
@@ -70,7 +86,6 @@
         flex-wrap: nowrap;
     }
 
-    /* Align bottom buttons */
     .bottom-buttons {
         display: flex;
         justify-content: space-between;
@@ -78,13 +93,11 @@
         margin-top: 20px;
     }
 
-    /* Buttons group on the right bottom */
     .right-buttons {
         display: flex;
         gap: 15px;
     }
 
-    /* Notification info text */
     .notification-text {
         font-size: 14px;
         color: #666;
@@ -92,28 +105,16 @@
         margin-top: 5px;
     }
 
-    /* DataGrid section */
     .grid-section {
         margin-top: 30px;
     }
 </style>
 
-
 <div class="page-container">
 
     <div class="title">Inventory Document</div>
-    <script>
-        window.getDocumentTypes = function() {
-            return $.getJSON("/api/StockInventory/GetDocumentTypes")
-                .fail(function(jqXHR, textStatus, errorThrown) {
-                    console.error("Failed to load document types:", textStatus, errorThrown);
-                });
-        };
-    </script>
 
-    <!-- Form Section -->
     <div class="form-wrapper">
-
         <!-- Left Column -->
         <div class="left-column">
             <div class="form-row">
@@ -123,8 +124,7 @@
                         .Label("Document No:")
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%")
-                        .ReadOnly(true)
-                        )
+                        .ReadOnly(true))
                 </div>
 
                 <div class="doc-type-row" style="flex: 2;">
@@ -132,23 +132,35 @@
                         .ID("DocType")
                         .Label("Type of the Document Attached:")
                         .LabelMode(EditorLabelMode.Outside)
-                        .DataSource(new JS("getDocumentTypes"))
-                        .ValueExpr("id")
+                        .DataSource(d => d.Mvc().Controller("StockInventory").LoadAction("GetDocumentTypes"))
                         .DisplayExpr("text")
-                        .SearchEnabled(true)
-                        .DropDownOptions(o => o.Width(400))
-                        .Placeholder("Select Document Type")
-                        .Width("100%")
-                        )
-
-
+                        .ValueExpr("id")
+                        .ValidationRules(rules =>
+                        {
+                            rules.AddRequired().Message("Document Type is required.");
+                        }))
                     @(Html.DevExtreme().Button()
                         .ID("btnAdd")
                         .Icon("plus")
                         .Type(ButtonType.Success)
                         .Width(60)
-                        .OnClick("onAddDocType")
-                        )
+                        .OnClick("onAddDocType"))
+                </div>
+
+                <!-- Popup for adding document types -->
+                <div id="popupContainer">
+                    @(Html.DevExtreme().Popup()
+                        .ID("documentTypePopup")
+                        .Width(600)
+                        .Height(400)
+                        .ShowTitle(true)
+                        .Title("Add Document Type")
+                        .Visible(false)
+                        .DragEnabled(true)
+                        .CloseOnOutsideClick(true)
+                        .ContentTemplate(@<text>
+                        <div id="popupContent">Loading...</div>
+                    </text>))
                 </div>
             </div>
 
@@ -158,8 +170,7 @@
                         .ID("ReferenceNo")
                         .Label("Reference No:")
                         .LabelMode(EditorLabelMode.Outside)
-                        .Width("100%")
-                        )
+                        .Width("100%"))
                 </div>
 
                 <div>
@@ -167,8 +178,7 @@
                         .ID("Remarks")
                         .Label("Remarks / Notes:")
                         .LabelMode(EditorLabelMode.Outside)
-                        .Width("100%")
-                        )
+                        .Width("100%"))
                 </div>
             </div>
 
@@ -178,8 +188,7 @@
                         .ID("DocumentExpiryDate")
                         .Label("Document Expiry Date:")
                         .LabelMode(EditorLabelMode.Outside)
-                        .Width("100%")
-                        )
+                        .Width("100%"))
                 </div>
 
                 <div>
@@ -188,8 +197,7 @@
                         .Label("Expiry Date (Hijri):")
                         .LabelMode(EditorLabelMode.Outside)
                         .DisplayFormat("dd-MMM-yyyy")
-                        .Width("100%")
-                        )
+                        .Width("100%"))
                 </div>
 
                 <div>
@@ -198,9 +206,8 @@
                         .Label("Notification Date:")
                         .LabelMode(EditorLabelMode.Outside)
                         .DisplayFormat("dd-MMM-yyyy")
-                        .Value(DateTime.Now.AddDays(7)) 
-                        .Width("100%")
-                        )
+                        .Value(DateTime.Now.AddDays(7))
+                        .Width("100%"))
                 </div>
             </div>
 
@@ -217,8 +224,7 @@
                     .Icon("fas fa-paperclip")
                     .Type(ButtonType.Normal)
                     .Width("100%")
-                    .StylingMode(ButtonStylingMode.Outlined)
-                    )
+                    .StylingMode(ButtonStylingMode.Outlined))
             </div>
 
             <div>
@@ -227,14 +233,11 @@
                     .Icon("fas fa-plus")
                     .Type(ButtonType.Success)
                     .Width("100%")
-                    .OnClick("onSaveDocument")
-                    )
+                    .OnClick("onSaveDocument"))
             </div>
         </div>
     </div>
-    <p style="font-size: 15px; margin-left: 300px;">
-        * A Notification will be issued to corresponding user at this date.
-    </p>
+
     <!-- Grid Section -->
     <div class="grid-section">
         @(Html.DevExtreme().DataGrid()
@@ -242,10 +245,7 @@
             .Height(600)
             .ShowBorders(true)
             .ColumnAutoWidth(true)
-            .DataSource(d => d.Mvc()
-            .Controller("StockInventory")
-            .LoadAction("GetDocuments")
-            )
+            .DataSource(d => d.Mvc().Controller("StockInventory").LoadAction("GetDocuments"))
             .Columns(columns =>
             {
                 columns.Add().DataField("DocumentNo").Caption("Doc No").AllowEditing(false);
@@ -259,7 +259,6 @@
                 columns.Add().DataField("DocumentStatusRemarks").Caption("Status Remarks");
             })
             .Paging(p => p.Enabled(false))
-            .HeaderFilter(f => f.Visible(false))
             .ShowRowLines(true)
             .Editing(e =>
             {
@@ -268,41 +267,28 @@
                 e.AllowAdding(false);
                 e.AllowDeleting(false);
             })
-            .OnRowUpdating("onGridRowUpdating")
-            )
+            .OnRowUpdating("onGridRowUpdating"))
     </div>
 
     <!-- Bottom Buttons -->
     <div class="bottom-buttons">
-        @(Html.DevExtreme().Button()
-            .Text("Add")
-            .Icon("fas fa-plus")
-            .Type(ButtonType.Success)
-            .Width(120)
-            .OnClick("onSaveDocument")
-            )
-
         <div class="right-buttons">
             @(Html.DevExtreme().Button()
                 .Text("Show All Documents")
                 .Type(ButtonType.Normal)
                 .Icon("fas fa-folder-open")
-                .Width(180)
-                )
-
+                .Width(180))
             @(Html.DevExtreme().Button()
                 .Text("Back")
                 .Icon("fas fa-arrow-left")
                 .Type(ButtonType.Normal)
                 .Width(120)
-                .OnClick("Goback")
-                )
+                .OnClick("Goback"))
         </div>
     </div>
 </div>
 
 <script>
-    // Call API to load Document No on page load
     $(function () {
         loadInitialDocumentNo();
     });
@@ -313,20 +299,50 @@
         });
     }
 
-       
-
-
-    // Dummy button actions
     function onAddDocType() {
-        DevExpress.ui.notify("Add new document type logic here", "info", 2000);
-    }
+         // Make sure the popup exists
+         const popup = $("#documentTypePopup").dxPopup("instance");
 
+         // Show loading text
+         $("#popupContent").html("Loading...");
+
+         // Load the content from your Razor Page
+         $("#popupContent").load("/pulse%20Infotech/IMS/DocumentTypes", function (response, status, xhr) {
+             if (status === "error") {
+                 $("#popupContent").html("<p>Error loading content: " + xhr.status + " " + xhr.statusText + "</p>");
+             }
+             popup.show(); // Only show when content is loaded
+         });
+     }
     function onSaveDocument() {
-        DevExpress.ui.notify("Save logic not implemented yet", "info", 2000);
+        const documentData = {
+            documentNo: $("#DocumentNo").dxTextBox("instance").option("value"),
+            documentType: $("#DocType").dxSelectBox("instance").option("value"),
+            documentRefNo: $("#ReferenceNo").dxTextBox("instance").option("value"),
+            documentRemarks: $("#Remarks").dxTextBox("instance").option("value"),
+            documentExpDate: $("#DocumentExpiryDate").dxDateBox("instance").option("value"),
+            hijriExpDate: $("#HijriExpiryDate").dxDateBox("instance").option("value"),
+            notificationDate: $("#NotificationDate").dxDateBox("instance").option("value")
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/api/StockInventory/SaveInventoryDocument",
+            data: JSON.stringify(documentData),
+            contentType: "application/json",
+            success: function () {
+                DevExpress.ui.notify("Document saved successfully", "success", 2000);
+                $("#documentsGrid").dxDataGrid("instance").refresh();
+                loadInitialDocumentNo();
+            },
+            error: function () {
+                DevExpress.ui.notify("Failed to save document", "error", 2000);
+            }
+        });
     }
 
     function onGridRowUpdating(e) {
-        // Your logic to save updates
+        // Add update logic if needed
     }
 
     function Goback() {
