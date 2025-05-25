@@ -303,15 +303,15 @@
          // Make sure the popup exists
          const popup = $("#documentTypePopup").dxPopup("instance");
 
-         // Show loading text
+         
          $("#popupContent").html("Loading...");
 
-         // Load the content from your Razor Page
-         $("#popupContent").load("/pulse%20Infotech/IMS/DocumentTypes", function (response, status, xhr) {
+       
+         $("#popupContent").load("IMS/DocumentTypes", function (response, status, xhr) {
              if (status === "error") {
                  $("#popupContent").html("<p>Error loading content: " + xhr.status + " " + xhr.statusText + "</p>");
              }
-             popup.show(); // Only show when content is loaded
+             popup.show(); 
          });
      }
     function onSaveDocument() {
@@ -327,7 +327,7 @@
 
         $.ajax({
             type: "POST",
-            url: "/api/StockInventory/SaveInventoryDocument",
+            url: "/api/StockInventory/SaveProjectDocument",
             data: JSON.stringify(documentData),
             contentType: "application/json",
             success: function () {
