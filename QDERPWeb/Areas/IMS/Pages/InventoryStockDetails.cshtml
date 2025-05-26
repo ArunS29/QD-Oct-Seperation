@@ -2345,16 +2345,17 @@
                             .catch(err => alert("Download failed."));
                         }
 
-                        function openInventoryDocumentPopup() {
-                            const popup = $("#inventoryDocumentPopup").dxPopup("instance");
+                                            function openInventoryDocumentPopup() {
+                        const popup = $("#inventoryDocumentPopup").dxPopup("instance");
 
-                            popup.option("onShown", function () {
-                                const frame = document.getElementById("inventoryDocumentFrame");
-                                frame.src = "/pulse%20Infotech/IMS/InventoryDocument"; // Adjust path if needed
-                            });
+                        popup.option("onShown", function () {
+                            const frame = document.getElementById("inventoryDocumentFrame");
+                            frame.src = `/${tenantName}/IMS/InventoryDocument`; // Use backticks for template string
+                        });
 
-                            popup.show();
-                        }
+                        popup.show();
+                    }
+
                     </script>
 
 
