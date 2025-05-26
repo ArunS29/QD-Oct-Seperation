@@ -1,0 +1,82 @@
+﻿@page
+@model QD.ERP.Web.Areas.IMS.Pages.uploadExcelModel
+@{
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Import Excel to DevExtreme DataGrid</title>
+
+    <!-- DevExtreme CSS -->
+    <link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/23.2.4/css/dx.light.css">
+
+    <!-- DevExtreme and XLSX Libraries -->
+    <script src="https://cdn3.devexpress.com/jslib/23.2.4/js/dx.all.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <style>
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            margin: 40px;
+        }
+
+        #excel-file {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Import Excel to DevExtreme DataGrid</h2>
+    <input type="file" id="excel-file" accept=".xlsx, .xls" />
+    <div id="gridContainer" style="margin-top: 20px;"></div>
+
+    <script>
+        let dataGrid;
+
+        document.getElementById('excel-file').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+
+                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                const jsonData = XLSX.utils.sheet_to_json(firstSheet, { defval: '' });
+
+                if (!dataGrid) {
+                    dataGrid = $("#gridContainer").dxDataGrid({
+                        dataSource: jsonData,
+                        columnsAutoWidth: true,
+                        showBorders: true,
+                        height: 500,
+                        scrolling: { mode: "virtual" },
+                        searchPanel: { visible: true },
+                        filterRow: { visible: true },
+                        headerFilter: { visible: true },
+                        columnChooser: { enabled: true },
+                        grouping: { autoExpandAll: false },
+                        groupPanel: { visible: true },
+                        pager: {
+                            showPageSizeSelector: true,
+                            allowedPageSizes: [10, 20, 50],
+                            showInfo: true
+                        },
+                        paging: { pageSize: 20 },
+                        wordWrapEnabled: true
+                    }).dxDataGrid("instance");
+                } else {
+                    dataGrid.option("dataSource", jsonData);
+                }
+            };
+
+            reader.readAsArrayBuffer(file);
+        });
+    </script>
+
+</body>
+</html>

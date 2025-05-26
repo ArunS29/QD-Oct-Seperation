@@ -1,5 +1,13 @@
 ﻿@page
 @using DevExtreme.AspNet.Mvc
+
+
+<!-- DevExtreme CSS -->
+<link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/23.2.4/css/dx.light.css">
+
+<!-- DevExtreme and XLSX Libraries -->
+<script src="https://cdn3.devexpress.com/jslib/23.2.4/js/dx.all.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 	.overlay {
 		display: none;
@@ -403,11 +411,22 @@
 		.OnInitialized("function(e) { loadGridState(); }")
 		)
 </div>
+<input style="display:none;" type="file" id="excel-file" accept=".xlsx, .xls" />
+<div>
+
+	@(Html.DevExtreme().Button()
+		.ID("btnPastefromExcel")
+		.Text(new JS("formatMessage('Paste from Excel')"))
+		.Icon("card")
+		.Width(250)
+		.OnClick("onPasteFromExcelClick")
+		)
+</div>
 
 <div class="Head">
 	<div class="limited-footer">
 		@await Html.PartialAsync("VATModuleFooter")
-	</div>
+</div>
 </div>
 
 <div id="overlay" class="overlay">
@@ -419,15 +438,18 @@
 
 
 <script>
-
+	
 		$(document).ready(function () {
 		$(".limited-footer .btn-containerIvoiceEdit").each(function () {
-			if (!$(this).find("#btnBack,#btnPastefromExcel,#btnUploadItems").length) {
+			if (!$(this).find("#btnUploadItems").length) {
 				$(this).remove();
-			}
+		}
 		});
 	});
 
+	function onPasteFromExcelClick() {
+			document.getElementById('excel-file').click();
+		}
 			  function viewInvoice(tenantName) {
 				let url = `/${tenantName}/Finance/frm20161VATInvoiceEdit`;
 				window.location.href = url; // Navigate to the form
@@ -513,134 +535,49 @@
 				}
 			});
 		});
-		$(function () {
-			var inputPopupInstance = $("#inputPopupContainer").dxPopup({
-				width: 600,
-				height: 400,
-				showTitle: true,
-				title: "Details",
-				visible: false,
-				dragEnabled: true,
-				closeOnOutsideClick: true,
-				contentTemplate: function () {
-					return $("<div>").attr("id", "popupFormContent");
+		let dataGrid;
+
+		document.getElementById('excel-file').addEventListener('change', function (e) {
+			const file = e.target.files[0];
+			if (!file) return;
+
+			const reader = new FileReader();
+
+			reader.onload = function (e) {
+				const data = new Uint8Array(e.target.result);
+				const workbook = XLSX.read(data, { type: 'array' });
+
+				const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+				const jsonData = XLSX.utils.sheet_to_json(firstSheet, { defval: '' });
+
+				if (!dataGrid) {
+					dataGrid = $("#dataGrid").dxDataGrid({
+						dataSource: jsonData,
+						columnsAutoWidth: true,
+						showBorders: true,
+						height: 500,
+						scrolling: { mode: "virtual" },
+						searchPanel: { visible: true },
+						filterRow: { visible: true },
+						headerFilter: { visible: true },
+						columnChooser: { enabled: true },
+						grouping: { autoExpandAll: false },
+						groupPanel: { visible: true },
+						pager: {
+							showPageSizeSelector: true,
+							allowedPageSizes: [10, 20, 50],
+							showInfo: true
+						},
+						paging: { pageSize: 20 },
+						wordWrapEnabled: true
+					}).dxDataGrid("instance");
+				} else {
+					dataGrid.option("dataSource", jsonData);
 				}
-			}).dxPopup("instance");
-			var contextMenu = $("#contextMenu");
-			$(document).on("click", function () {
-				contextMenu.hide();
-			});
-			$("#dataGrid").customizeGridContextMenu();
-			$("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
-				e.preventDefault();
-				var rowIndex = $(this).index();
-				var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex];
-				console.log(rowData);
-				contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
-			});
+			};
+
+			reader.readAsArrayBuffer(file);
 		});
-
-		function ddBtnShowRecords_click(duration) {
-			var frmDateBox = $("#frmdateBox").dxDateBox("instance");
-			var toDateBox = $("#todateBox").dxDateBox("instance");
-			var frmDate = new Date(frmDateBox.option("value"));
-			var toDate = new Date(toDateBox.option("value"));
-			var currentDate = new Date();
-
-			switch (duration) {
-				case 'today':
-					frmDate = toDate = currentDate;
-					break;
-				case 'yesterday':
-					var dateObj = new Date();
-					dateObj.setDate(dateObj.getDate() - 1);
-					frmDate = toDate = dateObj;
-					break;
-				case 'week':
-					var dayOfWeek = currentDate.getDay();
-					var startOfWeek = currentDate.getDate() - (dayOfWeek + 1) % 7;
-					frmDate = new Date(currentDate.setDate(startOfWeek));
-					toDate = new Date(currentDate.setDate(startOfWeek + 6));
-					break;
-				case 'tillmonth':
-					frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-					toDate = currentDate;
-					break;
-				case 'fullmonth':
-					frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-					toDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-					break;
-				case 'tillyear':
-					frmDate = new Date(currentDate.getFullYear(), 0, 1);
-					toDate = currentDate;
-					break;
-				case 'fullyear':
-					frmDate = new Date(currentDate.getFullYear(), 0, 1);
-					toDate = new Date(currentDate.getFullYear(), 11, 31);
-					break;
-				case 'lastyear':
-					frmDate = new Date(currentDate.getFullYear() - 1, 0, 1);
-					toDate = new Date(currentDate.getFullYear() - 1, 11, 31);
-					break;
-				case 'lastmonth':
-					frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
-					toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
-					break;
-			}
-
-			frmDate = frmDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
-			toDate = toDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
-			FromDate = frmDate;
-			ToDate = toDate;
-
-			frmDateBox.option("value", frmDate);
-			toDateBox.option("value", toDate);
-
-			$.ajax({
-				url: '/api/VATModule/GetVatDetails',
-				type: 'GET',
-				data: {
-					frmDate: frmDate,
-					toDate: toDate
-				},
-				success: function (data) {
-					$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
-					var dataGrid = $("#dataGrid").dxDataGrid("instance");
-					var dataSource = dataGrid.option("dataSource");
-					if (dataSource && dataSource.length > 0) {
-						var lastRow = dataSource[dataSource.length - 1];
-						VoucherAmountFormatted = lastRow.VoucherAmountFormatted;
-						var firstRow = dataSource[0];
-						firstrowVoucherAmountFormatted = firstRow.VoucherAmountFormatted;
-					}
-				},
-				error: function () {
-					DevExpress.ui.notify("Error while loading data", "error", 2000);
-				}
-			});
-		}
-		function formatDate(date) {
-			var d = new Date(date),
-				month = '' + (d.getMonth() + 1),
-				day = '' + d.getDate(),
-				year = d.getFullYear();
-
-			var strmonth = d.toLocaleString('default', { month: 'short' });
-			if (day.length < 2)
-				day = '0' + day;
-
-			return [day, strmonth, year].join('-');
-		}
-		function formatDate(date) {
-			var d = new Date(date),
-				month = '' + (d.getMonth() + 1),
-				day = '' + d.getDate(),
-				year = d.getFullYear();
-
-			var strmonth = d.toLocaleString('default', { month: 'short' });
-			if (day.length < 2)
-				day = '0' + day;
-
-			return [day, strmonth, year].join('-');
-		}
+		
+		
 </script>

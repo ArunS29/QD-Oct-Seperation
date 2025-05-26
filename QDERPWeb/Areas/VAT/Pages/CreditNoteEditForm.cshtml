@@ -2073,12 +2073,12 @@
 								.WordWrapEnabled(true)
 								.ShowBorders(true)
 								.ShowColumnHeaders(true)
-								.FilterRow(f => f.Visible(false))
-								.SearchPanel(sp => sp.HighlightSearchText(false))
+								.FilterRow(f => f.Visible(true))
+								.SearchPanel(sp => sp.HighlightSearchText(true))
 								.Selection(sl => sl.Mode(SelectionMode.Single))
 								.OnSelectionChanged("ClientCodedataGridSelectionChanged")
 								.OnInitialized("ClientCodedataGridInitialized")
-								.HeaderFilter(p => p.Visible(false))
+								.HeaderFilter(p => p.Visible(true))
 								.ShowBorders(true)
 								.HoverStateEnabled(true)
 								.Paging(p => p.PageSize(15))
@@ -3004,7 +3004,7 @@
                 .Alignment(HorizontalAlignment.Center);
 
             columns.Add().DataField("CountryCodeAlpha2")
-                .Caption(new JS("formatMessage('CountryCodeAlpha2')"))
+                .Caption(new JS("formatMessage('CountryCode')"))
                 .Alignment(HorizontalAlignment.Center);
 					})
         .OnSelectionChanged("dataGridSelectionabc")   
@@ -4619,6 +4619,7 @@ openModal(url, title);
 			}
 
 			  function ClientCodedataGridSelectionChanged(e) {
+						 debugger;
 				const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
 				const ddbInstance = $("#ddclientcode").dxDropDownBox("instance");
 
@@ -4640,7 +4641,6 @@ openModal(url, title);
 								  $("#ClientVATNo").dxTextBox("instance").option("value",selectedRowData[0].VatregistrationNo)
 								  $("#ClientOtherID").dxTextBox("instance").option("value",selectedRowData[0].ClientOtherId)
 								  $("#OtherIDType").dxTextBox("instance").option("value",selectedRowData[0].ClientOtherIdtype)
-								  accid = selectedRowData[0].AccountId;
 								  $("#StreetName").dxTextBox("instance").option("value",selectedRowData[0].ClientAddressStreet)
 								  $("#StreetNameArabic").dxTextBox("instance").option("value",selectedRowData[0].ClientAddressStreetAr)
 								  $("#AdditionalAddress").dxTextBox("instance").option("value",selectedRowData[0].ClientAdditionalStreet)
