@@ -258,7 +258,13 @@
 				subColumns.AddFor(m => m.QuantityInvoiced).Caption("Quantity Invoiced").Alignment(HorizontalAlignment.Right).Visible(true);
 				subColumns.AddFor(m => m.UnitRate).Caption("Unit Rate").Alignment(HorizontalAlignment.Right).Visible(true);
 				subColumns.AddFor(m => m.AmountBeforeDiscount).Caption("Amount Before Discount").Alignment(HorizontalAlignment.Right).Visible(true);
-				subColumns.AddFor(m => m.Discount).Caption("Discount").Alignment(HorizontalAlignment.Right).Visible(true);
+				subColumns.AddFor(m => m.Discount).Caption("Discount").Alignment(HorizontalAlignment.Right).CellTemplate(@<text>
+					   		<%- (data.Discount == null || data.Discount === 0)
+					   		? '0.00'
+					   		: data.Discount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+					   	</text>)
+			.Visible(true);
+
 				subColumns.AddFor(m => m.AmountAfterDiscount).Caption("Amount After Discount").Alignment(HorizontalAlignment.Right).Visible(true);
 				subColumns.AddFor(m => m.VatAmount).Caption("VAT Amount").Alignment(HorizontalAlignment.Right).Visible(true);
 				subColumns.AddFor(m => m.Total).Caption("Total").Alignment(HorizontalAlignment.Right).Visible(true);
@@ -268,8 +274,26 @@
 			{
 				cogsColumns.AddFor(m => m.NoOfUnitsSold).Caption("No of Units Sold").Alignment(HorizontalAlignment.Right).Visible(true);
 				cogsColumns.AddFor(m => m.SalesAmount).Caption("Sales Amount").Alignment(HorizontalAlignment.Right).Visible(true);
-				cogsColumns.AddFor(m => m.CostOfGoodsSold).Caption("Cost of Goods Sold").Alignment(HorizontalAlignment.Right).Visible(true);
-				cogsColumns.AddFor(m => m.ProfitOnSales).Caption("Profit On Sales").Alignment(HorizontalAlignment.Right).Visible(true);
+				cogsColumns.AddFor(m => m.CostOfGoodsSold)
+			.Caption("Cost of Goods Sold")
+			.Alignment(HorizontalAlignment.Right)
+			.CellTemplate(@<text>
+					   		<%- (data.CostOfGoodsSold == null || data.CostOfGoodsSold === 0)
+					   		? '0.00'
+					   		: data.CostOfGoodsSold.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+					   	</text>)
+			.Visible(true);
+
+				cogsColumns.AddFor(m => m.ProfitOnSales)
+			.Caption("Profit On Sales")
+			.Alignment(HorizontalAlignment.Right)
+			.CellTemplate(@<text>
+					   		<%- (data.ProfitOnSales == null || data.ProfitOnSales === 0)
+					   		? '0.00'
+					   		: data.ProfitOnSales.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+					   	</text>)
+			.Visible(true);
+
 				cogsColumns.AddFor(m => m.IsCogsPosted).Caption("Is Cogs Posted").Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(@<text>
 		<div class="dx-icon">
 			<%= data.IsCogsPosted ? '<i style="color:red" class="fa fa-toggle-on"></i>' : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
@@ -337,6 +361,30 @@
 			.SummaryType(SummaryType.Sum)
 			.ShowInGroupFooter(true)
 			.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+			   items.Add()
+			.Column("CostOfGoodsSold")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"function(e) {
+				if (e.value === null || e.value === undefined) return '';
+				return e.value.toLocaleString(undefined, {
+				minimumFractionDigits: 2,
+				maximumFractionDigits: 2
+				});
+				}");
+
+			items.Add()
+			.Column("ProfitOnSales")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"function(e) {
+				if (e.value === null || e.value === undefined) return '';
+				return e.value.toLocaleString(undefined, {
+				minimumFractionDigits: 2,
+				maximumFractionDigits: 2
+				});
+				}");
 			});
 
 			summary.TotalItems(items =>
@@ -365,6 +413,50 @@
 			.Column("Total")
 			.SummaryType(SummaryType.Sum)
 			.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				items.Add()
+			.Column("NoOfUnitsSold")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"function(e) {
+		return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+		}");
+
+				items.Add()
+			.Column("SalesAmount")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"function(e) {
+		return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+		}");
+
+				items.Add()
+			.Column("AmountBeforeDiscount")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"function(e) {
+		return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+		}");
+
+				items.Add()
+			.Column("AmountAfterDiscount")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"function(e) {
+		return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+		}");
+
+
+				items.Add()
+			.Column("CostOfGoodsSold")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"function(e) {
+		return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+		}");
+
+				items.Add()
+			.Column("ProfitOnSales")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"function(e) {
+		return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+		}");
+
 			});
 		})
 

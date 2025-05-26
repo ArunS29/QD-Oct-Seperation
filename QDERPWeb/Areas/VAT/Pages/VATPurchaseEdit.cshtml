@@ -336,7 +336,7 @@
 		padding: 0 10px;
 	}
 
-	.limited-footer .btn-container:not(:has(#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint2,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
+	.limited-footer .btn-container:not(:has(#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint2,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag,#ddButtonLayout)) {
 		display: none !important;
 	}
 
@@ -511,6 +511,7 @@
 														.Label(new JS("formatMessage('Supplier Invoice No')"))
 														.LabelMode(EditorLabelMode.Outside)
 														.ShowClearButton(true)
+														.Disabled(true)
 														.AcceptCustomValue(true)
 														.OpenOnFieldClick(false)
 														.DropDownOptions(d => d.Width(600))
@@ -538,7 +539,7 @@
 														.Label(new JS("formatMessage('Order No')"))
 														.LabelMode(EditorLabelMode.Outside)
 														.Value("")
-														.Disabled(true))
+														@* .Disabled(true) *@)
 						</td>
 
 						<!-- 6. Order Date -->
@@ -604,8 +605,39 @@
 
 								<td style="width:10%; vertical-align: bottom; padding-bottom: 5px;">
 									<div style="display:flex; gap:5px;">
+
 										@(Html.DevExtreme().Button().ID("AddClient").Icon("plus").Hint("Add Description").Width(60))
+								@(Html.DevExtreme().Popup()
+																.ID("ledgerAccountPopup")
+																.Width("80%")
+																.Height("85%")
+																.Title("Add Ledger Account")
+																.ShowTitle(true)
+																.CloseOnOutsideClick(true)
+																.Visible(false)
+																.ResizeEnabled(true)
+																.ContentTemplate(@<text>
+												  									<div id="popupContent" class="background" style="width:100%; height:100%;">
+												  										<iframe id="ledgerAccountFrame" class="background" style="width:100%; height:100%; border:none;"></iframe>
+												  									</div>
+												  								</text>)
+																)
 										@(Html.DevExtreme().Button().ID("EditClient").Icon("edit").Hint("Edit Description").Width(60))
+								@(Html.DevExtreme().Popup()
+																.ID("ledgerEditAccountPopup")
+																.Width("80%")
+																.Height("85%")
+																.Title(new JS("formatMessage('Edit Ledger Account')"))
+																.ShowTitle(true)
+																.CloseOnOutsideClick(true)
+																.Visible(false)  // Hidden by default
+																.ResizeEnabled(true)
+																.ContentTemplate(@<text>
+												  									<div id="popupContent" style="width:100%; height:100%;">
+												  										<iframe id="ledgerEditAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
+												  									</div>
+												  								</text>)
+																)
 									</div>
 								</td>
 
@@ -2509,6 +2541,7 @@
 
 <script>
 
+
 		  function onClientCodeRowPrepared(e) {
 			if (e.rowType === "data" && e.data.IsLedgerObselete === true) {
 				e.rowElement.css("background-color", "#ffcccc"); // light red
@@ -2530,7 +2563,7 @@
 
 			$(".limited-footer .btn-containerIvoiceEdit").each(function () {
 
-				if (!$(this).find("#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint2,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag").length) {
+				if (!$(this).find("#btnSave,#btnSaveAndClose,#btnPrint2,#btnAddNew,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#ddButtonLayout").length) {
 
 					$(this).remove();
 
@@ -6491,9 +6524,9 @@
 			dropDownBox.close(); // Optional: auto-close the dropdown after selection
 		}
 	}
-	 function onLinkClick() {
-			window.location.href = "https://example.com"; // Or your desired action
-		}
+	 // function onLinkClick() {
+		// 	window.location.href = "https://example.com"; // Or your desired action
+		// }
 
 </script>
 

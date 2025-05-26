@@ -1,0 +1,162 @@
+﻿@page
+@using DevExtreme.AspNet.Mvc
+@model QD.ERP.Web.Areas.VAT.Pages.VATSalesReportCOGSPostingModel
+@{
+}
+
+ <style>
+        .dx-icon-custom-post-avg::before {
+            content: "";
+            display: inline-block;
+            background-image: url('/images/post-average-cost.png');
+            width: 16px;
+            height: 16px;
+            background-size: contain;
+        }
+
+        .dx-icon-custom-post-cogs::before {
+            content: "";
+            display: inline-block;
+            background-image: url('/images/post-cogs-ledger.png');
+            width: 16px;
+            height: 16px;
+            background-size: contain;
+        }
+    </style>
+
+<input id="formId" value="frm201LedgerView" type="hidden" />
+<div class="title">
+    <div class="header-container">
+        <div id="VATSalesReportCOGSPosting" class="no-border-input"></div>
+    </div>
+</div>
+
+<div class="dx-fieldset horizontal-container">
+	@(Html.DevExtreme().DateBox()
+		.ID("frmdateBox")
+		.Label(new JS("formatMessage('Start Date')"))
+		.LabelMode(EditorLabelMode.Outside)
+		.InputAttr("aria-label", "Date")
+		.Type(DateBoxType.Date)
+		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)) // First day of the month
+		.DisplayFormat("dd-MMM-yyyy")
+		.TabIndex(2)
+		)
+
+	@(Html.DevExtreme().DateBox()
+		.ID("todateBox")
+		.Label(new JS("formatMessage('End Date')"))
+		.LabelMode(EditorLabelMode.Outside)
+		.InputAttr("aria-label", "Date")
+		.Type(DateBoxType.Date)
+		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))) // Last day of the month
+		.DisplayFormat("dd-MMM-yyyy")
+		.TabIndex(3)
+		)
+
+
+	@(Html.DevExtreme().DropDownButton()
+		.ID("ddBtnShowRecords")
+		.Text(new JS("formatMessage('Show Records')"))
+		.Icon("smalliconslayout")
+		.Width(180)
+		.ElementAttr("class", "button-alignment-down")
+		.TabIndex(4)
+		.DropDownOptions(options => options.Width(230))
+		.Items(items =>
+		{
+			items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
+			items.Add().Text(new JS("formatMessage('Today')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
+			items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+			items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
+			items.Add().Text(new JS("formatMessage('This Month Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+			items.Add().Text(new JS("formatMessage('This Month (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+			items.Add().Text(new JS("formatMessage('This Year Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+			items.Add().Text(new JS("formatMessage('This Year (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+			items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+			items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+		})
+		)
+
+</div>
+
+@(
+Html.DevExtreme().DataGrid()    
+   .ID("dataGrid")
+   .RemoteOperations(false)
+   .DataSource(new JS("[]"))
+    .ShowBorders(true)
+    .Selection(s => s.Mode(SelectionMode.Multiple))
+   .Columns(columns =>
+{
+   @*  columns.Add().Type(GridCommandColumnType.SelectBox)
+        .Width(50)
+        .Alignment(HorizontalAlignment.Center); *@
+
+    columns.Add().DataField("InvoiceNo")
+        .Caption("Invoice No")
+        .Width(150)
+        .Alignment(HorizontalAlignment.Center);
+
+    columns.Add().DataField("InvoiceDate")
+        .Caption("Invoice Date")
+        .DataType(GridColumnDataType.Date)
+        .Format("dd-MMM-yyyy")
+        .Alignment(HorizontalAlignment.Center);
+
+    columns.Add().DataField("ClientName")
+        .Caption("Client Name")
+        .Alignment(HorizontalAlignment.Center);
+
+    columns.Add().DataField("StatusForPosting")
+        .Caption("Status For Posting")
+        .Alignment(HorizontalAlignment.Center);
+
+    columns.Add().DataField("IsPosted")
+        .Caption("Is Posted")
+        .Alignment(HorizontalAlignment.Center);
+
+    columns.Add().DataField("IsCogsPosted")
+        .Caption("Is Cogs Posted")
+        .Alignment(HorizontalAlignment.Center);
+
+   
+  
+})
+
+)
+
+
+
+
+    <script>
+        function showRecords() {
+            // Call to backend to reload data based on fromDate and toDate
+            DevExpress.ui.notify("Showing records...", "info", 1500);
+        }
+
+        function postAverageCost() {
+            DevExpress.ui.notify("Posting average cost...", "success", 2000);
+        }
+
+        function postCogsToLedger() {
+            DevExpress.ui.notify("Posting COGS to ledger...", "success", 2000);
+        }
+
+
+    $(function () {
+                    $("#VATSalesReportCOGSPosting").dxTextBox({
+                        text: formatMessage("Invoice & Credit Notes : Average Cost Posting"),
+                        width:480,
+                        readOnly: true,
+                                    onContentReady: function(e) {
+                                    $(e.element).addClass("dx-textbox-heading");
+                            }
+
+                    });
+                });
+
+    </script>
+
+   
+
