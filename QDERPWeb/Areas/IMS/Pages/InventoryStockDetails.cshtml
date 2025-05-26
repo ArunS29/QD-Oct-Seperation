@@ -6,7 +6,12 @@
 @using QD.ERP.Web.Pages.Shared.IMS
 @{
 }
-
+@{
+    var enteredBy = HttpContext.Session.GetString("UserName");
+    var enteredOn = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
+    var modifiedBy = "adminUser"; // Replace with real logic
+    var modifiedOn = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
+}
 <style>
     .form-tablee {
         width: 100%;
@@ -358,10 +363,10 @@
                 .Icon("money") // "Purchases"
                 .Text(new JS("formatMessage('Purchases')"));
 
-                // tab-content-12
+              @*   // tab-content-12
                 items.Add()
                 .Icon("bookmark") // "Matl.Requests"
-                .Text(new JS("formatMessage('Matl. Requests')"));
+                .Text(new JS("formatMessage('Matl. Requests')")); *@
             })
                 .SelectedIndex(0) // Default selected tab is the first one
                 .OnSelectionChanged("onTabSelectionChanged") // Event handler for tab selection changes
@@ -743,6 +748,8 @@
                                                 <div class="audit-field">
                                                 @(Html.DevExtreme().TextArea()
                                                     .ID("EnteredBy")
+                                                    .Value(enteredBy)
+                                                    .ReadOnly(true)
                                                     .Height(40)
                                                     .Width("90%"))
                                                 </div>
@@ -752,6 +759,8 @@
                                                 <div class="audit-field">
                                                 @(Html.DevExtreme().TextArea()
                                                     .ID("EnteredOn")
+                                                    .Value(enteredOn)
+                                                    .ReadOnly(true)
                                                     .Height(40)
                                                     .Width("90%"))
                                                 </div>
@@ -763,10 +772,12 @@
                                             <div class="audit-row">
                                                 <div class="audit-label" id="ModifiedByLabel"></div>
                                                 <div class="audit-field">
-                                                        @(Html.DevExtreme().TextArea()
-                                                            .ID("ModifiedBy")
-                                                            .Height(40)
-                                                            .Width("90%"))
+                                                @(Html.DevExtreme().TextArea()
+                                                    .ID("ModifiedBy")
+                                                    .Value(modifiedBy)
+                                                    .ReadOnly(true)
+                                                    .Height(40)
+                                                    .Width("90%"))
                                                 </div>
                                             </div>
                                             <div class="audit-row">
@@ -774,6 +785,8 @@
                                                 <div class="audit-field">
                                                 @(Html.DevExtreme().TextArea()
                                                     .ID("ModifiedOn")
+                                                    .Value(modifiedOn)
+                                                    .ReadOnly(true)
                                                     .Height(40)
                                                     .Width("90%"))
                                                 </div>
@@ -833,7 +846,13 @@
                         const title = "";
                         openModal(url, title);
                     }
-
+                                            $(function () {
+                        // Direct assignment using Razor variables
+                        $("#EnteredBy").dxTextArea("instance").option("value", "@enteredBy");
+                        $("#EnteredOn").dxTextArea("instance").option("value", "@enteredOn");
+                        $("#ModifiedBy").dxTextArea("instance").option("value", "@modifiedBy");
+                        $("#ModifiedOn").dxTextArea("instance").option("value", "@modifiedOn");
+                    });
 
                 </script>
             </div>
@@ -2167,167 +2186,178 @@
                 </style>
                 <!-- Filter/Info Section -->
                 <div class="toolbar-container">
-                @(Html.DevExtreme().Button()
-                    .Text(new JS("formatMessage('Add & Attach Files')"))
-                    .Icon("attach")
-                    .Type(ButtonType.Default)
-                    .Width(250)
-                    )
-                @(Html.DevExtreme().Button()
-                    .Text(new JS("formatMessage('Merge Selected Files')"))
-                    .Icon("fas fa-file-pdf")
-                    .Type(ButtonType.Default)
-                    .Width(250)
-                    .OnClick("mergeSelectedFiles") // ✅
-                    )
+                  
+                    @(Html.DevExtreme().Button()
+                        .Text(new JS("formatMessage('Add & Attach Files')"))
+                        .Icon("attach")
+                        .Type(ButtonType.Default)
+                        .Width(250)
+                        .OnClick("openInventoryDocumentPopup") // JavaScript function
+                        )
+                    @(Html.DevExtreme().Button()
+                        .Text(new JS("formatMessage('Merge Selected Files')"))
+                        .Icon("fas fa-file-pdf")
+                        .Type(ButtonType.Default)
+                        .Width(250)
+                        .OnClick("mergeSelectedFiles") 
+                        )
 
-                @(Html.DevExtreme().Button()
-                    .Text(new JS("formatMessage('Save Separated PDF Files')"))
-                    .Icon("save")
-                    .Type(ButtonType.Default)
-                    .Width(280)
-                    .OnClick("saveSeparatedFiles") // ✅
-                    )
+                    @(Html.DevExtreme().Button()
+                        .Text(new JS("formatMessage('Save Separated PDF Files')"))
+                        .Icon("save")
+                        .Type(ButtonType.Default)
+                        .Width(280)
+                        .OnClick("saveSeparatedFiles") 
+                        )
+                    @(Html.DevExtreme().Popup()
+                        .ID("inventoryDocumentPopup")
+                        .Width("80%")
+                        .Height("80%")
+                        .ShowTitle(true)
+                        .Title("Attach Files")
+                        .Visible(false)
+                        .ContentTemplate(@<text>
+                            <iframe id="inventoryDocumentFrame" width="100%" height="100%" frameborder="0"></iframe>
+                        </text>)
+                        )
 
-                </div>
+                    </div>
 
-                <br />
-                <div>
-                @(Html.DevExtreme().DataGrid()
-                    .ID("documentGrid")
-                    .Height(500)
-                    .Width("100%")
-                    .ShowBorders(true)
-                    .ShowColumnLines(true)
-                    .ShowRowLines(true)
-                    .RowAlternationEnabled(true)
-                    .ColumnAutoWidth(true)
-                    .ShowColumnHeaders(true)
-                    .AllowColumnReordering(true)
-                    .AllowColumnResizing(true)
-                    .ColumnFixing(c => c.Enabled(true))
-                    .GroupPanel(p => p.Visible(false))
-                    .OnInitialized("onDocumentGridInitialized")
+                    <br />
+                    <div>
+                    @(Html.DevExtreme().DataGrid()
+                        .ID("documentGrid")
+                        .Height(500)
+                        .Width("100%")
+                        .ShowBorders(true)
+                        .ShowColumnLines(true)
+                        .ShowRowLines(true)
+                        .RowAlternationEnabled(true)
+                        .ColumnAutoWidth(true)
+                        .ShowColumnHeaders(true)
+                        .AllowColumnReordering(true)
+                        .AllowColumnResizing(true)
+                        .ColumnFixing(c => c.Enabled(true))
+                        .GroupPanel(p => p.Visible(false))
+                        .OnInitialized("onDocumentGridInitialized")
 
-                    .Selection(s => s
-                    .Mode(SelectionMode.Multiple)
-                    .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)
-                    )
+                        .Selection(s => s
+                        .Mode(SelectionMode.Multiple)
+                        .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)
+                        )
 
-                    .Columns(columns =>
-                    {
-                        columns.Add().DataField("Total").Caption(new JS("formatMessage('Total')")).Alignment(HorizontalAlignment.Center).Width(100);
-                        columns.Add().DataField("DocumentType").Caption(new JS("formatMessage('Document Type')")).Alignment(HorizontalAlignment.Center).Width(200);
-                        columns.Add().DataField("DocumentRefNo").Caption(new JS("formatMessage('Document Ref No')")).Alignment(HorizontalAlignment.Center).Width(200);
-                        columns.Add().DataField("ExpiryOn").Caption(new JS("formatMessage('Expiry On')")).Alignment(HorizontalAlignment.Center).Width(150).DataType(GridColumnDataType.Date);
-                        columns.Add().DataField("NotifyOn").Caption(new JS("formatMessage('Notify On')")).Alignment(HorizontalAlignment.Center).Width(150).DataType(GridColumnDataType.Date);
-                    })
+                        .Columns(columns =>
+                        {
+                            columns.Add().DataField("Total").Caption(new JS("formatMessage('Total')")).Alignment(HorizontalAlignment.Center).Width(100);
+                            columns.Add().DataField("DocumentType").Caption(new JS("formatMessage('Document Type')")).Alignment(HorizontalAlignment.Center).Width(200);
+                            columns.Add().DataField("DocumentRefNo").Caption(new JS("formatMessage('Document Ref No')")).Alignment(HorizontalAlignment.Center).Width(200);
+                            columns.Add().DataField("ExpiryOn").Caption(new JS("formatMessage('Expiry On')")).Alignment(HorizontalAlignment.Center).Width(150).DataType(GridColumnDataType.Date);
+                            columns.Add().DataField("NotifyOn").Caption(new JS("formatMessage('Notify On')")).Alignment(HorizontalAlignment.Center).Width(150).DataType(GridColumnDataType.Date);
+                        })
 
-                    .Summary(s => s
-                    .TotalItems(items =>
-                    {
-                        items.Add().SummaryType(SummaryType.Count).Column("Total").DisplayFormat("Total: {0}");
-                    })
-                    )
-                    )
+                        .Summary(s => s
+                        .TotalItems(items =>
+                        {
+                            items.Add().SummaryType(SummaryType.Count).Column("Total").DisplayFormat("Total: {0}");
+                        })
+                        )
+                        )
 
 
-                </div>
-                <script>
-                    let DocumentGridInstance = null;
+                    </div>
 
-                    function onDocumentGridInitialized(e) {
-                        DocumentGridInstance = e.component;
-                        console.log("DocumentGrid initialized", DocumentGridInstance);
-                    }
+                    <!-- Scripts -->
+                    <script>
+                        let DocumentGridInstance = null;
 
-                    function loadDocumentGrid(gscode) {
-                        if (!DocumentGridInstance) {
-                            console.error("DocumentGrid not initialized");
-                            return;
+                        function onDocumentGridInitialized(e) {
+                            DocumentGridInstance = e.component;
                         }
 
-                        const dataStore = new DevExpress.data.CustomStore({
-                            key: "DocumentRefNo", // Ensure this is unique per row
-                            load: function () {
-                                return $.getJSON("/api/StockInventory/GetDocumentGridData", { gscode: gscode })
-                                    .then(data => {
-                                        console.log("Document Grid Data Loaded", data);
-                                        return data;
+                        function loadDocumentGrid(gscode) {
+                            if (!DocumentGridInstance) return;
+
+                            const dataStore = new DevExpress.data.CustomStore({
+                                key: "DocumentRefNo",
+                                load: () => $.getJSON("/api/StockInventory/GetDocumentGridData", { gscode })
+                                    .then(data => data)
+                                    .catch(err => {
+                                        alert("Failed to load data.");
+                                        throw err;
                                     })
-                                    .fail((jqXHR, textStatus, errorThrown) => {
-                                        console.error("API call failed:", textStatus, errorThrown);
-                                        alert("Failed to load data: " + textStatus);
-                                        throw new Error("API call failed: " + textStatus);
-                                    });
-                            }
-                        });
+                            });
 
-                        DocumentGridInstance.option("dataSource", dataStore);
-                    }
-
-                                        function getSelectedDocumentNos() {
-                        const selectedRows = DocumentGridInstance.getSelectedRowsData();
-                        if (!selectedRows || selectedRows.length === 0) {
-                            alert("Please select at least one document.");
-                            return [];
+                            DocumentGridInstance.option("dataSource", dataStore);
                         }
-                        return selectedRows.map(row => row.DocumentRefNo);
-                    }
 
-                    function mergeSelectedFiles() {
-                        const selectedDocs = getSelectedDocumentNos();
-                        if (selectedDocs.length === 0) return;
+                        function getSelectedDocumentNos() {
+                            const selected = DocumentGridInstance.getSelectedRowsData();
+                            if (!selected.length) {
+                                alert("Please select at least one document.");
+                                return [];
+                            }
+                            return selected.map(r => r.DocumentRefNo);
+                        }
 
-                        fetch("/api/StockInventory/MergeSelectedDocuments", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify(selectedDocs)
-                        })
-                        .then(response => {
-                            if (!response.ok) throw new Error("Failed to merge PDFs.");
-                            return response.blob();
-                        })
-                        .then(blob => {
-                            const url = window.URL.createObjectURL(blob);
-                            const link = document.createElement("a");
-                            link.href = url;
-                            link.download = "MergedDocument.pdf";
-                            link.click();
-                        })
-                        .catch(err => {
-                            console.error(err);
-                            alert("Merging documents failed.");
+                        function mergeSelectedFiles() {
+                            const selectedDocs = getSelectedDocumentNos();
+                            if (!selectedDocs.length) return;
+
+                            fetch("/api/StockInventory/MergeSelectedDocuments", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify(selectedDocs)
+                            })
+                            .then(response => {
+                                if (!response.ok) throw new Error("Failed to merge files.");
+                                return response.blob();
+                            })
+                            .then(blob => {
+                                const url = window.URL.createObjectURL(blob);
+                                const link = document.createElement("a");
+                                link.href = url;
+                                link.download = "MergedDocument.pdf";
+                                link.click();
+                            })
+                            .catch(err => alert("Merging failed."));
+                        }
+
+                        function saveSeparatedFiles() {
+                            const selectedDocs = getSelectedDocumentNos();
+                            if (!selectedDocs.length) return;
+
+                            fetch("/api/StockInventory/DownloadMultipleDocuments", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify(selectedDocs)
+                            })
+                            .then(response => {
+                                if (!response.ok) throw new Error("Failed to download files.");
+                                return response.blob();
+                            })
+                            .then(blob => {
+                                const url = window.URL.createObjectURL(blob);
+                                const link = document.createElement("a");
+                                link.href = url;
+                                link.download = "Documents.zip";
+                                link.click();
+                            })
+                            .catch(err => alert("Download failed."));
+                        }
+
+                                            function openInventoryDocumentPopup() {
+                        const popup = $("#inventoryDocumentPopup").dxPopup("instance");
+
+                        popup.option("onShown", function () {
+                            const frame = document.getElementById("inventoryDocumentFrame");
+                            frame.src = `/${tenantName}/IMS/InventoryDocument`; // Use backticks for template string
                         });
+
+                        popup.show();
                     }
 
-                    function saveSeparatedFiles() {
-                        const selectedDocs = getSelectedDocumentNos();
-                        if (selectedDocs.length === 0) return;
+                    </script>
 
-                        fetch("/api/StockInventory/DownloadMultipleDocuments", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify(selectedDocs)
-                        })
-                        .then(response => {
-                            if (!response.ok) throw new Error("Failed to download documents.");
-                            return response.blob();
-                        })
-                        .then(blob => {
-                            const url = window.URL.createObjectURL(blob);
-                            const link = document.createElement("a");
-                            link.href = url;
-                            link.download = "Documents.zip";
-                            link.click();
-                        })
-                        .catch(err => {
-                            console.error(err);
-                            alert("Downloading documents failed.");
-                        });
-                    }
-
-                </script>
 
 
 
@@ -2439,13 +2469,13 @@
 
             </div>
         </div>
-        <div id="tab-content-12" class="tab-content">
+      @*   <div id="tab-content-12" class="tab-content">
             <div class="background">
 
                 @await Html.PartialAsync("~/Pages/Shared/IMS/StockDetails_MaterialRequest.cshtml")
 
             </div>
-        </div>
+        </div> *@
         <div class="Footer">
         @await Html.PartialAsync("~/Pages/Shared/IMS/StockEditFooter.cshtml")
         </div>

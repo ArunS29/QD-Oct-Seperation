@@ -4208,11 +4208,12 @@
             // 
             // BottomMargin
             // 
-            this.BottomMargin.HeightF = 29.99908F;
+            this.BottomMargin.HeightF = 0F;
             this.BottomMargin.Name = "BottomMargin";
             // 
             // Detail
             // 
+            this.Detail.Expanded = false;
             this.Detail.HeightF = 0F;
             this.Detail.Name = "Detail";
             // 
@@ -5248,7 +5249,7 @@
             this.DataMember = "qry201_802VATCreditNoteReport";
             this.DataSource = this.sqlDataSource1;
             this.Font = new DevExpress.Drawing.DXFont("Arial", 9.75F);
-            this.Margins = new DevExpress.Drawing.DXMargins(24F, 42F, 999.1673F, 29.99908F);
+            this.Margins = new DevExpress.Drawing.DXMargins(24F, 42F, 999.1673F, 0F);
             this.PageHeight = 1169;
             this.PageWidth = 1000;
             this.PaperKind = DevExpress.Drawing.Printing.DXPaperKind.Custom;

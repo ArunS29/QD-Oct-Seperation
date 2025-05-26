@@ -94,65 +94,92 @@ namespace QD.ERP.Web.Pages
 
                 return Page();
             }
-            // 👉 New CASE 2: If it is Invoice-related
-            if (reportName == "TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS" || reportName == "RegulartaxinvoicewithoutSignatoriesFormat05" || reportName == "SimplifiedTaxInvoice" || reportName == "regularInvoiceformat02" || reportName == "ForgeinCurrencys" || 
-                reportName== "ForeignCurrencyProforma" || reportName == "ForeignEnglishProforma" || reportName == "ProformaInvoiceEnglish" || reportName == "ProformaPreviewInvoice"  || reportName == "ProformaNewFormat" 
-                || reportName == "BillsPurchases")
+            if (string.IsNullOrEmpty(reportName))
+                return BadRequest("Report name is required.");
+
+            if (reportName == "TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS" ||
+                reportName == "RegulartaxinvoicewithoutSignatoriesFormat05" ||
+                reportName == "Foreigncurrency1" ||
+                reportName == "PrintRegularInvoiceFormat02" ||
+                reportName == "ForeignCurrencyProforma" ||
+                reportName == "ForeignEnglishProforma" ||
+                reportName == "ProformaInvoiceEnglish" ||
+                reportName == "ProformaPreviewInvoice" ||
+                reportName == "ProformaNewFormat" ||
+                reportName == "BillsPurchases")
             {
                 if (string.IsNullOrEmpty(invoiceNo))
                 {
                     return BadRequest("Invoice No is required for invoice reports.");
                 }
 
-                invoiceNo = invoiceNo;
+                Report = reportName switch
+                {
+                    "TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS" =>
+                        new QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE.TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS(
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage,
+                            companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper),
 
-                if (reportName == "TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS")
-                {
-                    // Instantiate the report dynamically
-                    Report = new QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE.TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS(
-                        invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
-                }
-                else if (reportName == "regularInvoiceformat02")
-                {
-                    Report = new QD.ERP.Web.Areas.VAT.Reports.B2B.regularInvoiceformat02(invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, companyPhone, website, emailAddress, isApproved, _tenantDbContextHelper);
-                }
-                else if (reportName == "ForgeinCurrencys")
-                {
+                    "PrintRegularInvoiceFormat02" =>
+                        new QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE.PrintRegularInvoiceFormat02(
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage,
+                            companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
+                            isApproved, _tenantDbContextHelper),
 
-                   Report= new QD.ERP.Web.Areas.VAT.Reports.B2B.ForgeinCurrencys(invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, companyPhone, website, emailAddress, isApproved, _tenantDbContextHelper);
-                }
-                else if (reportName == "RegulartaxinvoicewithoutSignatoriesFormat05")
-                {
-                    Report = new QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE.RegulartaxinvoicewithoutSignatoriesFormat05(invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, companyPhone, website, emailAddress, isApproved, _tenantDbContextHelper);
-                }
-                else if (reportName == "ForeignCurrencyProforma")
-                {
-                    Report = new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.ForeignCurrencyProforma(invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage, companyNameAr, companyAddressAr, companyPhone, website, emailAddress, isApproved, _tenantDbContextHelper);
-                }
-                else if (reportName == "ForeignEnglishProforma")
-                {
-                    Report = new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.ForeignEnglishProforma(invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, companyPhone, website, emailAddress, isApproved, _tenantDbContextHelper);
-                }
-                else if (reportName == "ProformaInvoiceEnglish")
-                {
-                    Report = new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.ProformaInvoiceEnglish(invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, companyPhone, website, emailAddress, isApproved, _tenantDbContextHelper);
-                }
-                else if (reportName == "ProformaPreviewInvoice")
-                {
-                    Report = new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.ProformaPreviewInvoice(invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, companyPhone, website, emailAddress, isApproved, _tenantDbContextHelper);
-                }
-                else if (reportName == "ProformaNewFormat")
-                {
-                    Report = new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.ProformaNewFormat(invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
-                }
-                //else if (reportName == "BillsPurchases")
-                //{
-                //    Report = new QD.ERP.Web.Areas.VAT.Reports.PurchaseRegister.BillsPurchases(invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
-                //}
+                    "Foreigncurrency1" =>
+                        new QD.ERP.Web.Areas.VAT.Reports.B2B.Foreigncurrency1(
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage,
+                            companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
+                            isApproved, _tenantDbContextHelper),
+
+                    "RegulartaxinvoicewithoutSignatoriesFormat05" =>
+                        new QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE.RegulartaxinvoicewithoutSignatoriesFormat05(
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage,
+                            companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
+                            isApproved, _tenantDbContextHelper),
+
+                    "ForeignCurrencyProforma" =>
+                        new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.ForeignCurrencyProforma(
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
+                            companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
+                            isApproved, _tenantDbContextHelper),
+
+                    "ForeignEnglishProforma" =>
+                        new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.ForeignEnglishProforma(
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage,
+                            companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
+                            isApproved, _tenantDbContextHelper),
+
+                    "ProformaInvoiceEnglish" =>
+                        new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.ProformaInvoiceEnglish(
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage,
+                            companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
+                            isApproved, _tenantDbContextHelper),
+
+                    "ProformaPreviewInvoice" =>
+                        new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.ProformaPreviewInvoice(
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage,
+                            companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
+                            isApproved, _tenantDbContextHelper),
+
+                    "ProformaNewFormat" =>
+                        new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.ProformaNewFormat(
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage,
+                            companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper),
+
+                    "BillsPurchases" =>
+                        throw new NotImplementedException("BillsPurchases report is not implemented."),
+
+                    _ => throw new ArgumentException("Invalid report name.")
+                };
+
                 return Page();
             }
 
-            if (reportName == "Foreigncurrencycredit" || reportName == "CreditNote")
+            
+
+
+            if (reportName == "CreditForeignCurrency" || reportName == "creditnote")
             {
                 if (string.IsNullOrEmpty(CreditNoteNo))
                 {
@@ -161,15 +188,16 @@ namespace QD.ERP.Web.Pages
 
                 CreditNoteNo = CreditNoteNo;
 
-                if (reportName == "Foreigncurrencycredit")
+                if (reportName == "CreditForeignCurrency")
                 {
-                    Report = new QD.ERP.Web.Areas.VAT.Reports.VATCreditNote.Foreigncurrencycredit(
+                    Report = new QD.ERP.Web.Areas.VAT.Reports.VATCreditNote.creditnote(
                         CreditNoteNo, tenantName, companyName, companyAddress,  companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
-                } else if(reportName == "CreditNote")
+                } else if(reportName == "creditnote")
                 {
                     Report = new QD.ERP.Web.Areas.VAT.Reports.VATCreditNote.creditnote(
                         CreditNoteNo, tenantName, companyName, companyAddress,  companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
                 }
+
 
 
 

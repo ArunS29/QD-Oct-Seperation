@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace QD.ERP.Web.Pages.Shared.IMS
+namespace QD.ERP.Web.Areas.VAT.Pages
 {
-    public class StockDetails_purchasesModel : PageModel
+    public class VATSalesReportCOGSPostingModel : PageModel
     {
         public void OnGet()
         {

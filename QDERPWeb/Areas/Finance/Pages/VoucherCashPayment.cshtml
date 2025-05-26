@@ -3900,6 +3900,7 @@
         });
     }
     function showChequePopup() {
+
         const dataGrid = $("#dataGrid").dxDataGrid("instance");
         let totalDrAmount = 0.00; // Safe default
         if (dataGrid) {
@@ -3912,10 +3913,12 @@
             }
         }
         const chequeboxNo = $("#ChequeNoReferenceNo").dxTextBox("instance").option("value");
-     //   const currencyInstance = $("#ddCurrency").dxDropDownBox("instance");
-     //   const currencyId = currencyInstance.option("value"); // Current CurrencyID
-     //   const currencyName = currencyInstance.option("displayValue"); // Current CurrencyName
-        
+        const voucherno = $("#VoucherNo").dxTextBox("instance").option("value");
+
+        const currencyInstance = $("#ddCurrency").dxDropDownBox("instance");
+        const currencyId = currencyInstance.option("value"); // Current CurrencyID
+        const currencyName = currencyInstance.option("displayValue"); // Current CurrencyName
+
         if ($("#chequePopup").length === 0) {
             $.ajax({
                 url: "/api/VoucherMaster/LoadChequePopup",
@@ -3938,30 +3941,22 @@
                     if (chequeBox) {
                         chequeBox.option("value", chequeboxNo);
                     }
-                    // // Get the dxSelectBox instance
-                    // const currencyname = $("#txtcurrency").dxSelectBox("instance");
 
-                    // // Check if the instance exists
-                    // if (currencyname) {
-                    
-                    //     const selectedValue = currencyname.option("value");
-                    //     const selectedText = currencyname.option("text");
-                      
-                    // }
+                    // Get the dxSelectBox instance
+                    const currencyname = $("#txtcurrency").dxSelectBox("instance");
 
+                    // Check if the instance exists
+                    if (currencyname) {
 
+                        const selectedValue = currencyname.option("value");
+                        const selectedText = currencyname.option("text");
 
+                    }
                     $("#ChequeIssuedinfavourof").dxTextBox("instance").option("value", paymentaccheadname);
-                    $.ajax({
-                        url: "/api/VoucherMaster/GetNewCPVoucherNo",
-                        type: 'GET',
-                        success: function (data) {
-                            $("#PopVoucherNo").dxTextBox("instance").option("value", data);
-                        },
-                        error: function (xhr, status, error) {
-                            console.error("Error loading Voucher No:", error);
-                        }
-                    });
+                    const popvoucher = $("#PopVoucherNo").dxTextBox("instance");
+                    if (popvoucher) {
+                        popvoucher.option("value", voucherno);
+                    }
                 },
                 error: function (xhr, status, error) {
                     console.error("Error loading cheque popup:", error);
