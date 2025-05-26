@@ -641,7 +641,10 @@
 							<tr>
 								<td>
 									@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Client Code')"))//.ID("ClientCode")
-																			.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetClientCode").LoadMode(DataSourceLoadMode.Raw).Key("AccountId"))
+																			.DataSource(d => d.WebApi().Controller("VATModule")
+																			.LoadAction("GetClientCode")
+																			.LoadMode(DataSourceLoadMode.Raw)
+																			.Key("AccountId"))
 																			.LabelMode(EditorLabelMode.Outside)
 																			.ID("ddclientcode")
 																			.ValidationRules(rules =>
@@ -654,16 +657,19 @@
 																			.OpenOnFieldClick(false)
 																			.ValueChangeEvent("input")
 																			.HoverStateEnabled(true)
-																			.LabelMode(EditorLabelMode.Outside)
 																			.ValueExpr("AccountHead")
 																			.DisplayExpr("AccountId")
-
+																			.OnInput("dropDownBoxOnInput")
+																			.OnClosed("onDropDownBoxClosed")
+																			.OnOpened("onOpened")
 																			.Width("100%")
 																			.TabIndex(4)
 																			.DropDownOptions(o => o
 																			// .Width("100%") // Set the desired width for the dropdown content*@
 																			.Width(1000)
 																			)
+																		@* 	.OnKeyDown("onKeyDown") *@
+																		@* 	.OnValueChanged("dropDownBoxValueChanged") *@
 																			.ContentTemplate(new TemplateName("ClientCodeContentTemplate")))
 								</td>
 								<td style="width:10%; vertical-align: bottom; padding-bottom: 5px;">
@@ -2266,6 +2272,10 @@
 
 							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
+								totalItems.Add().Column("TotalBeforeDiscount").SummaryType(SummaryType.Sum)
+
+							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
 								totalItems.Add().Column("Amount").SummaryType(SummaryType.Sum)
 
 							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
@@ -3798,7 +3808,7 @@
 			allowEditing: true,
 			editCellTemplate: function (cellElement, cellInfo) {
 				// Open the modal form in a popup
-				let url = `/${tenantName}/Finance/VATDetailsDescription`;
+				let url = `/${tenantName}/VAT/VATDetailsDescription`;
 				let title = "";
 
 				// Pass cellInfo to the modal context
@@ -4334,7 +4344,7 @@
 					window.currentDescriptionCell = options;
 
 					// Open modal
-					let url = `/${tenantName}/Finance/VATDetailsDescription`;
+					let url = `/${tenantName}/VAT/VATDetailsDescription`;
 					let title = "VAT Details Description";
 					openModal(url, title);
 				}
@@ -7987,5 +7997,32 @@
 
 
 
+		function onDropDownBoxClosed(e) {
+			const typedText = e.component.option("text");
+				const grid = $(e.component.content()).find("#clientcode-datagrid").first().dxDataGrid("instance");
+
+			if (!grid) return;
+
+			const visibleRows = grid.getVisibleRows();
+			const match = visibleRows.find(r => r.data.AccountHead === typedText);
+
+			if (!match) {
+				// Clear the value if not valid
+				e.component.option("value", null);
+
+			}
+		}
+		
+
+		
+
+			// let dataGrid;
+
+		function dropDownBoxValueChanged(e) {
+			if (!e.value) {
+				dataGrid.clearSelection();
+				return;
+			}
+		}
 </script>
 

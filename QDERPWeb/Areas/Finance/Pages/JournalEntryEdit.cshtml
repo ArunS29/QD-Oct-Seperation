@@ -268,11 +268,12 @@
             .DisplayExpr("this")
             );
                     columns.Add().DataField("DrAmount").Caption("Dr Amount").Width(120).Alignment(HorizontalAlignment.Right)
-            .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+            .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' Dr' : ''; }");
+
                     columns.Add().DataField("CrAmount").Caption("Cr Amount").Width(120).Alignment(HorizontalAlignment.Right)
-            .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+            .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' Cr' : ''; }");
                     columns.Add().DataField("CostAllocationDescription").Caption("Cost Allocation").Width(200);
-                    columns.Add().DataField("TotalCostAllocated").Caption("Total Cost Allocated").Width(150);
+                    columns.Add().DataField("TotalCostAllocated").Caption("Total Cost Allocated").Width(150).AllowEditing(false);
                     columns.Add().Caption("...").Width(100).CellTemplate(@<text>
             <div class="text-center">
                 @(Html.DevExtreme().Button()
@@ -288,7 +289,7 @@
             <div class="headerBolder">...</div>
         </text>);
                     columns.Add().DataField("EmployeeCostDescription").Caption("Employees Allocation").Width(150);
-                    columns.Add().DataField("TotalEmpAllocated").Caption("Total Employee Allocation").Width(150).Visible(true);
+                    columns.Add().DataField("TotalEmpAllocated").Caption("Total Employee Allocation").Width(150).Visible(true).AllowEditing(false);
                     columns.Add().Caption("...").Width(100).Visible(true).CellTemplate(@<text>
             <div class="text-center">
                 @(Html.DevExtreme().Button()
@@ -304,7 +305,7 @@
             <div class="headerBolder">...</div>
         </text>);
                     // ✅ Additional columns from entity
-                    columns.Add().DataField("JournalChildNo").Caption("Journal Child No").Width(150).Visible(true);
+                    columns.Add().DataField("JournalChildNo").Caption("Journal Child No").Width(150).Visible(false);
                     columns.Add().DataField("JournalRefNo").Caption("Journal Ref No").Width(200).Visible(false);
                     
                     columns.Add().DataField("AccountId").Caption("Account ID").Width(150).Visible(false);
@@ -1191,12 +1192,13 @@
                         $("#ApprovedOntext").dxTextBox("instance").option("value", formattedApprovedDate);
                         var postedDate = entry.PostedOn ? new Date(entry.PostedOn) : null;
                         var formattedPostedDate = postedDate
-                            ? approvedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+                            ? postedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
                             : "";
 
                         $("#PostedOnDate").dxTextBox("instance").option("value", formattedPostedDate);
                         $("#journalvoucher").dxTextBox("instance").option("value", entry.PostedVoucherNo);
                         // Disable DevExtreme buttons based on submission and verification date
+                        debugger;
                         const btnSubmit = $("#btnSubmit").dxButton("instance");
                         const btnVerify = $("#btnVerify").dxButton("instance");
                         const btnPostJournal = $("#btnPostJournal").dxButton("instance");
@@ -1204,6 +1206,7 @@
                         const btnmoveup = $("#btnMoveUp").dxButton("instance");
                         const btnmovedown = $("#btnMoveDown").dxButton("instance");
                         const btnlayout = $("#journaleditButtonLayout1").dxDropDownButton("instance");
+                        const btnattach = $("#btnAttach").dxButton("instance");
 
                         if (formattedsubmittedDate) {
                             btnSubmit.option("disabled", true);
@@ -1222,9 +1225,12 @@
                         if (formattedPostedDate) {
                             disable();
                             btnPrint.option("disabled", false);
+                            btnPrint.repaint();
                             btnmoveup.option("disabled", false);
                             btnmovedown.option("disabled", false);
                             btnlayout.option("disabled", false);
+                            btnlayout.repaint();
+                            btnattach.option("disabled", false);
                         }
 
 
@@ -1826,24 +1832,30 @@
         $("#EffectiveDate").dxDateBox("instance").option("disabled", true);
         $("#VoucherNarration").dxTextArea("instance").option("disabled", true);
 
-        // 🔒 Disable DataGrid editing
-        $("#dataGrid").dxDataGrid("instance").option("editing", {
+        // 🔒 Disable DataGrid editing and context menu
+        let dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+        dataGrid.option("editing", {
             allowUpdating: false,
             allowDeleting: false,
             mode: "cell",
             useIcons: true
         });
 
+        // ⛔ Disable the context menu
+        dataGrid.option("onContextMenuPreparing", null); // Or: () => {}
+
         // 🔒 Disable all buttons except #btnjournalBack
         $("button").not("#btnjournalBack").prop("disabled", true);
 
-        // If your DevExtreme buttons are not native <button> elements, use this instead:
+        // 🔒 Disable DevExtreme buttons except #btnjournalBack
         $(".dx-button").each(function () {
             const $btn = $(this);
             if (!$btn.closest("#btnjournalBack").length) {
                 $btn.dxButton("instance").option("disabled", true);
             }
         });
+
         // 🔒 Wait for grid content to be rendered and disable cell buttons
         setTimeout(function () {
             $("#dataGrid").find(".dx-button").each(function () {
@@ -1853,8 +1865,8 @@
                 }
             });
         }, 100);
-
     }
+
 
 
     function submit() {

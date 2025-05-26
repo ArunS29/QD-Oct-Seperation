@@ -282,6 +282,28 @@
             .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
             )
     </div>
+   
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnPostAvgCost")
+                .Text("Post Average Cost")
+                .Icon("cart") // Or use custom icon with .ElementAttr
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Contained)
+                .Width(180)
+                .OnClick("onPostAverageCost"))
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnPostCogsLedger")
+                .Text("Post COGS To Ledger")
+                .Icon("check") // You can replace with a custom icon as well
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Contained)
+                .Width(180)
+                .OnClick("onPostCogsToLedger"))
+    </div>
 
 
     <div class="btn-container">
@@ -461,9 +483,9 @@
             .OnClick("navigateToInvoiceEdit")
             )
     </div>
-  
-    
-        <div class="btn-container">
+
+
+    <div class="btn-containerIvoiceEdit">
             @(Html.DevExtreme().Button()
                 .ID("btnPurchaseDetails")
                 .Text(new JS("formatMessage('Purchase Details')"))
@@ -747,7 +769,18 @@
 
                         </div>
 
+    <div class="btn-containerIvoiceEdit">
+        @(Html.DevExtreme().Button()
+                .ID("btncreatevatinvoice")
+                .Text(new JS("formatMessage('Create VAT Invoice')"))
+                .Icon("edit")
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Type(ButtonType.Normal)
+                .ElementAttr(new { @class = "bold-button" })
+                .OnClick("onCreateVatInvoiceClick")
+                )
 
+    </div>
                  
 
      <div class="btn-containerIvoiceEdit">
@@ -2115,7 +2148,22 @@
     });
     ////Credit Note Function for reports
 
+        function onPostAverageCost() {
+        // Your logic here
+        DevExpress.ui.notify("Posting average cost...", "info", 2000);
+    }
 
+    function onPostCogsToLedger() {
+        // Your logic here
+        DevExpress.ui.notify("Posting COGS to ledger...", "info", 2000);
+    }
+
+            function onCreateVatInvoiceClick(e) {
+        DevExpress.ui.dialog.alert(
+            "Cannot continue saving with errors, please clear the errors and continue.",
+            "Clear Errors"
+        );
+    }
 
     async function handleCreditReportPrinting(e) {
         const itemText = e.itemData?.text;
@@ -2232,6 +2280,7 @@
             console.warn("Unknown print option selected.");
         }
     }
+       
 
     // Example handler function for debit note
     // function handleDebitNotePrinting(itemText) {

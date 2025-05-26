@@ -100,6 +100,9 @@
         width: 100%;
     }
 
+    .limited-footer .btn-container:not(:has(#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach)) {
+        display: none !important;
+    }
 
     .horizontal-container {
         display: flex;
@@ -494,7 +497,6 @@
         </text>);
 
                     item.Add().Title("Quote Text").Icon("detailslayout").Text("Quote Text").Template(@<text>
-            <div class="dx-card layout-container">
                 <!-- Subject -->
                 <div class="form-row">
                     <div class="form-column">
@@ -568,7 +570,6 @@
                 </div>
         </text>);
                     item.Add().Text("Branch / Division").Icon("home").Title("Branch / Division").Template(@<text>
-            <div class="dx-card p-3">
                 <div class="row g-2">
                     <div class="col-md-4">
                         <div>
@@ -750,82 +751,74 @@
                     item.Add().Text("Signatories").Icon("user").Title("Signatories").Template(@<text>
             <div class="form-container">
                 <div class="dx-card p-3">
-                    <table class=" table-borderless w-100">
-                        <thead>
-                            <tr>
-                                <th>Prepared By</th>
-                                <th>Verified By</th>
-                                <th>Approved By</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <!-- Prepared By SelectBox -->
-                                <td>
-                                    @(Html.DevExtreme().SelectBox()
-                                    .ID("preparedBy")
-                                    .DataSource(new[] { "User 1", "User 2", "User 3" })
-                                    .ShowClearButton(true)
-                                    .ShowDropDownButton(true)
-                                    .Width("100%")
-                                    )
-                                </td>
 
-                                <!-- Verified By SelectBox -->
-                                <td>
-                                    @(Html.DevExtreme().SelectBox()
-                                    .ID("verifiedBy")
-                                    .DataSource(new[] { "Verifier 1", "Verifier 2", "Verifier 3" })
-                                    .ShowClearButton(true)
-                                    .ShowDropDownButton(true)
-                                    .Width("100%")
-                                    )
-                                </td>
+                    <!-- Row: SelectBoxes with Button -->
+                    <div class="form-row" style=" display: flex; gap: 24px; margin-bottom: 16px;">
+                        <!-- Prepared By -->
+                        <div class="form-group" style="  flex: 1;display: flex; flex-direction: column; justify-content: flex-start;">
+                            <div class="selectbox-group" style="align-items:end; display:flex;">
+                                @(Html.DevExtreme().SelectBox()
+                                .ID("preparedBy")
+                                .Label("Prepared By")
+                                .LabelMode(EditorLabelMode.Outside)
+                                .DataSource(new[] { "User 1", "User 2", "User 3" })
+                                .ShowClearButton(true)
+                                .ShowDropDownButton(true)
+                                .Width("100%")
+                                )
+                                @(Html.DevExtreme().Button()
+                                .ID("btnpreparedby")
+                                .Icon("plus")
+                                .ElementAttr("class", "button-alignment-down")
+                                .OnClick("redirecttopreparedBy")
+                                )
+                            </div>
+                            <div class="checkbox-group" style="display: contents;">
+                                @(Html.DevExtreme().CheckBox().ID("showSeal").Value(true).Text("Show Company Seal"))
+                                @(Html.DevExtreme().CheckBox().ID("showSignature").Value(true).Text("Show Signature"))
+                                @(Html.DevExtreme().CheckBox().ID("printLetterhead").Value(true).Text("Print in Letter Head"))
+                            </div>
+                        </div>
 
-                                <!-- Approved By SelectBox -->
-                                <td>
-                                    @(Html.DevExtreme().SelectBox()
-                                    .ID("approvedBy")
-                                    .DataSource(new[] { "Approver 1", "Approver 2", "Approver 3" })
-                                    .ShowClearButton(true)
-                                    .ShowDropDownButton(true)
-                                    .Width("100%")
-                                    )
-                                </td>
-                            </tr>
+                        <!-- Verified By -->
+                        <div class="form-group" style="  flex: 1;display: flex; flex-direction: column; justify-content: flex-start;" >
+                            @(Html.DevExtreme().SelectBox()
+                            .ID("verifiedBy")
+                            .Label("Verified By")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .DataSource(new[] { "Verifier 1", "Verifier 2", "Verifier 3" })
+                            .ShowClearButton(true)
+                            .ShowDropDownButton(true)
+                            .Width("100%")
+                            )
+                            <div class="checkbox-group" style=" display: flex;flex-direction: column;margin-top: 8px; gap: 6px;">
+                                @(Html.DevExtreme().CheckBox().ID("pageBreakBefore").Text("Page Break before Terms"))
+                                @(Html.DevExtreme().CheckBox().ID("pageBreakAfter").Text("Page Break after Terms"))
+                                @(Html.DevExtreme().CheckBox().ID("clientAcknowledgement").Text("Print Client Acknowledgement"))
+                            </div>
+                        </div>
 
-                            <tr>
-                                <!-- Prepared By Checkboxes -->
-                                <td>
-                                    @(Html.DevExtreme().CheckBox().ID("showSeal").Value(true).Text("Show Company Seal"))
-                                    <br />
-                                    @(Html.DevExtreme().CheckBox().ID("showSignature").Value(true).Text("Show Signature"))
-                                    <br />
-                                    @(Html.DevExtreme().CheckBox().ID("printLetterhead").Value(true).Text("Print in Letter Head"))
-                                </td>
-
-                                <!-- Verified By Checkboxes -->
-                                <td>
-                                    @(Html.DevExtreme().CheckBox().ID("pageBreakBefore").Text("Page Break before Terms"))
-                                    <br />
-                                    @(Html.DevExtreme().CheckBox().ID("pageBreakAfter").Text("Page Break after Terms"))
-                                    <br />
-                                    @(Html.DevExtreme().CheckBox().ID("clientAcknowledgement").Text("Print Client Acknowledgement"))
-                                </td>
-
-                                <!-- Approved By Checkboxes -->
-                                <td>
-                                    @(Html.DevExtreme().CheckBox().ID("printItemCodeDesc").Text("Print Item Code with Description"))
-                                    <br />
-                                    @(Html.DevExtreme().CheckBox().ID("printItemPartNoDesc").Text("Print Item Part No with Description"))
-                                    <br />
-                                    @(Html.DevExtreme().CheckBox().ID("printItemPartArabicDesc").Text("Print Item Part No with Arabic Desc."))
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                        <!-- Approved By -->
+                        <div class="form-group" style="  flex: 1;display: flex; flex-direction: column; justify-content: flex-start;" >
+                            @(Html.DevExtreme().SelectBox()
+                            .ID("approvedBy")
+                            .Label("Approved By")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .DataSource(new[] { "Approver 1", "Approver 2", "Approver 3" })
+                            .ShowClearButton(true)
+                            .ShowDropDownButton(true)
+                            .Width("100%")
+                            )
+                            <div class="checkbox-group" style=" display: flex;flex-direction: column;margin-top: 8px; gap: 6px;" >
+                                @(Html.DevExtreme().CheckBox().ID("printItemCodeDesc").Text("Print Item Code with Description"))
+                                @(Html.DevExtreme().CheckBox().ID("printItemPartNoDesc").Text("Print Item Part No with Description"))
+                                @(Html.DevExtreme().CheckBox().ID("printItemPartArabicDesc").Text("Print Item Part No with Arabic Desc."))
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+
 
         </text>);
                 })
@@ -841,7 +834,7 @@
         )
         .Columns(columns =>
         {
-            columns.Add().Caption("#").CellTemplate(@<text>
+            columns.Add().DataField("SNo").Caption("#").CellTemplate(@<text>
         @(ViewData["rowIndex"] = ((int)(ViewData["rowIndex"] ?? 0)) + 1)
         @ViewData["rowIndex"]
     </text>).Width(100);
@@ -880,43 +873,6 @@
         )
 </div>
 
-<div class="form-container">
-    <div class="footer-buttons">
-        <div class="col-md-12">
-            <div class="row">
-                <div class="col-md-2">
-                    @(Html.DevExtreme()
-                        .Button()
-                        .ID("btnSave")
-                        .Text("Save")
-                        .Icon("check")
-                        .OnClick("onSaveSupplierMasterClick"))
-                </div>
-                <div class="col-md-2">
-                    @(Html.DevExtreme()
-                        .Button()
-                        .ID("btnSaveClose")
-                        .Text("Save & Close")
-                        .Icon("check"))
-                </div>
-                <div class="col-md-2">
-                    @(Html.DevExtreme()
-                        .Button()
-                        .ID("btnDelete")
-                        .Text("Delete")
-                        .Icon("trash"))
-                </div>
-                <div class="col-md-2">
-                    @(Html.DevExtreme()
-                        .Button()
-                        .ID("btnBack")
-                        .Text("Back")
-                        .Icon("arrowleft"))
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 <div class="Head">
     <div class="limited-footer">
         @await Html.PartialAsync("VATModuleFooter")
@@ -1115,6 +1071,32 @@
     // function TypeOfRequest() {
     //     openEntityModal("QuotationTypeOfRequest");
     // }
+
+     $("#btnAddNew").on("click", function (e) {
+        var newRow = {
+            SNo: rowData.length + 1, // Auto-generate SNo
+            ItemCode: ItemNo,
+            Description: "",
+            DescriptionDetails:"",
+            UnitRateMethod: "",
+            Qty: 0,
+            UnitCostPrice: 0.00,
+            Discountdetails: 0.00,
+            UnitPrice: 0.00,
+            QuotedDiscount: 0.00,
+            QuotedDiscountDetails:0.00,
+            VATDesc:0.00,
+            VAT:"",
+            TotalCost:0.00,
+            Total: 0.00,
+            ProfitOrLose:0.00,
+
+        };
+        rowData.push(newRow);
+        dataGridInstance.option("dataSource", rowData);
+        dataGridInstance.refresh();
+    });
+
     $(function () {
     $("#AddNewQuotation").dxTextBox({
     text: formatMessage("Add New Quotation"),
@@ -1124,12 +1106,28 @@
         }
         });
     });
-    function onOpened(e) {
+
+            $(document).ready(function () {
+
+        $(".limited-footer .btn-containerIvoiceEdit").each(function () {
+
+            if (!$(this).find("#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#").length) {
+
+                $(this).remove();
+
+            }
+
+        });
+
+    });
+
+
+
+        function onOpened(e) {
         setTimeout(() => {
             e.component.focus();
         });
     }
-
     function onKeyDown(e) {
         const ddbInstance = e.component;
         if (e.event.keyCode !== 40) return;
@@ -1169,6 +1167,11 @@
     }
     function AddModeReq(){
         const url = `/${tenantName}/IMS/QuotationModeOfRequest`;
+        const title = "";
+        openModal(url, title);
+    }
+      function redirecttopreparedBy(){
+        const url = `/${tenantName}/IMS/Signatories`;
         const title = "";
         openModal(url, title);
     }
