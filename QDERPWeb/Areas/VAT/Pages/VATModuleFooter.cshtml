@@ -694,8 +694,8 @@
             .Type(ButtonType.Success)
             .StylingMode(ButtonStylingMode.Contained)
             .Icon("check")
-            .ElementAttr(new { @class = "bold-button" }) // Optional custom class
-                                                         //.OnClick("onOkClick") // Uncomment and define this function in JS
+            .ElementAttr(new { @class = "bold-button" }) 
+                                                        
             )
     </div>
 
@@ -1990,7 +1990,7 @@
                     reportName = "PrintRegularInvoiceFormat02";
                     break;
                 case "Print Tax Invoice - (Foreign Currency)":
-                    reportName = "ForeignCurrency";
+                    reportName = "Foreigncurrency1";
                     break;
                 case "Print Regular Tax Invoice - Without Signatories (Format 05)":
                     reportName = "RegulartaxinvoicewithoutSignatoriesFormat05";
@@ -2135,10 +2135,10 @@
 
             switch (itemText) {
                 case "Preview Credit Note":
-                        reportName = "PreviewCreditNote"; // Replace with actual report key
+                            reportName = "creditnote"; // Replace with actual report key
                     break;
                 case "Preview Credit Note(Foreign Currency)":
-                    reportName = "CreditForeignCurrency";
+                        reportName = "CreditForeignCurrency";
                     break;
                 case "Credit Note Posting":
                     reportName = "CreditNotePosting"; // Replace with actual report key

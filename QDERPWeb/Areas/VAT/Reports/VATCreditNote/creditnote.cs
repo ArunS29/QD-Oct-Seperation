@@ -114,7 +114,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.VATCreditNote
 
                     using (SqlConnection conn = new SqlConnection(connectionString))
                     {
-                        string query = "SELECT * FROM  WHERE qry201_802VATCreditNoteReport CreditNoteNo = @CreditNoteNo";
+                        string query = "SELECT * FROM   qry201_802VATCreditNoteReport where CreditNoteNo = @CreditNoteNo";
 
                         using (SqlCommand cmd = new SqlCommand(query, conn))
                         {
