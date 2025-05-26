@@ -632,7 +632,6 @@
             .Icon("plus")
             .Width(50)
             .Text(new JS("formatMessage('Add New Receipt')"))
-            .ElementAttr(new { style = "display: none;" })
             .DropDownOptions(options => options.Width(230))
             .Items(items =>
             {
@@ -1605,10 +1604,26 @@
             window.location.href = url;
         }
         
-        function addNewDeliveryNote(e) {
+        function addNewMaterialRequest(e) {
             let url = ''; // Declare once
             switch (e.itemData.text) {
-                case formatMessage('Add New Delivery to Client'):
+                case formatMessage('Add New Material Receipt-From Supplier'):
+                    url = `/${tenantName}/IMS/EditMaterialReceiptsNote`;
+                    break;
+                case formatMessage('Add New Material Receipt-Returned From Project'):
+                    url = `/${tenantName}/IMS/AddNewStoreRequest`;
+                    break;
+                default:
+                    console.log("Clicked item: ", e.itemData.text);
+                    return;
+            }
+
+            window.location.href = url;
+        }
+         function addNewDeliveryNote(e) {
+            let url = ''; // Declare once
+            switch (e.itemData.text) {
+               case formatMessage('Add New Delivery to Client'):
                     url = `/${tenantName}/IMS/AddNewDeliverytoClient`;
                     break;
                 case formatMessage('Add Material Issued To Store(Consumption)'):
