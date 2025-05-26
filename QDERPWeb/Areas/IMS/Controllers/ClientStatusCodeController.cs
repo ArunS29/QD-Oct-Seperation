@@ -12,6 +12,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     public class ClientStatusCodeController : Controller
     {
         private ERPMasterWtDataContext _context;
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+        private readonly ILogger<SalesOrdersController> _logger;
 
         public ClientStatusCodeController(ERPMasterWtDataContext context)
         {
@@ -44,6 +46,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
                 return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
             }
         }
@@ -88,6 +91,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
                 return StatusCode(500, $"Error: {ex.Message}");
             }
         }
@@ -115,6 +119,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
                 return StatusCode(500, $"Update failed: {ex.Message}");
             }
         }

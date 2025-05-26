@@ -67,6 +67,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
+				_logger.LogError($"Error in GetProject: {ex.Message}");
                 return StatusCode(500, "Internal server error: " + ex.Message);
             }
         }
@@ -461,7 +462,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 			}
 			catch (Exception ex)
 			{
-				// await transaction.RollbackAsync();
+				_logger.LogError($"Error in GetProject: {ex.Message}");
 				return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
 			}
 
@@ -598,6 +599,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 			}
 			catch (Exception ex)
 			{
+				_logger.LogError($"Error in GetProject: {ex.Message}");
 				return StatusCode(500, new { success = false, message = ex.Message });
 			}
 		}
@@ -625,6 +627,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				}
 				catch (Exception ex)
 				{
+					_logger.LogError($"Error in GetProject: {ex.Message}");
 					return StatusCode(500, $"Internal server error: {ex.Message}");
 				}
 			}
@@ -687,6 +690,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				}
 				catch (Exception ex)
 				{
+					_logger.LogError($"Error in GetProject: {ex.Message}");
 					return StatusCode(500, $"Internal server error: {ex.Message}");
 				}
 			}
@@ -732,6 +736,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 			}
 			catch (Exception ex)
 			{
+				_logger.LogError($"Error in GetProject: {ex.Message}");
 				return StatusCode(500, new { success = false, message = ex.Message });
 			}
 		}
@@ -814,50 +819,58 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 		[HttpPost]
 		public async Task<IActionResult> VerifyMPR(string mprNo)
 		{
-			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			try
 			{
-				return Unauthorized(new { message = "Invalid tenant context." });
+				if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+				{
+					return Unauthorized(new { message = "Invalid tenant context." });
+				}
+
+				if (string.IsNullOrEmpty(mprNo))
+				{
+					return BadRequest(new { message = "Mprno is required." });
+				}
+
+				var voucher = await dbContext.Tbl60601purchaseRequestMasters
+					.FirstOrDefaultAsync(v => v.Mprno == mprNo);
+
+				if (voucher == null)
+				{
+					return NotFound(new { message = "Credit note not found." });
+				}
+
+				var userName = HttpContext.Session.GetString("UserName");
+				var userIdString = HttpContext.Session.GetString("UserId");
+
+				if (!int.TryParse(userIdString, out int userId))
+				{
+					return Unauthorized(new { message = "Invalid or missing UserId in session." });
+				}
+
+				// Update voucher fields
+				voucher.IsVerified = true;
+				voucher.VerifiedOn = DateTime.Now;
+				voucher.VerifiedBy = userName;
+				voucher.PurchaseRequestStatusId = 32; // Enquiry/Request Verified
+
+				var signatoryId = await GetSignatoryIDfromUserID(userId);
+				if (signatoryId.HasValue)
+				{
+					voucher.MprverifiedSign = (byte)signatoryId.Value;
+				}
+
+				await dbContext.SaveChangesAsync();
+
+				return Ok(new
+				{
+					message = "Material Purchase Request has been Verified and processed for Approval."
+				});
 			}
-
-			if (string.IsNullOrEmpty(mprNo))
+			catch (Exception ex)
 			{
-				return BadRequest(new { message = "Mprno is required." });
+				_logger.LogError($"Error in GetProject: {ex.Message}");
+				return StatusCode(500, new { message = "Internal Server Error", ex.Message });
 			}
-
-			var voucher = await dbContext.Tbl60601purchaseRequestMasters
-				.FirstOrDefaultAsync(v => v.Mprno == mprNo);
-
-			if (voucher == null)
-			{
-				return NotFound(new { message = "Credit note not found." });
-			}
-
-			var userName = HttpContext.Session.GetString("UserName");
-			var userIdString = HttpContext.Session.GetString("UserId");
-
-			if (!int.TryParse(userIdString, out int userId))
-			{
-				return Unauthorized(new { message = "Invalid or missing UserId in session." });
-			}
-
-			// Update voucher fields
-			voucher.IsVerified = true;
-			voucher.VerifiedOn = DateTime.Now;
-			voucher.VerifiedBy = userName;
-			voucher.PurchaseRequestStatusId = 32; // Enquiry/Request Verified
-
-			var signatoryId = await GetSignatoryIDfromUserID(userId);
-			if (signatoryId.HasValue)
-			{
-				voucher.MprverifiedSign = (byte)signatoryId.Value;
-			}
-
-			await dbContext.SaveChangesAsync();
-
-			return Ok(new
-			{
-				message = "Material Purchase Request has been Verified and processed for Approval."
-			});
 		}
 		[HttpPost]
 		public async Task<ActionResult> ApproveMPR(string mprNo)
@@ -910,6 +923,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				}
 				catch (Exception ex)
 				{
+					_logger.LogError($"Error in GetProject: {ex.Message}");
 					return BadRequest(new { Message = ex.Message });
 				}
 			}
@@ -956,6 +970,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				}
 				catch (Exception ex)
 				{
+					_logger.LogError($"Error in GetProject: {ex.Message}");
 					return BadRequest(new { Message = ex.Message });
 				}
 			}

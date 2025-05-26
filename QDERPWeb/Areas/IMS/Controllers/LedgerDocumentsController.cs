@@ -142,6 +142,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
                 return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
             }
             }
@@ -152,29 +153,37 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateDocumentEntries([FromBody] List<Tbl20116LedgerDocument> documents)
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            try
             {
-                foreach (var doc in documents)
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    var existing = await dbContext.Tbl20116LedgerDocuments
-                        .FirstOrDefaultAsync(d => d.DocumentNo == doc.DocumentNo);
-
-                    if (existing != null)
+                    foreach (var doc in documents)
                     {
-                        existing.DocumentType = doc.DocumentType;
-                        existing.DocumentRefNo = doc.DocumentRefNo;
-                        existing.DocumentRemarks = doc.DocumentRemarks;
-                        existing.DocumentExpDate = doc.DocumentExpDate;
-                        existing.DocumentExpDateAr = doc.DocumentExpDateAr;
-                        existing.DocumentNotificationDate = doc.DocumentNotificationDate;
+                        var existing = await dbContext.Tbl20116LedgerDocuments
+                            .FirstOrDefaultAsync(d => d.DocumentNo == doc.DocumentNo);
+
+                        if (existing != null)
+                        {
+                            existing.DocumentType = doc.DocumentType;
+                            existing.DocumentRefNo = doc.DocumentRefNo;
+                            existing.DocumentRemarks = doc.DocumentRemarks;
+                            existing.DocumentExpDate = doc.DocumentExpDate;
+                            existing.DocumentExpDateAr = doc.DocumentExpDateAr;
+                            existing.DocumentNotificationDate = doc.DocumentNotificationDate;
+                        }
                     }
+
+                    await dbContext.SaveChangesAsync();
+                    return Ok(new { success = true });
                 }
 
-                await dbContext.SaveChangesAsync();
-                return Ok(new { success = true });
+                return Unauthorized(new { success = false });
             }
-
-            return Unauthorized(new { success = false });
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while fetching the data.", ex });
+            }
         }
 
     }

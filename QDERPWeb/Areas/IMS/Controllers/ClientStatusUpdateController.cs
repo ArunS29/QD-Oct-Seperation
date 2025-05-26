@@ -75,19 +75,26 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         [HttpGet]
         public IActionResult GetClientStatusById(long clientStatusNo)
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            try
             {
-                var item = dbContext.Tbl30104ClientStatuses
-                    .FirstOrDefault(x => x.ClientStatusNo == clientStatusNo);
-
-                if (item != null)
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    return Ok(item);
+                    var item = dbContext.Tbl30104ClientStatuses
+                        .FirstOrDefault(x => x.ClientStatusNo == clientStatusNo);
+
+                    if (item != null)
+                    {
+                        return Ok(item);
+                    }
+
+                    return NotFound(new { success = false, message = "Client status not found" });
                 }
-
-                return NotFound(new { success = false, message = "Client status not found" });
             }
-
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while fetching the data.", ex });
+            }
             return Unauthorized(new { success = false, message = "Invalid tenant." });
         }
 
@@ -143,11 +150,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError($"Error in GetProject: {ex.Message}");
                     return StatusCode(500, new
-                    {
-                        success = false,
-                        message = "Error saving data: " + ex.Message
-                    });
+                        {
+                            success = false,
+                            message = "Error saving data: " + ex.Message
+                        });
                 }
             }
 
@@ -177,6 +185,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError($"Error in GetProject: {ex.Message}");
                     return StatusCode(500, new { success = false, message = $"Delete failed: {ex.Message}" });
                 }
             }
