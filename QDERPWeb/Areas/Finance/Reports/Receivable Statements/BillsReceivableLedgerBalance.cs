@@ -124,8 +124,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
                 var querySql = @"
             SELECT * 
             FROM qry205_027AgeingBillsReceivableWtColumns  
-            WHERE (@AccountID IS NULL OR AccountHeadNo = @AccountID)
-            AND VoucherDate BETWEEN @StartDate AND @EndDate";
+            WHERE (@AccountID IS NULL OR AccountHeadNo = @AccountID)"
+            ;
 
                 var customQuery = new CustomSqlQuery
                 {

@@ -1,5 +1,8 @@
 ﻿var dictionary = {
     "en": {
+        "Preview Journal EntryForm": "Preview Journal EntryForm",
+        "Preview Journal EntryForm(with Employee Cost)": "Preview Journal EntryForm(with Employee Cost)",
+        "Edit Posted Voucher": "Edit Posted Voucher",
         "Save And Close": "Save And Close",
         "MPRNo": "MPRNo",
         "MPR Date": "MPR Date",

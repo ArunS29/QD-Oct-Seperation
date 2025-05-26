@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Identity.Client;
+using QD.ERP.Web.Areas.Finance.Reports.TrialBalance.AgeingReports;
 
 namespace QD.ERP.Web.Pages
 {
@@ -31,7 +32,7 @@ namespace QD.ERP.Web.Pages
             _tenantDbContextHelper = tenantDbContextHelper;
         }
 
-        public IActionResult OnGet(string reportName, string accountId, DateTime? frmDate, DateTime? toDate)
+        public IActionResult OnGet(string reportName, string accountId, DateTime? frmDate, DateTime? toDate,string accountGroup)
         {
             if (string.IsNullOrEmpty(reportName))
                 return BadRequest("Invalid report name.");
@@ -180,6 +181,11 @@ namespace QD.ERP.Web.Pages
                 case "XtraReportAgeingreportsummary":
                     Report = new XtraReportAgeingreportsummary();
                     break;
+                case "Group":
+                    Report = new QD.ERP.Web.Areas.Finance.Reports.Register.Group(accountGroup, frmDate.Value, toDate.Value,
+                        tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                    break;
+
                 default:
                     return NotFound("Report not found.");
             }
