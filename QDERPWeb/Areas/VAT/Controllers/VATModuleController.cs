@@ -3766,6 +3766,30 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 			return Unauthorized(new { message = "Invalid tenant.", success = false });
 
 		}
+        [HttpGet]
+        public async Task<IActionResult> GetInvoiceNumbers()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var result = await dbContext.Tbl20170VatcreditNoteMasters
+                    .Select(g => new
+                    {
+                        g.InvoiceNo,
+						
+					    
+                    })
+                    .ToListAsync();
+
+                    return Ok(result);
+                }
+            }
+            catch (Exception ex) { throw ex; }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+        }
+
 
         [HttpGet]
         public async Task<IActionResult> GetInvoiceSubTypes()

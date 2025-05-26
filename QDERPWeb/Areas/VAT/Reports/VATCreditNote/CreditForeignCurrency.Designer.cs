@@ -856,7 +856,7 @@
             this.xrLabel67,
             this.xrLabel66,
             this.xrLabel65});
-            this.TopMargin.HeightF = 1102F;
+            this.TopMargin.HeightF = 1031.667F;
             this.TopMargin.Name = "TopMargin";
             // 
             // pageInfo1
@@ -4175,11 +4175,12 @@
             // 
             // BottomMargin
             // 
-            this.BottomMargin.HeightF = 30F;
+            this.BottomMargin.HeightF = 0F;
             this.BottomMargin.Name = "BottomMargin";
             // 
             // Detail
             // 
+            this.Detail.Expanded = false;
             this.Detail.HeightF = 1.333618F;
             this.Detail.Name = "Detail";
             // 
@@ -5214,7 +5215,7 @@
             this.DataMember = "qry201_802VATCreditNoteReport";
             this.DataSource = this.sqlDataSource1;
             this.Font = new DevExpress.Drawing.DXFont("Cambria", 10F);
-            this.Margins = new DevExpress.Drawing.DXMargins(28F, 30F, 1102F, 30F);
+            this.Margins = new DevExpress.Drawing.DXMargins(28F, 30F, 1031.667F, 0F);
             this.PageHeight = 1169;
             this.PageWidth = 1000;
             this.PaperKind = DevExpress.Drawing.Printing.DXPaperKind.Custom;

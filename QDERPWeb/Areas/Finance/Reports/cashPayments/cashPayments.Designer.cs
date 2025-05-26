@@ -151,6 +151,7 @@
             this.xrLabel2 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel1 = new DevExpress.XtraReports.UI.XRLabel();
             this.Detail = new DevExpress.XtraReports.UI.DetailBand();
+            this.xrSubreport1 = new DevExpress.XtraReports.UI.XRSubreport();
             this.table2 = new DevExpress.XtraReports.UI.XRTable();
             this.tableRow2 = new DevExpress.XtraReports.UI.XRTableRow();
             this.tableCell5 = new DevExpress.XtraReports.UI.XRTableCell();
@@ -435,9 +436,17 @@
             // Detail
             // 
             this.Detail.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
+            this.xrSubreport1,
             this.table2});
-            this.Detail.HeightF = 83.83341F;
+            this.Detail.HeightF = 91.62501F;
             this.Detail.Name = "Detail";
+            // 
+            // xrSubreport1
+            // 
+            this.xrSubreport1.LocationFloat = new DevExpress.Utils.PointFloat(465.3551F, 60.66665F);
+            this.xrSubreport1.Name = "xrSubreport1";
+            this.xrSubreport1.ReportSource = new QD.ERP.Web.Areas.VAT.Reports.B2B.RegularTaxInvoiceSignatoriesFormat005();
+            this.xrSubreport1.SizeF = new System.Drawing.SizeF(285.7813F, 29.66664F);
             // 
             // table2
             // 
@@ -445,7 +454,7 @@
             this.table2.Name = "table2";
             this.table2.Rows.AddRange(new DevExpress.XtraReports.UI.XRTableRow[] {
             this.tableRow2});
-            this.table2.SizeF = new System.Drawing.SizeF(810.0004F, 83.83341F);
+            this.table2.SizeF = new System.Drawing.SizeF(810.0004F, 91.62501F);
             // 
             // tableRow2
             // 
@@ -2065,5 +2074,6 @@
         private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox3;
         private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox5;
         private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox4;
+        private DevExpress.XtraReports.UI.XRSubreport xrSubreport1;
     }
 }

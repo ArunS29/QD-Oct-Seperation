@@ -35,3 +35,9 @@ node_modules/
 .vs/
 /QDERPWeb/DAL/Entities/ERPMasterWtDataContext.cs
 /QDERPWeb/logs
+QDERPWeb/wwwroot/js/vendor.js
+QDERPWeb/wwwroot/js/reporting.viewer.part.bundle.js
+QDERPWeb/wwwroot/js/reporting.designer.part.bundle.js
+QDERPWeb/wwwroot/css/reporting.viewer.part.bundle.css
+QDERPWeb/wwwroot/css/reporting.designer.part.bundle.css
+QDERPWeb/appsettings.json
