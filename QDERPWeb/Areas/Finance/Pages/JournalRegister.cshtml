@@ -268,8 +268,10 @@
             .Type(Format.ShortDate)    // Custom type format
             .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }")).Visible(true);
                 columns.AddFor(m => m.JournalVoucherNarration).Caption(new JS("formatMessage('Journal Voucher Narration')")).Alignment(HorizontalAlignment.Center).Visible(true);
-                columns.AddFor(m => m.DrAmountTotal).Caption(new JS("formatMessage('Dr Amount Total')")).Alignment(HorizontalAlignment.Right).Visible(true);
-                columns.AddFor(m => m.CrAmountTotal).Caption(new JS("formatMessage('Cr Amount Total')")).Alignment(HorizontalAlignment.Right).Visible(true);
+                columns.AddFor(m => m.DrAmountTotal).Caption(new JS("formatMessage('Dr Amount Total')")).Alignment(HorizontalAlignment.Right).Visible(true)
+    .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+                columns.AddFor(m => m.CrAmountTotal).Caption(new JS("formatMessage('Cr Amount Total')")).Alignment(HorizontalAlignment.Right).Visible(true)
+    .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
                 columns.AddFor(m => m.IsSubmittedToFinance).Caption(new JS("formatMessage('Is Submitted To Finance')")).Alignment(HorizontalAlignment.Center)
             .CellTemplate(@<text>
         <div class="dx-icon">
