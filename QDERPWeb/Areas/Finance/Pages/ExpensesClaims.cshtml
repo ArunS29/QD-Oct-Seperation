@@ -644,7 +644,7 @@ columns.Add()
 
     // This function used to call API to get records for the selected values.
     function ddBtnShowRecords_click(duration) {
-        debugger;
+        
         var requesterId = accheadid || '@requesterIdByte';// Ensure it's a number
 
         
@@ -744,7 +744,7 @@ columns.Add()
             dataGrid.selectRows(e.value, false);
         }
         if (e.value) {
-            debugger;
+            
             let grid = $("#dataGrid").dxDataGrid("instance");
             let rowIndex = e.element.closest("tr").index(); // Get the edited row index
             let rowData = grid.getVisibleRows()[rowIndex].data;
@@ -888,7 +888,7 @@ columns.Add()
     }
    
         function onClaimRefNoClick(claimRefNo) {
-            debugger;
+            
             if (!claimRefNo) return;
 
        

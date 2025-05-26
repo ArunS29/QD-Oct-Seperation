@@ -2897,13 +2897,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     {
                         // if (child == null) continue;
 
-                        if (child.InvoiceChildSlNo == null || child.InvoiceChildSlNo == 0)
+                        if (child.CreditNoteChildSlNo == null || child.CreditNoteChildSlNo == 0)
                         {
                             // Create a new instance for each child
                             var aTbl20171VatcreditNoteChild = new Tbl20171VatcreditNoteChild
                             {
                                 CreditNoteNo = child.InvoiceNo,
-                                UnitRate = child.UnitPrice?.GetDecimal() ?? 0m, // Ensure null safety
+                                UnitRate = child.UnitRate, // Ensure null safety
                                 DetailedDescription = child.Description?.GetString() ?? string.Empty, // Null safety
                                 QuantityCredited = child.Qty?.GetDecimal() ?? 0m, // Null safety
                                 TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8,
@@ -2920,7 +2920,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         {
                             // Find and update existing child (Update)
                             var existingChild = await dbContext.Tbl20171VatcreditNoteChildren
-                                .FirstOrDefaultAsync(x => x.CreditNoteChildSlNo == child.InvoiceChildSlNo);
+                                .FirstOrDefaultAsync(x => x.CreditNoteChildSlNo == child.CreditNoteChildSlNo);
 
                             if (existingChild != null)
                             {

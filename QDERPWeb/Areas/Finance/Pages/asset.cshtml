@@ -1715,7 +1715,7 @@
     return null;
 }
     function updateAsset() {
-        debugger;
+        
     const purchaseDateRaw = $("#txtPurchasedDate").dxDateBox("instance").option("value");
     const formattedpurchaseDate = formatDate(purchaseDateRaw);
     console.log("Formatted Purchase Date:", formattedpurchaseDate);
@@ -1857,7 +1857,7 @@
     }
 }
 function onDeleteMaintenanceSchedule(MaintenanceRefNo) {
-    debugger;
+    
        $.ajax({
             url: `/api/AssetView/DeleteMaintenanceSchedule?MaintenanceRefNo=${MaintenanceRefNo}`,
         type: "POST",

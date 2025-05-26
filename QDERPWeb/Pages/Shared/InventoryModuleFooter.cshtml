@@ -579,7 +579,7 @@
             .Width(50)
             .Text(new JS("formatMessage('Add New RFQ')"))
             .ElementAttr(new { style = "display: none;" })
-            // .OnClick("toggleGroupPanel")
+            .OnClick("AddNewRFQ")
             )
 
     </div>
@@ -653,13 +653,13 @@
             .DropDownOptions(options => options.Width(325))
             .Items(items =>
             {
-                items.Add().Text(new JS("formatMessage('Add New Delivery to Client ')"));
+                items.Add().Text(new JS("formatMessage('Add New Delivery to Client')"));
                 items.Add().Text(new JS("formatMessage('Add Material Issued To Store(Consumption)')"));
                 items.Add().Text(new JS("formatMessage('Add Material Issued To Project(Consumption)')"));
                 items.Add().Text(new JS("formatMessage('Add Store Transfers')"));
 
             })
-            .OnItemClick("addNewMaterialRequest")
+            .OnItemClick("addNewDeliveryNote")
             .ShowArrowIcon(false)
             )
     </div>
@@ -1299,9 +1299,12 @@
             // const title = "";
             window.location.href = url;
         }
-          function AddNewSalesOrder() {
-        window.location.href = `/${tenantName}/IMS/AddNewSalesOrder`;
-    }
+        function AddNewSalesOrder() {
+            window.location.href = `/${tenantName}/IMS/AddNewSalesOrder`;
+        }
+        function AddNewRFQ() {
+            window.location.href = `/${tenantName}/IMS/AddNewRFQ`;
+        }
         function addPaymentButton_click(e) {
         let url = "";
         let title = "Payments";
@@ -1592,6 +1595,29 @@
                     url = `/${tenantName}/IMS/AddNewStoreRequest`;
                     break;
                 case formatMessage('Add New Project Request'):
+                    url = `/${tenantName}/IMS/AddNewProjectRequest`;
+                    break;
+                default:
+                    console.log("Clicked item: ", e.itemData.text);
+                    return;
+            }
+
+            window.location.href = url;
+        }
+        
+        function addNewDeliveryNote(e) {
+            let url = ''; // Declare once
+            switch (e.itemData.text) {
+                case formatMessage('Add New Delivery to Client'):
+                    url = `/${tenantName}/IMS/AddNewDeliverytoClient`;
+                    break;
+                case formatMessage('Add Material Issued To Store(Consumption)'):
+                    url = `/${tenantName}/IMS/AddNewStoreRequest`;
+                    break;
+                case formatMessage('Add Material Issued To Project(Consumption)'):
+                    url = `/${tenantName}/IMS/AddNewProjectRequest`;
+                    break;
+                case formatMessage('Add Store Transfers'):
                     url = `/${tenantName}/IMS/AddNewProjectRequest`;
                     break;
                 default:

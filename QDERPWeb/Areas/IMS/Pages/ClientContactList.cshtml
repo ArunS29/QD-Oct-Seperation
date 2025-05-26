@@ -352,7 +352,7 @@ $(document).ready(function () {
 });
 
 function bindClientContactData(clientContactSlNo) {
-    debugger;
+    
     $.ajax({
         url: `/api/ClientContactList/GetContactBySlNo?clientContactSlNo=${clientContactSlNo}`,
         type: 'GET',
@@ -391,7 +391,7 @@ function bindClientContactData(clientContactSlNo) {
         });
     });
     function saveOrUpdateClientList() {
-        debugger;
+        
     const clientContactSlNo = $("#clientHidden").dxTextBox("instance").option("value"); // hidden field for ID
 
     const data = {

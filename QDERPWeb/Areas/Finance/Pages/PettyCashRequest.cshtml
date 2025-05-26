@@ -905,7 +905,7 @@
                 dataGrid.selectRows(e.value, false);
             }
             if (e.value) {
-                debugger;
+                
                 let grid = $("#dataGrid").dxDataGrid("instance");
                 let rowIndex = e.element.closest("tr").index(); // Get the edited row index
                 let rowData = grid.getVisibleRows()[rowIndex].data;

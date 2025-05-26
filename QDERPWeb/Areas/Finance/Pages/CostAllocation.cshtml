@@ -114,7 +114,7 @@
   ">
         <!-- Add the Font Awesome icon -->
         <i class="fa-duotone fa-solid fa-clipboard"
-           style="font-size: 2.5rem; color: goldenrod;"></i>
+           style="font-size: 2.5rem; color: red;"></i>
         <!-- Header text -->
         <h5 class="mb-0" style="font-size: 1.5rem;">Cost Allocation</h5>
     </div>
@@ -389,6 +389,13 @@
                 .Icon("plus")
                 .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
                 )
+            @(Html.DevExtreme().Button()
+                .ID("btnPrint")
+                .Text("Print")
+                .Icon("print")
+                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
+                )
         </div>
         @using (Html.DevExtreme().NamedTemplate("JournalcostAllocationDropdownContentTemplate"))
         {
@@ -606,7 +613,7 @@
     // function dataGridSelectionChanged(e) {
     //     var selectedData = e.selectedRowsData[0];
     //     if (!selectedData) return;
-    //     debugger;
+    
     //     var dataGrid = $("#costdataGrid").dxDataGrid("instance");
     //     var focusedRowIndex = dataGrid.option("focusedRowIndex");
 
@@ -671,7 +678,7 @@
 
         // Debug to ensure VM is correctly populated
         console.log("VM to be sent:", VM);
-        // debugger;
+        
         $.ajax({
             type: "POST",
             url: "/api/CostAllocation/SaveCostAllocation",
@@ -772,7 +779,7 @@
 
     // Function to reset the DataGrid and reinitialize it
     function resetCostDataGrid() {
-        debugger;
+        
         const costdataGrid = $('#costdataGrid').dxDataGrid('instance');
 
         if (costdataGrid) {
@@ -852,7 +859,7 @@
             dataGrid.selectRows(e.value, false);
         }
         if (e.value) {
-            debugger;
+            
             let grid = $("#costdataGrid").dxDataGrid("instance");
             let rowIndex = e.element.closest("tr").index(); // Get the edited row index
             let rowData = grid.getVisibleRows()[rowIndex].data;

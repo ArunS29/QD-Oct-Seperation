@@ -1534,7 +1534,7 @@
         }
     }
 
-    //debugger;
+    
 
     function dataGridSelectionChanged(e) {
         const selectedKey = e.selectedRowKeys[0];
@@ -1618,7 +1618,7 @@
 
         var ChequeNoValidator = $("#ChequeNo").dxValidator("instance");
         var aChequeNoValidator = ChequeNoValidator.validate();
-        // debugger;
+        
         if (aChequeNoValidator.isValid
         ) {
 
@@ -1805,7 +1805,7 @@
                         // Get the latest entry from the filtered data
                         var latestEntry = filteredData.length > 0 ? filteredData[filteredData.length - 1] : null;
                         console.log(latestEntry);
-                        debugger;
+                        
                         if (accheadname != null) {
 
                             if (accheadname && accheadname.startsWith("Cost")) {
@@ -1896,7 +1896,7 @@
                         // Get the latest entry from the filtered data
                         var latestEntry = filteredData.length > 0 ? filteredData[filteredData.length - 1] : null;
                         console.log(latestEntry);
-                        debugger;
+                        
                         if (accheadname != null) {
 
                             if (accheadname && accheadname.startsWith("Salary Payable")) {
@@ -2932,7 +2932,7 @@
         const queryString = Object.keys(params)
             .map(key => `${key}=${params[key]}`)
             .join('&');
-        debugger;
+        
         $.ajax({
             url: `/api/VoucherEntryReceipts/CostAllocation?${queryString}`,
             type: "GET",
@@ -2940,7 +2940,7 @@
             success: function (data) {
                 // Get the popup's unique identifier, for example, use the voucher number
                 
-                debugger;
+                
                 // Check if the popup is already opened
               
                     // Create and store the popup instance
@@ -2961,7 +2961,7 @@
     }
 
     function openPropertyAllocationPopup(params) {
-        debugger;
+        
         const queryString = Object.keys(params)
             .map(key => `${key}=${params[key]}`)
             .join('&');
@@ -2973,7 +2973,7 @@
             success: function (data) {
                 // Get the popup's unique identifier, for example, use the voucher number
                 const popupId = `PropertyAllocationPopup-${params.VoucherEntryNo}`;
-                debugger;
+                
                 // Check if the popup is already opened
                 if (!openedPopups[popupId]) {
                     // Create and store the popup instance
@@ -3010,7 +3010,7 @@
             success: function (data) {
                 // Get the popup's unique identifier, for example, use the voucher number
                 const popupId = `EmployeeAllocationPopup-${params.VoucherEntryNo}`;
-                debugger;
+                
                 // Check if the popup is already opened
                 if (!openedPopups[popupId]) {
                     // Create and store the popup instance
@@ -3047,7 +3047,7 @@
             success: function (data) {
                 // Get the popup's unique identifier, for example, use the voucher number
                 const popupId = `BillsReceivablePopup-${params.VoucherEntryNo}`;
-                debugger;
+                
                 // Check if the popup is already opened
                 if (!openedPopups[popupId]) {
                     // Create and store the popup instance
@@ -3074,7 +3074,7 @@
     }
 
     function openSalaryPopup(params) {
-        debugger;
+        
         const queryString = Object.keys(params)
             .map(key => `${key}=${params[key]}`)
             .join('&');
@@ -3086,7 +3086,7 @@
             success: function (data) {
                 // Get the popup's unique identifier, for example, use the voucher number
                 const popupId = `SalaryPaidEntryPopup-${params.VoucherEntryNo}`;
-                debugger;
+                
                 // Check if the popup is already opened
                 if (!openedPopups[popupId]) {
                     // Create and store the popup instance
@@ -3293,7 +3293,7 @@
                 VoucherAmount: amount,
                 AccountID: accountid
             };
-            debugger;
+            
             if (openedPopups[popupId]) {
                 openedPopups[popupId].show();
             } else {
@@ -3375,7 +3375,7 @@
                 AccountHead: accountHead,
                 VoucherAmount: amount
             };
-            debugger;
+            
             if (openedPopups[popupId]) {
                 openedPopups[popupId].show();
             } else {
@@ -3417,7 +3417,7 @@
                 VoucherAmount: amount,
                 AccountID: accountid
             };
-            debugger;
+            
             if (openedPopups[popupId]) {
                 openedPopups[popupId].show();
             } else {
@@ -3430,7 +3430,7 @@
     //     const argsledno = urlParams.get("argsledno");
 
     //     console.log("Formatted Voucher in ready block:", argsledno);
-    //     debugger;
+    
 
     //     if (argsledno) {
     //         // If argsledno is passed in URL, don't generate a new voucher number
@@ -3645,7 +3645,7 @@
                     // DevExpress.ui.notify("No voucher entries found.", "warning", 2000);
                     return;
                 }
-                debugger;
+                
                 var lastRow = response.data[response.data.length - 1]; // Get the last row
                 var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
 
@@ -3773,7 +3773,7 @@
 
 
         if (oldRowData.DrCr === "Dr") {
-            debugger;
+            
             // Find all corresponding "Cr" rows
             let drRows = allData.filter(row => row.DrCr === "Cr" && row.SysRemarks.includes(oldAccountHead));
 
@@ -3814,7 +3814,7 @@
 
 
         if (oldRowData.DrCr === "Cr") {
-            debugger;
+            
             // Find all corresponding "Cr" rows
             let crRows = allData.filter(row => row.DrCr === "Dr" && row.SysRemarks.includes(`Paid thru: ${oldAccountHead}`));
 

@@ -1,8 +1,8 @@
 ﻿@page
 @model QD.ERP.Web.Areas.IMS.Pages.InventoryDocumentModel
 @{
-}<
-    <style>
+}
+<style>
     /* Style for the textboxes */
     .dx-datagrid .dx-row {
         border-bottom: 1px solid #ccc; /* Border between rows */
@@ -61,8 +61,9 @@
         }
 
     .content-container-top {
-        padding:15px;
+        padding: 15px;
     }
+
     .container {
         display: none !important;
     }
@@ -89,8 +90,8 @@
         display: none;
     }
 
-    .dx-button-text{
-        color:black;
+    .dx-button-text {
+        color: black;
     }
 
     .dx-button-mode-contained.dx-button-success .dx-icon {
@@ -102,39 +103,40 @@
     <div class="header-container">
         <div id="InvnetoryDoc" class="no-border-input"></div>
     </div>
-</div> 
+</div>
 
 <div style="padding: 20px;">
     <div>Enter a New Document & Add to the Existing List:</div>
     <!-- Form Section -->
-    <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+    <div style="display: flex; flex-wrap: wrap; gap: 10px;">
         <!-- Left Column -->
         <div style="flex: 2; min-width: 300px;">
             <div style="display:flex;">
-            <div style="margin-bottom: 10px;">
-                @(Html.DevExtreme().TextBox()
-                    .ID("DocumentNo")
-                    .Label("Document No:")
-                    .LabelMode(EditorLabelMode.Outside)
-                    .Value("1")
-                    .Width("365%"))
-            </div>
+                <div>
+                    @(Html.DevExtreme().TextBox()
+                        .ID("DocumentNo")
+                        .Label("Document No:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Value("1")
+                        .Width(375))
+                </div>
 
-            <div style="margin-left:510px; display:flex; align-items:end;">
-                @(Html.DevExtreme().SelectBox()
-                    .ID("DocType")
-                    .Label("Type of the Document Attached:")
-                    .LabelMode(EditorLabelMode.Outside)
-                    .DataSource(new[] { "Passport", "Visa", "ID", "Work Permit" })
-                    .Width(620))
+                <div style="margin-left:10px; display:flex; align-items:end;">
+                    @(Html.DevExtreme().SelectBox()
+                        .ID("DocType")
+                        .Label("Type of the Document Attached:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .DataSource(new[] { "Passport", "Visa", "ID", "Work Permit" })
+                        .Width(310))
 
                     @(Html.DevExtreme().Button()
                         .ID("btnAdd")
                         .Icon("plus")
                         .Type(ButtonType.Success)
+                        .OnClick("test")
                         )
+                </div>
             </div>
-             </div>
             <div style="margin-bottom: 10px; display: flex; gap: 10px;">
                 @(Html.DevExtreme().TextBox()
                     .ID("ReferenceNo")
@@ -169,9 +171,7 @@
                     .Width("100%"))
             </div>
 
-            <p style="font-size: 15px; margin-left: 770px;">
-                * A Notification will be issued to corresponding user at this date.
-            </p>
+           
         </div>
 
         <!-- Right Column (Document Upload & Add Button) -->
@@ -189,16 +189,18 @@
                     .Text("Add")
                     .Icon("fas fa-plus")
                     .Type(ButtonType.Success)
-                    .Width("88%"))
+                    .Width("80%"))
             </div>
         </div>
     </div>
-
+    <p style="font-size: 15px; margin-left: 300px;">
+        * A Notification will be issued to corresponding user at this date.
+    </p>
     <!-- Grid Section -->
     <div style="text-align-last:center;">
         @(Html.DevExtreme().DataGrid()
             .ID("documentsGrid")
-            .Height(630)
+            .Height(300)
             .ShowBorders(true)
             .ColumnAutoWidth(true)
             .Columns(columns =>
@@ -253,5 +255,10 @@
     });
      function Goback() {
         window.history.back();
+    }
+    function test() {
+        const url = `/${tenantName}/IMS/InventoryDocument`;
+            const title = "";
+                openModal(url, title);
     }
 </script>

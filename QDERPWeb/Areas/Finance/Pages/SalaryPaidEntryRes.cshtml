@@ -483,7 +483,7 @@
     $("#AMbtnSave").on("click", function (e) {
         e.preventDefault();
 
-        // debugger;
+        
         var VM = {
             // alert($("#VoucherNo").dxTextBox("instance").option("value"));
             "AccountGroupId": $("#AccountGroupID").dxTextBox("instance").option("value"),
@@ -524,7 +524,7 @@
         e.preventDefault();
         alert("Are you sure want to exit?");
         window.location.href = "http://localhost:5000/";
-        // debugger;
+        
     });
 
 
@@ -564,7 +564,7 @@
             }
         }
 
-        //debugger;
+        
 
         function dataGridSelectionChanged(e) {
             const selectedKey = e.selectedRowKeys[0];

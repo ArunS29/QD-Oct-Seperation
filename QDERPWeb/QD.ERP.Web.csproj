@@ -50,6 +50,7 @@
 		<PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
 		<PackageReference Include="DevExpress.AspNetCore.Reporting" Version="24.1.6" />
 		<PackageReference Include="DevExpress.Drawing.Skia" Version="24.1.6" />
+		<PackageReference Include="DevExpress.Pdf.Core" Version="24.1.6" />
 		<PackageReference Include="DevExpress.Reporting.Core" Version="24.1.6" />
 		<PackageReference Include="DevExpress.Web.Reporting.Common" Version="24.1.6" />
 		<PackageReference Include="DevExtreme.AspNet.Data" Version="4.0.0" />
