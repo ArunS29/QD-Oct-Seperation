@@ -25,7 +25,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
+        [HttpGet("GetUserddl")]
         public async Task<ActionResult> GetUserddl(DataSourceLoadOptions loadOptions)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
