@@ -19,6 +19,7 @@
             orientation: orientation,
             unit: "mm",
             format: "a1"
+
         });
 
         doc.setFontSize(9); // Default font
@@ -64,6 +65,7 @@
 
             var blobUrl = URL.createObjectURL(pdfBlob);
             newWindow.document.getElementById("pdfViewer").src = blobUrl + "#zoom=80";
+
         });
     }).fail(function () {
         console.error("Failed to load all data.");
