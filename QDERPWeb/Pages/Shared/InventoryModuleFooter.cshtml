@@ -638,7 +638,7 @@
                 items.Add().Text(new JS("formatMessage('Add New Material Receipt-From Supplier')"));
                 items.Add().Text(new JS("formatMessage('Add New Material Receipt-Returned From Project')"));
             })
-            .OnItemClick("addNewMaterialRequest")
+            .OnItemClick("addNewMaterialReceipt")
             .ShowArrowIcon(false)
             )
     </div>
@@ -1608,7 +1608,7 @@
             window.location.href = url;
         }
         
-        function addNewMaterialRequest(e) {
+        function addNewMaterialReceipt(e) {
             let url = ''; // Declare once
             switch (e.itemData.text) {
                 case formatMessage('Add New Material Receipt-From Supplier'):

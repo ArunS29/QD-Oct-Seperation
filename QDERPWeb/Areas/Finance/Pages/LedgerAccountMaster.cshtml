@@ -848,8 +848,7 @@
 
         if (aAccountMasterDropDownBoxValidator.isValid && aAccountGroupValidator.isValid) {
 
-            // **Retrieve User and Date Information**
-            $("#CreatedBy").dxTextBox("instance").option("value", getUN);
+            
             let CreatedBy = $("#CreatedBy").dxTextBox("instance").option("value");
             let CreatedOn = $("#CreatedOn").dxTextBox("instance").option("value");
 
@@ -911,7 +910,6 @@
             console.log("Request Type:", requestType);
             console.log("Data Sent:", VM);
 
-            // **Send AJAX Request**
             $.ajax({
                 type: requestType,
                 url: apiUrl,
@@ -925,7 +923,36 @@
                             "success",
                             2000
                         );
+
+                        // Log success for debugging
                         console.log("Success Response:", response);
+
+                        // Populate audit fields based on operation type
+                        if (isUpdate) {
+                            const modifiedBy = VM.RecordModifiedBy;
+                            const modifiedOn = new Date(VM.RecordModifiedOn);
+
+                            // Format to dd-MMM-yyyy
+                            const formattedDate = modifiedOn.toLocaleDateString('en-GB', {
+                                day: '2-digit',
+                                month: 'short',
+                                year: 'numeric'
+                            }).replace(/ /g, '-');
+                            $("#ModifiedBy").dxTextBox("instance").option("value", modifiedBy || "");
+                            $("#ModifiedOn").dxTextBox("instance").option("value", formattedDate || new Date().toISOString());
+                        } else {
+                            const createdBy = data.AG.RecordCreatedBy;
+                            const createdOn = new Date(data.AG.RecordCreatedOn);
+
+                            // Format to dd-MMM-yyyy
+                            const formattedDate = createdOn.toLocaleDateString('en-GB', {
+                                day: '2-digit',
+                                month: 'short',
+                                year: 'numeric'
+                            }).replace(/ /g, '-');
+                            $("#CreatedBy").dxTextBox("instance").option("value", createdBy || "");
+                            $("#CreatedOn").dxTextBox("instance").option("value", formattedDate || new Date().toISOString());
+                        }
                     } else {
                         alert("Operation failed: " + response.message);
                         console.error("API Error Response:", response);
@@ -936,6 +963,7 @@
                     console.error("AJAX Error:", xhr.responseText);
                 }
             });
+
 
         } else {
             // **Validation Failed - Show Error Dialog**
