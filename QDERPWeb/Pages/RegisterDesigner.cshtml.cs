@@ -13,6 +13,8 @@ using System.IO;
 using System.Linq;
 using ERPMasterWtDataContext = QD.ERP.Web.DAL.Entities.ERPMasterWtDataContext;
 using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis;
+using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.summary_Report;
+using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.Detailed_Report;
 
 namespace QD.ERP.Web.Pages
 {
@@ -105,17 +107,91 @@ namespace QD.ERP.Web.Pages
                         return NotFound("Report not found.");
                 }
             }
-            else if (!string.IsNullOrEmpty(requestedBy) && frmDate.HasValue && toDate.HasValue)
+            else if (frmDate.HasValue && toDate.HasValue)
             {
+                frmDate = frmDate.Value;
+                toDate = toDate.Value;
+
                 switch (reportName)
                 {
+                    case "SummaryReport":
+                        // **Handle requestedBy being empty or null**
+                        string requestedByValue = string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy;
+                        Report = new CostCenterSummaryReport(requestedByValue, frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
+                    case "SummaryReportByDate":
+                        Report = new SummaryReport_ByDate_(
+                            string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
+                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                        );
+                        break;
 
                     case "CostCenterReport":
-                        Report = new CostcenterRepoer(requestedBy, frmDate.Value, toDate.Value,
-                            tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new CostcenterRepoer(
+                            string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
+                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                        );
                         break;
-                    case "SummaryReport":
-                        Report = new CostCenterSummaryReport(requestedBy, frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+
+                    case "CostCenterReportByDate":
+                        Report = new CostcenterBydate(
+                            string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
+                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                        );
+                        break;
+
+                    case "CostCenterGroupReport":
+                        Report = new CostCenterGroupReport(
+                            string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
+                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                        );
+                        break;
+
+                    case "CostCenterGroupReportByDate":
+                        Report = new CostcenterGroupByDate(
+                            string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
+                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                        );
+                        break;
+
+
+
+                    case "DetailReport":
+                        Report = new DetailReport(
+                            string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
+                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                        );
+                        break;
+                    case "DetailedBydate":
+                        Report = new DetailedBydate(
+                            string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
+                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                        );
+                        break;
+                    case "DetailedGroup":
+                        Report = new DetailedGroup(
+                            string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
+                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                        );
+                        break;
+                    case "detailGroupBydate":
+                        Report = new detailGroupBydate(
+                            string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
+                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                        );
+                        break;
+                    case "CostCenterMasterGroup":
+                        Report = new CostCenterMasterGroup(
+                            string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
+                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                        );
+                        break;
+
+                    case "detailedMasterByDate":
+                        Report = new detailedMasterByDate(
+                            string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
+                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                        );
                         break;
                 }   
             }
