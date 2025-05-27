@@ -56,7 +56,7 @@
 
 
 <a href="javascript:void(0);" id="btnOpenDesigner" class="btn-edit-report"
-   onclick="openReportDesigner('@Model.ReportName', '@Model.VoucherType', '@Model.FrmDate', '@Model.ToDate')">
+   onclick="openReportDesigner('@Model.ReportName', '@Model.VoucherType', '@Model.FrmDate', '@Model.ToDate','@Model.requestedBy')">
     <span class="btn-text">Open Designer</span>
     <i class="fa fa-pencil-alt"></i>
 </a>
@@ -272,19 +272,29 @@
         return pathParts[1] || ''; 
     }
 
-    function openReportDesigner(reportName, voucherType, frmDate, toDate) {
+       function openReportDesigner(reportName, voucherType, requestedBy, frmDate, toDate) {
         const tenantName = getTenantNameFromUrl();
 
         console.log("Opening Designer with:");
         console.log("Tenant Name:", tenantName);
         console.log("Report Name:", reportName);
         console.log("Voucher Type:", voucherType);
+        console.log("Requested By:", requestedBy);
         console.log("From Date:", frmDate);
         console.log("To Date:", toDate);
 
-        const reportDesignerUrl = `/${tenantName}/RegisterDesigner?reportName=${encodeURIComponent(reportName)}&voucherType=${encodeURIComponent(voucherType)}&frmDate=${encodeURIComponent(frmDate)}&toDate=${encodeURIComponent(toDate)}`;
+        let reportDesignerUrl = `/${tenantName}/RegisterDesigner?reportName=${encodeURIComponent(reportName)}&frmDate=${encodeURIComponent(frmDate)}&toDate=${encodeURIComponent(toDate)}`;
+
+        // Pass either voucherType or requestedBy, depending on what's provided
+        if (voucherType) {
+            reportDesignerUrl += `&voucherType=${encodeURIComponent(voucherType)}`;
+        } else if (requestedBy) {
+            reportDesignerUrl += `&requestedBy=${encodeURIComponent(requestedBy)}`;
+        }
+
         window.open(reportDesignerUrl, "_blank", "noopener,noreferrer,width=1200,height=800");
     }
+
 
 
 

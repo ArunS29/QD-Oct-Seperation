@@ -87,10 +87,9 @@
     <script src="~/js/jwt-decode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+    <script src="~/js/global/print.js"></script>
     <!-- jsPDF Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="@Url.Content("~/js/global/print.js?v=20250522")"></script>
-
 
     <!-- DevExpress PDF Exporter -->
     <script src="https://cdn3.devexpress.com/jslib/23.1.4/js/dx.all.js"></script>
@@ -1464,11 +1463,17 @@
             </main>
         </div>
     </div>
-    <footer class="text-center py-3 footerContainer" style="display:flex;">
-        <p id="footerMessage1" style="font-weight:bold;"></p>
-        <p> &copy; @DateTime.Now.Year Pulse InfoTech. </p>
+    <footer class="text-center py-3 footerContainer" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem;">
+        <span class="me-3">User Name: @userId</span>
+        <span class="me-3">User ID:  @userName</span>
+        <span class="me-3">Level: <span id="userLevel">Loading...</span></span>
+        <span class="me-3">@DateTime.Now.ToString("M/d/yyyy h:mm:ss tt")</span>
+        <p id="footerMessage1" style="font-weight: bold;"></p>
+        <p>&copy; @DateTime.Now.Year Pulse InfoTech.</p>
         <p id="footerMessage2"></p>
-  </footer>
+    </footer>
+
+
 
     <script src="~/js/localization.js" asp-append-version="true"></script>
     <script src="~/js/popup.js" asp-append-version="true"></script>
@@ -1498,6 +1503,7 @@
     </div>
 
     <script>
+ 
         document.addEventListener("DOMContentLoaded", function () {
             const humanResourcesIcon = document.getElementById("humanResourcesIcon");
             if (humanResourcesIcon) {
@@ -1540,6 +1546,24 @@
                 humanResourcesIcon.setAttribute("data-tooltip", formatMessage("Projects Control"));
             }
         });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch('/api/utility/CheckUserLevel')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('userLevel').innerText = data.userLevel;
+                    } else {
+                        document.getElementById('userLevel').innerText = "N/A";
+                        console.warn("User level not available.");
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('userLevel').innerText = "Error";
+                    console.error("Error fetching user level:", error);
+                });
+        });
+
         $(function () {
             $("#BillsReceivableAll").dxTextBox({
                 text: formatMessage("Bills Receivable (All)"),
@@ -2505,6 +2529,8 @@
 
 
         function handleClick(selectedText) {
+
+                
             var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
             var frmDateBox = $("#frmdateBox").dxDateBox("instance");
             var toDateBox = $("#todateBox").dxDateBox("instance");

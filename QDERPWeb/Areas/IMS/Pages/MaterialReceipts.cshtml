@@ -320,6 +320,14 @@
 		}
 		});
 	});
+	$(function () {
+			var now = new Date();
+			var firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+			var tillmonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+			$("#frmdateBox").dxDateBox("instance").option("value", firstDay);
+			$("#todateBox").dxDateBox("instance").option("value", tillmonth);
+			ddBtnShowRecords_click('range');
+	});
 	function ddBtnShowRecords_click(duration) {
 		 var frmDateBox = $("#frmdateBox").dxDateBox("instance");
 			var toDateBox = $("#todateBox").dxDateBox("instance");

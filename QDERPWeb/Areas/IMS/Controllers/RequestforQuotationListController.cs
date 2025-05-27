@@ -33,45 +33,52 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         [HttpGet]
         public async Task<IActionResult> GetRFQRequest(DateTime? fromDate, DateTime? toDate)
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-            {
-                var query = dbContext.Qry60704rfqviewMasters.AsQueryable();
-
-
-                // Default dates if not provided
-                if (!fromDate.HasValue)
+            try {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1); // Start of the current month
+                    var query = dbContext.Qry60704rfqviewMasters.AsQueryable();
+
+
+                    // Default dates if not provided
+                    if (!fromDate.HasValue)
+                    {
+                        fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1); // Start of the current month
+                    }
+
+                    if (!toDate.HasValue)
+                    {
+                        toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)); // End of the current month
+                    }
+
+                    // Filtering by date range
+                    query = query.Where(i => i.Rfqdate >= fromDate && i.Rfqdate <= toDate);
+
+                    // Fetching the data
+                    var data = await query.Select(i => new
+                    {
+                        i.Rfqno,
+                        i.Rfqdate,
+                        i.Mprno,
+                        i.SupplierName,
+                        i.SupplierQuotationNo,
+                        i.QuoteHasItemsToPo,
+                        i.Pono,
+                        i.NoOfItems,
+                        i.TotalBeforeTax,
+                        i.TotalDiscount,
+                        i.TotalAfterDiscount,
+                    }).ToListAsync();
+
+                    return Json(data);
                 }
 
-                if (!toDate.HasValue)
-                {
-                    toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)); // End of the current month
-                }
-
-                // Filtering by date range
-                query = query.Where(i => i.Rfqdate >= fromDate && i.Rfqdate <= toDate);
-
-                // Fetching the data
-                var data = await query.Select(i => new
-                {
-                    i.Rfqno,
-                    i.Rfqdate,
-                    i.Mprno,
-                    i.SupplierName,
-                    i.SupplierQuotationNo,
-                    i.QuoteHasItemsToPo,
-                    i.Pono,
-                    i.NoOfItems,
-                    i.TotalBeforeTax,
-                    i.TotalDiscount,
-                    i.TotalAfterDiscount,
-                }).ToListAsync();
-
-                return Json(data);
+                return Unauthorized(new { message = "Invalid tenant." });
             }
-
-            return Unauthorized(new { message = "Invalid tenant." });
+            catch (Exception ex)
+                            {
+                    _logger.LogError($"Error in GetProject: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+                }
         }
 
     }

@@ -33,51 +33,61 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         [HttpGet]
         public async Task<IActionResult> GetJobOrders(DateTime? fromDate, DateTime? toDate)
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            try
             {
-                var query = dbContext.Tbl60801jobOrderMasters.AsQueryable();
-
-
-                // Default dates if not provided
-                if (!fromDate.HasValue)
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1); // Start of the current month
+                    var query = dbContext.Tbl60801jobOrderMasters.AsQueryable();
+
+
+                    // Default dates if not provided
+                    if (!fromDate.HasValue)
+                    {
+                        fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1); // Start of the current month
+                    }
+
+                    if (!toDate.HasValue)
+                    {
+                        toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)); // End of the current month
+                    }
+
+                    // Filtering by date range
+                    query = query.Where(i => i.JobOrderDate >= fromDate && i.JobOrderDate <= toDate);
+
+                    // Fetching the data
+                    var data = await query.Select(i => new
+                    {
+                        i.ValveType,
+                        i.JobOrderNo,
+                        i.JobOrderDate,
+                        i.JobOrderDescription,
+                        i.JobOrderStatus,
+                        i.JobOrderType,
+                        i.TagNo,
+                        i.Size,
+                        i.Class,
+                        i.Operator,
+                        i.Materials,
+                        i.Qty,
+                        i.Make,
+                        i.ModelNo,
+                        i.ItemSlNo,
+                        i.WorkOrderNo,
+                        //i.workorderDate
+                    }).ToListAsync();
+
+                    return Json(data);
                 }
 
-                if (!toDate.HasValue)
-                {
-                    toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)); // End of the current month
-                }
-
-                // Filtering by date range
-                query = query.Where(i => i.JobOrderDate >= fromDate && i.JobOrderDate <= toDate);
-
-                // Fetching the data
-                var data = await query.Select(i => new
-                {
-                    i.ValveType,
-                    i.JobOrderNo,
-                    i.JobOrderDate,
-                    i.JobOrderDescription,
-                    i.JobOrderStatus,
-                    i.JobOrderType,
-                    i.TagNo,
-                    i.Size,
-                    i.Class,
-                    i.Operator,
-                    i.Materials,
-                    i.Qty,
-                    i.Make,
-                    i.ModelNo,
-                    i.ItemSlNo,
-                    i.WorkOrderNo,
-                    //i.workorderDate
-                }).ToListAsync();
-
-                return Json(data);
+                return Unauthorized(new { message = "Invalid tenant." });
             }
-
-            return Unauthorized(new { message = "Invalid tenant." });
+            catch (Exception
+            
+             ex)
+            {
+                return StatusCode(500, new { message = "Internal server error." });
+                    return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+            }
         }
     }
 }

@@ -8,6 +8,10 @@ using Newtonsoft.Json;
 using DevExpress.Printing.Utils.DocumentStoring;
 using DevExpress.Pdf;
 using System.IO;
+using PdfSharpCore.Pdf.IO;
+using PdfSharpCore.Pdf;
+using System.Collections.Generic;
+using System.IO;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
@@ -66,61 +70,79 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         [HttpGet]
         public IActionResult GetStockGroups(DataSourceLoadOptions loadOptions)
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            try
             {
-                var query = dbContext.Tbl20165GoodsAndServicesGroups
-                    .Select(x => new
-                    {
-                        x.GsgroupName,
-                        x.GsgroupCode,
-                        x.GsgroupId
-                    });
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var query = dbContext.Tbl20165GoodsAndServicesGroups
+                        .Select(x => new
+                        {
+                            x.GsgroupName,
+                            x.GsgroupCode,
+                            x.GsgroupId
+                        });
 
-                return Json(DataSourceLoader.Load(query, loadOptions));
+                    return Json(DataSourceLoader.Load(query, loadOptions));
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
             }
+            catch (Exception ex)
+            {
+                                    _logger.LogError($"Error in GetProject: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
 
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> GetNextStockNumber(string GsgroupId)
         {
-            if (!byte.TryParse(GsgroupId, out byte groupIdByte))
+            try
             {
-                return BadRequest(new { message = "Invalid Group ID format." });
-            }
-
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-            {
-                var group = await dbContext.Tbl20165GoodsAndServicesGroups
-                    .FirstOrDefaultAsync(x => x.GsgroupId == groupIdByte);
-
-                if (group == null)
-                    return NotFound(new { message = "Group not found." });
-
-                string groupCode = group.GsgroupCode;
-
-                var existingCodes = await dbContext.Tbl20164GoodsAndServicesMasters
-                    .Where(x => x.Gscode.StartsWith(groupCode + "-"))
-                    .Select(x => x.Gscode)
-                    .ToListAsync();
-
-                int maxNumber = 0;
-                foreach (var code in existingCodes)
+                if (!byte.TryParse(GsgroupId, out byte groupIdByte))
                 {
-                    var parts = code.Split('-');
-                    if (parts.Length == 2 && int.TryParse(parts[1], out int number))
-                    {
-                        if (number > maxNumber)
-                            maxNumber = number;
-                    }
+                    return BadRequest(new { message = "Invalid Group ID format." });
                 }
 
-                string nextCode = $"{groupCode}-{(maxNumber + 1):D3}";
-                return Ok(nextCode);
-            }
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var group = await dbContext.Tbl20165GoodsAndServicesGroups
+                        .FirstOrDefaultAsync(x => x.GsgroupId == groupIdByte);
 
-            return Unauthorized(new { message = "Invalid tenant." });
+                    if (group == null)
+                        return NotFound(new { message = "Group not found." });
+
+                    string groupCode = group.GsgroupCode;
+
+                    var existingCodes = await dbContext.Tbl20164GoodsAndServicesMasters
+                        .Where(x => x.Gscode.StartsWith(groupCode + "-"))
+                        .Select(x => x.Gscode)
+                        .ToListAsync();
+
+                    int maxNumber = 0;
+                    foreach (var code in existingCodes)
+                    {
+                        var parts = code.Split('-');
+                        if (parts.Length == 2 && int.TryParse(parts[1], out int number))
+                        {
+                            if (number > maxNumber)
+                                maxNumber = number;
+                        }
+                    }
+
+                    string nextCode = $"{groupCode}-{(maxNumber + 1):D3}";
+                    return Ok(nextCode);
+                }
+
+                return Unauthorized(new { message = "Invalid tenant." });
+            }
+            catch (Exception ex)
+            {
+                                    _logger.LogError($"Error in GetProject: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+
+            }
         }
 
         [HttpGet]
@@ -272,30 +294,39 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         [HttpPost]
         public IActionResult AddGoodsServiceGroup([FromBody] Tbl20165GoodsAndServicesGroup model)
         {
-            if (model == null)
-                return BadRequest(new { message = "Invalid data", success = false });
-
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            try
             {
-                byte maxId = dbContext.Tbl20165GoodsAndServicesGroups
-                        .Select(x => x.GsgroupId)
-                        .AsEnumerable()                // Bring data to memory first
-                        .DefaultIfEmpty((byte)0)
-                        .Max();
+                if (model == null)
+                    return BadRequest(new { message = "Invalid data", success = false });
 
-                // Check to avoid exceeding byte.MaxValue (255)
-                if (maxId == byte.MaxValue)
-                    return BadRequest(new { message = "Maximum group ID limit reached.", success = false });
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    byte maxId = dbContext.Tbl20165GoodsAndServicesGroups
+                            .Select(x => x.GsgroupId)
+                            .AsEnumerable()                // Bring data to memory first
+                            .DefaultIfEmpty((byte)0)
+                            .Max();
 
-                model.GsgroupId = (byte)(maxId + 1);
+                    // Check to avoid exceeding byte.MaxValue (255)
+                    if (maxId == byte.MaxValue)
+                        return BadRequest(new { message = "Maximum group ID limit reached.", success = false });
 
-                dbContext.Tbl20165GoodsAndServicesGroups.Add(model);
-                dbContext.SaveChanges();
+                    model.GsgroupId = (byte)(maxId + 1);
 
-                return Ok(new { message = "Saved successfully", success = true });
+                    dbContext.Tbl20165GoodsAndServicesGroups.Add(model);
+                    dbContext.SaveChanges();
+
+                    return Ok(new { message = "Saved successfully", success = true });
+                }
+
+                return Unauthorized(new { message = "Invalid tenant", success = false });
             }
+            catch (Exception ex)
+            {
+            _logger.LogError($"Error in GetProject: {ex.Message}");
+            return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
 
-            return Unauthorized(new { message = "Invalid tenant", success = false });
+            }
         }
         [HttpPut]
         public IActionResult UpdateGoodsService(int key, [FromForm] string values)
@@ -768,21 +799,30 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         [HttpGet]
         public async Task<IActionResult> GetByCode(string code)
         {
-            if (string.IsNullOrWhiteSpace(code))
-                return BadRequest(new { message = "Code is required", success = false });
-
-            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            try
             {
-                return Unauthorized(new { message = "Invalid tenant", success = false });
+                if (string.IsNullOrWhiteSpace(code))
+                    return BadRequest(new { message = "Code is required", success = false });
+
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    return Unauthorized(new { message = "Invalid tenant", success = false });
+                }
+
+                var item = await dbContext.Tbl20164GoodsAndServicesMasters
+                    .FirstOrDefaultAsync(x => x.Gscode == code);
+
+                if (item == null)
+                    return NotFound(new { message = "Item not found", success = false });
+
+                return Ok(item);
             }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
 
-            var item = await dbContext.Tbl20164GoodsAndServicesMasters
-                .FirstOrDefaultAsync(x => x.Gscode == code);
-
-            if (item == null)
-                return NotFound(new { message = "Item not found", success = false });
-
-            return Ok(item);
+            }
         }
         [HttpGet]
         public async Task<IActionResult> GetStockCardData(string gscode)
@@ -807,6 +847,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
                 return StatusCode(500, "An error occurred: " + ex.Message);
             }
         }
@@ -830,6 +871,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
                 return StatusCode(500, "An error occurred: " + ex.Message);
             }
         }
@@ -854,6 +896,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
                 return StatusCode(500, "An error occurred: " + ex.Message);
             }
         }
@@ -878,6 +921,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
                 return StatusCode(500, "An error occurred: " + ex.Message);
             }
         }
@@ -902,6 +946,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
                 return StatusCode(500, "An error occurred: " + ex.Message);
             }
         }
@@ -925,6 +970,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
@@ -948,23 +994,33 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
         [HttpGet]
         public async Task<IActionResult> GetUnitCodeOptions()
         {
-            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                return Unauthorized("Invalid tenant context.");
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized("Invalid tenant context.");
 
-            var unitCodes = await dbContext.Tbl40111PropertyUnitCodes
-                .Select(u => new {
-                    u.UnitCode,
-                    u.UnitType,
-                    u.UnitDesc
-                }).ToListAsync();
+                var unitCodes = await dbContext.Tbl40111PropertyUnitCodes
+                    .Select(u => new
+                    {
+                        u.UnitCode,
+                        u.UnitType,
+                        u.UnitDesc
+                    }).ToListAsync();
 
-            return Ok(unitCodes);
+                return Ok(unitCodes);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
         }
         [HttpGet]
         public async Task<IActionResult> GetPurchaseGridData(string gscode)
@@ -985,6 +1041,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
@@ -1007,63 +1064,81 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
-        //[HttpPost("MergeSelectedDocuments")]
-        //public IActionResult MergeSelectedDocuments([FromBody] List<string> filePaths)
-        //{
-        //    using var outputStream = new MemoryStream();
-        //    var outputDocument = new PdfDocumentProcessor();
+        [HttpPost]
+        public IActionResult MergeSelectedDocuments([FromBody] List<string> filePaths)
+        {
+            try
+            {
+                var outputDocument = new PdfSharpCore.Pdf.PdfDocument();
 
-        //    foreach (var path in filePaths)
-        //    {
-        //        if (!System.IO.File.Exists(path))
-        //            continue;
+                foreach (var filePath in filePaths)
+                {
+                    if (!System.IO.File.Exists(filePath)) continue;
 
-        //        var tempDocument = new PdfDocumentProcessor();
-        //        tempDocument.LoadDocument(path);
+                    using var inputDocument = PdfSharpCore.Pdf.IO.PdfReader.Open(filePath, PdfSharpCore.Pdf.IO.PdfDocumentOpenMode.Import);
+                    for (int idx = 0; idx < inputDocument.PageCount; idx++)
+                    {
+                        var page = inputDocument.Pages[idx];
+                        outputDocument.AddPage(page);
+                    }
+                }
 
-        //        for (int i = 0; i < tempDocument.Document.Pages.Count; i++)
-        //        {
-        //            outputDocument.Document.Pages.Add(tempDocument.Document.Pages[i]);
-        //        }
-        //    }
+                using var stream = new MemoryStream();
+                outputDocument.Save(stream, false);
+                stream.Position = 0;
 
-            
-        //    outputDocument.SaveDocument(outputStream);
-        //    outputStream.Position = 0;
+                return File(stream.ToArray(), "application/pdf", "MergedDocument.pdf");
+            }
+            catch (Exception ex)
+            {
+                  _logger.LogError($"Error in GetProject: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+            }
+        }
 
-        //    return File(outputStream.ToArray(), "application/pdf", "MergedDocument.pdf");
-        //}
 
-        [HttpPost("DownloadMultipleDocuments")]
+
+        [HttpPost]
         public async Task<IActionResult> DownloadMultipleDocuments([FromBody] List<string> filePaths)
         {
-            using var zipStream = new MemoryStream();
-            using var archive = new System.IO.Compression.ZipArchive(zipStream, System.IO.Compression.ZipArchiveMode.Create, true);
-
-            foreach (var fullPath in filePaths)
+            try
             {
-                if (!System.IO.File.Exists(fullPath)) continue;
+                using var zipStream = new MemoryStream();
+                using var archive = new System.IO.Compression.ZipArchive(zipStream, System.IO.Compression.ZipArchiveMode.Create, true);
 
-                var fileName = Path.GetFileName(fullPath);
-                var entry = archive.CreateEntry(fileName);
-                using var entryStream = entry.Open();
-                using var fileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read);
-                await fileStream.CopyToAsync(entryStream);
+                foreach (var fullPath in filePaths)
+                {
+                    if (!System.IO.File.Exists(fullPath)) continue;
+
+                    var fileName = Path.GetFileName(fullPath);
+                    var entry = archive.CreateEntry(fileName, System.IO.Compression.CompressionLevel.Fastest);
+
+                    using var entryStream = entry.Open();
+                    using var fileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read);
+                    await fileStream.CopyToAsync(entryStream);
+                }
+
+                zipStream.Position = 0;
+                return File(zipStream.ToArray(), "application/zip", "Documents.zip");
             }
-
-            zipStream.Position = 0;
-            return File(zipStream.ToArray(), "application/zip", "Documents.zip");
+            catch (Exception ex)
+            {
+                  _logger.LogError($"Error in GetProject: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+            }
         }
+
         [HttpDelete]
         public async Task<IActionResult> DeleteByCode(string code)
         {
             if (string.IsNullOrWhiteSpace(code))
                 return BadRequest(new { success = false, message = "Invalid stock code." });
 
-            // Get tenant and DB context
+            
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 return Unauthorized(new { success = false, message = "Unauthorized access or invalid tenant." });
@@ -1084,6 +1159,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
                 return StatusCode(500, new
                 {
                     success = false,
@@ -1091,8 +1167,152 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     details = ex.Message
                 });
             }
+
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetDocumentTypes()
+        {
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized("Invalid tenant context.");
+
+                var docTypes = await dbContext.Tbl101DocumentTypes
+                    .Select(d => new { id = d.DocumentTypeId, text = d.DocumentType })
+                    .ToListAsync();
+
+                return Ok(docTypes);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> SaveDocument([FromBody] Tbl70003projectDocument model)
+        {
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized("Invalid tenant context.");
+
+                if (string.IsNullOrEmpty(model.DocumentNo))
+                {
+                    
+                    dbContext.Tbl70003projectDocuments.Add(model);
+                }
+                else
+                {
+                    var existing = await dbContext.Tbl70003projectDocuments
+                        .FirstOrDefaultAsync(d => d.DocumentNo == model.DocumentNo);
+
+                    if (existing == null)
+                    {
+                        dbContext.Tbl70003projectDocuments.Add(model);
+                    }
+                    else
+                    {
+                        existing.DocumentType = model.DocumentType;
+                        existing.DocumentRefNo = model.DocumentRefNo;
+                        existing.DocumentRemarks = model.DocumentRemarks;
+                        existing.DocumentExpDate = model.DocumentExpDate;
+                        existing.DocumentExpDateAr = model.DocumentExpDateAr;
+                        existing.DocumentNotificationDate = model.DocumentNotificationDate;
+                        existing.DocumentStatus = model.DocumentStatus;
+                        existing.DocumentStatusRemarks = model.DocumentStatusRemarks;
+                    }
+                }
+
+                await dbContext.SaveChangesAsync();
+                return Json(new { success = true, documentNo = model.DocumentNo });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> GenerateNewDocumentNo()
+        {
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized("Invalid tenant context.");
+
+                var lastDoc = await dbContext.Tbl70003projectDocuments
+                    .OrderByDescending(d => d.DocumentNo)
+                    .FirstOrDefaultAsync();
+
+                if (lastDoc == null || string.IsNullOrEmpty(lastDoc.DocumentNo))
+                    return Ok("1"); 
+
+                
+                if (int.TryParse(lastDoc.DocumentNo, out int lastNumber))
+                    return Ok((lastNumber + 1).ToString());
+
+                return Ok(""); 
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, $"Error generating document number: {ex.Message}");
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetDocuments()
+        {
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized("Invalid tenant context.");
+
+                var documents = await dbContext.Tbl70003projectDocuments
+                    .Select(d => new
+                    {
+                        DocumentNo = d.DocumentNo,
+                        DocumentType = d.DocumentType,
+                        DocumentRefNo = d.DocumentRefNo,
+                        DocumentRemarks = d.DocumentRemarks,
+                        DocumentExpDate = d.DocumentExpDate,
+                        DocumentExpDateAr = d.DocumentExpDateAr,
+                        DocumentNotificationDate = d.DocumentNotificationDate,
+                        ProjectId = d.ProjectId
+                    })
+                    .ToListAsync();
+
+                return Json(documents);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> SaveProjectDocument([FromBody] Tbl70003projectDocument model)
+        {
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized("Invalid tenant context.");
+
+                model.DocumentStatus = 1; 
+                model.DocumentStatusRemarks = "Active"; 
+
+                dbContext.Tbl70003projectDocuments.Add(model);
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Document saved successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
 
     }
 }

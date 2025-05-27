@@ -40,6 +40,7 @@ namespace QD.ERP.Web.Pages
         public string VoucherType { get; private set; }
         public DateTime FrmDate { get; private set; }
         public DateTime ToDate { get; private set; }
+        public string requestedBy { get; private set; }
         public List<string> SelectedValues { get; private set; } = new List<string>();
 
         public IActionResult OnGet(string reportName, string voucherType, DateTime? frmDate, DateTime? toDate, string requestedBy, string[] selectedValues)

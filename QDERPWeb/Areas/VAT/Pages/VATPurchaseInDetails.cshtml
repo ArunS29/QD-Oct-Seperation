@@ -53,6 +53,10 @@
 		color: black;
 	}
 
+	.ledgerResult {
+		overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
+		width: 100%;
+	}
 	.close-btn {
 		position: absolute;
 		top: 10px;
@@ -138,6 +142,14 @@
 		.context-menu-item:not(:last-child) {
 			border-bottom: 1px solid #e0e0e0;
 		}
+
+	.mainContainer {
+		width: 100%;
+	}
+
+	.dx-fieldset.horizontal-container {
+		margin-top: 10px;
+	}
 </style>
 
 <input id="formId" value="frm201LedgerView" type="hidden" />
@@ -217,7 +229,7 @@
 		{
 			columns.Add().Caption("Purchase Bill Details").Columns(bill =>
 			{
-				bill.AddFor(m => m.PurchaseVoucherNo).Caption("Purchase Voucher No").Alignment(HorizontalAlignment.Center).GroupIndex(0);
+				/* bill.AddFor(m => m.PurchaseVoucherNo).Caption("Purchase Voucher No").Alignment(HorizontalAlignment.Center).GroupIndex(0); */
 				bill.AddFor(m => m.PurchaseVoucherNo).Caption("Purchase Voucher No").Alignment(HorizontalAlignment.Center);
 				bill.AddFor(m => m.PurchaseVoucherDate).Caption("Voucher Date").Format("dd-MMM-yyyy").Alignment(HorizontalAlignment.Center);
 				bill.AddFor(m => m.PurchaseBillNo).Caption("Bill No").Alignment(HorizontalAlignment.Center);
@@ -255,15 +267,15 @@
 			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
 				item.AddFor(m => m.CalcLineWithTax)
-			.Caption("Total Amount")
+			.Caption("Amount After Tax")
 			.Alignment(HorizontalAlignment.Right)
 			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 			});
 
-			columns.Add().Caption("Goods In Transit").Columns(transit =>
+			columns.Add().Caption("Goods In Transit(Additional Cost On Purchase Of Material)").Columns(transit =>
 			{
 				transit.AddFor(m => m.IsGoodsInTransitAccount)
-			.Caption("GIT Applicable")
+			.Caption("Is Goods In Transit Account")
 			.Alignment(HorizontalAlignment.Center);
 
 				transit.AddFor(m => m.GoodsInTransitAccountNo)
@@ -271,11 +283,11 @@
 			.Alignment(HorizontalAlignment.Left);
 
 				transit.AddFor(m => m.GoodsInTransitAccountLedger)
-			.Caption("GIT Ledger")
+			.Caption("GIT Account Ledger")
 			.Alignment(HorizontalAlignment.Left);
 
 				transit.AddFor(m => m.GoodsInTransitPurchaseVoucherNo)
-			.Caption("Linked Purchase Voucher")
+			.Caption("GIT Purchase Voucher Linked")
 			.Alignment(HorizontalAlignment.Center);
 			});
 		})
@@ -287,6 +299,10 @@
 		)
  *@
 		@* 	.OnCellClick("function(e) {handleCellClick(e);}") *@
+		.Height(680) // <<< fixed height
+		.ColumnAutoWidth(true)
+		.Width("98%")
+		.WordWrapEnabled(true)
 		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
@@ -597,4 +613,16 @@
 
 		return [day, strmonth, year].join('-');
 	}
+
+	$(function () {
+					$("#VATPurchaseInvoiceWithDetails").dxTextBox({
+						text: formatMessage("Purchase Details"),
+						width:480,
+						readOnly: true,
+									onContentReady: function(e) {
+									$(e.element).addClass("dx-textbox-heading");
+							}
+
+					});
+				});
 </script>

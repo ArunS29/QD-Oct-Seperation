@@ -328,7 +328,7 @@
 	
 	}
 
-	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint22,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
+	.limited-footer .btn-container:not(:has(#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint22,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btncreatevatinvoice)) {
 		display: none !important;
 	}
 
@@ -1423,9 +1423,9 @@
 				</div>
 			</text>);
 
-								columns.Add().DataField("ExcemptionCode")
+								@* columns.Add().DataField("ExcemptionCode")
 					.Caption(new JS("formatMessage('Excemption Code')"))
-					.Width(200);
+					.Width(200); *@
 
 								columns.Add().DataField("VAT")
 					.Caption(new JS("formatMessage('VAT')"))
@@ -2540,7 +2540,7 @@
 
 			$(".limited-footer .btn-containerIvoiceEdit").each(function () {
 
-				if (!$(this).find("#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint22,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag").length) {
+				if (!$(this).find("#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint22,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btncreatevatinvoice").length) {
 
 					$(this).remove();
 
@@ -3053,7 +3053,7 @@
 
 						{
 			dataField: "VATPercentage",
-			caption: formatMessage('VAT%'),
+			caption: formatMessage('VAT Description'),
 			width: 150,
 			editCellTemplate: function(cellElement, cellInfo) {
 				getTaxSlabData().done(function (dropdownData) {
@@ -3103,7 +3103,7 @@
 			}
 		},
 
-						{ dataField: "ExcemptionCode", caption: formatMessage('Excemption Code'), width: 150 },
+						// { dataField: "ExcemptionCode", caption: formatMessage('Excemption Code'), width: 150 },
 
 						{ dataField: "CalcTaxAmount", caption: formatMessage('VAT'), width: 150 },
 
@@ -3579,7 +3579,7 @@
 
 				{
 					dataField: "VATPercentage",
-					caption: formatMessage('VAT%'),
+					caption: formatMessage('VAT Description'),
 					width: 150,
 					editCellTemplate: function (cellElement, cellInfo) {
 						getTaxSlabData().done(function (dropdownData) {
@@ -3629,7 +3629,7 @@
 					}
 				},
 
-				{ dataField: formatMessage('ExcemptionCode'), caption: "Excemption Code", width: 150 },
+				// { dataField: formatMessage('ExcemptionCode'), caption: "Excemption Code", width: 150 },
 
 				{ dataField: "VAT", caption: formatMessage('VAT'), width: 150 },
 
@@ -6658,7 +6658,7 @@
 
 			$(document).ready(function () {
 			var button = $("#btnSave").dxButton("instance");
-			button.option("text", "Update");
+			button.option("text", "Save");
 		});
 
 			$("#btnAttach").on("click", function (e) {

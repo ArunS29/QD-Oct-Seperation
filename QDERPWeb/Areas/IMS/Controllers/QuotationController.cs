@@ -32,49 +32,58 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         [HttpGet]
         public async Task<IActionResult> GetQuotation(DateTime? fromDate, DateTime? toDate)
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            try
             {
-                var query = dbContext.Qry60104quotationViewMasters.AsQueryable();
-
-
-                // Default dates if not provided
-                if (!fromDate.HasValue)
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1); // Start of the current month
+                    var query = dbContext.Qry60104quotationViewMasters.AsQueryable();
+
+
+                    // Default dates if not provided
+                    if (!fromDate.HasValue)
+                    {
+                        fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1); // Start of the current month
+                    }
+
+                    if (!toDate.HasValue)
+                    {
+                        toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)); // End of the current month
+                    }
+
+                    // Filtering by date range
+                    query = query.Where(i => i.SalesOrderDate >= fromDate && i.SalesOrderDate <= toDate);
+
+                    // Fetching the data
+                    var data = await query.Select(i => new
+                    {
+                        i.QuoteNo,
+                        i.QuoteDate,
+                        i.ClientName,
+                        i.ClientRefNo,
+                        i.Mprno,
+                        i.SalesOrderNo,
+                        i.SalesPersonName,
+                        i.IsSubmitted,
+                        i.IsApproved,
+                        i.IsVerified,
+                        i.NoOfItems,
+                        i.TotalBeforeDiscount,
+                        i.TotalWithTax,
+                        i.TotalTaxAmount,
+                        i.TotalAfterDiscount,
+                    }).ToListAsync();
+
+                    return Json(data);
                 }
 
-                if (!toDate.HasValue)
-                {
-                    toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)); // End of the current month
-                }
+                return Unauthorized(new { message = "Invalid tenant." });
 
-                // Filtering by date range
-                query = query.Where(i => i.SalesOrderDate >= fromDate && i.SalesOrderDate <= toDate);
-
-                // Fetching the data
-                var data = await query.Select(i => new
-                {
-                    i.QuoteNo,
-                    i.QuoteDate,
-                    i.ClientName,
-                    i.ClientRefNo,
-                    i.Mprno,
-                    i.SalesOrderNo,
-                    i.SalesPersonName,
-                    i.IsSubmitted,
-                    i.IsApproved,
-                    i.IsVerified,
-                    i.NoOfItems,
-                    i.TotalBeforeDiscount,
-                    i.TotalWithTax,
-                    i.TotalTaxAmount,
-                    i.TotalAfterDiscount,
-                }).ToListAsync();
-
-                return Json(data);
             }
-
-            return Unauthorized(new { message = "Invalid tenant." });
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, new { message = "Internal server error.", error = ex.Message });
+            }
         }
 
 

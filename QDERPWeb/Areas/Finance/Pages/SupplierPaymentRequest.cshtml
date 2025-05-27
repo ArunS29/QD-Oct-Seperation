@@ -64,14 +64,14 @@
                         .RemoteOperations(true)
                         .Columns(columns =>
                         {
-                            columns.Add().DataField("select").Caption(new JS("formatMessage('Select')"))
+                            columns.Add().DataField("select").Visible(true).Caption(new JS("formatMessage('Select')"))
                         .CellTemplate(@<text>
                     <input type="checkbox" class="dx-checkbox" />
                 </text>);
-                            columns.Add().DataField("ReferenceNo").Caption(new JS("formatMessage('Reference No')"));
-                            columns.Add().DataField("PurchaseOrderNo").Caption(new JS("formatMessage('Supplier Bill No')"));
-                            columns.Add().DataField("VoucherDate").Caption(new JS("formatMessage('Voucher Date')"));
-                            columns.Add().DataField("PayableAmount").Caption(new JS("formatMessage('Payable Amount')"))
+                            columns.Add().DataField("ReferenceNo").Visible(true).Caption(new JS("formatMessage('Reference No')"));
+                            columns.Add().DataField("PurchaseOrderNo").Visible(true).Caption(new JS("formatMessage('Supplier Bill No')"));
+                            columns.Add().DataField("VoucherDate").Visible(true).Caption(new JS("formatMessage('Voucher Date')"));
+                            columns.Add().DataField("PayableAmount").Visible(true).Caption(new JS("formatMessage('Payable Amount')"))
                             .Alignment(HorizontalAlignment.Right)
                             .CustomizeText(@"
                 function(e) {

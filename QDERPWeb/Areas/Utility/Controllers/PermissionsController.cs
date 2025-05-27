@@ -41,7 +41,7 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                     using (var dbContext = _dbContextFactory.CreateDbContext(tenant.ConnectionString))
                     {
 
-                        var permissions = dbContext.TblUserAccesses
+                        var permissions = dbContext.TblUserAccessWebs
                             .Where(p => p.UserId == byte.Parse(userId) && p.ItemName.ToLower().StartsWith(formId.ToLower() + "_"))
                             .Select(p => new Permission
                             {

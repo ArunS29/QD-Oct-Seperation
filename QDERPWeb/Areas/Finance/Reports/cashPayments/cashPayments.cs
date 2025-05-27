@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
@@ -6,8 +7,11 @@ using System.Text;
 using DevExpress.XtraPrinting;
 using DevExpress.XtraReports.UI;
 using Microsoft.Extensions.Configuration;
+using QD.ERP.Web.Areas.Finance.Reports.cashPayments;
 using QD.ERP.Web.Service;
 using Svg;
+using System.Drawing.Printing;
+
 
 
 namespace QD.ERP.Web.Areas.Finance.Reports.test
@@ -32,7 +36,24 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
             InitializeComponent();
             SetReportParameters(voucherNo, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb,username);
             LoadReportData(voucherNo);
+            LoadSubreport(voucherNo);
+
+
         }
+        private void LoadSubreport(string voucherNo)
+        {
+            if (string.IsNullOrWhiteSpace(voucherNo)) return;
+
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out _))
+                throw new Exception("Unable to retrieve tenant context.");
+
+            var subReport = new subCostReport();
+            subReport.LoadData(voucherNo, tenant.ConnectionString);
+
+            // ✅ Set the subreport directly
+            xrSubreport1.ReportSource = subReport;
+        }
+
 
         private void SetReportParameters(string voucherNo, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb, string username)
         {
@@ -389,7 +410,10 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
 
                 return words.Trim();
             }
+
         }
+        // Change the event handler signature to match DevExpress's BeforePrint event
+        
 
     }
 }

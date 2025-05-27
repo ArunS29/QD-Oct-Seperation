@@ -1,92 +1,73 @@
 ﻿function exportDataGridToPDF(gridId) {
-    const gridElement = document.getElementById(gridId);
+    var grid = $("#" + gridId).dxDataGrid("instance");
 
-    if (!gridElement) {
-        DevExpress.ui.notify(`Grid element #${gridId} not found.`, "error", 3000);
+    if (!grid) {
+        console.error("DataGrid not found!");
         return;
     }
 
-    if ($(gridElement).is(":hidden")) {
-        DevExpress.ui.notify("Grid is not visible. Please show it before printing.", "warning", 3000);
-        return;
-    }
+    grid.getDataSource().load().done(function (fullData) {
+        const { jsPDF } = window.jspdf;
 
-    let gridInstance = null;
-    let isPivotGrid = false;
+        var columns = grid.getVisibleColumns();
+        var columnCount = columns.length;
 
-    try {
-        gridInstance = $("#" + gridId).dxDataGrid("instance");
-    } catch (e) {
-        gridInstance = null;
-    }
+        // ✅ Define orientation before using it
+        var orientation = columnCount > 10 ? "landscape" : "portrait";
 
-    if (!gridInstance) {
-        try {
-            gridInstance = $("#" + gridId).dxPivotGrid("instance");
-            isPivotGrid = true;
-        } catch (e) {
-            gridInstance = null;
-        }
-    }
+        var doc = new jsPDF({
+            orientation: orientation,
+            unit: "mm",
+            format: "a1"
 
-    if (!gridInstance) {
-        DevExpress.ui.notify("Grid or PivotGrid instance not found!", "error", 3000);
-        return;
-    }
-
-    if (!isPivotGrid) {
-        // DataGrid export code as you have
-    }
-    else {
-        // PivotGrid export with data load wait
-        gridInstance.getDataSource().load().done(function () {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({
-                orientation: "landscape",
-                unit: "mm",
-                format: "a3"
-            });
-
-            doc.setFontSize(9);
-
-            DevExpress.pdfExporter.exportPivotGrid({
-                component: gridInstance,
-                jsPDFDocument: doc,
-                autoTableOptions: {
-                    styles: { fontSize: 8, cellPadding: 2 },
-                    tableWidth: "wrap"
-                }
-            }).then(() => showPDF(doc));
-        }).fail(() => {
-            DevExpress.ui.notify("Failed to load PivotGrid data.", "error", 3000);
         });
-    }
 
-    function showPDF(doc) {
-        const pdfBlob = doc.output("blob");
-        const newWindow = window.open("", "_blank", "width=1200,height=800");
-        newWindow.document.write(`
-            <html>
-            <head>
-                <title>Exported PDF</title>
-                <script>
-                    function printPDF() {
-                        document.getElementById('pdfViewer').contentWindow.print();
-                    }
-                <\/script>
-            </head>
-            <body>
-                <div style="display: flex; justify-content: space-between; padding: 10px; background: #ddd;">
-                    <button onclick="printPDF()">🖨 Print</button>
-                    <button onclick="window.close()">❌ Close</button>
-                </div>
-                <iframe id="pdfViewer" width="100%" height="90%" style="border:none;"></iframe>
-            </body>
-            </html>
-        `);
-        newWindow.document.close();
+        doc.setFontSize(9); // Default font
 
-        const blobUrl = URL.createObjectURL(pdfBlob);
-        newWindow.document.getElementById("pdfViewer").src = blobUrl;
-    }
+        var columnStyles = {};
+        columns.forEach((col, index) => {
+            columnStyles[index] = { cellWidth: "wrap", minCellWidth: 20 };
+        });
+
+        DevExpress.pdfExporter.exportDataGrid({
+            jsPDFDocument: doc,
+            component: grid,
+            autoTableOptions: {
+                styles: { fontSize: 9, cellPadding: 3 },
+                tableWidth: "wrap",
+                columnStyles: columnStyles
+            }
+        }).then(() => {
+            var pdfBlob = doc.output("blob");
+
+            var newWindow = window.open("", "_blank", "width=1200,height=800");
+            newWindow.document.write(`
+                <html>
+                <head>
+                    <title>Exported PDF</title>
+                    <script>
+                        function printPDF() {
+                            document.getElementById('pdfViewer').contentWindow.print();
+                        }
+                    <\/script>
+                </head>
+                <body>
+                    <div style="display: flex; justify-content: space-between; padding: 10px; background: #ddd;">
+                        <button onclick="printPDF()">🖨 Print</button>
+                        <button onclick="window.close()">❌ Close</button>
+                    </div>
+                    <iframe id="pdfViewer" width="100%" height="90%" style="border:none;"></iframe>
+                </body>
+                </html>
+            `);
+
+            newWindow.document.close();
+
+            var blobUrl = URL.createObjectURL(pdfBlob);
+            newWindow.document.getElementById("pdfViewer").src = blobUrl + "#zoom=80";
+
+        });
+    }).fail(function () {
+        console.error("Failed to load all data.");
+    });
 }

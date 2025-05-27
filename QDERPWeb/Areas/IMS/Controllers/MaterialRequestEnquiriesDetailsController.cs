@@ -44,6 +44,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				}
 				catch (Exception ex)
 				{
+					_logger.LogError(ex, "Error fetching VAT credit note details");
 					return StatusCode(500, $"Internal server error: {ex.Message}");
 				}
 			}
@@ -71,6 +72,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				}
 				catch (Exception ex)
 				{
+					_logger.LogError(ex, "Error fetching VAT credit note details");
 					return StatusCode(500, $"Internal server error: {ex.Message}");
 				}
 			}
@@ -97,7 +99,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             catch (Exception ex)
             {
                 // Log the exception details here as needed
-
+			_logger.LogError($"Error in GetProject: {ex.Message}");
                 // Return a JSON response with error details and a 500 status code
                 Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 return Json(new
