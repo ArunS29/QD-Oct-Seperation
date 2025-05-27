@@ -651,7 +651,7 @@
 
 
 
-         function handleReportsClick(e) {
+            function handleReportsClick(e) {
         const selectedText = e.itemData.text;
 
         // Get instances of SelectBox and DateBox components
@@ -670,11 +670,7 @@
             return;
         }
 
-        if (!requestedBy) {
-            alert("Please select a value for 'Requested By'.");
-            return;
-        }
-
+        // Format date as D-MMM-YYYY
         function formatDate(date) {
             let dateObj = new Date(date);
             let day = dateObj.getDate();
@@ -689,15 +685,11 @@
         if (reportMappings[selectedText]) {
             const reportName = reportMappings[selectedText];
 
-            console.log(`Opening report: ${reportName}`);
-            console.log("From Date:", frmDateStr);
-            console.log("To Date:", toDateStr);
-            console.log("Cost Allocation Group:", requestedBy ? requestedBy : "Not provided");
-
-            // Construct the URL with frmDate and toDate as mandatory, and requestedBy if available
+            // Construct the URL with frmDate and toDate (always required)
             let url = `/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
 
-            if (requestedBy) {
+            // Append requestedBy only if selected
+            if (requestedBy && requestedBy !== '') {
                 url += `&requestedBy=${encodeURIComponent(requestedBy)}`;
             }
 
@@ -707,6 +699,7 @@
             console.warn('No report mapping found for:', selectedText);
         }
     }
+
 
 
 
