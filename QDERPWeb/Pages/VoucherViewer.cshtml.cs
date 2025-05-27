@@ -36,7 +36,7 @@ namespace QD.ERP.Web.Pages
         public string VoucherNo { get; private set; }
         public string ReportName { get; private set; }
 
-        public IActionResult OnGet(string reportName, string voucherNo, string invoiceNo, bool isApproved, string debitNoteNo,string CreditNoteNo)
+        public IActionResult OnGet(string reportName, string voucherNo, string invoiceNo, bool isApproved, string debitNoteNo, string CreditNoteNo)
         {
             if (string.IsNullOrEmpty(reportName))
             {
@@ -55,7 +55,7 @@ namespace QD.ERP.Web.Pages
             var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
             var ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                 .FirstOrDefault(x => x.CompanyNameShort == tenantName);
-         
+
 
             var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
             var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
@@ -97,16 +97,26 @@ namespace QD.ERP.Web.Pages
             if (string.IsNullOrEmpty(reportName))
                 return BadRequest("Report name is required.");
 
-            if (reportName == "TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS" ||
-                reportName == "RegulartaxinvoicewithoutSignatoriesFormat05" ||
-                reportName == "Foreigncurrency1" ||
-                reportName == "PrintRegularInvoiceFormat02" ||
-                reportName == "ForeignCurrencyProforma" ||
-                reportName == "ForeignEnglishProforma" ||
-                reportName == "ProformaInvoiceEnglish" ||
-                reportName == "ProformaPreviewInvoice" ||
-                reportName == "ProformaNewFormat" ||
-                reportName == "BillsPurchases")
+            if (
+      reportName == "TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS" ||
+      reportName == "RegulartaxinvoicewithoutSignatoriesFormat05" ||
+      reportName == "Foreigncurrency1" ||
+      reportName == "PrintRegularInvoiceFormat02" ||
+      reportName == "ForeignCurrencyProforma" ||
+      reportName == "ForeignEnglishProforma" ||
+      reportName == "ProformaInvoiceEnglish" ||
+      reportName == "ProformaPreviewInvoice" ||
+      reportName == "ProformaNewFormat" ||
+      reportName == "BillsPurchases" ||
+      reportName == "PrintRegularTaxInvoiceWtDocumentLevelDiscount" ||
+      reportName == "Withoutsignatories" ||
+      reportName == "withsignatories" ||
+      reportName == "RegularTaxInvoiceFormat06" ||
+      reportName == "PrintRegularTaxInvoiceWithSignatories_Format05_"
+  )
+
+
+
             {
                 if (string.IsNullOrEmpty(invoiceNo))
                 {
@@ -117,18 +127,29 @@ namespace QD.ERP.Web.Pages
                 {
                     "TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS" =>
                         new QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE.TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS(
-                            invoiceNo, tenantName, companyName, companyAddress, logoImage,
+
+
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
+
                             companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper),
 
                     "PrintRegularInvoiceFormat02" =>
                         new QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE.PrintRegularInvoiceFormat02(
-                            invoiceNo, tenantName, companyName, companyAddress, logoImage,
+
+
+
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
+
                             companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
                             isApproved, _tenantDbContextHelper),
 
                     "Foreigncurrency1" =>
                         new QD.ERP.Web.Areas.VAT.Reports.B2B.Foreigncurrency1(
-                            invoiceNo, tenantName, companyName, companyAddress, logoImage,
+
+
+
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
+
                             companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
                             isApproved, _tenantDbContextHelper),
 
@@ -146,26 +167,72 @@ namespace QD.ERP.Web.Pages
 
                     "ForeignEnglishProforma" =>
                         new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.ForeignEnglishProforma(
-                            invoiceNo, tenantName, companyName, companyAddress, logoImage,
+
+
+
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
+
                             companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
                             isApproved, _tenantDbContextHelper),
 
                     "ProformaInvoiceEnglish" =>
                         new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.ProformaInvoiceEnglish(
-                            invoiceNo, tenantName, companyName, companyAddress, logoImage,
+
+
+
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
+
                             companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
                             isApproved, _tenantDbContextHelper),
 
                     "ProformaPreviewInvoice" =>
                         new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.ProformaPreviewInvoice(
-                            invoiceNo, tenantName, companyName, companyAddress, logoImage,
+
+
+
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
+
                             companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
                             isApproved, _tenantDbContextHelper),
 
                     "ProformaNewFormat" =>
                         new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.ProformaNewFormat(
-                            invoiceNo, tenantName, companyName, companyAddress, logoImage,
-                            companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper),
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper),
+
+
+
+
+
+
+                    "PrintRegularTaxInvoiceWtDocumentLevelDiscount" =>
+                             new QD.ERP.Web.Areas.VAT.Reports.B2B.PrintRegularTaxInvoiceWtDocumentLevelDiscount(
+                                 invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
+                                 companyNameAr, companyAddressAr,
+                                 isApproved, _tenantDbContextHelper),
+                    "Withoutsignatories" =>
+                    new QD.ERP.Web.Areas.VAT.Reports.B2B.Withoutsignatories(
+                   invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
+                   companyNameAr, companyAddressAr,
+                   isApproved, _tenantDbContextHelper),
+                    "withsignatories" =>
+                 new QD.ERP.Web.Areas.VAT.Reports.B2B.withsignatories2(
+                invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
+                companyNameAr, companyAddressAr,
+                isApproved, _tenantDbContextHelper),
+                    "RegularTaxInvoiceFormat06" =>
+                    new QD.ERP.Web.Areas.VAT.Reports.B2B.RegularTaxInvoiceFormat06(
+                   invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
+                   companyNameAr, companyAddressAr,
+                   isApproved, _tenantDbContextHelper),
+                    "PrintRegularTaxInvoiceWithSignatories_Format05_" =>
+                 new QD.ERP.Web.Areas.VAT.Reports.B2B.PrintRegularTaxInvoiceWithSignatories_Format05_(
+                invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
+                companyNameAr, companyAddressAr,
+                isApproved, _tenantDbContextHelper),
+
+
+
+
 
                     "BillsPurchases" =>
                         throw new NotImplementedException("BillsPurchases report is not implemented."),
@@ -176,7 +243,11 @@ namespace QD.ERP.Web.Pages
                 return Page();
             }
 
+      
             
+
+
+
 
 
             if (reportName == "CreditForeignCurrency" || reportName == "creditnote")
@@ -189,14 +260,22 @@ namespace QD.ERP.Web.Pages
                 CreditNoteNo = CreditNoteNo;
 
                 if (reportName == "CreditForeignCurrency")
+
                 {
                     Report = new QD.ERP.Web.Areas.VAT.Reports.VATCreditNote.creditnote(
                         CreditNoteNo, tenantName, companyName, companyAddress,  companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
                 } else if(reportName == "creditnote")
+
                 {
                     Report = new QD.ERP.Web.Areas.VAT.Reports.VATCreditNote.creditnote(
-                        CreditNoteNo, tenantName, companyName, companyAddress,  companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
+                        CreditNoteNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
                 }
+                else if (reportName == "creditnote")
+                {
+                    Report = new QD.ERP.Web.Areas.VAT.Reports.VATCreditNote.creditnote(
+                        CreditNoteNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
+                }
+
 
 
 
@@ -224,15 +303,15 @@ namespace QD.ERP.Web.Pages
                     Report = new employeecostJournalRegister(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                     break;
                 case "cashPaymentformat2":
-                    Report = new cashPaymentformat2(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName,_tenantDbContextHelper);
+                    Report = new cashPaymentformat2(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                     break;
                 case "SalesReport2":
                     Report = new SalesReport2(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                     break;
                 case "SalesVoucherReport":
-					Report = new SalesVoucherReport(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-					break;
-				case "cashPayments":
+                    Report = new SalesVoucherReport(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                    break;
+                case "cashPayments":
                     Report = new cashPayments(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                     break;
                 case "PreviewClaimRequestForm":

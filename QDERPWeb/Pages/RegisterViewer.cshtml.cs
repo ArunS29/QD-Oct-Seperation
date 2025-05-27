@@ -124,11 +124,13 @@ namespace QD.ERP.Web.Pages
 
             else if (frmDate.HasValue && toDate.HasValue)
             {
+              
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
 
                 switch (reportName)
                 {
+                    
                     case "SummaryReport":
                         // **Handle requestedBy being empty or null**
                         string requestedByValue = string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy;
@@ -144,7 +146,7 @@ namespace QD.ERP.Web.Pages
                     case "CostCenterReport":
                         Report = new CostcenterRepoer(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper
                         );
                         break;
 
@@ -208,15 +210,28 @@ namespace QD.ERP.Web.Pages
                             FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
                         );
                         break;
+                    default:
+                        return NotFound("cost analysis report not found.");
+
+                }
+            }
+
+            ///VAtReports
+           else  if (frmDate.HasValue && toDate.HasValue)
+            {
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+                switch (reportName)
+                {
                     case "TaxSummaryReport":
-                        Report = new TaxSummaryReport(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new TaxSummaryReport(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
                     case "TaxVATReport":
                         Report = new TaxVATReport(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                         break;
-                    case "TaxReportRevenueInArabic":
-                        Report =new TaxReportRevenueInArabic(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
-                        break;
+                    //case "TaxReportRevenueInArabic":
+                    //    Report = new TaxReportRevenueInArabic(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                    //    break;
                     case "CreditSummary":
                         Report = new CreditSummary(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                         break;
@@ -224,16 +239,16 @@ namespace QD.ERP.Web.Pages
                         Report = new DebitNoteSummary(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                         break;
                     case "VATPurchasesAndExpReport":
-                        Report = new VATPurchasesAndExpReport(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new VATPurchasesAndExpReport(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
                     case "TaxSummaryReportPurchaseInArabic":
-                        Report = new TaxSummaryReportPurchaseInArabic(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new TaxSummaryReportPurchaseInArabic(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
                     case "VATReturnsform":
-                        Report = new VATReturnsform(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        Report = new VATReturnsform(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
                     default:
-                        return NotFound("Cost report not found.");
+                        return NotFound("VAT report not found.");
                 }
             }
 

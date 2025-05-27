@@ -31,7 +31,7 @@ namespace QD.ERP.Web.Pages
             _tenantDbContextHelper = tenantDbContextHelper;
         }
 
-        public IActionResult OnGet(string reportName, string voucherType, DateTime? frmDate, DateTime? toDate,string requestedBy)
+        public IActionResult OnGet(string reportName, string voucherType, DateTime? frmDate, DateTime? toDate, string requestedBy)
         {
 
             if (string.IsNullOrEmpty(reportName))
@@ -45,7 +45,7 @@ namespace QD.ERP.Web.Pages
 
             // Get Tenant Name from Session
             var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
-
+            var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
             // Company Info
             var companyDetails = _eRPMasterWtDataContext.Tbl901CompanyDetails
                 .FirstOrDefault(x => x.CompanyNameShort == tenantName);
@@ -129,7 +129,7 @@ namespace QD.ERP.Web.Pages
                     case "CostCenterReport":
                         Report = new CostcenterRepoer(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr,userName, _tenantDbContextHelper
                         );
                         break;
 
@@ -193,12 +193,15 @@ namespace QD.ERP.Web.Pages
                             frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
                         );
                         break;
-                }   
+                    default:
+                        return NotFound("Cost Analysis Report not found.");
+                }
             }
-            else
-            {
-                return BadRequest("Missing required parameters.");
-            }
+
+            //else
+            //{
+            //    return BadRequest("Missing required parameters.");
+            //}
 
             return Page();
         }

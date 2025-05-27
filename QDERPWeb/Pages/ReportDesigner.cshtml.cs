@@ -5,6 +5,7 @@ using QD.ERP.Web.Areas.Finance.Reports;
 using QD.ERP.Web.Areas.Finance.Reports.BillsReceivable;
 using QD.ERP.Web.Areas.Finance.Reports.Payable_Statements;
 using QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements;
+using QD.ERP.Web.Areas.Finance.Reports.TrialBalance;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Reports;
 using System;
@@ -14,7 +15,7 @@ using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Identity.Client;
-using QD.ERP.Web.Areas.Finance.Reports.TrialBalance.AgeingReports;
+using QD.ERP.Web.Areas.Finance.Reports.Register;
 
 namespace QD.ERP.Web.Pages
 {
@@ -32,7 +33,7 @@ namespace QD.ERP.Web.Pages
             _tenantDbContextHelper = tenantDbContextHelper;
         }
 
-        public IActionResult OnGet(string reportName, string accountId, DateTime? frmDate, DateTime? toDate,string accountGroup)
+        public IActionResult OnGet(string reportName, string accountId, DateTime? frmDate, DateTime? toDate,String accountGroup)
         {
             if (string.IsNullOrEmpty(reportName))
                 return BadRequest("Invalid report name.");
@@ -182,15 +183,101 @@ namespace QD.ERP.Web.Pages
                     Report = new XtraReportAgeingreportsummary();
                     break;
                 case "Group":
-                    Report = new QD.ERP.Web.Areas.Finance.Reports.Register.Group(accountGroup, frmDate.Value, toDate.Value,
-                        tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                    if (string.IsNullOrEmpty(accountGroup))
+                        return BadRequest("Account group is required for Group report.");
+
+                    Report = new Group(accountGroup, frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                     break;
+                case "subGroup":
+                    if (string.IsNullOrEmpty(accountGroup))
+                        return BadRequest("Account group is required for subGroup report.");
+
+                    Report = new subGroup(accountGroup, frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                    break;
+                case "TrialBalanceReport":
+                    if (string.IsNullOrEmpty(accountGroup))
+                        return BadRequest("Account group is required for subGroup report.");
+                    Report = new TrialBalanceReport(accountGroup, frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                break;
+                case "TrialBalanceExportFormat":
+                    if (string.IsNullOrEmpty(accountGroup))
+                        return BadRequest("Account group is required for subGroup report.");
+                    Report = new TrialBalance_ExportFormat_(accountGroup, frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper );
+                    break;
+                case "TrialBalanceDrCr":
+                    if (string.IsNullOrEmpty(accountGroup))
+                        return BadRequest("Account group is required for subGroup report.");
+                    Report = new TrialBalanceDrCr(accountGroup, frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                    break;
+                case "IncomeStatements":
+                    if (string.IsNullOrEmpty(accountGroup))
+                        return BadRequest("Account group is required for subGroup report.");
+                    Report = new IncomeStatements(accountGroup, frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                    break;
+                case "incomeStatementsBymonth":
+                    if (string.IsNullOrEmpty(accountGroup))
+                        return BadRequest("Account group is required for subGroup report.");
+                    Report = new incomeStatements_Bymonth_(accountGroup, frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                    break;
+                case "balnceSheet":
+                    if (string.IsNullOrEmpty(accountGroup))
+                        return BadRequest("Account group is required for subGroup report.");
+                    Report = new balnceSheet(accountGroup,  toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                    break;
+                case "BalanceSheetHorizondalFormat":
+                    if (string.IsNullOrEmpty(accountGroup))
+                        return BadRequest("Account group is required for subGroup report.");
+                    Report = new BalanceSheetHorizondalFormat(accountGroup, frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                    break;
+
 
                 default:
                     return NotFound("Report not found.");
-            }
 
-            return Page();
+
+            }
+        
+           return Page();
+
+
         }
+
+
+           //if (!string.IsNullOrEmpty(accountGroup) && frmDate.HasValue && toDate.HasValue)
+           // {
+           //     switch (reportName)
+           //     {
+           //         case "Group":
+           //             Report = new Group(
+           //                 accountGroup, // Use accountGroup, not accountId
+           //                 frmDate.Value,
+           //                 toDate.Value,
+           //                 tenantName,
+           //                 companyName,
+           //                 companyAddress,
+           //                 logoImage,
+           //                 companyNameAr,
+           //                 companyAddressAr,
+           //                 _tenantDbContextHelper
+           //             );
+           //             break;
+           //         case "subGroup":
+           //             Report = new subGroup(
+           //                 accountGroup, // Use accountGroup, not accountId
+           //                 frmDate.Value,
+           //                 toDate.Value,
+           //                 tenantName,
+           //                 companyName,
+           //                 companyAddress,
+           //                 logoImage,
+           //                 companyNameAr,
+           //                 companyAddressAr,
+           //                 _tenantDbContextHelper
+           //             );
+           //             break;
+           //         default:
+           //             return NotFound("Trial Balance Report not found.");
+                   // }
+                //}
     }
 }
