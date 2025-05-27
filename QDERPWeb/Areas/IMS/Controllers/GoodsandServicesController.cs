@@ -21,40 +21,55 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         [HttpGet]
         public IActionResult GetGoodsAndServicesGroups()
         {
-
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            try
             {
-                var groups = dbContext.Tbl20165GoodsAndServicesGroups
-                    .Select(g => new
-                    {
-                        g.GsgroupId,
-                        g.GsgroupName,
-                        g.GsgroupCode
-                    })
-                    .ToList();
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var groups = dbContext.Tbl20165GoodsAndServicesGroups
+                        .Select(g => new
+                        {
+                            g.GsgroupId,
+                            g.GsgroupName,
+                            g.GsgroupCode
+                        })
+                        .ToList();
 
-                return Ok(groups);
+                    return Ok(groups);
+                }
             }
-
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in GetGoodsAndServicesGroups");
+                return StatusCode(500, "Internal Server Error");
+            }
             return Unauthorized(new { message = "Invalid tenant.", success = false });
-        }
+            }
 
         [HttpGet]
         public IActionResult GetLatestClientCode(string categoryCode)
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            try
             {
-                var latestClientCode = dbContext.Tbl20164GoodsAndServicesMasters 
-                    .Where(c => c.Gscode.StartsWith(categoryCode + "-"))
-                    .OrderByDescending(c => c.Gscode)
-                    .Select(c => c.Gscode)
-                    .FirstOrDefault();
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var latestClientCode = dbContext.Tbl20164GoodsAndServicesMasters
+                        .Where(c => c.Gscode.StartsWith(categoryCode + "-"))
+                        .OrderByDescending(c => c.Gscode)
+                        .Select(c => c.Gscode)
+                        .FirstOrDefault();
 
-                return Ok(latestClientCode); // returns e.g., "SW-4"
+                    return Ok(latestClientCode); // returns e.g., "SW-4"
+                }
+
+                return Unauthorized(new { message = "Invalid tenant." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in GetLatestClientCode");
+                return StatusCode(500, "Internal Server Error");
+            }
             }
 
-            return Unauthorized(new { message = "Invalid tenant." });
-        }
 
 
 

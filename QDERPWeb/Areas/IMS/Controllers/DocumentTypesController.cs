@@ -129,22 +129,29 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
         [HttpPost]
         public async Task<IActionResult> DeleteDocumentType([FromBody] Tbl101DocumentType documentType)
-        {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        { try
             {
-                var entity = await dbContext.Tbl101DocumentTypes.FindAsync(documentType.DocumentTypeId);
-                if (entity == null)
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    return NotFound(new { success = false, message = "Document Type not found." });
+                    var entity = await dbContext.Tbl101DocumentTypes.FindAsync(documentType.DocumentTypeId);
+                    if (entity == null)
+                    {
+                        return NotFound(new { success = false, message = "Document Type not found." });
+                    }
+
+                    dbContext.Tbl101DocumentTypes.Remove(entity);
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(new { success = true, message = "Document Type deleted successfully." });
                 }
 
-                dbContext.Tbl101DocumentTypes.Remove(entity);
-                await dbContext.SaveChangesAsync();
-
-                return Ok(new { success = true, message = "Document Type deleted successfully." });
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
             }
-
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in DeleteDocumentType: {ex.Message}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
     }
 }

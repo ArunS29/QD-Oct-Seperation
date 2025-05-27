@@ -41,6 +41,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error in GetProjectSubUnit");
                 return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
             }
         }

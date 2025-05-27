@@ -681,7 +681,7 @@
                         .Type(ButtonType.Normal)
                         .StylingMode(ButtonStylingMode.Outlined)
                         .Icon("save")
-                        .OnClick("function() {alert('This is a Feature (Document Viewer)');}")
+                        .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
                         )
                     </div>
                 </div>
@@ -696,17 +696,17 @@
                         .RemoteOperations(false)
                         .Columns(columns =>
                         {
-                        columns.AddFor(m => m.DepreciationDocNo).Caption("Depreciation Doc No");
-                        columns.AddFor(m => m.DeprStartDate).Caption("Depr Start Date");
-                        columns.AddFor(m => m.DeprEndDate).Caption("Depr End Date");
-                        columns.AddFor(m => m.OpeningBalance).Caption("Opening Balance");
-                        columns.AddFor(m => m.DebitTransaction).Caption("Debit Transaction");
-                        columns.AddFor(m => m.CreditTransaction).Caption("Credit Transaction");
-                        columns.AddFor(m => m.ClosingBalance).Caption("Closing Balance");
-                        columns.AddFor(m => m.DepreciatedPercentage).Caption("Depreciated Percentage");
-                        columns.AddFor(m => m.DepreciationAmount).Caption("Depreciation Amount");
-                        columns.AddFor(m => m.AccumulatedAdjusted).Caption("Accumulated Adjusted");
-                        columns.AddFor(m => m.BookValueAsOnDate).Caption("Book Value As On Date");
+                    columns.AddFor(m => m.DepreciationDocNo).Caption("Depreciation Doc No").Visible(true);
+                    columns.AddFor(m => m.DeprStartDate).Caption("Depr Start Date").Visible(true);
+                        columns.AddFor(m => m.DeprEndDate).Caption("Depr End Date").Visible(true);
+                    columns.AddFor(m => m.OpeningBalance).Caption("Opening Balance").Visible(true);
+                        columns.AddFor(m => m.DebitTransaction).Caption("Debit Transaction").Visible(true);
+                        columns.AddFor(m => m.CreditTransaction).Caption("Credit Transaction").Visible(true);
+                        columns.AddFor(m => m.ClosingBalance).Caption("Closing Balance").Visible(true);
+                        columns.AddFor(m => m.DepreciatedPercentage).Caption("Depreciated Percentage").Visible(true);
+                    columns.AddFor(m => m.DepreciationAmount).Caption("Depreciation Amount").Visible(true);
+                        columns.AddFor(m => m.AccumulatedAdjusted).Caption("Accumulated Adjusted").Visible(true);
+                    columns.AddFor(m => m.BookValueAsOnDate).Caption("Book Value As On Date").Visible(true);
                         })
                         .AllowColumnReordering(true) // Enable column reordering
                         .AllowColumnResizing(true)   // Enable column resizing
@@ -800,12 +800,12 @@
                         columns.AddFor(m => m.DocumentNo).Caption("Doc No");
 
 
-                        columns.AddFor(m => m.DocumentType).Caption("DocumentType");
-                        columns.AddFor(m => m.DocumentRefNo).Caption("Document Ref.No");
-                        columns.AddFor(m => m.DocumentRemarks).Caption("Document Remarks");
-                        columns.AddFor(m => m.DocumentExpDate).Caption("Expiry On");
-                        columns.AddFor(m => m.DocumentExpDateAr).Caption("Expiry Arabic");
-                        columns.AddFor(m => m).Caption("Notify On");
+                    columns.AddFor(m => m.DocumentType).Caption("DocumentType").Visible(true);;
+                    columns.AddFor(m => m.DocumentRefNo).Caption("Document Ref.No").Visible(true);;
+                        columns.AddFor(m => m.DocumentRemarks).Caption("Document Remarks").Visible(true);;
+                    columns.AddFor(m => m.DocumentExpDate).Caption("Expiry On").Visible(true);;
+                    columns.AddFor(m => m.DocumentExpDateAr).Caption("Expiry Arabic").Visible(true);;
+                    columns.AddFor(m => m).Caption("Notify On").Visible(true);;
                         })
                         //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
                         .AllowColumnReordering(true) // Enable column reordering

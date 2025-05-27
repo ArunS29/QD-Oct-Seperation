@@ -33,48 +33,52 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         [HttpGet]
         public async Task<IActionResult> GetDeliveryNotes(DateTime? fromDate, DateTime? toDate)
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            try
             {
-                var query = dbContext.Qry60304deliveryNoteViewMasters.AsQueryable();
-
-
-                // Default dates if not provided
-                if (!fromDate.HasValue)
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1); // Start of the current month
+                    var query = dbContext.Qry60304deliveryNoteViewMasters.AsQueryable();
+
+
+                    // Default dates if not provided
+                    if (!fromDate.HasValue)
+                    {
+                        fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1); // Start of the current month
+                    }
+
+                    if (!toDate.HasValue)
+                    {
+                        toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)); // End of the current month
+                    }
+
+                    // Filtering by date range
+                    query = query.Where(i => i.DeliveryDate >= fromDate && i.DeliveryDate <= toDate);
+
+                    // Fetching the data
+                    var data = await query.Select(i => new
+                    {
+                        i.DeliveredTo,
+                        i.DeliveryNoteNo,
+                        i.DeliveryDate,
+                        i.DeliveryIssuedTo,
+                        i.Mprno,
+                        i.InvoiceNo,
+                        i.ClientName,
+                        i.ClientPono,
+                        i.ClientProject,
+                        i.SalesOrderNo,
+                        i.StoreName
+                    }).ToListAsync();
+
+                    return Json(data);
                 }
-
-                if (!toDate.HasValue)
-                {
-                    toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)); // End of the current month
-                }
-
-                // Filtering by date range
-                query = query.Where(i => i.DeliveryDate >= fromDate && i.DeliveryDate <= toDate);
-
-                // Fetching the data
-                var data = await query.Select(i => new
-                {
-                    i.DeliveredTo,
-                    i.DeliveryNoteNo,
-                    i.DeliveryDate,
-                    i.DeliveryIssuedTo,
-                    i.Mprno,
-                    i.InvoiceNo,
-                    i.ClientName,
-                    i.ClientPono,
-                    i.ClientProject,
-                    i.SalesOrderNo,
-                    i.StoreName
-                }).ToListAsync();
-
-                return Json(data);
+                return Unauthorized(new { message = "Invalid tenant." });
+             }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while fetching delivery notes");
+                return StatusCode(500, "Internal Server Error");
             }
-
-            return Unauthorized(new { message = "Invalid tenant." });
         }
-
-
-
     }
 }

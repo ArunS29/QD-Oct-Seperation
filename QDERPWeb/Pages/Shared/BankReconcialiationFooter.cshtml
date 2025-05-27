@@ -105,6 +105,7 @@
             display: inline-block;
         }
 </style>
+
 <div class="dx-fieldset horizontal-container">
 
     @* <div id="ddButtonLayout"></div> *@
@@ -130,17 +131,7 @@
 
         )
     </div>
-    <div class="btn-container">
-    @(Html.DevExtreme().Button()
-        .ID("btnPrint")
-        .Text(new JS("formatMessage('Print')"))
-        .Type(ButtonType.Normal)
-        .StylingMode(ButtonStylingMode.Outlined)
-        .Icon("print") // Correct icon for printing
-        .Width(180)
-            .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
-    )
-    </div>
+
     <div class="btn-container">
     @(Html.DevExtreme().Button()
         .ID("btnPrintGrid")
@@ -149,7 +140,7 @@
         .StylingMode(ButtonStylingMode.Outlined)
         .Icon("print") // Correct icon for printing
         .Width(180)
-            .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
+            
 
     )
     </div>
@@ -439,6 +430,39 @@
         // Or refresh a specific grid, for example:
         // $("#YourGridID").dxDataGrid("instance").refresh();
     }
+      async function exportGridToPdf() {
+          alert('print')
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
 
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+        DevExpress.pdfExporter.exportDataGrid({
+            jsPDFDocument: doc,
+            component: dataGrid,
+            margin: { top: 20 },
+            customizeCell: function(options) {
+                const gridCell = options.gridCell;
+                const pdfCell = options.pdfCell;
+
+                if (gridCell.rowType === "data") {
+                    pdfCell.text = String(pdfCell.text); // Ensure consistent formatting
+                }
+            }
+        }).then(() => {
+            const blob = doc.output("blob");
+            const url = URL.createObjectURL(blob);
+
+            // Option 1: Open in new tab
+            window.open(url, '_blank');
+
+            // Option 2: Embed in iframe (uncomment if needed)
+            // document.getElementById("pdfViewer").src = url;
+        });
+    }
+
+    $(function () {
+        $("#btnPrintGrid").dxButton("instance").option("onClick", exportGridToPdf);
+    });
 </script>
 
