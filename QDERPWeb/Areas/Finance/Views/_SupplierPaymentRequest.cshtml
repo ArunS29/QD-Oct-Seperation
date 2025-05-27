@@ -400,4 +400,37 @@
                     }
                 });
             });
+
+
+                 async function exportSupplierGridToPdf() {
+             alert('print')
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: "landscape" }); // or portrait
+
+            const grid = $("#dataGrid").dxDataGrid("instance");
+
+            await DevExpress.pdfExporter.exportDataGrid({
+                jsPDFDocument: doc,
+                component: grid,
+                margin: { top: 20 },
+                customizeCell: function (options) {
+                    const gridCell = options.gridCell;
+                    const pdfCell = options.pdfCell;
+
+                    if (gridCell.rowType === "data" && typeof pdfCell.text === "string") {
+                        pdfCell.text = pdfCell.text.replace(/[()]/g, ''); // remove brackets if you want cleaner export
+                    }
+                }
+            });
+
+            const blob = doc.output("blob");
+            const url = URL.createObjectURL(blob);
+
+            // Open in new tab (or use iframe if needed)
+            window.open(url, "_blank");
+        }
+
+        $(function () {
+            $("#supplierPrint").dxButton("instance").option("onClick", exportSupplierGridToPdf);
+        });
 </script>
