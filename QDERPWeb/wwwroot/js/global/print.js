@@ -18,7 +18,8 @@
         var doc = new jsPDF({
             orientation: orientation,
             unit: "mm",
-            format: "a2"
+            format: "a1"
+
         });
 
         doc.setFontSize(9); // Default font
@@ -63,7 +64,8 @@
             newWindow.document.close();
 
             var blobUrl = URL.createObjectURL(pdfBlob);
-            newWindow.document.getElementById("pdfViewer").src = blobUrl + "#zoom=65";
+            newWindow.document.getElementById("pdfViewer").src = blobUrl + "#zoom=80";
+
         });
     }).fail(function () {
         console.error("Failed to load all data.");
