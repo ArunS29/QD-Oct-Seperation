@@ -264,11 +264,11 @@
             .DropDownOptions(options => options.Width(230))
             .Items(items =>
             {
-                items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties");
-                items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock");
-                items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert");
-                items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder");
-                items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save");
+                items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu");
+                items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
+                items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
+                items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
+                items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
             })
             .ShowArrowIcon(false)
             )
@@ -284,8 +284,7 @@
         @(Html.DevExtreme().Button()
             .ID("supplierToggleSearch")
             .Text(new JS("formatMessage('Search')"))
-            .Type(ButtonType.Normal)
-            .StylingMode(ButtonStylingMode.Outlined)
+            
             .Icon("search")
             .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
             .OnClick("togglesupplierFilterRow")
@@ -298,11 +297,13 @@
             
             .Text(new JS("formatMessage('Group')"))
             .ElementAttr(new { @class = "bold-button" })
+            .OnClick("togglesupplierGroupPanel")
             )
         @(Html.DevExtreme().Button()
             .ID("btnaddsupplier")
             .Text("Create Payment Request")
             .Icon("plus")
+            .OnClick("createpayment")
             .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
             )
     </div>
@@ -383,9 +384,12 @@
 				$(this).remove();
 			}
 		});
+        $("#supplierToggleSearch").show();
 	});
+    
     // Footer Filter row button click event
     function togglesupplierFilterRow() {
+        
         var grid = $("#SupplierpaymentdataGrid").dxDataGrid("instance");
         var currentVisibility = grid.option("filterRow.visible");
 
@@ -400,37 +404,185 @@
                     }
                 });
             });
+    function showSubmenu(e) {
+        e.event.stopPropagation();
+        var $submenu = $('#submenuContainer');
+        var $target = $(e.event.target).closest('.dx-item-content');
+        var offset = $target.offset();
+        var elementWidth = $target.outerWidth();
+
+        // Position submenu with a slight margin (e.g., 5px)
+        $submenu.css({
+            'width': 180,
+            'position': 'absolute',
+            'top': offset.top,
+            'left': offset.left + elementWidth + 5, // Add margin
+            'display': 'block'
+        });
+    }
+
+    function closeSubmenu() {
+        $("#submenuContainer").hide();
+    }
+    // Handle the file selection
+    $("#loadLayoutInput").on("change", function (event) {
+        const dataGrid = $("#SupplierpaymentdataGrid").dxDataGrid("instance");
+        const file = event.target.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                try {
+
+                    const layout = JSON.parse(e.target.result);
 
 
-                 async function exportSupplierGridToPdf() {
-             alert('print')
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({ orientation: "landscape" }); // or portrait
+                    dataGrid.state(layout);
+                } catch (error) {
+                    console.error("Error parsing JSON:", error);
+                    alert("Failed to load layout. Please ensure the file is valid JSON.");
+                }
+            };
 
-            const grid = $("#dataGrid").dxDataGrid("instance");
 
-            await DevExpress.pdfExporter.exportDataGrid({
-                jsPDFDocument: doc,
-                component: grid,
-                margin: { top: 20 },
-                customizeCell: function (options) {
-                    const gridCell = options.gridCell;
-                    const pdfCell = options.pdfCell;
+            reader.readAsText(file);
+        }
+    });
+    function setDefaultLayoutClick(e) {
+        var grid = $("#SupplierpaymentdataGrid").dxDataGrid("instance");
+        var form = $('#formId').val();
+        var layout = grid.state();
+        const layoutJson = JSON.stringify(layout, null, 2);
+        console.log(layoutJson);
 
-                    if (gridCell.rowType === "data" && typeof pdfCell.text === "string") {
-                        pdfCell.text = pdfCell.text.replace(/[()]/g, ''); // remove brackets if you want cleaner export
+        $.ajax({
+            url: '/api/Utility/SaveLayout',  // API endpoint
+            type: 'POST',
+            data: {
+                layout: layoutJson,
+                form: form
+            },
+            success: function (data) {
+                DevExpress.ui.notify("Layout saved successfully", "success", 2000);
+            },
+            error: function () {
+                DevExpress.ui.notify("Error while saving data", "error", 2000);
+            }
+        });
+    }
+    function resetLayoutClick(e) {
+        var grid = $("#SupplierpaymentdataGrid").dxDataGrid("instance");
+        var form = $('#formId').val();
+        $.ajax({
+            url: '/api/Utility/SaveLayout',  // API endpoint
+            type: 'POST',
+            data: {
+                layout: null,
+                form: form
+            },
+            success: function (data) {
+                DevExpress.ui.notify("Layout reset successfull", "success", 2000);
+                grid.state({});
+            },
+            error: function () {
+                DevExpress.ui.notify("Error while saving data", "error", 2000);
+            }
+        });
+    }
+
+
+    function loadGridState() {
+        var form = $('#formId').val();
+        // Call the API to get the grid state
+        $.ajax({
+            url: `/api/Utility/LoadLayout`, // Adjust to your actual API endpoint
+            method: 'GET',
+            data: {
+                form: form
+            },
+            success: function (response) {
+                // Get the DataGrid instance
+                var dataGrid = $("#SupplierpaymentdataGrid").dxDataGrid("instance");
+
+                // Load the state into the DataGrid
+                if (response) {
+                    try {
+                        // Parse the JSON string from the file
+                        const layout = JSON.parse(response);
+
+                        // Restore the grid state
+                        dataGrid.state(layout);
+                    } catch (error) {
+                        console.error("Error parsing JSON:", error);
+                        alert("Failed to load layout. Please ensure the JSON is valid.");
                     }
                 }
-            });
-
-            const blob = doc.output("blob");
-            const url = URL.createObjectURL(blob);
-
-            // Open in new tab (or use iframe if needed)
-            window.open(url, "_blank");
-        }
-
-        $(function () {
-            $("#supplierPrint").dxButton("instance").option("onClick", exportSupplierGridToPdf);
+            },
+            error: function (xhr, status, error) {
+                console.error("Error loading grid state:", error);
+            }
         });
+    }
+    function saveLayoutClick(e) {
+
+        var grid = $("#SupplierpaymentdataGrid").dxDataGrid("instance");
+        var layout = grid.state();
+        const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
+        //console.log(layoutJson);
+        // Create a Blob from the JSON string
+        const blob = new Blob([layoutJson], { type: "application/json" });
+        // Create a URL for the Blob
+        const url = URL.createObjectURL(blob);
+        // Create a link element
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "grid-layout.json"; // Set the file name for download
+        // Append the link to the body (needed for Firefox)
+        document.body.appendChild(a);
+        // Programmatically click the link to trigger the download
+        a.click();
+        // Clean up by removing the link and revoking the Object URL
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        //DevExpress.ui.notify("Layout", "success", 600);
+    }
+    function openLayoutClick(e) {
+
+        // Create an input element dynamically
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = "application/json";
+
+        // When a file is selected
+        input.addEventListener("change", function (event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const layout = JSON.parse(e.target.result);
+                    const grid = $("#SupplierpaymentdataGrid").dxDataGrid("instance");
+                    grid.state(layout);
+                    //DevExpress.ui.notify("Layout applied successfully!", "success", 600);
+                } catch (error) {
+                    DevExpress.ui.notify("Invalid layout file!", "error", 600);
+                }
+            };
+
+            reader.readAsText(file);
+        });
+
+        // Trigger the file input click event
+        input.click();
+    }
+    function togglesupplierGroupPanel() {
+        var dataGrid = $("#SupplierpaymentdataGrid").dxDataGrid("instance");
+        var isVisible = dataGrid.option("groupPanel.visible");
+        dataGrid.option("groupPanel.visible", !isVisible);
+    }
+    function createpayment() {
+        window.location.href = `/${tenantName}/Finance/CreatePaymentRequest`;
+    }
 </script>

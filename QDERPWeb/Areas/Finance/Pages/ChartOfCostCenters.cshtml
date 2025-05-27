@@ -282,28 +282,28 @@ function refreshDataGrid() {
                         if (!selectedRowData) {
                             alert("No row selected");
                         } else {
-                                const modal = document.getElementById("masterModal");
-                                const iframe = document.getElementById("modalIframe");
+                                // const modal = document.getElementById("masterModal");
+                                // const iframe = document.getElementById("modalIframe");
 
-                                 iframe.src = `/${tenantName}/Finance/CostCenterMaster?CostAllocationUnitId=${selectedRowData.CostAllocationUnitId}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}`;;
+                                //  iframe.src = `/${tenantName}/Finance/CostCenterMaster?CostAllocationUnitId=${selectedRowData.CostAllocationUnitId}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}`;;
 
-                                modal.style.display = "block";
+                                // // modal.style.display = "none";
 
-                                const closeBtn = modal.querySelector(".close");
-                                closeBtn.onclick = () => {
-                                    modal.style.display = "none";
-                                    refreshDataGrid(); // Refresh the DataGrid when closing
-                                };
+                                // const closeBtn = modal.querySelector(".close");
+                                // closeBtn.onclick = () => {
+                                //     modal.style.display = "none";
+                                //     refreshDataGrid(); // Refresh the DataGrid when closing
+                                // };
 
-                                window.onclick = (event) => {
-                                    if (event.target === modal) {
-                                        modal.style.display = "none";
-                                      refreshDataGrid(); // Refresh when clicking outside
-                                    }
-                                };
+                                // window.onclick = (event) => {
+                                //     if (event.target === modal) {
+                                //         modal.style.display = "none";
+                                //       refreshDataGrid(); // Refresh when clicking outside
+                                //     }
+                                // };
                             // Navigate to the EditCostCenter page
-                            // window.location.href = `/${tenantName}/Finance/CostCenterMaster?CostAllocationUnitId=${selectedRowData.CostAllocationUnitId}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}`;
-                            //&CostAllocationUnit=${encodeURIComponent(selectedRowData.CostAllocationUnit)}&CostAllocationMasterGroup=${encodeURIComponent(selectedRowData.CostAllocationMasterGroup)}&CostAllocationGroup=${encodeURIComponent(selectedRowData.CostAllocationGroup)}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}
+                            window.location.href = `/${tenantName}/Finance/CostCenterMaster?CostAllocationUnitId=${selectedRowData.CostAllocationUnitId}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}`;
+                            // &CostAllocationUnit=${encodeURIComponent(selectedRowData.CostAllocationUnit)}&CostAllocationMasterGroup=${encodeURIComponent(selectedRowData.CostAllocationMasterGroup)}&CostAllocationGroup=${encodeURIComponent(selectedRowData.CostAllocationGroup)}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}
                         }
                     }
                 },

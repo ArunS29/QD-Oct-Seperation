@@ -1016,6 +1016,17 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return BadRequest(new { success = false, message = "Failed to insert voucher." });
             }
         }
+        [HttpGet]
+        public IActionResult IsPLItemLedger(string accountId)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(false);
+            }
+
+            bool isPLItem = dbContext.Qry20111ListOfPandLitems.Any(p => p.AccountId == accountId);
+            return Ok(isPLItem);
+        }
 
 
     }

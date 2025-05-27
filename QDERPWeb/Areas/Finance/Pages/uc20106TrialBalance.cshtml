@@ -130,16 +130,15 @@
                 .DropDownOptions(options => options.Width(230))
                 .Items(items =>
                 {
-                    items.Add().Text("Show Records").Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
-                    items.Add().Text("Today").Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
-                    items.Add().Text("Yesterday").Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-                    items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
+                     items.Add().Text("This Year Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+                   
                     items.Add().Text("This Month Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-                    items.Add().Text("This Month (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-                    items.Add().Text("This Year Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-                    items.Add().Text("This Year (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-                    items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+                    
                     items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+                    
+                    items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+                   
+                     items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
                 })
                 )
         <div class="dx-field dx-field-4" id="check">
@@ -155,8 +154,6 @@
     <!-- Pivot Grid (Will Always Appear Below Filters) -->
     <div id="pivotGridContainer" style="width: 100%;"></div>
 
-   <!-- Grid Footer Partial -->
-    @await Html.PartialAsync("_GridFooter")
 </div>
 
 
@@ -333,10 +330,10 @@
                     data: data
                 },
                 fields: [
-                    { dataField: "AccountGroup", area: "row", caption: "Account Group" },
+                    // { dataField: "AccountGroup", area: "row", caption: "Account Group" },
                     { dataField: "MasterGroup", area: "row", caption: "Master Group" },
                     { dataField: "LedgerNo", area: "row", caption: "Ledger No" },
-                    { dataField: "Category", area: "row", caption: "Category" },
+                    // { dataField: "Category", area: "row", caption: "Category" },
                     //{ dataField: "VoucherNo", area: "column", caption: "Voucher No" },
                    // { dataField: "VoucherDate", area: "column", caption: "Voucher Date", dataType: "date", format: "shortDate" },
                     //{ dataField: "VoucherEntryNo", area: "column", caption: "Voucher Entry No" },
