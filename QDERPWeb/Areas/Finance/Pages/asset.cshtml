@@ -1668,7 +1668,7 @@
             $("#txtenteredby").dxTextBox("instance").option("value", assetData.AddedBy);
        
             $("#txtenteredon").dxTextBox("instance").option("value", formatDate(assetData.AddedOn));
-            $("#txtmodifiedby").dxTextBox("instance").option("value", getUN);
+            $("#txtmodifiedby").dxTextBox("instance").option("value", assetData.ModifiedBy);
             console.log("uan:", getUN);
            
             function formatDate(date) {

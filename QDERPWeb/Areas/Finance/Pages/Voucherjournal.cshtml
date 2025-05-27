@@ -330,7 +330,7 @@
             .Label("Convertion Rate")
             .LabelMode(EditorLabelMode.Outside)
             .ID("txtCurrencyRate")
-            .Value("")
+            .Value("0.00")
             //  .ReadOnly(true) // Make it read-only
             .Width(160)
             )
@@ -990,7 +990,7 @@
         var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
         var accountHead = $("#ddAccountHead").dxDropDownBox("instance").option("value");
         var voucherAmount = $("#txtVoucherAmount").dxNumberBox("instance").option("value");
-        var drCr = lastDrCr; // Set DrCr based on the previous entry
+        var drCr = $("#sbDrCr").dxSelectBox("instance").option("value");; // Set DrCr based on the previous entry
         var entryNarration = $("#txtEntryNarration").dxTextArea("instance").option("value");
 
         // Reset previous error styles

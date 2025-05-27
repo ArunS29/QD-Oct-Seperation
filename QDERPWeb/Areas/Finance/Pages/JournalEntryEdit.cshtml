@@ -1066,7 +1066,25 @@
                     {
                         text: "Cost Allocation",
                         onItemClick: function () {
-                            openAllocationPopup("Cost", params);
+                            $.ajax({
+                                type: "GET",
+                                url: `/api/JournalEntryEdit/IsPLItemLedger?accountId=${encodeURIComponent(selectedAccountId)}`,
+                                success: function (isPLItem) {
+                                    
+                                    if (isPLItem== true) {
+                                        openAllocationPopup("Cost", params);
+                                    } else {
+                                        DevExpress.ui.dialog.alert(
+                                            "The Ledger is not a Cost/Revenue Ledger for allocating Cost, Please Check the Ledger again.<br/>Cost Allocation can only be added for P & L Items",
+                                            "Ledger is Not for Cost Allocation."
+                                        );
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    DevExpress.ui.dialog.alert("Error checking account type: " + error, "Error");
+                                    console.error("Check P&L API error:", xhr.responseText);
+                                }
+                            });
                         }
                     },
                     {
