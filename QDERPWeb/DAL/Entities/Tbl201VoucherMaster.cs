@@ -9,7 +9,7 @@ public partial class Tbl201VoucherMaster
 {
     public string VoucherNo { get; set; }
 
-    public DateTime VoucherDate { get; set; }
+    public DateTime? VoucherDate { get; set; }
 
     public string VoucherRefNo { get; set; }
 
@@ -71,7 +71,7 @@ public partial class Tbl201VoucherMaster
 
     public string RentalPayslipNo { get; set; }
     //  public object VoucherEntries { get; internal set; }
-    public int currencyid { get; set; }
-    public int basecurrencyid { get; set; }
-    public Decimal currencyrate { get; set; }
+    public int? currencyid { get; set; }
+    public int? basecurrencyid { get; set; }
+    public Decimal? currencyrate { get; set; }
 }

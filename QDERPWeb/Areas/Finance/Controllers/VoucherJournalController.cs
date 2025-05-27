@@ -471,6 +471,7 @@ namespace QDWEB.Areas.Finance.Controllers
                   VoucherAmount = i.VoucherAmount, // No need for special handling for "Cr"
                   EntryNarration = i.EntryNarration,
                   AccountHead = i.AccountHead,
+                  AccountId = i.AccountHead,
                   SysRemarks = i.SysRemarks
               })
               .ToList(); // Execute the query

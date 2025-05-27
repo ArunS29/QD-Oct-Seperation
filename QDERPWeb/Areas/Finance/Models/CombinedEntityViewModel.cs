@@ -49,6 +49,7 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public decimal? CrAmount { get; set; }
         public string EntryNarration { get; set; }
         public string AccountHead { get; set; }
+        public string AccountId { get; set; }
         public string SysRemarks { get; set; }
         public long VoucherEntryNo { get; set; }
         public decimal? VoucherAmountFormatted { get; set; }
@@ -571,5 +572,6 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string NewVoucherNo { get; set; }
     }
 
+   
 }
 
