@@ -157,12 +157,14 @@
                         {
                         totalItems.Add()
                         .Column("DrAmount")
+
                         .SummaryType(SummaryType.Sum)
                         .CustomizeText(
                         "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
                         );
                         totalItems.Add()
                         .Column("CrAmount")
+                        
                         .SummaryType(SummaryType.Sum)
                         .CustomizeText(
                         "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"

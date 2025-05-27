@@ -33,66 +33,82 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         [HttpGet]
         public async Task<IActionResult> GetSalesOrders(DateTime? fromDate, DateTime? toDate)
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            try
             {
-                var query = dbContext.Qry60204salesOrderViewMasters.AsQueryable();
-
-
-                // Default dates if not provided
-                if (!fromDate.HasValue)
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1); // Start of the current month
+                    var query = dbContext.Qry60204salesOrderViewMasters.AsQueryable();
+
+
+                    // Default dates if not provided
+                    if (!fromDate.HasValue)
+                    {
+                        fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1); // Start of the current month
+                    }
+
+                    if (!toDate.HasValue)
+                    {
+                        toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)); // End of the current month
+                    }
+
+                    // Filtering by date range
+                    query = query.Where(i => i.SalesOrderDate >= fromDate && i.SalesOrderDate <= toDate);
+
+                    // Fetching the data
+                    var data = await query.Select(i => new
+                    {
+                        i.SalesOrderNo,
+                        i.SalesOrderDate,
+                        i.ClientName,
+                        i.ClientPono,
+                        i.Mprno,
+                        i.QuoteNo,
+                        i.InvoiceStatus,
+                        i.OrderStatus,
+                        i.NoOfItems,
+                        i.TotalBeforeDiscount,
+                        i.Discount,
+                        i.TotalAfterDiscount,
+                        i.TotalTaxAmount,
+                        i.TotalWithTax,
+                    }).ToListAsync();
+
+                    return Json(data);
                 }
 
-                if (!toDate.HasValue)
-                {
-                    toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)); // End of the current month
-                }
-
-                // Filtering by date range
-                query = query.Where(i => i.SalesOrderDate >= fromDate && i.SalesOrderDate <= toDate);
-
-                // Fetching the data
-                var data = await query.Select(i => new
-                {
-                    i.SalesOrderNo,
-                    i.SalesOrderDate,
-                    i.ClientName,
-                    i.ClientPono,
-                    i.Mprno,
-                    i.QuoteNo,
-                    i.InvoiceStatus,
-                    i.OrderStatus,
-                    i.NoOfItems,
-                    i.TotalBeforeDiscount,
-                    i.Discount,
-                    i.TotalAfterDiscount,
-                    i.TotalTaxAmount,
-                    i.TotalWithTax,
-                }).ToListAsync();
-
-                return Json(data);
+                return Unauthorized(new { message = "Invalid tenant." });
             }
-
-            return Unauthorized(new { message = "Invalid tenant." });
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+            }
         }
 
         [HttpGet]
         public IActionResult SalesOrderNoIncrease()
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            try
             {
-                var lastOrderNo = dbContext.Qry60204salesOrderViewMasters
-                    .OrderByDescending(x => x.SalesOrderNo)
-                    .Select(x => x.SalesOrderNo)
-                    .FirstOrDefault();
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var lastOrderNo = dbContext.Qry60204salesOrderViewMasters
+                        .OrderByDescending(x => x.SalesOrderNo)
+                        .Select(x => x.SalesOrderNo)
+                        .FirstOrDefault();
 
-                string nextOrderNo = GenerateNextOrderNo(lastOrderNo);
+                    string nextOrderNo = GenerateNextOrderNo(lastOrderNo);
 
-                return Ok(new { salesOrderNo = nextOrderNo });
+                    return Ok(new { salesOrderNo = nextOrderNo });
+                }
+
+                return Unauthorized(new { message = "Invalid tenant." });
             }
-
-            return Unauthorized(new { message = "Invalid tenant." });
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+            }
         }
 
         private string GenerateNextOrderNo(string lastOrderNo)

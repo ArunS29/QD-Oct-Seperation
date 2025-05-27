@@ -26,32 +26,40 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
-          [HttpGet]
+        [HttpGet]
         public async Task<ActionResult> GetQuotationAnalysis(DataSourceLoadOptions loadOptions)
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            try
             {
-                using (dbContext)
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    var ledgerAccounts = dbContext.Qry60707rfqissuedByMprno02s
-                        .Where(p => p.Mprno != null)
-                        .Select(i => new
-                        {
-                            i.Mprno,
-                            i.NoOfRfqissued,
-                            i.ClientName,
-                            i.StoreName,
-                            i.Mprdate,
-                            i.RequestedBy,
-                         
+                    using (dbContext)
+                    {
+                        var ledgerAccounts = dbContext.Qry60707rfqissuedByMprno02s
+                            .Where(p => p.Mprno != null)
+                            .Select(i => new
+                            {
+                                i.Mprno,
+                                i.NoOfRfqissued,
+                                i.ClientName,
+                                i.StoreName,
+                                i.Mprdate,
+                                i.RequestedBy,
 
-						});
 
-                    return Json(await DataSourceLoader.LoadAsync(ledgerAccounts, loadOptions));
+                            });
+
+                        return Json(await DataSourceLoader.LoadAsync(ledgerAccounts, loadOptions));
+                    }
                 }
-            }
 
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in GetQuotationAnalysis");
+                return StatusCode(500, new { message = "Internal Server Error", success = false });
+            }
         }
 
     }

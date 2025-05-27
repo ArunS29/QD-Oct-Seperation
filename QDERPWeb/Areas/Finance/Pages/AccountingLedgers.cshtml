@@ -970,6 +970,7 @@
 			accgroupid = selectedRowData[0].AccountGroupId;
 			accheadar = selectedRowData[0].AccountHeadArabic;
 			updateBankReconciliationState(accheadname);
+				updateReceivableStatement(accgroup);
 
 		}
 
@@ -1299,6 +1300,20 @@
 			dropdown.option("items", items); // Update the dropdown options
 		}
 	}
+		// 	function updateReceivableStatement(accgroup) {
+		// 	let dropdown = $("#ddReports").dxDropDownButton("instance");
+		// 	let items = dropdown.option("items");
+
+		// 	if (items && items.length > 1) { // Ensure index exists before modifying
+		// 				if (accgroup.includes("SUNDRY") || accgroup.includes("SUNDRY")) {
+		// 			items[1] = { ...items[1], disabled: false }; 
+		// 		} else {
+		// 			items[1] = { ...items[1], disabled: true }; 
+		// 		}
+
+		// 		dropdown.option("items", items); 
+		// 	}
+		// }
 	function ddBtnGenerateReport_click(duration) {
 		var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
 		if (dropDownBox.option("value") === null) {

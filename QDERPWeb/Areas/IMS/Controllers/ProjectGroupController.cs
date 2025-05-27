@@ -29,7 +29,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                        .Select(i => new
 
                        {
-                           i.ProjectGroupId,
+                         i.ProjectGroupId,
                          i.ProjectGroupCode,
                          i.ProjectGroup,
                          i.ProjectGroupAr,
@@ -46,6 +46,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error in ProjectGroupController");
                 return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
             }
         }
@@ -103,35 +104,51 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         [HttpDelete]
         public IActionResult Delete(int key)
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            try
             {
-                var record = dbContext.Tbl70006projectGroups.FirstOrDefault(x => x.ProjectGroupId == key);
-                if (record == null)
-                    return NotFound();
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var record = dbContext.Tbl70006projectGroups.FirstOrDefault(x => x.ProjectGroupId == key);
+                    if (record == null)
+                        return NotFound();
 
-                dbContext.Tbl70006projectGroups.Remove(record);
-                dbContext.SaveChanges();
-                return Ok();
+                    dbContext.Tbl70006projectGroups.Remove(record);
+                    dbContext.SaveChanges();
+                    return Ok();
+                }
+
+                return Unauthorized(new { success = false, message = "Invalid tenant" });
             }
-
-            return Unauthorized(new { success = false, message = "Invalid tenant" });
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in DeleteProjectGroup: {ex}");
+                return StatusCode(500, new { message = "An error occurred while fetching the data.", ex });
+            }
         }
         //Projects Form Controllers
         [HttpGet]
         public IActionResult GetLatestProjectCode(string projectCode)
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            try
             {
-                var latestClientCode = dbContext.Tbl70001projectMasters
-                    .Where(c => c.ProjectId.StartsWith(projectCode + "-"))
-                    .OrderByDescending(c => c.ProjectId)
-                    .Select(c => c.ProjectId)
-                    .FirstOrDefault();
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var latestClientCode = dbContext.Tbl70001projectMasters
+                        .Where(c => c.ProjectId.StartsWith(projectCode + "-"))
+                        .OrderByDescending(c => c.ProjectId)
+                        .Select(c => c.ProjectId)
+                        .FirstOrDefault();
 
-                return Ok(latestClientCode); // returns e.g., "SW-4"
+                    return Ok(latestClientCode); // returns e.g., "SW-4"
+                }
+
+                return Unauthorized(new { message = "Invalid tenant." });
             }
-
-            return Unauthorized(new { message = "Invalid tenant." });
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetLatestProjectCode: {ex}");
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
         }
         [HttpGet]
         public async Task<IActionResult> GetAllCostAllocationData()
@@ -159,6 +176,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Error in GetAllCostAllocationData: {ex}");
                 return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
             }
         }
@@ -189,6 +207,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Error in GetProjectAllData: {ex}");
                 return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
             }
         }
@@ -240,19 +259,27 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         [HttpDelete]
         public IActionResult Delete1(string key)
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            try
             {
-                var record = dbContext.Tbl70001projectMasters.FirstOrDefault(x => x.ProjectId == key);
-                if (record == null)
-                    return NotFound();
-             
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var record = dbContext.Tbl70001projectMasters.FirstOrDefault(x => x.ProjectId == key);
+                    if (record == null)
+                        return NotFound();
 
-                dbContext.Tbl70001projectMasters.Remove(record);
-                dbContext.SaveChanges();
-                return Ok();
+
+                    dbContext.Tbl70001projectMasters.Remove(record);
+                    dbContext.SaveChanges();
+                    return Ok();
+                }
+
+                return Unauthorized(new { success = false, message = "Invalid tenant" });
             }
-
-            return Unauthorized(new { success = false, message = "Invalid tenant" });
+            catch (Exception ex)
+            {
+                 _logger.LogError($"Error in Delete: {ex}");
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
         }
     }
 }

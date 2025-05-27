@@ -33,51 +33,58 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         [HttpGet]
         public async Task<IActionResult> GetMaterialReceipt(DateTime? fromDate, DateTime? toDate)
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            try
             {
-                var query = dbContext.Qry60504materialReceiptViewMasters.AsQueryable();
-
-
-                // Default dates if not provided
-                if (!fromDate.HasValue)
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1); // Start of the current month
+                    var query = dbContext.Qry60504materialReceiptViewMasters.AsQueryable();
+
+
+                    // Default dates if not provided
+                    if (!fromDate.HasValue)
+                    {
+                        fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1); // Start of the current month
+                    }
+
+                    if (!toDate.HasValue)
+                    {
+                        toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)); // End of the current month
+                    }
+
+                    // Filtering by date range
+                    query = query.Where(i => i.ReceiptDate >= fromDate && i.ReceiptDate <= toDate);
+
+                    // Fetching the data
+                    var data = await query.Select(i => new
+                    {
+                        i.ReceiptNo,
+                        i.ReceiptDate,
+                        i.SupplierCode,
+                        i.SupplierName,
+                        i.OurPurchaseOrderNo,
+                        i.VatpurchaseBillNo,
+                        i.IsSubmitted,
+                        i.IsVerified,
+                        i.IsApproved,
+                        i.NoOfItems,
+                        i.TotalBeforeTax,
+                        i.TotalDiscount,
+                        i.TotalAfterDiscount,
+                        i.TotalTaxAmount,
+                        i.TotalWithTax,
+
+                    }).ToListAsync();
+
+                    return Json(data);
                 }
 
-                if (!toDate.HasValue)
-                {
-                    toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)); // End of the current month
-                }
-
-                // Filtering by date range
-                query = query.Where(i => i.ReceiptDate >= fromDate && i.ReceiptDate <= toDate);
-
-                // Fetching the data
-                var data = await query.Select(i => new
-                {
-                    i.ReceiptNo,
-                    i.ReceiptDate,
-                    i.SupplierCode,
-                    i.SupplierName,
-                    i.OurPurchaseOrderNo,
-                    i.VatpurchaseBillNo,
-                    i.IsSubmitted,
-                    i.IsVerified,
-                    i.IsApproved,
-                    i.NoOfItems,
-                    i.TotalBeforeTax,
-                    i.TotalDiscount,
-                    i.TotalAfterDiscount,
-                    i.TotalTaxAmount,
-                    i.TotalWithTax,
-                  
-                }).ToListAsync();
-
-                return Json(data);
+                return Unauthorized(new { message = "Invalid tenant." });
             }
-
-            return Unauthorized(new { message = "Invalid tenant." });
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, new { message = "Internal server error." });
+            }
         }
-
     }
 }

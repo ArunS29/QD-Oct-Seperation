@@ -18,9 +18,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
-   [HttpGet]
+        [HttpGet]
         public IActionResult GetContactBySlNo(int clientContactSlNo)
         {
+            try { 
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 var data = dbContext.Tbl3010102clientContactLists.FirstOrDefault(x => x.ClientContactSlNo == clientContactSlNo);
@@ -31,6 +32,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return NotFound(new { message = "Contact not found." });
             }
             return Unauthorized(new { message = "Invalid tenant." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while getting contact by SL No.");
+                return StatusCode(500, new { message = "Internal server error." });
+            }
         }
 
         [HttpPost]
@@ -92,6 +99,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError($"Error in GetProject: {ex.Message}");
                     return StatusCode(500, new { success = false, message = "Error saving data: " + ex.Message });
                 }
             }
@@ -145,6 +153,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
                 return StatusCode(500, new { success = false, message = $"Delete failed: {ex.Message}" });
             }
             }
