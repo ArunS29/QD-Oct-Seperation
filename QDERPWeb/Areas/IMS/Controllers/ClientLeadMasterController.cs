@@ -50,18 +50,26 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         [HttpGet]
         public IActionResult GetLatestClientCode(string categoryCode)
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            try
             {
-                var latestClientCode = dbContext.Tbl30101ClientMasters
-                    .Where(c => c.ClientCode.StartsWith(categoryCode + "-"))
-                    .OrderByDescending(c => c.ClientCode)
-                    .Select(c => c.ClientCode)
-                    .FirstOrDefault();
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var latestClientCode = dbContext.Tbl30101ClientMasters
+                        .Where(c => c.ClientCode.StartsWith(categoryCode + "-"))
+                        .OrderByDescending(c => c.ClientCode)
+                        .Select(c => c.ClientCode)
+                        .FirstOrDefault();
 
-                return Ok(latestClientCode); // returns e.g., "SW-4"
+                    return Ok(latestClientCode); // returns e.g., "SW-4"
+                }
+
             }
-
-            return Unauthorized(new { message = "Invalid tenant." });
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetLatestClientCode: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while fetching the data.", ex });
+            }
+                return Unauthorized(new { message = "Invalid tenant." });
         }
 
 
@@ -236,6 +244,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError($"Error in GetProject: {ex.Message}");
                     return StatusCode(500, new { success = false, message = $"Delete failed: {ex.Message}" });
                 }
             }
@@ -265,6 +274,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
             }
@@ -336,42 +346,56 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         [HttpDelete]
         public IActionResult DeleteContact(long clientContactSlNo)
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-            {
-                var contact = dbContext.Tbl3010102clientContactLists
-                    .FirstOrDefault(c => c.ClientContactSlNo == clientContactSlNo);
-
-                if (contact != null)
+                try
                 {
-                    dbContext.Tbl3010102clientContactLists.Remove(contact);
-                    dbContext.SaveChanges();
-                    return Ok(new { success = true, message = "Contact deleted successfully." });
+                    if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    {
+                        var contact = dbContext.Tbl3010102clientContactLists
+                            .FirstOrDefault(c => c.ClientContactSlNo == clientContactSlNo);
+
+                        if (contact != null)
+                        {
+                            dbContext.Tbl3010102clientContactLists.Remove(contact);
+                            dbContext.SaveChanges();
+                            return Ok(new { success = true, message = "Contact deleted successfully." });
+                        }
+
+                        return NotFound(new { success = false, message = "Contact not found." });
+                    }
                 }
-
-                return NotFound(new { success = false, message = "Contact not found." });
-            }
-
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetProject: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+                }
             return Unauthorized(new { success = false, message = "Invalid tenant." });
         }
 
         [HttpDelete]
         public IActionResult DeleteStatus(long clientStatusNo)
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-            {
-                var status = dbContext.Tbl30104ClientStatuses
-                    .FirstOrDefault(s => s.ClientStatusNo == clientStatusNo);
-
-                if (status != null)
+                try
                 {
-                    dbContext.Tbl30104ClientStatuses.Remove(status);
-                    dbContext.SaveChanges();
-                    return Ok(new { success = true, message = "Client status deleted successfully." });
+                    if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    {
+                        var status = dbContext.Tbl30104ClientStatuses
+                            .FirstOrDefault(s => s.ClientStatusNo == clientStatusNo);
+
+                        if (status != null)
+                        {
+                            dbContext.Tbl30104ClientStatuses.Remove(status);
+                            dbContext.SaveChanges();
+                            return Ok(new { success = true, message = "Client status deleted successfully." });
+                        }
+
+                        return NotFound(new { success = false, message = "Status not found." });
+                    }
                 }
-
-                return NotFound(new { success = false, message = "Status not found." });
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while fetching the data.", ex});
             }
-
             return Unauthorized(new { success = false, message = "Invalid tenant." });
         }
 

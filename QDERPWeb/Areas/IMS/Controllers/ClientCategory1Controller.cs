@@ -68,7 +68,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     short newCode = (short)(lastCode + 1);
 
-                   
+
                     branch.ClientCategoryCode = newCode;
 
                     dbContext.Tbl30102ClientCategories.Add(branch);
@@ -141,21 +141,30 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteBranchMaster([FromBody] Tbl30102ClientCategory branch)
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            try
             {
-                var BranchToDelete = await dbContext.Tbl30102ClientCategories.FindAsync(branch.ClientCategoryCode);
-                if (BranchToDelete == null)
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    return NotFound();
+                    var BranchToDelete = await dbContext.Tbl30102ClientCategories.FindAsync(branch.ClientCategoryCode);
+                    if (BranchToDelete == null)
+                    {
+                        return NotFound();
+                    }
+
+                    dbContext.Tbl30102ClientCategories.Remove(BranchToDelete);
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(new { success = true, message = "Client Category deleted successfully." });
                 }
-
-                dbContext.Tbl30102ClientCategories.Remove(BranchToDelete);
-                await dbContext.SaveChangesAsync();
-
-                return Ok(new { success = true, message = "Client Category deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in DeleteBranchMaster: {ex.Message}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
 
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
         }
     }
-}
+

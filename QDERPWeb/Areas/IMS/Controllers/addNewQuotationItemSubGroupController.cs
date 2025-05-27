@@ -57,7 +57,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         return BadRequest(new { success = false, message = "Document Type already exists." });
                     }
 
-                 
+
 
                     dbContext.Tbl60107quotationChildItemGroups.Add(documentType);
                     await dbContext.SaveChangesAsync();
@@ -130,21 +130,31 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteSubGroup([FromBody] Tbl60107quotationChildItemGroup documentType)
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            try
             {
-                var entity = await dbContext.Tbl60107quotationChildItemGroups.FindAsync(documentType.QuoteGroupItemSlNo);
-                if (entity == null)
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    return NotFound(new { success = false, message = "Sub Group not found." });
+                    var entity = await dbContext.Tbl60107quotationChildItemGroups.FindAsync(documentType.QuoteGroupItemSlNo);
+                    if (entity == null)
+                    {
+                        return NotFound(new { success = false, message = "Sub Group not found." });
+                    }
+
+                    dbContext.Tbl60107quotationChildItemGroups.Remove(entity);
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(new { success = true, message = "Sub Group deleted successfully." });
                 }
-
-                dbContext.Tbl60107quotationChildItemGroups.Remove(entity);
-                await dbContext.SaveChangesAsync();
-
-                return Ok(new { success = true, message = "Sub Group deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in DeleteSubGroup: {ex.Message}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
 
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
         }
     }
-}
+
+

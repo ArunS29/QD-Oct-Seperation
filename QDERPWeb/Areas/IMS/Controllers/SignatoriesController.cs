@@ -54,6 +54,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
                 return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
             }
         }
@@ -113,19 +114,28 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         [HttpDelete]
         public IActionResult Delete(int key)
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            try
             {
-                var record = dbContext.Tbl90104DocumentSignatories.FirstOrDefault(x => x.SignatoryId == key);
-            if (record == null)
-                return NotFound();
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var record = dbContext.Tbl90104DocumentSignatories.FirstOrDefault(x => x.SignatoryId == key);
+                    if (record == null)
+                        return NotFound();
 
-                dbContext.Tbl90104DocumentSignatories.Remove(record);
-                dbContext.SaveChanges();
-            return Ok();
+                    dbContext.Tbl90104DocumentSignatories.Remove(record);
+                    dbContext.SaveChanges();
+                    return Ok();
+                }
+
+                return Unauthorized(new { success = false, message = "Invalid tenant" });
             }
+            catch (Exception ex)
+            {
+                                    _logger.LogError($"Error in GetProject: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
 
-            return Unauthorized(new { success = false, message = "Invalid tenant" });
-        }
+            }
+            }
 
 
 
