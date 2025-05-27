@@ -27,7 +27,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             try
             {
                 ConfigureSqlDataSource(); // Connect with tenant DB
-                sqlDataSource1.Fill();    // Load data
+                sqlDataSource3.Fill();    // Load data
             }
             catch (Exception ex)
             {
@@ -89,7 +89,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports
 
         private void ConfigureSqlDataSource()
         {
-            sqlDataSource1.Queries.Clear();
+            sqlDataSource3.Queries.Clear();
 
             var customQuery = new CustomSqlQuery
             {
@@ -97,11 +97,11 @@ namespace QD.ERP.Web.Areas.Finance.Reports
                 Sql = "SELECT * FROM qry201SubLedgerPayablesMaster"
             };
 
-            sqlDataSource1.Queries.Add(customQuery);
+            sqlDataSource3.Queries.Add(customQuery);
 
             if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
             {
-                sqlDataSource1.ConnectionParameters = new CustomStringConnectionParameters(tenant.ConnectionString);
+                sqlDataSource3.ConnectionParameters = new CustomStringConnectionParameters(tenant.ConnectionString);
             }
             else
             {

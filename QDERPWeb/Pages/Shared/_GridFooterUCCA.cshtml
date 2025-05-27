@@ -651,7 +651,7 @@
 
 
 
-         function handleReportsClick(e) {
+            function handleReportsClick(e) {
         const selectedText = e.itemData.text;
 
         // Get instances of SelectBox and DateBox components
@@ -670,12 +670,7 @@
             return;
         }
 
-        if (!requestedBy) {
-            alert("Please select a value for 'Requested By'.");
-            return;
-        }
-
-        // Function to format date as D-MMM-YYYY
+        // Format date as D-MMM-YYYY
         function formatDate(date) {
             let dateObj = new Date(date);
             let day = dateObj.getDate();
@@ -690,13 +685,13 @@
         if (reportMappings[selectedText]) {
             const reportName = reportMappings[selectedText];
 
-            console.log(`Opening report: ${reportName}`);
-            console.log("From Date:", frmDateStr);
-            console.log("To Date:", toDateStr);
-            console.log("Requested By:", requestedBy);
+            // Construct the URL with frmDate and toDate (always required)
+            let url = `/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
 
-            // Build final URL with all required params
-            let url = `/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}&requestedBy=${encodeURIComponent(requestedBy)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
+            // Append requestedBy only if selected
+            if (requestedBy && requestedBy !== '') {
+                url += `&requestedBy=${encodeURIComponent(requestedBy)}`;
+            }
 
             // Open Document Viewer
             window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
@@ -704,6 +699,8 @@
             console.warn('No report mapping found for:', selectedText);
         }
     }
+
+
 
 
         function printGrid() {

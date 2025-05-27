@@ -711,26 +711,32 @@
     @(Html.DevExtreme().DataGrid()
         .ID("itemGrid")
         .Height("600px")
+        .DataSource(new JS("[]")) // using global JS array
+        .KeyExpr("ItemCode")
         .Selection(s => s
         .Mode(SelectionMode.Multiple)
         .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)
+        )
+        .Editing(editing => editing
+        .Mode(GridEditMode.Row)
+        .AllowAdding(true)
+        .AllowUpdating(true)
+        .AllowDeleting(true)
         )
         .Columns(columns =>
         {
             columns.Add().Caption("#").CellTemplate(@<text>
         @(ViewData["rowIndex"] = ((int)(ViewData["rowIndex"] ?? 0)) + 1)
         @ViewData["rowIndex"]
-    </text>).Width(100);
+    </text>).Width(50);
+
             columns.Add().DataField("ItemCode").Caption("Item Code");
             columns.Add().DataField("Description").Caption("Description");
-            columns.Add().DataField("...").Caption("...");
             columns.Add().DataField("UnitRateMethod").Caption("Unit Rate Method");
             columns.Add().DataField("Qty").Caption("Qty");
             columns.Add().DataField("UnitCostPrice").Caption("Unit Cost Price").Format("currency");
-            columns.Add().DataField("...").Caption("...").Format("currency");
-            columns.Add().DataField("UnitPrice").Caption("Unit Price");
+            columns.Add().DataField("UnitPrice").Caption("Unit Price").Format("currency");
             columns.Add().DataField("QuotedDiscount").Caption("Quoted Discount");
-            columns.Add().DataField("...").Caption("...");
             columns.Add().DataField("VATDesc").Caption("VAT Desc");
             columns.Add().DataField("VAT").Caption("VAT");
             columns.Add().DataField("Total").Caption("Total");
@@ -740,8 +746,12 @@
         .ColumnAutoWidth(true)
         .Width("100%")
         .WordWrapEnabled(true)
-        .OnCellClick("function(e) {handleCellClick(e);}")
-        .ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+        .OnCellClick("function(e) { handleCellClick(e); }")
+        .ColumnChooser(cc => cc
+        .Enabled(true)
+        .Title("Show/Hide Column")
+        .Mode(GridColumnChooserMode.Select)
+        )
         .AllowColumnReordering(true)
         .AllowColumnResizing(true)
         .ColumnFixing(fixing => fixing.Enabled(true))
@@ -756,48 +766,7 @@
         )
 </div>
 
-<div class="form-container">
-    <div class="footer-buttons">
-        <div class="col-md-12">
-            <div class="row">
-                <div class="col-md-2">
-                    @(Html.DevExtreme()
-                        .Button()
-                        .ID("btnSave")
-                        .Text("Save")
-                        .Icon("check")
-                        .OnClick("onSaveSupplierMasterClick"))
-                </div>
-                <div class="col-md-2">
-                    @(Html.DevExtreme()
-                        .Button()
-                        .ID("btnSaveClose")
-                        .Text("Save & Close")
-                        .Icon("check"))
-                </div>
-                <div class="col-md-2">
-                    @(Html.DevExtreme()
-                        .Button()
-                        .ID("btnDelete")
-                        .Text("Delete")
-                        .Icon("trash"))
-                </div>
-                <div class="col-md-2">
-                    @(Html.DevExtreme()
-                        .Button()
-                        .ID("btnBack")
-                        .Text("Back")
-                        .Icon("arrowleft"))
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="Head">
-    <div class="limited-footer">
-        @await Html.PartialAsync("VATModuleFooter")
-    </div>
-</div>
+
             @using (Html.DevExtreme().NamedTemplate("GetModeOfRequestContentTemplate"))
             {
                 @(Html.DevExtreme().DataGrid()
@@ -1002,29 +971,14 @@
 
                         })
                         )
+
+                      
 }
+<div class="Footer">
+    @await Html.PartialAsync("/Pages/Shared/IMS/DeliveryNotesFooter.cshtml")
+</div>
 <script>
-    //     function openEntityModal(entity) {
-    //     const url = `/${tenantName}/IMS/${entity}`;
-    //     const title = "";
-    //     openModal(url, title);
-    // }
-
-    // function PreparedBy() {
-    //     openEntityModal("Signatories");
-    // }
-
-    // function AddInventoryGroup() {
-    //     openEntityModal("ProjectSubUnits");
-    // }
-
-    // function ModeOfRequest() {
-    //     openEntityModal("QuotationModeOfRequest");
-    // }
-
-    // function TypeOfRequest() {
-    //     openEntityModal("QuotationTypeOfRequest");
-    // }
+   
     $(function () {
     $("#addNewDeliverytoClient").dxTextBox({
     text: formatMessage("Add New Delivery to Client"),
