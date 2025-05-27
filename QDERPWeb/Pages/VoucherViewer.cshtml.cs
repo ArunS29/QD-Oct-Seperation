@@ -107,12 +107,8 @@ namespace QD.ERP.Web.Pages
       reportName == "ProformaInvoiceEnglish" ||
       reportName == "ProformaPreviewInvoice" ||
       reportName == "ProformaNewFormat" ||
-      reportName == "BillsPurchases" ||
-      reportName == "PrintRegularTaxInvoiceWtDocumentLevelDiscount" ||
-      reportName == "Withoutsignatories" ||
-      reportName == "withsignatories" ||
-      reportName == "RegularTaxInvoiceFormat06" ||
-      reportName == "PrintRegularTaxInvoiceWithSignatories_Format05_"
+      reportName == "BillsPurchases" 
+     
   )
 
 
@@ -204,32 +200,7 @@ namespace QD.ERP.Web.Pages
 
 
 
-                    "PrintRegularTaxInvoiceWtDocumentLevelDiscount" =>
-                             new QD.ERP.Web.Areas.VAT.Reports.B2B.PrintRegularTaxInvoiceWtDocumentLevelDiscount(
-                                 invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
-                                 companyNameAr, companyAddressAr,
-                                 isApproved, _tenantDbContextHelper),
-                    "Withoutsignatories" =>
-                    new QD.ERP.Web.Areas.VAT.Reports.B2B.Withoutsignatories(
-                   invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
-                   companyNameAr, companyAddressAr,
-                   isApproved, _tenantDbContextHelper),
-                    "withsignatories" =>
-                 new QD.ERP.Web.Areas.VAT.Reports.B2B.withsignatories2(
-                invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
-                companyNameAr, companyAddressAr,
-                isApproved, _tenantDbContextHelper),
-                    "RegularTaxInvoiceFormat06" =>
-                    new QD.ERP.Web.Areas.VAT.Reports.B2B.RegularTaxInvoiceFormat06(
-                   invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
-                   companyNameAr, companyAddressAr,
-                   isApproved, _tenantDbContextHelper),
-                    "PrintRegularTaxInvoiceWithSignatories_Format05_" =>
-                 new QD.ERP.Web.Areas.VAT.Reports.B2B.PrintRegularTaxInvoiceWithSignatories_Format05_(
-                invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
-                companyNameAr, companyAddressAr,
-                isApproved, _tenantDbContextHelper),
-
+                   
 
 
 
