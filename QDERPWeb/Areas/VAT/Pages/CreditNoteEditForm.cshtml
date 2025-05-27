@@ -4923,6 +4923,7 @@ openModal(url, title);
 								  $("#ClientVATNo").dxTextBox("instance").option("value",selectedRowData[0].VatregistrationNo)
 								  $("#ClientOtherID").dxTextBox("instance").option("value",selectedRowData[0].ClientOtherId)
 								  $("#OtherIDType").dxTextBox("instance").option("value",selectedRowData[0].ClientOtherIdtype)
+
 								  $("#StreetName").dxTextBox("instance").option("value",selectedRowData[0].ClientAddressStreet)
 								  $("#StreetNameArabic").dxTextBox("instance").option("value",selectedRowData[0].ClientAddressStreetAr)
 								  $("#AdditionalAddress").dxTextBox("instance").option("value",selectedRowData[0].ClientAdditionalStreet)
@@ -6802,7 +6803,7 @@ openModal(url, title);
 	$("#btnSave").on("click", function (e) {
 		debugger;
 		var clientnameValidator = $("#ddclientname").dxValidator("instance");
-		var clientnameValidation = clientnameValidator.validate();
+		var clientnameValidation = clientnameValidator.validate();	
 		if(clientnameValidation.isValid)
 		{
 	// Create JSON object for master invoice
@@ -6825,7 +6826,7 @@ openModal(url, title);
 			// BuyerOtherIdtype: $("#OtherIDType").dxTextBox("instance").option("value"),
 			 BuyerOtherId: $("#ClientOtherID").dxTextBox("instance").option("value"),
 		     InvoiceCounterValue: $("#InvoiceCounterValue").dxTextBox("instance").option("value"),
-			 InvoiceNo: $("#InvoiceNo").dxTextBox("instance").option("value")|| null,
+			// InvoiceNo: $("#InvoiceNo").dxTextBox("instance").option("value")|| null,
 
 			 InvoiceEffectiveDate:$("#EffectiveDate").dxDateBox("instance").option("value")|| null,
 			InvoiceStartDate: $("#InvoiceStartDate").dxDateBox("instance").option("value")|| null,
