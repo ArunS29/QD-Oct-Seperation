@@ -568,7 +568,7 @@
             .Width(50)
             .Text(new JS("formatMessage('RFQ Details')"))
             .ElementAttr(new { style = "display: none;" })
-            // .OnClick("toggleGroupPanel")
+            .OnClick("AddNewRFQDetails")
             )
 
     </div>
@@ -1304,6 +1304,10 @@
         function AddNewRFQ() {
             window.location.href = `/${tenantName}/IMS/AddNewRFQ`;
         }
+    function AddNewRFQDetails() {
+        window.location.href = `/${tenantName}/IMS/RFQwithItemDetails`;
+    }
+
         function addPaymentButton_click(e) {
         let url = "";
         let title = "Payments";

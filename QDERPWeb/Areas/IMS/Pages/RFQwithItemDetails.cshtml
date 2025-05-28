@@ -1,7 +1,8 @@
-@page
-@model QD.ERP.Web.Areas.IMS.Pages.RequestforQuotationListModel
+﻿@page
+@model QD.ERP.Web.Areas.IMS.Pages.RFQwithItemDetailsModel
 @{
 }
+
 <style>
 	.overlay {
 		display: none;
@@ -27,7 +28,7 @@
 		overflow: hidden;
 	}
 
-	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnColumnChooser,#btnRfqDetails,#btnAddNewRFQ)) {
+	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel)) {
 		display: none !important
 	}
 
@@ -229,7 +230,7 @@
 
 </div>
 <div class="dx-field ledgerResult">
-	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60704rfqviewMaster>()
+	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60706rfqdetail>()
 		.ID("dataGrid")
 		.RemoteOperations(false)
 		.DataSource(new JS("[]"))
@@ -237,28 +238,23 @@
 		{
 			columns.Add().Caption(" RFQ Details").Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.Rfqno).Caption("RFQ No ").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Rfqno).Caption("RFQ No").Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.Rfqdate).Caption("Rfq Date").Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.Mprno).Caption("MPR NO").Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
-				subColumns.AddFor(m => m.SupplierName).Caption("Supplier Name").Alignment(HorizontalAlignment.Center).Visible(true);
+				
 				subColumns.AddFor(m => m.SupplierQuotationNo).Caption("Supplier Quotation No").Alignment(HorizontalAlignment.Center);
-				subColumns.AddFor(m => m.QuoteHasItemsToPo).Caption(" Quote Has Items To Po").Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
-		<div class="dx-icon">
-			<%= data.QuoteHasItemsToPo ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-		</div>
-	</text>
-		);
-				subColumns.AddFor(m => m.Pono).Caption(" Po No").Alignment(HorizontalAlignment.Center);
-
-
+				subColumns.AddFor(m => m.SupplierName).Caption("Supplier Name").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Gscode).Caption("GS Code").Alignment(HorizontalAlignment.Center);
+				subColumns.AddFor(m => m.Gsdescrpition).Caption("GS Descrpition").Alignment(HorizontalAlignment.Center);
+				subColumns.AddFor(m => m.QuotedQuantity).Caption("Quoted Quantity").Alignment(HorizontalAlignment.Center);
+				subColumns.AddFor(m => m.UnitDesc).Caption("Unit Desc").Alignment(HorizontalAlignment.Center);
+				subColumns.AddFor(m => m.UnitPrice).Caption("Unit Price").Alignment(HorizontalAlignment.Center);
+				subColumns.AddFor(m => m.ItemDiscount).Caption("Item Discount").Alignment(HorizontalAlignment.Center);
+				subColumns.AddFor(m => m.LineTotalBeforeTax).Caption("Line Total Before Tax").Alignment(HorizontalAlignment.Center);
+				subColumns.AddFor(m => m.LineTotalAfterDisc).Caption("Line Total After Disc").Alignment(HorizontalAlignment.Center);
+				subColumns.AddFor(m => m.IsWonForPo).Caption("Is Won For Po").Alignment(HorizontalAlignment.Center);
 			});
-			columns.Add().Caption("No Of Items ").Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.NoOfItems).Caption(" No Of Items").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.TotalBeforeTax).Caption(" Total Before Tax").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.TotalDiscount).Caption(" Total Discount" ).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.TotalAfterDiscount).Caption("Total After Discount").Alignment(HorizontalAlignment.Center).Visible(true);
-			});
+		
 			
 			
 		})
@@ -288,7 +284,6 @@
 			.StorageKey("gridContainerState");
 		})
 		.OnInitialized("function(e) { loadGridState(); }")
-		.OnContextMenuPreparing("onContextMenuPreparing")
 		)
 
 
@@ -300,20 +295,12 @@
 <script>
 		 $(function () {
 	$("#RequestforQuotationList").dxTextBox({
-	text: formatMessage("Request for Quotation List"),
+	text: formatMessage("RFQ with Item Details"),
 		readOnly: true,
 		onContentReady: function (e) {
 		$(e.element).addClass("dx-textbox-heading");
 		}
 		});
-	});
-	$(function () {
-			var now = new Date();
-			var firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-			var tillmonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-			$("#frmdateBox").dxDateBox("instance").option("value", firstDay);
-			$("#todateBox").dxDateBox("instance").option("value", tillmonth);
-			ddBtnShowRecords_click('range');
 	});
 		function ddBtnShowRecords_click(duration) {
 		 var frmDateBox = $("#frmdateBox").dxDateBox("instance");
@@ -375,7 +362,7 @@
 	toDate = toDate.toISOString().split('T')[0];
 
 				$.ajax({
-		url: '/api/RequestforQuotationList/GetRFQRequest',
+			url: '/api/RequestforQuotationList/GetRFQwithItemDetails',
 		type: 'GET',
 		data: {
 			fromDate: frmDate,
@@ -395,81 +382,6 @@
 
 	}
 
-
-	function onContextMenuPreparing(e) {
-		if (e.target === "content" && e.row && e.row.data) {
-			const rowData = e.row.data;
-			const Rfqno = encodeURIComponent(rowData.Rfqno);
-			const tenantName = window.tenantName || "defaultTenant";
-
-			e.items = [
-				{
-					text: "Edit Request",
-					icon: "edit",
-					onItemClick: function () {
-						const url = `/${tenantName}/IMS/AddNewRFQ?Rfqno=${Rfqno}`;
-						window.location.href = url;
-					}
-				},
-				{
-					text: "Delete RFQ",
-					icon: "trash",
-					onItemClick: function () {
-						if (confirm(`Are you sure you want to delete RFQ ${Rfqno}?`)) {
-							// Replace with your actual delete logic, e.g., an AJAX call
-							fetch(`/${tenantName}/IMS/DeleteRFQ?Rfqno=${Rfqno}`, {
-								method: 'DELETE'
-							})
-								.then(response => {
-									if (response.ok) {
-										alert(`RFQ ${Rfqno} deleted successfully.`);
-										// Refresh the DataGrid or remove the row
-										e.component.refresh();
-									} else {
-										alert(`Failed to delete RFQ ${Rfqno}.`);
-									}
-								})
-								.catch(error => {
-									console.error('Error deleting RFQ:', error);
-									alert('An error occurred while deleting the RFQ.');
-								});
-						}
-					}
-				},
-				{
-					text: "Unlock the RFQ",
-					icon: "unlock",
-					onItemClick: function () {
-						// Replace with your actual unlock logic, e.g., an AJAX call
-						fetch(`/${tenantName}/IMS/UnlockRFQ?Rfqno=${Rfqno}`, {
-							method: 'POST'
-						})
-							.then(response => {
-								if (response.ok) {
-									alert(`RFQ ${Rfqno} unlocked successfully.`);
-									// Optionally refresh the DataGrid
-									e.component.refresh();
-								} else {
-									alert(`Failed to unlock RFQ ${Rfqno}.`);
-								}
-							})
-							.catch(error => {
-								console.error('Error unlocking RFQ:', error);
-								alert('An error occurred while unlocking the RFQ.');
-							});
-					}
-				},
-				{
-					text: "Create Purchase Order",
-					icon: "add",
-					onItemClick: function () {
-						const url = `/${tenantName}/IMS/CreatePurchaseOrder?Rfqno=${Rfqno}`;
-						window.location.href = url;
-					}
-				}
-			];
-		}
-	}
 
 
 </script>
