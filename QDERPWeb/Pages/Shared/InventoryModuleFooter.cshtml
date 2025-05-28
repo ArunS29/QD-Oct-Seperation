@@ -1,4 +1,4 @@
- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+﻿ <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style type="text/css">
     #dataGrid .dx-datagrid-headers .dx-datagrid-action {
         text-align: center !important;
@@ -213,7 +213,7 @@
             .ShowArrowIcon(false)
             )
     </div>
-
+  
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnMoveUp")
@@ -264,7 +264,7 @@
             .Text(new JS("formatMessage('Print')"))
             .ElementAttr(new { style = "display: none;" })
             .Width(50)
-            .OnClick("exportGridToPDF")
+            .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
             )
     </div>
 
