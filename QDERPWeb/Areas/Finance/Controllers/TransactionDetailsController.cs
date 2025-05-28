@@ -111,7 +111,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             .AsNoTracking()
                             .Where(x => (!startDate.HasValue || x.VoucherDate >= startDate.Value)
                                      && (!endDate.HasValue || x.VoucherDate <= endDate.Value)
-                                     && (string.IsNullOrEmpty(accountGroup) || x.AccountGroup == accountGroup))
+                                     && (string.IsNullOrEmpty(accountGroup) || x.CostAllocationUnit == accountGroup))
                             .OrderBy(x => x.VoucherDate)
                             .Select(item => new
                             {

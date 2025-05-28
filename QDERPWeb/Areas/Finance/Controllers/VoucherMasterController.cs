@@ -8,6 +8,7 @@ using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
@@ -536,7 +537,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 						CrAmount = i.CrAmount,
 						EntryNarration = i.EntryNarration,
 						AccountHead = accountHeadMap.ContainsKey(i.AccountHead) ? accountHeadMap[i.AccountHead] : i.AccountHead,
-						SysRemarks = i.SysRemarks
+                        AccountId= i.AccountHead,
+                        SysRemarks = i.SysRemarks
 					}).ToList();
 
 					return Json(DataSourceLoader.Load(resultList.AsQueryable(), loadOptions));
@@ -2300,39 +2302,116 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
 
                 if (VM == null || string.IsNullOrWhiteSpace(VM.VoucherNo))
-            {
-                return BadRequest(new { success = false, message = "Invalid data received." });
-            }
-
-            try
-            {
-                var existingVoucher = await dbContext.Tbl201VoucherMasters
-                                                    .FirstOrDefaultAsync(v => v.VoucherNo == VM.VoucherNo);
-
-                if (existingVoucher != null)
                 {
-						dbContext.Entry(existingVoucher).State = EntityState.Detached;
-						dbContext.Entry(VM).State = EntityState.Modified;
-						// Update existing record
-						dbContext.Entry(existingVoucher).CurrentValues.SetValues(VM);
-                }
-                else
-                {
-                    // Insert new record
-                    dbContext.Tbl201VoucherMasters.Add(VM);
+                    return BadRequest(new { success = false, message = "Invalid data received." });
                 }
 
-                await dbContext.SaveChangesAsync();
-                return Ok(new { success = true, message = existingVoucher != null ? "Voucher updated successfully!" : "Voucher inserted successfully!" });
+                try
+                {
+                    var existingVoucher = await dbContext.Tbl201VoucherMasters
+                                                        .FirstOrDefaultAsync(v => v.VoucherNo == VM.VoucherNo);
+
+
+     //               var existingVoucher = await dbContext.Tbl201VoucherMasters
+     //.Where(v => v.VoucherNo == VM.VoucherNo)
+     //.Select(v => new { v.VoucherNo,
+     //    v.VoucherDate,v.VoucherRefNo,v.VoucherNarration,v.VoucherEnteredBy,v.VoucherEnteredOn,
+     //v.VoucherVerifiedBy,v.VoucherVerifiedOn,v.IsApproved,v.IsAuditVerified,v.IsVerified,v.DeliveryNoteNo,
+     //v.CogsInvoiceNo,
+     //    v.ReferenceNote,v.RentalPayslipNo,
+     //    v.currencyrate,
+     //    v.VoucherModifiedBy,
+     //    v.VoucherModifiedOn,
+     
+     //v.SalesPersonCode,v.BillNo,v.BillDate,v.BillPaidTo,v.BillRemarks,v.InvoiceNoOfDays})
+     //.FirstOrDefaultAsync();
+
+
+
+
+                    if (existingVoucher != null)
+                    {
+                        dbContext.Entry(existingVoucher).State = EntityState.Detached;
+                        dbContext.Entry(VM).State = EntityState.Modified;
+                        // Update existing record
+                        dbContext.Entry(existingVoucher).CurrentValues.SetValues(VM);
+                    }
+                    else
+                    {
+                        // Insert new record
+                        dbContext.Tbl201VoucherMasters.Add(VM);
+                    }
+
+                    await dbContext.SaveChangesAsync();
+                    return Ok(new { success = true, message = existingVoucher != null ? "Voucher updated successfully!" : "Voucher inserted successfully!" });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+                }
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
-            }
-        }
             return Unauthorized(new { message = "Invalid tenant.", success = false });
 
         }
+
+        //[HttpPost]
+        //public async Task<ActionResult> UpdateVoucher([FromBody] UpdateSalesVoucher VM)
+        //{
+        //    if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //        return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+        //    if (VM == null || string.IsNullOrWhiteSpace(VM.VoucherNo))
+        //        return BadRequest(new { success = false, message = "Invalid data received." });
+
+        //    try
+        //    {
+        //        var existingVoucher = await dbContext.UpdateSalesVouchers
+        //            .FirstOrDefaultAsync(v => v.VoucherNo == VM.VoucherNo);
+
+        //        //if (existingVoucher != null)
+        //        //{
+        //        //    // Map values from VM to existingVoucher manually or via AutoMapper
+        //        //    existingVoucher.VoucherDate = VM.VoucherDate;
+        //        //    existingVoucher.VoucherNarration = VM.VoucherNarration;
+        //        //    existingVoucher.InvoiceSubmittedDate = VM.InvoiceSubmittedDate;
+        //        //    existingVoucher.UseSubmittedDate = VM.UseSubmittedDate;
+        //        //    // TODO: map all other relevant fields here
+
+        //        //    dbContext.Tbl201VoucherMasters.Update(existingVoucher);
+        //        //}
+        //        //else
+        //        //{
+        //        //    // Map VM to entity
+        //        //    var newVoucher = new Tbl201VoucherMaster
+        //        //    {
+        //        //        VoucherNo = VM.VoucherNo,
+        //        //        VoucherDate = VM.VoucherDate,
+        //        //        VoucherNarration = VM.VoucherNarration,
+        //        //        InvoiceSubmittedDate = VM.InvoiceSubmittedDate,
+        //        //        UseSubmittedDate = VM.UseSubmittedDate,
+        //        //        // TODO: map all other relevant fields here
+        //        //    };
+
+        //        //    dbContext.Tbl201VoucherMasters.Add(newVoucher);
+        //        //}
+
+        //        await dbContext.SaveChangesAsync();
+
+        //        return Ok(new
+        //        {
+        //            success = true,
+        //            message = existingVoucher != null ? "Voucher updated successfully!" : "Voucher inserted successfully!"
+        //        });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+        //    }
+        //}
+
+
+
+
         [HttpPost]
         public IActionResult UpdateVoucherEntry([FromBody] Tbl201VoucherEntry model)
         {
@@ -2767,7 +2846,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpPost]
         public async Task<ActionResult> UpdateInvoiceChildDetails(List<InvoiceItem> InvoiceChildren)
         {
-            if (InvoiceChildren == null)
+            if (InvoiceChildren == null || InvoiceChildren.Count == 0)
             {
                 return BadRequest(new { success = false, message = "Invalid or empty invoice data received." });
             }
@@ -2776,32 +2855,35 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
+                    var savedChildren = new List<Tbl20162VatinvoiceChild>();
+
                     foreach (var child in InvoiceChildren)
                     {
-                        // if (child == null) continue;
-
                         if (child.InvoiceChildSlNo == null || child.InvoiceChildSlNo == 0)
                         {
-                            // Create a new instance for each child
-                            var aTbl20162VatinvoiceChild = new Tbl20162VatinvoiceChild
+                            var newChild = new Tbl20162VatinvoiceChild
                             {
                                 InvoiceNo = child.InvoiceNo,
-                                UnitRate = child.UnitPrice?.GetDecimal() ?? 0m, // Ensure null safety
-                                DetailedDescription = child.Description?.GetString() ?? string.Empty, // Null safety
-                                QuantityInvoiced = child.Qty?.GetDecimal() ?? 0m, // Null safety
+                                UnitRate = child.UnitPrice?.GetDecimal() ?? 0m,
+                                DetailedDescription = child.Description?.GetString() ?? string.Empty,
+                                QuantityInvoiced = child.Qty?.GetDecimal() ?? 0m,
                                 TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8,
                                 UnitsToBill = 1,
                                 UnitRateMethod = 49,
-                                ItemCode = child.ItemCode ?? string.Empty, // Null safety
+                                ItemCode = child.ItemCode ?? string.Empty,
                                 UoM = "Each"
-                                // Do NOT set the ID or primary key if it is auto-incremented
                             };
 
-                            await dbContext.Tbl20162VatinvoiceChildren.AddAsync(aTbl20162VatinvoiceChild);
+                            await dbContext.Tbl20162VatinvoiceChildren.AddAsync(newChild);
+                            await dbContext.SaveChangesAsync();
+
+                            // Set the generated ID back to the input model if needed
+                            child.InvoiceChildSlNo = newChild.InvoiceChildSlNo;
+
+                            savedChildren.Add(newChild);
                         }
                         else
                         {
-                            // Find and update existing child (Update)
                             var existingChild = await dbContext.Tbl20162VatinvoiceChildren
                                 .FirstOrDefaultAsync(x => x.InvoiceChildSlNo == child.InvoiceChildSlNo);
 
@@ -2818,24 +2900,31 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 existingChild.UoM = "Each";
 
                                 dbContext.Tbl20162VatinvoiceChildren.Update(existingChild);
+                                savedChildren.Add(existingChild);
                             }
                         }
-
-
                     }
 
                     await dbContext.SaveChangesAsync();
 
-                    return Ok(new { success = true, message = "Invoice child records updated successfully!" });
+                    return Ok(new
+                    {
+                        success = true,
+                        message = "Invoice child records saved successfully!",
+                        data = savedChildren
+                    });
+                }
+                else
+                {
+                    return BadRequest(new { success = false, message = "Failed to retrieve tenant and database context." });
                 }
             }
             catch (Exception ex)
             {
                 return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
             }
-
-            return BadRequest("Failed to retrieve tenant and database context.");
         }
+
 
         [HttpPost]
         public async Task<ActionResult> UpdateCreditNoteMasterDetails(Tbl20170VatcreditNoteMaster InvoiceMaster)

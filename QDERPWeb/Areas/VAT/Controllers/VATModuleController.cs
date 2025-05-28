@@ -1419,9 +1419,9 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                         bool IsCashOrBankAccount = false;
 
                         // 🔁 Call the stored procedure sp201_62InsertVATtoVoucher
-                        var result = dbContext.Database.ExecuteSqlRaw("EXEC sp201_62InsertVATtoVoucher @p0,@p1,@p2,@p3", InvoiceNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc, IsCashOrBankAccount);
+                        //var result = dbContext.Database.ExecuteSqlRaw("EXEC sp201_62InsertVATtoVoucher @p0,@p1,@p2,@p3", InvoiceNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc, IsCashOrBankAccount);
 
-                        //   var result1 = dbContext.Database.ExecuteSqlRaw("EXEC sp201_62InsertVATtoVoucher_BHD @p0,@p1,@p2,@p3", InvoiceNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc, IsCashOrBankAccount);
+                        var result1 = dbContext.Database.ExecuteSqlRaw("EXEC sp201_62InsertVATtoVoucher_BHD @p0,@p1,@p2,@p3", InvoiceNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc, IsCashOrBankAccount);
 
                         dbContext.SaveChanges();
 						IsDirect = true;
@@ -2109,18 +2109,78 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
         }
 
 
-        [HttpPost]
-		public async Task<ActionResult> CreditPostInvoice(string CreditNoteNo, bool IsDirect)
+		//[HttpPost]
+		//public async Task<ActionResult> CreditPostInvoice(string CreditNoteNo, bool IsDirectApproval)
+		//{
+		//	if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+		//	{
+		//		try
+		//		{
+		//			var UserName = HttpContext.Session.GetString("UserName");
+
+		//			if (string.IsNullOrEmpty(CreditNoteNo))
+		//			{
+		//				return BadRequest(new { Message = "Credit number is required." });
+		//			}
+
+		//			var voucher = dbContext.Tbl20170VatcreditNoteMasters.FirstOrDefault(v => v.CreditNoteNo == CreditNoteNo);
+
+		//			if (voucher == null)
+		//			{
+		//				return NotFound(new { Message = "CreditNoteNo not found." });
+		//			}
+
+		//			// Update the fields
+		//			voucher.IsPosted = true;
+		//			voucher.PostedOn = DateTime.Now;
+		//			voucher.PostedBy = UserName;
+
+		//			int JustAddedVoucherEntryNoSubLedger = 0;
+		//			int JustAddedVoucherEntryNoCostAlloc = 0;
+
+		//			// 🔁 Call the stored procedure sp201_62InsertVATtoVoucher
+		//			// var result = dbContext.Database.ExecuteSqlRaw("EXEC sp201_82InsertVATCreditNotetoVoucher @p0,@p1,@p2", CreditNoteNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc);
+
+		//			var result = dbContext.Database.ExecuteSqlRaw("EXEC sp201_82InsertVATCreditNotetoVoucher_BHD @p0,@p1,@p2", CreditNoteNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc);
+
+
+		//			//   var result1 = dbContext.Database.ExecuteSqlRaw("EXEC  sp201_82InsertVATCreditNotetoVoucher_BHD @p0,@p1,@p2,@p3", InvoiceNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc, IsCashOrBankAccount);
+
+
+
+		//			dbContext.SaveChanges();
+
+		//			return Ok(new
+		//			{
+		//				Message = "Invoice posted successfully.",
+		//				VoucherVerifiedBy = UserName,  // Example, replace with actual data if needed
+		//											   //VoucherVerifiedOn = voucher.VoucherApprovedOn.ToString("dd-MMM-yyyy")
+		//			});
+		//		}
+		//		catch (Exception ex)
+		//		{
+		//			return BadRequest(new { Message = ex.Message });
+		//		}
+		//	}
+		//	return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+		//}
+
+
+		[HttpPost]
+		public async Task<ActionResult> CreditPostInvoice(string CreditNoteNo, bool IsDirectApproval)
 		{
 			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
 			{
 				try
 				{
+					bool IsDirect = false;
+
 					var UserName = HttpContext.Session.GetString("UserName");
 
 					if (string.IsNullOrEmpty(CreditNoteNo))
 					{
-						return BadRequest(new { Message = "Credit number is required." });
+						return BadRequest(new { Message = "CreditNoteNo is required." });
 					}
 
 					var voucher = dbContext.Tbl20170VatcreditNoteMasters.FirstOrDefault(v => v.CreditNoteNo == CreditNoteNo);
@@ -2139,22 +2199,26 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 					int JustAddedVoucherEntryNoCostAlloc = 0;
 
 					// 🔁 Call the stored procedure sp201_62InsertVATtoVoucher
-					// var result = dbContext.Database.ExecuteSqlRaw("EXEC sp201_82InsertVATCreditNotetoVoucher @p0,@p1,@p2", CreditNoteNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc);
+					//var result = dbContext.Database.ExecuteSqlRaw("EXEC sp201_62InsertVATtoVoucher @p0,@p1,@p2,@p3", InvoiceNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc, IsCashOrBankAccount);
 
-					var result = dbContext.Database.ExecuteSqlRaw("EXEC sp201_82InsertVATCreditNotetoVoucher_BHD @p0,@p1,@p2", CreditNoteNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc);
-
-
-					//   var result1 = dbContext.Database.ExecuteSqlRaw("EXEC  sp201_82InsertVATCreditNotetoVoucher_BHD @p0,@p1,@p2,@p3", InvoiceNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc, IsCashOrBankAccount);
-
-
+					var result1 = dbContext.Database.ExecuteSqlRaw("EXEC sp201_82InsertVATCreditNotetoVoucher_BHD @p0,@p1,@p2", CreditNoteNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc);
 
 					dbContext.SaveChanges();
+					IsDirect = true;
+
+					if (IsDirectApproval == true)
+					{
+						IsDirect = false;
+					}
+
 
 					return Ok(new
 					{
 						Message = "Invoice posted successfully.",
-						VoucherVerifiedBy = UserName,  // Example, replace with actual data if needed
-													   //VoucherVerifiedOn = voucher.VoucherApprovedOn.ToString("dd-MMM-yyyy")
+						VoucherVerifiedBy = UserName,
+						IsDirect = IsDirect
+						// Example, replace with actual data if needed
+						//VoucherVerifiedOn = voucher.VoucherApprovedOn.ToString("dd-MMM-yyyy")
 					});
 				}
 				catch (Exception ex)
@@ -2165,6 +2229,8 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 			return Unauthorized(new { message = "Invalid tenant.", success = false });
 
 		}
+
+
 		[HttpGet]
 		public async Task<IActionResult> GetSupplierCode(DataSourceLoadOptions loadOptions)
 		{

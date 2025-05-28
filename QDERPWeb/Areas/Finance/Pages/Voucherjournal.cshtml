@@ -330,7 +330,7 @@
             .Label("Convertion Rate")
             .LabelMode(EditorLabelMode.Outside)
             .ID("txtCurrencyRate")
-            .Value("")
+            .Value("0.00")
             //  .ReadOnly(true) // Make it read-only
             .Width(160)
             )
@@ -924,7 +924,7 @@
 <script>
     let argsledno = null; let paymentaccheadId; let paymentaccheadname; let paymentIsLedgerObselete;
     let accheadid, accheadname, refno, accgroup, accgroupid, accheadar;
-    var globalVoucherNo = "";
+    var globalVoucherNo = "",IsAccHead=false,accountHead=null;
     // $(function () {
     //     const dataGrid = $("#dataGrid").dxDataGrid("instance");
     //     const totalDebitTextbox = $("#totalDebitTextbox").dxTextBox("instance");
@@ -988,9 +988,12 @@
     function addVoucherEntry() {
         // Get values from the fields
         var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
-        var accountHead = $("#ddAccountHead").dxDropDownBox("instance").option("value");
+            if(IsAccHead==false)
+            {
+                accountHead = $("#ddAccountHead").dxDropDownBox("instance").option("value");
+            }
         var voucherAmount = $("#txtVoucherAmount").dxNumberBox("instance").option("value");
-        var drCr = lastDrCr; // Set DrCr based on the previous entry
+        var drCr = $("#sbDrCr").dxSelectBox("instance").option("value");; // Set DrCr based on the previous entry
         var entryNarration = $("#txtEntryNarration").dxTextArea("instance").option("value");
 
         // Reset previous error styles
@@ -1497,6 +1500,8 @@
 
 
     function updateTemporaryNo(e) {
+
+        debugger;
         const voucherNo = e.value;
         const temporaryNo = $("#TemporaryNo").dxTextBox("instance");
 
@@ -1509,7 +1514,7 @@
 
 
     $(document).ready(function () {
-        
+        debugger;
         $("#btnPrint").dxButton("instance").option("disabled", true);
        $("#btnPreview1").dxDropDownButton("instance").option("disabled", true);
 
@@ -1577,6 +1582,20 @@
                         DevExpress.ui.notify("No voucher entries found.", "warning", 2000);
                         return;
                     }
+
+                        var lastRow = response.data[response.data.length - 1]; // Get the last row
+                            var dropDownBox = $("#ddAccountHead").dxDropDownBox("instance");
+
+    if (dropDownBox) {
+                    IsAccHead=true;
+                    // Set selected value based on what the DropDownBox expects
+                    // Assuming ValueExpr is "AccountId", and AccountId is present in `lastRow`
+                    //dropDownBox.option("value", lastRow.AccountHead); // or lastRow.AccountId if available
+                     console.log("lastRow",lastRow)
+                             accountHead=lastRow.AccountId;
+                     dropDownBox.option("value", lastRow.AccountHead);
+                    // dataGridSelectionChanged({ selectedRowKeys: [lastRow.AccountHead] });
+    }
 
                     var dataGrid = $("#dataGrid").dxDataGrid("instance");
                     if (dataGrid) {

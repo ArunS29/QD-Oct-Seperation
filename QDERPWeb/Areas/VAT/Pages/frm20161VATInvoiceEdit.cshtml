@@ -1014,7 +1014,7 @@
 
 															.LabelMode(EditorLabelMode.Outside)
 															.ID("ddlGoodsGroup2")
-															//.Value("Income - Trading")
+															.Value("Income - Trading")
 															.ShowClearButton(true)
 															.AcceptCustomValue(true)
 															.OpenOnFieldClick(false)
@@ -3034,17 +3034,15 @@
 
 																	.Height(345)
 
-																	.Selection(s => s.Mode(SelectionMode.Single))
-
 																	.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 
 																	.Columns(columns =>
 
 																	{
 
-																		columns.Add().DataField("SignatoryID").Caption(new JS("formatMessage('SignatoryID')")).Alignment(HorizontalAlignment.Center);
+																			columns.Add().DataField("SellerOtherIdtype").Caption(new JS("formatMessage('SignatoryID')")).Alignment(HorizontalAlignment.Center);
 
-																			columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('SignatoryName')")).Alignment(HorizontalAlignment.Center);
+																			columns.Add().DataField("SellerIdtypeName").Caption(new JS("formatMessage('SignatoryName')")).Alignment(HorizontalAlignment.Center);
 
 
 																	})
@@ -3579,7 +3577,7 @@
 					columns: [
 						{
 
-								dataField: "InvoiceChildSLNo",
+							    dataField: "InvoiceChildSlNo",
 								caption: "InvoiceChildSLNo",
 								width: 100,
 								allowEditing: false, // Prevent manual editing
@@ -4114,6 +4112,14 @@
 			keyExpr: "SNo",
 
 			columns: [
+				          {
+
+								dataField: "InvoiceChildSLNo",
+								caption: "InvoiceChildSLNo",
+								width: 100,
+								allowEditing: false, // Prevent manual editing
+								visible: false // Hide the column
+							},
 
 				{
 
@@ -4829,7 +4835,7 @@
 			  function ClientCodedataGridSelectionChanged(e) {
 				const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
 				const ddbInstance = $("#ddclientcode").dxDropDownBox("instance");
-
+				debugger;
 				if (selectedKey) {
 					ddbInstance.option("value", selectedKey);
 					 ddbInstance.close();
@@ -6545,52 +6551,102 @@
 
 					}
 
-				function onEditorPreparing(e) {
 
-			if (e.parentType === "dataRow" && (e.dataField === "Qty" || e.dataField === "UnitPrice" || e.dataField === "VATPercentage")) {
-				e.editorOptions.onValueChanged = function (args) {
-					let grid = $("#B2BdataGrid").dxDataGrid("instance");
-					let rowIndex = e.row.rowIndex;
+					//Discount
+	// 					function onEditorPreparing(e) {
+	// 	if (e.parentType === "dataRow" &&
+	// 		(e.dataField === "Qty" ||
+	// 		 e.dataField === "UnitPrice" ||
+	// 		 e.dataField === "VATPercentage" ||
+	// 		 e.dataField === "Discount")) {
+
+	// 		e.editorOptions.onValueChanged = function (args) {
+	// 			let grid = $("#B2BdataGrid").dxDataGrid("instance");
+	// 			let rowIndex = e.row.rowIndex;
+
+	// 			let newValue = args.value;
+
+	// 			// Get existing values or updated ones
+	// 			let qty = e.dataField === "Qty" ? newValue : grid.cellValue(rowIndex, "Qty") || 0;
+	// 			let unitPrice = e.dataField === "UnitPrice" ? newValue : grid.cellValue(rowIndex, "UnitPrice") || 0;
+	// 			let discount = e.dataField === "Discount" ? newValue : grid.cellValue(rowIndex, "Discount") || 0;
+
+	// 			// VAT rate handling
+	// 			let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex, "VAT%") || "0%";
+	// 			let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100;
+
+	// 			// Calculate amount
+	// 			let amount = qty * unitPrice;
+	// 			let discountedAmount = amount - discount;
+
+	// 			// Ensure discountedAmount doesn't go negative
+	// 			if (discountedAmount < 0) discountedAmount = 0;
+
+	// 			let vatValue = discountedAmount * vatRate;
+	// 			let totalValue = discountedAmount + vatValue;
+
+	// 			// Update grid cells
+	// 			grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
+	// 			grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
+	// 			grid.cellValue(rowIndex, "Unit Price",unitPrice);
+	// 			grid.cellValue(rowIndex, "Total Before Discount",unitPrice);
+	// 			grid.cellValue(rowIndex, "Amount",amount.toFixed(2));
+	// 			grid.cellValue(rowIndex, "Discount",discount);
+	// 			grid.cellValue(rowIndex, "Qty", qty);
+	// 			grid.cellValue(rowIndex, "VAT%", vatRateStr);
+	// 		};
+	// 	}
+	// }
 
 
-					// Get the updated value from the input field
-					let newValue = args.value;
-					console.log("gridnewvalue",newValue)
-					// Get existing values
-					let qty = e.dataField === "Qty" ? newValue : grid.cellValue(rowIndex, "Qty") || 0;
-					console.log("qty",qty)
+	function onEditorPreparing(e) {
 
-					 let unitPrice = e.dataField === "UnitPrice" ? newValue : grid.cellValue(rowIndex, "UnitPrice") || 0;
-					 console.log("unitPrice",unitPrice)
-					// let vatRate = (e.dataField === "VAT%" ? newValue : grid.cellValue(rowIndex, "VAT%")) || 0;
-					let vatval=grid.cellValue(rowIndex, "VAT%");
-					 console.log("VATVal",vatval)
+		if (e.parentType === "dataRow" && (e.dataField === "Qty" || e.dataField === "UnitPrice" || e.dataField === "VATPercentage")) {
+			e.editorOptions.onValueChanged = function (args) {
+				let grid = $("#B2BdataGrid").dxDataGrid("instance");
+				let rowIndex = e.row.rowIndex;
 
-					let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex, "VAT%") || "0%";
-					console.log("vatRateStr",vatRateStr)
 
-					let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100; // Convert "15%" → 15 → 0.15
-					console.log("vatRate",vatRate)
+				// Get the updated value from the input field
+				let newValue = args.value;
+				console.log("gridnewvalue",newValue)
+				// Get existing values
+				let qty = e.dataField === "Qty" ? newValue : grid.cellValue(rowIndex, "Qty") || 0;
+				console.log("qty",qty)
 
-					// Calculate values
-					let amount = qty * unitPrice;
-					 console.log("amount",amount)
+				 let unitPrice = e.dataField === "UnitPrice" ? newValue : grid.cellValue(rowIndex, "UnitPrice") || 0;
+				 console.log("unitPrice",unitPrice)
+				// let vatRate = (e.dataField === "VAT%" ? newValue : grid.cellValue(rowIndex, "VAT%")) || 0;
+				let vatval=grid.cellValue(rowIndex, "VAT%");
+				 console.log("VATVal",vatval)
 
-					let vatValue = amount * vatRate;
-					console.log("vatValue",vatValue)
+				let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex, "VAT%") || "0%";
+				console.log("vatRateStr",vatRateStr)
 
-					let totalValue = amount + vatValue;
-					console.log("totalValue",vatValue)
+				let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100; // Convert "15%" → 15 → 0.15
+				console.log("vatRate",vatRate)
 
-					// Update values in the grid
-					grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
-					grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
-					grid.cellValue(rowIndex, "Unit Price",amount);
-					 grid.cellValue(rowIndex, "Qty",qty);
-					 grid.cellValue(rowIndex, "VAT%",vatRateStr);
-				};
-			}
+				// Calculate values
+				let amount = qty * unitPrice;
+				 console.log("amount",amount)
+
+				let vatValue = amount * vatRate;
+				console.log("vatValue",vatValue)
+
+				let totalValue = amount + vatValue;
+				console.log("totalValue",vatValue)
+
+				// Update values in the grid
+				grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
+				grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
+				grid.cellValue(rowIndex, "Unit Price",unitPrice);
+				grid.cellValue(rowIndex, "Total Before Discount",unitPrice);
+				grid.cellValue(rowIndex, "Amount",unitPrice);
+				 grid.cellValue(rowIndex, "Qty",qty);
+				 grid.cellValue(rowIndex, "VAT%",vatRateStr);
+			};
 		}
+	}
 
 
 		$("#btnSave").on("click", function (e) {
@@ -6599,7 +6655,10 @@
 			var clientnameValidation = clientnameValidator.validate();
 
 		  //  InvoiceCurrencyCode = $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value");
-
+		  if(revaccheadid==null)
+		  {
+				  revaccheadid="L00343"
+		  }
 
 			if(clientnameValidation.isValid)
 			{
@@ -6643,7 +6702,11 @@
 			PaymentTerms: $("#PaymentTerms").dxTextBox("instance").option("value")|| null,
 			QuotationNo: $("#QuotationNo").dxTextBox("instance").option("value")|| null,
 			DeliveryNoteNos: $("#DeliveryNotes").dxTextBox("instance").option("value")|| null,
+				InvoiceDueDate:$("#PODate").dxDateBox("instance").option("value")|| null,
 			ClientGrnreferenceNo:$("#ClientGRNReference").dxTextBox("instance").option("value")|| null,
+				AddedBy:$("#SubmittedBytext").dxTextBox("instance").option("value")|| null,
+					AddedOn:$("#ddlinvoicesubmittedon").dxDateBox("instance").option("value")|| null,
+						
 
 			//Deduction&CurrencyDetails
 		//	InvoiceCurrencyCode: InvoiceCurrencyExchangeId|| null,
@@ -6667,6 +6730,8 @@
 			  SellerGroupVatnumber:$("#OurGroupVATNo").dxTextBox("instance").option("value")|| null,
 			  SellerVATNumber:$("#OurVATNo").dxTextBox("instance").option("value")|| null,
 			  SellerNameAr:$("#OurCompanyNameinArabic").dxTextBox("instance").option("value")|| null,
+				  AddedBy:$("#SubmittedBytext").dxTextBox("instance").option("value")|| null,
+					AddedOn:$("#ddlinvoicesubmittedon").dxDateBox("instance").option("value")|| null,
 			   SellerOtherIdtype:SellerOtherIdtype|| null,
 			   SellerOtherSellerId:$("#OtherID1").dxTextBox("instance").option("value")|| null,
 
@@ -6724,7 +6789,32 @@
 						contentType: "application/json",
 						data: JSON.stringify(updatedDataSource),
 						success: function (response) {
-							//DevExpress.ui.notify(response.message, "success", 3000);
+								
+								$.ajax({
+									type: "GET",
+											url: `/api/VATModule/GetGridInvoiceDetails?InvoiceNo=${encodeURIComponent(InVoiceNo)}`,
+										dataType: 'json',
+									success: function (response) {
+											console.log("Grid",response)
+										// if (!response || !response.data || response.data.length === 0) {
+										// 	console.warn("No voucher entries found.");
+										// 	return;
+										// }
+
+											let rowData = response.map((item, index) => ({
+				SNo: index + 1,
+				...item
+			}));
+										// let rowData = response;
+
+										// ✅ Now safely initialize the grid here
+										initializeDataGrid(rowData);
+									},
+									error: function (xhr, status, error) {
+										console.error("Error fetching grid data:", error);
+									}
+								});
+
 							  DevExpress.ui.dialog.alert(
 						"Invoice Details updated Successfully.",
 						"Update successful"
@@ -6751,14 +6841,16 @@
 		 });
 
 
-
-				$("#btnSaveAndClose").on("click", function (e) {
+				 $("#btnSaveAndClose").on("click", function (e) {
 
 				var clientnameValidator = $("#ddclientname").dxValidator("instance");
 				var clientnameValidation = clientnameValidator.validate();
 
 			  //  InvoiceCurrencyCode = $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value");
-
+			  if(revaccheadid==null)
+			  {
+					  revaccheadid="L00343"
+			  }
 
 				if(clientnameValidation.isValid)
 				{
@@ -6802,7 +6894,11 @@
 				PaymentTerms: $("#PaymentTerms").dxTextBox("instance").option("value")|| null,
 				QuotationNo: $("#QuotationNo").dxTextBox("instance").option("value")|| null,
 				DeliveryNoteNos: $("#DeliveryNotes").dxTextBox("instance").option("value")|| null,
+					InvoiceDueDate:$("#PODate").dxDateBox("instance").option("value")|| null,
 				ClientGrnreferenceNo:$("#ClientGRNReference").dxTextBox("instance").option("value")|| null,
+					AddedBy:$("#SubmittedBytext").dxTextBox("instance").option("value")|| null,
+						AddedOn:$("#ddlinvoicesubmittedon").dxDateBox("instance").option("value")|| null,
+
 
 				//Deduction&CurrencyDetails
 			//	InvoiceCurrencyCode: InvoiceCurrencyExchangeId|| null,
@@ -6826,6 +6922,8 @@
 				  SellerGroupVatnumber:$("#OurGroupVATNo").dxTextBox("instance").option("value")|| null,
 				  SellerVATNumber:$("#OurVATNo").dxTextBox("instance").option("value")|| null,
 				  SellerNameAr:$("#OurCompanyNameinArabic").dxTextBox("instance").option("value")|| null,
+					  AddedBy:$("#SubmittedBytext").dxTextBox("instance").option("value")|| null,
+						AddedOn:$("#ddlinvoicesubmittedon").dxDateBox("instance").option("value")|| null,
 				   SellerOtherIdtype:SellerOtherIdtype|| null,
 				   SellerOtherSellerId:$("#OtherID1").dxTextBox("instance").option("value")|| null,
 
@@ -6883,7 +6981,32 @@
 							contentType: "application/json",
 							data: JSON.stringify(updatedDataSource),
 							success: function (response) {
-								//DevExpress.ui.notify(response.message, "success", 3000);
+
+									$.ajax({
+										type: "GET",
+												url: `/api/VATModule/GetGridInvoiceDetails?InvoiceNo=${encodeURIComponent(InVoiceNo)}`,
+											dataType: 'json',
+										success: function (response) {
+												console.log("Grid",response)
+											// if (!response || !response.data || response.data.length === 0) {
+											// 	console.warn("No voucher entries found.");
+											// 	return;
+											// }
+
+												let rowData = response.map((item, index) => ({
+					SNo: index + 1,
+					...item
+				}));
+											// let rowData = response;
+
+											// ✅ Now safely initialize the grid here
+											initializeDataGrid(rowData);
+										},
+										error: function (xhr, status, error) {
+											console.error("Error fetching grid data:", error);
+										}
+									});
+
 								  DevExpress.ui.dialog.alert(
 							"Invoice Details updated Successfully.",
 							"Update successful"
@@ -6948,7 +7071,7 @@
 
 		function VATPercentage(newValue, rowIndex,TaxSlabCode) {
 			let grid = $("#B2BdataGrid").dxDataGrid("instance");
-
+			
 			// Get current row values
 			let qty = grid.cellValue(rowIndex, "Qty") || 0;
 
@@ -6969,12 +7092,53 @@
 						// Update values in the grid
 					grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
 					grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
-						grid.cellValue(rowIndex, "Unit Price",amount);
+					grid.cellValue(rowIndex, "Unit Price",unitPrice);
+					grid.cellValue(rowIndex, "Total Before Discount",unitPrice);
+						grid.cellValue(rowIndex, "Amount",unitPrice);
 					grid.cellValue(rowIndex, "Qty",qty);
 					grid.cellValue(rowIndex, "VAT%",vatRateStr);
 					 grid.cellValue(rowIndex, "TaxSlabCode",TaxSlabCode);
 
 		}
+
+
+		//Discount
+// 			function VATPercentage(newValue, rowIndex, TaxSlabCode) {
+//     let grid = $("#B2BdataGrid").dxDataGrid("instance");
+// 	debugger;
+//     // Get current row values
+//     let qty = parseFloat(grid.cellValue(rowIndex, "Qty")) || 0;
+//     let unitPrice = parseFloat(grid.cellValue(rowIndex, "UnitPrice")) || 0;
+//     let discountPercentage = parseFloat(grid.cellValue(rowIndex, "Discount")) || 0;
+//     let vatRateStr = newValue || "0%";
+
+//     let vatRate = parseFloat(vatRateStr); // Extract numeric part (e.g., 15 from "15%")
+//     let discountRate = discountPercentage/100;
+
+//     // Calculate initial amount
+//     let amount = qty * unitPrice;
+
+//     // Apply discount
+//     let discountValue = amount * discountRate;
+//     let discountedAmount = amount - discountValue;
+
+//     // Calculate VAT and total
+//     let vatValue = discountedAmount * (vatRate);
+//     let totalValue = discountedAmount + vatValue;
+
+//     // Update values in the grid
+//     grid.cellValue(rowIndex, "Qty", qty);
+//     grid.cellValue(rowIndex, "UnitPrice", unitPrice); // Make sure column name matches "UnitPrice"
+//     grid.cellValue(rowIndex, "Amount", amount.toFixed(2));
+//     grid.cellValue(rowIndex, "Discount", discountPercentage); // Just to keep the value intact
+//     grid.cellValue(rowIndex, "Total Before Discount", amount.toFixed(2));
+//     grid.cellValue(rowIndex, "VAT%", vatRateStr);
+//     grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
+//     grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
+//     grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
+// }
+
+
 
 
 			function ViewInvoiceVATPercentage(newValue, rowIndex,TaxSlabCode) {
@@ -8006,11 +8170,11 @@
 			const visibleRows = grid.getVisibleRows();
 			const match = visibleRows.find(r => r.data.AccountHead === typedText);
 
-			if (!match) {
-				// Clear the value if not valid
-				e.component.option("value", null);
+			// if (!match) {
+			// 	// Clear the value if not valid
+			// 	e.component.option("value", null);
 
-			}
+			// }
 		}
 		
 

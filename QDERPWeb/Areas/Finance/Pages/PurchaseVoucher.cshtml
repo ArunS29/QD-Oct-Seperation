@@ -1510,6 +1510,21 @@ $(function () {
 					// DevExpress.ui.notify("No voucher entries found.", "warning", 2000);
 					return;
 				}
+
+					var lastRow = response.data[response.data.length - 1]; // Get the last row
+					var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
+
+					if (dropDownBox) {
+						//IsClientName=true;
+						// Set selected value based on what the DropDownBox expects
+						// Assuming ValueExpr is "AccountId", and AccountId is present in `lastRow`
+						//dropDownBox.option("value", lastRow.AccountHead); // or lastRow.AccountId if available
+						 console.log("lastRow",lastRow)
+						 paymentaccheadId=lastRow.AccountId;
+						 paymentaccheadname=lastRow.AccountHead;
+						 dropDownBox.option("value", lastRow.AccountHead);
+						// dataGridSelectionChanged({ selectedRowKeys: [lastRow.AccountHead] });
+					}
 				var voucherTextBox = $("#VoucherNo").dxTextBox("instance");
 				if (voucherTextBox) {
 					voucherTextBox.option("readOnly", true);

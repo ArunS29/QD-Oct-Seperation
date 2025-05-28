@@ -568,7 +568,7 @@
             .Width(50)
             .Text(new JS("formatMessage('RFQ Details')"))
             .ElementAttr(new { style = "display: none;" })
-            // .OnClick("toggleGroupPanel")
+            .OnClick("AddNewRFQDetails")
             )
 
     </div>
@@ -638,7 +638,7 @@
                 items.Add().Text(new JS("formatMessage('Add New Material Receipt-From Supplier')"));
                 items.Add().Text(new JS("formatMessage('Add New Material Receipt-Returned From Project')"));
             })
-            .OnItemClick("addNewMaterialRequest")
+            .OnItemClick("addNewMaterialReceipt")
             .ShowArrowIcon(false)
             )
     </div>
@@ -1304,6 +1304,10 @@
         function AddNewRFQ() {
             window.location.href = `/${tenantName}/IMS/AddNewRFQ`;
         }
+    function AddNewRFQDetails() {
+        window.location.href = `/${tenantName}/IMS/RFQwithItemDetails`;
+    }
+
         function addPaymentButton_click(e) {
         let url = "";
         let title = "Payments";
@@ -1604,7 +1608,7 @@
             window.location.href = url;
         }
         
-        function addNewMaterialRequest(e) {
+        function addNewMaterialReceipt(e) {
             let url = ''; // Declare once
             switch (e.itemData.text) {
                 case formatMessage('Add New Material Receipt-From Supplier'):

@@ -298,27 +298,27 @@
             <label id="CreatedBy1" class="no-border-input"></label>
             </div>
     <div class="col-md-1">
-                @(Html.DevExtreme().TextBox().ID("CreatedBy").Value(null).Width("100%").ReadOnly(false))
+                @(Html.DevExtreme().TextBox().ID("CreatedBy").Value(null).Width("100%").ReadOnly(true))
             </div>
 
     <div class="col-md-1">
             <label id="CreatedOn1" class="no-border-input"></label>
         </div>
     <div class="col-md-1">
-            @(Html.DevExtreme().TextBox().ID("CreatedOn").Value(null).Width("100%").ReadOnly(false))
+            @(Html.DevExtreme().TextBox().ID("CreatedOn").Value(null).Width("100%").ReadOnly(true))
         </div>
     <div class="col-md-1">
             <label id="ModifiedBy1" class="no-border-input"></label>
         </div>
     <div class="col-md-1">
-            @(Html.DevExtreme().TextBox().ID("ModifiedBy").Value(null).Width("100%").ReadOnly(false))
+            @(Html.DevExtreme().TextBox().ID("ModifiedBy").Value(null).Width("100%").ReadOnly(true))
         </div>
 
     <div class="col-md-1">
             <label id="ModifiedOn1" class="no-border-input"></label>
         </div>
     <div class="col-md-1">
-            @(Html.DevExtreme().TextBox().ID("ModifiedOn").Value(null).Width("100%").ReadOnly(false))
+            @(Html.DevExtreme().TextBox().ID("ModifiedOn").Value(null).Width("100%").ReadOnly(true))
         </div>
 </div>
 
@@ -534,85 +534,85 @@
     let dataGrid;
     let CreatedOnvalue = null;
 
-    $(function () {
-        $("#costCenterComboBox").dxSelectBox({
-            width: 1000,
-            dataSource: new DevExpress.data.CustomStore({
-                load: function (loadOptions) {
-                    return $.ajax({
-                        url: "/api/CostCenterMaster/GetCostAllocationGroup", // Replace with your API endpoint
-                        dataType: "json",
-                        data: loadOptions,
-                        type: "GET"
-                    });
-                },
-                byKey: function (key) {
-                    return $.ajax({
-                        url: "/api/CostCenterMaster/GetCostCenterByKey", // Use an appropriate API endpoint for this
-                        data: { key: key },
-                        type: "GET"
-                    });
-                }
-            }),
-            displayExpr: "CostAllocationGroup", // Field to display in ComboBox
-            valueExpr: "CostAllocationUnitId", // Field to use as the value
-            placeholder: formatMessage('Select or Enter a Cost Center Group'),
-            searchEnabled: true, // Enable search functionality
-            acceptCustomValue: true, // Allow user to input custom values
-            inputAttr: { style: "text-align: left;" },
-            onCustomItemCreating: function (args) {
-                const newValue = args.text; // The custom value entered by the user
-                return {
-                    CostAllocationUnitId: newValue, // Assign a unique ID or key
-                    CostAllocationGroup: newValue  // Use the entered value as the display text
-                };
-            },
-            onValueChanged: function (args) {
-                const selectedValue = args.value;
-                console.log("Selected/Entered Value:", selectedValue);
-            }
-        });
-    });
+    // $(function () {
+    //     $("#costCenterComboBox").dxSelectBox({
+    //         width: 1000,
+    //         dataSource: new DevExpress.data.CustomStore({
+    //             load: function (loadOptions) {
+    //                 return $.ajax({
+    //                     url: "/api/CostCenterMaster/GetCostAllocationGroup", // Replace with your API endpoint
+    //                     dataType: "json",
+    //                     data: loadOptions,
+    //                     type: "GET"
+    //                 });
+    //             },
+    //             byKey: function (key) {
+    //                 return $.ajax({
+    //                     url: "/api/CostCenterMaster/GetCostCenterByKey", // Use an appropriate API endpoint for this
+    //                     data: { key: key },
+    //                     type: "GET"
+    //                 });
+    //             }
+    //         }),
+    //         displayExpr: "CostAllocationGroup", // Field to display in ComboBox
+    //         valueExpr: "CostAllocationUnitId", // Field to use as the value
+    //         placeholder: formatMessage('Select or Enter a Cost Center Group'),
+    //         searchEnabled: true, // Enable search functionality
+    //         acceptCustomValue: true, // Allow user to input custom values
+    //         inputAttr: { style: "text-align: left;" },
+    //         onCustomItemCreating: function (args) {
+    //             const newValue = args.text; // The custom value entered by the user
+    //             return {
+    //                 CostAllocationUnitId: newValue, // Assign a unique ID or key
+    //                 CostAllocationGroup: newValue  // Use the entered value as the display text
+    //             };
+    //         },
+    //         onValueChanged: function (args) {
+    //             const selectedValue = args.value;
+    //             console.log("Selected/Entered Value:", selectedValue);
+    //         }
+    //     });
+    // });
 
-    $(function () {
-        $("#costCenterMaster1").dxSelectBox({
-            width: 1000,
-            dataSource: new DevExpress.data.CustomStore({
-                load: function (loadOptions) {
-                    return $.ajax({
-                        url: "/api/CostCenterMaster/GetCostAllocationMasterGroup", // Replace with your API endpoint
-                        dataType: "json",
-                        data: loadOptions,
-                        type: "GET"
-                    });
-                },
-                byKey: function (key) {
-                    return $.ajax({
-                        url: "/api/CostCenterMaster/GetCostCenterMasterGroupByKey", // Use your specific endpoint for fetching a single record by key
-                        data: { key: key },
-                        type: "GET"
-                    });
-                }
-            }),
-            displayExpr: "CostAllocationMasterGroup", // Field to display in ComboBox
-            valueExpr: "CostAllocationUnitId", // Field to use as the value
-            placeholder: formatMessage('Select or Enter a Cost Center Master Group'),
-            searchEnabled: true, // Enable search functionality
-            acceptCustomValue: true, // Allow user to input custom values
-            inputAttr: { style: "text-align: left;" },
-            onCustomItemCreating: function (args) {
-                const newValue = args.text; // The custom value entered by the user
-                return {
-                    CostAllocationUnitId: newValue, // Assign a unique ID or key
-                    CostAllocationMasterGroup: newValue  // Use the entered value as the display text
-                };
-            },
-            onValueChanged: function (args) {
-                const selectedValue = args.value;
-                console.log("Selected/Entered Value:", selectedValue);
-            }
-        });
-    });
+    // $(function () {
+    //     $("#costCenterMaster1").dxSelectBox({
+    //         width: 1000,
+    //         dataSource: new DevExpress.data.CustomStore({
+    //             load: function (loadOptions) {
+    //                 return $.ajax({
+    //                     url: "/api/CostCenterMaster/GetCostAllocationMasterGroup", // Replace with your API endpoint
+    //                     dataType: "json",
+    //                     data: loadOptions,
+    //                     type: "GET"
+    //                 });
+    //             },
+    //             byKey: function (key) {
+    //                 return $.ajax({
+    //                     url: "/api/CostCenterMaster/GetCostCenterMasterGroupByKey", // Use your specific endpoint for fetching a single record by key
+    //                     data: { key: key },
+    //                     type: "GET"
+    //                 });
+    //             }
+    //         }),
+    //         displayExpr: "CostAllocationMasterGroup", // Field to display in ComboBox
+    //         valueExpr: "CostAllocationUnitId", // Field to use as the value
+    //         placeholder: formatMessage('Select or Enter a Cost Center Master Group'),
+    //         searchEnabled: true, // Enable search functionality
+    //         acceptCustomValue: true, // Allow user to input custom values
+    //         inputAttr: { style: "text-align: left;" },
+    //         onCustomItemCreating: function (args) {
+    //             const newValue = args.text; // The custom value entered by the user
+    //             return {
+    //                 CostAllocationUnitId: newValue, // Assign a unique ID or key
+    //                 CostAllocationMasterGroup: newValue  // Use the entered value as the display text
+    //             };
+    //         },
+    //         onValueChanged: function (args) {
+    //             const selectedValue = args.value;
+    //             console.log("Selected/Entered Value:", selectedValue);
+    //         }
+    //     });
+    // });
 
     // GetBranchDropDown
     function dataGridSelectionChangedbranch(e) {
@@ -959,9 +959,9 @@ function formatDate(date) {
     });
 
     function navigateToHome() {
-     
-        
-       window.parent.document.getElementById("customModal").style.display = "none";
+
+
+        history.back();
         
     }
 
