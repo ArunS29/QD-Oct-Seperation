@@ -51,7 +51,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     }
 
                     // Filtering by date range
-                    query = query.Where(i => i.SalesOrderDate >= fromDate && i.SalesOrderDate <= toDate);
+                    query = query.Where(i => i.QuoteDate >= fromDate && i.QuoteDate <= toDate);
 
                     // Fetching the data
                     var data = await query.Select(i => new
