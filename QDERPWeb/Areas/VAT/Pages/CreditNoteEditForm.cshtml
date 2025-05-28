@@ -6808,6 +6808,11 @@ openModal(url, title);
 		{
 	// Create JSON object for master invoice
 		let CreditNoteNo=$('#CreditNoteNo').dxTextBox("instance").option("value");
+
+		if(revaccheadid==null)
+{
+	revaccheadid="L00343"
+}
 		
 		var InvoiceMaster = {
 			CreditNoteNo: $('#CreditNoteNo').dxTextBox("instance").option("value"),
@@ -7076,34 +7081,67 @@ openModal(url, title);
 
 
 
+	// function VATPercentage(newValue, rowIndex,TaxSlabCode) {
+	// 	let grid = $("#B2BdataGrid").dxDataGrid("instance");
+
+	// 	// Get current row values
+	// 	let qty = grid.cellValue(rowIndex, "Qty") || 0;
+
+	// 	let unitPrice = grid.cellValue(rowIndex, "UnitPrice") || 0;
+	// 	let vatRateStr = newValue || "0%";
+
+
+	// 	//let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100;
+	// 	let vatRate = parseFloat(vatRateStr);
+
+
+	// 	// Calculate amount and VAT
+	// 	let amount = qty * unitPrice;
+	// 	let vatValue = amount * vatRate;
+	// 	let totalValue = amount + vatValue;
+	// 	//alert(vatValue)
+	// 				// Update values in the grid
+	// 			grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
+	// 			grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
+	// 			grid.cellValue(rowIndex, "Unit Price",amount);
+	// 			grid.cellValue(rowIndex, "Qty",qty);
+	// 			grid.cellValue(rowIndex, "VAT%",vatRateStr);
+	// 			 grid.cellValue(rowIndex, "TaxSlabCode",TaxSlabCode);
+
+	// }
+
+
 	function VATPercentage(newValue, rowIndex,TaxSlabCode) {
-		let grid = $("#B2BdataGrid").dxDataGrid("instance");
+			let grid = $("#B2BdataGrid").dxDataGrid("instance");
+			debugger;
+			// Get current row values
+			let qty = grid.cellValue(rowIndex, "Qty") || 0;
 
-		// Get current row values
-		let qty = grid.cellValue(rowIndex, "Qty") || 0;
-
-		let unitPrice = grid.cellValue(rowIndex, "UnitPrice") || 0;
-		let vatRateStr = newValue || "0%";
-
-
-		//let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100;
-		let vatRate = parseFloat(vatRateStr);
+	
+			let unitPrice = grid.cellValue(rowIndex, "UnitPrice") || 0;
+			let vatRateStr = newValue || "0%";
 
 
-		// Calculate amount and VAT
-		let amount = qty * unitPrice;
-		let vatValue = amount * vatRate;
-		let totalValue = amount + vatValue;
-		//alert(vatValue)
-					// Update values in the grid
-				grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
-				grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
-				grid.cellValue(rowIndex, "Unit Price",amount);
-				grid.cellValue(rowIndex, "Qty",qty);
-				grid.cellValue(rowIndex, "VAT%",vatRateStr);
-				 grid.cellValue(rowIndex, "TaxSlabCode",TaxSlabCode);
+			//let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100;
+			let vatRate = parseFloat(vatRateStr);
 
-	}
+
+			// Calculate amount and VAT
+			let amount = qty * unitPrice;
+			let vatValue = amount * vatRate;
+			let totalValue = amount + vatValue;
+			//alert(vatValue)
+						// Update values in the grid
+					grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
+					grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
+					grid.cellValue(rowIndex, "Unit Price",unitPrice);
+					grid.cellValue(rowIndex, "Total Before Discount",unitPrice);
+						grid.cellValue(rowIndex, "Amount",unitPrice);
+					grid.cellValue(rowIndex, "Qty",qty);
+					grid.cellValue(rowIndex, "VAT%",vatRateStr);
+					 grid.cellValue(rowIndex, "TaxSlabCode",TaxSlabCode);
+
+		}
 
 
 	$(document).ready(function () {

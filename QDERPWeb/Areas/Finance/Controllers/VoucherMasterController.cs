@@ -2868,6 +2868,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 DetailedDescription = child.Description?.GetString() ?? string.Empty,
                                 QuantityInvoiced = child.Qty?.GetDecimal() ?? 0m,
                                 TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8,
+                                //Discount = child.Discount,
                                 UnitsToBill = 1,
                                 UnitRateMethod = 49,
                                 ItemCode = child.ItemCode ?? string.Empty,
@@ -2898,7 +2899,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 existingChild.UnitRateMethod = 49;
                                 existingChild.ItemCode = child.ItemCode ?? string.Empty;
                                 existingChild.UoM = "Each";
-
+                               // existingChild.Discount = child.Discount;
                                 dbContext.Tbl20162VatinvoiceChildren.Update(existingChild);
                                 savedChildren.Add(existingChild);
                             }

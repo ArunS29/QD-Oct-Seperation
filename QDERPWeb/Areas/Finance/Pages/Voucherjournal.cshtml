@@ -1818,6 +1818,10 @@
                    
 
                     var ddCurrency = $("#ddCurrency").dxDropDownBox("instance");
+                        if(data.currencyid==null||"")
+                        {
+                                    data.currencyid=1;
+                        }
                     ddCurrency.option("value", data.currencyid || "");
 
                      var verifiedDate = data.VoucherVerifiedOn ? new Date(data.VoucherVerifiedOn) : null;

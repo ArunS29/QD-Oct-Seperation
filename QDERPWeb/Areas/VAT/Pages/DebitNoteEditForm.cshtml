@@ -452,8 +452,10 @@
                                 .DataSource(d => d.WebApi()
                                     .Controller("VATModule")
                                     .LoadAction("GetPurchaseVoucher")
-									.LoadParams(new { accheadid = new JS("accheadid") }) // Fix: ensure `accheadid` is a proper parameter key	
-                                    .LoadMode(DataSourceLoadMode.Raw)
+															.LoadParams(new { supplierid = new JS("$('#VATSupplierName').dxDropDownBox('instance').option('value')") }) // Pass the selected Receiving Account value
+
+															//.LoadParams(new { supplierid = new JS("supplierid") }) // Fix: ensure `accheadid` is a proper parameter key
+															.LoadMode(DataSourceLoadMode.Raw)
                                     .Key("PurchaseVoucherNo"))
 							      .ValidationRules(rules =>
                                     {
@@ -1349,7 +1351,7 @@
 													.LoadAction("GetPurchaseVoucher")
 											.LoadMode(DataSourceLoadMode.Raw)
 													///   .Key("AccountHead") //salary paid entry
-													.Key("AccountId")
+														.Key("PurchaseVoucherNo")
 
 											)
 											.WordWrapEnabled(true)
@@ -1369,9 +1371,9 @@
 											.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 											.Columns(columns =>
 											{
-												columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account ID')")).Alignment(HorizontalAlignment.Center);
-												columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Supplier account/Cash account')")).Alignment(HorizontalAlignment.Center);
-												columns.Add().DataField("RecordStatus").Caption(new JS("formatMessage('Record Status')")).Alignment(HorizontalAlignment.Center);
+													columns.Add().DataField("PurchaseVoucherNo").Caption(new JS("formatMessage('Purchase Voucher No')")).Alignment(HorizontalAlignment.Center);
+													columns.Add().DataField("SupplierCode").Caption(new JS("formatMessage('Supplier account/Cash account')")).Alignment(HorizontalAlignment.Center);
+													//columns.Add().DataField("RecordStatus").Caption(new JS("formatMessage('Record Status')")).Alignment(HorizontalAlignment.Center);
 
 											})
 
@@ -3398,6 +3400,7 @@
 
 					accheadid=selectedRowData[0].AccountHead;
 	                supplierid=selectedRowData[0].AccountId;
+					alert(supplierid)
 
 				} else {
 					DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
