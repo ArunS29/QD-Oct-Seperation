@@ -190,13 +190,14 @@ namespace QD.ERP.Web.Areas.Security.Controllers
 
                         SetHttpOnlyCookie("AuthToken", token, 20);
                         SetHttpOnlyCookie("Permissions", JsonSerializer.Serialize(permissions), 20);
-
+                         var sessionCookie = Request.Cookies[".AspNetCore.Session"];
                         return Ok(new
                         {
                             message = "Login successful",
                             success = true,
                             token,
                             permissions
+                            ,sessionCookie
                         });
                     }
                 }
@@ -260,7 +261,10 @@ namespace QD.ERP.Web.Areas.Security.Controllers
                 SetHttpOnlyCookie("Permissions", JsonSerializer.Serialize(permissions), 20);
                 SetHttpOnlyCookie("AuthToken", newToken, 20);
 
-                        return Ok(new { message = "Session extended successfully.", success = true, token = newToken, permissions= permissions });
+                        var sessionCookie = Request.Cookies[".AspNetCore.Session"];
+                      
+
+                        return Ok(new { message = "Session extended successfully.", success = true, token = newToken, sessionCookie, permissions= permissions });
                     }
                 }
                 else
