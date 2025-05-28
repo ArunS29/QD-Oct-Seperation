@@ -43,10 +43,26 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             try
             {
-				dbContext.Tbl201AccountGroups.Add(AG);
+                string userName = HttpContext.Session.GetString("UserName");
+                DateTime now = DateTime.Now;
+                // Set audit fields
+                AG.RecordCreatedBy = userName;
+                AG.RecordCreatedOn = now;
+
+                dbContext.Tbl201AccountGroups.Add(AG);
                 await dbContext.SaveChangesAsync();
                 //return Json(new { VoucherEntryNo = VE.VoucherNo });
-                return Ok(new { success = true, message = "Data inserted successfully!" });
+                return Ok(new
+                {
+                    success = true,
+                    message = "Data inserted successfully!",
+                    data = new
+                    {
+                        AG.RecordCreatedBy,
+                        AG.RecordCreatedOn
+                    }
+                });
+
             }
             catch (Exception ex)
             {
@@ -70,6 +86,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             try
             {
+                string userName = HttpContext.Session.GetString("UserName");
+                DateTime now = DateTime.Now;
                 var existingRecord = await dbContext.Tbl201AccountGroups.FindAsync(AG.AccountGroupId);
 
                 if (existingRecord == null)
@@ -85,15 +103,24 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                 existingRecord.AccountGroupUnder = AG.AccountGroupUnder ?? existingRecord.AccountGroupUnder;
 
-                existingRecord.RecordCreatedBy = AG.RecordCreatedBy;
-                existingRecord.RecordCreatedOn = AG.RecordCreatedOn;
-                existingRecord.RecordModifiedBy = AG.RecordModifiedBy;
-                existingRecord.RecordModifiedOn = AG.RecordModifiedOn;
+                
+                existingRecord.RecordModifiedBy = userName;
+                existingRecord.RecordModifiedOn = now;
 
                 dbContext.Tbl201AccountGroups.Update(existingRecord);
                 await dbContext.SaveChangesAsync();
 
-                return Ok(new { success = true, message = "Data updated successfully!" });
+                return Ok(new
+                {
+                    success = true,
+                    message = "Data updated successfully!",
+                    data = new
+                    {
+                        existingRecord.RecordModifiedBy,
+                        existingRecord.RecordModifiedOn
+                    }
+                });
+
             }
             catch (Exception ex)
             {
@@ -973,40 +1000,29 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpGet]
         public IActionResult GetAccountGroupsData(string AccountGroupId)
         {
-			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				return Unauthorized(new { success = false, message = "Invalid tenant." });
-			}
-			try
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            try
             {
                 var accountGroup = dbContext.Tbl201AccountGroups
-                    .Where(a => a.AccountGroupId == AccountGroupId)
-                    .Select(a => new
-                    {
-                        a.AccountGroupId,
-                        a.AccountGroup,
-                        a.AccountGroupAr,
-                        a.RecordCreatedBy,
-                        a.RecordCreatedOn,
-                        a.IsUseInSales,
-                        a.IsUsedInPurchase,
-                        a.IsUseInReconciliation,
-                        a.IsSalaryPayable
-                    })
-                    .FirstOrDefault();
+                    .FirstOrDefault(a => a.AccountGroupId == AccountGroupId);
 
                 if (accountGroup == null)
                 {
                     return NotFound(new { success = false, message = "Account Group not found." });
                 }
 
-                return Ok(accountGroup);
+                return Ok(accountGroup); // This returns all columns in the entity
             }
             catch (Exception ex)
             {
                 return StatusCode(500, new { success = false, message = "Error retrieving data", error = ex.Message });
             }
         }
+
 
     }
 }

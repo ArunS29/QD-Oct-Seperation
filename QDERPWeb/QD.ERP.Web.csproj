@@ -10,7 +10,6 @@
 		<Compile Remove="Areas\Finance\Pages\ClientAddressDetailsDropdown.cshtml.cs" />
 		<Compile Remove="Areas\Finance\Pages\CreditNoteEditForm.cshtml.cs" />
 		<Compile Remove="Areas\Finance\Pages\DatabaseMasterModule.cshtml.cs" />
-		<Compile Remove="Areas\Finance\Pages\SalesPersonMaster.cshtml.cs" />
 		<Compile Remove="Areas\Finance\Pages\VATDatabaseSignatories.cshtml.cs" />
 		<Compile Remove="Areas\Finance\Pages\VATInvoiceWithDetails.cshtml.cs" />
 		<Compile Remove="Areas\Finance\Pages\VATOurAddressDetails.cshtml.cs" />
@@ -29,7 +28,6 @@
 		<Content Remove="Areas\Finance\Pages\InventoryListtoUpload.cshtml" />
 		<Content Remove="Areas\Finance\Pages\InvoiceCostPosting.cshtml" />
 		<Content Remove="Areas\Finance\Pages\InvoiceProfitorLossSummary.cshtml" />
-		<Content Remove="Areas\Finance\Pages\SalesPersonMaster.cshtml" />
 		<Content Remove="Areas\Finance\Pages\SalesPersonorProjectList.cshtml" />
 		<Content Remove="Areas\Finance\Pages\SalesRegisterVAT.cshtml" />
 		<Content Remove="Areas\Finance\Pages\VATCreditNotRegister.cshtml" />

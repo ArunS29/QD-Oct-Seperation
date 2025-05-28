@@ -2,10 +2,11 @@
 @using DevExtreme.AspNet.Mvc
 
 <style type="text/css">
-	.ellipsis-column .dx-cell {
+	.ellipsis-column {
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
+		display: block;
 	}
 	.overlay {
 		display: none;
@@ -472,7 +473,11 @@
 						columns.AddFor(m => m.VoucherApprovedOn).Caption(new JS("formatMessage('VoucherApprovedOn')")).Alignment(HorizontalAlignment.Left).Visible(false);
 						columns.AddFor(m => m.VoucherVerifiedOn).Caption(new JS("formatMessage('VoucherVerifiedOn')")).Alignment(HorizontalAlignment.Left).Visible(false);
 						columns.AddFor(m => m.VoucherVerifiedBy).Caption(new JS("formatMessage('VoucherVerifiedBy')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.VoucherNarration).Caption(new JS("formatMessage('Narration')")).Alignment(HorizontalAlignment.Left).Visible(true).Width(70).CssClass("ellipsis-column"); ;
+						columns.AddFor(m => m.VoucherNarration).Caption(new JS("formatMessage('Narration')")).Alignment(HorizontalAlignment.Left).Visible(true).Width(70).CellTemplate(@<text>
+			<div title="<%- data.VoucherNarration %>" class="ellipsis-column">
+				<%- data.VoucherNarration %>
+			</div>
+		</text>);
 					})
 				.OnCellClick("function(e) {handleCellClick(e);}")
 				.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
@@ -970,6 +975,7 @@
 			accgroupid = selectedRowData[0].AccountGroupId;
 			accheadar = selectedRowData[0].AccountHeadArabic;
 			updateBankReconciliationState(accheadname);
+				updateReceivableStatement(accgroup);
 
 		}
 
@@ -1299,6 +1305,20 @@
 			dropdown.option("items", items); // Update the dropdown options
 		}
 	}
+		// 	function updateReceivableStatement(accgroup) {
+		// 	let dropdown = $("#ddReports").dxDropDownButton("instance");
+		// 	let items = dropdown.option("items");
+
+		// 	if (items && items.length > 1) { // Ensure index exists before modifying
+		// 				if (accgroup.includes("SUNDRY") || accgroup.includes("SUNDRY")) {
+		// 			items[1] = { ...items[1], disabled: false }; 
+		// 		} else {
+		// 			items[1] = { ...items[1], disabled: true }; 
+		// 		}
+
+		// 		dropdown.option("items", items); 
+		// 	}
+		// }
 	function ddBtnGenerateReport_click(duration) {
 		var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
 		if (dropDownBox.option("value") === null) {
