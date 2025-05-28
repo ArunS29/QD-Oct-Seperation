@@ -8,5 +8,6 @@
 
         public string LogoUrl { get; set; }
         public string schemaname { get; set; }
+        public string CompanyNameShort { get;  set; }
     }
 }

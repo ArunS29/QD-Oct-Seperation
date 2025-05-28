@@ -98,7 +98,7 @@
             .Icon("save")
             .Hint("Click to save")
             .ElementAttr(new { @class = "bold-button" })
-            .OnClick("onSaveClicked") // Bind JS function here
+            .OnClick("saveDeliveryNote") // Bind JS function here
             )
     </div>
 
@@ -140,7 +140,6 @@
             .Icon("money")
             .Text(new JS("formatMessage('Add New Stock Item')"))
             .Width(200)
-            .OnClick("onAddNewItemClick")
             )
 
 
@@ -201,10 +200,11 @@
 <script type="text/javascript">
 
 
-     function onAddNewItemClick() {
+        function onAddNewItemClick() {
         const grid = $("#itemGrid").dxDataGrid("instance");
-        grid.addRow();
+        grid.addRow(); // adds a blank new row
     }
+
 
 
 
@@ -460,135 +460,65 @@
             reader.readAsText(file);
         }
     });
-    function onSaveClicked(e) {
-        var isUpdate = $("#btnSave").data("is-update");
-
-        const data = {
-            Gscode: $("#StockNoItemCode").dxTextBox("instance").option("value"),
-            Gsdescrpition: $("#ItemName").dxTextBox("instance").option("value"),
-            GsdescriptionAr: $("#ItemNameArabic").dxTextBox("instance").option("value"),
-            GsgroupId: $("#StockGroup").dxSelectBox("instance").option("value"),
-            StoreId: $("#ItemStore").dxSelectBox("instance").option("value"),
-            ItemClassificationId: $("#ItemClassification").dxSelectBox("instance").option("value"),
-            GsdetailedDesc: $("#DetailedDescription").dxTextArea("instance").option("value"),
-            GsdetailedDescAr: $("#ArabicDescription").dxTextArea("instance").option("value"),
-            GsuoM: $("#UnitOfMeasure").dxSelectBox("instance").option("value"),
-            GspackingUnit: $("#PackingUnit").dxNumberBox("instance").option("value"),
-            ItemSize: $("#ItemSize").dxSelectBox("instance").option("value"),
-            ItemThickness: $("#ItemThickness").dxSelectBox("instance").option("value"),
-            ItemDimension: $("#ItemDimension").dxSelectBox("instance").option("value"),
-            ActualSize: $("#ActualSize").dxTextBox("instance").option("value"),
-            OpeningBalance: $("#OpeningBalance").dxNumberBox("instance").option("value"),
-            CostPrice: $("#CostPrice").dxNumberBox("instance").option("value"),
-            ExFactoryCostPrice: $("#ExFactoryPrice").dxNumberBox("instance").option("value"),
-            GssellingRate: $("#SellingPrice").dxNumberBox("instance").option("value"),
-            MinSellingPrice: $("#MinSellingPrice").dxNumberBox("instance").option("value"),
-            MaxSellingPrice: $("#MaxSellingPrice").dxNumberBox("instance").option("value"),
-            ItemPartNo: $("#ItemPartNo").dxTextBox("instance").option("value"),
-            Hscode: $("#ItemHSCode").dxTextBox("instance").option("value"),
-            ItemColor: $("#ItemColor").dxSelectBox("instance").option("value"),
-            ItemBrand: $("#ItemBrand").dxSelectBox("instance").option("value"),
-            ItemMake: $("#ItemManufacturer").dxSelectBox("instance").option("value"),
-            CountryOfOrigin: $("#CountryOfOrigin").dxTextBox("instance").option("value"),
-            CreatedBy: $("#EnteredBy").dxTextArea("instance").option("value"),
-            // CreatedOn: new Date($("#EnteredOn").dxTextArea("instance").option("value")).toISOString(),
-            ModifiedBy: $("#ModifiedBy").dxTextArea("instance").option("value"),
-            // ModifiedOn: new Date($("#ModifiedOn").dxTextArea("instance").option("value")).toISOString(),
-            IsDiscontinued: $("#ItemDiscontinued").dxCheckBox("instance").option("value"),
-             MinQty: $("#MinQty").dxNumberBox("instance").option("value"),
-            MaxQty: $("#MaxQty").dxNumberBox("instance").option("value"),
-            ReorderLevel: $("#ReorderLevel").dxNumberBox("instance").option("value"),
-            ReorderQty: $("#ReorderQty").dxNumberBox("instance").option("value"),
-            ReorderLeadTime: $("#ReorderLeadTime").dxNumberBox("instance").option("value"),
-            ItemImage: imageBase64
-
+       function saveDeliveryNote(closeAfterSave = false) {
+        const model = {
+            deliveryNoteNo: $("#deliveryNoteNo").dxTextBox("instance").option("value"),
+            deliveryDate: $("#deliveryNoteDate").dxDateBox("instance").option("value"),
+            clientCode: $("#GetProjectDropDown").dxDropDownBox("instance").option("value"),
+            salesPersonCode: $("#ddGetSalesPerson").dxDropDownBox("instance").option("value"),
+            clientPono: $("#clientPOnumber").dxTextBox("instance").option("value"),
+            clientPodate: $("#ClientPODate").dxDateBox("instance").option("value"),
+            attention: $("#ClientRefName").dxTextBox("instance").option("value"),
+            clientContactNo: $("#ClientContactNo").dxTextBox("instance").option("value"),
+            clientContactEmail: $("#ClientEmail").dxTextBox("instance").option("value"),
+            StoreCode: $("#ddGetModeOfRequest").dxDropDownBox("instance").option("value"),
+            projectId: $("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value"),
+            clientProject: $("#clientProject").dxTextBox("instance").option("value"),
+            deliveryNoteRemarks: $("#DeliveryNoteRemarks").dxTextArea("instance").option("value"),
+            salesman: $("#Salesman").dxTextBox("instance").option("value"),
+            transportedBy: $("#DeliveredBy").dxTextBox("instance").option("value"),
+            driversName: $("#DriverName").dxTextBox("instance").option("value"),
+            driversId: $("#DriverID").dxTextBox("instance").option("value"),
+            vehicleNo: $("#VehicleNo").dxTextBox("instance").option("value"),
+             companyBranch: $("#CompanyName").dxSelectBox("instance").option("value"),
+            deliveryType: $("#DeliveryType").dxSelectBox("instance").option("value"),
+            inventoryMasterGroupId: $("#InventoryGroup").dxSelectBox("instance").option("value"),
+            salesOrderNo: $("#SalesOrderNo").dxTextBox("instance").option("value"),
+            quotationNo: $("#QuotationNo").dxTextBox("instance").option("value"),
+            enquiryRequestNo: $("#EnquiryRequestNo").dxTextBox("instance").option("value"),
+             Dnsignatory: $("#Dnsignatory").dxDropDownBox("instance").option("value")
         };
 
         $.ajax({
-            url: '/api/StockInventory/Save',
+            url: '/api/DeliveryNote/SaveDeliveryNote',
             type: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify(data),
-            success: function () {
-                DevExpress.ui.notify(isUpdate ? "Updated successfully!" : "Saved successfully!", "success", 3000);
+            data: JSON.stringify(model),
+            success: function (res) {
+                DevExpress.ui.notify(res.message || "Saved successfully!", "success", 3000);
 
-                if (!isUpdate) {
-                    $("#btnSave").dxButton("instance").option("text", "Update");
-                    $("#btnSave").data("is-update", true);
+                if (closeAfterSave) {
+                    // Example: Hide popup or redirect
+                    if ($("#deliveryNotePopup").length > 0) {
+                        $("#deliveryNotePopup").dxPopup("instance").hide();
+                    } else {
+                        // Or redirect to a summary/listing page
+                        window.history.back();
+                    }
                 }
             },
-            error: function () {
-                DevExpress.ui.notify("Error saving item.", "error", 3000);
+            error: function (err) {
+                DevExpress.ui.notify("Failed to save delivery note. " + (err.responseText || ""), "error", 3000);
             }
         });
     }
-    function onSaveAndCloseClicked(e) {
-        // Reuse the logic of onSaveClicked, but also go back
-        var isUpdate = $("#btnSave").data("is-update");
 
-        const data = {
-            Gscode: $("#StockNoItemCode").dxTextBox("instance").option("value"),
-            Gsdescrpition: $("#ItemName").dxTextBox("instance").option("value"),
-            GsdescriptionAr: $("#ItemNameArabic").dxTextBox("instance").option("value"),
-            GsgroupId: $("#StockGroup").dxSelectBox("instance").option("value"),
-            StoreId: $("#ItemStore").dxSelectBox("instance").option("value"),
-            ItemClassificationId: $("#ItemClassification").dxSelectBox("instance").option("value"),
-            GsdetailedDesc: $("#DetailedDescription").dxTextArea("instance").option("value"),
-            GsdetailedDescAr: $("#ArabicDescription").dxTextArea("instance").option("value"),
-            GsuoM: $("#UnitOfMeasure").dxSelectBox("instance").option("value"),
-            GspackingUnit: $("#PackingUnit").dxNumberBox("instance").option("value"),
-            ItemSize: $("#ItemSize").dxSelectBox("instance").option("value"),
-            ItemThickness: $("#ItemThickness").dxSelectBox("instance").option("value"),
-            ItemDimension: $("#ItemDimension").dxSelectBox("instance").option("value"),
-            ActualSize: $("#ActualSize").dxTextBox("instance").option("value"),
-            OpeningBalance: $("#OpeningBalance").dxNumberBox("instance").option("value"),
-            CostPrice: $("#CostPrice").dxNumberBox("instance").option("value"),
-            ExFactoryCostPrice: $("#ExFactoryPrice").dxNumberBox("instance").option("value"),
-            GssellingRate: $("#SellingPrice").dxNumberBox("instance").option("value"),
-            MinSellingPrice: $("#MinSellingPrice").dxNumberBox("instance").option("value"),
-            MaxSellingPrice: $("#MaxSellingPrice").dxNumberBox("instance").option("value"),
-            ItemPartNo: $("#ItemPartNo").dxTextBox("instance").option("value"),
-            Hscode: $("#ItemHSCode").dxTextBox("instance").option("value"),
-            ItemColor: $("#ItemColor").dxSelectBox("instance").option("value"),
-            ItemBrand: $("#ItemBrand").dxSelectBox("instance").option("value"),
-            ItemMake: $("#ItemManufacturer").dxSelectBox("instance").option("value"),
-            CountryOfOrigin: $("#CountryOfOrigin").dxTextBox("instance").option("value"),
-              CreatedBy: $("#EnteredBy").dxTextArea("instance").option("value"),
-            // CreatedOn: new Date($("#EnteredOn").dxTextArea("instance").option("value")).toISOString(),
-            ModifiedBy: $("#ModifiedBy").dxTextArea("instance").option("value"),
-            // ModifiedOn: new Date($("#ModifiedOn").dxTextArea("instance").option("value")).toISOString(),
-            IsDiscontinued: $("#ItemDiscontinued").dxCheckBox("instance").option("value"),
-             MinQty: $("#MinQty").dxNumberBox("instance").option("value"),
-            MaxQty: $("#MaxQty").dxNumberBox("instance").option("value"),
-            ReorderLevel: $("#ReorderLevel").dxNumberBox("instance").option("value"),
-            ReorderQty: $("#ReorderQty").dxNumberBox("instance").option("value"),
-            ReorderLeadTime: $("#ReorderLeadTime").dxNumberBox("instance").option("value"),
-            ItemImage: imageBase64
-        };
-
-        $.ajax({
-            url: '/api/StockInventory/Save',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(data),
-            success: function () {
-                DevExpress.ui.notify(isUpdate ? "Updated successfully!" : "Saved successfully!", "success", 3000);
-
-                if (!isUpdate) {
-                    $("#btnSave").dxButton("instance").option("text", "Update");
-                    $("#btnSave").data("is-update", true);
-                }
-
-                // Navigate back after success
-                setTimeout(() => {
-                    window.history.back();
-                }, 1000);
-            },
-            error: function () {
-                DevExpress.ui.notify("Error saving item.", "error", 3000);
-            }
-        });
+    function onSaveAndCloseClicked() {
+        saveDeliveryNote(true);
     }
+
+
+    
     function onBackButtonClick(e) {
         window.history.back();
     }

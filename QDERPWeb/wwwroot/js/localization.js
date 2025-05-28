@@ -1,5 +1,10 @@
 ﻿var dictionary = {
     "en": {
+        "PropertyOrEquipment": "PropertyOrEquipment",
+        "EmployeeName": "EmployeeName",
+        "UnitCostPrice": "UnitCostPrice",
+        "UnitRate Method": "UnitRate Method",
+        "Stock Description":"Stock Description",
         "Preview Journal EntryForm": "Preview Journal EntryForm",
         "Preview Journal EntryForm(with Employee Cost)": "Preview Journal EntryForm(with Employee Cost)",
         "Edit Posted Voucher": "Edit Posted Voucher",
