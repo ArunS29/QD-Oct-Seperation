@@ -3856,7 +3856,101 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
         }
 
+        [HttpPost]
+        public IActionResult InsertOrUpdate([FromBody] Tbl20164GoodsAndServicesMaster clientMaster)
+        {
+            if (clientMaster == null)
+            {
+                return BadRequest("Invalid client data.");
+            }
 
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var existingClient = dbContext.Tbl20164GoodsAndServicesMasters
+                        .FirstOrDefault(c => c.Gscode == clientMaster.Gscode);
+
+                    if (existingClient != null)
+                    {
+                        // Update existing record
+                        existingClient.GsgroupId = clientMaster.GsgroupId;
+                        existingClient.ItemPartNo = clientMaster.ItemPartNo;
+                        existingClient.Gsdescrpition = clientMaster.Gsdescrpition;
+                        existingClient.GsuoM = clientMaster.GsuoM;
+                        existingClient.GspackingUnit = clientMaster.GspackingUnit;
+                        existingClient.GssellingRate = clientMaster.GssellingRate;
+                        existingClient.CostPrice = clientMaster.CostPrice;
+                        existingClient.GsdetailedDesc = clientMaster.GsdetailedDesc;
+                        existingClient.GsdetailedDescAr = clientMaster.GsdetailedDescAr;
+
+                        dbContext.Tbl20164GoodsAndServicesMasters.Update(existingClient);
+                        dbContext.SaveChanges();
+
+                        return Ok(new { success = true, message = "Client updated successfully." });
+                    }
+                    else
+                    {
+                        // Insert new record
+                        var newClient = new Tbl20164GoodsAndServicesMaster
+                        {
+                            Gscode = clientMaster.Gscode,
+                            GsgroupId = clientMaster.GsgroupId,
+                            ItemPartNo = clientMaster.ItemPartNo,
+                            Gsdescrpition = clientMaster.Gsdescrpition,
+                            GsuoM = clientMaster.GsuoM,
+                            GspackingUnit = clientMaster.GspackingUnit,
+                            GssellingRate = clientMaster.GssellingRate,
+                            CostPrice = clientMaster.CostPrice,
+                            GsdetailedDesc = clientMaster.GsdetailedDesc,
+                            GsdetailedDescAr = clientMaster.GsdetailedDescAr,
+
+
+                        };
+
+                        dbContext.Tbl20164GoodsAndServicesMasters.Add(newClient);
+                        dbContext.SaveChanges();
+
+                        return Ok(new { success = true, message = "Client saved successfully." });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error saving ClientMaster: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpPost]
+        public IActionResult DeleteGoodsandService([FromBody] string GoodsCode)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var entity = dbContext.Tbl20164GoodsAndServicesMasters
+                        .FirstOrDefault(x => x.Gscode == GoodsCode);
+
+                    if (entity == null)
+                    {
+                        return NotFound(new { success = false, message = "Record not found." });
+                    }
+
+                    dbContext.Tbl20164GoodsAndServicesMasters.Remove(entity);
+                    dbContext.SaveChanges();
+
+                    return Ok(new { success = true, message = "Deleted successfully." });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new { success = false, message = $"Delete failed: {ex.Message}" });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
         [HttpGet]
         public async Task<IActionResult> GetInvoiceSubTypes()
         {
@@ -3998,62 +4092,132 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
         }
 
-        [HttpPost]
-        public async Task<ActionResult> DebitPostInvoice(string DebitNoteNo, bool IsDirect)
-        {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-            {
-                try
-                {
-                    var UserName = HttpContext.Session.GetString("UserName");
+        //[HttpDelete]
+        //public async Task<ActionResult> DeleteDebitNote(string debitNoteNo, DateTime debitNoteDate)
+        //{
+        //    if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //    {
+        //        try
+        //        {
+        //            var userName = HttpContext.Session.GetString("UserName");
 
-                    if (string.IsNullOrEmpty(DebitNoteNo))
-                    {
-                        return BadRequest(new { Message = "Debit number is required." });
-                    }
+        //            if (string.IsNullOrEmpty(debitNoteNo))
+        //            {
+        //                return BadRequest(new { Message = "Debit Note number is required." });
+        //            }
 
-                    var voucher = dbContext.Tbl20172VatdebitNoteMasters.FirstOrDefault(v => v.DebitNoteNo == DebitNoteNo);
+        //            var voucher = dbContext.Tbl20172VatdebitNoteMasters
+        //                .FirstOrDefault(v => v.DebitNoteNo == debitNoteNo);
 
-                    if (voucher == null)
-                    {
-                        return NotFound(new { Message = "DebitNoteNo not found." });
-                    }
+        //            if (voucher == null)
+        //            {
+        //                return NotFound(new { Message = "Debit Note not found." });
+        //            }
 
-                    // Update the fields
-                    voucher.IsPosted = true;
-                    voucher.PostedOn = DateTime.Now;
-                    voucher.PostedBy = UserName;
+        //            // Check if date locking is enabled
+        //            if (gIsDateLockingEnabled)
+        //            {
+        //                var isDateLocked = dbContext.Tbl90117VoucherDateLockings
+        //                    .Any(v => v.VoucherTypeCode == "VAT_DEBITNOTE" &&
+        //                              v.VoucherDateLocked >= debitNoteDate);
 
-                    int JustAddedVoucherEntryNoSubLedger = 0;
-                    int JustAddedVoucherEntryNoCostAlloc = 0;
-                    bool IsCashOrBankAccount = false;
+        //                if (isDateLocked)
+        //                {
+        //                    return BadRequest(new { Message = "This VAT Debit Note Entry date has been blocked for Deleting. Please review your entry." });
+        //                }
+        //            }
 
-                    // 🔁 Call the stored procedure sp201_62InsertVATtoVoucher
-                    var result = dbContext.Database.ExecuteSqlRaw("EXEC sp201_92InsertVATDebitNotetoVoucher_BHD @p0,@p1,@p2,@p3", DebitNoteNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc, IsCashOrBankAccount);
+        //            // Check if approved
+        //            if (voucher.IsApproved == true)
+        //            {
+        //                return BadRequest(new { Message = "Debit Note is already approved. You cannot delete the Approved Debit Note." });
+        //            }
+
+        //            // Delete children first
+        //            var children = dbContext.Tbl20173VatdebitNoteChildren
+        //                .Where(c => c.DebitNoteNo == debitNoteNo);
+        //            dbContext.Tbl20173VatdebitNoteChildren.RemoveRange(children);
+
+        //            // Delete main record
+        //            dbContext.Tbl20172VatdebitNoteMasters.Remove(voucher);
+
+        //            // Delete associated PDF document (assumed to be a helper)
+        //            DeleteDocumentPDF(debitNoteNo, "VoucherScanned/VATDebitNote");
+
+        //            await dbContext.SaveChangesAsync();
+
+        //            return Ok(new
+        //            {
+        //                Message = "Debit Note has been successfully removed from the database.",
+        //                DeletedBy = userName,
+        //                DeletedOn = DateTime.Now.ToString("yyyy-MM-dd HH:mm")
+        //            });
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            return BadRequest(new { Message = ex.Message });
+        //        }
+        //    }
+
+        //    return Unauthorized(new { Message = "Invalid tenant.", Success = false });
+        //}
+
+        //[HttpPost]
+        //public async Task<ActionResult> DebitPostInvoice(string DebitNoteNo, bool IsDirect)
+        //{
+        //    if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //    {
+        //        try
+        //        {
+        //            var UserName = HttpContext.Session.GetString("UserName");
+
+        //            if (string.IsNullOrEmpty(DebitNoteNo))
+        //            {
+        //                return BadRequest(new { Message = "Debit number is required." });
+        //            }
+
+        //            var voucher = dbContext.Tbl20172VatdebitNoteMasters.FirstOrDefault(v => v.DebitNoteNo == DebitNoteNo);
+
+        //            if (voucher == null)
+        //            {
+        //                return NotFound(new { Message = "DebitNoteNo not found." });
+        //            }
+
+        //            // Update the fields
+        //            voucher.IsPosted = true;
+        //            voucher.PostedOn = DateTime.Now;
+        //            voucher.PostedBy = UserName;
+
+        //            int JustAddedVoucherEntryNoSubLedger = 0;
+        //            int JustAddedVoucherEntryNoCostAlloc = 0;
+        //            bool IsCashOrBankAccount = false;
+
+        //            // 🔁 Call the stored procedure sp201_62InsertVATtoVoucher
+        //            var result = dbContext.Database.ExecuteSqlRaw("EXEC sp201_92InsertVATDebitNotetoVoucher_BHD @p0,@p1,@p2,@p3", DebitNoteNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc, IsCashOrBankAccount);
 
 
 
-                    //   var result1 = dbContext.Database.ExecuteSqlRaw("EXEC  sp201_82InsertVATCreditNotetoVoucher_BHD @p0,@p1,@p2,@p3", InvoiceNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc, IsCashOrBankAccount);
+        //            //   var result1 = dbContext.Database.ExecuteSqlRaw("EXEC  sp201_82InsertVATCreditNotetoVoucher_BHD @p0,@p1,@p2,@p3", InvoiceNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc, IsCashOrBankAccount);
 
 
 
-                    dbContext.SaveChanges();
+        //            dbContext.SaveChanges();
 
-                    return Ok(new
-                    {
-                        Message = "Invoice posted successfully.",
-                        VoucherVerifiedBy = UserName,  // Example, replace with actual data if needed
-                                                       //VoucherVerifiedOn = voucher.VoucherApprovedOn.ToString("dd-MMM-yyyy")
-                    });
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(new { Message = ex.Message });
-                }
-            }
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        //            return Ok(new
+        //            {
+        //                Message = "Invoice posted successfully.",
+        //                VoucherVerifiedBy = UserName,  // Example, replace with actual data if needed
+        //                                               //VoucherVerifiedOn = voucher.VoucherApprovedOn.ToString("dd-MMM-yyyy")
+        //            });
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            return BadRequest(new { Message = ex.Message });
+        //        }
+        //    }
+        //    return Unauthorized(new { message = "Invalid tenant.", success = false });
 
-        }
+        //}
 
     }
 }

@@ -722,7 +722,24 @@
 																					//.ShowClearButton(true) // Optional: adds a clear (X) button
 															)
 							</td>
-							<td colspan="3">@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name in Arabic')")).ID("ClientNameArabic").LabelMode(EditorLabelMode.Outside))</td>
+							<td>
+								@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name in Arabic')")).ID("ClientNameArabic").LabelMode(EditorLabelMode.Outside).Width("100%"))
+							</td>
+
+							<td style="width:10%; vertical-align: bottom; padding-bottom: 5px;">
+								@(
+																Html.DevExtreme().Button()
+																.ID("ClientnameconvertToArabic")
+																.Width("60")
+																.Height(50)
+																.Icon("fas fa-language") // Ensure Font Awesome class is correct
+																.ElementAttr(new { @class = "input-button" })
+																.OnClick("function() { convertToArabic(); }")
+
+																)
+							</td>
+							
+							
 
 						</tr>
 						<tr>
@@ -920,7 +937,7 @@
 
 						</tr>
 						<tr>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Counter Value')")).ID("InvoiceCounterValue").LabelMode(EditorLabelMode.Outside).Disabled(true))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Counter Value:')")).ID("InvoiceCounterValue").LabelMode(EditorLabelMode.Outside).Disabled(true))</td>
 							<td colspan="3">@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('UUID')")).ID("UUID").LabelMode(EditorLabelMode.Outside).Disabled(true))</td>
 						</tr>
 					</table>
@@ -3813,7 +3830,7 @@
 				allowEditing: true,
 				editCellTemplate: function (cellElement, cellInfo) {
 					// Open the modal form in a popup
-					let url = `/${tenantName}/Finance/VATDetailsDescription`;
+					let url = `/${tenantName}/VAT/VATDetailsDescription`;
 					let title = "";
 
 					// Pass cellInfo to the modal context
@@ -4352,7 +4369,7 @@
 					window.currentDescriptionCell = options;
 
 					// Open modal
-					let url = `/${tenantName}/Finance/VATDetailsDescription`;
+					let url = `/${tenantName}/VAT/VATDetailsDescription`;
 					let title = "VAT Details Description";
 					openModal(url, title);
 				}
@@ -8006,7 +8023,75 @@
 				openModal(url, title);
 		}
 
+		//
+			async function convertToArabic() {
+		const textBox1Instance = $("#ddclientname").dxDropDownBox("instance");
+		const textBox2Instance = $("#ClientNameArabic").dxTextBox("instance");
 
+		if (!textBox1Instance || !textBox2Instance) {
+			console.error("TextBox instances are not properly initialized.");
+			return;
+		}
+
+		const englishText = textBox1Instance.option("text");
+
+		if (!englishText || englishText.trim() === "") {
+			alert("Please enter text to translate.");
+			return;
+		}
+
+		const arabicTranslation = await translateToArabic(englishText);
+
+		textBox2Instance.option("value", arabicTranslation);
+	}
+
+	// Dummy translate function (replace with real translation logic or API call)
+	 async function convertToArabic() {
+
+		// Get the TextBox1 (input) instance
+
+		const textBox1Instance = $("#txtInvoiceNotes").dxTextArea("instance");
+
+		// Get the TextBox2 (output) instance
+
+		const textBox2Instance = $("#txtNotesinArabic").dxTextArea("instance");
+
+		// Ensure both instances are initialized
+
+		if (!textBox1Instance || !textBox2Instance) {
+
+			console.error("TextBox instances are not properly initialized.");
+
+			return;
+
+		}
+
+
+		// Get the value from TextBox1
+
+		const englishText = textBox1Instance.option("value");
+
+
+
+		// Validate input
+
+		if (!englishText || englishText.trim() === "") {
+
+			alert("Please enter text to translate.");
+
+			return;
+
+		}
+
+		// Perform translation
+
+		const arabicTranslation = await translateToArabic(englishText);
+
+		// Update TextBox2 with the Arabic translation
+
+		textBox2Instance.option("value", arabicTranslation);
+
+	}
 
 </script>
 

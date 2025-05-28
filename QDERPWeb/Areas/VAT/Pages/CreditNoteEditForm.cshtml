@@ -445,7 +445,7 @@
 				<div class="card-container">
 					<!-- First Card (Left Side) -->
 					
-						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
+						<table width="80%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 							<tr>
 								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Credit Note No')")).ID("CreditNoteNo").Disabled(true).LabelMode(EditorLabelMode.Outside))</td>
 								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Credit Note Date')")).ID("CreditNoteDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Disabled(true).Value(DateTime.Now).LabelMode(EditorLabelMode.Outside))</td>
@@ -528,23 +528,31 @@
 												.Disabled(true))
 								</td>
 								<td>
+								
+											
+									
 									@(Html.DevExtreme().DropDownBox()
-												.ID("InvoiceTransactionsCode")
-												.Label("Invoice Transaction Code")
-												.Value(new[] { 1 }) // Default selected value
-												.ValueExpr("ID")
-												.DisplayExpr("Name")
-												.LabelMode(EditorLabelMode.Outside)
-												.Placeholder("Choose VAT Transaction Types")
-												.ContentTemplate(new JS("VATTransactionTemplate"))
-												.DataSource(new[] {
+																			.ID("InvoiceTransactionsCode")
+																			.Label("Invoice Transactions Code")
+																			.Value("0100000") // Default selected value
+																			.ValueExpr("ID")
+																			.DisplayExpr("ID")
+																			.LabelMode(EditorLabelMode.Outside)
+																			.AcceptCustomValue(true)
+																			.OpenOnFieldClick(false)
+																			.ValueChangeEvent("input")
+																			.Placeholder("Choose VAT Transaction Types")
+																		     .HoverStateEnabled(true)
+																			.ContentTemplate(new JS("VATTransactionTemplate"))// Reference the NamedTemplate
+																			.DataSource(new[] {
 									new { ID = 1, Name = "3rd Party Tax Invoice" },
 									new { ID = 2, Name = "Nominal Tax Invoice" },
-									new { ID = 3, Name = "Export Tax Invoice" },
+									new { ID = 3, Name = "Export Tax Invoice" },	
 									new { ID = 4, Name = "Summary Tax Invoice" },
 									new { ID = 5, Name = "Self Billed Tax Invoice" }
 									})
-																													)
+																			.OnInitialized("onDropDownInitialized")
+																			)
 								</td>
 
 
@@ -643,6 +651,7 @@
 
 								 
 								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name in Arabic')")).ID("ClientNameArabic").LabelMode(EditorLabelMode.Outside))</td>
+
 
 							</tr>
 							<tr>
@@ -829,7 +838,7 @@
 
 							</tr>
 							<tr>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Counter Value')")).ID("InvoiceCounterValue").LabelMode(EditorLabelMode.Outside))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Counter Value:')")).ID("InvoiceCounterValue").LabelMode(EditorLabelMode.Outside))</td>
 								<td>@(Html.DevExtreme().DropDownBox()
 																	.Label(new JS("formatMessage('Invoice No:')"))
 																	.DataSource(d => d.WebApi()
@@ -2034,31 +2043,35 @@
 								})
 								)
 		}
+
 		@using (Html.DevExtreme().NamedTemplate("VATTransactionTemplate"))
-		{
-			@(Html.DevExtreme().List()
-								.ID("vatTransactionList")
-								.DataSource(new[] {
-		new { ID = 1, Name = "3rd Party Tax Invoice" },
-		new { ID = 2, Name = "Nominal Tax Invoice" },
-		new { ID = 3, Name = "Export Tax Invoice" },
-		new { ID = 4, Name = "Summary Tax Invoice" },
-		new { ID = 5, Name = "Self Billed Tax Invoice" }
+{
+	@(Html.DevExtreme().List()
+			.ID("vatTransactionList")
+			.DataSource(new[] {
+			new { ID = 1, Name = "3rd Party Tax Invoice" },
+			new { ID = 2, Name = "Nominal Tax Invoice" },
+			new { ID = 3, Name = "Export Tax Invoice" },
+			new { ID = 4, Name = "Summary Tax Invoice" },
+			new { ID = 5, Name = "Self Billed Tax Invoice" }
 		})
-								.DisplayExpr("Name")
-								.KeyExpr("ID")
-								.SelectionMode(ListSelectionMode.Multiple)
-								.ItemTemplate(@<text>
-			<div class="vat-item">
-				<label class="toggle-switch">
-					<input type="checkbox" name="vatOption" value="<%- ID %>" />
-					<span class="slider"></span>
-				</label>
-				<label class="vat-label"><%- Name %></label>
-			</div>
-		</text>)
-								)
-		}
+			.DisplayExpr("ID")
+			.KeyExpr("ID")
+			.SelectionMode(ListSelectionMode.Multiple)
+			.SelectedItemKeys(new[] { 1 }) // Default selected
+			.OnSelectionChanged("onVatTransactionSelectionChanged")
+			.ItemTemplate(@<text>
+	<div class="vat-item">
+		<label class="toggle-switch">
+			<input type="checkbox" class="vat-checkbox" value="<%- ID %>" />
+			<span class="slider"></span>
+		</label>
+		<span class="vat-label"><%- Name %></span>
+	</div>
+</text>)
+		)
+}
+
 
 		@using (Html.DevExtreme().NamedTemplate("ClientCodeContentTemplate"))
 		{
@@ -7223,42 +7236,91 @@ openModal(url, title);
 		dataGrid1.refresh();
 	}
 	$(function () {
-		const dropDown = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
-
-		// On initial load - set checkboxes
-		const selectedVals = dropDown.option("value") || [];
-		selectedVals.forEach(id => {
-			$(`input[name="vatOption"][value="${id}"]`)
-				.prop("checked", true)
-				.closest(".vat-item").addClass("selected");
-		});
-	});
-
-	// Handle checkbox change
-	$(document).on("change", 'input[name="vatOption"]', function () {
-		const selectedIds = $('input[name="vatOption"]:checked')
-			.map(function () { return parseInt(this.value); }).get();
-
-		const dropDown = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
-		dropDown.option("value", selectedIds);
-
-		// Highlight selected
-		$(".vat-item").removeClass("selected");
-		$('input[name="vatOption"]:checked').each(function () {
-			$(this).closest(".vat-item").addClass("selected");
-		});
-	});
-
-	// Close only on outside click
-	$(document).on("click", function (e) {
-		const $target = $(e.target);
-		const isInside = $target.closest(".dx-dropdowneditor-overlay, #InvoiceTransactionsCode").length > 0;
-
-		if (!isInside) {
 			const dropDown = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
-			dropDown.close();
-		}
+
+			// On initial load - set checkboxes
+			const selectedVals = dropDown.option("value") || [];
+			selectedVals.forEach(id => {
+				$(`input[name="vatOption"][value="${id}"]`)
+					.prop("checked", true)
+					.closest(".vat-item").addClass("selected");
+			});
+		});
+
+		// Handle checkbox change
+		$(document).on("change", 'input[name="vatOption"]', function () {
+			const selectedIds = $('input[name="vatOption"]:checked')
+				.map(function () { return parseInt(this.value); }).get();
+
+			const dropDown = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
+			dropDown.option("value", selectedIds);
+
+			// Highlight selected
+			$(".vat-item").removeClass("selected");
+			$('input[name="vatOption"]:checked').each(function () {
+				$(this).closest(".vat-item").addClass("selected");
+			});
+		});
+
+		// Close only on outside click
+		$(document).on("click", function (e) {
+			const $target = $(e.target);
+			const isInside = $target.closest(".dx-dropdowneditor-overlay, #InvoiceTransactionsCode").length > 0;
+
+			if (!isInside) {
+				const dropDown = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
+				dropDown.close();
+			}
+		});
+		$("#InvoiceTransactionsCode").dxDropDownBox({
+		dataSource: [],
+		valueExpr: "code",
+		displayExpr: "code",
+		value: ""
 	});
+function onDropDownInitialized(e) {
+    dropDownInstance = e.component;
+}
+		function onVatTransactionSelectionChanged(e) {
+	const selectedIds = e.component.option("selectedItemKeys");
+	const transactionCode = setInvoiceTransactionCode(selectedIds);
+
+	const ddbInstance = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
+
+	let dataSource = ddbInstance.option("dataSource");
+	let currentData = Array.isArray(dataSource) ? dataSource : (dataSource?.items?.() || []);
+
+	const found = currentData.find(item => item.code === transactionCode);
+	if (!found) {
+		currentData.push({ code: transactionCode });
+		ddbInstance.option("dataSource", currentData);
+	}
+
+	ddbInstance.option("value", transactionCode);
+
+	// Update toggle color
+	$(".vat-checkbox").each(function () {
+		const id = parseInt($(this).val());
+		
+		const isChecked = selectedIds.includes(id);
+		$(this).prop("checked", isChecked);
+	});
+}
+
+
+
+	// Generates the transaction code like "010110"
+	function setInvoiceTransactionCode(selectedIds) {
+		// Initialize the transaction code with a prefix
+		let strTransactionCode = "01";
+
+		// Dynamically generate the binary string based on selections (1 for selected, 0 for unselected)
+		for (let i = 1; i <= 5; i++) {
+			strTransactionCode += selectedIds.includes(i) ? "1" : "0";
+		}
+
+		return strTransactionCode;
+	}
 
 		function disableEditing() {
 			// Disable all input fields and buttons except for specific ones

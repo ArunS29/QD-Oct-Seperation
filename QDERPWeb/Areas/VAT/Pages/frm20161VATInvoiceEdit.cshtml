@@ -467,6 +467,12 @@
 		-webkit-user-drag: none;
 		padding: 1px;
 	}
+
+	/* .full-height-container {
+		height: 100%;
+	} */
+
+	
 </style>
 
 <link rel="stylesheet" href="~/css/Site.css" />
@@ -518,7 +524,7 @@
 				
 				<div class="card-container">
 					<!-- First Card (Left Side) -->
-						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
+						<table width="100%" style="font-size:14px;" cellpadding="5">
 							<tr>
 								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice No')")).ID("InvoiceNo").Disabled(true).LabelMode(EditorLabelMode.Outside))</td>
 								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Date')")).ID("InvoiceDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).Disabled(true).LabelMode(EditorLabelMode.Outside))</td>
@@ -607,7 +613,7 @@
 
 									@(Html.DevExtreme().DropDownBox()
 																			.ID("InvoiceTransactionsCode")
-																			.Label("Invoice Transactions Code*")
+																			.Label("Invoice Transactions Code")
 																			.Value("0100000") // Default selected value
 																			.ValueExpr("ID")
 																			.DisplayExpr("ID")
@@ -637,7 +643,7 @@
 
 					<!-- Second Card (Right Side) -->
 					
-						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
+						<table width="100%" style="font-size:14px;" cellpadding="5">
 							<tr>
 								<td>
 									@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Client Code')"))//.ID("ClientCode")
@@ -976,7 +982,7 @@
 
 							</tr>
 							<tr>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Counter Value')")).ID("InvoiceCounterValue").LabelMode(EditorLabelMode.Outside).Disabled(true))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Counter Value:')")).ID("InvoiceCounterValue").LabelMode(EditorLabelMode.Outside).Disabled(true))</td>
 							<td colspan="3">@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('UUID')")).ID("UUID").LabelMode(EditorLabelMode.Outside).Disabled(true))</td>
 							</tr>
 						</table>
@@ -2058,6 +2064,7 @@
 							Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
 							.ID("B2BdataGrid")
 							.RemoteOperations(false)
+						
 							.Columns(columns =>
 							{
 								columns.AddFor(m => m.VoucherEntryNo)
@@ -3754,7 +3761,7 @@
 
 										  // Replace or fetch dynamically
 
-											let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example add page
+												let url = `/${tenantName}/IMS/GoodsAndService`; // Example add page
 											let title = "Goods and Services";
 												openModal(url, title);
 											//window.location.href = url;
@@ -3779,7 +3786,7 @@
 
 										  // Replace or fetch dynamically
 
-											let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example edit page
+												let url = `/${tenantName}/IMS/GoodsAndService`; // Example edit page
 											let title = "Goods and Services";
 												openModal(url, title);
 											//window.location.href = url;
@@ -4295,7 +4302,7 @@
 								icon: "plus",
 								hint: "Add new item",
 								onClick: function () {
-									let url = `/${tenantName}/VAT/VATGoodsandServices`; // ✅ No query parameters
+										let url = `/${tenantName}/IMS/GoodsAndService`; // ✅ No query parameters
 									let title = "Goods and Services";
 									openModal(url, title); // Opens the form in a modal
 									// Or use: window.location.href = url; if navigating directly
@@ -4316,7 +4323,7 @@
 								onClick: function () {
 
 									//let url = `/${tenantName}/VAT/VATGoodsandServices?AccountHeadID=${encodeURIComponent(acchedid)}`; // Example edit page
-						          let url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}`; // Example add page
+									  let url = `/${tenantName}/IMS/GoodsAndService?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}`; // Example add page
 											let title = "Goods and Services";
 													openModal(url, title);
 									//window.location.href = url;

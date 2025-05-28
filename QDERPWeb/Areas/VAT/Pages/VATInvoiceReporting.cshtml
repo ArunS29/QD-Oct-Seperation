@@ -5,7 +5,7 @@
 }
 <style>
 
-    .limited-footer .btn-containerIvoiceEdit:not(:has(#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#ddButtonLayout,#btntoggleGroupPanel,#btnColumnChooser,#ddReport0,#btnShowRowTotals,#btnShowFields)) {
+    .limited-footer .btn-containerIvoiceEdit:not(:has(#btnPrint,#ddButtonLayout,#ddReport0,#btnShowRowTotals,#btnShowFields)) {
         display: none !important;
     }
     .dx-fieldset.horizontal-container {
@@ -88,7 +88,7 @@
                 .LabelMode(EditorLabelMode.Outside)
                 .InputAttr("aria-label", "Date")
                 .Type(DateBoxType.Date)
-                .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+                        .Value(new DateTime(DateTime.Now.Year, 1, 1))
                 .DisplayFormat("dd-MMM-yyyy")
                 .TabIndex(2)
                 )
@@ -256,6 +256,7 @@
     }
 
     function initializePivotGrid(data) {
+        let serialCounter = 1;
         var pivotGrid = $("#pivotGridContainer").dxPivotGrid({
             dataSource: {
                 store: {
@@ -302,7 +303,16 @@
             showColumnGrandTotals: true,
             showDataHeaders: true,
             showRowTotals: true,
-            showRowGrandTotals: true
+            showRowGrandTotals: true,
+              onCellPrepared(e) {
+      if (e.area === "row" ) {
+        // Reset counter when starting new row set
+        if (e.rowIndex === 0) serialCounter = 1;
+
+        // Apply prefix only to first level row items (no nested rows)
+        e.cellElement.text(`${serialCounter++}. ${e.cell.text}`);
+      }
+    }
         }).dxPivotGrid("instance");
 
         // Expand rows initially
@@ -346,7 +356,7 @@
     }
     	$(document).ready(function () {
 		$(".limited-footer .btn-container").each(function () {
-            if (!$(this).find("#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#ddButtonLayout,#btntoggleGroupPanel,#btnColumnChooser,#ddReport0,#btnShowRowTotals,#btnShowFields").length) {
+            if (!$(this).find("#btnPrint,#ddButtonLayout,#ddReport0,#btnShowRowTotals,#btnShowFields").length) {
 				$(this).remove();
 			}
 		});

@@ -155,27 +155,33 @@
 		background: #fff;
 		border-radius: 8px;
 		box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-		width: 200px;
+		width: 220px;
 		display: none;
 		flex-direction: column;
 		padding: 5px 0;
 		z-index: 1000;
+		font-family: Arial, sans-serif;
+		font-size: 14px;
 	}
 
 	.context-menu-item {
-		/* display: flex; */
+		display: flex; /* Ensures icon and text align */
 		align-items: center;
 		padding: 10px 15px;
 		font-size: 14px;
 		cursor: pointer;
 		transition: background 0.2s ease-in-out;
 		color: #333;
+		position: relative;
+		white-space: nowrap;
 	}
 
 		.context-menu-item i {
 			margin-right: 10px;
 			font-size: 16px;
 			color: #007bff;
+			text-align: center;
+			width: 20px;
 		}
 
 		.context-menu-item:hover {
@@ -186,19 +192,34 @@
 			border-bottom: 1px solid #e0e0e0;
 		}
 
-	.has-submenu .submenu {
-		display: none;
-		position: absolute;
-		top: 0;
-		left: 100%;
-		background: #fff;
-		border: 1px solid #ccc;
-		min-width: 200px;
-		z-index: 1000;
+	.has-submenu {
+		position: relative;
 	}
 
-	.has-submenu:hover .submenu {
-		display: block;
+		.has-submenu .submenu {
+			display: none;
+			position: absolute;
+			top: 0;
+			left: 100%;
+			background: #fff;
+			border-radius: 8px;
+			box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+			min-width: 220px;
+			padding: 5px 0;
+			z-index: 1000;
+			margin-left: 8px;
+		}
+
+		.has-submenu:hover .submenu {
+			display: flex;
+			flex-direction: column;
+		}
+
+	.obsolete {
+		font-style: italic;
+		color: #b00;
+		margin-left: 4px;
+		font-size: 13px;
 	}
 
 	.mainContainer {
@@ -236,13 +257,13 @@
 
 </div> *@
 
-<div class="context-menu" id="contextMenu">
+<div class="context-menu" id="contextMenu" style="top: 574px;left: 892px;width: 15%;">
 	<div class="context-menu-item" onclick="viewInvoiceCreditNote()">
 		<i class="dx-icon-search"></i> View e-Invoice Credit Note
 	</div>
 
 	<div class="context-menu-item has-submenu">
-		<i class="dx-icon-file"></i> VAT Credit Notes (Obsolete)
+		<i class="dx-icon-file"></i> VAT Credit Notes <span class="obsolete">(Obsolete)</span>
 		<div class="submenu">
 			<div class="context-menu-item">
 				<i class="dx-icon-file"></i> View VAT Credit Note
