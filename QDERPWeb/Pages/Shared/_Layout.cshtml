@@ -1464,18 +1464,18 @@
         </div>
     </div>
     <footer class="text-center py-3 footerContainer" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem;">
-        <div class="dx-header-row">
-    <div>
-        <p id="footerMessage1" style="font-weight: bold;"></p>
-        <p>&copy; @DateTime.Now.Year Pulse InfoTech.</p>
-        <p id="footerMessage2"></p>
-        </div>
-        <div>
-            <span class="me-3" >User ID:  @userId</span>
-            <span class="me-3">User Name: @userName </span>
-            <span class="me-3">Level: <span id="userLevel">Loading...</span></span>
-            <span class="me-3">@DateTime.Now.ToString("M/d/yyyy h:mm:ss tt")</span>
-        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:1em;">
+            <div>
+                <span class="me-3">User ID:  <b>@userId</b></span>
+                <span class="me-3">User Name: <b>@userName</b> </span>
+                <span class="me-3">Level: <span id="userLevel" style="font-weight: bold;">Loading...</span></span>
+                <span class="me-3"><b>@DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</b></span>
+            </div>
+            <div style="display:flex;">
+                <p id="footerMessage1" style="font-weight: bold;"></p>
+                <p>&copy; @DateTime.Now.Year Pulse InfoTech.</p>
+                <p id="footerMessage2"></p>
+            </div>
         </div>
     </footer>
 

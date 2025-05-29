@@ -32,51 +32,58 @@ namespace QDWEB.Areas.Finance.Controllers
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-
                 string voucherPrefix = "JV-NEW-";
-            string strNewVoucherNo;
 
-            try
-            {
-                using (var transaction = await dbContext.Database.BeginTransactionAsync())
+                try
                 {
-                    string sql = @"
-                SELECT MAX(CAST(RIGHT(TempVoucherNo, 6) AS INT)) AS MaxVoucherNo
-                FROM tbl201VoucherMasterTemp WITH (TABLOCKX)
-                WHERE TempVoucherNo LIKE {0}";
+                    var strategy = dbContext.Database.CreateExecutionStrategy();
 
-                    // Fix: Use FromSqlRaw instead of SqlQueryAsync
-                    var result = await dbContext.VoucherResults
-                        .FromSqlRaw(sql, voucherPrefix + "%")
-                        .ToListAsync();
+                    string strNewVoucherNo = null;
 
-                    int maxVoucherNo = result.FirstOrDefault()?.MaxVoucherNo ?? 0;
-
-                    int newVoucherNo = maxVoucherNo + 1;
-                    strNewVoucherNo = voucherPrefix + newVoucherNo.ToString("D6");
-
-                    var newVoucherEntry = new Tbl201VoucherMasterTemp
+                    // Wrap everything in the retry strategy
+                    strNewVoucherNo = await strategy.ExecuteAsync(async () =>
                     {
-                        TempVoucherNo = strNewVoucherNo
-                    };
+                        using (var transaction = await dbContext.Database.BeginTransactionAsync())
+                        {
+                            string sql = @"
+                        SELECT MAX(CAST(RIGHT(TempVoucherNo, 6) AS INT)) AS MaxVoucherNo
+                        FROM tbl201VoucherMasterTemp WITH (TABLOCKX)
+                        WHERE TempVoucherNo LIKE {0}";
 
-                        dbContext.Tbl201VoucherMasterTemps.Add(newVoucherEntry);
-                    await dbContext.SaveChangesAsync();
+                            var result = await dbContext.VoucherResults
+                                .FromSqlRaw(sql, voucherPrefix + "%")
+                                .ToListAsync();
 
-                    await transaction.CommitAsync();
+                            int maxVoucherNo = result.FirstOrDefault()?.MaxVoucherNo ?? 0;
+                            int newVoucherNo = maxVoucherNo + 1;
+
+                            string generatedVoucherNo = voucherPrefix + newVoucherNo.ToString("D6");
+
+                            var newVoucherEntry = new Tbl201VoucherMasterTemp
+                            {
+                                TempVoucherNo = generatedVoucherNo
+                            };
+
+                            dbContext.Tbl201VoucherMasterTemps.Add(newVoucherEntry);
+                            await dbContext.SaveChangesAsync();
+
+                            await transaction.CommitAsync();
+
+                            return generatedVoucherNo; // Return from inside the lambda
+                        }
+                    });
+
+                    return Json(strNewVoucherNo);
                 }
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, error = ex.Message });
-            }
-
-
-            return Json(strNewVoucherNo);
+                catch (Exception ex)
+                {
+                    return Json(new { success = false, error = ex.Message });
+                }
             }
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
 
 
 
@@ -211,94 +218,92 @@ namespace QDWEB.Areas.Finance.Controllers
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 if (VM == null || VM.VoucherEntries == null || !VM.VoucherEntries.Any())
-            {
-                return BadRequest(new { success = false, message = "Invalid data received." });
-            }
-
-            try
-            {
-                using (var transaction = await dbContext.Database.BeginTransactionAsync())
                 {
-                        DateTime currentDate = DateTime.Now;
-                        string currentYear = currentDate.Year.ToString();
-                        string currentMonth = currentDate.Month.ToString("00");
-                        string voucherString = "JV-" + currentYear.Substring(currentYear.Length - 2, 2) + "-" + currentMonth + "-";
-                        string strNewReceiptNo;
+                    return BadRequest(new { success = false, message = "Invalid data received." });
+                }
 
-                        // SQL query with interpolated string
-                        string likePattern = voucherString + "%";
+                try
+                {
+                    var strategy = dbContext.Database.CreateExecutionStrategy();
 
-                        
-                            // Use raw SQL query to fetch the maximum voucher number
+                    string newVoucherNo = null;
+
+                    await strategy.ExecuteAsync(async () =>
+                    {
+                        using (var transaction = await dbContext.Database.BeginTransactionAsync())
+                        {
+                            DateTime currentDate = DateTime.Now;
+                            string currentYear = currentDate.Year.ToString();
+                            string currentMonth = currentDate.Month.ToString("00");
+                            string voucherString = "JV-" + currentYear.Substring(currentYear.Length - 2, 2) + "-" + currentMonth + "-";
+                            string strNewReceiptNo;
+
+                            string likePattern = voucherString + "%";
+
                             var result = await dbContext.VoucherResults
                                 .FromSqlInterpolated($@"
-                SELECT MAX(CAST(RIGHT(VoucherNo, 3) AS INT)) AS MaxVoucherNo
-                FROM Tbl201VoucherEntry
-                WHERE VoucherNo LIKE {likePattern}")
+                            SELECT MAX(CAST(RIGHT(VoucherNo, 3) AS INT)) AS MaxVoucherNo
+                            FROM Tbl201VoucherEntry
+                            WHERE VoucherNo LIKE {likePattern}")
                                 .ToListAsync();
 
                             int maxVoucherNo = result.FirstOrDefault()?.MaxVoucherNo ?? 0;
-
                             int journalNo = maxVoucherNo + 1;
 
-                            // Format the new voucher number with leading zeros
-                            strNewReceiptNo = "000" + journalNo.ToString();
-                            strNewReceiptNo = strNewReceiptNo.Substring(strNewReceiptNo.Length - 3);
+                            strNewReceiptNo = journalNo.ToString("D3");
+                            newVoucherNo = voucherString + strNewReceiptNo;
 
-                            // Concatenate with the voucher string
-                            strNewReceiptNo = voucherString + strNewReceiptNo;
+                            // Set VoucherNo and resolve AccountId
+                            foreach (var entry in VM.VoucherEntries)
+                            {
+                                entry.VoucherNo = newVoucherNo;
+                                entry.VoucherEntryNo = 0;
 
-                        var newVoucherNo = strNewReceiptNo;
-                    // Assign `VoucherNo` and fetch `AccountId`
-                    foreach (var entry in VM.VoucherEntries)
-                    {
-                        entry.VoucherNo = newVoucherNo;
-                        entry.VoucherEntryNo = 0;
+                                // Resolve AccountId from AccountHead
+                                entry.AccountHead = await dbContext.Tbl201ChartOfAccounts
+                                    .Where(a => a.AccountHead == entry.AccountHead)
+                                    .Select(a => a.AccountId)
+                                    .FirstOrDefaultAsync();
+                            }
 
-                        // Fetch AccountId based on AccountHead
-                        entry.AccountHead = await dbContext.Tbl201ChartOfAccounts
-                            .Where(a => a.AccountHead == entry.AccountHead)
-                            .Select(a => a.AccountId)
-                            .FirstOrDefaultAsync();
-                    }
+                            var voucherMaster = new Tbl201VoucherMaster
+                            {
+                                VoucherNo = newVoucherNo,
+                                VoucherDate = VM.VoucherMaster.VoucherDate,
+                                VoucherEffectiveDate = VM.VoucherMaster.VoucherEffectiveDate,
+                                VoucherNarration = VM.VoucherMaster.VoucherNarration,
+                                BillRemarks = VM.VoucherMaster.BillRemarks,
+                                VoucherType = VM.VoucherMaster.VoucherType,
+                                IsVerified = VM.VoucherMaster.IsVerified,
+                                IsApproved = VM.VoucherMaster.IsApproved,
+                                VoucherVerifiedBy = VM.VoucherMaster.VoucherVerifiedBy,
+                                VoucherApprovedBy = VM.VoucherMaster.VoucherApprovedBy,
+                                VoucherVerifiedOn = DateTime.Now,
+                                VoucherApprovedOn = DateTime.Now,
+                                basecurrencyid = VM.VoucherMaster.basecurrencyid,
+                                currencyid = VM.VoucherMaster.currencyid,
+                                currencyrate = VM.VoucherMaster.currencyrate
+                            };
 
-                    // **Save to VoucherMaster Table**
-                    var voucherMaster = new Tbl201VoucherMaster
-                    {
-                        VoucherNo = newVoucherNo,
-                        VoucherDate = VM.VoucherMaster.VoucherDate,
-                        VoucherEffectiveDate = VM.VoucherMaster.VoucherEffectiveDate,
-                        VoucherNarration = VM.VoucherMaster.VoucherNarration,
-                        BillRemarks = VM.VoucherMaster.BillRemarks,
-                        VoucherType = VM.VoucherMaster.VoucherType,
-                        IsVerified = VM.VoucherMaster.IsVerified,
-                        IsApproved = VM.VoucherMaster.IsApproved,
-                        VoucherVerifiedBy = VM.VoucherMaster.VoucherVerifiedBy,
-                        VoucherApprovedBy = VM.VoucherMaster.VoucherApprovedBy,
-                        VoucherVerifiedOn = DateTime.Now,
-                        VoucherApprovedOn = DateTime.Now,
-                        basecurrencyid = VM.VoucherMaster.basecurrencyid,
-                        currencyid = VM.VoucherMaster.currencyid,
-                        currencyrate = VM.VoucherMaster.currencyrate
+                            dbContext.Tbl201VoucherMasters.Add(voucherMaster);
+                            await dbContext.Tbl201VoucherEntries.AddRangeAsync(VM.VoucherEntries);
+                            await dbContext.SaveChangesAsync();
 
-                    };
-
-                        dbContext.Tbl201VoucherMasters.Add(voucherMaster);
-                    await dbContext.Tbl201VoucherEntries.AddRangeAsync(VM.VoucherEntries);
-                    await dbContext.SaveChangesAsync();
-                    await transaction.CommitAsync();
+                            await transaction.CommitAsync();
+                        }
+                    });
 
                     return Ok(new { success = true, message = "Voucher saved successfully!", voucherNo = newVoucherNo });
                 }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
-            }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+                }
             }
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
 
 
 
@@ -309,92 +314,83 @@ namespace QDWEB.Areas.Finance.Controllers
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                // **Validate Incoming Data**
                 if (VM == null || VM.VoucherMaster == null || string.IsNullOrEmpty(VM.VoucherMaster.VoucherNo) || VM.VoucherEntries == null || !VM.VoucherEntries.Any())
-            {
-                return BadRequest(new { success = false, message = "Invalid data received or missing voucher number." });
-            }
-
-            try
-            {
-                using (var transaction = await dbContext.Database.BeginTransactionAsync())
                 {
-                    // **Find Existing Voucher Master**
-                    var voucherMaster = await dbContext.Tbl201VoucherMasters
-                        .FirstOrDefaultAsync(v => v.VoucherNo == VM.VoucherMaster.VoucherNo);
+                    return BadRequest(new { success = false, message = "Invalid data received or missing voucher number." });
+                }
 
-                    if (voucherMaster == null)
+                try
+                {
+                    var strategy = dbContext.Database.CreateExecutionStrategy();
+
+                    await strategy.ExecuteAsync(async () =>
                     {
-                        return NotFound(new { success = false, message = "Voucher not found." });
-                    }
-
-                    // **Update Master Record**
-                    voucherMaster.VoucherDate = VM.VoucherMaster.VoucherDate;
-                    voucherMaster.VoucherEffectiveDate = VM.VoucherMaster.VoucherEffectiveDate;
-                    voucherMaster.VoucherNarration = VM.VoucherMaster.VoucherNarration;
-                    voucherMaster.BillRemarks = VM.VoucherMaster.BillRemarks;
-
-                    // **Delete Old Entries First**
-                    var existingEntries = await dbContext.Tbl201VoucherEntries
-                        .Where(e => e.VoucherNo == VM.VoucherMaster.VoucherNo)
-                        .ToListAsync();
-
-                        dbContext.Tbl201VoucherEntries.RemoveRange(existingEntries);
-                    await dbContext.SaveChangesAsync(); // Ensure old records are removed first
-
-                    // **Fetch Account IDs and Add New Entries**
-                    var newEntries = new List<Tbl201VoucherEntry>();
-
-                    foreach (var entry in VM.VoucherEntries)
-                    {
-                        // **Ensure AccountHead is not null**
-                        if (string.IsNullOrEmpty(entry.AccountHead))
+                        using (var transaction = await dbContext.Database.BeginTransactionAsync())
                         {
-                            return BadRequest(new { success = false, message = "AccountHead cannot be null or empty." });
+                            // Find and update voucher master
+                            var voucherMaster = await dbContext.Tbl201VoucherMasters
+                                .FirstOrDefaultAsync(v => v.VoucherNo == VM.VoucherMaster.VoucherNo);
+
+                            if (voucherMaster == null)
+                            {
+                                throw new Exception("Voucher not found.");
+                            }
+
+                            voucherMaster.VoucherDate = VM.VoucherMaster.VoucherDate;
+                            voucherMaster.VoucherEffectiveDate = VM.VoucherMaster.VoucherEffectiveDate;
+                            voucherMaster.VoucherNarration = VM.VoucherMaster.VoucherNarration;
+                            voucherMaster.BillRemarks = VM.VoucherMaster.BillRemarks;
+
+                            // Delete old entries
+                            var existingEntries = await dbContext.Tbl201VoucherEntries
+                                .Where(e => e.VoucherNo == VM.VoucherMaster.VoucherNo)
+                                .ToListAsync();
+
+                            dbContext.Tbl201VoucherEntries.RemoveRange(existingEntries);
+                            await dbContext.SaveChangesAsync();
+
+                            // Add new entries
+                            var newEntries = new List<Tbl201VoucherEntry>();
+                            foreach (var entry in VM.VoucherEntries)
+                            {
+                                if (string.IsNullOrEmpty(entry.AccountHead))
+                                {
+                                    throw new Exception("AccountHead cannot be null or empty.");
+                                }
+
+                                var accountId = await dbContext.Tbl201ChartOfAccounts
+                                    .Where(a => a.AccountHead == entry.AccountHead)
+                                    .Select(a => a.AccountId)
+                                    .FirstOrDefaultAsync();
+
+                                newEntries.Add(new Tbl201VoucherEntry
+                                {
+                                    VoucherNo = VM.VoucherMaster.VoucherNo,
+                                    DrCr = entry.DrCr,
+                                    VoucherAmount = entry.VoucherAmount,
+                                    EntryNarration = entry.EntryNarration,
+                                    AccountHead = accountId
+                                });
+                            }
+
+                            await dbContext.Tbl201VoucherEntries.AddRangeAsync(newEntries);
+                            await dbContext.SaveChangesAsync();
+
+                            await transaction.CommitAsync();
                         }
-
-                        // **Fetch Account ID from ChartOfAccounts**
-                        //var accountID = await _context.Tbl201ChartOfAccounts
-                        //    .Where(a => a.AccountHead == entry.AccountHead)
-                        //    .Select(a => a.AccountId) // Convert to nullable int to avoid null exceptions
-                        //    .FirstOrDefaultAsync();
-
-                        //if (accountID == null)
-                        //         {
-                        //        return BadRequest(new { success = false, message = $"AccountHead '{entry.AccountHead}' not found in ChartOfAccounts." });
-                        //        }
-
-                        // **Create New Entry** add objects to list
-                        newEntries.Add(new Tbl201VoucherEntry
-                        {
-                            VoucherNo = VM.VoucherMaster.VoucherNo,
-                            // Assign AccountID as a string
-                            DrCr = entry.DrCr,
-                            VoucherAmount = entry.VoucherAmount,
-                            EntryNarration = entry.EntryNarration,
-                            AccountHead = await dbContext.Tbl201ChartOfAccounts
-                                             .Where(a => a.AccountHead == entry.AccountHead)
-                                             .Select(a => a.AccountId) // Convert to nullable int to avoid null exceptions
-                                             .FirstOrDefaultAsync(),
-                        });
-                    }
-
-                    // **Insert New Entries**
-                    await dbContext.Tbl201VoucherEntries.AddRangeAsync(newEntries);
-                    await dbContext.SaveChangesAsync();
-                    await transaction.CommitAsync();
+                    });
 
                     return Ok(new { success = true, message = "Voucher updated successfully!" });
                 }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
-            }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+                }
             }
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
 
 
         //[HttpGet]
