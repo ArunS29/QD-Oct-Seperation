@@ -553,7 +553,221 @@ namespace QD.ERP.Web.Areas.Finance.Models
 		public List<Tbl60602purchaseRequestChild> PurchaseRequestDetails { get; set; }
 		
 	}
-    public class CloneJournalEntryRequest
+	public class RFQViewModel
+	{
+		public string Rfqno { get; set; }
+
+		public DateTime? Rfqdate { get; set; }
+
+		public string Mprno { get; set; }
+
+		public string SupplierCode { get; set; }
+
+		public bool? IsQuoted { get; set; }
+
+		public bool? IsWon { get; set; }
+
+		public string ReasonWon { get; set; }
+
+		public string DeliveryPeriod { get; set; }
+
+		public string PaymentTerms { get; set; }
+
+		public string QuoteValidTo { get; set; }
+
+		public DateTime? QuoteValidDate { get; set; }
+
+		public string SupplierQuotationNo { get; set; }
+
+		public DateTime? SupplierQuotationDt { get; set; }
+
+		public string PreparedBy { get; set; }
+
+		public DateTime? PreparedOn { get; set; }
+
+		public string AddedBy { get; set; }
+
+		public DateTime? AddedOn { get; set; }
+
+		public string ModifiedBy { get; set; }
+
+		public DateTime? ModifiedOn { get; set; }
+
+		public byte? CompanyBranch { get; set; }
+
+		public string Attention { get; set; }
+
+		public string SupplierContactNo { get; set; }
+
+		public string SupplierContactEmail { get; set; }
+
+		public bool? IsApproved { get; set; }
+
+		public string ApprovedBy { get; set; }
+
+		public DateTime? ApprovedOn { get; set; }
+
+		public string Rfqsubject { get; set; }
+
+		public string Rfqintro { get; set; }
+
+		public string Rfqsummary { get; set; }
+
+		public byte? Rfqsignatory { get; set; }
+
+		public string Project { get; set; }
+
+		public byte? InventoryMasterGroupId { get; set; }
+
+		public string ProjectMasterCode { get; set; }
+
+		public bool? IsSubmitted { get; set; }
+
+		public string SubmittedBy { get; set; }
+
+		public DateTime? SubmittedOn { get; set; }
+
+		public bool? IsVerified { get; set; }
+
+		public string VerifiedBy { get; set; }
+
+		public DateTime? VerifiedOn { get; set; }
+
+		public string SalesPersonCode { get; set; }
+
+		public List<Tbl60702rfqchild> RFQDetailses { get; set; }
+		
+
+	}
+	public class QuotationViewModel
+	{
+		public string QuoteNo { get; set; }
+
+		public DateTime? QuoteDate { get; set; }
+
+		public string ClientRefNo { get; set; }
+
+		public string Attention { get; set; }
+
+		public string SubjectTitle { get; set; }
+
+		public byte? TypeOfQuote { get; set; }
+
+		public string QuoteType { get; set; }
+
+		public decimal? QuoteTransport { get; set; }
+
+		public decimal? QuoteDiscount { get; set; }
+
+		public byte? PaymentTerms { get; set; }
+
+		public byte? DeliveryPeriod { get; set; }
+
+		public byte? DeliveryTerms { get; set; }
+
+		public string QuoteValidity { get; set; }
+
+		public string PreparedBy { get; set; }
+
+		public DateTime? PreparedOn { get; set; }
+
+		public string ApprovedBy { get; set; }
+
+		public DateTime? ApprovedOn { get; set; }
+
+		public string AddedBy { get; set; }
+
+		public DateTime? AddedOn { get; set; }
+
+		public string ModifiedBy { get; set; }
+
+		public DateTime? ModifiedOn { get; set; }
+
+		public string Rfqcode { get; set; }
+
+		public string ClientContactNo { get; set; }
+
+		public string ClientContactEmail { get; set; }
+
+		public string ClientCode { get; set; }
+
+		public string QuotationSummary { get; set; }
+
+		public byte? QuoteSignatory { get; set; }
+
+		public string QuoteIntro { get; set; }
+
+		public byte? TypeOfRequest { get; set; }
+
+		public byte? ModeOfRequest { get; set; }
+
+		public string AdditionsText { get; set; }
+
+		public string DiscountsText { get; set; }
+
+		public DateTime? QuoteDueDate { get; set; }
+
+		public string Project { get; set; }
+
+		public string SalesPersonCode { get; set; }
+
+		public bool? IsVerified { get; set; }
+
+		public bool? IsApproved { get; set; }
+
+		public byte? RevisionNo { get; set; }
+
+		public byte? CompanyBranch { get; set; }
+
+		public string Mprno { get; set; }
+
+		public string QuoteThanksNote { get; set; }
+
+		public string QuoteColumn1 { get; set; }
+
+		public string QuoteColumn2 { get; set; }
+
+		public string QuoteColumn3 { get; set; }
+
+		public string QuoteLabel1 { get; set; }
+
+		public string QuoteLabel2 { get; set; }
+
+		public string QuoteLabel3 { get; set; }
+
+		public DateTime? QuoteSubmittedOn { get; set; }
+
+		public string QuoteSubmittedBy { get; set; }
+
+		public byte? QuoteStatus { get; set; }
+
+		public byte? InventoryMasterGroupId { get; set; }
+
+		public byte? VerifiedSignatory { get; set; }
+
+		public byte? ApprovedSignatory { get; set; }
+
+		public bool? IsSubmitted { get; set; }
+
+		public string SubmittedBy { get; set; }
+
+		public DateTime? SubmittedOn { get; set; }
+
+		public string VerifiedBy { get; set; }
+
+		public DateTime? VerifiedOn { get; set; }
+
+		public string ProjectMasterCode { get; set; }
+
+		public DateTime? BidClosingDate { get; set; }
+
+		public string TransportationScope { get; set; }
+
+		public List<Tbl60102quotationChild> QuotationDetailses { get; set; }
+
+
+	}
+	public class CloneJournalEntryRequest
     {
         public string FromJournalRefNo { get; set; }
         public string ToJournalRefNo { get; set; }
@@ -572,6 +786,5 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string NewVoucherNo { get; set; }
     }
 
-   
 }
 
