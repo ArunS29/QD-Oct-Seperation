@@ -190,14 +190,17 @@ namespace QD.ERP.Web.Areas.Security.Controllers
 
                         SetHttpOnlyCookie("AuthToken", token, 20);
                         SetHttpOnlyCookie("Permissions", JsonSerializer.Serialize(permissions), 20);
-                         var sessionCookie = Request.Cookies[".AspNetCore.Session"];
+                        // var sessionCookie = Request.Cookies[".AspNetCore.Session"];
+
+                        HttpContext.Session.SetString("TenantName", request.TenantName);
+
                         return Ok(new
                         {
                             message = "Login successful",
                             success = true,
                             token,
                             permissions
-                            ,sessionCookie
+                            
                         });
                     }
                 }
