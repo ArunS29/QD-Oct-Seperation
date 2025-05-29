@@ -550,6 +550,73 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetByDeliveryNoteNo(string deliveryNoteNo)
+        {
+            if (string.IsNullOrWhiteSpace(deliveryNoteNo))
+                return BadRequest(new { message = "Delivery Note No is required", success = false });
+
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { message = "Invalid tenant", success = false });
+
+            try
+            {
+                var master = await dbContext.Tbl60301deliveryNoteMasters
+                    .FirstOrDefaultAsync(x => x.DeliveryNoteNo == deliveryNoteNo);
+
+                if (master == null)
+                    return NotFound(new { message = "Delivery Note not found", success = false });
+
+                var children = await dbContext.Tbl60302deliveryNoteChildren
+                    .Where(x => x.DeliveryNoteNo == deliveryNoteNo)
+                    .ToListAsync();
+
+                return Ok(new
+                {
+                    success = true,
+                    deliveryNoteNo = master.DeliveryNoteNo,
+                    deliveryDate = master.DeliveryDate,
+                    clientCode = master.ClientCode,
+                    salesPersonCode = master.SalesPersonCode,
+                    clientPono = master.ClientPono,
+                    clientPodate = master.ClientPodate,
+                    attention = master.Attention,
+                    clientContactNo = master.ClientContactNo,
+                    clientContactEmail = master.ClientContactEmail,
+                    StoreCode = master.StoreCode,
+                    projectId = master.ProjectId,
+                    clientProject = master.ClientProject,
+                    deliveryNoteRemarks = master.DeliveryNoteRemarks,
+                    salesman = master.Salesman,
+                    transportedBy = master.TransportedBy,
+                    driversName = master.DriversName,
+                    driversId = master.DriversId,
+                    vehicleNo = master.VehicleNo,
+                    companyBranch = master.CompanyBranch,
+                    deliveryType = master.DeliveryType,
+                    inventoryMasterGroupId = master.InventoryMasterGroupId,
+                    salesOrderNo = master.SalesOrderNo,
+                    quotationNo = master.QuotationNo,
+                    Dnsignatory = master.Dnsignatory,
+                    IsApproved = master.IsApproved,
+
+                    items = children.Select(x => new
+                    {
+                        SNo = x.DeliveryNoteSlNo,
+                        ItemCode = x.Gscode,
+                        UnitRateMethod = x.UnitRateMethod,
+                        Qty = x.IssuedQty,
+                        UnitCostPrice = x.IssuedUnitPrice,
+                        EmployeeName = x.EmployeeNo,
+                        PropertyOrEquipment = x.PropertyNo
+                    })
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error loading delivery note", success = false, error = ex.Message });
+            }
+        }
 
 
     }

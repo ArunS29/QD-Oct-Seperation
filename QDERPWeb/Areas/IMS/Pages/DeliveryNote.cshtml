@@ -180,7 +180,17 @@
 		@await Html.PartialAsync("InventoryModuleFooter")
 	</div>
 </div>
-
+<div class="context-menuInvoice" id="contextMenu">
+	<div class="context-menu-itemInvoice" onclick="viewRecord()">
+		<i class="dx-icon-search"></i> View
+	</div>
+	<div class="context-menu-itemInvoice" onclick="editRecord()">
+		<i class="dx-icon-edit"></i> Edit
+	</div>
+	<div class="context-menu-itemInvoice" onclick="deleteRecord()">
+		<i class="dx-icon-trash"></i> Delete
+	</div>
+</div>
 <div class="dx-fieldset horizontal-container">
 	@(Html.DevExtreme().DateBox()
 		.ID("frmdateBox")
@@ -389,6 +399,64 @@
 
 
 	}
+	 let selectedRowData = null;
 
+	$(function () {
+		const contextMenu = $("#contextMenu");
+
+		$(document).on("click", function () {
+			contextMenu.hide();
+		});
+
+	   $("#dataGrid").customizeGridContextMenu();
+		  $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
+		e.preventDefault();
+		const dataGrid = $("#dataGrid").dxDataGrid("instance");
+		const rowIndex = $(this).index();
+		selectedRowData = dataGrid.getVisibleRows()[rowIndex].data;
+
+		$("#contextMenu").css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
+	});
+
+	});
+	function viewRecord() {
+		if (selectedRowData) {
+			const DeliveryNoteNo = selectedRowData.DeliveryNoteNo;
+			window.location.href = `/${tenantName}/IMS/DeliveryEditForm?DeliveryNoteNo=${encodeURIComponent(DeliveryNoteNo)}&mode=view`;
+		}
+	}
+
+	function editRecord() {
+		if (selectedRowData) {
+			const DeliveryNoteNo = selectedRowData.DeliveryNoteNo;
+			window.location.href = `/${tenantName}/IMS/DeliveryEditForm?DeliveryNoteNo=${encodeURIComponent(DeliveryNoteNo)}&mode=edit`;
+		}
+	}
+
+
+	   function deleteRecord() {
+		if (selectedRowData) {
+			const code = selectedRowData.Gscode;
+			if (confirm(`Are you sure you want to delete stock item: ${code}?`)) {
+				$.ajax({
+					url: "/api/StockInventory/DeleteStockItem",
+					method: "POST",
+					contentType: "application/json",
+					data: JSON.stringify(code),
+					success: function (result) {
+						DevExpress.ui.notify(result.message, result.success ? "success" : "error", 2000);
+						if (result.success) {
+							const grid = $("#dataGrid").dxDataGrid("instance");
+							grid.refresh();
+						}
+					},
+					error: function (xhr) {
+						DevExpress.ui.notify("Error deleting stock item", "error", 2000);
+						console.error(xhr);
+					}
+				});
+			}
+		}
+	}
 
 </script>
