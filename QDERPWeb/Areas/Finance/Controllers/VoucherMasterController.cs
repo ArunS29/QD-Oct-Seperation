@@ -2853,6 +2853,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             try
             {
+              
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
                     var savedChildren = new List<Tbl20162VatinvoiceChild>();
@@ -2868,6 +2869,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 DetailedDescription = child.Description?.GetString() ?? string.Empty,
                                 QuantityInvoiced = child.Qty?.GetDecimal() ?? 0m,
                                 TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8,
+                                Discount = child.Discount,
                                 UnitsToBill = 1,
                                 UnitRateMethod = 49,
                                 ItemCode = child.ItemCode ?? string.Empty,
@@ -2889,6 +2891,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                             if (existingChild != null)
                             {
+                              
                                 existingChild.InvoiceNo = child.InvoiceNo;
                                 existingChild.UnitRate = child.UnitRate;
                                 existingChild.DetailedDescription = child.DetailedDescription;
@@ -2898,7 +2901,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 existingChild.UnitRateMethod = 49;
                                 existingChild.ItemCode = child.ItemCode ?? string.Empty;
                                 existingChild.UoM = "Each";
-
+                                existingChild.Discount = child.Discount;
                                 dbContext.Tbl20162VatinvoiceChildren.Update(existingChild);
                                 savedChildren.Add(existingChild);
                             }
@@ -2994,7 +2997,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 CreditNoteNo = child.InvoiceNo,
                                 UnitRate = child.UnitRate, // Ensure null safety
                                 DetailedDescription = child.Description?.GetString() ?? string.Empty, // Null safety
-                                QuantityCredited = child.Qty?.GetDecimal() ?? 0m, // Null safety
+                                QuantityCredited = child.QuantityCredited, // Null safety
                                 TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8,
                                 UnitsToCredited = 1,
                                 UnitRateMethod = 49,
@@ -3013,12 +3016,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                             if (existingChild != null)
                             {
-                                existingChild.CreditNoteNo = child.InvoiceNo;
+                                existingChild.CreditNoteNo = child.InvoiceNo;                                                                                                                                   
                                 existingChild.UnitRate = child.UnitRate;
                                 existingChild.DetailedDescription = child.DetailedDescription;
-                                existingChild.QuantityCredited = child.QuantityInvoiced;
+                                existingChild.QuantityCredited = child.QuantityCredited;
                                 existingChild.TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8;
-                                existingChild.UnitsToCredited = 1;
+                                existingChild.UnitsToCredited   = 1;
                                 existingChild.UnitRateMethod = 49;
                                 existingChild.ItemCode = child.ItemCode ?? string.Empty;
                                 existingChild.UoM = "Each";
