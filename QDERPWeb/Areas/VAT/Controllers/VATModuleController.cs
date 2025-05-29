@@ -336,9 +336,12 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 						g.ItemPartNo,
 						g.CostPrice,
 						g.GssellingRate,
-						g.ReorderQty
+						g.ReorderQty,
+						g.StoreCode,
+						g.MaxQty,
+						g.MinQty
 
-					})
+                    })
 					.ToListAsync();
 
 					return Ok(result);

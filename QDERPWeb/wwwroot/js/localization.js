@@ -1,6 +1,14 @@
 ﻿var dictionary = {
     "en": {
+
+        "PropertyOrEquipment": "PropertyOrEquipment",
+        "EmployeeName": "EmployeeName",
+        "UnitCostPrice": "UnitCostPrice",
+        "UnitRate Method": "UnitRate Method",
+        "Stock Description": "Stock Description",
+
         "QuoteChildId":"QuoteChildId",
+
         "Tax Slab": "Tax Slab",
         "Unit Cost Price": "Unit Cost Price",
         "Quoted Discount": "Quoted Discount",
