@@ -453,6 +453,7 @@
                         .TabIndex(1)
                         .Width("100%")
                         .OnKeyDown("onKeyDown")
+                        .Disabled(true)
                         //.OnValueChanged("dropDownBoxValueChanged")
                         .ContentTemplate(new TemplateName("GetTypeOfRequestContentTemplate"))
                         )
@@ -463,6 +464,7 @@
                         .Width(40)
                         .ElementAttr("style", "margin-top:18px;")
                         .OnClick("AddTypeReq")
+                        .Disabled(true)
                         )
                     </div>
                     <div class="col-md-3" style="display:flex; align-items:end;">
@@ -658,19 +660,21 @@
                     <div class="col-md-4">
                         @(Html.DevExtreme().SelectBox()
                         .ID("DeliveryType")
-                        .DataSource(d => d.Mvc()
-                        .Controller("DeliveryNote")
-                        .LoadAction("GetDeliveryTypes")
-                        )
-                        .ValueExpr("Id")
-                        .DisplayExpr("Name")
-                        .Value(1) // Default value, e.g., `1` for "Issued to Client" if known
+                        .DataSource(new[] {
+                        new { Id = 1, Name = "Issued to Client" } // hardcoded item
+                        })
+                        .ValueExpr("Id")             // The value that will be posted (1)
+                        .DisplayExpr("Name")         // What is shown to user ("Issued to Client")
+                        .Value(1)                    // Default selected value
                         .Label("Delivery Type:")
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%")
-                        .Disabled(false)
+                        .Disabled(true)              // Make it readonly
                         )
+                        <!-- Make sure value is posted -->
+                        <input type="hidden" name="DeliveryType" value="1" />
                     </div>
+
 
                     <div class="col-md-4">
                       @(Html.DevExtreme().SelectBox()
@@ -694,6 +698,7 @@
                         .Label("Sales Order No:")
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%")
+                        .Disabled(true)
                         )
                     </div>
 
@@ -703,6 +708,7 @@
                         .Label("Quotation No:")
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%")
+                        .Disabled(true)
                         )
                     </div>
 
@@ -712,6 +718,7 @@
                         .Label("Enquiry/Request No:")
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%")
+                        .Disabled(true)
                         )
                     </div>
                 </div>
@@ -1490,39 +1497,52 @@
             console.log("MinQty:", minQty, "MaxQty:", maxQty);
 
             // Create the NumberBox editor
-            $("<div>").dxNumberBox({
-                value: cellInfo.value || 0,
-                min: minQty,
-                max: maxQty,
-                showSpinButtons: true,
-                onValueChanged: function (e) {
-                    let newQty = e.value;
+              $("<div>").dxNumberBox({
+        value: cellInfo.value || 0,
+        showSpinButtons: true,
+        onValueChanged: function (e) {
+            let newQty = e.value;
 
-                    console.log("User entered Qty:", newQty);
+            // Fetch updated min/max dynamically
+            let rowIndex = cellInfo.row.rowIndex;
+            let updatedRow = dataGrid.getDataSource().items()[rowIndex] || {};
+            let maxQty = updatedRow.MaxQty || 0;
+            let minQty = updatedRow.MinQty || 0;
 
-                    // Re-fetch Min and Max dynamically
-                    let updatedRow = dataGrid.getDataSource().items()[rowIndex] || {};
-                    let maxQty = updatedRow.MaxQty || 0;
-                    let minQty = updatedRow.MinQty || 0;
+            console.log("Validation Check -> MinQty:", minQty, "MaxQty:", maxQty, "NewQty:", newQty);
 
-                    console.log("Validation Check -> MinQty:", minQty, "MaxQty:", maxQty, "NewQty:", newQty);
+            if (newQty > maxQty) {
+                console.warn(`Qty ${newQty} exceeds MaxQty ${maxQty}`);
 
-                    if (newQty > maxQty) {
-                        console.warn(`Qty ${newQty} exceeds MaxQty ${maxQty}`);
-                        DevExpress.ui.notify(`The maximum allowed quantity is ${maxQty}.`, "error", 3000);
-                        e.component.option("value", maxQty);
-                        cellInfo.setValue(maxQty);
-                    } else if (newQty < minQty) {
-                        console.warn(`Qty ${newQty} is below MinQty ${minQty}`);
-                        DevExpress.ui.notify(`The minimum allowed quantity is ${minQty}.`, "error", 3000);
-                        e.component.option("value", minQty);
-                        cellInfo.setValue(minQty);
-                    } else {
-                        console.log(`Qty ${newQty} is valid`);
-                        cellInfo.setValue(newQty);
-                    }
-                }
-            }).appendTo(cellElement);
+                DevExpress.ui.dialog.confirm(
+                    `The quantity you entered (${newQty}) exceeds the allowed maximum (${maxQty}).`,
+                    "Quantity Limit Exceeded"
+                ).done(function () {
+                    // Optional: you can add confirmation handling here if needed
+                });
+
+                setTimeout(() => {
+                    DevExpress.ui.notify(`The maximum allowed quantity is ${maxQty}.`, "error", 3000);
+                }, 100); // Give it slight delay to ensure render
+
+                e.component.option("value", maxQty);
+                cellInfo.setValue(maxQty);
+            } else if (newQty < minQty) {
+                console.warn(`Qty ${newQty} is below MinQty ${minQty}`);
+
+                setTimeout(() => {
+                    DevExpress.ui.notify(`The minimum allowed quantity is ${minQty}.`, "error", 3000);
+                }, 100);
+
+                e.component.option("value", minQty);
+                cellInfo.setValue(minQty);
+            } else {
+                console.log(`Qty ${newQty} is valid`);
+                cellInfo.setValue(newQty);
+            }
+        }
+    }).appendTo(cellElement);
+
         }
     },
 

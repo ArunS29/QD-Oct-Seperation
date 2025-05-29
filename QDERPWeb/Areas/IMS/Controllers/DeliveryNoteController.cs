@@ -94,12 +94,14 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             try
             {
+                string userName = HttpContext.Session.GetString("UserName") ?? "System";
+
                 var existingNote = await dbContext.Tbl60301deliveryNoteMasters
                     .FirstOrDefaultAsync(x => x.DeliveryNoteNo == model.DeliveryNoteNo);
 
                 if (existingNote == null)
                 {
-                    model.AddedBy = User.Identity?.Name ?? "System";
+                    model.AddedBy = userName;
                     model.AddedOn = DateTime.Now;
                     model.IsVerified = false;
                     model.IsApproved = false;
@@ -144,7 +146,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     existingNote.QuotationNo = model.QuotationNo;
                     existingNote.SalesOrderNo = model.SalesOrderNo;
 
-                    existingNote.ModifiedBy = User.Identity?.Name ?? "System";
+                    existingNote.ModifiedBy = userName;
                     existingNote.ModifiedOn = DateTime.Now;
                 }
 
@@ -162,6 +164,40 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, new { message = "Error saving delivery note: " + ex.Message, success = false });
             }
         }
+        [HttpPost]
+        public async Task<IActionResult> ApproveDeliveryNote([FromBody] string deliveryNoteNo)
+        {
+            if (string.IsNullOrWhiteSpace(deliveryNoteNo))
+                return BadRequest(new { message = "Delivery Note No is required", success = false });
+
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { message = "Invalid tenant", success = false });
+
+            try
+            {
+                var existingNote = await dbContext.Tbl60301deliveryNoteMasters
+                    .FirstOrDefaultAsync(x => x.DeliveryNoteNo == deliveryNoteNo);
+
+                if (existingNote == null)
+                    return NotFound(new { message = "Delivery note not found", success = false });
+
+                string approvedBy = HttpContext.Session.GetString("UserName") ?? "System";
+
+                existingNote.IsApproved = true;
+                existingNote.ApprovedBy = approvedBy; // ? Correct usage
+                existingNote.ApprovedOn = DateTime.Now;
+
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { message = "Delivery note approved successfully", success = true });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error approving delivery note: " + ex.Message, success = false });
+            }
+        }
+
+
         [HttpGet("GetCompanyBranch")]
         public async Task<IActionResult> GetCompanyBranch()
         {
