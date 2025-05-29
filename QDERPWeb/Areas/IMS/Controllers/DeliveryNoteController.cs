@@ -426,6 +426,94 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, $"Server error: {ex.Message}");
             }
         }
+        public class DeliveryNoteItemsRequest
+        {
+            public string DeliveryNoteNo { get; set; }
+            public List<DeliveryNoteItemDto> Items { get; set; }
+        }
+
+        public class DeliveryNoteItemDto
+        {
+            public int SNo { get; set; }
+            public string ItemCode { get; set; }
+            public string StockDescription { get; set; }
+            public byte? UnitRateMethod { get; set; }
+            public decimal? Qty { get; set; }
+            public decimal? UnitCostPrice { get; set; }
+            public string EmployeeName { get; set; }
+            public string PropertyOrEquipment { get; set; }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveOrUpdateDeliveryNoteItems([FromBody] DeliveryNoteItemsRequest request)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                {
+                    var deliveryNoteNo = request.DeliveryNoteNo;
+                    var items = request.Items;
+
+                    // Get existing records for DeliveryNoteNo
+                    var existingItems = await dbContext.Tbl60302deliveryNoteChildren
+                        .Where(x => x.DeliveryNoteNo == deliveryNoteNo)
+                        .ToListAsync();
+
+                    // Find max DeliveryNoteSlNo across all records (or filter by DeliveryNoteNo if preferred)
+                    long maxSlNo = existingItems.Any() ? existingItems.Max(x => x.DeliveryNoteSlNo) : 0;
+
+                    foreach (var item in items)
+                    {
+                        Tbl60302deliveryNoteChild entity = null;
+
+                        if (item.SNo != 0)
+                        {
+                            // Update existing
+                            entity = existingItems.FirstOrDefault(x => x.DeliveryNoteSlNo == item.SNo);
+                        }
+
+                        if (entity != null)
+                        {
+                            // Update existing record
+                            entity.Gscode = item.ItemCode;
+                            entity.UnitRateMethod = item.UnitRateMethod;
+                            entity.IssuedQty = item.Qty;
+                            entity.IssuedUnitPrice = item.UnitCostPrice;
+                            entity.EmployeeNo = item.EmployeeName;
+                            entity.PropertyNo = item.PropertyOrEquipment;
+                        }
+                        else
+                        {
+
+
+                            entity = new Tbl60302deliveryNoteChild
+                            {
+                                DeliveryNoteNo = deliveryNoteNo,
+                                Gscode = item.ItemCode,
+                                UnitRateMethod = item.UnitRateMethod,
+                                IssuedQty = item.Qty,
+                                IssuedUnitPrice = item.UnitCostPrice,
+                                EmployeeNo = item.EmployeeName,
+                                PropertyNo = item.PropertyOrEquipment,
+
+                            };
+
+                            dbContext.Tbl60302deliveryNoteChildren.Add(entity);
+                        }
+                    }
+
+                    await dbContext.SaveChangesAsync();
+                    return Ok(new { success = true, message = "Items saved/updated successfully!" });
+                }
+
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = $"Server error: {ex.Message}" });
+            }
+        }
+
 
 
     }

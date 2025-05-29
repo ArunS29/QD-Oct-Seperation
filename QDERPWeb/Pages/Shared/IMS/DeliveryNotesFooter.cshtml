@@ -460,7 +460,9 @@
             reader.readAsText(file);
         }
     });
-       function saveDeliveryNote(closeAfterSave = false) {
+           function saveDeliveryNote(closeAfterSave = false) {
+        var isUpdate = $("#btnSave").data("is-update");
+
         const model = {
             deliveryNoteNo: $("#deliveryNoteNo").dxTextBox("instance").option("value"),
             deliveryDate: $("#deliveryNoteDate").dxDateBox("instance").option("value"),
@@ -480,38 +482,55 @@
             driversName: $("#DriverName").dxTextBox("instance").option("value"),
             driversId: $("#DriverID").dxTextBox("instance").option("value"),
             vehicleNo: $("#VehicleNo").dxTextBox("instance").option("value"),
-             companyBranch: $("#CompanyName").dxSelectBox("instance").option("value"),
+            companyBranch: $("#CompanyName").dxSelectBox("instance").option("value"),
             deliveryType: $("#DeliveryType").dxSelectBox("instance").option("value"),
             inventoryMasterGroupId: $("#InventoryGroup").dxSelectBox("instance").option("value"),
             salesOrderNo: $("#SalesOrderNo").dxTextBox("instance").option("value"),
             quotationNo: $("#QuotationNo").dxTextBox("instance").option("value"),
             enquiryRequestNo: $("#EnquiryRequestNo").dxTextBox("instance").option("value"),
-             Dnsignatory: $("#Dnsignatory").dxDropDownBox("instance").option("value")
+            Dnsignatory: $("#Dnsignatory").dxDropDownBox("instance").option("value")
         };
 
-        $.ajax({
+        // Get grid data (items)
+        const itemGridInstance = $("#itemGrid").dxDataGrid("instance");
+        const items = itemGridInstance.getDataSource().items();
+
+        // Call both APIs: 1) save delivery note, 2) save item details
+        const saveNote = $.ajax({
             url: '/api/DeliveryNote/SaveDeliveryNote',
             type: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify(model),
-            success: function (res) {
-                DevExpress.ui.notify(res.message || "Saved successfully!", "success", 3000);
-
-                if (closeAfterSave) {
-                    // Example: Hide popup or redirect
-                    if ($("#deliveryNotePopup").length > 0) {
-                        $("#deliveryNotePopup").dxPopup("instance").hide();
-                    } else {
-                        // Or redirect to a summary/listing page
-                        window.history.back();
-                    }
-                }
-            },
-            error: function (err) {
-                DevExpress.ui.notify("Failed to save delivery note. " + (err.responseText || ""), "error", 3000);
-            }
+            data: JSON.stringify(model)
         });
+
+         const saveItems = $.ajax({
+        url: '/api/DeliveryNote/SaveOrUpdateDeliveryNoteItems',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            deliveryNoteNo: model.deliveryNoteNo,
+            items: items
+        })
+    });
+
+
+        // When both succeed
+        Promise.all([saveNote, saveItems])
+            .then(function ([noteRes, itemRes]) {
+                DevExpress.ui.notify(isUpdate ? "Updated successfully!" : "Saved successfully!", "success", 3000);
+                if (!isUpdate) {
+                    $("#btnSave").dxButton("instance").option("text", "Update");
+                    $("#btnSave").data("is-update", true);
+                }
+
+                
+            })
+            .catch(function (err) {
+                DevExpress.ui.notify("Failed to save. " + (err.responseText || ""), "error", 3000);
+            });
     }
+
+
 
     function onSaveAndCloseClicked() {
         saveDeliveryNote(true);
