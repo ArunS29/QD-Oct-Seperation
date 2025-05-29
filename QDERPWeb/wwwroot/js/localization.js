@@ -1,5 +1,6 @@
 ﻿var dictionary = {
     "en": {
+        "QuoteChildId":"QuoteChildId",
         "Tax Slab": "Tax Slab",
         "Unit Cost Price": "Unit Cost Price",
         "Quoted Discount": "Quoted Discount",
@@ -4715,7 +4716,8 @@
         "Profit or Loss": "الربح أو الخسارة",
         "MinSelling Price": "الحد الأدنى لسعر البيع",
         "MaxSellingPrice": "الحد الأقصى لسعر البيع",
-        "RFQ with Item Details": "طلب عرض أسعار مع تفاصيل العناصر"
+        "RFQ with Item Details": "طلب عرض أسعار مع تفاصيل العناصر",
+        "QuoteChildId": "معرف البند الفرعي للعرض"
     }
 };
 
