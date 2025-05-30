@@ -135,7 +135,7 @@
 	<div class="row g-5" style="padding:1em;gap:1px">
 		<div class="col-md-6" style="padding-right:0px">
 			<div class="form-group">
-				@(Html.DevExtreme().DropDownBox()
+			@* 	@(Html.DevExtreme().DropDownBox()
 								.Label(new JS("formatMessage('Client Name')"))
 								.DataSource(d => d.WebApi()
 								.Controller("SalesVoucher")
@@ -165,6 +165,45 @@
 								.TabIndex(1)
 								.OnKeyDown("onKeyDown")
 								.OnValueChanged("onSupplierNameChanged")
+								.ContentTemplate(new TemplateName("ClientNameContentTemplate"))
+								) *@
+
+
+				@(Html.DevExtreme().DropDownBox()
+								.Label(new JS("formatMessage('Client Name')"))
+								.DataSource(d => d.WebApi()
+								.Controller("SalesVoucher")
+								.LoadAction("GetClientName")
+								.LoadMode(DataSourceLoadMode.Raw)
+								.Key("AccountId")
+								)
+								.ValidationRules(rules =>
+								{
+									rules.AddRequired()
+									.Message(new JS("formatMessage('Client Name is required')"));
+								})
+								.LabelMode(EditorLabelMode.Outside)
+								.ID("accountDropDownBox")
+
+								.ShowClearButton(true)
+								.AcceptCustomValue(true)
+								.OpenOnFieldClick(false)
+								.ValueChangeEvent("input")
+								.HoverStateEnabled(true)
+
+								.ValueExpr("AccountId")
+								.DisplayExpr("AccountHead")
+								.OnInput("dropDownBoxOnInput")
+
+								.OnOpened("onOpened")
+								@* .Width(720) *@
+								.TabIndex(1)
+								@* .DropDownOptions(o => o
+								.Width(1000)
+								) *@
+								.OnKeyDown("onKeyDown")
+								.OnValueChanged("onSupplierNameChanged")
+								//.OnValueChanged("dropDownBoxValueChanged")
 								.ContentTemplate(new TemplateName("ClientNameContentTemplate"))
 								)
 
@@ -893,7 +932,7 @@
 		@await Html.PartialAsync("SalesVoucherFooter")
 	</div>
 
-	@using (Html.DevExtreme().NamedTemplate("ClientNameContentTemplate"))
+	@* @using (Html.DevExtreme().NamedTemplate("ClientNameContentTemplate"))
 	{
 		@(Html.DevExtreme().DataGrid()
 				.ID("clientname-datagrid")
@@ -917,9 +956,73 @@
 				.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 				.Height(345)
 				.Selection(s => s.Mode(SelectionMode.Single))
-				.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-
+				//.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+				.SelectedRowKeys(new JS("getSelectedRowKeys()"))
 				// ✅ Enable Column Chooser
+				.ColumnChooser(c => c
+				.Enabled(true) // Enable column chooser
+				.Mode(GridColumnChooserMode.Select) // Set mode to selection
+				)
+				.Columns(columns =>
+				{
+					columns.Add().DataField("MasterGroupId").Caption("Master Group Id").Visible(false);
+					columns.Add().DataField("MasterGroup").Caption("Master Group").Visible(false);
+					columns.Add().DataField("AccountGroupId").Caption("Account Group Id").Visible(false);
+					columns.Add().DataField("AccountGroup").Caption("Account Group").Visible(false);
+					columns.Add().DataField("AccountId").Caption("Account Id").Visible(true);
+					columns.Add().DataField("AccountHead").Caption("Account Head").Visible(true);
+					columns.Add().DataField("AccountHeadArabic").Caption("Account Head Arabic").Visible(true);
+					columns.Add().DataField("IsRestricted").Caption("Is Restricted").DataType(GridColumnDataType.Boolean).Visible(false);
+					columns.Add().DataField("IsUseInSales").Caption("Use In Sales").DataType(GridColumnDataType.Boolean).Visible(false);
+					columns.Add().DataField("IsUsedInPurchase").Caption("Used In Purchase").DataType(GridColumnDataType.Boolean).Visible(false);
+					columns.Add().DataField("IsProfitLossAccount").Caption("Profit/Loss Account").DataType(GridColumnDataType.Boolean).Visible(false);
+					columns.Add().DataField("IsBalanceSheetAccount").Caption("Balance Sheet Account").DataType(GridColumnDataType.Boolean).Visible(false);
+					columns.Add().DataField("IsMaintainBillByBill").Caption("Maintain Bill By Bill").DataType(GridColumnDataType.Boolean).Visible(false);
+					columns.Add().DataField("IsUseInReconciliation").Caption("Use In Reconciliation").DataType(GridColumnDataType.Boolean).Visible(false);
+					columns.Add().DataField("IsSalaryPayable").Caption("Salary Payable").DataType(GridColumnDataType.Boolean).Visible(false);
+					columns.Add().DataField("ReferenceNo").Caption("Reference No").Visible(false);
+					columns.Add().DataField("IsLedgerObselete").Visible(true).Caption("Ledger Obselete")
+				.Alignment(HorizontalAlignment.Center)
+				.CellTemplate(@<text>
+		<div class="dx-icon">
+			<%= data.IsLedgerObselete ? '<i style="color:red" class="fa fa-toggle-on"></i>' : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
+		</div>
+	</text>);
+				})
+			.OnRowPrepared("onAccountHeadRowPrepared")
+			)
+	} *@
+
+
+	@using (Html.DevExtreme().NamedTemplate("ClientNameContentTemplate"))
+	{
+		@(Html.DevExtreme().DataGrid()
+
+				.ID("clientname-datagrid")
+				.DataSource(d => d.WebApi()
+				.Controller("SalesVoucher")
+				.LoadAction("GetClientName")
+				.LoadMode(DataSourceLoadMode.Raw)
+				/// .Key("AccountHead") //salary paid entry
+				.Key("AccountId")
+				)
+				.WordWrapEnabled(true)
+				.ShowBorders(true)
+				.SearchPanel(sp => sp.Visible(true))
+				.SearchPanel(sp => sp.HighlightSearchText(true))
+				.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+				.OnSelectionChanged("dataGridSelectionChanged")
+				.OnInitialized("dataGridInitialized")
+				// .HeaderFilter(p => p.Visible(true))
+				.ShowBorders(true)
+				.HoverStateEnabled(true)
+				.Paging(p => p.PageSize(15))
+				.FilterRow(f => f.Visible(true))
+				.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+				.Height(345)
+
+				.Selection(s => s.Mode(SelectionMode.Single))
+				.SelectedRowKeys(new JS("getSelectedRowKeys()"))
 				.ColumnChooser(c => c
 				.Enabled(true) // Enable column chooser
 				.Mode(GridColumnChooserMode.Select) // Set mode to selection
@@ -1056,7 +1159,7 @@
 
 </div>
 <script>
-	let refno, accheadar, accgroup, accgroupid, accheadid, accheadname, supplierId, suprefno, supaccheadar, supaccgroup, supaccgroupid, suppliername,IsNotification = false, storedAccountHead;
+	let refno, accheadar, accgroup, accgroupid, accheadid, accheadname, supplierId, suprefno, supaccheadar, supaccgroup, supaccgroupid, suppliername,IsNotification = false, storedAccountHead,IsClientName=false,paymentaccheadname,paymentaccheadId,paymentIsLedgerObselete;
 
 		$(function () {
 										$("#EditCostAllocation").dxTextBox({
@@ -1380,6 +1483,23 @@
 					// DevExpress.ui.notify("No voucher entries found.", "warning", 2000);
 					return;
 				}
+			
+				var lastRow = response.data[response.data.length - 1]; // Get the last row
+				var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
+
+				if (dropDownBox) {
+					IsClientName=true;
+					// Set selected value based on what the DropDownBox expects
+					// Assuming ValueExpr is "AccountId", and AccountId is present in `lastRow`
+					//dropDownBox.option("value", lastRow.AccountHead); // or lastRow.AccountId if available
+					 console.log("lastRow",lastRow)
+					 paymentaccheadId=lastRow.AccountId;
+					 paymentaccheadname=lastRow.AccountHead;
+					 dropDownBox.option("value", lastRow.AccountHead);
+					// dataGridSelectionChanged({ selectedRowKeys: [lastRow.AccountHead] });
+				}
+
+
 				var voucherTextBox = $("#VoucherNo").dxTextBox("instance");
 				if (voucherTextBox) {
 					voucherTextBox.option("readOnly", true);
@@ -1797,7 +1917,7 @@
 			if (ddbInstance.option("opened")) {
 				ddbInstance.close();
 			}
-
+			// if(IsClientName!=true){
 			var selectedRowData = $("#clientname-datagrid").dxDataGrid("instance").getSelectedRowsData();
 
 			if (selectedRowData.length > 0) {
@@ -1811,9 +1931,9 @@
 					   "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
 					   "LEDGER IS OBSELETE(NOT IN USE)"
 					   );
-
 				}
-			}
+			  }
+			//}
 		}
 	}
 
@@ -1913,7 +2033,7 @@
 
 			// Validate the base date
 			if (!baseDate) {
-				alert("Please select a valid base date!");
+				//alert("Please select a valid base date!");
 				return;
 			}
 
@@ -3399,6 +3519,11 @@
 				}
 			];
 		}
+	}
+
+		function getSelectedRowKeys() {
+		var dropDown = $("#accountDropDownBox").dxDropDownBox("instance");
+		return dropDown.option("value") ? [dropDown.option("value")] : [];
 	}
 </script>
 

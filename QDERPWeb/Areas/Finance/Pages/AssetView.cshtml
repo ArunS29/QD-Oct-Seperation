@@ -102,15 +102,15 @@
                 .LoadAction("GetAssetView"))
                 .Columns(columns =>
                 {
-                    columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('AccountGroup')")).GroupIndex(0);
-                    columns.Add().DataField("AccountID").Visible(true);
+                    @* columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('AccountGroup')")).GroupIndex(0); *@
+                   @*  columns.Add().DataField("AccountID").Visible(true); *@
                     columns.Add().Caption(new JS("formatMessage('AssetDetails')")).Columns(group =>
                     {
                         group.Add().DataField("AccountID").Caption(new JS("formatMessage('AssetLedgerNo')"));
                         group.Add().DataField("AccountHead").Caption(new JS("formatMessage('AccountHead')"));
                         group.Add().DataField("AssetDescription").Caption(new JS("formatMessage('AssetDescription')"));
                         group.Add().DataField("Specifications").Caption(new JS("formatMessage('Specifications')"));
-                        group.Add().DataField("AccountGroup").Caption(new JS("formatMessage('AccountGroup')"));
+                        group.Add().DataField("AccountGroup").Caption(new JS("formatMessage('AccountGroup')")).GroupIndex(0);;
                         group.Add().DataField("PropertyNo").Caption(new JS("formatMessage('PropertyNo')"));
 
                     });
@@ -155,7 +155,8 @@
                         group.Add().DataField("Model").Caption(new JS("formatMessage('Model')"));
                         group.Add().DataField("Year").Caption(new JS("formatMessage('Year')"));
                         group.Add().DataField("Ownership").Caption(new JS("formatMessage('Ownership')"));
-                        group.Add().DataField("PurchaseDate").Caption(new JS("formatMessage('PurchaseDate')"));
+                group.Add().DataField("PurchaseDate").Caption(new JS("formatMessage('PurchaseDate')")).DataType(GridColumnDataType.Date)
+            .Format("dd-MMM-yyyy"); 
                         group.Add().DataField("ValueOfProperty").Caption(new JS("formatMessage('PurchasedValue')")).Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
                         group.Add().DataField("PurchasedAs").Caption(new JS("formatMessage('PurchasedAs')"));
                     });
@@ -333,6 +334,9 @@
                 .Grouping(grouping => grouping.AutoExpandAll(true))
                 .GroupPanel(groupPanel => groupPanel.Visible(false))
                 .ShowBorders(true)
+                .OnInitialized("onGridInitialized")
+                .OnOptionChanged("onGridOptionChanged")
+
                 .Width("100%")
                 )
         </div>
@@ -466,7 +470,7 @@
             onSelectionChanged: function (e) {
                 const selectedRows = e.selectedRowsData;
                 if (selectedRows.length > 0) {
-                    selectedVoucherId = selectedRows[0].AssetLedgerNo;
+                    selectedVoucherId = selectedRows[0].AccountID;
                 } else {
                     selectedVoucherId = null;
                 }
@@ -506,6 +510,33 @@
 
 
         });
+    }
+    function applyShowWhenGroupedToAllGroupedColumns(grid) {
+        const columns = grid.getVisibleColumns();
+
+        // Recursive function to handle nested columns
+        function processColumns(cols) {
+            cols.forEach((col) => {
+                if (col.columns) {
+                    processColumns(col.columns);
+                } else if (col.groupIndex >= 0 && col.showWhenGrouped !== true) {
+                    grid.columnOption(col.dataField, "showWhenGrouped", true);
+                }
+            });
+        }
+
+        processColumns(columns);
+    }
+
+    function onGridInitialized(e) {
+        applyShowWhenGroupedToAllGroupedColumns(e.component);
+    }
+
+    function onGridOptionChanged(e) {
+        if (e.fullName?.startsWith("columns") && e.fullName.endsWith("groupIndex")) {
+            const grid = e.component;
+            applyShowWhenGroupedToAllGroupedColumns(grid);
+        }
     }
 </script>
 

@@ -18,16 +18,17 @@
 <!-- Total Outstanding Cards -->
 <div class="dx-card-container">
     <!-- Total Client Outstanding Card -->
-    <div class="dx-card" id="clientcard">
+    <div class="Popupcard" id="clientcard">
         <div class="dx-card-header">
             <div id="TotalClientOutstanding" class="no-border-input"></div>
         </div>
         <div class="dx-card-content">
             <div id="totalClientOutstandingValue" class="total-value"></div>
+
         </div>
     </div>
     <!-- New Cash Balance Card -->
-    <div class="dx-card" id="DashboardBankAccount">
+    <div class="Popupcard" id="DashboardBankAccount">
         <div class="dx-card-header">
             <div id="TotalCashBalance" class="no-border-input"></div>
         </div>
@@ -37,7 +38,7 @@
     </div>
 
     <!-- Total Bills Outstanding Card -->
-    <div class="dx-card" id="SupplierCard">
+    <div class="Popupcard" id="SupplierCard">
         <div class="dx-card-header">
             <div id="TotalSupplierOutstanding" class="no-border-input"></div>
         </div>
@@ -1057,15 +1058,22 @@
         gap: 20px;
         padding: 1em;
     }
+    .Popupcard:hover {
+        box-shadow: 0px 0px 10px 2px var(--title-background-color);
+        transform: translateY(-5px);
+        cursor: pointer;
+        background-color: #f9fbff;
+    }
 
-
-    .dx-card {
+    .Popupcard {
         display: inline-block;
         padding: 20px;
-        background: #f5f5f5;
+        background: var(--background-color);
         border-radius: 10px;
-        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        box-shadow: 5px 5px 5px 5px var(--title-background-color);
         text-align: center;
+        transition: transform 0.2s ease, box-shadow 0.3s ease;
+        cursor: pointer;
     }
 
     .dx-card-header {

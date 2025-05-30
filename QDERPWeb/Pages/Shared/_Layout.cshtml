@@ -1463,11 +1463,23 @@
             </main>
         </div>
     </div>
-    <footer class="text-center py-3 footerContainer" style="display:flex;">
-        <p id="footerMessage1" style="font-weight:bold;"></p>
-        <p> &copy; @DateTime.Now.Year Pulse InfoTech. </p>
-        <p id="footerMessage2"></p>
-  </footer>
+    <footer class="text-center py-3 footerContainer" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:1em;">
+            <div>
+                <span class="me-3">User ID:  <b>@userId</b></span>
+                <span class="me-3">User Name: <b>@userName</b> </span>
+                <span class="me-3">Level: <span id="userLevel" style="font-weight: bold;">Loading...</span></span>
+                <span class="me-3"><b>@DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</b></span>
+            </div>
+            <div style="display:flex;">
+                <p id="footerMessage1" style="font-weight: bold;"></p>
+                <p>&copy; @DateTime.Now.Year Pulse InfoTech.</p>
+                <p id="footerMessage2"></p>
+            </div>
+        </div>
+    </footer>
+
+
 
     <script src="~/js/localization.js" asp-append-version="true"></script>
     <script src="~/js/popup.js" asp-append-version="true"></script>
@@ -1497,6 +1509,7 @@
     </div>
 
     <script>
+ 
         document.addEventListener("DOMContentLoaded", function () {
             const humanResourcesIcon = document.getElementById("humanResourcesIcon");
             if (humanResourcesIcon) {
@@ -1539,6 +1552,24 @@
                 humanResourcesIcon.setAttribute("data-tooltip", formatMessage("Projects Control"));
             }
         });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch('/api/utility/CheckUserLevel')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('userLevel').innerText = data.userLevel;
+                    } else {
+                        document.getElementById('userLevel').innerText = "N/A";
+                        console.warn("User level not available.");
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('userLevel').innerText = "Error";
+                    console.error("Error fetching user level:", error);
+                });
+        });
+
         $(function () {
             $("#BillsReceivableAll").dxTextBox({
                 text: formatMessage("Bills Receivable (All)"),

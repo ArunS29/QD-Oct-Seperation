@@ -336,9 +336,12 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 						g.ItemPartNo,
 						g.CostPrice,
 						g.GssellingRate,
-						g.ReorderQty
+						g.ReorderQty,
+						g.StoreCode,
+						g.MaxQty,
+						g.MinQty
 
-					})
+                    })
 					.ToListAsync();
 
 					return Ok(result);
@@ -1416,9 +1419,9 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                         bool IsCashOrBankAccount = false;
 
                         // 🔁 Call the stored procedure sp201_62InsertVATtoVoucher
-                        var result = dbContext.Database.ExecuteSqlRaw("EXEC sp201_62InsertVATtoVoucher @p0,@p1,@p2,@p3", InvoiceNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc, IsCashOrBankAccount);
+                        //var result = dbContext.Database.ExecuteSqlRaw("EXEC sp201_62InsertVATtoVoucher @p0,@p1,@p2,@p3", InvoiceNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc, IsCashOrBankAccount);
 
-                        //   var result1 = dbContext.Database.ExecuteSqlRaw("EXEC sp201_62InsertVATtoVoucher_BHD @p0,@p1,@p2,@p3", InvoiceNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc, IsCashOrBankAccount);
+                        var result1 = dbContext.Database.ExecuteSqlRaw("EXEC sp201_62InsertVATtoVoucher_BHD @p0,@p1,@p2,@p3", InvoiceNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc, IsCashOrBankAccount);
 
                         dbContext.SaveChanges();
 						IsDirect = true;
@@ -2106,18 +2109,78 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
         }
 
 
-        [HttpPost]
-		public async Task<ActionResult> CreditPostInvoice(string CreditNoteNo, bool IsDirect)
+		//[HttpPost]
+		//public async Task<ActionResult> CreditPostInvoice(string CreditNoteNo, bool IsDirectApproval)
+		//{
+		//	if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+		//	{
+		//		try
+		//		{
+		//			var UserName = HttpContext.Session.GetString("UserName");
+
+		//			if (string.IsNullOrEmpty(CreditNoteNo))
+		//			{
+		//				return BadRequest(new { Message = "Credit number is required." });
+		//			}
+
+		//			var voucher = dbContext.Tbl20170VatcreditNoteMasters.FirstOrDefault(v => v.CreditNoteNo == CreditNoteNo);
+
+		//			if (voucher == null)
+		//			{
+		//				return NotFound(new { Message = "CreditNoteNo not found." });
+		//			}
+
+		//			// Update the fields
+		//			voucher.IsPosted = true;
+		//			voucher.PostedOn = DateTime.Now;
+		//			voucher.PostedBy = UserName;
+
+		//			int JustAddedVoucherEntryNoSubLedger = 0;
+		//			int JustAddedVoucherEntryNoCostAlloc = 0;
+
+		//			// 🔁 Call the stored procedure sp201_62InsertVATtoVoucher
+		//			// var result = dbContext.Database.ExecuteSqlRaw("EXEC sp201_82InsertVATCreditNotetoVoucher @p0,@p1,@p2", CreditNoteNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc);
+
+		//			var result = dbContext.Database.ExecuteSqlRaw("EXEC sp201_82InsertVATCreditNotetoVoucher_BHD @p0,@p1,@p2", CreditNoteNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc);
+
+
+		//			//   var result1 = dbContext.Database.ExecuteSqlRaw("EXEC  sp201_82InsertVATCreditNotetoVoucher_BHD @p0,@p1,@p2,@p3", InvoiceNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc, IsCashOrBankAccount);
+
+
+
+		//			dbContext.SaveChanges();
+
+		//			return Ok(new
+		//			{
+		//				Message = "Invoice posted successfully.",
+		//				VoucherVerifiedBy = UserName,  // Example, replace with actual data if needed
+		//											   //VoucherVerifiedOn = voucher.VoucherApprovedOn.ToString("dd-MMM-yyyy")
+		//			});
+		//		}
+		//		catch (Exception ex)
+		//		{
+		//			return BadRequest(new { Message = ex.Message });
+		//		}
+		//	}
+		//	return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+		//}
+
+
+		[HttpPost]
+		public async Task<ActionResult> CreditPostInvoice(string CreditNoteNo, bool IsDirectApproval)
 		{
 			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
 			{
 				try
 				{
+					bool IsDirect = false;
+
 					var UserName = HttpContext.Session.GetString("UserName");
 
 					if (string.IsNullOrEmpty(CreditNoteNo))
 					{
-						return BadRequest(new { Message = "Credit number is required." });
+						return BadRequest(new { Message = "CreditNoteNo is required." });
 					}
 
 					var voucher = dbContext.Tbl20170VatcreditNoteMasters.FirstOrDefault(v => v.CreditNoteNo == CreditNoteNo);
@@ -2136,22 +2199,26 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 					int JustAddedVoucherEntryNoCostAlloc = 0;
 
 					// 🔁 Call the stored procedure sp201_62InsertVATtoVoucher
-					// var result = dbContext.Database.ExecuteSqlRaw("EXEC sp201_82InsertVATCreditNotetoVoucher @p0,@p1,@p2", CreditNoteNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc);
+					//var result = dbContext.Database.ExecuteSqlRaw("EXEC sp201_62InsertVATtoVoucher @p0,@p1,@p2,@p3", InvoiceNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc, IsCashOrBankAccount);
 
-					var result = dbContext.Database.ExecuteSqlRaw("EXEC sp201_82InsertVATCreditNotetoVoucher_BHD @p0,@p1,@p2", CreditNoteNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc);
-
-
-					//   var result1 = dbContext.Database.ExecuteSqlRaw("EXEC  sp201_82InsertVATCreditNotetoVoucher_BHD @p0,@p1,@p2,@p3", InvoiceNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc, IsCashOrBankAccount);
-
-
+					var result1 = dbContext.Database.ExecuteSqlRaw("EXEC sp201_82InsertVATCreditNotetoVoucher_BHD @p0,@p1,@p2", CreditNoteNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc);
 
 					dbContext.SaveChanges();
+					IsDirect = true;
+
+					if (IsDirectApproval == true)
+					{
+						IsDirect = false;
+					}
+
 
 					return Ok(new
 					{
 						Message = "Invoice posted successfully.",
-						VoucherVerifiedBy = UserName,  // Example, replace with actual data if needed
-													   //VoucherVerifiedOn = voucher.VoucherApprovedOn.ToString("dd-MMM-yyyy")
+						VoucherVerifiedBy = UserName,
+						IsDirect = IsDirect
+						// Example, replace with actual data if needed
+						//VoucherVerifiedOn = voucher.VoucherApprovedOn.ToString("dd-MMM-yyyy")
 					});
 				}
 				catch (Exception ex)
@@ -2162,6 +2229,8 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 			return Unauthorized(new { message = "Invalid tenant.", success = false });
 
 		}
+
+
 		[HttpGet]
 		public async Task<IActionResult> GetSupplierCode(DataSourceLoadOptions loadOptions)
 		{
@@ -3099,14 +3168,14 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
 
 		[HttpGet]
-		public async Task<IActionResult> GetPurchaseVoucher(string accheadid)
+		public async Task<IActionResult> GetPurchaseVoucher(string supplierid)
 		{
 			try
 			{
 				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
 				{
-					var result = dbContext.Qry20179PurchaseBillsWithBalance02s
-	 .Where(p => p.SupplierCode == accheadid)
+					var result = dbContext.Qry20179PurchaseBillsWithBalances
+     .Where(p => p.SupplierCode == supplierid)
 	 .Select(p => new
 	 {
 		 p.PurchaseVoucherNo,
@@ -3334,66 +3403,71 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
 
         private string GetNewDebitNoteNo(string invoiceAbbrv, int yearInDigit, DateTime invoiceDate, bool isResetByYear, ERPMasterWtDataContext dbContext)
-		{
-			try
-			{
-				int maxRunningNumber = 0;
+        {
+            try
+            {
+                int maxRunningNumber = 0;
 
-				if (isResetByYear)
-				{
-					maxRunningNumber = dbContext.Tbl20172VatdebitNoteMasters
-						.Where(d => d.DebitNoteDate.HasValue && d.DebitNoteDate.Value.Year == invoiceDate.Year)
-						.Select(d => d.DebitNoteNo)
-						.Where(no => no != null && no.Length >= 6)
-						.Select(no => Convert.ToInt32(no.Substring(no.Length - 6)))
-						.DefaultIfEmpty(0)
-						.Max();
-				}
-				else
-				{
-					maxRunningNumber = dbContext.Tbl20172VatdebitNoteMasters
-						.Select(d => d.DebitNoteNo)
-						.Where(no => no != null && no.Length >= 6)
-						.Select(no => Convert.ToInt32(no.Substring(no.Length - 6)))
-						.DefaultIfEmpty(0)
-						.Max();
-				}
+                IEnumerable<string> debitNoteNumbers;
 
-				maxRunningNumber += 1;
+                if (isResetByYear)
+                {
+                    debitNoteNumbers = dbContext.Tbl20172VatdebitNoteMasters
+                        .Where(d => d.DebitNoteDate.HasValue && d.DebitNoteDate.Value.Year == invoiceDate.Year)
+                        .Select(d => d.DebitNoteNo)
+                        .AsEnumerable(); // Force client-side evaluation
+                }
+                else
+                {
+                    debitNoteNumbers = dbContext.Tbl20172VatdebitNoteMasters
+                        .Select(d => d.DebitNoteNo)
+                        .AsEnumerable(); // Force client-side evaluation
+                }
 
-				string strNewDebitNoteNo = "000000" + maxRunningNumber.ToString();
-				strNewDebitNoteNo = strNewDebitNoteNo.Substring(strNewDebitNoteNo.Length - 6);
+                maxRunningNumber = debitNoteNumbers
+                    .Where(no => !string.IsNullOrEmpty(no) && no.Length >= 6)
+                    .Select(no =>
+                    {
+                        bool parsed = int.TryParse(no.Substring(no.Length - 6), out int number);
+                        return parsed ? number : 0;
+                    })
+                    .DefaultIfEmpty(0)
+                    .Max();
 
-				string strYear = invoiceDate.Year.ToString();
-				if (yearInDigit > 0)
-				{
-					strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
-				}
-				else
-				{
-					strYear = "";
-				}
+                maxRunningNumber += 1;
 
-				return $"DBN-{strYear}-{strNewDebitNoteNo}";
+                string strNewDebitNoteNo = "000000" + maxRunningNumber;
+                strNewDebitNoteNo = strNewDebitNoteNo.Substring(strNewDebitNoteNo.Length - 6);
 
-			}
-			catch (Exception)
-			{
-				string strYear = invoiceDate.Year.ToString();
-				if (yearInDigit > 0)
-				{
-					strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
-				}
-				else
-				{
-					strYear = "";
-				}
+                string strYear = invoiceDate.Year.ToString();
+                if (yearInDigit > 0)
+                {
+                    strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
+                }
+                else
+                {
+                    strYear = "";
+                }
 
-				return $"DBN-{strYear}-000001";
-			}
-		}
+                return $"DBN-{strYear}-{strNewDebitNoteNo}";
+            }
+            catch (Exception)
+            {
+                string strYear = invoiceDate.Year.ToString();
+                if (yearInDigit > 0)
+                {
+                    strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
+                }
+                else
+                {
+                    strYear = "";
+                }
 
-		[HttpGet]
+                return $"DBN-{strYear}-000001";
+            }
+        }
+
+        [HttpGet]
 		public ActionResult<string> GetVATProformaInvoiceNo()
 		{
 			try

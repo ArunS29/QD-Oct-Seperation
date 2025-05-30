@@ -672,7 +672,8 @@
 														.Icon("link")// Display text
 														.StylingMode(ButtonStylingMode.Text)   // Makes it look like a hyperlink
 														.Type(ButtonType.Normal)
-														.OnClick("onLinkClick"))
+														//.OnClick("onLinkClick")
+														)
 						</td>
 							</tr>
 
@@ -3984,8 +3985,6 @@
 				if (selectedRowData.length > 0) {
 							revaccheadid = selectedRowData[0].AccountId;
 
-
-
 				} else {
 					DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
 					return;
@@ -5516,8 +5515,8 @@
 		// 	InvoiceEffectiveDate:$("#EffectiveDate").dxDateBox("instance").option("value")|| null,
 		// 	InvoiceStartDate: $("#InvoiceStartDate").dxDateBox("instance").option("value")|| null,
 		// 	InvoiceEndDate:$("#InvoiceEndDate").dxDateBox("instance").option("value")|| null,
-		// 	RevenueAccount:revaccheadid|| null,
-		// 	CostCenterCode: $("#ddlGoodsGroup1").dxDropDownBox("instance").option("value")|| null,
+		PurchaseLedgerAccountNo:revaccheadid|| null,
+		CostCenterCode: $("#ddlGoodsGroup1").dxDropDownBox("instance").option("value")|| null,
 		// 	RemarksInEn: $("#txtInvoiceNotes").dxTextArea("instance").option("value")|| null,
 		// 	RemarksInAr: $("#txtNotesinArabic").dxTextArea("instance").option("value")|| null,
 

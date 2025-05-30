@@ -1,5 +1,30 @@
 ﻿var dictionary = {
     "en": {
+
+        "PropertyOrEquipment": "PropertyOrEquipment",
+        "EmployeeName": "EmployeeName",
+        "UnitCostPrice": "UnitCostPrice",
+        "UnitRate Method": "UnitRate Method",
+        "Stock Description": "Stock Description",
+
+        "QuoteChildId":"QuoteChildId",
+
+        "Tax Slab": "Tax Slab",
+        "Unit Cost Price": "Unit Cost Price",
+        "Quoted Discount": "Quoted Discount",
+        "Unit price": "Unit price",
+        "VAT Desc": "VAT Desc",
+        "VAT": "VAT",
+        "Total": "Total",
+        "Total Cost": "Total Cost",
+        "Profit or Loss": "Profit or Loss",
+        "MinSelling Price": "MinSelling Price",
+        "MaxSellingPrice": "MaxSellingPrice",
+        "RFQ with Item Details": "RFQ with Item Details",
+        "Material Request Revised History": "Material Request Revised History",
+        "RfqchildSlNo": "RfqchildSlNo",
+        "Item Discount": "Item Discount",
+        "Net Total": "Net Total",
         "Preview Journal EntryForm": "Preview Journal EntryForm",
         "Preview Journal EntryForm(with Employee Cost)": "Preview Journal EntryForm(with Employee Cost)",
         "Edit Posted Voucher": "Edit Posted Voucher",
@@ -4684,7 +4709,23 @@
         "Requested Name Ref": "المرجع باسم الطالب",
         "Request Enquiry": "استعلام الطلب",
         "Type Of Request": "نوع الطلب",
-        "Material Request Revised History": "سجل تعديل طلب المواد"
+        "Material Request Revised History": "سجل تعديل طلب المواد",
+        "RfqchildSlNo": "رقم تسلسل طلب عرض الأسعار",
+        "Item Discount": "خصم الصنف",
+        "Net Total": "الإجمالي الصافي",
+        "Tax Slab": "شريحة ضريبية",
+        "Unit Cost Price": "سعر تكلفة الوحدة",
+        "Quoted Discount": "الخصم المقتبس",
+        "Unit Price": "سعر الوحدة",
+        "VAT Desc": "وصف ضريبة القيمة المضافة",
+        "VAT": "ضريبة القيمة المضافة",
+        "Total": "الإجمالي",
+        "Total Cost": "التكلفة الإجمالية",
+        "Profit or Loss": "الربح أو الخسارة",
+        "MinSelling Price": "الحد الأدنى لسعر البيع",
+        "MaxSellingPrice": "الحد الأقصى لسعر البيع",
+        "RFQ with Item Details": "طلب عرض أسعار مع تفاصيل العناصر",
+        "QuoteChildId": "معرف البند الفرعي للعرض"
     }
 };
 

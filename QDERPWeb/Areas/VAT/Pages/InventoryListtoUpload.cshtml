@@ -9,177 +9,12 @@
 <script src="https://cdn3.devexpress.com/jslib/23.2.4/js/dx.all.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
-	.overlay {
-		display: none;
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background: rgba(0, 0, 0, 0.5);
-		z-index: 1000;
-	}
-
 	.limited-footer .btn-container:not(:has(#btnBack,#btnPastefromExcel,#btnUploadItems)) {
 		display: none !important;
 	}
-	.btnplus{
-		align-content:end;
-		border-radius: 50% !important;
-
+	.mainContainer{
+		width:100%;
 	}
-	.overlay-content {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		width: 100%;
-		height: 80%;
-		background: #fff;
-		box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-		border-radius: 8px;
-		overflow: hidden;
-	}
-
-	#overlay-frame {
-		width: 100%;
-		height: 100%;
-	}
-
-	.dx-datagrid-headers {
-		border: 1px solid #686868 !important;
-	}
-
-		.dx-datagrid-headers .dx-row > td {
-			border: 1px solid #686868 !important;
-			text-align: center !important;
-		}
-
-	.dx-datagrid .dx-header-row .dx-datagrid-text-content {
-		font-size: 12px !important;
-		white-space: normal !important;
-		text-align: center !important;
-		font-weight: bold;
-		color: black;
-	}
-
-	.close-btn {
-		position: absolute;
-		top: 10px;
-		right: 20px;
-		font-size: 30px;
-		cursor: pointer;
-	}
-
-	.custom-toolbar {
-		display: flex;
-		align-items: center;
-		gap: 10px;
-	}
-
-	.filter-btn {
-		background-color: #007bff;
-		color: white;
-		border: none;
-		padding: 6px 12px;
-		border-radius: 5px;
-		cursor: pointer;
-		font-family: 'Inter', sans-serif;
-	}
-
-		.filter-btn:hover {
-			background-color: #0056b3;
-		}
-
-	.dx-texteditor {
-		background-color: transparent !important;
-		border: 1px solid #d6e4f0 !important;
-		border-radius: 4px !important;
-		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
-		font-size: 14px !important;
-		transition: all 0.2s ease-in-out !important;
-		height: 39px !important;
-	}
-
-		.dx-texteditor:hover,
-		.dx-texteditor.dx-state-hover,
-		.dx-button:hover {
-			box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important;
-			border-color: #86b7fe !important;
-		}
-
-		.dx-texteditor.dx-state-focused {
-			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
-			border-color: #508ae1 !important;
-		}
-
-	.no-border-input {
-		border: none !important;
-		outline: none !important;
-		box-shadow: none !important;
-		background: transparent !important;
-		font-weight: bold;
-		font-size: 16px;
-		color: black;
-		pointer-events: none;
-	}
-
-	.context-menu {
-		position: absolute;
-		background: #fff;
-		border-radius: 8px;
-		box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-		width: 200px;
-		display: none;
-		flex-direction: column;
-		padding: 5px 0;
-		z-index: 1000;
-	}
-
-	.context-menu-item {
-		display: flex;
-		align-items: center;
-		padding: 10px 15px;
-		font-size: 14px;
-		cursor: pointer;
-		transition: background 0.2s ease-in-out;
-		color: #333;
-	}
-
-		.context-menu-item i {
-			margin-right: 10px;
-			font-size: 16px;
-			color: #007bff;
-		}
-
-		.context-menu-item:hover {
-			background: #f0f0f0;
-		}
-
-		.context-menu-item:not(:last-child) {
-			border-bottom: 1px solid #e0e0e0;
-		}
-		.container {
-		display: none !important;
-	}
-
-	.frame {
-		display: none !important;
-	}
-
-	.footerContainer {
-		display: none !important;
-	}
-
-	.bodyContainer {
-		display: flex;
-		justify-content: center;
-	}
-
-	.mainContainer {
-		margin-top: 1em;
-	}
-
 </style>
 
 <div class="title">
@@ -262,154 +97,10 @@
 		)
 
 
-	@* 	@(Html.DevExtreme().DropDownButton()
-		.ID("ddBtnShowRecords")
-		.Text(new JS("formatMessage('Show Records')"))
-		.Icon("smalliconslayout")
-		.Width(180)
-		.ElementAttr("class", "button-alignment-down")
-		.TabIndex(4)
-		.DropDownOptions(options => options.Width(230))
-		.Items(items =>
-		{
-			items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
-			items.Add().Text(new JS("formatMessage('Today')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
-			items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-			items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
-			items.Add().Text(new JS("formatMessage('This Month Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-			items.Add().Text(new JS("formatMessage('This Month (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-			items.Add().Text(new JS("formatMessage('This Year Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-			items.Add().Text(new JS("formatMessage('This Year (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-			items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-			items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
-		})
-		) *@
-
 </div>
 <div class="dx-field ledgerResult">
-	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201617vatinvoiceInDetail>()
-		.ID("dataGrid")
-		.RemoteOperations(false)
-		.DataSource(new JS("[]"))
-		.Columns(columns =>
-		{
-			columns.Add().Caption(new JS("formatMessage('Stock Details')")).Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.InvoiceNo).Caption(new JS("formatMessage('Sl No')")).Alignment(HorizontalAlignment.Center);
-				subColumns.AddFor(m => m.InvoiceNo).Caption(new JS("formatMessage('GS Code')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.InvoiceDate).Caption(new JS("formatMessage('GS Description')")).Alignment(HorizontalAlignment.Center).Format("dd - MMM - yyyy").Visible(true);
-				subColumns.AddFor(m => m.ClientName).Caption(new JS("formatMessage('GSUoM')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.UnitDesc).Caption(new JS("formatMessage('Quantity')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.QuantityInvoiced).Caption(new JS("formatMessage('Unit Price')")).Alignment(HorizontalAlignment.Right).Visible(true);
-				subColumns.AddFor(m => m.UnitRate).Caption(new JS("formatMessage('Plan No')")).Alignment(HorizontalAlignment.Right).Visible(true);
-				subColumns.AddFor(m => m.AmountBeforeDiscount).Caption(new JS("formatMessage('Manufacturer')")).Alignment(HorizontalAlignment.Right).Visible(true);
-				subColumns.AddFor(m => m.Discount).Caption(new JS("formatMessage('Delivery Period')")).Alignment(HorizontalAlignment.Right).Visible(true);
-				subColumns.AddFor(m => m.AmountAfterDiscount).Caption(new JS("formatMessage('Remarks')")).Alignment(HorizontalAlignment.Right).Visible(true);
-				subColumns.AddFor(m => m.VatAmount).Caption(new JS("formatMessage('GS Uom Description')")).Alignment(HorizontalAlignment.Right).Visible(true);
-				subColumns.AddFor(m => m.Total).Caption(new JS("formatMessage('Item Size')")).Alignment(HorizontalAlignment.Right).Visible(true);
-				subColumns.AddFor(m => m.Total).Caption(new JS("formatMessage('Item Part No')")).Alignment(HorizontalAlignment.Right).Visible(true);
-				subColumns.AddFor(m => m.Total).Caption(new JS("formatMessage('Item Brand')")).Alignment(HorizontalAlignment.Right).Visible(true);
-				subColumns.AddFor(m => m.Total).Caption(new JS("formatMessage('Item Color')")).Alignment(HorizontalAlignment.Right).Visible(true);
-				subColumns.AddFor(m => m.Total).Caption(new JS("formatMessage('Item Description')")).Alignment(HorizontalAlignment.Right).Visible(true);
-				subColumns.AddFor(m => m.Total).Caption(new JS("formatMessage('Item Thickness')")).Alignment(HorizontalAlignment.Right).Visible(true);
-				subColumns.AddFor(m => m.Total).Caption(new JS("formatMessage('GS Description Ar')")).Alignment(HorizontalAlignment.Right).Visible(true);
-			});
-
-
-		})
-		.Editing(editing => editing
-		.Mode(GridEditMode.Row)
-		@* .AllowUpdating(true) *@
-		)
-
-		@* 	.OnCellClick("function(e) {handleCellClick(e);}") *@
-		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
-		.AllowColumnReordering(true)
-		.AllowColumnResizing(true)
-		.ColumnFixing(fixing => fixing.Enabled(true))
-		.HeaderFilter(filter => filter.Visible(false))
-		.Height(500)
-		.FilterRow(filterRow => filterRow.Visible(false))
-		.GroupPanel(groupPanel => groupPanel.Visible(false))
-		.ShowBorders(true)
-		.ShowRowLines(true)
-		.Width("100%")
-
-
-		.Summary(summary =>
-		{
-			summary.GroupItems(items =>
-			{
-				items.Add()
-			.Column("Gsdescrpition")
-			.SummaryType(SummaryType.Count)
-			.ShowInGroupFooter(true);
-				@* .CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"); *@
-
-				@* items.Add()
-			.Column("QuantityInvoiced")
-			.SummaryType(SummaryType.Sum)
-			.ShowInGroupFooter(true)
-			.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
- *@
-				items.Add()
-		.Column("Discount")
-		.SummaryType(SummaryType.Sum)
-		.ShowInGroupFooter(true)
-		.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				items.Add()
-	.Column("VatAmount")
-	.SummaryType(SummaryType.Sum)
-	.ShowInGroupFooter(true)
-	.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				items.Add()
-	.Column("Total")
-	.SummaryType(SummaryType.Sum)
-	.ShowInGroupFooter(true)
-	.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-			});
-
-			summary.TotalItems(items =>
-			{
-				items.Add()
-			.Column("Gsdescrpition")
-			.SummaryType(SummaryType.Count);
-				@* .CustomizeText(@"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"); *@
-
-				@* items.Add()
-			.Column("QuantityInvoiced")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText(@"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
- *@
-				items.Add()
-		.Column("Discount")
-		.SummaryType(SummaryType.Sum)
-		.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				items.Add()
-	.Column("VatAmount")
-	.SummaryType(SummaryType.Sum)
-	.CustomizeText(@"function(e) { return   e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				items.Add()
-	.Column("Total")
-	.SummaryType(SummaryType.Sum)
-	.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-			});
-		})
-
-
-		.StateStoring(stateStoring =>
-		{
-			stateStoring
-			.Enabled(true)
-			.Type(StateStoringType.LocalStorage)
-			.StorageKey("gridContainerState");
-		})
-		.OnInitialized("function(e) { loadGridState(); }")
-		)
+	<div id="gridContainer" style="margin-top: 20px;"></div>
+	
 </div>
 <input style="display:none;" type="file" id="excel-file" accept=".xlsx, .xls" />
 <div>
@@ -458,7 +149,6 @@
 			$("#InventoryListtoUpload").dxTextBox({
 				text: formatMessage("Inventory List to Upload"),
 				readOnly: true,
-				width: "600px",
 				onContentReady: function (e) {
 				$(e.element).addClass("dx-textbox-heading");
 			}
@@ -551,7 +241,7 @@
 				const jsonData = XLSX.utils.sheet_to_json(firstSheet, { defval: '' });
 
 				if (!dataGrid) {
-					dataGrid = $("#dataGrid").dxDataGrid({
+					dataGrid = $("#gridContainer").dxDataGrid({
 						dataSource: jsonData,
 						columnsAutoWidth: true,
 						showBorders: true,
