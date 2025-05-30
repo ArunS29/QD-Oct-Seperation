@@ -81,14 +81,14 @@
         color: black;
     }
 </style>
-<input id="formId" value="frn20107ExpenseClaimView" type="hidden" />
+<input id="formId" value="frm20107ExpenseClaimView" type="hidden" />
 <div class="title">
     <div class="header-container">
         <div id="ExpensesClaims" class="no-border-input"></div>
     </div>
 </div>
 <div>
-    @await Html.PartialAsync("_GridFooter", new ViewDataDictionary(ViewData) { { "HideDropdowns", true } })
+    @await Html.PartialAsync("_ExpenseClaimFooter")
 </div>
 
 <div class="content-container-top">
@@ -168,6 +168,7 @@
             .Value(DateTime.Now)
             )
         @(Html.DevExtreme().Button()
+            .ID("ExpenseSubmission")
             .Text(new JS("formatMessage('Show all Submissions')"))
             .Type(ButtonType.Normal)
             .StylingMode(ButtonStylingMode.Contained)

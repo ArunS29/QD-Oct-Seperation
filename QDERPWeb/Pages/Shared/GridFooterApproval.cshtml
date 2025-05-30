@@ -258,7 +258,7 @@
         $(document).ready(function () {
             console.log('Start permission handling');
             // Form ID
-            var formId = "frm201LedgerView";
+            var formId = "VoucherApproval";
 
             // Call the API to get permissions
             $.ajax({
@@ -271,18 +271,15 @@
                     if (response.success && response.permissions) {
                         // Default visibility and enable status for buttons
                         var controlStates = {
-                            "btnShowRecords": { "Visible": false, "Enabled": false },
-                            "btnPrint": { "Visible": false, "Enabled": false },
-                            "btnSearch": { "Visible": false, "Enabled": false },
-                            "ddButtonLayout": { "Visible": false, "Enabled": false },
-                            "btnToggleSearch": { "Visible": false, "Enabled": false },
-                            "btntoggleGroupPanel": { "Visible": false, "Enabled": false },
-                            "btnToggleHeaderFilter": { "Visible": false, "Enabled": false },
-                            "btnColumnChooser": { "Visible": false, "Enabled": false },
-                            "ddButtonReceipts": { "Visible": false, "Enabled": false },
-                            "ddButtonPayment": { "Visible": false, "Enabled": false },
-                            "ddOtherVouchers": { "Visible": false, "Enabled": false },
-                            "ddReports": { "Visible": false, "Enabled": false }
+                        "ddBtnShowRecords": { "Visible": false, "Enabled": false },
+                        "btnRefresh": { "Visible": false, "Enabled": false },
+                        "ddButtonLayout": { "Visible": false, "Enabled": false },
+                        "btnPrint": { "Visible": false, "Enabled": false },
+                        "btnToggleSearch": { "Visible": false, "Enabled": false },
+                        "btntoggleGroupPanel": { "Visible": false, "Enabled": false },
+                        "btnToggleHeaderFilter": { "Visible": false, "Enabled": false },
+                        "btnColumnChooser": { "Visible": false, "Enabled": false },
+                        "ddButtonVouchers": { "Visible": false, "Enabled": false }
                         };
 
 
@@ -309,8 +306,29 @@
                                     };
                                 }
                             });
-                        }
 
+                        }
+                    var restrictedMenuItems = [
+                        { text: "Delete Vouchers", permissionSuffix: "DeleteVouchers" },
+                        { text: "Verify All Selected Vouchers", permissionSuffix: "VerifyAllSelectedVouchers" },
+                        { text: "Approve All Selected Vouchers", permissionSuffix: "ApproveAllSelectedVouchers" },
+                        { text: "Unlock Vouchers", permissionSuffix: "UnlockVouchers" }
+                    ];
+                    const contextMenu = $("#voucherContextMenu").dxContextMenu("instance");
+                    let updatedItems = contextMenu.option("dataSource").map(menuItem => {
+                        const item = restrictedMenuItems.find(r => r.text === menuItem.text);
+                        if (item) {
+                            const permission = response.permissions.find(p =>
+                                p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + item.permissionSuffix).trim().toLowerCase()
+                            );
+
+                            if (!permission || !permission.ItemVisible) {
+                                return { ...menuItem, visible: false, disabled: true };
+                            }
+                        }
+                        return menuItem;
+                    });
+                    contextMenu.option("dataSource", updatedItems);
                         console.log("Control States:", controlStates); // Log the control states
 
                         // Dynamically update button visibility and enabled state
