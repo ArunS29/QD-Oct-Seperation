@@ -301,6 +301,15 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
+                    // Check for duplicate GsgroupCode before adding
+                    bool exists = dbContext.Tbl20165GoodsAndServicesGroups
+                        .Any(x => x.GsgroupCode == model.GsgroupCode);
+
+                    if (exists)
+                    {
+                        return BadRequest(new { message = $"GsgroupCode '{model.GsgroupCode}' already exists.", success = false });
+                    }
+
                     byte maxId = dbContext.Tbl20165GoodsAndServicesGroups
                             .Select(x => x.GsgroupId)
                             .AsEnumerable()                // Bring data to memory first
@@ -323,13 +332,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
-            _logger.LogError($"Error in GetProject: {ex.Message}");
-            return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
-
+                _logger.LogError($"Error in AddGoodsServiceGroup: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while saving the data.", error = ex.Message });
             }
         }
+
         [HttpPut]
-        public IActionResult UpdateGoodsService(int key, [FromForm] string values)
+        public IActionResult UpdateGoodsService([FromForm] int key, [FromForm] string values)
         {
             try
             {

@@ -398,6 +398,25 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             return Unauthorized(new { success = false, message = "Invalid tenant." });
         }
+        [HttpGet]
+        public IActionResult GetClientDetails(string clientCode)
+        {
+            if (string.IsNullOrEmpty(clientCode))
+                return BadRequest("Client code is required.");
+
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var client = dbContext.Tbl30101ClientMasters
+                    .FirstOrDefault(c => c.ClientCode == clientCode);
+
+                if (client == null)
+                    return NotFound("Client not found.");
+
+                return Ok(client); // This returns all client fields
+            }
+
+            return Unauthorized("Invalid tenant.");
+        }
 
     }
 }
