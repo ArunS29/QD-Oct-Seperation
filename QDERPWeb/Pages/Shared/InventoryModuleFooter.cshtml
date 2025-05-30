@@ -1,4 +1,4 @@
-﻿ <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+ <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style type="text/css">
     #dataGrid .dx-datagrid-headers .dx-datagrid-action {
         text-align: center !important;
@@ -500,7 +500,7 @@
             .Width(50)
             .Text(new JS("formatMessage('Sales Order Details')"))
             .ElementAttr(new { style = "display: none;" })
-            // .OnClick("toggleGroupPanel")
+            .OnClick("btnSalesOrderDetail")
             )
 
     </div>
@@ -1306,11 +1306,15 @@
         }
     function AddNewRFQDetails() {
         window.location.href = `/${tenantName}/IMS/RFQwithItemDetails`;
+    } 
+    
+    function btnSalesOrderDetail() {
+        window.location.href = `/${tenantName}/IMS/SalesOrdersDetails`;
     }
 
         function addPaymentButton_click(e) {
         let url = "";
-        let title = "Payments";
+        let title = "Payments"; 
 
         switch (e.itemData.text) {
            case formatMessage('New Standard Tax Invoice(B2B Invoice)'):

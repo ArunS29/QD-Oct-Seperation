@@ -152,6 +152,29 @@
 	width: 100%;
 	overflow: hidden;
 	}
+
+	/* If it's a context menu item or toolbar item */
+	.custom-delete-item {
+		color: #d32f2f !important; /* red text */
+		font-weight: 600;
+	}
+
+	/* If it's a menu item specifically inside a DevExtreme context menu */
+	.dx-menu-item.custom-delete-item {
+		color: #d32f2f !important;
+	}
+
+	/* Optional: icon inside the item */
+	.custom-delete-item .dx-icon {
+		color: #d32f2f !important;
+	}
+
+	/* Optional: hover background */
+	.custom-delete-item:hover {
+		background-color: #ffecec !important;
+	}
+
+
 </style>
 
 <input id="formId" value="frm201LedgerView" type="hidden" />
@@ -279,6 +302,7 @@
 	.FilterRow(filterRow => filterRow.Visible(false))
 	.GroupPanel(groupPanel => groupPanel.Visible(false))
 	.ShowBorders(true)
+	.OnContextMenuPreparing("onContextMenuPreparing")
 	.StateStoring(stateStoring =>
 	{
 			stateStoring
@@ -289,26 +313,6 @@
 	.OnInitialized("function(e) { loadGridState(); }")
 			)
 
-		
-	<ul id="contextMenu" class="context-menu" style="display: none;">
-		<li onclick="editCostAllocation()">
-			<i class="fas fa-edit" style="margin-right: 8px;"></i><div id="EditCostAllocation">Edit Cost Allocation</div>
-		</li>
-		<li onclick="editBillsReceivable()">
-			<i class="fas fa-file-invoice" style="margin-right: 8px;"></i><div id="EditBillReceivable">Edit Bill Receivable</div>
-		</li>
-
-		<li onclick="editEmployeeAllocation()">
-			<i class="fas fa-file-invoice" style="margin-right: 8px;"></i> <div id="EditEmployeeAllocation">Edit Employee Allocation</div>
-		</li>
-		<li onclick="editPropertyAllocation()">
-			<i class="fas fa-cogs" style="margin-right: 8px;"></i><div id="EditPropertyAllocation">Edit Property Allocation</div>
-		</li>
-
-		<li onclick="onAllRowRemoving()">
-			<i class="fas fa-trash-alt" style="margin-right: 8px;"></i> <div id="DeleteAllLineEntries">Delete All Line Entries</div>
-		</li>
-	</ul>
 
 </div>
 <div id="invoiceErrorPopup"></div>
@@ -466,6 +470,83 @@
 
 
 	}
+
+			function onContextMenuPreparing(e) {
+			if (e.target === "content" && e.row) {
+				e.items = [
+					{
+						text: "Edit Sales Order",
+						icon: "edit",
+						onItemClick: function () {
+							let Mprno = e.row.data.Mprno;
+							let tenantName = window.tenantName || "defaultTenant"; // replace with dynamic tenant logic if needed
+							let url = `/${tenantName}/IMS/AddNewSalesOrder?Mprno`;
+							let title = "";
+							openModal(url, title);
+						}
+					},
+
+						{
+		text: "Delete Sales Order",
+		icon: "trash",
+					template: function () {
+			return $("<div>")
+				.addClass("dx-item-content custom-delete-item")
+				.html('<i class="dx-icon dx-icon-trash"></i> Delete Sales Order');
+		},
+
+		//cssClass: "delete-item", // <-- Add this line
+
+		onItemClick: function () {
+			DevExpress.ui.dialog.confirm(
+				"You are about to delete the Request / Enquiry.\nYou cannot revert the changes.\nAre you sure?",
+				"Confirm Delete"
+			).done(function (dialogResult) {
+				if (dialogResult) {
+					onDeleteRequest(e.row.data.RequestRefNo);
+				}
+			});
+		}
+	},
+					{
+						text: "Unlock the Order",
+						icon: "unlock",
+						onItemClick: function () {
+							onUnlockRequest(e.row.data);
+						}
+					},
+					{
+						text: "Create Proforma Invoice",
+						icon: "plus",
+						onItemClick: function () {
+							onCreateRFQ(e.row.data);
+						}
+					},
+					{
+						text: "Create Paartial Delivery for this sales Order",
+						icon: "plus",
+						onItemClick: function () {
+							onCreateQuotation(e.row.data);
+						}
+					},
+					{
+						text: "Create full Delivery for this sales order",
+						icon: "cart",
+						onItemClick: function () {
+							onCreatePO(e.row.data);
+						}
+					},
+					{
+						text: "create invoice for this salce order",
+						icon: "box",
+						onItemClick: function () {
+							onCreateMaterialReceipt(e.row.data);
+						}
+					},
+					
+				];
+			}
+		}
 
 
 

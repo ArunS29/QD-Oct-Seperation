@@ -1,4 +1,4 @@
-@page
+﻿@page
 @model QD.ERP.Web.Areas.IMS.Pages.AddNewSalesOrderModel
 @{
 }
@@ -192,11 +192,23 @@
     .dx-card{ 
         background: var(--background-color);
     }
+
+
+    .limited-footer .btn-container:not(:has(#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove)) {
+        display: none !important;
+    }
+
 </style>
 <meta charset="UTF-8">
 <div class="title">
     <div class="header-container">
         <div id="EditsalesOrders" class="no-border-title"></div>
+    </div>
+</div>
+
+<div class="Head">
+    <div class="limited-footer">
+        @await Html.PartialAsync("InventoryModuleFooter")
     </div>
 </div>
 <div class="form-container1">
@@ -226,7 +238,7 @@
                             .ID("SalesOrderNO")
                             .Label("Sales Order NO:")
                             .LabelMode(EditorLabelMode.Outside)
-                            .ReadOnly(true)
+                            @* .ReadOnly(true) *@
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%")
                             )
@@ -236,7 +248,7 @@
                         <td>
                             @(Html.DevExtreme().DateBox()
                             .ID("SalesOrderDate")
-                            .Value(DateTime.Today)
+                            @* .Value(DateTime.Today)   *@
                             .Label("Sales Order Date")
                             .LabelMode(EditorLabelMode.Outside)
                             .StylingMode(EditorStylingMode.Outlined)
@@ -251,10 +263,10 @@
                                     .DisplayExpr("ClientName")
                                     .DataSource(ds => ds
                                     .Mvc()
-                                    .Controller("ClientLeads")
-                                    .LoadAction("Get")
+                                    .Controller("SalesOrders")
+                                    .LoadAction("GetClientNames")
                                     .LoadMode(DataSourceLoadMode.Raw)
-                                    .   Key("ClientCode")
+                                    .Key("ClientCode")
                                     )
                                     .Label("Client Name")
                                     .LabelMode(EditorLabelMode.Outside)
@@ -346,29 +358,50 @@
                         <td>
                             <div class="row g-2">
                                 <div class="col-md-4" style="display: flex; align-items: flex-end;">
-                                    @(Html.DevExtreme().SelectBox()
+                                    @(Html.DevExtreme().DropDownBox()
                                     .ID("Project")
-                                    .DataSource(new[] { "Project A", "Project B" })
                                     .Label("Project:")
+                                    .ValueExpr("ProjectId")
+                                    .DisplayExpr("ProjectDescription")
+                                    .DataSource(ds => ds
+                                    .Mvc()
+                                    .Controller("SalesOrders")
+                                    .LoadAction("GetProject")
+                                    .LoadMode(DataSourceLoadMode.Raw)
+                                    .Key("ProjectId")
+                                    )
                                     .LabelMode(EditorLabelMode.Outside)
                                     .StylingMode(EditorStylingMode.Outlined)
-                                    .Width("100%"))
+                                    .Width("100%")
+                                    .ContentTemplate(new TemplateName("ProjectDropDownTemplate"))
+                                    )
+
                                     <div style="margin-left: 5px;">
                                         @(Html.DevExtreme().Button()
                                         .ID("AddProject")
                                         .Icon("plus")
                                         .Hint("Add Project")
+                                        .OnClick("AddProject")
                                         )
                                     </div>
                                 </div>
                                 <div class="col-md-4" style="display: flex; align-items: flex-end;">
-                                    @(Html.DevExtreme().SelectBox()
+                                    @(Html.DevExtreme().DropDownBox()
                                     .ID("TypeOFSalesOrder")
-                                    .DataSource(new[] { "Type A", "Type B" })
+                                    .ValueExpr("TypeOfRequestId")
+                                    .DisplayExpr("TypeOfRequest")
+                                    .DataSource(ds => ds
+                                    .Mvc()
+                                    .Controller("SalesOrders")
+                                    .LoadAction("GetTypeOfSalesOrder")
+                                    .LoadMode(DataSourceLoadMode.Raw)
+                                    .Key("TypeOfRequestId")
+                                    )
                                     .Label("Type of Sales Order:")
                                     .LabelMode(EditorLabelMode.Outside)
                                     .StylingMode(EditorStylingMode.Outlined)
-                                    .Width("100%"))
+                                    .Width("100%")
+                                    .ContentTemplate(new TemplateName("typeofSalesOrderDropDownTemplate")))
                                     <div style="margin-left: 5px;">
                                         @(Html.DevExtreme().Button()
                                         .ID("AddSalesOrder")
@@ -394,7 +427,6 @@
 
 
         </text>);
-
                     item.Add().Title("Signatories").Icon("detailslayout").Text("Signatories").Template(@<text>
             <div class="dx-card p-3">
                 <table style="width: 100%; vertical-align: top;">
@@ -403,13 +435,28 @@
                         <td style="width: 50%; vertical-align: top;">
                             <div style="font-weight: bold;">Signatories:</div>
                             <div class="mb-3">
-                                @(Html.DevExtreme().SelectBox()
+                                @(Html.DevExtreme().DropDownBox()
                                 .ID("preparedBy")
-                                .DataSource(new[] { "User 1", "User 2", "User 3" })
+                                .ValueExpr("SignatoryId")
+                                .DisplayExpr("SignatoryName")
+                                .DataSource(ds => ds
+                                .Mvc()
+                                .Controller("SalesOrders")
+                                .LoadAction("GetSignatory")
+                                .LoadMode(DataSourceLoadMode.Raw)
+                                .Key("SignatoryId")
+                                )
                                 .ShowClearButton(true)
                                 .ShowDropDownButton(true)
                                 .StylingMode(EditorStylingMode.Outlined)
-                                .Width("100%"))
+                                .Width("100%")
+                                .ContentTemplate(new TemplateName("SignatoriesDropDownTemplate")))
+                                @(Html.DevExtreme().Button()
+                                .ID("Signatories")
+                                .Icon("plus")
+                                .Hint("Add Sales Order")
+                                .OnClick("Signatorynew")
+                                )
                             </div>
                             <div>
                                 @(Html.DevExtreme().CheckBox().ID("showSeal").Value(true).Text("Show Company Seal"))<br />
@@ -476,23 +523,41 @@
                         <!-- LEFT SIDE -->
                         <td class="pe-2" style="width: 50%; vertical-align: top;">
                             <!-- Company Branch -->
-                            @(Html.DevExtreme().SelectBox()
+                            @(Html.DevExtreme().DropDownBox()
                             .ID("CompanyBranch")
-                            .DataSource(new[] { "Al Injaz Contracting Establishment" })
-                            .Value("Al Injaz Contracting Establishment")
-                            .StylingMode(EditorStylingMode.Outlined)
+                            .ValueExpr("BranchCode")
+                            .DisplayExpr("BranchName")
+                            .DataSource(ds => ds
+                            .Mvc()
+                            .Controller("SalesOrders")
+                            .LoadAction("GetCompanyBranch")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("BranchCode")
+                            )                            .StylingMode(EditorStylingMode.Outlined)
                             .Label("Company Branch / Division")
                             .LabelMode(EditorLabelMode.Outside)
-                            .Width("100%"))
+                            .Width("100%")
+                            .ContentTemplate(new TemplateName("CompanyBranchDropDownTemplate")))
 
                             <!-- Sales Person + Add Button -->
                             <div class="mt-3" style="display: flex; align-items: flex-end;">
-                                @(Html.DevExtreme().SelectBox()
+                                @(Html.DevExtreme().DropDownBox()
                                 .ID("SalesPerson")
                                 .StylingMode(EditorStylingMode.Outlined)
+                                .ValueExpr("SalesPersonCode")
+                                .DisplayExpr("SalesPersonName")
+                                .DataSource(ds => ds
+                                .Mvc()
+                                .Controller("SalesOrders")
+                                .LoadAction("GetSalesPersonName")
+                                .LoadMode(DataSourceLoadMode.Raw)
+                                .Key("SalesPersonCode")
+                                )
                                 .Label("Sales Person")
                                 .LabelMode(EditorLabelMode.Outside)
-                                .Width("100%"))
+                                .Width("100%")
+                                .ContentTemplate(new TemplateName("SalesPersonNameDropDownTemplate")))
+
                                 <div class="ms-1">
                                     @(Html.DevExtreme().Button()
                                     .ID("AddSalesPerson")
@@ -503,24 +568,42 @@
                             </div>
 
                             <!-- Inventory Group Master -->
-                            @(Html.DevExtreme().SelectBox()
+                            @(Html.DevExtreme().DropDownBox()
                             .ID("InventoryGroup")
-                            .DataSource(new[] { "Inventory Master Group" })
-                            .Value("Inventory Master Group")
+                            .ValueExpr("InventoryMasterGroupId")
+                            .DisplayExpr("InventoryMasterGroup")
+                            .DataSource(ds => ds
+                            .Mvc()
+                            .Controller("SalesOrders")
+                            .LoadAction("GetGroupMaster")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("InventoryMasterGroupId")
+                            )
                             .StylingMode(EditorStylingMode.Outlined)
                             .Label("Inventory Group Master *")
                             .LabelMode(EditorLabelMode.Outside)
                             .Width("100%")
-                            )
+                            .ContentTemplate(new TemplateName("MasterGroupDropDownTemplate")))
+
 
                             <!-- Cost Center Master -->
-                            @(Html.DevExtreme().SelectBox()
+                            @(Html.DevExtreme().DropDownBox()
                             .ID("CostCenter")
+                            .ValueExpr("CostAllocationUnitId")
+                            .DisplayExpr("CostAllocationMasterGroup")
+                            .DataSource(ds => ds
+                            .Mvc()
+                            .Controller("SalesOrders")
+                            .LoadAction("GetCostCenterMaster")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("CostAllocationUnitId")
+                            )
                             .StylingMode(EditorStylingMode.Outlined)
                             .Label("Cost Center Master *")
                             .LabelMode(EditorLabelMode.Outside)
                             .Width("100%")
-                           )
+                           .ContentTemplate(new TemplateName("CostCenterMasterDropDownTemplate")))
+
                         </td>
 
                         <!-- RIGHT SIDE -->
@@ -622,59 +705,60 @@
     .ShowBorders(true)
     .ShowRowLines(true)
     )
+    @(Html.DevExtreme()
+        .Button()
+        .ID("btnSave1")
+        .Text("Save")
+        .Icon("check")
+        .OnClick("onSaveSupplierMasterClick"))
 </div>
       
-<div class="form-container">
-    <div class="footer-buttons">
-        <div class="col-md-12">
-            <div class="row">
-                <div class="col-md-2">
-        @(Html.DevExtreme()
-            .Button()
-            .ID("btnSave")
-            .Text("Save")
-            .Icon("check")
-            .OnClick("onSaveSupplierMasterClick"))
-                </div>
-                <div class="col-md-2">
-        @(Html.DevExtreme()
-            .Button()
-            .ID("btnSaveClose")
-            .Text("Save & Close")
-            .Icon("check"))
-                </div>
-                <div class="col-md-2">
-        @(Html.DevExtreme()
-            .Button()
-            .ID("btnDelete")
-            .Text("Delete")
-            .Icon("trash")) 
-                </div>
-                <div class="col-md-2">
-        @(Html.DevExtreme()
-            .Button()
-            .ID("btnBack")
-            .Text("Back")
-            .Icon("arrowleft"))
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+@* <div class="form-container"> *@
+@*     <div class="footer-buttons"> *@
+@*         <div class="col-md-12"> *@
+@*             <div class="row"> *@
+@*                 <div class="col-md-2"> *@
+@*         @(Html.DevExtreme() *@
+@*             .Button() *@
+@*             .ID("btnSave") *@
+@*             .Text("Save") *@
+@*             .Icon("check") *@
+@*             .OnClick("onSaveSupplierMasterClick")) *@
+@*                 </div> *@
+@*                 <div class="col-md-2"> *@
+@*         @(Html.DevExtreme() *@
+@*             .Button() *@
+@*             .ID("btnSaveClose") *@
+@*             .Text("Save & Close") *@
+@*             .Icon("check")) *@
+@*                 </div> *@
+@*                 <div class="col-md-2"> *@
+@*         @(Html.DevExtreme() *@
+@*             .Button() *@
+@*             .ID("btnDelete") *@
+@*             .Text("Delete") *@
+@*             .Icon("trash"))  *@
+@*                 </div> *@
+@*                 <div class="col-md-2"> *@
+@*         @(Html.DevExtreme() *@
+@*             .Button() *@
+@*             .ID("btnBack") *@
+@*             .Text("Back") *@
+@*             .Icon("arrowleft")) *@
+@*                 </div> *@
+@*             </div> *@
+@*         </div> *@
+@*     </div> *@
+@* </div> *@
 
-<div class="Head">
-    <div class="limited-footer">
-        @await Html.PartialAsync("VATModuleFooter")
-    </div>
-</div>
 @using (Html.DevExtreme().NamedTemplate("ClientDropDownTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
             .ID("clientGrid")
             .DataSource(ds => ds
                 .Mvc()
-                .Controller("ClientLeads")
-                .LoadAction("Get")
+                    .Controller("SalesOrders")
+                    .LoadAction("GetClientNames")
                 .LoadMode(DataSourceLoadMode.Raw)
                 .Key("ClientCode")
             )
@@ -692,21 +776,199 @@
         )
 }
 
+@using (Html.DevExtreme().NamedTemplate("ProjectDropDownTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                .ID("projecttype")
+                .DataSource(ds => ds
+                    .Mvc()
+                        .Controller("SalesOrders")
+                        .LoadAction("GetProject")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("ProjectId")
+                )
+                .Height(300)
+                .ShowBorders(true)
+                .FilterRow(f => f.Visible(true))
+                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                .Selection(s => s.Mode(SelectionMode.Single))  // Single selection
+                .Columns(columns =>
+                {
+                        columns.Add().DataField("ProjectId").Caption("Project Id");
+                        columns.Add().DataField("ProjectDescription").Caption("Project Description");
+                })
+                    .OnSelectionChanged("onCodeSelected")  // Trigger onClientSelected on row selection
+            )
+}
+@using (Html.DevExtreme().NamedTemplate("typeofSalesOrderDropDownTemplate")) // ✅ Corrected name
+{
+    @(Html.DevExtreme().DataGrid()
+            .ID("typeofsalesorderGrid")
+            .DataSource(ds => ds
+                .Mvc()
+                .Controller("SalesOrders")
+                .LoadAction("GetTypeOfSalesOrder")
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("TypeOfRequestId")
+            )
+            .Height(300)
+            .ShowBorders(true)
+            .FilterRow(f => f.Visible(true))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .Columns(columns =>
+            {
+                columns.Add().DataField("TypeOfRequestId").Caption("Type Of Request Id");
+                columns.Add().DataField("TypeOfRequest").Caption("Type Of Request");
+            })
+            .OnSelectionChanged("onCodeSelected1")
+        )
+}
+
+@using (Html.DevExtreme().NamedTemplate("SignatoriesDropDownTemplate")) // ✅ Corrected name
+{
+    @(Html.DevExtreme().DataGrid()
+            .ID("SignatoryGrid")
+            .DataSource(ds => ds
+                .Mvc()
+                .Controller("SalesOrders")
+                .LoadAction("GetSignatory")
+                .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("SignatoryId")
+            )
+            .Height(300)
+            .ShowBorders(true)
+            .FilterRow(f => f.Visible(true))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .Columns(columns =>
+            {
+                    columns.Add().DataField("SignatoryId").Caption("Signatory Id");
+                    columns.Add().DataField("SignatoryName").Caption("Signatory Name");
+            })
+            .OnSelectionChanged("onCodesignatory")
+        )
+}
+@using (Html.DevExtreme().NamedTemplate("CompanyBranchDropDownTemplate")) // ✅ Corrected name
+{
+    @(Html.DevExtreme().DataGrid()
+            .ID("CompanyBranchGrid")
+                .DataSource(ds => ds
+                .Mvc()
+                .Controller("SalesOrders")
+                .LoadAction("GetCompanyBranch")
+                .LoadMode(DataSourceLoadMode.Raw)
+               .Key("BranchCode")
+                                )
+            .Height(300)
+            .ShowBorders(true)
+            .FilterRow(f => f.Visible(true))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .Columns(columns =>
+            {
+                    columns.Add().DataField("BranchCode").Caption("Branch Code");
+                    columns.Add().DataField("BranchName").Caption("Branch Name");
+            })
+            .OnSelectionChanged("onCompanyBranch")
+        )
+}
+@using (Html.DevExtreme().NamedTemplate("SalesPersonNameDropDownTemplate")) // ✅ Corrected name
+{
+    @(Html.DevExtreme().DataGrid()
+            .ID("CompanyBranchGrid")
+             .DataSource(ds => ds
+             .Mvc()
+             .Controller("SalesOrders")
+             .LoadAction("GetSalesPersonName")
+             .LoadMode(DataSourceLoadMode.Raw)
+                 .Key("SalesPersonCode")
+             )
+            .Height(300)
+            .ShowBorders(true)
+            .FilterRow(f => f.Visible(true))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .Columns(columns =>
+            {
+                    columns.Add().DataField("SalesPersonCode").Caption("Sales Person Code");
+                    columns.Add().DataField("SalesPersonName").Caption("Sales Person Name");
+            })
+            .OnSelectionChanged("onSalesPersonName")
+        )
+}
+
+@using (Html.DevExtreme().NamedTemplate("MasterGroupDropDownTemplate")) // ✅ Corrected name
+{
+    @(Html.DevExtreme().DataGrid()
+            .ID("MasterGroupGrid")
+             .DataSource(ds => ds
+             .Mvc()
+             .Controller("SalesOrders")
+             .LoadAction("GetGroupMaster")
+             .LoadMode(DataSourceLoadMode.Raw)
+            .Key("InventoryMasterGroupId")
+             )
+            .Height(300)
+            .ShowBorders(true)
+            .FilterRow(f => f.Visible(true))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .Columns(columns =>
+            {
+                    columns.Add().DataField("InventoryMasterGroupId").Caption("Inventory Master Group Id");
+                    columns.Add().DataField("InventoryMasterGroup").Caption("Inventory Master Group");
+            })
+            .OnSelectionChanged("onMasterGroup")
+        )
+}
+
+@using (Html.DevExtreme().NamedTemplate("CostCenterMasterDropDownTemplate")) // ✅ Corrected name
+{
+    @(Html.DevExtreme().DataGrid()
+            .ID("costcenterGroupGrid")
+             .DataSource(ds => ds
+             .Mvc()
+             .Controller("SalesOrders")
+                 .LoadAction("GetCostCenterMaster")
+             .LoadMode(DataSourceLoadMode.Raw)
+                .Key("CostAllocationUnitId")
+             )
+            .Height(300)
+            .ShowBorders(true)
+            .FilterRow(f => f.Visible(true))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .Columns(columns =>
+            {
+                    columns.Add().DataField("CostAllocationMasterGroup").Caption("Cost Allocation Master Group");
+            })
+            .OnSelectionChanged("costcentermasterGroup")
+        )
+}
 
 <script>
-             function onClientSelected(e) {
+        function onClientSelected(e) {
         const selected = e.selectedRowsData[0];
         if (selected) {
             const dropDownBox = $("#ClientNames").dxDropDownBox("instance");
             if (dropDownBox) {
-                // Set the value to ClientCode, not ClientName
+                // Set the value
                 dropDownBox.option("value", selected.ClientCode);
                 dropDownBox.close();
+
+                // Directly set the fields using selected row data
+                $("#ClientRefName").dxTextBox("instance").option("value", selected.ContactPerson || "");
+                $("#ClientEmail").dxTextBox("instance").option("value", selected.ContactEmail || "");
+                $("#ClientContact").dxTextBox("instance").option("value", selected.ContactMobile1 || "");
             } else {
                 console.error("DropDownBox instance not found.");
             }
         }
     }
+
+
+
 
 
     //     function openEntityModal(entity) {
@@ -745,6 +1007,21 @@
             const title = "";
                 openModal(url, title);
         }
+        ////AddnewProject
+     function AddProject(){
+            const url = `/${tenantName}/IMS/Projects`;
+            const title = "";
+                openModal(url, title);
+        }  
+
+          ////Addnewsignatory
+     function Signatorynew(){
+            const url = `/${tenantName}/IMS/Signatories`;
+            const title = "";
+                openModal(url, title);
+        }  
+        
+      
      $(function () {
     $.get("/api/SalesOrders/SalesOrderNoIncrease")
                 .done(function (response) {
@@ -760,4 +1037,139 @@
                 console.error("AJAX Error:", jqXHR.responseText, errorThrown);
             });
     });
+      //ProjectID
+        function onCodeSelected(e) {
+        const selected = e.selectedRowsData[0];
+        if (selected) {
+            const dropDownBox = $("#Project").dxDropDownBox("instance");
+            if (dropDownBox) {
+                dropDownBox.option("value", selected.ProjectId);
+                dropDownBox.close();
+            } else {
+                console.error("DropDownBox instance not found.");
+            }
+        }
+    }
+    
+    
+    //TypeofSalesOrder
+        function onCodeSelected1(e) {
+        const selected = e.selectedRowsData[0];
+        if (selected) {
+            const dropDownBox = $("#TypeOFSalesOrder").dxDropDownBox("instance");
+            if (dropDownBox) {
+                dropDownBox.option("value", selected.TypeOfRequestId);
+                dropDownBox.close();
+            } else {
+                console.error("DropDownBox instance not found.");
+            }
+        }
+    }
+    
+    //Signatory
+        function onCodesignatory(e) {
+        const selected = e.selectedRowsData[0];
+        if (selected) {
+            const dropDownBox = $("#preparedBy").dxDropDownBox("instance");
+            if (dropDownBox) {
+                dropDownBox.option("value", selected.SignatoryId);
+                dropDownBox.close();
+            } else {
+                console.error("DropDownBox instance not found.");
+            }
+        }
+    } 
+    //CompanyBranch
+        function onCompanyBranch(e) {
+        const selected = e.selectedRowsData[0];
+        if (selected) {
+            const dropDownBox = $("#CompanyBranch").dxDropDownBox("instance");
+            if (dropDownBox) {
+                dropDownBox.option("value", selected.BranchCode);
+                dropDownBox.close();
+            } else {
+                console.error("DropDownBox instance not found.");
+            }
+        }
+    } 
+    
+    //onSalesPersonName
+        function onSalesPersonName(e) {
+        const selected = e.selectedRowsData[0];
+        if (selected) {
+            const dropDownBox = $("#SalesPerson").dxDropDownBox("instance");
+            if (dropDownBox) {
+                dropDownBox.option("value", selected.SalesPersonCode);
+                dropDownBox.close();
+            } else {
+                console.error("DropDownBox instance not found.");
+            }
+        }
+    } 
+    
+    //MasterGroup
+        function onMasterGroup(e) {
+        const selected = e.selectedRowsData[0];
+        if (selected) {
+            const dropDownBox = $("#InventoryGroup").dxDropDownBox("instance");
+            if (dropDownBox) {
+                dropDownBox.option("value", selected.InventoryMasterGroupId);
+                dropDownBox.close();
+            } else {
+                console.error("DropDownBox instance not found.");
+            }
+        }
+    }  
+
+    //MasterGroup
+        function costcentermasterGroup(e) {
+        const selected = e.selectedRowsData[0];
+        if (selected) {
+            const dropDownBox = $("#CostCenter").dxDropDownBox("instance");
+            if (dropDownBox) {
+                dropDownBox.option("value", selected.CostAllocationUnitId);
+                dropDownBox.close();
+            } else {
+                console.error("DropDownBox instance not found.");
+            }
+        }
+    }
+          // Inject the logged-in user name from Razor server-side to JS variable
+    var currentUserName = '@User.Identity.Name';
+
+    $("#btnSave").on("click", function (e) {
+        var SalesOrderNo = $("#SalesOrderNO").dxTextBox("instance").option("value");
+        var QuotationNo = $("#QuotationNo").dxTextBox("instance").option("value");
+        var DefaultCostCenterMasterFromSalesOrder = $("#CostCenter").dxDropDownBox("instance").option("value");
+
+        const isCreateCostCenter = true;
+
+        const data = {
+            SalesOrderNo,
+            QuotationNo,
+            DefaultCostCenterMasterFromSalesOrder,
+            IsCreateCostCenterFromSalesOrder: isCreateCostCenter,
+            AddedBy: currentUserName  // pass actual username here
+        };
+
+        $.ajax({
+            url: "/api/SalesOrders/InsertSalesOrderFromQuotation",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function (res) {
+                DevExpress.ui.notify("Sales Order Created Successfully", "success", 3000);
+            },
+            error: function (xhr) {
+                const message = xhr.responseJSON?.message || "Failed to create Sales Order";
+                DevExpress.ui.notify(message, "error", 3000);
+                console.error("❌ AJAX Error:", xhr.responseJSON || xhr);
+            }
+        });
+    });
+
+
+
+
+
 </script>
