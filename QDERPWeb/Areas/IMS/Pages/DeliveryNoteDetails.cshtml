@@ -1,6 +1,5 @@
-@page
-@using DevExtreme.AspNet.Mvc
-@model QD.ERP.Web.Areas.IMS.Pages.DeliveryNoteModel
+﻿@page
+@model QD.ERP.Web.Areas.IMS.Pages.DeliveryNoteDetailsModel
 @{
 }
 <style>
@@ -28,7 +27,7 @@
 		overflow: hidden;
 	}
 
-	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnColumnChooser,#btnDeliveryNoteDetails,#btnDeliveryNotePosting,#btnAddDeliverynote)) {
+	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel)) {
 		display: none !important
 	}
 
@@ -156,7 +155,7 @@
 			border-bottom: 1px solid #e0e0e0;
 		}
 
-	.ledgerResult{
+	.ledgerResult {
 		overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
 		width: 100%;
 	}
@@ -170,7 +169,7 @@
 <input id="formId" value="frm201LedgerView" type="hidden" />
 <div class="title">
 	<div class="header-container">
-		<div id="DeliveryNote" class="no-border-input"></div>
+		<div id="DeliveryNoteDetails" class="no-border-input"></div>
 	</div>
 </div>
 
@@ -180,17 +179,7 @@
 		@await Html.PartialAsync("InventoryModuleFooter")
 	</div>
 </div>
-<div class="context-menuInvoice" id="contextMenu">
-	<div class="context-menu-itemInvoice" onclick="viewRecord()">
-		<i class="dx-icon-search"></i> View
-	</div>
-	<div class="context-menu-itemInvoice" onclick="editRecord()">
-		<i class="dx-icon-edit"></i> Edit
-	</div>
-	<div class="context-menu-itemInvoice" onclick="deleteRecord()">
-		<i class="dx-icon-trash"></i> Delete
-	</div>
-</div>
+
 <div class="dx-fieldset horizontal-container">
 	@(Html.DevExtreme().DateBox()
 		.ID("frmdateBox")
@@ -239,8 +228,8 @@
 
 
 </div>
-<div class="dx-field ledgerResult">
-	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60304deliveryNoteViewMaster>()
+<div class="dx-field ledgerResult" >
+	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60306deliveryNoteDetail>()
 		.ID("dataGrid")
 		.RemoteOperations(false)
 		.DataSource(new JS("[]"))
@@ -248,24 +237,17 @@
 		{
 			columns.Add().Caption("Delivery Note Details").Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.DeliveredTo).Caption("DeliveredTo To").Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.DeliveryNoteNo).Caption("Delivery Note No").Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.DeliveryDate).Caption("Delivery Date").Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
 				subColumns.AddFor(m => m.DeliveryIssuedTo).Caption("Delivery Issued To").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Mprno).Caption("Mpr no").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Gscode).Caption("Gs Code").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Gsdescrpition).Caption("Gs Description").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.UnitType).Caption("Unti Type").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.UnitRateMethod).Caption("Unit Rate Method").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.IssuedQty).Caption("IssuedQty").Alignment(HorizontalAlignment.Center).Visible(true);
+
 			});
-			columns.Add().Caption("Delivery To Client").Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.InvoiceNo).Caption("Invoice No").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.ClientName).Caption("Client Name").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.ClientPono).Caption("Client Po no").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.ClientProject).Caption("Client Project").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.SalesOrderNo).Caption("SalesOrder No").Alignment(HorizontalAlignment.Center).Visible(true);
-			});
-			columns.Add().Caption("Delivery To Store").Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.StoreName).Caption("Store Name").Alignment(HorizontalAlignment.Center).Visible(true);
-			});
+			
 		})
 		.Height(680) // Fixed height for the grid
 		.ColumnAutoWidth(true)
@@ -297,29 +279,13 @@
 
 
 
-
 </div>
 <div id="invoiceErrorPopup"></div>
 
 <script>
-		 $(function () {
-	$("#DeliveryNote").dxTextBox({
-	text: formatMessage("Delivery Note"),
-		readOnly: true,
-		onContentReady: function (e) {
-		$(e.element).addClass("dx-textbox-heading");
-		}
-		});
-	});
-		$(function () {
-			var now = new Date();
-			var firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-			var tillmonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-			$("#frmdateBox").dxDateBox("instance").option("value", firstDay);
-			$("#todateBox").dxDateBox("instance").option("value", tillmonth);
-			ddBtnShowRecords_click('range');
-	});
-	function ddBtnShowRecords_click(duration) {
+		
+	
+		function ddBtnShowRecords_click(duration) {
 		 var frmDateBox = $("#frmdateBox").dxDateBox("instance");
 			var toDateBox = $("#todateBox").dxDateBox("instance");
 			var frmDate = new Date(frmDateBox.option("value"));
@@ -360,7 +326,6 @@
 					frmDate = new Date(currentDate.getFullYear(), 0, 1); // First day of year (January 1)
 					toDate = currentDate;// Today
 					break;
-				case 'fullyear':
 					// Get the first and last day of the current year
 					frmDate = new Date(currentDate.getFullYear(), 0, 1); // First day of year (January 1)
 					toDate = new Date(currentDate.getFullYear(), 11, 31); // Last day of month
@@ -380,7 +345,7 @@
 	toDate = toDate.toISOString().split('T')[0];
 
 				$.ajax({
-		url: '/api/DeliveryNote/GetDeliveryNotes',
+			url: '/api/DeliveryNote/GetDeliveryNoteDetails',
 		type: 'GET',
 		data: {
 			fromDate: frmDate,
@@ -399,87 +364,6 @@
 
 
 	}
-	 let selectedRowData = null;
-
-	$(function () {
-		const contextMenu = $("#contextMenu");
-
-		$(document).on("click", function () {
-			contextMenu.hide();
-		});
-
-	   $("#dataGrid").customizeGridContextMenu();
-		  $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
-		e.preventDefault();
-		const dataGrid = $("#dataGrid").dxDataGrid("instance");
-		const rowIndex = $(this).index();
-		selectedRowData = dataGrid.getVisibleRows()[rowIndex].data;
-
-		$("#contextMenu").css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
-	});
-
-	});
-	function viewRecord() {
-		if (selectedRowData) {
-			const DeliveryNoteNo = selectedRowData.DeliveryNoteNo;
-			window.location.href = `/${tenantName}/IMS/DeliveryEditForm?DeliveryNoteNo=${encodeURIComponent(DeliveryNoteNo)}&mode=view`;
-		}
-	}
-
-	function editRecord() {
-		if (selectedRowData) {
-			const DeliveryNoteNo = selectedRowData.DeliveryNoteNo;
-			window.location.href = `/${tenantName}/IMS/DeliveryEditForm?DeliveryNoteNo=${encodeURIComponent(DeliveryNoteNo)}&mode=edit`;
-		}
-	}
-
-
-		function deleteRecord() {
-		if (selectedRowData) {
-			const code = selectedRowData.DeliveryNoteNo;
-
-			DevExpress.ui.dialog.confirm(
-				`Are you sure you want to delete stock item: <b>${code}</b>?`,
-				"Confirm Deletion"
-			).done(function (dialogResult) {
-				if (dialogResult) {
-					$.ajax({
-						url: "/api/DeliveryNote/DeleteDeliveryItem",
-						method: "POST",
-						contentType: "application/json",
-						data: JSON.stringify(code),
-						success: function (result) {
-							const messageType = result.success ? "Success" : "Error";
-							const messageColor = result.success ? "green" : "red";
-
-							DevExpress.ui.dialog.alert(
-								`<div style="color: ${messageColor}; font-weight: bold;">
-									${result.message}
-								</div>`,
-								messageType
-							).done(function () {
-								if (result.success) {
-									window.refreshPage();
-								}
-							});
-						},
-						error: function (xhr) {
-							DevExpress.ui.dialog.alert(
-								`<div style="color: red; font-weight: bold;">
-									Error deleting stock item.
-								</div>`,
-								"Error"
-							);
-							console.error(xhr);
-						}
-					});
-				}
-			});
-		} else {
-			DevExpress.ui.notify("Please select a row to delete.", "warning", 2000);
-		}
-	}
-
 
 
 

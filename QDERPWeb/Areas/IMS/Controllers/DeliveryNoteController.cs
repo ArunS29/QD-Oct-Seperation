@@ -617,7 +617,74 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, new { message = "Error loading delivery note", success = false, error = ex.Message });
             }
         }
+        public async Task<IActionResult> GetDeliveryNoteDetails()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                {
+                    var result = await dbContext.Qry60306deliveryNoteDetails
+                        .Select(d => new
+                        {
+                            d.DeliveryNoteNo,
+                            d.DeliveryDate,
+                            d.DeliveryIssuedTo,
+                            d.Gscode,
+                            d.Gsdescrpition,
+                            d.UnitType,
+                            d.UnitRateMethod,
+                            d.IssuedQty
+                        })
+                        .ToListAsync();
 
+                    return Ok(result);
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Server error: {ex.Message}");
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteDeliveryItem([FromBody] string deliveryNoteNo)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                {
+                    // Find the matching record from the delivery note master view/table
+                    var deliveryItem = await dbContext.Qry60304deliveryNoteViewMasters
+                        .FirstOrDefaultAsync(d => d.DeliveryNoteNo == deliveryNoteNo);
+
+                    if (deliveryItem == null)
+                    {
+                        return NotFound(new { success = false, message = $"Delivery note '{deliveryNoteNo}' not found." });
+                    }
+
+                    
+                    var entityToDelete = await dbContext.Tbl60301deliveryNoteMasters
+                        .FirstOrDefaultAsync(d => d.DeliveryNoteNo == deliveryNoteNo);
+
+                    if (entityToDelete == null)
+                    {
+                        return NotFound(new { success = false, message = $"No deletable record found for '{deliveryNoteNo}'." });
+                    }
+
+                    dbContext.Tbl60301deliveryNoteMasters.Remove(entityToDelete);
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(new { success = true, message = $"Stock item '{deliveryNoteNo}' deleted successfully." });
+                }
+
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = $"Server error: {ex.Message}" });
+            }
+        }
 
     }
 }
