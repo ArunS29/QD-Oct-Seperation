@@ -310,7 +310,7 @@
 							// Clear input box
 							$("#stockClassificationInput").dxTextBox("instance").option("value", "");
 							// Optionally reload any grid or list showing the data
-							// $("#yourGridId").dxDataGrid("instance").refresh();
+							 $("#storeGrid").dxDataGrid("instance").refresh();
 						},
 						error: function (err) {
 							DevExpress.ui.notify("Failed to add Stock Classification.", "error", 3000);

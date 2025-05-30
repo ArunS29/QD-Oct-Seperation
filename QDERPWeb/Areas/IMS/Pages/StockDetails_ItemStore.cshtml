@@ -325,15 +325,21 @@
             type: 'POST',
             data: JSON.stringify(storeData),
             contentType: 'application/json',
-            success: function (res) {
-                DevExpress.ui.notify("Store added successfully!", "success", 2000);
-                // Reload grid data after add
-                $("#storeGrid").dxDataGrid("instance").refresh();
-                // Clear inputs
-                $("#StoreId").dxTextBox("instance").option("value", "");
-                $("#StoreName").dxTextBox("instance").option("value", "");
-                $("#CostCenter").dxSelectBox("instance").option("value", null);
-            },
+                success: function (res) {
+        DevExpress.ui.notify("Store added successfully!", "success", 2000);
+        // Reload grid data after add
+        $("#storeGrid").dxDataGrid("instance").refresh();
+        // Clear inputs
+        $("#StoreId").dxTextBox("instance").option("value", "");
+        $("#StoreName").dxTextBox("instance").option("value", "");
+        $("#CostCenter").dxSelectBox("instance").option("value", null);
+
+        // Reset validation state for inputs
+        $("#StoreId").dxValidator("instance").reset();
+        $("#StoreName").dxValidator("instance").reset();
+        $("#CostCenter").dxValidator("instance").reset();
+    },
+
             error: function (err) {
                 DevExpress.ui.notify("Failed to add store.", "error", 3000);
             }

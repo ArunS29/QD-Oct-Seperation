@@ -434,12 +434,12 @@
 	}
 
 
-	   function deleteRecord() {
+    function deleteRecord() {
 		if (selectedRowData) {
-			const code = selectedRowData.Gscode;
+			const code = selectedRowData.DeliveryNoteNo;
 			if (confirm(`Are you sure you want to delete stock item: ${code}?`)) {
 				$.ajax({
-					url: "/api/StockInventory/DeleteStockItem",
+					url: "/api/DeliveryNote/DeleteDeliveryItem",
 					method: "POST",
 					contentType: "application/json",
 					data: JSON.stringify(code),
