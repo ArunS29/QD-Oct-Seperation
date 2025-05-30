@@ -336,9 +336,12 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 						g.ItemPartNo,
 						g.CostPrice,
 						g.GssellingRate,
-						g.ReorderQty
+						g.ReorderQty,
+						g.StoreCode,
+						g.MaxQty,
+						g.MinQty
 
-					})
+                    })
 					.ToListAsync();
 
 					return Ok(result);
@@ -3165,14 +3168,14 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
 
 		[HttpGet]
-		public async Task<IActionResult> GetPurchaseVoucher(string accheadid)
+		public async Task<IActionResult> GetPurchaseVoucher(string supplierid)
 		{
 			try
 			{
 				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
 				{
-					var result = dbContext.Qry20179PurchaseBillsWithBalance02s
-	 .Where(p => p.SupplierCode == accheadid)
+					var result = dbContext.Qry20179PurchaseBillsWithBalances
+     .Where(p => p.SupplierCode == supplierid)
 	 .Select(p => new
 	 {
 		 p.PurchaseVoucherNo,
@@ -3400,66 +3403,71 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
 
         private string GetNewDebitNoteNo(string invoiceAbbrv, int yearInDigit, DateTime invoiceDate, bool isResetByYear, ERPMasterWtDataContext dbContext)
-		{
-			try
-			{
-				int maxRunningNumber = 0;
+        {
+            try
+            {
+                int maxRunningNumber = 0;
 
-				if (isResetByYear)
-				{
-					maxRunningNumber = dbContext.Tbl20172VatdebitNoteMasters
-						.Where(d => d.DebitNoteDate.HasValue && d.DebitNoteDate.Value.Year == invoiceDate.Year)
-						.Select(d => d.DebitNoteNo)
-						.Where(no => no != null && no.Length >= 6)
-						.Select(no => Convert.ToInt32(no.Substring(no.Length - 6)))
-						.DefaultIfEmpty(0)
-						.Max();
-				}
-				else
-				{
-					maxRunningNumber = dbContext.Tbl20172VatdebitNoteMasters
-						.Select(d => d.DebitNoteNo)
-						.Where(no => no != null && no.Length >= 6)
-						.Select(no => Convert.ToInt32(no.Substring(no.Length - 6)))
-						.DefaultIfEmpty(0)
-						.Max();
-				}
+                IEnumerable<string> debitNoteNumbers;
 
-				maxRunningNumber += 1;
+                if (isResetByYear)
+                {
+                    debitNoteNumbers = dbContext.Tbl20172VatdebitNoteMasters
+                        .Where(d => d.DebitNoteDate.HasValue && d.DebitNoteDate.Value.Year == invoiceDate.Year)
+                        .Select(d => d.DebitNoteNo)
+                        .AsEnumerable(); // Force client-side evaluation
+                }
+                else
+                {
+                    debitNoteNumbers = dbContext.Tbl20172VatdebitNoteMasters
+                        .Select(d => d.DebitNoteNo)
+                        .AsEnumerable(); // Force client-side evaluation
+                }
 
-				string strNewDebitNoteNo = "000000" + maxRunningNumber.ToString();
-				strNewDebitNoteNo = strNewDebitNoteNo.Substring(strNewDebitNoteNo.Length - 6);
+                maxRunningNumber = debitNoteNumbers
+                    .Where(no => !string.IsNullOrEmpty(no) && no.Length >= 6)
+                    .Select(no =>
+                    {
+                        bool parsed = int.TryParse(no.Substring(no.Length - 6), out int number);
+                        return parsed ? number : 0;
+                    })
+                    .DefaultIfEmpty(0)
+                    .Max();
 
-				string strYear = invoiceDate.Year.ToString();
-				if (yearInDigit > 0)
-				{
-					strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
-				}
-				else
-				{
-					strYear = "";
-				}
+                maxRunningNumber += 1;
 
-				return $"DBN-{strYear}-{strNewDebitNoteNo}";
+                string strNewDebitNoteNo = "000000" + maxRunningNumber;
+                strNewDebitNoteNo = strNewDebitNoteNo.Substring(strNewDebitNoteNo.Length - 6);
 
-			}
-			catch (Exception)
-			{
-				string strYear = invoiceDate.Year.ToString();
-				if (yearInDigit > 0)
-				{
-					strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
-				}
-				else
-				{
-					strYear = "";
-				}
+                string strYear = invoiceDate.Year.ToString();
+                if (yearInDigit > 0)
+                {
+                    strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
+                }
+                else
+                {
+                    strYear = "";
+                }
 
-				return $"DBN-{strYear}-000001";
-			}
-		}
+                return $"DBN-{strYear}-{strNewDebitNoteNo}";
+            }
+            catch (Exception)
+            {
+                string strYear = invoiceDate.Year.ToString();
+                if (yearInDigit > 0)
+                {
+                    strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
+                }
+                else
+                {
+                    strYear = "";
+                }
 
-		[HttpGet]
+                return $"DBN-{strYear}-000001";
+            }
+        }
+
+        [HttpGet]
 		public ActionResult<string> GetVATProformaInvoiceNo()
 		{
 			try

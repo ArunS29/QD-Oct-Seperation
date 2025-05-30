@@ -115,7 +115,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Journal_Register
 
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    string query = "SELECT * FROM qry202_106JournalRegisterReport WHERE voucherno = @VoucherNo";
+                    string query = "SELECT * FROM qry202_106JournalRegisterReport WHERE JournalRefNo = @VoucherNo";
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@VoucherNo", voucherNo);

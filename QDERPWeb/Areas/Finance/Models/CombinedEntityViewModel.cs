@@ -341,7 +341,8 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string InvoiceNo { get; set; }
         public dynamic Amount { get; set; }
         public dynamic Description { get; set; }
-        public dynamic Discount { get; set; }
+        //public dynamic Discount { get; set; }
+        public decimal? Discount { get; set; }
         public dynamic DiscountDetails { get; set; }
         public dynamic ExemptionCode { get; set; }
         public string ItemCode { get; set; }
@@ -359,6 +360,7 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public int UnitsToBill { get; set; }
         public decimal? UnitRate { get; set; }
         public decimal? QuantityInvoiced { get; set; }
+        public decimal? QuantityCredited { get; set; }
 
 
     }
