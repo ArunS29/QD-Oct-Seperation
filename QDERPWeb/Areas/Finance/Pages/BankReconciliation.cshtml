@@ -140,7 +140,7 @@
                     </div>
                 </text>);
 
-                        columns.Add().DataField("BankClearedOn").Caption(new JS("formatMessage('Cleared On')"));
+                        columns.Add().DataField("BankClearedOn").Caption(new JS("formatMessage('Cleared On')")).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy");
                     columns.Add().DataField("PaymentStatus").Caption(new JS("formatMessage('Status')")).AllowEditing(true);
                     columns.Add().DataField("DrAmount").Caption(new JS("formatMessage('Receipts')")).CustomizeText(
                 "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
@@ -184,7 +184,10 @@
                     .Width("100%")
                     .Selection(s => s.Mode(SelectionMode.Multiple).ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always))
                     .OnSelectionChanged("getSelectedVoucherEntryNo")
-                   
+        .Paging(p => p.Enabled(false)) // 🔁 Disable pagination
+
+        .Scrolling(s => s.Mode(GridScrollingMode.Virtual)) // 🔁 Enable vertical scrolling
+        .Height(420)
         .Editing(editing => editing
         .Mode(GridEditMode.Cell) // or use .Batch(), .Cell(), or .Popup() depending on your requirement
         .AllowUpdating(true)   // Enable editing of existing rows
@@ -364,10 +367,6 @@ if (balanceOurBooksInstance) {
     balanceOurBooksInstance.option("value", formattedLastAmt);
 }
 
-if (balanceBankStatementInstance) {
-    const formattedFirstAmt = formatWithCommasAndParentheses(firstRowBalanceVal);
-    balanceBankStatementInstance.option("value", formattedFirstAmt);
-}
 
 
         // const TotalVal = LastAmt - FirstAmt;
@@ -497,60 +496,112 @@ $(document).ready(function () {
 
     $(function () {
 
-        let totatReceipts;
+       
 
         const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        
 
-        const totalDebitTextbox = $("#totalDebitTextbox").dxTextBox("instance");
-
-        const totalCreditTextbox = $("#totalCreditTextbox").dxTextBox("instance");
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
 
         function calculateTotals() {
 
             const data = dataGrid.getVisibleRows().map(row => row.data);
-
-            const totalDebit = data.reduce((sum, row) => sum + (row.DrAmount || 0), 0);
-
-            const totalCredit = data.reduce((sum, row) => sum + (row.CrAmount || 0), 0);
-
+            const totalDebit = dataGrid.getTotalSummaryValue("DrAmount") || 0;
+            const totalCredit = dataGrid.getTotalSummaryValue("CrAmount") || 0;
             const balance = totalDebit - totalCredit;
 
-               // Format balance for AmountNotReflectedinBank
-        let formattedAmount;
-        if (balance < 0) {
-            formattedAmount = `(${Math.abs(balance).toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            })})`;
-        } else {
-            formattedAmount = balance.toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
-        }
+            // Format balance for AmountNotReflectedinBank
+            let formattedAmount;
+            if (balance < 0) {
+                formattedAmount = `(${Math.abs(balance).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                })})`;
+            } else {
+                formattedAmount = balance.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            }
 
-        const amountNotReflectedBox = $("#AmountNotReflectedinBank").dxTextBox("instance");
-        if (amountNotReflectedBox) {
-            amountNotReflectedBox.option("value", formattedAmount);
-        }
+            const amountNotReflectedBox = $("#AmountNotReflectedinBank").dxTextBox("instance");
+            if (amountNotReflectedBox) {
+                amountNotReflectedBox.option("value", formattedAmount);
+            }
 
-            // Update TextBox values dynamically
+            // Get lastRowBalance from query string and parse it
+            const lastRowBalance = getQueryParam("lastRowBalance") || "0";
+            console.log("lstbal:", lastRowBalance);
+            const cleanedBalanceLR = lastRowBalance.replace(/[^0-9.-]/g, "");
+            const lastRowBalanceVal = parseFloat(cleanedBalanceLR) || 0;
 
+            // Parse formattedAmount to a number for calculation
+            const cleanedFormattedAmount = formattedAmount.replace(/[\(\),]/g, "");
+            const formattedAmountVal = parseFloat(cleanedFormattedAmount) || 0;
+            const netBalance = lastRowBalanceVal - formattedAmountVal;
+
+            // Format and set the BalanceAsPerBankStatement textbox
+            const balanceAsPerBankBox = $("#BalanceAsPerBankStatement").dxTextBox("instance");
+            if (balanceAsPerBankBox) {
+                let formattedNetBalance;
+                if (netBalance < 0) {
+                    formattedNetBalance = `(${Math.abs(netBalance).toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    })})`;
+                } else {
+                    formattedNetBalance = netBalance.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+                }
+
+                balanceAsPerBankBox.option("value", formattedNetBalance);
+            }
+
+
+            // Optionally update total Debit and Credit boxes
             // totalDebitTextbox.option("value", totalDebit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
-
             // totalCreditTextbox.option("value", totalCredit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
-
         }
 
         // Recalculate totals on content changes
-
         dataGrid.on("contentReady", calculateTotals);
-
         dataGrid.on("dataSourceChanged", calculateTotals);
 
+        $("#btnShowReconciled").on("click", function (e) {
+            e.preventDefault();
+            const dataGrid = $("#dataGrid").dxDataGrid("instance");
+            if (dataGrid) {
+                fetch(`/api/SalaryPayableMapping/Getshowreconcileditems`)
+                    .then(response => response.json())
+                    .then(result => {
+                        console.log("Raw response:", result);
 
+                        // Ensure `data` property exists
+                        if (Array.isArray(result.data)) {
+                            // Remove the event listeners
+                            dataGrid.off("contentReady", calculateTotals);
+                            dataGrid.off("dataSourceChanged", calculateTotals);
+
+                            // Update the dataSource
+                            dataGrid.option("dataSource", result.data);
+                        } else {
+                            console.warn("Unexpected response format", result);
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error loading data:", error);
+                    });
+            }
+
+        });
 
     });
+
 
 
     function onUpdateClick() {
@@ -578,10 +629,8 @@ $(document).ready(function () {
                 DevExpress.ui.dialog.alert(
                                 "Bank Reconciliation updated Successfully.",
                             "Update Successful"
-                        );
-            // Refresh the DataGrid after a successful update
-            var dataGrid = $("#dataGrid").dxDataGrid("instance");
-            dataGrid.refresh();
+                );
+            Reloadgriddata();
         },
         error: function (xhr) {
             alert("Error updating BankClearedOn: " + xhr.responseText);
@@ -643,7 +692,39 @@ $(document).ready(function () {
         }
 
 
+    function Reloadgriddata() {
+        function getQueryParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+        const accid = getQueryParam("accid");
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        if (dataGrid) {
+            fetch(`/api/SalaryPayableMapping/GetBankReconciliation?accid=${accid}`)
+                .then(response => response.json())
+                .then(result => {
+                    console.log("Raw response:", result);
 
+                    // Ensure `data` property exists
+                    if (Array.isArray(result.data)) {
+                        dataGrid.option("dataSource", result.data);
+
+                    } else {
+                        console.warn("Unexpected response format", result);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error loading data:", error);
+                });
+        }
     
+    
+    }
+  
+    $("#btnRefresh").on("click", function (e) {
+        e.preventDefault();
+        
+        Reloadgriddata();
+    });
     
 </script>

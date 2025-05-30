@@ -600,7 +600,7 @@
                         <div class="form-label">
                             <label for="StartDate">Modified on</label>
                         </div>
-                        @Html.DevExtreme().DateBox().ID("txtmodifiedon").Value(DateTime.Now).DisplayFormat("dd-MMM-yyyy").ReadOnly(true)
+                        @Html.DevExtreme().TextBox().ID("txtmodifiedon").Value(null).ReadOnly(true)
                     </div>
                 </div>
             </div>
@@ -1267,7 +1267,7 @@
             success: function (data) {
                 console.log("Data received from API:", data);
                 if (data && data.length > 0) {
-                    populateFields(data[0]);
+                        populateFields(data[0], assetLedgerNo);
                 } else {
                     console.warn("No data found for the given AssetLedgerNo.");
                 }
@@ -1505,7 +1505,7 @@
         }
         *@
 
-        function populateFields(assetData) {
+        function populateFields(assetData, assetLedgerNo) {
 
             $.ajax({
                 url: "/api/AccountLedgerMaster/getUserName",
@@ -1517,9 +1517,8 @@
                     console.log("userN:", getUN);
                 }
             });
-                          console.log("Data received from API2:", assetData.AddedOn);
-            console.log("AddedBy:", assetData.AddedBy);
-            $("#txtacctledno").dxTextBox("instance").option("value", assetData.AssetLedgerNo);
+            debugger;              
+            $("#txtacctledno").dxTextBox("instance").option("value", assetData.AssetLedgerNo || assetLedgerNo);
             $("#ddassetCategory").dxSelectBox("instance").option("value", assetData.AssetCategory);
 
             if (assetData.PlateNo && assetData.PlateNo !== "null") {

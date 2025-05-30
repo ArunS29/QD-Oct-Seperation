@@ -62,5 +62,42 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetQuotationAnalysisPvg(string mprno)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var result = await dbContext.Qry60708quotationAnalysisPvgs
+                        .Where(x => x.Mprno == mprno)
+                        .Select(x => new
+                        {
+                            x.Mprno,
+                            x.SupplierName,
+                            x.Gsdescrpition,
+                            x.UnitDesc,
+                            x.QuotedQuantity,
+                            x.UnitPrice,
+                            x.ItemDiscount,
+                            x.LineTotalBeforeTax,
+                            x.LineTotalAfterDisc,
+                            x.IsWonForPo
+                        })
+                        .ToListAsync();
+
+                    return Ok(result);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error fetching quotation analysis data for MPR No: {mprno}", mprno);
+                    return StatusCode(500, "Internal server error.");
+                }
+            }
+
+            return BadRequest("Invalid tenant context.");
+        }
+
+
     }
 }
