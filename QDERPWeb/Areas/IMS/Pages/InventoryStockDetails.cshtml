@@ -278,7 +278,7 @@
                                 )
                         </div>
                     </td>
-                    <th>
+                    <th style="display:flex; align-items:end;">
                         @(Html.DevExtreme().Button()
                             .ID("convertToArabic2")
                             .Width(50)
@@ -286,14 +286,12 @@
                             .ElementAttr("style", "padding:10px; color:black;margin-right:10px;")
                             .OnClick("convertToArabic1")
                             )
-                    </th>
-                    <td colspan="2">
+                  
                         @(Html.DevExtreme().TextBox()
                             .ID("ItemNameArabic")
                             .Label(new JS("formatMessage('Item Name / Description (In Arabic)')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .Width("100%"))
-                    </td>
                 </tr>
             </table>
 
@@ -1084,7 +1082,6 @@
                                     .ShowSpinButtons(true))
                             </td>
 
-                            </td>
                         </tr>
 
                     </table>

@@ -386,7 +386,7 @@
     }
 
     function onBackToList() {
-        DevExpress.ui.notify("Returning to list", "info", 1000);
+          window.parent.closeModal();
     }
 
          function dataGridSelectionChanged(e) {

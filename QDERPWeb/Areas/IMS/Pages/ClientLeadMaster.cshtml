@@ -327,7 +327,7 @@
                 <div class="form-row">
                         <div class="col-md-12">
                             <label>Client Address</label>
-                            @Html.DevExtreme().TextArea().ID("ClientAddress").Height(70)
+                        @Html.DevExtreme().TextArea().ID("ClientAddress").ElementAttr(new { style = "height: 70px !important;" })
                         </div>
                 </div>
                 <div class="form-row">
@@ -598,9 +598,9 @@
 
                     </div>
        <div class="col-md-2">
-                    @(Html.DevExtreme().Button().ID("btnSaveClose").Text("Save & Close").Icon("check").OnClick("function() { saveAndClose(); }"))
-                    </div> 
-                    <div class="col-md-2">
+                @(Html.DevExtreme().Button().ID("btnSaveClose").Text("Save & Close").Icon("check").OnClick("function() { saveAndClose(); }"))
+                </div> 
+                <div class="col-md-2">
         @(Html.DevExtreme().Button().ID("btnDelete").Text("Delete").Icon("trash"))
                     </div>
                     <div class="col-md-2">
@@ -631,16 +631,16 @@
                  .ShowBorders(true)
                  .HoverStateEnabled(true)
                  .Paging(p => p.PageSize(15))
-                 .FilterRow(f => f.Visible(false))//
+                 .FilterRow(f => f.Visible(true))//
                  .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                  .Height(345)
                  .Selection(s => s.Mode(SelectionMode.Single))
                  .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                  .Columns(columns =>
                  {
+                     columns.Add().DataField("ClientCategoryCode");
                      columns.Add().Caption(new JS("formatMessage('Category Code')")).DataField("CategoryCode");
                      columns.Add().DataField("ClientCategory");
-                     columns.Add().DataField("ClientCategoryCode");
 
 
                  })
@@ -651,8 +651,8 @@
      @(Html.DevExtreme().DataGrid()
                  .ID("GetLedgerNo-datagrid")
                  .DataSource(d => d.WebApi()
-                     .Controller("ClientLeadMaster")
-                     .LoadAction("GetClientLedgerNo")
+                 .Controller("ClientLeadMaster")
+                 .LoadAction("GetClientLedgerNo")
                  .LoadMode(DataSourceLoadMode.Raw)
                  .Key("AccountId")
                  )
