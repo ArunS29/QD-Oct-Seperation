@@ -3108,7 +3108,7 @@ public partial class ERPMasterWtDataContext : DbContext
 
     public virtual DbSet<Tbl60104quotationItemCost> Tbl60104quotationItemCosts { get; set; }
 
-    public virtual DbSet<Tbl60105quotationCostMaster> Tbl60105quotationCostMasters { get; set; }
+    public virtual DbSet<Tbl60501materialReceiptMaster> Tbl60105quotationCostMasters { get; set; }
 
     public virtual DbSet<Tbl60106quoteCostDistribution> Tbl60106quoteCostDistributions { get; set; }
 
@@ -3413,7 +3413,7 @@ public partial class ERPMasterWtDataContext : DbContext
     public virtual DbSet<PurchaseRequestViewModel> PurchaseRequestViewModels { get; set; }
     public virtual DbSet<RFQViewModel> RFQViewModels { get; set; }
     public virtual DbSet<QuotationViewModel> QuotationViewModels { get; set; }
-
+    public virtual DbSet<MaterialReceiptViewModel> MaterialReceiptViewModels { get; set; }
 
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -3438,6 +3438,7 @@ public partial class ERPMasterWtDataContext : DbContext
         modelBuilder.Entity<PurchaseRequestViewModel>().HasNoKey(); // ✅ If you're querying with it
         modelBuilder.Entity<RFQViewModel>().HasNoKey();
 		modelBuilder.Entity<QuotationViewModel>().HasNoKey();
+        modelBuilder.Entity<MaterialReceiptViewModel>().HasNoKey();
 		//modelBuilder.Entity<ClientCategoryDisplayDTO>.HasNoKey();
 		modelBuilder.Entity<A01CheckIfAnyCostEntriesOrphan>(entity =>
         {

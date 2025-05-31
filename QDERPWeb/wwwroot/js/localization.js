@@ -1,6 +1,12 @@
 ﻿var dictionary = {
     "en": {
-
+        "Request / Enquiry Details": "Request / Enquiry Details",
+        "Purchase Request with Item Details": "Purchase Request with Item Details",
+        "Qty Received": "Qty Received",
+        "LineTotal With Tax": "LineTotal With Tax",
+        "Quotation Details": "Quotation Details",
+        "Quotation with item Details": "Quotation with item Details",
+        "Material Receipt with Details": "Material Receipt with Details",
         "PropertyOrEquipment": "PropertyOrEquipment",
         "EmployeeName": "EmployeeName",
         "UnitCostPrice": "UnitCostPrice",
@@ -4725,7 +4731,17 @@
         "MinSelling Price": "الحد الأدنى لسعر البيع",
         "MaxSellingPrice": "الحد الأقصى لسعر البيع",
         "RFQ with Item Details": "طلب عرض أسعار مع تفاصيل العناصر",
-        "QuoteChildId": "معرف البند الفرعي للعرض"
+        "QuoteChildId": "معرف البند الفرعي للعرض",
+        "QuoteChildId": "معرف البند الفرعي للعرض",
+        "Qty Received": "الكمية المستلمة",
+        "LineTotal With Tax": "إجمالي السطر مع الضريبة",
+        "Quotation Details": "تفاصيل العرض",
+        "Quotation with item Details": "عرض الأسعار مع تفاصيل العناصر",
+        "Material Receipt with Details": "استلام المواد مع التفاصيل",
+        "QuoteChildId": "معرّف الفرع الفرعي للعرض",
+        "Tax Slab": "شريحة الضريبة",
+        "Unit Cost Price": "سعر تكلفة الوحدة",
+        "Purchase Request with Item Details": "طلب شراء مع تفاصيل الأصناف", 
     }
 };
 
