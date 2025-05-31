@@ -142,7 +142,6 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             return Unauthorized(new { message = "Invalid tenant." });
         }
 
-
         [HttpGet]
         public IActionResult SalesOrderNoIncrease()
         {
@@ -150,11 +149,24 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             {
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    var lastOrderNo = dbContext.Qry60204salesOrderViewMasters
-                        .OrderByDescending(x => x.SalesOrderNo)
-                        .Select(x => x.SalesOrderNo)
+                    var lastOrder = dbContext.Qry60204salesOrderViewMasters
+                        .AsEnumerable() // Required for Regex and parsing
+                        .Select(x => new
+                        {
+                            Original = x.SalesOrderNo,
+                            Match = Regex.Match(x.SalesOrderNo ?? "", @"^(.*-)(\d+)$")
+                        })
+                        .Where(x => x.Match.Success)
+                        .Select(x => new
+                        {
+                            Original = x.Original,
+                            Prefix = x.Match.Groups[1].Value,
+                            Number = int.Parse(x.Match.Groups[2].Value)
+                        })
+                        .OrderByDescending(x => x.Number)
                         .FirstOrDefault();
 
+                    string lastOrderNo = lastOrder?.Original;
                     string nextOrderNo = GenerateNextOrderNo(lastOrderNo);
 
                     return Ok(new { salesOrderNo = nextOrderNo });
@@ -164,7 +176,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in GetProject: {ex.Message}");
+                _logger.LogError($"Error in SalesOrderNoIncrease: {ex.Message}");
                 return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
             }
         }
@@ -172,15 +184,19 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         private string GenerateNextOrderNo(string lastOrderNo)
         {
             if (string.IsNullOrWhiteSpace(lastOrderNo))
-                return "AIC-RFQ-2025-00001";
+                return "SO-18-00001"; // Fallback default if nothing found
 
-            var match = Regex.Match(lastOrderNo, @"(.*-)(\d+)$");
-            if (!match.Success) return lastOrderNo + "-00001";
+            var match = Regex.Match(lastOrderNo, @"^(.*-)(\d+)$");
+            if (!match.Success)
+                return lastOrderNo + "-00001"; // Unexpected format fallback
 
-            var prefix = match.Groups[1].Value;
-            var number = int.Parse(match.Groups[2].Value);
+            string prefix = match.Groups[1].Value;
+            int number = int.Parse(match.Groups[2].Value);
+
             return $"{prefix}{(number + 1):D5}";
         }
+
+
         [HttpGet]
         public async Task<IActionResult> GetClientNames()
         {
@@ -410,66 +426,64 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
         }
 
-
-
         [HttpPost]
-        public async Task<IActionResult> InsertSalesOrderFromQuotation([FromBody] InsertSalesOrderFromQuotationDto model)
+        public async Task<IActionResult> SaveSalesOrder([FromBody] Tbl60201salesOrderMaster model)
         {
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { message = "Invalid tenant." });
+
+            if (model == null)
+                return BadRequest(new { message = "Invalid data." });
+
+            // Map ViewModel to Entity
+            var entity = new Tbl60201salesOrderMaster
             {
-                return Unauthorized(new { message = "Invalid tenant or missing context.", success = false });
-            }
+                SalesOrderNo = model.SalesOrderNo,
+                SalesOrderDate = model.SalesOrderDate,
+                ClientPono = model.ClientPono,
+                ClientPodate = model.ClientPodate,
+                QuoteNo = model.QuoteNo,
+                QuoteDate = model.QuoteDate,
+                ClientRefNo = model.ClientRefNo,
+                ClientCode = model.ClientCode,
+                Project = model.Project,
+                SalesPersonCode = model.SalesPersonCode,
+                AdditionsText = model.AdditionsText,
+                DiscountsText = model.DiscountsText,
+                CostAllocationMasterGroup = model.CostAllocationMasterGroup,
+                AddedBy = model.AddedBy ?? User.Identity?.Name,
+                AddedOn = DateTime.Now
+                // Map other fields as needed
+            };
 
-            try
-            {
-                _logger.LogInformation("InsertSalesOrderFromQuotation called with SalesOrderNo: {SalesOrderNo}, QuotationNo: {QuotationNo}, AddedBy: {AddedBy}, IsCreateCostCenter: {IsCreateCostCenter}, DefaultCostCenterMaster: {DefaultCostCenterMaster}",
-                    model.SalesOrderNo, model.QuoteNo, model.AddedBy, model.IsCreateCostCenterFromSalesOrder, model.CostAllocationMasterGroup);
+            dbContext.Tbl60201salesOrderMasters.Add(entity);
+            await dbContext.SaveChangesAsync();
 
-                var sql = "EXEC sp600_04InsertToSalesOrderFromQuotation @SalesOrderNo, @QuotationNo, @AddedBy, @IsCreateCostCenterFromSalesOrder, @DefaultCostCenterMasterFromSalesOrder";
-                var parameters = new[]
-                {
-            new SqlParameter("@SalesOrderNo", model.SalesOrderNo ?? (object)DBNull.Value),
-            new SqlParameter("@QuotationNo", model.QuoteNo ?? (object)DBNull.Value),
-            new SqlParameter("@AddedBy", model.AddedBy ?? (object)DBNull.Value),
-            new SqlParameter("@IsCreateCostCenterFromSalesOrder", model.IsCreateCostCenterFromSalesOrder),
-            new SqlParameter("@DefaultCostCenterMasterFromSalesOrder", model.CostAllocationMasterGroup ?? (object)DBNull.Value)
-        };
+            // Call the stored procedure
+            var salesOrderNoParam = new SqlParameter("@SalesOrderNo", model.SalesOrderNo ?? (object)DBNull.Value);
+            var clientNameParam = new SqlParameter("@ClientName", model.ClientCode ?? (object)DBNull.Value); // Use actual client name if available
+            var addedByParam = new SqlParameter("@AddedBy", model.AddedBy ?? User.Identity?.Name ?? (object)DBNull.Value);
+            var isCreateCostCenterParam = new SqlParameter("@IsCreateCostCenterFromSalesOrder", true);
+            var defaultCostCenterParam = new SqlParameter("@DefaultCostCenterMasterFromSalesOrder", model.CostAllocationMasterGroup ?? (object)DBNull.Value);
+            var salesPersonNameParam = new SqlParameter("@SalesPersonName", model.SalesPersonCode ?? (object)DBNull.Value);
 
-                await using var transaction = await dbContext.Database.BeginTransactionAsync();
+            await dbContext.Database.ExecuteSqlRawAsync(
+                "EXEC [dbo].[sp600_04InsertToCostCenterFromSalesOrder] @SalesOrderNo, @ClientName, @AddedBy, @IsCreateCostCenterFromSalesOrder, @DefaultCostCenterMasterFromSalesOrder, @SalesPersonName",
+                salesOrderNoParam, clientNameParam, addedByParam, isCreateCostCenterParam, defaultCostCenterParam, salesPersonNameParam
+            );
 
-                await dbContext.Database.ExecuteSqlRawAsync(sql, parameters);
-
-                await transaction.CommitAsync();
-
-                return Ok(new { message = "Sales order inserted successfully from quotation.", success = true });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "❌ Error executing stored procedure sp600_04InsertToSalesOrderFromQuotation");
-                return StatusCode(500, new
-                {
-                    message = ex.Message,
-                    inner = ex.InnerException?.Message
-                });
-            }
+            return Ok(new { success = true, message = "Sales order saved successfully." });
         }
 
 
 
+
     }
 
 
 
 
 
-    public class InsertSalesOrderFromQuotationDto
-    {
-        public string SalesOrderNo { get; set; }
-        public string QuoteNo { get; set; }
-        public string AddedBy { get; set; }
-        public bool IsCreateCostCenterFromSalesOrder { get; set; }
-        public string CostAllocationMasterGroup { get; set; }
-    }
 
 
 }

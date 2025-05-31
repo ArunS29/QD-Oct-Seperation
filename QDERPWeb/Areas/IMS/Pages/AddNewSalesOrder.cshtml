@@ -1022,21 +1022,26 @@
         }  
         
       
-     $(function () {
-    $.get("/api/SalesOrders/SalesOrderNoIncrease")
-                .done(function (response) {
-                if (response && response.salesOrderNo) {
-                    const salesOrderTextBox = $("#SalesOrderNO").dxTextBox("instance");
-                    salesOrderTextBox.option("value", response.salesOrderNo);
-                } else {
-                    DevExpress.ui.notify("Sales order number not found", "warning", 2000);
-                }
-            })
-            .fail(function (jqXHR, textStatus, errorThrown) {
-                DevExpress.ui.notify("Failed to fetch Sales Order NO", "error", 2000);
-                console.error("AJAX Error:", jqXHR.responseText, errorThrown);
-            });
-    });
+      $(function () {
+          const salesOrderTextBox = $("#SalesOrderNO").dxTextBox("instance");
+          if (!salesOrderTextBox) {
+              console.warn("SalesOrderNO TextBox not initialized yet.");
+              return;
+          }
+
+          $.get("/api/SalesOrders/SalesOrderNoIncrease")
+              .done(function (response) {
+                  if (response && response.salesOrderNo) {
+                      salesOrderTextBox.option("value", response.salesOrderNo);
+                  } else {
+                      DevExpress.ui.notify("Sales order number not found", "warning", 2000);
+                  }
+              })
+              .fail(function (jqXHR, textStatus, errorThrown) {
+                  DevExpress.ui.notify("Failed to fetch Sales Order NO", "error", 2000);
+                  console.error("AJAX Error:", jqXHR.responseText, errorThrown);
+              });
+      });
       //ProjectID
         function onCodeSelected(e) {
         const selected = e.selectedRowsData[0];
@@ -1137,39 +1142,40 @@
           // Inject the logged-in user name from Razor server-side to JS variable
     var currentUserName = '@User.Identity.Name';
 
+
+
+
     $("#btnSave").on("click", function (e) {
-        var SalesOrderNo = $("#SalesOrderNO").dxTextBox("instance").option("value");
-        var QuotationNo = $("#QuotationNo").dxTextBox("instance").option("value");
-        var DefaultCostCenterMasterFromSalesOrder = $("#CostCenter").dxDropDownBox("instance").option("value");
-
-        const isCreateCostCenter = true;
-
-        const data = {
-            SalesOrderNo,
-            QuotationNo,
-            DefaultCostCenterMasterFromSalesOrder,
-            IsCreateCostCenterFromSalesOrder: isCreateCostCenter,
-            AddedBy: currentUserName  // pass actual username here
+        var model = {
+            SalesOrderNo: $("#SalesOrderNO").dxTextBox("instance").option("value"),
+            SalesOrderDate: $("#SalesOrderDate").dxDateBox("instance").option("value"),
+            ClientPono: $("#ClientPoNo").dxTextBox("instance").option("value"),
+            ClientPodate: $("#ClientPoDate").dxDateBox("instance").option("value"),
+            QuoteNo: $("#QuotationNo").dxTextBox("instance").option("value"),
+            QuoteDate: $("#QuotationDate").dxDateBox("instance").option("value"),
+            ClientRefNo: $("#ClientRefName").dxTextBox("instance").option("value"),
+            ClientCode: $("#ClientNames").dxDropDownBox("instance").option("value"),
+            Project: $("#Project").dxDropDownBox("instance").option("value"),
+            SalesPersonCode: $("#SalesPerson").dxDropDownBox("instance").option("value"),
+            AdditionsText: $("#AdditionsText").dxTextBox("instance").option("value"),
+            DiscountsText: $("#DeductionsText").dxTextBox("instance").option("value"),
+            CostAllocationMasterGroup: $("#CostCenter").dxDropDownBox("instance").option("value"),
+            // Add other fields as needed
         };
 
         $.ajax({
-            url: "/api/SalesOrders/InsertSalesOrderFromQuotation",
+            url: "/api/SalesOrders/SaveSalesOrder",
             type: "POST",
             contentType: "application/json",
-            data: JSON.stringify(data),
-            success: function (res) {
-                DevExpress.ui.notify("Sales Order Created Successfully", "success", 3000);
+            data: JSON.stringify(model),
+            success: function (response) {
+                DevExpress.ui.notify(response.message, "success", 2000);
             },
             error: function (xhr) {
-                const message = xhr.responseJSON?.message || "Failed to create Sales Order";
-                DevExpress.ui.notify(message, "error", 3000);
-                console.error("❌ AJAX Error:", xhr.responseJSON || xhr);
+                DevExpress.ui.notify("Failed to save sales order.", "error", 2000);
             }
         });
-    });
-
-
-
+     });
 
 
 </script>
