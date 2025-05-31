@@ -77,7 +77,7 @@
             .ID("btnRefresh")
             .Icon("refresh")
             .Text(new JS("formatMessage('Refresh')"))
-            .Width(50)
+            .Width(150)
             .OnClick("refreshGrid")
             )
     </div>
@@ -85,7 +85,7 @@
     @(Html.DevExtreme().DropDownButton()
         .ID("ddButtonLayout")
         .Icon("smalliconslayout")
-        .Width(50)
+        .Width(150)
         .Text(new JS("formatMessage('Layout')"))
         .DropDownOptions(options => options.Width(230))
         .Items(items =>
@@ -114,7 +114,7 @@
             .ID("btnToggleSearch")
             .Icon("search")
             .Text(new JS("formatMessage('Search')"))
-            .Width(50)
+            .Width(150)
             .OnClick("toggleFilterRow")
             )
     </div>
@@ -125,7 +125,7 @@
         @(Html.DevExtreme().Button()
             .ID("btntoggleGroupPanel")
             .Icon("hierarchy")
-            .Width(50)
+            .Width(150)
             .Text(new JS("formatMessage('Group')"))
             .OnClick("toggleGroupPanel")
             )
