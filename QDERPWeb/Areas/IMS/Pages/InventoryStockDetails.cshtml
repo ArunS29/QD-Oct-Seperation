@@ -9,7 +9,7 @@
 @{
     var enteredBy = HttpContext.Session.GetString("UserName");
     var enteredOn = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
-    var modifiedBy = "adminUser"; // Replace with real logic
+    var modifiedBy = HttpContext.Session.GetString("UserName");
     var modifiedOn = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
 }
 <style>
@@ -2742,13 +2742,32 @@
           });
       });
 
-        function OpeningBalanceOPB(){
-        const url = `/${tenantName}/IMS/OpeningBalance`;
-        const title = "";
-            openModal(url, title);
+    function OpeningBalanceOPB() {
+        // Get instances safely
+        const gscodeInstance = $("#StockNoItemCode").dxTextBox("instance");
+        const descriptionInstance = $("#DetailedDescription").dxTextArea("instance");
+
+        // Check if both controls exist
+        if (!gscodeInstance || !descriptionInstance) {
+            console.warn("DevExtreme controls not initialized.");
+            return;
+        }
+
+        // Safely get values
+        const gscode = gscodeInstance.option("value") || '';
+        const description = descriptionInstance.option("value") || '';
+
+        // Encode the parameters to ensure URL safety
+        const url = `/${tenantName}/IMS/OpeningBalance?gscode=${encodeURIComponent(gscode)}&description=${encodeURIComponent(description)}&modal=true`;
+        openModal(url, "Opening Balance");
     }
 
-          //english text convert to arabic
+
+
+
+
+
+         
 
     async function translateToArabic(text) {
 
