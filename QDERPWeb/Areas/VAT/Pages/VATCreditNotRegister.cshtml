@@ -55,7 +55,7 @@
 		overflow: hidden;
 	}
 
-	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddReport123,#btnColumnChooser)) {
+	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddReport123)) {
 		display: none !important;
 	}
 	#overlay-frame {
@@ -825,7 +825,7 @@
 	}
 	$(document).ready(function () {
 		$(".limited-footer .btn-containerIvoiceEdit").each(function () {
-			if (!$(this).find("#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddButtonPayment,#ddReport123,btnColumnChooser").length) {
+			if (!$(this).find("#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddReport123").length) {
 				$(this).remove();
 			}
 		});

@@ -4068,30 +4068,21 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                 try
                 {
                     bool IsDirect = false;
-
                     var UserName = HttpContext.Session.GetString("UserName");
-
-        //            if (string.IsNullOrEmpty(debitNoteNo))
-        //            {
-        //                return BadRequest(new { Message = "Debit Note number is required." });
-        //            }
-
-        //            var voucher = dbContext.Tbl20172VatdebitNoteMasters
-        //                .FirstOrDefault(v => v.DebitNoteNo == debitNoteNo);
-
-        //            if (voucher == null)
-        //            {
-        //                return NotFound(new { Message = "Debit Note not found." });
-        //            }
-
+                    if (string.IsNullOrEmpty(DebitNoteNo))
+                    {
+                        return BadRequest(new { Message = "Debit number is required." });
+                    }
+                    var voucher = dbContext.Tbl20172VatdebitNoteMasters.FirstOrDefault(v => v.DebitNoteNo == DebitNoteNo);
+                    if (voucher == null)
+                    {
+                        return NotFound(new { Message = "DebitNoteNo not found." });
+						                    }
                     if (voucher.IsPosted != true)
                     {
-
-                        // Update the fields
                         voucher.IsPosted = true;
                         voucher.PostedOn = DateTime.Now;
                         voucher.PostedBy = UserName;
-
                         int JustAddedVoucherEntryNoSubLedger = 0;
                         int JustAddedVoucherEntryNoCostAlloc = 0;
                         bool IsCashOrBankAccount = false;
@@ -4129,8 +4120,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             }
             return Unauthorized(new { message = "Invalid tenant.", success = false });
 
-        //}
-
+        }
 
         [HttpGet]
         public async Task<ActionResult> GetPurchaseMasterInvoiceDetails(string InvoiceNo)

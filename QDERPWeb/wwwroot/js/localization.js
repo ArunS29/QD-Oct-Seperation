@@ -2646,7 +2646,7 @@
         "Create VAT Invoice": "Create VAT Invoice",
         "Invoice or Collection Report": "Invoice or Collection Report",
         "Sales Reporting In Details": "Sales Reporting In Details",
-
+        "By Quarter": "By Quarter",
     },
     "ar": {
         "Sales Reporting In Details": "تقرير المبيعات بالتفصيل",
@@ -4835,8 +4835,8 @@
         "Total Cost:": "إجمالي التكلفة:",
         "Supplier Ledger No": "رقم دفتر المورد",
         "Supplier Type": "نوع المورد",
-        "Additional Cost On Items": "تكلفة إضافية على الأصناف"
-
+        "Additional Cost On Items": "تكلفة إضافية على الأصناف",
+        "By Quarter": "حسب الربع",
     }
 };
 
