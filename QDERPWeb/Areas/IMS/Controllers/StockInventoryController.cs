@@ -1322,6 +1322,41 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
+        [HttpGet]
+        public async Task<IActionResult> GetOpeningBalanceByGscode(string gscode)
+        {
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized("Invalid tenant context.");
+
+                if (string.IsNullOrEmpty(gscode))
+                    return BadRequest("Gscode is required.");
+
+                var data = await dbContext.Tbl60502materialReceiptChildren
+                    .Where(x => x.Gscode == gscode)
+                    .Select(x => new
+                    {
+                        StockCode = x.Gscode,
+                        Unit = x.UnitRateMethod, // You may want to map this to a unit string if needed
+                        UnitPrice = x.UnitPrice,
+                        Quantity = x.QtyReceived,
+                        ExpiryDate = x.ExpiryDate,
+                        BatchNo = x.BatchNo
+                    })
+                    .ToListAsync();
+
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetOpeningBalanceByGscode: {ex.Message}");
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+
+
 
     }
 }

@@ -670,16 +670,16 @@
                         .DataSource(new[] {
                         new { Id = 3, Name = "Issued to Project" } // hardcoded item
                         })
-                        .ValueExpr("Id")             // The value that will be posted (1)
-                        .DisplayExpr("Name")         // What is shown to user ("Issued to Client")
-                        .Value(1)                    // Default selected value
+                        .ValueExpr("Id")             
+                        .DisplayExpr("Name")         
+                        .Value(3)                    
                         .Label("Delivery Type:")
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%")
-                        .Disabled(true)              // Make it readonly
+                        .Disabled(true)              
                         )
                         <!-- Make sure value is posted -->
-                        <input type="hidden" name="DeliveryType" value="1" />
+                        <input type="hidden" name="DeliveryType" value="3" />
                     </div>
 
                     <div class="col-md-4">
@@ -1456,13 +1456,52 @@
                                 }
 
                             });
+                                $("<div>").dxButton({
+                                        icon: "plus",
+                                        hint: "Add new item",
+                                        onClick: function () {
+                                            let url = `/${tenantName}/VAT/VATGoodsandServices`; // ✅ No query parameters
+                                            let title = "Goods and Services";
+                                            openModal(url, title); // Opens the form in a modal
+                                            // Or use: window.location.href = url; if navigating directly
+                                        },
+                                        width: 60,
+                                        height: 30
+                                    }).appendTo($container);
 
-                        });
 
-                    }
+                                    // ✅ Edit icon with navigation
 
-    },
-                            {
+                                    $("<div>").dxButton({
+
+                                        icon: "edit",
+
+                                        hint: "Edit item",
+
+                                        onClick: function () {
+
+                                            //let url = `/${tenantName}/VAT/VATGoodsandServices?AccountHeadID=${encodeURIComponent(acchedid)}`; // Example edit page
+                                          let url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}`; // Example add page
+                                                    let title = "Goods and Services";
+                                                            openModal(url, title);
+                                            //window.location.href = url;
+
+                                        },
+
+                                        width: 60,
+
+                                        height: 30
+
+                                    }).appendTo($container);
+
+                            });
+
+                        
+
+                         }
+
+                    },
+                    {
 
                             dataField: "UnitRateMethod",
 

@@ -1,8 +1,7 @@
 ﻿@page
-@model QD.ERP.Web.Areas.IMS.Pages.RFQwithItemDetailsModel
+@model QD.ERP.Web.Areas.IMS.Pages.PurchaseRequestItemDetailsModel
 @{
 }
-
 <style>
 	.overlay {
 		display: none;
@@ -28,9 +27,6 @@
 		overflow: hidden;
 	}
 
-	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel)) {
-		display: none !important
-	}
 
 	#overlay-frame {
 		width: 100%;
@@ -165,12 +161,16 @@
 		width: 100%;
 		overflow: hidden;
 	}
+
+	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnColumnChooser)) {
+		display: none !important
+	}
 </style>
 
 <input id="formId" value="frm201LedgerView" type="hidden" />
 <div class="title">
 	<div class="header-container">
-		<div id="RequestforQuotationList" class="no-border-input"></div>
+		<div id="Quotation" class="no-border-input"></div>
 	</div>
 </div>
 
@@ -204,6 +204,7 @@
 		.TabIndex(3)
 		)
 
+
 	@(Html.DevExtreme().DropDownButton()
 		.ID("ddBtnShowRecords")
 		.Text(new JS("formatMessage('Show Records')"))
@@ -227,36 +228,53 @@
 		})
 		)
 
-
 </div>
 <div class="dx-field ledgerResult">
-	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60706rfqdetail>()
+	@(
+		Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60609purchaseRequestItemDetail>()
 		.ID("dataGrid")
 		.RemoteOperations(false)
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
-			columns.Add().Caption(" RFQ Details").Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.Rfqno).Caption("RFQ No").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Rfqdate).Caption("Rfq Date").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Mprno).Caption("MPR NO").Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
-				
-				subColumns.AddFor(m => m.SupplierQuotationNo).Caption("Supplier Quotation No").Alignment(HorizontalAlignment.Center);
-				subColumns.AddFor(m => m.SupplierName).Caption("Supplier Name").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Gscode).Caption("GS Code").Alignment(HorizontalAlignment.Center);
-				subColumns.AddFor(m => m.Gsdescrpition).Caption("GS Descrpition").Alignment(HorizontalAlignment.Center);
-				subColumns.AddFor(m => m.QuotedQuantity).Caption("Quoted Quantity").Alignment(HorizontalAlignment.Center);
-				subColumns.AddFor(m => m.UnitDesc).Caption("Unit Desc").Alignment(HorizontalAlignment.Center);
-				subColumns.AddFor(m => m.UnitPrice).Caption("Unit Price").Alignment(HorizontalAlignment.Center);
-				subColumns.AddFor(m => m.ItemDiscount).Caption("Item Discount").Alignment(HorizontalAlignment.Center);
-				subColumns.AddFor(m => m.LineTotalBeforeTax).Caption("Line Total Before Tax").Alignment(HorizontalAlignment.Center);
-				subColumns.AddFor(m => m.LineTotalAfterDisc).Caption("Line Total After Disc").Alignment(HorizontalAlignment.Center);
-				subColumns.AddFor(m => m.IsWonForPo).Caption("Is Won For Po").Alignment(HorizontalAlignment.Center);
-			});
-		
 			
-			
+				columns.AddFor(m => m.Mprno).Caption("MPRNo").Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.Mprno).Caption("MPRNo").Alignment(HorizontalAlignment.Center).Visible(true).GroupIndex(0);
+				columns.AddFor(m => m.Mprdate).Caption("MPR Date").Alignment(HorizontalAlignment.Center).Visible(true).Format("dd-MMM-yyyy");
+				columns.AddFor(m => m.SubmittedOn).Caption("Submitted On").Alignment(HorizontalAlignment.Center).Visible(true);
+					columns.AddFor(m => m.IsVerified).Caption(new JS("formatMessage('Is Verified')")).Alignment(HorizontalAlignment.Center).AllowEditing(true)
+				.CellTemplate(@<text>
+			<div class="dx-icon">
+				<%= data.IsVerified ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+			</div>
+		</text>)
+				.Visible(true);
+					columns.AddFor(m => m.IsApproved).Caption(new JS("formatMessage('Is Approved')")).Alignment(HorizontalAlignment.Center).AllowEditing(true)
+				.CellTemplate(@<text>
+			<div class="dx-icon">
+				<%= data.IsApproved ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+			</div>
+		</text>)
+			.Visible(true);
+				columns.AddFor(m => m.ApprovedOn).Caption("Approved On").Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.Gscode).Caption("GS Code").Alignment(HorizontalAlignment.Center).Visible(true);
+			    columns.AddFor(m => m.Gsdescrpition).Caption("GS Description").Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.UnitDesc).Caption("Unit Desc").Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.QtyRequested).Caption("Qty Requested").Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.RequestedNameRef).Caption("Requested Name Ref").Alignment(HorizontalAlignment.Center).Visible(true);
+
+				columns.AddFor(m => m.ProjectDescription).Caption("Project Description").Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.TypeOfRequest).Caption("Type Of Request").Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.Pono).Caption("PONo").Alignment(HorizontalAlignment.Center).Visible(true);				columns.AddFor(m => m.RequestedNameRef).Caption("Requested Name Ref").Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.Podate).Caption("PO Date").Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.ReceiptStatus).Caption("Receipt Status").Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.ReceiptNo).Caption("Receipt No").Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.ReceiptDate).Caption("Receipt Date").Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.ReceivedQty).Caption("Received Qty").Alignment(HorizontalAlignment.Center).Visible(true);
+
+				columns.AddFor(m => m.BalanceToReceive).Caption("Balance To Receive").Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.TotalIssuedQty).Caption("Total Issued Qty").Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.BalanceToIssue).Caption("Balance To Issue").Alignment(HorizontalAlignment.Center).Visible(true);
 		})
 		.Height(680) // Fixed height for the grid
 		.ColumnAutoWidth(true)
@@ -273,6 +291,8 @@
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
 		.ShowRowLines(true)
+
+		//.OnContextMenuPreparing("onContextMenuPreparing")
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
@@ -284,27 +304,74 @@
 			.StorageKey("gridContainerState");
 		})
 		.OnInitialized("function(e) { loadGridState(); }")
+		.Summary(summary =>
+		{
+			summary.GroupItems(items =>
+			{
+				items.Add().Column("Gsdescrpition")
+			.SummaryType(SummaryType.Count)
+			.ShowInGroupFooter(true)
+			.DisplayFormat(new JS("formatMessage('No of Items: {0}')"));
+				items.Add().Column("QtyRequested")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"
+	function(e) {
+	if (e.value === null || e.value === undefined) {
+	return '';
+	}
+	return e.value.toLocaleString(undefined, {
+	minimumFractionDigits: 2,
+	maximumFractionDigits: 2
+	});
+	}
+	");
+			});
+			summary.TotalItems(items =>
+			{
+
+				items.Add().Column("QtyRequested")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"
+	function(e) {
+	if (e.value === null || e.value === undefined) {
+	return '';
+	}
+	return e.value.toLocaleString(undefined, {
+	minimumFractionDigits: 2,
+	maximumFractionDigits: 2
+	});
+	}
+	");
+				
+			});
+		})
 		)
 
-
-
+	)
 
 </div>
 <div id="invoiceErrorPopup"></div>
 
 <script>
 		 $(function () {
-		ddBtnShowRecords_click('range');
-	$("#RequestforQuotationList").dxTextBox({
-	text: formatMessage("RFQ with Item Details"),
+	$("#Quotation").dxTextBox({
+				text: formatMessage("Purchase Request with Item Details"),
 		readOnly: true,
 		onContentReady: function (e) {
 		$(e.element).addClass("dx-textbox-heading");
 		}
 		});
 	});
-
-		function ddBtnShowRecords_click(duration) {
+	$(function () {
+		var now = new Date();
+		var firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+		var tillmonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+		$("#frmdateBox").dxDateBox("instance").option("value", firstDay);
+		$("#todateBox").dxDateBox("instance").option("value", tillmonth);
+		ddBtnShowRecords_click('range');
+	});
+	function ddBtnShowRecords_click(duration) {
 		 var frmDateBox = $("#frmdateBox").dxDateBox("instance");
 			var toDateBox = $("#todateBox").dxDateBox("instance");
 			var frmDate = new Date(frmDateBox.option("value"));
@@ -364,7 +431,7 @@
 	toDate = toDate.toISOString().split('T')[0];
 
 				$.ajax({
-			url: '/api/RequestforQuotationList/GetRFQwithItemDetails',
+			url: '/api/MaterialRequestEnquiriesDetails/GetPurchaseRequestDetails',
 		type: 'GET',
 		data: {
 			fromDate: frmDate,
@@ -383,7 +450,96 @@
 
 
 	}
+	function onContextMenuPreparing(e) {
+		if (e.target === "content" && e.row && e.row.data) {
+			const rowData = e.row.data;
+			const QuoteNo = encodeURIComponent(rowData.QuoteNo);
+			const tenantName = window.tenantName || "defaultTenant";
 
-
-
+			e.items = [
+				{
+					text: "Edit Quotation",
+					icon: "edit",
+					onItemClick: function () {
+						const url = `/${tenantName}/IMS/AddNewQuotation?QuoteNo=${QuoteNo}`;
+						window.location.href = url;
+					}
+				},
+				{
+					text: "Duplicate Quotation",
+					icon: "doc",
+					onItemClick: function () {
+						const url = `/${tenantName}/IMS/CreatePurchaseOrder?Rfqno=${Rfqno}`;
+						window.location.href = url;
+					}
+				},
+				{
+					text: "Delete Quotation",
+					icon: "trash",
+					onItemClick: function () {
+						if (confirm(`Are you sure you want to delete RFQ ${Rfqno}?`)) {
+							// Replace with your actual delete logic, e.g., an AJAX call
+							fetch(`/${tenantName}/IMS/DeleteRFQ?Rfqno=${Rfqno}`, {
+								method: 'DELETE'
+							})
+								.then(response => {
+									if (response.ok) {
+										alert(`RFQ ${Rfqno} deleted successfully.`);
+										// Refresh the DataGrid or remove the row
+										e.component.refresh();
+									} else {
+										alert(`Failed to delete RFQ ${Rfqno}.`);
+									}
+								})
+								.catch(error => {
+									console.error('Error deleting RFQ:', error);
+									alert('An error occurred while deleting the RFQ.');
+								});
+						}
+					}
+				},
+				{
+					text: "Unlock the Quotation",
+					icon: "unlock",
+					onItemClick: function () {
+						// Replace with your actual unlock logic, e.g., an AJAX call
+						fetch(`/${tenantName}/IMS/UnlockRFQ?Rfqno=${Rfqno}`, {
+							method: 'POST'
+						})
+							.then(response => {
+								if (response.ok) {
+									alert(`RFQ ${Rfqno} unlocked successfully.`);
+									// Optionally refresh the DataGrid
+									e.component.refresh();
+								} else {
+									alert(`Failed to unlock RFQ ${Rfqno}.`);
+								}
+							})
+							.catch(error => {
+								console.error('Error unlocking RFQ:', error);
+								alert('An error occurred while unlocking the RFQ.');
+							});
+					}
+				},
+				{
+					text: "Revise Quotation",
+					icon: "preferences",
+					onItemClick: function () {
+						const url = `/${tenantName}/IMS/CreatePurchaseOrder?Rfqno=${Rfqno}`;
+						window.location.href = url;
+					}
+				},
+				{
+					text: "Create Sales Order",
+					icon: "add",
+					onItemClick: function () {
+						const url = `/${tenantName}/IMS/CreatePurchaseOrder?Rfqno=${Rfqno}`;
+						window.location.href = url;
+					}
+				}
+			];
+		}
+	}
 </script>
+
+

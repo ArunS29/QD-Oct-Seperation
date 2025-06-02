@@ -53,7 +53,7 @@
         /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
     }
 
-    .limited-footer .btn-container:not(:has(#ddButtonLayout,btnRefresh,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel,#btnColumnChooser,#btnAddSuppliers,)) {
+    .limited-footer .btn-container:not(:has(#ddButtonLayout,btnRefresh,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel,#btnColumnChooser,#btnAddSuppliers)) {
         display: none !important;
     }
 
@@ -105,20 +105,59 @@
                 columns.Add().DataField("SupplierCategory").Caption("Supplier Category").Visible(true).GroupIndex(0);
                 columns.Add().DataField("SupplierCode").Caption("Supplier Code").Visible(true);
                 columns.Add().DataField("SupplierName").Caption("Supplier Name").Visible(true);
+            columns.Add().DataField("SupplierCategory").Caption("Supplier Type").Visible(true);
                 columns.Add().DataField("ContactPerson").Caption("Contact Person").Visible(true);
                 columns.Add().DataField("ContactMobile1").Caption("Contact Mobile").Visible(true);
                 columns.Add().DataField("ContactPhone1").Caption("Contact Phone").Visible(true);
                 columns.Add().DataField("ContactPersonTitle").Caption("Contact Person Title").Visible(true);
-                columns.Add().DataField("SupplierAccountLedgerNo").Caption("Supplier AccountLedger No").Visible(true);
-          
+        columns.Add().DataField("SupplierAccountLedgerNo").Caption("Supplier Ledger No").Visible(true);
+
+
+            columns.Add().DataField("SupplierCategoryCode").Caption("Supplier Category Code").Visible(false);
+            columns.Add().DataField("CategoryCode").Caption("Category Code").Visible(false);
+            columns.Add().DataField("SupplierName").Caption("Supplier Name").Visible(false);
+            columns.Add().DataField("SupplierNameAr").Caption("Supplier Name (Arabic)").Visible(false);
+            columns.Add().DataField("SupplierAddress").Caption("Supplier Address").Visible(false);
+            columns.Add().DataField("ContactMobile2").Caption("Contact Mobile 2").Visible(false);
+            columns.Add().DataField("ContactPhone2").Caption("Contact Phone 2").Visible(false);
+            columns.Add().DataField("ContactEmail").Caption("Contact Email").Visible(false);
+            columns.Add().DataField("ContactFaxNo").Caption("Contact Fax No").Visible(false);
+            columns.Add().DataField("ContactRemarks").Caption("Contact Remarks").Visible(false);
+            columns.Add().DataField("BusinessCard1").Caption("Business Card 1").Visible(false);
+            columns.Add().DataField("BusinessCard2").Caption("Business Card 2").Visible(false);
+            columns.Add().DataField("IsDiscontinued").Caption("Is Discontinued").Visible(false);
+            columns.Add().DataField("ReasonDiscontinued").Caption("Reason Discontinued").Visible(false);
+            columns.Add().DataField("CreatedBy").Caption("Created By").Visible(false);
+            columns.Add().DataField("CreatedOn").Caption("Created On").Visible(false);
+            columns.Add().DataField("ModifiedBy").Caption("Modified By").Visible(false);
+            columns.Add().DataField("ModifiedOn").Caption("Modified On").Visible(false);
+            columns.Add().DataField("DiscontinuedBy").Caption("Discontinued By").Visible(false);
+            columns.Add().DataField("DiscontinuedOn").Caption("Discontinued On").Visible(false);
+            columns.Add().DataField("DateVisitedFirst").Caption("Date Visited First").Visible(false);
+            columns.Add().DataField("SupplierLedgerName").Caption("Supplier Ledger Name").Visible(false);
+            columns.Add().DataField("SupplierVatno").Caption("Supplier VAT No").Visible(false);
             })
-            .Summary(s => s.TotalItems(items =>
+        .Summary(summary =>
+        {
+            summary.GroupItems(items =>
             {
-                // Count for ClientName column
-                items.Add().Column("SupplierCode")
-                .SummaryType(SummaryType.Count)
-                .DisplayFormat(" Totan no.of Suppliers: {0}");
-            }))
+                items.Add().Column("SupplierName")
+            .SummaryType(SummaryType.Count)
+            .ShowInGroupFooter(true)
+            .DisplayFormat(new JS("formatMessage('No of Suppliers: {0}')"));
+
+            });
+            summary.TotalItems(items =>
+            {
+
+                items.Add().Column("SupplierName")
+            .SummaryType(SummaryType.Count)
+            .DisplayFormat("Total No of Suppliers: {0}");
+
+
+
+            });
+        })
         )
 
 </div>
@@ -165,7 +204,7 @@
                 $(e.element).addClass("dx-textbox-heading");
             }
         });
-    });s
+    });
 </script>
 
 

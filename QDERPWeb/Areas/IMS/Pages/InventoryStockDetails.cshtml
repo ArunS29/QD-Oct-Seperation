@@ -9,7 +9,7 @@
 @{
     var enteredBy = HttpContext.Session.GetString("UserName");
     var enteredOn = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
-    var modifiedBy = "adminUser"; // Replace with real logic
+    var modifiedBy = HttpContext.Session.GetString("UserName");
     var modifiedOn = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
 }
 <style>
@@ -1881,7 +1881,6 @@
                     .Type(ButtonType.Default)
                     .Width(140)
                     .ElementAttr("style", "padding:10px; color:black;margin-right:10px;")
-
                     )
                 </div>
 
@@ -1899,12 +1898,12 @@
                     .ShowRowLines(true)
                     .RowAlternationEnabled(true)
                     .ColumnAutoWidth(true)
-                    .DataSource(new JS("[]")) // Must be an empty array for dynamic row adding
+                    .DataSource(new JS("[]")) // Empty at start
                     .OnInitialized("onUnitConversionGridInitialized")
                     .Editing(editing =>
                     {
                         editing.Mode(GridEditMode.Row);
-                        editing.AllowAdding(false); // Important
+                        editing.AllowAdding(false);
                         editing.AllowUpdating(true);
                         editing.UseIcons(true);
                     })
@@ -1912,9 +1911,9 @@
                     {
                         columns.Add()
                         .DataField("UnitCodeOfConversion")
+                        .Width(300)
                         .Caption(new JS("formatMessage('Unit Code Of Conversion')"))
-                        .CellTemplate(new JS("unitCodeDropDownTemplate")); // ✅ JS function reference
-                    
+                        .EditCellTemplate(new JS("unitCodeDropDownEditor")); // ✅ Use as editor
 
                         columns.Add()
                         .DataField("UnitConverted")
@@ -1928,23 +1927,28 @@
                     )
 
 
+
+
                 </div>
                 <script>
                     let UnitConversionGridInstance = null;
                     let unitCodeLookupData = [];
 
+                    // ✅ Single correct version of unitCodeDropdown loader
                     function loadUnitCodeDropdown() {
-                        return $.getJSON("/api/StockInventory/GetUnitCodeOptions")
-                            .then(data => {
-                                unitCodeLookupData = data;
-                            });
+                        return $.ajax({
+                            url: "/api/StockInventory/GetUnitCodeOptions", // Update as per your API
+                            method: "GET",
+                            dataType: "json"
+                        }).then(function (response) {
+                            unitCodeLookupData = response;
+                        });
                     }
 
                     function onUnitConversionGridInitialized(e) {
                         UnitConversionGridInstance = e.component;
                         console.log("Grid initialized");
                     }
-
 
                     function loadUnitConversionGrid(gscode) {
                         if (!UnitConversionGridInstance) return;
@@ -1956,9 +1960,9 @@
 
                         UnitConversionGridInstance.option("dataSource", dataStore);
                     }
+
                     function addNewUnitRow() {
                         if (UnitConversionGridInstance) {
-                            const dataSource = UnitConversionGridInstance.option("dataSource") || [];
                             const currentData = UnitConversionGridInstance.getDataSource().items();
 
                             const newRow = {
@@ -1971,8 +1975,7 @@
                             UnitConversionGridInstance.option("dataSource", [...currentData]);
                         }
                     }
-
-                    $(function () {
+                     $(function () {
                         loadUnitCodeDropdown().then(() => {
                             $("#addButton").dxButton({
                                 text: "Add New Row",
@@ -1981,23 +1984,32 @@
                             });
                         });
                     });
-                        function unitCodeDropDownTemplate(cellElement, cellInfo) {
+                   
+
+                    // ✅ Dropdown Editor Template
+                    function unitCodeDropDownEditor(cellElement, cellInfo) {
                         $("<div>").appendTo(cellElement).dxDropDownBox({
                             value: cellInfo.value,
                             valueExpr: "UnitCode",
                             displayExpr: function (item) {
-                                return item ? item.UnitCode + " | " + item.UnitType + " | " + item.UnitDecs : "";
+                                return item ? `${item.UnitType}` : "";
                             },
-                            showClearButton: true,
                             dataSource: unitCodeLookupData,
+                            showClearButton: true,
+                            dropDownOptions: { width: 600 },
+                            onValueChanged: function (e) {
+                                const selected = unitCodeLookupData.find(x => x.UnitCode === e.value);
+                                if (selected) {
+                                    cellInfo.setValue(selected.UnitCode);
+                                }
+                            },
                             contentTemplate: function (e) {
-                                const value = e.component.option("value");
                                 return $("<div>").dxDataGrid({
                                     dataSource: unitCodeLookupData,
                                     keyExpr: "UnitCode",
                                     height: 300,
                                     selection: { mode: "single" },
-                                    selectedRowKeys: value ? [value] : [],
+                                    selectedRowKeys: e.component.option("value") ? [e.component.option("value")] : [],
                                     onSelectionChanged: function (selectedItems) {
                                         const selected = selectedItems.selectedRowsData[0];
                                         if (selected) {
@@ -2009,12 +2021,14 @@
                                     columns: [
                                         { dataField: "UnitCode", caption: "Unit Code" },
                                         { dataField: "UnitType", caption: "Unit Type" },
-                                        { dataField: "UnitDecs", caption: "Unit Description" }
+                                        { dataField: "UnitDesc", caption: "Unit Description" }
                                     ]
                                 });
                             }
                         });
                     }
+
+                    
 
                 </script>
             </div>
@@ -2423,7 +2437,7 @@
                         }
 
                         const dataStore = new DevExpress.data.CustomStore({
-                            key: "PurchaseVoucherNo", // Ensure this key is unique
+                            key: "Pono", // Ensure this key is unique
                             load: function () {
                                 console.log("Fetching Purchase Grid Data for GsCode:", gscode);
                                 return $.getJSON("/api/StockInventory/GetPurchaseGridData", { gscode: gscode })
@@ -2431,11 +2445,10 @@
                                         console.log("Purchase Grid Data Loaded", data);
                                         return data;
                                     })
-                                    .fail((jqXHR, textStatus, errorThrown) => {
-                                        console.error("API call failed:", textStatus, errorThrown);
-                                        alert("Failed to load data: " + textStatus);
-                                        throw new Error("API call failed: " + textStatus);
-                                    });
+                                             .fail(() => {
+                        alert("Failed to load purchase grid data.");
+                    });
+                                  
                             }
                         });
 
@@ -2623,11 +2636,12 @@
                             $("#EnteredBy").dxTextArea("instance").option("value", data.CreatedBy);
                             $("#ModifiedBy").dxTextArea("instance").option("value", data.ModifiedBy);
                             $("#ItemDiscontinued").dxCheckBox("instance").option("value", data.IsDiscontinued);
-
-                            if (data.ImageUrl) {
-                                $("#imgBox1").html(`<img src="${data.ImageUrl}" alt="Item Image" style="max-width:100px; max-height:100px;" />`);
+                                // Load Item Image (Base64)
+                            if (data.ItemImage) {
+                                const imgHtml = `<img src="data:image/png;base64,${data.ItemImage}" alt="Item Image" style="max-width: 100%; height: auto;" />`;
+                                document.getElementById("imgBox1").innerHTML = imgHtml;
                             } else {
-                                $("#imgBox1").html(`<span>No image data</span>`);
+                                document.getElementById("imgBox1").innerHTML = "<span>No image data</span>";
                             }
 
                             $("#MinQty").dxNumberBox("instance").option("value", data.MinQty);
@@ -2703,13 +2717,32 @@
           });
       });
 
-        function OpeningBalanceOPB(){
-        const url = `/${tenantName}/IMS/OpeningBalance`;
-        const title = "";
-            openModal(url, title);
+    function OpeningBalanceOPB() {
+        // Get instances safely
+        const gscodeInstance = $("#StockNoItemCode").dxTextBox("instance");
+        const descriptionInstance = $("#DetailedDescription").dxTextArea("instance");
+
+        // Check if both controls exist
+        if (!gscodeInstance || !descriptionInstance) {
+            console.warn("DevExtreme controls not initialized.");
+            return;
+        }
+
+        // Safely get values
+        const gscode = gscodeInstance.option("value") || '';
+        const description = descriptionInstance.option("value") || '';
+
+        // Encode the parameters to ensure URL safety
+        const url = `/${tenantName}/IMS/OpeningBalance?gscode=${encodeURIComponent(gscode)}&description=${encodeURIComponent(description)}&modal=true`;
+        openModal(url, "Opening Balance");
     }
 
-          //english text convert to arabic
+
+
+
+
+
+         
 
     async function translateToArabic(text) {
 
