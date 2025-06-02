@@ -3108,7 +3108,7 @@ public partial class ERPMasterWtDataContext : DbContext
 
     public virtual DbSet<Tbl60104quotationItemCost> Tbl60104quotationItemCosts { get; set; }
 
-    public virtual DbSet<Tbl60501materialReceiptMaster> Tbl60105quotationCostMasters { get; set; }
+    public virtual DbSet<Tbl60105quotationCostMaster> Tbl60105quotationCostMasters { get; set; }
 
     public virtual DbSet<Tbl60106quoteCostDistribution> Tbl60106quoteCostDistributions { get; set; }
 
