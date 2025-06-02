@@ -198,12 +198,11 @@
                 )
         </div>
 
-        <div class="form-row multi-column" style="display:flex; gap:20px;">
+        <div class="form-row multi-column" style="display:flex; gap:30px;">
             <div>
                 <label for="StoreId" class="form-label">Store Code</label>
                 @(Html.DevExtreme().TextBox()
                     .ID("StoreId")
-                    .Width("55%")
                     .Name("StoreId")
                     .Placeholder("Enter Store Code")
                     .ValidationRules(rules =>
@@ -236,7 +235,7 @@
                             .Text("Add")
                             .Type(ButtonType.Success)
                             .Icon("plus")
-                            .Width("100px")
+                            .Width("100%")
                             .OnClick("onAddStoreClick")
                             )
                     </div>
@@ -286,13 +285,24 @@
         </div>
 
         <br />
-
+        <div style="display:flex; gap:1%;">
+            <div class="action-buttons">
+                @(Html.DevExtreme().Button()
+                    .Text("Back")
+                    .Icon("arrowleft")
+                    .OnClick("Goback")
+                    .Width(120)
+                    .Type(ButtonType.Default))
+            </div>
        
 
     </div>
 </div>
 
 <script>
+    function Goback() {
+		window.parent.closeModal();
+	}
     $(function () {
         // Set the header title text box (readonly)
         $("#StockDetailsItemStore").dxTextBox({

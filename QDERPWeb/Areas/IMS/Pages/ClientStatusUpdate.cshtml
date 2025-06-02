@@ -349,7 +349,7 @@
             console.log("getdat:",data);
             if (data) {
                 $("#statusId").dxTextBox("instance").option("value", data.ClientStatusNo);
-                $("#GetClientDropDown").dxDropDownBox("instance").option("value", data.ClientCode);
+                $("#GetClientDropDown").dxDropDownBox("instance").option("value", data.Status);
                 $("#reportedBy").dxTextBox("instance").option("value", data.ReportedBy);
                 $("#reportedOn").dxDateBox("instance").option("value", data.ReportedOn);
                 $("#reportRemarks").dxTextArea("instance").option("value", data.StatusRemarks);
@@ -386,7 +386,7 @@
     }
 
     function onBackToList() {
-        DevExpress.ui.notify("Returning to list", "info", 1000);
+          window.parent.closeModal();
     }
 
          function dataGridSelectionChanged(e) {
