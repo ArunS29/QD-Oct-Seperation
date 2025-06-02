@@ -544,7 +544,7 @@
             .Width(50)
             .Text(new JS("formatMessage('Add Purchase Order')"))
             .ElementAttr(new { style = "display: none;" })
-            // .OnClick("toggleGroupPanel")
+            .OnClick("AddPurchaseOrder")
             )
 
     </div>
@@ -1239,8 +1239,6 @@
                 case 'Add Bank Receipts':
                     url = `/${tenantName}/Finance/VoucherEntryReceipts`;
                     title = "Add Bank Receipts";
-                    break;
-                default:
                     console.log("Clicked item: ", e.itemData.text);
                     return;
             }
@@ -1310,7 +1308,13 @@
     function OpenDeliveryNoteDetails() {
         window.location.href = `/${tenantName}/IMS/DeliveryNoteDetails`;
     }
+          function AddPurchaseOrder(){
 
+            const url = `/${tenantName}/IMS/AddNewPurchaseOrder`;
+
+            window.location.href = url;
+
+            }
         function addPaymentButton_click(e) {
         let url = "";
         let title = "Payments";
