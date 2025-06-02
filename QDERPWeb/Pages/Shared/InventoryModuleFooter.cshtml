@@ -472,6 +472,16 @@
 
     </div>
     <div class="btn-container">
+    @(Html.DevExtreme().Button()
+        .ID("btnQuotationDetails")
+        .Icon("add")
+        .Width(50)
+        .Text(new JS("formatMessage('Quotation Details')"))
+        .ElementAttr(new { style = "display: none;" })
+            .OnClick("QuotationDetails")
+        )
+    </div>
+    <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnAddNewQuotation")
             .Icon("add")
@@ -533,7 +543,7 @@
             .Width(50)
             .Text(new JS("formatMessage('Material Receipt Details')"))
             .ElementAttr(new { style = "display: none;" })
-            // .OnClick("toggleGroupPanel")
+            .OnClick("MaterialReceiptDetails")
             )
 
     </div>
@@ -632,7 +642,7 @@
             .Icon("plus")
             .Width(50)
             .Text(new JS("formatMessage('Add New Receipt')"))
-            .DropDownOptions(options => options.Width(230))
+            .DropDownOptions(options => options.Width(350))
             .Items(items =>
             {
                 items.Add().Text(new JS("formatMessage('Add New Material Receipt-From Supplier')"));
@@ -660,6 +670,16 @@
             })
             .OnItemClick("addNewDeliveryNote")
             .ShowArrowIcon(false)
+            )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnPurchaseEditDetails")
+            .Icon("add")
+            .Width(50)
+            .Text(new JS("formatMessage('Request / Enquiry Details')"))
+            .ElementAttr(new { style = "display: none;" })
+            .OnClick("PurchaseEditDetails")
             )
     </div>
     <div class="btn-container">
@@ -813,6 +833,8 @@
                         "btnCancel": { "Visible": false, "Enabled": false },
                         "btnAttach": { "Visible": false, "Enabled": false },
                         "btnUpload": { "Visible": false, "Enabled": false },
+                        "btnQuotationDetails": { "Visible": false, "Enabled": false },
+                        "btnPurchaseEditDetails": { "Visible": false, "Enabled": false },
                         };
 
 
@@ -1307,6 +1329,14 @@
     function AddNewRFQDetails() {
         window.location.href = `/${tenantName}/IMS/RFQwithItemDetails`;
     }
+    function QuotationDetails() {
+        window.location.href = `/${tenantName}/IMS/QuotationDetails`;
+    }
+    function MaterialReceiptDetails() {
+        window.location.href = `/${tenantName}/IMS/MaterialReceiptDetails`;
+    }
+     function PurchaseEditDetails() {
+        window.location.href = `/${tenantName}/IMS/PurchaseRequestItemDetails`;
     function OpenDeliveryNoteDetails() {
         window.location.href = `/${tenantName}/IMS/DeliveryNoteDetails`;
     }
@@ -1618,10 +1648,10 @@
             let url = ''; // Declare once
             switch (e.itemData.text) {
                 case formatMessage('Add New Material Receipt-From Supplier'):
-                    url = `/${tenantName}/IMS/EditMaterialReceiptsNote`;
+                    url = `/${tenantName}/IMS/MaterialReceiptFromSupplier`;
                     break;
                 case formatMessage('Add New Material Receipt-Returned From Project'):
-                    url = `/${tenantName}/IMS/AddNewStoreRequest`;
+                    url = `/${tenantName}/IMS/MaterialReceiptFromSupplier`;
                     break;
                 default:
                     console.log("Clicked item: ", e.itemData.text);

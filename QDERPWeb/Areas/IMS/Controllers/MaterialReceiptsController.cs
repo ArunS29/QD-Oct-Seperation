@@ -82,9 +82,37 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in GetProject: {ex.Message}");
-                return StatusCode(500, new { message = "Internal server error." });
-            }
+				_logger.LogError($"An error occurred while fetching the data : {ex.Message}");
+				return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+			}
         }
-    }
+		[HttpGet]
+		public async Task<IActionResult> GetVatCreditNoteDetails(string frmDate, string toDate)
+		{
+			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				try
+				{
+					if (!DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime from))
+						return BadRequest("Invalid fromDate format. Use MM/dd/yyyy.");
+
+					if (!DateTime.TryParseExact(toDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime to))
+						return BadRequest("Invalid toDate format. Use MM/dd/yyyy.");
+
+					var data = await dbContext.Qry60506materailReceiptDetails
+						.Where(x => x.ReceiptDate >= from && x.ReceiptDate <= to)
+						.ToListAsync();
+
+					return Ok(data);
+				}
+				catch (Exception ex)
+				{
+					_logger.LogError($"An error occurred while fetching the data : {ex.Message}");
+					return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+				}
+			}
+
+			return Unauthorized(new { message = "Invalid tenant." });
+		}
+	}
 }

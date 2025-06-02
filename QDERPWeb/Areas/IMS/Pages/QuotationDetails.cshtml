@@ -1,7 +1,8 @@
-@page
-@model QD.ERP.Web.Areas.IMS.Pages.QuotationModel
+﻿@page
+@model QD.ERP.Web.Areas.IMS.Pages.QuotationDetailsModel
 @{
 }
+
 <style>
 	.overlay {
 		display: none;
@@ -162,7 +163,7 @@
 		overflow: hidden;
 	}
 
-	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnColumnChooser,#btnAddNewQuotation,#btnQuotationDetails)) {
+	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnColumnChooser)) {
 		display: none !important
 	}
 </style>
@@ -231,63 +232,103 @@
 </div>
 <div class="dx-field ledgerResult">
 	@(
-		Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60104quotationViewMaster>()
+		Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60124quotationItemDetail>()
 		.ID("dataGrid")
 		.RemoteOperations(false)
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
-			columns.Add().Caption("Quotation Details").Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.QuoteNo).Caption(" Quote No").Alignment(HorizontalAlignment.Center).Visible(true);
-
-				subColumns.AddFor(m => m.QuoteDate).Caption("Quote Date").Alignment(HorizontalAlignment.Center).Visible(true).Format("dd-MMM-yyyy");
-				subColumns.AddFor(m => m.ClientName).Caption("Client Name").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Mprno).Caption("Mpr no").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.ClientRefNo).Caption("Client Ref No").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.SalesOrderNo).Caption("Sales Order No").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.SalesPersonName).Caption("Sales Person Name").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.IsSubmitted).Caption(" IsSubmitted ").Alignment(HorizontalAlignment.Center)
-			.CellTemplate(@<text>
-		<div class="dx-icon">
-			<%= data.IsSubmitted ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-		</div>
-	</text>).Visible(true);
-				subColumns.AddFor(m => m.IsVerified).Caption(" IsVerified ").Alignment(HorizontalAlignment.Center)
-			.CellTemplate(@<text>
-		<div class="dx-icon">
-			<%= data.IsVerified ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-		</div>
-	</text>).Visible(true);
-				subColumns.AddFor(m => m.IsApproved).Caption(" IsApproved ").Alignment(HorizontalAlignment.Center)
-			.CellTemplate(@<text>
-		<div class="dx-icon">
-			<%= data.IsApproved ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-		</div>
-	</text>).Visible(true);
+			
+				columns.AddFor(m => m.QuoteNo).Caption(" Quote No").Alignment(HorizontalAlignment.Center).Visible(true);
+			columns.AddFor(m => m.QuoteNo).Caption(" Quote No").Alignment(HorizontalAlignment.Center).Visible(true).GroupIndex(0);
+				columns.AddFor(m => m.QuoteDate).Caption("Quote Date").Alignment(HorizontalAlignment.Center).Visible(true).Format("dd-MMM-yyyy");
+				columns.AddFor(m => m.ClientName).Caption("Client Name").Alignment(HorizontalAlignment.Center).Visible(true);
+			columns.AddFor(m => m.Gscode).Caption("Stock Code").Alignment(HorizontalAlignment.Center).Visible(true);
+			columns.AddFor(m => m.Gsdescrpition).Caption("Stock Description").Alignment(HorizontalAlignment.Center).Visible(true);
+			columns.AddFor(m => m.QuotedQuantity).Caption("Quoted Qty").Alignment(HorizontalAlignment.Center).Visible(true);
+			columns.AddFor(m => m.ItemPartNo).Caption("Item Part No").Alignment(HorizontalAlignment.Center).Visible(true);
+			columns.AddFor(m => m.ItemSize).Caption("Item Size").Alignment(HorizontalAlignment.Center).Visible(true);
+			columns.AddFor(m => m.ItemBrand).Caption("Item Brand").Alignment(HorizontalAlignment.Center).Visible(true);
 
 
-			});
-			columns.Add().Caption("No Of Items").Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.NoOfItems).Caption("No Of Items").Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
+			columns.AddFor(m => m.QuoteNo).Caption("Quote No").Visible(false);
+			columns.AddFor(m => m.QuoteDate).Caption("Quote Date").Format("dd-MMM-yyyy").Visible(false);
+			columns.AddFor(m => m.Gscode).Caption("GS Code").Visible(false);
+			columns.AddFor(m => m.Gsdescrpition).Caption("GS Description").Visible(false);
+			columns.AddFor(m => m.ClientRefNo).Caption("Client Ref No").Visible(false);
+			columns.AddFor(m => m.Attention).Caption("Attention").Visible(false);
+			columns.AddFor(m => m.SubjectTitle).Caption("Subject Title").Visible(false);
+			columns.AddFor(m => m.PaymentTerms).Caption("Payment Terms").Visible(false);
+			columns.AddFor(m => m.DeliveryPeriod).Caption("Delivery Period").Visible(false);
+			columns.AddFor(m => m.DeliveryTerms).Caption("Delivery Terms").Visible(false);
+			columns.AddFor(m => m.QuoteValidity).Caption("Quote Validity").Visible(false);
+			columns.AddFor(m => m.Rfqcode).Caption("RFQ Code").Visible(false);
+			columns.AddFor(m => m.ClientContactNo).Caption("Client Contact No").Visible(false);
+			columns.AddFor(m => m.ClientContactEmail).Caption("Client Contact Email").Visible(false);
+			columns.AddFor(m => m.ClientCode).Caption("Client Code").Visible(false);
+			columns.AddFor(m => m.QuotationSummary).Caption("Quotation Summary").Visible(false);
+			columns.AddFor(m => m.QuoteSignatory).Caption("Quote Signatory").Visible(false);
+			columns.AddFor(m => m.QuoteIntro).Caption("Quote Intro").Visible(false);
+			columns.AddFor(m => m.ModeOfRequest).Caption("Mode Of Request").Visible(false);
+			columns.AddFor(m => m.TypeOfRequest).Caption("Type Of Request").Visible(false);
+			columns.AddFor(m => m.AdditionsText).Caption("Additions Text").Visible(false);
+			columns.AddFor(m => m.DiscountsText).Caption("Discounts Text").Visible(false);
+			columns.AddFor(m => m.QuoteDueDate).Caption("Quote Due Date").Format("dd-MMM-yyyy").Visible(false);
+			columns.AddFor(m => m.Project).Caption("Project").Visible(false);
+			columns.AddFor(m => m.SalesPersonName).Caption("Sales Person Name").Visible(false);
+			columns.AddFor(m => m.CompanyName).Caption("Company Name").Visible(false);
+			columns.AddFor(m => m.CompanyFullAddress).Caption("Company Full Address").Visible(false);
+			columns.AddFor(m => m.QuotedQuantity).Caption("Quoted Quantity").Visible(false);
+			columns.AddFor(m => m.UnitType).Caption("Unit Type").Visible(false);
+			columns.AddFor(m => m.UnitDesc).Caption("Unit Description").Visible(false);
+			columns.AddFor(m => m.QuotedUnitPrice).Caption("Quoted Unit Price").Visible(false);
+			columns.AddFor(m => m.QuotedTaxSlab).Caption("Quoted Tax Slab").Visible(false);
+			columns.AddFor(m => m.TaxRate).Caption("Tax Rate").Visible(false);
+			columns.AddFor(m => m.LineOrderNo).Caption("Line Order No").Visible(false);
+			columns.AddFor(m => m.LineTotalBeforeDiscount).Caption("Line Total Before Discount").Visible(false);
+			columns.AddFor(m => m.QuotedDiscount).Caption("Quoted Discount").Visible(false);
+			columns.AddFor(m => m.LineTotalAfterDiscount).Caption("Line Total After Discount").Visible(false);
+			columns.AddFor(m => m.LineTaxAmount).Caption("Line Tax Amount").Visible(false);
+			columns.AddFor(m => m.LineTotalWithTax).Caption("Line Total With Tax").Visible(false);
+			columns.AddFor(m => m.UnitRateMethod).Caption("Unit Rate Method").Visible(false);
+			columns.AddFor(m => m.Expr1).Caption("Expr1").Visible(false);
+			columns.AddFor(m => m.QuoteRemarks).Caption("Quote Remarks").Visible(false);
+			columns.AddFor(m => m.AddlDescription).Caption("Additional Description").Visible(false);
+			columns.AddFor(m => m.QuoteChildId).Caption("Quote Child ID").Visible(false);
+			columns.AddFor(m => m.QuotedUom).Caption("Quoted UOM").Visible(false);
+			columns.AddFor(m => m.ClientName).Caption("Client Name").Visible(false);
+			columns.AddFor(m => m.ClientAddress).Caption("Client Address").Visible(false);
+			columns.AddFor(m => m.TotalBeforeDiscount).Caption("Total Before Discount").Visible(false);
+			columns.AddFor(m => m.Discount).Caption("Discount").Visible(false);
+			columns.AddFor(m => m.TotalAfterDiscount).Caption("Total After Discount").Visible(false);
+			columns.AddFor(m => m.TotalTaxAmount).Caption("Total Tax Amount").Visible(false);
+			columns.AddFor(m => m.TotalWithTax).Caption("Total With Tax").Visible(false);
+			columns.AddFor(m => m.SignatoryName).Caption("Signatory Name").Visible(false);
+			columns.AddFor(m => m.SignatoryPosition).Caption("Signatory Position").Visible(false);
+			columns.AddFor(m => m.SignatoryContact).Caption("Signatory Contact").Visible(false);
+			columns.AddFor(m => m.SignatoryEmail).Caption("Signatory Email").Visible(false);
+			columns.AddFor(m => m.QuoteTransport).Caption("Quote Transport").Visible(false);
+			columns.AddFor(m => m.QuoteDiscount).Caption("Quote Discount").Visible(false);
+			columns.AddFor(m => m.FinalTotal).Caption("Final Total").Visible(false);
+			columns.AddFor(m => m.Mprno).Caption("MPR No").Visible(false);
+			columns.AddFor(m => m.PlanNo).Caption("Plan No").Visible(false);
+			columns.AddFor(m => m.ItemSize).Caption("Item Size").Visible(false);
+			columns.AddFor(m => m.ItemPartNo).Caption("Item Part No").Visible(false);
+			columns.AddFor(m => m.ItemBrand).Caption("Item Brand").Visible(false);
+			columns.AddFor(m => m.ItemMake).Caption("Item Make").Visible(false);
+			columns.AddFor(m => m.SalesPersonContactNo).Caption("Sales Person Contact No").Visible(false);
+			columns.AddFor(m => m.SalesPersonEmail).Caption("Sales Person Email").Visible(false);
+			columns.AddFor(m => m.Mprdate).Caption("MPR Date").Format("dd-MMM-yyyy").Visible(false);
+			columns.AddFor(m => m.GsdescriptionAr).Caption("GS Description (Arabic)").Visible(false);
+			columns.AddFor(m => m.SalesOrderNo).Caption("Sales Order No").Visible(false);
+			columns.AddFor(m => m.SalesOrderDate).Caption("Sales Order Date").Format("dd-MMM-yyyy").Visible(false);
+			columns.AddFor(m => m.QuoteSubmittedOn).Caption("Quote Submitted On").Format("dd-MMM-yyyy").Visible(false);
+			columns.AddFor(m => m.QuoteSubmittedBy).Caption("Quote Submitted By").Visible(false);
+			columns.AddFor(m => m.InventoryMasterGroupId).Caption("Inventory Master Group ID").Visible(false);
+			columns.AddFor(m => m.InventoryMasterGroup).Caption("Inventory Master Group").Visible(false);
+			columns.AddFor(m => m.SalesPersonUserId).Caption("Sales Person User ID").Visible(false);
+			columns.AddFor(m => m.ProjectMasterCode).Caption("Project Master Code").Visible(false);
 
-
-
-			});
-
-
-			columns.Add().Caption("Quoted Amount").Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.TotalBeforeDiscount).Caption("Total Before Discount").Alignment(HorizontalAlignment.Center).Visible(true);
-
-				subColumns.AddFor(m => m.TotalAfterDiscount).Caption("Discount ").Alignment(HorizontalAlignment.Center).Visible(true);
-
-				subColumns.AddFor(m => m.TotalTaxAmount).Caption("Total Tax Amount").Alignment(HorizontalAlignment.Center).Visible(true);
-
-				subColumns.AddFor(m => m.TotalWithTax).Caption("Total With Tax").Alignment(HorizontalAlignment.Center).Visible(true);
-
-			});
 		})
 		.Height(680) // Fixed height for the grid
 		.ColumnAutoWidth(true)
@@ -305,7 +346,7 @@
 		.ShowBorders(true)
 		.ShowRowLines(true)
 
-		.OnContextMenuPreparing("onContextMenuPreparing")
+		//.OnContextMenuPreparing("onContextMenuPreparing")
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
@@ -317,6 +358,48 @@
 			.StorageKey("gridContainerState");
 		})
 		.OnInitialized("function(e) { loadGridState(); }")
+		.Summary(summary =>
+		{
+			summary.GroupItems(items =>
+			{
+				items.Add().Column("Gscode")
+			.SummaryType(SummaryType.Count)
+			.ShowInGroupFooter(true)
+			.DisplayFormat(new JS("formatMessage('No of Items: {0}')"));
+
+			});
+			summary.TotalItems(items =>
+			{
+
+				items.Add().Column("QtyReceived")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"
+	function(e) {
+	if (e.value === null || e.value === undefined) {
+	return '';
+	}
+	return e.value.toLocaleString(undefined, {
+	minimumFractionDigits: 2,
+	maximumFractionDigits: 2
+	});
+	}
+	");
+				items.Add().Column("LineTotalWithTax")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"
+	function(e) {
+	if (e.value === null || e.value === undefined) {
+	return '';
+	}
+	return e.value.toLocaleString(undefined, {
+	minimumFractionDigits: 2,
+	maximumFractionDigits: 2
+	});
+	}
+	");
+
+			});
+		})
 		)
 
 	)
@@ -327,20 +410,20 @@
 <script>
 		 $(function () {
 	$("#Quotation").dxTextBox({
-	text: formatMessage("Quotation"),
+				text: formatMessage("Quotation Details"),
 		readOnly: true,
 		onContentReady: function (e) {
 		$(e.element).addClass("dx-textbox-heading");
 		}
 		});
 	});
-			$(function () {
-			var now = new Date();
-			var firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-			var tillmonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-			$("#frmdateBox").dxDateBox("instance").option("value", firstDay);
-			$("#todateBox").dxDateBox("instance").option("value", tillmonth);
-			ddBtnShowRecords_click('range');
+	$(function () {
+		var now = new Date();
+		var firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+		var tillmonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+		$("#frmdateBox").dxDateBox("instance").option("value", firstDay);
+		$("#todateBox").dxDateBox("instance").option("value", tillmonth);
+		ddBtnShowRecords_click('range');
 	});
 	function ddBtnShowRecords_click(duration) {
 		 var frmDateBox = $("#frmdateBox").dxDateBox("instance");
@@ -402,7 +485,7 @@
 	toDate = toDate.toISOString().split('T')[0];
 
 				$.ajax({
-		url: '/api/Quotation/GetQuotation',
+			url: '/api/Quotation/GetQuotationDetails',
 		type: 'GET',
 		data: {
 			fromDate: frmDate,
