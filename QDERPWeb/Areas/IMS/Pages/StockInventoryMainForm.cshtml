@@ -284,17 +284,35 @@
     }
 
 
-       function deleteRecord() {
-        if (selectedRowData) {
-            const code = selectedRowData.Gscode;
-            if (confirm(`Are you sure you want to delete stock item: ${code}?`)) {
+          function deleteRecord() {
+        if (!selectedRowData) {
+            DevExpress.ui.notify("Please select a row to delete.", "warning", 2000);
+            return;
+        }
+
+        const code = selectedRowData.Gscode;
+
+        DevExpress.ui.dialog.confirm(
+            `Are you sure you want to delete stock item: <b>${code}</b>?`,
+            "Confirm Deletion"
+        ).done(function (dialogResult) {
+            if (dialogResult) {
                 $.ajax({
                     url: "/api/StockInventory/DeleteStockItem",
                     method: "POST",
                     contentType: "application/json",
                     data: JSON.stringify(code),
                     success: function (result) {
-                        DevExpress.ui.notify(result.message, result.success ? "success" : "error", 2000);
+                        const messageType = result.success ? "Success" : "Error";
+                        const messageColor = result.success ? "green" : "red";
+
+                        DevExpress.ui.dialog.alert(
+                            `<div style="color: ${messageColor}; font-weight: bold;">
+                                ${result.message}
+                            </div>`,
+                            messageType
+                        );
+
                         if (result.success) {
                             const grid = $("#dataGrid").dxDataGrid("instance");
                             grid.refresh();
@@ -306,8 +324,11 @@
                     }
                 });
             }
-        }
+        });
     }
+
+
+    
 
 </script>
 

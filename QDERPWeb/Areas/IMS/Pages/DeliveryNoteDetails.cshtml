@@ -1,8 +1,7 @@
 ﻿@page
-@model QD.ERP.Web.Areas.IMS.Pages.RFQwithItemDetailsModel
+@model QD.ERP.Web.Areas.IMS.Pages.DeliveryNoteDetailsModel
 @{
 }
-
 <style>
 	.overlay {
 		display: none;
@@ -156,7 +155,7 @@
 			border-bottom: 1px solid #e0e0e0;
 		}
 
-	.ledgerResult{
+	.ledgerResult {
 		overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
 		width: 100%;
 	}
@@ -170,7 +169,7 @@
 <input id="formId" value="frm201LedgerView" type="hidden" />
 <div class="title">
 	<div class="header-container">
-		<div id="RequestforQuotationList" class="no-border-input"></div>
+		<div id="DeliveryNoteDetails" class="no-border-input"></div>
 	</div>
 </div>
 
@@ -229,33 +228,25 @@
 
 
 </div>
-<div class="dx-field ledgerResult">
-	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60706rfqdetail>()
+<div class="dx-field ledgerResult" >
+	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60306deliveryNoteDetail>()
 		.ID("dataGrid")
 		.RemoteOperations(false)
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
-			columns.Add().Caption(" RFQ Details").Columns(subColumns =>
+			columns.Add().Caption("Delivery Note Details").Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.Rfqno).Caption("RFQ No").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Rfqdate).Caption("Rfq Date").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Mprno).Caption("MPR NO").Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
-				
-				subColumns.AddFor(m => m.SupplierQuotationNo).Caption("Supplier Quotation No").Alignment(HorizontalAlignment.Center);
-				subColumns.AddFor(m => m.SupplierName).Caption("Supplier Name").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Gscode).Caption("GS Code").Alignment(HorizontalAlignment.Center);
-				subColumns.AddFor(m => m.Gsdescrpition).Caption("GS Descrpition").Alignment(HorizontalAlignment.Center);
-				subColumns.AddFor(m => m.QuotedQuantity).Caption("Quoted Quantity").Alignment(HorizontalAlignment.Center);
-				subColumns.AddFor(m => m.UnitDesc).Caption("Unit Desc").Alignment(HorizontalAlignment.Center);
-				subColumns.AddFor(m => m.UnitPrice).Caption("Unit Price").Alignment(HorizontalAlignment.Center);
-				subColumns.AddFor(m => m.ItemDiscount).Caption("Item Discount").Alignment(HorizontalAlignment.Center);
-				subColumns.AddFor(m => m.LineTotalBeforeTax).Caption("Line Total Before Tax").Alignment(HorizontalAlignment.Center);
-				subColumns.AddFor(m => m.LineTotalAfterDisc).Caption("Line Total After Disc").Alignment(HorizontalAlignment.Center);
-				subColumns.AddFor(m => m.IsWonForPo).Caption("Is Won For Po").Alignment(HorizontalAlignment.Center);
+				subColumns.AddFor(m => m.DeliveryNoteNo).Caption("Delivery Note No").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.DeliveryDate).Caption("Delivery Date").Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
+				subColumns.AddFor(m => m.DeliveryIssuedTo).Caption("Delivery Issued To").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Gscode).Caption("Gs Code").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Gsdescrpition).Caption("Gs Description").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.UnitType).Caption("Unti Type").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.UnitRateMethod).Caption("Unit Rate Method").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.IssuedQty).Caption("IssuedQty").Alignment(HorizontalAlignment.Center).Visible(true);
+
 			});
-		
-			
 			
 		})
 		.Height(680) // Fixed height for the grid
@@ -288,22 +279,12 @@
 
 
 
-
 </div>
 <div id="invoiceErrorPopup"></div>
 
 <script>
-		 $(function () {
-		ddBtnShowRecords_click('range');
-	$("#RequestforQuotationList").dxTextBox({
-	text: formatMessage("RFQ with Item Details"),
-		readOnly: true,
-		onContentReady: function (e) {
-		$(e.element).addClass("dx-textbox-heading");
-		}
-		});
-	});
-
+		
+	
 		function ddBtnShowRecords_click(duration) {
 		 var frmDateBox = $("#frmdateBox").dxDateBox("instance");
 			var toDateBox = $("#todateBox").dxDateBox("instance");
@@ -364,7 +345,7 @@
 	toDate = toDate.toISOString().split('T')[0];
 
 				$.ajax({
-			url: '/api/RequestforQuotationList/GetRFQwithItemDetails',
+			url: '/api/DeliveryNote/GetDeliveryNoteDetails',
 		type: 'GET',
 		data: {
 			fromDate: frmDate,

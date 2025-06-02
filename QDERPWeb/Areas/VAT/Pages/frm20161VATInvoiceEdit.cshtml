@@ -824,6 +824,7 @@
 																			.ID("ClientAddressDetails")
 																			.Label(new JS("formatMessage('Client Address Details')"))
 																			.ShowClearButton(true)
+														                	.AcceptCustomValue(true)
 																			.Width("100%")
 																			.LabelMode(EditorLabelMode.Outside)
 																			.DropDownOptions(o => o.Width(650).Height(550))
@@ -1726,21 +1727,21 @@
 												<td>
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Address - Street Name:')"))
-													.ID("StreetName")
+													.ID("OurStreetName")
 													.LabelMode(EditorLabelMode.Outside)
 													.Width("100%"))
 												</td>
 												<td>
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Address - Street Name: (Arabic)')"))
-													.ID("StreetNameArabic")
+													.ID("OurStreetNameArabic")
 													.LabelMode(EditorLabelMode.Outside)
 													.Width("100%"))
 												</td>
 												<td>
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Building Number:')"))
-													.ID("BuildingNumber")
+													.ID("OurBuildingNumber")
 													.LabelMode(EditorLabelMode.Outside)
 													.Width("100%"))
 												</td>
@@ -1749,21 +1750,21 @@
 												<td>
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Address - Additional Address:')"))
-													.ID("AdditionalAddress")
+													.ID("OurAdditionalAddress")
 													.LabelMode(EditorLabelMode.Outside)
 													.Width("100%"))
 												</td>
 												<td>
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Address - Additional Address: (Arabic)')"))
-													.ID("AdditionalAddressArabic")
+													.ID("OurAdditionalAddressArabic")
 													.LabelMode(EditorLabelMode.Outside)
 													.Width("100%"))
 												</td>
 												<td>
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Additional Number:')"))
-													.ID("AdditionalNumber")
+													.ID("OurAdditionalNumber")
 													.LabelMode(EditorLabelMode.Outside)
 													.Width("100%"))
 												</td>
@@ -1774,21 +1775,21 @@
 												<td>
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Client City:')"))
-													.ID("ClientCity")
+													.ID("OurClientCity")
 													.LabelMode(EditorLabelMode.Outside)
 													.Width("100%"))
 												</td>
 												<td>
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Client City: (Arabic)')"))
-													.ID("ClientCityArabic")
+													.ID("OurClientCityArabic")
 													.LabelMode(EditorLabelMode.Outside)
 													.Width("100%"))
 												</td>
 												<td>
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Postal Code:')"))
-													.ID("PostalCode")
+													.ID("OurPostalCode")
 													.LabelMode(EditorLabelMode.Outside)
 													.Width("100%"))
 												</td>
@@ -1798,21 +1799,21 @@
 												<td>
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Province / State:')"))
-													.ID("Province")
+													.ID("OurProvince")
 													.LabelMode(EditorLabelMode.Outside)
 													.Width("100%"))
 												</td>
 												<td>
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Province / State: (Arabic)')"))
-													.ID("ProvinceArabic")
+													.ID("OurProvinceArabic")
 													.LabelMode(EditorLabelMode.Outside)
 													.Width("100%"))
 												</td>
 
 												<td style="width: 100%">
 													@(Html.DevExtreme().SelectBox()
-													.ID("CountryCode")
+													.ID("OurCountryCode")
 													.Label(new JS("formatMessage('Country Code:')"))
 													.LabelMode(EditorLabelMode.Outside)
 													.Items(new[] { "US", "UK", "IN", "SA", "UAE" })
@@ -1826,14 +1827,14 @@
 												<td>
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('District / Neighborhood:')"))
-													.ID("District")
+													.ID("OurDistrict")
 													.LabelMode(EditorLabelMode.Outside)
 													.Width("100%"))
 												</td>
 												<td colspan="2">
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('District / Neighborhood: (Arabic)')"))
-													.ID("DistrictArabic")
+													.ID("OurDistrictArabic")
 													.LabelMode(EditorLabelMode.Outside)
 													.Width("100%"))
 												</td>
@@ -3426,7 +3427,8 @@
 		}
 
 			  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null,revaccheadid=null,InvoiceCurrencyExchangeId=null,TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
-					  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null,Gsdescrpition=null,GsdescriptionAr=null,ItemPartNo=null,CostPrice=null,GssellingRate=null,ReorderQty=null,IsDirectApproval=true,IsDirectVerify=true,IsClientCode=false;
+					  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null,Gsdescrpition=null,GsdescriptionAr=null,ItemPartNo=null,CostPrice=null,GssellingRate=null,ReorderQty=null,IsDirectApproval=true,IsDirectVerify=true,IsClientCode=false
+					  ClientPostalCode=null,ClientCity=null,ClientAddressSt=null;
 			  let dropDownInstance;
 			  let vatListInstance;
 
@@ -4653,7 +4655,14 @@
 									 IsClientCode=true;
 										console.log("ClientData",selectedRowData[0])
 								  let  accheadname = selectedRowData[0].AccountHead;
-									  ClientNamedataGridSelectionChanged({ selectedRowKeys: [accheadname] });
+									  ClientAddressSt=selectedRowData[0].ClientAddressStreet;
+										 ClientCity= selectedRowData[0].ClientCity;
+										ClientPostalCode=selectedRowData[0].ClientPostalCode;
+			var dropDownBox = $("#ClientAddressDetails").dxDropDownBox("instance");
+												// Set the value
+			var fullAddress = [ClientPostalCode,ClientAddressSt, ClientCity].filter(Boolean).join(", ");
+			dropDownBox.option("value", fullAddress);
+		    ClientNamedataGridSelectionChanged({ selectedRowKeys: [accheadname] });
 										  // DevExtreme widgets
 	$("#GroupVATNo").dxTextBox("instance").option("value", selectedRowData[0].ClientGroupVatnumber);
 	$("#ClientVATNo").dxTextBox("instance").option("value", selectedRowData[0].VatregistrationNo);
@@ -5095,12 +5104,13 @@
 				if (selectedRowData.length > 0) {
 
 						companyid = selectedRowData[0].CompanyId;
+							IsClientCode=true;
 						debugger;
 									  $("#OurGroupVATNo").dxTextBox("instance").option("value",selectedRowData[0].SellerGroupVatnumber)
 									  $("#OurVATNo").dxTextBox("instance").option("value",selectedRowData[0].CompanyVatno)
 									   $("#OurCompanyRegisteredName").dxTextBox("instance").option("value",selectedRowData[0].CompanyName)
 									//  $("#OurClientOtherID").dxTextBox("instance").option("value",selectedRowData[0].ClientOtherId)
-									  $("#OurCompanyNameinArabic").dxDropDownBox("instance").option("value",selectedRowData[0].CompanyNameAr)
+									  $("#OurCompanyNameinArabic").dxTextBox("instance").option("value",selectedRowData[0].CompanyNameAr)
 									  $("#OtherID1").dxTextBox("instance").option("value",selectedRowData[0].SellerOtherSellerId)
 									  dataGridOtherIDTypeHeadSelectionChanged({ selectedRowKeys: [selectedRowData[0].SellerOtherIdtype]});
 
@@ -6486,6 +6496,7 @@
 				InvoiceNo: $('#InvoiceNo').dxTextBox("instance").option("value") || null,
 				InvoiceDate: $("#InvoiceDate").dxDateBox("instance").option("value")|| null,
 				InvoiceDateWtTime: $("#InvoiceIssuedDateTime").dxDateBox("instance").option("value")|| null,
+				InvoiceDeliveryDate: $("#SupplyDate").dxDateBox("instance").option("value")|| null,
 				//PaymentMeansTypeCode: paymentmeanstypecode,
 				 //  InvoiceTypeCode: $("#VATInvoiceType").dxDropDownBox("instance").option("value")|| null,
 				 // InvoiceTypeCodeSubType: $("#VATInvoiceSubType").dxDropDownBox("instance").option("value")|| null,
@@ -6494,11 +6505,24 @@
 				 ClientCode: accheadid|| null,
 				 BuyerName: $("#ddclientname").dxDropDownBox("instance").option("value")|| null,
 				 BuyerNameAr: $("#ClientNameArabic").dxTextBox("instance").option("value")|| null,
-					 BuyerGroupVatnumber: $("#GroupVATNo").dxTextBox("instance").option("value")|| null,
+				 BuyerGroupVatnumber: $("#GroupVATNo").dxTextBox("instance").option("value")|| null,
 				 BuyerVatnumber: $("#ClientVATNo").dxTextBox("instance").option("value")|| null,
-					 BuyerOtherIdtype: $("#OtherIDType").dxDropDownBox("instance").option("value")|| null,
+				 BuyerOtherIdtype: $("#OtherIDType").dxDropDownBox("instance").option("value")|| null,
 				BuyerOtherId: $("#ClientOtherID").dxTextBox("instance").option("value")|| null,
-			    InvoiceCounterValue: $("#InvoiceCounterValue").dxTextBox("instance").option("value"),
+					BuyerAddressStreet:$("#StreetName").dxTextBox("instance").option("value")|| null,
+			BuyerAddressStreetAr:$("#StreetNameArabic").dxTextBox("instance").option("value")|| null,
+			BuyerAdditionalStreet:$("#AdditionalAddress").dxTextBox("instance").option("value")|| null,
+			BuyerAdditionalStreetAr:$("#AdditionalAddressArabic").dxTextBox("instance").option("value")|| null,
+				BuyerBuildingNumber:$("#BuildingNumber").dxTextBox("instance").option("value")|| null,
+				BuyerCity:$("#ClientCity").dxTextBox("instance").option("value")|| null,
+				BuyerCityAr:$("#ClientCityArabic").dxTextBox("instance").option("value")|| null,
+				BuyerAdditionalNumber:$("#AdditionalNumber").dxTextBox("instance").option("value")|| null,
+			BuyerProvince:$("#Province").dxTextBox("instance").option("value")|| null,
+		    BuyerProvinceAr:$("#ProvinceArabic").dxTextBox("instance").option("value")|| null,
+				BuyerPostalCode:$("#PostalCode").dxTextBox("instance").option("value")|| null,
+			BuyerNeighborhood:$("#District").dxTextBox("instance").option("value")||null,
+			BuyerNeighborhoodAr:$("#DistrictArabic").dxTextBox("instance").option("value")||null,
+			    InvoiceCounterValue: $("#InvoiceCounterValue").dxTextBox("instance").option("value")||null,
 				InvoiceUuid: $("#UUID").dxTextBox("instance").option("value")|| null,
 
 			//OtherDetails
@@ -6548,8 +6572,21 @@
 			  SellerGroupVatnumber:$("#OurGroupVATNo").dxTextBox("instance").option("value")|| null,
 			  SellerVATNumber:$("#OurVATNo").dxTextBox("instance").option("value")|| null,
 			  SellerNameAr:$("#OurCompanyNameinArabic").dxTextBox("instance").option("value")|| null,
-				  InvoiceSubmittedBy:$("#SubmittedBytext").dxTextBox("instance").option("value")|| null,
-				  InvoiceSubmittedOn:$("#ddlinvoicesubmittedon").dxDateBox("instance").option("value")|| null,
+			  SellerAddressStreet:$("#OurStreetName").dxTextBox("instance").option("value")||null,
+			  SellerAddressStreetAr:$("#OurStreetNameArabic").dxTextBox("instance").option("value")||null,
+			  SellerAdditionalStreet:$("#OurAdditionalAddress").dxTextBox("instance").option("value")||null,
+			  SellerAdditionalStreetAr:$("#OurAdditionalAddressArabic").dxTextBox("instance").option("value")||null,
+			  SellerBuildingNumber:$("#OurBuildingNumber").dxTextBox("instance").option("value")||null,
+			  SellerCity:$("#OurClientCity").dxTextBox("instance").option("value")||null,
+			   SellerCityAr:$("#OurClientCityArabic").dxTextBox("instance").option("value")||null,
+			   SellerAdditionalNumber:$("#OurAdditionalNumber").dxTextBox("instance").option("value")||null,
+			   SellerProvince:$("#OurProvince").dxTextBox("instance").option("value")||null,
+			   SellerProvinceAr:$("#OurProvinceArabic").dxTextBox("instance").option("value")||null,
+			   SellerPostalCode:$("#OurPostalCode").dxTextBox("instance").option("value")||null,
+			   SellerNeighborhood:$("#OurDistrict").dxTextBox("instance").option("value")||null,
+			   SellerNeighborhoodAr:$("#OurDistrictArabic").dxTextBox("instance").option("value")||null,
+			   InvoiceSubmittedBy:$("#SubmittedBytext").dxTextBox("instance").option("value")|| null,
+			   InvoiceSubmittedOn:$("#ddlinvoicesubmittedon").dxDateBox("instance").option("value")|| null,
 				 
 			   SellerOtherIdtype:SellerOtherIdtype|| null,
 			   SellerOtherSellerId:$("#OtherID1").dxTextBox("instance").option("value")|| null,
@@ -6562,14 +6599,7 @@
 
 			};
 
-			// var InvoiceChildren=null;
-
-			//  if(IsCurrent!="true")
-			//  {
-			//  }
-			//  else{
-			//        InvoiceChildren = $("#B2BUpdatedataGrid").dxDataGrid("instance").option("dataSource");
-			//  }
+		
 
 			  InvoiceChildren = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
 
@@ -6660,7 +6690,9 @@
 		 });
 
 
-				 $("#btnSaveAndClose").on("click", function (e) {
+
+
+				$("#btnSaveAndClose").on("click", function (e) {
 
 				var clientnameValidator = $("#ddclientname").dxValidator("instance");
 				var clientnameValidation = clientnameValidator.validate();
@@ -6679,6 +6711,7 @@
 					InvoiceNo: $('#InvoiceNo').dxTextBox("instance").option("value") || null,
 					InvoiceDate: $("#InvoiceDate").dxDateBox("instance").option("value")|| null,
 					InvoiceDateWtTime: $("#InvoiceIssuedDateTime").dxDateBox("instance").option("value")|| null,
+					InvoiceDeliveryDate: $("#SupplyDate").dxDateBox("instance").option("value")|| null,
 					//PaymentMeansTypeCode: paymentmeanstypecode,
 					 //  InvoiceTypeCode: $("#VATInvoiceType").dxDropDownBox("instance").option("value")|| null,
 					 // InvoiceTypeCodeSubType: $("#VATInvoiceSubType").dxDropDownBox("instance").option("value")|| null,
@@ -6687,11 +6720,24 @@
 					 ClientCode: accheadid|| null,
 					 BuyerName: $("#ddclientname").dxDropDownBox("instance").option("value")|| null,
 					 BuyerNameAr: $("#ClientNameArabic").dxTextBox("instance").option("value")|| null,
-						 BuyerGroupVatnumber: $("#GroupVATNo").dxTextBox("instance").option("value")|| null,
+					 BuyerGroupVatnumber: $("#GroupVATNo").dxTextBox("instance").option("value")|| null,
 					 BuyerVatnumber: $("#ClientVATNo").dxTextBox("instance").option("value")|| null,
-						 BuyerOtherIdtype: $("#OtherIDType").dxDropDownBox("instance").option("value")|| null,
+					 BuyerOtherIdtype: $("#OtherIDType").dxDropDownBox("instance").option("value")|| null,
 					BuyerOtherId: $("#ClientOtherID").dxTextBox("instance").option("value")|| null,
-					InvoiceCounterValue: $("#InvoiceCounterValue").dxTextBox("instance").option("value"),
+						BuyerAddressStreet:$("#StreetName").dxTextBox("instance").option("value")|| null,
+				BuyerAddressStreetAr:$("#StreetNameArabic").dxTextBox("instance").option("value")|| null,
+				BuyerAdditionalStreet:$("#AdditionalAddress").dxTextBox("instance").option("value")|| null,
+				BuyerAdditionalStreetAr:$("#AdditionalAddressArabic").dxTextBox("instance").option("value")|| null,
+					BuyerBuildingNumber:$("#BuildingNumber").dxTextBox("instance").option("value")|| null,
+					BuyerCity:$("#ClientCity").dxTextBox("instance").option("value")|| null,
+					BuyerCityAr:$("#ClientCityArabic").dxTextBox("instance").option("value")|| null,
+					BuyerAdditionalNumber:$("#AdditionalNumber").dxTextBox("instance").option("value")|| null,
+				BuyerProvince:$("#Province").dxTextBox("instance").option("value")|| null,
+				BuyerProvinceAr:$("#ProvinceArabic").dxTextBox("instance").option("value")|| null,
+					BuyerPostalCode:$("#PostalCode").dxTextBox("instance").option("value")|| null,
+				BuyerNeighborhood:$("#District").dxTextBox("instance").option("value")||null,
+				BuyerNeighborhoodAr:$("#DistrictArabic").dxTextBox("instance").option("value")||null,
+					InvoiceCounterValue: $("#InvoiceCounterValue").dxTextBox("instance").option("value")||null,
 					InvoiceUuid: $("#UUID").dxTextBox("instance").option("value")|| null,
 
 				//OtherDetails
@@ -6713,14 +6759,14 @@
 				PaymentTerms: $("#PaymentTerms").dxTextBox("instance").option("value")|| null,
 				QuotationNo: $("#QuotationNo").dxTextBox("instance").option("value")|| null,
 				DeliveryNoteNos: $("#DeliveryNotes").dxTextBox("instance").option("value")|| null,
-					InvoiceDueDate:$("#PODate").dxDateBox("instance").option("value")|| null,
+				InvoiceDueDate:$("#PODate").dxDateBox("instance").option("value")|| null,
 				ClientGrnreferenceNo:$("#ClientGRNReference").dxTextBox("instance").option("value")|| null,
-					AddedBy:$("#SubmittedBytext").dxTextBox("instance").option("value")|| null,
-						AddedOn:$("#ddlinvoicesubmittedon").dxDateBox("instance").option("value")|| null,
+				AddedBy:$("#SubmittedBytext").dxTextBox("instance").option("value")|| null,
+				AddedOn:$("#ddlinvoicesubmittedon").dxDateBox("instance").option("value")|| null,
 
 
 				//Deduction&CurrencyDetails
-			//	InvoiceCurrencyCode: InvoiceCurrencyExchangeId|| null,
+				InvoiceCurrencyCode: InvoiceCurrencyExchangeId|| null,
 				//TaxCurrencyCode: TaxCurrencyExchangeId|| null,
 				ExchangeRate:$("#currencyexchangerate").dxNumberBox("instance").option("value")|| null,
 				AdvanceText:$("#LessAdvance").dxTextBox("instance").option("value")|| null,
@@ -6741,20 +6787,35 @@
 				  SellerGroupVatnumber:$("#OurGroupVATNo").dxTextBox("instance").option("value")|| null,
 				  SellerVATNumber:$("#OurVATNo").dxTextBox("instance").option("value")|| null,
 				  SellerNameAr:$("#OurCompanyNameinArabic").dxTextBox("instance").option("value")|| null,
-					  AddedBy:$("#SubmittedBytext").dxTextBox("instance").option("value")|| null,
-						AddedOn:$("#ddlinvoicesubmittedon").dxDateBox("instance").option("value")|| null,
+				  SellerAddressStreet:$("#OurStreetName").dxTextBox("instance").option("value")||null,
+				  SellerAddressStreetAr:$("#OurStreetNameArabic").dxTextBox("instance").option("value")||null,
+				  SellerAdditionalStreet:$("#OurAdditionalAddress").dxTextBox("instance").option("value")||null,
+				  SellerAdditionalStreetAr:$("#OurAdditionalAddressArabic").dxTextBox("instance").option("value")||null,
+				  SellerBuildingNumber:$("#OurBuildingNumber").dxTextBox("instance").option("value")||null,
+				  SellerCity:$("#OurClientCity").dxTextBox("instance").option("value")||null,
+				   SellerCityAr:$("#OurClientCityArabic").dxTextBox("instance").option("value")||null,
+				   SellerAdditionalNumber:$("#OurAdditionalNumber").dxTextBox("instance").option("value")||null,
+				   SellerProvince:$("#OurProvince").dxTextBox("instance").option("value")||null,
+				   SellerProvinceAr:$("#OurProvinceArabic").dxTextBox("instance").option("value")||null,
+				   SellerPostalCode:$("#OurPostalCode").dxTextBox("instance").option("value")||null,
+				   SellerNeighborhood:$("#OurDistrict").dxTextBox("instance").option("value")||null,
+				   SellerNeighborhoodAr:$("#OurDistrictArabic").dxTextBox("instance").option("value")||null,
+				   InvoiceSubmittedBy:$("#SubmittedBytext").dxTextBox("instance").option("value")|| null,
+				   InvoiceSubmittedOn:$("#ddlinvoicesubmittedon").dxDateBox("instance").option("value")|| null,
+
 				   SellerOtherIdtype:SellerOtherIdtype|| null,
 				   SellerOtherSellerId:$("#OtherID1").dxTextBox("instance").option("value")|| null,
 
 
 				//Signatories
-			InvoicePreparedBy: SignatoryID|| null,
+				InvoicePreparedBy: SignatoryID|| null,
 			InvoiceCheckedBy: ChkbySignatoryID|| null,
 			InvoiceApprovedBy: ApproedbySignatoryID|| null
 
 				};
 
-			
+
+
 				  InvoiceChildren = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
 
 
@@ -6843,6 +6904,7 @@
 				}
 
 			 });
+
 
 
 
@@ -7364,7 +7426,14 @@
 								"Invoice Posted Successfully."
 							)
 						}
-						else
+							else if(response.IsPosted == true)
+							{
+									 DevExpress.ui.dialog.alert(
+									"This VAT Credit Note is already posted to your ledgers.",
+									"Credit Note Posted Already."
+								)
+							}
+						else 
 						{
 								   DevExpress.ui.dialog.custom({
 						title: "Voucher is not Approved",
@@ -7380,6 +7449,8 @@
 						}
 					});
 						}
+						
+
 					
 					} else {
 						DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
@@ -7817,9 +7888,10 @@
 
 		$(function () {
 		var dropDownBox = $("#ClientAddressDetails").dxDropDownBox("instance");
-		dropDownBox.open(); // Forces it to open on load
-		dropDownBox.close(); // Forces it to open on load
+		dropDownBox.open();
+		dropDownBox.close();
 	});
+
 
 			$(function () {
 			var dropDownBox = $("#OurAddressDetails").dxDropDownBox("instance");

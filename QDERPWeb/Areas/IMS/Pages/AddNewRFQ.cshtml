@@ -205,50 +205,50 @@
 	</div>
 </div>
 <div class="form-container1">
-	<div class="form-container">
-		<!-- Tab Menu -->
-		@(
-					Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%")
-					.Items(item =>
-					{
-						item.Add()
-					.Title("RFQ Details")
-					.Icon("folder")
-					.Text("RFQ Details")
-					.Template(@<text>
-			<div class="dx-card p-3">
-				<!-- Row 1: 3 Columns -->
-				<div class="row g-2">
-					<div class="col-md-2">
-
-						@(Html.DevExtreme().TextBox()
-						.Label(new JS("formatMessage('Request No')"))
-						.ID("RFQNo")
-						.LabelMode(EditorLabelMode.Outside)
-						.Width("100%")
-						)
-					</div>
-					<div class="col-md-2">
-						@(Html.DevExtreme().DateBox()
-						.ID("RFQDate")
-						.Value(DateTime.Today)
-						.Label("RFQ Date")
-						.LabelMode(EditorLabelMode.Outside)
-						.StylingMode(EditorStylingMode.Outlined)
-						.Width("100%"))
-					</div>
-					<div class="col-md-8" style="  display: flex; align-items: flex-end;">
-						@(Html.DevExtreme().DropDownBox()
-						.Label(new JS("formatMessage('Supplier Name:')"))
-						.DataSource(d => d.WebApi()
-						.Controller("RequestforQuotationList")
-						.LoadAction("GetSupplierName")
-						.LoadMode(DataSourceLoadMode.Raw)
-						.Key("SupplierCode")
-						)
-						.LabelMode(EditorLabelMode.Outside)
-						.ID("GetProjectDropDown")
-						.Width(900)
+    <div class="form-container">
+        <!-- Tab Menu -->
+        @(
+                Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%")
+                .Items(item =>
+                {
+                    item.Add()
+                .Title("RFQ Details")
+                .Icon("folder")
+                .Text("RFQ Details")
+                .Template(@<text>
+            <div class="dx-card p-3">
+                <!-- Row 1: 3 Columns -->
+                <div class="row g-2">
+                    <div class="col-md-2">
+                     
+							@(Html.DevExtreme().TextBox()
+								.Label(new JS("formatMessage('Request No')"))
+								.ID("RFQNo")
+								.LabelMode(EditorLabelMode.Outside)
+								.Width("100%")
+								)
+                    </div>
+                    <div class="col-md-2">
+                        @(Html.DevExtreme().DateBox()
+                        .ID("RFQDate")
+						.Value(DateTime.Now)
+                        .Label("RFQ Date")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .StylingMode(EditorStylingMode.Outlined)
+                        .Width("100%"))
+                    </div>
+                    <div class="col-md-8" style="  display: flex; align-items: flex-end;">
+                    			 @(Html.DevExtreme().DropDownBox()
+														.Label(new JS("formatMessage('Supplier Name:')"))
+                          .DataSource(d => d.WebApi()
+														.Controller("RequestforQuotationList")
+														.LoadAction("GetSupplierName")
+                                                    .LoadMode(DataSourceLoadMode.Raw)
+                                                   .Key("SupplierCode")
+                                                )
+                                         .LabelMode(EditorLabelMode.Outside)
+                                              .ID("GetProjectDropDown")
+     .Width(900)
      @*  .ShowClearButton(true)
                  .AcceptCustomValue(true) *@
 						.OpenOnFieldClick(false)//

@@ -1,7 +1,8 @@
-@page
-@model QD.ERP.Web.Areas.IMS.Pages.MaterialRequestEnquiriesDetailsModel
+﻿@page
+@model QD.ERP.Web.Areas.IMS.Pages.MaterialReceiptDetailsModel
 @{
 }
+
 
 
 @using DevExtreme.AspNet.Mvc
@@ -60,7 +61,7 @@
 		overflow: hidden;
 	}
 
-	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddReport123,#btnColumnChooser,#btnPurchaseEditDetails,#btnAddMaterialRequest)) {
+	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#ddReport123,#btnColumnChooser,#btnAddMaterialRequest)) {
 		display: none !important;
 	}
 	#overlay-frame {
@@ -297,132 +298,28 @@
 </div>
 <div class="dx-field ledgerResult" >
 	@(
-		Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60604purchaseRequestViewMaster>()
+		Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60506materailReceiptDetail>()
 				.ID("dataGrid")
 				.RemoteOperations(false)
 				.DataSource(new JS("[]"))
 				.Columns(columns =>
 				{
 			// Grid Band: Bills Receivable
-			columns.Add().Caption(new JS("formatMessage('Request/Enquiries Details')")).Columns(band =>
+			columns.Add().Caption(new JS("formatMessage('Material Receipt Details')")).Columns(band =>
 			{
-				band.AddFor(m => m.RequestEnquiry).Caption(new JS("formatMessage('Material Request/ Enquiry')")).Alignment(HorizontalAlignment.Left).Width(250);
-				band.AddFor(m => m.RequestEnquiry).Caption(new JS("formatMessage('Material Request/ Enquiry')")).Alignment(HorizontalAlignment.Left).GroupIndex(0); 
-				band.AddFor(m => m.Mprno).Caption(new JS("formatMessage('Request No')")).Alignment(HorizontalAlignment.Center);
-				band.AddFor(m => m.MprrevisionNo).Caption(new JS("formatMessage('Rev No')")).Alignment(HorizontalAlignment.Center);
-				band.AddFor(m => m.Mprdate).Caption(new JS("formatMessage('Request Date')")).Alignment(HorizontalAlignment.Right).Format("dd-MMM-yyyy").AllowEditing(true);
-				band.AddFor(m => m.RequestedNameRef).Caption(new JS("formatMessage('Requested By')")).Alignment(HorizontalAlignment.Center).GroupIndex(1);
-				band.AddFor(m => m.PurchaseRequestStatus).Caption(new JS("formatMessage('Purchase Request Status')")).Alignment(HorizontalAlignment.Center);
-				band.AddFor(m => m.IsSubmitted).Caption(new JS("formatMessage('Is Submitted')")).Alignment(HorizontalAlignment.Center).AllowEditing(true)
-			.CellTemplate(@<text>
-		<div class="dx-icon">
-			<%= data.IsSubmitted ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-		</div>
-	</text>)
-		.Visible(true);
-				band.AddFor(m => m.IsVerified).Caption(new JS("formatMessage('Is Verified')")).Alignment(HorizontalAlignment.Center).AllowEditing(true)
-			.CellTemplate(@<text>
-		<div class="dx-icon">
-			<%= data.IsVerified ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-		</div>
-	</text>)
-		.Visible(true);
-				band.AddFor(m => m.IsApproved).Caption(new JS("formatMessage('Is Approved')")).Alignment(HorizontalAlignment.Center).AllowEditing(true)
-			.CellTemplate(@<text>
-		<div class="dx-icon">
-			<%= data.IsApproved ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-		</div>
-	</text>)
-		.Visible(true);
-				band.AddFor(m => m.IsCancelled).Caption(new JS("formatMessage('Is Cancelled')")).Alignment(HorizontalAlignment.Center).AllowEditing(true)
-			.CellTemplate(@<text>
-		<div class="dx-icon">
-			<%= data.IsCancelled ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-		</div>
-	</text>
-		)
-				.Visible(true);
+				band.AddFor(m => m.ReceiptNo).Caption(new JS("formatMessage('Receipt No')")).Alignment(HorizontalAlignment.Left).Width(250);
+				band.AddFor(m => m.ReceiptNo).Caption(new JS("formatMessage('Receipt No')")).Alignment(HorizontalAlignment.Left).Width(250).GroupIndex(0);
+				band.AddFor(m => m.ReceiptDate).Caption(new JS("formatMessage('Receipt Date')")).Alignment(HorizontalAlignment.Left); 
+				band.AddFor(m => m.SupplierName).Caption(new JS("formatMessage('Supplier Name')")).Alignment(HorizontalAlignment.Center);
+				band.AddFor(m => m.Gscode).Caption(new JS("formatMessage('GS Code')")).Alignment(HorizontalAlignment.Center);
+				band.AddFor(m => m.Gsdescrpition).Caption(new JS("formatMessage('GS Description')")).Alignment(HorizontalAlignment.Right);
+				band.AddFor(m => m.QtyReceived).Caption(new JS("formatMessage('Qty Received')")).Alignment(HorizontalAlignment.Center);
+				band.AddFor(m => m.UnitDesc).Caption(new JS("formatMessage('Unit Desc')")).Alignment(HorizontalAlignment.Center);
+				band.AddFor(m => m.UnitPrice).Caption(new JS("formatMessage('Unit Price')")).Alignment(HorizontalAlignment.Center);
+				band.AddFor(m => m.LineTotalWithTax).Caption(new JS("formatMessage('LineTotal With Tax')")).Alignment(HorizontalAlignment.Center);
+	
 				});
-						
-						columns.Add().Caption(new JS("formatMessage('RFQ')")).Columns(band =>
-						{
-				band.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No of Items')")).Alignment(HorizontalAlignment.Center);
-				band.AddFor(m => m.NoOfRfqissued).Caption(new JS("formatMessage('No of RFQ Issued')")).Alignment(HorizontalAlignment.Center);
-
-			           });
-			
-				columns.Add().Caption(new JS("formatMessage('Quatation')")).Columns(band =>
-	         {
-				band.AddFor(m => m.NoOfQuotations).Caption(new JS("formatMessage('No of Quotation')")).Alignment(HorizontalAlignment.Center);
-				band.AddFor(m => m.NetQuotedAmount).Caption(new JS("formatMessage('Net Quoted Amount')")).Alignment(HorizontalAlignment.Center);
-				band.AddFor(m => m.NetQuotedWithTax).Caption(new JS("formatMessage('Net Quoted With Tax')")).Alignment(HorizontalAlignment.Center);
-
-			});
-
-				columns.Add().Caption(new JS("formatMessage('Sales Order Details')")).Columns(band =>
-	     {
-				band.AddFor(m => m.SalesOrderNo).Caption(new JS("formatMessage('Sales Order No')")).Alignment(HorizontalAlignment.Center);
-				band.AddFor(m => m.OrderStatus).Caption(new JS("formatMessage('Order Status')")).Alignment(HorizontalAlignment.Center);
-				band.AddFor(m => m.InvoiceStatus).Caption(new JS("formatMessage('Invoice Status')")).Alignment(HorizontalAlignment.Center);
-
-			});
-
-				// Add hidden columns for remaining model fields
-				columns.AddFor(m => m.TypeOfMpr).Caption("Type Of MPR").Visible(false);
-				columns.AddFor(m => m.ClientCode).Caption("Client Code").Visible(false);
-				columns.AddFor(m => m.StoreCode).Caption("Store Code").Visible(false);
-				columns.AddFor(m => m.ModeOfRequestId).Caption("Mode Of Request ID").Visible(false);
-				columns.AddFor(m => m.TypeOfRequestId).Caption("Type Of Request ID").Visible(false);
-				columns.AddFor(m => m.Mprremarks).Caption("MPR Remarks").Visible(false);
-				columns.AddFor(m => m.ModeOfRequest).Caption("Mode Of Request ").Visible(false);
-				columns.AddFor(m => m.TypeOfRequest).Caption("Type Of Request ").Visible(false);
-				columns.AddFor(m => m.ClientName).Caption("Client Name").Visible(false);
-				columns.AddFor(m => m.ClientCategory).Caption("Client Category").Visible(false);
-				columns.AddFor(m => m.StoreName).Caption("Store Name").Visible(false);
-				columns.AddFor(m => m.CompanyName).Caption("Company Name").Visible(false);
-				columns.AddFor(m => m.Project).Caption("Project").Visible(false);
-				columns.AddFor(m => m.RequestedBy).Caption("Requestor Name").Visible(false);
-				columns.AddFor(m => m.RequesterContact).Caption("Requester Contact").Visible(false);
-				columns.AddFor(m => m.RequesterContactEmail).Caption("Requester Contact Email").Visible(false);
-				columns.AddFor(m => m.Department).Caption("Department").Visible(false);
-				columns.AddFor(m => m.DepartmentCode).Caption("Department Code").Visible(false);
-				columns.AddFor(m => m.ClientRefNo).Caption("Client Ref No").Visible(false);
-				columns.AddFor(m => m.ProjectDescription).Caption("Project Description").Visible(false);
-				columns.AddFor(m => m.ProjectMasterCode).Caption("Project Master Code").Visible(false);
-				columns.AddFor(m => m.PurposeOfRequest).Caption("Purpose Of Request").Visible(false);
-				columns.AddFor(m => m.Remarks).Caption("Remarks").Visible(false);
-				columns.AddFor(m => m.Priority).Caption("Priority").Visible(false);
-				columns.AddFor(m => m.TotalRequestCost).Caption("Total Request Cost").Visible(false);
-
-				columns.AddFor(m => m.BidClosingDate).Caption("Bid Closing Date").Format("dd-MMM-yyyy").Visible(false);
-				columns.AddFor(m => m.BidReminderOn).Caption("Bid Reminder On").Format("dd-MMM-yyyy").Visible(false);
-				columns.AddFor(m => m.QuoteSubmittedOn).Caption("Quote Submitted On").Format("dd-MMM-yyyy").Visible(false);
-
-				columns.AddFor(m => m.Comments).Caption("BID Status").Visible(false);
-				columns.AddFor(m => m.ExpectedDate).Caption("Expected Date").Format("dd-MMM-yyyy").Visible(false);
-
-				columns.AddFor(m => m.InventoryMasterGroup).Caption("Inventory Master Group").Visible(false);
-				columns.AddFor(m => m.InventoryMasterGroupId).Caption("Inventory Master Group ID").Visible(false);
-				columns.AddFor(m => m.SalesPersonCode).Caption("Sales Person Code").Visible(false);
-				columns.AddFor(m => m.SalesPersonName).Caption("Sales Person Name").Visible(false);
-				columns.AddFor(m => m.SalesPersonUserId).Caption("Sales Person User ID").Visible(false);
-
-				columns.AddFor(m => m.AddedBy).Caption("Added By").Visible(false);
-				columns.AddFor(m => m.AddedOn).Caption("Added On").Format("dd-MMM-yyyy").Visible(false);
-				columns.AddFor(m => m.ApprovedBy).Caption("Approved By").Visible(false);
-				columns.AddFor(m => m.ApprovedOn).Caption("Approved On").Format("dd-MMM-yyyy").Visible(false);
-				columns.AddFor(m => m.ModifiedBy).Caption("Modified By").Visible(false);
-				columns.AddFor(m => m.ModifiedOn).Caption("Modified On").Format("dd-MMM-yyyy").Visible(false);
-				columns.AddFor(m => m.PreparedBy).Caption("Prepared By").Visible(false);
-				columns.AddFor(m => m.PreparedOn).Caption("Prepared On").Format("dd-MMM-yyyy").Visible(false);
-				columns.AddFor(m => m.RequesterName).Caption("Requester Name").Visible(false);
-				columns.AddFor(m => m.SubmittedOn).Caption("Submitted On").Format("dd-MMM-yyyy").Visible(false);
-				columns.AddFor(m => m.SubmittedBy).Caption("Submitted By").Visible(false);
-				columns.AddFor(m => m.VerifiedBy).Caption("Verified By").Visible(false);
-				columns.AddFor(m => m.VerifiedOn).Caption("Verified On").Format("dd-MMM-yyyy").Visible(false);
-				columns.AddFor(m => m.ProjectSubUnitName).Caption("Requesting Project Unit").Visible(false);
-				columns.AddFor(m => m.CancelledBy).Caption("CancelledBy").Visible(false);
-				columns.AddFor(m => m.CancelledOn).Caption("CancelledOn").Format("dd-MMM-yyyy").Visible(false);
+		
 
 			})
 		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
@@ -446,7 +343,48 @@
 		.ShowBorders(true)
 		.ShowRowLines(true)
 		.OnContextMenuPreparing("onContextMenuPreparing")
-		
+		.Summary(summary =>
+		{
+			summary.GroupItems(items =>
+			{
+				items.Add().Column("Gscode")
+			.SummaryType(SummaryType.Count)
+			.ShowInGroupFooter(true)
+			.DisplayFormat(new JS("formatMessage('No of Items: {0}')"));
+				
+			});
+			summary.TotalItems(items =>
+			{
+			
+			items.Add().Column("QtyReceived")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"
+	function(e) {
+	if (e.value === null || e.value === undefined) {
+	return '';
+	}
+	return e.value.toLocaleString(undefined, {
+	minimumFractionDigits: 2,
+	maximumFractionDigits: 2
+	});
+	}
+	");
+				items.Add().Column("LineTotalWithTax")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"
+	function(e) {
+	if (e.value === null || e.value === undefined) {
+	return '';
+	}
+	return e.value.toLocaleString(undefined, {
+	minimumFractionDigits: 2,
+	maximumFractionDigits: 2
+	});
+	}
+	");
+				
+			});
+		})
 		)
 </div>
 
@@ -557,7 +495,7 @@
 		toDateBox.option("value", toDate);
 
 		$.ajax({
-			url: '/api/MaterialRequestEnquiriesDetails/GetVatCreditNoteDetails',
+			url: '/api/MaterialReceipts/GetVatCreditNoteDetails',
 			type: 'GET',
 			data: {
 				frmDate: frmDate,
@@ -604,143 +542,38 @@
 		return [day, strmonth, year].join('-');
 	}
 	$(document).ready(function () {
-		$(".limited-footer .btn-container").each(function () {
-			if (!$(this).find("#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddReport123,#btnColumnChooser,#btnPurchaseEditDetails,#btnAddMaterialRequest").length) {
+		$(".limited-footer .btn-containerIvoiceEdit").each(function () {
+			if (!$(this).find("#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#ddButtonPayment,#ddReport123,btnColumnChooser").length) {
 				$(this).remove();
 			}
 		});
 	});
 
 
-
 	function onContextMenuPreparing(e) {
-		if (e.target === "content" && e.row) {
+		if (e.target === "content" && e.row && e.row.data) {
+			const rowData = e.row.data;
+			const ReceiptNo = encodeURIComponent(rowData.ReceiptNo);
+			const tenantName = window.tenantName || "defaultTenant";
+
 			e.items = [
 				{
-					text: "Edit Request / Enquiry",
+					text: "Edit Material Receipt",
 					icon: "edit",
 					onItemClick: function () {
-						const rowData = e.row.data;
-						if (!rowData) {
-							console.error("Row data is unavailable.");
-							return;
-						}
-
-						const { Mprno, RequestEnquiry } = rowData;
-						const tenantName = window.tenantName || "defaultTenant";
-						let url = "";
-						let title = "";
-
-						switch (RequestEnquiry) {
-							case "Client Request":
-								url = `/${tenantName}/IMS/AddNewClientRequest?Mprno=${Mprno}`;
-								title = "Edit Client Request";
-								break;
-							case "Project Request":
-								url = `/${tenantName}/IMS/AddNewProjectRequest?Mprno=${Mprno}`;
-								title = "Edit Project Request";
-								break;
-							case "Store Request":
-								url = `/${tenantName}/IMS/AddNewStoreRequest?Mprno=${Mprno}`;
-								title = "Edit Store Request";
-								break;
-							default:
-								console.warn("Unknown RequestEnquiry type:", RequestEnquiry);
-								return;
-						}
-
-						openModal(url, title);
-					}
-				},
-
-				{
-					text: "Clone Request / Enquiry",
-					icon: "copy",
-					onItemClick: function () {
-						onCloneRequest(e.row.data);
-					}
-				},
-				{
-					text: "Revise the Request / Enquiry",
-					icon: "repeat",
-					onItemClick: function () {
-						onReviseRequest(e.row.data);
-					}
-				},
-				{
-					text: "Delete Request / Enquiry",
-					icon: "trash",
-					onItemClick: function () {
-						DevExpress.ui.dialog.confirm(
-							"You are about to delete the Request / Enquiry.\nYou cannot revert the changes.\nAre you sure?",
-							"Confirm Delete"
-						).done(function (dialogResult) {
-							if (dialogResult) {
-								onDeleteRequest(e.row.data.RequestRefNo);
-							}
-						});
-					}
-				},
-				{
-					text: "Unlock the Request / Enquiry",
-					icon: "unlock",
-					onItemClick: function () {
-						onUnlockRequest(e.row.data);
-					}
-				},
-				{
-					text: "Create a RFQ",
-					icon: "plus",
-					onItemClick: function () {
-						onCreateRFQ(e.row.data);
-					}
-				},
-				{
-					text: "Create a Quotation",
-					icon: "plus",
-					onItemClick: function () {
-						onCreateQuotation(e.row.data);
-					}
-				},
-				{
-					text: "Create a Purchase Order",
-					icon: "cart",
-					onItemClick: function () {
-						onCreatePO(e.row.data);
-					}
-				},
-				{
-					text: "Create Material Receipt",
-					icon: "box",
-					onItemClick: function () {
-						onCreateMaterialReceipt(e.row.data);
-					}
-				},
-				{
-					text: "Create Material Issue Note",
-					icon: "export",
-					onItemClick: function () {
-						onCreateMaterialIssueNote(e.row.data);
-					}
-				},
-				{
-					text: "View Revision History",
-					icon: "clock",
-					onItemClick: function () {
-						let Mprno = e.row.data.Mprno;
-						let tenantName = window.tenantName || "defaultTenant"; // replace with dynamic tenant logic if needed
-						let url = `/${tenantName}/IMS/MPRRevisionHistory?Mprno=${Mprno}`;
-						let title = `MPRRevisionHistory - ${Mprno}`;
-						openModal(url, title);
-						
+						const url = `/${tenantName}/IMS/MaterialReceiptFromSupplier?ReceiptNo=${ReceiptNo}`;
+						window.location.href = url;
 					}
 				}
+				
+				
 			];
 		}
 	}
+
 		$(function () {
 				$("#MaterialRequest").dxTextBox({
-					text: formatMessage("Material Request"),
+					text: formatMessage("Material Receipt with Details"),
 				readOnly: true,
 				onContentReady: function (e) {
 					$(e.element).addClass("dx-textbox-heading");
