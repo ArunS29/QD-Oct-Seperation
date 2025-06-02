@@ -434,29 +434,53 @@
 	}
 
 
-    function deleteRecord() {
+		function deleteRecord() {
 		if (selectedRowData) {
 			const code = selectedRowData.DeliveryNoteNo;
-			if (confirm(`Are you sure you want to delete stock item: ${code}?`)) {
-				$.ajax({
-					url: "/api/DeliveryNote/DeleteDeliveryItem",
-					method: "POST",
-					contentType: "application/json",
-					data: JSON.stringify(code),
-					success: function (result) {
-						DevExpress.ui.notify(result.message, result.success ? "success" : "error", 2000);
-						if (result.success) {
-							const grid = $("#dataGrid").dxDataGrid("instance");
-							grid.refresh();
+
+			DevExpress.ui.dialog.confirm(
+				`Are you sure you want to delete stock item: <b>${code}</b>?`,
+				"Confirm Deletion"
+			).done(function (dialogResult) {
+				if (dialogResult) {
+					$.ajax({
+						url: "/api/DeliveryNote/DeleteDeliveryItem",
+						method: "POST",
+						contentType: "application/json",
+						data: JSON.stringify(code),
+						success: function (result) {
+							const messageType = result.success ? "Success" : "Error";
+							const messageColor = result.success ? "green" : "red";
+
+							DevExpress.ui.dialog.alert(
+								`<div style="color: ${messageColor}; font-weight: bold;">
+									${result.message}
+								</div>`,
+								messageType
+							).done(function () {
+								if (result.success) {
+									window.refreshPage();
+								}
+							});
+						},
+						error: function (xhr) {
+							DevExpress.ui.dialog.alert(
+								`<div style="color: red; font-weight: bold;">
+									Error deleting stock item.
+								</div>`,
+								"Error"
+							);
+							console.error(xhr);
 						}
-					},
-					error: function (xhr) {
-						DevExpress.ui.notify("Error deleting stock item", "error", 2000);
-						console.error(xhr);
-					}
-				});
-			}
+					});
+				}
+			});
+		} else {
+			DevExpress.ui.notify("Please select a row to delete.", "warning", 2000);
 		}
 	}
+
+
+
 
 </script>

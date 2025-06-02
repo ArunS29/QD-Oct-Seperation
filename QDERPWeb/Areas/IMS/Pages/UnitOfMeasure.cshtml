@@ -195,10 +195,21 @@
                 .AllowUpdating(true)
 
                 )
-                .Toolbar(toolbar =>
+            .Toolbar(toolbar =>
+            {
+                toolbar.Items(items =>
                 {
-                    toolbar.Items(items => { }); // hide default toolbar
-                })
+                    items.Add()
+                .Name("saveButton")
+                .Location(ToolbarItemLocation.After)
+                .Visible(false);
+
+                    items.Add()
+                .Name("revertButton")
+                .Location(ToolbarItemLocation.After)
+                .Visible(false);
+                });
+            })
                 .OnRowUpdating("onUnitRowUpdating")
                
             .AllowColumnReordering(true)
@@ -241,7 +252,7 @@
 
         // Handle Back button click
         $(document).on('click', '#btnBack', function () {
-            window.history.back();
+            window.parent.closeModal();
         });
 
     });

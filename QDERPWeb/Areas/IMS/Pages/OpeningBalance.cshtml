@@ -371,6 +371,46 @@
             }
         });
     }
+          $(function () {
+        setTimeout(function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const gscode = urlParams.get('gscode');
+            const description = urlParams.get('description');
+
+            console.log("URL Params - gscode:", gscode, "description:", description);
+
+            const stockBox = $("#txtStockCode").dxSelectBox("instance");
+            const descBox = $("#txtStockDescription").dxTextBox("instance");
+
+            if (gscode) {
+                stockBox.option("acceptCustomValue", true); // This is important
+                stockBox.option("value", gscode);
+            }
+
+            if (description) {
+                descBox.option("value", description);
+            }
+
+            loadOpeningBalanceGrid(gscode);
+        }, 300);
+    });
+
+    function loadOpeningBalanceGrid(gscode) {
+        if (!gscode) return;
+
+        $.ajax({
+            url: `/api/StockInventory/GetOpeningBalanceByGscode`,  // Your API endpoint
+            data: { gscode: gscode },
+            method: "GET",
+            success: function(data) {
+                // Assuming data is an array of records matching your grid columns
+                $("#gridOpeningBalance").dxDataGrid("instance").option("dataSource", data);
+            },
+            error: function(err) {
+                console.error("Error loading opening balance data", err);
+            }
+        });
+    }
 
 
    
