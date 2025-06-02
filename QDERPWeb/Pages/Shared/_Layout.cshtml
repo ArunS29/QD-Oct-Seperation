@@ -803,6 +803,7 @@
             border-radius: 50%;
             width: 50px;
             height: 50px;
+            z-index:1;
             font-size: 24px;
             cursor: pointer;
             display: none;
@@ -3084,7 +3085,36 @@
 
 
         });
+            async function exportPivotToPdf(pivotGridInstance,currentPivotRawData) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
 
+            if (!pivotGridInstance || currentPivotRawData.length === 0) {
+                DevExpress.ui.notify("No data available to export.", "error", 2000);
+                return;
+            }
+
+            const fields = pivotGridInstance.getDataSource().fields();
+
+            const headers = fields.map(f => f.caption || f.dataField);
+            const body = currentPivotRawData.map(item =>
+                fields.map(f => {
+                    let val = item[f.dataField];
+                    if (val instanceof Date) return val.toLocaleDateString();
+                    if (typeof val === "boolean") return val ? "Yes" : "No";
+                    return val ?? "";
+                })
+            );
+
+            doc.text("Quotation Analysis Export", 14, 15);
+            doc.autoTable({
+                head: [headers],
+                body: body,
+                startY: 20,
+            });
+
+            doc.save("quotation-analysis.pdf");
+        }
 
     </script>
 </body>

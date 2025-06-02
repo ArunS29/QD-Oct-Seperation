@@ -135,6 +135,11 @@
     }
     </style>
 
+<div class="title">
+    <div class="header-container">
+        <div id="Stockgroup" class="no-border-title"></div>
+    </div>
+</div>
 <div class="maindiv">
     <table class="form-table">
        
@@ -506,6 +511,16 @@
             });
         }
     });
+      $(function () {
+    $("#Stockgroup").dxTextBox({
+    text: formatMessage("Stock Group"),
+        readOnly: true,
+        onContentReady: function (e) {
+        $(e.element).addClass("dx-textbox-heading");
+        }
+        });
+    });
+
      async function translateToArabic(text) {
 
          try {
