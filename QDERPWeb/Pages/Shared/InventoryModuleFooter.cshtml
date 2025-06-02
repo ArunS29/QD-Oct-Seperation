@@ -557,7 +557,7 @@
             .Width(50)
             .Text(new JS("formatMessage('Delivery Note Details')"))
             .ElementAttr(new { style = "display: none;" })
-            // .OnClick("toggleGroupPanel")
+            .OnClick("OpenDeliveryNoteDetails")
             )
 
     </div>
@@ -1307,6 +1307,9 @@
     function AddNewRFQDetails() {
         window.location.href = `/${tenantName}/IMS/RFQwithItemDetails`;
     }
+    function OpenDeliveryNoteDetails() {
+        window.location.href = `/${tenantName}/IMS/DeliveryNoteDetails`;
+    }
 
         function addPaymentButton_click(e) {
         let url = "";
@@ -1599,6 +1602,9 @@
                     break;
                 case formatMessage('Add New Project Request'):
                     url = `/${tenantName}/IMS/AddNewProjectRequest`;
+                    break;
+                    case formatMessage('Posting Of Cost Prices'):
+                    url = `/${tenantName}/IMS/DeliveryNoteDetails`;
                     break;
                 default:
                     console.log("Clicked item: ", e.itemData.text);
