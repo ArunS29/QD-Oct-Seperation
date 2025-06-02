@@ -278,7 +278,7 @@
                                 )
                         </div>
                     </td>
-                    <th>
+                    <th style="display:flex; align-items:end;">
                         @(Html.DevExtreme().Button()
                             .ID("convertToArabic2")
                             .Width(50)
@@ -286,14 +286,12 @@
                             .ElementAttr("style", "padding:10px; color:black;margin-right:10px;")
                             .OnClick("convertToArabic1")
                             )
-                    </th>
-                    <td colspan="2">
+                  
                         @(Html.DevExtreme().TextBox()
                             .ID("ItemNameArabic")
                             .Label(new JS("formatMessage('Item Name / Description (In Arabic)')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .Width("100%"))
-                    </td>
                 </tr>
             </table>
 
@@ -1034,7 +1032,7 @@
                 <!-- Filter/Info Section -->
                 <div class="dx-fieldset horizontal-container ">
 
-                    <table style="width:100%; margin-bottom: 15px;">
+                    <table style="margin-bottom: 15px;">
                         <tr>
                             <td>
                             <td>
@@ -1043,7 +1041,7 @@
                                     .ID("MinQty")
                                     .Label(new JS("formatMessage('Minimum Quantity')"))
                                     .LabelMode(EditorLabelMode.Outside)
-                                    .Width(200)
+                                    .Width(350)
                                     .ShowSpinButtons(true))
                             </td>
                             <td>
@@ -1052,7 +1050,7 @@
                                     .ID("MaxQty")
                                     .Label(new JS("formatMessage('Maximum Quantity')"))
                                     .LabelMode(EditorLabelMode.Outside)
-                                    .Width(200)
+                                    .Width(350)
                                     .ShowSpinButtons(true))
                             </td>
                             <td>
@@ -1061,7 +1059,7 @@
                                     .ID("ReorderLevel")
                                     .Label(new JS("formatMessage('Reorder Level')"))
                                     .LabelMode(EditorLabelMode.Outside)
-                                    .Width(200)
+                                    .Width(350)
                                     .ShowSpinButtons(true))
                             </td>
                             <td>
@@ -1070,7 +1068,7 @@
                                     .ID("ReorderQty")
                                     .Label(new JS("formatMessage('Reorder Quantity/EOQ')"))
                                     .LabelMode(EditorLabelMode.Outside)
-                                    .Width(200)
+                                    .Width(350)
                                     .ShowSpinButtons(true))
                             </td>
                             <td>
@@ -1079,11 +1077,10 @@
                                     .ID("ReorderLeadTime")
                                     .Label(new JS("formatMessage('Reorder Lead Time')"))
                                     .LabelMode(EditorLabelMode.Outside)
-                                    .Width(200)
+                                    .Width(350)
                                     .ShowSpinButtons(true))
                             </td>
 
-                            </td>
                         </tr>
 
                     </table>
@@ -1106,7 +1103,7 @@
                         @(Html.DevExtreme().DropDownButton()
                             .Text(new JS("formatMessage('View Stock Movement Report')"))
                             .Icon("cart") // You can change to your preferred icon
-                            .Width(290)
+                            .Width(300)
                             .DisplayExpr("text")
                             )
 
@@ -1370,18 +1367,21 @@
                 @{
                     ViewBag.Title = "Invoice Grid";
                 }
-                <style>
-
-                    </style>
-                @(Html.DevExtreme().Button()
+                @(Html.DevExtreme().DropDownButton()
                     .ID("printButton")
                     .Text(new JS("formatMessage('Print')"))
                     .Icon("print")
                     .ElementAttr("style", "padding:10px")
-                    @* .OnClick("onPrintClick") // Optional: assign your click function here *@
+                    .DisplayExpr("Text")
+                    .KeyExpr("Text")
+                    .NoDataText("Show Or Remove") // 👈 Custom message when there are no items
+                    .ItemTemplate(@<text>
+                        <div style="display: flex; align-items: center;">
+                            <i class="dx-icon-<%- Icon %>" style="padding:10px;"></i>
+                            <span><%- Text %></span>
+                        </div>
+                    </text>)
                     )
-
-
 
                     <div class="dx-card " style="background-color:transparent; border:none;padding:10px;">
                        
@@ -1465,12 +1465,7 @@
             @{
                 ViewBag.Title = "Quotation Grid";
             }
-            
 
-
-                <style>
-
-                </style>
             @(Html.DevExtreme().DropDownButton()
                 .ID("Dropdown")
                 .Text(new JS("formatMessage('Print')"))
@@ -1478,6 +1473,7 @@
                 .ElementAttr("style", "padding:10px")
                 .DisplayExpr("Text")
                 .KeyExpr("Text")
+                .NoDataText("Show Or Remove")
                 .ItemTemplate(@<text>
                     <div style="display: flex; align-items: center;">
                         <i class="dx-icon-<%- Icon %>" style="padding:10px;"></i>
@@ -1572,11 +1568,7 @@
                 ViewBag.Title = "PurchaseOrder Grid";
             }
 
-
-
-                <style>
-
-                </style>
+               
             @(Html.DevExtreme().DropDownButton()
                 .ID("PurchaseOrderDropdown")
                 .Text(new JS("formatMessage('Print')"))
@@ -1584,15 +1576,14 @@
                 .ElementAttr("style", "padding:10px")
                 .DisplayExpr("Text")
                 .KeyExpr("Text")
+                .NoDataText("Show Or Remove") // 👈 Custom message when there are no items
                 .ItemTemplate(@<text>
                     <div style="display: flex; align-items: center;">
                         <i class="dx-icon-<%- Icon %>" style="padding:10px;"></i>
                         <span><%- Text %></span>
                     </div>
                 </text>)
-
                 )
-
 
                 <div class="dx-card " style="background-color:transparent; border:none;padding:10px;">
                     
@@ -1676,9 +1667,6 @@
                 ViewBag.Title = "ItemDelivers Grid";
             }
 
-                <style>
-
-                </style>
             @(Html.DevExtreme().DropDownButton()
                 .ID("ItemDeliversDropdown")
                 .Text(new JS("formatMessage('Print')"))
@@ -1686,13 +1674,13 @@
                 .ElementAttr("style", "padding:10px")
                 .DisplayExpr("Text")
                 .KeyExpr("Text")
+                .NoDataText("Show Or Remove") // 👈 Custom message when there are no items
                 .ItemTemplate(@<text>
                     <div style="display: flex; align-items: center;">
                         <i class="dx-icon-<%- Icon %>" style="padding:10px;"></i>
                         <span><%- Text %></span>
                     </div>
                 </text>)
-
                 )
 
 
@@ -1712,9 +1700,9 @@
                     {
                         columns.Add().DataField("DeliveryNoteNo").Caption(new JS("formatMessage('Delivery Note No')"));
                         columns.Add().DataField("DeliveryDate").Caption(new JS("formatMessage('Delivery Date')")).DataType(GridColumnDataType.Date);
-                        columns.Add().DataField("Status").Caption(new JS("formatMessage('Status')")); // Adjust as per entity property if needed
+                        columns.Add().DataField("Status").Caption(new JS("formatMessage('Status')")); 
                         columns.Add().DataField("InvoiceNo").Caption(new JS("formatMessage('Invoice No')"));
-                        columns.Add().DataField("IssuedFromStoreName").Caption(new JS("formatMessage('Issued From(Store)')"));
+                        columns.Add().DataField("IssuedFromStoreName").Caption(new JS("formatMessage('Issued From(Store)')")); 
                         columns.Add().DataField("DeliveryIssuedTo").Caption(new JS("formatMessage('Issued To')"));
                         columns.Add().DataField("IssuedQty").Caption(new JS("formatMessage('Qty')")).DataType(GridColumnDataType.Number);
                         columns.Add().DataField("IssuedUnitPrice").Caption(new JS("formatMessage('Unit Price')"));
@@ -1781,9 +1769,7 @@
 
 
 
-                <style>
-
-                </style>
+             
             @(Html.DevExtreme().DropDownButton()
                 .ID("ItemReceivedDropdown")
                 .Text(new JS("formatMessage('Print')"))
@@ -1791,6 +1777,7 @@
                 .ElementAttr("style", "padding:10px")
                 .DisplayExpr("Text")
                 .KeyExpr("Text")
+                .NoDataText("Show Or Remove")
                 .ItemTemplate(@<text>
                     <div style="display: flex; align-items: center;">
                         <i class="dx-icon-<%- Icon %>" style="padding:10px;"></i>
@@ -1886,10 +1873,6 @@
                 ViewBag.Title = "UnitConversion Grid";
             }
 
-
-                <style>
-
-                </style>
                 <div style="text-align: right;">
                 @(Html.DevExtreme().Button()
                     .ID("addButton")
@@ -1920,7 +1903,7 @@
                     .Editing(editing =>
                     {
                         editing.Mode(GridEditMode.Row);
-                        editing.AllowAdding(true);
+                        editing.AllowAdding(false);
                         editing.AllowUpdating(true);
                         editing.UseIcons(true);
                     })
@@ -2212,15 +2195,14 @@
                         .Icon("attach")
                         .Type(ButtonType.Default)
                         .Width(250)
-                        .OnClick("openInventoryDocumentPopup") // JavaScript function
+                        .OnClick("inventoryDocumentBind") // JavaScript function
                         )
-                    @(Html.DevExtreme().Button()
-                        .Text(new JS("formatMessage('Merge Selected Files')"))
-                        .Icon("fas fa-file-pdf")
-                        .Type(ButtonType.Default)
-                        .Width(250)
-                        .OnClick("mergeSelectedFiles") 
-                        )
+                         @(Html.DevExtreme().Button()
+                         .Text(new JS("formatMessage('Merge Selected Files')"))
+                         .Icon("fas fa-file-pdf")
+                         .Type(ButtonType.Default)
+                         .Width(280)
+                         .OnClick("mergeSelectedFiles"))
 
                     @(Html.DevExtreme().Button()
                         .Text(new JS("formatMessage('Save Separated PDF Files')"))
@@ -2229,18 +2211,6 @@
                         .Width(280)
                         .OnClick("saveSeparatedFiles") 
                         )
-                    @(Html.DevExtreme().Popup()
-                        .ID("inventoryDocumentPopup")
-                        .Width("80%")
-                        .Height("80%")
-                        .ShowTitle(true)
-                        .Title("Attach Files")
-                        .Visible(false)
-                        .ContentTemplate(@<text>
-                            <iframe id="inventoryDocumentFrame" width="100%" height="100%" frameborder="0"></iframe>
-                        </text>)
-                        )
-
                     </div>
 
                     <br />
@@ -2402,6 +2372,7 @@
                 .ElementAttr("style", "padding:10px")
                 .DisplayExpr("Text")
                 .KeyExpr("Text")
+                .NoDataText("Show Or Remove") 
                 .ItemTemplate(@<text>
                     <div style="display: flex; align-items: center;">
                         <i class="dx-icon-<%- Icon %>" style="padding:10px;"></i>
@@ -2563,7 +2534,11 @@
         }
     }
 
-
+        function inventoryDocumentBind(){
+                const url = `/${tenantName}/IMS/InventoryDocument`;
+              const title = "";
+                  openModal(url, title);
+          }
 
       function ItemStore(){
                 const url = `/${tenantName}/IMS/StockDetails_ItemStore`;
