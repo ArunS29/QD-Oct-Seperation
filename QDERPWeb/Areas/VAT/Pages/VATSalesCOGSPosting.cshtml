@@ -264,13 +264,13 @@
    .ID("dataGrid")
    .RemoteOperations(false)
    .DataSource(new JS("[]"))
-    .ShowBorders(true)
+    .ShowBorders(true)  
     .Selection(s => s
     .Mode(SelectionMode.Multiple) // Or SelectionMode.Single
     .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always))
 
 		.Columns(columns =>
-		{
+		{ 
    @*  columns.Command(command =>
     {
         command.Select().Text(""); // Optional: leave empty text for checkboxes
