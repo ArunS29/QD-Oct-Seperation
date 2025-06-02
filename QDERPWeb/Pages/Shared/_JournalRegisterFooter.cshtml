@@ -1,6 +1,5 @@
 ﻿@{
-    var hideDropdowns = ViewData["HideDropdowns"] as bool? ?? false;
-    var hideDropdown = ViewData["HideDropdown"] as bool? ?? false;
+    
 }
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -45,9 +44,10 @@
         padding: 0 !important;
     }
 
-    .modalTitle{ 
-         display:none; 
+    .modalTitle {
+        display: none;
     }
+
     .horizontal-container {
         display: flex;
         gap: 10px; /* Adds spacing between buttons */
@@ -139,8 +139,6 @@
         .btn-container:hover .dx-dropdownbutton .dx-button-text {
             display: inline-block;
         }
-  
-
 </style>
 
 <div class="dx-fieldset horizontal-container">
@@ -175,9 +173,36 @@
             .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
             )
     </div>
-   
+    <div class="btn-container">
 
-  
+
+        @(Html.DevExtreme().Button()
+
+            .ID("btnCreateNew")
+
+            .Icon("add") // DevExtreme built-in 'add' icon (a plus symbol)
+
+            .Text(new JS("formatMessage('Create New')"))
+
+            .ElementAttr(new { style = "margin-left: 10px;" }) // optional spacing
+
+            .Width(120)
+
+            .OnClick("function() { onCreateNewClick(); }") // your JS function
+
+            )
+
+    </div>
+    @*     <div class="btn-container">
+    @(Html.DevExtreme().Button()
+    .ID("btnBack")
+    .Text(new JS("formatMessage('Back')"))
+    .Icon("arrowleft")
+    // .OnClick("onBackButtonClick")
+    .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+    )
+    </div> *@
+
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnToggleSearch")
@@ -223,132 +248,7 @@
             .OnClick("showColumnChooser")
             )
     </div>
-    @if (!hideDropdown)
-    {
-        <div class="btn-container">
-            @(
-                Html.DevExtreme().DropDownButton()
-                                .ID("ddButtonExpense")
-                                .Icon("tags")
-                                .Width(50)
-                                .Text("Create New")
-                                .ElementAttr(new { style = "display: none;" })
-                                .DropDownOptions(options => options.Width(230))
-                                .Items(items =>
-                                {
-                                    items.Add().Text("Expense Claim Request").Icon("money");
-                                    items.Add().Text("Petty Cash Request").Icon("product");
-                                    items.Add().Text("Supplier Payment Request").Icon("money");
-
-                                })
-                                .OnItemClick("addExpenseButton_click")
-                                .ShowArrowIcon(false)
-                                )
-        </div>
-    }
-    @if (!hideDropdowns)
-    {
-        <div class="btn-container">
-            @(Html.DevExtreme().DropDownButton()
-                .ID("ddButtonReceipts")
-                .Icon("tags")
-                .Width(50)
-                .Text(new JS("formatMessage('Add Receipt')"))
-                .ElementAttr(new { style = "display: none;" })
-                .DropDownOptions(options => options.Width(230))
-                .Items(items =>
-                {
-                    items.Add().Text(new JS("formatMessage('Add Cash Receipts')")).Icon("money");
-                    items.Add().Text(new JS("formatMessage('Add Bank Receipts')")).Icon("product");
-                })
-                .OnItemClick("addRecipitsButton_click")
-                .ShowArrowIcon(false)
-                )
-        </div>
-
-        <div class="btn-container">
-            @(Html.DevExtreme().DropDownButton()
-                .ID("ddButtonPayment")
-                .Icon("money")
-                .Width(50)
-                .Text(new JS("formatMessage('Add Payment')"))
-                .ElementAttr(new { style = "display: none;" })
-                .DropDownOptions(options => options.Width(230))
-                .Items(items =>
-                {
-                    items.Add().Text(new JS("formatMessage('Add Cash Payment')")).Icon("money");
-                    items.Add().Text(new JS("formatMessage('Add Bank Payment')")).Icon("product");
-                })
-                .OnItemClick("addPaymentButton_click")
-                .ShowArrowIcon(false)
-                )
-        </div>
-
-        <div class="btn-container">
-            @(Html.DevExtreme().DropDownButton()
-                .ID("ddOtherVouchers")
-                .Icon("card")
-                .Width(50)
-                .Text(new JS("formatMessage('Other Vouchers')"))
-                .ElementAttr(new { style = "display: none;" })
-                .DropDownOptions(options => options.Width(230))
-                .Items(items =>
-                {
-                    items.Add().Text(new JS("formatMessage('Add Purchase Voucher')")).Icon("add");
-                    items.Add().Text(new JS("formatMessage('Add Sales Voucher')")).Icon("add");
-                    items.Add().Text(new JS("formatMessage('Add Journal Voucher')")).Icon("add");
-                })
-                .OnItemClick("otherVoucherButton_click")
-                .ShowArrowIcon(false)
-                )
-        </div>
-
-        <div class="btn-container">
-            @(Html.DevExtreme().DropDownButton()
-                .ID("ddReports")
-                .Icon("doc")
-                .Width(50)
-                .Text(new JS("formatMessage('Report')"))
-                .ElementAttr(new { style = "display: none;" })
-                .DropDownOptions(options => options.Width(320))
-                .Items(items =>
-                {
-                    items.Add().Text(new JS("formatMessage('Account Statements')")).Icon("file").OnClick("showSubmenu4");
-                    items.Add().Text(new JS("formatMessage('Receivable Statements')")).Icon("file").OnClick("showSubmenu5");
-                    items.Add().Text(new JS("formatMessage('Payable Statements')")).Icon("file").OnClick("showSubmenu6");
-                    items.Add().Text(new JS("formatMessage('Cost Reports')")).Icon("file").OnClick("showSubmenu7");
-                    items.Add().Text(new JS("formatMessage('Bank Reconciliation')")).Icon("product");
-                    items.Add().Text(new JS("formatMessage('Ledger to Receivable/Payable Mapping')")).Icon("product");
-                    items.Add().Text(new JS("formatMessage('Ledger to Salary Payable Mapping')")).Icon("product");
-                })
-                            .ItemTemplate(@<text>
-                        <div class="<%- text.replace(/\s+/g, '-').toLowerCase() %> submenu-item">
-                            <i class="dx-icon dx-icon-<%- icon %>"></i>
-                            <span><%- text %></span>
-                        </div>
-                    </text>)
-                .OnItemClick("addReportsButton_click")
-                .ShowArrowIcon(false)
-                )
-        </div>
-    }
     
-  
-    <div id="supplierPaymentRequestModal">
-
-        @(Html.DevExtreme().Popup()
-            .ID("SupplierpaymentPopup")
-            .Width("90%")
-            .Height(500)
-            .Visible(false)
-            .ShowCloseButton(true)
-            .ResizeEnabled(true)
-            .DragEnabled(true)
-            .ShowTitle(true)
-
-            )
-
-    </div>
 </div>
 <div id="warningPopup"></div>
 
@@ -357,7 +257,7 @@
     $(document).ready(function () {
         console.log('Start permission handling');
         // Form ID
-        var formId = "frm201LedgerView";
+        var formId = "frm20128JournalRegisterMain";
 
         // Call the API to get permissions
         $.ajax({
@@ -370,7 +270,7 @@
                 if (response.success && response.permissions) {
                     // Default visibility and enable status for buttons
                     var controlStates = {
-                        "btnShowRecords": { "Visible": false, "Enabled": false },
+                        "ddBtnShowRecords": { "Visible": false, "Enabled": false },
                         "btnPrint": { "Visible": false, "Enabled": false },
                         "btnSearch": { "Visible": false, "Enabled": false },
                         "ddButtonLayout": { "Visible": false, "Enabled": false },
@@ -378,11 +278,8 @@
                         "btntoggleGroupPanel": { "Visible": false, "Enabled": false },
                         "btnToggleHeaderFilter": { "Visible": false, "Enabled": false },
                         "btnColumnChooser": { "Visible": false, "Enabled": false },
-                        "ddButtonReceipts": { "Visible": false, "Enabled": false },
-                        "ddButtonPayment": { "Visible": false, "Enabled": false },
-                        "ddOtherVouchers": { "Visible": false, "Enabled": false },
-                        "ddReports": { "Visible": false, "Enabled": false },
-                        "ddButtonExpense": { "Visible": false, "Enabled": false }
+                        "btnCreateNew": { "Visible": false, "Enabled": false },
+                        "btnShowallsubmission": { "Visible": false, "Enabled": false }
                     };
 
 
@@ -435,79 +332,79 @@
                 alert('An error occurred while fetching permissions. Please try again.');
             }
         });
-       // showColumnChooser();
+        // showColumnChooser();
         console.log('End permission handling');
     });
 
 
- function exportGridToPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF('l', 'mm', 'a4'); // 'l' for landscape, 'mm' for millimeters, 'a4' for A4 size
+    function exportGridToPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('l', 'mm', 'a4'); // 'l' for landscape, 'mm' for millimeters, 'a4' for A4 size
 
-    // Get the instance of the DataGrid
-    var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        // Get the instance of the DataGrid
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
 
-    // Extract headers
-    var headers = dataGrid.getVisibleColumns().map(column => column.caption);
+        // Extract headers
+        var headers = dataGrid.getVisibleColumns().map(column => column.caption);
 
-    // Extract data and calculate sums
-    var creditSum = 0;
-    var debitSum = 0;
-    var data = dataGrid.getVisibleRows().map(row => {
-        return dataGrid.getVisibleColumns().map(column => {
-            let value = row.data[column.dataField];
-            if (column.dataType === 'date' && value) {
-                // Format date as dd-MMM-yyyy
-                let date = new Date(value);
-                let day = String(date.getDate()).padStart(2, '0');
-                let month = date.toLocaleString('default', { month: 'short' });
-                let year = date.getFullYear();
-                return `${day}-${month}-${year}`;
-            }
-            if (column.dataField === 'CrAmount') {
-                creditSum += value || 0;
-            }
-            if (column.dataField === 'DrAmount') {
-                debitSum += value || 0;
-            }
-            return value;
+        // Extract data and calculate sums
+        var creditSum = 0;
+        var debitSum = 0;
+        var data = dataGrid.getVisibleRows().map(row => {
+            return dataGrid.getVisibleColumns().map(column => {
+                let value = row.data[column.dataField];
+                if (column.dataType === 'date' && value) {
+                    // Format date as dd-MMM-yyyy
+                    let date = new Date(value);
+                    let day = String(date.getDate()).padStart(2, '0');
+                    let month = date.toLocaleString('default', { month: 'short' });
+                    let year = date.getFullYear();
+                    return `${day}-${month}-${year}`;
+                }
+                if (column.dataField === 'CrAmount') {
+                    creditSum += value || 0;
+                }
+                if (column.dataField === 'DrAmount') {
+                    debitSum += value || 0;
+                }
+                return value;
+            });
         });
-    });
 
-    // Generate PDF
-    doc.autoTable({
-        head: [headers],
-        body: data,
-        styles: { overflow: 'linebreak' },
-        theme: 'grid',
-        tableWidth: 'auto', // Adjust table width to fit the page
-        columnStyles: {
-            0: { cellWidth: 'wrap' }, // Adjust the first column width
-            // Add more column styles if needed
-        },
-        margin: { top: 10, right: 10, bottom: 30, left: 10 }, // Adjust margins if needed
-        didDrawPage: function (data) {
-            // Remove the "DataGrid Export" text
-            // doc.setFontSize(10);
-            // doc.text('DataGrid Export', data.settings.margin.left, 10);
+        // Generate PDF
+        doc.autoTable({
+            head: [headers],
+            body: data,
+            styles: { overflow: 'linebreak' },
+            theme: 'grid',
+            tableWidth: 'auto', // Adjust table width to fit the page
+            columnStyles: {
+                0: { cellWidth: 'wrap' }, // Adjust the first column width
+                // Add more column styles if needed
+            },
+            margin: { top: 10, right: 10, bottom: 30, left: 10 }, // Adjust margins if needed
+            didDrawPage: function (data) {
+                // Remove the "DataGrid Export" text
+                // doc.setFontSize(10);
+                // doc.text('DataGrid Export', data.settings.margin.left, 10);
 
-            // Add footer
-            var pageCount = doc.internal.getNumberOfPages();
-            doc.setFontSize(8);
-            doc.text(`Page ${data.pageNumber} of ${pageCount}`, data.settings.margin.left, doc.internal.pageSize.height - 20);
+                // Add footer
+                var pageCount = doc.internal.getNumberOfPages();
+                doc.setFontSize(8);
+                doc.text(`Page ${data.pageNumber} of ${pageCount}`, data.settings.margin.left, doc.internal.pageSize.height - 20);
 
-            // Add sum of credit and debit, and row count
-            doc.text(`Total Rows: ${dataGrid.getVisibleRows().length}`, data.settings.margin.left, doc.internal.pageSize.height - 15);
-            doc.text(`Total Credit: ${creditSum.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, data.settings.margin.left + 50, doc.internal.pageSize.height - 15);
-            doc.text(`Total Debit: ${debitSum.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, data.settings.margin.left + 150, doc.internal.pageSize.height - 15);
-        }
-    });
+                // Add sum of credit and debit, and row count
+                doc.text(`Total Rows: ${dataGrid.getVisibleRows().length}`, data.settings.margin.left, doc.internal.pageSize.height - 15);
+                doc.text(`Total Credit: ${creditSum.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, data.settings.margin.left + 50, doc.internal.pageSize.height - 15);
+                doc.text(`Total Debit: ${debitSum.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, data.settings.margin.left + 150, doc.internal.pageSize.height - 15);
+            }
+        });
 
-    // Open PDF in a new window
-    var string = doc.output('datauristring');
-    var newWindow = window.open();
-    newWindow.document.write('<iframe width="100%" height="100%" src="' + string + '"></iframe>');
-}
+        // Open PDF in a new window
+        var string = doc.output('datauristring');
+        var newWindow = window.open();
+        newWindow.document.write('<iframe width="100%" height="100%" src="' + string + '"></iframe>');
+    }
 
 
 
@@ -553,7 +450,7 @@
         }
     });
     function saveLayoutClick(e) {
-        
+
         var grid = $("#dataGrid").dxDataGrid("instance");
         var layout = grid.state();
         const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
@@ -576,7 +473,7 @@
         //DevExpress.ui.notify("Layout", "success", 600);
     }
     function openLayoutClick(e) {
-        
+
         // Create an input element dynamically
         const input = document.createElement("input");
         input.type = "file";
@@ -692,8 +589,8 @@
         if (isColumnChooserVisible) {
             dataGrid.option("columnChooser.enabled", false); // Disable the column chooser
         } else {
-            dataGrid.option("columnChooser.enabled", true); 
-            dataGrid.showColumnChooser(); 
+            dataGrid.option("columnChooser.enabled", true);
+            dataGrid.showColumnChooser();
         }
     }
 
@@ -704,7 +601,7 @@
         var grid = $("#dataGrid").dxDataGrid("instance");
         var currentVisibility = grid.option("filterRow.visible");
 
-        grid.option("filterRow.visible", !currentVisibility); 
+        grid.option("filterRow.visible", !currentVisibility);
     }
 
     // Footer Recipits button event
@@ -763,7 +660,7 @@
 
                     var acchedid = selectedItem.AccountId;
                     var accheadname = selectedItem.AccountHead;
-                   
+
                     // ✅ Construct the URL
                     var pageUrl = `/${tenantName}/Finance/SalaryPayableMapping?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}&FromDate=${encodeURIComponent(formattedFromDate)}&ToDate=${encodeURIComponent(formattedToDate)}`;
 
@@ -832,7 +729,7 @@
         $("#overlay").fadeOut();
         $("#overlay-frame").attr("src", ""); // Clear iframe to stop loading
     }
-  
+
     // Handle button clicks
     function addRecipitsButton_click(e) {
         let url = "";
@@ -896,7 +793,7 @@
     }
 
     // Close modal when clicking outside
-    window.onclick = function(event) {
+    window.onclick = function (event) {
         let modal = document.getElementById("customModal");
         if (event.target === modal) {
             closeModal();
@@ -986,7 +883,7 @@
         var submenuWidth = $submenu.outerWidth();
 
         // Calculate left-side positioning
-        var leftPos = offset.left - submenuWidth +620;
+        var leftPos = offset.left - submenuWidth + 620;
 
         // Prevent submenu from going off-screen on the left
         if (leftPos < 0) {
@@ -1014,30 +911,30 @@
             }
         });
     }
-        // function dataGridSelectionChanged(e) {
-        //     const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-        //     const ddbInstance = $("#accountDropDownBox").dxDropDownBox("instance");
+    // function dataGridSelectionChanged(e) {
+    //     const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+    //     const ddbInstance = $("#accountDropDownBox").dxDropDownBox("instance");
 
-        //     if (selectedKey) {
-        //         ddbInstance.option("value", selectedKey);
-        //         if (ddbInstance.option("opened")) ddbInstance.close();
-        //     }
-        //     var selectedRowData = $("#ledgeraccount-datagrid").dxDataGrid("instance").getSelectedRowsData();
-        //     // Get ReferenceNo from selected row
-        //     if (selectedRowData.length > 0) {
-        //         acchedid = selectedRowData[0].AccountId;
-        //         accheadname = selectedRowData[0].AccountHead;
-        //         refno = selectedRowData[0].ReferenceNo;
-        //         accgroup = selectedRowData[0].AccountGroup;
-        //         accgroupid = selectedRowData[0].AccountGroupId;
-        //         accheadar = selectedRowData[0].AccountHeadArabic;
-        //         updateBankReconciliationState(accheadname);
-        //             updateReceivableStatement(accgroup);
+    //     if (selectedKey) {
+    //         ddbInstance.option("value", selectedKey);
+    //         if (ddbInstance.option("opened")) ddbInstance.close();
+    //     }
+    //     var selectedRowData = $("#ledgeraccount-datagrid").dxDataGrid("instance").getSelectedRowsData();
+    //     // Get ReferenceNo from selected row
+    //     if (selectedRowData.length > 0) {
+    //         acchedid = selectedRowData[0].AccountId;
+    //         accheadname = selectedRowData[0].AccountHead;
+    //         refno = selectedRowData[0].ReferenceNo;
+    //         accgroup = selectedRowData[0].AccountGroup;
+    //         accgroupid = selectedRowData[0].AccountGroupId;
+    //         accheadar = selectedRowData[0].AccountHeadArabic;
+    //         updateBankReconciliationState(accheadname);
+    //             updateReceivableStatement(accgroup);
 
-        //     }
+    //     }
 
-        // }
-            $("#warningPopup").dxPopup({
+    // }
+    $("#warningPopup").dxPopup({
         visible: false,
         showTitle: true,
         title: "Warning",
@@ -1051,7 +948,7 @@
         closeOnOutsideClick: true
     });
 
-       var currentAccGroup = ""; // Global variable to store accgroup
+    var currentAccGroup = ""; // Global variable to store accgroup
 
     function updateReceivableStatement(accgroup) {
         currentAccGroup = accgroup || "";
@@ -1061,11 +958,11 @@
         e.event.stopPropagation();
 
         // If accgroup is not valid, show message and return
-           if (!currentAccGroup.toUpperCase().includes("SUNDRY DEBTORS")) {
-        $("#popupWarningMessage").text("No records to print");
-        $("#warningPopup").dxPopup("instance").show();
-        return;
-    }
+        if (!currentAccGroup.toUpperCase().includes("SUNDRY DEBTORS")) {
+            $("#popupWarningMessage").text("No records to print");
+            $("#warningPopup").dxPopup("instance").show();
+            return;
+        }
 
 
         hideAllSubmenus(); // Hide all submenus before showing the selected one
@@ -1103,7 +1000,7 @@
         });
     }
 
-         function updateReceivableStatement(accgroup) {
+    function updateReceivableStatement(accgroup) {
         currentAccGroup = accgroup || "";
     }
 
@@ -1202,7 +1099,7 @@
     }
     function addExpenseButton_click(e) {
         switch (e.itemData.text) {
-            
+
             case ('Expense Claim Request'):
                 window.location.href = `/${tenantName}/Finance/ExpensesClaimRequest`;
                 break;
@@ -1210,9 +1107,9 @@
                 window.location.href = `/${tenantName}/Finance/PettyCashRequest`;
                 break;
             case 'Supplier Payment Request':
-                
+
                 $.ajax({
-                    
+
                     url: `/api/ExpenseClaim/GetSupplierpayment`,
                     type: 'GET',
                     dataType: "html",

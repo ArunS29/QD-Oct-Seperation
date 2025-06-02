@@ -550,7 +550,141 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetByDeliveryNoteNo(string deliveryNoteNo)
+        {
+            if (string.IsNullOrWhiteSpace(deliveryNoteNo))
+                return BadRequest(new { message = "Delivery Note No is required", success = false });
 
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { message = "Invalid tenant", success = false });
+
+            try
+            {
+                var master = await dbContext.Tbl60301deliveryNoteMasters
+                    .FirstOrDefaultAsync(x => x.DeliveryNoteNo == deliveryNoteNo);
+
+                if (master == null)
+                    return NotFound(new { message = "Delivery Note not found", success = false });
+
+                var children = await dbContext.Tbl60302deliveryNoteChildren
+                    .Where(x => x.DeliveryNoteNo == deliveryNoteNo)
+                    .ToListAsync();
+
+                return Ok(new
+                {
+                    success = true,
+                    deliveryNoteNo = master.DeliveryNoteNo,
+                    deliveryDate = master.DeliveryDate,
+                    clientCode = master.ClientCode,
+                    salesPersonCode = master.SalesPersonCode,
+                    clientPono = master.ClientPono,
+                    clientPodate = master.ClientPodate,
+                    attention = master.Attention,
+                    clientContactNo = master.ClientContactNo,
+                    clientContactEmail = master.ClientContactEmail,
+                    StoreCode = master.StoreCode,
+                    projectId = master.ProjectId,
+                    clientProject = master.ClientProject,
+                    deliveryNoteRemarks = master.DeliveryNoteRemarks,
+                    salesman = master.Salesman,
+                    transportedBy = master.TransportedBy,
+                    driversName = master.DriversName,
+                    driversId = master.DriversId,
+                    vehicleNo = master.VehicleNo,
+                    companyBranch = master.CompanyBranch,
+                    deliveryType = master.DeliveryType,
+                    inventoryMasterGroupId = master.InventoryMasterGroupId,
+                    salesOrderNo = master.SalesOrderNo,
+                    quotationNo = master.QuotationNo,
+                    Dnsignatory = master.Dnsignatory,
+                    IsApproved = master.IsApproved,
+
+                    items = children.Select(x => new
+                    {
+                        SNo = x.DeliveryNoteSlNo,
+                        ItemCode = x.Gscode,
+                        UnitRateMethod = x.UnitRateMethod,
+                        Qty = x.IssuedQty,
+                        UnitCostPrice = x.IssuedUnitPrice,
+                        EmployeeName = x.EmployeeNo,
+                        PropertyOrEquipment = x.PropertyNo
+                    })
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error loading delivery note", success = false, error = ex.Message });
+            }
+        }
+        public async Task<IActionResult> GetDeliveryNoteDetails()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                {
+                    var result = await dbContext.Qry60306deliveryNoteDetails
+                        .Select(d => new
+                        {
+                            d.DeliveryNoteNo,
+                            d.DeliveryDate,
+                            d.DeliveryIssuedTo,
+                            d.Gscode,
+                            d.Gsdescrpition,
+                            d.UnitType,
+                            d.UnitRateMethod,
+                            d.IssuedQty
+                        })
+                        .ToListAsync();
+
+                    return Ok(result);
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Server error: {ex.Message}");
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteDeliveryItem([FromBody] string deliveryNoteNo)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                {
+                    // Find the matching record from the delivery note master view/table
+                    var deliveryItem = await dbContext.Qry60304deliveryNoteViewMasters
+                        .FirstOrDefaultAsync(d => d.DeliveryNoteNo == deliveryNoteNo);
+
+                    if (deliveryItem == null)
+                    {
+                        return NotFound(new { success = false, message = $"Delivery note '{deliveryNoteNo}' not found." });
+                    }
+
+                    
+                    var entityToDelete = await dbContext.Tbl60301deliveryNoteMasters
+                        .FirstOrDefaultAsync(d => d.DeliveryNoteNo == deliveryNoteNo);
+
+                    if (entityToDelete == null)
+                    {
+                        return NotFound(new { success = false, message = $"No deletable record found for '{deliveryNoteNo}'." });
+                    }
+
+                    dbContext.Tbl60301deliveryNoteMasters.Remove(entityToDelete);
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(new { success = true, message = $"Stock item '{deliveryNoteNo}' deleted successfully." });
+                }
+
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = $"Server error: {ex.Message}" });
+            }
+        }
 
     }
 }

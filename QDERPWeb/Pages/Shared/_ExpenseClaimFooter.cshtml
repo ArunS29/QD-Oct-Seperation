@@ -1,4 +1,6 @@
-﻿ <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+﻿
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style type="text/css">
     #dataGrid .dx-datagrid-headers .dx-datagrid-action {
         text-align: center !important;
@@ -40,9 +42,9 @@
         padding: 0 !important;
     }
 
-    /* .modalTitle{ */
-    /*     display:none; */
-    /* } */
+    .modalTitle{
+         display:none;
+    }
     .horizontal-container {
         display: flex;
         gap: 10px; /* Adds spacing between buttons */
@@ -98,7 +100,7 @@
 
         /* Initially hide the button text and set a fixed small width */
         .btn-container .dx-button {
-            width: 40px !important; /* Small width for icons */
+            width: 55px !important; /* Small width for icons */
             transition: width 0.3s ease-in-out;
         }
 
@@ -135,64 +137,10 @@
             display: inline-block;
         }
 
-    #btnAddNewQuotation:hover{
-        width: 240px !important; /* Expand to fit text */
-    }
-
-    #btnDeliveryNoteDetails:hover {
-        width: 210px !important; /* Expand to fit text */
-    }
-    #btnDeliveryNotePosting:hover {
-        width: 210px !important; /* Expand to fit text */
-    }
-    #btnDeliveryNoteDetails:hover {
-        width: 220px !important; /* Expand to fit text */
-    }
-
-    #btnAddDeliverynote:hover {
-        width: 210px !important; /* Expand to fit text */
-    }
-
-    #btnAddSalesOrder:hover {
-        width: 220px !important; /* Expand to fit text */
-    }
-
-    #btnSalesOrderDetails:hover {
-        width: 210px !important; /* Expand to fit text */
-    }
-
-    #btnCreateQuotations:hover {
-        width: 240px !important; /* Expand to fit text */
-    }
-
-    #btnPurchaseOrderDetails:hover {
-        width: 230px !important; /* Expand to fit text */
-    }
-
-    #btnNewPurchaseOrder:hover {
-        width: 230px !important; /* Expand to fit text */
-    }
-
-    #btnAddNewStockAdjustment:hover {
-        width: 30px !important; /* Expand to fit text */
-    }
-
-    #btnAddNewJobOrder:hover {
-        width: 230px !important; /* Expand to fit text */
-    }
-    
-    #btnStockAdjustmentDetails:hover {
-        width: 250px !important; /* Expand to fit text */
-    }
-
-    #btnMaterialReceiptDetails:hover {
-        width: 250px !important; /* Expand to fit text */
-    }
 
 </style>
 
-<div class="dx-fieldset horizontal-container" style="width:1000px;background-color:transparent;">
-
+<div class="dx-fieldset horizontal-container">
 
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
@@ -213,50 +161,7 @@
             .ShowArrowIcon(false)
             )
     </div>
-  
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnMoveUp")
-            .Text(new JS("formatMessage('Move Up')"))
-            .Type(ButtonType.Normal)
-                .StylingMode(ButtonStylingMode.Outlined)
-            .Icon("spinup") // Change the icon to an up/down arrow option
-            .ElementAttr(new { @class = "bold-button" })
-            )
-    </div>
-    <div class="btn-container">
-    @(Html.DevExtreme().Button()
-        .ID("btnMoveDown")
-        .Text(new JS("formatMessage('Move Down')"))
-        .Type(ButtonType.Normal)
-          .StylingMode(ButtonStylingMode.Outlined)
-        .Icon("spindown") // Change the icon to an up/down arrow option
-        .ElementAttr(new { @class = "bold-button" })
-        )
-</div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnSave")
-            .Text(new JS("formatMessage('Save')"))
-            .Type(ButtonType.Normal)
-            .StylingMode(ButtonStylingMode.Outlined)
-            .Icon("save")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-                                                         // .OnClick("saveInvoiceDetails") // Calls the JavaScript function
-            )
 
-    </div>
-    <div class="btn-container">
-
-        @(Html.DevExtreme().Button()
-            .ID("btnSaveAndClose")
-            .Text(new JS("formatMessage('Save and Close')"))
-            .Type(ButtonType.Normal)
-            .StylingMode(ButtonStylingMode.Outlined)
-            .Icon("save")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-            )
-    </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnPrint")
@@ -268,104 +173,8 @@
             )
     </div>
 
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnAddNew")
-            .Text(new JS("formatMessage('Add New Item')"))
-            .Icon("plus")
-            // .OnClick("addNewRow") // Attach function
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-            )
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnDelete")
-            .Text(new JS("formatMessage('Delete')"))
-            .Icon("close")
-            //  .OnClick("onDeleteButtonClick")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-            )
-    </div>
-    <div class="btn-container">
-    @(Html.DevExtreme().Button()
-        .ID("btnUpdate")
-        .Text(new JS("formatMessage('Update')"))
-        .Icon("save") // Icon similar to a floppy/save
-        //.Type(ButtonType.Normal)
-       // .StylingMode(ButtonStylingMode.Contained)
-        .ElementAttr(new { @class = "update-button" }) // Custom CSS class
-        )
-</div>
-    <div class="btn-container">
 
-        @(Html.DevExtreme().Button()
-            .ID("btnBack")
-            .Text(new JS("formatMessage('Back')"))
-            .Icon("arrowleft")
-            // .OnClick("onBackButtonClick")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-            )
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnSubmit")
-            .Text(new JS("formatMessage('Submit')"))
-            .Icon("check")
-            // .OnClick("onVerifyButtonClick")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
 
-            )
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnVerify")
-            .Text(new JS("formatMessage('Verify')"))
-            .Icon("check")
-            // .OnClick("onVerifyButtonClick")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-
-            )
-
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnApprove")
-            .Text(new JS("formatMessage('Approve')"))
-            .Icon("exportselected")
-            //   .OnClick("onApproveButtonClick")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-            )
-
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnCancel")
-            .Text(new JS("formatMessage('Cancel')"))
-            .Icon("close")
-            // .OnClick("onVerifyButtonClick")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-
-            )
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnAttach")
-            .Text(new JS("formatMessage('Attach')"))
-            .Icon("link")
-            //.OnClick("onAttachButtonClick")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-            )
-    </div>
-    <div class="btn-container">
-
-        @(Html.DevExtreme().Button()
-            .ID("btnUpload")
-            .Text(new JS("formatMessage('Upload')"))
-            .Icon("upload")
-            // .OnClick("onBackButtonClick")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-            )
-    </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnToggleSearch")
@@ -376,6 +185,7 @@
             .OnClick("toggleFilterRow")
             )
     </div>
+
 
 
     <div class="btn-container">
@@ -391,7 +201,7 @@
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnToggleHeaderFilter")
-            .Width(50)
+
             .Text(new JS("formatMessage('Toggle Filter')"))
             .ElementAttr(new { style = "display: none;" })
             .Icon("filter")
@@ -410,350 +220,54 @@
             .OnClick("showColumnChooser")
             )
     </div>
-
-
-
-
-
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnRefresh")
-            .Icon("refresh")
-            .Width(50)
-            .Text(new JS("formatMessage('Refresh')"))
-            .ElementAttr(new { style = "display: none;" })
-            .OnClick("refreshPage")
-            )
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnAddClientLeads")
-            .Icon("add")
-            .Width(50)
-            .Text(new JS("formatMessage('Add New Client')"))
-            .ElementAttr(new { style = "display: none;" })
-            .OnClick("clientMaster")
-            )
-
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnAddSuppliers")
-            .Icon("add")
-            .Width(50)
-            .Text(new JS("formatMessage('Add New Supplier')"))
-            .ElementAttr(new { style = "display: none;" })
-            .OnClick("supplierMaster")
-            )
-
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnRequestEnquiry")
-            .Icon("preferences")
-            .Width(50)
-            .Text(new JS("formatMessage('Request/Enquiry Details')"))
-            .ElementAttr(new { style = "display: none;" })
-            // .OnClick("toggleGroupPanel")
-            )
-
-    </div>
-
-
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnAddNewStockAdjustment")
-            .Icon("add")
-            .Width(50)
-            .Text(new JS("formatMessage('Add New Stock Adjustment Entry')"))
-            .ElementAttr(new { style = "display: none;" })
-            // .OnClick("toggleGroupPanel")
-            )
-
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnAddNewQuotation")
-            .Icon("add")
-            .Width(50)
-            .Text(new JS("formatMessage('Add New Quotation')"))
-            .ElementAttr(new { style = "display: none;" })
-           .OnClick("AddNewQuotation")
-            )
-
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnAddSalesOrder")
-            .Icon("folder")
-            .Width(50)
-            .Text(new JS("formatMessage('Add New Sales Order')"))
-            .ElementAttr(new { style = "display: none;" })
-            .OnClick("AddNewSalesOrder")
-            )
-                
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnSalesOrderDetails")
-            .Icon("overflow")
-            .Width(50)
-            .Text(new JS("formatMessage('Sales Order Details')"))
-            .ElementAttr(new { style = "display: none;" })
-            // .OnClick("toggleGroupPanel")
-            )
-
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnStockAdjustmentDetails")
-            .Icon("overflow")
-            .Width(50)
-            .Text(new JS("formatMessage('Stock Adjustment Details')"))
-            .ElementAttr(new { style = "display: none;" })
-            // .OnClick("toggleGroupPanel")
-            )
-
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnPurchaseOrderDetails")
-            .Icon("overflow")
-            .Width(50)
-            .Text(new JS("formatMessage('Purchase Order Details')"))
-            .ElementAttr(new { style = "display: none;" })
-            // .OnClick("toggleGroupPanel")
-            )
-
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnMaterialReceiptDetails")
-            .Icon("overflow")
-            .Width(50)
-            .Text(new JS("formatMessage('Material Receipt Details')"))
-            .ElementAttr(new { style = "display: none;" })
-            // .OnClick("toggleGroupPanel")
-            )
-
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnNewPurchaseOrder")
-            .Icon("plus")
-            .Width(50)
-            .Text(new JS("formatMessage('Add Purchase Order')"))
-            .ElementAttr(new { style = "display: none;" })
-            // .OnClick("toggleGroupPanel")
-            )
-
-    </div>
-
-   
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnDeliveryNoteDetails")
-            .Icon("overflow")
-            .Width(50)
-            .Text(new JS("formatMessage('Delivery Note Details')"))
-            .ElementAttr(new { style = "display: none;" })
-            .OnClick("OpenDeliveryNoteDetails")
-            )
-
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnRfqDetails")
-            .Icon("add")
-            .Width(50)
-            .Text(new JS("formatMessage('RFQ Details')"))
-            .ElementAttr(new { style = "display: none;" })
-            .OnClick("AddNewRFQDetails")
-            )
-
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnAddNewRFQ")
-            .Icon("add")
-            .Width(50)
-            .Text(new JS("formatMessage('Add New RFQ')"))
-            .ElementAttr(new { style = "display: none;" })
-            .OnClick("AddNewRFQ")
-            )
-
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnCreateQuotations")
-            .Icon("add")
-            .Width(50)
-            .Text(new JS("formatMessage('Create New Quotations')"))
-            .ElementAttr(new { style = "display: none;" })
-            // .OnClick("toggleGroupPanel")
-            )
-
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnAddNewJobOrder")
-            .Icon("add")
-            .Width(50)
-            .Text(new JS("formatMessage('Add New Job Order')"))
-            .ElementAttr(new { style = "display: none;" })
-            // .OnClick("toggleGroupPanel")
-            )
-
-    </div>
-
-
-
-    <div class="btn-container">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("btnDeliveryNotePosting")
-            .Icon("upload")
-            .Width(50)
-            .Text(new JS("formatMessage('Delivery Note Posting')"))
-            .ElementAttr(new { style = "display: none;" })
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text(new JS("formatMessage('Posting Of Cost Prices')"));
-                items.Add().Text(new JS("formatMessage('Posting of DN to Journal Books')"));
-            })
-            .OnItemClick("addNewMaterialRequest")
-            .ShowArrowIcon(false)
-            )
-    </div>
     
-    <div class="btn-container">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("btnAddNewReceipt")
-            .Icon("plus")
-            .Width(50)
-            .Text(new JS("formatMessage('Add New Receipt')"))
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text(new JS("formatMessage('Add New Material Receipt-From Supplier')"));
-                items.Add().Text(new JS("formatMessage('Add New Material Receipt-Returned From Project')"));
-            })
-            .OnItemClick("addNewMaterialReceipt")
-            .ShowArrowIcon(false)
-            )
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("btnAddDeliverynote")
-            .Icon("add")
-            .Width(50)
-            .Text(new JS("formatMessage('Add')"))
-            .ElementAttr(new { style = "display: none;" })
-            .DropDownOptions(options => options.Width(325))
-            .Items(items =>
-            {
-                items.Add().Text(new JS("formatMessage('Add New Delivery to Client')"));
-                items.Add().Text(new JS("formatMessage('Add Material Issued To Store(Consumption)')"));
-                items.Add().Text(new JS("formatMessage('Add Material Issued To Project(Consumption)')"));
-                items.Add().Text(new JS("formatMessage('Add Store Transfers')"));
+        <div class="btn-container">
+            @(
+                Html.DevExtreme().DropDownButton()
+                .ID("ddButtonExpense")
+                .Icon("tags")
+                .Width(50)
+                .Text("Create New")
+                .ElementAttr(new { style = "display: none;" })
+                .DropDownOptions(options => options.Width(230))
+                .Items(items =>
+                {
+                    items.Add().Text("Expense Claim Request").Icon("money");
+                    items.Add().Text("Petty Cash Request").Icon("product");
+                    items.Add().Text("Supplier Payment Request").Icon("money");
 
-            })
-            .OnItemClick("addNewDeliveryNote")
-            .ShowArrowIcon(false)
+                })
+                .OnItemClick("addExpenseButton_click")
+                .ShowArrowIcon(false)
+                )
+        </div>
+    
+    
+
+    <div id="supplierPaymentRequestModal">
+
+        @(Html.DevExtreme().Popup()
+            .ID("SupplierpaymentPopup")
+            .Width("90%")
+            .Height(500)
+            .Visible(false)
+            .ShowCloseButton(true)
+            .ResizeEnabled(true)
+            .DragEnabled(true)
+            .ShowTitle(true)
+
             )
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("btnAddMaterialRequest")
-            .Icon("add")
-            .Width(50)
-            .Text(new JS("formatMessage('Create New')"))
-            .ElementAttr(new { style = "display: none;" })
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text(new JS("formatMessage('Add New Client Request')")).Icon("user");
-                items.Add().Text(new JS("formatMessage('Add New Store Request')")).Icon("cart");
-                items.Add().Text(new JS("formatMessage('Add New Project Request')")).Icon("event");
-            })
-            .OnItemClick("addNewMaterialRequest")
-            .ShowArrowIcon(false)
-            )
+
     </div>
 </div>
-
+<div id="warningPopup"></div>
 
 <script type="text/javascript">
-    function refreshPage() {
-        location.reload();
-    }
-    function navigateToInvoiceEdit() {
-               // Replace with the actual tenant name dynamically
-                    var url = `/${tenantName}/Finance/VATInvoiceWithDetails`;
-                window.location.href = url; // Navigate to the page
-            }
-
-
-
-
-        // function getDropdownData() {
-        //     return [
-        //         { id: 1, name: "Item A" },
-        //         { id: 2, name: "Item B" },
-        //         { id: 3, name: "Item C" }
-        //     ];
-        // }
-
-        // Fetch dropdown data (same API can be used if needed)
-     function getDropdownData() {
-        return $.ajax({
-            url: "/api/VATModule/GetGoodsAndServices", // Update with your actual API endpoint
-            method: "GET",
-            dataType: "json"
-        }).then(function(response) {
-            console.log("GsData",response)
-            return response.map(item => ({
-                GSCode: item.Gscode,
-                GSDescrpition: item.Gsdescrpition,
-                GsdescriptionAr:item.GsdescriptionAr,
-                ItemPartNo: item.ItemPartNo,
-                CostPrice: item.CostPrice,
-                GSSellingRate: item.GssellingRate,
-                ReorderQty:item.ReorderQty
-            }));
-        });
-    }
-
-
-     // Handle button clicks
-        function addPrintButton_click(e) {
-            let url = "";
-            let title = "Print1";
-            switch (e.itemData.text) {
-                case (formatMessage('Upload Items from Excel')):
-                    url = `/${tenantName}/Finance/InventoryListtoUpload`;
-                    title = formatMessage('Upload Items from Excel');
-                    break;
-                case (formatMessage('Profit On Sale')):
-                    url = `/${tenantName}/Finance/InvoiceProfitorLossSummary`;
-                    title = formatMessage('Profit On Sale');
-                    break;
-                case (formatMessage('Invoice Cost Posting')):
-                    url = `/${tenantName}/Finance/InvoiceCostPosting`;
-                    title = formatMessage('Invoice Cost Posting');
-                    break;
-                default:
-                    console.log("Clicked item: ", e.itemData.text);
-                    return;
-            }
-            openModal(url, title);
-        }
-
 
         $(document).ready(function () {
             console.log('Start permission handling');
             // Form ID
-            var formId = "frm201LedgerView";
+            var formId = "frm20107ExpenseClaimView";
 
             // Call the API to get permissions
             $.ajax({
@@ -766,7 +280,7 @@
                     if (response.success && response.permissions) {
                         // Default visibility and enable status for buttons
                         var controlStates = {
-                            "btnShowRecords": { "Visible": false, "Enabled": false },
+                            "ddBtnShowRecords": { "Visible": false, "Enabled": false },
                             "btnPrint": { "Visible": false, "Enabled": false },
                             "btnSearch": { "Visible": false, "Enabled": false },
                             "ddButtonLayout": { "Visible": false, "Enabled": false },
@@ -774,45 +288,8 @@
                             "btntoggleGroupPanel": { "Visible": false, "Enabled": false },
                             "btnToggleHeaderFilter": { "Visible": false, "Enabled": false },
                             "btnColumnChooser": { "Visible": false, "Enabled": false },
-                            "ddButtonReceipts": { "Visible": false, "Enabled": false },
-                            "ddButtonPayment": { "Visible": false, "Enabled": false },
-                            "ddOtherVouchers": { "Visible": false, "Enabled": false },
-                            "ddReports": { "Visible": false, "Enabled": false },
-                             "btnRefresh": { "Visible": false, "Enabled": false },
-                                "btnAddClientLeads": { "Visible": false, "Enabled": false },
-                                "btnAddSuppliers": { "Visible": false, "Enabled": false },
-                                  "btnRequestEnquiry": { "Visible": false, "Enabled": false },
-                             "btnAddMaterialRequest": { "Visible": false, "Enabled": false },
-                             "btnAddNewQuotation": { "Visible": false, "Enabled": false },
-                             "btnAddSalesOrder": { "Visible": false, "Enabled": false },
-                             "btnDeliveryNotePosting": { "Visible": false, "Enabled": false },
-                             "btnDeliveryNoteDetails": { "Visible": false, "Enabled": false },
-                             "btnAddDeliverynote": { "Visible": false, "Enabled": false },
-                             "btnSalesOrderDetails": { "Visible": false, "Enabled": false },
-                             "btnRfqDetails": { "Visible": false, "Enabled": false },
-                             "btnAddNewRFQ": { "Visible": false, "Enabled": false },
-                             "btnCreateQuotations": { "Visible": false, "Enabled": false },
-                             "btnPurchaseOrderDetails": { "Visible": false, "Enabled": false },
-                             "btnNewPurchaseOrder": { "Visible": false, "Enabled": false },
-                             "btnMaterialReceiptDetails": { "Visible": false, "Enabled": false },
-                             "btnAddNewReceipt": { "Visible": false, "Enabled": false },
-                             "btnAddNewJobOrder": { "Visible": false, "Enabled": false },
-                             "btnAddNewStockAdjustment": { "Visible": false, "Enabled": false },
-                             "btnStockAdjustmentDetails": { "Visible": false, "Enabled": false },
-                           "btnSave":{ "Visible": false, "Enabled": false },
-                        "btnMoveDown": { "Visible": false, "Enabled": false },
-                        "btnMoveUp": { "Visible": false, "Enabled": false },
-                        "btnSaveAndClose": { "Visible": false, "Enabled": false },
-                        "btnAddNew": { "Visible": false, "Enabled": false },
-                        "btnDelete": { "Visible": false, "Enabled": false },
-                         "btnUpdate": { "Visible": false, "Enabled": false },                       
-                        "btnBack": { "Visible": false, "Enabled": false },
-                        "btnSubmit": { "Visible": false, "Enabled": false },
-                        "btnVerify": { "Visible": false, "Enabled": false },
-                        "btnApprove": { "Visible": false, "Enabled": false },
-                        "btnCancel": { "Visible": false, "Enabled": false },
-                        "btnAttach": { "Visible": false, "Enabled": false },
-                        "btnUpload": { "Visible": false, "Enabled": false },
+                            "ExpenseSubmission": { "Visible": false, "Enabled": false },
+                            "ddButtonExpense": { "Visible": false, "Enabled": false }
                         };
 
 
@@ -865,7 +342,7 @@
                     alert('An error occurred while fetching permissions. Please try again.');
                 }
             });
-            showColumnChooser();
+           // showColumnChooser();
             console.log('End permission handling');
         });
 
@@ -913,7 +390,7 @@
             tableWidth: 'auto', // Adjust table width to fit the page
             columnStyles: {
                 0: { cellWidth: 'wrap' }, // Adjust the first column width
-                //    more column styles if needed
+                // Add more column styles if needed
             },
             margin: { top: 10, right: 10, bottom: 30, left: 10 }, // Adjust margins if needed
             didDrawPage: function (data) {
@@ -983,6 +460,7 @@
             }
         });
         function saveLayoutClick(e) {
+
             var grid = $("#dataGrid").dxDataGrid("instance");
             var layout = grid.state();
             const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
@@ -1005,6 +483,7 @@
             //DevExpress.ui.notify("Layout", "success", 600);
         }
         function openLayoutClick(e) {
+
             // Create an input element dynamically
             const input = document.createElement("input");
             input.type = "file";
@@ -1120,8 +599,8 @@
             if (isColumnChooserVisible) {
                 dataGrid.option("columnChooser.enabled", false); // Disable the column chooser
             } else {
-                dataGrid.option("columnChooser.enabled", true); // Enable the column chooser
-                dataGrid.showColumnChooser(); // Show the column chooser
+                dataGrid.option("columnChooser.enabled", true);
+                dataGrid.showColumnChooser();
             }
         }
 
@@ -1132,16 +611,16 @@
             var grid = $("#dataGrid").dxDataGrid("instance");
             var currentVisibility = grid.option("filterRow.visible");
 
-            grid.option("filterRow.visible", !currentVisibility); // Toggle FilterRow visibility
+            grid.option("filterRow.visible", !currentVisibility);
         }
 
         // Footer Recipits button event
         function addRecipitsButton_click(e) {
             switch (e.itemData.text) {
-                case 'Add Cash Receipts':
+                case (formatMessage('Add Cash Receipts')):
                     window.open(`/${tenantName}/Finance/VoucherEntryCashReceipts`, 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
                     break;
-                case 'Add Bank Receipts':
+                case (formatMessage('Add Bank Receipts')):
                     window.open(`/${tenantName}/Finance/VoucherEntryReceipts`, 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
                     break;
                 // You can handle other cases here if needed
@@ -1154,10 +633,11 @@
             let selectedText = e.itemData.text;
 
             switch (selectedText) {
-                case 'Ledger to Salary Payable Mapping':
-                    if (typeof acchedid !== 'undefined' && typeof accheadname !== 'undefined') {
-                        pageUrl = `/${tenantName}/Finance/SalaryPayableMapping?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}`;
-                    } else {
+                case (formatMessage('Ledger to Salary Payable Mapping')):
+                    var accountDropDown = $("#accountDropDownBox").dxDropDownBox("instance");
+                    var selectedAccountId = accountDropDown.option("value");
+
+                    if (!selectedAccountId) {
                         Swal.fire({
                             icon: 'warning',
                             title: 'Please select the Account to Review',
@@ -1166,9 +646,42 @@
                         });
                         return;
                     }
+
+                    // Load full item from DataSource
+                    var dataSource = accountDropDown.getDataSource();
+                    dataSource.load().done(function (items) {
+                        var selectedItem = items.find(x => x.AccountId === selectedAccountId);
+
+                        if (!selectedItem) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Account not found',
+                                text: 'Please reselect the account.',
+                                confirmButtonText: 'OK'
+                            });
+                            return;
+                        }
+
+                        var frmDate = $("#frmdateBox").dxDateBox("instance").option("value");
+                        var toDate = $("#todateBox").dxDateBox("instance").option("value");
+
+                        var formattedFromDate = frmDate;
+                        var formattedToDate = toDate;
+
+                        var acchedid = selectedItem.AccountId;
+                        var accheadname = selectedItem.AccountHead;
+
+                        // ✅ Construct the URL
+                        var pageUrl = `/${tenantName}/Finance/SalaryPayableMapping?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}&FromDate=${encodeURIComponent(formattedFromDate)}&ToDate=${encodeURIComponent(formattedToDate)}`;
+
+                        // ✅ Open the modal with the page URL
+                        if (pageUrl) {
+                            openModal(pageUrl, selectedText);
+                        }
+                    });
                     break;
 
-                case 'Ledger to Receivable/Payable Mapping':
+                case (formatMessage('Ledger to Receivable/Payable Mapping')):
                     if (typeof acchedid !== 'undefined' && typeof accheadname !== 'undefined') {
                         pageUrl = `/${tenantName}/Finance/LedgerToSubLedgerMapping?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}&accid=${encodeURIComponent(accid)}&FromDate=${encodeURIComponent(FromDate)}&ToDate=${encodeURIComponent(ToDate)}`;
                     } else {
@@ -1182,7 +695,7 @@
                     }
                     break;
 
-                case 'Bank Reconciliation':
+                case (formatMessage('Bank Reconciliation')):
                     if (typeof acchedid !== 'undefined' && typeof accheadname !== 'undefined') {
                         pageUrl = `/${tenantName}/Finance/BankReconciliation?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}&accid=${encodeURIComponent(accid)}&FromDate=${encodeURIComponent(FromDate)}&ToDate=${encodeURIComponent(ToDate)}&lastRowBalance=${encodeURIComponent(lastRowBalance)}&firstRowBalance=${encodeURIComponent(firstRowBalance)}`;
                     } else {
@@ -1196,7 +709,7 @@
                     }
                     break;
 
-                case 'Detailed Transaction Report':
+                case (formatMessage('Detailed Transaction Report')):
                     window.open(`/${tenantName}/Finance/TransactionDetails`, 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
                     return;  // No need to set pageUrl for new window
             }
@@ -1232,13 +745,13 @@
             let url = "";
             let title = "Receipts";
             switch (e.itemData.text) {
-                case 'Add Cash Receipts':
+                case (formatMessage('Add Cash Receipts')):
                     url = `/${tenantName}/Finance/VoucherEntryCashReceipts`;
-                    title = "Add Cash Receipts";
+                    title = formatMessage('Add Cash Receipts');
                     break;
-                case 'Add Bank Receipts':
+                case (formatMessage('Add Bank Receipts')):
                     url = `/${tenantName}/Finance/VoucherEntryReceipts`;
-                    title = "Add Bank Receipts";
+                    title = formatMessage('Add Bank Receipts');
                     break;
                 default:
                     console.log("Clicked item: ", e.itemData.text);
@@ -1247,107 +760,47 @@
             openModal(url, title);
         }
 
-        // function addPaymentButton_click(e) {
-        //      let url = "";
-        //      let title = "Payments";
-        //      switch (e.itemData.text) {
-        //          case formatMessage('New Standard Tax Invoice(B2B Invoice)'):
-
-        //            DevExpress.ui.dialog.confirm(
-        //             "This option will create a New STANDARD TAX INVOICE (B2B)"
-        //             "After Creating the Invoice, you cannot remove or delete the Invoice".
-        //             "You can cancel only thru CREDIT NOTE."
-        //             "Click Yes if you want to continue.. or Click No to exit this option.",
-        //             "Confirm Creating new STANDARD TAX Invoice?"
-        //         ).done(function (dialogResult) {
-        //             if (dialogResult) {
-        //                 onConfirm(); // Proceed only if the user clicks "Yes"
-        //                  url = `/${tenantName}/Finance/frm20161VATInvoiceEdit`;
-        //             }
-        //         });
-
-        //              title = formatMessage('New Standard Tax Invoice(B2B Invoice)');
-        //              break;
-
-        //               case formatMessage('New Simplified Tax Invoice(B2C Invoice)'):
-        //              url = `/${tenantName}/Finance/frmVATInvoiceEditB2C`;
-
-        //              title = formatMessage('New Simplified Tax Invoice(B2C Invoice)');
-        //              break;
-
-        //          default:
-        //              console.log("Clicked item: ", e.itemData.text);
-        //              return;
-        //      }
-        //     openModal(url, title);
-        // }
-
-        function clientMaster(){
-            const url = `/${tenantName}/IMS/ClientLeadMaster`;
-            const title = "";
-                openModal(url, title);
-        }
-         function supplierMaster(){
-            const url = `/${tenantName}/IMS/SupplierLeadMaster`;
-            const title = "";
-                openModal(url, title);
-        }
-
-        function AddNewQuotation(){
-            const url = `/${tenantName}/IMS/AddNewQuotation`;
-            // const title = "";
-            window.location.href = url;
-        }
-        function AddNewSalesOrder() {
-            window.location.href = `/${tenantName}/IMS/AddNewSalesOrder`;
-        }
-        function AddNewRFQ() {
-            window.location.href = `/${tenantName}/IMS/AddNewRFQ`;
-        }
-    function AddNewRFQDetails() {
-        window.location.href = `/${tenantName}/IMS/RFQwithItemDetails`;
-    }
-    function OpenDeliveryNoteDetails() {
-        window.location.href = `/${tenantName}/IMS/DeliveryNoteDetails`;
-    }
-
         function addPaymentButton_click(e) {
-        let url = "";
-        let title = "Payments";
-
-        switch (e.itemData.text) {
-           case formatMessage('New Standard Tax Invoice(B2B Invoice)'):
-        DevExpress.ui.dialog.confirm(
-            "<div style='white-space: pre-wrap;'>"
-            + "This option will create a New STANDARD TAX INVOICE (B2B).\n"
-            + "After creating the invoice, you cannot remove or delete the invoice.\n"
-            + "You can cancel only through a CREDIT NOTE.\n"
-            + "Click Yes if you want to continue, or click No to exit this option."
-            + "</div>",
-            "Confirm Creating New STANDARD TAX Invoice?"
-        ).done(function (dialogResult) {
-            if (dialogResult) {
-                url = `/${tenantName}/Finance/frm20161VATInvoiceEdit`;
-                title = formatMessage('New Standard Tax Invoice(B2B Invoice)');
-                openModal(url, title);
+            let url = "";
+            let title = "Payments";
+            switch (e.itemData.text) {
+                case (formatMessage('Add Cash Payment')):
+                    url = `/${tenantName}/Finance/VoucherCashPayment`;
+                    title = formatMessage('Add Cash Payment');
+                    break;
+                case (formatMessage('Add Bank Payment')):
+                    url = `/${tenantName}/Finance/VoucherBankPayment`;
+                    title = formatMessage('Add Bank Payment');
+                    break;
+                default:
+                    console.log("Clicked item: ", e.itemData.text);
+                    return;
             }
-        });
-
-                break;
-
-            case formatMessage('New Simplified Tax Invoice(B2C Invoice)'):
-                url = `/${tenantName}/Finance/frmVATInvoiceEditB2C`;
-                title = formatMessage('New Simplified Tax Invoice(B2C Invoice)');
-                openModal(url, title);
-                break;
-
-            default:
-                console.log("Clicked item: ", e.itemData.text);
-                return;
+            openModal(url, title);
         }
-    }
 
-
+        function otherVoucherButton_click(e) {
+            let url = "";
+            let title = "Vouchers";
+            switch (e.itemData.text) {
+                case (formatMessage('Add Purchase Voucher')):
+                    url = `/${tenantName}/Finance/Purchasevoucher`;
+                    title = formatMessage('Add Purchase Voucher');
+                    break;
+                case (formatMessage('Add Sales Voucher')):
+                    url = `/${tenantName}/Finance/Salesvoucher`;
+                    title = formatMessage('Add Sales Voucher');
+                    break;
+                case (formatMessage('Add Journal Voucher')):
+                    url = `/${tenantName}/Finance/Voucherjournal`;
+                    title = formatMessage('Add Journal Voucher');
+                    break;
+                default:
+                    console.log("Clicked item: ", e.itemData.text);
+                    return;
+            }
+            openModal(url, title);
+        }
 
         // Close modal when clicking outside
         window.onclick = function(event) {
@@ -1431,25 +884,25 @@
             window.location.href = `/${tenantName}/Finance/AccountGroupsOrdering`;
 
         }
-        function showSubmenu8(e) {
+        function showSubmenu4(e) {
             e.event.stopPropagation();
             hideAllSubmenus(); // Hide all submenus before showing the selected one
-            var $submenu = $('#submenuContainer8');
+            var $submenu = $('#submenuContainer4');
             var $target = $(e.event.target).closest('.dx-item-content');
             var offset = $target.offset();
             var submenuWidth = $submenu.outerWidth();
 
             // Calculate left-side positioning
-            var leftPos = offset.left - submenuWidth - 5;
+            var leftPos = offset.left - submenuWidth +620;
 
             // Prevent submenu from going off-screen on the left
             if (leftPos < 0) {
-                leftPos = offset.left + $target.outerWidth() + 5; // Move it to the right if not enough space
+                leftPos = offset.left + $target.outerWidth() + 5;
             }
 
             // Position submenu
             $submenu.css({
-                'width': 250,
+                'width': 470,
                 'position': 'absolute',
                 'top': offset.top,
                 'left': leftPos,
@@ -1468,26 +921,77 @@
                 }
             });
         }
+            // function dataGridSelectionChanged(e) {
+            //     const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+            //     const ddbInstance = $("#accountDropDownBox").dxDropDownBox("instance");
 
-        function showSubmenu9(e) {
+            //     if (selectedKey) {
+            //         ddbInstance.option("value", selectedKey);
+            //         if (ddbInstance.option("opened")) ddbInstance.close();
+            //     }
+            //     var selectedRowData = $("#ledgeraccount-datagrid").dxDataGrid("instance").getSelectedRowsData();
+            //     // Get ReferenceNo from selected row
+            //     if (selectedRowData.length > 0) {
+            //         acchedid = selectedRowData[0].AccountId;
+            //         accheadname = selectedRowData[0].AccountHead;
+            //         refno = selectedRowData[0].ReferenceNo;
+            //         accgroup = selectedRowData[0].AccountGroup;
+            //         accgroupid = selectedRowData[0].AccountGroupId;
+            //         accheadar = selectedRowData[0].AccountHeadArabic;
+            //         updateBankReconciliationState(accheadname);
+            //             updateReceivableStatement(accgroup);
+
+            //     }
+
+            // }
+                $("#warningPopup").dxPopup({
+            visible: false,
+            showTitle: true,
+            title: "Warning",
+            contentTemplate: function (contentElement) {
+                contentElement.append("<p id='popupWarningMessage'></p>");
+            },
+            width: 300,
+            height: "auto",
+            showCloseButton: true,
+            dragEnabled: false,
+            closeOnOutsideClick: true
+        });
+
+           var currentAccGroup = ""; // Global variable to store accgroup
+
+        function updateReceivableStatement(accgroup) {
+            currentAccGroup = accgroup || "";
+        }
+
+        function showSubmenu5(e) {
             e.event.stopPropagation();
+
+            // If accgroup is not valid, show message and return
+               if (!currentAccGroup.toUpperCase().includes("SUNDRY DEBTORS")) {
+            $("#popupWarningMessage").text("No records to print");
+            $("#warningPopup").dxPopup("instance").show();
+            return;
+        }
+
+
             hideAllSubmenus(); // Hide all submenus before showing the selected one
-            var $submenu = $('#submenuContainer9');
+
+            var $submenu = $('#submenuContainer5');
             var $target = $(e.event.target).closest('.dx-item-content');
             var offset = $target.offset();
             var submenuWidth = $submenu.outerWidth();
 
             // Calculate left-side positioning
-            var leftPos = offset.left - submenuWidth - 5;
+            var leftPos = offset.left - submenuWidth + 620;
 
             // Prevent submenu from going off-screen on the left
             if (leftPos < 0) {
-                leftPos = offset.left + $target.outerWidth() + 5; // Move it to the right if not enough space
+                leftPos = offset.left + $target.outerWidth() + 5;
             }
 
-            // Position submenu
             $submenu.css({
-                'width': 250,
+                'width': 390,
                 'position': 'absolute',
                 'top': offset.top,
                 'left': leftPos,
@@ -1498,7 +1002,6 @@
                 'padding': '5px'
             });
 
-            // Click outside to close
             $(document).on("click", function (event) {
                 if (!$(event.target).closest('#submenuContainer5, .dx-item-content').length) {
                     $submenu.hide();
@@ -1507,25 +1010,38 @@
             });
         }
 
+             function updateReceivableStatement(accgroup) {
+            currentAccGroup = accgroup || "";
+        }
+
         function showSubmenu6(e) {
             e.event.stopPropagation();
-            hideAllSubmenus(); // Hide all submenus before showing the selected one
+
+            // Check if currentAccGroup includes "SUNDRY CREDITORS" (case insensitive)
+            if (!currentAccGroup.toUpperCase().includes("SUNDRY CREDITORS")) {
+                // Show warning popup
+                $("#popupWarningMessage").text("No records to print");
+                $("#warningPopup").dxPopup("instance").show();
+                return;
+            }
+
+            // Hide other submenus before showing this one
+            hideAllSubmenus();
+
             var $submenu = $('#submenuContainer6');
             var $target = $(e.event.target).closest('.dx-item-content');
             var offset = $target.offset();
             var submenuWidth = $submenu.outerWidth();
 
-            // Calculate left-side positioning
-            var leftPos = offset.left - submenuWidth - 5;
-
-            // Prevent submenu from going off-screen on the left
+            // Calculate left position so submenu doesn't go off-screen
+            var leftPos = offset.left - submenuWidth + 620;
             if (leftPos < 0) {
-                leftPos = offset.left + $target.outerWidth() + 5; // Move it to the right if not enough space
+                leftPos = offset.left + $target.outerWidth() + 5;
             }
 
-            // Position submenu
+            // Style and display submenu
             $submenu.css({
-                'width': 250,
+                'width': 370,
                 'position': 'absolute',
                 'top': offset.top,
                 'left': leftPos,
@@ -1536,7 +1052,7 @@
                 'padding': '5px'
             });
 
-            // Click outside to close
+            // Click outside to close submenu
             $(document).on("click", function (event) {
                 if (!$(event.target).closest('#submenuContainer6, .dx-item-content').length) {
                     $submenu.hide();
@@ -1544,6 +1060,7 @@
                 }
             });
         }
+
 
         function showSubmenu7(e) {
             e.event.stopPropagation();
@@ -1554,7 +1071,7 @@
             var submenuWidth = $submenu.outerWidth();
 
             // Calculate left-side positioning
-            var leftPos = offset.left - submenuWidth - 5;
+            var leftPos = offset.left - submenuWidth + 620;
 
             // Prevent submenu from going off-screen on the left
             if (leftPos < 0) {
@@ -1563,7 +1080,7 @@
 
             // Position submenu
             $submenu.css({
-                'width': 250,
+                'width': 370,
                 'position': 'absolute',
                 'top': offset.top,
                 'left': leftPos,
@@ -1590,67 +1107,42 @@
             $('#submenuContainer6').hide();
             $('#submenuContainer7').hide();
         }
-
-        function addNewMaterialRequest(e) {
-            let url = ''; // Declare once
+        function addExpenseButton_click(e) {
             switch (e.itemData.text) {
-                case formatMessage('Add New Client Request'):
-                    url = `/${tenantName}/IMS/AddNewClientRequest`;
+
+                case ('Expense Claim Request'):
+                    window.location.href = `/${tenantName}/Finance/ExpensesClaimRequest`;
                     break;
-                case formatMessage('Add New Store Request'):
-                    url = `/${tenantName}/IMS/AddNewStoreRequest`;
+                case ('Petty Cash Request'):
+                    window.location.href = `/${tenantName}/Finance/PettyCashRequest`;
                     break;
-                case formatMessage('Add New Project Request'):
-                    url = `/${tenantName}/IMS/AddNewProjectRequest`;
+                case 'Supplier Payment Request':
+
+                    $.ajax({
+
+                        url: `/api/ExpenseClaim/GetSupplierpayment`,
+                        type: 'GET',
+                        dataType: "html",
+                        success: function (data) {
+                            let popupInstance = $("#SupplierpaymentPopup").dxPopup("instance");
+                            popupInstance.option("contentTemplate", function () {
+                                return $("<div>").html(data);
+                            });
+                            popupInstance.show();
+                        },
+                        error: function (xhr) {
+                            alert('Failed to load the Supplier Payment Request view.');
+                        }
+                    });
                     break;
-                    case formatMessage('Posting Of Cost Prices'):
-                    url = `/${tenantName}/IMS/DeliveryNoteDetails`;
-                    break;
+
+                // You can handle other cases here if needed
                 default:
                     console.log("Clicked item: ", e.itemData.text);
-                    return;
             }
-
-            window.location.href = url;
         }
-        
-        function addNewMaterialReceipt(e) {
-            let url = ''; // Declare once
-            switch (e.itemData.text) {
-                case formatMessage('Add New Material Receipt-From Supplier'):
-                    url = `/${tenantName}/IMS/EditMaterialReceiptsNote`;
-                    break;
-                case formatMessage('Add New Material Receipt-Returned From Project'):
-                    url = `/${tenantName}/IMS/AddNewStoreRequest`;
-                    break;
-                default:
-                    console.log("Clicked item: ", e.itemData.text);
-                    return;
-            }
-
-            window.location.href = url;
-        }
-         function addNewDeliveryNote(e) {
-            let url = ''; // Declare once
-            switch (e.itemData.text) {
-               case formatMessage('Add New Delivery to Client'):
-                    url = `/${tenantName}/IMS/AddNewDeliverytoClient`;
-                    break;
-                case formatMessage('Add Material Issued To Store(Consumption)'):
-                    url = `/${tenantName}/IMS/AddNewStoreRequest`;
-                    break;
-                case formatMessage('Add Material Issued To Project(Consumption)'):
-                    url = `/${tenantName}/IMS/AddNewProjectRequest`;
-                    break;
-                case formatMessage('Add Store Transfers'):
-                    url = `/${tenantName}/IMS/AddNewProjectRequest`;
-                    break;
-                default:
-                    console.log("Clicked item: ", e.itemData.text);
-                    return;
-            }
-
-            window.location.href = url;
+        function onCreateNewClick() {
+            window.location.href = `/${tenantName}/Finance/JournalEntryEdit`;
         }
 
 </script>

@@ -3501,23 +3501,27 @@
                         let grid = $("#B2BdataGrid").dxDataGrid("instance");
                         let rowIndex = grid.getRowIndexByKey(cellInfo.key);
                         if (rowIndex !== -1) {
-                            let qty = grid.cellValue(rowIndex, "QuantityCredited") || 0;
-                            let unitPrice = grid.cellValue(rowIndex, "UnitRate") || 0;
 
-					
-                            let vatRate = selectedItem.TaxRate;
-                            let amount = qty * unitPrice;
-                            let vatAmount = amount * vatRate;
-                            let total = amount + vatAmount;
-							
+	let qty = grid.cellValue(rowIndex, "QuantityCredited") || 0;
+	let unitPrice = grid.cellValue(rowIndex, "UnitRate") || 0;
+	let discountPercentage = grid.cellValue(rowIndex, "Discount") || 0; // Get discount %
 
-                            grid.cellValue(rowIndex, "CalcLineAmount", amount.toFixed(2));
-                            grid.cellValue(rowIndex, "CalcTaxAmount", vatAmount.toFixed(2));
-                            grid.cellValue(rowIndex, "LineTotal", total.toFixed(2));
-							grid.cellValue(rowIndex, "QuantityCredited",qty);
-							grid.cellValue(rowIndex, "CalcLineAmountBeforeDiscount",vatAmount.toFixed(2));
+	let amount = qty * unitPrice;
+	let discountAmount = (amount * discountPercentage) / 100; // Calculate discount
+	let amountAfterDiscount = amount - discountAmount;
 
-                            grid.cellValue(rowIndex, "TaxSlabCode", selectedItem.TaxSlabCode);
+	let vatRate = selectedItem.TaxRate;
+	let vatAmount = amountAfterDiscount * vatRate;
+	let total = amountAfterDiscount + vatAmount;
+
+	grid.cellValue(rowIndex, "CalcLineAmount", amountAfterDiscount.toFixed(2));
+	grid.cellValue(rowIndex, "CalcTaxAmount", vatAmount.toFixed(2));
+	grid.cellValue(rowIndex, "LineTotal", total.toFixed(2));
+	grid.cellValue(rowIndex, "QuantityCredited", qty);
+	grid.cellValue(rowIndex, "CalcLineAmountBeforeDiscount", amount.toFixed(2)); // original amount before discount
+	grid.cellValue(rowIndex, "TaxSlabCode", selectedItem.TaxSlabCode);
+
+                            
                         }
                     }
                 },
@@ -3542,19 +3546,23 @@
                                 let rowIndex = grid.getRowIndexByKey(cellInfo.key);
                                 if (rowIndex !== -1) {
                                     let qty = grid.cellValue(rowIndex, "QuantityCredited") || 0;
-                                    let unitPrice = grid.cellValue(rowIndex, "UnitRate") || 0;
-                                    let vatRate = selectedItem.TaxRate;
-                                    let amount = qty * unitPrice;
-                                    let vatAmount = amount * vatRate;
-                                    let total = amount + vatAmount;
-						
+	let unitPrice = grid.cellValue(rowIndex, "UnitRate") || 0;
+	let discountPercentage = grid.cellValue(rowIndex, "Discount") || 0; // Get discount %
 
-                                    grid.cellValue(rowIndex, "CalcLineAmount", amount.toFixed(2));
-                                    grid.cellValue(rowIndex, "CalcTaxAmount", vatAmount.toFixed(2));
-                                    grid.cellValue(rowIndex, "LineTotal", total.toFixed(2));
-								    grid.cellValue(rowIndex, "QuantityCredited",qty);
-									grid.cellValue(rowIndex, "CalcLineAmountBeforeDiscount",vatAmount.toFixed(2));
-                                    grid.cellValue(rowIndex, "TaxSlabCode", selectedItem.TaxSlabCode);
+	let amount = qty * unitPrice;
+	let discountAmount = (amount * discountPercentage) / 100; // Calculate discount
+	let amountAfterDiscount = amount - discountAmount;
+
+	let vatRate = selectedItem.TaxRate;
+	let vatAmount = amountAfterDiscount * vatRate;
+	let total = amountAfterDiscount + vatAmount;
+
+	grid.cellValue(rowIndex, "CalcLineAmount", amountAfterDiscount.toFixed(2));
+	grid.cellValue(rowIndex, "CalcTaxAmount", vatAmount.toFixed(2));
+	grid.cellValue(rowIndex, "LineTotal", total.toFixed(2));
+	grid.cellValue(rowIndex, "QuantityCredited", qty);
+	grid.cellValue(rowIndex, "CalcLineAmountBeforeDiscount", amount.toFixed(2)); // original amount before discount
+	grid.cellValue(rowIndex, "TaxSlabCode", selectedItem.TaxSlabCode);
                                 }
 
                                 e.component.close();
@@ -4017,120 +4025,8 @@ openModal(url, title);
 
 					{ dataField: "Discount", caption: formatMessage('Discount'), width: 150 },
 
-// 					{
-//     dataField: "DiscountDetails",
-//     caption: "...",
-//     width: 100,
-// 	allowEditing: true,
-// 				cellTemplate: function (container, options) {
-// 		container.empty();
-
-// 		$("<div>")
-// 			.dxButton({
-// 				icon: "percent", // DevExtreme built-in icon
-// 				hint: "Apply percentage discount", // Tooltip
-// 				type: "normal", // Keeps styling neutral
-// 				stylingMode: "outlined", // Ensures border is visible
-// 				onClick: function (e) {
-// 					// Your button click logic here
-// 					console.log("Percent button clicked", options.data);
-// 				}
-// 			})
-// 			.css({
-// 				width: "70%",
-// 				border: "1px solid #add8e6",  // Light blue border
-// 				backgroundColor: "#ffffff",   // White background
-// 				borderRadius: "3px"
-// 			})
-// 			.appendTo(container);
-// 	},
-//     editCellTemplate: function (cellElement, cellInfo) {
-        
-//         // Create Popup content
-//         let $popupContent = $("<div>").css({
-//             padding: "20px",
-//             fontFamily: "Segoe UI, sans-serif",
-//             display: "flex",
-//             flexDirection: "column",
-//             gap: "10px",
-//             width: "100%"  // Full width inside popup
-//         });
-
-//         // Total Amount (read-only)
-//         $("<div>").appendTo($popupContent).dxNumberBox({
-//             label: "Total Amount",
-//             labelMode: "outside",
-//             min: 0,
-//             format: "#,##0.00",
-//             value: cellInfo.row.data.Amount || 0,
-//             readOnly: true
-//         });
-
-//         // Discount input + OK button row
-//         let $discountRow = $("<div>").css({
-//             display: "flex",
-//             gap: "10px",
-//             alignItems: "end"
-//         }).appendTo($popupContent);
-
-//         let discountEditor = $("<div>").appendTo($discountRow).dxNumberBox({
-//             label: "Discount",
-//             labelMode: "outside",
-//             min: 0,
-//             format: "#,##0.00",
-//             value: cellInfo.value || 0
-//         }).dxNumberBox("instance");
-
-//         $("<div>").appendTo($discountRow).dxButton({
-//             text: "OK",
-//             width: 70,
-//             onClick: function () {
-//                 let discountValue = discountEditor.option("value") || 0;
-//                 cellInfo.setValue(discountValue.toFixed(2));
-//                 popup.hide();
-//             }
-//         });
-
-//         // Percentage buttons
-//         let $grid = $("<div>").css({
-//             marginTop: "10px",
-//             display: "flex",
-//             flexWrap: "wrap",
-//             gap: "8px"
-//         }).appendTo($popupContent);
-
-//         [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100].forEach(function (percent) {
-//             $("<div>").appendTo($grid).dxButton({
-//                 text: percent + " %",
-//                 width: 80,
-//                 onClick: function () {
-//                     let totalAmount = cellInfo.row.data.Amount || 0;
-//                     let discount = (totalAmount * percent) / 100;
-//                     discountEditor.option("value", discount);
-//                 }
-//             });
-//         });
-
-//         // Create Popup
-//         let popup = $("<div>").appendTo(cellElement).dxPopup({
-//             contentTemplate: function () {
-//                 return $popupContent;
-//             },
-//             width: 550,     // ✅ set nice width
-//             height: "auto",
-//             showTitle: true,
-//             title: "Set Discount Details",
-//             visible: true,
-//             dragEnabled: true,
-//             closeOnOutsideClick: true
-//         }).dxPopup("instance");
-
-//     }
-// },
-
 					{ dataField: "Amount", caption: formatMessage('Amount'), width: 150 },
 
-					//{ dataField: "VAT%", caption: "VAT%", width: 150 },
 
 					{
 		dataField: "VATPercentage",
@@ -6598,7 +6494,7 @@ openModal(url, title);
 
 	function VATPercentage(newValue, rowIndex,TaxSlabCode) {
 			let grid = $("#B2BdataGrid").dxDataGrid("instance");
-// debugger;
+ // debugger;
 
 // Get existing values or updated ones
 let qty = grid.cellValue(rowIndex, "Qty") || 0;
@@ -7076,6 +6972,13 @@ grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
 								"Invoice Posted Successfully."
 							)
 						}
+						else if(response.IsPosted == true)
+							{
+									 DevExpress.ui.dialog.alert(
+									"This VAT Credit Note is already posted to your ledgers.",
+									"Credit Note Posted Already."
+								)
+							}
 						else
 						{
 								   DevExpress.ui.dialog.custom({
