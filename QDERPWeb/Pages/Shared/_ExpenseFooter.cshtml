@@ -180,6 +180,90 @@
 
 <script type="text/javascript">
     
+    $(document).ready(function () {
+        console.log('Start permission handling');
+        // Form ID
+        var formId = "ExpenseClaimEdit";
+
+        // Call the API to get permissions
+        $.ajax({
+            url: '/api/Permissions/GetAccessDetails?formId=' + formId,
+            type: 'GET',
+            contentType: 'application/json',
+            success: function (response) {
+                console.log("API Response:", response); // Log the API response
+
+                if (response.success && response.permissions) {
+                    // Default visibility and enable status for buttons
+                    var controlStates = {
+                        "expenseButtonLayout1": { "Visible": false, "Enabled": false },
+                        "btnSave": { "Visible": false, "Enabled": false },
+                        "btnSaveAndClose": { "Visible": false, "Enabled": false },
+                        "btnPrint": { "Visible": false, "Enabled": false },
+                        "btnDelete": { "Visible": false, "Enabled": false },
+                        "btnExpenceBack": { "Visible": false, "Enabled": false },
+                        "btnSubmit": { "Visible": false, "Enabled": false },
+                        "btnExpenseVerify": { "Visible": false, "Enabled": false },
+                        "btnExpenseApprove": { "Visible": false, "Enabled": false },
+                        "btnAttach": { "Visible": false, "Enabled": false },
+                        "btnPaytheClaim": { "Visible": false, "Enabled": false }
+                    };
+
+
+                    // Check for full access
+                    var fullAccess = response.permissions.find(p =>
+                        p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
+                    );
+
+                    if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
+                        // Grant full access: make all controls visible and enabled
+                        Object.keys(controlStates).forEach(key => {
+                            controlStates[key] = { "Visible": true, "Enabled": true };
+                        });
+                    } else {
+                        // Update states based on specific permissions for each control
+                        Object.keys(controlStates).forEach(key => {
+                            var controlPermission = response.permissions.find(p =>
+                                p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
+                            );
+                            if (controlPermission) {
+                                controlStates[key] = {
+                                    "Visible": controlPermission.ItemVisible || false,
+                                    "Enabled": controlPermission.ItemEnabled || false
+                                };
+                            }
+                        });
+                    }
+
+                    console.log("Control States:", controlStates); // Log the control states
+
+                    // Dynamically update button visibility and enabled state
+                    Object.keys(controlStates).forEach(key => {
+                        var button = document.getElementById(key);
+                        if (button) {
+                            // Handle visibility
+                            button.style.display = controlStates[key].Visible ? "inline-block" : "none";
+                            // Handle enable/disable state
+                            button.disabled = !controlStates[key].Enabled;
+                            console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
+                        } else {
+                            console.warn(`Button with ID "${key}" not found in the DOM.`);
+                        }
+                    });
+                } else {
+                    console.warn("Failed to fetch permissions or no permissions available.");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching permissions:", error);
+                alert('An error occurred while fetching permissions. Please try again.');
+            }
+        });
+        // showColumnChooser();
+        console.log('End permission handling');
+    });
+
+
     function ChangeRowHeight(newHeight) {
         // Update the row height
         $("#dataGrid .dx-data-row").css("height", newHeight + "px");

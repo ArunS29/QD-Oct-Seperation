@@ -305,7 +305,7 @@
 		.ShowBorders(true)
 		.ShowRowLines(true)
 
-
+		.OnContextMenuPreparing("onContextMenuPreparing")
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
@@ -421,5 +421,94 @@
 
 
 	}
+	function onContextMenuPreparing(e) {
+		if (e.target === "content" && e.row && e.row.data) {
+			const rowData = e.row.data;
+			const QuoteNo = encodeURIComponent(rowData.QuoteNo);
+			const tenantName = window.tenantName || "defaultTenant";
 
+			e.items = [
+				{
+					text: "Edit Quotation",
+					icon: "edit",
+					onItemClick: function () {
+						const url = `/${tenantName}/IMS/AddNewQuotation?QuoteNo=${QuoteNo}`;
+						window.location.href = url;
+					}
+				},
+				{
+					text: "Duplicate Quotation",
+					icon: "doc",
+					onItemClick: function () {
+						const url = `/${tenantName}/IMS/CreatePurchaseOrder?Rfqno=${Rfqno}`;
+						window.location.href = url;
+					}
+				},
+				{
+					text: "Delete Quotation",
+					icon: "trash",
+					onItemClick: function () {
+						if (confirm(`Are you sure you want to delete RFQ ${Rfqno}?`)) {
+							// Replace with your actual delete logic, e.g., an AJAX call
+							fetch(`/${tenantName}/IMS/DeleteRFQ?Rfqno=${Rfqno}`, {
+								method: 'DELETE'
+							})
+								.then(response => {
+									if (response.ok) {
+										alert(`RFQ ${Rfqno} deleted successfully.`);
+										// Refresh the DataGrid or remove the row
+										e.component.refresh();
+									} else {
+										alert(`Failed to delete RFQ ${Rfqno}.`);
+									}
+								})
+								.catch(error => {
+									console.error('Error deleting RFQ:', error);
+									alert('An error occurred while deleting the RFQ.');
+								});
+						}
+					}
+				},
+				{
+					text: "Unlock the Quotation",
+					icon: "unlock",
+					onItemClick: function () {
+						// Replace with your actual unlock logic, e.g., an AJAX call
+						fetch(`/${tenantName}/IMS/UnlockRFQ?Rfqno=${Rfqno}`, {
+							method: 'POST'
+						})
+							.then(response => {
+								if (response.ok) {
+									alert(`RFQ ${Rfqno} unlocked successfully.`);
+									// Optionally refresh the DataGrid
+									e.component.refresh();
+								} else {
+									alert(`Failed to unlock RFQ ${Rfqno}.`);
+								}
+							})
+							.catch(error => {
+								console.error('Error unlocking RFQ:', error);
+								alert('An error occurred while unlocking the RFQ.');
+							});
+					}
+				},
+				{
+					text: "Revise Quotation",
+					icon: "preferences",
+					onItemClick: function () {
+						const url = `/${tenantName}/IMS/CreatePurchaseOrder?Rfqno=${Rfqno}`;
+						window.location.href = url;
+					}
+				},
+				{
+					text: "Create Sales Order",
+					icon: "add",
+					onItemClick: function () {
+						const url = `/${tenantName}/IMS/CreatePurchaseOrder?Rfqno=${Rfqno}`;
+						window.location.href = url;
+					}
+				}
+			];
+		}
+	}
 </script>

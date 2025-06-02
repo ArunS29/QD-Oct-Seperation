@@ -2,14 +2,6 @@
 @model QD.ERP.Web.Areas.IMS.Pages.QuotationAnalysisModel
 @{
 }
-@{
-    var dropDownData = new[] {
-        new { ID = 1, Request = "Req001", Enquiry = "ENQ001", Client = "Client A", Supplier = "Supplier X" },
-        new { ID = 2, Request = "Req002", Enquiry = "ENQ002", Client = "Client B", Supplier = "Supplier Y" },
-        new { ID = 3, Request = "Req003", Enquiry = "ENQ003", Client = "Client C", Supplier = "Supplier Z" }
-    };
-}
-
 <style>
     .mainContainer{
         width:100%;
@@ -87,36 +79,17 @@
             .Text("View Analysis")
             .Icon("chart")
             .Type(ButtonType.Normal)
+            .OnClick("onViewAnalysisClick")
             )
     </div>
-    <!-- ✅ Add this container for PivotGrid -->
-</div>
-@* @using (Html.DevExtreme().NamedTemplate("LedgerContentTemplate")) *@
-@* { *@
-@*     @(Html.DevExtreme().DataGrid() *@
-@*             .ID("dropDownGrid") *@
-@*             .DataSource(dropDownData) *@
-@*             .Selection(s => s.Mode(SelectionMode.Single)) *@
-@*             .HoverStateEnabled(true) *@
-@*             .Paging(p => p.PageSize(5)) *@
-@*             .Height(250) *@
-@*             .Columns(columns => *@
-@*             { *@
-@*                 columns.Add().DataField("Request").Caption("Request"); *@
-@*                 columns.Add().DataField("Enquiry").Caption("Enquiry"); *@
-@*                 columns.Add().DataField("Client").Caption("Client"); *@
-@*                 columns.Add().DataField("Supplier").Caption("Supplier"); *@
-@*             }) *@
-@*             .OnSelectionChanged("onSelectionChanged") *@
-@*         ) *@
-@* } *@
 
-<div id="pivotGridContainer" style="margin-top: 20px;"></div>
+    <div id="pivotGridContainerId" style="margin-top: 20px;"></div>
+</div>
 
 <script>
       
 
-     function onGridRowClick(e) {
+    function onGridRowClick(e) {
         var selectedData = e.data;
         if (selectedData) {
             var dropDownBox = $("#requestSelectBox").dxDropDownBox("instance");
@@ -125,59 +98,97 @@
         }
     }
 
-    const emptyData = []; // No data initially
-    $(function () {
-        $("#pivotGridContainer").dxPivotGrid({
-            dataSource: {
-                store: {
-                    type: "array",
-                    data: emptyData
-                },
-                fields: [
-                    // area: null → enables drag/drop via field panel
-                    { dataField: "SupplierName", caption: "Supplier Name", area: "row" },
-                    { dataField: "ItemDescription", caption: "Item Description", area: "column" },
-                    { dataField: "Quantity", caption: "Quantity", area: "data", dataType: "number", summaryType: "sum" }
-                ]
-            },
+    function onViewAnalysisClick() {
+        const mprno = $("#requestSelectBox").dxDropDownBox("instance").option("value");
+        if (!mprno) {
+            DevExpress.ui.notify("Please select a request/enquiry first.", "warning", 2000);
+            return;
+        }
 
-            allowSortingBySummary: true,
-            allowSorting: true,
-            allowFiltering: true,
-            allowExpandAll: true,
-            showBorders: true,
-            showColumnHeaders: true,
-            showColumnTotals: true,
-            showRowTotals: true,
-            showColumnGrandTotals: true,
-            showRowGrandTotals: true,
-            wordWrapEnabled: true,
-            height: 500,
+        loadPivotGridData(mprno);
+    }
 
-            // Same fieldChooser settings
-            fieldChooser: {
-                enabled: true,
-                allowSearch: true,
-                layout: 0, // Tree layout like your second example
-                applyChangesMode: "instantly"
-            },
 
-            // Enable the drag-and-drop panel
-            fieldPanel: {
-                visible: true,
-                allowFieldDragging: true,
-                showColumnFields: true,
-                showDataFields: true,
-                showFilterFields: true,
-                showRowFields: true
-            },
+    function loadPivotGridData(mprno) {
+        $.ajax({
+            url: '/api/QuotationAnalysis/GetQuotationAnalysisPvg?mprno='+mprno,
+            type: 'GET',
+            success: function (data) {
+                console.log("API Data: ", data);
+        $("#pivotGridContainerId").dxPivotGrid({
+        dataSource: {
+            fields: [
+                { dataField: "Gsdescrpition", area: "row", caption: "Item Description" }, // ← rows
+                { dataField: "QuotedQuantity", area: "row", caption: "Quantity"},
+                { dataField: "SupplierName", area: "column", caption: "Supplier Name" }, // ← columns
+                { dataField: "UnitPrice", area: "data", caption: "Unit Price", summaryType: "avg", format: "currency" },
+                { dataField: "ItemDiscount", area: "data", caption: "Discount", summaryType: "sum", format: "fixedPoint" },
+                { dataField: "LineTotalBeforeTax", area: "data", caption: "Net Total", summaryType: "sum", format: "currency" },
+                { dataField: "IsWonForPo", area: "data", caption: "Won", summaryType: "max", dataType: "boolean" }
+            ],
+            store: {
+                type: "array",
+                data: data
+            }
+        },
+        allowSortingBySummary: true,
+        allowSorting: true,
+        allowFiltering: true,
+        allowExpandAll: true,
+        showBorders: true,
+        showColumnHeaders: true,
+        showColumnTotals: false,
+        showRowTotals: false,
+        showColumnGrandTotals: false,
+        showRowGrandTotals: false,
+        wordWrapEnabled: true,
+        height: 500,
+        fieldChooser: {
+            enabled: true,
+            allowSearch: true,
+            layout: 0
+        },
+        fieldPanel: {
+            visible: true,
+            allowFieldDragging: true,
+            showColumnFields: true,
+            showDataFields: true,
+            showFilterFields: true,
+            showRowFields: true
+        },
+        loadPanel: { enabled: true },
+        onCellPrepared: function (e) {
+            if (e.area === "data" && e.cell?.dataType === "boolean") {
+                const $cell = $(e.cellElement);
+                $cell.empty();
 
-            loadPanel: { enabled: true }
-        }).dxPivotGrid("instance");
+                const isChecked = !!e.cell.value;
+                const checkbox = $("<input>")
+                    .attr("type", "checkbox")
+                    .prop("checked", isChecked)
+                    .on("change", function () {
+                        // If this checkbox was checked
+                        if ($(this).prop("checked")) {
+                            // Uncheck all other checkboxes in the same row
+                            const rowIndex = e.rowIndex;
+                            const $row = $cell.closest("tr");
+
+                            $row.find('input[type="checkbox"]').not(this).prop("checked", false);
+                        }
+                    });
+                    $cell.append(checkbox);
+                }
+            }
+
+
+        });
+    },
+
+    error: function (xhr, status, error) {
+        console.error("Error fetching data: ", error);
+    }
     });
-
-
-
+    }
 
 
 </script>

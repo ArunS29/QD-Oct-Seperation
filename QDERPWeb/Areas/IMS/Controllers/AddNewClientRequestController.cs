@@ -123,32 +123,37 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				return $"AIC_ENQ-{strYear}-000001";
 			}
 		}
-		[HttpGet]
-		public async Task<IActionResult> GetClientName(DataSourceLoadOptions loadOptions)
-		{
-			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				try
-				{
-					var ClientCategory = dbContext.Tbl30101ClientMasters.Select(i => new
-					{
-						i.ClientCode,
-						i.ClientName
-					
-					});
+        [HttpGet]
+        public async Task<IActionResult> GetClientDetails(DataSourceLoadOptions loadOptions)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var clients = dbContext.Tbl30101ClientMasters.Select(i => new
+                    {
+                        i.ClientCode,
+                        i.ClientName,
+                        i.ContactPerson,
+                        i.ContactMobile1,
+                        i.ContactEmail,
+                        i.ClientAddress
+                    });
 
-					return Json(await DataSourceLoader.LoadAsync(ClientCategory, loadOptions));
-				}
-				catch (Exception ex)
-				{
-					_logger.LogError($"Error in GetProject: {ex.Message}");
-					return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
-				}
-			}
+                    return Json(await DataSourceLoader.LoadAsync(clients, loadOptions));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetClientDetails: {ex.Message}");
+                    return StatusCode(500, new { message = "Error fetching client details", error = ex.Message });
+                }
+            }
 
-			return Unauthorized(new { message = "Invalid tenant.", success = false });
-		}
-		[HttpGet]
+            return Unauthorized(new { message = "Invalid tenant", success = false });
+        }
+
+
+        [HttpGet]
 		public async Task<IActionResult> GetTypeOfRequest(DataSourceLoadOptions loadOptions)
 		{
 			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
@@ -173,32 +178,34 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 			return Unauthorized(new { message = "Invalid tenant.", success = false });
 		}
-		[HttpGet]
-		public async Task<IActionResult> GetModeOfRequest(DataSourceLoadOptions loadOptions)
-		{
-			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				try
-				{
-					var ClientCategory = dbContext.Tbl30103ModeOfRequestMasters.Select(i => new
-					{
-						i.ModeOfRequestId,
-						i.ModeOfRequest
+        [HttpGet("GetStores")]
+        public IActionResult GetStores()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var stores = dbContext.Tbl60001storeMasters
+                        .Select(store => new
+                        {
+                            StoreId = store.StoreId, 
+                            StoreName = store.StoreName
+                        })
+                        .ToList();
 
-					});
+                    return Ok(stores);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error loading stores: {ex.Message}");
+                    return StatusCode(500, new { message = "Failed to load store list.", error = ex.Message });
+                }
+            }
 
-					return Json(await DataSourceLoader.LoadAsync(ClientCategory, loadOptions));
-				}
-				catch (Exception ex)
-				{
-					_logger.LogError($"Error in GetProject: {ex.Message}");
-					return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
-				}
-			}
+            return Unauthorized(new { message = "Invalid tenant." });
+        }
 
-			return Unauthorized(new { message = "Invalid tenant.", success = false });
-		}
-		[HttpGet]
+        [HttpGet]
 		public async Task<IActionResult> GetSalesPerson(DataSourceLoadOptions loadOptions)
 		{
 			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
@@ -359,10 +366,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 					var ClientCategory = dbContext.Tbl90104DocumentSignatories.Select(i => new
 					{
-						i.SignatoryId,
-						i.SignatoryName
+                        SignatoryID = i.SignatoryId, // <-- Important: Ensure it matches exactly
+                        SignatoryName = i.SignatoryName
 
-					});
+                    });
 
 					return Json(await DataSourceLoader.LoadAsync(ClientCategory, loadOptions));
 				}
