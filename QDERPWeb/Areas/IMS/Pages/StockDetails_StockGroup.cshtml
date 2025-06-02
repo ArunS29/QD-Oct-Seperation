@@ -172,6 +172,7 @@
                     .Width(50)
                     .Icon("fas fa-language")
                     .ElementAttr("style", "margin-top: 25px;")
+                    .OnClick("convertToArabic")
 
                     )
             </td>
@@ -327,6 +328,11 @@
                     })
                     .Columns(columns =>
                     {
+                        columns.AddFor(m => m.GsgroupId)
+                        .Caption(new JS("formatMessage('Code')"))
+                        .Visible(false)
+                        .Alignment(HorizontalAlignment.Center)
+                        .AllowEditing(false); // Optional
                         columns.AddFor(m => m.GsgroupCode)
                         .Caption(new JS("formatMessage('Code')"))
                         .Alignment(HorizontalAlignment.Center)
@@ -472,10 +478,19 @@
                         DevExpress.ui.notify('Saved successfully', 'success', 2000);
                         $("#dataGrid").dxDataGrid("instance").refresh();
                     },
-                    error: function () {
-                        DevExpress.ui.notify('Save failed', 'error', 2000);
-                    }
-                });
+                         error: function (xhr) {
+            let message = "Save failed";
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                message = xhr.responseJSON.message;
+            } else if (xhr.responseText) {
+                try {
+                    const resp = JSON.parse(xhr.responseText);
+                    if (resp.message) message = resp.message;
+                } catch {}
+            }
+            DevExpress.ui.notify(message, 'error', 3000);
+        }
+    });
             } else {
                 // If validation failed, notify user
                 DevExpress.ui.notify('Please fill all required fields correctly.', 'error', 3000);
@@ -491,4 +506,72 @@
             });
         }
     });
+     async function translateToArabic(text) {
+
+         try {
+
+             const response = await fetch(
+
+                 `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`
+
+             );
+
+             const data = await response.json();
+
+             return data.responseData.translatedText;
+
+         } catch (error) {
+
+             console.error("Translation failed:", error);
+
+             return "Translation Error";
+
+         }
+
+    }
+
+    async function convertToArabic() {
+
+         // Get the TextBox1 (input) instance
+
+         const textBox1Instance = $("#NewStockServicesGroups").dxTextArea("instance");
+
+         // Get the TextBox2 (output) instance
+
+         const textBox2Instance = $("#StockServicesGroups").dxTextArea("instance");
+
+         // Ensure both instances are initialized
+
+         if (!textBox1Instance || !textBox2Instance) {
+
+             console.error("TextBox instances are not properly initialized.");
+
+             return;
+
+         }
+
+
+         // Get the value from TextBox1
+
+         const englishText = textBox1Instance.option("value");
+
+         // Validate input
+
+         if (!englishText || englishText.trim() === "") {
+
+             alert("Please enter text to translate.");
+
+             return;
+
+         }
+
+         // Perform translation
+
+         const arabicTranslation = await translateToArabic(englishText);
+
+         // Update TextBox2 with the Arabic translation
+
+         textBox2Instance.option("value", arabicTranslation);
+
+    }
 </script>
