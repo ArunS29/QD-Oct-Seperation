@@ -1,4 +1,4 @@
-﻿ <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+﻿<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style type="text/css">
     #dataGrid .dx-datagrid-headers .dx-datagrid-action {
         text-align: center !important;
@@ -135,16 +135,18 @@
             display: inline-block;
         }
 
-    #btnAddNewQuotation:hover{
+    #btnAddNewQuotation:hover {
         width: 240px !important; /* Expand to fit text */
     }
 
     #btnDeliveryNoteDetails:hover {
         width: 210px !important; /* Expand to fit text */
     }
+
     #btnDeliveryNotePosting:hover {
         width: 210px !important; /* Expand to fit text */
     }
+
     #btnDeliveryNoteDetails:hover {
         width: 220px !important; /* Expand to fit text */
     }
@@ -180,7 +182,7 @@
     #btnAddNewJobOrder:hover {
         width: 230px !important; /* Expand to fit text */
     }
-    
+
     #btnStockAdjustmentDetails:hover {
         width: 250px !important; /* Expand to fit text */
     }
@@ -213,27 +215,27 @@
             .ShowArrowIcon(false)
             )
     </div>
-  
+
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnMoveUp")
             .Text(new JS("formatMessage('Move Up')"))
             .Type(ButtonType.Normal)
-                .StylingMode(ButtonStylingMode.Outlined)
+            .StylingMode(ButtonStylingMode.Outlined)
             .Icon("spinup") // Change the icon to an up/down arrow option
             .ElementAttr(new { @class = "bold-button" })
             )
     </div>
     <div class="btn-container">
-    @(Html.DevExtreme().Button()
-        .ID("btnMoveDown")
-        .Text(new JS("formatMessage('Move Down')"))
-        .Type(ButtonType.Normal)
-          .StylingMode(ButtonStylingMode.Outlined)
-        .Icon("spindown") // Change the icon to an up/down arrow option
-        .ElementAttr(new { @class = "bold-button" })
-        )
-</div>
+        @(Html.DevExtreme().Button()
+            .ID("btnMoveDown")
+            .Text(new JS("formatMessage('Move Down')"))
+            .Type(ButtonType.Normal)
+            .StylingMode(ButtonStylingMode.Outlined)
+            .Icon("spindown") // Change the icon to an up/down arrow option
+            .ElementAttr(new { @class = "bold-button" })
+            )
+    </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnSave")
@@ -242,7 +244,7 @@
             .StylingMode(ButtonStylingMode.Outlined)
             .Icon("save")
             .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-                                                         // .OnClick("saveInvoiceDetails") // Calls the JavaScript function
+            // .OnClick("saveInvoiceDetails") // Calls the JavaScript function
             )
 
     </div>
@@ -287,15 +289,15 @@
             )
     </div>
     <div class="btn-container">
-    @(Html.DevExtreme().Button()
-        .ID("btnUpdate")
-        .Text(new JS("formatMessage('Update')"))
-        .Icon("save") // Icon similar to a floppy/save
-        //.Type(ButtonType.Normal)
-       // .StylingMode(ButtonStylingMode.Contained)
-        .ElementAttr(new { @class = "update-button" }) // Custom CSS class
-        )
-</div>
+        @(Html.DevExtreme().Button()
+            .ID("btnUpdate")
+            .Text(new JS("formatMessage('Update')"))
+            .Icon("save") // Icon similar to a floppy/save
+            //.Type(ButtonType.Normal)
+            // .StylingMode(ButtonStylingMode.Contained)
+            .ElementAttr(new { @class = "update-button" }) // Custom CSS class
+            )
+    </div>
     <div class="btn-container">
 
         @(Html.DevExtreme().Button()
@@ -472,14 +474,14 @@
 
     </div>
     <div class="btn-container">
-    @(Html.DevExtreme().Button()
-        .ID("btnQuotationDetails")
-        .Icon("add")
-        .Width(50)
-        .Text(new JS("formatMessage('Quotation Details')"))
-        .ElementAttr(new { style = "display: none;" })
+        @(Html.DevExtreme().Button()
+            .ID("btnQuotationDetails")
+            .Icon("add")
+            .Width(50)
+            .Text(new JS("formatMessage('Quotation Details')"))
+            .ElementAttr(new { style = "display: none;" })
             .OnClick("QuotationDetails")
-        )
+            )
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
@@ -488,7 +490,7 @@
             .Width(50)
             .Text(new JS("formatMessage('Add New Quotation')"))
             .ElementAttr(new { style = "display: none;" })
-           .OnClick("AddNewQuotation")
+            .OnClick("AddNewQuotation")
             )
 
     </div>
@@ -501,7 +503,7 @@
             .ElementAttr(new { style = "display: none;" })
             .OnClick("AddNewSalesOrder")
             )
-                
+
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
@@ -559,7 +561,7 @@
 
     </div>
 
-   
+
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnDeliveryNoteDetails")
@@ -635,17 +637,18 @@
             .ShowArrowIcon(false)
             )
     </div>
-    
+
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
             .ID("btnAddNewReceipt")
             .Icon("plus")
             .Width(50)
             .Text(new JS("formatMessage('Add New Receipt')"))
-            .DropDownOptions(options => options.Width(370))
+            .DropDownOptions(options => options.Width(350))
             .Items(items =>
             {
                 items.Add().Text(new JS("formatMessage('Add New Material Receipt-From Supplier')"));
+                items.Add().Text(new JS("formatMessage('Add New Material Receipt-Returned From Project')"));
             })
             .OnItemClick("addNewMaterialReceipt")
             .ShowArrowIcon(false)
@@ -824,7 +827,7 @@
                         "btnSaveAndClose": { "Visible": false, "Enabled": false },
                         "btnAddNew": { "Visible": false, "Enabled": false },
                         "btnDelete": { "Visible": false, "Enabled": false },
-                         "btnUpdate": { "Visible": false, "Enabled": false },                       
+                         "btnUpdate": { "Visible": false, "Enabled": false },
                         "btnBack": { "Visible": false, "Enabled": false },
                         "btnSubmit": { "Visible": false, "Enabled": false },
                         "btnVerify": { "Visible": false, "Enabled": false },
@@ -1341,11 +1344,6 @@
         window.location.href = `/${tenantName}/IMS/DeliveryNoteDetails`;
     }
 
-        function AddPurchaseOrder(){
-        const url = `/${tenantName}/IMS/AddNewPurchaseOrder`;
-        // const title = "";
-        window.location.href = url;
-        }
         function addPaymentButton_click(e) {
         let url = "";
         let title = "Payments";
@@ -1648,11 +1646,14 @@
 
             window.location.href = url;
         }
-        
+
         function addNewMaterialReceipt(e) {
             let url = ''; // Declare once
             switch (e.itemData.text) {
                 case formatMessage('Add New Material Receipt-From Supplier'):
+                    url = `/${tenantName}/IMS/MaterialReceiptFromSupplier`;
+                    break;
+                case formatMessage('Add New Material Receipt-Returned From Project'):
                     url = `/${tenantName}/IMS/MaterialReceiptFromSupplier`;
                     break;
                 default:
@@ -1684,7 +1685,14 @@
 
             window.location.href = url;
         }
-        function printFun() { 
-            exportDataGridToPDF('dataGrid'); 
+        function printFun() {
+            exportDataGridToPDF('dataGrid');
         }
+            function AddPurchaseOrder(){
+
+            const url = `/${tenantName}/IMS/AddNewPurchaseOrder`;
+
+            window.location.href = url;
+
+            }
 </script>
