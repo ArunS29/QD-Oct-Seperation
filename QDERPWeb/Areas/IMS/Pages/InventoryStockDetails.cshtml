@@ -1367,17 +1367,14 @@
                 @{
                     ViewBag.Title = "Invoice Grid";
                 }
-                <style>
-
-                    </style>
-                @(Html.DevExtreme().Button()
+                @(Html.DevExtreme().DropDownButton()
                     .ID("printButton")
                     .Text(new JS("formatMessage('Print')"))
                     .Icon("print")
                     .ElementAttr("style", "padding:10px")
                     .DisplayExpr("Text")
                     .KeyExpr("Text")
-                    .NoDataText("Show Or Remove")
+                    .NoDataText("Show Or Remove") // 👈 Custom message when there are no items
                     .ItemTemplate(@<text>
                         <div style="display: flex; align-items: center;">
                             <i class="dx-icon-<%- Icon %>" style="padding:10px;"></i>
@@ -1385,8 +1382,6 @@
                         </div>
                     </text>)
                     )
-
-
 
                     <div class="dx-card " style="background-color:transparent; border:none;padding:10px;">
                        
@@ -1470,12 +1465,7 @@
             @{
                 ViewBag.Title = "Quotation Grid";
             }
-            
 
-
-                <style>
-
-                </style>
             @(Html.DevExtreme().DropDownButton()
                 .ID("Dropdown")
                 .Text(new JS("formatMessage('Print')"))
@@ -1578,11 +1568,7 @@
                 ViewBag.Title = "PurchaseOrder Grid";
             }
 
-
-
-                <style>
-
-                </style>
+               
             @(Html.DevExtreme().DropDownButton()
                 .ID("PurchaseOrderDropdown")
                 .Text(new JS("formatMessage('Print')"))
@@ -1681,9 +1667,6 @@
                 ViewBag.Title = "ItemDelivers Grid";
             }
 
-                <style>
-
-                </style>
             @(Html.DevExtreme().DropDownButton()
                 .ID("ItemDeliversDropdown")
                 .Text(new JS("formatMessage('Print')"))
@@ -1786,9 +1769,7 @@
 
 
 
-                <style>
-
-                </style>
+             
             @(Html.DevExtreme().DropDownButton()
                 .ID("ItemReceivedDropdown")
                 .Text(new JS("formatMessage('Print')"))
@@ -1892,10 +1873,6 @@
                 ViewBag.Title = "UnitConversion Grid";
             }
 
-
-                <style>
-
-                </style>
                 <div style="text-align: right;">
                 @(Html.DevExtreme().Button()
                     .ID("addButton")
