@@ -87,7 +87,7 @@
 </div>
 <div class="Head">
     <div class="limited-footer">
-        @await Html.PartialAsync("_GridFooter")
+        @await Html.PartialAsync("_JournalRegisterFooter")
     </div>
 </div>
 <!-- HTML -->
@@ -205,6 +205,7 @@
         .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
         )
     @(Html.DevExtreme().Button()
+        .ID("btnShowallsubmission") 
         .Text("Show All Submission")
         .Type(ButtonType.Normal)
         .StylingMode(ButtonStylingMode.Contained)

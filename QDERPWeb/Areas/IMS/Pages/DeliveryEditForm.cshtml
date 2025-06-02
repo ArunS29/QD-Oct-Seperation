@@ -1,7 +1,8 @@
 ﻿@page
-@model QD.ERP.Web.Areas.IMS.Pages.AddNewDeliverytoClientModel
+@model QD.ERP.Web.Areas.IMS.Pages.DeliveryEditFormModel
 @{
 }
+
 <style>
     .dx-datagrid-headers {
     border: 1px solid #686868 !important;
@@ -1838,6 +1839,130 @@
             }
         });
     }
+            document.addEventListener("DOMContentLoaded", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const deliveryNoteNo = urlParams.get("DeliveryNoteNo");
+        const mode = urlParams.get("mode");
 
+        if (deliveryNoteNo) {
+            const isEditMode = mode === "edit";
+            const isViewMode = mode === "view";
+
+            setTimeout(() => {
+                fetch(`/api/DeliveryNote/GetByDeliveryNoteNo?deliveryNoteNo=${encodeURIComponent(deliveryNoteNo)}`)
+                    .then(response => {
+                        if (!response.ok) throw new Error("Failed to load delivery data");
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data) {
+                            // Fill form fields
+                            $("#deliveryNoteNo").dxTextBox("instance").option("value", data.deliveryNoteNo);
+                            $("#deliveryNoteDate").dxDateBox("instance").option("value", data.deliveryDate);
+                            $("#GetProjectDropDown").dxDropDownBox("instance").option("value", data.clientCode);
+                            $("#ddGetSalesPerson").dxDropDownBox("instance").option("value", data.salesPersonCode);
+                            $("#clientPOnumber").dxTextBox("instance").option("value", data.clientPono);
+                            $("#ClientPODate").dxDateBox("instance").option("value", data.clientPodate);
+                            $("#ClientRefName").dxTextBox("instance").option("value", data.attention);
+                            $("#ClientContactNo").dxTextBox("instance").option("value", data.clientContactNo);
+                            $("#ClientEmail").dxTextBox("instance").option("value", data.clientContactEmail);
+                            $("#ddGetModeOfRequest").dxDropDownBox("instance").option("value", data.StoreCode);
+                            $("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value", data.projectId);
+                            $("#clientProject").dxTextBox("instance").option("value", data.clientProject);
+                            $("#DeliveryNoteRemarks").dxTextArea("instance").option("value", data.deliveryNoteRemarks);
+                            $("#Salesman").dxTextBox("instance").option("value", data.salesman);
+                            $("#DeliveredBy").dxTextBox("instance").option("value", data.transportedBy);
+                            $("#DriverName").dxTextBox("instance").option("value", data.driversName);
+                            $("#DriverID").dxTextBox("instance").option("value", data.driversId);
+                            $("#VehicleNo").dxTextBox("instance").option("value", data.vehicleNo);
+                            $("#CompanyName").dxSelectBox("instance").option("value", data.companyBranch);
+                            $("#DeliveryType").dxSelectBox("instance").option("value", data.deliveryType);
+                            $("#InventoryGroup").dxSelectBox("instance").option("value", data.inventoryMasterGroupId);
+                            $("#SalesOrderNo").dxTextBox("instance").option("value", data.salesOrderNo);
+                            $("#QuotationNo").dxTextBox("instance").option("value", data.quotationNo);
+                            $("#EnquiryRequestNo").dxTextBox("instance").option("value", data.enquiryRequestNo);
+                            $("#Dnsignatory").dxDropDownBox("instance").option("value", data.Dnsignatory);
+
+                            // Set item grid data
+                            const itemGridInstance = $("#itemGrid").dxDataGrid("instance");
+                            itemGridInstance.option("dataSource", data.items);
+
+                            // Approval logic
+                                const isApproved = data.IsApproved === true || data.IsApproved === 1;
+                                console.log("Is Approved:", isApproved);
+
+                            if (isViewMode || isApproved) {
+                                setReadOnlyMode();
+                                itemGridInstance.option("editing", {
+
+                                    allowUpdating: false,
+                                    allowAdding: false,
+                                    allowDeleting: false
+                                });
+
+                                DevExpress.ui.notify(
+                                    isApproved
+                                        ? "This delivery note is approved. You are not allowed to edit it."
+                                        : "This delivery note is in view mode. Fields are read-only.",
+                                    "info",
+                                    4000
+                                );
+                            } else if (isEditMode) {
+                                // Enable grid editing
+                                itemGridInstance.option("editing", {
+                                        mode: "cell",
+                                        allowUpdating: true,
+                                    allowAdding: true,
+                                    allowDeleting: true
+                                });
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error loading delivery note:", error);
+                        alert("Failed to load delivery details.");
+                    });
+            }, 100);
+        }
+
+        function setReadOnlyMode() {
+            const readOnlyFields = [
+                { selector: "#deliveryNoteNo", type: "dxTextBox" },
+                { selector: "#deliveryNoteDate", type: "dxDateBox" },
+                { selector: "#GetProjectDropDown", type: "dxDropDownBox" },
+                { selector: "#ddGetSalesPerson", type: "dxDropDownBox" },
+                { selector: "#clientPOnumber", type: "dxTextBox" },
+                { selector: "#ClientPODate", type: "dxDateBox" },
+                { selector: "#ClientRefName", type: "dxTextBox" },
+                { selector: "#ClientContactNo", type: "dxTextBox" },
+                { selector: "#ClientEmail", type: "dxTextBox" },
+                { selector: "#ddGetModeOfRequest", type: "dxDropDownBox" },
+                { selector: "#ddGetTypeOfRequest", type: "dxDropDownBox" },
+                { selector: "#clientProject", type: "dxTextBox" },
+                { selector: "#DeliveryNoteRemarks", type: "dxTextArea" },
+                { selector: "#Salesman", type: "dxTextBox" },
+                { selector: "#DeliveredBy", type: "dxTextBox" },
+                { selector: "#DriverName", type: "dxTextBox" },
+                { selector: "#DriverID", type: "dxTextBox" },
+                { selector: "#VehicleNo", type: "dxTextBox" },
+                { selector: "#CompanyName", type: "dxSelectBox" },
+                { selector: "#DeliveryType", type: "dxSelectBox" },
+                { selector: "#InventoryGroup", type: "dxSelectBox" },
+                { selector: "#SalesOrderNo", type: "dxTextBox" },
+                { selector: "#QuotationNo", type: "dxTextBox" },
+                { selector: "#EnquiryRequestNo", type: "dxTextBox" },
+                { selector: "#Dnsignatory", type: "dxDropDownBox" }
+            ];
+
+            readOnlyFields.forEach(field => {
+                const instance = $(field.selector)[field.type]("instance");
+                if (instance) {
+                    instance.option("readOnly", true);
+                }
+            });
+
+            $("#btnSave").prop("disabled", true);
+        }
+    });
 
    </script>

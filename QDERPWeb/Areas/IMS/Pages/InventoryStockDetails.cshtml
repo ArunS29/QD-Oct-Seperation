@@ -696,9 +696,8 @@
                         </tr>
                         <tr class="flex-row">
                             <td>
-                            @(Html.DevExtreme().SelectBox()
-                                .ID("ItemColor")
-                                .SearchEnabled(true)
+                            @(Html.DevExtreme().ColorBox()
+                                .ID("ItemColor")                                
                                 .AcceptCustomValue(true) 
                                 .Label(new JS("formatMessage('Item Color : ')"))
                                 .LabelMode(EditorLabelMode.Outside))
@@ -1237,7 +1236,7 @@
                 <li onclick="handleAction('copy')">Copy</li>
                 <li onclick="handleAction('load')">Load</li>
                 <li onclick="handleAction('paste')">Paste</li>
-                <li onclick="handleAction('edit')">Edit</li>
+                <li onclick="handleAction('delete')">Delete</li>
             </ul>
 
             <script>
@@ -1275,9 +1274,9 @@
                     case 'paste':
                       pasteImage();
                       break;
-                    case 'edit':
-                      editImage();
-                      break;
+                    case 'delete':
+                deleteImage(); 
+                break;
                   }
                   menu.style.display = "none";
                 }
@@ -1346,8 +1345,14 @@
                 }
 
 
-                function editImage() {
-                  alert("Edit image – implement your logic (e.g., open modal or use canvas)");
+                function deleteImage() {
+                  const img = imgBox.querySelector("img");
+                  if (img) {
+                    img.remove();
+                    alert("Image deleted.");
+                  } else {
+                    alert("No image to delete.");
+                  }
                 }
             </script>
 
@@ -1365,8 +1370,8 @@
                 <style>
 
                     </style>
-                @(Html.DevExtreme().DropDownButton()
-                    .ID("printDropdown")
+                @(Html.DevExtreme().Button()
+                    .ID("printButton")
                     .Text(new JS("formatMessage('Print')"))
                     .Icon("print")
                     .ElementAttr("style", "padding:10px")
@@ -1379,8 +1384,8 @@
                             <span><%- Text %></span>
                         </div>
                     </text>)
-
                     )
+
 
 
                     <div class="dx-card " style="background-color:transparent; border:none;padding:10px;">
@@ -2634,7 +2639,7 @@
                             $("#MaxSellingPrice").dxNumberBox("instance").option("value", data.MaxSellingPrice);
                             $("#ItemPartNo").dxTextBox("instance").option("value", data.ItemPartNo);
                             $("#ItemHSCode").dxTextBox("instance").option("value", data.Hscode);
-                            $("#ItemColor").dxSelectBox("instance").option("value", data.ItemColor);
+                            $("#ItemColor").dxColorBox("instance").option("value", data.ItemColor);
                             $("#ItemBrand").dxSelectBox("instance").option("value", data.ItemBrand);
                             $("#ItemManufacturer").dxSelectBox("instance").option("value", data.ItemMake);
                             $("#CountryOfOrigin").dxTextBox("instance").option("value", data.CountryOfOrigin);
@@ -2686,7 +2691,8 @@
                 "dxNumberBox",
                 "dxTextArea",
                 "dxSelectBox",
-                "dxCheckBox"
+                "dxCheckBox",
+                "dxColorBox"
             ];
 
             for (const type of types) {

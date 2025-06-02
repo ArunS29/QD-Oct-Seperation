@@ -1269,6 +1269,54 @@ ContactRemarks:clientRemarks,
      function GoBack() {
         window.parent.closeModal(); // This closes the current window/tab
     }
+        $(document).ready(function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const clientCode = urlParams.get('clientCode');
+
+            if (clientCode) {
+                fetchClientData(clientCode);
+            }
+        });
+
+        function fetchClientData(clientCode) {
+            $.ajax({
+                url: '/Tenant/IMS/GetClientDetails', // Update with your real endpoint URL
+                type: 'GET',
+                data: { clientCode: clientCode },
+                success: function (data) {
+                    populateClientForm(data);
+                },
+                // error: function () {
+                //     alert('Failed to load client data.');
+                // }
+            });
+        }
+
+        function populateClientForm(data) {
+            $('#ClientName').val(data.clientName);
+            $('#ClientCategory').val(data.clientCategory);
+            $('#DateVisitedFirst').val(data.dateVisitedFirst?.split('T')[0]); // handle date format
+            $('#ClientAccountLedgerNo').val(data.clientAccountLedgerNo);
+            $('#ClientAddress').val(data.clientAddress);
+            $('#ContactPerson').val(data.contactPerson);
+            $('#ContactPersonTitle').val(data.contactPersonTitle);
+            $('#ContactMobile1').val(data.contactMobile1);
+            $('#ContactMobile2').val(data.contactMobile2);
+            $('#ContactPhone1').val(data.contactPhone1);
+            $('#ContactPhone2').val(data.contactPhone2);
+            $('#ContactFaxNo').val(data.contactFaxNo);
+            $('#ContactEmail').val(data.contactEmail);
+            $('#SalesPersonCode').val(data.salesPersonCode);
+            $('#VendorNo').val(data.vendorNo);
+            $('#ContactRemarks').val(data.contactRemarks);
+
+            // For image preview (if needed)
+            if (data.businessCard1)
+                $('#PreviewBusinessCard1').attr('src', `data:image/png;base64,${data.businessCard1}`);
+            if (data.businessCard2)
+                $('#PreviewBusinessCard2').attr('src', `data:image/png;base64,${data.businessCard2}`);
+        }
+
 </script>
 
 
