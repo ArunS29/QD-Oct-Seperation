@@ -554,7 +554,7 @@
             .Width(50)
             .Text(new JS("formatMessage('Add Purchase Order')"))
             .ElementAttr(new { style = "display: none;" })
-            // .OnClick("toggleGroupPanel")
+            .OnClick("AddPurchaseOrder")
             )
 
     </div>
@@ -642,11 +642,10 @@
             .Icon("plus")
             .Width(50)
             .Text(new JS("formatMessage('Add New Receipt')"))
-            .DropDownOptions(options => options.Width(350))
+            .DropDownOptions(options => options.Width(370))
             .Items(items =>
             {
                 items.Add().Text(new JS("formatMessage('Add New Material Receipt-From Supplier')"));
-                items.Add().Text(new JS("formatMessage('Add New Material Receipt-Returned From Project')"));
             })
             .OnItemClick("addNewMaterialReceipt")
             .ShowArrowIcon(false)
@@ -1345,6 +1344,11 @@
         window.location.href = `/${tenantName}/IMS/DeliveryNoteDetails`;
     }
 
+        function AddPurchaseOrder(){
+        const url = `/${tenantName}/IMS/AddNewPurchaseOrder`;
+        // const title = "";
+        window.location.href = url;
+        }
         function addPaymentButton_click(e) {
         let url = "";
         let title = "Payments"; 
@@ -1652,9 +1656,6 @@
             let url = ''; // Declare once
             switch (e.itemData.text) {
                 case formatMessage('Add New Material Receipt-From Supplier'):
-                    url = `/${tenantName}/IMS/MaterialReceiptFromSupplier`;
-                    break;
-                case formatMessage('Add New Material Receipt-Returned From Project'):
                     url = `/${tenantName}/IMS/MaterialReceiptFromSupplier`;
                     break;
                 default:

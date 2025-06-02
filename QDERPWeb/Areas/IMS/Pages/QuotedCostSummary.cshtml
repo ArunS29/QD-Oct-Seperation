@@ -1,0 +1,113 @@
+﻿@page
+@model QD.ERP.Web.Areas.IMS.Pages.QuotedCostSummaryModel
+@{
+}
+@using DevExtreme.AspNet.Mvc
+@using DevExtreme.AspNet.Mvc.Builders
+
+<div style="display: flex; gap: 10px; background-color: #e6f0fb; padding: 10px;">
+    <div style="flex: 1; background-color: white; border: 1px solid #ccc;">
+        <div style="background-color: #c7d9f1; padding: 5px; font-weight: bold; font-size:18px;">Select Items for Distribution</div>
+
+        @(Html.DevExtreme().DataGrid()
+            .ID("quotedItemsGrid")
+            .ShowBorders(true)
+            .Selection(s => s.Mode(SelectionMode.Multiple).ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always))
+            .Columns(columns =>
+            {
+                columns.Add().Type(GridCommandColumnType.Selection).Width(40);
+                columns.Add().DataField("ItemDescription").Caption("Item Description");
+                columns.Add().DataField("UoM").Caption("UoM");
+                columns.Add().DataField("Qty").Caption("Qty");
+                columns.Add().DataField("CostPrice").Caption("Cost Price").Format(Format.Currency);
+            })
+            .Height(700))
+    </div>
+
+    <!-- Right Panel: Cost Distribution -->
+    <div style="flex: 1.5; background-color: white; border: 1px solid #ccc;">
+        <div style="display: flex; align-items: center; gap: 10px; background-color: #d9e9fd; padding: 10px;">
+            <label style="font-size:35px;"> $ Cost Discription</label>
+            <label style="font-size:15px;">Cost Item:</label>
+            @(Html.DevExtreme().SelectBox()
+                .ID("costItemSelect")
+                 .DisplayExpr("Name")
+                .ValueExpr("ID")
+                .Width(150))
+
+            @(Html.DevExtreme().Button()
+                .Icon("plus")
+                .Type(ButtonType.Default)
+                .StylingMode(ButtonStylingMode.Outlined))
+
+            <label style=" font-size:15px;">Percentage (%):</label>
+            @(Html.DevExtreme().NumberBox()
+                .Value(0)
+                .Min(0)
+                .Max(100)
+                .Format("#0.##")
+                .Width(80))
+
+            <label style="font-size:15px;">Cost Amount:</label>
+            @(Html.DevExtreme().NumberBox()
+                .Value(0)
+                .Format("##,##0.00")
+                .Width(100))
+        </div>
+
+        <div id="pivotGridContainer" style="margin-top: 20px; padding:20px;"></div>
+
+    </div>
+</div>
+<script>
+    const emptyData = []; // No data initially
+    $(function () {
+        $("#pivotGridContainer").dxPivotGrid({
+            dataSource: {
+                store: {
+                    type: "array",
+                    data: emptyData
+                },
+                fields: [
+                     { dataField: "SupplierName", caption: "Store Code", area: "row" },
+                    { dataField: "ItemDescription", caption: " Description", area: "column" }
+                ]
+            },
+
+            allowSortingBySummary: true,
+            allowSorting: true,
+            allowFiltering: true,
+            allowExpandAll: true,
+            showBorders: true,
+            showColumnHeaders: true,
+            showColumnTotals: true,
+            showRowTotals: true,
+            showColumnGrandTotals: true,
+            showRowGrandTotals: true,
+            wordWrapEnabled: true,
+            height: 500,
+
+            // Same fieldChooser settings
+            fieldChooser: {
+                enabled: true,
+                allowSearch: true,
+                layout: 0, // Tree layout like your second example
+                applyChangesMode: "instantly"
+            },
+
+            // Enable the drag-and-drop panel
+            fieldPanel: {
+                visible: true,
+                allowFieldDragging: true,
+                showColumnFields: true,
+                showDataFields: true,
+                showFilterFields: true,
+                showRowFields: true
+            },
+
+            loadPanel: { enabled: true }
+        }).dxPivotGrid("instance");
+    });
+
+
+</script>
