@@ -646,7 +646,6 @@
             .Items(items =>
             {
                 items.Add().Text(new JS("formatMessage('Add New Material Receipt-From Supplier')"));
-                items.Add().Text(new JS("formatMessage('Add New Material Receipt-Returned From Project')"));
             })
             .OnItemClick("addNewMaterialReceipt")
             .ShowArrowIcon(false)
@@ -1653,9 +1652,6 @@
             let url = ''; // Declare once
             switch (e.itemData.text) {
                 case formatMessage('Add New Material Receipt-From Supplier'):
-                    url = `/${tenantName}/IMS/MaterialReceiptFromSupplier`;
-                    break;
-                case formatMessage('Add New Material Receipt-Returned From Project'):
                     url = `/${tenantName}/IMS/MaterialReceiptFromSupplier`;
                     break;
                 default:
