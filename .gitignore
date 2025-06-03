@@ -36,3 +36,7 @@ node_modules/
 /QDERPWeb/DAL/Entities/ERPMasterWtDataContext.cs
 /QDERPWeb/logs
 
+/logs
+*.log
+*.mdmp
+/.cr/personal/FavoritesList

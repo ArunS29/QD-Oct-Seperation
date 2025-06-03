@@ -1,4 +1,4 @@
-﻿using DevExpress.DataProcessing.InMemoryDataProcessor;
+using DevExpress.DataProcessing.InMemoryDataProcessor;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Http;
@@ -501,7 +501,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				{
 					//Update existing master with manual property mapping
 
-			existingMaster.Mprdate = VM.Mprdate;
+			        existingMaster.Mprdate = VM.Mprdate;
 					existingMaster.ClientCode = VM.ClientCode;
 					existingMaster.RequestedBy = VM.RequestedBy;
 					existingMaster.RequesterContactEmail = VM.RequesterContactEmail;

@@ -3,6 +3,13 @@
 @{
 }
 <style>
+	.dx-datagrid-headers .center-header {
+		text-align: center !important;
+	}
+
+	.Head {
+		margin-bottom: 8px;
+	}
 	.toggle-switch {
 		position: relative;
 		display: inline-block;
@@ -217,6 +224,9 @@
 		margin-top: 0px !important;
 	}
 
+	#B2BdataGrid{
+		height:700px ! important ;
+	}
 	/*     .dx-editor-outlined .dx-label span {
 			font-weight:bold !important;
 			} */
@@ -397,7 +407,7 @@
 															)
 							</td>
 							<td style="width: 50%;">
-								<div style="display: flex; align-items: end;">
+								<div style="display: flex; align-items: end; gap: 5px">
 									<div style="flex-grow: 1;">
 										@(Html.DevExtreme().DropDownBox()
 																				.Label(new JS("formatMessage('Client Name:')"))
@@ -528,7 +538,7 @@
 					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 						<tr>
 							<td colspan="2">
-								<div style="display: flex; align-items: end;">
+								<div style="display: flex; align-items: end; gap: 5px">
 									
 									@(Html.DevExtreme().DropDownBox()
 																			.Label(new JS("formatMessage('Client Name in Arabic:')"))
@@ -546,7 +556,7 @@
 																			.HoverStateEnabled(true)
 																			.ValueExpr("AccountHeadArabic")
 																			.DisplayExpr("AccountId")
-																			.Width(600)
+																		.Width("100%")
 																			.TabIndex(4)
 																			.DropDownOptions(o => o.Width(1000))
 																			.ContentTemplate(new TemplateName("ClientNameArContentTemplate"))
@@ -1390,6 +1400,8 @@
 								columns.Add().DataField("VATPercentage")
 					.Caption("VAT%")
 					.Width(150)
+
+
 				@* .CellTemplate(@<text>
 				<select class="form-select" style="width: 100%;" onchange="function(e){ var newVal = this.value; /* set value to datasource here */ }">
 					<option value="15%">15%</option>
@@ -1455,11 +1467,32 @@
 						.UseIcons(true)
 						)
 						.OnEditorPreparing("onEditorPreparing")
+						.Summary(summary =>
+
+						{
+
+							summary.TotalItems(totalItems =>
+
+							{
+	
+
+								totalItems.Add().Column("Amount").SummaryType(SummaryType.Sum)
+
+							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+								totalItems.Add().Column("VAT").SummaryType(SummaryType.Sum).Alignment(HorizontalAlignment.Right)
+
+							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+								
+
+							});
+
+						})
 						)
 		</div>
 
 		<div class="Head">
-			<div class="limited-footer">
+			<div class="limited-footer" style="margin-left: 5px;">
 				@await Html.PartialAsync("VATModuleFooter")
 			</div>
 		</div>
@@ -2675,6 +2708,7 @@
 								dataField: "InvoiceChildSLNo",
 								caption: "InvoiceChildSLNo",
 								width: 100,
+
 								allowEditing: false, // Prevent manual editing
 								visible: false // Hide the column
 							},
@@ -3203,7 +3237,9 @@
 
 					caption: "#",
 
-					width: 100,
+					width: 50,
+
+					cssClass: "center-header",
 
 					allowEditing: false // Prevent manual editing
 
@@ -3215,7 +3251,9 @@
 
 					caption: formatMessage('Item Code'),
 
-					width: 200
+					cssClass: "center-header",
+
+					width: 100
 
 				},
 
@@ -3224,8 +3262,10 @@
 					dataField: "Description",
 
 					caption: formatMessage('Description'),
+					
+					cssClass: "center-header",
 
-					width: 550,
+					width: 400,
 
 					editCellTemplate: function (cellElement, cellInfo) {
 
@@ -3412,7 +3452,8 @@
 			{
 			dataField: "Descriptions",
 			caption: "...",
-			width: 150,
+			cssClass: "center-header",
+			width: 80,
 			allowEditing: true,
 			cellTemplate: function (container, options) {
 			$("<div>").dxButton({
@@ -3440,7 +3481,9 @@
 
 					caption: formatMessage('Unit Rate Method'),
 
-					width: 200,
+					cssClass: "center-header",
+
+					width: 250,
 
 					editCellTemplate: function (cellElement, cellInfo) {
 
@@ -3563,23 +3606,24 @@
 				},
 
 
-				{ dataField: "Qty", caption: formatMessage('Qty'), width: 150 },
+				{ dataField: "Qty", caption: formatMessage('Qty'), width: 100, cssClass: "center-header" },
 
-				{ dataField: "UnitPrice", caption: formatMessage('Unit Price'), width: 150 },
+				{ dataField: "UnitPrice", caption: formatMessage('Unit Price'), width: 100, cssClass: "center-header", },
 
-				{ dataField: "TotalBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 185 },
+				  { dataField: "TotalBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 185,cssClass: "center-header", format: { type: "fixedPoint", precision: 2 } },
 
-				{ dataField: "Discount", caption: formatMessage('Discount'), width: 150 },
+				{ dataField: "Discount", caption: formatMessage('Discount'), width: 100,cssClass: "center-header" },
 
-				{ dataField: "DiscountDetails", caption: "...", width: 50 },
+				{ dataField: "DiscountDetails", caption: "...", width: 100,cssClass: "center-header" },
 
-				{ dataField: "Amount", caption: formatMessage('Amount'), width: 150 },
+				{ dataField: "Amount", caption: formatMessage('Amount'), width: 100,cssClass: "center-header" },
 
 				//{ dataField: "VAT%", caption: "VAT%", width: 150 },
 
 				{
 					dataField: "VATPercentage",
 					caption: formatMessage('VAT Description'),
+					cssClass: "center-header",
 					width: 150,
 					editCellTemplate: function (cellElement, cellInfo) {
 						getTaxSlabData().done(function (dropdownData) {
@@ -3631,9 +3675,9 @@
 
 				// { dataField: formatMessage('ExcemptionCode'), caption: "Excemption Code", width: 150 },
 
-				{ dataField: "VAT", caption: formatMessage('VAT'), width: 150 },
+				{ dataField: "VAT", caption: formatMessage('VAT'), width: 80,cssClass: "center-header" },
 
-				{ dataField: "Total", caption: formatMessage('Total'), width: 150 },
+				{ dataField: "Total", caption: formatMessage('Total'), width: 90,cssClass: "center-header" },
 
 				{ dataField: "TaxSlabCode", caption: formatMessage('TaxSlabCode'), width: 150, allowEditing: false, visible: false }
 
@@ -6075,9 +6119,7 @@
 			}
 
 			}
-
-
-			$("#btnBack").on("click", function (e) {
+	$("#btnBack").on("click", function (e) {
 				history.back(); // Closes or navigates back
 			});
 
