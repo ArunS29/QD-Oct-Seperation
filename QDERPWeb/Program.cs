@@ -18,6 +18,7 @@ using Microsoft.ApplicationInsights.Extensibility;
 using QD.ERP.Web.Service.ReportService;
 using QD.ERP.Web.Middlewares;
 using DevExpress.XtraCharts;
+using QD.ERP.Web.Middleware;
 
 //using qd.utilities;
 
@@ -80,6 +81,7 @@ builder.Services.AddRazorPages(options =>
 {
     options.Conventions.Add(new TenantRouteModelConvention());
 });
+builder.Services.AddScoped<LicenseService>();
 
 builder.Services.AddMemoryCache();
 builder.Services.AddDistributedMemoryCache();
@@ -173,6 +175,7 @@ var app = builder.Build();
 #region **2. Configure Middleware**
 
 app.UseDevExpressControls();
+//app.UseMiddleware<LicenseValidationMiddleware>(); // Add before UseRouting
 app.UseRouting();
 //app.UseStatusCodePages("text/plain", "Status Code: {0}");
 //app.UseStatusCodePagesWithRedirects("/Error/{0}");
