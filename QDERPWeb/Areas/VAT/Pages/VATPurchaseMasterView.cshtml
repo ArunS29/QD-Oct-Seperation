@@ -591,7 +591,7 @@
 			var rowIndex = $(this).index();
 			var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex];
 			invoiceNo = rowData.PurchaseVoucherNo;
-			VoucherStatus = rowData.VoucherStatus;
+			Status = rowData.VoucherStatus;
 			console.log("Purchase",rowData);
 			contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
 		});
@@ -742,28 +742,36 @@
 	// }
 
 	 function cloneEInvoice() {
+		 
 		if (!invoiceNo) {
 			alert("InvoiceNo is required.");
 			return;
 		}
 
-		$.ajax({
-						url: '/api/VATModule/DuplicateVatInvoice',
+			DevExpress.ui.dialog.confirm("You are about to Duplicate this Purchase Invoice. Are you Sure want to Continue?", "Confirm Clone")
+			.done(function (dialogResult) {
+				if (dialogResult) {
+					$.ajax({
+						//url: `/api/VATModule/UpdateToPurchaseUnlocktheBil?InvoiceNo=${encodeURIComponent(vno)}&IsDirectVerify=${encodeURIComponent(IsDirectVerify)}`,
+						url: '/api/VATModule/InsertPurchaseCloneEInvoice',
 						method: 'POST',
 						data: { invoiceNo: invoiceNo },
 						success: function (response) {
-							if (response.success) {
-								DevExpress.ui.notify("Purchase Invoice has been successfully added to the database.", "success", 3000);
-								// Optional: Refresh grid
+							if (response) {
+
+								DevExpress.ui.dialog.alert("Purchase Invoice has been successfully added to the database.", "Cloned Successfully");
+								// Optionally refresh the grid or perform additional actions
 								$("#dataGrid").dxDataGrid("instance").refresh();
 							} else {
-								DevExpress.ui.notify(response.message || "Duplication failed.", "error", 3000);
+								DevExpress.ui.notify(response.message || "Unlocking failed.", "error", 3000);
 							}
 						},
 						error: function () {
-							DevExpress.ui.notify("Server error while duplicating invoice.", "error", 3000);
+							DevExpress.ui.notify("Server error while unlocking the invoice.", "error", 3000);
 						}
 					});
+				}
+			});
 	}
 
 		$(document).ready(function () {
@@ -797,42 +805,40 @@
 
 
 
-				function UnlockInvoice() {
-		const rowData = selectedRowData; // Make sure selectedRowData is available
-
-		if (Status="Posted") {
-				 DevExpress.ui.dialog.alert(
-		"This VAT Purchase Bill is already posted to your ledgers.\nPlease delete the Purchase Entry from Accounting Books and continue.",
-		"Purchase Bill Posted Already"
-	);
-
+					function UnlockInvoice() {
+					
+		if (Status === "Posted") {
+			DevExpress.ui.dialog.alert(
+				"This VAT Purchase Bill is already posted to your ledgers.\nPlease delete the Purchase Entry from Accounting Books and continue.",
+				"Purchase Bill Posted Already"
+			);
 			return;
-		}else if(Status="Posted")
-		{
+		}
 
-		DevExpress.ui.dialog.confirm("You are about to Duplicate this Purchase Invoice. Are you sure you want to continue?", "Confirm Duplication")
+
+		DevExpress.ui.dialog.confirm("Are you sure you want to unlock this Purchase Bill?", "Confirm Unlock")
 			.done(function (dialogResult) {
 				if (dialogResult) {
 					$.ajax({
-						url: '/api/VATModule/DuplicateVatInvoice',
+						//url: `/api/VATModule/UpdateToPurchaseUnlocktheBil?InvoiceNo=${encodeURIComponent(vno)}&IsDirectVerify=${encodeURIComponent(IsDirectVerify)}`,
+						url: '/api/VATModule/UpdateToPurchaseUnlocktheBil',
 						method: 'POST',
-						data: { invoiceNo: rowData.InvoiceNo },
+						data: { invoiceNo: invoiceNo },
 						success: function (response) {
-							if (response.success) {
-								DevExpress.ui.notify("Purchase Invoice has been successfully added to the database.", "success", 3000);
-								// Optional: Refresh grid
-								$("#dataGrid").dxDataGrid("instance").refresh();
+							if (response) {
+								
+								DevExpress.ui.dialog.alert("Purchase Bill has been unlocked successfully.", "Bill Unlocked");
+								// Optionally refresh the grid or perform additional actions
 							} else {
-								DevExpress.ui.notify(response.message || "Duplication failed.", "error", 3000);
+								DevExpress.ui.notify(response.message || "Unlocking failed.", "error", 3000);
 							}
 						},
 						error: function () {
-							DevExpress.ui.notify("Server error while duplicating invoice.", "error", 3000);
+							DevExpress.ui.notify("Server error while unlocking the invoice.", "error", 3000);
 						}
 					});
 				}
 			});
-		}
-
 	}
+
 </script>
