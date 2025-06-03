@@ -174,7 +174,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             {
                 try
                 {
-                    var entity = dbContext.Tbl20164GoodsAndServicesMasters
+                    var entity = dbContext.Tbl20164GoodsAndServicesMasters 
                         .FirstOrDefault(x => x.Gscode == GoodsCode);
 
                     if (entity == null)

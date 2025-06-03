@@ -25,7 +25,7 @@
 		overflow: hidden;
 	}
 
-	.limited-footer .btn-containerIvoiceEdit:not(:has(#ddButtonLayout,#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#btntoggleGroupPanel,#btnColumnChooser,#btnInvoiceDetails,#ddReports,#ddButtonPayment)) {
+	.limited-footer .btn-containerIvoiceEdit:not(:has(#ddButtonLayout,#btnPrint, #btnToggleSearch,#btntoggleGroupPanel,#btnInvoiceDetails,#ddReports,#ddButtonPayment)) {
 		display: none !important
 	}
 
@@ -865,10 +865,11 @@
 	}
 	$(document).ready(function () {
 		$(".limited-footer .btn-container").each(function () {
-			if (!$(this).find("#ddButtonLayout,#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#btntoggleGroupPanel,#btnColumnChooser,#btnInvoiceDetails,#ddReports,#ddButtonPayment").length) {
+			if (!$(this).find("#ddButtonLayout,#btnPrint, #btnToggleSearch,#btntoggleGroupPanel,#btnInvoiceDetails,#ddReports,#ddButtonPayment").length) {
 				$(this).remove();
 			}
 		});
+		ddBtnShowRecords_click('range');
 	});
 	function checkIfOldVATInvoice(invoiceNo) {
 		$.ajax({

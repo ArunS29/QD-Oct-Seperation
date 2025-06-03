@@ -244,7 +244,7 @@
             .StylingMode(ButtonStylingMode.Outlined)
             .Icon("save")
             .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-            // .OnClick("saveInvoiceDetails") // Calls the JavaScript function
+                                                         // .OnClick("saveInvoiceDetails") // Calls the JavaScript function
             )
 
     </div>
@@ -293,8 +293,8 @@
             .ID("btnUpdate")
             .Text(new JS("formatMessage('Update')"))
             .Icon("save") // Icon similar to a floppy/save
-            //.Type(ButtonType.Normal)
-            // .StylingMode(ButtonStylingMode.Contained)
+                          //.Type(ButtonType.Normal)
+                          // .StylingMode(ButtonStylingMode.Contained)
             .ElementAttr(new { @class = "update-button" }) // Custom CSS class
             )
     </div>
@@ -648,7 +648,6 @@
             .Items(items =>
             {
                 items.Add().Text(new JS("formatMessage('Add New Material Receipt-From Supplier')"));
-                items.Add().Text(new JS("formatMessage('Add New Material Receipt-Returned From Project')"));
             })
             .OnItemClick("addNewMaterialReceipt")
             .ShowArrowIcon(false)
@@ -1653,9 +1652,6 @@
                 case formatMessage('Add New Material Receipt-From Supplier'):
                     url = `/${tenantName}/IMS/MaterialReceiptFromSupplier`;
                     break;
-                case formatMessage('Add New Material Receipt-Returned From Project'):
-                    url = `/${tenantName}/IMS/MaterialReceiptFromSupplier`;
-                    break;
                 default:
                     console.log("Clicked item: ", e.itemData.text);
                     return;
@@ -1688,11 +1684,8 @@
         function printFun() {
             exportDataGridToPDF('dataGrid');
         }
-            function AddPurchaseOrder(){
-
+        function AddPurchaseOrder(){
             const url = `/${tenantName}/IMS/AddNewPurchaseOrder`;
-
             window.location.href = url;
-
-            }
+        }
 </script>
