@@ -363,6 +363,13 @@
 				.FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
 				.GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
 				.ShowBorders(false)
+		.Paging(p => p.Enabled(true).PageSize(15))       // <-- Enable pagination here
+		.Pager(pager => pager
+		.Visible(true)
+		.ShowPageSizeSelector(true)
+		.AllowedPageSizes(new[] { 10, 15, 20 })
+		.ShowInfo(true)
+		)
 				.ShowRowLines(true) // Enable row lines
 			@* 	.ColumnChooser(columnChooser => columnChooser
 				.Enabled(false) // Enable the column chooser for hiding and showing columns
