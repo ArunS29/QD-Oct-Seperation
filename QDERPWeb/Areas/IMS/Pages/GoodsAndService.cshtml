@@ -428,9 +428,10 @@
         });
 
     });
-    function onBackButtonClick() {
-      window.parent.closeModal();
-    }
+
+    $(document).on("click", "#btnBack", function () {
+        window.history.back();
+    });
 
     function dataGridSelectionChanged1(e) {
         const selectedRow = e.selectedRowsData[0];

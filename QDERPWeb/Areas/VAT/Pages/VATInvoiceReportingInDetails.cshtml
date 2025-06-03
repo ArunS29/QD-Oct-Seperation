@@ -6,8 +6,8 @@
 <style>
  
 
-    .limited-footer .btn-containerIvoiceEdit:not(:has(#btnPrint,#ddButtonLayout,#btnShowRowTotals,#btnShowFields)) {
-        display: none !important
+    .limited-footer .btn-containerIvoiceEdit:not(:has(#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#ddButtonLayout,#btntoggleGroupPanel,#btnColumnChooser,#btnShowRowTotals,#btnShowFields)) {
+        display: none !important;
     }
 
     .dx-fieldset.horizontal-container {
@@ -76,19 +76,27 @@
 
     <!-- Input Controls in One Line -->
     <div class="dx-fieldset horizontal-container">
-        @(Html.DevExtreme().DateBox()
+       
+
+        <div class="dx-field">
+            <!-- Start Date Picker -->
+            @(Html.DevExtreme().DateBox()
                 .ID("frmdateBox")
-                .Label(new JS("formatMessage('From Date')"))
+                
                 .LabelMode(EditorLabelMode.Outside)
                 .InputAttr("aria-label", "Date")
                 .Type(DateBoxType.Date)
-                .Value(new DateTime(DateTime.Now.Year, 1, 1))
+                .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
                 .DisplayFormat("dd-MMM-yyyy")
                 .TabIndex(2)
                 )
-        @(Html.DevExtreme().DateBox()
+        </div>
+
+        <div class="dx-field">
+            <!-- End Date Picker -->
+            @(Html.DevExtreme().DateBox()
                 .ID("todateBox")
-                .Label(new JS("formatMessage('To Date')"))
+              
                 .LabelMode(EditorLabelMode.Outside)
                 .InputAttr("aria-label", "Date")
                 .Type(DateBoxType.Date)
@@ -96,28 +104,31 @@
                 .DisplayFormat("dd-MMM-yyyy")
                 .TabIndex(3)
                 )
+        </div>
+        <!-- Dropdown Button to Show Records -->
         @(Html.DevExtreme().DropDownButton()
-                .ID("ddBtnShowRecords")
-                .Text(new JS("formatMessage('Show Records')"))
-                .Icon("smalliconslayout")
-                .Width(180)
-                .ElementAttr("class", "button-alignment-up")
-                .TabIndex(4)
-                .DropDownOptions(options => options.Width(230))
-                .Items(items =>
-                {
-                    items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
-                    items.Add().Text(new JS("formatMessage('Today')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
-                    items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-                    items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
-                    items.Add().Text(new JS("formatMessage('This Month Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-                    items.Add().Text(new JS("formatMessage('This Month (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-                    items.Add().Text(new JS("formatMessage('This Year Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-                    items.Add().Text(new JS("formatMessage('This Year (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-                    items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-                    items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
-                })
-                )
+            .ID("ddBtnShowRecords")
+            .Text("Show Records")
+            .Icon("smalliconslayout")
+            .Width(180)
+            .ElementAttr("class", "button-alignment-down")
+            .TabIndex(4)
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add().Text("Show Records").Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
+                items.Add().Text("Today").Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
+                items.Add().Text("Yesterday").Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+                items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
+                items.Add().Text("This Month Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+                items.Add().Text("This Month (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+                items.Add().Text("This Year Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+                items.Add().Text("This Year (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+                items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+                items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+            })
+            )
+       
     </div>
 
     <!-- Pivot Grid (Will Always Appear Below Filters) -->
@@ -129,7 +140,7 @@
 <script type="text/javascript">
     $(function () {
         $("#VATInvoiceReportingInDetails").dxTextBox({
-            text: formatMessage("Sales Reporting In Details"),
+            text: formatMessage("SalesReportingInDetails"),
             readOnly: true,
             onContentReady: function (e) {
                 $(e.element).addClass("dx-textbox-heading");
@@ -321,7 +332,7 @@
     }
     $(document).ready(function () {
         $(".limited-footer .btn-container").each(function () {
-            if (!$(this).find("#btnPrint,#ddButtonLayout,#btnShowRowTotals,#btnShowFields").length) {
+            if (!$(this).find("#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#ddButtonLayout,#btntoggleGroupPanel,#btnColumnChooser,#btnShowRowTotals,#btnShowFields").length) {
                 $(this).remove();
             }
         });

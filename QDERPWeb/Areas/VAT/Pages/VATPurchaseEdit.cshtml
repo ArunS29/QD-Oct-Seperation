@@ -4,19 +4,6 @@
 @{
 }
 <style>
-
-	.dx-datagrid-headers .center-header {
-		text-align: center !important;
-	}
-
-	.Head {
-		margin-bottom: 10px;
-	}
-
-	#B2BdataGrid {
-		height: 700px !important;
-	}
-
 	.toggle-switch {
 		position: relative;
 		display: inline-block;
@@ -488,7 +475,7 @@
 														.Label("")
 														.Label(new JS("formatMessage('Purchase Voucher No')"))
 														.LabelMode(EditorLabelMode.Outside)
-														.Disabled(true))
+														@* .Disabled(true) *@)
 						</td>
 
 						<!-- 2. Voucher Date -->
@@ -562,6 +549,7 @@
 														.ID("OrderDate")
 														.Type(DateBoxType.Date)
 														.DisplayFormat("dd-MMM-yyyy")
+														.Value(DateTime.Now)
 														.Label(new JS("formatMessage('Order Date')"))
 														.LabelMode(EditorLabelMode.Outside))
 						</td>
@@ -956,13 +944,6 @@
 				</tr>
 				<tr style="width: 100%">
 					<td>
-						<div style="display: flex; align-items: start; flex-direction: row-reverse;">
-							@(Html.DevExtreme().CheckBox()
-														.Text(new JS("formatMessage('')"))
-														.ID("SubmittedBy")
-														.Value(null)
-														.ElementAttr("style", "position:relative; right: 25px;")
-														)
 						@(Html.DevExtreme().DropDownBox()
 													.Label(new JS("formatMessage('Supplier Invoice Received On')"))
 													.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetItemsReturned").LoadMode(DataSourceLoadMode.Raw).Key("ItemId")) // Replace LoadAction accordingly
@@ -973,14 +954,17 @@
 													.OpenOnFieldClick(false)
 													.ValueExpr("ItemId")
 													.DisplayExpr("ItemName")
-													.Width("100%")
+													.Width("90%")
 													)
-					
-					
-						
-						</div>
 					</td>
 					<td>
+						<div style="display: flex; align-items: flex-end; gap: 10px;">
+							@(Html.DevExtreme().CheckBox()
+														.Text(new JS("formatMessage('')"))
+														.ID("SubmittedBy")
+														.Value(null)
+														.ElementAttr("style", "padding-bottom:40px;")
+														)
 							@(Html.DevExtreme().TextBox()
 														.Label(new JS("formatMessage('Invoice Received By')"))
 														.LabelMode(EditorLabelMode.Outside)
@@ -989,7 +973,7 @@
 														.Value(null)
 														// .Disabled(true)
 														)
-						
+						</div>
 
 					</td>
 					<td>
@@ -1506,36 +1490,11 @@
 									.UseIcons(true)
 									)
 									.OnEditorPreparing("onEditorPreparing")
-						.Summary(summary =>
-
-						{
-
-							summary.TotalItems(totalItems =>
-
-							{
-
-								
-
-								totalItems.Add().Column("Amount").SummaryType(SummaryType.Sum)
-
-							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-								totalItems.Add().Column("VAT").SummaryType(SummaryType.Sum).Alignment(HorizontalAlignment.Right)
-
-							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-								totalItems.Add().Column("Total").SummaryType(SummaryType.Sum).Alignment(HorizontalAlignment.Right)
-
-							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-							});
-
-						})
 									)
 		</div>
 
 		<div class="Head">
-			<div class="limited-footer" style="margin-left: 15px;">
+			<div class="limited-footer">
 				@await Html.PartialAsync("VATModuleFooter")
 			</div>
 		</div>
@@ -3261,8 +3220,6 @@
 
 					caption: "#",
 
-					cssClass: "center-header",
-
 					width: 50,
 
 					allowEditing: false // Prevent manual editing
@@ -3275,8 +3232,6 @@
 
 					caption: "Item Code",
 
-					cssClass: "center-header",
-
 					width: 100
 
 				},
@@ -3288,7 +3243,6 @@
 					caption: "Description",
 
 					width: 400,
-					cssClass: "center-header",
 
 					editCellTemplate: function (cellElement, cellInfo) {
 
@@ -3475,7 +3429,6 @@
 				{
 			dataField: "Descriptions",
 			caption: "...",
-			cssClass: "center-header",
 			width: 80,
 			allowEditing: true,
 			cellTemplate: function (container, options) {
@@ -3502,8 +3455,6 @@
 					dataField: "DescriptionDetails",
 
 					caption: "Unit Rate Method",
-
-					cssClass: "center-header",
 
 					width: 250,
 
@@ -3628,24 +3579,23 @@
 				},
 
 
-				{ dataField: "Qty", caption: "Qty", width: 100,cssClass: "center-header" },
+				{ dataField: "Qty", caption: "Qty", width: 100 },
 
-				{ dataField: "UnitPrice", caption: "Unit Price", width: 100,cssClass: "center-header" },
+				{ dataField: "UnitPrice", caption: "Unit Price", width: 100 },
 
 				// { dataField: "TotalBeforeDiscount", caption: "Total Before Discount", width: 180 },
 
-				  { dataField: "Discount", caption: "Discount", width: 100,cssClass: "center-header"},
+				{ dataField: "Discount", caption: "Discount", width: 100 },
 
 				// { dataField: "DiscountDetails", caption: "...", width: 50 },
 
-				  { dataField: "Amount", caption: "Amount", width: 100,cssClass: "center-header"},
+				{ dataField: "Amount", caption: "Amount", width: 100 },
 
 				//{ dataField: "VAT%", caption: "VAT%", width: 150 },
 
 				{
 					dataField: "VATPercentage",
 					caption: "VAT Description",
-					cssClass: "center-header",
 					width: 150,
 					editCellTemplate: function (cellElement, cellInfo) {
 						getTaxSlabData().done(function (dropdownData) {
@@ -3697,9 +3647,9 @@
 
 				// { dataField: "ExcemptionCode", caption: "Excemption Code", width: 150 },
 
-				{ dataField: "VAT", caption: "VAT", width: 80,cssClass: "center-header" },
+				{ dataField: "VAT", caption: "VAT", width: 80 },
 
-				{ dataField: "Total", caption: "Total", width: 90,cssClass: "center-header" },
+				{ dataField: "Total", caption: "Total", width: 90 },
 
 				{ dataField: "TaxSlabCode", caption: "TaxSlabCode", width: 150, allowEditing: false, visible: false }
 

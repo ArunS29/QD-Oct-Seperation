@@ -23,20 +23,18 @@
         overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
         width: 100%;
     }
-
     .dx-tabpanel .dx-tab {
         color: black !important;
-        font-weight: bold;
+        font-weight: bold; 
         font-size: 14px;
-        padding: 10px 15px;
+        padding: 10px 15px; 
     }
 
-
+       
         .dx-tabpanel .dx-tab.dx-selection {
             background-color: lightblue;
             color: white !important;
         }
-
     .dx-tabpanel {
     }
 
@@ -49,12 +47,12 @@
         margin: 15px;
         width: 99%;
         padding: 5px;
-        border-radius: 1px;
+        border-radius: 1px; 
     }
 
     .form-container {
         width: 100%;
-        border-radius: 1px;
+        border-radius: 1px; 
     }
 
     .form-row {
@@ -76,10 +74,11 @@
         align-items: center;
         gap: 10px;
     }
-
+ 
     .dx-textbox .dx-texteditor-input,
     .dx-numberbox .dx-texteditor-input,
     .dx-selectbox .dx-texteditor-input {
+      
     }
 
     .dx-button {
@@ -105,7 +104,7 @@
         display: flex;
         gap: 20px;
         justify-content: start;
-        align-items: center;
+        align-items: center; 
         margin: 15px;
     }
 
@@ -114,14 +113,13 @@
         justify-content: center;
         padding: 8px;
     }
-
     .form-row.border-outline {
         border: 1px solid gray;
         padding: 10px;
         margin-bottom: 15px;
         border-radius: 8px;
     }
-
+    
     .select-box {
         width: 20vh;
     }
@@ -155,7 +153,8 @@
         align-items: end;
     }
 
-    .form-container {
+    .form-container{
+      
         gap: 20px;
         font-family: Arial, sans-serif;
         width: 100%;
@@ -186,11 +185,11 @@
         font-weight: bold;
     }
 
-    .containers {
-        display: flex;
+    .containers{
+        display:flex;
     }
 
-    .dx-card {
+    .dx-card{ 
         background: var(--background-color);
     }
 
@@ -249,7 +248,7 @@
                         <td>
                             @(Html.DevExtreme().DateBox()
                             .ID("SalesOrderDate")
-                            .Value(DateTime.Today)  
+                            @* .Value(DateTime.Today)   *@
                             .Label("Sales Order Date")
                             .LabelMode(EditorLabelMode.Outside)
                             .StylingMode(EditorStylingMode.Outlined)
@@ -283,7 +282,7 @@
                                     .Icon("plus")
                                     .Hint("Add Client")
                                     .OnClick("AddClients")
-                                    )
+                                   )
                                 </div>
                             </div>
                         </td>
@@ -408,7 +407,7 @@
                                         .ID("AddSalesOrder")
                                         .Icon("plus")
                                         .Hint("Add Sales Order")
-                                        )
+                                    )
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -563,7 +562,7 @@
                                     @(Html.DevExtreme().Button()
                                     .ID("AddSalesPerson")
                                     .Icon("plus")
-                                    .Hint("Add Sales Person")
+                                    .Hint("Add Sales Person")   
                                     .Height(36))
                                 </div>
                             </div>
@@ -603,7 +602,7 @@
                             .Label("Cost Center Master *")
                             .LabelMode(EditorLabelMode.Outside)
                             .Width("100%")
-                            .ContentTemplate(new TemplateName("CostCenterMasterDropDownTemplate")))
+                           .ContentTemplate(new TemplateName("CostCenterMasterDropDownTemplate")))
 
                         </td>
 
@@ -625,7 +624,7 @@
                             .Label("Sales Order Remarks")
                             .LabelMode(EditorLabelMode.Outside)
                             .Width("100%")
-                            )
+                           )
 
                             <!-- Delivery Fields -->
                             <div style="display: flex; justify-content: space-between; margin-top: 1rem;">
@@ -665,63 +664,55 @@
     @(Html.DevExtreme().DataGrid()
         .ID("itemGrid")
         .Height("600px")
-        .DataSource(new JS("window.itemGridDataSource"))
         .Selection(s => s
         .Mode(SelectionMode.Multiple)
         .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)
         )
         .Columns(columns =>
         {
-            columns.Add().Caption("#").Width(60).CellTemplate(new JS("serialTemplate"));
-
-            columns.Add().DataField("Gscode").Caption("Item Code");
-
-            columns.Add()
-            .DataField("Description")
-            .Caption("Description")
-            .Width(400)
-            .EditCellTemplate(new JS("descriptionDropDownTemplate")); // ✅ editable dropdown
-
-            columns.Add().DataField("UnitRateMethod").Caption("Unit Rate Method").Width(400).EditCellTemplate(new JS("unitRateMethodDropDownTemplate")); ;
-            columns.Add().DataField("DeliveringQuantity").Caption("Qty");
-            columns.Add().DataField("CostPrice").Caption("Cost Price");
-            columns.Add().DataField("QuotedUnitPrice").Caption("Unit Price");
+            columns.Add().Caption("#").CellTemplate(@<text>
+        @(ViewData["rowIndex"] = ((int)(ViewData["rowIndex"] ?? 0)) + 1)
+        @ViewData["rowIndex"]
+    </text>).Width(100);
+            columns.Add().DataField("ItemCode").Caption("Item Code");
+            columns.Add().DataField("Description").Caption("Description");
+            columns.Add().DataField("...").Caption("...");
+            columns.Add().DataField("UnitRateMethod").Caption("Unit Rate Method");
+            columns.Add().DataField("Qty").Caption("Qty");
+            columns.Add().DataField("CostPrice").Caption("cost Price");
+            columns.Add().DataField("UnitPrice").Caption("Unit Price");
             columns.Add().DataField("QuotedDiscount").Caption("Quoted Discount");
+            columns.Add().DataField("...").Caption("...");
             columns.Add().DataField("Amount").Caption("Amount");
             columns.Add().DataField("VAT Desc").Caption("VAT Desc");
             columns.Add().DataField("VAT").Caption("VAT");
             columns.Add().DataField("Total").Caption("Total");
         })
-        .ColumnAutoWidth(true)
-        .Width("100%")
-        .WordWrapEnabled(true)
-        .OnCellClick("function(e) { handleCellClick(e); }") // ✅ allow editing on click
-        .ColumnChooser(columnChooser => columnChooser
-        .Enabled(true)
-        .Title(new JS("formatMessage('Show/Hide Column')"))
-        .Mode(GridColumnChooserMode.Select)
-        )
-        .AllowColumnReordering(true)
-        .AllowColumnResizing(true)
-        .ColumnFixing(fixing => fixing.Enabled(true))
-        .HeaderFilter(filter => filter.Visible(false))
-        .Paging(p => p.Enabled(false))
-        .Pager(pager => pager.Visible(false))
-        .Grouping(grouping => grouping.AutoExpandAll(true))
-        .FilterRow(filterRow => filterRow.Visible(false))
-        .GroupPanel(groupPanel => groupPanel.Visible(false))
-        .ShowBorders(true)
-        .ShowRowLines(true)
-        .Editing(editing => editing
-        .Mode(GridEditMode.Cell) // ✅ required for cell editing
-        .AllowAdding(true)
-        .AllowUpdating(true)
-        .AllowDeleting(true)
-        )
-        )
-    
+    .ColumnAutoWidth(true)
+    .Width("100%")
+    .WordWrapEnabled(true)
+    .OnCellClick("function(e) {handleCellClick(e);}")
+    .ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+    .AllowColumnReordering(true)
+    .AllowColumnResizing(true)
+    .ColumnFixing(fixing => fixing.Enabled(true))
+    .HeaderFilter(filter => filter.Visible(false))
+    .Paging(p => p.Enabled(false))
+    .Pager(pager => pager.Visible(false))
+    .Grouping(grouping => grouping.AutoExpandAll(true))
+    .FilterRow(filterRow => filterRow.Visible(false))
+    .GroupPanel(groupPanel => groupPanel.Visible(false))
+    .ShowBorders(true)
+    .ShowRowLines(true)
+    )
+    @(Html.DevExtreme()
+        .Button()
+        .ID("btnSave1")
+        .Text("Save")
+        .Icon("check")
+        .OnClick("onSaveSupplierMasterClick"))
 </div>
-
+      
 @* <div class="form-container"> *@
 @*     <div class="footer-buttons"> *@
 @*         <div class="col-md-12"> *@
@@ -763,13 +754,38 @@
 @using (Html.DevExtreme().NamedTemplate("ClientDropDownTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                .ID("clientGrid")
+            .ID("clientGrid")
+            .DataSource(ds => ds
+                .Mvc()
+                    .Controller("SalesOrders")
+                    .LoadAction("GetClientNames")
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("ClientCode")
+            )
+            .Height(300)
+            .ShowBorders(true)
+            .FilterRow(f => f.Visible(true))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Selection(s => s.Mode(SelectionMode.Single))  // Single selection
+            .Columns(columns =>
+            {
+                columns.Add().DataField("ClientCode").Caption("Client Code");
+                columns.Add().DataField("ClientName").Caption("Client Name");
+            })
+            .OnSelectionChanged("onClientSelected")  // Trigger onClientSelected on row selection
+        )
+}
+
+@using (Html.DevExtreme().NamedTemplate("ProjectDropDownTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                .ID("projecttype")
                 .DataSource(ds => ds
                     .Mvc()
                         .Controller("SalesOrders")
-                        .LoadAction("GetClientNames")
+                        .LoadAction("GetProject")
                     .LoadMode(DataSourceLoadMode.Raw)
-                    .Key("ClientCode")
+                        .Key("ProjectId")
                 )
                 .Height(300)
                 .ShowBorders(true)
@@ -778,454 +794,160 @@
                 .Selection(s => s.Mode(SelectionMode.Single))  // Single selection
                 .Columns(columns =>
                 {
-                    columns.Add().DataField("ClientCode").Caption("Client Code");
-                    columns.Add().DataField("ClientName").Caption("Client Name");
-                })
-                .OnSelectionChanged("onClientSelected")  // Trigger onClientSelected on row selection
-            )
-}
-
-@using (Html.DevExtreme().NamedTemplate("ProjectDropDownTemplate"))
-{
-    @(Html.DevExtreme().DataGrid()
-                    .ID("projecttype")
-                    .DataSource(ds => ds
-                        .Mvc()
-                            .Controller("SalesOrders")
-                            .LoadAction("GetProject")
-                        .LoadMode(DataSourceLoadMode.Raw)
-                            .Key("ProjectId")
-                    )
-                    .Height(300)
-                    .ShowBorders(true)
-                    .FilterRow(f => f.Visible(true))
-                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                    .Selection(s => s.Mode(SelectionMode.Single))  // Single selection
-                    .Columns(columns =>
-                    {
                         columns.Add().DataField("ProjectId").Caption("Project Id");
                         columns.Add().DataField("ProjectDescription").Caption("Project Description");
-                    })
-                        .OnSelectionChanged("onCodeSelected")  // Trigger onClientSelected on row selection
-                )
+                })
+                    .OnSelectionChanged("onCodeSelected")  // Trigger onClientSelected on row selection
+            )
 }
 @using (Html.DevExtreme().NamedTemplate("typeofSalesOrderDropDownTemplate")) // ✅ Corrected name
 {
     @(Html.DevExtreme().DataGrid()
-                .ID("typeofsalesorderGrid")
-                .DataSource(ds => ds
-                    .Mvc()
-                    .Controller("SalesOrders")
-                    .LoadAction("GetTypeOfSalesOrder")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                    .Key("TypeOfRequestId")
-                )
-                .Height(300)
-                .ShowBorders(true)
-                .FilterRow(f => f.Visible(true))
-                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                .Selection(s => s.Mode(SelectionMode.Single))
-                .Columns(columns =>
-                {
-                    columns.Add().DataField("TypeOfRequestId").Caption("Type Of Request Id");
-                    columns.Add().DataField("TypeOfRequest").Caption("Type Of Request");
-                })
-                .OnSelectionChanged("onCodeSelected1")
+            .ID("typeofsalesorderGrid")
+            .DataSource(ds => ds
+                .Mvc()
+                .Controller("SalesOrders")
+                .LoadAction("GetTypeOfSalesOrder")
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("TypeOfRequestId")
             )
+            .Height(300)
+            .ShowBorders(true)
+            .FilterRow(f => f.Visible(true))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .Columns(columns =>
+            {
+                columns.Add().DataField("TypeOfRequestId").Caption("Type Of Request Id");
+                columns.Add().DataField("TypeOfRequest").Caption("Type Of Request");
+            })
+            .OnSelectionChanged("onCodeSelected1")
+        )
 }
 
 @using (Html.DevExtreme().NamedTemplate("SignatoriesDropDownTemplate")) // ✅ Corrected name
 {
     @(Html.DevExtreme().DataGrid()
-                .ID("SignatoryGrid")
-                .DataSource(ds => ds
-                    .Mvc()
-                    .Controller("SalesOrders")
-                    .LoadAction("GetSignatory")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("SignatoryId")
-                )
-                .Height(300)
-                .ShowBorders(true)
-                .FilterRow(f => f.Visible(true))
-                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                .Selection(s => s.Mode(SelectionMode.Single))
-                .Columns(columns =>
-                {
+            .ID("SignatoryGrid")
+            .DataSource(ds => ds
+                .Mvc()
+                .Controller("SalesOrders")
+                .LoadAction("GetSignatory")
+                .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("SignatoryId")
+            )
+            .Height(300)
+            .ShowBorders(true)
+            .FilterRow(f => f.Visible(true))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .Columns(columns =>
+            {
                     columns.Add().DataField("SignatoryId").Caption("Signatory Id");
                     columns.Add().DataField("SignatoryName").Caption("Signatory Name");
-                })
-                .OnSelectionChanged("onCodesignatory")
-            )
+            })
+            .OnSelectionChanged("onCodesignatory")
+        )
 }
 @using (Html.DevExtreme().NamedTemplate("CompanyBranchDropDownTemplate")) // ✅ Corrected name
 {
     @(Html.DevExtreme().DataGrid()
-                .ID("CompanyBranchGrid")
-                    .DataSource(ds => ds
-                    .Mvc()
-                    .Controller("SalesOrders")
-                    .LoadAction("GetCompanyBranch")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                   .Key("BranchCode")
-                                    )
-                .Height(300)
-                .ShowBorders(true)
-                .FilterRow(f => f.Visible(true))
-                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                .Selection(s => s.Mode(SelectionMode.Single))
-                .Columns(columns =>
-                {
+            .ID("CompanyBranchGrid")
+                .DataSource(ds => ds
+                .Mvc()
+                .Controller("SalesOrders")
+                .LoadAction("GetCompanyBranch")
+                .LoadMode(DataSourceLoadMode.Raw)
+               .Key("BranchCode")
+                                )
+            .Height(300)
+            .ShowBorders(true)
+            .FilterRow(f => f.Visible(true))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .Columns(columns =>
+            {
                     columns.Add().DataField("BranchCode").Caption("Branch Code");
                     columns.Add().DataField("BranchName").Caption("Branch Name");
-                })
-                .OnSelectionChanged("onCompanyBranch")
-            )
+            })
+            .OnSelectionChanged("onCompanyBranch")
+        )
 }
 @using (Html.DevExtreme().NamedTemplate("SalesPersonNameDropDownTemplate")) // ✅ Corrected name
 {
     @(Html.DevExtreme().DataGrid()
-                .ID("CompanyBranchGrid")
-                 .DataSource(ds => ds
-                 .Mvc()
-                 .Controller("SalesOrders")
-                 .LoadAction("GetSalesPersonName")
-                 .LoadMode(DataSourceLoadMode.Raw)
-                     .Key("SalesPersonCode")
-                 )
-                .Height(300)
-                .ShowBorders(true)
-                .FilterRow(f => f.Visible(true))
-                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                .Selection(s => s.Mode(SelectionMode.Single))
-                .Columns(columns =>
-                {
+            .ID("CompanyBranchGrid")
+             .DataSource(ds => ds
+             .Mvc()
+             .Controller("SalesOrders")
+             .LoadAction("GetSalesPersonName")
+             .LoadMode(DataSourceLoadMode.Raw)
+                 .Key("SalesPersonCode")
+             )
+            .Height(300)
+            .ShowBorders(true)
+            .FilterRow(f => f.Visible(true))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .Columns(columns =>
+            {
                     columns.Add().DataField("SalesPersonCode").Caption("Sales Person Code");
                     columns.Add().DataField("SalesPersonName").Caption("Sales Person Name");
-                })
-                .OnSelectionChanged("onSalesPersonName")
-            )
+            })
+            .OnSelectionChanged("onSalesPersonName")
+        )
 }
 
 @using (Html.DevExtreme().NamedTemplate("MasterGroupDropDownTemplate")) // ✅ Corrected name
 {
     @(Html.DevExtreme().DataGrid()
-                .ID("MasterGroupGrid")
-                 .DataSource(ds => ds
-                 .Mvc()
-                 .Controller("SalesOrders")
-                 .LoadAction("GetGroupMaster")
-                 .LoadMode(DataSourceLoadMode.Raw)
-                .Key("InventoryMasterGroupId")
-                 )
-                .Height(300)
-                .ShowBorders(true)
-                .FilterRow(f => f.Visible(true))
-                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                .Selection(s => s.Mode(SelectionMode.Single))
-                .Columns(columns =>
-                {
+            .ID("MasterGroupGrid")
+             .DataSource(ds => ds
+             .Mvc()
+             .Controller("SalesOrders")
+             .LoadAction("GetGroupMaster")
+             .LoadMode(DataSourceLoadMode.Raw)
+            .Key("InventoryMasterGroupId")
+             )
+            .Height(300)
+            .ShowBorders(true)
+            .FilterRow(f => f.Visible(true))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .Columns(columns =>
+            {
                     columns.Add().DataField("InventoryMasterGroupId").Caption("Inventory Master Group Id");
                     columns.Add().DataField("InventoryMasterGroup").Caption("Inventory Master Group");
-                })
-                .OnSelectionChanged("onMasterGroup")
-            )
+            })
+            .OnSelectionChanged("onMasterGroup")
+        )
 }
 
 @using (Html.DevExtreme().NamedTemplate("CostCenterMasterDropDownTemplate")) // ✅ Corrected name
 {
     @(Html.DevExtreme().DataGrid()
-                .ID("costcenterGroupGrid")
-                 .DataSource(ds => ds
-                 .Mvc()
-                 .Controller("SalesOrders")
-                     .LoadAction("GetCostCenterMaster")
-                 .LoadMode(DataSourceLoadMode.Raw)
-                    .Key("CostAllocationUnitId")
-                 )
-                .Height(300)
-                .ShowBorders(true)
-                .FilterRow(f => f.Visible(true))
-                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                .Selection(s => s.Mode(SelectionMode.Single))
-                .Columns(columns =>
-                {
+            .ID("costcenterGroupGrid")
+             .DataSource(ds => ds
+             .Mvc()
+             .Controller("SalesOrders")
+                 .LoadAction("GetCostCenterMaster")
+             .LoadMode(DataSourceLoadMode.Raw)
+                .Key("CostAllocationUnitId")
+             )
+            .Height(300)
+            .ShowBorders(true)
+            .FilterRow(f => f.Visible(true))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .Columns(columns =>
+            {
                     columns.Add().DataField("CostAllocationMasterGroup").Caption("Cost Allocation Master Group");
-                })
-                .OnSelectionChanged("costcentermasterGroup")
-            )
+            })
+            .OnSelectionChanged("costcentermasterGroup")
+        )
 }
 
 <script>
-    //description DropDownTemplate DropDown
-       let descriptionList = [];
-
-    $(function () {
-        // Load data once and reuse in dropdown
-        $.get("/api/SalesOrders/GetGoodsAndServices", function (data) {
-            descriptionList = data;
-        });
-    });
-
-      function descriptionDropDownTemplate(cellElement, cellInfo) {
-        const wrapper = $("<div>").css({
-            display: "flex",
-            alignItems: "center",
-            width: "100%",
-            minWidth: "600px",
-            boxSizing: "border-box",
-            gap: "1px" // spacing between controls
-        });
-
-        // DropDownBox
-        const dropDown = $("<div>").dxDropDownBox({
-            value: cellInfo.value,
-             valueExpr: "Gsdescrpition",     // Specify how the value is stored
-            displayExpr: "Gsdescrpition",   // Specify what is displayed
-            deferRendering: false,
-            showClearButton: true,
-            showDropDownButton: true,
-            width: 250,
-            dataSource: descriptionList,    // Important for displayExpr to work
-            dropDownOptions: { width: 900 },
-            contentTemplate: function (e) {
-                const dataGrid = $("<div>").dxDataGrid({
-                    dataSource: descriptionList,
-                    keyExpr: "Gscode",
-                    selection: { mode: "single" },
-                    columns: [
-                        { dataField: "Gscode", caption: "Code" },
-                        { dataField: "ItemPartNo", caption: "Item Part No" },
-                        { dataField: "Gsdescrpition", caption: "Description" },
-                        { dataField: "GsdescriptionAr", caption: "Arabic Description" },
-                        { dataField: "GspackingUnit", caption: "Unit Desc" },
-                        {
-                            dataField: "IsDiscontinued",
-                            caption: "Discontinued?",
-                            dataType: "boolean",
-                            width: 120,
-                            allowEditing: false,
-                            showEditorAlways: true
-                        }
-                    ],
-                     searchPanel: {
-        visible: true,
-        width: 240,
-        placeholder: "Search..."
-    },
-                    onSelectionChanged: function (selectedItems) {
-                        const data = selectedItems.selectedRowsData[0];
-                        if (data) {
-                            cellInfo.setValue(data.Gsdescrpition);
-                            e.component.option("value", data.Gsdescrpition);
-                            const grid = $("#itemGrid").dxDataGrid("instance");
-                            const rowIndex = grid.getRowIndexByKey(cellInfo.key);
-                            grid.cellValue(rowIndex, "ItemCode", data.Gscode);
-                            grid.cellValue(rowIndex, "Qty", 1);
-
-                            e.component.close();
-                        }
-                    },
-                    hoverStateEnabled: true,
-                    height: 200,
-                    width: 580,
-                    scrolling: {
-                        mode: "virtual",
-                        useNative: true,
-                        showScrollbar: "always"
-                    },
-                    paging: { enabled: false }
-                });
-
-                return $("<div>").append(dataGrid);
-            }
-        });
-
-        // Plus Button
-        const addButton = $("<div>").dxButton({
-            icon: "plus",
-            hint: "Add new item",
-            stylingMode: "text",
-           onClick: function () {
-
-                                    // Replace or fetch dynamically
-
-                                    let url = `/${tenantName}/IMS/GoodsAndService`; // Example add page
-                                    openModal(url, "");
-                                },
-                                width: 60,
-                                height: 30
-        });
-
-          const dropDownInstance = dropDown.dxDropDownBox("instance");
-
-    const editButton = $("<div>").dxButton({
-        icon: "edit",
-        hint: "Edit item",
-        stylingMode: "text",
-        onClick: function () {
-            dropDownInstance.open();
-
-            // Wait until the DropDownBox is rendered
-            setTimeout(() => {
-                const inputElement = dropDown.find("input.dx-texteditor-input").get(0); // ✅ Use dropDown, not dropDownElement
-
-                if (inputElement) {
-                    inputElement.focus();
-                    inputElement.setSelectionRange(0, inputElement.value.length); // ✅ Only select text
-                }
-            }, 50);
-        }
-    });
-
-        // Append all to wrapper
-        wrapper.append(dropDown, addButton, editButton);
-        cellElement.append(wrapper);
-    }
-
-
-
-    /////UnitCodeDRopdown
-        let unitCodesList = [];
-
-    $(function () {
-        $.get("/api/SalesOrders/GetUnitCodes", function (data) {
-            unitCodesList = data;
-        });
-    });
-
-        function unitRateMethodDropDownTemplate(cellElement, cellInfo) {
-        const wrapper = $("<div>").css({
-            display: "flex",
-            alignItems: "center",
-            width: "100%",
-            minWidth: "600px",
-            boxSizing: "border-box",
-            gap: "1px"
-        });
-
-        const dropDown = $("<div>").dxDropDownBox({
-            value: cellInfo.value,
-            valueExpr: "UnitCode",       // The value stored in the grid cell
-            displayExpr: "UnitDesc",     // The description shown in the dropdown box
-            deferRendering: false,
-            showClearButton: true,
-            showDropDownButton: true,
-            width: 250,
-        dataSource: () => unitCodesList,  // Use function for fresh data every time
-            dropDownOptions: { width: 900 },
-            contentTemplate: function(e) {
-                const dataGrid = $("<div>").dxDataGrid({
-                    dataSource: unitCodesList,
-                    keyExpr: "UnitCode",
-                    selection: { mode: "single" },
-                    columns: [
-                        { dataField: "UnitCode", caption: "Code" },
-                        { dataField: "UnitDesc", caption: "Description" },
-                        { dataField: "UnitDescAr", caption: "Arabic Desc" },
-                        { dataField: "UnitType", caption: "Type" }
-                    ],
-                    searchPanel: {
-                        visible: true,
-                        width: 240,
-                        placeholder: "Search unit codes..."
-                    },
-                    onSelectionChanged: function(selectedItems) {
-                        const data = selectedItems.selectedRowsData[0];
-                        if (data) {
-                            cellInfo.setValue(data.UnitDesc);   // Set the UnitCode as value
-                            e.component.option("value", data.UnitCode);
-
-                            // Optionally update related cells here if needed
-                            e.component.option("dataSource", unitCodesList);
-
-                            e.component.close();
-                        }
-                    },
-                    hoverStateEnabled: true,
-                    height: 200,
-                    width: 580,
-                    scrolling: {
-                        mode: "virtual",
-                        useNative: true,
-                        showScrollbar: "always"
-                    },
-                    paging: { enabled: false }
-                });
-
-                return $("<div>").append(dataGrid);
-            }
-        });
-
-        // Add Button for new Unit Code
-        const addButton = $("<div>").dxButton({
-            icon: "plus",
-            hint: "Add new unit code",
-            stylingMode: "text",
-            onClick: function () {
-          let url = `/${tenantName}/IMS/UnitOfMeasure`; // Update this route if needed
-                openModal(url, ""); // Your modal open function here
-            },
-            width: 60,
-            height: 30
-        });
-
-        // Edit Button to open dropdown and focus input
-        const editButton = $("<div>").dxButton({
-            icon: "edit",
-            hint: "Edit unit codes",
-            stylingMode: "text",
-            onClick: function () {
-                const dropDownInstance = dropDown.dxDropDownBox("instance");
-                dropDownInstance.open();
-
-                setTimeout(() => {
-                    const inputElement = dropDown.find("input.dx-texteditor-input").get(0);
-                    if (inputElement) {
-                        inputElement.focus();
-                        inputElement.setSelectionRange(0, inputElement.value.length);
-                    }
-                }, 50);
-            }
-        });
-
-        wrapper.append(dropDown, addButton, editButton);
-        cellElement.append(wrapper);
-    }
-
-
-
-
-    function handleCellClick(e) {
-        if (!e.column || !e.column.allowEditing) return;
-
-        const grid = e.component;
-        grid.editCell(e.rowIndex, e.columnIndex); // ✅ ensures editing is triggered
-    }
-
-
-    function serialTemplate(cellElement, cellInfo) {
-         const grid = $("#itemGrid").dxDataGrid("instance");
-         const rowIndex = grid.getRowIndexByKey(cellInfo.key);
-         if (rowIndex >= 0) {
-             cellElement.text(rowIndex + 1);
-         }
-     }
-      window.itemGridDataSource = new DevExpress.data.ArrayStore({
-        key: "ItemCode",
-        data: []
-    });
-
-     $(function () {
-         $("#btnAddNew").on("click", function () {
-             var button = $("#btnSave").dxButton("instance");
-        button.option("text", "Update");
-             var grid = $("#itemGrid").dxDataGrid("instance");
-             grid.addRow();
-         });
-     });
-
-         ///clientname IDBIndex data
         function onClientSelected(e) {
         const selected = e.selectedRowsData[0];
         if (selected) {
@@ -1290,57 +1012,36 @@
             const url = `/${tenantName}/IMS/Projects`;
             const title = "";
                 openModal(url, title);
-        }
+        }  
 
           ////Addnewsignatory
      function Signatorynew(){
             const url = `/${tenantName}/IMS/Signatories`;
             const title = "";
                 openModal(url, title);
-        }
+        }  
+        
+      
+      $(function () {
+          const salesOrderTextBox = $("#SalesOrderNO").dxTextBox("instance");
+          if (!salesOrderTextBox) {
+              console.warn("SalesOrderNO TextBox not initialized yet.");
+              return;
+          }
 
-
-        $(function () {
-        // Helper to get query string parameter
-        function getQueryParam(name) {
-            const url = new URL(window.location.href);
-            return url.searchParams.get(name);
-        }
-
-        const salesOrderNo = getQueryParam("SalesOrderNo");
-        const salesOrderTextBox = $("#SalesOrderNO").dxTextBox("instance");
-        if (!salesOrderTextBox) {
-            console.warn("SalesOrderNO TextBox not initialized yet.");
-            return;
-        }
-
-        if (salesOrderNo) {
-            // Editing: fetch and bind existing order (do NOT generate new number)
-            $.get(`/api/SalesOrders/GetSalesOrderByNo`, { salesOrderNo: salesOrderNo })
-                .done(function (data) {
-                    salesOrderTextBox.option("value", data.SalesOrderNo);
-                    // ...populate other fields as needed...
-                })
-                .fail(function () {
-                    DevExpress.ui.notify("Failed to load sales order details.", "error", 2000);
-                });
-        } else {
-            // Creating new: generate new order number
-            $.get("/api/SalesOrders/SalesOrderNoIncrease")
-                .done(function (response) {
-                    if (response && response.salesOrderNo) {
-                        salesOrderTextBox.option("value", response.salesOrderNo);
-                    } else {
-                        DevExpress.ui.notify("Sales order number not found", "warning", 2000);
-                    }
-                })
-                .fail(function (jqXHR, textStatus, errorThrown) {
-                    DevExpress.ui.notify("Failed to fetch Sales Order NO", "error", 2000);
-                    console.error("AJAX Error:", jqXHR.responseText, errorThrown);
-                });
-        }
-    });
-
+          $.get("/api/SalesOrders/SalesOrderNoIncrease")
+              .done(function (response) {
+                  if (response && response.salesOrderNo) {
+                      salesOrderTextBox.option("value", response.salesOrderNo);
+                  } else {
+                      DevExpress.ui.notify("Sales order number not found", "warning", 2000);
+                  }
+              })
+              .fail(function (jqXHR, textStatus, errorThrown) {
+                  DevExpress.ui.notify("Failed to fetch Sales Order NO", "error", 2000);
+                  console.error("AJAX Error:", jqXHR.responseText, errorThrown);
+              });
+      });
       //ProjectID
         function onCodeSelected(e) {
         const selected = e.selectedRowsData[0];
@@ -1354,8 +1055,8 @@
             }
         }
     }
-
-
+    
+    
     //TypeofSalesOrder
         function onCodeSelected1(e) {
         const selected = e.selectedRowsData[0];
@@ -1369,7 +1070,7 @@
             }
         }
     }
-
+    
     //Signatory
         function onCodesignatory(e) {
         const selected = e.selectedRowsData[0];
@@ -1382,7 +1083,7 @@
                 console.error("DropDownBox instance not found.");
             }
         }
-    }
+    } 
     //CompanyBranch
         function onCompanyBranch(e) {
         const selected = e.selectedRowsData[0];
@@ -1395,8 +1096,8 @@
                 console.error("DropDownBox instance not found.");
             }
         }
-    }
-
+    } 
+    
     //onSalesPersonName
         function onSalesPersonName(e) {
         const selected = e.selectedRowsData[0];
@@ -1409,8 +1110,8 @@
                 console.error("DropDownBox instance not found.");
             }
         }
-    }
-
+    } 
+    
     //MasterGroup
         function onMasterGroup(e) {
         const selected = e.selectedRowsData[0];
@@ -1423,7 +1124,7 @@
                 console.error("DropDownBox instance not found.");
             }
         }
-    }
+    }  
 
     //MasterGroup
         function costcentermasterGroup(e) {
@@ -1452,31 +1153,15 @@
             ClientPodate: $("#ClientPoDate").dxDateBox("instance").option("value"),
             QuoteNo: $("#QuotationNo").dxTextBox("instance").option("value"),
             QuoteDate: $("#QuotationDate").dxDateBox("instance").option("value"),
-            OrderExpiryDate: $("#OrderExpiryDate").dxDateBox("instance").option("value"),
-            ExpectedDeliveryDate: $("#ExpectedDeliveryDate").dxDateBox("instance").option("value"),
             ClientRefNo: $("#ClientRefName").dxTextBox("instance").option("value"),
-            ClientContactEmail: $("#ClientEmail").dxTextBox("instance").option("value"),
-            // DeliveryTerms: $("#DeliveryTerms").dxTextBox("instance").option("value"),
-            SalesOrderRemarks: $("#SalesOrderRemarks").dxTextArea("instance").option("value"),
-            ClientContactNo: $("#ClientContact").dxTextBox("instance").option("value"),
-            TypeOfRequest: $("#TypeOFSalesOrder").dxDropDownBox("instance").option("value"),
             ClientCode: $("#ClientNames").dxDropDownBox("instance").option("value"),
-            ClientRefNo: $("#ReferenceNo").dxTextBox("instance").option("value"),
             Project: $("#Project").dxDropDownBox("instance").option("value"),
-            QuoteSignatory: $("#preparedBy").dxDropDownBox("instance").option("value"),
             SalesPersonCode: $("#SalesPerson").dxDropDownBox("instance").option("value"),
             AdditionsText: $("#AdditionsText").dxTextBox("instance").option("value"),
             DiscountsText: $("#DeductionsText").dxTextBox("instance").option("value"),
             CostAllocationMasterGroup: $("#CostCenter").dxDropDownBox("instance").option("value"),
-            CompanyBranch: $("#CompanyBranch").dxDropDownBox("instance").option("value"),
-            InventoryMasterGroupId: $("#InventoryGroup").dxDropDownBox("instance").option("value"),
-            // DeliveryPeriod: $("#DeliveryPeriod").dxTextBox("instance").option("value"),
-
+            // Add other fields as needed
         };
-        // Collect grid rows
-    var gridData = $("#itemGrid").dxDataGrid("instance").getDataSource().items();
-
-      model.SalesOrderChildren = gridData;
 
         $.ajax({
             url: "/api/SalesOrders/SaveSalesOrder",
@@ -1492,50 +1177,5 @@
         });
      });
 
-     ////
-    $(function () {
-        // Helper to get query string parameter
-        function getQueryParam(name) {
-            const url = new URL(window.location.href);
-            return url.searchParams.get(name);
-        }
-
-        const salesOrderNo = getQueryParam("SalesOrderNo");
-        if (salesOrderNo) {
-            // Fetch sales order details from your API
-            $.get(`/api/SalesOrders/GetSalesOrderByNo`, { salesOrderNo: salesOrderNo })
-                .done(function (data) {
-                  $("#btnSave").dxButton("instance").option("text", "Update");
-                    // Populate fields using the IDs you listed
-                    $("#SalesOrderNO").dxTextBox("instance").option("value", data.SalesOrderNo);
-                    $("#SalesOrderDate").dxDateBox("instance").option("value", data.SalesOrderDate);
-                    $("#ClientPoNo").dxTextBox("instance").option("value", data.ClientPono);
-                    $("#ClientPoDate").dxDateBox("instance").option("value", data.ClientPodate);
-                    $("#QuotationNo").dxTextBox("instance").option("value", data.QuoteNo);
-                    $("#QuotationDate").dxDateBox("instance").option("value", data.QuoteDate);
-                    $("#OrderExpiryDate").dxDateBox("instance").option("value", data.OrderExpiryDate);
-                    $("#ExpectedDeliveryDate").dxDateBox("instance").option("value", data.ExpectedDeliveryDate);
-                    $("#ClientRefName").dxTextBox("instance").option("value", data.ClientRefNo);
-                    $("#ClientEmail").dxTextBox("instance").option("value", data.ClientContactEmail);
-                    $("#SalesOrderRemarks").dxTextArea("instance").option("value", data.SalesOrderRemarks);
-                    $("#ClientContact").dxTextBox("instance").option("value", data.ClientContactNo);
-                    $("#TypeOFSalesOrder").dxDropDownBox("instance").option("value", data.TypeOfRequest);
-                    $("#ClientNames").dxDropDownBox("instance").option("value", data.ClientCode);
-                    $("#ReferenceNo").dxTextBox("instance").option("value", data.ClientRefNo);
-                    $("#Project").dxDropDownBox("instance").option("value", data.Project);
-                    $("#preparedBy").dxDropDownBox("instance").option("value", data.QuoteSignatory);
-                    $("#SalesPerson").dxDropDownBox("instance").option("value", data.SalesPersonCode);
-                    $("#AdditionsText").dxTextBox("instance").option("value", data.AdditionsText);
-                    $("#DeductionsText").dxTextBox("instance").option("value", data.DiscountsText);
-                    $("#CostCenter").dxDropDownBox("instance").option("value", data.CostAllocationMasterGroup);
-                    $("#CompanyBranch").dxDropDownBox("instance").option("value", data.CompanyBranch);
-                    $("#InventoryGroup").dxDropDownBox("instance").option("value", data.InventoryMasterGroupId);
-                    // Add more fields as needed
-                })
-                .fail(function () {
-                    DevExpress.ui.notify("Failed to load sales order details.", "error", 2000);
-                });
-        }
-    });
 
 </script>

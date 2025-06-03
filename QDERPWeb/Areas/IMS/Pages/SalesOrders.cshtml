@@ -389,6 +389,7 @@
 				var tillmonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 				$("#frmdateBox").dxDateBox("instance").option("value", firstDay);
 				$("#todateBox").dxDateBox("instance").option("value", tillmonth);
+				ddBtnShowRecords_click('range');
 		});
 	function ddBtnShowRecords_click(duration) {
 		 var frmDateBox = $("#frmdateBox").dxDateBox("instance");
@@ -476,43 +477,37 @@
 					{
 						text: "Edit Sales Order",
 						icon: "edit",
-							onItemClick: function () {
-		let salesOrderNo = e.row.data.SalesOrderNo; // Use the correct field from your data
-		let tenantName = window.tenantName || "defaultTenant";
-		let url = `/${tenantName}/IMS/AddNewSalesOrder?SalesOrderNo=${encodeURIComponent(salesOrderNo)}`;
-		window.location.href = url; // <-- Redirects to the page
-	}
-
-
+						onItemClick: function () {
+							let Mprno = e.row.data.Mprno;
+							let tenantName = window.tenantName || "defaultTenant"; // replace with dynamic tenant logic if needed
+							let url = `/${tenantName}/IMS/AddNewSalesOrder?Mprno`;
+							let title = "";
+							openModal(url, title);
+						}
 					},
 
 						{
 		text: "Delete Sales Order",
 		icon: "trash",
-					onItemClick: function () {
-		const salesOrderNo = e.row.data.SalesOrderNo;
-		DevExpress.ui.dialog.confirm(
-			"You are about to delete the Sales Order.\nYou cannot revert the changes.\nAre you sure?",
-			"Confirm Delete"
-		).done(function (dialogResult) {
-			if (dialogResult) {
-				$.ajax({
-					url: `/api/SalesOrders/DeleteSalesOrder?salesOrderNo=${encodeURIComponent(salesOrderNo)}`,
-					type: "DELETE",
-					success: function (response) {
-						DevExpress.ui.notify(response.message, "success", 2000);
-						// Optionally refresh the grid
-						ddBtnShowRecords_click('range');
-					},
-					error: function (xhr) {
-						DevExpress.ui.notify("Failed to delete sales order.", "error", 2000);
-					}
-				});
-			}
-		});
-	}
+					template: function () {
+			return $("<div>")
+				.addClass("dx-item-content custom-delete-item")
+				.html('<i class="dx-icon dx-icon-trash"></i> Delete Sales Order');
+		},
+
+		//cssClass: "delete-item", // <-- Add this line
+
+		onItemClick: function () {
+			DevExpress.ui.dialog.confirm(
+				"You are about to delete the Request / Enquiry.\nYou cannot revert the changes.\nAre you sure?",
+				"Confirm Delete"
+			).done(function (dialogResult) {
+				if (dialogResult) {
+					onDeleteRequest(e.row.data.RequestRefNo);
+				}
+			});
+		}
 	},
-	
 					{
 						text: "Unlock the Order",
 						icon: "unlock",

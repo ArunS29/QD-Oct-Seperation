@@ -1,4 +1,4 @@
-using DevExtreme.AspNet.Data;
+﻿using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Humanizer;
 using DevExtreme.AspNet.Data.ResponseModel;
@@ -425,8 +425,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
             }
         }
+
         [HttpPost]
-        public async Task<IActionResult> SaveSalesOrder([FromBody] SalesorderViewModel model)
+        public async Task<IActionResult> SaveSalesOrder([FromBody] Tbl60201salesOrderMaster model)
         {
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 return Unauthorized(new { message = "Invalid tenant." });
@@ -434,296 +435,55 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             if (model == null)
                 return BadRequest(new { message = "Invalid data." });
 
-            bool isUpdate = false;
-
-            var salesOrderNo = model.SalesOrderNo?.Trim();
-
-            // Check if Sales Order already exists
-            var existingEntity = dbContext.Tbl60201salesOrderMasters
-                .FirstOrDefault(x => x.SalesOrderNo == salesOrderNo);
-
-            if (existingEntity != null)
+            // Map ViewModel to Entity
+            var entity = new Tbl60201salesOrderMaster
             {
-                // Update
-                isUpdate = true;
-                existingEntity.SalesOrderDate = model.SalesOrderDate;
-                existingEntity.ClientPono = model.ClientPono;
-                existingEntity.ClientPodate = model.ClientPodate;
-                existingEntity.QuoteNo = model.QuoteNo;
-                existingEntity.QuoteDate = model.QuoteDate;
-                existingEntity.ClientRefNo = model.ClientRefNo;
-                existingEntity.ClientCode = model.ClientCode;
-                existingEntity.Project = model.Project;
-                existingEntity.SalesPersonCode = model.SalesPersonCode;
-                existingEntity.ClientContactEmail = model.ClientContactEmail;
-                existingEntity.ClientContactNo = model.ClientContactNo;
-                existingEntity.TypeOfRequest = model.TypeOfRequest;
-                existingEntity.QuoteSignatory = model.QuoteSignatory;
-                existingEntity.CompanyBranch = model.CompanyBranch;
-                existingEntity.InventoryMasterGroupId = model.InventoryMasterGroupId;
-                existingEntity.AdditionsText = model.AdditionsText;
-                existingEntity.OrderExpiryDate = model.OrderExpiryDate;
-                existingEntity.SalesOrderRemarks = model.SalesOrderRemarks;
-                existingEntity.ExpectedDeliveryDate = model.ExpectedDeliveryDate;
-                existingEntity.DeliveryPeriod = model.DeliveryPeriod;
-                existingEntity.DeliveryTerms = model.DeliveryTerms;
-                existingEntity.DiscountsText = model.DiscountsText;
-                existingEntity.CostAllocationMasterGroup = model.CostAllocationMasterGroup;
-                existingEntity.AddedBy = User.Identity?.Name;
-                existingEntity.AddedOn = DateTime.Now;
+                SalesOrderNo = model.SalesOrderNo,
+                SalesOrderDate = model.SalesOrderDate,
+                ClientPono = model.ClientPono,
+                ClientPodate = model.ClientPodate,
+                QuoteNo = model.QuoteNo,
+                QuoteDate = model.QuoteDate,
+                ClientRefNo = model.ClientRefNo,
+                ClientCode = model.ClientCode,
+                Project = model.Project,
+                SalesPersonCode = model.SalesPersonCode,
+                AdditionsText = model.AdditionsText,
+                DiscountsText = model.DiscountsText,
+                CostAllocationMasterGroup = model.CostAllocationMasterGroup,
+                AddedBy = model.AddedBy ?? User.Identity?.Name,
+                AddedOn = DateTime.Now
+                // Map other fields as needed
+            };
 
-                dbContext.Tbl60201salesOrderMasters.Update(existingEntity);
-            }
-            else
-            {
-                // Insert new
-                var entity = new Tbl60201salesOrderMaster
-                {
-                    SalesOrderNo = salesOrderNo,
-                    SalesOrderDate = model.SalesOrderDate,
-                    ClientPono = model.ClientPono,
-                    ClientPodate = model.ClientPodate,
-                    QuoteNo = model.QuoteNo,
-                    QuoteDate = model.QuoteDate,
-                    ClientRefNo = model.ClientRefNo,
-                    ClientCode = model.ClientCode,
-                    Project = model.Project,
-                    SalesPersonCode = model.SalesPersonCode,
-                    ClientContactEmail = model.ClientContactEmail,
-                    ClientContactNo = model.ClientContactNo,
-                    TypeOfRequest = model.TypeOfRequest,
-                    QuoteSignatory = model.QuoteSignatory,
-                    CompanyBranch = model.CompanyBranch,
-                    InventoryMasterGroupId = model.InventoryMasterGroupId,
-                    AdditionsText = model.AdditionsText,
-                    OrderExpiryDate = model.OrderExpiryDate,
-                    SalesOrderRemarks = model.SalesOrderRemarks,
-                    ExpectedDeliveryDate = model.ExpectedDeliveryDate,
-                    DeliveryPeriod = model.DeliveryPeriod,
-                    DeliveryTerms = model.DeliveryTerms,
-                    DiscountsText = model.DiscountsText,
-                    CostAllocationMasterGroup = model.CostAllocationMasterGroup,
-                    AddedBy = model.AddedBy ?? User.Identity?.Name,
-                    AddedOn = DateTime.Now
-                };
-
-                await dbContext.Tbl60201salesOrderMasters.AddAsync(entity);
-            }
-
-            // Save header
+            dbContext.Tbl60201salesOrderMasters.Add(entity);
             await dbContext.SaveChangesAsync();
 
-            // Call stored procedure for Cost Center
-            if (!isUpdate)
-            { 
-                var salesOrderNoParam = new SqlParameter("@SalesOrderNo", salesOrderNo ?? (object)DBNull.Value);
-            var clientNameParam = new SqlParameter("@ClientName", model.ClientCode ?? (object)DBNull.Value);
+            // Call the stored procedure
+            var salesOrderNoParam = new SqlParameter("@SalesOrderNo", model.SalesOrderNo ?? (object)DBNull.Value);
+            var clientNameParam = new SqlParameter("@ClientName", model.ClientCode ?? (object)DBNull.Value); // Use actual client name if available
             var addedByParam = new SqlParameter("@AddedBy", model.AddedBy ?? User.Identity?.Name ?? (object)DBNull.Value);
             var isCreateCostCenterParam = new SqlParameter("@IsCreateCostCenterFromSalesOrder", true);
             var defaultCostCenterParam = new SqlParameter("@DefaultCostCenterMasterFromSalesOrder", model.CostAllocationMasterGroup ?? (object)DBNull.Value);
             var salesPersonNameParam = new SqlParameter("@SalesPersonName", model.SalesPersonCode ?? (object)DBNull.Value);
 
             await dbContext.Database.ExecuteSqlRawAsync(
-                "EXEC [dbo].[sp600_04InsertToCostCenterFromSalesOrder] " +
-                "@SalesOrderNo, @ClientName, @AddedBy, @IsCreateCostCenterFromSalesOrder, " +
-                "@DefaultCostCenterMasterFromSalesOrder, @SalesPersonName",
+                "EXEC [dbo].[sp600_04InsertToCostCenterFromSalesOrder] @SalesOrderNo, @ClientName, @AddedBy, @IsCreateCostCenterFromSalesOrder, @DefaultCostCenterMasterFromSalesOrder, @SalesPersonName",
                 salesOrderNoParam, clientNameParam, addedByParam, isCreateCostCenterParam, defaultCostCenterParam, salesPersonNameParam
             );
-            }
-            // Handle child records
-            var existingChildren = await dbContext.Tbl60202salesOrderChildren
-                .Where(x => x.SalesOrderNo == salesOrderNo)
-                .ToListAsync();
 
-            var newChildren = new List<Tbl60202salesOrderChild>();
-
-            foreach (var child in model.SalesOrderChildren)
-            {
-                if (child.SalesOrderChildId == 0)
-                {
-                    child.SalesOrderNo = salesOrderNo;
-                    newChildren.Add(child);
-                }
-                else
-                {
-                    var existingChild = existingChildren
-                        .FirstOrDefault(x => x.SalesOrderChildId == child.SalesOrderChildId);
-
-                    if (existingChild != null)
-                    {
-                        dbContext.Entry(existingChild).CurrentValues.SetValues(child);
-                    }
-                }
-            }
-
-            if (newChildren.Any())
-            {
-                await dbContext.Tbl60202salesOrderChildren.AddRangeAsync(newChildren);
-            }
-
-            await dbContext.SaveChangesAsync();
-
-            // Call child-level SP
-            foreach (var child in model.SalesOrderChildren)
-            {
-                var parameters = new[]
-                {
-            new SqlParameter("@JobOrderNo", salesOrderNo ?? (object)DBNull.Value),
-            new SqlParameter("@AddedBy", model.AddedBy ?? User.Identity?.Name ?? (object)DBNull.Value),
-            new SqlParameter("@SalesOrderChildID", child.SalesOrderChildId),
-            new SqlParameter("@ValveType", child.Gscode ?? (object)DBNull.Value)
-        };
-
-                await dbContext.Database.ExecuteSqlRawAsync(
-                    "EXEC [dbo].[sp608_01InsertToJobOrderFromSalesOrderChild] " +
-                    "@JobOrderNo, @AddedBy, @SalesOrderChildID, @ValveType", parameters);
-            }
-
-            return Ok(new
-            {
-                success = true,
-                message = isUpdate ? "Sales order updated successfully." : "Sales order created successfully."
-            });
+            return Ok(new { success = true, message = "Sales order saved successfully." });
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetSalesOrderByNo(string salesOrderNo)
-        {
-            if (string.IsNullOrWhiteSpace(salesOrderNo))
-                return BadRequest();
-
-            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                return Unauthorized();
-
-            var order = await dbContext.Tbl60201salesOrderMasters
-                .FirstOrDefaultAsync(x => x.SalesOrderNo == salesOrderNo);
-
-            if (order == null)
-                return NotFound();
-
-            return Ok(order);
-        }
-
-
-        [HttpDelete]
-        public async Task<IActionResult> DeleteSalesOrder(string salesOrderNo)
-        {
-            if (string.IsNullOrWhiteSpace(salesOrderNo))
-                return BadRequest(new { message = "SalesOrderNo is required." });
-
-            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                return Unauthorized(new { message = "Invalid tenant." });
-
-            var entity = await dbContext.Tbl60201salesOrderMasters
-                .FirstOrDefaultAsync(x => x.SalesOrderNo == salesOrderNo);
-
-            if (entity == null)
-                return NotFound(new { message = "Sales order not found." });
-
-            dbContext.Tbl60201salesOrderMasters.Remove(entity);
-            await dbContext.SaveChangesAsync();
-
-            return Ok(new { success = true, message = "Sales order deleted successfully." });
-        }
-
-        //[HttpGet]
-        //public IActionResult GetGoodsAndServices()
-        //{
-        //    try
-        //    {
-        //        if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-        //        {
-        //            var items = dbContext.Tbl20164GoodsAndServicesMasters
-        //                .Where(x => x.IsDiscontinued == false) // Optional filter
-        //                .Select(x => new
-        //                {
-        //                    x.Gscode,
-        //                    x.Gsdescrpition,
-        //                    x.GsdescriptionAr,
-        //                    x.ItemPartNo,
-        //                    x.GspackingUnit
-        //                })
-        //                .ToList();
-
-        //            return Json(items);
-        //        }
-        //        else
-        //        {
-        //            return BadRequest("Unable to resolve tenant context.");
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Optional: Log the exception (example: using ILogger)
-        //        Console.WriteLine("Error loading Goods and Services: " + ex.Message);
-        //        return StatusCode(500, "An error occurred while retrieving the data.");
-        //    }
-        //}
-        [HttpGet]
-        public async Task<IActionResult> GetGoodsAndServices()
-        {
-            try
-            {
-                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                {
-                    var data = await dbContext.Tbl20164GoodsAndServicesMasters
-                        .Select(i => new
-                        {
-                            i.Gscode,
-                            i.Gsdescrpition,
-                            i.GsdescriptionAr,
-                            i.ItemPartNo,
-                            i.GspackingUnit,
-                            i.IsDiscontinued
-
-                        })
-                        .ToListAsync();
-
-                    return Json(data); // return raw data, paging/sorting done on client-side
-                }
-
-                return Unauthorized(new { message = "Invalid tenant.", success = false });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error in GetProject: {ex.Message}");
-                return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
-            }
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetUnitCodes()
-        {
-            try
-            {
-                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                {
-                    var data = await dbContext.Tbl40111PropertyUnitCodes
-                        .Select(i => new
-                        {
-                            i.UnitDescAr,
-                            i.UnitDesc,
-                            i.UnitType,
-                            i.UnitCode,
-
-                        })
-                        .ToListAsync();
-
-                    return Json(data); // return raw data, paging/sorting done on client-side
-                }
-
-                return Unauthorized(new { message = "Invalid tenant.", success = false });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error in GetProject: {ex.Message}");
-                return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
-            }
-        }
 
 
 
     }
+
+
+
+
+
 
 
 }

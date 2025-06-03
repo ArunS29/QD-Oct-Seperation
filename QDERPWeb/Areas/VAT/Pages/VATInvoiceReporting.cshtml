@@ -5,7 +5,7 @@
 }
 <style>
 
-    .limited-footer .btn-containerIvoiceEdit:not(:has(#btnPrint,#ddButtonLayout,#ddReport0,#btnShowRowTotals,#btnShowFields)) {
+    .limited-footer .btn-containerIvoiceEdit:not(:has(#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#ddButtonLayout,#btntoggleGroupPanel,#btnColumnChooser,#ddReport0,#btnShowRowTotals,#btnShowFields)) {
         display: none !important;
     }
     .dx-fieldset.horizontal-container {
@@ -88,7 +88,7 @@
                 .LabelMode(EditorLabelMode.Outside)
                 .InputAttr("aria-label", "Date")
                 .Type(DateBoxType.Date)
-                        .Value(new DateTime(DateTime.Now.Year, 1, 1))
+                .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
                 .DisplayFormat("dd-MMM-yyyy")
                 .TabIndex(2)
                 )
@@ -109,28 +109,28 @@
         </div>
         <div>
         <!-- Dropdown Button to Show Records -->
-            @(Html.DevExtreme().DropDownButton()
-                        .ID("ddBtnShowRecords")
-                        .Text(new JS("formatMessage('Show Records')"))
-                        .Icon("smalliconslayout")
-                        .Width(180)
-                        .TabIndex(4)
-                        .DropDownOptions(options => options.Width(230))
-                        .Items(items =>
-                        {
-                            items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
-                            items.Add().Text(new JS("formatMessage('Today')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
-                            items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-                            items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
-                            items.Add().Text(new JS("formatMessage('This Month Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-                            items.Add().Text(new JS("formatMessage('By Quarter')")).Icon("event").OnClick("quarterSubMenu");
-                            items.Add().Text(new JS("formatMessage('This Month (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-                            items.Add().Text(new JS("formatMessage('This Year Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-                            items.Add().Text(new JS("formatMessage('This Year (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-                            items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-                            items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
-                        })
-                        )
+        @(Html.DevExtreme().DropDownButton()
+            .ID("ddBtnShowRecords")
+            .Text("Show Records")
+            .Icon("smalliconslayout")
+            .Width(180)
+            .ElementAttr("class", "button-alignment-up")
+            .TabIndex(4)
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add().Text("Show Records").Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
+                items.Add().Text("Today").Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
+                items.Add().Text("Yesterday").Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+                items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
+                items.Add().Text("This Month Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+                items.Add().Text("This Month (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+                items.Add().Text("This Year Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+                items.Add().Text("This Year (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+                items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+                items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+            })
+                )
         </div>
         <div class="dx-field dx-field-4" id="check">
             <!-- Use Effective Date Checkbox -->
@@ -217,25 +217,6 @@
                 startDate = new Date(today.getFullYear() - 1, 0, 1);
                 endDate = new Date(today.getFullYear() - 1, 11, 31);
                 break;
-            case 'q1': // Jan - Mar
-                startDate = new Date(today.getFullYear(), 0, 1);
-                endDate = new Date(today.getFullYear(), 2, 31);
-                break;
-
-            case 'q2': // Apr - Jun
-                startDate = new Date(today.getFullYear(), 3, 1);
-                endDate = new Date(today.getFullYear(), 5, 30);
-                break;
-
-            case 'q3': // Jul - Sep
-                startDate = new Date(today.getFullYear(), 6, 1);
-                endDate = new Date(today.getFullYear(), 8, 30);
-                break;
-
-            case 'q4': // Oct - Dec
-                startDate = new Date(today.getFullYear(), 9, 1);
-                endDate = new Date(today.getFullYear(), 11, 31);
-                break;
             case 'range':
             default:
                 // Get manual dates from DateBox controls
@@ -252,7 +233,6 @@
         $("#frmdateBox").dxDateBox("instance").option("value", startDate);
         $("#todateBox").dxDateBox("instance").option("value", endDate);
 
-        hidequarterSubmenus();
         fetchRecords(startDate, endDate);
     }
 
@@ -276,7 +256,6 @@
     }
 
     function initializePivotGrid(data) {
-        let serialCounter = 1;
         var pivotGrid = $("#pivotGridContainer").dxPivotGrid({
             dataSource: {
                 store: {
@@ -323,16 +302,7 @@
             showColumnGrandTotals: true,
             showDataHeaders: true,
             showRowTotals: true,
-            showRowGrandTotals: true,
-              onCellPrepared(e) {
-      if (e.area === "row" ) {
-        // Reset counter when starting new row set
-        if (e.rowIndex === 0) serialCounter = 1;
-
-        // Apply prefix only to first level row items (no nested rows)
-        e.cellElement.text(`${serialCounter++}. ${e.cell.text}`);
-      }
-    }
+            showRowGrandTotals: true
         }).dxPivotGrid("instance");
 
         // Expand rows initially
@@ -376,46 +346,9 @@
     }
     	$(document).ready(function () {
 		$(".limited-footer .btn-container").each(function () {
-            if (!$(this).find("#btnPrint,#ddButtonLayout,#ddReport0,#btnShowRowTotals,#btnShowFields").length) {
+            if (!$(this).find("#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#ddButtonLayout,#btntoggleGroupPanel,#btnColumnChooser,#ddReport0,#btnShowRowTotals,#btnShowFields").length) {
 				$(this).remove();
 			}
 		});
 	});
-    function quarterSubMenu(e) {
-        e.event.stopPropagation();
-        hideAllSubmenus(); // Hide all submenus before showing the selected one
-        var $submenu = $('#quarterSubMenu');
-        var $target = $(e.event.target).closest('.dx-item-content');
-        var offset = $target.offset();
-        var submenuWidth = $submenu.outerWidth();
-
-        // Calculate left-side positioning
-        var leftPos = offset.left - submenuWidth + 533;
-
-        // Prevent submenu from going off-screen on the left
-        if (leftPos < 0) {
-            leftPos = offset.left + $target.outerWidth() + 5; // Move it to the right if not enough space
-        }
-
-        // Position submenu
-        $submenu.css({
-            'width': 250,
-            'position': 'absolute',
-            'top': offset.top,
-            'left': leftPos,
-            'display': 'block',
-            'background': '#fff',
-            'border': '1px solid #ccc',
-            'box-shadow': '2px 2px 5px rgba(0,0,0,0.2)',
-            'padding': '5px'
-        });
-
-        // Click outside to close
-        $(document).on("click", function (event) {
-            if (!$(event.target).closest('#submenuContainer5, .dx-item-content').length) {
-                $submenu.hide();
-                $(document).off("click");
-            }
-        });
-    }
 </script>
