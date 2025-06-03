@@ -191,7 +191,7 @@
 		<div>
 				<div>
 				<label id="TypenewStockClassification" class="form-label"></label>
-					<div style="display:flex;">
+				<div style="display:flex; align-items:end;">
 					@(Html.DevExtreme().TextBox()
 												.ID("stockClassificationInput")
 												.Width("70%")
@@ -217,7 +217,7 @@
 		<div>
 		@(Html.DevExtreme().DataGrid()
 				.ID("storeGrid")
-				.Height(540)
+				.Height(400)
 				.Width("100%")
 				.ShowBorders(true)
 				.ColumnAutoWidth(true)
@@ -260,23 +260,22 @@
 		<br />
 		<!-- Buttons -->
 		<div style="display:flex; gap:1%;">
-			<div class="action-buttons">
-				@(Html.DevExtreme().Button()
-								.Text("Update")
-								.Icon("save")
-								.Width(130)
-								.Type(ButtonType.Default))
-			</div>
+			
 			<div class="action-buttons">
 				@(Html.DevExtreme().Button()
 								.Text("Back")
 								.Icon("arrowleft")
+								.OnClick("Goback")
 								.Width(120)
 								.Type(ButtonType.Default))
 			</div>
 		</div>
 	</div>
 <script>
+		function Goback() {
+		window.parent.closeModal();
+	}
+
 	 $(function () {
 	$("#ItemClassification").dxTextBox({
 	text: formatMessage("Item Classification"),
@@ -310,7 +309,7 @@
 							// Clear input box
 							$("#stockClassificationInput").dxTextBox("instance").option("value", "");
 							// Optionally reload any grid or list showing the data
-							// $("#yourGridId").dxDataGrid("instance").refresh();
+							 $("#storeGrid").dxDataGrid("instance").refresh();
 						},
 						error: function (err) {
 							DevExpress.ui.notify("Failed to add Stock Classification.", "error", 3000);

@@ -294,6 +294,7 @@
 
 <script>
 		 $(function () {
+		ddBtnShowRecords_click('range');
 	$("#RequestforQuotationList").dxTextBox({
 	text: formatMessage("RFQ with Item Details"),
 		readOnly: true,
@@ -302,6 +303,7 @@
 		}
 		});
 	});
+
 		function ddBtnShowRecords_click(duration) {
 		 var frmDateBox = $("#frmdateBox").dxDateBox("instance");
 			var toDateBox = $("#todateBox").dxDateBox("instance");

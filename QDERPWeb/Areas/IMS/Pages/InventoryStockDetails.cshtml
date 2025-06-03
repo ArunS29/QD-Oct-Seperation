@@ -9,7 +9,7 @@
 @{
     var enteredBy = HttpContext.Session.GetString("UserName");
     var enteredOn = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
-    var modifiedBy = "adminUser"; // Replace with real logic
+    var modifiedBy = HttpContext.Session.GetString("UserName");
     var modifiedOn = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
 }
 <style>
@@ -278,7 +278,7 @@
                                 )
                         </div>
                     </td>
-                    <th>
+                    <th style="display:flex; align-items:end;">
                         @(Html.DevExtreme().Button()
                             .ID("convertToArabic2")
                             .Width(50)
@@ -286,14 +286,12 @@
                             .ElementAttr("style", "padding:10px; color:black;margin-right:10px;")
                             .OnClick("convertToArabic1")
                             )
-                    </th>
-                    <td colspan="2">
+                  
                         @(Html.DevExtreme().TextBox()
                             .ID("ItemNameArabic")
                             .Label(new JS("formatMessage('Item Name / Description (In Arabic)')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .Width("100%"))
-                    </td>
                 </tr>
             </table>
 
@@ -698,9 +696,8 @@
                         </tr>
                         <tr class="flex-row">
                             <td>
-                            @(Html.DevExtreme().SelectBox()
-                                .ID("ItemColor")
-                                .SearchEnabled(true)
+                            @(Html.DevExtreme().ColorBox()
+                                .ID("ItemColor")                                
                                 .AcceptCustomValue(true) 
                                 .Label(new JS("formatMessage('Item Color : ')"))
                                 .LabelMode(EditorLabelMode.Outside))
@@ -1035,7 +1032,7 @@
                 <!-- Filter/Info Section -->
                 <div class="dx-fieldset horizontal-container ">
 
-                    <table style="width:100%; margin-bottom: 15px;">
+                    <table style="margin-bottom: 15px;">
                         <tr>
                             <td>
                             <td>
@@ -1044,7 +1041,7 @@
                                     .ID("MinQty")
                                     .Label(new JS("formatMessage('Minimum Quantity')"))
                                     .LabelMode(EditorLabelMode.Outside)
-                                    .Width(200)
+                                    .Width(350)
                                     .ShowSpinButtons(true))
                             </td>
                             <td>
@@ -1053,7 +1050,7 @@
                                     .ID("MaxQty")
                                     .Label(new JS("formatMessage('Maximum Quantity')"))
                                     .LabelMode(EditorLabelMode.Outside)
-                                    .Width(200)
+                                    .Width(350)
                                     .ShowSpinButtons(true))
                             </td>
                             <td>
@@ -1062,7 +1059,7 @@
                                     .ID("ReorderLevel")
                                     .Label(new JS("formatMessage('Reorder Level')"))
                                     .LabelMode(EditorLabelMode.Outside)
-                                    .Width(200)
+                                    .Width(350)
                                     .ShowSpinButtons(true))
                             </td>
                             <td>
@@ -1071,7 +1068,7 @@
                                     .ID("ReorderQty")
                                     .Label(new JS("formatMessage('Reorder Quantity/EOQ')"))
                                     .LabelMode(EditorLabelMode.Outside)
-                                    .Width(200)
+                                    .Width(350)
                                     .ShowSpinButtons(true))
                             </td>
                             <td>
@@ -1080,11 +1077,10 @@
                                     .ID("ReorderLeadTime")
                                     .Label(new JS("formatMessage('Reorder Lead Time')"))
                                     .LabelMode(EditorLabelMode.Outside)
-                                    .Width(200)
+                                    .Width(350)
                                     .ShowSpinButtons(true))
                             </td>
 
-                            </td>
                         </tr>
 
                     </table>
@@ -1107,7 +1103,7 @@
                         @(Html.DevExtreme().DropDownButton()
                             .Text(new JS("formatMessage('View Stock Movement Report')"))
                             .Icon("cart") // You can change to your preferred icon
-                            .Width(290)
+                            .Width(300)
                             .DisplayExpr("text")
                             )
 
@@ -1240,7 +1236,7 @@
                 <li onclick="handleAction('copy')">Copy</li>
                 <li onclick="handleAction('load')">Load</li>
                 <li onclick="handleAction('paste')">Paste</li>
-                <li onclick="handleAction('edit')">Edit</li>
+                <li onclick="handleAction('delete')">Delete</li>
             </ul>
 
             <script>
@@ -1278,9 +1274,9 @@
                     case 'paste':
                       pasteImage();
                       break;
-                    case 'edit':
-                      editImage();
-                      break;
+                    case 'delete':
+                deleteImage(); 
+                break;
                   }
                   menu.style.display = "none";
                 }
@@ -1349,8 +1345,14 @@
                 }
 
 
-                function editImage() {
-                  alert("Edit image – implement your logic (e.g., open modal or use canvas)");
+                function deleteImage() {
+                  const img = imgBox.querySelector("img");
+                  if (img) {
+                    img.remove();
+                    alert("Image deleted.");
+                  } else {
+                    alert("No image to delete.");
+                  }
                 }
             </script>
 
@@ -1365,25 +1367,21 @@
                 @{
                     ViewBag.Title = "Invoice Grid";
                 }
-                <style>
-
-                    </style>
                 @(Html.DevExtreme().DropDownButton()
-                    .ID("printDropdown")
+                    .ID("printButton")
                     .Text(new JS("formatMessage('Print')"))
                     .Icon("print")
                     .ElementAttr("style", "padding:10px")
                     .DisplayExpr("Text")
                     .KeyExpr("Text")
+                    .NoDataText("Show Or Remove") // 👈 Custom message when there are no items
                     .ItemTemplate(@<text>
                         <div style="display: flex; align-items: center;">
                             <i class="dx-icon-<%- Icon %>" style="padding:10px;"></i>
                             <span><%- Text %></span>
                         </div>
                     </text>)
-
                     )
-
 
                     <div class="dx-card " style="background-color:transparent; border:none;padding:10px;">
                        
@@ -1467,12 +1465,7 @@
             @{
                 ViewBag.Title = "Quotation Grid";
             }
-            
 
-
-                <style>
-
-                </style>
             @(Html.DevExtreme().DropDownButton()
                 .ID("Dropdown")
                 .Text(new JS("formatMessage('Print')"))
@@ -1480,6 +1473,7 @@
                 .ElementAttr("style", "padding:10px")
                 .DisplayExpr("Text")
                 .KeyExpr("Text")
+                .NoDataText("Show Or Remove")
                 .ItemTemplate(@<text>
                     <div style="display: flex; align-items: center;">
                         <i class="dx-icon-<%- Icon %>" style="padding:10px;"></i>
@@ -1574,11 +1568,7 @@
                 ViewBag.Title = "PurchaseOrder Grid";
             }
 
-
-
-                <style>
-
-                </style>
+               
             @(Html.DevExtreme().DropDownButton()
                 .ID("PurchaseOrderDropdown")
                 .Text(new JS("formatMessage('Print')"))
@@ -1586,15 +1576,14 @@
                 .ElementAttr("style", "padding:10px")
                 .DisplayExpr("Text")
                 .KeyExpr("Text")
+                .NoDataText("Show Or Remove") // 👈 Custom message when there are no items
                 .ItemTemplate(@<text>
                     <div style="display: flex; align-items: center;">
                         <i class="dx-icon-<%- Icon %>" style="padding:10px;"></i>
                         <span><%- Text %></span>
                     </div>
                 </text>)
-
                 )
-
 
                 <div class="dx-card " style="background-color:transparent; border:none;padding:10px;">
                     
@@ -1678,9 +1667,6 @@
                 ViewBag.Title = "ItemDelivers Grid";
             }
 
-                <style>
-
-                </style>
             @(Html.DevExtreme().DropDownButton()
                 .ID("ItemDeliversDropdown")
                 .Text(new JS("formatMessage('Print')"))
@@ -1688,13 +1674,13 @@
                 .ElementAttr("style", "padding:10px")
                 .DisplayExpr("Text")
                 .KeyExpr("Text")
+                .NoDataText("Show Or Remove") // 👈 Custom message when there are no items
                 .ItemTemplate(@<text>
                     <div style="display: flex; align-items: center;">
                         <i class="dx-icon-<%- Icon %>" style="padding:10px;"></i>
                         <span><%- Text %></span>
                     </div>
                 </text>)
-
                 )
 
 
@@ -1714,9 +1700,9 @@
                     {
                         columns.Add().DataField("DeliveryNoteNo").Caption(new JS("formatMessage('Delivery Note No')"));
                         columns.Add().DataField("DeliveryDate").Caption(new JS("formatMessage('Delivery Date')")).DataType(GridColumnDataType.Date);
-                        columns.Add().DataField("Status").Caption(new JS("formatMessage('Status')")); // Adjust as per entity property if needed
+                        columns.Add().DataField("Status").Caption(new JS("formatMessage('Status')")); 
                         columns.Add().DataField("InvoiceNo").Caption(new JS("formatMessage('Invoice No')"));
-                        columns.Add().DataField("IssuedFromStoreName").Caption(new JS("formatMessage('Issued From(Store)')"));
+                        columns.Add().DataField("IssuedFromStoreName").Caption(new JS("formatMessage('Issued From(Store)')")); 
                         columns.Add().DataField("DeliveryIssuedTo").Caption(new JS("formatMessage('Issued To')"));
                         columns.Add().DataField("IssuedQty").Caption(new JS("formatMessage('Qty')")).DataType(GridColumnDataType.Number);
                         columns.Add().DataField("IssuedUnitPrice").Caption(new JS("formatMessage('Unit Price')"));
@@ -1783,9 +1769,7 @@
 
 
 
-                <style>
-
-                </style>
+             
             @(Html.DevExtreme().DropDownButton()
                 .ID("ItemReceivedDropdown")
                 .Text(new JS("formatMessage('Print')"))
@@ -1793,6 +1777,7 @@
                 .ElementAttr("style", "padding:10px")
                 .DisplayExpr("Text")
                 .KeyExpr("Text")
+                .NoDataText("Show Or Remove")
                 .ItemTemplate(@<text>
                     <div style="display: flex; align-items: center;">
                         <i class="dx-icon-<%- Icon %>" style="padding:10px;"></i>
@@ -1888,10 +1873,6 @@
                 ViewBag.Title = "UnitConversion Grid";
             }
 
-
-                <style>
-
-                </style>
                 <div style="text-align: right;">
                 @(Html.DevExtreme().Button()
                     .ID("addButton")
@@ -1900,7 +1881,6 @@
                     .Type(ButtonType.Default)
                     .Width(140)
                     .ElementAttr("style", "padding:10px; color:black;margin-right:10px;")
-
                     )
                 </div>
 
@@ -1918,12 +1898,12 @@
                     .ShowRowLines(true)
                     .RowAlternationEnabled(true)
                     .ColumnAutoWidth(true)
-                    .DataSource(new JS("[]")) // Must be an empty array for dynamic row adding
+                    .DataSource(new JS("[]")) // Empty at start
                     .OnInitialized("onUnitConversionGridInitialized")
                     .Editing(editing =>
                     {
                         editing.Mode(GridEditMode.Row);
-                        editing.AllowAdding(true); // Important
+                        editing.AllowAdding(false);
                         editing.AllowUpdating(true);
                         editing.UseIcons(true);
                     })
@@ -1931,9 +1911,9 @@
                     {
                         columns.Add()
                         .DataField("UnitCodeOfConversion")
+                        .Width(300)
                         .Caption(new JS("formatMessage('Unit Code Of Conversion')"))
-                        .CellTemplate(new JS("unitCodeDropDownTemplate")); // ✅ JS function reference
-                    
+                        .EditCellTemplate(new JS("unitCodeDropDownEditor")); // ✅ Use as editor
 
                         columns.Add()
                         .DataField("UnitConverted")
@@ -1947,23 +1927,28 @@
                     )
 
 
+
+
                 </div>
                 <script>
                     let UnitConversionGridInstance = null;
                     let unitCodeLookupData = [];
 
+                    // ✅ Single correct version of unitCodeDropdown loader
                     function loadUnitCodeDropdown() {
-                        return $.getJSON("/api/StockInventory/GetUnitCodeOptions")
-                            .then(data => {
-                                unitCodeLookupData = data;
-                            });
+                        return $.ajax({
+                            url: "/api/StockInventory/GetUnitCodeOptions", // Update as per your API
+                            method: "GET",
+                            dataType: "json"
+                        }).then(function (response) {
+                            unitCodeLookupData = response;
+                        });
                     }
 
                     function onUnitConversionGridInitialized(e) {
                         UnitConversionGridInstance = e.component;
                         console.log("Grid initialized");
                     }
-
 
                     function loadUnitConversionGrid(gscode) {
                         if (!UnitConversionGridInstance) return;
@@ -1975,9 +1960,9 @@
 
                         UnitConversionGridInstance.option("dataSource", dataStore);
                     }
+
                     function addNewUnitRow() {
                         if (UnitConversionGridInstance) {
-                            const dataSource = UnitConversionGridInstance.option("dataSource") || [];
                             const currentData = UnitConversionGridInstance.getDataSource().items();
 
                             const newRow = {
@@ -1990,8 +1975,7 @@
                             UnitConversionGridInstance.option("dataSource", [...currentData]);
                         }
                     }
-
-                    $(function () {
+                     $(function () {
                         loadUnitCodeDropdown().then(() => {
                             $("#addButton").dxButton({
                                 text: "Add New Row",
@@ -2000,23 +1984,32 @@
                             });
                         });
                     });
-                        function unitCodeDropDownTemplate(cellElement, cellInfo) {
+                   
+
+                    // ✅ Dropdown Editor Template
+                    function unitCodeDropDownEditor(cellElement, cellInfo) {
                         $("<div>").appendTo(cellElement).dxDropDownBox({
                             value: cellInfo.value,
                             valueExpr: "UnitCode",
                             displayExpr: function (item) {
-                                return item ? item.UnitCode + " | " + item.UnitType + " | " + item.UnitDecs : "";
+                                return item ? `${item.UnitType}` : "";
                             },
-                            showClearButton: true,
                             dataSource: unitCodeLookupData,
+                            showClearButton: true,
+                            dropDownOptions: { width: 600 },
+                            onValueChanged: function (e) {
+                                const selected = unitCodeLookupData.find(x => x.UnitCode === e.value);
+                                if (selected) {
+                                    cellInfo.setValue(selected.UnitCode);
+                                }
+                            },
                             contentTemplate: function (e) {
-                                const value = e.component.option("value");
                                 return $("<div>").dxDataGrid({
                                     dataSource: unitCodeLookupData,
                                     keyExpr: "UnitCode",
                                     height: 300,
                                     selection: { mode: "single" },
-                                    selectedRowKeys: value ? [value] : [],
+                                    selectedRowKeys: e.component.option("value") ? [e.component.option("value")] : [],
                                     onSelectionChanged: function (selectedItems) {
                                         const selected = selectedItems.selectedRowsData[0];
                                         if (selected) {
@@ -2028,12 +2021,14 @@
                                     columns: [
                                         { dataField: "UnitCode", caption: "Unit Code" },
                                         { dataField: "UnitType", caption: "Unit Type" },
-                                        { dataField: "UnitDecs", caption: "Unit Description" }
+                                        { dataField: "UnitDesc", caption: "Unit Description" }
                                     ]
                                 });
                             }
                         });
                     }
+
+                    
 
                 </script>
             </div>
@@ -2200,15 +2195,14 @@
                         .Icon("attach")
                         .Type(ButtonType.Default)
                         .Width(250)
-                        .OnClick("openInventoryDocumentPopup") // JavaScript function
+                        .OnClick("inventoryDocumentBind") // JavaScript function
                         )
-                    @(Html.DevExtreme().Button()
-                        .Text(new JS("formatMessage('Merge Selected Files')"))
-                        .Icon("fas fa-file-pdf")
-                        .Type(ButtonType.Default)
-                        .Width(250)
-                        .OnClick("mergeSelectedFiles") 
-                        )
+                         @(Html.DevExtreme().Button()
+                         .Text(new JS("formatMessage('Merge Selected Files')"))
+                         .Icon("fas fa-file-pdf")
+                         .Type(ButtonType.Default)
+                         .Width(280)
+                         .OnClick("mergeSelectedFiles"))
 
                     @(Html.DevExtreme().Button()
                         .Text(new JS("formatMessage('Save Separated PDF Files')"))
@@ -2217,18 +2211,6 @@
                         .Width(280)
                         .OnClick("saveSeparatedFiles") 
                         )
-                    @(Html.DevExtreme().Popup()
-                        .ID("inventoryDocumentPopup")
-                        .Width("80%")
-                        .Height("80%")
-                        .ShowTitle(true)
-                        .Title("Attach Files")
-                        .Visible(false)
-                        .ContentTemplate(@<text>
-                            <iframe id="inventoryDocumentFrame" width="100%" height="100%" frameborder="0"></iframe>
-                        </text>)
-                        )
-
                     </div>
 
                     <br />
@@ -2390,6 +2372,7 @@
                 .ElementAttr("style", "padding:10px")
                 .DisplayExpr("Text")
                 .KeyExpr("Text")
+                .NoDataText("Show Or Remove") 
                 .ItemTemplate(@<text>
                     <div style="display: flex; align-items: center;">
                         <i class="dx-icon-<%- Icon %>" style="padding:10px;"></i>
@@ -2454,7 +2437,7 @@
                         }
 
                         const dataStore = new DevExpress.data.CustomStore({
-                            key: "PurchaseVoucherNo", // Ensure this key is unique
+                            key: "Pono", // Ensure this key is unique
                             load: function () {
                                 console.log("Fetching Purchase Grid Data for GsCode:", gscode);
                                 return $.getJSON("/api/StockInventory/GetPurchaseGridData", { gscode: gscode })
@@ -2462,11 +2445,10 @@
                                         console.log("Purchase Grid Data Loaded", data);
                                         return data;
                                     })
-                                    .fail((jqXHR, textStatus, errorThrown) => {
-                                        console.error("API call failed:", textStatus, errorThrown);
-                                        alert("Failed to load data: " + textStatus);
-                                        throw new Error("API call failed: " + textStatus);
-                                    });
+                                             .fail(() => {
+                        alert("Failed to load purchase grid data.");
+                    });
+                                  
                             }
                         });
 
@@ -2552,7 +2534,11 @@
         }
     }
 
-
+        function inventoryDocumentBind(){
+                const url = `/${tenantName}/IMS/InventoryDocument`;
+              const title = "";
+                  openModal(url, title);
+          }
 
       function ItemStore(){
                 const url = `/${tenantName}/IMS/StockDetails_ItemStore`;
@@ -2643,18 +2629,19 @@
                             $("#MaxSellingPrice").dxNumberBox("instance").option("value", data.MaxSellingPrice);
                             $("#ItemPartNo").dxTextBox("instance").option("value", data.ItemPartNo);
                             $("#ItemHSCode").dxTextBox("instance").option("value", data.Hscode);
-                            $("#ItemColor").dxSelectBox("instance").option("value", data.ItemColor);
+                            $("#ItemColor").dxColorBox("instance").option("value", data.ItemColor);
                             $("#ItemBrand").dxSelectBox("instance").option("value", data.ItemBrand);
                             $("#ItemManufacturer").dxSelectBox("instance").option("value", data.ItemMake);
                             $("#CountryOfOrigin").dxTextBox("instance").option("value", data.CountryOfOrigin);
                             $("#EnteredBy").dxTextArea("instance").option("value", data.CreatedBy);
                             $("#ModifiedBy").dxTextArea("instance").option("value", data.ModifiedBy);
                             $("#ItemDiscontinued").dxCheckBox("instance").option("value", data.IsDiscontinued);
-
-                            if (data.ImageUrl) {
-                                $("#imgBox1").html(`<img src="${data.ImageUrl}" alt="Item Image" style="max-width:100px; max-height:100px;" />`);
+                                // Load Item Image (Base64)
+                            if (data.ItemImage) {
+                                const imgHtml = `<img src="data:image/png;base64,${data.ItemImage}" alt="Item Image" style="max-width: 100%; height: auto;" />`;
+                                document.getElementById("imgBox1").innerHTML = imgHtml;
                             } else {
-                                $("#imgBox1").html(`<span>No image data</span>`);
+                                document.getElementById("imgBox1").innerHTML = "<span>No image data</span>";
                             }
 
                             $("#MinQty").dxNumberBox("instance").option("value", data.MinQty);
@@ -2695,7 +2682,8 @@
                 "dxNumberBox",
                 "dxTextArea",
                 "dxSelectBox",
-                "dxCheckBox"
+                "dxCheckBox",
+                "dxColorBox"
             ];
 
             for (const type of types) {
@@ -2729,13 +2717,32 @@
           });
       });
 
-        function OpeningBalanceOPB(){
-        const url = `/${tenantName}/IMS/OpeningBalance`;
-        const title = "";
-            openModal(url, title);
+    function OpeningBalanceOPB() {
+        // Get instances safely
+        const gscodeInstance = $("#StockNoItemCode").dxTextBox("instance");
+        const descriptionInstance = $("#DetailedDescription").dxTextArea("instance");
+
+        // Check if both controls exist
+        if (!gscodeInstance || !descriptionInstance) {
+            console.warn("DevExtreme controls not initialized.");
+            return;
+        }
+
+        // Safely get values
+        const gscode = gscodeInstance.option("value") || '';
+        const description = descriptionInstance.option("value") || '';
+
+        // Encode the parameters to ensure URL safety
+        const url = `/${tenantName}/IMS/OpeningBalance?gscode=${encodeURIComponent(gscode)}&description=${encodeURIComponent(description)}&modal=true`;
+        openModal(url, "Opening Balance");
     }
 
-          //english text convert to arabic
+
+
+
+
+
+         
 
     async function translateToArabic(text) {
 

@@ -320,6 +320,7 @@
             .Text(new JS("formatMessage('Back')"))
             .Icon("arrowleft")
             .Type(ButtonType.Default)
+            .OnClick("Goback")
             .StylingMode(ButtonStylingMode.Outlined)
             .ElementAttr("class", "black-text")
             )
@@ -467,6 +468,9 @@ function bindClientContactData(clientContactSlNo) {
                 DevExpress.ui.notify(msg, 'error', 3000);
             }
         });
+    }
+               function Goback() {
+               window.parent.closeModal(); 
     }
 
 </script>

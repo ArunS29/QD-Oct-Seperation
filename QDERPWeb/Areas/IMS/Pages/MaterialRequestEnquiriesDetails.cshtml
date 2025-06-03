@@ -60,7 +60,7 @@
 		overflow: hidden;
 	}
 
-	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddReport123,#btnColumnChooser,#btnAddMaterialRequest)) {
+	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddReport123,#btnColumnChooser,#btnPurchaseEditDetails,#btnAddMaterialRequest)) {
 		display: none !important;
 	}
 	#overlay-frame {
@@ -604,8 +604,8 @@
 		return [day, strmonth, year].join('-');
 	}
 	$(document).ready(function () {
-		$(".limited-footer .btn-containerIvoiceEdit").each(function () {
-			if (!$(this).find("#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddButtonPayment,#ddReport123,btnColumnChooser").length) {
+		$(".limited-footer .btn-container").each(function () {
+			if (!$(this).find("#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddReport123,#btnColumnChooser,#btnPurchaseEditDetails,#btnAddMaterialRequest").length) {
 				$(this).remove();
 			}
 		});

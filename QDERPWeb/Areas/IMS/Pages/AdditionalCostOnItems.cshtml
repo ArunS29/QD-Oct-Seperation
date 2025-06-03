@@ -1,0 +1,262 @@
+﻿@page
+@model QD.ERP.Web.Areas.IMS.Pages.AdditionalCostOnItemsModel
+@{
+}
+<style>
+
+    .dx-datagrid-column-chooser-button {
+        display: none !important;
+    }
+
+    .dx-fieldset {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 15px;
+        padding: 20px;
+        background-color: transparent;
+        width: 250px;
+        height: 10%;
+    }
+
+
+    .dx-field {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        margin-left: 10px;
+    }
+
+    .field-label {
+        font-weight: bold;
+    }
+
+    .aligned-input {
+        width: 100%;
+    }
+
+    .input-group {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .dx-textarea {
+        width: 100%;
+        height: 60px;
+    }
+
+    .dx-card {
+        width: 1000px;
+        background: var(--background-color);
+    }
+
+    .limited-footer .btn-container:not(:has(#btnUpdate,#btnBack)) {
+        display: none !important;
+    }
+
+    .container {
+        display: none !important;
+    }
+
+    .dx-button-text {
+        color: black;
+    }
+
+    .input-button {
+        color: black;
+    }
+
+    .dx-button-mode-contained.dx-button-success .dx-icon {
+        color: black;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .playIcon {
+        display: none;
+    }
+
+    .dx-label-cell {
+        text-align: right;
+        font-weight: bold;
+        padding-right: 8px;
+        white-space: nowrap;
+    }
+
+    .dx-field-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 10px 6px;
+    }
+
+        .dx-field-table td {
+            vertical-align: middle;
+        }
+
+    .form-header {
+        color: white;
+        padding: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+</style>
+
+<div class="title">
+    <div class="header-container">
+        <div id="AddQuotationCostItem" class="no-border-input"></div>
+    </div>
+</div>
+
+<table class="dx-field-table" style="padding:20px;">
+    <tr>
+        <td>
+            @(Html.DevExtreme().TextBox()
+                .ID("QuotationNo")
+                .LabelMode(EditorLabelMode.Outside)
+                .Label(new JS("formatMessage('Quotation No')")))
+        </td>
+
+        <td>
+            @(Html.DevExtreme().TextBox()
+                .ID("StockCode")
+                .LabelMode(EditorLabelMode.Outside)
+                .Label(new JS("formatMessage('Stock Item Code:')")))
+        </td>
+
+        <td>
+            @(Html.DevExtreme().TextBox()
+                .ID("StockDescription")
+                .LabelMode(EditorLabelMode.Outside)
+                .Label(new JS("formatMessage('Stock Description:')")))
+        </td>
+        <td >
+            @(Html.DevExtreme().NumberBox()
+                .ID("Quantity")
+                .ShowSpinButtons(true)
+                .Width("100%")
+                .LabelMode(EditorLabelMode.Outside)
+                .Label(new JS("formatMessage('Quantity')")))
+        </td>
+        <td>
+            @(Html.DevExtreme().NumberBox()
+                .ID("CostPrice")
+                .Width("100%")
+                .Format("#,##0.00")
+                .LabelMode(EditorLabelMode.Outside)
+                .Label(new JS("formatMessage('Cost Price')")))
+        </td>
+    </tr>
+</table>
+
+<table class="dx-field-table" style="padding:20px;"  >
+    <tr>
+        <td colspan="3">
+            @(Html.DevExtreme().SelectBox()
+                .ID("CostItem")
+                .DisplayExpr("Text")
+                .ValueExpr("Value")
+                .SearchEnabled(true)
+                .Placeholder("Select Cost Item")
+                .LabelMode(EditorLabelMode.Outside)
+                .Label(new JS("formatMessage('Cost Item:')")))
+        </td>
+
+        <td>
+            @(Html.DevExtreme().NumberBox()
+                .ID("Percentage")
+                .Min(0).Max(100).Format("#0.00")
+                .LabelMode(EditorLabelMode.Outside)
+                .Label(new JS("formatMessage('Percentage (%)')")))
+        </td>
+
+        <td>
+            @(Html.DevExtreme().NumberBox()
+                .ID("ItemQty")
+                .Min(1)
+                .ShowSpinButtons(true)
+                .LabelMode(EditorLabelMode.Outside)
+                .Label(new JS("formatMessage('Quantity')")))
+        </td>
+        <td>
+            @(Html.DevExtreme().NumberBox()
+                .ID("CostAmount")
+                .Format("#,##0.00")
+                .LabelMode(EditorLabelMode.Outside)
+                .Label(new JS("formatMessage('Cost Amount:')")))
+        </td>
+
+        <td style="display:flex; align-items:end;">
+            @(Html.DevExtreme().NumberBox()
+                .ID("TotalCost")
+                .Format("#,##0.00")
+                .Width("70%")
+                .LabelMode(EditorLabelMode.Outside)
+                .Label(new JS("formatMessage('Total Cost:')")))
+     
+            @(Html.DevExtreme().Button()
+                .ID("btnAdd")
+                .Text("Add")
+                .Type(ButtonType.Success)
+                .Icon("plus")
+                .OnClick("addCostItem"))
+        </td>
+    </tr>
+</table>
+
+<hr />
+<div style="padding:20px;" >
+<!-- Data Grid -->
+@(Html.DevExtreme().DataGrid()
+    .ID("CostItemsGrid")
+    .ShowBorders(true)
+    .ShowRowLines(true)
+    .Height(450)
+    .ColumnAutoWidth(true)
+    .DataSource(new JS("[]"))
+    .Columns(columns =>
+    {
+        columns.Add().DataField("CostItemCode").Caption("Cost Item Code");
+        columns.Add().DataField("CostItemDescription").Caption("Cost Item Description");
+        columns.Add().DataField("CostPercentage").Caption("Cost Percentage");
+        columns.Add().DataField("CostItemQty").Caption("Cost Item Qty");
+        columns.Add().DataField("CostItemPrice").Caption("Cost Item Price");
+        columns.Add().DataField("TotalCost").Caption("Total Cost");
+    })
+)
+</div>
+<!-- Footer Buttons -->
+<div class="footer-buttons" style="padding:20px;">
+    @(Html.DevExtreme().Button().Text("Update").Icon("save").Type(ButtonType.Success))
+    @(Html.DevExtreme().Button().Text("Delete").Icon("remove").Type(ButtonType.Danger))
+    @(Html.DevExtreme().Button().Text("Back").Icon("arrowleft").OnClick("Goback").Type(ButtonType.Default))
+</div>
+
+<script>
+    function addCostItem() {
+        DevExpress.ui.notify("Add clicked", "info", 1000);
+    }
+
+    function formatMessage(labelText) {
+        return labelText;
+    }
+
+        $(function () {
+        $("#AddQuotationCostItem").dxTextBox({
+            text: formatMessage("Additional Cost On Items"),
+                readOnly: true,
+                onContentReady: function (e) {
+                    $(e.element).addClass("dx-textbox-heading");
+                }
+            });
+        });
+            function Goback() {
+        window.parent.closeModal(); // This closes the current window/tab
+    }
+</script>

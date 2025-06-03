@@ -1967,7 +1967,14 @@
 					caption: formatMessage('Description'),
 
 					width: 550,
-
+					cellTemplate: function (cellElement, cellInfo) {
+						// Display the description (GSDescrpition) instead of GSCode
+						getDropdownData().done(function (dropdownData) {
+							let selectedItem = dropdownData.find(item => item.GSCode === cellInfo.value);
+							let displayText = selectedItem ? selectedItem.GSDescrpition : cellInfo.value;
+							$("<span>").text(displayText).appendTo(cellElement);
+						});
+					},
 					editCellTemplate: function (cellElement, cellInfo) {
 
 						getDropdownData().done(function (dropdownData) {
@@ -2159,7 +2166,13 @@
 					caption: formatMessage('Unit Rate Method'),
 
 					width: 200,
-
+					cellTemplate: function (cellElement, cellInfo) {
+						getUnitRateMethods().done(function (unitRates) {
+							let selectedItem = unitRates.find(item => item.UnitCode === cellInfo.value);
+							let displayText = selectedItem ? selectedItem.UnitDesc : (cellInfo.value || "");
+							$("<span>").text(displayText).appendTo(cellElement);
+						});
+					},
 					editCellTemplate: function (cellElement, cellInfo) {
 
 						getUnitRateMethods().done(function (unitRates) {
@@ -2535,7 +2548,14 @@
 					caption: formatMessage('Description'),
 
 					width: 550,
-
+					cellTemplate: function (cellElement, cellInfo) {
+						// Display the description (GSDescrpition) instead of GSCode
+						getDropdownData().done(function (dropdownData) {
+							let selectedItem = dropdownData.find(item => item.GSCode === cellInfo.value);
+							let displayText = selectedItem ? selectedItem.GSDescrpition : cellInfo.value;
+							$("<span>").text(displayText).appendTo(cellElement);
+						});
+					},
 					editCellTemplate: function (cellElement, cellInfo) {
 
 						getDropdownData().done(function (dropdownData) {
@@ -2727,7 +2747,13 @@
 					caption: formatMessage('Unit Rate Method'),
 
 					width: 200,
-
+					cellTemplate: function (cellElement, cellInfo) {
+						getUnitRateMethods().done(function (unitRates) {
+							let selectedItem = unitRates.find(item => item.UnitCode === cellInfo.value);
+							let displayText = selectedItem ? selectedItem.UnitDesc : (cellInfo.value || "");
+							$("<span>").text(displayText).appendTo(cellElement);
+						});
+					},
 					editCellTemplate: function (cellElement, cellInfo) {
 
 						getUnitRateMethods().done(function (unitRates) {

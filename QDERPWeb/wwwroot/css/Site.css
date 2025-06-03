@@ -54,7 +54,7 @@
 
 .horizontal-container {
     display: flex;
-    gap: 20px; /* Adds spacing between buttons */
+    gap: 5px; /* Adds spacing between buttons */
     justify-content: start; /* Aligns buttons to the left */
     align-items: center; /* Vertically centers the buttons */
     margin: 15px;
@@ -194,12 +194,12 @@ body {
     background-color: #909ead00 !important;
     border: 1px solid #d6e4f0 !important;
     border-radius: 4px !important;
-    padding: 6px 12px !important; /* Reduced button padding */
+    padding: 0px 6px !important; /* Reduced button padding */
     font-size: 14px !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
     transition: all 0.2s ease-in-out !important;
-    /*height: 39px !important;*/ /* Fixed height */
-}
+    height: 39px !important;
+}                           
 
     /* Hover Effect for Button */
     .dx-button:hover {

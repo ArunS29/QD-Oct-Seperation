@@ -297,6 +297,7 @@
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
+		.OnContextMenuPreparing("onContextMenuPreparing")
 		.StateStoring(stateStoring =>
 		{
 			stateStoring
@@ -408,5 +409,87 @@
 
 
 	}
+		function onContextMenuPreparing(e) {
+			if (e.target === "content" && e.row && e.row.data) {
+				const rowData = e.row.data;
+						const ReceiptNo = encodeURIComponent(rowData.ReceiptNo);
+				const tenantName = window.tenantName || "defaultTenant";
+
+				e.items = [
+					{
+							text: "Edit Material Receipt",
+						icon: "edit",
+						onItemClick: function () {
+										const url = `/${tenantName}/IMS/MaterialReceiptFromSupplier?ReceiptNo=${ReceiptNo}`;
+							window.location.href = url;
+						}
+					},
+					{
+							text: "Preview Material Receipt",
+						icon: "doc",
+						onItemClick: function () {
+							const url = `/${tenantName}/IMS/CreatePurchaseOrder?Rfqno=${Rfqno}`;
+							window.location.href = url;
+						}
+					},
+					{
+							text: "Delete Material Receipt",
+						icon: "trash",
+						onItemClick: function () {
+							if (confirm(`Are you sure you want to delete RFQ ${Rfqno}?`)) {
+								// Replace with your actual delete logic, e.g., an AJAX call
+								fetch(`/${tenantName}/IMS/DeleteRFQ?Rfqno=${Rfqno}`, {
+									method: 'DELETE'
+								})
+									.then(response => {
+										if (response.ok) {
+											alert(`RFQ ${Rfqno} deleted successfully.`);
+											// Refresh the DataGrid or remove the row
+											e.component.refresh();
+										} else {
+											alert(`Failed to delete RFQ ${Rfqno}.`);
+										}
+									})
+									.catch(error => {
+										console.error('Error deleting RFQ:', error);
+										alert('An error occurred while deleting the RFQ.');
+									});
+							}
+						}
+					},
+					{
+							text: "Unlock the Material Receipt",
+						icon: "unlock",
+						onItemClick: function () {
+							// Replace with your actual unlock logic, e.g., an AJAX call
+							fetch(`/${tenantName}/IMS/UnlockRFQ?Rfqno=${Rfqno}`, {
+								method: 'POST'
+							})
+								.then(response => {
+									if (response.ok) {
+										alert(`RFQ ${Rfqno} unlocked successfully.`);
+										// Optionally refresh the DataGrid
+										e.component.refresh();
+									} else {
+										alert(`Failed to unlock RFQ ${Rfqno}.`);
+									}
+								})
+								.catch(error => {
+									console.error('Error unlocking RFQ:', error);
+									alert('An error occurred while unlocking the RFQ.');
+								});
+						}
+					},
+					{
+							text: "Create a VAT Purchase Voucher",
+						icon: "add",
+						onItemClick: function () {
+							const url = `/${tenantName}/IMS/CreatePurchaseOrder?Rfqno=${Rfqno}`;
+							window.location.href = url;
+						}
+					}
+				];
+			}
+		}
 
 </script>

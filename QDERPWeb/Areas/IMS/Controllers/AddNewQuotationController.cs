@@ -121,7 +121,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
 			{
 				if (string.IsNullOrEmpty(QuoteNo))
-					return BadRequest("RFQ No is required.");
+					return BadRequest("Quote No is required.");
 
 				try
 				{
