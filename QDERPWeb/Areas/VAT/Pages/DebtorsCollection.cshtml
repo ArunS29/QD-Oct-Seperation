@@ -65,10 +65,11 @@
 </div>
 
 
-<div class="container" style="display: flex; flex-direction: column; gap: 20px;width:100%;">
+<div class="container" style="display: flex; flex-direction: column;width:100%;">
 
     <div class="Head">
-        <div class="limited-footer">
+        <div class="limited-footer" style="margin: 10px;"
+        >
             @await Html.PartialAsync("VATModuleFooter")
         </div>
     </div>
@@ -238,8 +239,8 @@
                 },
                 fields: [
                     { dataField: "AccountHead", area: "row", caption: "Client Name" },
-                    { dataField: "DrAmount", area: "data", caption: "Invoiced Amount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
-                    { dataField: "CrAmount", area: "data", caption: "Received/ Credited Amount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
+                    { dataField: "DrAmount", caption: "Invoiced Amount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
+                    { dataField: "CrAmount", caption: "Received/ Credited Amount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
                     { dataField: "VoucherMonth", area: "column", caption: "Transaction Month", dataType: "date", format: "MMM-yyyy" },
 
                     // Remaining fields without area specified (for detail expansion or binding)
@@ -290,7 +291,16 @@
             showColumnGrandTotals: true,
             showDataHeaders: true,
             showRowTotals: true,
-            showRowGrandTotals: true
+            showRowGrandTotals: true,
+             onCellPrepared(e) {
+      if (e.area === "row" ) {
+        // Reset counter when starting new row set
+        if (e.rowIndex === 0) serialCounter = 1;
+
+        // Apply prefix only to first level row items (no nested rows)
+        e.cellElement.text(`${serialCounter++}. ${e.cell.text}`);
+      }
+    }
         }).dxPivotGrid("instance");
 
         // Expand rows initially
