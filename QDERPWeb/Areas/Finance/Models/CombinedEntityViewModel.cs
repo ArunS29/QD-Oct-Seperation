@@ -346,7 +346,7 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public dynamic DiscountDetails { get; set; }
         public dynamic ExemptionCode { get; set; }
         public string ItemCode { get; set; }
-        public dynamic Qty { get; set; }
+        public decimal? Qty { get; set; }
         public dynamic SNo { get; set; }
         public dynamic Total { get; set; }
         public dynamic TotalBeforeDiscount { get; set; }

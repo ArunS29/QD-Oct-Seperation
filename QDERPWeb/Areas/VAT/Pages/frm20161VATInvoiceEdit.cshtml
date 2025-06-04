@@ -3592,6 +3592,7 @@
 
 		});
 
+
 		function initializeDataGrid(rowData) {
     let grid = $("#B2BdataGrid").dxDataGrid({
         dataSource: rowData,
@@ -4710,23 +4711,6 @@
 			$("#PostalCode").dxTextBox("instance").option("value", selectedRowData[0].ClientPostalCode);
 		$("#District").dxTextBox("instance").option("value", selectedRowData[0].ClientNeighborhood);
 			$("#DistrictArabic").dxTextBox("instance").option("value", selectedRowData[0].ClientNeighborhoodAr);
-
-
-	// $("#StreetName").val(selectedRowData[0].ClientAddressStreet);
-	// $("#StreetNameArabic").val(selectedRowData[0].ClientAddressStreetAr);
-	// $("#AdditionalAddress").val(selectedRowData[0].ClientAdditionalStreet);
-	// $("#AdditionalAddressArabic").val(selectedRowData[0].ClientAdditionalStreetAr);
-	// $("#BuildingNumber").val(selectedRowData[0].ClientBuildingNumber);
-	// $("#ClientCity").val(selectedRowData[0].ClientCity);
-	// $("#ClientCityArabic").val(selectedRowData[0].ClientCityAr);
-	// $("#AdditionalNumber").val(selectedRowData[0].ClientAdditionalNumber);
-	// $("#Province").val(selectedRowData[0].ClientProvince);
-	// $("#ProvinceArabic").val(selectedRowData[0].ClientProvinceAr);
-	// $("#PostalCode").val(selectedRowData[0].ClientPostalCode);
-
-	// // Fix incorrect value assignments
-	// $("#District").val(selectedRowData[0].ClientNeighborhood); // was incorrectly using Arabic version key
-	// $("#DistrictArabic").val(selectedRowData[0].ClientNeighborhoodAr); // was incorrectly using country code key
 
 
 
@@ -7451,13 +7435,13 @@
 								"Invoice Posted Successfully."
 							)
 						}
-							else if(response.IsPosted == true)
-							{
-									 DevExpress.ui.dialog.alert(
-									"This VAT Credit Note is already posted to your ledgers.",
-									"Credit Note Posted Already."
-								)
-							}
+							// else if(response.IsPosted == true)
+							// {
+							// 		 DevExpress.ui.dialog.alert(
+							// 		"This VAT Credit Note is already posted to your ledgers.",
+							// 		"Credit Note Posted Already."
+							// 	)
+							// }
 						else 
 						{
 								   DevExpress.ui.dialog.custom({

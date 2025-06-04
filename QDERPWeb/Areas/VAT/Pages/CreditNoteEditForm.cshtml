@@ -6234,8 +6234,6 @@ openModal(url, title);
 	revaccheadid="L00343"
 }
 
-alert(accid);
-		
 		var InvoiceMaster = {
 			CreditNoteNo: $('#CreditNoteNo').dxTextBox("instance").option("value"),
 			CreditNoteDate: $("#CreditNoteDate").dxDateBox("instance").option("value"),
@@ -6335,11 +6333,11 @@ alert(accid);
 		console.log("InvoiceChildren:", updatedDataSource);
 
 		// Ensure InvoiceChildren is not empty or undefined
-		if (!InvoiceChildren || InvoiceChildren.length === 0) {
-			console.error("InvoiceChildren is empty or undefined");
-			DevExpress.ui.notify("No child records found.", "error", 3000);
-			return;  // Exit if there are no child records
-		}
+		// if (!InvoiceChildren || InvoiceChildren.length === 0) {
+		// 	console.error("InvoiceChildren is empty or undefined");
+		// 	DevExpress.ui.notify("No child records found.", "error", 3000);
+		// 	return;  // Exit if there are no child records
+		// }
 
 		// Send AJAX request to update the invoice master details
 		$.ajax({
@@ -6480,11 +6478,11 @@ alert(accid);
 		console.log("InvoiceChildren:", updatedDataSource);
 
 		// Ensure InvoiceChildren is not empty or undefined
-		if (!InvoiceChildren || InvoiceChildren.length === 0) {
-			console.error("InvoiceChildren is empty or undefined");
-			DevExpress.ui.notify("No child records found.", "error", 3000);
-			return;  // Exit if there are no child records
-		}
+		// if (!InvoiceChildren || InvoiceChildren.length === 0) {
+		// 	console.error("InvoiceChildren is empty or undefined");
+		// 	DevExpress.ui.notify("No child records found.", "error", 3000);
+		// 	return;  // Exit if there are no child records
+		// }
 
 		// Send AJAX request to update the invoice master details
 		$.ajax({

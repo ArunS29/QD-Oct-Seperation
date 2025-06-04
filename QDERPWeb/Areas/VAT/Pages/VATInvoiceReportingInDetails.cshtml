@@ -58,6 +58,9 @@
     .mainContainer {
         width: 100%;
     }
+
+
+
 </style>
 <div class="title">
     <div class="header-container">
@@ -66,10 +69,10 @@
 </div>
 
 
-<div class="container" style="display: flex; flex-direction: column; gap: 20px;width:100%;">
+<div class="container" style="display: flex; flex-direction: column; width:100%;">
 
     <div class="Head">
-        <div class="limited-footer">
+        <div class="limited-footer" style="margin: 10px;">
             @await Html.PartialAsync("VATModuleFooter")
         </div>
     </div>
@@ -274,7 +277,16 @@
             showColumnGrandTotals: true,
             showDataHeaders: true,
             showRowTotals: true,
-            showRowGrandTotals: true
+            showRowGrandTotals: true,
+                          onCellPrepared(e) {
+      if (e.area === "row" ) {
+        // Reset counter when starting new row set
+        if (e.rowIndex === 0) serialCounter = 1;
+
+        // Apply prefix only to first level row items (no nested rows)
+        e.cellElement.text(`${serialCounter++}. ${e.cell.text}`);
+      }
+    }
         }).dxPivotGrid("instance");
 
         // Expand rows initially

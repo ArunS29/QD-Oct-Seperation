@@ -637,11 +637,11 @@
 								title = "Edit Client Request";
 								break;
 							case "Project Request":
-								url = `/${tenantName}/IMS/AddNewProjectRequest?Mprno=${Mprno}`;
+								url = `/${tenantName}/IMS/MRAddNewProjectRequest?Mprno=${Mprno}`;
 								title = "Edit Project Request";
 								break;
 							case "Store Request":
-								url = `/${tenantName}/IMS/AddNewStoreRequest?Mprno=${Mprno}`;
+								url = `/${tenantName}/IMS/MRAddNewStoreRequest?Mprno=${Mprno}`;
 								title = "Edit Store Request";
 								break;
 							default:
@@ -649,7 +649,8 @@
 								return;
 						}
 
-						openModal(url, title);
+						//openModal(url, title);
+						window.location.href=url;
 					}
 				},
 
@@ -676,7 +677,9 @@
 							"Confirm Delete"
 						).done(function (dialogResult) {
 							if (dialogResult) {
-								onDeleteRequest(e.row.data.RequestRefNo);
+								var Mprno=e.row.data.Mprno;
+								console.log("number", Mprno);
+								onDeleteRequest(Mprno);
 							}
 						});
 					}
@@ -747,5 +750,30 @@
 				}
 			});
 		});
+
+	function onDeleteRequest(Mprno) {
+		if (!Mprno) {
+			DevExpress.ui.notify('MPRNo is missing.', 'error', 3000);
+			return;
+		}
+
+		$.ajax({
+			url: `/api/MaterialRequestEnquiriesDetails/DeletePurchaseRequest?Mprno=${Mprno}`,
+			method: 'POST',
+			success: function (response) {
+				if (response.success) {
+					DevExpress.ui.notify(response.message, 'success', 2000);
+					$("#dataGrid").dxDataGrid("instance").refresh();
+				} else {
+					DevExpress.ui.notify(response.message, 'error', 3000);
+				}
+			},
+			error: function () {
+				DevExpress.ui.notify('An error occurred while attempting to delete the request.', 'error', 3000);
+			}
+		});
+	}
+
+
 
 </script>	
