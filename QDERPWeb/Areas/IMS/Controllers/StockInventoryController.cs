@@ -587,10 +587,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 // Get the max existing ID (assuming StockClassificationId is a byte, short, or int)
                 short maxId = (short)dbContext.Tbl30111StockClassificationMasters
-     .Select(x => x.StockClassId)
-     .AsEnumerable()
-     .DefaultIfEmpty((short)0)
-     .Max();
+                         .Select(x => x.StockClassId)
+                         .AsEnumerable()
+                         .DefaultIfEmpty((short)0)
+                         .Max();
 
                 // Check if maxId has reached its limit
                 if (maxId == short.MaxValue)
@@ -614,7 +614,35 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
         }
 
+        [HttpDelete]
+        public IActionResult DeleteStockClassification(string key)
+        {
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized(new { message = "Invalid tenant." });
 
+                // Convert key (string) to short
+                if (!short.TryParse(key, out short id))
+                    return BadRequest(new { message = "Invalid Stock Classification ID." });
+
+                var stockClass = dbContext.Tbl30111StockClassificationMasters
+                                          .FirstOrDefault(x => x.StockClassId == id);
+
+                if (stockClass == null)
+                    return NotFound(new { message = "Stock Classification not found." });
+
+                dbContext.Tbl30111StockClassificationMasters.Remove(stockClass);
+                dbContext.SaveChanges();
+
+                return Ok(new { message = "Stock Classification deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "DeleteStockClassification failed");
+                return StatusCode(500, new { message = "An unexpected error occurred.", detailed = ex.Message });
+            }
+        }
         public class StockClassificationUpdateDto
         {
             public int Key { get; set; }
