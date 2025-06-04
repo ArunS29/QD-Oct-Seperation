@@ -103,10 +103,7 @@
         <div id="QuotationTypeofRequest" class="no-border-input"></div>
     </div>
 </div>
-<div class="signatory-form-container">
-    <div id="DatabaseSignatories" class="no-border-title"></div>
-   
-    <div class="form-row">
+    <div class="form-row" style="padding:20px;">
         <div class="col-md-6">
         @(Html.DevExtreme().TextBox()
             .ID("txtTypeOfRequest")
@@ -119,9 +116,9 @@
             )
 
      </div>
-    </div>
+ </div>
 
-    <div class="form-row">
+    <div class="form-row" style="padding:20px;">
        <div class="col-md-6">
         @(Html.DevExtreme().TextBox()
             .ID("txtTermsCategory")
@@ -136,7 +133,7 @@
          <div class="col-md-2">
             @(Html.DevExtreme().Button()
                 .ID("btnAddSalesPerson")
-                .Text("ADD")
+                .Text(new JS("formatMessage('ADD')"))
                 .Icon("plus")
                 .OnClick("function() { addSignatoryToGrid(); }")
                 .ElementAttr(new { @class = "dx-button-add" })
@@ -169,9 +166,9 @@
         .OnRowUpdating("onSignatoryUpdating")                       // Handles saving
             .Columns(columns =>
             {
-                columns.Add().DataField("TypeOfRequestId").Caption("ID").Width(80).AllowEditing(false);
-                columns.Add().DataField("TypeOfRequest").Caption("Type Of Request").Width(200);
-                columns.Add().DataField("TermsCategory").Caption("Terms Category").Width(200);
+            columns.Add().DataField("TypeOfRequestId").Caption(new JS("formatMessage('ID')")).Width(80).AllowEditing(false);
+            columns.Add().DataField("TypeOfRequest").Caption(new JS("formatMessage('Type Of Request')")).Width(200);
+            columns.Add().DataField("TermsCategory").Caption(new JS("formatMessage('Terms Category')")).Width(200);
               
             })
         .Height(500)

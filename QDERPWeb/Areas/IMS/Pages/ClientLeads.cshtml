@@ -165,7 +165,7 @@
     function onClientsGridContextMenu(e) {
         if (e.target === "content" && e.row) {
             e.items = [{
-                text: "Client Edit",
+                 text: formatMessage("Client Edit"),
                 onItemClick: function () {
                     let clientCode = e.row.data.ClientCode;
                     let tenantName = window.tenantName || "defaultTenant"; // replace with dynamic tenant logic if needed

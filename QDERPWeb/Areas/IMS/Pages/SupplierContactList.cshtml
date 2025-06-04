@@ -356,7 +356,10 @@
                 console.log("Supplier Contact Loaded:", data);
                 if (data) {
                     $("#txtSupplierHidden").dxTextBox("instance").option("value", data.SupplierContactSlNo); // hidden field
-                    $("#txtSupplierCode").dxTextBox("instance").option("value", data.SupplierCode);
+                       $("#txtSupplierCode").dxTextBox("instance").option({
+                            value: data.SupplierCode,
+                            readOnly: true
+                        });
                     $("#txtSupplierName").dxTextBox("instance").option("value", data.SupplierName);
                     $("#contactPerson").dxTextBox("instance").option("value", data.ContactPerson);
                     $("#title").dxTextBox("instance").option("value", data.ContactPersonTitle);
