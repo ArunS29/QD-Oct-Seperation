@@ -398,6 +398,7 @@
 								.ID("txtRequestNo")
 								.LabelMode(EditorLabelMode.Outside)
 								.Width("100%")
+								.ReadOnly(true)
 								)
 
 						</td>
@@ -435,7 +436,7 @@
 														.Label(new JS("formatMessage('Client Name:')"))
                           .DataSource(d => d.WebApi()
 														.Controller("AddNewClientRequest")
-														.LoadAction("GetClientName")
+														.LoadAction("GetClientDetails")
                                                     .LoadMode(DataSourceLoadMode.Raw)
                                                    .Key("CategoryCode")
                                                 )
@@ -464,15 +465,30 @@
 								.Hint("Add Description")
 								.Width(40)
 								.ElementAttr("style", "margin-top: 20px;")
+								.OnClick("AddNewClient")
 								)
 
-							@(Html.DevExtreme().Button()
-								.ID("EditDebits")
-								.Icon("edit")
-								.Hint("Edit Description")
-								.Width(40)
-								.ElementAttr("style", "margin-top: 20px;")
-								)
+							  @(Html.DevExtreme().Button()
+    .ID("btnEditClient")
+    .Icon("edit")
+    .ElementAttr("class", "button-alignment-up button-group")
+    .OnClick(@<text>
+        function() {
+            var dropDownBox = $('#GetProjectDropDown').dxDropDownBox('instance');
+            var selectedValue = dropDownBox.option('value');
+
+            if (!selectedValue) {
+                DevExpress.ui.notify('Please select a client.', 'warning', 2000);
+                return;
+            }
+
+            var url = '/' + tenantName + '/IMS/ClientLeadMaster?clientCode=' + encodeURIComponent(selectedValue);
+            openModal(url, '');
+        }
+    </text>)
+)
+
+
 						</td>
 					</tr>
 					<tr style="display: flex; gap: 10px;align-items:end; width:100%;">
@@ -481,15 +497,15 @@
 									.Label(new JS("formatMessage('Store Code:')"))
 									.ID("ddStoreCode")
 									.DataSource(d => d.WebApi()
-									.Controller("AccountLedgerMaster")
-									.LoadAction("getVATInvoiceTypes")
+									//.Controller("AccountLedgerMaster")
+									//.LoadAction("getVATInvoiceTypes")
 									.LoadMode(DataSourceLoadMode.Raw)
 									.Key("InvoiceType"))
 									.AcceptCustomValue(true)
 									.OpenOnFieldClick(false)
 									.ValueChangeEvent("input")
 									.HoverStateEnabled(true)
-									.Value("Tax Invoice")
+									//.Value("Tax Invoice")
 									.ValueExpr("InvoiceType")
 									.DisplayExpr("InvoiceType")
 									.LabelMode(EditorLabelMode.Outside)
@@ -519,7 +535,6 @@
 							.OpenOnFieldClick(false)
 							.ValueChangeEvent("input")
 							.HoverStateEnabled(true)
-							.Value("Tax Invoice")
 							.ValueExpr("InvoiceType")
 							.DisplayExpr("InvoiceType")
 							.LabelMode(EditorLabelMode.Outside)
@@ -685,7 +700,7 @@
 							.OpenOnFieldClick(false)
 														.ValueChangeEvent("input")
 														.HoverStateEnabled(true)
-							.Value("Tax Invoice")
+							
 							.ValueExpr("InvoiceType")
 							.DisplayExpr("InvoiceType")
 							.LabelMode(EditorLabelMode.Outside)
@@ -774,6 +789,7 @@
 															.TabIndex(1)
 															.Width("100%")
 															.OnKeyDown("onKeyDown")
+                                                            .Value(8)
 															//.OnValueChanged("dropDownBoxValueChanged")
 															.ContentTemplate(new TemplateName("GetTaxContentTemplate"))
 															)
@@ -848,6 +864,7 @@
 													.HoverStateEnabled(true)
 													.ValueExpr("CompanyId")
 															.DisplayExpr("CompanyName")
+															.Value(1)
 													.OnInput("dropDownBoxOnInput")
 													.OnOpened("onOpened")
 													.TabIndex(1)
@@ -875,6 +892,7 @@
 															.OpenOnFieldClick(false)//
 															.ValueChangeEvent("input")
 															.HoverStateEnabled(true)
+															.Value(1)
 															.ValueExpr("RequestedByCode")
 															.DisplayExpr("RequestedBy")
 															.OnInput("dropDownBoxOnInput")
@@ -882,6 +900,7 @@
 															.TabIndex(1)
 															.Width("100%")
 															.OnKeyDown("onKeyDown")
+															.Disabled(true)
 															//.OnValueChanged("dropDownBoxValueChanged")
 															.ContentTemplate(new TemplateName("GetMPRRequesterByContentTemplate"))
 															)
@@ -904,6 +923,7 @@
 															.OpenOnFieldClick(false)//
 															.ValueChangeEvent("input")
 															.HoverStateEnabled(true)
+															.Value(1)
 															.ValueExpr("PurchaseRequestStatusId")
 															.DisplayExpr("PurchaseRequestStatus")
 															.OnInput("dropDownBoxOnInput")
@@ -933,6 +953,7 @@
 													.OpenOnFieldClick(false)//
 													.ValueChangeEvent("input")
 													.HoverStateEnabled(true)
+													.Value(1)
 													.ValueExpr("InventoryMasterGroupId")
 												    .DisplayExpr("InventoryMasterGroup")
 													.OnInput("dropDownBoxOnInput")
@@ -1425,7 +1446,7 @@
 					.ID("GetProject-datagrid")
 					.DataSource(d => d.WebApi()
 					.Controller("AddNewClientRequest")
-					.LoadAction("GetClientName")
+					.LoadAction("GetClientDetails")
 					.LoadMode(DataSourceLoadMode.Raw)
 					.Key("ClientCode")
 					)
@@ -1461,7 +1482,7 @@
 					.ID("GetProject-datagrid1")
 					.DataSource(d => d.WebApi()
 					.Controller("AddNewClientRequest")
-					.LoadAction("GetModeOfRequest")
+					.LoadAction("GetModeofRequest")
 					.LoadMode(DataSourceLoadMode.Raw)
 					.Key("ModeOfRequestId")
 					)
@@ -1655,6 +1676,7 @@
 					.Columns(columns =>
 					{
 						columns.Add().Caption(new JS("formatMessage('Status')")).DataField("PurchaseRequestStatus");
+
 						
 					})
 					)
@@ -2211,6 +2233,22 @@
 			if (ddbInstance.option("opened")) {
 				ddbInstance.close();
 			}
+			 // Make an AJAX call to fetch contact details
+        $.ajax({
+            url: '/api/AddNewClientRequest/GetClientContactDetails',
+            type: 'GET',
+            data: { clientCode: selectedKey },
+            success: function (data) {
+                // Assuming 'data' contains ContactName, ContactEmail, and ContactMobile
+              
+ $('#txtContactName').dxTextBox("instance").option("value", data.ContactName);
+ $('#txtReqEmail').dxTextBox("instance").option("value",data.ContactEmail);
+ $('#ContactNo').dxTextBox("instance").option("value", data.ContactMobile);
+            },
+            error: function (xhr, status, error) {
+                console.error('Error fetching contact details:', error);
+            }
+        });
 		}
 	}
 	function dataGridInitialized1(e) {
@@ -2462,7 +2500,7 @@
 		} else  {
 			// If Mprno is not present and IsCurrent is not "true", generate a Autogenerate request number
 			$.ajax({
-				url: "/api/AddNewClientRequest/GetNewDebitNoteNoApi",
+				url: "/api/AddNewClientRequest/GetNewRequestNoApi",
 				type: "GET",
 				success: function (data) {
 					console.log("Success:", data);
@@ -2476,7 +2514,7 @@
 				},
 				error: function (xhr, status, error) {
 					console.error("Error loading Payment Accounts:", error);
-					DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+					DevExpress.ui.dialog.alert("Failed to load Rquest No details.", "Error");
 				}
 			});
 		}
@@ -6773,6 +6811,11 @@ LineTotal: 0
 		  }
 			 function AddTypeReq(){
 				const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
+			  const title = "";
+				  openModal(url, title);
+		  }
+		  	 function AddNewClient(){
+				const url = `/${tenantName}/IMS/ClientLeadMaster`;
 			  const title = "";
 				  openModal(url, title);
 		  }
