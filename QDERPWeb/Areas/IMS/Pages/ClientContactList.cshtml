@@ -337,7 +337,7 @@ $(document).ready(function () {
 
     // Extract and clean parameters safely
     const clientContactSlNo = (urlParams.get("ClientContactSlNo") || "").split(/[?&]/)[0];
-    const clientCode = (urlParams.get("clientCode") || "").split(/[?&]/)[0];
+   // const clientCode = (urlParams.get("clientCode") || "").split(/[?&]/)[0];
     const clientName = (urlParams.get("clientName") || "").split(/[?&]/)[0];
 
     // Bind hidden and visible values
@@ -422,13 +422,20 @@ function bindClientContactData(clientContactSlNo) {
         data: JSON.stringify(data),
         success: function (res) {
             if (res.success) {
-                DevExpress.ui.notify(res.message, "success", 2000);
-
+                DevExpress.ui.notify(res.message, "success", 3000);
+                    // Refresh parent DataGrid (ensure the correct selector is used)
+                    if (window.parent && window.parent.$("#ContactListdataGrid").length) {
+                        let dataGrid = window.parent.$("#ContactListdataGrid").dxDataGrid("instance");
+                        if (dataGrid) {
+                            dataGrid.refresh();
+                        }
+                    }
                 // Set new or updated ID back to the hidden field
                 $("#clientHidden").dxTextBox("instance").option("value", res.lastClientContactSlNo);
 
                 // Change button text to "Update" if needed
                 $("#saveClientListButton").dxButton("instance").option("text", "Update");
+
             } else {
                 DevExpress.ui.notify(res.message, "error", 3000);
             }

@@ -1630,13 +1630,10 @@
                     url = `/${tenantName}/IMS/AddNewClientRequest`;
                     break;
                 case formatMessage('Add New Store Request'):
-                    url = `/${tenantName}/IMS/AddNewStoreRequest`;
+                    url = `/${tenantName}/IMS/MRAddNewStoreRequest`;
                     break;
                 case formatMessage('Add New Project Request'):
-                    url = `/${tenantName}/IMS/AddNewProjectRequest`;
-                    break;
-                    case formatMessage('Posting Of Cost Prices'):
-                    url = `/${tenantName}/IMS/DeliveryNoteDetails`;
+                    url = `/${tenantName}/IMS/MRAddNewProjectRequest`;
                     break;
                 default:
                     console.log("Clicked item: ", e.itemData.text);

@@ -524,7 +524,7 @@
 														.Label(new JS("formatMessage('Supplier Invoice No')"))
 														.LabelMode(EditorLabelMode.Outside)
 														.ShowClearButton(true)
-														.Disabled(true)
+														@* .Disabled(true) *@
 														.AcceptCustomValue(true)
 														.OpenOnFieldClick(false)
 														.DropDownOptions(d => d.Width(600))
@@ -956,7 +956,7 @@
 				</tr>
 				<tr style="width: 100%">
 					<td>
-						<div style="display: flex; align-items: start; flex-direction: row-reverse;">
+						<div style="display: flex; align-items: start; flex-direction: row-reverse; width:104%;">
 							@(Html.DevExtreme().CheckBox()
 														.Text(new JS("formatMessage('')"))
 														.ID("SubmittedBy")
@@ -964,7 +964,7 @@
 														.ElementAttr("style", "position:relative; right: 25px;")
 														)
 						@(Html.DevExtreme().DropDownBox()
-													.Label(new JS("formatMessage('Supplier Invoice Received On')"))
+														.Label(new JS("formatMessage('Supplier Invoice Received On:')"))
 													.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetItemsReturned").LoadMode(DataSourceLoadMode.Raw).Key("ItemId")) // Replace LoadAction accordingly
 													.LabelMode(EditorLabelMode.Outside)
 													.ID("ddlinvoicesubmittedon")
@@ -1567,7 +1567,7 @@
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
-						columns.Add().DataField("PurchaseBillNo").Caption("Purchase Bill No").Alignment(HorizontalAlignment.Center);
+						columns.Add().DataField("PurchaseBillNo").Caption("Purchase Bill No").Alignment(HorizontalAlignment.Left);
 					})
 					)
 		}
