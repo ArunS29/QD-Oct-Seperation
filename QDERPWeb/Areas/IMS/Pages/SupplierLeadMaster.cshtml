@@ -51,7 +51,6 @@
         gap: 10px;
         padding: 10px;
         margin-bottom: 15px;
-        width: 97%;
     }
 
 
@@ -309,8 +308,7 @@
             <div class="form-container">
                 <div class="form-row">
 
-                    <div class="col-md-6">
-                        <label>Supplier Ledger No</label>
+                    <div class="col-md-6" style="display:flex; align-items:end; gap:30px; width: 70%; ">
                         @(Html.DevExtreme().DropDownBox()
                         .DataSource(d => d.WebApi()
                         .Controller("SupplierMaster")
@@ -319,6 +317,7 @@
                         .Key("AccountId")
                         )
                         .LabelMode(EditorLabelMode.Outside)
+                        .Label("Supplier Ledger No")
                         .ID("GetSupplierLedgerNoDropDown")
                         .Width(900)
                         @*  .ShowClearButton(true)
@@ -336,10 +335,17 @@
                         //.OnValueChanged("dropDownBoxValueChanged")
                         .ContentTemplate(new TemplateName("GetSupplierLedgerNoContentTemplate"))
                         )
-
-                    </div>
-
-
+                    <td>
+                            <div id="LedgerActive" class="no-border-input" style="width:50%"></div>
+                            @(Html.DevExtreme().Switch()
+                            .ID("SubmasterActive")
+                            .Value(false)  
+                            .SwitchedOffText("No") 
+                            .SwitchedOnText("Yes") 
+                            .Width(100) 
+                            )
+                     </td>
+                  </div>
                 </div>
                 <div class="form-row">
                     <div class="col-md-12">
@@ -457,13 +463,11 @@
                     {
                     @*   columns.AddFor(m => m.).Caption(""); *@
                     columns.AddFor(m => m.ContactPerson).Caption("Name").Alignment(HorizontalAlignment.Center);
-
-
                     columns.AddFor(m => m.ContactPersonTitle).Caption("Title").Alignment(HorizontalAlignment.Center);
                     columns.AddFor(m => m.ContactEmail).Caption("Email").Alignment(HorizontalAlignment.Center);
                     columns.AddFor(m => m.ContactMobile1).Caption("Mobile").Alignment(HorizontalAlignment.Center);
                     columns.AddFor(m => m.ContactPhone1).Caption("Phone").Alignment(HorizontalAlignment.Center);
-                    columns.AddFor(m => m.SupplierContactSlNo).Caption("Supplier ContactSlNo").Alignment(HorizontalAlignment.Center);
+                    columns.AddFor(m => m.SupplierContactSlNo).Caption("Supplier ContactSlNo").Alignment(HorizontalAlignment.Center).Visible(false);
                     })
                     //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
                     .AllowColumnReordering(true) // Enable column reordering
@@ -1106,4 +1110,30 @@
                         function Goback() {
         window.parent.closeModal(); // This closes the current window/tab
     }
+
+         $(function () {
+        // Initialize the TextBox with default text
+        $("#LedgerActive").dxTextBox({
+            value: "Supllier is Currently Active:",
+            readOnly: true
+        });
+
+        // Get the instance of the switch
+        let switchInstance = $("#SubmasterActive").dxSwitch("instance");
+
+        // Handle value change event
+        switchInstance.option("onValueChanged", function (e) {
+            let textBoxInstance = $("#LedgerActive").dxTextBox("instance");
+
+            if (e.value) {
+                // When switched ON, update text and apply red color
+                textBoxInstance.option("value", "Supplier is set as obsolete:");
+                $("#LedgerActive .dx-texteditor-input").css("color", "red");
+            } else {
+                // When switched OFF, update text and reset color
+                textBoxInstance.option("value", "Ledger is Currently Active:");
+                $("#LedgerActive .dx-texteditor-input").css("color", "black");
+            }
+        });
+    });
 </script>

@@ -164,7 +164,7 @@
 
 
     </div>
-
+    <br />
     <div id="gridContainer"></div>
 
 
@@ -269,35 +269,49 @@
                                var clientCategoryCode = selectedData.ClientCategoryCode;
 
                                 // Send delete request to the API
-                                $.ajax({
-                                    type: "POST",
-                                    url: "/api/ClientCategory1/DeleteBranchMaster",
-                                    data: JSON.stringify({ ClientCategoryCode: clientCategoryCode }),
-                                    contentType: "application/json",
-                                    success: function (response) {
-                                        if (response.success) {
-                                            dataGrid.refresh(); // Refresh the grid
-                                            Swal.fire({
-                                                icon: 'success',
-                                                title: 'Success',
-                                                text: formatMessage(' deleted successfully.'),
-                                                confirmButtonText: 'OK'
-                                            });
-                                        } else {
-                                            Swal.fire({
-                                                icon: 'error',
-                                                title: 'Error',
-                                                text: response.message,
-                                                confirmButtonText: 'OK'
-                                            });
-                                        }
-                                    },
-                                    error: function (xhr) {
-                                        Swal.fire({
-                                            icon: 'error',
-                                            title: 'Error',
-                                            text: xhr.responseText,
-                                            confirmButtonText: 'OK'
+                                                      Swal.fire({
+                            title: 'Are you sure?',
+                            text: "Do you really want to delete this item?",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#d33',
+                            cancelButtonColor: '#3085d6',
+                            confirmButtonText: 'Yes, delete it!',
+                            cancelButtonText: 'No'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                        // Proceed with delete
+                                        $.ajax({
+                                            type: "POST",
+                                            url: "/api/ClientCategory1/DeleteBranchMaster",
+                                            data: JSON.stringify({ ClientCategoryCode: clientCategoryCode }),
+                                            contentType: "application/json",
+                                            success: function (response) {
+                                                if (response.success) {
+                                                    dataGrid.refresh(); // Refresh the grid
+                                                    Swal.fire({
+                                                        icon: 'success',
+                                                        title: 'Deleted!',
+                                                        text: 'The item was deleted successfully.',
+                                                        confirmButtonText: 'OK'
+                                                    });
+                                                } else {
+                                                    Swal.fire({
+                                                        icon: 'error',
+                                                        title: 'Error',
+                                                        text: response.message,
+                                                        confirmButtonText: 'OK'
+                                                    });
+                                                }
+                                            },
+                                            error: function (xhr) {
+                                                Swal.fire({
+                                                    icon: 'error',
+                                                    title: 'Error',
+                                                    text: xhr.responseText,
+                                                    confirmButtonText: 'OK'
+                                                });
+                                            }
                                         });
                                     }
                                 });

@@ -221,7 +221,8 @@
                     .DisplayExpr("InventoryMasterGroup") // selected item shows only the name
                     
                     .LabelMode(EditorLabelMode.Outside)
-                    .Label("Inventory Master Groups")
+                    .Label(new JS("formatMessage('Inventory Master Groups')"))
+
                     .ValidationRules(rules =>
                     {
                         rules.AddRequired()
@@ -356,7 +357,7 @@
                         .Alignment(HorizontalAlignment.Center);
 
                         columns.AddFor(m => m.InventoryMasterGroupId)
-                        .Caption(new JS("formatMessage('Inventory Master Group')"))
+                        .Caption(new JS("formatMessage('Inventory Master Groups')"))
                         .Alignment(HorizontalAlignment.Center);
 
                         columns.AddFor(m => m.IsServicesGroup)
