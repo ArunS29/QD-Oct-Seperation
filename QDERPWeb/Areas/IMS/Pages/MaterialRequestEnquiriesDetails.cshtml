@@ -637,11 +637,11 @@
 								title = "Edit Client Request";
 								break;
 							case "Project Request":
-								url = `/${tenantName}/IMS/AddNewProjectRequest?Mprno=${Mprno}`;
+								url = `/${tenantName}/IMS/MRAddNewProjectRequest?Mprno=${Mprno}`;
 								title = "Edit Project Request";
 								break;
 							case "Store Request":
-								url = `/${tenantName}/IMS/AddNewStoreRequest?Mprno=${Mprno}`;
+								url = `/${tenantName}/IMS/MRAddNewStoreRequest?Mprno=${Mprno}`;
 								title = "Edit Store Request";
 								break;
 							default:
@@ -649,7 +649,8 @@
 								return;
 						}
 
-						openModal(url, title);
+						//openModal(url, title);
+						window.location.href=url;
 					}
 				},
 
