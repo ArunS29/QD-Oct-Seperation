@@ -2723,18 +2723,50 @@
         "Delivery Details":"Delivery Details",
         "Min Qty": "Min Qty",
         "Max Qty": "Max Qty",
-
-
-
+        "Stock Delivery From Store:":"Stock Delivery From Store:",
+        "Print Item Part No with Arabic Desc.":"Print Item Part No with Arabic Desc.",
+        "Quotation Details": "Quotation Details",
+        "Quote No": "Quote No",
+        "Quote Date": "Quote Date",
+        "Client Name": "Client Name",
+        "Mpr no": "Mpr no",
+        "Client Ref No": "Client Ref No",
+        "Sales Order No": "Sales Order No",
+        "Sales Person Name": "Sales Person Name",
+        "IsSubmitted": "IsSubmitted",
+        "IsVerified": "IsVerified",
+        "IsApproved": "IsApproved",
+        "No Of Items": "No Of Items",
+        "Quoted Amount": "Quoted Amount",
+        "Total Before Discount": "Total Before Discount",
+        "Discount": "Discount",
+        "Total Tax Amount": "Total Tax Amount",
+        "Total With Tax": "Total With Tax",
 
 
 
     },
     "ar": {
 
-
-
-
+        "Quotation Details": "تفاصيل عرض السعر",
+        "Quote No": "رقم العرض",
+        "Quote Date": "تاريخ العرض",
+        "Client Name": "اسم العميل",
+        "Mpr no": "رقم طلب المواد",
+        "Client Ref No": "رقم مرجع العميل",
+        "Sales Order No": "رقم أمر البيع",
+        "Sales Person Name": "اسم مندوب المبيعات",
+        "IsSubmitted": "تم الإرسال",
+        "IsVerified": "تم التحقق",
+        "IsApproved": "تمت الموافقة",
+        "No Of Items": "عدد العناصر",
+        "Quoted Amount": "المبلغ المقتبس",
+        "Total Before Discount": "الإجمالي قبل الخصم",
+        "Discount": "الخصم",
+        "Total Tax Amount": "إجمالي مبلغ الضريبة",
+        "Total With Tax": "الإجمالي مع الضريبة",
+        "Print Item Part No with Arabic Desc.":"اطبع رقم جزء العنصر مع الوصف باللغة العربية.",
+        "Stock Delivery From Store:":"تسليم المخزون من المتجر:",
         "Min Qty": "الحد الأدنى للكمية",
         "Max Qty": "الكمية القصوى",
         "Delivery Details":"تفاصيل التسليم",
