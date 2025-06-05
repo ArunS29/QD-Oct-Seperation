@@ -17,10 +17,11 @@ namespace QD.ERP.Web.DAL.Entities
 
             optionsBuilder.UseSqlServer(connectionString, sqlOptions =>
             {
+                sqlOptions.CommandTimeout(120); // Set timeout to 120 seconds
                 sqlOptions.EnableRetryOnFailure(
-                    maxRetryCount: 5, // Number of retry attempts
-                    maxRetryDelay: TimeSpan.FromSeconds(10), // Maximum delay between retries
-                    errorNumbersToAdd: null // Optional: specify SQL error codes to retry on
+                    maxRetryCount: 5,
+                    maxRetryDelay: TimeSpan.FromSeconds(80),
+                    errorNumbersToAdd: null
                 );
             })
                         .EnableSensitiveDataLogging()
