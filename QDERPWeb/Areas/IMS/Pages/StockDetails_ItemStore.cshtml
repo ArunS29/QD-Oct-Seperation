@@ -30,7 +30,12 @@
     .dx-datagrid-headers .dx-datagrid-table .dx-row > td {
         text-align: center !important;
     }
-
+     
+    .dx-invalid-message, .dx-overlay-content {
+        text-align: left !important; /* or center, as you prefer */
+        font-size: 13px;
+        margin-top: 2px;
+    }
     .overlay-content {
         position: absolute;
         top: 50%;
@@ -185,7 +190,7 @@
     <div class="store-master-container">
 
         <div class="form-row">
-            <label for="StoreName" class="form-label">Store Name</label>
+            <label id="StoreNameq" class="form-label"></label>
             @(Html.DevExtreme().TextBox()
                 .ID("StoreName")
                 .Width("75%")
@@ -200,7 +205,7 @@
 
         <div class="form-row multi-column" style="display:flex; gap:30px;">
             <div>
-                <label for="StoreId" class="form-label">Store Code</label>
+                <label id="StoreIdq" for="StoreId" class="form-label">Store Code</label>
                 @(Html.DevExtreme().TextBox()
                     .ID("StoreId")
                     .Name("StoreId")
@@ -213,7 +218,7 @@
             </div>
 
             <div>
-                <label for="CostCenter" class="form-label">Cost Center</label>
+                <label id="CostCenterq" for="CostCenter" class="form-label">Cost Center</label>
                 <div style="display:flex; align-items:center; gap:20px;">
                     @(Html.DevExtreme().SelectBox()
                         .ID("CostCenter")
@@ -232,7 +237,7 @@
                         )
                     <div class="add-button-wrap">
                         @(Html.DevExtreme().Button()
-                            .Text("Add")
+                            .Text(new JS("formatMessage('Add')"))
                             .Type(ButtonType.Success)
                             .Icon("plus")
                             .Width("100%")
@@ -267,9 +272,9 @@
              
                 .Columns(columns =>
                 {
-                    columns.Add().DataField("StoreId").Caption("Store ID").Width(200).Alignment(HorizontalAlignment.Center).AllowEditing(false);
-                    columns.Add().DataField("StoreName").Caption("Store Name").Width(300).Alignment(HorizontalAlignment.Center);
-                    columns.Add().DataField("CostAllocationUnitId").Caption("Cost Center for Consumption").Width(250).Alignment(HorizontalAlignment.Center);
+                    columns.Add().DataField("StoreId").Caption(new JS("formatMessage('Store ID')")).Width(200).Alignment(HorizontalAlignment.Center).AllowEditing(true);
+                    columns.Add().DataField("StoreName").Caption(new JS("formatMessage('Store Name')")).Width(300).Alignment(HorizontalAlignment.Center);
+                    columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('Cost Center for Consumption')")).Width(250).Alignment(HorizontalAlignment.Center);
                 })
                 .Editing(editing => editing
                 .Mode(GridEditMode.Row)
@@ -288,7 +293,7 @@
         <div style="display:flex; gap:1%;">
             <div class="action-buttons">
                 @(Html.DevExtreme().Button()
-                    .Text("Back")
+                    .Text(new JS("formatMessage('Back')"))
                     .Icon("arrowleft")
                     .OnClick("Goback")
                     .Width(120)
@@ -314,22 +319,27 @@
         });
     });
 
-    function onAddStoreClick() {
+        function onAddStoreClick() {
+        // Trigger DevExtreme validation for each field
+        var isStoreIdValid = $("#StoreId").dxValidator("instance").validate().isValid;
+        var isStoreNameValid = $("#StoreName").dxValidator("instance").validate().isValid;
+        var isCostCenterValid = $("#CostCenter").dxValidator("instance").validate().isValid;
+
+        // If any field is invalid, DevExtreme will show the required message under the field
+        if (!isStoreIdValid || !isStoreNameValid || !isCostCenterValid) {
+                 DevExpress.ui.notify('Please fill all required fields correctly.', 'error', 3000);
+            return;
+        }
+
         var storeId = $("#StoreId").dxTextBox("instance").option("value");
         var storeName = $("#StoreName").dxTextBox("instance").option("value");
         var costCenter = $("#CostCenter").dxSelectBox("instance").option("value");
-
-        if (!storeId || !storeName || !costCenter) {
-            DevExpress.ui.notify("Please fill all required fields.", "error", 2000);
-            return;
-        }
 
         var storeData = {
             StoreId: storeId,
             StoreName: storeName,
             CostAllocationUnitId: costCenter
         };
-
         $.ajax({
             url: '/api/StockInventory/AddStore',
             type: 'POST',
@@ -363,5 +373,17 @@
             });
         }
     });
+         $(function () {
+              $("#StoreNameq").text(
+               formatMessage("Store Name"));
+                });
+                $(function () {
+                  $("#CostCenterq").text(
+                   formatMessage("Cost Center"));
+                });
+                $(function () {
+                  $("#StoreIdq").text(
+                   formatMessage("Store ID"));
+                });
 
 </script>

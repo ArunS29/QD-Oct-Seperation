@@ -371,10 +371,10 @@
 			@(Html.DevExtreme().Tabs()
 									.Items(items =>
 									{
-										items.Add().Icon("optionsgear").Text("Material Request's/Enquiry Details");
-										items.Add().Icon("accountbox").Text("Request Details");
-										items.Add().Icon("card").Text("Branch/Divisions");
-										items.Add().Icon("attach").Text("Signatories");
+							items.Add().Icon("optionsgear").Text(new JS("formatMessage('Material Requests/Enquiry Details')"));
+							items.Add().Icon("accountbox").Text(new JS("formatMessage('Request Details')"));
+							items.Add().Icon("card").Text(new JS("formatMessage('Branch/Divisions')"));
+							items.Add().Icon("attach").Text(new JS("formatMessage('Signatories')"));
 									})
 									.SelectedIndex(0)
 									.OnSelectionChanged("onTabSelectionChanged")
@@ -572,7 +572,7 @@
 						<td colspan="2" style="width:100%;">
 							@(Html.DevExtreme().TextBox()
 							.ID("ContactNo")
-							.Label("Contact No:")
+							.Label(new JS("formatMessage('Contact No:')"))
 							.LabelMode(EditorLabelMode.Outside)
 							.Width("100%"))
 
@@ -616,40 +616,40 @@
 							)
 						</td>
 						<td style="display: flex; align-items:end;width:100%;" colspan="2">
-							@(Html.DevExtreme().DropDownBox()
-														.Label(new JS("formatMessage('Type of Request:')"))
-														.DataSource(d => d.WebApi()
-														.Controller("AddNewClientRequest")
-														.LoadAction("GetTypeOfRequest")
-														.LoadMode(DataSourceLoadMode.Raw)
-														.Key("TypeOfRequestId")
-														)
-														.LabelMode(EditorLabelMode.Outside)
-														.ID("ddGetTypeOfRequest")
-														.Width(900)
-														@*  .ShowClearButton(true)
-							.AcceptCustomValue(true) *@
-														.OpenOnFieldClick(false)//
-														.ValueChangeEvent("input")
-														.HoverStateEnabled(true)
-														.ValueExpr("TypeOfRequestId")
-														.DisplayExpr("TypeOfRequest")
-														.OnInput("dropDownBoxOnInput")
-														.OnOpened("onOpened")
-														.TabIndex(1)
-														.Width("100%")
-														.OnKeyDown("onKeyDown")
-														//.OnValueChanged("dropDownBoxValueChanged")
-														.ContentTemplate(new TemplateName("GetTypeOfRequestContentTemplate"))
-														)
-							@(Html.DevExtreme().Button()
-							.ID("AddTypeReq")
-							.Icon("plus")
-							.Hint("Add Description")
-							.Width(40)
-							.ElementAttr("style", "margin-top:18px;")
-							.OnClick("AddTypeReq")
-							)
+						  @(Html.DevExtreme().DropDownBox()
+								.Label(new JS("formatMessage('Type of Request:')"))
+								.DataSource(d => d.WebApi()
+								.Controller("AddNewClientRequest")
+								.LoadAction("GetTypeOfRequest")
+								.LoadMode(DataSourceLoadMode.Raw)
+								.Key("TypeOfRequestId")
+								)
+								.LabelMode(EditorLabelMode.Outside)
+								.ID("ddGetTypeOfRequest")
+								.Width(900)
+								@*  .ShowClearButton(true)
+	.AcceptCustomValue(true) *@
+								.OpenOnFieldClick(false)//
+								.ValueChangeEvent("input")
+								.HoverStateEnabled(true)
+								.ValueExpr("TypeOfRequestId")
+								.DisplayExpr("TypeOfRequest")
+								.OnInput("dropDownBoxOnInput")
+								.OnOpened("onOpened")
+								.TabIndex(1)
+								.Width("100%")
+								.OnKeyDown("onKeyDown")
+								//.OnValueChanged("dropDownBoxValueChanged")
+								.ContentTemplate(new TemplateName("GetTypeOfRequestContentTemplate"))
+								)
+								@(Html.DevExtreme().Button()
+								.ID("AddTypeReq")
+								.Icon("plus")
+								.Hint("Add Description")
+								.Width(40)
+								.ElementAttr("style", "margin-top:18px;")
+								.OnClick("AddTypeReq")
+								)
 						</td>
 						<td colspan="2" style="width:100%;">
 							 @(Html.DevExtreme().DropDownBox()
@@ -826,7 +826,7 @@
 						<tr>
 							
 							<td>
-									<label>Remarks:</label>
+									<label id="remark"></label>
 									@(Html.DevExtreme().TextArea()
 									.ID("txtRemarks")
 									.ElementAttr("style", "height:150px !important;")
@@ -3252,9 +3252,9 @@ function loadClientDetails(mprno) {
                     height: 300,
                     scrolling: { mode: "virtual" },
                     columns: [
-                        { dataField: "QuoteGroupItemSlNo", caption: "ID", width: 60 },
-                        { dataField: "GroupCode", caption: "Group Code", width: 80 },
-                        { dataField: "GroupName", caption: "Group Name", width: 200 }
+                        { dataField: "QuoteGroupItemSlNo",caption: formatMessage("ID"), width: 60 },
+							{ dataField: "GroupCode",caption: formatMessage("Group Code"), width: 80 },
+                        { dataField: "GroupName", caption: formatMessage("Group Name"), width: 200 }
                     ],
                     onSelectionChanged: function (selectedItems) {
                         let selectedItem = selectedItems.selectedRowsData[0];
@@ -3381,19 +3381,19 @@ function loadClientDetails(mprno) {
 
 										columns: [
 
-											{ dataField: "GSCode", caption: "Code", width: 80 },
+													{ dataField: "GSCode", caption: formatMessage("Code"), width: 80 },
 
-											{ dataField: "GSDescrpition", caption: "Description", width: 200 },
+												{ dataField: "GSDescrpition", caption: formatMessage("Description"), width: 200 },
 
-											{ dataField: "GsdescriptionAr", caption: "Description In Arabic", width: 200 },
+												{ dataField: "GsdescriptionAr", caption: formatMessage("Description In Arabic"), width: 200 },
 
-											{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
+												{ dataField: "ItemPartNo", caption: formatMessage("Item Part No"), width: 100 },
 
-											{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
+												{ dataField: "CostPrice", caption: formatMessage("Cost Price"), width: 100 },
 
-											{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
+											{ dataField: "GSSellingRate", caption: formatMessage("Selling Rate"), width: 100 },
 
-											{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+													{ dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100 }
 
 										],
 
@@ -3557,13 +3557,13 @@ function loadClientDetails(mprno) {
 										columns: [
 
 
-											{ dataField: "UnitCode", caption: "Code", width: 80 },
+												{ dataField: "UnitCode", caption: formatMessage("Code"),width: 80 },
 
-											{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
+												{ dataField: "UnitDesc",caption: formatMessage("Unit Rate Method"), width: 200 },
 
-											{ dataField: "UnitType", caption: "Unit Type", width: 150 },
+												{ dataField: "UnitType", caption: formatMessage("Unit Type"), width: 150 },
 
-											{ dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
+												{ dataField: "UnitDescAr", caption: formatMessage("Unit Code"), width: 100 }
 
 										],
 
@@ -6828,6 +6828,10 @@ LineTotal: 0
 		}
 		});
 	});
+	 $(function () {
+						$("#remark").text(
+							 formatMessage("Remarks:"));
+            });
 
 
 		

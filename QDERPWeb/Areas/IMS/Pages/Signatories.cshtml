@@ -96,6 +96,7 @@
 
     .mainContainer {
         margin-top: 1em;
+        overflow-x:hidden;
     }
 
     .imagecontainer {
@@ -128,12 +129,10 @@
 </style>
 <div class="title">
     <div class="header-container">
-        <div id="TypeSignatory" class="no-border-input"></div>
+        <div id="DatabaseSignatories1" class="no-border-title"></div>
     </div>
 </div>
 <div class="signatory-form-container">
-    <div id="DatabaseSignatories" class="no-border-title"></div>
-
         <table style="width: 100%;">
             <tr>
                 <!-- LEFT CONTAINER -->
@@ -175,7 +174,7 @@
                             <div style="flex: 1;">
                                 @(Html.DevExtreme().DropDownBox()
                                     .ID("SignatoryUserId")
-                                    .Label("Signatory User ID:")
+                                    .Label(new JS("formatMessage('Signatory User ID:')"))
                                     .LabelMode(EditorLabelMode.Outside)
                                     .ShowClearButton(true)
                                     .OpenOnFieldClick(true)
@@ -205,8 +204,8 @@
                                                     allowedPageSizes: [5, 10, 20]
                                                 },
                                                 columns: [
-                                                    { dataField: "SignatoryID", caption: "ID", width: 60 },
-                                                    { dataField: "SignatoryName", caption: "Name", width: 200 }
+                                        { dataField: "SignatoryID",caption: formatMessage("ID"), width: 60 },
+                                            { dataField: "SignatoryName",caption: formatMessage("Name"), width: 200 }
                                                 ],
                                                 onSelectionChanged: function (e) {
                                                     var selected = e.selectedRowsData[0];
@@ -223,7 +222,7 @@
                             <div>
                                 @(Html.DevExtreme().Button()
                                     .ID("btnAddSalesPerson")
-                                    .Text("ADD")
+                                    .Text(new JS("formatMessage('ADD')"))
                                     .Icon("plus")
                                     .OnClick("function() { addSignatoryToGrid(); }")
                                     .ElementAttr(new { @class = "dx-button-add" })
@@ -319,11 +318,11 @@
         .OnRowUpdating("onSignatoryUpdating")                       // Handles saving
             .Columns(columns =>
             {
-                columns.Add().DataField("SignatoryID").Caption("ID").Width(80).AllowEditing(false);
-                columns.Add().DataField("SignatoryName").Caption("Name").Width(200);
-                columns.Add().DataField("SignatoryPosition").Caption("Position").Width(200);
-                columns.Add().DataField("SignatoryContact").Caption("Contact").Width(150);
-                columns.Add().DataField("SignatoryEmail").Caption("Email").Width(250);
+                columns.Add().DataField("SignatoryID").Caption(new JS("formatMessage('ID')")).Width(80).AllowEditing(false);
+                columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Name')")).Width(200);
+                columns.Add().DataField("SignatoryPosition").Caption(new JS("formatMessage('Position')")).Width(200);
+                columns.Add().DataField("SignatoryContact").Caption(new JS("formatMessage('Contact')")).Width(150);
+                columns.Add().DataField("SignatoryEmail").Caption(new JS("formatMessage('Email')")).Width(250);
             // Image columns with cell template
             columns.Add().DataField("DecodedBusinessCard1")
             .Caption(new JS("formatMessage('Signature Image')"))
@@ -404,7 +403,7 @@
         });
 
     $(function () {
-        $("#TypeSignatory").dxTextBox({
+        $("#DatabaseSignatories1").dxTextBox({
             text: formatMessage("Database Signatories"),
             readOnly: true,
             onContentReady: function (e) {

@@ -275,7 +275,7 @@
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
             .ID("btnPrint3")
-            .Text("Print") // Using string directly
+            .Text(new JS("formatMessage('Print')")) // Using string directly
             .Icon("print")
             .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
             .DropDownOptions(options => options.Width(230))
@@ -621,7 +621,7 @@
     <div class="btn-containerIvoiceEdit">
         @(Html.DevExtreme().DropDownButton()
             .ID("btnPrint2")
-            .Text("Print")
+            .Text(new JS("formatMessage('Print')"))
             .Icon("print")
             .ElementAttr(new { @class = "bold-button" })
             .DropDownOptions(options => options.Width(230))
@@ -771,7 +771,7 @@
     <div class="btn-containerIvoiceEdit">
         @(Html.DevExtreme().DropDownButton()
             .ID("btnPrint1")
-            .Text("Print")
+            .Text(new JS("formatMessage('Print')"))
             .Icon("print")
             .ElementAttr(new { @class = "bold-button" })
             .DropDownOptions(options => options.Width(230))
@@ -797,7 +797,7 @@
     <div class="btn-containerIvoiceEdit">
         @(Html.DevExtreme().DropDownButton()
             .ID("btnPrint22")
-            .Text("Print")
+            .Text(new JS("formatMessage('Print')"))
             .Icon("print")
             .ElementAttr(new { @class = "bold-button" })
             .DropDownOptions(options => options.Width(230))
