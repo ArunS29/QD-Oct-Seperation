@@ -2,7 +2,6 @@
 using DevExtreme.AspNet.Mvc;
 using Humanizer;
 using DevExtreme.AspNet.Data.ResponseModel;
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -29,7 +28,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
-
         [HttpGet]
         public async Task<IActionResult> GetCashBalance()
         {
@@ -40,14 +38,14 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             try
             {
-                // Use projection to reduce data transfer and memory usage
-                var cashBalance = await dbContext.Qry201MainVoucherEntriesWithMasters
-                    .AsNoTracking()
-                    .Where(v => v.AccountGroup == "BANK ACCOUNTS" || v.AccountGroup == "CASH-IN-HAND")
-                    .Select(v => (v.DrAmount ?? 0) - (v.CrAmount ?? 0)) // Project only required fields
-                    .SumAsync();
+                var cashbalance = await dbContext.SupplierOutstandings
+              .AsNoTracking()
+              .Where(x => x.AccountHead == "Cash Balance")
+              .Select(x => x.Balance)
+              .FirstOrDefaultAsync(); // Or .SingleOrDefaultAsync() if exactly one row is expected
 
-                return Ok(new { success = true, cashBalance = Math.Round(cashBalance, 2) }); // Return rounded value
+                return Ok(new { success = true, balance = cashbalance });
+
             }
             catch (Exception ex)
             {
@@ -55,9 +53,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
-
         [HttpGet]
-        public async Task<IActionResult> GetTotalClientOutstanding()
+        public async Task<IActionResult> supplieroutstanding()
         {
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
             {
@@ -66,14 +63,14 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             try
             {
-                // Use projection to reduce data transfer and memory usage
-                var totalOutstanding = await dbContext.Qry20115BillsOutStandings
+                var totalOutstanding = await dbContext.SupplierOutstandings
                     .AsNoTracking()
-                    .Where(b => b.Balance > 0)
-                    .Select(b => b.Balance) // Project only required fields
-                    .SumAsync();
+                    .Where(x => x.AccountHead == "supplier outstanding")
+                    .Select(x => x.Balance)
+                    .FirstOrDefaultAsync(); // Or .SingleOrDefaultAsync() if exactly one row is expected
 
-                return Ok(new { success = true, totalOutstanding = Math.Round(totalOutstanding ?? 0, 2) }); // Return rounded value
+                return Ok(new { success = true, balance = totalOutstanding });
+
 
             }
             catch (Exception ex)
@@ -82,6 +79,33 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
+        [HttpGet]
+        public async Task<IActionResult> GetTotalClientOutstanding()
+        {
+
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+
+            try
+            {
+                var totalOutstanding = await dbContext.SupplierOutstandings
+                 .AsNoTracking()
+                 .Where(x => x.AccountHead == "client outstanding")
+                 .Select(x => x.Balance)
+                 .FirstOrDefaultAsync(); // Or .SingleOrDefaultAsync() if exactly one row is expected
+
+                return Ok(new { success = true, balance = totalOutstanding });
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in GetTotalBillsOutstanding");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
 
         [HttpGet]
         public async Task<IActionResult> GetTotalBillsOutstanding()
@@ -93,21 +117,21 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             try
             {
-                // Use projection to reduce data transfer and memory usage
-                var totalBillsOutstanding = await dbContext.Qry20115BillsPayableOutStandings
+                var totalOutstanding = await dbContext.SupplierOutstandings
                     .AsNoTracking()
-                    .Where(b => b.Balance > 0)
-                    .Select(b => b.Balance) // Project only required fields
-                    .SumAsync();
+                    .Select(x => x.Balance)
+                    .FirstOrDefaultAsync(); // Or .SingleOrDefaultAsync() if exactly one row is expected
 
-                return Ok(new { success = true, totalBillsOutstanding = Math.Round(totalBillsOutstanding ?? 0, 2) }); // Return rounded value
+                return Ok(new { success = true, balance = totalOutstanding });
+
 
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in GetTotalBillsOutstanding");
+                _logger.LogError(ex, "Error in GetTotalClientOutstanding");
                 return StatusCode(500, "Internal server error");
             }
+
         }
 
         [HttpGet]
