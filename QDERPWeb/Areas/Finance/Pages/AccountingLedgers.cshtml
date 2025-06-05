@@ -492,6 +492,14 @@
 				.FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
 				.GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
 				.ShowBorders(true)
+				.Paging(p => p.Enabled(true).PageSize(15))    // enable paging with 15 rows per page
+				.Pager(pager => pager
+				.Visible(true)                            // show pager UI (page numbers etc)
+				.ShowPageSizeSelector(true)              // allow user to change page size
+				.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+				.ShowInfo(true)                          // show info like "Page 1 of 10"
+				)
+
 				.ShowRowLines(true) // Enable row lines
 				@* 	.ColumnChooser(columnChooser => columnChooser
 		.Enabled(false) // Enable the column chooser for hiding and showing columns
@@ -573,6 +581,14 @@
 								.OnInitialized("dataGridInitialized")
 							.HeaderFilter(p => p.Visible(false))
 								.ShowBorders(true)
+									.Paging(p => p.Enabled(true).PageSize(15))    // enable paging with 15 rows per page
+	.Pager(pager => pager
+		.Visible(true)                            // show pager UI (page numbers etc)
+		.ShowPageSizeSelector(true)              // allow user to change page size
+		.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+		.ShowInfo(true)                          // show info like "Page 1 of 10"
+	)
+
 								.HoverStateEnabled(true)
 								//.Paging(p => p.PageSize(15))
 								.FilterRow(f => f.Visible(true))
@@ -629,7 +645,7 @@
 		var formId = "frm201LedgerView";
 
 		// Call the API to get permissions
-		$.ajax({
+		$.ajax({	
 			url: '/api/Permissions/GetAccessDetails?formId=' + formId,
 			type: 'GET',
 			contentType: 'application/json',

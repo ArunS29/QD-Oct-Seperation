@@ -5,7 +5,17 @@
 @{
 } *@
 <style>
+	.dx-datagrid-headers .center-header {
+		text-align: center !important;
+	}
 
+	.Head{
+		margin-bottom: 10px;
+	}
+
+	#B2BdataGrid {
+		height: 700px !important;
+	}
 	.toggle-switch {
 		position: relative;
 		display: inline-block;
@@ -467,6 +477,12 @@
 		-webkit-user-drag: none;
 		padding: 1px;
 	}
+
+	/* .full-height-container {
+		height: 100%;
+	} */
+
+	
 </style>
 
 <link rel="stylesheet" href="~/css/Site.css" />
@@ -518,7 +534,7 @@
 				
 				<div class="card-container">
 					<!-- First Card (Left Side) -->
-						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
+						<table width="100%" style="font-size:14px;" cellpadding="5">
 							<tr>
 								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice No')")).ID("InvoiceNo").Disabled(true).LabelMode(EditorLabelMode.Outside))</td>
 								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Date')")).ID("InvoiceDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).Disabled(true).LabelMode(EditorLabelMode.Outside))</td>
@@ -607,7 +623,7 @@
 
 									@(Html.DevExtreme().DropDownBox()
 																			.ID("InvoiceTransactionsCode")
-																			.Label("Invoice Transactions Code*")
+																			.Label("Invoice Transactions Code")
 																			.Value("0100000") // Default selected value
 																			.ValueExpr("ID")
 																			.DisplayExpr("ID")
@@ -637,7 +653,7 @@
 
 					<!-- Second Card (Right Side) -->
 					
-						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
+						<table width="100%" style="font-size:14px;" cellpadding="5">
 							<tr>
 								<td>
 									@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Client Code')"))//.ID("ClientCode")
@@ -977,7 +993,7 @@
 
 							</tr>
 							<tr>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Counter Value')")).ID("InvoiceCounterValue").LabelMode(EditorLabelMode.Outside).Disabled(true))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Counter Value:')")).ID("InvoiceCounterValue").LabelMode(EditorLabelMode.Outside).Disabled(true))</td>
 							<td colspan="3">@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('UUID')")).ID("UUID").LabelMode(EditorLabelMode.Outside).Disabled(true))</td>
 							</tr>
 						</table>
@@ -2059,6 +2075,7 @@
 							Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
 							.ID("B2BdataGrid")
 							.RemoteOperations(false)
+						
 							.Columns(columns =>
 							{
 								columns.AddFor(m => m.VoucherEntryNo)
@@ -2269,7 +2286,7 @@
 
 							{
 
-								totalItems.Add().Column("Discount").SummaryType(SummaryType.Sum)
+								totalItems.Add().Column("Discount").SummaryType(SummaryType.Sum).Alignment(HorizontalAlignment.Right)
 
 							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
@@ -2281,7 +2298,7 @@
 
 							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
-							totalItems.Add().Column("VAT").SummaryType(SummaryType.Sum)
+								totalItems.Add().Column("VAT").SummaryType(SummaryType.Sum).Alignment(HorizontalAlignment.Right)
 
 							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 								totalItems.Add().Column("Total").SummaryType(SummaryType.Sum)
@@ -2295,7 +2312,7 @@
 		</div>
 
 		<div class="Head">
-			<div class="limited-footer">
+			<div class="limited-footer" style="margin-left: 15px;">
 				@await Html.PartialAsync("VATModuleFooter")
 			</div>
 		</div>
@@ -3575,6 +3592,7 @@
 
 		});
 
+
 		function initializeDataGrid(rowData) {
     let grid = $("#B2BdataGrid").dxDataGrid({
         dataSource: rowData,
@@ -3916,6 +3934,7 @@
 
 			keyExpr: "SNo",
 
+
 			columns: [
 				          {
 
@@ -3931,7 +3950,7 @@
 					dataField: "SNo",
 
 					caption: "#",
-
+					cssClass: "center-header",
 					width: 100,
 
 					allowEditing: false // Prevent manual editing
@@ -3943,6 +3962,7 @@
 					dataField: "ItemCode",
 
 					caption: formatMessage('Item Code'),
+					cssClass: "center-header",
 
 					width: 200
 
@@ -3953,7 +3973,8 @@
 					dataField: "Description",
 
 					caption: formatMessage('Description'),
-
+					cssClass: "center-header"
+ ,
 					width: 550,
 						 sortOrder: "asc", // auto-sort
 					editCellTemplate: function (cellElement, cellInfo) {
@@ -4100,7 +4121,7 @@
 								icon: "plus",
 								hint: "Add new item",
 								onClick: function () {
-									let url = `/${tenantName}/VAT/VATGoodsandServices`; // ✅ No query parameters
+										let url = `/${tenantName}/IMS/GoodsAndService`; // ✅ No query parameters
 									let title = "Goods and Services";
 									openModal(url, title); // Opens the form in a modal
 									// Or use: window.location.href = url; if navigating directly
@@ -4121,7 +4142,7 @@
 								onClick: function () {
 
 									//let url = `/${tenantName}/VAT/VATGoodsandServices?AccountHeadID=${encodeURIComponent(acchedid)}`; // Example edit page
-						          let url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}`; // Example add page
+									  let url = `/${tenantName}/IMS/GoodsAndService?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}`; // Example add page
 											let title = "Goods and Services";
 													openModal(url, title);
 									//window.location.href = url;
@@ -4142,6 +4163,7 @@
 	{
 			dataField: "Descriptions",
 			caption: "...",
+			cssClass: "center-header",
 			width: 80,
 			allowEditing: true,
 			cellTemplate: function (container, options) {
@@ -4169,6 +4191,8 @@
 					dataField: "DescriptionDetails",
 
 					caption: formatMessage('Unit Rate Method'),
+
+					cssClass: "center-header",
 
 					width: 200,
 
@@ -4294,134 +4318,136 @@
 				},
 
 
-				{ dataField: "Qty", caption: formatMessage('Qty'), width: 150 },
+					{ dataField: "Qty", caption: formatMessage('Qty'), width: 150, cssClass: "center-header" },
 
-				{ dataField: "UnitPrice", caption: formatMessage('Unit Price'), width: 150 },
+					{ dataField: "UnitPrice", caption: formatMessage('Unit Price'), width: 150, cssClass: "center-header" },
 
-			    { dataField: "TotalBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 185, format: { type: "fixedPoint", precision: 2 } },
+			    { dataField: "TotalBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 185, cssClass: "center-header", format: { type: "fixedPoint", precision: 2 } },
 
-				{ dataField: "Discount", caption: formatMessage('Discount'), width: 150 },
+				{ dataField: "Discount", caption: formatMessage('Discount'), width: 150, cssClass: "center-header" },
 
 				//{ dataField: "DiscountDetails", caption: "...", width: 50 },
-				{
-    dataField: "DiscountDetails",
-    caption: "...",
-    width: 100,
-		allowEditing: true,
-				cellTemplate: function (container, options) {
-		container.empty();
+					{
+			dataField: "DiscountDetails",
+			caption: "...",
+			cssClass: "center-header",
+			width: 100,
+			allowEditing: true,
+					cellTemplate: function (container, options) {
+			container.empty(); 
 
-		$("<div>")
-			.dxButton({
-				icon: "percent", // DevExtreme built-in icon
-				hint: "Apply percentage discount", // Tooltip
-				type: "normal", // Keeps styling neutral
-				stylingMode: "outlined", // Ensures border is visible
-				onClick: function (e) {
-					// Your button click logic here
-					console.log("Percent button clicked", options.data);
-				}
-			})
-			.css({
-				width: "70%",
-				border: "1px solid #add8e6",  // Light blue border
-				backgroundColor: "#ffffff",   // White background
-				borderRadius: "3px"
-			})
-			.appendTo(container);
-	},
+			$("<div>")
+				.dxButton({
+					icon: "percent", // DevExtreme built-in icon
+					hint: "Apply percentage discount", // Tooltip
+					type: "normal", // Keeps styling neutral
+					stylingMode: "outlined", // Ensures border is visible
+					onClick: function (e) {
+						// Your button click logic here
+						console.log("Percent button clicked", options.data);
+					}
+				})
+				.css({
+					width: "70%",
+					border: "1px solid #add8e6",  // Light blue border
+					backgroundColor: "#ffffff",   // White background
+					borderRadius: "3px"
+				})
+				.appendTo(container);
+		},
+			editCellTemplate: function (cellElement, cellInfo) {
 
-    editCellTemplate: function (cellElement, cellInfo) {
-        
-        // Create Popup content
-        let $popupContent = $("<div>").css({
-            padding: "20px",
-            fontFamily: "Segoe UI, sans-serif",
-            display: "flex",
-            flexDirection: "column",
-            gap: "10px",
-            width: "100%"  // Full width inside popup
-        });
+				// Create Popup content
+				let $popupContent = $("<div>").css({
+					padding: "20px",
+					fontFamily: "Segoe UI, sans-serif",
+					display: "flex",
+					flexDirection: "column",
+					gap: "10px",
+					width: "100%"  // Full width inside popup
+				});
 
-        // Total Amount (read-only)
-        $("<div>").appendTo($popupContent).dxNumberBox({
-            label: "Total Amount",
-            labelMode: "outside",
-            min: 0,
-            format: "#,##0.00",
-            value: cellInfo.row.data.Amount || 0,
-            readOnly: true
-        });
+				// Total Amount (read-only)
+				$("<div>").appendTo($popupContent).dxNumberBox({
+					label: "Total Amount",
+					labelMode: "outside",
+					min: 0,
+					format: "#,##0.00",
+					value: cellInfo.row.data.Amount || 0,
+					readOnly: true
+				});
 
-        // Discount input + OK button row
-        let $discountRow = $("<div>").css({
-            display: "flex",
-            gap: "10px",
-            alignItems: "end"
-        }).appendTo($popupContent);
+				// Discount input + OK button row
+				let $discountRow = $("<div>").css({
+					display: "flex",
+					gap: "10px",
+					alignItems: "end"
+				}).appendTo($popupContent);
 
-        let discountEditor = $("<div>").appendTo($discountRow).dxNumberBox({
-            label: "Discount",
-            labelMode: "outside",
-            min: 0,
-            format: "#,##0.00",
-            value: cellInfo.value || 0
-        }).dxNumberBox("instance");
+				let discountEditor = $("<div>").appendTo($discountRow).dxNumberBox({
+					label: "Discount",
+					labelMode: "outside",
+					min: 0,
+					format: "#,##0.00",
+					value: cellInfo.value || 0
+				}).dxNumberBox("instance");
 
-        $("<div>").appendTo($discountRow).dxButton({
-            text: "OK",
-            width: 70,
-            onClick: function () {
-                let discountValue = discountEditor.option("value") || 0;
-                cellInfo.setValue(discountValue.toFixed(2));
-                popup.hide();
-            }
-        });
+				$("<div>").appendTo($discountRow).dxButton({
+					text: "OK",
+					width: 70,
+					onClick: function () {
+						let discountValue = discountEditor.option("value") || 0;
+						cellInfo.setValue(discountValue.toFixed(2));
+						popup.hide();
+					}
+				});
 
-        // Percentage buttons
-        let $grid = $("<div>").css({
-            marginTop: "10px",
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "8px"
-        }).appendTo($popupContent);
+				// Percentage buttons
+				let $grid = $("<div>").css({
+					marginTop: "10px",
+					display: "flex",
+					flexWrap: "wrap",
+					gap: "8px"
+				}).appendTo($popupContent);
 
-        [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100].forEach(function (percent) {
-            $("<div>").appendTo($grid).dxButton({
-                text: percent + " %",
-                width: 80,
-                onClick: function () {
-                    let totalAmount = cellInfo.row.data.Amount || 0;
-                    let discount = (totalAmount * percent) / 100;
-                    discountEditor.option("value", discount);
-                }
-            });
-        });
+				[5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100].forEach(function (percent) {
+					$("<div>").appendTo($grid).dxButton({
+						text: percent + " %",
+						width: 80,
+						onClick: function () {
+							let totalAmount = cellInfo.row.data.Amount || 0;
+							let discount = (totalAmount * percent) / 100;
+							discountEditor.option("value", discount);
+						}
+					});
+				});
 
-        // Create Popup
-        let popup = $("<div>").appendTo(cellElement).dxPopup({
-            contentTemplate: function () {
-                return $popupContent;
-            },
-            width: 550,     // ✅ set nice width
-            height: "auto",
-            showTitle: true,
-            title: "Set Discount Details",
-            visible: true,
-            dragEnabled: true,
-            closeOnOutsideClick: true
-        }).dxPopup("instance");
+				// Create Popup
+				let popup = $("<div>").appendTo(cellElement).dxPopup({
+					contentTemplate: function () {
+						return $popupContent;
+					},
+					width: 550,     // ✅ set nice width
+					height: "auto",
+					showTitle: true,
+					title: "Set Discount Details",
+					visible: true,
+					dragEnabled: true,
+					closeOnOutsideClick: true
+				}).dxPopup("instance");
 
-    }
-},
+			}
+		},
 
-					{ dataField: "Amount", caption: formatMessage('Amount'), width: 150, format: { type: "fixedPoint", precision: 2 } },
+
+					{ dataField: "Amount", caption: formatMessage('Amount'), width: 150,cssClass: "center-header", format: { type: "fixedPoint", precision: 2 } },
 
 				//{ dataField: "VAT%", caption: "VAT%", width: 150 },
 
 				{
 					dataField: "VATPercentage",
 					caption: formatMessage('VAT%'),
+					cssClass: "center-header",
 					width: 150,
 					editCellTemplate: function (cellElement, cellInfo) {
 						getTaxSlabData().done(function (dropdownData) {
@@ -4472,11 +4498,11 @@
 					}
 				},
 
-				{ dataField: formatMessage('ExcemptionCode'), caption: "Excemption Code", width: 150 },
+				{ dataField: formatMessage('ExcemptionCode'), caption: "Excemption Code", width: 150, cssClass: "center-header"},
 
-				{ dataField: "VAT", caption: formatMessage('VAT'), width: 150 },
+				{ dataField: "VAT", caption: formatMessage('VAT'), width: 150, cssClass: "center-header" },
 
-				{ dataField: "Total", caption: formatMessage('Total'), width: 150, format: { type: "fixedPoint", precision: 2 } },
+				{ dataField: "Total", caption: formatMessage('Total'), width: 150, cssClass: "center-header", format: { type: "fixedPoint", precision: 2 } },
 
 				{ dataField: "TaxSlabCode", caption: formatMessage('TaxSlabCode'), width: 150, allowEditing: false, visible: false }
 
@@ -4685,23 +4711,6 @@
 			$("#PostalCode").dxTextBox("instance").option("value", selectedRowData[0].ClientPostalCode);
 		$("#District").dxTextBox("instance").option("value", selectedRowData[0].ClientNeighborhood);
 			$("#DistrictArabic").dxTextBox("instance").option("value", selectedRowData[0].ClientNeighborhoodAr);
-
-
-	// $("#StreetName").val(selectedRowData[0].ClientAddressStreet);
-	// $("#StreetNameArabic").val(selectedRowData[0].ClientAddressStreetAr);
-	// $("#AdditionalAddress").val(selectedRowData[0].ClientAdditionalStreet);
-	// $("#AdditionalAddressArabic").val(selectedRowData[0].ClientAdditionalStreetAr);
-	// $("#BuildingNumber").val(selectedRowData[0].ClientBuildingNumber);
-	// $("#ClientCity").val(selectedRowData[0].ClientCity);
-	// $("#ClientCityArabic").val(selectedRowData[0].ClientCityAr);
-	// $("#AdditionalNumber").val(selectedRowData[0].ClientAdditionalNumber);
-	// $("#Province").val(selectedRowData[0].ClientProvince);
-	// $("#ProvinceArabic").val(selectedRowData[0].ClientProvinceAr);
-	// $("#PostalCode").val(selectedRowData[0].ClientPostalCode);
-
-	// // Fix incorrect value assignments
-	// $("#District").val(selectedRowData[0].ClientNeighborhood); // was incorrectly using Arabic version key
-	// $("#DistrictArabic").val(selectedRowData[0].ClientNeighborhoodAr); // was incorrectly using country code key
 
 
 
@@ -7426,13 +7435,13 @@
 								"Invoice Posted Successfully."
 							)
 						}
-							else if(response.IsPosted == true)
-							{
-									 DevExpress.ui.dialog.alert(
-									"This VAT Credit Note is already posted to your ledgers.",
-									"Credit Note Posted Already."
-								)
-							}
+							// else if(response.IsPosted == true)
+							// {
+							// 		 DevExpress.ui.dialog.alert(
+							// 		"This VAT Credit Note is already posted to your ledgers.",
+							// 		"Credit Note Posted Already."
+							// 	)
+							// }
 						else 
 						{
 								   DevExpress.ui.dialog.custom({

@@ -244,7 +244,7 @@
             .StylingMode(ButtonStylingMode.Outlined)
             .Icon("save")
             .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-            // .OnClick("saveInvoiceDetails") // Calls the JavaScript function
+                                                         // .OnClick("saveInvoiceDetails") // Calls the JavaScript function
             )
 
     </div>
@@ -293,8 +293,8 @@
             .ID("btnUpdate")
             .Text(new JS("formatMessage('Update')"))
             .Icon("save") // Icon similar to a floppy/save
-            //.Type(ButtonType.Normal)
-            // .StylingMode(ButtonStylingMode.Contained)
+                          //.Type(ButtonType.Normal)
+                          // .StylingMode(ButtonStylingMode.Contained)
             .ElementAttr(new { @class = "update-button" }) // Custom CSS class
             )
     </div>
@@ -453,7 +453,7 @@
         @(Html.DevExtreme().Button()
             .ID("btnRequestEnquiry")
             .Icon("preferences")
-            .Width(50)
+            .Width(100)
             .Text(new JS("formatMessage('Request/Enquiry Details')"))
             .ElementAttr(new { style = "display: none;" })
             // .OnClick("toggleGroupPanel")
@@ -648,7 +648,6 @@
             .Items(items =>
             {
                 items.Add().Text(new JS("formatMessage('Add New Material Receipt-From Supplier')"));
-                items.Add().Text(new JS("formatMessage('Add New Material Receipt-Returned From Project')"));
             })
             .OnItemClick("addNewMaterialReceipt")
             .ShowArrowIcon(false)
@@ -1631,13 +1630,10 @@
                     url = `/${tenantName}/IMS/AddNewClientRequest`;
                     break;
                 case formatMessage('Add New Store Request'):
-                    url = `/${tenantName}/IMS/AddNewStoreRequest`;
+                    url = `/${tenantName}/IMS/MRAddNewStoreRequest`;
                     break;
                 case formatMessage('Add New Project Request'):
-                    url = `/${tenantName}/IMS/AddNewProjectRequest`;
-                    break;
-                    case formatMessage('Posting Of Cost Prices'):
-                    url = `/${tenantName}/IMS/DeliveryNoteDetails`;
+                    url = `/${tenantName}/IMS/MRAddNewProjectRequest`;
                     break;
                 default:
                     console.log("Clicked item: ", e.itemData.text);
@@ -1651,9 +1647,6 @@
             let url = ''; // Declare once
             switch (e.itemData.text) {
                 case formatMessage('Add New Material Receipt-From Supplier'):
-                    url = `/${tenantName}/IMS/MaterialReceiptFromSupplier`;
-                    break;
-                case formatMessage('Add New Material Receipt-Returned From Project'):
                     url = `/${tenantName}/IMS/MaterialReceiptFromSupplier`;
                     break;
                 default:
@@ -1688,11 +1681,8 @@
         function printFun() {
             exportDataGridToPDF('dataGrid');
         }
-            function AddPurchaseOrder(){
-
+        function AddPurchaseOrder(){
             const url = `/${tenantName}/IMS/AddNewPurchaseOrder`;
-
             window.location.href = url;
-
-            }
+        }
 </script>

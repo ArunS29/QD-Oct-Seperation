@@ -337,7 +337,7 @@
                 .Type(ButtonType.Default)
                 .OnClick("onCardClick"))
             </div>
-        </text>);
+        </text>).Alignment(HorizontalAlignment.Center);
 
                 columns.AddFor(m => m.AccountId).DataField("AccountHead").Caption("Account Ledger").Width(300)
             .CellTemplate(@<text>
@@ -866,227 +866,56 @@
                            
                         )
 }
-<div id="cardPopoverContent" style="display: none;">
-    <!-- Move your floatingDropdownForm contents here -->
-    <div class="form-container">
-        <table>
-            <tr>
-                <td>
-                    <div id="calculateVATButton"></div>
-                </td>
-                <td>
-                    <div id="saveEntryButton"></div>
-                </td>
-                <td colspan="2">
-                    <div class="input-group">
-                        <label>Tax Percentage</label>
-                        <div id="taxPercentage"></div>
-                    </div>
-                </td>
-            </tr>
 
-            <tr>
-                <td>
-                    <div class="input-group">
-                        <label>Taxable Amount</label>
-                        <div id="taxableAmount"></div>
-                    </div>
-                </td>
-                <td>
-                    <div class="input-group">
-                        <label>VAT Amount</label>
-                        <div id="vatAmount"></div>
-                    </div>
-                </td>
-                <td>
-                    <div class="input-group">
-                        <label>Round Off</label>
-                        <div id="roundOff" class="highlight"></div>
-                    </div>
-                </td>
-                <td>
-                    <div class="input-group">
-                        <label>Bill Amount</label>
-                        <div id="billAmount"></div>
-                    </div>
-                </td>
-            </tr>
-
-            <tr>
-                <td colspan="2">
-                    <div class="input-group">
-                        <label>Supplier Name</label>
-                        <div id="supplierName"></div>
-                    </div>
-                </td>
-                <td colspan="2">
-                    <div class="input-group">
-                        <label>Supplier Name In Arabic</label>
-                        <div id="supplierArabic"></div>
-                    </div>
-                </td>
-            </tr>
-
-            <tr>
-                <td colspan="2">
-                    <div class="input-group">
-                        <label>Supplier VAT No</label>
-                        <div id="supplierVAT"></div>
-                    </div>
-                </td>
-                <td colspan="2">
-                    <div class="input-group">
-                        <label>Purchaser Name</label>
-                        <div id="purchaserName"></div>
-                    </div>
-                </td>
-            </tr>
-
-            <tr>
-                <td colspan="2">
-                    <label>Line Narration</label>
-                </td>
-                <td colspan="2">
-                    <a href="#">Use Expense Description</a>
-                    <div id="addLineNarrationBtn"></div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="4" class="narration-cell">
-                    <div id="lineNarration"></div>
-                </td>
-            </tr>
-
-            <tr>
-                <td colspan="2">
-                    <div class="input-group">
-                        <label>Cost Allocation for Employees</label>
-                        <div id="costEmployees"></div>
-                    </div>
-                </td>
-                <td colspan="2">
-                    <div class="input-group">
-                        <label>Cost Allocation for Property/Equipments</label>
-                        <div id="costProperty"></div>
-                    </div>
-                </td>
-            </tr>
-        </table>
-    </div>
-</div>
 <div id="cardPopover"></div>
 
 
 
 <script>
     function onCardClick(e) {
-        $("#cardPopover").dxPopover("instance").show();
+        const popover = $("#cardPopover").dxPopover("instance");
+
+        if (popover.option("visible")) {
+            popover.hide();
+        } else {
+            popover.show();
+        }
     }
 
 
-            function closeDropdownForm() {
-                $("#floatingDropdownForm").hide();
-            }
+
+           
     $(function () {
 
         $("#cardPopover").dxPopover({
             target: ".dropdown-wrapper",
-            contentTemplate: function () {
-                return $("#cardPopoverContent").clone().show();
-            },
-            width: 800,
+            width: 1000,
             position: "bottom",
             showEvent: "",
             hideEvent: "",
-            hideOnOutsideClick: true
-        });
+            hideOnOutsideClick: true,
+            contentTemplate: function (contentElement) {
+                // Clear previous content
+                contentElement.empty();
 
-        $("#calculateVATButton").dxButton({
-            text: "Calculate VAT",
-            icon: "fa fa-calculator",
-            type: "default",
-            onClick: function () {
-                // Your logic
+                // Load the partial view via AJAX
+                $.ajax({
+                    url: '/api/ExpenseClaim/ExpenseClaimVAT', // Adjust for area if needed
+                    type: 'GET',
+                    success: function (data) {
+                        contentElement.html(data); // Inject the returned HTML
+                    },
+                    error: function () {
+                        contentElement.html("<div style='color:red;'>Failed to load content.</div>");
+                    }
+                });
             }
         });
 
-        $("#saveEntryButton").dxButton({
-            text: "Save Entry",
-            icon: "save",
-            type: "success",
-            onClick: function () {
-                // Your logic
-            }
-        });
-
-        $(function () {
-            $("#taxPercentage").dxDropDownBox({
-                valueExpr: "PurchaseTaxSlabCode",
-                displayExpr: function (item) {
-                    return item ? item.PurchaseTaxSlab : "";
-                },
-                placeholder: "Select Tax Percentage",
-                contentTemplate: function (e) {
-                    const $dataGrid = $("<div>").dxDataGrid({
-                        dataSource: {
-                            load: function () {
-                                return $.getJSON("/ExpenseClaim/GetPurchaseTaxSlabs");
-                            }
-                        },
-                        columns: [
-                            { dataField: "PurchaseTaxSlabCode", caption: "Tax Code" },
-                            { dataField: "PurchaseTaxSlab", caption: "Tax Slab" }
-                        ],
-                        height: 250,
-                        selection: { mode: "single" },
-                        hoverStateEnabled: true,
-                        paging: { pageSize: 10 },
-                        onSelectionChanged: function (selectedItems) {
-                            const selected = selectedItems.selectedRowsData[0];
-                            if (selected) {
-                                e.component.option("value", selected.PurchaseTaxSlabCode);
-                                e.component.close();
-                            }
-                        }
-                    });
-
-                    return $dataGrid;
-                }
-            });
-        });
-
-        $("#taxableAmount").dxNumberBox({ value: 0 });
-        $("#vatAmount").dxNumberBox({ value: 0 });
-        $("#roundOff").dxNumberBox({ value: 0 });
-        $("#billAmount").dxNumberBox({ value: 0 });
-        $("#supplierArabic").dxTextBox({ value: "" });
-        $("#supplierVAT").dxTextBox({ value: "" });
-
-        $("#addLineNarrationBtn").dxButton({
-            icon: "plus",
-            type: "default",
-            onClick: function () {
-                // Add narration logic
-            }
-        });
-
-        $("#lineNarration").dxTextArea({
-            height: 80,
-            placeholder: "Enter narration..."
-        });
-
-        // These can be dxDropDownBox, dxSelectBox, or custom templates
-        $("#supplierName").dxDropDownBox({ placeholder: "Select Supplier", contentTemplate: function () { return $("<div>").text("Dropdown content"); } });
-        $("#purchaserName").dxDropDownBox({ placeholder: "Select Purchaser", contentTemplate: function () { return $("<div>").text("Dropdown content"); } });
-        $("#costEmployees").dxDropDownBox({ placeholder: "Select Employee", contentTemplate: function () { return $("<div>").text("Dropdown content"); } });
-        $("#costProperty").dxDropDownBox({ placeholder: "Select Property", contentTemplate: function () { return $("<div>").text("Dropdown content"); } });
+       
     });
 
-            $(document).on("click", function (e) {
-                if (!$(e.target).closest(".dropdown-box, .dx-button").length) {
-                    closeDropdownForm();
-                }
-            });
+           
     let paymentaccheadId;
     function dropDownBoxOnInput(e) {
         const ddbInstance = e.component;
@@ -1170,6 +999,18 @@
             dataGrid.option("searchPanel.text", text);
         }
     }
+
+        function dropDownBoxpercentageOnInput(e) {
+            const ddbInstance = e.component;
+            if (!ddbInstance.option("opened")) ddbInstance.open();
+
+
+            const text = ddbInstance.option("text");
+            if (dataGrid) {
+                dataGrid.option("searchPanel.text", text);
+            }
+        }
+
     function onOpened(e) {
         setTimeout(() => {
             e.component.focus();
@@ -1199,8 +1040,7 @@
             var selectedRowData = $("#suppliername-datagrid").dxDataGrid("instance").getSelectedRowsData();
             // Get ReferenceNo from selected row
             if (selectedRowData.length > 0) {
-                paymentaccheadId = selectedRowData[0].CostAllocationUnitId;
-                paymentaccheadname = selectedRowData[0].CostAllocationUnit;
+               
                 
 
                 
@@ -1891,5 +1731,52 @@ function generateVoucherNo() {
         }, 100);
 
     }
+    
+    function onTaxBoxClosed(e) {
+        const typedText = e.component.option("text");
+        const grid = $(e.component.content()).find("#percentage-datagrid").first().dxDataGrid("instance");
+
+        if (!grid) return;
+
+        const visibleRows = grid.getVisibleRows();
+        const match = visibleRows.find(r => r.data.PurchaseTaxSlab === typedText);
+
+        if (!match) {
+            // Clear the value if not valid
+            e.component.option("value", null);
+
+        }
+    }
+    function onemployeeBoxClosed(e) {
+        const typedText = e.component.option("text");
+        const grid = $(e.component.content()).find("#employee-datagrid").first().dxDataGrid("instance");
+
+        if (!grid) return;
+
+        const visibleRows = grid.getVisibleRows();
+        const match = visibleRows.find(r => r.data.EmployeeName === typedText);
+
+        if (!match) {
+            // Clear the value if not valid
+            e.component.option("value", null);
+
+        }
+    }
+    function onpropertyBoxClosed(e) {
+        const typedText = e.component.option("text");
+        const grid = $(e.component.content()).find("#property-datagrid").first().dxDataGrid("instance");
+
+        if (!grid) return;
+
+        const visibleRows = grid.getVisibleRows();
+        const match = visibleRows.find(r => r.data.PropertyDescription === typedText);
+
+        if (!match) {
+            // Clear the value if not valid
+            e.component.option("value", null);
+
+        }
+    }
+
 
 </script>

@@ -784,6 +784,106 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Json(new { message = "Invalid tenant.", success = false });
         }
+        [HttpGet]
+        public IActionResult GetTaxpercentage()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var data = dbContext.Tbl20168VatpurchaseTaxSlabs
+                    .Select(c => new
+                    {
+                        c.PurchaseTaxSlabCode,
+                        c.PurchaseTaxSlab
+                    }).ToList();
+
+                return Ok(data);
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpGet]
+        public IActionResult ExpenseClaimVAT()
+        {
+            //// Log or debug the incoming parameters
+            //ViewBag.VoucherNo = voucherNo;
+            //ViewBag.AccountHead = accountHead;
+            //ViewBag.VoucherAmount = voucherAmount;
+            //ViewBag.DrCr = drCr;
+            //ViewBag.VoucherEntryNo = voucherEntryNo;
+            return PartialView("~/Areas/Finance/Views/_ExpenseClaimVAT.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
+        }
+        [HttpGet]
+        public IActionResult GetSupplierName()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var data = dbContext.Tbl30199SupplierMasters
+                    .Select(c => new
+                    {
+                        c.SupplierName,
+                        c.SupplierVatno
+                    }).ToList();
+
+                return Ok(data);
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpGet]
+        public IActionResult GetCostEmployees()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var data = dbContext.Tbl101Employees
+                    .Select(c => new
+                    {
+                        c.EmployeeId,
+                        c.EmployeeName,
+                        c.EmployeeReferenceId,
+                        c.NationalId
+                    }).ToList();
+
+                return Ok(data);
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpGet]
+        public IActionResult GetCostProperty()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var data = dbContext.Qry40102PropertyMasterView2s
+                    .Select(c => new
+                    {
+                        c.PropertyNo,
+                        c.PropertyDescription,
+                        c.PlateNo,
+                        c.ChassisNo,
+                        c.PropertyGroup,
+                        c.MobilizedTo,
+                        c.Brand,
+                        c.Capacity,
+                        c.ClientSite,
+                        c.CurrentStatus,
+                        c.DiscontinuedOn,
+                        c.DiscontinuedRemarks,
+                        c.DoorNo,
+                        c.Model,
+                        c.Operator,
+                        c.PropertyCategoryName,
+                        c.PropertySuppliedBy,
+                        c.PropertyType,
+                        c.Specifications,
+                        c.Year
+
+                    }).ToList();
+
+                return Ok(data);
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
     }
 }
 

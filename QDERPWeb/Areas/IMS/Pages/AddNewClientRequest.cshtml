@@ -371,10 +371,10 @@
 			@(Html.DevExtreme().Tabs()
 									.Items(items =>
 									{
-										items.Add().Icon("optionsgear").Text("Material Request's/Enquiry Details");
-										items.Add().Icon("accountbox").Text("Request Details");
-										items.Add().Icon("card").Text("Branch/Divisions");
-										items.Add().Icon("attach").Text("Signatories");
+							items.Add().Icon("optionsgear").Text(new JS("formatMessage('Material Requests/Enquiry Details')"));
+							items.Add().Icon("accountbox").Text(new JS("formatMessage('Request Details')"));
+							items.Add().Icon("card").Text(new JS("formatMessage('Branch/Divisions')"));
+							items.Add().Icon("attach").Text(new JS("formatMessage('Signatories')"));
 									})
 									.SelectedIndex(0)
 									.OnSelectionChanged("onTabSelectionChanged")
@@ -398,6 +398,7 @@
 								.ID("txtRequestNo")
 								.LabelMode(EditorLabelMode.Outside)
 								.Width("100%")
+								.ReadOnly(true)
 								)
 
 						</td>
@@ -435,7 +436,7 @@
 														.Label(new JS("formatMessage('Client Name:')"))
                           .DataSource(d => d.WebApi()
 														.Controller("AddNewClientRequest")
-														.LoadAction("GetClientName")
+														.LoadAction("GetClientDetails")
                                                     .LoadMode(DataSourceLoadMode.Raw)
                                                    .Key("CategoryCode")
                                                 )
@@ -464,15 +465,30 @@
 								.Hint("Add Description")
 								.Width(40)
 								.ElementAttr("style", "margin-top: 20px;")
+								.OnClick("AddNewClient")
 								)
 
-							@(Html.DevExtreme().Button()
-								.ID("EditDebits")
-								.Icon("edit")
-								.Hint("Edit Description")
-								.Width(40)
-								.ElementAttr("style", "margin-top: 20px;")
-								)
+							  @(Html.DevExtreme().Button()
+    .ID("btnEditClient")
+    .Icon("edit")
+    .ElementAttr("class", "button-alignment-up button-group")
+    .OnClick(@<text>
+        function() {
+            var dropDownBox = $('#GetProjectDropDown').dxDropDownBox('instance');
+            var selectedValue = dropDownBox.option('value');
+
+            if (!selectedValue) {
+                DevExpress.ui.notify('Please select a client.', 'warning', 2000);
+                return;
+            }
+
+            var url = '/' + tenantName + '/IMS/ClientLeadMaster?clientCode=' + encodeURIComponent(selectedValue);
+            openModal(url, '');
+        }
+    </text>)
+)
+
+
 						</td>
 					</tr>
 					<tr style="display: flex; gap: 10px;align-items:end; width:100%;">
@@ -481,15 +497,15 @@
 									.Label(new JS("formatMessage('Store Code:')"))
 									.ID("ddStoreCode")
 									.DataSource(d => d.WebApi()
-									.Controller("AccountLedgerMaster")
-									.LoadAction("getVATInvoiceTypes")
+									//.Controller("AccountLedgerMaster")
+									//.LoadAction("getVATInvoiceTypes")
 									.LoadMode(DataSourceLoadMode.Raw)
 									.Key("InvoiceType"))
 									.AcceptCustomValue(true)
 									.OpenOnFieldClick(false)
 									.ValueChangeEvent("input")
 									.HoverStateEnabled(true)
-									.Value("Tax Invoice")
+									//.Value("Tax Invoice")
 									.ValueExpr("InvoiceType")
 									.DisplayExpr("InvoiceType")
 									.LabelMode(EditorLabelMode.Outside)
@@ -519,7 +535,6 @@
 							.OpenOnFieldClick(false)
 							.ValueChangeEvent("input")
 							.HoverStateEnabled(true)
-							.Value("Tax Invoice")
 							.ValueExpr("InvoiceType")
 							.DisplayExpr("InvoiceType")
 							.LabelMode(EditorLabelMode.Outside)
@@ -557,7 +572,7 @@
 						<td colspan="2" style="width:100%;">
 							@(Html.DevExtreme().TextBox()
 							.ID("ContactNo")
-							.Label("Contact No:")
+							.Label(new JS("formatMessage('Contact No:')"))
 							.LabelMode(EditorLabelMode.Outside)
 							.Width("100%"))
 
@@ -601,40 +616,40 @@
 							)
 						</td>
 						<td style="display: flex; align-items:end;width:100%;" colspan="2">
-							@(Html.DevExtreme().DropDownBox()
-														.Label(new JS("formatMessage('Type of Request:')"))
-														.DataSource(d => d.WebApi()
-														.Controller("AddNewClientRequest")
-														.LoadAction("GetTypeOfRequest")
-														.LoadMode(DataSourceLoadMode.Raw)
-														.Key("TypeOfRequestId")
-														)
-														.LabelMode(EditorLabelMode.Outside)
-														.ID("ddGetTypeOfRequest")
-														.Width(900)
-														@*  .ShowClearButton(true)
-							.AcceptCustomValue(true) *@
-														.OpenOnFieldClick(false)//
-														.ValueChangeEvent("input")
-														.HoverStateEnabled(true)
-														.ValueExpr("TypeOfRequestId")
-														.DisplayExpr("TypeOfRequest")
-														.OnInput("dropDownBoxOnInput")
-														.OnOpened("onOpened")
-														.TabIndex(1)
-														.Width("100%")
-														.OnKeyDown("onKeyDown")
-														//.OnValueChanged("dropDownBoxValueChanged")
-														.ContentTemplate(new TemplateName("GetTypeOfRequestContentTemplate"))
-														)
-							@(Html.DevExtreme().Button()
-							.ID("AddTypeReq")
-							.Icon("plus")
-							.Hint("Add Description")
-							.Width(40)
-							.ElementAttr("style", "margin-top:18px;")
-							.OnClick("AddTypeReq")
-							)
+						  @(Html.DevExtreme().DropDownBox()
+								.Label(new JS("formatMessage('Type of Request:')"))
+								.DataSource(d => d.WebApi()
+								.Controller("AddNewClientRequest")
+								.LoadAction("GetTypeOfRequest")
+								.LoadMode(DataSourceLoadMode.Raw)
+								.Key("TypeOfRequestId")
+								)
+								.LabelMode(EditorLabelMode.Outside)
+								.ID("ddGetTypeOfRequest")
+								.Width(900)
+								@*  .ShowClearButton(true)
+	.AcceptCustomValue(true) *@
+								.OpenOnFieldClick(false)//
+								.ValueChangeEvent("input")
+								.HoverStateEnabled(true)
+								.ValueExpr("TypeOfRequestId")
+								.DisplayExpr("TypeOfRequest")
+								.OnInput("dropDownBoxOnInput")
+								.OnOpened("onOpened")
+								.TabIndex(1)
+								.Width("100%")
+								.OnKeyDown("onKeyDown")
+								//.OnValueChanged("dropDownBoxValueChanged")
+								.ContentTemplate(new TemplateName("GetTypeOfRequestContentTemplate"))
+								)
+								@(Html.DevExtreme().Button()
+								.ID("AddTypeReq")
+								.Icon("plus")
+								.Hint("Add Description")
+								.Width(40)
+								.ElementAttr("style", "margin-top:18px;")
+								.OnClick("AddTypeReq")
+								)
 						</td>
 						<td colspan="2" style="width:100%;">
 							 @(Html.DevExtreme().DropDownBox()
@@ -685,7 +700,7 @@
 							.OpenOnFieldClick(false)
 														.ValueChangeEvent("input")
 														.HoverStateEnabled(true)
-							.Value("Tax Invoice")
+							
 							.ValueExpr("InvoiceType")
 							.DisplayExpr("InvoiceType")
 							.LabelMode(EditorLabelMode.Outside)
@@ -774,6 +789,7 @@
 															.TabIndex(1)
 															.Width("100%")
 															.OnKeyDown("onKeyDown")
+                                                            .Value(8)
 															//.OnValueChanged("dropDownBoxValueChanged")
 															.ContentTemplate(new TemplateName("GetTaxContentTemplate"))
 															)
@@ -810,7 +826,7 @@
 						<tr>
 							
 							<td>
-									<label>Remarks:</label>
+									<label id="remark"></label>
 									@(Html.DevExtreme().TextArea()
 									.ID("txtRemarks")
 									.ElementAttr("style", "height:150px !important;")
@@ -848,6 +864,7 @@
 													.HoverStateEnabled(true)
 													.ValueExpr("CompanyId")
 															.DisplayExpr("CompanyName")
+															.Value(1)
 													.OnInput("dropDownBoxOnInput")
 													.OnOpened("onOpened")
 													.TabIndex(1)
@@ -875,6 +892,7 @@
 															.OpenOnFieldClick(false)//
 															.ValueChangeEvent("input")
 															.HoverStateEnabled(true)
+															.Value(1)
 															.ValueExpr("RequestedByCode")
 															.DisplayExpr("RequestedBy")
 															.OnInput("dropDownBoxOnInput")
@@ -882,6 +900,7 @@
 															.TabIndex(1)
 															.Width("100%")
 															.OnKeyDown("onKeyDown")
+															.Disabled(true)
 															//.OnValueChanged("dropDownBoxValueChanged")
 															.ContentTemplate(new TemplateName("GetMPRRequesterByContentTemplate"))
 															)
@@ -904,6 +923,7 @@
 															.OpenOnFieldClick(false)//
 															.ValueChangeEvent("input")
 															.HoverStateEnabled(true)
+															.Value(1)
 															.ValueExpr("PurchaseRequestStatusId")
 															.DisplayExpr("PurchaseRequestStatus")
 															.OnInput("dropDownBoxOnInput")
@@ -933,6 +953,7 @@
 													.OpenOnFieldClick(false)//
 													.ValueChangeEvent("input")
 													.HoverStateEnabled(true)
+													.Value(1)
 													.ValueExpr("InventoryMasterGroupId")
 												    .DisplayExpr("InventoryMasterGroup")
 													.OnInput("dropDownBoxOnInput")
@@ -1425,7 +1446,7 @@
 					.ID("GetProject-datagrid")
 					.DataSource(d => d.WebApi()
 					.Controller("AddNewClientRequest")
-					.LoadAction("GetClientName")
+					.LoadAction("GetClientDetails")
 					.LoadMode(DataSourceLoadMode.Raw)
 					.Key("ClientCode")
 					)
@@ -1461,7 +1482,7 @@
 					.ID("GetProject-datagrid1")
 					.DataSource(d => d.WebApi()
 					.Controller("AddNewClientRequest")
-					.LoadAction("GetModeOfRequest")
+					.LoadAction("GetModeofRequest")
 					.LoadMode(DataSourceLoadMode.Raw)
 					.Key("ModeOfRequestId")
 					)
@@ -1655,6 +1676,7 @@
 					.Columns(columns =>
 					{
 						columns.Add().Caption(new JS("formatMessage('Status')")).DataField("PurchaseRequestStatus");
+
 						
 					})
 					)
@@ -2211,6 +2233,22 @@
 			if (ddbInstance.option("opened")) {
 				ddbInstance.close();
 			}
+			 // Make an AJAX call to fetch contact details
+        $.ajax({
+            url: '/api/AddNewClientRequest/GetClientContactDetails',
+            type: 'GET',
+            data: { clientCode: selectedKey },
+            success: function (data) {
+                // Assuming 'data' contains ContactName, ContactEmail, and ContactMobile
+              
+ $('#txtContactName').dxTextBox("instance").option("value", data.ContactName);
+ $('#txtReqEmail').dxTextBox("instance").option("value",data.ContactEmail);
+ $('#ContactNo').dxTextBox("instance").option("value", data.ContactMobile);
+            },
+            error: function (xhr, status, error) {
+                console.error('Error fetching contact details:', error);
+            }
+        });
 		}
 	}
 	function dataGridInitialized1(e) {
@@ -2462,7 +2500,7 @@
 		} else  {
 			// If Mprno is not present and IsCurrent is not "true", generate a Autogenerate request number
 			$.ajax({
-				url: "/api/AddNewClientRequest/GetNewDebitNoteNoApi",
+				url: "/api/AddNewClientRequest/GetNewRequestNoApi",
 				type: "GET",
 				success: function (data) {
 					console.log("Success:", data);
@@ -2476,7 +2514,7 @@
 				},
 				error: function (xhr, status, error) {
 					console.error("Error loading Payment Accounts:", error);
-					DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+					DevExpress.ui.dialog.alert("Failed to load Rquest No details.", "Error");
 				}
 			});
 		}
@@ -3214,9 +3252,9 @@ function loadClientDetails(mprno) {
                     height: 300,
                     scrolling: { mode: "virtual" },
                     columns: [
-                        { dataField: "QuoteGroupItemSlNo", caption: "ID", width: 60 },
-                        { dataField: "GroupCode", caption: "Group Code", width: 80 },
-                        { dataField: "GroupName", caption: "Group Name", width: 200 }
+                        { dataField: "QuoteGroupItemSlNo",caption: formatMessage("ID"), width: 60 },
+							{ dataField: "GroupCode",caption: formatMessage("Group Code"), width: 80 },
+                        { dataField: "GroupName", caption: formatMessage("Group Name"), width: 200 }
                     ],
                     onSelectionChanged: function (selectedItems) {
                         let selectedItem = selectedItems.selectedRowsData[0];
@@ -3343,19 +3381,19 @@ function loadClientDetails(mprno) {
 
 										columns: [
 
-											{ dataField: "GSCode", caption: "Code", width: 80 },
+													{ dataField: "GSCode", caption: formatMessage("Code"), width: 80 },
 
-											{ dataField: "GSDescrpition", caption: "Description", width: 200 },
+												{ dataField: "GSDescrpition", caption: formatMessage("Description"), width: 200 },
 
-											{ dataField: "GsdescriptionAr", caption: "Description In Arabic", width: 200 },
+												{ dataField: "GsdescriptionAr", caption: formatMessage("Description In Arabic"), width: 200 },
 
-											{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
+												{ dataField: "ItemPartNo", caption: formatMessage("Item Part No"), width: 100 },
 
-											{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
+												{ dataField: "CostPrice", caption: formatMessage("Cost Price"), width: 100 },
 
-											{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
+											{ dataField: "GSSellingRate", caption: formatMessage("Selling Rate"), width: 100 },
 
-											{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+													{ dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100 }
 
 										],
 
@@ -3519,13 +3557,13 @@ function loadClientDetails(mprno) {
 										columns: [
 
 
-											{ dataField: "UnitCode", caption: "Code", width: 80 },
+												{ dataField: "UnitCode", caption: formatMessage("Code"),width: 80 },
 
-											{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
+												{ dataField: "UnitDesc",caption: formatMessage("Unit Rate Method"), width: 200 },
 
-											{ dataField: "UnitType", caption: "Unit Type", width: 150 },
+												{ dataField: "UnitType", caption: formatMessage("Unit Type"), width: 150 },
 
-											{ dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
+												{ dataField: "UnitDescAr", caption: formatMessage("Unit Code"), width: 100 }
 
 										],
 
@@ -6776,6 +6814,11 @@ LineTotal: 0
 			  const title = "";
 				  openModal(url, title);
 		  }
+		  	 function AddNewClient(){
+				const url = `/${tenantName}/IMS/ClientLeadMaster`;
+			  const title = "";
+				  openModal(url, title);
+		  }
 			   $(function () {
 	$("#ClientRequestMasterForm").dxTextBox({
 	text: formatMessage("Client Request"),
@@ -6785,6 +6828,10 @@ LineTotal: 0
 		}
 		});
 	});
+	 $(function () {
+						$("#remark").text(
+							 formatMessage("Remarks:"));
+            });
 
 
 		

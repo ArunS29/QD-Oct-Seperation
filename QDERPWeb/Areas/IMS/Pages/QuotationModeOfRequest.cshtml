@@ -104,8 +104,6 @@
     </div>
 </div>
 <div class="signatory-form-container">
-    <div id="DatabaseSignatories" class="no-border-title"></div>
-
     <div class="form-row">
         <div class="col-md-6">
             @(Html.DevExtreme().TextBox()
@@ -125,7 +123,7 @@
         <div class="col-md-2">
             @(Html.DevExtreme().Button()
                 .ID("btnAddSalesPerson")
-                .Text("ADD")
+                .Text(new JS("formatMessage('ADD')"))
                 .Icon("plus")
                 .OnClick("function() { addSignatoryToGrid(); }")
                 .ElementAttr(new { @class = "dx-button-add" })
@@ -159,8 +157,10 @@
             .OnRowUpdating("onSignatoryUpdating")                       // Handles saving
             .Columns(columns =>
             {
-            columns.Add().DataField("ModeOfRequestId").Caption("ID").Width(80).AllowEditing(false);
-            columns.Add().DataField("ModeOfRequest").Caption("Mode Of Request").Width(200);
+            columns.Add().DataField("ModeOfRequestId").Caption(new JS("formatMessage('ID')"))
+            .Width(80).AllowEditing(false);
+            columns.Add().DataField("ModeOfRequest").Caption(new JS("formatMessage('Mode Of Request')"))
+            .Width(200);
            
 
             })
@@ -331,7 +331,15 @@
                 }
             });
         }
-
+    $(function () {
+            $("#QuotationModeofRequest").dxTextBox({
+                text: formatMessage("Quotation Mode of Request"),
+            readOnly: true,
+            onContentReady: function (e) {
+                $(e.element).addClass("dx-textbox-heading");
+            }
+        });
+    });
 
 
 

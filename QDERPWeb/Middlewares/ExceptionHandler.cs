@@ -1,5 +1,10 @@
-﻿using System.Net;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using QD.ERP.Web.Exceptions; // Make sure to import the custom exception namespace
+using System;
+using System.Net;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace QD.ERP.Web.Middlewares
 {
@@ -17,9 +22,7 @@ namespace QD.ERP.Web.Middlewares
         public async Task InvokeAsync(HttpContext httpContext)
         {
             if (httpContext == null)
-            {
                 throw new ArgumentNullException(nameof(httpContext));
-            }
 
             try
             {
@@ -27,7 +30,7 @@ namespace QD.ERP.Web.Middlewares
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An unhandled exception occurred while processing the request.");
+                _logger.LogError(ex, "An unhandled exception occurred.");
                 await HandleExceptionAsync(httpContext, ex);
             }
         }
@@ -35,17 +38,23 @@ namespace QD.ERP.Web.Middlewares
         private static async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             if (context == null)
-            {
                 throw new ArgumentNullException(nameof(context));
-            }
 
-            if (exception is UnauthorizedAccessException)
+            // 🔁 Redirect if the license is expired
+            if (exception is LicenseExpiredException)
             {
-                // Handle unauthorized access by redirecting to the login page
-                context.Response.Redirect("http://localhost:60232/test/Security/Login");
+                context.Response.Redirect("/pulse/Security/LicenseActivation");
                 return;
             }
 
+            // 🔁 Redirect if unauthorized access (optional)
+            if (exception is UnauthorizedAccessException)
+            {
+                context.Response.Redirect("/pulse/Security/Login");
+                return;
+            }
+
+            // Default: return JSON error response
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
@@ -53,25 +62,23 @@ namespace QD.ERP.Web.Middlewares
             {
                 StatusCode = context.Response.StatusCode,
                 Message = "An unexpected error occurred. Please try again later.",
-                Detailed = exception.Message // Consider hiding this in production for security
+                Detailed = exception.Message
             };
 
             var result = JsonSerializer.Serialize(errorDetails, new JsonSerializerOptions
             {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase // Use camelCase for JSON properties
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             });
 
             try
             {
-                context.Items["Exception"] = errorDetails; // Pass error details to other middleware if needed
+                context.Items["Exception"] = errorDetails;
                 await context.Response.WriteAsync(result);
             }
             catch (Exception writeEx)
             {
-                // Log any issues that occur while writing the response
                 Console.WriteLine($"Failed to write error response: {writeEx.Message}");
             }
         }
-
     }
 }

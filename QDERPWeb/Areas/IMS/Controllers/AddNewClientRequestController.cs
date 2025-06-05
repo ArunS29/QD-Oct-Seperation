@@ -1,4 +1,6 @@
 ﻿using DevExpress.DataProcessing.InMemoryDataProcessor;
+using DevExpress.XtraRichEdit.Import.Html;
+using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Http;
@@ -29,7 +31,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         }
 
         [HttpGet]
-        public ActionResult<string> GetNewDebitNoteNoApi()
+        public ActionResult<string> GetNewRequestNoApi()
         {
             try
             {
@@ -151,9 +153,35 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             return Unauthorized(new { message = "Invalid tenant", success = false });
         }
+		[HttpGet]
+		public async Task<IActionResult> GetModeofRequest()
+		{
+			try
+			{
+				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+				{
+					var dbSignatories = await dbContext.Tbl30103ModeOfRequestMasters
+					   .Select(s => new
+					   {
+						   s.ModeOfRequestId,
+						   s.ModeOfRequest
 
+					   })
+						.ToListAsync();
 
-        [HttpGet]
+					return Json(dbSignatories); // return raw data, paging/sorting done on client-side
+				}
+
+				return Unauthorized(new { message = "Invalid tenant.", success = false });
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Error in GetProject: {ex.Message}");
+				return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
+			}
+		}
+
+		[HttpGet]
 		public async Task<IActionResult> GetTypeOfRequest(DataSourceLoadOptions loadOptions)
 		{
 			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
@@ -188,8 +216,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     var stores = dbContext.Tbl60001storeMasters
                         .Select(store => new
                         {
-                            StoreId = store.StoreId, 
-                            StoreName = store.StoreName
+                            store.StoreId, 
+                          store.StoreName
                         })
                         .ToList();
 
@@ -366,8 +394,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 					var ClientCategory = dbContext.Tbl90104DocumentSignatories.Select(i => new
 					{
-                        SignatoryID = i.SignatoryId, // <-- Important: Ensure it matches exactly
-                        SignatoryName = i.SignatoryName
+                        i.SignatoryId,
+                        i.SignatoryName
+                        // SignatoryID = i.SignatoryId, // <-- Important: Ensure it matches exactly
+                        // SignatoryName = i.SignatoryName
 
                     });
 
@@ -983,6 +1013,33 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 			}
 
 			return Unauthorized(new { Message = "Invalid tenant.", Success = false });
+		}
+		[HttpGet]
+		public IActionResult GetClientContactDetails(string clientCode)
+		{
+			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				// Replace with your actual data retrieval logic
+				var client = dbContext.Tbl30101ClientMasters
+								 .FirstOrDefault(c => c.ClientCode == clientCode);
+
+			if (client != null)
+			{
+				return Json(new
+				{
+					ContactName = client.ContactPerson,
+					ContactEmail = client.ContactMobile1,
+					ContactMobile = client.ContactEmail
+				});
+			}
+			else
+			{
+				return NotFound();
+			}
+			}
+
+			return Unauthorized(new { Message = "Invalid tenant.", Success = false });
+
 		}
 
 	}

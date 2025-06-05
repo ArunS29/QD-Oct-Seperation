@@ -1124,16 +1124,16 @@
                                 .Height(400)
                                 .Columns(columns =>
                                 {
-                                    columns.Add().DataField("ReceiptNo").Caption("Document No").Alignment(HorizontalAlignment.Center);
-                                    columns.Add().DataField("TypeOfEntry").Caption("Transaction Type").Alignment(HorizontalAlignment.Center);
-                                    columns.Add().DataField("TransactionDate").Caption("Transaction Date").Alignment(HorizontalAlignment.Center)
+                                    columns.Add().DataField("ReceiptNo").Caption(new JS("formatMessage('Document No')")).Alignment(HorizontalAlignment.Center);
+                                    columns.Add().DataField("TypeOfEntry").Caption(new JS("formatMessage('Transaction Type')")).Alignment(HorizontalAlignment.Center);
+                                    columns.Add().DataField("TransactionDate").Caption(new JS("formatMessage('Transaction Date')")).Alignment(HorizontalAlignment.Center)
                                     .DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy");
-                                    columns.Add().DataField("InventoryEffectiveDate").Caption("Inventory Effective Date")
+                                    columns.Add().DataField("InventoryEffectiveDate").Caption(new JS("formatMessage('Inventory Effective Date')"))
                                     .Alignment(HorizontalAlignment.Center).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy");
-                                    columns.Add().DataField("OpeningBalanceQty").Caption("Opening Balance").Alignment(HorizontalAlignment.Center).Format("fixedPoint");
-                                    columns.Add().DataField("ReceivedQty").Caption("Received").Alignment(HorizontalAlignment.Center).Format("fixedPoint");
-                                    columns.Add().DataField("IssuedQty").Caption("Issued").Alignment(HorizontalAlignment.Center).Format("fixedPoint");
-                                    columns.Add().DataField("StockReceiptAndOpnBalQty").Caption("Balance").Alignment(HorizontalAlignment.Center).Format("fixedPoint");
+                                    columns.Add().DataField("OpeningBalanceQty").Caption(new JS("formatMessage('Opening Balance')")).Alignment(HorizontalAlignment.Center).Format("fixedPoint");
+                                    columns.Add().DataField("ReceivedQty").Caption(new JS("formatMessage('Received')")).Alignment(HorizontalAlignment.Center).Format("fixedPoint");
+                                    columns.Add().DataField("IssuedQty").Caption(new JS("formatMessage('Issued')")).Alignment(HorizontalAlignment.Center).Format("fixedPoint");
+                                    columns.Add().DataField("StockReceiptAndOpnBalQty").Caption(new JS("formatMessage('Balance')")).Alignment(HorizontalAlignment.Center).Format("fixedPoint");
                                 })
                                 .Summary(summary =>
                                 {
@@ -1238,7 +1238,7 @@
                 <li onclick="handleAction('paste')">Paste</li>
                 <li onclick="handleAction('delete')">Delete</li>
             </ul>
-
+             
             <script>
                 let imageBase64 = null;
 
@@ -1978,7 +1978,7 @@
                      $(function () {
                         loadUnitCodeDropdown().then(() => {
                             $("#addButton").dxButton({
-                                text: "Add New Row",
+                                text: formatMessage("Add New Row"),
                                 type: "success",
                                 onClick: addNewUnitRow
                             });
@@ -2398,16 +2398,16 @@
                     .OnInitialized("onPurchaseGridInitialized")
                     .Columns(columns =>
                     {
-                        columns.Add().DataField("Gscode").Caption("Item Code");
-                        columns.Add().DataField("Pono").Caption("Purchase Voucher No");
-                        columns.Add().DataField("Podate").Caption("Purchase Voucher Date").DataType(GridColumnDataType.Date);
-                        columns.Add().DataField("QuotedQuantity").Caption("Quantity Invoiced");
-                        columns.Add().DataField("UnitDesc").Caption("Unit Desc");
-                        columns.Add().DataField("UnitPrice").Caption("Unit Rate");
-                        columns.Add().DataField("ItemDiscount").Caption("Discount").Format("##,##0.00");
-                        columns.Add().DataField("LineTotalAfterDisc").Caption("Total After Disc").Format("##,##0.00");
-                        columns.Add().DataField("LineTaxAmount").Caption("Tax Amount").Format("##,##0.00");
-                        columns.Add().DataField("LineTotalWithTax").Caption("Total With Tax").Format("##,##0.00");
+                        columns.Add().DataField("Gscode").Caption(new JS("formatMessage('Item Code')"));
+                        columns.Add().DataField("Pono").Caption(new JS("formatMessage('Purchase Voucher No')"));
+                        columns.Add().DataField("Podate").Caption(new JS("formatMessage('Purchase Voucher Date')")).DataType(GridColumnDataType.Date);
+                        columns.Add().DataField("QuotedQuantity").Caption(new JS("formatMessage('Quantity Invoiced')"));
+                        columns.Add().DataField("UnitDesc").Caption(new JS("formatMessage('Unit Desc')"));
+                        columns.Add().DataField("UnitPrice").Caption(new JS("formatMessage('Unit Rate')"));
+                        columns.Add().DataField("ItemDiscount").Caption(new JS("formatMessage('Discount')")).Format("##,##0.00");
+                        columns.Add().DataField("LineTotalAfterDisc").Caption(new JS("formatMessage('Total After Disc')")).Format("##,##0.00");
+                        columns.Add().DataField("LineTaxAmount").Caption(new JS("formatMessage('Tax Amount')")).Format("##,##0.00");
+                        columns.Add().DataField("LineTotalWithTax").Caption(new JS("formatMessage('Total With Tax')")).Format("##,##0.00");
                     })
                     .Summary(summary =>
                     {

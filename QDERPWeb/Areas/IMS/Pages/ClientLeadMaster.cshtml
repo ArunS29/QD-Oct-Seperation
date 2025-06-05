@@ -536,8 +536,9 @@
 
 
                 <div style="padding:10px;">
-                    @(Html.DevExtreme().DataGrid()
-                    .ID("MaintenanceGrid")
+                   
+                    @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl3010102clientContactList>()
+                    .ID("ContactListdataGrid")
                     .DataSource(ds => ds.Mvc()
                 .Controller("ClientLeadMaster")
                 .LoadAction("GetContactList"))
@@ -1018,10 +1019,15 @@ ContactRemarks:clientRemarks,
             success: function (response) {
                 if (response.success) {
                     DevExpress.ui.notify(response.message, "success", 3000);
-                    // Close the form or popup if needed
-                    // setTimeout(function () {
-                    //     $("#clientMasterPopup").dxPopup("instance").hide();
-                    // }, 2000);
+                        // Refresh parent DataGrid (ensure the correct selector is used)
+                        if (window.parent && window.parent.$("#dataGrid").length) {
+                            let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+                            if (dataGrid) {
+                                dataGrid.refresh();
+                            }
+                        }
+                        //$('#modalIframe').modal('hide');
+                        setTimeout(() => window.location.reload(), 2000);
                 } else {
                     DevExpress.ui.notify("Error: " + response.message, "error", 3000);
                 }
@@ -1155,7 +1161,7 @@ ContactRemarks:clientRemarks,
                                     success: function (res) {
                                         if (res.success) {
                                             DevExpress.ui.notify(res.message, "success", 2000);
-                                            $("#MaintenanceGrid").dxDataGrid("instance").refresh();
+                                            $("#ContactListdataGrid").dxDataGrid("instance").refresh();
                                         } else {
                                             DevExpress.ui.notify(res.message, "error", 3000);
                                         }
@@ -1193,7 +1199,8 @@ ContactRemarks:clientRemarks,
     }
     
     function redirectToStatusUpdate() {
-        let url = `/${tenantName}/IMS/ClientStatusUpdate`;
+        var clientName = $('#txtClientName').dxTextBox("instance").option("value");
+        let url = `/${tenantName}/IMS/ClientStatusUpdate?clientName=${encodeURIComponent(clientName)}`;
         let title = "";
         openModal(url, title);
     }

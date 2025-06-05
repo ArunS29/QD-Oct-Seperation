@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DevExtreme.AspNet.Data;
+using DevExtreme.AspNet.Mvc;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.Areas.Finance.Models;
@@ -543,6 +545,30 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 			}
 
 			return Unauthorized(new { Message = "Invalid tenant.", Success = false });
+		}
+		[HttpGet]
+		public async Task<IActionResult> GetQuotationStatus(DataSourceLoadOptions loadOptions)
+		{
+			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				try
+				{
+					var clients = dbContext.Tbl60107quotationStatuses.Select(i => new
+					{
+					i.QuoteStatusId,
+					i.QuoteStatus
+					});
+
+					return Json(await DataSourceLoader.LoadAsync(clients, loadOptions));
+				}
+				catch (Exception ex)
+				{
+					_logger.LogError($"Error in GetClientDetails: {ex.Message}");
+					return StatusCode(500, new { message = "Error fetching client details", error = ex.Message });
+				}
+			}
+
+			return Unauthorized(new { message = "Invalid tenant", success = false });
 		}
 	}
 }
