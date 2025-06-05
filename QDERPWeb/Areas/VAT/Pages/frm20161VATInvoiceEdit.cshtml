@@ -8038,5 +8038,21 @@
 				return;
 			}
 		}
+
+
+
+			$("#btnPrint1").on("click", function (e) {
+			var dropdown = $("#btnPrint1").dxDropDownButton("instance");
+			var items = dropdown.option("items");
+
+			// Set disabled flag on specific items
+			items.forEach(function (item) {
+					if (item.text === "Print Simplified TAX Invoice" ) {
+					item.disabled = true;
+				}
+			});
+
+			dropdown.option("items", items);
+		});
 </script>
 

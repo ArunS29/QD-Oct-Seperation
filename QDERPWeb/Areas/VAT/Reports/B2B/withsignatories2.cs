@@ -1,35 +1,27 @@
 ﻿using System;
-using System.Drawing;
-using System.Collections;
-using System.ComponentModel;
-using DevExpress.XtraReports.UI;
-using DevExpress.XtraPrinting.Drawing;
 using System.Data;
 using System.Data.SqlClient;
+using System.Drawing;
+using DevExpress.XtraReports.UI;
+using DevExpress.XtraPrinting.Drawing;
+using QD.ERP.Web.Service;
 
 namespace QD.ERP.Web.Areas.VAT.Reports.B2B
 {
-	public partial class regularInvoiceformat02 : DevExpress.XtraReports.UI.XtraReport
-	{	
-		public regularInvoiceformat02()
-		{
-			InitializeComponent();
-		}
-
+    public partial class withsignatories2 : XtraReport
+    {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private bool _isApproved;
 
-        public regularInvoiceformat02(
+        public withsignatories2(
             string invoiceNo,
             string tenantName,
             string companyName,
             string companyAddress,
             Image logoImage,
+            Image sealImage,
             string companyNameAr,
             string companyAddressAr,
-            string companyPhone,
-            string companyEmail,
-            string companyWebsite,
             bool isApproved,
             TenantDbContextHelper tenantDbContextHelper)
         {
@@ -37,12 +29,11 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B
             _isApproved = isApproved;
 
             InitializeComponent();
-            SetReportParameters(invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, companyPhone, companyEmail, companyWebsite);
+            SetReportParameters(invoiceNo, tenantName, companyName, companyAddress, logoImage, sealImage, companyNameAr, companyAddressAr);
             LoadReportData(invoiceNo);
         }
 
-        private void SetReportParameters(string invoiceNo, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressAr, string companyPhone,
-            string companyEmail, string companyWebsite)
+        private void SetReportParameters(string invoiceNo, string tenantName, string companyName, string companyAddress, Image logoImage, Image sealImage, string companyNameAr, string companyAddressAr)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -69,11 +60,8 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B
             AddOrUpdateParameter("CompanyAddress", companyAddress ?? "", typeof(string));
             AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddressAr", companyAddressAr ?? "", typeof(string));
-            AddOrUpdateParameter("CompanyPhone", companyPhone ?? "", typeof(string));
-            AddOrUpdateParameter("CompanyEmailAddress", companyEmail ?? "", typeof(string));
 
-            AddOrUpdateParameter("CompanyWebsite", companyWebsite ?? "", typeof(string));
-
+            // Set report label values dynamically
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
 
@@ -89,16 +77,11 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B
             if (FindControl("xrLabelCompanyAddressAr", true) is XRLabel addressArLabel)
                 addressArLabel.Text = companyAddressAr;
 
-            if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
+            if (FindControl("xrPictureBoxLogo", true) is XRPictureBox logoPictureBox)
                 logoPictureBox.Image = logoImage;
-            if (FindControl("xrLabelCompanyPhone", true) is XRLabel companyphoneLabel)
-                companyphoneLabel.Text = companyPhone;
 
-            if (FindControl("xrLabelCompanyEmailAddress", true) is XRLabel emailLabel)
-                emailLabel.Text = companyEmail;
-
-            if (FindControl("xrLabelCompanyWebsite", true) is XRLabel websiteLabel)
-                websiteLabel.Text = companyWebsite;
+            if (FindControl("xrPictureBoxSeal", true) is XRPictureBox sealPictureBox)
+                sealPictureBox.Image = sealImage;
         }
 
         private void LoadReportData(string invoiceNo)
@@ -108,7 +91,6 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B
             if (dt.Rows.Count == 0)
             {
                 this.DataSource = null;
-                
             }
             else
             {
@@ -145,7 +127,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B
                 }
                 else
                 {
-                    throw new Exception("Unable to get tenant context. Please check session and cache.");
+                    throw new Exception("Unable to get tenant context.");
                 }
             }
             catch (Exception ex)
@@ -169,7 +151,6 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B
                 this.Watermark.ImageViewMode = ImageViewMode.Stretch;
             }
         }
-
-     
     }
 }
+
