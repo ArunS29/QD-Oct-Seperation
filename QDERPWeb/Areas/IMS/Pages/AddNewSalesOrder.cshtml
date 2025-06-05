@@ -2,6 +2,7 @@
 @model QD.ERP.Web.Areas.IMS.Pages.AddNewSalesOrderModel
 @{
 }
+
 <style>
     .dx-datagrid-headers {
         border: 1px solid #686868 !important;
@@ -526,14 +527,14 @@
                             <!-- Company Branch -->
                             @(Html.DevExtreme().DropDownBox()
                             .ID("CompanyBranch")
-                            .ValueExpr("BranchCode")
-                            .DisplayExpr("BranchName")
+                            .ValueExpr("CompanyId")
+                            .DisplayExpr("CompanyName")
                             .DataSource(ds => ds
                             .Mvc()
                             .Controller("SalesOrders")
                             .LoadAction("GetCompanyBranch")
                             .LoadMode(DataSourceLoadMode.Raw)
-                            .Key("BranchCode")
+                            .Key("CompanyId")
                             )                            .StylingMode(EditorStylingMode.Outlined)
                             .Label("Company Branch / Division")
                             .LabelMode(EditorLabelMode.Outside)
@@ -677,17 +678,17 @@
             columns.Add().DataField("Gscode").Caption("Item Code");
 
             columns.Add()
-            .DataField("Description")
+            .DataField("Gsdescrpition")
             .Caption("Description")
             .Width(400)
             .EditCellTemplate(new JS("descriptionDropDownTemplate")); // ✅ editable dropdown
 
             columns.Add().DataField("UnitRateMethod").Caption("Unit Rate Method").Width(400).EditCellTemplate(new JS("unitRateMethodDropDownTemplate")); ;
-            columns.Add().DataField("DeliveringQuantity").Caption("Qty");
+            columns.Add().DataField("QuotedQuantity").Caption("Qty");
             columns.Add().DataField("CostPrice").Caption("Cost Price");
             columns.Add().DataField("QuotedUnitPrice").Caption("Unit Price");
             columns.Add().DataField("QuotedDiscount").Caption("Quoted Discount");
-            columns.Add().DataField("Amount").Caption("Amount");
+            columns.Add().DataField("LineTaxAmount").Caption("Amount");
             columns.Add().DataField("VAT Desc").Caption("VAT Desc");
             columns.Add().DataField("VAT").Caption("VAT");
             columns.Add().DataField("Total").Caption("Total");
@@ -867,7 +868,7 @@
                         .Controller("SalesOrders")
                         .LoadAction("GetCompanyBranch")
                         .LoadMode(DataSourceLoadMode.Raw)
-                       .Key("BranchCode")
+                           .Key("CompanyId")
                                         )
                     .Height(300)
                     .ShowBorders(true)
@@ -876,8 +877,8 @@
                     .Selection(s => s.Mode(SelectionMode.Single))
                     .Columns(columns =>
                     {
-                        columns.Add().DataField("BranchCode").Caption("Branch Code");
-                        columns.Add().DataField("BranchName").Caption("Branch Name");
+                            columns.Add().DataField("CompanyId").Caption("Company ID");
+                            columns.Add().DataField("CompanyName").Caption("Company Name");
                     })
                     .OnSelectionChanged("onCompanyBranch")
                 )
@@ -885,7 +886,7 @@
 @using (Html.DevExtreme().NamedTemplate("SalesPersonNameDropDownTemplate")) // ✅ Corrected name
 {
     @(Html.DevExtreme().DataGrid()
-                    .ID("CompanyBranchGrid")
+                    .ID("SalesPersonGrid")
                      .DataSource(ds => ds
                      .Mvc()
                      .Controller("SalesOrders")
@@ -957,6 +958,9 @@
 }
 
 <script>
+
+   
+
     //description DropDownTemplate DropDown
        let descriptionList = [];
 
@@ -1020,7 +1024,7 @@
                             e.component.option("value", data.Gsdescrpition);
                             const grid = $("#itemGrid").dxDataGrid("instance");
                             const rowIndex = grid.getRowIndexByKey(cellInfo.key);
-                            grid.cellValue(rowIndex, "ItemCode", data.Gscode);
+                            grid.cellValue(rowIndex, "Gscode", data.Gscode);
                             grid.cellValue(rowIndex, "Qty", 1);
 
                             e.component.close();
@@ -1320,6 +1324,11 @@
                 .done(function (data) {
                     salesOrderTextBox.option("value", data.SalesOrderNo);
                     // ...populate other fields as needed...
+                     // Now bind children to grid:
+            if (data.SalesOrderChildren && data.SalesOrderChildren.length > 0) {
+                var grid = $("#itemGrid").dxDataGrid("instance");
+                grid.option("dataSource", data.SalesOrderChildren);
+            }
                 })
                 .fail(function () {
                     DevExpress.ui.notify("Failed to load sales order details.", "error", 2000);
@@ -1389,7 +1398,7 @@
         if (selected) {
             const dropDownBox = $("#CompanyBranch").dxDropDownBox("instance");
             if (dropDownBox) {
-                dropDownBox.option("value", selected.BranchCode);
+                dropDownBox.option("value", selected.CompanyId);
                 dropDownBox.close();
             } else {
                 console.error("DropDownBox instance not found.");
@@ -1445,6 +1454,25 @@
 
 
     $("#btnSave").on("click", function (e) {
+         // Collect grid rows
+    var gridData = $("#itemGrid").dxDataGrid("instance").getDataSource().items();
+
+    // Map grid rows to match Tbl60202salesOrderChild entity
+    var children = gridData.map(function(row) {
+        return {
+            SalesOrderChildId: row.SalesOrderChildId ?? 0,
+            SalesOrderNo: $("#SalesOrderNO").dxTextBox("instance").option("value"),
+            QuoteNo: $("#QuotationNo").dxTextBox("instance").option("value"),
+            QuotedQuantity: row.QuotedQuantity ?? null,
+            UnitRateMethod: row.UnitRateMethod ?? null,
+            Gscode: row.Gscode ?? "",
+
+            QuotedUnitPrice: row.QuotedUnitPrice ?? null,
+            QuotedDiscount: row.QuotedDiscount ?? null,
+            CostPrice: row.CostPrice ?? null,
+        };
+    });
+
         var model = {
             SalesOrderNo: $("#SalesOrderNO").dxTextBox("instance").option("value"),
             SalesOrderDate: $("#SalesOrderDate").dxDateBox("instance").option("value"),
@@ -1455,7 +1483,7 @@
             OrderExpiryDate: $("#OrderExpiryDate").dxDateBox("instance").option("value"),
             ExpectedDeliveryDate: $("#ExpectedDeliveryDate").dxDateBox("instance").option("value"),
             ClientRefNo: $("#ClientRefName").dxTextBox("instance").option("value"),
-            ClientContactEmail: $("#ClientEmail").dxTextBox("instance").option("value"),
+            ClientContactEmail: $("#ClientEmail")   .dxTextBox("instance").option("value"),
             // DeliveryTerms: $("#DeliveryTerms").dxTextBox("instance").option("value"),
             SalesOrderRemarks: $("#SalesOrderRemarks").dxTextArea("instance").option("value"),
             ClientContactNo: $("#ClientContact").dxTextBox("instance").option("value"),
@@ -1469,14 +1497,13 @@
             DiscountsText: $("#DeductionsText").dxTextBox("instance").option("value"),
             CostAllocationMasterGroup: $("#CostCenter").dxDropDownBox("instance").option("value"),
             CompanyBranch: $("#CompanyBranch").dxDropDownBox("instance").option("value"),
-            InventoryMasterGroupId: $("#InventoryGroup").dxDropDownBox("instance").option("value"),
+            InventoryMasterGroupId: $("#InventoryGroup").dxDropDownBox("instance").option("value"),  
+              SalesOrderChildren: children
+
             // DeliveryPeriod: $("#DeliveryPeriod").dxTextBox("instance").option("value"),
 
         };
-        // Collect grid rows
-    var gridData = $("#itemGrid").dxDataGrid("instance").getDataSource().items();
-
-      model.SalesOrderChildren = gridData;
+   
 
         $.ajax({
             url: "/api/SalesOrders/SaveSalesOrder",
@@ -1491,7 +1518,9 @@
             }
         });
      });
-
+     //date today  works
+         // Instead of: $("#SalesOrderDate").dxDateBox("instance").option("value")
+   
      ////
     $(function () {
         // Helper to get query string parameter
