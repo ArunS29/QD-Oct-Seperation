@@ -146,7 +146,7 @@ namespace QD.ERP.Web.Pages
                     case "CostCenterReport":
                         Report = new CostcenterRepoer(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr,  _tenantDbContextHelper
                         );
                         break;
 
@@ -210,33 +210,23 @@ namespace QD.ERP.Web.Pages
                             FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
                         );
                         break;
-                    default:
-                        return NotFound("cost analysis report not found.");
 
-                }
-            }
 
-            ///VAtReports
-           else  if (frmDate.HasValue && toDate.HasValue)
-            {
-                FrmDate = frmDate.Value;
-                ToDate = toDate.Value;
-                switch (reportName)
-                {
+                    ////VAT REports
                     case "TaxSummaryReport":
                         Report = new TaxSummaryReport(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
                     case "TaxVATReport":
                         Report = new TaxVATReport(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                         break;
-                    //case "TaxReportRevenueInArabic":
-                    //    Report = new TaxReportRevenueInArabic(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-                    //    break;
+                    case "TaxReportRevenueInArabic":
+                        Report = new TaxReportRevenueInArabic(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
                     case "CreditSummary":
-                        Report = new CreditSummary(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new CreditSummary(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
                     case "DebitNoteSummary":
-                        Report = new DebitNoteSummary(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new DebitNoteSummary(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
                     case "VATPurchasesAndExpReport":
                         Report = new VATPurchasesAndExpReport(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
@@ -248,10 +238,12 @@ namespace QD.ERP.Web.Pages
                         Report = new VATReturnsform(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
                     default:
-                        return NotFound("VAT report not found.");
+                        return NotFound("cost analysis report not found.");
+
                 }
             }
 
+       
             ///Bills Receivable reports
             // **CASE 3: Reports using selectedValues**
             else if (selectedValues != null && selectedValues.Length > 0)

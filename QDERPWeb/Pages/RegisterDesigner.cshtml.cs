@@ -15,6 +15,7 @@ using ERPMasterWtDataContext = QD.ERP.Web.DAL.Entities.ERPMasterWtDataContext;
 using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis;
 using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.summary_Report;
 using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.Detailed_Report;
+using QD.ERP.Web.Areas.VAT.Reports.VAT_Sales_Invoice_Register;
 
 namespace QD.ERP.Web.Pages
 {
@@ -129,7 +130,7 @@ namespace QD.ERP.Web.Pages
                     case "CostCenterReport":
                         Report = new CostcenterRepoer(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr,userName, _tenantDbContextHelper
+                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
                         );
                         break;
 
@@ -193,15 +194,21 @@ namespace QD.ERP.Web.Pages
                             frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
                         );
                         break;
+
+             
+                    case "TaxSummaryReport":
+                        Report = new TaxSummaryReport(frmDate.Value,toDate.Value,tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        break;
+                      
                     default:
                         return NotFound("Cost Analysis Report not found.");
                 }
             }
 
-            //else
-            //{
-            //    return BadRequest("Missing required parameters.");
-            //}
+            else
+            {
+                return BadRequest("Missing required parameters.");
+            }
 
             return Page();
         }
