@@ -1588,17 +1588,21 @@
 		const typedText = e.component.option("text");
 		const grid = $(e.component.content()).find("#ledgeraccount-datagrid").first().dxDataGrid("instance");
 
-		if (!grid) return;
+		if (!grid || !typedText) return;
 
 		const visibleRows = grid.getVisibleRows();
 		const match = visibleRows.find(r => r.data.AccountHead === typedText);
 
-		if (!match) {
-			// Clear the value if not valid
-			e.component.option("value", null);
-
+		if (match) {
+			const selectedKey = match.data.AccountId;
+			grid.selectRows([selectedKey], false); // select the row in the grid
+			e.component.option("value", selectedKey); // bind the selected key to DropDownBox
+			grid.option("focusedRowIndex", match.rowIndex); // optional: focus the matched row
+		} else {
+			e.component.option("value", null); // clear if no match found
 		}
 	}
+
 
 
 </script>
