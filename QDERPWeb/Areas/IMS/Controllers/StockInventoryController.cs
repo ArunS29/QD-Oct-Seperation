@@ -614,35 +614,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
         }
 
-        [HttpDelete]
-        public IActionResult DeleteStockClassification(string key)
-        {
-            try
-            {
-                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                    return Unauthorized(new { message = "Invalid tenant." });
+      
 
-                // Convert key (string) to short
-                if (!short.TryParse(key, out short id))
-                    return BadRequest(new { message = "Invalid Stock Classification ID." });
 
-                var stockClass = dbContext.Tbl30111StockClassificationMasters
-                                          .FirstOrDefault(x => x.StockClassId == id);
-
-                if (stockClass == null)
-                    return NotFound(new { message = "Stock Classification not found." });
-
-                dbContext.Tbl30111StockClassificationMasters.Remove(stockClass);
-                dbContext.SaveChanges();
-
-                return Ok(new { message = "Stock Classification deleted successfully." });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "DeleteStockClassification failed");
-                return StatusCode(500, new { message = "An unexpected error occurred.", detailed = ex.Message });
-            }
-        }
         public class StockClassificationUpdateDto
         {
             public int Key { get; set; }
@@ -676,6 +650,31 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             {
                 _logger.LogError(ex, "UpdateStockClassification failed");
                 return StatusCode(500, new { message = "An error occurred while updating.", detailed = ex.Message });
+            }
+        }
+         [HttpDelete]
+        public IActionResult DeleteStockClassification(string key)
+        {
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized(new { message = "Invalid tenant." });
+
+                if (!short.TryParse(key, out short id))
+                    return BadRequest(new { message = "Invalid Stock Classification ID." });
+
+                var stockClass = dbContext.Tbl30111StockClassificationMasters.FirstOrDefault(x => x.StockClassId == id);
+                if (stockClass == null)
+                    return NotFound(new { message = "Stock Classification not found." });
+
+                dbContext.Tbl30111StockClassificationMasters.Remove(stockClass);
+                dbContext.SaveChanges();
+
+                return Ok(new { message = "Deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error.", error = ex.Message });
             }
         }
         [HttpGet]
@@ -1366,7 +1365,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     .Select(x => new
                     {
                         StockCode = x.Gscode,
-                        Unit = x.UnitRateMethod, // You may want to map this to a unit string if needed
+                        Unit = x.UnitRateMethod, 
                         UnitPrice = x.UnitPrice,
                         Quantity = x.QtyReceived,
                         ExpiryDate = x.ExpiryDate,
@@ -1388,10 +1387,3 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
     }
 }
-
-
-
-
-    
-
-
