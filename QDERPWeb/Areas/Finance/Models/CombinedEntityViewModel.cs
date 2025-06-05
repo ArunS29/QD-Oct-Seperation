@@ -875,6 +875,20 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string VoucherNo { get; set; }
         public string NewVoucherNo { get; set; }
     }
+    public class ExpenseClaimChildDto
+    {
+        public long ClaimChildNo { get; set; }
+        public decimal TaxableAmount { get; set; }
+        public decimal TaxAmount { get; set; }
+        public decimal? RoundOff { get; set; }
+        public string SupplierName { get; set; }
+        public string SupplierVATNo { get; set; }
+        public string PurchaserName { get; set; }
+        public string LineNarration { get; set; }
+        public string EmployeeNo { get; set; }
+        public string PropertyNo { get; set; }
+        public bool IsTaxIncluded { get; set; }
+    }
 
 }
 

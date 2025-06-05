@@ -617,9 +617,16 @@
 
 								<td style="width:10%; vertical-align: bottom; padding-bottom: 5px;">
 									<div style="display:flex; gap:5px;">
+										      @(Html.DevExtreme().Button()
+																				.ID("AddClient")
+																				.Icon("plus")
+																				.Hint("Add Description")
+																				.Width(60)
+																				.ElementAttr("style", "display: flex; justify-content: center; align-items: center;")
+																			.OnClick("showLedgerAccountPopup")
 
-										@(Html.DevExtreme().Button().ID("AddClient").Icon("plus").Hint("Add Description").Width(60))
-								@(Html.DevExtreme().Popup()
+																				)
+								             @(Html.DevExtreme().Popup()
 																.ID("ledgerAccountPopup")
 																.Width("80%")
 																.Height("85%")
@@ -634,7 +641,15 @@
 												  									</div>
 												  								</text>)
 																)
-										@(Html.DevExtreme().Button().ID("EditClient").Icon("edit").Hint("Edit Description").Width(60))
+																 @(Html.DevExtreme().Button()
+																				.ID("EditClient")
+																				.Icon("edit")
+																				.Hint("Edit Description")
+													                     		.Width(60)
+																				.ElementAttr("style", "display: flex; justify-content: center; align-items: center;")
+																			.OnClick("showLedgerAccountEditPopup")
+
+																				)
 								@(Html.DevExtreme().Popup()
 																.ID("ledgerEditAccountPopup")
 																.Width("80%")
@@ -7481,9 +7496,41 @@
 		dropDownBox.close();
 	});
 
-	 // function onLinkClick() {
-		// 	window.location.href = "https://example.com"; // Or your desired action
-		// }
+		function showLedgerAccountPopup() {
+			var popup = $("#ledgerAccountPopup").dxPopup("instance");
+			popup.show();
+
+			// Correct URL to your LedgerAccount view
+			$("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
+		}
+
+	function showLedgerAccountEditPopup() {
+		
+			const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}`;
+			var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
+
+			// Add an event to refresh the page when the popup is closed
+			popupInstance.option("onHidden", function () {
+				//location.reload(); // Reloads the page after closing the popup
+			});
+
+			popupInstance.show();
+
+			setTimeout(function () {
+				var iframe = document.getElementById("ledgerEditAccountFrame");
+
+				if (!iframe) {
+					console.error("Error: ledgerEditAccountFrame not found!");
+					return;
+				}
+
+				iframe.onload = function () {
+					console.log("Iframe loaded successfully.");
+				};
+
+				iframe.src = url;
+			}, 300);
+		}
 
 </script>
 
