@@ -4213,6 +4213,62 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
         }
 
 
+        [HttpPost]
+        public async Task<IActionResult> DeleteInvoiceAllLineItem(string InvoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    if (string.IsNullOrWhiteSpace(InvoiceNo))
+                    {
+                        return BadRequest(new { Message = "Invoice number is required." });
+                    }
+
+                    // Check if invoice exists (optional)
+                    var invoiceExists = await dbContext.Tbl20162VatinvoiceChildren
+                                            .AnyAsync(v => v.InvoiceNo == InvoiceNo);
+
+                    if (!invoiceExists)
+                    {
+                        return NotFound(new { Message = "Invoice not found." });
+                    }
+
+                    return Ok(new { Message = "Invoice child records deleted successfully." });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new { Message = "Error while deleting invoice child records.", Error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteInvoiceChild([FromBody] int InvoiceChildSlNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                   
+
+                    // Call the stored procedure with SerialNumber
+                    var result = await dbContext.Database.ExecuteSqlRawAsync(
+                        "EXEC sp201_61DeleteVATInvoiceChild @p0", InvoiceChildSlNo);
+
+                    return Ok(new { success = true, message = "Line item deleted successfully." });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new { success = false, message = "Server error occurred.", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+
 
 
         //[HttpPost]

@@ -33,49 +33,84 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCashBalance()
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
             {
-                try
-                {
-                    var cashBalance = await dbContext.Qry201MainVoucherEntriesWithMasters
-                .Where(v => v.AccountGroup == "BANK ACCOUNTS" || v.AccountGroup == "CASH-IN-HAND") // Add this filter
-                .Select(v => (v.DrAmount ?? 0) - (v.CrAmount ?? 0)) // Match Part 2 logic
-                .SumAsync();
-
-                    return Ok(new { success = true, cashBalance = (int)cashBalance }); // Convert to int if needed
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError($"Error in GetCashBalance: {ex.Message}");
-                    return StatusCode(500, "Internal server error");
-                }
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
             }
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+            try
+            {
+                // Use projection to reduce data transfer and memory usage
+                var cashBalance = await dbContext.Qry201MainVoucherEntriesWithMasters
+                    .AsNoTracking()
+                    .Where(v => v.AccountGroup == "BANK ACCOUNTS" || v.AccountGroup == "CASH-IN-HAND")
+                    .Select(v => (v.DrAmount ?? 0) - (v.CrAmount ?? 0)) // Project only required fields
+                    .SumAsync();
+
+                return Ok(new { success = true, cashBalance = Math.Round(cashBalance, 2) }); // Return rounded value
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in GetCashBalance");
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> GetTotalClientOutstanding()
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
             {
-                try
-                {
-                    var totalOutstanding = await dbContext.Qry20115BillsOutStandings
-                        .Where(b => b.Balance > 0)
-                        .SumAsync(b => b.Balance);
-                    totalOutstanding = (int)totalOutstanding;
-                    return Ok(new { success = true, totalOutstanding });
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError($"Error in GetTotalClientOutstanding: {ex.Message}");
-                    return StatusCode(500, "Internal server error");
-                }
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
             }
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+            try
+            {
+                // Use projection to reduce data transfer and memory usage
+                var totalOutstanding = await dbContext.Qry20115BillsOutStandings
+                    .AsNoTracking()
+                    .Where(b => b.Balance > 0)
+                    .Select(b => b.Balance) // Project only required fields
+                    .SumAsync();
+
+                return Ok(new { success = true, totalOutstanding = Math.Round(totalOutstanding ?? 0, 2) }); // Return rounded value
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in GetTotalClientOutstanding");
+                return StatusCode(500, "Internal server error");
+            }
         }
 
-       [HttpGet]
+        [HttpGet]
+        public async Task<IActionResult> GetTotalBillsOutstanding()
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+
+            try
+            {
+                // Use projection to reduce data transfer and memory usage
+                var totalBillsOutstanding = await dbContext.Qry20115BillsPayableOutStandings
+                    .AsNoTracking()
+                    .Where(b => b.Balance > 0)
+                    .Select(b => b.Balance) // Project only required fields
+                    .SumAsync();
+
+                return Ok(new { success = true, totalBillsOutstanding = Math.Round(totalBillsOutstanding ?? 0, 2) }); // Return rounded value
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in GetTotalBillsOutstanding");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        [HttpGet]
 
 public async Task<IActionResult> GetAccountSummary(DataSourceLoadOptions loadOptions)
 
@@ -194,28 +229,7 @@ public async Task<IActionResult> GetAccountSummary(DataSourceLoadOptions loadOpt
 
 
 
-        [HttpGet]
-        public async Task<IActionResult> GetTotalBillsOutstanding()
-        {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
-            {
-                try
-                {
-                    var totalBillsOutstanding = await dbContext.Qry20115BillsPayableOutStandings
-                        .Where(b => b.Balance > 0)
-                        .SumAsync(b => b.Balance);
-                    totalBillsOutstanding = (int)totalBillsOutstanding;
-                    return Ok(new { success = true, totalBillsOutstanding });
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError($"Error in GetTotalBillsOutstanding: {ex.Message}");
-                    return StatusCode(500, "Internal server error");
-                }
-            }
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
-        }
-
+      
         [HttpGet]
         public async Task<IActionResult> GetBillsPayableOutstanding(DataSourceLoadOptions loadOptions)
         {
