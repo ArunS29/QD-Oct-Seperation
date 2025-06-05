@@ -5,6 +5,51 @@
 @{
 } *@
 <style>
+	.form-wrapper {
+		border-radius: 6px;
+		width: 97%;
+		height: 85%;
+	}
+
+	.form-group {
+		position: relative;
+		padding: 10px;
+	}
+
+		.form-group label {
+			display: block;
+			margin-bottom: 15px;
+		}
+
+	.form-row {
+		display: flex;
+		gap: 20px;
+		flex-wrap: wrap;
+	}
+
+	.arabic-button {
+		background: transparent;
+		border: none;
+		cursor: pointer;
+	}
+
+	.top-buttons {
+		position: absolute;
+		top: 0;
+		right: 0;
+		display: flex;
+		gap: 8px;
+	}
+
+		.top-buttons .dx-button {
+			height: 30px;
+			color: black;
+		}
+
+	.arabic-textbox-wrapper {
+		position: relative;
+		width: 100%;
+	}
 	.dx-datagrid-headers .center-header {
 		text-align: center !important;
 	}
@@ -3700,18 +3745,109 @@
                     });
                 }
             },
-            {
-                dataField: "Descriptions",
-                caption: "...",
-                width: 50,
-                allowEditing: true,
-                editCellTemplate: function (cellElement, cellInfo) {
-                    let url = `/${tenantName}/VAT/CreditDetailDescription`;
-                    let title = "VAT Details Description";
-                    window.currentDescriptionCell = cellInfo;
-                    openModal(url, title);
-                }
-            },
+			   {
+					dataField: "Descriptions",
+					caption: "...",
+					width: 50,
+					allowEditing: false,
+						cellTemplate: function (container, options) {
+			const buttonId = `popover-btn-${options.rowIndex}`;
+			const popoverId = `popover-${options.rowIndex}`;
+				const url = `/${tenantName}/VAT/CreditDetailDescription`;
+			$("<div>")
+				.attr("id", buttonId)
+				.appendTo(container)
+				.dxButton({
+						icon: "user",
+					onClick: function () {
+						$(`#${popoverId}`).dxPopover("instance").show(`#${buttonId}`);
+					}
+				});
+
+			// Add a hidden div for popover content
+			$("<div>")
+				.attr("id", popoverId)
+				.appendTo("body") // Append to body so it's not restricted to grid layout
+				.dxPopover({
+					width: 900,
+					height: "auto",
+					position: "bottom",
+					showTitle: true,
+					title: "VAT Description",
+							contentTemplate: function () {
+						const formHtml = `
+		<div class="form-wrapper">
+			<div class="form-group">
+				<div class="top-buttons">
+					<div id="btnUseDetailedDesc"></div>
+					<div id="btnUseItemDesc"></div>
+				</div>
+			</div>
+			<table style="width: 100%; border-spacing: 10px; border-collapse: separate;">
+				<tr>
+					<td colspan="4">
+						<div id="DetailedDescription"></div>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3">
+						<div style="display: flex; align-items: end; gap: 10px;">
+							<div id="DetailedDescriptionArabic"></div>
+							<div id="btnConvertDescription"></div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td><div id="ServiceStartDate"></div></td>
+					<td><div id="ServiceEndDate"></div></td>
+					<td><div id="ExpiryDate"></div></td>
+				</tr>
+				<tr>
+					<td><div id="CostAllocationEmployees"></div></td>
+					<td><div id="CostAllocationProperty"></div></td>
+					<td><div id="BatchLotNo"></div></td>
+				</tr>
+				<tr>
+					<td><div id="DiscountText"></div></td>
+					<td>
+						<div style="display: flex; align-items: end; gap: 10px;">
+							<div id="btnConvertDiscount"></div>
+							<div id="DiscountTextArabic"></div>
+						</div>
+					</td>
+					<td><div id="Remarks"></div></td>
+				</tr>
+			</table>
+		</div>
+						`;
+
+						const $container = $("<div>").html(formHtml);
+
+						// Initialize DevExtreme controls after rendering
+						setTimeout(function () {
+							$("#btnUseDetailedDesc").dxButton({ text: "Use Detailed Description" });
+							$("#btnUseItemDesc").dxButton({ text: "Use Item Description" });
+							$("#DetailedDescription").dxTextBox({ label: "Detailed Description", labelMode: "outside", width: "100%" });
+							$("#DetailedDescriptionArabic").dxTextBox({ label: "Detailed Description (Arabic)", labelMode: "outside", width: "98%", height: 100 });
+							$("#btnConvertDescription").dxButton({ icon: "fas fa-language", onClick: function () { convertToArabicbtn("DetailedDescription", "DetailedDescriptionArabic"); } });
+							$("#ServiceStartDate").dxDateBox({ label: "Service Start Date", labelMode: "outside" });
+							$("#ServiceEndDate").dxDateBox({ label: "Service End Date", labelMode: "outside" });
+							$("#ExpiryDate").dxDateBox({ label: "Expiry Date", labelMode: "outside", width: "100%" });
+							$("#CostAllocationEmployees").dxSelectBox({ label: "Cost Allocation for Employees", labelMode: "outside", width: "100%", placeholder: "Select Employees" });
+							$("#CostAllocationProperty").dxSelectBox({ label: "Cost Allocation for Property/Equipments", labelMode: "outside", width: "100%", placeholder: "Select Property/Equipments" });
+							$("#BatchLotNo").dxTextBox({ label: "Batch/Lot No", labelMode: "outside", width: "100%" });
+							$("#DiscountText").dxTextBox({ label: "Discount Text", labelMode: "outside", width: "100%" });
+							$("#btnConvertDiscount").dxButton({ icon: "fas fa-language", onClick: function () { convertToArabicbtn2("DiscountText", "DiscountTextArabic"); } });
+							$("#DiscountTextArabic").dxTextBox({ label: "Discount Text (Arabic)", labelMode: "outside", width: "100%" });
+							$("#Remarks").dxTextBox({ label: "Remarks", labelMode: "outside" });
+						}, 0);
+
+						return $container;
+					}
+				});
+		}
+
+				},
             {
                 dataField: "UnitRateMethod",
                 caption: formatMessage('Unit Rate Method'),
@@ -4168,30 +4304,109 @@
 					}
 
 				},
-	{
-			dataField: "Descriptions",
-			caption: "...",
-			cssClass: "center-header",
-			width: 80,
-			allowEditing: true,
-			cellTemplate: function (container, options) {
-			$("<div>").dxButton({
-				icon: "user", // Built-in DevExtreme icon
-				hint: "Edit VAT Details Description",
-				stylingMode: "text",
-				width: 60,
-				onClick: function () {
-					// Save context
-					window.currentDescriptionCell = options;
+		{
+					dataField: "Descriptions",
+					caption: "...",
+					width: 50,
+					allowEditing: false,
+						cellTemplate: function (container, options) {
+			const buttonId = `popover-btn-${options.rowIndex}`;
+			const popoverId = `popover-${options.rowIndex}`;
+				const url = `/${tenantName}/VAT/CreditDetailDescription`;
+			$("<div>")
+				.attr("id", buttonId)
+				.appendTo(container)
+				.dxButton({
+						icon: "user",
+					onClick: function () {
+						$(`#${popoverId}`).dxPopover("instance").show(`#${buttonId}`);
+					}
+				});
 
-					// Open modal
-					let url = `/${tenantName}/VAT/VATDetailsDescription`;
-					let title = "VAT Details Description";
-					openModal(url, title);
-				}
-			}).appendTo(container);
+			// Add a hidden div for popover content
+			$("<div>")
+				.attr("id", popoverId)
+				.appendTo("body") // Append to body so it's not restricted to grid layout
+				.dxPopover({
+					width: 900,
+					height: "auto",
+					position: "bottom",
+					showTitle: true,
+					title: "VAT Description",
+							contentTemplate: function () {
+						const formHtml = `
+		<div class="form-wrapper">
+			<div class="form-group">
+				<div class="top-buttons">
+					<div id="btnUseDetailedDesc"></div>
+					<div id="btnUseItemDesc"></div>
+				</div>
+			</div>
+			<table style="width: 100%; border-spacing: 10px; border-collapse: separate;">
+				<tr>
+					<td colspan="4">
+						<div id="DetailedDescription"></div>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3">
+						<div style="display: flex; align-items: end; gap: 10px;">
+							<div id="DetailedDescriptionArabic"></div>
+							<div id="btnConvertDescription"></div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td><div id="ServiceStartDate"></div></td>
+					<td><div id="ServiceEndDate"></div></td>
+					<td><div id="ExpiryDate"></div></td>
+				</tr>
+				<tr>
+					<td><div id="CostAllocationEmployees"></div></td>
+					<td><div id="CostAllocationProperty"></div></td>
+					<td><div id="BatchLotNo"></div></td>
+				</tr>
+				<tr>
+					<td><div id="DiscountText"></div></td>
+					<td>
+						<div style="display: flex; align-items: end; gap: 10px;">
+							<div id="btnConvertDiscount"></div>
+							<div id="DiscountTextArabic"></div>
+						</div>
+					</td>
+					<td><div id="Remarks"></div></td>
+				</tr>
+			</table>
+		</div>
+						`;
+
+						const $container = $("<div>").html(formHtml);
+
+						// Initialize DevExtreme controls after rendering
+						setTimeout(function () {
+							$("#btnUseDetailedDesc").dxButton({ text: "Use Detailed Description" });
+							$("#btnUseItemDesc").dxButton({ text: "Use Item Description" });
+							$("#DetailedDescription").dxTextBox({ label: "Detailed Description", labelMode: "outside", width: "100%" });
+							$("#DetailedDescriptionArabic").dxTextBox({ label: "Detailed Description (Arabic)", labelMode: "outside", width: "98%", height: 100 });
+							$("#btnConvertDescription").dxButton({ icon: "fas fa-language", onClick: function () { convertToArabicbtn("DetailedDescription", "DetailedDescriptionArabic"); } });
+							$("#ServiceStartDate").dxDateBox({ label: "Service Start Date", labelMode: "outside" });
+							$("#ServiceEndDate").dxDateBox({ label: "Service End Date", labelMode: "outside" });
+							$("#ExpiryDate").dxDateBox({ label: "Expiry Date", labelMode: "outside", width: "100%" });
+							$("#CostAllocationEmployees").dxSelectBox({ label: "Cost Allocation for Employees", labelMode: "outside", width: "100%", placeholder: "Select Employees" });
+							$("#CostAllocationProperty").dxSelectBox({ label: "Cost Allocation for Property/Equipments", labelMode: "outside", width: "100%", placeholder: "Select Property/Equipments" });
+							$("#BatchLotNo").dxTextBox({ label: "Batch/Lot No", labelMode: "outside", width: "100%" });
+							$("#DiscountText").dxTextBox({ label: "Discount Text", labelMode: "outside", width: "100%" });
+							$("#btnConvertDiscount").dxButton({ icon: "fas fa-language", onClick: function () { convertToArabicbtn2("DiscountText", "DiscountTextArabic"); } });
+							$("#DiscountTextArabic").dxTextBox({ label: "Discount Text (Arabic)", labelMode: "outside", width: "100%" });
+							$("#Remarks").dxTextBox({ label: "Remarks", labelMode: "outside" });
+						}, 0);
+
+						return $container;
+					}
+				});
 		}
-		},
+
+				},
 
 
 				{
