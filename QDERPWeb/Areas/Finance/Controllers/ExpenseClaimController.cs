@@ -802,16 +802,16 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
         [HttpGet]
-        public IActionResult ExpenseClaimVAT()
+        public IActionResult ExpenseClaimVAT(long claimChildNo, string description, string approvedAmount)
+        
         {
-            //// Log or debug the incoming parameters
-            //ViewBag.VoucherNo = voucherNo;
-            //ViewBag.AccountHead = accountHead;
-            //ViewBag.VoucherAmount = voucherAmount;
-            //ViewBag.DrCr = drCr;
-            //ViewBag.VoucherEntryNo = voucherEntryNo;
-            return PartialView("~/Areas/Finance/Views/_ExpenseClaimVAT.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
+            ViewBag.ClaimChildNo = claimChildNo;
+            ViewBag.ExpenseDescription = description;
+            ViewBag.ApprovedAmount = approvedAmount;
+
+            return PartialView("~/Areas/Finance/Views/_ExpenseClaimVAT.cshtml");
         }
+
         [HttpGet]
         public IActionResult GetSupplierName()
         {
@@ -884,6 +884,107 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        [HttpPost]
+        public IActionResult SaveExpenseClaimEntry([FromBody] ExpenseClaimChildDto model)
+        {
+            if (model == null || model.ClaimChildNo <= 0)
+                return BadRequest("Invalid data");
+
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var existingEntry = dbContext.Tbl20103ExpenseClaimChildren
+                    .FirstOrDefault(x => x.ClaimChildNo == model.ClaimChildNo);
+
+                if (existingEntry != null)
+                {
+                    // Update existing
+                    existingEntry.TaxableAmount = model.TaxableAmount;
+                    existingEntry.TaxAmount = model.TaxAmount;
+                    existingEntry.RoundOff = model.RoundOff;
+                    existingEntry.SupplierName = model.SupplierName;
+                    existingEntry.SupplierVatno = model.SupplierVATNo;
+                    existingEntry.PurchaserName = model.PurchaserName;
+                    existingEntry.LineNarration = model.LineNarration;
+                    existingEntry.EmployeeNo = model.EmployeeNo;
+                    existingEntry.PropertyNo = model.PropertyNo;
+                    existingEntry.IsTaxIncluded = model.IsTaxIncluded;
+                }
+                //else
+                //{
+                //    // Insert new
+                //    var claimEntry = new Tbl20103ExpenseClaimChild
+                //    {
+                //        ClaimChildNo = model.ClaimChildNo,
+                //        TaxableAmount = model.TaxableAmount,
+                //        TaxAmount = model.TaxAmount,
+                //        RoundOff = model.RoundOff,
+                //        SupplierName = model.SupplierName,
+                //        SupplierVatno = model.SupplierVATNo,
+                //        PurchaserName = model.PurchaserName,
+                //        LineNarration = model.LineNarration,
+                //        EmployeeNo = model.EmployeeNo,
+                //        PropertyNo = model.PropertyNo,
+                //        IsTaxIncluded = model.IsTaxIncluded
+                //    };
+
+                //    dbContext.Tbl20103ExpenseClaimChildren.Add(claimEntry);
+                //}
+
+                dbContext.SaveChanges();
+
+                return Ok(new { message = "Saved successfully." });
+            }
+
+            return BadRequest("Unable to resolve tenant database context.");
+        }
+
+        [HttpGet]
+        public IActionResult GetChildClaimsByVoucherNo(string voucherNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var result = dbContext.Tbl20103ExpenseClaimChildren
+                    .Where(x => x.VoucherNo == voucherNo)
+                    .ToList();
+
+                return Json(result);
+            }
+
+            return Unauthorized(); // or BadRequest("Invalid tenant context");
+        }
+
+        [HttpPost]
+        public IActionResult AddOrUpdateChildClaim([FromBody] Tbl20103ExpenseClaimChild child)
+        {
+            if (child == null)
+                return BadRequest("Invalid data");
+
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                if (child.ClaimChildNo > 0)
+                {
+                    // Update
+                    var existing = dbContext.Tbl20103ExpenseClaimChildren
+                        .FirstOrDefault(x => x.ClaimChildNo == child.ClaimChildNo);
+
+                    if (existing != null)
+                    {
+                        dbContext.Entry(existing).CurrentValues.SetValues(child);
+                    }
+                }
+                else
+                {
+                    // Insert
+                    dbContext.Tbl20103ExpenseClaimChildren.Add(child);
+                }
+
+                dbContext.SaveChanges();
+                return Ok();
+            }
+
+            return Unauthorized(); // or BadRequest("Tenant context could not be resolved");
+        }
+
     }
 }
 
