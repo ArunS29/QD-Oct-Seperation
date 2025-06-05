@@ -30,7 +30,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports
 
             try
             {
-                sqlDataSource2.Fill();
+                sqlDataSource1.Fill();
             }
             catch (Exception ex)
             {
@@ -105,11 +105,11 @@ namespace QD.ERP.Web.Areas.Finance.Reports
 
         private void ConfigureSqlDataSource(string accountId, DateTime frmDate, DateTime toDate)
         {
-            sqlDataSource2.Queries.Clear();
+            sqlDataSource1.Queries.Clear();
 
             if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
             {
-                sqlDataSource2.ConnectionParameters = new CustomStringConnectionParameters(tenant.ConnectionString);
+                sqlDataSource1.ConnectionParameters = new CustomStringConnectionParameters(tenant.ConnectionString);
 
                 // Use schema from tenant, or default to dbo
                 string schemaName = string.IsNullOrWhiteSpace(tenant.schemaname) ? "dbo" : tenant.schemaname;
@@ -128,8 +128,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             new QueryParameter("@EndDate", typeof(DateTime), toDate)
         });
 
-                sqlDataSource2.Queries.Add(storedProcQuery);
-                sqlDataSource2.Name = "sqlDataSource2";
+                sqlDataSource1.Queries.Add(storedProcQuery);
+                sqlDataSource1.Name = "sqlDataSource1";
             }
             else
             {
