@@ -36,6 +36,10 @@
             DevExpress.DataAccess.Sql.QueryParameter queryParameter2 = new DevExpress.DataAccess.Sql.QueryParameter();
             DevExpress.DataAccess.Sql.QueryParameter queryParameter3 = new DevExpress.DataAccess.Sql.QueryParameter();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AccountWithNarration));
+            DevExpress.DataAccess.Sql.StoredProcQuery storedProcQuery2 = new DevExpress.DataAccess.Sql.StoredProcQuery();
+            DevExpress.DataAccess.Sql.QueryParameter queryParameter4 = new DevExpress.DataAccess.Sql.QueryParameter();
+            DevExpress.DataAccess.Sql.QueryParameter queryParameter5 = new DevExpress.DataAccess.Sql.QueryParameter();
+            DevExpress.DataAccess.Sql.QueryParameter queryParameter6 = new DevExpress.DataAccess.Sql.QueryParameter();
             this.TopMargin = new DevExpress.XtraReports.UI.TopMarginBand();
             this.BottomMargin = new DevExpress.XtraReports.UI.BottomMarginBand();
             this.xrLabel10 = new DevExpress.XtraReports.UI.XRLabel();
@@ -63,6 +67,7 @@
             this.xrTableCell6 = new DevExpress.XtraReports.UI.XRTableCell();
             this.xrTableCell7 = new DevExpress.XtraReports.UI.XRTableCell();
             this.Detail = new DevExpress.XtraReports.UI.DetailBand();
+            this.xrPictureBox2 = new DevExpress.XtraReports.UI.XRPictureBox();
             this.xrLine2 = new DevExpress.XtraReports.UI.XRLine();
             this.xrLabel12 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrTable2 = new DevExpress.XtraReports.UI.XRTable();
@@ -90,6 +95,7 @@
             this.xrLabelTotal = new DevExpress.XtraReports.UI.XRLabel();
             this.calculatedField1 = new DevExpress.XtraReports.UI.CalculatedField();
             this.PageHeader = new DevExpress.XtraReports.UI.PageHeaderBand();
+            this.sqlDataSource2 = new DevExpress.DataAccess.Sql.SqlDataSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.xrTable1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xrTable2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
@@ -450,11 +456,19 @@
             // Detail
             // 
             this.Detail.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
+            this.xrPictureBox2,
             this.xrLine2,
             this.xrLabel12,
             this.xrTable2});
-            this.Detail.HeightF = 70.66666F;
+            this.Detail.HeightF = 71.41673F;
             this.Detail.Name = "Detail";
+            // 
+            // xrPictureBox2
+            // 
+            this.xrPictureBox2.LocationFloat = new DevExpress.Utils.PointFloat(637.2436F, 46.83329F);
+            this.xrPictureBox2.Name = "xrPictureBox2";
+            this.xrPictureBox2.SizeF = new System.Drawing.SizeF(100F, 24.16666F);
+            this.xrPictureBox2.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
             // 
             // xrLine2
             // 
@@ -559,8 +573,8 @@
             // tableCell13
             // 
             this.tableCell13.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Iif([VoucherAmountFormatted] > 0, FormatString(\'{0:#,##0.00}\', [VoucherAmountForm" +
-                    "atted]), \'-\')\n")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Iif(\n    [ConvertedAmount] > 0,\n    [CurrencySymbole] + \' \' + FormatString(\'{0:##" +
+                    ",##,##0.00}\', [ConvertedAmount]),\n    \'-\'\n)\n")});
             this.tableCell13.Font = new DevExpress.Drawing.DXFont("Arial", 8F, DevExpress.Drawing.DXFontStyle.Bold);
             this.tableCell13.Name = "tableCell13";
             this.tableCell13.StyleName = "DetailData1";
@@ -572,7 +586,8 @@
             // tableCell14
             // 
             this.tableCell14.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Iif([CrAmount] == 0, \'-\', FormatString(\'{0:#,##0.00}\', [CrAmount]))\n")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Iif(\n    [ConvertedCrAmount] > 0,\n    [CurrencySymbole] + \' \' + FormatString(\'{0:" +
+                    "##,##,##0.00}\', [ConvertedCrAmount]),\n    \'-\'\n)\n\n")});
             this.tableCell14.Font = new DevExpress.Drawing.DXFont("Arial", 8F, DevExpress.Drawing.DXFontStyle.Bold);
             this.tableCell14.Name = "tableCell14";
             this.tableCell14.StyleName = "DetailData1";
@@ -702,7 +717,8 @@
             this.xrLabel7.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel7.BorderWidth = 0.5F;
             this.xrLabel7.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Sum(Iif([VoucherAmountFormatted] > 0, [VoucherAmountFormatted], 0))\n\n")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[CurrencySymbole] + \' \' + FormatString(\'{0:##,##,##0.00}\', Sum(Iif([ConvertedAmou" +
+                    "nt] > 0, [ConvertedAmount], 0)))\n\n")});
             this.xrLabel7.Font = new DevExpress.Drawing.DXFont("Arial", 10F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel7.LocationFloat = new DevExpress.Utils.PointFloat(622.7792F, 10.00002F);
             this.xrLabel7.Name = "xrLabel7";
@@ -752,7 +768,8 @@
             this.xrLabel8.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel8.BorderWidth = 0.5F;
             this.xrLabel8.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Sum([CrAmount])")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Iif(\n  IsNullOrEmpty([CurrencySymbole]),\n  \'\', \n  [CurrencySymbole] + \' \'\n) + For" +
+                    "matString(\'{0:##,##,##0.00}\', Sum([ConvertedCrAmount]))\n")});
             this.xrLabel8.Font = new DevExpress.Drawing.DXFont("Arial", 10F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel8.LocationFloat = new DevExpress.Utils.PointFloat(730.1061F, 9.333356F);
             this.xrLabel8.Name = "xrLabel8";
@@ -825,6 +842,29 @@
             this.PageHeader.HeightF = 35F;
             this.PageHeader.Name = "PageHeader";
             // 
+            // sqlDataSource2
+            // 
+            this.sqlDataSource2.ConnectionName = "DBConnection";
+            this.sqlDataSource2.Name = "sqlDataSource2";
+            storedProcQuery2.Name = "StProAccountLedger";
+            queryParameter4.Name = "@ParamAccountNo";
+            queryParameter4.Type = typeof(string);
+            queryParameter4.ValueInfo = "L00567";
+            queryParameter5.Name = "@StartDate";
+            queryParameter5.Type = typeof(global::System.DateTime);
+            queryParameter5.ValueInfo = "2024-01-01";
+            queryParameter6.Name = "@EndDate";
+            queryParameter6.Type = typeof(global::System.DateTime);
+            queryParameter6.ValueInfo = "2025-01-01";
+            storedProcQuery2.Parameters.AddRange(new DevExpress.DataAccess.Sql.QueryParameter[] {
+            queryParameter4,
+            queryParameter5,
+            queryParameter6});
+            storedProcQuery2.StoredProcName = "StProAccountLedger";
+            this.sqlDataSource2.Queries.AddRange(new DevExpress.DataAccess.Sql.SqlQuery[] {
+            storedProcQuery2});
+            this.sqlDataSource2.ResultSchemaSerializable = resources.GetString("sqlDataSource2.ResultSchemaSerializable");
+            // 
             // AccountWithNarration
             // 
             this.Bands.AddRange(new DevExpress.XtraReports.UI.Band[] {
@@ -837,9 +877,10 @@
             this.CalculatedFields.AddRange(new DevExpress.XtraReports.UI.CalculatedField[] {
             this.calculatedField1});
             this.ComponentStorage.AddRange(new System.ComponentModel.IComponent[] {
-            this.sqlDataSource1});
+            this.sqlDataSource1,
+            this.sqlDataSource2});
             this.DataMember = "StProAccountLedger";
-            this.DataSource = this.sqlDataSource1;
+            this.DataSource = this.sqlDataSource2;
             this.Font = new DevExpress.Drawing.DXFont("Arial", 8F);
             this.Margins = new DevExpress.Drawing.DXMargins(25F, 25F, 25F, 54.66679F);
             this.PageWidth = 890;
@@ -913,5 +954,7 @@
         private DevExpress.XtraReports.UI.PageHeaderBand PageHeader;
         private DevExpress.XtraReports.UI.XRLabel xrLabel10;
         private DevExpress.XtraReports.UI.XRLabel xrLabel11;
+        private DevExpress.DataAccess.Sql.SqlDataSource sqlDataSource2;
+        private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox2;
     }
 }
