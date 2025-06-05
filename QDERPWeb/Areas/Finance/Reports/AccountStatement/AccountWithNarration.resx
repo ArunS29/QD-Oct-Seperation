@@ -125,9 +125,9 @@
     Sum(Iif([ConvertedAmount] &gt; 0, [ConvertedAmount], 0)) - Sum([ConvertedCrAmount]) == 0,
     '-',
     Iif(
-        Sum(Iif([VoucherAmountFormatted] &gt; 0, [ConvertedAmount], 0)) - Sum([ConvertedCrAmount]) &lt; 0,
-        '-' + FormatString('{0:N2}', Abs(Sum(Iif([ConvertedAmount] &gt; 0, [ConvertedAmount], 0)) - Sum([ConvertedCrAmount]))),
-        FormatString('{0:N2}', Sum(Iif([ConvertedAmount] &gt; 0, [ConvertedAmount], 0)) - Sum([ConvertedCrAmount]))
+        Sum(Iif([ConvertedAmount] &gt; 0, [ConvertedAmount], 0)) - Sum([ConvertedCrAmount]) &lt; 0,
+        [CurrencySymbole] + '-' + FormatString('{0:N2}', Abs(Sum(Iif([ConvertedAmount] &gt; 0, [ConvertedAmount], 0)) - Sum([ConvertedCrAmount]))),
+        [CurrencySymbole] + FormatString('{0:N2}', Sum(Iif([ConvertedAmount] &gt; 0, [ConvertedAmount], 0)) - Sum([ConvertedCrAmount]))
     )
 )
 </value>
