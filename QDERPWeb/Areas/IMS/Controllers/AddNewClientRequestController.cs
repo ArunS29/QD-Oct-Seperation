@@ -30,50 +30,93 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
-        public ActionResult<string> GetNewRequestNoApi()
-        {
-            try
-            {
-                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                {
-                   
-
-                    var company = dbContext.Tbl901CompanyDetails
-                                           .FirstOrDefault(c => c.CompanyNameShort == "Pulse Infotech");
+		//    [HttpGet]
+		//    public ActionResult<string> GetNewRequestNoApi()
+		//    {
+		//        try
+		//        {
+		//            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+		//            {
 
 
-                    if (company == null)
-                    {
-                        return NotFound("Company not found.");
-                    }
-
-                    string invoiceAbbrv = company.InvoiceAbbrv;
-                    int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
-
-                    bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
-
-                    DateTime invoiceDate = DateTime.Now;
+		//                var company = dbContext.Tbl901CompanyDetails
+		//                                       .FirstOrDefault(c => c.CompanyNameShort == "Pulse Infotech");
 
 
+		//                if (company == null)
+		//                {
+		//                    return NotFound("Company not found.");
+		//                }
 
-                    // Step 4: Generate New Debit Note No
-                    string newDebitNoteNo = GetNewDebitNoteNo(invoiceAbbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear, dbContext);
+		//                string invoiceAbbrv = company.InvoiceAbbrv;
+		//                int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
 
-                    return Ok(newDebitNoteNo);
-                }
-                else
-                {
-                    return BadRequest("Tenant or DB Context not found.");
-                }
-            }
-            catch (Exception ex)
-            {
-				_logger.LogError($"Error in GetProject: {ex.Message}");
-                return StatusCode(500, "Internal server error: " + ex.Message);
-            }
-        }
+		//                bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
 
+		//                DateTime invoiceDate = DateTime.Now;
+
+
+
+		//                // Step 4: Generate New Debit Note No
+		//                string newDebitNoteNo = GetNewDebitNoteNo(invoiceAbbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear, dbContext);
+
+		//                return Ok(newDebitNoteNo);
+		//            }
+		//            else
+		//            {
+		//                return BadRequest("Tenant or DB Context not found.");
+		//            }
+		//        }
+		//        catch (Exception ex)
+		//        {
+		//_logger.LogError($"Error in GetProject: {ex.Message}");
+		//            return StatusCode(500, "Internal server error: " + ex.Message);
+		//        }
+		//    }
+
+		[HttpGet]
+		public ActionResult<string> GetNewRequestNoApi()
+		{
+			try
+			{
+				// Retrieve tenant name from session
+				var tenantName = HttpContext.Session.GetString("TenantName");
+				if (string.IsNullOrWhiteSpace(tenantName))
+				{
+					return Unauthorized(new { message = "Tenant name not found in session.", success = false });
+				}
+
+				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+				{
+					// Use tenantName to find the company
+					var company = dbContext.Tbl901CompanyDetails
+										   .FirstOrDefault(c => c.CompanyNameShort == tenantName);
+					if (company == null)
+					{
+						return NotFound("Company not found.");
+					}
+
+					string invoiceAbbrv = company.InvoiceAbbrv;
+					int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
+					bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
+					DateTime invoiceDate = DateTime.Now;
+
+					// Generate new debit note number
+					string newDebitNoteNo = GetNewDebitNoteNo(invoiceAbbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear, dbContext);
+
+					return Ok(newDebitNoteNo);
+				}
+				else
+				{
+					return BadRequest("Tenant or DB Context not found.");
+				}
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Error in GetNewRequestNoApi: {ex.Message}");
+				return StatusCode(500, "Internal server error: " + ex.Message);
+			}
+		}
 
 
 		private string GetNewDebitNoteNo(string invoiceAbbrv, int yearInDigit, DateTime invoiceDate, bool isResetByYear, ERPMasterWtDataContext dbContext)
