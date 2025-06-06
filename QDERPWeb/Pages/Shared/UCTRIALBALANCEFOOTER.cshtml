@@ -689,7 +689,7 @@
          "Income Statements(Customizable Format)":"IncomestatementsHorizondal",
          "Balance Sheet":"balnceSheet",
          "Balance Sheet(Horizondal Format)":"BalanceSheetHorizondalFormat",
-         "Cash Flow Statements":"",
+         "Cash Flow Statements":"Cash Flow Statements",
         "Bills Receivable- Ageing (By End Date)": "BillsReceivableEndDate",
         "Bills Receivable- Ageing as per Ledger Balance(By End Date)": "BillsReceivableledgerBalance",
           "Bills Receivable Summary- Ageing as per Ledger Balance (By End Date)":"BillsReceivablesSummaryAgeingasperLedgerBalanceByEndDate",
@@ -698,7 +698,7 @@
         "Bills Payable- Ageing as per Ledger Balance(By End Date)": "BillsPayablesSummaryAgeingasperLedgerBalanceByEndDate",
           "Bills Payable Summary- Ageing as per Ledger Balance (By End Date)":"billsPayableSummaryLedgerBalance",
           "Bills Payable Report (By End Date)":"BillsPayableReportEnddate",
-          "Property Allocation Report":"",
+          "Property Allocation Report":"PropertAllocationReport",
 
       };
 
@@ -707,8 +707,7 @@
 
 
         // Menu item click handler
-    function  handleReportsClick(e) {
-        
+       function handleReportsClick(e) {
         const selectedText = e.itemData.text;
 
         // Get UI control instances
@@ -716,14 +715,12 @@
         var frmDateBox = $("#frmdateBox").dxDateBox("instance");
         var toDateBox = $("#todateBox").dxDateBox("instance");
 
-       // var accountGroup = accountGroup.option("value");
-       var accountGroup = selectBox;
         var frmDate = frmDateBox.option("value");
         var toDate = toDateBox.option("value");
 
-        // Validation
-        if (!accountGroup || !frmDate || !toDate) {
-            alert("Please select Account Group, From Date, and To Date.");
+        // Validation (remove accountGroup from mandatory fields if needed)
+        if (!frmDate || !toDate) {
+            alert("Please select From Date and To Date.");
             return;
         }
 
@@ -739,27 +736,39 @@
         var frmDateStr = formatDate(frmDate);
         var toDateStr = formatDate(toDate);
 
-        // If report mapping exists
+        // Check if report mapping exists
         if (reportMappingss[selectedText]) {
             const reportName = reportMappingss[selectedText];
 
-            console.log("Opening report:", reportName);
-            console.log("Account Group:", accountGroup);
-            console.log("From Date:", frmDateStr);
-            console.log("To Date:", toDateStr);
+            if (selectedText === "Cash Flow Statements") {
+                // Special handling for Cash Flow Statements report
+                
 
-            // Customize your tenant name accordingly
-         /*    const tenantName = "YourTenant";  */// Replace with dynamic value if needed
+                const formattedFrmDate = new Date(frmDate).toISOString().split('T')[0];
+                const formattedToDate = new Date(toDate).toISOString().split('T')[0];
 
-            // Construct the URL
-            let url = `/${tenantName}/DocumentViewer?reportName=${encodeURIComponent(reportName)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}&accountGroup=${encodeURIComponent(accountGroup)}`;
+                var url = `/${tenantName}/Finance/CashInflow?fromDate=${formattedFrmDate}&toDate=${formattedToDate}`;
+                window.open(url, '_blank');
+            } 
+            else if (selectedText === "PropertAllocationReport") {
+                // Special handling for Cash Flow Statements report
 
-            // Open report
-            window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+
+                const formattedFrmDate = new Date(frmDate).toISOString().split('T')[0];
+                const formattedToDate = new Date(toDate).toISOString().split('T')[0];
+
+                var url = `/${tenantName}/Finance/PropertAllocationReport?fromDate=${formattedFrmDate}&toDate=${formattedToDate}`;
+                window.open(url, '_blank');
+            }else {
+                // Default handling for other reports
+                let url = `/${tenantName}/DocumentViewer?reportName=${encodeURIComponent(reportName)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}&accountGroup=${encodeURIComponent(accountGroup)}`;
+                window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+            }
         } else {
             console.warn("No report mapping found for:", selectedText);
         }
     }
+
 
 
 </script>

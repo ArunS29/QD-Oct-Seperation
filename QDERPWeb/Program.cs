@@ -64,10 +64,6 @@ builder.Services.ConfigureReportingServices(configurator =>
 });
 
 
-var DBConnection = builder.Configuration.GetConnectionString("DBConnection");
-builder.Services.AddDbContext<QD.ERP.Web.DAL.Entities.ERPMasterWtDataContext>(options =>
-    options.UseSqlServer(DBConnection));
-
 var CommonDBConnection = builder.Configuration.GetConnectionString("CommonDBConnection");
 builder.Services.AddDbContext<ERPCommonContext>(options =>
     options.UseSqlServer(CommonDBConnection));
