@@ -4,6 +4,9 @@ using DevExpress.DataAccess.Sql;
 using DevExpress.DataAccess.ConnectionParameters;
 using DevExpress.XtraReports.UI;
 using QD.ERP.Web.Service;
+using DevExpress.XtraPrinting;
+using Svg;
+using System.Text;
 
 namespace QD.ERP.Web.Reports
 {
@@ -24,6 +27,8 @@ namespace QD.ERP.Web.Reports
             try
             {
                 sqlDataSource2.Fill();
+                LoadCurrencyImage(accountId, frmDate, toDate);
+
             }
             catch (Exception ex)
             {
@@ -119,6 +124,116 @@ namespace QD.ERP.Web.Reports
             else
             {
                 throw new Exception("Unable to get tenant context. Please check session and cache.");
+            }
+        }
+        private void LoadCurrencyImage(string accountId, DateTime frmDate, DateTime toDate)
+        {
+            if (string.IsNullOrEmpty(accountId))
+            {
+                SetCurrencyImageNull();
+                return;
+            }
+
+            try
+            {
+                if (_tenantDbContextHelper == null || !_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
+                {
+                    SetCurrencyImageNull();
+                    return;
+                }
+
+                string connectionString = tenant.ConnectionString;
+                string svgText = null;
+
+                using (var connection = new System.Data.SqlClient.SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (var command = new System.Data.SqlClient.SqlCommand($"{tenant.schemaname}.StProAccountLedger", connection))
+                    {
+                        command.CommandType = System.Data.CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@ParamAccountNo", accountId);
+                        command.Parameters.AddWithValue("@StartDate", frmDate);
+                        command.Parameters.AddWithValue("@EndDate", toDate);
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            if (reader.Read() && !reader.IsDBNull(reader.GetOrdinal("CurrencyImage")))
+                            {
+                                svgText = reader["CurrencyImage"]?.ToString()?.Trim().TrimStart('\uFEFF');
+                            }
+                        }
+                    }
+                }
+
+                if (string.IsNullOrWhiteSpace(svgText))
+                {
+                    SetCurrencyImageNull();
+                    return;
+                }
+
+                // Convert SVG to Bitmap
+                Bitmap bitmap = null;
+                try
+                {
+                    using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(svgText)))
+                    {
+                        SvgDocument svgDoc = SvgDocument.Open<SvgDocument>(stream);
+                        bitmap = svgDoc.Draw();
+                    }
+                }
+                catch
+                {
+                    // Failed to convert SVG
+                    bitmap = null;
+                }
+
+                // Apply the bitmap to your specific picture boxes
+                if (FindControl("xrPictureBox2", true) is XRPictureBox pictureBoxDr)
+                {
+                    pictureBoxDr.Image = bitmap;
+                    pictureBoxDr.Sizing = ImageSizeMode.Normal;
+                }
+
+                if (FindControl("xrPictureBox3", true) is XRPictureBox pictureBoxCr)
+                {
+                    pictureBoxCr.Image = bitmap;
+                    pictureBoxCr.Sizing = ImageSizeMode.Normal;
+                }
+                if (FindControl("xrPictureBox4", true) is XRPictureBox pictureBox4)
+                {
+                    pictureBox4.Image = bitmap;
+                    pictureBox4.Sizing = ImageSizeMode.Normal;
+                }
+                if (FindControl("xrPictureBox5", true) is XRPictureBox pictureBox5)
+                {
+                    pictureBox5.Image = bitmap;
+                    pictureBox5.Sizing = ImageSizeMode.Normal;
+                }
+                if (FindControl("xrPictureBox6", true) is XRPictureBox pictureBox6)
+                {
+                    pictureBox6.Image = bitmap;
+                    pictureBox6.Sizing = ImageSizeMode.Normal;
+                }
+
+            }
+            catch
+            {
+                SetCurrencyImageNull();
+            }
+        }
+
+
+        private void SetCurrencyImageNull()
+        {
+            string[] pictureBoxNames = { "xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5", "xrPictureBox6", "xrPictureBox7" };
+
+            foreach (string name in pictureBoxNames)
+            {
+                if (FindControl(name, true) is XRPictureBox pictureBox)
+                {
+                    pictureBox.Image = null;
+                    pictureBox.ImageSource = null;
+                }
             }
         }
     }

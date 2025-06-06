@@ -486,7 +486,7 @@
             // 
             this.xrPictureBox2.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Visible", "[ConvertedDrAmount] != 0")});
-            this.xrPictureBox2.LocationFloat = new DevExpress.Utils.PointFloat(622.3351F, 19.3334F);
+            this.xrPictureBox2.LocationFloat = new DevExpress.Utils.PointFloat(624.3352F, 19.3334F);
             this.xrPictureBox2.Name = "xrPictureBox2";
             this.xrPictureBox2.Padding = new DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100F);
             this.xrPictureBox2.SizeF = new System.Drawing.SizeF(23.83337F, 18F);
@@ -777,7 +777,7 @@
             // 
             // xrPictureBox4
             // 
-            this.xrPictureBox4.LocationFloat = new DevExpress.Utils.PointFloat(652.4513F, 42.49998F);
+            this.xrPictureBox4.LocationFloat = new DevExpress.Utils.PointFloat(676.2847F, 42.49998F);
             this.xrPictureBox4.Name = "xrPictureBox4";
             this.xrPictureBox4.Padding = new DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100F);
             this.xrPictureBox4.SizeF = new System.Drawing.SizeF(23.83337F, 18F);
