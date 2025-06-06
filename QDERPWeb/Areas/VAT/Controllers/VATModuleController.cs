@@ -4396,6 +4396,30 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
+        [HttpGet]
+        public IActionResult CreditDetailDescription()
+        {
+            //// Log or debug the incoming parameters
+            //ViewBag.VoucherNo = voucherNo;
+            //ViewBag.AccountHead = accountHead;
+            //ViewBag.VoucherAmount = voucherAmount;
+            //ViewBag.DrCr = drCr;
+            //ViewBag.VoucherEntryNo = voucherEntryNo;
+            return PartialView("~/Areas/VAT/Pages/CreditDetailDescription.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
+        }
+
+        [HttpGet]
+        public IActionResult VATPercentageCal()
+        {
+            //// Log or debug the incoming parameters
+            //ViewBag.VoucherNo = voucherNo;
+            //ViewBag.AccountHead = accountHead;
+            //ViewBag.VoucherAmount = voucherAmount;
+            //ViewBag.DrCr = drCr;
+            //ViewBag.VoucherEntryNo = voucherEntryNo;
+            return PartialView("~/Areas/VAT/Pages/VATPercentageCal.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
+        }
+
     }
 }
 

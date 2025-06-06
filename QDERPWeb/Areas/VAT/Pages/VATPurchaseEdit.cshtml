@@ -507,11 +507,7 @@
 					<tr>
 						<!-- 3. Supplier Invoice No -->
 						<td>
-							@* <label style="display: flex; justify-content: space-between; width: 100%;">
-								<span>Supplier Invoice No</span>
-								<span style="direction: rtl;">رقم فاتورة المورد</span>
-								
-							</label> *@
+					@* 
 							@(Html.DevExtreme().DropDownBox()
 														.ID("SupplierInvoiceNo")
 														.DataSource(ds => ds.WebApi()
@@ -524,11 +520,32 @@
 														.Label(new JS("formatMessage('Supplier Invoice No')"))
 														.LabelMode(EditorLabelMode.Outside)
 														.ShowClearButton(true)
-														@* .Disabled(true) *@
+														@* .Disabled(true)
 														.AcceptCustomValue(true)
 														.OpenOnFieldClick(false)
 														.DropDownOptions(d => d.Width(600))
-														.ContentTemplate(new TemplateName("SupplierInvoiceContentTemplate")))
+														.ContentTemplate(new TemplateName("SupplierInvoiceContentTemplate"))) *@
+
+							@(Html.DevExtreme().DropDownBox()
+														.ID("SupplierInvoiceNo")
+														.DataSource(ds => ds.WebApi()
+														.Controller("VATModule")
+														.LoadAction("GetSupplierInvoices")
+														.LoadMode(DataSourceLoadMode.Raw)
+														.Key("InvoiceNo"))
+														.DisplayExpr("InvoiceNo")
+														.ValueExpr("InvoiceNo")
+														.Label(new JS("formatMessage('Supplier Invoice No')"))
+														.LabelMode(EditorLabelMode.Outside)
+														.ShowClearButton(true)
+														.AcceptCustomValue(true)
+														.OpenOnFieldClick(false)
+														.DropDownOptions(d => d.Width(600))
+														.OnValueChanged("onSupplierInvoiceValueChanged")
+														.ContentTemplate(new TemplateName("SupplierInvoiceContentTemplate"))
+														)
+
+
 						</td>
 
 						<!-- 5. Invoice Date -->
@@ -7400,15 +7417,48 @@
 		}
 	}
 
-	function SupplierInvoiceDataGridSelectionChanged(e) {
-		const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-		const ddbInstance = $("#SupplierInvoiceNo").dxDropDownBox("instance");
+	// function SupplierInvoiceDataGridSelectionChanged(e) {
+	// 	const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+	// 	const ddbInstance = $("#SupplierInvoiceNo").dxDropDownBox("instance");
 
-		if (selectedKey) {
-			ddbInstance.option("value", selectedKey);
-			ddbInstance.close();
+	// 	if (selectedKey) {
+	// 		ddbInstance.option("value", selectedKey);
+	// 		ddbInstance.close();
+	// 	}
+	// }
+
+		function SupplierInvoiceDataGridSelectionChanged(e) {
+		const ddbInstance = $("#SupplierInvoiceNo").dxDropDownBox("instance");
+		const selectedKey = e.selectedRowKeys?.[0] || ddbInstance.option("value"); // Handle selected or custom value
+
+		if (!selectedKey) return;
+
+		const dataSource = ddbInstance.getDataSource();
+		const dataItems = dataSource.items(); // Loaded data from the DropDownBox
+
+		// Check for existing PurchaseBillNo match (case-insensitive)
+		const exists = dataItems.some(item => {
+			return item.PurchaseBillNo?.toString().toLowerCase() === selectedKey.toString().toLowerCase();
+		});
+
+		if (exists) {
+			ddbInstance.option({
+				value: null,
+				validationError: {
+					message: "Supplier Invoice is already available in the system, Please review again."
+				},
+				isValid: false
+			});
+		} else {
+			ddbInstance.option({
+				validationError: null,
+				isValid: true
+			});
 		}
 	}
+
+
+
 
 	async function convertToArabic() {
 
@@ -7531,6 +7581,91 @@
 				iframe.src = url;
 			}, 300);
 		}
+
+
+	// 	 function validateSupplierInvoiceNo(e) {
+	// 	const value = e.value;
+	// 	let isDuplicate = false;
+
+	// 	const dropDown = $("#SupplierInvoiceNo").dxDropDownBox("instance");
+	// 	const dataSource = dropDown.getDataSource();
+
+	// 	// Get all loaded items and check for duplicates
+	// 	const items = dataSource.items();
+
+	// 	if (items && items.length) {
+	// 		isDuplicate = items.some(item => item.InvoiceNo === value);
+	// 	}
+
+	// 	if (isDuplicate) {
+	// 		e.rule.message = "Supplier Invoice is already available in the system, Please review again.";
+	// 		return false;
+	// 	}
+
+	// 	return true;
+	// }
+
+
+			function onSupplierInvoiceValueChanged(e) {
+		const newValue = e.value;
+		const ddbInstance = e.component;
+
+		if (!newValue) return;
+
+		const dataSource = ddbInstance.getDataSource();
+		const dataItems = dataSource.items();
+
+		const exists = dataItems.some(item => {
+			return item.PurchaseBillNo?.toString().toLowerCase() === newValue.toString().toLowerCase();
+		});
+
+		if (exists) {
+			ddbInstance.option({
+				value: null,
+				validationError: {
+					message: "Supplier Invoice is already available in the system, Please review again."
+				},
+				isValid: false
+			});
+		} else {
+			ddbInstance.option({
+				validationError: null,
+				isValid: true
+			});
+		}
+	}
+
+
+
+	  $(function () {
+		  debugger;
+		const dropDown = $("#SupplierInvoiceNo").dxDropDownBox("instance");
+
+		// Ensure data source is loaded before validating
+		const dataSource = dropDown.getDataSource();
+		dataSource.load().done(function (items) {
+			$("#SupplierInvoiceWrapper").dxValidator({
+				validationRules: [
+					{
+						type: "required",
+						message: "Supplier Invoice No is required"
+					},
+					{
+						type: "custom",
+						message: "Supplier Invoice is already available in the system, Please review again.",
+						validationCallback: function (e) {
+							const value = dropDown.option("value");
+
+							if (!value) return true;
+
+							const duplicate = items && items.some(item => item.InvoiceNo === value);
+							return !duplicate;
+						}
+					}
+				]
+			});
+		});
+	});
 
 </script>
 
