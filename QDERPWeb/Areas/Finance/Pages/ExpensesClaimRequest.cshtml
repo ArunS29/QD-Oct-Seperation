@@ -883,6 +883,9 @@
 
         const popover = $("#cardPopover").dxPopover("instance");
 
+         // 👉 Set the target to the button that was clicked
+          popover.option("target", button);
+
         // Dynamically update the popover contentTemplate with row-specific URL
         popover.option("contentTemplate", function (contentElement) {
             contentElement.empty();
@@ -914,7 +917,7 @@
     $(function () {
 
         $("#cardPopover").dxPopover({
-            target: ".dropdown-wrapper",
+            
             width: 1000,
             position: "bottom",
             showEvent: "",
@@ -1244,6 +1247,7 @@
         }
 
         function addEmptyRowIfNeeded() {
+            debugger;
             const dataSource = dataGrid.option("dataSource") || [];
 
             if (!Array.isArray(dataSource)) {
@@ -1288,7 +1292,7 @@
                             data: { voucherNo: voucherNo },
                             success: function (data) {
                                 dataGrid.option("dataSource", data);
-                                // addEmptyRowIfNeeded(); // Optional: keep extra row
+                                addEmptyRowIfNeeded(); // Optional: keep extra row
                             },
                             error: function () {
                                 DevExpress.ui.notify("Failed to reload data", "error", 1500);
@@ -1321,6 +1325,7 @@
                             data: { voucherNo: voucherNo },
                             success: function (data) {
                                 dataGrid.option("dataSource", data);
+                                addEmptyRowIfNeeded();
                                
                             },
                             error: function () {
@@ -1485,6 +1490,7 @@
 
                         const gridInstance = $("#dataGrid").dxDataGrid("instance");
                         gridInstance.option("dataSource", data);
+                        gridInstance.refresh();
                     } else {
                         DevExpress.ui.notify("No entry found with the given reference number.", "warning", 3000);
                     }
@@ -1942,34 +1948,61 @@ function generateVoucherNo() {
 
         }
     }
-    function saveExpenseClaimEntry() {
-        debugger;
-        const data = {
-            ClaimChildNo: voucherEntryNo, // Pass this explicitly
-            TaxableAmount: $("#taxableamount").dxNumberBox("instance").option("value"),
-            TaxAmount: $("#vatAmount").dxNumberBox("instance").option("value"),
-            RoundOff: $("#roundoff").dxNumberBox("instance").option("value"),
-            SupplierName: $("#suppliername").dxDropDownBox("instance").option("value"),
-            SupplierVATNo: $("#suppliervatno").dxTextBox("instance").option("value"),
-            PurchaserName: $("#purchaserName").dxTextBox("instance").option("value"),
-            LineNarration: $("#linenarration").dxTextArea("instance").option("value"),
-            EmployeeNo: $("#costemployees").dxDropDownBox("instance").option("value"),
-            PropertyNo: $("#costproperty").dxDropDownBox("instance").option("value"),
-            IsTaxIncluded: true
-        };
-
-        $.ajax({
-            url: '/api/ExpenseClaim/SaveExpenseClaimEntry',
-            type: 'POST',
-            data: JSON.stringify(data),
-            contentType: 'application/json',
-            success: function (response) {
-                DevExpress.ui.notify("Saved successfully", "success", 2000);
-            },
-            error: function (xhr, status, error) {
-                DevExpress.ui.notify("Error saving entry: " + error, "error", 3000);
-            }
+    function ontaxOpened(e) {
+        setTimeout(() => {
+            e.component.focus();
         });
+        // Select row in the inner data grid
+        const grid = $("#percentage-datagrid").dxDataGrid("instance");
+
+        // Wait for content template rendering
+        setTimeout(() => {
+            if (grid && taxCode) {
+                grid.selectRows([taxCode], false);
+            }
+        }, 1000);
+    }
+    function onsupplierOpened(e) {
+        setTimeout(() => {
+            e.component.focus();
+        });
+        // Select row in the inner data grid
+        const grid = $("#suppliername-datagrid").dxDataGrid("instance");
+
+        // Make sure grid is ready and tax code is defined
+        setTimeout(() => {
+            if (grid && suppliername) {
+                grid.selectRows([suppliername], false);
+            }
+        }, 400);
+    }
+    function onemployeeOpened(e) {
+        setTimeout(() => {
+            e.component.focus();
+        });
+        // Select row in the inner data grid
+        const grid = $("#employee-datagrid").dxDataGrid("instance");
+
+        setTimeout(() => {
+            // Make sure grid is ready and tax code is defined
+            if (grid && employeename) {
+                grid.selectRows([employeename], false);
+            }
+        }, 400);
+    }
+    function onpropertyOpened(e) {
+        setTimeout(() => {
+            e.component.focus();
+        });
+        // Select row in the inner data grid
+        const grid = $("#property-datagrid").dxDataGrid("instance");
+
+        setTimeout(() => {
+            // Make sure grid is ready and tax code is defined
+            if (grid && propertyname) {
+                grid.selectRows([propertyname], false);
+            }
+        }, 400);
     }
 
 
