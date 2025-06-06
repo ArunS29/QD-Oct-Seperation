@@ -90,9 +90,9 @@
 
     $(document).ready(function () {
         const apiEndpoints = [
-            { url: "/api/Dashboard/GetTotalClientOutstanding", target: "#totalClientOutstandingValue", key: "totalOutstanding" },
-            { url: "/api/Dashboard/GetTotalBillsOutstanding", target: "#totalBillsOutstandingValue", key: "totalBillsOutstanding" },
-            { url: "/api/Dashboard/GetCashBalance", target: "#cashBalanceValue", key: "cashBalance" }
+            { url: "/api/Dashboard/supplieroutstanding", target: "#totalBillsOutstandingValue ", key: "balance" },
+            { url: "/api/Dashboard/GetTotalClientOutstanding", target: "#totalClientOutstandingValue", key: "balance" },
+            { url: "/api/Dashboard/GetCashBalance", target: "#cashBalanceValue", key: "balance" }
         ];
 
         const fetchData = async (endpoint) => {
