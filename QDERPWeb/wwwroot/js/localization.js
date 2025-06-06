@@ -1,5 +1,6 @@
 ﻿var dictionary = {
     "en": {
+        "Category Added":"Category Added",
         "Additional Cost On Items":"Additional Cost On Items",
         "Description": "Description",
         "No of Suppliers: {0}": "No of Suppliers: {0}",
@@ -5079,6 +5080,7 @@
         "Supplier Type": "نوع المورد",
         "Additional Cost On Items": "تكلفة إضافية على الأصناف",
         "By Quarter": "حسب الربع",
+        "Category Added": "تمت إضافة الفئة"
     }
 };
 

@@ -331,9 +331,8 @@
     $(document).ready(function () {
         const urlParams = new URLSearchParams(window.location.search);
         const clientStatusNo = (urlParams.get("clientStatusNo") || "").split(/[?&]/)[0];
-        const clientCodes = urlParams.get("clientCode");
-        console.log("cd", clientCodes)
-        alert("hi " + clientCode);
+        const clientCodes = (urlParams.get("clientCode") || "").split(/[?&]/)[0];
+       alert(clientCodes);
   
          $("#statusId").dxTextBox("instance").option("value",clientStatusNo);
         $("#GetClientDropDown").dxDropDownBox("instance").option("value", clientCodes);
@@ -354,7 +353,7 @@
             console.log("getdat:",data);
             if (data) {
                 $("#statusId").dxTextBox("instance").option("value", data.ClientStatusNo);
-                $("#GetClientDropDown").dxDropDownBox("instance").option("value", data.Status);
+                $("#GetClientDropDown").dxDropDownBox("instance").option("value", data.ClientCode);
                 $("#reportedBy").dxTextBox("instance").option("value", data.ReportedBy);
                 $("#reportedOn").dxDateBox("instance").option("value", data.ReportedOn);
                 $("#reportRemarks").dxTextArea("instance").option("value", data.StatusRemarks);
@@ -462,9 +461,7 @@
 
     }
 
-    function onDeleteClient() {
-        DevExpress.ui.notify("Client Deleted", "error", 1000);
-    }
+  
 
     function onBackToList() {
           window.parent.closeModal();
