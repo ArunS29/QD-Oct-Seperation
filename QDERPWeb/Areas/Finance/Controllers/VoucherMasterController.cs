@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
@@ -27,9 +28,10 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<VoucherMasterController> _logger;
-
-        public VoucherMasterController(ILogger<VoucherMasterController> logger, TenantDbContextHelper tenantDbContextHelper)
+        private readonly IUserActionLogger _userActionLogger;
+        public VoucherMasterController(ILogger<VoucherMasterController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -1979,9 +1981,14 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 // Remove all matching records
                 dbContext.Tbl201VoucherEntries.RemoveRange(records);
                 await dbContext.SaveChangesAsync();
-
-                // Fetch updated voucher list
-                var voucherEntries = await dbContext.Tbl201VoucherEntries
+                    // ✅ Log the deletion action
+                    await _userActionLogger.LogAsync(
+                        module: "Finance > Delete Receipts",
+                        actionDetail: $"Deleted all voucher entries for VoucherNo: {VoucherNo}. Total deleted: {records.Count}",
+                        documentNo: VoucherNo
+                    );
+                    // Fetch updated voucher list
+                    var voucherEntries = await dbContext.Tbl201VoucherEntries
                                                    .Where(ve => ve.VoucherNo == VoucherNo)
                                                    .ToListAsync();
 
