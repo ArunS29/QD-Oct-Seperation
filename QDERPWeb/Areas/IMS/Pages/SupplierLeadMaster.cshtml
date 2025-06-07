@@ -456,9 +456,7 @@
 
                     .ID("Contact-dataGrid")
                     .RemoteOperations(false)
-                    .DataSource(ds => ds.Mvc()
-                    .Controller("SupplierMaster")
-                    .LoadAction("GetContact"))
+                    .KeyExpr("SupplierContactSlNo")
                     .Columns(columns =>
                     {
                     @*   columns.AddFor(m => m.).Caption(""); *@
@@ -468,6 +466,7 @@
                     columns.AddFor(m => m.ContactMobile1).Caption("Mobile").Alignment(HorizontalAlignment.Center);
                     columns.AddFor(m => m.ContactPhone1).Caption("Phone").Alignment(HorizontalAlignment.Center);
                     columns.AddFor(m => m.SupplierContactSlNo).Caption("Supplier ContactSlNo").Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.SupplierCode).Caption("Supplier Code").Alignment(HorizontalAlignment.Center).Visible(false);
                     })
                     //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
                     .AllowColumnReordering(true) // Enable column reordering
@@ -726,6 +725,7 @@
                         $('#imgBox2').html(`<img src="${img2}" />`);
                         businessCard2Base64 = img2;
                     }
+                     loadSupplierContactListGrid(data.SupplierCode);
                 }
             },
             error: function () {
@@ -733,7 +733,22 @@
             }
         });
     }
-
+    function loadSupplierContactListGrid(SupplierCode) {
+    $.ajax({
+        url: `/api/SupplierMaster/GetContactList?SupplierCode=${encodeURIComponent(SupplierCode)}`,
+        type: 'GET',
+        success: function (statusData) {
+            const grid = $("#Contact-dataGrid").dxDataGrid("instance");
+            if (grid) {
+                grid.option("dataSource", statusData);
+                grid.refresh();
+            }
+        },
+        error: function () {
+            DevExpress.ui.notify("Failed to load status data", "error", 3000);
+        }
+    });
+}
     function onOpened(e) {
         setTimeout(() => {
             e.component.focus();
@@ -962,7 +977,7 @@
     function onClientsGridContextMenu1(e) {
         if (e.target === "content" && e.row) {
             let SupplierContactSlNo = e.row.data.SupplierContactSlNo;
-
+            let SupplierCode = e.row.data.SupplierCode;
             e.items = [
                 {
                     text: "Client Edit",
@@ -985,7 +1000,7 @@
                                         success: function (res) {
                                             if (res.success) {
                                                 DevExpress.ui.notify(res.message, "success", 2000);
-                                                $("#Contact-dataGrid").dxDataGrid("instance").refresh();
+                                               loadSupplierContactListGrid(SupplierCode)
                                             } else {
                                                 DevExpress.ui.notify(res.message, "error", 3000);
                                             }

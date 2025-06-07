@@ -134,6 +134,33 @@
         window.location.href = `/${tenantName}/Finance/DashboardBankAccount`;    });
 
     $(document).ready(function () {
+        const apiEndpoints = [
+            { url: "/api/Dashboard/supplieroutstanding", target: "#totalBillsOutstandingValue ", key: "balance" },
+            { url: "/api/Dashboard/GetTotalClientOutstanding", target: "#totalClientOutstandingValue", key: "balance" },
+            { url: "/api/Dashboard/GetCashBalance", target: "#cashBalanceValue", key: "balance" }
+        ];
+
+        const fetchData = async (endpoint) => {
+            const startTime = performance.now();
+            try {
+                const response = await $.getJSON(endpoint.url);
+                if (response.success) {
+                    $(endpoint.target).text(response[endpoint.key].toLocaleString('en-US'));
+                } else {
+                    console.error(`Error loading data from ${endpoint.url}`);
+                }
+            } catch (error) {
+                console.error(`Error fetching data from ${endpoint.url}:`, error);
+            } finally {
+                const endTime = performance.now();
+                console.log(`Response time for ${endpoint.url}: ${(endTime - startTime).toFixed(2)} ms`);
+            }
+        };
+
+        apiEndpoints.forEach(fetchData);
+    });
+
+    $(document).ready(function () {
         //     $.ajax({
         //     url: "/api/Dashboard/GetOutstandingChartData",
         //     type: "GET",
@@ -662,23 +689,7 @@
             chart.draw(data, options);
         }
     $(function () {
-        // Fetch Total Client Outstanding
-        $.getJSON("/api/Dashboard/GetTotalClientOutstanding", function (response) {
-            if (response.success) {
-                $("#totalClientOutstandingValue").text(response.totalOutstanding.toLocaleString('en-US'));
-            } else {
-                alert("Error loading total client outstanding data.");
-            }
-        });
-
-        // Fetch Total Bills Outstanding
-        $.getJSON("/api/Dashboard/GetTotalBillsOutstanding", function (response) {
-            if (response.success) {
-                $("#totalBillsOutstandingValue").text(response.totalBillsOutstanding.toLocaleString('en-US'));
-            } else {
-                alert("Error loading total bills outstanding data.");
-            }
-        });
+     
 
         // Client Outstanding DataGrid
         $("#clientOutstandingGrid").dxDataGrid({

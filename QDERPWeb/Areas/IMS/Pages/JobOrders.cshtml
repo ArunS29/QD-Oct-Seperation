@@ -290,6 +290,7 @@
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
+		.OnContextMenuPreparing("onContextMenuPreparing")
 		.StateStoring(stateStoring =>
 		{
 			stateStoring
@@ -404,6 +405,96 @@
 
 
 	}
+	function onContextMenuPreparing(e) {
+		if (e.target === "content" && e.row) {
+			e.items = [
+				{
+					text: "Edit Job Order",
+					icon: "edit",
+					onItemClick: function () {
+						const rowData = e.row.data;
+						if (!rowData) {
+							console.error("Row data is unavailable.");
+							return;
+						}
 
+						// const { Mprno, RequestEnquiry } = rowData;
+						// const tenantName = window.tenantName || "defaultTenant";
+						// let url = "";
+						// let title = "";
+
+						// switch (RequestEnquiry) {
+						// 	case "Client Request":
+						// 		url = `/${tenantName}/IMS/AddNewClientRequest?Mprno=${Mprno}`;
+						// 		title = "Edit Client Request";
+						// 		break;
+						// 	case "Project Request":
+						// 		url = `/${tenantName}/IMS/MRAddNewProjectRequest?Mprno=${Mprno}`;
+						// 		title = "Edit Project Request";
+						// 		break;
+						// 	case "Store Request":
+						// 		url = `/${tenantName}/IMS/MRAddNewStoreRequest?Mprno=${Mprno}`;
+						// 		title = "Edit Store Request";
+						// 		break;
+						// 	default:
+						// 		console.warn("Unknown RequestEnquiry type:", RequestEnquiry);
+						// 		return;
+						// }
+
+						//openModal(url, title);
+						window.location.href = url;
+					}
+				},
+
+			
+				{
+					text: "Delete Job Order",
+					icon: "trash",
+					// onItemClick: function () {
+					// 	DevExpress.ui.dialog.confirm(
+					// 		"You are about to delete the Request / Enquiry.\nYou cannot revert the changes.\nAre you sure?",
+					// 		"Confirm Delete"
+					// 	).done(function (dialogResult) {
+					// 		if (dialogResult) {
+					// 			var Mprno = e.row.data.Mprno;
+					// 			console.log("number", Mprno);
+					// 			onDeleteRequest(Mprno);
+					// 		}
+					// 	});
+					// }
+				},
+				{
+					text: "Unlock the Order",
+					icon: "unlock",
+					onItemClick: function () {
+						onUnlockRequest(e.row.data);
+					}
+				},
+				{
+					text: "Create the Delivery Note for this Order",
+					icon: "plus",
+					onItemClick: function () {
+						onCreateRFQ(e.row.data);
+					}
+				},
+				{
+					text: "Create Delivery Note for Multiple Job Orders",
+					icon: "plus",
+					onItemClick: function () {
+						onCreateQuotation(e.row.data);
+					}
+				},
+				{
+					text: "Create Invoice for this Job Order",
+					icon: "cart",
+					onItemClick: function () {
+						onCreatePO(e.row.data);
+					}
+				}
+				
+			
+			];
+		}
+	}
 
 </script>

@@ -378,58 +378,64 @@
         });
     });
     function onSaveClient() {
+        debugger;
         DevExpress.ui.notify("Client Saved", "success", 1000);
     }
 
-    function onSaveAndClose() {
-        // DevExpress.ui.notify("Saved & Closed", "success", 1000);
-        const clientStatusNo = $("#statusId").dxTextBox("instance").option("value");
+   function onSaveAndClose() {
+    const clientStatusNo = $("#statusId").dxTextBox("instance").option("value");
 
-        const data = {
-            ClientCode: String($("#GetClientDropDown").dxDropDownBox("instance").option("value")),
-            ReportedBy: $("#reportedBy").dxTextBox("instance").option("value"),
-            ReportedOn: $("#reportedOn").dxDateBox("instance").option("value"),
-            StatusRemarks: $("#reportRemarks").dxTextArea("instance").option("value"),
-            Status: $("#GetStatusDropDown").dxDropDownBox("instance").option("value"),
-            FollowupOn: $("#followUpOn").dxDateBox("instance").option("value")
-        };
+    const data = {
+        ClientCode: String($("#GetClientDropDown").dxDropDownBox("instance").option("value")),
+        ReportedBy: $("#reportedBy").dxTextBox("instance").option("value"),
+        ReportedOn: $("#reportedOn").dxDateBox("instance").option("value"),
+        StatusRemarks: $("#reportRemarks").dxTextArea("instance").option("value"),
+        Status: $("#GetStatusDropDown").dxDropDownBox("instance").option("value"),
+        FollowupOn: $("#followUpOn").dxDateBox("instance").option("value")
+    };
 
-        // Only include ClientStatusNo if it's an update
-        if (clientStatusNo) {
-            data.ClientStatusNo = parseInt(clientStatusNo);
-        }
-
-        $.ajax({
-            url: '/api/ClientStatusUpdate/SaveOrUpdateClientStatusUpdate',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(data),
-            success: function (res) {
-                if (res.success) {
-                    DevExpress.ui.notify(res.message, "success", 2000);
-
-                    // Set the returned ID back to the textbox
-                    $("#statusId").dxTextBox("instance").option("value", res.lastClientStatusNo);
-                    // Refresh parent DataGrid (ensure the correct selector is used)
-                    if (window.parent && window.parent.$("#ClientStatusdataGrid").length) {
-                        let dataGrid = window.parent.$("#ClientStatusdataGrid").dxDataGrid("instance");
-                        if (dataGrid) {
-                            dataGrid.refresh();
-                        }
-                    }
-                    //$('#modalIframe').modal('hide');
-                    setTimeout(() => window.location.reload(), 2000);
-                    window.parent.closeModal();
-
-                } else {
-                    DevExpress.ui.notify(res.message, "error", 3000);
-                }
-            },
-            error: function (err) {
-                DevExpress.ui.notify("Save or update failed: " + err.responseText, "error", 3000);
-            }
-        });
+    if (clientStatusNo) {
+        data.ClientStatusNo = parseInt(clientStatusNo);
     }
+
+    $.ajax({
+        url: '/api/ClientStatusUpdate/SaveOrUpdateClientStatusUpdate',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        success: function (res) {
+            if (res.success) {
+                DevExpress.ui.notify(res.message, "success", 3000);
+
+                $("#statusId").dxTextBox("instance").option("value", res.lastClientStatusNo);
+
+                // Refresh parent DataGrid with fresh data
+                if (window.parent && typeof window.parent.loadClientStatusGrid === "function") {
+                    const clientCode = $("#GetClientDropDown").dxDropDownBox("instance").option("value");
+                    if (clientCode) {
+                        window.parent.loadClientStatusGrid(clientCode);
+                    }
+                }
+
+                // Close modal after a small delay to ensure grid refresh completes
+                setTimeout(() => {
+                    if (window.parent && typeof window.parent.closeModal === "function") {
+                        window.parent.closeModal();
+                    }
+                }, 500);
+
+            } else {
+                DevExpress.ui.notify(res.message, "error", 3000);
+            }
+        },
+        error: function (err) {
+            DevExpress.ui.notify("Save or update failed: " + err.responseText, "error", 3000);
+        }
+    });
+}
+
+ 
+
 
     $("#btnDelete").on("click", function (e) {
         e.preventDefault();
@@ -541,15 +547,22 @@
             if (res.success) {
                 DevExpress.ui.notify(res.message, "success", 2000);
 
-                // Set the returned ID back to the textbox
-                $("#statusId").dxTextBox("instance").option("value", res.lastClientStatusNo);
-                    // Refresh parent DataGrid (ensure the correct selector is used)
-                    if (window.parent && window.parent.$("#ClientStatusdataGrid").length) {
-                        let dataGrid = window.parent.$("#ClientStatusdataGrid").dxDataGrid("instance");
-                        if (dataGrid) {
-                            dataGrid.refresh();
-                        }
+                  $("#statusId").dxTextBox("instance").option("value", res.lastClientStatusNo);
+               // Refresh parent DataGrid with fresh data
+                if (window.parent && typeof window.parent.loadClientStatusGrid === "function") {
+                    const clientCode = $("#GetClientDropDown").dxDropDownBox("instance").option("value");
+                    if (clientCode) {
+                        window.parent.loadClientStatusGrid(clientCode);
                     }
+                }
+
+                // Close modal after a small delay to ensure grid refresh completes
+                setTimeout(() => {
+                    if (window.parent && typeof window.parent.closeModal === "function") {
+                        window.parent.closeModal();
+                    }
+                }, 500);
+
             } else {
                 DevExpress.ui.notify(res.message, "error", 3000);
             }
