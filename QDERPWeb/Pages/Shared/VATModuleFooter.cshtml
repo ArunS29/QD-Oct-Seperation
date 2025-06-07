@@ -104,33 +104,25 @@
     /*     .btn-container:hover .dx-button { */
     /*         width: 200px !important; /* Expand to fit text */ */
     /*     } */
-
     /*     .btn-container .dx-button .dx-button-text { */
     /*         display: none; */
     /*     } */
-
     /*     .btn-container:hover .dx-button .dx-button-text { */
     /*         display: inline-block; */
     /*     } */
-
     /*     .btn-container .dx-dropdownbutton { */
     /*         width: 55px !important; */
     /*         transition: width 0.3s ease-in-out; */
     /*     } */
-
     /*     .btn-container:hover .dx-dropdownbutton { */
     /*         width: 180px !important; /* Adjust as needed */ */
     /*     } */
-
     /*     .btn-container .dx-dropdownbutton .dx-button-text { */
     /*         display: none; */
     /*     } */
-
     /*     .btn-container:hover .dx-dropdownbutton .dx-button-text { */
     /*         display: inline-block; */
     /*     } */
-
-
     /*     .btn-container .dx-button { */
     /*         width: 40px !important; /* Small width for just the icon */ */
     /*         transition: width 0.3s ease-in-out; */
@@ -139,27 +131,19 @@
     /*         padding-right: 0 !important; */
     /*         text-align: center; */
     /*     } */
-
-
     /*     .btn-container:hover .dx-button { */
     /*         width: 200px !important; */
     /*     } */
-
-
     /*     .btn-container .dx-button .dx-icon { */
     /*         display: inline-block !important; */
     /*     } */
-
-
     /*     .btn-container .dx-button .dx-button-text { */
     /*         display: none; */
     /*     } */
-
     /* .btn-containerIvoiceEdit:hover .dx-button .dx-button-text { */
     /*     display: inline-block; */
-    /*     margin-left: 8px; */ 
+    /*     margin-left: 8px; */
     /* } */
-
     .modal-content {
         position: absolute;
         top: 40%;
@@ -190,28 +174,22 @@
     /*     padding-right: 0 !important; */
     /*     text-align: center; */
     /* } */
-
     /* .btn-containerIvoiceEdit:hover .dx-button { */
     /*     width: 200px !important; */
     /* } */
-
     /* .btn-container:hover #btnAddNewPayment.dx-button { */
     /*     width: 240px !important; */
     /* } */
-
     /* .btn-containerIvoiceEdit .dx-button .dx-icon { */
     /*     display: inline-block !important; */
     /* } */
-
     /* .btn-containerIvoiceEdit .dx-button .dx-button-text { */
     /*     display: none; */
     /* } */
-
     /* .btn-containerIvoiceEdit:hover .dx-button .dx-button-text { */
     /*     display: inline-block; */
     /*     margin-left: 8px; /* optional spacing between icon and text */ */
     /* } */
-
     .multiline-button .dx-button-text {
         white-space: normal;
     }
@@ -250,7 +228,11 @@
             .DropDownOptions(options => options.Width(230))
             .Items(items =>
             {
+
+                // items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu");
+
                // items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu");
+
                 items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
                 items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
                 items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
@@ -634,7 +616,7 @@
                 items.Add().Text("UploadItems Form Excel").Icon("edit");
 
             })
-
+            .OnItemClick("addPrintButton_click")
 
             )
     </div>
@@ -809,6 +791,8 @@
                 items.Add().Text("Preview Invoice(English)").Icon("folder");
                 items.Add().Text("Preview Invoices in Foreign Currency(English)").Icon("edit");
                 items.Add().Text("Preview Invoices in (Foreign Currency)").Icon("upload");
+                items.Add().Text("Preview Invoices in -with discount").Icon("upload");
+                items.Add().Text("Preview Invoices in -withOut discount").Icon("upload");
                 items.Add().Text("Upload Items From Excel").Icon("chart");
 
             })
@@ -1972,7 +1956,7 @@
                         reportName = "TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS";
                         break;
                     case "Print Simplified TAX Invoice":
-                        reportName = "SimplifiedTaxInvoice";
+                        reportName = "PrintsimplifiedTaxInvoices";
                         break;
                     case "Print Regular Tax Invoice - Format 02":
                         reportName = "PrintRegularInvoiceFormat02";
@@ -1984,26 +1968,52 @@
                         reportName = "RegulartaxinvoicewithoutSignatoriesFormat05";
                         break;
                     case "Print Regular Tax Invoice - With Signatories (Format 05)":
-                        reportName = "TAXINVOICE_WSIGN_FORMAT05";
+                        reportName = "PrintRegularTaxInvoiceWithSignatories_Format05_";
                         break;
                     case "Design 02 (W/o Signatories)":
-                        reportName = "TAXINVOICE_DESIGN02_WOSIGN";
+                        reportName = "Withoutsignatories";
                         break;
                     case "Design 02 (With Signatories)":
-                        reportName = "TAXINVOICE_DESIGN02_WSIGN";
+                        reportName = "withsignatories";
                         break;
-                    case "Preview Invoices in (Foreign Currency)":
-                        reportName = "proformaInvoiceforegincurrency";
-                        break;
-                    case "Preview Invoices in Foreign Currency(English)":
-                        reportName = "ProformaInvoiceForeignEnglish";
-                        break;
-                    case "Preview Invoice(English)":
-                        reportName = "PreviewInvoiceEnglish";
-                        break;
-                    case "Preview Invoice":
-                        reportName = "PreviewInvoice";
-                        break;
+                        case "Print Regular Tax Invoice -  (Format 06)":
+                            reportName = "RegularTaxInvoiceFormat06";
+                            break;
+                        case "Print Regular Tax Invoice - wt Document Level Discount":
+                            reportName = "PrintRegularTaxInvoiceWtDocumentLevelDiscount";
+                            break;
+
+                         case "Print Regular Tax Invoice - without Signatories(with symbols)":
+                            reportName = "taxinvoicewithSignatoriesWithSymbols";
+                            break;
+
+
+
+                   case "Preview Invoices in (Foreign Currency)":
+                            reportName = "ForeignCurrencyProforma";
+                            break;
+                        case "Preview Invoices in Foreign Currency(English)":
+                            reportName = "ForeignEnglishProforma";
+                            break;
+                        case "Preview Invoice(English)":
+                            reportName = "ProformaInvoiceEnglish";
+                            break;
+                        case "Preview Invoice":
+                            reportName = "ProformaPreviewInvoice";
+                            break;
+                             case "Preview Proforma Invoice(NewFormat)":
+                            reportName = "ProformaNewFormat";
+                            break;
+                        case "Preview Invoices in -with discount":
+                            reportName = "Wtdiscountpreviewinvoice";
+                            break;
+                        case "Preview Invoices in -withOut discount":
+                            reportName = "WithoutDiscountInvoice";
+                            break;
+
+                    case "Preview VAT Purchase Bill":
+                            reportName = "BillsPurchases";
+                            break;
                     default:
                         alert("Invalid report format selected.");
                         return;
@@ -2067,7 +2077,14 @@
                 "Print Simplified TAX Invoice",
                 "Preview Invoices in (Foreign Currency)",
                 "Preview Invoices in Foreign Currency(English)",
-                "Preview Invoice(English)"
+                "Preview Invoice(English)",
+                "Preview Proforma Invoice(NewFormat)",
+                    "Preview Invoice",
+                    "Preview Invoices in -with discount",
+                    "Preview Invoices in -withOut discount",
+                 "Preview VAT Purchase Bill",
+
+
             ];
 
             if (standardFormats.includes(itemText)) {
@@ -2084,7 +2101,11 @@
                     { text: "Print Regular Tax Invoice - Format 02", shortcut: "Alt+2" },
                     { text: "Print Tax Invoice - (Foreign Currency)", shortcut: "Alt+3" },
                     { text: "Print Regular Tax Invoice - Without Signatories (Format 05)", shortcut: "Alt+5" },
-                    { text: "Print Regular Tax Invoice - With Signatories (Format 05)" },
+                     { text: "Print Regular Tax Invoice - With Signatories (Format 05)" },
+                        {text:"Print Regular Tax Invoice - without Signatories(with symbols)"},
+                         {text:"Print Regular Tax Invoice - wt Document Level Discount"},
+                      { text: "Print Regular Tax Invoice -  (Format 06)" },
+                   
                     { text: "Design 02 (W/o Signatories)" },
                     { text: "Design 02 (With Signatories)" }
                 ],
@@ -2100,6 +2121,10 @@
                     handleReportPrinting(itemText);
                 }
             });
+
+
+         // Function to determine if Simplified Invoice printing should be disabled
+   
         });
         ////Credit Note Function for reports
 
@@ -2123,12 +2148,12 @@
 
                 switch (itemText) {
                     case "Preview Credit Note":
-                            reportName = "creditnote"; 
+                            reportName = "creditnote";
                         break;
                     case "Preview Credit Note(Foreign Currency)":
                         reportName = "CreditForeignCurrency";
                         break;
-                   
+
                     default:
                         alert("Invalid report format selected.");
                         return;

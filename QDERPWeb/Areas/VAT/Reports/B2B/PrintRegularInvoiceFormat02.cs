@@ -18,6 +18,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
             string companyName,
             string companyAddress,
             Image logoImage,
+            Image sealImage,
             string companyNameAr,
             string companyAddressAr,
               string companyPhone,
@@ -30,11 +31,11 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
             _isApproved = isApproved;
 
             InitializeComponent();
-            SetReportParameters(invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr,companyPhone, companyEmail, companyWebsite);
+            SetReportParameters(invoiceNo, tenantName, companyName, companyAddress, logoImage,sealImage, companyNameAr, companyAddressAr,companyPhone, companyEmail, companyWebsite);
             LoadReportData(invoiceNo);
         }
 
-        private void SetReportParameters(string invoiceNo, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressAr, string companyPhone,
+        private void SetReportParameters(string invoiceNo, string tenantName, string companyName, string companyAddress, Image logoImage,Image sealImage, string companyNameAr, string companyAddressAr, string companyPhone,
             string companyEmail,string companyWebsite)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
@@ -82,8 +83,11 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
             if (FindControl("xrLabelCompanyAddressAr", true) is XRLabel addressArLabel)
                 addressArLabel.Text = companyAddressAr;
 
-            if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
+            if (FindControl("xrPictureBox2", true) is XRPictureBox logoPictureBox)
                 logoPictureBox.Image = logoImage;
+
+            if (FindControl("xrPictureBox1", true) is XRPictureBox sealPictureBox)
+                sealPictureBox.Image = sealImage;
             if (FindControl("xrLabelCompanyPhone", true) is XRLabel companyphoneLabel)
                 companyphoneLabel.Text = companyPhone;
 
@@ -101,7 +105,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
             if (dt.Rows.Count == 0)
             {
                 this.DataSource = null;
-                CreateNoDataLabel();
+             
             }
             else
             {
@@ -163,15 +167,6 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
             }
         }
 
-        private void CreateNoDataLabel()
-        {
-            XRLabel noDataLabel = new XRLabel
-            {
-                Text = "No records found.",
-                BoundsF = new RectangleF(0, 0, PageWidth - Margins.Left - Margins.Right, 50),
-                TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter
-            };
-            this.Bands[BandKind.Detail].Controls.Add(noDataLabel);
-        }
+        
     }
 }
