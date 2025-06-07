@@ -493,14 +493,17 @@
 
 						<!-- 2. Voucher Date -->
 						<td>
-							
 							@(Html.DevExtreme().DateBox()
+														.Label(new JS("formatMessage('Voucher Date')"))
 														.ID("InvoiceDate")
+														.InputAttr("aria-label", "Date")
+														.LabelMode(EditorLabelMode.Outside)
 														.Type(DateBoxType.Date)
 														.DisplayFormat("dd-MMM-yyyy")
 														.Value(DateTime.Now)
-														.Label(new JS("formatMessage('Voucher Date')"))
-														.LabelMode(EditorLabelMode.Outside))
+														.OnValueChanged("onVoucherDateChanged") // JS function name
+
+														)
 						</td>
 					</tr>
 
@@ -738,7 +741,9 @@
 									@(Html.DevExtreme().TextBox()
 																			.ID("ClientVATNo")
 																			.Label(new JS("formatMessage('Supplier VAT No')"))
-																			.LabelMode(EditorLabelMode.Outside))
+																			.LabelMode(EditorLabelMode.Outside)
+																			)
+
 								</td>
 
 								<!-- 13. Supplier Name in Arabic (TextEdit) -->
@@ -5633,13 +5638,13 @@
 
 					});
 				});
-				$(function () {
-					$("#ClientVATNo").dxTextBox({
-						text: formatMessage("Client VAT Number: *"),
-						readOnly: true
+				// $(function () {
+				// 	$("#ClientVATNo").dxTextBox({
+				// 		text: formatMessage("Client VAT Number: *"),
+				// 		readOnly: true
 
-					});
-				});
+				// 	});
+				// });
 				$(function () {
 					$("#OtherType").dxTextBox({
 						text: formatMessage("Other ID Type: *"),
@@ -7583,6 +7588,40 @@
 		}
 
 
+			 function onVoucherDateChanged(e) {
+		console.log("Selected Date:", e.value);
+		debugger;
+		var InvoiceDate = $("#InvoiceDate").dxDateBox("instance");
+		InvoiceDate.option("onValueChanged", function (e) {
+			let InvoiceDateval = e.value; // Get Date from DevExtreme DateBox
+
+			// Check if InvoiceDateval is valid
+			if (!InvoiceDateval) return;
+
+			// Set effectiveDate to the same value as InvoiceDate
+		
+
+			// Convert to 'yyyy-MM-dd' format
+			let formattedDate = new Date(InvoiceDateval).toISOString().split("T")[0];
+
+			// Define the cutoff date (2021-12-31)
+			let cutoffDate = new Date("2021-12-31");
+
+			// Get the current date to set if the voucher date is blocked
+			let currentdate = new Date();
+			let formattedCurrentDate = currentdate.toISOString().split("T")[0]; // Format it as 'yyyy-MM-dd'
+
+			// Check if the formatted voucher date is before the cutoff date
+			if (new Date(formattedDate) < cutoffDate) {
+				// Show alert for blocked entry
+				DevExpress.ui.dialog.alert("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
+
+				// Set both voucherDate and effectiveDate to the current date
+				InvoiceDate.option("value", formattedCurrentDate);
+				
+			}
+		});
+	}
 	// 	 function validateSupplierInvoiceNo(e) {
 	// 	const value = e.value;
 	// 	let isDuplicate = false;
