@@ -1,20 +1,19 @@
-﻿using System.Net.Http;
-using System.Threading.Tasks;
+﻿using System;
 using System.Data;
 using System.Data.SqlClient;
-using DevExpress.XtraReports.UI;
 using System.Drawing;
-using QD.ERP.Web.Service;
+using DevExpress.XtraReports.UI;
 using DevExpress.XtraPrinting.Drawing;
+using QD.ERP.Web.Service;
 
-namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
+namespace QD.ERP.Web.Areas.VAT.Reports.B2B
 {
-    public partial class TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS : XtraReport
+    public partial class withsignatories2 : XtraReport
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
-        private bool _isApproved;  // This flag will come from the client-side
+        private bool _isApproved;
 
-        public TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS(
+        public withsignatories2(
             string invoiceNo,
             string tenantName,
             string companyName,
@@ -23,15 +22,15 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
             Image sealImage,
             string companyNameAr,
             string companyAddressAr,
-            bool isApproved,  // Accepting approval status here
+            bool isApproved,
             TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
-            _isApproved = isApproved;  // Store the approval status
+            _isApproved = isApproved;
 
             InitializeComponent();
-            SetReportParameters(invoiceNo, tenantName, companyName, companyAddress, logoImage,  sealImage, companyNameAr, companyAddressAr);
-            LoadReportData(invoiceNo);  // Load the data synchronously
+            SetReportParameters(invoiceNo, tenantName, companyName, companyAddress, logoImage, sealImage, companyNameAr, companyAddressAr);
+            LoadReportData(invoiceNo);
         }
 
         private void SetReportParameters(string invoiceNo, string tenantName, string companyName, string companyAddress, Image logoImage, Image sealImage, string companyNameAr, string companyAddressAr)
@@ -62,6 +61,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
             AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddressAr", companyAddressAr ?? "", typeof(string));
 
+            // Set report label values dynamically
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
 
@@ -77,20 +77,20 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
             if (FindControl("xrLabelCompanyAddressAr", true) is XRLabel addressArLabel)
                 addressArLabel.Text = companyAddressAr;
 
-            if (FindControl("xrPictureBox2", true) is XRPictureBox logoPictureBox)
-                logoPictureBox.Image = logoImage;
-            if (FindControl("xrPictureBox5", true) is XRPictureBox sealPictureBox)
+            //if (FindControl("xrPictureBoxLogo", true) is XRPictureBox logoPictureBox)
+            //    logoPictureBox.Image = logoImage;
+
+            if (FindControl("xrPictureBoxSeal", true) is XRPictureBox sealPictureBox)
                 sealPictureBox.Image = sealImage;
         }
 
         private void LoadReportData(string invoiceNo)
         {
-            DataTable dt = GetReportData(invoiceNo);  // Load data synchronously
+            DataTable dt = GetReportData(invoiceNo);
 
             if (dt.Rows.Count == 0)
             {
                 this.DataSource = null;
-               
             }
             else
             {
@@ -100,7 +100,6 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
             }
         }
 
-        // GetReportData is implemented below:
         private DataTable GetReportData(string invoiceNo)
         {
             DataTable dt = new DataTable();
@@ -128,7 +127,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
                 }
                 else
                 {
-                    throw new Exception("Unable to get tenant context. Please check session and cache.");
+                    throw new Exception("Unable to get tenant context.");
                 }
             }
             catch (Exception ex)
@@ -139,30 +138,19 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
             return dt;
         }
 
-
         private void SetWatermark()
         {
             if (!_isApproved)
             {
                 this.Watermark.Text = "DRAFT COPY";
-
-                // Set font
                 this.Watermark.Font = new Font("Arial", 70, FontStyle.Bold);
-
-                this.Watermark.ForeColor = Color.FromArgb(80, 173, 216, 230); 
-
+                this.Watermark.ForeColor = Color.FromArgb(80, 173, 216, 230);
                 this.Watermark.TextDirection = DirectionMode.ForwardDiagonal;
-
                 this.Watermark.ShowBehind = true;
-
                 this.Watermark.ImageTiling = false;
                 this.Watermark.ImageViewMode = ImageViewMode.Stretch;
             }
         }
-
-
-
-
-       
     }
 }
+

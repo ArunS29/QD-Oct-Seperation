@@ -1003,5 +1003,13 @@
     
     });
 
-   
+   $(function () {
+            // Get the description from Razor
+       var description = '@description';
+
+            // Handle the button click
+            $("#linenarrationbtn").dxButton("instance").option("onClick", function () {
+                $("#linenarration").dxTextArea("instance").option("value", description);
+            });
+        });
 </script>

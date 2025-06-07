@@ -2623,6 +2623,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
 
+
         [HttpPost]
         public async Task<ActionResult> UpdatePurchaseChildDetails(List<InvoiceItem> InvoiceChildren)
         {
@@ -2652,7 +2653,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 UnitsToBill = 1,
                                 //UnitRateInOc = child.UnitPrice?.GetDecimal() ?? 0m,
                                 //DiscountInOc = child.Discount,
-                                Discount= child.Discount,
+                                Discount = child.Discount,
                                 UnitRateMethod = 49,
                                 ItemCode = child.ItemCode ?? string.Empty, // Null safety
                                 UoM = "Each"
@@ -2699,10 +2700,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return BadRequest("Failed to retrieve tenant and database context.");
         }
 
-
-        
-
-		[HttpPost]
+        [HttpPost]
         public async Task<ActionResult> UpdateInvoiceMasterDetails(Tbl20161VatinvoiceMaster InvoiceMaster)
         {
             if (InvoiceMaster == null)
