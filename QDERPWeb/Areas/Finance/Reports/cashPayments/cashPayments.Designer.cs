@@ -445,7 +445,7 @@
             // 
             this.xrSubreport1.LocationFloat = new DevExpress.Utils.PointFloat(465.3551F, 41.83334F);
             this.xrSubreport1.Name = "xrSubreport1";
-            this.xrSubreport1.ReportSource = new QD.ERP.Web.Areas.VAT.Reports.B2B.RegularTaxInvoiceSignatoriesFormat005();
+            this.xrSubreport1.ReportSource = new QD.ERP.Web.Areas.Finance.Reports.cashPayments.subCostReport();
             this.xrSubreport1.SizeF = new System.Drawing.SizeF(285.7813F, 48.49996F);
             // 
             // table2

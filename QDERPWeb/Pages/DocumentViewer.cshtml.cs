@@ -1740,6 +1740,8 @@ namespace QD.ERP.Web.Pages
 
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                     .FirstOrDefault(x => x.CompanyNameShort == tenantName);
 
@@ -1769,7 +1771,7 @@ namespace QD.ERP.Web.Pages
                 }
                 Report = new balnceSheet(
                     AccountGroup, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper,userName
                 );
 
             }

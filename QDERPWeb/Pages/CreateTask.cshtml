@@ -1,0 +1,215 @@
+﻿@page
+@model QD.ERP.Web.Pages.CreateTaskModel
+@{
+    Layout = null;
+}
+
+<!-- DevExtreme Styles -->
+<link href="https://cdn3.devexpress.com/jslib/23.2.5/css/dx.light.css" rel="stylesheet" />
+<style>
+    /* Container for modal and popup */
+    #popupContainer {
+        position: relative;
+        max-width: 1600px;
+       
+        overflow: visible !important; /* Important for dropdown popups */
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.2);
+        background: #fff;
+        padding: 1.5rem;
+    }
+
+    label {
+        font-weight: 600;
+    }
+
+    /* Fix Save button visibility */
+    .dx-button {
+        min-width: 120px;
+    }
+</style>
+
+<div id="popupContainer" class="modal-content">
+    <h3 class="mb-4">Create Notification Task</h3>
+
+    @using DevExtreme.AspNet.Mvc
+
+    @using (Html.BeginForm("", "", FormMethod.Post, new { id = "taskForm" }))
+    {
+        @Html.Hidden("AlertCode", "")
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label>User</label>
+                @(Html.DevExtreme().SelectBox()
+                    .ID("AlertUserID")
+                    .DataSource(d => d.Mvc().Controller("AlertTask").LoadAction("GetUsers"))
+                    .DisplayExpr("UserName")
+                    .ValueExpr("UserId")
+                    .Placeholder("Select User")
+                    .Width("100%")
+                    .ValidationRules(r => r.AddRequired())
+                    .DropDownOptions(opts => opts.Container("#popupContainer")) // Fix popup clipping
+                    )
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label>Alert Date</label>
+                @(Html.DevExtreme().DateBox()
+                    .ID("AlertUserOn")
+                    .Type(DateBoxType.Date)
+                    .Width("100%")
+                    .ValidationRules(r => r.AddRequired())
+                    .DropDownOptions(opts => opts.Container("#popupContainer")) // Fix popup clipping
+                    )
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label>Alert Time</label>
+                @(Html.DevExtreme().DateBox()
+                    .ID("AlertUserTime")
+                    .Type(DateBoxType.Time)
+                    .Width("100%")
+                    .ValidationRules(r => r.AddRequired())
+                    .DropDownOptions(opts => opts.Container("#popupContainer"))
+                    )
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label>Send Via</label>
+                <div class="d-flex flex-column gap-2">
+                    <div class="d-flex align-items-center">
+                        <span class="me-2">Email</span>
+                        @(Html.DevExtreme().Switch().ID("SwitchEmail").Value(false).OnValueChanged("toggleEmail"))
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <span class="me-2">System</span>
+                        @(Html.DevExtreme().Switch().ID("SwitchSystem").Value(false))
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <span class="me-2">SMS</span>
+                        @(Html.DevExtreme().Switch().ID("SwitchSms").Value(false).OnValueChanged("toggleMobile"))
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 mb-3">
+                <label>Message</label>
+                @(Html.DevExtreme().TextArea()
+                    .ID("AlertUserMessage")
+                    .Height(80)
+                    .Width("100%")
+                    .ValidationRules(r => r.AddRequired())
+                    )
+            </div>
+
+            <div class="col-md-6 mb-3 emailField" style="display:none;">
+                <label>User Email</label>
+                @(Html.DevExtreme().TextBox()
+                    .ID("AlertUserEmail")
+                    .Mode(TextBoxMode.Email)
+                    .Width("100%"))
+            </div>
+
+            <div class="col-md-6 mb-3 mobileField" style="display:none;">
+                <label>User Mobile No</label>
+                @(Html.DevExtreme().TextBox()
+                    .ID("AlertUserMobileNo")
+                    .Mode(TextBoxMode.Tel)
+                    .Width("100%"))
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label>Notified By</label>
+                @(Html.DevExtreme().TextBox().ID("AlertNotifiedByUser").Width("100%"))
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label>Notified On</label>
+                @(Html.DevExtreme().DateBox().ID("AlertNotifiedOn").Type(DateBoxType.DateTime).Width("100%")
+                    .DropDownOptions(opts => opts.Container("#popupContainer"))
+                    )
+            </div>
+
+            <div class="col-md-12 mb-3">
+                <label>Status Remarks</label>
+                @(Html.DevExtreme().TextArea()
+                    .ID("AlertStatusRemarks")
+                    .Height(60)
+                    .Width("100%"))
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-3 mt-4">
+            @(Html.DevExtreme().Button()
+                .ID("saveBtn")
+                .Text("Save Task")
+                .Icon("save")
+                .Type(ButtonType.Success)
+                .OnClick("onSaveClick")
+                )
+
+            @(Html.DevExtreme().Button()
+                .ID("cancelBtn")
+                .Text("Cancel")
+                .Icon("close")
+                .Type(ButtonType.Default)
+                .OnClick("function() { $('#popupContainer').hide().html(''); }")
+                )
+        </div>
+    }
+</div>
+
+
+
+<script>
+    function toggleEmail(e) {
+        $('.emailField').toggle(e.value);
+    }
+
+    function toggleMobile(e) {
+        $('.mobileField').toggle(e.value);
+    }
+
+    function onSaveClick() {
+        const payload = {
+            AlertCode: $('#AlertCode').val(),
+            AlertUserID: $("#AlertUserID").dxSelectBox("instance").option("value"),
+            AlertUserOn: $("#AlertUserOn").dxDateBox("instance").option("value"),
+            AlertNotifiedByUser: $("#AlertNotifiedByUser").dxTextBox("instance").option("value") === 'true',
+            AlertByEmail: $("#SwitchEmail").dxSwitch("instance").option("value"),
+            AlertBySystem: $("#SwitchSystem").dxSwitch("instance").option("value"),
+            AlertBySms: $("#SwitchSms").dxSwitch("instance").option("value"),
+            AlertUserMessage: $("#AlertUserMessage").dxTextArea("instance").option("value"),
+            AlertUserEmail: $("#AlertUserEmail").dxTextBox("instance").option("value"),
+            AlertUserMobileNo: $("#AlertUserMobileNo").dxTextBox("instance").option("value"),
+            AlertNotifiedByUser: $("#AlertNotifiedByUser").dxTextBox("instance").option("value"),
+            AlertNotifiedOn: $("#AlertNotifiedOn").dxDateBox("instance").option("value"),
+            AlertStatusRemarks: $("#AlertStatusRemarks").dxTextArea("instance").option("value")
+        };
+
+        $.ajax({
+            url: '/api/AlertTask/CreateTask',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(payload),
+            success: function (res) {
+                if (res.success) {
+                    DevExpress.ui.notify("Task Created Successfully", "success", 2000);
+                    $('#popupContainer').hide().html('');
+                } else {
+                    DevExpress.ui.notify(res.message || "Error creating task", "error", 3000);
+                }
+            },
+            error: function () {
+                DevExpress.ui.notify("Server error. Try again later.", "error", 3000);
+            }
+        });
+    }
+
+    $(function () {
+        $.get('/api/AlertTask/GetNextAlertCode', function (data) {
+            $('#AlertCode').val(data.alertCode);
+        });
+    });
+</script>

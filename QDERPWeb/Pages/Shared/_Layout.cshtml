@@ -2108,10 +2108,7 @@
         });
 
         function handleBellClick() {
-            const notificationPopup = document.getElementById('notificationPopup');
-            if (notificationPopup) {
-                notificationPopup.style.display = 'block';
-            }
+            window.location.href = `/${tenantName}/Shared/Notification`;
         }
 
         // Function for Gear icon click - show settings popup
