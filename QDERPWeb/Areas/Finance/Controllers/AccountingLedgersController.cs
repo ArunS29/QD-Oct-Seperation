@@ -45,17 +45,17 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             i.AccountHeadArabic,
                             i.ReferenceNo,
                             i.IsLedgerObselete,
-						    i.IsRestricted,
-							i.IsUseInSales,
-							i.IsUsedInPurchase,
-							i.IsProfitLossAccount,
-							i.IsBalanceSheetAccount,
-							i.IsMaintainBillByBill,
-							i.IsUseInReconciliation,
-							i.IsSalaryPayable,
-							i.Expr1,
+                            i.IsRestricted,
+                            i.IsUseInSales,
+                            i.IsUsedInPurchase,
+                            i.IsProfitLossAccount,
+                            i.IsBalanceSheetAccount,
+                            i.IsMaintainBillByBill,
+                            i.IsUseInReconciliation,
+                            i.IsSalaryPayable,
+                            i.Expr1,
 
-						});
+                        });
 
                     return Json(await DataSourceLoader.LoadAsync(ledgerAccounts, loadOptions));
                 }
@@ -65,7 +65,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetVouchers(string accountId, string frmDate, string toDate, int page = 1, int pageSize = 50)
+        public async Task<ActionResult> GetVouchers(string accountId, string frmDate, string toDate)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
@@ -77,30 +77,19 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     if (!DateTime.TryParseExact(toDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime to))
                         return BadRequest("Invalid to date format. Use MM/dd/yyyy.");
 
-                    // Call SP and get all records first
+                    //var ledgerData = await dbContext.AccountLedgers
+                    //    .FromSqlRaw("EXEC StProAccountLedger @p0, @p1, @p2", accountId, from, to)
+                    //    .ToListAsync();
                     var allLedgerData = await dbContext.AccountLedgers
-                        .FromSqlRaw("EXEC StProAccountLedger @p0, @p1, @p2", accountId, from, to)
-                        .ToListAsync();
+        .FromSqlRaw("EXEC StProAccountLedger @p0, @p1, @p2", accountId, from, to)
+        .ToListAsync(); // Fetch all records first
 
-                    // Filter out rows without VoucherType
-                    var filteredData = allLedgerData
-                        .Where(x => !string.IsNullOrEmpty(x.VoucherType));
-
-                    // Pagination logic
-                    int totalCount = filteredData.Count();
-                    var pagedData = filteredData
-                        .Skip((page - 1) * pageSize)
-                        .Take(pageSize)
+                    var ledgerData = allLedgerData
+                        .Where(x => !string.IsNullOrEmpty(x.VoucherType)) // Filter results
                         .ToList();
 
-                    return Json(new
-                    {
-                        success = true,
-                        totalCount,
-                        page,
-                        pageSize,
-                        data = pagedData
-                    });
+
+                    return Json(ledgerData);
                 }
                 catch (Exception ex)
                 {
