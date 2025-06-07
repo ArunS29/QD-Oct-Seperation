@@ -4,17 +4,12 @@
 @{
 } *@
 <style>
-	.dx-datagrid-headers .center-header {
-		text-align: center !important;
-	}
 
-	.Head {
-		margin-bottom: 10px;
-	}
 
 	#B2BdataGrid {
 		height: 700px !important;
 	}
+
 
 	.toggle-switch {
 		position: relative;
@@ -802,6 +797,9 @@
 															//.ShowClearButton(true) // Optional: adds a clear (X) button
 															)
 							</td>
+
+							<td colspan="3">@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name in Arabic')")).ID("ClientNameArabic").LabelMode(EditorLabelMode.Outside))</td>
+
 							<td>
 								@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name in Arabic')")).ID("ClientNameArabic").LabelMode(EditorLabelMode.Outside).Width("100%"))
 							</td>
@@ -1004,7 +1002,7 @@
 
 						</tr>
 						<tr>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Counter Value:')")).ID("InvoiceCounterValue").LabelMode(EditorLabelMode.Outside).Disabled(true))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Counter Value')")).ID("InvoiceCounterValue").LabelMode(EditorLabelMode.Outside).Disabled(true))</td>
 							<td colspan="3">@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('UUID')")).ID("UUID").LabelMode(EditorLabelMode.Outside).Disabled(true))</td>
 						</tr>
 					</table>
@@ -2322,7 +2320,7 @@
 		</div>
 
 		<div class="Head">
-			<div class="limited-footer" style="margin-left: 15px;">
+			<div class="limited-footer">
 				@await Html.PartialAsync("VATModuleFooter")
 			</div>
 		</div>
@@ -3959,8 +3957,6 @@
 
 						caption: "#",
 
-						cssClass: "center-header",
-
 						width: 100,
 
 						allowEditing: false // Prevent manual editing
@@ -3973,8 +3969,6 @@
 
 						caption: formatMessage('Item Code'),
 
-						cssClass: "center-header",
-
 						width: 200
 
 					},
@@ -3984,8 +3978,6 @@
 						dataField: "Description",
 
 						caption: formatMessage('Description'),
-
-						cssClass: "center-header",
 
 						width: 550,
 							 sortOrder: "asc", // auto-sort
@@ -4175,7 +4167,6 @@
 		{
 				dataField: "Descriptions",
 				caption: "...",
-				cssClass: "center-header",
 				width: 80,
 				allowEditing: true,
 				cellTemplate: function (container, options) {
@@ -4203,8 +4194,6 @@
 						dataField: "DescriptionDetails",
 
 						caption: formatMessage('Unit Rate Method'),
-
-						cssClass: "center-header",
 
 						width: 200,
 
@@ -4330,19 +4319,18 @@
 					},
 
 
-					{ dataField: "Qty", caption: formatMessage('Qty'), width: 150, cssClass: "center-header" },
+					{ dataField: "Qty", caption: formatMessage('Qty'), width: 150 },
 
-					{ dataField: "UnitPrice", caption: formatMessage('Unit Price'), width: 150, cssClass: "center-header" },
+					{ dataField: "UnitPrice", caption: formatMessage('Unit Price'), width: 150 },
 
-					{ dataField: "TotalBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 185, cssClass: "center-header", format: { type: "fixedPoint", precision: 2 } },
+					{ dataField: "TotalBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 185, format: { type: "fixedPoint", precision: 2 } },
 
-					{ dataField: "Discount", caption: formatMessage('Discount'),cssClass: "center-header", width: 150,alignment: "right" },
+					{ dataField: "Discount", caption: formatMessage('Discount'), width: 150 },
 
 					//{ dataField: "DiscountDetails", caption: "...", width: 50 },
 					{
 		dataField: "DiscountDetails",
 		caption: "...",
-		cssClass: "center-header",
 		width: 100,
 			allowEditing: true,
 					cellTemplate: function (container, options) {
@@ -4452,14 +4440,13 @@
 		}
 	},
 
-						{ dataField: "Amount", caption: formatMessage('Amount'), width: 150,cssClass: "center-header", format: { type: "fixedPoint", precision: 2 } },
+						{ dataField: "Amount", caption: formatMessage('Amount'), width: 150, format: { type: "fixedPoint", precision: 2 } },
 
 					//{ dataField: "VAT%", caption: "VAT%", width: 150 },
 
 					{
 						dataField: "VATPercentage",
 						caption: formatMessage('VAT%'),
-	cssClass: "center-header",
 						width: 150,
 						editCellTemplate: function (cellElement, cellInfo) {
 							getTaxSlabData().done(function (dropdownData) {
@@ -4510,11 +4497,11 @@
 						}
 					},
 
-					{ dataField: formatMessage('ExcemptionCode'), caption: "Excemption Code", cssClass: "center-header",width: 150 },
+					{ dataField: formatMessage('ExcemptionCode'), caption: "Excemption Code", width: 150 },
 
-					{ dataField: "VAT", caption: formatMessage('VAT'),cssClass: "center-header", width: 150, alignment: "right"  },
+					{ dataField: "VAT", caption: formatMessage('VAT'), width: 150 },
 
-					{ dataField: "Total", caption: formatMessage('Total'),cssClass: "center-header", width: 150,alignment: "right",format: { type: "fixedPoint", precision: 2 } },
+					{ dataField: "Total", caption: formatMessage('Total'), width: 150, format: { type: "fixedPoint", precision: 2 } },
 
 					{ dataField: "TaxSlabCode", caption: formatMessage('TaxSlabCode'), width: 150, allowEditing: false, visible: false }
 
@@ -8038,75 +8025,7 @@
 				openModal(url, title);
 		}
 
-		//
-			async function convertToArabic() {
-		const textBox1Instance = $("#ddclientname").dxDropDownBox("instance");
-		const textBox2Instance = $("#ClientNameArabic").dxTextBox("instance");
 
-		if (!textBox1Instance || !textBox2Instance) {
-			console.error("TextBox instances are not properly initialized.");
-			return;
-		}
-
-		const englishText = textBox1Instance.option("text");
-
-		if (!englishText || englishText.trim() === "") {
-			alert("Please enter text to translate.");
-			return;
-		}
-
-		const arabicTranslation = await translateToArabic(englishText);
-
-		textBox2Instance.option("value", arabicTranslation);
-	}
-
-	// Dummy translate function (replace with real translation logic or API call)
-	 async function convertToArabic() {
-
-		// Get the TextBox1 (input) instance
-
-		const textBox1Instance = $("#txtInvoiceNotes").dxTextArea("instance");
-
-		// Get the TextBox2 (output) instance
-
-		const textBox2Instance = $("#txtNotesinArabic").dxTextArea("instance");
-
-		// Ensure both instances are initialized
-
-		if (!textBox1Instance || !textBox2Instance) {
-
-			console.error("TextBox instances are not properly initialized.");
-
-			return;
-
-		}
-
-
-		// Get the value from TextBox1
-
-		const englishText = textBox1Instance.option("value");
-
-
-
-		// Validate input
-
-		if (!englishText || englishText.trim() === "") {
-
-			alert("Please enter text to translate.");
-
-			return;
-
-		}
-
-		// Perform translation
-
-		const arabicTranslation = await translateToArabic(englishText);
-
-		// Update TextBox2 with the Arabic translation
-
-		textBox2Instance.option("value", arabicTranslation);
-
-	}
 
 			function onDropDownBoxClosed(e) {
 				const typedText = e.component.option("text");

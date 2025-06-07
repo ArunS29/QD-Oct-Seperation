@@ -262,8 +262,8 @@
         display: none !important;
     }
 
-    .limited-footer .btn-container:not(:has(#ddButtonLayout,#btnSave,#btnSaveAndClose,#btnPrint,#btnDelete,#btnAddNew,#btnAttach,#btnSubmit,#btnVerify,#btnApprove)) {
-        display: none !important
+    .footerContainer {
+        display: none !important;
     }
 
     .bodyContainer {
@@ -317,7 +317,7 @@
                         <td>
                             @(Html.DevExtreme().TextBox()
                             .ID("PurchaseOrderNo")
-                            .Value("")
+                            .Value("AIC-PO-2025-00001")
                             .Label("Purchase Order No:")
                             .LabelMode(EditorLabelMode.Outside)
                             .ReadOnly(true)
@@ -348,22 +348,11 @@
                                 .Label("Supplier Name:")
                                 .LabelMode(EditorLabelMode.Outside)
                                 .StylingMode(EditorStylingMode.Outlined)
-                                .Width("100%")
-                                .DataSource(d => d.Mvc()
-                                .Controller("PurchaseOrders")
-                                .LoadAction("GetClients")
-                                )
-                                .ValueExpr("ClientCode")      
-                                .DisplayExpr("ClientName")
-                                .SearchEnabled(true)
-                                .OnValueChanged("onSupplierChanged")
-                                )
-
+                                .Width("100%"))
                                 <div style="margin-left: 5px;">
                                     @(Html.DevExtreme().Button()
                                     .ID("AddSupplier")
                                     .Icon("plus")
-                                    .OnClick("redirecttoClientLeadmaster1")
                                     .Hint("Add Supplier"))
                                 </div>
                             </div>
@@ -447,16 +436,9 @@
                                 .ID("Project")
                                 .Label("Project:")
                                 .LabelMode(EditorLabelMode.Outside)
+                                .DataSource(new[] { "Project A", "Project B" })
                                 .StylingMode(EditorStylingMode.Outlined)
-                                .Width("100%")
-                                .DataSource(d => d.Mvc()
-                                .Controller("PurchaseOrders")
-                                .LoadAction("GetProjects")
-                                )
-                                .ValueExpr("ProjectId")
-                                .DisplayExpr("ProjectDescription")
-                                .SearchEnabled(true)
-                                )
+                                .Width("100%"))
                                 <div style="margin-left: 5px;">
                                     @(Html.DevExtreme().Button()
                                     .ID("AddProject")
@@ -471,16 +453,7 @@
                             .Label("Sales Person:")
                             .LabelMode(EditorLabelMode.Outside)
                             .StylingMode(EditorStylingMode.Outlined)
-                            .Width("100%")
-                            .DataSource(d => d.Mvc()
-                            .Controller("AddNewClientRequest") 
-                            .LoadAction("GetSalesPerson")      
-                            )
-                            .ValueExpr("SalesPersonCode")         
-                            .DisplayExpr("SalesPersonName")         
-                            .SearchEnabled(true)
-                            )
-
+                            .Width("100%"))
                         </td>
                         <td>
                             @(Html.DevExtreme().TextBox()
@@ -496,16 +469,7 @@
                             .Label("Requesting Unit:")
                             .LabelMode(EditorLabelMode.Outside)
                             .StylingMode(EditorStylingMode.Outlined)
-                            .Width("100%")
-                            .DataSource(d => d.Mvc()
-                            .Controller("PurchaseOrders")      // Replace with your actual controller name
-                            .LoadAction("GetRequestingUnits")  // This should match the method name above
-                            )
-                            .ValueExpr("ProjectSubUnitCode")       // The ID field
-                            .DisplayExpr("ProjectSubUnitName")     // The name to show in dropdown
-                            .SearchEnabled(true)
-                            )
-
+                            .Width("100%"))
                         </td>
                     </tr>
                 </table>
@@ -513,47 +477,51 @@
 
         </text>);
                     item.Add().Title("Order Details").Icon("detailslayout").Text("Order Details").Template(@<text>
-            <div class="dx-card layout-container">
-                <!-- Subject and Po Summary -->
+
+                <!-- Subject -->
                 <div class="form-row">
                     <div class="form-column">
-                        <div class="field-header">
-                            <label for="Subject" class="field-label">Subject:</label>
-                            <div class="field-buttons">
-                                <button class="btn-solid" onclick="setDefaultValue('Subject')">Set Default</button>
-                                <button class="btn-outline"><i class="fa fa-font"></i></button>
-                            </div>
+                    <div class="field-header">
+                        <label for="Subject" class="field-label">Subject:</label>
+                        <div class="field-buttons">
+                            <button class="btn-solid">Set Default</button>
+                            <button class="btn-outline"><i class="fa fa-font"></i></button>
                         </div>
-                        @(Html.DevExtreme().TextBox()
-                        .ID("Subject")
-                        .LabelMode(EditorLabelMode.Hidden)
-                        .Width("100%")
-                        )
                     </div>
-                    <div class="form-column">
-                        <div class="field-header">
-                            <label for="PoSummary" class="field-label">Po Summary:</label>
-                            <div class="field-buttons">
-                                <button class="btn-solid" onclick="setDefaultValue('PoSummary')">Set Default</button>
-                                <button class="btn-outline"><i class="fa fa-font"></i></button>
-                            </div>
-                        </div>
-                        @(Html.DevExtreme().TextArea()
-                        .ID("PoSummary")
-                        .Height(80)
-                        .LabelMode(EditorLabelMode.Hidden)
-                        .Width("100%")
-                        )
-                    </div>
+                    @(Html.DevExtreme().TextBox()
+                    .ID("Subject")
+                    .Value("Quotation for Materials")
+                    .LabelMode(EditorLabelMode.Hidden)
+                    .Width("100%")
+                    )
                 </div>
 
-                <!-- Po Introduction and Thanks Notes -->
+                <!-- Po Summary -->
+                    <div class="form-column">
+                    <div class="field-header">
+                        <label for="PoSummary" class="field-label">Po Summary:</label>
+                        <div class="field-buttons">
+                            <button class="btn-solid">Set Default</button>
+                            <button class="btn-outline"><i class="fa fa-font"></i></button>
+                        </div>
+                    </div>
+                    @(Html.DevExtreme().TextArea()
+                    .ID("PoSummary")
+                    .Value("We hope that our offer is in line with your requirements...")
+                    .Height(80)
+                    .LabelMode(EditorLabelMode.Hidden)
+                    .Width("100%")
+                    )
+                </div>
+             </div>
+                
+                <!-- Po Introduction -->
                 <div class="form-row">
                     <div class="form-column">
                         <div class="field-header">
-                            <label for="PoIntro" class="field-label">Po Introduction:</label>
+                            <label for="Subject" class="field-label">Po Introduction:</label>
                             <div class="field-buttons">
-                                <button class="btn-solid" onclick="setDefaultValue('PoIntro')">Set Default</button>
+                                <button class="btn-solid">Set Default</button>
                                 <button class="btn-outline"><i class="fa fa-font"></i></button>
                             </div>
                         </div>
@@ -563,11 +531,13 @@
                         .Width("100%")
                         )
                     </div>
+
+                    <!-- Po Summary -->
                     <div class="form-column">
                         <div class="field-header">
-                            <label for="Thanks" class="field-label">Thanks Notes:</label>
+                            <label for="PoSummary" class="field-label">Thanks Notes:</label>
                             <div class="field-buttons">
-                                <button class="btn-solid" onclick="setDefaultValue('Thanks')">Set Default</button>
+                                <button class="btn-solid">Set Default</button>
                                 <button class="btn-outline"><i class="fa fa-font"></i></button>
                             </div>
                         </div>
@@ -579,7 +549,6 @@
                         )
                     </div>
                 </div>
-            </div>
        
 
         </text>);
@@ -653,7 +622,7 @@
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <label for="ShippingAddress" style="font-weight: bold;">Shipping Address</label>
                             <div style="display: flex; gap: 5px;">
-                                <button class="btn-solid" onclick="setDefaultValue('ShippingAddress')">Set Default</button>
+                                <button style="padding: 3px 8px; border: none; border-radius: 4px; background-color: #8c8c8c; color: white;">Set Default</button>
                                 <button style="padding: 3px 8px; border: 1px solid #8c8c8c; background-color: transparent; color: #333;">A</button>
                             </div>
                         </div>
@@ -670,7 +639,7 @@
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <label for="BillingAddress" style="font-weight: bold;">Billing Address</label>
                             <div style="display: flex; gap: 5px;">
-                                <button class="btn-solid" onclick="setDefaultValue('BillingAddress')">Set Default</button>
+                                <button style="padding: 3px 8px; border: none; border-radius: 4px; background-color: #8c8c8c; color: white;">Set Default</button>
                                 <button style="padding: 3px 8px; border: 1px solid #8c8c8c; background-color: transparent; color: #333;">A</button>
                             </div>
                         </div>
@@ -727,16 +696,11 @@
 
                     <!-- Company Branch -->
                     @(Html.DevExtreme().SelectBox()
-                    .ID("CompanyName")
-                    .Label("Company Branch")
-                    .DataSource(d => d.Mvc()
-                    .Controller("DeliveryNote")
-                    .LoadAction("GetCompanyBranch")
-                    )
-                    .DisplayExpr("CompanyName")
-                    .ValueExpr("CompanyId")
+                    .ID("CompanyBranch")
+                    .DataSource(new[] { "Al Injaz Contracting Establishment", "Branch 2" })
+                    .Label("Company Branch / Division")
                     .LabelMode(EditorLabelMode.Outside)
-                    .Width("95%")
+                    .Width("100%")
                     )
 
                     <!-- Type of Request + P.O. Category -->
@@ -744,28 +708,16 @@
                         <div style="flex: 1;">
                             @(Html.DevExtreme().SelectBox()
                             .ID("RequestType")
-                            .DataSource(d => d.Mvc()
-                            .Controller("PurchaseOrders") // replace with actual name
-                            .LoadAction("GetTypeOfRequests")
-                            )
-                            .ValueExpr("TypeOfRequestID")
-                            .DisplayExpr("TypeOfRequest")
+                            .DataSource(new[] { "Purchase", "Service", "Lease" })
                             .Label("Type of Request:")
                             .LabelMode(EditorLabelMode.Outside)
                             .Width("100%")
                             )
-
                         </div>
                         <div style="flex: 1; display: flex; align-items: flex-end;">
                             <div style="width: 100%;">
-                                @(Html.DevExtreme().SelectBox()
+                                @(Html.DevExtreme().TextBox()
                                 .ID("POCategory")
-                                .DataSource(d => d.Mvc()
-                                .Controller("PurchaseOrders") 
-                                .LoadAction("GetPOCategories")
-                                )
-                                .ValueExpr("POCategoryCode")
-                                .DisplayExpr("POCategoryName")
                                 .Label("P.O. Category:")
                                 .LabelMode(EditorLabelMode.Outside)
                                 .Width("100%")
@@ -784,17 +736,12 @@
                     <div style="margin-top: 10px;">
                         @(Html.DevExtreme().SelectBox()
                         .ID("InventoryGroup")
-                        .DataSource(d => d.Mvc()
-                        .Controller("PurchaseOrders") // Replace with your controller name
-                        .LoadAction("GetInventoryGroups")
-                        )
-                        .ValueExpr("InventoryMasterGroupId")
-                        .DisplayExpr("InventoryMasterGroup")
+                        .DataSource(new[] { "Inventory Master Group", "Other Group" })
+                        .Value("Inventory Master Group")
                         .Label("Inventory Group Master: *")
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%")
                         )
-
                     </div>
                 </div>
 
@@ -804,18 +751,13 @@
 
                     <!-- Currency -->
                     @(Html.DevExtreme().SelectBox()
-                    .ID("CurrencyExchange")
-                    .DataSource(d => d.Mvc()
-                    .Controller("PurchaseOrders") // Replace with your controller
-                    .LoadAction("GetCurrencyList")
-                    )
-                    .ValueExpr("CurrencyExchangeId")
-                    .DisplayExpr("CurrencyName")
-                    .Label("Currency")
+                    .ID("Currency")
+                    .DataSource(new[] { "Saudi Arabian Riyals", "USD", "EUR" })
+                    .Value("Saudi Arabian Riyals")
+                    .Label("Currency:")
                     .LabelMode(EditorLabelMode.Outside)
                     .Width("100%")
                     )
-
 
                     <!-- Exchange Rate -->
                     <div style="display: flex; gap: 10px; margin-top: 10px;">
@@ -902,12 +844,7 @@
                                 <td>
                                     @(Html.DevExtreme().SelectBox()
                                     .ID("preparedBy2")
-                                    .DataSource(d => d.Mvc()
-                                    .Controller("PurchaseOrders") 
-                                    .LoadAction("GetDocumentSignatories")
-                                    )
-                                    .ValueExpr("SignatoryId")
-                                    .DisplayExpr("SignatoryName")
+                                    .DataSource(new[] { "User 1", "User 2", "User 3" })
                                     .ShowClearButton(true)
                                     .ShowDropDownButton(true)
                                     .Width("100%")
@@ -918,12 +855,7 @@
                                 <td>
                                     @(Html.DevExtreme().SelectBox()
                                     .ID("verifiedBy2")
-                                    .DataSource(d => d.Mvc()
-                                    .Controller("PurchaseOrders") // 🔁 Same controller
-                                    .LoadAction("GetDocumentSignatories")
-                                    )
-                                    .ValueExpr("SignatoryId")
-                                    .DisplayExpr("SignatoryName")
+                                    .DataSource(new[] { "Verifier 1", "Verifier 2", "Verifier 3" })
                                     .ShowClearButton(true)
                                     .ShowDropDownButton(true)
                                     .Width("100%")
@@ -934,12 +866,7 @@
                                 <td>
                                     @(Html.DevExtreme().SelectBox()
                                     .ID("approvedBy2")
-                                    .DataSource(d => d.Mvc()
-                                    .Controller("PurchaseOrders")
-                                    .LoadAction("GetDocumentSignatories")
-                                    )
-                                    .ValueExpr("SignatoryId")
-                                    .DisplayExpr("SignatoryName")
+                                    .DataSource(new[] { "Approver 1", "Approver 2", "Approver 3" })
                                     .ShowClearButton(true)
                                     .ShowDropDownButton(true)
                                     .Width("100%")
@@ -996,33 +923,28 @@
         .Mode(SelectionMode.Multiple)
         .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)
         )
-        .Editing(editing => editing
-        .Mode(GridEditMode.Row)
-        .AllowAdding(true)
-        .AllowUpdating(true)
-        .AllowDeleting(false)
-        )
         .Columns(columns =>
         {
             columns.Add().Caption("#").CellTemplate(@<text>
         @(ViewData["rowIndex"] = ((int)(ViewData["rowIndex"] ?? 0)) + 1)
         @ViewData["rowIndex"]
     </text>).Width(100);
-            columns.Add().DataField("Gscode").Caption("Item Code");
-            columns.Add().DataField("AddlDescription").Caption("Description");
+            columns.Add().DataField("ItemCode").Caption("Item Code");
+            columns.Add().DataField("Description").Caption("Description");
             columns.Add().DataField("...").Caption("...");
             columns.Add().DataField("UnitRateMethod").Caption("Unit Rate Method");
-            columns.Add().DataField("QuotedQuantity").Caption("Qty");
+            columns.Add().DataField("Qty").Caption("Qty");
             columns.Add().DataField("UnitPrice").Caption("Unit Price");
-            columns.Add().DataField("ItemDiscount").Caption("Item Discount");
+            columns.Add().DataField("iremDiscount").Caption("Item Discount");
             columns.Add().DataField("VATDesc").Caption("VAT Desc");
-            columns.Add().DataField("DiscountInOc").Caption("VAT");
-            columns.Add().DataField("UnitRateInOc").Caption("Amount").Format("currency");
+            columns.Add().DataField("VAT").Caption("VAT");
+            columns.Add().DataField("Amount").Caption("Amount").Format("currency");
             columns.Add().DataField("MRItemNumber").Caption("MR Item Number");
         })
         .ColumnAutoWidth(true)
         .Width("100%")
         .WordWrapEnabled(true)
+        .OnCellClick("function(e) {handleCellClick(e);}")
         .ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
         .AllowColumnReordering(true)
         .AllowColumnResizing(true)
@@ -1035,44 +957,50 @@
         .GroupPanel(groupPanel => groupPanel.Visible(false))
         .ShowBorders(true)
         .ShowRowLines(true)
-        .OnEditorPreparing("onEditorPreparing")
         )
 </div>
-@using (Html.DevExtreme().NamedTemplate("GetSalesPersonContentTemplate"))
-{
-    @(Html.DevExtreme().DataGrid()
-            .ID("GetSalesPerson-datagrid")
-            .DataSource(d => d.WebApi()
-                .Controller("AddNewClientRequest") // ✅ Your controller name
-                .LoadAction("GetSalesPerson")     // ✅ Method name
-                .LoadMode(DataSourceLoadMode.Raw)
-                .Key("SalesPersonCode")
-            )
-            .WordWrapEnabled(true)
-            .ShowBorders(true)
-            .Selection(sl => sl.Mode(SelectionMode.Single))
-            .OnSelectionChanged("dataGridSelectionChanged4")
-            .OnInitialized("dataGridInitialized4")
-            .HeaderFilter(p => p.Visible(true))
-            .HoverStateEnabled(true)
-            .Paging(p => p.PageSize(15))
-            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-            .Height(345)
-            .SelectedRowKeys(new JS(@"component.option('value') ? [component.option('value')] : []"))
-            .Columns(columns =>
-            {
-                columns.Add().DataField("SalesPersonName").Caption("Sales Person");
-            })
-        )
-}
 
 <div class="form-container">
-    <div class="Head">
-        <div class="limited-footer">
-            @await Html.PartialAsync("/Pages/Shared/InventoryModuleFooter.cshtml")
+    <div class="footer-buttons">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-2">
+                    @(Html.DevExtreme()
+                        .Button()
+                        .ID("btnSave")
+                        .Text("Save")
+                        .Icon("check")
+                        .OnClick("onSaveSupplierMasterClick"))
+                </div>
+                <div class="col-md-2">
+                    @(Html.DevExtreme()
+                        .Button()
+                        .ID("btnSaveClose")
+                        .Text("Save & Close")
+                        .Icon("check"))
+                </div>
+                <div class="col-md-2">
+                    @(Html.DevExtreme()
+                        .Button()
+                        .ID("btnDelete")
+                        .Text("Delete")
+                        .Icon("trash"))
+                </div>
+                <div class="col-md-2">
+                    @(Html.DevExtreme()
+                        .Button()
+                        .ID("btnBack")
+                        .Text("Back")
+                        .Icon("arrowleft"))
+                </div>
+            </div>
         </div>
     </div>
-
+</div>
+<div class="Head">
+    <div class="limited-footer">
+        @await Html.PartialAsync("VATModuleFooter")
+    </div>
 </div>
 <script>
     //     function openEntityModal(entity) {
@@ -1105,6 +1033,7 @@
         }
         });
     });
+</script>
         $(function () {
         $.get("/api/PurchaseOrders/GetAutoGeneratedPurchaseorderNumber", function (res) {
             if (res.success) {

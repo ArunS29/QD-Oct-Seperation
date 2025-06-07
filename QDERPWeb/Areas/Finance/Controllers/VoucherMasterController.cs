@@ -2917,6 +2917,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 QuantityCredited = child.Qty, // Null safety
                                 TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8,
                                 UnitsToCredited = 1,
+
                                 UnitRateInOc = child.UnitPrice?.GetDecimal() ?? 0m,
                                 DiscountInOc = child.Discount,
                                 Discount = child.Discount,
@@ -2952,6 +2953,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 dbContext.Tbl20171VatcreditNoteChildren.Update(existingChild);
                             }
                         }
+
+
                     }
 
                     await dbContext.SaveChangesAsync();
@@ -3086,49 +3089,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
             }
-
-            return BadRequest("Failed to retrieve tenant and database context.");
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> UpdateProformaInvoiceMasterDetails(Tbl20181ProformaInvoiceMaster InvoiceMaster)
-        {
-            if (InvoiceMaster == null)
-            {
-                return BadRequest(new { success = false, message = "Invalid invoice data received." });
-            }
-
-            try
-            {
-                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                {
-                    var existingInvoice = await dbContext.Tbl20181ProformaInvoiceMasters
-                                                                 .FirstOrDefaultAsync(v => v.ProformaInvoiceNo == InvoiceMaster.ProformaInvoiceNo);
-
-                    if (existingInvoice != null)
-                    {
-                        // Update existing master record
-                        dbContext.Entry(existingInvoice).CurrentValues.SetValues(InvoiceMaster);
-                    }
-                    else
-                    {
-                        // Insert new invoice master record
-                        await dbContext.Tbl20181ProformaInvoiceMasters.AddAsync(InvoiceMaster);
-                    }
-
-
-                    await dbContext.SaveChangesAsync();
-                    // await transaction.CommitAsync();
-
-                    return Ok(new { success = true, message = existingInvoice != null ? "Invoice and child records updated successfully!" : "New invoice and child records added successfully!" });
-                }
-            }
-            catch (Exception ex)
-            {
-                // await transaction.RollbackAsync();
-                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
-            }
-
 
             return BadRequest("Failed to retrieve tenant and database context.");
         }
