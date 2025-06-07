@@ -21,12 +21,13 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
             string Company_Name_Ar,
             string company_address_arb,
             TenantDbContextHelper tenantDbContextHelper,
-            bool isUseEffectiveDate = true)
+             string username,
+            bool isUseEffectiveDate = true )
         {
             _tenantDbContextHelper = tenantDbContextHelper;
 
             InitializeComponent();
-            SetReportParameters(accountGroup, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb, isUseEffectiveDate);
+            SetReportParameters(accountGroup, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb, isUseEffectiveDate,username);
 
             try
             {
@@ -57,7 +58,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
             Image logoImage,
             string Company_Name_Ar,
             string company_address_arb,
-            bool isUseEffectiveDate)
+            bool isUseEffectiveDate,string username)
         {
             AddReportParameter("AccountGroup", typeof(string), accountGroup ?? "");
             AddReportParameter("IsUseEffectiveDate", typeof(bool), isUseEffectiveDate);
@@ -67,8 +68,9 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
             AddReportParameter("CompanyAddress", typeof(string), company_address ?? "");
             AddReportParameter("CompanyNameAr", typeof(string), Company_Name_Ar ?? "");
             AddReportParameter("CompanyAddressArb", typeof(string), company_address_arb ?? "");
+            AddReportParameter("UserName",  typeof(string), username ?? "");
 
-            ApplyReportControls(tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
+            ApplyReportControls(tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb,username);
             ConfigureSqlQuery();
         }
 
@@ -78,8 +80,13 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
             string company_address,
             Image logoImage,
             string Company_Name_Ar,
-            string company_address_arb)
+            string company_address_arb,
+            string username)
         {
+
+            if (FindControl("xrLabelUserName", true) is XRLabel userNameLabel)
+                userNameLabel.Text = username;
+
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
 
