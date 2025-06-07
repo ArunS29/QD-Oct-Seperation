@@ -887,6 +887,8 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string LineNarration { get; set; }
         public string EmployeeNo { get; set; }
         public string PropertyNo { get; set; }
+        public string SupplierNameAr { get; set; }
+        public byte VATApplicableRate { get; set; }
         public bool IsTaxIncluded { get; set; }
     }
 

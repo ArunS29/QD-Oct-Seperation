@@ -81,28 +81,28 @@ namespace QD.ERP.Web.Pages
 
                     case "PreviewRegister":
                         Report = new PreviewRegister(voucherType, frmDate.Value, toDate.Value,
-                            tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                            tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
                         break;
                     case "OrderByVchNoRegister":
                         Report = new OrderByVchNoRegister(voucherType, frmDate.Value, toDate.Value,
                             tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, 
-                            _tenantDbContextHelper);
+                            _tenantDbContextHelper, userName);
                         break;
                     case "OrderbyVchNoWIthVchNarration":
                         Report = new OrderbyVchNoWIthVchNarration(voucherType, frmDate.Value, toDate.Value,
-                            tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                            tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
                         break;
                     case "Register4line":
                         Report = new Register4line(voucherType, frmDate.Value, toDate.Value,
-                            tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                            tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
                         break;
                     case "RegisterLineEntryNarration":
                         Report = new RegisterLineEntryNarration(voucherType, frmDate.Value, toDate.Value,
-                            tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                            tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
                         break;
                     case "RegisterWithVchNarration":
                         Report = new RegisterWithVchNarration(voucherType, frmDate.Value, toDate.Value,
-                            tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                            tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
                         break;
                     default:
                         return NotFound("Report not found.");

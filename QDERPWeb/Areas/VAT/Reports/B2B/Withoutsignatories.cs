@@ -76,8 +76,8 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B
             if (FindControl("xrLabelCompanyAddressAr", true) is XRLabel addressArLabel)
                 addressArLabel.Text = companyAddressAr;
 
-            if (FindControl("xrPictureBox2", true) is XRPictureBox logoPictureBox)
-                logoPictureBox.Image = logoImage;
+            //if (FindControl("xrPictureBox2", true) is XRPictureBox logoPictureBox)
+            //    logoPictureBox.Image = logoImage;
 
             if (FindControl("xrPictureBox5", true) is XRPictureBox sealPictureBox)
                 sealPictureBox.Image = sealImage;

@@ -189,24 +189,26 @@ namespace QD.ERP.Web.Pages
 
 
 
-                            invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage, 
 
                             companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
                             isApproved, _tenantDbContextHelper),
+
+
 
                     "ProformaPreviewInvoice" =>
                         new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.ProformaPreviewInvoice(
 
 
 
-                            invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage,
 
                             companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
                             isApproved, _tenantDbContextHelper),
 
                     "ProformaNewFormat" =>
                         new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.ProformaNewFormat(
-                       invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage, companyNameAr,
+                       invoiceNo, tenantName, companyName, companyAddress, logoImage,  companyNameAr,
                        companyAddressAr, isApproved, _tenantDbContextHelper),
                     "WithoutDiscountInvoice" =>
                      new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.WithoutDiscountInvoice(
