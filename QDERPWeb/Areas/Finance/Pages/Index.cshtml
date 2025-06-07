@@ -49,7 +49,7 @@
         </div>
     </div>
 </div>
-<div class="grid-container">
+@* <div class="grid-container">
     <!-- Client Outstanding Section -->
     <div class="grid-section">
         <div id="ClientOutstanding" class="no-border-title"></div>
@@ -67,7 +67,7 @@
         <div id="BankAccountDetails" class="no-border-title"></div>
         <div id="accountSummaryGrid"></div>
     </div>
-</div>
+</div> *@
 
 <div class="chart-row1">
     <canvas id="outstandingChart" style="width:100%;max-width:700px"></canvas>
@@ -274,7 +274,7 @@
 
         // Account Summary DataGrid
         fetchDataAndInitializeGrid(
-            "/api/Dashboard/GetAccountSummary",
+            "/api/Dashboard/Getsupplieroustanding",
             "#accountSummaryGrid",
             [
                 { dataField: "AccountHeadName", caption: formatMessage("Account Head"), width: 200, allowReordering: true },
@@ -375,64 +375,64 @@
         $(".dx-card-container, .grid-container, .chart-container").show(); // Show main dashboard
     });
     google.charts.load('current', { 'packages': ['corechart'] });
-    //google.charts.setOnLoadCallback(loadChartData);
+    google.charts.setOnLoadCallback(loadChartData);
 
-    // function loadChartData() {
-    //     $.ajax({
-    //         url: "/api/Dashboard/GetOutstandingChartData",
-    //         type: "GET",
-    //         dataType: "json",
-    //         success: function (response) {
-    //             if (response.success) {
-    //                 const data = response.data;
+    function loadChartData() {
+        $.ajax({
+            url: "/api/Dashboard/GetOutstandingChartData",
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (response.success) {
+                    const data = response.data;
 
-    //                 // Aggregate data for ranking
-    //                 const accountBalances = [...new Set(data.map(item => item.AccountHead))].map(label => {
-    //                     const totalBalance = data
-    //                         .filter(item => item.AccountHead === label)
-    //                         .reduce((sum, item) => sum + item.Balance, 0);
+                    // Aggregate data for ranking
+                    const accountBalances = [...new Set(data.map(item => item.AccountHead))].map(label => {
+                        const totalBalance = data
+                            .filter(item => item.AccountHead === label)
+                            .reduce((sum, item) => sum + item.Balance, 0);
 
-    //                     return { label: label, balance: totalBalance };
-    //                 });
+                        return { label: label, balance: totalBalance };
+                    });
 
-    //                 // Sort by balance and take top 5
-    //                 const topAccounts = accountBalances
-    //                     .sort((a, b) => b.balance - a.balance) // Descending order
-    //                     .slice(0, 5); // Top 5
+                    // Sort by balance and take top 5
+                    const topAccounts = accountBalances
+                        .sort((a, b) => b.balance - a.balance) // Descending order
+                        .slice(0, 5); // Top 5
 
-    //                 // Prepare data for Google Charts
-    //                 const chartData = [['Account Head', 'Outstanding Balance']];
-    //                 topAccounts.forEach(item => {
-    //                     chartData.push([item.label, item.balance]);
-    //                 });
+                    // Prepare data for Google Charts
+                    const chartData = [['Account Head', 'Outstanding Balance']];
+                    topAccounts.forEach(item => {
+                        chartData.push([item.label, item.balance]);
+                    });
 
-    //              //   drawChart(chartData);
-    //             } else {
-    //                 console.error("Error fetching data");
-    //             }
-    //         },
-    //         error: function (error) {
-    //             console.error("Error fetching data: ", error);
-    //         }
-    //     });
-    // }
+                 //   drawChart(chartData);
+                } else {
+                    console.error("Error fetching data");
+                }
+            },
+            error: function (error) {
+                console.error("Error fetching data: ", error);
+            }
+        });
+    }
 
-    // function drawChart(chartData) {
-    //     // Convert to Google Charts format
-    //     const data = google.visualization.arrayToDataTable(chartData);
+    function drawChart(chartData) {
+        // Convert to Google Charts format
+        const data = google.visualization.arrayToDataTable(chartData);
 
-    //     // Set Options
-    //     const options = {
-    //         title: formatMessage('Top 5 Outstanding Accounts'),
-    //         is3D: true,
-    //         pieSliceText: 'value',
-    //         height: 400
-    //     };
+        // Set Options
+        const options = {
+            title: formatMessage('Top 5 Outstanding Accounts'),
+            is3D: true,
+            pieSliceText: 'value',
+            height: 400
+        };
 
-    //     // Draw Chart
-    //     const chart = new google.visualization.PieChart(document.getElementById('myChart2'));
-    //     chart.draw(data, options);
-    // }
+        // Draw Chart
+        const chart = new google.visualization.PieChart(document.getElementById('myChart2'));
+        chart.draw(data, options);
+    }
  
     $(function () {
         const textBoxConfigs = [

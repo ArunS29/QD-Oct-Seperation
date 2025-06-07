@@ -28,6 +28,31 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
+
+        [HttpPost]
+        public async Task<IActionResult> RunAllOutstandingProcedures()
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+
+            try
+            {
+                // Execute stored procedures one by one
+                await dbContext.Database.ExecuteSqlRawAsync("EXEC sp_01totClientOutstanding");
+                await dbContext.Database.ExecuteSqlRawAsync("EXEC sp_01totSupOutstanding");
+                await dbContext.Database.ExecuteSqlRawAsync("EXEC sp_01totcashbalance");
+
+                return Ok(new { success = true, message = "Stored procedures executed successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error executing stored procedures");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetCashBalance()
         {
@@ -134,126 +159,33 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
         }
 
-        [HttpGet]
-
-public async Task<IActionResult> GetAccountSummary(DataSourceLoadOptions loadOptions)
-
-{
-
-     if (_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
-
-     {
-
-         try
-
-         {
-
-             var data = dbContext.Qry201MainVoucherEntriesWithMasters
-
-                 .Where(v => v.AccountGroup == "BANK ACCOUNTS" || v.AccountGroup == "CASH-IN-HAND") // Filter by AccountGroup
-
-                 .GroupBy(v => new { v.AccountHeadName, v.AccountGroup }) // Group by AccountHeadName and AccountGroup
-
-                 .Select(g => new
-
-                 {
-
-                     AccountHeadName = g.Key.AccountHeadName,
-
-                     AccountGroup = g.Key.AccountGroup,
-
-                     TotalBalance = g.Sum(v => (v.DrAmount ?? 0) - (v.CrAmount ?? 0)) // Calculate total balance
-
-                 })
-
-                 .OrderByDescending(g => g.TotalBalance) // Order by TotalBalance in descending order
-
-                 .Take(5) // Take the top 5 results
-
-                 .AsQueryable();
- 
-             return Json(await DataSourceLoader.LoadAsync(data, loadOptions));
-
-         }
-
-         catch (Exception ex)
-
-         {
-
-             _logger.LogError($"Error in GetAccountSummary: {ex.Message}");
-
-             return StatusCode(500, "Internal server error");
-
-         }
-
-     }
- 
-     return Unauthorized(new { message = "Invalid tenant.", success = false });
-
-}
-
 
         [HttpGet]
-
-        public async Task<IActionResult> GetAccountSummaryBank(DataSourceLoadOptions loadOptions)
-
+        public async Task<IActionResult> Getsupplieroustanding (DataSourceLoadOptions loadOptions)
         {
-
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
-
             {
-
                 try
-
                 {
-
-                    var data = dbContext.Qry201MainVoucherEntriesWithMasters
-
-                        .Where(v => v.AccountGroup == "BANK ACCOUNTS" || v.AccountGroup == "CASH-IN-HAND") // Filter by AccountGroup
-
-                        .GroupBy(v => new { v.AccountHeadName, v.AccountGroup }) // Group by AccountHeadName and AccountGroup
-
-                        .Select(g => new
-
-                        {
-
-                            AccountHeadName = g.Key.AccountHeadName,
-
-                            AccountGroup = g.Key.AccountGroup,
-
-                            TotalBalance = g.Sum(v => (v.DrAmount ?? 0) - (v.CrAmount ?? 0)) // Calculate total balance
-
-                        })
-
-                        .OrderByDescending(g => g.TotalBalance) // Order by TotalBalance in descending order
-
-                 
-
+                    var data = dbContext.Qry01Bankandcashbalance
+                        .AsNoTracking()
+                        .OrderByDescending(x => x.Balance)
+                        //.Take(5)
                         .AsQueryable();
 
                     return Json(await DataSourceLoader.LoadAsync(data, loadOptions));
-
                 }
-
                 catch (Exception ex)
-
                 {
-
-                    _logger.LogError($"Error in GetAccountSummary: {ex.Message}");
-
+                    _logger.LogError(ex, "Error in Getsupplieroustanding");
                     return StatusCode(500, "Internal server error");
-
                 }
-
             }
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
-
         }
 
 
-
-      
         [HttpGet]
         public async Task<IActionResult> GetBillsPayableOutstanding(DataSourceLoadOptions loadOptions)
         {
@@ -261,20 +193,14 @@ public async Task<IActionResult> GetAccountSummary(DataSourceLoadOptions loadOpt
             {
                 try
                 {
-                    var data = dbContext.Qry20115BillsPayableOutStandings
+                    var data = dbContext.Qry01SupplierOutstanding
+                     .AsNoTracking()
+                     .OrderByDescending(b => b.Balance)
+                     //.Take(5)
+                     .AsQueryable()
                         .Where(b => b.Balance > 0) // Only bills with outstanding balance
-                        .GroupBy(b => new { b.Balance, b.OverdueDays, b.AccountHeadNo, b.AccountHead }) // Group by Balance, OverdueDays, AccountHeadNo, and AccountHead
-                        .Select(g => new
-                        {
-                            AccountHeadNo = g.Key.AccountHeadNo,
-                            AccountHead = g.Key.AccountHead,
-                            Balance = g.Key.Balance,         // Use the grouped Balance
-                            OverdueDays = g.Key.OverdueDays // Use the grouped OverdueDays
-                        })
-                        .OrderByDescending(g => g.Balance) // Highest balance first
-                        .ThenByDescending(g => g.OverdueDays) // Highest overdue days next
-                        .ThenBy(g => string.IsNullOrEmpty(g.AccountHead)) // Sort null/empty last
-                        .ThenBy(g => g.AccountHead) // Alphabetical order if same Balance and OverdueDays
+                        .OrderByDescending(b => b.Balance) // Highest balance first
+                        .ThenByDescending(b => b.OverdueDays) // Highest overdue days next
                         .Take(5) // Top 5 only
                         .AsQueryable();
 
@@ -290,6 +216,7 @@ public async Task<IActionResult> GetAccountSummary(DataSourceLoadOptions loadOpt
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
+
         [HttpGet]
         public async Task<IActionResult> GetBillsPayableOutstandingSupplier(DataSourceLoadOptions loadOptions)
         {
@@ -297,23 +224,19 @@ public async Task<IActionResult> GetAccountSummary(DataSourceLoadOptions loadOpt
             {
                 try
                 {
-                    var data = dbContext.Qry20115BillsPayableOutStandings
-                        .Where(b => b.Balance > 0) // Only bills with outstanding balance
-                        .GroupBy(b => new {  b.AccountHeadNo, b.AccountHead }) // Group by fields
-                        .Select(g => new
-                        {
-                            AccountHeadNo = g.Key.AccountHeadNo,
-                            AccountHead = g.Key.AccountHead,
-                            Balance = g.Sum(x => x.Balance  ),
-                            OverdueDays = g.Max(x => x.OverdueDays),
-                        })
-                        .OrderByDescending(g => g.Balance)
-                        .ThenByDescending(g => g.OverdueDays)
-                        .ThenBy(g => string.IsNullOrEmpty(g.AccountHead))
-                        .ThenBy(g => g.AccountHead)
-                        .AsQueryable(); // Removed .Take(5)
+                    var data = dbContext.Qry01SupplierOutstanding
+                 .AsNoTracking()
+                 .OrderByDescending(b => b.Balance)
+                 //.Take(5)
+                 .AsQueryable()
+                    .Where(b => b.Balance > 0) // Only bills with outstanding balance
+                    .OrderByDescending(b => b.Balance) // Highest balance first
+                    .ThenByDescending(b => b.OverdueDays) // Highest overdue days next
+                    
+                    .AsQueryable();
 
                     return Json(await DataSourceLoader.LoadAsync(data, loadOptions));
+
                 }
                 catch (Exception ex)
                 {
