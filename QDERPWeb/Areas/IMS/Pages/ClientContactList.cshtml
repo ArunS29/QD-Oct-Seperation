@@ -426,15 +426,18 @@ function bindClientContactData(clientContactSlNo) {
         success: function (res) {
             if (res.success) {
                 DevExpress.ui.notify(res.message, "success", 3000);
-                    // Refresh parent DataGrid (ensure the correct selector is used)
-                    if (window.parent && window.parent.$("#ContactListdataGrid").length) {
-                        let dataGrid = window.parent.$("#ContactListdataGrid").dxDataGrid("instance");
-                        if (dataGrid) {
-                            dataGrid.refresh();
-                        }
-                    }
-                // Set new or updated ID back to the hidden field
+                           // Set new or updated ID back to the hidden field
                 $("#clientHidden").dxTextBox("instance").option("value", res.lastClientContactSlNo);
+              
+                     // Refresh parent DataGrid with fresh data
+                if (window.parent && typeof window.parent.loadContactListGrid === "function") {
+                    const clientCode = $("#clientCode").dxTextBox("instance").option("value");
+                    if (clientCode) {
+                        window.parent.loadContactListGrid(clientCode);
+                    }
+                }
+
+     
 
                 // Change button text to "Update" if needed
                 $("#saveClientListButton").dxButton("instance").option("text", "Update");
