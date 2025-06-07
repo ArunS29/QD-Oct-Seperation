@@ -467,6 +467,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 if (model == null)
                     return BadRequest(new { success = false, message = "Invalid data." });
+            
 
                 bool isUpdate = false;
                 var salesOrderNo = model.SalesOrderNo?.Trim();
@@ -597,27 +598,30 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 await dbContext.SaveChangesAsync();
 
-                foreach (var child in incomingChildren)
-                {
-                    try
-                    {
-                        var childParams = new[]
-                        {
-                    new SqlParameter("@JobOrderNo", salesOrderNo ?? (object)DBNull.Value),
-                    new SqlParameter("@AddedBy", model.AddedBy ?? User.Identity?.Name ?? (object)DBNull.Value),
-                    new SqlParameter("@SalesOrderChildID", child.SalesOrderChildId),
-                    new SqlParameter("@ValveType", child.Gscode ?? (object)DBNull.Value)
-                };
+                //if (model.IsGenerateJO)
+                //{
+                //    foreach (var child in incomingChildren)
+                //    {
+                //        var childParams = new[]
+                //        {
+                //    new SqlParameter("@JobOrderNo", salesOrderNo ?? (object)DBNull.Value),
+                //    new SqlParameter("@AddedBy", model.AddedBy ?? User.Identity?.Name ?? (object)DBNull.Value),
+                //    new SqlParameter("@SalesOrderChildID", child.SalesOrderChildId),
+                //    new SqlParameter("@ValveType", model.ValveType ?? (object)DBNull.Value)
+                //};
 
-                        await dbContext.Database.ExecuteSqlRawAsync(
-                            "EXEC [dbo].[sp608_01InsertToJobOrderFromSalesOrderChild] " +
-                            "@JobOrderNo, @AddedBy, @SalesOrderChildID, @ValveType", childParams);
-                    }
-                    catch (Exception exChild)
-                    {
-                        _logger.LogError(exChild, "Child SP error for SalesOrderChildId: " + child.SalesOrderChildId);
-                    }
-                }
+                //        try
+                //        {
+                //            await dbContext.Database.ExecuteSqlRawAsync(
+                //                "EXEC [dbo].[sp608_01InsertToJobOrderFromSalesOrderChild] " +
+                //                "@JobOrderNo, @AddedBy, @SalesOrderChildID, @ValveType", childParams);
+                //        }
+                //        catch (Exception exChild)
+                //        {
+                //            _logger.LogError(exChild, $"Child SP error for SalesOrderChildId: {child.SalesOrderChildId}");
+                //        }
+                //    }
+                //}
 
                 return Ok(new
                 {
@@ -636,6 +640,50 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 });
             }
         }
+      [HttpPost]
+public async Task<IActionResult> GenerateJobOrders([FromBody] SalesorderViewModel model)
+{
+    try
+    {
+        if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+        if (string.IsNullOrWhiteSpace(model.SalesOrderNo))
+            return BadRequest(new { success = false, message = "Missing Sales Order No." });
+
+        if (model.SalesOrderChildren == null || !model.SalesOrderChildren.Any())
+            return BadRequest(new { success = false, message = "No line items selected." });
+
+        foreach (var child in model.SalesOrderChildren)
+        {
+            if (child.SalesOrderChildId == 0)
+                return BadRequest(new { success = false, message = "Invalid SalesOrderChildId in line items." });
+
+            var parameters = new[]
+            {
+                new SqlParameter("@JobOrderNo", model.SalesOrderNo ?? (object)DBNull.Value),
+                new SqlParameter("@AddedBy", model.AddedBy ?? User.Identity?.Name ?? (object)DBNull.Value),
+                new SqlParameter("@SalesOrderChildID", child.SalesOrderChildId),
+                new SqlParameter("@ValveType", model.ValveType ?? (object)DBNull.Value)
+            };
+
+            await dbContext.Database.ExecuteSqlRawAsync(
+                "EXEC [dbo].[sp608_01InsertToJobOrderFromSalesOrderChild] " +
+                "@JobOrderNo, @AddedBy, @SalesOrderChildID, @ValveType", parameters);
+        }
+
+        return Ok(new { success = true, message = "Job orders generated successfully." });
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, "Error generating job orders");
+        return StatusCode(500, new { success = false, message = ex.Message });
+    }
+}
+
+
+
+
 
 
 
@@ -719,17 +767,29 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 return Unauthorized(new { message = "Invalid tenant." });
 
+            // Fetch the master record
             var entity = await dbContext.Tbl60201salesOrderMasters
                 .FirstOrDefaultAsync(x => x.SalesOrderNo == salesOrderNo);
 
             if (entity == null)
                 return NotFound(new { message = "Sales order not found." });
 
+            // Fetch and delete all child records
+            var children = await dbContext.Tbl60202salesOrderChildren
+                .Where(x => x.SalesOrderNo == salesOrderNo)
+                .ToListAsync();
+
+            if (children.Any())
+                dbContext.Tbl60202salesOrderChildren.RemoveRange(children);
+
+            // Delete master record
             dbContext.Tbl60201salesOrderMasters.Remove(entity);
+
             await dbContext.SaveChangesAsync();
 
-            return Ok(new { success = true, message = "Sales order deleted successfully." });
+            return Ok(new { success = true, message = "Sales order and its child items deleted successfully." });
         }
+
 
         //[HttpGet]
         //public IActionResult GetGoodsAndServices()
@@ -830,6 +890,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
     }
 
+    public class GenerateJOViewModel
+    {
+        public string SalesOrderNo { get; set; }
+        public string ValveType { get; set; }
+        public string AddedBy { get; set; }
+    }
 
 }
 

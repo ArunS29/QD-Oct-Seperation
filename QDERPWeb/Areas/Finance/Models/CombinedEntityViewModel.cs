@@ -664,6 +664,8 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public DateTime? VerifiedOn { get; set; }
 
         public string CostAllocationMasterGroup { get; set; }
+        public string ? ValveType { get; set; }  // e.g. "Manual Valves", "Control Valves", "Safety Valves"
+
         public List<Tbl60202salesOrderChild> SalesOrderChildren { get; set; }
 
     }
