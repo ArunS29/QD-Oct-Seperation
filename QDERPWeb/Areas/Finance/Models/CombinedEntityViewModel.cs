@@ -433,6 +433,11 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string ProjectClaimedFor { get; set; }
         public string ClaimRemarks { get; set; }
 
+        public string PaymentType { get; set; }
+        public string PaymentAccount { get; set; }
+
+        public byte FundRequestTypeId { get; set; }
+
         public List<Tbl20103ExpenseClaimChild> ExpenseDetails { get; set; }
     }
 
