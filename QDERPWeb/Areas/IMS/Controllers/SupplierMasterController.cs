@@ -246,24 +246,18 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
         [HttpGet]
-        public async Task<IActionResult> GetContact(DataSourceLoadOptions loadOptions)
+        public async Task<IActionResult> GetContactList(string SupplierCode)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 try
                 {
-                    var SupplierContact = dbContext.Tbl3019902SupplierContactLists.Select(i => new
-                    {
-                        i.ContactPerson,
-                        i.ContactPersonTitle,
-                        i.ContactEmail,
-                        i.ContactMobile1,
-                        i.ContactPhone1,
-                        i.SupplierCode,
-                        i.SupplierContactSlNo
-                    });
+                    var result = await dbContext.Tbl3019902SupplierContactLists
+                     .Where(i => i.SupplierCode == SupplierCode)
+                     .ToListAsync();
 
-                    return Json(await DataSourceLoader.LoadAsync(SupplierContact, loadOptions));
+                    return Json(result);
+
                 }
                 catch (Exception ex)
                 {

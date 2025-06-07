@@ -356,7 +356,10 @@
                 console.log("Supplier Contact Loaded:", data);
                 if (data) {
                     $("#txtSupplierHidden").dxTextBox("instance").option("value", data.SupplierContactSlNo); // hidden field
-                    $("#txtSupplierCode").dxTextBox("instance").option("value", data.SupplierCode);
+                       $("#txtSupplierCode").dxTextBox("instance").option({
+                            value: data.SupplierCode,
+                            readOnly: true
+                        });
                     $("#txtSupplierName").dxTextBox("instance").option("value", data.SupplierName);
                     $("#contactPerson").dxTextBox("instance").option("value", data.ContactPerson);
                     $("#title").dxTextBox("instance").option("value", data.ContactPersonTitle);
@@ -415,6 +418,14 @@
                 if (res.success) {
                     DevExpress.ui.notify(res.message, "success", 2000);
                     $("#txtSupplierHidden").dxTextBox("instance").option("value", res.lastSupplierContactSlNo);
+
+                     // Refresh parent DataGrid with fresh data
+                if (window.parent && typeof window.parent.loadSupplierContactListGrid === "function") {
+                    const SupplierCode = $("#txtSupplierCode").dxTextBox("instance").option("value");
+                    if (SupplierCode) {
+                        window.parent.loadSupplierContactListGrid(SupplierCode);
+                    }
+                }
                 } else {
                     DevExpress.ui.notify(res.message, "error", 3000);
                 }

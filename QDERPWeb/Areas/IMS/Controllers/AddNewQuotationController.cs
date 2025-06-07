@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DevExtreme.AspNet.Data;
+using DevExtreme.AspNet.Mvc;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.Areas.Finance.Models;
@@ -21,18 +23,66 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 			_logger = logger;
 		}
 
+		//[HttpGet]
+		//public ActionResult<string> GetNewDebitNoteNoApi()
+		//{
+		//	try
+		//	{
+		//		if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+		//		{
+
+
+		//			var company = dbContext.Tbl901CompanyDetails
+		//								   .FirstOrDefault(c => c.CompanyNameShort == "Pulse Infotech");
+
+
+		//			if (company == null)
+		//			{
+		//				return NotFound("Company not found.");
+		//			}
+
+		//			string invoiceAbbrv = company.InvoiceAbbrv;
+		//			int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
+
+		//			bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
+
+		//			DateTime invoiceDate = DateTime.Now;
+
+
+
+		//			// Step 4: Generate New Debit Note No
+		//			string newDebitNoteNo = GetNewDebitNoteNo(invoiceAbbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear, dbContext);
+
+		//			return Ok(newDebitNoteNo);
+		//		}
+		//		else
+		//		{
+		//			return BadRequest("Tenant or DB Context not found.");
+		//		}
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		return StatusCode(500, "Internal server error: " + ex.Message);
+		//	}
+		//}
+
 		[HttpGet]
 		public ActionResult<string> GetNewDebitNoteNoApi()
 		{
 			try
 			{
+				// Retrieve tenant name from session
+				var tenantName = HttpContext.Session.GetString("TenantName");
+				if (string.IsNullOrWhiteSpace(tenantName))
+				{
+					return Unauthorized(new { message = "Tenant name not found in session.", success = false });
+				}
+
 				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
 				{
-
-
+					// Use tenantName to find the company
 					var company = dbContext.Tbl901CompanyDetails
-										   .FirstOrDefault(c => c.CompanyNameShort == "Pulse Infotech");
-
+										   .FirstOrDefault(c => c.CompanyNameShort == tenantName);
 
 					if (company == null)
 					{
@@ -41,14 +91,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 					string invoiceAbbrv = company.InvoiceAbbrv;
 					int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
-
 					bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
-
 					DateTime invoiceDate = DateTime.Now;
 
-
-
-					// Step 4: Generate New Debit Note No
+					// Generate new debit note number
 					string newDebitNoteNo = GetNewDebitNoteNo(invoiceAbbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear, dbContext);
 
 					return Ok(newDebitNoteNo);
@@ -60,10 +106,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 			}
 			catch (Exception ex)
 			{
+				_logger.LogError($"Error in GetNewDebitNoteNoApi: {ex.Message}");
 				return StatusCode(500, "Internal server error: " + ex.Message);
 			}
 		}
-
 
 
 		private string GetNewDebitNoteNo(string invoiceAbbrv, int yearInDigit, DateTime invoiceDate, bool isResetByYear, ERPMasterWtDataContext dbContext)
@@ -543,6 +589,30 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 			}
 
 			return Unauthorized(new { Message = "Invalid tenant.", Success = false });
+		}
+		[HttpGet]
+		public async Task<IActionResult> GetQuotationStatus(DataSourceLoadOptions loadOptions)
+		{
+			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				try
+				{
+					var clients = dbContext.Tbl60107quotationStatuses.Select(i => new
+					{
+					i.QuoteStatusId,
+					i.QuoteStatus
+					});
+
+					return Json(await DataSourceLoader.LoadAsync(clients, loadOptions));
+				}
+				catch (Exception ex)
+				{
+					_logger.LogError($"Error in GetClientDetails: {ex.Message}");
+					return StatusCode(500, new { message = "Error fetching client details", error = ex.Message });
+				}
+			}
+
+			return Unauthorized(new { message = "Invalid tenant", success = false });
 		}
 	}
 }

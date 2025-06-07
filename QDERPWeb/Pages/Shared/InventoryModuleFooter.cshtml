@@ -451,7 +451,7 @@
         @(Html.DevExtreme().Button()
             .ID("btnRequestEnquiry")
             .Icon("preferences")
-            .Width(50)
+            .Width(100)
             .Text(new JS("formatMessage('Request/Enquiry Details')"))
             .ElementAttr(new { style = "display: none;" })
             // .OnClick("toggleGroupPanel")
@@ -1637,13 +1637,10 @@
                     url = `/${tenantName}/IMS/AddNewClientRequest`;
                     break;
                 case formatMessage('Add New Store Request'):
-                    url = `/${tenantName}/IMS/AddNewStoreRequest`;
+                    url = `/${tenantName}/IMS/MRAddNewStoreRequest`;
                     break;
                 case formatMessage('Add New Project Request'):
-                    url = `/${tenantName}/IMS/AddNewProjectRequest`;
-                    break;
-                    case formatMessage('Posting Of Cost Prices'):
-                    url = `/${tenantName}/IMS/DeliveryNoteDetails`;
+                    url = `/${tenantName}/IMS/MRAddNewProjectRequest`;
                     break;
                 default:
                     console.log("Clicked item: ", e.itemData.text);

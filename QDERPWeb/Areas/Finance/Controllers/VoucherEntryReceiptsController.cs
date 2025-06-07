@@ -8,6 +8,7 @@ using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.Areas.Finance.Views;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 using SkiaSharp;
 //using QD.ERP.Web.DAL.Entities;
 
@@ -20,10 +21,11 @@ namespace Form.Areas.Finance.Controllers
     {
 		private readonly TenantDbContextHelper _tenantDbContextHelper;
 		private readonly ILogger<VoucherEntryReceiptsController> _logger;
-
-		public VoucherEntryReceiptsController(ILogger<VoucherEntryReceiptsController> logger, TenantDbContextHelper tenantDbContextHelper)
-		{
-			_tenantDbContextHelper = tenantDbContextHelper;
+        private readonly IUserActionLogger _userActionLogger;
+        public VoucherEntryReceiptsController(ILogger<VoucherEntryReceiptsController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
+        {
+            _userActionLogger = userActionLogger;
+            _tenantDbContextHelper = tenantDbContextHelper;
 			_logger = logger;
 		}
 		[HttpGet]
@@ -251,6 +253,11 @@ namespace Form.Areas.Finance.Controllers
 				// Add entries to the database
 				dbContext.Tbl201VoucherEntries.AddRange(voucherEntries);
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+              module: "Finance > Cash Receipts",
+              actionDetail: $"Saved voucher: {voucherEntries[0].VoucherNo}, Entries: {voucherEntries.Count}, AccountHead: {AccountHead}",
+              documentNo: voucherEntries[0].VoucherNo
+          );
 
                 //SaveVoucher(voucherEntries);
 
@@ -335,6 +342,11 @@ namespace Form.Areas.Finance.Controllers
                                     existingEntry.SysRemarks = entry.SysRemarks;
                                     dbContext.Tbl201VoucherEntries.Update(existingEntry);
 									dbContext.SaveChanges();
+                                    await _userActionLogger.LogAsync(
+                                          module: "Finance > Cash Receipts",
+                                          actionDetail: $"Updated voucher: {voucherEntries[0].VoucherNo}, Entries: {voucherEntries.Count}, AccountHead: {AccountHead}",
+                                          documentNo: voucherEntries[0].VoucherNo
+                                     );
 
                                 }
                                 else
@@ -382,6 +394,11 @@ namespace Form.Areas.Finance.Controllers
                                             existingEntry.SysRemarks = entry.SysRemarks;
                                             dbContext.Tbl201VoucherEntries.Update(existingEntry);
                                             dbContext.SaveChanges();
+                                            await _userActionLogger.LogAsync(
+                                                  module: "Finance > Cash Receipts",
+                                                  actionDetail: $"Updated voucher: {voucherEntries[0].VoucherNo}, Entries: {voucherEntries.Count}, AccountHead: {AccountHead}",
+                                                  documentNo: voucherEntries[0].VoucherNo
+                                              );
 
                                         }
                                         else
@@ -1065,7 +1082,12 @@ namespace Form.Areas.Finance.Controllers
                     voucherMaster.VoucherNo = voucherEntries1[0].VoucherNo;
                     voucherMaster.VoucherDate = DateTime.Now;
 					dbContext.Tbl201VoucherMasters.Remove(masterrecord);
-
+                    // Log voucher master deletion
+                    await _userActionLogger.LogAsync(
+                        module: "Finance > Voucher Deletion",
+                        actionDetail: $"Deleted voucher master record with VoucherNo: {VoucherNo}",
+                        documentNo: VoucherNo
+                    );
 
                 }
 
@@ -1084,6 +1106,12 @@ namespace Form.Areas.Finance.Controllers
                     if (record != null)
                     {
 						dbContext.Tbl201VoucherEntries.Remove(record);
+
+                        await _userActionLogger.LogAsync(
+                         module: "Finance > Voucher Deletion",
+                         actionDetail: $"Deleted voucher entry with VoucherEntryNo: {voucherEntryNo}, VoucherNo: {VoucherNo}",
+                         documentNo: VoucherNo
+                        );
                     }
                     else if (SubLedgerRecord != null)
                     {
@@ -1105,6 +1133,11 @@ namespace Form.Areas.Finance.Controllers
 
                     //  _context.Tbl201VoucherMasters.Remove(masterrecord);
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                       module: "Finance > Voucher Deletion",
+                       actionDetail: $"Deleted voucher master record with VoucherNo: {VoucherNo}",
+                       documentNo: VoucherNo
+                   );
 
 
                 }
@@ -1253,6 +1286,11 @@ namespace Form.Areas.Finance.Controllers
                                             existingEntry.SysRemarks = entry.SysRemarks;
 											dbContext.Tbl201VoucherEntries.Update(existingEntry);
 											dbContext.SaveChanges();
+                                            await _userActionLogger.LogAsync(
+                                                   module: "Finance > Voucher Deletion",
+                                                   actionDetail: $"Deleted voucher master record with VoucherNo: {VoucherNo}",
+                                                   documentNo: VoucherNo
+                                            );
 
                                         }
                                         else

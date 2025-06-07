@@ -18,6 +18,8 @@ using Microsoft.ApplicationInsights.Extensibility;
 using QD.ERP.Web.Service.ReportService;
 using QD.ERP.Web.Middlewares;
 using DevExpress.XtraCharts;
+using QD.ERP.Web.Middleware;
+using QD.ERP.Web.Services.Logging;
 
 //using qd.utilities;
 
@@ -63,10 +65,6 @@ builder.Services.ConfigureReportingServices(configurator =>
 });
 
 
-var DBConnection = builder.Configuration.GetConnectionString("DBConnection");
-builder.Services.AddDbContext<QD.ERP.Web.DAL.Entities.ERPMasterWtDataContext>(options =>
-    options.UseSqlServer(DBConnection));
-
 var CommonDBConnection = builder.Configuration.GetConnectionString("CommonDBConnection");
 builder.Services.AddDbContext<ERPCommonContext>(options =>
     options.UseSqlServer(CommonDBConnection));
@@ -80,6 +78,7 @@ builder.Services.AddRazorPages(options =>
 {
     options.Conventions.Add(new TenantRouteModelConvention());
 });
+builder.Services.AddScoped<LicenseService>();
 
 builder.Services.AddMemoryCache();
 builder.Services.AddDistributedMemoryCache();
@@ -89,7 +88,8 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
-
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IUserActionLogger, UserActionLogger>();
 builder.Services.AddScoped<DbContextFactory>();
 builder.Services.AddMultitenancy<Tenant, TenantResolver>();
 builder.Services.AddScoped<UserAccessService>();
@@ -173,6 +173,7 @@ var app = builder.Build();
 #region **2. Configure Middleware**
 
 app.UseDevExpressControls();
+//app.UseMiddleware<LicenseValidationMiddleware>(); // Add before UseRouting
 app.UseRouting();
 //app.UseStatusCodePages("text/plain", "Status Code: {0}");
 //app.UseStatusCodePagesWithRedirects("/Error/{0}");

@@ -263,7 +263,7 @@
             .DropDownOptions(options => options.Width(230))
             .Items(items =>
             {
-                items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu");
+               // items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu");
                 items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
                 items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
                 items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
@@ -288,7 +288,7 @@
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
             .ID("btnPrint3")
-            .Text("Print") // Using string directly
+            .Text(new JS("formatMessage('Print')")) // Using string directly
             .Icon("print")
             .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
             .DropDownOptions(options => options.Width(230))
@@ -407,8 +407,8 @@
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
             .ID("ddButtonPayment")
-            .Icon("money")
-            .Width(50)
+            .Icon("add")
+            .Width("100%")
             .Text("Add New")
             .ElementAttr(new { style = "display: none;" })
             .DropDownOptions(options => options.Width(500))
@@ -426,7 +426,7 @@
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnAddNewPayment")
-            .Icon("money")
+            .Icon("add")
             .Text(new JS("formatMessage('Add New VAT Purchase Bill')"))
             .Width(500)
             .OnClick("addPurchase")
@@ -458,7 +458,7 @@
             .ID("btnInvoiceDetails")
             .Text("Invoice Details")
             .Icon("card")
-            .Width(150)
+            .Width(190)
             .OnClick("navigateToInvoiceEdit")
             )
     </div>
@@ -469,7 +469,7 @@
             .ID("btnPurchaseDetails")
             .Text(new JS("formatMessage('Purchase Details')"))
             .Icon("card")
-            .Width(150)
+            .Width(190)
             .OnClick("navigateToPurchaseDetails")
             )
     </div>
@@ -634,7 +634,7 @@
     <div class="btn-containerIvoiceEdit">
         @(Html.DevExtreme().DropDownButton()
             .ID("btnPrint2")
-            .Text("Print")
+            .Text(new JS("formatMessage('Print')"))
             .Icon("print")
             .ElementAttr(new { @class = "bold-button" })
             .DropDownOptions(options => options.Width(230))
@@ -784,7 +784,7 @@
     <div class="btn-containerIvoiceEdit">
         @(Html.DevExtreme().DropDownButton()
             .ID("btnPrint1")
-            .Text("Print")
+            .Text(new JS("formatMessage('Print')"))
             .Icon("print")
             .ElementAttr(new { @class = "bold-button" })
             .DropDownOptions(options => options.Width(230))
@@ -810,7 +810,7 @@
     <div class="btn-containerIvoiceEdit">
         @(Html.DevExtreme().DropDownButton()
             .ID("btnPrint22")
-            .Text("Print")
+            .Text(new JS("formatMessage('Print')"))
             .Icon("print")
             .ElementAttr(new { @class = "bold-button" })
             .DropDownOptions(options => options.Width(230))

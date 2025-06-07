@@ -467,6 +467,27 @@
 		-webkit-user-drag: none;
 		padding: 1px;
 	}
+
+	/* .full-height-container {
+		height: 100%;
+	} */
+	  .context-menuInvoice {
+		background: white;
+		border: 1px solid #ccc;
+		width: 200px;
+		box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+		font-family: Arial, sans-serif;
+	}
+
+	.context-menu-itemInvoice {
+		padding: 8px 12px;
+		cursor: pointer;
+	}
+
+		.context-menu-itemInvoice:hover {
+			background: #f0f0f0;
+		}
+	
 </style>
 
 <link rel="stylesheet" href="~/css/Site.css" />
@@ -478,18 +499,16 @@
 	</div>
 </div>
 
-<div class="context-menuInvoice" id="contextMenu">
-	<div class="context-menu-itemInvoice">
+<div class="context-menuInvoice" id="contextMenu" style="display:none; position:absolute; z-index:9999;">
+	<div class="context-menu-itemInvoice" data-action="add">
 		<i class="dx-icon-plus"></i> Add Line Item
 	</div>
-
-	<div class="context-menu-itemInvoice">
+	<div class="context-menu-itemInvoice" data-action="delete">
 		<i class="dx-icon-close"></i> Delete Line Item
 	</div>
-	<div class="context-menu-itemInvoice">
-		<i class="dx-icon-close"></i> Delete All Line Items
+	<div class="context-menu-itemInvoice" data-action="deleteAll">
+		<i class="dx-icon-trash"></i> Delete All Line Items
 	</div>
-	
 </div>
 
 <div class="containerLedgerAccount">
@@ -654,7 +673,7 @@
 																			})
 																			.ShowClearButton(true)
 																			.AcceptCustomValue(true)
-																			.OpenOnFieldClick(false)
+																			.OpenOnFieldClick(true)
 																			.ValueChangeEvent("input")
 																			.HoverStateEnabled(true)
 																			.ValueExpr("AccountHead")
@@ -706,7 +725,7 @@
 																				.Hint("Edit Description")
 																				.Width(35)
 																				.ElementAttr("style", "display: flex; justify-content: center; align-items: center;")
-																			.OnClick("showLedgerAccountEditPopup")
+																		     	.OnClick("showLedgerAccountEditPopup")
 
 																				)
 
@@ -3386,10 +3405,13 @@
 }
 
 <input type="file" id="fileInput" style="display: none;" />
-
+<div id="cardPopover"></div>
+<div id="CalcardPopover"></div>
 <!-- Modal Structure -->
 
 <script>
+
+
 	
 			 function dataGridSelectionabc(e) {
 				const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
@@ -3544,11 +3566,6 @@
 									dataType: 'json',
 								success: function (response) {
 										console.log("Grid",response)
-									// if (!response || !response.data || response.data.length === 0) {
-									// 	console.warn("No voucher entries found.");
-									// 	return;
-									// }
-
 										let rowData = response.map((item, index) => ({
 			SNo: index + 1,
 			...item
@@ -3574,6 +3591,7 @@
 
 
 		});
+
 
 		function initializeDataGrid(rowData) {
     let grid = $("#B2BdataGrid").dxDataGrid({
@@ -3674,18 +3692,24 @@
                     });
                 }
             },
-            {
-                dataField: "Descriptions",
-                caption: "...",
-                width: 50,
-                allowEditing: true,
-                editCellTemplate: function (cellElement, cellInfo) {
-                    let url = `/${tenantName}/VAT/CreditDetailDescription`;
-                    let title = "VAT Details Description";
-                    window.currentDescriptionCell = cellInfo;
-                    openModal(url, title);
-                }
-            },
+						{
+			dataField: "Descriptions",
+			caption: "...",
+			cssClass: "center-header",
+			width: 80,
+			allowEditing: false, // Set false, because we're using custom popup
+			cellTemplate: function (container, options) {
+				$("<div>").dxButton({
+					icon: "user",
+					hint: "Edit VAT Details Description",
+					stylingMode: "text",
+					width: 60,
+					onClick: function (e) {
+				onCardClick(e.element[0]); // ✅ Pass raw DOM element
+			}
+				}).appendTo(container);
+			}
+		},
             {
                 dataField: "UnitRateMethod",
                 caption: formatMessage('Unit Rate Method'),
@@ -3749,7 +3773,25 @@
             { dataField: "UnitRate", caption: formatMessage('Unit Price'), width: 150 },
             { dataField: "CalcLineAmountBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 150 },
             { dataField: "Discount", caption: formatMessage('Discount'), width: 150 },
-            { dataField: "DiscountDetails", caption: "...", width: 50 },
+					{
+		dataField: "DiscountDetails",
+		caption: "...",
+		cssClass: "center-header",
+		width: 100,
+		allowEditing: false,
+		cellTemplate: function (container, options) {  // ✅ fixed here
+			$("<div>").dxButton({
+				icon: "preferences", // or another valid icon
+				hint: "VAT Calculator",
+				stylingMode: "text",
+				width: 30,
+				onClick: function (e) {
+					onCalCardClick(e.element[0]); // ✅ Pass raw DOM element
+				}
+			}).appendTo(container);
+		}
+	}
+	,
             { dataField: "CalcLineAmount", caption: formatMessage('Amount'), width: 150 },
             {
     dataField: "VATPercentage",
@@ -4139,29 +4181,24 @@
 					}
 
 				},
-	{
-			dataField: "Descriptions",
-			caption: "...",
-			width: 80,
-			allowEditing: true,
-			cellTemplate: function (container, options) {
+		{
+		dataField: "Descriptions",
+		caption: "...",
+		cssClass: "center-header",
+		width: 80,
+		allowEditing: false, // Set false, because we're using custom popup
+		cellTemplate: function (container, options) {
 			$("<div>").dxButton({
-				icon: "user", // Built-in DevExtreme icon
+				icon: "user",
 				hint: "Edit VAT Details Description",
 				stylingMode: "text",
 				width: 60,
-				onClick: function () {
-					// Save context
-					window.currentDescriptionCell = options;
-
-					// Open modal
-					let url = `/${tenantName}/VAT/VATDetailsDescription`;
-					let title = "VAT Details Description";
-					openModal(url, title);
-				}
+				onClick: function (e) {
+			onCardClick(e.element[0]); // ✅ Pass raw DOM element
+		}
 			}).appendTo(container);
 		}
-		},
+	},
 
 
 				{
@@ -4303,117 +4340,25 @@
 				{ dataField: "Discount", caption: formatMessage('Discount'), width: 150 },
 
 				//{ dataField: "DiscountDetails", caption: "...", width: 50 },
-				{
-    dataField: "DiscountDetails",
-    caption: "...",
-    width: 100,
-		allowEditing: true,
-				cellTemplate: function (container, options) {
-		container.empty();
-
-		$("<div>")
-			.dxButton({
-				icon: "percent", // DevExtreme built-in icon
-				hint: "Apply percentage discount", // Tooltip
-				type: "normal", // Keeps styling neutral
-				stylingMode: "outlined", // Ensures border is visible
+						{
+		dataField: "DiscountDetails",
+		caption: "...",
+		cssClass: "center-header",
+		width: 100,
+		allowEditing: false,
+		cellTemplate: function (container, options) {  // ✅ fixed here
+			$("<div>").dxButton({
+				icon: "preferences", // or another valid icon
+				hint: "VAT Calculator",
+				stylingMode: "text",
+				width: 60,
 				onClick: function (e) {
-					// Your button click logic here
-					console.log("Percent button clicked", options.data);
+					onCalCardClick(e.element[0]); // ✅ Pass raw DOM element
 				}
-			})
-			.css({
-				width: "70%",
-				border: "1px solid #add8e6",  // Light blue border
-				backgroundColor: "#ffffff",   // White background
-				borderRadius: "3px"
-			})
-			.appendTo(container);
-	},
-
-    editCellTemplate: function (cellElement, cellInfo) {
-        
-        // Create Popup content
-        let $popupContent = $("<div>").css({
-            padding: "20px",
-            fontFamily: "Segoe UI, sans-serif",
-            display: "flex",
-            flexDirection: "column",
-            gap: "10px",
-            width: "100%"  // Full width inside popup
-        });
-
-        // Total Amount (read-only)
-        $("<div>").appendTo($popupContent).dxNumberBox({
-            label: "Total Amount",
-            labelMode: "outside",
-            min: 0,
-            format: "#,##0.00",
-            value: cellInfo.row.data.Amount || 0,
-            readOnly: true
-        });
-
-        // Discount input + OK button row
-        let $discountRow = $("<div>").css({
-            display: "flex",
-            gap: "10px",
-            alignItems: "end"
-        }).appendTo($popupContent);
-
-        let discountEditor = $("<div>").appendTo($discountRow).dxNumberBox({
-            label: "Discount",
-            labelMode: "outside",
-            min: 0,
-            format: "#,##0.00",
-            value: cellInfo.value || 0
-        }).dxNumberBox("instance");
-
-        $("<div>").appendTo($discountRow).dxButton({
-            text: "OK",
-            width: 70,
-            onClick: function () {
-                let discountValue = discountEditor.option("value") || 0;
-                cellInfo.setValue(discountValue.toFixed(2));
-                popup.hide();
-            }
-        });
-
-        // Percentage buttons
-        let $grid = $("<div>").css({
-            marginTop: "10px",
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "8px"
-        }).appendTo($popupContent);
-
-        [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100].forEach(function (percent) {
-            $("<div>").appendTo($grid).dxButton({
-                text: percent + " %",
-                width: 80,
-                onClick: function () {
-                    let totalAmount = cellInfo.row.data.Amount || 0;
-                    let discount = (totalAmount * percent) / 100;
-                    discountEditor.option("value", discount);
-                }
-            });
-        });
-
-        // Create Popup
-        let popup = $("<div>").appendTo(cellElement).dxPopup({
-            contentTemplate: function () {
-                return $popupContent;
-            },
-            width: 550,     // ✅ set nice width
-            height: "auto",
-            showTitle: true,
-            title: "Set Discount Details",
-            visible: true,
-            dragEnabled: true,
-            closeOnOutsideClick: true
-        }).dxPopup("instance");
-
-    }
-},
+			}).appendTo(container);
+		}
+	}
+	,
 
 					{ dataField: "Amount", caption: formatMessage('Amount'), width: 150, format: { type: "fixedPoint", precision: 2 } },
 
@@ -4521,7 +4466,7 @@
 					Qty: 0,
 					UnitPrice: 0.00,
 					TotalBeforeDiscount:0.00,
-					Discount:"",
+					Discount:0,
 					DiscountDetails:"",
 					Amount:0.00,
 					ExcemptionCode:"",
@@ -4534,6 +4479,80 @@
 				dataGridInstance.refresh();
 			});
 
+
+				function onCardClick(cellElement) {
+				const popover = $("#cardPopover").dxPopover("instance");
+
+				// Set the new target element for the popover
+				popover.option("target", cellElement);
+
+				if (popover.option("visible")) {
+					popover.hide();
+				} else {
+					popover.show();
+				}
+			}
+
+				function onCalCardClick(cellElement) {
+					const popover = $("#CalcardPopover").dxPopover("instance");
+
+				// Set the new target element for the popover
+				popover.option("target", cellElement);
+
+				if (popover.option("visible")) {
+					popover.hide();
+				} else {
+					popover.show();
+				}
+			}
+
+			$(function () {
+				$("#cardPopover").dxPopover({
+					width: 1000,
+					position: "bottom",
+					showEvent: "", // Manual control
+					hideEvent: "", // Manual control
+					hideOnOutsideClick: true,
+					contentTemplate: function (contentElement) {
+						contentElement.empty();
+
+						$.ajax({
+						    url: '/api/VATModule/CreditDetailDescription', // Adjust for area if needed
+							type: 'GET',
+							success: function (data) {
+								contentElement.html(data);
+							},
+							error: function () {
+								contentElement.html("<div style='color:red;'>Failed to load content.</div>");
+							}
+						});
+					}
+				});
+			});
+
+				$(function () {
+					$("#CalcardPopover").dxPopover({
+						width: 550,
+						position: "bottom",
+						showEvent: "", // Manual control
+						hideEvent: "", // Manual control
+						hideOnOutsideClick: true,
+						contentTemplate: function (contentElement) {
+							contentElement.empty();
+
+							$.ajax({
+								url: '/api/VATModule/VATPercentageCal', // Adjust for area if needed
+								type: 'GET',
+								success: function (data) {
+									contentElement.html(data);
+								},
+								error: function () {
+									contentElement.html("<div style='color:red;'>Failed to load content.</div>");
+								}
+							});
+						}
+					});
+				});
 
 			// Fetch dropdown data (same API can be used if needed)
 		 function getDropdownData() {
@@ -4685,23 +4704,6 @@
 			$("#PostalCode").dxTextBox("instance").option("value", selectedRowData[0].ClientPostalCode);
 		$("#District").dxTextBox("instance").option("value", selectedRowData[0].ClientNeighborhood);
 			$("#DistrictArabic").dxTextBox("instance").option("value", selectedRowData[0].ClientNeighborhoodAr);
-
-
-	// $("#StreetName").val(selectedRowData[0].ClientAddressStreet);
-	// $("#StreetNameArabic").val(selectedRowData[0].ClientAddressStreetAr);
-	// $("#AdditionalAddress").val(selectedRowData[0].ClientAdditionalStreet);
-	// $("#AdditionalAddressArabic").val(selectedRowData[0].ClientAdditionalStreetAr);
-	// $("#BuildingNumber").val(selectedRowData[0].ClientBuildingNumber);
-	// $("#ClientCity").val(selectedRowData[0].ClientCity);
-	// $("#ClientCityArabic").val(selectedRowData[0].ClientCityAr);
-	// $("#AdditionalNumber").val(selectedRowData[0].ClientAdditionalNumber);
-	// $("#Province").val(selectedRowData[0].ClientProvince);
-	// $("#ProvinceArabic").val(selectedRowData[0].ClientProvinceAr);
-	// $("#PostalCode").val(selectedRowData[0].ClientPostalCode);
-
-	// // Fix incorrect value assignments
-	// $("#District").val(selectedRowData[0].ClientNeighborhood); // was incorrectly using Arabic version key
-	// $("#DistrictArabic").val(selectedRowData[0].ClientNeighborhoodAr); // was incorrectly using country code key
 
 
 
@@ -7426,13 +7428,13 @@
 								"Invoice Posted Successfully."
 							)
 						}
-							else if(response.IsPosted == true)
-							{
-									 DevExpress.ui.dialog.alert(
-									"This VAT Credit Note is already posted to your ledgers.",
-									"Credit Note Posted Already."
-								)
-							}
+							// else if(response.IsPosted == true)
+							// {
+							// 		 DevExpress.ui.dialog.alert(
+							// 		"This VAT Credit Note is already posted to your ledgers.",
+							// 		"Credit Note Posted Already."
+							// 	)
+							// }
 						else 
 						{
 								   DevExpress.ui.dialog.custom({
@@ -7937,16 +7939,8 @@
 		}
 
 				function showLedgerAccountEditPopup() {
-		
 
-			// IsEdit = true;
-			// if (!refno) refno = "";
-			// if (!accheadar) accheadar = "";
-
-			//const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(acchedid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
-
-				const url = `/${tenantName}/Finance/LedgerAccount`;
-
+				const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}`;
 			var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
 
 			// Add an event to refresh the page when the popup is closed
@@ -8029,5 +8023,156 @@
 				return;
 			}
 		}
+
+
+	
+	$(function () {
+			var selectedRowKey = null;
+		// Hide context menu when clicking outside
+		$(document).on("click", function () {
+			$("#contextMenu").hide();
+		});
+
+		// Handle context menu item clicks
+		$(".context-menu-itemInvoice").on("click", function (e) {
+			e.stopPropagation(); // Prevent menu from hiding immediately
+
+			const action = $(this).data("action");
+			const grid = $("#B2BdataGrid").dxDataGrid("instance");
+			const selectedRowKeys = grid.getSelectedRowKeys();
+			selectedRowKey = selectedRowKeys.length > 0 ? selectedRowKeys[0] : null;
+
+			if (!grid) {
+				DevExpress.ui.notify("Grid instance not found.", "error", 2000);
+				return;
+			}
+
+			if (action === "add") {
+				grid.addRow();
+			}
+			else if (action === "delete") {
+				if (selectedRowKey !== null) {
+					const rowIndex = grid.getRowIndexByKey(selectedRowKey);
+					if (rowIndex >= 0) {
+						const rowData = grid.getDataSource().items()[rowIndex];
+						const { InvoiceChildSlNo, InvoiceNo } = rowData;
+
+						if (!InvoiceChildSlNo) {
+							grid.deleteRow(rowIndex); // Deletes from UI
+						} else {
+							DevExpress.ui.dialog.confirm(
+								"You are about to delete invoice line item.\nAre you sure you want to delete this invoice detail?",
+								"Delete Invoice"
+							).done(function (confirmResult) {
+								if (confirmResult) {
+									$.ajax({
+										url: "/api/VATModule/DeleteInvoiceChild",
+										type: "POST",
+										contentType: "application/json",
+										data: JSON.stringify(InvoiceChildSlNo),
+										success: function (response) {
+											if (response.success) {
+												grid.refresh();
+												DevExpress.ui.dialog.alert("VAT Invoice Line Item Deleted Successfully.", "Data Delete Successful");
+
+												// Fetch updated data and re-bind the grid
+												$.ajax({
+													type: "GET",
+													url: `/api/VATModule/GetGridInvoiceDetails?InvoiceNo=${encodeURIComponent(InvoiceNo)}`,
+													dataType: 'json',
+													success: function (data) {
+														debugger;
+														const newRowData = data.map((item, index) => ({
+															SNo: index + 1,
+															...item
+														}));
+														initializeDataGrid(newRowData);
+													},
+													error: function () {
+														DevExpress.ui.notify("Failed to refresh grid data.", "error", 2000);
+													}
+												});
+											} else {
+												DevExpress.ui.notify(response.message || "Deletion failed.", "error", 2000);
+											}
+										},
+										error: function (xhr) {
+											DevExpress.ui.notify("Server error: " + xhr.statusText, "error", 2000);
+										}
+									});
+								}
+							});
+						}
+					}
+				} else {
+					DevExpress.ui.notify("No row selected to delete.", "error", 2000);
+				}
+			}
+			else if (action === "deleteAll") {
+				if (selectedRowKey !== null) {
+					const rowIndex = grid.getRowIndexByKey(selectedRowKey);
+					if (rowIndex >= 0) {
+						const rowData = grid.getDataSource().items()[rowIndex];
+						const { InvoiceNo } = rowData;
+
+						if (!InvoiceNo) {
+							const dataSource = grid.option("dataSource");
+							dataSource.length = 0;
+							grid.option("dataSource", dataSource);
+							grid.refresh();
+						} else {
+							DevExpress.ui.dialog.confirm(
+								"You are about to delete all the invoice line items.\nAre you sure you want to delete this invoice detail?",
+								"Delete Invoice"
+							).done(function (confirmResult) {
+								if (confirmResult) {
+									$.ajax({
+										url: "/api/VATModule/DeleteInvoiceAllLineItem",
+										type: "POST",
+										contentType: "application/json",
+										data: JSON.stringify(InvoiceNo),
+										success: function (response) {
+											if (response.success) {
+												grid.refresh();
+												DevExpress.ui.dialog.alert("VAT Invoice Line Items Deleted Successfully.", "Data Delete Successful");
+
+												$.ajax({
+													type: "GET",
+													url: `/api/VATModule/GetGridInvoiceDetails?InvoiceNo=${encodeURIComponent(InvoiceNo)}`,
+													dataType: 'json',
+													success: function (data) {
+														const newRowData = data.map((item, index) => ({
+															SNo: index + 1,
+															...item
+														}));
+														initializeDataGrid(newRowData);
+													},
+													error: function () {
+														DevExpress.ui.notify("Failed to refresh grid data.", "error", 2000);
+													}
+												});
+											} else {
+												DevExpress.ui.notify(response.message || "Deletion failed.", "error", 2000);
+											}
+										},
+										error: function (xhr) {
+											DevExpress.ui.notify("Server error: " + xhr.statusText, "error", 2000);
+										}
+									});
+								}
+							});
+						}
+					}
+				} else {
+					DevExpress.ui.notify("No row selected to delete.", "error", 2000);
+				}
+			}
+
+			$("#contextMenu").hide();
+		});
+	});
+
+
+
 </script>
 

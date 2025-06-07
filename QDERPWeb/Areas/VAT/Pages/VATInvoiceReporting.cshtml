@@ -68,7 +68,7 @@
 </div>
 
 
-<div class="container" style="display: flex; flex-direction: column; gap: 20px;width:100%;">
+<div class="container" style="display: flex; flex-direction: column;width:100%;">
 
     <div class="Head">
         <div class="limited-footer">
@@ -150,6 +150,7 @@
 
 
 <script type="text/javascript">
+    let pivotData = [];
     $(function () {
         $("#VATInvoiceReporting").dxTextBox({
             text: formatMessage("Sales Reporting"),
@@ -247,6 +248,7 @@
                 endDate: formatDate(endDate)
             },
             success: function (data) {
+                 pivotData = data; // Set global
                 initializePivotGrid(data);
             },
             error: function (xhr, status, error) {
@@ -351,4 +353,175 @@
 			}
 		});
 	});
+    function quarterSubMenu(e) {
+        e.event.stopPropagation();
+        hideAllSubmenus(); // Hide all submenus before showing the selected one
+        var $submenu = $('#quarterSubMenu');
+        var $target = $(e.event.target).closest('.dx-item-content');
+        var offset = $target.offset();
+        var submenuWidth = $submenu.outerWidth();
+
+        // Calculate left-side positioning
+        var leftPos = offset.left - submenuWidth + 533;
+
+        // Prevent submenu from going off-screen on the left
+        if (leftPos < 0) {
+            leftPos = offset.left + $target.outerWidth() + 5; // Move it to the right if not enough space
+        }
+
+        // Position submenu
+        $submenu.css({
+            'width': 250,
+            'position': 'absolute',
+            'top': offset.top,
+            'left': leftPos,
+            'display': 'block',
+            'background': '#fff',
+            'border': '1px solid #ccc',
+            'box-shadow': '2px 2px 5px rgba(0,0,0,0.2)',
+            'padding': '5px'
+        });
+
+        // Click outside to close
+        $(document).on("click", function (event) {
+            if (!$(event.target).closest('#submenuContainer5, .dx-item-content').length) {
+                $submenu.hide();
+                $(document).off("click");
+            }
+        });
+    }
+
+    let extraFieldsVisible = false; // Flag to track toggle state
+
+        $("#btnShowFields").on("click", function (e) {
+        const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
+        const dataSource = pivotGrid.getDataSource();
+           
+        // Base fields (always visible)
+        const baseFields = [
+                    { dataField: "AccountHead", area: "row", caption: "Client Name" },
+                    { dataField: "InvoiceMonth", area: "column", caption: "Invoice Month", dataType: "date", format: "MMM-yyyy" },
+                    {
+                        dataField: "TotalRevenue",
+                        area: "data",
+                        caption: "Net Revenue",
+                        summaryType: "sum",
+                        format: { type: "fixedPoint", precision: 2 }
+                    }
+                ];
+
+        // Extra filter fields
+        const extraFields = [
+            { dataField: "InvoiceNo", area: "filter", caption: "Invoice No" },
+            { dataField: "InvoiceDate", area: "filter", caption: "Invoice Date" },
+            {
+                dataField: "InvoiceDate",
+                area: "filter",
+                caption: "Invoice Date",
+                format: "dd-MMM-yyyy"
+            },
+            {
+                dataField: "InvoiceEffectiveDate", area: "filter", caption: "Invoice Effective Date", customizeText: function (cellInfo) {
+                    const date = new Date(cellInfo.value);
+                    if (isNaN(date)) return ""; // handle invalid dates
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const month = date.toLocaleString('en-US', { month: 'short' });
+                    const year = date.getFullYear();
+                    return `${day}-${month}-${year}`;
+                }
+            },
+            { dataField: "CostAllocationUnit", area: "filter", caption: "Cost Allocation Unit" },
+            { dataField: "CostAllocationGroup", area: "filter", caption: "Cost Allocation Group" },
+            { dataField: "CostAllocationMasterGroup", area: "filter", caption: "Cost Allocation Master Group" },
+            { dataField: "CompanyBranch", area: "filter", caption: "Company Branch" },
+            { dataField: "SalesPersonName", area: "filter", caption: "Sales Person Name" },
+            { dataField: "Discount", area: "filter", caption: "Discount" },
+            { dataField: "TotalRevenue", area: "filter", caption: "Gross Revenue" },
+            { dataField: "CalcTaxAmount", area: "filter", caption: "Tax Amount" },
+            { dataField: "AdvanceAmount", area: "filter", caption: "Advance Amount" },
+            { dataField: "RetentionAmount", area: "filter", caption: "Retention Amount" },
+            { dataField: "InvoiceStatus", area: "filter", caption: "Invoice Status" },
+            { dataField: "RetentionAmount", area: "filter", caption: "Invoice Amount with Tax" },
+            { dataField: "CreditNoteNo", area: "filter", caption: "Credit Note No" },
+            { dataField: "CreditNoteDate", area: "filter", caption: "Credit Note Date" },
+            { dataField: "CreditNoteAmount", area: "filter", caption: "Credit Note Amount" },
+            { dataField: "CreditNoteTaxAmount", area: "filter", caption: "Credit Note Tax Amount" },
+            { dataField: "TotalCreditNoteAmount", area: "filter", caption: "Total Credit Note Amount" },
+            { dataField: "TotalCreditNoteAmount", area: "filter", caption: "Received/Credited Amount" },
+            { dataField: "InvoiceBalance", area: "filter", caption: "Invoice Balance" },
+            { dataField: "ReceivedMonth", area: "filter", caption: "Received Month" },
+            { dataField: "RevenueLedgerNo", area: "filter", caption: "Revenue Ledger No" },
+            { dataField: "RevenueLedgerName", area: "filter", caption: "Revenue Ledger Name" }
+            
+        ];
+
+        if (!extraFieldsVisible) {
+            // Show extra fields
+            dataSource.fields([...baseFields, ...extraFields]);
+            extraFieldsVisible = true;
+            //e.component.option("text", "Hide Extra Fields"); // Optional: update button text
+        } else {
+            // Hide extra fields
+            dataSource.fields(baseFields);
+            extraFieldsVisible = false;
+           // e.component.option("text", "Show Extra Fields"); // Optional: update button text
+        }
+
+        dataSource.load();
+    });
+
+       $('#btnShowRowTotals').click(function () {
+        showrowtotal(pivotData); // Correctly passing the data array
+    });
+
+
+            function showrowtotal(pivotData) {
+        const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
+        console.log("pivotData", pivotData);
+
+        // Group by CostAllocationUnit (Cost Group)
+        const grouped = {};
+        pivotData.forEach(item => {
+            const groupKey = item.AccountHead;
+            if (!groupKey) return; // Skip if no group key
+            if (!grouped[groupKey]) grouped[groupKey] = [];
+            grouped[groupKey].push(item);
+        });
+
+        console.log("Grouped:", pivotData);
+
+        // Create total rows for each Cost Group
+        const totalRows = Object.entries(grouped).map(([groupName, rows]) => {
+            const totalIncome = rows.reduce((sum, r) => sum + (r.TotalRevenue || 0), 0);
+           
+
+            return {
+                AccountHead: groupName + " Total",
+                TotalRevenue: totalIncome
+               
+            };
+        });
+
+        // Debug: Check totals
+        console.log("Total Rows:", totalRows);
+
+        const updatedData = [...pivotData, ...totalRows];
+
+        // Refresh PivotGrid with updated data
+        pivotGrid.option("dataSource", {
+            fields: [
+                { dataField: "AccountHead", area: "row", caption: "Client Name" },
+                { dataField: "TotalRevenue", area: "data", summaryType: "sum", caption: "Net Revenue" }
+            ],
+            store: updatedData
+        });
+    }
+    function customFormatter(cellInfo) {
+        const value = cellInfo.value;
+        if (value < 0) {
+            return "-" + Math.abs(value).toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+        } else {
+            return value.toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+        }
+    }
 </script>

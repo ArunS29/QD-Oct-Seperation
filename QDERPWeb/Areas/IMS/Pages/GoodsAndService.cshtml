@@ -64,7 +64,7 @@
         <div class="col" style="width: 33.33%;">
         @(Html.DevExtreme().TextBox()
                 .ID("txtGoodsCode7")
-            .Label("Goods & Services Code:")
+                .Label(new JS("formatMessage('Goods & Services Code:')"))
             .LabelMode(EditorLabelMode.Outside)
             .Width("100%")
                 .ValidationRules(rules =>
@@ -113,7 +113,7 @@
         <div class="col" style="width: 33.33%;">
         @(Html.DevExtreme().TextBox()
                 .ID("txtItemPartNo4")
-            .Label("Item Part No:")
+                .Label(new JS("formatMessage('Item Part No:')"))
             .LabelMode(EditorLabelMode.Outside)
             .Width("100%"))
     </div>
@@ -124,7 +124,7 @@
     <div class="col" style="width:50%;">
         @(Html.DevExtreme().TextArea()
                 .ID("txtDescription8")
-            .Label("Goods & Services Description:")
+                .Label(new JS("formatMessage('Goods & Services Description:')"))
             .LabelMode(EditorLabelMode.Outside)
             .ElementAttr("style", "height:150px !important;")
         .ValidationRules(rules =>
@@ -197,7 +197,7 @@
     <div class="col" style="width:25%">
         @(Html.DevExtreme().NumberBox()
                 .ID("packingUnit")
-            .Label("Packing Unit:")
+                .Label(new JS("formatMessage('Packing Unit:')"))
             .LabelMode(EditorLabelMode.Outside)
             .Value(1)
             .Width("100%"))
@@ -205,7 +205,7 @@
         <div class="col" style="width:25%">
         @(Html.DevExtreme().NumberBox()
                 .ID("sellingRate")
-            .Label("Selling Rate:")
+                .Label(new JS("formatMessage('Selling Rate:')"))
             .LabelMode(EditorLabelMode.Outside)
             .Value(1)
             .Width("100%"))
@@ -213,7 +213,7 @@
         <div class="col" style="width:25%">
         @(Html.DevExtreme().NumberBox()
                 .ID("txtCostPrice3")
-            .Label("Cost Price:")
+                .Label(new JS("formatMessage('Cost Price:')"))
             .LabelMode(EditorLabelMode.Outside)
             .Value(1)
             .Width("100%"))
@@ -225,7 +225,7 @@
     <div class="col" style="width:50%">
         @(Html.DevExtreme().TextArea()
                 .ID("txtDetailedDescription")
-            .Label("Detailed Description:")
+                .Label(new JS("formatMessage('Detailed Description:')"))
             .LabelMode(EditorLabelMode.Outside)
             .ElementAttr("style", "height:150px !important;")
             .Width("100%"))

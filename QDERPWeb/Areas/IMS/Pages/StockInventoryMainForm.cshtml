@@ -140,14 +140,9 @@
 </style>
 
 <div class="container-fluid"></div>
-
 <div class="title">
     <div class="header-container">
-        <div id="StockInventoryMainForm" class="no-border-title">
-            <h2 >
-                Stock Inventory
-            </h2>
-        </div>
+        <div id="StockInventoryMainForm" class="no-border-title"></div>
     </div>
 </div>
 <div class="Footer">
@@ -164,7 +159,6 @@
         <i class="dx-icon-trash"></i> Delete
     </div>
 </div>
-
 <div id="printSection">
     <div class="dx-field ledgerResult" >
       @(Html.DevExtreme().DataGrid<Qry60001inventoryStockView>()
@@ -176,58 +170,58 @@
     .Columns(columns =>
     {
         columns.AddFor(m => m.Gscode)
-            .Caption("Stock Code")
+                .Caption(new JS("formatMessage('Stock Code')"))
             .Width(120);
         columns.AddFor(m => m.Gsdescrpition)
-            .Caption("Description")
+                .Caption(new JS("formatMessage('Description')"))
             .Width(280);
         columns.AddFor(m => m.GsgroupName)
-            .Caption("Stock Group")
+                .Caption(new JS("formatMessage('Stock Group')"))
             .Width(180)
             .GroupIndex(0);
         columns.AddFor(m => m.ItemPartNo)
-            .Caption("Item Part No")
+                .Caption(new JS("formatMessage('Item Part No')"))
             .Width(150);
         columns.AddFor(m => m.UnitType)
-            .Caption("Unit")
+                .Caption(new JS("formatMessage('Unit')"))
             .Width(100);
         columns.AddFor(m => m.GssellingRate)
-            .Caption("Selling Price")
+                .Caption(new JS("formatMessage('Selling Price')"))
             .Format("fixedPoint")
             .Alignment(HorizontalAlignment.Right)
             .Width(120);
         columns.AddFor(m => m.CostPrice)
-            .Caption("Cost Price")
+                .Caption(new JS("formatMessage('Cost Price')"))
             .Format("fixedPoint")
             .Alignment(HorizontalAlignment.Right)
             .Width(120);
         columns.AddFor(m => m.OpeningBalance)
-            .Caption("Opening Balance")
+                .Caption(new JS("formatMessage('Opening Balance')"))
             .Format("fixedPoint")
             .Alignment(HorizontalAlignment.Right)
             .Width(120);
         columns.AddFor(m => m.TotalReceived)
-            .Caption("Received")
+                .Caption(new JS("formatMessage('Received')"))
             .Format("fixedPoint")
             .Alignment(HorizontalAlignment.Right)
             .Width(120);
         columns.AddFor(m => m.TotalIssues)
-            .Caption("Issues")
+                .Caption(new JS("formatMessage('Issues')"))
             .Format("fixedPoint")
             .Alignment(HorizontalAlignment.Right)
             .Width(120);
         columns.AddFor(m => m.ClosingBalance)
-            .Caption("Closing Balance")
+                .Caption(new JS("formatMessage('Closing Balance')"))
             .Format("fixedPoint")
             .Alignment(HorizontalAlignment.Right)
             .Width(120);
         columns.AddFor(m => m.MaxQty)
-            .Caption("Inventory Value (FIFO)")
+                .Caption(new JS("formatMessage('Inventory Value (FIFO)')"))
             .Format("fixedPoint")
             .Alignment(HorizontalAlignment.Right)
             .Width(150);
         columns.AddFor(m => m.IsDiscontinued)
-            .Caption("IsDiscontinued")
+            .Caption(new JS("formatMessage('IsDiscontinued')"))
             .Visible(false)
             .Width(150);
     })
@@ -326,6 +320,15 @@
             }
         });
     }
+    $(function () {
+        $("#StockInventoryMainForm").dxTextBox({
+            text: formatMessage("Stock Inventory"),
+                readOnly: true,
+                onContentReady: function (e) {
+                    $(e.element).addClass("dx-textbox-heading");
+                }
+            });
+        });
 
 
     

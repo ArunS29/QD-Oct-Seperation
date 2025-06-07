@@ -303,7 +303,7 @@
                         .Label(new JS("formatMessage('Client Name:')"))
                         .DataSource(d => d.WebApi()
                         .Controller("AddNewClientRequest")
-                        .LoadAction("GetClientName")
+						.LoadAction("GetClientDetails")
                         .LoadMode(DataSourceLoadMode.Raw)
                         .Key("CategoryCode")
 
@@ -486,17 +486,17 @@
                         .Label(new JS("formatMessage('Project:')"))
                         .DataSource(d => d.WebApi()
                         .Controller("AddNewClientRequest")
-                        .LoadAction("GetClientName")
+						.LoadAction("GetProject")
                         .LoadMode(DataSourceLoadMode.Raw)
-						.Key("ClientCode")
+						.Key("ProjectId")
                         )
                         .LabelMode(EditorLabelMode.Outside)
                         .ID("GetProjectDataDropDown")
                         .OpenOnFieldClick(false)//
                         .ValueChangeEvent("input")
                         .HoverStateEnabled(true)
-                        .ValueExpr("ClientCode")
-                        .DisplayExpr("ClientName")
+						.ValueExpr("ProjectId")
+						.DisplayExpr("ProjectDescription")
                         .OnInput("dropDownBoxOnInput")
                         .OnOpened("onOpened")
                         .TabIndex(1)
@@ -756,7 +756,7 @@
                                     @(Html.DevExtreme().DropDownBox()
                                     .Label(new JS("formatMessage('Quotation Status:')"))
                                     .DataSource(d => d.WebApi()
-                                    .Controller("AddNewQuotationStatus")
+									.Controller("AddNewQuotation")
                                     .LoadAction("GetQuotationStatus")
                                     .LoadMode(DataSourceLoadMode.Raw)
                                     .Key("QuoteStatusId")
@@ -1263,7 +1263,7 @@
                         .ID("GetProject-datagrid")
                         .DataSource(d => d.WebApi()
                         .Controller("AddNewClientRequest")
-                        .LoadAction("GetClientName")
+							.LoadAction("GetClientDetails")
                         .LoadMode(DataSourceLoadMode.Raw)
                         .Key("ClientCode")
                         )
@@ -1296,7 +1296,7 @@
     @(Html.DevExtreme().DataGrid()
                         .ID("GetProject-datagrid")
                         .DataSource(d => d.WebApi()
-                        .Controller("AddNewQuotationStatus")
+							.Controller("AddNewQuotation")
                         .LoadAction("GetQuotationStatus")
                         .LoadMode(DataSourceLoadMode.Raw)
                         .Key("QuoteStatusId")
@@ -1332,9 +1332,9 @@
                 .ID("GetProjectdata-datagrid")
                 .DataSource(d => d.WebApi()
 					.Controller("AddNewClientRequest")
-					.LoadAction("GetClientName")
+							.LoadAction("GetProject")
                 .LoadMode(DataSourceLoadMode.Raw)
-					.Key("ClientCode")
+						.Key("ProjectId")
                 )
                 .WordWrapEnabled(true)
                 .ShowBorders(true)
@@ -1353,8 +1353,8 @@
                 .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                 .Columns(columns =>
                 {
-						columns.Add().DataField("ClientCode");
-						columns.Add().DataField("ClientName");
+						columns.Add().DataField("ProjectId");
+						columns.Add().DataField("ProjectDescription");
 
 
 
@@ -1822,7 +1822,7 @@
 				},
 				error: function (xhr, status, error) {
 					console.error("Error loading Payment Accounts:", error);
-					DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+					DevExpress.ui.dialog.alert("Failed to load QuoteNo details.", "Error");
 				}
 			});
 		}
@@ -3091,28 +3091,28 @@
 	}
 
 
-	$(document).ready(function () {
-		if (IsCurrent !== "true") {
-			$.ajax({
-				url: "/api/VATModule/GetVATInvoiceNo",
-				type: "GET",
-				success: function (data) {
-					console.log("Success:", data);
+	// $(document).ready(function () {
+	// 	if (IsCurrent !== "true") {
+	// 		$.ajax({
+	// 			url: "/api/VATModule/GetVATInvoiceNo",
+	// 			type: "GET",
+	// 			success: function (data) {
+	// 				console.log("Success:", data);
 
-					const invoiceBox = $("#InvoiceNo").dxTextBox("instance");
-					if (invoiceBox) {
-						invoiceBox.option("value", data || "");
-					} else {
-						console.warn("Invoice TextBox not initialized.");
-					}
-				},
-				error: function (xhr, status, error) {
-					console.error("Error loading Payment Accounts:", error);
-					DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
-				}
-			});
-		}
-	});
+	// 				const invoiceBox = $("#InvoiceNo").dxTextBox("instance");
+	// 				if (invoiceBox) {
+	// 					invoiceBox.option("value", data || "");
+	// 				} else {
+	// 					console.warn("Invoice TextBox not initialized.");
+	// 				}
+	// 			},
+	// 			error: function (xhr, status, error) {
+	// 				console.error("Error loading Payment Accounts:", error);
+	// 				DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+	// 			}
+	// 		});
+	// 	}
+	// });
 
 
 

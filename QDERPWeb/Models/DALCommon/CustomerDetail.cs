@@ -26,4 +26,8 @@ public partial class CustomerDetail
 
     public byte[] EncryptedConnectionStringOffline { get; set; }
 	public string schemaname { get; set; }
+
+    public DateTime? LicExpiryDate { get; set; }
+
+    public decimal? ExtendedDays { get; set; }
 }

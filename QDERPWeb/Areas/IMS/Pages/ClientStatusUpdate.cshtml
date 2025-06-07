@@ -331,8 +331,12 @@
     $(document).ready(function () {
         const urlParams = new URLSearchParams(window.location.search);
         const clientStatusNo = (urlParams.get("clientStatusNo") || "").split(/[?&]/)[0];
-    alert(clientStatusNo);
+        const clientCodes = (urlParams.get("clientCode") || "").split(/[?&]/)[0];
+       alert(clientCodes);
+  
          $("#statusId").dxTextBox("instance").option("value",clientStatusNo);
+        $("#GetClientDropDown").dxDropDownBox("instance").option("value", clientCodes);
+
          
          if (clientStatusNo) {
         bindClientStatusById(clientStatusNo);
@@ -349,7 +353,7 @@
             console.log("getdat:",data);
             if (data) {
                 $("#statusId").dxTextBox("instance").option("value", data.ClientStatusNo);
-                $("#GetClientDropDown").dxDropDownBox("instance").option("value", data.Status);
+                $("#GetClientDropDown").dxDropDownBox("instance").option("value", data.ClientCode);
                 $("#reportedBy").dxTextBox("instance").option("value", data.ReportedBy);
                 $("#reportedOn").dxDateBox("instance").option("value", data.ReportedOn);
                 $("#reportRemarks").dxTextArea("instance").option("value", data.StatusRemarks);
@@ -374,16 +378,96 @@
         });
     });
     function onSaveClient() {
+        debugger;
         DevExpress.ui.notify("Client Saved", "success", 1000);
     }
 
-    function onSaveAndClose() {
-        DevExpress.ui.notify("Saved & Closed", "success", 1000);
+   function onSaveAndClose() {
+    const clientStatusNo = $("#statusId").dxTextBox("instance").option("value");
+
+    const data = {
+        ClientCode: String($("#GetClientDropDown").dxDropDownBox("instance").option("value")),
+        ReportedBy: $("#reportedBy").dxTextBox("instance").option("value"),
+        ReportedOn: $("#reportedOn").dxDateBox("instance").option("value"),
+        StatusRemarks: $("#reportRemarks").dxTextArea("instance").option("value"),
+        Status: $("#GetStatusDropDown").dxDropDownBox("instance").option("value"),
+        FollowupOn: $("#followUpOn").dxDateBox("instance").option("value")
+    };
+
+    if (clientStatusNo) {
+        data.ClientStatusNo = parseInt(clientStatusNo);
     }
 
-    function onDeleteClient() {
-        DevExpress.ui.notify("Client Deleted", "error", 1000);
+    $.ajax({
+        url: '/api/ClientStatusUpdate/SaveOrUpdateClientStatusUpdate',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        success: function (res) {
+            if (res.success) {
+                DevExpress.ui.notify(res.message, "success", 3000);
+
+                $("#statusId").dxTextBox("instance").option("value", res.lastClientStatusNo);
+
+                // Refresh parent DataGrid with fresh data
+                if (window.parent && typeof window.parent.loadClientStatusGrid === "function") {
+                    const clientCode = $("#GetClientDropDown").dxDropDownBox("instance").option("value");
+                    if (clientCode) {
+                        window.parent.loadClientStatusGrid(clientCode);
+                    }
+                }
+
+                // Close modal after a small delay to ensure grid refresh completes
+                setTimeout(() => {
+                    if (window.parent && typeof window.parent.closeModal === "function") {
+                        window.parent.closeModal();
+                    }
+                }, 500);
+
+            } else {
+                DevExpress.ui.notify(res.message, "error", 3000);
+            }
+        },
+        error: function (err) {
+            DevExpress.ui.notify("Save or update failed: " + err.responseText, "error", 3000);
+        }
+    });
+}
+
+ 
+
+
+    $("#btnDelete").on("click", function (e) {
+        e.preventDefault();
+        onDeleteButtonClick();
+    });
+    function onDeleteButtonClick(e) {
+
+        var ClientCode = $("#statusId").dxTextBox("instance").option("value");
+
+        if (!ClientCode) {
+            DevExpress.ui.notify("Please enter or select a Journal Entry to delete.", "warning", 3000);
+            return;
+        }
+
+        $.ajax({
+            url: "/api/ClientStatusUpdate/DeleteClientStatusUpdate",
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(ClientCode), // 👈 plain string
+            success: function (response) {
+                DevExpress.ui.notify(response.message, 'success', 3000);
+                window.parent.closeModal();
+            },
+            error: function (xhr) {
+                const msg = xhr.responseJSON?.message || xhr.responseText || 'Error occurred while deleting.';
+                DevExpress.ui.notify(msg, 'error', 3000);
+            }
+        });
+
     }
+
+  
 
     function onBackToList() {
           window.parent.closeModal();
@@ -463,8 +547,22 @@
             if (res.success) {
                 DevExpress.ui.notify(res.message, "success", 2000);
 
-                // Set the returned ID back to the textbox
-                $("#statusId").dxTextBox("instance").option("value", res.lastClientStatusNo);
+                  $("#statusId").dxTextBox("instance").option("value", res.lastClientStatusNo);
+               // Refresh parent DataGrid with fresh data
+                if (window.parent && typeof window.parent.loadClientStatusGrid === "function") {
+                    const clientCode = $("#GetClientDropDown").dxDropDownBox("instance").option("value");
+                    if (clientCode) {
+                        window.parent.loadClientStatusGrid(clientCode);
+                    }
+                }
+
+                // Close modal after a small delay to ensure grid refresh completes
+                setTimeout(() => {
+                    if (window.parent && typeof window.parent.closeModal === "function") {
+                        window.parent.closeModal();
+                    }
+                }, 500);
+
             } else {
                 DevExpress.ui.notify(res.message, "error", 3000);
             }

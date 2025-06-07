@@ -346,7 +346,7 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public dynamic DiscountDetails { get; set; }
         public dynamic ExemptionCode { get; set; }
         public string ItemCode { get; set; }
-        public dynamic Qty { get; set; }
+        public decimal? Qty { get; set; }
         public dynamic SNo { get; set; }
         public dynamic Total { get; set; }
         public dynamic TotalBeforeDiscount { get; set; }
@@ -986,6 +986,22 @@ namespace QD.ERP.Web.Areas.Finance.Models
     {
         public string VoucherNo { get; set; }
         public string NewVoucherNo { get; set; }
+    }
+    public class ExpenseClaimChildDto
+    {
+        public long ClaimChildNo { get; set; }
+        public decimal TaxableAmount { get; set; }
+        public decimal TaxAmount { get; set; }
+        public decimal? RoundOff { get; set; }
+        public string SupplierName { get; set; }
+        public string SupplierVATNo { get; set; }
+        public string PurchaserName { get; set; }
+        public string LineNarration { get; set; }
+        public string EmployeeNo { get; set; }
+        public string PropertyNo { get; set; }
+        public string SupplierNameAr { get; set; }
+        public byte VATApplicableRate { get; set; }
+        public bool IsTaxIncluded { get; set; }
     }
 
 }

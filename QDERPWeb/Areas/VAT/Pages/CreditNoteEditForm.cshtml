@@ -5,7 +5,16 @@
 }
 
 <style>
+	#B2BdataGrid {
+	height: 700px !important;
+}
+	.dx-datagrid-headers .center-header {
+		text-align: center !important;
+	}
 
+	.Head {
+		margin-bottom: 10px;
+	}
 	.toggle-switch {
 	position: relative;
 	display: inline-block;
@@ -441,7 +450,7 @@
 
 		<!-- Tab Content -->
 		<div class="dx-fieldset">
-			<div id="tab-content-1" class="tab-content" style="padding:1em;">
+			<div id="tab-content-1" class="tab-content" style="padding:0em 1em;">
 				<div class="card-container">
 					<!-- First Card (Left Side) -->
 					
@@ -896,9 +905,7 @@
 
 							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Start Date')")).ID("InvoiceEndDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").LabelMode(EditorLabelMode.Outside))</td>
 								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice End Date')")).ID("InvoiceStartDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").LabelMode(EditorLabelMode.Outside))</td>
-</tr>
 
-						<tr>
 							<td>
 							@* @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Revenue Account')")).ID("RevenueAccount")
 								.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType"))) *@
@@ -971,7 +978,7 @@
 
 						</tr>
 					<tr>
-						<td>
+						<td colspan="3">
 							<div style="display: flex; gap: 4px; align-items: flex-end;">
 								<div style="flex: 1;">
 									@(Html.DevExtreme().TextArea()
@@ -1004,12 +1011,8 @@
 																			.OnClick("function() { $('#txtInvoiceNotes').dxTextArea('instance').option('value', ''); }")
 																			)
 								</div>
-							</div>
-						</td>
-
-
-
-						<td style="display: flex; align-items: end;gap: 4px;">
+								<div>
+						
 
 							@(
 														Html.DevExtreme().Button()
@@ -1020,9 +1023,16 @@
 														.ElementAttr(new { @class = "input-button" })
 														.OnClick("function() { convertToArabic(); }")
 
-														)
+														)	
+													</div>
+													</div>
 
+														</td>
 
+														<td colspan="2">
+														<div style="display: flex; align-items: end;gap: 4px;">
+
+														
 							@(Html.DevExtreme().TextArea()
 														.Label(new JS("formatMessage('Notes in Arabic')"))
 														.LabelMode(EditorLabelMode.Outside)
@@ -1034,8 +1044,10 @@
 
 
 														)
+													</div>
 
 						</td>
+													
 
 
 
@@ -1080,7 +1092,7 @@
 																				.TabIndex(1)
 																				.DropDownOptions(o => o.Width(1000))
 																				.ContentTemplate(new TemplateName("InvoiceCurrencyTemplate"))
-																				.Width("75%"))
+																				.Width("100%"))
 										@(Html.DevExtreme().Button()
 																				.ID("EditClient2")
 																				.Icon("edit")
@@ -1116,7 +1128,7 @@
 																				.DropDownOptions(o => o.Width(1000))
 																				@* .Disabled(true) *@
 																				.ContentTemplate(new TemplateName("TaxCurrencyTemplate"))
-																				.Width("75%"))
+																				.Width("100%"))
 										@(Html.DevExtreme().Button()
 																				.ID("EditClient1")
 																				.Icon("edit")
@@ -1136,7 +1148,7 @@
 																			.Step(1)
 																			.ShowSpinButtons(true)
 																			.Value(1)
-																			.Width("75%")
+																			.Width("100%")
                                      )
 								</td>
 							</tr>
@@ -3653,6 +3665,8 @@
 
 							caption: "#",
 
+							cssClass: "center-header",
+
 							width: 100,
 
 							allowEditing: false // Prevent manual editing
@@ -3665,6 +3679,8 @@
 
 							caption: formatMessage('Item Code'),
 
+							cssClass: "center-header",
+
 							width: 200
 
 						},
@@ -3676,6 +3692,9 @@
 			caption: formatMessage('Description'),
 
 			width: 550,
+
+			cssClass: "center-header",
+
 			 sortOrder: "asc", // auto-sort
 
 			  editCellTemplate: function (cellElement, cellInfo) {
@@ -3864,6 +3883,7 @@
 										{
 	dataField: "Descriptions",
 	caption: "...",
+	   cssClass: "center-header",
 	width: 90,
 	allowEditing: true,
 			cellTemplate: function (container, options) {
@@ -3891,6 +3911,8 @@
 						dataField: "DescriptionDetails",
 
 						caption: formatMessage('Unit Rate Method'),
+
+						   cssClass: "center-header",
 
 						width: 200,
 
@@ -4003,7 +4025,7 @@ let title = "Unit of Measure";
 openModal(url, title);
 
 									},
-
+									   cssClass: "center-header",
 									width: 60,
 
 									height: 30
@@ -4017,20 +4039,21 @@ openModal(url, title);
 					},
 
 
-					{ dataField: "Qty", caption: formatMessage('Qty'), width: 150 },
+					{ dataField: "Qty", caption: formatMessage('Qty'), cssClass: "center-header",width: 150 },
 
-					{ dataField: "UnitPrice", caption: formatMessage('Unit Price'), width: 150 },
+					{ dataField: "UnitPrice", caption: formatMessage('Unit Price'), cssClass: "center-header", width: 150 },
 
 					// { dataField: "TotalBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 185 },
 
-					{ dataField: "Discount", caption: formatMessage('Discount'), width: 150 },
+					{ dataField: "Discount", caption: formatMessage('Discount'),cssClass: "center-header", width: 150 },
 
-					{ dataField: "Amount", caption: formatMessage('Amount'), width: 150 },
+					{ dataField: "Amount", caption: formatMessage('Amount'),cssClass: "center-header", width: 150 },
 
 
 					{
 		dataField: "VATPercentage",
 		caption: formatMessage('VAT%'),
+		   cssClass: "center-header",
 		width: 150,
 		editCellTemplate: function(cellElement, cellInfo) {
 			getTaxSlabData().done(function (dropdownData) {
@@ -4079,11 +4102,11 @@ openModal(url, title);
 		}
 	},
 
-					{ dataField: "ExcemptionCode", caption: formatMessage('Excemption Code'), width: 150 },
+					{ dataField: "ExcemptionCode", caption: formatMessage('Excemption Code'),cssClass: "center-header", width: 150 },
 
-					{ dataField: "VAT", caption: formatMessage('VAT'), width: 150 },
+					{ dataField: "VAT", caption: formatMessage('VAT'),cssClass: "center-header", width: 150 },
 
-					{ dataField: "Total", caption: formatMessage('Total'), width: 150 },
+					{ dataField: "Total", caption: formatMessage('Total'),cssClass: "center-header", width: 150 },
 
 					 { dataField: "TaxSlabCode", caption: formatMessage('TaxSlabCode'), width: 150 ,allowEditing: false,visible: false}
 
@@ -6226,6 +6249,7 @@ openModal(url, title);
 	revaccheadid="L00343"
 }
 		
+
 		var InvoiceMaster = {
 			CreditNoteNo: $('#CreditNoteNo').dxTextBox("instance").option("value"),
 			CreditNoteDate: $("#CreditNoteDate").dxDateBox("instance").option("value"),
@@ -6299,11 +6323,11 @@ openModal(url, title);
 		console.log("InvoiceChildren:", updatedDataSource);
 
 		// Ensure InvoiceChildren is not empty or undefined
-		if (!InvoiceChildren || InvoiceChildren.length === 0) {
-			console.error("InvoiceChildren is empty or undefined");
-			DevExpress.ui.notify("No child records found.", "error", 3000);
-			return;  // Exit if there are no child records
-		}
+		// if (!InvoiceChildren || InvoiceChildren.length === 0) {
+		// 	console.error("InvoiceChildren is empty or undefined");
+		// 	DevExpress.ui.notify("No child records found.", "error", 3000);
+		// 	return;  // Exit if there are no child records
+		// }
 
 		// Send AJAX request to update the invoice master details
 		$.ajax({
@@ -6444,11 +6468,11 @@ openModal(url, title);
 		console.log("InvoiceChildren:", updatedDataSource);
 
 		// Ensure InvoiceChildren is not empty or undefined
-		if (!InvoiceChildren || InvoiceChildren.length === 0) {
-			console.error("InvoiceChildren is empty or undefined");
-			DevExpress.ui.notify("No child records found.", "error", 3000);
-			return;  // Exit if there are no child records
-		}
+		// if (!InvoiceChildren || InvoiceChildren.length === 0) {
+		// 	console.error("InvoiceChildren is empty or undefined");
+		// 	DevExpress.ui.notify("No child records found.", "error", 3000);
+		// 	return;  // Exit if there are no child records
+		// }
 
 		// Send AJAX request to update the invoice master details
 		$.ajax({

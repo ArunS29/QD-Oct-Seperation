@@ -193,19 +193,19 @@
 				<label id="TypenewStockClassification" class="form-label"></label>
 				<div style="display:flex; align-items:end;">
 					@(Html.DevExtreme().TextBox()
-												.ID("stockClassificationInput")
-												.Width("70%")
-												.Placeholder("Type new Stock Classification")
-												)
+						.ID("stockClassificationInput")
+						.Width("70%")
+						.Placeholder("Type new Stock Classification")
+						)
 
 					<div class="add-button-wrap" style="margin-left:50%; margin-top:10px;">
 						@(Html.DevExtreme().Button()
-													.ID("addStockClassBtn")
-													.Text(new JS("formatMessage('Add')"))
-													.Type(ButtonType.Success)
-													.Icon("plus")
-													.Width("100%")
-													)
+									.ID("addStockClassBtn")
+									.Text(new JS("formatMessage('Add')"))
+									.Type(ButtonType.Success)
+									.Icon("plus")
+									.Width("100%")
+									)
 						</div>
 					</div>
 				</div>
@@ -228,24 +228,29 @@
 				.LoadAction("GetAll")
 				.UpdateAction("UpdateStockClassification") // Add update action
 				.UpdateMethod("PUT")
+				.DeleteAction("DeleteStockClassification")
+				.DeleteMethod("DELETE")
 				.Controller("StockInventory")
 				.Key("StockClassId") // Primary key
 				)
 				.Editing(editing => editing
 				.Mode(GridEditMode.Row) // or .Form, .Popup
 				.AllowUpdating(true)
+				.AllowDeleting(true)
 				.UseIcons(true) // Show edit/save icons
+				.ConfirmDelete(true)
+				.Texts(t => t.ConfirmDeleteMessage("Are you sure you want to delete this record?"))
 				)
 				.Columns(columns =>
 				{
 					columns.Add().DataField("StockClassId")
-					.Caption("ID")
+					.Caption(new JS("formatMessage('ID')"))
 					.Width(100)
 					.Alignment(HorizontalAlignment.Center)
 					.AllowEditing(false); // Read-only
 
 					columns.Add().DataField("StockClassification")
-					.Caption("Stock Classification")
+					.Caption(new JS("formatMessage('Stock Classification')"))
 					.Width(300)
 					.Alignment(HorizontalAlignment.Center);
 				})
@@ -263,11 +268,11 @@
 			
 			<div class="action-buttons">
 				@(Html.DevExtreme().Button()
-								.Text("Back")
-								.Icon("arrowleft")
-								.OnClick("Goback")
-								.Width(120)
-								.Type(ButtonType.Default))
+						.Text(new JS("formatMessage('Back')"))
+						.Icon("arrowleft")
+						.OnClick("Goback")
+						.Width(120)
+						.Type(ButtonType.Default))
 			</div>
 		</div>
 	</div>
@@ -326,4 +331,12 @@
 			});
 		}
 	});
+	  $(function() {
+		 var grid = $("#storeGrid").dxDataGrid("instance");
+		 if (grid) {
+			 grid.option("onRowRemoved", function(e) {
+				 DevExpress.ui.notify("Deleted successfully.", "success", 2000);
+			 });
+		 }
+	 });
 </script>

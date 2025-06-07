@@ -14,6 +14,8 @@ public partial class ERPMasterWtDataContext : DbContext
         : base(options)
     {
     }
+
+    public DbSet<SupplierOutstanding> SupplierOutstandings { get; set; }
     public virtual DbSet<CurrencyMaster> CurrencyMasters { get; set; }
 
     public virtual DbSet<Language> Languages { get; set; }
@@ -3414,9 +3416,11 @@ public partial class ERPMasterWtDataContext : DbContext
     public virtual DbSet<RFQViewModel> RFQViewModels { get; set; }
     public virtual DbSet<QuotationViewModel> QuotationViewModels { get; set; }
     public virtual DbSet<MaterialReceiptViewModel> MaterialReceiptViewModels { get; set; }
+    public DbSet<Qry01Bankandcashbalance> Qry01Bankandcashbalance { get; set; }
+    public DbSet<Qry01SupplierOutstanding> Qry01SupplierOutstanding { get; set; }
 
 
-	protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
      
         // modelBuilder.Entity<VoucherViewModel>().HasNoKey();
@@ -3439,8 +3443,13 @@ public partial class ERPMasterWtDataContext : DbContext
         modelBuilder.Entity<RFQViewModel>().HasNoKey();
 		modelBuilder.Entity<QuotationViewModel>().HasNoKey();
         modelBuilder.Entity<MaterialReceiptViewModel>().HasNoKey();
-		//modelBuilder.Entity<ClientCategoryDisplayDTO>.HasNoKey();
-		modelBuilder.Entity<A01CheckIfAnyCostEntriesOrphan>(entity =>
+
+        modelBuilder.Entity<Qry01Bankandcashbalance>().HasNoKey().ToView("qry01Bankandcashbalance");
+        modelBuilder.Entity<Qry01SupplierOutstanding>().HasNoKey().ToView("qry01supplieroutstanding");
+
+
+        //modelBuilder.Entity<ClientCategoryDisplayDTO>.HasNoKey();
+        modelBuilder.Entity<A01CheckIfAnyCostEntriesOrphan>(entity =>
         {
             entity
                 .HasNoKey()
@@ -5222,6 +5231,19 @@ public partial class ERPMasterWtDataContext : DbContext
                 .IsRequired()
                 .HasMaxLength(8)
                 .IsUnicode(false);
+        });
+        modelBuilder.Entity<SupplierOutstanding>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToTable("tbl01supplieroutstanding"); // If it's a table; use .ToView() if it's a view
+
+            entity.Property(e => e.AccountHead)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+
+            entity.Property(e => e.Balance)
+                .HasColumnType("decimal(18, 2)");
         });
 
         modelBuilder.Entity<Qry10103EmployeeMasterForPaySlip>(entity =>

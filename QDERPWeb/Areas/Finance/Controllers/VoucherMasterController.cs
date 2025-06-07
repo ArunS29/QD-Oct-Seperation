@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
@@ -27,9 +28,10 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<VoucherMasterController> _logger;
-
-        public VoucherMasterController(ILogger<VoucherMasterController> logger, TenantDbContextHelper tenantDbContextHelper)
+        private readonly IUserActionLogger _userActionLogger;
+        public VoucherMasterController(ILogger<VoucherMasterController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -1979,9 +1981,14 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 // Remove all matching records
                 dbContext.Tbl201VoucherEntries.RemoveRange(records);
                 await dbContext.SaveChangesAsync();
-
-                // Fetch updated voucher list
-                var voucherEntries = await dbContext.Tbl201VoucherEntries
+                    // ✅ Log the deletion action
+                    await _userActionLogger.LogAsync(
+                        module: "Finance > Delete Receipts",
+                        actionDetail: $"Deleted all voucher entries for VoucherNo: {VoucherNo}. Total deleted: {records.Count}",
+                        documentNo: VoucherNo
+                    );
+                    // Fetch updated voucher list
+                    var voucherEntries = await dbContext.Tbl201VoucherEntries
                                                    .Where(ve => ve.VoucherNo == VoucherNo)
                                                    .ToListAsync();
 
@@ -2640,9 +2647,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 PurchaseVoucherNo = child.InvoiceNo,
                                 UnitRate = child.UnitPrice?.GetDecimal() ?? 0m, // Ensure null safety
                                 DetailedDescription = child.Description?.GetString() ?? string.Empty, // Null safety
-                                QuantityInvoiced = child.Qty?.GetDecimal() ?? 0m, // Null safety
+                                QuantityInvoiced = child.Qty, // Null safety
                                 TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8,
                                 UnitsToBill = 1,
+                                //UnitRateInOc = child.UnitPrice?.GetDecimal() ?? 0m,
+                                //DiscountInOc = child.Discount,
+                                Discount= child.Discount,
                                 UnitRateMethod = 49,
                                 ItemCode = child.ItemCode ?? string.Empty, // Null safety
                                 UoM = "Each"
@@ -2665,6 +2675,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 existingChild.QuantityInvoiced = child.QuantityInvoiced;
                                 existingChild.TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8;
                                 existingChild.UnitsToBill = 1;
+                                existingChild.Discount = child.Discount;
                                 existingChild.UnitRateMethod = 49;
                                 existingChild.ItemCode = child.ItemCode ?? string.Empty;
                                 existingChild.UoM = "Each";
@@ -2759,7 +2770,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 InvoiceNo = child.InvoiceNo,
                                 UnitRate = child.UnitPrice?.GetDecimal() ?? 0m,
                                 DetailedDescription = child.Description?.GetString() ?? string.Empty,
-                                QuantityInvoiced = child.Qty?.GetDecimal() ?? 0m,
+                                QuantityInvoiced = child.Qty,
                                 TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8,
                                 Discount = child.Discount,
                                 UnitRateInOc= child.UnitPrice?.GetDecimal() ?? 0m,
@@ -2890,12 +2901,28 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             // Create a new instance for each child
                             var aTbl20171VatcreditNoteChild = new Tbl20171VatcreditNoteChild
                             {
+                                //CreditNoteNo = child.InvoiceNo,
+                                //UnitRate = child.UnitRate, // Ensure null safety
+                                //DetailedDescription = child.Description?.GetString() ?? string.Empty, // Null safety
+                                //QuantityCredited = child.QuantityCredited, // Null safety
+                                //TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8,
+                                //UnitsToCredited = 1,
+                                //UnitRateInOc = child.UnitPrice?.GetDecimal() ?? 0m,
+                                //DiscountInOc = child.Discount,
+                                //UnitRateMethod = 49,
+                                //ItemCode = child.ItemCode ?? string.Empty, // Null safety
+                                //UoM = "Each"
+
                                 CreditNoteNo = child.InvoiceNo,
-                                UnitRate = child.UnitRate, // Ensure null safety
+                                UnitRate = child.UnitPrice?.GetDecimal() ?? 0m, // Ensure null safety
                                 DetailedDescription = child.Description?.GetString() ?? string.Empty, // Null safety
-                                QuantityCredited = child.QuantityCredited, // Null safety
+                                QuantityCredited = child.Qty, // Null safety
                                 TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8,
                                 UnitsToCredited = 1,
+
+                                UnitRateInOc = child.UnitPrice?.GetDecimal() ?? 0m,
+                                DiscountInOc = child.Discount,
+                                Discount = child.Discount,
                                 UnitRateMethod = 49,
                                 ItemCode = child.ItemCode ?? string.Empty, // Null safety
                                 UoM = "Each"
@@ -2918,6 +2945,9 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 existingChild.QuantityCredited = child.QuantityCredited;
                                 existingChild.TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8;
                                 existingChild.UnitsToCredited   = 1;
+                                existingChild.UnitRateInOc = child.UnitPrice?.GetDecimal() ?? 0m;
+                                existingChild.DiscountInOc = child.Discount;
+                                existingChild.Discount = child.Discount;
                                 existingChild.UnitRateMethod = 49;
                                 existingChild.ItemCode = child.ItemCode ?? string.Empty;
                                 existingChild.UoM = "Each";
@@ -3010,9 +3040,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 DebitNoteNo = child.InvoiceNo,
                                 UnitRate = child.UnitPrice?.GetDecimal() ?? 0m, // Ensure null safety
                                 DetailedDescription = child.Description?.GetString() ?? string.Empty, // Null safety
-                                QuantityDebited = child.Qty?.GetDecimal() ?? 0m, // Null safety
+                                QuantityDebited = child.Qty, // Null safety
                                 TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8,
                                 UnitsToDebited = 1,
+                                Discount = child.Discount,
+                                UnitRateInOc = child.UnitPrice?.GetDecimal() ?? 0m,
+                                DiscountInOc = child.Discount,
                                 UnitRateMethod = 49,
                                 ItemCode = child.ItemCode ?? string.Empty, // Null safety
                                 UoM = "Each"
@@ -3036,6 +3069,9 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 existingChild.TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8;
                                 existingChild.UnitsToDebited = 1;
                                 existingChild.UnitRateMethod = 49;
+                                existingChild.Discount = child.Discount;
+                                existingChild.UnitRateInOc = child.UnitPrice?.GetDecimal() ?? 0m;
+                                existingChild.DiscountInOc = child.Discount;
                                 existingChild.ItemCode = child.ItemCode ?? string.Empty;
                                 existingChild.UoM = "Each";
 

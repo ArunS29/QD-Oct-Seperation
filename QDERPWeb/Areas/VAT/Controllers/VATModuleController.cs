@@ -110,39 +110,80 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 			return Unauthorized(new { message = "Invalid tenant.", success = false });
 		}
 
+
 		[HttpPost]
-		public async Task<ActionResult> DuplicateVatInvoice(string invoiceNo)
-		{
-			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				if (string.IsNullOrWhiteSpace(invoiceNo))
-					return BadRequest("Invoice number is required.");
+        public async Task<ActionResult> InsertPurchaseCloneEInvoice(string InvoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    // Fetch the invoice master details using the given InvoiceNo
+                    var invoice = await dbContext.Tbl20166VatpurchaseMasters
+                                                 .FirstOrDefaultAsync(i => i.PurchaseVoucherNo == InvoiceNo);
 
-				try
-				{
-					// Assuming the stored procedure returns a message string (like 'Success' or detailed message)
-					var result = await dbContext
-						.Database
-						.ExecuteSqlInterpolatedAsync($"EXEC sp201_73InsertDuplicatePurchaseBill @InvoiceNo = {invoiceNo}");
+                    if (invoice == null)
+                    {
+                        return NotFound(new { Message = "Invoice not found." });
+                    }
 
-					// Optionally: fetch the newly created invoice or confirm if rows affected > 0
-					if (result > 0)
-					{
-						return Json(new { success = true, message = "Purchase Invoice has been successfully added to the database." });
-					}
-					else
-					{
-						return Json(new { success = false, message = "Duplication failed or no invoice was added." });
-					}
-				}
-				catch (Exception ex)
-				{
-					return StatusCode(500, $"Internal server error: {ex.Message}");
-				}
-			}
+                    string invoiceAbbr = "PUR"; // Fixed abbreviation
+                    DateTime invoiceDate = DateTime.Now;
+                    string yearDigits = invoiceDate.ToString("yy");
 
-			return Unauthorized(new { message = "Invalid tenant.", success = false });
-		}
+                    // Format: PUR-YY-
+                    string invoicePrefix = $"{invoiceAbbr}-{yearDigits}-";
+
+                    // Get last voucher number matching current year
+                    var lastInvoiceNumber = await dbContext.Tbl20166VatpurchaseMasters
+                        .Where(i => i.PurchaseVoucherNo.StartsWith(invoicePrefix))
+                        .OrderByDescending(i => i.PurchaseVoucherNo)
+                        .Select(i => i.PurchaseVoucherNo)
+                        .FirstOrDefaultAsync();
+
+
+                    int newNumber = 1;
+                    if (!string.IsNullOrEmpty(lastInvoiceNumber))
+                    {
+                        // Extract numeric part after last hyphen
+                        var match = Regex.Match(lastInvoiceNumber, @"(\d{6})$");
+                        if (match.Success)
+                        {
+                            newNumber = int.Parse(match.Groups[1].Value) + 1;
+                        }
+                    }
+
+                    // Build new voucher number: PUR-YY-000001
+                    string newPurchaseVoucherNo = $"{invoiceAbbr}-{yearDigits}-{newNumber:D6}";
+
+                    // Extract values from the fetched invoice
+                    string ToInvoiceNo = newPurchaseVoucherNo; // You can generate or assign this as needed
+                    DateTime InvoiceDate = invoice.PurchaseVoucherDate ?? DateTime.Now;
+                    string AddedBy = invoice.AddedBy ?? "System"; // Fallback if null
+                    DateTime AddedOn = invoice.AddedOn ?? DateTime.Now;
+                
+
+                    // Execute the stored procedure
+                    var result = dbContext.Database.ExecuteSqlRaw(
+                        "EXEC sp201_73InsertDuplicatePurchaseBill @p0,@p1,@p2,@p3,@p4",
+                        InvoiceNo, ToInvoiceNo, InvoiceDate, AddedBy, AddedOn);
+
+                    dbContext.SaveChanges();
+
+                    return Ok(new
+                    {
+                        Message = "Purchase Invoice cloned successfully.",
+                        VoucherVerifiedBy = User.Identity?.Name ?? "System"
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
 
 		[HttpGet]
 		public async Task<ActionResult> GetVatDetails(string frmDate, string toDate)
@@ -4086,6 +4127,213 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteInvoiceAllLineItem(string InvoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    if (string.IsNullOrWhiteSpace(InvoiceNo))
+                    {
+                        return BadRequest(new { Message = "Invoice number is required." });
+                    }
+
+                    // Check if invoice exists (optional)
+                    var invoiceExists = await dbContext.Tbl20162VatinvoiceChildren
+                                            .AnyAsync(v => v.InvoiceNo == InvoiceNo);
+
+                    if (!invoiceExists)
+                    {
+                        return NotFound(new { Message = "Invoice not found." });
+                    }
+
+                    return Ok(new { Message = "Invoice child records deleted successfully." });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new { Message = "Error while deleting invoice child records.", Error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteInvoiceChild([FromBody] int InvoiceChildSlNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                   
+
+                    // Call the stored procedure with SerialNumber
+                    var result = await dbContext.Database.ExecuteSqlRawAsync(
+                        "EXEC sp201_61DeleteVATInvoiceChild @p0", InvoiceChildSlNo);
+
+                    return Ok(new { success = true, message = "Line item deleted successfully." });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new { success = false, message = "Server error occurred.", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+
+
+
+        //[HttpPost]
+        //public async Task<ActionResult> UpdateProformaInvoiceChildDetails(List<Tbl20182ProformaInvoiceChild> InvoiceChildren)
+        //{
+        //    if (InvoiceChildren == null || InvoiceChildren.Count == 0)
+        //    {
+        //        return BadRequest(new { success = false, message = "Invalid or empty invoice data received." });
+        //    }
+
+        //    try
+        //    {
+
+        //        if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //        {
+        //            var savedChildren = new List<Tbl20162VatinvoiceChild>();
+
+        //            foreach (var child in InvoiceChildren)
+        //            {
+        //                if (child.ProformaInvChildSlNo == null || child.ProformaInvChildSlNo == 0)
+        //                {
+        //                    var newChild = new Tbl20182ProformaInvoiceChild
+        //                    {
+        //                        ProformaInvoiceNo = child.ProformaInvoiceNo,
+        //                        UnitRate = child.UnitRate,
+        //                        DetailedDescription = child.Description?.GetString() ?? string.Empty,
+        //                        QuantityInvoiced = child.Qty?.GetDecimal() ?? 0m,
+        //                        TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8,
+        //                        Discount = child.Discount,
+        //                        UnitRateInOc = child.UnitPrice?.GetDecimal() ?? 0m,
+        //                        DiscountInOc = child.Discount,
+        //                        UnitsToBill = 1,
+        //                        UnitRateMethod = 49,
+        //                        ItemCode = child.ItemCode ?? string.Empty,
+        //                        UoM = "Each"
+        //                    };
+
+        //                    await dbContext.Tbl20162VatinvoiceChildren.AddAsync(newChild);
+        //                    await dbContext.SaveChangesAsync();
+
+        //                    // Set the generated ID back to the input model if needed
+        //                    child.InvoiceChildSlNo = newChild.InvoiceChildSlNo;
+
+        //                    savedChildren.Add(newChild);
+        //                }
+        //                else
+        //                {
+        //                    var existingChild = await dbContext.Tbl20162VatinvoiceChildren
+        //                        .FirstOrDefaultAsync(x => x.InvoiceChildSlNo == child.InvoiceChildSlNo);
+
+        //                    if (existingChild != null)
+        //                    {
+
+        //                        existingChild.InvoiceNo = child.InvoiceNo;
+        //                        existingChild.UnitRate = child.UnitRate;
+        //                        existingChild.DetailedDescription = child.DetailedDescription;
+        //                        existingChild.QuantityInvoiced = child.QuantityInvoiced;
+        //                        existingChild.TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8;
+        //                        existingChild.UnitsToBill = 1;
+        //                        existingChild.UnitRateMethod = 49;
+        //                        existingChild.ItemCode = child.ItemCode ?? string.Empty;
+        //                        existingChild.UoM = "Each";
+        //                        existingChild.Discount = child.Discount;
+        //                        existingChild.UnitRateInOc = child.UnitPrice?.GetDecimal() ?? 0m;
+        //                        existingChild.DiscountInOc = child.Discount;
+        //                        dbContext.Tbl20162VatinvoiceChildren.Update(existingChild);
+        //                        savedChildren.Add(existingChild);
+        //                    }
+        //                }
+        //            }
+
+        //            await dbContext.SaveChangesAsync();
+
+        //            return Ok(new
+        //            {
+        //                success = true,
+        //                message = "Invoice child records saved successfully!",
+        //                data = savedChildren
+        //            });
+        //        }
+        //        else
+        //        {
+        //            return BadRequest(new { success = false, message = "Failed to retrieve tenant and database context." });
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+        //    }
+        //}
+
+        [HttpPost]
+        public async Task<ActionResult> UpdateToPurchaseUnlocktheBil(string invoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+
+                    var records = dbContext.Tbl20166VatpurchaseMasters
+                  .Where(x => x.PurchaseVoucherNo == invoiceNo)
+                  .ToList();
+
+                    foreach (var record in records)
+                    {
+                        record.IsApproved = false;
+                        record.IsVerified = false;
+                    }
+
+                    dbContext.SaveChanges();
+
+
+                    return Ok(new
+                    {
+                        Message = "Unlocak the bill successfully.",
+                       
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpGet]
+        public IActionResult CreditDetailDescription()
+        {
+            //// Log or debug the incoming parameters
+            //ViewBag.VoucherNo = voucherNo;
+            //ViewBag.AccountHead = accountHead;
+            //ViewBag.VoucherAmount = voucherAmount;
+            //ViewBag.DrCr = drCr;
+            //ViewBag.VoucherEntryNo = voucherEntryNo;
+            return PartialView("~/Areas/VAT/Pages/CreditDetailDescription.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
+        }
+
+        [HttpGet]
+        public IActionResult VATPercentageCal()
+        {
+            //// Log or debug the incoming parameters
+            //ViewBag.VoucherNo = voucherNo;
+            //ViewBag.AccountHead = accountHead;
+            //ViewBag.VoucherAmount = voucherAmount;
+            //ViewBag.DrCr = drCr;
+            //ViewBag.VoucherEntryNo = voucherEntryNo;
+            return PartialView("~/Areas/VAT/Pages/VATPercentageCal.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
+        }
 
     }
 }
