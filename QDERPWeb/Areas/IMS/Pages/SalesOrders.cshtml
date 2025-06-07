@@ -279,6 +279,7 @@
 
 				subColumns.AddFor(m => m.TotalWithTax).Caption("Total With Tax").Alignment(HorizontalAlignment.Center).Visible(true);
 
+
 			});
 		})
 		.Height(680) // Fixed height for the grid
@@ -304,6 +305,39 @@
 		.OnContextMenuPreparing("onContextMenuPreparing")
 		.StateStoring(stateStoring =>
 		{
+
+	});
+					})
+	.Height(680) // Fixed height for the grid
+	.ColumnAutoWidth(true)
+	.Width("98%")
+	.WordWrapEnabled(true)
+	.OnCellClick("function(e) {handleCellClick(e);}")
+	.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+	.AllowColumnReordering(true)
+	.AllowColumnResizing(true)
+	.ColumnFixing(fixing => fixing.Enabled(true))
+	.HeaderFilter(filter => filter.Visible(false))
+		.Paging(p => p.PageSize(10)) // Set desired page size (e.g., 10 rows per page)
+		.Pager(pager =>
+		{
+			pager.ShowPageSizeSelector(true);
+			pager.AllowedPageSizes(new[] { 5, 10, 20, 50 });
+			pager.ShowNavigationButtons(true);
+			pager.Visible(true);
+		})
+
+	.GroupPanel(groupPanel => groupPanel.Visible(false))
+	.ShowBorders(true)
+	.ShowRowLines(true)
+
+
+	.FilterRow(filterRow => filterRow.Visible(false))
+	.GroupPanel(groupPanel => groupPanel.Visible(false))
+	.ShowBorders(true)
+	.StateStoring(stateStoring =>
+	{
+
 			stateStoring
 			.Enabled(true)
 			.Type(StateStoringType.LocalStorage)

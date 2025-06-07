@@ -614,6 +614,9 @@
             DevExpress.DataAccess.Sql.ColumnExpression columnExpression290 = new DevExpress.DataAccess.Sql.ColumnExpression();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RegulartaxinvoicewithoutSignatoriesFormat05));
             this.TopMargin = new DevExpress.XtraReports.UI.TopMarginBand();
+            this.xrLabel170 = new DevExpress.XtraReports.UI.XRLabel();
+            this.xrLabel169 = new DevExpress.XtraReports.UI.XRLabel();
+            this.xrLabel168 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel158 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel151 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel69 = new DevExpress.XtraReports.UI.XRLabel();
@@ -633,6 +636,7 @@
             this.xrPictureBox2 = new DevExpress.XtraReports.UI.XRPictureBox();
             this.xrLine2 = new DevExpress.XtraReports.UI.XRLine();
             this.xrLabel159 = new DevExpress.XtraReports.UI.XRLabel();
+            this.xrLine1 = new DevExpress.XtraReports.UI.XRLine();
             this.xrLabel153 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel152 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel150 = new DevExpress.XtraReports.UI.XRLabel();
@@ -784,10 +788,6 @@
             this.DetailData1 = new DevExpress.XtraReports.UI.XRControlStyle();
             this.DetailData3_Odd = new DevExpress.XtraReports.UI.XRControlStyle();
             this.PageInfo = new DevExpress.XtraReports.UI.XRControlStyle();
-            this.xrLine1 = new DevExpress.XtraReports.UI.XRLine();
-            this.xrLabel168 = new DevExpress.XtraReports.UI.XRLabel();
-            this.xrLabel169 = new DevExpress.XtraReports.UI.XRLabel();
-            this.xrLabel170 = new DevExpress.XtraReports.UI.XRLabel();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             // 
             // TopMargin
@@ -960,9 +960,51 @@
             this.xrLabel136,
             this.xrLabel89,
             this.xrLabel166});
-            this.TopMargin.HeightF = 1115.68F;
+            this.TopMargin.HeightF = 1092.667F;
             this.TopMargin.Name = "TopMargin";
             this.TopMargin.StylePriority.UseBorderWidth = false;
+            // 
+            // xrLabel170
+            // 
+            this.xrLabel170.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Parameters.CompanyWebsite]")});
+            this.xrLabel170.Font = new DevExpress.Drawing.DXFont("Cambria", 8F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel170.ForeColor = System.Drawing.Color.RoyalBlue;
+            this.xrLabel170.LocationFloat = new DevExpress.Utils.PointFloat(358.3383F, 1076.334F);
+            this.xrLabel170.Multiline = true;
+            this.xrLabel170.Name = "xrLabel170";
+            this.xrLabel170.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
+            this.xrLabel170.SizeF = new System.Drawing.SizeF(182.0863F, 16.33331F);
+            this.xrLabel170.StylePriority.UseFont = false;
+            this.xrLabel170.StylePriority.UseForeColor = false;
+            // 
+            // xrLabel169
+            // 
+            this.xrLabel169.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Parameters.CompanyEmailAddress]")});
+            this.xrLabel169.Font = new DevExpress.Drawing.DXFont("Cambria", 8F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel169.ForeColor = System.Drawing.Color.RoyalBlue;
+            this.xrLabel169.LocationFloat = new DevExpress.Utils.PointFloat(356.7224F, 1061.667F);
+            this.xrLabel169.Multiline = true;
+            this.xrLabel169.Name = "xrLabel169";
+            this.xrLabel169.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
+            this.xrLabel169.SizeF = new System.Drawing.SizeF(182.0863F, 14.66669F);
+            this.xrLabel169.StylePriority.UseFont = false;
+            this.xrLabel169.StylePriority.UseForeColor = false;
+            // 
+            // xrLabel168
+            // 
+            this.xrLabel168.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[parameters.CompanyPhone]")});
+            this.xrLabel168.Font = new DevExpress.Drawing.DXFont("Cambria", 8F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel168.ForeColor = System.Drawing.Color.IndianRed;
+            this.xrLabel168.LocationFloat = new DevExpress.Utils.PointFloat(184.1089F, 1072.347F);
+            this.xrLabel168.Multiline = true;
+            this.xrLabel168.Name = "xrLabel168";
+            this.xrLabel168.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
+            this.xrLabel168.SizeF = new System.Drawing.SizeF(174.2294F, 16.66663F);
+            this.xrLabel168.StylePriority.UseFont = false;
+            this.xrLabel168.StylePriority.UseForeColor = false;
             // 
             // xrLabel158
             // 
@@ -1303,6 +1345,19 @@
             this.xrLabel159.SizeF = new System.Drawing.SizeF(923F, 197.4125F);
             this.xrLabel159.StylePriority.UseBorders = false;
             // 
+            // xrLine1
+            // 
+            this.xrLine1.BackColor = System.Drawing.Color.Transparent;
+            this.xrLine1.BorderColor = System.Drawing.Color.Transparent;
+            this.xrLine1.ForeColor = System.Drawing.Color.SteelBlue;
+            this.xrLine1.LineWidth = 2F;
+            this.xrLine1.LocationFloat = new DevExpress.Utils.PointFloat(4.999898F, 1049.749F);
+            this.xrLine1.Name = "xrLine1";
+            this.xrLine1.SizeF = new System.Drawing.SizeF(925.0001F, 8.75F);
+            this.xrLine1.StylePriority.UseBackColor = false;
+            this.xrLine1.StylePriority.UseBorderColor = false;
+            this.xrLine1.StylePriority.UseForeColor = false;
+            // 
             // xrLabel153
             // 
             this.xrLabel153.Borders = DevExpress.XtraPrinting.BorderSide.None;
@@ -1337,7 +1392,7 @@
             this.xrLabel150.Multiline = true;
             this.xrLabel150.Name = "xrLabel150";
             this.xrLabel150.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel150.SizeF = new System.Drawing.SizeF(920.0001F, 203.4126F);
+            this.xrLabel150.SizeF = new System.Drawing.SizeF(920.0001F, 199.2457F);
             this.xrLabel150.StylePriority.UseBorders = false;
             this.xrLabel150.StylePriority.UseTextAlignment = false;
             this.xrLabel150.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft;
@@ -1685,11 +1740,11 @@
             this.xrLabel129.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[TotalWithTax]")});
             this.xrLabel129.Font = new DevExpress.Drawing.DXFont("Cambria", 8F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel129.LocationFloat = new DevExpress.Utils.PointFloat(381.3788F, 904.1667F);
+            this.xrLabel129.LocationFloat = new DevExpress.Utils.PointFloat(381.3788F, 900.9999F);
             this.xrLabel129.Multiline = true;
             this.xrLabel129.Name = "xrLabel129";
             this.xrLabel129.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel129.SizeF = new System.Drawing.SizeF(214.0759F, 18.83331F);
+            this.xrLabel129.SizeF = new System.Drawing.SizeF(214.0759F, 22.00012F);
             this.xrLabel129.StylePriority.UseBorders = false;
             this.xrLabel129.StylePriority.UseFont = false;
             this.xrLabel129.TextFormatString = "{0:0.00}";
@@ -1700,13 +1755,13 @@
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrLabel128.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[TotalWithTax]")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[calcTaxAmountOC]")});
             this.xrLabel128.Font = new DevExpress.Drawing.DXFont("Cambria", 8F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel128.LocationFloat = new DevExpress.Utils.PointFloat(381.3788F, 882.1666F);
             this.xrLabel128.Multiline = true;
             this.xrLabel128.Name = "xrLabel128";
             this.xrLabel128.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel128.SizeF = new System.Drawing.SizeF(214.0759F, 22.00006F);
+            this.xrLabel128.SizeF = new System.Drawing.SizeF(214.0759F, 18.83325F);
             this.xrLabel128.StylePriority.UseBorders = false;
             this.xrLabel128.StylePriority.UseFont = false;
             this.xrLabel128.TextFormatString = "{0:0.00}";
@@ -1868,7 +1923,7 @@
             this.xrLabel118.SizeF = new System.Drawing.SizeF(126.2731F, 37.16669F);
             this.xrLabel118.StylePriority.UseBorders = false;
             this.xrLabel118.StylePriority.UseTextAlignment = false;
-            this.xrLabel118.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
+            this.xrLabel118.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             this.xrLabel118.TextFormatString = "{0:0.00}";
             // 
             // xrLabel117
@@ -1878,14 +1933,14 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrLabel117.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[calcTaxAmount]")});
-            this.xrLabel117.LocationFloat = new DevExpress.Utils.PointFloat(690.8333F, 757.7345F);
+            this.xrLabel117.LocationFloat = new DevExpress.Utils.PointFloat(690.8332F, 757.7345F);
             this.xrLabel117.Multiline = true;
             this.xrLabel117.Name = "xrLabel117";
             this.xrLabel117.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
             this.xrLabel117.SizeF = new System.Drawing.SizeF(112.8937F, 37.16669F);
             this.xrLabel117.StylePriority.UseBorders = false;
             this.xrLabel117.StylePriority.UseTextAlignment = false;
-            this.xrLabel117.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
+            this.xrLabel117.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             this.xrLabel117.TextFormatString = "{0:0.00}";
             // 
             // xrLabel116
@@ -1902,7 +1957,7 @@
             this.xrLabel116.SizeF = new System.Drawing.SizeF(80.55432F, 37.16669F);
             this.xrLabel116.StylePriority.UseBorders = false;
             this.xrLabel116.StylePriority.UseTextAlignment = false;
-            this.xrLabel116.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
+            this.xrLabel116.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             this.xrLabel116.TextFormatString = "{0:0.00}";
             // 
             // xrLabel114
@@ -1919,7 +1974,7 @@
             this.xrLabel114.SizeF = new System.Drawing.SizeF(116.9657F, 37.16669F);
             this.xrLabel114.StylePriority.UseBorders = false;
             this.xrLabel114.StylePriority.UseTextAlignment = false;
-            this.xrLabel114.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
+            this.xrLabel114.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             this.xrLabel114.TextFormatString = "{0:0.00}";
             // 
             // xrLabel113
@@ -1936,7 +1991,7 @@
             this.xrLabel113.SizeF = new System.Drawing.SizeF(67.87506F, 37.16669F);
             this.xrLabel113.StylePriority.UseBorders = false;
             this.xrLabel113.StylePriority.UseTextAlignment = false;
-            this.xrLabel113.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
+            this.xrLabel113.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             this.xrLabel113.TextFormatString = "{0:0.00}";
             // 
             // xrLabel112
@@ -1953,7 +2008,7 @@
             this.xrLabel112.SizeF = new System.Drawing.SizeF(82.55319F, 37.16669F);
             this.xrLabel112.StylePriority.UseBorders = false;
             this.xrLabel112.StylePriority.UseTextAlignment = false;
-            this.xrLabel112.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
+            this.xrLabel112.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             this.xrLabel112.TextFormatString = "{0:0.00}";
             // 
             // xrLabel111
@@ -1970,8 +2025,7 @@
             this.xrLabel111.SizeF = new System.Drawing.SizeF(55.67371F, 37.16669F);
             this.xrLabel111.StylePriority.UseBorders = false;
             this.xrLabel111.StylePriority.UseTextAlignment = false;
-            this.xrLabel111.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
-            this.xrLabel111.TextFormatString = "{0:0.00}";
+            this.xrLabel111.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             // 
             // xrLabel105
             // 
@@ -2312,7 +2366,7 @@
             this.xrLabel88.StylePriority.UseFont = false;
             this.xrLabel88.StylePriority.UseForeColor = false;
             this.xrLabel88.StylePriority.UseTextAlignment = false;
-            this.xrLabel88.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft;
+            this.xrLabel88.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
             // 
             // xrLabel87
             // 
@@ -2338,7 +2392,7 @@
             this.xrLabel87.StylePriority.UseFont = false;
             this.xrLabel87.StylePriority.UseForeColor = false;
             this.xrLabel87.StylePriority.UseTextAlignment = false;
-            this.xrLabel87.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft;
+            this.xrLabel87.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
             // 
             // xrLabel86
             // 
@@ -2364,7 +2418,7 @@
             this.xrLabel86.StylePriority.UseFont = false;
             this.xrLabel86.StylePriority.UseForeColor = false;
             this.xrLabel86.StylePriority.UseTextAlignment = false;
-            this.xrLabel86.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft;
+            this.xrLabel86.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
             this.xrLabel86.TextFormatString = "{0:dd-MMM-yyyy}";
             // 
             // xrLabel85
@@ -2417,7 +2471,7 @@
             this.xrLabel84.StylePriority.UseFont = false;
             this.xrLabel84.StylePriority.UseForeColor = false;
             this.xrLabel84.StylePriority.UseTextAlignment = false;
-            this.xrLabel84.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft;
+            this.xrLabel84.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
             this.xrLabel84.TextFormatString = "{0:dd-MMM-yyyy}";
             // 
             // xrLabel96
@@ -2444,7 +2498,7 @@
             this.xrLabel96.StylePriority.UseFont = false;
             this.xrLabel96.StylePriority.UseForeColor = false;
             this.xrLabel96.StylePriority.UseTextAlignment = false;
-            this.xrLabel96.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft;
+            this.xrLabel96.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
             this.xrLabel96.TextFormatString = "{0:dd-MMM-yyyy}";
             // 
             // xrLabel95
@@ -2590,8 +2644,7 @@
             this.xrLabel83.BackColor = System.Drawing.Color.Transparent;
             this.xrLabel83.BorderColor = System.Drawing.Color.Black;
             this.xrLabel83.BorderDashStyle = DevExpress.XtraPrinting.BorderDashStyle.Dot;
-            this.xrLabel83.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
-            | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.xrLabel83.Borders = ((DevExpress.XtraPrinting.BorderSide)((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrLabel83.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[BuyerOtherIDAr]")});
             this.xrLabel83.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, DevExpress.Drawing.DXFontStyle.Bold);
@@ -2615,8 +2668,7 @@
             this.xrLabel82.BackColor = System.Drawing.Color.Transparent;
             this.xrLabel82.BorderColor = System.Drawing.Color.Black;
             this.xrLabel82.BorderDashStyle = DevExpress.XtraPrinting.BorderDashStyle.Dot;
-            this.xrLabel82.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
-            | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.xrLabel82.Borders = DevExpress.XtraPrinting.BorderSide.Bottom;
             this.xrLabel82.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[BuyerNeighborhoodAr]")});
             this.xrLabel82.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, DevExpress.Drawing.DXFontStyle.Bold);
@@ -2640,8 +2692,7 @@
             this.xrLabel81.BackColor = System.Drawing.Color.Transparent;
             this.xrLabel81.BorderColor = System.Drawing.Color.Black;
             this.xrLabel81.BorderDashStyle = DevExpress.XtraPrinting.BorderDashStyle.Dot;
-            this.xrLabel81.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
-            | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.xrLabel81.Borders = DevExpress.XtraPrinting.BorderSide.Bottom;
             this.xrLabel81.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[BuyerNeighborhoodAr]")});
             this.xrLabel81.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, DevExpress.Drawing.DXFontStyle.Bold);
@@ -2740,8 +2791,7 @@
             this.xrLabel77.BackColor = System.Drawing.Color.Transparent;
             this.xrLabel77.BorderColor = System.Drawing.Color.Black;
             this.xrLabel77.BorderDashStyle = DevExpress.XtraPrinting.BorderDashStyle.Dot;
-            this.xrLabel77.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
-            | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.xrLabel77.Borders = ((DevExpress.XtraPrinting.BorderSide)((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrLabel77.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[BuyerCityAr]")});
             this.xrLabel77.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, DevExpress.Drawing.DXFontStyle.Bold);
@@ -3412,8 +3462,7 @@
             this.xrLabel37.BackColor = System.Drawing.Color.Transparent;
             this.xrLabel37.BorderColor = System.Drawing.Color.Black;
             this.xrLabel37.BorderDashStyle = DevExpress.XtraPrinting.BorderDashStyle.Dot;
-            this.xrLabel37.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
-            | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.xrLabel37.Borders = ((DevExpress.XtraPrinting.BorderSide)((DevExpress.XtraPrinting.BorderSide.Right | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrLabel37.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[SellerVATNumberAr]")});
             this.xrLabel37.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, DevExpress.Drawing.DXFontStyle.Bold);
@@ -3566,7 +3615,7 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrLabel24.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[SellerNeighborhoodAr]")});
-            this.xrLabel24.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel24.Font = new DevExpress.Drawing.DXFont("Cambria", 7F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel24.ForeColor = System.Drawing.Color.Black;
             this.xrLabel24.LocationFloat = new DevExpress.Utils.PointFloat(417.5622F, 287.8891F);
             this.xrLabel24.Multiline = true;
@@ -3846,8 +3895,7 @@
             this.xrLabel13.BackColor = System.Drawing.Color.Transparent;
             this.xrLabel13.BorderColor = System.Drawing.Color.Black;
             this.xrLabel13.BorderDashStyle = DevExpress.XtraPrinting.BorderDashStyle.Dot;
-            this.xrLabel13.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
-            | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.xrLabel13.Borders = ((DevExpress.XtraPrinting.BorderSide)((DevExpress.XtraPrinting.BorderSide.Right | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrLabel13.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[SellerVATNumber]")});
             this.xrLabel13.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, DevExpress.Drawing.DXFontStyle.Bold);
@@ -5513,61 +5561,6 @@
             this.PageInfo.Name = "PageInfo";
             this.PageInfo.Padding = new DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100F);
             // 
-            // xrLine1
-            // 
-            this.xrLine1.BackColor = System.Drawing.Color.Transparent;
-            this.xrLine1.BorderColor = System.Drawing.Color.Transparent;
-            this.xrLine1.ForeColor = System.Drawing.Color.SteelBlue;
-            this.xrLine1.LineWidth = 2F;
-            this.xrLine1.LocationFloat = new DevExpress.Utils.PointFloat(4.999898F, 1049.749F);
-            this.xrLine1.Name = "xrLine1";
-            this.xrLine1.SizeF = new System.Drawing.SizeF(925.0001F, 8.75F);
-            this.xrLine1.StylePriority.UseBackColor = false;
-            this.xrLine1.StylePriority.UseBorderColor = false;
-            this.xrLine1.StylePriority.UseForeColor = false;
-            // 
-            // xrLabel168
-            // 
-            this.xrLabel168.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[parameters.CompanyPhone]")});
-            this.xrLabel168.Font = new DevExpress.Drawing.DXFont("Cambria", 8F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel168.ForeColor = System.Drawing.Color.IndianRed;
-            this.xrLabel168.LocationFloat = new DevExpress.Utils.PointFloat(184.1089F, 1072.347F);
-            this.xrLabel168.Multiline = true;
-            this.xrLabel168.Name = "xrLabel168";
-            this.xrLabel168.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel168.SizeF = new System.Drawing.SizeF(174.2294F, 16.66663F);
-            this.xrLabel168.StylePriority.UseFont = false;
-            this.xrLabel168.StylePriority.UseForeColor = false;
-            // 
-            // xrLabel169
-            // 
-            this.xrLabel169.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Parameters.CompanyEmailAddress]")});
-            this.xrLabel169.Font = new DevExpress.Drawing.DXFont("Cambria", 8F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel169.ForeColor = System.Drawing.Color.RoyalBlue;
-            this.xrLabel169.LocationFloat = new DevExpress.Utils.PointFloat(356.7224F, 1061.667F);
-            this.xrLabel169.Multiline = true;
-            this.xrLabel169.Name = "xrLabel169";
-            this.xrLabel169.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel169.SizeF = new System.Drawing.SizeF(182.0863F, 14.66669F);
-            this.xrLabel169.StylePriority.UseFont = false;
-            this.xrLabel169.StylePriority.UseForeColor = false;
-            // 
-            // xrLabel170
-            // 
-            this.xrLabel170.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Parameters.CompanyWebsite]")});
-            this.xrLabel170.Font = new DevExpress.Drawing.DXFont("Cambria", 8F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel170.ForeColor = System.Drawing.Color.RoyalBlue;
-            this.xrLabel170.LocationFloat = new DevExpress.Utils.PointFloat(358.3383F, 1076.334F);
-            this.xrLabel170.Multiline = true;
-            this.xrLabel170.Name = "xrLabel170";
-            this.xrLabel170.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel170.SizeF = new System.Drawing.SizeF(182.0863F, 16.33331F);
-            this.xrLabel170.StylePriority.UseFont = false;
-            this.xrLabel170.StylePriority.UseForeColor = false;
-            // 
             // RegulartaxinvoicewithoutSignatoriesFormat05
             // 
             this.Bands.AddRange(new DevExpress.XtraReports.UI.Band[] {
@@ -5579,7 +5572,7 @@
             this.DataMember = "qry201_602VATInvoiceReport";
             this.DataSource = this.sqlDataSource1;
             this.Font = new DevExpress.Drawing.DXFont("Cambria", 10F);
-            this.Margins = new DevExpress.Drawing.DXMargins(30F, 30F, 1115.68F, 30F);
+            this.Margins = new DevExpress.Drawing.DXMargins(30F, 30F, 1092.667F, 30F);
             this.PageHeight = 1169;
             this.PageWidth = 1000;
             this.PaperKind = DevExpress.Drawing.Printing.DXPaperKind.Custom;

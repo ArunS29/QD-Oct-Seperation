@@ -121,7 +121,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.VATDebitNote
 
                     using (SqlConnection conn = new SqlConnection(connectionString))
                     {
-                        string query = "SELECT * FROM qry201_602VATInvoiceReport WHERE DebitNoteNo = @DebitNoteNo";
+                        string query = "SELECT * FROM qry201_902DebitNoteReport WHERE DebitNoteNo = @DebitNoteNo";
 
                         using (SqlCommand cmd = new SqlCommand(query, conn))
                         {

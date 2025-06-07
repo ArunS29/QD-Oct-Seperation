@@ -5,6 +5,12 @@
 } *@
 <style>
 
+
+	#B2BdataGrid {
+		height: 700px !important;
+	}
+
+
 	.toggle-switch {
 		position: relative;
 		display: inline-block;
@@ -96,27 +102,27 @@
 
 	/* .dx-overlay-content dx-popup-normal dx-resizable{
 
-				max-height: 369.13px ! important;
+					max-height: 369.13px ! important;
 
-				width: 600px;
+					width: 600px;
 
-				height: 550px;
+					height: 550px;
 
-				z-index: 1501;
+					z-index: 1501;
 
-				left: 0px;
+					left: 0px;
 
-				top: 0px;
+					top: 0px;
 
-				transform: translate(-366px, -329px);
+					transform: translate(-366px, -329px);
 
-				transition: all;
+					transition: all;
 
-				opacity: 1;
+					opacity: 1;
 
-				visibility: visible;
+					visibility: visible;
 
-			} */
+				} */
 
 	.dx-overlay-content dx-popup-normal dx-resizable dx-dropdowneditor-overlay-flipped {
 		max-height: 378.13px !important;
@@ -261,16 +267,16 @@
 
 	/*     .dx-editor-outlined .dx-label span {
 
-				font-weight:bold !important;
+					font-weight:bold !important;
 
-				} */
+					} */
 
 	.custom-textbox input {
 		font-weight: bold !important;
 		color: black !important; /* Use !important to override DevExtreme styles */
 		/*   border: 3px solid #282222;
 
-				border-radius: 8px !important; */
+					border-radius: 8px !important; */
 	}
 
 	.custom-textbox1 input {
@@ -323,47 +329,47 @@
 
 	/* .container {
 
-				display: none !important;
+					display: none !important;
 
-			}
+				}
 
-			.frame {
+				.frame {
 
-				display: none !important;
+					display: none !important;
 
-			}
+				}
 
-			.footerContainer {
+				.footerContainer {
 
-				display: none !important;
+					display: none !important;
 
-			}
+				}
 
-			.bodyContainer {
+				.bodyContainer {
 
-				display: flex;
+					display: flex;
 
-				justify-content: center;
+					justify-content: center;
 
-			} */
+				} */
 
 	/* .mainContainer {
 
-				margin-top: 1em;
+					margin-top: 1em;
 
-				width: 100%;
+					width: 100%;
 
-			} */
+				} */
 
 	/* .card-container {
 
-				display: flex;
+					display: flex;
 
-				justify-content: space-between;
+					justify-content: space-between;
 
-				gap: 20px;
+					gap: 20px;
 
-				} */
+					} */
 
 	.card {
 		flex: 1;
@@ -776,7 +782,7 @@
 															.MaxLength(15)
 															.Mask("000000000000000") // 15 digits
 															.MaskChar(" ") // Optional: makes it more readable
-																					//.ShowClearButton(true) // Optional: adds a clear (X) button
+															//.ShowClearButton(true) // Optional: adds a clear (X) button
 															)
 							</td>
 							<td>
@@ -788,10 +794,30 @@
 															.MaxLength(15)
 															.Mask("000000000000000") // 15 digits
 															.MaskChar(" ") // Optional: makes it more readable
-																					//.ShowClearButton(true) // Optional: adds a clear (X) button
+															//.ShowClearButton(true) // Optional: adds a clear (X) button
 															)
 							</td>
+
 							<td colspan="3">@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name in Arabic')")).ID("ClientNameArabic").LabelMode(EditorLabelMode.Outside))</td>
+
+							<td>
+								@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name in Arabic')")).ID("ClientNameArabic").LabelMode(EditorLabelMode.Outside).Width("100%"))
+							</td>
+
+							<td style="width:10%; vertical-align: bottom; padding-bottom: 5px;">
+								@(
+															Html.DevExtreme().Button()
+															.ID("ClientnameconvertToArabic")
+															.Width("60")
+															.Height(50)
+															.Icon("fas fa-language") // Ensure Font Awesome class is correct
+															.ElementAttr(new { @class = "input-button" })
+															.OnClick("function() { convertToArabic(); }")
+
+															)
+							</td>
+
+
 
 						</tr>
 						<tr>
@@ -2646,43 +2672,43 @@
 @using (Html.DevExtreme().NamedTemplate("RevenueAccountTemplate"))
 {
 	@(
-						Html.DevExtreme().DataGrid()
+							Html.DevExtreme().DataGrid()
 
-														.ID("accounthead-datagrid1")
-														.DataSource(d => d.WebApi()
-														.Controller("VATModule")
-															.LoadAction("GetRevenueAccount")
-														.LoadMode(DataSourceLoadMode.Raw)
-													///   .Key("AccountHead") //salary paid entry
-													.Key("IncomeLedger")
+															.ID("accounthead-datagrid1")
+															.DataSource(d => d.WebApi()
+															.Controller("VATModule")
+																.LoadAction("GetRevenueAccount")
+															.LoadMode(DataSourceLoadMode.Raw)
+														///   .Key("AccountHead") //salary paid entry
+														.Key("IncomeLedger")
 
-														)
+															)
 
-													.WordWrapEnabled(true)
-													.ShowBorders(true)
-													.SearchPanel(sp => sp.HighlightSearchText(true))
-													.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-													.OnSelectionChanged("dataGridRevenueAccountSelectionChanged")
-													.OnInitialized("dataGridRevenueAccountHeadInitialized")
-													// .HeaderFilter(p => p.Visible(true))
-													.ShowBorders(true)
-													.HoverStateEnabled(true)
-													.Paging(p => p.PageSize(15))
-													.FilterRow(f => f.Visible(true))
-													.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-													.Height(345)
-													.Disabled(false)
-													.Selection(s => s.Mode(SelectionMode.Single))
-													.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-													.Columns(columns =>
-													{
-														columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Code')")).Alignment(HorizontalAlignment.Center);
-														columns.Add().DataField("IncomeLedger").Caption(new JS("formatMessage('Revenue Ledger')")).Alignment(HorizontalAlignment.Center);
-														columns.Add()
-		.DataField("IsLedgerObselete")
-		.Caption(new JS("formatMessage('Is Ledger Obselete')"))
-		.Alignment(HorizontalAlignment.Center)
-		.EditCellTemplate(@<text>
+														.WordWrapEnabled(true)
+														.ShowBorders(true)
+														.SearchPanel(sp => sp.HighlightSearchText(true))
+														.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+														.OnSelectionChanged("dataGridRevenueAccountSelectionChanged")
+														.OnInitialized("dataGridRevenueAccountHeadInitialized")
+														// .HeaderFilter(p => p.Visible(true))
+														.ShowBorders(true)
+														.HoverStateEnabled(true)
+														.Paging(p => p.PageSize(15))
+														.FilterRow(f => f.Visible(true))
+														.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+														.Height(345)
+														.Disabled(false)
+														.Selection(s => s.Mode(SelectionMode.Single))
+														.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+														.Columns(columns =>
+														{
+															columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Code')")).Alignment(HorizontalAlignment.Center);
+															columns.Add().DataField("IncomeLedger").Caption(new JS("formatMessage('Revenue Ledger')")).Alignment(HorizontalAlignment.Center);
+															columns.Add()
+			.DataField("IsLedgerObselete")
+			.Caption(new JS("formatMessage('Is Ledger Obselete')"))
+			.Alignment(HorizontalAlignment.Center)
+			.EditCellTemplate(@<text>
 	@(Html.DevExtreme().CheckBox()
 	.Value(new JS("data.IsLedgerObselete"))
 	.OnValueChanged("function(e) { data.IsLedgerObselete = e.value; }")
@@ -2691,69 +2717,30 @@
 
 
 
-													})
+														})
 
-												)
+													)
 }
 
 @using (Html.DevExtreme().NamedTemplate("CostCenterAccountTemplate"))
 {
 	@(Html.DevExtreme().DataGrid()
 
-										.ID("costcenter-datagrid")
-										.DataSource(d => d.WebApi()
-										.Controller("VATModule")
-											.LoadAction("GetCostCenterAccount")
-										.LoadMode(DataSourceLoadMode.Raw)
-											///   .Key("AccountHead") //salary paid entry
-											.Key("CostAllocationUnitId")
-
-										)
-										.WordWrapEnabled(true)
-										.ShowBorders(true)
-										.SearchPanel(sp => sp.HighlightSearchText(true))
-										.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-										.OnSelectionChanged("dataGridCostCenterAccountHeadSelectionChanged")
-										.OnInitialized("dataGridCostCenterAccountHeadInitialized")
-										// .HeaderFilter(p => p.Visible(true))
-										.ShowBorders(true)
-										.HoverStateEnabled(true)
-										.Paging(p => p.PageSize(15))
-										.FilterRow(f => f.Visible(true))
-										.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-										.Height(345)
-										.Selection(s => s.Mode(SelectionMode.Single))
-										.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-										.Columns(columns =>
-										{
-											columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('Cost Center Code')")).Alignment(HorizontalAlignment.Left);
-											columns.Add().DataField("CostAllocationUnit").Caption(new JS("formatMessage('Cost Center')")).Alignment(HorizontalAlignment.Left);
-
-
-										})
-
-									)
-
-}
-@using (Html.DevExtreme().NamedTemplate("InvoiceCurrencyTemplate"))
-{
-	@(Html.DevExtreme().DataGrid()
-
-												.ID("invoicecurrecy-datagrid")
+											.ID("costcenter-datagrid")
 											.DataSource(d => d.WebApi()
 											.Controller("VATModule")
-													.LoadAction("GetInvoiceCurrency")
+												.LoadAction("GetCostCenterAccount")
 											.LoadMode(DataSourceLoadMode.Raw)
-													///   .Key("AccountHead") //salary paid entry
-													.Key("CurrencyExchangeId")
+												///   .Key("AccountHead") //salary paid entry
+												.Key("CostAllocationUnitId")
 
 											)
 											.WordWrapEnabled(true)
 											.ShowBorders(true)
 											.SearchPanel(sp => sp.HighlightSearchText(true))
 											.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-											.OnSelectionChanged("dataGridInvoiceCurrencyHeadSelectionChanged")
-											.OnInitialized("dataGridInvoiceCurrencyHeadInitialized")
+											.OnSelectionChanged("dataGridCostCenterAccountHeadSelectionChanged")
+											.OnInitialized("dataGridCostCenterAccountHeadInitialized")
 											// .HeaderFilter(p => p.Visible(true))
 											.ShowBorders(true)
 											.HoverStateEnabled(true)
@@ -2765,9 +2752,8 @@
 											.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 											.Columns(columns =>
 											{
-												columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center);
-												columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency')")).Alignment(HorizontalAlignment.Center);
-												columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('ExchangeRate')")).Alignment(HorizontalAlignment.Center);
+												columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('Cost Center Code')")).Alignment(HorizontalAlignment.Left);
+												columns.Add().DataField("CostAllocationUnit").Caption(new JS("formatMessage('Cost Center')")).Alignment(HorizontalAlignment.Left);
 
 
 											})
@@ -2775,14 +2761,14 @@
 										)
 
 }
-@using (Html.DevExtreme().NamedTemplate("TaxCurrencyTemplate"))
+@using (Html.DevExtreme().NamedTemplate("InvoiceCurrencyTemplate"))
 {
 	@(Html.DevExtreme().DataGrid()
 
-													.ID("taxcurrecy-datagrid")
+													.ID("invoicecurrecy-datagrid")
 												.DataSource(d => d.WebApi()
 												.Controller("VATModule")
-														.LoadAction("GetTaxCurrency")
+														.LoadAction("GetInvoiceCurrency")
 												.LoadMode(DataSourceLoadMode.Raw)
 														///   .Key("AccountHead") //salary paid entry
 														.Key("CurrencyExchangeId")
@@ -2792,8 +2778,8 @@
 												.ShowBorders(true)
 												.SearchPanel(sp => sp.HighlightSearchText(true))
 												.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-												.OnSelectionChanged("dataGridTaxCurrencyHeadSelectionChanged")
-												.OnInitialized("dataGridTaxCurrencyHeadInitialized")
+												.OnSelectionChanged("dataGridInvoiceCurrencyHeadSelectionChanged")
+												.OnInitialized("dataGridInvoiceCurrencyHeadInitialized")
 												// .HeaderFilter(p => p.Visible(true))
 												.ShowBorders(true)
 												.HoverStateEnabled(true)
@@ -2815,25 +2801,25 @@
 											)
 
 }
-@using (Html.DevExtreme().NamedTemplate("DivisionTemplate"))
+@using (Html.DevExtreme().NamedTemplate("TaxCurrencyTemplate"))
 {
 	@(Html.DevExtreme().DataGrid()
 
-														.ID("division-datagrid")
+														.ID("taxcurrecy-datagrid")
 													.DataSource(d => d.WebApi()
 													.Controller("VATModule")
-															.LoadAction("GetDivision")
+															.LoadAction("GetTaxCurrency")
 													.LoadMode(DataSourceLoadMode.Raw)
 															///   .Key("AccountHead") //salary paid entry
-															.Key("BranchCode")
+															.Key("CurrencyExchangeId")
 
 													)
 													.WordWrapEnabled(true)
 													.ShowBorders(true)
 													.SearchPanel(sp => sp.HighlightSearchText(true))
 													.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-													.OnSelectionChanged("dataGridDivisionHeadSelectionChanged")
-													.OnInitialized("dataGridDivisionHeadInitialized")
+													.OnSelectionChanged("dataGridTaxCurrencyHeadSelectionChanged")
+													.OnInitialized("dataGridTaxCurrencyHeadInitialized")
 													// .HeaderFilter(p => p.Visible(true))
 													.ShowBorders(true)
 													.HoverStateEnabled(true)
@@ -2845,12 +2831,52 @@
 													.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 													.Columns(columns =>
 													{
-														columns.Add().DataField("BranchCode").Caption(new JS("formatMessage('BranchCode')"));
-														columns.Add().DataField("BranchName").Caption(new JS("formatMessage('BranchName')"));
-														columns.Add().DataField("BranchNameAr").Caption(new JS("formatMessage('BranchNameAr')"));
+														columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center);
+														columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency')")).Alignment(HorizontalAlignment.Center);
+														columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('ExchangeRate')")).Alignment(HorizontalAlignment.Center);
+
+
 													})
 
 												)
+
+}
+@using (Html.DevExtreme().NamedTemplate("DivisionTemplate"))
+{
+	@(Html.DevExtreme().DataGrid()
+
+															.ID("division-datagrid")
+														.DataSource(d => d.WebApi()
+														.Controller("VATModule")
+																.LoadAction("GetDivision")
+														.LoadMode(DataSourceLoadMode.Raw)
+																///   .Key("AccountHead") //salary paid entry
+																.Key("BranchCode")
+
+														)
+														.WordWrapEnabled(true)
+														.ShowBorders(true)
+														.SearchPanel(sp => sp.HighlightSearchText(true))
+														.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+														.OnSelectionChanged("dataGridDivisionHeadSelectionChanged")
+														.OnInitialized("dataGridDivisionHeadInitialized")
+														// .HeaderFilter(p => p.Visible(true))
+														.ShowBorders(true)
+														.HoverStateEnabled(true)
+														.Paging(p => p.PageSize(15))
+														.FilterRow(f => f.Visible(true))
+														.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+														.Height(345)
+														.Selection(s => s.Mode(SelectionMode.Single))
+														.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+														.Columns(columns =>
+														{
+															columns.Add().DataField("BranchCode").Caption(new JS("formatMessage('BranchCode')"));
+															columns.Add().DataField("BranchName").Caption(new JS("formatMessage('BranchName')"));
+															columns.Add().DataField("BranchNameAr").Caption(new JS("formatMessage('BranchNameAr')"));
+														})
+
+													)
 
 }
 @using (Html.DevExtreme().NamedTemplate("SalesPersonTemplate"))
@@ -2859,21 +2885,86 @@
 
 	@(Html.DevExtreme().DataGrid()
 
-															.ID("salesperson-datagrid")
+																.ID("salesperson-datagrid")
 
-														.DataSource(d => d.WebApi()
+															.DataSource(d => d.WebApi()
 
-														.Controller("VATModule")
+															.Controller("VATModule")
 
-																.LoadAction("GetSalesPerson")
+																	.LoadAction("GetSalesPerson")
 
-														.LoadMode(DataSourceLoadMode.Raw)
+															.LoadMode(DataSourceLoadMode.Raw)
+
+																		///   .Key("AccountHead") //salary paid entry
+
+																		.Key("SalesPersonCode")
+
+															)
+
+															.WordWrapEnabled(true)
+
+															.ShowBorders(true)
+
+															.SearchPanel(sp => sp.HighlightSearchText(true))
+
+															.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+
+															.OnSelectionChanged("dataGridSalesPersonHeadSelectionChanged")
+
+															.OnInitialized("dataGridSalesPersonHeadInitialized")
+
+															// .HeaderFilter(p => p.Visible(true))
+
+															.ShowBorders(true)
+
+															.HoverStateEnabled(true)
+
+															.Paging(p => p.PageSize(15))
+
+															.FilterRow(f => f.Visible(true))
+
+															.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+
+															.Height(345)
+
+															.Selection(s => s.Mode(SelectionMode.Single))
+
+															.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+
+															.Columns(columns =>
+
+															{
+
+																columns.Add().DataField("SalesPersonName").Caption(new JS("formatMessage('SalesPersonName')"));
+															})
+
+														)
+
+
+
+}
+
+@using (Html.DevExtreme().NamedTemplate("CompanyBranchTemplate"))
+
+{
+
+	@(Html.DevExtreme().DataGrid()
+
+																.ID("companybranch-datagrid")
+
+															.DataSource(d => d.WebApi()
+
+															.Controller("VATModule")
+
+																	.LoadAction("GetCompanyBranch")
+
+															.LoadMode(DataSourceLoadMode.Raw)
 
 																	///   .Key("AccountHead") //salary paid entry
 
-																	.Key("SalesPersonCode")
+																	.Key("CompanyId")
 
-														)
+															)
 
 														.WordWrapEnabled(true)
 
@@ -2883,9 +2974,9 @@
 
 														.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
 
-														.OnSelectionChanged("dataGridSalesPersonHeadSelectionChanged")
+														.OnSelectionChanged("dataGridCompanyBranchHeadSelectionChanged")
 
-														.OnInitialized("dataGridSalesPersonHeadInitialized")
+														.OnInitialized("dataGridCompanyBranchHeadInitialized")
 
 														// .HeaderFilter(p => p.Visible(true))
 
@@ -2909,79 +3000,14 @@
 
 														{
 
-															columns.Add().DataField("SalesPersonName").Caption(new JS("formatMessage('SalesPersonName')"));
+															columns.Add().DataField("CompanyId").Caption(new JS("formatMessage('CompanyId')")).Alignment(HorizontalAlignment.Center);
+
+															columns.Add().DataField("CompanyName").Caption(new JS("formatMessage('CompanyName')")).Alignment(HorizontalAlignment.Center);
+
+
 														})
 
 													)
-
-
-
-}
-
-@using (Html.DevExtreme().NamedTemplate("CompanyBranchTemplate"))
-
-{
-
-	@(Html.DevExtreme().DataGrid()
-
-															.ID("companybranch-datagrid")
-
-														.DataSource(d => d.WebApi()
-
-														.Controller("VATModule")
-
-																.LoadAction("GetCompanyBranch")
-
-														.LoadMode(DataSourceLoadMode.Raw)
-
-																///   .Key("AccountHead") //salary paid entry
-
-																.Key("CompanyId")
-
-														)
-
-													.WordWrapEnabled(true)
-
-													.ShowBorders(true)
-
-													.SearchPanel(sp => sp.HighlightSearchText(true))
-
-													.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-
-													.OnSelectionChanged("dataGridCompanyBranchHeadSelectionChanged")
-
-													.OnInitialized("dataGridCompanyBranchHeadInitialized")
-
-													// .HeaderFilter(p => p.Visible(true))
-
-													.ShowBorders(true)
-
-													.HoverStateEnabled(true)
-
-													.Paging(p => p.PageSize(15))
-
-													.FilterRow(f => f.Visible(true))
-
-													.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-
-													.Height(345)
-
-													.Selection(s => s.Mode(SelectionMode.Single))
-
-													.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-
-													.Columns(columns =>
-
-													{
-
-														columns.Add().DataField("CompanyId").Caption(new JS("formatMessage('CompanyId')")).Alignment(HorizontalAlignment.Center);
-
-														columns.Add().DataField("CompanyName").Caption(new JS("formatMessage('CompanyName')")).Alignment(HorizontalAlignment.Center);
-
-
-													})
-
-												)
 
 }
 @using (Html.DevExtreme().NamedTemplate("OtherIDTypeTemplate"))
@@ -2990,88 +3016,21 @@
 
 	@(
 
-					Html.DevExtreme().DataGrid()
-
-																			.ID("otheridtype-datagrid")
-
-																		.DataSource(d => d.WebApi()
-
-																		.Controller("VATModule")
-
-																				.LoadAction("GetOtherIDType")
-
-																		.LoadMode(DataSourceLoadMode.Raw)
-
-																					///   .Key("AccountHead") //salary paid entry
-
-																					.Key("SellerOtherIdtype")
-
-																		)
-
-																		.WordWrapEnabled(true)
-
-																		.ShowBorders(true)
-
-																		.SearchPanel(sp => sp.HighlightSearchText(true))
-
-																		.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-
-																		.OnSelectionChanged("dataGridOtherIDTypeHeadSelectionChanged")
-
-																		.OnInitialized("dataGridOtherIDTypeHeadInitialized")
-
-																		// .HeaderFilter(p => p.Visible(true))
-
-																		.ShowBorders(true)
-
-																		.HoverStateEnabled(true)
-
-																		.Paging(p => p.PageSize(15))
-
-																		.FilterRow(f => f.Visible(true))
-
-																		.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-
-																		.Height(345)
-
-																		.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-
-																		.Columns(columns =>
-
-																		{
-
-																			columns.Add().DataField("SellerOtherIdtype").Caption(new JS("formatMessage('SignatoryID')")).Alignment(HorizontalAlignment.Center);
-
-																			columns.Add().DataField("SellerIdtypeName").Caption(new JS("formatMessage('SignatoryName')")).Alignment(HorizontalAlignment.Center);
-
-
-																		})
-
-																	)
-
-}
-
-@using (Html.DevExtreme().NamedTemplate("PreparedByTemplate"))
-
-{
-
-	@(
-
 						Html.DevExtreme().DataGrid()
 
-																				.ID("preparedby-datagrid")
+																				.ID("otheridtype-datagrid")
 
 																			.DataSource(d => d.WebApi()
 
 																			.Controller("VATModule")
 
-																						.LoadAction("GetAllSignatories")
+																					.LoadAction("GetOtherIDType")
 
 																			.LoadMode(DataSourceLoadMode.Raw)
 
-																							///   .Key("AccountHead") //salary paid entry
+																						///   .Key("AccountHead") //salary paid entry
 
-																							.Key("SignatoryID")
+																						.Key("SellerOtherIdtype")
 
 																			)
 
@@ -3083,9 +3042,9 @@
 
 																			.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
 
-																			.OnSelectionChanged("dataGridPreparedByHeadSelectionChanged")
+																			.OnSelectionChanged("dataGridOtherIDTypeHeadSelectionChanged")
 
-																			.OnInitialized("dataGridPreparedByHeadInitialized")
+																			.OnInitialized("dataGridOtherIDTypeHeadInitialized")
 
 																			// .HeaderFilter(p => p.Visible(true))
 
@@ -3101,17 +3060,15 @@
 
 																			.Height(345)
 
-																			.Selection(s => s.Mode(SelectionMode.Single))
-
 																			.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 
 																			.Columns(columns =>
 
 																			{
 
-																				columns.Add().DataField("SignatoryID").Caption(new JS("formatMessage('SignatoryID')")).Alignment(HorizontalAlignment.Center);
+																				columns.Add().DataField("SellerOtherIdtype").Caption(new JS("formatMessage('SignatoryID')")).Alignment(HorizontalAlignment.Center);
 
-																				columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('SignatoryName')")).Alignment(HorizontalAlignment.Center);
+																				columns.Add().DataField("SellerIdtypeName").Caption(new JS("formatMessage('SignatoryName')")).Alignment(HorizontalAlignment.Center);
 
 
 																			})
@@ -3120,7 +3077,7 @@
 
 }
 
-@using (Html.DevExtreme().NamedTemplate("CheckedByTemplate"))
+@using (Html.DevExtreme().NamedTemplate("PreparedByTemplate"))
 
 {
 
@@ -3128,7 +3085,7 @@
 
 							Html.DevExtreme().DataGrid()
 
-																					.ID("checkedby-datagrid")
+																					.ID("preparedby-datagrid")
 
 																				.DataSource(d => d.WebApi()
 
@@ -3152,9 +3109,9 @@
 
 																				.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
 
-																				.OnSelectionChanged("dataGridCheckedByHeadSelectionChanged")
+																				.OnSelectionChanged("dataGridPreparedByHeadSelectionChanged")
 
-																				.OnInitialized("dataGridCheckedByHeadInitialized")
+																				.OnInitialized("dataGridPreparedByHeadInitialized")
 
 																				// .HeaderFilter(p => p.Visible(true))
 
@@ -3188,6 +3145,75 @@
 																			)
 
 }
+
+@using (Html.DevExtreme().NamedTemplate("CheckedByTemplate"))
+
+{
+
+	@(
+
+								Html.DevExtreme().DataGrid()
+
+																						.ID("checkedby-datagrid")
+
+																					.DataSource(d => d.WebApi()
+
+																					.Controller("VATModule")
+
+																								.LoadAction("GetAllSignatories")
+
+																					.LoadMode(DataSourceLoadMode.Raw)
+
+																									///   .Key("AccountHead") //salary paid entry
+
+																									.Key("SignatoryID")
+
+																					)
+
+																					.WordWrapEnabled(true)
+
+																					.ShowBorders(true)
+
+																					.SearchPanel(sp => sp.HighlightSearchText(true))
+
+																					.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+
+																					.OnSelectionChanged("dataGridCheckedByHeadSelectionChanged")
+
+																					.OnInitialized("dataGridCheckedByHeadInitialized")
+
+																					// .HeaderFilter(p => p.Visible(true))
+
+																					.ShowBorders(true)
+
+																					.HoverStateEnabled(true)
+
+																					.Paging(p => p.PageSize(15))
+
+																					.FilterRow(f => f.Visible(true))
+
+																					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+
+																					.Height(345)
+
+																					.Selection(s => s.Mode(SelectionMode.Single))
+
+																					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+
+																					.Columns(columns =>
+
+																					{
+
+																						columns.Add().DataField("SignatoryID").Caption(new JS("formatMessage('SignatoryID')")).Alignment(HorizontalAlignment.Center);
+
+																						columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('SignatoryName')")).Alignment(HorizontalAlignment.Center);
+
+
+																					})
+
+																				)
+
+}
 @* @using (Html.DevExtreme().NamedTemplate("VATTransactionTemplate"))
 {
 	@(Html.DevExtreme().List()
@@ -3217,20 +3243,20 @@
 @using (Html.DevExtreme().NamedTemplate("VATTransactionTemplate"))
 {
 	@(Html.DevExtreme().List()
-				.ID("vatTransactionList")
-				.DataSource(new[] {
+					.ID("vatTransactionList")
+					.DataSource(new[] {
 			new { ID = 1, Name = "3rd Party Tax Invoice" },
 			new { ID = 2, Name = "Nominal Tax Invoice" },
 			new { ID = 3, Name = "Export Tax Invoice" },
 			new { ID = 4, Name = "Summary Tax Invoice" },
 			new { ID = 5, Name = "Self Billed Tax Invoice" }
 		})
-				.DisplayExpr("ID")
-				.KeyExpr("ID")
-				.SelectionMode(ListSelectionMode.Multiple)
-				.SelectedItemKeys(new[] { 1 }) // Default selected
-				.OnSelectionChanged("onVatTransactionSelectionChanged")
-				.ItemTemplate(@<text>
+					.DisplayExpr("ID")
+					.KeyExpr("ID")
+					.SelectionMode(ListSelectionMode.Multiple)
+					.SelectedItemKeys(new[] { 1 }) // Default selected
+					.OnSelectionChanged("onVatTransactionSelectionChanged")
+					.ItemTemplate(@<text>
 	<div class="vat-item">
 		<label class="toggle-switch">
 			<input type="checkbox" class="vat-checkbox" value="<%- ID %>" />
@@ -3239,7 +3265,7 @@
 		<span class="vat-label"><%- Name %></span>
 	</div>
 </text>)
-			)
+				)
 }
 
 
@@ -3250,66 +3276,66 @@
 
 	@(
 
-								Html.DevExtreme().DataGrid()
+									Html.DevExtreme().DataGrid()
 
-																						.ID("approvedby-datagrid")
+																							.ID("approvedby-datagrid")
 
-																					.DataSource(d => d.WebApi()
+																						.DataSource(d => d.WebApi()
 
-																					.Controller("VATModule")
+																						.Controller("VATModule")
 
-																								.LoadAction("GetAllSignatories")
+																									.LoadAction("GetAllSignatories")
 
-																					.LoadMode(DataSourceLoadMode.Raw)
+																						.LoadMode(DataSourceLoadMode.Raw)
 
-																									///   .Key("AccountHead") //salary paid entry
+																										///   .Key("AccountHead") //salary paid entry
 
-																									.Key("SignatoryID")
+																										.Key("SignatoryID")
+
+																						)
+
+																						.WordWrapEnabled(true)
+
+																						.ShowBorders(true)
+
+																						.SearchPanel(sp => sp.HighlightSearchText(true))
+
+																						.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+
+																						.OnSelectionChanged("dataGridApprovedByHeadSelectionChanged")
+
+																						.OnInitialized("dataGridApprovedByHeadInitialized")
+
+																						// .HeaderFilter(p => p.Visible(true))
+
+																						.ShowBorders(true)
+
+																						.HoverStateEnabled(true)
+
+																						.Paging(p => p.PageSize(15))
+
+																						.FilterRow(f => f.Visible(true))
+
+																						.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+
+																						.Height(345)
+
+																						.Selection(s => s.Mode(SelectionMode.Single))
+
+																						.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+
+																						.Columns(columns =>
+
+																						{
+
+																							columns.Add().DataField("SignatoryID").Caption(new JS("formatMessage('SignatoryID')"));
+
+																							columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('SignatoryName')"));
+
+
+																						})
 
 																					)
-
-																					.WordWrapEnabled(true)
-
-																					.ShowBorders(true)
-
-																					.SearchPanel(sp => sp.HighlightSearchText(true))
-
-																					.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-
-																					.OnSelectionChanged("dataGridApprovedByHeadSelectionChanged")
-
-																					.OnInitialized("dataGridApprovedByHeadInitialized")
-
-																					// .HeaderFilter(p => p.Visible(true))
-
-																					.ShowBorders(true)
-
-																					.HoverStateEnabled(true)
-
-																					.Paging(p => p.PageSize(15))
-
-																					.FilterRow(f => f.Visible(true))
-
-																					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-
-																					.Height(345)
-
-																					.Selection(s => s.Mode(SelectionMode.Single))
-
-																					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-
-																					.Columns(columns =>
-
-																					{
-
-																						columns.Add().DataField("SignatoryID").Caption(new JS("formatMessage('SignatoryID')"));
-
-																						columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('SignatoryName')"));
-
-
-																					})
-
-																				)
 
 }
 
@@ -3319,68 +3345,68 @@
 
 	@(Html.DevExtreme().DataGrid()
 
-																.ID("salesorderno-datagrid")
+																	.ID("salesorderno-datagrid")
 
-															.DataSource(d => d.WebApi()
+																.DataSource(d => d.WebApi()
 
-															.Controller("VATModule")
+																.Controller("VATModule")
 
-																		.LoadAction("GetSalesOrderNo")
+																			.LoadAction("GetSalesOrderNo")
 
-															.LoadMode(DataSourceLoadMode.Raw)
+																.LoadMode(DataSourceLoadMode.Raw)
 
-																			///   .Key("AccountHead") //salary paid entry
+																				///   .Key("AccountHead") //salary paid entry
 
-																			.Key("ClientCode")
+																				.Key("ClientCode")
 
-															)
+																)
 
-														.WordWrapEnabled(true)
+															.WordWrapEnabled(true)
 
-														.ShowBorders(true)
+															.ShowBorders(true)
 
-														.SearchPanel(sp => sp.HighlightSearchText(true))
+															.SearchPanel(sp => sp.HighlightSearchText(true))
 
-														.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+															.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
 
-															.OnSelectionChanged("ClientSalesOrderNodataGridSelectionChanged")
+																.OnSelectionChanged("ClientSalesOrderNodataGridSelectionChanged")
 
-															.OnInitialized("ClientSalesOrderNodataGridInitialized")
+																.OnInitialized("ClientSalesOrderNodataGridInitialized")
 
-														// .HeaderFilter(p => p.Visible(true))
+															// .HeaderFilter(p => p.Visible(true))
 
-														.ShowBorders(true)
+															.ShowBorders(true)
 
-														.HoverStateEnabled(true)
+															.HoverStateEnabled(true)
 
-														.Paging(p => p.PageSize(15))
+															.Paging(p => p.PageSize(15))
 
-														.FilterRow(f => f.Visible(true))
+															.FilterRow(f => f.Visible(true))
 
-														.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+															.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 
-														.Height(345)
+															.Height(345)
 
-														.Selection(s => s.Mode(SelectionMode.Single))
+															.Selection(s => s.Mode(SelectionMode.Single))
 
-														.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+															.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 
-														.Columns(columns =>
+															.Columns(columns =>
 
-														{
+															{
 
-															columns.Add().DataField("SalesOrderNo").Caption(new JS("formatMessage('Sales Order No')")).Alignment(HorizontalAlignment.Center);
-															columns.Add().DataField("ClientPono").Caption(new JS("formatMessage('Client POno')")).Alignment(HorizontalAlignment.Center);
-															columns.Add().DataField("TotalOrderValue").Caption(new JS("formatMessage('Total Order Value')")).Alignment(HorizontalAlignment.Center);
-															columns.Add().DataField("TotalInvoicedValue").Caption(new JS("formatMessage('Total Invoiced Value')")).Alignment(HorizontalAlignment.Center);
-															columns.Add().DataField("BalanceToInvoiceValue").Caption(new JS("formatMessage('Balance To Invoice Value')")).Alignment(HorizontalAlignment.Center);
-															columns.Add().DataField("BalanceToInvoiceWoTax").Caption(new JS("formatMessage('Balance To Invoice Without Tax')")).Alignment(HorizontalAlignment.Center);
-															columns.Add().DataField("OrderValueWoTax").Caption(new JS("formatMessage('PO Value Without Tax')")).Alignment(HorizontalAlignment.Center);
+																columns.Add().DataField("SalesOrderNo").Caption(new JS("formatMessage('Sales Order No')")).Alignment(HorizontalAlignment.Center);
+																columns.Add().DataField("ClientPono").Caption(new JS("formatMessage('Client POno')")).Alignment(HorizontalAlignment.Center);
+																columns.Add().DataField("TotalOrderValue").Caption(new JS("formatMessage('Total Order Value')")).Alignment(HorizontalAlignment.Center);
+																columns.Add().DataField("TotalInvoicedValue").Caption(new JS("formatMessage('Total Invoiced Value')")).Alignment(HorizontalAlignment.Center);
+																columns.Add().DataField("BalanceToInvoiceValue").Caption(new JS("formatMessage('Balance To Invoice Value')")).Alignment(HorizontalAlignment.Center);
+																columns.Add().DataField("BalanceToInvoiceWoTax").Caption(new JS("formatMessage('Balance To Invoice Without Tax')")).Alignment(HorizontalAlignment.Center);
+																columns.Add().DataField("OrderValueWoTax").Caption(new JS("formatMessage('PO Value Without Tax')")).Alignment(HorizontalAlignment.Center);
 
 
-														})
+															})
 
-													)
+														)
 
 }
 
@@ -8028,5 +8054,23 @@
 					return;
 				}
 			}
+
+
+
+
+					$("#btnPrint1").on("click", function (e) {
+		var dropdown = $("#btnPrint1").dxDropDownButton("instance");
+		var items = dropdown.option("items");
+
+		// Set disabled flag on specific items
+		items.forEach(function (item) {
+			if (item.text === "Print Regular TAX Invoice" || item.text === "Additional Formats") {
+				item.disabled = true;
+			}
+		});
+
+		dropdown.option("items", items);
+	});
+
 </script>
 

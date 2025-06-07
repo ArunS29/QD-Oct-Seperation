@@ -58,7 +58,7 @@
 @* Floating Edit Report Button with Icon and Text *@
 <a href="javascript:void(0);" id="btnOpenDesigner" class="btn-edit-report"
    data-tooltip="Open Designer"
-   onclick="openReportDesigner('@Model.ReportName', '@Model.AccountId', '@Model.FrmDate', '@Model.ToDate')">
+   onclick="openReportDesigner('@Model.ReportName', '@Model.AccountId', '@Model.FrmDate', '@Model.ToDate','@Model.AccountGroup')">
     <span class="btn-text">Open Designer</span>
     <i class="fa fa-pencil-alt"></i>
 </a>
@@ -277,7 +277,7 @@
 
 <div id="webDocumentViewer"></div>
 
-<script>
+@* <script>
     function getTenantNameFromUrl() {
         const pathParts = window.location.pathname.split('/');
         return pathParts[1] || ''; 
@@ -291,4 +291,31 @@
         window.open(reportDesignerUrl, "_blank", "noopener,noreferrer,width=1200,height=800");
     }
 
+</script> *@
+
+
+<script>
+    function getTenantNameFromUrl() {
+        const pathParts = window.location.pathname.split('/');
+        return pathParts[1] || '';
+    }
+
+    function openReportDesigner(reportName, accountId, frmDate, toDate, accountGroup) {
+        const tenantName = getTenantNameFromUrl();
+        let reportDesignerUrl;
+
+        if (accountId && accountId.trim() !== "") {
+           
+            reportDesignerUrl = `/${tenantName}/ReportDesigner?reportName=${encodeURIComponent(reportName)}&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDate)}&toDate=${encodeURIComponent(toDate)}`;
+        } else if (accountGroup && accountGroup.trim() !== "") {
+        
+            reportDesignerUrl = `/${tenantName}/ReportDesigner?reportName=${encodeURIComponent(reportName)}&accountGroup=${encodeURIComponent(accountGroup)}&frmDate=${encodeURIComponent(frmDate)}&toDate=${encodeURIComponent(toDate)}`;
+        } else {
+            alert("Please provide either Account ID or Account Group.");
+            return;
+        }
+
+        window.open(reportDesignerUrl, "_blank", "noopener,noreferrer,width=1200,height=800");
+    }
 </script>
+

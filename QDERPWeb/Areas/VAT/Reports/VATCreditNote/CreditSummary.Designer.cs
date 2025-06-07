@@ -373,7 +373,7 @@
             // 
             this.Detail.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
             this.table2});
-            this.Detail.HeightF = 52F;
+            this.Detail.HeightF = 42F;
             this.Detail.Name = "Detail";
             this.Detail.Padding = new DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100F);
             this.Detail.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopLeft;
@@ -384,7 +384,7 @@
             this.table2.Name = "table2";
             this.table2.Rows.AddRange(new DevExpress.XtraReports.UI.XRTableRow[] {
             this.tableRow2});
-            this.table2.SizeF = new System.Drawing.SizeF(1450F, 52F);
+            this.table2.SizeF = new System.Drawing.SizeF(1450F, 42F);
             // 
             // tableRow2
             // 
@@ -428,7 +428,7 @@
             xrSummary1.Running = DevExpress.XtraReports.UI.SummaryRunning.Group;
             this.tableCell21.Summary = xrSummary1;
             this.tableCell21.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
-            this.tableCell21.Weight = 0.026001459522611306D;
+            this.tableCell21.Weight = 0.0269704508285288D;
             // 
             // tableCell22
             // 
@@ -445,7 +445,7 @@
             this.tableCell22.StylePriority.UseBorders = false;
             this.tableCell22.StylePriority.UseBorderWidth = false;
             this.tableCell22.StylePriority.UseFont = false;
-            this.tableCell22.Weight = 0.037766166581539425D;
+            this.tableCell22.Weight = 0.036797175275621929D;
             // 
             // tableCell23
             // 
@@ -463,7 +463,7 @@
             this.tableCell23.StylePriority.UseBorderWidth = false;
             this.tableCell23.StylePriority.UseFont = false;
             this.tableCell23.TextFormatString = "{0:dd-MMM-yyyy}";
-            this.tableCell23.Weight = 0.051917224893981713D;
+            this.tableCell23.Weight = 0.054495286234223464D;
             // 
             // tableCell24
             // 
@@ -482,7 +482,7 @@
             this.tableCell24.StylePriority.UseFont = false;
             this.tableCell24.StylePriority.UseTextAlignment = false;
             this.tableCell24.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
-            this.tableCell24.Weight = 0.052165445263424225D;
+            this.tableCell24.Weight = 0.05332794161202932D;
             // 
             // tableCell25
             // 
@@ -499,7 +499,7 @@
             this.tableCell25.StylePriority.UseBorders = false;
             this.tableCell25.StylePriority.UseBorderWidth = false;
             this.tableCell25.StylePriority.UseFont = false;
-            this.tableCell25.Weight = 0.099648106825766844D;
+            this.tableCell25.Weight = 0.09590754913692D;
             // 
             // tableCell26
             // 
@@ -789,7 +789,7 @@
             this.xrLabel26.StylePriority.UseBorderColor = false;
             this.xrLabel26.StylePriority.UseFont = false;
             this.xrLabel26.StylePriority.UseForeColor = false;
-            this.xrLabel26.Text = "Reported By:[Parameters.TenantName]";
+            this.xrLabel26.Text = "Reported By:[Parameters.UserName]";
             // 
             // pageInfo2
             // 
@@ -2000,8 +2000,7 @@
             // xrLabel6
             // 
             this.xrLabel6.BackColor = System.Drawing.Color.LightSkyBlue;
-            this.xrLabel6.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
-            | DevExpress.XtraPrinting.BorderSide.Right) 
+            this.xrLabel6.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrLabel6.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([TotalCreditNoteAmount])")});
@@ -2068,11 +2067,11 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrLabel3.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([calcLineAmount])")});
-            this.xrLabel3.LocationFloat = new DevExpress.Utils.PointFloat(586.1782F, 0F);
+            this.xrLabel3.LocationFloat = new DevExpress.Utils.PointFloat(586.5249F, 0F);
             this.xrLabel3.Multiline = true;
             this.xrLabel3.Name = "xrLabel3";
             this.xrLabel3.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel3.SizeF = new System.Drawing.SizeF(92.4502F, 48.33335F);
+            this.xrLabel3.SizeF = new System.Drawing.SizeF(92.10352F, 48.33335F);
             this.xrLabel3.StylePriority.UseBackColor = false;
             this.xrLabel3.StylePriority.UseBorders = false;
             this.xrLabel3.StylePriority.UseTextAlignment = false;

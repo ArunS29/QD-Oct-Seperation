@@ -99,7 +99,13 @@
             .HeaderFilter(filter => filter.Visible(false))
         .FilterRow(filterRow => filterRow.Visible(false).ApplyFilter(GridApplyFilterMode.Auto)) // ✅ Enables inline filter inputs
 
-            .Paging(p => p.Enabled(false))
+        .Pager(pager =>
+        {
+            pager.ShowPageSizeSelector(true);
+            pager.AllowedPageSizes(new[] { 5, 10, 20, 50 });
+            pager.ShowNavigationButtons(true);
+            pager.Visible(true);
+        })
             .Columns(columns =>
             {
                 columns.Add().DataField("SupplierCategory").Caption("Supplier Category").Visible(true).GroupIndex(0);
