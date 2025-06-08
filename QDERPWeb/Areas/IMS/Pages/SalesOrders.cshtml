@@ -282,32 +282,9 @@
 
 			});
 		})
-		.Height(680) // Fixed height for the grid
-		.ColumnAutoWidth(true)
-		.Width("98%")
-		.WordWrapEnabled(true)
-		.OnCellClick("function(e) {handleCellClick(e);}")
-		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
-		.AllowColumnReordering(true)
-		.AllowColumnResizing(true)
-		.ColumnFixing(fixing => fixing.Enabled(true))
-		.HeaderFilter(filter => filter.Visible(false))
-		.Paging(p => p.Enabled(false))
-		.Pager(pager => pager.Visible(false))
-		.GroupPanel(groupPanel => groupPanel.Visible(false))
-		.ShowBorders(true)
-		.ShowRowLines(true)
-
-
-		.FilterRow(filterRow => filterRow.Visible(false))
-		.GroupPanel(groupPanel => groupPanel.Visible(false))
-		.ShowBorders(true)
+		
 		.OnContextMenuPreparing("onContextMenuPreparing")
-		.StateStoring(stateStoring =>
-		{
-
-	});
-					})
+		
 	.Height(680) // Fixed height for the grid
 	.ColumnAutoWidth(true)
 	.Width("98%")

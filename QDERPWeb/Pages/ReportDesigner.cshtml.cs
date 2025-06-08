@@ -222,7 +222,7 @@ namespace QD.ERP.Web.Pages
                 case "balnceSheet":
                     if (string.IsNullOrEmpty(accountGroup))
                         return BadRequest("Account group is required for subGroup report.");
-                    Report = new balnceSheet(accountGroup,  toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                    //Report = new balnceSheet(accountGroup,  toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                     break;
                 case "BalanceSheetHorizondalFormat":
                     if (string.IsNullOrEmpty(accountGroup))
