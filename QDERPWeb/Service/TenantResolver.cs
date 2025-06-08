@@ -69,12 +69,13 @@ namespace QD.ERP.Web.Service
             {
                 // Compare CompanyNameShort with tenant.Name (already lowercase)
                 var companyDetails = await tenantDbContext.Tbl901CompanyDetails
-                    .FirstOrDefaultAsync(p => p.CompanyNameShort.ToLower() == tenant.Name);
+                    .FirstOrDefaultAsync();
 
                 if (companyDetails?.CompanyLogo != null)
                 {
                     tenant.LogoUrl = $"data:image/png;base64,{Convert.ToBase64String(companyDetails.CompanyLogo)}";
                 }
+                tenant.CompanyNameShort = companyDetails.CompanyName.ToLower();
             }
 
             // Cache and return the resolved tenant

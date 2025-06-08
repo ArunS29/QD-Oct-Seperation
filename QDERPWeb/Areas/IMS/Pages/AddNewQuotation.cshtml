@@ -1822,7 +1822,7 @@
 				},
 				error: function (xhr, status, error) {
 					console.error("Error loading Payment Accounts:", error);
-					DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+					DevExpress.ui.dialog.alert("Failed to load QuoteNo details.", "Error");
 				}
 			});
 		}
@@ -3091,28 +3091,28 @@
 	}
 
 
-	$(document).ready(function () {
-		if (IsCurrent !== "true") {
-			$.ajax({
-				url: "/api/VATModule/GetVATInvoiceNo",
-				type: "GET",
-				success: function (data) {
-					console.log("Success:", data);
+	// $(document).ready(function () {
+	// 	if (IsCurrent !== "true") {
+	// 		$.ajax({
+	// 			url: "/api/VATModule/GetVATInvoiceNo",
+	// 			type: "GET",
+	// 			success: function (data) {
+	// 				console.log("Success:", data);
 
-					const invoiceBox = $("#InvoiceNo").dxTextBox("instance");
-					if (invoiceBox) {
-						invoiceBox.option("value", data || "");
-					} else {
-						console.warn("Invoice TextBox not initialized.");
-					}
-				},
-				error: function (xhr, status, error) {
-					console.error("Error loading Payment Accounts:", error);
-					DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
-				}
-			});
-		}
-	});
+	// 				const invoiceBox = $("#InvoiceNo").dxTextBox("instance");
+	// 				if (invoiceBox) {
+	// 					invoiceBox.option("value", data || "");
+	// 				} else {
+	// 					console.warn("Invoice TextBox not initialized.");
+	// 				}
+	// 			},
+	// 			error: function (xhr, status, error) {
+	// 				console.error("Error loading Payment Accounts:", error);
+	// 				DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+	// 			}
+	// 		});
+	// 	}
+	// });
 
 
 

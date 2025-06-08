@@ -61,7 +61,6 @@
     <i class="fa fa-pencil-alt"></i>
 </a>
 
-
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
 <!-- Email Popup -->
 <div id="emailPopup" class="popup-overlay">
@@ -266,10 +265,11 @@
 
 <div id="webDocumentViewer"></div> 
 
+
 <script>
     function getTenantNameFromUrl() {
         const pathParts = window.location.pathname.split('/');
-        return pathParts[1] || ''; 
+        return pathParts[1] || '';
     }
 
        function openReportDesigner(reportName, voucherType, requestedBy, frmDate, toDate) {
@@ -282,6 +282,26 @@
         console.log("Requested By:", requestedBy);
         console.log("From Date:", frmDate);
         console.log("To Date:", toDate);
+             console.log("requestedBy:",requestedBy );
+
+        let reportDesignerUrl;
+
+       
+        if (voucherType && voucherType.trim() !== "") {
+   
+            reportDesignerUrl = `/${tenantName}/RegisterDesigner?reportName=${encodeURIComponent(reportName)}&voucherType=${encodeURIComponent(voucherType)}&frmDate=${encodeURIComponent(frmDate)}&toDate=${encodeURIComponent(toDate)}`;
+        } 
+        else if (requestedBy && requestedBy.trim() !== "") {
+
+            let reportDesignerUrl = `/${tenantName}/RegisterDesigner?reportName=${encodeURIComponent(reportName)}&requestedBy=${encodeURIComponent(requestedBy)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
+
+
+           // reportDesignerUrl = `/${tenantName}/RegisterDesigner?reportName=${encodeURIComponent(reportName)}&voucherType=${encodeURIComponent(requestedBy)}&frmDate=${encodeURIComponent(frmDate)}&toDate=${encodeURIComponent(toDate)}`;
+        }
+        else {
+          
+            reportDesignerUrl = `/${tenantName}/RegisterDesigner?reportName=${encodeURIComponent(reportName)}&frmDate=${encodeURIComponent(frmDate)}&toDate=${encodeURIComponent(toDate)}`;
+        }
 
         let reportDesignerUrl = `/${tenantName}/RegisterDesigner?reportName=${encodeURIComponent(reportName)}&frmDate=${encodeURIComponent(frmDate)}&toDate=${encodeURIComponent(toDate)}`;
 
@@ -295,9 +315,31 @@
         window.open(reportDesignerUrl, "_blank", "noopener,noreferrer,width=1200,height=800");
     }
 
+    
+    document.getElementById("btnClose")?.addEventListener("click", function () {
+        window.history.back();
+    });
+</script>
 
 
-
+@* 
+<script>
+    function getTenantNameFromUrl() {
+        const pathParts = window.location.pathname.split('/');
+        return pathParts[1] || '';
+    }
+    
+    function openReportDesigner(reportName, voucherType, frmDate, toDate,requestedBy) {
+        alert('hi');
+         alert("Voucher Type",voucherType);
+        const tenantName = getTenantNameFromUrl();
+        console.log("requestedBy",requestedBy);
+        console.log("Opening Designer with:");
+        console.log("Tenant Name:", tenantName);
+        console.log("Report Name:", reportName);
+        console.log("Voucher Type:", voucherType);
+        console.log("From Date:", frmDate);
+        console.log("To Date:", toDate);
 
 
     document.getElementById("btnClose").addEventListener("click", function () {
@@ -306,4 +348,6 @@
 
     });
 
-</script>
+</script> *@
+
+

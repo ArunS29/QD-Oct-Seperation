@@ -1,27 +1,25 @@
 ﻿using System;
-using System.Drawing;
-using System.Collections;
-using System.ComponentModel;
-using DevExpress.XtraReports.UI;
-using DevExpress.XtraPrinting.Drawing;
 using System.Data;
 using System.Data.SqlClient;
+using System.Drawing;
+using DevExpress.XtraReports.UI;
+using DevExpress.XtraPrinting.Drawing;
+using QD.ERP.Web.Service;
 
-namespace QD.ERP.Web.Areas.VAT.Reports.VATCreditNote
+namespace QD.ERP.Web.Areas.VAT.Reports.B2B
 {
-	public partial class Foreigncurrencycredit : DevExpress.XtraReports.UI.XtraReport
-	{	
-		
-
-
+    public partial class RegularTaxInvoiceFormat06 : XtraReport
+    {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private bool _isApproved;
 
-        public Foreigncurrencycredit(
-            string creditNoteNo,
+        public RegularTaxInvoiceFormat06(
+            string invoiceNo,
             string tenantName,
             string companyName,
             string companyAddress,
+            Image logoImage,
+            Image sealImage,
             string companyNameAr,
             string companyAddressAr,
             bool isApproved,
@@ -31,11 +29,11 @@ namespace QD.ERP.Web.Areas.VAT.Reports.VATCreditNote
             _isApproved = isApproved;
 
             InitializeComponent();
-            SetReportParameters(creditNoteNo, tenantName, companyName, companyAddress,  companyNameAr, companyAddressAr);
-            LoadReportData(creditNoteNo);
+            SetReportParameters(invoiceNo, tenantName, companyName, companyAddress, logoImage, sealImage, companyNameAr, companyAddressAr);
+            LoadReportData(invoiceNo);
         }
 
-        private void SetReportParameters(string creditNoteNo, string tenantName, string companyName, string companyAddress,  string companyNameAr, string companyAddressAr)
+        private void SetReportParameters(string invoiceNo, string tenantName, string companyName, string companyAddress, Image logoImage, Image sealImage, string companyNameAr, string companyAddressAr)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -56,7 +54,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.VATCreditNote
                 }
             }
 
-            AddOrUpdateParameter("CreditNoteNo", creditNoteNo, typeof(string));
+            AddOrUpdateParameter("InvoiceNo", invoiceNo, typeof(string));
             AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string));
             AddOrUpdateParameter("CompanyName", companyName ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddress", companyAddress ?? "", typeof(string));
@@ -78,17 +76,20 @@ namespace QD.ERP.Web.Areas.VAT.Reports.VATCreditNote
             if (FindControl("xrLabelCompanyAddressAr", true) is XRLabel addressArLabel)
                 addressArLabel.Text = companyAddressAr;
 
-        
+            if (FindControl("xrPictureBoxLogo", true) is XRPictureBox logoPictureBox)
+                logoPictureBox.Image = logoImage;
+
+            if (FindControl("xrPictureBoxSeal", true) is XRPictureBox sealPictureBox)
+                sealPictureBox.Image = sealImage;
         }
 
-        private void LoadReportData(string creditNoteNo)
+        private void LoadReportData(string invoiceNo)
         {
-            DataTable dt = GetReportData(creditNoteNo);
+            DataTable dt = GetReportData(invoiceNo);
 
             if (dt.Rows.Count == 0)
             {
                 this.DataSource = null;
-                CreateNoDataLabel();
             }
             else
             {
@@ -98,7 +99,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.VATCreditNote
             }
         }
 
-        private DataTable GetReportData(string creditNoteNo)
+        private DataTable GetReportData(string invoiceNo)
         {
             DataTable dt = new DataTable();
 
@@ -110,12 +111,12 @@ namespace QD.ERP.Web.Areas.VAT.Reports.VATCreditNote
 
                     using (SqlConnection conn = new SqlConnection(connectionString))
                     {
-                        string query = "SELECT * FROM qry201_802VATCreditNoteReport WHERE CreditNoteNo = @CreditNoteNo";
+                        string query = "SELECT * FROM qry201_602VATInvoiceReport WHERE InvoiceNo = @InvoiceNo";
 
                         using (SqlCommand cmd = new SqlCommand(query, conn))
                         {
                             cmd.CommandType = CommandType.Text;
-                            cmd.Parameters.AddWithValue("@CreditNoteNo", creditNoteNo);
+                            cmd.Parameters.AddWithValue("@InvoiceNo", invoiceNo);
 
                             SqlDataAdapter da = new SqlDataAdapter(cmd);
                             conn.Open();
@@ -149,17 +150,5 @@ namespace QD.ERP.Web.Areas.VAT.Reports.VATCreditNote
                 this.Watermark.ImageViewMode = ImageViewMode.Stretch;
             }
         }
-
-        private void CreateNoDataLabel()
-        {
-            XRLabel noDataLabel = new XRLabel
-            {
-                Text = "No records found.",
-                BoundsF = new RectangleF(0, 0, PageWidth - Margins.Left - Margins.Right, 50),
-                TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter
-            };
-            this.Bands[BandKind.Detail].Controls.Add(noDataLabel);
-        }
-
     }
 }

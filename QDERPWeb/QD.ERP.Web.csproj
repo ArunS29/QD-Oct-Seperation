@@ -10,14 +10,10 @@
 		<Compile Remove="Areas\Finance\Pages\ClientAddressDetailsDropdown.cshtml.cs" />
 		<Compile Remove="Areas\Finance\Pages\CreditNoteEditForm.cshtml.cs" />
 		<Compile Remove="Areas\Finance\Pages\DatabaseMasterModule.cshtml.cs" />
-		<Compile Remove="Areas\Finance\Pages\SalesPersonMaster.cshtml.cs" />
 		<Compile Remove="Areas\Finance\Pages\VATDatabaseSignatories.cshtml.cs" />
-		<Compile Remove="Areas\Finance\Pages\VATDetailsDescription.cshtml.cs" />
 		<Compile Remove="Areas\Finance\Pages\VATInvoiceWithDetails.cshtml.cs" />
 		<Compile Remove="Areas\Finance\Pages\VATOurAddressDetails.cshtml.cs" />
-		<Compile Remove="Areas\Finance\Pages\VATPercentageCal.cshtml.cs" />
 		<Compile Remove="Areas\Finance\Pages\VATSalesReporting.cshtml.cs" />
-		<Compile Remove="Areas\VAT\Pages\VATSalesReportCOGSPosting.cshtml.cs" />
 		<Compile Remove="Controllers\LoginController.cs" />
 		<Compile Remove="Pages\Dashboard.cshtml.cs" />
 		<Compile Remove="Pages\Login.cshtml.cs" />
@@ -32,20 +28,15 @@
 		<Content Remove="Areas\Finance\Pages\InventoryListtoUpload.cshtml" />
 		<Content Remove="Areas\Finance\Pages\InvoiceCostPosting.cshtml" />
 		<Content Remove="Areas\Finance\Pages\InvoiceProfitorLossSummary.cshtml" />
-		<Content Remove="Areas\Finance\Pages\SalesPersonMaster.cshtml" />
 		<Content Remove="Areas\Finance\Pages\SalesPersonorProjectList.cshtml" />
 		<Content Remove="Areas\Finance\Pages\SalesRegisterVAT.cshtml" />
 		<Content Remove="Areas\Finance\Pages\VATCreditNotRegister.cshtml" />
 		<Content Remove="Areas\Finance\Pages\VATDatabaseSignatories.cshtml" />
-		<Content Remove="Areas\Finance\Pages\VATDetailsDescription.cshtml" />
 		<Content Remove="Areas\Finance\Pages\VATGoodsandServices.cshtml" />
 		<Content Remove="Areas\Finance\Pages\VATInvoiceWithDetails.cshtml" />
 		<Content Remove="Areas\Finance\Pages\VATMasterModule.cshtml" />
 		<Content Remove="Areas\Finance\Pages\VATOurAddressDetails.cshtml" />
-		<Content Remove="Areas\Finance\Pages\VATPercentageCal.cshtml" />
 		<Content Remove="Areas\Finance\Pages\VATSalesReporting.cshtml" />
-		<Content Remove="Areas\VAT\Pages\VATModuleFooter.cshtml" />
-		<Content Remove="Areas\VAT\Pages\VATSalesReportCOGSPosting.cshtml" />
 		<Content Remove="Pages\Dashboard.cshtml" />
 		<Content Remove="Pages\Login.cshtml" />
 	</ItemGroup>
@@ -65,7 +56,6 @@
 		<PackageReference Include="Humanizer" Version="2.14.1" />
 		<PackageReference Include="MailKit" Version="4.11.0" />
 		<PackageReference Include="Microsoft.ApplicationInsights" Version="2.23.0" />
-		<PackageReference Include="Microsoft.AspNet.Mvc" Version="5.3.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.20" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.6" />
 		<PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.1.175" />

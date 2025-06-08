@@ -25,7 +25,7 @@
 		overflow: hidden;
 	}
 
-	.limited-footer .btn-containerIvoiceEdit:not(:has(#ddButtonLayout,#btnPrint, #btnToggleSearch,#btntoggleGroupPanel,#btnInvoiceDetails,#ddReports,#ddButtonPayment)) {
+	.limited-footer .btn-containerIvoiceEdit:not(:has(#ddButtonLayout,#btnPrint, #btnToggleSearch,#btntoggleGroupPanel,#btnInvoiceDetails,#ddReports,#ddButtonPayment,#btnColumnChooser)) {
 		display: none !important
 	}
 
@@ -865,11 +865,10 @@
 	}
 	$(document).ready(function () {
 		$(".limited-footer .btn-container").each(function () {
-			if (!$(this).find("#ddButtonLayout,#btnPrint, #btnToggleSearch,#btntoggleGroupPanel,#btnInvoiceDetails,#ddReports,#ddButtonPayment").length) {
+			if (!$(this).find("#ddButtonLayout,#btnPrint, #btnToggleSearch,#btntoggleGroupPanel,#btnInvoiceDetails,#ddReports,#ddButtonPayment,#btnColumnChooser").length) {
 				$(this).remove();
 			}
 		});
-		ddBtnShowRecords_click('range');
 	});
 	function checkIfOldVATInvoice(invoiceNo) {
 		$.ajax({
@@ -905,6 +904,19 @@
 				$("#invoiceErrorPopup").dxPopup("dispose");
 			}
 		});
+	}
+
+
+	 function showColumnChooser() {
+		var dataGrid = $("#dataGrid").dxDataGrid("instance");
+		var isColumnChooserVisible = dataGrid.option("columnChooser.enabled");
+
+		if (isColumnChooserVisible) {
+			dataGrid.option("columnChooser.enabled", false); // Disable the column chooser
+		} else {
+			dataGrid.option("columnChooser.enabled", true);
+			dataGrid.showColumnChooser();
+		}
 	}
 
 
