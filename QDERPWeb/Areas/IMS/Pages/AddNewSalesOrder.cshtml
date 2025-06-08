@@ -215,7 +215,6 @@
         display: none !important;
     }
 
-    <style >
     .dx-dropDownBox.dx-invalid .dx-texteditor-input {
         border-color: red !important;
         border-width: 2px;
@@ -229,11 +228,7 @@
     </div>
 </div>
 
-<div class="Head">
-    <div class="limited-footer">
-        @await Html.PartialAsync("InventoryModuleFooter")
-    </div>
-</div>
+
 <div class="form-container1">
     <div class="form-container">
         <!-- Tab Menu -->
@@ -766,7 +761,11 @@
         )
 
 </div>
-
+<div class="Head">
+    <div class="limited-footer">
+        @await Html.PartialAsync("InventoryModuleFooter")
+    </div>
+</div>
 @* <div class="form-container"> *@
 @*     <div class="footer-buttons"> *@
 @*         <div class="col-md-12"> *@
@@ -1040,7 +1039,19 @@
 
 
 
+        $(document).ready(function () {
 
+            $(".limited-footer .btn-containerIvoiceEdit").each(function () {
+
+                if (!$(this).find("#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnAttach").length) {
+
+                    $(this).remove();
+
+                }
+
+            });
+
+        });
 
        function onGridRightClick(e) {
         if (e.row && e.row.rowType === "data") {
