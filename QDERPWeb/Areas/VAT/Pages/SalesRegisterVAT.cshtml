@@ -528,6 +528,13 @@
 			.StorageKey("gridContainerState");
 		})
 		.OnInitialized("function(e) { loadGridState(); }")
+		.Paging(p => p.Enabled(true).PageSize(20)) // Enable paging with page size
+		.Pager(p => p
+		.ShowPageSizeSelector(true)
+		.AllowedPageSizes(new[] { 10, 20, 50, 100 })
+		.ShowInfo(true)
+		.Visible(true)
+		)
 		)
 
 
