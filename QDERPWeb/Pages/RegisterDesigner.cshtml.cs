@@ -117,40 +117,40 @@ namespace QD.ERP.Web.Pages
                     case "SummaryReport":
                         // **Handle requestedBy being empty or null**
                         string requestedByValue = string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy;
-                        Report = new CostCenterSummaryReport(requestedByValue, frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new CostCenterSummaryReport(requestedByValue, frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper,userName);
                         break;
                     case "SummaryReportByDate":
                         Report = new SummaryReport_ByDate_(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
                         );
                         break;
 
                     case "CostCenterReport":
                         Report = new CostcenterRepoer(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
                         );
                         break;
 
                     case "CostCenterReportByDate":
                         Report = new CostcenterBydate(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
                         );
                         break;
 
                     case "CostCenterGroupReport":
                         Report = new CostCenterGroupReport(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
                         );
                         break;
 
                     case "CostCenterGroupReportByDate":
                         Report = new CostcenterGroupByDate(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
                         );
                         break;
 

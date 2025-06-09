@@ -4,7 +4,6 @@
     ViewData["Title"] = "Notifications";
 }
 
-<!-- External Libraries -->
 <link href="https://cdn3.devexpress.com/jslib/23.2.5/css/dx.light.css" rel="stylesheet" />
 <script src="https://cdn3.devexpress.com/jslib/23.2.5/js/jquery.min.js"></script>
 <script src="https://cdn3.devexpress.com/jslib/23.2.5/js/jszip.min.js"></script>
@@ -99,12 +98,9 @@
         }
 
     @@media (max-width: 768px) {
-        #notificationGrid
-
-    {
-        overflow-x: auto;
-    }
-
+        #notificationGrid {
+            overflow-x: auto;
+        }
     }
 </style>
 
@@ -118,55 +114,29 @@
             <button class="notification-btn delete" onclick="deleteSelectedNotifications()">
                 <i class="fas fa-trash-alt"></i> Delete
             </button>
-
             <button class="notification-btn mark-read" onclick="markAllAsRead()">
                 <i class="fas fa-check-double"></i> Mark All as Read
             </button>
             <button class="notification-btn mark-read" id="btnAddTask">
-                <i class="fas fa-check-double"></i> Add New Task
+                <i class="fas fa-plus"></i> Add New Task
             </button>
             <button class="notification-btn mark-read" onclick="AddnewRemainder()">
-                <i class="fas fa-check-double"></i> Add new Remainder
+                <i class="fas fa-bell"></i> Add new Remainder
             </button>
-@*             <button class="dx-button dx-button-default" onclick="clearSeenCache()">Clear Seen Cache</button>
- *@        </div>
+        </div>
     </div>
-    <div id="popupContainer" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:10000; overflow:auto; padding: 30px;">
-    </div>
+
+    <div id="popupContainer" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:10000; overflow:auto; padding: 30px;"></div>
     <div id="notificationGrid"></div>
 </div>
 
 <script>
     let dataGridInstance;
 
-    // Seen Status Helpers
-    function getSeenNotifications() {
-        const seen = localStorage.getItem("seenNotifications");
-        return seen ? JSON.parse(seen) : [];
-    }
-
-    function markAsSeen(alertNo) {
-        const seen = getSeenNotifications();
-        if (!seen.includes(alertNo)) {
-            seen.push(alertNo);
-            localStorage.setItem("seenNotifications", JSON.stringify(seen));
-        }
-    }
-
-    function isSeen(alertNo) {
-        return getSeenNotifications().includes(alertNo);
-    }
-
-    function clearSeenCache() {
-        localStorage.removeItem("seenNotifications");
-        dataGridInstance.refresh();
-    }
-
-    // DataGrid Initialization
     $(function () {
         dataGridInstance = $("#notificationGrid").dxDataGrid({
             dataSource: DevExpress.data.AspNet.createStore({
-                key: "AlertNo",
+                key: "AlertCode",
                 loadUrl: "/api/Notification/GetUserNotifications"
             }),
             remoteOperations: true,
@@ -190,16 +160,13 @@
                 visible: true
             },
             onRowPrepared: function (e) {
-                if (e.rowType === "data") {
-                    const isAlertSeen = isSeen(e.data.AlertNo);
-                    if (!isAlertSeen) {
-                        e.rowElement.addClass("unseen");
-                    }
+                if (e.rowType === "data" && (!e.data.IsSeen || e.data.IsSeen === 0)) {
+                    e.rowElement.addClass("unseen");
                 }
             },
             columns: [
                 {
-                    dataField: "AlertNo",
+                    dataField: "AlertCode",
                     caption: "Alert #",
                     width: 100
                 },
@@ -213,7 +180,7 @@
                     }
                 },
                 {
-                    dataField: "AlertType",
+                    dataField: "AlertStatusRemarks",
                     caption: "Type",
                     width: 100,
                     cellTemplate: function (container, options) {
@@ -227,7 +194,7 @@
                     }
                 },
                 {
-                    dataField: "AlertCreatedOn",
+                    dataField: "AlertUserOn",
                     caption: "Created On",
                     dataType: "datetime",
                     format: "dd-MM-yyyy hh:mm tt",
@@ -237,10 +204,10 @@
                     caption: "Status",
                     width: 100,
                     cellTemplate: function (container, options) {
-                        const seen = isSeen(options.data.AlertNo);
+                        const isSeen = options.data.IsSeen === true || options.data.IsSeen === 1;
                         const badge = $("<span>")
-                            .addClass(seen ? "badge-seen" : "badge-unseen")
-                            .text(seen ? "Seen" : "Unseen");
+                            .addClass(isSeen ? "badge-seen" : "badge-unseen")
+                            .text(isSeen ? "Seen" : "Unseen");
                         container.append(badge);
                     }
                 },
@@ -253,10 +220,31 @@
                             hint: "View",
                             text: "View",
                             onClick: function (e) {
-                                const alertNo = e.row.data.AlertNo;
-                                markAsSeen(alertNo);
-                                DevExpress.ui.dialog.alert((e.row.data.AlertUserMessage || e.row.data.AlertMasterMessage), "Notification Detail");
-                                dataGridInstance.refresh();
+                                const AlertCode = e.row.data.AlertCode;
+
+                                fetch('/api/Notification/MarkAsSeen', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ AlertCode: AlertCode })
+                                })
+                                    .then(response => {
+                                        if (response.ok) {
+                                            DevExpress.ui.dialog.alert(
+                                                (e.row.data.AlertUserMessage || e.row.data.AlertMasterMessage),
+                                                "Notification Detail"
+                                            );
+                                            dataGridInstance.refresh();
+                                        } else {
+                                            return response.text().then(text => {
+                                                console.error("Server Error:", text);
+                                                DevExpress.ui.notify("Failed to mark as seen", "error", 2000);
+                                            });
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error("Network Error:", error);
+                                        DevExpress.ui.notify("Error marking as seen", "error", 2000);
+                                    });
                             }
                         }
                     ]
@@ -265,16 +253,18 @@
         }).dxDataGrid("instance");
     });
 
-    // Mark All as Read (Client-side)
     function markAllAsRead() {
-        dataGridInstance.getDataSource().load().then(data => {
-            const alertNos = data.map(item => item.AlertNo);
-            localStorage.setItem("seenNotifications", JSON.stringify(alertNos));
-            dataGridInstance.refresh();
-        });
+        fetch('/api/Notification/MarkAllAsSeen', { method: 'POST' })
+            .then(response => {
+                if (response.ok) {
+                    DevExpress.ui.notify("All notifications marked as read.", "success", 2000);
+                    dataGridInstance.refresh();
+                } else {
+                    DevExpress.ui.notify("Failed to mark all as read.", "error", 2000);
+                }
+            });
     }
 
-    // Delete Selected
     function deleteSelectedNotifications() {
         const keys = dataGridInstance.getSelectedRowKeys();
         if (keys.length === 0) {
@@ -287,15 +277,15 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(keys)
         })
-        .then(() => {
-            DevExpress.ui.notify("Notifications deleted.", "success", 2000);
-            dataGridInstance.refresh();
-        })
-        .catch(() => {
-            DevExpress.ui.notify("Delete failed.", "error", 2000);
-        });
+            .then(() => {
+                DevExpress.ui.notify("Notifications deleted.", "success", 2000);
+                dataGridInstance.refresh();
+            })
+            .catch(() => {
+                DevExpress.ui.notify("Delete failed.", "error", 2000);
+            });
     }
-        $(document).ready(function () {
+     $(document).ready(function () {
         $('#btnAddTask').click(function () {
             $.get('/Shared/CreateTask', function (html) {
                 $('#popupContainer').html(html).fadeIn();
@@ -309,3 +299,4 @@
         });
     });
 </script>
+
