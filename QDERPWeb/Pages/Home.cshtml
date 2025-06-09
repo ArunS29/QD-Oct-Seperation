@@ -1,0 +1,303 @@
+﻿@page
+@model QD.ERP.Web.Pages.Shared.HomeModel
+@{
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>QuickDice ERP - Home</title>
+
+    <!-- Poppins font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f4f7fa;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            overflow-x: hidden;
+        }
+
+        .mainContainer {
+            width: 1500px;
+            padding: 0px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            margin-top: 0px;
+            font-size: 56px;
+            font-weight: 800;
+            background: linear-gradient(90deg, #007bff, #00c6ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            z-index: 1;
+            position: relative;
+            animation: fadeSlide 1s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        p {
+            color: #555;
+            font-size: 22px;
+            font-weight: 500;
+            margin-bottom: 40px;
+            z-index: 1;
+            position: relative;
+            animation: fadeSlide 1.2s ease;
+            font-family: 'Poppins', sans-serif;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+
+        @@keyframes fadeSlide {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        @@keyframes scaleIn {
+            from
+
+        {
+            opacity: 0;
+            transform: scale(0.5);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        }
+
+        .radial-container {
+            position: relative;
+            width: 600px;
+            height: 600px;
+            margin: 0 auto;
+            animation: scaleIn 1s ease-in-out;
+        }
+
+
+        .main-card {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 140px;
+            height: 140px;
+            background-color: #007bff;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            flex-direction: column;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+            .main-card i {
+                font-size: 26px;
+                margin-bottom: 6px;
+            }
+
+            .main-card:hover {
+                transform: translate(-50%, -50%) rotate(10deg) scale(1.1);
+                box-shadow: 0 12px 25px rgba(0, 123, 255, 0.4);
+            }
+
+        .module-icon {
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            background-color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            opacity: 0;
+            transform: scale(0.8);
+            animation: fadeInIcon 0.6s forwards;
+        }
+
+            .module-icon i {
+                font-size: 26px;
+                color: #007bff;
+                transition: transform 0.6s ease;
+            }
+
+            .module-icon:hover {
+                transform: scale(1.15) rotate(15deg);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            }
+
+                .module-icon:hover i {
+                    transform: rotate(360deg);
+                }
+
+            .module-icon[data-tooltip]::after {
+                content: attr(data-tooltip);
+                position: absolute;
+                bottom: -28px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #007bff;
+                color: #fff;
+                padding: 4px 10px;
+                border-radius: 6px;
+                font-size: 12px;
+                white-space: nowrap;
+                opacity: 0;
+                transition: opacity 0.4s ease, bottom 0.4s ease;
+                pointer-events: none;
+            }
+
+            .module-icon:hover::after {
+                opacity: 1;
+                bottom: -38px;
+            }
+
+        @@keyframes fadeInIcon {
+            to
+
+        {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to QuickDice ERP</h1>
+    <p>One solution for all Modules.</p>
+
+    <div class="radial-container" id="radialContainer">
+        <div class="main-card" onclick="location.href='/Dashboard'" title="Go to Dashboard">
+            <i class="fa-solid fa-chart-pie"></i>
+            Dashboard
+        </div>
+
+        <div class="module-icon" data-tooltip="Finance Management" onclick="toggleSidebar('Finance')">
+            <i class="fa-solid fa-coins"></i>
+        </div>
+        <div class="module-icon" data-tooltip="Human Resources" onclick="toggleSidebar('HR')">
+            <i class="fa-solid fa-users"></i>
+        </div>
+        <div class="module-icon" data-tooltip="E-invoicing VAT" onclick="toggleSidebar('VAT')">
+            <i class="fa-solid fa-file-invoice-dollar"></i>
+        </div>
+        <div class="module-icon" data-tooltip="Manpower Rental" onclick="toggleSidebar('CAMP')">
+            <i class="fa-solid fa-hard-hat"></i>
+        </div>
+        <div class="module-icon" data-tooltip="Equipment Rental" onclick="toggleSidebar('Equipment')">
+            <i class="fa-solid fa-truck-ramp-box"></i>
+        </div>
+        <div class="module-icon" data-tooltip="Trading & Inventory" onclick="toggleSidebar('IMS')">
+            <i class="fa-solid fa-boxes-stacked"></i>
+        </div>
+
+    </div>
+
+    <script>
+               window.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('radialContainer');
+            const modules = container.querySelectorAll('.module-icon');
+            const radius = 220;  // radius adjusted for 600px container
+            const total = modules.length;
+            const centerX = container.offsetWidth / 2;
+            const centerY = container.offsetHeight / 2;
+
+            modules.forEach((mod, i) => {
+                const angle = (i / total) * 2 * Math.PI - Math.PI / 2;
+                const x = centerX + radius * Math.cos(angle) - mod.offsetWidth / 2;
+                const y = centerY + radius * Math.sin(angle) - mod.offsetHeight / 2;
+                mod.style.left = `${x}px`;
+                mod.style.top = `${y}px`;
+                mod.style.animationDelay = `${i * 0.1 + 0.5}s`;
+            });
+        });
+
+
+
+
+        function toggleSidebar(moduleKey) {
+            const sidebar1 = document.getElementById("sidebar");
+            const sidebar2 = document.getElementById("sidebar2");
+
+            sidebar1?.classList.add("hidden");
+            sidebar2?.classList.add("hidden");
+
+            document.querySelectorAll("#sidebar .menu-item, #sidebar2 .menu-item").forEach(item => {
+                item.style.display = "none";
+            });
+
+            switch (moduleKey) {
+                case 'Finance':
+                    sidebar2?.classList.remove("hidden");
+                    showItemByClass('finance', sidebar2);
+                    break;
+                case 'HR':
+                    sidebar1?.classList.remove("hidden");
+                    showItemByClass('hr', sidebar1);
+                    break;
+                case 'VAT':
+                    sidebar1?.classList.remove("hidden");
+                    showItemByClass('vat', sidebar1);
+                    break;
+                case 'CAMP':
+                    sidebar1?.classList.remove("hidden");
+                    showItemByClass('camp', sidebar1);
+                    break;
+                case 'Equipment':
+                    sidebar1?.classList.remove("hidden");
+                    showItemByClass('rentals', sidebar1);
+                    break;
+                case 'IMS':
+                    sidebar1?.classList.remove("hidden");
+                    showItemByClass('inventory', sidebar1);
+                    break;
+                case 'Projects':
+                    sidebar1?.classList.remove("hidden");
+                    showItemByClass('projects', sidebar1);
+                    break;
+            }
+        }
+
+        function showItemByClass(className, container) {
+            const item = container.querySelector(`.menu-item.${className}`);
+            if (item) item.style.display = "flex";
+        }
+    </script>
+</body>
+</html>

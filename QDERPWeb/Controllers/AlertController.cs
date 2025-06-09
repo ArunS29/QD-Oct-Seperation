@@ -10,31 +10,16 @@ namespace QD.ERP.Web.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class AlertTaskController : ControllerBase
+    public class AlertController : ControllerBase
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
 
-        public AlertTaskController(TenantDbContextHelper tenantDbContextHelper)
+        public AlertController(TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
         }
 
         // Get all users for dropdown (Username and UserId)
-        [HttpGet]
-        public async Task<IActionResult> GetUsers()
-        {
-            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
-                return Unauthorized(new { message = "Invalid tenant", success = false });
-
-            var users = await dbContext.TblUserMasters
-                .Select(u => new { u.UserId, u.UserName })
-                .OrderBy(u => u.UserName)
-                .ToListAsync();
-
-            return Ok(users);
-        }
-
-        // Get next AlertCode starting with "TSK-"
         [HttpGet]
         public async Task<IActionResult> GetNextAlertCode()
         {
@@ -55,11 +40,10 @@ namespace QD.ERP.Web.Controllers
                     int.TryParse(parts[1], out lastNum);
             }
 
-            string nextCode = $"TSK-{(lastNum + 1):D3}";
+            string nextCode = $"TSK-{(lastNum + 1):D5}";
             return Ok(new { AlertCode = nextCode });
         }
 
-        // Create new notification task using Tbl901AlertUsers entity directly
         [HttpPost]
         public async Task<IActionResult> CreateTask([FromBody] Tbl901AlertUser newAlert)
         {
@@ -69,14 +53,56 @@ namespace QD.ERP.Web.Controllers
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
                 return Unauthorized(new { message = "Invalid tenant", success = false });
 
-            // Set audit fields
-            newAlert.AlertUserAddedOn = DateTime.UtcNow;
-            newAlert.AlertUserAddedBy = User.Identity?.Name ?? "System";
+            var userName = HttpContext.Session.GetString("UserName") ?? "System";
 
-            dbContext.Tbl901AlertUsers.Add(newAlert);
-            await dbContext.SaveChangesAsync();
+            // Check if AlertCode already exists
+            var existingAlert = await dbContext.Tbl901AlertUsers
+                .FirstOrDefaultAsync(a => a.AlertCode == newAlert.AlertCode);
 
-            return Ok(new { success = true, message = "Notification task created successfully." });
+            if (existingAlert != null)
+            {
+                // Update existing
+                existingAlert.AlertUserId = newAlert.AlertUserId;
+                existingAlert.AlertUserOn = newAlert.AlertUserOn;
+                existingAlert.AlertUserTime = newAlert.AlertUserTime;
+                existingAlert.AlertByEmail = newAlert.AlertByEmail;
+                existingAlert.AlertBySystem = newAlert.AlertBySystem;
+                existingAlert.AlertBySms = newAlert.AlertBySms;
+                existingAlert.AlertUserMessage = newAlert.AlertUserMessage;
+                existingAlert.AlertUserEmail = newAlert.AlertUserEmail;
+                existingAlert.AlertUserMobileNo = newAlert.AlertUserMobileNo;
+                existingAlert.AlertUserModifiedOn = DateTime.UtcNow;
+                existingAlert.AlertUserModifiedBy = userName;
+
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Alert updated successfully." });
+            }
+            else
+            {
+                // Insert new
+                newAlert.AlertUserAddedOn = DateTime.UtcNow;
+                newAlert.AlertUserAddedBy = userName;
+
+                dbContext.Tbl901AlertUsers.Add(newAlert);
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Alert created successfully." });
+            }
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                return Unauthorized(new { message = "Invalid tenant", success = false });
+
+            var users = await dbContext.TblUserMasters
+                .Select(u => new { u.UserId, u.UserName })
+                .ToListAsync();
+
+            return Ok(users);
         }
     }
 }
