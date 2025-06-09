@@ -1362,6 +1362,9 @@ namespace QD.ERP.Web.Pages
                     companyNameAr, companyAddressAr,userName, _tenantDbContextHelper
                 );
             }
+           
+            
+            
             ///Trial
             
             else if (reportName == "Group")

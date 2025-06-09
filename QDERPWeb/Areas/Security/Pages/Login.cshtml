@@ -328,12 +328,24 @@
                 }
             },
             error: function (xhr, status, error) {
-                // Hide loading spinner
                 document.getElementById('loadingSpinner').style.display = 'none';
-
                 console.error('Error:', error);
-                showErrorMessage('Invalid username or password. Please try again.'); // Show generic error
+
+                const response = xhr.responseJSON;
+
+                if (response && response.message) {
+                    if (response.message === "License not valid.") {
+                        // Redirect to License Activation page
+                        window.location.href = `/${tenantName}/security/LicenseActivation`;
+                    } else {
+                        showErrorMessage(response.message);
+                    }
+                } else {
+                    showErrorMessage('Invalid username or password. Please try again.');
+                }
             }
+
+
         });
     };
 

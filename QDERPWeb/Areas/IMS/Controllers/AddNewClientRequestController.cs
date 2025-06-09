@@ -132,14 +132,14 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 				// Extract numeric parts and determine the maximum
 				int maxRunningNumber = mprNumbers
-					.Select(no => int.TryParse(no.Substring(no.Length - 6), out int num) ? num : 0)
+					.Select(no => int.TryParse(no.Substring(no.Length - 5), out int num) ? num : 0)
 					.DefaultIfEmpty(0)
 					.Max();
 
 				maxRunningNumber += 1;
 
 				// Format the new debit note number
-				string strNewDebitNoteNo = maxRunningNumber.ToString().PadLeft(6, '0');
+				string strNewDebitNoteNo = maxRunningNumber.ToString().PadLeft(5, '0');
 
 				string strYear = invoiceDate.Year.ToString();
 				if (yearInDigit > 0)
@@ -165,7 +165,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 					strYear = "";
 				}
 
-				return $"AIC_ENQ-{strYear}-000001";
+				return $"AIC_ENQ-{strYear}-00001";
 			}
 		}
         [HttpGet]

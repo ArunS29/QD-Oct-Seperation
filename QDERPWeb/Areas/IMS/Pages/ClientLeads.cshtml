@@ -71,12 +71,18 @@
         .AllowColumnReordering(true) // Optional: allow dragging columns
         .ColumnChooser(chooser => chooser
         .Enabled(true)
-
         .Mode(GridColumnChooserMode.Select) // You can also use "DragAndDrop"
-
-
         )
-        .Paging(p => p.Enabled(false))
+
+        .Paging(p => p.PageSize(10)) // Set desired page size (e.g., 10 rows per page)
+        .Pager(pager =>
+        {
+            pager.ShowPageSizeSelector(true);
+            pager.AllowedPageSizes(new[] { 5, 10, 20, 50 });
+            pager.ShowNavigationButtons(true);
+            pager.Visible(true);
+        })
+
         .Columns(columns =>
         {
             columns.Add().DataField("Category").Caption(new JS("formatMessage('Category')")).Visible(true).GroupIndex(0);

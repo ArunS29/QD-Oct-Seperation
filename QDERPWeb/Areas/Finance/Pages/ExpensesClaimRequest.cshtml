@@ -255,7 +255,7 @@
                 .DisplayExpr("CostAllocationUnit")
                 
                 .OnInput("dropDownBoxOnInput")
-                .OnOpened("onOpened")
+                .OnOpened("onclaimOpened")
                 .Width(440)
                 .TabIndex(1)
                 .DropDownOptions(o => o.Width(1000))
@@ -428,6 +428,7 @@
             .AllowUpdating(true)
             .AllowDeleting(true)
             .UseIcons(true)
+            
             )
             .Summary(summary =>
             {
@@ -439,7 +440,7 @@
                 .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
                 });
             })
-            
+            .OnRowRemoving("onexpenserowremoving")
             )
     </div>
     <div class="container">
@@ -549,7 +550,7 @@
                     <!-- Radio Group --> @(Html.DevExtreme().RadioGroup()
                     .ID("radioGroup")
                     .Items(new[] { "Cash Payment", "Bank Payment" }) // Static items
-                    .Value("null") // Default selected value
+                    .Value(null) // Default selected value
                     .Layout(Orientation.Horizontal)
                     .OnValueChanged("onRadioGroupValueChanged") // Attach JavaScript function
                     )
@@ -609,7 +610,7 @@
                         .ValueExpr("AccountId")
                         .DisplayExpr("AccountHead")
                         .OnInput("dropDownBoxOnInput")
-                        .OnOpened("onOpened")
+                        .OnOpened("onPaymentOpened")
                         .Width(200)
                         .TabIndex(1)
                         .DropDownOptions(o => o
@@ -942,10 +943,18 @@
         }
     }
 
-    function onOpened(e) {
+    function onPaymentOpened(e) {
         setTimeout(() => {
             e.component.focus();
         });
+        const grid = $("#accounthead-datagrid").dxDataGrid("instance");
+
+        // Wait for content template rendering
+        setTimeout(() => {
+            if (grid && Accountname) {
+                grid.selectRows([Accountname], false);
+            }
+        }, 1000);
     }
 
     function onKeyDown(e) {
@@ -1025,7 +1034,7 @@
             }
         }
 
-    function onOpened(e) {
+    function onclaimOpened(e) {
         setTimeout(() => {
             e.component.focus();
         });
@@ -1382,6 +1391,9 @@
         }
     });
     let claimRefNo = null;
+    let claimproject = null;
+    let Accountname = null;
+
     $(document).ready(function () {
         claimRefNo = getUrlParameter('claimRefNo');
         var button = $("#btnSave").dxButton("instance");
@@ -1398,11 +1410,21 @@
                     const entry = data.find(d => d.ClaimRefNo === claimRefNo); // optional check
                     
                     if (entry) {
+                        Accountname = entry.PaymentAccountname || null;
+                        claimproject = entry.Claimedproject || null;
                         $("#VoucherNo").dxTextBox("instance").option("value", entry.ClaimRefNo);
                         $("#claimerdate").dxDateBox("instance").option("value", entry.ClaimDate);
                         $("#claimerEffectiveDate").dxDateBox("instance").option("value", entry.ClaimEffectiveDate ? new Date(entry.ClaimEffectiveDate) : new Date());
                         $("#txtEntryNarration").dxTextArea("instance").option("value", entry.ClaimRemarks);
                         $("#accountDropDownBox").dxDropDownBox("instance").option("value", entry.ProjectClaimedFor);
+                        $("#ddAccountHead").dxDropDownBox("instance").option("value", entry.PaymentAccountname);
+                        let radioGroup = $("#radioGroup").dxRadioGroup("instance");
+                        radioGroup.option("value", entry.PaymentType);
+
+                        if (entry.PaymentType) {
+                            onRadioGroupValueChanged({ value: entry.PaymentType });
+                        }
+
                         $("#IsSubmitted").dxCheckBox("instance").option("value", entry.IsSubmittedToFinance || false);
                         $("#SubmittedBytext").dxTextBox("instance").option("value", entry.SubmittedBy || "");
                         $("#IsVerified").dxCheckBox("instance").option("value", entry.IsVerified || false);
@@ -1503,26 +1525,38 @@
             // DevExpress.ui.notify("Journal Reference Number is missing in the URL.", "error", 3000);
         }
     }
-    
-    
+
+
     function onRadioGroupValueChanged(e) {
-    let selectedValue = e.value;
-    let loadAction = selectedValue === "Cash Payment" ? "GetCPPaymentAccounts" : "GetBPPaymentAccounts";
+        debugger;
+        let selectedValue = e.value;
+        let loadAction = selectedValue === "Cash Payment" ? "GetCPPaymentAccounts" : "GetBPPaymentAccounts";
 
-    // Update the DropDownBox dataSource
-    let dropDownBox = $("#ddAccountHead").dxDropDownBox("instance");
-    dropDownBox.option("dataSource", DevExpress.data.AspNet.createStore({
-        key: "AccountId",
-        loadUrl: "/api/VoucherMaster/" + loadAction
-    }));
+        // Safely get DropDownBox instance
+        let dropDownBoxElement = $("#ddAccountHead");
+        if (dropDownBoxElement.length > 0) {
+            let dropDownBox = dropDownBoxElement.dxDropDownBox("instance");
+            if (dropDownBox) {
+                dropDownBox.option("dataSource", DevExpress.data.AspNet.createStore({
+                    key: "AccountId",
+                    loadUrl: "/api/ExpenseClaim/" + loadAction
+                }));
+            }
+        }
 
-    // Update the DataGrid dataSource
-    let dataGrid = $("#accounthead-datagrid").dxDataGrid("instance");
-    dataGrid.option("dataSource", DevExpress.data.AspNet.createStore({
-        key: "AccountId",
-        loadUrl: "/api/VoucherMaster/" + loadAction
-    }));
-}
+        // Safely get DataGrid instance
+        let dataGridElement = $("#accounthead-datagrid");
+        if (dataGridElement.length > 0) {
+            let dataGrid = dataGridElement.dxDataGrid("instance");
+            if (dataGrid) {
+                dataGrid.option("dataSource", DevExpress.data.AspNet.createStore({
+                    key: "AccountId",
+                    loadUrl: "/api/ExpenseClaim/" + loadAction
+                }));
+            }
+        }
+    }
+
     
          $("#btnSave").on("click", function (e) {
     e.preventDefault();
@@ -1539,6 +1573,9 @@
             ClaimEffectiveDate:$("#claimerEffectiveDate").dxDateBox("instance").option("value")|| new Date(),
             ProjectClaimedFor: paymentaccheadId,
             ClaimRemarks: $("#txtEntryNarration").dxTextArea("instance").option("value"),
+            PaymentType: $("#radioGroup").dxRadioGroup("instance").option("value") || null,
+            PaymentAccount: $("#ddAccountHead").dxDropDownBox("instance").option("value")||null,
+            FundRequestTypeId: 1,
             ExpenseDetails: gridData // 🔁 Add the grid rows here
         };
 
@@ -1797,10 +1834,14 @@ function proceedWithSubmit() {
 }
 
 function generateVoucherNo() {
-    const selectedPaymentType = $("#radioGroup").dxRadioGroup("instance").option("value");
+        const radioGroupInstance = $("#radioGroup").dxRadioGroup("instance");
+        const selectedPaymentType = radioGroupInstance.option("value");
     const grid = $("#dataGrid").dxDataGrid("instance");
     const data = grid.getDataSource().items();
     const claimRefNo = $("#VoucherNo").dxTextBox("instance").option("value");
+        const accountHeadInstance = $("#ddAccountHead").dxDropDownBox("instance");
+        const selectedAccountHead = accountHeadInstance.option("value");
+
 
     const hasValidAmounts = data.some(row => {
         return (row.ClaimedAmount && row.ClaimedAmount > 0) || (row.ApprovedAmount && row.ApprovedAmount > 0);
@@ -1820,6 +1861,9 @@ function generateVoucherNo() {
         DevExpress.ui.dialog.alert("Claim Reference No. is missing.", "Missing Reference");
         return;
     }
+      
+       
+
 
     // Step 1: Check if IsApproved = true using API
     $.ajax({
@@ -1845,9 +1889,26 @@ function generateVoucherNo() {
             } else if (selectedPaymentType === "Bank Payment") {
                 apiUrl = "/api/ExpenseClaim/GetNewBPVoucherNo";
             } else {
-                DevExpress.ui.notify("Please select a payment type.", "warning", 2000);
-                return;
+                    DevExpress.ui.dialog.alert("Please select a payment type.", "Validation Error");
+
+                    // Show visual validation error
+                    radioGroupInstance.option("isValid", false);
+                    radioGroupInstance.option("validationError", { message: "Payment type is required." });
+
+                    return;
             }
+                if (!selectedAccountHead) {
+                    DevExpress.ui.dialog.alert("Cannot continue with saving the errors.<br/>Please clear the errors and continue.", "Validation Error");
+
+                    // Show visual validation error by setting a custom invalid state
+                    accountHeadInstance.option("isValid", false);
+                    accountHeadInstance.option("validationError", { message: "Please select a Payment Account." });
+
+                    return;
+                } else {
+                    // Reset validation if previously set
+                    accountHeadInstance.option("isValid", true);
+                }
 
             $.ajax({
                 url: apiUrl,
@@ -2004,6 +2065,44 @@ function generateVoucherNo() {
             }
         }, 400);
     }
+    function onexpenserowremoving(e) {
+        const claimChildNo = e.data.ClaimChildNo;
 
+        if (claimChildNo) {
+            e.cancel = true; // Prevent default DevExtreme behavior
+
+            $.ajax({
+                url: '/api/ExpenseClaim/DeleteExpenseChild', // adjust path based on your area/controller
+                type: 'POST',
+                data: JSON.stringify(claimChildNo),
+                contentType: 'application/json',
+                success: function (response) {
+                    if (response.success) {
+                        var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+                        loadExpenseGridData(voucherNo);
+
+
+                    } else {
+                        DevExpress.ui.notify(response.message || "Delete failed", "error", 2000);
+                    }
+                },
+                error: function () {
+                    DevExpress.ui.notify("Server error during delete", "error", 2000);
+                }
+            });
+        }
+    }
+    function loadExpenseGridData(voucherNo) {
+        $.ajax({
+            url: "/api/ExpenseClaim/GetChildClaimsByVoucherNo",
+            type: "GET",
+            data: { voucherNo: voucherNo },
+            success: function (data) {
+                const dataGrid = $("#dataGrid").dxDataGrid("instance");
+                dataGrid.option("dataSource", data);
+               
+            }
+        });
+    }
 
 </script>

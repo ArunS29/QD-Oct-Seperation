@@ -2,6 +2,7 @@ using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Humanizer;
 using DevExtreme.AspNet.Data.ResponseModel;
+using Microsoft.Data.SqlClient;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,7 @@ using System.Text.RegularExpressions;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
+    [Area("IMS")]
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class SalesOrdersController : Controller
@@ -85,46 +87,818 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> GetSalesOrdersDetails(DateTime? fromDate, DateTime? toDate)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var query = dbContext.Qry60212salesOrderItemsWithDetails.AsQueryable();
+                // Default dates if not provided
+                if (!fromDate.HasValue)
+                {
+                    fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1); // Start of the current month
+                }
+
+                if (!toDate.HasValue)
+                {
+                    toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)); // End of the current month
+                }
+
+                // Filtering by date range
+                query = query.Where(i => i.SalesOrderDate >= fromDate && i.SalesOrderDate <= toDate);
+
+                // Fetching the data
+                var data = await query.Select(i => new
+                {
+                    i.SalesOrderNo,
+                    i.SalesOrderDate,
+                    i.ClientName,
+                    i.ClientPono,
+                    i.SalesPersonName,
+                    i.Gscode,
+                    i.Gsdescrpition,
+                    i.UnitType,
+                    i.UnitDesc,
+                    i.QuotedQuantity,
+                    i.DeliveryTerms,
+                    i.QuoteRemarks,
+                    i.QuotedUnitPrice,
+                    i.LineTotalBeforeDiscount,
+                    i.QuotedDiscount,
+                    i.LineTotalAfterDiscount,
+                    i.LineTaxAmount,
+                    i.LineTotalWithTax,
+                    i.BalanceToDeliver,
+                    i.TotalOrderedQty,
+                    i.TotalIssdQty,
+                    i.DeliveryPeriod,
+                    i.CostPrice,
+                }).ToListAsync();
+
+                return Json(data);
+            }
+
+            return Unauthorized(new { message = "Invalid tenant." });
+        }
+
+
         [HttpGet]
         public IActionResult SalesOrderNoIncrease()
         {
             try
             {
-                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                // Get tenant name from session
+                string tenantName = HttpContext.Session.GetString("TenantName");
+                if (string.IsNullOrWhiteSpace(tenantName))
                 {
-                    var lastOrderNo = dbContext.Qry60204salesOrderViewMasters
-                        .OrderByDescending(x => x.SalesOrderNo)
-                        .Select(x => x.SalesOrderNo)
-                        .FirstOrDefault();
-
-                    string nextOrderNo = GenerateNextOrderNo(lastOrderNo);
-
-                    return Ok(new { salesOrderNo = nextOrderNo });
+                    _logger.LogWarning("Tenant name not found in session when generating SalesOrderNo.");
+                    return Unauthorized(new { message = "Tenant name not found in session." });
                 }
 
-                return Unauthorized(new { message = "Invalid tenant." });
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    _logger.LogWarning("Invalid tenant context when generating SalesOrderNo.");
+                    return Unauthorized(new { message = "Invalid tenant." });
+                }
+
+                // Build prefix
+                string[] words = tenantName.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                string prefix;
+                if (words.Length == 1)
+                {
+                    var word = words[0];
+                    prefix = (word.Length >= 2)
+                        ? $"{char.ToUpper(word[0])}{char.ToUpper(word[^1])}"
+                        : word.ToUpper();
+                }
+                else
+                {
+                    prefix = string.Concat(words.Select(w => char.ToUpper(w[0])));
+                }
+
+                string year = DateTime.Now.Year.ToString();
+                string basePrefix = $"{prefix}-{year}-";
+
+                // Fetch all matching sales order numbers from the database
+                var orderNos = dbContext.Tbl60201salesOrderMasters
+                    .Where(x => x.SalesOrderNo.StartsWith(basePrefix))
+                    .Select(x => x.SalesOrderNo)
+                    .ToList();
+
+                // Use Regex in-memory to find the highest number
+                int maxNumber = 0;
+                var regex = new Regex($@"^{Regex.Escape(basePrefix)}(\d+)$");
+                foreach (var orderNo in orderNos)
+                {
+                    var match = regex.Match(orderNo ?? "");
+                    if (match.Success && int.TryParse(match.Groups[1].Value, out int num))
+                    {
+                        if (num > maxNumber)
+                            maxNumber = num;
+                    }
+                }
+
+                int nextNumber = maxNumber + 1;
+                string nextOrderNo = $"{basePrefix}{nextNumber:D5}";
+
+                return Ok(new { salesOrderNo = nextOrderNo });
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in GetProject: {ex.Message}");
+                _logger.LogError($"Error in SalesOrderNoIncrease: {ex.Message}");
                 return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
             }
         }
 
+
+
         private string GenerateNextOrderNo(string lastOrderNo)
         {
             if (string.IsNullOrWhiteSpace(lastOrderNo))
-                return "AIC-RFQ-2025-00001";
+                return "SO-18-00001"; // Fallback default if nothing found
 
-            var match = Regex.Match(lastOrderNo, @"(.*-)(\d+)$");
-            if (!match.Success) return lastOrderNo + "-00001";
+            var match = Regex.Match(lastOrderNo, @"^(.*-)(\d+)$");
+            if (!match.Success)
+                return lastOrderNo + "-00001"; // Unexpected format fallback
 
-            var prefix = match.Groups[1].Value;
-            var number = int.Parse(match.Groups[2].Value);
+            string prefix = match.Groups[1].Value;
+            int number = int.Parse(match.Groups[2].Value);
+
             return $"{prefix}{(number + 1):D5}";
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetClientNames()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var data = await dbContext.Tbl30101ClientMasters
+                        .Select(i => new
+                        {
+                            i.ClientCode,
+                            i.ClientName,
+                            i.ContactMobile1,
+                            i.ContactEmail,
+                            i.ContactPerson
+
+
+                        })
+                        .ToListAsync();
+
+                    return Json(data); // return raw data, paging/sorting done on client-side
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetProject()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var data = await dbContext.Qry70002projectsViewMasters
+                        .Select(i => new
+                        {
+                            i.ProjectId,
+                            i.ProjectDescription
+
+                        })
+                        .ToListAsync();
+
+                    return Json(data); // return raw data, paging/sorting done on client-side
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetTypeOfSalesOrder()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var data = await dbContext.Tbl30104TypeOfRequestMasters
+                        .Select(i => new
+                        {
+                            i.TypeOfRequestId,
+                            i.TypeOfRequest
+
+                        })
+                        .ToListAsync();
+
+                    return Json(data); // return raw data, paging/sorting done on client-side
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
+            }
+        }
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetSignatory()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var data = await dbContext.Tbl90104DocumentSignatories
+                        .Select(i => new
+                        {
+                            i.SignatoryId,
+                            i.SignatoryName
+
+                        })
+                        .ToListAsync();
+
+                    return Json(data); // return raw data, paging/sorting done on client-side
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCompanyBranch()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var data = await dbContext.Tbl901CompanyDetails
+                        .Select(i => new
+                        {
+                            i.CompanyId,
+                            i.CompanyName
+
+                        })
+                        .ToListAsync();
+
+                    return Json(data); // return raw data, paging/sorting done on client-side
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetSalesPersonName()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var data = await dbContext.Tbl20101SalesPersonMasters
+                        .Select(i => new
+                        {
+                            i.SalesPersonName,
+                            i.SalesPersonCode
+
+                        })
+                        .ToListAsync();
+
+                    return Json(data); // return raw data, paging/sorting done on client-side
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetGroupMaster()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var data = await dbContext.Tbl60008inventoryMasterGroups
+                        .Select(i => new
+                        {
+                            i.InventoryMasterGroupId,
+                            i.InventoryMasterGroup
+
+                        })
+                        .ToListAsync();
+
+                    return Json(data); // return raw data, paging/sorting done on client-side
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCostCenterMaster()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var data = await dbContext.Tbl201CostAllocationUnits
+                        .Select(i => new
+                        {
+                            i.CostAllocationMasterGroup,
+                            i.CostAllocationUnitId
+
+
+                        })
+                        .ToListAsync();
+
+                    return Json(data); // return raw data, paging/sorting done on client-side
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> SaveSalesOrder([FromBody] SalesorderViewModel model)
+        {
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+                if (model == null)
+                    return BadRequest(new { success = false, message = "Invalid data." });
+            
+
+                bool isUpdate = false;
+                var salesOrderNo = model.SalesOrderNo?.Trim();
+
+                var existingEntity = await dbContext.Tbl60201salesOrderMasters
+                    .FirstOrDefaultAsync(x => x.SalesOrderNo == salesOrderNo);
+
+                if (existingEntity != null)
+                {
+                    isUpdate = true;
+                    existingEntity.SalesOrderDate = model.SalesOrderDate;
+                    existingEntity.ClientPono = model.ClientPono;
+                    existingEntity.ClientPodate = model.ClientPodate;
+                    existingEntity.QuoteNo = model.QuoteNo;
+                    existingEntity.QuoteDate = model.QuoteDate;
+                    existingEntity.ClientRefNo = model.ClientRefNo;
+                    existingEntity.ClientCode = model.ClientCode;
+                    existingEntity.Project = model.Project;
+                    existingEntity.SalesPersonCode = model.SalesPersonCode;
+                    existingEntity.ClientContactEmail = model.ClientContactEmail;
+                    existingEntity.ClientContactNo = model.ClientContactNo;
+                    existingEntity.TypeOfRequest = model.TypeOfRequest;
+                    existingEntity.QuoteSignatory = model.QuoteSignatory;
+                    existingEntity.CompanyBranch = model.CompanyBranch;
+                    existingEntity.InventoryMasterGroupId = model.InventoryMasterGroupId;
+                    existingEntity.AdditionsText = model.AdditionsText;
+                    existingEntity.OrderExpiryDate = model.OrderExpiryDate;
+                    existingEntity.SalesOrderRemarks = model.SalesOrderRemarks;
+                    existingEntity.ExpectedDeliveryDate = model.ExpectedDeliveryDate;
+                    existingEntity.DeliveryPeriod = model.DeliveryPeriod;
+                    existingEntity.DeliveryTerms = model.DeliveryTerms;
+                    existingEntity.DiscountsText = model.DiscountsText;
+                    existingEntity.CostAllocationMasterGroup = model.CostAllocationMasterGroup;
+                    existingEntity.AddedBy = model.AddedBy ?? User.Identity?.Name;
+                    existingEntity.AddedOn = DateTime.Now;
+
+                    dbContext.Tbl60201salesOrderMasters.Update(existingEntity);
+                }
+                else
+                {
+                    var entity = new Tbl60201salesOrderMaster
+                    {
+                        SalesOrderNo = salesOrderNo,
+                        SalesOrderDate = model.SalesOrderDate,
+                        ClientPono = model.ClientPono,
+                        ClientPodate = model.ClientPodate,
+                        QuoteNo = model.QuoteNo,
+                        QuoteDate = model.QuoteDate,
+                        ClientRefNo = model.ClientRefNo,
+                        ClientCode = model.ClientCode,
+                        Project = model.Project,
+                        SalesPersonCode = model.SalesPersonCode,
+                        ClientContactEmail = model.ClientContactEmail,
+                        ClientContactNo = model.ClientContactNo,
+                        TypeOfRequest = model.TypeOfRequest,
+                        QuoteSignatory = model.QuoteSignatory,
+                        CompanyBranch = model.CompanyBranch,
+                        InventoryMasterGroupId = model.InventoryMasterGroupId,
+                        AdditionsText = model.AdditionsText,
+                        OrderExpiryDate = model.OrderExpiryDate,
+                        SalesOrderRemarks = model.SalesOrderRemarks,
+                        ExpectedDeliveryDate = model.ExpectedDeliveryDate,
+                        DeliveryPeriod = model.DeliveryPeriod,
+                        DeliveryTerms = model.DeliveryTerms,
+                        DiscountsText = model.DiscountsText,
+                        CostAllocationMasterGroup = model.CostAllocationMasterGroup,
+                        AddedBy = model.AddedBy ?? User.Identity?.Name,
+                        AddedOn = DateTime.Now
+                    };
+
+                    await dbContext.Tbl60201salesOrderMasters.AddAsync(entity);
+                }
+
+                await dbContext.SaveChangesAsync();
+
+                if (!isUpdate)
+                {
+                    var parameters = new[]
+                    {
+                new SqlParameter("@SalesOrderNo", salesOrderNo ?? (object)DBNull.Value),
+                new SqlParameter("@ClientName", model.ClientCode ?? (object)DBNull.Value),
+                new SqlParameter("@AddedBy", model.AddedBy ?? User.Identity?.Name ?? (object)DBNull.Value),
+                new SqlParameter("@IsCreateCostCenterFromSalesOrder", true),
+                new SqlParameter("@DefaultCostCenterMasterFromSalesOrder", model.CostAllocationMasterGroup ?? (object)DBNull.Value),
+                new SqlParameter("@SalesPersonName", model.SalesPersonCode ?? (object)DBNull.Value)
+            };
+
+                    await dbContext.Database.ExecuteSqlRawAsync(
+                        "EXEC [dbo].[sp600_04InsertToCostCenterFromSalesOrder] " +
+                        "@SalesOrderNo, @ClientName, @AddedBy, @IsCreateCostCenterFromSalesOrder, " +
+                        "@DefaultCostCenterMasterFromSalesOrder, @SalesPersonName", parameters);
+                }
+
+                var existingChildren = await dbContext.Tbl60202salesOrderChildren
+                    .Where(x => x.SalesOrderNo == salesOrderNo)
+                    .ToListAsync();
+
+                var incomingChildren = model.SalesOrderChildren ?? new List<Tbl60202salesOrderChild>();
+                var incomingIds = incomingChildren.Select(c => c.SalesOrderChildId).ToList();
+                var newChildren = new List<Tbl60202salesOrderChild>();
+
+                foreach (var child in incomingChildren)
+                {
+                    if (child.SalesOrderChildId == 0)
+                    {
+                        child.SalesOrderNo = salesOrderNo;
+                        newChildren.Add(child);
+                    }
+                    else
+                    {
+                        var existingChild = existingChildren.FirstOrDefault(x => x.SalesOrderChildId == child.SalesOrderChildId);
+                        if (existingChild != null)
+                        {
+                            dbContext.Entry(existingChild).CurrentValues.SetValues(child);
+                        }
+                    }
+                }
+
+                var toDelete = existingChildren
+                    .Where(x => !incomingIds.Contains(x.SalesOrderChildId))
+                    .ToList();
+
+                if (toDelete.Any())
+                    dbContext.Tbl60202salesOrderChildren.RemoveRange(toDelete);
+
+                if (newChildren.Any())
+                    await dbContext.Tbl60202salesOrderChildren.AddRangeAsync(newChildren);
+
+                await dbContext.SaveChangesAsync();
+
+                //if (model.IsGenerateJO)
+                //{
+                //    foreach (var child in incomingChildren)
+                //    {
+                //        var childParams = new[]
+                //        {
+                //    new SqlParameter("@JobOrderNo", salesOrderNo ?? (object)DBNull.Value),
+                //    new SqlParameter("@AddedBy", model.AddedBy ?? User.Identity?.Name ?? (object)DBNull.Value),
+                //    new SqlParameter("@SalesOrderChildID", child.SalesOrderChildId),
+                //    new SqlParameter("@ValveType", model.ValveType ?? (object)DBNull.Value)
+                //};
+
+                //        try
+                //        {
+                //            await dbContext.Database.ExecuteSqlRawAsync(
+                //                "EXEC [dbo].[sp608_01InsertToJobOrderFromSalesOrderChild] " +
+                //                "@JobOrderNo, @AddedBy, @SalesOrderChildID, @ValveType", childParams);
+                //        }
+                //        catch (Exception exChild)
+                //        {
+                //            _logger.LogError(exChild, $"Child SP error for SalesOrderChildId: {child.SalesOrderChildId}");
+                //        }
+                //    }
+                //}
+
+                return Ok(new
+                {
+                    success = true,
+                    message = isUpdate ? "Sales order updated successfully." : "Sales order created successfully."
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in SaveSalesOrder");
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "An error occurred while saving the sales order.",
+                    details = ex.Message
+                });
+            }
+        }
+      [HttpPost]
+public async Task<IActionResult> GenerateJobOrders([FromBody] SalesorderViewModel model)
+{
+    try
+    {
+        if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+        if (string.IsNullOrWhiteSpace(model.SalesOrderNo))
+            return BadRequest(new { success = false, message = "Missing Sales Order No." });
+
+        if (model.SalesOrderChildren == null || !model.SalesOrderChildren.Any())
+            return BadRequest(new { success = false, message = "No line items selected." });
+
+        foreach (var child in model.SalesOrderChildren)
+        {
+            if (child.SalesOrderChildId == 0)
+                return BadRequest(new { success = false, message = "Invalid SalesOrderChildId in line items." });
+
+            var parameters = new[]
+            {
+                new SqlParameter("@JobOrderNo", model.SalesOrderNo ?? (object)DBNull.Value),
+                new SqlParameter("@AddedBy", model.AddedBy ?? User.Identity?.Name ?? (object)DBNull.Value),
+                new SqlParameter("@SalesOrderChildID", child.SalesOrderChildId),
+                new SqlParameter("@ValveType", model.ValveType ?? (object)DBNull.Value)
+            };
+
+            await dbContext.Database.ExecuteSqlRawAsync(
+                "EXEC [dbo].[sp608_01InsertToJobOrderFromSalesOrderChild] " +
+                "@JobOrderNo, @AddedBy, @SalesOrderChildID, @ValveType", parameters);
+        }
+
+        return Ok(new { success = true, message = "Job orders generated successfully." });
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, "Error generating job orders");
+        return StatusCode(500, new { success = false, message = ex.Message });
+    }
+}
+
+
+
+
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetSalesOrderByNo(string salesOrderNo)
+        {
+            if (string.IsNullOrWhiteSpace(salesOrderNo))
+                return BadRequest();
+
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized();
+
+            var order = await dbContext.Tbl60201salesOrderMasters
+                .FirstOrDefaultAsync(x => x.SalesOrderNo == salesOrderNo);
+
+            if (order == null)
+                return NotFound();
+
+            // Load children with description from Goods and Services
+            var children = await (
+                from c in dbContext.Tbl60202salesOrderChildren
+                join g in dbContext.Tbl20164GoodsAndServicesMasters
+                    on c.Gscode equals g.Gscode into gj
+                from g in gj.DefaultIfEmpty()
+                where c.SalesOrderNo == salesOrderNo
+                select new
+                {
+                    c.SalesOrderChildId,
+                    c.SalesOrderNo,
+                    c.QuoteNo,
+                    c.Gscode,
+                    Gsdescrpition = g.Gsdescrpition, // <-- include description
+                    c.UnitRateMethod,
+                    c.QuotedQuantity,
+                    c.CostPrice,
+                    c.QuotedUnitPrice,
+                    c.QuotedDiscount,
+                    // Add any other fields you need for the grid
+                }
+            ).ToListAsync();
+
+            // Return both master and children
+            return Ok(new
+            {
+                order.SalesOrderNo,
+                order.SalesOrderDate,
+                order.ClientPono,
+                order.ClientPodate,
+                order.QuoteNo,
+                order.QuoteDate,
+                order.ClientRefNo,
+                order.ClientCode,
+                order.Project,
+                order.SalesPersonCode,
+                order.ClientContactEmail,
+                order.ClientContactNo,
+                order.TypeOfRequest,
+                order.QuoteSignatory,
+                order.CompanyBranch,
+                order.InventoryMasterGroupId,
+                order.AdditionsText,
+                order.OrderExpiryDate,
+                order.SalesOrderRemarks,
+                order.ExpectedDeliveryDate,
+                order.DeliveryPeriod,
+                order.DeliveryTerms,
+                order.DiscountsText,
+                order.CostAllocationMasterGroup,
+                SalesOrderChildren = children
+            });
+        }
+
+
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteSalesOrder(string salesOrderNo)
+        {
+            if (string.IsNullOrWhiteSpace(salesOrderNo))
+                return BadRequest(new { message = "SalesOrderNo is required." });
+
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { message = "Invalid tenant." });
+
+            // Fetch the master record
+            var entity = await dbContext.Tbl60201salesOrderMasters
+                .FirstOrDefaultAsync(x => x.SalesOrderNo == salesOrderNo);
+
+            if (entity == null)
+                return NotFound(new { message = "Sales order not found." });
+
+            // Fetch and delete all child records
+            var children = await dbContext.Tbl60202salesOrderChildren
+                .Where(x => x.SalesOrderNo == salesOrderNo)
+                .ToListAsync();
+
+            if (children.Any())
+                dbContext.Tbl60202salesOrderChildren.RemoveRange(children);
+
+            // Delete master record
+            dbContext.Tbl60201salesOrderMasters.Remove(entity);
+
+            await dbContext.SaveChangesAsync();
+
+            return Ok(new { success = true, message = "Sales order and its child items deleted successfully." });
+        }
+
+
+        //[HttpGet]
+        //public IActionResult GetGoodsAndServices()
+        //{
+        //    try
+        //    {
+        //        if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //        {
+        //            var items = dbContext.Tbl20164GoodsAndServicesMasters
+        //                .Where(x => x.IsDiscontinued == false) // Optional filter
+        //                .Select(x => new
+        //                {
+        //                    x.Gscode,
+        //                    x.Gsdescrpition,
+        //                    x.GsdescriptionAr,
+        //                    x.ItemPartNo,
+        //                    x.GspackingUnit
+        //                })
+        //                .ToList();
+
+        //            return Json(items);
+        //        }
+        //        else
+        //        {
+        //            return BadRequest("Unable to resolve tenant context.");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Optional: Log the exception (example: using ILogger)
+        //        Console.WriteLine("Error loading Goods and Services: " + ex.Message);
+        //        return StatusCode(500, "An error occurred while retrieving the data.");
+        //    }
+        //}
+        [HttpGet]
+        public async Task<IActionResult> GetGoodsAndServices()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var data = await dbContext.Tbl20164GoodsAndServicesMasters
+                        .Select(i => new
+                        {
+                            i.Gscode,
+                            i.Gsdescrpition,
+                            i.GsdescriptionAr,
+                            i.ItemPartNo,
+                            i.GspackingUnit,
+                            i.IsDiscontinued
+
+                        })
+                        .ToListAsync();
+
+                    return Json(data); // return raw data, paging/sorting done on client-side
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetUnitCodes()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var data = await dbContext.Tbl40111PropertyUnitCodes
+                        .Select(i => new
+                        {
+                            i.UnitDescAr,
+                            i.UnitDesc,
+                            i.UnitType,
+                            i.UnitCode,
+
+                        })
+                        .ToListAsync();
+
+                    return Json(data); // return raw data, paging/sorting done on client-side
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
+            }
         }
 
 
 
     }
+
+    public class GenerateJOViewModel
+    {
+        public string SalesOrderNo { get; set; }
+        public string ValveType { get; set; }
+        public string AddedBy { get; set; }
+    }
+
 }
+
+
+
+

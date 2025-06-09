@@ -436,17 +436,25 @@
 		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
+	 .Editing(editing => editing
+        .Mode(GridEditMode.Row))
 		.ColumnFixing(fixing => fixing.Enabled(true))
 		.HeaderFilter(filter => filter.Visible(false))
-		.Paging(p => p.Enabled(false))
-		.Pager(pager => pager.Visible(false))
 		.Grouping(grouping => grouping.AutoExpandAll(true))
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
 		.ShowRowLines(true)
 		.OnContextMenuPreparing("onContextMenuPreparing")
-		
+		.Paging(p => p.PageSize(10)) // Set desired page size (e.g., 10 rows per page)
+.Pager(pager =>
+{
+    pager.ShowPageSizeSelector(true);
+    pager.AllowedPageSizes(new[] { 5, 10, 20, 50 });
+    pager.ShowNavigationButtons(true);
+    pager.Visible(true);
+})
+
 		)
 </div>
 
@@ -774,6 +782,39 @@
 		});
 	}
 
+	function onCloneRequest(originalData) {
+    if (!originalData) {
+        console.error("No data to clone.");
+        return;
+    }
+
+    // Create a deep copy of the original data
+    const clonedData = JSON.parse(JSON.stringify(originalData));
+
+    // Reset fields that should be unique or re-initialized
+    clonedData.Mprno = null; // Assuming Mprno is a unique identifier
+    clonedData.MprrevisionNo = false;
+    clonedData.Mprdate = new Date().toISOString().split('T')[0]; // Set to today's date
+    clonedData.IsSubmitted = false;
+    clonedData.IsVerified = false;
+    clonedData.IsApproved = false;
+    clonedData.IsCancelled = false;
+    clonedData.AddedOn = new Date().toISOString().split('T')[0];
+    clonedData.ModifiedOn = null;
+    clonedData.SubmittedOn = null;
+    clonedData.VerifiedOn = null;
+    clonedData.ApprovedOn = null;
+    clonedData.CancelledOn = null;
+    clonedData.Remarks = "Cloned from MPR";
+
+    // Insert the cloned data into the DataGrid
+    const dataGrid = $("#dataGrid").dxDataGrid("instance");
+    dataGrid.getDataSource().store().insert(clonedData).then(() => {
+        dataGrid.refresh();
+    }).catch((error) => {
+        console.error("Error inserting cloned data:", error);
+    });
+}
 
 
 </script>	

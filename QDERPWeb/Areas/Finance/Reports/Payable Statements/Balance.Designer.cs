@@ -853,7 +853,7 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.tableCell19.BorderWidth = 1F;
             this.tableCell19.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Less30to60]")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "-([Less30to60])")});
             this.tableCell19.Font = new DevExpress.Drawing.DXFont("Arial", 8.25F, DevExpress.Drawing.DXFontStyle.Italic);
             this.tableCell19.Name = "tableCell19";
             this.tableCell19.StyleName = "DetailData1";
@@ -874,7 +874,7 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.tableCell20.BorderWidth = 1F;
             this.tableCell20.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Less60to90]")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "-([Less60to90])")});
             this.tableCell20.Font = new DevExpress.Drawing.DXFont("Arial", 8.25F, DevExpress.Drawing.DXFontStyle.Italic);
             this.tableCell20.Name = "tableCell20";
             this.tableCell20.StyleName = "DetailData1";
@@ -918,7 +918,7 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrTableCell16.BorderWidth = 1F;
             this.xrTableCell16.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Less180to365]")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "-([Less180to365])")});
             this.xrTableCell16.Font = new DevExpress.Drawing.DXFont("Arial", 8.25F, DevExpress.Drawing.DXFontStyle.Italic);
             this.xrTableCell16.Multiline = true;
             this.xrTableCell16.Name = "xrTableCell16";
@@ -1134,7 +1134,7 @@
             this.xrLabel8.Multiline = true;
             this.xrLabel8.Name = "xrLabel8";
             this.xrLabel8.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel8.SizeF = new System.Drawing.SizeF(110.1803F, 42.83337F);
+            this.xrLabel8.SizeF = new System.Drawing.SizeF(107.1797F, 42.83337F);
             this.xrLabel8.StylePriority.UseBorders = false;
             this.xrLabel8.StylePriority.UseFont = false;
             this.xrLabel8.StylePriority.UseTextAlignment = false;
@@ -1388,7 +1388,7 @@
             this.DataSource = this.sqlDataSource1;
             this.Font = new DevExpress.Drawing.DXFont("Arial", 9.75F);
             this.Landscape = true;
-            this.Margins = new DevExpress.Drawing.DXMargins(18F, 32F, 25F, 40.91665F);
+            this.Margins = new DevExpress.Drawing.DXMargins(0F, 0F, 25F, 40.91665F);
             this.PageHeight = 900;
             this.PageWidth = 1580;
             this.PaperKind = DevExpress.Drawing.Printing.DXPaperKind.Custom;

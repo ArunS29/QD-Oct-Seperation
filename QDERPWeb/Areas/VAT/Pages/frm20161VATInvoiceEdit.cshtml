@@ -5,17 +5,55 @@
 @{
 } *@
 <style>
+	.form-wrapper {
+		border-radius: 6px;
+		width: 97%;
+		height: 85%;
+	}
+
+	.form-group {
+		position: relative;
+		padding: 10px;
+	}
+
+		.form-group label {
+			display: block;
+			margin-bottom: 15px;
+		}
+
+	.form-row {
+		display: flex;
+		gap: 20px;
+		flex-wrap: wrap;
+	}
+
+	.arabic-button {
+		background: transparent;
+		border: none;
+		cursor: pointer;
+	}
+
+	.top-buttons {
+		position: absolute;
+		top: 0;
+		right: 0;
+		display: flex;
+		gap: 8px;
+	}
+
+		.top-buttons .dx-button {
+			height: 30px;
+			color: black;
+		}
+
+	.arabic-textbox-wrapper {
+		position: relative;
+		width: 100%;
+	}
 	.dx-datagrid-headers .center-header {
 		text-align: center !important;
 	}
 
-	.Head{
-		margin-bottom: 10px;
-	}
-
-	#B2BdataGrid {
-		height: 700px !important;
-	}
 	.toggle-switch {
 		position: relative;
 		display: inline-block;
@@ -547,7 +585,7 @@
 				
 				<div class="card-container">
 					<!-- First Card (Left Side) -->
-						<table width="100%" style="font-size:14px;" cellpadding="5">
+						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 							<tr>
 								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice No')")).ID("InvoiceNo").Disabled(true).LabelMode(EditorLabelMode.Outside))</td>
 								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Date')")).ID("InvoiceDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).Disabled(true).LabelMode(EditorLabelMode.Outside))</td>
@@ -636,7 +674,7 @@
 
 									@(Html.DevExtreme().DropDownBox()
 																			.ID("InvoiceTransactionsCode")
-																			.Label("Invoice Transactions Code")
+																			.Label("Invoice Transactions Code*")
 																			.Value("0100000") // Default selected value
 																			.ValueExpr("ID")
 																			.DisplayExpr("ID")
@@ -666,7 +704,7 @@
 
 					<!-- Second Card (Right Side) -->
 					
-						<table width="100%" style="font-size:14px;" cellpadding="5">
+						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 							<tr>
 								<td>
 									@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Client Code')"))//.ID("ClientCode")
@@ -1006,7 +1044,7 @@
 
 							</tr>
 							<tr>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Counter Value:')")).ID("InvoiceCounterValue").LabelMode(EditorLabelMode.Outside).Disabled(true))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Counter Value')")).ID("InvoiceCounterValue").LabelMode(EditorLabelMode.Outside).Disabled(true))</td>
 							<td colspan="3">@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('UUID')")).ID("UUID").LabelMode(EditorLabelMode.Outside).Disabled(true))</td>
 							</tr>
 						</table>
@@ -2088,7 +2126,6 @@
 							Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
 							.ID("B2BdataGrid")
 							.RemoteOperations(false)
-						
 							.Columns(columns =>
 							{
 								columns.AddFor(m => m.VoucherEntryNo)
@@ -2299,7 +2336,7 @@
 
 							{
 
-								totalItems.Add().Column("Discount").SummaryType(SummaryType.Sum).Alignment(HorizontalAlignment.Right)
+								totalItems.Add().Column("Discount").SummaryType(SummaryType.Sum)
 
 							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
@@ -2311,7 +2348,7 @@
 
 							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
-								totalItems.Add().Column("VAT").SummaryType(SummaryType.Sum).Alignment(HorizontalAlignment.Right)
+							totalItems.Add().Column("VAT").SummaryType(SummaryType.Sum)
 
 							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 								totalItems.Add().Column("Total").SummaryType(SummaryType.Sum)
@@ -2325,7 +2362,7 @@
 		</div>
 
 		<div class="Head">
-			<div class="limited-footer" style="margin-left: 15px;">
+			<div class="limited-footer">
 				@await Html.PartialAsync("VATModuleFooter")
 			</div>
 		</div>
@@ -3703,24 +3740,109 @@
                     });
                 }
             },
-						{
-			dataField: "Descriptions",
-			caption: "...",
-			cssClass: "center-header",
-			width: 80,
-			allowEditing: false, // Set false, because we're using custom popup
-			cellTemplate: function (container, options) {
-				$("<div>").dxButton({
-					icon: "user",
-					hint: "Edit VAT Details Description",
-					stylingMode: "text",
-					width: 60,
-					onClick: function (e) {
-				onCardClick(e.element[0]); // ✅ Pass raw DOM element
-			}
-				}).appendTo(container);
-			}
-		},
+			   {
+					dataField: "Descriptions",
+					caption: "...",
+					width: 50,
+					allowEditing: false,
+						cellTemplate: function (container, options) {
+			const buttonId = `popover-btn-${options.rowIndex}`;
+			const popoverId = `popover-${options.rowIndex}`;
+				const url = `/${tenantName}/VAT/CreditDetailDescription`;
+			$("<div>")
+				.attr("id", buttonId)
+				.appendTo(container)
+				.dxButton({
+						icon: "user",
+					onClick: function () {
+						$(`#${popoverId}`).dxPopover("instance").show(`#${buttonId}`);
+					}
+				});
+
+			// Add a hidden div for popover content
+			$("<div>")
+				.attr("id", popoverId)
+				.appendTo("body") // Append to body so it's not restricted to grid layout
+				.dxPopover({
+					width: 900,
+					height: "auto",
+					position: "bottom",
+					showTitle: true,
+					title: "VAT Description",
+							contentTemplate: function () {
+						const formHtml = `
+		<div class="form-wrapper">
+			<div class="form-group">
+				<div class="top-buttons">
+					<div id="btnUseDetailedDesc"></div>
+					<div id="btnUseItemDesc"></div>
+				</div>
+			</div>
+			<table style="width: 100%; border-spacing: 10px; border-collapse: separate;">
+				<tr>
+					<td colspan="4">
+						<div id="DetailedDescription"></div>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3">
+						<div style="display: flex; align-items: end; gap: 10px;">
+							<div id="DetailedDescriptionArabic"></div>
+							<div id="btnConvertDescription"></div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td><div id="ServiceStartDate"></div></td>
+					<td><div id="ServiceEndDate"></div></td>
+					<td><div id="ExpiryDate"></div></td>
+				</tr>
+				<tr>
+					<td><div id="CostAllocationEmployees"></div></td>
+					<td><div id="CostAllocationProperty"></div></td>
+					<td><div id="BatchLotNo"></div></td>
+				</tr>
+				<tr>
+					<td><div id="DiscountText"></div></td>
+					<td>
+						<div style="display: flex; align-items: end; gap: 10px;">
+							<div id="btnConvertDiscount"></div>
+							<div id="DiscountTextArabic"></div>
+						</div>
+					</td>
+					<td><div id="Remarks"></div></td>
+				</tr>
+			</table>
+		</div>
+						`;
+
+						const $container = $("<div>").html(formHtml);
+
+						// Initialize DevExtreme controls after rendering
+						setTimeout(function () {
+							$("#btnUseDetailedDesc").dxButton({ text: "Use Detailed Description" });
+							$("#btnUseItemDesc").dxButton({ text: "Use Item Description" });
+							$("#DetailedDescription").dxTextBox({ label: "Detailed Description", labelMode: "outside", width: "100%" });
+							$("#DetailedDescriptionArabic").dxTextBox({ label: "Detailed Description (Arabic)", labelMode: "outside", width: "98%", height: 100 });
+							$("#btnConvertDescription").dxButton({ icon: "fas fa-language", onClick: function () { convertToArabicbtn("DetailedDescription", "DetailedDescriptionArabic"); } });
+							$("#ServiceStartDate").dxDateBox({ label: "Service Start Date", labelMode: "outside" });
+							$("#ServiceEndDate").dxDateBox({ label: "Service End Date", labelMode: "outside" });
+							$("#ExpiryDate").dxDateBox({ label: "Expiry Date", labelMode: "outside", width: "100%" });
+							$("#CostAllocationEmployees").dxSelectBox({ label: "Cost Allocation for Employees", labelMode: "outside", width: "100%", placeholder: "Select Employees" });
+							$("#CostAllocationProperty").dxSelectBox({ label: "Cost Allocation for Property/Equipments", labelMode: "outside", width: "100%", placeholder: "Select Property/Equipments" });
+							$("#BatchLotNo").dxTextBox({ label: "Batch/Lot No", labelMode: "outside", width: "100%" });
+							$("#DiscountText").dxTextBox({ label: "Discount Text", labelMode: "outside", width: "100%" });
+							$("#btnConvertDiscount").dxButton({ icon: "fas fa-language", onClick: function () { convertToArabicbtn2("DiscountText", "DiscountTextArabic"); } });
+							$("#DiscountTextArabic").dxTextBox({ label: "Discount Text (Arabic)", labelMode: "outside", width: "100%" });
+							$("#Remarks").dxTextBox({ label: "Remarks", labelMode: "outside" });
+						}, 0);
+
+						return $container;
+					}
+				});
+		}
+
+				},
             {
                 dataField: "UnitRateMethod",
                 caption: formatMessage('Unit Rate Method'),
@@ -3969,7 +4091,6 @@
 
 			keyExpr: "SNo",
 
-
 			columns: [
 				          {
 
@@ -3985,7 +4106,7 @@
 					dataField: "SNo",
 
 					caption: "#",
-					cssClass: "center-header",
+
 					width: 100,
 
 					allowEditing: false // Prevent manual editing
@@ -3997,7 +4118,6 @@
 					dataField: "ItemCode",
 
 					caption: formatMessage('Item Code'),
-					cssClass: "center-header",
 
 					width: 200
 
@@ -4008,8 +4128,7 @@
 					dataField: "Description",
 
 					caption: formatMessage('Description'),
-					cssClass: "center-header"
- ,
+
 					width: 550,
 						 sortOrder: "asc", // auto-sort
 					editCellTemplate: function (cellElement, cellInfo) {
@@ -4156,7 +4275,7 @@
 								icon: "plus",
 								hint: "Add new item",
 								onClick: function () {
-										let url = `/${tenantName}/IMS/GoodsAndService`; // ✅ No query parameters
+									let url = `/${tenantName}/VAT/VATGoodsandServices`; // ✅ No query parameters
 									let title = "Goods and Services";
 									openModal(url, title); // Opens the form in a modal
 									// Or use: window.location.href = url; if navigating directly
@@ -4177,7 +4296,7 @@
 								onClick: function () {
 
 									//let url = `/${tenantName}/VAT/VATGoodsandServices?AccountHeadID=${encodeURIComponent(acchedid)}`; // Example edit page
-									  let url = `/${tenantName}/IMS/GoodsAndService?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}`; // Example add page
+						          let url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}`; // Example add page
 											let title = "Goods and Services";
 													openModal(url, title);
 									//window.location.href = url;
@@ -4196,23 +4315,108 @@
 
 				},
 		{
-		dataField: "Descriptions",
-		caption: "...",
-		cssClass: "center-header",
-		width: 80,
-		allowEditing: false, // Set false, because we're using custom popup
-		cellTemplate: function (container, options) {
-			$("<div>").dxButton({
-				icon: "user",
-				hint: "Edit VAT Details Description",
-				stylingMode: "text",
-				width: 60,
-				onClick: function (e) {
-			onCardClick(e.element[0]); // ✅ Pass raw DOM element
+					dataField: "Descriptions",
+					caption: "...",
+					width: 50,
+					allowEditing: false,
+						cellTemplate: function (container, options) {
+			const buttonId = `popover-btn-${options.rowIndex}`;
+			const popoverId = `popover-${options.rowIndex}`;
+				const url = `/${tenantName}/VAT/CreditDetailDescription`;
+			$("<div>")
+				.attr("id", buttonId)
+				.appendTo(container)
+				.dxButton({
+						icon: "user",
+					onClick: function () {
+						$(`#${popoverId}`).dxPopover("instance").show(`#${buttonId}`);
+					}
+				});
+
+			// Add a hidden div for popover content
+			$("<div>")
+				.attr("id", popoverId)
+				.appendTo("body") // Append to body so it's not restricted to grid layout
+				.dxPopover({
+					width: 900,
+					height: "auto",
+					position: "bottom",
+					showTitle: true,
+					title: "VAT Description",
+							contentTemplate: function () {
+						const formHtml = `
+		<div class="form-wrapper">
+			<div class="form-group">
+				<div class="top-buttons">
+					<div id="btnUseDetailedDesc"></div>
+					<div id="btnUseItemDesc"></div>
+				</div>
+			</div>
+			<table style="width: 100%; border-spacing: 10px; border-collapse: separate;">
+				<tr>
+					<td colspan="4">
+						<div id="DetailedDescription"></div>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3">
+						<div style="display: flex; align-items: end; gap: 10px;">
+							<div id="DetailedDescriptionArabic"></div>
+							<div id="btnConvertDescription"></div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td><div id="ServiceStartDate"></div></td>
+					<td><div id="ServiceEndDate"></div></td>
+					<td><div id="ExpiryDate"></div></td>
+				</tr>
+				<tr>
+					<td><div id="CostAllocationEmployees"></div></td>
+					<td><div id="CostAllocationProperty"></div></td>
+					<td><div id="BatchLotNo"></div></td>
+				</tr>
+				<tr>
+					<td><div id="DiscountText"></div></td>
+					<td>
+						<div style="display: flex; align-items: end; gap: 10px;">
+							<div id="btnConvertDiscount"></div>
+							<div id="DiscountTextArabic"></div>
+						</div>
+					</td>
+					<td><div id="Remarks"></div></td>
+				</tr>
+			</table>
+		</div>
+						`;
+
+						const $container = $("<div>").html(formHtml);
+
+						// Initialize DevExtreme controls after rendering
+						setTimeout(function () {
+							$("#btnUseDetailedDesc").dxButton({ text: "Use Detailed Description" });
+							$("#btnUseItemDesc").dxButton({ text: "Use Item Description" });
+							$("#DetailedDescription").dxTextBox({ label: "Detailed Description", labelMode: "outside", width: "100%" });
+							$("#DetailedDescriptionArabic").dxTextBox({ label: "Detailed Description (Arabic)", labelMode: "outside", width: "98%", height: 100 });
+							$("#btnConvertDescription").dxButton({ icon: "fas fa-language", onClick: function () { convertToArabicbtn("DetailedDescription", "DetailedDescriptionArabic"); } });
+							$("#ServiceStartDate").dxDateBox({ label: "Service Start Date", labelMode: "outside" });
+							$("#ServiceEndDate").dxDateBox({ label: "Service End Date", labelMode: "outside" });
+							$("#ExpiryDate").dxDateBox({ label: "Expiry Date", labelMode: "outside", width: "100%" });
+							$("#CostAllocationEmployees").dxSelectBox({ label: "Cost Allocation for Employees", labelMode: "outside", width: "100%", placeholder: "Select Employees" });
+							$("#CostAllocationProperty").dxSelectBox({ label: "Cost Allocation for Property/Equipments", labelMode: "outside", width: "100%", placeholder: "Select Property/Equipments" });
+							$("#BatchLotNo").dxTextBox({ label: "Batch/Lot No", labelMode: "outside", width: "100%" });
+							$("#DiscountText").dxTextBox({ label: "Discount Text", labelMode: "outside", width: "100%" });
+							$("#btnConvertDiscount").dxButton({ icon: "fas fa-language", onClick: function () { convertToArabicbtn2("DiscountText", "DiscountTextArabic"); } });
+							$("#DiscountTextArabic").dxTextBox({ label: "Discount Text (Arabic)", labelMode: "outside", width: "100%" });
+							$("#Remarks").dxTextBox({ label: "Remarks", labelMode: "outside" });
+						}, 0);
+
+						return $container;
+					}
+				});
 		}
-			}).appendTo(container);
-		}
-	},
+
+				},
 
 
 				{
@@ -4220,8 +4424,6 @@
 					dataField: "DescriptionDetails",
 
 					caption: formatMessage('Unit Rate Method'),
-
-					cssClass: "center-header",
 
 					width: 200,
 
@@ -4347,13 +4549,13 @@
 				},
 
 
-					{ dataField: "Qty", caption: formatMessage('Qty'), width: 150, cssClass: "center-header" },
+				{ dataField: "Qty", caption: formatMessage('Qty'), width: 150 },
 
-					{ dataField: "UnitPrice", caption: formatMessage('Unit Price'), width: 150, cssClass: "center-header" },
+				{ dataField: "UnitPrice", caption: formatMessage('Unit Price'), width: 150 },
 
-			    { dataField: "TotalBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 185, cssClass: "center-header", format: { type: "fixedPoint", precision: 2 } },
+			    { dataField: "TotalBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 185, format: { type: "fixedPoint", precision: 2 } },
 
-				{ dataField: "Discount", caption: formatMessage('Discount'), width: 150, cssClass: "center-header" },
+				{ dataField: "Discount", caption: formatMessage('Discount'), width: 150 },
 
 				//{ dataField: "DiscountDetails", caption: "...", width: 50 },
 						{
@@ -4376,15 +4578,13 @@
 	}
 	,
 
-
-					{ dataField: "Amount", caption: formatMessage('Amount'), width: 150,cssClass: "center-header", format: { type: "fixedPoint", precision: 2 } },
+					{ dataField: "Amount", caption: formatMessage('Amount'), width: 150, format: { type: "fixedPoint", precision: 2 } },
 
 				//{ dataField: "VAT%", caption: "VAT%", width: 150 },
 
 				{
 					dataField: "VATPercentage",
 					caption: formatMessage('VAT%'),
-					cssClass: "center-header",
 					width: 150,
 					editCellTemplate: function (cellElement, cellInfo) {
 						getTaxSlabData().done(function (dropdownData) {
@@ -4435,11 +4635,11 @@
 					}
 				},
 
-				{ dataField: formatMessage('ExcemptionCode'), caption: "Excemption Code", width: 150, cssClass: "center-header"},
+				{ dataField: formatMessage('ExcemptionCode'), caption: "Excemption Code", width: 150 },
 
-				{ dataField: "VAT", caption: formatMessage('VAT'), width: 150, cssClass: "center-header" },
+				{ dataField: "VAT", caption: formatMessage('VAT'), width: 150 },
 
-				{ dataField: "Total", caption: formatMessage('Total'), width: 150, cssClass: "center-header", format: { type: "fixedPoint", precision: 2 } },
+				{ dataField: "Total", caption: formatMessage('Total'), width: 150, format: { type: "fixedPoint", precision: 2 } },
 
 				{ dataField: "TaxSlabCode", caption: formatMessage('TaxSlabCode'), width: 150, allowEditing: false, visible: false }
 
@@ -8043,6 +8243,8 @@
 		}
 
 
+
+		
 	
 	$(function () {
 			var selectedRowKey = null;
@@ -8191,6 +8393,22 @@
 	});
 
 
+		
 
+
+
+			$("#btnPrint1").on("click", function (e) {
+			var dropdown = $("#btnPrint1").dxDropDownButton("instance");
+			var items = dropdown.option("items");
+
+			// Set disabled flag on specific items
+			items.forEach(function (item) {
+					if (item.text === "Print Simplified TAX Invoice" ) {
+					item.disabled = true;
+				}
+			});
+
+			dropdown.option("items", items);
+		});
 </script>
 

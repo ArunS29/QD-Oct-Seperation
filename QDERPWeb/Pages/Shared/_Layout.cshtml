@@ -55,7 +55,17 @@
     }
 }
 
+@inject QD.ERP.Web.Service.LicenseService LicenseService
 
+@{
+    // Retrieve tenantName from session
+    string tenantNameFromSession = Context.Session.GetString("TenantName") ?? "";
+
+    // Pass tenantNameFromSession to the method
+    string licenseMessage = string.IsNullOrWhiteSpace(tenantNameFromSession)
+        ? "Tenant name is not available in the session."
+        : await LicenseService.CheckExtendedLicenseInfoAsync(tenantNameFromSession);
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1031,8 +1041,10 @@
             <div class="image">
                 <img src="@Tenant.Value.LogoUrl" alt="Tenant Logo" />
                 <div class="companyName">
-                    @tenantName
-                </div>
+                    @Tenant.Value.CompanyNameShort
+                </div> 
+              
+
             </div>
             <div class="dropdownLang">
           @*   <div>
@@ -1429,22 +1441,6 @@
 
             </div>
         </div>
-        <div id="quarterSubMenu" class="context-menu" style="display:none; width: 300px;">
-            <div class="context-menu-item1">
-                <div class="submenu-item" onclick="ddBtnShowRecords_click('q1')">
-                    <span class="no-border-input">1st Quarter (Jan - Mar)</span>
-                </div>
-                <div class="submenu-item" onclick="ddBtnShowRecords_click('q2')">
-                    <span class="no-border-input">2nd Quarter (Apr - Jun)</span>
-                </div>
-                <div class="submenu-item" onclick="ddBtnShowRecords_click('q3')">
-                    <span class="no-border-input">3rd Quarter (Jul - Sep)</span>
-                </div>
-                <div class="submenu-item" onclick="ddBtnShowRecords_click('q4')">
-                    <span class="no-border-input">4th Quarter (Oct - Dec)</span>
-                </div>
-            </div>
-        </div>
         <!-- Notification Popup -->
         <div id="notificationPopup" class="popup">
             <div class="popup-header">
@@ -1606,12 +1602,20 @@
         </div>
     </div>
     <footer class="text-center py-3 footerContainer" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem;">
+        @if (!string.IsNullOrEmpty(licenseMessage))
+        {
+            <div id="custom-watermark" style="position: fixed; bottom: 0; width: 100%; z-index: 9999; background-color: red; color: white; display: flex; align-items: center;justify-content: center;font-family: 'Segoe UI', sans-serif;font-size: 14px;padding: 0.5rem;box-shadow: 0 -2px 6px rgba(0,0,0,0.2);">
+                <span>Your <strong>@licenseMessage</strong>. Please <a href="https://quickdiceerp.com/contact-us" target="_blank" style="color: white; text-decoration: underline;">purchase a license</a> to continue using this product.</span>
+                <button onclick="document.getElementById('custom-watermark').remove()" style=" margin-left: 1rem;background: transparent;border: none;color: white;font-size: 16px;cursor: pointer;" title="Close">&times;</button>
+            </div>
+        }
         <div style="display:flex;flex-direction:column;align-items:center;gap:1em;">
             <div>
+              
                 <span class="me-3">User ID:  <b>@userId</b></span>
                 <span class="me-3">User Name: <b>@userName</b> </span>
                 <span class="me-3">Level: <span id="userLevel" style="font-weight: bold;">Loading...</span></span>
-                <span class="me-3"><b>@DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</b></span>
+                @* <span class="me-3"><b>@DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</b></span> *@
             </div>
             <div style="display:flex;">
                 <p id="footerMessage1" style="font-weight: bold;"></p>
@@ -3300,9 +3304,7 @@
 
             doc.save("quotation-analysis.pdf");
         }
-        function hidequarterSubmenus() {
-            $('#quarterSubMenu').hide();
-        }
+
     </script>
 </body>
 </html>
