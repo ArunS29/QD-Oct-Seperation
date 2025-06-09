@@ -75,7 +75,7 @@ namespace QD.ERP.Web.Service
                 {
                     tenant.LogoUrl = $"data:image/png;base64,{Convert.ToBase64String(companyDetails.CompanyLogo)}";
                 }
-                tenant.CompanyNameShort = companyDetails.CompanyName.ToLower();
+                tenant.CompanyNameShort = companyDetails.CompanyNameShort.ToLower();
             }
 
             // Cache and return the resolved tenant
