@@ -933,13 +933,7 @@
                 <div class="companyName">
                     @Tenant.Value.CompanyNameShort
                 </div> 
-                @if (!string.IsNullOrEmpty(licenseMessage))
-                {
-                    <div id="custom-watermark" style="position: fixed; bottom: 0; width: 100%; z-index: 9999; background-color: red; color: white; display: flex; align-items: center;    justify-content: center;   font-family: 'Segoe UI', sans-serif;    font-size: 14px;    padding: 0.5rem;    box-shadow: 0 -2px 6px rgba(0,0,0,0.2);">
-                        <span>Your <strong>@licenseMessage</strong>. Please <a href="https://quickdiceerp.com/contact-us" target="_blank" style="color: white; text-decoration: underline;">purchase a license</a> to continue using this product.</span>
-                        <button onclick="document.getElementById('custom-watermark').remove()" style=" margin-left: 1rem;        background: transparent;        border: none;        color: white;        font-size: 16px;        cursor: pointer;    " title="Close">&times;</button>
-                    </div>
-                }
+              
 
             </div>
             <div class="dropdownLang">
@@ -1483,12 +1477,20 @@
         </div>
     </div>
     <footer class="text-center py-3 footerContainer" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem;">
+        @if (!string.IsNullOrEmpty(licenseMessage))
+        {
+            <div id="custom-watermark" style="position: fixed; bottom: 0; width: 100%; z-index: 9999; background-color: red; color: white; display: flex; align-items: center;justify-content: center;font-family: 'Segoe UI', sans-serif;font-size: 14px;padding: 0.5rem;box-shadow: 0 -2px 6px rgba(0,0,0,0.2);">
+                <span>Your <strong>@licenseMessage</strong>. Please <a href="https://quickdiceerp.com/contact-us" target="_blank" style="color: white; text-decoration: underline;">purchase a license</a> to continue using this product.</span>
+                <button onclick="document.getElementById('custom-watermark').remove()" style=" margin-left: 1rem;background: transparent;border: none;color: white;font-size: 16px;cursor: pointer;" title="Close">&times;</button>
+            </div>
+        }
         <div style="display:flex;flex-direction:column;align-items:center;gap:1em;">
             <div>
+              
                 <span class="me-3">User ID:  <b>@userId</b></span>
                 <span class="me-3">User Name: <b>@userName</b> </span>
                 <span class="me-3">Level: <span id="userLevel" style="font-weight: bold;">Loading...</span></span>
-                <span class="me-3"><b>@DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</b></span>
+                @* <span class="me-3"><b>@DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</b></span> *@
             </div>
             <div style="display:flex;">
                 <p id="footerMessage1" style="font-weight: bold;"></p>
