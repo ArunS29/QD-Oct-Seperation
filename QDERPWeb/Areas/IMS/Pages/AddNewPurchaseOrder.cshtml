@@ -299,9 +299,9 @@
                 .Items(item =>
                 {
                     item.Add()
-                .Title("Purchase Order Details")
+                .Title(new JS("formatMessage('Purchase Order Details')"))
                 .Icon("folder")
-                .Text("Purchase Order Details")
+                .Text(new JS("formatMessage('Purchase Order Details')"))
                 .Template(@<text>
             <div class="dx-card p-3">
                 <table style="table-layout: fixed; width: 100%;">
@@ -319,7 +319,7 @@
                             @(Html.DevExtreme().TextBox()
                             .ID("PurchaseOrderNo")
                             .Value("")
-                            .Label("Purchase Order No:")
+                            .Label(new JS("formatMessage('Purchase Order No:')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .ReadOnly(true)
                             .StylingMode(EditorStylingMode.Outlined)
@@ -328,7 +328,7 @@
                         <td>
                             @(Html.DevExtreme().SelectBox()
                             .ID("RevNo")
-                            .Label("Rev. No:")
+                            .Label(new JS("formatMessage('REV.No')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -336,7 +336,7 @@
                         <td>
                             @(Html.DevExtreme().DateBox()
                             .ID("PoDate")
-                            .Label("PO Date:")
+                            .Label(new JS("formatMessage('PO Date')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Value(DateTime.Now)
@@ -346,7 +346,7 @@
                             <div style="display: flex; align-items:end;">
                                 @(Html.DevExtreme().SelectBox()
                                 .ID("SupplierName")
-                                .Label("Supplier Name:")
+                                .Label(new JS("formatMessage('Supplier Name:')"))
                                 .LabelMode(EditorLabelMode.Outside)
                                 .StylingMode(EditorStylingMode.Outlined)
                                 .Width("100%")
@@ -372,7 +372,7 @@
                         <td>
                             @(Html.DevExtreme().TextBox()
                             .ID("ClientProjectRef")
-                            .Label("Client Project Ref:")
+                            .Label(new JS("formatMessage('Client Project Ref:')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -384,7 +384,7 @@
                         <td>
                             @(Html.DevExtreme().TextBox()
                             .ID("SupplierQuotationNo")
-                            .Label("Supplier Quotation No:")
+                            .Label(new JS("formatMessage('Supplier Quotation No:')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -392,7 +392,7 @@
                         <td>
                             @(Html.DevExtreme().DateBox()
                             .ID("SupplierQuoteDate")
-                            .Label("Supplier Quote Date:")
+                            .Label(new JS("formatMessage('Supplier Quote Date:')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -401,7 +401,7 @@
                             <div style="display: flex; align-items:end;">
                                 @(Html.DevExtreme().TextBox()
                                 .ID("AttentionTo")
-                                .Label("Attention To:")
+                                .Label(new JS("formatMessage('Attention To:')"))
                                 .LabelMode(EditorLabelMode.Outside)
                                 .StylingMode(EditorStylingMode.Outlined)
                                 .Width("100%"))
@@ -416,7 +416,7 @@
                         <td>
                             @(Html.DevExtreme().TextBox()
                             .ID("SupplierContactNo")
-                            .Label("Supplier Contact No:")
+                            .Label(new JS("formatMessage('Supplier Contact No:')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -424,7 +424,7 @@
                         <td>
                             @(Html.DevExtreme().TextBox()
                             .ID("SupplierEmail")
-                            .Label("Supplier Email:")
+                            .Label(new JS("formatMessage('Supplier Email:')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .Mode(TextBoxMode.Email)
                             .StylingMode(EditorStylingMode.Outlined)
@@ -437,7 +437,7 @@
                         <td>
                             @(Html.DevExtreme().TextBox()
                             .ID("ReferenceNo")
-                            .Label("Reference No:")
+                            .Label(new JS("formatMessage('Reference No:')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -446,7 +446,7 @@
                             <div style="display: flex; align-items:end;">
                                 @(Html.DevExtreme().SelectBox()
                                 .ID("Project")
-                                .Label("Project:")
+                                .Label(new JS("formatMessage('Project:')"))
                                 .LabelMode(EditorLabelMode.Outside)
                                 .StylingMode(EditorStylingMode.Outlined)
                                 .Width("100%")
@@ -469,7 +469,7 @@
                         <td>
                             @(Html.DevExtreme().SelectBox()
                             .ID("SalesPerson")
-                            .Label("Sales Person:")
+                            .Label(new JS("formatMessage('Sales Person:')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%")
@@ -486,7 +486,7 @@
                         <td>
                             @(Html.DevExtreme().TextBox()
                             .ID("RFQNo")
-                            .Label("RFQ No:")
+                            .Label(new JS("formatMessage('RFQ No')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -494,7 +494,7 @@
                         <td>
                             @(Html.DevExtreme().SelectBox()
                             .ID("RequestingUnit")
-                            .Label("Requesting Unit:")
+                            .Label(new JS("formatMessage('Requesting Unit:')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%")
@@ -513,13 +513,13 @@
             </div>
 
         </text>);
-                    item.Add().Title("Order Details").Icon("detailslayout").Text("Order Details").Template(@<text>
+                    item.Add().Title(new JS("formatMessage('Order Details')")).Icon("detailslayout").Text(new JS("formatMessage('Order Details')")).Template(@<text>
             <div class="dx-card layout-container">
                 <!-- Subject and Po Summary -->
                 <div class="form-row">
                     <div class="form-column">
                         <div class="field-header">
-                            <label for="Subject" class="field-label">Subject:</label>
+                            <label id="Subject1" for="Subject" class="field-label"></label>
                             <div class="field-buttons">
                                 <button class="btn-solid" onclick="setDefaultValue('Subject')">Set Default</button>
                                 <button class="btn-outline"><i class="fa fa-font"></i></button>
@@ -533,7 +533,7 @@
                     </div>
                     <div class="form-column">
                         <div class="field-header">
-                            <label for="PoSummary" class="field-label">Po Summary:</label>
+                            <label id="PoSummary1" for="PoSummary" class="field-label"></label>
                             <div class="field-buttons">
                                 <button class="btn-solid" onclick="setDefaultValue('PoSummary')">Set Default</button>
                                 <button class="btn-outline"><i class="fa fa-font"></i></button>
@@ -552,7 +552,7 @@
                 <div class="form-row">
                     <div class="form-column">
                         <div class="field-header">
-                            <label for="PoIntro" class="field-label">Po Introduction:</label>
+                            <label id="PoIntroduction1" for="PoIntro" class="field-label"></label>
                             <div class="field-buttons">
                                 <button class="btn-solid" onclick="setDefaultValue('PoIntro')">Set Default</button>
                                 <button class="btn-outline"><i class="fa fa-font"></i></button>
@@ -566,7 +566,7 @@
                     </div>
                     <div class="form-column">
                         <div class="field-header">
-                            <label for="Thanks" class="field-label">Thanks Notes:</label>
+                            <label id="ThanksNotes1" for="Thanks" class="field-label"></label>
                             <div class="field-buttons">
                                 <button class="btn-solid" onclick="setDefaultValue('Thanks')">Set Default</button>
                                 <button class="btn-outline"><i class="fa fa-font"></i></button>
@@ -584,7 +584,7 @@
 
 
         </text>);
-                    item.Add().Text("Shipping Details").Icon("home").Title("Shipping Details").Template(@<text>
+                    item.Add().Text(new JS("formatMessage('Shipping Details')")).Icon("home").Title(new JS("formatMessage('Shipping Details')")).Template(@<text>
             <div style="display: flex; gap: 15px;  padding: 15px; border-radius: 6px;">
 
                 <!-- Left Card -->
@@ -596,7 +596,7 @@
                             @(Html.DevExtreme().SelectBox()
                             .ID("PaymentTerm")
                             .DataSource(new[] { "Cash", "Net 30", "Net 60" })
-                            .Label("Payment Term:")
+                            .Label(new JS("formatMessage('Payment Term:')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .Width("100%")
                             )
@@ -605,7 +605,7 @@
                             @(Html.DevExtreme().SelectBox()
                             .ID("DocumentsRequired")
                             .DataSource(new[] { "Invoice", "Packing List", "Certificate of Origin" })
-                            .Label("Documents Required:")
+                            .Label(new JS("formatMessage('Documents Required:')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .Width("100%")
                             )
@@ -618,7 +618,7 @@
                             @(Html.DevExtreme().SelectBox()
                             .ID("DeliveryTerm")
                             .DataSource(new[] { "FOB", "CIF", "EXW" })
-                            .Label("Delivery Term:")
+                            .Label(new JS("formatMessage('Delivery Term:')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .Width("100%")
                             )
@@ -627,7 +627,7 @@
                             @(Html.DevExtreme().SelectBox()
                             .ID("WarrantyPeriod")
                             .DataSource(new[] { "6 Months", "1 Year", "2 Years" })
-                            .Label("Warranty Period:")
+                            .Label(new JS("formatMessage('Warranty Period:')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .Width("100%")
                             )
@@ -639,7 +639,7 @@
                         @(Html.DevExtreme().SelectBox()
                         .ID("DeliveryPeriod")
                         .DataSource(new[] { "7 Days", "14 Days", "30 Days" })
-                        .Label("Delivery Period:")
+                        .Label(new JS("formatMessage('Delivery Period:')"))
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%")
                         )
@@ -652,7 +652,7 @@
                     <!-- PoSummary 1 -->
                     <div>
                         <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <label for="ShippingAddress" style="font-weight: bold;">Shipping Address</label>
+                            <label for="ShippingAddress" id="Shipping" style="font-weight: bold;"></label>
                             <div style="display: flex; gap: 5px;">
                                 <button class="btn-solid" onclick="setDefaultValue('ShippingAddress')">Set Default</button>
                                 <button style="padding: 3px 8px; border: 1px solid #8c8c8c; background-color: transparent; color: #333;">A</button>
@@ -669,7 +669,7 @@
                     <!-- PoSummary 2 -->
                     <div>
                         <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <label for="BillingAddress" style="font-weight: bold;">Billing Address</label>
+                            <label for="BillingAddress" id="Billing" style="font-weight: bold;"></label>
                             <div style="display: flex; gap: 5px;">
                                 <button class="btn-solid" onclick="setDefaultValue('BillingAddress')">Set Default</button>
                                 <button style="padding: 3px 8px; border: 1px solid #8c8c8c; background-color: transparent; color: #333;">A</button>
@@ -686,7 +686,7 @@
             </div>
 
         </text>);
-                    item.Add().Text("Approvals").Icon("user").Title("Approvals").Template(@<text>
+                    item.Add().Text(new JS("formatMessage('Approvals')")).Icon("user").Title(new JS("formatMessage('Approvals')")).Template(@<text>
             <div class="form-container">
                 <div class="dx-card p-3">
                     <table class=" table-borderless w-100">
@@ -694,23 +694,23 @@
                             <tr>
                                 <!-- Prepared By Checkboxes -->
                                 <td>
-                                    @(Html.DevExtreme().CheckBox().ID("SubmittedBy").Value(true).Text("Submitted By:"))
+                                    @(Html.DevExtreme().CheckBox().ID("SubmittedBy").Value(true).Text(new JS("formatMessage('Submitted By')")))
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("SubmittedOn").Value(true).Text("Submitted On:"))
+                                    @(Html.DevExtreme().CheckBox().ID("SubmittedOn").Value(true).Text(new JS("formatMessage('Submitted On')")))
                                 </td>
 
                                 <!-- Verified By Checkboxes -->
                                 <td>
-                                    @(Html.DevExtreme().CheckBox().ID("VrifiedBy").Text("Vrified By:"))
+                                    @(Html.DevExtreme().CheckBox().ID("VrifiedBy").Text(new JS("formatMessage('Verified By')")))
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("VrifiedOn").Text("Verified On:"))
+                                    @(Html.DevExtreme().CheckBox().ID("VrifiedOn").Text(new JS("formatMessage('Verified On')")))
                                 </td>
 
                                 <!-- Approved By Checkboxes -->
                                 <td>
-                                    @(Html.DevExtreme().CheckBox().ID("ApprovalBy").Text("Approval By:"))
+                                    @(Html.DevExtreme().CheckBox().ID("ApprovalBy").Text(new JS("formatMessage('Approved By')")))
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("ApprovalOn").Text("Approval On:"))
+                                    @(Html.DevExtreme().CheckBox().ID("ApprovalOn").Text(new JS("formatMessage('Approved On')")))
                                 </td>
                             </tr>
                         </tbody>
@@ -719,17 +719,17 @@
             </div>
 
         </text>);
-                    item.Add().Text("Branch / Division").Icon("user").Title("Branch / Division").Template(@<text>
+                    item.Add().Text(new JS("formatMessage('Branch / Division')")).Icon("user").Title(new JS("formatMessage('Branch/Divisions')")).Template(@<text>
             <div style="display: flex; gap: 15px;padding: 15px;">
 
                 <!-- Branch & Divisions -->
                 <div style="padding: 10px; border-radius: 6px; flex: 1;">
-                    <div style="margin-bottom: 5px;">Branch & Divisions:</div>
+                    <div id="Divisions" style="margin-bottom: 5px;"></div>
 
                     <!-- Company Branch -->
                     @(Html.DevExtreme().SelectBox()
                     .ID("CompanyName")
-                    .Label("Company Branch")
+                    .Label(new JS("formatMessage('Company Branch')"))
                     .DataSource(d => d.Mvc()
                     .Controller("DeliveryNote")
                     .LoadAction("GetCompanyBranch")
@@ -751,7 +751,7 @@
                             )
                             .ValueExpr("TypeOfRequestID")
                             .DisplayExpr("TypeOfRequest")
-                            .Label("Type of Request:")
+                            .Label(new JS("formatMessage('Type of Request:')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .Width("100%")
                             )
@@ -767,7 +767,7 @@
                                 )
                                 .ValueExpr("POCategoryCode")
                                 .DisplayExpr("POCategoryName")
-                                .Label("P.O. Category:")
+                                .Label(new JS("formatMessage('P.O. Category:')"))
                                 .LabelMode(EditorLabelMode.Outside)
                                 .Width("100%")
                                 )
@@ -791,7 +791,7 @@
                         )
                         .ValueExpr("InventoryMasterGroupId")
                         .DisplayExpr("InventoryMasterGroup")
-                        .Label("Inventory Group Master: *")
+                        .Label(new JS("formatMessage('Inventory Group Master: *')"))
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%")
                         )
@@ -801,7 +801,7 @@
 
                 <!-- Foreign Currency -->
                 <div style="padding: 10px; flex: 1;">
-                    <div style="margin-bottom: 5px;">Foreign Currency:</div>
+                    <div id="Foreign" style="margin-bottom: 5px;"></div>
 
                     <!-- Currency -->
                     @(Html.DevExtreme().SelectBox()
@@ -812,7 +812,7 @@
                     )
                     .ValueExpr("CurrencyExchangeId")
                     .DisplayExpr("CurrencyName")
-                    .Label("Currency")
+                    .Label(new JS("formatMessage('Currency')"))
                     .LabelMode(EditorLabelMode.Outside)
                     .Width("100%")
                     )
@@ -823,7 +823,7 @@
                         <div style="flex: 2;">
                             @(Html.DevExtreme().NumberBox()
                             .ID("ExchangeRate")
-                            .Label("Currency Exchange Rate:")
+                            .Label(new JS("formatMessage('Currency Exchange Rate:')"))
                             .Value(0)
                             .Min(0.00)
                             .Step(0.01)
@@ -837,14 +837,14 @@
 
                 <!-- Shipment & Discounts -->
                 <div style=" padding: 10px; flex: 1;">
-                    <div style="margin-bottom: 5px;">Shipment & Discounts:</div>
+                    <div id="Shipment" style="margin-bottom: 5px;"></div>
 
                     <!-- Shipments & Handling -->
                     <div style="display: flex; gap: 10px;">
                         <div style="flex: 2;">
                             @(Html.DevExtreme().TextBox()
                             .ID("ShipmentHandling")
-                            .Label("")
+                            .Label(new JS("formatMessage('')"))
                             .Placeholder("(+) Shipments & Handling:")
                             .LabelMode(EditorLabelMode.Hidden)
                             .Width("100%")
@@ -854,7 +854,7 @@
                             @(Html.DevExtreme().SelectBox()
                             .ID("ShipmentHandlingMethod")
                             .DataSource(new[] { "Flat", "Percentage" })
-                            .Label("")
+                            .Label(new JS("formatMessage('')"))
                             .LabelMode(EditorLabelMode.Hidden)
                             .Width("100%")
                             )
@@ -875,7 +875,7 @@
                             @(Html.DevExtreme().SelectBox()
                             .ID("DiscountMethod")
                             .DataSource(new[] { "Flat", "Percentage" })
-                            .Label("")
+                            .Label(new JS("formatMessage('')"))
                             .LabelMode(EditorLabelMode.Hidden)
                             .Width("100%")
                             )
@@ -886,15 +886,16 @@
 
 
         </text>);
-                    item.Add().Text("Signatories").Icon("user").Title("Signatories").Template(@<text>
+
+                    item.Add().Text(new JS("formatMessage('Signatories')")).Icon("user").Title(new JS("formatMessage('Signatories')")).Template(@<text>
             <div class="form-container">
                 <div class="dx-card p-3">
                     <table class=" table-borderless w-100">
                         <thead>
                             <tr>
-                                <th>Prepared By</th>
-                                <th>Verified By</th>
-                                <th>Approved By</th>
+                                <th id="Prepared">Prepared By</th>
+                                <th id="Verified">Verified By</th>
+                                <th id="Approved">Approved By</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -951,33 +952,33 @@
                             <tr>
                                 <!-- Prepared By Checkboxes -->
                                 <td>
-                                    @(Html.DevExtreme().CheckBox().ID("showSeal2").Value(true).Text("Show Company Seal"))
+                                    @(Html.DevExtreme().CheckBox().ID("showSeal2").Value(true).Text(new JS("formatMessage('Show Company Seal')")))
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("showSignature2").Value(true).Text("Show Signature"))
+                                    @(Html.DevExtreme().CheckBox().ID("showSignature2").Value(true).Text(new JS("formatMessage('Show Signature')")))
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("printLetterhead2").Value(true).Text("Print in Letter Head"))
+                                    @(Html.DevExtreme().CheckBox().ID("printLetterhead2").Value(true).Text(new JS("formatMessage('Print in Letter Head')")))
                                 </td>
 
                                 <!-- Verified By Checkboxes -->
                                 <td>
-                                    @(Html.DevExtreme().CheckBox().ID("pageBreakBefore2").Text("Page Break before Terms"))
+                                    @(Html.DevExtreme().CheckBox().ID("pageBreakBefore2").Text(new JS("formatMessage('Page Break before Terms')")))
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("pageBreakAfter2").Text("Page Break after Terms"))
+                                    @(Html.DevExtreme().CheckBox().ID("pageBreakAfter2").Text(new JS("formatMessage('Page Break after Terms')")))
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("ShowHSCodeinsteadStockCode").Text("Show HS Code instead Stock Code"))
+                                    @(Html.DevExtreme().CheckBox().ID("ShowHSCodeinsteadStockCode").Text(new JS("formatMessage('Show HS Code instead Stock Code')")))
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("ShowitemPartNumberinsteadStockCode").Text("Show item Part Number instead Stock Code"))
+                                    @(Html.DevExtreme().CheckBox().ID("ShowitemPartNumberinsteadStockCode").Text(new JS("formatMessage('Show item Part Number instead Stock Code')")))
                                 </td>
 
                                 <!-- Approved By Checkboxes -->
                                 <td>
-                                    @(Html.DevExtreme().CheckBox().ID("ShowFullSupplierAcceptance").Text("Show Full Supplier Acceptance"))
+                                    @(Html.DevExtreme().CheckBox().ID("ShowFullSupplierAcceptance").Text(new JS("formatMessage('Show Full Supplier Acceptance')")))
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("ShowSimpleSuppilerAcceptance").Text("Show Simple Suppiler Acceptance (One Line Only)"))
+                                    @(Html.DevExtreme().CheckBox().ID("ShowSimpleSuppilerAcceptance").Text(new JS("formatMessage('Show Simple Suppiler Acceptance (One Line Only)')")))
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("ShowSignatoryPositionOnly").Text("Show Signatory Position Only"))
+                                    @(Html.DevExtreme().CheckBox().ID("ShowSignatoryPositionOnly").Text(new JS("formatMessage('Show Signatory Position Only')")))
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("ShowPaymentTermsShippingDetails").Text("Show Payment Terms & Shipping Details"))
+                                    @(Html.DevExtreme().CheckBox().ID("ShowPaymentTermsShippingDetails").Text(new JS("formatMessage('Show Payment Terms & Shipping Details')")))
                                 </td>
                             </tr>
                         </tbody>
@@ -1201,11 +1202,6 @@
             }
         });
     });
-
-
-
-
-
             var dataGridInstance;
 
         var rowData = []; // Store the grid data
@@ -2041,4 +2037,52 @@
     }
 
 
+      $(function () {
+                       $("#Approved").text(
+                            formatMessage("Approved By"));
+               });
+                $(function () {
+                       $("#Verified").text(
+                            formatMessage("Verified By"));
+               });
+                 $(function () {
+                          $("#Prepared").text(
+                               formatMessage("Prepared By"));
+               });
+                $(function () {
+                       $("#Billing").text(
+                            formatMessage("Billing Address"));
+               });
+               $(function () {
+                          $("#Shipping").text(
+                               formatMessage("Shipping Address"));
+               });
+               $(function () {
+                             $("#Divisions").text(
+                                  formatMessage("Branch & Divisions:"));
+               });
+               $(function () {
+                             $("#Foreign").text(
+                                  formatMessage("Foreign Currency:"));
+               });
+               $(function () {
+                             $("#Shipment").text(
+                                  formatMessage("Shipment & Discounts:"));
+               });
+                $(function () {
+                             $("#Subject1").text(
+                                     formatMessage("Subject:"));
+               });
+                $(function () {
+                                $("#PoSummary1").text(
+                                     formatMessage("Po Summary:"));
+               });
+                $(function () {
+                                $("#PoIntroduction1").text(
+                                     formatMessage("Po Introduction:"));
+               });
+                $(function () {
+                                $("#ThanksNotes1").text(
+                                     formatMessage("Thanks Notes:"));
+               });
 </script>

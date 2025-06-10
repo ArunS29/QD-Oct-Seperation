@@ -235,29 +235,29 @@
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
-			columns.Add().Caption(" RFQ Details").Columns(subColumns =>
+				columns.Add().Caption(new JS("formatMessage('RFQ Details')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.Rfqno).Caption("RFQ No ").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Rfqdate).Caption("Rfq Date").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Mprno).Caption("MPR NO").Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
-				subColumns.AddFor(m => m.SupplierName).Caption("Supplier Name").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.SupplierQuotationNo).Caption("Supplier Quotation No").Alignment(HorizontalAlignment.Center);
-				subColumns.AddFor(m => m.QuoteHasItemsToPo).Caption(" Quote Has Items To Po").Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
+				subColumns.AddFor(m => m.Rfqno).Caption(new JS("formatMessage('RFQ No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Rfqdate).Caption(new JS("formatMessage('RFQ Date')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Mprno).Caption(new JS("formatMessage('MPR NO')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
+				subColumns.AddFor(m => m.SupplierName).Caption(new JS("formatMessage('Supplier Name')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.SupplierQuotationNo).Caption(new JS("formatMessage('Supplier Quotation No')")).Alignment(HorizontalAlignment.Center);
+				subColumns.AddFor(m => m.QuoteHasItemsToPo).Caption(new JS("formatMessage('Quote Has Items To Po')")).Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
 		<div class="dx-icon">
 			<%= data.QuoteHasItemsToPo ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
 		</div>
 	</text>
 		);
-				subColumns.AddFor(m => m.Pono).Caption(" Po No").Alignment(HorizontalAlignment.Center);
+				subColumns.AddFor(m => m.Pono).Caption(new JS("formatMessage('Po No')")).Alignment(HorizontalAlignment.Center);
 
 
 			});
-			columns.Add().Caption("No Of Items ").Columns(subColumns =>
+				columns.Add().Caption(new JS("formatMessage('No Of Items')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.NoOfItems).Caption(" No Of Items").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.TotalBeforeTax).Caption(" Total Before Tax").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.TotalDiscount).Caption(" Total Discount" ).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.TotalAfterDiscount).Caption("Total After Discount").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No Of Items')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.TotalBeforeTax).Caption(new JS("formatMessage('Total Before Tax')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.TotalDiscount).Caption(new JS("formatMessage('Total Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.TotalAfterDiscount).Caption(new JS("formatMessage('Total After Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
 			});
 			
 			

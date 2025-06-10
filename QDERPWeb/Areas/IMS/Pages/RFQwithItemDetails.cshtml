@@ -236,27 +236,23 @@
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
-			columns.Add().Caption(" RFQ Details").Columns(subColumns =>
+		columns.Add().Caption(new JS("formatMessage('RFQ Details')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.Rfqno).Caption("RFQ No").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Rfqdate).Caption("Rfq Date").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Mprno).Caption("MPR NO").Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
-				
-				subColumns.AddFor(m => m.SupplierQuotationNo).Caption("Supplier Quotation No").Alignment(HorizontalAlignment.Center);
-				subColumns.AddFor(m => m.SupplierName).Caption("Supplier Name").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Gscode).Caption("GS Code").Alignment(HorizontalAlignment.Center);
-				subColumns.AddFor(m => m.Gsdescrpition).Caption("GS Descrpition").Alignment(HorizontalAlignment.Center);
-				subColumns.AddFor(m => m.QuotedQuantity).Caption("Quoted Quantity").Alignment(HorizontalAlignment.Center);
-				subColumns.AddFor(m => m.UnitDesc).Caption("Unit Desc").Alignment(HorizontalAlignment.Center);
-				subColumns.AddFor(m => m.UnitPrice).Caption("Unit Price").Alignment(HorizontalAlignment.Center);
-				subColumns.AddFor(m => m.ItemDiscount).Caption("Item Discount").Alignment(HorizontalAlignment.Center);
-				subColumns.AddFor(m => m.LineTotalBeforeTax).Caption("Line Total Before Tax").Alignment(HorizontalAlignment.Center);
-				subColumns.AddFor(m => m.LineTotalAfterDisc).Caption("Line Total After Disc").Alignment(HorizontalAlignment.Center);
-				subColumns.AddFor(m => m.IsWonForPo).Caption("Is Won For Po").Alignment(HorizontalAlignment.Center);
+				subColumns.AddFor(m => m.Rfqno).Caption(new JS("formatMessage('RFQ No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Rfqdate).Caption(new JS("formatMessage('RFQ Date')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Mprno).Caption(new JS("formatMessage('MPR NO')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
+				subColumns.AddFor(m => m.SupplierQuotationNo).Caption(new JS("formatMessage('Supplier Quotation No')")).Alignment(HorizontalAlignment.Center);
+				subColumns.AddFor(m => m.SupplierName).Caption(new JS("formatMessage('Supplier Name')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Gscode).Caption(new JS("formatMessage('GS Code')")).Alignment(HorizontalAlignment.Center);
+				subColumns.AddFor(m => m.Gsdescrpition).Caption(new JS("formatMessage('GS Descrpition')")).Alignment(HorizontalAlignment.Center);
+				subColumns.AddFor(m => m.QuotedQuantity).Caption(new JS("formatMessage('Quoted Quantity')")).Alignment(HorizontalAlignment.Center);
+				subColumns.AddFor(m => m.UnitDesc).Caption(new JS("formatMessage('Unit Desc')")).Alignment(HorizontalAlignment.Center);
+				subColumns.AddFor(m => m.UnitPrice).Caption(new JS("formatMessage('Unit Price')")).Alignment(HorizontalAlignment.Center);
+				subColumns.AddFor(m => m.ItemDiscount).Caption(new JS("formatMessage('Item Discount')")).Alignment(HorizontalAlignment.Center);
+				subColumns.AddFor(m => m.LineTotalBeforeTax).Caption(new JS("formatMessage('Line Total Before Tax')")).Alignment(HorizontalAlignment.Center);
+				subColumns.AddFor(m => m.LineTotalAfterDisc).Caption(new JS("formatMessage('Line Total After Disc')")).Alignment(HorizontalAlignment.Center);
+				subColumns.AddFor(m => m.IsWonForPo).Caption(new JS("formatMessage('Is Won For Po')")).Alignment(HorizontalAlignment.Center);
 			});
-		
-			
-			
 		})
 		.Height(680) // Fixed height for the grid
 		.ColumnAutoWidth(true)

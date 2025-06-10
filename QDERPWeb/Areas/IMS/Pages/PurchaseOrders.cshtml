@@ -237,44 +237,44 @@
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
-			columns.Add().Caption("Purchase Order Details").Columns(subColumns =>
+				columns.Add().Caption(new JS("formatMessage('Purchase Order Details')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.Pono).Caption(" Po No").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.RevisionNo).Caption("REV.No").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Podate).Caption("Po Date").Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
-				subColumns.AddFor(m => m.SupplierName).Caption("Supplier Name").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.IsSubmitted).Caption("IsSubmitted").Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
+				subColumns.AddFor(m => m.Pono).Caption(new JS("formatMessage('Po No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.RevisionNo).Caption(new JS("formatMessage('REV.No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Podate).Caption(new JS("formatMessage('PO Date')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
+				subColumns.AddFor(m => m.SupplierName).Caption(new JS("formatMessage('Supplier Name')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.IsSubmitted).Caption(new JS("formatMessage('IsSubmitted')")).Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
 		<div class="dx-icon">
 			<%= data.IsSubmitted ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
 		</div>
 	</text>).Visible(true);
-				subColumns.AddFor(m => m.IsVerified).Caption("IsVerified").Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
+				subColumns.AddFor(m => m.IsVerified).Caption(new JS("formatMessage('IsVerified')")).Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
 		<div class="dx-icon">
 			<%= data.IsVerified ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
 		</div>
 	</text>).Visible(true);
-				subColumns.AddFor(m => m.IsApproved).Caption("IsApproved").Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
+				subColumns.AddFor(m => m.IsApproved).Caption(new JS("formatMessage('IsApproved')")).Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
 		<div class="dx-icon">
 			<%= data.IsApproved ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
 		</div>
 	</text>).Visible(true);
-				subColumns.AddFor(m => m.NoOfItems).Caption("No Of Items").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.OrderStatus).Caption("Order Status").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.BillStatus).Caption("Bill Status").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No Of Items')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.OrderStatus).Caption(new JS("formatMessage('Order Status')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.BillStatus).Caption(new JS("formatMessage('Bill Status')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
 
 
 			});
-			columns.Add().Caption(" Amount ").Columns(subColumns =>
+				columns.Add().Caption(new JS("formatMessage('Amount')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.TotalBeforeTax).Caption("Total Before Tax").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.TotalDiscount).Caption(" Total Discount").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.TotalAfterDiscount).Caption(" Total After Discount").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.TotalTaxAmount).Caption("Total Tax Amount").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.TotalWithTax).Caption("Total With Tax").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.AdditionsAmount).Caption("Additions Amount").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.DeductionsAmount).Caption(" Deductions Amount").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.GrandTotal).Caption(" GrandTotal").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.TotalBeforeTax).Caption(new JS("formatMessage('Total Before Tax')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.TotalDiscount).Caption(new JS("formatMessage('Total Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.TotalAfterDiscount).Caption(new JS("formatMessage('Total After Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.TotalTaxAmount).Caption(new JS("formatMessage('Total Tax Amount')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.TotalWithTax).Caption(new JS("formatMessage('Total With Tax')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.AdditionsAmount).Caption(new JS("formatMessage('Additions Amount')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.DeductionsAmount).Caption(new JS("formatMessage('Deductions Amount')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.GrandTotal).Caption(new JS("formatMessage('Grand Total')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
 
 

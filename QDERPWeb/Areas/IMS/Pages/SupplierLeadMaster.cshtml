@@ -479,7 +479,6 @@
                     .ColumnAutoWidth(true)
                     .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
                     .ShowBorders(true)
-
                     .Width("100%")
                     )
                 </div>
@@ -584,6 +583,7 @@
                             )
                             .WordWrapEnabled(true)
                             .ShowBorders(true)
+                            .ShowColumnHeaders(false)
                             @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
                             .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
                             .OnSelectionChanged("dataGridSelectionChanged1")

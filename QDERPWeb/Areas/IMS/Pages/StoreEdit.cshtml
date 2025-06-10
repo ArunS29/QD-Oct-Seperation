@@ -169,7 +169,7 @@
                             <div style="flex: 1;">
                                 @(Html.DevExtreme().DropDownBox()
                                     .ID("ddCostcenter")
-                                .Label("Type a newStore & Add to the Existing List:")
+                                    .Label(new JS("formatMessage('Type a newStore & Add to the Existing List')"))
                                     .LabelMode(EditorLabelMode.Outside)
                                     .ShowClearButton(true)
                                     .OpenOnFieldClick(true)
@@ -199,10 +199,10 @@
                                                     allowedPageSizes: [5, 10, 20]
                                                 },
                                                 columns: [
-                                                    { dataField: "CostAllocationUnitId", caption: "ID", width: 250 },
-                                                    { dataField: "CostAllocationUnit", caption: "Name", width: 250 },
-                                                     { dataField: "CostAllocationGroup", caption: "ID", width: 250 },
-                                                    { dataField: "CostAllocationMasterGroup", caption: "Name", width: 250 },
+                                        { dataField: "CostAllocationUnitId",caption: formatMessage("ID"), width: 250 },
+                                        { dataField: "CostAllocationUnit",caption: formatMessage("Name"),width: 250 },
+                                         { dataField: "CostAllocationGroup", caption: formatMessage("ID") ,width: 250 },
+                                        { dataField: "CostAllocationMasterGroup",caption: formatMessage("Name"), width: 250 },
                                                 ],
                                                 onSelectionChanged: function (e) {
                                                     var selected = e.selectedRowsData[0];
@@ -219,7 +219,7 @@
                             <div>
                                 @(Html.DevExtreme().Button()
                                     .ID("btnAddSalesPerson")
-                                    .Text("ADD")
+                                    .Text(new JS("formatMessage('ADD')"))
                                     .Icon("plus")
                                     .OnClick("function() { addStoreToGrid(); }")
                                     .ElementAttr(new { @class = "dx-button-add" })
@@ -256,9 +256,9 @@
         .OnRowUpdating("onStoryUpdating")                       // Handles saving
             .Columns(columns =>
             {
-                columns.Add().DataField("StoreId").Caption("Store ID").Width(300).AllowEditing(false);
-                columns.Add().DataField("StoreName").Caption("Store Name").Width(500);
-                columns.Add().DataField("CostAllocationUnitId").Caption("Cost Center for Consumption").Width(200)
+                columns.Add().DataField("StoreId").Caption(new JS("formatMessage('Store ID')")).Width(300).AllowEditing(false);
+                columns.Add().DataField("StoreName").Caption(new JS("formatMessage('Store Name')")).Width(500);
+                columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('Cost Center for Consumption')")).Width(200)
                  .Lookup(lookup => lookup
                             .DataSource(d => d.WebApi()
                             .Controller("StoreCode")
