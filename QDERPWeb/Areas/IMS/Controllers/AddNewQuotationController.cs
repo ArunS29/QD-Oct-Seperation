@@ -89,13 +89,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 						return NotFound("Company not found.");
 					}
 
-					string invoiceAbbrv = company.InvoiceAbbrv;
+					string QuotationAbbrv = company.QuotationAbbrv;
 					int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
 					bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
 					DateTime invoiceDate = DateTime.Now;
 
 					// Generate new debit note number
-					string newDebitNoteNo = GetNewDebitNoteNo(invoiceAbbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear, dbContext);
+					string newDebitNoteNo = GetNewDebitNoteNo(QuotationAbbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear, dbContext);
 
 					return Ok(newDebitNoteNo);
 				}
@@ -108,31 +108,31 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 			{
 				_logger.LogError($"Error in GetNewDebitNoteNoApi: {ex.Message}");
 				return StatusCode(500, "Internal server error: " + ex.Message);
-			}
+			}	
 		}
 
 
-		private string GetNewDebitNoteNo(string invoiceAbbrv, int yearInDigit, DateTime invoiceDate, bool isResetByYear, ERPMasterWtDataContext dbContext)
+		private string GetNewDebitNoteNo(string QuotationAbbrv, int yearInDigit, DateTime invoiceDate, bool isResetByYear, ERPMasterWtDataContext dbContext)
 		{
 			try
 			{
 				// Retrieve MPR numbers into memory Tbl601_01QuotationMaster
 				var mprNumbers = dbContext.Tbl60101quotationMasters
-					.Where(d => d.QuoteNo != null && d.QuoteNo.Length >= 5 &&
+					.Where(d => d.QuoteNo != null && d.QuoteNo.Length >= 4 &&
 								(!isResetByYear || (d.QuoteDate.HasValue && d.QuoteDate.Value.Year == invoiceDate.Year)))
 					.Select(d => d.QuoteNo)
 					.ToList();
 
 				// Extract numeric parts and determine the maximum
 				int maxRunningNumber = mprNumbers
-					.Select(no => int.TryParse(no.Substring(no.Length - 5), out int num) ? num : 0)
+					.Select(no => int.TryParse(no.Substring(no.Length - 4), out int num) ? num : 0)
 					.DefaultIfEmpty(0)
 					.Max();
 
 				maxRunningNumber += 1;
 
 				// Format the new debit note number
-				string strNewDebitNoteNo = maxRunningNumber.ToString().PadLeft(5, '0');
+				string strNewDebitNoteNo = maxRunningNumber.ToString().PadLeft(4, '0');
 
 				string strYear = invoiceDate.Year.ToString();
 				if (yearInDigit > 0)
@@ -144,7 +144,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 					strYear = "";
 				}
 
-				return $"AIC-QTN-{strYear}-{strNewDebitNoteNo}";
+				return $"{QuotationAbbrv}{strYear}-{strNewDebitNoteNo}";
 			}
 			catch (Exception)
 			{
@@ -158,7 +158,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 					strYear = "";
 				}
 
-				return $"AIC_QTN-{strYear}-00001";
+				return $"{QuotationAbbrv}{strYear}-0001";
 			}
 		}
 		[HttpGet]

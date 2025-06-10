@@ -30,49 +30,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             _logger = logger;
         }
 
-		//    [HttpGet]
-		//    public ActionResult<string> GetNewRequestNoApi()
-		//    {
-		//        try
-		//        {
-		//            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-		//            {
-
-
-		//                var company = dbContext.Tbl901CompanyDetails
-		//                                       .FirstOrDefault(c => c.CompanyNameShort == "Pulse Infotech");
-
-
-		//                if (company == null)
-		//                {
-		//                    return NotFound("Company not found.");
-		//                }
-
-		//                string invoiceAbbrv = company.InvoiceAbbrv;
-		//                int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
-
-		//                bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
-
-		//                DateTime invoiceDate = DateTime.Now;
-
-
-
-		//                // Step 4: Generate New Debit Note No
-		//                string newDebitNoteNo = GetNewDebitNoteNo(invoiceAbbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear, dbContext);
-
-		//                return Ok(newDebitNoteNo);
-		//            }
-		//            else
-		//            {
-		//                return BadRequest("Tenant or DB Context not found.");
-		//            }
-		//        }
-		//        catch (Exception ex)
-		//        {
-		//_logger.LogError($"Error in GetProject: {ex.Message}");
-		//            return StatusCode(500, "Internal server error: " + ex.Message);
-		//        }
-		//    }
+		
 
 		[HttpGet]
 		public ActionResult<string> GetNewRequestNoApi()
@@ -96,7 +54,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 						return NotFound("Company not found.");
 					}
 
-					string invoiceAbbrv = company.InvoiceAbbrv;
+					string invoiceAbbrv = company.RequestAbbrv;
 					int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
 					bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
 					DateTime invoiceDate = DateTime.Now;
@@ -125,7 +83,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 			{
 				// Retrieve MPR numbers into memory
 				var mprNumbers = dbContext.Tbl60601purchaseRequestMasters
-					.Where(d => d.Mprno != null && d.Mprno.Length >= 6 &&
+					.Where(d => d.Mprno != null && d.Mprno.Length >= 5 &&
 								(!isResetByYear || (d.Mprdate.HasValue && d.Mprdate.Value.Year == invoiceDate.Year)))
 					.Select(d => d.Mprno)
 					.ToList();
@@ -151,7 +109,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 					strYear = "";
 				}
 
-				return $"AIC-ENQ-{strYear}-{strNewDebitNoteNo}";
+				return $"{invoiceAbbrv}{strYear}-{strNewDebitNoteNo}";
 			}
 			catch (Exception)
 			{
@@ -165,7 +123,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 					strYear = "";
 				}
 
-				return $"AIC_ENQ-{strYear}-00001";
+				return $"{invoiceAbbrv}{strYear}-00001";
 			}
 		}
         [HttpGet]
@@ -434,6 +392,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 			{
 				try
 				{
+
 
 					var ClientCategory = dbContext.Tbl90104DocumentSignatories.Select(i => new
 					{
