@@ -38,17 +38,18 @@ namespace QD.ERP.Web.Controllers
             {
                 using (dbContext)
                 {
-                    var query = dbContext.Qry90101SystemAlertMasters
+                    var query = dbContext.Tbl901AlertUsers
                         .Where(x => x.AlertUserId == userId)
-                        .OrderByDescending(x => x.AlertCreatedOn)
+                        .OrderByDescending(x => x.AlertUserOn)
                         .Select(x => new
                         {
-                            x.AlertNo,
+                            x.AlertCode,
                             x.AlertUserMessage,
-                            x.AlertMasterMessage,
-                            x.AlertCreatedOn,
-                            x.AlertType,
-                            x.AlertNotifiedByUser
+                            x.AlertStatusRemarks,
+                            x.AlertUserOn,
+                            x.AlertBySystem,
+                            x.AlertNotifiedByUser,
+                            x.IsSeen
                         });
 
                     var result = await DataSourceLoader.LoadAsync(query, loadOptions);
@@ -59,6 +60,10 @@ namespace QD.ERP.Web.Controllers
             return Unauthorized(new { message = "Invalid tenant", success = false });
         }
 
+
+        /// <summary>
+        /// ✅ Get count of unseen notifications for badge
+        /// </summary>
         /// <summary>
         /// ✅ Get count of unseen notifications for badge
         /// </summary>
@@ -73,7 +78,7 @@ namespace QD.ERP.Web.Controllers
             {
                 using (dbContext)
                 {
-                    var unseenCount = await dbContext.Qry90101SystemAlertMasters
+                    var unseenCount = await dbContext.Tbl901AlertUsers
                         .Where(x => x.AlertUserId == userId && x.AlertNotifiedByUser == false)
                         .CountAsync();
 
@@ -83,6 +88,7 @@ namespace QD.ERP.Web.Controllers
 
             return Unauthorized(new { message = "Invalid tenant", success = false });
         }
+
 
         /// <summary>
         /// ✅ Mark all unseen notifications as read for current user
@@ -148,5 +154,77 @@ namespace QD.ERP.Web.Controllers
 
             return Unauthorized(new { message = "Invalid tenant", success = false });
         }
+        [HttpPost]
+        public async Task<IActionResult> MarkAsSeen([FromBody] MarkAsSeenRequest request)
+        {
+            if (request == null || string.IsNullOrEmpty(request.AlertCode))
+                return BadRequest(new { success = false, message = "Invalid request data" });
+
+            var userIdStr = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdStr) || !byte.TryParse(userIdStr, out byte userId))
+                return Unauthorized(new { message = "Invalid session or user ID", success = false });
+
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out ERPMasterWtDataContext dbContext))
+            {
+                using (dbContext)
+                {
+                    var alert = await dbContext.Tbl901AlertUsers
+                        .FirstOrDefaultAsync(x => x.AlertUserId == userId && x.AlertCode == request.AlertCode);
+
+                    if (alert == null)
+                        return NotFound(new { success = false, message = "Notification not found" });
+
+                    alert.IsSeen = true;
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(new { success = true, message = "Notification marked as seen" });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant", success = false });
+        }
+        [HttpPost]
+        public async Task<IActionResult> MarkAllAsSeen()
+        {
+            var userIdStr = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdStr) || !byte.TryParse(userIdStr, out byte userId))
+                return Unauthorized(new { success = false, message = "Invalid session or user ID" });
+
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out ERPMasterWtDataContext dbContext))
+            {
+                using (dbContext)
+                {
+                    var unseenAlerts = await dbContext.Tbl901AlertUsers
+                        .Where(x => x.AlertUserId == userId && !x.IsSeen)
+                        .ToListAsync();
+
+                    if (!unseenAlerts.Any())
+                    {
+                        return Ok(new { success = true, message = "No unseen alerts found." });
+                    }
+
+                    unseenAlerts.ForEach(x => x.IsSeen = true);
+
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(new
+                    {
+                        success = true,
+                        message = $"{unseenAlerts.Count} alert(s) marked as seen."
+                    });
+                }
+            }
+
+            return Unauthorized(new { success = false, message = "Invalid tenant or database context." });
+        }
     }
+
+
+    public class MarkAsSeenRequest
+    {
+        public string AlertCode { get; set; }
+    }
+   
 }
+
+

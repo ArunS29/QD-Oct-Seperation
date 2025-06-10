@@ -42,4 +42,5 @@ public partial class Tbl901AlertUser
     public DateTime? AlertNotifiedOn { get; set; }
 
     public string AlertStatusRemarks { get; set; }
+    public bool IsSeen { get; internal set; }
 }
