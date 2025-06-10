@@ -532,7 +532,6 @@
 														.OpenOnFieldClick(false)
 														.ValueChangeEvent("input")
 														.HoverStateEnabled(true)
-														.Value("Tax Invoice")
 														.ValueExpr("InvoiceType")
 														.DisplayExpr("InvoiceType")
 														.LabelMode(EditorLabelMode.Outside)
@@ -892,7 +891,8 @@
 															.Width(900)
 															@*  .ShowClearButton(true)
 								.AcceptCustomValue(true) *@
-															.OpenOnFieldClick(false)//
+															.OpenOnFieldClick(false)
+																	.Value(4)
 															.ValueChangeEvent("input")
 															.HoverStateEnabled(true)
 															.ValueExpr("RequestedByCode")
@@ -923,6 +923,7 @@
 															.OpenOnFieldClick(false)//
 															.ValueChangeEvent("input")
 															.HoverStateEnabled(true)
+															.Value(2)
 															.ValueExpr("PurchaseRequestStatusId")
 															.DisplayExpr("PurchaseRequestStatus")
 															.OnInput("dropDownBoxOnInput")
