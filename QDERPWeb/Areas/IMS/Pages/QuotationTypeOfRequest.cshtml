@@ -300,7 +300,7 @@
             contentType: "application/json",
             data: JSON.stringify(data),
             success: function () {
-                DevExpress.ui.notify("Signatory saved successfully!", "success", 2000);
+                DevExpress.ui.notify("Type Request saved successfully!", "success", 2000);
                 $("#SignatoryGrid").dxDataGrid("instance").refresh();
             },
             error: function () {

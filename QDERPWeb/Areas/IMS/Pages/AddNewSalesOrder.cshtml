@@ -237,7 +237,7 @@
                 .Items(item =>
                 {
                     item.Add()
-                .Title("Sales Order Details")
+                .Title(new JS("formatMessage('Sales Order Details')"))
                 .Icon("folder")
                 .Text("Sales Order Details")
                 .Template(@<text>
@@ -254,12 +254,12 @@
                         <td>
                             @(Html.DevExtreme().TextBox()
                             .ID("SalesOrderNO")
+                            .Label(new JS("formatMessage('Sales Order NO:')"))
                             .ValidationRules(rules =>
                             {
                             rules.AddRequired()
                             .Message("Sales Order No is required");
                             })
-                            .Label("Sales Order NO:")
                             .LabelMode(EditorLabelMode.Outside)
                             .ReadOnly(true)
                             .StylingMode(EditorStylingMode.Outlined)
@@ -272,8 +272,8 @@
                             @(Html.DevExtreme().DateBox()
                             .ID("SalesOrderDate")
                             .Value(DateTime.Today)
+                            .Label(new JS("formatMessage('Sales Order Date')"))
                             .DateSerializationFormat("yyyy-MM-dd")  // ✅ Ensure consistent format
-                            .Label("Sales Order Date")
                             .LabelMode(EditorLabelMode.Outside)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -295,7 +295,7 @@
                                     .LoadMode(DataSourceLoadMode.Raw)
                                     .Key("ClientCode")
                                     )
-                                    .Label("Client Name")
+                                    .Label(new JS("formatMessage('Client Name')"))
                                     .LabelMode(EditorLabelMode.Outside)
                                     .Width("100%")
                                     .ValidationRules(rules =>
@@ -326,7 +326,7 @@
                         <td>
                             @(Html.DevExtreme().TextBox()
                             .ID("QuotationNo")
-                            .Label("Quotation No:")
+                            .Label(new JS("formatMessage('Quotation No:')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -334,7 +334,7 @@
                         <td>
                             @(Html.DevExtreme().DateBox()
                             .ID("QuotationDate")
-                            .Label("Quotation Date:")
+                            .Label(new JS("formatMessage('Quotation Date:')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -344,7 +344,7 @@
                                 <div class="col-md-4">
                                     @(Html.DevExtreme().TextBox()
                                     .ID("ClientRefName")
-                                    .Label("Client Ref. Name:")
+                                    .Label(new JS("formatMessage('Client Ref. Name:')"))
                                     .LabelMode(EditorLabelMode.Outside)
                                     .StylingMode(EditorStylingMode.Outlined)
                                     .Width("100%"))
@@ -352,7 +352,7 @@
                                 <div class="col-md-4">
                                     @(Html.DevExtreme().TextBox()
                                     .ID("ClientEmail")
-                                    .Label("Client Email:")
+                                    .Label(new JS("formatMessage('Client Email:')")) 
                                     .LabelMode(EditorLabelMode.Outside)
                                     .Mode(TextBoxMode.Email)
                                     .StylingMode(EditorStylingMode.Outlined)
@@ -361,7 +361,7 @@
                                 <div class="col-md-4">
                                     @(Html.DevExtreme().TextBox()
                                     .ID("ClientContact")
-                                    .Label("Client Contact No:")
+                                    .Label(new JS("formatMessage('Client Contact No:')"))
                                     .LabelMode(EditorLabelMode.Outside)
                                     .StylingMode(EditorStylingMode.Outlined)
                                     .Width("100%"))
@@ -375,7 +375,7 @@
                         <td>
                             @(Html.DevExtreme().TextBox()
                             .ID("ClientPoNo")
-                            .Label("Client PO No:")
+                            .Label(new JS("formatMessage('Client PO No:')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -383,7 +383,7 @@
                         <td>
                             @(Html.DevExtreme().DateBox()
                             .ID("ClientPoDate")
-                            .Label("Client PO Date:")
+                            .Label(new JS("formatMessage('Client PO Date:')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -393,7 +393,7 @@
                                 <div class="col-md-4" style="display: flex; align-items: flex-end;">
                                     @(Html.DevExtreme().DropDownBox()
                                     .ID("Project")
-                                    .Label("Project:")
+                                    .Label(new JS("formatMessage('Project:')"))
                                     .ValueExpr("ProjectId")
                                     .DisplayExpr("ProjectDescription")
                                     .DataSource(ds => ds
@@ -421,6 +421,7 @@
                                 <div class="col-md-4" style="display: flex; align-items: flex-end;">
                                     @(Html.DevExtreme().DropDownBox()
                                     .ID("TypeOFSalesOrder")
+                                    .Label(new JS("formatMessage('Type of Sales Order:')"))
                                     .ValueExpr("TypeOfRequestId")
                                     .DisplayExpr("TypeOfRequest")
                                     .DataSource(ds => ds
@@ -430,7 +431,6 @@
                                     .LoadMode(DataSourceLoadMode.Raw)
                                     .Key("TypeOfRequestId")
                                     )
-                                    .Label("Type of Sales Order:")
                                     .LabelMode(EditorLabelMode.Outside)
                                     .StylingMode(EditorStylingMode.Outlined)
                                     .Width("100%")
@@ -446,7 +446,7 @@
                                 <div class="col-md-4">
                                     @(Html.DevExtreme().TextBox()
                                     .ID("ReferenceNo")
-                                    .Label("Reference No:")
+                                    .Label(new JS("formatMessage('Reference No:')"))
                                     .LabelMode(EditorLabelMode.Outside)
                                     .StylingMode(EditorStylingMode.Outlined)
                                     .Width("100%"))
@@ -460,16 +460,18 @@
 
 
         </text>);
-                    item.Add().Title("Signatories").Icon("detailslayout").Text("Signatories").Template(@<text>
+
+                    item.Add().Title(new JS("formatMessage('Signatories')")).Icon("detailslayout").Text("Signatories").Template(@<text>
             <div class="dx-card p-3">
                 <table style="width: 100%; vertical-align: top;">
                     <tr>
                         <!-- Left: Signatories -->
                         <td style="width: 50%; vertical-align: top;">
-                            <div style="font-weight: bold;">Signatories:</div>
                             <div class="mb-3">
                                 @(Html.DevExtreme().DropDownBox()
                                 .ID("preparedBy")
+                                .Label(new JS("formatMessage('Signatories')"))
+                                .LabelMode(EditorLabelMode.Outside)
                                 .ValueExpr("SignatoryId")
                                 .DisplayExpr("SignatoryName")
                                 .DataSource(ds => ds
@@ -492,19 +494,18 @@
                                 )
                             </div>
                             <div>
-                                @(Html.DevExtreme().CheckBox().ID("showSeal").Value(true).Text("Show Company Seal"))<br />
-                                @(Html.DevExtreme().CheckBox().ID("showSignature").Value(true).Text("Show Signature"))<br />
-                                @(Html.DevExtreme().CheckBox().ID("printLetterhead").Value(true).Text("Print in Letter Head"))
+                                @(Html.DevExtreme().CheckBox().ID("showSeal").Value(true).Text(new JS("formatMessage('Show Company Seal')")))<br />
+                                @(Html.DevExtreme().CheckBox().ID("showSignature").Value(true).Text(new JS("formatMessage('Show Signature')")))<br />
+                                @(Html.DevExtreme().CheckBox().ID("printLetterhead").Value(true).Text(new JS("formatMessage('Print in Letter Head')")))
                             </div>
                         </td>
 
                         <!-- Right: Additions & Deductions -->
                         <td style="width: 50%; padding: 10px;">
-                            <div style="font-weight: bold;">Shipment & Discounts:</div>
-
+                            <div id="Shipment" ="font-weight: bold;"></div>
                             <!-- Additions -->
                             <div style="margin-top: 10px; margin-bottom: 15px;">
-                                <div>Additions:</div>
+                                <div id="Additions1"></div>
                                 <div class="d-flex gap-2 mt-1">
                                     @(Html.DevExtreme().TextBox()
                                     .ID("AdditionsText")
@@ -523,7 +524,7 @@
 
                             <!-- Deductions -->
                             <div>
-                                <div>Deductions:</div>
+                                <div id="Deductions1"></div>
                                 <div class="d-flex gap-2 mt-1">
                                     @(Html.DevExtreme().TextBox()
                                     .ID("DeductionsText")
@@ -548,7 +549,7 @@
 
 
         </text>);
-                    item.Add().Text("Branch / Divisions").Icon("user").Title("Branch / Divisions").Template(@<text>
+            item.Add().Text("Branch / Divisions").Icon("user").Title(new JS("formatMessage('Branch/Divisions')")).Template(@<text>
 
             <div class="dx-card p-3" style="padding:10px;">
                 <table style="width: 100%; vertical-align: top;">
@@ -558,6 +559,9 @@
                             <!-- Company Branch -->
                             @(Html.DevExtreme().DropDownBox()
                             .ID("CompanyBranch")
+                            .Value("Al Injaz Contracting Establishment")
+                            .StylingMode(EditorStylingMode.Outlined)
+                            .Label(new JS("formatMessage('Company Branch / Division')"))
                             .ValueExpr("CompanyId")
                             .DisplayExpr("CompanyName")
                             .DataSource(ds => ds
@@ -566,8 +570,7 @@
                             .LoadAction("GetCompanyBranch")
                             .LoadMode(DataSourceLoadMode.Raw)
                             .Key("CompanyId")
-                            )                            .StylingMode(EditorStylingMode.Outlined)
-                            .Label("Company Branch / Division")
+)                           .StylingMode(EditorStylingMode.Outlined)
                             .LabelMode(EditorLabelMode.Outside)
                             .Width("100%")
                             .ContentTemplate(new TemplateName("CompanyBranchDropDownTemplate")))
@@ -577,6 +580,7 @@
                                 @(Html.DevExtreme().DropDownBox()
                                 .ID("SalesPerson")
                                 .StylingMode(EditorStylingMode.Outlined)
+                                .Label(new JS("formatMessage('Sales Person')"))
                                 .ValueExpr("SalesPersonCode")
                                 .DisplayExpr("SalesPersonName")
                                 .DataSource(ds => ds
@@ -586,14 +590,13 @@
                                 .LoadMode(DataSourceLoadMode.Raw)
                                 .Key("SalesPersonCode")
                                 )
-                                .Label("Sales Person")
                                 .LabelMode(EditorLabelMode.Outside)
                                 .Width("100%")
                                 .ContentTemplate(new TemplateName("SalesPersonNameDropDownTemplate")))
 
                                 <div class="ms-1">
                                     @(Html.DevExtreme().Button()
-                                    .ID("AddSalesPerson")
+                                    .ID("AddSalesPerson")   
                                     .Icon("plus")
                                     .Hint("Add Sales Person")
                                     .Height(36))
@@ -613,7 +616,7 @@
                             .Key("InventoryMasterGroupId")
                             )
                             .StylingMode(EditorStylingMode.Outlined)
-                            .Label("Inventory Group Master *")
+                            .Label(new JS("formatMessage('Inventory Group Master *')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .Width("100%")
                             .ContentTemplate(new TemplateName("MasterGroupDropDownTemplate")))
@@ -632,7 +635,7 @@
                             .Key("CostAllocationUnitId")
                             )
                             .StylingMode(EditorStylingMode.Outlined)
-                            .Label("Cost Center Master *")
+                            .Label(new JS("formatMessage('Cost Center Master *')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .Width("100%")
                             .ContentTemplate(new TemplateName("CostCenterMasterDropDownTemplate")))
@@ -645,7 +648,7 @@
                             @(Html.DevExtreme().DateBox()
                             .ID("OrderExpiryDate")
                             .StylingMode(EditorStylingMode.Outlined)
-                            .Label("Order Expiry Date")
+                            .Label(new JS("formatMessage('Order Expiry Date')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .Width("100%"))
 
@@ -654,7 +657,7 @@
                             .ID("SalesOrderRemarks")
                             .MinHeight(80)
                             .StylingMode(EditorStylingMode.Outlined)
-                            .Label("Sales Order Remarks")
+                            .Label(new JS("formatMessage('Sales Order Remarks')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .Width("100%")
                             )
@@ -664,7 +667,7 @@
                                 @(Html.DevExtreme().DateBox()
                                 .ID("ExpectedDeliveryDate")
                                 .StylingMode(EditorStylingMode.Outlined)
-                                .Label("Expected Delivery Date")
+                                .Label(new JS("formatMessage('Expected Delivery Date')"))
                                 .LabelMode(EditorLabelMode.Outside)
                                 .Width("100%")
                                 .ElementAttr("style", "width: 33%;"))
@@ -672,7 +675,7 @@
                                 @(Html.DevExtreme().TextBox()
                                 .ID("DeliveryPeriod")
                                 .StylingMode(EditorStylingMode.Outlined)
-                                .Label("Delivery Period")
+                                .Label(new JS("formatMessage('Delivery Period')"))
                                 .LabelMode(EditorLabelMode.Outside)
                                 .Width("100%")
                                 .ElementAttr("style", "width: 30%; margin-left: 10px;"))
@@ -680,7 +683,7 @@
                                 @(Html.DevExtreme().TextBox()
                                 .ID("DeliveryTerms")
                                 .StylingMode(EditorStylingMode.Outlined)
-                                .Label("Delivery Terms")
+                                .Label(new JS("formatMessage('Delivery Terms')"))
                                 .LabelMode(EditorLabelMode.Outside)
                                 .Width("100%")
                                 .ElementAttr("style", "width: 33%; margin-left: 10px;"))
@@ -704,8 +707,10 @@
         )
         .Columns(columns =>
         {
-            columns.Add().Caption("#").Width(60).CellTemplate(new JS("serialTemplate"));
-
+            columns.Add().Caption("#").CellTemplate(@<text>
+        @(ViewData["rowIndex"] = ((int)(ViewData["rowIndex"] ?? 0)) + 1)
+        @ViewData["rowIndex"]
+    </text>).Width(100);
             columns.Add().DataField("Gscode").Caption("Item Code");
 
             columns.Add()
@@ -721,14 +726,14 @@
     .EditCellTemplate(new JS("unitRateMethodDropDownTemplate"))
     .CellTemplate(new JS("function (container, options) { const unit = unitCodesList.find(u => u.UnitCode === options.value); container.text(unit ? unit.UnitDesc : options.value); }"));
 
-                columns.Add().DataField("QuotedQuantity").Caption("Qty");
-            columns.Add().DataField("CostPrice").Caption("Cost Price");
-            columns.Add().DataField("QuotedUnitPrice").Caption("Unit Price");
-            columns.Add().DataField("QuotedDiscount").Caption("Quoted Discount");
-            columns.Add().DataField("LineTaxAmount").Caption("Amount");
-            columns.Add().DataField("VAT Desc").Caption("VAT Desc");
-            columns.Add().DataField("VAT").Caption("VAT");
-            columns.Add().DataField("Total").Caption("Total");
+            columns.Add().DataField("Qty").Caption(new JS("formatMessage('Qty')"));
+            columns.Add().DataField("CostPrice").Caption(new JS("formatMessage('cost Price')"));
+            columns.Add().DataField("QuotedUnitPrice").Caption(new JS("formatMessage('Unit Price')"));
+            columns.Add().DataField("QuotedDiscount").Caption(new JS("formatMessage('Quoted Discount')"));
+            columns.Add().DataField("LineTaxAmount").Caption(new JS("formatMessage('Amount')"));
+            columns.Add().DataField("VAT Desc").Caption(new JS("formatMessage('VAT Desc')"));
+            columns.Add().DataField("VAT").Caption(new JS("formatMessage('VAT')"));
+            columns.Add().DataField("Total").Caption(new JS("formatMessage('Total')"));
         })
         .ColumnAutoWidth(true)
         .Width("100%")
@@ -1546,6 +1551,17 @@
                 });
         }
     });
+    $(function () {
+                    $("#Additions1").text(
+                         formatMessage("Additions"));
+            });
+    $(function () {
+                        $("#Deductions1").text(
+                             formatMessage("Deductions"));
+                }); $(function () {
+                        $("#Shipment").text(
+                             formatMessage("Shipment & Discounts"));
+                });
 
       //ProjectID
         function onCodeSelected(e) {

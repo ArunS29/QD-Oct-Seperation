@@ -239,38 +239,26 @@
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
-			columns.Add().Caption("Job Order Details").Columns(subColumns =>
+			columns.Add().Caption(new JS("formatMessage('Job Order Details')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.ValveType).Caption(" Valve Type").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.JobOrderNo).Caption("JobOrder No").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.JobOrderDate).Caption(" Job Order Date").Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
-				subColumns.AddFor(m => m.JobOrderDescription).Caption(" Job Order Description").Alignment(HorizontalAlignment.Center).Visible(true);
-				
-				subColumns.AddFor(m => m.JobOrderStatus).Caption("Job Order Status Name ").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.JobOrderType).Caption("Job Order Type ").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.TagNo).Caption("TagNo ").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Size).Caption("Size ").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Class).Caption("Class ").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Operator).Caption("Operator ").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Materials).Caption("Materials ").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Qty).Caption("Qty ").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Make).Caption("Make ").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.ModelNo).Caption("Model No ").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.ItemSlNo).Caption("Item Sl No ").Alignment(HorizontalAlignment.Center).Visible(true);
-				@* subColumns.AddFor(m => m.ItemSlNo).Caption("Item Sl No ").Alignment(HorizontalAlignment.Center).Visible(true); *@
-				subColumns.AddFor(m => m.WorkOrderNo).Caption("  Work Order No ").Alignment(HorizontalAlignment.Center).Visible(true);
-
-
-
-
-
-
-
-
-
+				subColumns.AddFor(m => m.ValveType).Caption(new JS("formatMessage('Valve Type')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.JobOrderNo).Caption(new JS("formatMessage('JobOrder No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.JobOrderDate).Caption(new JS("formatMessage('Job Order Date')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
+				subColumns.AddFor(m => m.JobOrderDescription).Caption(new JS("formatMessage('Job Order Description')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.JobOrderStatus).Caption(new JS("formatMessage('Job Order Status Name')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.JobOrderType).Caption(new JS("formatMessage('Job Order Type')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.TagNo).Caption(new JS("formatMessage('TagNo')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Size).Caption(new JS("formatMessage('Size')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Class).Caption(new JS("formatMessage('Class')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Operator).Caption(new JS("formatMessage('Operator')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Materials).Caption(new JS("formatMessage('Materials')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Qty).Caption(new JS("formatMessage('Qty')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Make).Caption(new JS("formatMessage('Make')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.ModelNo).Caption(new JS("formatMessage('Model No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.ItemSlNo).Caption(new JS("formatMessage('Item Sl No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				@* subColumns.AddFor(m => m.ItemSlNo).Caption(new JS("formatMessage('Item Sl No ')")).Alignment(HorizontalAlignment.Center).Visible(true); *@
+				subColumns.AddFor(m => m.WorkOrderNo).Caption(new JS("formatMessage('Work Order No')")).Alignment(HorizontalAlignment.Center).Visible(true);
 			});
-		
-
 		})
 		.Height(680) // Fixed height for the grid
 		.ColumnAutoWidth(true)
@@ -307,13 +295,8 @@
 		})
 		.OnInitialized("function(e) { loadGridState(); }")
 		)
-
-
-
-
 </div>
 <div id="invoiceErrorPopup"></div>
-
 <script>
 		 $(function () {
 	$("#JobOrders").dxTextBox({
