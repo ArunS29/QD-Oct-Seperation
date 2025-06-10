@@ -612,7 +612,7 @@
 
 								@(Html.DevExtreme().DropDownBox()
 															.ID("InvoiceTransactionsCode")
-															.Label("Invoice Transactions Code*")
+															.Label(new JS("formatMessage('Invoice Transactions Code')"))
 															.Value("0100000") // Default selected value
 															.ValueExpr("ID")
 															.DisplayExpr("ID")
@@ -1268,7 +1268,7 @@
 			<div id="tab-content-4" class="tab-content">
 				<div class="card-container">
 
-					<table style="width:80%; font-size:14px; margin:5px;" cellpadding="5">
+					<table style="width:60%; font-size:14px; margin:5px;" cellpadding="5">
 						<tr>
 							<th>Foreign Currency Billing</th>
 						</tr>
@@ -1297,7 +1297,7 @@
 																			.TabIndex(1)
 																			.DropDownOptions(o => o.Width(1000))
 																			.ContentTemplate(new TemplateName("InvoiceCurrencyTemplate"))
-																			.Width("75%"))
+																			.Width("100%"))
 									@(Html.DevExtreme().Button()
 																			.ID("EditClient2")
 																			.Icon("edit")
@@ -1335,7 +1335,7 @@
 																			.DropDownOptions(o => o.Width(1000))
 																			@* .Disabled(true) *@
 																			.ContentTemplate(new TemplateName("TaxCurrencyTemplate"))
-																			.Width("75%"))
+																			.Width("100%"))
 									@(Html.DevExtreme().Button()
 																			.ID("EditClient1")
 																			.Icon("edit")
@@ -1356,7 +1356,7 @@
 															.Step(1)
 															.ShowSpinButtons(true)
 															.Value(1)
-															.Width("75%")
+															.Width("100%")
 															)
 							</td>
 						</tr>
@@ -4497,7 +4497,7 @@
 						}
 					},
 
-					{ dataField: formatMessage('ExcemptionCode'), caption: "Excemption Code", width: 150 },
+					{ dataField: "ExcemptionCode", caption: formatMessage('Excemption Code'), cssClass: "center-header",width: 150 },
 
 					{ dataField: "VAT", caption: formatMessage('VAT'), width: 150 },
 

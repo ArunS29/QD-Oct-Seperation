@@ -360,7 +360,7 @@
 	
 
 	.mainContainer {
-		width: 100%;
+		width: 95.5%;
 	}
 
 	/* .content-container-top {
@@ -581,7 +581,7 @@
 							
 							@(Html.DevExtreme().TextBox()
 														.ID("MaterialReceipt")
-														.Label(new JS("formatMessage('Material Receipt')"))
+														.Label(new JS("formatMessage('Material Receipts')"))
 														.LabelMode(EditorLabelMode.Outside)
 														.Placeholder(""))
 						</td>
@@ -943,7 +943,7 @@
 						<tr colspan="1">
 							
 							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Effective Date')")).ID("EffectiveDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside))</td>
-					<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Due Date')")).ID("InvoiceDueDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside))</td>
+					<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Due Date')")).ID("InvoiceDueDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside))</td>
 					<td>
 						@* @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Revenue Account')")).ID("RevenueAccount")
 								.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType"))) *@
@@ -975,6 +975,40 @@
 													//  .OnKeyDown("onKeyDown")
 													//.OnValueChanged("dropDownBoxValueChanged")
 													.ContentTemplate(new TemplateName("RevenueAccountTemplate"))
+													.Width("100%")
+													)
+					</td>
+					<td>
+						@* @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Cost Center Account')")).ID("CostCenterAccount")
+								.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getPaymentMeans").LoadMode(DataSourceLoadMode.Raw).Key("PaymentMeans"))) *@
+						@(Html.DevExtreme().DropDownBox()
+													.Label(new JS("formatMessage('Cost Center Account')"))
+													.DataSource(d => d.WebApi()
+													.Controller("VATModule")
+													.LoadAction("GetCostCenterAccount")
+													.LoadMode(DataSourceLoadMode.Raw)
+													.Key("CostAllocationUnitId")
+													)
+													.LabelMode(EditorLabelMode.Outside)
+													.ID("ddlGoodsGroup1")
+													.ShowClearButton(true)
+
+													.AcceptCustomValue(true)
+													.OpenOnFieldClick(false)
+													.ValueChangeEvent("input")
+													.HoverStateEnabled(true)
+													.ValueExpr("CostAllocationUnitId")
+													.DisplayExpr("CostAllocationUnit")
+													.OnInput("dropDownBoxOnInput")
+													.OnOpened("onOpened")
+													//.Width(650)
+													.TabIndex(1)
+													.DropDownOptions(o => o
+													.Width(1000)
+													)
+													//  .OnKeyDown("onKeyDown")
+													//.OnValueChanged("dropDownBoxValueChanged")
+													.ContentTemplate(new TemplateName("CostCenterAccountTemplate"))
 													.Width("100%")
 													)
 					</td>
@@ -1020,46 +1054,13 @@
 						</div>
 
 					</td>
-					<td>
-						@* @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Cost Center Account')")).ID("CostCenterAccount")
-								.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getPaymentMeans").LoadMode(DataSourceLoadMode.Raw).Key("PaymentMeans"))) *@
-						@(Html.DevExtreme().DropDownBox()
-													.Label(new JS("formatMessage('Cost Center Account')"))
-													.DataSource(d => d.WebApi()
-													.Controller("VATModule")
-													.LoadAction("GetCostCenterAccount")
-													.LoadMode(DataSourceLoadMode.Raw)
-													.Key("CostAllocationUnitId")
-													)
-													.LabelMode(EditorLabelMode.Outside)
-													.ID("ddlGoodsGroup1")
-													.ShowClearButton(true)
-
-													.AcceptCustomValue(true)
-													.OpenOnFieldClick(false)
-													.ValueChangeEvent("input")
-													.HoverStateEnabled(true)
-													.ValueExpr("CostAllocationUnitId")
-													.DisplayExpr("CostAllocationUnit")
-													.OnInput("dropDownBoxOnInput")
-													.OnOpened("onOpened")
-													//.Width(650)
-													.TabIndex(1)
-													.DropDownOptions(o => o
-													.Width(1000)
-													)
-													//  .OnKeyDown("onKeyDown")
-													//.OnValueChanged("dropDownBoxValueChanged")
-													.ContentTemplate(new TemplateName("CostCenterAccountTemplate"))
-													.Width("100%")
-													)
-					</td>
-				</tr>
+					
+				@* </tr>
 			
 		
 
 					<tr width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5"
-						colspan="2">
+						colspan="2"> *@
 							<td>
 								@(Html.DevExtreme().TextArea()
 																						.Label(new JS("formatMessage('Invoice Notes')"))
@@ -1112,14 +1113,14 @@
 
 
 						<h5>Deductions:Advance / Retention</h5>
-						<table width="80%" style="font-size:14px; margin:10px 0;" cellpadding="3">
+						<table width="80%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 							<tr>
 
-								<td style="width: 55%;">
+								<td>
 									@(Html.DevExtreme().TextBox()
 																			.ID("LessAdvance")
 																			.Value("Less: Advance")
-																			.Width("90%")) <!-- Added Width -->
+																			.Width("100%")) <!-- Added Width -->
 								</td>
 								<td>
 									@(Html.DevExtreme().NumberBox()
@@ -1136,11 +1137,11 @@
 
 							<tr>
 
-								<td style="width: 55%;">
+								<td>
 									@(Html.DevExtreme().TextBox()
 																			.ID("LessOtherDeductions")
 																			.Value("Less: Other Deductions")
-																			.Width("90%")) <!-- Added Width -->
+																			.Width("100%")) <!-- Added Width -->
 								</td>
 
 								<td>
@@ -1160,7 +1161,7 @@
 				</div>
 			</div>
 		<div id="tab-content-4" class="tab-content" style="align-items: flex-start;padding: 0 13px;min-height: 100%;">
-			<table width="80%" style="font-size:14px; margin:10px 0;" cellpadding="2">
+			<table width="90%" style="font-size:14px; margin:10px 0;" cellpadding="2">
 
 				<tr>
 
@@ -1168,7 +1169,7 @@
 
 					@(Html.DevExtreme().CheckBox()
 												.ID("PrintOnLetterHead")
-												.Text("Print Purchase Bill in Letter Head")
+													.Text(new JS("formatMessage('Print Purchase Bill in Letter Head')"))
 												.ElementAttr("style", "font-weight: bold; color: #0000ff; margin-bottom: 15px;")
 												)
 					</td>
@@ -1186,7 +1187,7 @@
 													.LabelMode(EditorLabelMode.Outside)
 													.ID("VerifiedBytext")
 													.Value(null) // Default value		
-													.Width("80%")
+													.Width("90%")
 													)
 
 						@(Html.DevExtreme().TextBox()
@@ -1194,7 +1195,7 @@
 													.LabelMode(EditorLabelMode.Outside)
 													.ID("VerifiedOnDate")
 													.Value(null) // Default value
-													.Width("80%")
+													.Width("90%")
 													)
 					</td>
 
@@ -1208,7 +1209,7 @@
 													.LabelMode(EditorLabelMode.Outside)
 													.ID("ApprovedBytext")
 													.Value(null) // Default value												
-													.Width("80%")
+													.Width("90%")
 													@* .Disabled(true) *@
 													)
 						@(Html.DevExtreme().TextBox()
@@ -1216,7 +1217,7 @@
 													.LabelMode(EditorLabelMode.Outside)
 													.ID("ApprovedOntext")
 													.Value(null) // Default value												
-													.Width("80%")
+													.Width("90%")
 													)
 					</td>
 				</tr>
@@ -5383,7 +5384,7 @@
 				$(function () {
 					$("#VATPurchaseEdit").dxTextBox({
 						text: formatMessage("New VAT Purchase Bill"),
-						width:480,
+						width:310,
 						readOnly: true,
 									onContentReady: function(e) {
 									$(e.element).addClass("dx-textbox-heading");
