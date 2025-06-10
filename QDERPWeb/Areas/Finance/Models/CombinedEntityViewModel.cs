@@ -361,6 +361,7 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public decimal? UnitRate { get; set; }
         public decimal? QuantityInvoiced { get; set; }
         public decimal? QuantityCredited { get; set; }
+        public string ProformaInvoiceNo { get; set; }
 
 
     }

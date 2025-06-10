@@ -3498,7 +3498,7 @@
 
 			  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null,revaccheadid=null,InvoiceCurrencyExchangeId=null,TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
 					  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null,Gsdescrpition=null,GsdescriptionAr=null,ItemPartNo=null,CostPrice=null,GssellingRate=null,ReorderQty=null,IsDirectApproval=true,IsDirectVerify=true,IsClientCode=false
-					  ClientPostalCode=null,ClientCity=null,ClientAddressSt=null;
+					  ClientPostalCode=null,ClientCity=null,ClientAddressSt=null,Desc=null,rowIx=null;
 			  let dropDownInstance;
 			  let vatListInstance;
 
@@ -3667,6 +3667,7 @@
                             onValueChanged: function (e) {
                                 let selectedItem = dropdownData.find(item => item.GSCode === e.value);
                                 if (selectedItem) {
+									Desc = selectedItem.GSDescrpition;
                                     cellInfo.setValue(selectedItem.GSDescrpition);
                                     let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
                                     let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
@@ -3824,6 +3825,8 @@
 							$("#btnUseItemDesc").dxButton({ text: "Use Item Description" });
 							$("#DetailedDescription").dxTextBox({ label: "Detailed Description", labelMode: "outside", width: "100%" });
 							$("#DetailedDescriptionArabic").dxTextBox({ label: "Detailed Description (Arabic)", labelMode: "outside", width: "98%", height: 100 });
+						    $("#DetailedDescription").dxTextBox("instance").option("value",Gsdescrpition);
+
 							$("#btnConvertDescription").dxButton({ icon: "fas fa-language", onClick: function () { convertToArabicbtn("DetailedDescription", "DetailedDescriptionArabic"); } });
 							$("#ServiceStartDate").dxDateBox({ label: "Service Start Date", labelMode: "outside" });
 							$("#ServiceEndDate").dxDateBox({ label: "Service End Date", labelMode: "outside" });
@@ -4039,6 +4042,7 @@
 				
 					let grid = $("#B2BdataGrid").dxDataGrid("instance");
 					let rowIndex = e.row.rowIndex;
+					rowIx=rowIndex;
 						debugger;
 					let newValue = args.value;
 
@@ -4070,6 +4074,8 @@
 					grid.cellValue(rowIndex, "Discount",discount);
 					grid.cellValue(rowIndex, "Qty", qty);
 					grid.cellValue(rowIndex, "VAT%", vatRateStr);
+
+						applyDiscount(amount.toFixed(2));
 				
 			};
 		}
@@ -4084,7 +4090,7 @@
 	var rowData = []; // Store the grid data
 
 	$(function () {
-
+		debugger;
 		dataGridInstance = $("#B2BdataGrid").dxDataGrid({
 
 			dataSource: rowData,
@@ -4166,6 +4172,8 @@
 
 									if (selectedItem) {
 
+										Desc = selectedItem.GSDescrpition;
+										alret(Desc)
 										cellInfo.setValue(selectedItem.GSDescrpition);
 
 										let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
@@ -4398,6 +4406,7 @@
 							$("#btnUseItemDesc").dxButton({ text: "Use Item Description" });
 							$("#DetailedDescription").dxTextBox({ label: "Detailed Description", labelMode: "outside", width: "100%" });
 							$("#DetailedDescriptionArabic").dxTextBox({ label: "Detailed Description (Arabic)", labelMode: "outside", width: "98%", height: 100 });
+							$("#DetailedDescription").dxTextBox("instance").option("value",Gsdescrpition);
 							$("#btnConvertDescription").dxButton({ icon: "fas fa-language", onClick: function () { convertToArabicbtn("DetailedDescription", "DetailedDescriptionArabic"); } });
 							$("#ServiceStartDate").dxDateBox({ label: "Service Start Date", labelMode: "outside" });
 							$("#ServiceEndDate").dxDateBox({ label: "Service End Date", labelMode: "outside" });
@@ -4735,7 +4744,8 @@
 						contentElement.empty();
 
 						$.ajax({
-						    url: '/api/VATModule/CreditDetailDescription', // Adjust for area if needed
+						    url: `/api/VATModule/CreditDetailDescription?Description=${encodeURIComponent(Gsdescrpition)}`,
+
 							type: 'GET',
 							success: function (data) {
 								contentElement.html(data);
@@ -4747,30 +4757,56 @@
 					}
 				});
 			});
-
 				$(function () {
-					$("#CalcardPopover").dxPopover({
-						width: 550,
-						position: "bottom",
-						showEvent: "", // Manual control
-						hideEvent: "", // Manual control
-						hideOnOutsideClick: true,
-						contentTemplate: function (contentElement) {
-							contentElement.empty();
+		$("#CalcardPopover").dxPopover({
+			width: 550,
+			position: "bottom",
+			showEvent: "", // Manual control
+			hideEvent: "", // Manual control
+			hideOnOutsideClick: true,
+			contentTemplate: function (contentElement) {
+				contentElement.empty();
+						   debugger;
+				// Get the latest amount value from somewhere accessible
+				let amount = window.currentAmount || 0; // Use a global variable or a shared scope
 
-							$.ajax({
-								url: '/api/VATModule/VATPercentageCal', // Adjust for area if needed
-								type: 'GET',
-								success: function (data) {
-									contentElement.html(data);
-								},
-								error: function () {
-									contentElement.html("<div style='color:red;'>Failed to load content.</div>");
-								}
-							});
-						}
-					});
+				$.ajax({
+					url: `/api/VATModule/VATPercentageCal?amount=${encodeURIComponent(amount)}`,
+					type: 'GET',
+					success: function (data) {
+						contentElement.html(data);
+					},
+					error: function () {
+						contentElement.html("<div style='color:red;'>Failed to load content.</div>");
+					}
 				});
+			}
+		});
+	});
+
+				// $(function () {
+				// 	$("#CalcardPopover").dxPopover({
+				// 		width: 550,
+				// 		position: "bottom",
+				// 		showEvent: "", // Manual control
+				// 		hideEvent: "", // Manual control
+				// 		hideOnOutsideClick: true,
+				// 		contentTemplate: function (contentElement) {
+				// 			contentElement.empty();
+
+				// 			$.ajax({
+				// 				url: '/api/VATModule/VATPercentageCal', // Adjust for area if needed
+				// 				type: 'GET',
+				// 				success: function (data) {
+				// 					contentElement.html(data);
+				// 				},
+				// 				error: function () {
+				// 					contentElement.html("<div style='color:red;'>Failed to load content.</div>");
+				// 				}
+				// 			});
+				// 		}
+				// 	});
+				// });
 
 			// Fetch dropdown data (same API can be used if needed)
 		 function getDropdownData() {
@@ -6611,8 +6647,10 @@
 			e.editorOptions.onValueChanged = function (args) {
 				let grid = $("#B2BdataGrid").dxDataGrid("instance");
 				let rowIndex = e.row.rowIndex;
+						rowIx=rowIndex;
 					debugger;
 				let newValue = args.value;
+
 
 				// Get existing values or updated ones
 				let qty = e.dataField === "Qty" ? newValue : grid.cellValue(rowIndex, "Qty") || 0;
@@ -6642,60 +6680,13 @@
 				grid.cellValue(rowIndex, "Discount",discount);
 				grid.cellValue(rowIndex, "Qty", qty);
 				grid.cellValue(rowIndex, "VAT%", vatRateStr);
+
+			  // Store value for use in popover
+               window.currentAmount = amount.toFixed(2);
+
 			};
 		}
 	}
-
-
-	// function onEditorPreparing(e) {
-
-	// 	if (e.parentType === "dataRow" && (e.dataField === "Qty" || e.dataField === "UnitPrice" || e.dataField === "VATPercentage")) {
-	// 		e.editorOptions.onValueChanged = function (args) {
-	// 			let grid = $("#B2BdataGrid").dxDataGrid("instance");
-	// 			let rowIndex = e.row.rowIndex;
-
-
-	// 			// Get the updated value from the input field
-	// 			let newValue = args.value;
-	// 			console.log("gridnewvalue",newValue)
-	// 			// Get existing values
-	// 			let qty = e.dataField === "Qty" ? newValue : grid.cellValue(rowIndex, "Qty") || 0;
-	// 			console.log("qty",qty)
-
-	// 			 let unitPrice = e.dataField === "UnitPrice" ? newValue : grid.cellValue(rowIndex, "UnitPrice") || 0;
-	// 			 console.log("unitPrice",unitPrice)
-	// 			// let vatRate = (e.dataField === "VAT%" ? newValue : grid.cellValue(rowIndex, "VAT%")) || 0;
-	// 			let vatval=grid.cellValue(rowIndex, "VAT%");
-	// 			 console.log("VATVal",vatval)
-
-	// 			let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex, "VAT%") || "0%";
-	// 			console.log("vatRateStr",vatRateStr)
-
-	// 			let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100; // Convert "15%" → 15 → 0.15
-	// 			console.log("vatRate",vatRate)
-
-	// 			// Calculate values
-	// 			let amount = qty * unitPrice;
-	// 			 console.log("amount",amount)
-
-	// 			let vatValue = amount * vatRate;
-	// 			console.log("vatValue",vatValue)
-
-	// 			let totalValue = amount + vatValue;
-	// 			console.log("totalValue",vatValue)
-
-	// 			// Update values in the grid
-	// 			grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
-	// 			grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
-	// 			grid.cellValue(rowIndex, "Unit Price",unitPrice);
-	// 			grid.cellValue(rowIndex, "Total Before Discount",unitPrice);
-	// 			grid.cellValue(rowIndex, "Amount",unitPrice);
-	// 			 grid.cellValue(rowIndex, "Qty",qty);
-	// 			 grid.cellValue(rowIndex, "VAT%",vatRateStr);
-	// 		};
-	// 	}
-	// }
-
 
 		$("#btnSave").on("click", function (e) {
 
@@ -8410,5 +8401,34 @@
 
 			dropdown.option("items", items);
 		});
+
+
+				function applyDiscount() {
+				debugger;
+		let grid = $("#B2BdataGrid").dxDataGrid("instance");
+
+		const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
+		const discount = $("#discount").dxNumberBox("instance").option("value") || 0;
+		const finalAmount = total - discount;
+
+		// Set value to FinalAmount column (or any appropriate column)
+				grid.cellValue(rowIx, "Discount", discount);
+
+		DevExpress.ui.notify("Final Amount: ₹" + finalAmount.toFixed(2), "success", 2000);
+	}
+
+
+	// 		function applyDiscount(discountValue) {
+	// 			debugger;
+	// 	$("#totalAmount").dxNumberBox("instance").option("value",discountValue);
+	// 	const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
+	// 	const discount = $("#discount").dxNumberBox("instance").option("value") || 0;
+	// 	const finalAmount = total - discount;
+
+	// 	// Optionally show a notification
+	// 	DevExpress.ui.notify("Final Amount: ₹" + finalAmount.toFixed(2), "success", 2000);
+
+	// }
+
 </script>
 

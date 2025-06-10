@@ -102,16 +102,22 @@
 
 </div>
 <script>
+
+       alert("1")
+     $("#totalAmount").dxNumberBox("instance").option("value",@ViewBag.Amount);
+
     function setDiscount(percent) {
+        debugger;
         const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
         const discountValue = total * (percent / 100);
         $("#discount").dxNumberBox("instance").option("value", discountValue.toFixed(2));
     }
+   
 
-    function applyDiscount() {
-        const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
-        const discount = $("#discount").dxNumberBox("instance").option("value") || 0;
-        const finalAmount = total - discount;
-        DevExpress.ui.notify("Final Amount: ₹" + finalAmount.toFixed(2), "success", 2000);
-    }
+    // function applyDiscount() {
+    //     const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
+    //     const discount = $("#discount").dxNumberBox("instance").option("value") || 0;
+    //     const finalAmount = total - discount;
+    //     DevExpress.ui.notify("Final Amount: ₹" + finalAmount.toFixed(2), "success", 2000);
+    // }
 </script>
