@@ -1,4 +1,4 @@
-@page
+﻿@page
 @model QD.ERP.Web.Areas.IMS.Pages.AddNewSalesOrderModel
 @{
 }
@@ -273,7 +273,7 @@
                             .ID("SalesOrderDate")
                             .Value(DateTime.Today)
                             .Label(new JS("formatMessage('Sales Order Date')"))
-                            .DateSerializationFormat("yyyy-MM-dd")  // ? Ensure consistent format
+                            .DateSerializationFormat("yyyy-MM-dd")  // ✅ Ensure consistent format
                             .LabelMode(EditorLabelMode.Outside)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -717,7 +717,7 @@
             .DataField("Gsdescrpition")
             .Caption("Description")
             .Width(400)
-            .EditCellTemplate(new JS("descriptionDropDownTemplate")); // ? editable dropdown
+            .EditCellTemplate(new JS("descriptionDropDownTemplate")); // ✅ editable dropdown
 
          columns.Add()
     .DataField("UnitRateMethod")
@@ -738,7 +738,7 @@
         .ColumnAutoWidth(true)
         .Width("100%")
         .WordWrapEnabled(true)
-        .OnCellClick("function(e) { handleCellClick(e); }") // ? allow editing on click
+        .OnCellClick("function(e) { handleCellClick(e); }") // ✅ allow editing on click
         .ColumnChooser(columnChooser => columnChooser
         .Enabled(true)
         .Title(new JS("formatMessage('Show/Hide Column')"))
@@ -756,7 +756,7 @@
         .ShowBorders(true)
         .ShowRowLines(true)
         .Editing(editing => editing
-        .Mode(GridEditMode.Cell) // ? required for cell editing
+        .Mode(GridEditMode.Cell) // ✅ required for cell editing
         .AllowAdding(true)
         .AllowUpdating(true)
         .AllowDeleting(true)
@@ -847,28 +847,6 @@
 @using (Html.DevExtreme().NamedTemplate("ClientDropDownTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-<<<<<<< HEAD
-            .ID("clientGrid")
-            .DataSource(ds => ds
-                .Mvc()
-                .Controller("ClientLeads")
-                .LoadAction("Get")
-                .LoadMode(DataSourceLoadMode.Raw)
-                .Key("ClientCode")
-            )
-            .Height(300)
-            .ShowBorders(true)
-            .FilterRow(f => f.Visible(true))
-            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-            .Selection(s => s.Mode(SelectionMode.Single))  // Single selection
-            .Columns(columns =>
-            {
-                columns.Add().DataField("ClientCode").Caption(new JS("formatMessage('Client Code')"));
-                columns.Add().DataField("ClientName").Caption(new JS("formatMessage('Client Name')"));
-            })
-            .OnSelectionChanged("onClientSelected")  // Trigger onClientSelected on row selection
-        )
-=======
                     .ID("clientGrid")
                     .DataSource(ds => ds
                         .Mvc()
@@ -915,7 +893,7 @@
                             .OnSelectionChanged("onCodeSelected")  // Trigger onClientSelected on row selection
                     )
 }
-@using (Html.DevExtreme().NamedTemplate("typeofSalesOrderDropDownTemplate")) // ? Corrected name
+@using (Html.DevExtreme().NamedTemplate("typeofSalesOrderDropDownTemplate")) // ✅ Corrected name
 {
     @(Html.DevExtreme().DataGrid()
                     .ID("typeofsalesorderGrid")
@@ -940,7 +918,7 @@
                 )
 }
 
-@using (Html.DevExtreme().NamedTemplate("SignatoriesDropDownTemplate")) // ? Corrected name
+@using (Html.DevExtreme().NamedTemplate("SignatoriesDropDownTemplate")) // ✅ Corrected name
 {
     @(Html.DevExtreme().DataGrid()
                     .ID("SignatoryGrid")
@@ -964,7 +942,7 @@
                     .OnSelectionChanged("onCodesignatory")
                 )
 }
-@using (Html.DevExtreme().NamedTemplate("CompanyBranchDropDownTemplate")) // ? Corrected name
+@using (Html.DevExtreme().NamedTemplate("CompanyBranchDropDownTemplate")) // ✅ Corrected name
 {
     @(Html.DevExtreme().DataGrid()
                     .ID("CompanyBranchGrid")
@@ -988,7 +966,7 @@
                     .OnSelectionChanged("onCompanyBranch")
                 )
 }
-@using (Html.DevExtreme().NamedTemplate("SalesPersonNameDropDownTemplate")) // ? Corrected name
+@using (Html.DevExtreme().NamedTemplate("SalesPersonNameDropDownTemplate")) // ✅ Corrected name
 {
     @(Html.DevExtreme().DataGrid()
                     .ID("SalesPersonGrid")
@@ -1013,7 +991,7 @@
                 )
 }
 
-@using (Html.DevExtreme().NamedTemplate("MasterGroupDropDownTemplate")) // ? Corrected name
+@using (Html.DevExtreme().NamedTemplate("MasterGroupDropDownTemplate")) // ✅ Corrected name
 {
     @(Html.DevExtreme().DataGrid()
                     .ID("MasterGroupGrid")
@@ -1038,7 +1016,7 @@
                 )
 }
 
-@using (Html.DevExtreme().NamedTemplate("CostCenterMasterDropDownTemplate")) // ? Corrected name
+@using (Html.DevExtreme().NamedTemplate("CostCenterMasterDropDownTemplate")) // ✅ Corrected name
 {
     @(Html.DevExtreme().DataGrid()
                     .ID("costcenterGroupGrid")
@@ -1172,7 +1150,6 @@
             }
         });
     }, 100);
->>>>>>> origin/develop
 }
 
 
@@ -1297,11 +1274,11 @@
 
             // Wait until the DropDownBox is rendered
             setTimeout(() => {
-                const inputElement = dropDown.find("input.dx-texteditor-input").get(0); // ? Use dropDown, not dropDownElement
+                const inputElement = dropDown.find("input.dx-texteditor-input").get(0); // ✅ Use dropDown, not dropDownElement
 
                 if (inputElement) {
                     inputElement.focus();
-                    inputElement.setSelectionRange(0, inputElement.value.length); // ? Only select text
+                    inputElement.setSelectionRange(0, inputElement.value.length); // ✅ Only select text
                 }
             }, 50);
         }
@@ -1429,7 +1406,7 @@
         if (!e.column || !e.column.allowEditing) return;
 
         const grid = e.component;
-        grid.editCell(e.rowIndex, e.columnIndex); // ? ensures editing is triggered
+        grid.editCell(e.rowIndex, e.columnIndex); // ✅ ensures editing is triggered
     }
 
 
@@ -1574,7 +1551,6 @@
                 });
         }
     });
-<<<<<<< HEAD
     $(function () {
                     $("#Additions1").text(
                          formatMessage("Additions"));
@@ -1586,7 +1562,6 @@
                         $("#Shipment").text(
                              formatMessage("Shipment & Discounts"));
                 });
-=======
 
       //ProjectID
         function onCodeSelected(e) {
@@ -1800,7 +1775,7 @@
             success: function (response) {
                 DevExpress.ui.notify(response.message, "success", 2000);
 
-                // ? Reload data after save
+                // ✅ Reload data after save
                     $.get("/api/SalesOrders/GetSalesOrderChildren?quoteNo=" + model.SalesOrderNo, function(data) {
                     window.itemGridDataSource = data;
                     $("#itemGrid").dxDataGrid("instance").option("dataSource", data);
@@ -1974,7 +1949,7 @@
                 data: JSON.stringify(model),
                 success: function (response) {
                     DevExpress.ui.notify(response.message, "success", 2000);
-                    // ? Reload data after save
+                    // ✅ Reload data after save
                     $.get("/api/SalesOrders/GetSalesOrderChildren?quoteNo=" + model.QuoteNo, function(data) {
                         window.itemGridDataSource = data;
                         $("#itemGrid").dxDataGrid("instance").option("dataSource", data);   
@@ -2023,6 +1998,5 @@
             }
         });
     }
->>>>>>> origin/develop
 
 </script>
