@@ -630,9 +630,9 @@
                  .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                  .Columns(columns =>
                  {
-                     columns.Add().DataField("ClientCategoryCode");
-                     columns.Add().Caption(new JS("formatMessage('Category Code')")).DataField("CategoryCode");
-                     columns.Add().DataField("ClientCategory");
+                                columns.Add().DataField("ClientCategoryCode").Caption(new JS("formatMessage('Client Category Code')"));
+                                columns.Add().DataField("CategoryCode").Caption(new JS("formatMessage('Category Code')"));
+                                columns.Add().DataField("ClientCategory").Caption(new JS("formatMessage('Client Category')"));
 
 
                  })

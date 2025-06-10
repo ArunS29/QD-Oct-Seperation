@@ -88,6 +88,7 @@
             .ShowColumnLines(true)
             .ShowRowLines(true)
             .Width("100%")
+            .OnCellPrepared("oncellPrepared")
             .OnContextMenuPreparing("onSuppliersGridContextMenu")
             .AllowColumnResizing(true) // Enable column resizing
             .ColumnResizingMode(ColumnResizingMode.NextColumn) // Optional: can be "Widget" or "NextColumn"
@@ -108,29 +109,29 @@
         })
             .Columns(columns =>
             {
-                columns.Add().DataField("SupplierCategory").Caption("Supplier Category").Visible(true).GroupIndex(0);
-                columns.Add().DataField("SupplierCode").Caption("Supplier Code").Visible(true);
-                columns.Add().DataField("SupplierName").Caption("Supplier Name").Visible(true);
-            columns.Add().DataField("SupplierCategory").Caption("Supplier Type").Visible(true);
-                columns.Add().DataField("ContactPerson").Caption("Contact Person").Visible(true);
-                columns.Add().DataField("ContactMobile1").Caption("Contact Mobile").Visible(true);
-                columns.Add().DataField("ContactPhone1").Caption("Contact Phone").Visible(true);
-                columns.Add().DataField("ContactPersonTitle").Caption("Contact Person Title").Visible(true);
-        columns.Add().DataField("SupplierAccountLedgerNo").Caption("Supplier Ledger No").Visible(true);
+        columns.Add().DataField("SupplierCategory").Caption(new JS("formatMessage('Supplier Category')")).Visible(true).GroupIndex(0);
+        columns.Add().DataField("SupplierCode").Caption(new JS("formatMessage('Supplier Code')")).Visible(true);
+        columns.Add().DataField("SupplierName").Caption(new JS("formatMessage('Supplier Name')")).Visible(true);
+        columns.Add().DataField("SupplierCategory").Caption(new JS("formatMessage('Supplier Type')")).Visible(true);
+        columns.Add().DataField("ContactPerson").Caption(new JS("formatMessage('Contact Person')")).Visible(true);
+        columns.Add().DataField("ContactMobile1").Caption(new JS("formatMessage('Contact Mobile')")).Visible(true);
+        columns.Add().DataField("ContactPhone1").Caption(new JS("formatMessage('Contact Phone')")).Visible(true);
+        columns.Add().DataField("ContactPersonTitle").Caption(new JS("formatMessage('Contact Person Title')")).Visible(true);
+        columns.Add().DataField("SupplierAccountLedgerNo").Caption(new JS("formatMessage('Supplier Ledger No')")).Visible(true);
 
 
-            columns.Add().DataField("SupplierCategoryCode").Caption("Supplier Category Code").Visible(false);
-            columns.Add().DataField("CategoryCode").Caption("Category Code").Visible(false);
-            columns.Add().DataField("SupplierName").Caption("Supplier Name").Visible(false);
-            columns.Add().DataField("SupplierNameAr").Caption("Supplier Name (Arabic)").Visible(false);
-            columns.Add().DataField("SupplierAddress").Caption("Supplier Address").Visible(false);
-            columns.Add().DataField("ContactMobile2").Caption("Contact Mobile 2").Visible(false);
-            columns.Add().DataField("ContactPhone2").Caption("Contact Phone 2").Visible(false);
-            columns.Add().DataField("ContactEmail").Caption("Contact Email").Visible(false);
-            columns.Add().DataField("ContactFaxNo").Caption("Contact Fax No").Visible(false);
-            columns.Add().DataField("ContactRemarks").Caption("Contact Remarks").Visible(false);
-            //columns.Add().DataField("BusinessCard1").Caption("Business Card 1").Visible(false);
-            //columns.Add().DataField("BusinessCard2").Caption("Business Card 2").Visible(false);
+        columns.Add().DataField("SupplierCategoryCode").Caption(new JS("formatMessage('Supplier Category Code')")).Visible(false);
+        columns.Add().DataField("CategoryCode").Caption(new JS("formatMessage('Category Code')")).Visible(false);
+        columns.Add().DataField("SupplierName").Caption(new JS("formatMessage('Supplier Name')")).Visible(false);
+        columns.Add().DataField("SupplierNameAr").Caption(new JS("formatMessage('Supplier Name (Arabic)')")).Visible(false);
+        columns.Add().DataField("SupplierAddress").Caption(new JS("formatMessage('Supplier Address')")).Visible(false);
+        columns.Add().DataField("ContactMobile2").Caption(new JS("formatMessage('Contact Mobile 2')")).Visible(false);
+        columns.Add().DataField("ContactPhone2").Caption(new JS("formatMessage('Contact Phone 2')")).Visible(false);
+        columns.Add().DataField("ContactEmail").Caption(new JS("formatMessage('Contact Email')")).Visible(false);
+        columns.Add().DataField("ContactFaxNo").Caption(new JS("formatMessage('Contact Fax No')")).Visible(false);
+        columns.Add().DataField("ContactRemarks").Caption(new JS("formatMessage('Contact Remarks')")).Visible(false);
+        //columns.Add().DataField("BusinessCard1").Caption(new JS("formatMessage('Business Card 1')")).Visible(false);
+        //columns.Add().DataField("BusinessCard2").Caption(new JS("formatMessage('Business Card 2')")).Visible(false);
             // Image columns with cell template
             columns.Add().DataField("DecodedBusinessCard1").Visible(false)
             .Caption(new JS("formatMessage('Business Card 1')"))
@@ -157,17 +158,17 @@
     }
     }
     "));
-            columns.Add().DataField("IsDiscontinued").Caption("Is Discontinued").Visible(false);
-            columns.Add().DataField("ReasonDiscontinued").Caption("Reason Discontinued").Visible(false);
-            columns.Add().DataField("CreatedBy").Caption("Created By").Visible(false);
-            columns.Add().DataField("CreatedOn").Caption("Created On").Visible(false);
-            columns.Add().DataField("ModifiedBy").Caption("Modified By").Visible(false);
-            columns.Add().DataField("ModifiedOn").Caption("Modified On").Visible(false);
-            columns.Add().DataField("DiscontinuedBy").Caption("Discontinued By").Visible(false);
-            columns.Add().DataField("DiscontinuedOn").Caption("Discontinued On").Visible(false);
-            columns.Add().DataField("DateVisitedFirst").Caption("Date Visited First").Visible(false);
-            columns.Add().DataField("SupplierLedgerName").Caption("Supplier Ledger Name").Visible(false);
-            columns.Add().DataField("SupplierVatno").Caption("Supplier VAT No").Visible(false);
+        columns.Add().DataField("IsDiscontinued").Caption(new JS("formatMessage('Is Discontinued')")).Visible(false);
+        columns.Add().DataField("ReasonDiscontinued").Caption(new JS("formatMessage('Reason Discontinued')")).Visible(false);
+        columns.Add().DataField("CreatedBy").Caption(new JS("formatMessage('Created By')")).Visible(false);
+        columns.Add().DataField("CreatedOn").Caption(new JS("formatMessage('Created On')")).Visible(false);
+        columns.Add().DataField("ModifiedBy").Caption(new JS("formatMessage('Modified By')")).Visible(false);
+        columns.Add().DataField("ModifiedOn").Caption(new JS("formatMessage('Modified On')")).Visible(false);
+        columns.Add().DataField("DiscontinuedBy").Caption(new JS("formatMessage('Discontinued By')")).Visible(false);
+        columns.Add().DataField("DiscontinuedOn").Caption(new JS("formatMessage('Discontinued On')")).Visible(false);
+        columns.Add().DataField("DateVisitedFirst").Caption(new JS("formatMessage('Date Visited First')")).Visible(false);
+        columns.Add().DataField("SupplierLedgerName").Caption(new JS("formatMessage('Supplier Ledger Name')")).Visible(false);
+            columns.Add().DataField("SupplierVatno").Caption(new JS("formatMessage('Supplier VAT No')")).Visible(false);
             })
         .Summary(summary =>
         {
@@ -237,6 +238,11 @@
             }
         });
     });
+         function oncellPrepared(e) {
+        if (e.rowType === "group" && (e.column.dataField === "SupplierCategory" || e.column.dataField === "SupplierCategory")) {
+            e.cellElement.css("font-weight", "bold");
+        }
+    }
 </script>
 
 
