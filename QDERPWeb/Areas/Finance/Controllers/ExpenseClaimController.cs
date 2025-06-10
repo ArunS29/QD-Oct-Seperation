@@ -110,30 +110,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-        //[HttpGet]
-        //public async Task<IActionResult> GetReceivingAccount(DataSourceLoadOptions loadOptions)
-        //{
-        //    if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-        //    {
-
-        //        try
-        //        {
-        //            var tbl20101salespersonmasters = await dbContext.Tbl20103ExpenseClaimChildren.Select(i => new
-        //            {
-
-        //                i.AccountId,
-        //                i.ClaimChildNo,
-        //                i.ClaimRefNo,
-        //            });
-
-        //            return Json(await DataSourceLoader.LoadAsync(tbl20101salespersonmasters, loadOptions));
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
-        //        }
-        //    }
-        //}
+        
         [HttpGet]
         public JsonResult GetExpenseClaims()
         {
@@ -404,6 +381,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     existingMaster.ClaimRemarks = model.ClaimRemarks;
                     existingMaster.ClaimModifiedBy = userName;
                     existingMaster.ClaimModifiedOn = now;
+                    existingMaster.PaymentType = model.PaymentType;
+                    existingMaster.PaymentAccount = model.PaymentAccount;
                     dbContext.Tbl20102ExpenseClaimMasters.Update(existingMaster);
                 }
                 else
@@ -417,36 +396,46 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         ProjectClaimedFor = model.ProjectClaimedFor,
                         ClaimRemarks = model.ClaimRemarks,
                         ClaimerId = claimerId,
+                        PaymentType = model.PaymentType,
+                        PaymentAccount = model.PaymentAccount,
                         ClaimCreatedBy = userName,
                         ClaimCreatedOn = now,
-                        FundRequestTypeId = 1
+                        FundRequestTypeId = model.FundRequestTypeId
                     };
 
                     dbContext.Tbl20102ExpenseClaimMasters.Add(newMaster);
                 }
 
-                // ✅ Remove existing child rows for this ClaimRefNo
-                var existingChildren = dbContext.Tbl20103ExpenseClaimChildren
-                    .Where(c => c.ClaimRefNo == model.ClaimRefNo);
+                //// ✅ Remove existing child rows for this ClaimRefNo
+                //var existingChildren = dbContext.Tbl20103ExpenseClaimChildren
+                //    .Where(c => c.ClaimRefNo == model.ClaimRefNo);
 
-                dbContext.Tbl20103ExpenseClaimChildren.RemoveRange(existingChildren);
+                //dbContext.Tbl20103ExpenseClaimChildren.RemoveRange(existingChildren);
 
                 // ✅ Add new child rows
                 foreach (var item in model.ExpenseDetails)
                 {
-                    var child = new Tbl20103ExpenseClaimChild
-                    {
-                        ClaimRefNo = model.ClaimRefNo,
-                        ExpenseDescription = item.ExpenseDescription,
-                        BillRefNo = item.BillRefNo,
-                        BillDate = item.BillDate,
-                        ClaimedAmount = item.ClaimedAmount,
-                        ApprovedAmount = item.ApprovedAmount,
-                        AccountId = item.AccountId,
-                        CostCenterCode = item.CostCenterCode
-                    };
+                    var existingChild = await dbContext.Tbl20103ExpenseClaimChildren
+                           .FirstOrDefaultAsync(c =>
+                           c.ClaimRefNo == model.ClaimRefNo &&
+                           c.ClaimChildNo == item.ClaimChildNo);
 
-                    dbContext.Tbl20103ExpenseClaimChildren.Add(child);
+                    if (existingChild != null)
+                    {
+                        // ✅ Only update the desired 4 columns
+                        existingChild.ClaimChildNo = item.ClaimChildNo;
+                        existingChild.ClaimRefNo = model.ClaimRefNo;
+                        existingChild.AccountId = item.AccountId;
+                        existingChild.CostCenterCode = item.CostCenterCode;
+                        existingChild.ExpenseDescription = item.ExpenseDescription;
+                        existingChild.BillRefNo = item.BillRefNo;
+                        existingChild.BillDate = item.BillDate;
+                        existingChild.ClaimedAmount = item.ClaimedAmount;
+                        existingChild.ApprovedAmount = item.ApprovedAmount;
+
+
+                        dbContext.Tbl20103ExpenseClaimChildren.Update(existingChild);
+                    }
                 }
 
                 await dbContext.SaveChangesAsync();
@@ -689,6 +678,37 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 {
                     var result = await dbContext.Tbl20102ExpenseClaimMasters
                                     .Where(x => x.ClaimRefNo == claimRefNo)
+                                    .Select(x => new {
+                                        x.ClaimRefNo,
+                                        x.ClaimDate,
+                                        x.ProjectClaimedFor,
+                                        x.ClaimRemarks,
+                                        x.IsSubmittedToFinance,
+                                        x.SubmittedBy,
+                                        x.SubmittedOn,
+                                        x.IsVerified,
+                                        x.VerifiedBy,
+                                        x.VerifiedOn,
+                                        x.IsApproved,
+                                        x.ApprovedBy,
+                                        x.ApprovedOn,
+                                        x.IsPaid,
+                                        x.PaidBy,
+                                        x.PaidOn,
+                                        x.PaymentVoucherNo,
+                                        x.PaymentType,
+                                        x.PaymentAccount,
+                                        Claimedproject = dbContext.Tbl201CostAllocationUnits
+                       .Where(a => a.CostAllocationUnitId == x.ProjectClaimedFor)
+                       .Select(a => a.CostAllocationUnit)
+                       .FirstOrDefault(),
+                                        PaymentAccountname = dbContext.Tbl201ChartOfAccounts
+                       .Where(c => c.AccountId == x.PaymentAccount)
+                       .Select(c => c.AccountHead)
+                       .FirstOrDefault(),
+                                       
+                                    })
+
                                     .ToListAsync();
 
                     if (result != null && result.Any())
@@ -718,6 +738,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
     .Where(x => x.ClaimRefNo == claimRefNo)
     .Select(x => new {
         x.ClaimRefNo,
+        x.ClaimChildNo,
         x.ExpenseDescription,
         x.BillRefNo,
         x.BillDate,
@@ -908,6 +929,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     existingEntry.EmployeeNo = model.EmployeeNo;
                     existingEntry.PropertyNo = model.PropertyNo;
                     existingEntry.IsTaxIncluded = model.IsTaxIncluded;
+                    existingEntry.VatapplicableRate = model.VATApplicableRate;
+                    existingEntry.SupplierNameAr = model.SupplierNameAr;
                 }
                 //else
                 //{
@@ -939,15 +962,38 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetChildClaimsByVoucherNo(string voucherNo)
+        public async Task<ActionResult> GetChildClaimsByVoucherNo(string voucherNo)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                var result = dbContext.Tbl20103ExpenseClaimChildren
-                    .Where(x => x.VoucherNo == voucherNo)
-                    .ToList();
+                var result = await dbContext.Tbl20103ExpenseClaimChildren
+   .Where(x => x.ClaimRefNo == voucherNo)
+   .Select(x => new {
+       x.ClaimRefNo,
+       x.ClaimChildNo,
+       x.ExpenseDescription,
+       x.BillRefNo,
+       x.BillDate,
+       x.ClaimedAmount,
+       x.ApprovedAmount,
+       x.AccountId,
+       x.CostCenterCode,
+       AccountHead = dbContext.Tbl201ChartOfAccounts
+                       .Where(a => a.AccountId == x.AccountId)
+                       .Select(a => a.AccountHead)
+                       .FirstOrDefault(),
+       CostAllocationUnit = dbContext.Tbl201CostAllocationUnits
+                       .Where(c => c.CostAllocationUnitId == x.CostCenterCode)
+                       .Select(c => c.CostAllocationUnit)
+                       .FirstOrDefault()
+   })
+   .ToListAsync();
 
-                return Json(result);
+
+                  return Json(result);
+                
+
+              
             }
 
             return Unauthorized(); // or BadRequest("Invalid tenant context");
@@ -961,6 +1007,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
+                child.VoucherNo = null;
                 if (child.ClaimChildNo > 0)
                 {
                     // Update
@@ -984,7 +1031,136 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(); // or BadRequest("Tenant context could not be resolved");
         }
+        [HttpGet]
+        public async Task<ActionResult> GetClaimVAT(long claimchildno)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var result = await dbContext.Tbl20103ExpenseClaimChildren
+   .Where(x => x.ClaimChildNo == claimchildno)
+   .Select(x => new {
+       x.ClaimRefNo,
+       x.ClaimChildNo,
+       x.ApprovedAmount,
+       x.TaxableAmount,
+       x.TaxAmount,
+       x.RoundOff,
+       x.SupplierName,
+       x.SupplierNameAr,
+       x.SupplierVatno,
+       x.PurchaserName,
+       x.LineNarration,
+       x.EmployeeNo,
+       x.VatapplicableRate,
+       x.PropertyNo,
+       EmployeeName = dbContext.Tbl101Employees
+                       .Where(a => a.EmployeeId == x.EmployeeNo)
+                       .Select(a => a.EmployeeName)
+                       .FirstOrDefault(),
+       propertyname = dbContext.Qry40102PropertyMasterView2s
+                       .Where(c => c.PropertyNo == x.PropertyNo)
+                       .Select(c => c.PropertyDescription)
+                       .FirstOrDefault(),
+       TaxRate = dbContext.Tbl20168VatpurchaseTaxSlabs
+                       .Where(c => c.PurchaseTaxSlabCode == x.VatapplicableRate)
+                       .Select(c => c.PurchaseTaxSlab)
+                       .FirstOrDefault()
+   })
+   .ToListAsync();
 
+
+                return Json(result);
+
+
+
+            }
+
+            return Unauthorized(); // or BadRequest("Invalid tenant context");
+        }
+        [HttpPost]
+        public IActionResult DeleteExpenseChild([FromBody] long claimChildNo)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            try
+            {
+                var record = dbContext.Tbl20103ExpenseClaimChildren.FirstOrDefault(x => x.ClaimChildNo == claimChildNo);
+                if (record != null)
+                {
+                    
+                    dbContext.Tbl20103ExpenseClaimChildren.Remove(record);
+                    
+                    dbContext.SaveChanges();
+                    return Ok(new { success = true });
+                }
+
+                return NotFound(new { success = false, message = "Record not found." });
+            }
+            catch (Exception ex)
+            {
+                // Optionally log exception
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetCPPaymentAccounts(DataSourceLoadOptions loadOptions)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var qryListOfAccountlists = dbContext.Qry201ListOfAccounts
+                        .Where(p => p.AccountGroupId == "A012")
+                        .Select(i => new
+                        {
+                            i.AccountHead,
+                            i.AccountId,
+                            i.AccountHeadArabic,
+                            i.IsLedgerObselete
+                        });
+
+                    var result = await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions);
+                    return Json(result);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, "Internal server error. Please try again later.");
+                }
+            }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+
+        [HttpGet]
+        public async Task<ActionResult> GetBPPaymentAccounts(DataSourceLoadOptions loadOptions)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var qryListOfAccountlists = dbContext.Qry201ListOfAccounts.Where(p => p.AccountGroupId == "A013").Select(i => new
+                    {
+                        i.AccountHead,
+                        i.AccountId,
+                        i.AccountHeadArabic,
+                        i.IsLedgerObselete
+
+
+                    });
+
+                    return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
     }
 }
 

@@ -1425,7 +1425,8 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrLabel161.CanGrow = false;
             this.xrLabel161.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[TotalCreditNoteAmountInOC]")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "TextAlignment", "[TotalInvoiceAmountBeforeDiscount]"),
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[TotalInvoiceAmountBeforeDiscount]")});
             this.xrLabel161.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel161.LocationFloat = new DevExpress.Utils.PointFloat(179.8331F, 636.8333F);
             this.xrLabel161.Name = "xrLabel161";
@@ -1459,7 +1460,7 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrLabel91.CanGrow = false;
             this.xrLabel91.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[TotalCreditNoteAmountInOC]")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[TotalCreditNoteAmount]")});
             this.xrLabel91.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel91.LocationFloat = new DevExpress.Utils.PointFloat(179.8331F, 682.8333F);
             this.xrLabel91.Name = "xrLabel91";
@@ -1476,7 +1477,7 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrLabel92.CanGrow = false;
             this.xrLabel92.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[TaxAmount]")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[TotalTaxAmount]")});
             this.xrLabel92.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel92.LocationFloat = new DevExpress.Utils.PointFloat(179.8331F, 705.8333F);
             this.xrLabel92.Name = "xrLabel92";
@@ -1494,7 +1495,7 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrLabel93.CanGrow = false;
             this.xrLabel93.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[TotalWithTaxInOC]")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[TotalWithTax]")});
             this.xrLabel93.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel93.LocationFloat = new DevExpress.Utils.PointFloat(179.5F, 728.8332F);
             this.xrLabel93.Name = "xrLabel93";
@@ -1769,7 +1770,7 @@
             this.xrLabel111.Multiline = true;
             this.xrLabel111.Name = "xrLabel111";
             this.xrLabel111.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel111.SizeF = new System.Drawing.SizeF(100.8865F, 80.62421F);
+            this.xrLabel111.SizeF = new System.Drawing.SizeF(100.7199F, 80.62421F);
             this.xrLabel111.StylePriority.UseBackColor = false;
             this.xrLabel111.StylePriority.UseBorderColor = false;
             this.xrLabel111.StylePriority.UseBorders = false;
@@ -1931,7 +1932,7 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrTableCell1.CanGrow = false;
             this.xrTableCell1.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[calcLineTotalWithTaxInOC]")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[LineTotalWithTax]")});
             this.xrTableCell1.Name = "xrTableCell1";
             this.xrTableCell1.StylePriority.UseBorders = false;
             this.xrTableCell1.TextFormatString = "{0:0.00}";
@@ -1970,7 +1971,7 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrTableCell4.CanGrow = false;
             this.xrTableCell4.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[calcLineAmountOC]")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[calcLineAmount]")});
             this.xrTableCell4.Name = "xrTableCell4";
             this.xrTableCell4.StylePriority.UseBorders = false;
             this.xrTableCell4.TextFormatString = "{0:0.00}";
@@ -2226,6 +2227,7 @@
             this.xrTableCell11.Name = "xrTableCell11";
             this.xrTableCell11.StylePriority.UseBorderDashStyle = false;
             this.xrTableCell11.StylePriority.UseBorders = false;
+            this.xrTableCell11.TextFormatString = "{0:dd-MMM-yyyy}";
             this.xrTableCell11.Weight = 0.782804763892474D;
             // 
             // xrTableCell17

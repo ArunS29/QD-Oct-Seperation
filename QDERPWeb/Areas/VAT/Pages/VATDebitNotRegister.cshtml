@@ -196,35 +196,6 @@
 	.dx-fieldset.horizontal-container {
 		margin-top: 10px;
 	}
-
-	.context-menu {
-		display: none;
-		position: absolute;
-		background: white;
-		border: 1px solid #ccc;
-		box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-		z-index: 1000;
-		border-radius: 4px;
-		padding: 4px 0;
-		font-family: sans-serif;
-		width: 180px;
-	}
-
-	.context-menu-item {
-		padding: 8px 12px;
-		cursor: pointer;
-		white-space: nowrap;
-	}
-
-		.context-menu-item:hover {
-			background-color: #f0f0f0;
-		}
-
-		.context-menu-item.delete {
-			color: red;
-			font-weight: bold;
-		}
-
 </style>
 
 <input id="formId" value="frm201LedgerView" type="hidden" />
@@ -241,8 +212,8 @@
 	</div>
 </div>
 
-<div class="context-menu" id="contextMenu" style="top: 500px;left: 760px;width: 12%;">
-	@* <div class="context-menu-item" onclick="viewInvoice()">
+<div class="context-menu" id="contextMenu">
+	<div class="context-menu-item" onclick="viewInvoice()">
 		<i class="dx-icon-search"></i> View e-Invoice
 	</div>
 
@@ -255,15 +226,6 @@
 
 	<div class="context-menu-item" onclick="cloneEInvoice()">
 		<i class="dx-icon-copy"></i> Clone e-Invoice
-	</div> *@
-	<div class="context-menu-item" onclick="editDebitNote()">
-		✏️ Edit Debit Note
-	</div>
-	<div class="context-menu-item delete" onclick="deleteDebitNote()">
-		❌ Delete Debit Note
-	</div>
-	<div class="context-menu-item" onclick="unlockDebitNote()">
-		🔓 Unlock the Debit Note
 	</div>
 </div>
 
@@ -437,62 +399,51 @@
 			{
 				subColumns.AddFor(m => m.DomesticStandardPurTax)
 			.Caption("Domestic 5% VAT")
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.Alignment(HorizontalAlignment.Right);
 
 
 				subColumns.AddFor(m => m.TotalDspurchaseTax10Perc)
 			.Caption("Domestic 10% VAT")
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.Alignment(HorizontalAlignment.Right);
 
 				subColumns.AddFor(m => m.TotalDspurchaseTax15Perc)
 			.Caption("Domestic 15% VAT")
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.Alignment(HorizontalAlignment.Right);
 
 				subColumns.AddFor(m => m.DomesticZeroTaxPurTax)
 			.Caption("Domestic Zero Rated VAT")
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.Alignment(HorizontalAlignment.Right);
 
 				subColumns.AddFor(m => m.DomesticExemptedTaxPurTax)
 			.Caption("Domestic Exempted VAT")
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.Alignment(HorizontalAlignment.Right);
 			});
 
 				vatColumns.Add().Caption("Imports VAT").Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.ImportsVatpaidAtCustomsTax)
 			.Caption("Imports @5% VAT")
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.Alignment(HorizontalAlignment.Right);
 
-				subColumns.AddFor(m => m.TotalImportPurchaseTax10Perc)
+				subColumns.AddFor(m => m.TotalRcmpurchaseTax10Perc)
 			.Caption("Imports @10% VAT")
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.Alignment(HorizontalAlignment.Right);
 
-				subColumns.AddFor(m => m.TotalImportPurchaseTax15Perc)
+				subColumns.AddFor(m => m.TotalRcmpurchaseTax15Perc)
 			.Caption("Imports @15% VAT")
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.Alignment(HorizontalAlignment.Right);
 
 				subColumns.AddFor(m => m.ImportsVatthruRcmtax)
 			.Caption("RCM @5% VAT")
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.Alignment(HorizontalAlignment.Right);
 
-				subColumns.AddFor(m => m.TotalRcmpurchaseTax10Perc)
+				subColumns.AddFor(m => m.TotalImportPurchase10Perc)
 			.Caption("RCM @10% VAT")
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.Alignment(HorizontalAlignment.Right);
 
 				subColumns.AddFor(m => m.TotalRcmpurchaseTax15Perc)
 			.Caption("RCM @15% VAT")
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.Alignment(HorizontalAlignment.Right);
 			});
 			});
 		})
@@ -530,73 +481,49 @@
 				totalItems.Add().Column("CalcTaxAmount").SummaryType(SummaryType.Sum)
 			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
-				totalItems.Add().Column("TotalDebitNoteAmount").SummaryType(SummaryType.Sum)
+				totalItems.Add().Column("TotalCreditNoteAmount").SummaryType(SummaryType.Sum)
 			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
-				totalItems.Add().Column("DomesticStandardPurchases").SummaryType(SummaryType.Sum)
+				totalItems.Add().Column("DomesticStandartRatedRevenue").SummaryType(SummaryType.Sum)
 			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
-				totalItems.Add().Column("TotalDspurchase10Perc").SummaryType(SummaryType.Sum)
+				totalItems.Add().Column("TotalRevenueOf10Perc").SummaryType(SummaryType.Sum)
 			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
-				totalItems.Add().Column("TotalDspurchase15Perc").SummaryType(SummaryType.Sum)
+				totalItems.Add().Column("TotalRevenueOf15Perc").SummaryType(SummaryType.Sum)
 			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
-				totalItems.Add().Column("DomesticZeroTaxPurchases").SummaryType(SummaryType.Sum)
+				totalItems.Add().Column("DomesticZeroRatedRevenue").SummaryType(SummaryType.Sum)
 			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
-				totalItems.Add().Column("DomesticExemptedTaxPurchases").SummaryType(SummaryType.Sum)
+				totalItems.Add().Column("DomesticExemptedRevenue").SummaryType(SummaryType.Sum)
 			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
-				totalItems.Add().Column("ImportsVatpaidAtCustoms").SummaryType(SummaryType.Sum)
+				totalItems.Add().Column("GccstandardRatedRevenue").SummaryType(SummaryType.Sum)
 			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
-				totalItems.Add().Column("TotalImportPurchase10Perc").SummaryType(SummaryType.Sum)
+				totalItems.Add().Column("ExportsRevenue").SummaryType(SummaryType.Sum)
 			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
-				totalItems.Add().Column("TotalImportPurchase15Perc").SummaryType(SummaryType.Sum)
+				totalItems.Add().Column("DomesticStandartRatedTax").SummaryType(SummaryType.Sum)
 			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
-				totalItems.Add().Column("ImportsVatthruRcm").SummaryType(SummaryType.Sum)
+				totalItems.Add().Column("TotalTaxOf10Perc").SummaryType(SummaryType.Sum)
 			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
-				totalItems.Add().Column("TotalRcmpurchase10Perc").SummaryType(SummaryType.Sum)
+				totalItems.Add().Column("TotalTaxOf15Perc").SummaryType(SummaryType.Sum)
 			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
-				totalItems.Add().Column("TotalRcmpurchase15Perc").SummaryType(SummaryType.Sum)
+				totalItems.Add().Column("DomesticZeroRatedTax").SummaryType(SummaryType.Sum)
 			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
-				totalItems.Add().Column("DomesticStandardPurTax").SummaryType(SummaryType.Sum)
+				totalItems.Add().Column("DomesticExemptedTax").SummaryType(SummaryType.Sum)
 			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
-				totalItems.Add().Column("TotalDspurchaseTax10Perc").SummaryType(SummaryType.Sum)
+				totalItems.Add().Column("GccstandardRatedTax").SummaryType(SummaryType.Sum)
 			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
-				totalItems.Add().Column("TotalDspurchaseTax15Perc").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				totalItems.Add().Column("DomesticZeroTaxPurTax").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				totalItems.Add().Column("DomesticExemptedTaxPurTax").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				totalItems.Add().Column("ImportsVatpaidAtCustomsTax").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				totalItems.Add().Column("TotalImportPurchaseTax10Perc").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				totalItems.Add().Column("TotalImportPurchaseTax15Perc").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				totalItems.Add().Column("ImportsVatthruRcmtax").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				totalItems.Add().Column("TotalRcmpurchaseTax10Perc").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				totalItems.Add().Column("TotalRcmpurchaseTax15Perc").SummaryType(SummaryType.Sum)
+				totalItems.Add().Column("ExportsTax").SummaryType(SummaryType.Sum)
 			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 			});
 		})
@@ -616,28 +543,27 @@
 
 <script>
 	// // Assuming tenantName is already defined globally
-		let invoiceNo = null;
-		let IsEdit = false,CreditNoteNo=null;
+	let CreditNoteNo = null;
+		let IsEdit = false;
 
 		// Assuming tenantName is already defined globally
-			function editDebitNote() {
-			if (!invoiceNo) {
-				alert("Invoice number is not set.");
+		function viewInvoice() {
+			if (!CreditNoteNo) {
+					alert("CreditNoteNo is not set.");
 				return;
 			}
 
 			IsEdit = true;
 
 			const params = new URLSearchParams({
-				InvoiceNo: invoiceNo,
-				IsEditflag: IsEdit,
+				CreditNoteNo: CreditNoteNo,
+			    IsEditflag: IsEdit,
 				modal: true // If you want to explicitly include modal=true
 			});
 
-			const url = `/${tenantName}/VAT/DebitNoteEditForm?${params.toString()}`;
-				const title = "New e-Invoice Debit Note";
-			//openModal(url, title);
-			 window.location.href = url; // Navigate to the page
+			const url = `/${tenantName}/VAT/CreditNoteEditForm?${params.toString()}`;
+		    window.location.href = url;
+		//	openModal(url, title);
 		}
 
 
@@ -845,38 +771,11 @@
 	}
 	$(document).ready(function () {
 		$(".limited-footer .btn-containerIvoiceEdit").each(function () {
-					if (!$(this).find("#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddReport12").length) {
+				if (!$(this).find("#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddButtonPayment,#ddReport12").length) {
 				$(this).remove();
 			}
 		});
 	});
-		function unlockDebitNote() {
-		DevExpress.ui.dialog.custom({
-			title: "Unlock Debit Note",
-			message: "Are you sure you want to unlock this Debit Note?",
-			buttons: [
-				{ text: "Yes", onClick: () => true },
-				{ text: "No", onClick: () => false }
-			],
-			showTitle: true
-		}).show().done(function (dialogResult) {
-			if (dialogResult) {
-				// Simulate Unlock API Call or Logic
-				// You can replace this block with your AJAX/API call to unlock the note
-				setTimeout(function () {
-					DevExpress.ui.dialog.alert(
-						"Debit Note has been unlocked successfully.",
-						"Debit Note Unlocked"
-					);
-
-					// Optional: refresh the grid if needed
-					// $("#yourDataGridID").dxDataGrid("instance").refresh();
-				}, 500);
-			}
-		});
-	}
-
-
 	$(document).ready(function () {
     $('#btnAddNew1').on('click', function (e) {
         e.stopPropagation(); // prevent click from bubbling up
@@ -884,25 +783,6 @@
         const offset = $(this).offset();
         $('#submenu').css({ top: offset.top + $(this).outerHeight(), left: offset.left });
     });
-
-
-	// 	document.addEventListener("contextmenu", function (e) {
-	//   e.preventDefault();
-
-	//   const contextMenu = document.getElementById("contextMenu");
-
-	//   // Position the menu
-	//   contextMenu.style.top = `${e.pageY}px`;
-	//   contextMenu.style.left = `${e.pageX}px`;
-
-	//   // Show it
-	//   contextMenu.style.display = "block";
-	// });
-
-	// // Hide on click elsewhere
-	// document.addEventListener("click", function () {
-	//   document.getElementById("contextMenu").style.display = "none";
-	// });
 
     // Hide submenu when clicking outside
     $(document).on('click', function () {

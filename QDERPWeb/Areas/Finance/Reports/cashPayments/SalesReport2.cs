@@ -1,10 +1,18 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Text;
+using DevExpress.XtraPrinting;
 using DevExpress.XtraReports.UI;
-using QD.ERP.Web.Service;
 using Microsoft.Extensions.Configuration;
+using QD.ERP.Web.Areas.Finance.Reports.cashPayments;
+using QD.ERP.Web.Service;
+using Svg;
+using System.Drawing.Printing;
+
+
 
 namespace QD.ERP.Web.Areas.Finance.Reports.cashPayments
 {
@@ -28,7 +36,12 @@ namespace QD.ERP.Web.Areas.Finance.Reports.cashPayments
             InitializeComponent();
             SetReportParameters(voucherNo, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb, username);
             LoadReportData(voucherNo);
+
+
+
         }
+
+
 
         private void SetReportParameters(string voucherNo, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb, string username)
         {
@@ -60,23 +73,23 @@ namespace QD.ERP.Web.Areas.Finance.Reports.cashPayments
             AddOrUpdateParameter("CompanyNameAr", Company_Name_Ar ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddressArb", company_address_arb ?? "", typeof(string));
 
-            if (this.FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
+            if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
             if (FindControl("xrLabelUserName", true) is XRLabel userLabel)
                 userLabel.Text = username;
-            if (this.FindControl("xrLabelCompanyName", true) is XRLabel companyNameLabel)
+            if (FindControl("xrLabelCompanyName", true) is XRLabel companyNameLabel)
                 companyNameLabel.Text = company_Name;
 
-            if (this.FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
+            if (FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
                 addressLabel.Text = company_address;
 
-            if (this.FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
+            if (FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
                 companyNameArLabel.Text = Company_Name_Ar;
 
-            if (this.FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
+            if (FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
                 addressArbLabel.Text = company_address_arb;
 
-            if (this.FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
+            if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
                 logoPictureBox.Image = logoImage;
         }
 
@@ -88,22 +101,144 @@ namespace QD.ERP.Web.Areas.Finance.Reports.cashPayments
             {
                 this.DataSource = null;
                 CreateNoDataLabel();
+                return;
             }
-            else
+
+            this.DataSource = dt;
+            this.DataMember = "";
+
+            decimal totalAmount = Convert.ToDecimal(dt.Compute("SUM(DrAmount)", ""));
+            int currencyId = Convert.ToInt32(dt.Rows[0]["currencyId"]);
+
+            var currencyInfo = GetCurrencySymbolOrImageStatus(currencyId);
+
+            // Amount in words
+            if (FindControl("xrLabel9", true) is XRLabel labelEnglish)
+                labelEnglish.Text = $"Amount in Words: {NumberToWordsHelper.ToEnglishWords(totalAmount, currencyInfo.Symbol)}";
+
+            if (FindControl("xrLabel10", true) is XRLabel labelArabic)
+                labelArabic.Text = $"المبلغ كتابةً: {NumberToWordsHelper.ToArabicWords(totalAmount)}";
+
+            if (!string.IsNullOrEmpty(currencyInfo.Symbol))
             {
-                this.DataSource = dt;
-                this.DataMember = "";
-
-                decimal totalAmount = Convert.ToDecimal(dt.Compute("SUM(DrAmount)", ""));
-
-                if (FindControl("xrLabel9", true) is XRLabel labelEnglish)
-                    labelEnglish.Text = NumberToWordsHelper.ToEnglishWords(totalAmount);
-
-                if (FindControl("xrLabel10", true) is XRLabel labelArabic)
-                    labelArabic.Text = NumberToWordsHelper.ToArabicWords(totalAmount);
-
+                foreach (string labelName in new[] { "xrLabel6", "xrLabel17", "xrLabel18", "xrLabel19" })
+                {
+                    if (FindControl(labelName, true) is XRLabel label)
+                        label.Text = currencyInfo.Symbol;
+                }
             }
+            else if (currencyInfo.HasImage)
+            {
+                string svgXml = GetCurrencySvgXml(currencyId);
+                if (!string.IsNullOrEmpty(svgXml))
+                {
+                    foreach (string pictureBoxName in new[] { "xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5" })
+                    {
+                        if (FindControl(pictureBoxName, true) is XRPictureBox pictureBox)
+                        {
+                            try
+                            {
+                                using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(svgXml)))
+                                {
+                                    SvgDocument svgDoc = SvgDocument.Open<SvgDocument>(stream);
+                                    Bitmap bitmap = svgDoc.Draw(); // original quality
+
+                                    pictureBox.Image = bitmap;
+                                    pictureBox.Sizing = ImageSizeMode.Normal; // Best for scaling inside the box
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"Failed to render SVG: {ex.Message}");
+                            }
+                        }
+                    }
+
+                }
+            }
+
         }
+
+
+        private (string Symbol, bool HasImage) GetCurrencySymbolOrImageStatus(int currencyId)
+        {
+            string symbol = "";
+            bool hasImage = false;
+
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
+                    throw new Exception("Unable to retrieve tenant context.");
+
+                string connectionString = tenant.ConnectionString;
+
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    string query = @"
+                SELECT CurrencySymbole, CurrencyImage 
+                FROM Tbl20169CurrencyExchange 
+                WHERE CurrencyExchangeId = @currencyId";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@currencyId", currencyId);
+                        conn.Open();
+
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                symbol = reader["CurrencySymbole"]?.ToString();
+                                hasImage = reader["CurrencyImage"] != DBNull.Value && !string.IsNullOrWhiteSpace(reader["CurrencyImage"]?.ToString());
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error retrieving currency info: {ex.Message}");
+            }
+
+            return (symbol?.Trim() ?? "", hasImage);
+        }
+
+
+        private string GetCurrencySvgXml(int currencyId)
+        {
+            string svgXml = null;
+
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
+                    throw new Exception("Unable to retrieve tenant context.");
+
+                string connectionString = tenant.ConnectionString;
+
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    string query = "SELECT CurrencyImage FROM Tbl20169CurrencyExchange WHERE CurrencyExchangeId = @currencyId";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@currencyId", currencyId);
+                        conn.Open();
+
+                        object result = cmd.ExecuteScalar();
+                        if (result != null && result != DBNull.Value)
+                            svgXml = result.ToString(); // Raw SVG XML as string
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error retrieving currency SVG: {ex.Message}");
+            }
+
+            return svgXml;
+        }
+
+
 
         private DataTable GetReportData(string voucherNo)
         {
@@ -111,25 +246,22 @@ namespace QD.ERP.Web.Areas.Finance.Reports.cashPayments
 
             try
             {
-                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
-                {
-                    string connectionString = tenant.ConnectionString;
+                // Get multi-tenant connection string
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
+                    throw new Exception("Unable to retrieve tenant context. Please check session or cache.");
 
-                    using (SqlConnection conn = new SqlConnection(connectionString))
-                    {
-                        string query = "SELECT * FROM [qry201MainVoucherEntriesWithMaster] WHERE voucherno = @VoucherNo";
-                        using (SqlCommand cmd = new SqlCommand(query, conn))
-                        {
-                            cmd.Parameters.AddWithValue("@VoucherNo", voucherNo);
-                            SqlDataAdapter da = new SqlDataAdapter(cmd);
-                            conn.Open();
-                            da.Fill(dt);
-                        }
-                    }
-                }
-                else
+                string connectionString = tenant.ConnectionString;
+
+                using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    throw new Exception("Unable to get tenant context. Please check session and cache.");
+                    string query = "SELECT * FROM [qry201MainVoucherEntriesWithMaster] WHERE voucherno = @VoucherNo";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@VoucherNo", voucherNo);
+                        SqlDataAdapter da = new SqlDataAdapter(cmd);
+                        conn.Open();
+                        da.Fill(dt);
+                    }
                 }
             }
             catch (Exception ex)
@@ -150,17 +282,18 @@ namespace QD.ERP.Web.Areas.Finance.Reports.cashPayments
             };
             this.Bands[BandKind.Detail].Controls.Add(noDataLabel);
         }
+
         public static class NumberToWordsHelper
         {
-            public static string ToEnglishWords(decimal number)
+            public static string ToEnglishWords(decimal number, string currencySymbol)
             {
                 var integer = (int)number;
                 var fraction = (int)((number - integer) * 100);
 
-                string result = NumberToWords(integer) + " Riyals";
+                string result = NumberToWords(integer) + " " + currencySymbol;
 
                 if (fraction > 0)
-                    result += " and " + NumberToWords(fraction) + " Halalas";
+                    result += " and " + NumberToWords(fraction) + " " + currencySymbol;
 
                 return result + " Only";
             }
@@ -265,6 +398,10 @@ namespace QD.ERP.Web.Areas.Finance.Reports.cashPayments
 
                 return words.Trim();
             }
+
         }
+        // Change the event handler signature to match DevExpress's BeforePrint event
+
+
     }
 }

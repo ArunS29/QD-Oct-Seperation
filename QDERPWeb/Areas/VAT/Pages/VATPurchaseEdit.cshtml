@@ -4,19 +4,6 @@
 @{
 }
 <style>
-
-	.dx-datagrid-headers .center-header {
-		text-align: center !important;
-	}
-
-	.Head {
-		margin-bottom: 10px;
-	}
-
-	#B2BdataGrid {
-		height: 700px !important;
-	}
-
 	.toggle-switch {
 		position: relative;
 		display: inline-block;
@@ -488,30 +475,29 @@
 														.Label("")
 														.Label(new JS("formatMessage('Purchase Voucher No')"))
 														.LabelMode(EditorLabelMode.Outside)
-														.Disabled(true))
+														@* .Disabled(true) *@)
 						</td>
 
 						<!-- 2. Voucher Date -->
 						<td>
-							
 							@(Html.DevExtreme().DateBox()
+														.Label(new JS("formatMessage('Voucher Date')"))
 														.ID("InvoiceDate")
+														.InputAttr("aria-label", "Date")
+														.LabelMode(EditorLabelMode.Outside)
 														.Type(DateBoxType.Date)
 														.DisplayFormat("dd-MMM-yyyy")
 														.Value(DateTime.Now)
-														.Label(new JS("formatMessage('Voucher Date')"))
-														.LabelMode(EditorLabelMode.Outside))
+														.OnValueChanged("onVoucherDateChanged") // JS function name
+
+														)
 						</td>
 					</tr>
 
 					<tr>
 						<!-- 3. Supplier Invoice No -->
 						<td>
-							@* <label style="display: flex; justify-content: space-between; width: 100%;">
-								<span>Supplier Invoice No</span>
-								<span style="direction: rtl;">رقم فاتورة المورد</span>
-								
-							</label> *@
+					@* 
 							@(Html.DevExtreme().DropDownBox()
 														.ID("SupplierInvoiceNo")
 														.DataSource(ds => ds.WebApi()
@@ -524,11 +510,32 @@
 														.Label(new JS("formatMessage('Supplier Invoice No')"))
 														.LabelMode(EditorLabelMode.Outside)
 														.ShowClearButton(true)
-														@* .Disabled(true) *@
+														@* .Disabled(true)
 														.AcceptCustomValue(true)
 														.OpenOnFieldClick(false)
 														.DropDownOptions(d => d.Width(600))
-														.ContentTemplate(new TemplateName("SupplierInvoiceContentTemplate")))
+														.ContentTemplate(new TemplateName("SupplierInvoiceContentTemplate"))) *@
+
+							@(Html.DevExtreme().DropDownBox()
+														.ID("SupplierInvoiceNo")
+														.DataSource(ds => ds.WebApi()
+														.Controller("VATModule")
+														.LoadAction("GetSupplierInvoices")
+														.LoadMode(DataSourceLoadMode.Raw)
+														.Key("InvoiceNo"))
+														.DisplayExpr("InvoiceNo")
+														.ValueExpr("InvoiceNo")
+														.Label(new JS("formatMessage('Supplier Invoice No')"))
+														.LabelMode(EditorLabelMode.Outside)
+														.ShowClearButton(true)
+														.AcceptCustomValue(true)
+														.OpenOnFieldClick(false)
+														.DropDownOptions(d => d.Width(600))
+														.OnValueChanged("onSupplierInvoiceValueChanged")
+														.ContentTemplate(new TemplateName("SupplierInvoiceContentTemplate"))
+														)
+
+
 						</td>
 
 						<!-- 5. Invoice Date -->
@@ -562,6 +569,7 @@
 														.ID("OrderDate")
 														.Type(DateBoxType.Date)
 														.DisplayFormat("dd-MMM-yyyy")
+														.Value(DateTime.Now)
 														.Label(new JS("formatMessage('Order Date')"))
 														.LabelMode(EditorLabelMode.Outside))
 						</td>
@@ -721,7 +729,9 @@
 									@(Html.DevExtreme().TextBox()
 																			.ID("ClientVATNo")
 																			.Label(new JS("formatMessage('Supplier VAT No')"))
-																			.LabelMode(EditorLabelMode.Outside))
+																			.LabelMode(EditorLabelMode.Outside)
+																			)
+
 								</td>
 
 								<!-- 13. Supplier Name in Arabic (TextEdit) -->
@@ -988,14 +998,17 @@
 													.OpenOnFieldClick(false)
 													.ValueExpr("ItemId")
 													.DisplayExpr("ItemName")
-													.Width("100%")
+													.Width("90%")
 													)
-					
-					
-						
-						</div>
 					</td>
 					<td>
+						<div style="display: flex; align-items: flex-end; gap: 10px;">
+							@(Html.DevExtreme().CheckBox()
+														.Text(new JS("formatMessage('')"))
+														.ID("SubmittedBy")
+														.Value(null)
+														.ElementAttr("style", "padding-bottom:40px;")
+														)
 							@(Html.DevExtreme().TextBox()
 														.Label(new JS("formatMessage('Invoice Received By')"))
 														.LabelMode(EditorLabelMode.Outside)
@@ -1004,7 +1017,7 @@
 														.Value(null)
 														// .Disabled(true)
 														)
-						
+						</div>
 
 					</td>
 					<td>
@@ -1521,36 +1534,11 @@
 									.UseIcons(true)
 									)
 									.OnEditorPreparing("onEditorPreparing")
-						.Summary(summary =>
-
-						{
-
-							summary.TotalItems(totalItems =>
-
-							{
-
-								
-
-								totalItems.Add().Column("Amount").SummaryType(SummaryType.Sum)
-
-							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-								totalItems.Add().Column("VAT").SummaryType(SummaryType.Sum).Alignment(HorizontalAlignment.Right)
-
-							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-								totalItems.Add().Column("Total").SummaryType(SummaryType.Sum).Alignment(HorizontalAlignment.Right)
-
-							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-							});
-
-						})
 									)
 		</div>
 
 		<div class="Head">
-			<div class="limited-footer" style="margin-left: 15px;">
+			<div class="limited-footer">
 				@await Html.PartialAsync("VATModuleFooter")
 			</div>
 		</div>
@@ -5616,13 +5604,13 @@
 
 					});
 				});
-				$(function () {
-					$("#ClientVATNo").dxTextBox({
-						text: formatMessage("Client VAT Number: *"),
-						readOnly: true
+				// $(function () {
+				// 	$("#ClientVATNo").dxTextBox({
+				// 		text: formatMessage("Client VAT Number: *"),
+				// 		readOnly: true
 
-					});
-				});
+				// 	});
+				// });
 				$(function () {
 					$("#OtherType").dxTextBox({
 						text: formatMessage("Other ID Type: *"),
@@ -7400,15 +7388,48 @@
 		}
 	}
 
-	function SupplierInvoiceDataGridSelectionChanged(e) {
-		const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-		const ddbInstance = $("#SupplierInvoiceNo").dxDropDownBox("instance");
+	// function SupplierInvoiceDataGridSelectionChanged(e) {
+	// 	const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+	// 	const ddbInstance = $("#SupplierInvoiceNo").dxDropDownBox("instance");
 
-		if (selectedKey) {
-			ddbInstance.option("value", selectedKey);
-			ddbInstance.close();
+	// 	if (selectedKey) {
+	// 		ddbInstance.option("value", selectedKey);
+	// 		ddbInstance.close();
+	// 	}
+	// }
+
+		function SupplierInvoiceDataGridSelectionChanged(e) {
+		const ddbInstance = $("#SupplierInvoiceNo").dxDropDownBox("instance");
+		const selectedKey = e.selectedRowKeys?.[0] || ddbInstance.option("value"); // Handle selected or custom value
+
+		if (!selectedKey) return;
+
+		const dataSource = ddbInstance.getDataSource();
+		const dataItems = dataSource.items(); // Loaded data from the DropDownBox
+
+		// Check for existing PurchaseBillNo match (case-insensitive)
+		const exists = dataItems.some(item => {
+			return item.PurchaseBillNo?.toString().toLowerCase() === selectedKey.toString().toLowerCase();
+		});
+
+		if (exists) {
+			ddbInstance.option({
+				value: null,
+				validationError: {
+					message: "Supplier Invoice is already available in the system, Please review again."
+				},
+				isValid: false
+			});
+		} else {
+			ddbInstance.option({
+				validationError: null,
+				isValid: true
+			});
 		}
 	}
+
+
+
 
 	async function convertToArabic() {
 
@@ -7531,6 +7552,125 @@
 				iframe.src = url;
 			}, 300);
 		}
+
+
+			 function onVoucherDateChanged(e) {
+		console.log("Selected Date:", e.value);
+		debugger;
+		var InvoiceDate = $("#InvoiceDate").dxDateBox("instance");
+		InvoiceDate.option("onValueChanged", function (e) {
+			let InvoiceDateval = e.value; // Get Date from DevExtreme DateBox
+
+			// Check if InvoiceDateval is valid
+			if (!InvoiceDateval) return;
+
+			// Set effectiveDate to the same value as InvoiceDate
+		
+
+			// Convert to 'yyyy-MM-dd' format
+			let formattedDate = new Date(InvoiceDateval).toISOString().split("T")[0];
+
+			// Define the cutoff date (2021-12-31)
+			let cutoffDate = new Date("2021-12-31");
+
+			// Get the current date to set if the voucher date is blocked
+			let currentdate = new Date();
+			let formattedCurrentDate = currentdate.toISOString().split("T")[0]; // Format it as 'yyyy-MM-dd'
+
+			// Check if the formatted voucher date is before the cutoff date
+			if (new Date(formattedDate) < cutoffDate) {
+				// Show alert for blocked entry
+				DevExpress.ui.dialog.alert("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
+
+				// Set both voucherDate and effectiveDate to the current date
+				InvoiceDate.option("value", formattedCurrentDate);
+				
+			}
+		});
+	}
+	// 	 function validateSupplierInvoiceNo(e) {
+	// 	const value = e.value;
+	// 	let isDuplicate = false;
+
+	// 	const dropDown = $("#SupplierInvoiceNo").dxDropDownBox("instance");
+	// 	const dataSource = dropDown.getDataSource();
+
+	// 	// Get all loaded items and check for duplicates
+	// 	const items = dataSource.items();
+
+	// 	if (items && items.length) {
+	// 		isDuplicate = items.some(item => item.InvoiceNo === value);
+	// 	}
+
+	// 	if (isDuplicate) {
+	// 		e.rule.message = "Supplier Invoice is already available in the system, Please review again.";
+	// 		return false;
+	// 	}
+
+	// 	return true;
+	// }
+
+
+			function onSupplierInvoiceValueChanged(e) {
+		const newValue = e.value;
+		const ddbInstance = e.component;
+
+		if (!newValue) return;
+
+		const dataSource = ddbInstance.getDataSource();
+		const dataItems = dataSource.items();
+
+		const exists = dataItems.some(item => {
+			return item.PurchaseBillNo?.toString().toLowerCase() === newValue.toString().toLowerCase();
+		});
+
+		if (exists) {
+			ddbInstance.option({
+				value: null,
+				validationError: {
+					message: "Supplier Invoice is already available in the system, Please review again."
+				},
+				isValid: false
+			});
+		} else {
+			ddbInstance.option({
+				validationError: null,
+				isValid: true
+			});
+		}
+	}
+
+
+
+	  $(function () {
+		  debugger;
+		const dropDown = $("#SupplierInvoiceNo").dxDropDownBox("instance");
+
+		// Ensure data source is loaded before validating
+		const dataSource = dropDown.getDataSource();
+		dataSource.load().done(function (items) {
+			$("#SupplierInvoiceWrapper").dxValidator({
+				validationRules: [
+					{
+						type: "required",
+						message: "Supplier Invoice No is required"
+					},
+					{
+						type: "custom",
+						message: "Supplier Invoice is already available in the system, Please review again.",
+						validationCallback: function (e) {
+							const value = dropDown.option("value");
+
+							if (!value) return true;
+
+							const duplicate = items && items.some(item => item.InvoiceNo === value);
+							return !duplicate;
+						}
+					}
+				]
+			});
+		});
+	});
 
 </script>
 

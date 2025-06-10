@@ -54,7 +54,7 @@
 		overflow: hidden;
 	}
 
-	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddReport12,#btnPurchaseDetails)) {
+	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddReport1)) {
 		display: none !important;
 	}  
 
@@ -703,11 +703,10 @@
 	}
 	$(document).ready(function () {
 		$(".limited-footer .btn-containerIvoiceEdit").each(function () {
-				if (!$(this).find("#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddButtonPayment,#ddReport12,#btnPurchaseDetails").length) {
+				if (!$(this).find("#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddButtonPayment,#ddReport12,#btnPurchaseDetails,#btnColumnChooser").length) {
 				$(this).remove();
 			}
 		});
-		ddBtnShowRecords_click('range');
 	});
 	// function cloneEInvoice() {
 	// 	const rowData = selectedRowData; // Make sure selectedRowData is available
@@ -839,6 +838,19 @@
 					});
 				}
 			});
+	}
+
+
+	 function showColumnChooser() {
+		var dataGrid = $("#dataGrid").dxDataGrid("instance");
+		var isColumnChooserVisible = dataGrid.option("columnChooser.enabled");
+
+		if (isColumnChooserVisible) {
+			dataGrid.option("columnChooser.enabled", false); // Disable the column chooser
+		} else {
+			dataGrid.option("columnChooser.enabled", true);
+			dataGrid.showColumnChooser();
+		}
 	}
 
 </script>

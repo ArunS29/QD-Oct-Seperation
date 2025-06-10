@@ -2,26 +2,24 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.DAL.Entities;
+using QD.ERP.Web.Service;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using QD.ERP.Web.Service; // Ensure this namespace includes TenantDbContextHelper
 
 public class TemplateCreateModel : PageModel
 {
-    private readonly ERPMasterWtDataContext _context;
     private readonly TenantDbContextHelper _tenantDbContextHelper;
 
-    public TemplateCreateModel(ERPMasterWtDataContext context, TenantDbContextHelper tenantDbContextHelper)
+    public TemplateCreateModel(TenantDbContextHelper tenantDbContextHelper)
     {
-        _context = context;
-        _tenantDbContextHelper = tenantDbContextHelper;
+        _tenantDbContextHelper = tenantDbContextHelper ?? throw new ArgumentNullException(nameof(tenantDbContextHelper));
     }
 
     [BindProperty]
     public EmailTemplate Template { get; set; } = new EmailTemplate();
 
-    public bool IsSuccess { get; set; } = false; 
+    public bool IsSuccess { get; set; } = false;
 
     public void OnGet() { }
 
@@ -34,33 +32,29 @@ public class TemplateCreateModel : PageModel
 
         try
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out var _, out var dbContext))
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
             {
-                // Trim input values
-                Template.TemplateName = Template.TemplateName?.Trim();
-                Template.Subject = Template.Subject?.Trim();
-                Template.Body = Template.Body?.Trim();
-                Template.Status = Template.Status?.Trim() ?? "Active";
-
-                // Save the template to the tenant-specific database
-                dbContext.EmailTemplates.Add(Template);
-                await dbContext.SaveChangesAsync();
-
-                IsSuccess = true;
-                return Page(); // JS will alert and go back
+                ModelState.AddModelError(string.Empty, "Unable to resolve tenant database context.");
+                return Page();
             }
-            else
-            {
-                throw new Exception("Unable to retrieve tenant context.");
-            }
+
+            // Trim and sanitize
+            Template.TemplateName = Template.TemplateName?.Trim();
+            Template.Subject = Template.Subject?.Trim();
+            Template.Body = Template.Body?.Trim();
+            Template.Status = Template.Status?.Trim() ?? "Active";
+
+            dbContext.EmailTemplates.Add(Template);
+            await dbContext.SaveChangesAsync();
+
+            IsSuccess = true;
+            return Page(); // JS will pick this and close or reload
         }
         catch (Exception ex)
         {
-            ModelState.AddModelError(string.Empty, "An error occurred while saving the template. Please try again.");
-            Console.WriteLine($"Error saving template: {ex.Message}");
+            ModelState.AddModelError(string.Empty, "An error occurred while saving the template.");
+            Console.WriteLine($"[TemplateCreateModel] Error: {ex}");
             return Page();
         }
     }
-
-
 }

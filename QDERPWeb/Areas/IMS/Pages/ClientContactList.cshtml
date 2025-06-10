@@ -130,7 +130,7 @@
     <div class="form-row">
         <div class="form-field" style="display: flex;  align-items: end;">
             @(Html.DevExtreme().TextBox()
-                .ID("clientName")
+                .ID("txtclientName")
                 .Value("")
                 .Width("100%")
                 .Label("Client Name")
@@ -337,13 +337,17 @@ $(document).ready(function () {
 
     // Extract and clean parameters safely
     const clientContactSlNo = (urlParams.get("ClientContactSlNo") || "").split(/[?&]/)[0];
-   // const clientCode = (urlParams.get("clientCode") || "").split(/[?&]/)[0];
-    const clientName = (urlParams.get("clientName") || "").split(/[?&]/)[0];
+   const clientCode = (urlParams.get("clientCode") || "").split(/[?&]/)[0];
+    const clientName = (urlParams.get("clientName") || "").split(/[?&]/)[0]; 
+   // alert("clientContactSlNo"+clientContactSlNo);
+       //alert("clientCode"+clientCode);
+        // alert("clientName"+clientName);
+
 
     // Bind hidden and visible values
     $("#clientHidden").dxTextBox("instance").option("value", clientContactSlNo);
     $("#clientCode").dxTextBox("instance").option("value", clientCode);
-    $("#clientName").dxTextBox("instance").option("value", clientName);
+    $("#txtclientName").dxTextBox("instance").option("value", clientName);
 
     // If editing existing contact
     if (clientContactSlNo) {
@@ -362,7 +366,6 @@ function bindClientContactData(clientContactSlNo) {
             if (data) {
                 $("#clientHidden").dxTextBox("instance").option("value", data.ClientContactSlNo); // hidden field
                 $("#clientCode").dxTextBox("instance").option("value", data.ClientCode);
-                $("#clientName").dxTextBox("instance").option("value", data.clientName);
                 $("#contactPerson").dxTextBox("instance").option("value", data.ContactPerson);
                 $("#title").dxTextBox("instance").option("value", data.ContactPersonTitle);
                 $("#division").dxTextBox("instance").option("value", data.ContactDivision);
@@ -397,7 +400,7 @@ function bindClientContactData(clientContactSlNo) {
 
     const data = {
         ClientCode: $("#clientCode").dxTextBox("instance").option("value"),
-        ClientName: $("#clientName").dxTextBox("instance").option("value"),
+        ClientName: $("#txtclientName").dxTextBox("instance").option("value"),
         ContactPerson: $("#contactPerson").dxTextBox("instance").option("value"),
         ContactPersonTitle: $("#title").dxTextBox("instance").option("value"),
         ContactDivision: $("#division").dxTextBox("instance").option("value"),
@@ -423,15 +426,18 @@ function bindClientContactData(clientContactSlNo) {
         success: function (res) {
             if (res.success) {
                 DevExpress.ui.notify(res.message, "success", 3000);
-                    // Refresh parent DataGrid (ensure the correct selector is used)
-                    if (window.parent && window.parent.$("#ContactListdataGrid").length) {
-                        let dataGrid = window.parent.$("#ContactListdataGrid").dxDataGrid("instance");
-                        if (dataGrid) {
-                            dataGrid.refresh();
-                        }
-                    }
-                // Set new or updated ID back to the hidden field
+                           // Set new or updated ID back to the hidden field
                 $("#clientHidden").dxTextBox("instance").option("value", res.lastClientContactSlNo);
+              
+                     // Refresh parent DataGrid with fresh data
+                if (window.parent && typeof window.parent.loadContactListGrid === "function") {
+                    const clientCode = $("#clientCode").dxTextBox("instance").option("value");
+                    if (clientCode) {
+                        window.parent.loadContactListGrid(clientCode);
+                    }
+                }
+
+     
 
                 // Change button text to "Update" if needed
                 $("#saveClientListButton").dxButton("instance").option("text", "Update");

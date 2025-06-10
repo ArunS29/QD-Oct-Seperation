@@ -287,52 +287,43 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetClientStatus(DataSourceLoadOptions loadOptions)
+        public async Task<IActionResult> GetClientStatus(string clientCode)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 try
                 {
-                    var ClientCategory = dbContext.Qry30102ClientStatuses.Select(i => new
-                    {
-                        i.ReportedOn,
-                        i.Status,
-                        i.FollowupOn,
-                        i.StatusRemarks,
-                        i.ClientCode,
-                        i.ClientStatusNo
-                    });
+                    var result = await dbContext.Qry30102ClientStatuses
+                        .Where(i => i.ClientCode == clientCode)
+                        .ToListAsync();
 
-                    return Json(await DataSourceLoader.LoadAsync(ClientCategory, loadOptions));
+                    return Json(result);
                 }
                 catch (Exception ex)
                 {
+
                     _logger.LogError($"Error in GetProject: {ex.Message}");
                     return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
                 }
             }
 
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
+            return Unauthorized();
         }
+
+
         [HttpGet]
-        public async Task<IActionResult> GetContactList(DataSourceLoadOptions loadOptions)
+       public async Task<IActionResult> GetContactList(string clientCode)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 try
                 {
-                    var ClientCategory = dbContext.Tbl3010102clientContactLists.Select(i => new
-                    {
-                        i.ContactPerson,
-                        i.ContactPersonTitle,
-                        i.ContactEmail,
-                        i.ContactMobile1,
-                        i.ContactPhone1,
-                        i.ClientContactSlNo,
-                        i.ClientCode
-                    });
+                    var result = await dbContext.Tbl3010102clientContactLists
+                      .Where(i => i.ClientCode == clientCode)
+                      .ToListAsync();
 
-                    return Json(await DataSourceLoader.LoadAsync(ClientCategory, loadOptions));
+                    return Json(result);
+                   
                 }
                 catch (Exception ex)
                 {

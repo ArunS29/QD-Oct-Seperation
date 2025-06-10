@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
@@ -16,14 +17,17 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
     {
 		private readonly TenantDbContextHelper _tenantDbContextHelper;
 		private readonly ILogger<VoucherEntryCashReceiptsController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-		public VoucherEntryCashReceiptsController(ILogger<VoucherEntryCashReceiptsController> logger, TenantDbContextHelper tenantDbContextHelper)
+        public VoucherEntryCashReceiptsController(ILogger<VoucherEntryCashReceiptsController> logger, TenantDbContextHelper tenantDbContextHelper)
 		{
-			_tenantDbContextHelper = tenantDbContextHelper;
+            IUserActionLogger userActionLogger;
+            _tenantDbContextHelper = tenantDbContextHelper;
 			_logger = logger;
 		}
 
 		[HttpGet]
+
         public async Task<IActionResult> GetReceivingAccount(DataSourceLoadOptions loadOptions)
         {
 			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
@@ -198,9 +202,17 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 					dbContext.Tbl201VoucherMasters.AddRange(voucherMaster);
                 }
 
-				dbContext.Tbl201VoucherEntries.AddRange(voucherEntries);
-
+                // Save to DB
+                dbContext.Tbl201VoucherEntries.AddRange(voucherEntries);
                 await dbContext.SaveChangesAsync();
+
+                // ✅ Log the action
+                await _userActionLogger.LogAsync(
+                    module: "Finance > Cash Payment",
+                    actionDetail: $"Saved voucher: {voucherEntries[0].VoucherNo}, Entries: {voucherEntries.Count}, AccountHead: {AccountHead}",
+                    documentNo: voucherEntries[0].VoucherNo
+                );
+
 
 
 
@@ -430,8 +442,15 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
 				dbContext.Tbl201VoucherMasters.Add(VM);
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+            module: "Finance > Voucher Master",
+            actionDetail: $"Saved voucher master entry: {VM.VoucherNo}, Date: {VM.VoucherDate?.ToString("yyyy-MM-dd") ?? "N/A"}",
+            documentNo: VM.VoucherNo
+        );
+
                 //return Json(new { VoucherEntryNo = VE.VoucherNo });
                 return Ok(new { success = true, message = "Data inserted successfully!" });
+
             }
             catch (Exception ex)
             {
