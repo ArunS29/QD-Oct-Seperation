@@ -458,12 +458,12 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 					string yearSuffix = DateTime.Now.ToString("yyyy"); // Get last two digits of the year
 
 					// Get invoice abbreviation
-					var invoiceAbbrv = await dbContext.Tbl901CompanyDetails
-						.Select(c => c.EinvoiceAbbrv)
-						.FirstOrDefaultAsync();
+					//var invoiceAbbrv = await dbContext.Tbl901CompanyDetails
+					//	.Select(c => c.EinvoiceAbbrv)
+					//	.FirstOrDefaultAsync();
 
-					if (string.IsNullOrEmpty(invoiceAbbrv))
-						return BadRequest("Invoice abbreviation not found.");
+					//if (string.IsNullOrEmpty(invoiceAbbrv))
+					//	return BadRequest("Invoice abbreviation not found.");
 
 					// Get last invoice number
 					//var lastInvoiceNumber = await dbContext.Tbl20161VatinvoiceMasters
@@ -4312,27 +4312,18 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
         }
 
         [HttpGet]
-        public IActionResult CreditDetailDescription()
+        public IActionResult CreditDetailDescription(string Description)
         {
-            //// Log or debug the incoming parameters
-            //ViewBag.VoucherNo = voucherNo;
-            //ViewBag.AccountHead = accountHead;
-            //ViewBag.VoucherAmount = voucherAmount;
-            //ViewBag.DrCr = drCr;
-            //ViewBag.VoucherEntryNo = voucherEntryNo;
-            return PartialView("~/Areas/VAT/Pages/CreditDetailDescription.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
+      
+            return PartialView("~/Areas/VAT/Pages/CreditDetailDescription.cshtml", Description); // Ensure this is inside /Views/VoucherEntryReceipts/
         }
 
         [HttpGet]
-        public IActionResult VATPercentageCal()
+        public IActionResult VATPercentageCal(decimal amount)
         {
-            //// Log or debug the incoming parameters
-            //ViewBag.VoucherNo = voucherNo;
-            //ViewBag.AccountHead = accountHead;
-            //ViewBag.VoucherAmount = voucherAmount;
-            //ViewBag.DrCr = drCr;
-            //ViewBag.VoucherEntryNo = voucherEntryNo;
-            return PartialView("~/Areas/VAT/Pages/VATPercentageCal.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
+            // Use the amount value in your logic/view
+            ViewBag.Amount = amount;
+            return PartialView("~/Areas/VAT/Pages/VATPercentageCal.cshtml");
         }
 
     }

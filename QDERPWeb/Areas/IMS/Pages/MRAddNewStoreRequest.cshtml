@@ -372,10 +372,10 @@
 			@(Html.DevExtreme().Tabs()
 						.Items(items =>
 						{
-							items.Add().Icon("optionsgear").Text("Material Request's/Enquiry Details");
-							items.Add().Icon("accountbox").Text("Request Details");
-							items.Add().Icon("card").Text("Branch/Divisions");
-							items.Add().Icon("attach").Text("Signatories");
+							items.Add().Icon("optionsgear").Text(new JS("formatMessage('Material Requests/Enquiry Details')"));
+							items.Add().Icon("accountbox").Text(new JS("formatMessage('Request Details')"));
+							items.Add().Icon("card").Text(new JS("formatMessage('Branch/Divisions')"));
+							items.Add().Icon("attach").Text(new JS("formatMessage('Signatories')"));
 						})
 						.SelectedIndex(0)
 						.OnSelectionChanged("onTabSelectionChanged")
@@ -822,7 +822,7 @@
 						<tr>
 
 							<td>
-								<label>Remarks:</label>
+								<label id="Remarks1">Remarks:</label>
 								@(Html.DevExtreme().TextArea()
 															.ID("txtRemarks")
 															.ElementAttr("style", "height:150px !important;")
@@ -1494,7 +1494,7 @@
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
-						columns.Add().DataField("ModeOfRequest");
+						columns.Add().DataField("ModeOfRequest").Caption(new JS("formatMessage('Mode Of Request')"));
 
 
 
@@ -1529,7 +1529,7 @@
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
-						columns.Add().DataField("TypeOfRequest");
+						columns.Add().DataField("TypeOfRequest").Caption(new JS("formatMessage('Type Of Request')"));
 
 
 
@@ -1565,7 +1565,7 @@
                         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                         .Columns(columns =>
                         {
-                                columns.Add().DataField("StoreName");
+                                columns.Add().DataField("StoreName").Caption(new JS("formatMessage('Store Name')"));
 
 
 
@@ -1604,7 +1604,7 @@
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
-						columns.Add().DataField("SalesPersonName");
+						columns.Add().DataField("SalesPersonName").Caption(new JS("formatMessage('Sales Person Name')"));
 
 
 
@@ -1675,9 +1675,6 @@
 					{
 						columns.Add().Caption(new JS("formatMessage('Branch Code')")).DataField("CompanyId");
 						columns.Add().Caption(new JS("formatMessage('Branch/Division Name')")).DataField("CompanyName");
-
-
-
 					})
 					)
 		}@using (Html.DevExtreme().NamedTemplate("GetEnquiryContentTemplate"))
@@ -1912,12 +1909,6 @@
 					})
 					)
 		}
-
-
-
-
-
-
 		@using (Html.DevExtreme().NamedTemplate("PaymentmeansContentTemplate"))
 		{
 			@(Html.DevExtreme().DataGrid()
@@ -6835,5 +6826,9 @@
 		const title = "";
 		openModal(url, title);
 	}
+	 $(function () {
+					$("#Remarks1").text(
+						 formatMessage("Remarks:"));
+			});
 
 </script>

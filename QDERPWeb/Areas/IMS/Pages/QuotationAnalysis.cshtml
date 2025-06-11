@@ -38,7 +38,7 @@
 </div>
 <div style="padding: 10px; background-color: #c7cfdd;">
     <div style="display: flex; align-items: center; gap: 10px;">
-        <label style="font-weight: bold;">Select a Request / Enquiry:</label>
+        <label id="SelectRequest" style="font-weight: bold;"></label>
 
         @(Html.DevExtreme().DropDownBox()
             .ID("requestSelectBox")
@@ -50,7 +50,7 @@
             )
             .ValueExpr("Mprno")        // <--- This will be used as value
             .DisplayExpr("Mprno")      // <--- This will be shown in the DropDownBox input
-            .Placeholder("Select request")
+            .Placeholder(new JS("formatMessage('Select request')"))
             .ShowClearButton(true)
             .Width(300)
             .DropDownOptions(o => o.Width(1000)) // ✅ Width of the popup dropdown
@@ -77,11 +77,11 @@
             @* .GroupPanel(g => g.Visible(true)) *@///COLUMN GROUP IN TOP OF THE GRID
 
             .Columns(columns => {
-            columns.Add().DataField("Mprno").Caption("Request/Enquiry.No");
-            columns.Add().DataField("NoOfRfqissued").Caption("No of RFQ Issued");
-            columns.Add().DataField("ClientName").Caption("Client Name or Store Name");
-            columns.Add().DataField("Mprdate").Caption("MPR Date").DataType(GridColumnDataType.Date). Format("dd-MMM-yyyy");
-            columns.Add().DataField("RequestedBy").Caption("Requested By");
+            columns.Add().DataField("Mprno").Caption(new JS("formatMessage('Request/Enquiry.No')"));
+            columns.Add().DataField("NoOfRfqissued").Caption(new JS("formatMessage('No of RFQ Issued')"));
+            columns.Add().DataField("ClientName").Caption(new JS("formatMessage('Client Name or Store Name')"));
+            columns.Add().DataField("Mprdate").Caption(new JS("formatMessage('MPR Date')")).DataType(GridColumnDataType.Date). Format("dd-MMM-yyyy");
+            columns.Add().DataField("RequestedBy").Caption(new JS("formatMessage('Requested By')"));
 
             })
 
@@ -92,7 +92,7 @@
 
         @(Html.DevExtreme().Button()
             .ID("viewAnalysisButton")
-            .Text("View Analysis")
+            .Text(new JS("formatMessage('View Analysis')"))
             .Icon("chart")
             .Type(ButtonType.Normal)
             .OnClick("onViewAnalysisClick")
@@ -139,13 +139,13 @@
                 pivotGridInstance = $("#pivotGridContainerId").dxPivotGrid({
                     dataSource: {
                         fields: [
-                            { dataField: "Gsdescrpition", area: "row", caption: "Item Description" },
-                            { dataField: "QuotedQuantity", area: "row", caption: "Quantity" },
-                            { dataField: "SupplierName", area: "column", caption: "Supplier Name" },
-                            { dataField: "UnitPrice", area: "data", caption: "Unit Price", summaryType: "avg", format: "currency" },
-                            { dataField: "ItemDiscount", area: "data", caption: "Discount", summaryType: "sum", format: "fixedPoint" },
-                            { dataField: "LineTotalBeforeTax", area: "data", caption: "Net Total", summaryType: "sum", format: "currency" },
-                            { dataField: "IsWonForPo", area: "data", caption: "Won", summaryType: "max", dataType: "boolean" }
+                            { dataField: "Gsdescrpition", area: "row", caption: formatMessage("Item Description") },
+                            { dataField: "QuotedQuantity", area: "row", caption: formatMessage("Quantity") },
+                            { dataField: "SupplierName", area: "column", caption: formatMessage("Supplier Name") },
+                            { dataField: "UnitPrice", area: "data", caption: formatMessage("Unit Price"), summaryType: "avg", format: "currency" },
+                            { dataField: "ItemDiscount", area: "data", caption: formatMessage("Discount"), summaryType: "sum", format: "fixedPoint" },
+                            { dataField: "LineTotalBeforeTax", area: "data", caption: formatMessage("Net Total"), summaryType: "sum", format: "currency" },
+                            { dataField: "IsWonForPo", area: "data", caption: formatMessage("IsWonForPo"), summaryType: "max", dataType: "boolean" }
                         ],
                         store: {
                             type: "array",
@@ -205,6 +205,10 @@
         });
     }
 
+     $(function () {
+                    $("#SelectRequest").text(
+                         formatMessage("Select a Request / Enquiry:"));
+            });
 
     
 

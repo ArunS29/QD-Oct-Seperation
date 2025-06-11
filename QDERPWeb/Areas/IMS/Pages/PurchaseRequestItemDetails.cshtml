@@ -237,11 +237,11 @@
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
-			
-				columns.AddFor(m => m.Mprno).Caption("MPRNo").Alignment(HorizontalAlignment.Center).Visible(true);
-				columns.AddFor(m => m.Mprno).Caption("MPRNo").Alignment(HorizontalAlignment.Center).Visible(true).GroupIndex(0);
-				columns.AddFor(m => m.Mprdate).Caption("MPR Date").Alignment(HorizontalAlignment.Center).Visible(true).Format("dd-MMM-yyyy");
-				columns.AddFor(m => m.SubmittedOn).Caption("Submitted On").Alignment(HorizontalAlignment.Center).Visible(true);
+
+				columns.AddFor(m => m.Mprno).Caption(new JS("formatMessage('MPRNo')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.Mprno).Caption(new JS("formatMessage('MPRNo')")).Alignment(HorizontalAlignment.Center).Visible(true).GroupIndex(0);
+				columns.AddFor(m => m.Mprdate).Caption(new JS("formatMessage('MPR Date')")).Alignment(HorizontalAlignment.Center).Visible(true).Format("dd-MMM-yyyy");
+				columns.AddFor(m => m.SubmittedOn).Caption(new JS("formatMessage('Submitted On')")).Alignment(HorizontalAlignment.Center).Visible(true);
 					columns.AddFor(m => m.IsVerified).Caption(new JS("formatMessage('Is Verified')")).Alignment(HorizontalAlignment.Center).AllowEditing(true)
 				.CellTemplate(@<text>
 			<div class="dx-icon">
@@ -256,25 +256,26 @@
 			</div>
 		</text>)
 			.Visible(true);
-				columns.AddFor(m => m.ApprovedOn).Caption("Approved On").Alignment(HorizontalAlignment.Center).Visible(true);
-				columns.AddFor(m => m.Gscode).Caption("GS Code").Alignment(HorizontalAlignment.Center).Visible(true);
-			    columns.AddFor(m => m.Gsdescrpition).Caption("GS Description").Alignment(HorizontalAlignment.Center).Visible(true);
-				columns.AddFor(m => m.UnitDesc).Caption("Unit Desc").Alignment(HorizontalAlignment.Center).Visible(true);
-				columns.AddFor(m => m.QtyRequested).Caption("Qty Requested").Alignment(HorizontalAlignment.Center).Visible(true);
-				columns.AddFor(m => m.RequestedNameRef).Caption("Requested Name Ref").Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.ApprovedOn).Caption(new JS("formatMessage('Approved On')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.Gscode).Caption(new JS("formatMessage('GS Code')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.Gsdescrpition).Caption(new JS("formatMessage('GS Description')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.UnitDesc).Caption(new JS("formatMessage('Unit Desc')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.QtyRequested).Caption(new JS("formatMessage('Qty Requested')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.RequestedNameRef).Caption(new JS("formatMessage('Requested Name Ref')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
-				columns.AddFor(m => m.ProjectDescription).Caption("Project Description").Alignment(HorizontalAlignment.Center).Visible(true);
-				columns.AddFor(m => m.TypeOfRequest).Caption("Type Of Request").Alignment(HorizontalAlignment.Center).Visible(true);
-				columns.AddFor(m => m.Pono).Caption("PONo").Alignment(HorizontalAlignment.Center).Visible(true);				columns.AddFor(m => m.RequestedNameRef).Caption("Requested Name Ref").Alignment(HorizontalAlignment.Center).Visible(true);
-				columns.AddFor(m => m.Podate).Caption("PO Date").Alignment(HorizontalAlignment.Center).Visible(true);
-				columns.AddFor(m => m.ReceiptStatus).Caption("Receipt Status").Alignment(HorizontalAlignment.Center).Visible(true);
-				columns.AddFor(m => m.ReceiptNo).Caption("Receipt No").Alignment(HorizontalAlignment.Center).Visible(true);
-				columns.AddFor(m => m.ReceiptDate).Caption("Receipt Date").Alignment(HorizontalAlignment.Center).Visible(true);
-				columns.AddFor(m => m.ReceivedQty).Caption("Received Qty").Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.ProjectDescription).Caption(new JS("formatMessage('Project Description')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.TypeOfRequest).Caption(new JS("formatMessage('Type Of Request')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.Pono).Caption(new JS("formatMessage('PO No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.RequestedNameRef).Caption(new JS("formatMessage('Requested Name Ref')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.Podate).Caption(new JS("formatMessage('PO Date')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.ReceiptStatus).Caption(new JS("formatMessage('Receipt Status')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.ReceiptNo).Caption(new JS("formatMessage('Receipt No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.ReceiptDate).Caption(new JS("formatMessage('Receipt Date')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.ReceivedQty).Caption(new JS("formatMessage('Received Qty')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
-				columns.AddFor(m => m.BalanceToReceive).Caption("Balance To Receive").Alignment(HorizontalAlignment.Center).Visible(true);
-				columns.AddFor(m => m.TotalIssuedQty).Caption("Total Issued Qty").Alignment(HorizontalAlignment.Center).Visible(true);
-				columns.AddFor(m => m.BalanceToIssue).Caption("Balance To Issue").Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.BalanceToReceive).Caption(new JS("formatMessage('Balance To Receive')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.TotalIssuedQty).Caption(new JS("formatMessage('Total Issued Qty')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.BalanceToIssue).Caption(new JS("formatMessage('Balance To Issue')")).Alignment(HorizontalAlignment.Center).Visible(true);
 		})
 		.Height(680) // Fixed height for the grid
 		.ColumnAutoWidth(true)
@@ -347,9 +348,6 @@
 			});
 		})
 		)
-
-	)
-
 </div>
 <div id="invoiceErrorPopup"></div>
 

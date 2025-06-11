@@ -349,12 +349,20 @@
 	}
 
 	.mainContainer {
-		width: 95.5%;
+		width: 100%;
 	}
 
 	.content-container-top {
 		width: 100%;
 	}
+	  .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
 
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
@@ -387,7 +395,7 @@
 		
 
 
-			<div id="tab-content-1" class="tab-content">
+			<div id="tab-content-1" class="tab-content" style="padding:20px;">
 
 				<table style="width:100%;">
 					<tr style="display:flex; gap: 10px; align-items:end; width:100%;">
@@ -433,23 +441,24 @@
 						</td>
 						<td style="display: flex; align-items: end; width:100%;" colspan="2">
 							 @(Html.DevExtreme().DropDownBox()
-														.Label(new JS("formatMessage('Client Name:')"))
-                          .DataSource(d => d.WebApi()
-														.Controller("AddNewClientRequest")
-														.LoadAction("GetClientDetails")
-                                                    .LoadMode(DataSourceLoadMode.Raw)
-                                                   .Key("CategoryCode")
-                                                )
-                                         .LabelMode(EditorLabelMode.Outside)
-                                              .ID("GetProjectDropDown")
+									.Label(new JS("formatMessage('Client Name:')"))
+									.AcceptCustomValue(true)
+									.DataSource(d => d.WebApi()
+									.Controller("AddNewClientRequest")
+									.LoadAction("GetClientDetails")
+                                    .LoadMode(DataSourceLoadMode.Raw)
+                                    .Key("CategoryCode")
+                                    )
+									.LabelMode(EditorLabelMode.Outside)
+									.ID("GetProjectDropDown")
      .Width(900)
      @*  .ShowClearButton(true)
                  .AcceptCustomValue(true) *@
      .OpenOnFieldClick(false)//
      .ValueChangeEvent("input")
      .HoverStateEnabled(true)
-														.ValueExpr("ClientCode")
-														.DisplayExpr("ClientName")
+		.ValueExpr("ClientCode")
+		.DisplayExpr("ClientName")
      .OnInput("dropDownBoxOnInput")
      .OnOpened("onOpened")
      .TabIndex(1)
@@ -547,18 +556,24 @@
 							.Hint("Add Description")
 							.Width(40)
 							.ElementAttr("style", "margin-top:18px;")
-														.Disabled(true)
+							.Disabled(true)
 							)
 
 						</td>
-						<td colspan="2" style="width:100%;">
+						<td colspan="2" style="width:100%; display:flex; align-items:end;">
 							@(Html.DevExtreme().TextBox()
 							.Label(new JS("formatMessage('Client Contact Name:')"))
 							.ID("txtContactName")
 							.LabelMode(EditorLabelMode.Outside)
 							.Width("100%")
 							)
-
+							@(Html.DevExtreme().Button()
+							.ID("Addcontactname")
+							.Icon("plus")
+							.Width(40)
+							.ElementAttr("style", "margin-top:18px;")
+							.OnClick("AddContactName")
+							)
 						</td>
 						<td colspan="2" style="width:100%;">
 							@(Html.DevExtreme().TextBox()
@@ -839,18 +854,18 @@
 			</div>
 
 			<div id="tab-content-3" class="tab-content">
-				<div class="row">
+				<div class="row" >
 					<!-- Card 1: 8 columns -->
 					<div class="col-6">
-					
-							
-								<div class="row" style="font-size:14px;">
+
+
+						<div class="row" style="font-size:14px;padding:20px;">
 									<div class="col-12">
 									   @(Html.DevExtreme().DropDownBox()
 															.Label(new JS("formatMessage('Company Branch/Division:')"))
 													.DataSource(d => d.WebApi()
 													.Controller("AddNewClientRequest")
-															.LoadAction("GetCompany")
+													.LoadAction("GetCompany")
 													.LoadMode(DataSourceLoadMode.Raw)
 													.Key("CompanyId")
 													)
@@ -1006,13 +1021,13 @@
 																			.OnClick("AddReqUnit")
 												)
 
-											@(Html.DevExtreme().Button()
-												.ID("EditReqUnit")
-												.Icon("edit")
-												.Hint("Edit Description")
-												.Width(40)
-												.ElementAttr("style", "margin-top:18px;")
-												)
+											@* @(Html.DevExtreme().Button() *@
+											@* 	.ID("EditReqUnit") *@
+											@* 	.Icon("edit") *@
+											@* 	.Hint("Edit Description") *@
+											@* 	.Width(40) *@
+											@* 	.ElementAttr("style", "margin-top:18px;") *@
+											@* 	) *@
 										</div>
 									</div>
 
@@ -1022,20 +1037,19 @@
 								</div>
 							
 					
-					</div>
+							</div>
 
 					<!-- Card 2: 4 columns -->
-					<div class="col-6"> 
-						
-							
-								<div class="row" style="font-size:14px;">
+					<div class="col-6">
+
+
+						<div class="row" style="font-size:14px;padding:20px;">
 
 									<div class="col-6">
 								@(Html.DevExtreme().DateBox()
 															.ID("ddBitCls")
-															.Label(new JS("formatMessage('Bit Closing Date:')"))
+															.Label(new JS("formatMessage('Bid Closing Date:')"))
 															.Type(DateBoxType.Date) // Other options: DateTime, Time
-															.Value(DateTime.Now)
 															.DisplayFormat("dd/MM/yyyy")
 															.LabelMode(EditorLabelMode.Outside)
 															.Width("100%")
@@ -1048,7 +1062,6 @@
 															.ID("ddReminder")
 															.Label(new JS("formatMessage('Set Reminder On:')"))
 															.Type(DateBoxType.Date) // Other options: DateTime, Time
-															.Value(DateTime.Now)
 															.DisplayFormat("dd/MM/yyyy")
 															.LabelMode(EditorLabelMode.Outside)
 															.Width("100%")
@@ -1082,7 +1095,7 @@
 			</div>
 
 			
-			<div id="tab-content-4" class="tab-content">
+			<div id="tab-content-4" class="tab-content" style="padding:20px;">
 
 
 					<div class="row">
@@ -1460,7 +1473,7 @@
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(false))//
+					.FilterRow(f => f.Visible(true))//
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 					.Height(345)
 					.Selection(s => s.Mode(SelectionMode.Single))
@@ -1496,7 +1509,7 @@
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(false))//
+					.FilterRow(f => f.Visible(true))//
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 					.Height(345)
 					.Selection(s => s.Mode(SelectionMode.Single))
@@ -1531,7 +1544,7 @@
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(false))//
+					.FilterRow(f => f.Visible(true))//
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 					.Height(345)
 					.Selection(s => s.Mode(SelectionMode.Single))
@@ -1565,7 +1578,7 @@
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(false))//
+					.FilterRow(f => f.Visible(true))//
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 					.Height(345)
 					.Selection(s => s.Mode(SelectionMode.Single))
@@ -1599,7 +1612,7 @@
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(false))//
+					.FilterRow(f => f.Visible(true))//
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 					.Height(345)
 					.Selection(s => s.Mode(SelectionMode.Single))
@@ -1634,7 +1647,7 @@
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(false))//
+					.FilterRow(f => f.Visible(true))//
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 					.Height(345)
 					.Selection(s => s.Mode(SelectionMode.Single))
@@ -1668,7 +1681,7 @@
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(false))//
+					.FilterRow(f => f.Visible(true))//
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 					.Height(345)
 					.Selection(s => s.Mode(SelectionMode.Single))
@@ -1701,7 +1714,7 @@
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(false))//
+					.FilterRow(f => f.Visible(true))//
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 					.Height(345)
 					.Selection(s => s.Mode(SelectionMode.Single))
@@ -1734,7 +1747,7 @@
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(false))//
+					.FilterRow(f => f.Visible(true))//
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 					.Height(345)
 					.Selection(s => s.Mode(SelectionMode.Single))
@@ -6818,6 +6831,10 @@ LineTotal: 0
 		  	 function AddNewClient(){
 				const url = `/${tenantName}/IMS/ClientLeadMaster`;
 			  const title = "";
+				  openModal(url, title);
+			  } function AddContactName(){
+					const url = `/${tenantName}/IMS/ClientLeadMaster`;
+			 const title = "";
 				  openModal(url, title);
 		  }
 			   $(function () {

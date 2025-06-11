@@ -1512,10 +1512,9 @@
 
 
             <div id="sidebar" class="sidebar hidden">
-                  <div class="menu-item1"
-                  @* onmouseover="toggleSidebar()"  *@
-                  @* onmouseout="toggleSidebar()" *@
-                  >
+                <div class="menu-item1"
+                     style="cursor: pointer;"
+                     onclick="navigateToTenantHome()">
                     <img border="0" src="~/images/erp_logo.png" alt="QD-ERP" width="45" height="30">
                     <div id="HumanResources2" class="text no-border-input">Quick Dice</div>
                 </div>
@@ -2283,8 +2282,10 @@
           popup.style.display = 'block';
         }
 
-        function hidePopup() {
-          document.getElementById('notificationPopup').style.display = 'none';
+            function hidePopup() {
+          setTimeout(function() {
+            document.getElementById('notificationPopup').style.display = 'none';
+          }, 5000); // 5000 milliseconds = 5 seconds
         }
 
         window.addEventListener('DOMContentLoaded', fetchUnseenCount);
@@ -3304,7 +3305,13 @@
 
             doc.save("quotation-analysis.pdf");
         }
-
+                function navigateToTenantHome() {
+            if (tenantName) {
+                window.location.href = `/${tenantName}/Home`;
+            } else {
+                console.warn("Tenant name is not set.");
+            }
+        }
     </script>
 </body>
 </html>
