@@ -263,7 +263,7 @@
                 .Items(item =>
                 {
                     item.Add()
-                .Title("Quotation Details")
+				.Title(new JS("formatMessage('Quotation Details')"))
                 .Icon("folder")
                 .Text("Quotation Details")
                 .Template(@<text>
@@ -274,7 +274,7 @@
                     <div class="col-md-2">
                         @(Html.DevExtreme().TextBox()
                         .ID("txtQuotationNo")
-                        .Label("Quotation No:")
+						.Label(new JS("formatMessage('Quotation No:')"))
                         .LabelMode(EditorLabelMode.Outside)
                         .ReadOnly(true)
                         .Width("100%")
@@ -283,7 +283,7 @@
                     <div class="col-md-1">
                         @(Html.DevExtreme().TextBox()
                         .ID("txtRevisionNo")
-                        .Label("Revision #:")
+						.Label(new JS("formatMessage('Revision #:')"))
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%")
 						.Disabled(true)
@@ -293,7 +293,7 @@
                         @(Html.DevExtreme().DateBox()
                         .ID("QuotationDate")
                         .Value(DateTime.Now)
-                        .Label("Quotation Date:")
+						.Label(new JS("formatMessage('Quotation Date:')"))
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%")
                         )
@@ -380,7 +380,7 @@
                     <div class="col-md-2">
                         @(Html.DevExtreme().TextBox()
                         .ID("MprNumber")
-                        .Label("MPR / Enquiry No:")
+						.Label(new JS("formatMessage('MPR / Enquiry No:')"))
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%")
                         )
@@ -388,7 +388,7 @@
                     <div class="col-md-3">
                         @(Html.DevExtreme().TextBox()
                         .ID("ClientRefName")
-                        .Label("Client Ref. Name / Attention To:")
+						.Label(new JS("formatMessage('Client Ref. Name / Attention To:')"))
                         .LabelMode(EditorLabelMode.Outside) 
                         .Width("100%")
                         )
@@ -397,7 +397,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("ClientEmail")
                         .Mode(TextBoxMode.Email)
-                        .Label("Client Email:")
+						.Label(new JS("formatMessage('Client Email:')"))
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%")
                         )
@@ -405,7 +405,7 @@
                     <div class="col-md-3">
                         @(Html.DevExtreme().TextBox()
                         .ID("ClientContactNo")
-                        .Label("Client Contact No:")
+						.Label(new JS("formatMessage('Client Contact No:')"))
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%")
                         )
@@ -509,7 +509,7 @@
                     <div class="col-md-4">
                         @(Html.DevExtreme().TextBox()
                         .ID("ClientProjectRef")
-                        .Label("Client Project (Ref):")
+						.Label(new JS("formatMessage('Client Project (Ref):')"))
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%")
                         )
@@ -520,13 +520,13 @@
 
         </text>);
 
-                    item.Add().Title("Quote Text").Icon("detailslayout").Text("Quote Text").Template(@<text>
+						item.Add().Title(new JS("formatMessage('Quote Text')")).Icon("detailslayout").Text("Quote Text").Template(@<text>
             <div class="dx-card layout-container">
                 <!-- Subject -->
                 <div class="form-row">
                     <div class="form-column">
                         <div class="field-header">
-                            <label for="Subject" class="field-label">Subject:</label>
+							<label id="Subject1"  class="field-label"></label>
                             <div class="field-buttons">
                                 <button class="btn-solid">Set Default</button>
                                 <button class="btn-outline"><i class="fa fa-font"></i></button>
@@ -534,7 +534,6 @@
                         </div>
                         @(Html.DevExtreme().TextBox()
                         .ID("Subject")
-                        .Value("Quotation for Materials")
                         .LabelMode(EditorLabelMode.Hidden)
                         .Width("100%")
                         )
@@ -543,7 +542,7 @@
                     <!-- Po Summary -->
                     <div class="form-column">
                         <div class="field-header">
-                            <label for="QuoteSummary" class="field-label">Quote Summary:</label>
+							<label for="QuoteSummary" id="QuoteSummary1" class="field-label"></label>
                             <div class="field-buttons">
                                 <button class="btn-solid">Set Default</button>
                                 <button class="btn-outline"><i class="fa fa-font"></i></button>
@@ -551,7 +550,6 @@
                         </div>
                         @(Html.DevExtreme().TextArea()
                         .ID("QuoteSummary")
-                        .Value("We hope that our offer is in line with your requirements...")
                         .Height(80)
                         .LabelMode(EditorLabelMode.Hidden)
                         .Width("100%")
@@ -563,7 +561,7 @@
                 <div class="form-row">
                     <div class="form-column">
                         <div class="field-header">
-                            <label for="QuoteIntro" class="field-label">Quote Introduction:</label>
+							<label for="QuoteIntro" id="QuoteIntro1" class="field-label"></label>
                             <div class="field-buttons">
                                 <button class="btn-solid">Set Default</button>
                                 <button class="btn-outline"><i class="fa fa-font"></i></button>
@@ -579,7 +577,7 @@
                     <!-- Po Summary -->
                     <div class="form-column">
                         <div class="field-header">
-                            <label for="QuoteThanks" class="field-label">Quote Thanks:</label>
+                            <label for="QuoteThanks" id="QuoteThanks1" class="field-label"></label>
                             <div class="field-buttons">
                                 <button class="btn-solid">Set Default</button>
                                 <button class="btn-outline"><i class="fa fa-font"></i></button>
@@ -594,7 +592,7 @@
                     </div>
                 </div>
         </text>);
-                    item.Add().Text("Branch / Division").Icon("home").Title("Branch / Division").Template(@<text>
+						item.Add().Text("Branch / Division").Icon("home").Title(new JS("formatMessage('Branch/Divisions')")).Template(@<text>
             <div class="dx-card p-3">
                 <div class="row g-2">
                     <div class="col-md-4">
@@ -655,7 +653,7 @@
 
                             @(Html.DevExtreme().TextBox()
                             .ID("ReferenceNo")
-                            .Label("Reference No:")
+							.Label(new JS("formatMessage('Reference No:')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .Width("100%")
                             )
@@ -668,7 +666,7 @@
                             @(Html.DevExtreme().TextBox()
                             .ID("SubmittedBy")
                             .Value("Administrator")
-                            .Label("Quote Submitted By:")
+							.Label(new JS("formatMessage('Quote Submitted By:')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .Width("100%")
                             .Disabled(true)
@@ -679,7 +677,7 @@
                                     @(Html.DevExtreme().DateBox()
                                     .ID("SubmittedOn")
                                     .Value(DateTime.Now)
-                                    .Label("Quote Submitted On:")
+									.Label(new JS("formatMessage('Quote Submitted On:')"))
                                     .LabelMode(EditorLabelMode.Outside)
                                     .Width("100%")
                                     )
@@ -687,7 +685,7 @@
                                 <div class="col-md-6">
                                     @(Html.DevExtreme().DateBox()
                                     .ID("BidClosingDate")
-                                    .Label("Bid Closing Date:")
+									.Label(new JS("formatMessage('Bid Closing Date:')"))
                                     .LabelMode(EditorLabelMode.Outside)
                                     .Width("100%")
                                     )
@@ -698,7 +696,7 @@
                                 <div class="col-md-6">
 									@(Html.DevExtreme().TextBox()
 									.ID("txtTransportationScope")
-									.Label("Transportation Scope:")
+									.Label(new JS("formatMessage('Transportation Scope:')"))
 									.LabelMode(EditorLabelMode.Outside)
 									.Width("100%")
 									.Disabled(true)
@@ -795,7 +793,7 @@
                                 <div class="col-12">
                                     @(Html.DevExtreme().TextArea()
                                     .ID("Remarks")
-                                    .Label("Remarks:")
+									.Label(new JS("formatMessage('Remarks:')"))
                                     .LabelMode(EditorLabelMode.Outside)
                                     .Width("100%")
                                     .Height(80)
@@ -808,7 +806,7 @@
 
 
         </text>);
-                    item.Add().Text("Signatories").Icon("user").Title("Signatories").Template(@<text>
+						item.Add().Text("Signatories").Icon("user").Title(new JS("formatMessage('Signatories')")).Template(@<text>
             <div class="form-container">
                 <div class="dx-card p-3">
                     <table class=" table-borderless w-100">
@@ -910,31 +908,31 @@
 
                             <tr>
                                 <!-- Prepared By Checkboxes -->
-                                <td>
-                                    @(Html.DevExtreme().CheckBox().ID("showSeal").Value(true).Text("Show Company Seal"))
-                                    <br />
-                                    @(Html.DevExtreme().CheckBox().ID("showSignature").Value(true).Text("Show Signature"))
-                                    <br />
-                                    @(Html.DevExtreme().CheckBox().ID("printLetterhead").Value(true).Text("Print in Letter Head"))
-                                </td>
+								<td>
+									@(Html.DevExtreme().CheckBox().ID("showSeal").Value(true).Text(new JS("formatMessage('Show Company Seal')")) )
+									<br />
+									@(Html.DevExtreme().CheckBox().ID("showSignature").Value(true).Text(new JS("formatMessage('Show Signature')")) )
+									<br />
+									@(Html.DevExtreme().CheckBox().ID("printLetterhead").Value(true).Text(new JS("formatMessage('Print in Letter Head')")) )
+								</td>
 
-                                <!-- Verified By Checkboxes -->
-                                <td>
-                                    @(Html.DevExtreme().CheckBox().ID("pageBreakBefore").Text("Page Break before Terms"))
-                                    <br />
-                                    @(Html.DevExtreme().CheckBox().ID("pageBreakAfter").Text("Page Break after Terms"))
-                                    <br />
-                                    @(Html.DevExtreme().CheckBox().ID("clientAcknowledgement").Text("Print Client Acknowledgement"))
-                                </td>
+								<!-- Verified By Checkboxes -->
+								<td>
+									@(Html.DevExtreme().CheckBox().ID("pageBreakBefore").Text(new JS("formatMessage('Page Break before Terms')")) )
+									<br />
+									@(Html.DevExtreme().CheckBox().ID("pageBreakAfter").Text(new JS("formatMessage('Page Break after Terms')")) )
+									<br />
+									@(Html.DevExtreme().CheckBox().ID("clientAcknowledgement").Text(new JS("formatMessage('Print Client Acknowledgement')")) )
+								</td>
 
-                                <!-- Approved By Checkboxes -->
-                                <td>
-                                    @(Html.DevExtreme().CheckBox().ID("printItemCodeDesc").Text("Print Item Code with Description"))
-                                    <br />
-                                    @(Html.DevExtreme().CheckBox().ID("printItemPartNoDesc").Text("Print Item Part No with Description"))
-                                    <br />
-                                    @(Html.DevExtreme().CheckBox().ID("printItemPartArabicDesc").Text("Print Item Part No with Arabic Desc."))
-                                </td>
+								<!-- Approved By Checkboxes -->
+								<td>
+									@(Html.DevExtreme().CheckBox().ID("printItemCodeDesc").Text(new JS("formatMessage('Print Item Code with Description')")) )
+									<br />
+									@(Html.DevExtreme().CheckBox().ID("printItemPartNoDesc").Text(new JS("formatMessage('Print Item Part No with Description')")) )
+									<br />
+									@(Html.DevExtreme().CheckBox().ID("printItemPartArabicDesc").Text(new JS("formatMessage('Print Item Part No with Arabic Desc')")) )
+								</td>
                             </tr>
                         </tbody>
                     </table>
@@ -2047,19 +2045,19 @@
 
 										columns: [
 
-											{ dataField: "GSCode", caption: "Code", width: 80 },
+													{ dataField: "GSCode", caption: formatMessage("Code"), width: 80 },
 
-											{ dataField: "GSDescrpition", caption: "Description", width: 200 },
+												{ dataField: "GSDescrpition", caption: formatMessage("Description"), width: 200 },
 
-											{ dataField: "GsdescriptionAr", caption: "Description In Arabic", width: 200 },
+												{ dataField: "GsdescriptionAr", caption: formatMessage("Description In Arabic"), width: 200 },
 
-											{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
+												{ dataField: "ItemPartNo", caption: formatMessage("Item Part No"), width: 100 },
 
-											{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
+												{ dataField: "CostPrice", caption: formatMessage("Cost Price"), width: 100 },
 
-											{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
+											{ dataField: "GSSellingRate", caption: formatMessage("Selling Rate"), width: 100 },
 
-											{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+													{ dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100 }
 
 										],
 
@@ -2223,13 +2221,13 @@
 
 										columns: [
 
-											{ dataField: "UnitCode", caption: "Code", width: 80 },
+											{ dataField: "UnitCode", caption: "Code", caption: formatMessage("Code"), width: 80 },
 
-											{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
+											{ dataField: "UnitDesc",caption: formatMessage("Unit Rate Method"), width: 200 },
 
-											{ dataField: "UnitType", caption: "Unit Type", width: 150 },
+											{ dataField: "UnitType",caption: formatMessage("Unit Type"), width: 150 },
 
-											{ dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
+											{ dataField: "UnitDescAr",caption: formatMessage("Unit Code"), width: 100 }
 
 										],
 
@@ -6127,6 +6125,24 @@
 		});
 	});
 
-	
+		  $(function () {
+								$("#QuoteThanks1").text(
+									 formatMessage("Quote Thanks:"));
+					});
+
+	$(function () {
+							$("#QuoteIntro1").text(
+								 formatMessage("Quote Introduction:"));
+				});
+
+	$(function () {
+							$("#QuoteSummary1").text(
+								 formatMessage("Quote Summary:"));
+				});
+
+	$(function () {
+							$("#Subject1").text(
+								 formatMessage("Subject:"));
+				});
 
 </script>

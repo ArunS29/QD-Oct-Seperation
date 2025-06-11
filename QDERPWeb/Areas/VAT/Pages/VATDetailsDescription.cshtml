@@ -115,17 +115,16 @@
         <div class="top-buttons">
             @(Html.DevExtreme().Button()
                 .ID("btnUseDetailedDesc")
-                .Text("Use Detailed Description")
+                .Text(new JS("formatMessage('Use Detailed Description')"))
                 .Type(ButtonType.Default)
                 )
             @(Html.DevExtreme().Button()
                 .ID("btnUseItemDesc")
-                .Text("Use Item Description")
+                .Text(new JS("formatMessage('Use Item Description')"))
                 .Type(ButtonType.Default)
                 )
         </div> 
     </div>
-
     <!-- Row 2: Arabic Description + Convert Button -->
     <table style="width: 100%; border-spacing: 10px; border-collapse: separate;">
     <tr>

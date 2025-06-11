@@ -72,7 +72,7 @@
 
 
 <div>
-    <h2 style="text-align: center;">Client Status</h2>
+    <h2 id="Clientstatus1" style="text-align: center;">Client Status</h2>
     <div class="dx-fieldset horizontal-container">
 
         @(Html.DevExtreme().TextBox()
@@ -311,13 +311,9 @@
     }
 
 
-
-
-
-
-
-
-
-
+    $(function () {
+                       $("#Clientstatus1").text(
+                            formatMessage("Client Status"));
+      });
 
 </script>

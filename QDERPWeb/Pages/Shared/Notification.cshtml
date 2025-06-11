@@ -120,13 +120,15 @@
             <button class="notification-btn mark-read" id="btnAddTask">
                 <i class="fas fa-plus"></i> Add New Task
             </button>
-            <button class="notification-btn mark-read" onclick="AddnewRemainder()">
+            <button class="notification-btn mark-read" id="AddnewRemainder">
                 <i class="fas fa-bell"></i> Add new Remainder
             </button>
         </div>
     </div>
 
-    <div id="popupContainer" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:10000; overflow:auto; padding: 30px;"></div>
+    <!-- Separate popup containers -->
+    <div id="popupTaskContainer" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:10000; overflow:auto; padding: 30px;"></div>
+    <div id="popupReminderContainer" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:10000; overflow:auto; padding: 30px;"></div>
     <div id="notificationGrid"></div>
 </div>
 
@@ -285,18 +287,33 @@
                 DevExpress.ui.notify("Delete failed.", "error", 2000);
             });
     }
-     $(document).ready(function () {
+        $(document).ready(function () {
+        // Handle Add Task popup
         $('#btnAddTask').click(function () {
             $.get('/Shared/CreateTask', function (html) {
-                $('#popupContainer').html(html).fadeIn();
+                $('#popupTaskContainer').html(html).fadeIn();
             });
         });
 
-        $('#popupContainer').on('click', function (e) {
-            if ($(e.target).is('#popupContainer')) {
-                $('#popupContainer').fadeOut().html('');
+        $('#popupTaskContainer').on('click', function (e) {
+            if ($(e.target).is('#popupTaskContainer')) {
+                $('#popupTaskContainer').fadeOut().html('');
+            }
+        });
+
+        // Handle Add Reminder popup
+        $('#AddnewRemainder').click(function () {
+            $.get('/Shared/Remainder', function (html) {
+                $('#popupReminderContainer').html(html).fadeIn();
+            });
+        });
+
+        $('#popupReminderContainer').on('click', function (e) {
+            if ($(e.target).is('#popupReminderContainer')) {
+                $('#popupReminderContainer').fadeOut().html('');
             }
         });
     });
+
 </script>
 

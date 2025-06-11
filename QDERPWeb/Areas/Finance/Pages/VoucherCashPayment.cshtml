@@ -343,6 +343,7 @@
         .TabIndex(2) // Different tabindex to separate from the first
         .DropDownOptions(o => o.Width(700))
         .OnKeyDown("onKeyDown")
+        .ReadOnly(true)
         //.OnValueChanged("dropDownBoxValueChanged") // Optional
         .ContentTemplate(new TemplateName("BaseCurrencyContentTemplate"))
     )

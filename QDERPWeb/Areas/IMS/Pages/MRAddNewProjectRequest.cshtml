@@ -373,10 +373,10 @@
 			@(Html.DevExtreme().Tabs()
 						.Items(items =>
 						{
-							items.Add().Icon("optionsgear").Text("Material Request's/Enquiry Details");
-							items.Add().Icon("accountbox").Text("Request Details");
-							items.Add().Icon("card").Text("Branch/Divisions");
-							items.Add().Icon("attach").Text("Signatories");
+							items.Add().Icon("optionsgear").Text(new JS("formatMessage('Material Requests/Enquiry Details')"));
+							items.Add().Icon("accountbox").Text(new JS("formatMessage('Request Details')"));
+							items.Add().Icon("card").Text(new JS("formatMessage('Branch/Divisions')"));
+							items.Add().Icon("attach").Text(new JS("formatMessage('Signatories')"));
 						})
 						.SelectedIndex(0)
 						.OnSelectionChanged("onTabSelectionChanged")
@@ -569,7 +569,7 @@
 						<td colspan="2" style="width:100%;">
 							@(Html.DevExtreme().TextBox()
 														.ID("ContactNo")
-														.Label("Contact No:")
+														.Label(new JS("formatMessage('Contact No:')"))
 														.LabelMode(EditorLabelMode.Outside)
 														.Width("100%"))
 
@@ -828,7 +828,7 @@
 						<tr>
 
 							<td>
-								<label>Remarks:</label>
+								<label id="Remarks1">Remarks:</label>
 								@(Html.DevExtreme().TextArea()
 															.ID("txtRemarks")
 															.ElementAttr("style", "height:150px !important;")
@@ -6908,6 +6908,9 @@
 			});
 		});
 
-
+		 $(function () {
+					$("#Remarks1").text(
+						 formatMessage("Remarks:"));
+			});
 
 </script>

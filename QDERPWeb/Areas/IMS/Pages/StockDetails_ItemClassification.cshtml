@@ -197,15 +197,14 @@
 						.Width("70%")
 						.Placeholder("Type new Stock Classification")
 						)
-
 					<div class="add-button-wrap" style="margin-left:50%; margin-top:10px;">
 						@(Html.DevExtreme().Button()
-									.ID("addStockClassBtn")
-									.Text(new JS("formatMessage('Add')"))
-									.Type(ButtonType.Success)
-									.Icon("plus")
-									.Width("100%")
-									)
+							.ID("addStockClassBtn")
+							.Text(new JS("formatMessage('Add')"))
+							.Type(ButtonType.Success)
+							.Icon("plus")
+							.Width("100%")
+							)
 						</div>
 					</div>
 				</div>
@@ -225,41 +224,56 @@
 				.ShowRowLines(true)
 				.RowAlternationEnabled(true)
 				.DataSource(d => d.WebApi()
+				.Controller("StockInventory")
 				.LoadAction("GetAll")
-				.UpdateAction("UpdateStockClassification") // Add update action
+				.UpdateAction("UpdateStockClassification")
 				.UpdateMethod("PUT")
 				.DeleteAction("DeleteStockClassification")
 				.DeleteMethod("DELETE")
-				.Controller("StockInventory")
-				.Key("StockClassId") // Primary key
+				.Key("StockClassId")
 				)
 				.Editing(editing => editing
-				.Mode(GridEditMode.Row) // or .Form, .Popup
+				.Mode(GridEditMode.Row)
 				.AllowUpdating(true)
 				.AllowDeleting(true)
-				.UseIcons(true) // Show edit/save icons
-				.ConfirmDelete(true)
-				.Texts(t => t.ConfirmDeleteMessage("Are you sure you want to delete this record?"))
+				.UseIcons(true)
 				)
 				.Columns(columns =>
 				{
 					columns.Add().DataField("StockClassId")
-					.Caption(new JS("formatMessage('ID')"))
+					.Caption("ID")
 					.Width(100)
 					.Alignment(HorizontalAlignment.Center)
-					.AllowEditing(false); // Read-only
+					.AllowEditing(false);
 
 					columns.Add().DataField("StockClassification")
-					.Caption(new JS("formatMessage('Stock Classification')"))
+					.Caption("Stock Classification")
 					.Width(300)
-					.Alignment(HorizontalAlignment.Center);
+					.Alignment(HorizontalAlignment.Center)
+					.AllowEditing(true);
+
+					columns.Add()
+					.Type(GridCommandColumnType.Buttons)
+					.Width(150)
+					.Buttons(buttons =>
+					{
+						buttons.Add().Name("edit"); 
+						buttons.Add().Name("save");
+						buttons.Add().Name("cancel"); 
+						buttons.Add().Name("customDelete")
+					.Icon("trash")
+					.Hint("Delete")
+					.OnClick("onCustomDeleteClick");
+					});
 				})
 				.AllowColumnReordering(true)
 				.AllowColumnResizing(true)
 				.ColumnFixing(fixing => fixing.Enabled(true))
-				.GroupPanel(groupPanel => groupPanel.Visible(false))
+				.GroupPanel(g => g.Visible(false))
 				.ShowColumnHeaders(true)
 				)
+
+
 
 		</div>
 		<br />
@@ -331,12 +345,28 @@
 			});
 		}
 	});
-	  $(function() {
-		 var grid = $("#storeGrid").dxDataGrid("instance");
-		 if (grid) {
-			 grid.option("onRowRemoved", function(e) {
-				 DevExpress.ui.notify("Deleted successfully.", "success", 2000);
-			 });
-		 }
-	 });
+		function onCustomDeleteClick(e) {
+		if (!e || !e.row || !e.row.data || !e.row.data.StockClassId) {
+			DevExpress.ui.notify("Invalid record selected.", "error", 2000);
+			return;
+		}
+
+		DevExpress.ui.dialog.confirm("Are you sure you want to delete this Stock Classification?", "Confirm Deletion")
+			.done(function (dialogResult) {
+				if (dialogResult) {
+					$.ajax({
+						url: '/api/StockInventory/DeleteStockClassification?key=' + e.row.data.StockClassId,
+						type: 'DELETE',
+						success: function () {
+							DevExpress.ui.notify("Stock Classification deleted successfully!", "success", 2000);
+							$("#storeGrid").dxDataGrid("instance").refresh();
+						},
+						error: function () {
+							DevExpress.ui.notify("Failed to delete Stock Classification.", "error", 2000);
+						}
+					});
+				}
+	   });
+	}
 </script>
+

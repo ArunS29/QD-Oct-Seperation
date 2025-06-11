@@ -3093,6 +3093,139 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return BadRequest("Failed to retrieve tenant and database context.");
         }
 
+        [HttpPost]
+        public async Task<ActionResult> UpdateProformaInvoiceMasterDetails(Tbl20181ProformaInvoiceMaster InvoiceMaster)
+        {
+            if (InvoiceMaster == null)
+            {
+                return BadRequest(new { success = false, message = "Invalid invoice data received." });
+            }
+
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var existingInvoice = await dbContext.Tbl20181ProformaInvoiceMasters
+                                                                 .FirstOrDefaultAsync(v => v.ProformaInvoiceNo == InvoiceMaster.ProformaInvoiceNo);
+
+                    if (existingInvoice != null)
+                    {
+                        // Update existing master record
+                        dbContext.Entry(existingInvoice).CurrentValues.SetValues(InvoiceMaster);
+                    }
+                    else
+                    {
+                        // Insert new invoice master record
+                        await dbContext.Tbl20181ProformaInvoiceMasters.AddAsync(InvoiceMaster);
+                    }
+
+
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(new { success = true, message = existingInvoice != null ? "Invoice and child records updated successfully!" : "New invoice and child records added successfully!" });
+                }
+            }
+            catch (Exception ex)
+            {
+                // await transaction.RollbackAsync();
+                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+            }
+
+
+            return BadRequest("Failed to retrieve tenant and database context.");
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> UpdateProformaChildDetails(List<InvoiceItem> InvoiceChildren)
+        {
+            if (InvoiceChildren == null || InvoiceChildren.Count == 0)
+            {
+                return BadRequest(new { success = false, message = "Invalid or empty invoice data received." });
+            }
+
+            try
+            {
+
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var savedChildren = new List<Tbl20182ProformaInvoiceChild>();
+
+                    foreach (var child in InvoiceChildren)
+                    {
+                        if (child.InvoiceChildSlNo == null || child.InvoiceChildSlNo == 0)
+                        {
+                            var newChild = new Tbl20182ProformaInvoiceChild
+                            {
+                                ProformaInvoiceNo = child.InvoiceNo,
+                                UnitRate = child.UnitPrice?.GetDecimal() ?? 0m,
+                                DetailedDescription = child.Description?.GetString() ?? string.Empty,
+                                QuantityInvoiced = child.Qty,
+                                TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8,
+                                Discount = child.Discount,
+                                UnitRateInOc = child.UnitPrice?.GetDecimal() ?? 0m,
+                                DiscountInOc = child.Discount,
+                                UnitsToBill = 1,
+                                UnitRateMethod = 49,
+                                ItemCode = child.ItemCode ?? string.Empty,
+                                UoM = "Each"
+                            };
+
+                            await dbContext.Tbl20182ProformaInvoiceChildren.AddAsync(newChild);
+                            await dbContext.SaveChangesAsync();
+
+                            // Set the generated ID back to the input model if needed
+                            //child.InvoiceChildSlNo = newChild.ProformaInvChildSlNo;
+
+                            savedChildren.Add(newChild);
+                        }
+                        else
+                        {
+                            var existingChild = await dbContext.Tbl20182ProformaInvoiceChildren
+                                .FirstOrDefaultAsync(x => x.ProformaInvChildSlNo == child.InvoiceChildSlNo);
+
+                            if (existingChild != null)
+                            {
+
+                                existingChild.ProformaInvoiceNo = child.InvoiceNo;
+                                existingChild.UnitRate = child.UnitRate;
+                                existingChild.DetailedDescription = child.DetailedDescription;
+                                existingChild.QuantityInvoiced = child.QuantityInvoiced;
+                                existingChild.TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8;
+                                existingChild.UnitsToBill = 1;
+                                existingChild.UnitRateMethod = 49;
+                                existingChild.ItemCode = child.ItemCode ?? string.Empty;
+                                existingChild.UoM = "Each";
+                                existingChild.Discount = child.Discount;
+                                existingChild.UnitRateInOc = child.UnitPrice?.GetDecimal() ?? 0m;
+                                existingChild.DiscountInOc = child.Discount;
+                                dbContext.Tbl20182ProformaInvoiceChildren.Update(existingChild);
+                                savedChildren.Add(existingChild);
+                            }
+                        }
+                    }
+
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(new
+                    {
+                        success = true,
+                        message = "Invoice child records saved successfully!",
+                        data = savedChildren
+                    });
+                }
+                else
+                {
+                    return BadRequest(new { success = false, message = "Failed to retrieve tenant and database context." });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
+
+
 
     }
 

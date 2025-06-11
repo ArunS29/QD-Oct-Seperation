@@ -199,7 +199,7 @@
                 <!-- Asset Ledger No Field -->
                 <div class="col-md-2">
                     <div class="form-label">
-                        <label for="AssetLedgerNo">Supplier Code</label>
+                        <label id="Suppliercode1" for="AssetLedgerNo"></label>
                     </div>
         @(Html.DevExtreme().TextBox().ID("txtSupplierCode").Value("").ReadOnly(true)
             .ValidationRules(r => r.AddRequired().Message("Supplier Code is required.")))
@@ -210,7 +210,7 @@
                 <!-- Asset Category Dropdown -->
                 <div class="col-md-8 ">
                     <div class="form-label">
-                        <label for="SupplierCategory">Supplier Category</label>
+                        <label id="suppliercategory1" for="SupplierCategory"></label>
                     </div>
                     <div class="form-group-row">
         @(Html.DevExtreme().DropDownBox()
@@ -264,7 +264,7 @@
                             <!-- Asset Description Field -->
                             <div class="col-md-12">
                                 <div class="form-label">
-                                    <label for="AssetDescription">Supplier Name</label>
+                                    <label id="suppliername1" for="AssetDescription"></label>
                                 </div>
         @(
             Html.DevExtreme().TextBox()
@@ -302,8 +302,8 @@
                 .Items(item =>
                 {
                     item.Add()
-                .Title("Contact Details")
-                .Text("Contact Details")
+                .Title(new JS("formatMessage('Contact Details')"))
+                .Text(new JS("formatMessage('Contact Details')"))
                 .Template(@<text>
             <div class="form-container">
                 <div class="form-row">
@@ -317,7 +317,7 @@
                         .Key("AccountId")
                         )
                         .LabelMode(EditorLabelMode.Outside)
-                        .Label("Supplier Ledger No")
+                        .Label(new JS("formatMessage('Supplier Ledger No')"))
                         .ID("GetSupplierLedgerNoDropDown")
                         .Width(900)
                         @*  .ShowClearButton(true)
@@ -349,51 +349,51 @@
                 </div>
                 <div class="form-row">
                     <div class="col-md-12">
-                        <label>Client Address</label>
-                        @Html.DevExtreme().TextArea().ID("SupplierAddress").Height(70)
+                        @(Html.DevExtreme().TextArea().ID("SupplierAddress").Height(70).Label(new JS("formatMessage('Client Address')"))
+                        .LabelMode(EditorLabelMode.Outside) )
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="col-md-6">
-                        <label>Contact Person</label>
-                        @Html.DevExtreme().TextBox().ID("SupplierPerson")
+                        @(Html.DevExtreme().TextBox().ID("SupplierPerson").Label(new JS("formatMessage('Contact Person')"))
+                        .LabelMode(EditorLabelMode.Outside))
                     </div>
                     <div class="col-md-6">
-                        <label>Title</label>
-                        @Html.DevExtreme().TextBox().ID("Title")
+                        @(Html.DevExtreme().TextBox().ID("Title").Label(new JS("formatMessage('Title')"))
+                        .LabelMode(EditorLabelMode.Outside))
                     </div>
 
                 </div>
                 <div class="form-row">
                     <div class="col-md-6">
-                        <label>Mobile Number (1)</label>
-                        @Html.DevExtreme().TextBox().ID("MobileNumber1")
+                        @(Html.DevExtreme().TextBox().ID("MobileNumber1").Label(new JS("formatMessage('Mobile Number (1)')"))
+                        .LabelMode(EditorLabelMode.Outside))
                     </div>
                     <div class="col-md-6">
-                        <label>Phone No (1)</label>
-                        @Html.DevExtreme().TextBox().ID("PhoneNumber1")
+                        @(Html.DevExtreme().TextBox().ID("PhoneNumber1").Label(new JS("formatMessage('Phone No (1)')"))
+                        .LabelMode(EditorLabelMode.Outside))
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="col-md-6">
-                        <label>Mobile Number (2)</label>
-                        @Html.DevExtreme().TextBox().ID("MobileNumber2")
+                        @(Html.DevExtreme().TextBox().ID("MobileNumber2").Label(new JS("formatMessage('Mobile Number (2)')"))
+                        .LabelMode(EditorLabelMode.Outside))
                     </div>
                     <div class="col-md-6">
-                        <label>Phone No (2)</label>
-                        @Html.DevExtreme().TextBox().ID("PhoneNumber2")
+                        @(Html.DevExtreme().TextBox().ID("PhoneNumber2").Label(new JS("formatMessage('Phone No (2)')"))
+                        .LabelMode(EditorLabelMode.Outside))
                     </div>
 
                 </div>
                 <div class="form-row">
                     <div class="col-md-6">
-                        <label>Fax No</label>
-                        @Html.DevExtreme().TextBox().ID("FaxNumber")
+                        @(Html.DevExtreme().TextBox().ID("FaxNumber").Label(new JS("formatMessage('Fax No')"))
+                        .LabelMode(EditorLabelMode.Outside))
                     </div>
                     <div class="col-md-6">
-                        <label>Email</label>
-                        @Html.DevExtreme().TextBox().ID("Email")
+                        @(Html.DevExtreme().TextBox().ID("Email").Label(new JS("formatMessage('Email')"))
+                        .LabelMode(EditorLabelMode.Outside))
                     </div>
                 </div>
 
@@ -401,8 +401,8 @@
                 <div class="form-row">
 
                     <div class="col-md-12">
-                        <label>Remarks</label>
-                        @Html.DevExtreme().TextArea().ID("Remarks").Height(60)
+                        @(Html.DevExtreme().TextArea().ID("Remarks").Height(60).Label(new JS("formatMessage('Remarks')"))
+                        .LabelMode(EditorLabelMode.Outside))
                     </div>
                 </div>
             </div>
@@ -412,7 +412,7 @@
 
 
 
-                    item.Add().Title("Business Card").Text("Business Card").Template(@<text>
+                    item.Add().Title(new JS("formatMessage('Business Card')")).Text(new JS("formatMessage('Business Card')")).Template(@<text>
             <div class="dx-fieldset" style="display:flex;flex-direction:column;gap: 10px;width:50%;">
                 <div class="imagecontainer" id="imgBox1">
                     <span>No image data</span>
@@ -429,7 +429,7 @@
         </text>);
 
 
-                    item.Add().Text("Additional Contact").Title("Additional Contact").Template(@<text>
+                    item.Add().Text(new JS("formatMessage('Additional Contact')")).Title(new JS("formatMessage('Additional Contact')")).Template(@<text>
             <div class="form-container">
 
 
@@ -438,7 +438,7 @@
                 <div class="form-group" style="display: flex; justify-content: flex-end; width: 100%;padding:8px;">
                     @(Html.DevExtreme().Button()
                     .ID("btnAddNewContact")
-                    .Text("Add New Contact")
+                    .Text(new JS("formatMessage('Add New Contact')"))
                     .Type(ButtonType.Normal)
 
                     .StylingMode(ButtonStylingMode.Outlined)
@@ -460,15 +460,15 @@
                     .Columns(columns =>
                     {
                     @*   columns.AddFor(m => m.).Caption(""); *@
-                    columns.AddFor(m => m.ContactPerson).Caption("Name").Alignment(HorizontalAlignment.Center);
-                    columns.AddFor(m => m.ContactPersonTitle).Caption("Title").Alignment(HorizontalAlignment.Center);
-                    columns.AddFor(m => m.ContactEmail).Caption("Email").Alignment(HorizontalAlignment.Center);
-                    columns.AddFor(m => m.ContactMobile1).Caption("Mobile").Alignment(HorizontalAlignment.Center);
-                    columns.AddFor(m => m.ContactPhone1).Caption("Phone").Alignment(HorizontalAlignment.Center);
-                    columns.AddFor(m => m.SupplierContactSlNo).Caption("Supplier ContactSlNo").Alignment(HorizontalAlignment.Center).Visible(false);
-                    columns.AddFor(m => m.SupplierCode).Caption("Supplier Code").Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.ContactPerson).Caption(new JS("formatMessage('Name')")).Alignment(HorizontalAlignment.Center);
+                    columns.AddFor(m => m.ContactPersonTitle).Caption(new JS("formatMessage('Title')")).Alignment(HorizontalAlignment.Center);
+                    columns.AddFor(m => m.ContactEmail).Caption(new JS("formatMessage('Email')")).Alignment(HorizontalAlignment.Center);
+                    columns.AddFor(m => m.ContactMobile1).Caption(new JS("formatMessage('Mobile')")).Alignment(HorizontalAlignment.Center);
+                    columns.AddFor(m => m.ContactPhone1).Caption(new JS("formatMessage('Phone')")).Alignment(HorizontalAlignment.Center);
+                    columns.AddFor(m => m.SupplierContactSlNo).Caption(new JS("formatMessage('Supplier ContactSlNo')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.SupplierCode).Caption(new JS("formatMessage('Supplier Code')")).Alignment(HorizontalAlignment.Center).Visible(false);
                     })
-                    //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
+                    //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser").Mode(GridColumnChooserMode.Select))
                     .AllowColumnReordering(true) // Enable column reordering
                     .AllowColumnResizing(true)   // Enable column resizing
                     .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
@@ -479,7 +479,6 @@
                     .ColumnAutoWidth(true)
                     .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
                     .ShowBorders(true)
-
                     .Width("100%")
                     )
                 </div>
@@ -491,19 +490,19 @@
 
 
 
-                    item.Add().Text("Document").Title("Document").Template(@<text>
+                    item.Add().Text(new JS("formatMessage('Document')")).Title(new JS("formatMessage('Document')")).Template(@<text>
 
             <div class="form-container">
 
                 <div class="flex-row" style="margin-top: 20px; width: 120%; ">
                     <div class="col-md-2">
-                        @(Html.DevExtreme().Button().ID("btnAddAttach").Text("Add & Attach Files").Icon("attach").Width(500).OnClick("addAttachFiles"))
+                        @(Html.DevExtreme().Button().ID("btnAddAttach").Text(new JS("formatMessage('Add & Attach Files')")).Icon("attach").Width(500).OnClick("addAttachFiles"))
                     </div>
                     <div class="col-md-2">
-                        @(Html.DevExtreme().Button().ID("btnMerge").Text("Merge Selected Files").Icon("group").Width(500))
+                        @(Html.DevExtreme().Button().ID("btnMerge").Text(new JS("formatMessage('Merge Selected Files')")).Icon("group").Width(500))
                     </div>
                     <div class="col-md-2">
-                        @(Html.DevExtreme().DropDownButton().ID("btnSeparate").Text("Save Separate PDF Files ").Icon("folder").Width(300))
+                        @(Html.DevExtreme().DropDownButton().ID("btnSeparate").Text(new JS("formatMessage('Save Separate PDF files')")).Icon("folder").Width(300))
                     </div>
                 </div>
 
@@ -584,6 +583,7 @@
                             )
                             .WordWrapEnabled(true)
                             .ShowBorders(true)
+                            .ShowColumnHeaders(false)
                             @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
                             .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
                             .OnSelectionChanged("dataGridSelectionChanged1")
@@ -649,18 +649,18 @@
         <div class="col-md-12">
             <div class="row">
                 <div class="col-md-2">
-        @(Html.DevExtreme().Button().ID("btnSave").Text("Save").Icon("check").OnClick("onSaveSupplierMasterClick"))
+        @(Html.DevExtreme().Button().ID("btnSave").Text(new JS("formatMessage('Save')")).Icon("check").OnClick("onSaveSupplierMasterClick"))
         @* .OnClick("onSaveClientMasterClick")  .OnClick("function() { saveAndClose(); }") *@
                 </div>
                 <div class="col-md-2">
-        @(Html.DevExtreme().Button().ID("btnSaveClose").Text("Save & Close").Icon("check").OnClick("onSaveAndClose")
+        @(Html.DevExtreme().Button().ID("btnSaveClose").Text(new JS("formatMessage('Save & Close')")).Icon("check").OnClick("onSaveAndClose")
         )
                 </div>
                 <div class="col-md-2">
-        @(Html.DevExtreme().Button().ID("btnDelete").Text("Delete").Icon("trash"))
+        @(Html.DevExtreme().Button().ID("btnDelete").Text(new JS("formatMessage('Delete')")).Icon("trash"))
                 </div>
                 <div class="col-md-2">
-        @(Html.DevExtreme().Button().ID("btnBack").Text("Back").Icon("arrowleft").OnClick("Goback")
+        @(Html.DevExtreme().Button().ID("btnBack").Text(new JS("formatMessage('Back')")).Icon("arrowleft").OnClick("Goback")
         )
                 </div>
             </div>
@@ -1156,4 +1156,19 @@
             }
         });
     });
+         $(function () {
+                            $("#Suppliercode1").text(
+                                 formatMessage("Supplier Name"));
+                });
+                 $(function () {
+                            $("#suppliercategory1").text(
+                             formatMessage("Supplier Category"));
+            });
+                 $(function () {
+                            $("#suppliername1").text(
+                                 formatMessage("Supplier Code"));
+                });
+
+
+
 </script>
