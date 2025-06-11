@@ -3756,10 +3756,10 @@ LineTotal: 0
 			openModal(url, title); // opens in modal instead of new window
 		}
 
-			  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null,revaccheadid=null,InvoiceCurrencyExchangeId=null,TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
-			  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null;
-			  let dropDownInstance;
-			  let vatListInstance;
+		 	  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null,revaccheadid=null,InvoiceCurrencyExchangeId=null,TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
+		 	  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null;
+		 	  let dropDownInstance;
+		 	  let vatListInstance;
 
 
 
@@ -5990,7 +5990,7 @@ LineTotal: 0
 				$('input, select, textarea').prop('disabled', true);
 
 				$('.dx-button').each(function () {
-					const allowedButtons = ['btnMoveDown',  'btnMoveUp', 'btnSave','btnSaveAndClose','btnPostToLedgers','btnPostTag'];
+						const allowedButtons = ['btnPrint1','btnMoveDown','btnMoveUp','btnSave','btnSaveAndClose','btnPostToLedgers','btnPostTag'];
 					if (!allowedButtons.includes($(this).attr('id'))) {
 						$(this).dxButton('option', 'disabled', true);
 					}
