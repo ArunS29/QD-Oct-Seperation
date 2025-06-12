@@ -673,33 +673,33 @@
 								<td>
 
 								@(Html.DevExtreme().DropDownBox()
-																												.ID("InvoiceTransactionsCode")
-																												.Label("Invoice Transactions Code*")
-																												.Value("0100000") // Default selected value
-																												.ValueExpr("ID")
-																												.DisplayExpr("ID")
-																												.LabelMode(EditorLabelMode.Outside)
-																												.AcceptCustomValue(true)
-																												.OpenOnFieldClick(false)
-																												.ValueChangeEvent("input")
-																												.Placeholder("Choose VAT Transaction Types")
-																										.HoverStateEnabled(true)
-																												.ContentTemplate(new JS("VATTransactionTemplate")) // Reference the NamedTemplate
-																												.DataSource(new[] {
-									new { ID = 1, Name = "3rd Party Tax Invoice" },
-									new { ID = 2, Name = "Nominal Tax Invoice" },
-									new { ID = 3, Name = "Export Tax Invoice" },
-									new { ID = 4, Name = "Summary Tax Invoice" },
-									new { ID = 5, Name = "Self Billed Tax Invoice" }
-									})
-																												.OnInitialized("onDropDownInitialized")
-																												)
+															.ID("InvoiceTransactionsCode")
+															.Label(new JS("formatMessage('Invoice Transactions Code')"))
+															.Value("0100000") // Default selected value
+															.ValueExpr("ID")
+															.DisplayExpr("ID")
+															.LabelMode(EditorLabelMode.Outside)
+															.AcceptCustomValue(true)
+															.OpenOnFieldClick(false)
+															.ValueChangeEvent("input")
+															.Placeholder("Choose VAT Transaction Types")
+															.HoverStateEnabled(true)
+															.ContentTemplate(new JS("VATTransactionTemplate")) // Reference the NamedTemplate
+															.DataSource(new[] {
+								new { ID = 1, Name = "3rd Party Tax Invoice" },
+								new { ID = 2, Name = "Nominal Tax Invoice" },
+								new { ID = 3, Name = "Export Tax Invoice" },
+								new { ID = 4, Name = "Summary Tax Invoice" },
+								new { ID = 5, Name = "Self Billed Tax Invoice" }
+								})
+															.OnInitialized("onDropDownInitialized")
+															)
 
 
 
-								</td>
-							</tr>
-						</table>
+							</td>
+						</tr>
+					</table>
 
 
 					<!-- Second Card (Right Side) -->
@@ -1310,36 +1310,36 @@
 			<div id="tab-content-4" class="tab-content">
 				<div class="card-container">
 
-						<table style="width:80%; font-size:14px; margin:5px;" cellpadding="5">
-							<tr>
-								<th>Foreign Currency Billing</th>
-							</tr>
-							<tr>
-								<td>
-									<div style="display: flex; align-items: end; gap: 10px;">
+					<table style="width:60%; font-size:14px; margin:5px;" cellpadding="5">
+						<tr>
+							<th>Foreign Currency Billing</th>
+						</tr>
+						<tr>
+							<td>
+								<div style="display: flex; align-items: end; gap: 10px;">
 									@(Html.DevExtreme().DropDownBox()
-																													.Label(new JS("formatMessage('Invoice Currency')"))
-																													.DataSource(d => d.WebApi()
-																													.Controller("VATModule")
-																													.LoadAction("GetInvoiceCurrency")
-																													.LoadMode(DataSourceLoadMode.Raw)
-																													.Key("CurrencyExchangeId"))
-																													.LabelMode(EditorLabelMode.Outside)
-																													.ID("ddlGoodsGroup3")
-																													.ShowClearButton(true)
-																													.Value("Saudi Arabian Riyals")
-																													.AcceptCustomValue(true)
-																													.OpenOnFieldClick(false)
-																													.ValueChangeEvent("input")
-																													.HoverStateEnabled(true)
-																													.ValueExpr("CurrencyExchangeId")
-																													.DisplayExpr("CurrencyName")
-																													.OnInput("dropDownBoxOnInput")
-																													.OnOpened("onOpened")
-																													.TabIndex(1)
-																													.DropDownOptions(o => o.Width(1000))
-																													.ContentTemplate(new TemplateName("InvoiceCurrencyTemplate"))
-																													.Width("75%"))
+																			.Label(new JS("formatMessage('Invoice Currency')"))
+																			.DataSource(d => d.WebApi()
+																			.Controller("VATModule")
+																			.LoadAction("GetInvoiceCurrency")
+																			.LoadMode(DataSourceLoadMode.Raw)
+																			.Key("CurrencyExchangeId"))
+																			.LabelMode(EditorLabelMode.Outside)
+																			.ID("ddlGoodsGroup3")
+																			.ShowClearButton(true)
+																			.Value("Saudi Arabian Riyals")
+																			.AcceptCustomValue(true)
+																			.OpenOnFieldClick(false)
+																			.ValueChangeEvent("input")
+																			.HoverStateEnabled(true)
+																			.ValueExpr("CurrencyExchangeId")
+																			.DisplayExpr("CurrencyName")
+																			.OnInput("dropDownBoxOnInput")
+																			.OnOpened("onOpened")
+																			.TabIndex(1)
+																			.DropDownOptions(o => o.Width(1000))
+																			.ContentTemplate(new TemplateName("InvoiceCurrencyTemplate"))
+																			.Width("100%"))
 									@(Html.DevExtreme().Button()
 																													.ID("EditClient2")
 																													.Icon("edit")
@@ -1354,30 +1354,31 @@
 								<td>
 									<div style="display: flex; align-items: end; gap: 10px;">
 									@(Html.DevExtreme().DropDownBox()
-																													.Label(new JS("formatMessage('Tax Currency')"))
-																													.DataSource(d => d.WebApi()
-																													.Controller("VATModule")
-																													.LoadAction("GetTaxCurrency")
-																													.LoadMode(DataSourceLoadMode.Raw)
-																													.Key("CurrencyExchangeId"))
-																													.LabelMode(EditorLabelMode.Outside)
-																													.ID("ddlGoodsGroup4")
-																													.Disabled(true)
-																													.ShowClearButton(true)
-																													.Value("Saudi Arabian Riyals")
-																													.AcceptCustomValue(true)
-																													.OpenOnFieldClick(false)
-																													.ValueChangeEvent("input")
-																													.HoverStateEnabled(true)
-																													.ValueExpr("CurrencyExchangeId")
-																													.DisplayExpr("CurrencyName")
-																													.OnInput("dropDownBoxOnInput")
-																													.OnOpened("onOpened")
-																													.TabIndex(1)
-																													.DropDownOptions(o => o.Width(1000))
-																													@* .Disabled(true) *@
-																													.ContentTemplate(new TemplateName("TaxCurrencyTemplate"))
-																													.Width("75%"))
+																			.Label(new JS("formatMessage('Tax Currency')"))
+																			.DataSource(d => d.WebApi()
+																			.Controller("VATModule")
+																			.LoadAction("GetTaxCurrency")
+																			.LoadMode(DataSourceLoadMode.Raw)
+																			.Key("CurrencyExchangeId"))
+																			.LabelMode(EditorLabelMode.Outside)
+																			.ID("ddlGoodsGroup4")
+																			.Disabled(true)
+																			.ShowClearButton(true)
+																			.Value("Saudi Arabian Riyals")
+																			.AcceptCustomValue(true)
+																			.OpenOnFieldClick(false)
+																			.ValueChangeEvent("input")
+																			.HoverStateEnabled(true)
+																			.ValueExpr("CurrencyExchangeId")
+																			.DisplayExpr("CurrencyName")
+																			.OnInput("dropDownBoxOnInput")
+																			.OnOpened("onOpened")
+																			.TabIndex(1)
+																			.DropDownOptions(o => o.Width(1000))
+																			@* .Disabled(true) *@
+																			.ContentTemplate(new TemplateName("TaxCurrencyTemplate"))
+																			.Width("100%"))
+
 									@(Html.DevExtreme().Button()
 																													.ID("EditClient1")
 																													.Icon("edit")
@@ -1391,18 +1392,18 @@
 							<tr>
 								<td>
 								@(Html.DevExtreme().NumberBox()
-																												.ID("currencyexchangerate")
-																												.Label(new JS("formatMessage('Currency Exchange Rate:')"))
-																												.LabelMode(EditorLabelMode.Outside)
-																												.Min(1)
-																												.Step(1)
-																												.ShowSpinButtons(true)
-																												.Value(1)
-																												.Width("75%")
-																)
-								</td>
-							</tr>
-						</table>
+															.ID("currencyexchangerate")
+															.Label(new JS("formatMessage('Currency Exchange Rate:')"))
+															.LabelMode(EditorLabelMode.Outside)
+															.Min(1)
+															.Step(1)
+															.ShowSpinButtons(true)
+															.Value(1)
+															.Width("100%")
+															)
+							</td>
+						</tr>
+					</table>
 
 					<table width="100%" style="font-size:14px; margin:5px;" cellpadding="2">
 							<tr>
@@ -4658,7 +4659,7 @@
 
 				mode: "cell"
 
-				// allowUpdating: true,
+					{ dataField: "ExcemptionCode", caption: formatMessage('Excemption Code'), cssClass: "center-header",width: 150 },
 
 				// allowAdding: false, // We'll add manually
 

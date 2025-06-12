@@ -115,5 +115,30 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
             }
         }
+        [HttpDelete]
+        public IActionResult Delete(string key)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var record = dbContext.Tbl60001storeMasters.FirstOrDefault(x => x.StoreId == key);
+                    if (record == null)
+                        return NotFound();
+
+                    dbContext.Tbl60001storeMasters.Remove(record);
+                    dbContext.SaveChanges();
+                    return Ok();
+                }
+
+                return Unauthorized(new { success = false, message = "Invalid tenant" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in Delete: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+
+            }
+        }
     }
 }
