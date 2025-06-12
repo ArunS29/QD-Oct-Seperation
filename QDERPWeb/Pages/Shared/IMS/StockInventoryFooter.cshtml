@@ -164,7 +164,7 @@
             .Icon("print")
             .Width(150)
             .Text(new JS("formatMessage('Report')"))
-            .DropDownOptions(options => options.Width(230))
+            .DropDownOptions(options => options.Width(350))
             .Items(items =>
             {
                 items.Add().Text(new JS("formatMessage('Inventory Report(With Expiry date)')")).Icon("money");
@@ -515,8 +515,30 @@
 
             window.open(`/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}`, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
         } else {
-            console.warn('No report mapping found for:', selectedText);
+            let url = "";
+            switch (selectedText) {
+            case "Inventory Report By date":
+                url = `/${tenantName}/IMS/InventoryByDateReport`;
+                break;
+            case "Inventory Report On Stores":
+                url = `/${tenantName}/IMS/StoreInventoryReport`;
+                break;
+            case "Inventory Report on Store(Pivort Report)":
+                url = `/${tenantName}/IMS/PivotStoreInventory`;
+                break;
+            case "Inventory Report On stores (By Date)":
+                url = `/${tenantName}/IMS/StoreInventoryByDate`;
+                break;
+            case "Inventory - Stock Movement report":
+                url = `/${tenantName}/IMS/StockMovementReport`;
+                break;
+            default:
+                console.warn('No URL mapping found for:', selectedText);
+                return;
+        }
+
+            window.location.href = url;
         }
     }
-
+    
 </script>
