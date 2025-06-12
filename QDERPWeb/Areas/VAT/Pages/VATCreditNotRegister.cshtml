@@ -481,8 +481,12 @@
 		.AllowColumnResizing(true)
 		.ColumnFixing(fixing => fixing.Enabled(true))
 		.HeaderFilter(filter => filter.Visible(false))
-		.Paging(p => p.Enabled(false))
-		.Pager(pager => pager.Visible(false))
+		.Paging(p => p.Enabled(true).PageSize(15))    // enable paging with 15 rows per page
+		.Pager(pager => pager
+		.Visible(true)                            // show pager UI (page numbers etc)
+		.ShowPageSizeSelector(true)              // allow user to change page size
+		.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+		.ShowInfo(true))
 		.Grouping(grouping => grouping.AutoExpandAll(true))
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
