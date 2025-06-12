@@ -233,7 +233,7 @@
 		)
 	@(Html.DevExtreme().CheckBox()
 		.ID("chkUseEffectiveDate")
-		.Text("Use Effective Date")
+		.Text(new JS("formatMessage('Use Effective Date')"))
 		.Value(false)
 		.ElementAttr("class", "mt-4 ml-4") // Adjust margin as needed
 		)
@@ -246,36 +246,36 @@
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
-			columns.Add().Caption("Invoice Details").Columns(subColumns =>
+			columns.Add().Caption(new JS("formatMessage('Invoice Details')")).Columns(subColumns =>
 			{
 			@* 	subColumns.AddFor(m => m.InvoiceNo).Caption("Invoice No").Alignment(HorizontalAlignment.Center).GroupIndex(0); *@
-				subColumns.AddFor(m => m.InvoiceNo).Caption("Invoice No").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.ClientName).Caption("Client Name").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.InvoiceDate).Caption("Invoice Date").Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
-				subColumns.AddFor(m => m.ItemCode).Caption("Item Code").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Gsdescrpition).Caption("Item Description").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.UnitDesc).Caption("Unit Description").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.QuantityInvoiced).Caption("Quantity Invoiced").Alignment(HorizontalAlignment.Right).Visible(true);
-				subColumns.AddFor(m => m.UnitRate).Caption("Unit Rate").Alignment(HorizontalAlignment.Right).Visible(true);
-				subColumns.AddFor(m => m.AmountBeforeDiscount).Caption("Amount Before Discount").Alignment(HorizontalAlignment.Right).Visible(true);
-				subColumns.AddFor(m => m.Discount).Caption("Discount").Alignment(HorizontalAlignment.Right).CellTemplate(@<text>
+				subColumns.AddFor(m => m.InvoiceNo).Caption(new JS("formatMessage('Invoice No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.ClientName).Caption(new JS("formatMessage('Client Name')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.InvoiceDate).Caption(new JS("formatMessage('Invoice Date')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
+				subColumns.AddFor(m => m.ItemCode).Caption(new JS("formatMessage('Item Code')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Gsdescrpition).Caption(new JS("formatMessage('Item Description')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.UnitDesc).Caption(new JS("formatMessage('Unit Description')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.QuantityInvoiced).Caption(new JS("formatMessage('Quantity Invoiced')")).Alignment(HorizontalAlignment.Right).Visible(true);
+				subColumns.AddFor(m => m.UnitRate).Caption(new JS("formatMessage('Unit Rate')")).Alignment(HorizontalAlignment.Right).Visible(true);
+				subColumns.AddFor(m => m.AmountBeforeDiscount).Caption(new JS("formatMessage('Amount Before Discount')")).Alignment(HorizontalAlignment.Right).Visible(true);
+				subColumns.AddFor(m => m.Discount).Caption(new JS("formatMessage('Discount')")).Alignment(HorizontalAlignment.Right).CellTemplate(@<text>
 					   		<%- (data.Discount == null || data.Discount === 0)
 					   		? '0.00'
 					   		: data.Discount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
 					   	</text>)
 			.Visible(true);
 
-				subColumns.AddFor(m => m.AmountAfterDiscount).Caption("Amount After Discount").Alignment(HorizontalAlignment.Right).Visible(true);
-				subColumns.AddFor(m => m.VatAmount).Caption("VAT Amount").Alignment(HorizontalAlignment.Right).Visible(true);
-				subColumns.AddFor(m => m.Total).Caption("Total").Alignment(HorizontalAlignment.Right).Visible(true);
+				subColumns.AddFor(m => m.AmountAfterDiscount).Caption(new JS("formatMessage('Amount After Discount')")).Alignment(HorizontalAlignment.Right).Visible(true);
+				subColumns.AddFor(m => m.VatAmount).Caption(new JS("formatMessage('VAT Amount')")).Alignment(HorizontalAlignment.Right).Visible(true);
+				subColumns.AddFor(m => m.Total).Caption(new JS("formatMessage('Total')")).Alignment(HorizontalAlignment.Right).Visible(true);
 			});
 
-			columns.Add().Caption("Cost Of Goods Sold").Columns(cogsColumns =>
+			columns.Add().Caption(new JS("formatMessage('Cost Of Goods Sold')")).Columns(cogsColumns =>
 			{
-				cogsColumns.AddFor(m => m.NoOfUnitsSold).Caption("No of Units Sold").Alignment(HorizontalAlignment.Right).Visible(true);
-				cogsColumns.AddFor(m => m.SalesAmount).Caption("Sales Amount").Alignment(HorizontalAlignment.Right).Visible(true);
+				cogsColumns.AddFor(m => m.NoOfUnitsSold).Caption(new JS("formatMessage('No of Units Sold')")).Alignment(HorizontalAlignment.Right).Visible(true);
+				cogsColumns.AddFor(m => m.SalesAmount).Caption(new JS("formatMessage('Sales Amount')")).Alignment(HorizontalAlignment.Right).Visible(true);
 				cogsColumns.AddFor(m => m.CostOfGoodsSold)
-			.Caption("Cost of Goods Sold")
+			.Caption(new JS("formatMessage('Cost of Goods Sold')"))
 			.Alignment(HorizontalAlignment.Right)
 			.CellTemplate(@<text>
 					   		<%- (data.CostOfGoodsSold == null || data.CostOfGoodsSold === 0)
@@ -285,7 +285,7 @@
 			.Visible(true);
 
 				cogsColumns.AddFor(m => m.ProfitOnSales)
-			.Caption("Profit On Sales")
+			.Caption(new JS("formatMessage('Profit On Sales')"))
 			.Alignment(HorizontalAlignment.Right)
 			.CellTemplate(@<text>
 					   		<%- (data.ProfitOnSales == null || data.ProfitOnSales === 0)
@@ -294,12 +294,12 @@
 					   	</text>)
 			.Visible(true);
 
-				cogsColumns.AddFor(m => m.IsCogsPosted).Caption("Is Cogs Posted").Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(@<text>
+				cogsColumns.AddFor(m => m.IsCogsPosted).Caption(new JS("formatMessage('Is Cogs Posted')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(@<text>
 		<div class="dx-icon">
 			<%= data.IsCogsPosted ? '<i style="color:red" class="fa fa-toggle-on"></i>' : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
 		</div>
 	</text>);
-				cogsColumns.AddFor(m => m.StatusForPosting).Caption("Status For Posting").Alignment(HorizontalAlignment.Center).Visible(true);
+				cogsColumns.AddFor(m => m.StatusForPosting).Caption(new JS("formatMessage('Status For Posting')")).Alignment(HorizontalAlignment.Center).Visible(true);
 			});
 		})
 	@* 	.Editing(editing => editing
