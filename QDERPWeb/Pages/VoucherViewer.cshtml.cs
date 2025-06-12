@@ -18,6 +18,12 @@ using ERPMasterWtDataContext = QD.ERP.Web.DAL.Entities.ERPMasterWtDataContext;
 using QD.ERP.Web.Areas.VAT.Reports.VATCreditNote;
 using QD.ERP.Web.Areas.Finance.Reports.journalEntry;
 using QD.ERP.Web.Areas.Finance.Reports.Journal_Register;
+using QD.ERP.Web.Areas.VAT.Reports.Inventory_Reports;
+using QD.ERP.Web.Areas.IMS.InventoryReports.MaterialPurchaseRequistion;
+using QD.ERP.Web.Areas.IMS.Reports.InventoryReports;
+using QD.ERP.Web.Areas.IMS.Report.Inventory_Report;
+using QD.ERP.Web.Areas.IMS.Inventory_Reports;
+using QD.ERP.Web.Areas.IMS.Reports.quotationstoClients;
 
 
 namespace QD.ERP.Web.Pages
@@ -36,7 +42,7 @@ namespace QD.ERP.Web.Pages
         public string VoucherNo { get; private set; }
         public string ReportName { get; private set; }
 
-        public IActionResult OnGet(string reportName, string voucherNo, string invoiceNo, bool isApproved, string debitNoteNo, string CreditNoteNo)
+        public IActionResult OnGet(string reportName, string voucherNo, string invoiceNo, bool isApproved, string debitNoteNo, string CreditNoteNo,string RequestNo,string quotationNo)
         {
             if (string.IsNullOrEmpty(reportName))
             {
@@ -67,20 +73,36 @@ namespace QD.ERP.Web.Pages
 
             Image logoImage = null;
             Image companySealImage = null;
-            if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+
+            if ((ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0) ||
+                (ERPCompany_details?.CompanySeal != null && ERPCompany_details.CompanySeal.Length > 0))
             {
                 try
                 {
-                    using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                    // Convert Logo
+                    if (ERPCompany_details.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
                     {
-                        logoImage = Image.FromStream(ms);
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                        {
+                            logoImage = Image.FromStream(ms);
+                        }
+                    }
+
+                    // Convert Seal
+                    if (ERPCompany_details.CompanySeal != null && ERPCompany_details.CompanySeal.Length > 0)
+                    {
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanySeal))
+                        {
+                            companySealImage = Image.FromStream(ms);
+                        }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Error processing company logo: " + ex.Message);
+                    Console.WriteLine("Error processing company logo or seal: " + ex.Message);
                 }
             }
+
             if (reportName == "DebitNoteView")
             {
                 if (string.IsNullOrEmpty(debitNoteNo))
@@ -315,6 +337,75 @@ namespace QD.ERP.Web.Pages
                 return Page();
             }
 
+            if (reportName == "MaterialRequestInventory" || reportName == "MaterialPurcchaseRequestion")
+            {
+                if (string.IsNullOrEmpty(RequestNo))
+                {
+                    return BadRequest("requestNo is required for IMS reports.");
+                }
+
+                RequestNo = RequestNo;
+
+                if (reportName == "MaterialRequestInventory")
+
+                {
+                    Report = new MaterialRequestInventory(RequestNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
+                }
+
+                else if (reportName == "MaterialPurcchaseRequestion")
+
+                {
+                    Report = new MaterialPurcchaseRequestion(RequestNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
+                }
+
+                
+                return Page();
+            }
+
+
+            if (reportName == "PreviewQuotations" || reportName == "PreviewQuotationwithadditionalDetails" || reportName == "PreviewQuotationwithoutPrice" || reportName == "QuotationWOvat" || reportName == "vatTotalPricewithout" || reportName == "withoutvatDiscount")
+            {
+                if (string.IsNullOrEmpty(quotationNo))
+                {
+                    return BadRequest("is required for IMS reports.");
+                }
+
+                quotationNo = quotationNo;
+                switch (reportName)
+                {
+                    case "PreviewQuotations":
+                     
+                        Report = new PreviewQuotations(quotationNo, tenantName, companyName, logoImage,companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
+                    case "PreviewQuotationwithadditionalDetails":
+
+                        Report = new PreviewQuotationwithadditionalDetails(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        break;
+                    case "PreviewQuotationwithoutPrice":
+
+                        Report = new PreviewQuotationwithoutPrice(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        break;
+                    case "QuotationWOvat":
+
+                        Report = new QuotationWOvat(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        break;
+                    case "vatTotalPricewithout":
+
+                        Report = new vatTotalPricewithout(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        break;
+                    case "withoutvatDiscount":
+
+                        Report = new withoutvatDiscount(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        break;
+                   
+
+                    default:
+                        return NotFound("Report not found.");
+                }
+                return Page();
+            }
+
+
 
 
 
@@ -364,6 +455,8 @@ namespace QD.ERP.Web.Pages
                 default:
                     return NotFound("Report not found.");
             }
+
+
 
             return Page();
         }

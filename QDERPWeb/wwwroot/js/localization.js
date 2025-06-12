@@ -2909,7 +2909,12 @@
         "Inventory Report On Stores": "Inventory Report On Stores",
         "Inventory Report on Store(Pivort Report)": "Inventory Report on Store(Pivort Report)",
         "Inventory Report On stores (By Date)": "Inventory Report On stores (By Date)",
-        "Inventory - Stock Movement report": "Inventory - Stock Movement report"
+        "Inventory - Stock Movement report": "Inventory - Stock Movement report",
+        "Preview Quotation without VAT": "Preview Quotation without VAT",
+        "Preview Quotation without VAT and without Total Price": "Preview Quotation without VAT and without Total Price",
+        "Preview Quotation without VAT and without Discount": "Preview Quotation without VAT and without Discount",
+        "Preview Quotation with additional Details": "Preview Quotation with additional Details",
+        "Preview Quotation without Price": "Preview Quotation without Price",
 
     },
     "ar": {
