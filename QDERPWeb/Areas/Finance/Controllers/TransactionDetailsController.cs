@@ -172,6 +172,94 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        [HttpGet]
+        public async Task<IActionResult> GetPagedTrialBalance(
+    DateTime? startDate,
+    DateTime? endDate,
+    string accountGroup,
+    int skip = 0,
+    int take = 5)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                using (dbContext)
+                {
+                    try
+                    {
+                        var query = dbContext.Qry20106CostAnalyses
+                            .AsNoTracking()
+                            .Where(x => (!startDate.HasValue || x.VoucherDate >= startDate.Value)
+                                     && (!endDate.HasValue || x.VoucherDate <= endDate.Value)
+                                     && (string.IsNullOrEmpty(accountGroup) || x.CostAllocationUnit == accountGroup));
+
+                        var totalCount = await query.CountAsync();
+
+                        var pagedData = await query
+                            .OrderBy(x => x.VoucherDate)
+                            .Skip(skip)
+                            .Take(take)
+                            .Select(item => new
+                            {
+                                item.CostAllocationMasterGroup,
+                                item.CostAllocationGroup,
+                                item.CostAllocationUnit,
+                                item.CostAmount,
+                                item.Income,
+                                item.Expenses,
+                                item.VoucherDate,
+                                item.EffectiveDate,
+                                item.AllocationEffectiveDate,
+                                item.CostAllocationId,
+                                item.VoucherEntryId,
+                                item.CostAllocationUnitId,
+                                item.CostAllocDrCr,
+                                item.AmountAllocated,
+                                item.CostAllocRemarks,
+                                item.IsDisabled,
+                                item.AccountHead,
+                                item.AccountGroup,
+                                item.MasterGroup,
+                                item.Pl,
+                                item.AccountId,
+                                item.VoucherNo,
+                                item.VoucherType,
+                                item.VoucherTypeAndNo,
+                                item.CostCenterIncharge,
+                                item.EntryNarration,
+                                item.SysRemarks,
+                                item.VoucherMonth,
+                                item.VoucherYear,
+                                item.EffectiveMonth,
+                                item.EffectiveYear,
+                                item.AllocationEffectiveMonth,
+                                item.AllocationEffectiveYear,
+                                item.ProjectMasterCode,
+                                item.BranchCode,
+                                item.BranchName,
+                                item.VoucherNarration,
+                                item.VoucherRefNo,
+                            })
+                            .ToListAsync();
+
+                        return Ok(new
+                        {
+                            data = pagedData,
+                            totalCount = totalCount
+                        });
+                    }
+                    catch (TaskCanceledException ex)
+                    {
+                        _logger.LogError($"Timeout in GetPagedTrialBalance: {ex.Message}");
+                        return StatusCode(504, new { message = "The request timed out. Please try again later.", error = ex.Message });
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError($"Error in GetPagedTrialBalance: {ex.Message}");
+                        return StatusCode(500, new { message = "An error occurred while processing your request.", error = ex.Message });
+                    }
+                }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
 
     }
 }
