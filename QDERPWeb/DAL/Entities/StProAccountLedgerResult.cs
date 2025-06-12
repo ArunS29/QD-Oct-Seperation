@@ -38,5 +38,9 @@ namespace QD.ERP.Web.DAL.Entities
         public DateTime? VoucherEffectiveDate { get; set; }
         public string AccountHeadArabic { get; set; }
         public string ReferenceNote { get; set; }
+        public decimal? ConvertedDrAmount { get; set; }
+        public decimal? ConvertedCrAmount { get; set; }
+        public decimal? ConvertedAmount { get; set; }
+        
     }
 }

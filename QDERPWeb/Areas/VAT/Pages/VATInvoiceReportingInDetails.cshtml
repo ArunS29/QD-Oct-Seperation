@@ -6,8 +6,8 @@
 <style>
  
 
-    .limited-footer .btn-containerIvoiceEdit:not(:has(#btnPrint,#ddButtonLayout,#btnShowRowTotals,#btnShowFields)) {
-        display: none !important
+    .limited-footer .btn-containerIvoiceEdit:not(:has(#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#ddButtonLayout,#btntoggleGroupPanel,#btnColumnChooser,#btnShowRowTotals,#btnShowFields)) {
+        display: none !important;
     }
 
     .dx-fieldset.horizontal-container {
@@ -58,6 +58,9 @@
     .mainContainer {
         width: 100%;
     }
+
+
+
 </style>
 <div class="title">
     <div class="header-container">
@@ -66,29 +69,37 @@
 </div>
 
 
-<div class="container" style="display: flex; flex-direction: column; gap: 20px;width:100%;">
+<div class="container" style="display: flex; flex-direction: column; width:100%;">
 
     <div class="Head">
-        <div class="limited-footer">
+        <div class="limited-footer" style="margin: 10px;">
             @await Html.PartialAsync("VATModuleFooter")
         </div>
     </div>
 
     <!-- Input Controls in One Line -->
     <div class="dx-fieldset horizontal-container">
-        @(Html.DevExtreme().DateBox()
+       
+
+        <div class="dx-field">
+            <!-- Start Date Picker -->
+            @(Html.DevExtreme().DateBox()
                 .ID("frmdateBox")
-                .Label(new JS("formatMessage('From Date')"))
+                
                 .LabelMode(EditorLabelMode.Outside)
                 .InputAttr("aria-label", "Date")
                 .Type(DateBoxType.Date)
-                .Value(new DateTime(DateTime.Now.Year, 1, 1))
+                .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
                 .DisplayFormat("dd-MMM-yyyy")
                 .TabIndex(2)
                 )
-        @(Html.DevExtreme().DateBox()
+        </div>
+
+        <div class="dx-field">
+            <!-- End Date Picker -->
+            @(Html.DevExtreme().DateBox()
                 .ID("todateBox")
-                .Label(new JS("formatMessage('To Date')"))
+              
                 .LabelMode(EditorLabelMode.Outside)
                 .InputAttr("aria-label", "Date")
                 .Type(DateBoxType.Date)
@@ -96,28 +107,31 @@
                 .DisplayFormat("dd-MMM-yyyy")
                 .TabIndex(3)
                 )
+        </div>
+        <!-- Dropdown Button to Show Records -->
         @(Html.DevExtreme().DropDownButton()
-                .ID("ddBtnShowRecords")
-                .Text(new JS("formatMessage('Show Records')"))
-                .Icon("smalliconslayout")
-                .Width(180)
-                .ElementAttr("class", "button-alignment-up")
-                .TabIndex(4)
-                .DropDownOptions(options => options.Width(230))
-                .Items(items =>
-                {
-                    items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
-                    items.Add().Text(new JS("formatMessage('Today')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
-                    items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-                    items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
-                    items.Add().Text(new JS("formatMessage('This Month Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-                    items.Add().Text(new JS("formatMessage('This Month (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-                    items.Add().Text(new JS("formatMessage('This Year Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-                    items.Add().Text(new JS("formatMessage('This Year (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-                    items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-                    items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
-                })
-                )
+            .ID("ddBtnShowRecords")
+            .Text("Show Records")
+            .Icon("smalliconslayout")
+            .Width(180)
+            .ElementAttr("class", "button-alignment-down")
+            .TabIndex(4)
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add().Text("Show Records").Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
+                items.Add().Text("Today").Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
+                items.Add().Text("Yesterday").Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+                items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
+                items.Add().Text("This Month Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+                items.Add().Text("This Month (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+                items.Add().Text("This Year Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+                items.Add().Text("This Year (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+                items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+                items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+            })
+            )
+       
     </div>
 
     <!-- Pivot Grid (Will Always Appear Below Filters) -->
@@ -127,9 +141,10 @@
 
 
 <script type="text/javascript">
+    let pivotData=[];
     $(function () {
         $("#VATInvoiceReportingInDetails").dxTextBox({
-            text: formatMessage("Sales Reporting In Details"),
+            text: formatMessage("SalesReportingInDetails"),
             readOnly: true,
             onContentReady: function (e) {
                 $(e.element).addClass("dx-textbox-heading");
@@ -223,6 +238,7 @@
                 endDate: formatDate(endDate)
             },
             success: function (data) {
+                pivotData=data;
                 initializePivotGrid(data);
             },
             error: function (xhr, status, error) {
@@ -274,7 +290,16 @@
             showColumnGrandTotals: true,
             showDataHeaders: true,
             showRowTotals: true,
-            showRowGrandTotals: true
+            showRowGrandTotals: true,
+                          onCellPrepared(e) {
+      if (e.area === "row" ) {
+        // Reset counter when starting new row set
+        if (e.rowIndex === 0) serialCounter = 1;
+
+        // Apply prefix only to first level row items (no nested rows)
+        e.cellElement.text(`${serialCounter++}. ${e.cell.text}`);
+      }
+    }
         }).dxPivotGrid("instance");
 
         // Expand rows initially
@@ -321,11 +346,132 @@
     }
     $(document).ready(function () {
         $(".limited-footer .btn-container").each(function () {
-            if (!$(this).find("#btnPrint,#ddButtonLayout,#btnShowRowTotals,#btnShowFields").length) {
+            if (!$(this).find("#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#ddButtonLayout,#btntoggleGroupPanel,#btnColumnChooser,#btnShowRowTotals,#btnShowFields").length) {
                 $(this).remove();
             }
         });
     });
+
+
+     let extraFieldsVisible = false;
+
+    $("#btnShowFields").on("click", function (e) {
+        const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
+        const dataSource = pivotGrid.getDataSource();
+
+        const baseFields = [
+             { dataField: "ClientName", area: "row", caption: "Client Name" },
+                    { dataField: "InvoiceMonth", area: "column", caption: "Invoice Month", dataType: "date", format: "MMM-yyyy" },
+                    { dataField: "AmountAfterDiscount", area: "data", caption: "Amount After Discount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
+                    { dataField: "VatAmount", area: "data", caption: "Vat Amount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
+                    { dataField: "Total", area: "data", caption: "Total", summaryType: "sum", format: { type: "fixedPoint", precision: 2 } }
+        ];
+
+        const extraFields = [
+            { dataField: "InvoiceNo", area: "filter", caption: "Invoice No" },
+            { dataField: "InvoiceDate", area: "filter", caption: "InvoiceDate" },
+            { dataField: "BillingName", area: "filter", caption: "Billing Name" },
+            { dataField: "ItemCode", area: "filter", caption: "Item Code" },
+            { dataField: "DetailedDescription", area: "filter", caption: "GS Description", format: { type: "fixedPoint", precision: 2 } },
+            { dataField: "QuantityInvoiced", area: "filter", caption: "Quantity Invoiced" },
+            { dataField: "UnitDesc", area: "filter", caption: "Unit Desc" },
+            { dataField: "UnitRate", area: "filter", caption: "Unit Rate" },
+            { dataField: "AmountBeforeDiscount", area: "filter", caption: "Amount Before Discount" },
+            { dataField: "Discount", area: "filter", caption: "Discount" },
+            { dataField: "InvoiceEffectiveDate", area: "filter", caption: "InvoiceEffectiveDate", dataType: "date" },
+            { dataField: "ReferenceNo", area: "filter", caption: "Reference No", dataType: "date" },
+            { dataField: "SalesPerson", area: "filter", caption: "Sales Person" },
+            { dataField: "CompanyBranch", area: "filter", caption: "Company Branch" },
+            { dataField: "CostAllocationMasterGroup", area: "filter", caption: "Cost Allocation Master Group" },
+            { dataField: "CostAllocationGroup", area: "filter", caption: "Cost Allocation Group" },
+            { dataField: "CostAllocationUnit", area: "filter", caption: "Cost Allocation Unit" },
+            { dataField: "SalesPersonName", area: "filter", caption: "Sales Person Name" },
+            { dataField: "StockGroupName", area: "filter", caption: "Stock Group Name" },
+            { dataField: "ItemPartNo", area: "filter", caption: "Item Part No" },
+            { dataField: "ItemBrand", area: "filter", caption: "Item Brand" },
+            { dataField: "ItemMake", area: "filter", caption: "Item Make" },
+            { dataField: "InvoiceStatus", area: "filter", caption: "Invoice Status" },
+            { dataField: "IssuedInvoiceCostPrice", area: "filter", caption: "Issued Invoice Cost Price" },
+            { dataField: "CostAllocationUnitId", area: "filter", caption: "Cost Allocation Unit Id" },
+            { dataField: "NoOfUnitsSold", area: "filter", caption: "No Of Units Sold" },
+            { dataField: "StatusForPosting", area: "filter", caption: "Status For Posting" },
+            { dataField: "CostOfGoodsSold", area: "filter", caption: "Cost Of Goods Sold" },
+            { dataField: "SalesAmount", area: "filter", caption: "Sales Amount" },
+            { dataField: "ProfitOnSales", area: "filter", caption: "Profit On Sales" },
+            { dataField: "EmployeeNo", area: "filter", caption: "Employee No" },
+            { dataField: "IsServicesGroup", area: "filter", caption: "Is Services Group" },
+            { dataField: "RevenueLedgerName", area: "filter", caption: "Revenue Ledger Name" }
+        ];
+
+        // Toggle logic
+        if (!extraFieldsVisible) {
+            dataSource.fields([...baseFields, ...extraFields]);
+            pivotGrid.option("dataSource", dataSource); // reassign DS
+            extraFieldsVisible = true;
+        } else {
+            dataSource.fields(baseFields);
+            pivotGrid.option("dataSource", dataSource); // reassign DS
+            extraFieldsVisible = false;
+        }
+
+        dataSource.load(); // reload grid
+    });
+
+
+       $('#btnShowRowTotals').click(function () {
+        showrowtotal(pivotData); // Correctly passing the data array
+    });
+
+
+            function showrowtotal(pivotData) {
+        const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
+        console.log("pivotData", pivotData);
+
+        // Group by CostAllocationUnit (Cost Group)
+        const grouped = {};
+        pivotData.forEach(item => {
+            const groupKey = item.ClientName;
+            if (!groupKey) return; // Skip if no group key
+            if (!grouped[groupKey]) grouped[groupKey] = [];
+            grouped[groupKey].push(item);
+        });
+
+        console.log("Grouped:", pivotData);
+
+        // Create total rows for each Cost Group
+        const totalRows = Object.entries(grouped).map(([groupName, rows]) => {
+            const totalIncome = rows.reduce((sum, r) => sum + (r.AmountAfterDiscount || 0), 0);
+
+
+            return {
+                ClientName: groupName + " Total",
+                AmountAfterDiscount: totalIncome
+
+            };
+        });
+
+        // Debug: Check totals
+        console.log("Total Rows:", totalRows);
+
+        const updatedData = [...pivotData, ...totalRows];
+
+        // Refresh PivotGrid with updated data
+        pivotGrid.option("dataSource", {
+            fields: [
+                { dataField: "ClientName", area: "row", caption: "Client Name" },
+                { dataField: "AmountAfterDiscount", area: "data", summaryType: "sum", caption: "Invoiced Amount" }
+            ],
+            store: updatedData
+        });
+    }
+    function customFormatter(cellInfo) {
+        const value = cellInfo.value;
+        if (value < 0) {
+            return "-" + Math.abs(value).toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+        } else {
+            return value.toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+        }
+    }
 </script>
 
 

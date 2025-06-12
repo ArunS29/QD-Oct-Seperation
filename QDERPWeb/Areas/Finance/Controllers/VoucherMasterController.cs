@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
@@ -27,9 +28,10 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<VoucherMasterController> _logger;
-
-        public VoucherMasterController(ILogger<VoucherMasterController> logger, TenantDbContextHelper tenantDbContextHelper)
+        private readonly IUserActionLogger _userActionLogger;
+        public VoucherMasterController(ILogger<VoucherMasterController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -1979,9 +1981,14 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 // Remove all matching records
                 dbContext.Tbl201VoucherEntries.RemoveRange(records);
                 await dbContext.SaveChangesAsync();
-
-                // Fetch updated voucher list
-                var voucherEntries = await dbContext.Tbl201VoucherEntries
+                    // ✅ Log the deletion action
+                    await _userActionLogger.LogAsync(
+                        module: "Finance > Delete Receipts",
+                        actionDetail: $"Deleted all voucher entries for VoucherNo: {VoucherNo}. Total deleted: {records.Count}",
+                        documentNo: VoucherNo
+                    );
+                    // Fetch updated voucher list
+                    var voucherEntries = await dbContext.Tbl201VoucherEntries
                                                    .Where(ve => ve.VoucherNo == VoucherNo)
                                                    .ToListAsync();
 
@@ -2616,6 +2623,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
 
+
         [HttpPost]
         public async Task<ActionResult> UpdatePurchaseChildDetails(List<InvoiceItem> InvoiceChildren)
         {
@@ -2640,9 +2648,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 PurchaseVoucherNo = child.InvoiceNo,
                                 UnitRate = child.UnitPrice?.GetDecimal() ?? 0m, // Ensure null safety
                                 DetailedDescription = child.Description?.GetString() ?? string.Empty, // Null safety
-                                QuantityInvoiced = child.Qty?.GetDecimal() ?? 0m, // Null safety
+                                QuantityInvoiced = child.Qty, // Null safety
                                 TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8,
                                 UnitsToBill = 1,
+                                //UnitRateInOc = child.UnitPrice?.GetDecimal() ?? 0m,
+                                //DiscountInOc = child.Discount,
+                                Discount = child.Discount,
                                 UnitRateMethod = 49,
                                 ItemCode = child.ItemCode ?? string.Empty, // Null safety
                                 UoM = "Each"
@@ -2665,6 +2676,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 existingChild.QuantityInvoiced = child.QuantityInvoiced;
                                 existingChild.TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8;
                                 existingChild.UnitsToBill = 1;
+                                existingChild.Discount = child.Discount;
                                 existingChild.UnitRateMethod = 49;
                                 existingChild.ItemCode = child.ItemCode ?? string.Empty;
                                 existingChild.UoM = "Each";
@@ -2688,10 +2700,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return BadRequest("Failed to retrieve tenant and database context.");
         }
 
-
-        
-
-		[HttpPost]
+        [HttpPost]
         public async Task<ActionResult> UpdateInvoiceMasterDetails(Tbl20161VatinvoiceMaster InvoiceMaster)
         {
             if (InvoiceMaster == null)
@@ -2759,7 +2768,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 InvoiceNo = child.InvoiceNo,
                                 UnitRate = child.UnitPrice?.GetDecimal() ?? 0m,
                                 DetailedDescription = child.Description?.GetString() ?? string.Empty,
-                                QuantityInvoiced = child.Qty?.GetDecimal() ?? 0m,
+                                QuantityInvoiced = child.Qty,
                                 TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8,
                                 Discount = child.Discount,
                                 UnitRateInOc= child.UnitPrice?.GetDecimal() ?? 0m,
@@ -2890,14 +2899,28 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             // Create a new instance for each child
                             var aTbl20171VatcreditNoteChild = new Tbl20171VatcreditNoteChild
                             {
+                                //CreditNoteNo = child.InvoiceNo,
+                                //UnitRate = child.UnitRate, // Ensure null safety
+                                //DetailedDescription = child.Description?.GetString() ?? string.Empty, // Null safety
+                                //QuantityCredited = child.QuantityCredited, // Null safety
+                                //TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8,
+                                //UnitsToCredited = 1,
+                                //UnitRateInOc = child.UnitPrice?.GetDecimal() ?? 0m,
+                                //DiscountInOc = child.Discount,
+                                //UnitRateMethod = 49,
+                                //ItemCode = child.ItemCode ?? string.Empty, // Null safety
+                                //UoM = "Each"
+
                                 CreditNoteNo = child.InvoiceNo,
-                                UnitRate = child.UnitRate, // Ensure null safety
+                                UnitRate = child.UnitPrice?.GetDecimal() ?? 0m, // Ensure null safety
                                 DetailedDescription = child.Description?.GetString() ?? string.Empty, // Null safety
-                                QuantityCredited = child.QuantityCredited, // Null safety
+                                QuantityCredited = child.Qty, // Null safety
                                 TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8,
                                 UnitsToCredited = 1,
+
                                 UnitRateInOc = child.UnitPrice?.GetDecimal() ?? 0m,
                                 DiscountInOc = child.Discount,
+                                Discount = child.Discount,
                                 UnitRateMethod = 49,
                                 ItemCode = child.ItemCode ?? string.Empty, // Null safety
                                 UoM = "Each"
@@ -2922,6 +2945,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 existingChild.UnitsToCredited   = 1;
                                 existingChild.UnitRateInOc = child.UnitPrice?.GetDecimal() ?? 0m;
                                 existingChild.DiscountInOc = child.Discount;
+                                existingChild.Discount = child.Discount;
                                 existingChild.UnitRateMethod = 49;
                                 existingChild.ItemCode = child.ItemCode ?? string.Empty;
                                 existingChild.UoM = "Each";
@@ -2929,6 +2953,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 dbContext.Tbl20171VatcreditNoteChildren.Update(existingChild);
                             }
                         }
+
+
                     }
 
                     await dbContext.SaveChangesAsync();
@@ -3012,9 +3038,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 DebitNoteNo = child.InvoiceNo,
                                 UnitRate = child.UnitPrice?.GetDecimal() ?? 0m, // Ensure null safety
                                 DetailedDescription = child.Description?.GetString() ?? string.Empty, // Null safety
-                                QuantityDebited = child.Qty?.GetDecimal() ?? 0m, // Null safety
+                                QuantityDebited = child.Qty, // Null safety
                                 TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8,
                                 UnitsToDebited = 1,
+                                Discount = child.Discount,
+                                UnitRateInOc = child.UnitPrice?.GetDecimal() ?? 0m,
+                                DiscountInOc = child.Discount,
                                 UnitRateMethod = 49,
                                 ItemCode = child.ItemCode ?? string.Empty, // Null safety
                                 UoM = "Each"
@@ -3038,6 +3067,9 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 existingChild.TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8;
                                 existingChild.UnitsToDebited = 1;
                                 existingChild.UnitRateMethod = 49;
+                                existingChild.Discount = child.Discount;
+                                existingChild.UnitRateInOc = child.UnitPrice?.GetDecimal() ?? 0m;
+                                existingChild.DiscountInOc = child.Discount;
                                 existingChild.ItemCode = child.ItemCode ?? string.Empty;
                                 existingChild.UoM = "Each";
 
@@ -3089,7 +3121,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
                     await dbContext.SaveChangesAsync();
-                    // await transaction.CommitAsync();
 
                     return Ok(new { success = true, message = existingInvoice != null ? "Invoice and child records updated successfully!" : "New invoice and child records added successfully!" });
                 }
@@ -3103,6 +3134,97 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return BadRequest("Failed to retrieve tenant and database context.");
         }
+
+        [HttpPost]
+        public async Task<ActionResult> UpdateProformaChildDetails(List<InvoiceItem> InvoiceChildren)
+        {
+            if (InvoiceChildren == null || InvoiceChildren.Count == 0)
+            {
+                return BadRequest(new { success = false, message = "Invalid or empty invoice data received." });
+            }
+
+            try
+            {
+
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var savedChildren = new List<Tbl20182ProformaInvoiceChild>();
+
+                    foreach (var child in InvoiceChildren)
+                    {
+                        if (child.InvoiceChildSlNo == null || child.InvoiceChildSlNo == 0)
+                        {
+                            var newChild = new Tbl20182ProformaInvoiceChild
+                            {
+                                ProformaInvoiceNo = child.InvoiceNo,
+                                UnitRate = child.UnitPrice?.GetDecimal() ?? 0m,
+                                DetailedDescription = child.Description?.GetString() ?? string.Empty,
+                                QuantityInvoiced = child.Qty,
+                                TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8,
+                                Discount = child.Discount,
+                                UnitRateInOc = child.UnitPrice?.GetDecimal() ?? 0m,
+                                DiscountInOc = child.Discount,
+                                UnitsToBill = 1,
+                                UnitRateMethod = 49,
+                                ItemCode = child.ItemCode ?? string.Empty,
+                                UoM = "Each"
+                            };
+
+                            await dbContext.Tbl20182ProformaInvoiceChildren.AddAsync(newChild);
+                            await dbContext.SaveChangesAsync();
+
+                            // Set the generated ID back to the input model if needed
+                            //child.InvoiceChildSlNo = newChild.ProformaInvChildSlNo;
+
+                            savedChildren.Add(newChild);
+                        }
+                        else
+                        {
+                            var existingChild = await dbContext.Tbl20182ProformaInvoiceChildren
+                                .FirstOrDefaultAsync(x => x.ProformaInvChildSlNo == child.InvoiceChildSlNo);
+
+                            if (existingChild != null)
+                            {
+
+                                existingChild.ProformaInvoiceNo = child.InvoiceNo;
+                                existingChild.UnitRate = child.UnitRate;
+                                existingChild.DetailedDescription = child.DetailedDescription;
+                                existingChild.QuantityInvoiced = child.QuantityInvoiced;
+                                existingChild.TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8;
+                                existingChild.UnitsToBill = 1;
+                                existingChild.UnitRateMethod = 49;
+                                existingChild.ItemCode = child.ItemCode ?? string.Empty;
+                                existingChild.UoM = "Each";
+                                existingChild.Discount = child.Discount;
+                                existingChild.UnitRateInOc = child.UnitPrice?.GetDecimal() ?? 0m;
+                                existingChild.DiscountInOc = child.Discount;
+                                dbContext.Tbl20182ProformaInvoiceChildren.Update(existingChild);
+                                savedChildren.Add(existingChild);
+                            }
+                        }
+                    }
+
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(new
+                    {
+                        success = true,
+                        message = "Invoice child records saved successfully!",
+                        data = savedChildren
+                    });
+                }
+                else
+                {
+                    return BadRequest(new { success = false, message = "Failed to retrieve tenant and database context." });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
+
 
 
     }

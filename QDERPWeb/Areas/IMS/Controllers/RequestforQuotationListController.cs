@@ -134,36 +134,38 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             return Unauthorized(new { message = "Invalid tenant." });
         }
-        //Add New RFQ Form
+		//Add New RFQ Form
+		
 		[HttpGet]
 		public ActionResult<string> GetNewDebitNoteNoApi()
 		{
 			try
 			{
+				// Retrieve tenant name from session
+				var tenantName = HttpContext.Session.GetString("TenantName");
+				if (string.IsNullOrWhiteSpace(tenantName))
+				{
+					return Unauthorized(new { message = "Tenant name not found in session.", success = false });
+				}
+
 				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
 				{
-
-
+					// Use tenantName to find the company
 					var company = dbContext.Tbl901CompanyDetails
-										   .FirstOrDefault(c => c.CompanyNameShort == "Pulse Infotech");
-
+										   .FirstOrDefault(c => c.CompanyNameShort == tenantName);
 
 					if (company == null)
 					{
 						return NotFound("Company not found.");
 					}
 
-					string invoiceAbbrv = company.InvoiceAbbrv;
+					string Rfqabbrv = company.Rfqabbrv;
 					int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
-
 					bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
-
 					DateTime invoiceDate = DateTime.Now;
 
-
-
-					// Step 4: Generate New Debit Note No
-					string newDebitNoteNo = GetNewDebitNoteNo(invoiceAbbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear, dbContext);
+					// Generate new debit note number
+					string newDebitNoteNo = GetNewDebitNoteNo(Rfqabbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear, dbContext);
 
 					return Ok(newDebitNoteNo);
 				}
@@ -174,13 +176,14 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 			}
 			catch (Exception ex)
 			{
+				_logger.LogError($"Error in GetNewDebitNoteNoApi: {ex.Message}");
 				return StatusCode(500, "Internal server error: " + ex.Message);
 			}
 		}
 
 
 
-		private string GetNewDebitNoteNo(string invoiceAbbrv, int yearInDigit, DateTime invoiceDate, bool isResetByYear, ERPMasterWtDataContext dbContext)
+		private string GetNewDebitNoteNo(string Rfqabbrv, int yearInDigit, DateTime invoiceDate, bool isResetByYear, ERPMasterWtDataContext dbContext)
 		{
 			try
 			{
@@ -213,7 +216,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 					strYear = "";
 				}
 
-				return $"AIC-RFQ-{strYear}-{strNewDebitNoteNo}";
+				return $"{Rfqabbrv}{strYear}-{strNewDebitNoteNo}";
 			}
 			catch (Exception)
 			{
@@ -227,7 +230,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 					strYear = "";
 				}
 
-				return $"AIC_RFQ-{strYear}-00001";
+				return $"{Rfqabbrv}{strYear}-00001";
 			}
 		}
 		[HttpGet]

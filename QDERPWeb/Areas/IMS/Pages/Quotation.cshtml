@@ -227,7 +227,7 @@
 			items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
 		})
 		)
-
+  
 </div>
 <div class="dx-field ledgerResult">
 	@(
@@ -237,55 +237,53 @@
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
-			columns.Add().Caption("Quotation Details").Columns(subColumns =>
+				columns.Add().Caption(new JS("formatMessage('Quotation Details')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.QuoteNo).Caption(" Quote No").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.QuoteNo).Caption(new JS("formatMessage('Quote No')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
-				subColumns.AddFor(m => m.QuoteDate).Caption("Quote Date").Alignment(HorizontalAlignment.Center).Visible(true).Format("dd-MMM-yyyy");
-				subColumns.AddFor(m => m.ClientName).Caption("Client Name").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Mprno).Caption("Mpr no").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.ClientRefNo).Caption("Client Ref No").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.SalesOrderNo).Caption("Sales Order No").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.SalesPersonName).Caption("Sales Person Name").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.IsSubmitted).Caption(" IsSubmitted ").Alignment(HorizontalAlignment.Center)
+				subColumns.AddFor(m => m.QuoteDate).Caption(new JS("formatMessage('Quote Date')")).Alignment(HorizontalAlignment.Center).Visible(true).Format("dd-MMM-yyyy");
+				subColumns.AddFor(m => m.ClientName).Caption(new JS("formatMessage('Client Name')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Mprno).Caption(new JS("formatMessage('Mpr no')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.ClientRefNo).Caption(new JS("formatMessage('Client Ref No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.SalesOrderNo).Caption(new JS("formatMessage('Sales Order No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.SalesPersonName).Caption(new JS("formatMessage('Sales Person Name')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.IsSubmitted).Caption(new JS("formatMessage('IsSubmitted')")).Alignment(HorizontalAlignment.Center)
 			.CellTemplate(@<text>
 		<div class="dx-icon">
 			<%= data.IsSubmitted ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
 		</div>
 	</text>).Visible(true);
-				subColumns.AddFor(m => m.IsVerified).Caption(" IsVerified ").Alignment(HorizontalAlignment.Center)
+				subColumns.AddFor(m => m.IsVerified).Caption(new JS("formatMessage('IsVerified')")).Alignment(HorizontalAlignment.Center)
 			.CellTemplate(@<text>
 		<div class="dx-icon">
 			<%= data.IsVerified ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
 		</div>
 	</text>).Visible(true);
-				subColumns.AddFor(m => m.IsApproved).Caption(" IsApproved ").Alignment(HorizontalAlignment.Center)
+				subColumns.AddFor(m => m.IsApproved).Caption(new JS("formatMessage('IsApproved')")).Alignment(HorizontalAlignment.Center)
 			.CellTemplate(@<text>
 		<div class="dx-icon">
 			<%= data.IsApproved ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
 		</div>
 	</text>).Visible(true);
-
-
 			});
-			columns.Add().Caption("No Of Items").Columns(subColumns =>
+			columns.Add().Caption(new JS("formatMessage('No Of Items')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.NoOfItems).Caption("No Of Items").Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
+				subColumns.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No Of Items')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
 
 
 
 			});
 
 
-			columns.Add().Caption("Quoted Amount").Columns(subColumns =>
+			columns.Add().Caption(new JS("formatMessage('Quoted Amount')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.TotalBeforeDiscount).Caption("Total Before Discount").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.TotalBeforeDiscount).Caption(new JS("formatMessage('Total Before Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
-				subColumns.AddFor(m => m.TotalAfterDiscount).Caption("Discount ").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.TotalAfterDiscount).Caption(new JS("formatMessage('Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
-				subColumns.AddFor(m => m.TotalTaxAmount).Caption("Total Tax Amount").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.TotalTaxAmount).Caption(new JS("formatMessage('Total Tax Amount')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
-				subColumns.AddFor(m => m.TotalWithTax).Caption("Total With Tax").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.TotalWithTax).Caption(new JS("formatMessage('Total With Tax')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
 			});
 		})
@@ -299,8 +297,15 @@
 		.AllowColumnResizing(true)
 		.ColumnFixing(fixing => fixing.Enabled(true))
 		.HeaderFilter(filter => filter.Visible(false))
-		.Paging(p => p.Enabled(false))
-		.Pager(pager => pager.Visible(false))
+		.Paging(p => p.PageSize(10)) // Set desired page size (e.g., 10 rows per page)
+		.Pager(pager =>
+		{
+			pager.ShowPageSizeSelector(true);
+			pager.AllowedPageSizes(new[] { 5, 10, 20, 50 });
+			pager.ShowNavigationButtons(true);
+			pager.Visible(true);
+		})
+
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
 		.ShowRowLines(true)

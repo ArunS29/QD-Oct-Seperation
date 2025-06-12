@@ -193,19 +193,18 @@
 				<label id="TypenewStockClassification" class="form-label"></label>
 				<div style="display:flex; align-items:end;">
 					@(Html.DevExtreme().TextBox()
-												.ID("stockClassificationInput")
-												.Width("70%")
-												.Placeholder("Type new Stock Classification")
-												)
-
+						.ID("stockClassificationInput")
+						.Width("70%")
+						.Placeholder("Type new Stock Classification")
+						)
 					<div class="add-button-wrap" style="margin-left:50%; margin-top:10px;">
 						@(Html.DevExtreme().Button()
-													.ID("addStockClassBtn")
-													.Text(new JS("formatMessage('Add')"))
-													.Type(ButtonType.Success)
-													.Icon("plus")
-													.Width("100%")
-													)
+							.ID("addStockClassBtn")
+							.Text(new JS("formatMessage('Add')"))
+							.Type(ButtonType.Success)
+							.Icon("plus")
+							.Width("100%")
+							)
 						</div>
 					</div>
 				</div>
@@ -225,16 +224,19 @@
 				.ShowRowLines(true)
 				.RowAlternationEnabled(true)
 				.DataSource(d => d.WebApi()
-				.LoadAction("GetAll")
-				.UpdateAction("UpdateStockClassification") // Add update action
-				.UpdateMethod("PUT")
 				.Controller("StockInventory")
-				.Key("StockClassId") // Primary key
+				.LoadAction("GetAll")
+				.UpdateAction("UpdateStockClassification")
+				.UpdateMethod("PUT")
+				.DeleteAction("DeleteStockClassification")
+				.DeleteMethod("DELETE")
+				.Key("StockClassId")
 				)
 				.Editing(editing => editing
-				.Mode(GridEditMode.Row) // or .Form, .Popup
+				.Mode(GridEditMode.Row)
 				.AllowUpdating(true)
-				.UseIcons(true) // Show edit/save icons
+				.AllowDeleting(true)
+				.UseIcons(true)
 				)
 				.Columns(columns =>
 				{
@@ -242,19 +244,36 @@
 					.Caption("ID")
 					.Width(100)
 					.Alignment(HorizontalAlignment.Center)
-					.AllowEditing(false); // Read-only
+					.AllowEditing(false);
 
 					columns.Add().DataField("StockClassification")
 					.Caption("Stock Classification")
 					.Width(300)
-					.Alignment(HorizontalAlignment.Center);
+					.Alignment(HorizontalAlignment.Center)
+					.AllowEditing(true);
+
+					columns.Add()
+					.Type(GridCommandColumnType.Buttons)
+					.Width(150)
+					.Buttons(buttons =>
+					{
+						buttons.Add().Name("edit"); 
+						buttons.Add().Name("save");
+						buttons.Add().Name("cancel"); 
+						buttons.Add().Name("customDelete")
+					.Icon("trash")
+					.Hint("Delete")
+					.OnClick("onCustomDeleteClick");
+					});
 				})
 				.AllowColumnReordering(true)
 				.AllowColumnResizing(true)
 				.ColumnFixing(fixing => fixing.Enabled(true))
-				.GroupPanel(groupPanel => groupPanel.Visible(false))
+				.GroupPanel(g => g.Visible(false))
 				.ShowColumnHeaders(true)
 				)
+
+
 
 		</div>
 		<br />
@@ -263,11 +282,11 @@
 			
 			<div class="action-buttons">
 				@(Html.DevExtreme().Button()
-								.Text("Back")
-								.Icon("arrowleft")
-								.OnClick("Goback")
-								.Width(120)
-								.Type(ButtonType.Default))
+						.Text(new JS("formatMessage('Back')"))
+						.Icon("arrowleft")
+						.OnClick("Goback")
+						.Width(120)
+						.Type(ButtonType.Default))
 			</div>
 		</div>
 	</div>
@@ -326,4 +345,28 @@
 			});
 		}
 	});
+		function onCustomDeleteClick(e) {
+		if (!e || !e.row || !e.row.data || !e.row.data.StockClassId) {
+			DevExpress.ui.notify("Invalid record selected.", "error", 2000);
+			return;
+		}
+
+		DevExpress.ui.dialog.confirm("Are you sure you want to delete this Stock Classification?", "Confirm Deletion")
+			.done(function (dialogResult) {
+				if (dialogResult) {
+					$.ajax({
+						url: '/api/StockInventory/DeleteStockClassification?key=' + e.row.data.StockClassId,
+						type: 'DELETE',
+						success: function () {
+							DevExpress.ui.notify("Stock Classification deleted successfully!", "success", 2000);
+							$("#storeGrid").dxDataGrid("instance").refresh();
+						},
+						error: function () {
+							DevExpress.ui.notify("Failed to delete Stock Classification.", "error", 2000);
+						}
+					});
+				}
+	   });
+	}
 </script>
+

@@ -190,10 +190,8 @@
 
                 <!-- Asset Ledger No Field -->
                 <div class="col-md-2">
-                    <div class="form-label">
-                        <label for="AssetLedgerNo">Client Code</label>
-                    </div>
-        @(Html.DevExtreme().TextBox().ID("txtClientCode").Value("").ReadOnly(true)
+        @(Html.DevExtreme().TextBox().ID("txtClientCode").Value("").ReadOnly(true).Label(new JS("formatMessage('Client Code')"))
+            .LabelMode(EditorLabelMode.Outside)
          .ValidationRules(r => r.AddRequired().Message("Client Code is required.")))
                 </div>
 
@@ -201,11 +199,9 @@
 
                 <!-- Asset Category Dropdown -->
                 <div class="col-md-8 " >
-                    <div class="form-label">
-                        <label for="ClientCategory">Client Category</label>
-                    </div>
-                    <div class="form-group-row" style="display:flex;">
-        @(Html.DevExtreme().DropDownBox()
+                    <div class="form-group-row" style="display:flex; align-items:end;">
+        @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Client Category')"))
+            .LabelMode(EditorLabelMode.Outside)
      .DataSource(d => d.WebApi()
      .Controller("ClientLeadMaster")
      .LoadAction("GetClientCategory")
@@ -243,13 +239,11 @@
                         <div class="row">
                             <!-- Asset Description Field -->
                             <div class="col-md-12">
-                                <div class="form-label">
-                                    <label for="AssetDescription">Client Name</label>
-                                </div>
+                                
         @(
             Html.DevExtreme().TextBox()
-            .ID("txtClientName")
-            // .Value("")
+            .ID("txtClientName").Label(new JS("formatMessage('Client Name')"))
+            .LabelMode(EditorLabelMode.Outside)
              .ValidationRules(r => r.AddRequired().Message("Client Name is required."))
             )
                             </div>
@@ -282,42 +276,42 @@
                 .Items(item =>
                 {
                     item.Add()
-                .Title("Contact Details")
+                .Title(new JS("formatMessage('Contact Details')"))
                 .Text("Contact Details")
                 .Template(@<text>
             <div class="form-container">
                 <div class="form-row">
                     <div class="col-md-6" style="">
-                        <label>Client Visited On</label>
-                        @Html.DevExtreme().DateBox().ID("ClientVisitedOn").DisplayFormat("dd-MMM-yyyy")
+                        @(Html.DevExtreme().DateBox().ID("ClientVisitedOn").Label(new JS("formatMessage('Client Visited On')"))
+                        .LabelMode(EditorLabelMode.Outside).DisplayFormat("dd-MMM-yyyy"))
                     </div>
                     <div class="col-md-6">
-                        <label>Client Ledger No</label>
-                       @(Html.DevExtreme().DropDownBox()
-     .DataSource(d => d.WebApi()
-     .Controller("ClientLeadMaster")
-     .LoadAction("GetClientLedgerNo")
-     .LoadMode(DataSourceLoadMode.Raw)
-     .Key("AccountId")
-     )
-     .LabelMode(EditorLabelMode.Outside)
-     .ID("GetLedgerNoDropDown")
-     .Width(900)
-     @*  .ShowClearButton(true)
-                 .AcceptCustomValue(true) *@
-     .OpenOnFieldClick(false)//
-     .ValueChangeEvent("input")
-     .HoverStateEnabled(true)
-     .ValueExpr("AccountId")
-     .DisplayExpr("AccountHead")
-     .OnInput("dropDownBoxOnInput")
-     .OnOpened("onOpened")
-     .TabIndex(1)
-     .Width("100%")
-     .OnKeyDown("onKeyDown")
-     //.OnValueChanged("dropDownBoxValueChanged")
-     .ContentTemplate(new TemplateName("GetLedgerNoContentTemplate"))
-     )
+                        @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Client Ledger No')"))
+                        .LabelMode(EditorLabelMode.Outside)
+                        .DataSource(d => d.WebApi()
+                        .Controller("ClientLeadMaster")
+                        .LoadAction("GetClientLedgerNo")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("AccountId")
+                     )
+                     .LabelMode(EditorLabelMode.Outside)
+                     .ID("GetLedgerNoDropDown")
+                     .Width(900)
+                     @*  .ShowClearButton(true)
+                                 .AcceptCustomValue(true) *@
+                     .OpenOnFieldClick(false)//
+                     .ValueChangeEvent("input")
+                     .HoverStateEnabled(true)
+                     .ValueExpr("AccountId")
+                     .DisplayExpr("AccountHead")
+                     .OnInput("dropDownBoxOnInput")
+                     .OnOpened("onOpened")
+                     .TabIndex(1)
+                     .Width("100%")
+                     .OnKeyDown("onKeyDown")
+                     //.OnValueChanged("dropDownBoxValueChanged")
+                     .ContentTemplate(new TemplateName("GetLedgerNoContentTemplate"))
+                     )
 
 
                     </div>
@@ -326,95 +320,92 @@
                 </div>
                 <div class="form-row">
                         <div class="col-md-12">
-                            <label>Client Address</label>
-                        @Html.DevExtreme().TextArea().ID("ClientAddress").ElementAttr(new { style = "height: 70px !important;" })
+                        @(Html.DevExtreme().TextArea().ID("ClientAddress").Label(new JS("formatMessage('Client Address')"))
+                        .LabelMode(EditorLabelMode.Outside).ElementAttr(new { style = "height: 70px !important;" }))
                         </div>
                 </div>
                 <div class="form-row">
                     <div class="col-md-6">
-                        <label>Contact Person</label>
-                        @Html.DevExtreme().TextBox().ID("ContactPerson")
+                        @(Html.DevExtreme().TextBox().ID("ContactPerson").Label(new JS("formatMessage('Contact Person')"))
+                        .LabelMode(EditorLabelMode.Outside) )
                     </div>
                     <div class="col-md-6">
-                        <label>Title</label>
-                        @Html.DevExtreme().TextBox().ID("Title")
+                        @(Html.DevExtreme().TextBox().ID("Title").Label(new JS("formatMessage('Title')"))
+                        .LabelMode(EditorLabelMode.Outside))
                     </div>
                  
                 </div>
                   <div class="form-row">
                     <div class="col-md-6">
-                        <label>Mobile Number (1)</label>
-                        @Html.DevExtreme().TextBox().ID("MobileNumber1")
+                        @(Html.DevExtreme().TextBox().ID("MobileNumber1").Label(new JS("formatMessage('Mobile Number (1)')"))
+                        .LabelMode(EditorLabelMode.Outside))
                     </div>
                     <div class="col-md-6">
-                        <label>Phone No (1)</label>
-                        @Html.DevExtreme().TextBox().ID("PhoneNumber1")
+                        @(Html.DevExtreme().TextBox().ID("PhoneNumber1").Label(new JS("formatMessage('Phone No (1)')"))
+                        .LabelMode(EditorLabelMode.Outside))
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="col-md-6">
-                        <label>Mobile Number (2)</label>
-                        @Html.DevExtreme().TextBox().ID("MobileNumber2")
+                        @(Html.DevExtreme().TextBox().ID("MobileNumber2").Label(new JS("formatMessage('Mobile Number (2)')"))
+                        .LabelMode(EditorLabelMode.Outside))
                     </div>
                     <div class="col-md-6">
-                        <label>Phone No (2)</label>
-                        @Html.DevExtreme().TextBox().ID("PhoneNumber2")
+                        @(Html.DevExtreme().TextBox().ID("PhoneNumber2").Label(new JS("formatMessage('Phone No (2)')"))
+                        .LabelMode(EditorLabelMode.Outside))
                     </div>
                     
                 </div>
                 <div class="form-row">
                     <div class="col-md-6">
-                        <label>Fax No</label>
-                        @Html.DevExtreme().TextBox().ID("FaxNumber")
+                        @(Html.DevExtreme().TextBox().ID("FaxNumber").Label(new JS("formatMessage('Fax No')"))
+                        .LabelMode(EditorLabelMode.Outside))
                     </div>
                     <div class="col-md-6">
-                        <label>Email</label>
-                        @Html.DevExtreme().TextBox().ID("Email")
+                        @(Html.DevExtreme().TextBox().ID("Email").Label(new JS("formatMessage('Email')"))
+                        .LabelMode(EditorLabelMode.Outside))
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="col-md-6">
-                        <label>Sales Person</label>
-                     @(Html.DevExtreme().DropDownBox()
-     .DataSource(d => d.WebApi()
-     .Controller("ClientLeadMaster")
-     .LoadAction("GetSalesPerson")
-     .LoadMode(DataSourceLoadMode.Raw)
-     .Key("CategoryCode")
-     )
-     .LabelMode(EditorLabelMode.Outside)
-     .ID("GetSalesPersonDropDown")
-     .Width(900)
-     @*  .ShowClearButton(true)
-                 .AcceptCustomValue(true) *@
-     .OpenOnFieldClick(false)//
-     .ValueChangeEvent("input")
-     .HoverStateEnabled(true)
-     .ValueExpr("SalesPersonCode")
-     .DisplayExpr("SalesPersonName")
-     .OnInput("dropDownBoxOnInput")
-     .OnOpened("onOpened")
-     .TabIndex(1)
-     .Width("100%")
-     .OnKeyDown("onKeyDown")
-     //.OnValueChanged("dropDownBoxValueChanged")
-     .ContentTemplate(new TemplateName("GetSalesPersonContentTemplate"))
-     )
-
+                        @(
+                        Html.DevExtreme().DropDownBox()
+                        .Label(new JS("formatMessage('Sales Person')"))
+                        .LabelMode(EditorLabelMode.Outside)
+                        .DataSource(d => d.WebApi()
+                        .Controller("ClientLeadMaster")
+                        .LoadAction("GetSalesPerson")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("CategoryCode")
+                        )
+                        .ID("GetSalesPersonDropDown")
+                        .Width(900)
+                        .OpenOnFieldClick(false)
+                        .ValueChangeEvent("input")
+                        .HoverStateEnabled(true)
+                        .ValueExpr("SalesPersonCode")
+                        .DisplayExpr("SalesPersonName")
+                        .OnInput("dropDownBoxOnInput")
+                        .OnOpened("onOpened")
+                        .TabIndex(1)
+                        .Width("100%")
+                        .OnKeyDown("onKeyDown")
+                        //.OnValueChanged("dropDownBoxValueChanged")
+                        .ContentTemplate(new TemplateName("GetSalesPersonContentTemplate"))
+                        )
                     </div>
                     <div class="col-md-6">
-                        <label>Vendor Code</label>
-                        @Html.DevExtreme().TextBox().ID("VendorCode")
+                        @(Html.DevExtreme().TextBox().ID("VendorCode").Label(new JS("formatMessage('Vendor Code')"))
+                        .LabelMode(EditorLabelMode.Outside))
                     </div>
-                  
                 </div>
                 <div class="form-row">
                   
                     <div class="col-md-12">
-                        <label>Remarks</label>
-                        @Html.DevExtreme().TextArea().ID("Remarks").Height(60)
+                        @(Html.DevExtreme().TextArea().ID("Remarks").Label(new JS("formatMessage('Remarks')"))
+                        .LabelMode(EditorLabelMode.Outside).Height(60))
                     </div>
                 </div>
             </div>
@@ -423,7 +414,7 @@
 
 
 
-                    item.Add().Title("Business Card").Text("Business Card").Template(@<text>
+                    item.Add().Title(new JS("formatMessage('Business Card')")).Text("Business Card").Template(@<text>
             <div class="dx-fieldset" style="display:flex;flex-direction:column;gap: 10px;width:50%;">
                 <div class="imagecontainer" id="imgBox1">
                     <span>No image data</span>
@@ -440,7 +431,7 @@
         </text>);
 
 
-                    item.Add().Text("Client Status").Title("Client Status").Template(@<text>
+                    item.Add().Text("Client Status").Title(new JS("formatMessage('Client Status')")).Template(@<text>
             <div class="form-container" >
 
                         @* <div class="form-group" style="display: flex; justify-content: flex-end; width: 100%;">
@@ -459,7 +450,7 @@
                 <div class="form-group" style="display: flex; justify-content: flex-end; width: 100%;padding:8px;">
                     @(Html.DevExtreme().Button()
                     .ID("btnAddRepotStatus")
-                    .Text("Add Report Status")
+                    .Text(new JS("formatMessage('Add Report Status')"))
                     .Type(ButtonType.Normal)
                     .StylingMode(ButtonStylingMode.Outlined)
                     .Icon("save")
@@ -482,13 +473,13 @@
         .KeyExpr("ClientStatusNo")
                     .Columns(columns =>
                     {
-                                @*   columns.AddFor(m => m.).Caption(""); *@
-                    columns.AddFor(m => m.ReportedOn).Caption("Reported On");
-                    columns.AddFor(m => m.Status).Caption("Status");
-                    columns.AddFor(m => m.FollowupOn).Caption("Followup On");
-                    columns.AddFor(m => m.StatusRemarks).Caption("Status Remarks");
-                      columns.AddFor(m => m.ClientCode).Caption("Client Code");
-                      columns.AddFor(m => m.ClientStatusNo).Caption("Client Status No");
+                                @*   columns.AddFor(m => m.)..Caption(new JS("formatMessage('"); *@
+                    columns.AddFor(m => m.ReportedOn).Caption(new JS("formatMessage('Reported On')"));
+                    columns.AddFor(m => m.Status).Caption(new JS("formatMessage('Status')"));
+                    columns.AddFor(m => m.FollowupOn).Caption(new JS("formatMessage('Followup On')"));
+                    columns.AddFor(m => m.StatusRemarks).Caption(new JS("formatMessage('Status Remarks')"));
+                    columns.AddFor(m => m.ClientCode).Caption(new JS("formatMessage('Client Code')"));
+                    columns.AddFor(m => m.ClientStatusNo).Caption(new JS("formatMessage('Client Status No')"));
                     
                 
                     })
@@ -514,7 +505,7 @@
 
 
 
-                    item.Add().Text("Contact List").Title("Contact List").Template(@<text>
+                    item.Add().Text("Contact List").Title(new JS("formatMessage('Contact List')")).Template(@<text>
 
             <div class="form-container" >
 
@@ -524,7 +515,7 @@
                     <div class="form-group">
                         @(Html.DevExtreme().Button()
                         .ID("btnAddNew")
-                        .Text("Add New Contact")
+                        .Text(new JS("formatMessage('Add New Contact')"))
                         .Type(ButtonType.Normal)
                         .StylingMode(ButtonStylingMode.Outlined)
                         .Icon("plus")
@@ -536,21 +527,22 @@
 
 
                 <div style="padding:10px;">
-                    @(Html.DevExtreme().DataGrid()
-                    .ID("MaintenanceGrid")
+                   
+                    @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl3010102clientContactList>()
+                    .ID("ContactListdataGrid")
                     .DataSource(ds => ds.Mvc()
                 .Controller("ClientLeadMaster")
                 .LoadAction("GetContactList"))
                .KeyExpr("ClientContactSlNo")
                     .Columns(columns =>
                     {
-                    columns.Add().Caption("Name").DataField("ContactPerson");
-                    columns.Add().Caption("Title").DataField("ContactPersonTitle");
-                    columns.Add().Caption("Email").DataField("ContactEmail");
-                    columns.Add().Caption("Mobile").DataField("ContactMobile1");
-                    columns.Add().Caption("Phone").DataField("ContactPhone1");
-                       columns.Add().Caption("Client Code").DataField("ClientCode").Visible(false);
-                          columns.Add().Caption("Client ContactSlNo").DataField("ClientContactSlNo");
+                                columns.Add().Caption(new JS("formatMessage('Name')")).DataField("ContactPerson");
+                                columns.Add().Caption(new JS("formatMessage('Title')")).DataField("ContactPersonTitle");
+                                columns.Add().Caption(new JS("formatMessage('Email')")).DataField("ContactEmail");
+                                columns.Add().Caption(new JS("formatMessage('Mobile')")).DataField("ContactMobile1");
+                                columns.Add().Caption(new JS("formatMessage('Phone')")).DataField("ContactPhone1");
+                                columns.Add().Caption(new JS("formatMessage('Client Code')")).DataField("ClientCode").Visible(false);
+                                columns.Add().Caption(new JS("formatMessage('Client ContactSlNo')")).DataField("ClientContactSlNo");
                    
                     })
                     .Height(250)
@@ -594,17 +586,17 @@
             <div class="col-md-12">
                 <div class="row">
                     <div class="col-md-2">
-       @(Html.DevExtreme().Button().ID("btnSave").Text("Save").Icon("check").OnClick("onSaveClientMasterClick"))
+        @(Html.DevExtreme().Button().ID("btnSave").Text(new JS("formatMessage('Save')")).Icon("check").OnClick("onSaveClientMasterClick"))
 
                     </div>
        <div class="col-md-2">
-                @(Html.DevExtreme().Button().ID("btnSaveClose").Text("Save & Close").Icon("check").OnClick("function() { saveAndClose(); }"))
+        @(Html.DevExtreme().Button().ID("btnSaveClose").Text(new JS("formatMessage('Save & Close')")).Icon("check").OnClick("function() { saveAndClose(); }"))
                 </div> 
                 <div class="col-md-2">
-        @(Html.DevExtreme().Button().ID("btnDelete").Text("Delete").Icon("trash"))
+        @(Html.DevExtreme().Button().ID("btnDelete").Text(new JS("formatMessage('Delete')")).Icon("trash"))
                     </div>
                     <div class="col-md-2">
-        @(Html.DevExtreme().Button().ID("btnBack").Text("Back").Icon("arrowleft").OnClick("GoBack"))
+        @(Html.DevExtreme().Button().ID("btnBack").Text(new JS("formatMessage('Back')")).Icon("arrowleft").OnClick("GoBack"))
                     </div>
                 </div>
             </div>
@@ -638,9 +630,9 @@
                  .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                  .Columns(columns =>
                  {
-                     columns.Add().DataField("ClientCategoryCode");
-                     columns.Add().Caption(new JS("formatMessage('Category Code')")).DataField("CategoryCode");
-                     columns.Add().DataField("ClientCategory");
+                                columns.Add().DataField("ClientCategoryCode").Caption(new JS("formatMessage('Client Category Code')"));
+                                columns.Add().DataField("CategoryCode").Caption(new JS("formatMessage('Category Code')"));
+                                columns.Add().DataField("ClientCategory").Caption(new JS("formatMessage('Client Category')"));
 
 
                  })
@@ -1018,10 +1010,15 @@ ContactRemarks:clientRemarks,
             success: function (response) {
                 if (response.success) {
                     DevExpress.ui.notify(response.message, "success", 3000);
-                    // Close the form or popup if needed
-                    // setTimeout(function () {
-                    //     $("#clientMasterPopup").dxPopup("instance").hide();
-                    // }, 2000);
+                        // Refresh parent DataGrid (ensure the correct selector is used)
+                        if (window.parent && window.parent.$("#dataGrid").length) {
+                            let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+                            if (dataGrid) {
+                                dataGrid.refresh();
+                            }
+                        }
+                        //$('#modalIframe').modal('hide');
+                        setTimeout(() => window.location.reload(), 2000);
                 } else {
                     DevExpress.ui.notify("Error: " + response.message, "error", 3000);
                 }
@@ -1155,7 +1152,7 @@ ContactRemarks:clientRemarks,
                                     success: function (res) {
                                         if (res.success) {
                                             DevExpress.ui.notify(res.message, "success", 2000);
-                                            $("#MaintenanceGrid").dxDataGrid("instance").refresh();
+                                            $("#ContactListdataGrid").dxDataGrid("instance").refresh();
                                         } else {
                                             DevExpress.ui.notify(res.message, "error", 3000);
                                         }
@@ -1193,7 +1190,8 @@ ContactRemarks:clientRemarks,
     }
     
     function redirectToStatusUpdate() {
-        let url = `/${tenantName}/IMS/ClientStatusUpdate`;
+        var clientName = $('#txtClientName').dxTextBox("instance").option("value");
+        let url = `/${tenantName}/IMS/ClientStatusUpdate?clientName=${encodeURIComponent(clientName)}`;
         let title = "";
         openModal(url, title);
     }

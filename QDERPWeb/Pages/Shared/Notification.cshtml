@@ -1,0 +1,319 @@
+﻿@page
+@model QD.ERP.Web.Pages.Shared.NotificationModel
+@{
+    ViewData["Title"] = "Notifications";
+}
+
+<link href="https://cdn3.devexpress.com/jslib/23.2.5/css/dx.light.css" rel="stylesheet" />
+<script src="https://cdn3.devexpress.com/jslib/23.2.5/js/jquery.min.js"></script>
+<script src="https://cdn3.devexpress.com/jslib/23.2.5/js/jszip.min.js"></script>
+<script src="https://cdn3.devexpress.com/jslib/23.2.5/js/dx.all.js"></script>
+
+<style>
+    .notification-container {
+        padding: 20px;
+        max-width: 1800px;
+        margin: auto;
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 0 12px rgba(0,0,0,0.08);
+    }
+
+    .notification-btn {
+        padding: 8px 18px;
+        font-size: 14px;
+        font-weight: 600;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        color: #fff;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+        .notification-btn.delete {
+            background: linear-gradient(135deg, #ff4e50, #f00000);
+        }
+
+            .notification-btn.delete:hover {
+                background: linear-gradient(135deg, #f00000, #c10000);
+            }
+
+        .notification-btn.mark-read {
+            background: linear-gradient(135deg, #28a745, #218838);
+        }
+
+            .notification-btn.mark-read:hover {
+                background: linear-gradient(135deg, #218838, #1e7e34);
+            }
+
+    .badge-seen {
+        padding: 4px 10px;
+        border-radius: 12px;
+        background-color: #28a745;
+        color: white;
+        font-size: 12px;
+    }
+
+    .badge-unseen {
+        padding: 4px 10px;
+        border-radius: 12px;
+        background-color: #dc3545;
+        color: white;
+        font-size: 12px;
+    }
+
+    .dx-datagrid-content .dx-row.unseen {
+        background-color: #fff8e1 !important;
+    }
+
+    .top-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .notification-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+        .notification-header h2 {
+            font-weight: 600;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .notification-header i {
+            color: #f39c12;
+            margin-right: 8px;
+        }
+
+    @@media (max-width: 768px) {
+        #notificationGrid {
+            overflow-x: auto;
+        }
+    }
+</style>
+
+<div class="notification-container">
+    <div class="notification-header">
+        <h2><i class="dx-icon-bell"></i> @ViewData["Title"]</h2>
+    </div>
+
+    <div class="top-actions">
+        <div>
+            <button class="notification-btn delete" onclick="deleteSelectedNotifications()">
+                <i class="fas fa-trash-alt"></i> Delete
+            </button>
+            <button class="notification-btn mark-read" onclick="markAllAsRead()">
+                <i class="fas fa-check-double"></i> Mark All as Read
+            </button>
+            <button class="notification-btn mark-read" id="btnAddTask">
+                <i class="fas fa-plus"></i> Add New Task
+            </button>
+            <button class="notification-btn mark-read" id="AddnewRemainder">
+                <i class="fas fa-bell"></i> Add new Remainder
+            </button>
+        </div>
+    </div>
+
+    <!-- Separate popup containers -->
+    <div id="popupTaskContainer" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:10000; overflow:auto; padding: 30px;"></div>
+    <div id="popupReminderContainer" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:10000; overflow:auto; padding: 30px;"></div>
+    <div id="notificationGrid"></div>
+</div>
+
+<script>
+    let dataGridInstance;
+
+    $(function () {
+        dataGridInstance = $("#notificationGrid").dxDataGrid({
+            dataSource: DevExpress.data.AspNet.createStore({
+                key: "AlertCode",
+                loadUrl: "/api/Notification/GetUserNotifications"
+            }),
+            remoteOperations: true,
+            showBorders: true,
+            rowAlternationEnabled: true,
+            columnAutoWidth: true,
+            paging: { pageSize: 10 },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [5, 10, 20],
+                showInfo: true
+            },
+            selection: {
+                mode: "multiple"
+            },
+            filterRow: {
+                visible: true,
+                applyFilter: "auto"
+            },
+            groupPanel: {
+                visible: true
+            },
+            onRowPrepared: function (e) {
+                if (e.rowType === "data" && (!e.data.IsSeen || e.data.IsSeen === 0)) {
+                    e.rowElement.addClass("unseen");
+                }
+            },
+            columns: [
+                {
+                    dataField: "AlertCode",
+                    caption: "Alert #",
+                    width: 100
+                },
+                {
+                    dataField: "AlertUserMessage",
+                    caption: "Message",
+                    minWidth: 200,
+                    cellTemplate: function (container, options) {
+                        const msg = options.value || options.data.AlertMasterMessage;
+                        $("<div>").text(msg).appendTo(container);
+                    }
+                },
+                {
+                    dataField: "AlertStatusRemarks",
+                    caption: "Type",
+                    width: 100,
+                    cellTemplate: function (container, options) {
+                        let icon = "bell";
+                        switch (options.value) {
+                            case 1: icon = "info"; break;
+                            case 2: icon = "warning"; break;
+                            case 3: icon = "close"; break;
+                        }
+                        container.append(`<i class='dx-icon dx-icon-${icon}'></i>`);
+                    }
+                },
+                {
+                    dataField: "AlertUserOn",
+                    caption: "Created On",
+                    dataType: "datetime",
+                    format: "dd-MM-yyyy hh:mm tt",
+                    width: 180
+                },
+                {
+                    caption: "Status",
+                    width: 100,
+                    cellTemplate: function (container, options) {
+                        const isSeen = options.data.IsSeen === true || options.data.IsSeen === 1;
+                        const badge = $("<span>")
+                            .addClass(isSeen ? "badge-seen" : "badge-unseen")
+                            .text(isSeen ? "Seen" : "Unseen");
+                        container.append(badge);
+                    }
+                },
+                {
+                    type: "buttons",
+                    caption: "Action",
+                    width: 120,
+                    buttons: [
+                        {
+                            hint: "View",
+                            text: "View",
+                            onClick: function (e) {
+                                const AlertCode = e.row.data.AlertCode;
+
+                                fetch('/api/Notification/MarkAsSeen', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ AlertCode: AlertCode })
+                                })
+                                    .then(response => {
+                                        if (response.ok) {
+                                            DevExpress.ui.dialog.alert(
+                                                (e.row.data.AlertUserMessage || e.row.data.AlertMasterMessage),
+                                                "Notification Detail"
+                                            );
+                                            dataGridInstance.refresh();
+                                        } else {
+                                            return response.text().then(text => {
+                                                console.error("Server Error:", text);
+                                                DevExpress.ui.notify("Failed to mark as seen", "error", 2000);
+                                            });
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error("Network Error:", error);
+                                        DevExpress.ui.notify("Error marking as seen", "error", 2000);
+                                    });
+                            }
+                        }
+                    ]
+                }
+            ]
+        }).dxDataGrid("instance");
+    });
+
+    function markAllAsRead() {
+        fetch('/api/Notification/MarkAllAsSeen', { method: 'POST' })
+            .then(response => {
+                if (response.ok) {
+                    DevExpress.ui.notify("All notifications marked as read.", "success", 2000);
+                    dataGridInstance.refresh();
+                } else {
+                    DevExpress.ui.notify("Failed to mark all as read.", "error", 2000);
+                }
+            });
+    }
+
+    function deleteSelectedNotifications() {
+        const keys = dataGridInstance.getSelectedRowKeys();
+        if (keys.length === 0) {
+            DevExpress.ui.notify("No notifications selected.", "warning", 2000);
+            return;
+        }
+
+        fetch("/api/Notification/Delete", {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(keys)
+        })
+            .then(() => {
+                DevExpress.ui.notify("Notifications deleted.", "success", 2000);
+                dataGridInstance.refresh();
+            })
+            .catch(() => {
+                DevExpress.ui.notify("Delete failed.", "error", 2000);
+            });
+    }
+        $(document).ready(function () {
+        // Handle Add Task popup
+        $('#btnAddTask').click(function () {
+            $.get('/Shared/CreateTask', function (html) {
+                $('#popupTaskContainer').html(html).fadeIn();
+            });
+        });
+
+        $('#popupTaskContainer').on('click', function (e) {
+            if ($(e.target).is('#popupTaskContainer')) {
+                $('#popupTaskContainer').fadeOut().html('');
+            }
+        });
+
+        // Handle Add Reminder popup
+        $('#AddnewRemainder').click(function () {
+            $.get('/Shared/Remainder', function (html) {
+                $('#popupReminderContainer').html(html).fadeIn();
+            });
+        });
+
+        $('#popupReminderContainer').on('click', function (e) {
+            if ($(e.target).is('#popupReminderContainer')) {
+                $('#popupReminderContainer').fadeOut().html('');
+            }
+        });
+    });
+
+</script>
+

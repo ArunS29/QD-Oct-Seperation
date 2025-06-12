@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DevExtreme.AspNet.Data;
+using DevExtreme.AspNet.Mvc;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.Areas.Finance.Models;
@@ -21,35 +23,88 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 			_logger = logger;
 		}
 
+		//[HttpGet]
+		//public ActionResult<string> GetNewDebitNoteNoApi()
+		//{
+		//	try
+		//	{
+		//		if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+		//		{
+
+
+		//			var company = dbContext.Tbl901CompanyDetails
+		//								   .FirstOrDefault(c => c.CompanyNameShort == "Pulse Infotech");
+
+
+		//			if (company == null)
+		//			{
+		//				return NotFound("Company not found.");
+		//			}
+
+		//			string invoiceAbbrv = company.InvoiceAbbrv;
+		//			int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
+
+		//			bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
+
+		//			DateTime invoiceDate = DateTime.Now;
+
+
+
+		//			// Step 4: Generate New Debit Note No
+		//			string newDebitNoteNo = GetNewDebitNoteNo(invoiceAbbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear, dbContext);
+
+		//			return Ok(newDebitNoteNo);
+		//		}
+		//		else
+		//		{
+		//			return BadRequest("Tenant or DB Context not found.");
+		//		}
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		return StatusCode(500, "Internal server error: " + ex.Message);
+		//	}
+		//}
+
 		[HttpGet]
 		public ActionResult<string> GetNewDebitNoteNoApi()
 		{
 			try
 			{
+				// Step 1: Get tenant name from session
+				var tenantName = HttpContext.Session.GetString("TenantName");
+				if (string.IsNullOrWhiteSpace(tenantName))
+				{
+					return Unauthorized(new { message = "Tenant name not found in session.", success = false });
+				}
+
+				// Step 2: Try to get DbContext for tenant
 				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
 				{
-
-
+					// Step 3: Get company from Tbl901CompanyDetails using tenantName
 					var company = dbContext.Tbl901CompanyDetails
-										   .FirstOrDefault(c => c.CompanyNameShort == "Pulse Infotech");
-
+										   .FirstOrDefault(c => c.CompanyNameShort == tenantName);
 
 					if (company == null)
 					{
-						return NotFound("Company not found.");
+						return NotFound("Company not found in Tbl901CompanyDetails.");
 					}
 
-					string invoiceAbbrv = company.InvoiceAbbrv;
+					// Step 4: Get NoOfDigitsToInventoryQuotation using CompanyId from Tbl901CompanyDetails02
+					int noOfDigits = dbContext.Tbl901CompanyDetails02s
+											  .Where(c => c.CompanyId == company.CompanyId)
+											  .Select(c => c.NoOfDigitsToInventoryQuotation ?? 4)
+											  .FirstOrDefault(); // Default to 4 if not found
+
+					// Step 5: Extract values for quotation number
+					string QuotationAbbrv = company.QuotationAbbrv;
 					int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
-
 					bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
-
 					DateTime invoiceDate = DateTime.Now;
-
-
-
-					// Step 4: Generate New Debit Note No
-					string newDebitNoteNo = GetNewDebitNoteNo(invoiceAbbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear, dbContext);
+					// Generate new debit note QuotationAbbrv
+					string newDebitNoteNo = GetNewDebitNoteNo(QuotationAbbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear, noOfDigits, dbContext);
+				
+					
 
 					return Ok(newDebitNoteNo);
 				}
@@ -60,61 +115,53 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 			}
 			catch (Exception ex)
 			{
+				_logger.LogError($"Error in GetNewDebitNoteNoApi: {ex.Message}");
 				return StatusCode(500, "Internal server error: " + ex.Message);
 			}
 		}
 
 
 
-		private string GetNewDebitNoteNo(string invoiceAbbrv, int yearInDigit, DateTime invoiceDate, bool isResetByYear, ERPMasterWtDataContext dbContext)
+		private string GetNewDebitNoteNo(string QuotationAbbrv, int yearInDigit, DateTime invoiceDate, bool isResetByYear, int noOfDigits, ERPMasterWtDataContext dbContext)
 		{
 			try
 			{
-				// Retrieve MPR numbers into memory Tbl601_01QuotationMaster
 				var mprNumbers = dbContext.Tbl60101quotationMasters
-					.Where(d => d.QuoteNo != null && d.QuoteNo.Length >= 5 &&
+					.Where(d => d.QuoteNo != null &&
+								d.QuoteNo.Length >= noOfDigits &&
 								(!isResetByYear || (d.QuoteDate.HasValue && d.QuoteDate.Value.Year == invoiceDate.Year)))
 					.Select(d => d.QuoteNo)
 					.ToList();
 
-				// Extract numeric parts and determine the maximum
 				int maxRunningNumber = mprNumbers
-					.Select(no => int.TryParse(no.Substring(no.Length - 5), out int num) ? num : 0)
+					.Select(no => int.TryParse(no.Substring(no.Length - noOfDigits), out int num) ? num : 0)
 					.DefaultIfEmpty(0)
 					.Max();
 
 				maxRunningNumber += 1;
 
-				// Format the new debit note number
-				string strNewDebitNoteNo = maxRunningNumber.ToString().PadLeft(5, '0');
+				string strNewDebitNoteNo = maxRunningNumber.ToString().PadLeft(noOfDigits, '0');
 
 				string strYear = invoiceDate.Year.ToString();
 				if (yearInDigit > 0)
-				{
 					strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
-				}
 				else
-				{
 					strYear = "";
-				}
 
-				return $"AIC-QTN-{strYear}-{strNewDebitNoteNo}";
+				return $"{QuotationAbbrv}{strYear}-{strNewDebitNoteNo}";
 			}
 			catch (Exception)
 			{
 				string strYear = invoiceDate.Year.ToString();
 				if (yearInDigit > 0)
-				{
 					strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
-				}
 				else
-				{
 					strYear = "";
-				}
 
-				return $"AIC_QTN-{strYear}-00001";
+				return $"{QuotationAbbrv}{strYear}-{"1".PadLeft(noOfDigits, '0')}";
 			}
 		}
+
 		[HttpGet]
 		public async Task<IActionResult> GetQuotationdataByCode(string QuoteNo)
 		{
@@ -543,6 +590,30 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 			}
 
 			return Unauthorized(new { Message = "Invalid tenant.", Success = false });
+		}
+		[HttpGet]
+		public async Task<IActionResult> GetQuotationStatus(DataSourceLoadOptions loadOptions)
+		{
+			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				try
+				{
+					var clients = dbContext.Tbl60107quotationStatuses.Select(i => new
+					{
+					i.QuoteStatusId,
+					i.QuoteStatus
+					});
+
+					return Json(await DataSourceLoader.LoadAsync(clients, loadOptions));
+				}
+				catch (Exception ex)
+				{
+					_logger.LogError($"Error in GetClientDetails: {ex.Message}");
+					return StatusCode(500, new { message = "Error fetching client details", error = ex.Message });
+				}
+			}
+
+			return Unauthorized(new { message = "Invalid tenant", success = false });
 		}
 	}
 }

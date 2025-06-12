@@ -162,7 +162,7 @@ namespace QD.ERP.Web.Areas.General.Controller
 
                 var matchingCompanyQuery = dbContext.Tbl901CompanyDetails
                     .AsNoTracking()
-                    .Where(c => c.CompanyNameShort == tenantName)
+                   // .Where(c => c.CompanyNameShort == tenantName)
                     .Select(c => new
                     {
                         c.CompanyId,
@@ -219,11 +219,11 @@ namespace QD.ERP.Web.Areas.General.Controller
 
                     });
 
-                // ✅ Check existence *before* sending to DataSourceLoader
-                if (!await matchingCompanyQuery.AnyAsync())
-                {
-                    return NotFound(new { success = false, message = $"Company with short name '{tenantName}' not found." });
-                }
+                //// ✅ Check existence *before* sending to DataSourceLoader
+                //if (!await matchingCompanyQuery.AnyAsync())
+                //{
+                //    return NotFound(new { success = false, message = $"Company with short name '{tenantName}' not found." });
+                //}
 
                 // ✅ Pass IQueryable directly
                 var result = await DataSourceLoader.LoadAsync(matchingCompanyQuery, loadOptions);

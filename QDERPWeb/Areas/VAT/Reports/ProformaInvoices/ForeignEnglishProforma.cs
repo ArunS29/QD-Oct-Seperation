@@ -21,6 +21,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices
             string companyName,
             string companyAddress,
             Image logoImage,
+                Image sealImage,
             string companyNameAr,
             string companyAddressAr,
           string companyPhone,
@@ -33,11 +34,11 @@ namespace QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices
             _isApproved = isApproved;
 
             InitializeComponent();
-            SetReportParameters(invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, companyPhone, companyEmail, companyWebsite);
+            SetReportParameters(invoiceNo, tenantName, companyName, companyAddress, logoImage,  sealImage, companyNameAr, companyAddressAr, companyPhone, companyEmail, companyWebsite);
             LoadReportData(invoiceNo);
         }
 
-        private void SetReportParameters(string invoiceNo, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressAr,
+        private void SetReportParameters(string invoiceNo, string tenantName, string companyName, string companyAddress, Image logoImage, Image sealImage, string companyNameAr, string companyAddressAr,
     string companyPhone, string companyEmail, string companyWebsite)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
@@ -93,8 +94,9 @@ namespace QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices
             if (FindControl("xrLabelCompanyWebsite", true) is XRLabel websiteLabel)
                 websiteLabel.Text = companyWebsite;
 
-
-            if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
+            if (FindControl("xrPictureBox1", true) is XRPictureBox sealPictureBox)
+                sealPictureBox.Image = sealImage;
+            if (FindControl("xrPictureBox2", true) is XRPictureBox logoPictureBox)
                 logoPictureBox.Image = logoImage;
         }
 

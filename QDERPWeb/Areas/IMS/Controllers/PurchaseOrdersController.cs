@@ -2,6 +2,7 @@ using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Humanizer;
 using DevExtreme.AspNet.Data.ResponseModel;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -398,16 +399,30 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 if (existingPo == null)
                 {
+                    // New PO - initialize states
                     model.AddedBy = userName;
                     model.AddedOn = DateTime.Now;
                     model.IsApproved = false;
                     model.IsVerified = false;
+                    model.IsSubmitted = model.IsSubmitted ?? false;
+
+                    if (model.IsSubmitted == true)
+                    {
+                        model.SubmittedBy = userName;
+                        model.SubmittedOn = DateTime.Now;
+                    }
 
                     dbContext.Tbl60401purchaseOrderMasters.Add(model);
                 }
                 else
                 {
-                    // Update all fields
+                    // If already approved, do NOT allow editing
+                    if (existingPo.IsApproved == true)
+                    {
+                        return BadRequest(new { message = "This purchase order has been approved and cannot be edited.", success = false });
+                    }
+
+                    // Update fields normally
                     existingPo.Podate = model.Podate;
                     existingPo.SupplierCode = model.SupplierCode;
                     existingPo.SupplierQuoteNo = model.SupplierQuoteNo;
@@ -417,11 +432,44 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     existingPo.SupplierContactNo = model.SupplierContactNo;
                     existingPo.SupplierContactEmail = model.SupplierContactEmail;
                     existingPo.SubjectTitle = model.SubjectTitle;
+
+                    // Handle submit, verify, approve logic
+
+                    // Submit
+                    if (model.IsSubmitted == true && existingPo.IsSubmitted != true)
+                    {
+                        existingPo.IsSubmitted = true;
+                        existingPo.SubmittedBy = userName;
+                        existingPo.SubmittedOn = DateTime.Now;
+                    }
+
+                    // Verify - only if submitted and not verified yet
+                    if (model.IsVerified == true && existingPo.IsVerified != true)
+                    {
+                        if (existingPo.IsSubmitted != true)
+                        {
+                            return BadRequest(new { message = "Cannot verify before submitting.", success = false });
+                        }
+                        existingPo.IsVerified = true;
+                        existingPo.VerifiedBy = userName;
+                        existingPo.VerifiedOn = DateTime.Now;
+                    }
+
+                    // Approve - only if verified and not approved yet
+                    if (model.IsApproved == true && existingPo.IsApproved != true)
+                    {
+                        if (existingPo.IsVerified != true)
+                        {
+                            return BadRequest(new { message = "Cannot approve before verification.", success = false });
+                        }
+                        existingPo.IsApproved = true;
+                        existingPo.ApprovedBy = userName;
+                        existingPo.ApprovedOn = DateTime.Now;
+                    }
+
+                    // Update other fields that can be changed before approval
                     existingPo.PreparedBy = model.PreparedBy;
                     existingPo.PreparedOn = model.PreparedOn;
-                    existingPo.ApprovedBy = model.ApprovedBy;
-                    existingPo.ApprovedOn = model.ApprovedOn;
-                    existingPo.IsApproved = model.IsApproved;
                     existingPo.Project = model.Project;
                     existingPo.Pointroduction = model.Pointroduction;
                     existingPo.Posummary = model.Posummary;
@@ -449,12 +497,6 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     existingPo.PorevisionNo = model.PorevisionNo;
                     existingPo.Currency = model.Currency;
                     existingPo.ExchangeRate = model.ExchangeRate;
-                    existingPo.IsSubmitted = model.IsSubmitted;
-                    existingPo.SubmittedBy = model.SubmittedBy;
-                    existingPo.SubmittedOn = model.SubmittedOn;
-                    existingPo.IsVerified = model.IsVerified;
-                    existingPo.VerifiedBy = model.VerifiedBy;
-                    existingPo.VerifiedOn = model.VerifiedOn;
                     existingPo.PocategoryId = model.PocategoryId;
                     existingPo.PorevisionId = model.PorevisionId;
                     existingPo.IsObseleteVersion = model.IsObseleteVersion;
@@ -475,14 +517,17 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 {
                     message = "Purchase order saved successfully",
                     pono = model.Pono,
+                    isApproved = existingPo?.IsApproved ?? model.IsApproved ?? false,
                     success = true
                 });
+
             }
             catch (Exception ex)
             {
                 return StatusCode(500, new { message = "Error saving purchase order: " + ex.Message, success = false });
             }
         }
+
         [HttpPost]
         public async Task<IActionResult> SaveItem([FromBody] List<Tbl60402purchaseOrderChild> items)
         {
@@ -557,4 +602,3 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
     }
 }
-

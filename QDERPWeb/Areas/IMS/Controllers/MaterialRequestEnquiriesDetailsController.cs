@@ -140,5 +140,59 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
 			}
 		}
+		[HttpPost]
+		public IActionResult DeletePurchaseRequest(string Mprno)
+		{
+			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				try
+				{
+					var prMaster = dbContext.Tbl60601purchaseRequestMasters
+						.FirstOrDefault(pr => pr.Mprno == Mprno);
+
+					if (prMaster == null)
+					{
+						return Json(new { success = false, message = "Request/Enquiry not found." });
+					}
+
+					if (prMaster.IsSubmitted.HasValue && prMaster.IsSubmitted.Value)
+					{
+						return Json(new { success = false, message = "Request/Enquiry is already submitted. You cannot delete the submitted Request/Enquiry." });
+					}
+					if (prMaster.IsApproved.HasValue && prMaster.IsApproved.Value)
+					{
+						return Json(new { success = false, message = "Request/Enquiry is already approved. You cannot delete the approved Request/Enquiry." });
+					}
+
+					
+
+					// Delete child records
+					var prChildren = dbContext.Tbl60602purchaseRequestChildren
+						.Where(child => child.Mprno == Mprno);
+					dbContext.Tbl60602purchaseRequestChildren.RemoveRange(prChildren);
+
+					// Delete master record
+					dbContext.Tbl60601purchaseRequestMasters.Remove(prMaster);
+
+					// Delete associated documents
+					//DeleteDocumentPDF(Mprno, "VoucherScanned\\IMSEnquiry");
+
+					dbContext.SaveChanges();
+					
+					// Log the deletion
+					//InsertUserEntryLogSheet("IMS Purchase Request", $"IMS Purchase Request Ref No. {Mprno} has been deleted by User ID: {User.Identity.Name}.", User.Identity.Name, Mprno);
+
+					return Json(new { success = true, message = "Request/Enquiry has been successfully removed from the database." });
+				}
+				catch (Exception ex)
+				{
+					// Log the exception as needed
+					return Json(new { success = false, message = "An error occurred while deleting the Request/Enquiry." });
+				}
+			}
+
+			return Json(new { success = false, message = "Invalid tenant context." });
+		}
+
 	}
 }

@@ -19,6 +19,7 @@ using QD.ERP.Web.Service.ReportService;
 using QD.ERP.Web.Middlewares;
 using DevExpress.XtraCharts;
 using QD.ERP.Web.Middleware;
+using QD.ERP.Web.Services.Logging;
 
 //using qd.utilities;
 
@@ -66,7 +67,7 @@ builder.Services.ConfigureReportingServices(configurator =>
 
 var CommonDBConnection = builder.Configuration.GetConnectionString("CommonDBConnection");
 builder.Services.AddDbContext<ERPCommonContext>(options =>
-    options.UseSqlServer(CommonDBConnection));
+    options.UseSqlServer(CommonDBConnection).EnableSensitiveDataLogging());
 
 builder.Services
     .AddRazorPages()
@@ -87,7 +88,8 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
-
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IUserActionLogger, UserActionLogger>();
 builder.Services.AddScoped<DbContextFactory>();
 builder.Services.AddMultitenancy<Tenant, TenantResolver>();
 builder.Services.AddScoped<UserAccessService>();

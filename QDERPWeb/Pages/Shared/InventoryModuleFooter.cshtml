@@ -1,4 +1,4 @@
-﻿<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+ <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style type="text/css">
     #dataGrid .dx-datagrid-headers .dx-datagrid-action {
         text-align: center !important;
@@ -135,18 +135,16 @@
             display: inline-block;
         }
 
-    #btnAddNewQuotation:hover {
+    #btnAddNewQuotation:hover{
         width: 240px !important; /* Expand to fit text */
     }
 
     #btnDeliveryNoteDetails:hover {
         width: 210px !important; /* Expand to fit text */
     }
-
     #btnDeliveryNotePosting:hover {
         width: 210px !important; /* Expand to fit text */
     }
-
     #btnDeliveryNoteDetails:hover {
         width: 220px !important; /* Expand to fit text */
     }
@@ -182,7 +180,7 @@
     #btnAddNewJobOrder:hover {
         width: 230px !important; /* Expand to fit text */
     }
-
+    
     #btnStockAdjustmentDetails:hover {
         width: 250px !important; /* Expand to fit text */
     }
@@ -216,26 +214,28 @@
             )
     </div>
 
+
+
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnMoveUp")
             .Text(new JS("formatMessage('Move Up')"))
             .Type(ButtonType.Normal)
-            .StylingMode(ButtonStylingMode.Outlined)
+                .StylingMode(ButtonStylingMode.Outlined)
             .Icon("spinup") // Change the icon to an up/down arrow option
             .ElementAttr(new { @class = "bold-button" })
             )
     </div>
     <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnMoveDown")
-            .Text(new JS("formatMessage('Move Down')"))
-            .Type(ButtonType.Normal)
-            .StylingMode(ButtonStylingMode.Outlined)
-            .Icon("spindown") // Change the icon to an up/down arrow option
-            .ElementAttr(new { @class = "bold-button" })
-            )
-    </div>
+    @(Html.DevExtreme().Button()
+        .ID("btnMoveDown")
+        .Text(new JS("formatMessage('Move Down')"))
+        .Type(ButtonType.Normal)
+          .StylingMode(ButtonStylingMode.Outlined)
+        .Icon("spindown") // Change the icon to an up/down arrow option
+        .ElementAttr(new { @class = "bold-button" })
+        )
+</div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnSave")
@@ -289,15 +289,15 @@
             )
     </div>
     <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnUpdate")
-            .Text(new JS("formatMessage('Update')"))
-            .Icon("save") // Icon similar to a floppy/save
-                          //.Type(ButtonType.Normal)
-                          // .StylingMode(ButtonStylingMode.Contained)
-            .ElementAttr(new { @class = "update-button" }) // Custom CSS class
-            )
-    </div>
+    @(Html.DevExtreme().Button()
+        .ID("btnUpdate")
+        .Text(new JS("formatMessage('Update')"))
+        .Icon("save") // Icon similar to a floppy/save
+        //.Type(ButtonType.Normal)
+       // .StylingMode(ButtonStylingMode.Contained)
+        .ElementAttr(new { @class = "update-button" }) // Custom CSS class
+        )
+</div>
     <div class="btn-container">
 
         @(Html.DevExtreme().Button()
@@ -453,7 +453,7 @@
         @(Html.DevExtreme().Button()
             .ID("btnRequestEnquiry")
             .Icon("preferences")
-            .Width(50)
+            .Width(100)
             .Text(new JS("formatMessage('Request/Enquiry Details')"))
             .ElementAttr(new { style = "display: none;" })
             // .OnClick("toggleGroupPanel")
@@ -474,14 +474,14 @@
 
     </div>
     <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnQuotationDetails")
-            .Icon("add")
-            .Width(50)
-            .Text(new JS("formatMessage('Quotation Details')"))
-            .ElementAttr(new { style = "display: none;" })
+    @(Html.DevExtreme().Button()
+        .ID("btnQuotationDetails")
+        .Icon("add")
+        .Width(50)
+        .Text(new JS("formatMessage('Quotation Details')"))
+        .ElementAttr(new { style = "display: none;" })
             .OnClick("QuotationDetails")
-            )
+        )
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
@@ -490,7 +490,7 @@
             .Width(50)
             .Text(new JS("formatMessage('Add New Quotation')"))
             .ElementAttr(new { style = "display: none;" })
-            .OnClick("AddNewQuotation")
+           .OnClick("AddNewQuotation")
             )
 
     </div>
@@ -503,7 +503,7 @@
             .ElementAttr(new { style = "display: none;" })
             .OnClick("AddNewSalesOrder")
             )
-
+                
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
@@ -512,7 +512,7 @@
             .Width(50)
             .Text(new JS("formatMessage('Sales Order Details')"))
             .ElementAttr(new { style = "display: none;" })
-            // .OnClick("toggleGroupPanel")
+            .OnClick("btnSalesOrderDetail")
             )
 
     </div>
@@ -561,7 +561,7 @@
 
     </div>
 
-
+   
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnDeliveryNoteDetails")
@@ -637,14 +637,14 @@
             .ShowArrowIcon(false)
             )
     </div>
-
+    
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
             .ID("btnAddNewReceipt")
             .Icon("plus")
             .Width(50)
             .Text(new JS("formatMessage('Add New Receipt')"))
-            .DropDownOptions(options => options.Width(350))
+            .DropDownOptions(options => options.Width(370))
             .Items(items =>
             {
                 items.Add().Text(new JS("formatMessage('Add New Material Receipt-From Supplier')"));
@@ -701,10 +701,34 @@
             .ShowArrowIcon(false)
             )
     </div>
+   <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("btnPrint1")
+            .Text(new JS("formatMessage('Print')"))
+            .Icon("print")
+            .ElementAttr(new { @class = "bold-button" })
+            .DropDownOptions(options => options.Width(230))
+            .ShowArrowIcon(false)
+            .Items(items =>
+            {
+                items.Add().Text("Custom request Designs").Icon("print");
+                items.Add().Text("Preview Request").Icon("file");
+                items.Add().Text("Preview Request(With Expected Unit Price)").Icon("folder");
+
+            })
+            .OnItemClick("handleCreditReportPrinting")
+            )
+    </div>
+
+ 
+
+
 </div>
 
 
 <script type="text/javascript">
+        
+
     function refreshPage() {
         location.reload();
     }
@@ -789,6 +813,7 @@
                         var controlStates = {
                             "btnShowRecords": { "Visible": false, "Enabled": false },
                             "btnPrint": { "Visible": false, "Enabled": false },
+                            "btnPrint1": { "Visible": false, "Enabled": false },
                             "btnSearch": { "Visible": false, "Enabled": false },
                             "ddButtonLayout": { "Visible": false, "Enabled": false },
                             "btnToggleSearch": { "Visible": false, "Enabled": false },
@@ -826,7 +851,7 @@
                         "btnSaveAndClose": { "Visible": false, "Enabled": false },
                         "btnAddNew": { "Visible": false, "Enabled": false },
                         "btnDelete": { "Visible": false, "Enabled": false },
-                         "btnUpdate": { "Visible": false, "Enabled": false },
+                         "btnUpdate": { "Visible": false, "Enabled": false },                       
                         "btnBack": { "Visible": false, "Enabled": false },
                         "btnSubmit": { "Visible": false, "Enabled": false },
                         "btnVerify": { "Visible": false, "Enabled": false },
@@ -1329,6 +1354,10 @@
         }
     function AddNewRFQDetails() {
         window.location.href = `/${tenantName}/IMS/RFQwithItemDetails`;
+    } 
+    
+    function btnSalesOrderDetail() {
+        window.location.href = `/${tenantName}/IMS/SalesOrdersDetails`;
     }
     function QuotationDetails() {
         window.location.href = `/${tenantName}/IMS/QuotationDetails`;
@@ -1343,9 +1372,14 @@
         window.location.href = `/${tenantName}/IMS/DeliveryNoteDetails`;
     }
 
+        function AddPurchaseOrder(){
+        const url = `/${tenantName}/IMS/AddNewPurchaseOrder`;
+        // const title = "";
+        window.location.href = url;
+        }
         function addPaymentButton_click(e) {
         let url = "";
-        let title = "Payments";
+        let title = "Payments"; 
 
         switch (e.itemData.text) {
            case formatMessage('New Standard Tax Invoice(B2B Invoice)'):
@@ -1630,13 +1664,10 @@
                     url = `/${tenantName}/IMS/AddNewClientRequest`;
                     break;
                 case formatMessage('Add New Store Request'):
-                    url = `/${tenantName}/IMS/AddNewStoreRequest`;
+                    url = `/${tenantName}/IMS/MRAddNewStoreRequest`;
                     break;
                 case formatMessage('Add New Project Request'):
-                    url = `/${tenantName}/IMS/AddNewProjectRequest`;
-                    break;
-                    case formatMessage('Posting Of Cost Prices'):
-                    url = `/${tenantName}/IMS/DeliveryNoteDetails`;
+                    url = `/${tenantName}/IMS/MRAddNewProjectRequest`;
                     break;
                 default:
                     console.log("Clicked item: ", e.itemData.text);
@@ -1645,7 +1676,7 @@
 
             window.location.href = url;
         }
-
+        
         function addNewMaterialReceipt(e) {
             let url = ''; // Declare once
             switch (e.itemData.text) {
@@ -1681,11 +1712,69 @@
 
             window.location.href = url;
         }
-        function printFun() {
-            exportDataGridToPDF('dataGrid');
+        function printFun() { 
+            exportDataGridToPDF('dataGrid'); 
         }
-        function AddPurchaseOrder(){
-            const url = `/${tenantName}/IMS/AddNewPurchaseOrder`;
-            window.location.href = url;
+
+         async function handleCreditReportPrinting(e) {
+           debugger;
+        const itemText = e.itemData?.text;
+
+        let requestNo = $("#txtRequestNo").dxTextBox("instance").option("value");
+
+        if (!requestNo) {
+            alert("RequestNo  is required.");
+            return;
         }
+
+        try {
+            const isApproved = await checkInvoiceApprovalStatus1(requestNo);
+            const watermarkText = isApproved ? "" : "Draft Copy";
+            let reportName = "";
+
+            switch (itemText) {
+                case "Preview Request":
+                        reportName = "MaterialRequestInventory";
+                    break;
+                case "Preview Request(With Expected Unit Price)":
+                    reportName = "MaterialPurcchaseRequestion";
+                    break;
+
+                default:
+                    alert("Invalid report format selected.");
+                    return;
+            }
+
+            const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&RequestNo=${encodeURIComponent(requestNo)}&skipPreview=true&watermark=${encodeURIComponent(watermarkText)}&isApproved=${isApproved}`;
+
+            window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+        } catch (error) {
+            console.error("Error checking approval status:", error);
+            alert("Failed to check invoice approval status.");
+        }
+    }
+
+    async function checkInvoiceApprovalStatus1(requestNo) {
+        try {
+            const response = await $.ajax({
+             //   url: `/api/VATModule/GetRequestNoteApprovalStatus/${encodeURIComponent(RequestNo)}`,
+
+                url: `/api/AddNewClientRequest/GetRequestNoteApprovalStatus/${encodeURIComponent(requestNo)}`,
+                method: 'GET',
+                dataType: 'json',
+            });
+
+            return response?.isApproved ?? false;
+        } catch (error) {
+            console.error("Error fetching approval status:", error);
+            return false;
+        }
+    }
+
+
+
+
+
+
+
 </script>

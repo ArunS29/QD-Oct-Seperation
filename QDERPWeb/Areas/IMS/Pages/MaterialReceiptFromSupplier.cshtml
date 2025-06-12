@@ -268,7 +268,7 @@
 					.Items(item =>
 					{
 						item.Add()
-					.Title("Material Recipts Details")
+					.Title(new JS("formatMessage('Material Recipts Details')"))
 					.Icon("folder")
 					.Text("Material Recipts Details")
 					.Template(@<text>
@@ -278,7 +278,7 @@
 					<div style="flex: 1;">
 						@(Html.DevExtreme().TextBox()
 						.ID("txtMaterialReceiptNo")
-						.Label("Material Receipt No:")
+						.Label(new JS("formatMessage('Material Recipts No:')"))
 						.LabelMode(EditorLabelMode.Outside)
 						.ReadOnly(true)
 						.Width("100%"))
@@ -286,7 +286,7 @@
 					<div style="flex: 1;">
 						@(Html.DevExtreme().DateBox()
 						.ID("ReceiptDate")
-						.Label("Receipt Date")
+						.Label(new JS("formatMessage('Receipt Date')"))
 						.LabelMode(EditorLabelMode.Outside)
 						.Value(DateTime.Now)
 						.DisplayFormat("dd-MMM-yyyy")
@@ -295,7 +295,7 @@
 					<div style="flex: 1;">
 						@(Html.DevExtreme().TextBox()
 						.ID("SupplierDeliveryNoteNo")
-						.Label("Supplier Delivery Note No:")
+						.Label(new JS("formatMessage('Supplier Delivery Note No:')"))
 						.LabelMode(EditorLabelMode.Outside)
 						.Width("100%"))
 					</div>
@@ -341,21 +341,21 @@
 					<div style="flex: 1;">
 						@(Html.DevExtreme().TextBox()
 						.ID("MaterialRequestNo")
-						.Label("Material Request No:")
+						.Label(new JS("formatMessage('Material Request No:')"))
 						.LabelMode(EditorLabelMode.Outside)
 						.Width("100%"))
 					</div>
 					<div style="flex: 1;">
 						@(Html.DevExtreme().TextBox()
 						.ID("SupplierQuotationNo")
-						.Label("Supplier Quotation No:")
+						.Label(new JS("formatMessage('Supplier Quotation No:')"))
 						.LabelMode(EditorLabelMode.Outside)
 						.Width("100%"))
 					</div>
 					<div style="flex: 1;">
 						@(Html.DevExtreme().TextBox()
 						.ID("txtjobCode")
-						.Label("Job Code:")
+						.Label(new JS("formatMessage('Job Code:')"))
 						.LabelMode(EditorLabelMode.Outside)
 						.Width("100%"))
 					</div>
@@ -393,14 +393,14 @@
 					<div style="flex: 1;">
 						@(Html.DevExtreme().TextBox()
 						.ID("RFQNo")
-						.Label("RFQ No:")
+						.Label(new JS("formatMessage('RFQ No')"))
 						.LabelMode(EditorLabelMode.Outside)
 						.Width("100%"))
 					</div>
 					<div style="flex: 1;">
 						@(Html.DevExtreme().TextBox()
 						.ID("PurchaseOrderNo")
-						.Label("Purchase Order No:")
+						.Label(new JS("formatMessage('Purchase Order No:')"))
 						.LabelMode(EditorLabelMode.Outside)
 						.Width("100%"))
 					</div>
@@ -434,7 +434,7 @@
 
 
 						@(Html.DevExtreme().DropDownBox()
-						.Label("Items Received In Store:")
+						.Label(new JS("formatMessage('Items Received In Store:')"))
 						.DataSource(d => d.WebApi()
 						.Controller("MaterialReceipt")
 						.LoadAction("GetStore")
@@ -460,7 +460,7 @@
 					</div>
 					<div style="flex: 1;">
 						@(Html.DevExtreme().DropDownBox()
-						.Label("Project:")
+						.Label(new JS("formatMessage('Project:')"))
 						.DataSource(d => d.WebApi()
 						.Controller("MaterialReceipt")
 						.LoadAction("GetProject")
@@ -490,7 +490,7 @@
 
 		</text>);
 
-						item.Add().Title("Signatories").Icon("detailslayout").Text("Signatories").Template(@<text>
+						item.Add().Title(new JS("formatMessage('Signatories')")).Icon("detailslayout").Text("Signatories").Template(@<text>
 
 			<div style="padding: 15px; margin-top: 15px;">
 				<div style="display: flex; gap: 10px; align-items: flex-start;">
@@ -498,7 +498,7 @@
 					<div style="flex: 1;">
 						<div style="margin-bottom: 5px;">
 							@(Html.DevExtreme().DropDownBox()
-							.Label("Signatory:")
+							.Label(new JS("formatMessage('Signatory:')"))
 							.DataSource(d => d.WebApi()
 							.Controller("MaterialReceipt")
 							.LoadAction("GetSignatory")
@@ -524,16 +524,16 @@
 
 						</div>
 						<div>
-							@(Html.DevExtreme().CheckBox().ID("ShowSignature").Value(true).Text("Show Signature"))
+							@(Html.DevExtreme().CheckBox().ID("ShowSignature").Value(true).Text(new JS("formatMessage('Show Signature')")) )
 						</div>
 						<div>
-							@(Html.DevExtreme().CheckBox().ID("ShowCompanySeal").Value(true).Text("Show Company Seal"))
+							@(Html.DevExtreme().CheckBox().ID("ShowCompanySeal").Value(true).Text(new JS("formatMessage('Show Company Seal')")) ) 
 						</div>
 						<div>
-							@(Html.DevExtreme().CheckBox().ID("PrintInLetterHead").Value(true).Text("Print in Letter Head"))
+							@(Html.DevExtreme().CheckBox().ID("PrintInLetterHead").Value(true).Text(new JS("formatMessage('Print in Letter Head')")) )
 						</div>
 						<div>
-							@(Html.DevExtreme().CheckBox().ID("IsServiceEntrySheet").Value(false).Text("Is Service Entry Sheet"))
+							@(Html.DevExtreme().CheckBox().ID("IsServiceEntrySheet").Value(false).Text(new JS("formatMessage('Is Service Entry Sheet')")) )
 						</div>
 					</div>
 
@@ -541,7 +541,7 @@
 					<div style="flex: 2;">
 						@(Html.DevExtreme().TextArea()
 						.ID("RemarksNotes")
-						.Label("Remarks / Notes:")
+						.Label(new JS("formatMessage('Remarks / Notes:')"))
 						.LabelMode(EditorLabelMode.Outside)
 						.ElementAttr("style", "height: 100px !important;")
 						.Width("100%"))
@@ -550,11 +550,11 @@
 			</div>
 
 		</text>);
-						item.Add().Text("Branch / Division").Icon("home").Title("Branch / Division").Template(@<text>
+						item.Add().Text("Branch / Division").Icon("home").Title(new JS("formatMessage('Branch/Divisions')")).Template(@<text>
 			<div style="padding: 15px;">
 				<div>
 					@(Html.DevExtreme().DropDownBox()
-					.Label("Company Branch/Division")
+					.Label(new JS("formatMessage('Company Branch/Division')"))
 					.DataSource(d => d.WebApi()
 					.Controller("MaterialReceipt")
 					.LoadAction("GetCompany")
@@ -580,7 +580,7 @@
 				</div>
 				<div>
 					@(Html.DevExtreme().DropDownBox()
-					.Label("Inventory Group Master:*")
+					.Label(new JS("formatMessage('Inventory Group Master:*')"))
 					.DataSource(d => d.WebApi()
 					.Controller("MaterialReceipt")
 					.LoadAction("GetInventoryGroup")
@@ -606,7 +606,7 @@
 				</div>
 				<div>
 					@(Html.DevExtreme().DropDownBox()
-					.Label("Material Recieved Type")
+					.Label(new JS("formatMessage('Material Recieved Type')"))
 					.DataSource(d => d.WebApi()
 					.Controller("MaterialReceipt")
 					.LoadAction("GetMaterialReceivedType")
@@ -934,7 +934,7 @@
 										.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 										.Columns(columns =>
 										{
-											columns.Add().DataField("StoreName");
+												columns.Add().DataField("StoreName").Caption(new JS("formatMessage('Store Name')"));
 
 
 
@@ -1002,7 +1002,7 @@
 												.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 												.Columns(columns =>
 												{
-													columns.Add().DataField("SignatoryName");
+														columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')"));
 
 
 
@@ -1036,10 +1036,7 @@
 													.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 													.Columns(columns =>
 													{
-														columns.Add().DataField("CompanyName");
-
-
-
+															columns.Add().DataField("CompanyName").Caption(new JS("formatMessage('Company Name')"));
 													})
 													)
 }
@@ -1070,7 +1067,7 @@
 														.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 														.Columns(columns =>
 														{
-															columns.Add().DataField("InventoryMasterGroup");
+																columns.Add().DataField("InventoryMasterGroup").Caption(new JS("formatMessage('Inventory Master Group')"));
 
 
 
@@ -1104,7 +1101,7 @@
 															.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 															.Columns(columns =>
 															{
-																columns.Add().DataField("ReceiptType");
+																	columns.Add().DataField("ReceiptType").Caption(new JS("formatMessage('Receipt Type')"));
 
 
 
@@ -1404,7 +1401,7 @@
 				},
 				error: function (xhr, status, error) {
 					console.error("Error loading Payment Accounts:", error);
-					DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+					DevExpress.ui.dialog.alert("Failed to load ReceiptNo details.", "Error");
 				}
 			});
 		}
@@ -1598,19 +1595,19 @@
 
 										columns: [
 
-											{ dataField: "GSCode", caption: "Code", width: 80 },
+											{ dataField: "GSCode", caption: formatMessage('Code'), width: 80 },
 
-											{ dataField: "GSDescrpition", caption: "Description", width: 200 },
+											{ dataField: "GSDescrpition", caption: formatMessage('Description'), width: 200 },
 
-											{ dataField: "GsdescriptionAr", caption: "Description In Arabic", width: 200 },
+											{ dataField: "GsdescriptionAr", caption: formatMessage('Description In Arabic'), width: 200 },
 
-											{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
+											{ dataField: "ItemPartNo", caption: formatMessage('Item Part No'), width: 100 },
 
-											{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
+											{ dataField: "CostPrice",  caption: formatMessage('Cost Price'),width: 100 },
 
-											{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
+											{ dataField: "GSSellingRate", caption: formatMessage('Selling Rate'), width: 100 },
 
-											{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+											{ dataField: "ReorderQty",caption: formatMessage('Current Qty'), width: 100 }
 
 										],
 
@@ -1768,13 +1765,13 @@
 
 										columns: [
 
-											{ dataField: "UnitCode", caption: "Code", width: 80 },
+											{ dataField: "UnitCode",caption: formatMessage('Code'), width: 80 },
 
-											{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
+											{ dataField: "UnitDesc",caption: formatMessage('Unit Rate Method'), width: 200 },
 
-											{ dataField: "UnitType", caption: "Unit Type", width: 150 },
+											{ dataField: "UnitType",caption: formatMessage('Unit Type'), width: 150 },
 
-											{ dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
+											{ dataField: "UnitDescAr",caption: formatMessage('Unit Code'), width: 100 }
 
 										],
 
@@ -1901,9 +1898,9 @@
 
 										columns: [
 
-											{ dataField: "TaxSlabCode", caption: "Code", width: 80 },
+											{ dataField: "TaxSlabCode", caption: formatMessage('Code'), width: 80 },
 
-											{ dataField: "TaxSlab", caption: "TaxSlab", width: 200 },
+											{ dataField: "TaxSlab", caption: formatMessage('TaxSlab'), width: 200 },
 
 
 
@@ -2160,19 +2157,19 @@
 
 										columns: [
 
-											{ dataField: "GSCode", caption: "Code", width: 80 },
+											{ dataField: "GSCode",  caption: formatMessage('Code'),width: 80 },
 
-											{ dataField: "GSDescrpition", caption: "Description", width: 200 },
+											{ dataField: "GSDescrpition",caption: formatMessage('Description'), width: 200 },
 
-											{ dataField: "GsdescriptionAr", caption: "Description In Arabic", width: 200 },
+											{ dataField: "GsdescriptionAr", caption: formatMessage('Description In Arabic'), width: 200 },
 
-											{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
+											{ dataField: "ItemPartNo", caption: formatMessage('Item Part No'), width: 100 },
 
-											{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
+											{ dataField: "CostPrice",caption: formatMessage('Cost Price'), width: 100 },
 
-											{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
+											{ dataField: "GSSellingRate",caption: formatMessage('Selling Rate'), width: 100 },
 
-											{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+											{ dataField: "ReorderQty",caption: formatMessage('Current Qty'), width: 100 }
 
 										],
 
@@ -2611,28 +2608,28 @@
 	}
 
 
-	$(document).ready(function () {
-		if (IsCurrent !== "true") {
-			$.ajax({
-				url: "/api/VATModule/GetVATInvoiceNo",
-				type: "GET",
-				success: function (data) {
-					console.log("Success:", data);
+	// $(document).ready(function () {
+	// 	if (IsCurrent !== "true") {
+	// 		$.ajax({
+	// 			url: "/api/VATModule/GetVATInvoiceNo",
+	// 			type: "GET",
+	// 			success: function (data) {
+	// 				console.log("Success:", data);
 
-					const invoiceBox = $("#InvoiceNo").dxTextBox("instance");
-					if (invoiceBox) {
-						invoiceBox.option("value", data || "");
-					} else {
-						console.warn("Invoice TextBox not initialized.");
-					}
-				},
-				error: function (xhr, status, error) {
-					console.error("Error loading Payment Accounts:", error);
-					DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
-				}
-			});
-		}
-	});
+	// 				const invoiceBox = $("#InvoiceNo").dxTextBox("instance");
+	// 				if (invoiceBox) {
+	// 					invoiceBox.option("value", data || "");
+	// 				} else {
+	// 					console.warn("Invoice TextBox not initialized.");
+	// 				}
+	// 			},
+	// 			error: function (xhr, status, error) {
+	// 				console.error("Error loading Payment Accounts:", error);
+	// 				DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+	// 			}
+	// 		});
+	// 	}
+	// });
 
 
 

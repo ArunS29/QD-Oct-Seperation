@@ -209,7 +209,7 @@
                 .Items(item =>
                 {
                     item.Add()
-                .Title("RFQ Details")
+					.Title(new JS("formatMessage('RFQ Details')"))
                 .Icon("folder")
                 .Text("RFQ Details")
                 .Template(@<text>
@@ -229,7 +229,7 @@
                         @(Html.DevExtreme().DateBox()
                         .ID("RFQDate")
 						.Value(DateTime.Now)
-                        .Label("RFQ Date")
+                        .Label(new JS("formatMessage('RFQ Date')"))
                         .LabelMode(EditorLabelMode.Outside)
                         .StylingMode(EditorStylingMode.Outlined)
                         .Width("100%"))
@@ -283,7 +283,7 @@
                         <div style="flex: 1; margin-left: 10px;">
                             @(Html.DevExtreme().TextBox()
                             .ID("RequestNo")
-                            .Label("Request / Enquiry No:")
+						.Label(new JS("formatMessage('Request / Enquiry No:')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .Width("100%"))
                         </div>
@@ -295,14 +295,14 @@
                     <div class="col-md-3">
                         @(Html.DevExtreme().TextBox()
                         .ID("ProjectRef")
-                        .Label("Project Ref:")
+						.Label(new JS("formatMessage('Project Ref:')"))
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%"))
                     </div>
                     <div class="col-md-3" style="  display: flex; align-items: flex-end;">
                         @(Html.DevExtreme().TextBox()
                         .ID("AttentionTo")
-                        .Label("Attention To:")
+						.Label(new JS("formatMessage('Attention To:')"))
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("calc(100% - 40px)"))
                         @(Html.DevExtreme().Button()
@@ -315,7 +315,7 @@
                     <div class="col-md-2">
                         @(Html.DevExtreme().TextBox()
                         .ID("SupplierEmail")
-                        .Label("Supplier Email:")
+						.Label(new JS("formatMessage('Supplier Email:')"))
                         .LabelMode(EditorLabelMode.Outside)
                         .Mode(TextBoxMode.Email)
                         .Width("100%"))
@@ -323,7 +323,7 @@
                     <div class="col-md-2">
                         @(Html.DevExtreme().TextBox()
                         .ID("SupplierContact")
-                        .Label("Supplier Contact No:")
+						.Label(new JS("formatMessage('Supplier Contact No:')"))
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%"))
                     </div>
@@ -335,14 +335,14 @@
                     <div class="col-md-3">
                         @(Html.DevExtreme().TextBox()
                         .ID("SupplierQuoteNo")
-                        .Label("Supplier Quote No:")
+						.Label(new JS("formatMessage('Supplier Quote No:')"))
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%"))
                     </div>
                     <div class="col-md-3">
                         @(Html.DevExtreme().DateBox()
                         .ID("SupplierQuoteDate")
-                        .Label("Supplier Quote Date:")
+						.Label(new JS("formatMessage('Supplier Quote Date:')"))
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%"))
                     </div>
@@ -350,7 +350,7 @@
                         @(Html.DevExtreme().SelectBox()
                         .ID("SalesPerson")
                         .DataSource(new[] { "Sales A", "Sales B" })
-                        .Label("Sales Person:")
+						.Label(new JS("formatMessage('Sales Person:')"))
 						.Disabled(true)
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%"))
@@ -388,7 +388,7 @@
 
         </text>);
 
-                    item.Add().Title("RFQ Sub Details").Icon("detailslayout").Text("RFQ Sub Details").Template(@<text>
+						item.Add().Title(new JS("formatMessage('RFQ Sub Details')")).Icon("detailslayout").Text("RFQ Sub Details").Template(@<text>
             <div class="d-flex flex-wrap gap-3">
     <!-- Left Card: Subject + Quote Introduction -->
     <div class="dx-card p-3 flex-fill" style="min-width: 300px;">
@@ -400,7 +400,7 @@
                         @(Html.DevExtreme().TextBox()
                             .ID("Subject")
                             .Value("Quotation for Materials")
-                            .Label("RFQ Subject:")
+													.Label(new JS("formatMessage('RFQ Subject:')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .Width("100%")
                         )
@@ -417,15 +417,14 @@
                 <tr>
                     <td>
                       @(Html.DevExtreme().TextArea()
-    .ID("QuoteIntro")
-    .Value("With reference to your enquiry, please find our competitive Quotation as follows:")
-    .Height(80)
-    .Label("RFQ Remarks:")
-    .LabelMode(EditorLabelMode.Outside)
-    .Width("100%")
-    .RtlEnabled(true) // Enables right-to-left text direction
-    .Spellcheck(true) // Enables browser-based spell checking
-    .MaxLength(500) // Sets maximum character limit
+							.ID("QuoteIntro")
+							.Height(80)
+							.Label(new JS("formatMessage('RFQ Remarks:')"))
+							.LabelMode(EditorLabelMode.Outside)
+							.Width("100%")
+							.RtlEnabled(true) // Enables right-to-left text direction
+							.Spellcheck(true) // Enables browser-based spell checking
+							.MaxLength(500) // Sets maximum character limit
   )
 
                         <div class="d-flex gap-1 mt-1">
@@ -448,9 +447,8 @@
                     <td>
                         @(Html.DevExtreme().TextArea()
                             .ID("QuoteSummary")
-                            .Value("We hope that our offer is in line with your requirements. Please indicate in your purchase order our Quotation Reference and acceptance to the terms & conditions.")
-                                    .ElementAttr("style", "height: 160px ! important;")
-                            .Label("RFQ Summary:")
+                            .ElementAttr("style", "height: 160px ! important;")
+							.Label(new JS("formatMessage('RFQ Summary:')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .Width("100%")
                         )
@@ -470,14 +468,14 @@
 
 
         </text>);
-                    item.Add().Text("Signatories").Icon("user").Title("Signatories").Template(@<text>
+						item.Add().Text("Signatories").Icon("user").Title(new JS("formatMessage('Signatories')")).Template(@<text>
 
             <div class="form-container">
                 <div class="dx-card p-3">
                     <table class=" table-borderless w-100">
                         <thead>
                             <tr>
-                                <th>Siguatory:</th>
+                                @* <th>Siguatory:</th> *@
                             </tr>
                         </thead>
                         <tbody>
@@ -515,12 +513,12 @@
                             <tr style="display: flex;" >
                                 <!-- Prepared By Checkboxes -->
                                 <td>
-                                    @(Html.DevExtreme().CheckBox().ID("showSeal").Value(true).Text("Show Company Seal"))
+									@(Html.DevExtreme().CheckBox().ID("showSeal").Value(true).Text(new JS("formatMessage('Show Company Seal')")) )
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("showSignature").Value(true).Text("Show Signature"))
+									@(Html.DevExtreme().CheckBox().ID("showSignature").Value(true).Text(new JS("formatMessage('Show Signature')")) )
                                     <br />
+								   @(Html.DevExtreme().CheckBox().ID("printLetterhead").Value(true).Text(new JS("formatMessage('Print in Letter Head')")) )
                                 </td>
-                                <td>@(Html.DevExtreme().CheckBox().ID("printLetterhead").Value(true).Text("Print in Letter Head"))</td>
                             </tr>
                         </tbody>
                     </table>
@@ -528,13 +526,13 @@
             </div>
 
         </text>);
-                    item.Add().Text("Branch / Divisions").Icon("home").Title("Branch / Divisions").Template(@<text>
+						item.Add().Text("Branch / Divisions").Icon("home").Title(new JS("formatMessage('Branch/Divisions')")).Template(@<text>
             <div class="dx-card p-3">
                 <div class="row g-2">
                     <!-- Column 1 -->
                                 <div>
                                  @(Html.DevExtreme().DropDownBox()
-													.Label(new JS("formatMessage('Compan:')"))
+													.Label(new JS("formatMessage('Company:')"))
 													.DataSource(d => d.WebApi()
 													.Controller("RequestforQuotationList")
 													.LoadAction("GetCompany")
@@ -1165,7 +1163,7 @@
 				},
 				error: function (xhr, status, error) {
 					console.error("Error loading Payment Accounts:", error);
-					DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+					DevExpress.ui.dialog.alert("Failed to load RFQNo details.", "Error");
 				}
 			});
 		}
@@ -1271,7 +1269,7 @@
 							
 							{
 
-								dataField: "Gscode",
+					dataField: "GSCode",
 
 								caption: formatMessage('Item Code'),
 
@@ -2144,28 +2142,28 @@ LineTotalAfterDisc:0.00
 
 
 
-		$(document).ready(function () {
-			if (IsCurrent !== "true") {
-				$.ajax({
-					url: "/api/VATModule/GetVATInvoiceNo",
-					type: "GET",
-					success: function (data) {
-						console.log("Success:", data);
+		// $(document).ready(function () {
+		// 	if (IsCurrent !== "true") {
+		// 		$.ajax({
+		// 			url: "/api/VATModule/GetVATInvoiceNo",
+		// 			type: "GET",
+		// 			success: function (data) {
+		// 				console.log("Success:", data);
 
-						const invoiceBox = $("#InvoiceNo").dxTextBox("instance");
-						if (invoiceBox) {
-							invoiceBox.option("value", data || "");
-						} else {
-							console.warn("Invoice TextBox not initialized.");
-						}
-					},
-					error: function (xhr, status, error) {
-						console.error("Error loading Payment Accounts:", error);
-						DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
-					}
-				});
-			}
-		});
+		// 				const invoiceBox = $("#InvoiceNo").dxTextBox("instance");
+		// 				if (invoiceBox) {
+		// 					invoiceBox.option("value", data || "");
+		// 				} else {
+		// 					console.warn("Invoice TextBox not initialized.");
+		// 				}
+		// 			},
+		// 			error: function (xhr, status, error) {
+		// 				console.error("Error loading Payment Accounts:", error);
+		// 				DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+		// 			}
+		// 		});
+		// 	}
+		// });
 
 
 

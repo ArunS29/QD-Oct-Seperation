@@ -36,5 +36,29 @@ namespace QD.ERP.Web.Service
 
             return DateTime.UtcNow.Date <= validUntil.Date;
         }
+        public async Task<string> CheckExtendedLicenseInfoAsync(string companyName)
+        {
+            if (string.IsNullOrWhiteSpace(companyName))
+                throw new ArgumentException("Company name cannot be null or empty.", nameof(companyName));
+
+            var licenseInfo = await GetLicenseInfoAsync(companyName);
+            if (licenseInfo == null)
+                return "License not found.";
+
+            var expiryDate = licenseInfo.LicExpiryDate ?? DateTime.MinValue;
+            var extendedDays = licenseInfo.ExtendedDays ?? 0;
+
+            var validUntil = expiryDate.AddDays(Convert.ToDouble(extendedDays));
+            var today = DateTime.UtcNow.Date;
+
+            if (today > expiryDate.Date && today <= validUntil.Date)
+            {
+                return $"License expired on {expiryDate:dd-MM-yyyy}, but extended for {extendedDays} day(s) until {validUntil:dd-MM-yyyy}.";
+            }
+
+            return null; // No alert needed
+        }
+
+
     }
 }

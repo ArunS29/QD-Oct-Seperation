@@ -55,7 +55,17 @@
     }
 }
 
+@inject QD.ERP.Web.Service.LicenseService LicenseService
 
+@{
+    // Retrieve tenantName from session
+    string tenantNameFromSession = Context.Session.GetString("TenantName") ?? "";
+
+    // Pass tenantNameFromSession to the method
+    string licenseMessage = string.IsNullOrWhiteSpace(tenantNameFromSession)
+        ? "Tenant name is not available in the session."
+        : await LicenseService.CheckExtendedLicenseInfoAsync(tenantNameFromSession);
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -110,9 +120,25 @@
             -moz-osx-font-smoothing: grayscale; /* Font smoothing for Firefox on macOS */
         }
 
+        .dx-list:not(.dx-list-select-decorator-enabled) .dx-list-item.dx-list-item-selected {
+            background-color: var(--title-background-color);
+            color: #fff;
+        }
+
+        .dx-list:not(.dx-list-select-decorator-enabled) .dx-list-item.dx-state-focused.dx-list-item-selected {
+            background-color: var(--title-background-color);
+            color: #fff;
+        }
+
+        .dx-list:not(.dx-list-select-decorator-enabled) .dx-list-item.dx-state-focused {
+            background-color: var(--title-background-color);
+            color: #fff;
+        }
+
         :root {
             font-family: "Inter", Helvetica, Arial, sans-serif;
             --highlight-color: #0f6cbd;
+            --highlight-color: var(--hover-bg-color);
             --text-color: #525252;
             --hover-bg-color: var(--hover-bg-color);
             --sidebar-bg: #909ead00;
@@ -888,6 +914,116 @@
             border-radius: 6px;
             border: 2px solid #f0f0f0;
         }
+
+        .notification-bell-wrapper {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+            .notification-bell-wrapper .badge-count {
+                position: absolute;
+                top: -6px;
+                right: -6px;
+                background: #dc3545;
+                color: white;
+                font-size: 12px;
+                font-weight: 700;
+                padding: 2px 6px;
+                border-radius: 12px;
+                min-width: 20px;
+                text-align: center;
+                user-select: none;
+                display: none; /* hide when 0 */
+            }
+
+            .notification-bell-wrapper i.fas.fa-bell {
+                font-size: 28px;
+                color: #444;
+            }
+
+        .notification-tooltip {
+            position: absolute;
+            top: 120%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            white-space: nowrap;
+            max-width: 300px;
+            font-size: 14px;
+            display: none;
+            z-index: 9999;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .notification-bell-wrapper {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .badge-count {
+            background-color: crimson;
+            color: white;
+            border-radius: 50%;
+            padding: 3px 6px;
+            font-size: 12px;
+            position: absolute;
+            top: -6px;
+            right: -6px;
+        }
+
+        .notification-popup {
+            display: none;
+            position: absolute;
+            top: 130%;
+            right: 0;
+            width: 320px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .popup-header {
+            padding: 12px 16px;
+            font-weight: 600;
+            font-size: 16px;
+            border-bottom: 1px solid #eee;
+            background-color: #f9f9f9;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        .popup-body {
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 8px 0;
+        }
+
+            .popup-body .notification-item {
+                padding: 10px 16px;
+                font-size: 14px;
+                border-bottom: 1px solid #f1f1f1;
+                color: #333;
+                transition: background 0.2s;
+            }
+
+                .popup-body .notification-item:hover {
+                    background-color: #f5f5f5;
+                }
+
+        .notification-item strong {
+            color: #555;
+            display: block;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
     </style>
     @RenderSection("Styles", required: false)
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
@@ -921,8 +1057,10 @@
             <div class="image">
                 <img src="@Tenant.Value.LogoUrl" alt="Tenant Logo" />
                 <div class="companyName">
-                    @tenantName
-                </div>
+                    @Tenant.Value.CompanyNameShort
+                </div> 
+              
+
             </div>
             <div class="dropdownLang">
           @*   <div>
@@ -961,7 +1099,22 @@
             <button id="fullscreenToggle">
                 <i class="fas fa-expand" id="fullscreenIcon"></i>
             </button>
-            <i class="fas fa-bell img" onclick="handleBellClick()"></i> <!-- Bell icon -->
+            <div class="notification-bell-wrapper"
+                 onmouseenter="showPopup()"
+                 onmouseleave="hidePopup()"
+                 onclick="handleBellClick()">
+                <i class="fas fa-bell"></i>
+                <div class="badge-count" id="notificationBadge">0</div>
+
+                <!-- Styled Popup Panel -->
+                <div class="notification-popup" id="notificationPopup">
+                    <div class="popup-header">Notifications</div>
+                    <div class="popup-body" id="notificationPopupContent">Loading...</div>
+                </div>
+            </div>
+
+
+
             <i class="fas fa-cogs img" onclick="handleGearClick()"></i> <!-- Gear icon -->
             <i class="fas fa-file-alt img" onclick="handleFileClick()"></i> <!-- File text icon -->
             <i class="fas fa-circle-info img" onclick="handleInfoClick()"></i>
@@ -1304,22 +1457,6 @@
 
             </div>
         </div>
-        <div id="quarterSubMenu" class="context-menu" style="display:none; width: 300px;">
-            <div class="context-menu-item1">
-                <div class="submenu-item" onclick="ddBtnShowRecords_click('q1')">
-                    <span class="no-border-input">1st Quarter (Jan - Mar)</span>
-                </div>
-                <div class="submenu-item" onclick="ddBtnShowRecords_click('q2')">
-                    <span class="no-border-input">2nd Quarter (Apr - Jun)</span>
-                </div>
-                <div class="submenu-item" onclick="ddBtnShowRecords_click('q3')">
-                    <span class="no-border-input">3rd Quarter (Jul - Sep)</span>
-                </div>
-                <div class="submenu-item" onclick="ddBtnShowRecords_click('q4')">
-                    <span class="no-border-input">4th Quarter (Oct - Dec)</span>
-                </div>
-            </div>
-        </div>
         <!-- Notification Popup -->
         <div id="notificationPopup" class="popup">
             <div class="popup-header">
@@ -1391,10 +1528,9 @@
 
 
             <div id="sidebar" class="sidebar hidden">
-                  <div class="menu-item1"
-                  @* onmouseover="toggleSidebar()"  *@
-                  @* onmouseout="toggleSidebar()" *@
-                  >
+                <div class="menu-item1"
+                     style="cursor: pointer;"
+                     onclick="navigateToTenantHome()">
                     <img border="0" src="~/images/erp_logo.png" alt="QD-ERP" width="45" height="30">
                     <div id="HumanResources2" class="text no-border-input">Quick Dice</div>
                 </div>
@@ -1481,12 +1617,20 @@
         </div>
     </div>
     <footer class="text-center py-3 footerContainer" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem;">
+        @if (!string.IsNullOrEmpty(licenseMessage))
+        {
+            <div id="custom-watermark" style="position: fixed; bottom: 0; width: 100%; z-index: 9999; background-color: red; color: white; display: flex; align-items: center;justify-content: center;font-family: 'Segoe UI', sans-serif;font-size: 14px;padding: 0.5rem;box-shadow: 0 -2px 6px rgba(0,0,0,0.2);">
+                <span>Your <strong>@licenseMessage</strong>. Please <a href="https://quickdiceerp.com/contact-us" target="_blank" style="color: white; text-decoration: underline;">purchase a license</a> to continue using this product.</span>
+                <button onclick="document.getElementById('custom-watermark').remove()" style=" margin-left: 1rem;background: transparent;border: none;color: white;font-size: 16px;cursor: pointer;" title="Close">&times;</button>
+            </div>
+        }
         <div style="display:flex;flex-direction:column;align-items:center;gap:1em;">
             <div>
+              
                 <span class="me-3">User ID:  <b>@userId</b></span>
                 <span class="me-3">User Name: <b>@userName</b> </span>
                 <span class="me-3">Level: <span id="userLevel" style="font-weight: bold;">Loading...</span></span>
-                <span class="me-3"><b>@DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</b></span>
+                @* <span class="me-3"><b>@DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</b></span> *@
             </div>
             <div style="display:flex;">
                 <p id="footerMessage1" style="font-weight: bold;"></p>
@@ -2108,13 +2252,59 @@
         });
 
         function handleBellClick() {
-            const notificationPopup = document.getElementById('notificationPopup');
-            if (notificationPopup) {
-                notificationPopup.style.display = 'block';
-            }
+            window.location.href = `/${tenantName}/Shared/Notification`;
+        }
+                function handleBellClick() {
+          window.location.href = `/${tenantName}/Shared/Notification`;
         }
 
-        // Function for Gear icon click - show settings popup
+             let alertsData = [];
+
+        async function fetchUnseenCount() {
+          try {
+            const response = await fetch('/api/Notification/GetUserNotifications');
+            if (!response.ok) throw new Error('Failed to fetch notifications');
+
+            const json = await response.json();
+            alertsData = json.data || [];
+
+            const unseenCount = alertsData.filter(n => n.IsSeen === false).length;
+            const badge = document.getElementById('notificationBadge');
+            badge.style.display = unseenCount > 0 ? 'inline-block' : 'none';
+            badge.textContent = unseenCount;
+
+          } catch (err) {
+            console.error('Error fetching notifications:', err);
+          }
+        }
+
+        function showPopup() {
+          const popup = document.getElementById('notificationPopup');
+          const content = document.getElementById('notificationPopupContent');
+
+          const unread = alertsData.filter(n => !n.IsSeen && n.AlertUserMessage);
+
+          if (unread.length === 0) {
+            content.innerHTML = '<div class="notification-item">No new notifications</div>';
+          } else {
+            content.innerHTML = unread.map(n => `
+              <div class="notification-item">
+                <strong>${n.AlertCode}</strong>
+                <span>${n.AlertUserMessage}</span>
+              </div>
+            `).join('');
+          }
+
+          popup.style.display = 'block';
+        }
+
+            function hidePopup() {
+          setTimeout(function() {
+            document.getElementById('notificationPopup').style.display = 'none';
+          }, 5000); // 5000 milliseconds = 5 seconds
+        }
+
+        window.addEventListener('DOMContentLoaded', fetchUnseenCount);
         function handleGearClick() {
             const settingsPopup = document.getElementById('settingsPopup');
             if (settingsPopup) {
@@ -3131,8 +3321,12 @@
 
             doc.save("quotation-analysis.pdf");
         }
-        function hidequarterSubmenus() {
-            $('#quarterSubMenu').hide();
+                function navigateToTenantHome() {
+            if (tenantName) {
+                window.location.href = `/${tenantName}/Home`;
+            } else {
+                console.warn("Tenant name is not set.");
+            }
         }
     </script>
 </body>

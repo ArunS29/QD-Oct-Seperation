@@ -381,7 +381,7 @@
             this.tableCell1.StylePriority.UseTextAlignment = false;
             this.tableCell1.Text = "Invoice Date";
             this.tableCell1.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
-            this.tableCell1.Weight = 0.072539723005524054D;
+            this.tableCell1.Weight = 0.072745542216992781D;
             // 
             // tableCell2
             // 
@@ -402,7 +402,7 @@
             this.tableCell2.StylePriority.UseTextAlignment = false;
             this.tableCell2.Text = "Reference #";
             this.tableCell2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
-            this.tableCell2.Weight = 0.082199750125443824D;
+            this.tableCell2.Weight = 0.0819939309139751D;
             // 
             // tableCell3
             // 
@@ -718,7 +718,7 @@
             this.tableCell15.StylePriority.UseBorders = false;
             this.tableCell15.StylePriority.UseFont = false;
             this.tableCell15.TextFormatString = "{0:dd-MMM-yyyy}";
-            this.tableCell15.Weight = 0.070893910398758378D;
+            this.tableCell15.Weight = 0.05978279788825213D;
             // 
             // tableCell16
             // 
@@ -737,7 +737,7 @@
             this.tableCell16.StylePriority.UseTextAlignment = false;
             this.tableCell16.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.tableCell16.TextFormatString = "{0:C2}";
-            this.tableCell16.Weight = 0.056272053471428239D;
+            this.tableCell16.Weight = 0.067383165981934487D;
             // 
             // tableCell17
             // 
