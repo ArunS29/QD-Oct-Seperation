@@ -18,7 +18,7 @@ using Microsoft.ApplicationInsights.Extensibility;
 using QD.ERP.Web.Service.ReportService;
 using QD.ERP.Web.Middlewares;
 using DevExpress.XtraCharts;
-//using QD.ERP.Web.Middleware;
+using QD.ERP.Web.Middleware;
 using QD.ERP.Web.Services.Logging;
 
 //using qd.utilities;
