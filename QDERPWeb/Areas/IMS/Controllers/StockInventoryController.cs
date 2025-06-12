@@ -21,11 +21,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<StockInventoryController> _logger;
+        private readonly IConfiguration _configuration; // ✅ Add this
 
-        public StockInventoryController(ILogger<StockInventoryController> logger, TenantDbContextHelper tenantDbContextHelper)
+        public StockInventoryController(ILogger<StockInventoryController> logger, TenantDbContextHelper tenantDbContextHelper, IConfiguration configuration)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -1328,27 +1330,84 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
         }
         [HttpPost]
-        public async Task<IActionResult> SaveProjectDocument([FromBody] Tbl70003projectDocument model)
+        public async Task<IActionResult> SaveProjectDocument()
         {
             try
             {
-                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                // Step 1: Get tenant info
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
                     return Unauthorized("Invalid tenant context.");
 
-                model.DocumentStatus = 1; 
-                model.DocumentStatusRemarks = "Active"; 
+                var tenantName = HttpContext.Session.GetString("TenantName")?.Trim();
+                if (string.IsNullOrWhiteSpace(tenantName))
+                    return Unauthorized("Tenant name not found in session.");
+
+                // Step 2: Get form data and file
+                var form = await Request.ReadFormAsync();
+                var file = form.Files.FirstOrDefault();
+                if (file == null || file.Length == 0)
+                    return BadRequest("No file uploaded.");
+
+                // Step 3: Get module and form name (fallback to URL path if route data is null)
+                var routeValues = HttpContext.Request.RouteValues;
+                var module = routeValues["area"]?.ToString();
+                var formName = routeValues["page"]?.ToString();
+
+                if (string.IsNullOrWhiteSpace(module) || string.IsNullOrWhiteSpace(formName))
+                {
+                    var segments = HttpContext.Request.Path.Value?.Split('/', StringSplitOptions.RemoveEmptyEntries);
+                    module ??= segments.Length > 1 ? segments[1] : "UnknownModule";
+                    formName ??= segments.LastOrDefault() ?? "UnknownForm";
+                }
+
+                // Normalize path elements
+                module = module.Replace(" ", "_");
+                formName = formName.Replace(" ", "_");
+                tenantName = tenantName.Replace(" ", "_");
+
+                // Step 4: Build blob file path
+                var fileName = $"{form["DocumentNo"]}_{Path.GetFileName(file.FileName)}";
+                var filePathInBlob = $"Inventory/{module}/{fileName}";
+
+                // Step 5: Upload to Azure Blob
+                var connectionString = _configuration.GetConnectionString("AzureBlobStorage");
+                var containerName = "client-files";
+                var blobHelper = new AzureBlobHelper(connectionString, containerName);
+                var blobPath = await blobHelper.UploadFileAsync(file, filePathInBlob, tenantName);
+
+                // Step 6: Save metadata
+                var model = new Tbl70003projectDocument
+                {
+                    DocumentNo = form["DocumentNo"],
+                    ProjectId = form["ProjectId"],
+                    DocumentType = short.TryParse(form["DocumentType"], out var docType) ? docType : null,
+                    DocumentRefNo = form["DocumentRefNo"],
+                    DocumentRemarks = form["DocumentRemarks"],
+                    DocumentExpDate = DateTime.TryParse(form["DocumentExpDate"], out var expDate) ? expDate : null,
+                    DocumentNotificationDate = DateTime.TryParse(form["DocumentNotificationDate"], out var notiDate) ? notiDate : null,
+                    DocumentExpDateAr = form["DocumentExpDateAr"],
+                    DocumentStatus = 1,
+                    DocumentStatusRemarks = "Active",
+                    AzurePath = blobPath,
+                    DocumentFile = null
+                };
 
                 dbContext.Tbl70003projectDocuments.Add(model);
                 await dbContext.SaveChangesAsync();
 
-                return Ok(new { success = true, message = "Document saved successfully." });
+                return Ok(new { success = true, message = "Document saved and uploaded successfully." });
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in GetProject: {ex.Message}");
+                _logger.LogError($"Error in SaveProjectDocument: {ex.Message}");
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
+
+
+
+
+
         [HttpGet]
         public async Task<IActionResult> GetOpeningBalanceByGscode(string gscode)
         {
@@ -1431,6 +1490,44 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
             }
         }
+        public IActionResult GetAllDocuments()
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                return StatusCode(500, "Tenant not found.");
+
+            var connectionString = _configuration.GetConnectionString("AzureBlobStorage");
+            var containerName = "client-files"; // or from config if preferred
+
+            if (string.IsNullOrWhiteSpace(connectionString) || string.IsNullOrWhiteSpace(containerName))
+                return StatusCode(500, "Azure Blob configuration is missing.");
+
+            var blobHelper = new AzureBlobHelper(connectionString, containerName);
+
+            var documents = dbContext.Tbl70003projectDocuments
+                .Select(d => new
+                {
+                    d.DocumentNo,
+                    d.DocumentType,
+                    d.DocumentRefNo,
+                    d.DocumentRemarks,
+                    d.AzurePath // ✅ Already includes tenant folder
+                })
+                .ToList();
+
+            var result = documents
+                .Where(doc => !string.IsNullOrWhiteSpace(doc.AzurePath))
+                .Select(doc => new
+                {
+                    doc.DocumentNo,
+                    doc.DocumentType,
+                    doc.DocumentRefNo,
+                    doc.DocumentRemarks,
+                    FileUrl = blobHelper.GetBlobSasUrl(doc.AzurePath) // ✅ No extraction needed
+                });
+
+            return Ok(result);
+        }
+
 
         [HttpGet]
         public async Task<IActionResult> GetStockData(DateTime? fromDate, DateTime? toDate)
