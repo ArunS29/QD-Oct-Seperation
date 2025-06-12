@@ -306,142 +306,142 @@
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
-			columns.Add().Caption("Credit Note Details").Columns(subColumns =>
+			columns.Add().Caption(new JS("formatMessage('Credit Note Details')")).Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.InvoiceZatcaStatus)
-			.Caption("Invoice Zatca Status")
+			.Caption(new JS("formatMessage('Invoice Zatca Status')"))
 			.Alignment(HorizontalAlignment.Center)
 			.Width(135).MinWidth(23);
 
 				subColumns.AddFor(m => m.CreditNoteNo)
-			.Caption("Credit Note No")
+			.Caption(new JS("formatMessage('Credit Note No')"))
 			.Alignment(HorizontalAlignment.Center)
 			.Width(135).MinWidth(23);
 
 				subColumns.AddFor(m => m.CreditNoteDate)
-			.Caption("Credit Note Date")
+			.Caption(new JS("formatMessage('Credit Note Date')"))
 			.Alignment(HorizontalAlignment.Center)
 			.Format("dd-MMM-yyyy")
 			.Width(135).MinWidth(23);
 
 				subColumns.AddFor(m => m.AccountHead)
-			.Caption("Account Head")
+			.Caption(new JS("formatMessage('Account Head')"))
 			.Alignment(HorizontalAlignment.Center)
 			.Width(341).MinWidth(23);
 
 				subColumns.AddFor(m => m.InvoiceStatus)
-			.Caption("Credit Note Status")
+			.Caption(new JS("formatMessage('Credit Note Status')"))
 			.Alignment(HorizontalAlignment.Center)
 			.Width(87).MinWidth(23);
 			});
 
-			columns.Add().Caption("Credit Note & Tax Amount").Columns(subColumns =>
+			columns.Add().Caption(new JS("formatMessage('Credit Note & Tax Amount')")).Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.CalcLineAmount)
-			.Caption("Amount Before Tax")
+			.Caption(new JS("formatMessage('Amount Before Tax')"))
 			.Alignment(HorizontalAlignment.Right)
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				subColumns.AddFor(m => m.CalcTaxAmount)
-			.Caption("Total VAT Amount")
+			.Caption(new JS("formatMessage('Total VAT Amount')"))
 			.Alignment(HorizontalAlignment.Right)
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				subColumns.AddFor(m => m.TotalCreditNoteAmount)
-			.Caption("Total Amount")
+			.Caption(new JS("formatMessage('Total Amount')"))
 			.Alignment(HorizontalAlignment.Right)
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
 
-			columns.Add().Caption("Credit Not Classified").Columns(revenueColumns =>
+			columns.Add().Caption(new JS("formatMessage('Credit Not Classified')")).Columns(revenueColumns =>
 			{
-				revenueColumns.Add().Caption("Domestic").Columns(subColumns =>
+				revenueColumns.Add().Caption(new JS("formatMessage('Domestic')")).Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.DomesticStandartRatedRevenue)
-			.Caption("Domestic Revenue @5%")
+			.Caption(new JS("formatMessage('Domestic Revenue @5%')"))
 			.Alignment(HorizontalAlignment.Right)
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				subColumns.AddFor(m => m.TotalRevenueOf10Perc)
-			.Caption("Domestic Revenue @10%")
+			.Caption(new JS("formatMessage('Domestic Revenue @10%')"))
 			.Alignment(HorizontalAlignment.Right)
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				subColumns.AddFor(m => m.TotalRevenueOf15Perc)
-			.Caption("Domestic Revenue @15%")
+			.Caption(new JS("formatMessage('Domestic Revenue @15%')"))
 			.Alignment(HorizontalAlignment.Right)
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				subColumns.AddFor(m => m.DomesticZeroRatedRevenue)
-			.Caption("Domestic Zero Rated Revenue")
+			.Caption(new JS("formatMessage('Domestic Zero Rated Revenue')"))
 			.Alignment(HorizontalAlignment.Right)
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				subColumns.AddFor(m => m.DomesticExemptedRevenue)
-			.Caption("Domestic Exempted Revenue")
+			.Caption(new JS("formatMessage('Domestic Exempted Revenue')"))
 			.Alignment(HorizontalAlignment.Right)
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
 
-				revenueColumns.Add().Caption("Imports").Columns(subColumns =>
+				revenueColumns.Add().Caption(new JS("formatMessage('Imports')")).Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.GccstandardRatedRevenue)
-			.Caption("GCC Revenue")
+			.Caption(new JS("formatMessage('GCC Revenue')"))
 			.Alignment(HorizontalAlignment.Right)
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
 
-				revenueColumns.Add().Caption("Exports").Columns(subColumns =>
+				revenueColumns.Add().Caption(new JS("formatMessage('Exports')")).Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.ExportsRevenue)
-			.Caption("Exports Revenue")
+			.Caption(new JS("formatMessage('Exports Revenue')"))
 			.Alignment(HorizontalAlignment.Right)
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
 			});
 
-			columns.Add().Caption("VAT Amount Classified").Columns(vatColumns =>
+			columns.Add().Caption(new JS("formatMessage('VAT Amount Classified')")).Columns(vatColumns =>
 			{
-				vatColumns.Add().Caption("Domestic VAT").Columns(subColumns =>
+				vatColumns.Add().Caption(new JS("formatMessage('Domestic VAT')")).Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.DomesticStandartRatedTax)
-			.Caption("Domestic VAT @5%")
+			.Caption(new JS("formatMessage('Domestic VAT @5%')"))
 			.Alignment(HorizontalAlignment.Right)
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				subColumns.AddFor(m => m.TotalTaxOf10Perc)
-			.Caption("Domestic VAT @10%")
+			.Caption(new JS("formatMessage('Domestic VAT @10%')"))
 			.Alignment(HorizontalAlignment.Right)
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				subColumns.AddFor(m => m.TotalTaxOf15Perc)
-			.Caption("Domestic VAT @15%")
+			.Caption(new JS("formatMessage('Domestic VAT @15%')"))
 			.Alignment(HorizontalAlignment.Right)
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				subColumns.AddFor(m => m.DomesticZeroRatedTax)
-			.Caption("Domestic Zero Rated VAT")
+			.Caption(new JS("formatMessage('Domestic Zero Rated VAT')"))
 			.Alignment(HorizontalAlignment.Right)
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				subColumns.AddFor(m => m.DomesticExemptedTax)
-			.Caption("Domestic Exempted VAT")
+			.Caption(new JS("formatMessage('Domestic Exempted VAT')"))
 			.Alignment(HorizontalAlignment.Right)
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
 
-				vatColumns.Add().Caption("Imports VAT").Columns(subColumns =>
+				vatColumns.Add().Caption(new JS("formatMessage('Imports VAT')")).Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.GccstandardRatedTax)
-			.Caption("GCC Tax")
+			.Caption(new JS("formatMessage('GCC Tax')"))
 			.Alignment(HorizontalAlignment.Right)
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
 
-				vatColumns.Add().Caption("Exports VAT").Columns(subColumns =>
+				vatColumns.Add().Caption(new JS("formatMessage('Exports VAT')")).Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.ExportsTax)
-			.Caption("Exports Tax")
+			.Caption(new JS("formatMessage('Exports Tax')"))
 			.Alignment(HorizontalAlignment.Right)
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
@@ -745,6 +745,9 @@
 				frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
 				toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
 				break;
+					default:
+					frmDate = frmDateBox.option("value");
+					toDate = toDateBox.option("value");
 		}
 
 		frmDate = frmDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });

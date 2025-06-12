@@ -136,7 +136,7 @@
             <!-- Use Effective Date Checkbox -->
             @(Html.DevExtreme().CheckBox()
                 .ID("useEffectiveDate")
-                .Text("Use Effective Date")
+                .Text(new JS("formatMessage('Use Effective Date')"))
                 .Value(true)
                 )
         </div>
