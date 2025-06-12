@@ -2912,6 +2912,21 @@
         "Model No": "Model No",
         "Item Sl No": "Item Sl No",
         "Work Order No": "Work Order No",
+
+        "Other Countries": "Other Countries",
+        "Inventory Report(With Expiry date)": "Inventory Report(With Expiry date)",
+        "Inventory Report By date": "Inventory Report By date",
+        "Inventory Report On Stores": "Inventory Report On Stores",
+        "Inventory Report on Store(Pivort Report)": "Inventory Report on Store(Pivort Report)",
+        "Inventory Report On stores (By Date)": "Inventory Report On stores (By Date)",
+        "Inventory - Stock Movement report": "Inventory - Stock Movement report",
+        "Preview Quotation without VAT": "Preview Quotation without VAT",
+        "Preview Quotation without VAT and without Total Price": "Preview Quotation without VAT and without Total Price",
+        "Preview Quotation without VAT and without Discount": "Preview Quotation without VAT and without Discount",
+        "Preview Quotation with additional Details": "Preview Quotation with additional Details",
+        "Preview Quotation without Price": "Preview Quotation without Price",
+
+
         "Other Countries":"Other Countries",
         "Job Order Description (Detailed)": "Job Order Description (Detailed)",
         "Serial No:": "Serial No:",
@@ -2959,6 +2974,7 @@
         "Dispatch Report Prepared By:": "Dispatch Report Prepared By:",
         "Dispatch Report Approved By:": "Dispatch Report Approved By:",
         "Edit Job Order Details":"Edit Job Order Details"
+
     },
     "ar": {
         "Edit Job Order Details":"تعديل تفاصيل طلب الوظيفة",

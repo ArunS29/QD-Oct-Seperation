@@ -1044,5 +1044,36 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 		}
 
-	}
+
+        [HttpGet("{RequestNo}")]
+        public async Task<ActionResult> GetRequestNoteApprovalStatus(string RequestNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var requestNo = await dbContext.Tbl60601purchaseRequestMasters
+
+                        .Where(i => i.Mprno == RequestNo)
+                        .FirstOrDefaultAsync();
+
+                    if (requestNo == null)
+                    {
+                        return Ok(new { isApproved = false }); // Safe fallback
+                    }
+
+                    return Ok(new { isApproved = requestNo.IsApproved ?? false });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error fetching approval status for RequestNo {RequestNo}: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized("Unable to fetch tenant information.");
+        }
+
+
+    }
 }
