@@ -472,7 +472,7 @@
 
         @(Html.DevExtreme().Button()
             .ID("btnUpdate")
-            .Text(new JS("formatMessage('Update')"))
+            .Text(new JS("formatMessage('Update')")) 
             .Icon("save") // Icon similar to a floppy/save
             .Type(ButtonType.Normal)
             .StylingMode(ButtonStylingMode.Contained)
@@ -486,7 +486,7 @@
             .ID("ddButtonPayment")
             .Icon("add")
             .Width("100%")
-            .Text("Add New")
+            .Text(new JS("formatMessage('Add New')"))
             .ElementAttr(new { style = "display: none;" })
             .DropDownOptions(options => options.Width(500))
             .Items(items =>
@@ -533,7 +533,7 @@
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnInvoiceDetails")
-            .Text("Invoice Details")
+            .Text(new JS("formatMessage('Invoice Details')"))
             .Icon("card")
             .Width(190)
             .OnClick("navigateToInvoiceEdit")
@@ -583,8 +583,8 @@
             .DropDownOptions(options => options.Width(230))
             .Items(items =>
             {
-                items.Add().Text("Tax Report").Icon("file").OnClick("showSubmenu8");
-                items.Add().Text("Inventory Report").Icon("file").OnClick("showSubmenu9");
+                items.Add().Text(new JS("formatMessage('Tax Report')")).Icon("file").OnClick("showSubmenu8");
+                items.Add().Text(new JS("formatMessage('Inventory Report')")).Icon("file").OnClick("showSubmenu9");
 
             })
             .OnItemClick("addReportsButton_click")
@@ -609,6 +609,7 @@
             })
             .OnItemClick("handleReportClick")
             .ShowArrowIcon(false)
+
             )
     </div>
 
@@ -854,7 +855,8 @@
             .Text(new JS("formatMessage('Add New')"))
             .Icon("plus")
             // .OnClick("addNewRow") // Attach function
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+            .ElementAttr(new { @class = "bold-button" })
+            // Apply custom CSS class
             )
     </div>
 
@@ -1017,7 +1019,7 @@
             .Type(ButtonType.Normal)
             .StylingMode(ButtonStylingMode.Outlined)
             .Icon("hierarchy")
-            .Text("Show Fields")
+            .Text(new JS("formatMessage('Show Fields')"))
             )
 
     </div>
@@ -1027,7 +1029,7 @@
             .Type(ButtonType.Normal)
             .StylingMode(ButtonStylingMode.Outlined)
             .Icon("hierarchy")
-            .Text("Show Row Totals")
+            .Text(new JS("formatMessage('Show Row Totals')"))
 
             )
 

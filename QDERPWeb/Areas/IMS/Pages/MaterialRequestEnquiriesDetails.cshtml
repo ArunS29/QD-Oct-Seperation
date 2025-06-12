@@ -311,7 +311,7 @@
 				band.AddFor(m => m.Mprno).Caption(new JS("formatMessage('Request No')")).Alignment(HorizontalAlignment.Center);
 				band.AddFor(m => m.MprrevisionNo).Caption(new JS("formatMessage('Rev No')")).Alignment(HorizontalAlignment.Center);
 				band.AddFor(m => m.Mprdate).Caption(new JS("formatMessage('Request Date')")).Alignment(HorizontalAlignment.Right).Format("dd-MMM-yyyy").AllowEditing(true);
-				band.AddFor(m => m.RequestedNameRef).Caption(new JS("formatMessage('Requested By')")).Alignment(HorizontalAlignment.Center).GroupIndex(1);
+				band.AddFor(m => m.RequestedNameRef).Caption(new JS("formatMessage('Requested By')")).Alignment(HorizontalAlignment.Center);
 				band.AddFor(m => m.PurchaseRequestStatus).Caption(new JS("formatMessage('Purchase Request Status')")).Alignment(HorizontalAlignment.Center);
 				band.AddFor(m => m.IsSubmitted).Caption(new JS("formatMessage('Is Submitted')")).Alignment(HorizontalAlignment.Center).AllowEditing(true)
 			.CellTemplate(@<text>
