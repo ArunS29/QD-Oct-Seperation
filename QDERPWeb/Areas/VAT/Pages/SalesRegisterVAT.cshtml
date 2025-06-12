@@ -397,13 +397,7 @@
 			});
 			});
 		})
-		.Paging(p => p.Enabled(true).PageSize(15))    // enable paging with 15 rows per page
-		.Pager(pager => pager
-		.Visible(true)                            // show pager UI (page numbers etc)
-		.ShowPageSizeSelector(true)
-		.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
-		.ShowInfo(true)
-		)
+		.Height(680) // <<< fixed height
 		.ColumnAutoWidth(true)
 		.Width("98%")
 		.WordWrapEnabled(true)
@@ -413,6 +407,8 @@
 		.AllowColumnResizing(true)
 		.ColumnFixing(fixing => fixing.Enabled(true))
 		.HeaderFilter(filter => filter.Visible(false))
+		.Paging(p => p.Enabled(false))
+		.Pager(pager => pager.Visible(false))
 		.Grouping(grouping => grouping.AutoExpandAll(true))
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -526,7 +522,8 @@
 			.Type(StateStoringType.LocalStorage)
 			.StorageKey("gridContainerState");
 		})
-		.OnInitialized("function(e) { loadGridState(); }"))
+		.OnInitialized("function(e) { loadGridState(); }")
+		)
 
 
 
