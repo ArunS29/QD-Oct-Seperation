@@ -240,7 +240,7 @@
 		columns.Add().Caption(new JS("formatMessage('Stock Adjustments Entries')")).Columns(subColumns =>
 			{
 		subColumns.AddFor(m => m.InvoiceZatcaStatus).Caption(new JS("formatMessage('Invoice Zatca Status')")).Alignment(HorizontalAlignment.Center).Visible(true);
-		subColumns.AddFor(m => m.InvoiceType).Caption(new JS("formatMessage('Invoice Typ')")).Alignment(HorizontalAlignment.Center).Visible(true);
+		subColumns.AddFor(m => m.InvoiceType).Caption(new JS("formatMessage('Invoice Type')")).Alignment(HorizontalAlignment.Center).Visible(true);
 		subColumns.AddFor(m => m.InvoiceNo).Caption(new JS("formatMessage('Invoice No')")).Alignment(HorizontalAlignment.Center).Visible(true);
 		subColumns.AddFor(m => m.InvoiceDate).Caption(new JS("formatMessage('Invoice Date')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
 		subColumns.AddFor(m => m.InvoiceEffectiveDate).Caption(new JS("formatMessage('Invoice Effective Date')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);

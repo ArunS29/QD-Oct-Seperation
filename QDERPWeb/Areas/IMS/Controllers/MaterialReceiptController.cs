@@ -316,13 +316,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 						return NotFound("Company not found.");
 					}
 
-					string invoiceAbbrv = company.InvoiceAbbrv;
+					string RequestAbbrv = company.RequestAbbrv;
 					int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
 					bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
 					DateTime invoiceDate = DateTime.Now;
 
 					// Generate new debit note number
-					string newDebitNoteNo = GetNewDebitNoteNo(invoiceAbbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear, dbContext);
+					string newDebitNoteNo = GetNewDebitNoteNo(RequestAbbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear, dbContext);
 
 					return Ok(newDebitNoteNo);
 				}
@@ -339,7 +339,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 		}
 
 
-		private string GetNewDebitNoteNo(string invoiceAbbrv, int yearInDigit, DateTime invoiceDate, bool isResetByYear, ERPMasterWtDataContext dbContext)
+		private string GetNewDebitNoteNo(string RequestAbbrv, int yearInDigit, DateTime invoiceDate, bool isResetByYear, ERPMasterWtDataContext dbContext)
 		{
 			try
 			{
@@ -371,7 +371,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 					strYear = "";
 				}
 
-				return $"AIC-MR-{strYear}-{strNewDebitNoteNo}";
+				return $"{RequestAbbrv}{strYear}-{strNewDebitNoteNo}";
 			}
 			catch (Exception)
 			{
@@ -385,7 +385,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 					strYear = "";
 				}
 
-				return $"AIC_MR-{strYear}-00001";
+				return $"{RequestAbbrv}{strYear}-00001";
 			}
 		}
 

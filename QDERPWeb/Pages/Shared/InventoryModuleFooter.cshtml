@@ -213,7 +213,9 @@
             .ShowArrowIcon(false)
             )
     </div>
-  
+
+
+
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnMoveUp")
@@ -699,10 +701,34 @@
             .ShowArrowIcon(false)
             )
     </div>
+   <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("btnPrint1")
+            .Text(new JS("formatMessage('Print')"))
+            .Icon("print")
+            .ElementAttr(new { @class = "bold-button" })
+            .DropDownOptions(options => options.Width(230))
+            .ShowArrowIcon(false)
+            .Items(items =>
+            {
+                items.Add().Text("Custom request Designs").Icon("print");
+                items.Add().Text("Preview Request").Icon("file");
+                items.Add().Text("Preview Request(With Expected Unit Price)").Icon("folder");
+
+            })
+            .OnItemClick("handleCreditReportPrinting")
+            )
+    </div>
+
+ 
+
+
 </div>
 
 
 <script type="text/javascript">
+        
+
     function refreshPage() {
         location.reload();
     }
@@ -787,6 +813,7 @@
                         var controlStates = {
                             "btnShowRecords": { "Visible": false, "Enabled": false },
                             "btnPrint": { "Visible": false, "Enabled": false },
+                            "btnPrint1": { "Visible": false, "Enabled": false },
                             "btnSearch": { "Visible": false, "Enabled": false },
                             "ddButtonLayout": { "Visible": false, "Enabled": false },
                             "btnToggleSearch": { "Visible": false, "Enabled": false },
@@ -1688,4 +1715,66 @@
         function printFun() { 
             exportDataGridToPDF('dataGrid'); 
         }
+
+         async function handleCreditReportPrinting(e) {
+           debugger;
+        const itemText = e.itemData?.text;
+
+        let requestNo = $("#txtRequestNo").dxTextBox("instance").option("value");
+
+        if (!requestNo) {
+            alert("RequestNo  is required.");
+            return;
+        }
+
+        try {
+            const isApproved = await checkInvoiceApprovalStatus1(requestNo);
+            const watermarkText = isApproved ? "" : "Draft Copy";
+            let reportName = "";
+
+            switch (itemText) {
+                case "Preview Request":
+                        reportName = "MaterialRequestInventory";
+                    break;
+                case "Preview Request(With Expected Unit Price)":
+                    reportName = "MaterialPurcchaseRequestion";
+                    break;
+
+                default:
+                    alert("Invalid report format selected.");
+                    return;
+            }
+
+            const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&RequestNo=${encodeURIComponent(requestNo)}&skipPreview=true&watermark=${encodeURIComponent(watermarkText)}&isApproved=${isApproved}`;
+
+            window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+        } catch (error) {
+            console.error("Error checking approval status:", error);
+            alert("Failed to check invoice approval status.");
+        }
+    }
+
+    async function checkInvoiceApprovalStatus1(requestNo) {
+        try {
+            const response = await $.ajax({
+             //   url: `/api/VATModule/GetRequestNoteApprovalStatus/${encodeURIComponent(RequestNo)}`,
+
+                url: `/api/AddNewClientRequest/GetRequestNoteApprovalStatus/${encodeURIComponent(requestNo)}`,
+                method: 'GET',
+                dataType: 'json',
+            });
+
+            return response?.isApproved ?? false;
+        } catch (error) {
+            console.error("Error fetching approval status:", error);
+            return false;
+        }
+    }
+
+
+
+
+
+
+
 </script>
