@@ -28,7 +28,7 @@
         }
 
         .mainContainer {
-            width: 100%;
+            width: 1500px;
             padding: 0px;
             display: flex;
             flex-direction: column;
@@ -68,17 +68,15 @@
 
 
         @@keyframes fadeSlide {
-            from
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
 
-        {
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
 
         }
 
@@ -86,14 +84,14 @@
             from
 
         {
-            opacity: 0;
-            transform: scale(0.5);
-        }
+                opacity: 0;
+                transform: scale(0.5);
+            }
 
-        to {
-            opacity: 1;
-            transform: scale(1);
-        }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
 
         }
 
@@ -194,9 +192,9 @@
             to
 
         {
-            opacity: 1;
-            transform: scale(1);
-        }
+                opacity: 1;
+                transform: scale(1);
+            }
 
         }
     </style>
@@ -233,6 +231,26 @@
     </div>
 
     <script>
+
+         $(document).ready(function () {
+                     fetch('/api/Dashboard/RunAllOutstandingProcedures', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+            } else {
+                alert("Error: " + data.message);
+            }
+        })
+        .catch(error => {
+            alert("API call failed: " + error);
+        });
+
+         });
+
                window.addEventListener('DOMContentLoaded', () => {
             const container = document.getElementById('radialContainer');
             const modules = container.querySelectorAll('.module-icon');
