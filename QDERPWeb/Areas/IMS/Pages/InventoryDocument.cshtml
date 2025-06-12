@@ -337,12 +337,15 @@
         <!-- Right Column -->
         <div class="right-column">
             <div>
-                @(Html.DevExtreme().Button()
-                    .Text("Attach a Document")
-                    .Icon("fas fa-paperclip")
-                    .Type(ButtonType.Normal)
-                    .Width("100%")
-                    .StylingMode(ButtonStylingMode.Outlined))
+                @(Html.DevExtreme().FileUploader()
+                    .ID("fileUploader")
+                    .SelectButtonText("Attach a Document")
+                    .LabelText("")
+                    .Accept("*/*")
+                    .UploadMode(FileUploadMode.UseForm)
+                    .OnValueChanged("onFileSelected")
+                    )
+
             </div>
 
             <div>
@@ -395,7 +398,9 @@
                 .Text("Show All Documents")
                 .Type(ButtonType.Normal)
                 .Icon("fas fa-folder-open")
-                .Width(350))
+                .Width(350)
+                .OnClick("showAllDocuments"))
+
             @(Html.DevExtreme().Button()
                 .Text("Back")
                 .Icon("fas fa-arrow-left")
@@ -404,6 +409,9 @@
                 .OnClick("Goback"))
         </div>
     </div>
+    <!-- Popup to show all documents -->
+    <div id="popupDocumentList"></div>
+
 </div>
 
 <script>
@@ -416,21 +424,12 @@
             $("#DocumentNo").dxTextBox("instance").option("value", data);
         });
     }
-    //     function onAddDocType() {
-    //     const popup = $("#documentTypePopup").dxPopup("instance");
-
-    //     if (!popup) {
-    //         alert("Popup instance not found.");
-    //         return;
-    //     }
-
-    //     popup.option("onShown", function () {
-    //         const frame = document.getElementById("documentTypeFrame");
-    //         frame.src = `/${tenantName}/IMS/DocumentTypes`; Or replace with correct endpoint
-    //     });
-
-    //     popup.show();
-    // }
+        function onFileSelected(e) {
+        const file = e.value[0]; // DevExtreme passes file(s) in e.value
+        if (file) {
+            DevExpress.ui.notify("File selected: " + file.name, "info", 2000);
+        }
+    }
          function onAddDocType(){
         const url = `/${tenantName}/IMS/DocumentTypes`;
         const title = "";
@@ -439,32 +438,44 @@
 
 
 
-    function onSaveDocument() {
-        const documentData = {
-            documentNo: $("#DocumentNo").dxTextBox("instance").option("value"),
-            documentType: $("#DocType").dxSelectBox("instance").option("value"),
-            documentRefNo: $("#ReferenceNo").dxTextBox("instance").option("value"),
-            documentRemarks: $("#Remarks").dxTextBox("instance").option("value"),
-            documentExpDate: $("#DocumentExpiryDate").dxDateBox("instance").option("value"),
-            hijriExpDate: $("#HijriExpiryDate").dxDateBox("instance").option("value"),
-            notificationDate: $("#NotificationDate").dxDateBox("instance").option("value")
-        };
+           function onSaveDocument() {
+        const files = $("#fileUploader").dxFileUploader("instance").option("value");
+
+        if (!files || files.length === 0) {
+            DevExpress.ui.notify("Please select a document to attach.", "warning", 2000);
+            return;
+        }
+
+        const file = files[0];
+
+        const formData = new FormData();
+        formData.append("File", file);
+        formData.append("DocumentNo", $("#DocumentNo").dxTextBox("instance").option("value"));
+        formData.append("DocumentType", $("#DocType").dxSelectBox("instance").option("value"));
+        formData.append("DocumentRefNo", $("#ReferenceNo").dxTextBox("instance").option("value"));
+        formData.append("DocumentRemarks", $("#Remarks").dxTextBox("instance").option("value"));
+        formData.append("DocumentExpDate", $("#DocumentExpiryDate").dxDateBox("instance").option("value"));
+        formData.append("HijriExpDate", $("#HijriExpiryDate").dxDateBox("instance").option("value"));
+        formData.append("NotificationDate", $("#NotificationDate").dxDateBox("instance").option("value"));
 
         $.ajax({
-            type: "POST",
             url: "/api/StockInventory/SaveProjectDocument",
-            data: JSON.stringify(documentData),
-            contentType: "application/json",
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
             success: function () {
-                DevExpress.ui.notify("Document saved successfully", "success", 2000);
+                DevExpress.ui.notify("Document uploaded successfully", "success", 2000);
                 $("#documentsGrid").dxDataGrid("instance").refresh();
                 loadInitialDocumentNo();
             },
             error: function () {
-                DevExpress.ui.notify("Failed to save document", "error", 2000);
+                DevExpress.ui.notify("Upload failed", "error", 2000);
             }
         });
     }
+
+
 
     function onGridRowUpdating(e) {
         // Add update logic if needed
@@ -482,4 +493,45 @@
                 }
             });
         });
+            function showAllDocuments() {
+        $("#popupDocumentList").dxPopup({
+            title: "All Uploaded Documents",
+            visible: true,
+            width: "80%",
+            height: "80%",
+            showCloseButton: true,
+            contentTemplate: function (contentElement) {
+                contentElement.append(
+                    $("<div>").attr("id", "documentGrid")
+                );
+
+                $("#documentGrid").dxDataGrid({
+                    dataSource: DevExpress.data.AspNet.createStore({
+                        key: "DocumentNo",
+                        loadUrl: "/api/StockInventory/GetAllDocuments"
+                    }),
+                    columns: [
+                        { dataField: "DocumentNo", caption: "Document No" },
+                        { dataField: "DocumentType", caption: "Document Type" },
+                        { dataField: "DocumentRefNo", caption: "Reference No" },
+                        { dataField: "DocumentRemarks", caption: "Remarks" },
+                        {
+                            caption: "Download",
+                            cellTemplate: function (container, options) {
+                                $("<a>")
+                                    .text("Download")
+                                    .attr("href", options.data.FileUrl) // Your DB field with blob URL
+                                    .attr("target", "_blank")
+                                    .addClass("dx-link")
+                                    .appendTo(container);
+                            }
+                        }
+                    ],
+                    showBorders: true,
+                    columnAutoWidth: true
+                });
+            }
+        });
+    }
+
 </script>

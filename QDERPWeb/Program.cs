@@ -20,6 +20,7 @@ using QD.ERP.Web.Middlewares;
 using DevExpress.XtraCharts;
 //using QD.ERP.Web.Middleware;
 using QD.ERP.Web.Services.Logging;
+using QD.ERP.Web.Middleware;
 
 //using qd.utilities;
 
