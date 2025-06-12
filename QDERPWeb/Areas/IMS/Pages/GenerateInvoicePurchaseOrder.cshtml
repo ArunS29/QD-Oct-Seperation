@@ -1,5 +1,5 @@
 ﻿@page
-@model QD.ERP.Web.Areas.IMS.Pages.GenerateInvoiceModel
+@model QD.ERP.Web.Areas.IMS.Pages.GenerateInvoicePurchaseOrderModel
 @{
 }
 @using DevExtreme.AspNet.Mvc
@@ -267,7 +267,7 @@
 
 		$(function () {
 			$("#Generateinvoice").dxTextBox({
-				text: formatMessage("Generate Invoice"),
+				text: formatMessage("Generate Invoice Purchas Order"),
 			readOnly: true,
 			onContentReady: function (e) {
 				$(e.element).addClass("dx-textbox-heading");
