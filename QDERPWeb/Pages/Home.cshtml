@@ -2,6 +2,9 @@
 @model QD.ERP.Web.Pages.Shared.HomeModel
 @{
 }
+@{
+    var tenantName = HttpContext.Session.GetString("TenantName") ?? "";
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -203,7 +206,7 @@
     <p>One solution for all Modules.</p>
 
     <div class="radial-container" id="radialContainer">
-        <div class="main-card" onclick="location.href='/Dashboard'" title="Go to Dashboard">
+        <div class="main-card" onclick="location.href='@($"/{tenantName}/Finance/Index")'" title="Go to Dashboard">
             <i class="fa-solid fa-chart-pie"></i>
             Dashboard
         </div>
@@ -298,6 +301,7 @@
             const item = container.querySelector(`.menu-item.${className}`);
             if (item) item.style.display = "flex";
         }
+
     </script>
 </body>
 </html>
