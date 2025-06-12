@@ -159,6 +159,27 @@
     </div>
 
     <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("ddReports")
+            .Icon("print")
+            .Width(150)
+            .Text(new JS("formatMessage('Report')"))
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add().Text(new JS("formatMessage('Inventory Report(With Expiry date)')")).Icon("money");
+                items.Add().Text(new JS("formatMessage('Inventory Report By date')")).Icon("money");
+                items.Add().Text(new JS("formatMessage('Inventory Report On Stores')")).Icon("money");
+                items.Add().Text(new JS("formatMessage('Inventory Report on Store(Pivort Report)')")).Icon("money");
+                items.Add().Text(new JS("formatMessage('Inventory Report On stores (By Date)')")).Icon("money");
+                items.Add().Text(new JS("formatMessage('Inventory - Stock Movement report')")).Icon("money");
+            })
+            .OnItemClick("handleReportClick")
+            .ShowArrowIcon(false)
+            )
+    </div>
+
+    <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnAddNewPayment")
             .Icon("money")
@@ -469,5 +490,33 @@
         grid.filter(["IsDiscontinued", "=", false]);  
     }
 
+
+
+    
+    const reportMappings = {
+        "Inventory Report(With Expiry date)": "InventoryReportWithExpireDates",
+              
+        
+        
+    };
+
+    function handleReportClick(e) {
+        const selectedText = e.itemData.text;
+        const reportName = reportMappings[selectedText];
+
+        if (reportName) {
+            console.log(`Opening report: ${reportName}`);
+
+            // Ensure tenantName is defined before using
+            if (typeof tenantName === "undefined") {
+                console.error("tenantName is not defined.");
+                return;
+            }
+
+            window.open(`/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}`, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+        } else {
+            console.warn('No report mapping found for:', selectedText);
+        }
+    }
 
 </script>

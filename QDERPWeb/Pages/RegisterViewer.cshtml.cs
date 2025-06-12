@@ -8,6 +8,7 @@ using QD.ERP.Web.Areas.Finance.Reports.BillsReceivable;
 using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis;
 using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.Detailed_Report;
 using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.summary_Report;
+using QD.ERP.Web.Areas.VAT.Reports.InventoryReports;
 using QD.ERP.Web.Areas.VAT.Reports.PurchaseRegister;
 using QD.ERP.Web.Areas.VAT.Reports.VAT_Sales_Invoice_Register;
 using QD.ERP.Web.Areas.VAT.Reports.VATCreditNote;
@@ -291,6 +292,10 @@ namespace QD.ERP.Web.Pages
                         break;
                     case "BillsRecivableReport1":
                         Report = new BillsRecivableReport1(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
+
+                    case "InventoryReportWithExpireDates":
+                        Report = new InventoryReportWithExpireDates(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
 
 
