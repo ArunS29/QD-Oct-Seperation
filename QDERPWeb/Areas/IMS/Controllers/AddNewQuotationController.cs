@@ -71,31 +71,40 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 		{
 			try
 			{
-				// Retrieve tenant name from session
+				// Step 1: Get tenant name from session
 				var tenantName = HttpContext.Session.GetString("TenantName");
 				if (string.IsNullOrWhiteSpace(tenantName))
 				{
 					return Unauthorized(new { message = "Tenant name not found in session.", success = false });
 				}
 
+				// Step 2: Try to get DbContext for tenant
 				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
 				{
-					// Use tenantName to find the company
+					// Step 3: Get company from Tbl901CompanyDetails using tenantName
 					var company = dbContext.Tbl901CompanyDetails
 										   .FirstOrDefault(c => c.CompanyNameShort == tenantName);
 
 					if (company == null)
 					{
-						return NotFound("Company not found.");
+						return NotFound("Company not found in Tbl901CompanyDetails.");
 					}
 
-					string invoiceAbbrv = company.InvoiceAbbrv;
+					// Step 4: Get NoOfDigitsToInventoryQuotation using CompanyId from Tbl901CompanyDetails02
+					int noOfDigits = dbContext.Tbl901CompanyDetails02s
+											  .Where(c => c.CompanyId == company.CompanyId)
+											  .Select(c => c.NoOfDigitsToInventoryQuotation ?? 4)
+											  .FirstOrDefault(); // Default to 4 if not found
+
+					// Step 5: Extract values for quotation number
+					string QuotationAbbrv = company.QuotationAbbrv;
 					int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
 					bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
 					DateTime invoiceDate = DateTime.Now;
-
-					// Generate new debit note number
-					string newDebitNoteNo = GetNewDebitNoteNo(invoiceAbbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear, dbContext);
+					// Generate new debit note QuotationAbbrv
+					string newDebitNoteNo = GetNewDebitNoteNo(QuotationAbbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear, noOfDigits, dbContext);
+				
+					
 
 					return Ok(newDebitNoteNo);
 				}
@@ -112,55 +121,47 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 		}
 
 
-		private string GetNewDebitNoteNo(string invoiceAbbrv, int yearInDigit, DateTime invoiceDate, bool isResetByYear, ERPMasterWtDataContext dbContext)
+
+		private string GetNewDebitNoteNo(string QuotationAbbrv, int yearInDigit, DateTime invoiceDate, bool isResetByYear, int noOfDigits, ERPMasterWtDataContext dbContext)
 		{
 			try
 			{
-				// Retrieve MPR numbers into memory Tbl601_01QuotationMaster
 				var mprNumbers = dbContext.Tbl60101quotationMasters
-					.Where(d => d.QuoteNo != null && d.QuoteNo.Length >= 5 &&
+					.Where(d => d.QuoteNo != null &&
+								d.QuoteNo.Length >= noOfDigits &&
 								(!isResetByYear || (d.QuoteDate.HasValue && d.QuoteDate.Value.Year == invoiceDate.Year)))
 					.Select(d => d.QuoteNo)
 					.ToList();
 
-				// Extract numeric parts and determine the maximum
 				int maxRunningNumber = mprNumbers
-					.Select(no => int.TryParse(no.Substring(no.Length - 5), out int num) ? num : 0)
+					.Select(no => int.TryParse(no.Substring(no.Length - noOfDigits), out int num) ? num : 0)
 					.DefaultIfEmpty(0)
 					.Max();
 
 				maxRunningNumber += 1;
 
-				// Format the new debit note number
-				string strNewDebitNoteNo = maxRunningNumber.ToString().PadLeft(5, '0');
+				string strNewDebitNoteNo = maxRunningNumber.ToString().PadLeft(noOfDigits, '0');
 
 				string strYear = invoiceDate.Year.ToString();
 				if (yearInDigit > 0)
-				{
 					strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
-				}
 				else
-				{
 					strYear = "";
-				}
 
-				return $"AIC-QTN-{strYear}-{strNewDebitNoteNo}";
+				return $"{QuotationAbbrv}{strYear}-{strNewDebitNoteNo}";
 			}
 			catch (Exception)
 			{
 				string strYear = invoiceDate.Year.ToString();
 				if (yearInDigit > 0)
-				{
 					strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
-				}
 				else
-				{
 					strYear = "";
-				}
 
-				return $"AIC_QTN-{strYear}-00001";
+				return $"{QuotationAbbrv}{strYear}-{"1".PadLeft(noOfDigits, '0')}";
 			}
 		}
+
 		[HttpGet]
 		public async Task<IActionResult> GetQuotationdataByCode(string QuoteNo)
 		{
