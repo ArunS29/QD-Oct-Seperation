@@ -120,9 +120,25 @@
             -moz-osx-font-smoothing: grayscale; /* Font smoothing for Firefox on macOS */
         }
 
+        .dx-list:not(.dx-list-select-decorator-enabled) .dx-list-item.dx-list-item-selected {
+            background-color: var(--title-background-color);
+            color: #fff;
+        }
+
+        .dx-list:not(.dx-list-select-decorator-enabled) .dx-list-item.dx-state-focused.dx-list-item-selected {
+            background-color: var(--title-background-color);
+            color: #fff;
+        }
+
+        .dx-list:not(.dx-list-select-decorator-enabled) .dx-list-item.dx-state-focused {
+            background-color: var(--title-background-color);
+            color: #fff;
+        }
+
         :root {
             font-family: "Inter", Helvetica, Arial, sans-serif;
             --highlight-color: #0f6cbd;
+            --highlight-color: var(--hover-bg-color);
             --text-color: #525252;
             --hover-bg-color: var(--hover-bg-color);
             --sidebar-bg: #909ead00;
