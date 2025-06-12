@@ -4,165 +4,165 @@
 }
 <style>
 	.overlay {
-		display: none;
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background: rgba(0, 0, 0, 0.5);
-		z-index: 1000;
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.5);
+	z-index: 1000;
 	}
 
 	.overlay-content {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		width: 100%;
-		height: 80%;
-		background: #fff;
-		box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-		border-radius: 8px;
-		overflow: hidden;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 100%;
+	height: 80%;
+	background: #fff;
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+	border-radius: 8px;
+	overflow: hidden;
 	}
 
 	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnColumnChooser,#btnRfqDetails,#btnAddNewRFQ)) {
-		display: none !important
+	display: none !important
 	}
 
 	#overlay-frame {
-		width: 100%;
-		height: 100%;
+	width: 100%;
+	height: 100%;
 	}
 
 	.dx-datagrid-headers {
-		border: 1px solid #686868 !important;
-		width: 100%; /* Adjust to fit the container */
-		overflow-x: auto; /* Enable horizontal scrolling */
-		white-space: nowrap; /* Prevent wrapping of headings */
-		overflow-y: hidden;
+	border: 1px solid #686868 !important;
+	width: 100%; /* Adjust to fit the container */
+	overflow-x: auto; /* Enable horizontal scrolling */
+	white-space: nowrap; /* Prevent wrapping of headings */
+	overflow-y: hidden;
 	}
 
-		.dx-datagrid-headers .dx-row > td {
-			border: 1px solid #686868 !important;
-			text-align: center !important;
-			/* 	width:1000px; */
-		}
+	.dx-datagrid-headers .dx-row > td {
+	border: 1px solid #686868 !important;
+	text-align: center !important;
+	/* 	width:1000px; */
+	}
 
 	.dx-datagrid .dx-header-row .dx-datagrid-text-content {
-		font-size: 12px !important;
-		white-space: nowrap !important; /* Prevent wrapping of text */
-		text-align: center !important;
-		font-weight: bold;
-		color: black;
+	font-size: 12px !important;
+	white-space: nowrap !important; /* Prevent wrapping of text */
+	text-align: center !important;
+	font-weight: bold;
+	color: black;
 	}
 
 	.close-btn {
-		position: absolute;
-		top: 10px;
-		right: 20px;
-		font-size: 30px;
-		cursor: pointer;
+	position: absolute;
+	top: 10px;
+	right: 20px;
+	font-size: 30px;
+	cursor: pointer;
 	}
 
 	.custom-toolbar {
-		display: flex;
-		align-items: center;
-		gap: 10px;
+	display: flex;
+	align-items: center;
+	gap: 10px;
 	}
 
 	.filter-btn {
-		background-color: #007bff;
-		color: white;
-		border: none;
-		padding: 6px 12px;
-		border-radius: 5px;
-		cursor: pointer;
-		font-family: 'Inter', sans-serif;
+	background-color: #007bff;
+	color: white;
+	border: none;
+	padding: 6px 12px;
+	border-radius: 5px;
+	cursor: pointer;
+	font-family: 'Inter', sans-serif;
 	}
 
-		.filter-btn:hover {
-			background-color: #0056b3;
-		}
+	.filter-btn:hover {
+	background-color: #0056b3;
+	}
 
 	.dx-texteditor {
-		background-color: transparent !important;
-		border: 1px solid #d6e4f0 !important;
-		border-radius: 4px !important;
-		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
-		font-size: 14px !important;
-		transition: all 0.2s ease-in-out !important;
-		height: 39px !important;
+	background-color: transparent !important;
+	border: 1px solid #d6e4f0 !important;
+	border-radius: 4px !important;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+	font-size: 14px !important;
+	transition: all 0.2s ease-in-out !important;
+	height: 39px !important;
 	}
 
-		.dx-texteditor:hover,
-		.dx-texteditor.dx-state-hover,
-		.dx-button:hover {
-			box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important;
-			border-color: #86b7fe !important;
-		}
+	.dx-texteditor:hover,
+	.dx-texteditor.dx-state-hover,
+	.dx-button:hover {
+	box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important;
+	border-color: #86b7fe !important;
+	}
 
-		.dx-texteditor.dx-state-focused {
-			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
-			border-color: #508ae1 !important;
-		}
+	.dx-texteditor.dx-state-focused {
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+	border-color: #508ae1 !important;
+	}
 
 	.no-border-input {
-		border: none !important;
-		outline: none !important;
-		box-shadow: none !important;
-		background: transparent !important;
-		font-weight: bold;
-		font-size: 16px;
-		color: black;
-		pointer-events: none;
+	border: none !important;
+	outline: none !important;
+	box-shadow: none !important;
+	background: transparent !important;
+	font-weight: bold;
+	font-size: 16px;
+	color: black;
+	pointer-events: none;
 	}
 
 	.context-menuInvoice {
-		position: absolute;
-		background: #fff;
-		border-radius: 8px;
-		box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-		width: 200px;
-		display: none;
-		flex-direction: column;
-		padding: 5px 0;
-		z-index: 1000;
+	position: absolute;
+	background: #fff;
+	border-radius: 8px;
+	box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+	width: 200px;
+	display: none;
+	flex-direction: column;
+	padding: 5px 0;
+	z-index: 1000;
 	}
 
 	.context-menu-itemInvoice {
-		display: flex;
-		align-items: center;
-		padding: 10px 15px;
-		font-size: 14px;
-		cursor: pointer;
-		transition: background 0.2s ease-in-out;
-		color: #333;
+	display: flex;
+	align-items: center;
+	padding: 10px 15px;
+	font-size: 14px;
+	cursor: pointer;
+	transition: background 0.2s ease-in-out;
+	color: #333;
 	}
 
-		.context-menu-itemInvoice i {
-			margin-right: 10px;
-			font-size: 16px;
-			color: #007bff;
-		}
+	.context-menu-itemInvoice i {
+	margin-right: 10px;
+	font-size: 16px;
+	color: #007bff;
+	}
 
-		.context-menu-itemInvoice:hover {
-			background: #f0f0f0;
-		}
+	.context-menu-itemInvoice:hover {
+	background: #f0f0f0;
+	}
 
-		.context-menu-itemInvoice:not(:last-child) {
-			border-bottom: 1px solid #e0e0e0;
-		}
+	.context-menu-itemInvoice:not(:last-child) {
+	border-bottom: 1px solid #e0e0e0;
+	}
 
 	.ledgerResult {
-		overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
-		width: 100%;
+	overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
+	width: 100%;
 	}
 
 	.mainContainer {
-		width: 100%;
-		overflow: hidden;
+	width: 100%;
+	overflow: hidden;
 	}
 </style>
 
@@ -182,122 +182,120 @@
 
 <div class="dx-fieldset horizontal-container">
 	@(Html.DevExtreme().DateBox()
-		.ID("frmdateBox")
-		.Label(new JS("formatMessage('Start Date')"))
-		.LabelMode(EditorLabelMode.Outside)
-		.InputAttr("aria-label", "Date")
-		.Type(DateBoxType.Date)
-		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)) // First day of the month
-		.DisplayFormat("dd-MMM-yyyy")
-		.TabIndex(2)
-		)
+			.ID("frmdateBox")
+			.Label(new JS("formatMessage('Start Date')"))
+			.LabelMode(EditorLabelMode.Outside)
+			.InputAttr("aria-label", "Date")
+			.Type(DateBoxType.Date)
+			.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)) // First day of the month
+			.DisplayFormat("dd-MMM-yyyy")
+			.TabIndex(2)
+			)
 
 	@(Html.DevExtreme().DateBox()
-		.ID("todateBox")
-		.Label(new JS("formatMessage('End Date')"))
-		.LabelMode(EditorLabelMode.Outside)
-		.InputAttr("aria-label", "Date")
-		.Type(DateBoxType.Date)
-		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))) // Last day of the month
-		.DisplayFormat("dd-MMM-yyyy")
-		.TabIndex(3)
-		)
+			.ID("todateBox")
+			.Label(new JS("formatMessage('End Date')"))
+			.LabelMode(EditorLabelMode.Outside)
+			.InputAttr("aria-label", "Date")
+			.Type(DateBoxType.Date)
+			.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))) // Last day of the month
+			.DisplayFormat("dd-MMM-yyyy")
+			.TabIndex(3)
+			)
 
 	@(Html.DevExtreme().DropDownButton()
-		.ID("ddBtnShowRecords")
-		.Text(new JS("formatMessage('Show Records')"))
-		.Icon("smalliconslayout")
-		.Width(180)
-		.ElementAttr("class", "button-alignment-down")
-		.TabIndex(4)
-		.DropDownOptions(options => options.Width(230))
-		.Items(items =>
-		{
-			items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
-			items.Add().Text(new JS("formatMessage('Today')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
-			items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-			items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
-			items.Add().Text(new JS("formatMessage('This Month Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-			items.Add().Text(new JS("formatMessage('This Month (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-			items.Add().Text(new JS("formatMessage('This Year Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-			items.Add().Text(new JS("formatMessage('This Year (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-			items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-			items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
-		})
-		)
+			.ID("ddBtnShowRecords")
+			.Text(new JS("formatMessage('Show Records')"))
+			.Icon("smalliconslayout")
+			.Width(180)
+			.ElementAttr("class", "button-alignment-down")
+			.TabIndex(4)
+			.DropDownOptions(options => options.Width(230))
+			.Items(items =>
+			{
+				items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
+				items.Add().Text(new JS("formatMessage('Today')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
+				items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+				items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
+				items.Add().Text(new JS("formatMessage('This Month Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+				items.Add().Text(new JS("formatMessage('This Month (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+				items.Add().Text(new JS("formatMessage('This Year Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+				items.Add().Text(new JS("formatMessage('This Year (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+				items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+				items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+			})
+			)
 
 
 </div>
 <div class="dx-field ledgerResult">
-		@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60704rfqviewMaster>()
-		.ID("stockSummaryGrid")
-		.DataSource(d => d.Mvc().Controller("StockInventory").LoadAction("GetInventorySummary"))
-		.Height(680)
-		.ShowBorders(true)
-		.ShowRowLines(true)
-		.WordWrapEnabled(true)
-		.ColumnAutoWidth(true)
-		.AllowColumnResizing(true)
-		.Grouping(g => g.AutoExpandAll(true))
-		.GroupPanel(p => p.Visible(false))
-		.Columns(columns =>
-		{
-	// Band column for Stock Details
-	columns.Add()
+	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry66004inventoryTransByDateWtFullDetail>()
+			.ID("dataGrid")
+			.DataSource(d => d.Mvc().Controller("StockInventory").LoadAction("GetInventorySummary"))
+			.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+			.Height(680)
+			.ShowBorders(true)
+			.ShowRowLines(true)
+			.WordWrapEnabled(true)
+			.ColumnAutoWidth(true)
+			.AllowColumnResizing(true)
+			.Grouping(g => g.AutoExpandAll(true))
+			.GroupPanel(p => p.Visible(false))
+			.Columns(columns =>
+			{
+				// Band column for Stock Details
+				columns.Add()
 		.Caption("Stock Details")
 		.Columns(detail =>
 		{
-	detail.AddFor(m => m.StockGroup)
+		detail.AddFor(m => m.GsgroupName)
 		.Caption("Stock Group")
 		.GroupIndex(0)
 		.Visible(false); // Used for grouping, hidden
 
-	detail.AddFor(m => m.StockCode)
+		detail.AddFor(m => m.Gscode)
 		.Caption("Stock Code")
 		.Width(150);
 
-	detail.AddFor(m => m.Description)
+		detail.AddFor(m => m.Gsdescrpition)
 		.Caption("Description")
 		.Width(300);
-		});
+			});
 
-	// Band column for Stock Balance
-	columns.Add()
+				// Band column for Stock Balance
+				columns.Add()
 		.Caption("Stock Balance")
 		.Columns(balance =>
 		{
-	balance.AddFor(m => m.OpeningBalance)
-		.Caption("Opening Balance")
-		.Format("#,##0.00")
-		.Alignment(HorizontalAlignment.Right)
-		.CellTemplate(@<text>
-		<div style="background-color:#FFEFD5;">@data.OpeningBalance?.ToString("0.00")</div>
-	</text>);
+				balance.AddFor(m => m.TotalOpeningBal)
+	.Caption("Opening Balance")
+	.Format("#,##0.00")
+	.Alignment(HorizontalAlignment.Right)
+	.CellTemplate(@<text>
+	</text>
+	);
 
-	balance.AddFor(m => m.Received)
+				balance.AddFor(m => m.TotalReceived)
 		.Caption("Received")
 		.Format("#,##0.00")
 		.Alignment(HorizontalAlignment.Right);
 
-	balance.AddFor(m => m.Issues)
+				balance.AddFor(m => m.TotalIssues)
 		.Caption("Issues")
 		.Format("#,##0.00")
 		.Alignment(HorizontalAlignment.Right);
 
-	balance.AddFor(m => m.ClosingBalance)
+				balance.AddFor(m => m.TotalBalance)
 		.Caption("Closing Balance")
 		.Format("#,##0.00")
-		.Alignment(HorizontalAlignment.Right)
-		.CellTemplate(@<text>
-		<div style="background-color:#FFEFD5;">@data.ClosingBalance?.ToString("0.00")</div>
-	</text>);
+		.Alignment(HorizontalAlignment.Right);
 
-	balance.AddFor(m => m.AvgCost)
+	balance.AddFor(m => m.AverageCostUnitPrice)
 	.Caption("Average Cost Unit")
 	.Format("#,##0.0000")
 	.Alignment(HorizontalAlignment.Right);
 
-	balance.AddFor(m => m.TotalStockValue)
+	balance.AddFor(m => m.TotalStockValueByAvgCost)
 	.Caption("Total Stock Value By Cost")
 	.Format("#,##0.0000")
 	.Alignment(HorizontalAlignment.Right);
@@ -390,7 +388,7 @@
 	toDate = toDate.toISOString().split('T')[0];
 
 				$.ajax({
-		url: '/api/RequestforQuotationList/GetRFQRequest',
+		url: '/api/StockInventory/GetInventorySummary',
 		type: 'GET',
 		data: {
 			fromDate: frmDate,
