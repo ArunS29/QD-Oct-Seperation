@@ -1575,6 +1575,140 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
             }
         }
+        [HttpGet]
+        public async Task<IActionResult> GetStockDataByDate(DateTime? fromDate, DateTime? toDate)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var query = dbContext.Qry65403storeStockBalanceMasterByDates.AsQueryable();
 
+                    // Fetching the data
+                    var data = await query.Select(i => new
+                    {
+                        i.StoreName,
+                        i.StoreCode,
+                        i.Gsdescrpition,
+                        i.TotalOpeningBal,
+                        i.TotalReceivedFromSuppliers,
+                        i.TotalReceivedFromStores,
+                        i.TotalReceipts,
+                        i.TotalIssuedToClient,
+                        i.TotalConsumed,
+                        i.TotalStoreTransfered,
+                        i.TotalIssues,
+                        i.BalanceInStock,
+                        i.AmountOpeningBal,
+                        i.AmountReceived,
+                        i.AmountReceivedFromStore,
+                        i.AmountTotalReceipts,
+                        i.AmountIssuedToClient,
+                        i.AmountConsumed,
+                        i.AmountIssuedToStore,
+                        i.AmountTotalIssues,
+                        i.TransactionTotal,
+                    }).ToListAsync();
+
+                    return Json(data);
+                }
+
+                return Unauthorized(new { message = "Invalid tenant." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetStockMomentReport(DateTime? fromDate, DateTime? toDate)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var query = dbContext.Qry665MtlStockMasterAvgCost03WtDetail002s.AsQueryable();
+
+                    // Default dates if not provided
+                    if (!fromDate.HasValue)
+                    {
+                        fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1); // Start of the current month
+                    }
+
+                    if (!toDate.HasValue)
+                    {
+                        toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)); // End of the current month
+                    }
+
+                    // Filtering by date range
+                    query = query.Where(i => i.TransactionDate >= fromDate && i.TransactionDate <= toDate);
+
+                    // Fetching the data
+                    var data = await query.Select(i => new
+                    {
+                        i.ReceiptNo,
+                        i.IsServicesGroup,
+                        i.TransactionDate,
+                        i.UnitPrice,
+                        i.Transactions,
+                        i.Gscode,
+                        i.Gsdescrpition,
+                        i.UnitRateMethod,
+                        i.StockReceivedQty,
+                        i.GsgroupName,
+                        i.TransactionTotal,
+                    }).ToListAsync();
+
+                    return Json(data);
+                }
+
+                return Unauthorized(new { message = "Invalid tenant." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetStockPivotData(DateTime? fromDate, DateTime? toDate)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var query = dbContext.Qry65320storeStockBalanceWtStoreCodes.AsQueryable();
+
+                    // Fetching the data
+                    var data = await query.Select(i => new
+                    {
+                        i.Gscode,
+                        i.StoreCode,
+                        i.Gsdescrpition,
+                        i.GsdetailedDesc,
+                        i.IsServicesGroup,
+                        i.IsDiscontinued,
+                        i.Hscode,
+                        i.CostPrice,
+                        i.CurrentyQty,
+                        i.UnitDesc,
+                        i.GsgroupName
+                        }).ToListAsync();
+
+                    return Json(data);
+                }
+
+                return Unauthorized(new { message = "Invalid tenant." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+            }
+        }
+        
     }
 }

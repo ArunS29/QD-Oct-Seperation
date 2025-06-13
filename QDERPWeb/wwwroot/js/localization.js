@@ -2920,6 +2920,7 @@
         "Inventory Report(With Expiry date)": "Inventory Report(With Expiry date)",
         "Inventory Report By date": "Inventory Report By date",
         "Inventory Report On Stores": "Inventory Report On Stores",
+        "Inventory Report By Date": "Inventory Report By Date",
         "Inventory Report on Store(Pivort Report)": "Inventory Report on Store(Pivort Report)",
         "Inventory Report On stores (By Date)": "Inventory Report On stores (By Date)",
         "Inventory - Stock Movement report": "Inventory - Stock Movement report",
@@ -2995,12 +2996,16 @@
         "Print Footer At Footer.": "Print Footer At Footer.",
         "Company Branch / Division": "Company Branch / Division",
         "Inventory Group Master": "Inventory Group Master",
-
-
+        "Stock Report By Store":"Stock Report By Store",
+        "Store Inventory By Date": "Store Inventory By Date",
+        "Stock Movement Report":"Stock Movement Report",
     },
     "ar": {
-
-
+        "Stock Movement Report":"تقرير حركة الأسهم",
+        "Store Inventory By Date":"مخزون المتجر حسب التاريخ",
+        "Inventory Report On Stores":"تقرير المخزون في المخازن",
+        "Inventory Report By Date":"تقرير المخزون حسب التاريخ",
+        "Stock Report By Store":"تقرير المخزون حسب المتجر",
         "Show Item Line No instead of SI,No.": "عرض رقم سطر الصنف بدلاً من رقم الفاتورة",
         "Print Item Code With Description": "طباعة كود الصنف مع الوصف",
         "Print Item Part With Description": "طباعة جزء الصنف مع الوصف",
