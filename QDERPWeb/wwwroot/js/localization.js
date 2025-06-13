@@ -1,5 +1,9 @@
 ﻿var dictionary = {
     "en": {
+        "RFQ Remarks:": "RFQ Remarks:",
+        "RFQ Summary:": "RFQ Summary:",
+        "Company Branch / Division:":"Company Branch / Division:",
+        "Inventory Group Master:":"Inventory Group Master:",
         "Additional Cost On Items":"Additional Cost On Items",
         "Description": "Description",
         "No of Suppliers: {0}": "No of Suppliers: {0}",

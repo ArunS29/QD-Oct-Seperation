@@ -330,7 +330,7 @@
 		padding: 20px;
 	}
 
-	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnCancel,#btnAttach,#btnUpload)) {
+	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnCancel,#btnAttach,#btnUpload)) {
 		display: none !important;
 	}
 
@@ -433,7 +433,7 @@
 								.Label(new JS("formatMessage('Requested On')"))
 								.ID("InvoiceDueDate")
 								.Type(DateBoxType.Date)
-								.DisplayFormat("dd-MMM-yyyy")
+								//.DisplayFormat("dd-MMM-yyyy")
 								.Value(DateTime.Now)
 								.LabelMode(EditorLabelMode.Outside)
 								.Width("100%")
@@ -2466,7 +2466,7 @@
 
 			$(".limited-footer .btn-containerIvoiceEdit").each(function () {
 
-			if (!$(this).find("#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnCancel,#btnAttach,#btnUpload").length) {
+			if (!$(this).find("#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnCancel,#btnAttach,#btnUpload").length) {
 
 					$(this).remove();
 
@@ -5937,7 +5937,7 @@ LineTotal: 0
 					// Get the selected row data
 					var selectedRowData = e.selectedRowsData[0]; // We assume only one row is selected at a time
 					if (selectedRowData) {
-						selectedSNo = selectedRowData.SNo; // Assign AccountGroupId to the global variable
+						selectedSNo = selectedRowData.LineOrderNo; // Assign AccountGroupId to the global variable
 						console.log("Selected AccountGroupId: ", selectedSNo); // Log the global variable
 					}
 				});
@@ -5978,6 +5978,7 @@ LineTotal: 0
 
 			  //MoveupDown functionality
 			function moveRowUp() {
+				debugger;
 				var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 				var dataSource = dataGrid.getDataSource();
 				var data = getFlatData(dataSource.items()); // Flatten the grouped data
@@ -5987,7 +5988,7 @@ LineTotal: 0
 
 
 				// Find the row index based on the selected row key (AccountGroupId)
-				var rowIndex = data.findIndex(item => item.SNo === selectedSNo);
+				var rowIndex = data.findIndex(item => item.LineOrderNo === selectedSNo);
 
 				console.log("Row Index:", rowIndex); // Log row index for debugging
 
@@ -5996,11 +5997,11 @@ LineTotal: 0
 					swapRows(data, rowIndex, rowIndex - 1); // Swap rows in the data
 
 					// Update the data source with the new data order
-					dataSource.store().update(data[rowIndex].SNo, data[rowIndex]);
-					dataSource.store().update(data[rowIndex - 1].SNo, data[rowIndex - 1]);
+					dataSource.store().update(data[rowIndex].LineOrderNo, data[rowIndex]);
+					dataSource.store().update(data[rowIndex - 1].LineOrderNo, data[rowIndex - 1]);
 
 					// After swap, select the moved row
-					dataGrid.selectRows([data[rowIndex - 1].SNo]);
+					dataGrid.selectRows([data[rowIndex - 1].LineOrderNo]);
 				}
 			}
 
@@ -6013,14 +6014,14 @@ LineTotal: 0
 				// var selectedRowKeys = dataGrid.option("selectedRowKeys");
 
 
-				var rowIndex = data.findIndex(item => item.SNo === selectedSNo);
+				var rowIndex = data.findIndex(item => item.LineOrderNo === selectedSNo);
 
 				console.log("Row Index:", rowIndex);
 
 				if (rowIndex < data.length - 1) {
 					swapRows(data, rowIndex, rowIndex + 1);
 					dataGrid.refresh();
-					dataGrid.selectRows([data[rowIndex + 1].SNo]);
+					dataGrid.selectRows([data[rowIndex + 1].LineOrderNo]);
 				} else {
 					console.log("Cannot move row down: Row is already at the bottom.");
 				}
@@ -6053,7 +6054,7 @@ LineTotal: 0
 
 				$('.dx-button').each(function () {
 
-						const allowedButtons = ['btnPrint1','btnMoveDown','btnMoveUp','btnSave','btnSaveAndClose','btnPostToLedgers','btnPostTag'];
+					const allowedButtons = ['btnMoveDown','btnBack', 'btnMoveUp', 'btnSave','btnPrint','btnSaveAndClose','btnPostToLedgers','btnPostTag'];
 
 					if (!allowedButtons.includes($(this).attr('id'))) {
 						$(this).dxButton('option', 'disabled', true);
@@ -6081,6 +6082,8 @@ LineTotal: 0
 			$("#btnSubmit").on("click", function () {
 		var $btn = $(this);
 		$btn.prop('disabled', true);
+		const SubmitButton = $("#btnSubmit").dxButton("instance");
+		SubmitButton.option("disabled", true);
     const mprNo = $('#txtRequestNo').dxTextBox("instance").option("value");
 
     if (!mprNo) {

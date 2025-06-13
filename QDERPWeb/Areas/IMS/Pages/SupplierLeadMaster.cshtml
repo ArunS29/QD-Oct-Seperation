@@ -939,6 +939,97 @@
             DevExpress.ui.notify("Please fill all required fields", "error", 3000);
         }
     }
+
+    // function onSaveAndClose(e) {
+
+    //     // Collecting form data from client master form
+    //     var supplierCode = $('#txtSupplierCode').dxTextBox("instance").option("value");
+    //     var supplierName = $('#txtSupplierName').dxTextBox("instance").option("value");
+    //     var supplierCategory = $('#GetSupplierCategoryDropDown').dxDropDownBox("instance").option("value");
+
+    //     // var clientVisitedOn = $('#ClientVisitedOn').dxDateBox("instance").option("value");
+    //     var supplierAccountLedgerNo = $('#GetSupplierLedgerNoDropDown').dxDropDownBox("instance").option("value");
+    //     var supplierAddress = $('#SupplierAddress').dxTextArea("instance").option("value");
+    //     var contactPerson = $('#SupplierPerson').dxTextBox("instance").option("value");
+    //     var contactPersonTitle = $('#Title').dxTextBox("instance").option("value");
+
+
+
+    //     var contactMobile1 = $('#MobileNumber1').dxTextBox("instance").option("value");
+    //     var contactMobile2 = $('#MobileNumber2').dxTextBox("instance").option("value");
+    //     var contactPhone1 = $('#PhoneNumber1').dxTextBox("instance").option("value");
+    //     var contactPhone2 = $('#PhoneNumber2').dxTextBox("instance").option("value");
+
+    //     var contactFaxNo = $('#FaxNumber').dxTextBox("instance").option("value");
+    //     var contactEmail = $('#Email').dxTextBox("instance").option("value");
+
+    //     var contactRemarks = $('#Remarks').dxTextArea("instance").option("value");
+
+    //     // Validate required fields
+    //     var supplierNameValidator = $("#txtSupplierName").dxValidator("instance");
+    //     var supplierCodeValidator = $("#txtSupplierCode").dxValidator("instance");
+
+    //     var supplierNameValidation = supplierNameValidator.validate();
+    //     var supplierCodeValidation = supplierCodeValidator.validate();
+
+    //     if (supplierNameValidation.isValid && supplierCodeValidation.isValid) {
+    //         // Construct the data object to send to the API
+    //         const data = {
+    //             SupplierCode: supplierCode,
+    //             SupplierName: supplierName,
+    //             SupplierCategory: supplierCategory,
+    //             SupplierAccountLedgerNo: supplierAccountLedgerNo,
+    //             SupplierAddress: supplierAddress,
+    //             ContactPerson: contactPerson,
+    //             ContactPersonTitle: contactPersonTitle,
+    //             ContactMobile1: contactMobile1,
+    //             ContactMobile2: contactMobile2,
+    //             ContactPhone1: contactPhone1,
+    //             ContactPhone2: contactPhone2,
+    //             ContactFaxNo: contactFaxNo,
+    //             ContactEmail: contactEmail,
+    //             ContactRemarks: contactRemarks,
+
+    //             BusinessCard1: businessCard1Base64 ? businessCard1Base64.split(',')[1] : null,
+    //             BusinessCard2: businessCard2Base64 ? businessCard2Base64.split(',')[1] : null
+
+
+
+
+    //         };
+
+    //         console.log(data);
+
+    //         // Send data via AJAX POST request
+    //         $.ajax({
+    //             url: '/api/SupplierMaster/InsertOrUpdate', // Change this URL to your actual API endpoint
+    //             type: 'POST',
+    //             contentType: 'application/json',
+    //             data: JSON.stringify(data), // Send the data as a JSON string
+    //             success: function (response) {
+    //                 if (response.success) {
+    //                     DevExpress.ui.notify(response.message, "success", 3000);
+    //                     // Refresh parent DataGrid (ensure the correct selector is used)
+    //                     if (window.parent && window.parent.$("#dataGrid").length) {
+    //                         let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+    //                         if (dataGrid) {
+    //                             dataGrid.refresh();
+    //                         }
+    //                     }
+                        
+    //                 } else {
+    //                     DevExpress.ui.notify("Error: " + response.message, "error", 3000);
+    //                 }
+    //             },
+    //             error: function (xhr, status, error) {
+    //                 console.log("Error: " + error);
+    //                 DevExpress.ui.notify("An error occurred while saving the data", "error", 3000);
+    //             }
+    //         });
+    //     } else {
+    //         DevExpress.ui.notify("Please fill all required fields", "error", 3000);
+    //     }
+    // }
     //delete
     $("#btnDelete").on("click", function (e) {
         e.preventDefault();
@@ -1016,29 +1107,6 @@
             ];
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
