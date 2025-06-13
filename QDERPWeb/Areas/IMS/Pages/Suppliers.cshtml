@@ -53,10 +53,6 @@
         /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
     }
 
-    .limited-footer .btn-container:not(:has(#ddButtonLayout,btnRefresh,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel,#btnColumnChooser,#btnAddSuppliers)) {
-        display: none !important;
-    }
-
     .mainContainer {
         width: 96%;
         overflow-x: hidden;
@@ -69,11 +65,7 @@
         <div id="ClientLeads" class="no-border-input"></div>
     </div>
 </div>
-<div class="Head">
-    <div class="limited-footer">
-        @await Html.PartialAsync("InventoryModuleFooter")
-    </div>
-</div>
+@await Html.PartialAsync("/Pages/Shared/IMS/SupplierFooter.cshtml")
 <div>
     @(
             Html.DevExtreme().DataGrid<Qry30199QrySupplierList>()

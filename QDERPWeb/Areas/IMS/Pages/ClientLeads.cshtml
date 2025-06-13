@@ -34,10 +34,6 @@
         /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
     }
 
-    .limited-footer .btn-container:not(:has(#ddButtonLayout,btnRefresh,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel,#btnColumnChooser,#btnAddClientLeads)) {
-        display: none !important;
-    }
-
     .mainContainer {
         width:96%;
         overflow-x:hidden;
@@ -49,12 +45,7 @@
         <div id="ClientLeads" class="no-border-input"></div>
     </div>
 </div>
-    <div class="Head">
-    <div class="limited-footer">
-        @await Html.PartialAsync("InventoryModuleFooter")
-    </div>
-</div>
-
+@await Html.PartialAsync("/Pages/Shared/IMS/ClientLeadFooter.cshtml")
 <div>
     @(
         Html.DevExtreme().DataGrid()
@@ -167,14 +158,6 @@
 <script>
 
     $(document).ready(function () {
-
-        $(".limited-footer .btn-containerIvoiceEdit").each(function () {
-
-            if (!$(this).find("#ddButtonLayout,btnRefresh,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel,#btnColumnChooser,#btnAddClientLeads").length) {
-                $(this).remove();
-            }
-
-        });
 
         // Handle Back button click
         $(document).on('click', '#btnBack', function () {
