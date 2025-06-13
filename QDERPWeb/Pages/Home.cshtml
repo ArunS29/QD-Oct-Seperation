@@ -28,7 +28,7 @@
         }
 
         .mainContainer {
-            width: 1500px;
+            width: 100%;
             padding: 0px;
             display: flex;
             flex-direction: column;
@@ -51,7 +51,7 @@
             font-family: 'Poppins', sans-serif;
         }
 
-        p {
+        .Hometext {
             color: #555;
             font-size: 22px;
             font-weight: 500;
@@ -201,7 +201,7 @@
 </head>
 <body>
     <h1>Welcome to QuickDice ERP</h1>
-    <p>One solution for all Modules.</p>
+    <p class="Hometext">One solution for all Modules.</p>
 
     <div class="radial-container" id="radialContainer">
         <div class="main-card" onclick="location.href='@($"/{tenantName}/Finance/Index")'" title="Go to Dashboard">
