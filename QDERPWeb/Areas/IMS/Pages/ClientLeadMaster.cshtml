@@ -288,30 +288,30 @@
                     <div class="col-md-6">
                         @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Client Ledger No')"))
                         .LabelMode(EditorLabelMode.Outside)
-                        .DataSource(d => d.WebApi()
-                        .Controller("ClientLeadMaster")
-                        .LoadAction("GetClientLedgerNo")
-                        .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("AccountId")
-                     )
-                     .LabelMode(EditorLabelMode.Outside)
-                     .ID("GetLedgerNoDropDown")
-                     .Width(900)
-                     @*  .ShowClearButton(true)
-                                 .AcceptCustomValue(true) *@
-                     .OpenOnFieldClick(false)//
-                     .ValueChangeEvent("input")
-                     .HoverStateEnabled(true)
-                     .ValueExpr("AccountId")
-                     .DisplayExpr("AccountHead")
-                     .OnInput("dropDownBoxOnInput")
-                     .OnOpened("onOpened")
-                     .TabIndex(1)
-                     .Width("100%")
-                     .OnKeyDown("onKeyDown")
-                     //.OnValueChanged("dropDownBoxValueChanged")
-                     .ContentTemplate(new TemplateName("GetLedgerNoContentTemplate"))
-                     )
+     .DataSource(d => d.WebApi()
+     .Controller("ClientLeadMaster")
+     .LoadAction("GetClientLedgerNo")
+     .LoadMode(DataSourceLoadMode.Raw)
+     .Key("AccountId")
+     )
+     .LabelMode(EditorLabelMode.Outside)
+     .ID("GetLedgerNoDropDown")
+     .Width(900)
+     @*  .ShowClearButton(true)
+                 .AcceptCustomValue(true) *@
+     .OpenOnFieldClick(false)//
+     .ValueChangeEvent("input")
+     .HoverStateEnabled(true)
+     .ValueExpr("AccountId")
+     .DisplayExpr("AccountHead")
+     .OnInput("dropDownBoxOnInput")
+     .OnOpened("onOpened")
+     .TabIndex(1)
+     .Width("100%")
+     .OnKeyDown("onKeyDown")
+     //.OnValueChanged("dropDownBoxValueChanged")
+     .ContentTemplate(new TemplateName("GetLedgerNoContentTemplate"))
+     )
 
 
                     </div>
@@ -374,27 +374,27 @@
                         Html.DevExtreme().DropDownBox()
                         .Label(new JS("formatMessage('Sales Person')"))
                         .LabelMode(EditorLabelMode.Outside)
-                        .DataSource(d => d.WebApi()
-                        .Controller("ClientLeadMaster")
-                        .LoadAction("GetSalesPerson")
-                        .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("CategoryCode")
-                        )
-                        .ID("GetSalesPersonDropDown")
-                        .Width(900)
+     .DataSource(d => d.WebApi()
+     .Controller("ClientLeadMaster")
+     .LoadAction("GetSalesPerson")
+     .LoadMode(DataSourceLoadMode.Raw)
+     .Key("CategoryCode")
+     )
+     .ID("GetSalesPersonDropDown")
+     .Width(900)
                         .OpenOnFieldClick(false)
-                        .ValueChangeEvent("input")
-                        .HoverStateEnabled(true)
-                        .ValueExpr("SalesPersonCode")
-                        .DisplayExpr("SalesPersonName")
-                        .OnInput("dropDownBoxOnInput")
-                        .OnOpened("onOpened")
-                        .TabIndex(1)
-                        .Width("100%")
-                        .OnKeyDown("onKeyDown")
-                        //.OnValueChanged("dropDownBoxValueChanged")
-                        .ContentTemplate(new TemplateName("GetSalesPersonContentTemplate"))
-                        )
+     .ValueChangeEvent("input")
+     .HoverStateEnabled(true)
+     .ValueExpr("SalesPersonCode")
+     .DisplayExpr("SalesPersonName")
+     .OnInput("dropDownBoxOnInput")
+     .OnOpened("onOpened")
+     .TabIndex(1)
+     .Width("100%")
+     .OnKeyDown("onKeyDown")
+     //.OnValueChanged("dropDownBoxValueChanged")
+     .ContentTemplate(new TemplateName("GetSalesPersonContentTemplate"))
+     )
                     </div>
                     <div class="col-md-6">
                         @(Html.DevExtreme().TextBox().ID("VendorCode").Label(new JS("formatMessage('Vendor Code')"))
@@ -460,19 +460,18 @@
 
 
 
-                <div class="dx-field ledgerResult" style="padding:10px;">
+               <div class="dx-field ledgerResult" style="padding:10px;">
 
-                    @(
-                    Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry30102ClientStatus>()
+    @(
+        Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry30102ClientStatus>()
                         
-                    .ID("ClientStatusdataGrid")
+            .ID("ClientStatusdataGrid")
                     .RemoteOperations(false)
-                     .DataSource(ds => ds.Mvc()
-        .Controller("ClientLeadMaster")
-        .LoadAction("GetClientStatus"))
-        .KeyExpr("ClientStatusNo")
-                    .Columns(columns =>
-                    {
+          .KeyExpr("ClientStatusNo")
+            .RemoteOperations(false)
+          
+            .Columns(columns =>
+            {
                                 @*   columns.AddFor(m => m.)..Caption(new JS("formatMessage('"); *@
                     columns.AddFor(m => m.ReportedOn).Caption(new JS("formatMessage('Reported On')"));
                     columns.AddFor(m => m.Status).Caption(new JS("formatMessage('Status')"));
@@ -482,21 +481,21 @@
                     columns.AddFor(m => m.ClientStatusNo).Caption(new JS("formatMessage('Client Status No')"));
                     
                 
-                    })
+            })
                     //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
                     .AllowColumnReordering(true) // Enable column reordering
                     .AllowColumnResizing(true)   // Enable column resizing
                     .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
-                    .HeaderFilter(filter => filter.Visible(true))
-                    .Height(250)
-                    .ColumnAutoWidth(true)
+            .HeaderFilter(filter => filter.Visible(true))
+            .Height(250)
+            .ColumnAutoWidth(true)
                     .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
                     .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
-                    .ShowBorders(true)
-                    .Width("100%")
-                      .OnContextMenuPreparing("onClientsGridContextMenu1")
-                    )
-                </div>
+            .ShowBorders(true)
+            .Width("100%")
+            .OnContextMenuPreparing("onClientsGridContextMenu1")
+    )
+</div>
 
 
 
@@ -530,10 +529,8 @@
                    
                     @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl3010102clientContactList>()
                     .ID("ContactListdataGrid")
-                    .DataSource(ds => ds.Mvc()
-                .Controller("ClientLeadMaster")
-                .LoadAction("GetContactList"))
-               .KeyExpr("ClientContactSlNo")
+                    .RemoteOperations(false)
+                    .KeyExpr("ClientContactSlNo")
                     .Columns(columns =>
                     {
                                 columns.Add().Caption(new JS("formatMessage('Name')")).DataField("ContactPerson");
@@ -766,10 +763,15 @@
         const clientCode = urlParams.get("clientCode");
        
          const cleanClientCode = clientCode ? clientCode.split("?")[0] : null;   // Trim off anything after '?' if it's accidentally included in value
-       
+        // ✅ Define globally so Razor grid can access it
+    // window.getClientCodeParams = function () {
+    //     return { cleanClientCode: cleanClientCode };
+    // };
+
         if (cleanClientCode) {
             loadClientDetails(cleanClientCode); 
         }
+    
     });
 
     function loadClientDetails(cleanClientCode) {
@@ -811,6 +813,9 @@
                     $('#imgBox2').html(`<img src="${img2}" />`);
                     businessCard2Base64 = img2;
                 }
+                // 👉 Load status for DataGrid
+                loadClientStatusGrid(data.ClientCode);
+                 loadContactListGrid(data.ClientCode);
             }
         },
         error: function () {
@@ -818,7 +823,38 @@
         }
     });
 }
-
+function loadClientStatusGrid(clientCode) {
+    $.ajax({
+        url: `/api/ClientLeadMaster/GetClientStatus?clientCode=${encodeURIComponent(clientCode)}`,
+        type: 'GET',
+        success: function (statusData) {
+            const grid = $("#ClientStatusdataGrid").dxDataGrid("instance");
+            if (grid) {
+                grid.option("dataSource", statusData);
+                grid.refresh();
+            }
+        },
+        error: function () {
+            DevExpress.ui.notify("Failed to load status data", "error", 3000);
+        }
+    });
+}
+function loadContactListGrid(clientCode) {
+    $.ajax({
+        url: `/api/ClientLeadMaster/GetContactList?clientCode=${encodeURIComponent(clientCode)}`,
+        type: 'GET',
+        success: function (statusData) {
+            const grid = $("#ContactListdataGrid").dxDataGrid("instance");
+            if (grid) {
+                grid.option("dataSource", statusData);
+                grid.refresh();
+            }
+        },
+        error: function () {
+            DevExpress.ui.notify("Failed to load status data", "error", 3000);
+        }
+    });
+}
 
      function onOpened(e) {
         setTimeout(() => {
@@ -933,7 +969,12 @@ function generateNextClientCode(categoryCode) {
     });
 }
 
-
+ function getClientCodeParams() {
+            debugger;
+    const clientCode = $('#txtClientCode').dxTextBox("instance").option("value");
+    console.log("Sending clientCode:", clientCode);
+    return { clientCode: clientCode };
+}
 
 //Save
 
@@ -1070,6 +1111,7 @@ ContactRemarks:clientRemarks,
     function onClientsGridContextMenu1(e) {
     if (e.target === "content" && e.row) {
         let ClientStatusNo = e.row.data.ClientStatusNo;
+  const clientCode = e.row.data.ClientCode;
 
         e.items = [
             {
@@ -1093,7 +1135,8 @@ ContactRemarks:clientRemarks,
                                     success: function (res) {
                                         if (res.success) {
                                             DevExpress.ui.notify(res.message, "success", 2000);
-                                            $("#ClientStatusdataGrid").dxDataGrid("instance").refresh();
+                                               // ✅ Reload updated data
+                                       loadClientStatusGrid(clientCode);
                                         } else {
                                             DevExpress.ui.notify(res.message, "error", 3000);
                                         }
@@ -1127,15 +1170,21 @@ ContactRemarks:clientRemarks,
 //         }
 //     }
     function onClientsGridContextMenu2(e) {
+        debugger;
     if (e.target === "content" && e.row) {
         let ClientContactSlNo = e.row.data.ClientContactSlNo;
+        const clientCode = e.row.data.ClientCode;
+        // Retrieve the value from the txtClientName TextBox
+        let clientName = $("#txtClientName").dxTextBox("instance").option("value") || "";
+        let encodedClientName = encodeURIComponent(clientName); // Encode to handle special characters
+
 
         e.items = [
             {
                 text: "Client Edit",
                 onItemClick: function () {
                     let tenantName = window.tenantName || "defaultTenant";
-                    let url = `/${tenantName}/IMS/ClientContactList?ClientContactSlNo=${ClientContactSlNo}`;
+                    let url = `/${tenantName}/IMS/ClientContactList?ClientContactSlNo=${ClientContactSlNo}&clientName=${encodedClientName}`;
                     let title = `Edit Client - ${ClientContactSlNo}`;
                     openModal(url, title);
                 }
@@ -1152,7 +1201,7 @@ ContactRemarks:clientRemarks,
                                     success: function (res) {
                                         if (res.success) {
                                             DevExpress.ui.notify(res.message, "success", 2000);
-                                            $("#ContactListdataGrid").dxDataGrid("instance").refresh();
+                                            loadContactListGrid(clientCode)
                                         } else {
                                             DevExpress.ui.notify(res.message, "error", 3000);
                                         }
@@ -1191,9 +1240,11 @@ ContactRemarks:clientRemarks,
     
     function redirectToStatusUpdate() {
         var clientName = $('#txtClientName').dxTextBox("instance").option("value");
-        let url = `/${tenantName}/IMS/ClientStatusUpdate?clientName=${encodeURIComponent(clientName)}`;
+            var clientCode = $('#txtClientCode').dxTextBox("instance").option("value");
+        let url = `/${tenantName}/IMS/ClientStatusUpdate?clientName=${encodeURIComponent(clientName)}&clientCode=${encodeURIComponent(clientCode)}`;
         let title = "";
         openModal(url, title);
+
     }
    
     function addContactList() {
@@ -1202,7 +1253,7 @@ ContactRemarks:clientRemarks,
 
     var tenantName = window.tenantName || "defaultTenant"; // use your tenant variable
    // var url = `/${tenantName}/IMS/ClientContactList?clientCode=${encodeURIComponent(clientCode)}&clientName=${encodeURIComponent(clientName)}`;
-    var url = `/${tenantName}/IMS/ClientContactList?clientCode=${encodeURIComponent(clientCode)}&clientName=${encodeURIComponent(clientName)}`;
+            var url = `/${tenantName}/IMS/ClientContactList?clientCode=${encodeURIComponent(clientCode)}&clientName=${encodeURIComponent(clientName)}`;
 
     var title = `Contact List - ${clientName}`;
     
@@ -1314,6 +1365,7 @@ ContactRemarks:clientRemarks,
             if (data.businessCard2)
                 $('#PreviewBusinessCard2').attr('src', `data:image/png;base64,${data.businessCard2}`);
         }
+       
 
 </script>
 
