@@ -169,14 +169,7 @@
 <input id="formId" value="frm201LedgerView" type="hidden" />
 <div class="title">
 	<div class="header-container">
-		<div id="RequestforQuotationList" class="no-border-input"></div>
-	</div>
-</div>
-
-
-<div class="Head">
-	<div class="limited-footer">
-		@await Html.PartialAsync("InventoryModuleFooter")
+		<div id="inventoryByDateReport" class="no-border-input"></div>
 	</div>
 </div>
 
@@ -231,7 +224,7 @@
 <div class="dx-field ledgerResult">
 	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry66004inventoryTransByDateWtFullDetail>()
 			.ID("dataGrid")
-			.DataSource(d => d.Mvc().Controller("StockInventory").LoadAction("GetInventorySummary"))
+			.DataSource(new JS("[]"))
 			.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
 			.Height(680)
 			.ShowBorders(true)
@@ -312,8 +305,8 @@
 
 <script>
 		 $(function () {
-	$("#RequestforQuotationList").dxTextBox({
-	text: formatMessage("Request for Quotation List"),
+	$("#inventoryByDateReport").dxTextBox({
+	text: formatMessage("Inventory Report By Date"),
 		readOnly: true,
 		onContentReady: function (e) {
 		$(e.element).addClass("dx-textbox-heading");

@@ -169,13 +169,14 @@
 <input id="formId" value="frm201LedgerView" type="hidden" />
 <div class="title">
 	<div class="header-container">
-		<div id="RequestforQuotationList" class="no-border-input"></div>
+		<div id="storeInventoryReport" class="no-border-input"></div>
 	</div>
 </div>
 <div class="dx-field ledgerResult">
 	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry65315storeStockBalanceMaster>()
 		.ID("dataGrid")
 		.DataSource(d => d.Mvc().Controller("StockInventory").LoadAction("GetStockData"))
+		.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
 		.ShowBorders(true)
 		.ShowColumnLines(true)
 		.ShowRowLines(true)
@@ -254,8 +255,8 @@
 
 <script>
 		 $(function () {
-	$("#RequestforQuotationList").dxTextBox({
-	text: formatMessage("Request for Quotation List"),
+	$("#storeInventoryReport").dxTextBox({
+	text: formatMessage("Inventory Report On Stores"),
 		readOnly: true,
 		onContentReady: function (e) {
 		$(e.element).addClass("dx-textbox-heading");
