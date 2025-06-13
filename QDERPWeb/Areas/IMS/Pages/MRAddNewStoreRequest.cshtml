@@ -384,23 +384,16 @@
 
 		<!-- Tab Content -->
 		<div class="dx-fieldset">
-
-
-
-
 			<div id="tab-content-1" class="tab-content">
-
 				<table style="width:100%;">
 					<tr style="display:flex; gap: 10px; align-items:end; width:100%;">
 						<td colspan="3" style="width:100%;">
-
 							@(Html.DevExtreme().TextBox()
 														.Label(new JS("formatMessage('Request No')"))
 														.ID("txtRequestNo")
 														.LabelMode(EditorLabelMode.Outside)
 														.Width("100%")
 														)
-
 						</td>
 						<td colspan="2" style="width:100%;">
 							@(Html.DevExtreme().SelectBox()
@@ -416,9 +409,9 @@
 														.ValueExpr("InvoiceNo")
 														.ShowClearButton(true)
 														.SearchEnabled(true)
+														.ReadOnly(true)
 														.Width("100%")
 														)
-
 						</td>
 						<td colspan="2" style="width:100%;">
 							@(Html.DevExtreme().DateBox()
@@ -547,13 +540,22 @@
 														)
 
 						</td>
-						<td colspan="2" style="width:100%;">
+							<td colspan="2" style="width:100%; display:flex; align-items:end;">
 							@(Html.DevExtreme().TextBox()
-														.Label(new JS("formatMessage('Client Contact Name:')"))
-														.ID("txtContactName")
-														.LabelMode(EditorLabelMode.Outside)
-														.Width("100%")
-														)
+							.Label(new JS("formatMessage('Client Contact Name:')"))
+							.ID("txtContactName")
+							.LabelMode(EditorLabelMode.Outside)
+							.Width("100%")
+							)
+							@(Html.DevExtreme().Button()
+							.ID("Addcontactname")
+							.Icon("plus")
+							.Width(40)
+							.ElementAttr("style", "margin-top:18px;")
+							.OnClick("AddContactName")
+							)
+						</td>
+
 
 						</td>
 						<td colspan="2" style="width:100%;">
@@ -6820,6 +6822,11 @@
 			}
 		});
 	});
+	 function AddContactName(){
+					const url = `/${tenantName}/IMS/ClientLeadMaster`;
+			 const title = "";
+				  openModal(url, title);
+		  }
 
 	function AddStoreEdit() {
 		const url = `/${tenantName}/IMS/StoreEdit`;
