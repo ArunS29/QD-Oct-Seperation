@@ -328,7 +328,7 @@
         const urlParams = new URLSearchParams(window.location.search);
         const clientStatusNo = (urlParams.get("clientStatusNo") || "").split(/[?&]/)[0];
         const clientCodes = (urlParams.get("clientCode") || "").split(/[?&]/)[0];
-        alert(clientCodes);
+       
 
         $("#statusId").dxTextBox("instance").option("value", clientStatusNo);
         $("#GetClientDropDown").dxDropDownBox("instance").option("value", clientCodes);

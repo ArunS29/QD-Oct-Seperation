@@ -1073,7 +1073,98 @@ ContactRemarks:clientRemarks,
         DevExpress.ui.notify("Please fill all required fields", "error", 3000);
     }
 }
+        function saveAndClose(e) {
 
+        // Collecting form data from client master form
+        var clientCode = $('#txtClientCode').dxTextBox("instance").option("value");
+        var clientName = $('#txtClientName').dxTextBox("instance").option("value");
+        var clientCategory = $('#GetProjectDropDown').dxDropDownBox("instance").option("value");
+        var clientVisitedOn = $('#ClientVisitedOn').dxDateBox("instance").option("value");
+        var clientLedgerNo = $('#GetLedgerNoDropDown').dxDropDownBox("instance").option("value");
+        var clientAddress = $('#ClientAddress').dxTextArea("instance").option("value");
+
+        var clientContactPerson = $('#ContactPerson').dxTextBox("instance").option("value");
+        var clientTitle = $('#Title').dxTextBox("instance").option("value");
+
+            var clientMobile1 = $('#MobileNumber1').dxTextBox("instance").option("value");
+            var clientMobile2 = $('#MobileNumber2').dxTextBox("instance").option("value");
+            var clientPhone1 = $('#PhoneNumber1').dxTextBox("instance").option("value");
+            var clientPhone2 = $('#PhoneNumber2').dxTextBox("instance").option("value");
+            var clientFax = $('#FaxNumber').dxTextBox("instance").option("value");
+             var clientEmail = $('#Email').dxTextBox("instance").option("value");
+            var clientSalesPerson = $('#GetSalesPersonDropDown').dxDropDownBox("instance").option("value");
+            var clientVender = $('#VendorCode').dxTextBox("instance").option("value");
+             var clientRemarks = $('#Remarks').dxTextArea("instance").option("value");
+
+        // Validate required fields
+        var clientNameValidator = $("#txtClientName").dxValidator("instance");
+        var clientCodeValidator = $("#txtClientCode").dxValidator("instance");
+
+        var clientNameValidation = clientNameValidator.validate();
+        var clientCodeValidation = clientCodeValidator.validate();
+
+        if (clientNameValidation.isValid && clientCodeValidation.isValid) {
+            // Construct the data object to send to the API
+            const data = {
+     ClientCode:clientCode,
+    ClientName:clientName,
+    ClientCategory:clientCategory,
+    DateVisitedFirst:clientVisitedOn,
+    ClientAccountLedgerNo:clientLedgerNo,
+    ClientAddress:clientAddress,
+    ContactPerson:clientContactPerson,
+    ContactPersonTitle:clientTitle,
+    ContactMobile1:clientMobile1,
+    ContactMobile2:clientMobile2,
+    ContactPhone1:clientPhone1,
+    ContactPhone2:clientPhone2,
+    ContactFaxNo:clientFax,
+    ContactEmail:clientEmail,
+    SalesPersonCode:clientSalesPerson,
+    VendorNo:clientVender,
+    ContactRemarks:clientRemarks,
+
+     // Add base64 data for images, removing the prefix
+                BusinessCard1: businessCard1Base64 ? businessCard1Base64.split(',')[1] : null,
+                BusinessCard2: businessCard2Base64 ? businessCard2Base64.split(',')[1] : null
+
+
+
+
+            };
+
+            console.log(data);
+
+            // Send data via AJAX POST request
+            $.ajax({
+                url: '/api/ClientLeadMaster/InsertOrUpdate', // Change this URL to your actual API endpoint
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data), // Send the data as a JSON string
+                success: function (response) {
+                    if (response.success) {
+                        DevExpress.ui.notify(response.message, "success", 3000);
+                            // Refresh parent DataGrid (ensure the correct selector is used)
+                            if (window.parent && window.parent.$("#dataGrid").length) {
+                                let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+                                if (dataGrid) {
+                                    dataGrid.refresh();
+                                }
+                            }
+                              history.back();
+                    } else {
+                        DevExpress.ui.notify("Error: " + response.message, "error", 3000);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log("Error: " + error);
+                    DevExpress.ui.notify("An error occurred while saving the data", "error", 3000);
+                }
+            });
+        } else {
+            DevExpress.ui.notify("Please fill all required fields", "error", 3000);
+        }
+    }
 //delete
  $("#btnDelete").on("click", function (e) {
      e.preventDefault();
