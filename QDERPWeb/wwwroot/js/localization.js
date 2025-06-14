@@ -1,5 +1,6 @@
 ﻿var dictionary = {
     "en": {
+        "Terms":"Terms",
         "Name of the Requester:":"Name of the Requester:",
         "Name of the Store Incharge:":"Name of the Store Incharge:",
         "Edit Client Request": "Edit Client Request",
@@ -5594,7 +5595,8 @@
         "Additional Cost On Items": "تكلفة إضافية على الأصناف",
         "By Quarter": "حسب الربع",
         "Name of the Requester:": "اسم مقدم الطلب:",
-        "Name of the Store Incharge:": "اسم مسؤول المخزن:"
+        "Name of the Store Incharge:": "اسم مسؤول المخزن:",
+        "Terms": "الشروط"
     }
 };
 

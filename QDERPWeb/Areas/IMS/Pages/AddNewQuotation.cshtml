@@ -245,9 +245,7 @@
         background: var(--background-color);
     }
 
-	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnAttach)) {
-		display: none !important;
-	}
+	
 </style>
 <meta charset="UTF-8">
 <div class="title">
@@ -1148,11 +1146,9 @@
 </div>
 
 
-<div class="Head">
-    <div class="limited-footer">
-		@await Html.PartialAsync("InventoryModuleFooter")
-    </div>
-</div>
+
+		@await Html.PartialAsync("/Pages/Shared/IMS/QuotationFormFooter.cshtml")
+
             @using (Html.DevExtreme().NamedTemplate("GetModeOfRequestContentTemplate"))
             {
                 @(Html.DevExtreme().DataGrid()
@@ -1773,21 +1769,6 @@
 		SignatoryID = null, ChkbySignatoryID = null, ApproedbySignatoryID = null, IsCurrent = "false", ExchangeRate = null;
 	let dropDownInstance;
 	let vatListInstance;
-
-	$(document).ready(function () {
-
-		$(".limited-footer .btn-containerIvoiceEdit").each(function () {
-
-			if (!$(this).find("#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnAttach").length) {
-
-				$(this).remove();
-
-			}
-
-		});
-
-	});
-
 
 
 
@@ -5286,7 +5267,7 @@
 		$('input, select, textarea').prop('disabled', true);
 
 		$('.dx-button').each(function () {
-			const allowedButtons = ['btnMoveDown', 'btnMoveUp', 'btnSave', 'btnSaveAndClose', 'btnPrint2' ,'btnPostToLedgers', 'btnPostTag' ,'btnBack'];
+			const allowedButtons = ['btnMoveDown', 'btnMoveUp', 'btnSave', 'btnSaveAndClose', 'btnPrint' ,'btnPostToLedgers', 'btnPostTag' ,'btnBack'];
 			if (!allowedButtons.includes($(this).attr('id'))) {
 				$(this).dxButton('option', 'disabled', true);
 			}
@@ -5474,6 +5455,8 @@
 
 
 	function proceedWithApproval() {
+			const VerifyButton = $("#btnApprove").dxButton("instance");
+		VerifyButton.option("disabled", true);
 
 		var QuoteNo = $('#txtQuotationNo').dxTextBox("instance").option("value");
 
@@ -5492,7 +5475,7 @@
 						response.Message,
 						"Approved"
 					).done(() => {
-						disableEditing(); // Function to disable editing controls
+						//disableEditing(); // Function to disable editing controls
 					});
 				} else {
 					DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
@@ -6091,7 +6074,7 @@
 
 		 $(function() {
 	  const tenantName = window.tenantName || "defaultTenant";
-	  const dd = $("#btnPrint2").dxDropDownButton("instance");
+	  const dd = $("#btnPrint").dxDropDownButton("instance");
 
 	  dd.option("onItemClick", function(e) {
 		if (e.itemData.text === "Prepare Cost Sheet") {
