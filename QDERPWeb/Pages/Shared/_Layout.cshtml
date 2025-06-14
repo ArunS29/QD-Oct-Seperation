@@ -16,6 +16,7 @@
     string userId = "";
     string tenantName = "";
     string companyName = "";
+    string escapedJson = "{}"; // Initialize early to make available later
     List<string> userModules = new List<string>();
     string encryptedTenantName = EncryptionHelper.Encrypt(tenantName); // Encrypt tenantName
 
@@ -43,10 +44,8 @@
             {
                 userModules = UserAccessService.GetUserModules(parsedUserId);
                 var financeMenuAccess = await UserAccessService.GetFinanceMenuAccessAsync(parsedUserId);
-                var financeMenuAccessJson = System.Text.Json.JsonSerializer.Serialize(financeMenuAccess);
-                <script>
-                    window.financeMenuAccess = @Html.Raw(financeMenuAccessJson);
-                </script>
+                var json = System.Text.Json.JsonSerializer.Serialize(financeMenuAccess);
+                escapedJson = System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(json);
             }
         }
         catch (Exception ex)
@@ -3400,6 +3399,9 @@
                 console.warn("Tenant name is not set.");
             }
         }
+    </script>
+    <script>
+        window.financeMenuAccess = JSON.parse("@Html.Raw(escapedJson)");
     </script>
 </body>
 </html>
