@@ -1606,6 +1606,7 @@ namespace QD.ERP.Web.Pages
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
 
+                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
@@ -1637,7 +1638,7 @@ namespace QD.ERP.Web.Pages
                 }
                 Report = new IncomeStatements(
                     AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper,userName
                 );
             }
             else if (reportName == "incomeStatementsBymonth")
@@ -1651,6 +1652,7 @@ namespace QD.ERP.Web.Pages
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
 
+                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
@@ -1682,7 +1684,7 @@ namespace QD.ERP.Web.Pages
                 }
                 Report = new incomeStatements_Bymonth_(
                     AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper,userName
                 );
             }
             else if (reportName == "IncomestatementsHorizondal")
@@ -1835,7 +1837,7 @@ namespace QD.ERP.Web.Pages
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
 
-
+                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                     .FirstOrDefault(x => x.CompanyNameShort == tenantName);
@@ -1866,7 +1868,7 @@ namespace QD.ERP.Web.Pages
                 }
                 Report = new BillsPayablesAgeingasperLedgerBalanceByEndDate(
                     AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper,userName
                 );
             }
 
@@ -1881,6 +1883,7 @@ namespace QD.ERP.Web.Pages
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
 
+                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
@@ -1912,7 +1915,7 @@ namespace QD.ERP.Web.Pages
                 }
                 Report = new BillsPayablesAgeingByEndDate(
                     AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper,userName
                 );
             }
             else if (reportName == "BillsReceivableEndDate")
@@ -1926,6 +1929,7 @@ namespace QD.ERP.Web.Pages
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
 
+                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
@@ -1957,7 +1961,7 @@ namespace QD.ERP.Web.Pages
                 }
                 Report = new BillsReceivableEndDate(
                     AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper,userName
                 );
             }
             else if (reportName == "BillsPayablesSummaryAgeingasperLedgerBalanceByEndDate")
@@ -1971,6 +1975,7 @@ namespace QD.ERP.Web.Pages
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
 
+                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
@@ -2002,7 +2007,7 @@ namespace QD.ERP.Web.Pages
                 }
                 Report = new BillsPayablesSummaryAgeingasperLedgerBalanceByEndDate(
                     AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper,userName
                 );
             }
             else if (reportName == "BillsReceivableledgerBalance")
@@ -2016,6 +2021,7 @@ namespace QD.ERP.Web.Pages
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
 
+                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
@@ -2047,7 +2053,7 @@ namespace QD.ERP.Web.Pages
                 }
                 Report = new BillsReceivableledgerBalance(
                     AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper,userName
                 );
             }
             else if (reportName == "BillsReceivablesReportByEndDate")
@@ -2061,6 +2067,7 @@ namespace QD.ERP.Web.Pages
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
 
+                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
@@ -2092,7 +2099,7 @@ namespace QD.ERP.Web.Pages
                 }
                 Report = new BillsReceivablesReportByEndDate(
                     AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper,userName
                 );
             }
             else if (reportName == "BillsReceivablesSummaryAgeingasperLedgerBalanceByEndDate")
@@ -2106,6 +2113,7 @@ namespace QD.ERP.Web.Pages
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
 
+                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
@@ -2136,7 +2144,7 @@ namespace QD.ERP.Web.Pages
                     }
                 }
                 Report = new BillsReceivablesSummaryAgeingasperLedgerBalanceByEndDate(AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
 
 
             }
