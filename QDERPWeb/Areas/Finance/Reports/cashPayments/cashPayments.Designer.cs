@@ -464,7 +464,7 @@
             this.xrLabel7.Font = new DevExpress.Drawing.DXFont("Arial", 8.25F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrLabel7.LocationFloat = new DevExpress.Utils.PointFloat(0F, 0F);
             this.xrLabel7.Name = "xrLabel7";
-            this.xrLabel7.SizeF = new System.Drawing.SizeF(212.6713F, 91.62501F);
+            this.xrLabel7.SizeF = new System.Drawing.SizeF(210.8333F, 91.62501F);
             this.xrLabel7.StylePriority.UseBorderColor = false;
             this.xrLabel7.StylePriority.UseBorders = false;
             this.xrLabel7.StylePriority.UseBorderWidth = false;
@@ -484,9 +484,9 @@
             this.xrLabel15,
             this.xrPictureBox2});
             this.xrPanel1.KeepTogether = false;
-            this.xrPanel1.LocationFloat = new DevExpress.Utils.PointFloat(212.6713F, 0F);
+            this.xrPanel1.LocationFloat = new DevExpress.Utils.PointFloat(210.8333F, 0F);
             this.xrPanel1.Name = "xrPanel1";
-            this.xrPanel1.SizeF = new System.Drawing.SizeF(126.9302F, 91.62501F);
+            this.xrPanel1.SizeF = new System.Drawing.SizeF(128.7682F, 91.62501F);
             this.xrPanel1.StylePriority.UseBorderColor = false;
             this.xrPanel1.StylePriority.UseBorders = false;
             this.xrPanel1.StylePriority.UseBorderWidth = false;
@@ -608,6 +608,7 @@
             this.xrPanel3.BorderColor = System.Drawing.Color.Black;
             this.xrPanel3.Borders = ((DevExpress.XtraPrinting.BorderSide)((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top)));
             this.xrPanel3.BorderWidth = 1F;
+            this.xrPanel3.CanGrow = false;
             this.xrPanel3.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
             this.xrLabel39,
             this.xrLabel44});
@@ -661,9 +662,8 @@
             // xrLabel38
             // 
             this.xrLabel38.BorderColor = System.Drawing.Color.Black;
-            this.xrLabel38.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
-            | DevExpress.XtraPrinting.BorderSide.Right) 
-            | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.xrLabel38.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
+            | DevExpress.XtraPrinting.BorderSide.Right)));
             this.xrLabel38.BorderWidth = 1F;
             this.xrLabel38.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[DrCr]"),
@@ -1107,7 +1107,7 @@
             this.xrLabel3,
             this.xrTable1,
             this.table1});
-            this.GroupHeader2.HeightF = 103.5001F;
+            this.GroupHeader2.HeightF = 101.8333F;
             this.GroupHeader2.Name = "GroupHeader2";
             this.GroupHeader2.StylePriority.UseBorders = false;
             // 
@@ -1205,7 +1205,7 @@
             this.xrLabel3.Multiline = true;
             this.xrLabel3.Name = "xrLabel3";
             this.xrLabel3.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel3.SizeF = new System.Drawing.SizeF(810.0002F, 43.83337F);
+            this.xrLabel3.SizeF = new System.Drawing.SizeF(810.0002F, 42.16656F);
             this.xrLabel3.StylePriority.UseBorders = false;
             // 
             // xrTable1
