@@ -68,6 +68,8 @@ builder.Services.ConfigureReportingServices(configurator =>
 var CommonDBConnection = builder.Configuration.GetConnectionString("CommonDBConnection");
 builder.Services.AddDbContext<ERPCommonContext>(options =>
     options.UseSqlServer(CommonDBConnection).EnableSensitiveDataLogging());
+builder.Services.AddDbContext<ERPMasterWtDataContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services
     .AddRazorPages()
