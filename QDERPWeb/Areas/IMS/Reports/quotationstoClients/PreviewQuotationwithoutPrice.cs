@@ -23,9 +23,6 @@ namespace QD.ERP.Web.Areas.IMS.Inventory_Reports
             Image logoImage,
             Image sealImage,
             string companyAddress,
-            string companyPhone,
-            string companyEmail,
-            string companyWebsite,
             string companyNameAr,
             string companyAddressAr,
             string username,
@@ -35,14 +32,13 @@ namespace QD.ERP.Web.Areas.IMS.Inventory_Reports
 
             InitializeComponent();
             SetReportParameters(quotationNo, tenantName, companyName, logoImage, sealImage,
-                                companyAddress, companyPhone, companyEmail, companyWebsite,
-                                companyNameAr, companyAddressAr,username);
+                                companyAddress, companyNameAr, companyAddressAr,username);
             LoadReportData(quotationNo);
         }
 
         private void SetReportParameters(string quotationNo, string tenantName, string companyName,
-            Image logoImage, Image sealImage, string companyAddress, string companyPhone,
-            string companyEmail, string companyWebsite, string companyNameAr, string companyAddressAr,string username)
+            Image logoImage, Image sealImage, string companyAddress, 
+            string companyNameAr, string companyAddressAr,string username)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -67,9 +63,7 @@ namespace QD.ERP.Web.Areas.IMS.Inventory_Reports
             AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string));
             AddOrUpdateParameter("CompanyName", companyName ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddress", companyAddress ?? "", typeof(string));
-            AddOrUpdateParameter("CompanyPhone", companyPhone ?? "", typeof(string));
-            AddOrUpdateParameter("CompanyEmailAddress", companyEmail ?? "", typeof(string));
-            AddOrUpdateParameter("CompanyWebsite", companyWebsite ?? "", typeof(string));
+           
             AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddressAr", companyAddressAr ?? "", typeof(string));
             AddOrUpdateParameter("UserName", username ?? "", typeof(string));
@@ -83,15 +77,6 @@ namespace QD.ERP.Web.Areas.IMS.Inventory_Reports
             if (FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
                 addressLabel.Text = companyAddress;
 
-            if (FindControl("xrLabelCompanyPhone", true) is XRLabel phoneLabel)
-                phoneLabel.Text = companyPhone;
-
-            if (FindControl("xrLabelCompanyEmailAddress", true) is XRLabel emailLabel)
-                emailLabel.Text = companyEmail;
-
-            if (FindControl("xrLabelCompanyWebsite", true) is XRLabel websiteLabel)
-                websiteLabel.Text = companyWebsite;
-
             if (FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
                 companyNameArLabel.Text = companyNameAr;
 
@@ -100,10 +85,10 @@ namespace QD.ERP.Web.Areas.IMS.Inventory_Reports
             if (FindControl("UserName", true) is XRLabel usernameLabel)
                 usernameLabel.Text = username;
 
-            if (FindControl("xrPictureBox4", true) is XRPictureBox logoPictureBox)
+            if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
                 logoPictureBox.Image = logoImage;
 
-            if (FindControl("xrPictureBox2", true) is XRPictureBox sealPictureBox)
+            if (FindControl("xrPictureBox4", true) is XRPictureBox sealPictureBox)
                 sealPictureBox.Image = sealImage;
         }
 

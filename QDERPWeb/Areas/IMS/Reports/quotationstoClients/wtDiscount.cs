@@ -1,46 +1,46 @@
-﻿using System;
+﻿using DevExpress.XtraPrinting.Drawing;
+using DevExpress.XtraReports.UI;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
-using System.ComponentModel;
-using DevExpress.XtraReports.UI;
 
-namespace QD.ERP.Web.Areas.IMS.Report.Inventory_Report
+namespace QD.ERP.Web.Areas.IMS.Reports.quotationstoClients
 {
-    public partial class PreviewQuotationwithadditionalDetails : DevExpress.XtraReports.UI.XtraReport
+    public partial class wtDiscount : DevExpress.XtraReports.UI.XtraReport
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
 
-        public PreviewQuotationwithadditionalDetails()
+        public wtDiscount()
         {
             InitializeComponent();
         }
 
-        public PreviewQuotationwithadditionalDetails(
+        public wtDiscount(
             string quotationNo,
             string tenantName,
             string companyName,
             Image logoImage,
             Image sealImage,
             string companyAddress,
-           
+          
             string companyNameAr,
             string companyAddressAr,
-          
+            string username,
             TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
 
             InitializeComponent();
             SetReportParameters(quotationNo, tenantName, companyName, logoImage, sealImage,
-                                companyAddress,
-                                companyNameAr, companyAddressAr);
+                companyAddress,
+                companyNameAr, companyAddressAr,username);
+
             LoadReportData(quotationNo);
         }
 
         private void SetReportParameters(string quotationNo, string tenantName, string companyName,
-            Image logoImage, Image sealImage, string companyAddress, 
-             string companyNameAr, string companyAddressAr)
+            Image logoImage, Image sealImage, string companyAddress, string companyNameAr, string companyAddressAr,string username)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -61,17 +61,14 @@ namespace QD.ERP.Web.Areas.IMS.Report.Inventory_Report
                 }
             }
 
-
             AddOrUpdateParameter("QuotationNo", quotationNo, typeof(string));
             AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string));
             AddOrUpdateParameter("CompanyName", companyName ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddress", companyAddress ?? "", typeof(string));
             AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string));
-           
             AddOrUpdateParameter("CompanyAddressAr", companyAddressAr ?? "", typeof(string));
-          
+            AddOrUpdateParameter("UserName", username ?? "", typeof(string));
 
-            // Bind to report labels/images
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
 
@@ -80,24 +77,20 @@ namespace QD.ERP.Web.Areas.IMS.Report.Inventory_Report
 
             if (FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
                 addressLabel.Text = companyAddress;
+            if (FindControl("xrLabelCompanyNameAr", true) is XRLabel arCompanyNameLabel)
+                arCompanyNameLabel.Text = companyNameAr;
+            if (FindControl("UserName", true) is XRLabel usernameLabel)
+                usernameLabel.Text = username;
 
-            if (FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
-                companyNameArLabel.Text = companyNameAr;
-
-            if (FindControl("xrLabelCompanyAddressAr", true) is XRLabel addressArLabel)
-                addressArLabel.Text = companyAddressAr;
-          
+            if (FindControl("xrLabelCompanyAddressAr", true) is XRLabel arAddressLabel)
+                arAddressLabel.Text = companyAddressAr;
 
             if (FindControl("xrPictureBox4", true) is XRPictureBox logoPictureBox)
                 logoPictureBox.Image = logoImage;
 
             if (FindControl("xrPictureBox1", true) is XRPictureBox sealPictureBox)
                 sealPictureBox.Image = sealImage;
-
-            
         }
-
-      
 
         private void LoadReportData(string quotationNo)
         {
@@ -110,7 +103,7 @@ namespace QD.ERP.Web.Areas.IMS.Report.Inventory_Report
             else
             {
                 this.DataSource = dt;
-                this.DataMember = ""; // Optional
+                this.DataMember = ""; // Set to table name if needed
             }
         }
 
@@ -120,7 +113,8 @@ namespace QD.ERP.Web.Areas.IMS.Report.Inventory_Report
 
             try
             {
-                if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
+                if (_tenantDbContextHelper != null &&
+                    _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
                 {
                     string connectionString = tenant.ConnectionString;
 
@@ -141,20 +135,16 @@ namespace QD.ERP.Web.Areas.IMS.Report.Inventory_Report
                 }
                 else
                 {
-                    throw new Exception("Unable to get tenant context. Please check session/cache.");
+                    throw new Exception("Tenant context not found. Please check the session/cache.");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[Quotation Report] Error: {ex.Message}");
+                Console.WriteLine("Error loading wtDiscount data: " + ex.Message);
             }
 
             return dt;
         }
-
-        private void ReportHeader_BeforePrint(object sender, CancelEventArgs e)
-        {
-            // Optional customization hook
-        }
     }
 }
+
