@@ -331,10 +331,10 @@
 		padding: 20px;
 	}
 
-	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnCancel,#btnAttach,#btnUpload)) {
+	/* .limited-footer .btn-container:not(:has(#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnCancel,#btnAttach,#btnUpload)) {
 		display: none !important;
 	}
-
+ */
 	.playIcon {
 		display: none;
 	}
@@ -393,7 +393,6 @@
 														.ID("txtRequestNo")
 														.LabelMode(EditorLabelMode.Outside)
 														.Width("100%")
-														.ReadOnly(true)
 														)
 						</td>
 						<td colspan="2" style="width:100%;">
@@ -543,7 +542,7 @@
 						</td>
 							<td colspan="2" style="width:100%; display:flex; align-items:end;">
 							@(Html.DevExtreme().TextBox()
-							.Label(new JS("formatMessage('Client Contact Name:')"))
+							.Label(new JS("formatMessage('Name of the Store Incharge:')"))
 							.ID("txtContactName")
 							.LabelMode(EditorLabelMode.Outside)
 							.Width("100%")
@@ -1430,11 +1429,7 @@
 						)
 		</div>
 
-		<div class="Head">
-			<div class="limited-footer">
-				@await Html.PartialAsync("InventoryModuleFooter")
-			</div>
-		</div>
+@await Html.PartialAsync("/Pages/Shared/IMS/MaterialRequestFormFooter1.cshtml")
 
 		@using (Html.DevExtreme().NamedTemplate("GetProjectContentTemplate"))
 		{
@@ -2496,19 +2491,19 @@
 	let dropDownInstance;
 	let vatListInstance;
 
-	$(document).ready(function () {
+	// $(document).ready(function () {
 
-		$(".limited-footer .btn-containerIvoiceEdit").each(function () {
+	// 	$(".limited-footer .btn-containerIvoiceEdit").each(function () {
 
-			if (!$(this).find("#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnCancel,#btnAttach,#btnUpload").length) {
+	// 		if (!$(this).find("#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnCancel,#btnAttach,#btnUpload").length) {
 
-				$(this).remove();
+	// 			$(this).remove();
 
-			}
+	// 		}
 
-		});
+	// 	});
 
-	});
+	// });
 
 	//View e-Invoice
 	$(document).ready(function () {
@@ -6089,6 +6084,8 @@
 
 
 	function proceedWithApproval() {
+			const VerifyButton = $("#btnApprove").dxButton("instance");
+		VerifyButton.option("disabled", true);
 
 		const mprNo = $('#txtRequestNo').dxTextBox("instance").option("value");
 
@@ -6107,7 +6104,7 @@
 						response.Message,
 						"Approved"
 					).done(() => {
-						disableEditing(); // Function to disable editing controls
+						//disableEditing(); // Function to disable editing controls
 					});
 				} else {
 					DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
