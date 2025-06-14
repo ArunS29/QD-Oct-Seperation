@@ -18,11 +18,11 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             Image logoImage,
             string Company_Name_Ar,
             string company_address_arb,
-            TenantDbContextHelper tenantDbContextHelper)
+            TenantDbContextHelper tenantDbContextHelper,string username)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             InitializeComponent();
-            SetReportParameters(tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
+            SetReportParameters(tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb,username);
 
             try
             {
@@ -38,10 +38,10 @@ namespace QD.ERP.Web.Areas.Finance.Reports
         public BIllsPayable()
         {
             InitializeComponent();
-            SetReportParameters("", "", "", null, "", "");
+            SetReportParameters("", "", "", null, "", "","");
         }
 
-        private void SetReportParameters(string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
+        private void SetReportParameters(string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb,string username)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -67,7 +67,9 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             AddOrUpdateParameter("CompanyAddress", company_address ?? "", typeof(string), false);
             AddOrUpdateParameter("CompanyNameAr", Company_Name_Ar ?? "", typeof(string), false);
             AddOrUpdateParameter("CompanyAddressArb", company_address_arb ?? "", typeof(string), false);
-
+            AddOrUpdateParameter("UserName", username ?? "", typeof(string), false);
+            if (FindControl("xrLabelUserName", true) is XRLabel userNameLabel)
+                userNameLabel.Text = username;
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
 
