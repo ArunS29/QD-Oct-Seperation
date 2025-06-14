@@ -1,0 +1,408 @@
+@page
+@model QD.ERP.Web.Areas.ERM.Pages.GenerateInvoiceSalesOrderModel
+@{
+}
+@using DevExtreme.AspNet.Mvc
+
+<style>
+    .filter-group {
+        display: flex;
+    }
+    .action-buttons {
+        display: flex;
+        margin-top: 20px;
+    }
+
+        .action-buttons .dx-button {
+            width: 180px;
+        }
+
+	.overlay {
+		display: none;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.5); /* Transparent background */
+		z-index: 1000;
+	}
+	/* Ensure word wrap and center alignment for grid headers */
+	.header-wrap {
+		white-space: normal !important; /* Enable word wrap */
+		text-align: center !important; /* Center align text */
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		font-weight: bold;
+	}
+
+	/* Ensure text in grid headers is always centered */
+	.dx-datagrid .dx-header-row .dx-datagrid-text-content {
+		white-space: normal !important;
+		text-align: center !important;
+	}
+
+	/* Ensure column headers text aligns to center */
+	.dx-datagrid-headers .dx-datagrid-table .dx-row > td {
+		text-align: center !important;
+	}
+
+	.overlay-content {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 100%;
+		height: 80%;
+		background: #fff;
+		box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+		border-radius: 8px;
+		overflow: hidden;
+	}
+
+	#overlay-frame {
+		width: 100%;
+		height: 100%;
+	}
+
+	.Maincontainer.Maincontainer {
+		background-color: white;
+	}
+
+	.close-btn {
+		position: absolute;
+		top: 10px;
+		right: 20px;
+		font-size: 30px;
+		cursor: pointer;
+	}
+
+
+
+
+	/* Toolbar Styling */
+	.custom-toolbar {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.filter-btn {
+		background-color: #007bff;
+		color: white;
+		border: none;
+		padding: 6px 12px;
+		border-radius: 5px;
+		cursor: pointer;
+		font-family: 'Inter', sans-serif;
+	}
+
+		.filter-btn:hover {
+			background-color: #0056b3;
+		}
+
+	/* Text Editor Styling */
+	.dx-texteditor {
+		background-color: #909ead00 !important; /* Light background */
+		border: 1px solid #d6e4f0 !important; /* Soft border */
+		border-radius: 4px !important; /* Smaller rounded corners */
+
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important; /* Reduced shadow */
+		font-size: 14px !important; /* Slightly smaller font */
+		transition: all 0.2s ease-in-out !important;
+		height: 39px !important; /* Fixed height */
+	}
+
+		/* Hover and Focus States */
+		.dx-texteditor:hover,
+		.dx-texteditor.dx-state-hover,
+		.dx-button:hover {
+			box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important; /* Slightly reduced hover effect */
+			border-color: #86b7fe !important; /* Highlight border */
+		}
+
+		.dx-texteditor.dx-state-focused {
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important; /* Softer focus effect */
+			border-color: #508ae1 !important;
+		}
+
+	#dataGrid .dx-header-row .dx-datagrid-text-content {
+		font-weight: bold;
+		color: black;
+	}
+
+
+	.dx-datagrid-header-panel {
+		background-color: #909ead00;
+		/* display:none; */
+	}
+
+	.no-border-input {
+		border: none !important;
+		outline: none !important;
+		box-shadow: none !important;
+		background: transparent !important;
+		font-weight: bold;
+		font-size: 16px;
+		color: black;
+		pointer-events: none; /* Prevents hover and click effects */
+	}
+
+	.dx-button-mode-contained.dx-button-default {
+		color: black;
+	}
+
+	.dx-button-mode-contained.dx-button-success {
+		color: black;
+	}
+
+	.container {
+		display: none !important;
+	}
+
+	.frame {
+		display: none !important;
+	}
+
+	.footerContainer {
+		display: none !important;
+	}
+
+	.bodyContainer {
+		display: flex;
+		justify-content: center;
+	}
+
+	.imagecontainer {
+		border-bottom: 2px;
+	}
+
+	.mainContainer {
+		margin-top: 1em;
+		width: 100%;
+	}
+
+	.playIcon {
+		display: none;
+	}
+</style>
+<div class="title">
+	<div class="header-container">
+		<div id="Generateinvoice" class="no-border-input"></div>
+	</div>
+</div>
+<div class="delivery-container">
+
+	<!-- Filter Bar -->
+	<div class="filter-row" style=" display: flex; gap: 5px; align-items: flex-end; margin-bottom: 15px; padding:20px;">
+		<div class="filter-group">
+			@(Html.DevExtreme().DropDownBox()
+						.ID("clientNameDropdown")
+						.DataSource(d => d.Mvc()
+						.Controller("DeliveryNote")
+						.LoadAction("GetDeliveryNotesWithDetail") // You will create this API
+						.LoadMode(DataSourceLoadMode.Raw)
+						.Key("ClientCode")
+						)
+						.ValueExpr("ClientCode")
+						.DisplayExpr("ClientName")
+						.LabelMode(EditorLabelMode.Outside)
+						.ContentTemplate(new TemplateName("DeliveryClientNameTemplate"))
+						.Label(new JS("formatMessage('Client Name:')"))
+						.LabelMode(EditorLabelMode.Outside)
+						.Width(470))
+		</div>
+
+		<div class="filter-group">
+			@(Html.DevExtreme().DropDownBox()
+						.ID("salesOrderDropdown")
+						.Label(new JS("formatMessage('Sales Order #:')"))
+						.LabelMode(EditorLabelMode.Outside)
+						.DataSource(d => d.Mvc()
+						.Controller("DeliveryNote")
+						.LoadAction("GetDeliveryNotesWithDetail") // You will create this API
+						.LoadMode(DataSourceLoadMode.Raw)
+						.Key("SalesOrderNo")
+						)
+						.ValueExpr("SalesOrderNo")
+						.DisplayExpr("SalesOrderNo")
+						.LabelMode(EditorLabelMode.Outside)
+						.ContentTemplate(new TemplateName("DeliverySalesOrderNoTemplate"))
+						.Width(470))
+		</div>
+
+		<div class="filter-button">
+			@(Html.DevExtreme().Button()
+						.Text("Show Delivery Notes")
+						.Icon("doc")
+						.Type(ButtonType.Default)
+						.Width(270))
+		</div>
+	</div>
+	<div style="padding:20px;">
+		@(Html.DevExtreme().DataGrid()
+				.ID("deliveryNotesGrid")
+				.Height(500)
+				.Width("100%")
+				.ShowBorders(true)
+				.ColumnAutoWidth(true)
+				.DataSource(d => d.Mvc()
+				.Controller("DeliveryNote")
+				.LoadAction("GetDeliveryNotesWithDetail")
+				)
+				.Columns(columns =>
+				{
+					columns.Add().DataField("DeliveryNoteNo").Caption("Delivery Note No").Width(150);
+					columns.Add().DataField("DeliveryDate").Caption("Delivery Date").DataType(GridColumnDataType.Date).Width(130);
+					columns.Add().DataField("ClientName").Caption("Client Name").Width(200);
+					columns.Add().DataField("ClientPono").Caption("Client PONo").Width(150);
+					columns.Add().DataField("SalesOrderNo").Caption("Sales Order No").Width(150);
+					columns.Add().DataField("OrderStatus").Caption("Order Status").Width(130);
+					columns.Add().DataField("InvoiceNo").Caption("Invoice No").Width(130);
+					columns.Add().DataField("InvoiceStatus").Caption("Invoice Status").Width(130);
+				})
+				)
+
+	</div>
+
+    <!-- Action Buttons -->
+	<div class="action-buttons" style=" display: flex;margin-top: 20px; padding:20px; gap:10px;">
+        @(Html.DevExtreme().Button()
+            .Text("Generate VAT Invoice")
+            .Icon("check")
+			.Width(270)
+            .Type(ButtonType.Success))
+
+        @(Html.DevExtreme().Button()
+            .Text("Print")
+            .Icon("print")
+            .Type(ButtonType.Default))
+
+        @(Html.DevExtreme().Button()
+            .Text("Back")
+            .Icon("back")
+            .Type(ButtonType.Default))
+    </div>
+	@using (Html.DevExtreme().NamedTemplate("DeliveryClientNameTemplate"))
+	{
+		@(Html.DevExtreme().DataGrid()
+			.ID("clientGrid")
+			.DataSource(ds => ds
+			.Mvc()
+			.Controller("DeliveryNote")
+			.LoadAction("GetDeliveryNotesWithDetail")
+			.LoadMode(DataSourceLoadMode.Raw)
+			.Key("ClientCode")
+			)
+			.Height(300)
+			.ShowBorders(true)
+			.FilterRow(f => f.Visible(true))
+			.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+			.Selection(s => s.Mode(SelectionMode.Single))  // Single selection
+			.Columns(columns =>
+			{
+				columns.Add().DataField("ClientCode").Caption("Client Code");
+				columns.Add().DataField("ClientName").Caption("Client Name");
+			})
+			.OnSelectionChanged("onClientSelected")  // Trigger onClientSelected on row selection
+			)
+	}
+	
+	@using (Html.DevExtreme().NamedTemplate("DeliverySalesOrderNoTemplate"))
+	{
+		@(Html.DevExtreme().DataGrid()
+			.ID("SalesorderNoGrid")
+			.DataSource(ds => ds
+			.Mvc()
+			.Controller("DeliveryNote")
+			.LoadAction("GetDeliveryNotesWithDetail")
+			.LoadMode(DataSourceLoadMode.Raw)
+			.Key("SalesOrderNo")
+			)
+			.Height(300)
+			.ShowBorders(true)
+			.FilterRow(f => f.Visible(true))
+			.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+			.Selection(s => s.Mode(SelectionMode.Single))  // Single selection
+			.Columns(columns =>
+			{
+				columns.Add().DataField("SalesOrderNo").Caption("Sales Order No");
+			})
+			.OnSelectionChanged("onSalesOrderNoSelected")  // Trigger onClientSelected on row selection
+			)
+	}
+</div>
+
+<script>
+
+		$(function () {
+			$("#Generateinvoice").dxTextBox({
+				text: formatMessage("Generate Invoice Sales Order"),
+			readOnly: true,
+			onContentReady: function (e) {
+				$(e.element).addClass("dx-textbox-heading");
+			}
+		});
+	});
+
+		$(function () {
+		// Get query params
+		const urlParams = new URLSearchParams(window.location.search);
+		const salesOrderNo = urlParams.get("salesOrderNo");
+		const clientCode = urlParams.get("clientCode");
+
+		// Load client dropdown
+		$.get("/api/SalesOrders/GetClientNames", function (clients) {
+			$("#clientNameDropdown").dxSelectBox("instance").option("dataSource", clients);
+			if (clientCode) {
+				$("#clientNameDropdown").dxSelectBox("instance").option("value", clientCode);
+			}
+		});
+
+		// Load sales order dropdown
+		$.get("/api/SalesOrders/GetSalesOrders", function (orders) {
+			$("#salesOrderDropdown").dxSelectBox("instance").option("dataSource", orders);
+			if (salesOrderNo) {
+				$("#salesOrderDropdown").dxSelectBox("instance").option("value", salesOrderNo);
+			}
+		});
+
+		// Only load delivery notes for the selected sales order
+		if (salesOrderNo) {
+			$.get("/api/DeliveryNote/GetDeliveryNotesWithDetailBySalesOrderNo", { salesOrderNo }, function (deliveryNotes) {
+				$("#deliveryNotesGrid").dxDataGrid("instance").option("dataSource", deliveryNotes);
+			});
+		} else {
+			// Optionally clear the grid if no sales order is selected
+			$("#deliveryNotesGrid").dxDataGrid("instance").option("dataSource", []);
+		}
+	});
+
+	 function onClientSelected(e) {
+			const selected = e.selectedRowsData[0];
+			if (selected) {
+				const dropDownBox = $("#clientNameDropdown").dxDropDownBox("instance");
+				if (dropDownBox) {
+					dropDownBox.option("value", selected.ClientCode);
+					dropDownBox.close();
+				} else {
+					console.error("DropDownBox instance not found.");
+				}
+			}
+		}
+		
+		function onSalesOrderNoSelected(e) {
+			const selected = e.selectedRowsData[0];
+			if (selected) {
+				const dropDownBox = $("#salesOrderDropdown").dxDropDownBox("instance");
+				if (dropDownBox) {
+					dropDownBox.option("value", selected.SalesOrderNo);
+					dropDownBox.close();
+				} else {
+					console.error("DropDownBox instance not found.");
+				}
+			}
+		}
+
+</script>

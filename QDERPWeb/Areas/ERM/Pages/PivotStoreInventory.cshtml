@@ -1,0 +1,243 @@
+﻿@page
+@model QD.ERP.Web.Areas.ERM.Pages.PivotStoreInventoryModel
+@{
+}
+    
+<style>
+	.overlay {
+		display: none;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.5);
+		z-index: 1000;
+	}
+
+	.overlay-content {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 100%;
+		height: 80%;
+		background: #fff;
+		box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+		border-radius: 8px;
+		overflow: hidden;
+	}
+
+	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnColumnChooser,#btnRfqDetails,#btnAddNewRFQ)) {
+		display: none !important
+	}
+
+	#overlay-frame {
+		width: 100%;
+		height: 100%;
+	}
+
+	.dx-datagrid-headers {
+		border: 1px solid #686868 !important;
+		width: 100%; /* Adjust to fit the container */
+		overflow-x: auto; /* Enable horizontal scrolling */
+		white-space: nowrap; /* Prevent wrapping of headings */
+		overflow-y: hidden;
+	}
+
+		.dx-datagrid-headers .dx-row > td {
+			border: 1px solid #686868 !important;
+			text-align: center !important;
+			/* 	width:1000px; */
+		}
+
+	.dx-datagrid .dx-header-row .dx-datagrid-text-content {
+		font-size: 12px !important;
+		white-space: nowrap !important; /* Prevent wrapping of text */
+		text-align: center !important;
+		font-weight: bold;
+		color: black;
+	}
+
+	.close-btn {
+		position: absolute;
+		top: 10px;
+		right: 20px;
+		font-size: 30px;
+		cursor: pointer;
+	}
+
+	.custom-toolbar {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.filter-btn {
+		background-color: #007bff;
+		color: white;
+		border: none;
+		padding: 6px 12px;
+		border-radius: 5px;
+		cursor: pointer;
+		font-family: 'Inter', sans-serif;
+	}
+
+		.filter-btn:hover {
+			background-color: #0056b3;
+		}
+
+	.dx-texteditor {
+		background-color: transparent !important;
+		border: 1px solid #d6e4f0 !important;
+		border-radius: 4px !important;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+		font-size: 14px !important;
+		transition: all 0.2s ease-in-out !important;
+		height: 39px !important;
+	}
+
+		.dx-texteditor:hover,
+		.dx-texteditor.dx-state-hover,
+		.dx-button:hover {
+			box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important;
+			border-color: #86b7fe !important;
+		}
+
+		.dx-texteditor.dx-state-focused {
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+			border-color: #508ae1 !important;
+		}
+
+	.no-border-input {
+		border: none !important;
+		outline: none !important;
+		box-shadow: none !important;
+		background: transparent !important;
+		font-weight: bold;
+		font-size: 16px;
+		color: black;
+		pointer-events: none;
+	}
+
+	.context-menuInvoice {
+		position: absolute;
+		background: #fff;
+		border-radius: 8px;
+		box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+		width: 200px;
+		display: none;
+		flex-direction: column;
+		padding: 5px 0;
+		z-index: 1000;
+	}
+
+	.context-menu-itemInvoice {
+		display: flex;
+		align-items: center;
+		padding: 10px 15px;
+		font-size: 14px;
+		cursor: pointer;
+		transition: background 0.2s ease-in-out;
+		color: #333;
+	}
+
+		.context-menu-itemInvoice i {
+			margin-right: 10px;
+			font-size: 16px;
+			color: #007bff;
+		}
+
+		.context-menu-itemInvoice:hover {
+			background: #f0f0f0;
+		}
+
+		.context-menu-itemInvoice:not(:last-child) {
+			border-bottom: 1px solid #e0e0e0;
+		}
+
+	.ledgerResult {
+		overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
+		width: 100%;
+	}
+
+	.mainContainer {
+		width: 100%;
+		overflow: hidden;
+	}
+</style>
+
+<input id="formId" value="frm201LedgerView" type="hidden" />
+<div class="title">
+	<div class="header-container">
+		<div id="stockReportByStore" class="no-border-input"></div>
+	</div>
+</div>
+<div class="dx-field ledgerResult">
+	@(Html.DevExtreme().PivotGrid()
+		.ID("stockPivotGrid")
+		.AllowSortingBySummary(true)
+		.AllowFiltering(true)
+		.AllowExpandAll(true)
+		.ShowBorders(true)
+		.FieldChooser(fc => fc.Enabled(true))
+		.DataSource(ds => ds
+		.Store(store => store
+		.Mvc()
+		.Controller("StockInventory")
+		.LoadAction("GetStockPivotData")
+		)
+		.Fields(fields =>
+		{
+			// Row fields
+			fields.Add()
+			.DataField("GsgroupName")
+			.Area(PivotGridArea.Row)
+			.Caption("Stock Group");
+
+			fields.Add()
+			.DataField("Gscode")
+			.Area(PivotGridArea.Row)
+			.Caption("GS Code");
+
+			fields.Add()
+			.DataField("Gsdescrpition")
+			.Area(PivotGridArea.Row)
+			.Caption("GS Description");
+
+			fields.Add()
+			.DataField("UnitDesc")
+			.Area(PivotGridArea.Row)
+			.Caption("Unit Desc");
+			
+			// Column fields
+			fields.Add()
+			.DataField("StoreCode")
+			.Area(PivotGridArea.Column)
+			.Caption("Store");
+
+			// Data field
+			fields.Add()
+			.DataField("Qty")
+			.Area(PivotGridArea.Data)
+			.Caption("Qty")
+			.SummaryType(SummaryType.Sum);
+		})
+		)
+		)
+
+</div>
+<div id="invoiceErrorPopup"></div>
+
+<script>
+		 $(function () {
+	$("#stockReportByStore").dxTextBox({
+	text: formatMessage("Stock Report By Store"),
+		readOnly: true,
+		onContentReady: function (e) {
+		$(e.element).addClass("dx-textbox-heading");
+		}
+		});
+	});
+	
+</script>

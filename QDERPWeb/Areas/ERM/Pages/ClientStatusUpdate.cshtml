@@ -1,0 +1,602 @@
+﻿@page
+
+@model QD.ERP.Web.Areas.ERM.Pages.ClientStatusUpdateModel
+
+@using DevExtreme.AspNet.Mvc
+
+@{
+    ViewBag.Title = "Client Status Update";
+}
+
+<!-- Styles -->
+<style>
+    h3 {
+        text-align: center;
+        padding: 20px;
+    }
+
+    .mainContainer {
+        width: 100%;
+        margin-top: 5%;
+        /* border: 1px solid #ccc; */
+    }
+
+    .form-group-row {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .form-container {
+        padding: 20px;
+    }
+
+    .form-group-row > div {
+        flex: 1;
+        /* min-width: 50px; */
+    }
+
+    .status-with-button {
+        align-items: end;
+        display: flex;
+    }
+
+    .plus-btn-wrapper {
+        display: flex;
+        align-items: center;
+    }
+
+    .inline-plus-button {
+        background-color: #b6e265;
+        border-radius: 50%;
+        height: 32px;
+        width: 32px;
+        min-width: 32px;
+        padding: 0;
+    }
+
+    .custom-textarea-with-scroll .dx-texteditor-input {
+        overflow-y: scroll !important;
+    }
+
+    .toolbar-buttons {
+        margin: 5px;
+        display: flex;
+        justify-content: flex-start; /* or center, or space-between */
+        gap: 20px; /* space between buttons */
+        margin-top: 10%;
+        padding: 10px 0;
+    }
+
+    .dx-button {
+        font-weight: bold;
+        font-size: 10px;
+    }
+
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+    }
+
+    .imagecontainer {
+        border-bottom: 2px;
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+        width: 100%;
+    }
+
+    .playIcon {
+        display: none;
+    }
+</style>
+<div class="title">
+    <div class="header-container">
+        <div id="ClientStatusUpdate" class="no-border-title"></div>
+    </div>
+</div>
+<div class="form-container">
+
+
+    <div class="form-group-row">
+        @(Html.DevExtreme().TextBox()
+            .ID("statusId")
+            .Disabled(true)
+            .Label(new JS("formatMessage('Status ID')"))
+            .Value("-1")
+            .ReadOnly(true)
+            .LabelMode(EditorLabelMode.Outside)
+            .TabIndex(1)
+            )
+
+        @(Html.DevExtreme().DropDownBox()
+            .DataSource(d => d.WebApi()
+            .Controller("ClientStatusUpdate")
+            .LoadAction("GetClient")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("StatusCode")
+            )
+            .Label(new JS("formatMessage('Client')"))
+            .LabelMode(EditorLabelMode.Outside)
+            .ID("GetClientDropDown")
+            .Width(900)
+            @*  .ShowClearButton(true)
+        .AcceptCustomValue(true) *@
+            .OpenOnFieldClick(false)//
+            .ValueChangeEvent("input")
+            .HoverStateEnabled(true)
+            .ValueExpr("StatusCode")
+            .DisplayExpr("Status")
+            .OnInput("dropDownBoxOnInput")
+            .OnOpened("onOpened")
+            .TabIndex(1)
+            .OnKeyDown("onKeyDown")
+            .Disabled(true)
+            //.OnValueChanged("dropDownBoxValueChanged")
+            .ContentTemplate(new TemplateName("GetClientContentTemplate"))
+            )
+
+    </div>
+
+    <div class="form-group-row">
+
+        @(Html.DevExtreme().DateBox()
+            .Label(new JS("formatMessage('Reported On')"))
+            .ID("reportedOn")
+            .InputAttr("aria-label", "Date")
+            .LabelMode(EditorLabelMode.Outside)
+            .Type(DateBoxType.Date)
+            .DisplayFormat("dd-MMM-yyyy")
+            .Value(DateTime.Now)
+            )
+
+
+        @(Html.DevExtreme().TextBox()
+            .ID("reportedBy")
+            .Label(new JS("formatMessage('Reported By')"))
+            .LabelMode(EditorLabelMode.Outside)
+            .TabIndex(4)
+            )
+    </div>
+
+    <div class="form-group-row">
+        @(Html.DevExtreme().TextArea()
+            .ID("reportRemarks")
+            .Name("reportRemarks")
+            .Label(new JS("formatMessage('Report Remarks')"))
+            .LabelMode(EditorLabelMode.Outside)
+            .Height("200px")
+            .ElementAttr(new { @class = "custom-textarea-with-scroll" })
+            )
+    </div>
+
+    <!-- Status with inline plus button -->
+    <div class="form-group-row status-with-button">
+
+        @(Html.DevExtreme().DropDownBox()
+            .DataSource(d => d.WebApi()
+            .Controller("ClientStatusUpdate")
+            .LoadAction("GetStatus")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("StatusCode")
+            )
+            .Label(new JS("formatMessage('Status')"))
+            .LabelMode(EditorLabelMode.Outside)
+            .ID("GetStatusDropDown")
+            .Width(900)
+            @*  .ShowClearButton(true)
+        .AcceptCustomValue(true) *@
+            .OpenOnFieldClick(false)//
+            .ValueChangeEvent("input")
+            .HoverStateEnabled(true)
+            .ValueExpr("StatusCode")
+            .DisplayExpr("Status")
+            .OnInput("dropDownBoxOnInput")
+            .OnOpened("onOpened")
+            .TabIndex(1)
+            .OnKeyDown("onKeyDown")
+            //.OnValueChanged("dropDownBoxValueChanged")
+            .ContentTemplate(new TemplateName("GetStatusContentTemplate"))
+            )
+
+
+        <div class="plus-btn-wrapper">
+            @(Html.DevExtreme().Button()
+                .ID("btnAddStatus")
+                .Icon("plus")
+                .Width("60")
+                .Hint(new JS("formatMessage('Add New Status')"))
+                .ElementAttr(new { @class = "inline-plus-button dx-button-mode-contained dx-button-normal" })
+                .OnClick("redirectToClientStatusCode")
+                )
+        </div>
+    </div>
+
+    <div class="  form-group-row " style="width:49.5%;">
+
+        @(Html.DevExtreme().DateBox()
+            .Label(new JS("formatMessage('Followup On')"))
+            .ID("followUpOn")
+            .InputAttr("aria-label", "Date")
+            .LabelMode(EditorLabelMode.Outside)
+            .Type(DateBoxType.Date)
+            .DisplayFormat("dd-MMM-yyyy")
+            .Value(DateTime.Now)
+            )
+    </div>
+    <div class="toolbar-buttons">
+        @(Html.DevExtreme().Button().ID("btnSave").Text(new JS("formatMessage('Save')")).Icon("save").OnClick("saveOrUpdateClientStatus"))
+        @(Html.DevExtreme().Button().ID("btnSaveClose").Text(new JS("formatMessage('Save & Close')")).Icon("save").OnClick("onSaveAndClose"))
+        @(Html.DevExtreme().Button().ID("btnDelete").Text(new JS("formatMessage('Delete')")).Icon("trash").OnClick("onDeleteClient"))
+        @(Html.DevExtreme().Button().ID("btnBack").Text(new JS("formatMessage('Back')")).Icon("back").OnClick("onBackToList"))
+    </div>
+
+    @using (Html.DevExtreme().NamedTemplate("GetStatusContentTemplate"))
+    {
+        @(Html.DevExtreme().DataGrid()
+            .ID("GetStatus-datagrid")
+            .DataSource(d => d.WebApi()
+            .Controller("ClientStatusUpdate")
+            .LoadAction("GetStatus")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("StatusCode")
+            )
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+            @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+            .OnSelectionChanged("dataGridSelectionChanged")
+            .OnInitialized("dataGridInitialized")
+            .HeaderFilter(p => p.Visible(true))
+            .ShowBorders(true)
+            .HoverStateEnabled(true)
+            .Paging(p => p.PageSize(15))
+            .FilterRow(f => f.Visible(false))//
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Height(345)
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .Columns(columns =>
+            {
+                columns.Add().Caption(new JS("formatMessage('Status Code')")).DataField("StatusCode");
+                columns.Add().DataField("Status");
+
+
+            })
+            )
+    }
+    @using (Html.DevExtreme().NamedTemplate("GetClientContentTemplate"))
+    {
+        @(Html.DevExtreme().DataGrid()
+            .ID("GetClient-datagrid")
+            .DataSource(d => d.WebApi()
+            .Controller("ClientStatusUpdate")
+            .LoadAction("GetClient")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("StatusCode")
+            )
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+            @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+            .OnSelectionChanged("dataGridSelectionChanged1")
+            .OnInitialized("dataGridInitialized1")
+            .HeaderFilter(p => p.Visible(true))
+            .ShowBorders(true)
+            .HoverStateEnabled(true)
+            .Paging(p => p.PageSize(15))
+            .FilterRow(f => f.Visible(false))//
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Height(345)
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .Columns(columns =>
+            {
+                columns.Add().Caption(new JS("formatMessage('Status Code')")).DataField("StatusCode");
+                columns.Add().DataField("Status");
+
+
+            })
+            )
+    }
+</div>
+
+<!-- JavaScript handler -->
+<script>
+    function redirectToClientStatusCode() {
+        let url = `/${tenantName}/ERM/ClientStatusCode`;
+        let title = "";
+        openModal(url, title);
+        refreshClientCategorySelectBox()
+    }
+
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const clientStatusNo = (urlParams.get("clientStatusNo") || "").split(/[?&]/)[0];
+        const clientCodes = (urlParams.get("clientCode") || "").split(/[?&]/)[0];
+       
+
+        $("#statusId").dxTextBox("instance").option("value", clientStatusNo);
+        $("#GetClientDropDown").dxDropDownBox("instance").option("value", clientCodes);
+
+
+        if (clientStatusNo) {
+            bindClientStatusById(clientStatusNo);
+            $("#btnSave").dxButton("instance").option("text", "Update");
+        }
+
+
+    });
+    function bindClientStatusById(clientStatusNo) {
+        $.ajax({
+            url: `/api/ClientStatusUpdate/GetClientStatusById?clientStatusNo=${clientStatusNo}`,
+            type: 'GET',
+            success: function (data) {
+                console.log("getdat:", data);
+                if (data) {
+                    $("#statusId").dxTextBox("instance").option("value", data.ClientStatusNo);
+                    $("#GetClientDropDown").dxDropDownBox("instance").option("value", data.ClientCode);
+                    $("#reportedBy").dxTextBox("instance").option("value", data.ReportedBy);
+                    $("#reportedOn").dxDateBox("instance").option("value", data.ReportedOn);
+                    $("#reportRemarks").dxTextArea("instance").option("value", data.StatusRemarks);
+                    $("#GetStatusDropDown").dxDropDownBox("instance").option("value", data.Status);
+                    $("#followUpOn").dxDateBox("instance").option("value", data.FollowupOn);
+                }
+            },
+            error: function (xhr, status, error) {
+                DevExpress.ui.notify("Error loading client status data", "error", 3000);
+            }
+        });
+    }
+
+
+    $(function () {
+        $("#ClientStatusUpdate").dxTextBox({
+            text: formatMessage("Client Status Update"),
+            readOnly: true,
+            onContentReady: function (e) {
+                $(e.element).addClass("dx-textbox-heading");
+            }
+        });
+    });
+    function onSaveClient() {
+        debugger;
+        DevExpress.ui.notify("Client Saved", "success", 1000);
+    }
+
+    function onSaveAndClose() {
+        const clientStatusNo = $("#statusId").dxTextBox("instance").option("value");
+
+        const data = {
+            ClientCode: String($("#GetClientDropDown").dxDropDownBox("instance").option("value")),
+            ReportedBy: $("#reportedBy").dxTextBox("instance").option("value"),
+            ReportedOn: $("#reportedOn").dxDateBox("instance").option("value"),
+            StatusRemarks: $("#reportRemarks").dxTextArea("instance").option("value"),
+            Status: $("#GetStatusDropDown").dxDropDownBox("instance").option("value"),
+            FollowupOn: $("#followUpOn").dxDateBox("instance").option("value")
+        };
+
+        if (clientStatusNo) {
+            data.ClientStatusNo = parseInt(clientStatusNo);
+        }
+
+        $.ajax({
+            url: '/api/ClientStatusUpdate/SaveOrUpdateClientStatusUpdate',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (res) {
+                if (res.success) {
+                    DevExpress.ui.notify(res.message, "success", 3000);
+
+                    $("#statusId").dxTextBox("instance").option("value", res.lastClientStatusNo);
+
+                    // Refresh parent DataGrid with fresh data
+                    if (window.parent && typeof window.parent.loadClientStatusGrid === "function") {
+                        const clientCode = $("#GetClientDropDown").dxDropDownBox("instance").option("value");
+                        if (clientCode) {
+                            window.parent.loadClientStatusGrid(clientCode);
+                        }
+                    }
+
+                    // Close modal after a small delay to ensure grid refresh completes
+                    setTimeout(() => {
+                        if (window.parent && typeof window.parent.closeModal === "function") {
+                            window.parent.closeModal();
+                        }
+                    }, 500);
+
+                } else {
+                    DevExpress.ui.notify(res.message, "error", 3000);
+                }
+            },
+            error: function (err) {
+                DevExpress.ui.notify("Save or update failed: " + err.responseText, "error", 3000);
+            }
+        });
+    }
+
+
+
+
+    $("#btnDelete").on("click", function (e) {
+        e.preventDefault();
+        onDeleteButtonClick();
+    });
+    function onDeleteButtonClick(e) {
+
+        var ClientCode = $("#statusId").dxTextBox("instance").option("value");
+
+        if (!ClientCode) {
+            DevExpress.ui.notify("Please enter or select a Journal Entry to delete.", "warning", 3000);
+            return;
+        }
+
+        $.ajax({
+            url: "/api/ClientStatusUpdate/DeleteClientStatusUpdate",
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(ClientCode), // 👈 plain string
+            success: function (response) {
+                DevExpress.ui.notify(response.message, 'success', 3000);
+                window.parent.closeModal();
+            },
+            error: function (xhr) {
+                const msg = xhr.responseJSON?.message || xhr.responseText || 'Error occurred while deleting.';
+                DevExpress.ui.notify(msg, 'error', 3000);
+            }
+        });
+
+    }
+
+
+
+    function onBackToList() {
+        window.parent.closeModal();
+    }
+
+    function dataGridSelectionChanged(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#GetStatusDropDown").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
+
+    function dataGridInitialized(e) {
+        dataGrid = e.component;
+    }
+    function dataGridSelectionChanged1(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#GetClientDropDown").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
+
+    function dataGridInitialized1(e) {
+        dataGrid = e.component;
+    }
+
+    function dropDownBoxOnInput(e) {
+        const ddbInstance = e.component;
+        if (!ddbInstance.option("opened")) ddbInstance.open();
+        const text = ddbInstance.option("text");
+        if (dataGrid) {
+            dataGrid.option("searchPanel.text", text);
+        }
+    }
+
+    function onOpened() {
+        console.log("DropDownBox opened");
+    }
+
+    function onKeyDown(event) {
+        console.log("Key pressed:", event.key);
+    }
+    //save
+    function saveOrUpdateClientStatus() {
+        const clientStatusNo = $("#statusId").dxTextBox("instance").option("value");
+
+        const data = {
+            ClientCode: String($("#GetClientDropDown").dxDropDownBox("instance").option("value")),
+            ReportedBy: $("#reportedBy").dxTextBox("instance").option("value"),
+            ReportedOn: $("#reportedOn").dxDateBox("instance").option("value"),
+            StatusRemarks: $("#reportRemarks").dxTextArea("instance").option("value"),
+            Status: $("#GetStatusDropDown").dxDropDownBox("instance").option("value"),
+            FollowupOn: $("#followUpOn").dxDateBox("instance").option("value")
+        };
+
+        // Only include ClientStatusNo if it's an update
+        if (clientStatusNo) {
+            data.ClientStatusNo = parseInt(clientStatusNo);
+        }
+
+        $.ajax({
+            url: '/api/ClientStatusUpdate/SaveOrUpdateClientStatusUpdate',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (res) {
+                if (res.success) {
+                    DevExpress.ui.notify(res.message, "success", 2000);
+
+                    $("#statusId").dxTextBox("instance").option("value", res.lastClientStatusNo);
+                    // Refresh parent DataGrid with fresh data
+                    if (window.parent && typeof window.parent.loadClientStatusGrid === "function") {
+                        const clientCode = $("#GetClientDropDown").dxDropDownBox("instance").option("value");
+                        if (clientCode) {
+                            window.parent.loadClientStatusGrid(clientCode);
+                        }
+                    }
+
+                    // Close modal after a small delay to ensure grid refresh completes
+                    setTimeout(() => {
+                        if (window.parent && typeof window.parent.closeModal === "function") {
+                            window.parent.closeModal();
+                        }
+                    }, 500);
+
+                } else {
+                    DevExpress.ui.notify(res.message, "error", 3000);
+                }
+            },
+            error: function (err) {
+                DevExpress.ui.notify("Save or update failed: " + err.responseText, "error", 3000);
+            }
+        });
+    }
+
+    $("#btnDelete").on("click", function (e) {
+        e.preventDefault();
+        onDeleteButtonClick();
+    });
+    function onDeleteButtonClick(e) {
+
+        var ClientCode = $("#statusId").dxTextBox("instance").option("value");
+
+        if (!ClientCode) {
+            DevExpress.ui.notify("Please enter or select a Journal Entry to delete.", "warning", 3000);
+            return;
+        }
+
+        $.ajax({
+            url: "/api/ClientStatusUpdate/DeleteClientStatusUpdate",
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(ClientCode), // 👈 plain string
+            success: function (response) {
+                DevExpress.ui.notify(response.message, 'success', 3000);
+                setTimeout(function () {
+                    location.reload();
+                }, 2000);
+            },
+            error: function (xhr) {
+                const msg = xhr.responseJSON?.message || xhr.responseText || 'Error occurred while deleting.';
+                DevExpress.ui.notify(msg, 'error', 3000);
+            }
+        });
+    }
+</script>

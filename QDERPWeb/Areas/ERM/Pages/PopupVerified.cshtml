@@ -1,0 +1,342 @@
+﻿@page
+@model QD.ERP.Web.Areas.ERM.Pages.PopupVerifiedModel
+@{
+}
+<style>
+    .dx-datagrid-headers {
+        border: 1px solid #686868 !important;
+        width: 100%; /* Adjust to fit the container */
+        overflow-x: auto; /* Enable horizontal scrolling */
+        white-space: nowrap; /* Prevent wrapping of headings */
+        overflow-y: hidden;
+    }
+
+    .dx-datagrid .dx-header-row .dx-datagrid-text-content {
+        font-size: 12px !important;
+        white-space: nowrap !important; /* Prevent wrapping of text */
+        text-align: center !important;
+        font-weight: bold;
+        color: black;
+    }
+
+    .ledgerResult {
+        overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
+        width: 100%;
+    }
+
+    .dx-tabpanel .dx-tab {
+        color: black !important;
+        font-weight: bold;
+        font-size: 14px;
+        padding: 10px 15px;
+    }
+
+
+        .dx-tabpanel .dx-tab.dx-selection {
+            background-color: lightblue;
+            color: white !important;
+        }
+
+    .dx-tabpanel {
+    }
+
+
+    .mainContainer {
+        overflow-x: hidden;
+    }
+
+    .form-container1 {
+        margin: 15px;
+        width: 99%;
+        padding: 5px;
+        border-radius: 1px;
+    }
+
+    .form-container {
+        width: 100%;
+        border-radius: 1px;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 10px;
+        padding: 10px;
+        margin-bottom: 15px;
+        width: 100%;
+    }
+
+
+    .form-label {
+        color: black;
+        padding: 5px;
+        font-weight: bold;
+        width: 200px;
+        text-align: Left;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .dx-textbox .dx-texteditor-input,
+    .dx-numberbox .dx-texteditor-input,
+    .dx-selectbox .dx-texteditor-input {
+    }
+
+    .dx-button {
+        margin-left: 5px;
+    }
+
+    .dx-selectbox {
+        width: 100%;
+    }
+
+    .footer-buttons .row {
+        margin-top: 20px;
+    }
+
+    .form-control-with-border {
+        border-radius: 4px;
+        padding: 8px;
+        width: 100%;
+    }
+
+
+    .horizontal-container {
+        display: flex;
+        gap: 20px;
+        justify-content: start;
+        align-items: center;
+        margin: 15px;
+    }
+
+    .button-group {
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+    }
+
+    .form-row.border-outline {
+        border: 1px solid gray;
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+    }
+
+    .select-box {
+        width: 20vh;
+    }
+
+    .imagecontainer {
+        background-color: #e0f7fa;
+        border: 1px solid #90caf9;
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        overflow: hidden;
+        position: relative;
+    }
+
+        .imagecontainer img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .imagecontainer span {
+            color: #555;
+            font-style: italic;
+            position: absolute;
+        }
+
+    .flex-row {
+        display: flex;
+        align-items: end;
+    }
+
+    .form-container {
+        gap: 20px;
+        font-family: Arial, sans-serif;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .form-card1 {
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        padding: 1%;
+    }
+
+    .form-row1 {
+        display: flex;
+        gap: 20px;
+    }
+
+    .form-group1 {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    label {
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .containers {
+        display: flex;
+    }
+
+    .dx-card {
+        background: var(--background-color);
+    }
+
+    .section-box {
+        padding: 10px;
+        margin-bottom: 15px;
+    }
+
+    .section-box label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .button-group {
+        display: flex;
+        margin-right: 64%;
+    }
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+        width: 100%;
+    }
+
+    .playIcon {
+        display: none;
+    }
+
+    .dx-button-mode-contained.dx-button-default {
+        color:black; }
+</style>
+<meta charset="UTF-8">
+<div class="title">
+    <div class="header-container">
+        <div id="Verified" class="no-border-title"></div>
+    </div>
+</div>
+<div class="form-container1">
+    <div class="form-container">
+        <!-- Tab Menu -->
+        @(
+                Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%")
+                .Items(item =>
+                {
+                    item.Add()
+                .Title("Verify/cancel")
+                .Icon("folder")
+                .Text("Verify/cancel")
+                .Template(@<text>
+            <div class="dx-card p-3">
+
+                <!-- Notes Section -->
+                <div class="section-box">
+                    <label>Notes by Verifier:</label>
+                    @(Html.DevExtreme().TextArea()
+                    .ID("VerifierNotes")
+                    .MinHeight(500)
+                    .StylingMode(EditorStylingMode.Outlined)
+                    .Width("100%"))
+                </div>
+
+                <!-- Buttons -->
+                <div class="button-group">
+
+                    <!-- Verify Button -->
+                    <div class="verify-button">
+                        @(Html.DevExtreme().Button()
+                        .ID("VerifyRequest")
+                        .Text("Verify Request")
+                        .Icon("check") 
+                        .Type(ButtonType.Default)
+                        .StylingMode(ButtonStylingMode.Contained)
+                        .Width(180))
+                    </div>
+
+                    <!-- Cancel Button -->
+                    <div class="cancel-button">
+                        @(Html.DevExtreme().Button()
+                        .ID("CancelRequest")
+                        .Text("Cancel this Request")
+                        .Icon("remove") // Red minus icon
+                        .Type(ButtonType.Default)
+                        .StylingMode(ButtonStylingMode.Contained)
+                        .Width(250))
+                    </div>
+
+                    <!-- Back Button -->
+                    <div class="back-button">
+                        @(Html.DevExtreme().Button()
+                        .ID("BackButton")
+                        .Text("Back")
+                        .Icon("arrowleft") // Green back arrow
+                        .Type(ButtonType.Default)
+                        .StylingMode(ButtonStylingMode.Contained)
+                        .Width(150))
+                    </div>
+                </div>
+            </div> 
+        </text>);
+                })
+            )
+<script>
+    //     function openEntityModal(entity) {
+    //     const url = `/${tenantName}/ERM/${entity}`;
+    //     const title = "";
+    //     openModal(url, title);
+    // }
+
+    // function PreparedBy() {
+    //     openEntityModal("Signatories");
+    // }
+
+    // function AddInventoryGroup() {
+    //     openEntityModal("ProjectSubUnits");
+    // }
+
+    // function ModeOfRequest() {
+    //     openEntityModal("QuotationModeOfRequest");
+    // }
+
+    // function TypeOfRequest() {
+    //     openEntityModal("QuotationTypeOfRequest");
+    // }
+    $(function () {
+            $("#Verified").dxTextBox({
+            text: formatMessage("Verified"),
+        readOnly: true,
+        onContentReady: function (e) {
+        $(e.element).addClass("dx-textbox-heading");
+        }
+        });
+    });
+</script>

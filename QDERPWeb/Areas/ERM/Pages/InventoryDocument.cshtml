@@ -1,0 +1,537 @@
+﻿@page
+@model QD.ERP.Web.Areas.ERM.Pages.InventoryDocumentModel
+@using DevExtreme.AspNet.Mvc
+@{
+    ViewData["Title"] = "Inventory Document";
+}
+<style>
+    .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5); /* Transparent background */
+        z-index: 1000;
+    }
+
+    .dx-button-mode-contained.dx-button-success .dx-icon {
+       color: black;
+    }
+    /* Ensure word wrap and center alignment for grid headers */
+    .header-wrap {
+        white-space: normal !important; /* Enable word wrap */
+        text-align: center !important; /* Center align text */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+    }
+
+    /* Ensure text in grid headers is always centered */
+    .dx-datagrid .dx-header-row .dx-datagrid-text-content {
+        white-space: normal !important;
+        text-align: center !important;
+    }
+
+    /* Ensure column headers text aligns to center */
+    .dx-datagrid-headers .dx-datagrid-table .dx-row > td {
+        text-align: center !important;
+    }
+
+    .overlay-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        height: 80%;
+        background: #fff;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    #overlay-frame {
+        width: 100%;
+        height: 100%;
+    }
+
+    .Maincontainer.Maincontainer {
+        background-color: white;
+    }
+
+    .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        font-size: 30px;
+        cursor: pointer;
+    }
+
+
+
+
+    /* Toolbar Styling */
+    .custom-toolbar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .filter-btn {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-family: 'Inter', sans-serif;
+    }
+
+        .filter-btn:hover {
+            background-color: #0056b3;
+        }
+
+    /* Text Editor Styling */
+    .dx-texteditor {
+        background-color: #909ead00 !important; /* Light background */
+        border: 1px solid #d6e4f0 !important; /* Soft border */
+        border-radius: 4px !important; /* Smaller rounded corners */
+
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important; /* Reduced shadow */
+        font-size: 14px !important; /* Slightly smaller font */
+        transition: all 0.2s ease-in-out !important;
+        height: 39px !important; /* Fixed height */
+    }
+
+        /* Hover and Focus States */
+        .dx-texteditor:hover,
+        .dx-texteditor.dx-state-hover,
+        .dx-button:hover {
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important; /* Slightly reduced hover effect */
+            border-color: #86b7fe !important; /* Highlight border */
+        }
+
+        .dx-texteditor.dx-state-focused {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important; /* Softer focus effect */
+            border-color: #508ae1 !important;
+        }
+
+    #dataGrid .dx-header-row .dx-datagrid-text-content {
+        font-weight: bold;
+        color: black;
+    }
+
+
+    .dx-datagrid-header-panel {
+        background-color: #909ead00;
+        /* display:none; */
+    }
+
+    .no-border-input {
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        font-weight: bold;
+        font-size: 16px;
+        color: black;
+        pointer-events: none; /* Prevents hover and click effects */
+    }
+
+    .dx-button-mode-contained.dx-button-default {
+        color: black;
+    }
+
+    .dx-button-mode-contained.dx-button-success {
+        color: black;
+    }
+
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .imagecontainer {
+        border-bottom: 2px;
+    }
+
+    .mainContainer {
+        width: 100%;
+    }
+
+    .playIcon {
+        display: none;
+    }
+
+    .form-wrapper {
+        display: flex;
+        gap: 30px;
+        flex-wrap: wrap;
+        margin-bottom: 40px;
+    }
+
+    .left-column {
+        flex: 2;
+        min-width: 320px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .right-column {
+        flex: 1;
+        min-width: 250px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 20px;
+        text-align: center;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+        .form-row > div {
+            flex: 1;
+            min-width: 140px;
+        }
+
+    .doc-type-row {
+        display: flex;
+        align-items: flex-end;
+        gap: 10px;
+        flex-wrap: nowrap;
+    }
+
+    .bottom-buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+    }
+
+    .right-buttons {
+        display: flex;
+        gap: 15px;
+    }
+
+    .notification-text {
+        font-size: 14px;
+        text-align: right;
+        margin-top: 5px;
+    }
+
+    .grid-section {
+        margin-top: 30px;
+    }
+</style>
+<div class="title">
+    <div class="header-container">
+        <div id="InventoryDocuments" class="no-border-input"></div>
+    </div>
+</div>
+<div style="padding:20px;">
+
+    <div class="form-wrapper">
+        <!-- Left Column -->
+        <div class="left-column">
+            <div class="form-row">
+                <div>
+                    @(Html.DevExtreme().TextBox()
+                        .ID("DocumentNo")
+                        .Label("Document No:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%")
+                        .ReadOnly(true))
+                </div>
+
+                <div class="doc-type-row" style="flex: 2;">
+                    @(Html.DevExtreme().SelectBox()
+                        .ID("DocType")
+                        .Label("Type of the Document Attached:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%")
+                        .DataSource(d => d.Mvc().Controller("StockInventory").LoadAction("GetDocumentTypes"))
+                        .DisplayExpr("text")
+                        .ValueExpr("id")
+                        .ValidationRules(rules =>
+                        {
+                            rules.AddRequired().Message("Document Type is required.");
+                        }))
+                    @(Html.DevExtreme().Button()
+                        .ID("btnAdd")
+                        .Icon("plus")
+                        .Type(ButtonType.Success)
+                        .Width(65)
+                        .ElementAttr("style", "color:black;")
+                        .OnClick("onAddDocType"))
+                </div>
+
+            </div>
+
+            <div class="form-row">
+                <div>
+                    @(Html.DevExtreme().TextBox()
+                        .ID("ReferenceNo")
+                        .Label("Reference No:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%"))
+                </div>
+
+                <div>
+                    @(Html.DevExtreme().TextBox()
+                        .ID("Remarks")
+                        .Label("Remarks / Notes:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%"))
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div>
+                    @(Html.DevExtreme().DateBox()
+                        .ID("DocumentExpiryDate")
+                        .Label("Document Expiry Date:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%"))
+                </div>
+
+                <div>
+                    @(Html.DevExtreme().DateBox()
+                        .ID("HijriExpiryDate")
+                        .Label("Expiry Date (Hijri):")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .DisplayFormat("dd-MMM-yyyy")
+                        .Width("100%"))
+                </div>
+
+                <div>
+                    @(Html.DevExtreme().DateBox()
+                        .ID("NotificationDate")
+                        .Label("Notification Date:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .DisplayFormat("dd-MMM-yyyy")
+                        .Value(DateTime.Now.AddDays(7))
+                        .Width("100%"))
+                </div>
+            </div>
+
+            <div class="notification-text">
+                * A Notification will be issued to corresponding user at this date.
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="right-column">
+            <div>
+                @(Html.DevExtreme().FileUploader()
+                    .ID("fileUploader")
+                    .SelectButtonText("Attach a Document")
+                    .LabelText("")
+                    .Accept("*/*")
+                    .UploadMode(FileUploadMode.UseForm)
+                    .OnValueChanged("onFileSelected")
+                    )
+
+            </div>
+
+            <div>
+                @(Html.DevExtreme().Button()
+                    .Text("Add")
+                    .Icon("fas fa-plus")
+                    .Type(ButtonType.Success)
+                    .Width("100%")
+                    .OnClick("onSaveDocument"))
+            </div>
+        </div>
+    </div>
+
+    <!-- Grid Section -->
+    <div class="grid-section">
+        @(Html.DevExtreme().DataGrid()
+            .ID("documentsGrid")
+            .Height(600)
+            .ShowBorders(true)
+            .ColumnAutoWidth(true)
+            .DataSource(d => d.Mvc().Controller("StockInventory").LoadAction("GetDocuments"))
+            .Columns(columns =>
+            {
+                columns.Add().DataField("DocumentNo").Caption("Doc No").AllowEditing(false);
+                columns.Add().DataField("DocumentType").Caption("Document Type");
+                columns.Add().DataField("DocumentRefNo").Caption("Reference No");
+                columns.Add().DataField("DocumentRemarks").Caption("Remarks");
+                columns.Add().DataField("DocumentExpDate").Caption("Expiry On");
+                columns.Add().DataField("DocumentExpDateAr").Caption("Expiry (Hijri)");
+                columns.Add().DataField("DocumentNotificationDate").Caption("Notify On");
+                columns.Add().DataField("DocumentStatus").Caption("Status");
+                columns.Add().DataField("DocumentStatusRemarks").Caption("Status Remarks");
+            })
+            .Paging(p => p.Enabled(false))
+            .ShowRowLines(true)
+            .Editing(e =>
+            {
+                e.Mode(GridEditMode.Row);
+                e.AllowUpdating(true);
+                e.AllowAdding(false);
+                e.AllowDeleting(false);
+            })
+            .OnRowUpdating("onGridRowUpdating"))
+    </div>
+
+    <!-- Bottom Buttons -->
+    <div class="bottom-buttons">
+        <div class="right-buttons">
+            @(Html.DevExtreme().Button()
+                .Text("Show All Documents")
+                .Type(ButtonType.Normal)
+                .Icon("fas fa-folder-open")
+                .Width(350)
+                .OnClick("showAllDocuments"))
+
+            @(Html.DevExtreme().Button()
+                .Text("Back")
+                .Icon("fas fa-arrow-left")
+                .Type(ButtonType.Normal)
+                .Width(120)
+                .OnClick("Goback"))
+        </div>
+    </div>
+    <!-- Popup to show all documents -->
+    <div id="popupDocumentList"></div>
+
+</div>
+
+<script>
+    $(function () {
+        loadInitialDocumentNo();
+    });
+
+    function loadInitialDocumentNo() {
+        $.get("/api/StockInventory/GenerateNewDocumentNo", function (data) {
+            $("#DocumentNo").dxTextBox("instance").option("value", data);
+        });
+    }
+        function onFileSelected(e) {
+        const file = e.value[0]; // DevExtreme passes file(s) in e.value
+        if (file) {
+            DevExpress.ui.notify("File selected: " + file.name, "info", 2000);
+        }
+    }
+         function onAddDocType(){
+        const url = `/${tenantName}/ERM/DocumentTypes`;
+        const title = "";
+            openModal(url, title);
+    }
+
+
+
+           function onSaveDocument() {
+        const files = $("#fileUploader").dxFileUploader("instance").option("value");
+
+        if (!files || files.length === 0) {
+            DevExpress.ui.notify("Please select a document to attach.", "warning", 2000);
+            return;
+        }
+
+        const file = files[0];
+
+        const formData = new FormData();
+        formData.append("File", file);
+        formData.append("DocumentNo", $("#DocumentNo").dxTextBox("instance").option("value"));
+        formData.append("DocumentType", $("#DocType").dxSelectBox("instance").option("value"));
+        formData.append("DocumentRefNo", $("#ReferenceNo").dxTextBox("instance").option("value"));
+        formData.append("DocumentRemarks", $("#Remarks").dxTextBox("instance").option("value"));
+        formData.append("DocumentExpDate", $("#DocumentExpiryDate").dxDateBox("instance").option("value"));
+        formData.append("HijriExpDate", $("#HijriExpiryDate").dxDateBox("instance").option("value"));
+        formData.append("NotificationDate", $("#NotificationDate").dxDateBox("instance").option("value"));
+
+        $.ajax({
+            url: "/api/StockInventory/SaveProjectDocument",
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function () {
+                DevExpress.ui.notify("Document uploaded successfully", "success", 2000);
+                $("#documentsGrid").dxDataGrid("instance").refresh();
+                loadInitialDocumentNo();
+            },
+            error: function () {
+                DevExpress.ui.notify("Upload failed", "error", 2000);
+            }
+        });
+    }
+
+
+
+    function onGridRowUpdating(e) {
+        // Add update logic if needed
+    }
+
+    function Goback() {
+        window.history.back();
+    }
+     $(function () {
+        $("#InventoryDocuments").dxTextBox({
+            text: formatMessage("Inventory Documents"),
+                readOnly: true,
+                onContentReady: function (e) {
+                    $(e.element).addClass("dx-textbox-heading");
+                }
+            });
+        });
+            function showAllDocuments() {
+        $("#popupDocumentList").dxPopup({
+            title: "All Uploaded Documents",
+            visible: true,
+            width: "80%",
+            height: "80%",
+            showCloseButton: true,
+            contentTemplate: function (contentElement) {
+                contentElement.append(
+                    $("<div>").attr("id", "documentGrid")
+                );
+
+                $("#documentGrid").dxDataGrid({
+                    dataSource: DevExpress.data.AspNet.createStore({
+                        key: "DocumentNo",
+                        loadUrl: "/api/StockInventory/GetAllDocuments"
+                    }),
+                    columns: [
+                        { dataField: "DocumentNo", caption: "Document No" },
+                        { dataField: "DocumentType", caption: "Document Type" },
+                        { dataField: "DocumentRefNo", caption: "Reference No" },
+                        { dataField: "DocumentRemarks", caption: "Remarks" },
+                        {
+                            caption: "Download",
+                            cellTemplate: function (container, options) {
+                                $("<a>")
+                                    .text("Download")
+                                    .attr("href", options.data.FileUrl) // Your DB field with blob URL
+                                    .attr("target", "_blank")
+                                    .addClass("dx-link")
+                                    .appendTo(container);
+                            }
+                        }
+                    ],
+                    showBorders: true,
+                    columnAutoWidth: true
+                });
+            }
+        });
+    }
+
+</script>

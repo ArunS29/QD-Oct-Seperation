@@ -1,0 +1,134 @@
+﻿@page
+@model QD.ERP.Web.Areas.ERM.Pages.MPRRevisionHistoryModel
+@using QD.ERP.Web.DAL.Entities
+@{
+}
+
+@using DevExtreme.AspNet.Mvc
+@using DevExtreme.AspNet.Mvc.Builders
+
+
+<style>
+
+    .datagrid {
+        height: 600px;
+        padding: 18px;
+    }
+
+    .toolbar-buttons {
+        /* position: fixed; */
+        bottom: 20px; /* Distance from bottom */
+        left: 20px; /* Distance from left */
+        display: flex;
+        gap: 10px; /* Space between buttons */
+        /* z-index: 9999; /* Make sure it's on top */
+        /* background-color: white; /* Optional: background */ */ padding: 10px; /* Optional: inner spacing */
+        border-radius: 6px;
+        margin-top: 10px;
+        /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
+    }
+
+    .limited-footer .btn-container:not(:has(#ddButtonLayout,btnRefresh,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel,#btnColumnChooser,#btnAddClientLeads)) {
+        display: none !important;
+    }
+
+    .mainContainer {
+        width: 96%;
+        overflow-x: hidden;
+    }
+
+</style>
+<div class="title">
+    <div class="header-container">
+        <div id="MPRHistory" class="no-border-input"></div>
+    </div>
+</div>
+
+
+<div>
+    @(
+        Html.DevExtreme().DataGrid<Qry60604purchaseRequestViewMaster>()
+        .ID("dataGrid")
+        .DataSource(ds => ds.Mvc()
+        .Controller("MaterialRequestEnquiriesDetails")
+        .LoadAction("Get")
+        .LoadParams(new { Mprno = new JS("cleanmprno") })
+        )
+        .KeyExpr("Mprno")
+        .ElementAttr("class", "datagrid")
+        .ShowBorders(true)
+        .Width("100%")
+        .ColumnAutoWidth(true)
+        .ShowColumnLines(true)
+        .ShowRowLines(true)
+        .AllowColumnResizing(true)
+        .ColumnResizingMode(ColumnResizingMode.NextColumn)
+        .AllowColumnReordering(true)
+        .ColumnChooser(chooser => chooser
+        .Enabled(true)
+        .Mode(GridColumnChooserMode.Select)
+        )
+        .Paging(p => p.Enabled(false))
+      
+        .Columns(columns =>
+        {
+            columns.Add().Type(GridCommandColumnType.Selection);
+            columns.Add().DataField("Mprno").Caption(new JS("formatMessage('MPRNo')"));
+            columns.Add().DataField("Mprdate").Caption(new JS("formatMessage('MPR Date')"));
+            columns.Add().DataField("MprrevisedBy").Caption(new JS("formatMessage('MPR Revised By')"));
+            columns.Add().DataField("MprrevisedOn").Caption(new JS("formatMessage('MPR Revised On')"));
+            columns.Add().DataField("RequestedNameRef").Caption(new JS("formatMessage('Requested Name Ref')"));
+            columns.Add().DataField("RequestEnquiry").Caption(new JS("formatMessage('Request Enquiry')"));
+            columns.Add().DataField("TypeOfRequest").Caption(new JS("formatMessage('Type Of Request')"));
+        })
+        .Selection(s => s.Mode(SelectionMode.Multiple).ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always))
+        )
+
+
+
+</div>
+<!-- Bottom Toolbar -->
+
+
+<script>
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
+
+    const mprno = getQueryParam("Mprno");
+    const cleanmprno = mprno ? mprno.split("?")[0] : null;
+
+    $(document).ready(function () {
+
+        $(".limited-footer .btn-containerIvoiceEdit").each(function () {
+
+            if (!$(this).find("#ddButtonLayout,btnRefresh,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel,#btnColumnChooser,#btnAddClientLeads").length) {
+                $(this).remove();
+            }
+
+        });
+
+        // Handle Back button click
+        $(document).on('click', '#btnBack', function () {
+            window.history.back();
+        });
+
+    });
+    function onGridReady(e) {
+        const items = e.component.getDataSource().items();
+        console.log("Image src: ", "data:image/png;base64," + data.BusinessCard1);
+
+    }
+    $(function () {
+        $("#MPRHistory").dxTextBox({
+            text: formatMessage("Material Request Revised History"),
+            readOnly: true,
+            onContentReady: function (e) {
+                $(e.element).addClass("dx-textbox-heading");
+            }
+        });
+    });
+
+   
+</script>

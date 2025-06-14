@@ -1,0 +1,723 @@
+﻿@page
+@model QD.ERP.Web.Areas.ERM.Pages.addNewQuotationItemSubGroupModel
+@{
+}
+
+@using DevExtreme.AspNet.Mvc
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<!-- Add SweetAlert CSS and JS CDN -->
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+
+
+<style type="text/css">
+    /* Card container styling */
+    .card-container {
+        background-color: white; /* Set background color for the card */
+        padding: 20px; /* Add some padding inside the card */
+        border-radius: 8px; /* Rounded corners */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for the card */
+    }
+
+        /* Label text color blue */
+        .card-container label {
+            color: blue; /* Set label text color to blue */
+        }
+
+
+    /* Style for the textboxes */
+    .dx-datagrid .dx-row {
+        border-bottom: 1px solid #ccc; /* Border between rows */
+    }
+
+    /* Grid Column Header Text Color */
+    .dx-datagrid-headers .dx-header-row .dx-datagrid-text-content {
+        color: #2d5799; /* Set header text color */
+    }
+
+    /* Grid Column Header Background Color */
+    .dx-datagrid-headers .dx-header-row {
+        background-color: white; /* Set background color for column headers */
+    }
+
+    /* Button customization */
+    .dx-button-add {
+        background-color: #f5f8fb !important; /* Set background color to #cfddee */
+        color: red !important; /* Set text color to red */
+        border: 1px solid #b0c4de; /* Light border around the button */
+    }
+
+        .dx-button-add .dx-icon {
+            color: green !important; /* Set icon color to green */
+        }
+
+    .horizontal-container {
+        display: flex;
+        gap: 10px; /* Adds spacing between buttons */
+        justify-content: start; /* Aligns buttons to the left */
+        align-items: center; /* Vertically centers the buttons */
+        margin: 15px;
+    }
+
+    .dx-selectbox .dx-texteditor-input {
+        text-align: center; /* Centers the text inside the input */
+    }
+
+    .backgroundcolor {
+        background-color: white;
+    }
+
+    .button-alignment-down {
+        margin-bottom: 10px;
+    }
+
+    /* Style for the Save and Refresh buttons */
+    .action-buttons-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+        .action-buttons-container .dx-button {
+            margin-right: 10px; /* Space between buttons */
+        }
+
+    .content-container-top {
+        padding: 15px;
+    }
+
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+        width: 100%;
+    }
+
+    .playIcon {
+        display: none;
+    }
+</style>
+
+<div class="title">
+    <div class="header-container">
+        <div id="quotationLineItem" class="no-border-input"></div>
+    </div>
+</div>
+@* <div class="sathish-container-top"> *@
+<div class="content-container-top">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="costCenterComboBox" class="form-label" style="width: 30%;">Sub Group Code</label>
+                <div id="costCenterComboBox"></div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            @(Html.DevExtreme().TextBox()
+                .ID("quotationNo")
+                .Label(new JS("formatMessage('Quotation No')"))
+                .LabelMode(EditorLabelMode.Outside)
+                .Value("AIC-ENQ-2025-00001") // example value
+                )
+        </div>
+
+        <div class="col-md-4">
+            @(Html.DevExtreme().TextBox()
+                .ID("mprNo")
+                .Label(new JS("formatMessage('MPR No')"))
+                .LabelMode(EditorLabelMode.Outside)
+
+                )
+        </div>
+    </div>
+
+    <div class="row mt-2" style="display: flex;align-items: baseline;">
+        <div class="col-md-8">
+
+            <div class="form-group">
+                <label id="CostCenterMaster" class="no-border-input" style="width: 166px;">Sub Group Notes:</label>
+                <div id="costCenterMaster1"></div>
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+            <td>
+                <div id="LedgerActive" class="no-border-input"></div>
+            </td>
+            <td>
+                @(Html.DevExtreme().Switch()
+                    .ID("schLedgerActive")
+                    .Value(false)  // Set initial state to "on"
+                    .SwitchedOffText("No") // Text to display when the toggle is on
+                    .SwitchedOnText("Yes") // Text to display when the toggle is off
+                    .Width(100) // Width of the toggle switch
+                    )
+            </td>
+
+        </div>
+    </div>
+
+    <div class="row mt-2" style="display: flex;align-items: baseline;">
+        <div class="col-md-8">
+            @(Html.DevExtreme().TextBox()
+                .ID("subGroupRemarks")
+                .Label(new JS("formatMessage('Sub Group Remarks / Notes')"))
+                .LabelMode(EditorLabelMode.Outside)
+                )
+        </div>
+        <div class="col-md-4">
+            @(Html.DevExtreme().Button()
+                .ID("btnAddSubGroup")
+                .Text(new JS("formatMessage('Add')"))
+                .Icon("plus")
+                .Height(40)
+                .Width(120)
+                .OnClick("function() { adddivmaster(); }")
+                )
+        </div>
+    </div>
+    <div id="gridContainer"></div>
+
+
+
+</div>
+@* </div> *@
+
+
+<script type="text/javascript">
+    $(function () {
+        // Initialize the first SelectBox with validation
+        $("#costCenterComboBox").dxSelectBox({
+            width: 400,
+            dataSource: new DevExpress.data.CustomStore({
+                load: function (loadOptions) {
+                    return $.ajax({
+                        url: "/api/addNewQuotationItemSubGroup/GetSubGroup",
+                        dataType: "json",
+                        data: loadOptions,
+                        type: "GET"
+                    });
+                },
+                byKey: function (key) {
+                    return $.ajax({
+                        url: "/api/addNewQuotationItemSubGroup/GetCostCenterByKey",
+                        data: { key: key },
+                        type: "GET"
+                    });
+                }
+            }),
+            displayExpr: "GroupCode",
+            valueExpr: "GroupCode",
+            placeholder: formatMessage('Select or Enter a Cost Center Group'),
+            searchEnabled: true,
+            acceptCustomValue: true,
+            inputAttr: { style: "text-align: left;" },
+            onCustomItemCreating: function (args) {
+                const newValue = args.text;
+                return {
+                    GroupCode: newValue,
+                    GroupName: newValue
+                };
+            },
+            onValueChanged: function (args) {
+                const selectedValue = args.value;
+                console.log("Selected/Entered Value:", selectedValue);
+            }
+        });
+
+        // Attach validator to the first SelectBox
+        $("#costCenterComboBox").dxValidator({
+            validationRules: [{
+                type: 'required',
+                message: formatMessage('Cost Center Group is required')
+            }]
+        });
+
+        // Initialize the second SelectBox with validation
+        $("#costCenterMaster1").dxSelectBox({
+            width: 800,
+            dataSource: new DevExpress.data.CustomStore({
+                load: function (loadOptions) {
+                    return $.ajax({
+                        url: "/api/addNewQuotationItemSubGroup/GetSubGroup",
+                        dataType: "json",
+                        data: loadOptions,
+                        type: "GET"
+                    });
+                },
+                byKey: function (key) {
+                    return $.ajax({
+                        url: "/api/addNewQuotationItemSubGroup/GetCostCenterMasterGroupByKey",
+                        data: { key: key },
+                        type: "GET"
+                    });
+                }
+            }),
+            displayExpr: "GroupName",
+            valueExpr: "GroupName",
+            placeholder: formatMessage('Select or Enter a Cost Center Master Group'),
+            searchEnabled: true,
+            acceptCustomValue: true,
+            inputAttr: { style: "text-align: left;" },
+            onCustomItemCreating: function (args) {
+                const newValue = args.text;
+                return {
+                    GroupName: newValue,
+                    GroupName: newValue
+                };
+            },
+            onValueChanged: function (args) {
+                const selectedValue = args.value;
+                console.log("Selected/Entered Value:", selectedValue);
+            }
+        });
+
+        // Attach validator to the second SelectBox
+        $("#costCenterMaster1").dxValidator({
+            validationRules: [{
+                type: 'required',
+                message: formatMessage('Cost Center Master Group is required')
+            }]
+        });
+    });
+
+
+
+    $(function () {
+        // Initialize the TextBox with default text
+        $("#LedgerActive").dxTextBox({
+            value: "Show Price Details:",
+            readOnly: true
+        });
+
+        // Get the instance of the switch
+        let switchInstance = $("#schLedgerActive").dxSwitch("instance");
+
+        // Handle value change event
+        switchInstance.option("onValueChanged", function (e) {
+            let textBoxInstance = $("#LedgerActive").dxTextBox("instance");
+
+            if (e.value) {
+                // When switched ON, update text and apply red color
+                textBoxInstance.option("value", "Hide Price Details:");
+                $("#LedgerActive .dx-texteditor-input").css("color", "black");
+            } else {
+                // When switched OFF, update text and reset color
+                textBoxInstance.option("value", "Show Price Details:");
+                $("#LedgerActive .dx-texteditor-input").css("color", "black");
+            }
+        });
+    });
+
+
+    $(function () {
+        var updatedRows = []; // To store the updated rows
+        var searchPanelVisible = false; // Track the visibility of the search panel
+
+        // Initialize DevExtreme DataGrid with CustomStore
+        $("#gridContainer").dxDataGrid({
+            dataSource: new DevExpress.data.CustomStore({
+                key: "QuoteGroupItemSlNo",
+                load: function () {
+                    return $.getJSON('/api/addNewQuotationItemSubGroup/GetSubGroup'); // Fetch data from the API
+                },
+                update: function (key, values) {
+                    var updatedBranch = {
+                        QuoteGroupItemSlNo: key, // Use the key for the branch to identify it
+                        GroupCode: values.GroupCode,
+                        GroupName: values.GroupName,
+                        GroupRemarks: values.GroupRemarks,
+                        IsShowLineItemsTotal:values.IsShowLineItemsTotal
+                    };
+
+                    // Add the updated branch to the updatedRows array
+                    updatedRows.push(updatedBranch);
+
+                    // Send the updated data to the backend via AJAX
+                    return $.ajax({
+                        type: "POST",
+                        url: "/api/addNewQuotationItemSubGroup/UpdateSubGroup",
+                        data: JSON.stringify(updatedBranch),
+                        contentType: "application/json",
+                        success: function (response) {
+                            // SweetAlert on success
+                            Swal.fire({
+                                icon: 'success',
+                                title: formatMessage('SubGroup Updated'),
+                                text: formatMessage('The SubGroup has been successfully updated.'),
+                                confirmButtonText: 'OK'
+                            });
+                        },
+                        error: function (xhr) {
+                            // Check if the error is due to a duplicate branch name
+                            var errorMessage = xhr.responseJSON?.message || "An error occurred.";
+
+                            if (xhr.status === 400 && errorMessage.includes(" SubGroup already exists")) {
+
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: formatMessage('Duplicate SubGroup'),
+                                    text: formatMessage('This SubGroup already exists! Please choose a different name.'),
+                                    confirmButtonText: 'OK'
+                                }).then(() => {
+                                    // Trigger the cancel action on the DataGrid after alert is closed
+                                    var dataGrid = $("#gridContainer").dxDataGrid("instance");
+                                    dataGrid.cancelEditData();  // Cancel the current edit
+                                });
+
+
+                            } else {
+                                // Handle other errors
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: errorMessage,
+                                    confirmButtonText: 'OK'
+                                });
+                            }
+                        }
+                    });
+                }
+            }),
+            editing: {
+                mode: "batch", // Enable batch edit mode for multiple row editing
+                allowUpdating: true,  // Allow cell updates
+                allowAdding: false,   // No new rows
+                allowDeleting: true, // Prevent row deletion
+                useIcons: true, // Use icons for save/cancel
+                texts: {
+                    saveAll: "Update", // Custom text for save button
+                    cancelAll: "Cancel All Changes" // Custom text for cancel button
+                }
+            },
+            columns: [
+                { dataField: "QuoteGroupItemSlNo", caption: formatMessage("ID"), width: 100, editorOptions: { readOnly: true } },
+                { dataField: "GroupCode", caption: formatMessage("Code") },
+                { dataField: "GroupName", caption: formatMessage("Sub Group Name") },
+                { dataField: "GroupRemarks", caption: formatMessage("Notes") },
+                {
+                    dataField: "IsShowLineItemsTotal",
+                    caption: formatMessage("Hide Price"),
+                    alignment: "center",
+                    allowEditing: false, // Disable default editing
+                    cellTemplate: function (container, options) {
+                        const isOn = options.data.IsShowLineItemsTotal;
+                        const iconClass = isOn ? "fa-toggle-on" : "fa-toggle-off";
+                        const color = isOn ? "green" : "red";
+
+                        // Create the icon element
+                        const icon = $("<i>")
+                            .addClass(`fa ${iconClass}`)
+                            .css("color", color)
+                            .css("cursor", "pointer");
+
+                        // Append the icon to the container
+                        container.append(icon);
+
+                        // Handle click event to toggle the value
+                        icon.on("click", function () {
+                            const newValue = !isOn;
+
+                            // Update the data source
+                            const dataGrid = $("#gridContainer").dxDataGrid("instance");
+                            dataGrid.cellValue(options.rowIndex, "IsShowLineItemsTotal", newValue);
+
+                            // Optionally, save the changes immediately
+                            dataGrid.saveEditData();
+                        });
+                    }
+                }
+                ,
+                {
+                    type: "buttons",
+                    width: 100,
+                    buttons: [
+                        {
+                            icon: "trash",
+                            hint: "Delete",
+                            onClick: function (e) {
+                                var dataGrid = $("#gridContainer").dxDataGrid("instance");
+                                var selectedData = e.row.data;
+                                var QuoteGroupItemSlNo = selectedData.QuoteGroupItemSlNo;
+
+                                // Send delete request to the API
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/api/addNewQuotationItemSubGroup/DeleteSubGroup",
+                                    data: JSON.stringify({ QuoteGroupItemSlNo: QuoteGroupItemSlNo }),
+                                    contentType: "application/json",
+                                    success: function (response) {
+                                        if (response.success) {
+                                            dataGrid.refresh(); // Refresh the grid
+                                            Swal.fire({
+                                                icon: 'success',
+                                                title: 'Success',
+                                                text: formatMessage(' deleted successfully.'),
+                                                confirmButtonText: 'OK'
+                                            });
+                                        } else {
+                                            Swal.fire({
+                                                icon: 'error',
+                                                title: 'Error',
+                                                text: response.message,
+                                                confirmButtonText: 'OK'
+                                            });
+                                        }
+                                    },
+                                    error: function (xhr) {
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Error',
+                                            text: xhr.responseText,
+                                            confirmButtonText: 'OK'
+                                        });
+                                    }
+                                });
+                            }
+                        }
+                    ]
+                }
+            ],
+            showBorders: true,
+            paging: {
+                pageSize: 10
+            },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [5, 10, 20],
+                showInfo: true
+            },
+            filterRow: {
+                visible: searchPanelVisible, // Set initial visibility of the filter row
+                applyFilter: "auto"
+            },
+            toolbar: {
+                items: [
+                    {
+                        widget: "dxButton",
+                        options: {
+                            icon: "save",  // Icon for the Save button
+                            text: formatMessage("Update"),  // Text alongside the icon
+                            onClick: function () {
+                                $("#gridContainer").dxDataGrid("instance").saveEditData();  // Save all changes
+                            }
+                        },
+                        location: "after"
+                    },
+                    {
+                        widget: "dxButton",  // Adding Cancel button
+                        options: {
+                            icon: "close",  // Icon for Cancel button
+                            text: formatMessage("Cancel"),  // Text for Cancel button
+                            onClick: function () {
+                                $("#gridContainer").dxDataGrid("instance").cancelEditData();  // Cancel all edits
+                            },
+                            visible: false // Initially hide the cancel button
+                        },
+                        location: "after",
+                        name: "cancelButton"
+                    },
+                    {
+                        widget: "dxButton", // Add the Back button
+                        options: {
+                            icon: "arrowleft", // You can choose another icon if you'd like
+                            text: "Back",
+                            onClick: function () {
+                                window.parent.closeModal(); // This closes the current window/tab
+                            }
+                        },
+                        location: "after"
+                    }
+                ]
+            },
+            onEditingStart: function (e) {
+                var dataGrid = $("#gridContainer").dxDataGrid("instance");
+                var toolbarItems = dataGrid.option("toolbar.items");
+                var cancelButton = toolbarItems.find(item => item.name === "cancelButton");
+                cancelButton.options.visible = true; // Show the cancel button when editing starts
+                dataGrid.option("toolbar.items", toolbarItems);
+            },
+            onSaved: function (e) {
+                var dataGrid = $("#gridContainer").dxDataGrid("instance");
+                var toolbarItems = dataGrid.option("toolbar.items");
+                var cancelButton = toolbarItems.find(item => item.name === "cancelButton");
+                cancelButton.options.visible = false; // Hide the cancel button when editing ends
+                dataGrid.option("toolbar.items", toolbarItems);
+            },
+            onEditCanceling: function (e) {
+                var dataGrid = $("#gridContainer").dxDataGrid("instance");
+                var toolbarItems = dataGrid.option("toolbar.items");
+                var cancelButton = toolbarItems.find(item => item.name === "cancelButton");
+                cancelButton.options.visible = false; // Hide the cancel button when editing is canceled
+                dataGrid.option("toolbar.items", toolbarItems);
+            },
+
+            onRowUpdated: function (e) {
+                // SweetAlert when a row is updated
+                Swal.fire({
+                    icon: 'success',
+                    title: formatMessage('Row Updated'),
+                    text: formatMessage('The row data was successfully updated.'),
+                    confirmButtonText: 'OK'
+                });
+            },
+            onRowInserted: function (e) {
+                // SweetAlert when a new row is inserted
+                Swal.fire({
+                    icon: 'success',
+                    title: formatMessage('Row Inserted'),
+                    text: formatMessage('A new row was added successfully.'),
+                    confirmButtonText: 'OK'
+                });
+            },
+            onRowRemoved: function (e) {
+                // SweetAlert when a row is removed
+                Swal.fire({
+                    icon: 'info',
+                    title: formatMessage('Row Removed'),
+                    text: formatMessage('The row has been removed from the grid.'),
+                    confirmButtonText: 'OK'
+                });
+            },
+
+            // Enable vertical and horizontal scrolling
+            scrolling: {
+                mode: "virtual", // This makes the scrolling virtual, loading rows as you scroll
+                rowRenderingMode: "virtual", // Optimizes row rendering
+                useNative: true // Use native scrolling for better performance
+            },
+            height: 400, // Set a fixed height for the grid (this helps in showing vertical scrollbar)
+            width: "100%" // Make grid responsive and take full width of the container
+        });
+    });
+
+
+
+
+
+    function adddivmaster() {
+        
+
+        var GroupCode = $("#costCenterComboBox").dxSelectBox("instance").option("value");
+        var GroupName = $("#costCenterMaster1").dxSelectBox("instance").option("value");
+        var QuotationNo = $("#quotationNo").dxTextBox("instance").option("value");
+        var Mprno = $("#mprNo").dxTextBox("instance").option("value");
+        var GroupRemarks = $("#subGroupRemarks").dxTextBox("instance").option("value");
+        var IsShowLineItemsTotal = $("#schLedgerActive").dxSwitch("instance").option("value");
+
+
+
+        // Get the validator instances
+        var GroupCodeValidator = $("#costCenterComboBox").dxValidator("instance");
+        var GroupNameValidator = $("#costCenterMaster1").dxValidator("instance");
+
+        // Validate the inputs
+        var isGroupCodeValid = GroupCodeValidator.validate().isValid;
+        var isGroupNameValid = GroupNameValidator.validate().isValid;
+
+        if (isGroupCodeValid && isGroupNameValid) {
+            // Get the data array from the grid's data source
+            var existingBranches = $("#gridContainer").dxDataGrid("instance").getDataSource().items();
+
+            // Check if the branch name already exists in the grid data
+            var duplicate = existingBranches.some(function (item) {
+                return item.GroupName && GroupName &&
+                    item.GroupName.toLowerCase() === GroupName.toLowerCase();
+            });
+
+            if (duplicate) {
+                Swal.fire({
+                    icon: 'error',
+                    title: formatMessage('Duplicate GroupName'),
+                    text: formatMessage('This GroupName already exists!'),
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            // Create the data object to send to the API
+            var branchData = {
+                GroupCode: GroupCode,
+                GroupName: GroupName,
+                QuotationNo: QuotationNo,
+                Mprno: Mprno,
+                GroupRemarks: GroupRemarks,
+                IsShowLineItemsTotal: IsShowLineItemsTotal
+            };
+
+            // Send the data to the AddBranch API using AJAX
+            $.ajax({
+                url: '/api/addNewQuotationItemSubGroup/AddSubGroup',  // The API endpoint for adding a branch
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(branchData),  // Convert the data object to JSON string
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: formatMessage('AddSubGroup Added'),
+                            text: response.message,
+                            confirmButtonText: 'OK'
+                        });
+                        // Clear inputs
+                        // $("#txtClientCategory").dxTextBox("instance").option("value", "");
+                        // $("#txtNumberOfDays").dxNumberBox("instance").option("value", null);
+                        // $("#chkEmployeeDocument").dxCheckBox("instance").option("value", false);
+
+                        // Optionally, you can reload the data grid to reflect the newly added branch
+                        $("#gridContainer").dxDataGrid("instance").refresh();
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: formatMessage('Error'),
+                            text: response.message,
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                },
+                error: function (xhr) {
+                    var errorMessage = xhr.status === 500
+                        ? "Server error: Please try again later."
+                        : "Validation error: " + xhr.responseText;
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: errorMessage,
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        } else {
+            // If validation fails, show a notification
+            DevExpress.ui.notify(formatMessage('Please fill required details!'), "error", 2000);
+        }
+    }
+
+    $(function () {
+        $("#quotationLineItem").dxTextBox({
+            text: formatMessage("Quotation Items Sub Group"),
+            readOnly: true,
+            onContentReady: function (e) {
+                $(e.element).addClass("dx-textbox-heading");
+            }
+        });
+    });
+</script>
+
