@@ -280,32 +280,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, new { success = false, message = ex.Message });
             }
         }
-        [HttpGet]
-        public async Task<IActionResult> GetCostItem()
-        {
-            try
-            {
-                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                {
-                    var costItems = await dbContext.Tbl60105quotationCostMasters
-                        .Select(s => new
-                        {
-                            s.CostItemCode,
-                            s.CostItem
-                        })
-                        .ToListAsync();
-
-                    return Json(costItems);
-                }
-
-                return Unauthorized(new { message = "Invalid tenant.", success = false });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in GetCostItem");
-                return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
-            }
-        }
+       
         [HttpPost]
         public async Task<IActionResult> SaveOrUpdateStatus([FromBody] Tbl60105quotationCostMaster model)
         {
