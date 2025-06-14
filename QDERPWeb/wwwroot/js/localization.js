@@ -3006,9 +3006,11 @@
         "Inventory Group Master": "Inventory Group Master",
         "Stock Report By Store":"Stock Report By Store",
         "Store Inventory By Date": "Store Inventory By Date",
-        "Stock Movement Report":"Stock Movement Report",
+        "Stock Movement Report": "Stock Movement Report",
+        "Add New Stock Item": "Add New Stock Item",
     },
     "ar": {
+        "Add New Stock Item": "إضافة عنصر مخزون جديد",
         "Stock Movement Report":"تقرير حركة الأسهم",
         "Store Inventory By Date":"مخزون المتجر حسب التاريخ",
         "Inventory Report On Stores":"تقرير المخزون في المخازن",

@@ -62,7 +62,7 @@
             .Icon("overflow")
             .Width(50)
             .Text(new JS("formatMessage('Purchase Order Details')"))
-            // .OnClick("toggleGroupPanel")
+                .OnClick("btnPurchaseOrderDetails1")
             )
 
     </div>
@@ -320,5 +320,8 @@
         }
         function AddPurchaseOrder(){
             window.location.href = `/${tenantName}/IMS/AddNewPurchaseOrder`;
+        }
+    function btnPurchaseOrderDetails1(){
+            window.location.href = `/${tenantName}/IMS/PurchaseRequestItemDetails`;
         }
 </script>
