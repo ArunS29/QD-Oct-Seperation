@@ -211,7 +211,7 @@
     }
 
 
-    .limited-footer .btn-container:not(:has(#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint2,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove)) {
+    .limited-footer .btn-container:not(:has(#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnStockAvailability)) {
         display: none !important;
     }
 
@@ -232,6 +232,7 @@
 <div class="form-container1">
     <div class="form-container">
         <!-- Tab Menu -->
+
         @(
                 Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%")
                 .Items(item =>
@@ -735,10 +736,19 @@
             columns.Add().DataField("CostPrice").Caption("Cost Price");
             columns.Add().DataField("QuotedUnitPrice").Caption("Unit Price");
             columns.Add().DataField("QuotedDiscount").Caption("Quoted Discount");
-            columns.Add().DataField("LineTaxAmount").Caption("Amount");
-            columns.Add().DataField("QuotedTaxSlab").Caption("VAT Desc");
-            columns.Add().DataField("VAT").Caption("VAT");
-            columns.Add().DataField("Total").Caption("Total");
+            columns.Add().DataField("LineTaxAmount").Caption("Amount").AllowEditing(false);
+            columns.Add()
+            .DataField("QuotedTaxSlab")
+            .Caption("VAT Desc")
+            .Width(300)
+            .EditCellTemplate(new JS("vatDescDropDownTemplate"))
+            .CellTemplate(new JS(@"
+    function (container, options) {
+    const found = TaxSlab.find(x => x.TaxRateIn100 === options.value);
+    container.text(found ? found.TaxRateInWord : options.value);
+    }
+    ")); columns.Add().DataField("VAT").Caption("VAT").AllowEditing(false);
+            columns.Add().DataField("Total").Caption("Total").AllowEditing(false);
         })
         .ColumnAutoWidth(true)
         .Width("100%")
@@ -750,6 +760,7 @@
         .Mode(GridColumnChooserMode.Select)
         )
         .AllowColumnReordering(true)
+        .OnRowUpdating("onRowUpdating")
         .AllowColumnResizing(true)
         .ColumnFixing(fixing => fixing.Enabled(true))
         .HeaderFilter(filter => filter.Visible(false))
@@ -1231,6 +1242,8 @@
                                 const grid = $("#itemGrid").dxDataGrid("instance");
                                 const rowIndex = grid.getRowIndexByKey(cellInfo.key);
                                 grid.cellValue(rowIndex, "Gscode", data.Gscode);
+                                grid.cellValue(rowIndex, "CostPrice", data.CostPrice);
+                                grid.cellValue(rowIndex, "UnitRateMethod", data.GsuoM);
                                 grid.cellValue(rowIndex, "Qty", 1);
 
                                 e.component.close();
@@ -1295,7 +1308,7 @@
 
 
 
-        /////UnitCodeDRopdown
+        /////UnitRateDropdown
             let unitCodesList = [];
 
         $(function () {
@@ -1404,6 +1417,59 @@
         }
 
 
+        /////VAT DESC
+            let TaxSlab = [];
+
+        $(function () {
+            $.get("/api/SalesOrders/GetTaxSlabs", function (data) {
+              TaxSlabs = data;
+            });
+        });
+
+    function vatDescDropDownTemplate(cellElement, cellInfo) {
+        const dropDownBox = $("<div>").dxDropDownBox({
+            value: cellInfo.value,
+            valueExpr: "TaxRateIn100",
+            displayExpr: "TaxRateInWord",
+            dataSource: TaxSlabs,
+            showClearButton: true,
+            showDropDownButton: true,
+            deferRendering: false,
+            width: "100%",
+            dropDownOptions: { width: 600 },
+            contentTemplate: function (e) {
+                const gridBox = $("<div>").dxDataGrid({
+                    dataSource: TaxSlabs,
+                    keyExpr: "TaxRateIn100",
+                    selection: { mode: "single" },
+                    columns: [
+                        { dataField: "TaxSlabCode", caption: "Code", width: 100 },
+                        { dataField: "TaxSlab", caption: "VAT Desc", width: 300 }
+                    ],
+                    hoverStateEnabled: true,
+                    height: 250,
+                    searchPanel: {
+                        visible: true,
+                        width: 240,
+                        placeholder: "Search VAT Desc..."
+                    },
+                    paging: { enabled: false },
+                    onSelectionChanged: function (selectedItems) {
+                        const selected = selectedItems.selectedRowsData[0];
+                        if (selected) {
+                            cellInfo.setValue(selected.TaxRateIn100);  // ✅ set correct value
+                            e.component.option("value", selected.TaxRateIn100); // ✅ sync dropdown
+                            e.component.close();
+                        }
+                    }
+                });
+
+                return $("<div>").append(gridBox);
+            }
+        });
+
+        cellElement.append(dropDownBox);
+    }
 
 
         function handleCellClick(e) {
@@ -1732,7 +1798,7 @@
                     Gscode: row.Gscode ?? "",
                     QuotedUnitPrice: row.QuotedUnitPrice ?? null,
                     QuotedDiscount: row.QuotedDiscount ?? null,
-                     QuotedTaxSlab: row.QuotedTaxSlab ?? null,
+                    QuotedTaxSlab: row.QuotedTaxSlab != null ? parseInt(row.QuotedTaxSlab) : null,
                     CostPrice: row.CostPrice ?? null
                 }));
 
@@ -1791,9 +1857,7 @@
             }
         });
 
-         //date today  works
-             // Instead of: $("#SalesOrderDate").dxDateBox("instance").option("value")
-
+       
          ////
         $(function () {
             // Helper to get query string parameter
@@ -1824,14 +1888,14 @@
                         $("#TypeOFSalesOrder").dxDropDownBox("instance").option("value", data.TypeOfRequest);
                         $("#ClientNames").dxDropDownBox("instance").option("value", data.ClientCode);
                          $("#ReferenceNo").dxTextBox("instance").option("value", data.Project);
-                            $("#Project").dxDropDownBox("instance").option("value", data.ProjectMasterCode);
-                                        $("#ReferenceNo1").dxTextBox("instance").option("value", data.ClientRefNo);
+                        $("#Project").dxDropDownBox("instance").option("value", data.ProjectMasterCode);
+                          $("#ReferenceNo1").dxTextBox("instance").option("value", data.ClientRefNo);
                         $("#preparedBy").dxDropDownBox("instance").option("value", data.QuoteSignatory);
                         $("#SalesPerson").dxDropDownBox("instance").option("value", data.SalesPersonCode);
                         $("#AdditionsText").dxTextBox("instance").option("value", data.AdditionsText);
                         $("#DeductionsText").dxTextBox("instance").option("value", data.DiscountsText);
-                                    $("#AdditionsAmount").dxNumberBox("instance").option("value", data.QuoteTransport);
-                                    $("#DeductionsAmount").dxNumberBox("instance").option("value", data.QuoteDiscount);
+                          $("#AdditionsAmount").dxNumberBox("instance").option("value", data.QuoteTransport);
+                          $("#DeductionsAmount").dxNumberBox("instance").option("value", data.QuoteDiscount);
                         $("#CostCenter").dxDropDownBox("instance").option("value", data.CostAllocationMasterGroup);
                         $("#CompanyBranch").dxDropDownBox("instance").option("value", data.CompanyBranch);
                         $("#InventoryGroup").dxDropDownBox("instance").option("value", data.InventoryMasterGroupId);
@@ -2059,5 +2123,159 @@
                 }
             });
         }
+    
+        function onRowUpdating(e) {
+        const data = Object.assign({}, e.oldData, e.newData);
+
+        const qty = parseFloat(data.QuotedQuantity) || 0;
+        const unitPrice = parseFloat(data.QuotedUnitPrice) || 0;
+        const discount = parseFloat(data.QuotedDiscount) || 0;
+        const vatRate = parseFloat(data.QuotedTaxSlab) || 0;
+
+        // Your updated formula
+        const amount = (qty * unitPrice) + discount;
+        const vat = (amount * vatRate) / 100;
+        const total = amount + vat;
+
+        // Add calculated values to update object
+        e.newData.LineTaxAmount = amount.toFixed(2);
+        e.newData.VAT = vat.toFixed(2);
+        e.newData.Total = total.toFixed(2);
+    }
+    ///submitbutton
+       $("#btnSubmit").on("click", function () {
+        const salesOrderNo = $("#SalesOrderNO").dxTextBox("instance").option("value")?.trim();
+
+        if (!salesOrderNo) {
+            DevExpress.ui.notify("Please enter a Sales Order Number.", "error", 2000);
+            return;
+        }
+
+        $.ajax({
+            url: '/api/SalesOrders/SubmitSalesOrder',
+            type: 'POST',
+            data: JSON.stringify(salesOrderNo),
+            contentType: 'application/json',
+            success: function (response) {
+                if (response.success) {
+                    DevExpress.ui.notify(response.message, "success", 2000);
+
+                
+
+                    // 🛑 Disable Submit button
+                    if ($("#btnSubmit").data("dxButton")) {
+                        $("#btnSubmit").dxButton("instance").option("disabled", true);
+                    } else {
+                        $("#btnSubmit").attr("disabled", true);
+                    }
+                } else {
+                    DevExpress.ui.notify(response.message, "error", 2000);
+                }
+            },
+            error: function (xhr) {
+                const errMsg = xhr.responseJSON?.message || "Unexpected error.";
+                DevExpress.ui.notify(errMsg, "error", 2000);
+            }
+        });
+    });
+    //verify button
+    $("#btnVerify").on("click", function () {
+        const salesOrderNo = $("#SalesOrderNO").dxTextBox("instance").option("value")?.trim();
+
+        if (!salesOrderNo) {
+            DevExpress.ui.notify("Enter Sales Order No first.", "error", 2000);
+            return;
+        }
+
+        $.ajax({
+            url: '/api/SalesOrders/VerifySalesOrder',
+            type: 'POST',
+            data: JSON.stringify(salesOrderNo),
+            contentType: 'application/json',
+            success: function (response) {
+                if (response.success) {
+                    DevExpress.ui.notify(response.message, "success", 2000);
+                    $("#btnVerify").dxButton("instance").option("disabled", true);
+                } else {
+                    DevExpress.ui.notify(response.message, "error", 2000);
+                }
+            },
+            error: function (xhr) {
+                const errMsg = xhr.responseJSON?.message || "Unexpected error.";
+                DevExpress.ui.notify(errMsg, "error", 2000);
+            }
+        });
+    });
+    //Approve
+    $("#btnApprove").on("click", function () {
+        const salesOrderNo = $("#SalesOrderNO").dxTextBox("instance").option("value")?.trim();
+
+        if (!salesOrderNo) {
+            DevExpress.ui.notify("Enter Sales Order No first.", "error", 2000);
+            return;
+        }
+
+        $.ajax({
+            url: '/api/SalesOrders/ApproveSalesOrder',
+            type: 'POST',
+            data: JSON.stringify(salesOrderNo),
+            contentType: 'application/json',
+            success: function (response) {
+                if (response.success) {
+                    DevExpress.ui.notify(response.message, "success", 2000);
+                    disableAllControls(); // disable fields/buttons
+                } else {
+                    DevExpress.ui.notify(response.message, "error", 2000);
+                }
+            },
+            error: function (xhr) {
+                const errMsg = xhr.responseJSON?.message || "Unexpected error.";
+                DevExpress.ui.notify(errMsg, "error", 2000);
+            }
+        });
+    });
+  
+        function disableAllControls() {
+        const componentTypes = [
+            { selector: "#SalesOrderNO", type: "dxTextBox" },
+            { selector: "#SalesOrderDate", type: "dxDateBox" },
+            { selector: "#ClientNames", type: "dxDropDownBox" },
+            { selector: "#QuotationNo", type: "dxTextBox" },
+            { selector: "#QuotationDate", type: "dxDateBox" },
+            { selector: "#ClientPoNo", type: "dxTextBox" },
+            { selector: "#ClientPoDate", type: "dxDateBox" },
+            { selector: "#Project", type: "dxDropDownBox" },
+            { selector: "#TypeOFSalesOrder", type: "dxDropDownBox" },
+            { selector: "#ReferenceNo", type: "dxTextBox" },
+            { selector: "#ClientRefName", type: "dxTextBox" },
+            { selector: "#ClientEmail", type: "dxTextBox" },
+            { selector: "#ClientContact", type: "dxTextBox" }
+        ];
+
+        // Disable fields
+        componentTypes.forEach(item => {
+            const instance = $(item.selector)[item.type]("instance");
+            if (instance) {
+                instance.option("disabled", true);
+            }
+        });
+
+        // Disable buttons
+        const buttonIds = [
+            "#ddButtonLayout", "#btnMoveDown", "#btnMoveUp", "#btnSave",
+            "#btnSaveAndClose", "#btnAddNew", "#btnDelete",
+            "#btnSubmit", "#btnVerify", "#btnApprove"
+        ];
+
+        buttonIds.forEach(id => {
+            const $btn = $(id);
+            if ($btn.data("dxButton")) {
+                $btn.dxButton("instance").option("disabled", true);
+            } else {
+                $btn.prop("disabled", true).addClass("dx-state-disabled");
+            }
+        });
+    }
+
 
 </script>
