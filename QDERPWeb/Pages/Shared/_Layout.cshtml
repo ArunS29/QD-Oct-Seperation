@@ -17,6 +17,7 @@
     string tenantName = "";
     string companyName = "";
     string escapedJson = "{}"; // Initialize early to make available later
+    string escapedJson1 = "{}"; // Initialize early to make available later
     List<string> userModules = new List<string>();
     string encryptedTenantName = EncryptionHelper.Encrypt(tenantName); // Encrypt tenantName
 
@@ -46,6 +47,9 @@
                 var financeMenuAccess = await UserAccessService.GetFinanceMenuAccessAsync(parsedUserId);
                 var json = System.Text.Json.JsonSerializer.Serialize(financeMenuAccess);
                 escapedJson = System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(json);
+                var inventoryMenuAccess = await UserAccessService.GetInventoryMenuAccessAsync(parsedUserId);
+                var json1 = System.Text.Json.JsonSerializer.Serialize(inventoryMenuAccess);
+                escapedJson1 = System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(json1);
             }
         }
         catch (Exception ex)
@@ -124,9 +128,23 @@
             -moz-osx-font-smoothing: grayscale; /* Font smoothing for Firefox on macOS */
         }
 
+        .dx-list:not(.dx-list-select-decorator-enabled) .dx-list-item.dx-list-item-selected {
+            background-color: var(--title-background-color);
+            color: #fff;
+        }
+
+        .dx-list:not(.dx-list-select-decorator-enabled) .dx-list-item.dx-state-focused.dx-list-item-selected {
+            background-color: var(--title-background-color);
+            color: #fff;
+        }
+
+        .dx-list:not(.dx-list-select-decorator-enabled) .dx-list-item.dx-state-focused {
+            background-color: var(--title-background-color);
+            color: #fff;
+        }
         :root {
             font-family: "Inter", Helvetica, Arial, sans-serif;
-            --highlight-color: #0f6cbd;
+            --highlight-color: var(--hover-bg-color);
             --text-color: #525252;
             --hover-bg-color: var(--hover-bg-color);
             --sidebar-bg: #909ead00;
@@ -1523,10 +1541,7 @@
 
 
             <div id="sidebar" class="sidebar hidden">
-                <div class="menu-item1"
-                @* onmouseover="toggleSidebar()"  *@
-                @* onmouseout="toggleSidebar()" *@
-                  >
+                <div class="menu-item1" style="cursor:pointer" onclick="navigateToTenantHome()" >
                     <img border="0" src="~/images/erp_logo.png" alt="QD-ERP" width="45" height="30">
                     <div id="HumanResources2" class="text no-border-input">Quick Dice</div>
                 </div>
@@ -2602,73 +2617,85 @@
                 }
 
 
-                function showInventorySubmenu() {
-                    const sidebar2 = document.getElementById('sidebar2');
-                    sidebar2.innerHTML = `
-                                        <div class="submenu-item" onclick="toggleSubmenu('financeDashboardSubmenu1')" role="button" aria-expanded="false">
-                                            <i class="fas fa-book-open"></i>
-                                            <div class="text">${formatMessage("Inventory Dashboard")}</div>
-                                        </div>
-                                        <div id="financeDashboardSubmenu1" class="nested-submenu" style="display: none; margin-left: 30px;">
-                                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/Index">
-                                                <div class="text">${formatMessage("My Dashboard")}</div>
-                                            </a>
-                                        </div>
+                       function showInventorySubmenu() {
+            const sidebar2 = document.getElementById('sidebar2');
 
-                                       <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/IMS/StockInventoryMainForm">
-                                            <i class="fas fa-boxes"></i>
-                                            <div class="text">${formatMessage("Stock Inventory")}</div>
-                                        </a>
-                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/IMS/MaterialRequestEnquiriesDetails">
-                                            <i class="fas fa-clipboard-list"></i>
-                                            <div class="text">${formatMessage("Material Requests")}</div>
-                                        </a>
-                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/IMS/Quotation">
-                                            <i class="fas fa-file-signature"></i>
-                                            <div class="text">${formatMessage("Quotations To Clients")}</div>
-                                        </a>
-                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/IMS/SalesOrders">
-                                            <i class="fas fa-shopping-bag"></i>
-                                            <div class="text">${formatMessage("Sales Orders")}</div>
-                                        </a>
-                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/IMS/DeliveryNote">
-                                            <i class="fas fa-truck"></i>
-                                            <div class="text">${formatMessage("Delivery Note")}</div>
-                                        </a>
-                                        <a class="submenu-item" href="/${tenantName}/IMS/RequestforQuotationList">
-                                            <i class="fas fa-database"></i>
-                                            <div class="text">${formatMessage("RFQ Database")}</div>
-                                        </a>
-                                        <a class="submenu-item" href="/${tenantName}/IMS/QuotationAnalysis">
-                                            <i class="fas fa-chart-line"></i>
-                                            <div class="text">${formatMessage("Quotation Analysis")}</div>
-                                        </a>
-                                        <a class="submenu-item" href="/${tenantName}/IMS/PurchaseOrders">
-                                            <i class="fas fa-file-invoice"></i>
-                                            <div class="text">${formatMessage("Purchase Orders")}</div>
-                                        </a>
-                                        <a class="submenu-item" href="/${tenantName}/IMS/MaterialReceipts">
-                                            <i class="fas fa-dolly-flatbed"></i>
-                                            <div class="text">${formatMessage("Material Receipts")}</div>
-                                        </a>
-                                        <a class="submenu-item" href="/${tenantName}/IMS/ClientLeads">
-                                            <i class="fas fa-user-plus"></i>
-                                            <div class="text">${formatMessage("Client Leads")}</div>
-                                        </a>
-                                        <a class="submenu-item" href="/${tenantName}/IMS/Suppliers">
-                                            <i class="fas fa-people-carry"></i>
-                                            <div class="text">${formatMessage("Suppliers")}</div>
-                                        </a>
-                                        <a class="submenu-item" href="/${tenantName}/IMS/JobOrders">
-                                            <i class="fas fa-tasks"></i>
-                                            <div class="text">${formatMessage("Job Orders")}</div>
-                                        </a>
-                                        <a class="submenu-item" href="/${tenantName}/IMS/StockAdjustments">
-                                            <i class="fas fa-sliders-h"></i>
-                                            <div class="text">${formatMessage("Stock Adjustments")}</div>
-                                        </a>
+            const inventoryDashboardItems = [
+                { key: "My Dashboard", icon: "fas fa-tachometer-alt", href: `/${tenantName}/Finance/Index` }
+            ];
+
+            const inventoryMenuItems = [
+                { key: "Stock Inventory", icon: "fas fa-boxes", href: `/${tenantName}/IMS/StockInventoryMainForm`, label: "Stock Inventory", hideOnClick: true },
+                { key: "Material Requests", icon: "fas fa-clipboard-list", href: `/${tenantName}/IMS/MaterialRequestEnquiriesDetails`, label: "Material Requests", hideOnClick: true },
+                { key: "Quotations To Clients", icon: "fas fa-file-signature", href: `/${tenantName}/IMS/Quotation`, label: "Quotations To Clients", hideOnClick: true },
+                { key: "Sales Orders", icon: "fas fa-shopping-bag", href: `/${tenantName}/IMS/SalesOrders`, label: "Sales Orders", hideOnClick: true },
+                { key: "Delivery Note", icon: "fas fa-truck", href: `/${tenantName}/IMS/DeliveryNote`, label: "Delivery Note", hideOnClick: true },
+                { key: "RFQ Database", icon: "fas fa-database", href: `/${tenantName}/IMS/RequestforQuotationList`, label: "RFQ Database", hideOnClick: false },
+                { key: "Quotation Analysis", icon: "fas fa-chart-line", href: `/${tenantName}/IMS/QuotationAnalysis`, label: "Quotation Analysis", hideOnClick: false },
+                { key: "Purchase Orders", icon: "fas fa-file-invoice", href: `/${tenantName}/IMS/PurchaseOrders`, label: "Purchase Orders", hideOnClick: false },
+                { key: "Material Receipts", icon: "fas fa-dolly-flatbed", href: `/${tenantName}/IMS/MaterialReceipts`, label: "Material Receipts", hideOnClick: false },
+                { key: "Client Leads", icon: "fas fa-user-plus", href: `/${tenantName}/IMS/ClientLeads`, label: "Client Leads", hideOnClick: false },
+                { key: "Suppliers", icon: "fas fa-people-carry", href: `/${tenantName}/IMS/Suppliers`, label: "Suppliers", hideOnClick: false },
+                { key: "Job Orders", icon: "fas fa-tasks", href: `/${tenantName}/IMS/JobOrders`, label: "Job Orders", hideOnClick: false },
+                { key: "Stock Adjustments", icon: "fas fa-sliders-h", href: `/${tenantName}/IMS/StockAdjustments`, label: "Stock Adjustments", hideOnClick: false }
+            ];
+
+            // Access config from backend
+            const access = (inventoryMenuAccess1 || []).reduce((acc, x) => {
+                acc[x.ItemDescription] = x;
+                return acc;
+            }, {});
+
+            // Build Inventory Dashboard submenu
+            let dashboardHtml = `
+                <div class="submenu-item" onclick="toggleSubmenu('inventoryDashboardSubmenu')" role="button" aria-expanded="false">
+                    <i class="fas fa-book-open"></i>
+                    <div class="text">${formatMessage("Inventory Dashboard")}</div>
+                </div>
+                <div id="inventoryDashboardSubmenu" class="nested-submenu" style="display: none; margin-left: 30px;">
+            `;
+
+            inventoryDashboardItems.forEach(item => {
+                const perm = access[item.key];
+                if (!perm || !perm.ItemVisible) return;
+                dashboardHtml += `
+                    <a class="submenu-item${!perm.ItemEnabled ? ' disabled' : ''}"
+                       ${perm.ItemEnabled ? 'onclick="hideSidebars()"' : 'onclick="return false;"'}
+                       href="${perm.ItemEnabled ? item.href : '#'}"
+                       style="${!perm.ItemEnabled ? 'pointer-events:none;opacity:0.5;cursor:not-allowed;' : ''}">
+                        <i class="${item.icon}"></i>
+                        <div class="text">${formatMessage(item.key)}</div>
+                    </a>
                 `;
-                }
+            });
+            dashboardHtml += '</div>';
+
+            // Build other inventory menu items
+            const filteredMenuItems = inventoryMenuItems
+                .filter(item => {
+                    const menuConfig = access[item.key];
+                    return menuConfig ? menuConfig.ItemVisible : false;
+                })
+                .map(item => {
+                    const menuConfig = access[item.key];
+                    return {
+                        ...item,
+                        enabled: menuConfig ? menuConfig.ItemEnabled : false
+                    };
+                });
+
+            let otherMenusHtml = filteredMenuItems.map(item => `
+                <a class="submenu-item${!item.enabled ? ' disabled' : ''}"
+                   ${item.enabled ? (item.hideOnClick ? 'onclick="hideSidebars()"' : '') : 'onclick="return false;"'}
+                   href="${item.enabled ? item.href : '#'}"
+                   style="${!item.enabled ? 'pointer-events:none;opacity:0.5;cursor:not-allowed;' : ''}">
+                    <i class="${item.icon}"></i>
+                    <div class="text">${formatMessage(item.label)}</div>
+                </a>
+            `).join('');
+
+            sidebar2.innerHTML = dashboardHtml + otherMenusHtml;
+        }
 
 
                 // Function to toggle visibility of nested submenus
@@ -3173,7 +3200,7 @@
                     }
                 }
 
-                window.onload = function () {
+                $(function () {
                     document.documentElement.style.setProperty("--header-color", localStorage.getItem("--header-color") || "#F0F8FF");
                     document.documentElement.style.setProperty("--footer-color", localStorage.getItem("--footer-color") || "F0F8FF");
                     document.documentElement.style.setProperty("--nav-color", localStorage.getItem("--nav-color") || "#D6EAF8");
@@ -3183,7 +3210,7 @@
                     document.documentElement.style.setProperty("--dx-card-hover-box-shadow", localStorage.getItem("--dx-card-hover-box-shadow") || "#4a7fad");
 
 
-                };
+                });
                 window.onscroll = function () {
                     let button = document.getElementById("goToTopBtn");
                     if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
@@ -3399,8 +3426,7 @@
                 console.warn("Tenant name is not set.");
             }
         }
-    </script>
-    <script>
+        inventoryMenuAccess1 = JSON.parse("@Html.Raw(escapedJson1)");
         window.financeMenuAccess = JSON.parse("@Html.Raw(escapedJson)");
     </script>
 </body>

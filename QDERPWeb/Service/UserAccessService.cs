@@ -58,5 +58,25 @@ namespace QD.ERP.Web.Service
             }
             return new List<UserMenuAccess>();
         }
+
+        public async Task<List<UserMenuAccess>> GetInventoryMenuAccessAsync(int userId1)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                // Corrected: "Finance Menu" and property initializers
+                var result = await dbContext.TblUserAccessWebs
+                    .Where(x => x.UserId == userId1 && x.ItemForm == "Inventory Menu")
+                    .Select(x => new UserMenuAccess
+                    {
+                        ItemDescription = x.ItemDescription,
+                        ItemEnabled = x.ItemEnabled == true,
+                        ItemVisible = x.ItemVisible == true
+                    })
+                    .ToListAsync();
+
+                return result;
+            }
+            return new List<UserMenuAccess>();
+        }
     }
 }
