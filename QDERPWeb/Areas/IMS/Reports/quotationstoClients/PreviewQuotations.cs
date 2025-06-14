@@ -24,9 +24,7 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
             Image logoImage,
              Image sealImage,
              string companyAddress,
-             string companyPhone,
-            string companyEmail,
-            string companyWebsite,
+           
             string companyNameAr,
             string companyAddressAr,
             
@@ -36,12 +34,12 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
            
 
             InitializeComponent();
-            SetReportParameters(quotationNo, tenantName, companyName, logoImage,sealImage, companyAddress,companyPhone, companyEmail,companyWebsite,  companyNameAr, companyAddressAr);
+            SetReportParameters(quotationNo, tenantName, companyName, logoImage,sealImage, companyAddress,  companyNameAr, companyAddressAr);
             LoadReportData(quotationNo);
         }
 
         private void SetReportParameters(string quotationNo, string tenantName, string companyName,Image logoImage,Image sealImage, string companyAddress,
-            string companyPhone,string companyEmail,string companyWebsite, string companyNameAr, string companyAddressAr)
+             string companyNameAr, string companyAddressAr)
 
 
         {
@@ -70,10 +68,7 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
             AddOrUpdateParameter("CompanyAddress", companyAddress ?? "", typeof(string));
             AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string));
           
-            AddOrUpdateParameter("CompanyPhone", companyPhone ?? "", typeof(string));
-            AddOrUpdateParameter("CompanyEmailAddress", companyEmail ?? "", typeof(string));
-
-            AddOrUpdateParameter("CompanyWebsite", companyWebsite ?? "", typeof(string));
+         
             AddOrUpdateParameter("CompanyAddressAr", companyAddressAr ?? "", typeof(string));
 
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
@@ -95,14 +90,7 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
 
             if (FindControl("xrPictureBox4", true) is XRPictureBox sealPictureBox)
                 sealPictureBox.Image = sealImage;
-            if (FindControl("xrLabelCompanyPhone", true) is XRLabel companyphoneLabel)
-                companyphoneLabel.Text = companyPhone;
-
-            if (FindControl("xrLabelCompanyEmailAddress", true) is XRLabel emailLabel)
-                emailLabel.Text = companyEmail;
-
-            if (FindControl("xrLabelCompanyWebsite", true) is XRLabel websiteLabel)
-                websiteLabel.Text = companyWebsite;
+           
         }
 
         private void LoadReportData(string quotationNo)
