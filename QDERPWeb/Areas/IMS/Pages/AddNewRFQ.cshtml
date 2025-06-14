@@ -188,9 +188,7 @@
     .containers{
         display:flex;
     }
-	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnAttach,#btnUpload)) {
-		display: none !important;
-	}
+
     .dx-card{ 
         background: var(--background-color);
     }
@@ -799,6 +797,8 @@
 									.OnEditorPreparing("onEditorPreparing")
 									)
 		</div>
+	@await Html.PartialAsync("/Pages/Shared/IMS/RFQFormFooter.cshtml")
+
 		@using (Html.DevExtreme().NamedTemplate("GetSupplierContentTemplate"))
 		{
 			@(Html.DevExtreme().DataGrid()
@@ -976,11 +976,7 @@
 </div>
       
 
-<div class="Head">
-    <div class="limited-footer">
-        @await Html.PartialAsync("InventoryModuleFooter")
-    </div>
-</div>
+
 <script>
 	
 	  function onOpened(e) {
@@ -1116,23 +1112,6 @@
 			  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null;
 			  let dropDownInstance;
 			  let vatListInstance;
-
-			$(document).ready(function () {
-
-			$(".limited-footer .btn-containerIvoiceEdit").each(function () {
-
-			if (!$(this).find("#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnAttach,#btnUpload").length) {
-
-					$(this).remove();
-
-				}
-
-			});
-
-		});
-
-
-
 
 	//View e-Invoice
 
