@@ -37,11 +37,16 @@
             Context.Session.SetString("UserId", userId ?? "");
             Context.Session.SetString("TenantName", tenantName ?? "");
 
-           
+
 
             if (int.TryParse(userId, out int parsedUserId))
             {
                 userModules = UserAccessService.GetUserModules(parsedUserId);
+                var financeMenuAccess = await UserAccessService.GetFinanceMenuAccessAsync(parsedUserId);
+                var financeMenuAccessJson = System.Text.Json.JsonSerializer.Serialize(financeMenuAccess);
+                <script>
+                    window.financeMenuAccess = @Html.Raw(financeMenuAccessJson);
+                </script>
             }
         }
         catch (Exception ex)
@@ -104,7 +109,7 @@
     <!-- DevExpress PDF Exporter -->
     <script src="https://cdn3.devexpress.com/jslib/23.1.4/js/dx.all.js"></script>
 
-   
+
 
 
 
@@ -120,25 +125,9 @@
             -moz-osx-font-smoothing: grayscale; /* Font smoothing for Firefox on macOS */
         }
 
-        .dx-list:not(.dx-list-select-decorator-enabled) .dx-list-item.dx-list-item-selected {
-            background-color: var(--title-background-color);
-            color: #fff;
-        }
-
-        .dx-list:not(.dx-list-select-decorator-enabled) .dx-list-item.dx-state-focused.dx-list-item-selected {
-            background-color: var(--title-background-color);
-            color: #fff;
-        }
-
-        .dx-list:not(.dx-list-select-decorator-enabled) .dx-list-item.dx-state-focused {
-            background-color: var(--title-background-color);
-            color: #fff;
-        }
-
         :root {
             font-family: "Inter", Helvetica, Arial, sans-serif;
             --highlight-color: #0f6cbd;
-            --highlight-color: var(--hover-bg-color);
             --text-color: #525252;
             --hover-bg-color: var(--hover-bg-color);
             --sidebar-bg: #909ead00;
@@ -193,6 +182,12 @@
 
         .dx-datagrid-header-panel {
             background-color: var(--header-color) !important;
+        }
+
+        .submenu-item.disabled {
+            pointer-events: none;
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .container {
@@ -619,7 +614,7 @@
             padding: 20px;
         }
 
-        .popup-header  {
+        .popup-header {
             font-size: 18px;
             font-weight: bold;
             display: flex;
@@ -829,7 +824,7 @@
             border-radius: 50%;
             width: 50px;
             height: 50px;
-            z-index:1;
+            z-index: 1;
             font-size: 24px;
             cursor: pointer;
             display: none;
@@ -894,7 +889,8 @@
             height: calc(100% - 50px); /* Adjusted for header height */
             border: none;
         }
-        .dropdownLang{
+
+        .dropdownLang {
             display: flex;
             gap: 10px;
             align-items: center;
@@ -1058,12 +1054,12 @@
                 <img src="@Tenant.Value.LogoUrl" alt="Tenant Logo" />
                 <div class="companyName">
                     @Tenant.Value.CompanyNameShort
-                </div> 
-              
+                </div>
+
 
             </div>
             <div class="dropdownLang">
-          @*   <div>
+                @*   <div>
                 @(Html.DevExtreme().SelectBox()
                     .ID("currencySelect")
                     .DataSource(currencies)
@@ -1075,25 +1071,25 @@
                     .Value(currencies.FirstOrDefault()?.CurrencyID)
                     )
             </div> *@
-            <div>
-                @(Html.DevExtreme().SelectBox()
-                    .ID("languageSelectBox")
-                    .DataSource(new JS("locales")) // Ensure 'locales' is populated before rendering
-                    .DisplayExpr("name")
-                    .ValueExpr("value")
-                    .Width("10em")
-                    .Value(new JS("locale"))
-                    .OnValueChanged("changeLocale")
-                    .Label(new JS("formatMessage('Language')"))
-                    .LabelMode(EditorLabelMode.Outside)
-                    .ItemTemplate(@<text>
-                    <div style="display: flex; align-items: center;">
-                        <img src="<%- flag %>" alt="" style="width: 20px; height: 20px; border-radius: 50%; margin-right: 8px;" />
-                        <span><%- name %></span>
-                    </div>
-                </text>)
-                    )
-            </div>
+                <div>
+                    @(Html.DevExtreme().SelectBox()
+                        .ID("languageSelectBox")
+                        .DataSource(new JS("locales")) // Ensure 'locales' is populated before rendering
+                        .DisplayExpr("name")
+                        .ValueExpr("value")
+                        .Width("10em")
+                        .Value(new JS("locale"))
+                        .OnValueChanged("changeLocale")
+                        .Label(new JS("formatMessage('Language')"))
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ItemTemplate(@<text>
+                        <div style="display: flex; align-items: center;">
+                            <img src="<%- flag %>" alt="" style="width: 20px; height: 20px; border-radius: 50%; margin-right: 8px;" />
+                            <span><%- name %></span>
+                        </div>
+                    </text>)
+                        )
+                </div>
             </div>
             @* <button id="themeToggle">Toggle Dark Mode</button> *@
             <button id="fullscreenToggle">
@@ -1277,7 +1273,7 @@
         </div>
 
         <div id="submenuContainer5" class="context-menu" style="display:none; width:300px;">
-            <div class="context-menu-item1" >
+            <div class="context-menu-item1">
                 <div class="submenu-item" onclick="handleClick('BillsReceivableAll')">
                     <i class="fa fa-file"></i>
                     <span id="BillsReceivableAll" class="no-border-input"></span>
@@ -1310,7 +1306,7 @@
                     <i class="fa fa-file"></i>
                     <span id="BillsReceivableFormat" class="no-border-input"></span>
                 </div>
-                
+
             </div>
         </div>
 
@@ -1420,7 +1416,7 @@
                     <span class="no-border-input">Tax Summary Report-Credit Notes</span>
                 </div>
 
-               
+
             </div>
         </div>
         <div id="submenuContainer" class="context-menu" style="display:none; width: 300px;">
@@ -1471,8 +1467,8 @@
 
         <!-- Settings Popup -->
         <div id="settingsPopup" class="popup">
-            <div  class="popup-header">
-                <span class="popup-header"  id="Settings1"></span>
+            <div class="popup-header">
+                <span class="popup-header" id="Settings1"></span>
                 <span class="popup-close" onclick="closePopup('settingsPopup')">X</span>
             </div>
             <div class="popup-content">
@@ -1529,8 +1525,9 @@
 
             <div id="sidebar" class="sidebar hidden">
                 <div class="menu-item1"
-                     style="cursor: pointer;"
-                     onclick="navigateToTenantHome()">
+                @* onmouseover="toggleSidebar()"  *@
+                @* onmouseout="toggleSidebar()" *@
+                  >
                     <img border="0" src="~/images/erp_logo.png" alt="QD-ERP" width="45" height="30">
                     <div id="HumanResources2" class="text no-border-input">Quick Dice</div>
                 </div>
@@ -1626,7 +1623,7 @@
         }
         <div style="display:flex;flex-direction:column;align-items:center;gap:1em;">
             <div>
-              
+
                 <span class="me-3">User ID:  <b>@userId</b></span>
                 <span class="me-3">User Name: <b>@userName</b> </span>
                 <span class="me-3">Level: <span id="userLevel" style="font-weight: bold;">Loading...</span></span>
@@ -1670,1657 +1667,1732 @@
     </div>
 
     <script>
- 
-        document.addEventListener("DOMContentLoaded", function () {
-            const humanResourcesIcon = document.getElementById("humanResourcesIcon");
-            if (humanResourcesIcon) {
-                humanResourcesIcon.setAttribute("data-tooltip", formatMessage("Human Resources"));
-            }
-        });
-        document.addEventListener("DOMContentLoaded", function () {
-            const humanResourcesIcon = document.getElementById("FinanceIcon");
-            if (humanResourcesIcon) {
-                humanResourcesIcon.setAttribute("data-tooltip", formatMessage("Finance"));
-            }
-        });
-        document.addEventListener("DOMContentLoaded", function () {
-            const humanResourcesIcon = document.getElementById("VATModulesIcon");
-            if (humanResourcesIcon) {
-                humanResourcesIcon.setAttribute("data-tooltip", formatMessage("VAT Modules"));
-            }
-        });
-        document.addEventListener("DOMContentLoaded", function () {
-            const humanResourcesIcon = document.getElementById("EquipmentRentalsIcon");
-            if (humanResourcesIcon) {
-                humanResourcesIcon.setAttribute("data-tooltip", formatMessage("Equipment Rentals"));
-            }
-        });
-        document.addEventListener("DOMContentLoaded", function () {
-            const humanResourcesIcon = document.getElementById("CampManagementIcon");
-            if (humanResourcesIcon) {
-                humanResourcesIcon.setAttribute("data-tooltip", formatMessage("Camp Management"));
-            }
-        });
-        document.addEventListener("DOMContentLoaded", function () {
-            const humanResourcesIcon = document.getElementById("InventoryManagementIcon");
-            if (humanResourcesIcon) {
-                humanResourcesIcon.setAttribute("data-tooltip", formatMessage("Inventory Management"));
-            }
-        });
-        document.addEventListener("DOMContentLoaded", function () {
-            const humanResourcesIcon = document.getElementById("ProjectsControlIcon");
-            if (humanResourcesIcon) {
-                humanResourcesIcon.setAttribute("data-tooltip", formatMessage("Projects Control"));
-            }
-        });
 
-        document.addEventListener("DOMContentLoaded", function () {
-            fetch('/api/utility/CheckUserLevel')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        document.getElementById('userLevel').innerText = data.userLevel;
-                    } else {
-                        document.getElementById('userLevel').innerText = "N/A";
-                        console.warn("User level not available.");
+                document.addEventListener("DOMContentLoaded", function () {
+                    const humanResourcesIcon = document.getElementById("humanResourcesIcon");
+                    if (humanResourcesIcon) {
+                        humanResourcesIcon.setAttribute("data-tooltip", formatMessage("Human Resources"));
                     }
-                })
-                .catch(error => {
-                    document.getElementById('userLevel').innerText = "Error";
-                    console.error("Error fetching user level:", error);
                 });
-        });
-
-        $(function () {
-            $("#BillsReceivableAll").dxTextBox({
-                text: formatMessage("Bills Receivable (All)"),
-                width:400,
-               
-                readOnly: true
-            });
-            $("#BillsReceivableByAccount").dxTextBox({
-                text: formatMessage("Bills Receivable (By Account)"),
-                width:400,
-                readOnly: true
-            });
-            $("#BillsReceivableAgeingToday").dxTextBox({
-                text: formatMessage("Bills Receivable (Ageing as on Today)"),
-                width:400,
-                readOnly: true
-            });
-            $("#Report4").dxTextBox({
-                text: formatMessage("Bills Receivable (Ageing By End Date)"),
-                width:400,
-                readOnly: true
-            });
-            $("#BillsReceivableRentation").dxTextBox({
-                text: formatMessage("Bills Receivable (With Retention)"),
-                width:400,
-                readOnly: true
-            });
-            $("#BillsReceivablelandscapeformat").dxTextBox({
-                text: formatMessage("Bills Receivables (Landscape format)"),
-                width:400,
-                readOnly: true
-            });
-            $("#BillsReceivableLedgerBalance").dxTextBox({
-                text: formatMessage("Bills Receivable (Ageing as per Ledger Balance)"),
-                width:400,
-                readOnly: true
-            });
-            $("#BillsReceivableFormat").dxTextBox({
-                text: formatMessage("Bills Receivable (Format 2)"),
-                width:400,
-                readOnly: true
-            });
-            $("#StatementOfAccountOrderByVoucherNo1").dxTextBox({
-           
-                text: formatMessage("Statement of Account Order By Voucher No"),
-                width:400,
-                readOnly: true
-            });
-        });
-        ////////////////
-          $(function () {
-            $("#BillsPayablesWithReferenceNo").dxTextBox({
-                text: formatMessage("Bills Payables(With Reference No)"),
-                width:400,
-                readOnly: true
-            });
-            $("#BillsPayablesWithVoucherNo").dxTextBox({
-                text: formatMessage("Bills Payables (With Voucher No)"),
-                width:400,
-                readOnly: true
-            });
-            $("#BillsPayablesAgeingasonToday").dxTextBox({
-                text: formatMessage("Bills Payables (Ageing as on Today)"),
-                width:400,
-                readOnly: true
-            });
-            $("#BillsPayablesAgeingasonEndDate").dxTextBox({
-                text: formatMessage("Bills Payables (Ageing as on End Date)"),
-                width:400,
-                readOnly: true
-            });
-            $("#BillsPayablesWithRetention").dxTextBox({
-                text: formatMessage("Bills Payables (With Retention)"),
-                width:400,
-                readOnly: true
-            });
-            $("#BillsPayablesLandscapeFormat").dxTextBox({
-                text: formatMessage("Bills Payables (Landscape Format)"),
-                width:400,
-                readOnly: true
-            });
-            $("#BillsPayablesAgeingasperLedgerBalance").dxTextBox({
-                text: formatMessage("Bills Payables (Ageing as per Ledger Balance)"),
-                width:400,
-                readOnly: true
-            });
-            $("#BillsPayablesAllIncludingPaid").dxTextBox({
-                text: formatMessage("Bills Payables (All Including Paid)"),
-                width:400,
-                readOnly: true
-            });
-           
-        });
-
-         ////////////////###############
-          $(function () {
-            $("#CostAllocationReportDetailed").dxTextBox({
-                text: formatMessage("Cost Allocation Report - Detailed"),
-                width:400,
-                readOnly: true
-            });
-            $("#CostAllocationReportSummary").dxTextBox({
-                text: formatMessage("Cost Allocation Report - Summary"),
-                width:400,
-                readOnly: true
-            });
-            $("#EmployeeAllocationReportDetailed").dxTextBox({
-                text: formatMessage("Employee Allocation Report - Detailed"),
-                width:400,
-                readOnly: true
-            });
-            $("#EmployeeAllocationReportSummary").dxTextBox({
-                text: formatMessage("Employee Allocation Report - Summary"),
-                width:400,
-                
-                readOnly: true
-            });
-            $("#PropertyCostAllocationReportDetailed").dxTextBox({
-                text: formatMessage("Property Cost Allocation Report - Detailed"),
-                width:400,
-                readOnly: true
-            });
-            $("#PropertyCostAllocationReportSummary").dxTextBox({
-                text: formatMessage("Property Cost Allocation Report - Summary"),
-                width:400,
-                readOnly: true
-            });
-           
-
-        });
-        $(function () {
-            $("#StatementOfAccounts").dxTextBox({
-                text: formatMessage("Statement of Accounts"),
-                width:400,
-                readOnly: true
-            });
-            $("#StatementOfAccountsWithNarration").dxTextBox({
-                text: formatMessage("Statement of Accounts (With Narration)"),
-                width:400,
-                readOnly: true
-            });
-            $("#StatementOfAccountsExportFormat").dxTextBox({
-                text: formatMessage("Statement of Accounts (Export Format)"),
-                width:400,
-                readOnly: true
-            });
-            $("#StatementOfAccountsExportFormat2").dxTextBox({
-                text: formatMessage("Statement of Accounts (Export Format2)"),
-                width:400,
-                readOnly: true
-            });
-            $("#StatementOfAccountsWithDetails").dxTextBox({
-                text: formatMessage("Statement of Accounts - With Details"),
-                width:400,
-                readOnly: true
-            });
-            $("#StatementOfAccountOrderByVoucherNoWithoutNarration").dxTextBox({
-                text: formatMessage("Statement of Account Order By VocuherNo (Without Narration)"),
-                width:410,
-                readOnly: true
-            });
-            $("#StatementOfAccountExportFormatLandscape").dxTextBox({
-                text: formatMessage("Statement of Account Export Format(Landscape)"),
-                width:400,
-                readOnly: true
-            });
-            $("#StatementOfAccountOrderByVoucherNo").dxTextBox({
-                text: formatMessage("Statement of Account Order By Voucher No"),
-                width:400,
-                readOnly: true
-            });
-              $("#AccountDebtors").dxTextBox({
-                text: formatMessage("Account Debtors"),
-                width:400,
-                readOnly: true
-            });
-            $("#AccountConfirmationLetter").dxTextBox({
-                text: formatMessage("AccountConfirmationLetter"),
-                width:400,
-                readOnly: true
-            });
-        });
-
-        $(function () {
-            $("#DetailedReportText").dxTextBox({
-                text: formatMessage("Detailed Report"),
-                width:400,
-                readOnly: true
-            });
-            $("#DetailedReportByDateText").dxTextBox({
-                text: formatMessage("Detailed Report(By Date)"),
-                width:400,
-                readOnly: true
-            });
-            $("#DetailedGroupReportText").dxTextBox({
-                text: formatMessage("Detailed Group Report"),
-                width:400,
-                readOnly: true
-            });
-            $("#DetailedGroupReportByDateText").dxTextBox({
-                text: formatMessage("Detailed Group Report(By Date)"),
-                width:400,
-                readOnly: true
-            });
-            $("#CostCenterMasterReportText").dxTextBox({
-                text: formatMessage("Cost Center Master Report"),
-                width:400,
-                readOnly: true
-            });
-        });
-
-        $(function () {
-            $("#SummaryReport").dxTextBox({
-                text: formatMessage("Summary Report"),
-                width:400,
-                readOnly: true
-            });
-            $("#SummaryReportByDate").dxTextBox({
-                text: formatMessage("Summary Report(By Date)"),
-                width:400,
-                readOnly: true
-            });
-            $("#CostCenterReport").dxTextBox({
-                text: formatMessage("Cost Center Report"),
-                width:400,
-                readOnly: true
-            });
-            $("#CostCenterReportByDate").dxTextBox({
-                text: formatMessage("Cost Center Report(By Date)"),
-                width:400,
-                readOnly: true
-            });
-            $("#CostCenterGroupReport").dxTextBox({
-                text: formatMessage("Cost Center Group Report"),
-                width:400,
-                readOnly: true
-            });
-            $("#CostCenterGroupReportByDate").dxTextBox({
-                text: formatMessage("Cost Center Group Report(By Date)"),
-                width:400,
-                readOnly: true
-            });
-        });
-        $(function () {
-            $("#SummaryReport").dxTextBox({
-                text: formatMessage("Summary Report"),
-                width:400,
-                readOnly: true
-            });
-            $("#SummaryReportByDate").dxTextBox({
-                text: formatMessage("Summary Report(By Date)"),
-                width:400,
-                readOnly: true
-            });
-            $("#CostCenterReport").dxTextBox({
-                text: formatMessage("Cost Center Report"),
-                width:400,
-                readOnly: true
-            });
-            $("#CostCenterReportByDate").dxTextBox({
-                text: formatMessage("Cost Center Report(By Date)"),
-                width:400,
-                readOnly: true
-            });
-            $("#CostCenterGroupReport").dxTextBox({
-                text: formatMessage("Cost Center Group Report"),
-                width:400,
-                readOnly: true
-            });
-            $("#CostCenterGroupReportByDate").dxTextBox({
-                text: formatMessage("Cost Center Group Report(By Date)"),
-                width:400,
-                readOnly: true
-            });
-        });
-        $(function () {
-            $("#ReceivablesAgeingReport").dxTextBox({
-                text: formatMessage("Receivables Ageing Report"),
-                width:400,
-                readOnly: true
-
-            });
-            $("#ReceivablesAgeingReportSalesPerson").dxTextBox({
-                text: formatMessage("Receivables Ageing Report (By Sales Person)"),
-                width:400,
-                readOnly: true
-
-            });
-            $("#ReceivablesAgeingReportCustomizable").dxTextBox({
-                text: formatMessage("Receivables Ageing Report (Customizable)"),
-                width:400,
-                readOnly: true
-
-            });
-            $("#ReceivablesAgeingSummary").dxTextBox({
-                text: formatMessage("Receivables Ageing Summary"),
-                width:400,
-                readOnly: true
-
-            });
-            $("#ReceivablesAgeingSummaryCustomizable").dxTextBox({
-                text: formatMessage("Receivables Ageing Summary (Customizable)"),
-                width:400,
-                readOnly: true
-
-            });
-        });
-        $(function () {
-            $("#Short").dxTextBox({
-                text: formatMessage("Short"),
-                readOnly: true
-
-            });
-        });
-        $(function () {
-            $("#Tall").dxTextBox({
-                text: formatMessage("Tall"),
-                readOnly: true
-
-            });
-        });
-        $(function () {
-            $("#Mediam").dxTextBox({
-                text: formatMessage("Mediam"),
-                readOnly: true
-
-            });
-        });
-        $(function () {
-            $("#ExtraTall").dxTextBox({
-                text: formatMessage("Extra Tall"),
-                readOnly: true
-
-            });
-        });
-
-
-        $(function () {
-            $("#HumanResources").dxTextBox({
-                text: formatMessage("Human Resources"),
-                readOnly: true
-
-            });
-        });
-        $(function () {
-            $("#Finance").dxTextBox({
-                text: formatMessage("Finance"),
-                readOnly: true
-
-            });
-        });
-        $(function () {
-            $("#VATModules").dxTextBox({
-                text: formatMessage("VAT Modules"),
-                readOnly: true
-
-            });
-        });
-        $(function () {
-            $("#EquipmentRentals").dxTextBox({
-                text: formatMessage("Equipment Rentals"),
-                readOnly: true
-
-            });
-        });
-        $(function () {
-            $("#CampManagement").dxTextBox({
-                text: formatMessage("Camp Management"),
-                readOnly: true
-
-            });
-        });
-        $(function () {
-            $("#InventoryManagement").dxTextBox({
-                text: formatMessage("Inventory Management"),
-                readOnly: true
-
-            });
-        });
-        $(function () {
-            $("#ProjectsControl").dxTextBox({
-                text: formatMessage("Projects Control"),
-                readOnly: true
-
-            });
-        });
-
-        var authToken = '@authToken';
-        var tenantName = '@tenantName';
-        var userName = '@userName';
-        var userId = '@userId';
-
-        $(document).ready(function () {
-            if (authToken) {
-                var decodedToken = jwt_decode(authToken);
-                var tokenExpiry = new Date(decodedToken.exp * 1000); // Token expiry time in milliseconds
-                var currentTime = new Date();
-
-                // Store token expiry in sessionStorage for use across reloads
-                sessionStorage.setItem('TokenExpiry', tokenExpiry);
-                monitorTokenExpiry();
-                // Initialize idle timeout handling
-                setupIdleTimeout();
-                $('.modal-backdrop').remove();
-                // Function to monitor token expiry and extend session
-                function monitorTokenExpiry() {
-                    // Set interval to check the token expiry every 30 seconds
-                    setInterval(function () {
-                        var tokenExpiry = new Date(sessionStorage.getItem('TokenExpiry')); // Get updated expiry
-                        var currentTime = new Date();
-                        var timeToExpiry = (tokenExpiry - currentTime) / 1000; // Time left in seconds
-
-                        // If token will expire in less than 2 minutes, extend the session
-                        if (timeToExpiry <= 120 && timeToExpiry > 0) {
-                            console.log('Token is about to expire. Extending session...');
-                            extendSession();
-                        }
-                    }, 30000); // Check every 30 seconds
-                }
-
-                // Function to setup idle timeout logic
-                function setupIdleTimeout() {
-                    var countdown;
-                    var countdownTime = 60; // Countdown for 30 seconds
-                    var countdownInterval;
-                    $(document).idle({
-                        idle: 15 * 60 * 1000, // 15 minutes of inactivity
-                        onIdle: function () {
-                            // Show the modal when the user is idle for 15 minutes
-                            $('#idleModal').modal('show');
-                            $('.modal-backdrop').remove();
-                            // Start countdown
-                            countdown = countdownTime;
-                            updateCountdownDisplay(countdown);
-                            countdownInterval = setInterval(function () {
-                                countdown--;
-                                updateCountdownDisplay(countdown);
-
-                                // If countdown reaches 0, log out automatically
-                                if (countdown <= 0) {
-                                    clearInterval(countdownInterval);
-                                    autoLogout();
-                                }
-                            }, 1000);
-                        },
-                        onActive: function () {
-                            // If user becomes active again, stop countdown and hide the modal
-                        },
-                        keepTracking: true,
-                    });
-
-                    // Handle "Stay Logged In" button
-                    $('#stayLoggedIn').on('click', function () {
-                        $('#idleModal').modal('hide');
-                        clearInterval(countdownInterval); // Stop countdown
-                        extendSession(); // Extend session when user stays logged in
-                    });
-
-                    // Handle "Log Out" button
-                    $('#logout').on('click', function () {
-                        clearInterval(countdownInterval); // Stop countdown
-                        autoLogout(); // Log out the user
-                    });
-
-                    // Function to update countdown display
-                    function updateCountdownDisplay(seconds) {
-                        var minutes = Math.floor(seconds / 60);
-                        var secondsLeft = seconds % 60;
-                        $('#countdownTimer').text(`${minutes}:${secondsLeft < 10 ? '0' + secondsLeft : secondsLeft}`);
+                document.addEventListener("DOMContentLoaded", function () {
+                    const humanResourcesIcon = document.getElementById("FinanceIcon");
+                    if (humanResourcesIcon) {
+                        humanResourcesIcon.setAttribute("data-tooltip", formatMessage("Finance"));
                     }
-                }
+                });
+                document.addEventListener("DOMContentLoaded", function () {
+                    const humanResourcesIcon = document.getElementById("VATModulesIcon");
+                    if (humanResourcesIcon) {
+                        humanResourcesIcon.setAttribute("data-tooltip", formatMessage("VAT Modules"));
+                    }
+                });
+                document.addEventListener("DOMContentLoaded", function () {
+                    const humanResourcesIcon = document.getElementById("EquipmentRentalsIcon");
+                    if (humanResourcesIcon) {
+                        humanResourcesIcon.setAttribute("data-tooltip", formatMessage("Equipment Rentals"));
+                    }
+                });
+                document.addEventListener("DOMContentLoaded", function () {
+                    const humanResourcesIcon = document.getElementById("CampManagementIcon");
+                    if (humanResourcesIcon) {
+                        humanResourcesIcon.setAttribute("data-tooltip", formatMessage("Camp Management"));
+                    }
+                });
+                document.addEventListener("DOMContentLoaded", function () {
+                    const humanResourcesIcon = document.getElementById("InventoryManagementIcon");
+                    if (humanResourcesIcon) {
+                        humanResourcesIcon.setAttribute("data-tooltip", formatMessage("Inventory Management"));
+                    }
+                });
+                document.addEventListener("DOMContentLoaded", function () {
+                    const humanResourcesIcon = document.getElementById("ProjectsControlIcon");
+                    if (humanResourcesIcon) {
+                        humanResourcesIcon.setAttribute("data-tooltip", formatMessage("Projects Control"));
+                    }
+                });
 
-                // Function to automatically log out the user
-                function autoLogout() {
-                    var url = `/${tenantName}/Security/Login`;
-                    $.ajax({
-                        url: '/api/Login/SignOut', // Call the SignOut API
-                        type: 'GET', // HTTP method
-                        success: function (response) {
-                            sessionStorage.clear();
-                            // alert(response.message);
-                            window.location.href = url; // Redirect to login page
-                        },
-                        error: function (xhr, status, error) {
-                            alert('An error occurred during sign-out');
-                        }
-                    });
-                }
-
-                // Function to extend the session
-                function extendSession() {
-                    $.ajax({
-                        url: '/api/Login/ExtendSession', // API endpoint for extending session
-                        type: 'POST',
-                        xhrFields: {
-                            withCredentials: true // Include cookies in the request
-                        },
-                        success: function (data) {
+                document.addEventListener("DOMContentLoaded", function () {
+                    fetch('/api/utility/CheckUserLevel')
+                        .then(response => response.json())
+                        .then(data => {
                             if (data.success) {
-                                console.log('Session extended successfully.');
-                                // Update AuthToken and Permissions in sessionStorage
-                                sessionStorage.setItem('AuthToken', data.token);
-                                sessionStorage.setItem('Permissions', JSON.stringify(data.permissions));
-
-                                // Update the token expiry
-                                var newDecodedToken = jwt_decode(data.token);
-                                var newTokenExpiry = new Date(newDecodedToken.exp * 1000);
-                                sessionStorage.setItem('TokenExpiry', newTokenExpiry);
+                                document.getElementById('userLevel').innerText = data.userLevel;
                             } else {
-                                console.error('Failed to extend session:', data.message);
+                                document.getElementById('userLevel').innerText = "N/A";
+                                console.warn("User level not available.");
                             }
+                        })
+                        .catch(error => {
+                            document.getElementById('userLevel').innerText = "Error";
+                            console.error("Error fetching user level:", error);
+                        });
+                });
+
+                $(function () {
+                    $("#BillsReceivableAll").dxTextBox({
+                        text: formatMessage("Bills Receivable (All)"),
+                        width:400,
+
+                        readOnly: true
+                    });
+                    $("#BillsReceivableByAccount").dxTextBox({
+                        text: formatMessage("Bills Receivable (By Account)"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#BillsReceivableAgeingToday").dxTextBox({
+                        text: formatMessage("Bills Receivable (Ageing as on Today)"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#Report4").dxTextBox({
+                        text: formatMessage("Bills Receivable (Ageing By End Date)"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#BillsReceivableRentation").dxTextBox({
+                        text: formatMessage("Bills Receivable (With Retention)"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#BillsReceivablelandscapeformat").dxTextBox({
+                        text: formatMessage("Bills Receivables (Landscape format)"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#BillsReceivableLedgerBalance").dxTextBox({
+                        text: formatMessage("Bills Receivable (Ageing as per Ledger Balance)"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#BillsReceivableFormat").dxTextBox({
+                        text: formatMessage("Bills Receivable (Format 2)"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#StatementOfAccountOrderByVoucherNo1").dxTextBox({
+
+                        text: formatMessage("Statement of Account Order By Voucher No"),
+                        width:400,
+                        readOnly: true
+                    });
+                });
+                ////////////////
+                  $(function () {
+                    $("#BillsPayablesWithReferenceNo").dxTextBox({
+                        text: formatMessage("Bills Payables(With Reference No)"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#BillsPayablesWithVoucherNo").dxTextBox({
+                        text: formatMessage("Bills Payables (With Voucher No)"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#BillsPayablesAgeingasonToday").dxTextBox({
+                        text: formatMessage("Bills Payables (Ageing as on Today)"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#BillsPayablesAgeingasonEndDate").dxTextBox({
+                        text: formatMessage("Bills Payables (Ageing as on End Date)"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#BillsPayablesWithRetention").dxTextBox({
+                        text: formatMessage("Bills Payables (With Retention)"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#BillsPayablesLandscapeFormat").dxTextBox({
+                        text: formatMessage("Bills Payables (Landscape Format)"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#BillsPayablesAgeingasperLedgerBalance").dxTextBox({
+                        text: formatMessage("Bills Payables (Ageing as per Ledger Balance)"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#BillsPayablesAllIncludingPaid").dxTextBox({
+                        text: formatMessage("Bills Payables (All Including Paid)"),
+                        width:400,
+                        readOnly: true
+                    });
+
+                });
+
+                 ////////////////###############
+                  $(function () {
+                    $("#CostAllocationReportDetailed").dxTextBox({
+                        text: formatMessage("Cost Allocation Report - Detailed"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#CostAllocationReportSummary").dxTextBox({
+                        text: formatMessage("Cost Allocation Report - Summary"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#EmployeeAllocationReportDetailed").dxTextBox({
+                        text: formatMessage("Employee Allocation Report - Detailed"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#EmployeeAllocationReportSummary").dxTextBox({
+                        text: formatMessage("Employee Allocation Report - Summary"),
+                        width:400,
+
+                        readOnly: true
+                    });
+                    $("#PropertyCostAllocationReportDetailed").dxTextBox({
+                        text: formatMessage("Property Cost Allocation Report - Detailed"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#PropertyCostAllocationReportSummary").dxTextBox({
+                        text: formatMessage("Property Cost Allocation Report - Summary"),
+                        width:400,
+                        readOnly: true
+                    });
+
+
+                });
+                $(function () {
+                    $("#StatementOfAccounts").dxTextBox({
+                        text: formatMessage("Statement of Accounts"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#StatementOfAccountsWithNarration").dxTextBox({
+                        text: formatMessage("Statement of Accounts (With Narration)"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#StatementOfAccountsExportFormat").dxTextBox({
+                        text: formatMessage("Statement of Accounts (Export Format)"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#StatementOfAccountsExportFormat2").dxTextBox({
+                        text: formatMessage("Statement of Accounts (Export Format2)"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#StatementOfAccountsWithDetails").dxTextBox({
+                        text: formatMessage("Statement of Accounts - With Details"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#StatementOfAccountOrderByVoucherNoWithoutNarration").dxTextBox({
+                        text: formatMessage("Statement of Account Order By VocuherNo (Without Narration)"),
+                        width:410,
+                        readOnly: true
+                    });
+                    $("#StatementOfAccountExportFormatLandscape").dxTextBox({
+                        text: formatMessage("Statement of Account Export Format(Landscape)"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#StatementOfAccountOrderByVoucherNo").dxTextBox({
+                        text: formatMessage("Statement of Account Order By Voucher No"),
+                        width:400,
+                        readOnly: true
+                    });
+                      $("#AccountDebtors").dxTextBox({
+                        text: formatMessage("Account Debtors"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#AccountConfirmationLetter").dxTextBox({
+                        text: formatMessage("AccountConfirmationLetter"),
+                        width:400,
+                        readOnly: true
+                    });
+                });
+
+                $(function () {
+                    $("#DetailedReportText").dxTextBox({
+                        text: formatMessage("Detailed Report"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#DetailedReportByDateText").dxTextBox({
+                        text: formatMessage("Detailed Report(By Date)"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#DetailedGroupReportText").dxTextBox({
+                        text: formatMessage("Detailed Group Report"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#DetailedGroupReportByDateText").dxTextBox({
+                        text: formatMessage("Detailed Group Report(By Date)"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#CostCenterMasterReportText").dxTextBox({
+                        text: formatMessage("Cost Center Master Report"),
+                        width:400,
+                        readOnly: true
+                    });
+                });
+
+                $(function () {
+                    $("#SummaryReport").dxTextBox({
+                        text: formatMessage("Summary Report"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#SummaryReportByDate").dxTextBox({
+                        text: formatMessage("Summary Report(By Date)"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#CostCenterReport").dxTextBox({
+                        text: formatMessage("Cost Center Report"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#CostCenterReportByDate").dxTextBox({
+                        text: formatMessage("Cost Center Report(By Date)"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#CostCenterGroupReport").dxTextBox({
+                        text: formatMessage("Cost Center Group Report"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#CostCenterGroupReportByDate").dxTextBox({
+                        text: formatMessage("Cost Center Group Report(By Date)"),
+                        width:400,
+                        readOnly: true
+                    });
+                });
+                $(function () {
+                    $("#SummaryReport").dxTextBox({
+                        text: formatMessage("Summary Report"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#SummaryReportByDate").dxTextBox({
+                        text: formatMessage("Summary Report(By Date)"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#CostCenterReport").dxTextBox({
+                        text: formatMessage("Cost Center Report"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#CostCenterReportByDate").dxTextBox({
+                        text: formatMessage("Cost Center Report(By Date)"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#CostCenterGroupReport").dxTextBox({
+                        text: formatMessage("Cost Center Group Report"),
+                        width:400,
+                        readOnly: true
+                    });
+                    $("#CostCenterGroupReportByDate").dxTextBox({
+                        text: formatMessage("Cost Center Group Report(By Date)"),
+                        width:400,
+                        readOnly: true
+                    });
+                });
+                $(function () {
+                    $("#ReceivablesAgeingReport").dxTextBox({
+                        text: formatMessage("Receivables Ageing Report"),
+                        width:400,
+                        readOnly: true
+
+                    });
+                    $("#ReceivablesAgeingReportSalesPerson").dxTextBox({
+                        text: formatMessage("Receivables Ageing Report (By Sales Person)"),
+                        width:400,
+                        readOnly: true
+
+                    });
+                    $("#ReceivablesAgeingReportCustomizable").dxTextBox({
+                        text: formatMessage("Receivables Ageing Report (Customizable)"),
+                        width:400,
+                        readOnly: true
+
+                    });
+                    $("#ReceivablesAgeingSummary").dxTextBox({
+                        text: formatMessage("Receivables Ageing Summary"),
+                        width:400,
+                        readOnly: true
+
+                    });
+                    $("#ReceivablesAgeingSummaryCustomizable").dxTextBox({
+                        text: formatMessage("Receivables Ageing Summary (Customizable)"),
+                        width:400,
+                        readOnly: true
+
+                    });
+                });
+                $(function () {
+                    $("#Short").dxTextBox({
+                        text: formatMessage("Short"),
+                        readOnly: true
+
+                    });
+                });
+                $(function () {
+                    $("#Tall").dxTextBox({
+                        text: formatMessage("Tall"),
+                        readOnly: true
+
+                    });
+                });
+                $(function () {
+                    $("#Mediam").dxTextBox({
+                        text: formatMessage("Mediam"),
+                        readOnly: true
+
+                    });
+                });
+                $(function () {
+                    $("#ExtraTall").dxTextBox({
+                        text: formatMessage("Extra Tall"),
+                        readOnly: true
+
+                    });
+                });
+
+
+                $(function () {
+                    $("#HumanResources").dxTextBox({
+                        text: formatMessage("Human Resources"),
+                        readOnly: true
+
+                    });
+                });
+                $(function () {
+                    $("#Finance").dxTextBox({
+                        text: formatMessage("Finance"),
+                        readOnly: true
+
+                    });
+                });
+                $(function () {
+                    $("#VATModules").dxTextBox({
+                        text: formatMessage("VAT Modules"),
+                        readOnly: true
+
+                    });
+                });
+                $(function () {
+                    $("#EquipmentRentals").dxTextBox({
+                        text: formatMessage("Equipment Rentals"),
+                        readOnly: true
+
+                    });
+                });
+                $(function () {
+                    $("#CampManagement").dxTextBox({
+                        text: formatMessage("Camp Management"),
+                        readOnly: true
+
+                    });
+                });
+                $(function () {
+                    $("#InventoryManagement").dxTextBox({
+                        text: formatMessage("Inventory Management"),
+                        readOnly: true
+
+                    });
+                });
+                $(function () {
+                    $("#ProjectsControl").dxTextBox({
+                        text: formatMessage("Projects Control"),
+                        readOnly: true
+
+                    });
+                });
+
+                var authToken = '@authToken';
+                var tenantName = '@tenantName';
+                var userName = '@userName';
+                var userId = '@userId';
+
+                $(document).ready(function () {
+                    if (authToken) {
+                        var decodedToken = jwt_decode(authToken);
+                        var tokenExpiry = new Date(decodedToken.exp * 1000); // Token expiry time in milliseconds
+                        var currentTime = new Date();
+
+                        // Store token expiry in sessionStorage for use across reloads
+                        sessionStorage.setItem('TokenExpiry', tokenExpiry);
+                        monitorTokenExpiry();
+                        // Initialize idle timeout handling
+                        setupIdleTimeout();
+                        $('.modal-backdrop').remove();
+                        // Function to monitor token expiry and extend session
+                        function monitorTokenExpiry() {
+                            // Set interval to check the token expiry every 30 seconds
+                            setInterval(function () {
+                                var tokenExpiry = new Date(sessionStorage.getItem('TokenExpiry')); // Get updated expiry
+                                var currentTime = new Date();
+                                var timeToExpiry = (tokenExpiry - currentTime) / 1000; // Time left in seconds
+
+                                // If token will expire in less than 2 minutes, extend the session
+                                if (timeToExpiry <= 120 && timeToExpiry > 0) {
+                                    console.log('Token is about to expire. Extending session...');
+                                    extendSession();
+                                }
+                            }, 30000); // Check every 30 seconds
+                        }
+
+                        // Function to setup idle timeout logic
+                        function setupIdleTimeout() {
+                            var countdown;
+                            var countdownTime = 60; // Countdown for 30 seconds
+                            var countdownInterval;
+                            $(document).idle({
+                                idle: 15 * 60 * 1000, // 15 minutes of inactivity
+                                onIdle: function () {
+                                    // Show the modal when the user is idle for 15 minutes
+                                    $('#idleModal').modal('show');
+                                    $('.modal-backdrop').remove();
+                                    // Start countdown
+                                    countdown = countdownTime;
+                                    updateCountdownDisplay(countdown);
+                                    countdownInterval = setInterval(function () {
+                                        countdown--;
+                                        updateCountdownDisplay(countdown);
+
+                                        // If countdown reaches 0, log out automatically
+                                        if (countdown <= 0) {
+                                            clearInterval(countdownInterval);
+                                            autoLogout();
+                                        }
+                                    }, 1000);
+                                },
+                                onActive: function () {
+                                    // If user becomes active again, stop countdown and hide the modal
+                                },
+                                keepTracking: true,
+                            });
+
+                            // Handle "Stay Logged In" button
+                            $('#stayLoggedIn').on('click', function () {
+                                $('#idleModal').modal('hide');
+                                clearInterval(countdownInterval); // Stop countdown
+                                extendSession(); // Extend session when user stays logged in
+                            });
+
+                            // Handle "Log Out" button
+                            $('#logout').on('click', function () {
+                                clearInterval(countdownInterval); // Stop countdown
+                                autoLogout(); // Log out the user
+                            });
+
+                            // Function to update countdown display
+                            function updateCountdownDisplay(seconds) {
+                                var minutes = Math.floor(seconds / 60);
+                                var secondsLeft = seconds % 60;
+                                $('#countdownTimer').text(`${minutes}:${secondsLeft < 10 ? '0' + secondsLeft : secondsLeft}`);
+                            }
+                        }
+
+                        // Function to automatically log out the user
+                        function autoLogout() {
+                            var url = `/${tenantName}/Security/Login`;
+                            $.ajax({
+                                url: '/api/Login/SignOut', // Call the SignOut API
+                                type: 'GET', // HTTP method
+                                success: function (response) {
+                                    sessionStorage.clear();
+                                    // alert(response.message);
+                                    window.location.href = url; // Redirect to login page
+                                },
+                                error: function (xhr, status, error) {
+                                    alert('An error occurred during sign-out');
+                                }
+                            });
+                        }
+
+                        // Function to extend the session
+                        function extendSession() {
+                            $.ajax({
+                                url: '/api/Login/ExtendSession', // API endpoint for extending session
+                                type: 'POST',
+                                xhrFields: {
+                                    withCredentials: true // Include cookies in the request
+                                },
+                                success: function (data) {
+                                    if (data.success) {
+                                        console.log('Session extended successfully.');
+                                        // Update AuthToken and Permissions in sessionStorage
+                                        sessionStorage.setItem('AuthToken', data.token);
+                                        sessionStorage.setItem('Permissions', JSON.stringify(data.permissions));
+
+                                        // Update the token expiry
+                                        var newDecodedToken = jwt_decode(data.token);
+                                        var newTokenExpiry = new Date(newDecodedToken.exp * 1000);
+                                        sessionStorage.setItem('TokenExpiry', newTokenExpiry);
+                                    } else {
+                                        console.error('Failed to extend session:', data.message);
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error('Error extending session:', error);
+                                }
+                            });
+                        }
+                    }
+                });
+
+                function handleBellClick() {
+                    window.location.href = `/${tenantName}/Shared/Notification`;
+                }
+                        function handleBellClick() {
+                  window.location.href = `/${tenantName}/Shared/Notification`;
+                }
+
+                     let alertsData = [];
+
+                async function fetchUnseenCount() {
+                  try {
+                    const response = await fetch('/api/Notification/GetUserNotifications');
+                    if (!response.ok) throw new Error('Failed to fetch notifications');
+
+                    const json = await response.json();
+                    alertsData = json.data || [];
+
+                    const unseenCount = alertsData.filter(n => n.IsSeen === false).length;
+                    const badge = document.getElementById('notificationBadge');
+                    badge.style.display = unseenCount > 0 ? 'inline-block' : 'none';
+                    badge.textContent = unseenCount;
+
+                  } catch (err) {
+                    console.error('Error fetching notifications:', err);
+                  }
+                }
+
+                function showPopup() {
+                  const popup = document.getElementById('notificationPopup');
+                  const content = document.getElementById('notificationPopupContent');
+
+                  const unread = alertsData.filter(n => !n.IsSeen && n.AlertUserMessage);
+
+                  if (unread.length === 0) {
+                    content.innerHTML = '<div class="notification-item">No new notifications</div>';
+                  } else {
+                    content.innerHTML = unread.map(n => `
+                      <div class="notification-item">
+                        <strong>${n.AlertCode}</strong>
+                        <span>${n.AlertUserMessage}</span>
+                      </div>
+                    `).join('');
+                  }
+
+                  popup.style.display = 'block';
+                }
+
+                function hidePopup() {
+                  document.getElementById('notificationPopup').style.display = 'none';
+                }
+
+                window.addEventListener('DOMContentLoaded', fetchUnseenCount);
+                function handleGearClick() {
+                    const settingsPopup = document.getElementById('settingsPopup');
+                    if (settingsPopup) {
+                        settingsPopup.style.display = 'block';
+                    }
+                }
+                function handleInfoClick() {
+
+                        $.ajax({
+                            url: "/api/utility/CheckUserLevel", // Server-side endpoint to check UserLevel
+                            method: "GET",
+                            success: function (response) {
+                                if (response.success && response.userLevel === 99) {
+                                               window.location.href = `/${tenantName}/General/CompanyDetails`;
+
+                                } else {
+                                    // Notify the user that navigation is not allowed
+                                    DevExpress.ui.notify("You do not have permission to view this page.", "error", 2000);
+                                }
+                            },
+                            error: function () {
+                                DevExpress.ui.notify("Failed to check user level.", "error", 2000);
+                            }
+                        });
+                }
+
+                // Function for Avatar click - show user profile
+                function handleAvatarClick() {
+                    const profilePopup = document.getElementById('profilePopup');
+                    if (profilePopup) {
+                        profilePopup.style.display = 'block';
+                    }
+                }
+                function closePopup(popupId) {
+                    const popup = document.getElementById(popupId);
+                    if (popup) {
+                        popup.style.display = 'none';
+                    }
+                }
+                      // Use the data from the backend
+                const availableFinanceMenus = (window.financeMenuAccess || []).map(item => ({
+                    key: item.ItemDescription,
+                    enabled: item.ItemEnabled,
+                    visible: item.ItemVisible
+                }));
+        console.log(availableFinanceMenus)
+
+
+                const breadcrumbTrail = [];
+                function navigate(name) {
+                    const sidebar2 = document.getElementById('sidebar2');
+                    if (sidebar2.style.display === 'block') {
+                        sidebar2.style.display = 'none';
+                    } else {
+                        sidebar2.style.display = 'block'; // Show sidebar2
+                    }
+                    // Dynamically load submenu items for the first sidebar menu
+                    if (name === 'Finance') {
+                        showFinanceSubmenu();
+                        breadcrumbTrail[0] = name;
+                        updateBreadcrumb();
+                    } else if (name === 'Human Resources') {
+                        breadcrumbTrail.length = 0;
+                        updateBreadcrumb();
+                        updateBreadcrumbFromSidebar2('');
+                        sidebar2.style.display = 'none';
+                    } else if (name === 'VAT Modules') {
+                        breadcrumbTrail.length = 0;
+                        showVATModuleSubmenu();
+                        updateBreadcrumb();
+                        updateBreadcrumbFromSidebar2('');
+                        //sidebar2.style.display = 'none';
+                    } else if (name === 'Equipment Rentals') {
+                        breadcrumbTrail.length = 0;
+                        updateBreadcrumb();
+                        updateBreadcrumbFromSidebar2('');
+                        sidebar2.style.display = 'none';
+                    } else if (name === 'Camp Management') {
+                        breadcrumbTrail.length = 0;
+                        updateBreadcrumb();
+                        updateBreadcrumbFromSidebar2('');
+                        sidebar2.style.display = 'none';
+                    } else if (name === 'Inventory Management') {
+                        showInventorySubmenu();
+                        breadcrumbTrail.length = 0;
+                        updateBreadcrumb();
+                        updateBreadcrumbFromSidebar2('');
+                        // sidebar2.style.display = 'none';
+                    } else if (name === 'Projects Control') {
+                        breadcrumbTrail.length = 0;
+                        updateBreadcrumb();
+                        updateBreadcrumbFromSidebar2('');
+                        sidebar2.style.display = 'none';
+                    }
+
+                              function showFinanceSubmenu() {
+                    const sidebar2 = document.getElementById('sidebar2');
+
+                    // Finance Dashboard submenu items
+                    const financeDashboardItems = [
+                        { key: "My Dashboard", icon: "fas fa-tachometer-alt", href: `/${tenantName}/Finance/Index` },
+                        { key: "Voucher Verification", icon: "fas fa-check-double", href: `/${tenantName}/Finance/VoucherApproval` },
+                        { key: "Bills Receivable", icon: "fas fa-file-invoice-dollar", href: `/${tenantName}/Finance/BillsReceivable` },
+                        { key: "Bills Payable", icon: "fas fa-money-check-alt", href: `/${tenantName}/Finance/BillsPayable` },
+                        { key: "Cost Analysis", icon: "fas fa-chart-pie", href: `/${tenantName}/Finance/ucCostAnalysis` },
+                        { key: "Salary Payable", icon: "fas fa-wallet", href: `/${tenantName}/Finance/SalaryPayable` },
+                        { key: "Chart Of Accounts", icon: "fas fa-book", href: `/${tenantName}/Finance/ChartOfAccounts` },
+                        { key: "Chart of Cost Centers", icon: "fas fa-project-diagram", href: `/${tenantName}/Finance/ChartOfCostCenters` },
+                        { key: "Financial Reports", icon: "fas fa-balance-scale", href: `/${tenantName}/Finance/uc20106TrialBalance` },
+                        { key: "Asset Register", icon: "fas fa-boxes", href: `/${tenantName}/Finance/AssetView` }
+                    ];
+
+                    // Other finance menu items
+                    const financeMenuItems = [
+                        {
+                            key: "Accounting Ledgers",
+                            href: `/${tenantName}/Finance/AccountingLedgers`,
+                            icon: "fas fa-book",
+                            label: "Accounting Ledgers",
+                            hideOnClick: true
                         },
-                        error: function (xhr, status, error) {
-                            console.error('Error extending session:', error);
+                        {
+                            key: "Accounting Register",
+                            href: `/${tenantName}/Finance/AccountingRegister`,
+                            icon: "fas fa-book",
+                            label: "Accounting Register",
+                            hideOnClick: true
+                        },
+                        {
+                            key: "Chart Of Accounts",
+                            href: `/${tenantName}/Finance/ChartOfAccounts`,
+                            icon: "fas fa-chart-pie",
+                            label: "Chart Of Accounts",
+                            hideOnClick: true
+                        },
+                        {
+                            key: "Chart of Cost Centers",
+                            href: `/${tenantName}/Finance/ChartOfCostCenters`,
+                            icon: "fas fa-chart-pie",
+                            label: "Chart of Cost Centers",
+                            hideOnClick: true
+                        },
+                        {
+                            key: "Voucher BankPayment",
+                            href: `/${tenantName}/Finance/VoucherBankPayment`,
+                            icon: "fas fa-university",
+                            label: "Bank Payment",
+                            hideOnClick: true
+                        },
+                        {
+                            key: "Voucher CashPayment",
+                            href: `/${tenantName}/Finance/VoucherCashPayment`,
+                            icon: "fas fa-money-bill-wave",
+                            label: "Cash Payment",
+                            hideOnClick: false
+                        },
+                        {
+                            key: "Voucher CashReceipts",
+                            href: `/${tenantName}/Finance/VoucherEntryCashReceipts`,
+                            icon: "fas fa-dollar-sign",
+                            label: "Cash Receipt",
+                            hideOnClick: false
+                        },
+                        {
+                            key: "Voucher BankPayment",
+                            href: `/${tenantName}/Finance/VoucherEntryReceipts`,
+                            icon: "fas fa-receipt",
+                            label: "Bank Receipt",
+                            hideOnClick: false
+                        },
+                        {
+                            key: "Voucher Sales",
+                            href: `/${tenantName}/Finance/salesVoucher`,
+                            icon: "fas fa-tags",
+                            label: "Sales Voucher",
+                            hideOnClick: false
+                        },
+                        {
+                            key: "Purchase Voucher",
+                            href: `/${tenantName}/Finance/purchasevoucher`,
+                            icon: "fas fa-shopping-cart",
+                            label: "Purchase Voucher",
+                            hideOnClick: false
+                        },
+                        {
+                            key: "Expenses Claims",
+                            href: `/${tenantName}/Finance/ExpensesClaims`,
+                            icon: "fas fa-file-invoice-dollar",
+                            label: "Expense Claim",
+                            hideOnClick: false
+                        },
+                        {
+                            key: "Voucher journal",
+                            href: `/${tenantName}/Finance/Voucherjournal`,
+                            icon: "fas fa-book-open",
+                            label: "Journal Voucher",
+                            hideOnClick: false
+                        },
+                        {
+                            key: "Journal Register",
+                            href: `/${tenantName}/Finance/JournalRegister`,
+                            icon: "fas fa-newspaper",
+                            label: "Journal Register",
+                            hideOnClick: false
+                        }
+                    ];
+
+                    // Access config from backend
+                    const access = (window.financeMenuAccess || []).reduce((acc, x) => {
+                        acc[x.ItemDescription] = x;
+                        return acc;
+                    }, {});
+
+                    // Build Finance Dashboard submenu
+                    let dashboardHtml = `
+                        <div class="submenu-item" onclick="toggleSubmenu('financeDashboardSubmenu')" role="button" aria-expanded="false">
+                            <i class="fas fa-book-open"></i>
+                            <div class="text">${formatMessage("Finance Dashboard")}</div>
+                        </div>
+                        <div id="financeDashboardSubmenu" class="nested-submenu" style="display: none; margin-left: 30px;">
+                    `;
+
+                    financeDashboardItems.forEach(item => {
+                        const perm = access[item.key];
+                        if (!perm || !perm.ItemVisible) return;
+                        dashboardHtml += `
+                            <a class="submenu-item${!perm.ItemEnabled ? ' disabled' : ''}"
+                               ${perm.ItemEnabled ? 'onclick="hideSidebars()"' : 'onclick="return false;"'}
+                               href="${perm.ItemEnabled ? item.href : '#'}"
+                               style="${!perm.ItemEnabled ? 'pointer-events:none;opacity:0.5;cursor:not-allowed;' : ''}">
+                                <i class="${item.icon}"></i>
+                                <div class="text">${formatMessage(item.key)}</div>
+                            </a>
+                        `;
+                    });
+                    dashboardHtml += '</div>';
+
+                    // Build other finance menu items
+                    const filteredMenuItems = financeMenuItems
+                        .filter(item => {
+                            const menuConfig = access[item.key];
+                            return menuConfig ? menuConfig.ItemVisible : false;
+                        })
+                        .map(item => {
+                            const menuConfig = access[item.key];
+                            return {
+                                ...item,
+                                enabled: menuConfig ? menuConfig.ItemEnabled : false
+                            };
+                        });
+
+                    let otherMenusHtml = filteredMenuItems.map(item => `
+                        <a class="submenu-item${!item.enabled ? ' disabled' : ''}"
+                           ${item.enabled ? (item.hideOnClick ? 'onclick="hideSidebars()"' : '') : 'onclick="return false;"'}
+                           href="${item.enabled ? item.href : '#'}"
+                           style="${!item.enabled ? 'pointer-events:none;opacity:0.5;cursor:not-allowed;' : ''}">
+                            <i class="${item.icon}"></i>
+                            <div class="text">${formatMessage(item.label)}</div>
+                        </a>
+                    `).join('');
+
+                    sidebar2.innerHTML = dashboardHtml + otherMenusHtml;
+                }
+
+
+
+                    function showVATModuleSubmenu() {
+                        const sidebar2 = document.getElementById('sidebar2');
+                        sidebar2.innerHTML = `
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/SalesRegisterVAT">
+                                            <i class="fas fa-book"></i>
+                                            <div class="text">${formatMessage("Sales Invoice Register")}</div>
+                                        </a>
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATCreditNotRegister">
+                                            <i class="fas fa-book"></i>
+                                            <div class="text">${formatMessage("Credit Note Register")}</div>
+                                        </a>
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATPurchaseMasterView">
+                                            <i class="fas fa-book"></i>
+                                            <div class="text">${formatMessage("Purchase Invoice Register")}</div>
+                                        </a>
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATDebitNotRegister">
+                                            <i class="fas fa-book"></i>
+                                            <div class="text">${formatMessage("Debit Note Register")}</div>
+                                        </a>
+                                         <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATReturnsSalesandPurchase">
+                                            <i class="fas fa-book"></i>
+                                            <div class="text">${formatMessage("VAT Returns")}</div>
+                                        </a>
+                                                         <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATInvoiceReporting">
+                                            <i class="fas fa-book"></i>
+                                            <div class="text">${formatMessage("Sales Reporting")}</div>
+                                        </a>
+                                         <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/ProformaInvoiceMasterView">
+                                            <i class="fas fa-book"></i>
+                                            <div class="text">${formatMessage("Proforma Invoices")}</div>
+                                        </a>
+                                        `;
+
+                    }
+                }
+
+
+                function showInventorySubmenu() {
+                    const sidebar2 = document.getElementById('sidebar2');
+                    sidebar2.innerHTML = `
+                                        <div class="submenu-item" onclick="toggleSubmenu('financeDashboardSubmenu1')" role="button" aria-expanded="false">
+                                            <i class="fas fa-book-open"></i>
+                                            <div class="text">${formatMessage("Inventory Dashboard")}</div>
+                                        </div>
+                                        <div id="financeDashboardSubmenu1" class="nested-submenu" style="display: none; margin-left: 30px;">
+                                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/Index">
+                                                <div class="text">${formatMessage("My Dashboard")}</div>
+                                            </a>
+                                        </div>
+
+                                       <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/IMS/StockInventoryMainForm">
+                                            <i class="fas fa-boxes"></i>
+                                            <div class="text">${formatMessage("Stock Inventory")}</div>
+                                        </a>
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/IMS/MaterialRequestEnquiriesDetails">
+                                            <i class="fas fa-clipboard-list"></i>
+                                            <div class="text">${formatMessage("Material Requests")}</div>
+                                        </a>
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/IMS/Quotation">
+                                            <i class="fas fa-file-signature"></i>
+                                            <div class="text">${formatMessage("Quotations To Clients")}</div>
+                                        </a>
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/IMS/SalesOrders">
+                                            <i class="fas fa-shopping-bag"></i>
+                                            <div class="text">${formatMessage("Sales Orders")}</div>
+                                        </a>
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/IMS/DeliveryNote">
+                                            <i class="fas fa-truck"></i>
+                                            <div class="text">${formatMessage("Delivery Note")}</div>
+                                        </a>
+                                        <a class="submenu-item" href="/${tenantName}/IMS/RequestforQuotationList">
+                                            <i class="fas fa-database"></i>
+                                            <div class="text">${formatMessage("RFQ Database")}</div>
+                                        </a>
+                                        <a class="submenu-item" href="/${tenantName}/IMS/QuotationAnalysis">
+                                            <i class="fas fa-chart-line"></i>
+                                            <div class="text">${formatMessage("Quotation Analysis")}</div>
+                                        </a>
+                                        <a class="submenu-item" href="/${tenantName}/IMS/PurchaseOrders">
+                                            <i class="fas fa-file-invoice"></i>
+                                            <div class="text">${formatMessage("Purchase Orders")}</div>
+                                        </a>
+                                        <a class="submenu-item" href="/${tenantName}/IMS/MaterialReceipts">
+                                            <i class="fas fa-dolly-flatbed"></i>
+                                            <div class="text">${formatMessage("Material Receipts")}</div>
+                                        </a>
+                                        <a class="submenu-item" href="/${tenantName}/IMS/ClientLeads">
+                                            <i class="fas fa-user-plus"></i>
+                                            <div class="text">${formatMessage("Client Leads")}</div>
+                                        </a>
+                                        <a class="submenu-item" href="/${tenantName}/IMS/Suppliers">
+                                            <i class="fas fa-people-carry"></i>
+                                            <div class="text">${formatMessage("Suppliers")}</div>
+                                        </a>
+                                        <a class="submenu-item" href="/${tenantName}/IMS/JobOrders">
+                                            <i class="fas fa-tasks"></i>
+                                            <div class="text">${formatMessage("Job Orders")}</div>
+                                        </a>
+                                        <a class="submenu-item" href="/${tenantName}/IMS/StockAdjustments">
+                                            <i class="fas fa-sliders-h"></i>
+                                            <div class="text">${formatMessage("Stock Adjustments")}</div>
+                                        </a>
+                `;
+                }
+
+
+                // Function to toggle visibility of nested submenus
+                function toggleSubmenu(submenuId) {
+                    const submenu = document.getElementById(submenuId);
+                    if (submenu.style.display === 'none') {
+                        submenu.style.display = 'block';
+                    } else {
+                        submenu.style.display = 'none';
+                    }
+                }
+
+                // Function to toggle visibility of nested submenus
+                function toggleSubmenu(submenuId) {
+                    const submenu = document.getElementById(submenuId);
+                    if (submenu.style.display === 'none') {
+                        submenu.style.display = 'block';
+                    } else {
+                        submenu.style.display = 'none';
+                    }
+                }
+
+
+                function loadAccountLedger() {
+                    // Set the iframe source to load Accounting Ledgers content
+                    const iframe = document.getElementById("contentIframe");
+                    iframe.src = `/${tenantName}/Finance/AccountingLedgers`;
+                    hideSidebars();
+                    // Update the breadcrumb (same as the anchor tag in the menu)
+                    updateBreadcrumbFromSidebar2('Accounting Ledgers');
+
+                }
+
+
+                function hideSidebars() {
+                    const sidebar = document.getElementById('sidebar');
+                    const sidebar2 = document.getElementById('sidebar2');
+                    const root = document.documentElement; // Access CSS custom properties
+
+                    // Hide Sidebar 1 and Sidebar 2
+                    sidebar.classList.add('hidden');
+                    sidebar2.classList.add('hidden');
+                    sidebar2.style.display = 'none'; // Set display to none for sidebar2
+
+                    // Update the CSS variable based on the sidebar state
+                    root.style.setProperty('--sidebar-width', '4em'); // No sidebar
+                    sidebar2.style.marginTop = '70px'; // Adjust Sidebar 2 margin
+
+                    // Adjust the toggle button symbol
+                    const toggleBtn = document.querySelector('.toggle-btn');
+                    toggleBtn.innerHTML = '&gt;';
+                }
+
+
+                function updateBreadcrumbFromSidebar2(submenuItem) {
+                    // Clear the breadcrumb trail before adding the new item
+                    breadcrumbTrail.length = 1;
+                    breadcrumbTrail.push(submenuItem); // Add the new breadcrumb item
+                    updateBreadcrumb(); // Re-render the breadcrumb trail
+                }
+
+
+                function updateBreadcrumb() {
+                    const breadcrumbContainer = document.getElementById("breadcrumb");
+
+                    // Clear existing breadcrumb items
+                    breadcrumbContainer.innerHTML = '';
+
+                    breadcrumbTrail.forEach((name, index) => {
+                        // Create breadcrumb item
+                        const breadcrumbItem = document.createElement("span");
+                        breadcrumbItem.textContent = name;
+                        breadcrumbItem.onclick = () => goToLevel(index);
+                        breadcrumbContainer.appendChild(breadcrumbItem);
+
+                        // Add a separator if not the last item
+                        if (index < breadcrumbTrail.length - 1) {
+                            const separator = document.createElement("span");
+                            separator.textContent = " / ";
+                            separator.className = "separator";
+                            breadcrumbContainer.appendChild(separator);
                         }
                     });
                 }
-            }
-        });
-
-        function handleBellClick() {
-            window.location.href = `/${tenantName}/Shared/Notification`;
-        }
-                function handleBellClick() {
-          window.location.href = `/${tenantName}/Shared/Notification`;
-        }
-
-             let alertsData = [];
-
-        async function fetchUnseenCount() {
-          try {
-            const response = await fetch('/api/Notification/GetUserNotifications');
-            if (!response.ok) throw new Error('Failed to fetch notifications');
-
-            const json = await response.json();
-            alertsData = json.data || [];
-
-            const unseenCount = alertsData.filter(n => n.IsSeen === false).length;
-            const badge = document.getElementById('notificationBadge');
-            badge.style.display = unseenCount > 0 ? 'inline-block' : 'none';
-            badge.textContent = unseenCount;
-
-          } catch (err) {
-            console.error('Error fetching notifications:', err);
-          }
-        }
-
-        function showPopup() {
-          const popup = document.getElementById('notificationPopup');
-          const content = document.getElementById('notificationPopupContent');
-
-          const unread = alertsData.filter(n => !n.IsSeen && n.AlertUserMessage);
-
-          if (unread.length === 0) {
-            content.innerHTML = '<div class="notification-item">No new notifications</div>';
-          } else {
-            content.innerHTML = unread.map(n => `
-              <div class="notification-item">
-                <strong>${n.AlertCode}</strong>
-                <span>${n.AlertUserMessage}</span>
-              </div>
-            `).join('');
-          }
-
-          popup.style.display = 'block';
-        }
-
-            function hidePopup() {
-          setTimeout(function() {
-            document.getElementById('notificationPopup').style.display = 'none';
-          }, 5000); // 5000 milliseconds = 5 seconds
-        }
-
-        window.addEventListener('DOMContentLoaded', fetchUnseenCount);
-        function handleGearClick() {
-            const settingsPopup = document.getElementById('settingsPopup');
-            if (settingsPopup) {
-                settingsPopup.style.display = 'block';
-            }
-        }
-        function handleInfoClick() {
-
-                $.ajax({
-                    url: "/api/utility/CheckUserLevel", // Server-side endpoint to check UserLevel
-                    method: "GET",
-                    success: function (response) {
-                        if (response.success && response.userLevel === 99) {
-                                       window.location.href = `/${tenantName}/General/CompanyDetails`;
-
-                        } else {
-                            // Notify the user that navigation is not allowed
-                            DevExpress.ui.notify("You do not have permission to view this page.", "error", 2000);
-                        }
-                    },
-                    error: function () {
-                        DevExpress.ui.notify("Failed to check user level.", "error", 2000);
-                    }
-                });
-        }
-
-        // Function for Avatar click - show user profile
-        function handleAvatarClick() {
-            const profilePopup = document.getElementById('profilePopup');
-            if (profilePopup) {
-                profilePopup.style.display = 'block';
-            }
-        }
-        function closePopup(popupId) {
-            const popup = document.getElementById(popupId);
-            if (popup) {
-                popup.style.display = 'none';
-            }
-        }
-        const breadcrumbTrail = [];
-        function navigate(name) {
-            const sidebar2 = document.getElementById('sidebar2');
-            if (sidebar2.style.display === 'block') {
-                sidebar2.style.display = 'none';
-            } else {
-                sidebar2.style.display = 'block'; // Show sidebar2
-            }
-            // Dynamically load submenu items for the first sidebar menu
-            if (name === 'Finance') {
-                showFinanceSubmenu();
-                breadcrumbTrail[0] = name;
-                updateBreadcrumb();
-            } else if (name === 'Human Resources') {
-                breadcrumbTrail.length = 0;
-                updateBreadcrumb();
-                updateBreadcrumbFromSidebar2('');
-                sidebar2.style.display = 'none';
-            } else if (name === 'VAT Modules') {
-                breadcrumbTrail.length = 0;
-                showVATModuleSubmenu();
-                updateBreadcrumb();
-                updateBreadcrumbFromSidebar2('');
-                //sidebar2.style.display = 'none';
-            } else if (name === 'Equipment Rentals') {
-                breadcrumbTrail.length = 0;
-                updateBreadcrumb();
-                updateBreadcrumbFromSidebar2('');
-                sidebar2.style.display = 'none';
-            } else if (name === 'Camp Management') {
-                breadcrumbTrail.length = 0;
-                updateBreadcrumb();
-                updateBreadcrumbFromSidebar2('');
-                sidebar2.style.display = 'none';
-            } else if (name === 'Inventory Management') {
-                showInventorySubmenu();
-                breadcrumbTrail.length = 0;
-                updateBreadcrumb();
-                updateBreadcrumbFromSidebar2('');
-                // sidebar2.style.display = 'none';
-            } else if (name === 'Projects Control') {
-                breadcrumbTrail.length = 0;
-                updateBreadcrumb();
-                updateBreadcrumbFromSidebar2('');
-                sidebar2.style.display = 'none';
-            }
-            function showFinanceSubmenu() {
-                const sidebar2 = document.getElementById('sidebar2');
-                sidebar2.innerHTML = `
-                                       <div class="submenu-item" onclick="toggleSubmenu('financeDashboardSubmenu')" role="button" aria-expanded="false">
-                                    <i class="fas fa-book-open"></i>
-                                    <div class="text">${formatMessage("Finance Dashboard")}</div>
-                                </div>
-                                <div id="financeDashboardSubmenu" class="nested-submenu" style="display: none; margin-left: 30px;">
-                                         <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/Index">
-            <i class="fas fa-tachometer-alt"></i>
-            <div class="text">${formatMessage("My Dashboard")}</div>
-        </a>
-                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/VoucherApproval">
-                                        <i class="fas fa-check-double"></i>
-                                        <div class="text">${formatMessage("Voucher Verification")}</div>
-                                    </a>
-                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/BillsReceivable">
-                                        <i class="fas fa-file-invoice-dollar"></i>
-                                        <div class="text">${formatMessage("Bills Receivable")}</div>
-                                    </a>
-                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/BillsPayable">
-                                        <i class="fas fa-money-check-alt"></i>
-                                        <div class="text">${formatMessage("Bills Payable")}</div>
-                                    </a>
-                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ucCostAnalysis">
-                                        <i class="fas fa-chart-pie"></i>
-                                        <div class="text">${formatMessage("Cost Analysis")}</div>
-                                    </a>
-                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/SalaryPayable">
-                                        <i class="fas fa-wallet"></i>
-                                        <div class="text">${formatMessage("Salary Payable")}</div>
-                                    </a>
-                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ChartOfAccounts">
-                                        <i class="fas fa-book"></i>
-                                        <div class="text">${formatMessage("Chart Of Accounts")}</div>
-                                    </a>
-                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ChartOfCostCenters">
-                                        <i class="fas fa-project-diagram"></i>
-                                        <div class="text">${formatMessage("Chart of Cost Centers")}</div>
-                                    </a>
-                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/uc20106TrialBalance">
-                                        <i class="fas fa-balance-scale"></i>
-                                        <div class="text">${formatMessage("Financial Reports")}</div>
-                                    </a>
-                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/AssetView">
-                                        <i class="fas fa-boxes"></i>
-                                        <div class="text">${formatMessage("Asset Register")}</div>
-                                    </a>
-                                </div>
-
-                                <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/AccountingLedgers">
-                                    <i class="fas fa-book"></i>
-                                    <div class="text">${formatMessage("Accounting Ledgers")}</div>
-                                </a>
-                                <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/AccountingRegister">
-                                    <i class="fas fa-book"></i>
-                                    <div class="text">${formatMessage("Accounting Register")}</div>
-                                </a>
-                                <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ChartOfAccounts">
-                                    <i class="fas fa-chart-pie"></i>
-                                    <div class="text">${formatMessage("Chart Of Accounts")}</div>
-                                </a>
-                                <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ChartOfCostCenters">
-                                    <i class="fas fa-chart-pie"></i>
-                                    <div class="text">${formatMessage("Chart of Cost Centers")}</div>
-                                </a>
-                                <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/VoucherBankPayment">
-                                    <i class="fas fa-university"></i>
-                                    <div class="text">${formatMessage("Bank Payment")}</div>
-                                </a>
-                                <a class="submenu-item" href="/${tenantName}/Finance/VoucherCashPayment">
-                                    <i class="fas fa-money-bill-wave"></i>
-                                    <div class="text">${formatMessage("Cash Payment")}</div>
-                                </a>
-                                <a class="submenu-item" href="/${tenantName}/Finance/VoucherEntryCashReceipts">
-                                    <i class="fas fa-dollar-sign"></i>
-                                    <div class="text">${formatMessage("Cash Receipt")}</div>
-                                </a>
-                                <a class="submenu-item" href="/${tenantName}/Finance/VoucherEntryReceipts">
-                                    <i class="fas fa-receipt"></i>
-                                    <div class="text">${formatMessage("Bank Receipt")}</div>
-                                </a>
-                                <a class="submenu-item" href="/${tenantName}/Finance/salesVoucher">
-                                    <i class="fas fa-tags"></i>
-                                    <div class="text">${formatMessage("Sales Voucher")}</div>
-                                </a>
-                                <a class="submenu-item" href="/${tenantName}/Finance/purchasevoucher">
-                                    <i class="fas fa-shopping-cart"></i>
-                                    <div class="text">${formatMessage("Purchase Voucher")}</div>
-                                </a>
-                                <a class="submenu-item" href="/${tenantName}/Finance/ExpensesClaims">
-                                    <i class="fas fa-file-invoice-dollar"></i>
-                                    <div class="text">${formatMessage("Expense Claim")}</div>
-                                </a>
-                                <a class="submenu-item" href="/${tenantName}/Finance/Voucherjournal">
-                                    <i class="fas fa-book-open"></i>
-                                    <div class="text">${formatMessage("Journal Voucher")}</div>
-                                </a>
-                                <a class="submenu-item" href="/${tenantName}/Finance/JournalRegister">
-                                    <i class="fas fa-newspaper"></i>
-                                    <div class="text">${formatMessage("Journal Register")}</div>
-                                </a>`;
-            }
-
-            function showVATModuleSubmenu() {
-                const sidebar2 = document.getElementById('sidebar2');
-                sidebar2.innerHTML = `
-                                <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/SalesRegisterVAT">
-                                    <i class="fas fa-book"></i>
-                                    <div class="text">${formatMessage("Sales Invoice Register")}</div>
-                                </a>
-                                <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATCreditNotRegister">
-                                    <i class="fas fa-book"></i>
-                                    <div class="text">${formatMessage("Credit Note Register")}</div>
-                                </a>
-                                <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATPurchaseMasterView">
-                                    <i class="fas fa-book"></i>
-                                    <div class="text">${formatMessage("Purchase Invoice Register")}</div>
-                                </a>
-                                <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATDebitNotRegister">
-                                    <i class="fas fa-book"></i>
-                                    <div class="text">${formatMessage("Debit Note Register")}</div>
-                                </a>
-                                 <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATReturnsSalesandPurchase">
-                                    <i class="fas fa-book"></i>
-                                    <div class="text">${formatMessage("VAT Returns")}</div>
-                                </a>
-                                                 <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATInvoiceReporting">
-                                    <i class="fas fa-book"></i>
-                                    <div class="text">${formatMessage("Sales Reporting")}</div>
-                                </a>
-                                 <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/ProformaInvoiceMasterView">
-                                    <i class="fas fa-book"></i>
-                                    <div class="text">${formatMessage("Proforma Invoices")}</div>
-                                </a>
-                                `;
-
-            }
-        }
 
 
-        function showInventorySubmenu() {
-            const sidebar2 = document.getElementById('sidebar2');
-            sidebar2.innerHTML = `
-                                <div class="submenu-item" onclick="toggleSubmenu('financeDashboardSubmenu1')" role="button" aria-expanded="false">
-                                    <i class="fas fa-book-open"></i>
-                                    <div class="text">${formatMessage("Inventory Dashboard")}</div>
-                                </div>
-                                <div id="financeDashboardSubmenu1" class="nested-submenu" style="display: none; margin-left: 30px;">
-                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/Index">
-                                        <div class="text">${formatMessage("My Dashboard")}</div>
-                                    </a>
-                                </div>
-
-                               <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/IMS/StockInventoryMainForm">
-                                    <i class="fas fa-boxes"></i> 
-                                    <div class="text">${formatMessage("Stock Inventory")}</div>
-                                </a>
-                                <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/IMS/MaterialRequestEnquiriesDetails">
-                                    <i class="fas fa-clipboard-list"></i> 
-                                    <div class="text">${formatMessage("Material Requests")}</div>
-                                </a>
-                                <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/IMS/Quotation">
-                                    <i class="fas fa-file-signature"></i> 
-                                    <div class="text">${formatMessage("Quotations To Clients")}</div>
-                                </a>
-                                <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/IMS/SalesOrders">
-                                    <i class="fas fa-shopping-bag"></i> 
-                                    <div class="text">${formatMessage("Sales Orders")}</div>
-                                </a>
-                                <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/IMS/DeliveryNote">
-                                    <i class="fas fa-truck"></i> 
-                                    <div class="text">${formatMessage("Delivery Note")}</div>
-                                </a>
-                                <a class="submenu-item" href="/${tenantName}/IMS/RequestforQuotationList">
-                                    <i class="fas fa-database"></i> 
-                                    <div class="text">${formatMessage("RFQ Database")}</div>
-                                </a>
-                                <a class="submenu-item" href="/${tenantName}/IMS/QuotationAnalysis">
-                                    <i class="fas fa-chart-line"></i> 
-                                    <div class="text">${formatMessage("Quotation Analysis")}</div>
-                                </a>
-                                <a class="submenu-item" href="/${tenantName}/IMS/PurchaseOrders">
-                                    <i class="fas fa-file-invoice"></i>
-                                    <div class="text">${formatMessage("Purchase Orders")}</div>
-                                </a>
-                                <a class="submenu-item" href="/${tenantName}/IMS/MaterialReceipts">
-                                    <i class="fas fa-dolly-flatbed"></i> 
-                                    <div class="text">${formatMessage("Material Receipts")}</div>
-                                </a>
-                                <a class="submenu-item" href="/${tenantName}/IMS/ClientLeads">
-                                    <i class="fas fa-user-plus"></i> 
-                                    <div class="text">${formatMessage("Client Leads")}</div>
-                                </a>
-                                <a class="submenu-item" href="/${tenantName}/IMS/Suppliers">
-                                    <i class="fas fa-people-carry"></i>
-                                    <div class="text">${formatMessage("Suppliers")}</div>
-                                </a>
-                                <a class="submenu-item" href="/${tenantName}/IMS/JobOrders">
-                                    <i class="fas fa-tasks"></i> 
-                                    <div class="text">${formatMessage("Job Orders")}</div>
-                                </a>
-                                <a class="submenu-item" href="/${tenantName}/IMS/StockAdjustments">
-                                    <i class="fas fa-sliders-h"></i> 
-                                    <div class="text">${formatMessage("Stock Adjustments")}</div>
-                                </a>
-        `;
-        }
-
-
-        // Function to toggle visibility of nested submenus
-        function toggleSubmenu(submenuId) {
-            const submenu = document.getElementById(submenuId);
-            if (submenu.style.display === 'none') {
-                submenu.style.display = 'block';
-            } else {
-                submenu.style.display = 'none';
-            }
-        }
-
-        // Function to toggle visibility of nested submenus
-        function toggleSubmenu(submenuId) {
-            const submenu = document.getElementById(submenuId);
-            if (submenu.style.display === 'none') {
-                submenu.style.display = 'block';
-            } else {
-                submenu.style.display = 'none';
-            }
-        }
-
-
-        function loadAccountLedger() {
-            // Set the iframe source to load Accounting Ledgers content
-            const iframe = document.getElementById("contentIframe");
-            iframe.src = `/${tenantName}/Finance/AccountingLedgers`;
-            hideSidebars();
-            // Update the breadcrumb (same as the anchor tag in the menu)
-            updateBreadcrumbFromSidebar2('Accounting Ledgers');
-
-        }
-
-
-        function hideSidebars() {
-            const sidebar = document.getElementById('sidebar');
-            const sidebar2 = document.getElementById('sidebar2');
-            const root = document.documentElement; // Access CSS custom properties
-
-            // Hide Sidebar 1 and Sidebar 2
-            sidebar.classList.add('hidden');
-            sidebar2.classList.add('hidden');
-            sidebar2.style.display = 'none'; // Set display to none for sidebar2
-
-            // Update the CSS variable based on the sidebar state
-            root.style.setProperty('--sidebar-width', '4em'); // No sidebar
-            sidebar2.style.marginTop = '70px'; // Adjust Sidebar 2 margin
-
-            // Adjust the toggle button symbol
-            const toggleBtn = document.querySelector('.toggle-btn');
-            toggleBtn.innerHTML = '&gt;';
-        }
-
-
-        function updateBreadcrumbFromSidebar2(submenuItem) {
-            // Clear the breadcrumb trail before adding the new item
-            breadcrumbTrail.length = 1;
-            breadcrumbTrail.push(submenuItem); // Add the new breadcrumb item
-            updateBreadcrumb(); // Re-render the breadcrumb trail
-        }
-
-
-        function updateBreadcrumb() {
-            const breadcrumbContainer = document.getElementById("breadcrumb");
-
-            // Clear existing breadcrumb items
-            breadcrumbContainer.innerHTML = '';
-
-            breadcrumbTrail.forEach((name, index) => {
-                // Create breadcrumb item
-                const breadcrumbItem = document.createElement("span");
-                breadcrumbItem.textContent = name;
-                breadcrumbItem.onclick = () => goToLevel(index);
-                breadcrumbContainer.appendChild(breadcrumbItem);
-
-                // Add a separator if not the last item
-                if (index < breadcrumbTrail.length - 1) {
-                    const separator = document.createElement("span");
-                    separator.textContent = " / ";
-                    separator.className = "separator";
-                    breadcrumbContainer.appendChild(separator);
+                function goToLevel(level) {
+                    breadcrumbTrail = breadcrumbTrail.slice(0, level + 1); // Keep up to the selected level
+                    updateBreadcrumb();
                 }
-            });
-        }
 
-
-        function goToLevel(level) {
-            breadcrumbTrail = breadcrumbTrail.slice(0, level + 1); // Keep up to the selected level
-            updateBreadcrumb();
-        }
-
-        function resetBreadcrumb() {
-            breadcrumbTrail = ["Home"]; // Reset to the initial state
-            updateBreadcrumb();
-        }
-
-        // Example usage to ensure Sidebar2 interactions don't interfere with the trail
-        function selectNestedSubmenu(parent, child) {
-            updateBreadcrumbFromSidebar2(parent); // Update second level
-            updateBreadcrumbFromSidebar2(child); // Add/update the third level
-        }
-
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const sidebar2 = document.getElementById('sidebar2');
-            const toggleBtn = document.querySelector('.toggle-btn');
-            const root = document.documentElement; // Access CSS custom properties
-
-            // Toggle visibility of Sidebar 1
-            sidebar.classList.toggle('hidden');
-            sidebar2.classList.toggle('expanded');
-
-            // Update the CSS variable based on the sidebar state
-            if (sidebar.classList.contains('hidden') && sidebar2.classList.contains('expanded')) {
-                root.style.setProperty('--sidebar-width', '80px'); // Sidebar 2 width
-                //sidebar2.style.marginTop = '70px'; // Adjust Sidebar 2 margin
-            } else if (sidebar.classList.contains('hidden')) {
-                root.style.setProperty('--sidebar-width', '4em'); // No sidebar
-                //  sidebar2.style.marginTop = '70px'; // Adjust Sidebar 2 margin
-            } else {
-                root.style.setProperty('--sidebar-width', '256px'); // Sidebar 1 width
-                //sidebar2.style.marginTop = '70px'; // Keep Sidebar 2 margin
-                //sidebar.style.marginTop = '45px'; // Adjust Sidebar 1 margin
-            }
-
-            // Adjust the toggle button symbol
-            toggleBtn.innerHTML = sidebar.classList.contains('hidden') ? '&gt;' : '&lt;';
-        }
-        // function updateHeight() {
-        //   document.querySelector('.mainContainer').style.height = window.innerHeight + 'px';
-        // }
-
-        // Update height when fullscreen mode is toggled
-        // document.addEventListener("fullscreenchange", updateHeight);
-        // document.addEventListener("webkitfullscreenchange", updateHeight);
-        // document.addEventListener("mozfullscreenchange", updateHeight);
-        // document.addEventListener("MSFullscreenChange", updateHeight);
-
-        // Also update on window resize
-        // window.addEventListener("resize", updateHeight);
-        //Fuction for report onclick
-
-
-        function handleClick(selectedText) {
-
-                
-            var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
-            var frmDateBox = $("#frmdateBox").dxDateBox("instance");
-            var toDateBox = $("#todateBox").dxDateBox("instance");
-
-            var accountId = dropDownBox.option("value");
-            var frmDate = frmDateBox.option("value");
-            var toDate = toDateBox.option("value");
-
-            // Check if accountId is not selected
-            if (!accountId) {
-                alert("Please select an account.");
-               
-                document.getElementById("submenuContainer4").style.display = 'none';
-                document.getElementById("submenuContainer5").style.display = 'none';
-                document.getElementById("submenuContainer6").style.display = 'none';
-                return;
-            }
-
-            // Function to format date as D-MMM-YYYY (e.g., 18-Jan-2022)
-            function formatDate(date) {
-                if (!date) return "";
-                let dateObj = new Date(date);
-                let day = dateObj.getDate(); // Get Day
-                let month = dateObj.toLocaleString('en-US', { month: 'short' }); // Get Month as 'Jan', 'Feb'
-                let year = dateObj.getFullYear(); // Get Year
-                return `${day}-${month}-${year}`; // Format as D-MMM-YYYY
-            }
-
-            // Format dates correctly
-            var frmDateStr = formatDate(frmDate);
-            var toDateStr = formatDate(toDate);
-
-            // Debugging: Log selectedText and formatted dates
-            console.log("Selected Report Type:", selectedText);
-            console.log("Formatted From Date:", frmDateStr);
-            console.log("Formatted To Date:", toDateStr);
-
-            // Mapping report names to URLs
-            const reportMappings = {
-                "Account Ledger - Statement of Accounts": "StatementOfAccountReport",
-                "Account Ledger - Statement of Accounts (With Narration)": "AccountWithNarration",
-                "Account Ledger - Statement of Accounts (Export Format2)": "AccountStatementFormat2Report",
-                "Account Ledger - Statement of Accounts (Export Format)": "AccountExportFromatReport",
-                "Account Ledger - Statement of Account OrderByVocuherNo(Without Narration)": "AccountOrderbyVchNoWONarrationReport",
-                "Account Ledger - Statement of Account Export Format(Landscape)": "AccountExportLandscapeReport",
-                "AccountOrderByVoucherNo": "AccountOrderByVoucherNo",
-                "BillsReceivablelandscapeformat": "BillsReceivablelandscapeformat",
-                "BillsReceivableAll": "BillsReceivableAll",
-                "BillsReceivableByAccount": "BillsReceivableByAccount",
-                "BillsReceivableAgeingToday": "BillsReceivableAgeingToday",
-                "Report4": "Report4",
-                "BillsReceivableRentation": "BillsReceivableRentation",
-                "BillsReceivableLedgerBalance": "BillsReceivableLedgerBalance",
-                "BillsReceivableFormat": "BillsReceivableFormat",
-                "rpt201BillsPayable": "rpt201BillsPayable",
-                "rpt201BillsPayableWithVchNo": "rpt201BillsPayableWithVchNo",
-                "AccountDetails": "AccountDetails",
-                "AgeingToday": "AgeingToday",
-                "EndDate": "EndDate",
-                "Payablelandscape": "Payablelandscape",
-                "payableRetention": "payableRetention",
-                "Balance": "Balance",
-                "BillsPayablePaid": "BillsPayablePaid",
-                "XtraReportBillsReceivableAgeingReport": "XtraReportBillsReceivableAgeingReport",
-                "XtraReportAgeingreportsummary": "XtraReportAgeingreportsummary",
-                "AccountDebtors": "AccountDebtors",
-                "AccountConfirmationLetter": "AccountDebtors"
-            };
-
-            // Check if selectedText matches any report name
-            if (reportMappings[selectedText]) {
-                let reportName = reportMappings[selectedText];
-                console.log(`Redirecting to ${reportName}`);
-                window.open(
-                    `/${tenantName}/DocumentViewer?reportName=${encodeURIComponent(reportName)}&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}&skipPreview=true`,
-                    '_blank',
-                    'width=1200,height=800,scrollbars=yes,resizable=yes'
-                );
-            } else {
-                console.log("No matching report found for selectedText:", selectedText);
-            }
-
-            // Optional: Adjust row height
-            ChangeRowHeight(70);
-            document.getElementById("submenuContainer4").style.display = 'none';
-            document.getElementById("submenuContainer5").style.display = 'none';
-            document.getElementById("submenuContainer6").style.display = 'none';
-        }
-
-
-        window.onclick = function (event) {
-            if (!event.target.matches('.fa-user')) {
-                let dropdowns = document.getElementsByClassName("dropdown-menu");
-                for (let i = 0; i < dropdowns.length; i++) {
-                    let openDropdown = dropdowns[i];
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
-                    }
+                function resetBreadcrumb() {
+                    breadcrumbTrail = ["Home"]; // Reset to the initial state
+                    updateBreadcrumb();
                 }
-            }
-        };
-        function handleReserpasswordClick() {
-            window.location.href = `/${tenantName}/General/frm90108ChangePassword`;
-        }
-        function toggleDropdown() {
-            document.getElementById("userDropdown").classList.toggle("show");
-        }
-        function logout() {
-            fetch('/api/Login/SignOut', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Redirect to login page after successful logout
-                        window.location.href = `/${tenantName}/Security/Login`; // Redirect to login page
 
+                // Example usage to ensure Sidebar2 interactions don't interfere with the trail
+                function selectNestedSubmenu(parent, child) {
+                    updateBreadcrumbFromSidebar2(parent); // Update second level
+                    updateBreadcrumbFromSidebar2(child); // Add/update the third level
+                }
+
+                function toggleSidebar() {
+                    const sidebar = document.getElementById('sidebar');
+                    const sidebar2 = document.getElementById('sidebar2');
+                    const toggleBtn = document.querySelector('.toggle-btn');
+                    const root = document.documentElement; // Access CSS custom properties
+
+                    // Toggle visibility of Sidebar 1
+                    sidebar.classList.toggle('hidden');
+                    sidebar2.classList.toggle('expanded');
+
+                    // Update the CSS variable based on the sidebar state
+                    if (sidebar.classList.contains('hidden') && sidebar2.classList.contains('expanded')) {
+                        root.style.setProperty('--sidebar-width', '80px'); // Sidebar 2 width
+                        //sidebar2.style.marginTop = '70px'; // Adjust Sidebar 2 margin
+                    } else if (sidebar.classList.contains('hidden')) {
+                        root.style.setProperty('--sidebar-width', '4em'); // No sidebar
+                        //  sidebar2.style.marginTop = '70px'; // Adjust Sidebar 2 margin
                     } else {
-                        alert("Logout failed. Please try again.");
+                        root.style.setProperty('--sidebar-width', '256px'); // Sidebar 1 width
+                        //sidebar2.style.marginTop = '70px'; // Keep Sidebar 2 margin
+                        //sidebar.style.marginTop = '45px'; // Adjust Sidebar 1 margin
                     }
-                })
-                .catch(error => console.error("Error:", error));
-        }
-         function applyTheme(theme) {
-            let themes = {
-            "light-orange": {
-                "--header-color": "#FFDDC1",
-                "--footer-color": "#FFDDC1",
-                "--nav-color": "#FFB899",
-                "--background-color": "#FFF4E1",
-                "--hover-bg-color": "#FFC49C",
-                "--title-background-color": "#faa25a",
-        "--dx-card-hover-box-shadow": "0 4px 12px #faa25a",
+
+                    // Adjust the toggle button symbol
+                    toggleBtn.innerHTML = sidebar.classList.contains('hidden') ? '&gt;' : '&lt;';
+                }
+                // function updateHeight() {
+                //   document.querySelector('.mainContainer').style.height = window.innerHeight + 'px';
+                // }
+
+                // Update height when fullscreen mode is toggled
+                // document.addEventListener("fullscreenchange", updateHeight);
+                // document.addEventListener("webkitfullscreenchange", updateHeight);
+                // document.addEventListener("mozfullscreenchange", updateHeight);
+                // document.addEventListener("MSFullscreenChange", updateHeight);
+
+                // Also update on window resize
+                // window.addEventListener("resize", updateHeight);
+                //Fuction for report onclick
+
+
+                function handleClick(selectedText) {
+
+
+                    var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
+                    var frmDateBox = $("#frmdateBox").dxDateBox("instance");
+                    var toDateBox = $("#todateBox").dxDateBox("instance");
+
+                    var accountId = dropDownBox.option("value");
+                    var frmDate = frmDateBox.option("value");
+                    var toDate = toDateBox.option("value");
+
+                    // Check if accountId is not selected
+                    if (!accountId) {
+                        alert("Please select an account.");
+
+                        document.getElementById("submenuContainer4").style.display = 'none';
+                        document.getElementById("submenuContainer5").style.display = 'none';
+                        document.getElementById("submenuContainer6").style.display = 'none';
+                        return;
+                    }
+
+                    // Function to format date as D-MMM-YYYY (e.g., 18-Jan-2022)
+                    function formatDate(date) {
+                        if (!date) return "";
+                        let dateObj = new Date(date);
+                        let day = dateObj.getDate(); // Get Day
+                        let month = dateObj.toLocaleString('en-US', { month: 'short' }); // Get Month as 'Jan', 'Feb'
+                        let year = dateObj.getFullYear(); // Get Year
+                        return `${day}-${month}-${year}`; // Format as D-MMM-YYYY
+                    }
+
+                    // Format dates correctly
+                    var frmDateStr = formatDate(frmDate);
+                    var toDateStr = formatDate(toDate);
+
+                    // Debugging: Log selectedText and formatted dates
+                    console.log("Selected Report Type:", selectedText);
+                    console.log("Formatted From Date:", frmDateStr);
+                    console.log("Formatted To Date:", toDateStr);
+
+                    // Mapping report names to URLs
+                    const reportMappings = {
+                        "Account Ledger - Statement of Accounts": "StatementOfAccountReport",
+                        "Account Ledger - Statement of Accounts (With Narration)": "AccountWithNarration",
+                        "Account Ledger - Statement of Accounts (Export Format2)": "AccountStatementFormat2Report",
+                        "Account Ledger - Statement of Accounts (Export Format)": "AccountExportFromatReport",
+                        "Account Ledger - Statement of Account OrderByVocuherNo(Without Narration)": "AccountOrderbyVchNoWONarrationReport",
+                        "Account Ledger - Statement of Account Export Format(Landscape)": "AccountExportLandscapeReport",
+                        "AccountOrderByVoucherNo": "AccountOrderByVoucherNo",
+                        "BillsReceivablelandscapeformat": "BillsReceivablelandscapeformat",
+                        "BillsReceivableAll": "BillsReceivableAll",
+                        "BillsReceivableByAccount": "BillsReceivableByAccount",
+                        "BillsReceivableAgeingToday": "BillsReceivableAgeingToday",
+                        "Report4": "Report4",
+                        "BillsReceivableRentation": "BillsReceivableRentation",
+                        "BillsReceivableLedgerBalance": "BillsReceivableLedgerBalance",
+                        "BillsReceivableFormat": "BillsReceivableFormat",
+                        "rpt201BillsPayable": "rpt201BillsPayable",
+                        "rpt201BillsPayableWithVchNo": "rpt201BillsPayableWithVchNo",
+                        "AccountDetails": "AccountDetails",
+                        "AgeingToday": "AgeingToday",
+                        "EndDate": "EndDate",
+                        "Payablelandscape": "Payablelandscape",
+                        "payableRetention": "payableRetention",
+                        "Balance": "Balance",
+                        "BillsPayablePaid": "BillsPayablePaid",
+                        "XtraReportBillsReceivableAgeingReport": "XtraReportBillsReceivableAgeingReport",
+                        "XtraReportAgeingreportsummary": "XtraReportAgeingreportsummary",
+                        "AccountDebtors": "AccountDebtors",
+                        "AccountConfirmationLetter": "AccountDebtors"
+                    };
+
+                    // Check if selectedText matches any report name
+                    if (reportMappings[selectedText]) {
+                        let reportName = reportMappings[selectedText];
+                        console.log(`Redirecting to ${reportName}`);
+                        window.open(
+                            `/${tenantName}/DocumentViewer?reportName=${encodeURIComponent(reportName)}&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}&skipPreview=true`,
+                            '_blank',
+                            'width=1200,height=800,scrollbars=yes,resizable=yes'
+                        );
+                    } else {
+                        console.log("No matching report found for selectedText:", selectedText);
+                    }
+
+                    // Optional: Adjust row height
+                    ChangeRowHeight(70);
+                    document.getElementById("submenuContainer4").style.display = 'none';
+                    document.getElementById("submenuContainer5").style.display = 'none';
+                    document.getElementById("submenuContainer6").style.display = 'none';
+                }
+
+
+                window.onclick = function (event) {
+                    if (!event.target.matches('.fa-user')) {
+                        let dropdowns = document.getElementsByClassName("dropdown-menu");
+                        for (let i = 0; i < dropdowns.length; i++) {
+                            let openDropdown = dropdowns[i];
+                            if (openDropdown.classList.contains('show')) {
+                                openDropdown.classList.remove('show');
+                            }
+                        }
+                    }
+                };
+                function handleReserpasswordClick() {
+                    window.location.href = `/${tenantName}/General/frm90108ChangePassword`;
+                }
+                function toggleDropdown() {
+                    document.getElementById("userDropdown").classList.toggle("show");
+                }
+                function logout() {
+                    fetch('/api/Login/SignOut', {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Redirect to login page after successful logout
+                                window.location.href = `/${tenantName}/Security/Login`; // Redirect to login page
+
+                            } else {
+                                alert("Logout failed. Please try again.");
+                            }
+                        })
+                        .catch(error => console.error("Error:", error));
+                }
+                 function applyTheme(theme) {
+                    let themes = {
+                    "light-orange": {
+                        "--header-color": "#FFDDC1",
+                        "--footer-color": "#FFDDC1",
+                        "--nav-color": "#FFB899",
+                        "--background-color": "#FFF4E1",
+                        "--hover-bg-color": "#FFC49C",
+                        "--title-background-color": "#faa25a",
+                "--dx-card-hover-box-shadow": "0 4px 12px #faa25a",
+                            },
+                    "light-pink": {
+                        "--header-color": "#FFD3E0",
+                        "--footer-color": "#FFD3E0",
+                        "--nav-color": "#FF9FB9",
+                        "--background-color": "#FFECF2",
+                        "--hover-bg-color": "#FFB6C9",
+                        "--title-background-color": "#fc6f99",
+                        "--dx-card-hover-box-shadow": "0 4px 12px #fc6f99",
+
                     },
-            "light-pink": {
-                "--header-color": "#FFD3E0",
-                "--footer-color": "#FFD3E0",
-                "--nav-color": "#FF9FB9",
-                "--background-color": "#FFECF2",
-                "--hover-bg-color": "#FFB6C9",
-                "--title-background-color": "#fc6f99",       
-                "--dx-card-hover-box-shadow": "0 4px 12px #fc6f99",
+                    "light-cyan": {
+                        "--header-color": "#C3E8F7",
+                        "--footer-color": "#C3E8F7",
+                        "--nav-color": "#91D6ED",
+                        "--background-color": "#E8F8FF",
+                        "--hover-bg-color": "#A5DAEE",
+                        "--title-background-color": "#4394b4",
+                        "--dx-card-hover-box-shadow": "0 4px 12px #4394b4",
 
-            },
-            "light-cyan": {
-                "--header-color": "#C3E8F7",
-                "--footer-color": "#C3E8F7",
-                "--nav-color": "#91D6ED",
-                "--background-color": "#E8F8FF",
-                "--hover-bg-color": "#A5DAEE",
-                "--title-background-color": "#4394b4",    
-                "--dx-card-hover-box-shadow": "0 4px 12px #4394b4",
+                    },
+                    "light-rose": {
+                        "--header-color": "#D4A5A5",
+                        "--footer-color": "#D4A5A5",
+                        "--nav-color": "#B97F7F",
+                        "--background-color": "#EFD8D8",
+                        "--hover-bg-color": "#C78C8C",
+                        "--title-background-color": "#8d5353",
+                        "--dx-card-hover-box-shadow": "0 4px 12px #8d5353",
 
-            },
-            "light-rose": {
-                "--header-color": "#D4A5A5",
-                "--footer-color": "#D4A5A5",
-                "--nav-color": "#B97F7F",
-                "--background-color": "#EFD8D8",
-                "--hover-bg-color": "#C78C8C",
-                "--title-background-color": "#8d5353",
-                "--dx-card-hover-box-shadow": "0 4px 12px #8d5353",
+                    },
+                    "light-gold": {
+                        "--header-color": "#FFF7D6",
+                        "--footer-color": "#FFF7D6",
+                        "--nav-color": "#FFEB99",
+                        "--background-color": "#FFFBEA",
+                        "--hover-bg-color": "#FFDE88",
+                        "--title-background-color": "#caae3b",
+                    "--dx-card-hover-box-shadow": "0 4px 12px #caae3b",
 
-            },
-            "light-gold": {
-                "--header-color": "#FFF7D6",
-                "--footer-color": "#FFF7D6",
-                "--nav-color": "#FFEB99",
-                "--background-color": "#FFFBEA",
-                "--hover-bg-color": "#FFDE88",
-                "--title-background-color": "#caae3b",
-            "--dx-card-hover-box-shadow": "0 4px 12px #caae3b",
+                    },
+                    "light-mint": {
+                        "--header-color": "#E1F7D5",
+                        "--footer-color": "#E1F7D5",
+                        "--nav-color": "#B3E99F",
+                        "--background-color": "#F3FBED",
+                        "--hover-bg-color": "#C8F3B8",
+                        "--title-background-color": "#97ce7a",
+                    "--dx-card-hover-box-shadow": "0 4px 12px #97ce7a",
 
-            },
-            "light-mint": {
-                "--header-color": "#E1F7D5",
-                "--footer-color": "#E1F7D5",
-                "--nav-color": "#B3E99F",
-                "--background-color": "#F3FBED",
-                "--hover-bg-color": "#C8F3B8",
-                "--title-background-color": "#97ce7a",
-            "--dx-card-hover-box-shadow": "0 4px 12px #97ce7a",
+                    },
+                    "light-peach": {
+                        "--header-color": "#FAE1DD",
+                        "--footer-color": "#FAE1DD",
+                        "--nav-color": "#F5BFB8",
+                        "--background-color": "#FFF2EF",
+                        "--hover-bg-color": "#F7C9C2",
+                        "--title-background-color": "#af665b",
+                          "--dx-card-hover-box-shadow": "0 4px 12px #af665b",
 
-            },
-            "light-peach": {
-                "--header-color": "#FAE1DD",
-                "--footer-color": "#FAE1DD",
-                "--nav-color": "#F5BFB8",
-                "--background-color": "#FFF2EF",
-                "--hover-bg-color": "#F7C9C2",
-                "--title-background-color": "#af665b",
-                  "--dx-card-hover-box-shadow": "0 4px 12px #af665b",
+                    },
+                    "light-sky": {
+                        "--header-color": "#E6F0FF",
+                        "--footer-color": "#E6F0FF",
+                        "--nav-color": "#B3D1FF",
+                        "--background-color": "#F5FAFF",
+                        "--hover-bg-color": "#C3DBFF",
+                        "--title-background-color": "#5d82b9",
+                        "--dx-card-hover-box-shadow": "0 4px 12px #5d82b9",
 
-            },
-            "light-sky": {
-                "--header-color": "#E6F0FF",
-                "--footer-color": "#E6F0FF",
-                "--nav-color": "#B3D1FF",
-                "--background-color": "#F5FAFF",
-                "--hover-bg-color": "#C3DBFF",
-                "--title-background-color": "#5d82b9",
-                "--dx-card-hover-box-shadow": "0 4px 12px #5d82b9",
+                    },
+                    "light-olive": {
+                        "--header-color": "#D9E4DD",
+                        "--footer-color": "#D9E4DD",
+                        "--nav-color": "#B3C6B9",
+                        "--background-color": "#EDF5F0",
+                        "--hover-bg-color": "#C3D5C7",
+                        "--title-background-color": "#5cb97e",
+                    "--dx-card-hover-box-shadow": "0 4px 12px #5cb97e",
 
-            },
-            "light-olive": {
-                "--header-color": "#D9E4DD",
-                "--footer-color": "#D9E4DD",
-                "--nav-color": "#B3C6B9",
-                "--background-color": "#EDF5F0",
-                "--hover-bg-color": "#C3D5C7",
-                "--title-background-color": "#5cb97e",
-            "--dx-card-hover-box-shadow": "0 4px 12px #5cb97e",
+                    },
+                    "light-coral": {
+                        "--header-color": "#FDE2E4",
+                        "--footer-color": "#FDE2E4",
+                        "--nav-color": "#FAB6B8",
+                        "--background-color": "#FFF4F5",
+                        "--hover-bg-color": "#FBC8CA",
+                        "--title-background-color": "#ca6d73",
+                       "--dx-card-hover-box-shadow": "0 4px 12px #ca6d73",
 
-            },
-            "light-coral": {
-                "--header-color": "#FDE2E4",
-                "--footer-color": "#FDE2E4",
-                "--nav-color": "#FAB6B8",
-                "--background-color": "#FFF4F5",
-                "--hover-bg-color": "#FBC8CA",
-                "--title-background-color": "#ca6d73",
-               "--dx-card-hover-box-shadow": "0 4px 12px #ca6d73",
+                    },
+                    "light-sand": {
+                        "--header-color": "#E3D5CA",
+                        "--footer-color": "#E3D5CA",
+                        "--nav-color": "#C5A994",
+                        "--background-color": "#F7F2ED",
+                        "--hover-bg-color": "#D6BFAE",
+                        "--title-background-color": "#a77b59",
+                        "--dx-card-hover-box-shadow": "0 4px 12px #a77b59",
 
-            },
-            "light-sand": {
-                "--header-color": "#E3D5CA",
-                "--footer-color": "#E3D5CA",
-                "--nav-color": "#C5A994",
-                "--background-color": "#F7F2ED",
-                "--hover-bg-color": "#D6BFAE",
-                "--title-background-color": "#a77b59",
-                "--dx-card-hover-box-shadow": "0 4px 12px #a77b59",
-
-            },
-                   "light-lavender": {
-            "--header-color": "#E6E6FA",
-            "--footer-color": "#E6E6FA",
-            "--nav-color": "#D8BFD8",
-            "--background-color": "#F8F8FF",
-            "--hover-bg-color": "#DDA0DD",
-                "--title-background-color": "#6262d6",
-             "--dx-card-hover-box-shadow": "0 4px 12px #6262d6",
-
-        },
-        "light-seafoam": {
-            "--header-color": "#D1F2EB",
-            "--footer-color": "#D1F2EB",
-            "--nav-color": "#A3E4D7",
-            "--background-color": "#E8F8F5",
-            "--hover-bg-color": "#76D7C4",
-                "--title-background-color": "#5aaa99",
-             "--dx-card-hover-box-shadow": "0 4px 12px #5aaa99",
-
-        },
-        "light-butter": {
-            "--header-color": "#FFF9E6",
-            "--footer-color": "#FFF9E6",
-            "--nav-color": "#FFECB3",
-            "--background-color": "#FFFAF0",
-            "--hover-bg-color": "#FFE082",
-                "--title-background-color": "#ceb45e",
-            "--dx-card-hover-box-shadow": "0 4px 12px #ceb45e",
-
-        },
-        "light-periwinkle": {
-            "--header-color": "#E0E7FF",
-            "--footer-color": "#E0E7FF",
-            "--nav-color": "#C7D2FE",
-            "--background-color": "#F3F4FF",
-            "--hover-bg-color": "#A5B4FC",
-                "--title-background-color": "#526bbd",
-          "--dx-card-hover-box-shadow": "0 4px 12px #526bbd",
-
-        },
-        "light-mauve": {
-            "--header-color": "#F5E0E6",
-            "--footer-color": "#F5E0E6",
-            "--nav-color": "#ECB3C1",
-            "--background-color": "#FFF0F5",
-            "--hover-bg-color": "#E57399",
-                "--title-background-color": "#c45373",
-        "--dx-card-hover-box-shadow": "0 4px 12px #c45373",
-
-        },
-        "light-aqua": {
-            "--header-color": "#E0FFFF",
-            "--footer-color": "#E0FFFF",
-            "--nav-color": "#B2DFDB",
-            "--background-color": "#F0FFFF",
-            "--hover-bg-color": "#80CBC4",
-                "--title-background-color": "#48aaaa",
-           "--dx-card-hover-box-shadow": "0 4px 12px #48aaaa",
-
-        },
-        "light-blush": {
-            "--header-color": "#FFE4E1",
-            "--footer-color": "#FFE4E1",
-            "--nav-color": "#FFCDD2",
-            "--background-color": "#FFF5F5",
-            "--hover-bg-color": "#EF9A9A",
-                "--title-background-color": "#df7367",
-             "--dx-card-hover-box-shadow": "0 4px 12px #df7367",
-
-        },
-        "light-mist": {
-            "--header-color": "#F0F8FF",
-            "--footer-color": "#F0F8FF",
-            "--nav-color": "#D6EAF8",
-            "--background-color": "#F8FBFF",
-            "--hover-bg-color": "#AED6F1",
-                "--title-background-color": "#4a7fad",
-            "--dx-card-hover-box-shadow": "0 4px 12px #4a7fad",
-
-        },
-        "light-pearl": {
-            "--header-color": "#FAF0E6",
-            "--footer-color": "#FAF0E6",
-            "--nav-color": "#F5DEB3",
-            "--background-color": "#FFF5EE",
-            "--hover-bg-color": "#EEDFCC",
-                "--title-background-color": "#af7d4b",
-              "--dx-card-hover-box-shadow": "0 4px 12px #af7d4b",
-
-        },
-        "light-mint-cream": {
-            "--header-color": "#F5FFFA",
-            "--footer-color": "#F5FFFA",
-            "--nav-color": "#CCFFCC",
-            "--background-color": "#F0FFF0",
-            "--hover-bg-color": "#99FF99",
-                "--title-background-color": "#54a77d",
-               "--dx-card-hover-box-shadow": "0 4px 12px #54a77d",
+                    },
+                           "light-lavender": {
+                    "--header-color": "#E6E6FA",
+                    "--footer-color": "#E6E6FA",
+                    "--nav-color": "#D8BFD8",
+                    "--background-color": "#F8F8FF",
+                    "--hover-bg-color": "#DDA0DD",
+                        "--title-background-color": "#6262d6",
+                     "--dx-card-hover-box-shadow": "0 4px 12px #6262d6",
 
                 },
-            "dark-charcoal": {
-            "--header-color": "#918f8f",
-            "--footer-color": "#918f8f",
-            "--nav-color": "#c2bfbf",
-            "--background-color": "#c2bfbf",
-            "--hover-bg-color": "#6E6E6E",
-            "--title-background-color": "#050505",
-          "--dx-card-hover-box-shadow": "0 4px 12px #050505",
+                "light-seafoam": {
+                    "--header-color": "#D1F2EB",
+                    "--footer-color": "#D1F2EB",
+                    "--nav-color": "#A3E4D7",
+                    "--background-color": "#E8F8F5",
+                    "--hover-bg-color": "#76D7C4",
+                        "--title-background-color": "#5aaa99",
+                     "--dx-card-hover-box-shadow": "0 4px 12px #5aaa99",
 
-        }
-        };
+                },
+                "light-butter": {
+                    "--header-color": "#FFF9E6",
+                    "--footer-color": "#FFF9E6",
+                    "--nav-color": "#FFECB3",
+                    "--background-color": "#FFFAF0",
+                    "--hover-bg-color": "#FFE082",
+                        "--title-background-color": "#ceb45e",
+                    "--dx-card-hover-box-shadow": "0 4px 12px #ceb45e",
 
+                },
+                "light-periwinkle": {
+                    "--header-color": "#E0E7FF",
+                    "--footer-color": "#E0E7FF",
+                    "--nav-color": "#C7D2FE",
+                    "--background-color": "#F3F4FF",
+                    "--hover-bg-color": "#A5B4FC",
+                        "--title-background-color": "#526bbd",
+                  "--dx-card-hover-box-shadow": "0 4px 12px #526bbd",
 
-            if (themes[theme]) {
-                for (let property in themes[theme]) {
-                    document.documentElement.style.setProperty(property, themes[theme][property]);
-                    localStorage.setItem(property, themes[theme][property]); // Save the theme in LocalStorage
+                },
+                "light-mauve": {
+                    "--header-color": "#F5E0E6",
+                    "--footer-color": "#F5E0E6",
+                    "--nav-color": "#ECB3C1",
+                    "--background-color": "#FFF0F5",
+                    "--hover-bg-color": "#E57399",
+                        "--title-background-color": "#c45373",
+                "--dx-card-hover-box-shadow": "0 4px 12px #c45373",
+
+                },
+                "light-aqua": {
+                    "--header-color": "#E0FFFF",
+                    "--footer-color": "#E0FFFF",
+                    "--nav-color": "#B2DFDB",
+                    "--background-color": "#F0FFFF",
+                    "--hover-bg-color": "#80CBC4",
+                        "--title-background-color": "#48aaaa",
+                   "--dx-card-hover-box-shadow": "0 4px 12px #48aaaa",
+
+                },
+                "light-blush": {
+                    "--header-color": "#FFE4E1",
+                    "--footer-color": "#FFE4E1",
+                    "--nav-color": "#FFCDD2",
+                    "--background-color": "#FFF5F5",
+                    "--hover-bg-color": "#EF9A9A",
+                        "--title-background-color": "#df7367",
+                     "--dx-card-hover-box-shadow": "0 4px 12px #df7367",
+
+                },
+                "light-mist": {
+                    "--header-color": "#F0F8FF",
+                    "--footer-color": "#F0F8FF",
+                    "--nav-color": "#D6EAF8",
+                    "--background-color": "#F8FBFF",
+                    "--hover-bg-color": "#AED6F1",
+                        "--title-background-color": "#4a7fad",
+                    "--dx-card-hover-box-shadow": "0 4px 12px #4a7fad",
+
+                },
+                "light-pearl": {
+                    "--header-color": "#FAF0E6",
+                    "--footer-color": "#FAF0E6",
+                    "--nav-color": "#F5DEB3",
+                    "--background-color": "#FFF5EE",
+                    "--hover-bg-color": "#EEDFCC",
+                        "--title-background-color": "#af7d4b",
+                      "--dx-card-hover-box-shadow": "0 4px 12px #af7d4b",
+
+                },
+                "light-mint-cream": {
+                    "--header-color": "#F5FFFA",
+                    "--footer-color": "#F5FFFA",
+                    "--nav-color": "#CCFFCC",
+                    "--background-color": "#F0FFF0",
+                    "--hover-bg-color": "#99FF99",
+                        "--title-background-color": "#54a77d",
+                       "--dx-card-hover-box-shadow": "0 4px 12px #54a77d",
+
+                        },
+                    "dark-charcoal": {
+                    "--header-color": "#918f8f",
+                    "--footer-color": "#918f8f",
+                    "--nav-color": "#c2bfbf",
+                    "--background-color": "#c2bfbf",
+                    "--hover-bg-color": "#6E6E6E",
+                    "--title-background-color": "#050505",
+                  "--dx-card-hover-box-shadow": "0 4px 12px #050505",
+
                 }
-            }
-        }
-
-        window.onload = function () {
-            document.documentElement.style.setProperty("--header-color", localStorage.getItem("--header-color") || "#F0F8FF");
-            document.documentElement.style.setProperty("--footer-color", localStorage.getItem("--footer-color") || "F0F8FF");
-            document.documentElement.style.setProperty("--nav-color", localStorage.getItem("--nav-color") || "#D6EAF8");
-            document.documentElement.style.setProperty("--background-color", localStorage.getItem("--background-color") || "#F8FBFF");
-            document.documentElement.style.setProperty("--hover-bg-color", localStorage.getItem("--hover-bg-color") || "#AED6F1");
-            document.documentElement.style.setProperty("--title-background-color", localStorage.getItem("--title-background-color") || "#4a7fad");
-            document.documentElement.style.setProperty("--dx-card-hover-box-shadow", localStorage.getItem("--dx-card-hover-box-shadow") || "#4a7fad");
-
-
-        };
-        window.onscroll = function () {
-            let button = document.getElementById("goToTopBtn");
-            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
-                button.style.display = "block";
-            } else {
-                button.style.display = "none";
-            }
-        };
-
-        // Scroll to top smoothly
-        function scrollToTop() {
-            window.scrollTo({ top: 0, behavior: "smooth" });
-        }
-
-        // Report Mappings for Ageing Reports
-        const ageingReportMappings = {
-            "Receivables Ageing Report": "AgeingReport",
-            "Receivables Ageing Report (By Sales Person)": "XtraReportBillsReceivableAgeingReport",
-            "Receivables Ageing Report (Customizable)": "XtraReportAgeingCustomizable",
-            "Receivables Ageing Summary": "XtraReportAgeingreportsummary",
-            "Receivables Ageing Summary (Customizable)": "RptReceivableAgeingSummaryCustomizable"
-        };
-
-        // Function to handle submenu report clicks
-        function handleClickreport(reportKey) {
-            if (reportKey === "Receivables Ageing Report (Customizable)") {
-                window.location.href = `/${tenantName}/Finance/ReportBillsReceivable`;
-            } else if (reportKey === "Receivables Ageing Summary (Customizable)") {
-                window.location.href = `/${tenantName}/Finance/SalesBillsReceivable`;
-            } else if (ageingReportMappings[reportKey]) {
-                const reportName = ageingReportMappings[reportKey];
-                console.log(`Opening report: ${reportName}`);
-
-                // Open Document Viewer with selected report
-                window.open(
-                    `/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}`,
-                    '_blank',
-                    'width=1200,height=800,scrollbars=yes,resizable=yes'
-                );
-            } else {
-                console.warn('No report mapping found for:', reportKey);
-            }
-        }
-
-
-        function handleCstReportClick(reportName) {
-            var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
-            var frmDateBox = $("#frmdateBox").dxDateBox("instance");
-            var toDateBox = $("#todateBox").dxDateBox("instance");
-
-            var accountId = dropDownBox.option("value");
-            var frmDate = frmDateBox.option("value");
-            var toDate = toDateBox.option("value");
-
-            var formattedFrmDate = new Date(frmDate).toISOString().split('T')[0];
-            var formattedToDate = new Date(toDate).toISOString().split('T')[0];
-
-            // Get the AccountHead manually from the data source
-            dropDownBox.getDataSource().load().done(function (items) {
-                var selectedAccount = items.find(x => x.AccountId === accountId);
-                var accountHead = selectedAccount && selectedAccount.AccountHead ? encodeURIComponent(selectedAccount.AccountHead) : "";
-
-                var url = `/${tenantName}/Finance/${reportName}?accountId=${accountId}&fromDate=${formattedFrmDate}&toDate=${formattedToDate}&accountHead=${accountHead}`;
-                window.open(url, '_blank');
-            });
-        }
-        document.addEventListener("DOMContentLoaded", function () {
-            const helpVideoLink = document.getElementById("helpVideo");
-
-            // Get the last part of the URL path
-            const pathSegments = window.location.pathname.split('/');
-            const formName = pathSegments[pathSegments.length - 1] || pathSegments[pathSegments.length - 2];
-
-            if (formName && helpVideoLink) {
-                helpVideoLink.href = `https://help.quickdice.net/?formName=${encodeURIComponent(formName)}`;
-            }
-        });
-
-
-        function handleVATClick(selectedText) {
-            console.log("handleVATClick triggered with:", selectedText);
-
-            try {
-                // Get the DateBox instances
-                var frmDateBox = $("#frmdateBox").dxDateBox("instance");
-                var toDateBox = $("#todateBox").dxDateBox("instance");
-
-                if (!frmDateBox || !toDateBox) {
-                    console.error("DateBox instances not found.");
-                    alert("Date selection components are missing.");
-                    return;
-                }
-
-                // Get the date values
-                var frmDate = frmDateBox.option("value");
-                var toDate = toDateBox.option("value");
-
-                // Function to format date as D-MMM-YYYY
-                function formatDate(date) {
-                    if (!date) return "";
-                    let dateObj = new Date(date);
-                    let day = dateObj.getDate();
-                    let month = dateObj.toLocaleString('en-US', { month: 'short' });
-                    let year = dateObj.getFullYear();
-                    return `${day}-${month}-${year}`;
-                }
-
-                // Format dates
-                var frmDateStr = formatDate(frmDate);
-                var toDateStr = formatDate(toDate);
-
-                // Validate dates
-                if (!frmDateStr || !toDateStr) {
-                    alert("Please select valid From and To dates.");
-                    return;
-                }
-                
-                // Extract tenant name from URL
-                let pathParts = window.location.pathname.split('/');
-                let tenantName = pathParts[1] || "defaultTenant";
-
-                // Mapping report names to actual report IDs
-                const reportMappings = {
-                    "TaxSummaryReport": "TaxSummaryReport",
-                    "TaxVATReport": "TaxVATReport",
-                    "TaxReportRevenueInArabic": "TaxReportRevenueInArabic",
-                   "CreditSummary":"CreditSummary",
-                  "VATPurchasesAndExpReport":"VATPurchasesAndExpReport",
-                   "DebitNoteSummary":"DebitNoteSummary",
-                  
-                 
                 };
 
-                // Check if selectedText matches any report
-                if (reportMappings[selectedText]) {
-                    let reportName = reportMappings[selectedText];
-                    console.log(`Redirecting to ${reportName}`);
 
-                    window.open(
-                        `/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}&skipPreview=true`,
-                        '_blank',
-                        'width=1200,height=800,scrollbars=yes,resizable=yes'
-                    );
-                } else {
-                    console.warn("No matching report found for:", selectedText);
-                    alert("No matching report found.");
+                    if (themes[theme]) {
+                        for (let property in themes[theme]) {
+                            document.documentElement.style.setProperty(property, themes[theme][property]);
+                            localStorage.setItem(property, themes[theme][property]); // Save the theme in LocalStorage
+                        }
+                    }
                 }
-            } catch (error) {
-                console.error("An error occurred:", error);
-                alert("Something went wrong. Check console for details.");
-            }
-        }
-         $(function () {
-            // Set the header text
-            $("#notificationTitle").text(formatMessage("Notifications"))
-                .addClass("dx-textbox-heading");
 
-            // Set the message text
-            $("#notificationMessage").text(formatMessage("You have new notifications!"));
-
-            $("#Settings1").text(formatMessage("Settings"))
-                .addClass("dx-textbox-heading");
-            
-            $("#settingMessage1").text(formatMessage("Adjust your preferences here."));
-
-            $("#settingMessage2").text(formatMessage("Predefined Themes:"));
-
-            $("#userWelcome").text(formatMessage("Welcome, "));
-
-            $("#userLogout").text(formatMessage("Logout"));
-
-            $("#footerMessage1").text(formatMessage("Copyright "));
-
-            $("#footerMessage2").text(formatMessage(" All rights reserved."));
+                window.onload = function () {
+                    document.documentElement.style.setProperty("--header-color", localStorage.getItem("--header-color") || "#F0F8FF");
+                    document.documentElement.style.setProperty("--footer-color", localStorage.getItem("--footer-color") || "F0F8FF");
+                    document.documentElement.style.setProperty("--nav-color", localStorage.getItem("--nav-color") || "#D6EAF8");
+                    document.documentElement.style.setProperty("--background-color", localStorage.getItem("--background-color") || "#F8FBFF");
+                    document.documentElement.style.setProperty("--hover-bg-color", localStorage.getItem("--hover-bg-color") || "#AED6F1");
+                    document.documentElement.style.setProperty("--title-background-color", localStorage.getItem("--title-background-color") || "#4a7fad");
+                    document.documentElement.style.setProperty("--dx-card-hover-box-shadow", localStorage.getItem("--dx-card-hover-box-shadow") || "#4a7fad");
 
 
+                };
+                window.onscroll = function () {
+                    let button = document.getElementById("goToTopBtn");
+                    if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+                        button.style.display = "block";
+                    } else {
+                        button.style.display = "none";
+                    }
+                };
 
-        });
-            async function exportPivotToPdf(pivotGridInstance,currentPivotRawData) {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+                // Scroll to top smoothly
+                function scrollToTop() {
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                }
 
-            if (!pivotGridInstance || currentPivotRawData.length === 0) {
-                DevExpress.ui.notify("No data available to export.", "error", 2000);
-                return;
-            }
+                // Report Mappings for Ageing Reports
+                const ageingReportMappings = {
+                    "Receivables Ageing Report": "AgeingReport",
+                    "Receivables Ageing Report (By Sales Person)": "XtraReportBillsReceivableAgeingReport",
+                    "Receivables Ageing Report (Customizable)": "XtraReportAgeingCustomizable",
+                    "Receivables Ageing Summary": "XtraReportAgeingreportsummary",
+                    "Receivables Ageing Summary (Customizable)": "RptReceivableAgeingSummaryCustomizable"
+                };
 
-            const fields = pivotGridInstance.getDataSource().fields();
+                // Function to handle submenu report clicks
+                function handleClickreport(reportKey) {
+                    if (reportKey === "Receivables Ageing Report (Customizable)") {
+                        window.location.href = `/${tenantName}/Finance/ReportBillsReceivable`;
+                    } else if (reportKey === "Receivables Ageing Summary (Customizable)") {
+                        window.location.href = `/${tenantName}/Finance/SalesBillsReceivable`;
+                    } else if (ageingReportMappings[reportKey]) {
+                        const reportName = ageingReportMappings[reportKey];
+                        console.log(`Opening report: ${reportName}`);
 
-            const headers = fields.map(f => f.caption || f.dataField);
-            const body = currentPivotRawData.map(item =>
-                fields.map(f => {
-                    let val = item[f.dataField];
-                    if (val instanceof Date) return val.toLocaleDateString();
-                    if (typeof val === "boolean") return val ? "Yes" : "No";
-                    return val ?? "";
-                })
-            );
+                        // Open Document Viewer with selected report
+                        window.open(
+                            `/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}`,
+                            '_blank',
+                            'width=1200,height=800,scrollbars=yes,resizable=yes'
+                        );
+                    } else {
+                        console.warn('No report mapping found for:', reportKey);
+                    }
+                }
 
-            doc.text("Quotation Analysis Export", 14, 15);
-            doc.autoTable({
-                head: [headers],
-                body: body,
-                startY: 20,
-            });
 
-            doc.save("quotation-analysis.pdf");
-        }
+                function handleCstReportClick(reportName) {
+                    var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
+                    var frmDateBox = $("#frmdateBox").dxDateBox("instance");
+                    var toDateBox = $("#todateBox").dxDateBox("instance");
+
+                    var accountId = dropDownBox.option("value");
+                    var frmDate = frmDateBox.option("value");
+                    var toDate = toDateBox.option("value");
+
+                    var formattedFrmDate = new Date(frmDate).toISOString().split('T')[0];
+                    var formattedToDate = new Date(toDate).toISOString().split('T')[0];
+
+                    // Get the AccountHead manually from the data source
+                    dropDownBox.getDataSource().load().done(function (items) {
+                        var selectedAccount = items.find(x => x.AccountId === accountId);
+                        var accountHead = selectedAccount && selectedAccount.AccountHead ? encodeURIComponent(selectedAccount.AccountHead) : "";
+
+                        var url = `/${tenantName}/Finance/${reportName}?accountId=${accountId}&fromDate=${formattedFrmDate}&toDate=${formattedToDate}&accountHead=${accountHead}`;
+                        window.open(url, '_blank');
+                    });
+                }
+                document.addEventListener("DOMContentLoaded", function () {
+                    const helpVideoLink = document.getElementById("helpVideo");
+
+                    // Get the last part of the URL path
+                    const pathSegments = window.location.pathname.split('/');
+                    const formName = pathSegments[pathSegments.length - 1] || pathSegments[pathSegments.length - 2];
+
+                    if (formName && helpVideoLink) {
+                        helpVideoLink.href = `https://help.quickdice.net/?formName=${encodeURIComponent(formName)}`;
+                    }
+                });
+
+
+                function handleVATClick(selectedText) {
+                    console.log("handleVATClick triggered with:", selectedText);
+
+                    try {
+                        // Get the DateBox instances
+                        var frmDateBox = $("#frmdateBox").dxDateBox("instance");
+                        var toDateBox = $("#todateBox").dxDateBox("instance");
+
+                        if (!frmDateBox || !toDateBox) {
+                            console.error("DateBox instances not found.");
+                            alert("Date selection components are missing.");
+                            return;
+                        }
+
+                        // Get the date values
+                        var frmDate = frmDateBox.option("value");
+                        var toDate = toDateBox.option("value");
+
+                        // Function to format date as D-MMM-YYYY
+                        function formatDate(date) {
+                            if (!date) return "";
+                            let dateObj = new Date(date);
+                            let day = dateObj.getDate();
+                            let month = dateObj.toLocaleString('en-US', { month: 'short' });
+                            let year = dateObj.getFullYear();
+                            return `${day}-${month}-${year}`;
+                        }
+
+                        // Format dates
+                        var frmDateStr = formatDate(frmDate);
+                        var toDateStr = formatDate(toDate);
+
+                        // Validate dates
+                        if (!frmDateStr || !toDateStr) {
+                            alert("Please select valid From and To dates.");
+                            return;
+                        }
+
+                        // Extract tenant name from URL
+                        let pathParts = window.location.pathname.split('/');
+                        let tenantName = pathParts[1] || "defaultTenant";
+
+                        // Mapping report names to actual report IDs
+                        const reportMappings = {
+                            "TaxSummaryReport": "TaxSummaryReport",
+                            "TaxVATReport": "TaxVATReport",
+                            "TaxReportRevenueInArabic": "TaxReportRevenueInArabic",
+                           "CreditSummary":"CreditSummary",
+                          "VATPurchasesAndExpReport":"VATPurchasesAndExpReport",
+                           "DebitNoteSummary":"DebitNoteSummary",
+
+
+                        };
+
+                        // Check if selectedText matches any report
+                        if (reportMappings[selectedText]) {
+                            let reportName = reportMappings[selectedText];
+                            console.log(`Redirecting to ${reportName}`);
+
+                            window.open(
+                                `/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}&skipPreview=true`,
+                                '_blank',
+                                'width=1200,height=800,scrollbars=yes,resizable=yes'
+                            );
+                        } else {
+                            console.warn("No matching report found for:", selectedText);
+                            alert("No matching report found.");
+                        }
+                    } catch (error) {
+                        console.error("An error occurred:", error);
+                        alert("Something went wrong. Check console for details.");
+                    }
+                }
+                 $(function () {
+                    // Set the header text
+                    $("#notificationTitle").text(formatMessage("Notifications"))
+                        .addClass("dx-textbox-heading");
+
+                    // Set the message text
+                    $("#notificationMessage").text(formatMessage("You have new notifications!"));
+
+                    $("#Settings1").text(formatMessage("Settings"))
+                        .addClass("dx-textbox-heading");
+
+                    $("#settingMessage1").text(formatMessage("Adjust your preferences here."));
+
+                    $("#settingMessage2").text(formatMessage("Predefined Themes:"));
+
+                    $("#userWelcome").text(formatMessage("Welcome, "));
+
+                    $("#userLogout").text(formatMessage("Logout"));
+
+                    $("#footerMessage1").text(formatMessage("Copyright "));
+
+                    $("#footerMessage2").text(formatMessage(" All rights reserved."));
+
+
+
+                });
+                    async function exportPivotToPdf(pivotGridInstance,currentPivotRawData) {
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF();
+
+                    if (!pivotGridInstance || currentPivotRawData.length === 0) {
+                        DevExpress.ui.notify("No data available to export.", "error", 2000);
+                        return;
+                    }
+
+                    const fields = pivotGridInstance.getDataSource().fields();
+
+                    const headers = fields.map(f => f.caption || f.dataField);
+                    const body = currentPivotRawData.map(item =>
+                        fields.map(f => {
+                            let val = item[f.dataField];
+                            if (val instanceof Date) return val.toLocaleDateString();
+                            if (typeof val === "boolean") return val ? "Yes" : "No";
+                            return val ?? "";
+                        })
+                    );
+
+                    doc.text("Quotation Analysis Export", 14, 15);
+                    doc.autoTable({
+                        head: [headers],
+                        body: body,
+                        startY: 20,
+                    });
+
+                    doc.save("quotation-analysis.pdf");
+                }
                 function navigateToTenantHome() {
             if (tenantName) {
                 window.location.href = `/${tenantName}/Home`;

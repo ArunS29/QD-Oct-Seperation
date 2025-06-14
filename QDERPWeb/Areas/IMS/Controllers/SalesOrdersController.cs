@@ -1,4 +1,4 @@
-using DevExtreme.AspNet.Data;
+﻿using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Humanizer;
 using DevExtreme.AspNet.Data.ResponseModel;
@@ -162,7 +162,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     return Unauthorized(new { message = "Invalid tenant." });
                 }
 
-                // Build prefix
+                // Build prefix from tenant name
                 string[] words = tenantName.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
                 string prefix;
                 if (words.Length == 1)
@@ -178,15 +178,17 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 }
 
                 string year = DateTime.Now.Year.ToString();
-                string basePrefix = $"{prefix}-{year}-";
 
-                // Fetch all matching sales order numbers from the database
+                // 🔄 Updated format: {Prefix}-SO-{Year}-
+                string basePrefix = $"{prefix}-SO-{year}-";
+
+                // Fetch existing Sales Order Nos matching this format
                 var orderNos = dbContext.Tbl60201salesOrderMasters
                     .Where(x => x.SalesOrderNo.StartsWith(basePrefix))
                     .Select(x => x.SalesOrderNo)
                     .ToList();
 
-                // Use Regex in-memory to find the highest number
+                // Extract number part using Regex
                 int maxNumber = 0;
                 var regex = new Regex($@"^{Regex.Escape(basePrefix)}(\d+)$");
                 foreach (var orderNo in orderNos)
@@ -199,6 +201,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     }
                 }
 
+                // Generate next number
                 int nextNumber = maxNumber + 1;
                 string nextOrderNo = $"{basePrefix}{nextNumber:D5}";
 
@@ -210,6 +213,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
             }
         }
+
 
 
 
@@ -483,9 +487,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     existingEntity.ClientPodate = model.ClientPodate;
                     existingEntity.QuoteNo = model.QuoteNo;
                     existingEntity.QuoteDate = model.QuoteDate;
+                    existingEntity.QuoteTransport = model.QuoteTransport;
+                    existingEntity.QuoteDiscount = model.QuoteDiscount;
                     existingEntity.ClientRefNo = model.ClientRefNo;
+                    existingEntity.Attention = model.Attention;
                     existingEntity.ClientCode = model.ClientCode;
                     existingEntity.Project = model.Project;
+                    existingEntity.ProjectMasterCode = model.ProjectMasterCode;
                     existingEntity.SalesPersonCode = model.SalesPersonCode;
                     existingEntity.ClientContactEmail = model.ClientContactEmail;
                     existingEntity.ClientContactNo = model.ClientContactNo;
@@ -517,14 +525,18 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         QuoteNo = model.QuoteNo,
                         QuoteDate = model.QuoteDate,
                         ClientRefNo = model.ClientRefNo,
+                        Attention = model.Attention,
                         ClientCode = model.ClientCode,
                         Project = model.Project,
                         SalesPersonCode = model.SalesPersonCode,
+                        QuoteTransport = model.QuoteTransport,
+                        QuoteDiscount = model.QuoteDiscount,
                         ClientContactEmail = model.ClientContactEmail,
                         ClientContactNo = model.ClientContactNo,
                         TypeOfRequest = model.TypeOfRequest,
                         QuoteSignatory = model.QuoteSignatory,
                         CompanyBranch = model.CompanyBranch,
+                        ProjectMasterCode = model.ProjectMasterCode,
                         InventoryMasterGroupId = model.InventoryMasterGroupId,
                         AdditionsText = model.AdditionsText,
                         OrderExpiryDate = model.OrderExpiryDate,
@@ -561,69 +573,74 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         "@DefaultCostCenterMasterFromSalesOrder, @SalesPersonName", parameters);
                 }
 
-                var existingChildren = await dbContext.Tbl60202salesOrderChildren
-                    .Where(x => x.SalesOrderNo == salesOrderNo)
-                    .ToListAsync();
+				var existingChildren = await dbContext.Tbl60202salesOrderChildren
+			   .Where(x => x.SalesOrderNo == model.SalesOrderNo)
+			   .ToListAsync();
 
-                var incomingChildren = model.SalesOrderChildren ?? new List<Tbl60202salesOrderChild>();
-                var incomingIds = incomingChildren.Select(c => c.SalesOrderChildId).ToList();
-                var newChildren = new List<Tbl60202salesOrderChild>();
+				var incomingChildren = model.SalesOrderChildren ?? new List<Tbl60202salesOrderChild>();
+				var incomingIds = incomingChildren.Where(c => c.SalesOrderChildId > 0).Select(c => c.SalesOrderChildId).ToList();
 
-                foreach (var child in incomingChildren)
-                {
-                    if (child.SalesOrderChildId == 0)
-                    {
-                        child.SalesOrderNo = salesOrderNo;
-                        newChildren.Add(child);
-                    }
-                    else
-                    {
-                        var existingChild = existingChildren.FirstOrDefault(x => x.SalesOrderChildId == child.SalesOrderChildId);
-                        if (existingChild != null)
-                        {
-                            dbContext.Entry(existingChild).CurrentValues.SetValues(child);
-                        }
-                    }
-                }
+				// ✅ Update existing children
+				foreach (var child in incomingChildren.Where(c => c.SalesOrderChildId > 0))
+				{
+					var entity = existingChildren.FirstOrDefault(x => x.SalesOrderChildId == child.SalesOrderChildId);
+					if (entity != null)
+					{
+						_logger.LogInformation($"Updating child ID: {child.SalesOrderChildId}, QuotedDiscount: {child.QuotedDiscount}");
+						entity.QuotedUnitPrice = child.QuotedUnitPrice;
+						entity.QuotedDiscount = child.QuotedDiscount;
+						entity.CostPrice = child.CostPrice;
+						entity.UnitRateMethod = child.UnitRateMethod;
+						entity.Gscode = child.Gscode;
+						entity.QuotedTaxSlab = child.QuotedTaxSlab;
 
-                var toDelete = existingChildren
-                    .Where(x => !incomingIds.Contains(x.SalesOrderChildId))
-                    .ToList();
+						dbContext.Entry(entity).State = EntityState.Modified; // Force update tracking
+					}
+				}
 
-                if (toDelete.Any())
-                    dbContext.Tbl60202salesOrderChildren.RemoveRange(toDelete);
+				// ✅ Insert new children
+				var newChildren = incomingChildren.Where(c => c.SalesOrderChildId == 0).ToList();
+				foreach (var child in newChildren)
+				{
+					child.SalesOrderNo = model.SalesOrderNo;
+					await dbContext.Tbl60202salesOrderChildren.AddAsync(child);
+				}
 
-                if (newChildren.Any())
-                    await dbContext.Tbl60202salesOrderChildren.AddRangeAsync(newChildren);
+				// ✅ Delete removed children
+				var toDelete = existingChildren.Where(x => !incomingIds.Contains(x.SalesOrderChildId)).ToList();
+				if (toDelete.Any())
+					dbContext.Tbl60202salesOrderChildren.RemoveRange(toDelete);
 
-                await dbContext.SaveChangesAsync();
+				var result = await dbContext.SaveChangesAsync();
+				_logger.LogInformation($"Child records updated/added/deleted. Save result = {result}");
 
-                //if (model.IsGenerateJO)
-                //{
-                //    foreach (var child in incomingChildren)
-                //    {
-                //        var childParams = new[]
-                //        {
-                //    new SqlParameter("@JobOrderNo", salesOrderNo ?? (object)DBNull.Value),
-                //    new SqlParameter("@AddedBy", model.AddedBy ?? User.Identity?.Name ?? (object)DBNull.Value),
-                //    new SqlParameter("@SalesOrderChildID", child.SalesOrderChildId),
-                //    new SqlParameter("@ValveType", model.ValveType ?? (object)DBNull.Value)
-                //};
 
-                //        try
-                //        {
-                //            await dbContext.Database.ExecuteSqlRawAsync(
-                //                "EXEC [dbo].[sp608_01InsertToJobOrderFromSalesOrderChild] " +
-                //                "@JobOrderNo, @AddedBy, @SalesOrderChildID, @ValveType", childParams);
-                //        }
-                //        catch (Exception exChild)
-                //        {
-                //            _logger.LogError(exChild, $"Child SP error for SalesOrderChildId: {child.SalesOrderChildId}");
-                //        }
-                //    }
-                //}
+				//if (model.IsGenerateJO)
+				//{
+				//    foreach (var child in incomingChildren)
+				//    {
+				//        var childParams = new[]
+				//        {
+				//    new SqlParameter("@JobOrderNo", salesOrderNo ?? (object)DBNull.Value),
+				//    new SqlParameter("@AddedBy", model.AddedBy ?? User.Identity?.Name ?? (object)DBNull.Value),
+				//    new SqlParameter("@SalesOrderChildID", child.SalesOrderChildId),
+				//    new SqlParameter("@ValveType", model.ValveType ?? (object)DBNull.Value)
+				//};
 
-                return Ok(new
+				//        try
+				//        {
+				//            await dbContext.Database.ExecuteSqlRawAsync(
+				//                "EXEC [dbo].[sp608_01InsertToJobOrderFromSalesOrderChild] " +
+				//                "@JobOrderNo, @AddedBy, @SalesOrderChildID, @ValveType", childParams);
+				//        }
+				//        catch (Exception exChild)
+				//        {
+				//            _logger.LogError(exChild, $"Child SP error for SalesOrderChildId: {child.SalesOrderChildId}");
+				//        }
+				//    }
+				//}
+
+				return Ok(new
                 {
                     success = true,
                     message = isUpdate ? "Sales order updated successfully." : "Sales order created successfully."
@@ -721,8 +738,9 @@ public async Task<IActionResult> GenerateJobOrders([FromBody] SalesorderViewMode
                     c.CostPrice,
                     c.QuotedUnitPrice,
                     c.QuotedDiscount,
-                    // Add any other fields you need for the grid
-                }
+					c.QuotedTaxSlab
+					// Add any other fields you need for the grid
+				}
             ).ToListAsync();
 
             // Return both master and children
@@ -737,6 +755,7 @@ public async Task<IActionResult> GenerateJobOrders([FromBody] SalesorderViewMode
                 order.ClientRefNo,
                 order.ClientCode,
                 order.Project,
+                order.ProjectMasterCode,
                 order.SalesPersonCode,
                 order.ClientContactEmail,
                 order.ClientContactNo,
@@ -751,6 +770,10 @@ public async Task<IActionResult> GenerateJobOrders([FromBody] SalesorderViewMode
                 order.DeliveryPeriod,
                 order.DeliveryTerms,
                 order.DiscountsText,
+                order.Attention, 
+                order.QuoteTransport, 
+                order.QuoteDiscount, 
+
                 order.CostAllocationMasterGroup,
                 SalesOrderChildren = children
             });
@@ -887,8 +910,66 @@ public async Task<IActionResult> GenerateJobOrders([FromBody] SalesorderViewMode
         }
 
 
+		[HttpGet]
+		public async Task<IActionResult> GetStoreToIssueItem()
+		{
+			try
+			{
+				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+				{
+					var data = await dbContext.Tbl60001storeMasters
+						.Select(i => new
+						{
+							i.StoreId,
+							i.StoreName,
+							i.LedgerNo,
+							i.CostAllocationUnitId,
 
-    }
+						})
+						.ToListAsync();
+
+					return Json(data); // return raw data, paging/sorting done on client-side
+				}
+
+				return Unauthorized(new { message = "Invalid tenant.", success = false });
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Error in GetProject: {ex.Message}");
+				return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
+			}
+		}
+
+		//[HttpGet]
+		//public async Task<IActionResult> GetStoreStockAvailabilityGrid()
+		//{
+		//	try
+		//	{
+		//		if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+		//		{
+		//			var data = await dbContext.Qry65320storeStockAvaliabilityForSalesOrders
+		//				.Select(i => new
+		//				{
+		//					i.StoreId,
+		//					i.StoreName,
+		//					i.LedgerNo,
+		//					i.CostAllocationUnitId,
+
+		//				})
+		//				.ToListAsync();
+
+		//			return Json(data); // return raw data, paging/sorting done on client-side
+		//		}
+
+		//		return Unauthorized(new { message = "Invalid tenant.", success = false });
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		_logger.LogError($"Error in GetProject: {ex.Message}");
+		//		return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
+		//	}
+		//}
+	}
 
     public class GenerateJOViewModel
     {

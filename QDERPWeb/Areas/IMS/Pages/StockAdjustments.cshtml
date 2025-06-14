@@ -163,9 +163,6 @@
 		overflow: hidden;
 	}
 
-	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnColumnChooser,#btnStockAdjustmentDetails,#btnAddNewStockAdjustment)) {
-		display: none !important
-	}
 </style>
 
 <input id="formId" value="frm201LedgerView" type="hidden" />
@@ -174,14 +171,7 @@
 		<div id="StockAdjustments" class="no-border-input"></div>
 	</div>
 </div>
-
-
-<div class="Head">
-	<div class="limited-footer">
-		@await Html.PartialAsync("InventoryModuleFooter")
-	</div>
-</div>
-
+@await Html.PartialAsync("/Pages/Shared/IMS/StockAdjustmentFooter.cshtml")
 <div class="dx-fieldset horizontal-container">
 	@(Html.DevExtreme().DateBox()
 		.ID("frmdateBox")

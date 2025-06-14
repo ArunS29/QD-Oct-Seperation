@@ -102,11 +102,23 @@
                 .LoadAction("GetAssetView"))
                 .Columns(columns =>
                 {
+                    columns.AddFor(m => m.AccumDepLedgerNo).Caption("Accum Dep Ledger No").Visible(false);
+                    columns.AddFor(m => m.AddedBy).Caption("Added By").Visible(false);
+                    columns.AddFor(m => m.AddedOn).Caption("Added On").Visible(false);
+                    columns.AddFor(m => m.AssetDescription).Caption("Asset Description").Visible(false);
+                    columns.AddFor(m => m.AccumDepLedgerNo).Caption("Accum Dep Ledger No").Visible(false);
+                    columns.AddFor(m => m.AssetType).Caption("Asset Type").Visible(false);
+                    columns.AddFor(m => m.BMV).Caption("BMV").Visible(false);
+                    columns.AddFor(m => m.CalculatedDepreciationAmount).Caption("Calculated Depreciation Amount").Visible(false);
+                    columns.AddFor(m => m.CurrentCondition).Caption("Current Condition").Visible(false);
+                    columns.AddFor(m => m.CurrentReading).Caption("Current Reading").Visible(false);
+                    columns.AddFor(m => m.DepAsOnDate).Caption("Dep As On Date").Visible(false);
+                    columns.AddFor(m => m.DepreciationLedgerNo).Caption("Depreciation Ledger No").Visible(false);
                     @* columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('AccountGroup')")).GroupIndex(0); *@
                    @*  columns.Add().DataField("AccountID").Visible(true); *@
                     columns.Add().Caption(new JS("formatMessage('AssetDetails')")).Columns(group =>
                     {
-                        group.Add().DataField("AccountID").Caption(new JS("formatMessage('AssetLedgerNo')"));
+                        group.Add().DataField("AssetLedgerNo").Caption(new JS("formatMessage('AssetLedgerNo')"));
                         group.Add().DataField("AccountHead").Caption(new JS("formatMessage('AccountHead')"));
                         group.Add().DataField("AssetDescription").Caption(new JS("formatMessage('AssetDescription')"));
                         group.Add().DataField("Specifications").Caption(new JS("formatMessage('Specifications')"));
@@ -470,7 +482,7 @@
             onSelectionChanged: function (e) {
                 const selectedRows = e.selectedRowsData;
                 if (selectedRows.length > 0) {
-                    selectedVoucherId = selectedRows[0].AccountID;
+                    selectedVoucherId = selectedRows[0].AssetLedgerNo;
                 } else {
                     selectedVoucherId = null;
                 }

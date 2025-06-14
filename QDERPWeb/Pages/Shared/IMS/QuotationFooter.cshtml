@@ -1,0 +1,394 @@
+﻿<div class="dx-fieldset horizontal-container" style="gap:10px;background-color:transparent;">
+
+
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("ddButtonLayout")
+            .Icon("smalliconslayout")
+            .Width("100%")
+            .Text(new JS("formatMessage('Layout')"))
+            .ElementAttr(new { style = "display: none;" })
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu");
+                items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
+                items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
+                items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
+                items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
+            })
+            .ShowArrowIcon(false)
+            )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnPrint")
+            .Icon("print")
+            .Text(new JS("formatMessage('Print')"))
+            .ElementAttr(new { style = "display: none;" })
+            .Width(50)
+            .OnClick("printFun")
+            )
+    </div>
+     <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnToggleSearch")
+            .Icon("search")
+            .Text(new JS("formatMessage('Search')"))
+            .ElementAttr(new { style = "display: none;" })
+            .Width(50)
+            .OnClick("toggleFilterRow")
+            )
+    </div>
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btntoggleGroupPanel")
+            .Icon("hierarchy")
+            .Width(50)
+            .Text(new JS("formatMessage('Group')"))
+            .ElementAttr(new { style = "display: none;" })
+            .OnClick("toggleGroupPanel")
+            )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnColumnChooser")
+            .Icon("columnchooser")
+            .Width(50)
+            .Text(new JS("formatMessage('Column Chooser')"))
+            .ElementAttr(new { style = "display: none;" })
+            .OnClick("showColumnChooser")
+            )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnQuotationDetails")
+            .Icon("add")
+            .Width(50)
+            .Text(new JS("formatMessage('Quotation Details')"))
+            .OnClick("QuotationD    etails")
+            )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnAddNewQuotation")
+            .Icon("add")
+            .Width(50)
+            .Text(new JS("formatMessage('Add New Quotation')"))
+            .OnClick("AddNewQuotation")
+            )
+
+    </div>
+
+   
+</div>
+
+<script>
+    $(document).ready(function () {
+           console.log('Start permission handling');
+           // Form ID
+           var formId = "frm201LedgerView";
+
+           // Call the API to get permissions
+           $.ajax({
+               url: '/api/Permissions/GetAccessDetails?formId=' + formId,
+               type: 'GET',
+               contentType: 'application/json',
+               success: function (response) {
+                   console.log("API Response:", response); // Log the API response
+
+                   if (response.success && response.permissions) {
+                       // Default visibility and enable status for buttons
+                       var controlStates = {
+                          
+                           "ddButtonLayout": { "Visible": false, "Enabled": false },
+                           "btnPrint": { "Visible": false, "Enabled": false },
+                         "btnToggleSearch": { "Visible": false, "Enabled": false },
+                          "btntoggleGroupPanel": { "Visible": false, "Enabled": false },
+                          "btnColumnChooser": { "Visible": false, "Enabled": false },
+                          "btnAddMaterialRequest": { "Visible": false, "Enabled": false }
+                          
+                       };
+
+
+                       // Check for full access
+                       var fullAccess = response.permissions.find(p =>
+                           p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
+                       );
+
+                       if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
+                           // Grant full access: make all controls visible and enabled
+                           Object.keys(controlStates).forEach(key => {
+                               controlStates[key] = { "Visible": true, "Enabled": true };
+                           });
+                       } else {
+                           // Update states based on specific permissions for each control
+                           Object.keys(controlStates).forEach(key => {
+                               var controlPermission = response.permissions.find(p =>
+                                   p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
+                               );
+                               if (controlPermission) {
+                                   controlStates[key] = {
+                                       "Visible": controlPermission.ItemVisible || false,
+                                       "Enabled": controlPermission.ItemEnabled || false
+                                   };
+                               }
+                           });
+                       }
+
+                       console.log("Control States:", controlStates); // Log the control states
+
+                       // Dynamically update button visibility and enabled state
+                       Object.keys(controlStates).forEach(key => {
+                           var button = document.getElementById(key);
+                           if (button) {
+                               // Handle visibility
+                               button.style.display = controlStates[key].Visible ? "inline-block" : "none";
+                               // Handle enable/disable state
+                               button.disabled = !controlStates[key].Enabled;
+                               console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
+                           } else {
+                               console.warn(`Button with ID "${key}" not found in the DOM.`);
+                           }
+                       });
+                   } else {
+                       console.warn("Failed to fetch permissions or no permissions available.");
+                   }
+               },
+               error: function (xhr, status, error) {
+                   console.error("Error fetching permissions:", error);
+                   alert('An error occurred while fetching permissions. Please try again.');
+               }
+           });
+           showColumnChooser();
+           console.log('End permission handling');
+       });
+
+
+       
+    // Hide context menu on click outside
+           let isHeaderFilterEnabled = false;
+
+           function toggleHeaderFilter() {
+               var dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+               isHeaderFilterEnabled = !isHeaderFilterEnabled;
+               dataGrid.option("headerFilter.visible", isHeaderFilterEnabled); // Toggle the header filter visibility
+           }
+           $(document).on("click", function () {
+               var contextMenu = $("#contextMenu");
+               contextMenu.hide();
+               var $submenu = $('#submenuContainer');
+               $submenu.hide(); // Hide the submenu popup
+           });
+
+           // Handle the file selection
+           $("#loadLayoutInput").on("change", function (event) {
+               const dataGrid = $("#dataGrid").dxDataGrid("instance");
+               const file = event.target.files[0];
+
+               if (file) {
+                   const reader = new FileReader();
+
+                   reader.onload = function (e) {
+                       try {
+                           // Parse the JSON string from the file
+                           const layout = JSON.parse(e.target.result);
+
+                           // Restore the grid state
+                           dataGrid.state(layout);
+                       } catch (error) {
+                           console.error("Error parsing JSON:", error);
+                           alert("Failed to load layout. Please ensure the file is valid JSON.");
+                       }
+                   };
+
+                   // Read the file as text
+                   reader.readAsText(file);
+               }
+           });
+           function saveLayoutClick(e) {
+               var grid = $("#dataGrid").dxDataGrid("instance");
+               var layout = grid.state();
+               const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
+               //console.log(layoutJson);
+               // Create a Blob from the JSON string
+               const blob = new Blob([layoutJson], { type: "application/json" });
+               // Create a URL for the Blob
+               const url = URL.createObjectURL(blob);
+               // Create a link element
+               const a = document.createElement("a");
+               a.href = url;
+               a.download = "grid-layout.json"; // Set the file name for download
+               // Append the link to the body (needed for Firefox)
+               document.body.appendChild(a);
+               // Programmatically click the link to trigger the download
+               a.click();
+               // Clean up by removing the link and revoking the Object URL
+               document.body.removeChild(a);
+               URL.revokeObjectURL(url);
+               //DevExpress.ui.notify("Layout", "success", 600);
+           }
+           function openLayoutClick(e) {
+               // Create an input element dynamically
+               const input = document.createElement("input");
+               input.type = "file";
+               input.accept = "application/json";
+
+               // When a file is selected
+               input.addEventListener("change", function (event) {
+                   const file = event.target.files[0];
+                   if (!file) return;
+
+                   const reader = new FileReader();
+                   reader.onload = function (e) {
+                       try {
+                           const layout = JSON.parse(e.target.result);
+                           const grid = $("#dataGrid").dxDataGrid("instance");
+                           grid.state(layout);
+                           //DevExpress.ui.notify("Layout applied successfully!", "success", 600);
+                       } catch (error) {
+                           DevExpress.ui.notify("Invalid layout file!", "error", 600);
+                       }
+                   };
+
+                   reader.readAsText(file);
+               });
+
+               // Trigger the file input click event
+               input.click();
+           }
+
+           function loadGridState() {
+               var form = $('#formId').val();
+               // Call the API to get the grid state
+               $.ajax({
+                   url: `/api/Utility/LoadLayout`, // Adjust to your actual API endpoint
+                   method: 'GET',
+                   data: {
+                       form: form
+                   },
+                   success: function (response) {
+                       // Get the DataGrid instance
+                       var dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+                       // Load the state into the DataGrid
+                       if (response) {
+                           try {
+                               // Parse the JSON string from the file
+                               const layout = JSON.parse(response);
+
+                               // Restore the grid state
+                               dataGrid.state(layout);
+                           } catch (error) {
+                               console.error("Error parsing JSON:", error);
+                               alert("Failed to load layout. Please ensure the JSON is valid.");
+                           }
+                       }
+                   },
+                   error: function (xhr, status, error) {
+                       console.error("Error loading grid state:", error);
+                   }
+               });
+           }
+           function setDefaultLayoutClick(e) {
+               var grid = $("#dataGrid").dxDataGrid("instance");
+               var form = $('#formId').val();
+               var layout = grid.state();
+               const layoutJson = JSON.stringify(layout, null, 2);
+               console.log(layoutJson);
+
+               $.ajax({
+                   url: '/api/Utility/SaveLayout',  // API endpoint
+                   type: 'POST',
+                   data: {
+                       layout: layoutJson,
+                       form: form
+                   },
+                   success: function (data) {
+                       DevExpress.ui.notify("Layout saved successfully", "success", 2000);
+                   },
+                   error: function () {
+                       DevExpress.ui.notify("Error while saving data", "error", 2000);
+                   }
+               });
+           }
+           function resetLayoutClick(e) {
+               var grid = $("#dataGrid").dxDataGrid("instance");
+               var form = $('#formId').val();
+               $.ajax({
+                   url: '/api/Utility/SaveLayout',  // API endpoint
+                   type: 'POST',
+                   data: {
+                       layout: null,
+                       form: form
+                   },
+                   success: function (data) {
+                       DevExpress.ui.notify("Layout reset successfull", "success", 2000);
+                       grid.state({});
+                   },
+                   error: function () {
+                       DevExpress.ui.notify("Error while saving data", "error", 2000);
+                   }
+               });
+           }
+          // Footer Filter row button click event
+        function toggleFilterRow() {
+            var grid = $("#dataGrid").dxDataGrid("instance");
+            var currentVisibility = grid.option("filterRow.visible");
+
+            grid.option("filterRow.visible", !currentVisibility); // Toggle FilterRow visibility
+        }
+          // Footer Group Pannel button click event
+        function toggleGroupPanel() {
+            var dataGrid = $("#dataGrid").dxDataGrid("instance");
+            var isVisible = dataGrid.option("groupPanel.visible");
+            dataGrid.option("groupPanel.visible", !isVisible);
+        }
+            function showColumnChooser() {
+            var dataGrid = $("#dataGrid").dxDataGrid("instance");
+            var isColumnChooserVisible = dataGrid.option("columnChooser.enabled");
+
+            if (isColumnChooserVisible) {
+                dataGrid.option("columnChooser.enabled", false); // Disable the column chooser
+            } else {
+                dataGrid.option("columnChooser.enabled", true); // Enable the column chooser
+                dataGrid.showColumnChooser(); // Show the column chooser
+            }
+        }
+         function ChangeRowHeight(newHeight) {
+            // Update the row height
+            $("#dataGrid .dx-data-row").css("height", newHeight + "px");
+            closeSubmenu();
+        }
+        function showSubmenu(e) {
+            e.event.stopPropagation();
+            var $submenu = $('#submenuContainer');
+            var $target = $(e.event.target).closest('.dx-item-content');
+            var offset = $target.offset();
+            var elementWidth = $target.outerWidth();
+
+            // Position submenu with a slight margin (e.g., 5px)
+            $submenu.css({
+                'width': 180,
+                'position': 'absolute',
+                'top': offset.top,
+                'left': offset.left + elementWidth + 5, // Add margin
+                'display': 'block'
+            });
+        }
+
+        function closeSubmenu() {
+            $("#submenuContainer").hide();
+        }
+        function printFun() {
+            exportDataGridToPDF('dataGrid');
+        }
+        function AddNewQuotation(){
+            window.location.href = `/${tenantName}/IMS/AddNewQuotation`;
+        }
+        function QuotationDetails() {
+            window.location.href = `/${tenantName}/IMS/QuotationDetails`;
+        }
+</script>

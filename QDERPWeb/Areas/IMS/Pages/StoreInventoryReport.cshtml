@@ -2,3 +2,266 @@
 @model QD.ERP.Web.Areas.IMS.Pages.StoreInventoryReportModel
 @{
 }
+<style>
+	.overlay {
+		display: none;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.5);
+		z-index: 1000;
+	}
+
+	.overlay-content {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 100%;
+		height: 80%;
+		background: #fff;
+		box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+		border-radius: 8px;
+		overflow: hidden;
+	}
+
+	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnColumnChooser,#btnRfqDetails,#btnAddNewRFQ)) {
+		display: none !important
+	}
+
+	#overlay-frame {
+		width: 100%;
+		height: 100%;
+	}
+
+	.dx-datagrid-headers {
+		border: 1px solid #686868 !important;
+		width: 100%; /* Adjust to fit the container */
+		overflow-x: auto; /* Enable horizontal scrolling */
+		white-space: nowrap; /* Prevent wrapping of headings */
+		overflow-y: hidden;
+	}
+
+		.dx-datagrid-headers .dx-row > td {
+			border: 1px solid #686868 !important;
+			text-align: center !important;
+			/* 	width:1000px; */
+		}
+
+	.dx-datagrid .dx-header-row .dx-datagrid-text-content {
+		font-size: 12px !important;
+		white-space: nowrap !important; /* Prevent wrapping of text */
+		text-align: center !important;
+		font-weight: bold;
+		color: black;
+	}
+
+	.close-btn {
+		position: absolute;
+		top: 10px;
+		right: 20px;
+		font-size: 30px;
+		cursor: pointer;
+	}
+
+	.custom-toolbar {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.filter-btn {
+		background-color: #007bff;
+		color: white;
+		border: none;
+		padding: 6px 12px;
+		border-radius: 5px;
+		cursor: pointer;
+		font-family: 'Inter', sans-serif;
+	}
+
+		.filter-btn:hover {
+			background-color: #0056b3;
+		}
+
+	.dx-texteditor {
+		background-color: transparent !important;
+		border: 1px solid #d6e4f0 !important;
+		border-radius: 4px !important;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+		font-size: 14px !important;
+		transition: all 0.2s ease-in-out !important;
+		height: 39px !important;
+	}
+
+		.dx-texteditor:hover,
+		.dx-texteditor.dx-state-hover,
+		.dx-button:hover {
+			box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important;
+			border-color: #86b7fe !important;
+		}
+
+		.dx-texteditor.dx-state-focused {
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+			border-color: #508ae1 !important;
+		}
+
+	.no-border-input {
+		border: none !important;
+		outline: none !important;
+		box-shadow: none !important;
+		background: transparent !important;
+		font-weight: bold;
+		font-size: 16px;
+		color: black;
+		pointer-events: none;
+	}
+
+	.context-menuInvoice {
+		position: absolute;
+		background: #fff;
+		border-radius: 8px;
+		box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+		width: 200px;
+		display: none;
+		flex-direction: column;
+		padding: 5px 0;
+		z-index: 1000;
+	}
+
+	.context-menu-itemInvoice {
+		display: flex;
+		align-items: center;
+		padding: 10px 15px;
+		font-size: 14px;
+		cursor: pointer;
+		transition: background 0.2s ease-in-out;
+		color: #333;
+	}
+
+		.context-menu-itemInvoice i {
+			margin-right: 10px;
+			font-size: 16px;
+			color: #007bff;
+		}
+
+		.context-menu-itemInvoice:hover {
+			background: #f0f0f0;
+		}
+
+		.context-menu-itemInvoice:not(:last-child) {
+			border-bottom: 1px solid #e0e0e0;
+		}
+
+	.ledgerResult {
+		overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
+		width: 100%;
+	}
+
+	.mainContainer {
+		width: 100%;
+		overflow: hidden;
+	}
+</style>
+
+<input id="formId" value="frm201LedgerView" type="hidden" />
+<div class="title">
+	<div class="header-container">
+		<div id="storeInventoryReport" class="no-border-input"></div>
+	</div>
+</div>
+<div class="dx-field ledgerResult">
+	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry65315storeStockBalanceMaster>()
+		.ID("dataGrid")
+		.DataSource(d => d.Mvc().Controller("StockInventory").LoadAction("GetStockData"))
+		.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+		.ShowBorders(true)
+		.ShowColumnLines(true)
+		.ShowRowLines(true)
+		.ColumnAutoWidth(true)
+		.WordWrapEnabled(true)
+		.Height(700)
+		.Columns(columns =>
+		{
+			// Stock Details Band
+			columns.Add().Caption("Stock Details").Columns(detail =>
+			{
+				detail.AddFor(m => m.StoreName).Caption("Store Name");
+				detail.AddFor(m => m.StoreCode).Caption("Stock Code");
+				detail.AddFor(m => m.Gsdescrpition).Caption("Stock Description");
+			});
+
+			// Opening Balance Band
+			columns.Add().Caption("Opening Balance").Columns(open =>
+			{
+				open.AddFor(m => m.TotalOpeningBal).Caption("Opening Bal. (Qty)");
+			});
+
+			// Inventory Stock Qty Band
+			columns.Add().Caption("Inventory Stock Qty").Columns(invQty =>
+			{
+				invQty.Add().Caption("Stock Receipts (Qty)").Columns(receipts =>
+			{
+				receipts.AddFor(m => m.TotalReceivedFromSuppliers).Caption("From Suppliers (Qty)");
+				receipts.AddFor(m => m.TotalReceivedFromStores).Caption("From Store (Qty)");
+				receipts.AddFor(m => m.TotalReceipts).Caption("Total Receipts (Qty)");
+			});
+
+				invQty.Add().Caption("Stock Issues").Columns(issues =>
+			{
+				issues.AddFor(m => m.TotalIssuedToClient).Caption("To Client (Qty)");
+				issues.AddFor(m => m.TotalConsumed).Caption("Consumed (Qty)");
+				issues.AddFor(m => m.TotalStoreTransfered).Caption("Transferred (Qty)");
+				issues.AddFor(m => m.TotalIssues).Caption("Total Issues (Qty)");
+			});
+
+				invQty.AddFor(m => m.BalanceInStock).Caption("Closing Balance (Qty)");
+			});
+
+			// Inventory Stock Value (Amount) Band
+			columns.Add().Caption("Inventory Stock Values (Amount)").Columns(val =>
+			{
+				val.AddFor(m => m.AmountOpeningBal).Caption("Opening Bal. (Amt)");
+
+				val.Add().Caption("Stock Receipts (Amount)").Columns(receiptAmt =>
+			{
+				receiptAmt.AddFor(m => m.AmountReceived).Caption("From Suppliers (Amt)");
+				receiptAmt.AddFor(m => m.AmountReceivedFromStore).Caption("From Store (Amt)");
+				receiptAmt.AddFor(m => m.AmountTotalReceipts).Caption("Total Receipts (Amt)");
+			});
+
+				val.Add().Caption("Stock Issues (Amount)").Columns(issueAmt =>
+			{
+				issueAmt.AddFor(m => m.AmountIssuedToClient).Caption("To Client (Amt)");
+				issueAmt.AddFor(m => m.AmountConsumed).Caption("Consumed (Amt)");
+				issueAmt.AddFor(m => m.AmountIssuedToStore).Caption("Transferred (Amt)");
+				issueAmt.AddFor(m => m.AmountTotalIssues).Caption("Total Issues (Amt)");
+			});
+
+				val.AddFor(m => m.TransactionTotal).Caption("Closing Balance (Amt)");
+			});
+		})
+		)
+
+
+
+
+
+
+</div>
+<div id="invoiceErrorPopup"></div>
+
+<script>
+		 $(function () {
+	$("#storeInventoryReport").dxTextBox({
+	text: formatMessage("Inventory Report On Stores"),
+		readOnly: true,
+		onContentReady: function (e) {
+		$(e.element).addClass("dx-textbox-heading");
+		}
+		});
+	});
+	
+</script>

@@ -1,8 +1,7 @@
 ﻿@page
-@model QD.ERP.Web.Areas.IMS.Pages.StoreInventoryByDateModel
+@model QD.ERP.Web.Areas.IMS.Pages.InventoryByDateReportModel
 @{
 }
-
 <style>
 	.overlay {
 	display: none;
@@ -170,10 +169,9 @@
 <input id="formId" value="frm201LedgerView" type="hidden" />
 <div class="title">
 	<div class="header-container">
-		<div id="storeInventoryByDate" class="no-border-input"></div>
+		<div id="inventoryByDateReport" class="no-border-input"></div>
 	</div>
 </div>
-
 
 <div class="dx-fieldset horizontal-container">
 	@(Html.DevExtreme().DateBox()
@@ -224,77 +222,79 @@
 
 </div>
 <div class="dx-field ledgerResult">
-	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry65403storeStockBalanceMasterByDate>()
-		.ID("dataGrid")
-		.DataSource(new JS("[]"))
-		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
-		.ShowBorders(true)
-		.ShowColumnLines(true)
-		.ShowRowLines(true)
-		.ColumnAutoWidth(true)
-		.WordWrapEnabled(true)
-		.Height(700)
-		.Columns(columns =>
+	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry66004inventoryTransByDateWtFullDetail>()
+			.ID("dataGrid")
+			.DataSource(new JS("[]"))
+			.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+			.Height(680)
+			.ShowBorders(true)
+			.ShowRowLines(true)
+			.WordWrapEnabled(true)
+			.ColumnAutoWidth(true)
+			.AllowColumnResizing(true)
+			.Grouping(g => g.AutoExpandAll(true))
+			.GroupPanel(p => p.Visible(false))
+			.Columns(columns =>
+			{
+				// Band column for Stock Details
+				columns.Add()
+		.Caption("Stock Details")
+		.Columns(detail =>
 		{
-			// Stock Details Band
-			columns.Add().Caption("Stock Details").Columns(detail =>
-			{
-				detail.AddFor(m => m.StoreName).Caption("Store Name");
-				detail.AddFor(m => m.StoreCode).Caption("Stock Code");
-				detail.AddFor(m => m.Gsdescrpition).Caption("Stock Description");
+		detail.AddFor(m => m.GsgroupName)
+		.Caption("Stock Group")
+		.GroupIndex(0)
+		.Visible(false); // Used for grouping, hidden
+
+		detail.AddFor(m => m.Gscode)
+		.Caption("Stock Code")
+		.Width(150);
+
+		detail.AddFor(m => m.Gsdescrpition)
+		.Caption("Description")
+		.Width(300);
 			});
 
-			// Opening Balance Band
-			columns.Add().Caption("Opening Balance").Columns(open =>
-			{
-				open.AddFor(m => m.TotalOpeningBal).Caption("Opening Bal. (Qty)");
-			});
+				// Band column for Stock Balance
+				columns.Add()
+		.Caption("Stock Balance")
+		.Columns(balance =>
+		{
+				balance.AddFor(m => m.TotalOpeningBal)
+	.Caption("Opening Balance")
+	.Format("#,##0.00")
+	.Alignment(HorizontalAlignment.Right)
+	.CellTemplate(@<text>
+	</text>
+	);
 
-			// Inventory Stock Qty Band
-			columns.Add().Caption("Inventory Stock Qty").Columns(invQty =>
-			{
-				invQty.Add().Caption("Stock Receipts (Qty)").Columns(receipts =>
-			{
-				receipts.AddFor(m => m.TotalReceivedFromSuppliers).Caption("From Suppliers (Qty)");
-				receipts.AddFor(m => m.TotalReceivedFromStores).Caption("From Store (Qty)");
-				receipts.AddFor(m => m.TotalReceipts).Caption("Total Receipts (Qty)");
-			});
+				balance.AddFor(m => m.TotalReceived)
+		.Caption("Received")
+		.Format("#,##0.00")
+		.Alignment(HorizontalAlignment.Right);
 
-				invQty.Add().Caption("Stock Issues").Columns(issues =>
-			{
-				issues.AddFor(m => m.TotalIssuedToClient).Caption("To Client (Qty)");
-				issues.AddFor(m => m.TotalConsumed).Caption("Consumed (Qty)");
-				issues.AddFor(m => m.TotalStoreTransfered).Caption("Transferred (Qty)");
-				issues.AddFor(m => m.TotalIssues).Caption("Total Issues (Qty)");
-			});
+				balance.AddFor(m => m.TotalIssues)
+		.Caption("Issues")
+		.Format("#,##0.00")
+		.Alignment(HorizontalAlignment.Right);
 
-				invQty.AddFor(m => m.BalanceInStock).Caption("Closing Balance (Qty)");
-			});
+				balance.AddFor(m => m.TotalBalance)
+		.Caption("Closing Balance")
+		.Format("#,##0.00")
+		.Alignment(HorizontalAlignment.Right);
 
-			// Inventory Stock Value (Amount) Band
-			columns.Add().Caption("Inventory Stock Values (Amount)").Columns(val =>
-			{
-				val.AddFor(m => m.AmountOpeningBal).Caption("Opening Bal. (Amt)");
+	balance.AddFor(m => m.AverageCostUnitPrice)
+	.Caption("Average Cost Unit")
+	.Format("#,##0.0000")
+	.Alignment(HorizontalAlignment.Right);
 
-				val.Add().Caption("Stock Receipts (Amount)").Columns(receiptAmt =>
-			{
-				receiptAmt.AddFor(m => m.AmountReceived).Caption("From Suppliers (Amt)");
-				receiptAmt.AddFor(m => m.AmountReceivedFromStore).Caption("From Store (Amt)");
-				receiptAmt.AddFor(m => m.AmountTotalReceipts).Caption("Total Receipts (Amt)");
-			});
-
-				val.Add().Caption("Stock Issues (Amount)").Columns(issueAmt =>
-			{	
-				issueAmt.AddFor(m => m.AmountIssuedToClient).Caption("To Client (Amt)");
-				issueAmt.AddFor(m => m.AmountConsumed).Caption("Consumed (Amt)");
-				issueAmt.AddFor(m => m.AmountIssuedToStore).Caption("Transferred (Amt)");
-				issueAmt.AddFor(m => m.AmountTotalIssues).Caption("Total Issues (Amt)");
-			});
-
-				val.AddFor(m => m.TransactionTotal).Caption("Closing Balance (Amt)");
-			});
-		})
-		)
+	balance.AddFor(m => m.TotalStockValueByAvgCost)
+	.Caption("Total Stock Value By Cost")
+	.Format("#,##0.0000")
+	.Alignment(HorizontalAlignment.Right);
+	});
+	})
+	)
 
 
 
@@ -305,8 +305,8 @@
 
 <script>
 		 $(function () {
-	$("#storeInventoryByDate").dxTextBox({
-	text: formatMessage("Store Inventory By Date"),
+	$("#inventoryByDateReport").dxTextBox({
+	text: formatMessage("Inventory Report By Date"),
 		readOnly: true,
 		onContentReady: function (e) {
 		$(e.element).addClass("dx-textbox-heading");
@@ -381,7 +381,7 @@
 	toDate = toDate.toISOString().split('T')[0];
 
 				$.ajax({
-		url: '/api/StockInventory/GetStockDataByDate',
+		url: '/api/StockInventory/GetInventorySummary',
 		type: 'GET',
 		data: {
 			fromDate: frmDate,
@@ -400,4 +400,82 @@
 
 
 	}
+
+
+	function onContextMenuPreparing(e) {
+		if (e.target === "content" && e.row && e.row.data) {
+			const rowData = e.row.data;
+			const Rfqno = encodeURIComponent(rowData.Rfqno);
+			const tenantName = window.tenantName || "defaultTenant";
+
+			e.items = [
+				{
+					text: "Edit Request",
+					icon: "edit",
+					onItemClick: function () {
+						const url = `/${tenantName}/IMS/AddNewRFQ?Rfqno=${Rfqno}`;
+						window.location.href = url;
+					}
+				},
+				{
+					text: "Delete RFQ",
+					icon: "trash",
+					onItemClick: function () {
+						if (confirm(`Are you sure you want to delete RFQ ${Rfqno}?`)) {
+							// Replace with your actual delete logic, e.g., an AJAX call
+							fetch(`/${tenantName}/IMS/DeleteRFQ?Rfqno=${Rfqno}`, {
+								method: 'DELETE'
+							})
+								.then(response => {
+									if (response.ok) {
+										alert(`RFQ ${Rfqno} deleted successfully.`);
+										// Refresh the DataGrid or remove the row
+										e.component.refresh();
+									} else {
+										alert(`Failed to delete RFQ ${Rfqno}.`);
+									}
+								})
+								.catch(error => {
+									console.error('Error deleting RFQ:', error);
+									alert('An error occurred while deleting the RFQ.');
+								});
+						}
+					}
+				},
+				{
+					text: "Unlock the RFQ",
+					icon: "unlock",
+					onItemClick: function () {
+						// Replace with your actual unlock logic, e.g., an AJAX call
+						fetch(`/${tenantName}/IMS/UnlockRFQ?Rfqno=${Rfqno}`, {
+							method: 'POST'
+						})
+							.then(response => {
+								if (response.ok) {
+									alert(`RFQ ${Rfqno} unlocked successfully.`);
+									// Optionally refresh the DataGrid
+									e.component.refresh();
+								} else {
+									alert(`Failed to unlock RFQ ${Rfqno}.`);
+								}
+							})
+							.catch(error => {
+								console.error('Error unlocking RFQ:', error);
+								alert('An error occurred while unlocking the RFQ.');
+							});
+					}
+				},
+				{
+					text: "Create Purchase Order",
+					icon: "add",
+					onItemClick: function () {
+						const url = `/${tenantName}/IMS/CreatePurchaseOrder?Rfqno=${Rfqno}`;
+						window.location.href = url;
+					}
+				}
+			];
+		}
+	}
+
+
 </script>
