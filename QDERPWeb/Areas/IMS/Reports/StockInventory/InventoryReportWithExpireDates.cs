@@ -74,7 +74,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.InventoryReports
             if (FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
                 addressLabel.Text = company_address;
 
-            if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
+            if (FindControl("xrPictureBox4", true) is XRPictureBox logoPictureBox)
                 logoPictureBox.Image = logoImage;
 
             if (FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)

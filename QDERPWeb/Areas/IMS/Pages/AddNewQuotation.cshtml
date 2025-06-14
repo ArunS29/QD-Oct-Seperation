@@ -245,7 +245,7 @@
         background: var(--background-color);
     }
 
-	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint2,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnAttach)) {
+	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnAttach)) {
 		display: none !important;
 	}
 </style>
@@ -1778,7 +1778,7 @@
 
 		$(".limited-footer .btn-containerIvoiceEdit").each(function () {
 
-			if (!$(this).find("#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint2,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnAttach").length) {
+			if (!$(this).find("#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnAttach").length) {
 
 				$(this).remove();
 

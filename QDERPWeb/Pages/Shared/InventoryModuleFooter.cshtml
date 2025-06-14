@@ -259,7 +259,7 @@
             .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
             )
     </div>
-    <div class="btn-container">
+ @*    <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnPrint")
             .Icon("print")
@@ -268,7 +268,7 @@
             .Width(50)
             .OnClick("printFun")
             )
-    </div>
+    </div> *@
 
     <div class="btn-container">
         @(Html.DevExtreme().Button()
@@ -720,9 +720,54 @@
             )
     </div>
 
- 
+   <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("btnPrint")
+            .Text(new JS("formatMessage('Print')"))
+            .Icon("print")
+            .ElementAttr(new { @class = "bold-button" })
+            .DropDownOptions(options => options.Width(230))
+            .ShowArrowIcon(false)
+            .Items(items =>
+            {
+                items.Add().Text("Preview Quotation").Icon("folder");
+                items.Add().Text("Preview Quotation(W/O Discount Column)").Icon("folder");
+                items.Add().Text("Preview Quotation(W/o VAT)").Icon("folder");
+                items.Add().Text("Preview Quotation(W/o VAT & W/o TotalPrice)").Icon("folder");
+                items.Add().Text("Preview Quotation(W/o VAT & W/o Discount)").Icon("folder");
+                items.Add().Text("Preview Quotation(With Addl Details)").Icon("folder");
+                items.Add().Text("Preview Quotation(Without Price)").Icon("folder");
+                items.Add().Text("Preview Quotation(With Item Image)").Icon("folder");
+                items.Add().Text("Preview Quotation(With Group Code)").Icon("folder");
+                items.Add().Text("Preview Quotation(With Sub Group)").Icon("folder");
+               
+            
 
 
+            })
+            .OnItemClick("handleQuatation")
+            )
+    </div> 
+
+    <div class="btn-container">
+         @(Html.DevExtreme().DropDownButton() 
+            .ID("btnPrint2") 
+            .Text(new JS("formatMessage('Print')")) 
+           .Icon("print") 
+            .ElementAttr(new { @class = "bold-button" })
+            .DropDownOptions(options => options.Width(230)) 
+            .ShowArrowIcon(false) 
+             .Items(items => 
+            { 
+
+             items.Add().Text("Custom Report Designs").Icon("folder");
+
+                items.Add().Text("Preview  Sales Order").Icon("folder");
+                items.Add().Text("Preview Sales Order(without Price)").Icon("folder");
+                 }) 
+           .OnItemClick("handleSales") 
+           ) 
+ </div>
 </div>
 
 
@@ -1712,9 +1757,9 @@
 
             window.location.href = url;
         }
-        function printFun() { 
-            exportDataGridToPDF('dataGrid'); 
-        }
+        // function printFun() { 
+        //     exportDataGridToPDF('dataGrid'); 
+        // }
 
          async function handleCreditReportPrinting(e) {
            debugger;
@@ -1757,7 +1802,7 @@
     async function checkInvoiceApprovalStatus1(requestNo) {
         try {
             const response = await $.ajax({
-             //   url: `/api/VATModule/GetRequestNoteApprovalStatus/${encodeURIComponent(RequestNo)}`,
+              
 
                 url: `/api/AddNewClientRequest/GetRequestNoteApprovalStatus/${encodeURIComponent(requestNo)}`,
                 method: 'GET',
@@ -1771,9 +1816,75 @@
         }
     }
 
+        const quotationReportMap = {
+        "Preview Quotation": "PreviewQuotations",
+        "Preview Quotation(W/O Discount Column)": "wtDiscount",
+        "Preview Quotation(W/o VAT)":"QuotationWOvat",
+        "Preview Quotation(W/o VAT & W/o TotalPrice)":"vatTotalPricewithout",
+        "Preview Quotation(W/o VAT & W/o Discount)":"withoutvatDiscount",
+        "Preview Quotation(With Addl Details)":"PreviewQuotationwithadditionalDetails",
+        "Preview Quotation(Without Price)":"PreviewQuotationwithoutPrice",
+        "Preview Quotation(With Item Image)":"PreviewQuotationWithImage",
+        "Preview Quotation(With Group Code)":"GroupCode",
+        "Preview Quotation(With Sub Group)":"PreviewQuotationWithSubGroup"
+         
+         };
 
 
+    function handleQuatation(e) {
+        alert('History trig')
+        const itemText = e.itemData?.text;
+        const tenantName = window.tenantName || "";
+        const quotationNo = $("#txtQuotationNo").dxTextBox("instance").option("value");
 
+        if (!quotationNo && itemText.includes("Quotation")) {
+            alert("Quotation number is required.");
+            return;
+        }
+
+        try {
+            const reportName = quotationReportMap[itemText];
+
+            if (!reportName) {
+                alert("Invalid report format selected.");
+                return;
+            }
+
+            const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&QuotationNo=${encodeURIComponent(quotationNo)}`;
+            window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+
+        } catch (error) {
+            console.error("Failed to open report:", error);
+            alert("An error occurred while trying to open the report.");
+        }
+    }
+
+
+       const salesReportMap = {
+        "Preview  Sales Order": "SalesOrderReport", // two spaces!
+        "Preview Sales Order(without Price)": "SalesOrderReportWithoutPrice"
+    };
+
+    function handleSales(e) {
+        const itemText = e.itemData?.text;
+        const tenantName = window.tenantName || "";
+        const salesOrderNo = $("#SalesOrderNO").dxTextBox("instance").option("value");
+
+        if (!salesOrderNo) {
+            alert("Sales Order number is required.");
+            return;
+        }
+
+        const reportName = salesReportMap[itemText];
+
+        if (!reportName) {
+            alert("Invalid report format selected.");
+            return;
+        }
+
+        const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&SalesOrderNo=${encodeURIComponent(salesOrderNo)}`;
+        window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+    }
 
 
 
