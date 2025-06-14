@@ -35,4 +35,7 @@ node_modules/
 .vs/
 /QDERPWeb/DAL/Entities/ERPMasterWtDataContext.cs
 /QDERPWeb/logs
+logs/
+*.log
+*.mdmp
 
