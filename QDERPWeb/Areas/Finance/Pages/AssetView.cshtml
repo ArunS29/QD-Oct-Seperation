@@ -326,8 +326,13 @@
                 .HeaderFilter(filter => filter.Visible(true))
                 .Height(680)
                 .ColumnAutoWidth(true)
-              .Paging(p => p.Enabled(false))
-        .Pager(pager => pager.Visible(false))
+        .Paging(p => p.Enabled(true).PageSize(15))    // enable paging with 15 rows per page
+        .Pager(pager => pager
+        .Visible(true)                            // show pager UI (page numbers etc)
+        .ShowPageSizeSelector(true)              // allow user to change page size
+        .AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+        .ShowInfo(true)                          // show info like "Page 1 of 10"
+        )
 
                 .FilterRow(filterRow => filterRow.Visible(false))
                 .Grouping(grouping => grouping.AutoExpandAll(true))

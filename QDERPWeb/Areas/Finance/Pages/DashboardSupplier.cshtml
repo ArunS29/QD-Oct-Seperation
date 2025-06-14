@@ -48,13 +48,6 @@
     </div>
 </div>
 <div class="grid-container">
-    <!-- Client Outstanding Section -->
-    @* <div class="grid-section"> *@
-    @*     <div id="ClientOutstanding" class="no-border-title"></div> *@
-    @*     <div id="clientOutstandingGrid"></div> *@
-    @* </div> *@
-
-    <!-- Bills Payable Outstanding Section -->
     <div class="grid-section">
         <div id="SupplierOutstanding" class="no-border-title" style="width:90%;"></div>
         <div id="billsPayableGrid" ></div>
@@ -65,57 +58,7 @@
 
     </div>
 
-    <!-- Bank Account Details Section -->
-    @* <div class="grid-section"> *@
-    @*     <div id="BankAccountDetails" class="no-border-title"></div> *@
-    @*     <div id="bankAccountGrid"></div> *@
-    @* </div> *@
-</div>
-
-@* <div class="chart-row1"> *@
-@*     <canvas id="outstandingChart" style="width:100%;max-width:700px"></canvas> *@
-@*     <div id="myChart2" style="width: 70%; height: 350px;"></div> *@
-
-@* </div> *@
-@* <div class="chart-row">
-    <canvas id="myChart1" style="width:100%;max-width:700px"></canvas>
-
-</div> *@
-<!-- Pie Chart Containers -->
-@* <div class="chart-row"> *@
-@*     <div class="chart-container"> *@
-@*         <h3>Client Outstanding Distribution</h3> *@
-@*         <div id="clientOutstandingPieChart"></div> *@
-@*     </div> *@
-@*     <div class="chart-container"> *@
-@*         <h3>Supplier Outstanding Distribution</h3> *@
-@*         <div id="clientOutstandingPieChart1"></div> *@
-@*     </div> *@
-@*     <div class="chart-container"> *@
-@*         <h3>Bank Account Distribution</h3> *@
-@*         <div id="bankAccountsPieChart"></div> *@
-@*     </div> *@
-@* </div> *@
-<!-- Grid Container -->
-
-
-<!-- Charts Row Container -->
-@* <div class="chart-row">
-    <!-- Client Outstanding Aging Chart -->
-    <div class="chart-container">
-        <div id="ClientOutstandingAgingChart" class="no-border-title"></div>
-        <canvas id="clientOutstandingChart" width="600" height="400"></canvas>
-    </div> *@
-
-    <!-- Supplier Outstanding Aging Chart -->
     
- 
-@*     <!-- Bank Accounts Chart --> *@
-@*     <div class="chart-container"> *@
-@*         <div id="BankAccountsChart" class="no-border-title"></div> *@
-@*         <div id="bankAccountsChart"></div> *@
-@*     </div> *@
-@* </div>   *@
 <script>
             $("#clientcard").on("click", function () {
         // Your click logic here
@@ -130,324 +73,34 @@
          window.location.href = `/${tenantName}/Finance/DashboardBankAccount`;    });
 
     $(document).ready(function () {
-        //     $.ajax({
-        //     url: "/api/Dashboard/GetOutstandingChartData",
-        //     type: "GET",
-        //     dataType: "json",
-        //     success: function (response) {
-        //         if (response.success) {
-        //             const data = response.data;
+        const apiEndpoints = [
+            { url: "/api/Dashboard/supplieroutstanding", target: "#totalBillsOutstandingValue ", key: "balance" },
+            { url: "/api/Dashboard/GetTotalClientOutstanding", target: "#totalClientOutstandingValue", key: "balance" },
+            { url: "/api/Dashboard/GetCashBalance", target: "#cashBalanceValue", key: "balance" }
+        ];
 
-        //             // Separate client and supplier data
-        //             const clientData = data.filter(item => item.Type === "Client");
-        //             const supplierData = data.filter(item => item.Type === "Supplier");
+        const fetchData = async (endpoint) => {
+            const startTime = performance.now();
+            try {
+                const response = await $.getJSON(endpoint.url);
+                if (response.success) {
+                    $(endpoint.target).text(response[endpoint.key].toLocaleString('en-US'));
+                } else {
+                    console.error(`Error loading data from ${endpoint.url}`);
+                }
+            } catch (error) {
+                console.error(`Error fetching data from ${endpoint.url}:`, error);
+            } finally {
+                const endTime = performance.now();
+                console.log(`Response time for ${endpoint.url}: ${(endTime - startTime).toFixed(2)} ms`);
+            }
+        };
 
-        //             // Aggregate data for ranking
-        //             const accountBalances = [...new Set(data.map(item => item.AccountHead))].map(label => {
-        //                 const clientBalance = clientData.find(d => d.AccountHead === label)?.Balance || 0;
-        //                 const supplierBalance = supplierData.find(d => d.AccountHead === label)?.Balance || 0;
-        //                 return {
-        //                     label: label,
-        //                     clientBalance: clientBalance,
-        //                     supplierBalance: supplierBalance,
-        //                     totalBalance: clientBalance + supplierBalance
-        //                 };
-        //             });
+        apiEndpoints.forEach(fetchData);
+    });
 
-        //             // Sort by total balance and take top 10
-        //             const topAccounts = accountBalances
-        //                 .sort((a, b) => b.totalBalance - a.totalBalance) // Descending order
-        //                 .slice(0, 10); // Top 10
-
-        //             // Extract labels and data for the chart
-        //             const labels = topAccounts.map(item => item.label);
-        //             const clientBalances = topAccounts.map(item => item.clientBalance);
-        //             const supplierBalances = topAccounts.map(item => item.supplierBalance);
-
-        //             // Example third dataset (optional)
-        //             const otherData = labels.map((_, index) => index * 500);
-
-        //             // Create the chart
-        //             new Chart("myChart1", {
-        //                 type: "line",
-        //                 data: {
-        //                     labels: labels, // Account Names
-        //                     datasets: [
-        //                         {
-        //                             label: formatMessage("Client Outstanding"),
-        //                             data: clientBalances,
-        //                             borderColor: "red",
-        //                             fill: false
-        //                         },
-        //                         {
-        //                             label: formatMessage("Supplier Outstanding"),
-        //                             data: supplierBalances,
-        //                             borderColor: "green",
-        //                             fill: false
-        //                         },
-        //                         {
-        //                             label: formatMessage("Other Data"),
-        //                             data: otherData,
-        //                             borderColor: "blue",
-        //                             fill: false
-        //                         }
-        //                     ]
-        //                 },
-        //                 options: {
-        //                     plugins: {
-        //                         legend: { display: true }
-        //                     },
-        //                     scales: {
-        //                         y: { beginAtZero: true }
-        //                     }
-        //                 }
-        //             });
-        //         } else {
-        //             console.error("Error fetching data");
-        //         }
-        //     },
-        //     error: function (error) {
-        //         console.error("Error fetching data: ", error);
-        //     }
-        // });
-            // $.ajax({
-            //     url: "/api/Dashboard/GetClientOutstandingByOverdueDays",
-            //     type: "GET",
-            //     dataType: "json",
-            //     success: function (response) {
-            //         if (response.success) {
-            //             // Extract data for the chart
-            //             const labels = response.data.map(item => `${item.AccountHead} (${item.OverdueDays} Days)`);
-            //             const balances = response.data.map(item => item.Balance);
-
-            //             // Render the bar chart
-            //             const ctx = document.getElementById("clientOutstandingChart").getContext("2d");
-            //             new Chart(ctx, {
-            //                 type: "bar",
-            //                 data: {
-            //                     labels: labels,
-            //                     datasets: [{
-            //                         label: "Balance Amount",
-
-            //                         data: balances,
-            //                         backgroundColor: "#007acc", // Updated color
-            //                         borderColor: "#007acc", // Updated border color
-            //                         borderWidth: 1
-            //                     }]
-            //                 },
-            //                 options: {
-            //                     responsive: true,
-            //                     plugins: {
-            //                         legend: {
-            //                             display: true,
-            //                             labels: {
-            //                                 font: {
-            //                                     size: 12 // Adjust legend font size
-            //                                 }
-            //                             }
-            //                         },
-            //                         tooltip: {
-            //                             enabled: true,
-            //                             callbacks: {
-            //                                 label: function (context) {
-            //                                     return `Balance: ${context.raw.toLocaleString()}`;
-            //                                 }
-            //                             }
-            //                         },
-            //                         title: {
-            //                             display: true,
-            //                             text: "Client Outstanding Balances by Overdue Days", // Chart title
-            //                             font: {
-            //                                 size: 16,
-            //                                 weight: "bold"
-            //                             }
-            //                         }
-            //                     },
-            //                     scales: {
-            //                         x: {
-            //                             title: {
-            //                                 display: true,
-            //                                 text: "Clients (Overdue Days)", // X-axis title
-            //                                 font: {
-            //                                     size: 14,
-            //                                     weight: "bold"
-            //                                 }
-            //                             },
-            //                             ticks: {
-            //                                 autoSkip: false, // Prevent skipping labels
-            //                                 maxRotation: 45, // Rotate labels for better readability
-            //                                 minRotation: 0
-            //                             }
-            //                         },
-            //                         y: {
-            //                             beginAtZero: true,
-            //                             title: {
-            //                                 display: true,
-            //                                 text: "Balance Amount", // Y-axis title
-            //                                 font: {
-            //                                     size: 14,
-            //                                     weight: "bold"
-            //                                 }
-            //                             },
-            //                             ticks: {
-            //                                 callback: function (value) {
-            //                                     return value.toLocaleString(); // Format Y-axis values
-            //                                 }
-            //                             }
-            //                         }
-            //                     }
-            //                 }
-            //             });
-            //         } else {
-            //             console.error("Error loading data: ", response.message);
-            //         }
-            //     },
-            //     error: function (xhr, status, error) {
-            //         console.error("Error fetching data: ", error);
-            //     }
-            // });
-            //
-            // $.ajax({
-            //     url: "/api/Dashboard/GetBankAccounts",
-            //     type: "GET",
-            //     dataType: "json",
-            //     success: function (response) {
-            //         $("#bankAccountsChart").dxChart({
-            //             dataSource: response.data,
-            //             series: [{
-            //                 argumentField: "AccountHeadName",
-            //                 valueField: "Amount",
-            //                 name: formatMessage("Amount"),
-            //                 type: "bar",
-            //                 color: "#007acc"
-            //             }],
-            //             argumentAxis: {
-            //                 label: { rotationAngle: -45 },
-            //                 title: formatMessage("Account Head Name")
-
-            //             },
-            //             valueAxis: {
-            //                 title: formatMessage("Amount"),
-            //                 label: { format: { type: "fixedPoint", precision: 2 } }
-            //             },
-            //             legend: { visible: true },
-            //             tooltip: {
-            //                 enabled: true,
-            //                 format: { type: "fixedPoint", precision: 2 }
-            //             }
-            //         });
-            //     },
-            //     error: function (xhr, status, error) {
-            //         console.error("Error fetching data: ", error);
-            //     }
-            // });
-            // Fetch Client Outstanding Aging Data
-            // $.ajax({
-            //     url: "/api/Dashboard/GetClientOutstandingAgingForChart",
-            //     type: "GET",
-            //     dataType: "json",
-            //     success: function (response) {
-            //         if (response.success) {
-            //             // Client Outstanding Pie Chart
-            //             $("#clientOutstandingPieChart").dxPieChart({
-            //                 dataSource: response.agingData,
-            //                 series: [{
-            //                     argumentField: "OverDueGroup",
-            //                     valueField: "Balance",
-            //                     label: {
-            //                         visible: true,
-            //                         format: "currency"
-            //                     }
-            //                 }],
-            //                title:formatMessage( "Client Outstanding Distribution")
-            //             });
-            //         }
-            //     }
-            // });
-    //         $.ajax({
-    //     url: "/api/Dashboard/GetBillsOutstandingAgingForChart",
-    //     type: "GET",
-    //     dataType: "json",
-    //     success: function (response) {
-    //         if (response.success) {
-    //             // Client Outstanding Pie Chart
-    //             $("#clientOutstandingPieChart1").dxPieChart({
-    //                 dataSource: response.data,
-    //                 series: [{
-    //                     argumentField: "OverdueDays",
-    //                     valueField: "Balance",
-    //                     label: {
-    //                         visible: true,
-    //                         format: "currency"
-    //                     }
-    //                 }],
-    //                 title: formatMessage("Supplier Outstanding Distribution"),
-    //             });
-    //         }
-    //     }
-    // });
-            // Fetch Bank Accounts Data
-            // $.ajax({
-            //     url: "/api/Dashboard/GetBankAccounts",
-            //     type: "GET",
-            //     dataType: "json",
-            //     success: function (response) {
-            //         // Bank Accounts Pie Chart
-            //         $("#bankAccountsPieChart").dxPieChart({
-            //             dataSource: response.data,
-            //             series: [{
-            //                 argumentField: "AccountHeadName",
-            //                 valueField: "Amount",
-            //                 label: {
-            //                     visible: true,
-            //                     format: "currency"
-            //                 }
-            //             }],
-            //             title: formatMessage("Bank Account Distribution")
-            //         });
-            //     }
-            // });
-            // $.ajax({
-            //     url: "/api/Dashboard/GetBillsOutstandingAgingForChart",
-            //     type: "GET",
-            //     dataType: "json",
-            //     success: function (response) {
-            //         console.log("API Response:", response);
-
-            //         if (response.success && Array.isArray(response.agingData) && response.agingData.length > 0) {
-            //             // Ensure Balance is a number
-            //             response.agingData.forEach(item => {
-            //                 item.Balance = Number(item.Balance) || 0;
-            //             });
-
-            //             var pieChartInstance = $("#billsOutstandingPieChart").dxPieChart("instance");
-
-            //             if (pieChartInstance) {
-            //                 // Update the existing chart
-            //                 pieChartInstance.option("dataSource", response.agingData);
-            //             } else {
-            //                 // Initialize the pie chart
-            //                 $("#billsOutstandingPieChart").dxPieChart({
-            //                     dataSource: response.agingData,
-            //                     series: [{
-            //                         argumentField: "OverDueGroup",
-            //                         valueField: "Balance",
-            //                         label: {
-            //                             visible: true,
-            //                             format: "currency"
-            //                         }
-            //                     }],
-            //                     title: formatMessage("Supplier Outstanding Distribution"),
-            //                 });
-            //             }
-            //         } else {
-            //             console.error("Invalid or empty data received from API.");
-            //         }
-            //     },
-            //     error: function (xhr, status, error) {
-            //         console.error("AJAX Error:", status, error);
-            //     }
-            // });
+    $(document).ready(function () {
+       
           $.ajax({
     url: "/api/Dashboard/GetOutstandingChartData",
     type: "GET",
@@ -584,123 +237,7 @@
             const chart = new google.visualization.PieChart(document.getElementById('myChart2'));
             chart.draw(data, options);
         }
-    $(function () {
-        // Fetch Total Client Outstanding
-        $.getJSON("/api/Dashboard/GetTotalClientOutstanding", function (response) {
-            if (response.success) {
-                $("#totalClientOutstandingValue").text(response.totalOutstanding.toLocaleString('en-US'));
-            } else {
-                alert("Error loading total client outstanding data.");
-            }
-        });
-
-        // Fetch Total Bills Outstanding
-        $.getJSON("/api/Dashboard/GetTotalBillsOutstanding", function (response) {
-            if (response.success) {
-                $("#totalBillsOutstandingValue").text(response.totalBillsOutstanding.toLocaleString('en-US'));
-            } else {
-                alert("Error loading total bills outstanding data.");
-            }
-        });
-
-        // Client Outstanding DataGrid
-      $("#clientOutstandingGrid").dxDataGrid({
-                dataSource: DevExpress.data.AspNet.createStore({
-                    key: "AccountHeadNo",
-                    loadUrl: "/api/Dashboard/GetClientOutstanding"
-                }),
-                remoteOperations: true,
-                columns: [
-                    {
-                        dataField: "AccountHead",
-                        caption: formatMessage("Account Head"),
-                        width: 200,
-                        allowReordering: true,
-                        headerCellTemplate: function (header, info) {
-                            $("<div>")
-                                .text(info.column.caption)
-                                .css({
-                                    "text-align": "center",
-                                    "font-weight": "bold"
-                                })
-                                                    .appendTo(header);
-    }
-                    },
-                    {
-                        dataField: "Balance",
-                            caption: formatMessage("Balance Amount"),
-                        format: { type: "fixedPoint", precision: 2 },
-                        allowReordering: true,
-                        headerCellTemplate: function (header, info) {
-                            $("<div>")
-                                .text(info.column.caption)
-                                .css({
-                                    "text-align": "center",
-                                    "font-weight": "bold"
-                                })
-                                .appendTo(header);
-                        }
-                    },
-                    {
-                        dataField: "OverdueDays",
-                        caption: formatMessage("Overdue Days"),
-                        visible: false,
-                        allowHiding: true
-                    },
-                    { dataField: "AccountGroupId", caption: formatMessage("Account Group"), visible: false, allowHiding: true },
-                    { dataField: "AccountHeadNo", caption: formatMessage("Account Head No"), visible: false, allowHiding: true }
-                ],
-                columnAutoWidth: true,
-                showBorders: true,
-                filterRow: { visible: false },
-                paging: { enabled: false },
-
-                // Enable vertical scrolling
-                height: 400,
-                scrolling: {
-                    mode: "virtual"
-                },
-
-                searchPanel: { visible: false },
-
-                allowColumnReordering: true,
-                allowColumnResizing: true,
-
-                columnChooser: {
-                    enabled: true,
-                    mode: "select"
-                },
-
-                toolbar: {
-                    items: [
-                        {
-                            location: "after",
-                            widget: "dxButton",
-                            options: {
-                                icon: "columnchooser",
-                                text: formatMessage("Column Chooser"),
-                                onClick: function () {
-                                    $("#clientOutstandingGrid").dxDataGrid("instance").showColumnChooser();
-                                }
-                            }
-                        }
-                    ]
-                },
-                summary: {
-                    totalItems: [
-                        {
-                            column: "Balance",
-                            summaryType: "sum",
-                            valueFormat: { type: "fixedPoint", precision: 2 },
-                            displayFormat:formatMessage("Total: {0}")
-                        }
-                    ]
-                }
-            });
-
-        // Bills Payable Outstanding DataGrid
-
-            // Bills Payable Outstanding DataGrid
+   
       $(document).ready(function () {
         $.ajax({
             url: "/api/Dashboard/GetBillsPayableOutstandingSupplier",
@@ -755,7 +292,16 @@
                         columnAutoWidth: true,
                         showBorders: true,
                         filterRow: { visible: false },
-                        paging: { enabled: false },
+                                 paging: {
+                enabled: true,
+                pageSize: 15
+            },
+            pager: {
+                visible: true,
+                showPageSizeSelector: true,
+                allowedPageSizes: [10, 15, 20],
+                showInfo: true
+            },
                         height: 500,
                         width: 580,
                         scrolling: {
@@ -808,71 +354,7 @@
         });
     });
 
-        // Bank Account Details DataGrid
-        $("#bankAccountGrid").dxDataGrid({
-            dataSource: DevExpress.data.AspNet.createStore({
-                key: "AccountHead",
-                loadUrl: "/api/Dashboard/GetBankAccounts"
-            }),
-            remoteOperations: true,
-            columns: [
-                { dataField: "AccountHeadName", caption: formatMessage("Account Head"), width: 200, allowReordering: true },
-                { dataField: "Amount", caption: formatMessage("Balance Amount"), format: { type: "fixedPoint", precision: 2 }, allowReordering: true },
-                { dataField: "AccountGroup", caption: formatMessage("Account Group"), visible: false, allowHiding: true },
-                { dataField: "MasterGroupID", caption: formatMessage("Master Group"), visible: false, allowHiding: true }
-            ],
-            columnAutoWidth: true,
-            showBorders: true,
-            filterRow: { visible: false },
-            paging: { enabled: false }, // Show all data
-
-            // Enable vertical scrolling
-            height: 400, // Adjust grid height as needed
-            scrolling: {
-                mode: "virtual" // Enables virtual scrolling for large data
-            },
-
-            searchPanel: { visible: false }, // Hide search panel by default
-
-            // Enable column reordering
-            allowColumnReordering: true,
-            allowColumnResizing: true,
-
-            // Enable column chooser
-            columnChooser: {
-                enabled: true,
-                mode: "select"
-            },
-
-            // Add Column Chooser button in toolbar
-            toolbar: {
-                items: [
-                    {
-                        location: "after",
-                        widget: "dxButton",
-                        options: {
-                            icon: "columnchooser",
-                            text: formatMessage("Column Chooser"),
-                            onClick: function () {
-                                $("#bankAccountGrid").dxDataGrid("instance").showColumnChooser();
-                            }
-                        }
-                    }
-                ]
-            },
-            summary: {
-                totalItems: [
-                    {
-                        column: "Amount",
-                        summaryType: "sum",
-                        valueFormat: { type: "fixedPoint", precision: 2 },
-                        displayFormat:formatMessage("Total : {0}")
-                    }
-                ]
-            }
-        });
-
-        // // Bills Outstanding Aging Chart
+       
         $(document).ready(function () {
             $.ajax({
                 url: "/api/Dashboard/GetBillsOutstandingAgingForChartSupplier",
