@@ -58,19 +58,8 @@
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
-            .ID("btnStockAdjustmentDetails")
-            .Icon("overflow")
-            .Width(50)
-            .Text(new JS("formatMessage('Stock Adjustment Details')"))
-            .OnClick("stockAdjustmentDetails")
-            )
-
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
             .ID("btnAddNewStockAdjustment")
             .Icon("add")
-            .Width(50)
             .Text(new JS("formatMessage('Add New Stock Adjustment Entry')"))
             .OnClick("addNewstockAdjustment")
             )
@@ -296,9 +285,6 @@
         }
         function printFun() {
             exportDataGridToPDF('dataGrid');
-        }
-        function stockAdjustmentDetails(){
-            window.location.href = `/${tenantName}/IMS/StockAdjustmentEntry`;
         }
         function addNewstockAdjustment(){
             window.location.href = `/${tenantName}/IMS/StockAdjustmentEntry`;

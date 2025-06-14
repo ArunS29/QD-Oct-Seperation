@@ -198,22 +198,15 @@
 
                 <!-- Asset Ledger No Field -->
                 <div class="col-md-2">
-                    <div class="form-label">
-                        <label id="Suppliercode1" for="AssetLedgerNo"></label>
-                    </div>
-        @(Html.DevExtreme().TextBox().ID("txtSupplierCode").Value("").ReadOnly(true)
+                    @(Html.DevExtreme().TextBox().ID("txtSupplierCode").Label(new JS("formatMessage('Supplier Name')")).LabelMode(EditorLabelMode.Outside).Value("").ReadOnly(true)
             .ValidationRules(r => r.AddRequired().Message("Supplier Code is required.")))
                 </div>
-
-
-
                 <!-- Asset Category Dropdown -->
                 <div class="col-md-8 ">
-                    <div class="form-label">
-                        <label id="suppliercategory1" for="SupplierCategory"></label>
-                    </div>
-                    <div class="form-group-row">
+                    <div class="form-group-row" style="align-items:end;">
         @(Html.DevExtreme().DropDownBox()
+            .Label(new JS("formatMessage('Supplier Category')"))
+            .LabelMode(EditorLabelMode.Outside)
             .DataSource(d => d.WebApi()
             .Controller("SupplierMaster")
             .LoadAction("GetSupplierCategory")
@@ -223,8 +216,8 @@
             .LabelMode(EditorLabelMode.Outside)
             .ID("GetSupplierCategoryDropDown")
             .Width(900)
-            @*  .ShowClearButton(true)
-                        .AcceptCustomValue(true) *@
+            @*.ShowClearButton(true)
+            .AcceptCustomValue(true) *@
             .OpenOnFieldClick(false)
             .ValueChangeEvent("input")
             .HoverStateEnabled(true)
@@ -238,7 +231,7 @@
             //.OnValueChanged("dropDownBoxValueChanged")
             .ContentTemplate(new TemplateName("GetSupplierCategoryContentTemplate"))
             )
-        @(Html.DevExtreme().Button().ID("btnAddAccount").Icon("plus").ElementAttr("class", "button-alignment-down button-group").OnClick("redirectToSupplierCategory"))
+        @(Html.DevExtreme().Button().ID("btnAddAccount").Icon("plus").ElementAttr("class", "button-alignment-up button-group").OnClick("redirectToSupplierCategory"))
                     </div>
                 </div>
 
@@ -263,32 +256,17 @@
                         <div class="row">
                             <!-- Asset Description Field -->
                             <div class="col-md-12">
-                                <div class="form-label">
-                                    <label id="suppliername1" for="AssetDescription"></label>
-                                </div>
-        @(
-            Html.DevExtreme().TextBox()
+        @( Html.DevExtreme().TextBox()
+            .Label(new JS("formatMessage('Supplier Code')"))
+            .LabelMode(EditorLabelMode.Outside)
             .ID("txtSupplierName")
             .ValidationRules(r => r.AddRequired().Message("Supplier Name is required."))
             // .Value("")
             )
                             </div>
-
-
                         </div>
-
-
                     </div>
-
-
-
                 </div>
-            </div>
-
-
-
-
-            <div class="row">
             </div>
         </div>
     </div>
@@ -1224,19 +1202,4 @@
             }
         });
     });
-         $(function () {
-                            $("#Suppliercode1").text(
-                                 formatMessage("Supplier Name"));
-                });
-                 $(function () {
-                            $("#suppliercategory1").text(
-                             formatMessage("Supplier Category"));
-            });
-                 $(function () {
-                            $("#suppliername1").text(
-                                 formatMessage("Supplier Code"));
-                });
-
-
-
 </script>
