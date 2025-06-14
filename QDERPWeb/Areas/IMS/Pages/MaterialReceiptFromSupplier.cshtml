@@ -250,9 +250,7 @@
 		height: 190px !important;
 	}
 
-	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnAttach)) {
-		display: none !important;
-	}
+	
 </style>
 <meta charset="UTF-8">
 <div class="title">
@@ -1141,14 +1139,7 @@
 																})
 																)
 }
-<div class="Head">
-	<div class="limited-footer">
-		@await Html.PartialAsync("InventoryModuleFooter")
-	</div>
-</div>
-
-
-
+@await Html.PartialAsync("/Pages/Shared/IMS/MaterialReceiptFormFooter.cshtml")
 
 <script>
 
@@ -1352,21 +1343,6 @@
 		SignatoryID = null, ChkbySignatoryID = null, ApproedbySignatoryID = null, IsCurrent = "false", ExchangeRate = null;
 	let dropDownInstance;
 	let vatListInstance;
-
-	$(document).ready(function () {
-
-		$(".limited-footer .btn-container").each(function () {
-
-			if (!$(this).find("#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnAttach").length) {
-
-				$(this).remove();
-
-			}
-
-		});
-
-	});
-
 
 
 
