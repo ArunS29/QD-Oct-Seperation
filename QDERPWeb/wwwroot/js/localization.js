@@ -1,5 +1,13 @@
 ﻿var dictionary = {
     "en": {
+        "Name of the Requester:":"Name of the Requester:",
+        "Name of the Store Incharge:":"Name of the Store Incharge:",
+        "Edit Client Request": "Edit Client Request",
+        "Clone Request / Enquiry": "Clone Request / Enquiry",
+        "Stock Code": "Stock Code",
+        "Stock Description": "Stock Description",
+        "Cost Group": "Cost Group",
+        "Cost Item": "Cost Item",
         "RFQ Remarks:": "RFQ Remarks:",
         "RFQ Summary:": "RFQ Summary:",
         "Company Branch / Division:":"Company Branch / Division:",
@@ -5583,6 +5591,8 @@
         "Supplier Type": "نوع المورد",
         "Additional Cost On Items": "تكلفة إضافية على الأصناف",
         "By Quarter": "حسب الربع",
+        "Name of the Requester:": "اسم مقدم الطلب:",
+        "Name of the Store Incharge:": "اسم مسؤول المخزن:"
     }
 };
 
