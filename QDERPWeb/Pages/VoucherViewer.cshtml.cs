@@ -19,11 +19,13 @@ using QD.ERP.Web.Areas.VAT.Reports.VATCreditNote;
 using QD.ERP.Web.Areas.Finance.Reports.journalEntry;
 using QD.ERP.Web.Areas.Finance.Reports.Journal_Register;
 using QD.ERP.Web.Areas.VAT.Reports.Inventory_Reports;
-using QD.ERP.Web.Areas.IMS.InventoryReports.MaterialPurchaseRequistion;
+
 using QD.ERP.Web.Areas.IMS.Reports.InventoryReports;
-using QD.ERP.Web.Areas.IMS.Report.Inventory_Report;
+
 using QD.ERP.Web.Areas.IMS.Inventory_Reports;
 using QD.ERP.Web.Areas.IMS.Reports.quotationstoClients;
+using QD.ERP.Web.Areas.IMS.InventoryReports.MaterialPurchaseRequistion;
+using QD.ERP.Web.Areas.IMS.Report.Inventory_Report;
 
 
 namespace QD.ERP.Web.Pages
@@ -42,7 +44,7 @@ namespace QD.ERP.Web.Pages
         public string VoucherNo { get; private set; }
         public string ReportName { get; private set; }
 
-        public IActionResult OnGet(string reportName, string voucherNo, string invoiceNo, bool isApproved, string debitNoteNo, string CreditNoteNo,string RequestNo,string quotationNo)
+        public IActionResult OnGet(string reportName, string voucherNo, string invoiceNo, bool isApproved, string debitNoteNo, string CreditNoteNo,string RequestNo,string quotationNo,string salesOrderNo)
         {
             if (string.IsNullOrEmpty(reportName))
             {
@@ -358,12 +360,13 @@ namespace QD.ERP.Web.Pages
                     Report = new MaterialPurcchaseRequestion(RequestNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
                 }
 
-                
+
                 return Page();
             }
 
 
-            if (reportName == "PreviewQuotations" || reportName == "PreviewQuotationwithadditionalDetails" || reportName == "PreviewQuotationwithoutPrice" || reportName == "QuotationWOvat" || reportName == "vatTotalPricewithout" || reportName == "withoutvatDiscount")
+            if (reportName == "PreviewQuotations" || reportName == "PreviewQuotationwithadditionalDetails" || reportName == "PreviewQuotationwithoutPrice" || reportName == "QuotationWOvat" || reportName == "vatTotalPricewithout" || 
+                reportName == "withoutvatDiscount" || reportName == "GroupCode" || reportName == "wtDiscount" || reportName == "PreviewQuotationWithImage" ||  reportName == "PreviewQuotationWithSubGroup")
             {
                 if (string.IsNullOrEmpty(quotationNo))
                 {
@@ -375,29 +378,45 @@ namespace QD.ERP.Web.Pages
                 {
                     case "PreviewQuotations":
                      
-                        Report = new PreviewQuotations(quotationNo, tenantName, companyName, logoImage,companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new PreviewQuotations(quotationNo, tenantName, companyName, logoImage,companySealImage, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                         break;
                     case "PreviewQuotationwithadditionalDetails":
 
-                        Report = new PreviewQuotationwithadditionalDetails(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        Report = new PreviewQuotationwithadditionalDetails(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                         break;
                     case "PreviewQuotationwithoutPrice":
 
-                        Report = new PreviewQuotationwithoutPrice(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        Report = new PreviewQuotationwithoutPrice(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
                     case "QuotationWOvat":
-
-                        Report = new QuotationWOvat(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                     
+                        Report = new QuotationWOvat(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
                     case "vatTotalPricewithout":
 
-                        Report = new vatTotalPricewithout(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        Report = new vatTotalPricewithout(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
                     case "withoutvatDiscount":
 
-                        Report = new withoutvatDiscount(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        Report = new withoutvatDiscount(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
-                   
+
+                    case "GroupCode":
+
+                        Report = new GroupCode(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        break;
+                    case "wtDiscount":
+
+                        Report = new wtDiscount(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr,userName, _tenantDbContextHelper);
+                        break;
+                    case "PreviewQuotationWithImage":
+
+                        Report = new PreviewQuotationWithImage(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
+                    case "PreviewQuotationWithSubGroup":
+
+                        Report = new PreviewQuotationWithSubGroup(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr,  _tenantDbContextHelper);
+                        break;
 
                     default:
                         return NotFound("Report not found.");
@@ -405,6 +424,27 @@ namespace QD.ERP.Web.Pages
                 return Page();
             }
 
+
+            if (reportName == "SalesOrderReport")
+            {
+                if (string.IsNullOrEmpty(salesOrderNo))
+                {
+                    return BadRequest("requestNo is required for IMS reports.");
+                }
+
+                salesOrderNo = salesOrderNo;
+
+                if (reportName == "SalesOrderReport")
+
+                {
+                    Report = new SalesOrderReport(salesOrderNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                }
+
+
+
+
+                return Page();
+            }
 
 
 

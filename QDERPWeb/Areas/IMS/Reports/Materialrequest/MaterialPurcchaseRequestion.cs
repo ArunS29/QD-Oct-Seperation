@@ -86,13 +86,13 @@ namespace QD.ERP.Web.Areas.IMS.InventoryReports.MaterialPurchaseRequistion
             if (dt.Rows.Count == 0)
             {
                 this.DataSource = null;
-                CreateNoDataLabel();
+               
             }
             else
             {
                 this.DataSource = dt;
                 this.DataMember = "";
-                SetWatermark();
+              
             }
         }
 
@@ -134,29 +134,6 @@ namespace QD.ERP.Web.Areas.IMS.InventoryReports.MaterialPurchaseRequistion
             return dt;
         }
 
-        private void SetWatermark()
-        {
-            if (!_isApproved)
-            {
-                this.Watermark.Text = "DRAFT COPY";
-                this.Watermark.Font = new Font("Arial", 70, FontStyle.Bold);
-                this.Watermark.ForeColor = Color.FromArgb(80, 173, 216, 230);
-                this.Watermark.TextDirection = DirectionMode.ForwardDiagonal;
-                this.Watermark.ShowBehind = true;
-                this.Watermark.ImageTiling = false;
-                this.Watermark.ImageViewMode = ImageViewMode.Stretch;
-            }
-        }
-
-        private void CreateNoDataLabel()
-        {
-            XRLabel noDataLabel = new XRLabel
-            {
-                Text = "No records found.",
-                BoundsF = new RectangleF(0, 0, PageWidth - Margins.Left - Margins.Right, 50),
-                TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter
-            };
-            this.Bands[BandKind.Detail].Controls.Add(noDataLabel);
-        }
+       
     }
 }
