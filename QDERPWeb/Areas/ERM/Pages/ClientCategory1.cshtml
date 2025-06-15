@@ -183,7 +183,7 @@
             dataSource: new DevExpress.data.CustomStore({
                 key: "ClientCategoryCode",
                 load: function () {
-                    return $.getJSON('/api/ClientCategory1/GetBranches'); // Fetch data from the API
+                    return $.getJSON('/api/ClientCategory2/GetBranches'); // Fetch data from the API
                 },
                 update: function (key, values) {
                     var updatedBranch = {
@@ -198,7 +198,7 @@
                     // Send the updated data to the backend via AJAX
                     return $.ajax({
                         type: "POST",
-                        url: "/api/ClientCategory1/UpdateBranch",
+                        url: "/api/ClientCategory2/UpdateBranch",
                         data: JSON.stringify(updatedBranch),
                         contentType: "application/json",
                         success: function (response) {
@@ -283,7 +283,7 @@
                                         // Proceed with delete
                                         $.ajax({
                                             type: "POST",
-                                            url: "/api/ClientCategory1/DeleteBranchMaster",
+                                            url: "/api/ClientCategory2/DeleteBranchMaster",
                                             data: JSON.stringify({ ClientCategoryCode: clientCategoryCode }),
                                             contentType: "application/json",
                                             success: function (response) {
@@ -477,7 +477,7 @@
 
             // Send the data to the AddBranch API using AJAX
             $.ajax({
-                url: '/api/ClientCategory1/AddBranch',  // The API endpoint for adding a branch
+                url: '/api/ClientCategory2/AddBranch',  // The API endpoint for adding a branch
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(branchData),  // Convert the data object to JSON string

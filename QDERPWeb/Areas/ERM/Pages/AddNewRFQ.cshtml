@@ -236,7 +236,7 @@
                     			 @(Html.DevExtreme().DropDownBox()
 														.Label(new JS("formatMessage('Supplier Name:')"))
                           .DataSource(d => d.WebApi()
-														.Controller("RequestforQuotationList")
+														.Controller("ERRequestforQuotationList")
 														.LoadAction("GetSupplierName")
                                                     .LoadMode(DataSourceLoadMode.Raw)
                                                    .Key("SupplierCode")
@@ -483,7 +483,7 @@
                                    @(Html.DevExtreme().DropDownBox()
 													.Label(new JS("formatMessage('Signatory:')"))
 													.DataSource(d => d.WebApi()
-													.Controller("RequestforQuotationList")
+													.Controller("ERRequestforQuotationList")
 													.LoadAction("GetSignatory")
 													.LoadMode(DataSourceLoadMode.Raw)
 													.Key("SignatoryId")
@@ -532,7 +532,7 @@
                                  @(Html.DevExtreme().DropDownBox()
 													.Label(new JS("formatMessage('Company Branch / Division:')"))
 													.DataSource(d => d.WebApi()
-													.Controller("RequestforQuotationList")
+													.Controller("ERRequestforQuotationList")
 													.LoadAction("GetCompany")
 													.LoadMode(DataSourceLoadMode.Raw)
 													.Key("CompanyId")
@@ -562,7 +562,7 @@
                                     @(Html.DevExtreme().DropDownBox()
 													.Label(new JS("formatMessage('Inventory Group Master:')"))
 													.DataSource(d => d.WebApi()
-													.Controller("RequestforQuotationList")
+													.Controller("ERRequestforQuotationList")
 													.LoadAction("GetInventoryGroup")
 													.LoadMode(DataSourceLoadMode.Raw)
 													.Key("InventoryMasterGroupId")
@@ -804,7 +804,7 @@
 			@(Html.DevExtreme().DataGrid()
 					.ID("GetSupplier-datagrid")
 					.DataSource(d => d.WebApi()
-					.Controller("RequestforQuotationList")
+					.Controller("ERRequestforQuotationList")
 					.LoadAction("GetSupplierName")
 					.LoadMode(DataSourceLoadMode.Raw)
 					.Key("SupplierCode")
@@ -873,7 +873,7 @@
 	@(Html.DevExtreme().DataGrid()
 			.ID("GetSignatory-datagrid")
 			.DataSource(d => d.WebApi()
-			.Controller("RequestforQuotationList")
+			.Controller("ERRequestforQuotationList")
 			.LoadAction("GetSignatory")
 			.LoadMode(DataSourceLoadMode.Raw)
 			.Key("SignatoryId")
@@ -908,7 +908,7 @@
 	@(Html.DevExtreme().DataGrid()
 			.ID("GetCompany-datagrid")
 			.DataSource(d => d.WebApi()
-			.Controller("RequestforQuotationList")
+			.Controller("ERRequestforQuotationList")
 			.LoadAction("GetCompany")
 			.LoadMode(DataSourceLoadMode.Raw)
 			.Key("CompanyId")
@@ -943,7 +943,7 @@
 	@(Html.DevExtreme().DataGrid()
 			.ID("GetInventoryGroup-datagrid")
 			.DataSource(d => d.WebApi()
-			.Controller("RequestforQuotationList")
+			.Controller("ERRequestforQuotationList")
 			.LoadAction("GetInventoryGroup")
 			.LoadMode(DataSourceLoadMode.Raw)
 			.Key("InventoryMasterGroupId")
@@ -1129,7 +1129,7 @@
 		} else  {
 			// If Mprno is not present and IsCurrent is not "true", generate a Autogenerate request number
 			$.ajax({
-				url: "/api/RequestforQuotationList/GetNewDebitNoteNoApi",
+				url: "/api/ERRequestforQuotationList/GetNewDebitNoteNoApi",
 				type: "GET",
 				success: function (data) {
 					console.log("Success:", data);
@@ -1152,7 +1152,7 @@
 
 	function loadClientDetails(Rfqno) {
     $.ajax({
-			url: `/api/RequestforQuotationList/GetRFQdataByCode?RFQno=${encodeURIComponent(Rfqno)}`,
+			url: `/api/ERRequestforQuotationList/GetRFQdataByCode?RFQno=${encodeURIComponent(Rfqno)}`,
         type: 'GET',
         dataType: 'json',
         success: function (response) {
@@ -1185,7 +1185,7 @@
                // Fetch and initialize the data grid with invoice details
                 $.ajax({
                     type: "GET",
-						url: `/api/RequestforQuotationList/GetRFQChildren?RFQno=${encodeURIComponent(Rfqno)}`,
+						url: `/api/ERRequestforQuotationList/GetRFQChildren?RFQno=${encodeURIComponent(Rfqno)}`,
                     dataType: 'json',
                     success: function (gridResponse) {
                         console.log("Grid", gridResponse);
@@ -2134,7 +2134,7 @@ LineTotalAfterDisc:0.00
 		}
 	function getUnitRateMethods1() {
 		return $.ajax({
-			url: "/api/addNewQuotationItemSubGroup/GetSubGroup", // This should match your actual backend endpoint
+			url: "/api/addNewQuotationItemSubGroup1GetSubGroup", // This should match your actual backend endpoint
 			method: "GET",
 			dataType: "json"
 		}).then(function (response) {
@@ -3971,7 +3971,7 @@ LineTotalAfterDisc:0.00
 
 		$.ajax({
 			type: "POST",
-			url: "/api/RequestforQuotationList/SaveOrUpdateRFQ",
+			url: "/api/ERRequestforQuotationList/SaveOrUpdateRFQ",
 			contentType: "application/json",
 			data: JSON.stringify(model),
 			success: function (response) {
@@ -4012,7 +4012,7 @@ LineTotalAfterDisc:0.00
         }
 
         $.ajax({
-			url: `/api/RequestforQuotationList/DeleteRfq?Rfqno=${encodeURIComponent(Rfqno)}`,
+			url: `/api/ERRequestforQuotationList/DeleteRfq?Rfqno=${encodeURIComponent(Rfqno)}`,
             type: 'Delete',
                        success: function (response) {
                 DevExpress.ui.notify(response.message, 'success', 3000);
@@ -4068,7 +4068,7 @@ LineTotalAfterDisc:0.00
 
 			$.ajax({
 				type: "POST",
-				url: "/api/RequestforQuotationList/SaveOrUpdateRFQ",
+				url: "/api/ERRequestforQuotationList/SaveOrUpdateRFQ",
 				contentType: "application/json",
 				data: JSON.stringify(model),
 				success: function (response) {
@@ -4365,7 +4365,7 @@ LineTotalAfterDisc:0.00
         if (dialogResult) {
             $.ajax({
                 type: "POST",
-					url: `/api/RequestforQuotationList/SubmitRFQ?Rfqno=${encodeURIComponent(Rfqno)}`,
+					url: `/api/ERRequestforQuotationList/SubmitRFQ?Rfqno=${encodeURIComponent(Rfqno)}`,
                 contentType: "application/json",
                 success: function (response) {
 					//disableEditing();
@@ -4440,7 +4440,7 @@ LineTotalAfterDisc:0.00
 
 		$.ajax({
 			type: "POST",
-			url: `/api/RequestforQuotationList/VerifyRFQ?Rfqno=${encodeURIComponent(Rfqno)}`,
+			url: `/api/ERRequestforQuotationList/VerifyRFQ?Rfqno=${encodeURIComponent(Rfqno)}`,
 			contentType: "application/json",
 			success: function (response) {
 				if (response && response.message) {
@@ -4515,7 +4515,7 @@ LineTotalAfterDisc:0.00
 
 		$.ajax({
 			type: "POST",
-			url: `/api/RequestforQuotationList/ApproveRFQ?Rfqno=${encodeURIComponent(Rfqno)}`,
+			url: `/api/ERRequestforQuotationList/ApproveRFQ?Rfqno=${encodeURIComponent(Rfqno)}`,
 			contentType: "application/json",
 				success: function (response) {
 				if (response && response.Message) {

@@ -228,7 +228,7 @@
                         .DisplayExpr("CostAllocationUnit")
                         .ValueExpr("CostAllocationUnitId")
                         .DataSource(d => d.WebApi()
-                        .Controller("StockInventory")
+                        .Controller("ERStockInventory")
                         .LoadAction("GetCostCenters"))
                         .ValidationRules(rules =>
                         {
@@ -262,7 +262,7 @@
                 .ShowRowLines(true)
                 .RowAlternationEnabled(true)
                 .DataSource(d => d.WebApi()
-                .Controller("StockInventory")
+                .Controller("ERStockInventory")
                 .LoadAction("GetAllStores")
                 .UpdateAction("UpdateStore")
                 .UpdateMethod("PUT")
@@ -341,7 +341,7 @@
             CostAllocationUnitId: costCenter
         };
         $.ajax({
-            url: '/api/StockInventory/AddStore',
+            url: '/api/ERStockInventory/AddStore',
             type: 'POST',
             data: JSON.stringify(storeData),
             contentType: 'application/json',

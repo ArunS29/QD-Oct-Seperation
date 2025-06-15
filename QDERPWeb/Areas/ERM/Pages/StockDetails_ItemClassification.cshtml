@@ -224,7 +224,7 @@
 				.ShowRowLines(true)
 				.RowAlternationEnabled(true)
 				.DataSource(d => d.WebApi()
-				.Controller("StockInventory")
+				.Controller("ERStockInventory")
 				.LoadAction("GetAll")
 				.UpdateAction("UpdateStockClassification")
 				.UpdateMethod("PUT")
@@ -319,7 +319,7 @@
 					}
 
 					$.ajax({
-					url: '/api/StockInventory/AddStockClassification',
+					url: '/api/ERStockInventory/AddStockClassification',
 						type: 'POST',
 						contentType: 'application/json',
 						data: JSON.stringify({ StockClassification: newStockClass }),
@@ -355,7 +355,7 @@
 			.done(function (dialogResult) {
 				if (dialogResult) {
 					$.ajax({
-						url: '/api/StockInventory/DeleteStockClassification?key=' + e.row.data.StockClassId,
+						url: '/api/ERStockInventory/DeleteStockClassification?key=' + e.row.data.StockClassId,
 						type: 'DELETE',
 						success: function () {
 							DevExpress.ui.notify("Stock Classification deleted successfully!", "success", 2000);

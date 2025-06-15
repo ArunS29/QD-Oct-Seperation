@@ -485,7 +485,7 @@
 	toDate = toDate.toISOString().split('T')[0];
 
 				$.ajax({
-			url: '/api/Quotation/GetQuotationDetails',
+			url: '/api/Quotation1/GetQuotationDetails',
 		type: 'GET',
 		data: {
 			fromDate: frmDate,
@@ -515,7 +515,7 @@
 					text: "Edit Quotation",
 					icon: "edit",
 					onItemClick: function () {
-						const url = `/${tenantName}/ERM/AddNewQuotation1?QuoteNo=${QuoteNo}`;
+						const url = `/${tenantName}/ERM/AddNewQuotation?QuoteNo=${QuoteNo}`;
 						window.location.href = url;
 					}
 				},

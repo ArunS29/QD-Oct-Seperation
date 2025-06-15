@@ -10,13 +10,13 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class SuppliersController : Controller
+    public class ERSuppliersController : Controller
     {
 
         private readonly TenantDbContextHelper _tenantDbContextHelper;
-        private readonly ILogger<ClientLeadsController> _logger;
+        private readonly ILogger<ERSuppliersController> _logger;
 
-        public SuppliersController(ILogger<ClientLeadsController> logger, TenantDbContextHelper tenantDbContextHelper)
+        public ERSuppliersController(ILogger<ERSuppliersController> logger, TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;

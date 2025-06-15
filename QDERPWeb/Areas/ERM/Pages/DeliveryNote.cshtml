@@ -166,7 +166,7 @@
 <input id="formId" value="frm201LedgerView" type="hidden" />
 <div class="title">
 	<div class="header-container">
-		<div id="DeliveryNote" class="no-border-input"></div>
+		<div id="DeliveryNote1" class="no-border-input"></div>
 	</div>
 </div>
 
@@ -302,7 +302,7 @@
 
 <script>
 		 $(function () {
-	$("#DeliveryNote").dxTextBox({
+	$("#DeliveryNote1").dxTextBox({
 	text: formatMessage("Delivery Note"),
 		readOnly: true,
 		onContentReady: function (e) {
@@ -379,7 +379,7 @@
 	toDate = toDate.toISOString().split('T')[0];
 
 				$.ajax({
-		url: '/api/DeliveryNote/GetDeliveryNotes',
+		url: '/api/DeliveryNote1/GetDeliveryNotes',
 		type: 'GET',
 		data: {
 			fromDate: frmDate,
@@ -443,7 +443,7 @@
 			).done(function (dialogResult) {
 				if (dialogResult) {
 					$.ajax({
-						url: "/api/DeliveryNote/DeleteDeliveryItem",
+						url: "/api/DeliveryNote1/DeleteDeliveryItem",
 						method: "POST",
 						contentType: "application/json",
 						data: JSON.stringify(code),

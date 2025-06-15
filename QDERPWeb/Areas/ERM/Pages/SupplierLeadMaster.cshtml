@@ -208,7 +208,7 @@
             .Label(new JS("formatMessage('Supplier Category')"))
             .LabelMode(EditorLabelMode.Outside)
             .DataSource(d => d.WebApi()
-            .Controller("SupplierMaster")
+            .Controller("ERSupplierMaster")
             .LoadAction("GetSupplierCategory")
             .LoadMode(DataSourceLoadMode.Raw)
             .Key("CategoryCode")
@@ -289,7 +289,7 @@
                     <div class="col-md-6" style="display:flex; align-items:end; gap:30px; width: 70%; ">
                         @(Html.DevExtreme().DropDownBox()
                         .DataSource(d => d.WebApi()
-                        .Controller("SupplierMaster")
+                        .Controller("ERSupplierMaster")
                         .LoadAction("GetSupplierLedgerNo")
                         .LoadMode(DataSourceLoadMode.Raw)
                         .Key("AccountId")
@@ -554,7 +554,7 @@
             @(Html.DevExtreme().DataGrid()
                             .ID("GetProject-datagrid")
                             .DataSource(d => d.WebApi()
-                                .Controller("SupplierMaster")
+                                .Controller("ERSupplierMaster")
                                 .LoadAction("GetSupplierCategory")
                             .LoadMode(DataSourceLoadMode.Raw)
                             .Key("CategoryCode")
@@ -592,7 +592,7 @@
             @(Html.DevExtreme().DataGrid()
                             .ID("GetLedgerNo-datagrid")
                             .DataSource(d => d.WebApi()
-                                .Controller("SupplierMaster")
+                                .Controller("ERSupplierMaster")
                                 .LoadAction("GetSupplierLedgerNo")
                             .LoadMode(DataSourceLoadMode.Raw)
                             .Key("AccountId")
@@ -669,7 +669,7 @@
     function loadSupplierDetails(cleanSupplierCode) {
         
         $.ajax({
-            url: `/api/SupplierMaster/GetSupplierByCode?supplierCode=${cleanSupplierCode}`,
+            url: `/api/ERSupplierMaster/GetSupplierByCode?supplierCode=${cleanSupplierCode}`,
             type: 'GET',
             success: function (data) {
                 $("#btnSave").dxButton("instance").option("text", "Update");
@@ -713,7 +713,7 @@
     }
     function loadSupplierContactListGrid(SupplierCode) {
     $.ajax({
-        url: `/api/SupplierMaster/GetContactList?SupplierCode=${encodeURIComponent(SupplierCode)}`,
+        url: `/api/ERSupplierMaster/GetContactList?SupplierCode=${encodeURIComponent(SupplierCode)}`,
         type: 'GET',
         success: function (statusData) {
             const grid = $("#Contact-dataGrid").dxDataGrid("instance");
@@ -785,7 +785,7 @@
     function generateNextSupplierCode(categoryCode) {
 
         $.ajax({
-            url: `/api/SupplierMaster/GetLatestSupplierCode?categoryCode=${categoryCode}`,
+            url: `/api/ERSupplierMaster/GetLatestSupplierCode?categoryCode=${categoryCode}`,
             type: 'GET',
             success: function (latestCode) {
                 let nextNumber = 1;
@@ -888,7 +888,7 @@
 
             // Send data via AJAX POST request
             $.ajax({
-                url: '/api/SupplierMaster/InsertOrUpdate', // Change this URL to your actual API endpoint
+                url: '/api/ERSupplierMaster/InsertOrUpdate', // Change this URL to your actual API endpoint
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(data), // Send the data as a JSON string
@@ -980,7 +980,7 @@
 
     //         // Send data via AJAX POST request
     //         $.ajax({
-    //             url: '/api/SupplierMaster/InsertOrUpdate', // Change this URL to your actual API endpoint
+    //             url: '/api/ERSupplierMaster/InsertOrUpdate', // Change this URL to your actual API endpoint
     //             type: 'POST',
     //             contentType: 'application/json',
     //             data: JSON.stringify(data), // Send the data as a JSON string
@@ -1026,7 +1026,7 @@
         if (confirm("Are you sure you want to delete this suppiler?")) {
 
         $.ajax({
-            url: "/api/SupplierMaster/DeleteSupplierLeadMaster",
+            url: "/api/ERSupplierMaster/DeleteSupplierLeadMaster",
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(SupplierCode), // 👈 plain string
@@ -1064,7 +1064,7 @@
                             .done(function (dialogResult) {
                                 if (dialogResult) {
                                     $.ajax({
-                                        url: `/api/SupplierMaster/DeleteContact?SupplierContactSlNo=${SupplierContactSlNo}`,
+                                        url: `/api/ERSupplierMaster/DeleteContact?SupplierContactSlNo=${SupplierContactSlNo}`,
                                         type: 'DELETE',
                                         success: function (res) {
                                             if (res.success) {

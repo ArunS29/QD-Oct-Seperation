@@ -31,7 +31,7 @@
         .DisplayExpr("StoreName")
         .DataSource(ds => ds
         .Mvc()
-        .Controller("SalesOrders")
+        .Controller("ERSalesOrders")
         .LoadAction("GetStoreToIssueItem")
         .LoadMode(DataSourceLoadMode.Raw)
         .Key("StoreId")
@@ -80,7 +80,7 @@
                         .ID("StoreToIssueItemDropDown")
                          .DataSource(ds => ds
                          .Mvc()
-                         .Controller("SalesOrders")
+                         .Controller("ERSalesOrders")
                           .LoadAction("GetStoreToIssueItem")
                          .LoadMode(DataSourceLoadMode.Raw)
                          .Key("StoreId")

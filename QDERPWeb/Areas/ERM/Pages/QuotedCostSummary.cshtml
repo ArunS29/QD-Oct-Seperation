@@ -59,7 +59,7 @@
             @(Html.DevExtreme().DropDownBox()
                          .AcceptCustomValue(true)
                         .DataSource(d => d.WebApi()
-                        .Controller("QuotedCostSummary")
+                        .Controller("ERQuotedCostSummary")
                         .LoadAction("GetCostItem")
                         .LoadMode(DataSourceLoadMode.Raw)
                         .Key("CostItemCode")
@@ -109,7 +109,7 @@
         @(Html.DevExtreme().DataGrid()
             .ID("GetProject-datagrid")
             .DataSource(d => d.WebApi()
-            .Controller("QuotedCostSummary")
+            .Controller("ERQuotedCostSummary")
             .LoadAction("GetCostItem")
             .LoadMode(DataSourceLoadMode.Raw)
             .Key("CostItemCode")
@@ -179,7 +179,7 @@
     });
 
     function loadClientDetails(QuoteNo) {
-      $.get(`/api/QuotedCostSummary/GetQuotedCostSummary?QuoteNo=${encodeURIComponent(QuoteNo)}`)
+      $.get(`/api/ERQuotedCostSummary/GetQuotedCostSummary?QuoteNo=${encodeURIComponent(QuoteNo)}`)
         .done(statusData => {
           const grid = $("#quotedItemsGrid").dxDataGrid("instance");
           if (grid) {
@@ -191,7 +191,7 @@
     }
 
     function loadPivotGridData(QuoteNo) {
-      $.get(`/api/QuotedCostSummary/GetquotationCostList?QuoteNo=${encodeURIComponent(QuoteNo)}`)
+      $.get(`/api/ERQuotedCostSummary/GetquotationCostList?QuoteNo=${encodeURIComponent(QuoteNo)}`)
         .done(data => {
           pivotGridInstance.option('dataSource', {
             fields: pivotGridInstance.option('dataSource').fields,

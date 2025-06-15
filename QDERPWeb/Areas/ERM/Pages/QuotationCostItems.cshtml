@@ -139,7 +139,7 @@
         .KeyExpr("QuotationCostItemId")
             .RemoteOperations(false)
             .DataSource(d => d.WebApi()
-            .Controller("Quotation")
+            .Controller("Quotation1")
         .LoadAction("GetCostItem")
             .LoadMode(DataSourceLoadMode.Raw)
             )
@@ -232,7 +232,7 @@
                 CostItem: $("#txtQuotationCostItem").dxTextBox("instance").option("value"),
             };
             $.ajax({
-                url: '/api/Quotation/SaveOrUpdateStatus',
+                url: '/api/Quotation1/SaveOrUpdateStatus',
                 method: "POST",
                 contentType: "application/json",
                 data: JSON.stringify(data),
@@ -267,7 +267,7 @@
     };
 
     $.ajax({
-        url: '/api/Quotation/SaveOrUpdateStatus',
+        url: '/api/Quotation1/SaveOrUpdateStatus',
         method: "POST",
         contentType: "application/json",
         data: JSON.stringify(updatedData),
@@ -285,7 +285,7 @@
         if (!confirm("Are you sure you want to delete this Cost Item?")) return;
 
         $.ajax({
-            url: `/api/Quotation/DeleteCostItem/` + key,
+            url: `/api/Quotation1/DeleteCostItem/` + key,
             method: "DELETE",
             xhrFields: { withCredentials: true },
             success: function (result) {

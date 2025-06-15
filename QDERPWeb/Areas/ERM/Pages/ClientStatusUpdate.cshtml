@@ -125,7 +125,7 @@
 
         @(Html.DevExtreme().DropDownBox()
             .DataSource(d => d.WebApi()
-            .Controller("ClientStatusUpdate")
+            .Controller("ClientStatusUpdate1")
             .LoadAction("GetClient")
             .LoadMode(DataSourceLoadMode.Raw)
             .Key("StatusCode")
@@ -189,7 +189,7 @@
 
         @(Html.DevExtreme().DropDownBox()
             .DataSource(d => d.WebApi()
-            .Controller("ClientStatusUpdate")
+            .Controller("ClientStatusUpdate1")
             .LoadAction("GetStatus")
             .LoadMode(DataSourceLoadMode.Raw)
             .Key("StatusCode")
@@ -250,7 +250,7 @@
         @(Html.DevExtreme().DataGrid()
             .ID("GetStatus-datagrid")
             .DataSource(d => d.WebApi()
-            .Controller("ClientStatusUpdate")
+            .Controller("ClientStatusUpdate1")
             .LoadAction("GetStatus")
             .LoadMode(DataSourceLoadMode.Raw)
             .Key("StatusCode")
@@ -284,7 +284,7 @@
         @(Html.DevExtreme().DataGrid()
             .ID("GetClient-datagrid")
             .DataSource(d => d.WebApi()
-            .Controller("ClientStatusUpdate")
+            .Controller("ClientStatusUpdate1")
             .LoadAction("GetClient")
             .LoadMode(DataSourceLoadMode.Raw)
             .Key("StatusCode")
@@ -343,7 +343,7 @@
     });
     function bindClientStatusById(clientStatusNo) {
         $.ajax({
-            url: `/api/ClientStatusUpdate/GetClientStatusById?clientStatusNo=${clientStatusNo}`,
+            url: `/api/ClientStatusUpdate1/GetClientStatusById?clientStatusNo=${clientStatusNo}`,
             type: 'GET',
             success: function (data) {
                 console.log("getdat:", data);
@@ -395,7 +395,7 @@
         }
 
         $.ajax({
-            url: '/api/ClientStatusUpdate/SaveOrUpdateClientStatusUpdate',
+            url: '/api/ClientStatusUpdate1/SaveOrUpdateClientStatusUpdate',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(data),
@@ -447,7 +447,7 @@
         }
 
         $.ajax({
-            url: "/api/ClientStatusUpdate/DeleteClientStatusUpdate",
+            url: "/api/ClientStatusUpdate1/DeleteClientStatusUpdate",
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(ClientCode), // 👈 plain string
@@ -535,7 +535,7 @@
         }
 
         $.ajax({
-            url: '/api/ClientStatusUpdate/SaveOrUpdateClientStatusUpdate',
+            url: '/api/ClientStatusUpdate1/SaveOrUpdateClientStatusUpdate',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(data),
@@ -583,7 +583,7 @@
         }
 
         $.ajax({
-            url: "/api/ClientStatusUpdate/DeleteClientStatusUpdate",
+            url: "/api/ClientStatusUpdate1/DeleteClientStatusUpdate",
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(ClientCode), // 👈 plain string

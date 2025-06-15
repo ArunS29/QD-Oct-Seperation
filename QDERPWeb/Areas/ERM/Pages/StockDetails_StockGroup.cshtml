@@ -214,7 +214,7 @@
                 @(Html.DevExtreme().SelectBox()
                     .ID("InventoryMasterGroups")
                     .DataSource(ds => ds.WebApi()
-                    .Controller("StockInventory")
+                    .Controller("ERStockInventory")
                     .LoadAction("GetInventoryMasterGroups")
                     )
                     .ValueExpr("InventoryMasterGroupId")
@@ -243,7 +243,7 @@
                     .LabelMode(EditorLabelMode.Outside)
                     .Label(new JS("formatMessage('Inventory Ledger Account')"))
                     .DataSource(d => d.Mvc()
-                    .Controller("StockInventory")
+                    .Controller("ERStockInventory")
                     .LoadAction("GetInventoryLedgerAccounts")
                     )
                     .DisplayExpr("DisplayText") 
@@ -264,7 +264,7 @@
                     .LabelMode(EditorLabelMode.Outside)
                     .Label(new JS("formatMessage('Cost Ledger Account')"))
                     .DataSource(d => d.Mvc()
-                    .Controller("StockInventory") // Replace with your actual controller name
+                    .Controller("ERStockInventory") // Replace with your actual controller name
                     .LoadAction("GetCostLedgerAccounts")
                     )
                     .DisplayExpr("DisplayText") // Shows "AccountHead | AccountGroup"
@@ -319,7 +319,7 @@
                 @(Html.DevExtreme().DataGrid<Tbl20165GoodsAndServicesGroup>()
                     .ID("dataGrid")
                     .DataSource(ds => ds.Mvc()
-                    .Controller("StockInventory")
+                    .Controller("ERStockInventory")
                     .LoadAction("GoodsServicesData")
                     .UpdateAction("UpdateGoodsService")
                     .Key("GsgroupId")
@@ -410,7 +410,7 @@
     function onIsServicesChanged(gsgroupId, isChecked) {
         alert(isChecked)
         $.ajax({
-            url: '/api/StockInventory/UpdateIsServices',
+            url: '/api/ERStockInventory/UpdateIsServices',
             method: 'POST',
             data: JSON.stringify({ GsgroupId: gsgroupId, IsServicesGroup: isChecked }),
             contentType: 'application/json',
@@ -476,7 +476,7 @@
                 };
 
                 $.ajax({
-                    url: '/api/StockInventory/AddGoodsServiceGroup',
+                    url: '/api/ERStockInventory/AddGoodsServiceGroup',
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify(data),

@@ -556,7 +556,7 @@
 		toDateBox.option("value", toDate);
 
 		$.ajax({
-			url: '/api/MaterialRequestEnquiriesDetails/GetVatCreditNoteDetails',
+			url: '/api/MaterialRequestEnquiriesDetails1/GetVatCreditNoteDetails',
 			type: 'GET',
 			data: {
 				frmDate: frmDate,
@@ -623,7 +623,7 @@
 
 						switch (RequestEnquiry) {
 							case "Client Request":
-								url = `/${tenantName}/ERM/AddNewClientRequest1?Mprno=${Mprno}`;
+								url = `/${tenantName}/ERM/AddNewClientRequest?Mprno=${Mprno}`;
 								title = "Edit Client Request";
 								break;
 							case "Project Request":
@@ -748,7 +748,7 @@
 		}
 
 		$.ajax({
-			url: `/api/MaterialRequestEnquiriesDetails/DeletePurchaseRequest?Mprno=${Mprno}`,
+			url: `/api/MaterialRequestEnquiriesDetails1/DeletePurchaseRequest?Mprno=${Mprno}`,
 			method: 'POST',
 			success: function (response) {
 				if (response.success) {

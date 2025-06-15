@@ -428,7 +428,7 @@
 		toDate = toDate.toISOString().split('T')[0];
 
 					$.ajax({
-			url: '/api/SalesOrders/GetSalesOrdersDetails',
+			url: '/api/ERSalesOrders/GetSalesOrdersDetails',
 			type: 'GET',
 			data: {
 				fromDate: frmDate,
@@ -475,7 +475,7 @@
 	// 	).done(function (dialogResult) {
 	// 		if (dialogResult) {
 	// 			$.ajax({
-	// 				url: `/api/SalesOrders/DeleteSalesOrder?salesOrderNo=${encodeURIComponent(salesOrderNo)}`,
+	// 				url: `/api/ERSalesOrders/DeleteSalesOrder?salesOrderNo=${encodeURIComponent(salesOrderNo)}`,
 	// 				type: "DELETE",
 	// 				success: function (response) {
 	// 					DevExpress.ui.notify(response.message, "success", 2000);

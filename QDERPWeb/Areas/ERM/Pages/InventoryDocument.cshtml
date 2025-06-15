@@ -264,7 +264,7 @@
                         .Label("Type of the Document Attached:")
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%")
-                        .DataSource(d => d.Mvc().Controller("StockInventory").LoadAction("GetDocumentTypes"))
+                        .DataSource(d => d.Mvc().Controller("ERStockInventory").LoadAction("GetDocumentTypes"))
                         .DisplayExpr("text")
                         .ValueExpr("id")
                         .ValidationRules(rules =>
@@ -366,7 +366,7 @@
             .Height(600)
             .ShowBorders(true)
             .ColumnAutoWidth(true)
-            .DataSource(d => d.Mvc().Controller("StockInventory").LoadAction("GetDocuments"))
+            .DataSource(d => d.Mvc().Controller("ERStockInventory").LoadAction("GetDocuments"))
             .Columns(columns =>
             {
                 columns.Add().DataField("DocumentNo").Caption("Doc No").AllowEditing(false);
@@ -420,7 +420,7 @@
     });
 
     function loadInitialDocumentNo() {
-        $.get("/api/StockInventory/GenerateNewDocumentNo", function (data) {
+        $.get("/api/ERStockInventory/GenerateNewDocumentNo", function (data) {
             $("#DocumentNo").dxTextBox("instance").option("value", data);
         });
     }
@@ -459,7 +459,7 @@
         formData.append("NotificationDate", $("#NotificationDate").dxDateBox("instance").option("value"));
 
         $.ajax({
-            url: "/api/StockInventory/SaveProjectDocument",
+            url: "/api/ERStockInventory/SaveProjectDocument",
             type: "POST",
             data: formData,
             contentType: false,
@@ -508,7 +508,7 @@
                 $("#documentGrid").dxDataGrid({
                     dataSource: DevExpress.data.AspNet.createStore({
                         key: "DocumentNo",
-                        loadUrl: "/api/StockInventory/GetAllDocuments"
+                        loadUrl: "/api/ERStockInventory/GetAllDocuments"
                     }),
                     columns: [
                         { dataField: "DocumentNo", caption: "Document No" },
