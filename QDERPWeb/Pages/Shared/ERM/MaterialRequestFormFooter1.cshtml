@@ -1,0 +1,497 @@
+﻿<div class="dx-fieldset horizontal-container" style="gap:10px;background-color:transparent;">
+
+
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("ddButtonLayout")
+            .Icon("smalliconslayout")
+            .Width("100%")
+            .Text(new JS("formatMessage('Layout')"))
+            
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu");
+                items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
+                items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
+                items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
+                items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
+            })
+            .ShowArrowIcon(false)
+            )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnMoveUp")
+                .Text(new JS("formatMessage('Move Up')"))
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("spinup") // Change the icon to an up/down arrow option
+                .ElementAttr(new { @class = "bold-button" })
+                )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnMoveDown")
+                .Text(new JS("formatMessage('Move Down')"))
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("spindown") // Change the icon to an up/down arrow option
+                .ElementAttr(new { @class = "bold-button" })
+                )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnSave")
+                .Text(new JS("formatMessage('Save')"))
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("save")
+                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                )
+
+    </div>
+    <div class="btn-container">
+
+        @(Html.DevExtreme().Button()
+                .ID("btnSaveAndClose")
+                .Text(new JS("formatMessage('Save and Close')"))
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("save")
+                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                )
+    </div>
+    <div class="btn-container">
+
+        @(Html.DevExtreme().DropDownButton()
+
+                .ID("btnPrint1")
+
+                .Text(new JS("formatMessage('Print')"))
+
+                .Icon("print")
+
+                .ElementAttr(new { @class = "bold-button" })
+
+                .DropDownOptions(options => options.Width(230))
+
+                .ShowArrowIcon(false)
+
+                .Items(items =>
+
+                {
+
+                    items.Add().Text("Custom request Designs").Icon("print");
+
+                    items.Add().Text("Preview Request").Icon("file");
+
+                    items.Add().Text("Preview Request(With Expected Unit Price)").Icon("folder");
+
+                })
+
+                .OnItemClick("handleCreditReportPrinting")
+
+                )
+    </div>
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnAddNew")
+                .Text(new JS("formatMessage('Add New Item')"))
+                .Icon("plus")
+                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnDelete")
+                .Text(new JS("formatMessage('Delete')"))
+                .Icon("close")
+                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                )
+    </div>
+    <div class="btn-container">
+
+        @(Html.DevExtreme().Button()
+                .ID("btnBack")
+                .Text(new JS("formatMessage('Back')"))
+                .Icon("arrowleft")
+                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnSubmit")
+                .Text(new JS("formatMessage('Submit')"))
+                .Icon("check")
+                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+
+                )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnVerify")
+                .Text(new JS("formatMessage('Verify')"))
+                .Icon("check")
+                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+
+                )
+
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnApprove")
+                .Text(new JS("formatMessage('Approve')"))
+                .Icon("exportselected")
+                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                )
+
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnCancel")
+                .Text(new JS("formatMessage('Cancel')"))
+                .Icon("close")
+                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+
+                )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnAttach")
+                .Text(new JS("formatMessage('Attach')"))
+                .Icon("link")
+                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                )
+    </div>
+    <div class="btn-container">
+
+        @(Html.DevExtreme().Button()
+                .ID("btnUpload")
+                .Text(new JS("formatMessage('Upload')"))
+                .Icon("upload")
+                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                )
+    </div>
+
+</div>
+
+<script>
+       
+    // Hide context menu on click outside
+           let isHeaderFilterEnabled = false;
+
+           function toggleHeaderFilter() {
+               var dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+               isHeaderFilterEnabled = !isHeaderFilterEnabled;
+               dataGrid.option("headerFilter.visible", isHeaderFilterEnabled); // Toggle the header filter visibility
+           }
+           $(document).on("click", function () {
+               var contextMenu = $("#contextMenu");
+               contextMenu.hide();
+               var $submenu = $('#submenuContainer');
+               $submenu.hide(); // Hide the submenu popup
+           });
+
+           // Handle the file selection
+           $("#loadLayoutInput").on("change", function (event) {
+               const dataGrid = $("#dataGrid").dxDataGrid("instance");
+               const file = event.target.files[0];
+
+               if (file) {
+                   const reader = new FileReader();
+
+                   reader.onload = function (e) {
+                       try {
+                           // Parse the JSON string from the file
+                           const layout = JSON.parse(e.target.result);
+
+                           // Restore the grid state
+                           dataGrid.state(layout);
+                       } catch (error) {
+                           console.error("Error parsing JSON:", error);
+                           alert("Failed to load layout. Please ensure the file is valid JSON.");
+                       }
+                   };
+
+                   // Read the file as text
+                   reader.readAsText(file);
+               }
+           });
+           function saveLayoutClick(e) {
+               var grid = $("#dataGrid").dxDataGrid("instance");
+               var layout = grid.state();
+               const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
+               //console.log(layoutJson);
+               // Create a Blob from the JSON string
+               const blob = new Blob([layoutJson], { type: "application/json" });
+               // Create a URL for the Blob
+               const url = URL.createObjectURL(blob);
+               // Create a link element
+               const a = document.createElement("a");
+               a.href = url;
+               a.download = "grid-layout.json"; // Set the file name for download
+               // Append the link to the body (needed for Firefox)
+               document.body.appendChild(a);
+               // Programmatically click the link to trigger the download
+               a.click();
+               // Clean up by removing the link and revoking the Object URL
+               document.body.removeChild(a);
+               URL.revokeObjectURL(url);
+               //DevExpress.ui.notify("Layout", "success", 600);
+           }
+           function openLayoutClick(e) {
+               // Create an input element dynamically
+               const input = document.createElement("input");
+               input.type = "file";
+               input.accept = "application/json";
+
+               // When a file is selected
+               input.addEventListener("change", function (event) {
+                   const file = event.target.files[0];
+                   if (!file) return;
+
+                   const reader = new FileReader();
+                   reader.onload = function (e) {
+                       try {
+                           const layout = JSON.parse(e.target.result);
+                           const grid = $("#dataGrid").dxDataGrid("instance");
+                           grid.state(layout);
+                           //DevExpress.ui.notify("Layout applied successfully!", "success", 600);
+                       } catch (error) {
+                           DevExpress.ui.notify("Invalid layout file!", "error", 600);
+                       }
+                   };
+
+                   reader.readAsText(file);
+               });
+
+               // Trigger the file input click event
+               input.click();
+           }
+
+           function loadGridState() {
+               var form = $('#formId').val();
+               // Call the API to get the grid state
+               $.ajax({
+                   url: `/api/Utility/LoadLayout`, // Adjust to your actual API endpoint
+                   method: 'GET',
+                   data: {
+                       form: form
+                   },
+                   success: function (response) {
+                       // Get the DataGrid instance
+                       var dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+                       // Load the state into the DataGrid
+                       if (response) {
+                           try {
+                               // Parse the JSON string from the file
+                               const layout = JSON.parse(response);
+
+                               // Restore the grid state
+                               dataGrid.state(layout);
+                           } catch (error) {
+                               console.error("Error parsing JSON:", error);
+                               alert("Failed to load layout. Please ensure the JSON is valid.");
+                           }
+                       }
+                   },
+                   error: function (xhr, status, error) {
+                       console.error("Error loading grid state:", error);
+                   }
+               });
+           }
+           function setDefaultLayoutClick(e) {
+               var grid = $("#dataGrid").dxDataGrid("instance");
+               var form = $('#formId').val();
+               var layout = grid.state();
+               const layoutJson = JSON.stringify(layout, null, 2);
+               console.log(layoutJson);
+
+               $.ajax({
+                   url: '/api/Utility/SaveLayout',  // API endpoint
+                   type: 'POST',
+                   data: {
+                       layout: layoutJson,
+                       form: form
+                   },
+                   success: function (data) {
+                       DevExpress.ui.notify("Layout saved successfully", "success", 2000);
+                   },
+                   error: function () {
+                       DevExpress.ui.notify("Error while saving data", "error", 2000);
+                   }
+               });
+           }
+           function resetLayoutClick(e) {
+               var grid = $("#dataGrid").dxDataGrid("instance");
+               var form = $('#formId').val();
+               $.ajax({
+                   url: '/api/Utility/SaveLayout',  // API endpoint
+                   type: 'POST',
+                   data: {
+                       layout: null,
+                       form: form
+                   },
+                   success: function (data) {
+                       DevExpress.ui.notify("Layout reset successfull", "success", 2000);
+                       grid.state({});
+                   },
+                   error: function () {
+                       DevExpress.ui.notify("Error while saving data", "error", 2000);
+                   }
+               });
+           }
+        
+          // Footer Group Pannel button click event
+        function toggleGroupPanel() {
+            var dataGrid = $("#dataGrid").dxDataGrid("instance");
+            var isVisible = dataGrid.option("groupPanel.visible");
+            dataGrid.option("groupPanel.visible", !isVisible);
+        }
+            function showColumnChooser() {
+            var dataGrid = $("#dataGrid").dxDataGrid("instance");
+            var isColumnChooserVisible = dataGrid.option("columnChooser.enabled");
+
+            if (isColumnChooserVisible) {
+                dataGrid.option("columnChooser.enabled", false); // Disable the column chooser
+            } else {
+                dataGrid.option("columnChooser.enabled", true); // Enable the column chooser
+                dataGrid.showColumnChooser(); // Show the column chooser
+            }
+        }
+         function ChangeRowHeight(newHeight) {
+            // Update the row height
+            $("#dataGrid .dx-data-row").css("height", newHeight + "px");
+            closeSubmenu();
+        }
+        function showSubmenu(e) {
+            e.event.stopPropagation();
+            var $submenu = $('#submenuContainer');
+            var $target = $(e.event.target).closest('.dx-item-content');
+            var offset = $target.offset();
+            var elementWidth = $target.outerWidth();
+
+            // Position submenu with a slight margin (e.g., 5px)
+            $submenu.css({
+                'width': 180,
+                'position': 'absolute',
+                'top': offset.top,
+                'left': offset.left + elementWidth + 5, // Add margin
+                'display': 'block'
+            });
+        }
+
+        function closeSubmenu() {
+            $("#submenuContainer").hide();
+        }
+             function addNewMaterialRequest(e) {
+            let url = ''; // Declare once
+            switch (e.itemData.text) {
+                case formatMessage('Add New Client Request'):
+                    url = `/${tenantName}/ERM/AddNewClientRequest`;
+                    break;
+                case formatMessage('Add New Store Request'):
+                    url = `/${tenantName}/ERM/MRAddNewStoreRequest`;
+                    break;
+                case formatMessage('Add New Project Request'):
+                    url = `/${tenantName}/ERM/MRAddNewProjectRequest`;
+                    break;
+                default:
+                    console.log("Clicked item: ", e.itemData.text);
+                    return;
+            }
+
+            window.location.href = url;
+        }
+                 async function handleCreditReportPrinting(e) {
+
+           debugger;
+
+        const itemText = e.itemData?.text;
+
+        let requestNo = $("#txtRequestNo").dxTextBox("instance").option("value");
+
+        if (!requestNo) {
+
+            alert("RequestNo  is required.");
+
+            return;
+
+        }
+
+        try {
+
+            const isApproved = await checkInvoiceApprovalStatus1(requestNo);
+
+            const watermarkText = isApproved ? "" : "Draft Copy";
+
+            let reportName = "";
+
+            switch (itemText) {
+
+                case "Preview Request":
+
+                        reportName = "MaterialRequestInventory";
+
+                    break;
+
+                case "Preview Request(With Expected Unit Price)":
+
+                    reportName = "MaterialPurcchaseRequestion";
+
+                    break;
+
+                default:
+
+                    alert("Invalid report format selected.");
+
+                    return;
+
+            }
+
+            const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&RequestNo=${encodeURIComponent(requestNo)}&skipPreview=true&watermark=${encodeURIComponent(watermarkText)}&isApproved=${isApproved}`;
+
+            window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+
+        } catch (error) {
+
+            console.error("Error checking approval status:", error);
+
+            alert("Failed to check invoice approval status.");
+
+        }
+
+    }
+
+    async function checkInvoiceApprovalStatus1(requestNo) {
+
+        try {
+
+            const response = await $.ajax({
+
+
+                url: `/api/AddNewClientRequest/GetRequestNoteApprovalStatus/${encodeURIComponent(requestNo)}`,
+
+                method: 'GET',
+
+                dataType: 'json',
+
+            });
+
+            return response?.isApproved ?? false;
+
+        } catch (error) {
+
+            console.error("Error fetching approval status:", error);
+
+            return false;
+
+        }
+
+    }
+
+</script>

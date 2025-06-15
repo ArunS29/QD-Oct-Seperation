@@ -331,10 +331,7 @@
 		padding: 20px;
 	}
 
-	/* .limited-footer .btn-container:not(:has(#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnCancel,#btnAttach,#btnUpload)) {
-		display: none !important;
-	}
- */
+
 	.playIcon {
 		display: none;
 	}
@@ -1429,7 +1426,7 @@
 						)
 		</div>
 
-@await Html.PartialAsync("/Pages/Shared/IMS/MaterialRequestFormFooter1.cshtml")
+@await Html.PartialAsync("/Pages/Shared/IMS/MaterialRequestFormFooter.cshtml")
 
 		@using (Html.DevExtreme().NamedTemplate("GetProjectContentTemplate"))
 		{
@@ -2491,19 +2488,7 @@
 	let dropDownInstance;
 	let vatListInstance;
 
-	// $(document).ready(function () {
-
-	// 	$(".limited-footer .btn-containerIvoiceEdit").each(function () {
-
-	// 		if (!$(this).find("#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnCancel,#btnAttach,#btnUpload").length) {
-
-	// 			$(this).remove();
-
-	// 		}
-
-	// 	});
-
-	// });
+	
 
 	//View e-Invoice
 	$(document).ready(function () {

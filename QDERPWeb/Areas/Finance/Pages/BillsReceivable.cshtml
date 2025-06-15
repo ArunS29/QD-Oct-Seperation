@@ -181,7 +181,13 @@
                 .Width(80); // Fixed width, change to auto for dynamic sizing
                 });
                 })
-            .Paging(p => p.PageSize(10))
+            .Paging(p => p.Enabled(true).PageSize(15))    // enable paging with 15 rows per page
+            .Pager(pager => pager
+            .Visible(true)                            // show pager UI (page numbers etc)
+            .ShowPageSizeSelector(true)              // allow user to change page size
+            .AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+            .ShowInfo(true)                          // show info like "Page 1 of 10"
+            )
             .AllowColumnReordering(true)
             .AllowColumnResizing(true)
             .ColumnFixing(fixing => fixing.Enabled(true))

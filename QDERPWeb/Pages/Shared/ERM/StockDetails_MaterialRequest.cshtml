@@ -1,0 +1,54 @@
+﻿@using DevExtreme.AspNet.Mvc
+@using DevExtreme.AspNet.Mvc.Builders
+@{
+    ViewBag.Title = "MaterialRequest Grid";
+}
+ 
+
+
+<style>
+
+</style>
+@(Html.DevExtreme().DropDownButton()
+    .ID("MaterialRequestDropdown")
+    .Text(new JS("formatMessage('Print')"))
+    .Icon("print")
+  .ElementAttr("style", "padding:10px")
+    .DisplayExpr("Text")
+    .KeyExpr("Text")
+    .ItemTemplate(@<text>
+    <div style="display: flex; align-items: center;">
+        <i class="dx-icon-<%- Icon %>" style="padding:10px;"></i>
+        <span><%- Text %></span>
+    </div>
+</text>)
+
+)
+
+
+<div class="dx-card " style="background-color:transparent; border:none;padding:10px;">
+
+
+    @(Html.DevExtreme().DataGrid()
+                .ID("MaterialRequestGrid")
+                .Height(620)
+                .ShowBorders(true)
+                .ShowColumnLines(true)
+                .ShowRowLines(true)
+                .RowAlternationEnabled(true)
+                .ColumnAutoWidth(true)
+                .Columns(columns =>
+                {
+            columns.Add().DataField("MRPNo").Caption(new JS("formatMessage('PO No')"));
+            columns.Add().DataField("RequstedNamedRef").Caption(new JS("formatMessage('Requsted Named Ref')")).DataType(GridColumnDataType.Date);
+            columns.Add().DataField("SupplierName").Caption(new JS("formatMessage('Supplier Name')"));
+            columns.Add().DataField("QtyRequested").Caption(new JS("formatMessage('Qty Requested')")).DataType(GridColumnDataType.Number);
+            columns.Add().DataField("UnitDesc").Caption(new JS("formatMessage('Unit Desc')"));
+            columns.Add().DataField("ExpectedUnitRate").Caption(new JS("formatMessage('Expected Unit Rate')"));
+            columns.Add().DataField("ProjectSubUnitName").Caption(new JS("formatMessage('Project Sub Unit Name')"));
+            columns.Add().DataField("PurchaseRequestStatus").Caption(new JS("formatMessage('Purchase Request Status')"));
+                })
+            
+              
+                )
+</div>

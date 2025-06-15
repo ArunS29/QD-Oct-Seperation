@@ -67,7 +67,7 @@
 </style>
 <div class="title">
     <div class="header-container">
-        <div id="LedgerDocuments" class="no-border-title"></div>
+        <div id="LedgerDocuments1" class="no-border-title"></div>
     </div>
 </div>
 <div class="my-3" style="max-width:2000px;">
@@ -94,7 +94,7 @@
                         @(Html.DevExtreme().DropDownBox()
                             .Label(new JS("formatMessage('Type of the Document Attached:')"))
                             .DataSource(d => d.WebApi()
-                            .Controller("LedgerDocuments")
+                            .Controller("LedgerDocuments1")
                             .LoadAction("GetDocumentTypes")
                             .LoadMode(DataSourceLoadMode.Raw)
                             .Key("DocumentTypeId")
@@ -265,7 +265,7 @@
                            .Caption(new JS("formatMessage('Document Type')"))
                             .Lookup(lookup => lookup
                             .DataSource(d => d.WebApi()
-                            .Controller("LedgerDocuments")
+                            .Controller("LedgerDocuments1")
                             .LoadAction("GetDocumentTypes")
                             .LoadMode(DataSourceLoadMode.Raw)
                             .Key("DocumentTypeId")
@@ -331,7 +331,7 @@
 
                 .ID("accountpaymentamount-datagrid")
                 .DataSource(d => d.WebApi()
-                .Controller("LedgerDocuments")
+                .Controller("LedgerDocuments1")
                 .LoadAction("GetDocumentTypes")
                 .LoadMode(DataSourceLoadMode.Raw)
                 .Key("DocumentTypeId")
@@ -371,7 +371,7 @@
     $(function () {
         // Trigger the AJAX request to get the new document number
         $.ajax({
-            url: "/api/LedgerDocuments/GetNewDocumentNo", // Your API endpoint
+            url: "/api/LedgerDocuments1/GetNewDocumentNo", // Your API endpoint
             type: 'GET',
             success: function (data) {
                 // Set the value in the DocumentNo TextBox once the new number is retrieved
@@ -436,7 +436,7 @@
         // Make the AJAX POST request
         $.ajax({
             type: "POST",
-            url: `/api/LedgerDocuments/AddDocumentsEntry?DocumentType=${encodeURIComponent(documentType)}`,
+            url: `/api/LedgerDocuments1/AddDocumentsEntry?DocumentType=${encodeURIComponent(documentType)}`,
             contentType: "application/json",
             data: JSON.stringify(VM),
             dataType: "json",
@@ -499,7 +499,7 @@
     function fetchNewDocumentNo() {
        
         $.ajax({
-            url: "/api/LedgerDocuments/GetNewDocumentNo", // Your API endpoint
+            url: "/api/LedgerDocuments1/GetNewDocumentNo", // Your API endpoint
             type: 'GET',
             success: function (data) {
                 // Set the value in the DocumentNo TextBox once the new number is retrieved
@@ -540,7 +540,7 @@
 
         // Send updated data to API
         $.ajax({
-            url: "/api/LedgerDocuments/UpdateDocumentEntries", // your Web API endpoint
+            url: "/api/LedgerDocuments1/UpdateDocumentEntries", // your Web API endpoint
             type: "POST",
             contentType: "application/json",
             data: JSON.stringify(allRows), // or selectedRows
@@ -587,7 +587,7 @@
         console.log("Key pressed:", event.key);
     }
              $(function () {
-                $("#LedgerDocuments").dxTextBox({
+                $("#LedgerDocuments1").dxTextBox({
                     text:formatMessage("Ledger Documents"),
                     readOnly: true,
                     onContentReady: function(e) {
