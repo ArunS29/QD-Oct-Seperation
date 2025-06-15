@@ -1,4 +1,4 @@
-@page
+﻿@page
 @model QD.ERP.Web.Areas.Finance.Pages.IndexModel
 @using Newtonsoft.Json
 @{
@@ -365,7 +365,7 @@
         //     }
         // });
 
-    
+
 
     // Handle click on "Total Client Outstanding" card
     $("#totalClientOutstandingCard").click(function () {
@@ -437,7 +437,7 @@
         const chart = new google.visualization.PieChart(document.getElementById('myChart2'));
         chart.draw(data, options);
     }
- 
+
     $(function () {
         const textBoxConfigs = [
             { id: "OutstandingDetails", text: "Outstanding Details", class: "dx-textbox-heading" },
