@@ -59,10 +59,6 @@
 		border-radius: 8px;
 		overflow: hidden;
 	}
-
-	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddReport123,#btnColumnChooser,#btnPurchaseEditDetails,#btnAddMaterialRequest)) {
-		display: none !important;
-	}
 	#overlay-frame {
 		width: 100%;
 		height: 100%;
@@ -222,12 +218,7 @@
 </div>
 
 
-<div class="Head">
-	<div class="limited-footer">
-		@await Html.PartialAsync("InventoryModuleFooter")
-	</div>
-</div>
-
+@await Html.PartialAsync("/Pages/Shared/IMS/MaterialRequestFooter.cshtml")
 
 <div class="context-menu" id="contextMenu">
 	<div class="context-menu-item">
@@ -433,7 +424,7 @@
 		.Width("99%")
 		.WordWrapEnabled(true)
 		//.OnCellClick("function(e) {handleCellClick(e);}")
-		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+		.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
 	 .Editing(editing => editing
@@ -611,15 +602,6 @@
 
 		return [day, strmonth, year].join('-');
 	}
-	$(document).ready(function () {
-		$(".limited-footer .btn-container").each(function () {
-			if (!$(this).find("#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddReport123,#btnColumnChooser,#btnPurchaseEditDetails,#btnAddMaterialRequest").length) {
-				$(this).remove();
-			}
-		});
-	});
-
-
 
 	function onContextMenuPreparing(e) {
 		if (e.target === "content" && e.row) {

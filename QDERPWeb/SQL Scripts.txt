@@ -1,0 +1,64 @@
+﻿ALTER TABLE tbl700_03ProjectDocuments 
+
+ADD AzurePath VARCHAR(MAX) NULL; 
+
+
+alter table tbl201vouchermaster 
+
+add Currencyid int  
+
+update tbl201vouchermaster 
+
+set currencyid=1 
+
+  
+
+
+ 
+
+update tbl201Vouchermaster  
+
+ set basecurrencyid=1  
+
+   
+
+ALTER TABLE tbl201Vouchermaster 
+
+ADD CurrencyRate DECIMAL(18, 2); 
+
+  
+
+alter table tbl201vouchermaster 
+
+add basecurrencyid int; 
+
+  
+
+select * from tbl201Vouchermaster 
+
+
+alter table tbl20113ChequeMaster  
+
+add Currencyid int      
+
+update tbl20113ChequeMaster   
+
+set currencyid=1  
+
+
+ALTER TABLE tbl20113ChequeMaster   
+
+ADD CurrencyRate DECIMAL(18, 2);   
+
+  
+
+alter table tbl20113ChequeMaster   
+
+add basecurrencyid int;  
+
+ 
+
+update tbl20113ChequeMaster    
+
+set basecurrencyid=1,  currencyid=1 
+

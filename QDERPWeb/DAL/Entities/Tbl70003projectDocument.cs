@@ -26,4 +26,7 @@ public partial class Tbl70003projectDocument
     public byte? DocumentStatus { get; set; }
 
     public string DocumentStatusRemarks { get; set; }
+    public byte[] DocumentFile { get; set; }
+    public string AzurePath { get; set; }
+
 }

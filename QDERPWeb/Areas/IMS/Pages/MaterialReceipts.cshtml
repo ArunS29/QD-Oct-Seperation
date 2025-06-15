@@ -27,10 +27,6 @@
 		overflow: hidden;
 	}
 
-	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnColumnChooser,#btnMaterialReceiptDetails,#btnAddNewReceipt)) {
-		display: none !important
-	}
-
 	#overlay-frame {
 		width: 100%;
 		height: 100%;
@@ -172,14 +168,7 @@
 		<div id="MaterialReceipts" class="no-border-input"></div>
 	</div>
 </div>
-
-
-<div class="Head">
-	<div class="limited-footer">
-		@await Html.PartialAsync("InventoryModuleFooter")
-	</div>
-</div>
-
+@await Html.PartialAsync("/Pages/Shared/IMS/MaterialReceiptFooter.cshtml")
 <div class="dx-fieldset horizontal-container">
 	@(Html.DevExtreme().DateBox()
 		.ID("frmdateBox")
@@ -282,7 +271,7 @@
 		.Width("98%")
 		.WordWrapEnabled(true)
 		.OnCellClick("function(e) {handleCellClick(e);}")
-		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+		.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
 		.ColumnFixing(fixing => fixing.Enabled(true))

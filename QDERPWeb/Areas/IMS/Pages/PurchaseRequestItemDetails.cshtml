@@ -161,10 +161,6 @@
 		width: 100%;
 		overflow: hidden;
 	}
-
-	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnColumnChooser)) {
-		display: none !important
-	}
 </style>
 
 <input id="formId" value="frm201LedgerView" type="hidden" />
@@ -175,11 +171,7 @@
 </div>
 
 
-<div class="Head">
-	<div class="limited-footer">
-		@await Html.PartialAsync("InventoryModuleFooter")
-	</div>
-</div>
+@await Html.PartialAsync("/Pages/Shared/IMS/DetailsFooter.cshtml")
 
 <div class="dx-fieldset horizontal-container">
 	@(Html.DevExtreme().DateBox()
@@ -227,7 +219,6 @@
 			items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
 		})
 		)
-
 </div>
 <div class="dx-field ledgerResult">
 	@(
@@ -237,7 +228,6 @@
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
-
 				columns.AddFor(m => m.Mprno).Caption(new JS("formatMessage('MPRNo')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				columns.AddFor(m => m.Mprno).Caption(new JS("formatMessage('MPRNo')")).Alignment(HorizontalAlignment.Center).Visible(true).GroupIndex(0);
 				columns.AddFor(m => m.Mprdate).Caption(new JS("formatMessage('MPR Date')")).Alignment(HorizontalAlignment.Center).Visible(true).Format("dd-MMM-yyyy");

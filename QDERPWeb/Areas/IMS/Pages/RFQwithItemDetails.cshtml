@@ -27,11 +27,6 @@
 		border-radius: 8px;
 		overflow: hidden;
 	}
-
-	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel)) {
-		display: none !important
-	}
-
 	#overlay-frame {
 		width: 100%;
 		height: 100%;
@@ -173,14 +168,7 @@
 		<div id="RequestforQuotationList" class="no-border-input"></div>
 	</div>
 </div>
-
-
-<div class="Head">
-	<div class="limited-footer">
-		@await Html.PartialAsync("InventoryModuleFooter")
-	</div>
-</div>
-
+@await Html.PartialAsync("/Pages/Shared/IMS/DetailsFooter.cshtml")
 <div class="dx-fieldset horizontal-container">
 	@(Html.DevExtreme().DateBox()
 		.ID("frmdateBox")

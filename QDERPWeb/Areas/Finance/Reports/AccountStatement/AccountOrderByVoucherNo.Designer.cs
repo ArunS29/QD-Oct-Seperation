@@ -45,7 +45,6 @@
             this.xrLabel10 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel12 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel9 = new DevExpress.XtraReports.UI.XRLabel();
-            this.xrLabel5 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrPageInfo2 = new DevExpress.XtraReports.UI.XRPageInfo();
             this.xrLabel4 = new DevExpress.XtraReports.UI.XRLabel();
             this.ReportHeader = new DevExpress.XtraReports.UI.ReportHeaderBand();
@@ -97,6 +96,7 @@
             this.xrTableCell6 = new DevExpress.XtraReports.UI.XRTableCell();
             this.xrTableCell7 = new DevExpress.XtraReports.UI.XRTableCell();
             this.sqlDataSource2 = new DevExpress.DataAccess.Sql.SqlDataSource(this.components);
+            this.xrLabel5 = new DevExpress.XtraReports.UI.XRLabel();
             ((System.ComponentModel.ISupportInitialize)(this.xrTable1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             // 
@@ -108,13 +108,13 @@
             // BottomMargin
             // 
             this.BottomMargin.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
+            this.xrLabel5,
             this.xrLabel10,
             this.xrLabel12,
             this.xrLabel9,
-            this.xrLabel5,
             this.xrPageInfo2,
             this.xrLabel4});
-            this.BottomMargin.HeightF = 54.66677F;
+            this.BottomMargin.HeightF = 56.66689F;
             this.BottomMargin.Name = "BottomMargin";
             // 
             // xrLabel10
@@ -183,19 +183,6 @@
             this.xrLabel9.Summary = xrSummary2;
             this.xrLabel9.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
             this.xrLabel9.TextFormatString = "{0:N2}";
-            // 
-            // xrLabel5
-            // 
-            this.xrLabel5.BorderColor = System.Drawing.Color.Transparent;
-            this.xrLabel5.Font = new DevExpress.Drawing.DXFont("Arial", 8F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel5.ForeColor = System.Drawing.Color.DarkGray;
-            this.xrLabel5.LocationFloat = new DevExpress.Utils.PointFloat(5F, 33.66689F);
-            this.xrLabel5.Name = "xrLabel5";
-            this.xrLabel5.SizeF = new System.Drawing.SizeF(270.3535F, 20.66685F);
-            this.xrLabel5.StylePriority.UseBorderColor = false;
-            this.xrLabel5.StylePriority.UseFont = false;
-            this.xrLabel5.StylePriority.UseForeColor = false;
-            this.xrLabel5.Text = "Quickdice ERP Solutions";
             // 
             // xrPageInfo2
             // 
@@ -960,6 +947,22 @@
             storedProcQuery2});
             this.sqlDataSource2.ResultSchemaSerializable = resources.GetString("sqlDataSource2.ResultSchemaSerializable");
             // 
+            // xrLabel5
+            // 
+            this.xrLabel5.BackColor = System.Drawing.Color.Transparent;
+            this.xrLabel5.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Parameters.CompanyName]\n\n\n")});
+            this.xrLabel5.Font = new DevExpress.Drawing.DXFont("Calibri", 10F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
+            this.xrLabel5.ForeColor = System.Drawing.Color.DarkGray;
+            this.xrLabel5.LocationFloat = new DevExpress.Utils.PointFloat(0F, 33.66689F);
+            this.xrLabel5.Multiline = true;
+            this.xrLabel5.Name = "xrLabel5";
+            this.xrLabel5.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
+            this.xrLabel5.SizeF = new System.Drawing.SizeF(289.4098F, 23F);
+            this.xrLabel5.StylePriority.UseBackColor = false;
+            this.xrLabel5.StylePriority.UseFont = false;
+            this.xrLabel5.StylePriority.UseForeColor = false;
+            // 
             // AccountOrderByVoucherNo
             // 
             this.Bands.AddRange(new DevExpress.XtraReports.UI.Band[] {
@@ -977,7 +980,7 @@
             this.DataMember = "StProAccountLedger";
             this.DataSource = this.sqlDataSource2;
             this.Font = new DevExpress.Drawing.DXFont("Arial", 9.75F);
-            this.Margins = new DevExpress.Drawing.DXMargins(25F, 25F, 25F, 54.66677F);
+            this.Margins = new DevExpress.Drawing.DXMargins(25F, 25F, 25F, 56.66689F);
             this.PageHeight = 1169;
             this.PageWidth = 920;
             this.PaperKind = DevExpress.Drawing.Printing.DXPaperKind.Custom;
@@ -1017,7 +1020,6 @@
         private DevExpress.XtraReports.UI.XRLabel xrLabel6;
         private DevExpress.XtraReports.UI.XRLabel xrLabel4;
         private DevExpress.XtraReports.UI.XRPageInfo xrPageInfo2;
-        private DevExpress.XtraReports.UI.XRLabel xrLabel5;
         private DevExpress.XtraReports.UI.XRLabel xrLabel9;
         private DevExpress.XtraReports.UI.XRLabel xrLabel12;
         private DevExpress.XtraReports.UI.CalculatedField calculatedField1;
@@ -1053,5 +1055,6 @@
         private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox5;
         private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox4;
         private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox6;
+        private DevExpress.XtraReports.UI.XRLabel xrLabel5;
     }
 }

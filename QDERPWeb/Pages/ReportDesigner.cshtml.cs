@@ -212,12 +212,12 @@ namespace QD.ERP.Web.Pages
                 case "IncomeStatements":
                     if (string.IsNullOrEmpty(accountGroup))
                         return BadRequest("Account group is required for subGroup report.");
-                    Report = new IncomeStatements(accountGroup, frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                    Report = new IncomeStatements(accountGroup, frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper,username);
                     break;
                 case "incomeStatementsBymonth":
                     if (string.IsNullOrEmpty(accountGroup))
                         return BadRequest("Account group is required for subGroup report.");
-                    Report = new incomeStatements_Bymonth_(accountGroup, frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                    Report = new incomeStatements_Bymonth_(accountGroup, frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper,username);
                     break;
                 case "balnceSheet":
                     if (string.IsNullOrEmpty(accountGroup))

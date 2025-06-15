@@ -162,9 +162,6 @@
 		overflow: hidden;
 	}
 
-	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnColumnChooser,#btnAddNewQuotation,#btnQuotationDetails)) {
-		display: none !important
-	}
 </style>
 
 <input id="formId" value="frm201LedgerView" type="hidden" />
@@ -175,11 +172,7 @@
 </div>
 
 
-<div class="Head">
-	<div class="limited-footer">
-		@await Html.PartialAsync("InventoryModuleFooter")
-	</div>
-</div>
+@await Html.PartialAsync("/Pages/Shared/IMS/QuotationFooter.cshtml")
 
 <div class="dx-fieldset horizontal-container">
 	@(Html.DevExtreme().DateBox()
@@ -292,7 +285,7 @@
 		.Width("98%")
 		.WordWrapEnabled(true)
 		.OnCellClick("function(e) {handleCellClick(e);}")
-		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+		.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
 		.ColumnFixing(fixing => fixing.Enabled(true))

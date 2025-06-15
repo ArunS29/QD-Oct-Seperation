@@ -3,6 +3,7 @@
 @using DevExtreme.AspNet.Mvc
 @{
     ViewData["Title"] = "Asset View";
+    ViewContext.RouteData.Values["area"] = "Finance";
 }
 
 
@@ -899,16 +900,23 @@
                         Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl20111AssetMaintenanceMaster>()
 
                         .ID("maintenanceGrid")
-                        .RemoteOperations(false)
-                    .DataSource(ds => ds.Mvc()
-                    .Controller("AssetView")
-                    .LoadAction("GetMaintenance"))
                     .KeyExpr("MaintenanceRefNo")
+                    .RemoteOperations(false)
+
+                    .DataSource(new JS("maintenanceDataSource") )
                         .Columns(columns =>
                         {
                        
-                         columns.AddFor(m => m.MaintenanceRefNo).Caption("Maintenance Id");
-                          columns.AddFor(m => m.MaintenanceTypeId).Caption("Maintenance Type");
+                         columns.AddFor(m => m.MaintenanceRefNo).Visible(false);
+                    columns.AddFor(m => m.MaintenanceTypeId)
+                    .DataField("MaintenanceTypeId")
+                    .Caption("Maintenance Type")
+                    .Lookup(lookup => lookup
+                    .DataSource(ds => ds.Mvc().Controller("AssetView").LoadAction("GetEditMaintenance"))
+                    .ValueExpr("AssetMaintenanceTypeId")
+                    .DisplayExpr("AssetMaintenanceType")
+                    );
+
                         columns.AddFor(m => m.MaintenanceReading).Caption("Maintenance Reading");
                         columns.AddFor(m => m.MaintenanceDate).Caption("Maintenance Scheduled On");
                         columns.AddFor(m => m.ReminderDate).Caption("Reminder Date");
@@ -929,9 +937,43 @@
                         .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
                         .ShowBorders(true)
                         .Width("100%")
+                    .Editing(editing => editing
+                    .Mode(GridEditMode.Cell)
+                    .AllowUpdating(true) // <-- MUST be here
+                    .AllowDeleting(false)
+                    .UseIcons(true)
+                    )
+
                     .OnContextMenuPreparing("onContextMenuPreparing")
+                   
+                    .OnRowUpdated("onRowUpdated")
+
                         )
                     </div>
+                @section Scripts {
+                <script>
+                    const maintenanceDataSource = new DevExpress.data.CustomStore({
+                        key: "MaintenanceRefNo",
+                        load: () => $.getJSON("/api/AssetView/GetMaintenance"),
+                        update: (key, values) => {
+                            // If you want to send full row, fetch original first (optional)
+                            const grid = $("#maintenanceGrid").dxDataGrid("instance");
+                            const originalData = grid.getDataSource().items().find(x => x.MaintenanceRefNo === key);
+
+                            const merged = Object.assign({}, originalData, values); // merge
+
+                            merged.MaintenanceRefNo = key;
+
+                            return $.ajax({
+                                url: "/api/AssetView/UpdateMaintenanceType",
+                                method: "POST",
+                                contentType: "application/json",
+                                data: JSON.stringify(merged)
+                            });
+                        }
+                    });
+                </script>
+                }
 
 
 
@@ -1016,6 +1058,55 @@
                 })
                         )
 }
+
+
+@* Cell Template *@
+<script type="text/html" id="maintenanceTypeCellTemplate">
+    <%- data.MaintenanceType ? data.MaintenanceType : " " %>
+</script>
+
+<script type="text/html" id="maintenanceTypeEditCellTemplate">
+        <div id="maintenanceTypeDropDownBox_<%- data.MaintenanceRefNo %>"></div>
+        <script type="text/javascript">
+    (function () {
+        var elementId = "maintenanceTypeDropDownBox_<%- data.MaintenanceRefNo %>";
+        var value = <%- data.MaintenanceTypeId != null ? JSON.stringify(data.MaintenanceTypeId) : 'null' %>;
+
+        $("#" + elementId).dxDropDownBox({
+            dataSource: DevExpress.data.AspNet.createStore({
+                key: "AssetMaintenanceTypeId",
+                loadUrl: "/api/AssetView/GetEditMaintenance"
+            }),
+            value: value,
+            valueExpr: "AssetMaintenanceTypeId",
+            displayExpr: "AssetMaintenanceType",
+            showClearButton: false,
+            placeholder: "Select AccountHead",
+            dropDownOptions: { width: 800 },
+            contentTemplate: function (e) {
+                return $("<div>").dxDataGrid({
+                    dataSource: e.component.option("dataSource"),
+                    columns: [{ dataField: "AssetMaintenanceType" }],
+                    selection: { mode: "single" },
+                    selectedRowKeys: [e.component.option("value")],
+                    onSelectionChanged: function (selectedItems) {
+                        debugger;
+                        e.component.option("value", selectedItems.selectedRowKeys[0] || null);
+                    },
+                    filterRow: { visible: true },
+                    height: 345,
+                    paging: { pageSize: 15 },
+                    hoverStateEnabled: true,
+                    showBorders: true,
+                    scrolling: { mode: "virtual" }
+                });
+            }
+        });
+    })();
+</script>
+</script>
+
+
 
 <script type="text/html" id="deleteTemplate">
     <a href="javascript:void(0);" onclick="deleteRow(this)">Delete</a>
@@ -1172,45 +1263,55 @@
             columnAutoWidth: true,
             showBorders: true
         }).dxDataGrid("instance");
+        const maintenanceDataSource = new DevExpress.data.CustomStore({
+            key: "MaintenanceRefNo", // ✅ MUST match your entity PK
+            load: function () {
+                return $.getJSON("/api/AssetView/GetMaintenance");
+            },
+            update: function (key, values) {
+                values.MaintenanceRefNo = key; // ✅ include primary key
+                return $.ajax({
+                    url: "/api/AssetView/UpdateMaintenanceType",
+                    method: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(values)
+                });
+            }
+        });
     });
 
     function addScheduledTypeRow() {
-        var readingBox = $("#txtMaintenanceReading").dxNumberBox("instance");
-        var typeBox = $("#ddlMaintenanceTypes").dxSelectBox("instance");
+        const ledgerNo = $("#txtacctledno").dxTextBox("instance").option("value");
+        const maintenanceReading = $("#txtMaintenanceReading").dxNumberBox("instance").option("value");
 
-        if (!readingBox || !typeBox) {
-            console.error("dxNumberBox or dxSelectBox not initialized properly.");
+        if (!ledgerNo) {
+            DevExpress.ui.notify("Asset Ledger No is required", "error", 3000);
             return;
         }
 
-        var maintenanceReading = readingBox.option("value");
-        var maintenanceTypeId = typeBox.option("value"); // GSCode
-        var maintenanceTypeText = typeBox.option("text");
-
-   
-
-        var today = new Date();
-        var formattedDate = today.toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric"
-        });
-
-        var newRow = {
-            SNo: rowData.length + 1,
-            MaintenanceRefNo: "",
-            MaintenanceTypeId: maintenanceTypeId,
+        const newRow = {
+            AssetLedgerNo: ledgerNo,
+            MaintenanceTypeId: 1,
             MaintenanceReading: maintenanceReading,
-            MaintenanceDate: formattedDate,
-            ReminderDate: "",
-            MaintenanceRemarks: "",
+            MaintenanceDate: new Date().toISOString(),
+            ReminderDate: new Date().toISOString(),
             IsMaintenanceDone: false,
-            ActualMaintenanceDoneOn: ""
+            ActualMaintenanceDoneOn: null
         };
 
-        rowData.push(newRow);
-        dataGridInstance.option("dataSource", rowData);
-        dataGridInstance.refresh();
+        $.ajax({
+            url: "/api/AssetView/AddMaintenanceType",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(newRow),
+            success: function () {
+                DevExpress.ui.notify("Scheduled Maintenance Added", "success", 2000);
+                $("#maintenanceGrid").dxDataGrid("instance").refresh();
+            },
+            error: function () {
+                DevExpress.ui.notify("Failed to add Scheduled Maintenance", "error", 3000);
+            }
+        });
     }
 
 
@@ -1876,6 +1977,79 @@ function onDeleteMaintenanceSchedule(MaintenanceRefNo) {
     });
 }
 
+    function gridmaintenance_valueChanged(e) {
+        var $dataGrid = $("#maintenanceGrid");
 
+        if ($dataGrid.length) {
+            var dataGrid = $dataGrid.dxDataGrid("instance");
+            dataGrid.selectRows(e.value, false);
+        }
 
+        if (e.value) {
+            let grid = $("#maintenanceGrid").dxDataGrid("instance");
+            let rowIndex = e.element.closest("tr").index();
+            let rowData = grid.getVisibleRows()[rowIndex].data;
+
+            let costAllocationDropdownGrid = $("#accountDropDownBoxeditGrid").dxDataGrid("instance");
+            let selectedRowData = costAllocationDropdownGrid.getSelectedRowsData()[0];
+
+            if (selectedRowData) {
+                rowData.MaintenanceTypeId = selectedRowData.AssetMaintenanceTypeId;
+                rowData.MaintenanceType = selectedRowData.AssetMaintenanceType; // Update AccountHead
+                grid.cellValue(rowIndex, "MaintenanceTypeId", selectedRowData.AssetMaintenanceTypeId);
+                grid.cellValue(rowIndex, "MaintenanceType", selectedRowData.AssetMaintenanceType); // Reflect change
+            }
+        }
+
+        e.component.option("opened", false);
+    }
+
+    function onEditorPreparing(e) {
+        debugger;
+        if (e.parentType === "dataRow" && e.dataField === "MaintenanceType") {
+            e.editorType = "dxDropDownBox";
+            e.editorOptions = {
+                value: e.value,
+                valueExpr: "AssetMaintenanceTypeId",
+                displayExpr: "AssetMaintenanceType",
+                dataSource: DevExpress.data.AspNet.createStore({
+                    key: "AssetMaintenanceTypeId",
+                    loadUrl: "/api/AssetView/GetEditMaintenance"
+                }),
+                contentTemplate: function (e, container) {
+                    $("<div>")
+                        .dxList({
+                            dataSource: DevExpress.data.AspNet.createStore({
+                                key: "AssetMaintenanceTypeId",
+                                loadUrl: "/api/AssetView/GetEditMaintenance"
+                            }),
+                            selectionMode: "single",
+                            selectedItemKeys: [e.component.option("value")],
+                            onItemClick: function (args) {
+                                e.component.option("value", args.itemData.AssetMaintenanceTypeId);
+                                e.component.close();
+                            },
+                            keyExpr: "AssetMaintenanceTypeId",
+                            displayExpr: "AssetMaintenanceType"
+                        }).appendTo(container);
+                }
+            };
+        }
+    }
+
+    function onRowUpdated(e) {
+        debugger;
+        const merged = Object.assign({}, e.oldData, e.newData);
+        e.cancel = true;
+
+        $.ajax({
+            url: "/api/AssetView/UpdateMaintenanceType",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(merged)
+        }).done(() => {
+            DevExpress.ui.notify("Updated", "success", 2000);
+            $("#maintenanceGrid").dxDataGrid("instance").refresh();
+        });
+    }
 </script>

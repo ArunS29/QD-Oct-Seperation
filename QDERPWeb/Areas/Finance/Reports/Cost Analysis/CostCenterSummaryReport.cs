@@ -72,9 +72,9 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis
             AddOrUpdateParameter("CompanyAddress", companyAddress ?? "", typeof(string));
             AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddressAr", companyAddressAr ?? "", typeof(string));
-            AddOrUpdateParameter("userName", username ?? "", typeof(string), false);
-            if (FindControl("xrLabeluserName", true) is XRLabel userLabel)
-                userLabel.Text = username;
+            AddOrUpdateParameter("UserName", username ?? "", typeof(string), false);
+            if (FindControl("xrLabelUserName", true) is XRLabel userNameLabel)
+                userNameLabel.Text = username;
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
 

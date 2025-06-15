@@ -155,7 +155,7 @@
 		background: #fff;
 		border-radius: 8px;
 		box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-		width: 200px;
+		width: 20%;
 		display: none;
 		flex-direction: column;
 		padding: 5px 0;
@@ -170,6 +170,7 @@
 		cursor: pointer;
 		transition: background 0.2s ease-in-out;
 		color: #333;
+		width: 110%;
 	}
 
 		.context-menu-item i {
@@ -487,8 +488,12 @@
 		.AllowColumnResizing(true)
 		.ColumnFixing(fixing => fixing.Enabled(true))
 		.HeaderFilter(filter => filter.Visible(false))
-		.Paging(p => p.Enabled(false))
-		.Pager(pager => pager.Visible(false))
+		.Paging(p => p.Enabled(true).PageSize(15))    // enable paging with 15 rows per page
+		.Pager(pager => pager
+		.Visible(true)                            // show pager UI (page numbers etc)
+		.ShowPageSizeSelector(true)              // allow user to change page size
+		.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+		.ShowInfo(true))
 		.Grouping(grouping => grouping.AutoExpandAll(true))
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))

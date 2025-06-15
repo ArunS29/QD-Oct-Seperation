@@ -26,11 +26,21 @@
     <label id="Seletthestoretoissueitem" class="no-border-input" style="font-weight:100 bold; width: 220px; "></label>
 
     @(Html.DevExtreme().DropDownBox()
-            .ID("storeSelectBox")
-            .DisplayExpr("Name")
-            .ValueExpr("ID")
+            .ID("storeBox")
+        .ValueExpr("StoreId")
+        .DisplayExpr("StoreName")
+        .DataSource(ds => ds
+        .Mvc()
+        .Controller("SalesOrders")
+        .LoadAction("GetStoreToIssueItem")
+        .LoadMode(DataSourceLoadMode.Raw)
+        .Key("StoreId")
+        ).DropDownOptions(options => options.Width(450))
+
             .Value(1)
-            .Width(250))
+            .Width(250)
+        .ContentTemplate(new TemplateName("StoreToIssueItemDropDownTemplate")))
+    
 
     @(Html.DevExtreme().Button()
             .ID("prepareDeliveryNoteBtn")
@@ -45,6 +55,7 @@
         .ShowBorders(true)
         .ColumnAutoWidth(true)
         .Height(350)
+
         .Selection(s => s.Mode(SelectionMode.Multiple).ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always))
         .Columns(columns =>
         {
@@ -63,7 +74,30 @@
         }))
 </div>
 <div id="pivotGridContainer" style="margin-top: 20px; padding:20px;"></div>
-
+@using (Html.DevExtreme().NamedTemplate("StoreToIssueItemDropDownTemplate")) // ✅ Corrected name
+{
+    @(Html.DevExtreme().DataGrid()
+                        .ID("StoreToIssueItemDropDown")
+                         .DataSource(ds => ds
+                         .Mvc()
+                         .Controller("SalesOrders")
+                          .LoadAction("GetStoreToIssueItem")
+                         .LoadMode(DataSourceLoadMode.Raw)
+                         .Key("StoreId")
+                         )
+                        .Height(300)
+                        .ShowBorders(true)
+                        .FilterRow(f => f.Visible(true))
+                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                        .Selection(s => s.Mode(SelectionMode.Single))
+                        .Columns(columns =>
+                        {
+                                columns.Add().DataField("StoreId").Caption("Store Id");
+                                columns.Add().DataField("StoreName").Caption("Store Name");
+                        })
+                            .OnSelectionChanged("StoretoIssueItems")
+                    )
+}
 <script>
 
 
@@ -82,7 +116,20 @@
                     { dataField: "Quantity", caption: "Oredered UOM", area: "data", dataType: "number", summaryType: "sum" },
                     { dataField: "Quantity", caption: "Oredered Qty", area: "data", dataType: "number", summaryType: "sum" },
                     { dataField: "Quantity", caption: "Issd Qty", area: "data", dataType: "number", summaryType: "sum" },
-                    { dataField: "Quantity", caption: "Balance ", area: "data", dataType: "number", summaryType: "sum" }
+                    { dataField: "Storecode", caption: "Store Code", area: "data", dataType: "number", summaryType: "sum" },
+                    { dataField: "Quantity1", caption: "Balance ", area: "data", dataType: "number", summaryType: "sum" }
+                    // { dataField: "SalesOrderNo", caption: "Sales order No ", area: "data", dataType: "number", summaryType: "sum" }
+                    // { dataField: "UnitRateMethod", caption: "Unit Rate Method ", area: "data", dataType: "number", summaryType: "sum" }
+                    // { dataField: "GsgroupName", caption: "Gs group Name ", area: "data", dataType: "number", summaryType: "sum" }
+                    // { dataField: "ItemPartNo", caption: "Item Part No ", area: "data", dataType: "number", summaryType: "sum" }
+                    // { dataField: "StockClassification", caption: "Stock Classification ", area: "data", dataType: "number", summaryType: "sum" }
+                    // { dataField: "UnitDesc", caption: "Unit Desc ", area: "data", dataType: "number", summaryType: "sum" }
+                    // { dataField: "OrderedQty", caption: "Ordered Qty ", area: "data", dataType: "number", summaryType: "sum" }
+                    // { dataField: "TotalOrderedQty", caption: "Total Ordered Qty ", area: "data", dataType: "number", summaryType: "sum" }
+                    // { dataField: "TotalIssdQty", caption: "Total Issd Qty", area: "data", dataType: "number", summaryType: "sum" }
+                    // { dataField: "BalanceToDeliver", caption: "Balance To Deliver", area: "data", dataType: "number", summaryType: "sum" }
+                    // { dataField: "CurrentyQty", caption: "Current Qty", area: "data", dataType: "number", summaryType: "sum" }
+                    // { dataField: "BalanceToDeliver", caption: "BalanceToDeliver", area: "data", dataType: "number", summaryType: "sum" }
                 ]
             },
 
@@ -139,4 +186,17 @@
 
             });
          });
+         //Costcenter
+        function StoretoIssueItems(e) {
+        const selected = e.selectedRowsData[0];
+        if (selected) {
+            const dropDownBox = $("#storeBox").dxDropDownBox("instance");
+            if (dropDownBox) {
+                dropDownBox.option("value", selected.StoreId);
+                dropDownBox.close();
+            } else {
+                console.error("DropDownBox instance not found.");
+            }
+        }
+    }
 </script>

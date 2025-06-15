@@ -88,13 +88,13 @@ namespace QD.ERP.Web.Areas.VAT.Reports.Inventory_Reports
             if (dt.Rows.Count == 0)
             {
                 this.DataSource = null;
-                CreateNoDataLabel();
+               
             }
             else
             {
                 this.DataSource = dt;
                 this.DataMember = "";
-                SetWatermark();
+               
             }
         }
 

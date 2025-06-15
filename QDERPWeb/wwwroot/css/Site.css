@@ -311,3 +311,200 @@ body {
     text-align: center;
     width: 220px;
 }
+
+
+/*IMS footer Styles*/
+
+<style type="text/css" >
+#dataGrid .dx-datagrid-headers .dx-datagrid-action {
+    text-align: center !important;
+}
+
+#dataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
+    text-align: center !important;
+}
+/* Button Styling */
+.dx-button {
+    background-color: #909ead00 !important;
+    border: 1px solid #d6e4f0 !important;
+    border-radius: 4px !important;
+    padding: 6px 12px !important; /* Reduced button padding */
+    font-size: 14px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+    transition: all 0.2s ease-in-out !important;
+    height: 39px !important; /* Fixed height */
+}
+
+    /* Hover Effect for Button */
+    .dx-button:hover {
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important; /* Slightly reduced hover effect */
+        border-color: #86b7fe !important; /* Highlight border */
+    }
+
+.dx-icon {
+    font-size: 20px !important; /* Adjust size if needed */
+    color: gray !important; /* Adjust color if needed */
+}
+
+.dx-button-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dx-dropdownbutton .dx-button-content {
+    padding: 0 !important;
+}
+
+/* .modalTitle{ */
+/*     display:none; */
+/* } */
+.horizontal-container {
+    display: flex;
+    gap: 10px; /* Adds spacing between buttons */
+    justify-content: start; /* Aligns buttons to the left */
+    align-items: center; /* Vertically centers the buttons */
+    margin: 15px;
+    margin-top: 0px;
+}
+
+.button-alignment-down {
+    margin-top: 23px;
+}
+
+.button-group {
+    margin-left: 1px !important;
+}
+
+.dx-datagrid .dx-row {
+    margin-bottom: 50px;
+}
+/* Custom styles for context menu */
+.context-menu {
+    display: none;
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+.context-menu-item {
+    padding: 0px, 15px,10px 15px;
+    cursor: pointer;
+}
+
+.ledgerResult {
+    margin: 15px !important;
+}
+
+#rowHeightMenu {
+    position: absolute;
+    top: 100px; /* Adjust positioning as per your design */
+    left: 300px; /* Adjust positioning as per your design */
+    display: none; /* Keep it hidden until needed */
+}
+
+
+.btn-container {
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+}
+
+    /* Initially hide the button text and set a fixed small width */
+    .btn-container .dx-button {
+        width: 40px !important; /* Small width for icons */
+        transition: width 0.3s ease-in-out;
+    }
+
+    /* Show full text when hovered */
+    .btn-container:hover .dx-button {
+        width: 200px !important; /* Expand to fit text */
+    }
+
+    /* Initially hide text */
+    .btn-container .dx-button .dx-button-text {
+        display: none;
+    }
+
+    /* Show text on hover */
+    .btn-container:hover .dx-button .dx-button-text {
+        display: inline-block;
+    }
+
+    /* Ensure dropdown button behaves similarly */
+    .btn-container .dx-dropdownbutton {
+        width: 55px !important;
+        transition: width 0.3s ease-in-out;
+    }
+
+    .btn-container:hover .dx-dropdownbutton {
+        width: 180px !important; /* Adjust as needed */
+    }
+
+    .btn-container .dx-dropdownbutton .dx-button-text {
+        display: none;
+    }
+
+    .btn-container:hover .dx-dropdownbutton .dx-button-text {
+        display: inline-block;
+    }
+
+#btnAddNewQuotation:hover {
+    width: 240px !important; /* Expand to fit text */
+}
+
+#btnDeliveryNoteDetails:hover {
+    width: 210px !important; /* Expand to fit text */
+}
+
+#btnDeliveryNotePosting:hover {
+    width: 210px !important; /* Expand to fit text */
+}
+
+#btnDeliveryNoteDetails:hover {
+    width: 220px !important; /* Expand to fit text */
+}
+
+#btnAddDeliverynote:hover {
+    width: 210px !important; /* Expand to fit text */
+}
+
+#btnAddSalesOrder:hover {
+    width: 220px !important; /* Expand to fit text */
+}
+
+#btnSalesOrderDetails:hover {
+    width: 210px !important; /* Expand to fit text */
+}
+
+#btnCreateQuotations:hover {
+    width: 240px !important; /* Expand to fit text */
+}
+
+#btnPurchaseOrderDetails:hover {
+    width: 230px !important; /* Expand to fit text */
+}
+
+#btnNewPurchaseOrder:hover {
+    width: 230px !important; /* Expand to fit text */
+}
+
+#btnAddNewStockAdjustment:hover {
+    width: 30px !important; /* Expand to fit text */
+}
+
+#btnAddNewJobOrder:hover {
+    width: 230px !important; /* Expand to fit text */
+}
+
+#btnStockAdjustmentDetails:hover {
+    width: 250px !important; /* Expand to fit text */
+}
+
+#btnMaterialReceiptDetails:hover {
+    width: 250px !important; /* Expand to fit text */
+}
+
+</style >

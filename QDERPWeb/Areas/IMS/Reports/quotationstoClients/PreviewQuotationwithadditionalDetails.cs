@@ -23,26 +23,24 @@ namespace QD.ERP.Web.Areas.IMS.Report.Inventory_Report
             Image logoImage,
             Image sealImage,
             string companyAddress,
-            string companyPhone,
-            string companyEmail,
-            string companyWebsite,
+           
             string companyNameAr,
             string companyAddressAr,
-            string username,
+          
             TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
 
             InitializeComponent();
             SetReportParameters(quotationNo, tenantName, companyName, logoImage, sealImage,
-                                companyAddress, companyPhone, companyEmail, companyWebsite,
-                                companyNameAr, companyAddressAr,username);
+                                companyAddress,
+                                companyNameAr, companyAddressAr);
             LoadReportData(quotationNo);
         }
 
         private void SetReportParameters(string quotationNo, string tenantName, string companyName,
-            Image logoImage, Image sealImage, string companyAddress, string companyPhone,
-            string companyEmail, string companyWebsite, string companyNameAr, string companyAddressAr,string username)
+            Image logoImage, Image sealImage, string companyAddress, 
+             string companyNameAr, string companyAddressAr)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -69,11 +67,9 @@ namespace QD.ERP.Web.Areas.IMS.Report.Inventory_Report
             AddOrUpdateParameter("CompanyName", companyName ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddress", companyAddress ?? "", typeof(string));
             AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string));
-            AddOrUpdateParameter("CompanyPhone", companyPhone ?? "", typeof(string));
-            AddOrUpdateParameter("CompanyEmailAddress", companyEmail ?? "", typeof(string));
-            AddOrUpdateParameter("CompanyWebsite", companyWebsite ?? "", typeof(string));
+           
             AddOrUpdateParameter("CompanyAddressAr", companyAddressAr ?? "", typeof(string));
-            AddOrUpdateParameter("UserName", username ?? "", typeof(string));
+          
 
             // Bind to report labels/images
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
@@ -90,8 +86,7 @@ namespace QD.ERP.Web.Areas.IMS.Report.Inventory_Report
 
             if (FindControl("xrLabelCompanyAddressAr", true) is XRLabel addressArLabel)
                 addressArLabel.Text = companyAddressAr;
-            if (FindControl("UserName", true) is XRLabel usernameLabel)
-                usernameLabel.Text = username;
+          
 
             if (FindControl("xrPictureBox4", true) is XRPictureBox logoPictureBox)
                 logoPictureBox.Image = logoImage;
@@ -99,31 +94,10 @@ namespace QD.ERP.Web.Areas.IMS.Report.Inventory_Report
             if (FindControl("xrPictureBox1", true) is XRPictureBox sealPictureBox)
                 sealPictureBox.Image = sealImage;
 
-            if (FindControl("xrLabelCompanyPhone", true) is XRLabel phoneLabel)
-                phoneLabel.Text = companyPhone;
-
-            if (FindControl("xrLabelCompanyEmailAddress", true) is XRLabel emailLabel)
-                emailLabel.Text = companyEmail;
-
-            if (FindControl("xrLabelCompanyWebsite", true) is XRLabel websiteLabel)
-                websiteLabel.Text = companyWebsite;
+            
         }
 
-        private void SetLabelText(string labelName, string text)
-        {
-            if (FindControl(labelName, true) is XRLabel label)
-            {
-                label.Text = text;
-            }
-        }
-
-        private void SetImage(string imageName, Image image)
-        {
-            if (FindControl(imageName, true) is XRPictureBox pictureBox)
-            {
-                pictureBox.Image = image;
-            }
-        }
+      
 
         private void LoadReportData(string quotationNo)
         {

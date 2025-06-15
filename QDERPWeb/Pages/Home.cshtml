@@ -2,6 +2,9 @@
 @model QD.ERP.Web.Pages.Shared.HomeModel
 @{
 }
+@{
+    var tenantName = HttpContext.Session.GetString("TenantName") ?? "";
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,7 +51,7 @@
             font-family: 'Poppins', sans-serif;
         }
 
-        p {
+        .Hometext {
             color: #555;
             font-size: 22px;
             font-weight: 500;
@@ -65,17 +68,15 @@
 
 
         @@keyframes fadeSlide {
-            from
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
 
-        {
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
 
         }
 
@@ -83,14 +84,14 @@
             from
 
         {
-            opacity: 0;
-            transform: scale(0.5);
-        }
+                opacity: 0;
+                transform: scale(0.5);
+            }
 
-        to {
-            opacity: 1;
-            transform: scale(1);
-        }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
 
         }
 
@@ -191,19 +192,19 @@
             to
 
         {
-            opacity: 1;
-            transform: scale(1);
-        }
+                opacity: 1;
+                transform: scale(1);
+            }
 
         }
     </style>
 </head>
 <body>
     <h1>Welcome to QuickDice ERP</h1>
-    <p>One solution for all Modules.</p>
+    <p class="Hometext">One solution for all Modules.</p>
 
     <div class="radial-container" id="radialContainer">
-        <div class="main-card" onclick="location.href='/Dashboard'" title="Go to Dashboard">
+        <div class="main-card" onclick="location.href='@($"/{tenantName}/Finance/Index")'" title="Go to Dashboard">
             <i class="fa-solid fa-chart-pie"></i>
             Dashboard
         </div>
@@ -230,6 +231,26 @@
     </div>
 
     <script>
+
+         $(document).ready(function () {
+                     fetch('/api/Dashboard/RunAllOutstandingProcedures', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+            } else {
+                alert("Error: " + data.message);
+            }
+        })
+        .catch(error => {
+            alert("API call failed: " + error);
+        });
+
+         });
+
                window.addEventListener('DOMContentLoaded', () => {
             const container = document.getElementById('radialContainer');
             const modules = container.querySelectorAll('.module-icon');
@@ -298,6 +319,7 @@
             const item = container.querySelector(`.menu-item.${className}`);
             if (item) item.style.display = "flex";
         }
+
     </script>
 </body>
 </html>

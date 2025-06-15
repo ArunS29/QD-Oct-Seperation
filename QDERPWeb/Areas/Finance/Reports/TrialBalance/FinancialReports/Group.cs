@@ -33,10 +33,15 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Register
                 sqlDataSource1.Fill();
 
                 // Apply filter after data load
-                if (!string.IsNullOrEmpty(accountGroup))
+                if (!string.IsNullOrWhiteSpace(accountGroup))
                 {
-                    this.FilterString = $"[AccountGroup] = '{accountGroup}'";
+                    this.FilterString = $"[AccountGroup] = '{accountGroup.Replace("'", "''")}'"; // Escape single quotes
                 }
+                else
+                {
+                    this.FilterString = string.Empty; // No filter applied
+                }
+
             }
             catch (Exception ex)
             {

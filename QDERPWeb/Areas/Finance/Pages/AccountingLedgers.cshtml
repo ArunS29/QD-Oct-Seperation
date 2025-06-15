@@ -149,6 +149,7 @@
 		<div id="AccountingLedger" class="no-border-input"></div>
 	</div>
 </div>
+<div id="loadPanel"></div>
 <div class="Head">
 	<div class="header-container">
 		<div class="footer">@await Html.PartialAsync("_GridFooter", new ViewDataDictionary(ViewData) { { "HideDropdown", true } })</div>
@@ -633,6 +634,16 @@
 }
 
 
+	$(function () {
+		$("#loadPanel").dxLoadPanel({
+			shadingColor: "rgba(0,0,0,0.4)",
+			position: { of: "body" }, // or change to "#mainContent" if you want to limit area
+			visible: false,
+			showIndicator: true,
+			showPane: true,
+			message: "Loading..."
+		});
+	});
 
 
 
@@ -1234,6 +1245,10 @@
 
 		frmDateBox.option("value", frmDate);  // Set frmDateBox value
 		toDateBox.option("value", toDate);    // Set toDateBox value
+
+		var loadPanel = $("#loadPanel").dxLoadPanel("instance");
+		loadPanel.show();
+
 		$.ajax({
 			url: '/api/AccountingLedgers/GetVouchers',  // API endpoint
 			type: 'GET',
@@ -1255,9 +1270,13 @@
 					firstrowVoucherAmountFormatted = firstRow.VoucherAmountFormatted; // Return the value
 				}
 				// DevExpress.ui.notify("Data fetched successfully", "success", 2000);
+				//loadPanel.hide();
 			},
 			error: function () {
 				DevExpress.ui.notify("Error while loading data", "error", 2000);
+			},
+			complete: function () {
+				$("#loadPanel").dxLoadPanel("instance").hide(); // ✅ Always hide the loader
 			}
 		});
 	}
