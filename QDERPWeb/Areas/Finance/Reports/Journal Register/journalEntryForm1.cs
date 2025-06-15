@@ -92,14 +92,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Journal_Register
             this.DataSource = dt;
             this.DataMember = "";
 
-
-
-
         }
-
-
-
-
 
         private DataTable GetReportData(string voucherNo)
         {
@@ -107,7 +100,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Journal_Register
 
             try
             {
-                // Get multi-tenant connection string
+
                 if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
                     throw new Exception("Unable to retrieve tenant context. Please check session or cache.");
 
