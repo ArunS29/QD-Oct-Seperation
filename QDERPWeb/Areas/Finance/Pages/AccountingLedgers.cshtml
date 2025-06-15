@@ -2,6 +2,12 @@
 @using DevExtreme.AspNet.Mvc
 
 <style type="text/css">
+	.ellipsis-column {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		display: block;
+	}
 	.overlay {
 		display: none;
 		position: fixed;
@@ -143,6 +149,7 @@
 		<div id="AccountingLedger" class="no-border-input"></div>
 	</div>
 </div>
+<div id="loadPanel"></div>
 <div class="Head">
 	<div class="header-container">
 		<div class="footer">@await Html.PartialAsync("_GridFooter", new ViewDataDictionary(ViewData) { { "HideDropdown", true } })</div>
@@ -227,6 +234,7 @@
 				.ValueExpr("AccountId")
 				.DisplayExpr("AccountHead")
 				.OnInput("dropDownBoxOnInput")
+				.OnClosed("onDropDownBoxClosed")
 				.OnOpened("onOpened")
 				.Width(500)
 				.TabIndex(1)
@@ -466,7 +474,11 @@
 						columns.AddFor(m => m.VoucherApprovedOn).Caption(new JS("formatMessage('VoucherApprovedOn')")).Alignment(HorizontalAlignment.Left).Visible(false);
 						columns.AddFor(m => m.VoucherVerifiedOn).Caption(new JS("formatMessage('VoucherVerifiedOn')")).Alignment(HorizontalAlignment.Left).Visible(false);
 						columns.AddFor(m => m.VoucherVerifiedBy).Caption(new JS("formatMessage('VoucherVerifiedBy')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.VoucherNarration).Caption(new JS("formatMessage('Narration')")).Alignment(HorizontalAlignment.Left).Visible(true).Width(162).MinWidth(23);
+						columns.AddFor(m => m.VoucherNarration).Caption(new JS("formatMessage('Narration')")).Alignment(HorizontalAlignment.Left).Visible(true).Width(70).CellTemplate(@<text>
+			<div title="<%- data.VoucherNarration %>" class="ellipsis-column">
+				<%- data.VoucherNarration %>
+			</div>
+		</text>);
 					})
 				.OnCellClick("function(e) {handleCellClick(e);}")
 				.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
@@ -481,6 +493,14 @@
 				.FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
 				.GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
 				.ShowBorders(true)
+				.Paging(p => p.Enabled(true).PageSize(15))    // enable paging with 15 rows per page
+				.Pager(pager => pager
+				.Visible(true)                            // show pager UI (page numbers etc)
+				.ShowPageSizeSelector(true)              // allow user to change page size
+				.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+				.ShowInfo(true)                          // show info like "Page 1 of 10"
+				)
+
 				.ShowRowLines(true) // Enable row lines
 				@* 	.ColumnChooser(columnChooser => columnChooser
 		.Enabled(false) // Enable the column chooser for hiding and showing columns
@@ -562,6 +582,14 @@
 								.OnInitialized("dataGridInitialized")
 							.HeaderFilter(p => p.Visible(false))
 								.ShowBorders(true)
+									.Paging(p => p.Enabled(true).PageSize(15))    // enable paging with 15 rows per page
+	.Pager(pager => pager
+		.Visible(true)                            // show pager UI (page numbers etc)
+		.ShowPageSizeSelector(true)              // allow user to change page size
+		.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+		.ShowInfo(true)                          // show info like "Page 1 of 10"
+	)
+
 								.HoverStateEnabled(true)
 								//.Paging(p => p.PageSize(15))
 								.FilterRow(f => f.Visible(true))
@@ -606,6 +634,16 @@
 }
 
 
+	$(function () {
+		$("#loadPanel").dxLoadPanel({
+			shadingColor: "rgba(0,0,0,0.4)",
+			position: { of: "body" }, // or change to "#mainContent" if you want to limit area
+			visible: false,
+			showIndicator: true,
+			showPane: true,
+			message: "Loading..."
+		});
+	});
 
 
 
@@ -618,7 +656,7 @@
 		var formId = "frm201LedgerView";
 
 		// Call the API to get permissions
-		$.ajax({
+		$.ajax({	
 			url: '/api/Permissions/GetAccessDetails?formId=' + formId,
 			type: 'GET',
 			contentType: 'application/json',
@@ -746,7 +784,6 @@
 	// // Function to fetch and bind data to the DataGrid
 	// function fetchAndBindDatas(accountHeadNo, frmDate, toDate) {
 	// 	alert("hi");
-	// 	debugger;
 	// 	$.ajax({
 	// 		url: '/api/AccountingLedgers/GetVouchers',
 	// 		type: 'GET',
@@ -965,6 +1002,7 @@
 			accgroupid = selectedRowData[0].AccountGroupId;
 			accheadar = selectedRowData[0].AccountHeadArabic;
 			updateBankReconciliationState(accheadname);
+				updateReceivableStatement(accgroup);
 
 		}
 
@@ -1130,7 +1168,7 @@
 	function ddBtnShowRecords_click(duration) {
 		var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
 		if (dropDownBox.option("value") === null) {
-			alert("Please select a ledger account.");
+			DevExpress.ui.notify("Please select a ledger account.", "error", 3000);
 			return;
 		}
 		var frmDateBox = $("#frmdateBox").dxDateBox("instance");
@@ -1207,6 +1245,10 @@
 
 		frmDateBox.option("value", frmDate);  // Set frmDateBox value
 		toDateBox.option("value", toDate);    // Set toDateBox value
+
+		var loadPanel = $("#loadPanel").dxLoadPanel("instance");
+		loadPanel.show();
+
 		$.ajax({
 			url: '/api/AccountingLedgers/GetVouchers',  // API endpoint
 			type: 'GET',
@@ -1228,9 +1270,13 @@
 					firstrowVoucherAmountFormatted = firstRow.VoucherAmountFormatted; // Return the value
 				}
 				// DevExpress.ui.notify("Data fetched successfully", "success", 2000);
+				//loadPanel.hide();
 			},
 			error: function () {
 				DevExpress.ui.notify("Error while loading data", "error", 2000);
+			},
+			complete: function () {
+				$("#loadPanel").dxLoadPanel("instance").hide(); // ✅ Always hide the loader
 			}
 		});
 	}
@@ -1294,10 +1340,24 @@
 			dropdown.option("items", items); // Update the dropdown options
 		}
 	}
+		// 	function updateReceivableStatement(accgroup) {
+		// 	let dropdown = $("#ddReports").dxDropDownButton("instance");
+		// 	let items = dropdown.option("items");
+
+		// 	if (items && items.length > 1) { // Ensure index exists before modifying
+		// 				if (accgroup.includes("SUNDRY") || accgroup.includes("SUNDRY")) {
+		// 			items[1] = { ...items[1], disabled: false }; 
+		// 		} else {
+		// 			items[1] = { ...items[1], disabled: true }; 
+		// 		}
+
+		// 		dropdown.option("items", items); 
+		// 	}
+		// }
 	function ddBtnGenerateReport_click(duration) {
 		var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
 		if (dropDownBox.option("value") === null) {
-			alert("Please select a ledger account.");
+			DevExpress.ui.notify("Please select a ledger account.", "error", 3000);
 			return;
 		}
 		var frmDateBox = $("#frmdateBox").dxDateBox("instance");
@@ -1470,7 +1530,7 @@
 			alert("Invalid voucher details.");
 			return;
 		}
-
+		
 		let formattedVoucher = voucherNo.trim().toUpperCase(); // Convert to uppercase for consistency
 		let formattedVoucherType = voucherType.trim(); // Trim to avoid leading/trailing spaces
 
@@ -1494,6 +1554,8 @@
 			let targetUrl = `${baseUrl}?argsledno=${encodeURIComponent(formattedVoucher)}&vouchertype=${encodeURIComponent(formattedVoucherType)}`;
 			console.log("Navigating to:", targetUrl); // Debugging
 			window.location.href = targetUrl; // Navigate
+		} else if (formattedVoucherType == "Opening Balance") {
+			DevExpress.ui.notify("Unable to Navigate because of you choosed Opening Balance.", "warning", 3000);
 		} else {
 			alert("Unknown voucher type: " + voucherType);
 		}
@@ -1541,6 +1603,24 @@
 			alert("No voucher selected.");
 		}
 	});
+	function onDropDownBoxClosed(e) {
+		const typedText = e.component.option("text");
+		const grid = $(e.component.content()).find("#ledgeraccount-datagrid").first().dxDataGrid("instance");
+
+		if (!grid || !typedText) return;
+
+		const visibleRows = grid.getVisibleRows();
+		const match = visibleRows.find(r => r.data.AccountHead === typedText);
+
+		if (match) {
+			const selectedKey = match.data.AccountId;
+			grid.selectRows([selectedKey], false); // select the row in the grid
+			e.component.option("value", selectedKey); // bind the selected key to DropDownBox
+			grid.option("focusedRowIndex", match.rowIndex); // optional: focus the matched row
+		} else {
+			e.component.option("value", null); // clear if no match found
+		}
+	}
 
 
 

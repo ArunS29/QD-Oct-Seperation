@@ -38,6 +38,9 @@
     .dx-field-label {
         font-weight: bold !important;
     }
+    .paddingLeft{
+        padding-left: 15px;
+    }
 </style>
 <div class="title">
     <div class="header-container">
@@ -254,6 +257,8 @@
             .TabIndex(2) // Different tabindex to separate from the first
             .DropDownOptions(o => o.Width(700))
             .OnKeyDown("onKeyDown")
+            .ReadOnly(true)
+
             //.OnValueChanged("dropDownBoxValueChanged") // Optional
             .ContentTemplate(new TemplateName("BaseCurrencyContentTemplate"))
             )
@@ -327,7 +332,7 @@
             .Label("Convertion Rate")
             .LabelMode(EditorLabelMode.Outside)
             .ID("txtCurrencyRate")
-            .Value("")
+            .Value("0.00")
             //  .ReadOnly(true) // Make it read-only
             .Width(160)
             )
@@ -550,7 +555,7 @@
 </div> *@
 
 
-<div class="displayFlex">
+<div class="displayFlex paddingLeft">
     <div class="col-md-7" style="padding-top:10px; padding-bottom:10px;">
         <div class="form-group">
             @(
@@ -588,7 +593,7 @@
         </div>
     </div>
 </div>
-<div class="col-md-6">
+<div class="col-md-6 paddingLeft">
     <div class="row">
         <div class="col-md-6">
             <div>
@@ -641,7 +646,7 @@
 
 
 <div>
-    @await Html.PartialAsync("PurchaseVoucherFooter")
+    @await Html.PartialAsync("_Formfooter")
 </div>
 
 
@@ -921,14 +926,14 @@
 <script>
     let argsledno = null; let paymentaccheadId; let paymentaccheadname; let paymentIsLedgerObselete;
     let accheadid, accheadname, refno, accgroup, accgroupid, accheadar;
-    var globalVoucherNo = "";
+    var globalVoucherNo = "",IsAccHead=false,accountHead=null;
     // $(function () {
     //     const dataGrid = $("#dataGrid").dxDataGrid("instance");
     //     const totalDebitTextbox = $("#totalDebitTextbox").dxTextBox("instance");
     //     const totalCreditTextbox = $("#totalCreditTextbox").dxTextBox("instance");
 
     //     function calculateTotals() {
-    //         debugger;
+    
     //         const data = dataGrid.option("dataSource") || [];
 
     //         const totalDebit = data.reduce((sum, row) => sum + (row.DrCr === "Dr" ? row.VoucherAmount || 0 : 0), 0);
@@ -985,9 +990,12 @@
     function addVoucherEntry() {
         // Get values from the fields
         var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
-        var accountHead = $("#ddAccountHead").dxDropDownBox("instance").option("value");
+            if(IsAccHead==false)
+            {
+                accountHead = $("#ddAccountHead").dxDropDownBox("instance").option("value");
+            }
         var voucherAmount = $("#txtVoucherAmount").dxNumberBox("instance").option("value");
-        var drCr = lastDrCr; // Set DrCr based on the previous entry
+        var drCr = $("#sbDrCr").dxSelectBox("instance").option("value");; // Set DrCr based on the previous entry
         var entryNarration = $("#txtEntryNarration").dxTextArea("instance").option("value");
 
         // Reset previous error styles
@@ -1074,7 +1082,7 @@
     function onVoucherNoChanged(e) {
         $.ajax({
             type: "GET",
-            url: "/api/JournalVoucher/GetVoucherEntries",
+            url: "/api/VoucherJournal/GetVoucherEntries",
             contentType: "application/json",
             data: {
                 voucherNo: e.value
@@ -1139,7 +1147,7 @@
     });
 
     function saveVoucher() {
-        debugger;
+        
         var button = $("#btnSave").dxButton("instance");
         var finalVoucherNo = globalVoucherNo || argsledno || "";
 
@@ -1257,7 +1265,7 @@
 
     $("#btnSaveAndClose").on("click", function (e) {
         e.preventDefault();
-        debugger;
+        
 
         var dataGrid = $("#dataGrid").dxDataGrid("instance");
         var gridData = dataGrid.option("dataSource");
@@ -1494,6 +1502,8 @@
 
 
     function updateTemporaryNo(e) {
+
+        debugger;
         const voucherNo = e.value;
         const temporaryNo = $("#TemporaryNo").dxTextBox("instance");
 
@@ -1507,8 +1517,8 @@
 
     $(document).ready(function () {
         debugger;
-        $("#btnPrint").dxButton("instance").option("disabled", true);
-       $("#btnPreview1").dxDropDownButton("instance").option("disabled", true);
+       //  $("#btnPrint").dxButton("instance").option("disabled", true);
+       // $("#btnPreview1").dxDropDownButton("instance").option("disabled", true);
 
         const urlParams = new URLSearchParams(window.location.search);
         argsledno = urlParams.get("argsledno"); // Get the argsledno query parameter
@@ -1574,6 +1584,20 @@
                         DevExpress.ui.notify("No voucher entries found.", "warning", 2000);
                         return;
                     }
+
+                        var lastRow = response.data[response.data.length - 1]; // Get the last row
+                            var dropDownBox = $("#ddAccountHead").dxDropDownBox("instance");
+
+    if (dropDownBox) {
+                    IsAccHead=true;
+                    // Set selected value based on what the DropDownBox expects
+                    // Assuming ValueExpr is "AccountId", and AccountId is present in `lastRow`
+                    //dropDownBox.option("value", lastRow.AccountHead); // or lastRow.AccountId if available
+                     console.log("lastRow",lastRow)
+                             accountHead=lastRow.AccountId;
+                     dropDownBox.option("value", lastRow.AccountHead);
+                    // dataGridSelectionChanged({ selectedRowKeys: [lastRow.AccountHead] });
+    }
 
                     var dataGrid = $("#dataGrid").dxDataGrid("instance");
                     if (dataGrid) {
@@ -1783,18 +1807,42 @@
 
                     const data = response.data[0];
                     if (data) {
-
+                        
                         $("#VoucherDate").dxDateBox("instance").option("value", data.VoucherDate);
                         $("#EffectiveDate").dxDateBox("instance").option("value", data.VoucherEffectiveDate);
                         // $("#BillDate").dxDateBox("instance").option("value", data.BillDate || "");
                         $("#VoucherNarration").dxTextBox("instance").option("value", data.VoucherNarration || "");
                         $("#Remarks").dxTextBox("instance").option("value", data.BillRemarks || "");
                         $("#VerifiedBy").dxCheckBox("instance").option("value", data.IsVerified || false);
-                        $("#ApprovedBy").dxCheckBox("instance").option("value", data.IsApproved || false);
-                        $("#VerifiedBytext").dxTextBox("instance").option("value", data.VoucherVerifiedBy || null);
-                        $("#ApprovedBytext").dxTextBox("instance").option("value", data.VoucherApprovedBy || "");
-                        $("#VerifiedOnDate").dxTextBox("instance").option("value", data.VoucherVerifiedOn || false);
-                        $("#ApprovedOntext").dxTextBox("instance").option("value", data.VoucherApprovedOn || "");
+                     $("#VerifiedBytext").dxTextBox("instance").option("value", data.VoucherVerifiedBy || "");
+                     $("#ApprovedBy").dxCheckBox("instance").option("value", data.IsApproved || false);
+                     $("#ApprovedBytext").dxTextBox("instance").option("value", data.VoucherApprovedBy || "");
+                   
+
+                    var ddCurrency = $("#ddCurrency").dxDropDownBox("instance");
+                        if(data.currencyid==null||"")
+                        {
+                                    data.currencyid=1;
+                        }
+                    ddCurrency.option("value", data.currencyid || "");
+
+                     var verifiedDate = data.VoucherVerifiedOn ? new Date(data.VoucherVerifiedOn) : null;
+                    var formattedDate = verifiedDate
+                        ? verifiedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+                        : "";
+
+                    $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate);
+                    var approvedDate = data.VoucherApprovedOn ? new Date(data.VoucherApprovedOn) : null;
+                    var formattedApprovedDate = approvedDate
+                        ? approvedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+                        : "";
+
+                    $("#ApprovedOntext").dxTextBox("instance").option("value", formattedApprovedDate);
+
+                    // Check if both VerifiedOnDate and ApprovedOntext have values
+                    if (formattedDate && formattedApprovedDate) {
+                        disableEditing();
+                    }
 
 
 
@@ -2250,7 +2298,7 @@
     }
 
     function onDeleteButtonClick() {
-        debugger;
+        
         var dataGrid = $("#dataGrid").dxDataGrid("instance");
         var rowCount = dataGrid.getVisibleRows().length;
 
@@ -2492,7 +2540,7 @@
         const queryString = Object.keys(params)
             .map(key => `${key}=${params[key]}`)
             .join('&');
-        debugger;
+        
         $.ajax({
             url: `/api/VoucherEntryReceipts/CostAllocation?${queryString}`,
             type: "GET",
@@ -2500,7 +2548,7 @@
             success: function (data) {
                 // Get the popup's unique identifier, for example, use the voucher number
                 const popupId = `CostAllocationPopup-${params.VoucherEntryNo}`;
-                debugger;
+                
                 // Check if the popup is already opened
                 if (!openedPopups[popupId]) {
                     // Create and store the popup instance
@@ -2527,7 +2575,7 @@
     }
 
     function openPropertyAllocationPopup(params) {
-        debugger;
+        
         const queryString = Object.keys(params)
             .map(key => `${key}=${params[key]}`)
             .join('&');
@@ -2539,7 +2587,7 @@
             success: function (data) {
                 // Get the popup's unique identifier, for example, use the voucher number
                 const popupId = `PropertyAllocationPopup-${params.VoucherEntryNo}`;
-                debugger;
+                
                 // Check if the popup is already opened
                 if (!openedPopups[popupId]) {
                     // Create and store the popup instance
@@ -2576,7 +2624,7 @@
             success: function (data) {
                 // Get the popup's unique identifier, for example, use the voucher number
                 const popupId = `EmployeeAllocationPopup-${params.VoucherEntryNo}`;
-                debugger;
+                
                 // Check if the popup is already opened
                 if (!openedPopups[popupId]) {
                     // Create and store the popup instance
@@ -2613,7 +2661,7 @@
             success: function (data) {
                 // Get the popup's unique identifier, for example, use the voucher number
                 const popupId = `BillsReceivablePopup-${params.VoucherEntryNo}`;
-                debugger;
+                
                 // Check if the popup is already opened
                 if (!openedPopups[popupId]) {
                     // Create and store the popup instance
@@ -2640,7 +2688,7 @@
     }
 
     function openSalaryPopup(params) {
-        debugger;
+        
         const queryString = Object.keys(params)
             .map(key => `${key}=${params[key]}`)
             .join('&');
@@ -2652,7 +2700,7 @@
             success: function (data) {
                 // Get the popup's unique identifier, for example, use the voucher number
                 const popupId = `SalaryPaidEntryPopup-${params.VoucherEntryNo}`;
-                debugger;
+                
                 // Check if the popup is already opened
                 if (!openedPopups[popupId]) {
                     // Create and store the popup instance
@@ -2816,7 +2864,7 @@
                 AccountHead: accountHead,
                 VoucherAmount: amount
             };
-            debugger;
+            
             if (openedPopups[popupId]) {
                 openedPopups[popupId].show();
             } else {
@@ -2860,7 +2908,7 @@
                 VoucherAmount: amount,
                 AccountID: accountHead
             };
-            debugger;
+            
             if (openedPopups[popupId]) {
                 openedPopups[popupId].show();
             } else {
@@ -2942,7 +2990,7 @@
                 AccountHead: accountHead,
                 VoucherAmount: amount
             };
-            debugger;
+            
             if (openedPopups[popupId]) {
                 openedPopups[popupId].show();
             } else {
@@ -2984,7 +3032,7 @@
                 VoucherAmount: amount,
                 AccountID: accountHead
             };
-            debugger;
+            
             if (openedPopups[popupId]) {
                 openedPopups[popupId].show();
             } else {

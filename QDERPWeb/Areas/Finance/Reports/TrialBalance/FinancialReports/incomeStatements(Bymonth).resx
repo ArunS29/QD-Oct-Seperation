@@ -121,17 +121,18 @@
     <value>PERhdGFTZXQgTmFtZT0ic3FsRGF0YVNvdXJjZTEiPjxEYXRhU2V0IE5hbWU9InNwMjAxMTZJbmNvbWVTdGF0ZW1lbnRNb250aFBpdm90Ij48VmlldyBOYW1lPSJSZXN1bHQxIj48RmllbGQgTmFtZT0iQWNjb3VudEhlYWQiIFR5cGU9IlN0cmluZyIgLz48RmllbGQgTmFtZT0iQWNjb3VudEhlYWROYW1lIiBUeXBlPSJTdHJpbmciIC8+PEZpZWxkIE5hbWU9IkFjY291bnRHcm91cCIgVHlwZT0iU3RyaW5nIiAvPjxGaWVsZCBOYW1lPSJNYXN0ZXJHcm91cCIgVHlwZT0iU3RyaW5nIiAvPjxGaWVsZCBOYW1lPSJNYXN0ZXJPcmRlck5vIiBUeXBlPSJEZWNpbWFsIiAvPjxGaWVsZCBOYW1lPSJKYW4iIFR5cGU9IkRlY2ltYWwiIC8+PEZpZWxkIE5hbWU9IkZlYiIgVHlwZT0iRGVjaW1hbCIgLz48RmllbGQgTmFtZT0iTWFyIiBUeXBlPSJEZWNpbWFsIiAvPjxGaWVsZCBOYW1lPSJBcHIiIFR5cGU9IkRlY2ltYWwiIC8+PEZpZWxkIE5hbWU9Ik1heSIgVHlwZT0iRGVjaW1hbCIgLz48RmllbGQgTmFtZT0iSnVuIiBUeXBlPSJEZWNpbWFsIiAvPjxGaWVsZCBOYW1lPSJKdWwiIFR5cGU9IkRlY2ltYWwiIC8+PEZpZWxkIE5hbWU9IkF1ZyIgVHlwZT0iRGVjaW1hbCIgLz48RmllbGQgTmFtZT0iU2VwIiBUeXBlPSJEZWNpbWFsIiAvPjxGaWVsZCBOYW1lPSJPY3QiIFR5cGU9IkRlY2ltYWwiIC8+PEZpZWxkIE5hbWU9Ik5vdiIgVHlwZT0iRGVjaW1hbCIgLz48RmllbGQgTmFtZT0iRGVjIiBUeXBlPSJEZWNpbWFsIiAvPjwvVmlldz48VmlldyBOYW1lPSJSZXN1bHQyIj48RmllbGQgTmFtZT0iQWNjb3VudEhlYWQiIFR5cGU9IlN0cmluZyIgLz48RmllbGQgTmFtZT0iQWNjb3VudEhlYWROYW1lIiBUeXBlPSJTdHJpbmciIC8+PEZpZWxkIE5hbWU9IkFjY291bnRHcm91cCIgVHlwZT0iU3RyaW5nIiAvPjxGaWVsZCBOYW1lPSJNYXN0ZXJHcm91cCIgVHlwZT0iU3RyaW5nIiAvPjxGaWVsZCBOYW1lPSJNYXN0ZXJPcmRlck5vIiBUeXBlPSJEZWNpbWFsIiAvPjxGaWVsZCBOYW1lPSJKYW4iIFR5cGU9IkRlY2ltYWwiIC8+PEZpZWxkIE5hbWU9IkZlYiIgVHlwZT0iRGVjaW1hbCIgLz48RmllbGQgTmFtZT0iTWFyIiBUeXBlPSJEZWNpbWFsIiAvPjxGaWVsZCBOYW1lPSJBcHIiIFR5cGU9IkRlY2ltYWwiIC8+PEZpZWxkIE5hbWU9Ik1heSIgVHlwZT0iRGVjaW1hbCIgLz48RmllbGQgTmFtZT0iSnVuIiBUeXBlPSJEZWNpbWFsIiAvPjxGaWVsZCBOYW1lPSJKdWwiIFR5cGU9IkRlY2ltYWwiIC8+PEZpZWxkIE5hbWU9IkF1ZyIgVHlwZT0iRGVjaW1hbCIgLz48RmllbGQgTmFtZT0iU2VwIiBUeXBlPSJEZWNpbWFsIiAvPjxGaWVsZCBOYW1lPSJPY3QiIFR5cGU9IkRlY2ltYWwiIC8+PEZpZWxkIE5hbWU9Ik5vdiIgVHlwZT0iRGVjaW1hbCIgLz48RmllbGQgTmFtZT0iRGVjIiBUeXBlPSJEZWNpbWFsIiAvPjwvVmlldz48L0RhdGFTZXQ+PC9EYXRhU2V0Pg==</value>
   </data>
   <data name="calTotal.Expression" xml:space="preserve">
-    <value>iif(IsNullOrEmpty([Jan]), 0, [Jan]) + 
-iif(IsNullOrEmpty( [Feb] ), 0, [Feb]  ) + 
-iif(IsNullOrEmpty( [Mar] ), 0, [Mar] ) +
-iif(IsNullOrEmpty( [Apr]), 0, [Apr]) +
-iif(IsNullOrEmpty( [May]), 0, [May]) +
-iif(IsNullOrEmpty( [Jun]), 0, [Jun]) +
-iif(IsNullOrEmpty( [Jul]), 0, [Jul]) +
-iif(IsNullOrEmpty( [Aug] ), 0, [Aug] ) +
-iif(IsNullOrEmpty( [Sep]), 0, [Sep]) +
-iif(IsNullOrEmpty( [Oct] ), 0, [Oct] ) +
-iif(IsNullOrEmpty( [Nov] ), 0, [Nov] ) +
-iif(IsNullOrEmpty( [Dec]), 0, [Dec])</value>
+    <value>IsNull([Jan], 0) +
+IsNull([Feb], 0) +
+IsNull([Mar], 0) +
+IsNull([Apr], 0) +
+IsNull([May], 0) +
+IsNull([Jun], 0) +
+IsNull([Jul], 0) +
+IsNull([Aug], 0) +
+IsNull([Sep], 0) +
+IsNull([Oct], 0) +
+IsNull([Nov], 0) +
+IsNull([Dec], 0)
+</value>
   </data>
 </root>

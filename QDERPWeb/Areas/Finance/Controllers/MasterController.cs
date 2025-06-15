@@ -25,7 +25,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
+        [HttpGet("GetUserddl")]
         public async Task<ActionResult> GetUserddl(DataSourceLoadOptions loadOptions)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
@@ -768,7 +768,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
         [HttpPost("DeleteLedgerSubGroup")]
-        public IActionResult DeleteLedgerSubGroup([FromBody] string ledgerSubGroupCode)
+        public IActionResult DeleteLedgerSubGroup([FromQuery] string ledgerSubGroupCode)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {

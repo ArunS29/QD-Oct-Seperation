@@ -63,7 +63,7 @@
         background-color: #fff;
     }
 
-    .limited-footer .btn-container:not(:has(#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
+    .limited-footer .btn-container:not(:has(#btnUpdate,#btnBack)) {
         display: none !important;
     }
 
@@ -105,7 +105,7 @@
     </div>
 </div>
 <div class="signatory-form-container">
-    <div id="DatabaseSignatories" class="no-border-title"></div>
+   
 
     <div class="form-row">
         <div class="col-md-6">
@@ -126,7 +126,7 @@
         <div class="col-md-2">
             @(Html.DevExtreme().Button()
                 .ID("btnAddSalesPerson")
-                .Text("ADD")
+                .Text(new JS("formatMessage('ADD')"))
                 .Icon("plus")
                 .OnClick("function() { addSignatoryToGrid(); }")
                 .ElementAttr(new { @class = "dx-button-add" })
@@ -160,8 +160,8 @@
             .OnRowUpdating("onSignatoryUpdating")                       // Handles saving
             .Columns(columns =>
             {
-            columns.Add().DataField("ProjectSubUnitCode").Caption("Code").Width(80).AllowEditing(false);
-            columns.Add().DataField("ProjectSubUnitName").Caption("Project Unit Name").Width(200);
+            columns.Add().DataField("ProjectSubUnitCode").Caption(new JS("formatMessage('Code')")).Width(80).AllowEditing(false);
+            columns.Add().DataField("ProjectSubUnitName").Caption(new JS("formatMessage('Project Unit Name')")).Width(200);
            
 
             })
@@ -187,13 +187,13 @@
 
 
     <div class="limited-footer">
-        @await Html.PartialAsync("VATModuleFooter")
+    @await Html.PartialAsync("InventoryModuleFooter")
     </div>
     <script>
 
         $(document).ready(function () {
 
-              $(".limited-footer .btn-containerIvoiceEdit").each(function () {
+        $(".limited-footer .btn-container").each(function () {
 
                   if (!$(this).find("#btnUpdate,#btnBack").length) {
 

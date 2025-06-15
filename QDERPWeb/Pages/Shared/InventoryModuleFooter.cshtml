@@ -214,17 +214,160 @@
             )
     </div>
 
+
+
     <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnMoveUp")
+            .Text(new JS("formatMessage('Move Up')"))
+            .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+            .Icon("spinup") // Change the icon to an up/down arrow option
+            .ElementAttr(new { @class = "bold-button" })
+            )
+    </div>
+    <div class="btn-container">
+    @(Html.DevExtreme().Button()
+        .ID("btnMoveDown")
+        .Text(new JS("formatMessage('Move Down')"))
+        .Type(ButtonType.Normal)
+          .StylingMode(ButtonStylingMode.Outlined)
+        .Icon("spindown") // Change the icon to an up/down arrow option
+        .ElementAttr(new { @class = "bold-button" })
+        )
+</div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnSave")
+            .Text(new JS("formatMessage('Save')"))
+            .Type(ButtonType.Normal)
+            .StylingMode(ButtonStylingMode.Outlined)
+            .Icon("save")
+            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                                                         // .OnClick("saveInvoiceDetails") // Calls the JavaScript function
+            )
+
+    </div>
+    <div class="btn-container">
+
+        @(Html.DevExtreme().Button()
+            .ID("btnSaveAndClose")
+            .Text(new JS("formatMessage('Save and Close')"))
+            .Type(ButtonType.Normal)
+            .StylingMode(ButtonStylingMode.Outlined)
+            .Icon("save")
+            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+            )
+    </div>
+ @*    <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnPrint")
             .Icon("print")
             .Text(new JS("formatMessage('Print')"))
             .ElementAttr(new { style = "display: none;" })
             .Width(50)
-            .OnClick("exportGridToPDF")
+            .OnClick("printFun")
+            )
+    </div> *@
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnAddNew")
+            .Text(new JS("formatMessage('Add New Item')"))
+            .Icon("plus")
+            // .OnClick("addNewRow") // Attach function
+            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
             )
     </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnDelete")
+            .Text(new JS("formatMessage('Delete')"))
+            .Icon("close")
+            //  .OnClick("onDeleteButtonClick")
+            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+            )
+    </div>
+    <div class="btn-container">
+    @(Html.DevExtreme().Button()
+        .ID("btnUpdate")
+        .Text(new JS("formatMessage('Update')"))
+        .Icon("save") // Icon similar to a floppy/save
+        //.Type(ButtonType.Normal)
+       // .StylingMode(ButtonStylingMode.Contained)
+        .ElementAttr(new { @class = "update-button" }) // Custom CSS class
+        )
+</div>
+    <div class="btn-container">
 
+        @(Html.DevExtreme().Button()
+            .ID("btnBack")
+            .Text(new JS("formatMessage('Back')"))
+            .Icon("arrowleft")
+            // .OnClick("onBackButtonClick")
+            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+            )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnSubmit")
+            .Text(new JS("formatMessage('Submit')"))
+            .Icon("check")
+            // .OnClick("onVerifyButtonClick")
+            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+
+            )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnVerify")
+            .Text(new JS("formatMessage('Verify')"))
+            .Icon("check")
+            // .OnClick("onVerifyButtonClick")
+            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+
+            )
+
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnApprove")
+            .Text(new JS("formatMessage('Approve')"))
+            .Icon("exportselected")
+            //   .OnClick("onApproveButtonClick")
+            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+            )
+
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnCancel")
+            .Text(new JS("formatMessage('Cancel')"))
+            .Icon("close")
+            // .OnClick("onVerifyButtonClick")
+            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+
+            )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnAttach")
+            .Text(new JS("formatMessage('Attach')"))
+            .Icon("link")
+            //.OnClick("onAttachButtonClick")
+            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+            )
+    </div>
+    <div class="btn-container">
+
+        @(Html.DevExtreme().Button()
+            .ID("btnUpload")
+            .Text(new JS("formatMessage('Upload')"))
+            .Icon("upload")
+            // .OnClick("onBackButtonClick")
+            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+            )
+    </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnToggleSearch")
@@ -269,16 +412,11 @@
             .OnClick("showColumnChooser")
             )
     </div>
-    <div class="btn-container">
 
-        @(Html.DevExtreme().Button()
-            .ID("btnBack")
-            .Text(new JS("formatMessage('Back')"))
-            .Icon("arrowleft")
-            // .OnClick("onBackButtonClick")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-            )
-    </div>
+
+
+
+
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnRefresh")
@@ -307,7 +445,7 @@
             .Width(50)
             .Text(new JS("formatMessage('Add New Supplier')"))
             .ElementAttr(new { style = "display: none;" })
-            // .OnClick("toggleGroupPanel")
+            .OnClick("supplierMaster")
             )
 
     </div>
@@ -315,13 +453,15 @@
         @(Html.DevExtreme().Button()
             .ID("btnRequestEnquiry")
             .Icon("preferences")
-            .Width(50)
+            .Width(150)
             .Text(new JS("formatMessage('Request/Enquiry Details')"))
             .ElementAttr(new { style = "display: none;" })
             // .OnClick("toggleGroupPanel")
             )
 
     </div>
+
+
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnAddNewStockAdjustment")
@@ -332,6 +472,16 @@
             // .OnClick("toggleGroupPanel")
             )
 
+    </div>
+    <div class="btn-container">
+    @(Html.DevExtreme().Button()
+        .ID("btnQuotationDetails")
+        .Icon("add")
+        .Width(50)
+        .Text(new JS("formatMessage('Quotation Details')"))
+        .ElementAttr(new { style = "display: none;" })
+            .OnClick("QuotationDetails")
+        )
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
@@ -351,7 +501,7 @@
             .Width(50)
             .Text(new JS("formatMessage('Add New Sales Order')"))
             .ElementAttr(new { style = "display: none;" })
-            // .OnClick("toggleGroupPanel")
+            .OnClick("AddNewSalesOrder")
             )
                 
     </div>
@@ -362,7 +512,7 @@
             .Width(50)
             .Text(new JS("formatMessage('Sales Order Details')"))
             .ElementAttr(new { style = "display: none;" })
-            // .OnClick("toggleGroupPanel")
+            .OnClick("btnSalesOrderDetail")
             )
 
     </div>
@@ -395,7 +545,7 @@
             .Width(50)
             .Text(new JS("formatMessage('Material Receipt Details')"))
             .ElementAttr(new { style = "display: none;" })
-            // .OnClick("toggleGroupPanel")
+            .OnClick("MaterialReceiptDetails")
             )
 
     </div>
@@ -406,7 +556,7 @@
             .Width(50)
             .Text(new JS("formatMessage('Add Purchase Order')"))
             .ElementAttr(new { style = "display: none;" })
-            // .OnClick("toggleGroupPanel")
+            .OnClick("AddPurchaseOrder")
             )
 
     </div>
@@ -419,7 +569,7 @@
             .Width(50)
             .Text(new JS("formatMessage('Delivery Note Details')"))
             .ElementAttr(new { style = "display: none;" })
-            // .OnClick("toggleGroupPanel")
+            .OnClick("OpenDeliveryNoteDetails")
             )
 
     </div>
@@ -430,7 +580,7 @@
             .Width(50)
             .Text(new JS("formatMessage('RFQ Details')"))
             .ElementAttr(new { style = "display: none;" })
-            // .OnClick("toggleGroupPanel")
+            .OnClick("AddNewRFQDetails")
             )
 
     </div>
@@ -441,7 +591,7 @@
             .Width(50)
             .Text(new JS("formatMessage('Add New RFQ')"))
             .ElementAttr(new { style = "display: none;" })
-            // .OnClick("toggleGroupPanel")
+            .OnClick("AddNewRFQ")
             )
 
     </div>
@@ -467,6 +617,9 @@
             )
 
     </div>
+
+
+
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
             .ID("btnDeliveryNotePosting")
@@ -491,14 +644,12 @@
             .Icon("plus")
             .Width(50)
             .Text(new JS("formatMessage('Add New Receipt')"))
-            .ElementAttr(new { style = "display: none;" })
-            .DropDownOptions(options => options.Width(230))
+            .DropDownOptions(options => options.Width(370))
             .Items(items =>
             {
                 items.Add().Text(new JS("formatMessage('Add New Material Receipt-From Supplier')"));
-                items.Add().Text(new JS("formatMessage('Add New Material Receipt-Returned From Project')"));
             })
-            .OnItemClick("addNewMaterialRequest")
+            .OnItemClick("addNewMaterialReceipt")
             .ShowArrowIcon(false)
             )
     </div>
@@ -512,14 +663,24 @@
             .DropDownOptions(options => options.Width(325))
             .Items(items =>
             {
-                items.Add().Text(new JS("formatMessage('Add New Delivery to Client ')"));
+                items.Add().Text(new JS("formatMessage('Add New Delivery to Client')"));
                 items.Add().Text(new JS("formatMessage('Add Material Issued To Store(Consumption)')"));
                 items.Add().Text(new JS("formatMessage('Add Material Issued To Project(Consumption)')"));
                 items.Add().Text(new JS("formatMessage('Add Store Transfers')"));
 
             })
-            .OnItemClick("addNewMaterialRequest")
+            .OnItemClick("addNewDeliveryNote")
             .ShowArrowIcon(false)
+            )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnPurchaseEditDetails")
+            .Icon("add")
+            .Width(50)
+            .Text(new JS("formatMessage('Request / Enquiry Details')"))
+            .ElementAttr(new { style = "display: none;" })
+            .OnClick("PurchaseEditDetails")
             )
     </div>
     <div class="btn-container">
@@ -540,10 +701,79 @@
             .ShowArrowIcon(false)
             )
     </div>
+   <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("btnPrint1")
+            .Text(new JS("formatMessage('Print')"))
+            .Icon("print")
+            .ElementAttr(new { @class = "bold-button" })
+            .DropDownOptions(options => options.Width(230))
+            .ShowArrowIcon(false)
+            .Items(items =>
+            {
+                items.Add().Text("Custom request Designs").Icon("print");
+                items.Add().Text("Preview Request").Icon("file");
+                items.Add().Text("Preview Request(With Expected Unit Price)").Icon("folder");
+
+            })
+            .OnItemClick("handleCreditReportPrinting")
+            )
+    </div>
+
+   <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("btnPrint")
+            .Text(new JS("formatMessage('Print')"))
+            .Icon("print")
+            .ElementAttr(new { @class = "bold-button" })
+            .DropDownOptions(options => options.Width(230))
+            .ShowArrowIcon(false)
+            .Items(items =>
+            {
+                items.Add().Text("Preview Quotation").Icon("folder");
+                items.Add().Text("Preview Quotation(W/O Discount Column)").Icon("folder");
+                items.Add().Text("Preview Quotation(W/o VAT)").Icon("folder");
+                items.Add().Text("Preview Quotation(W/o VAT & W/o TotalPrice)").Icon("folder");
+                items.Add().Text("Preview Quotation(W/o VAT & W/o Discount)").Icon("folder");
+                items.Add().Text("Preview Quotation(With Addl Details)").Icon("folder");
+                items.Add().Text("Preview Quotation(Without Price)").Icon("folder");
+                items.Add().Text("Preview Quotation(With Item Image)").Icon("folder");
+                items.Add().Text("Preview Quotation(With Group Code)").Icon("folder");
+                items.Add().Text("Preview Quotation(With Sub Group)").Icon("folder");
+               
+            
+
+
+            })
+            .OnItemClick("handleQuatation")
+            )
+    </div> 
+
+    <div class="btn-container">
+         @(Html.DevExtreme().DropDownButton() 
+            .ID("btnPrint2") 
+            .Text(new JS("formatMessage('Print')")) 
+           .Icon("print") 
+            .ElementAttr(new { @class = "bold-button" })
+            .DropDownOptions(options => options.Width(230)) 
+            .ShowArrowIcon(false) 
+             .Items(items => 
+            { 
+
+             items.Add().Text("Custom Report Designs").Icon("folder");
+
+                items.Add().Text("Preview  Sales Order").Icon("folder");
+                items.Add().Text("Preview Sales Order(without Price)").Icon("folder");
+                 }) 
+           .OnItemClick("handleSales") 
+           ) 
+ </div>
 </div>
 
 
 <script type="text/javascript">
+        
+
     function refreshPage() {
         location.reload();
     }
@@ -628,6 +858,7 @@
                         var controlStates = {
                             "btnShowRecords": { "Visible": false, "Enabled": false },
                             "btnPrint": { "Visible": false, "Enabled": false },
+                            "btnPrint1": { "Visible": false, "Enabled": false },
                             "btnSearch": { "Visible": false, "Enabled": false },
                             "ddButtonLayout": { "Visible": false, "Enabled": false },
                             "btnToggleSearch": { "Visible": false, "Enabled": false },
@@ -659,7 +890,22 @@
                              "btnAddNewJobOrder": { "Visible": false, "Enabled": false },
                              "btnAddNewStockAdjustment": { "Visible": false, "Enabled": false },
                              "btnStockAdjustmentDetails": { "Visible": false, "Enabled": false },
-                          //  "btnSave":{ "Visible": false, "Enabled": false }
+                           "btnSave":{ "Visible": false, "Enabled": false },
+                        "btnMoveDown": { "Visible": false, "Enabled": false },
+                        "btnMoveUp": { "Visible": false, "Enabled": false },
+                        "btnSaveAndClose": { "Visible": false, "Enabled": false },
+                        "btnAddNew": { "Visible": false, "Enabled": false },
+                        "btnDelete": { "Visible": false, "Enabled": false },
+                         "btnUpdate": { "Visible": false, "Enabled": false },                       
+                        "btnBack": { "Visible": false, "Enabled": false },
+                        "btnSubmit": { "Visible": false, "Enabled": false },
+                        "btnVerify": { "Visible": false, "Enabled": false },
+                        "btnApprove": { "Visible": false, "Enabled": false },
+                        "btnCancel": { "Visible": false, "Enabled": false },
+                        "btnAttach": { "Visible": false, "Enabled": false },
+                        "btnUpload": { "Visible": false, "Enabled": false },
+                        "btnQuotationDetails": { "Visible": false, "Enabled": false },
+                        "btnPurchaseEditDetails": { "Visible": false, "Enabled": false },
                         };
 
 
@@ -760,7 +1006,7 @@
             tableWidth: 'auto', // Adjust table width to fit the page
             columnStyles: {
                 0: { cellWidth: 'wrap' }, // Adjust the first column width
-                // Add more column styles if needed
+                //    more column styles if needed
             },
             margin: { top: 10, right: 10, bottom: 30, left: 10 }, // Adjust margins if needed
             didDrawPage: function (data) {
@@ -1142,12 +1388,43 @@
 
         function AddNewQuotation(){
             const url = `/${tenantName}/IMS/AddNewQuotation`;
-            const title = "";
-                openModal(url, title);
+            // const title = "";
+            window.location.href = url;
+        }
+        function AddNewSalesOrder() {
+            window.location.href = `/${tenantName}/IMS/AddNewSalesOrder`;
+        }
+        function AddNewRFQ() {
+            window.location.href = `/${tenantName}/IMS/AddNewRFQ`;
+        }
+    function AddNewRFQDetails() {
+        window.location.href = `/${tenantName}/IMS/RFQwithItemDetails`;
+    } 
+    
+    function btnSalesOrderDetail() {
+        window.location.href = `/${tenantName}/IMS/SalesOrdersDetails`;
+    }
+    function QuotationDetails() {
+        window.location.href = `/${tenantName}/IMS/QuotationDetails`;
+    }
+    function MaterialReceiptDetails() {
+        window.location.href = `/${tenantName}/IMS/MaterialReceiptDetails`;
+    }
+     function PurchaseEditDetails() {
+        window.location.href = `/${tenantName}/IMS/PurchaseRequestItemDetails`;
+     }
+    function OpenDeliveryNoteDetails() {
+        window.location.href = `/${tenantName}/IMS/DeliveryNoteDetails`;
+    }
+
+        function AddPurchaseOrder(){
+        const url = `/${tenantName}/IMS/AddNewPurchaseOrder`;
+        // const title = "";
+        window.location.href = url;
         }
         function addPaymentButton_click(e) {
         let url = "";
-        let title = "Payments";
+        let title = "Payments"; 
 
         switch (e.itemData.text) {
            case formatMessage('New Standard Tax Invoice(B2B Invoice)'):
@@ -1432,9 +1709,45 @@
                     url = `/${tenantName}/IMS/AddNewClientRequest`;
                     break;
                 case formatMessage('Add New Store Request'):
-                    url = `/${tenantName}/IMS/AddNewStoreRequest`;
+                    url = `/${tenantName}/IMS/MRAddNewStoreRequest`;
                     break;
                 case formatMessage('Add New Project Request'):
+                    url = `/${tenantName}/IMS/MRAddNewProjectRequest`;
+                    break;
+                default:
+                    console.log("Clicked item: ", e.itemData.text);
+                    return;
+            }
+
+            window.location.href = url;
+        }
+        
+        function addNewMaterialReceipt(e) {
+            let url = ''; // Declare once
+            switch (e.itemData.text) {
+                case formatMessage('Add New Material Receipt-From Supplier'):
+                    url = `/${tenantName}/IMS/MaterialReceiptFromSupplier`;
+                    break;
+                default:
+                    console.log("Clicked item: ", e.itemData.text);
+                    return;
+            }
+
+            window.location.href = url;
+        }
+         function addNewDeliveryNote(e) {
+            let url = ''; // Declare once
+            switch (e.itemData.text) {
+               case formatMessage('Add New Delivery to Client'):
+                    url = `/${tenantName}/IMS/AddNewDeliverytoClient`;
+                    break;
+                case formatMessage('Add Material Issued To Store(Consumption)'):
+                    url = `/${tenantName}/IMS/AddNewStoreRequest`;
+                    break;
+                case formatMessage('Add Material Issued To Project(Consumption)'):
+                    url = `/${tenantName}/IMS/AddNewProjectRequest`;
+                    break;
+                case formatMessage('Add Store Transfers'):
                     url = `/${tenantName}/IMS/AddNewProjectRequest`;
                     break;
                 default:
@@ -1444,5 +1757,135 @@
 
             window.location.href = url;
         }
+        // function printFun() { 
+        //     exportDataGridToPDF('dataGrid'); 
+        // }
+
+         async function handleCreditReportPrinting(e) {
+           debugger;
+        const itemText = e.itemData?.text;
+
+        let requestNo = $("#txtRequestNo").dxTextBox("instance").option("value");
+
+        if (!requestNo) {
+            alert("RequestNo  is required.");
+            return;
+        }
+
+        try {
+            const isApproved = await checkInvoiceApprovalStatus1(requestNo);
+            const watermarkText = isApproved ? "" : "Draft Copy";
+            let reportName = "";
+
+            switch (itemText) {
+                case "Preview Request":
+                        reportName = "MaterialRequestInventory";
+                    break;
+                case "Preview Request(With Expected Unit Price)":
+                    reportName = "MaterialPurcchaseRequestion";
+                    break;
+
+                default:
+                    alert("Invalid report format selected.");
+                    return;
+            }
+
+            const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&RequestNo=${encodeURIComponent(requestNo)}&skipPreview=true&watermark=${encodeURIComponent(watermarkText)}&isApproved=${isApproved}`;
+
+            window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+        } catch (error) {
+            console.error("Error checking approval status:", error);
+            alert("Failed to check invoice approval status.");
+        }
+    }
+
+    async function checkInvoiceApprovalStatus1(requestNo) {
+        try {
+            const response = await $.ajax({
+              
+
+                url: `/api/AddNewClientRequest/GetRequestNoteApprovalStatus/${encodeURIComponent(requestNo)}`,
+                method: 'GET',
+                dataType: 'json',
+            });
+
+            return response?.isApproved ?? false;
+        } catch (error) {
+            console.error("Error fetching approval status:", error);
+            return false;
+        }
+    }
+
+        const quotationReportMap = {
+        "Preview Quotation": "PreviewQuotations",
+        "Preview Quotation(W/O Discount Column)": "wtDiscount",
+        "Preview Quotation(W/o VAT)":"QuotationWOvat",
+        "Preview Quotation(W/o VAT & W/o TotalPrice)":"vatTotalPricewithout",
+        "Preview Quotation(W/o VAT & W/o Discount)":"withoutvatDiscount",
+        "Preview Quotation(With Addl Details)":"PreviewQuotationwithadditionalDetails",
+        "Preview Quotation(Without Price)":"PreviewQuotationwithoutPrice",
+        "Preview Quotation(With Item Image)":"PreviewQuotationWithImage",
+        "Preview Quotation(With Group Code)":"GroupCode",
+        "Preview Quotation(With Sub Group)":"PreviewQuotationWithSubGroup"
+         
+         };
+
+
+    function handleQuatation(e) {
+        alert('History trig')
+        const itemText = e.itemData?.text;
+        const tenantName = window.tenantName || "";
+        const quotationNo = $("#txtQuotationNo").dxTextBox("instance").option("value");
+
+        if (!quotationNo && itemText.includes("Quotation")) {
+            alert("Quotation number is required.");
+            return;
+        }
+
+        try {
+            const reportName = quotationReportMap[itemText];
+
+            if (!reportName) {
+                alert("Invalid report format selected.");
+                return;
+            }
+
+            const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&QuotationNo=${encodeURIComponent(quotationNo)}`;
+            window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+
+        } catch (error) {
+            console.error("Failed to open report:", error);
+            alert("An error occurred while trying to open the report.");
+        }
+    }
+
+
+       const salesReportMap = {
+        "Preview  Sales Order": "SalesOrderReport", // two spaces!
+        "Preview Sales Order(without Price)": "SalesOrderReportWithoutPrice"
+    };
+
+    function handleSales(e) {
+        const itemText = e.itemData?.text;
+        const tenantName = window.tenantName || "";
+        const salesOrderNo = $("#SalesOrderNO").dxTextBox("instance").option("value");
+
+        if (!salesOrderNo) {
+            alert("Sales Order number is required.");
+            return;
+        }
+
+        const reportName = salesReportMap[itemText];
+
+        if (!reportName) {
+            alert("Invalid report format selected.");
+            return;
+        }
+
+        const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&SalesOrderNo=${encodeURIComponent(salesOrderNo)}`;
+        window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+    }
+
+
 
 </script>

@@ -1,0 +1,1878 @@
+﻿ @page
+@using DevExtreme.AspNet.Mvc
+
+@{
+    ViewData["Title"] = "User Account Details";
+}
+
+<form id="userForm">
+    <div class="title">
+        <div class="header-container">
+            <h2>User Account Details</h2>
+        </div>
+    </div>
+    <div class="Head">
+    <div class="limited-footer">
+        <div class="footer">@await Html.PartialAsync("userfooter", new ViewDataDictionary(ViewData) { { "HideDropdown", true } })</div>
+    </div>
+</div>
+    <div id="tabPanelContainer">
+        @(Html.DevExtreme().TabPanel()
+                .ID("accessTabPanel")
+                .Items(items =>
+                {
+                    items.Add()
+                .Title("User Account Details")
+                .Template(@<text>
+            <div class="dx-form" style="padding: 20px; max-width: 1200px;">
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label>User ID:</label>
+                        @(Html.DevExtreme().TextBox().ID("UserId").Width("100%"))
+                    </div>
+
+                    <div class="form-group">
+                        <label>User Name:</label>
+                        @(Html.DevExtreme().TextBox()
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ID("UserName")
+                        .OnChange("validateEmail")
+                        .Value(null)
+                        .ValidationRules(rules =>
+                        {
+                        rules.AddRequired()
+
+                        .Message(new JS("formatMessage('Email Address Cannot be Empty')"));
+                        })
+                        )
+                    </div>
+
+                    <div class="form-group">
+                        <label>Password:</label>
+                        @(Html.DevExtreme().TextBox().ID("Password").Mode(TextBoxMode.Password).Width("100%"))
+                    </div>
+
+                    <div class="form-group">
+                        <label>Department :</label>
+                        @(Html.DevExtreme().DropDownBox()
+                        .ID("ddDepartment")
+                        .DataSource(d => d.WebApi()
+                        .Controller("utility")
+                        .LoadAction("GetDepartments")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("DepartmentCode"))
+                        .DisplayExpr("Department")
+                        .ValueExpr("DepartmentCode")
+                        .ShowClearButton(true)
+                        .Placeholder("Select Department")
+                        //.AcceptCustomValue(false)
+                        //.Label("Department")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%")
+                        .DropDownOptions(d => d.Width("100%"))
+                        .ContentTemplate(new TemplateName("DepartmentContentTemplate"))
+                        .ValidationRules(rules =>
+                        {
+                        rules.AddRequired().Message("Please select a department.");
+                        })
+                        )
+                    </div>
+
+                    <div class="form-group">
+                        <label>Company Branch :</label>
+                        @(Html.DevExtreme().DropDownBox()
+                        .DataSource(d => d.WebApi().Controller("utility").LoadAction("GetCompanies").LoadMode(DataSourceLoadMode.Raw).Key("CompanyID"))
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ID("ddCompany")
+                        .ValidationRules(rules => {
+                        rules.AddRequired().Message("Please select a company.");
+                        })
+                        .ShowClearButton(true)
+                        .AcceptCustomValue(true)
+                        .OpenOnFieldClick(false)
+                        .ValueChangeEvent("input")
+                        .HoverStateEnabled(true)
+                        .Value(null)
+                        .ValueExpr("CompanyID")
+                        .DisplayExpr("CompanyName")
+                        .Width("100%")
+                        .TabIndex(1)
+                        .DropDownOptions(o => o
+                        //.Width("100%") // Set the desired width for the dropdown content*@
+                        .Width(1000)
+                        )
+                        // .OnKeyDown("onKeyDown")
+                        .ContentTemplate(new TemplateName("CompanyContentTemplate")))
+
+                    </div>
+
+
+
+
+                    <div class="form-group">
+                        <label>Company Division :</label>
+                        @(Html.DevExtreme().DropDownBox()
+                        .DataSource(d => d.WebApi().Controller("utility").LoadAction("GetBranches").LoadMode(DataSourceLoadMode.Raw).Key("BranchCode"))
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ID("ddBranch")
+                        .ValidationRules(rules => {
+                        rules.AddRequired().Message("Please select a Division.");
+                        })
+                        .ShowClearButton(true)
+                        .AcceptCustomValue(true)
+                        .OpenOnFieldClick(false)
+                        .ValueChangeEvent("input")
+                        .HoverStateEnabled(true)
+                        .Value(null)
+                        .ValueExpr("BranchCode")
+                        .DisplayExpr("BranchName")
+                        .Width("100%")
+                        .TabIndex(1)
+                        .DropDownOptions(o => o
+                        //.Width("100%") // Set the desired width for the dropdown content*@
+                        .Width(1000)
+                        )
+                        // .OnKeyDown("onKeyDown")
+                        .ContentTemplate(new TemplateName("BranchContentTemplate")))
+
+                    </div>
+
+                    <div class="form-group">
+                        <label>User Level :</label>
+                        @(Html.DevExtreme().DropDownBox()
+                        .DataSource(d => d.WebApi().Controller("utility").LoadAction("GetUserLevels").LoadMode(DataSourceLoadMode.Raw).Key("UserLevelID"))
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ID("ddUserLevel")
+                        .ValidationRules(rules => {
+                        rules.AddRequired().Message("Please select a user level.");
+                        })
+                        .ShowClearButton(true)
+                        .AcceptCustomValue(true)
+                        .OpenOnFieldClick(false)
+                        .ValueChangeEvent("input")
+                        .HoverStateEnabled(true)
+                        .Value(null)
+                        .ValueExpr("UserLevelID")
+                        .DisplayExpr("UserLevelDesc")
+                        .Width("100%")
+                        .TabIndex(1)
+                        .DropDownOptions(o => o
+                        //.Width("100%") // Set the desired width for the dropdown content*@
+                        .Width(1000)
+                        )
+                        // .OnKeyDown("onKeyDown")
+                        .ContentTemplate(new TemplateName("UserLevelContentTemplate")))
+
+                    </div>
+
+                    <div class="form-group">
+                        <label>Employee File Access Group :</label>
+                        @(Html.DevExtreme().DropDownBox()
+                        .DataSource(d => d.WebApi().Controller("utility").LoadAction("GetEmployeeGroups").LoadMode(DataSourceLoadMode.Raw).Key("EmpGroupID"))
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ID("ddEmployeeGroup")
+                        .ValidationRules(rules => {
+                        rules.AddRequired().Message("Please select an employee group.");
+                        })
+                        .ShowClearButton(true)
+                        .AcceptCustomValue(true)
+                        .OpenOnFieldClick(false)
+                        .ValueChangeEvent("input")
+                        .HoverStateEnabled(true)
+                        .Value(null)
+                        .DisplayExpr("EmployeeGroup")
+                        .ValueExpr("EmpGroupID")
+                        .Width("100%")
+                        .TabIndex(1)
+                        .DropDownOptions(o => o
+                        //.Width("100%") // Set the desired width for the dropdown content*@
+                        .Width(1000)
+                        )
+                        // .OnKeyDown("onKeyDown")
+                        .ContentTemplate(new TemplateName("EmployeeGroupContentTemplate")))
+
+                    </div>
+
+
+                    <div class="form-group">
+                        <label>Inventory Master Access:</label>
+                        @(Html.DevExtreme().DropDownBox()
+                        .ID("ddInventoryMasterGroup")
+                        .DataSource(d => d.WebApi()
+                        .Controller("utility")
+                        .LoadAction("GetInventoryGroups")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("InventoryMasterGroupID")
+                        )
+                        .DisplayExpr("InventoryMasterGroup")
+                        .ValueExpr("InventoryMasterGroupID")
+                        .ShowClearButton(true)
+                        .Placeholder("Select Inventory Group")
+                        .AcceptCustomValue(false)
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%")
+                        .DropDownOptions(d => d.Width("100%"))
+                        .ContentTemplate(new TemplateName("InventoryGroupContentTemplate"))
+                        .ValidationRules(rules =>
+                        {
+                        rules.AddRequired().Message("Please select an inventory group.");
+                        })
+                        )
+                    </div>
+
+                    <div class="form-group">
+                        <label>Petty Cash Account(Finance Module) :</label>
+                        @(Html.DevExtreme().DropDownBox()
+                        .DataSource(d => d.WebApi().Controller("utility").LoadAction("GetFilteredAccountHead").LoadMode(DataSourceLoadMode.Raw).Key("AccountId"))
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ID("ddFilteredAccountHead")
+                        .ValidationRules(rules => {
+                        rules.AddRequired().Message("Ledger Account should be entered.");
+                        })
+                        .ShowClearButton(true)
+                        .AcceptCustomValue(true)
+                        .OpenOnFieldClick(false)
+                        .ValueChangeEvent("input")
+                        .HoverStateEnabled(true)
+                        .Value(null)
+                        .ValueExpr("AccountId")
+                        .DisplayExpr("AccountHead")
+                        .Width("100%")
+                        .TabIndex(1)
+                        .DropDownOptions(o => o
+                        //.Width("100%") // Set the desired width for the dropdown content*@
+                        .Width(1000)
+                        )
+                        // .OnKeyDown("onKeyDown")
+                        .ContentTemplate(new TemplateName("FilteredAccountHeadContentTemplate")))
+
+                    </div>
+
+
+                    <div class="form-group">
+                        <label>Equipment Sales Person Access :</label>
+                        @(Html.DevExtreme().DropDownBox()
+                        .Label(new JS("formatMessage('User Level')"))
+                        .ID("ddHRUserLevel")
+                        .DataSource(d => d.WebApi()
+                        .Controller("Utility")
+                        .LoadAction("GetHRUserLevels")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("HruserLevelId")
+                        )
+                        .ValidationRules(rules => {
+                        rules.AddRequired().Message(new JS("formatMessage('User Level should be selected')"));
+                        })
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ShowClearButton(true)
+                        .AcceptCustomValue(false)
+                        .ValueExpr("HruserLevelId")
+                        .DisplayExpr("HruserLevelDesc")
+                        .Placeholder("Select Equipment Sales Person Access")
+                        .Width("100%")
+                        .DropDownOptions(o => o.Width("100%"))
+                        .ContentTemplate(new TemplateName("HRUserLevelContentTemplate"))
+                        )
+                    </div>
+
+                    <div class="form-group">
+                        <label>Inventory Sales Person Access :</label>
+                        @(Html.DevExtreme().DropDownBox()
+                        .DataSource(d => d.WebApi().Controller("utility").LoadAction("GetSalesPersonAccessLevels").LoadMode(DataSourceLoadMode.Raw).Key("SalesPersonID"))
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ID("ddSalesPerson")
+                        .ValidationRules(rules => {
+                        rules.AddRequired().Message("Ledger Account should be entered.");
+                        })
+                        .ShowClearButton(true)
+                        .AcceptCustomValue(true)
+                        .OpenOnFieldClick(false)
+                        .ValueChangeEvent("input")
+                        .HoverStateEnabled(true)
+                        .Value(null)
+                        .ValueExpr("SalesPersonID")
+                        .DisplayExpr("SalesPersonAccessLevelId")
+                        .Width("100%")
+                        .TabIndex(1)
+                        .DropDownOptions(o => o
+                        //.Width("100%") // Set the desired width for the dropdown content*@
+                        .Width(1000)
+                        )
+                        // .OnKeyDown("onKeyDown")
+                        .ContentTemplate(new TemplateName("SalesPersonDropDownTemplate")))
+
+                    </div>
+
+                    <div class="form-group">
+                        <label>HR Employee Timesheet Group :</label><div class="form-group">
+                            @(Html.DevExtreme().DropDownBox()
+                            .DataSource(d => d.WebApi()
+                            .Controller("Utility")
+                            .LoadAction("GetProjectGroups")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("ProjectGroupID")
+                            )
+                            .ValidationRules(rules => {
+                            rules.AddRequired().Message("Project Group is required");
+                            })
+                            .LabelMode(EditorLabelMode.Outside)
+                            .ID("ddProjectGroup")
+                            .ShowClearButton(true)
+                            .AcceptCustomValue(false)
+                            //.OpenOnFieldClick(false)
+                            //.ValueChangeEvent("input")
+                            //.HoverStateEnabled(true)
+                            .Placeholder("Select HR Employee Timesheet Group")
+                            .ValueExpr("ProjectGroupID")
+                            .DisplayExpr("ProjectGroupName")
+                            .Width("100%")
+                            .DropDownOptions(o => o.Width("100%"))
+                            .ContentTemplate(new TemplateName("ProjectGroupContentTemplate"))
+                            )
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group">
+                        <label>User Mobile No:</label>
+                        @(Html.DevExtreme().TextBox().ID("UserMobileNo").Width("100%"))
+                    </div>
+
+                    <div class="form-group">
+                        <label>User Email Address:</label>
+                        @(Html.DevExtreme().TextBox().ID("UserEmailAddress").Width("100%"))
+                    </div>
+
+                    <div class="form-group">
+                        <label>User Last Logged In Time:</label>
+                        @(Html.DevExtreme().DateBox().ID("UserLastLoggedInTime").Width("100%"))
+                    </div>
+
+                    <div class="form-group">
+                        <label>User Last Logged Off Time:</label>
+                        @(Html.DevExtreme().DateBox().ID("UserLastLoggedOffTime").Width("100%"))
+                    </div>
+
+                </div>
+                <div id="userProfileContainer" style="margin-top: 30px;"></div>
+
+                <div class="form-actions">
+
+                    <button type="button" id="btnSave" class="btn btn-success" onclick="saveUserDetails()">Save</button>
+                    @* <button type="button" id="btnResetPassword" class="btn btn-warning" onclick="resetPassword()">Reset Password</button> *@
+                </div>
+            </div>
+
+        </text>);
+
+                    items.Add()
+                .Title("User Access Details")
+                .Template(@<text>
+            <div>
+                <div class="containerInventoryStock">
+
+                    <div class="content-container-top">
+                        <div class="dx-fieldset horizontal-container">
+                            <table class="form-tablee">
+                                <tr>
+                                    <td>
+                                        @(Html.DevExtreme().Button()
+                                        .ID("btnGenerateAccessList")
+                                        .Text("Generate Access List")
+                                        .Icon("key")
+                                        .Width("100%")
+                                        .ElementAttr("class", "inline-icon")
+                                        .OnClick("StockGroup")
+                                        )
+                                    </td>
+                                    <td>
+                                        <div style="display: flex; align-items: center;">
+                                            @(Html.DevExtreme().Button()
+                                            .ID("btnReplicateUserAccessMain")
+                                            .Text("Replicate User Access")
+                                            .Icon("group")
+                                            .Width(200)
+                                            .OnClick("ReplicateAccess")
+                                            )
+                                            @(Html.DevExtreme().Button()
+                                            .ID("btnReplicateUserAccessDropdown")
+                                            .Icon("chevrondown") // dropdown arrow
+                                            .Width(50)
+                                            .OnClick("onDropdownIconClick")
+                                            )
+                                        </div>
+                                    </td>
+
+
+                                </tr>
+                            </table>
+
+
+                        </div>
+
+                    </div>
+                    <div class="tab-layout">
+                        <div class="tab-menu">
+                            @(
+                            Html.DevExtreme().Tabs()
+                            .Items(items =>
+                            {
+                            items.Add().Icon("preferences").Text("Master Module");
+                            items.Add().Icon("chart").Text("Finance");
+                            items.Add().Icon("image").Text("VAT");
+                            items.Add().Icon("money").Text("Human Resources");
+                            items.Add().Icon("repeat").Text("Equipment Rental");
+                            items.Add().Icon("tags").Text("Inventory Management");
+                            items.Add().Icon("cart").Text("Camp Management");
+                            items.Add().Icon("runner").Text("Project Control");
+                            items.Add().Icon("check").Text("Scaffolding Rental Solution");
+                            items.Add().Icon("repeat").Text("Alert Notification");
+                            items.Add().Icon("doc").Text("Finance Ledger Access");
+                            })
+                            .SelectedIndex(0)
+                            .Orientation(DevExtreme.AspNet.Mvc.Orientation.Vertical)
+                            .OnSelectionChanged("onTabSelectionChanged")
+                            )
+                        </div>
+
+                        <div class="tab-content-area">
+                            <!-- Container + Card Panels -->
+                            <div class="container-fluid tab-container" id="Master-content" >
+                                loadMAsterData
+                                <div class="card">
+                                    <div id="gridContainer1"></div>
+                                </div>
+                            </div>
+
+                            <div class="container-fluid tab-container" id="finance-content">
+                                loadFinanceData
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div id="gridContainer"></div> 
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="container-fluid tab-container">
+                                <div class="card">
+                                    <div class="card-body">Content for VAT</div>
+                                </div>
+                            </div>
+
+                            <div class="container-fluid tab-container">
+                                <div class="card">
+                                    <div class="card-body">Content for Human Resources</div>
+                                </div>
+                            </div>
+
+                            <div class="container-fluid tab-container">
+                                <div class="card">
+                                    <div class="card-body">Content for Equipment Rental</div>
+                                </div>
+                            </div>
+
+                            <div class="container-fluid tab-container">
+                                <div class="card">
+                                    <div class="card-body">Content for Inventory Management</div>
+                                </div>
+                            </div>
+
+                            <div class="container-fluid tab-container">
+                                <div class="card">
+                                    <div class="card-body">Content for Camp Management</div>
+                                </div>
+                            </div>
+
+                            <div class="container-fluid tab-container">
+                                <div class="card">
+                                    <div class="card-body">Content for Project Control</div>
+                                </div>
+                            </div>
+
+                            <div class="container-fluid tab-container">
+                                <div class="card">
+                                    <div class="card-body">Content for Scaffolding Rental Solution</div>
+                                </div>
+                            </div>
+
+                            <div class="container-fluid tab-container">
+                                <div class="card">
+                                    @(Html.DevExtreme().TextBox()
+                                    .ID("txtUserId")
+                                    .Placeholder("Enter User ID")
+                                    )
+
+                                    <div class="card-body">
+                                        <div style="margin-top: 20px;">
+                                            @(Html.DevExtreme().Button()
+                                            .ID("btnNotificationsOnCompanyDocs")
+                                            .Text("Set Alert Notification for Company Documents")
+                                            .OnClick("onSetAlertNotificationClick")
+                                            )
+                                            <div id="lblAlertforCompanyDoc" style="margin-top: 5px;"></div>
+                                        </div>
+
+                                        <div style="margin-top: 20px;">
+                                            @(Html.DevExtreme().Button()
+                                            .ID("btnNotificationsOnEquipmentDocs")
+                                            .Text("Set Alert Notification for Equipment Documents")
+                                            .OnClick("onSetEquipmentAlertNotificationClick")
+                                            )
+                                            <div id="lblAlertforEquipmentDoc" style="margin-top: 5px;"></div>
+                                        </div>
+
+                                        <div style="margin-top: 20px;">
+                                            @(Html.DevExtreme().Button()
+                                            .ID("btnNotificationsOnHRDocs")
+                                            .Text("Set Alert Notification for HR Documents")
+                                            .OnClick("onSetHRAlertNotificationClick")
+                                            )
+                                            <div id="lblAlertforHRDoc" style="margin-top: 5px;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="container-fluid tab-container">
+                                <div class="card">
+                                    <div class="card-body">Content for Finance Ledger Access</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+
+
+                </div>
+
+
+            </div>
+        </text>);
+                })
+            )
+    </div>
+</form>
+
+@using (Html.DevExtreme().NamedTemplate("DepartmentContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                                        .ID("department-datagrid")
+                                        .DataSource(d => d.WebApi()
+                                            .Controller("utility")
+                                            .LoadAction("GetDepartments")
+                                            .LoadMode(DataSourceLoadMode.Raw)
+                                            .Key("DepartmentCode"))
+                                        .Selection(s => s.Mode(SelectionMode.Single))
+                                        .ShowBorders(true)
+                                        .SearchPanel(s => s.Visible(true).HighlightSearchText(true))
+                                        .Paging(p => p.PageSize(10))
+                                        .FilterRow(f => f.Visible(true))
+                                        .Height(300)
+                                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                        .OnSelectionChanged("onDepartmentSelectionChanged")
+                                        .Columns(columns =>
+                                        {
+                                            columns.Add().DataField("DepartmentCode").Caption("Code").Width(100);
+                                            columns.Add().DataField("Department").Caption("Department Name");
+                                        }))
+}
+
+@using (Html.DevExtreme().NamedTemplate("CompanyContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                                                        .ID("company-datagrid")
+                                                    .DataSource(d => d.WebApi()
+                                                        .Controller("utility")
+                                                        .LoadAction("GetCompanies")
+                                                    .LoadMode(DataSourceLoadMode.Raw)
+                                                        .Key("CompanyID")
+                                                    )
+                                                    .WordWrapEnabled(true)
+                                                    .ShowBorders(true)
+                                                    .ShowColumnHeaders(true)
+                                                    .FilterRow(f => f.Visible(false))
+                                                    .SearchPanel(sp => sp.HighlightSearchText(false))
+                                                    .Selection(sl => sl.Mode(SelectionMode.Single))
+                                                        .OnSelectionChanged("onCompanySelectionChanged")
+                                                        .OnInitialized("onCompanydataGridInitialized")
+                                                    .HeaderFilter(p => p.Visible(false))
+                                                    .ShowBorders(true)
+                                                    .HoverStateEnabled(true)
+                                                    .Paging(p => p.PageSize(15))
+
+                                                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                                    .Height(200)
+                                                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                                    .Columns(columns =>
+                                                    {
+                                                        columns.Add().DataField("CompanyID").Caption("ID").Width(100);
+                                                        columns.Add().DataField("CompanyName").Caption("Company Name");
+
+
+                                                    })
+                                                    )
+}
+
+@using (Html.DevExtreme().NamedTemplate("BranchContentTemplate"))
+{
+    @(
+                Html.DevExtreme().DataGrid()
+                                                               .ID("Branch-datagrid")
+                                                        .DataSource(d => d.WebApi()
+                                                            .Controller("utility")
+                                                            .LoadAction("GetBranches")
+                                                            .LoadMode(DataSourceLoadMode.Raw)
+                                                            .Key("BranchCode")
+                                                        )
+
+                                                             .WordWrapEnabled(true)
+                                                                        .ShowBorders(true)
+                                                                        .ShowColumnHeaders(true)
+                                                                        .FilterRow(f => f.Visible(false))
+                                                                        .SearchPanel(sp => sp.HighlightSearchText(false))
+                                                                        .Selection(sl => sl.Mode(SelectionMode.Single))
+                                                                                .OnSelectionChanged("onBranchSelectionChanged")
+                                                                                .OnInitialized("onBranchdataGridInitialized")
+                                                                        .HeaderFilter(p => p.Visible(false))
+                                                                        .ShowBorders(true)
+                                                                        .HoverStateEnabled(true)
+                                                                        .Paging(p => p.PageSize(15))
+
+                                                                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                                                        .Height(200)
+                                                                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                                                        .Columns(columns =>
+                                                                            {
+                                                                                columns.Add().DataField("BranchCode").Caption("Code").Width(100);
+                                                                                columns.Add().DataField("BranchName").Caption("Branch Name");
+
+
+                                                                            })
+                                                                        )
+}
+@using (Html.DevExtreme().NamedTemplate("UserLevelContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                                                                .ID("UserLevel-datagrid")
+                                                        .DataSource(d => d.WebApi()
+                                                            .Controller("utility")
+                                                            .LoadAction("GetUserLevels")
+                                                        .LoadMode(DataSourceLoadMode.Raw)
+                                                            .Key("UserLevelID")
+                                                        )
+                                                        .WordWrapEnabled(true)
+                                                        .ShowBorders(true)
+                                                        .ShowColumnHeaders(true)
+                                                        .FilterRow(f => f.Visible(false))
+                                                        .SearchPanel(sp => sp.HighlightSearchText(false))
+                                                        .Selection(sl => sl.Mode(SelectionMode.Single))
+                                                            .OnSelectionChanged("onUserLevelSelectionChanged")
+                                                            .OnInitialized("onUserLeveldataGridInitialized")
+                                                        .HeaderFilter(p => p.Visible(false))
+                                                        .ShowBorders(true)
+                                                        .HoverStateEnabled(true)
+                                                        .Paging(p => p.PageSize(15))
+
+                                                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                                        .Height(200)
+                                                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                                         .Columns(columns =>
+                                    {
+                                        columns.Add().DataField("UserLevelID").Caption("ID").Width(100);
+                                        columns.Add().DataField("UserLevelDesc").Caption("Description");
+                                    })
+                                )
+}
+@using (Html.DevExtreme().NamedTemplate("EmployeeGroupContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                                                                .ID("EmployeeGroup-datagrid")
+                                                        .DataSource(d => d.WebApi()
+                                                            .Controller("utility")
+                                                            .LoadAction("GetEmployeeGroups")
+                                                        .LoadMode(DataSourceLoadMode.Raw)
+                                                            .Key("EmpGroupID")
+                                                        )
+                                                        .WordWrapEnabled(true)
+                                                        .ShowBorders(true)
+                                                        .ShowColumnHeaders(true)
+                                                        .FilterRow(f => f.Visible(false))
+                                                        .SearchPanel(sp => sp.HighlightSearchText(false))
+                                                        .Selection(sl => sl.Mode(SelectionMode.Single))
+                                                            .OnSelectionChanged("onEmployeeGroupSelectionChanged")
+                                                            .OnInitialized("onEmployeeGroupdataGridInitialized")
+                                                        .HeaderFilter(p => p.Visible(false))
+                                                        .ShowBorders(true)
+                                                        .HoverStateEnabled(true)
+                                                        .Paging(p => p.PageSize(15))
+
+                                                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                                        .Height(200)
+                                                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                                       .Columns(columns =>
+                                    {
+                                        columns.Add().DataField("EmpGroupID").Caption("Group ID").Width(100);
+                                        columns.Add().DataField("EmployeeGroup").Caption("Group Name");
+                                    })
+                                )
+}
+@using (Html.DevExtreme().NamedTemplate("InventoryGroupContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                                    .ID("inventory-group-datagrid")
+                                    .DataSource(d => d.WebApi()
+                                        .Controller("utility")
+                                            .LoadAction("GetInventoryGroups")
+                                        .LoadMode(DataSourceLoadMode.Raw)
+                                        .Key("InventoryMasterGroupID")
+                                    )
+                                    .Selection(s => s.Mode(SelectionMode.Single))
+                                    .ShowBorders(true)
+                                    .SearchPanel(s => s.Visible(true).HighlightSearchText(true))
+                                    .Paging(p => p.PageSize(10))
+                                    .FilterRow(f => f.Visible(true))
+                                    .Height(300)
+                                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                    .OnSelectionChanged("onInventoryGroupSelectionChanged")
+                                    .Columns(columns =>
+                                    {
+                                        columns.Add().DataField("InventoryMasterGroupID").Caption("Group ID").Width(100);
+                                        columns.Add().DataField("InventoryMasterGroup").Caption("Group Name");
+                                    })
+                                )
+}
+
+@using (Html.DevExtreme().NamedTemplate("FilteredAccountHeadContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                                                                .ID("FilteredAccountHead-datagrid")
+                                                        .DataSource(d => d.WebApi()
+                                                            .Controller("utility")
+                                                            .LoadAction("GetFilteredAccountHead")
+                                                        .LoadMode(DataSourceLoadMode.Raw)
+                                                            .Key("AccountId")
+                                                        )
+                                                        .WordWrapEnabled(true)
+                                                        .ShowBorders(true)
+                                                        .ShowColumnHeaders(true)
+                                                        .FilterRow(f => f.Visible(false))
+                                                        .SearchPanel(sp => sp.HighlightSearchText(false))
+                                                        .Selection(sl => sl.Mode(SelectionMode.Single))
+                                                            .OnSelectionChanged("onFilteredAccountSelectionChanged")
+                                                            .OnInitialized("onFilteredAccountGridInitialized")
+                                                        .HeaderFilter(p => p.Visible(false))
+                                                        .ShowBorders(true)
+                                                        .HoverStateEnabled(true)
+                                                        .Paging(p => p.PageSize(15))
+
+                                                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                                        .Height(200)
+                                                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                                       .Columns(columns =>
+                                    {
+                                        columns.Add().DataField("AccountId").Caption("Account ID").Visible(true);
+                                        columns.Add().DataField("AccountHead").Caption("Account Head").Visible(true);
+                                        columns.Add().DataField("AccountGroup").Caption("Account Group").Visible(true);
+                                        columns.Add().DataField("IsRestricted").Caption("Restricted").DataType(GridColumnDataType.Boolean);
+                                        columns.Add().DataField("MasterGroup").Caption("Master Group");
+                                        columns.Add().DataField("AccountHeadArabic").Caption("Account Head Arabic");
+                                    })
+                                @*     .Paging(p => p.PageSize(15))
+                        .FilterRow(f => f.Visible(true))
+                        .SearchPanel(s => s.Visible(true))
+                        .Height(350)
+                        .ShowBorders(true)
+                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual)) *@
+                                )
+}
+@using (Html.DevExtreme().NamedTemplate("HRUserLevelContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                                    .ID("hruserlevel-datagrid")
+                                    .DataSource(d => d.WebApi()
+                                        .Controller("Utility")
+                                        .LoadAction("GetHRUserLevels")
+                                        .LoadMode(DataSourceLoadMode.Raw)
+                                            .Key("HruserLevelId")
+                                    )
+                                    .Selection(s => s.Mode(SelectionMode.Single))
+                                    .OnSelectionChanged("onHRUserLevelSelectionChanged")
+                                    .Columns(columns =>
+                                    {
+                                        columns.Add().DataField("HruserLevelId").Caption("ID").Visible(true);
+                                        columns.Add().DataField("HruserLevelDesc").Caption("Description").Visible(true);
+                                    })
+                                    .Paging(p => p.PageSize(10))
+                                    .Height(300)
+                                    .ShowBorders(true)
+                                )
+}
+@using (Html.DevExtreme().NamedTemplate("SalesPersonDropDownTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                                                                .ID("SalesPerson-datagrid")
+                                                        .DataSource(d => d.WebApi()
+                                                            .Controller("utility")
+                                                            .LoadAction("GetSalesPersonAccessLevels")
+                                                        .LoadMode(DataSourceLoadMode.Raw)
+                                                                    .Key("SalesPersonAccessLevelId")
+                                                        )
+                                                        .WordWrapEnabled(true)
+                                                        .ShowBorders(true)
+                                                        .ShowColumnHeaders(true)
+                                                        .FilterRow(f => f.Visible(false))
+                                                        .SearchPanel(sp => sp.HighlightSearchText(false))
+                                                        .Selection(sl => sl.Mode(SelectionMode.Single))
+                                                            .OnSelectionChanged("onSalesPersonGridSelectionChanged")
+                                                            .OnInitialized("onSalesPersonGridInitialized")
+                                                        .HeaderFilter(p => p.Visible(false))
+                                                        .ShowBorders(true)
+                                                        .HoverStateEnabled(true)
+                                                        .Paging(p => p.PageSize(15))
+
+                                                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                                        .Height(200)
+                                                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                                           .Columns(columns =>
+                                    {
+
+                                        columns.Add().DataField("SalesPersonAccessLevelId").Caption("Sales Person");
+                                        columns.Add().DataField("SalesPersonAccessDesc").Caption("Access Level");
+                                    })@*
+                        .Height(300)
+                        .Paging(p => p.PageSize(10))
+                        .SearchPanel(sp => sp.Visible(true)) *@
+                                )
+}
+
+@using (Html.DevExtreme().NamedTemplate("ProjectGroupContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                                    .ID("projectgroup-datagrid")
+                                    .DataSource(d => d.WebApi()
+                                        .Controller("Utility")
+                                            .LoadAction("GetProjectGroups")
+                                        .LoadMode(DataSourceLoadMode.Raw)
+                                                .Key("ProjectGroupID")
+                                    )
+                                    .ShowBorders(true)
+                                    .Selection(s => s.Mode(SelectionMode.Single))
+                                    .SearchPanel(sp => sp.Visible(true).HighlightSearchText(true))
+                                    .Paging(p => p.PageSize(10))
+                                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                    .HoverStateEnabled(true)
+                                    .Height(300)
+                                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                    .OnSelectionChanged("projectGroupSelectionChanged")
+                                    .Columns(columns =>
+                                    {
+                                        columns.Add().DataField("ProjectGroupID").Caption("Project Group ID").Visible(true).Width(120);
+                                        columns.Add().DataField("ProjectGroupName").Caption("Project Group Name").Visible(true);
+                                    })
+                                )
+}
+
+
+
+
+@section Scripts {
+    <script>
+            let UserlevID=null,IsUserlevelflag=false;
+             let CompanyID=null,IsCompanyflag=false;
+             let BranchID=null,IsBranchflag=false;
+             let HrlevelD=null,IsHrlevelflag=false;
+             let InventoryMpraccessID=null,IsInventoryMpraccessflag=false;
+             let PettyCashAccountID=null,IsPettyCashAccountflag=false;
+        $(document).ready(function () {
+
+            // Hide all tabs and show the first one
+            $('.tab-container').hide();
+            $('.tab-container').eq(0).show();
+
+            // Load Master Module data by default
+            loadMasterModuleData("Master Module");
+
+            
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get("userId");
+            const tenantName = urlParams.get("tenantName");
+
+            if (userId) {
+                loadUserDetails(userId);
+            } else {
+                // Fetch next UserId from the server
+                $.ajax({
+                    url: window.location.origin + "/api/Utility/GetNextUserId",
+                    method: "GET",
+                    cache: false,
+                    dataType: "json",
+                    success: function (response) {
+                        if (response.success && response.nextUserId) {
+                            const userIdBox = $("#UserId").dxTextBox("instance");
+                            if (userIdBox) {
+                                userIdBox.option("value", response.nextUserId);
+                            }
+                        } else {
+                            DevExpress.ui.notify("Failed to generate User ID", "error", 3000);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        DevExpress.ui.notify("Failed to generate User ID", "error", 3000);
+                    }
+                });
+            }
+        });
+
+          // Get User ID from URL or TextBox
+    function getUserId() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const userIdFromUrl = urlParams.get("userId");
+
+        if (userIdFromUrl && userIdFromUrl.trim() !== "") {
+            return userIdFromUrl;
+        }
+
+        return $("#txtUserId").dxTextBox("instance").option("value");
+    }
+
+    // Show confirmation dialog before applying alert
+    function showNotificationConfirm(callback) {
+        
+        DevExpress.ui.dialog.confirm(
+            "You are about to Set Alert Notifications for this User.\nAre you Sure want to Apply this Setting?",
+            "Set Notification Setting"
+        ).done(function (dialogResult) {
+            if (dialogResult && typeof callback === "function") {
+                callback();
+            }
+        });
+    }
+
+    // Handle setting alert for Company Documents
+    function onSetAlertNotificationClick() {
+            
+        const button = $("#btnNotificationsOnCompanyDocs").dxButton("instance");
+
+        if (button.option("text") === "Set Alert Notification for Company Documents") {
+            showNotificationConfirm(function () {
+                const userId = getUserId();
+                if (userId) {
+                    $.post("/api/Utility/SetCompanyDocAlert", { userId: userId }, function (response) {
+                        if (response.success) {
+                            button.option("text", "Remove Alert Notification for Company Documents");
+                            $("#lblAlertforCompanyDoc")
+                                .text("This User Account is set to Receive Popup Notification on Expiry of Company Documents.")
+                                .css("color", "blue");
+                        } else {
+                            DevExpress.ui.dialog.alert(response.message, "Error");
+                        }
+                    });
+                } else {
+                    DevExpress.ui.dialog.alert("User ID is required.", "Warning");
+                }
+            });
+        }
+    }
+
+    // Handle setting alert for Equipment Documents
+    function onSetEquipmentAlertNotificationClick() {
+            
+        const button = $("#btnNotificationsOnEquipmentDocs").dxButton("instance");
+
+        if (button.option("text") === "Set Alert Notification for Equipment Documents") {
+            showNotificationConfirm(function () {
+                const userId = getUserId();
+                if (userId) {
+                    $.post("/api/Utility/SetEquipmentDocAlert", { userId: userId }, function (response) {
+                        if (response.success) {
+                            button.option("text", "Remove Alert Notification for Equipment Documents");
+                            $("#lblAlertforEquipmentDoc")
+                                .text("This User Account is set to Receive Popup Notification on Expiry of Equipment Documents.")
+                                .css("color", "blue");
+                        } else {
+                            DevExpress.ui.dialog.alert(response.message, "Error");
+                        }
+                    });
+                } else {
+                    DevExpress.ui.dialog.alert("User ID is required.", "Warning");
+                }
+            });
+        }
+    }
+
+    // Handle setting alert for HR Documents
+    function onSetHRAlertNotificationClick() {
+        
+        const button = $("#btnNotificationsOnHRDocs").dxButton("instance");
+
+        if (button.option("text") === "Set Alert Notification for HR Documents") {
+            showNotificationConfirm(function () {
+                const userId = getUserId();
+                if (userId) {
+                    $.post("/api/Utility/SetHRDocAlert", { userId: userId }, function (response) {
+                        if (response.success) {
+                            button.option("text", "Remove Alert Notification for HR Documents");
+                            $("#lblAlertforHRDoc")
+                                .text("This User Account is set to Receive Popup Notification on Expiry of HR Documents.")
+                                .css("color", "blue");
+                        } else {
+                            DevExpress.ui.dialog.alert(response.message, "Error");
+                        }
+                    });
+                } else {
+                    DevExpress.ui.dialog.alert("User ID is required.", "Warning");
+                }
+            });
+        }
+    }
+
+        function loadUserDetails(userId) {
+
+            
+            $.ajax({
+                url: "/api/Utility/GetUserID",
+                method: "GET",
+                data: { userId: userId },
+                success: function (response) {
+                    if (!response.success || !response.data) {
+                        $("#userProfileContainer").html("<div>User not found.</div>");
+                        return;
+                    }
+
+                    const user = response.data;
+                                     UserlevID=user.UserLevel;
+                                     console.log("UserlevelID",UserlevID)
+
+                                     CompanyID=user.CompanyId;
+                                             console.log("CompanyID",CompanyID)
+
+                                     BranchID=user.BranchCode;
+                                     console.log("BranchCode",BranchID)
+
+                                     HrlevelD=user.HrlevelCode;
+                                         console.log("HrlevelD",HrlevelD)
+
+                                                 InventoryMpraccessID=user.UserLevel;
+                                         console.log("InventoryMpraccessID",InventoryMpraccessID)
+
+                                         PettyCashAccountID=user.PettyCashAccount;
+                                         console.log("PettyCashAccount",PettyCashAccountID)
+
+                    $("#UserId").dxTextBox("instance").option("value", user.UserId);
+                    $("#UserName").dxTextBox("instance").option("value", user.UserName);
+                    $("#Password").dxTextBox("instance").option("value", user.Password);
+                    $("#UserEmailAddress").dxTextBox("instance").option("value", user.EmailAddress);
+                    $("#UserMobileNo").dxTextBox("instance").option("value", user.MobileNo);
+                    $("#UserLastLoggedInTime").dxDateBox("instance").option("value", user.LastLogOnTime);
+                    $("#UserLastLoggedOffTime").dxDateBox("instance").option("value", user.LastLogOffTime);
+
+
+                    // DropDown values
+                    $("#ddDepartment").dxDropDownBox("instance").option("value", user.DeptCode);
+                    // $("#ddCompany").dxDropDownBox("instance").option("value", user.CompanyId);
+                    // $("#ddBranch").dxDropDownBox("instance").option("value", user.BranchCode);
+                    // $("#ddUserLevel").dxDropDownBox("instance").option("value", user.UserLevel);
+                    // $("#ddEmployeeGroup").dxDropDownBox("instance").option("value", user.HrlevelCode);
+                    $("#ddInventoryMasterGroup").dxDropDownBox("instance").option("value", user.InventoryAccess);
+                    // $("#ddFilteredAccountHead").dxDropDownBox("instance").option("value", user.PettyCashAccount);
+                    $("#ddHRUserLevel").dxDropDownBox("instance").option("value", user.EqptQuotationAccess);
+                    // $("#ddSalesPerson").dxDropDownBox("instance").option("value", user.InventoryMpraccess);
+                    $("#ddProjectGroup").dxDropDownBox("instance").option("value", user.HrtimeSheetProjectGroup);
+                    //alert(user.CompanyId)
+                    onCompanySelectionChanged({ selectedRowKeys: [user.CompanyName] });
+                    onBranchSelectionChanged({ selectedRowKeys: [user.BranchName] });
+                    onUserLevelSelectionChanged({ selectedRowKeys: [user.UserLevelDesc] });
+                    onEmployeeGroupSelectionChanged({ selectedRowKeys: [user.HruserLevelDesc] });
+                    onFilteredAccountSelectionChanged({ selectedRowKeys: [user.AccountHead] });
+                    onSalesPersonGridSelectionChanged({ selectedRowKeys: [user.UserLevelDesc] });
+
+
+
+
+
+                },
+                error: function () {
+                    DevExpress.ui.notify("Failed to load user info", "error", 3000);
+                }
+            });
+        }
+
+        function onDepartmentSelectionChanged(e) {
+            const selectedKey = e.selectedRowKeys[0];
+            const ddbInstance = $("#ddDepartment").dxDropDownBox("instance");
+
+            if (selectedKey) {
+                ddbInstance.option("value", selectedKey);
+                if (ddbInstance.option("opened")) {
+                    ddbInstance.close();
+                      IsUserlevelflag=true;
+                }
+
+                const selectedRowData = e.selectedRowsData[0];
+                if (selectedRowData) {
+                    console.log("Selected:", selectedRowData.Department);
+                }
+            }
+        }
+        function onCompanySelectionChanged(e) {
+
+            // const selectedKey = e.selectedRowKeys && e.selectedRowKeys[0];
+            const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+
+            const ddbInstance = $("#ddCompany").dxDropDownBox("instance");
+
+            if (selectedKey) {
+
+                ddbInstance.option("value", selectedKey);
+                //  ddbInstance.repaint(); // Ensure UI refreshes
+                if (ddbInstance.option("opened")) {
+                    ddbInstance.close();
+                              IsCompanyflag=true;
+                }
+
+                const selectedRowData = e.selectedRowsData && e.selectedRowsData[0];
+                if (selectedRowData) {
+                    console.log("Selected company:", selectedRowData.CompanyName);
+                }
+            }
+        }
+
+        function onBranchSelectionChanged(e) {
+
+            // const selectedKey = e.selectedRowKeys && e.selectedRowKeys[0];
+            const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+
+            const ddbInstance = $("#ddBranch").dxDropDownBox("instance");
+
+            if (selectedKey) {
+
+                ddbInstance.option("value", selectedKey);
+                //  ddbInstance.repaint(); // Ensure UI refreshes
+                if (ddbInstance.option("opened")) {
+                    ddbInstance.close();
+                        IsBranchflag=true;
+                }
+
+                const selectedRowData = e.selectedRowsData && e.selectedRowsData[0];
+                if (selectedRowData) {
+                    console.log("Selected Branch:", selectedRowData.BranchName);
+                }
+            }
+        }
+
+        function onDepartmentsChanged(e) {
+            $.ajax({
+                url: "/api/Utility/GetDepartments",
+                method: "GET",
+                data: { module: selectedModule },
+                success: function (data) {
+                    prefixBox.option({
+                        items: data.data || data,
+                        value: null,
+                        disabled: false
+                    });
+                },
+            });
+        }
+
+        function onUserLevelSelectionChanged(e) {
+
+            // const selectedKey = e.selectedRowKeys && e.selectedRowKeys[0];
+            const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+
+            const ddbInstance = $("#ddUserLevel").dxDropDownBox("instance");
+
+            if (selectedKey) {
+
+                ddbInstance.option("value", selectedKey);
+                //  ddbInstance.repaint(); // Ensure UI refreshes
+                if (ddbInstance.option("opened")) {
+                    ddbInstance.close();
+                      IsUserlevelflag=true;
+                }
+
+                const selectedRowData = e.selectedRowsData && e.selectedRowsData[0];
+                if (selectedRowData) {
+                    console.log("User Level Selected:", selectedRowData.UserLevelDesc);
+                }
+               
+                    
+            }
+        }
+
+
+
+        function onEmployeeGroupSelectionChanged(e) {
+
+            // const selectedKey = e.selectedRowKeys && e.selectedRowKeys[0];
+            const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+
+            const ddbInstance = $("#ddEmployeeGroup").dxDropDownBox("instance");
+
+            if (selectedKey) {
+
+                ddbInstance.option("value", selectedKey);
+                //  ddbInstance.repaint(); // Ensure UI refreshes
+                if (ddbInstance.option("opened")) {
+                    ddbInstance.close();
+                }
+
+                const selectedRowData = e.selectedRowsData && e.selectedRowsData[0];
+                if (selectedRowData) {
+                    console.log("Selected Group:", selectedRowData.HruserLevelDesc);
+                }
+            }
+        }
+
+        function onInventoryGroupSelectionChanged(e) {
+            const selectedKey = e.selectedRowKeys[0];
+            const ddbInstance = $("#ddInventoryMasterGroup").dxDropDownBox("instance");
+
+            if (selectedKey) {
+                ddbInstance.option("value", selectedKey);
+                if (ddbInstance.option("opened")) {
+                    ddbInstance.close();
+                }
+
+                const selectedRowData = e.selectedRowsData[0];
+                if (selectedRowData) {
+                    console.log("Selected Inventory Group:", selectedRowData.InventoryMasterGroup);
+                }
+            }
+        }
+
+        function onFilteredAccountSelectionChanged(e) {
+
+            // const selectedKey = e.selectedRowKeys && e.selectedRowKeys[0];
+            const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+
+            const ddbInstance = $("#ddFilteredAccountHead").dxDropDownBox("instance");
+
+            if (selectedKey) {
+
+                ddbInstance.option("value", selectedKey);
+                //  ddbInstance.repaint(); // Ensure UI refreshes
+                if (ddbInstance.option("opened")) {
+                    ddbInstance.close();
+                }
+
+                const selectedRowData = e.selectedRowsData && e.selectedRowsData[0];
+                if (selectedRowData) {
+                    console.log("Selected Account:", selectedRowData.AccountHead);
+                }
+            }
+        }
+
+        function onHRUserLevelSelectionChanged(e) {
+            const selectedKey = e.selectedRowKeys[0];
+            const ddbInstance = $("#ddHRUserLevel").dxDropDownBox("instance");
+
+            if (selectedKey) {
+                ddbInstance.option("value", selectedKey);
+                if (ddbInstance.option("opened")) {
+                    ddbInstance.close();
+                }
+                const selectedRowData = e.selectedRowsData[0];
+                if (selectedRowData) {
+                    console.log("User Level Selected:", selectedRowData.UserLevelDesc);
+                }
+            }
+        }
+
+
+        function onSalesPersonGridSelectionChanged(e) {
+
+            // const selectedKey = e.selectedRowKeys && e.selectedRowKeys[0];
+            const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+
+            const ddbInstance = $("#ddSalesPerson").dxDropDownBox("instance");
+
+            if (selectedKey) {
+
+                ddbInstance.option("value", selectedKey);
+                //  ddbInstance.repaint(); // Ensure UI refreshes
+                if (ddbInstance.option("opened")) {
+                    ddbInstance.close();
+                }
+
+                const selectedRowData = e.selectedRowsData && e.selectedRowsData[0];
+                if (selectedRowData) {
+                    console.log("Selected SalesPerson:", selectedRowData.InventoryMprAccessDesc);
+                }
+            }
+        }
+
+        function projectGroupSelectionChanged(e) {
+            const selectedKey = e.selectedRowKeys[0];
+            const ddbInstance = $("#ddProjectGroup").dxDropDownBox("instance");
+
+            if (selectedKey) {
+                ddbInstance.option("value", selectedKey);
+                if (ddbInstance.option("opened")) {
+                    ddbInstance.close();
+                }
+
+                const selectedRowData = e.selectedRowsData[0];
+                console.log("Selected Project Group:", selectedRowData.ProjectGroupName);
+
+                window.selectedProjectGroupId = selectedRowData.ProjectGroupID;
+                window.selectedProjectGroupName = selectedRowData.ProjectGroupName;
+            } else {
+                DevExpress.ui.notify("Please select a Project Group from the grid", "error", 2000);
+            }
+        }
+
+
+
+               function saveUserDetails() {
+            
+             
+             let userLevelValue=null;
+                        if(IsUserlevelflag==false) {
+                                userLevelValue=UserlevID;
+                        }
+                        else{
+                                userLevelValue=$("#ddUserLevel").dxDropDownBox("instance").option("value");
+                        }
+
+                 let companyValue=null;
+                            if(IsCompanyflag==false){
+                                        companyValue=CompanyID;
+                            }
+                            else
+                            {
+                                   companyValue=$("#ddCompany").dxDropDownBox("instance").option("value");
+                            }
+                     let BranchValue=null;
+                         if(IsBranchflag==false){
+                                         BranchValue=BranchID;
+                         }
+                                     else{
+
+                                          BranchValue=$("#ddBranch").dxDropDownBox("instance").option("value");
+                                     }
+
+                                         let HrlevelDValue=null;
+                                             if(IsHrlevelflag==false){
+                                                         HrlevelDValue=HrlevelD;
+                                             }
+                                             else{
+                                                         HrlevelDValue=$("#ddEmployeeGroup").dxDropDownBox("instance").option("value");
+                                             }
+                                                 let InventoryMpraccessIDvalue=null;
+                                                     if(IsInventoryMpraccessflag==false){
+                                                                 InventoryMpraccessIDvalue=InventoryMpraccessID;
+                                                     }
+                                                     else{
+                                                                         InventoryMpraccessIDvalue=$("#ddSalesPerson").dxDropDownBox("instance").option("value");
+                                                     }
+                                                         let PettyCashAccountIDvalue=null;
+                                                             if(IsPettyCashAccountflag==false){
+                                                                         PettyCashAccountIDvalue=PettyCashAccountID;
+                                                             }
+                                                             else{
+                                                                         PettyCashAccountIDvalue=$("#ddFilteredAccountHead").dxDropDownBox("instance").option("value");
+                                                             }
+
+            const user = {
+                UserId: $("#UserId").dxTextBox("instance").option("value"),
+                UserName: $("#UserName").dxTextBox("instance").option("value"),
+                Password: $("#Password").dxTextBox("instance").option("value"),
+                DeptCode: $("#ddDepartment").dxDropDownBox("instance").option("value"),
+                    CompanyId: companyValue,
+                    BranchCode: BranchValue,
+                UserLevel: userLevelValue,
+                    HrlevelCode: HrlevelDValue,
+                        InventoryAccess: $("#ddInventoryMasterGroup").dxDropDownBox("instance").option("value"),
+                    PettyCashAccount: PettyCashAccountIDvalue,
+                EqptQuotationAccess: $("#ddHRUserLevel").dxDropDownBox("instance").option("value"),
+                    InventoryMpraccess: InventoryMpraccessIDvalue,
+                HrtimeSheetProjectGroup: $("#ddProjectGroup").dxDropDownBox("instance").option("value"),
+                // HRTimesheetGroup: $("#HRTimesheetGroup").dxSelectBox("instance").option("value"),
+                MobileNo: $("#UserMobileNo").dxTextBox("instance").option("value"),
+                EmailAddress: $("#UserEmailAddress").dxTextBox("instance").option("value"),
+                LastLogOnTime: $("#UserLastLoggedInTime").dxDateBox("instance").option("value"),
+                LastLogOffTime: $("#UserLastLoggedOffTime").dxDateBox("instance").option("value")
+            };
+            // Make an AJAX call to check the current user's UserLevel
+            $.ajax({
+                url: "/api/utility/CheckUserLevel", // Server-side endpoint to check UserLevel
+                method: "GET",
+                success: function (response) {
+                    if (response.success && response.userLevel === 99) {
+                        $.ajax({
+                            url: "/api/Utility/SaveUserDetails",
+                            method: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(user),
+                            success: function (response) {
+                                DevExpress.ui.notify("User details saved successfully!", "success", 3000);
+                            },
+                            error: function () {
+                                DevExpress.ui.notify("Failed to save user details", "error", 3000);
+                            }
+                        });
+                    } else {
+                        // Notify the user that navigation is not allowed
+                        DevExpress.ui.notify("You do not have permission to view this page.", "error", 2000);
+                    }
+                },
+                error: function () {
+
+        
+                }
+            });
+        }
+
+
+
+        function onCompanydataGridInitialized(e) {
+            dataGrid = e.component;
+        }
+
+        function onBranchdataGridInitialized(e) {
+            dataGrid2 = e.component;
+        }
+
+        function onUserLeveldataGridInitialized(e) {
+            dataGrid3 = e.component;
+        }
+
+        function onEmployeeGroupdataGridInitialized(e) {
+            dataGrid4 = e.component;
+        }
+        function onFilteredAccountGridInitialized(e) {
+            dataGrid5 = e.component;
+        }
+        function onSalesPersonGridInitialized(e) {
+            dataGrid6 = e.component;
+        }
+
+
+
+        function onSalesPersonValueChanged(e) {
+        }
+        function formatDate(dateStr) {
+            if (!dateStr) return "-";
+            const date = new Date(dateStr);
+            return date.toLocaleString();
+        }
+
+        function onTabSelectionChanged(e) {
+            var selectedIndex = e.component.option('selectedIndex');
+            var selectedText = e.component.option('items')[selectedIndex].text;
+
+            // Hide all containers
+            $('.tab-container').hide();
+
+            // Show the correct container
+            $('.tab-container').eq(selectedIndex).show();
+
+            if (selectedText === "Finance") {
+                loadFinanceData(selectedText);
+            }
+
+            if (selectedText === "Master Module") {
+                loadMasterModuleData(selectedText);
+            }
+        }
+
+        function loadFinanceData(selectedText) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get("userId");
+
+            $("#gridContainer").dxDataGrid({
+                dataSource: new DevExpress.data.CustomStore({
+                    key: "SlNo",
+                    load: function () {
+                        return $.getJSON(`/api/Utility/GetUserAccessWebs?userId=${userId}&selectedText=${selectedText}`)
+                            .then(function (result) {
+                                return {
+                                    data: result.data,
+                                    totalCount: result.totalCount
+                                };
+                            });
+                    }
+                }),
+                remoteOperations: false,
+                height: 500,
+                columnAutoWidth: true,
+                scrolling: {
+                    mode: "virtual",
+                    showScrollbar: "always"
+                },
+                columns: [
+                    { dataField: "SlNo", caption: "Serial No", visible: false },
+                    { dataField: "ItemForm", caption: "Item Name" },
+                    { dataField: "ItemDescription", caption: "Action Name" },
+                    {
+                        dataField: "ItemVisible",
+                        caption: "Visible",
+                        dataType: "boolean",
+                        cellTemplate: function (container, options) {
+                            $("<div>")
+                                .dxCheckBox({
+                                    value: options.value,
+                                    onValueChanged: function (e) {
+                                        const items = [{
+                                            SlNo: options.data.SlNo,
+                                            ItemVisible: e.value
+                                        }];
+                                        updateItemVisibility(items, function () {
+                                            $("#gridContainer").dxDataGrid("instance").refresh();
+                                        });
+                                    }
+                                })
+                                .appendTo(container);
+                        }
+                    }
+                ],
+                sorting: {
+                    mode: "multiple"
+                },
+                selection: {
+                    mode: "multiple"
+                },
+                showBorders: true
+            });
+        }
+
+        function loadMasterModuleData(selectedText) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get("userId");
+            
+            $("#gridContainer1").dxDataGrid({
+                dataSource: new DevExpress.data.CustomStore({
+                    key: "SlNo",
+                    load: function () {
+                        return $.getJSON(`/api/Utility/GetUserAccessWebs?userId=${userId}&selectedText=${selectedText}`)
+                            .then(function (result) {
+                                return {
+                                    data: result.data,
+                                    totalCount: result.totalCount
+                                };
+                            });
+                    }
+                }),
+                remoteOperations: false,
+                height: 500,
+                columnAutoWidth: true,
+                scrolling: {
+                    mode: "virtual",
+                    showScrollbar: "always"
+                },
+                columns: [
+                    { dataField: "SlNo", caption: "Serial No", visible: false },
+                    { dataField: "ItemForm", caption: "Item Name" },
+                    { dataField: "ItemDescription", caption: "Action Name" },
+                    {
+                        dataField: "ItemVisible",
+                        caption: "Visible",
+                        dataType: "boolean",
+                        cellTemplate: function (container, options) {
+                            $("<div>")
+                                .dxCheckBox({
+                                    value: options.value,
+                                    onValueChanged: function (e) {
+                                        const items = [{
+                                            SlNo: options.data.SlNo,
+                                            ItemVisible: e.value
+                                        }];
+                                        updateItemVisibility(items, function () {
+                                            $("#gridContainer1").dxDataGrid("instance").refresh();
+                                        });
+                                    }
+                                })
+                                .appendTo(container);
+                        }
+                    }
+                ],
+                sorting: {
+                    mode: "multiple"
+                },
+                selection: {
+                    mode: "multiple"
+                },
+                showBorders: true
+            });
+        }
+
+
+
+
+
+            function updateItemVisibility(items) {
+                $.ajax({
+                url: "/api/Utility/UpdateUserAccessWeb",
+                    method: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(items),
+                    success: function (data) {
+                        if (data.success) {
+                            DevExpress.ui.notify(data.message, "success", 3000);
+                        } else {
+                            DevExpress.ui.notify(data.message, "error", 3000);
+                        }
+                    },
+                    error: function () {
+                        DevExpress.ui.notify("Failed to update item visibility.", "error", 3000);
+                    }
+                });
+            }
+
+
+         
+         
+
+
+     
+
+        // function loadFinanceData() {
+        //     console.log("Loading Finance data...");
+        //     // Add your logic here
+        // }
+
+        function loadVATData() {
+            console.log("Loading VAT data...");
+            // Add your logic here
+        }
+
+        function loadHRData() {
+            console.log("Loading Human Resources data...");
+            // Add your logic here
+        }
+        function ItemStore() {
+            const url = `/${tenantName}/IMS/StockDetails_ItemStore`;
+            const title = "";
+            openModal(url, title);
+        }
+        function StockGroup() {
+           
+            
+
+            DevExpress.ui.dialog.confirm(
+                "You are about to Generate User Access Permissions for the user. Click Yes if you would like to continue.",
+                "Grant User Access Permission"
+            ).done(function (dialogResult) {
+                if (dialogResult) {
+                    // Get the userId from the query string
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const userId = urlParams.get("userId");
+                    
+                    if (userId) {
+                        $.ajax({
+                            url: "/api/Utility/GrantUserAccessPermissions", // API endpoint
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify({ userId: parseInt(userId) }), // Pass userId as JSON
+                            success: function (response) {
+                                DevExpress.ui.dialog.alert(
+                                    "User access permission has been successfully granted.",
+                                    "Success"
+                                );
+                            },
+                            error: function (xhr) {
+                                DevExpress.ui.dialog.alert(
+                                    "An error occurred while granting user access permissions.",
+                                    "Error"
+                                );
+                            }
+                        });
+                    } else {
+                        DevExpress.ui.dialog.alert("User ID is missing.", "Error");
+                    }
+                }
+
+            });
+        }
+
+        function ItemClassification() {
+            const url = `/${tenantName}/IMS/StockDetails_ItemClassification`;
+            const title = "";
+            openModal(url, title);
+        }
+        $(document).ready(function () {
+            // Ensure dxTabs has loaded, then get the selected index
+            const tabsInstance = DevExpress.ui.dxTabs.getInstance($(".dx-tabs")[0]);
+            const selectedTabIndex = tabsInstance.option("selectedIndex");
+
+            // Show the corresponding content
+            $("#tab-content-" + (selectedTabIndex + 1)).show();
+        });
+
+
+        $(function () {
+            $("#InventoryStockDetails").dxTextBox({
+                text: formatMessage("Inventory Stock Details"),
+                readOnly: true,
+                onContentReady: function (e) {
+                    $(e.element).addClass("dx-textbox-heading");
+                }
+
+            });
+        });
+
+        var contextMenuInstance;
+
+        $(function () {
+            $("<div style='margin-top: 60px;' id='addOrRemoveContextMenu'></div>").appendTo("body");
+
+            contextMenuInstance = $("#addOrRemoveContextMenu").dxContextMenu({
+                items: [
+                    {
+                        text: "Add or Remove Buttons",
+                        items: [
+                            {
+                                text: "User Access",
+                                template: function () {
+                                    return `
+                                              <div style="padding:5px;min-width:200px;">
+                                                  <div>
+                                                      <input type="checkbox" id="chkGenerate" />
+                                                      <label for="chkGenerate"> Generate Access List</label>
+                                                  </div>
+                                                  <div style="margin-top:5px;">
+                                                      <input type="checkbox" id="chkReplicate" />
+                                                      <label for="chkReplicate"> Replicate User Access</label>
+                                                  </div>
+                                                  <div style="margin-top:5px;">
+                                                      <button onclick="ResetToolbar()" style="width:100%;padding:5px;">Reset Toolbar</button>
+                                                  </div>
+                                              </div>
+                                          `;
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        template: function () {
+                            return `
+                                      <div style="padding:5px;min-width:220px;">
+                                          <button onclick="CustomizeToolbar()" style="width:100%;padding:5px;">Customize...</button>
+                                      </div>
+                                  `;
+                        }
+                    }
+                ],
+                target: "#btnReplicateUserAccessDropdown", // or your dropdown button ID
+                width: 250,
+                showSubmenuMode: { name: "onHover", delay: { show: 0, hide: 0 } },
+                submenuDirection: "right",
+                closeOnOutsideClick: false,
+                onItemClick: function (e) {
+                    e.event.stopPropagation();
+                }
+            }).dxContextMenu("instance");
+        });
+
+
+        function onDropdownIconClick(e) {
+            e.event.preventDefault();
+            e.event.stopPropagation();
+            const contextMenu = $("#addOrRemoveContextMenu").dxContextMenu("instance");
+            contextMenu.show();
+        }
+
+        function ReplicateAccess() {
+            const url = `/${tenantName}/Finance/ReplicateUserAccount`;
+            const title = "";
+            openModal(url, title);
+        }
+
+        function ResetToolbar() {
+            alert("Reset Toolbar clicked");
+        }
+
+        function CustomizeToolbar() {
+            alert("Customize clicked");
+        }
+
+           // Email validation for User Name field
+         // Function to validate email format
+        function validateEmail() {
+            // Get the email value from the DevExtreme TextBox
+            const email = $("#UserId").dxTextBox("instance").option("value");
+
+            // Create a temporary input element to validate the email
+            const tempInput = document.createElement("input");
+            tempInput.type = "email";
+            tempInput.value = email;
+
+            // Check if the email is valid
+            if (!tempInput.checkValidity()) {
+                DevExpress.ui.notify({
+                    message: formatMessage("Your Email ID is Invalid"),
+                    type: "error",
+                    displayTime: 3000
+
+                });
+
+                // Clear the email input field
+                $("#UserId").dxTextBox("instance").option("value", "");
+            } else {
+                DevExpress.ui.notify({
+                    message: formatMessage("Your Email ID is valid"),
+                    type: "success",
+                    displayTime: 3000,
+                    position: { my: "top right", at: "top right", of: window, offset: "0 30" }
+                });
+            }
+        }
+
+        // ... (rest of your JavaScript code remains unchanged) ...
+        
+    </script>
+
+}
+
+<style>
+    .form-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .form-group {
+        flex: 1 1 calc(33.333% - 20px);
+        min-width: 250px;
+    }
+
+    label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .mainContainer {
+        width: 96%;
+    }
+
+    .tab-layout {
+        display: flex;
+        gap: 20px;
+    }
+
+    .tab-menu {
+        min-width: 250px;
+    }
+
+    .tab-content-area {
+        flex-grow: 1;
+    }
+
+    .tab-container {
+        display: none;
+    }
+</style>

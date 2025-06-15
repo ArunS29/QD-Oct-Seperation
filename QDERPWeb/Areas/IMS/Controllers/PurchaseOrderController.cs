@@ -1,0 +1,117 @@
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using QD.ERP.Web.DAL.Entities;
+using QD.ERP.Web.Service;
+
+namespace QD.ERP.Web.Areas.IMS.Controllers
+{
+    [Route("api/[controller]/[action]")]
+    [ApiController]
+    public class PurchaseOrderController : Controller
+    {
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+        private readonly ILogger<PurchaseOrderController> _logger;
+
+        public PurchaseOrderController(ILogger<PurchaseOrderController> logger, TenantDbContextHelper tenantDbContextHelper)
+        {
+            _tenantDbContextHelper = tenantDbContextHelper;
+            _logger = logger;
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetPurchaseOrderCategories()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var PurchaseOrderCategories = await dbContext.Tbl60404pocategories
+                       .Select(s => new
+                       {
+                           s.PocategoryId,
+                           s.PocategoryName
+
+                       })
+                        .ToListAsync();
+
+                    return Json(PurchaseOrderCategories); // return raw data, paging/sorting done on client-side
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in GetPurchaseOrderCategories");
+                return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveOrUpdatePurchaseOrderCategories([FromBody] Tbl60404pocategory model) // ✅ Use correct entity class
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var existing = await dbContext.Tbl60404pocategories
+                        .FirstOrDefaultAsync(x => x.PocategoryId == model.PocategoryId);
+
+                    if (existing != null)
+                    {
+                        existing.PocategoryName = model.PocategoryName;
+                    }
+                    else
+                    {
+                        var lastId = await dbContext.Tbl60404pocategories
+                            .OrderByDescending(x => x.PocategoryId)
+                            .Select(x => (int?)x.PocategoryId)
+                            .FirstOrDefaultAsync();
+
+                        model.PocategoryId = (byte)((lastId ?? 0) + 1);
+                        dbContext.Tbl60404pocategories.Add(model);
+                    }
+
+                    await dbContext.SaveChangesAsync();
+                    return Ok(new { success = true, message = "Saved successfully", id = model.PocategoryId });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in SaveOrUpdateStatus: {ex}");
+                    return StatusCode(500, new { success = false, message = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { success = false, message = "Invalid tenant" });
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeletePurchaseOrderCategories(byte id)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var existing = await dbContext.Tbl60404pocategories
+                        .FirstOrDefaultAsync(x => x.PocategoryId == id);
+
+                    if (existing == null)
+                    {
+                        return NotFound(new { success = false, message = "Status not found" });
+                    }
+
+                    dbContext.Tbl60404pocategories.Remove(existing);
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(new { success = true, message = "Deleted successfully" });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in DeleteStatus: {ex}");
+                    return StatusCode(500, new { success = false, message = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { success = false, message = "Invalid tenant" });
+        }
+
+    }
+}

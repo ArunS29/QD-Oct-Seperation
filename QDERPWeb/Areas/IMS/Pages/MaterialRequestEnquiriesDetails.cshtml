@@ -59,10 +59,6 @@
 		border-radius: 8px;
 		overflow: hidden;
 	}
-
-	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddReport123,#btnColumnChooser,#btnAddMaterialRequest)) {
-		display: none !important;
-	}
 	#overlay-frame {
 		width: 100%;
 		height: 100%;
@@ -222,12 +218,7 @@
 </div>
 
 
-<div class="Head">
-	<div class="limited-footer">
-		@await Html.PartialAsync("InventoryModuleFooter")
-	</div>
-</div>
-
+@await Html.PartialAsync("/Pages/Shared/IMS/MaterialRequestFooter.cshtml")
 
 <div class="context-menu" id="contextMenu">
 	<div class="context-menu-item">
@@ -311,7 +302,7 @@
 				band.AddFor(m => m.Mprno).Caption(new JS("formatMessage('Request No')")).Alignment(HorizontalAlignment.Center);
 				band.AddFor(m => m.MprrevisionNo).Caption(new JS("formatMessage('Rev No')")).Alignment(HorizontalAlignment.Center);
 				band.AddFor(m => m.Mprdate).Caption(new JS("formatMessage('Request Date')")).Alignment(HorizontalAlignment.Right).Format("dd-MMM-yyyy").AllowEditing(true);
-				band.AddFor(m => m.RequestedNameRef).Caption(new JS("formatMessage('Requested By')")).Alignment(HorizontalAlignment.Center).GroupIndex(1);
+				band.AddFor(m => m.RequestedNameRef).Caption(new JS("formatMessage('Requested By')")).Alignment(HorizontalAlignment.Center);
 				band.AddFor(m => m.PurchaseRequestStatus).Caption(new JS("formatMessage('Purchase Request Status')")).Alignment(HorizontalAlignment.Center);
 				band.AddFor(m => m.IsSubmitted).Caption(new JS("formatMessage('Is Submitted')")).Alignment(HorizontalAlignment.Center).AllowEditing(true)
 			.CellTemplate(@<text>
@@ -432,79 +423,29 @@
 		.ColumnAutoWidth(true)
 		.Width("99%")
 		.WordWrapEnabled(true)
-		.OnCellClick("function(e) {handleCellClick(e);}")
-		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+		//.OnCellClick("function(e) {handleCellClick(e);}")
+		.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
+	 .Editing(editing => editing
+        .Mode(GridEditMode.Row))
 		.ColumnFixing(fixing => fixing.Enabled(true))
 		.HeaderFilter(filter => filter.Visible(false))
-		.Paging(p => p.Enabled(false))
-		.Pager(pager => pager.Visible(false))
 		.Grouping(grouping => grouping.AutoExpandAll(true))
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
 		.ShowRowLines(true)
 		.OnContextMenuPreparing("onContextMenuPreparing")
-		@* .Summary(summary =>
-		{
-			summary.TotalItems(totalItems =>
-			{
-				totalItems.Add().Column("AccountHead").SummaryType(SummaryType.Count)
-			.DisplayFormat(new JS("formatMessage('Count: {0}')"));
+		.Paging(p => p.PageSize(10)) // Set desired page size (e.g., 10 rows per page)
+.Pager(pager =>
+{
+    pager.ShowPageSizeSelector(true);
+    pager.AllowedPageSizes(new[] { 5, 10, 20, 50 });
+    pager.ShowNavigationButtons(true);
+    pager.Visible(true);
+})
 
-				totalItems.Add().Column("CalcLineAmount").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				totalItems.Add().Column("CalcTaxAmount").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				totalItems.Add().Column("TotalCreditNoteAmount").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				totalItems.Add().Column("DomesticStandartRatedRevenue").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				totalItems.Add().Column("TotalRevenueOf10Perc").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				totalItems.Add().Column("TotalRevenueOf15Perc").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				totalItems.Add().Column("DomesticZeroRatedRevenue").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				totalItems.Add().Column("DomesticExemptedRevenue").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				totalItems.Add().Column("GccstandardRatedRevenue").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				totalItems.Add().Column("ExportsRevenue").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				totalItems.Add().Column("DomesticStandartRatedTax").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				totalItems.Add().Column("TotalTaxOf10Perc").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				totalItems.Add().Column("TotalTaxOf15Perc").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				totalItems.Add().Column("DomesticZeroRatedTax").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				totalItems.Add().Column("DomesticExemptedTax").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				totalItems.Add().Column("GccstandardRatedTax").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				totalItems.Add().Column("ExportsTax").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-			});
-		}) *@
 		)
 </div>
 
@@ -550,8 +491,15 @@
 		    window.location.href = url;
 		//	openModal(url, title);
 		}
+	$(function () {
+			var now = new Date();
+			var firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+			var tillmonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+			$("#frmdateBox").dxDateBox("instance").option("value", firstDay);
+			$("#todateBox").dxDateBox("instance").option("value", tillmonth);
+			ddBtnShowRecords_click('range');
+	});
 	function ddBtnShowRecords_click(duration) {
-		debugger;
 		var frmDateBox = $("#frmdateBox").dxDateBox("instance");
 		var toDateBox = $("#todateBox").dxDateBox("instance");
 		var frmDate = new Date(frmDateBox.option("value"));
@@ -654,14 +602,6 @@
 
 		return [day, strmonth, year].join('-');
 	}
-	$(document).ready(function () {
-		$(".limited-footer .btn-containerIvoiceEdit").each(function () {
-			if (!$(this).find("#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddButtonPayment,#ddReport123,btnColumnChooser").length) {
-				$(this).remove();
-			}
-		});
-	});
-	
 
 	function onContextMenuPreparing(e) {
 		if (e.target === "content" && e.row) {
@@ -670,13 +610,40 @@
 					text: "Edit Request / Enquiry",
 					icon: "edit",
 					onItemClick: function () {
-						let Mprno = e.row.data.Mprno;
-						let tenantName = window.tenantName || "defaultTenant"; // replace with dynamic tenant logic if needed
-						let url = `/${tenantName}/IMS/AddNewClientRequest?Mprno=${Mprno}`;
+						const rowData = e.row.data;
+						if (!rowData) {
+							console.error("Row data is unavailable.");
+							return;
+						}
+
+						const { Mprno, RequestEnquiry } = rowData;
+						const tenantName = window.tenantName || "defaultTenant";
+						let url = "";
 						let title = "";
-						openModal(url, title);
+
+						switch (RequestEnquiry) {
+							case "Client Request":
+								url = `/${tenantName}/IMS/AddNewClientRequest?Mprno=${Mprno}`;
+								title = "Edit Client Request";
+								break;
+							case "Project Request":
+								url = `/${tenantName}/IMS/MRAddNewProjectRequest?Mprno=${Mprno}`;
+								title = "Edit Project Request";
+								break;
+							case "Store Request":
+								url = `/${tenantName}/IMS/MRAddNewStoreRequest?Mprno=${Mprno}`;
+								title = "Edit Store Request";
+								break;
+							default:
+								console.warn("Unknown RequestEnquiry type:", RequestEnquiry);
+								return;
+						}
+
+						//openModal(url, title);
+						window.location.href=url;
 					}
 				},
+
 				{
 					text: "Clone Request / Enquiry",
 					icon: "copy",
@@ -700,7 +667,9 @@
 							"Confirm Delete"
 						).done(function (dialogResult) {
 							if (dialogResult) {
-								onDeleteRequest(e.row.data.RequestRefNo);
+								var Mprno=e.row.data.Mprno;
+								console.log("number", Mprno);
+								onDeleteRequest(Mprno);
 							}
 						});
 					}
@@ -751,7 +720,12 @@
 					text: "View Revision History",
 					icon: "clock",
 					onItemClick: function () {
-						onViewRevisionHistory(e.row.data);
+						let Mprno = e.row.data.Mprno;
+						let tenantName = window.tenantName || "defaultTenant"; // replace with dynamic tenant logic if needed
+						let url = `/${tenantName}/IMS/MPRRevisionHistory?Mprno=${Mprno}`;
+						let title = `MPRRevisionHistory - ${Mprno}`;
+						openModal(url, title);
+						
 					}
 				}
 			];
@@ -766,22 +740,63 @@
 				}
 			});
 		});
-// 	$(document).ready(function () {
-//     $('#btnAddNew1').on('click', function (e) {
-//         e.stopPropagation(); // prevent click from bubbling up
-//         $('#submenu').toggle(); // toggle visibility
-//         const offset = $(this).offset();
-//         $('#submenu').css({ top: offset.top + $(this).outerHeight(), left: offset.left });
-//     });
 
-//     // Hide submenu when clicking outside
-//     $(document).on('click', function () {
-//         $('#submenu').hide();
-//     });
-// 	$(document).on('click', '#addCreditNote', function (e) {
-//     e.stopPropagation();
-// 			const url = `/${tenantName}/VAT/CreditNoteEditForm`;
-//     window.location.href = url;
-// });
-// });
+	function onDeleteRequest(Mprno) {
+		if (!Mprno) {
+			DevExpress.ui.notify('MPRNo is missing.', 'error', 3000);
+			return;
+		}
+
+		$.ajax({
+			url: `/api/MaterialRequestEnquiriesDetails/DeletePurchaseRequest?Mprno=${Mprno}`,
+			method: 'POST',
+			success: function (response) {
+				if (response.success) {
+					DevExpress.ui.notify(response.message, 'success', 2000);
+					$("#dataGrid").dxDataGrid("instance").refresh();
+				} else {
+					DevExpress.ui.notify(response.message, 'error', 3000);
+				}
+			},
+			error: function () {
+				DevExpress.ui.notify('An error occurred while attempting to delete the request.', 'error', 3000);
+			}
+		});
+	}
+
+	function onCloneRequest(originalData) {
+    if (!originalData) {
+        console.error("No data to clone.");
+        return;
+    }
+
+    // Create a deep copy of the original data
+    const clonedData = JSON.parse(JSON.stringify(originalData));
+
+    // Reset fields that should be unique or re-initialized
+    clonedData.Mprno = null; // Assuming Mprno is a unique identifier
+    clonedData.MprrevisionNo = false;
+    clonedData.Mprdate = new Date().toISOString().split('T')[0]; // Set to today's date
+    clonedData.IsSubmitted = false;
+    clonedData.IsVerified = false;
+    clonedData.IsApproved = false;
+    clonedData.IsCancelled = false;
+    clonedData.AddedOn = new Date().toISOString().split('T')[0];
+    clonedData.ModifiedOn = null;
+    clonedData.SubmittedOn = null;
+    clonedData.VerifiedOn = null;
+    clonedData.ApprovedOn = null;
+    clonedData.CancelledOn = null;
+    clonedData.Remarks = "Cloned from MPR";
+
+    // Insert the cloned data into the DataGrid
+    const dataGrid = $("#dataGrid").dxDataGrid("instance");
+    dataGrid.getDataSource().store().insert(clonedData).then(() => {
+        dataGrid.refresh();
+    }).catch((error) => {
+        console.error("Error inserting cloned data:", error);
+    });
+}
+
+
 </script>	

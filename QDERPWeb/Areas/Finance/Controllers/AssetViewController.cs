@@ -31,9 +31,10 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 try
                 {
-                    var ledgerData = dbContext.AssetRegisterViews
-                        .FromSqlRaw("EXEC sp20157AssetRegisterView")
-                        .AsQueryable(); // ✅ Keep it as IQueryable
+                    var ledgerData = dbContext.Qry20149AssetsRegisterViews
+                    .FromSqlRaw("SELECT * FROM qry20149AssetsRegisterView")
+                    .AsQueryable();
+
 
                     return Json(await DataSourceLoader.LoadAsync(ledgerData, loadOptions)); // ✅ No ToListAsync() here
                 }
@@ -347,35 +348,93 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetMaintenance(DataSourceLoadOptions loadOptions)
+        public IActionResult GetMaintenance()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+            {
+                var data = dbContext.Tbl20111AssetMaintenanceMasters
+                    .Select(x => new {
+                        x.MaintenanceRefNo,
+                        x.AssetLedgerNo,// ✅ This must be present
+                        x.MaintenanceTypeId,
+                        x.MaintenanceReading,
+                        x.MaintenanceDate,
+                        x.ReminderDate,
+                        x.IsMaintenanceDone,
+                        x.ActualMaintenanceDoneOn,
+                        x.MaintenanceRemarks
+                    }).ToList();
+
+                return Json(data);
+            }
+
+            return Unauthorized();
+        }
+
+        [HttpGet]
+        public IActionResult GetEditMaintenance()
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                var qryListOfAccountlists = dbContext.Tbl20111AssetMaintenanceMasters.Select(i => new
-                {
+                var data = dbContext.Tbl20112AssetMaintenanceTypes
+                    .Select(c => new
+                    {
+                        c.AssetMaintenanceTypeId,
+                        c.AssetMaintenanceType
+                    }).ToList();
 
-
-    i.AssetLedgerNo,
-    i.MaintenanceRefNo,
-       i.MaintenanceTypeId,
-         i.MaintenanceReading,
-
-        i.MaintenanceDate,
-
-         i.ReminderDate,
-
-        i.IsMaintenanceDone, 
-
-       i.ActualMaintenanceDoneOn,
-
-        i.MaintenanceRemarks 
-    });
-
-                return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+                return Ok(data);
             }
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        [HttpPost]
+        public IActionResult UpdateMaintenanceType([FromBody] Tbl20111AssetMaintenanceMaster updatedRow)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+            {
+                var entity = dbContext.Tbl20111AssetMaintenanceMasters
+                    .FirstOrDefault(x => x.MaintenanceRefNo == updatedRow.MaintenanceRefNo);
+
+                if (entity == null)
+                    return NotFound();
+
+                // Update the fields from the received model
+                entity.MaintenanceTypeId = updatedRow.MaintenanceTypeId;
+                entity.MaintenanceReading = updatedRow.MaintenanceReading;
+                entity.MaintenanceDate = updatedRow.MaintenanceDate;
+                entity.ReminderDate = updatedRow.ReminderDate;
+                entity.IsMaintenanceDone = updatedRow.IsMaintenanceDone;
+                entity.ActualMaintenanceDoneOn = updatedRow.ActualMaintenanceDoneOn;
+                entity.MaintenanceRemarks = updatedRow.MaintenanceRemarks;
+
+                dbContext.SaveChanges();
+                return Ok();
+            }
+
+            return Unauthorized(new { message = "Invalid tenant." });
+        }
+        [HttpPost]
+       
+        public IActionResult AddMaintenanceType([FromBody] Tbl20111AssetMaintenanceMaster model)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                return Unauthorized(); // or return Forbid(), depending on your security approach
+
+            if (model == null || string.IsNullOrEmpty(model.AssetLedgerNo))
+                return BadRequest("Invalid input");
+
+            
+            model.MaintenanceDate = model.MaintenanceDate == default ? DateTime.UtcNow : model.MaintenanceDate;
+            model.ReminderDate = model.ReminderDate == default ? DateTime.UtcNow : model.ReminderDate;
+            model.IsMaintenanceDone = false;
+
+            dbContext.Tbl20111AssetMaintenanceMasters.Add(model);
+            dbContext.SaveChanges();
+
+            return Ok();
+        }
+
 
     }
 }

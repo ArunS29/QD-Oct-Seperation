@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
+using QD.ERP.Web.Service;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
@@ -12,14 +13,16 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     public class ClientStatusCodeController : Controller
     {
         private ERPMasterWtDataContext _context;
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+        private readonly ILogger<ClientLeadsController> _logger;
 
-        public ClientStatusCodeController(ERPMasterWtDataContext context)
+       
+
+        public ClientStatusCodeController(ILogger<ClientLeadsController> logger, TenantDbContextHelper tenantDbContextHelper)
         {
-
-            _context = context;
+            _tenantDbContextHelper = tenantDbContextHelper;
+            _logger = logger;
         }
-
-
 
 
         [HttpGet]
@@ -27,8 +30,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         {
             try
             {
-
-                var qry = _context.Tbl30103ClientStatusCodes
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var qry = dbContext.Tbl30103ClientStatusCodes
                     .Select(i => new
                     {
                         i.StatusCode,
@@ -39,11 +43,14 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 return Json(await DataSourceLoader.LoadAsync(qry, loadOptions));
 
+                }
 
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
 
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Error in GetStatusCode: {ex.Message}");
                 return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
             }
         }
@@ -54,8 +61,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         {
             try
             {
-                // Step 1: Get the last ClientCategoryCode
-                short lastCode = _context.Tbl30103ClientStatusCodes
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    // Step 1: Get the last ClientCategoryCode
+                    short lastCode = dbContext.Tbl30103ClientStatusCodes
                                          .OrderByDescending(c => c.StatusCode)
                                          .Select(c => c.StatusCode)
                                          .FirstOrDefault();
@@ -70,10 +79,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     StatusCode =(byte)newCode
                 };
 
-                _context.Tbl30103ClientStatusCodes.Add(newCategory);
-                _context.SaveChanges();
+                dbContext.Tbl30103ClientStatusCodes.Add(newCategory);
+                dbContext.SaveChanges();
 
-                var allData = _context.Tbl30103ClientStatusCodes
+                var allData = dbContext.Tbl30103ClientStatusCodes
              .OrderBy(e => e.StatusCode)
              .Select(e => new ClientStatusDisplayDTO
              {
@@ -85,9 +94,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 // ✅ Return all data in the same structure
                 return Ok(new { data = allData });
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Error in CreateClientCategory: {ex.Message}");
                 return StatusCode(500, $"Error: {ex.Message}");
             }
         }
@@ -97,9 +110,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         {
             try
             {
-                foreach (var item in updatedList)
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    var entity = _context.Tbl30103ClientStatusCodes
+                    foreach (var item in updatedList)
+                {
+                    var entity = dbContext.Tbl30103ClientStatusCodes
                         .FirstOrDefault(x => x.StatusCode == item.StatusCode);
 
                     if (entity != null)
@@ -110,11 +125,15 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     }
                 }
 
-                _context.SaveChanges();
+                dbContext.SaveChanges();
                 return Ok(new { message = "Updated successfully" });
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Error in UpdateClientCategories: {ex.Message}");
                 return StatusCode(500, $"Update failed: {ex.Message}");
             }
         }

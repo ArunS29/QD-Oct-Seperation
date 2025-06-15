@@ -62,7 +62,7 @@
         background-color: #fff;
     }
 
-    .limited-footer .btn-container:not(:has(#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
+    .limited-footer .btn-container:not(:has(#btnUpdate,#btnBack)) {
         display: none !important;
     }
 
@@ -104,8 +104,6 @@
     </div>
 </div>
 <div class="signatory-form-container">
-    <div id="DatabaseSignatories" class="no-border-title"></div>
-
     <div class="form-row">
         <div class="col-md-6">
             @(Html.DevExtreme().TextBox()
@@ -125,7 +123,7 @@
         <div class="col-md-2">
             @(Html.DevExtreme().Button()
                 .ID("btnAddSalesPerson")
-                .Text("ADD")
+                .Text(new JS("formatMessage('ADD')"))
                 .Icon("plus")
                 .OnClick("function() { addSignatoryToGrid(); }")
                 .ElementAttr(new { @class = "dx-button-add" })
@@ -150,7 +148,7 @@
             .Editing(editing => editing
             .Mode(GridEditMode.Batch)
             .AllowUpdating(true)
-
+            .AllowDeleting(true)
             )
             .Toolbar(toolbar =>
             {
@@ -159,9 +157,21 @@
             .OnRowUpdating("onSignatoryUpdating")                       // Handles saving
             .Columns(columns =>
             {
-            columns.Add().DataField("ModeOfRequestId").Caption("ID").Width(80).AllowEditing(false);
-            columns.Add().DataField("ModeOfRequest").Caption("Mode Of Request").Width(200);
-           
+            columns.Add().DataField("ModeOfRequestId").Caption(new JS("formatMessage('ID')"))
+            .Width(80).AllowEditing(false);
+            columns.Add().DataField("ModeOfRequest").Caption(new JS("formatMessage('Mode Of Request')"))
+            .Width(200);
+            // Add delete button column
+            columns.Add()
+            .Type(GridCommandColumnType.Buttons)
+            .Buttons(buttons =>
+            {
+                buttons.Add()
+            .Name(GridColumnButtonName.Delete)
+            .Icon("trash") // Use a trash icon
+            .Hint("Delete Row") // Tooltip
+            .OnClick("onDeleteButtonClick");
+            });
 
             })
             .Height(500)
@@ -186,13 +196,13 @@
 
 
     <div class="limited-footer">
-        @await Html.PartialAsync("VATModuleFooter")
+    @await Html.PartialAsync("InventoryModuleFooter")
     </div>
     <script>
 
         $(document).ready(function () {
 
-              $(".limited-footer .btn-containerIvoiceEdit").each(function () {
+        $(".limited-footer .btn-container").each(function () {
 
                   if (!$(this).find("#btnUpdate,#btnBack").length) {
 
@@ -331,7 +341,36 @@
                 }
             });
         }
+    function onDeleteButtonClick(e) {
+        e.event.preventDefault(); // prevent default delete
 
+        var grid = $("#SignatoryGrid").dxDataGrid("instance");
+        var key = e.row.data.ModeOfRequestId; // get the ID of the row
+
+        if (confirm("Are you sure you want to delete this row?")) {
+            $.ajax({
+                url: '/api/QuotationModeOfRequestf/Delete?key=' + key,
+                type: 'DELETE',
+                success: function () {
+                    // Refresh the grid after delete
+                    grid.refresh();
+                    DevExpress.ui.notify("Deleted successfully", "success", 2000);
+                },
+                error: function () {
+                    DevExpress.ui.notify("Delete failed", "error", 2000);
+                }
+            });
+        }
+    }
+    $(function () {
+            $("#QuotationModeofRequest").dxTextBox({
+                text: formatMessage("Quotation Mode of Request"),
+            readOnly: true,
+            onContentReady: function (e) {
+                $(e.element).addClass("dx-textbox-heading");
+            }
+        });
+    });
 
 
 

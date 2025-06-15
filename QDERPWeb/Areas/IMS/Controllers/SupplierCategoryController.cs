@@ -140,21 +140,29 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteBranchMaster([FromBody] Tbl3019901SupplierCategory branch)
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            try
             {
-                var BranchToDelete = await dbContext.Tbl3019901SupplierCategories.FindAsync(branch.SupplierCategoryCode);
-                if (BranchToDelete == null)
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    return NotFound();
+                    var BranchToDelete = await dbContext.Tbl3019901SupplierCategories.FindAsync(branch.SupplierCategoryCode);
+                    if (BranchToDelete == null)
+                    {
+                        return NotFound();
+                    }
+
+                    dbContext.Tbl3019901SupplierCategories.Remove(BranchToDelete);
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(new { success = true, message = "Supplier Category deleted successfully." });
                 }
 
-                dbContext.Tbl3019901SupplierCategories.Remove(BranchToDelete);
-                await dbContext.SaveChangesAsync();
-
-                return Ok(new { success = true, message = "Supplier Category deleted successfully." });
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
             }
-
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
+            catch (Exception ex)
+            {
+                  _logger.LogError($"Error in GetProject: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+            }
         }
     }
 }

@@ -37,7 +37,7 @@
         color: #007bff; /* Change the icon color */
     }
 
-    .dx-field-item-label-text > {
+    .dx-field-item-label-text  {
         color: black !important;
     }
 
@@ -99,14 +99,14 @@
         <div id="SupplierContactList" class="no-border-title"></div>
     </div>
 </div>
-<div class="formContainer">
+<div class="formContainer" style="padding: 20px;">
 
     <div class="form-row">
         <div class="form-field">
             @(Html.DevExtreme().TextBox()
                 .ID("txtSupplierCode")
                 .Value("")
-                .Label("Supplier Code")
+                .Label(new JS("formatMessage('Supplier Code')"))
                 .Width("100%")
                 .LabelMode(EditorLabelMode.Outside)
                 .ElementAttr("class", "white-bg"))
@@ -118,8 +118,8 @@
                 .Width("100%")
                 .Value("-1")
                 .ReadOnly(true)
-                .Label(" ")
-                 .Disabled(true)
+                .Label("")
+                .Disabled(true)
                 .LabelMode(EditorLabelMode.Outside)
                 .ElementAttr("class", "white-bg"))
         </div>
@@ -131,7 +131,7 @@
                 .ID("txtSupplierName")
                 .Value("")
                 .Width("100%")
-                .Label("Supplier Name")
+            .Label(new JS("formatMessage('Supplier Name')"))
                 .LabelMode(EditorLabelMode.Outside)
                 .ElementAttr("class", "white-bg")
                 )
@@ -149,7 +149,7 @@
             @(Html.DevExtreme().TextBox()
                 .ID("contactPerson")
                 .Value("")
-                .Label("Contact Person")
+            .Label(new JS("formatMessage('Contact Person')"))
                 .LabelMode(EditorLabelMode.Outside)
                 .Width("100%")
                 .ElementAttr("class", "white-bg")
@@ -166,7 +166,7 @@
                 .ID("title")
                 .Value("")
                 .Width("100%")
-                .Label("Title")
+            .Label(new JS("formatMessage('Title')"))
                 .LabelMode(EditorLabelMode.Outside)
                 .ElementAttr("class", "white-bg"))
             @(Html.DevExtreme().Button()
@@ -182,7 +182,7 @@
                 .ID("division")
                 .Value("")
                 .Width("100%")
-                .Label("Division / Branch")
+               .Label(new JS("formatMessage('Division / Branch')"))
                 .LabelMode(EditorLabelMode.Outside)
                 .ElementAttr("class", "white-bg"))
             @(Html.DevExtreme().Button()
@@ -196,7 +196,7 @@
                 .ID("location")
                 .Value("")
                 .Width("100%")
-                .Label("Location")
+               .Label(new JS("formatMessage('Location')"))
                 .LabelMode(EditorLabelMode.Outside)
                 .ElementAttr("class", "white-bg")
                 )
@@ -213,7 +213,7 @@
                 .ID("mobile1")
                 .Value("")
                 .Width("100%")
-                .Label("Mobile Number (1)")
+                            .Label(new JS("formatMessage('Mobile Number (1)')"))
                 .LabelMode(EditorLabelMode.Outside)
                 .ElementAttr("class", "white-bg"))
             @(Html.DevExtreme().Button()
@@ -226,7 +226,7 @@
                 .ID("phone1")
                 .Value("")
                 .Width("100%")
-                .Label("Phone No. (1)")
+                .Label(new JS("formatMessage('Phone No (1)')"))
                 .LabelMode(EditorLabelMode.Outside)
                 .ElementAttr("class", "white-bg"))
             @(Html.DevExtreme().Button()
@@ -241,7 +241,7 @@
             @(Html.DevExtreme().TextBox()
                 .ID("mobile2")
                 .Width("100%")
-                .Label("Mobile Number (2)")
+                .Label(new JS("formatMessage('Mobile Number (2)')"))
                 .LabelMode(EditorLabelMode.Outside)
                 .ElementAttr("class", "white-bg"))
             @(Html.DevExtreme().Button()
@@ -254,7 +254,7 @@
                 .ID("phone2")
                 .Value("")
                 .Width("100%")
-                .Label("Phone No. (2)")
+                .Label(new JS("formatMessage('Phone No (2)')"))
                 .LabelMode(EditorLabelMode.Outside)
                 .ElementAttr("class", "white-bg"))
             @(Html.DevExtreme().Button()
@@ -263,13 +263,12 @@
                 )
         </div>
     </div>
-
     <div class="form-row">
         <div class="form-field" style="display: flex;  align-items: end;">
             @(Html.DevExtreme().TextBox()
                 .ID("fax")
                 .Value("")
-                .Label("Fax No")
+                            .Label(new JS("formatMessage('Fax No')"))
                 .Width("100%")
                 .LabelMode(EditorLabelMode.Outside)
                 .ElementAttr("class", "white-bg"))
@@ -283,7 +282,7 @@
                 .ID("email")
                 .Value("")
                 .Width("100%")
-                .Label("Email")
+                 .Label(new JS("formatMessage('Email')"))
                 .LabelMode(EditorLabelMode.Outside)
                 .ElementAttr("class", "white-bg"))
             @(Html.DevExtreme().Button()
@@ -295,7 +294,7 @@
     <div class="d-flex justify-content-start" style="gap: 10px; margin-bottom: 20px;">
         @(Html.DevExtreme().Button()
             .ID("btnSave")
-            .Text("Save")
+            .Text(new JS("formatMessage('Save')"))
             .Icon("save")
             .Type(ButtonType.Success)
             .OnClick("saveOrUpdateSupplierContact")
@@ -348,7 +347,7 @@
     });
 
     function bindSupplierContactData(supplierContactSlNo) {
-        debugger;
+        
         $.ajax({
             url: `/api/SupplierContactList/GetContactBySlNo?supplierContactSlNo=${supplierContactSlNo}`,
             type: 'GET',
@@ -356,7 +355,10 @@
                 console.log("Supplier Contact Loaded:", data);
                 if (data) {
                     $("#txtSupplierHidden").dxTextBox("instance").option("value", data.SupplierContactSlNo); // hidden field
-                    $("#txtSupplierCode").dxTextBox("instance").option("value", data.SupplierCode);
+                       $("#txtSupplierCode").dxTextBox("instance").option({
+                            value: data.SupplierCode,
+                            readOnly: true
+                        });
                     $("#txtSupplierName").dxTextBox("instance").option("value", data.SupplierName);
                     $("#contactPerson").dxTextBox("instance").option("value", data.ContactPerson);
                     $("#title").dxTextBox("instance").option("value", data.ContactPersonTitle);
@@ -386,7 +388,7 @@
     });
 
     function saveOrUpdateSupplierContact() {
-        debugger;
+        
         const supplierContactSlNo = $("#txtSupplierHidden").dxTextBox("instance").option("value"); // hidden ID
 
         const data = {
@@ -415,6 +417,14 @@
                 if (res.success) {
                     DevExpress.ui.notify(res.message, "success", 2000);
                     $("#txtSupplierHidden").dxTextBox("instance").option("value", res.lastSupplierContactSlNo);
+
+                     // Refresh parent DataGrid with fresh data
+                if (window.parent && typeof window.parent.loadSupplierContactListGrid === "function") {
+                    const SupplierCode = $("#txtSupplierCode").dxTextBox("instance").option("value");
+                    if (SupplierCode) {
+                        window.parent.loadSupplierContactListGrid(SupplierCode);
+                    }
+                }
                 } else {
                     DevExpress.ui.notify(res.message, "error", 3000);
                 }

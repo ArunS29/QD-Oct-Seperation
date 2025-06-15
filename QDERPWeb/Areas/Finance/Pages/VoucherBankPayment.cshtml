@@ -163,6 +163,7 @@
                         .ValueExpr("AccountId")
                         .DisplayExpr("AccountHead")
                         .OnInput("dropDownBoxOnInput")
+                        
                         .OnOpened("onOpened")
                         .Width(720)
                         .TabIndex(1)
@@ -214,13 +215,14 @@
                         .ID("ddAccountHead")
                         .ShowClearButton(true)
                         .AcceptCustomValue(true)
-                        .AcceptCustomValue(false)
+                        
                         .OpenOnFieldClick(false)
                         .ValueChangeEvent("input")
                         .HoverStateEnabled(true)
                         .ValueExpr("AccountId")
                         .DisplayExpr("AccountHead")
-                        .OnInput("dropDownBoxOnInput")
+                        .OnInput("dropDownBoxInput")
+                        .OnClosed("onDropDownBoxClosed")
                         .OnOpened("onOpened")
                         .Width(315)
                         .TabIndex(1)
@@ -328,7 +330,7 @@
         .DisplayExpr("CurrencyName")
         .OnInput("dropDownBoxOnInput") // Reuse or define separate handler if needed
         .OnOpened("onOpened")
-        .Width(160)
+        .Width(210)
         .TabIndex(2) // Different tabindex to separate from the first
         .DropDownOptions(o => o.Width(700))
         .OnKeyDown("onKeyDown")
@@ -391,7 +393,7 @@
                     .DisplayExpr("CurrencyName")
                     .OnInput("dropDownBoxOnInput")
                     .OnOpened("onOpened")
-                    .Width(160)
+                    .Width(210)
                     .TabIndex(1)
                     .DropDownOptions(o => o.Width(700))
                     .OnKeyDown("onKeyDown")
@@ -949,7 +951,7 @@
                         )
                         .WordWrapEnabled(true)
                         .ShowBorders(true)
-
+                        .SearchPanel(sp => sp.Visible(true))
                         .SearchPanel(sp => sp.HighlightSearchText(true))
                         .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
                         .OnSelectionChanged("dataGridSelectionChanged")
@@ -1461,16 +1463,44 @@
             });
 
 
-            function dropDownBoxOnInput(e) {
-                const ddbInstance = e.component;
-                if (!ddbInstance.option("opened")) ddbInstance.open();
+    function dropDownBoxOnInput(e) {
+        const dropDownBoxInstance = e.component;
+        const typedText = dropDownBoxInstance.option("text");
+
+        if (!dropDownBoxInstance.option("opened")) {
+            dropDownBoxInstance.open();
+        }
+    }
+    function dropDownBoxInput(e) {
+        const dropDownBoxInstance = e.component;
+        const typedText = dropDownBoxInstance.option("text");
+
+        if (!dropDownBoxInstance.option("opened")) {
+            dropDownBoxInstance.open();
+        }
+        const grid = $(e.component.content()).find("#accounthead-datagrid").first().dxDataGrid("instance");
+        if (grid) {
+            grid.option("searchPanel.text", typedText);
+        }
+    }
+
+    function onDropDownBoxClosed(e) {
+        const typedText = e.component.option("text");
+        const grid = $(e.component.content()).find("#accounthead-datagrid").first().dxDataGrid("instance");
+
+        if (!grid) return;
+
+        const visibleRows = grid.getVisibleRows();
+        const match = visibleRows.find(r => r.data.AccountHead === typedText);
+
+        if (!match) {
+            // Clear the value if not valid
+            e.component.option("value", null);
+           
+        }
+    }
 
 
-                const text = ddbInstance.option("text");
-                if (dataGrid) {
-                    dataGrid.option("searchPanel.text", text);
-                }
-            }
 
             function onOpened(e) {
                 setTimeout(() => {
@@ -1491,7 +1521,7 @@
                 }
             }
 
-            //debugger;
+            
 
             function dataGridSelectionChanged(e) {
                 const selectedKey = e.selectedRowKeys[0];
@@ -1575,7 +1605,7 @@
 
                 var ChequeNoValidator = $("#ChequeNo").dxValidator("instance");
                 var aChequeNoValidator = ChequeNoValidator.validate();
-                // debugger;
+                
                 if (aChequeNoValidator.isValid
                 ) {
 
@@ -1762,7 +1792,7 @@
         // Get the latest entry from the filtered data
         var latestEntry = filteredData.length > 0 ? filteredData[filteredData.length - 1] : null;
         console.log(latestEntry);
-        debugger;
+        
           if (accheadname != null) {
 
                 if (accheadname && accheadname.startsWith("Cost")) {
@@ -1853,7 +1883,7 @@
         // Get the latest entry from the filtered data
         var latestEntry = filteredData.length > 0 ? filteredData[filteredData.length - 1] : null;
         console.log(latestEntry);
-        debugger;
+        
           if (accheadname != null) {
 
                if (accheadname && accheadname.startsWith("Salary Payable")) {
@@ -2831,7 +2861,7 @@
         const queryString = Object.keys(params)
             .map(key => `${key}=${params[key]}`)
             .join('&');
-        debugger;
+        
         $.ajax({
             url: `/api/VoucherEntryReceipts/CostAllocation?${queryString}`,
             type: "GET",
@@ -2839,7 +2869,7 @@
             success: function (data) {
                 // Get the popup's unique identifier, for example, use the voucher number
                 
-                debugger;
+                
                 // Check if the popup is already opened
               
                     // Create and store the popup instance
@@ -2860,7 +2890,7 @@
     }
 
     function openPropertyAllocationPopup(params) {
-        debugger;
+        
         const queryString = Object.keys(params)
             .map(key => `${key}=${params[key]}`)
             .join('&');
@@ -2872,7 +2902,7 @@
             success: function (data) {
                 // Get the popup's unique identifier, for example, use the voucher number
                 const popupId = `PropertyAllocationPopup-${params.VoucherEntryNo}`;
-                debugger;
+                
                 // Check if the popup is already opened
                 if (!openedPopups[popupId]) {
                     // Create and store the popup instance
@@ -2909,7 +2939,7 @@
             success: function (data) {
                 // Get the popup's unique identifier, for example, use the voucher number
                 const popupId = `EmployeeAllocationPopup-${params.VoucherEntryNo}`;
-                debugger;
+                
                 // Check if the popup is already opened
                 if (!openedPopups[popupId]) {
                     // Create and store the popup instance
@@ -2946,7 +2976,7 @@
             success: function (data) {
                 // Get the popup's unique identifier, for example, use the voucher number
                 const popupId = `BillsReceivablePopup-${params.VoucherEntryNo}`;
-                debugger;
+                
                 // Check if the popup is already opened
                 if (!openedPopups[popupId]) {
                     // Create and store the popup instance
@@ -2973,7 +3003,7 @@
     }
 
     function openSalaryPopup(params) {
-        debugger;
+        
         const queryString = Object.keys(params)
             .map(key => `${key}=${params[key]}`)
             .join('&');
@@ -2985,7 +3015,7 @@
             success: function (data) {
                 // Get the popup's unique identifier, for example, use the voucher number
                 const popupId = `SalaryPaidEntryPopup-${params.VoucherEntryNo}`;
-                debugger;
+                
                 // Check if the popup is already opened
                 if (!openedPopups[popupId]) {
                     // Create and store the popup instance
@@ -3149,7 +3179,7 @@
                 AccountHead: accountHead,
                 VoucherAmount: amount
             };
-            debugger;
+            
             if (params) {
                 openCostAllocationPopup(params);
             } 
@@ -3191,7 +3221,7 @@
                 VoucherAmount: amount,
                 AccountID: accountid
             };
-            debugger;
+            
             if (openedPopups[popupId]) {
                 openedPopups[popupId].show();
             } else {
@@ -3233,7 +3263,7 @@
                 VoucherAmount: amount,
                 AccountID: accountid
             };
-            debugger;
+            
             if (openedPopups[popupId]) {
                 openedPopups[popupId].show();
             } else {
@@ -3273,7 +3303,7 @@
                 AccountHead: accountHead,
                 VoucherAmount: amount
             };
-            debugger;
+            
             if (openedPopups[popupId]) {
                 openedPopups[popupId].show();
             } else {
@@ -3315,7 +3345,7 @@
                 VoucherAmount: amount,
                 AccountID: accountid
             };
-            debugger;
+            
             if (openedPopups[popupId]) {
                 openedPopups[popupId].show();
             } else {
@@ -3328,7 +3358,7 @@
     //     const argsledno = urlParams.get("argsledno");
 
         //     console.log("Formatted Voucher in ready block:", argsledno);
-        //     debugger;
+        
 
         //     if (argsledno) {
         //         // If argsledno is passed in URL, don't generate a new voucher number
@@ -3543,7 +3573,15 @@
                         // DevExpress.ui.notify("No voucher entries found.", "warning", 2000);
                         return;
                     }
+                    
+                var lastRow = response.data[response.data.length - 1]; // Get the last row
+                var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
 
+                if (dropDownBox) {
+                    // Set selected value based on what the DropDownBox expects
+                    // Assuming ValueExpr is "AccountId", and AccountId is present in `lastRow`
+                    dropDownBox.option("value", lastRow.AccountHead); // or lastRow.AccountId if available
+                }
                     var dataGrid = $("#dataGrid").dxDataGrid("instance");
                     if (dataGrid) {
                         dataGrid.option("dataSource", response.data);
@@ -3662,7 +3700,7 @@
    
 
     if (oldRowData.DrCr === "Dr") {
-    debugger;
+    
     // Find all corresponding "Cr" rows
     let drRows = allData.filter(row => row.DrCr === "Cr" && row.SysRemarks.includes(oldAccountHead));
 
@@ -3703,7 +3741,7 @@
     
 
     if (oldRowData.DrCr === "Cr") {
-    debugger;
+    
     // Find all corresponding "Cr" rows
     let crRows = allData.filter(row => row.DrCr === "Dr" && row.SysRemarks.includes(`Paid thru: ${oldAccountHead}`));
 
@@ -3802,7 +3840,7 @@ function fetchUpdatedData(voucherEntryNo) {
             }
         }
         const chequeboxNo = $("#ChequeNoReferenceNo").dxTextBox("instance").option("value");
-
+        const voucherno = $("#VoucherNo").dxTextBox("instance").option("value");
         
 	     const currencyInstance = $("#ddCurrency").dxDropDownBox("instance");
      const currencyId = currencyInstance.option("value"); // Current CurrencyID
@@ -3842,16 +3880,10 @@ function fetchUpdatedData(voucherEntryNo) {
 
                     }
                     $("#ChequeIssuedinfavourof").dxTextBox("instance").option("value", paymentaccheadname);
-                    $.ajax({
-                        url: "/api/VoucherMaster/GetNewCPVoucherNo",
-                        type: 'GET',
-                        success: function (data) {
-                            $("#PopVoucherNo").dxTextBox("instance").option("value", data);
-                        },
-                        error: function (xhr, status, error) {
-                            console.error("Error loading Voucher No:", error);
-                        }
-                    });
+                    const popvoucher = $("#PopVoucherNo").dxTextBox("instance");
+                    if (popvoucher) {
+                        popvoucher.option("value", voucherno);
+                    }
                 },
                 error: function (xhr, status, error) {
                     console.error("Error loading cheque popup:", error);

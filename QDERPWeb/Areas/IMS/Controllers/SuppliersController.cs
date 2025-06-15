@@ -38,8 +38,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                             i.ContactPhone1,
                             i.ContactPersonTitle,
                             i.SupplierAccountLedgerNo,
-                            i.SupplierCategory
-                          
+                            i.SupplierCategory,
+                            
+                            DecodedBusinessCard1 = i.BusinessCard1 != null ? $"data:image/png;base64,{Convert.ToBase64String(i.BusinessCard1)}" : null,
+                            DecodedBusinessCard2 = i.BusinessCard2 != null ? $"data:image/png;base64,{Convert.ToBase64String(i.BusinessCard2)}" : null,
+
                         });
 
                     return Json(await DataSourceLoader.LoadAsync(qry, loadOptions));
@@ -49,6 +52,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
                 return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
             }
         }

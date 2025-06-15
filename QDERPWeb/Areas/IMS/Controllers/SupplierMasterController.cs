@@ -49,18 +49,27 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         [HttpGet]
         public IActionResult GetLatestSupplierCode(string categoryCode)//SW
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            try
             {
-                var latestSupplierCode = dbContext.Tbl30199SupplierMasters
-                    .Where(c => c.SupplierCode.StartsWith(categoryCode + "-"))
-                    .OrderByDescending(c => c.SupplierCode)
-                    .Select(c => c.SupplierCode)
-                    .FirstOrDefault();
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var latestSupplierCode = dbContext.Tbl30199SupplierMasters
+                        .Where(c => c.SupplierCode.StartsWith(categoryCode + "-"))
+                        .OrderByDescending(c => c.SupplierCode)
+                        .Select(c => c.SupplierCode)
+                        .FirstOrDefault();
 
-                return Ok(latestSupplierCode); // returns e.g., "SW-4"  get LastSw no
+                    return Ok(latestSupplierCode); // returns e.g., "SW-4"  get LastSw no
+                }
+
+                return Unauthorized(new { message = "Invalid tenant." });
             }
+            catch (Exception ex)
+            {
+                  _logger.LogError($"Error in GetProject: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
 
-            return Unauthorized(new { message = "Invalid tenant." });
+            }
         }
         [HttpGet]
         public async Task<IActionResult> GetSupplierLedgerNo(DataSourceLoadOptions loadOptions)
@@ -200,6 +209,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError($"Error in GetProject: {ex.Message}");
                     return StatusCode(500, $"Internal server error: {ex.Message}");
                 }
             }
@@ -228,6 +238,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError($"Error in GetProject: {ex.Message}");
                     return StatusCode(500, new { success = false, message = $"Delete failed: {ex.Message}" });
                 }
             }
@@ -235,24 +246,18 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
         [HttpGet]
-        public async Task<IActionResult> GetContact(DataSourceLoadOptions loadOptions)
+        public async Task<IActionResult> GetContactList(string SupplierCode)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 try
                 {
-                    var SupplierContact = dbContext.Tbl3019902SupplierContactLists.Select(i => new
-                    {
-                        i.ContactPerson,
-                        i.ContactPersonTitle,
-                        i.ContactEmail,
-                        i.ContactMobile1,
-                        i.ContactPhone1,
-                        i.SupplierCode,
-                        i.SupplierContactSlNo
-                    });
+                    var result = await dbContext.Tbl3019902SupplierContactLists
+                     .Where(i => i.SupplierCode == SupplierCode)
+                     .ToListAsync();
 
-                    return Json(await DataSourceLoader.LoadAsync(SupplierContact, loadOptions));
+                    return Json(result);
+
                 }
                 catch (Exception ex)
                 {
@@ -266,22 +271,30 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         [HttpDelete]
         public IActionResult DeleteContact(long SupplierContactSlNo)
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            try
             {
-                var contact = dbContext.Tbl3019902SupplierContactLists
-                    .FirstOrDefault(c => c.SupplierContactSlNo == SupplierContactSlNo);
-
-                if (contact != null)
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    dbContext.Tbl3019902SupplierContactLists.Remove(contact);
-                    dbContext.SaveChanges();
-                    return Ok(new { success = true, message = "Contact deleted successfully." });
+                    var contact = dbContext.Tbl3019902SupplierContactLists
+                        .FirstOrDefault(c => c.SupplierContactSlNo == SupplierContactSlNo);
+
+                    if (contact != null)
+                    {
+                        dbContext.Tbl3019902SupplierContactLists.Remove(contact);
+                        dbContext.SaveChanges();
+                        return Ok(new { success = true, message = "Contact deleted successfully." });
+                    }
+
+                    return NotFound(new { success = false, message = "Contact not found." });
                 }
 
-                return NotFound(new { success = false, message = "Contact not found." });
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
             }
-
-            return Unauthorized(new { success = false, message = "Invalid tenant." });
+            catch (Exception ex)
+            {
+                  _logger.LogError($"Error in GetProject: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+            }
         }
     }
 }

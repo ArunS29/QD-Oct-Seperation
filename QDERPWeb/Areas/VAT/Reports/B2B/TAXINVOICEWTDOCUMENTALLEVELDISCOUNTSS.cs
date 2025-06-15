@@ -20,6 +20,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
             string companyName,
             string companyAddress,
             Image logoImage,
+            Image sealImage,
             string companyNameAr,
             string companyAddressAr,
             bool isApproved,  // Accepting approval status here
@@ -29,11 +30,11 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
             _isApproved = isApproved;  // Store the approval status
 
             InitializeComponent();
-            SetReportParameters(invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
+            SetReportParameters(invoiceNo, tenantName, companyName, companyAddress, logoImage,  sealImage, companyNameAr, companyAddressAr);
             LoadReportData(invoiceNo);  // Load the data synchronously
         }
 
-        private void SetReportParameters(string invoiceNo, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressAr)
+        private void SetReportParameters(string invoiceNo, string tenantName, string companyName, string companyAddress, Image logoImage, Image sealImage, string companyNameAr, string companyAddressAr)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -78,6 +79,8 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
 
             if (FindControl("xrPictureBox2", true) is XRPictureBox logoPictureBox)
                 logoPictureBox.Image = logoImage;
+            if (FindControl("xrPictureBox5", true) is XRPictureBox sealPictureBox)
+                sealPictureBox.Image = sealImage;
         }
 
         private void LoadReportData(string invoiceNo)
@@ -87,7 +90,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
             if (dt.Rows.Count == 0)
             {
                 this.DataSource = null;
-                CreateNoDataLabel();
+               
             }
             else
             {
@@ -160,15 +163,6 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
 
 
 
-        private void CreateNoDataLabel()
-        {
-            XRLabel noDataLabel = new XRLabel
-            {
-                Text = "No records found.",
-                BoundsF = new RectangleF(0, 0, PageWidth - Margins.Left - Margins.Right, 50),
-                TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter
-            };
-            this.Bands[BandKind.Detail].Controls.Add(noDataLabel);
-        }
+       
     }
 }

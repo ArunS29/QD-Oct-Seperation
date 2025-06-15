@@ -537,8 +537,41 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             _logger.LogWarning("Invalid tenant.");
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        public async Task<IActionResult> CheckUserLevel()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    string userIdStr = HttpContext.Session.GetString("UserId");
+                    byte currentUserId = Convert.ToByte(userIdStr);
 
-        //user info
+                    var currentUser = await dbContext.TblUserMasters
+                        .Where(u => u.UserId == currentUserId)
+                        .Select(u => new { u.UserLevel })
+                        .FirstOrDefaultAsync();
+
+                    if (currentUser == null)
+                    {
+                        return Unauthorized(new { success = false, message = "User not found." });
+                    }
+
+                    return Ok(new { success = true, userLevel = currentUser.UserLevel });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in CheckUserLevel: {ex.Message}");
+                    return StatusCode(500, new
+                    {
+                        success = false,
+                        message = "An error occurred while checking user level.",
+                        error = ex.Message
+                    });
+                }
+            }
+
+            return Unauthorized(new { success = false, message = "Invalid tenant." });
+        }
         [HttpGet]
         public async Task<IActionResult> GetUsers(DataSourceLoadOptions loadOptions)
         {
@@ -559,8 +592,38 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         return Unauthorized(new { message = "User not found.", success = false });
                     }
 
-                    var usersQuery = dbContext.TblUserMasters
-                        .Where(u => currentUser.UserLevel == 99 || u.UserId == currentUser.UserId)
+                    if (currentUser.UserLevel == 99)
+                    {
+                        var usersQuery = dbContext.TblUserMasters
+                            .Select(u => new
+                            {
+                                u.UserId,
+                                u.UserName,
+                                u.Password,
+                                u.EmailAddress,
+                                u.MobileNo,
+                                u.LastLogOnTime,
+                                u.LastLogOffTime,
+                                u.DeptCode,
+                                u.CompanyId,
+                                u.BranchCode,
+                                u.UserLevel,
+                                u.HrlevelCode,
+                                u.InventoryAccess,
+                                u.PettyCashAccount,
+                                u.EqptQuotationAccess,
+                                u.InventoryMpraccess,
+                                u.HrtimeSheetProjectGroup,
+                                u.LogTerminal
+                            });
+
+                        var result = await DataSourceLoader.LoadAsync(usersQuery, loadOptions);
+                        return Json(result);
+                    }
+                    else
+                    {
+                        var usersQuery = dbContext.TblUserMasters
+                        .Where(u => u.UserId == currentUser.UserId)
                         .Select(u => new
                         {
                             u.UserId,
@@ -579,11 +642,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             u.PettyCashAccount,
                             u.EqptQuotationAccess,
                             u.InventoryMpraccess,
-                            u.HrtimeSheetProjectGroup
+                            u.HrtimeSheetProjectGroup,
+                            u.LogTerminal
                         });
 
-                    var result = await DataSourceLoader.LoadAsync(usersQuery, loadOptions);
-                    return Json(result);
+                        var result = await DataSourceLoader.LoadAsync(usersQuery, loadOptions);
+                        return Json(result);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -599,7 +664,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-
         public async Task<IActionResult> GetUserID(byte userId)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))

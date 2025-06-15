@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DevExpress.CodeParser;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
@@ -19,20 +20,28 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         [HttpGet]
         public IActionResult GetContactBySlNo(int supplierContactSlNo)
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            try
             {
-                var data = dbContext.Tbl3019902SupplierContactLists
-                    .FirstOrDefault(x => x.SupplierContactSlNo == supplierContactSlNo);
-
-                if (data != null)
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    return Ok(data);
+                    var data = dbContext.Tbl3019902SupplierContactLists
+                        .FirstOrDefault(x => x.SupplierContactSlNo == supplierContactSlNo);
+
+                    if (data != null)
+                    {
+                        return Ok(data);
+                    }
+
+                    return NotFound(new { message = "Supplier contact not found." });
                 }
 
-                return NotFound(new { message = "Supplier contact not found." });
+                return Unauthorized(new { message = "Invalid tenant." });
             }
-
-            return Unauthorized(new { message = "Invalid tenant." });
+            catch (Exception ex)
+            {
+                  _logger.LogError($"Error in GetProject: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+            }
         }
 
         [HttpPost]
@@ -70,10 +79,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                                 lastSupplierContactSlNo = existing.SupplierContactSlNo
                             });
                         }
-                        else
-                        {
-                            return NotFound(new { success = false, message = "Supplier contact not found." });
-                        }
+
                     }
                     else
                     {
@@ -91,6 +97,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError($"Error in GetProject: {ex.Message}");
                     return StatusCode(500, new { success = false, message = "Error saving data: " + ex.Message });
                 }
             }
@@ -120,6 +127,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError($"Error in GetProject: {ex.Message}");
                     return StatusCode(500, new { success = false, message = $"Delete failed: {ex.Message}" });
                 }
             }

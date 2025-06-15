@@ -25,11 +25,12 @@ namespace QD.ERP.Web.Areas.VAT.Reports.VATCreditNote
             Image logoImage,
             string companyNameAr,
             string companyAddressAr,
+            string username,
             TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             InitializeComponent();
-            SetReportParameters(frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
+            SetReportParameters(frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr,username);
         }
 
         private void SetReportParameters(
@@ -40,7 +41,8 @@ namespace QD.ERP.Web.Areas.VAT.Reports.VATCreditNote
             string companyAddress,
             Image logoImage,
             string companyNameAr,
-            string companyAddressAr)
+            string companyAddressAr,
+            string username)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -68,6 +70,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.VATCreditNote
             AddOrUpdateParameter("CompanyAddress", companyAddress ?? "", typeof(string));
             AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddressAr", companyAddressAr ?? "", typeof(string));
+            AddOrUpdateParameter("UserName", username ?? "", typeof(string));
 
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
@@ -86,6 +89,8 @@ namespace QD.ERP.Web.Areas.VAT.Reports.VATCreditNote
 
             if (FindControl("xrLabelCompanyAddressAr", true) is XRLabel addressArLabel)
                 addressArLabel.Text = companyAddressAr;
+            if (FindControl("xrLabelusername", true) is XRLabel usernameLabel)
+                usernameLabel.Text = companyAddressAr;
 
             ConfigureSqlDataSource(frmDate, toDate);
         }

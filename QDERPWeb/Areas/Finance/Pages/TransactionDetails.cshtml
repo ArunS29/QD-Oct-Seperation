@@ -176,11 +176,11 @@ function loadPivotGridData() {
                         data: filteredData
                     },
                     fields: [
-                        { dataField: "VoucherNo", area: "row", caption:"Voucher No", expanded: true, width: 250, allowSorting: true, allowFiltering: true },
+                        { dataField: "VoucherNo", area: "row", caption:"Voucher No", expanded: true, width: 150, allowSorting: true, allowFiltering: true },
                         { dataField: "AccountHeadName", area: "row", caption: "AccountHead Name", expanded: true, width: 250, allowSorting: true, allowFiltering: true },
-                        { dataField: "DrCr", area: "row", caption: "DrCr", expanded: true, width: 250, allowSorting: true, allowFiltering: true },
+                        { dataField: "DrCr", area: "row", caption: "DrCr", expanded: true, width: 100, allowSorting: true, allowFiltering: true },
                         { dataField: "CrAmount", area: "data", caption: "CrAmount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 }, width: 180 },
-                        // { dataField: "DrAmount", area: "data", caption: "DrAmount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 }, width: 180 },
+                        { dataField: "DrAmount", area: "data", caption: "DrAmount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 }, width: 180 },
                         // { dataField: "VoucherDate", area: "column", caption: "Voucher Date", allowSorting: true, allowFiltering: true },
                         // { dataField: "VoucherRefNo", area: "column", caption: "Voucher Ref No", allowSorting: true, allowFiltering: true },
                         // { dataField: "VoucherNarration", area: "column", caption: "Voucher Narration", allowSorting: true, allowFiltering: true },
@@ -204,9 +204,9 @@ function loadPivotGridData() {
                 showBorders: true,
                 showColumnHeaders: true,
                 showColumnTotals: true,
-                showRowTotals: true,
+                showRowTotals: false,
                 showColumnGrandTotals: true,
-                showRowGrandTotals: true,
+                showRowGrandTotals: false,
                 wordWrapEnabled: true,
                 height: 500,
                 fieldChooser: {
@@ -214,6 +214,9 @@ function loadPivotGridData() {
                     allowSearch: true, 
                     layout: 0 // 0 for a tree structure, 1 for a list structure
                 },
+                        scrolling: {
+                            mode: "virtual"
+                        },
                 fieldPanel: {
                     visible: true, // Allows drag-and-drop functionality
                     allowFieldDragging: true,
@@ -224,8 +227,7 @@ function loadPivotGridData() {
                 },
                 loadPanel: { enabled: true }
             }).dxPivotGrid("instance");
-                      // After PivotGrid is loaded, also bind the button click
-                            setupButtonClick();
+                     
         },
 
         error: function (xhr, status, error) {
@@ -234,23 +236,69 @@ function loadPivotGridData() {
     });
 }
 
-                      function setupButtonClick() {
-            var btnInstance = $("#btnShowRowTotals").dxButton("instance");
-            if (btnInstance) {
-                btnInstance.option("onClick", function() {
-                    var pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
-                    if (pivotGrid) {
-                        // Get current state
-                        var currentShowRowTotals = pivotGrid.option("showRowTotals");
+        $("#btnShowRowTotals").on("click", function (e) {
+            e.preventDefault();
 
-                        // Toggle the value
-                        pivotGrid.option("showRowTotals", !currentShowRowTotals);
-                    }
-                });
-            } else {
-                console.warn("Button instance not found!");
+            const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
+
+            if (pivotGrid) {
+                const currentSetting = pivotGrid.option("showRowTotals");
+                pivotGrid.option("showRowTotals", !currentSetting);
             }
-        }
+        });
+
+        $("#btnShowFields").on("click", function (e) {
+            e.preventDefault();
+
+            const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
+
+            if (!pivotGrid) return;
+
+            const dataSource = pivotGrid.getDataSource();
+            const currentFields = dataSource.fields();
+
+            const allFields = [
+                
+                { dataField: "VoucherDate", caption: "Voucher Date" },
+                { dataField: "VoucherRefNo", caption: "Voucher Ref No" },
+                { dataField: "VoucherNarration", caption: "Voucher Narration" },
+                { dataField: "VoucherEnteredBy", caption: "Voucher Entered By" },
+                { dataField: "VoucherEnteredOn", caption: "Voucher Entered On" },
+                { dataField: "VoucherVerifiedBy", caption: "Voucher Verified By" },
+                { dataField: "VoucherVerifiedOn", caption: "Voucher Verified On" },
+                { dataField: "VoucherApprovedBy", caption: "Voucher Approved By" },
+                { dataField: "VoucherApprovedOn", caption: "Voucher Approved On" },
+                { dataField: "VoucherEntryNo", caption: "Voucher Entry No" },
+                { dataField: "AccountHead", caption: "Account Head" },
+                { dataField: "VoucherAmountFormatted", caption: "Voucher Amount Formatted" },
+                { dataField: "EntryNarration", caption: "Entry Narration" },
+                { dataField: "AccountGroup", caption: "Account Group" }
+            ];
+
+            // Check if all fields are already in the "filter" area
+            const allInFilter = allFields.every(f =>
+                currentFields.find(c => c.dataField === f.dataField && c.area === "filter")
+            );
+
+            const updatedFields = currentFields.map(field => {
+                const isTargetField = allFields.find(f => f.dataField === field.dataField);
+                if (isTargetField) {
+                    return {
+                        ...field,
+                        area: allInFilter ? null : "filter"
+                    };
+                }
+                return field;
+            });
+
+            dataSource.fields(updatedFields);
+            dataSource.load();
+
+           
+        });
+
+
+
 
     $(document).ready(function () {
         loadPivotGridData();

@@ -27,11 +27,6 @@
 		overflow: hidden;
 	}
 
-
-	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnColumnChooser,#btnPurchaseOrderDetails,#btnNewPurchaseOrder)) {
-		display: none !important
-	}
-
 	#overlay-frame {
 		width: 100%;
 		height: 100%;
@@ -173,15 +168,7 @@
 		<div id="PurchaseOrders" class="no-border-input"></div>
 	</div>
 </div>
-
-
-<div class="Head">
-	<div class="limited-footer">
-		@await Html.PartialAsync("InventoryModuleFooter")
-	</div>
-</div>
-
-
+@await Html.PartialAsync("/Pages/Shared/IMS/PurchaseOrderFooter.cshtml")
 <div class="dx-fieldset horizontal-container">
 	@(Html.DevExtreme().DateBox()
 		.ID("frmdateBox")
@@ -237,44 +224,44 @@
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
-			columns.Add().Caption("Purchase Order Details").Columns(subColumns =>
+				columns.Add().Caption(new JS("formatMessage('Purchase Order Details')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.Pono).Caption(" Po No").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.RevisionNo).Caption("REV.No").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Podate).Caption("Po Date").Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
-				subColumns.AddFor(m => m.SupplierName).Caption("Supplier Name").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.IsSubmitted).Caption("IsSubmitted").Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
+				subColumns.AddFor(m => m.Pono).Caption(new JS("formatMessage('Po No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.RevisionNo).Caption(new JS("formatMessage('REV.No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Podate).Caption(new JS("formatMessage('PO Date')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
+				subColumns.AddFor(m => m.SupplierName).Caption(new JS("formatMessage('Supplier Name')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.IsSubmitted).Caption(new JS("formatMessage('IsSubmitted')")).Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
 		<div class="dx-icon">
 			<%= data.IsSubmitted ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
 		</div>
 	</text>).Visible(true);
-				subColumns.AddFor(m => m.IsVerified).Caption("IsVerified").Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
+				subColumns.AddFor(m => m.IsVerified).Caption(new JS("formatMessage('IsVerified')")).Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
 		<div class="dx-icon">
 			<%= data.IsVerified ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
 		</div>
 	</text>).Visible(true);
-				subColumns.AddFor(m => m.IsApproved).Caption("IsApproved").Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
+				subColumns.AddFor(m => m.IsApproved).Caption(new JS("formatMessage('IsApproved')")).Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
 		<div class="dx-icon">
 			<%= data.IsApproved ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
 		</div>
 	</text>).Visible(true);
-				subColumns.AddFor(m => m.NoOfItems).Caption("No Of Items").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.OrderStatus).Caption("Order Status").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.BillStatus).Caption("Bill Status").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No Of Items')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.OrderStatus).Caption(new JS("formatMessage('Order Status')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.BillStatus).Caption(new JS("formatMessage('Bill Status')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
 
 
 			});
-			columns.Add().Caption(" Amount ").Columns(subColumns =>
+				columns.Add().Caption(new JS("formatMessage('Amount')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.TotalBeforeTax).Caption("Total Before Tax").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.TotalDiscount).Caption(" Total Discount").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.TotalAfterDiscount).Caption(" Total After Discount").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.TotalTaxAmount).Caption("Total Tax Amount").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.TotalWithTax).Caption("Total With Tax").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.AdditionsAmount).Caption("Additions Amount").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.DeductionsAmount).Caption(" Deductions Amount").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.GrandTotal).Caption(" GrandTotal").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.TotalBeforeTax).Caption(new JS("formatMessage('Total Before Tax')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.TotalDiscount).Caption(new JS("formatMessage('Total Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.TotalAfterDiscount).Caption(new JS("formatMessage('Total After Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.TotalTaxAmount).Caption(new JS("formatMessage('Total Tax Amount')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.TotalWithTax).Caption(new JS("formatMessage('Total With Tax')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.AdditionsAmount).Caption(new JS("formatMessage('Additions Amount')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.DeductionsAmount).Caption(new JS("formatMessage('Deductions Amount')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.GrandTotal).Caption(new JS("formatMessage('Grand Total')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
 
 
@@ -286,13 +273,20 @@
 		.Width("98%")
 		.WordWrapEnabled(true)
 		.OnCellClick("function(e) {handleCellClick(e);}")
-		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+		.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
 		.ColumnFixing(fixing => fixing.Enabled(true))
 		.HeaderFilter(filter => filter.Visible(false))
-		.Paging(p => p.Enabled(false))
-		.Pager(pager => pager.Visible(false))
+		.Paging(p => p.PageSize(10)) // Set desired page size (e.g., 10 rows per page)
+		.Pager(pager =>
+		{
+			pager.ShowPageSizeSelector(true);
+			pager.AllowedPageSizes(new[] { 5, 10, 20, 50 });
+			pager.ShowNavigationButtons(true);
+			pager.Visible(true);
+		})
+
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
 		.ShowRowLines(true)
@@ -325,7 +319,14 @@
 		}
 		});
 	});
-
+	$(function () {
+			var now = new Date();
+			var firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+			var tillmonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+			$("#frmdateBox").dxDateBox("instance").option("value", firstDay);
+			$("#todateBox").dxDateBox("instance").option("value", tillmonth);
+			ddBtnShowRecords_click('range');
+	});
 	function ddBtnShowRecords_click(duration) {
 		 var frmDateBox = $("#frmdateBox").dxDateBox("instance");
 			var toDateBox = $("#todateBox").dxDateBox("instance");

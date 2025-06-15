@@ -6,6 +6,7 @@
     string voucherNo = ViewBag.VoucherNo;
     string drCr = ViewBag.DrCr;
     string accountHead = ViewBag.AccountHead;
+    string accountId = ViewBag.AccountID;
     string voucherAmount = ViewBag.VoucherAmount;
     long voucherEntryNo = ViewBag.VoucherEntryNo;
     double? voucherAmountParsed = null;
@@ -28,6 +29,7 @@
     }
 
 }
+<input type="hidden" id="CurrentVoucherEntryNo" value="@ViewBag.VoucherEntryNo" />
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 <style type="text/css">
@@ -106,30 +108,31 @@
     <div class="container2">
         <div class="dx-fieldset horizontal-container ">
 
-            <label for="DrCr">Dr/Cr</label>
             @(Html.DevExtreme().SelectBox()
                 .ID("DrCr")
+                .Label(new JS("formatMessage('Dr/Cr')"))
+                .LabelMode(EditorLabelMode.Outside)
                 .DataSource(new[] { drCr })
                 .Value(drCr)
                 .Width(150)
                 .ReadOnly(true)
                 )
-            <label for="CostAllocationExpense">
-                Cost Allocation for the Expenses:
-            </label>
 
             <!-- DevExtreme Popup -->
             @(Html.DevExtreme().TextBox()
                 .ID("Textbox")
+                .Label(new JS("formatMessage('Cost Allocation for the Expenses')"))
+                .LabelMode(EditorLabelMode.Outside)
                 .Value(voucherNo)
-                .Width(150)
+                .Width(250)
                 .ReadOnly(true)
                 )
 
 
-            <label for="Amount">Amount</label>
             @(Html.DevExtreme().NumberBox()
                 .ID("CostAmount")
+                .Label(new JS("formatMessage('Amount')"))
+                .LabelMode(EditorLabelMode.Outside)
                 .Value(voucherAmountParsed)
                 .ShowSpinButtons(true)
                 .ReadOnly(true)
@@ -158,9 +161,10 @@
 
         </div>
         <div class="dx-fieldset horizontal-container ">
-            <label for="Account Head">Account Head</label>
             @(Html.DevExtreme().SelectBox()
                 .ID("CostAllocationExpense")
+                .Label(new JS("formatMessage('Account Head')"))
+                .LabelMode(EditorLabelMode.Outside)
                 .DataSource(new[] { accountHead }) // Only the selected AccountHead
                 .Value(accountHead) // Pre-selected value
                 .ReadOnly(true) // Make the dropdown read-onlyr
@@ -195,14 +199,14 @@
                         .Icon("plus")
                         @* .OnClick("onAddCost") *@
                         .Hint("Add Cost Allocation")
-                        .Width(40)
+                        .Width(60)
                         )
                         @(Html.DevExtreme().Button()
                         .ID("btnEditcost_" + new JS("data.rowIndex"))
                         .Icon("edit")
                         @* .OnClick("onEditCost") *@
                         .Hint("Edit Cost Allocation")
-                        .Width(40)
+                        .Width(60)
                         )
                     </div>
                 </div>
@@ -237,14 +241,14 @@
                         .Icon("plus")
                         @* .OnClick("onAddCost") *@
                         .Hint("Add Cost Allocation")
-                        .Width(40)
+                        .Width(60)
                         )
                         @(Html.DevExtreme().Button()
                         .ID("btnEditcost_" + new JS("data.rowIndex"))
                         .Icon("edit")
                         @* .OnClick("onEditCost") *@
                         .Hint("Edit Cost Allocation")
-                        .Width(40)
+                        .Width(60)
                         )
                     </div>
                 </div>
@@ -564,7 +568,7 @@
     // function dataGridSelectionChanged(e) {
     //     var selectedData = e.selectedRowsData[0];
     //     if (!selectedData) return;
-    //     debugger;
+    
     //     var dataGrid = $("#costdataGrid").dxDataGrid("instance");
     //     var focusedRowIndex = dataGrid.option("focusedRowIndex");
 
@@ -617,7 +621,7 @@
             contentType: "application/json",
             data: JSON.stringify(costAllocations),
             success: function (response) {
-                debugger;
+                
                 Closepopup();
                 DevExpress.ui.dialog.alert(
                     "Cost Allocation Details updated Successfully.",
@@ -719,7 +723,7 @@
 
     // Function to reset the DataGrid
     function resetCostDataGrid() {
-        debugger;
+        
         const costdataGrid = $('#costdataGrid').dxDataGrid('instance');
 
         if (costdataGrid) {
@@ -800,7 +804,7 @@
             dataGrid.selectRows(e.value, false);
         }
         if (e.value) {
-            debugger;
+            
             let grid = $("#costdataGrid").dxDataGrid("instance");
             let rowIndex = e.element.closest("tr").index(); // Get the edited row index
             let rowData = grid.getVisibleRows()[rowIndex].data;
@@ -815,8 +819,18 @@
     }
 
     function closeParentModal() {
-        let popupInstance = $("#CostAllocationPopup").dxPopup("instance");
-        popupInstance.hide();
+        const voucherEntryNo = $("#CurrentVoucherEntryNo").val();
+if (!voucherEntryNo) {
+    console.warn("VoucherEntryNo not found in hidden field.");
+    return;
+}
+
+const popup = popupInstances[voucherEntryNo];
+if (popup) {
+    popup.hide();
+} else {
+    console.warn("No popup instance found for VoucherEntryNo:", voucherEntryNo);
+}
     }
 
     $(document).ready(function () {

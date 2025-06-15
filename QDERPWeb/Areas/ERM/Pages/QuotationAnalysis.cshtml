@@ -1,0 +1,211 @@
+﻿@page
+@model QD.ERP.Web.Areas.ERM.Pages.QuotationAnalysisModel
+@{
+}
+@using DevExtreme.AspNet.Mvc
+@using DevExtreme.AspNet.Mvc.Builders
+
+<title>DevExtreme PivotGrid Export to PDF</title>
+<link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/23.2.3/css/dx.light.css">
+<script src="https://cdn3.devexpress.com/jslib/23.2.3/js/jquery.min.js"></script>
+<script src="https://cdn3.devexpress.com/jslib/23.2.3/js/jszip.min.js"></script>
+<script src="https://cdn3.devexpress.com/jslib/23.2.3/js/dx.all.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+
+<style>
+    #pivotGridContainer {
+        margin-top: 20px;
+    }
+
+    button {
+        margin-top: 20px;
+    }
+    .mainContainer{
+        width:100%;
+
+    }
+
+</style>
+        @await Html.PartialAsync("/Pages/Shared/ERM/QuotationAnalysisFooter.cshtml")
+<div style="padding: 10px; background-color: #c7cfdd;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+        <label id="SelectRequest" style="font-weight: bold;"></label>
+
+        @(Html.DevExtreme().DropDownBox()
+            .ID("requestSelectBox")
+            .DataSource(d => d.WebApi()
+            .Controller("QuotationAnalysis1")
+            .LoadAction("GetQuotationAnalysis")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("Mprno")
+            )
+            .ValueExpr("Mprno")        // <--- This will be used as value
+            .DisplayExpr("Mprno")      // <--- This will be shown in the DropDownBox input
+            .Placeholder(new JS("formatMessage('Select request')"))
+            .ShowClearButton(true)
+            .Width(300)
+            .DropDownOptions(o => o.Width(1000)) // ✅ Width of the popup dropdown
+    
+            .ContentTemplate(@<text>
+            @(Html.DevExtreme().DataGrid()
+            .ID("dropDownGrid")
+            .DataSource(d => d.WebApi()
+            .Controller("QuotationAnalysis1")
+            .LoadAction("GetQuotationAnalysis")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("Mprno")
+            )      
+            .HoverStateEnabled(true)
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual)) // or "standard"
+            .Height(250)
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .RowAlternationEnabled(true)
+            .OnRowClick("onGridRowClick")
+
+            .FilterRow(f => f.Visible(true))
+            .AllowColumnResizing(true)
+            .AllowColumnReordering(true)
+            @* .GroupPanel(g => g.Visible(true)) *@///COLUMN GROUP IN TOP OF THE GRID
+
+            .Columns(columns => {
+            columns.Add().DataField("Mprno").Caption(new JS("formatMessage('Request/Enquiry.No')"));
+            columns.Add().DataField("NoOfRfqissued").Caption(new JS("formatMessage('No of RFQ Issued')"));
+            columns.Add().DataField("ClientName").Caption(new JS("formatMessage('Client Name or Store Name')"));
+            columns.Add().DataField("Mprdate").Caption(new JS("formatMessage('MPR Date')")).DataType(GridColumnDataType.Date). Format("dd-MMM-yyyy");
+            columns.Add().DataField("RequestedBy").Caption(new JS("formatMessage('Requested By')"));
+
+            })
+
+            )
+
+        </text>)
+            )
+
+        @(Html.DevExtreme().Button()
+            .ID("viewAnalysisButton")
+            .Text(new JS("formatMessage('View Analysis')"))
+            .Icon("chart")
+            .Type(ButtonType.Normal)
+            .OnClick("onViewAnalysisClick")
+            )
+    </div>
+
+    <div id="pivotGridContainerId" style="margin-top: 20px;"></div>
+</div>
+
+<script>
+      
+
+    function onGridRowClick(e) {
+        var selectedData = e.data;
+        if (selectedData) {
+            var dropDownBox = $("#requestSelectBox").dxDropDownBox("instance");
+            dropDownBox.option("value", selectedData.Mprno); // Set value
+            dropDownBox.close(); // Close the popup
+        }
+    }
+
+    function onViewAnalysisClick() {
+        const mprno = $("#requestSelectBox").dxDropDownBox("instance").option("value");
+        if (!mprno) {
+            DevExpress.ui.notify("Please select a request/enquiry first.", "warning", 2000);
+            return;
+        }
+
+        loadPivotGridData(mprno);
+    }
+
+    let pivotGridInstance = null;
+    let currentPivotRawData = [];
+
+        function loadPivotGridData(mprno) {
+        $.ajax({
+            url: '/api/QuotationAnalysis1/GetQuotationAnalysisPvg?mprno=' + mprno,
+            type: 'GET',
+            success: function (data) {
+                console.log("API Data: ", data);
+
+                currentPivotRawData = data; // Save raw data for export
+
+                pivotGridInstance = $("#pivotGridContainerId").dxPivotGrid({
+                    dataSource: {
+                        fields: [
+                            { dataField: "Gsdescrpition", area: "row", caption: formatMessage("Item Description") },
+                            { dataField: "QuotedQuantity", area: "row", caption: formatMessage("Quantity") },
+                            { dataField: "SupplierName", area: "column", caption: formatMessage("Supplier Name") },
+                            { dataField: "UnitPrice", area: "data", caption: formatMessage("Unit Price"), summaryType: "avg", format: "currency" },
+                            { dataField: "ItemDiscount", area: "data", caption: formatMessage("Discount"), summaryType: "sum", format: "fixedPoint" },
+                            { dataField: "LineTotalBeforeTax", area: "data", caption: formatMessage("Net Total"), summaryType: "sum", format: "currency" },
+                            { dataField: "IsWonForPo", area: "data", caption: formatMessage("IsWonForPo"), summaryType: "max", dataType: "boolean" }
+                        ],
+                        store: {
+                            type: "array",
+                            data: data
+                        }
+                    },
+                    allowSortingBySummary: true,
+                    allowSorting: true,
+                    allowFiltering: true,
+                    allowExpandAll: true,
+                    showBorders: true,
+                    showColumnHeaders: true,
+                    showColumnTotals: false,
+                    showRowTotals: false,
+                    showColumnGrandTotals: false,
+                    showRowGrandTotals: false,
+                    wordWrapEnabled: true,
+                    height: 500,
+                    fieldChooser: {
+                        enabled: true,
+                        allowSearch: true,
+                        layout: 0
+                    },
+                    fieldPanel: {
+                        visible: true,
+                        allowFieldDragging: true,
+                        showColumnFields: true,
+                        showDataFields: true,
+                        showFilterFields: true,
+                        showRowFields: true
+                    },
+                    loadPanel: { enabled: true },
+                    onCellPrepared: function (e) {
+                        if (e.area === "data" && e.cell?.dataType === "boolean") {
+                            const $cell = $(e.cellElement);
+                            $cell.empty();
+
+                            const isChecked = !!e.cell.value;
+                            const checkbox = $("<input>")
+                                .attr("type", "checkbox")
+                                .prop("checked", isChecked)
+                                .on("change", function () {
+                                    if ($(this).prop("checked")) {
+                                        const $row = $cell.closest("tr");
+                                        $row.find('input[type="checkbox"]').not(this).prop("checked", false);
+                                    }
+                                });
+
+                            $cell.append(checkbox);
+                        }
+                    }
+                }).dxPivotGrid("instance");
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching data: ", error);
+            }
+        });
+    }
+
+     $(function () {
+                    $("#SelectRequest").text(
+                         formatMessage("Select a Request / Enquiry:"));
+            });
+
+    
+
+    function printFun(){
+        console.log("Pivot");
+        exportPivotToPdf(pivotGridInstance,currentPivotRawData);
+    }
+</script>

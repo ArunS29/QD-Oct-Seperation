@@ -1,0 +1,619 @@
+﻿@page
+@model QD.ERP.Web.Areas.General.Pages.frm201useraccesModel
+
+<style>
+
+    .dx-datagrid .text-link {
+        color: lightblue;
+        cursor: pointer;
+        text-decoration: underline;
+        position: relative;
+    }
+
+        /* Optional: change color or add underline on hover for more emphasis */
+        .dx-datagrid .text-link:hover {
+            color: darkblue;
+            text-decoration: none;
+        }
+
+        /* Tooltip style on hover */
+        .dx-datagrid .text-link::after {
+            content: "Click to view details";
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #f9f9f9;
+            color: #333;
+            border: 1px solid #ccc;
+            padding: 5px 10px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+        }
+
+        .dx-datagrid .text-link:hover::after {
+            display: block;
+        }
+
+</style>
+
+
+<div class="title">
+    <div class="header-container">
+        <h2>Access Management</h2>
+    </div>
+</div>
+<div style="display: flex; gap: 10px; margin: 20px;">
+    <!-- ERP User Database box -->
+    <div style=" background-color: #27ae60; color: white; padding: 20px; border-radius: 5px;">
+        <h5 style="margin: 0; font-weight: bold;">QuickDice ERP Solutions</h5>
+        <h4 style="margin-top: 5px;">ERP User Database</h4>
+        <div style="font-size: 40px; margin-top: 10px;">👥</div>
+    </div>
+
+    <!-- Active Users box -->
+    <div style="width: 120px; background-color: #c0392b; color: white; padding: 20px; border-radius: 5px; text-align: center;">
+        <div style="font-size: 10px; font-weight: bold;">1</div>
+        <div style="margin-top: 10px;">Active Users</div>
+        <div style="font-size: 24px;">🧑‍💻</div>
+    </div>
+</div>
+
+<div class="Head">
+    <div class="limited-footer">
+        <div class="footer">@await Html.PartialAsync("userfooter", new ViewDataDictionary(ViewData) { { "HideDropdown", true } })</div>
+    </div>
+</div>
+
+<!-- DevExtreme Tab Panel -->
+<div id="tabPanelContainer">
+    @* <div style="margin-bottom: 10px;">
+        <button id="btnToggleSearch" class="btn btn-primary">Toggle Search</button>
+        <button id="btnToggleFilter" class="btn btn-secondary">Toggle Filter</button>
+    </div> *@
+
+    @(Html.DevExtreme().TabPanel()
+            .ID("accessTabPanel")
+            // .OnSelectionChanged("onTabSelectionChanged")
+            .Items(items =>
+            {
+                items.Add()
+            .Title("Welcome")
+            .Template(@<text>
+
+        @(Html.DevExtreme().DataGrid()
+        .ID("DataGrid")
+        .DataSource(d => d.WebApi()
+        .Controller("utility")
+        .LoadAction("GetUsers")
+        .LoadMode(DataSourceLoadMode.Raw)
+        .Key("UserId")
+        )
+        .ShowBorders(true)
+        .SearchPanel(s => s.Visible(false).HighlightSearchText(true))
+        .Paging(p => p.PageSize(10))
+        .FilterRow(f => f.Visible(false))
+        .HeaderFilter(h => h.Visible(false))
+        .ColumnAutoWidth(true)
+        .ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
+        .OnCellClick("onUserIdCellClick")
+        .Columns(columns =>
+        {
+
+        columns.Add().DataField("IsDisabled").Caption("Is Disabled").DataType(GridColumnDataType.Boolean).Width(100);
+        columns.Add().DataField("UserId").Caption("User ID").CssClass("text-link").Width(100);
+        columns.Add().DataField("UserName").Caption("User Name");
+        columns.Add().DataField("UserLevel").Caption("User Level")
+        .Lookup(lookup => lookup
+        .DataSource(new JS("userLevels"))
+        .ValueExpr("UserLevelID")
+        .DisplayExpr("UserLevelDesc")
+        );
+        columns.Add().DataField("EqptQuotationAccess").Caption("Employee Group")
+        .Lookup(lookup => lookup
+        .DataSource(new JS("employeeGroups"))
+        .ValueExpr("EmpGroupID")
+        .DisplayExpr("EmployeeGroup")
+        );
+        columns.Add().DataField("DeptCode").Caption("Department")
+        .Lookup(lookup => lookup
+        .DataSource(new JS("departments"))
+        .ValueExpr("DepartmentCode")
+        .DisplayExpr("Department")
+        );
+        columns.Add().DataField("MobileNo").Caption("UserMobileNo");
+        columns.Add().DataField("EmailAddress").Caption("EmailAddress");
+        columns.Add().DataField("IsDisabled").Caption("Currently Logged In").DataType(GridColumnDataType.Boolean).Width(100);
+        columns.Add().DataField("LogTerminal").Caption("Last Logged In Terminal");
+        columns.Add().DataField("LastLogOnTime").Caption("UserLastLoggedInTime");
+        columns.Add().DataField("LastLogOffTime").Caption("UserLastLoggedOffTime");
+
+
+@* 
+        columns.Add().DataField("Password").Caption("Password");
+        columns.Add().DataField("DeptCode").Caption("Department");
+        columns.Add().DataField("CompanyId").Caption("Company");
+        columns.Add().DataField("BranchCode").Caption("BranchCode");
+        columns.Add().DataField("HrlevelCode").Caption("HrlevelCode");
+        columns.Add().DataField("InventoryAccess").Caption("InventoryAccess");
+        columns.Add().DataField("PettyCashAccount").Caption("PettyCashAccount");
+        columns.Add().DataField("EqptQuotationAccess").Caption("EqptQuotationAccess");
+        columns.Add().DataField("InventoryMpraccess").Caption("InventoryMpraccess");
+        columns.Add().DataField("HrtimeSheetProjectGroup").Caption("HrtimeSheetProjectGroup");
+        columns.Add().DataField("EmailAddress").Caption("EmailAddress");
+        columns.Add().DataField("MobileNo").Caption("UserMobileNo");
+        columns.Add().DataField("LastLogOnTime").Caption("UserLastLoggedInTime");
+        columns.Add().DataField("LastLogOffTime").Caption("UserLastLoggedOffTime"); *@
+        
+    })
+        )
+
+    </text>);
+           @*      items.Add()
+            .Title("Module")
+            .Template(@<text>
+        <div style="padding: 20px;">
+            <h3>Welcome to Module Access Management</h3>
+            <p>Select the 'Module Access' tab to manage user permissions for different modules and forms.</p>
+            @(Html.DevExtreme().SelectBox()
+            .ID("ddUserList1")
+            .DataSource(ds => ds.WebApi()
+            .Controller("Utility")
+            .LoadAction("Getuserdetails")
+            .LoadMode(DataSourceLoadMode.Raw))
+            .DisplayExpr("UserName")
+            .ValueExpr("UserId")
+            .SearchEnabled(true)
+            .ShowClearButton(true)
+            .Placeholder("Select User")
+            .Label("User")
+
+            .LabelMode(EditorLabelMode.Outside)
+            .Width(400)
+            .OnValueChanged("onUserChanged")
+            )
+            <div id="gridContainerformodule" style="margin-top: 20px; width: 500px;"></div>
+            @(Html.DevExtreme().SelectBox()
+            .ID("ddModuleList1")
+            .DataSource(ds => ds.WebApi()
+            .Controller("Utility")
+            .LoadAction("GetDistinctModules")
+            .LoadMode(DataSourceLoadMode.Raw))
+            .DisplayExpr("Module")
+            .ValueExpr("Module")
+            .SearchEnabled(true)
+            .ShowClearButton(true)
+            .Placeholder("Select Module")
+            .Label("Module")
+            .LabelMode(EditorLabelMode.Outside)
+
+            .Width(400)
+            )
+        </div>
+    </text>);
+
+                items.Add()
+            .Title("User Access")
+            .Template(@<text>
+        <div style="padding: 20px;">
+            <div class="form-group">
+                @(Html.DevExtreme().SelectBox()
+                .ID("ddUserList")
+                .DataSource(ds => ds.WebApi()
+                .Controller("Utility")
+                .LoadAction("Getuserdetails")
+                .LoadMode(DataSourceLoadMode.Raw))
+                .DisplayExpr("UserName")
+                .ValueExpr("UserId")
+                .SearchEnabled(true)
+                .ShowClearButton(true)
+                .Placeholder("Select User")
+                .Label("User")
+                .LabelMode(EditorLabelMode.Outside)
+                .Width(400)
+                )
+
+                @(Html.DevExtreme().SelectBox()
+                .ID("ddModuleList")
+                .DataSource(ds => ds.WebApi()
+                .Controller("Utility")
+                .LoadAction("GetDistinctModules")
+                .LoadMode(DataSourceLoadMode.Raw))
+                .DisplayExpr("Module")
+                .ValueExpr("Module")
+                .SearchEnabled(true)
+                .ShowClearButton(true)
+                .Placeholder("Select Module")
+                .Label("Module")
+                .LabelMode(EditorLabelMode.Outside)
+                .OnValueChanged("onModuleChanged")
+                .Width(400)
+                )
+
+                @(Html.DevExtreme().SelectBox()
+                .ID("ddPrefixList")
+                .Items(Enumerable.Empty<string>())
+                .DisplayExpr("Prefix")
+                .ValueExpr("Prefix")
+                .SearchEnabled(true)
+                .ShowClearButton(true)
+                .Placeholder("Select Prefix")
+                .Label("Form")
+                .LabelMode(EditorLabelMode.Outside)
+                .Disabled(true)
+                .Width(400)
+                .OnValueChanged("loadGrid")
+                )
+            </div>
+
+            <div id="gridContainer" style="margin-top: 20px;"></div>
+        </div>
+    </text>); *@
+            })
+        .Width("100%")
+        )
+</div>
+
+@section Scripts {
+    <script>
+
+
+        $(document).ready(function () {
+            loadWelcomeGrid();
+
+            $("#loadGridButton").on("click", function () {
+                loadGrid();
+            });
+
+             const dataGrid = $("#userDataGrid").dxDataGrid("instance");
+
+        // Toggle Search Panel
+        $("#btnToggleSearch").on("click", function () {
+            const isVisible = dataGrid.option("searchPanel.visible");
+            dataGrid.option("searchPanel.visible", !isVisible);
+        });
+
+        // Toggle Filter Row
+        $("#btnToggleFilter").on("click", function () {
+            const isVisible = dataGrid.option("filterRow.visible");
+            dataGrid.option("filterRow.visible", !isVisible);
+        });
+        });
+
+        function onModuleChanged(e) {
+            const selectedModule = e.value;
+            const prefixBox = $("#ddPrefixList").dxSelectBox("instance");
+
+            if (!selectedModule) {
+                prefixBox.option({
+                    items: [],
+                    value: null,
+                    disabled: true
+                });
+                return;
+            }
+
+            $.ajax({
+                url: "/api/Utility/GetDistinctAccessPrefixes",
+                method: "GET",
+                data: { module: selectedModule },
+                success: function (data) {
+                    prefixBox.option({
+                        items: data.data || data,
+                        value: null,
+                        disabled: false
+                    });
+                },
+                error: function () {
+                    DevExpress.ui.notify("Failed to load prefixes.", "error", 3000);
+                    prefixBox.option({
+                        items: [],
+                        value: null,
+                        disabled: true
+                    });
+                }
+            });
+        }
+
+        function onUserChanged(e) {
+            const selectedUserId = e.value;
+
+            if (!selectedUserId) {
+                DevExpress.ui.notify("Please select a user.", "warning", 3000);
+                return;
+            }
+            alert('1');
+            loadModulesByUserId(selectedUserId);
+            alert('10');
+        }
+        function loadModulesByUserId(userId) {
+
+            $.ajax({
+                url: `/api/Utility/GetDistinctModulesByUserId`,
+                method: 'GET',
+                data: {
+                    userId: userId
+                },
+                success: function (data) {
+                    populateGrid(data.data); // Access the data property
+                },
+                error: function (xhr, status, error) {
+                    DevExpress.ui.notify("Failed to load modules.", "error", 3000);
+                }
+            });
+        }
+
+        function populateGrid(data) {
+            $("#gridContainerformodule").dxDataGrid({
+                dataSource: data,
+                columns: [
+                    { dataField: "Module", caption: "Module" }
+                ],
+                showBorders: true,
+                paging: {
+                    pageSize: 10
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [10, 20, 50],
+                    showInfo: true
+                },
+                columnAutoWidth: true
+            });
+        }
+
+
+
+        function loadGrid() {
+            const userId = $("#ddUserList").dxSelectBox("instance").option("value");
+            const module = $("#ddModuleList").dxSelectBox("instance").option("value");
+            const prefix = $("#ddPrefixList").dxSelectBox("instance").option("value");
+
+            if (!userId || !module) {
+                DevExpress.ui.notify("Please select User, Module, and Prefix.", "warning", 3000);
+                return;
+            }
+
+
+
+
+            $("#gridContainer").dxDataGrid({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    key: "SlNo",
+                    loadUrl: "/api/Utility/GetUserAccessDetails",
+                    loadParams: {
+                        userId: userId,
+                        module: module,
+                        prefix: prefix
+                    },
+                    updateUrl: "/api/Utility/UpdateItemVisibility"
+                }),
+                remoteOperations: true,
+                columns: [
+                    { dataField: "Prefix", caption: "Form Name" },
+                    { dataField: "SlNo", caption: "Serial No" },
+                    { dataField: "ItemName", caption: "Item Name" },
+                    { dataField: "ActionName", caption: "Action Name" },
+                    { dataField: "ItemEnabled", caption: "Enable" },
+                    {
+                        dataField: "ItemVisible",
+                        caption: "Visible",
+                        dataType: "boolean",
+                        cellTemplate: function (container, options) {
+                            $("<div>")
+                                .dxCheckBox({
+                                    value: options.value,
+                                    onValueChanged: function (e) {
+                                        const items = [{
+                                            slNo: options.data.SlNo,
+                                            ItemVisible: e.value
+                                        }];
+                                        updateItemVisibility(items);
+                                    }
+                                })
+                                .appendTo(container);
+                        }
+                    }
+                ],
+                sorting: {
+                    mode: "multiple"
+                },
+                selection: {
+                    mode: "multiple"
+                }
+            });
+        }
+        function loadWelcomeGrid(userName = "aarankumar832@gmail.com") {
+            $("#userInfoGrid").dxDataGrid({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    key: "UserName",
+                    loadUrl: "/api/Utility/GetUserIDdetails",
+                    loadParams: { userName: userName }
+                }),
+                remoteOperations: true,
+                columns: [
+                    { dataField: "UserId", caption: "User ID" },
+                    { dataField: "UserName", caption: "User Name" },
+                    { dataField: "EmailAddress", caption: "Email" },
+                    { dataField: "MobileNo", caption: "Mobile No" },
+                    {
+                        dataField: "LastLogOnTime",
+                        caption: "Last Log On",
+                        dataType: "datetime",
+                        format: "yyyy-MM-dd HH:mm"
+                    },
+                    {
+                        dataField: "LastLogOffTime",
+                        caption: "Last Log Off",
+                        dataType: "datetime",
+                        format: "yyyy-MM-dd HH:mm"
+                    }
+                ],
+                showBorders: true,
+                paging: {
+                    pageSize: 10
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [10, 20, 50],
+                    showInfo: true
+                },
+                columnAutoWidth: true
+            });
+        }
+
+
+        function updateItemVisibility(items) {
+            $.ajax({
+                url: "/api/Utility/UpdateItemVisible",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(items),
+                success: function (data) {
+                    if (data.success) {
+                        DevExpress.ui.notify(data.message, "success", 3000);
+                    } else {
+                        DevExpress.ui.notify(data.message, "error", 3000);
+                    }
+                },
+                error: function () {
+                    DevExpress.ui.notify("Failed to update item visibility.", "error", 3000);
+                }
+            });
+        }
+
+        var userLevels = [];
+        // Fetch user levels for lookup
+        function loadUserLevels() {
+
+            
+
+            return $.ajax({
+                url: "/api/Utility/GetUserLevels",
+                dataType: "json",
+                method: "GET",
+                data: { skip: 0, take: 1000 }, // adjust as needed
+                success: function (data) {
+                    userLevels = data.data || data;
+                }
+            });
+        }
+
+        var employeeGroups = [];
+
+        // Fetch employee groups for lookup
+        function loadEmployeeGroups() {
+            return $.ajax({
+                url: "/api/Utility/GetEmployeeGroups",
+                dataType: "json",
+                method: "GET",
+                data: { skip: 0, take: 1000 }, // adjust as needed
+                success: function (data) {
+                    employeeGroups = data.data || data;
+                }
+            });
+        }
+          $(document).ready(function () {
+            // Load employee groups first, then set the lookup data source
+            loadEmployeeGroups().then(function () {
+                // Find the EqptQuotationAccess column index (adjust if needed)
+                var grid = $("#DataGrid").dxDataGrid("instance");
+                var columns = grid.option("columns");
+                var eqptColIndex = columns.findIndex(c => c.dataField === "EqptQuotationAccess");
+                if (eqptColIndex >= 0) {
+                    grid.option("columns[" + eqptColIndex + "].lookup.dataSource", employeeGroups);
+                }
+            });
+        });
+
+         var departments = [];
+
+        // Fetch departments for lookup
+        function loadDepartments() {
+            return $.ajax({
+                url: "/api/Utility/GetDepartments",
+                dataType: "json",
+                method: "GET",
+                data: { skip: 0, take: 1000 }, // adjust as needed
+                success: function (data) {
+                    departments = data.data || data;
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            // Load departments first, then set the lookup data source
+            loadDepartments().then(function () {
+                var grid = $("#DataGrid").dxDataGrid("instance");
+                var columns = grid.option("columns");
+                var deptColIndex = columns.findIndex(c => c.dataField === "DeptCode");
+                if (deptColIndex >= 0) {
+                    grid.option("columns[" + deptColIndex + "].lookup.dataSource", departments);
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            // Load user levels first, then initialize the grid
+            loadUserLevels().then(function () {
+                $("#DataGrid").dxDataGrid("instance").option("columns[3].lookup.dataSource", userLevels);
+            });
+        });
+
+
+
+
+                        function onUserIdCellClick(e) {
+
+                            
+
+            // Ensure the click is on the UserId column
+            if (e.column && e.column.dataField === "UserId") {
+                 
+
+                const userId = e.data.UserId;
+                const userLevel = e.data.UserLevel;
+
+              
+                // Get tenant name from session storage
+                const tenantName = sessionStorage.getItem('tenantName');
+
+                if (!tenantName) {
+                    DevExpress.ui.notify("Tenant name not found in session storage.", "error", 2000);
+                    return;
+                }
+
+                // Make an AJAX call to check the current user's UserLevel
+                $.ajax({
+                    url: "/api/utility/CheckUserLevel", // Server-side endpoint to check UserLevel
+                    method: "GET",
+                    success: function (response) {
+                        if (response.success && response.userLevel === 99) {
+                            // If UserLevel is 99, navigate to the UserAccountDetails page
+                            const encodedTenant = encodeURIComponent(tenantName);
+                            const url = `/${encodedTenant}/General/UserAccountDetails?userId=${encodeURIComponent(userId)}`;
+                            window.location.href = url;
+                        } else {
+                            // Notify the user that navigation is not allowed
+                            DevExpress.ui.notify("You do not have permission to view this page.", "error", 2000);
+                        }
+                    },
+                    error: function () {
+                        DevExpress.ui.notify("Failed to check user level.", "error", 2000);
+                    }
+                });
+            }
+        }
+
+        //       $(document).ready(function () {
+        //     $(".limited-footer .btn-containerIvoiceEdit").each(function () {
+        //         if (!$(this).find("#btnPrint, #btnToggleSearch, #btntoggleGroupPanel, #btnCreateNew, #ddButtonLayout").length) {
+        //             $(this).remove();
+        //         }
+        //     });
+        // });
+    </script>
+}

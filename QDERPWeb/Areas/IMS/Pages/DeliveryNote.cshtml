@@ -28,10 +28,6 @@
 		overflow: hidden;
 	}
 
-	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnColumnChooser,#btnDeliveryNoteDetails,#btnDeliveryNotePosting,#btnAddDeliverynote)) {
-		display: none !important
-	}
-
 	#overlay-frame {
 		width: 100%;
 		height: 100%;
@@ -175,12 +171,18 @@
 </div>
 
 
-<div class="Head">
-	<div class="limited-footer">
-		@await Html.PartialAsync("InventoryModuleFooter")
+		@await Html.PartialAsync("/Pages/Shared/IMS/DeliveryNoteFooter.cshtml")
+<div class="context-menuInvoice" id="contextMenu">
+	<div class="context-menu-itemInvoice" onclick="viewRecord()">
+		<i class="dx-icon-search"></i> View
+	</div>
+	<div class="context-menu-itemInvoice" onclick="editRecord()">
+		<i class="dx-icon-edit"></i> Edit
+	</div>
+	<div class="context-menu-itemInvoice" onclick="deleteRecord()">
+		<i class="dx-icon-trash"></i> Delete
 	</div>
 </div>
-
 <div class="dx-fieldset horizontal-container">
 	@(Html.DevExtreme().DateBox()
 		.ID("frmdateBox")
@@ -262,13 +264,20 @@
 		.Width("98%")
 		.WordWrapEnabled(true)
 		.OnCellClick("function(e) {handleCellClick(e);}")
-		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+		.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
 		.ColumnFixing(fixing => fixing.Enabled(true))
 		.HeaderFilter(filter => filter.Visible(false))
-		.Paging(p => p.Enabled(false))
-		.Pager(pager => pager.Visible(false))
+		.Paging(p => p.PageSize(10)) // Set desired page size (e.g., 10 rows per page)
+		.Pager(pager =>
+		{
+			pager.ShowPageSizeSelector(true);
+			pager.AllowedPageSizes(new[] { 5, 10, 20, 50 });
+			pager.ShowNavigationButtons(true);
+			pager.Visible(true);
+		})
+
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
 		.ShowRowLines(true)
@@ -301,7 +310,14 @@
 		}
 		});
 	});
-
+		$(function () {
+			var now = new Date();
+			var firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+			var tillmonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+			$("#frmdateBox").dxDateBox("instance").option("value", firstDay);
+			$("#todateBox").dxDateBox("instance").option("value", tillmonth);
+			ddBtnShowRecords_click('range');
+	});
 	function ddBtnShowRecords_click(duration) {
 		 var frmDateBox = $("#frmdateBox").dxDateBox("instance");
 			var toDateBox = $("#todateBox").dxDateBox("instance");
@@ -382,6 +398,88 @@
 
 
 	}
+	 let selectedRowData = null;
+
+	$(function () {
+		const contextMenu = $("#contextMenu");
+
+		$(document).on("click", function () {
+			contextMenu.hide();
+		});
+
+	   $("#dataGrid").customizeGridContextMenu();
+		  $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
+		e.preventDefault();
+		const dataGrid = $("#dataGrid").dxDataGrid("instance");
+		const rowIndex = $(this).index();
+		selectedRowData = dataGrid.getVisibleRows()[rowIndex].data;
+
+		$("#contextMenu").css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
+	});
+
+	});
+	function viewRecord() {
+		if (selectedRowData) {
+			const DeliveryNoteNo = selectedRowData.DeliveryNoteNo;
+			window.location.href = `/${tenantName}/IMS/DeliveryEditForm?DeliveryNoteNo=${encodeURIComponent(DeliveryNoteNo)}&mode=view`;
+		}
+	}
+
+	function editRecord() {
+		if (selectedRowData) {
+			const DeliveryNoteNo = selectedRowData.DeliveryNoteNo;
+			window.location.href = `/${tenantName}/IMS/DeliveryEditForm?DeliveryNoteNo=${encodeURIComponent(DeliveryNoteNo)}&mode=edit`;
+		}
+	}
+
+
+		function deleteRecord() {
+		if (selectedRowData) {
+			const code = selectedRowData.DeliveryNoteNo;
+
+			DevExpress.ui.dialog.confirm(
+				`Are you sure you want to delete stock item: <b>${code}</b>?`,
+				"Confirm Deletion"
+			).done(function (dialogResult) {
+				if (dialogResult) {
+					$.ajax({
+						url: "/api/DeliveryNote/DeleteDeliveryItem",
+						method: "POST",
+						contentType: "application/json",
+						data: JSON.stringify(code),
+						success: function (result) {
+							const messageType = result.success ? "Success" : "Error";
+							const messageColor = result.success ? "green" : "red";
+
+							DevExpress.ui.dialog.alert(
+								`<div style="color: ${messageColor}; font-weight: bold;">
+									${result.message}
+								</div>`,
+								messageType
+							).done(function () {
+								if (result.success) {
+									window.refreshPage();
+								}
+							});
+						},
+						error: function (xhr) {
+							DevExpress.ui.dialog.alert(
+								`<div style="color: red; font-weight: bold;">
+									Error deleting stock item.
+								</div>`,
+								"Error"
+							);
+							console.error(xhr);
+						}
+					});
+				}
+			});
+		} else {
+			DevExpress.ui.notify("Please select a row to delete.", "warning", 2000);
+		}
+	}
+
+
 
 
 </script>

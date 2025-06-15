@@ -1,0 +1,317 @@
+﻿@page
+@model QD.ERP.Web.Areas.VAT.Pages.VATDetailsDescriptionModel
+@{
+    // ViewData["Title"] = "VAT Details Description";
+}
+<style>
+    .form-wrapper {
+        margin:10px;
+        padding: 20px;
+        border-radius: 6px;
+        width: 97%;  
+        height:85%;    
+    }
+
+    .form-group {
+        position: relative;
+        padding :10px;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 15px;
+        }
+
+    .form-row {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .element.style {
+        height: 110px !important;
+    }
+/*
+    .dx-textarea-input,
+    .dx-dropdowneditor-input,
+    .dx-datebox-input {
+        color: black !important;
+        height: 45px !important;
+    }
+
+    .dx-textarea, .dx-texteditor-input {
+        resize: none;
+        font-family: inherit;
+        display: block;
+        overflow: auto;
+        white-space: pre-wrap;
+        margin: 0;
+        height: 100px !important;
+    } */
+    .arabic-button {  
+        background: transparent;
+        border: none;
+        cursor: pointer;
+    }
+
+    .top-buttons {
+        position: absolute;
+        top: 0;
+        right: 0;
+        display: flex;
+        gap: 8px;
+    }
+
+        .top-buttons .dx-button {
+            height: 30px;
+            color:black;
+        }
+
+    .arabic-textbox-wrapper {
+        position: relative;
+        width: 100%;
+    }
+
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+     
+    }
+
+    .mainContainer {
+        margin-top: 3em;
+        width:100%;
+    }
+    .playIcon {
+        display: none;
+    } 
+    table tr {
+        gap: 10px;
+    }
+</style>
+
+
+<div class="title">
+    <div class="header-container">
+        <div id="DetailsDescription2" class="no-border-title"></div>
+    </div>
+</div>
+<div class="form-wrapper">
+
+    <!-- Row 1: Detailed Description + 2 Buttons -->
+    <div class="form-group">
+        <div class="top-buttons">
+            @(Html.DevExtreme().Button()
+                .ID("btnUseDetailedDesc")
+                .Text(new JS("formatMessage('Use Detailed Description')"))
+                .Type(ButtonType.Default)
+                )
+            @(Html.DevExtreme().Button()
+                .ID("btnUseItemDesc")
+                .Text(new JS("formatMessage('Use Item Description')"))
+                .Type(ButtonType.Default)
+                )
+        </div> 
+    </div>
+    <!-- Row 2: Arabic Description + Convert Button -->
+    <table style="width: 100%; border-spacing: 10px; border-collapse: separate;">
+    <tr>
+        <td colspan="4">
+                @(Html.DevExtreme().TextBox()
+                    .Label(new JS("formatMessage('Detailed Description / Specification:')"))
+                    .LabelMode(EditorLabelMode.Outside)
+                    .ID("DetailedDescription")
+                @*     .Height("100% !important") *@
+                    .Width("100%")
+                    )
+        </td>
+        </tr>
+        <tr>
+
+            <td colspan="3">
+                <div style="display: flex; align-items: end;gap:10px;">
+            @(Html.DevExtreme().TextBox()
+                .Label(new JS("formatMessage('Detailed Description / Specification (In Arabic):')"))
+                .LabelMode(EditorLabelMode.Outside)
+                .ID("DetailedDescriptionArabic")
+                .Height(100)
+                .Width("98%")
+            )
+            
+            @(Html.DevExtreme().Button()
+                .ID("btnConvertDescription")
+                .Icon("fas fa-language")
+                .ElementAttr(new { @class = "arabic-button" })
+                .OnClick("function() { convertToArabicbtn('DetailedDescription', 'DetailedDescriptionArabic'); }")
+            )
+            </div>
+        </td>
+    </tr>
+        <tr>
+            <td>
+                @(Html.DevExtreme().DateBox()
+                    .ID("ServiceStartDate")
+                    .Label("Service Start Date:")
+                    .LabelMode(EditorLabelMode.Outside)
+                    )
+            </td>
+            <td>
+                @(Html.DevExtreme().DateBox()
+                    .ID("ServiceEndDate")
+                    .Label("Service End Date:")
+                    .LabelMode(EditorLabelMode.Outside)
+                    )
+            </td>
+            <td>
+                @(Html.DevExtreme().DateBox()
+                    .ID("ExpiryDate")
+                    .Label("Expiry Date:")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Width("100%")
+                    )
+            </td>
+        </tr>
+        <tr>
+        <td>
+            @(Html.DevExtreme().SelectBox()
+                .ID("CostAllocationEmployees")
+                .Placeholder("Select Employees")
+                .Label("Cost Allocation for Employees:")
+                .LabelMode(EditorLabelMode.Outside)
+                .Width("100%")
+            )
+        </td>
+            <td>
+            @(Html.DevExtreme().SelectBox()
+                .ID("CostAllocationProperty")
+                .Placeholder("Select Property/Equipments")
+                .Label("Cost Allocation for Property/Equipments:")
+                .LabelMode(EditorLabelMode.Outside)
+                .Width("100%")
+            )
+        </td>
+            <td>
+                @(Html.DevExtreme().TextBox()
+                    .ID("BatchLotNo")
+                    .Label("Batch/Lot No:")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Width("100%")
+                    )
+            </td>
+    </tr>
+
+        <tr>
+        
+       
+        <td>
+            @(Html.DevExtreme().TextBox()
+                .ID("DiscountText")
+                .Label("Discount Text:")
+                .LabelMode(EditorLabelMode.Outside)
+                    .Width("100%")
+            )
+        </td>
+            <td>
+                <div style="display: flex; align-items: end;gap:10px;">
+                    @(Html.DevExtreme().Button()
+                        .ID("btnConvertDiscount")
+                        .Icon("fas fa-language")
+                        .ElementAttr(new { @class = "arabic-button" })
+                        .OnClick("function() { convertToArabicbtn2('DiscountText', 'DiscountTextArabic'); }")
+                        )
+                    @(Html.DevExtreme().TextBox()
+                        .ID("DiscountTextArabic")
+                        .Label("Discount Text: (Arabic)")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%")
+                        )
+                    
+                </div>
+            </td>
+            <td>
+                @(Html.DevExtreme().TextBox()
+                    .ID("Remarks")
+                    .Label("Remarks:")
+                    .LabelMode(EditorLabelMode.Outside)
+                    )
+            </td>
+    </tr>
+
+    
+    
+</table>
+
+</div>
+
+    <script>
+    async function translateToArabic(text) {
+        try {
+            const response = await fetch(
+                `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`
+            );
+            const data = await response.json();
+            console.log(data);
+            return data.responseData.translatedText;
+        } catch (error) {
+            console.error("Translation failed:", error);
+            return "Translation Error";
+        }
+    }
+    async function convertToArabicbtn() {
+        const textBox1Instance = $("#DetailedDescription").dxTextBox("instance");
+        const textBox2Instance = $("#DetailedDescriptionArabic").dxTextBox("instance");
+        if (!textBox1Instance || !textBox2Instance) {
+            console.error("TextBox instances are not properly initialized.");
+            return;
+        }
+
+        const englishText = textBox1Instance.option("value");
+        if (!englishText || englishText.trim() === "") {
+            alert("Please enter text to translate.");
+            return;
+        }
+
+        const arabicTranslation = await translateToArabic(englishText);
+        textBox2Instance.option("value", arabicTranslation);
+    }
+      async function convertToArabicbtn2() {
+        const textBox1Instance = $("#DiscountText").dxTextBox("instance");
+        const textBox2Instance = $("#DiscountTextArabic").dxTextBox("instance");
+        if (!textBox1Instance || !textBox2Instance) {
+            console.error("TextBox instances are not properly initialized.");
+            return;
+        }
+
+        const englishText = textBox1Instance.option("value");
+        if (!englishText || englishText.trim() === "") {
+            alert("Please enter text to translate.");
+            return;
+        }
+
+        const arabicTranslation = await translateToArabic(englishText);
+        textBox2Instance.option("value", arabicTranslation);
+    }
+
+        $(function () {
+                $("#DetailsDescription2").dxTextBox({
+                    text: formatMessage("Details Description"),
+                    readOnly: true,
+                                onContentReady: function(e) {
+                                $(e.element).addClass("dx-textbox-heading");
+                        }
+
+                });
+        });
+    </script>

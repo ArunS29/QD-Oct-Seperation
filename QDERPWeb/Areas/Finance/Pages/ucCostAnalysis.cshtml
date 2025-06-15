@@ -164,12 +164,15 @@
 <div class="ledgerResult" id="pivotGridContainer"></div>
 
 <script type="text/javascript">
+    let pivotData = [];
+    let slectedaccount;
 
     function onCostCenterSelected(e) {
         const selectedData = e.selectedRowsData[0];
         const dropDownBox = $("#requestedBy").dxDropDownBox("instance");
 
         if (selectedData) {
+            slectedaccount = selectedData.CostAllocationUnit;
             dropDownBox.option("value", selectedData.CostAllocationUnit);
             dropDownBox.close();
         }
@@ -241,6 +244,7 @@
             },
             success: function (data) {
                 if (Array.isArray(data)) {
+                    pivotData = data; // Set global
                     initializePivotGrid(data);
                 } else {
                     console.error("Unexpected response format", data);
@@ -311,14 +315,12 @@
         $("#frmdateBox").dxDateBox("instance").option("value", startDate);
         $("#todateBox").dxDateBox("instance").option("value", endDate);
 
-        // ✅ Updated: Use DropDownBox instead of SelectBox
-        var getaccountGroup = $("#requestedBy").dxDropDownBox("instance").option("value");
-        var accountGroup = getaccountGroup || null;
+        
 
         console.log("Fetching records with:", {
             startDate: startDate ? startDate.toISOString().split('T')[0] : "All Dates",
             endDate: endDate ? endDate.toISOString().split('T')[0] : "All Dates",
-            accountGroup: accountGroup || "All Account Groups"
+            accountGroup: slectedaccount
         });
 
         $.ajax({
@@ -327,7 +329,7 @@
             data: {
                 startDate: startDate ? startDate.toISOString().split('T')[0] : null,
                 endDate: endDate ? endDate.toISOString().split('T')[0] : null,
-                accountGroup: accountGroup
+                accountGroup: slectedaccount
             },
             success: function (data) {
                 initializePivotGrid(data);
@@ -343,12 +345,17 @@
         $("#pivotGridContainer").dxPivotGrid({
             dataSource: {
                 fields: [
-                    { dataField: "CostAllocationUnit", area: "row", caption: "Cost Group" },
-                    { dataField: "CostAllocationGroup", area: "row", caption: "Cost Center" },
+                    { dataField: "CostAllocationMasterGroup", area: "row", caption: "Cost Master", expanded: true },
+                    { dataField: "CostAllocationGroup", area: "row", caption: "Cost Center Group", expanded: true },
+                    { dataField: "CostAllocationUnit", area: "row", caption: "Cost Unit", expanded: true },
                     { dataField: "PL", area: "column", caption: "Income / Expense" },
-                    { dataField: "Income", area: "data", summaryType: "sum", caption: "Income" },
-                    { dataField: "Expenses", area: "data", summaryType: "sum", caption: "Expenses" },
-                    { dataField: "CostAmount", area: "data", summaryType: "sum", caption: "Grand Total" }
+                    { dataField: "VoucherTypeAndNo", area: "filter", caption: "Voucher No", visible: true },
+                    { dataField: "Income", area: "data", summaryType: "sum", caption: "Income", format: { type: "fixedPoint", precision: 3 }, customizeText: customFormatter },
+                    // Expenses
+                    { dataField: "Expenses", area: "data", summaryType: "sum", caption: "Expenses", format: { type: "fixedPoint", precision: 3 }, customizeText: customFormatter },
+                    // Grand Total
+                    { dataField: "CostAmount", area: "data", summaryType: "sum", caption: "Grand Total", format: { type: "fixedPoint", precision: 3 }, customizeText: customFormatter }
+
                 ],
                 store: data
             },
@@ -370,6 +377,9 @@
                 enabled: true,
                 allowSearch: true
             },
+            scrolling: {
+                mode: "virtual"
+            },
             fieldPanel: {
                 visible: true,
                 allowFieldDragging: true,
@@ -384,6 +394,7 @@
             showRowTotals: false,
             showRowGrandTotals: false
         });
+       
 
         $(window).resize(function () {
             $("#pivotGridContainer").dxPivotGrid("instance").option("height", $(window).height() - 50);
@@ -404,6 +415,8 @@
         }, function () {
             $(this).css("background-color", "");
         });
+        
+
     }
 
         function onDifferencesItemClick(e) {
@@ -506,12 +519,15 @@
 
         // Base fields (always visible)
         const baseFields = [
-            { dataField: "CostAllocationUnit", area: "row", caption: "Cost Group" },
-            { dataField: "CostAllocationGroup", area: "row", caption: "Cost Center" },
+            { dataField: "CostAllocationMasterGroup", area: "row", caption: "Cost Master", expanded: true },
+            { dataField: "CostAllocationGroup", area: "row", caption: "Cost Center Group", expanded: true },
+            { dataField: "CostAllocationUnit", area: "row", caption: "Cost Unit", expanded: true },
             { dataField: "PL", area: "column", caption: "Income / Expense" },
-            { dataField: "Income", area: "data", summaryType: "sum", caption: "Income" },
-            { dataField: "Expenses", area: "data", summaryType: "sum", caption: "Expenses" },
-            { dataField: "CostAmount", area: "data", summaryType: "sum", caption: "Grand Total" }
+            { dataField: "Income", area: "data", summaryType: "sum", caption: "Income", format: { type: "fixedPoint", precision: 3 }, customizeText: customFormatter },
+            // Expenses
+            { dataField: "Expenses", area: "data", summaryType: "sum", caption: "Expenses", format: { type: "fixedPoint", precision: 3 }, customizeText: customFormatter },
+            // Grand Total
+            { dataField: "CostAmount", area: "data", summaryType: "sum", caption: "Grand Total", format: { type: "fixedPoint", precision: 3 }, customizeText: customFormatter }
         ];
 
         // Extra filter fields
@@ -522,17 +538,92 @@
             { dataField: "CostCenterIncharge", area: "filter", caption: "Cost Center Incharge" },
             { dataField: "CostAllocationUnit", area: "filter", caption: "Cost Unit ID" },
             { dataField: "VoucherType", area: "filter", caption: "Voucher Type" },
-            { dataField: "VoucherNo", area: "filter", caption: "Voucher No" },
-            { dataField: "EffectiveDate", area: "filter", caption: "Effective Date" },
-            { dataField: "VoucherDate", area: "filter", caption: "Voucher Date" },
+            { dataField: "VoucherTypeAndNo", area: "filter", caption: "Voucher No" },
+            {
+                dataField: "EffectiveDate",
+                area: "filter",
+                caption: "Effective Date",
+                format: "dd-MMM-yyyy"
+            },
+            {
+                dataField: "VoucherDate", area: "filter", caption: "Voucher Date", customizeText: function (cellInfo) {
+                    const date = new Date(cellInfo.value);
+                    if (isNaN(date)) return ""; // handle invalid dates
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const month = date.toLocaleString('en-US', { month: 'short' });
+                    const year = date.getFullYear();
+                    return `${day}-${month}-${year}`;
+                }
+            },
             { dataField: "VoucherEntryID", area: "filter", caption: "Voucher Entry ID" },
-            { dataField: "VoucherMonth", area: "filter", caption: "Voucher Month" },
-            { dataField: "VoucherYear", area: "filter", caption: "Voucher Year" },
-            { dataField: "EffectiveMonth", area: "filter", caption: "Effective Month" },
-            { dataField: "EffectiveYear", area: "filter", caption: "Effective Year" },
-            { dataField: "AllocationEffectiveMonth", area: "filter", caption: "Allocation Effective Month" },
-            { dataField: "AllocationEffectiveDate", area: "filter", caption: "Allocation Effective Date" },
-            { dataField: "AllocationEffectiveYear", area: "filter", caption: "Allocation Effective Year" },
+            {
+                dataField: "VoucherMonth", area: "filter", caption: "Voucher Month", customizeText: function (cellInfo) {
+                    const date = new Date(cellInfo.value);
+                    if (isNaN(date)) return ""; // handle invalid dates
+                    
+                    const month = date.toLocaleString('en-US', { month: 'short' });
+                    const year = date.getFullYear();
+                    return `${month}-${year}`;
+                }
+            },
+            {
+                dataField: "VoucherYear", area: "filter", caption: "Voucher Year", customizeText: function (cellInfo) {
+                    const date = new Date(cellInfo.value);
+                    if (isNaN(date)) return ""; // handle invalid dates
+
+                    
+                    const year = date.getFullYear();
+                    return `${year}`;
+                }
+            },
+            {
+                dataField: "EffectiveMonth", area: "filter", caption: "Effective Month", customizeText: function (cellInfo) {
+                    const date = new Date(cellInfo.value);
+                    if (isNaN(date)) return ""; // handle invalid dates
+
+                    const month = date.toLocaleString('en-US', { month: 'short' });
+                    const year = date.getFullYear();
+                    return `${month}-${year}`;
+                }
+            },
+            {
+                dataField: "EffectiveYear", area: "filter", caption: "Effective Year", customizeText: function (cellInfo) {
+                    const date = new Date(cellInfo.value);
+                    if (isNaN(date)) return ""; // handle invalid dates
+
+
+                    const year = date.getFullYear();
+                    return `${year}`;
+                }
+            },
+            {
+                dataField: "AllocationEffectiveMonth", area: "filter", caption: "Allocation Effective Month", customizeText: function (cellInfo) {
+                    const date = new Date(cellInfo.value);
+                    if (isNaN(date)) return ""; // handle invalid dates
+
+                    const month = date.toLocaleString('en-US', { month: 'short' });
+                    const year = date.getFullYear();
+                    return `${month}-${year}`;
+                }
+            },
+            { dataField: "AllocationEffectiveDate", area: "filter", caption: "Allocation Effective Date",customizeText: function (cellInfo) {
+                    const date = new Date(cellInfo.value);
+                    if (isNaN(date)) return ""; // handle invalid dates
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const month = date.toLocaleString('en-US', { month: 'short' });
+                    const year = date.getFullYear();
+                    return `${day}-${month}-${year}`;
+                } },
+            {
+                dataField: "AllocationEffectiveYear", area: "filter", caption: "Allocation Effective Year", customizeText: function (cellInfo) {
+                    const date = new Date(cellInfo.value);
+                    if (isNaN(date)) return ""; // handle invalid dates
+
+
+                    const year = date.getFullYear();
+                    return `${year}`;
+                }
+            },
             { dataField: "VoucherNarration", area: "filter", caption: "Voucher Narration" },
             { dataField: "VoucherRefNo", area: "filter", caption: "Voucher Ref No" },
             { dataField: "EntryNarration", area: "filter", caption: "Entry Narration" },
@@ -557,6 +648,68 @@
         dataSource.load();
     }
 
+        $('#btnShowRowTotals').click(function () {
+        showrowtotal(pivotData); // Correctly passing the data array
+    });
+
+
+            function showrowtotal(pivotData) {
+         const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
+        console.log("pivotData", pivotData);
+
+        // Group by CostAllocationUnit (Cost Group)
+        const grouped = {};
+        pivotData.forEach(item => {
+            const groupKey = item.CostAllocationUnit;
+            if (!groupKey) return; // Skip if no group key
+            if (!grouped[groupKey]) grouped[groupKey] = [];
+            grouped[groupKey].push(item);
+        });
+
+        console.log("Grouped:", pivotData);
+
+        // Create total rows for each Cost Group
+        const totalRows = Object.entries(grouped).map(([groupName, rows]) => {
+            const totalIncome = rows.reduce((sum, r) => sum + (r.Income || 0), 0);
+            const totalExpenses = rows.reduce((sum, r) => sum + (r.Expenses || 0), 0);
+            const totalCostAmount = rows.reduce((sum, r) => sum + (r.CostAmount || 0), 0);
+
+            return {
+                CostAllocationUnit: groupName + " Total",
+                CostAllocationGroup: "", // Optional
+                PL: "", // Leave blank
+                Income: totalIncome,
+                Expenses: totalExpenses,
+                CostAmount: totalCostAmount
+            };
+        });
+
+        // Debug: Check totals
+        console.log("Total Rows:", totalRows);
+
+        const updatedData = [...pivotData, ...totalRows];
+
+        // Refresh PivotGrid with updated data
+        pivotGrid.option("dataSource", {
+            fields: [
+                { dataField: "CostAllocationUnit", area: "row", caption: "Cost Group" },
+                { dataField: "CostAllocationGroup", area: "row", caption: "Cost Center" },
+                { dataField: "PL", area: "column", caption: "Income / Expense" },
+                { dataField: "Income", area: "data", summaryType: "sum", caption: "Total Income" },
+                { dataField: "Expenses", area: "data", summaryType: "sum", caption: "Total Expenses" },
+                { dataField: "CostAmount", area: "data", summaryType: "sum", caption: "Grand Total" }
+            ],
+            store: updatedData
+        });
+    }
+    function customFormatter(cellInfo) {
+        const value = cellInfo.value;
+        if (value < 0) {
+            return "-" + Math.abs(value).toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+        } else {
+            return value.toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+        }
+    }
 
 
 </script>

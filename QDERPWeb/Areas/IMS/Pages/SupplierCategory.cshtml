@@ -140,10 +140,10 @@
 
 <div class="title">
     <div class="header-container">
-        <div id="BranchMaster" class="no-border-title"></div>
+        <div id="SupplierCategory" class="no-border-title"></div>
     </div>
 </div>
-<div class="content-container-top">
+<div class="content-container-top" style="padding:20px;">
     <div class="form-group">
 
         @(
@@ -172,6 +172,7 @@
                 )
         </div>
     </div>
+    <br />  
     <div class="col-md-4">
         <div class="form-group">
             @(Html.DevExtreme().Button()
@@ -192,9 +193,25 @@
 
 
     <div id="gridContainer"></div>
+    <br />
+    <div class="form-group">
+        @(Html.DevExtreme().Button()
+            .ID("btnback")
+            .Text(new JS("formatMessage('Back')"))
+            .Type(ButtonType.Normal)
+            .StylingMode(ButtonStylingMode.Outlined)
+            .Icon("arrowleft")
+            .OnClick("btnbackbt")
+            )
+    </div>
 </div>
 
 <script type="text/javascript">
+
+    function btnbackbt() {
+         window.parent.closeModal(); 
+     }
+
     $(function () {
         var updatedRows = []; // To store the updated rows
         var searchPanelVisible = false; // Track the visibility of the search panel
@@ -443,7 +460,7 @@
 
 
     function adddivmaster() {
-        debugger;
+        
         // Get the values from the text boxes
         var supplierCategory = $("#txtSupplierCategory").dxTextBox("instance").option("value");
         var categoryCode = $("#txtCategoryCode").dxTextBox("instance").option("value");
@@ -493,7 +510,7 @@
                     if (response.success) {
                         Swal.fire({
                             icon: 'success',
-                            title: formatMessage('Branch Added'),
+                            title: formatMessage('Category Added'),
                             text: response.message,
                             confirmButtonText: 'OK'
                         });
@@ -531,8 +548,8 @@
     }
 
     $(function () {
-        $("#BranchMaster").dxTextBox({
-            text: formatMessage("Branch Master"),
+        $("#SupplierCategory").dxTextBox({
+            text: formatMessage("Supplier Category"),
             readOnly: true,
             onContentReady: function (e) {
                 $(e.element).addClass("dx-textbox-heading");

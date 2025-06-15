@@ -16,7 +16,7 @@
        padding:10px;
    }
 
-    .limited-footer .btn-container:not(:has(#btnSave,#btnSaveAndClose,#btnPrint1,#btnDelete,#btnBack)) {
+    .limited-footer .btn-container:not(:has(#btnSave,#btnSaveAndClose,#btnDelete,btnPrint,#btnBack)) {
         display: none !important;
     }
 
@@ -64,7 +64,7 @@
         <div class="col" style="width: 33.33%;">
         @(Html.DevExtreme().TextBox()
                 .ID("txtGoodsCode7")
-            .Label("Goods & Services Code:")
+                .Label(new JS("formatMessage('Goods & Services Code:')"))
             .LabelMode(EditorLabelMode.Outside)
             .Width("100%")
                 .ValidationRules(rules =>
@@ -113,7 +113,7 @@
         <div class="col" style="width: 33.33%;">
         @(Html.DevExtreme().TextBox()
                 .ID("txtItemPartNo4")
-            .Label("Item Part No:")
+                .Label(new JS("formatMessage('Item Part No:')"))
             .LabelMode(EditorLabelMode.Outside)
             .Width("100%"))
     </div>
@@ -124,7 +124,7 @@
     <div class="col" style="width:50%;">
         @(Html.DevExtreme().TextArea()
                 .ID("txtDescription8")
-            .Label("Goods & Services Description:")
+                .Label(new JS("formatMessage('Goods & Services Description:')"))
             .LabelMode(EditorLabelMode.Outside)
             .ElementAttr("style", "height:150px !important;")
         .ValidationRules(rules =>
@@ -197,7 +197,7 @@
     <div class="col" style="width:25%">
         @(Html.DevExtreme().NumberBox()
                 .ID("packingUnit")
-            .Label("Packing Unit:")
+                .Label(new JS("formatMessage('Packing Unit:')"))
             .LabelMode(EditorLabelMode.Outside)
             .Value(1)
             .Width("100%"))
@@ -205,7 +205,7 @@
         <div class="col" style="width:25%">
         @(Html.DevExtreme().NumberBox()
                 .ID("sellingRate")
-            .Label("Selling Rate:")
+                .Label(new JS("formatMessage('Selling Rate:')"))
             .LabelMode(EditorLabelMode.Outside)
             .Value(1)
             .Width("100%"))
@@ -213,7 +213,7 @@
         <div class="col" style="width:25%">
         @(Html.DevExtreme().NumberBox()
                 .ID("txtCostPrice3")
-            .Label("Cost Price:")
+                .Label(new JS("formatMessage('Cost Price:')"))
             .LabelMode(EditorLabelMode.Outside)
             .Value(1)
             .Width("100%"))
@@ -225,7 +225,7 @@
     <div class="col" style="width:50%">
         @(Html.DevExtreme().TextArea()
                 .ID("txtDetailedDescription")
-            .Label("Detailed Description:")
+                .Label(new JS("formatMessage('Detailed Description:')"))
             .LabelMode(EditorLabelMode.Outside)
             .ElementAttr("style", "height:150px !important;")
             .Width("100%"))
@@ -248,11 +248,11 @@
 
         </div>
     <div class="Head">
-       @*  <div class="limited-footer">
-            @await Html.PartialAsync("VATModuleFooter")
+        <div class="limited-footer">
+            @await Html.PartialAsync("InventoryModuleFooter")
 
-        </div> *@
-        <div class="d-flex justify-content-start" style="gap: 10px; margin-bottom: 20px;">
+        </div> 
+       @*  <div class="d-flex justify-content-start" style="gap: 10px; margin-bottom: 20px;">
             @(Html.DevExtreme().Button()
                 .ID("btnSave")
                 .Text("Save")
@@ -296,7 +296,7 @@
                 .StylingMode(ButtonStylingMode.Outlined)
                 .ElementAttr("style", "color: black;")
                 )
-        </div>
+        </div> *@
     </div>
     @using (Html.DevExtreme().NamedTemplate("GoodsandServicesContentTemplate"))
     {
@@ -415,6 +415,23 @@
 
 </div>
 <script>
+    $(document).ready(function () {
+
+        $(".limited-footer .btn-container").each(function () {
+
+            if (!$(this).find("#btnSave,#btnSaveAndClose,#btnDelete,btnPrint,#btnBack").length) {
+
+                $(this).remove();
+
+            }
+
+        });
+
+    });
+
+    $(document).on("click", "#btnBack", function () {
+        window.history.back();
+    });
 
     function dataGridSelectionChanged1(e) {
         const selectedRow = e.selectedRowsData[0];
@@ -591,66 +608,17 @@
         }
     }
 
-    // $(document).ready(function () {
-    //     const urlParams = new URLSearchParams(window.location.search);
-    //     const clientCode = urlParams.get("clientCode");
 
-    //     const cleanClientCode = clientCode ? clientCode.split("?")[0] : null;   // Trim off anything after '?' if it's accidentally included in value
-
-    //     if (cleanClientCode) {
-    //         loadClientDetails(cleanClientCode);
-    //     }
-    // });
-
-    // function loadClientDetails(cleanClientCode) {
-    //     debugger;
-    //     $.ajax({
-    //         url: `/api/ClientLeadMaster/GetClientByCode?clientCode=${cleanClientCode}`,
-    //         type: 'GET',
-    //         success: function (data) {
-    //             $("#btnSave").dxButton("instance").option("text", "Update");
-    //             console.log("binddata:", data);
-    //             if (data) {
-    //                 $('#txtClientCode').dxTextBox("instance").option("value", data.ClientCode);
-    //                 $('#txtClientName').dxTextBox("instance").option("value", data.ClientName);
-    //                 $('#GetProjectDropDown').dxDropDownBox("instance").option("value", data.ClientCategory);
-    //                 $('#ClientVisitedOn').dxDateBox("instance").option("value", data.DateVisitedFirst);
-    //                 $('#GetLedgerNoDropDown').dxDropDownBox("instance").option("value", data.ClientAccountLedgerNo);
-    //                 $('#ClientAddress').dxTextArea("instance").option("value", data.ClientAddress);
-    //                 $('#ContactPerson').dxTextBox("instance").option("value", data.ContactPerson);
-    //                 $('#Title').dxTextBox("instance").option("value", data.ContactPersonTitle);
-    //                 $('#MobileNumber1').dxTextBox("instance").option("value", data.ContactMobile1);
-    //                 $('#MobileNumber2').dxTextBox("instance").option("value", data.ContactMobile2);
-    //                 $('#PhoneNumber1').dxTextBox("instance").option("value", data.ContactPhone1);
-    //                 $('#PhoneNumber2').dxTextBox("instance").option("value", data.ContactPhone2);
-    //                 $('#FaxNumber').dxTextBox("instance").option("value", data.ContactFaxNo);
-    //                 $('#Email').dxTextBox("instance").option("value", data.ContactEmail);
-    //                 $('#GetSalesPersonDropDown').dxDropDownBox("instance").option("value", data.SalesPersonCode);
-    //                 $('#VendorCode').dxTextBox("instance").option("value", data.VendorNo);
-    //                 $('#Remarks').dxTextArea("instance").option("value", data.ContactRemarks);
-
-    //                 // Load images if present
-    //                 if (data.BusinessCard1) {
-    //                     let img1 = "data:image/png;base64," + data.BusinessCard1;
-    //                     $('#imgBox1').html(`<img src="${img1}" />`);
-    //                     businessCard1Base64 = img1;
-    //                 }
-
-    //                 if (data.BusinessCard2) {
-    //                     let img2 = "data:image/png;base64," + data.BusinessCard2;
-    //                     $('#imgBox2').html(`<img src="${img2}" />`);
-    //                     businessCard2Base64 = img2;
-    //                 }
-    //             }
-    //         },
-    //         error: function () {
-    //             DevExpress.ui.notify("Error loading client details", "error", 3000);
-    //         }
-    //     });
-    // }
-
+    $("#btnSaveAndClose").on("click", function (e) {
+        e.preventDefault();
+        onSaveClientMasterClick();
+    });
+    $("#btnSave").on("click", function (e) {
+        e.preventDefault();
+        onSaveClientMasterClick();
+    });
     function onSaveClientMasterClick(e) {
-        debugger;
+        
         // Collecting form data from client master form
         var Gscode = $('#txtGoodsCode7').dxTextBox("instance").option("value");
       
@@ -729,7 +697,7 @@
         onDeleteButtonClick();
     });
     function onDeleteButtonClick(e) {
-        debugger;
+        
         var GoodsCode = $('#txtGoodsCode7').dxTextBox("instance").option("value");
 
         if (!GoodsCode) {

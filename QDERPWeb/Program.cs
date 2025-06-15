@@ -18,7 +18,9 @@ using Microsoft.ApplicationInsights.Extensibility;
 using QD.ERP.Web.Service.ReportService;
 using QD.ERP.Web.Middlewares;
 using DevExpress.XtraCharts;
-using qd.utilities;
+using QD.ERP.Web.Middleware;
+using QD.ERP.Web.Services.Logging;
+
 //using qd.utilities;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -51,6 +53,11 @@ builder.Services.AddScoped<DevExpress.XtraReports.Web.Extensions.ReportStorageWe
 // Configuring Reporting Services
 builder.Services.ConfigureReportingServices(configurator =>
 {
+    configurator.ConfigureReportDesigner(designerConfigurator =>
+    {
+        // Correct method to allow custom SQL queries
+        designerConfigurator.EnableCustomSql();
+    });
     configurator.ConfigureWebDocumentViewer(viewerConfigurator =>
     {
         viewerConfigurator.UseCachedReportSourceBuilder();
@@ -58,13 +65,11 @@ builder.Services.ConfigureReportingServices(configurator =>
 });
 
 
-var DBConnection = builder.Configuration.GetConnectionString("DBConnection");
-builder.Services.AddDbContext<QD.ERP.Web.DAL.Entities.ERPMasterWtDataContext>(options =>
-    options.UseSqlServer(DBConnection));
-
 var CommonDBConnection = builder.Configuration.GetConnectionString("CommonDBConnection");
 builder.Services.AddDbContext<ERPCommonContext>(options =>
-    options.UseSqlServer(CommonDBConnection));
+    options.UseSqlServer(CommonDBConnection).EnableSensitiveDataLogging());
+builder.Services.AddDbContext<ERPMasterWtDataContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services
     .AddRazorPages()
@@ -75,6 +80,7 @@ builder.Services.AddRazorPages(options =>
 {
     options.Conventions.Add(new TenantRouteModelConvention());
 });
+builder.Services.AddScoped<LicenseService>();
 
 builder.Services.AddMemoryCache();
 builder.Services.AddDistributedMemoryCache();
@@ -84,7 +90,8 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
-
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IUserActionLogger, UserActionLogger>();
 builder.Services.AddScoped<DbContextFactory>();
 builder.Services.AddMultitenancy<Tenant, TenantResolver>();
 builder.Services.AddScoped<UserAccessService>();
@@ -109,7 +116,6 @@ var loggerConfiguration = new LoggerConfiguration()
     .Enrich.FromLogContext()
     .WriteTo.Console();
 
-
 // Load local configuration from appsettings.json
 IConfiguration localConfig = builder.Configuration;
 
@@ -123,11 +129,28 @@ var configurationHelper = new ConfigurationHelper(localConfig, azureConnectionSt
 string mySetting = configurationHelper.GetConfigurationValue("MySetting");
 Console.WriteLine($"MySetting Value: {mySetting}");
 
-builder.Services.AddSingleton(new ClientFilesStorageHelper(
-    configurationHelper.GetConfigurationValue("AzureBlobStorage:ClientFilesContainerUri"),
-    configurationHelper.GetConfigurationValue("AzureBlobStorage:ClientFilesConnectionString"),
-    configurationHelper.GetConfigurationValue("AzureBlobStorage:ClientFilesContainerName")
-));
+
+//var containerUri = configurationHelper.GetConfigurationValue("AzureBlobStorage:ClientFilesContainerUri");
+//if (string.IsNullOrWhiteSpace(containerUri))
+//{
+//    throw new Exception("AzureBlobStorage:ClientFilesContainerUri is missing in configuration.");
+//}
+
+builder.Services.AddSingleton<ClientFilesStorageHelper>(provider =>
+{
+    var logger = provider.GetRequiredService<ILogger<ClientFilesStorageHelper>>();
+    var config = provider.GetRequiredService<IConfiguration>();
+
+    var containerUri = config["AzureBlobStorage:ClientFilesContainerUri"];
+    var connectionString = config["AzureBlobStorage:ClientFilesConnectionString"];
+    var containerName = config["AzureBlobStorage:ClientFilesContainerName"];
+
+    if (string.IsNullOrEmpty(containerUri))
+        throw new Exception("AzureBlobStorage:ClientFilesContainerUri is missing.");
+
+    return new ClientFilesStorageHelper(containerUri, connectionString, containerName, logger);
+});
+
 
 
 if (builder.Environment.IsDevelopment())
@@ -152,18 +175,19 @@ var app = builder.Build();
 #region **2. Configure Middleware**
 
 app.UseDevExpressControls();
+//app.UseMiddleware<LicenseValidationMiddleware>(); // Add before UseRouting
 app.UseRouting();
-app.UseStatusCodePages("text/plain", "Status Code: {0}");
-app.UseStatusCodePagesWithRedirects("/Error/{0}");
-app.Use(async (context, next) =>
-{
-    await next();
+//app.UseStatusCodePages("text/plain", "Status Code: {0}");
+//app.UseStatusCodePagesWithRedirects("/Error/{0}");
+//app.Use(async (context, next) =>
+//{
+//    await next();
 
-    if (context.Response.StatusCode == 404)
-    {
-        context.Response.Redirect("/Error/404");
-    }
-});
+//    if (context.Response.StatusCode == 404)
+//    {
+//        context.Response.Redirect("/Error/404");
+//    }
+//});
 
 
 app.Use(async (context, next) =>

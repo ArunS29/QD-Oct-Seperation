@@ -3,6 +3,7 @@
 @using DevExtreme.AspNet.Mvc
 @{
     ViewData["Title"] = "Asset View";
+    ViewContext.RouteData.Values["area"] = "Finance";
 }
 
 
@@ -137,25 +138,34 @@
 
 
                 <!-- Asset Category Dropdown -->
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div class="form-label">
                         <label for="AssetCategory">Asset Category</label>
                     </div>
                     <div class="form-group-row">
 
-                        @(Html.DevExtreme().SelectBox().ID("ddassetCategory")
-                            .LabelMode(EditorLabelMode.Outside).ValueExpr("AssetCategoryCode")
-                            .InputAttr("aria-label", "Owner")
+                        @(Html.DevExtreme().SelectBox()
+                            .ID("ddassetCategory")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .ValueExpr("AssetCategoryCode")
                             .DisplayExpr("AssetCategory")
-                            .DataSource(d => d.WebApi().Controller("assetview")
+                            .Placeholder("🔍 Select Asset Category") // 👈 Add placeholder here
+                            .InputAttr("aria-label", "Owner")
+                            .DataSource(d => d.WebApi()
+                            .Controller("assetview")
                             .LoadAction("GetAssetCategoriesByCode")
                             .LoadMode(DataSourceLoadMode.Raw)
-                            .Key("AssetCategory")).SearchEnabled(true).ShowClearButton(true).TabIndex(1)
-                              .ValidationRules(rules =>
-  {
-      rules.AddRequired().Message("Asset Category is required");
-  })
+                            .Key("AssetCategory"))
+                            .SearchEnabled(true)
+                            .ShowClearButton(true)
+                            .TabIndex(1)
+                            .Width("100%")
+                            .ValidationRules(rules =>
+                            {
+                                rules.AddRequired().Message("Asset Category is required");
+                            })
                             )
+
 
                         @(Html.DevExtreme().Button().ID("btnAddAccount").Icon("plus").ElementAttr("class", "button-alignment-down button-group").OnClick("redirectToAssetCategoryView"))
                     </div>
@@ -212,7 +222,7 @@
                 </div>
 
                 <!-- Property No (Property Modules) Dropdown -->
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-label">
                         <label for="PropertyNo">Property No(Modules)</label>
                     </div>
@@ -577,7 +587,7 @@
                         <div class="form-label">
                             <label for="StartDate">Modified By</label>
                         </div>
-                        @Html.DevExtreme().TextBox().ID("txtmodifiedby").Value("").ReadOnly(true)
+                        @Html.DevExtreme().TextBox().ID("txtmodifiedby").Value(null).ReadOnly(true)
                     </div>
                 </div>
                 <div class="form-row">
@@ -591,7 +601,7 @@
                         <div class="form-label">
                             <label for="StartDate">Modified on</label>
                         </div>
-                        @Html.DevExtreme().DateBox().ID("txtmodifiedon").Value(DateTime.Now).DisplayFormat("dd-MMM-yyyy").ReadOnly(true)
+                        @Html.DevExtreme().TextBox().ID("txtmodifiedon").Value(null).ReadOnly(true)
                     </div>
                 </div>
             </div>
@@ -672,7 +682,7 @@
                         .Type(ButtonType.Normal)
                         .StylingMode(ButtonStylingMode.Outlined)
                         .Icon("save")
-                        .OnClick("function() {alert('This is a Feature (Document Viewer)');}")
+                        .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
                         )
                     </div>
                 </div>
@@ -687,17 +697,17 @@
                         .RemoteOperations(false)
                         .Columns(columns =>
                         {
-                        columns.AddFor(m => m.DepreciationDocNo).Caption("Depreciation Doc No");
-                        columns.AddFor(m => m.DeprStartDate).Caption("Depr Start Date");
-                        columns.AddFor(m => m.DeprEndDate).Caption("Depr End Date");
-                        columns.AddFor(m => m.OpeningBalance).Caption("Opening Balance");
-                        columns.AddFor(m => m.DebitTransaction).Caption("Debit Transaction");
-                        columns.AddFor(m => m.CreditTransaction).Caption("Credit Transaction");
-                        columns.AddFor(m => m.ClosingBalance).Caption("Closing Balance");
-                        columns.AddFor(m => m.DepreciatedPercentage).Caption("Depreciated Percentage");
-                        columns.AddFor(m => m.DepreciationAmount).Caption("Depreciation Amount");
-                        columns.AddFor(m => m.AccumulatedAdjusted).Caption("Accumulated Adjusted");
-                        columns.AddFor(m => m.BookValueAsOnDate).Caption("Book Value As On Date");
+                    columns.AddFor(m => m.DepreciationDocNo).Caption("Depreciation Doc No").Visible(true);
+                    columns.AddFor(m => m.DeprStartDate).Caption("Depr Start Date").Visible(true);
+                        columns.AddFor(m => m.DeprEndDate).Caption("Depr End Date").Visible(true);
+                    columns.AddFor(m => m.OpeningBalance).Caption("Opening Balance").Visible(true);
+                        columns.AddFor(m => m.DebitTransaction).Caption("Debit Transaction").Visible(true);
+                        columns.AddFor(m => m.CreditTransaction).Caption("Credit Transaction").Visible(true);
+                        columns.AddFor(m => m.ClosingBalance).Caption("Closing Balance").Visible(true);
+                        columns.AddFor(m => m.DepreciatedPercentage).Caption("Depreciated Percentage").Visible(true);
+                    columns.AddFor(m => m.DepreciationAmount).Caption("Depreciation Amount").Visible(true);
+                        columns.AddFor(m => m.AccumulatedAdjusted).Caption("Accumulated Adjusted").Visible(true);
+                    columns.AddFor(m => m.BookValueAsOnDate).Caption("Book Value As On Date").Visible(true);
                         })
                         .AllowColumnReordering(true) // Enable column reordering
                         .AllowColumnResizing(true)   // Enable column resizing
@@ -791,12 +801,12 @@
                         columns.AddFor(m => m.DocumentNo).Caption("Doc No");
 
 
-                        columns.AddFor(m => m.DocumentType).Caption("DocumentType");
-                        columns.AddFor(m => m.DocumentRefNo).Caption("Document Ref.No");
-                        columns.AddFor(m => m.DocumentRemarks).Caption("Document Remarks");
-                        columns.AddFor(m => m.DocumentExpDate).Caption("Expiry On");
-                        columns.AddFor(m => m.DocumentExpDateAr).Caption("Expiry Arabic");
-                        columns.AddFor(m => m).Caption("Notify On");
+                    columns.AddFor(m => m.DocumentType).Caption("DocumentType").Visible(true);;
+                    columns.AddFor(m => m.DocumentRefNo).Caption("Document Ref.No").Visible(true);;
+                        columns.AddFor(m => m.DocumentRemarks).Caption("Document Remarks").Visible(true);;
+                    columns.AddFor(m => m.DocumentExpDate).Caption("Expiry On").Visible(true);;
+                    columns.AddFor(m => m.DocumentExpDateAr).Caption("Expiry Arabic").Visible(true);;
+                    columns.AddFor(m => m).Caption("Notify On").Visible(true);;
                         })
                         //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
                         .AllowColumnReordering(true) // Enable column reordering
@@ -890,16 +900,23 @@
                         Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl20111AssetMaintenanceMaster>()
 
                         .ID("maintenanceGrid")
-                        .RemoteOperations(false)
-                    .DataSource(ds => ds.Mvc()
-                    .Controller("AssetView")
-                    .LoadAction("GetMaintenance"))
                     .KeyExpr("MaintenanceRefNo")
+                    .RemoteOperations(false)
+
+                    .DataSource(new JS("maintenanceDataSource") )
                         .Columns(columns =>
                         {
                        
-                         columns.AddFor(m => m.MaintenanceRefNo).Caption("Maintenance Id");
-                          columns.AddFor(m => m.MaintenanceTypeId).Caption("Maintenance Type");
+                         columns.AddFor(m => m.MaintenanceRefNo).Visible(false);
+                    columns.AddFor(m => m.MaintenanceTypeId)
+                    .DataField("MaintenanceTypeId")
+                    .Caption("Maintenance Type")
+                    .Lookup(lookup => lookup
+                    .DataSource(ds => ds.Mvc().Controller("AssetView").LoadAction("GetEditMaintenance"))
+                    .ValueExpr("AssetMaintenanceTypeId")
+                    .DisplayExpr("AssetMaintenanceType")
+                    );
+
                         columns.AddFor(m => m.MaintenanceReading).Caption("Maintenance Reading");
                         columns.AddFor(m => m.MaintenanceDate).Caption("Maintenance Scheduled On");
                         columns.AddFor(m => m.ReminderDate).Caption("Reminder Date");
@@ -920,9 +937,43 @@
                         .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
                         .ShowBorders(true)
                         .Width("100%")
+                    .Editing(editing => editing
+                    .Mode(GridEditMode.Cell)
+                    .AllowUpdating(true) // <-- MUST be here
+                    .AllowDeleting(false)
+                    .UseIcons(true)
+                    )
+
                     .OnContextMenuPreparing("onContextMenuPreparing")
+                   
+                    .OnRowUpdated("onRowUpdated")
+
                         )
                     </div>
+                @section Scripts {
+                <script>
+                    const maintenanceDataSource = new DevExpress.data.CustomStore({
+                        key: "MaintenanceRefNo",
+                        load: () => $.getJSON("/api/AssetView/GetMaintenance"),
+                        update: (key, values) => {
+                            // If you want to send full row, fetch original first (optional)
+                            const grid = $("#maintenanceGrid").dxDataGrid("instance");
+                            const originalData = grid.getDataSource().items().find(x => x.MaintenanceRefNo === key);
+
+                            const merged = Object.assign({}, originalData, values); // merge
+
+                            merged.MaintenanceRefNo = key;
+
+                            return $.ajax({
+                                url: "/api/AssetView/UpdateMaintenanceType",
+                                method: "POST",
+                                contentType: "application/json",
+                                data: JSON.stringify(merged)
+                            });
+                        }
+                    });
+                </script>
+                }
 
 
 
@@ -1007,6 +1058,55 @@
                 })
                         )
 }
+
+
+@* Cell Template *@
+<script type="text/html" id="maintenanceTypeCellTemplate">
+    <%- data.MaintenanceType ? data.MaintenanceType : " " %>
+</script>
+
+<script type="text/html" id="maintenanceTypeEditCellTemplate">
+        <div id="maintenanceTypeDropDownBox_<%- data.MaintenanceRefNo %>"></div>
+        <script type="text/javascript">
+    (function () {
+        var elementId = "maintenanceTypeDropDownBox_<%- data.MaintenanceRefNo %>";
+        var value = <%- data.MaintenanceTypeId != null ? JSON.stringify(data.MaintenanceTypeId) : 'null' %>;
+
+        $("#" + elementId).dxDropDownBox({
+            dataSource: DevExpress.data.AspNet.createStore({
+                key: "AssetMaintenanceTypeId",
+                loadUrl: "/api/AssetView/GetEditMaintenance"
+            }),
+            value: value,
+            valueExpr: "AssetMaintenanceTypeId",
+            displayExpr: "AssetMaintenanceType",
+            showClearButton: false,
+            placeholder: "Select AccountHead",
+            dropDownOptions: { width: 800 },
+            contentTemplate: function (e) {
+                return $("<div>").dxDataGrid({
+                    dataSource: e.component.option("dataSource"),
+                    columns: [{ dataField: "AssetMaintenanceType" }],
+                    selection: { mode: "single" },
+                    selectedRowKeys: [e.component.option("value")],
+                    onSelectionChanged: function (selectedItems) {
+                        debugger;
+                        e.component.option("value", selectedItems.selectedRowKeys[0] || null);
+                    },
+                    filterRow: { visible: true },
+                    height: 345,
+                    paging: { pageSize: 15 },
+                    hoverStateEnabled: true,
+                    showBorders: true,
+                    scrolling: { mode: "virtual" }
+                });
+            }
+        });
+    })();
+</script>
+</script>
+
+
 
 <script type="text/html" id="deleteTemplate">
     <a href="javascript:void(0);" onclick="deleteRow(this)">Delete</a>
@@ -1163,45 +1263,55 @@
             columnAutoWidth: true,
             showBorders: true
         }).dxDataGrid("instance");
+        const maintenanceDataSource = new DevExpress.data.CustomStore({
+            key: "MaintenanceRefNo", // ✅ MUST match your entity PK
+            load: function () {
+                return $.getJSON("/api/AssetView/GetMaintenance");
+            },
+            update: function (key, values) {
+                values.MaintenanceRefNo = key; // ✅ include primary key
+                return $.ajax({
+                    url: "/api/AssetView/UpdateMaintenanceType",
+                    method: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(values)
+                });
+            }
+        });
     });
 
     function addScheduledTypeRow() {
-        var readingBox = $("#txtMaintenanceReading").dxNumberBox("instance");
-        var typeBox = $("#ddlMaintenanceTypes").dxSelectBox("instance");
+        const ledgerNo = $("#txtacctledno").dxTextBox("instance").option("value");
+        const maintenanceReading = $("#txtMaintenanceReading").dxNumberBox("instance").option("value");
 
-        if (!readingBox || !typeBox) {
-            console.error("dxNumberBox or dxSelectBox not initialized properly.");
+        if (!ledgerNo) {
+            DevExpress.ui.notify("Asset Ledger No is required", "error", 3000);
             return;
         }
 
-        var maintenanceReading = readingBox.option("value");
-        var maintenanceTypeId = typeBox.option("value"); // GSCode
-        var maintenanceTypeText = typeBox.option("text");
-
-   
-
-        var today = new Date();
-        var formattedDate = today.toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric"
-        });
-
-        var newRow = {
-            SNo: rowData.length + 1,
-            MaintenanceRefNo: "",
-            MaintenanceTypeId: maintenanceTypeId,
+        const newRow = {
+            AssetLedgerNo: ledgerNo,
+            MaintenanceTypeId: 1,
             MaintenanceReading: maintenanceReading,
-            MaintenanceDate: formattedDate,
-            ReminderDate: "",
-            MaintenanceRemarks: "",
+            MaintenanceDate: new Date().toISOString(),
+            ReminderDate: new Date().toISOString(),
             IsMaintenanceDone: false,
-            ActualMaintenanceDoneOn: ""
+            ActualMaintenanceDoneOn: null
         };
 
-        rowData.push(newRow);
-        dataGridInstance.option("dataSource", rowData);
-        dataGridInstance.refresh();
+        $.ajax({
+            url: "/api/AssetView/AddMaintenanceType",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(newRow),
+            success: function () {
+                DevExpress.ui.notify("Scheduled Maintenance Added", "success", 2000);
+                $("#maintenanceGrid").dxDataGrid("instance").refresh();
+            },
+            error: function () {
+                DevExpress.ui.notify("Failed to add Scheduled Maintenance", "error", 3000);
+            }
+        });
     }
 
 
@@ -1258,7 +1368,7 @@
             success: function (data) {
                 console.log("Data received from API:", data);
                 if (data && data.length > 0) {
-                    populateFields(data[0]);
+                        populateFields(data[0], assetLedgerNo);
                 } else {
                     console.warn("No data found for the given AssetLedgerNo.");
                 }
@@ -1496,7 +1606,7 @@
         }
         *@
 
-        function populateFields(assetData) {
+        function populateFields(assetData, assetLedgerNo) {
 
             $.ajax({
                 url: "/api/AccountLedgerMaster/getUserName",
@@ -1508,9 +1618,8 @@
                     console.log("userN:", getUN);
                 }
             });
-                          console.log("Data received from API2:", assetData.AddedOn);
-            console.log("AddedBy:", assetData.AddedBy);
-            $("#txtacctledno").dxTextBox("instance").option("value", assetData.AssetLedgerNo);
+            debugger;              
+            $("#txtacctledno").dxTextBox("instance").option("value", assetData.AssetLedgerNo || assetLedgerNo);
             $("#ddassetCategory").dxSelectBox("instance").option("value", assetData.AssetCategory);
 
             if (assetData.PlateNo && assetData.PlateNo !== "null") {
@@ -1659,7 +1768,7 @@
             $("#txtenteredby").dxTextBox("instance").option("value", assetData.AddedBy);
        
             $("#txtenteredon").dxTextBox("instance").option("value", formatDate(assetData.AddedOn));
-            $("#txtmodifiedby").dxTextBox("instance").option("value", getUN);
+            $("#txtmodifiedby").dxTextBox("instance").option("value", assetData.ModifiedBy);
             console.log("uan:", getUN);
            
             function formatDate(date) {
@@ -1706,7 +1815,7 @@
     return null;
 }
     function updateAsset() {
-        debugger;
+        
     const purchaseDateRaw = $("#txtPurchasedDate").dxDateBox("instance").option("value");
     const formattedpurchaseDate = formatDate(purchaseDateRaw);
     console.log("Formatted Purchase Date:", formattedpurchaseDate);
@@ -1848,7 +1957,7 @@
     }
 }
 function onDeleteMaintenanceSchedule(MaintenanceRefNo) {
-    debugger;
+    
        $.ajax({
             url: `/api/AssetView/DeleteMaintenanceSchedule?MaintenanceRefNo=${MaintenanceRefNo}`,
         type: "POST",
@@ -1868,6 +1977,79 @@ function onDeleteMaintenanceSchedule(MaintenanceRefNo) {
     });
 }
 
+    function gridmaintenance_valueChanged(e) {
+        var $dataGrid = $("#maintenanceGrid");
 
+        if ($dataGrid.length) {
+            var dataGrid = $dataGrid.dxDataGrid("instance");
+            dataGrid.selectRows(e.value, false);
+        }
 
+        if (e.value) {
+            let grid = $("#maintenanceGrid").dxDataGrid("instance");
+            let rowIndex = e.element.closest("tr").index();
+            let rowData = grid.getVisibleRows()[rowIndex].data;
+
+            let costAllocationDropdownGrid = $("#accountDropDownBoxeditGrid").dxDataGrid("instance");
+            let selectedRowData = costAllocationDropdownGrid.getSelectedRowsData()[0];
+
+            if (selectedRowData) {
+                rowData.MaintenanceTypeId = selectedRowData.AssetMaintenanceTypeId;
+                rowData.MaintenanceType = selectedRowData.AssetMaintenanceType; // Update AccountHead
+                grid.cellValue(rowIndex, "MaintenanceTypeId", selectedRowData.AssetMaintenanceTypeId);
+                grid.cellValue(rowIndex, "MaintenanceType", selectedRowData.AssetMaintenanceType); // Reflect change
+            }
+        }
+
+        e.component.option("opened", false);
+    }
+
+    function onEditorPreparing(e) {
+        debugger;
+        if (e.parentType === "dataRow" && e.dataField === "MaintenanceType") {
+            e.editorType = "dxDropDownBox";
+            e.editorOptions = {
+                value: e.value,
+                valueExpr: "AssetMaintenanceTypeId",
+                displayExpr: "AssetMaintenanceType",
+                dataSource: DevExpress.data.AspNet.createStore({
+                    key: "AssetMaintenanceTypeId",
+                    loadUrl: "/api/AssetView/GetEditMaintenance"
+                }),
+                contentTemplate: function (e, container) {
+                    $("<div>")
+                        .dxList({
+                            dataSource: DevExpress.data.AspNet.createStore({
+                                key: "AssetMaintenanceTypeId",
+                                loadUrl: "/api/AssetView/GetEditMaintenance"
+                            }),
+                            selectionMode: "single",
+                            selectedItemKeys: [e.component.option("value")],
+                            onItemClick: function (args) {
+                                e.component.option("value", args.itemData.AssetMaintenanceTypeId);
+                                e.component.close();
+                            },
+                            keyExpr: "AssetMaintenanceTypeId",
+                            displayExpr: "AssetMaintenanceType"
+                        }).appendTo(container);
+                }
+            };
+        }
+    }
+
+    function onRowUpdated(e) {
+        debugger;
+        const merged = Object.assign({}, e.oldData, e.newData);
+        e.cancel = true;
+
+        $.ajax({
+            url: "/api/AssetView/UpdateMaintenanceType",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(merged)
+        }).done(() => {
+            DevExpress.ui.notify("Updated", "success", 2000);
+            $("#maintenanceGrid").dxDataGrid("instance").refresh();
+        });
+    }
 </script>

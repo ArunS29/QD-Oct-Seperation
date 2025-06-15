@@ -11,14 +11,6 @@
         padding: 20px;
     }
 
-   
-
-    
-
-    .bold-button {
-        font-weight: 600;
-    }
-
     .form-row {
         display: flex;
         gap: 15px;
@@ -71,7 +63,9 @@
         background-color: #fff;
     }
 
-   
+    .limited-footer .btn-container:not(:has(#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
+        display: none !important;
+    }
 
     .upload {
         display: block;
@@ -130,6 +124,9 @@
             position: absolute;
         }
 
+    .playIcon {
+        display: none;
+    }
 </style>
 <div class="title">
     <div class="header-container">
@@ -139,277 +136,290 @@
 <div class="signatory-form-container">
     <div id="DatabaseSignatories" class="no-border-title"></div>
 
-    <div class="form-row">
-        @(Html.DevExtreme().TextBox()
-            .ID("SignatoryName")
-            .Label(new JS("formatMessage('Signatory Name')"))
-            .LabelMode(EditorLabelMode.Outside)
-            .ValidationRules(rules =>
-            {
-                rules.AddRequired().Message("Signatory Name is required");
-            })
-            )
-
-        @(Html.DevExtreme().Button()
-            .ID("btnConvertName")
-            .Icon("fas fa-language")
-            .ElementAttr(new { @class = "input-button" })
-            .OnClick("function() { convertToArabic('SignatoryName', 'SignatoryNameArabic'); }")
-            )
-
-        @(Html.DevExtreme().TextBox()
-            .ID("SignatoryNameArabic")
-            .ElementAttr(new { dir = "rtl", @class = "rtl-textbox" })
-            .Label(new JS("formatMessage('Signatory Name(Arabic)')"))
-            .LabelMode(EditorLabelMode.Outside)
-            )
-    </div>
-
-    <div class="form-row">
-        @(Html.DevExtreme().TextBox()
-            .ID("SignatoryPosition")
-            .Label(new JS("formatMessage('Signatory Position')"))
-            .LabelMode(EditorLabelMode.Outside)
-            .ValidationRules(rules =>
-            {
-                rules.AddRequired().Message("Signatory Name is required");
-            })
-            )
-
-        @(Html.DevExtreme().Button()
-            .ID("btnConvertPosition")
-            .Icon("fas fa-language")
-            .ElementAttr(new { @class = "input-button" })
-            .OnClick("function() { convertToArabic('SignatoryPosition', 'SignatoryPositionArabic'); }")
-            )
-
-        @(Html.DevExtreme().TextBox()
-            .ID("SignatoryPositionArabic")
-            .ElementAttr(new { dir = "rtl", @class = "rtl-textbox" })
-            .Label(new JS("formatMessage('Signatory Position(Arabic)')"))
-            .LabelMode(EditorLabelMode.Outside)
-            )
-    </div>
-
-    <div class="form-row">
-        @(Html.DevExtreme().TextBox()
-            .ID("SignatoryContact")
-            .Label(new JS("formatMessage('Signatory Contact No.')"))
-            .LabelMode(EditorLabelMode.Outside)
-            )
-
-        @(Html.DevExtreme().TextBox()
-            .ID("SignatoryEmail")
-            .Label(new JS("formatMessage('Signatory Email')"))
-            .LabelMode(EditorLabelMode.Outside)
-
-            )
-    </div>
-
-
-    <div class="form-row d-flex align-items-end" style="gap: 15px; flex-wrap: wrap;">
-
-        <!-- Signatory DropDownBox -->
-        <div class="form-group mb-2" style="min-width: 250px;">
-            @(Html.DevExtreme().DropDownBox()
-                .ID("SignatoryUserId")
-                .Label("Signatory User ID:")
-                .LabelMode(EditorLabelMode.Outside)
-                .ShowClearButton(true)
-                .OpenOnFieldClick(true)
-                .AcceptCustomValue(false)
-                .DataSource(d => d.WebApi()
-                .Controller("Signatories")
-                .LoadAction("GetAllSignData")
-                .LoadMode(DataSourceLoadMode.Raw)
-                .Key("SignatoryID"))
-                .ValueExpr("SignatoryID")
-                .DisplayExpr("SignatoryName")
-                .ContentTemplate(@<text>
-                <div id="SignatoryGridContainer"></div>
-                <script>
-                    $(function () {
-                        $("#SignatoryGridContainer").dxDataGrid({
-                            dataSource: DevExpress.data.AspNet.createStore({
-                                key: "SignatoryID",
-                                loadUrl: "/api/Signatories/GetAllSignData"
-                            }),
-                            height: 250,
-                            selection: { mode: "single" },
-                            hoverStateEnabled: true,
-                            paging: { pageSize: 10 },
-                            pager: {
-                                showPageSizeSelector: true,
-                                allowedPageSizes: [5, 10, 20]
-                            },
-                            columns: [
-                                { dataField: "SignatoryID", caption: "ID", width: 60 },
-                                { dataField: "SignatoryName", caption: "Name", width: 200 }
-                            ],
-                            onSelectionChanged: function (e) {
-                                var selected = e.selectedRowsData[0];
-                                if (selected) {
-                                    $("#SignatoryUserId").dxDropDownBox("instance").option("value", selected.SignatoryID);
-                                }
-                            }
-                        });
-                    });
-                </script>
-            </text>)
-                )
-        </div>
-
-        <!-- Add Button -->
-        <div class="form-group mb-2">
-            @(Html.DevExtreme().Button()
-                .ID("btnAddSalesPerson")
-                .Text("ADD")
-                .Icon("plus")
-                .OnClick("function() { addSignatoryToGrid(); }")
-                .ElementAttr(new { @class = "dx-button-add" })
-                )
-        </div>
-
-        <!-- Image Upload Box -->
-        <div class="form-group mb-2">
-            <div class="dx-fieldset" style="width: 150px;">
-                <div class="imagecontainer" id="imgBox1" style="width: 100%; height: 100px; background-color: white;">
-                    <span>Upload Signature</span>
+    <table style="width: 100%;">
+        <tr>
+            <!-- LEFT CONTAINER -->
+            <td style="vertical-align: top; width: 50%; padding-right: 20px;">
+                <div class="form-group">
+                    @(Html.DevExtreme().TextBox()
+                        .ID("SignatoryName")
+                        .Label(new JS("formatMessage('Signatory Name')"))
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ValidationRules(rules =>
+                        {
+                            rules.AddRequired().Message("Signatory Name is required");
+                        })
+                        )
                 </div>
-                <input type="file" id="imageInput" accept="image/*" style="display:none;" />
-            </div>
-        </div>
 
-    </div>
+                <div class="form-group">
+                    @(Html.DevExtreme().TextBox()
+                        .ID("SignatoryPosition")
+                        .Label(new JS("formatMessage('Signatory Position')"))
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ValidationRules(rules =>
+                        {
+                            rules.AddRequired().Message("Signatory Position is required");
+                        })
+                        )
+                </div>
+
+                <div class="form-group">
+                    @(Html.DevExtreme().TextBox()
+                        .ID("SignatoryContact")
+                        .Label(new JS("formatMessage('Signatory Contact No.')"))
+                        .LabelMode(EditorLabelMode.Outside)
+                        )
+                </div>
+
+                <div class="form-group">
+                    <div style="display: flex; gap: 10px; align-items: flex-end;margin-top: 40px;flex-wrap: wrap;">
+                        <div style="flex: 1;">
+                            @(Html.DevExtreme().DropDownBox()
+                                .ID("SignatoryUserId")
+                                .Label("Signatory User ID:")
+                                .LabelMode(EditorLabelMode.Outside)
+                                .ShowClearButton(true)
+                                .OpenOnFieldClick(true)
+                                .AcceptCustomValue(false)
+                                .DataSource(d => d.WebApi()
+                                .Controller("Signatories")
+                                .LoadAction("GetAllSignData")
+                                .LoadMode(DataSourceLoadMode.Raw)
+                                .Key("SignatoryID"))
+                                .ValueExpr("SignatoryID")
+                                .DisplayExpr("SignatoryName")
+                                .ContentTemplate(@<text>
+                                <div id="SignatoryGridContainer"></div>
+                                <script>
+                                    $(function () {
+                                        $("#SignatoryGridContainer").dxDataGrid({
+                                            dataSource: DevExpress.data.AspNet.createStore({
+                                                key: "SignatoryID",
+                                                loadUrl: "/api/Signatories/GetAllSignData"
+                                            }),
+                                            height: 250,
+                                            selection: { mode: "single" },
+                                            hoverStateEnabled: true,
+                                            paging: { pageSize: 10 },
+                                            pager: {
+                                                showPageSizeSelector: true,
+                                                allowedPageSizes: [5, 10, 20]
+                                            },
+                                            columns: [
+                                                { dataField: "SignatoryID", caption: "ID", width: 60 },
+                                                { dataField: "SignatoryName", caption: "Name", width: 200 }
+                                            ],
+                                            onSelectionChanged: function (e) {
+                                                var selected = e.selectedRowsData[0];
+                                                if (selected) {
+                                                    $("#SignatoryUserId").dxDropDownBox("instance").option("value", selected.SignatoryID);
+                                                }
+                                            }
+                                        });
+                                    });
+                                </script>
+                            </text>)
+                                )
+                        </div>
+                        <div>
+                            @(Html.DevExtreme().Button()
+                                .ID("btnAddSalesPerson")
+                                .Text("ADD")
+                                .Icon("plus")
+                                .OnClick("function() { addSignatoryToGrid(); }")
+                                .ElementAttr(new { @class = "dx-button-add" })
+                                )
+                        </div>
+                    </div>
+                </div>
+            </td>
+
+            <!-- RIGHT CONTAINER -->
+            <td style="vertical-align: top; width: 50%;">
+                <div class="form-group">
+                    <div style="display: flex; gap: 10px; align-items:end;">
+                        @(Html.DevExtreme().Button()
+                            .ID("btnConvertName")
+                            .Icon("fas fa-language")
+                            .ElementAttr(new { @class = "input-button" })
+                            .OnClick("function() { convertToArabic('SignatoryName', 'SignatoryNameArabic'); }")
+                            )
+
+                        @(Html.DevExtreme().TextBox()
+                            .ID("SignatoryNameArabic")
+                            .ElementAttr(new { dir = "rtl", @class = "rtl-textbox" })
+                            .Label(new JS("formatMessage('Signatory Name(Arabic)')"))
+                            .LabelMode(EditorLabelMode.Outside)
+                            .Width("100%")
+                            )
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div style="display: flex; gap: 10px; align-items:end;">
+                        @(Html.DevExtreme().Button()
+                            .ID("btnConvertPosition")
+                            .Icon("fas fa-language")
+                            .ElementAttr(new { @class = "input-button" })
+                            .OnClick("function() { convertToArabic('SignatoryPosition', 'SignatoryPositionArabic'); }")
+                            )
+
+                        @(Html.DevExtreme().TextBox()
+                            .ID("SignatoryPositionArabic")
+                            .ElementAttr(new { dir = "rtl", @class = "rtl-textbox" })
+                            .Label(new JS("formatMessage('Signatory Position(Arabic)')"))
+                            .LabelMode(EditorLabelMode.Outside)
+                            .Width("100%")
+                            )
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @(Html.DevExtreme().TextBox()
+                        .ID("SignatoryEmail")
+                        .Label(new JS("formatMessage('Signatory Email')"))
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%")
+                        )
+                </div>
+
+                <div class="form-group">
+                    <div class="dx-fieldset" style="width: 375px;">
+                        <div class="imagecontainer" id="imgBox1" style="width: 142%; height: 100px; background-color: white;">
+                            <span>Upload Signature</span>
+                        </div>
+                        <input type="file" id="imageInput" accept="image/*" style="display:none;" />
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+
 
 
     <!-- ✅ Business Card Upload Section -->
     @*    <div class="form-row">
-    <div class="form-row-btn">
-    <label><b>Business Card</b></label>
-    <div class="dx-fieldset" style="display:flex;flex-direction:column;gap:10px;width:50%;">
-    <div class="imagecontainer" id="imgBox1">
-    <span>Upload Signature </span>
-    </div>
+        <div class="form-row-btn">
+            <label><b>Business Card</b></label>
+            <div class="dx-fieldset" style="display:flex;flex-direction:column;gap:10px;width:50%;">
+                <div class="imagecontainer" id="imgBox1">
+                    <span>Upload Signature </span>
+                </div>
 
-    <input type="file" id="imageInput" accept="image/*" style="display:none;" />
-    </div>
-    </div>
+                <input type="file" id="imageInput" accept="image/*" style="display:none;" />
+            </div>
+        </div>
     </div> *@
-</div>
-<div class="dx-field ledgerResult">
-    @(Html.DevExtreme().DataGrid()
-        .ID("SignatoryGrid")
-        .KeyExpr("SignatoryID")
-        .RemoteOperations(false)
-        .DataSource(d => d.WebApi()
-        .Controller("Signatories")
-        .LoadAction("GetAllSignData")
-        .LoadMode(DataSourceLoadMode.Raw)
-        )
-        .Editing(editing => editing
-        .Mode(GridEditMode.Batch)
-        .AllowUpdating(true)
+    <div class="dx-field ledgerResult">
+        @(Html.DevExtreme().DataGrid()
+            .ID("SignatoryGrid")
+            .KeyExpr("SignatoryID")
+            .RemoteOperations(false)
+            .DataSource(d => d.WebApi()
+            .Controller("Signatories")
+            .LoadAction("GetAllSignData")
+            .LoadMode(DataSourceLoadMode.Raw)
+            )
+            .Editing(editing => editing
+            .Mode(GridEditMode.Batch)
+            .AllowUpdating(true)
 
-        )
-        .Toolbar(toolbar =>
-        {
-            toolbar.Items(items => { }); // hide default toolbar
-        })
-        .OnRowUpdating("onSignatoryUpdating")                       // Handles saving
-        .Columns(columns =>
-        {
-            columns.Add().DataField("SignatoryID").Caption("ID").Width(80).AllowEditing(false);
-            columns.Add().DataField("SignatoryName").Caption("Name").Width(200);
-            columns.Add().DataField("SignatoryPosition").Caption("Position").Width(200);
-            columns.Add().DataField("SignatoryContact").Caption("Contact").Width(150);
-            columns.Add().DataField("SignatoryEmail").Caption("Email").Width(250);
-            // Image columns with cell template
-            columns.Add().DataField("DecodedBusinessCard1")
-            .Caption(new JS("formatMessage('Signature Image')"))
-            .CellTemplate(new JS(@"
-    function(cellElement, cellInfo) {
-    if (cellInfo.value) {
-    $('<img>')
-    .attr('src', cellInfo.value)
-    .css({ width: '100px', height: 'auto' })
-    .appendTo(cellElement);
-    }
-    }
-    ")).Width(150);
-            @* columns.Add().Caption("Signature Image").AllowEditing(false)
-    .CellTemplate(@<text>
-    function(cellElement, cellInfo) {
-    if (cellInfo.data?.SignatureImageBase64) {
-    $("<img>")
-    .attr("src", "data:image/png;base64," + cellInfo.data.SignatureImageBase64)
-    .css({ height: "40px", borderRadius: "4px" })
-    .appendTo(cellElement);
-    } else {
-    cellElement.text("No image");
-    }
-    }
+            )
+            .Toolbar(toolbar =>
+            {
+                toolbar.Items(items => { }); // hide default toolbar
+            })
+            .OnRowUpdating("onSignatoryUpdating")                       // Handles saving
+            .Columns(columns =>
+            {
+                columns.Add().DataField("SignatoryID").Caption("ID").Width(80).AllowEditing(false);
+                columns.Add().DataField("SignatoryName").Caption("Name").Width(200);
+                columns.Add().DataField("SignatoryPosition").Caption("Position").Width(200);
+                columns.Add().DataField("SignatoryContact").Caption("Contact").Width(150);
+                columns.Add().DataField("SignatoryEmail").Caption("Email").Width(250);
+                // Image columns with cell template
+                columns.Add().DataField("DecodedBusinessCard1")
+                .Caption(new JS("formatMessage('Signature Image')"))
+                .CellTemplate(new JS(@"
+        function(cellElement, cellInfo) {
+        if (cellInfo.value) {
+        $('<img>')
+        .attr('src', cellInfo.value)
+        .css({ width: '100px', height: 'auto' })
+        .appendTo(cellElement);
+        }
+        }
+        ")).Width(150);
+                @* columns.Add().Caption("Signature Image").AllowEditing(false)
+            .CellTemplate(@<text>
+        function(cellElement, cellInfo) {
+        if (cellInfo.data?.SignatureImageBase64) {
+        $("<img>")
+        .attr("src", "data:image/png;base64," + cellInfo.data.SignatureImageBase64)
+        .css({ height: "40px", borderRadius: "4px" })
+        .appendTo(cellElement);
+        } else {
+        cellElement.text("No image");
+        }
+        }
     </text>); *@
-        })
-        .Height(500)
-        .ColumnAutoWidth(true)
-        .AllowColumnReordering(true)
-        .AllowColumnResizing(true)
-        .ColumnFixing(f => f.Enabled(true))
-        .Paging(p => p.Enabled(true))
-        .Scrolling(s => s
-        .Mode(GridScrollingMode.Virtual)
-        .RowRenderingMode(GridRowRenderingMode.Virtual)
-        .PreloadEnabled(true)
-        .ScrollByContent(true)
-        )
-        .ShowBorders(true)
-        .ShowRowLines(true)
-        .Width("100%")
-        )
+            })
+            .Height(500)
+            .ColumnAutoWidth(true)
+            .AllowColumnReordering(true)
+            .AllowColumnResizing(true)
+            .ColumnFixing(f => f.Enabled(true))
+            .Paging(p => p.Enabled(true))
+            .Scrolling(s => s
+            .Mode(GridScrollingMode.Virtual)
+            .RowRenderingMode(GridRowRenderingMode.Virtual)
+            .PreloadEnabled(true)
+            .ScrollByContent(true)
+            )
+            .ShowBorders(true)
+            .ShowRowLines(true)
+            .Width("100%")
+            )
 
+
+    </div>
 
 </div>
-<!-- Footer Buttons -->
-<div class="form-footer d-flex justify-content-end" style="margin-top: 30px; gap: 15px;">
-    @(Html.DevExtreme().Button()
-        .ID("btnUpdate")
-        .Text(new JS("formatMessage('Update')"))
-        .Icon("save")
-        .Type(ButtonType.Normal)
-        .StylingMode(ButtonStylingMode.Contained)
-        .ElementAttr(new { @class = "update-button" })
-        )
-
-    @(Html.DevExtreme().Button()
-        .ID("btnBack")
-        .Text(new JS("formatMessage('Back')"))
-        .Icon("arrowleft")
-        .ElementAttr(new { @class = "bold-button" })
-        )
+<div class="limited-footer">
+    @await Html.PartialAsync("VATModuleFooter")
 </div>
-
-
 <script>
 
-  
+    $(document).ready(function () {
+
+          $(".limited-footer .btn-containerIvoiceEdit").each(function () {
+
+              if (!$(this).find("#btnUpdate,#btnBack").length) {
+
+                  $(this).remove();
+
+              }
+
+          });
+
+      });
 
     $(document).on("click", "#btnBack", function () {
         window.history.back();
     });
 
-    $(function () {
-        $("#DatabaseSignatories").dxTextBox({
-            text: formatMessage("Database "),
-            readOnly: true,
+      $(function () {
+            $("#DatabaseSignatories").dxTextBox({
+                text: formatMessage("Database "),
+                readOnly: true,
 
 
+            });
         });
-    });
 
     $(function () {
         $("#TypeSignatory").dxTextBox({
-            width: "600px",
             text: formatMessage("Database Signatories"),
             readOnly: true,
             onContentReady: function (e) {
@@ -479,7 +489,8 @@
             SignatoryContact: $("#SignatoryContact").dxTextBox("instance").option("value"),
             SignatoryEmail: $("#SignatoryEmail").dxTextBox("instance").option("value"),
             SignatoryUserId: $("#SignatoryUserId").dxDropDownBox("instance").option("value"),
-            SignatureImage: businessCard1Base64 ? businessCard1Base64.split(',')[1] : null,
+                 // Add base64 data for images, removing the prefix
+                    SignatureImage: businessCard1Base64 ? businessCard1Base64.split(',')[1] : null,
         };
 
         $.ajax({
@@ -490,21 +501,6 @@
             success: function () {
                 DevExpress.ui.notify("Signatory saved successfully!", "success", 2000);
                 $("#SignatoryGrid").dxDataGrid("instance").refresh();
-
-                // Clear form fields
-                $("#SignatoryName").dxTextBox("instance").option("value", "");
-                $("#SignatoryNameArabic").dxTextBox("instance").option("value", "");
-                $("#SignatoryPosition").dxTextBox("instance").option("value", "");
-                $("#SignatoryPositionArabic").dxTextBox("instance").option("value", "");
-                $("#SignatoryContact").dxTextBox("instance").option("value", "");
-                $("#SignatoryEmail").dxTextBox("instance").option("value", "");
-                $("#SignatoryUserId").dxDropDownBox("instance").option("value", null);
-
-                // Clear the base64 image data after save
-                businessCard1Base64 = null;
-
-                // Optionally, reset file uploader (if used)
-                $("#SignatureUploader").dxFileUploader("instance").reset();
             },
             error: function () {
                 DevExpress.ui.notify("Failed to save signatory.", "error", 2000);
@@ -514,13 +510,9 @@
 
 
     $("#btnUpdate").on("click", function () {
-        // Trigger the save operation manually
-        addSignatoryToGrid();
-
-        // Optionally, show a success message once the save operation completes
-        DevExpress.ui.notify("Signatory saved successfully!", "success", 2000);
+        const grid = $("#SignatoryGrid").dxDataGrid("instance");
+        grid.saveEditData(); // 🔥 only triggers on manual click
     });
-
 
 
     function onSignatoryUpdating(e) {

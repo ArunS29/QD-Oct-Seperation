@@ -249,18 +249,15 @@
 			<div class="form-group">
 				<div style="display:flex;">
 					@(Html.DevExtreme().NumberBox()
-												.Label(new JS("formatMessage('No. Of Days')"))
-												.LabelMode(EditorLabelMode.Outside)
-																			.ID("InvoiceNoOfDays")
-																			.Value(0)
-																			.ShowSpinButtons(true)
-																			.Min(0)
-																			.Max(1000)
-																			.Step(1)
-
-																				)
-						<label id="Days" class="no-border-input" style="margin-top:10px;" for="InvoiceNoOfDays"></label>
-
+							.Label(new JS("formatMessage('No. Of Days')"))
+							.LabelMode(EditorLabelMode.Outside)
+														.ID("InvoiceNoOfDays")
+														.Value(0)
+														.ShowSpinButtons(true)
+														.Min(0)
+														.Max(1000)
+														.Step(1)
+													)
 				</div>
 			</div>
 		</div>
@@ -304,11 +301,11 @@
 									.OpenOnFieldClick(false)
 									.ValueChangeEvent("input")
 									.HoverStateEnabled(true)
-									.ValueExpr("AccountId")
+									.ValueExpr("AccountId")	
 									.DisplayExpr("AccountHead")
 									.OnInput("dropDownBoxOnInput")
 									.OnOpened("onOpened")
-									.Width(650)
+									.Width(580)
 									.TabIndex(1)
 									.DropDownOptions(o => o
 									.Width(1000)
@@ -425,7 +422,7 @@
 						.DisplayExpr("CurrencyName")
 						.OnInput("dropDownBoxOnInput") // Reuse or define separate handler if needed
 						.OnOpened("onOpened")
-						.Width(160)
+						.Width(210)
 						.TabIndex(2) // Different tabindex to separate from the first
 						.DropDownOptions(o => o.Width(700))
 						.OnKeyDown("onKeyDown")
@@ -489,7 +486,7 @@
 						.DisplayExpr("CurrencyName")
 						.OnInput("dropDownBoxOnInput")
 						.OnOpened("onOpened")
-						.Width(160)
+						.Width(210)
 						.TabIndex(1)
 						.DropDownOptions(o => o.Width(700))
 						.OnKeyDown("onKeyDown")
@@ -1228,7 +1225,7 @@ $(function () {
 	let suppliername, griddatacount;
 	function onpurchaseVoucherDateChanged(e) {
 		console.log("Selected Date:", e.value);
-		debugger;
+		
 
 		var voucherDate = $("#VoucherDate").dxDateBox("instance");
 		var effectiveDate = $("#VoucherEffectiveDate").dxDateBox("instance");
@@ -1513,6 +1510,21 @@ $(function () {
 					// DevExpress.ui.notify("No voucher entries found.", "warning", 2000);
 					return;
 				}
+
+					var lastRow = response.data[response.data.length - 1]; // Get the last row
+					var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
+
+					if (dropDownBox) {
+						//IsClientName=true;
+						// Set selected value based on what the DropDownBox expects
+						// Assuming ValueExpr is "AccountId", and AccountId is present in `lastRow`
+						//dropDownBox.option("value", lastRow.AccountHead); // or lastRow.AccountId if available
+						 console.log("lastRow",lastRow)
+						 paymentaccheadId=lastRow.AccountId;
+						 paymentaccheadname=lastRow.AccountHead;
+						 dropDownBox.option("value", lastRow.AccountHead);
+						// dataGridSelectionChanged({ selectedRowKeys: [lastRow.AccountHead] });
+					}
 				var voucherTextBox = $("#VoucherNo").dxTextBox("instance");
 				if (voucherTextBox) {
 					voucherTextBox.option("readOnly", true);
@@ -1935,7 +1947,7 @@ $(function () {
 						};
 						openCostAllocationPopup(params); // Open DevExtreme Popup with dynamic content
 					} else if (accheadname) {
-						debugger;
+						
 
 						// Function to check allocation
 						function checkAllocation(url, successCallback) {
@@ -2274,7 +2286,7 @@ $(function () {
 				AccountHead: accountHead,
 				VoucherAmount: amount
 			};
-			debugger;
+			
 			if (openedPopups[popupId]) {
 				openedPopups[popupId].show();
 			} else {
@@ -2318,7 +2330,7 @@ $(function () {
 				VoucherAmount: amount,
 				AccountID: accountid
 			};
-			debugger;
+			
 			if (openedPopups[popupId]) {
 				openedPopups[popupId].show();
 			} else {
@@ -2360,7 +2372,7 @@ $(function () {
 				VoucherAmount: amount,
 				AccountID: accountid
 			};
-			debugger;
+			
 			if (openedPopups[popupId]) {
 				openedPopups[popupId].show();
 			} else {
@@ -2400,7 +2412,7 @@ $(function () {
 				AccountHead: accountHead,
 				VoucherAmount: amount
 			};
-			debugger;
+			
 			if (openedPopups[popupId]) {
 				openedPopups[popupId].show();
 			} else {
@@ -2442,7 +2454,7 @@ $(function () {
 				VoucherAmount: amount,
 				AccountID: accountid
 			};
-			debugger;
+			
 			if (openedPopups[popupId]) {
 				openedPopups[popupId].show();
 			} else {
@@ -2796,7 +2808,7 @@ $(function () {
 
 
 		if (oldRowData.DrCr === "Dr") {
-		debugger;
+		
 		// Find all corresponding "Cr" rows
 		let drRows = allData.filter(row => row.DrCr === "Cr" && row.SysRemarks.includes(oldAccountHead));
 
@@ -2837,7 +2849,7 @@ $(function () {
 
 
 		if (oldRowData.DrCr === "Cr") {
-		debugger;
+		
 		// Find all corresponding "Cr" rows
 		let crRows = allData.filter(row => row.DrCr === "Dr" && row.SysRemarks.includes(`Paid thru: ${oldAccountHead}`));
 
@@ -3039,7 +3051,7 @@ $(function () {
 		const queryString = Object.keys(params)
 			.map(key => `${key}=${params[key]}`)
 			.join('&');
-		debugger;
+		
 		$.ajax({
 			url: `/api/VoucherEntryReceipts/CostAllocation?${queryString}`,
 			type: "GET",
@@ -3047,7 +3059,7 @@ $(function () {
 			success: function (data) {
 				// Get the popup's unique identifier, for example, use the voucher number
 				const popupId = `CostAllocationPopup-${params.VoucherEntryNo}`;
-				debugger;
+				
 				// Check if the popup is already opened
 				if (!openedPopups[popupId]) {
 					// Create and store the popup instance
@@ -3074,7 +3086,7 @@ $(function () {
 	}
 
 	function openPropertyAllocationPopup(params) {
-		debugger;
+		
 		const queryString = Object.keys(params)
 			.map(key => `${key}=${params[key]}`)
 			.join('&');
@@ -3086,7 +3098,7 @@ $(function () {
 			success: function (data) {
 				// Get the popup's unique identifier, for example, use the voucher number
 				const popupId = `PropertyAllocationPopup-${params.VoucherEntryNo}`;
-				debugger;
+				
 				// Check if the popup is already opened
 				if (!openedPopups[popupId]) {
 					// Create and store the popup instance
@@ -3123,7 +3135,7 @@ $(function () {
 			success: function (data) {
 				// Get the popup's unique identifier, for example, use the voucher number
 				const popupId = `EmployeeAllocationPopup-${params.VoucherEntryNo}`;
-				debugger;
+				
 				// Check if the popup is already opened
 				if (!openedPopups[popupId]) {
 					// Create and store the popup instance
@@ -3160,7 +3172,7 @@ $(function () {
 			success: function (data) {
 				// Get the popup's unique identifier, for example, use the voucher number
 				const popupId = `BillsReceivablePopup-${params.VoucherEntryNo}`;
-				debugger;
+				
 				// Check if the popup is already opened
 				if (!openedPopups[popupId]) {
 					// Create and store the popup instance

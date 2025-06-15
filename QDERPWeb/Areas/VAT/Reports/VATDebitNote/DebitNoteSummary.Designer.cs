@@ -335,7 +335,7 @@
             this.xrLabel26.StylePriority.UseBorderColor = false;
             this.xrLabel26.StylePriority.UseFont = false;
             this.xrLabel26.StylePriority.UseForeColor = false;
-            this.xrLabel26.Text = "Reported By:[Parameters.TenantName]";
+            this.xrLabel26.Text = "Reported By:[Parameters.UserName]";
             // 
             // xrLabel17
             // 
@@ -389,7 +389,8 @@
             this.xrLabel13.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
             this.xrLabel13.SizeF = new System.Drawing.SizeF(1540F, 22.99999F);
             this.xrLabel13.StylePriority.UseTextAlignment = false;
-            this.xrLabel13.Text = " from [Parameters.StartDate!dd MMM yyyy] to [Parameters.EndDate!dd MMM yyyy]";
+            this.xrLabel13.Text = "For the period starting  from [Parameters.StartDate!dd MMM yyyy] to [Parameters.E" +
+    "ndDate!dd MMM yyyy]";
             this.xrLabel13.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
             // 
             // xrLine1
@@ -1918,6 +1919,7 @@
             this.xrLabel3,
             this.xrLabel2,
             this.xrLabel1});
+            this.GroupFooter1.HeightF = 50.9167F;
             this.GroupFooter1.Name = "GroupFooter1";
             // 
             // xrLabel22
@@ -1927,7 +1929,7 @@
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrLabel22.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum()")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([TotalRCMPurchase15Perc])")});
             this.xrLabel22.LocationFloat = new DevExpress.Utils.PointFloat(1483.003F, 0F);
             this.xrLabel22.Multiline = true;
             this.xrLabel22.Name = "xrLabel22";

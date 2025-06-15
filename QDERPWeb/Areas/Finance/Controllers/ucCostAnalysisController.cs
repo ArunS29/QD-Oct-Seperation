@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using QD.ERP.Web.DAL.Entities;
@@ -303,6 +304,47 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetCashFlowReport([FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    if (!startDate.HasValue || !endDate.HasValue)
+                        return BadRequest(new { message = "Start date and end date are required." });
+
+                    var startParam = new SqlParameter("@StartDate", startDate.Value);
+                    var endParam = new SqlParameter("@EndDate", endDate.Value);
+
+                    // Execute the SP that fills tbl20154CashFlowMaster
+                    await dbContext.Database.ExecuteSqlRawAsync("EXEC sp20156CashFlowMasterReport @StartDate, @EndDate", startParam, endParam);
+
+                    // Fetch the data from the filled table
+                    var result = await dbContext.Tbl20154CashFlowMasters
+                        .Select(item => new
+                        {
+                            item.AccountHead,
+                            item.AccountName,
+                            item.VoucherFormattedAmount,
+                            item.AccountGroup,
+                            item.MasterGroup,
+                            item.TransactionsFull,
+                            item.VoucherNo
+                        })
+                        .ToListAsync();
+
+                    return Ok(result);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetCashFlowReport: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while processing your request.", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
 
 
     }

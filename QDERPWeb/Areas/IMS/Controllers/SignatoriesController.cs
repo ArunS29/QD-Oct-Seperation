@@ -54,11 +54,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
                 return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
             }
         }
 
-      
+
         [HttpPost]
         public async Task<IActionResult> SaveOrUpdateSignatory([FromBody] Tbl90104DocumentSignatory model)
         {
@@ -66,33 +67,76 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             {
                 try
                 {
-                    var now = DateTime.Now;
+                    var existingRecord = await dbContext.Tbl90104DocumentSignatories
+                        .FirstOrDefaultAsync(x => x.SignatoryId == model.SignatoryId);
 
-                    // Determine next SignatoryId (auto-increment simulation)
-                    var lastId = await dbContext.Tbl90104DocumentSignatories
-                        .OrderByDescending(x => x.SignatoryId)
-                        .Select(x => x.SignatoryId)
-                        .FirstOrDefaultAsync();
+                    if (existingRecord != null)
+                    {
+                        // Update existing record
+                        existingRecord.SignatoryName = model.SignatoryName;
+                        existingRecord.SignatoryPosition = model.SignatoryPosition;
+                        existingRecord.SignatoryContact = model.SignatoryContact;
+                        existingRecord.SignatoryEmail = model.SignatoryEmail;
+                       
+                        existingRecord.SignatureImage = model.SignatureImage;
+               
 
-                    // Ensure lastId is valid and handle case where no records exist
-                    model.SignatoryId = lastId == 0 ? (byte)1 : (byte)(lastId + 1);
+                        await dbContext.SaveChangesAsync();
 
-                    // Add the new signatory
-                    dbContext.Tbl90104DocumentSignatories.Add(model);
+                        return Ok(new { success = true, message = "Updated successfully", id = existingRecord.SignatoryId });
+                    }
+                    else
+                    {
+                        // Insert new record
+                        var lastId = await dbContext.Tbl90104DocumentSignatories
+                            .OrderByDescending(x => x.SignatoryId)
+                            .Select(x => x.SignatoryId)
+                            .FirstOrDefaultAsync();
 
-                    await dbContext.SaveChangesAsync();
+                        model.SignatoryId = lastId == 0 ? (byte)1 : (byte)(lastId + 1);
+                       
 
-                    return Ok(new { success = true, message = "Saved successfully", id = model.SignatoryId });
+                        dbContext.Tbl90104DocumentSignatories.Add(model);
+                        await dbContext.SaveChangesAsync();
+
+                        return Ok(new { success = true, message = "Saved successfully", id = model.SignatoryId });
+                    }
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"Error in SaveSignatory: {ex}");
+                    _logger.LogError($"Error in SaveOrUpdateSignatory: {ex}");
                     return StatusCode(500, new { success = false, message = ex.Message });
                 }
             }
 
             return Unauthorized(new { success = false, message = "Invalid tenant" });
         }
+        [HttpDelete]
+        public IActionResult Delete(int key)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var record = dbContext.Tbl90104DocumentSignatories.FirstOrDefault(x => x.SignatoryId == key);
+                    if (record == null)
+                        return NotFound();
+
+                    dbContext.Tbl90104DocumentSignatories.Remove(record);
+                    dbContext.SaveChanges();
+                    return Ok();
+                }
+
+                return Unauthorized(new { success = false, message = "Invalid tenant" });
+            }
+            catch (Exception ex)
+            {
+                                    _logger.LogError($"Error in GetProject: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+
+            }
+            }
+
 
 
     }

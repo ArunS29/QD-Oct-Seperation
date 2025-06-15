@@ -260,13 +260,14 @@
                         .ID("AccountHeadDropDown")
                         .ShowClearButton(true)
                         .AcceptCustomValue(true)
-                .AcceptCustomValue(false)
+             
                         .OpenOnFieldClick(false)
                         .ValueChangeEvent("input")
                         .HoverStateEnabled(true)
                         .ValueExpr("AccountId")
                         .DisplayExpr("AccountHead")
                         .OnInput("dropDownBoxOnInput")
+                        .OnClosed("onDropDownBoxClosed")
                         .OnOpened("onOpened")
                         @* .OnOpened("onDropDownBoxOpened") *@
                         .Width(315)
@@ -376,10 +377,12 @@
                 .DisplayExpr("CurrencyName")
                 .OnInput("dropDownBoxOnInput") // Reuse or define separate handler if needed
                 .OnOpened("onOpened")
-                .Width(160)
+                .Width(210)
                 .TabIndex(2) // Different tabindex to separate from the first
                 .DropDownOptions(o => o.Width(700))
                 .OnKeyDown("onKeyDown")
+                .ReadOnly(true)
+
                 //.OnValueChanged("dropDownBoxValueChanged") // Optional
                 .ContentTemplate(new TemplateName("BaseCurrencyContentTemplate"))
                 )
@@ -438,7 +441,7 @@
                 .DisplayExpr("CurrencyName")
                 .OnInput("dropDownBoxOnInput")
                 .OnOpened("onOpened")
-                .Width(160)
+                .Width(210)
                 .TabIndex(1)
                 .DropDownOptions(o => o.Width(700))
                 .OnKeyDown("onKeyDown")
@@ -767,7 +770,7 @@
             )
     </div>
 
-    <table style="width: 100%;">
+    <table style="width: 100%; margin-left:20px;">
         <tr>
             <td style="width:20%;">
                 @(
@@ -1398,7 +1401,7 @@
                         };
                         openCostAllocationPopup(params); // Open DevExtreme Popup with dynamic content
                     } else if (accheadname) {
-                        debugger;
+                        
 
                         // Function to check allocation
                         function checkAllocation(url, successCallback) {
@@ -1579,7 +1582,21 @@
             dataGrid.option("searchPanel.text", text);
         }
     }
+    function onDropDownBoxClosed(e) {
+        const typedText = e.component.option("text");
+        const grid = $(e.component.content()).find("#accounthead-datagrid").first().dxDataGrid("instance");
 
+        if (!grid) return;
+
+        const visibleRows = grid.getVisibleRows();
+        const match = visibleRows.find(r => r.data.AccountHead === typedText);
+
+        if (!match) {
+            // Clear the value if not valid
+            e.component.option("value", null);
+
+        }
+    }
     function onOpened(e) {
         setTimeout(() => {
             e.component.focus();
@@ -2108,7 +2125,7 @@
         popup.show();
 
         // Correct URL to your LedgerAccount view
-        $("#ledgerAccountFrame").attr("src", "/pulse/Finance/LedgerAccount");
+        $("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
     }
     $(document).ready(function () {
         $("#btntoggleGroupPanel").click();
@@ -2330,7 +2347,7 @@
                 VoucherAmount: amount,
                 AccountID: accountid
             };
-            debugger;
+            
             if (openedPopups[popupId]) {
                 openedPopups[popupId].show();
             } else {
@@ -2372,7 +2389,7 @@
                 VoucherAmount: amount,
                 AccountID: accountid
             };
-            debugger;
+            
             if (openedPopups[popupId]) {
                 openedPopups[popupId].show();
             } else {
@@ -2412,7 +2429,7 @@
                 AccountHead: accountHead,
                 VoucherAmount: amount
             };
-            debugger;
+            
             if (openedPopups[popupId]) {
                 openedPopups[popupId].show();
             } else {
@@ -2529,7 +2546,7 @@
         const queryString = Object.keys(params)
             .map(key => `${key}=${params[key]}`)
             .join('&');
-        debugger;
+        
         $.ajax({
             url: `/api/VoucherEntryReceipts/CostAllocation?${queryString}`,
             type: "GET",
@@ -2537,7 +2554,7 @@
             success: function (data) {
                 // Get the popup's unique identifier, for example, use the voucher number
                 
-                debugger;
+                
                 // Check if the popup is already opened
               
                     // Create and store the popup instance
@@ -2568,7 +2585,7 @@
             success: function (data) {
                 // Get the popup's unique identifier, for example, use the voucher number
                 const popupId = `EmployeeAllocationPopup-${params.VoucherEntryNo}`;
-                debugger;
+                
                 // Check if the popup is already opened
                 if (!openedPopups[popupId]) {
                     // Create and store the popup instance
@@ -2607,7 +2624,7 @@
             success: function (data) {
                 // Get the popup's unique identifier, for example, use the voucher number
                 const popupId = `BillsReceivablePopup-${params.VoucherEntryNo}`;
-                debugger;
+                
                 // Check if the popup is already opened
                 if (!openedPopups[popupId]) {
                     // Create and store the popup instance
@@ -2842,7 +2859,15 @@
                             // DevExpress.ui.notify("No voucher entries found.", "warning", 2000);
                             return;
                         }
+                            
+var lastRow = response.data[response.data.length - 1]; // Get the last row
+var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
 
+if (dropDownBox) {
+    // Set selected value based on what the DropDownBox expects
+    // Assuming ValueExpr is "AccountId", and AccountId is present in `lastRow`
+    dropDownBox.option("value", lastRow.AccountHead); // or lastRow.AccountId if available
+}
                         var dataGrid = $("#dataGrid").dxDataGrid("instance");
                         if (dataGrid) {
                             dataGrid.option("dataSource", response.data);
@@ -2965,7 +2990,7 @@
    
 
     if (oldRowData.DrCr === "Cr") {
-    debugger;
+    
     // Find all corresponding "Cr" rows
     let drRows = allData.filter(row => row.DrCr === "Dr" && row.SysRemarks.includes(oldAccountHead));
 
@@ -3006,7 +3031,7 @@
     
 
     if (oldRowData.DrCr === "Dr") {
-    debugger;
+    
     // Find all corresponding "Cr" rows
     let crRows = allData.filter(row => row.DrCr === "Cr" && row.SysRemarks.includes(`Received by : ${oldAccountHead}`));
 

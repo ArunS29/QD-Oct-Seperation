@@ -327,5 +327,15 @@
                 dataGrid.refresh();
             }
         }
+        function dropDownBoxOnInput(e) {
+            const ddbInstance = e.component;
+            if (!ddbInstance.option("opened")) ddbInstance.open();
+
+
+            const text = ddbInstance.option("text");
+            if (dataGrid) {
+                dataGrid.option("searchPanel.text", text);
+            }
+        }
 
     </script>

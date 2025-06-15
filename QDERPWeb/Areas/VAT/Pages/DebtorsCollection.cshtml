@@ -65,10 +65,11 @@
 </div>
 
 
-<div class="container" style="display: flex; flex-direction: column; gap: 20px;width:100%;">
+<div class="container" style="display: flex; flex-direction: column;width:100%;">
 
     <div class="Head">
-        <div class="limited-footer">
+        <div class="limited-footer" style="margin: 10px;"
+        >
             @await Html.PartialAsync("VATModuleFooter")
         </div>
     </div>
@@ -136,6 +137,7 @@
 
 
 <script type="text/javascript">
+    let pivotData = [];
     $(function () {
         $("#DebtorsCollection").dxTextBox({
             text: formatMessage("DebtorsCollection"),
@@ -232,6 +234,7 @@
                 endDate: formatDate(endDate)
             },
             success: function (data) {
+                pivotData=data;
                 initializePivotGrid(data);
             },
             error: function (xhr, status, error) {
@@ -251,25 +254,8 @@
                     { dataField: "AccountHead", area: "row", caption: "Client Name" },
                     { dataField: "DrAmount", area: "data", caption: "Invoiced Amount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
                     { dataField: "CrAmount", area: "data", caption: "Received/ Credited Amount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
-                    { dataField: "VoucherMonth", area: "column", caption: "Transaction Month", dataType: "date", format: "MMM-yyyy" },
+                    { dataField: "VoucherMonth", area: "column", caption: "Transaction Month", dataType: "date", format: "MMM-yyyy" }
 
-                    // Remaining fields without area specified (for detail expansion or binding)
-                    { dataField: "ReferenceNo", caption: "Reference No" },
-                    { dataField: "AccountNo", caption: "Ledger No" },
-                    { dataField: "Amount", caption: "Amount" },
-                    { dataField: "DrCr", caption: "Dr Cr" },
-                    { dataField: "VoucherAmountFormatted", caption: "Voucher Amount Formatted", format: { type: "fixedPoint", precision: 2 } },
-                    { dataField: "AccountGroup", caption: "Account Group" },
-                    { dataField: "MasterGroup", caption: "Master Group" },
-                    { dataField: "AccountHeadNo", caption: "Account Head No" },
-                    { dataField: "EntryNarration", caption: "Entry Narration" },
-                    { dataField: "SysRemarks", caption: "Sys Remarks" },
-                    { dataField: "VoucherDate", caption: "Voucher Date", dataType: "date" },
-                    { dataField: "VoucherEffectiveDate", caption: "Effective Date", dataType: "date" },
-                    { dataField: "EffectiveMonth", caption: "Effective Month" },
-                    { dataField: "InvoiceSalesPersonCode", caption: "Invoice Sales Person Code" },
-                    { dataField: "InvoiceSalesPersonName", caption: "Invoice Sales Person Name" },
-                    { dataField: "VoucherNo", caption: "Voucher No" }
                 ]
 
             },
@@ -301,7 +287,16 @@
             showColumnGrandTotals: true,
             showDataHeaders: true,
             showRowTotals: true,
-            showRowGrandTotals: true
+            showRowGrandTotals: true,
+             onCellPrepared(e) {
+      if (e.area === "row" ) {
+        // Reset counter when starting new row set
+        if (e.rowIndex === 0) serialCounter = 1;
+
+        // Apply prefix only to first level row items (no nested rows)
+        e.cellElement.text(`${serialCounter++}. ${e.cell.text}`);
+      }
+    }
         }).dxPivotGrid("instance");
 
         // Expand rows initially
@@ -353,6 +348,111 @@
             }
         });
     });
+
+
+
+       let extraFieldsVisible = false;
+
+    $("#btnShowFields").on("click", function (e) {
+        const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
+        const dataSource = pivotGrid.getDataSource();
+
+        const baseFields = [
+            { dataField: "AccountHead", area: "row", caption: "Client Name" },
+            { dataField: "DrAmount", area: "data", caption: "Invoiced Amount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
+            { dataField: "CrAmount", area: "data", caption: "Received/ Credited Amount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
+            { dataField: "VoucherMonth", area: "column", caption: "Transaction Month", dataType: "date", format: "MMM-yyyy" },
+        ];
+
+        const extraFields = [
+            { dataField: "ReferenceNo", area: "filter", caption: "Reference No" },
+            { dataField: "AccountNo", area: "filter", caption: "Ledger No" },
+            { dataField: "Amount", area: "filter", caption: "Amount" },
+            { dataField: "DrCr", area: "filter", caption: "Dr Cr" },
+            { dataField: "VoucherAmountFormatted", area: "filter", caption: "Voucher Amount Formatted", format: { type: "fixedPoint", precision: 2 } },
+            { dataField: "AccountGroup", area: "filter", caption: "Account Group" },
+            { dataField: "MasterGroup", area: "filter", caption: "Master Group" },
+            { dataField: "AccountHeadNo", area: "filter", caption: "Account Head No" },
+            { dataField: "EntryNarration", area: "filter", caption: "Entry Narration" },
+            { dataField: "SysRemarks", area: "filter", caption: "Sys Remarks" },
+            { dataField: "VoucherDate", area: "filter", caption: "Voucher Date", dataType: "date" },
+            { dataField: "VoucherEffectiveDate", area: "filter", caption: "Effective Date", dataType: "date" },
+            { dataField: "EffectiveMonth", area: "filter", caption: "Effective Month" },
+            { dataField: "InvoiceSalesPersonCode", area: "filter", caption: "Invoice Sales Person Code" },
+            { dataField: "InvoiceSalesPersonName", area: "filter", caption: "Invoice Sales Person Name" },
+            { dataField: "VoucherNo", area: "filter", caption: "Voucher No" }
+        ];
+
+        // Toggle logic
+        if (!extraFieldsVisible) {
+            dataSource.fields([...baseFields, ...extraFields]);
+            pivotGrid.option("dataSource", dataSource); // reassign DS
+            extraFieldsVisible = true;
+        } else {
+            dataSource.fields(baseFields);
+            pivotGrid.option("dataSource", dataSource); // reassign DS
+            extraFieldsVisible = false;
+        }
+
+        dataSource.load(); // reload grid
+    });
+
+
+       $('#btnShowRowTotals').click(function () {
+        showrowtotal(pivotData); // Correctly passing the data array
+    });
+
+
+            function showrowtotal(pivotData) {
+        const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
+        console.log("pivotData", pivotData);
+
+        // Group by CostAllocationUnit (Cost Group)
+        const grouped = {};
+        pivotData.forEach(item => {
+            const groupKey = item.AccountHead;
+            if (!groupKey) return; // Skip if no group key
+            if (!grouped[groupKey]) grouped[groupKey] = [];
+            grouped[groupKey].push(item);
+        });
+
+        console.log("Grouped:", pivotData);
+
+        // Create total rows for each Cost Group
+        const totalRows = Object.entries(grouped).map(([groupName, rows]) => {
+            const totalIncome = rows.reduce((sum, r) => sum + (r.DrAmount || 0), 0);
+
+
+            return {
+                AccountHead: groupName + " Total",
+                DrAmount: totalIncome
+
+            };
+        });
+
+        // Debug: Check totals
+        console.log("Total Rows:", totalRows);
+
+        const updatedData = [...pivotData, ...totalRows];
+
+        // Refresh PivotGrid with updated data
+        pivotGrid.option("dataSource", {
+            fields: [
+                { dataField: "AccountHead", area: "row", caption: "Client Name" },
+                { dataField: "DrAmount", area: "data", summaryType: "sum", caption: "Invoiced Amount" }
+            ],
+            store: updatedData
+        });
+    }
+    function customFormatter(cellInfo) {
+        const value = cellInfo.value;
+        if (value < 0) {
+            return "-" + Math.abs(value).toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+        } else {
+            return value.toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+        }
+    }
+
 </script>
 
 

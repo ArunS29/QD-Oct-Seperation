@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Drawing;
+using System.Text;
 using DevExpress.DataAccess.ConnectionParameters;
 using DevExpress.DataAccess.Sql;
+using DevExpress.XtraPrinting;
 using DevExpress.XtraReports.UI;
+using Microsoft.Data.SqlClient;
 using QD.ERP.Web.Service;
+using Svg;
 
 namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
 {
@@ -22,13 +26,15 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
             Image logoImage,
             string companyNameAr,
             string companyAddressArb,
+            string username,
             TenantDbContextHelper tenantDbContextHelper // ✅ Use helper instead of connection string
         )
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             InitializeComponent();
-            SetReportParameters(accountId, frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressArb);
+            SetReportParameters(accountId, frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressArb,username);
             ConfigureDataSource(accountId); // ✅ Dynamically configure based on tenant
+            LoadCurrencySymbolAndImage();
         }
 
         public AgeingToday()
@@ -64,7 +70,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
             sqlDataSource1.Fill(); // Important
 
             this.DataSource = sqlDataSource1;
-            this.DataMember = "qry205_017AgeingBillsPayableWtColumns";
+          this.DataMember = "qry205_017AgeingBillsPayableWtColumns";
+           //his.DataMember = "";
         }
 
         private void SetReportParameters(
@@ -76,7 +83,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
             string companyAddress,
             Image logoImage,
             string companyNameAr,
-            string companyAddressArb)
+            string companyAddressArb,
+            string username)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -105,7 +113,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
             AddOrUpdateParameter("CompanyAddress", companyAddress ?? "", typeof(string), false);
             AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string), false);
             AddOrUpdateParameter("CompanyAddressArb", companyAddressArb ?? "", typeof(string), false);
-
+            AddOrUpdateParameter("UserName", username ?? "", typeof(string), false);
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
 
@@ -120,9 +128,110 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
 
             if (FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
                 addressArbLabel.Text = companyAddressArb;
+            if (FindControl("xrLabelUserName", true) is XRLabel userLabel)
+                userLabel.Text = username;
+
 
             if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox && logoImage != null)
                 logoPictureBox.Image = logoImage;
         }
+        private void LoadCurrencySymbolAndImage()
+        {
+            try
+            {
+                if (_tenantDbContextHelper == null || !_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
+                {
+                    SetCurrencyImageNull();
+                    return;
+                }
+
+                string connectionString = tenant.ConnectionString;
+                string svgText = null;
+                string currencySymbol = null;
+
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    string sql = $"SELECT TOP 1 CurrencyImage, CurrencySymbol FROM {tenant.schemaname}.tbl901companyDetails";
+                    using (var command = new SqlCommand(sql, connection))
+                    {
+                        using (var reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                svgText = reader["CurrencyImage"]?.ToString()?.Trim('\uFEFF');
+                                currencySymbol = reader["CurrencySymbol"]?.ToString()?.Trim();
+                            }
+                        }
+                    }
+                }
+
+                // Set currency symbol to label
+                if (FindControl("xrLabelCurrencySymbol", true) is XRLabel currencyLabel && !string.IsNullOrEmpty(currencySymbol))
+                {
+                    currencyLabel.Text = currencySymbol;
+                }
+
+                if (string.IsNullOrWhiteSpace(svgText))
+                {
+                    SetCurrencyImageNull();
+                    return;
+                }
+
+                Bitmap bitmap = null;
+                try
+                {
+                    using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(svgText)))
+                    {
+                        SvgDocument svgDoc = SvgDocument.Open<SvgDocument>(stream);
+                        bitmap = svgDoc.Draw();
+                    }
+                }
+                catch
+                {
+                    bitmap = null;
+                }
+
+                if (bitmap == null)
+                {
+                    SetCurrencyImageNull();
+                    return;
+                }
+
+                string[] pictureBoxNames = { "xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5", "xrPictureBox6", "xrPictureBox7", "xrPictureBox8", "xrPictureBox9" };
+
+                foreach (string name in pictureBoxNames)
+                {
+                    if (FindControl(name, true) is XRPictureBox pictureBox)
+                    {
+                        pictureBox.Image = bitmap;
+                        pictureBox.Sizing = ImageSizeMode.Normal;
+                    }
+                }
+            }
+            catch
+            {
+                SetCurrencyImageNull();
+            }
+        }
+        private void SetCurrencyImageNull()
+        {
+            string[] pictureBoxNames = { "xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5", "xrPictureBox6", "xrPictureBox7", "xrPictureBox8", "xrPictureBox9" };
+
+            foreach (string name in pictureBoxNames)
+            {
+                if (FindControl(name, true) is XRPictureBox pictureBox)
+                {
+                    pictureBox.Image = null;
+                    pictureBox.ImageSource = null;
+                }
+            }
+
+            if (FindControl("xrLabelCurrencySymbol", true) is XRLabel currencyLabel)
+            {
+                currencyLabel.Text = "";
+            }
+        }
+
     }
 }

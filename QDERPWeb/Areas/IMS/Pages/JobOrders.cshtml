@@ -27,10 +27,6 @@
 		overflow: hidden;
 	}
 
-	.limited-footer .btn-containerIvoiceEdit:not(:has(#ddButtonLayout,#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#btntoggleGroupPanel,#btnColumnChooser,#btnInvoiceDetails,#ddReports,#ddButtonPayment)) {
-		display: none !important
-	}
-
 	#overlay-frame {
 		width: 100%;
 		height: 100%;
@@ -165,9 +161,6 @@
 		overflow: hidden;
 	}
 
-	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnColumnChooser,#btnAddNewJobOrder)) {
-		display: none !important
-	}
 </style>
 
 <input id="formId" value="frm201LedgerView" type="hidden" />
@@ -176,14 +169,7 @@
 		<div id="JobOrders" class="no-border-input"></div>
 	</div>
 </div>
-
-
-<div class="Head">
-	<div class="limited-footer">
-		@await Html.PartialAsync("InventoryModuleFooter")
-	</div>
-</div>
-
+@await Html.PartialAsync("/Pages/Shared/IMS/JobOrderFooter.cshtml")
 <div class="dx-fieldset horizontal-container">
 	@(Html.DevExtreme().DateBox()
 		.ID("frmdateBox")
@@ -239,8 +225,27 @@
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
-			columns.Add().Caption("Job Order Details").Columns(subColumns =>
+			columns.Add().Caption(new JS("formatMessage('Job Order Details')")).Columns(subColumns =>
 			{
+
+				subColumns.AddFor(m => m.ValveType).Caption(new JS("formatMessage('Valve Type')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.JobOrderNo).Caption(new JS("formatMessage('JobOrder No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.JobOrderDate).Caption(new JS("formatMessage('Job Order Date')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
+				subColumns.AddFor(m => m.JobOrderDescription).Caption(new JS("formatMessage('Job Order Description')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.JobOrderStatus).Caption(new JS("formatMessage('Job Order Status Name')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.JobOrderType).Caption(new JS("formatMessage('Job Order Type')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.TagNo).Caption(new JS("formatMessage('TagNo')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Size).Caption(new JS("formatMessage('Size')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Class).Caption(new JS("formatMessage('Class')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Operator).Caption(new JS("formatMessage('Operator')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Materials).Caption(new JS("formatMessage('Materials')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Qty).Caption(new JS("formatMessage('Qty')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Make).Caption(new JS("formatMessage('Make')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.ModelNo).Caption(new JS("formatMessage('Model No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.ItemSlNo).Caption(new JS("formatMessage('Item Sl No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				@* subColumns.AddFor(m => m.ItemSlNo).Caption(new JS("formatMessage('Item Sl No ')")).Alignment(HorizontalAlignment.Center).Visible(true); *@
+				subColumns.AddFor(m => m.WorkOrderNo).Caption(new JS("formatMessage('Work Order No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+
 				subColumns.AddFor(m => m.ValveType).Caption(" Valve Type").Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.JobOrderNo).Caption("JobOrder No").Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.JobOrderDate).Caption(" Job Order Date").Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
@@ -263,33 +268,34 @@
 
 
 
-
-
-
-
-
 			});
-		
-
 		})
 		.Height(680) // Fixed height for the grid
 		.ColumnAutoWidth(true)
 		.Width("98%")
 		.WordWrapEnabled(true)
 		.OnCellClick("function(e) {handleCellClick(e);}")
-		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+		.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
 		.ColumnFixing(fixing => fixing.Enabled(true))
 		.HeaderFilter(filter => filter.Visible(false))
-		.Paging(p => p.Enabled(false))
-		.Pager(pager => pager.Visible(false))
+		.Paging(p => p.PageSize(10)) // Set desired page size (e.g., 10 rows per page)
+		.Pager(pager =>
+		{
+			pager.ShowPageSizeSelector(true);
+			pager.AllowedPageSizes(new[] { 5, 10, 20, 50 });
+			pager.ShowNavigationButtons(true);
+			pager.Visible(true);
+		})
+
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
 		.ShowRowLines(true)
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
+		.OnContextMenuPreparing("onContextMenuPreparing")
 		.StateStoring(stateStoring =>
 		{
 			stateStoring
@@ -299,24 +305,25 @@
 		})
 		.OnInitialized("function(e) { loadGridState(); }")
 		)
-
-
-
-
 </div>
 <div id="invoiceErrorPopup"></div>
-
 <script>
 		 $(function () {
-	$("#DeliveryNote").dxTextBox({
-	text: formatMessage("Delivery Note"),
+	$("#JobOrders").dxTextBox({
+	text: formatMessage("Job Orders"),
 		readOnly: true,
 		onContentReady: function (e) {
 		$(e.element).addClass("dx-textbox-heading");
 		}
 		});
 	});
-
+	$(function () {
+			var now = new Date();
+			var firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+			var tillmonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+			$("#frmdateBox").dxDateBox("instance").option("value", firstDay);
+			$("#todateBox").dxDateBox("instance").option("value", tillmonth);
+	});
 	function ddBtnShowRecords_click(duration) {
 		 var frmDateBox = $("#frmdateBox").dxDateBox("instance");
 			var toDateBox = $("#todateBox").dxDateBox("instance");
@@ -397,6 +404,96 @@
 
 
 	}
+	function onContextMenuPreparing(e) {
+		if (e.target === "content" && e.row) {
+			e.items = [
+				{
+					text: "Edit Job Order",
+					icon: "edit",
+					onItemClick: function () {
+						const rowData = e.row.data;
+						if (!rowData) {
+							console.error("Row data is unavailable.");
+							return;
+						}
 
+						// const { Mprno, RequestEnquiry } = rowData;
+						// const tenantName = window.tenantName || "defaultTenant";
+						// let url = "";
+						// let title = "";
+
+						// switch (RequestEnquiry) {
+						// 	case "Client Request":
+						// 		url = `/${tenantName}/IMS/AddNewClientRequest?Mprno=${Mprno}`;
+						// 		title = "Edit Client Request";
+						// 		break;
+						// 	case "Project Request":
+						// 		url = `/${tenantName}/IMS/MRAddNewProjectRequest?Mprno=${Mprno}`;
+						// 		title = "Edit Project Request";
+						// 		break;
+						// 	case "Store Request":
+						// 		url = `/${tenantName}/IMS/MRAddNewStoreRequest?Mprno=${Mprno}`;
+						// 		title = "Edit Store Request";
+						// 		break;
+						// 	default:
+						// 		console.warn("Unknown RequestEnquiry type:", RequestEnquiry);
+						// 		return;
+						// }
+
+						//openModal(url, title);
+						window.location.href = url;
+					}
+				},
+
+			
+				{
+					text: "Delete Job Order",
+					icon: "trash",
+					// onItemClick: function () {
+					// 	DevExpress.ui.dialog.confirm(
+					// 		"You are about to delete the Request / Enquiry.\nYou cannot revert the changes.\nAre you sure?",
+					// 		"Confirm Delete"
+					// 	).done(function (dialogResult) {
+					// 		if (dialogResult) {
+					// 			var Mprno = e.row.data.Mprno;
+					// 			console.log("number", Mprno);
+					// 			onDeleteRequest(Mprno);
+					// 		}
+					// 	});
+					// }
+				},
+				{
+					text: "Unlock the Order",
+					icon: "unlock",
+					onItemClick: function () {
+						onUnlockRequest(e.row.data);
+					}
+				},
+				{
+					text: "Create the Delivery Note for this Order",
+					icon: "plus",
+					onItemClick: function () {
+						onCreateRFQ(e.row.data);
+					}
+				},
+				{
+					text: "Create Delivery Note for Multiple Job Orders",
+					icon: "plus",
+					onItemClick: function () {
+						onCreateQuotation(e.row.data);
+					}
+				},
+				{
+					text: "Create Invoice for this Job Order",
+					icon: "cart",
+					onItemClick: function () {
+						onCreatePO(e.row.data);
+					}
+				}
+				
+			
+			];
+		}
+	}
 
 </script>

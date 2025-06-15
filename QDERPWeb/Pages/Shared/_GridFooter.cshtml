@@ -175,35 +175,8 @@
             .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
             )
     </div>
-    <div class="btn-container">
+   
 
-
-        @(Html.DevExtreme().Button()
-
-            .ID("btnCreateNew")
-
-            .Icon("add") // DevExtreme built-in 'add' icon (a plus symbol)
-
-            .Text(new JS("formatMessage('Create New')"))
-
-            .ElementAttr(new { style = "margin-left: 10px;" }) // optional spacing
-
-            .Width(120)
-
-            .OnClick("function() { onCreateNewClick(); }") // your JS function
-
-            )
-
-    </div>
-@*     <div class="btn-container">
-    @(Html.DevExtreme().Button()
-        .ID("btnBack")
-        .Text(new JS("formatMessage('Back')"))
-        .Icon("arrowleft")
-        // .OnClick("onBackButtonClick")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-        )
-    </div> *@
   
     <div class="btn-container">
         @(Html.DevExtreme().Button()
@@ -377,6 +350,8 @@
 
     </div>
 </div>
+<div id="warningPopup"></div>
+
 <script type="text/javascript">
 
     $(document).ready(function () {
@@ -578,7 +553,7 @@
         }
     });
     function saveLayoutClick(e) {
-        debugger;
+        
         var grid = $("#dataGrid").dxDataGrid("instance");
         var layout = grid.state();
         const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
@@ -601,7 +576,7 @@
         //DevExpress.ui.notify("Layout", "success", 600);
     }
     function openLayoutClick(e) {
-        debugger;
+        
         // Create an input element dynamically
         const input = document.createElement("input");
         input.type = "file";
@@ -1039,10 +1014,62 @@
             }
         });
     }
+        // function dataGridSelectionChanged(e) {
+        //     const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        //     const ddbInstance = $("#accountDropDownBox").dxDropDownBox("instance");
+
+        //     if (selectedKey) {
+        //         ddbInstance.option("value", selectedKey);
+        //         if (ddbInstance.option("opened")) ddbInstance.close();
+        //     }
+        //     var selectedRowData = $("#ledgeraccount-datagrid").dxDataGrid("instance").getSelectedRowsData();
+        //     // Get ReferenceNo from selected row
+        //     if (selectedRowData.length > 0) {
+        //         acchedid = selectedRowData[0].AccountId;
+        //         accheadname = selectedRowData[0].AccountHead;
+        //         refno = selectedRowData[0].ReferenceNo;
+        //         accgroup = selectedRowData[0].AccountGroup;
+        //         accgroupid = selectedRowData[0].AccountGroupId;
+        //         accheadar = selectedRowData[0].AccountHeadArabic;
+        //         updateBankReconciliationState(accheadname);
+        //             updateReceivableStatement(accgroup);
+
+        //     }
+
+        // }
+            $("#warningPopup").dxPopup({
+        visible: false,
+        showTitle: true,
+        title: "Warning",
+        contentTemplate: function (contentElement) {
+            contentElement.append("<p id='popupWarningMessage'></p>");
+        },
+        width: 300,
+        height: "auto",
+        showCloseButton: true,
+        dragEnabled: false,
+        closeOnOutsideClick: true
+    });
+
+       var currentAccGroup = ""; // Global variable to store accgroup
+
+    function updateReceivableStatement(accgroup) {
+        currentAccGroup = accgroup || "";
+    }
 
     function showSubmenu5(e) {
         e.event.stopPropagation();
+
+        // If accgroup is not valid, show message and return
+           if (!currentAccGroup.toUpperCase().includes("SUNDRY DEBTORS")) {
+        $("#popupWarningMessage").text("No records to print");
+        $("#warningPopup").dxPopup("instance").show();
+        return;
+    }
+
+
         hideAllSubmenus(); // Hide all submenus before showing the selected one
+
         var $submenu = $('#submenuContainer5');
         var $target = $(e.event.target).closest('.dx-item-content');
         var offset = $target.offset();
@@ -1053,12 +1080,11 @@
 
         // Prevent submenu from going off-screen on the left
         if (leftPos < 0) {
-            leftPos = offset.left + $target.outerWidth() + 5; // Move it to the right if not enough space
+            leftPos = offset.left + $target.outerWidth() + 5;
         }
 
-        // Position submenu
         $submenu.css({
-            'width': 390    ,
+            'width': 390,
             'position': 'absolute',
             'top': offset.top,
             'left': leftPos,
@@ -1069,7 +1095,6 @@
             'padding': '5px'
         });
 
-        // Click outside to close
         $(document).on("click", function (event) {
             if (!$(event.target).closest('#submenuContainer5, .dx-item-content').length) {
                 $submenu.hide();
@@ -1078,23 +1103,36 @@
         });
     }
 
+         function updateReceivableStatement(accgroup) {
+        currentAccGroup = accgroup || "";
+    }
+
     function showSubmenu6(e) {
         e.event.stopPropagation();
-        hideAllSubmenus(); // Hide all submenus before showing the selected one
+
+        // Check if currentAccGroup includes "SUNDRY CREDITORS" (case insensitive)
+        if (!currentAccGroup.toUpperCase().includes("SUNDRY CREDITORS")) {
+            // Show warning popup
+            $("#popupWarningMessage").text("No records to print");
+            $("#warningPopup").dxPopup("instance").show();
+            return;
+        }
+
+        // Hide other submenus before showing this one
+        hideAllSubmenus();
+
         var $submenu = $('#submenuContainer6');
         var $target = $(e.event.target).closest('.dx-item-content');
         var offset = $target.offset();
         var submenuWidth = $submenu.outerWidth();
 
-        // Calculate left-side positioning
+        // Calculate left position so submenu doesn't go off-screen
         var leftPos = offset.left - submenuWidth + 620;
-
-        // Prevent submenu from going off-screen on the left
         if (leftPos < 0) {
-            leftPos = offset.left + $target.outerWidth() + 5; // Move it to the right if not enough space
+            leftPos = offset.left + $target.outerWidth() + 5;
         }
 
-        // Position submenu
+        // Style and display submenu
         $submenu.css({
             'width': 370,
             'position': 'absolute',
@@ -1107,7 +1145,7 @@
             'padding': '5px'
         });
 
-        // Click outside to close
+        // Click outside to close submenu
         $(document).on("click", function (event) {
             if (!$(event.target).closest('#submenuContainer6, .dx-item-content').length) {
                 $submenu.hide();
@@ -1115,6 +1153,7 @@
             }
         });
     }
+
 
     function showSubmenu7(e) {
         e.event.stopPropagation();
@@ -1171,7 +1210,7 @@
                 window.location.href = `/${tenantName}/Finance/PettyCashRequest`;
                 break;
             case 'Supplier Payment Request':
-                debugger;
+                
                 $.ajax({
                     
                     url: `/api/ExpenseClaim/GetSupplierpayment`,

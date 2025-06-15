@@ -12,6 +12,35 @@
 		z-index: 1000;
 	}
 
+	.custom-submenu {
+		display: none;
+		position: absolute;
+		background-color: #ffffff;
+		border: 1px solid #ddd;
+		border-radius: 8px;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+		list-style: none;
+		padding: 10px 0;
+		min-width: 160px;
+		z-index: 999;
+	}
+
+		.custom-submenu li {
+			padding: 8px 16px;
+			transition: background-color 0.3s ease;
+		}
+
+			.custom-submenu li a {
+				text-decoration: none;
+				color: #333;
+				font-size: 14px;
+				display: block;
+			}
+
+			.custom-submenu li:hover {
+				background-color: #f0f0f0;
+				cursor: pointer;
+			}
 	.overlay-content {
 		position: absolute;
 		top: 50%;
@@ -25,9 +54,9 @@
 		overflow: hidden;
 	}
 
-	.limited-footer .btn-containerIvoiceEdit:not(:has(#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#ddButtonLayout,#btntoggleGroupPanel,#btnColumnChooser,#btnAddNewPayment,#btnPurchaseDetails,#ddReport1)) {
+	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddReport1)) {
 		display: none !important;
-	}
+	}  
 
 	#overlay-frame {
 		width: 100%;
@@ -161,6 +190,10 @@
 	.mainContainer {
 		width: 97%;
 	}
+
+	.dx-fieldset.horizontal-container {
+		margin-top: 10px;
+	}
 </style>
 
 <input id="formId" value="frm201LedgerView" type="hidden" />
@@ -177,11 +210,11 @@
 	</div>
 </div>
 <div class="context-menu" id="contextMenu">
-	<div class="context-menu-item">
+	<div class="context-menu-item" onclick="viewInvoice()">
 		<i class="dx-icon-edit"></i> Edit Invoice
 	</div>
 
-	<div class="context-menu-item">
+	<div class="context-menu-item" onclick="UnlockInvoice()">
 		<i class="dx-icon-unlocked"></i> Unlock The Bill
 	</div>
 
@@ -248,96 +281,96 @@
 		.Columns(columns =>
 		{
 			// 🔹 PURCHASE DETAILS
-			columns.Add().Caption("Purchase Details").Columns(detail =>
+			columns.Add().Caption(new JS("formatMessage('Purchase Details')")).Columns(detail =>
 			{
-				detail.AddFor(m => m.PurchaseVoucherNo).Caption("Purchase Voucher No");
+				detail.AddFor(m => m.PurchaseVoucherNo).Caption(new JS("formatMessage('Purchase Voucher No')"));
 				detail.AddFor(m => m.PurchaseVoucherDate)
-			.Caption("Purchase Voucher Date")
+			.Caption(new JS("formatMessage('Purchase Voucher Date')"))
 			.Format("dd-MMM-yyyy");
 
-				detail.AddFor(m => m.AccountHead).Caption("Account Head");
-				detail.AddFor(m => m.VoucherStatus).Caption("Voucher Status");
+				detail.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('Account Head')"));
+				detail.AddFor(m => m.VoucherStatus).Caption(new JS("formatMessage('Voucher Status')"));
 			});
 
 			// 🔹 PURCHASE & TAX AMOUNT
-			columns.Add().Caption("Purchase & Tax Amount").Columns(amount =>
+			columns.Add().Caption(new JS("formatMessage('Purchase & Tax Amount')")).Columns(amount =>
 			{
-				amount.AddFor(m => m.CalcLineAmount).Caption("Amount Before Tax")
+				amount.AddFor(m => m.CalcLineAmount).Caption(new JS("formatMessage('Amount Before Tax')"))
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				amount.AddFor(m => m.CalcTaxAmount).Caption("Total VAT Amount")
+				amount.AddFor(m => m.CalcTaxAmount).Caption(new JS("formatMessage('Total VAT Amount')"))
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				amount.AddFor(m => m.TotalPurchaseAmount).Caption("Bill Amount")
+				amount.AddFor(m => m.TotalPurchaseAmount).Caption(new JS("formatMessage('Bill Amount')"))
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
 
 			// 🔹 PURCHASE CLASSIFIED - Domestic & Imports
-			columns.Add().Caption("Revenue Classified").Columns(pclass =>
+			columns.Add().Caption(new JS("formatMessage('Revenue Classified')")).Columns(pclass =>
 			{
 				// Domestic
-				pclass.Add().Caption("Domestic").Columns(domestic =>
+				pclass.Add().Caption(new JS("formatMessage('Domestic')")).Columns(domestic =>
 			{
-				domestic.AddFor(m => m.DomesticStandardPurchases).Caption("Domestic Purchases @5%")
+				domestic.AddFor(m => m.DomesticStandardPurchases).Caption(new JS("formatMessage('Domestic Purchases @5%')"))
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				domestic.AddFor(m => m.TotalDspurchase10Perc).Caption("Domestic Purchases @10%")
+				domestic.AddFor(m => m.TotalDspurchase10Perc).Caption(new JS("formatMessage('Domestic Purchases @10%')"))
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				domestic.AddFor(m => m.TotalDspurchase15Perc).Caption("Domestic Purchases @15%")
+				domestic.AddFor(m => m.TotalDspurchase15Perc).Caption(new JS("formatMessage('Domestic Purchases @15%')"))
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				domestic.AddFor(m => m.DomesticZeroTaxPurchases).Caption("Domestic Zero Rated Purchases")
+				domestic.AddFor(m => m.DomesticZeroTaxPurchases).Caption(new JS("formatMessage('Domestic Zero Rated Purchases')"))
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				domestic.AddFor(m => m.DomesticExemptedTaxPurchases).Caption("Domestic Exempted Purchases")
+				domestic.AddFor(m => m.DomesticExemptedTaxPurchases).Caption(new JS("formatMessage('Domestic Exempted Purchases')"))
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
 
 				// Imports
-				pclass.Add().Caption("Imports").Columns(imports =>
+				pclass.Add().Caption(new JS("formatMessage('Imports')")).Columns(imports =>
 			{
-				imports.AddFor(m => m.ImportsVatpaidAtCustoms).Caption("Imports Purchases thru Customs 5%")
+				imports.AddFor(m => m.ImportsVatpaidAtCustoms).Caption(new JS("formatMessage('Imports Purchases thru Customs 5%')"))
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				imports.AddFor(m => m.TotalImportPurchase10Perc).Caption("Imports Purchases thru Customs 10%")
+				imports.AddFor(m => m.TotalImportPurchase10Perc).Caption("").Caption(new JS("formatMessage('Imports Purchases thru Customs 10%')"))
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				imports.AddFor(m => m.TotalImportPurchase15Perc).Caption("Imports Purchases thru Customs 15%")
+				imports.AddFor(m => m.TotalImportPurchase15Perc).Caption(new JS("formatMessage('Imports Purchases thru Customs 15%')"))
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				imports.AddFor(m => m.ImportsVatthruRcm).Caption("Imports RCM 5%")
+				imports.AddFor(m => m.ImportsVatthruRcm).Caption(new JS("formatMessage('Imports RCM 5%')"))
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				imports.AddFor(m => m.TotalRcmpurchase10Perc).Caption("Imports RCM 10%")
+				imports.AddFor(m => m.TotalRcmpurchase10Perc).Caption(new JS("formatMessage('Imports RCM 10%')"))
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				imports.AddFor(m => m.TotalRcmpurchase15Perc).Caption("Imports RCM 15%")
+				imports.AddFor(m => m.TotalRcmpurchase15Perc).Caption(new JS("formatMessage('Imports RCM 15%')"))
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
 			});
 
 			// 🔹 VAT AMOUNT CLASSIFIED - Domestic VAT & Imports VAT
-			columns.Add().Caption("VAT Amount Classified").Columns(vat =>
+			columns.Add().Caption(new JS("formatMessage('VAT Amount Classified')")).Columns(vat =>
 			{
 				// Domestic VAT
-				vat.Add().Caption("Domestic VAT").Columns(domesticVAT =>
+				vat.Add().Caption(new JS("formatMessage('Domestic VAT')")).Columns(domesticVAT =>
 			{
-				domesticVAT.AddFor(m => m.DomesticStandardPurTax).Caption("Domestic Purchases VAT @5%")
+				domesticVAT.AddFor(m => m.DomesticStandardPurTax).Caption(new JS("formatMessage('Domestic Purchases VAT @5%')"))
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				domesticVAT.AddFor(m => m.TotalDspurchaseTax10Perc).Caption("Domestic Purchases VAT @10%")
+				domesticVAT.AddFor(m => m.TotalDspurchaseTax10Perc).Caption(new JS("formatMessage('Domestic Purchases VAT @10%')"))
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				domesticVAT.AddFor(m => m.TotalDspurchaseTax15Perc).Caption("Domestic Purchases VAT @15%")
+				domesticVAT.AddFor(m => m.TotalDspurchaseTax15Perc).Caption(new JS("formatMessage('Domestic Purchases VAT @15%')"))
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				domesticVAT.AddFor(m => m.DomesticZeroTaxPurTax).Caption("Domestic Zero Rated VAT")
+				domesticVAT.AddFor(m => m.DomesticZeroTaxPurTax).Caption(new JS("formatMessage('Domestic Zero Rated VAT')"))
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				domesticVAT.AddFor(m => m.DomesticExemptedTaxPurTax).Caption("Domestic Exempted VAT")
+				domesticVAT.AddFor(m => m.DomesticExemptedTaxPurTax).Caption(new JS("formatMessage('Domestic Exempted VAT')"))
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
 
 				// Imports VAT
-				vat.Add().Caption("Imports VAT").Columns(importsVAT =>
+				vat.Add().Caption(new JS("formatMessage('Imports VAT')")).Columns(importsVAT =>
 			{
-				importsVAT.AddFor(m => m.ImportsVatpaidAtCustomsTax).Caption("VAT Paid in Customs 5%")
+				importsVAT.AddFor(m => m.ImportsVatpaidAtCustomsTax).Caption(new JS("formatMessage('VAT Paid in Customs 5%')"))
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				importsVAT.AddFor(m => m.TotalImportPurchaseTax10Perc).Caption("VAT Paid in Customs 10%")
+				importsVAT.AddFor(m => m.TotalImportPurchaseTax10Perc).Caption(new JS("formatMessage('VAT Paid in Customs 10%')"))
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				importsVAT.AddFor(m => m.TotalImportPurchaseTax15Perc).Caption("VAT Paid in Customs 15%")
+				importsVAT.AddFor(m => m.TotalImportPurchaseTax15Perc).Caption(new JS("formatMessage('VAT Paid in Customs 15%')"))
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				importsVAT.AddFor(m => m.ImportsVatthruRcmtax).Caption("VAT thru RCM 5%")
+				importsVAT.AddFor(m => m.ImportsVatthruRcmtax).Caption(new JS("formatMessage('VAT thru RCM 5%')"))
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				importsVAT.AddFor(m => m.TotalRcmpurchaseTax10Perc).Caption("VAT thru RCM 10%")
+				importsVAT.AddFor(m => m.TotalRcmpurchaseTax10Perc).Caption(new JS("formatMessage('VAT thru RCM 10%')"))
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				importsVAT.AddFor(m => m.TotalRcmpurchaseTax15Perc).Caption("VAT thru RCM 15%")
+				importsVAT.AddFor(m => m.TotalRcmpurchaseTax15Perc).Caption(new JS("formatMessage('VAT thru RCM 15%')"))
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
 			});
@@ -428,11 +461,20 @@
 			.StorageKey("gridContainerState");
 		})
 		.OnInitialized("function(e) { loadGridState(); }")
+		.Paging(p => p.Enabled(true).PageSize(20)) // Enable paging with page size
+		.Pager(p => p
+		.ShowPageSizeSelector(true)
+		.AllowedPageSizes(new[] { 10, 20, 50, 100 })
+		.ShowInfo(true)
+		.Visible(true)
+		)
 		)
 </div>
 
 
-
+<ul id="submenu" class="custom-submenu">
+	<li id="addCreditNote">Add New VAT Purchase Bill</li>
+</ul>
 <div id="overlay" class="overlay">
 	<div class="overlay-content">
 		<span class="close-btn" onclick="closeOverlay()">×</span>
@@ -440,17 +482,29 @@
 	</div>
 </div>
 
-
 <script>
 
-	let invoiceNo = null;
+	let invoiceNo = null,Status=null;
 	// Assuming tenantName is already defined globally
+		// Assuming tenantName is already defined globally
 	function viewInvoice() {
-		const url = `/${tenantName}/VAT/frm20161VATInvoiceEdit?InvoiceNo=${encodeURIComponent(invoiceNo)}`;
+		if (!invoiceNo) {
+			alert("Invoice number is not set.");
+			return;
+		}
 
-		//window.location.href = url;
-		title = "VAT Invoice Edit(B2B)";
-		openModal(url, title);
+		IsEdit = true;
+
+		const params = new URLSearchParams({
+			InvoiceNo: invoiceNo,
+			IsEditflag: IsEdit,
+			modal: true // If you want to explicitly include modal=true
+		});
+
+		const url = `/${tenantName}/VAT/VATPurchaseEdit?${params.toString()}`;
+		const title = "VAT Purchase Edit";
+		//openModal(url, title);
+		 window.location.href = url; // Navigate to the page
 	}
 
 
@@ -547,8 +601,9 @@
 			e.preventDefault();
 			var rowIndex = $(this).index();
 			var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex];
-			invoiceNo = rowData.InvoiceNo;
-			console.log(rowData);
+			invoiceNo = rowData.PurchaseVoucherNo;
+			Status = rowData.VoucherStatus;
+			console.log("Purchase",rowData);
 			contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
 		});
 	});
@@ -658,43 +713,95 @@
 		return [day, strmonth, year].join('-');
 	}
 	$(document).ready(function () {
-		$(".limited-footer .btn-container").each(function () {
-			if (!$(this).find("#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#ddButtonLayout,#btntoggleGroupPanel,#btnColumnChooser,#btnAddNewPayment,#btnPurchaseDetails,#ddReport1").length) {
+		$(".limited-footer .btn-containerIvoiceEdit").each(function () {
+				if (!$(this).find("#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddButtonPayment,#ddReport12,#btnPurchaseDetails,#btnColumnChooser").length) {
 				$(this).remove();
 			}
 		});
 	});
-	function cloneEInvoice() {
-		const rowData = selectedRowData; // Make sure selectedRowData is available
+	// function cloneEInvoice() {
+	// 	const rowData = selectedRowData; // Make sure selectedRowData is available
 
-		if (!rowData?.InvoiceNo || !rowData?.InvoiceDate) {
-			DevExpress.ui.notify("Purchase Voucher No and Date cannot be empty.", "error", 3000);
+	// 	if (!rowData?.InvoiceNo || !rowData?.InvoiceDate) {
+	// 		DevExpress.ui.notify("Purchase Voucher No and Date cannot be empty.", "error", 3000);
+	// 		return;
+	// 	}
+
+	// 	DevExpress.ui.dialog.confirm("You are about to Duplicate this Purchase Invoice. Are you sure you want to continue?", "Confirm Duplication")
+	// 		.done(function (dialogResult) {
+	// 			if (dialogResult) {
+	// 				$.ajax({
+	// 					url: '/api/VATModule/DuplicateVatInvoice',
+	// 					method: 'POST',
+	// 					data: { invoiceNo: rowData.InvoiceNo },
+	// 					success: function (response) {
+	// 						if (response.success) {
+	// 							DevExpress.ui.notify("Purchase Invoice has been successfully added to the database.", "success", 3000);
+	// 							// Optional: Refresh grid
+	// 							$("#dataGrid").dxDataGrid("instance").refresh();
+	// 						} else {
+	// 							DevExpress.ui.notify(response.message || "Duplication failed.", "error", 3000);
+	// 						}
+	// 					},
+	// 					error: function () {
+	// 						DevExpress.ui.notify("Server error while duplicating invoice.", "error", 3000);
+	// 					}
+	// 				});
+	// 			}
+	// 		});
+	// }
+
+	 function cloneEInvoice() {
+		 
+		if (!invoiceNo) {
+			alert("InvoiceNo is required.");
 			return;
 		}
 
-		DevExpress.ui.dialog.confirm("You are about to Duplicate this Purchase Invoice. Are you sure you want to continue?", "Confirm Duplication")
+			DevExpress.ui.dialog.confirm("You are about to Duplicate this Purchase Invoice. Are you Sure want to Continue?", "Confirm Clone")
 			.done(function (dialogResult) {
 				if (dialogResult) {
 					$.ajax({
-						url: '/api/VATModule/DuplicateVatInvoice',
+						//url: `/api/VATModule/UpdateToPurchaseUnlocktheBil?InvoiceNo=${encodeURIComponent(vno)}&IsDirectVerify=${encodeURIComponent(IsDirectVerify)}`,
+						url: '/api/VATModule/InsertPurchaseCloneEInvoice',
 						method: 'POST',
-						data: { invoiceNo: rowData.InvoiceNo },
+						data: { invoiceNo: invoiceNo },
 						success: function (response) {
-							if (response.success) {
-								DevExpress.ui.notify("Purchase Invoice has been successfully added to the database.", "success", 3000);
-								// Optional: Refresh grid
+							if (response) {
+
+								DevExpress.ui.dialog.alert("Purchase Invoice has been successfully added to the database.", "Cloned Successfully");
+								// Optionally refresh the grid or perform additional actions
 								$("#dataGrid").dxDataGrid("instance").refresh();
 							} else {
-								DevExpress.ui.notify(response.message || "Duplication failed.", "error", 3000);
+								DevExpress.ui.notify(response.message || "Unlocking failed.", "error", 3000);
 							}
 						},
 						error: function () {
-							DevExpress.ui.notify("Server error while duplicating invoice.", "error", 3000);
+							DevExpress.ui.notify("Server error while unlocking the invoice.", "error", 3000);
 						}
 					});
 				}
 			});
 	}
+
+		$(document).ready(function () {
+		$('#btnAddNew1').on('click', function (e) {
+			e.stopPropagation(); // prevent click from bubbling up
+			$('#submenu').toggle(); // toggle visibility
+			const offset = $(this).offset();
+			$('#submenu').css({ top: offset.top + $(this).outerHeight(), left: offset.left });
+		});
+
+		// Hide submenu when clicking outside
+		$(document).on('click', function () {
+			$('#submenu').hide();
+		});
+		$(document).on('click', '#addCreditNote', function (e) {
+		e.stopPropagation();
+				const url = `/${tenantName}/VAT/VATPurchaseEdit`;
+		window.location.href = url;
+	});
+	});
 	  $(function () {
 					$("#VATPurchase").dxTextBox({
 						text: formatMessage("Purchase Master View"),
@@ -705,4 +812,56 @@
 
 					});
 				});
+
+
+
+					function UnlockInvoice() {
+					
+		if (Status === "Posted") {
+			DevExpress.ui.dialog.alert(
+				"This VAT Purchase Bill is already posted to your ledgers.\nPlease delete the Purchase Entry from Accounting Books and continue.",
+				"Purchase Bill Posted Already"
+			);
+			return;
+		}
+
+
+		DevExpress.ui.dialog.confirm("Are you sure you want to unlock this Purchase Bill?", "Confirm Unlock")
+			.done(function (dialogResult) {
+				if (dialogResult) {
+					$.ajax({
+						//url: `/api/VATModule/UpdateToPurchaseUnlocktheBil?InvoiceNo=${encodeURIComponent(vno)}&IsDirectVerify=${encodeURIComponent(IsDirectVerify)}`,
+						url: '/api/VATModule/UpdateToPurchaseUnlocktheBil',
+						method: 'POST',
+						data: { invoiceNo: invoiceNo },
+						success: function (response) {
+							if (response) {
+								
+								DevExpress.ui.dialog.alert("Purchase Bill has been unlocked successfully.", "Bill Unlocked");
+								// Optionally refresh the grid or perform additional actions
+							} else {
+								DevExpress.ui.notify(response.message || "Unlocking failed.", "error", 3000);
+							}
+						},
+						error: function () {
+							DevExpress.ui.notify("Server error while unlocking the invoice.", "error", 3000);
+						}
+					});
+				}
+			});
+	}
+
+
+	 function showColumnChooser() {
+		var dataGrid = $("#dataGrid").dxDataGrid("instance");
+		var isColumnChooserVisible = dataGrid.option("columnChooser.enabled");
+
+		if (isColumnChooserVisible) {
+			dataGrid.option("columnChooser.enabled", false); // Disable the column chooser
+		} else {
+			dataGrid.option("columnChooser.enabled", true);
+			dataGrid.showColumnChooser();
+		}
+	}
+
 </script>

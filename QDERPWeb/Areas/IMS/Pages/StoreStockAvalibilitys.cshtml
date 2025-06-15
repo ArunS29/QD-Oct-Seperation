@@ -1,0 +1,202 @@
+﻿@page
+@model QD.ERP.Web.Areas.IMS.Pages.StoreStockAvalibilitysModel
+@{
+}
+<style>
+    .mainContainer{
+        width:100%;
+    }
+
+    .dx-button-text{
+        color:black;
+    }
+
+</style>
+@using DevExtreme.AspNet.Mvc
+@using DevExtreme.AspNet.Mvc.Builders
+
+<div class="title">
+    <div class="header-container">
+        <div id="StoreStockAvalibility" class="no-border-title"></div>
+    </div>
+</div>
+
+
+<div style=" padding: 10px; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; padding:20px;">
+    <label id="Seletthestoretoissueitem" class="no-border-input" style="font-weight:100 bold; width: 220px; "></label>
+
+    @(Html.DevExtreme().DropDownBox()
+            .ID("storeBox")
+        .ValueExpr("StoreId")
+        .DisplayExpr("StoreName")
+        .DataSource(ds => ds
+        .Mvc()
+        .Controller("SalesOrders")
+        .LoadAction("GetStoreToIssueItem")
+        .LoadMode(DataSourceLoadMode.Raw)
+        .Key("StoreId")
+        ).DropDownOptions(options => options.Width(450))
+
+            .Value(1)
+            .Width(250)
+        .ContentTemplate(new TemplateName("StoreToIssueItemDropDownTemplate")))
+    
+
+    @(Html.DevExtreme().Button()
+            .ID("prepareDeliveryNoteBtn")
+            .Text("Prepare Delivery Note")
+            .Icon("save")
+            .Type(ButtonType.Default)
+            .StylingMode(ButtonStylingMode.Contained))
+</div>
+<div style="padding:20px;">
+    @(Html.DevExtreme().DataGrid()
+        .ID("deliveryNoteGrid")
+        .ShowBorders(true)
+        .ColumnAutoWidth(true)
+        .Height(350)
+
+        .Selection(s => s.Mode(SelectionMode.Multiple).ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always))
+        .Columns(columns =>
+        {
+            columns.Add().Type(GridCommandColumnType.Selection).Width(40);
+            columns.Add().DataField("Service").Caption("Service");
+            columns.Add().DataField("OrderID").Caption("Order ID");
+            columns.Add().DataField("GSCode").Caption("GS Code");
+            columns.Add().DataField("StockDescription").Caption("Stock Description");
+            columns.Add().DataField("Unit").Caption("Unit");
+            columns.Add().DataField("TotalOrderedQty").Caption("Total Ordered Qty");
+            columns.Add().DataField("TotalIssdQty").Caption("Total Issd Qty");
+            columns.Add().DataField("BalanceToDeliver").Caption("Balance To Deliver");
+            columns.Add().DataField("CurrentQtyOrdered").Caption("Current Qty In Ordered Unit");
+            columns.Add().DataField("AvailabilityStatus").Caption("Availability Status");
+            columns.Add().DataField("DeliveringQuantity").Caption("Delivering Quantity");
+        }))
+</div>
+<div id="pivotGridContainer" style="margin-top: 20px; padding:20px;"></div>
+@using (Html.DevExtreme().NamedTemplate("StoreToIssueItemDropDownTemplate")) // ✅ Corrected name
+{
+    @(Html.DevExtreme().DataGrid()
+                        .ID("StoreToIssueItemDropDown")
+                         .DataSource(ds => ds
+                         .Mvc()
+                         .Controller("SalesOrders")
+                          .LoadAction("GetStoreToIssueItem")
+                         .LoadMode(DataSourceLoadMode.Raw)
+                         .Key("StoreId")
+                         )
+                        .Height(300)
+                        .ShowBorders(true)
+                        .FilterRow(f => f.Visible(true))
+                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                        .Selection(s => s.Mode(SelectionMode.Single))
+                        .Columns(columns =>
+                        {
+                                columns.Add().DataField("StoreId").Caption("Store Id");
+                                columns.Add().DataField("StoreName").Caption("Store Name");
+                        })
+                            .OnSelectionChanged("StoretoIssueItems")
+                    )
+}
+<script>
+
+
+
+    const emptyData = []; // No data initially
+    $(function () {
+        $("#pivotGridContainer").dxPivotGrid({
+            dataSource: {
+                store: {
+                    type: "array",
+                    data: emptyData
+                },
+                fields: [
+                    { dataField: "SupplierName", caption: "GS Code", area: "row" },
+                    { dataField: "ItemDescription", caption: "GS Description", area: "column" },
+                    { dataField: "Quantity", caption: "Oredered UOM", area: "data", dataType: "number", summaryType: "sum" },
+                    { dataField: "Quantity", caption: "Oredered Qty", area: "data", dataType: "number", summaryType: "sum" },
+                    { dataField: "Quantity", caption: "Issd Qty", area: "data", dataType: "number", summaryType: "sum" },
+                    { dataField: "Storecode", caption: "Store Code", area: "data", dataType: "number", summaryType: "sum" },
+                    { dataField: "Quantity1", caption: "Balance ", area: "data", dataType: "number", summaryType: "sum" }
+                    // { dataField: "SalesOrderNo", caption: "Sales order No ", area: "data", dataType: "number", summaryType: "sum" }
+                    // { dataField: "UnitRateMethod", caption: "Unit Rate Method ", area: "data", dataType: "number", summaryType: "sum" }
+                    // { dataField: "GsgroupName", caption: "Gs group Name ", area: "data", dataType: "number", summaryType: "sum" }
+                    // { dataField: "ItemPartNo", caption: "Item Part No ", area: "data", dataType: "number", summaryType: "sum" }
+                    // { dataField: "StockClassification", caption: "Stock Classification ", area: "data", dataType: "number", summaryType: "sum" }
+                    // { dataField: "UnitDesc", caption: "Unit Desc ", area: "data", dataType: "number", summaryType: "sum" }
+                    // { dataField: "OrderedQty", caption: "Ordered Qty ", area: "data", dataType: "number", summaryType: "sum" }
+                    // { dataField: "TotalOrderedQty", caption: "Total Ordered Qty ", area: "data", dataType: "number", summaryType: "sum" }
+                    // { dataField: "TotalIssdQty", caption: "Total Issd Qty", area: "data", dataType: "number", summaryType: "sum" }
+                    // { dataField: "BalanceToDeliver", caption: "Balance To Deliver", area: "data", dataType: "number", summaryType: "sum" }
+                    // { dataField: "CurrentyQty", caption: "Current Qty", area: "data", dataType: "number", summaryType: "sum" }
+                    // { dataField: "BalanceToDeliver", caption: "BalanceToDeliver", area: "data", dataType: "number", summaryType: "sum" }
+                ]
+            },
+
+            allowSortingBySummary: true,
+            allowSorting: true,
+            allowFiltering: true,
+            allowExpandAll: true,
+            showBorders: true,
+            showColumnHeaders: true,
+            showColumnTotals: true,
+            showRowTotals: true,
+            showColumnGrandTotals: true,
+            showRowGrandTotals: true,
+            wordWrapEnabled: true,
+            height: 500,
+
+            // Same fieldChooser settings
+            fieldChooser: {
+                enabled: true,
+                allowSearch: true,
+                layout: 0, // Tree layout like your second example
+                applyChangesMode: "instantly"
+            },
+
+            // Enable the drag-and-drop panel
+            fieldPanel: {
+                visible: true,
+                allowFieldDragging: true,
+                showColumnFields: true,
+                showDataFields: true,
+                showFilterFields: true,
+                showRowFields: true
+            },
+
+            loadPanel: { enabled: true }
+        }).dxPivotGrid("instance");
+    });
+
+
+
+     $(function () {
+        $("#StoreStockAvalibility").dxTextBox({
+            text:formatMessage("Store Stock Avalibility"),
+            readOnly: true,
+            onContentReady: function(e) {
+                $(e.element).addClass("dx-textbox-heading");
+            }
+        });
+    });
+    $(function () {
+            $("#Seletthestoretoissueitem").dxTextBox({
+                text: formatMessage("Select the Store to Issue Items:"),
+                readOnly: true
+
+            });
+         });
+         //Costcenter
+        function StoretoIssueItems(e) {
+        const selected = e.selectedRowsData[0];
+        if (selected) {
+            const dropDownBox = $("#storeBox").dxDropDownBox("instance");
+            if (dropDownBox) {
+                dropDownBox.option("value", selected.StoreId);
+                dropDownBox.close();
+            } else {
+                console.error("DropDownBox instance not found.");
+            }
+        }
+    }
+</script>

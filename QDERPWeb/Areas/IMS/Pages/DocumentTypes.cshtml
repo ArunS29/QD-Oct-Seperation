@@ -132,7 +132,7 @@
     </div>
 
     <div class="col-md-4">
-        <div class="form-group">
+        <div class="form-group" style="display:flex; align-items:end;">
             @(
                 Html.DevExtreme().NumberBox()
                 .ID("txtNumberOfDays")
@@ -141,8 +141,17 @@
                 .Min(0)
                 .ShowSpinButtons(true)
                 )
+       
+            @(Html.DevExtreme().Button()
+                .ID("btnadd")
+                .Text(new JS("formatMessage('ADD')"))
+                .Height(40)
+                .Width(178)
+                .Icon("plus")
+                .OnClick("function() { adddivmaster(); }")
+                )
         </div>
-    </div>
+        <br />
         <div class="col-md-4">
         <div class="form-group">
             @(
@@ -152,25 +161,12 @@
                 )
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="form-group">
-            @(Html.DevExtreme().Button()
-                .ID("btnadd")
-                .Text(new JS("formatMessage('ADD')"))
-                .Height(40)
-                .Width(178)
-                .Icon("plus")
-                .OnClick("function() { adddivmaster(); }")
-                .ElementAttr(new { @class = "dx-button-add" })
-                )
-        </div>
-
 
     </div>
-
+    <br />
     <div id="gridContainer"></div>
 
-
+   
 
 </div>
 @* </div> *@
@@ -429,7 +425,7 @@
 
 
     function adddivmaster() {
-        debugger;
+        
         // Get the values from the text boxes
         var documentType = $("#txtClientCategory").dxTextBox("instance").option("value");
         var numberOfDays = $("#txtNumberOfDays").dxNumberBox("instance").option("value");
@@ -528,4 +524,5 @@
             }
         });
     });
+         
 </script>

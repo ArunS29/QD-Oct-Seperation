@@ -1,0 +1,309 @@
+﻿@page
+@model QD.ERP.Web.Areas.IMS.Pages.QuotationCostItemsModel
+@{
+}
+
+@using DevExtreme.AspNet.Mvc
+@using DevExtreme.AspNet.Mvc.Builders
+<style>
+    .quotationCostItem-form-container {
+        padding: 20px;
+    }
+
+    .form-row {
+        display: flex;
+        gap:15px;
+        align-items: end;
+    }
+
+    .dx-datagrid-save-button,
+    .dx-datagrid-cancel-button {
+        display: none !important;
+    }
+
+    /* Also hide the entire right-aligned toolbar space */
+    .dx-toolbar-after {
+        display: none !important;
+    }
+
+    /* Optionally, remove padding/margin if needed */
+    .dx-datagrid-headers .dx-toolbar {
+        padding-right: 0 !important;
+    }
+    .form-row .form-row-btn {
+        margin: 2px;
+
+        width: 340px;
+        padding: 0px;
+    }
+
+    .rtl-textbox input {
+        text-align: right;
+    }
+        .form-row input,
+        .form-row .dx-textbox,
+        .form-row .dx-selectbox {
+            flex: 1;
+        }
+
+    .dx-fileuploader-input-wrapper .dx-button {
+        float: left;
+        margin-top: -10px;
+    }
+    .image-upload-row {
+        align-items: center;
+        gap: 10px;
+    }
+
+    .signature-upload {
+        border: 1px solid #ccc;
+        background-color: #fff;
+    }
+
+    .limited-footer .btn-container:not(:has(#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
+        display: none !important;
+    }
+
+
+    .grid{
+        padding:20px;
+    }
+
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: flex-start;
+        background-color: var(--background-color);
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+    }
+
+    .playIcon {
+        display: none;
+    }
+
+</style>
+<div class="title">
+    <div class="header-container">
+        <div id="QuotationCostItem" class="no-border-input"></div>
+    </div>
+</div>
+<div class="quotationCostItem-form-container">
+    <div id="DatabaseSignatories" class="no-border-title"></div>
+
+    <div class="form-row">
+        <div class="col-md-6">
+            @(Html.DevExtreme().TextBox()
+                .ID("txtQuotationCostItem")
+                .Label(new JS("formatMessage('Type new Quotation Status & Add to the Existing List:')"))
+                .LabelMode(EditorLabelMode.Outside)
+                .ValidationRules(rules =>
+                {
+                    rules.AddRequired().Message("Quotation Cost Item is required");
+                })
+                )
+
+        </div>
+  
+
+   
+        <div class="col-md-2">
+            @(Html.DevExtreme().Button()
+                .ID("btnAddQuotationCostItem")
+                .Text("ADD")
+                .Icon("plus")
+                .OnClick("function() { addQuotationCostItem(); }")
+                .ElementAttr(new { @class = "dx-button-add" })
+                )
+        </div>
+    </div>
+    </div>
+
+
+    <div class="dx-field ledgerResult">
+        @(Html.DevExtreme().DataGrid()
+            .ID("QuotationCostItemGrid")
+        .KeyExpr("QuotationCostItemId")
+            .RemoteOperations(false)
+            .DataSource(d => d.WebApi()
+            .Controller("Quotation")
+        .LoadAction("GetCostItem")
+            .LoadMode(DataSourceLoadMode.Raw)
+            )
+            .Editing(editing => editing
+            .Mode(GridEditMode.Batch)
+            .AllowUpdating(true)
+            .AllowDeleting(true)
+            )
+            .Toolbar(toolbar =>
+            {
+                toolbar.Items(items => { }); // hide default toolbar
+            })
+            .OnRowUpdating("onQuotationCostItemUpdating")                       // Handles saving
+            .Columns(columns =>
+            {
+            columns.Add().DataField("CostItemCode").Caption("Code").Width(80).AllowEditing(false);
+            columns.Add().DataField("CostItem").Caption("CostItem").Width(200);
+            columns.Add()
+            .Caption("Action").Width(100)
+            .Type(GridCommandColumnType.Buttons)
+            .Buttons(buttons =>
+            {
+                buttons.Add()
+                .Name(GridColumnButtonName.Delete)
+                .Icon("trash") // Use a trash icon
+                .Hint("Delete Row") // Tooltip
+                .OnClick("onDeleteButtonClick");
+                });
+            })
+            .Height(500)
+            .ColumnAutoWidth(true)
+            .AllowColumnReordering(true)
+            .AllowColumnResizing(true)
+            .ColumnFixing(f => f.Enabled(true))
+            .Paging(p => p.Enabled(true))
+            .Scrolling(s => s
+            .Mode(GridScrollingMode.Virtual)
+            .RowRenderingMode(GridRowRenderingMode.Virtual)
+            .PreloadEnabled(true)
+            .ScrollByContent(true)
+            )
+            .ShowBorders(true)
+            .ShowRowLines(true)
+            .Width("100%")
+            )
+
+
+    </div>
+
+
+    <div class="limited-footer">
+        @await Html.PartialAsync("VATModuleFooter")
+    </div>
+    <script>
+
+        $(document).ready(function () {
+
+              $(".limited-footer .btn-containerIvoiceEdit").each(function () {
+
+                  if (!$(this).find("#btnUpdate,#btnBack").length) {
+
+                      $(this).remove();
+
+                  }
+
+              });
+
+          });
+
+        $(document).on("click", "#btnBack", function () {
+            window.history.back();
+        });
+
+         
+
+        $(function () {
+        $("#QuotationCostItem").dxTextBox({
+            text: formatMessage("Cost Items"),
+                readOnly: true,
+                onContentReady: function (e) {
+                    $(e.element).addClass("dx-textbox-heading");
+                }
+            });
+        });
+       
+
+    function addQuotationCostItem() {
+         
+            const data = {
+                CostItem: $("#txtQuotationCostItem").dxTextBox("instance").option("value"),
+            };
+            $.ajax({
+                url: '/api/Quotation/SaveOrUpdateStatus',
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function (response) {
+                    if (response.success) {
+                        DevExpress.ui.notify("Data saved successfully!", "success", 1500);
+                        $("#QuotationCostItemGrid").dxDataGrid("instance").refresh();
+                        $("#txtQuotationCostItem").dxTextBox("instance").option("value", ""); // clear input
+                    } else {
+                        DevExpress.ui.notify(response.message || "Failed to save.", "error", 2000);
+                    }
+                },
+                error: function (xhr) {
+                    let errorMsg = xhr.responseJSON?.message || "Server error occurred.";
+                    DevExpress.ui.notify(errorMsg, "error", 2000);
+                }
+            });
+
+        }
+
+
+        $("#btnUpdate").on("click", function () {
+            const grid = $("#QuotationCostItemGrid").dxDataGrid("instance");
+            grid.saveEditData();
+        });
+
+
+        function onQuotationCostItemUpdating(e) {
+        const updatedData = {
+        CostItemCode: e.oldData.CostItemCode,
+        CostItem: e.newData?.CostItem ?? e.oldData.CostItem
+    };
+
+    $.ajax({
+        url: '/api/Quotation/SaveOrUpdateStatus',
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(updatedData),
+        success: function () {
+            DevExpress.ui.notify("Data updated successfully!", "success", 1500);
+            $("#QuotationCostItemGrid").dxDataGrid("instance").refresh();
+        },
+        error: function () {
+            DevExpress.ui.notify("Failed to update data.", "error", 1500);
+        }
+    });
+    }
+       function onDeleteButtonClick(e) {
+        const key = e.row.data.CostItemCode;
+        if (!confirm("Are you sure you want to delete this Cost Item?")) return;
+
+        $.ajax({
+            url: `/api/Quotation/DeleteCostItem/` + key,
+            method: "DELETE",
+            xhrFields: { withCredentials: true },
+            success: function (result) {
+                DevExpress.ui.notify(result.message || "Deleted successfully", "success", 2000);
+                $("#QuotationCostItemGrid").dxDataGrid("instance").refresh();
+            },
+            error: function (xhr) {
+                let msg = "Failed to delete item.";
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    msg = xhr.responseJSON.message;
+                }
+                DevExpress.ui.notify(msg, "error", 2000);
+            }
+        });
+
+        e.handled = true;
+    }
+
+
+
+    </script>

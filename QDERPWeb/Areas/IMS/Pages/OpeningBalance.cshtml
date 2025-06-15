@@ -1,0 +1,419 @@
+﻿@page
+@model QD.ERP.Web.Areas.IMS.Pages.OpeningBalanceModel
+@{
+}
+
+@using DevExtreme.AspNet.Mvc
+@using DevExtreme.AspNet.Mvc.Builders
+<style>
+    .signatory-form-container {
+        padding: 20px;
+    }
+
+    .form-row {
+        display: flex;
+        gap:15px;
+        align-items: end;
+    }
+
+    .dx-datagrid-save-button,
+    .dx-datagrid-cancel-button {
+        display: none !important;
+    }
+
+    /* Also hide the entire right-aligned toolbar space */
+    .dx-toolbar-after {
+        display: none !important;
+    }
+
+    /* Optionally, remove padding/margin if needed */
+    .dx-datagrid-headers .dx-toolbar {
+        padding-right: 0 !important;
+    }
+    .form-row .form-row-btn {
+        margin: 2px;
+        
+        width: 340px;
+        padding: 0px;
+    }
+
+    .rtl-textbox input {
+        text-align: right;
+    }
+        .form-row input,
+        .form-row .dx-textbox,
+        .form-row .dx-selectbox {
+            flex: 1;
+        }
+
+    .dx-fileuploader-input-wrapper .dx-button {
+        float: left;
+        margin-top: -10px;
+    }
+    .image-upload-row {
+        align-items: center;
+        gap: 10px;
+    }
+
+    .signature-upload {
+        border: 1px solid #ccc;
+        background-color: #fff;
+    }
+
+    .limited-footer .btn-container:not(:has(#btnUpdate,#btnBack)) {
+        display: none !important;
+    }
+    
+    .upload{
+        display: block;
+        top: 26px;
+        position: relative;
+        left: 0px;
+    }
+
+    .grid{
+        padding:20px;
+    }
+
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: flex-start;
+        background-color: var(--background-color);
+    }
+
+    .mainContainer {
+        width: 100%;
+        margin-top: 0px;
+        }
+    .imagecontainer {
+        background-color: #fff;
+        border: 1px solid #90caf9;
+        height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        overflow: hidden;
+        position: relative;
+    }
+
+        .imagecontainer img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .imagecontainer span {
+            color: #555;
+            font-style: italic;
+            position: absolute;
+        }
+
+    .dx-datagrid-action .dx-cell-focus-disabled{
+        text-align:center;
+    }
+    .dx-button-text{
+        color:black;
+    }
+    .playIcon {
+        display: none;
+    }
+</style>
+<div class="title">
+    <div class="header-container">
+        <div id="Openingbalance" class="no-border-input"></div>
+    </div>
+</div>
+<div class="signatory-form-container">
+    <div id="Stores" class="no-border-title"></div>
+
+    <!-- FORM LAYOUT -->
+    <div style="display:flex;gap:100px;">
+        <div style="display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; width:100%;">
+            <!-- Stock Code -->
+            <div style="flex: 1;">
+                @(Html.DevExtreme().SelectBox()
+                    .ID("txtStockCode")
+                    .Label("Stock Code")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .StylingMode(EditorStylingMode.Outlined)
+                    )
+            </div>
+
+            <!-- Description -->
+            <div style="flex: 2;">
+                @(Html.DevExtreme().TextBox()
+                    .ID("txtStockDescription")
+                    .Label("Stock Item Description")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .StylingMode(EditorStylingMode.Outlined)
+                    )
+            </div>
+
+            <!-- Opening Balance -->
+            <div style="flex: 1;">
+                @(Html.DevExtreme().NumberBox()
+                    .ID("txtOpeningBalance")
+                    .Label("Opening Balance")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .StylingMode(EditorStylingMode.Outlined)
+                    )
+            </div>
+        </div>
+        <div>
+            <div style="gap: 10px;display: flex;flex-direction: column;padding: 10px;">
+                @(Html.DevExtreme().NumberBox()
+                    .ID("txtOpeningQty")
+                    .ReadOnly(true)
+                    .Value(13)
+                    .ShowSpinButtons(true)
+                    .StylingMode(EditorStylingMode.Outlined)
+                    .Placeholder("Qty")
+                    )
+                @(Html.DevExtreme().NumberBox()
+                    .ID("txtOpeningRate")
+                    .Value(700.0000)
+                    .ReadOnly(true)
+                    .Format("#,##0.0000")
+                    .ShowSpinButtons(true)
+                    )
+            </div>
+        </div>
+    </div>
+
+    <!-- GRID -->
+    <div>
+        @(Html.DevExtreme().DataGrid()
+            .ID("gridOpeningBalance")
+            .DataSource(new object[] { }) // You can bind actual data here
+            .Columns(columns =>
+            {
+                columns.Add().DataField("StockCode").Caption("Stock Code");
+                columns.Add().DataField("Unit").Caption("Unit");
+                columns.Add().DataField("UnitPrice").Caption("Unit Price");
+                columns.Add().DataField("Quantity").Caption("Quantity");
+                columns.Add().DataField("ExpiryDate").Caption("Expiry Date").DataType(GridColumnDataType.Date);
+                columns.Add().DataField("BatchNo").Caption("Batch No");
+            })
+            .ShowBorders(true)
+            .ShowRowLines(true)
+            .RowAlternationEnabled(true)
+            .ColumnAutoWidth(true)
+            .Height(450)
+            .Width("100%")
+            )
+    </div>
+
+    <!-- BUTTON FOOTER -->
+    <div style="text-align: left;">
+        @(Html.DevExtreme().Button().ID("btnSave").Text("Save & Close").Type(ButtonType.Success).Icon("save"))
+        @(Html.DevExtreme().Button().ID("btnPrint").Text("Print").Icon("print"))
+        @(Html.DevExtreme().Button().ID("btnDelete").Text("Delete").Icon("trash").Type(ButtonType.Danger))
+        @(Html.DevExtreme().Button().ID("btnBack").Text("Back").Icon("back").Type(ButtonType.Normal))
+    </div>
+</div>
+
+ <script>
+
+    $(document).ready(function () {
+
+          $(".limited-footer .btn-container").each(function () {
+
+              if (!$(this).find("#btnUpdate,#btnBack").length) {
+
+                  $(this).remove();
+
+              }
+
+          });
+
+      });
+
+    $(document).on("click", "#btnBack", function () {
+        window.history.back();
+    });
+
+      $(function () {
+            $("#DatabaseSignatories").dxTextBox({
+                text: formatMessage("Database "),
+                readOnly: true,
+                           
+
+            });
+        });
+
+    $(function () {
+        $("#Openingbalance").dxTextBox({
+            text: formatMessage("Opening Balance Entries"),
+            readOnly: true,
+            onContentReady: function (e) {
+                $(e.element).addClass("dx-textbox-heading");
+            }
+        });
+    });
+    async function convertToArabic(sourceId, targetId) {
+        const sourceBox = $("#" + sourceId).dxTextBox("instance");
+        const targetBox = $("#" + targetId).dxTextBox("instance");
+
+        if (!sourceBox || !targetBox) {
+            console.error("TextBox not initialized.");
+            return;
+        }
+
+        const sourceText = sourceBox.option("value");
+
+        if (!sourceText || sourceText.trim() === "") {
+            alert("Please enter a value to translate.");
+            return;
+        }
+
+        try {
+            const translatedText = await translateToArabic(sourceText);
+            targetBox.option("value", translatedText);
+        } catch (error) {
+            console.error("Translation failed", error);
+            alert("Translation failed. Please try again.");
+        }
+    }
+
+    async function translateToArabic(text) {
+        try {
+            const response = await fetch(
+                `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`
+            );
+
+            if (!response.ok) {
+                throw new Error("Translation API request failed.");
+            }
+
+            const data = await response.json();
+            return data?.responseData?.translatedText || "Translation not found";
+        } catch (error) {
+            console.error("Translation failed:", error);
+            throw error;
+        }
+    }
+  
+    function addStoreToGrid() {
+        // Validate fields using the Validator components
+        //const nameValidationResult = $("#SignatoryName").dxValidator("instance").validate();
+        //const positionValidationResult = $("#SignatoryPosition").dxValidator("instance").validate();
+
+        // if (!nameValidationResult.isValid || !positionValidationResult.isValid) {
+        //     DevExpress.ui.notify("Please fill all required fields.", "warning", 2000);
+        //     return;
+        // }
+
+        const data = {
+            StoreId: $("#txtStoreCode").dxTextBox("instance").option("value"),
+            StoreName: $("#txtStoreName").dxTextBox("instance").option("value"),
+          
+            CostAllocationUnitId: $("#ddCostcenter").dxDropDownBox("instance").option("value")
+           
+        };
+
+        $.ajax({
+            url: '/api/StoreCode/SaveOrUpdateStory',
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function () {
+                DevExpress.ui.notify("Story saved successfully!", "success", 2000);
+                $("#StoryGrid").dxDataGrid("instance").refresh();
+            },
+            error: function () {
+                DevExpress.ui.notify("Failed to save Story.", "error", 2000);
+            }
+        });
+    }
+
+
+    $("#btnUpdate").on("click", function () {
+        const grid = $("#StoryGrid").dxDataGrid("instance");
+        grid.saveEditData(); // 🔥 only triggers on manual click
+    });
+
+
+    function onStoryUpdating(e) {
+        debugger;
+        const data = {
+            StoreId: e.oldData.StoreId,
+            StoreName: e.newData.StoreName ?? e.oldData.StoreName,
+            CostAllocationUnitId: e.newData.CostAllocationUnitId ?? e.oldData.CostAllocationUnitId
+          
+        };
+
+        e.cancel = true; // prevents grid from doing its own update
+
+        return $.ajax({
+            url: '/api/StoreCode/SaveOrUpdateStory',
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function () {
+                DevExpress.ui.notify("Data Updated Successfully!", "success", 1500);
+                $("#StoryGrid").dxDataGrid("instance").refresh();
+            },
+            error: function () {
+                DevExpress.ui.notify("Failed to save.", "error", 1500);
+            }
+        });
+    }
+          $(function () {
+        setTimeout(function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const gscode = urlParams.get('gscode');
+            const description = urlParams.get('description');
+
+            console.log("URL Params - gscode:", gscode, "description:", description);
+
+            const stockBox = $("#txtStockCode").dxSelectBox("instance");
+            const descBox = $("#txtStockDescription").dxTextBox("instance");
+
+            if (gscode) {
+                stockBox.option("acceptCustomValue", true); // This is important
+                stockBox.option("value", gscode);
+            }
+
+            if (description) {
+                descBox.option("value", description);
+            }
+
+            loadOpeningBalanceGrid(gscode);
+        }, 300);
+    });
+
+    function loadOpeningBalanceGrid(gscode) {
+        if (!gscode) return;
+
+        $.ajax({
+            url: `/api/StockInventory/GetOpeningBalanceByGscode`,  // Your API endpoint
+            data: { gscode: gscode },
+            method: "GET",
+            success: function(data) {
+                // Assuming data is an array of records matching your grid columns
+                $("#gridOpeningBalance").dxDataGrid("instance").option("dataSource", data);
+            },
+            error: function(err) {
+                console.error("Error loading opening balance data", err);
+            }
+        });
+    }
+
+
+   
+
+
+    </script>

@@ -1,6 +1,10 @@
 ﻿@page
 @using DevExtreme.AspNet.Mvc;
 @using DevExtreme.AspNet.Data;
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style type="text/css">
     .card {
         margin: 20px;
@@ -99,13 +103,12 @@
             @(
                     Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl201VoucherEntry>()
                     .ID("dataGrid")
-                    .KeyExpr("AccountHeadNo")
                     .RemoteOperations(false)
-                      .DataSource(ds => ds.Mvc()
+                    @*   .DataSource(ds => ds.Mvc()
                     .Controller("SalaryPayableMapping")
                         .LoadAction("GetBankReconciliation")
                     .LoadParams(new { accid = "0" }) // Add dynamic parameters
-                    )
+                    ) *@
                     .Columns(columns =>
                     {
                          columns.Add().DataField("VoucherEntryNo").Caption(new JS("formatMessage('Voucher Entry No')")).Visible(false);
@@ -137,7 +140,7 @@
                     </div>
                 </text>);
 
-                        columns.Add().DataField("BankClearedOn").Caption(new JS("formatMessage('Cleared On')"));
+                        columns.Add().DataField("BankClearedOn").Caption(new JS("formatMessage('Cleared On')")).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy");
                     columns.Add().DataField("PaymentStatus").Caption(new JS("formatMessage('Status')")).AllowEditing(true);
                     columns.Add().DataField("DrAmount").Caption(new JS("formatMessage('Receipts')")).CustomizeText(
                 "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
@@ -154,12 +157,14 @@
                         {
                         totalItems.Add()
                         .Column("DrAmount")
+
                         .SummaryType(SummaryType.Sum)
                         .CustomizeText(
                         "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
                         );
                         totalItems.Add()
                         .Column("CrAmount")
+                        
                         .SummaryType(SummaryType.Sum)
                         .CustomizeText(
                         "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
@@ -174,18 +179,22 @@
                     .ColumnAutoWidth(true)
                     .FilterRow(filterRow => filterRow.Visible(false))
                     .GroupPanel(groupPanel => groupPanel.Visible(false))
-                    //.ShowBorders(true)
+                    .ShowBorders(true)
+                    .ShowRowLines(true)
                     .Width("100%")
                     .Selection(s => s.Mode(SelectionMode.Multiple).ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always))
                     .OnSelectionChanged("getSelectedVoucherEntryNo")
-                   
+        .Paging(p => p.Enabled(false)) // 🔁 Disable pagination
+
+        .Scrolling(s => s.Mode(GridScrollingMode.Virtual)) // 🔁 Enable vertical scrolling
+        .Height(420)
         .Editing(editing => editing
         .Mode(GridEditMode.Cell) // or use .Batch(), .Cell(), or .Popup() depending on your requirement
         .AllowUpdating(true)   // Enable editing of existing rows
        @*  .AllowDeleting(true)   // Enable deleting rows
         .UseIcons(true) // Enables icons for editing buttons *@
         )
-       // .OnEditorPreparing("onEditorPreparing")
+       .OnEditorPreparing("onEditorPreparing")
         )
 </div>
 <div class="dx-fieldset vertical-container" style="display: flex;flex-direction: row;justify-content: space-around;">
@@ -221,7 +230,7 @@
 <script>
 
             let LastAmt = 0;
-            let FirstAmt = 0;
+                let FirstAmt = 0,isUpdatingCell=null;
 
 
       function formatVoucherDate(data) {
@@ -358,10 +367,6 @@ if (balanceOurBooksInstance) {
     balanceOurBooksInstance.option("value", formattedLastAmt);
 }
 
-if (balanceBankStatementInstance) {
-    const formattedFirstAmt = formatWithCommasAndParentheses(firstRowBalanceVal);
-    balanceBankStatementInstance.option("value", formattedFirstAmt);
-}
 
 
         // const TotalVal = LastAmt - FirstAmt;
@@ -375,24 +380,27 @@ if (balanceBankStatementInstance) {
             $("#titleHeader").text(`${accheadname} as on ${ToDate}`);
         }
 
-        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+              const dataGrid = $("#dataGrid").dxDataGrid("instance");
         if (dataGrid) {
-            dataGrid.option("dataSource", {
-                store: DevExpress.data.AspNet.createStore({
-                    loadUrl: "/api/SalaryPayableMapping/GetBankReconciliation",
-                    loadParams: { accid: accid }
+            fetch(`/api/SalaryPayableMapping/GetBankReconciliation?accid=${accid}`)
+                .then(response => response.json())
+                .then(result => {
+                    console.log("Raw response:", result);
+
+                    // Ensure `data` property exists
+                    if (Array.isArray(result.data)) {
+                        dataGrid.option("dataSource", result.data);
+                       
+                    } else {
+                        console.warn("Unexpected response format", result);
+                    }
                 })
-            });
-
-            console.log({ accid: accid });
-            dataGrid.refresh();
+                .catch(error => {
+                    console.error("Error loading data:", error);
+                });
         }
+
     });
-
-
-
-
-
 
 
     function ddBtnShowRecords_click(filterType) {
@@ -488,60 +496,112 @@ $(document).ready(function () {
 
     $(function () {
 
-        let totatReceipts;
+       
 
         const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        
 
-        const totalDebitTextbox = $("#totalDebitTextbox").dxTextBox("instance");
-
-        const totalCreditTextbox = $("#totalCreditTextbox").dxTextBox("instance");
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
 
         function calculateTotals() {
 
             const data = dataGrid.getVisibleRows().map(row => row.data);
-
-            const totalDebit = data.reduce((sum, row) => sum + (row.DrAmount || 0), 0);
-
-            const totalCredit = data.reduce((sum, row) => sum + (row.CrAmount || 0), 0);
-
+            const totalDebit = dataGrid.getTotalSummaryValue("DrAmount") || 0;
+            const totalCredit = dataGrid.getTotalSummaryValue("CrAmount") || 0;
             const balance = totalDebit - totalCredit;
 
-               // Format balance for AmountNotReflectedinBank
-        let formattedAmount;
-        if (balance < 0) {
-            formattedAmount = `(${Math.abs(balance).toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            })})`;
-        } else {
-            formattedAmount = balance.toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
-        }
+            // Format balance for AmountNotReflectedinBank
+            let formattedAmount;
+            if (balance < 0) {
+                formattedAmount = `(${Math.abs(balance).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                })})`;
+            } else {
+                formattedAmount = balance.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            }
 
-        const amountNotReflectedBox = $("#AmountNotReflectedinBank").dxTextBox("instance");
-        if (amountNotReflectedBox) {
-            amountNotReflectedBox.option("value", formattedAmount);
-        }
+            const amountNotReflectedBox = $("#AmountNotReflectedinBank").dxTextBox("instance");
+            if (amountNotReflectedBox) {
+                amountNotReflectedBox.option("value", formattedAmount);
+            }
 
-            // Update TextBox values dynamically
+            // Get lastRowBalance from query string and parse it
+            const lastRowBalance = getQueryParam("lastRowBalance") || "0";
+            console.log("lstbal:", lastRowBalance);
+            const cleanedBalanceLR = lastRowBalance.replace(/[^0-9.-]/g, "");
+            const lastRowBalanceVal = parseFloat(cleanedBalanceLR) || 0;
 
-            totalDebitTextbox.option("value", totalDebit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+            // Parse formattedAmount to a number for calculation
+            const cleanedFormattedAmount = formattedAmount.replace(/[\(\),]/g, "");
+            const formattedAmountVal = parseFloat(cleanedFormattedAmount) || 0;
+            const netBalance = lastRowBalanceVal - formattedAmountVal;
 
-            totalCreditTextbox.option("value", totalCredit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+            // Format and set the BalanceAsPerBankStatement textbox
+            const balanceAsPerBankBox = $("#BalanceAsPerBankStatement").dxTextBox("instance");
+            if (balanceAsPerBankBox) {
+                let formattedNetBalance;
+                if (netBalance < 0) {
+                    formattedNetBalance = `(${Math.abs(netBalance).toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    })})`;
+                } else {
+                    formattedNetBalance = netBalance.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+                }
 
+                balanceAsPerBankBox.option("value", formattedNetBalance);
+            }
+
+
+            // Optionally update total Debit and Credit boxes
+            // totalDebitTextbox.option("value", totalDebit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+            // totalCreditTextbox.option("value", totalCredit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
         }
 
         // Recalculate totals on content changes
-
         dataGrid.on("contentReady", calculateTotals);
-
         dataGrid.on("dataSourceChanged", calculateTotals);
 
+        $("#btnShowReconciled").on("click", function (e) {
+            e.preventDefault();
+            const dataGrid = $("#dataGrid").dxDataGrid("instance");
+            if (dataGrid) {
+                fetch(`/api/SalaryPayableMapping/Getshowreconcileditems`)
+                    .then(response => response.json())
+                    .then(result => {
+                        console.log("Raw response:", result);
 
+                        // Ensure `data` property exists
+                        if (Array.isArray(result.data)) {
+                            // Remove the event listeners
+                            dataGrid.off("contentReady", calculateTotals);
+                            dataGrid.off("dataSourceChanged", calculateTotals);
+
+                            // Update the dataSource
+                            dataGrid.option("dataSource", result.data);
+                        } else {
+                            console.warn("Unexpected response format", result);
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error loading data:", error);
+                    });
+            }
+
+        });
 
     });
+
 
 
     function onUpdateClick() {
@@ -569,10 +629,8 @@ $(document).ready(function () {
                 DevExpress.ui.dialog.alert(
                                 "Bank Reconciliation updated Successfully.",
                             "Update Successful"
-                        );
-            // Refresh the DataGrid after a successful update
-            var dataGrid = $("#dataGrid").dxDataGrid("instance");
-            dataGrid.refresh();
+                );
+            Reloadgriddata();
         },
         error: function (xhr) {
             alert("Error updating BankClearedOn: " + xhr.responseText);
@@ -581,72 +639,92 @@ $(document).ready(function () {
 }
 
 
-    // function onEditorPreparing(e) {
+    function onEditorPreparing(e) {
 
-    //                 if (e.dataField === 'PaymentStatus') {
-    //           alert("1")
+                    if (e.dataField === 'PaymentStatus') {
+           
 
-    //             e.cancel = true; // Prevent the default editor behavior
+                e.cancel = true; // Prevent the default editor behavior
 
-    //             const dataGridInstance = e.component; // Get the DataGrid instance
-    //             const rowIndex = e.row.rowIndex; // Get the row index of the clicked cell
-    //             const fieldName = e.dataField; // Dynamic field name (EntryNarration or SysRemarks)
-    //             const initialValue = e.row.data[fieldName] || ""; // Get the current value of the cell
+                const dataGridInstance = e.component; // Get the DataGrid instance
+                const rowIndex = e.row.rowIndex; // Get the row index of the clicked cell
+                const fieldName = e.dataField; // Dynamic field name (EntryNarration or SysRemarks)
+                const initialValue = e.row.data[fieldName] || ""; // Get the current value of the cell
 
-    //             // Show Swal modal
-    //             Swal.fire({
-    //                 title: `<i class="fas fa-edit" style="color:#007bff"></i> Edit ${fieldName.replace(/([A-Z])/g, ' $1')}`, // Format field name for title
-    //                 html: `
-    //                 <textarea id="swal-field-editor"
-    //                                           style="width:100%; height:100px; font-size:16px; padding:10px; border-radius:8px; border:1px solid #ddd;"
-    //                                           placeholder="Enter ${fieldName.replace(/([A-Z])/g, ' $1')}...">${initialValue}</textarea>
-    //                             `,
-    //                 showCancelButton: true,
-    //                 confirmButtonText: 'OK',
-    //                 cancelButtonText: 'Cancel',
-    //                 focusConfirm: false,
-    //                 didOpen: () => {
-    //                     // Focus the textarea and move the cursor to the end
-    //                     const textarea = document.getElementById('swal-field-editor');
-    //                     textarea.focus();
-    //                     textarea.setSelectionRange(initialValue.length, initialValue.length);
-    //                 },
-    //                 preConfirm: () => {
-    //                     const newValue = document.getElementById('swal-field-editor').value.trim();
-    //                     return newValue; // Return the new value from the modal
-    //                 }
-    //             }).then((result) => {
-    //                 if (result.isConfirmed) {
-    //                     const newValue = result.value;
+                // Show Swal modal
+                Swal.fire({
+                    title: `<i class="fas fa-edit" style="color:#007bff"></i> Edit ${fieldName.replace(/([A-Z])/g, ' $1')}`, // Format field name for title
+                    html: `
+                    <textarea id="swal-field-editor"
+                                              style="width:100%; height:100px; font-size:16px; padding:10px; border-radius:8px; border:1px solid #ddd;"
+                                              placeholder="Enter ${fieldName.replace(/([A-Z])/g, ' $1')}...">${initialValue}</textarea>
+                                `,
+                    showCancelButton: true,
+                    confirmButtonText: 'OK',
+                    cancelButtonText: 'Cancel',
+                    focusConfirm: false,
+                    didOpen: () => {
+                        // Focus the textarea and move the cursor to the end
+                        const textarea = document.getElementById('swal-field-editor');
+                        textarea.focus();
+                        textarea.setSelectionRange(initialValue.length, initialValue.length);
+                    },
+                    preConfirm: () => {
+                        const newValue = document.getElementById('swal-field-editor').value.trim();
+                        return newValue; // Return the new value from the modal
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const newValue = result.value;
 
-    //                     if (newValue !== initialValue) {
-    //                         isUpdatingCell = true; // Set the flag before updating the cell
-    //                         dataGridInstance.cellValue(rowIndex, fieldName, newValue); // Update the specific cell dynamically
-    //                         dataGridInstance.saveEditData(); // Save the edit data
-    //                         dataGridInstance.refresh(); // Refresh the grid to reflect changes
-    //                         isUpdatingCell = false; // Reset the flag after updating
-    //                     }
-    //                 } else if (result.isDismissed) {
-    //                     console.log('Edit cancelled');
-    //                 }
-    //             });
-    //         }
-    //     }
+                        if (newValue !== initialValue) {
+                            isUpdatingCell = true; // Set the flag before updating the cell
+                            dataGridInstance.cellValue(rowIndex, fieldName, newValue); // Update the specific cell dynamically
+                            dataGridInstance.saveEditData(); // Save the edit data
+                            
+                            isUpdatingCell = false; // Reset the flag after updating
+                        }
+                    } else if (result.isDismissed) {
+                        console.log('Edit cancelled');
+                    }
+                });
+            }
+        }
 
 
-    //     function onEditorPreparing(e) {
-    //     if (e.dataField === "PaymentStatus" && e.parentType === "dataRow") {
-    //         e.editorName = "dxSelectBox";
-    //         e.editorOptions = {
-    //             acceptCustomValue: true,
-    //             showClearButton: true,
-    //             onCustomItemCreating: function(args) {
-    //                 args.customItem = args.text;
-    //             }
-    //         };
-    //     }
-    // }
+    function Reloadgriddata() {
+        function getQueryParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+        const accid = getQueryParam("accid");
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        if (dataGrid) {
+            fetch(`/api/SalaryPayableMapping/GetBankReconciliation?accid=${accid}`)
+                .then(response => response.json())
+                .then(result => {
+                    console.log("Raw response:", result);
 
+                    // Ensure `data` property exists
+                    if (Array.isArray(result.data)) {
+                        dataGrid.option("dataSource", result.data);
+
+                    } else {
+                        console.warn("Unexpected response format", result);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error loading data:", error);
+                });
+        }
     
+    
+    }
+  
+    $("#btnRefresh").on("click", function (e) {
+        e.preventDefault();
+        
+        Reloadgriddata();
+    });
     
 </script>

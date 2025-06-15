@@ -8,6 +8,7 @@ using QD.ERP.Web.Areas.Finance.Reports.BillsReceivable;
 using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis;
 using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.Detailed_Report;
 using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.summary_Report;
+using QD.ERP.Web.Areas.VAT.Reports.InventoryReports;
 using QD.ERP.Web.Areas.VAT.Reports.PurchaseRegister;
 using QD.ERP.Web.Areas.VAT.Reports.VAT_Sales_Invoice_Register;
 using QD.ERP.Web.Areas.VAT.Reports.VATCreditNote;
@@ -40,6 +41,7 @@ namespace QD.ERP.Web.Pages
         public string VoucherType { get; private set; }
         public DateTime FrmDate { get; private set; }
         public DateTime ToDate { get; private set; }
+        public string requestedBy { get; private set; }
         public List<string> SelectedValues { get; private set; } = new List<string>();
 
         public IActionResult OnGet(string reportName, string voucherType, DateTime? frmDate, DateTime? toDate, string requestedBy, string[] selectedValues)
@@ -96,22 +98,22 @@ namespace QD.ERP.Web.Pages
                 switch (reportName)
                 {
                     case "PreviewRegister":
-                        Report = new PreviewRegister(VoucherType, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new PreviewRegister(VoucherType, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
                         break;
                     case "OrderByVchNoRegister":
-                        Report = new OrderByVchNoRegister(VoucherType, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new OrderByVchNoRegister(VoucherType, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
                         break;
                     case "OrderbyVchNoWIthVchNarration":
-                        Report = new OrderbyVchNoWIthVchNarration(VoucherType, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new OrderbyVchNoWIthVchNarration(VoucherType, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
                         break;
                     case "Register4line":
-                        Report = new Register4line(VoucherType, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new Register4line(VoucherType, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
                         break;
                     case "RegisterLineEntryNarration":
-                        Report = new RegisterLineEntryNarration(VoucherType, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new RegisterLineEntryNarration(VoucherType, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
                         break;
                     case "RegisterWithVchNarration":
-                        Report = new RegisterWithVchNarration(VoucherType, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new RegisterWithVchNarration(VoucherType, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
                         break;
                     default:
                         return NotFound("Report not found.");
@@ -123,48 +125,50 @@ namespace QD.ERP.Web.Pages
 
             else if (frmDate.HasValue && toDate.HasValue)
             {
+              
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
 
                 switch (reportName)
                 {
+                    
                     case "SummaryReport":
                         // **Handle requestedBy being empty or null**
                         string requestedByValue = string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy;
-                        Report = new CostCenterSummaryReport(requestedByValue, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new CostCenterSummaryReport(requestedByValue, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
                         break;
                     case "SummaryReportByDate":
                         Report = new SummaryReport_ByDate_(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
                         );
                         break;
 
                     case "CostCenterReport":
                         Report = new CostcenterRepoer(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
                         );
                         break;
 
                     case "CostCenterReportByDate":
                         Report = new CostcenterBydate(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
                         );
                         break;
 
                     case "CostCenterGroupReport":
                         Report = new CostCenterGroupReport(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
                         );
                         break;
 
                     case "CostCenterGroupReportByDate":
                         Report = new CostcenterGroupByDate(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
                         );
                         break;
 
@@ -173,69 +177,74 @@ namespace QD.ERP.Web.Pages
                     case "DetailReport":
                         Report = new DetailReport(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
                         );
                         break;
                     case "DetailedBydate":
                         Report = new DetailedBydate(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
                         );
                         break;
                     case "DetailedGroup":
                         Report = new DetailedGroup(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
                         );
                         break;
                     case "detailGroupBydate":
                         Report = new detailGroupBydate(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
                         );
                         break;
                     case "CostCenterMasterGroup":
                         Report = new CostCenterMasterGroup(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
                         );
                         break;
 
                     case "detailedMasterByDate":
                         Report = new detailedMasterByDate(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
                         );
                         break;
+
+
+                    ////VAT REports
                     case "TaxSummaryReport":
-                        Report = new TaxSummaryReport(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new TaxSummaryReport(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
                     case "TaxVATReport":
                         Report = new TaxVATReport(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                         break;
                     case "TaxReportRevenueInArabic":
-                        Report =new TaxReportRevenueInArabic(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new TaxReportRevenueInArabic(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                         break;
                     case "CreditSummary":
-                        Report = new CreditSummary(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new CreditSummary(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
                     case "DebitNoteSummary":
-                        Report = new DebitNoteSummary(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new DebitNoteSummary(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
                     case "VATPurchasesAndExpReport":
-                        Report = new VATPurchasesAndExpReport(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new VATPurchasesAndExpReport(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
                     case "TaxSummaryReportPurchaseInArabic":
-                        Report = new TaxSummaryReportPurchaseInArabic(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new TaxSummaryReportPurchaseInArabic(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
                     case "VATReturnsform":
-                        Report = new VATReturnsform(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        Report = new VATReturnsform(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
                     default:
-                        return NotFound("Cost report not found.");
+                        return NotFound("cost analysis report not found.");
+
                 }
             }
 
+       
             ///Bills Receivable reports
             // **CASE 3: Reports using selectedValues**
             else if (selectedValues != null && selectedValues.Length > 0)
@@ -264,22 +273,29 @@ namespace QD.ERP.Web.Pages
                 switch (reportName)
                 {
                     case "XtraReportAgeingreportsummary":
-                        Report = new XtraReportAgeingreportsummary(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new XtraReportAgeingreportsummary(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
                         break;
                     case "XtraReportBillsReceivableAgeingReport":
-                        Report = new XtraReportBillsReceivableAgeingReport(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new XtraReportBillsReceivableAgeingReport(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
                         break;
                     case "BIllsPayable":
-                        Report = new BIllsPayable(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new BIllsPayable(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
+                        break;
+                    case "Summary":
+                        Report = new Summary(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                         break;
                     case "BillsReceivableAgeingReport":
-                        Report = new BillsReceivableAgeingReport(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new BillsReceivableAgeingReport(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
                         break;
                     case "ReceivableReport(EffectiveDate)":
-                        Report = new ReceivableReport_EffectiveDate_(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new ReceivableReport_EffectiveDate_(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
                         break;
                     case "BillsRecivableReport1":
-                        Report = new BillsRecivableReport1(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new BillsRecivableReport1(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
+                        break;
+
+                    case "InventoryReportWithExpireDates":
+                        Report = new InventoryReportWithExpireDates(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr,  userName,_tenantDbContextHelper);
                         break;
 
 

@@ -42,4 +42,5 @@ public partial class Tbl20116LedgerDocument
     public string NotifiedTo { get; set; }
 
     public string NotificationRemarks { get; set; }
+    public string AzurePath { get; set; }
 }

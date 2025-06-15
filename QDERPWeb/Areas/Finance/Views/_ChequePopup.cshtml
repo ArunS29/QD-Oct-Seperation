@@ -222,13 +222,7 @@
             .OnClick("function() { SavePopCloseVoucherEntry(); }")
             .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
             )
-            @(Html.DevExtreme().Button()
-            .ID("btnPreview")
-            .Text(new JS("formatMessage('Preview')"))
-            .Icon("fullscreen")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-
-            )
+            
             @(Html.DevExtreme().Button()
             .ID("btnPrint")
             .Text(new JS("formatMessage('Print')"))
@@ -308,7 +302,7 @@
         "basecurrencyid": baseCurrency.option("value")
     };
 
-
+        debugger;
         $.ajax({
             type: "POST",
             url: "/api/VoucherMaster/SaveChequeDetails",

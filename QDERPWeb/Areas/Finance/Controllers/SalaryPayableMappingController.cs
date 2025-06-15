@@ -142,50 +142,89 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         //}
 
         [HttpGet]
-        public IActionResult GetBankReconciliation(string accid)
+        public IActionResult GetBankReconciliation(DataSourceLoadOptions loadOptions, string accid)
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                try
-                {
-                    if (string.IsNullOrEmpty(accid))
-                    {
-                        return BadRequest("Account ID is required.");
-                    }
-
-                    var query = from t1 in dbContext.Tbl201VoucherEntries
-                                join t2 in dbContext.Tbl201VoucherMasters
-                                on t1.VoucherNo equals t2.VoucherNo
-                                where t1.AccountHead == accid
-                                && (t1.BankClearedOn == null)
-                                && (t1.SysRemarks != "System Generated Opening Balance")
-                                select new
-                                {
-                                    t1.VoucherEntryNo,
-                                    t1.VoucherNo,
-                                    t2.VoucherRefNo,
-                                    t2.VoucherDate,
-                                    t1.SysRemarks,
-                                    t1.DrCr,
-                                    t1.BankClearedOn,
-                                    t1.PaymentStatus,
-                                    DrAmount = t1.DrCr == "Dr" ? t1.VoucherAmount : 0,
-                                    CrAmount = t1.DrCr == "Cr" ? t1.VoucherAmount : 0
-                                };
-
-                   // var result = await DataSourceLoader.LoadAsync(query.AsQueryable(), loadOptions);
-
-                    return Json(query);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError($"Error in GetSalaryMapping: {ex.Message}");
-                    return BadRequest(new { message = "An error occurred while fetching data.", error = ex.Message });
-                }
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
             }
 
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
+            if (string.IsNullOrWhiteSpace(accid) || accid == "0")
+            {
+                return BadRequest("Valid Account ID is required.");
+            }
+
+            try
+            {
+                var query = from t1 in dbContext.Tbl201VoucherEntries
+                            join t2 in dbContext.Tbl201VoucherMasters
+                            on t1.VoucherNo equals t2.VoucherNo
+                            where t1.AccountHead == accid
+                                  && t1.BankClearedOn == null
+                                  && t1.SysRemarks != "System Generated Opening Balance"
+                            select new
+                            {
+                                t1.VoucherEntryNo,
+                                t1.VoucherNo,
+                                t2.VoucherRefNo,
+                                t2.VoucherDate,
+                                t1.SysRemarks,
+                                t1.DrCr,
+                                t1.BankClearedOn,
+                                t1.PaymentStatus,
+                                DrAmount = t1.DrCr == "Dr" ? t1.VoucherAmount : 0,
+                                CrAmount = t1.DrCr == "Cr" ? t1.VoucherAmount : 0
+                            };
+
+                return Ok(DataSourceLoader.Load(query, loadOptions));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in GetBankReconciliation");
+                return BadRequest(new { message = "An error occurred while fetching data.", error = ex.Message });
+            }
         }
+
+        [HttpGet]
+        public IActionResult Getshowreconcileditems(DataSourceLoadOptions loadOptions)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+
+           
+
+            try
+            {
+                var query = from t1 in dbContext.Tbl201VoucherEntries
+                            join t2 in dbContext.Tbl201VoucherMasters
+                            on t1.VoucherNo equals t2.VoucherNo
+                            where t1.BankClearedOn != null
+                                  
+                            select new
+                            {
+                                t1.VoucherEntryNo,
+                                t1.VoucherNo,
+                                t2.VoucherRefNo,
+                                t2.VoucherDate,
+                                t1.SysRemarks,
+                                t1.DrCr,
+                                t1.BankClearedOn,
+                                t1.PaymentStatus,
+                                DrAmount = t1.DrCr == "Dr" ? t1.VoucherAmount : 0,
+                                CrAmount = t1.DrCr == "Cr" ? t1.VoucherAmount : 0
+                            };
+
+                return Ok(DataSourceLoader.Load(query, loadOptions));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in GetBankReconciliation");
+                return BadRequest(new { message = "An error occurred while fetching data.", error = ex.Message });
+            }
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> UpdateBankReconcilation([FromBody] Tbl201VoucherEntry model)

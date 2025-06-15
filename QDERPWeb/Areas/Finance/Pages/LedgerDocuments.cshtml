@@ -1,17 +1,156 @@
 ﻿@page
 @using QD.ERP.Web.DAL.Entities
 @{
-    ViewData["Title"] = null;
+    ViewData["Title"] = "Accounting Ledger Groups//";
 
 }
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
 <style>
+    .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5); /* Transparent background */
+        z-index: 1000;
+    }
+
+    .dx-button-mode-contained.dx-button-success .dx-icon {
+       color: black;
+    }
+    /* Ensure word wrap and center alignment for grid headers */
+    .header-wrap {
+        white-space: normal !important; /* Enable word wrap */
+        text-align: center !important; /* Center align text */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+    }
+
+    /* Ensure text in grid headers is always centered */
+    .dx-datagrid .dx-header-row .dx-datagrid-text-content {
+        white-space: normal !important;
+        text-align: center !important;
+    }
+
+    /* Ensure column headers text aligns to center */
+    .dx-datagrid-headers .dx-datagrid-table .dx-row > td {
+        text-align: center !important;
+    }
+
+    .overlay-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        height: 80%;
+        background: #fff;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    #overlay-frame {
+        width: 100%;
+        height: 100%;
+    }
+
+    .Maincontainer.Maincontainer {
+        background-color: white;
+    }
+
+    .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        font-size: 30px;
+        cursor: pointer;
+    }
 
 
 
 
+    /* Toolbar Styling */
+    .custom-toolbar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .filter-btn {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-family: 'Inter', sans-serif;
+    }
+
+        .filter-btn:hover {
+            background-color: #0056b3;
+        }
+
+    /* Text Editor Styling */
+    .dx-texteditor {
+        background-color: #909ead00 !important; /* Light background */
+        border: 1px solid #d6e4f0 !important; /* Soft border */
+        border-radius: 4px !important; /* Smaller rounded corners */
+
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important; /* Reduced shadow */
+        font-size: 14px !important; /* Slightly smaller font */
+        transition: all 0.2s ease-in-out !important;
+        height: 39px !important; /* Fixed height */
+    }
+
+        /* Hover and Focus States */
+        .dx-texteditor:hover,
+        .dx-texteditor.dx-state-hover,
+        .dx-button:hover {
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important; /* Slightly reduced hover effect */
+            border-color: #86b7fe !important; /* Highlight border */
+        }
+
+        .dx-texteditor.dx-state-focused {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important; /* Softer focus effect */
+            border-color: #508ae1 !important;
+        }
+
+    #dataGrid .dx-header-row .dx-datagrid-text-content {
+        font-weight: bold;
+        color: black;
+    }
+
+
+    .dx-datagrid-header-panel {
+        background-color: #909ead00;
+        /* display:none; */
+    }
+
+    .no-border-input {
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        font-weight: bold;
+        font-size: 16px;
+        color: black;
+        pointer-events: none; /* Prevents hover and click effects */
+    }
+
+    .dx-button-mode-contained.dx-button-default {
+        color: black;
+    }
+
+    .dx-button-mode-contained.dx-button-success {
+        color: black;
+    }
 
     .container {
         display: none !important;
@@ -25,13 +164,11 @@
         display: none !important;
     }
 
-    .bodyContainer {
-        display: flex;
-        justify-content: center;
+    .imagecontainer {
+        border-bottom: 2px;
     }
 
     .mainContainer {
-        margin-top:0em;
         width: 100%;
     }
 
@@ -39,791 +176,368 @@
         display: none;
     }
 
-
-</style>
-<div id="LedgerDocuments" class="no-border-title cards-container-title"></div>
-
-
-
-
-<div class="mainContainer">
-    <div class="title">
-        <div class="header-container">
-            <div id="ledgerdocumentsTitle1" class="no-border-input"></div>
-        </div>
-    </div>
-        <!-- Card -->
-        <div style="padding:15px;" >
-            <div style="margin-bottom:10px;">
-
-                <!-- First Row -->
-                <div id="EnteraNewDocumentAddtotheExistingList1" class="no-border-input"></div>
-                <div class="row mb-3">
-                    <div class="col-12 col-md-4">
-                    @(Html.DevExtreme().TextBox()
-                            .Label(new JS("formatMessage('Document No')"))
-                            .LabelMode(EditorLabelMode.Outside)
-                            .ID("DocumentNo")
-                            .Value(null)
-                            .Width("100%")
-                            .Disabled(true)
-
-                            )
-                    </div>
-                    <div class="col-12 col-md-6">
-                    @(Html.DevExtreme().SelectBox()
-                            .Label(new JS("formatMessage('Type of the Document Attached')"))
-                            .DataSource(d => d.WebApi()
-                            .Controller("LedgerAccountMaster")
-                            .LoadAction("GetDocumentType")
-                            .LoadMode(DataSourceLoadMode.Raw)
-                            .Key("DocumentTypeId"))
-                            .ValidationRules(rules =>
-                            {
-                                rules.AddRequired().Message("Type of the Document Attached is required");
-                            })
-                            .LabelMode(EditorLabelMode.Outside)
-                            .ID("accountMasterSelectBox")
-                            .ShowClearButton(true)
-                            .Width("100%")
-                            .ValueExpr("DocumentTypeId")
-                            .DisplayExpr("DocumentType")
-                            .HoverStateEnabled(true)
-                            )
-                    </div>
-                    <div class="col-6 col-md-1 mt-4">
-                    @(Html.DevExtreme().Button()
-                            .ID("btnAddAHead")
-                            .Icon("plus")
-                            .Width("100%")
-                            @*       .OnClick("redirecttoledgersubgrou") *@
-                            )
-                    </div>
-                    <div class="col-6 col-md-1 mt-4">
-                    @(Html.DevExtreme().Button()
-                            .ID("btnEditAHead")
-                            .Icon("edit")
-                            .Width("100%")
-                            )
-                    </div>
-                </div>
-
-                <!-- Second Row -->
-                <div class="row mb-3">
-                    <div class="col-12 col-md-4">
-                    @(Html.DevExtreme().TextBox()
-                            .Label(new JS("formatMessage('Reference No')"))
-                            .LabelMode(EditorLabelMode.Outside)
-                            .ID("ReferenceNo")
-                            .Value(null)
-                            .ValidationRules(rules =>
-                            {
-                                rules.AddRequired().Message("Reference No is required");
-
-                            })
-                            .Width("100%")
-                            .Disabled(true)
-                            )
-                    </div>
-                    <div class="col-12 col-md-6">
-                    @(Html.DevExtreme().TextBox()
-                            .Label(new JS("formatMessage('Remarks/Notes')"))
-                            .LabelMode(EditorLabelMode.Outside)
-                            .ID("Remarks")
-                            .Value(null)
-                            .Width("100%"))
-                    </div>
-                    <div class="col-12 col-md-2 mt-4">
-                    @(Html.DevExtreme().Button()
-                            .ID("btnAttachment")
-                            .Icon("fa fa-paperclip")
-                            .Width("100%")
-                          // .OnClick("onAttachButtonClick")
-                          )
-                    </div>
-                    <input type="file" id="fileInput" style="display: none;" />
-                </div>
-                <!-- Third Row -->
-                <div class="row mb-3">
-                @* <div class="col-12 col-md-4">
-                        <label>Document Expiry Date:</label>
-                        @(Html.DevExtreme().DropDownBox()
-                                    .DataSource(d => d.WebApi()
-                                        .Controller("LedgerAccountMaster")
-                                        .LoadAction("GetAccountMaster")
-                                        .LoadMode(DataSourceLoadMode.Raw)
-                                        .Key("DocumentExpiry"))
-                                    .LabelMode(EditorLabelMode.Outside)
-                                    .ID("accountMasterDropDownBoxExpiry")
-                                    .ShowClearButton(true)
-                                    .Width("100%"))
-                    </div> *@
-                    <div class="col-12 col-md-4">
-                    @(Html.DevExtreme().DateBox()
-                            .Label(new JS("formatMessage('Document Expiry Date')"))
-                            .LabelMode(EditorLabelMode.Outside)
-                            .Type(DateBoxType.Date)
-                            .DisplayFormat("dd-MMM-yyyy")
-                            .Value("") //Specifies the type as a date picker
-                            .ID("accountMasterDropDownBoxExpiry")
-
-                            .ShowClearButton(true)
-                            .Value(DateTime.Now)
-                            .Width("100%"))
-                    </div>
-
-
-                    <div class="col-10 col-md-3">
-                    @(Html.DevExtreme().TextBox()
-                            .Label(new JS("formatMessage('Expiry Date (Hijri)')"))
-                            .LabelMode(EditorLabelMode.Outside)
-                            .ID("ExpiryDate")
-                            .Value(null)
-                            .Width("100%"))
-                    </div>
-                    <div class="col-10 col-md-3">
-                    @(Html.DevExtreme().DateBox()
-                            .Label(new JS("formatMessage('Notification Date')"))
-                            .LabelMode(EditorLabelMode.Outside)
-                            .Type(DateBoxType.Date)
-                            .DisplayFormat("dd-MMM-yyyy")
-                            .Value("") //Specifies the type as a date picker
-                            .ID("accountMasterDropDownBoxNotification")
-
-                            .ShowClearButton(true)
-                            .Value(DateTime.Now)
-                            .Width("100%"))
-                    </div>
-                    <div class="col-6 col-md-2">
-                    @(Html.DevExtreme().Button()
-                            .ID("btnVoucherEntry")
-                            .Text(new JS("formatMessage('ADD')"))
-                            .Height(50)
-                            .Width("100%")
-                            .Icon("plus")
-                            .OnClick("function() { addVoucherEntry(); }"))
-                    </div>
-                </div>
-
-                <!-- Third Row - Button -->
-            @*   <div class="row">
-
-                </div> *@
-            </div>
-        </div>
-        <div class="col-12">
-            <div class="dx-field ledgerResult">
-            @(
-                        Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl20116LedgerDocument>()
-                        .ID("dataGrid")
-                        .RemoteOperations(false)
-                        .Columns(columns =>
-                        {
-                            columns.AddFor(m => m.DocumentNo).Caption(new JS("formatMessage('DocumentNo')"))
-                        .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }")
-                        .HeaderCellTemplate(@<div style="font-weight: bold;">DocumentNo</div>);
-                            columns.AddFor(m => m.DocumentType).Caption(new JS("formatMessage('DocumentType')")).HeaderCellTemplate(@<div style="font-weight: bold;">DocumentType</div>);
-                            columns.AddFor(m => m.DocumentRefNo).Caption(new JS("formatMessage('Document Ref No')")).HeaderCellTemplate(@<div style="font-weight: bold;">Document Ref No</div>);
-                            columns.AddFor(m => m.DocumentRemarks).Caption(new JS("formatMessage('Document Remarks')")).HeaderCellTemplate(@<div style="font-weight: bold;">Document Remarks</div>);
-
-                            columns.AddFor(m => m.DocumentExpDate)
-                        .Caption(new JS("formatMessage('Expiry On')"))
-                        .Format("dd-MMM-yyyy").HeaderCellTemplate(@<div style="font-weight: bold;">Expiry On</div>); // Format date as DD-MM-YYYY
-
-                            columns.AddFor(m => m.DocumentExpDateAr)
-                        .Caption(new JS("formatMessage('Expiry Arabic')"))
-                        .Format("dd-MMM-yyyy").HeaderCellTemplate(@<div style="font-weight: bold;">Expiry Arabic</div>);  // Format date as DD-MM-YYYY
-
-                            columns.AddFor(m => m.NotifiedOn)
-                        .Caption(new JS("formatMessage('Notify On')"))
-                        .Format("dd-MMM-yyyy").HeaderCellTemplate(@<div style="font-weight: bold;">Notify On</div>);  // Format date as DD-MM-YYYY
-                        })
-                    .AllowColumnReordering(true)
-                    .AllowColumnResizing(true)
-                    .ColumnFixing(fixing => fixing.Enabled(true))
-                    .HeaderFilter(filter => filter.Visible(true))
-                    .Height(250)
-                    .ColumnAutoWidth(true)
-                    .FilterRow(filterRow => filterRow.Visible(false))
-                    .GroupPanel(groupPanel => groupPanel.Visible(false))
-                    .ShowBorders(true)
-                    .Width("100%")
-                    @*            .OnCellClick("onDocumentNoClick") // Add the click event *@
-                    )
-            </div>
-        </div>
-
-        <div class="dx-fieldset horizontal-container mt-2">
-        @(Html.DevExtreme().Button()
-                .ID("btnUpdate")
-                .Text(new JS("formatMessage('Update')"))
-                .Icon("save")
-                .OnClick("function() { UpdateVoucherEntry(); }")
-                )
-        @(Html.DevExtreme().Button()
-                .ID("btnAllAttachments")
-                .Text(new JS("formatMessage('Show All Documents')"))
-                .Icon("save")
-                )
-        @(Html.DevExtreme().Button()
-                .ID("btnBack")
-                .Text("Back")
-                .Icon("arrowleft")
-                )
-        </div>
-    @using (Html.DevExtreme().NamedTemplate("DocumentAttachedContentTemplate"))
-    {
-        @(Html.DevExtreme().DataGrid()
-
-                .ID("accountpaymentamount-datagrid")
-                .DataSource(d => d.WebApi()
-                .Controller("LedgerAccountMaster")
-                .LoadAction("GetDocumentType")
-                .LoadMode(DataSourceLoadMode.Raw)
-                .Key("DocumentTypeId")
-                )
-                .WordWrapEnabled(true)
-                .ShowBorders(true)
-                .SearchPanel(sp => sp.HighlightSearchText(true))
-                .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                .OnSelectionChanged("dataGridSelectionChanged")
-                .OnInitialized("dataGridInitialized")
-                .HeaderFilter(p => p.Visible(true))
-                .ShowBorders(true)
-                .HoverStateEnabled(true)
-                .Paging(p => p.PageSize(15))
-                .FilterRow(f => f.Visible(true))
-                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                .Height(345)
-                .Selection(s => s.Mode(SelectionMode.Single))
-                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                .Columns(columns =>
-                {
-                    columns.Add().DataField("DocumentTypeId");
-                    columns.Add().DataField("DocumentType");
-
-                })
-                )
-
+    .form-wrapper {
+        display: flex;
+        gap: 30px;
+        flex-wrap: wrap;
+        margin-bottom: 40px;
     }
 
+    .left-column {
+        flex: 2;
+        min-width: 320px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .right-column {
+        flex: 1;
+        min-width: 250px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 20px;
+        text-align: center;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+        .form-row > div {
+            flex: 1;
+            min-width: 140px;
+        }
+
+    .doc-type-row {
+        display: flex;
+        align-items: flex-end;
+        gap: 10px;
+        flex-wrap: nowrap;
+    }
+
+    .bottom-buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+    }
+
+    .right-buttons {
+        display: flex;
+        gap: 15px;
+    }
+
+    .notification-text {
+        font-size: 14px;
+        text-align: right;
+        margin-top: 5px;
+    }
+
+    .grid-section {
+        margin-top: 30px;
+    }
+</style>
+<div class="title">
+    <div class="header-container">
+        <div id="InventoryDocuments" class="no-border-input"></div>
+    </div>
+</div>
+<div style="padding:20px;">
+
+    <div class="form-wrapper">
+        <!-- Left Column -->
+        <div class="left-column">
+            <div class="form-row">
+                <div>
+                    @(Html.DevExtreme().TextBox()
+                        .ID("DocumentNo")
+                        .Label("Document No:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%")
+                        .ReadOnly(true))
+                </div>
+
+                <div class="doc-type-row" style="flex: 2;">
+                    @(Html.DevExtreme().SelectBox()
+                        .ID("DocType")
+                        .Label("Type of the Document Attached:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%")
+                        .DataSource(d => d.Mvc().Controller("StockInventory").LoadAction("GetDocumentTypes"))
+                        .DisplayExpr("text")
+                        .ValueExpr("id")
+                        .ValidationRules(rules =>
+                        {
+                            rules.AddRequired().Message("Document Type is required.");
+                        }))
+                    @(Html.DevExtreme().Button()
+                        .ID("btnAdd")
+                        .Icon("plus")
+                        .Type(ButtonType.Success)
+                        .Width(65)
+                        .ElementAttr("style", "color:black;")
+                        .OnClick("onAddDocType"))
+                </div>
+
+            </div>
+
+            <div class="form-row">
+                <div>
+                    @(Html.DevExtreme().TextBox()
+                        .ID("ReferenceNo")
+                        .Label("Reference No:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%"))
+                </div>
+
+                <div>
+                    @(Html.DevExtreme().TextBox()
+                        .ID("Remarks")
+                        .Label("Remarks / Notes:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%"))
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div>
+                    @(Html.DevExtreme().DateBox()
+                        .ID("DocumentExpiryDate")
+                        .Label("Document Expiry Date:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%"))
+                </div>
+
+                <div>
+                    @(Html.DevExtreme().DateBox()
+                        .ID("HijriExpiryDate")
+                        .Label("Expiry Date (Hijri):")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .DisplayFormat("dd-MMM-yyyy")
+                        .Width("100%"))
+                </div>
+
+                <div>
+                    @(Html.DevExtreme().DateBox()
+                        .ID("NotificationDate")
+                        .Label("Notification Date:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .DisplayFormat("dd-MMM-yyyy")
+                        .Value(DateTime.Now.AddDays(7))
+                        .Width("100%"))
+                </div>
+            </div>
+
+            <div class="notification-text">
+                * A Notification will be issued to corresponding user at this date.
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="right-column">
+            <div>
+                @(Html.DevExtreme().FileUploader()
+                    .ID("fileUploader")
+                    .SelectButtonText("Attach a Document")
+                    .LabelText("")
+                    .Accept("*/*")
+                    .UploadMode(FileUploadMode.UseForm)
+                    .OnValueChanged("onFileSelected")
+                    )
+
+            </div>
+
+            <div>
+                @(Html.DevExtreme().Button()
+                    .Text("Add")
+                    .Icon("fas fa-plus")
+                    .Type(ButtonType.Success)
+                    .Width("100%")
+                    .OnClick("onSaveDocument"))
+            </div>
+        </div>
+    </div>
+
+    <!-- Grid Section -->
+    <div class="grid-section">
+        @(Html.DevExtreme().DataGrid()
+            .ID("documentsGrid")
+            .Height(600)
+            .ShowBorders(true)
+            .ColumnAutoWidth(true)
+            .DataSource(d => d.Mvc().Controller("LedgerDocumentsF").LoadAction("GetDocuments"))
+            .Columns(columns =>
+            {
+                columns.Add().DataField("DocumentNo").Caption("Doc No").AllowEditing(false);
+                columns.Add().DataField("DocumentType").Caption("Document Type");
+                columns.Add().DataField("DocumentRefNo").Caption("Reference No");
+                columns.Add().DataField("DocumentRemarks").Caption("Remarks");
+                columns.Add().DataField("DocumentExpDate").Caption("Expiry On");
+                columns.Add().DataField("DocumentExpDateAr").Caption("Expiry (Hijri)");
+                columns.Add().DataField("DocumentNotificationDate").Caption("Notify On");
+                columns.Add().DataField("DocumentStatus").Caption("Status");
+                columns.Add().DataField("DocumentStatusRemarks").Caption("Status Remarks");
+            })
+            .Paging(p => p.Enabled(false))
+            .ShowRowLines(true)
+            .Editing(e =>
+            {
+                e.Mode(GridEditMode.Row);
+                e.AllowUpdating(true);
+                e.AllowAdding(false);
+                e.AllowDeleting(false);
+            })
+            .OnRowUpdating("onGridRowUpdating"))
+    </div>
+
+    <!-- Bottom Buttons -->
+    <div class="bottom-buttons">
+        <div class="right-buttons">
+            @(Html.DevExtreme().Button()
+                .Text("Show All Documents")
+                .Type(ButtonType.Normal)
+                .Icon("fas fa-folder-open")
+                .Width(350)
+                .OnClick("showAllDocuments"))
+
+            @(Html.DevExtreme().Button()
+                .Text("Back")
+                .Icon("fas fa-arrow-left")
+                .Type(ButtonType.Normal)
+                .Width(120)
+                .OnClick("Goback"))
+        </div>
+    </div>
+    <!-- Popup to show all documents -->
+    <div id="popupDocumentList"></div>
 
 </div>
 
-
-
-<!-- Add more cards here following the same structure -->
-<!-- DataGrid -->
 <script>
-
-        $(function () {
-        $("#EnteraNewDocumentAddtotheExistingList1").text(
-            formatMessage("Enter a New Document & Add to the Existing List:")
-        );
+    $(function () {
+        loadInitialDocumentNo();
     });
 
-
-        var mARkey = null;
-        let mARresponse = null;
-
-
-           $(document).ready(function () {
-        // Retrieve VoucherNo from query parameters
-        const urlParams = new URLSearchParams(window.location.search);
-        const voucherNo = urlParams.get('VoucherNo');
-       // alert(voucherNo);
-
-        if (voucherNo) {
-            // Wait for DevExtreme TextBox to initialize
-            const interval = setInterval(() => {
-                const voucherRefernceNoInstance = $("#ReferenceNo").dxTextBox("instance");
-
-                if (voucherRefernceNoInstance) {
-                    // Set the value and stop the interval
-                    voucherRefernceNoInstance.option("value", voucherNo);
-
-                    clearInterval(interval);
-                }
-            }, 100); // Retry every 100ms
-        }
-    });
-
-
-        $(function () {
-            $.ajax({
-                url: "/api/LedgerAccountMaster/GetDocumentNo",
-                type: 'GET',
-                success: function (data) {
-                    // Set the value in the VoucherNo TextBox
-                    $("#DocumentNo").dxTextBox("instance").option("value", data);
-
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error loading Voucher No:", error);
-                }
-            });
+    function loadInitialDocumentNo() {
+        $.get("/api/LedgerDocumentsF/GetNewDocumentNo", function (data) {
+            $("#DocumentNo").dxTextBox("instance").option("value", data);
         });
-
-      function addVoucherEntry() {
-        // Get the validator instance for the dropdown
-        var accountMasterDropDownBoxValidator = $("#accountMasterDropDownBox").dxValidator("instance");
-        var accountMasterDropDownBoxValidation = accountMasterDropDownBoxValidator.validate();
-
-        // Validate input fields
-        if (accountMasterDropDownBoxValidation.isValid) {
-            // Prepare the VM (View Model) for the API call
-            var VM = {
-                "DocumentNo": $("#DocumentNo").dxTextBox("instance").option("value"),
-                "DocumentType": $("#accountMasterDropDownBox").dxDropDownBox("instance").option("value"),
-                "DocumentRefNo": $("#ReferenceNo").dxTextBox("instance").option("value"),
-                "DocumentRemarks": $("#Remarks").dxTextBox("instance").option("value"),
-                "DocumentExpDate": $("#accountMasterDropDownBoxExpiry").dxDateBox("instance").option("value"),
-                "DocumentExpDateAr": $("#ExpiryDate").dxTextBox("instance").option("value"),
-                "NotifiedOn": $("#accountMasterDropDownBoxNotification").dxDateBox("instance").option("value")
-            };
-
-            // Get selected row data from the data grid
-            var selectedRowData = $("#accountpaymentamount-datagrid").dxDataGrid("instance").getSelectedRowsData();
-
-            // Check if selectedRowData is valid and has at least one row
-            if (!selectedRowData || selectedRowData.length === 0) {
-                DevExpress.ui.notify("Please select a row in the grid!", "error", 2000);
-                return;
-            }
-
-            // Extract DocumentType from the selected row
-            var documentType = selectedRowData[0].DocumentType;
-
-            // Make the AJAX POST request
-            $.ajax({
-                type: "POST",
-                url: `/api/LedgerAccountMaster/AddDocumentsEntry?DocumentType=${encodeURIComponent(documentType)}`,
-                contentType: "application/json",
-                data: JSON.stringify(VM),
-                dataType: "json",
-                success: function (response) {
-                    // Update the grid data source with the new response
-                    $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
-
-                    // Notify the user of successful operation
-                    DevExpress.ui.notify("Document details added successfully!", "success", 2000);
-
-                    // Reset form fields
-                    resetFormFields();
-
-                    // Refresh the DocumentNo field
-                    fetchNewDocumentNo();
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error occurred while updating data:", error);
-                    DevExpress.ui.notify("Error occurred while updating data: " + error, "error", 2000);
-                }
-            });
-        } else {
-            DevExpress.ui.notify("Please fill the required details!", "error", 2000);
+    }
+        function onFileSelected(e) {
+        const file = e.value[0]; // DevExtreme passes file(s) in e.value
+        if (file) {
+            DevExpress.ui.notify("File selected: " + file.name, "info", 2000);
         }
     }
-
-
-            // Function to reset form fields
-    function resetFormFields() {
-        $("#accountMasterDropDownBox").dxDropDownBox("instance").option("value", "-");
-        $("#Remarks").dxTextBox("instance").option("value", "");
-        $("#accountMasterDropDownBoxExpiry").dxDateBox("instance").option("value", null);
-        $("#accountMasterDropDownBoxNotification").dxDateBox("instance").option("value", null);
+         function onAddDocType(){
+        const url = `/${tenantName}/IMS/DocumentTypes`;
+        const title = "";
+            openModal(url, title);
     }
 
-    // Function to fetch the new DocumentNo
-    function fetchNewDocumentNo() {
+
+
+           function onSaveDocument() {
+        const files = $("#fileUploader").dxFileUploader("instance").option("value");
+
+        if (!files || files.length === 0) {
+            DevExpress.ui.notify("Please select a document to attach.", "warning", 2000);
+            return;
+        }
+
+        const file = files[0];
+
+        const formData = new FormData();
+        formData.append("File", file);
+        formData.append("DocumentNo", $("#DocumentNo").dxTextBox("instance").option("value"));
+        formData.append("DocumentType", $("#DocType").dxSelectBox("instance").option("value"));
+        formData.append("DocumentRefNo", $("#ReferenceNo").dxTextBox("instance").option("value"));
+        formData.append("DocumentRemarks", $("#Remarks").dxTextBox("instance").option("value"));
+        formData.append("DocumentExpDate", $("#DocumentExpiryDate").dxDateBox("instance").option("value"));
+        formData.append("HijriExpDate", $("#HijriExpiryDate").dxDateBox("instance").option("value"));
+        formData.append("NotificationDate", $("#NotificationDate").dxDateBox("instance").option("value"));
+
         $.ajax({
-            url: "/api/LedgerAccountMaster/GetDocumentNo",
-            type: "GET",
-            success: function (data) {
-                // Set the value in the DocumentNo TextBox
-                $("#DocumentNo").dxTextBox("instance").option("value", data);
+            url: "/api/LedgerDocumentsF/AddDocumentsEntry",
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function () {
+                DevExpress.ui.notify("Document uploaded successfully", "success", 2000);
+                $("#documentsGrid").dxDataGrid("instance").refresh();
+                loadInitialDocumentNo();
             },
-            error: function (xhr, status, error) {
-                console.error("Error loading DocumentNo:", error);
-                DevExpress.ui.notify("Error loading DocumentNo!", "error", 2000);
+            error: function () {
+                DevExpress.ui.notify("Upload failed", "error", 2000);
             }
         });
     }
 
 
-    function UpdateVoucherEntry() {
-        // Get validator instances
-        var accountMasterDropDownBoxValidator = $("#accountMasterDropDownBox").dxValidator("instance");
-        var accountMasterDropDownBoxValidation = accountMasterDropDownBoxValidator.validate();
 
-        // Perform validation
-        if (accountMasterDropDownBoxValidation.isValid) {
-            // Create the Voucher object
-            var VU = {
-                "DocumentNo": $("#DocumentNo").dxTextBox("instance").option("value") || null,
-               // "DocumentType": $("#accountMasterDropDownBox").dxDropDownBox("instance").option("value") || null,
-                "DocumentRefNo": $("#ReferenceNo").dxTextBox("instance").option("value") || null,
-                "DocumentRemarks": $("#Remarks").dxTextBox("instance").option("value") || null,
-                "DocumentExpDate": $("#accountMasterDropDownBoxExpiry").dxDateBox("instance").option("value") || null,
-                "DocumentExpDateAr": $("#ExpiryDate").dxTextBox("instance").option("value") || null,
-                "NotifiedOn": $("#accountMasterDropDownBoxNotification").dxDateBox("instance").option("value") || null
-            };
-
-            console.log("Voucher Object:", VU);
-
-            // Perform AJAX call to update the document
-            $.ajax({
-                type: "POST",
-                url: "/api/LedgerAccountMaster/UpdateDocument",
-                contentType: "application/json",
-                data: JSON.stringify(VU),
-                dataType: "json",
-                success: function (response) {
-                    // Update the data grid with the response data
-                    $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
-
-                    DevExpress.ui.notify("Document details updated successfully!", "success", 2000);
-                },
-                error: function (xhr, status, error) {
-                    // Improved error message
-                    alert("Error occurred while updating data: " + xhr.responseText || error);
-                }
-            });
-        } else {
-            // Notify user about validation failure
-            DevExpress.ui.notify("Please fill the required details!", "error", 2000);
-        }
+    function onGridRowUpdating(e) {
+        // Add update logic if needed
     }
 
-
-        $("#btnBack").on("click", function (e) {
-            e.preventDefault();
-            alert("Are you sure want to exit?");
-            window.location.href = "http://localhost:5000/";
-            // debugger;
-        });
-
-
-            function addCostAllocation() {
-                $("#costAllocationPopup").dxPopup("instance").show();
-            }
-            function saveCostAllocation() {
-                $("#costAllocationPopup").dxPopup("instance").close();
-            }
-            function dropDownBoxOnInput(e) {
-                const ddbInstance = e.component;
-                if (!ddbInstance.option("opened")) ddbInstance.open();
-
-
-                const text = ddbInstance.option("text");
-                if (dataGrid) {
-                    dataGrid.option("searchPanel.text", text);
-                }
-            }
-
-            function onOpened(e) {
-                setTimeout(() => {
-                    e.component.focus();
-                });
-            }
-
-            function onKeyDown(e) {
-                const ddbInstance = e.component;
-                if (e.event.keyCode !== 40) return;
-                if (!ddbInstance.option("opened")) {
-                    ddbInstance.open();
-                } else {
-                    let focusedIndex = dataGrid.option("focusedRowIndex");
-                    let visibleRows = dataGrid.getVisibleRows().length - 1;
-                    if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
-                    dataGrid.focus(dataGrid.getRowElement(focusedIndex));
-                }
-            }
-
-            //debugger;
-
-            function dataGridSelectionChanged(e) {
-                const selectedKey = e.selectedRowKeys[0];
-                const ddbInstance = $("#accountMasterDropDownBox").dxDropDownBox("instance");
-
-                if (selectedKey) {
-                    ddbInstance.option("value", selectedKey);
-                    if (ddbInstance.option("opened")) {
-                        ddbInstance.close();
-                    }
-                }
-
-            }
-            // function dataGridAccountHeadSelectionChanged(e) {
-            //     const selectedKey = e.selectedRowKeys[0];
-            //     const ddbInstance = $("#AccountHeadDropDown").dxDropDownBox("instance");
-
-            //     if (selectedKey) {
-            //         ddbInstance.option("value", selectedKey);
-            //         if (ddbInstance.option("opened")) {
-            //             ddbInstance.close();
-            //         }
-            //     }
-
-            // }
-            function dataGridInitialized(e) {
-                dataGrid = e.component;
-            }
-
-
-
-
-        function dataGridAccountMasterSelectionChanged(e) {
-                const selectedKey = e.selectedRowKeys[0];
-            const ddbInstance = $("#accountMasterDropDownBox").dxDropDownBox("instance");
-
-                if (selectedKey) {
-                    ddbInstance.option("value", selectedKey);
-                    if (ddbInstance.option("opened")) {
-                        ddbInstance.close();
-                    }
-                }
-
-            var selectedValue = selectedKey;
-
-            $.ajax({
-
-                type: "GET",
-                url: `/api/LedgerAccountMaster/GetAccountMasterAR?MasterGroup=${encodeURIComponent(selectedValue)}`, // Pass value as a query parameter
-                contentType: "application/json",
-                dataType: "json",
-                success: function (response) {
-                    if (response) {
-
-                        mARresponse = response;
-
-
-                        // Update the second dropdown's DataGrid instance with the data
-                       // $("#accountDropDownBoxArabic").dxDataGrid("instance").option("dataSource", [response]); // Ensure response is array
-                        //const responseKey = response[0]?.key || response.key; // Adjust based on response structure
-                        dataGridAccountMasterSelectionChangedAr({ selectedRowKeys: [mARresponse] });
-
-                    } else {
-                        alert("No data found for the selected value.");
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error occurred while fetching data:", error);
-                    alert("Error occurred while updating data: " + error);
-                },
-            });
-
-
-
-            }
-
-
-
-            function dataGridAccountMasterInitialized(e) {
-                dataGrid = e.component;
-            }
-
-
-        function dataGridAccountMasterSelectionChangedAr(e) {
-            const selectedKey = e.selectedRowKeys[0];
-            const ddbInstance = $("#accountDropDownBoxArabic").dxDropDownBox("instance");
-
-            if (selectedKey) {
-               ddbInstance.option("value", selectedKey);
-                if (ddbInstance.option("opened")) {
-                    ddbInstance.close();
-                }
-            }
-
-
-        }
-
-
-
-        function dataGridAccountMasterInitializedAr(e) {
-            dataGrid = e.component;
-        }
-
-        function onCheckboxInit(e) {
-            $(e.element).attr("data-id", e.component.option("id"));
-        }
-
-        function syncCard4(e) {
-            // Get the instance of the source checkbox (Card 3)
-            const sourceCheckbox1 = $("#ChooseifthisgrouptobeunderSales").dxCheckBox("instance");
-            const sourceCheckbox2 = $("#ChooseifthisgrouptobeunderPurchases").dxCheckBox("instance");
-            const sourceCheckbox3 = $("#ChooseifthisgrouptobeunderSalaryPayable").dxCheckBox("instance");
-            const sourceCheckbox4 = $("#ChooseifthisgroupwanttobeReconcilied").dxCheckBox("instance");
-
-            // Get the instance of the target checkbox (Card 4)
-            const targetCheckbox1 = $("#ChooseifthisgrouptobeunderSales1").dxCheckBox("instance");
-            const targetCheckbox2 = $("#ChooseifthisgrouptobeunderPurchases1").dxCheckBox("instance");
-            const targetCheckbox3 = $("#ChooseifthisgrouptobeunderSalaryPayable1").dxCheckBox("instance");
-            const targetCheckbox4 = $("#ChooseifthisgroupwanttobeReconcilied1").dxCheckBox("instance");
-
-
-            // Assign the value of the source checkbox to the target checkbox
-            targetCheckbox1.option("value", sourceCheckbox1.option("value"));
-            targetCheckbox2.option("value", sourceCheckbox2.option("value"));
-            targetCheckbox3.option("value", sourceCheckbox3.option("value"));
-            targetCheckbox4.option("value", sourceCheckbox4.option("value"));
-
-        }
-
-       // Handle the button click to trigger the file input
-        // function onAttachClicked(e) {
-
-        //     document.getElementById("fileInput").click();
-        //   //  var docno = $("#DocumentNo").dxTextBox("instance").option("value");
-        //      // // Handle file selection and upload the file
-        // document.getElementById("fileInput").addEventListener("change", function (event) {
-        //     const files = event.target.files; // Get the selected files
-
-        //     if (files.length > 0) {
-        //         const selectedFile = files[0]; // Get the first selected file
-
-        //         // Display the file name (optional)
-        //        // alert(`File selected: ${selectedFile.name}`);
-
-        //         // Create a FormData object to prepare the file for upload
-        //         const formData = new FormData();
-        //         formData.append("file", selectedFile);
-
-        //         // Use AJAX to upload the file to the server
-        //         $.ajax({
-        //             url: "/api/LedgerAccountMaster/UploadFile", // Change to your API endpoint
-        //             type: "POST",
-        //             data: formData,
-        //             processData: false, // Important for FormData
-        //             contentType: false, // Important for FormData
-        //             success: function (response) {
-        //                 // Handle successful response
-        //                 DevExpress.ui.notify("File uploaded successfully!", "success", 2000);
-        //             },
-        //             error: function (xhr, status, error) {
-        //                 // Handle error
-        //                 alert(`Error uploading file: ${xhr.responseText || error}`);
-        //             }
-        //         });
-        //     }
-        // });
-        // }
-
-    function onDocumentNoClick(e) {
-            if (e.column && e.column.dataField === "DocumentNo") {
-                // Get the DocumentNo value
-                var documentNo = e.data.DocumentNo;
-
-                // Send the DocumentNo to the server
-                $.ajax({
-                    type: "POST",
-                    url: "/api/LedgerAccountMaster/OpenFileExplorer", // Adjust the URL to match your controller/action
-                    data: { documentNo: documentNo },
-                    success: function (response) {
-                        if (response.success) {
-                            alert("File explorer opened successfully.");
-                        } else {
-                            alert("Failed to open file explorer: " + response.message);
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        alert("An error occurred: " + error);
-                    }
-                });
-            }
-        }
-
-
-
-           function redirecttoledgersubgroup(){
-             const masterFormWindow = window.open(
-            `/${tenantName}/Finance/LedgerSubGroupMaster`,
-                'popupWindow',
-                'width=800,height=600,scrollbars=yes,resizable=yes'
-            );
-
-              const interval = setInterval(() => {
-                if (masterFormWindow.closed) {
-                    clearInterval(interval);
-                   // refreshLedgerSubGroupSelectBox();
-                }
-            }, 500);
-        }
-
-            //Attachment functionality
-            function onAttachButtonClick() {
-                const dialog = DevExpress.ui.dialog.custom({
-                    title: "Attach File",
-                    messageHtml: "<p>Click below to attach a file.</p>",
-                    buttons: [
-                        { text: "Select File", onClick: () => handleFileSelection() }
-                    ]
-                });
-
-                let dialogContainer = dialog.show(); // Show the dialog
-
-                setTimeout(() => {
-                    // Add a close button to the popup
-                    let titleElement = document.querySelector(".dx-dialog .dx-popup-title");
-                    if (titleElement) {
-                        let closeButton = document.createElement("span");
-                        closeButton.innerHTML = "&times;";
-                        closeButton.classList.add("dx-dialog-custom-close");
-
-                        titleElement.style.position = "relative"; // Ensure positioning works
-                        titleElement.appendChild(closeButton);
-
-                        // Close the dialog when clicking the close button
-                        closeButton.addEventListener("click", () => {
-                            let dialogElement = document.querySelector(".dx-dialog");
-                            if (dialogElement) {
-                                dialogElement.remove(); // Remove the dialog
-                            }
-                        });
-                    }
-
-                    // Disable Dragging
-                    let dialogPopup = document.querySelector(".dx-dialog");
-                    if (dialogPopup) {
-                        dialogPopup.classList.remove("dx-draggable");
-                    }
-                }, 0);
-            }
-
-            function handleFileSelection() {
-                const fileInput = document.getElementById("fileInput");
-
-                if (!fileInput) {
-                    console.error("Error: fileInput element not found!");
-                    return;
-                }
-
-                fileInput.multiple = false; // Force single file selection
-                fileInput.click(); // Open file picker
-            }
-
-            // Handle file selection
-            document.addEventListener("DOMContentLoaded", function () {
-                const fileInput = document.getElementById("fileInput");
-
-                if (fileInput) {
-                    fileInput.addEventListener("change", function () {
-                        const files = this.files;
-                        console.log("Selected file:", files[0]); // Log the selected file
-                    });
-                } else {
-                    console.error("Error: fileInput element not found on page load!");
-                }
-            });
-
-            $(function () {
-
-                                            $("#ledgerdocumentsTitle1").dxTextBox({
-                                                        text:formatMessage("Ledger Documents"),
-                                                            readOnly: true,
-                                                        onContentReady: function(e) {
+    function Goback() {
+        window.history.back();
+    }
+     $(function () {
+        $("#InventoryDocuments").dxTextBox({
+            text: formatMessage("Inventory Documents"),
+                readOnly: true,
+                onContentReady: function (e) {
                     $(e.element).addClass("dx-textbox-heading");
-            }
+                }
+            });
+        });
+            function showAllDocuments() {
+        $("#popupDocumentList").dxPopup({
+            title: "All Uploaded Documents",
+            visible: true,
+            width: "80%",
+            height: "80%",
+            showCloseButton: true,
+            contentTemplate: function (contentElement) {
+                contentElement.append(
+                    $("<div>").attr("id", "documentGrid")
+                );
 
-                                        });
-                                        });
+                $("#documentGrid").dxDataGrid({
+                    dataSource: DevExpress.data.AspNet.createStore({
+                        key: "DocumentNo",
+                        loadUrl: "/api/LedgerDocumentsF/GetAllDocuments"
+                    }),
+                    columns: [
+                        { dataField: "DocumentNo", caption: "Document No" },
+                        { dataField: "DocumentType", caption: "Document Type" },
+                        { dataField: "DocumentRefNo", caption: "Reference No" },
+                        { dataField: "DocumentRemarks", caption: "Remarks" },
+                        {
+                            caption: "Download",
+                            cellTemplate: function (container, options) {
+                                $("<a>")
+                                    .text("Download")
+                                    .attr("href", options.data.FileUrl) // Your DB field with blob URL
+                                    .attr("target", "_blank")
+                                    .addClass("dx-link")
+                                    .appendTo(container);
+                            }
+                        }
+                    ],
+                    showBorders: true,
+                    columnAutoWidth: true
+                });
+            }
+        });
+    }
+       $(function () {
+            const refNo = '@(ViewData["RefNo"] ?? "")';
+            $("#ReferenceNo").dxTextBox("instance").option("value", refNo);
+        });
 </script>

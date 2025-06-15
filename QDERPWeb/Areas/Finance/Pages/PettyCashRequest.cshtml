@@ -31,6 +31,12 @@
     .displayFlex {
         display: flex;
     }
+    .mainContainer {
+    margin-top: 5em;
+    width: 96%;
+    overflow-x: hidden;
+    }
+
 </style>
 
 <div class="title">
@@ -484,7 +490,7 @@
                         .Icon("money")
                         .ElementAttr(new { @class = "bold-button" })
                         .OnClick("addRow")
-                        .Height(300)
+                        .Height(160)
                         .Width(170)
                         )
                 </div>
@@ -493,7 +499,7 @@
         </div>
 
     </div>
-
+    <input id="formId" value="ExpenseClaimEdit" type="hidden" />
     <div>
         @await Html.PartialAsync("_ExpenseFooter")
     </div>
@@ -905,7 +911,7 @@
                 dataGrid.selectRows(e.value, false);
             }
             if (e.value) {
-                debugger;
+                
                 let grid = $("#dataGrid").dxDataGrid("instance");
                 let rowIndex = e.element.closest("tr").index(); // Get the edited row index
                 let rowData = grid.getVisibleRows()[rowIndex].data;
@@ -1036,6 +1042,7 @@
             var VM = {
                 ClaimRefNo: $("#VoucherNo").dxTextBox("instance").option("value"),
                 ClaimDate: $("#claimerdate").dxDateBox("instance").option("value"),
+                ClaimEffectiveDate: $("#claimerEffectiveDate").dxDateBox("instance").option("value") || new Date(),
                 ProjectClaimedFor: paymentaccheadId,
                 ClaimRemarks: $("#txtEntryNarration").dxTextArea("instance").option("value"),
                 ExpenseDetails: gridData // 🔁 Add the grid rows here

@@ -6,7 +6,12 @@
 @using QD.ERP.Web.Pages.Shared.IMS
 @{
 }
-
+@{
+    var enteredBy = HttpContext.Session.GetString("UserName");
+    var enteredOn = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
+    var modifiedBy = HttpContext.Session.GetString("UserName");
+    var modifiedOn = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
+}
 <style>
     .form-tablee {
         width: 100%;
@@ -136,6 +141,32 @@
         pointer-events: none; /* Prevents hover and click effects */
     }
 
+    .dx-dropdownlist-popup-wrapper .dx-list .dx-list-item {
+        color: #000 !important;
+        background-color: #fff !important;
+    }
+
+    .context-menu {
+        display: none;
+        position: absolute;
+        background-color: white;
+        border: 1px solid #ccc;
+        box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+        z-index: 1000;
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        min-width: 120px;
+    }
+
+        .context-menu li {
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+            .context-menu li:hover {
+                background-color: #eee;
+            }
 
    
 </style>
@@ -161,15 +192,26 @@
                             .ID("StockNoItemCode")
                             .Label(new JS("formatMessage('Stock No / Item Code')"))
                             .LabelMode(EditorLabelMode.Outside)
+                            .ReadOnly(true)
+                            .OnValueChanged("onGscodeChanged")
                             .Width("90%"))
                     </td>
                     <td>
                         <div style="display:flex;align-items:end;">
-                        @(Html.DevExtreme().SelectBox()
-                            .ID("StockGroup")
-                            .Label(new JS("formatMessage('Stock Group')"))
-                            .LabelMode(EditorLabelMode.Outside)
-                            .Width("90%"))
+                            @(Html.DevExtreme().SelectBox()
+                                .ID("StockGroup")
+                                .DisplayExpr("GsgroupName")
+                                .ValueExpr("GsgroupId")
+
+                                .DataSource(d => d.WebApi()
+                                .Controller("StockInventory")
+                                .LoadAction("GetStockGroups")
+                                )
+                                .Label(new JS("formatMessage('Stock Group')"))
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Width("90%")
+                                .OnValueChanged("onStockGroupChange")
+                                )
                         @(Html.DevExtreme().Button()
                             .ID("btnAddStockGroup")
                             .Icon("plus")
@@ -190,11 +232,19 @@
                 <tr>
                     <td>
                         <div style="display:flex;align-items:end;" ;>
-                        @(Html.DevExtreme().SelectBox()
-                            .ID("ItemStore")
-                            .Label(new JS("formatMessage('Item Store')"))
-                            .LabelMode(EditorLabelMode.Outside)
-                            .Width("90%"))
+                            @(Html.DevExtreme().SelectBox()
+                                .ID("ItemStore")
+                                .DisplayExpr("StoreName")
+                                .ValueExpr("StoreId")
+                                .DataSource(d => d.WebApi()
+                                .Controller("StockInventory")
+                                .LoadAction("GetStores")
+                                )
+                                .Label(new JS("formatMessage('Item Store')"))
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Width("90%")
+                                )
+
                         @(Html.DevExtreme().Button()
                             .ID("btnAddStore")
                             .Icon("plus")
@@ -206,11 +256,19 @@
                     </td>
                     <td>
                         <div style="display:flex;align-items:end;">
-                        @(Html.DevExtreme().SelectBox()
-                            .ID("ItemClassification")
-                            .Label(new JS("formatMessage('Item Classification')"))
-                            .LabelMode(EditorLabelMode.Outside)
-                            .Width("90%"))
+                            @(Html.DevExtreme().SelectBox()
+                                .ID("ItemClassification")
+                                .DisplayExpr("StockClassification")
+                                .ValueExpr("StockClassId")
+                                .DataSource(d => d.WebApi()
+                                .Controller("StockInventory")
+                                .LoadAction("GetItemClassifications")
+                                )
+                                .Label(new JS("formatMessage('Item Classification')"))
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Width("90%")
+                                )
+
                         @(Html.DevExtreme().Button()
                             .ID("btnAddClassification")
                             .Icon("plus")
@@ -220,13 +278,20 @@
                                 )
                         </div>
                     </td>
-                    <td colspan="2">
+                    <th style="display:flex; align-items:end;">
+                        @(Html.DevExtreme().Button()
+                            .ID("convertToArabic2")
+                            .Width(50)
+                            .Icon("fas fa-language")
+                            .ElementAttr("style", "padding:10px; color:black;margin-right:10px;")
+                            .OnClick("convertToArabic1")
+                            )
+                  
                         @(Html.DevExtreme().TextBox()
                             .ID("ItemNameArabic")
                             .Label(new JS("formatMessage('Item Name / Description (In Arabic)')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .Width("100%"))
-                    </td>
                 </tr>
             </table>
 
@@ -296,10 +361,10 @@
                 .Icon("money") // "Purchases"
                 .Text(new JS("formatMessage('Purchases')"));
 
-                // tab-content-12
+              @*   // tab-content-12
                 items.Add()
                 .Icon("bookmark") // "Matl.Requests"
-                .Text(new JS("formatMessage('Matl. Requests')"));
+                .Text(new JS("formatMessage('Matl. Requests')")); *@
             })
                 .SelectedIndex(0) // Default selected tab is the first one
                 .OnSelectionChanged("onTabSelectionChanged") // Event handler for tab selection changes
@@ -313,17 +378,848 @@
 
 
             <div id="tab1-content">
-                @* @await Html.PartialAsync("StockDetails_StockControl") *@
-             
-                @* @await Html.PartialAsync("~/Pages/Shared/IMS/MusFooter1.cshtml") *@
-                @await Html.PartialAsync("~/Pages/Shared/IMS/ItemAttributes.cshtml")
+
+
+                <style>
+                    .form-table {
+                        width: 100%;
+                        margin: 30px;
+                        border-spacing: 10px;
+                        font-family: Segoe UI, sans-serif;
+                    }
+
+                        .form-table th {
+                            text-align: left;
+                            font-weight: bold;
+                            padding-top: 10px;
+                        }
+
+                        .form-table td {
+                            width: 100%;
+                            vertical-align: top;
+                        }
+
+                    .highlight-red {
+                        color: red;
+                        font-weight: bold;
+                    }
+
+                    .muted-text {
+                        color: gray;
+                        font-size: 12px;
+                        padding-top: 10px;
+                    }
+
+                    .flex-row {
+                        display: flex;
+                        align-items: center;
+                    }
+
+                    .mainContainer {
+                        width: 100%;
+                    }
+
+
+                    .maindiv {
+                        display: flex;
+                    }
+
+                    .audit-row {
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                    }
+
+                    .audit-label {
+                        text-align: right;
+                        font-style: italic;
+                        font-size: 12px;
+                    }
+
+                    .audit-field {
+                        flex: 1;
+                        width: 40vh;
+                    }
+
+                    .audit-box {
+                        padding: 8px;
+                        font-size: 12px;
+                    }
+
+                    .audit-left,
+                    .audit-right {
+                        width: 100%;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 6px;
+                    }
+
+                    .audit {
+                        gap: 50px;
+                        display: flex;
+                    }
+
+                    .avg-cost-container {
+                        display: flex;
+                        align-items: center;
+                        gap: 15px;
+                        margin-left: 50px
+                    }
+
+
+                    .item-discontinued-label {
+                        font-weight: bold;
+                        color: red;
+                        margin-top: 12px;
+                        padding: 10px 10px 10px 0px;
+                    }
+                </style>
+
+
+                <div class="title">
+                    <div class="header-container">
+                        <div id="ItemAttributes" class="no-border-input"></div>
+                    </div>
+                </div>
+
+                <div class="maindiv">
+                    <table class="form-table">
+                        <!-- Detailed Description -->
+                        <tr>
+                            <th colspan="6" style="padding-bottom: 23px; padding-top: 30px;" id="DetailedDescriptionLabel"></th>
+                        </tr>
+                        <tr>
+                            <td colspan="6">
+                            @(Html.DevExtreme().TextArea()
+                                .ID("DetailedDescription")
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Width("100%"))
+                            </td>
+                        </tr>
+
+                        <!-- Item Size & Measurements Section -->
+                        <tr>
+                            <th colspan="6" id="ItemSizeMeasurements"></th>
+                        </tr>
+                        <tr class="flex-row">
+
+                            <td>
+                                <div style="display:flex;">
+                                @(Html.DevExtreme().SelectBox()
+                                    .ID("UnitOfMeasure")
+                                    .DisplayExpr("UnitType")
+                                    .ValueExpr("UnitCode")
+                                    .DataSource(d => d.WebApi()
+                                    .Controller("StockInventory")
+                                    .LoadAction("GetUnitCodes")
+                                    )
+                                    .Label(new JS("formatMessage('Unit of Measure : *')"))
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .Width("140")
+                                    )
+                                @(Html.DevExtreme().Button()
+                                    .ID("btnAddUOM")
+                                    .Icon("plus")
+                                    .Width("45")
+                                    .ElementAttr("style", "margin-top:23px")
+                                    .OnClick("UnitOfMeasure")
+                                    )
+                                </div>
+                            </td>
+
+                            <td>
+                            @(Html.DevExtreme().NumberBox()
+                                .ID("PackingUnit")
+                                .Value(1)
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Label(new JS("formatMessage('Packing Unit : ')")))
+                            </td>
+
+                            <td>
+                            @(Html.DevExtreme().SelectBox()
+                                .ID("ItemSize")
+                                .SearchEnabled(true)
+                                .AcceptCustomValue(true) 
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Label(new JS("formatMessage('Item Size : ')"))
+                                )
+                            </td>
+                        </tr>
+                        <tr class="flex-row">
+                            <td>
+                            @(Html.DevExtreme().SelectBox()
+                                .ID("ItemThickness")
+                                .SearchEnabled(true)
+                                .AcceptCustomValue(true) 
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Label(new JS("formatMessage('Item Thickness : ')"))
+                                )
+                            </td>
+
+                            <td>
+                            @(Html.DevExtreme().SelectBox()
+                                .ID("ItemDimension")
+                                .SearchEnabled(true)
+                                .AcceptCustomValue(true) 
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Label(new JS("formatMessage('Item Dimension : ')"))
+                                )
+                            </td>
+
+                            <td>
+                            @(Html.DevExtreme().TextBox()
+                                .ID("ActualSize")
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Label(new JS("formatMessage('Act. Size : ')"))
+                                )
+                            </td>
+
+
+
+                        </tr>
+
+                        <tr>
+                            <th colspan="6" id="ItemCostPriceDetails"></th>
+                        </tr>
+
+                        <tr class="flex-row">
+                            <td style="align-items:end; display:flex;" >
+                            @(Html.DevExtreme().NumberBox()
+                                .ID("OpeningBalance")
+                                .Value(0.00)
+                                .Format("#,##0.00")
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Width("80%")
+                                .Label(new JS("formatMessage('Opening Balance : ')")))
+                            @(Html.DevExtreme().Button()
+                                .ID("btnAddOPB")
+                                .Icon("fa fa-dollar-sign")
+                                .Width("45")
+                                .ElementAttr("style", "margin-top:23px")
+                                .OnClick("OpeningBalanceOPB")
+                                )
+                            </td>
+
+                            <td>
+                            @(Html.DevExtreme().NumberBox()
+                                .ID("CostPrice")
+                                .Value(0)
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Label(new JS("formatMessage('Cost Price : ')")))
+                            </td>
+
+                            <td>
+                            @(Html.DevExtreme().NumberBox()
+                                .ID("ExFactoryPrice")
+                                .Value(0)
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Label(new JS("formatMessage('Ex-Factory Price : ')")))
+                            </td>
+                        </tr>
+                        <tr class="flex-row">
+                            <td>
+                            @(Html.DevExtreme().NumberBox()
+                                .ID("SellingPrice")
+                                .Value(0)
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Label(new JS("formatMessage('Selling Price : ')")))
+                            </td>
+
+                            <td>
+                            @(Html.DevExtreme().NumberBox()
+                                .ID("MinSellingPrice")
+                                .Value(0)
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Label(new JS("formatMessage('Min Selling Price : ')")))
+                            </td>
+
+                            <td>
+                            @(Html.DevExtreme().NumberBox()
+                                .ID("MaxSellingPrice")
+                                .Value(0)
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Label(new JS("formatMessage('Max Selling Price : ')")))
+                            </td>
+                        </tr>
+
+
+                    </table>
+
+
+                    <table class="form-table">
+
+                        <!-- Detailed Description Arabic -->
+                        <tr class="flex-row" style="padding-bottom: 0px;">
+                            <th colspan="6" class="flex-row" id="DetailedDescriptionInArabic"></th>
+                            <th>
+                            @(Html.DevExtreme().Button()
+                                .ID("convertToArabic1")
+                                .Width(50)
+                                .Icon("fas fa-language")
+                                .ElementAttr("style", "padding:10px; color:black;margin-right:10px;")
+                                 .OnClick("convertToArabic")
+                                )
+                            </th>
+
+
+
+
+                        </tr>
+
+                        <tr>
+                            <td colspan="6" style="display:flex;">
+
+                            @(Html.DevExtreme().TextArea()
+                                .ID("ArabicDescription")
+                                .Width("100%")
+                                .LabelMode(EditorLabelMode.Outside)
+                                )
+
+                            </td>
+                        </tr>
+
+                        <!-- Item Code & Attributes -->
+                        <tr class="flex-row" style="margin-top: 15px;">
+                            <td>
+                            @(Html.DevExtreme().TextBox()
+                                .ID("ItemPartNo")
+                                .Label(new JS("formatMessage('Item Part No : ')"))
+                                .LabelMode(EditorLabelMode.Outside))
+                            </td>
+                            <td>
+                            @(Html.DevExtreme().TextBox()
+                                .ID("ItemHSCode")
+                                .Label(new JS("formatMessage('Item HS Code : ')"))
+                                .LabelMode(EditorLabelMode.Outside))
+                            </td>
+                            
+                        </tr>
+                        <tr class="flex-row">
+                            <td>
+                            @(Html.DevExtreme().ColorBox()
+                                .ID("ItemColor")                                
+                                .AcceptCustomValue(true) 
+                                .Label(new JS("formatMessage('Item Color : ')"))
+                                .LabelMode(EditorLabelMode.Outside))
+                            </td>
+
+
+                           
+                            <td>
+                            @(Html.DevExtreme().SelectBox()
+                                .ID("ItemBrand")
+                                .SearchEnabled(true)
+                                .AcceptCustomValue(true)
+                                .Label(new JS("formatMessage('Item Brand : ')"))
+                                .LabelMode(EditorLabelMode.Outside))
+                            </td>
+                        </tr>
+                        <tr class="flex-row">
+                           
+                            <td>
+                                @(Html.DevExtreme().SelectBox()
+                                    .ID("ItemManufacturer")
+                                    .SearchEnabled(true)
+                                    .AcceptCustomValue(true)
+                                    .Label(new JS("formatMessage('Item Make / Manufacturer : ')"))
+                                    .LabelMode(EditorLabelMode.Outside))
+                            </td>
+
+
+
+                            <td>
+                            @(Html.DevExtreme().TextBox()
+                                .ID("CountryOfOrigin")
+                                .Label(new JS("formatMessage('Country Of Origin : ')"))
+                                .LabelMode(EditorLabelMode.Outside))
+                            </td>
+
+                        </tr>
+
+
+                    </table>
+
+                </div>
+                <div style="width:100%">
+                    <table>
+                        <tr>
+                            <td colspan="4" class="audit-box">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <!-- Left Audit Info -->
+                                    <div class="audit">
+                                        <div class="audit-left">
+                                            <div class="audit-row">
+                                                <div class="audit-label" id="EnteredByLabel"></div>
+                                                <div class="audit-field">
+                                                @(Html.DevExtreme().TextArea()
+                                                    .ID("EnteredBy")
+                                                    .Value(enteredBy)
+                                                    .ReadOnly(true)
+                                                    .Height(40)
+                                                    .Width("90%"))
+                                                </div>
+                                            </div>
+                                            <div class="audit-row">
+                                                <div class="audit-label" id="EnteredOnLabel"></div>
+                                                <div class="audit-field">
+                                                @(Html.DevExtreme().TextArea()
+                                                    .ID("EnteredOn")
+                                                    .Value(enteredOn)
+                                                    .ReadOnly(true)
+                                                    .Height(40)
+                                                    .Width("90%"))
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Right Audit Info -->
+                                        <div class="audit-right">
+                                            <div class="audit-row">
+                                                <div class="audit-label" id="ModifiedByLabel"></div>
+                                                <div class="audit-field">
+                                                @(Html.DevExtreme().TextArea()
+                                                    .ID("ModifiedBy")
+                                                    .Value(modifiedBy)
+                                                    .ReadOnly(true)
+                                                    .Height(40)
+                                                    .Width("90%"))
+                                                </div>
+                                            </div>
+                                            <div class="audit-row">
+                                                <div class="audit-label" id="ModifiedOnLabel"></div>
+                                                <div class="audit-field">
+                                                @(Html.DevExtreme().TextArea()
+                                                    .ID("ModifiedOn")
+                                                    .Value(modifiedOn)
+                                                    .ReadOnly(true)
+                                                    .Height(40)
+                                                    .Width("90%"))
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="audit-right">
+                                        <div class="audit-row">
+                                        </div>
+                                        <div class="flex-row" style="width: 100%">
+                                            <label class="item-discontinued-label" id="ItemDiscontinuedLabel"></label>
+
+                                            @(Html.DevExtreme().CheckBox()
+                                                .ID("ItemDiscontinued")
+                                                .Value(false))
+
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </td>
+                        </tr>
+                        
+                    </table>
+                </div>
+            
+
+
+                <script>
+
+                    $(function () {
+                        $("#DetailedDescriptionLabel").text(formatMessage("Detailed Description : "));
+                        $("#ItemSizeMeasurements").text(formatMessage("Item Size & Measurements : "));
+                        $("#ItemCostPriceDetails").text(formatMessage("Item Cost & Price Details : "));
+                        $("#DetailedDescriptionInArabic").text(formatMessage("Detailed Description: (in Arabic) "));
+                        $("#EnteredByLabel").text(formatMessage("Entered By : "));
+                        $("#ModifiedByLabel").text(formatMessage("Modified By : "));
+                        $("#ModifiedOnLabel").text(formatMessage("Modified On : "));
+                        $("#AvgCostPriceLabel").text(formatMessage("Avg Cost Price :"));
+                        $("#EnteredOnLabel").text(formatMessage("Entered On : "));
+                        $("#ItemDiscontinuedLabel").text(formatMessage("Item Discontinued : "));
+                    });
+
+                    $(function () {
+                        $("#ItemAttributes").dxTextBox({
+                            text: formatMessage("Item Attributes"),
+                            readOnly: true,
+                            onContentReady: function (e) {
+                                $(e.element).addClass("dx-textbox-heading");
+                            }
+                        });
+                    });
+                    function UnitOfMeasure() {
+                        const url = `/${tenantName}/IMS/UnitOfMeasure`;
+                        const title = "";
+                        openModal(url, title);
+                    }
+                                            $(function () {
+                        // Direct assignment using Razor variables
+                        $("#EnteredBy").dxTextArea("instance").option("value", "@enteredBy");
+                        $("#EnteredOn").dxTextArea("instance").option("value", "@enteredOn");
+                        $("#ModifiedBy").dxTextArea("instance").option("value", "@modifiedBy");
+                        $("#ModifiedOn").dxTextArea("instance").option("value", "@modifiedOn");
+                    });
+
+                </script>
             </div>
             </div>
 
             <div id="tab-content-2" class="tab-content" style="display: none;">
                 <div>
-                  
-                @await Html.PartialAsync("~/Pages/Shared/IMS/StockDetails_StockControl.cshtml")
+
+
+                <style type="text/css">
+
+
+                    .overlay {
+                        display: none;
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: rgba(0, 0, 0, 0.5); /* Transparent background */
+
+                        z-index: 1000;
+                    }
+                    /* Ensure word wrap and center alignment for grid headers */
+                    .header-wrap {
+                        white-space: normal !important; /* Enable word wrap */
+                        text-align: center !important; /* Center align text */
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        font-weight: bold;
+                    }
+
+                    /* Ensure text in grid headers is always centered */
+                    .dx-datagrid .dx-header-row .dx-datagrid-text-content {
+                        white-space: normal !important;
+                        text-align: center !important;
+                    }
+
+                    /* Ensure column headers text aligns to center */
+                    .dx-datagrid-headers .dx-datagrid-table .dx-row > td {
+                        text-align: center !important;
+                    }
+
+                    .overlay-content {
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        width: 100%;
+                        height: 80%;
+                        background: #fff;
+                        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+                        border-radius: 8px;
+                        overflow: hidden;
+                    }
+
+                    #overlay-frame {
+                        width: 100%;
+                        height: 100%;
+                    }
+
+                    .Maincontainer.Maincontainer {
+                        background-color: white;
+                    }
+
+                    .close-btn {
+                        position: absolute;
+                        top: 10px;
+                        right: 20px;
+                        font-size: 30px;
+                        cursor: pointer;
+                    }
+
+
+
+
+                    /* Toolbar Styling */
+                    .custom-toolbar {
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                    }
+
+                    .filter-btn {
+                        background-color: #007bff;
+                        color: white;
+                        border: none;
+                        padding: 6px 12px;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        font-family: 'Inter', sans-serif;
+                    }
+
+                        .filter-btn:hover {
+                            background-color: #0056b3;
+                        }
+
+                    /* Text Editor Styling */
+                    .dx-texteditor {
+                        background-color: #909ead00 !important; /* Light background */
+                        border: 1px solid #d6e4f0 !important; /* Soft border */
+                        border-radius: 4px !important; /* Smaller rounded corners */
+
+                        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important; /* Reduced shadow */
+                        font-size: 14px !important; /* Slightly smaller font */
+                        transition: all 0.2s ease-in-out !important;
+                        height: 39px !important; /* Fixed height */
+                    }
+
+                        /* Hover and Focus States */
+                        .dx-texteditor:hover,
+                        .dx-texteditor.dx-state-hover,
+                        .dx-button:hover {
+                            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important; /* Slightly reduced hover effect */
+                            border-color: #86b7fe !important; /* Highlight border */
+                        }
+
+                        .dx-texteditor.dx-state-focused {
+                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important; /* Softer focus effect */
+                            border-color: #508ae1 !important;
+                        }
+
+                    #dataGrid .dx-header-row .dx-datagrid-text-content {
+                        font-weight: bold;
+                        color: black;
+                    }
+
+
+                    .dx-datagrid-header-panel {
+                        background-color: #909ead00;
+                        /* display:none; */
+                    }
+
+                    .no-border-input {
+                        border: none !important;
+                        outline: none !important;
+                        box-shadow: none !important;
+                        background: transparent !important;
+                        font-weight: bold;
+                        font-size: 16px;
+                        color: black;
+                        pointer-events: none; /* Prevents hover and click effects */
+                    }
+
+                    .context-menu {
+                        display: none;
+                        position: absolute;
+                        background-color: white;
+                        border: 1px solid #ccc;
+                        box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+                        z-index: 1000;
+                        list-style-type: none;
+                        padding: 0;
+                        margin: 0;
+                        min-width: 120px;
+                        font-family: sans-serif;
+                    }
+
+                        .context-menu li {
+                            padding: 8px 12px;
+                            cursor: pointer;
+                        }
+
+                            .context-menu li:hover {
+                                background-color: #eee;
+                            }
+
+                </style>
+
+
+                <!-- Filter/Info Section -->
+                <div class="dx-fieldset horizontal-container ">
+
+                    <table style="margin-bottom: 15px;">
+                        <tr>
+                            <td>
+                            <td>
+                                @(Html.DevExtreme()
+                                    .NumberBox()
+                                    .ID("MinQty")
+                                    .Label(new JS("formatMessage('Minimum Quantity')"))
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .Width(350)
+                                    .ShowSpinButtons(true))
+                            </td>
+                            <td>
+                                @(Html.DevExtreme()
+                                    .NumberBox()
+                                    .ID("MaxQty")
+                                    .Label(new JS("formatMessage('Maximum Quantity')"))
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .Width(350)
+                                    .ShowSpinButtons(true))
+                            </td>
+                            <td>
+                                @(Html.DevExtreme()
+                                    .NumberBox()
+                                    .ID("ReorderLevel")
+                                    .Label(new JS("formatMessage('Reorder Level')"))
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .Width(350)
+                                    .ShowSpinButtons(true))
+                            </td>
+                            <td>
+                                @(Html.DevExtreme()
+                                    .NumberBox()
+                                    .ID("ReorderQty")
+                                    .Label(new JS("formatMessage('Reorder Quantity/EOQ')"))
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .Width(350)
+                                    .ShowSpinButtons(true))
+                            </td>
+                            <td>
+                                @(Html.DevExtreme()
+                                    .NumberBox()
+                                    .ID("ReorderLeadTime")
+                                    .Label(new JS("formatMessage('Reorder Lead Time')"))
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .Width(350)
+                                    .ShowSpinButtons(true))
+                            </td>
+
+                        </tr>
+
+                    </table>
+                </div>
+                <table style="margin-left: 13px;">
+                    <tr>
+
+                        <td>
+
+                        @(Html.DevExtreme().Button()
+                            .ID("btnPrint")
+                            .Text(new JS("formatMessage('Print')"))
+                            .Icon("print") // DevExtreme built-in icon
+                            .Width(160)
+                           
+                            )
+
+                        </td>
+                        <td>
+                        @(Html.DevExtreme().DropDownButton()
+                            .Text(new JS("formatMessage('View Stock Movement Report')"))
+                            .Icon("cart") // You can change to your preferred icon
+                            .Width(300)
+                            .DisplayExpr("text")
+                            )
+
+                        </td>
+                    </tr>
+
+                </table>
+
+
+
+                <div class="dx-field ledgerResult" style="margin-bottom: 100px">
+                    <table style="width:100%; margin-top: 15px;">
+                        <tr>
+                            <td>
+                            @(Html.DevExtreme().DataGrid()
+                                .ID("stockCardGrid")
+                                .OnInitialized("onStockGridInitialized")
+                                .Height(400)
+                                .Columns(columns =>
+                                {
+                                    columns.Add().DataField("ReceiptNo").Caption(new JS("formatMessage('Document No')")).Alignment(HorizontalAlignment.Center);
+                                    columns.Add().DataField("TypeOfEntry").Caption(new JS("formatMessage('Transaction Type')")).Alignment(HorizontalAlignment.Center);
+                                    columns.Add().DataField("TransactionDate").Caption(new JS("formatMessage('Transaction Date')")).Alignment(HorizontalAlignment.Center)
+                                    .DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy");
+                                    columns.Add().DataField("InventoryEffectiveDate").Caption(new JS("formatMessage('Inventory Effective Date')"))
+                                    .Alignment(HorizontalAlignment.Center).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy");
+                                    columns.Add().DataField("OpeningBalanceQty").Caption(new JS("formatMessage('Opening Balance')")).Alignment(HorizontalAlignment.Center).Format("fixedPoint");
+                                    columns.Add().DataField("ReceivedQty").Caption(new JS("formatMessage('Received')")).Alignment(HorizontalAlignment.Center).Format("fixedPoint");
+                                    columns.Add().DataField("IssuedQty").Caption(new JS("formatMessage('Issued')")).Alignment(HorizontalAlignment.Center).Format("fixedPoint");
+                                    columns.Add().DataField("StockReceiptAndOpnBalQty").Caption(new JS("formatMessage('Balance')")).Alignment(HorizontalAlignment.Center).Format("fixedPoint");
+                                })
+                                .Summary(summary =>
+                                {
+                                    summary.TotalItems(totalItems =>
+                                    {
+                                        totalItems.Add().Column("OpeningBalanceQty").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value.toFixed(2); }");
+                                        totalItems.Add().Column("ReceivedQty").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value.toFixed(2); }");
+                                        totalItems.Add().Column("IssuedQty").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value.toFixed(2); }");
+                                        totalItems.Add().Column("StockReceiptAndOpnBalQty").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value.toFixed(2); }");
+                                    });
+                                })
+                                .ShowColumnLines(true)
+                                .ShowRowLines(true)
+                                .RowAlternationEnabled(true)
+                                .ShowColumnHeaders(true)
+                                .ColumnAutoWidth(true)
+                                .AllowColumnReordering(true)
+                                .AllowColumnResizing(true)
+                                .ColumnFixing(fixing => fixing.Enabled(true))
+                                .GroupPanel(panel => panel.Visible(false))
+                                .ShowBorders(true)
+                                )
+
+
+
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+
+                <script>
+                 let stockGridInstance = null;
+
+                    function onStockGridInitialized(e) {
+                      stockGridInstance = e.component;
+                      console.log("Grid initialized", stockGridInstance);
+                    }
+
+                    function onGscodeChanged(e) {
+                      const gscode = e.value;
+                      if (stockGridInstance && gscode) {
+                        loadStockCardGrid(gscode);
+                      } else {
+                        console.warn("Grid not initialized or invalid GsCode", gscode);
+                      }
+                    }
+
+                    function loadStockCardGrid(gscode) {
+                      console.log("Preparing to load grid for GsCode:", gscode);
+
+                      if (!stockGridInstance) {
+                        console.error("Grid not initialized");
+                        return;
+                      }
+
+                      const dataStore = new DevExpress.data.CustomStore({
+                        load: function () {
+                          console.log("Calling API for GsCode:", gscode);
+
+                          return $.getJSON(`/api/StockInventory/GetStockCardData`, { gscode })
+                            .then(data => {
+                              console.log(" Data loaded", data);
+                              return data;
+                            })
+                            .fail((jqXHR, textStatus, errorThrown) => {
+                              console.error("API call failed:", textStatus, errorThrown);
+                              
+                              alert("API call failed: " + textStatus + ", " + errorThrown);
+                              
+                              throw new Error(`API call failed: ${textStatus}`);
+                            });
+                        }
+                      });
+
+                      stockGridInstance.option("dataSource", dataStore);
+                    }
+
+
+
+                    function printReport() {
+                        alert("Print report clicked");
+                    }
+
+
+                </script>
                 </div>
             </div>
 
@@ -333,20 +1229,332 @@
                     <span>No image data</span>
                 </div>
                 </div>
+            <!-- Custom Context Menu -->
+            <!-- Add this in your body -->
+            <ul id="customMenu" class="context-menu">
+                <li onclick="handleAction('cut')">Cut</li>
+                <li onclick="handleAction('copy')">Copy</li>
+                <li onclick="handleAction('load')">Load</li>
+                <li onclick="handleAction('paste')">Paste</li>
+                <li onclick="handleAction('delete')">Delete</li>
+            </ul>
+             
+            <script>
+                let imageBase64 = null;
+
+                let copiedImageData = null;
+                const imgBox = document.getElementById("imgBox1");
+                const menu = document.getElementById("customMenu");
+
+                // Right-click to show custom menu
+                imgBox.addEventListener("contextmenu", function (e) {
+                  e.preventDefault();
+                  menu.style.top = `${e.pageY}px`;
+                  menu.style.left = `${e.pageX}px`;
+                  menu.style.display = "block";
+                });
+
+                // Hide menu on click
+                document.addEventListener("click", function () {
+                  menu.style.display = "none";
+                });
+
+                // Handle context menu actions
+                function handleAction(action) {
+                  switch (action) {
+                    case 'cut':
+                      cutImage();
+                      break;
+                    case 'copy':
+                      copyImage();
+                      break;
+                    case 'load':
+                      loadImage();
+                      break;
+                    case 'paste':
+                      pasteImage();
+                      break;
+                    case 'delete':
+                deleteImage(); 
+                break;
+                  }
+                  menu.style.display = "none";
+                }
+
+                // CUT: Remove image and store
+                function cutImage() {
+                  const img = imgBox.querySelector("img");
+                  if (img) {
+                    copiedImageData = img.src;
+                    img.remove();
+                  } else {
+                    alert("No image to cut.");
+                  }
+                }
+
+                // COPY: Store image src
+                function copyImage() {
+                  const img = imgBox.querySelector("img");
+                  if (img) {
+                    copiedImageData = img.src;
+                    alert("Image copied.");
+                  } else {
+                    alert("No image to copy.");
+                  }
+                }
+
+                function loadImage() {
+                    const input = document.createElement("input");
+                    input.type = "file";
+                    input.accept = "image/*";
+                    input.onchange = function (event) {
+                        const file = event.target.files[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = function (e) {
+                                imageBase64 = e.target.result.split(',')[1]; 
+
+                                const img = document.createElement("img");
+                                img.src = e.target.result;
+                                img.style.maxWidth = "100%";
+                                img.style.maxHeight = "100%";
+                                imgBox.innerHTML = '';
+                                imgBox.appendChild(img);
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    };
+                    input.click();
+                }
+
+
+
+                function pasteImage() {
+                    if (copiedImageData) {
+                        imageBase64 = copiedImageData.split(',')[1]; 
+
+                        const img = document.createElement("img");
+                        img.src = copiedImageData;
+                        img.style.maxWidth = "100%";
+                        img.style.maxHeight = "100%";
+                        imgBox.innerHTML = '';
+                        imgBox.appendChild(img);
+                    } else {
+                        alert("Nothing to paste.");
+                    }
+                }
+
+
+                function deleteImage() {
+                  const img = imgBox.querySelector("img");
+                  if (img) {
+                    img.remove();
+                    alert("Image deleted.");
+                  } else {
+                    alert("No image to delete.");
+                  }
+                }
+            </script>
+
             </div>
 
             <div id="tab-content-4" class="tab-content">
                 <div class="background">
                 <div>
 
-                    @await Html.PartialAsync("~/Pages/Shared/IMS/StockDetails_Invoices.cshtml")
+                    @using DevExtreme.AspNet.Mvc
+                    @using DevExtreme.AspNet.Mvc.Builders
+                @{
+                    ViewBag.Title = "Invoice Grid";
+                }
+                @(Html.DevExtreme().DropDownButton()
+                    .ID("printButton")
+                    .Text(new JS("formatMessage('Print')"))
+                    .Icon("print")
+                    .ElementAttr("style", "padding:10px")
+                    .DisplayExpr("Text")
+                    .KeyExpr("Text")
+                    .NoDataText("Show Or Remove") // 👈 Custom message when there are no items
+                    .ItemTemplate(@<text>
+                        <div style="display: flex; align-items: center;">
+                            <i class="dx-icon-<%- Icon %>" style="padding:10px;"></i>
+                            <span><%- Text %></span>
+                        </div>
+                    </text>)
+                    )
+
+                    <div class="dx-card " style="background-color:transparent; border:none;padding:10px;">
+                       
+
+                    @(Html.DevExtreme().DataGrid()
+                        .ID("invoiceGrid")
+                        .Height(620)
+                        .OnInitialized("onInvoiceGridInitialized")
+                        .ShowBorders(true)
+                        .ShowColumnLines(true)
+                        .ShowRowLines(true)
+                        .RowAlternationEnabled(true)
+                        .ColumnAutoWidth(true)
+                        .Columns(columns =>
+                        {
+                            columns.Add().DataField("InvoiceNo").Caption(new JS("formatMessage('Invoice No')"));
+                            columns.Add().DataField("InvoiceDate").Caption(new JS("formatMessage('Invoice Date')")).DataType(GridColumnDataType.Date);
+                            columns.Add().DataField("ClientName").Caption(new JS("formatMessage('Client Name')"));
+                            columns.Add().DataField("QuantityInvoiced").Caption(new JS("formatMessage('Qty')")).DataType(GridColumnDataType.Number);
+                            columns.Add().DataField("UnitDesc").Caption(new JS("formatMessage('Unit Desc')"));
+                            columns.Add().DataField("UnitRate").Caption(new JS("formatMessage('Unit Rate')"));
+                            columns.Add().DataField("Discount").Caption(new JS("formatMessage('Discount')")).Format("##,##0.00");
+                            columns.Add().DataField("VatAmount").Caption(new JS("formatMessage('VAT Amount')")).Format("##,##0.00");
+                            columns.Add().DataField("Total").Caption(new JS("formatMessage('Total')")).Format("##,##0.00");
+                        })
+                        .Summary(summary =>
+                        {
+                            summary.TotalItems(items =>
+                            {
+                                items.Add().Column("InvoiceNo").SummaryType(SummaryType.Count).DisplayFormat(" {0}");
+                                items.Add().Column("QuantityInvoiced").SummaryType(SummaryType.Sum).ValueFormat("##,##0");
+                                items.Add().Column("Discount").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
+                                items.Add().Column("VatAmount").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
+                                items.Add().Column("Total").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
+                            });
+                        })
+                        )
+
+                    </div>
+                    <script>
+                        let invoiceGridInstance = null;
+
+                        function onInvoiceGridInitialized(e) {
+                            
+                            invoiceGridInstance = e.component;
+                            console.log("Invoice Grid initialized", invoiceGridInstance);
+                        }
+
+                        function loadInvoiceGrid(gscode) {
+                            if (!invoiceGridInstance) {
+                                console.error("Invoice Grid not initialized");
+                                return;
+                            }
+
+                            const dataStore = new DevExpress.data.CustomStore({
+                                load: function () {
+                                    console.log("Fetching invoice data for GsCode:", gscode);
+                                    return $.getJSON(`/api/StockInventory/GetInvoiceGridData`, { gscode })
+                                        .then(data => {
+                                            console.log("Invoice Data Loaded", data);
+                                            return data;
+                                        })
+                                        .fail((jqXHR, textStatus, errorThrown) => {
+                                            console.error("Invoice API call failed:", textStatus, errorThrown);
+                                            alert("Invoice API call failed: " + textStatus);
+                                            throw new Error(`Invoice API call failed: ${textStatus}`);
+                                        });
+                                }
+                            });
+
+                            invoiceGridInstance.option("dataSource", dataStore);
+                        }
+                    </script>
                 </div>
                 </div>
             </div>
             <div id="tab-content-5" class="tab-content">
                 <div class="background">
 
-                @await Html.PartialAsync("~/Pages/Shared/IMS/StockDetails_Quotations.cshtml")
+                
+            @{
+                ViewBag.Title = "Quotation Grid";
+            }
+
+            @(Html.DevExtreme().DropDownButton()
+                .ID("Dropdown")
+                .Text(new JS("formatMessage('Print')"))
+                .Icon("print")
+                .ElementAttr("style", "padding:10px")
+                .DisplayExpr("Text")
+                .KeyExpr("Text")
+                .NoDataText("Show Or Remove")
+                .ItemTemplate(@<text>
+                    <div style="display: flex; align-items: center;">
+                        <i class="dx-icon-<%- Icon %>" style="padding:10px;"></i>
+                        <span><%- Text %></span>
+                    </div>
+                </text>)
+
+                )
+
+
+                <div class="dx-card " style="background-color:transparent; border:none;padding:10px;">
+
+
+                @(Html.DevExtreme().DataGrid()
+                    .ID("quotationGrid")
+                    .Height(620)
+                    .ShowBorders(true)
+                    .ShowColumnLines(true)
+                    .ShowRowLines(true)
+                    .RowAlternationEnabled(true)
+                    .ColumnAutoWidth(true)
+                    .OnInitialized("onQuotationGridInitialized")
+                    .Columns(columns =>
+                    {
+                        columns.Add().DataField("QuoteNo").Caption(new JS("formatMessage('Quote No')"));
+                        columns.Add().DataField("QuoteDate").Caption(new JS("formatMessage('Quote Date')")).DataType(GridColumnDataType.Date);
+                        columns.Add().DataField("ClientName").Caption(new JS("formatMessage('Client Name')"));
+                        columns.Add().DataField("QuotedQuantity").Caption(new JS("formatMessage('Qty')")).DataType(GridColumnDataType.Number);
+                        columns.Add().DataField("QuotedUnitPrice").Caption(new JS("formatMessage('Unit Price')")).Format("##,##0.00");
+                        columns.Add().DataField("QuotedDiscount").Caption(new JS("formatMessage('Discount')")).Format("##,##0.00");
+                        columns.Add().DataField("LineTaxAmount").Caption(new JS("formatMessage('VAT Amount')")).Format("##,##0.00");
+                    })
+
+                    .Summary(summary =>
+                    {
+                        summary.TotalItems(items =>
+                        {
+                            items.Add().Column("QuoteNo").SummaryType(SummaryType.Count).DisplayFormat(" {0}");
+                            items.Add().Column("QuotedQuantity").SummaryType(SummaryType.Sum).ValueFormat("##,##0");
+                            items.Add().Column("QuotedDiscount").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
+                            items.Add().Column("LineTaxAmount").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
+                        });
+                    })
+
+                    )
+
+                </div>
+                <script>
+                let quotationGridInstance = null;
+
+                function onQuotationGridInitialized(e) {
+                quotationGridInstance = e.component;
+                console.log("Quotation Grid initialized", quotationGridInstance);
+                }
+
+                function loadQuotationGrid(gscode) {
+                if (!quotationGridInstance) {
+                console.error("Quotation Grid not initialized");
+                return;
+                }
+
+                const dataStore = new DevExpress.data.CustomStore({
+                load: function () {
+                console.log("Fetching quotation data for GsCode:", gscode);
+                return $.getJSON(`/api/StockInventory/GetQuotationGridData`, { gscode })
+                .then(data => {
+                console.log("Quotation Data Loaded", data);
+                return data;
+                })
+                .fail((jqXHR, textStatus, errorThrown) => {
+                console.error("Quotation API call failed:", textStatus, errorThrown);
+                alert("Quotation API call failed: " + textStatus);
+                throw new Error(`Quotation API call failed: ${textStatus}`);
+                });
+                }
+                });
+
+                quotationGridInstance.option("dataSource", dataStore);
+                }
+
+                </script>
 
                 </div>
             </div>
@@ -354,53 +1562,913 @@
 
             <div id="tab-content-6" class="tab-content">
                 <div class="background">
+
+
+            @{
+                ViewBag.Title = "PurchaseOrder Grid";
+            }
+
                
-                @await Html.PartialAsync("~/Pages/Shared/IMS/StockDetails_PurchaseOrders.cshtml")
+            @(Html.DevExtreme().DropDownButton()
+                .ID("PurchaseOrderDropdown")
+                .Text(new JS("formatMessage('Print')"))
+                .Icon("print")
+                .ElementAttr("style", "padding:10px")
+                .DisplayExpr("Text")
+                .KeyExpr("Text")
+                .NoDataText("Show Or Remove") // 👈 Custom message when there are no items
+                .ItemTemplate(@<text>
+                    <div style="display: flex; align-items: center;">
+                        <i class="dx-icon-<%- Icon %>" style="padding:10px;"></i>
+                        <span><%- Text %></span>
+                    </div>
+                </text>)
+                )
+
+                <div class="dx-card " style="background-color:transparent; border:none;padding:10px;">
+                    
+
+                @(Html.DevExtreme().DataGrid()
+                    .ID("PurchaseOrderGrid")
+                    .Height(620)
+                    .DataSource(Enumerable.Empty<object>())  // initially empty, or dummyData if you want placeholder
+                    .ShowBorders(true)
+                    .ShowColumnLines(true)
+                    .ShowRowLines(true)
+                    .RowAlternationEnabled(true)
+                    .ColumnAutoWidth(true)
+                    .OnInitialized("onPurchaseOrderGridInitialized")  // hook event to get instance
+                    .Columns(columns =>
+                    {
+                        columns.Add().DataField("PONo").Caption(new JS("formatMessage('PO No')"));
+                        columns.Add().DataField("PODate").Caption(new JS("formatMessage('PO Date')")).DataType(GridColumnDataType.Date);
+                        columns.Add().DataField("SupplierName").Caption(new JS("formatMessage('Supplier Name')"));
+                        columns.Add().DataField("Qty").Caption(new JS("formatMessage('Qty')")).DataType(GridColumnDataType.Number);
+                        columns.Add().DataField("UnitPrice").Caption(new JS("formatMessage('Unit Price')")).Format("##,##0.00");
+                        columns.Add().DataField("Discount").Caption(new JS("formatMessage('Discount')")).Format("##,##0.00");
+                        columns.Add().DataField("VatAmount").Caption(new JS("formatMessage('VAT Amount')")).Format("##,##0.00");
+                        columns.Add().DataField("Total").Caption(new JS("formatMessage('Total')")).Format("##,##0.00");
+                    })
+                    .Summary(summary =>
+                    {
+                        summary.TotalItems(items =>
+                        {
+                            items.Add().Column("PONo").SummaryType(SummaryType.Count).DisplayFormat(" {0}");
+                            items.Add().Column("Qty").SummaryType(SummaryType.Sum).ValueFormat("##,##0");
+                            items.Add().Column("Discount").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
+                            items.Add().Column("VatAmount").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
+                            items.Add().Column("Total").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
+                        });
+                    })
+                    )
+
+                </div>
+                <script>
+                    let PurchaseOrderGridInstance = null;
+
+                    function onPurchaseOrderGridInitialized(e) {
+                        PurchaseOrderGridInstance = e.component;
+                        console.log("PurchaseOrderGrid initialized", PurchaseOrderGridInstance);
+                    }
+
+                    function loadPurchaseOrderGrid(gscode) {
+                        if (!PurchaseOrderGridInstance) {
+                            console.error("PurchaseOrderGrid not initialized");
+                            return;
+                        }
+
+                        const dataStore = new DevExpress.data.CustomStore({
+                            load: function () {
+                                console.log("Fetching Purchase Order for GsCode:", gscode);
+                                return $.getJSON(`/api/StockInventory/GetPurchaseOrderGridData`, { gscode })
+                                    .then(data => {
+                                        console.log("Purchase Data Loaded", data);
+                                        return data;
+                                    })
+                                    .fail((jqXHR, textStatus, errorThrown) => {
+                                        console.error("Purchase API call failed:", textStatus, errorThrown);
+                                        alert("Purchase API call failed: " + textStatus);
+                                        throw new Error(`Purchase API call failed: ${textStatus}`);
+                                    });
+                            }
+                        });
+
+                        PurchaseOrderGridInstance.option("dataSource", dataStore);
+                    }
+                </script>
+
                 </div>
             </div>
         <div id="tab-content-7" class="tab-content">
             <div class="background">
 
-                @await Html.PartialAsync("~/Pages/Shared/IMS/StockDetails_ItemDelivers.cshtml")
+
+            @{
+                ViewBag.Title = "ItemDelivers Grid";
+            }
+
+            @(Html.DevExtreme().DropDownButton()
+                .ID("ItemDeliversDropdown")
+                .Text(new JS("formatMessage('Print')"))
+                .Icon("print")
+                .ElementAttr("style", "padding:10px")
+                .DisplayExpr("Text")
+                .KeyExpr("Text")
+                .NoDataText("Show Or Remove") // 👈 Custom message when there are no items
+                .ItemTemplate(@<text>
+                    <div style="display: flex; align-items: center;">
+                        <i class="dx-icon-<%- Icon %>" style="padding:10px;"></i>
+                        <span><%- Text %></span>
+                    </div>
+                </text>)
+                )
+
+
+                <div class="dx-card " style="background-color:transparent; border:none;padding:10px;">
+
+
+                @(Html.DevExtreme().DataGrid()
+                    .ID("ItemDeliversGrid")
+                    .Height(620)
+                    .ShowBorders(true)
+                    .ShowColumnLines(true)
+                    .ShowRowLines(true)
+                    .RowAlternationEnabled(true)
+                    .ColumnAutoWidth(true)
+                    .OnInitialized("onItemDeliversGridInitialized") // JS event to capture grid instance
+                    .Columns(columns =>
+                    {
+                        columns.Add().DataField("DeliveryNoteNo").Caption(new JS("formatMessage('Delivery Note No')"));
+                        columns.Add().DataField("DeliveryDate").Caption(new JS("formatMessage('Delivery Date')")).DataType(GridColumnDataType.Date);
+                        columns.Add().DataField("Status").Caption(new JS("formatMessage('Status')")); 
+                        columns.Add().DataField("InvoiceNo").Caption(new JS("formatMessage('Invoice No')"));
+                        columns.Add().DataField("IssuedFromStoreName").Caption(new JS("formatMessage('Issued From(Store)')")); 
+                        columns.Add().DataField("DeliveryIssuedTo").Caption(new JS("formatMessage('Issued To')"));
+                        columns.Add().DataField("IssuedQty").Caption(new JS("formatMessage('Qty')")).DataType(GridColumnDataType.Number);
+                        columns.Add().DataField("IssuedUnitPrice").Caption(new JS("formatMessage('Unit Price')"));
+                        columns.Add().DataField("UnitTotalPrice").Caption(new JS("formatMessage('Total')")).Format("##,##0.00");
+                    })
+                    .Summary(summary =>
+                    {
+                        summary.TotalItems(items =>
+                        {
+                            items.Add().Column("DeliveryNoteNo").SummaryType(SummaryType.Count).DisplayFormat("{0}");
+                            items.Add().Column("IssuedQty").SummaryType(SummaryType.Sum).ValueFormat("##,##0");
+                            items.Add().Column("UnitTotalPrice").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
+                        });
+                    })
+                    )
+
+                </div>
+                <script>
+                    let ItemDeliversGridInstance = null;
+
+                    function onItemDeliversGridInitialized(e) {
+                        ItemDeliversGridInstance = e.component;
+                        console.log("ItemDeliversGrid initialized", ItemDeliversGridInstance);
+                    }
+
+                    // Call this function to load the grid data with gscode parameter
+                    function loadItemDeliversGrid(gscode) {
+                        if (!ItemDeliversGridInstance) {
+                            console.error("ItemDeliversGrid not initialized");
+                            return;
+                        }
+
+                        const dataStore = new DevExpress.data.CustomStore({
+                            key: "DeliveryNoteNo", // set primary key or unique field
+                            load: function() {
+                                console.log("Fetching Delivery Note Details for GsCode:", gscode);
+                                return $.getJSON("/api/StockInventory/GetItemDeliversGridData", { gscode: gscode })
+                                    .then(data => {
+                                        console.log("Item Delivery Data Loaded", data);
+                                        return data;
+                                    })
+                                    .fail((jqXHR, textStatus, errorThrown) => {
+                                        console.error("API call failed:", textStatus, errorThrown);
+                                        alert("Failed to load data: " + textStatus);
+                                        throw new Error("API call failed: " + textStatus);
+                                    });
+                            }
+                        });
+
+                        ItemDeliversGridInstance.option("dataSource", dataStore);
+                    }
+                </script>
+
+
             </div>
         </div>
 
             <div id="tab-content-8" class="tab-content">
                 <div class="background">
 
-                @await Html.PartialAsync("~/Pages/Shared/IMS/StockDetails_ItemReceived.cshtml")
+                @{
+                ViewBag.Title = "Item Received Grid";
+                }
+
+
+
+             
+            @(Html.DevExtreme().DropDownButton()
+                .ID("ItemReceivedDropdown")
+                .Text(new JS("formatMessage('Print')"))
+                .Icon("print")
+                .ElementAttr("style", "padding:10px")
+                .DisplayExpr("Text")
+                .KeyExpr("Text")
+                .NoDataText("Show Or Remove")
+                .ItemTemplate(@<text>
+                    <div style="display: flex; align-items: center;">
+                        <i class="dx-icon-<%- Icon %>" style="padding:10px;"></i>
+                        <span><%- Text %></span>
+                    </div>
+                </text>)
+
+                )
+
+
+                <div class="dx-card " style="background-color:transparent; border:none;padding:10px;">
+
+
+                @(Html.DevExtreme().DataGrid()
+                    .ID("ItemReceivedGrid")
+                    .Height(620)
+                    .DataSource(Enumerable.Empty<object>()) // Initially empty
+                    .ShowBorders(true)
+                    .ShowColumnLines(true)
+                    .ShowRowLines(true)
+                    .RowAlternationEnabled(true)
+                    .ColumnAutoWidth(true)
+                    .OnInitialized("onItemReceivedGridInitialized") // Needed for JS setup
+                    .Columns(columns =>
+                    {
+                        columns.Add().DataField("ReceiptNo").Caption(new JS("formatMessage('Receipt No')"));
+                        columns.Add().DataField("ReceiptDate").Caption(new JS("formatMessage('Receipt Date')")).DataType(GridColumnDataType.Date);
+                        columns.Add().DataField("SupplierName").Caption(new JS("formatMessage('Supplier Name')"));
+                        columns.Add().DataField("QtyReceived").Caption(new JS("formatMessage('Qty Received')")).DataType(GridColumnDataType.Number);
+                        columns.Add().DataField("UnitDesc").Caption(new JS("formatMessage('Unit Desc')"));
+                        columns.Add().DataField("UnitPrice").Caption(new JS("formatMessage('Unit Price')"));
+                        columns.Add().DataField("ItemDiscount").Caption(new JS("formatMessage('Discount')")).Format("##,##0.00");
+                        columns.Add().DataField("LineTaxAmount").Caption(new JS("formatMessage('VAT Amount')")).Format("##,##0.00");
+                        columns.Add().DataField("LineTotalWithTax").Caption(new JS("formatMessage('Total')")).Format("##,##0.00");
+                    })
+                    .Summary(summary =>
+                    {
+                        summary.TotalItems(items =>
+                        {
+                            items.Add().Column("ReceiptNo").SummaryType(SummaryType.Count).DisplayFormat(" {0}");
+                            items.Add().Column("QtyReceived").SummaryType(SummaryType.Sum).ValueFormat("##,##0");
+                            items.Add().Column("ItemDiscount").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
+                            items.Add().Column("LineTaxAmount").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
+                            items.Add().Column("LineTotalWithTax").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
+                        });
+                    })
+                    )
+
+                </div>
+                <script>
+                    let ItemReceivedGridInstance = null;
+
+                    function onItemReceivedGridInitialized(e) {
+                        ItemReceivedGridInstance = e.component;
+                        console.log("ItemReceivedGrid initialized", ItemReceivedGridInstance);
+                    }
+
+                    function loadItemReceivedGrid(gscode) {
+                        if (!ItemReceivedGridInstance) {
+                            console.error("ItemReceivedGrid not initialized");
+                            return;
+                        }
+
+                        const dataStore = new DevExpress.data.CustomStore({
+                            key: "ReceiptNo", // assuming ReceiptNo is unique
+                            load: function () {
+                                console.log("Fetching Material Receipt Data for GsCode:", gscode);
+                                return $.getJSON("/api/StockInventory/GetItemReceivedGridData", { gscode: gscode })
+                                    .then(data => {
+                                        console.log("Item Receipt Data Loaded", data);
+                                        return data;
+                                    })
+                                    .fail((jqXHR, textStatus, errorThrown) => {
+                                        console.error("API call failed:", textStatus, errorThrown);
+                                        alert("Failed to load data: " + textStatus);
+                                        throw new Error("API call failed: " + textStatus);
+                                    });
+                            }
+                        });
+
+                        ItemReceivedGridInstance.option("dataSource", dataStore);
+                    }
+                </script>
+
 
                 </div>
             </div>
         <div id="tab-content-9" class="tab-content">
             <div class="background">
 
-                @await Html.PartialAsync("~/Pages/Shared/IMS/StockDetails_UnitConversion.cshtml")
 
+            @{
+                ViewBag.Title = "UnitConversion Grid";
+            }
+
+                <div style="text-align: right;">
+                @(Html.DevExtreme().Button()
+                    .ID("addButton")
+                    .Text(new JS("formatMessage('Add')"))
+                    .Icon("plus")
+                    .Type(ButtonType.Default)
+                    .Width(140)
+                    .ElementAttr("style", "padding:10px; color:black;margin-right:10px;")
+                    )
+                </div>
+
+
+
+
+
+                <div class="dx-card " style="background-color:transparent; border:none;padding:10px;">
+
+                @(Html.DevExtreme().DataGrid()
+                    .ID("UnitConversionGrid")
+                    .Height(620)
+                    .ShowBorders(true)
+                    .ShowColumnLines(true)
+                    .ShowRowLines(true)
+                    .RowAlternationEnabled(true)
+                    .ColumnAutoWidth(true)
+                    .DataSource(new JS("[]")) // Empty at start
+                    .OnInitialized("onUnitConversionGridInitialized")
+                    .Editing(editing =>
+                    {
+                        editing.Mode(GridEditMode.Row);
+                        editing.AllowAdding(false);
+                        editing.AllowUpdating(true);
+                        editing.UseIcons(true);
+                    })
+                    .Columns(columns =>
+                    {
+                        columns.Add()
+                        .DataField("UnitCodeOfConversion")
+                        .Width(300)
+                        .Caption(new JS("formatMessage('Unit Code Of Conversion')"))
+                        .EditCellTemplate(new JS("unitCodeDropDownEditor")); // ✅ Use as editor
+
+                        columns.Add()
+                        .DataField("UnitConverted")
+                        .Caption(new JS("formatMessage('Unit Converted')"))
+                        .DataType(GridColumnDataType.Number);
+
+                        columns.Add()
+                        .DataField("UnitConversionRemarks")
+                        .Caption(new JS("formatMessage('Unit Conversion Remarks')"));
+                    })
+                    )
+
+
+
+
+                </div>
+                <script>
+                    let UnitConversionGridInstance = null;
+                    let unitCodeLookupData = [];
+
+                    // ✅ Single correct version of unitCodeDropdown loader
+                    function loadUnitCodeDropdown() {
+                        return $.ajax({
+                            url: "/api/StockInventory/GetUnitCodeOptions", // Update as per your API
+                            method: "GET",
+                            dataType: "json"
+                        }).then(function (response) {
+                            unitCodeLookupData = response;
+                        });
+                    }
+
+                    function onUnitConversionGridInitialized(e) {
+                        UnitConversionGridInstance = e.component;
+                        console.log("Grid initialized");
+                    }
+
+                    function loadUnitConversionGrid(gscode) {
+                        if (!UnitConversionGridInstance) return;
+
+                        const dataStore = new DevExpress.data.CustomStore({
+                            key: "UnitConversionId",
+                            load: () => $.getJSON("/api/StockInventory/GetUnitConversionGridData", { gscode })
+                        });
+
+                        UnitConversionGridInstance.option("dataSource", dataStore);
+                    }
+
+                    function addNewUnitRow() {
+                        if (UnitConversionGridInstance) {
+                            const currentData = UnitConversionGridInstance.getDataSource().items();
+
+                            const newRow = {
+                                UnitCodeOfConversion: null,
+                                UnitConverted: null,
+                                UnitConversionRemarks: null
+                            };
+
+                            currentData.push(newRow);
+                            UnitConversionGridInstance.option("dataSource", [...currentData]);
+                        }
+                    }
+                     $(function () {
+                        loadUnitCodeDropdown().then(() => {
+                            $("#addButton").dxButton({
+                                text: formatMessage("Add New Row"),
+                                type: "success",
+                                onClick: addNewUnitRow
+                            });
+                        });
+                    });
+                   
+
+                    // ✅ Dropdown Editor Template
+                    function unitCodeDropDownEditor(cellElement, cellInfo) {
+                        $("<div>").appendTo(cellElement).dxDropDownBox({
+                            value: cellInfo.value,
+                            valueExpr: "UnitCode",
+                            displayExpr: function (item) {
+                                return item ? `${item.UnitType}` : "";
+                            },
+                            dataSource: unitCodeLookupData,
+                            showClearButton: true,
+                            dropDownOptions: { width: 600 },
+                            onValueChanged: function (e) {
+                                const selected = unitCodeLookupData.find(x => x.UnitCode === e.value);
+                                if (selected) {
+                                    cellInfo.setValue(selected.UnitCode);
+                                }
+                            },
+                            contentTemplate: function (e) {
+                                return $("<div>").dxDataGrid({
+                                    dataSource: unitCodeLookupData,
+                                    keyExpr: "UnitCode",
+                                    height: 300,
+                                    selection: { mode: "single" },
+                                    selectedRowKeys: e.component.option("value") ? [e.component.option("value")] : [],
+                                    onSelectionChanged: function (selectedItems) {
+                                        const selected = selectedItems.selectedRowsData[0];
+                                        if (selected) {
+                                            e.component.option("value", selected.UnitCode);
+                                            cellInfo.setValue(selected.UnitCode);
+                                            e.component.close();
+                                        }
+                                    },
+                                    columns: [
+                                        { dataField: "UnitCode", caption: "Unit Code" },
+                                        { dataField: "UnitType", caption: "Unit Type" },
+                                        { dataField: "UnitDesc", caption: "Unit Description" }
+                                    ]
+                                });
+                            }
+                        });
+                    }
+
+                    
+
+                </script>
             </div>
         </div>
         <div id="tab-content-10" class="tab-content">
             <div class="background">
 
-                @await Html.PartialAsync("~/Pages/Shared/IMS/StockDetails_Document.cshtml")
+
+                <style type="text/css">
+
+
+                    .overlay {
+                        display: none;
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: rgba(0, 0, 0, 0.5); /* Transparent background */
+                        z-index: 1000;
+                    }
+                    /* Ensure word wrap and center alignment for grid headers */
+                    .header-wrap {
+                        white-space: normal !important; /* Enable word wrap */
+                        text-align: center !important; /* Center align text */
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        font-weight: bold;
+                    }
+
+                    /* Ensure text in grid headers is always centered */
+                    .dx-datagrid .dx-header-row .dx-datagrid-text-content {
+                        white-space: normal !important;
+                        text-align: center !important;
+                    }
+
+                    /* Ensure column headers text aligns to center */
+                    .dx-datagrid-headers .dx-datagrid-table .dx-row > td {
+                        text-align: center !important;
+                    }
+
+                    .overlay-content {
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        width: 100%;
+                        height: 80%;
+                        background: #fff;
+                        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+                        border-radius: 8px;
+                        overflow: hidden;
+                    }
+
+                    #overlay-frame {
+                        width: 100%;
+                        height: 100%;
+                    }
+
+                    .Maincontainer.Maincontainer {
+                        background-color: white;
+                    }
+
+                    .close-btn {
+                        position: absolute;
+                        top: 10px;
+                        right: 20px;
+                        font-size: 30px;
+                        cursor: pointer;
+                    }
+
+
+
+
+                    /* Toolbar Styling */
+                    .custom-toolbar {
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                    }
+
+                    .filter-btn {
+                        background-color: #007bff;
+                        color: white;
+                        border: none;
+                        padding: 6px 12px;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        font-family: 'Inter', sans-serif;
+                    }
+
+                        .filter-btn:hover {
+                            background-color: #0056b3;
+                        }
+
+                    /* Text Editor Styling */
+                    .dx-texteditor {
+                        background-color: #909ead00 !important; /* Light background */
+                        border: 1px solid #d6e4f0 !important; /* Soft border */
+                        border-radius: 4px !important; /* Smaller rounded corners */
+
+                        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important; /* Reduced shadow */
+                        font-size: 14px !important; /* Slightly smaller font */
+                        transition: all 0.2s ease-in-out !important;
+                        height: 39px !important; /* Fixed height */
+                    }
+
+                        /* Hover and Focus States */
+                        .dx-texteditor:hover,
+                        .dx-texteditor.dx-state-hover,
+                        .dx-button:hover {
+                            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important; /* Slightly reduced hover effect */
+                            border-color: #86b7fe !important; /* Highlight border */
+                        }
+
+                        .dx-texteditor.dx-state-focused {
+                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important; /* Softer focus effect */
+                            border-color: #508ae1 !important;
+                        }
+
+                    #dataGrid .dx-header-row .dx-datagrid-text-content {
+                        font-weight: bold;
+                        color: black;
+                    }
+
+
+                    .dx-datagrid-header-panel {
+                        background-color: #909ead00;
+                        /* display:none; */
+                    }
+
+                    .no-border-input {
+                        border: none !important;
+                        outline: none !important;
+                        box-shadow: none !important;
+                        background: transparent !important;
+                        font-weight: bold;
+                        font-size: 16px;
+                        color: black;
+                        pointer-events: none; /* Prevents hover and click effects */
+                    }
+
+                    .dx-button-mode-contained.dx-button-default {
+                        color: black;
+                    }
+
+                    .dx-button-mode-contained.dx-button-success {
+                        color: black;
+                    }
+
+                    .toolbar-container {
+                        display: flex;
+                        gap: 10px;
+                        padding: 1% 1% 1% 1%;
+                    }
+
+                </style>
+                <!-- Filter/Info Section -->
+                <div class="toolbar-container">
+                  
+                    @(Html.DevExtreme().Button()
+                        .Text(new JS("formatMessage('Add & Attach Files')"))
+                        .Icon("attach")
+                        .Type(ButtonType.Default)
+                        .Width(250)
+                        .OnClick("inventoryDocumentBind") // JavaScript function
+                        )
+                         @(Html.DevExtreme().Button()
+                         .Text(new JS("formatMessage('Merge Selected Files')"))
+                         .Icon("fas fa-file-pdf")
+                         .Type(ButtonType.Default)
+                         .Width(280)
+                         .OnClick("mergeSelectedFiles"))
+
+                    @(Html.DevExtreme().Button()
+                        .Text(new JS("formatMessage('Save Separated PDF Files')"))
+                        .Icon("save")
+                        .Type(ButtonType.Default)
+                        .Width(280)
+                        .OnClick("saveSeparatedFiles") 
+                        )
+                    </div>
+
+                    <br />
+                    <div>
+                    @(Html.DevExtreme().DataGrid()
+                        .ID("documentGrid")
+                        .Height(500)
+                        .Width("100%")
+                        .ShowBorders(true)
+                        .ShowColumnLines(true)
+                        .ShowRowLines(true)
+                        .RowAlternationEnabled(true)
+                        .ColumnAutoWidth(true)
+                        .ShowColumnHeaders(true)
+                        .AllowColumnReordering(true)
+                        .AllowColumnResizing(true)
+                        .ColumnFixing(c => c.Enabled(true))
+                        .GroupPanel(p => p.Visible(false))
+                        .OnInitialized("onDocumentGridInitialized")
+
+                        .Selection(s => s
+                        .Mode(SelectionMode.Multiple)
+                        .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)
+                        )
+
+                        .Columns(columns =>
+                        {
+                            columns.Add().DataField("Total").Caption(new JS("formatMessage('Total')")).Alignment(HorizontalAlignment.Center).Width(100);
+                            columns.Add().DataField("DocumentType").Caption(new JS("formatMessage('Document Type')")).Alignment(HorizontalAlignment.Center).Width(200);
+                            columns.Add().DataField("DocumentRefNo").Caption(new JS("formatMessage('Document Ref No')")).Alignment(HorizontalAlignment.Center).Width(200);
+                            columns.Add().DataField("ExpiryOn").Caption(new JS("formatMessage('Expiry On')")).Alignment(HorizontalAlignment.Center).Width(150).DataType(GridColumnDataType.Date);
+                            columns.Add().DataField("NotifyOn").Caption(new JS("formatMessage('Notify On')")).Alignment(HorizontalAlignment.Center).Width(150).DataType(GridColumnDataType.Date);
+                        })
+
+                        .Summary(s => s
+                        .TotalItems(items =>
+                        {
+                            items.Add().SummaryType(SummaryType.Count).Column("Total").DisplayFormat("Total: {0}");
+                        })
+                        )
+                        )
+
+
+                    </div>
+
+                    <!-- Scripts -->
+                    <script>
+                        let DocumentGridInstance = null;
+
+                        function onDocumentGridInitialized(e) {
+                            DocumentGridInstance = e.component;
+                        }
+
+                        function loadDocumentGrid(gscode) {
+                            if (!DocumentGridInstance) return;
+
+                            const dataStore = new DevExpress.data.CustomStore({
+                                key: "DocumentRefNo",
+                                load: () => $.getJSON("/api/StockInventory/GetDocumentGridData", { gscode })
+                                    .then(data => data)
+                                    .catch(err => {
+                                        alert("Failed to load data.");
+                                        throw err;
+                                    })
+                            });
+
+                            DocumentGridInstance.option("dataSource", dataStore);
+                        }
+
+                        function getSelectedDocumentNos() {
+                            const selected = DocumentGridInstance.getSelectedRowsData();
+                            if (!selected.length) {
+                                alert("Please select at least one document.");
+                                return [];
+                            }
+                            return selected.map(r => r.DocumentRefNo);
+                        }
+
+                        function mergeSelectedFiles() {
+                            const selectedDocs = getSelectedDocumentNos();
+                            if (!selectedDocs.length) return;
+
+                            fetch("/api/StockInventory/MergeSelectedDocuments", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify(selectedDocs)
+                            })
+                            .then(response => {
+                                if (!response.ok) throw new Error("Failed to merge files.");
+                                return response.blob();
+                            })
+                            .then(blob => {
+                                const url = window.URL.createObjectURL(blob);
+                                const link = document.createElement("a");
+                                link.href = url;
+                                link.download = "MergedDocument.pdf";
+                                link.click();
+                            })
+                            .catch(err => alert("Merging failed."));
+                        }
+
+                        function saveSeparatedFiles() {
+                            const selectedDocs = getSelectedDocumentNos();
+                            if (!selectedDocs.length) return;
+
+                            fetch("/api/StockInventory/DownloadMultipleDocuments", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify(selectedDocs)
+                            })
+                            .then(response => {
+                                if (!response.ok) throw new Error("Failed to download files.");
+                                return response.blob();
+                            })
+                            .then(blob => {
+                                const url = window.URL.createObjectURL(blob);
+                                const link = document.createElement("a");
+                                link.href = url;
+                                link.download = "Documents.zip";
+                                link.click();
+                            })
+                            .catch(err => alert("Download failed."));
+                        }
+
+                                            function openInventoryDocumentPopup() {
+                        const popup = $("#inventoryDocumentPopup").dxPopup("instance");
+
+                        popup.option("onShown", function () {
+                            const frame = document.getElementById("inventoryDocumentFrame");
+                            frame.src = `/${tenantName}/IMS/InventoryDocument`; // Use backticks for template string
+                        });
+
+                        popup.show();
+                    }
+
+                    </script>
+
+
+
 
             </div>
         </div>
         <div id="tab-content-11" class="tab-content">
             <div class="background">
 
-                @await Html.PartialAsync("~/Pages/Shared/IMS/StockDetails_purchases.cshtml")
+
+            @{
+                ViewBag.Title = "Purchases Grid";
+            }
+
+
+                <style>
+
+                </style>
+            @(Html.DevExtreme().DropDownButton()
+                .ID("purchaseDropdown")
+                .Text(new JS("formatMessage('Print')"))
+                .Icon("print")
+                .ElementAttr("style", "padding:10px")
+                .DisplayExpr("Text")
+                .KeyExpr("Text")
+                .NoDataText("Show Or Remove") 
+                .ItemTemplate(@<text>
+                    <div style="display: flex; align-items: center;">
+                        <i class="dx-icon-<%- Icon %>" style="padding:10px;"></i>
+                        <span><%- Text %></span>
+                    </div>
+                </text>)
+
+                )
+
+
+                <div class="dx-card " style="background-color:transparent; border:none;padding:10px;">
+
+
+                @(Html.DevExtreme().DataGrid()
+                    .ID("PurchaseGrid")
+                    .Height(620)
+                    .DataSource(Enumerable.Empty<object>()) 
+                    .ShowBorders(true)
+                    .ShowColumnLines(true)
+                    .ShowRowLines(true)
+                    .RowAlternationEnabled(true)
+                    .ColumnAutoWidth(true)
+                    .OnInitialized("onPurchaseGridInitialized")
+                    .Columns(columns =>
+                    {
+                        columns.Add().DataField("Gscode").Caption(new JS("formatMessage('Item Code')"));
+                        columns.Add().DataField("Pono").Caption(new JS("formatMessage('Purchase Voucher No')"));
+                        columns.Add().DataField("Podate").Caption(new JS("formatMessage('Purchase Voucher Date')")).DataType(GridColumnDataType.Date);
+                        columns.Add().DataField("QuotedQuantity").Caption(new JS("formatMessage('Quantity Invoiced')"));
+                        columns.Add().DataField("UnitDesc").Caption(new JS("formatMessage('Unit Desc')"));
+                        columns.Add().DataField("UnitPrice").Caption(new JS("formatMessage('Unit Rate')"));
+                        columns.Add().DataField("ItemDiscount").Caption(new JS("formatMessage('Discount')")).Format("##,##0.00");
+                        columns.Add().DataField("LineTotalAfterDisc").Caption(new JS("formatMessage('Total After Disc')")).Format("##,##0.00");
+                        columns.Add().DataField("LineTaxAmount").Caption(new JS("formatMessage('Tax Amount')")).Format("##,##0.00");
+                        columns.Add().DataField("LineTotalWithTax").Caption(new JS("formatMessage('Total With Tax')")).Format("##,##0.00");
+                    })
+                    .Summary(summary =>
+                    {
+                        summary.TotalItems(items =>
+                        {
+                            items.Add().Column("LineTaxAmount").SummaryType(SummaryType.Count).DisplayFormat("{0}");
+                            items.Add().Column("LineTotalAfterDisc").SummaryType(SummaryType.Sum).ValueFormat("##,##0");
+                            items.Add().Column("ItemDiscount").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
+                            items.Add().Column("LineTotalWithTax").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
+                        });
+                    })
+                    )
+
+                </div>
+                <script>
+                    let PurchaseGridInstance = null;
+
+                    function onPurchaseGridInitialized(e) {
+                        PurchaseGridInstance = e.component;
+                        console.log("PurchaseGrid initialized", PurchaseGridInstance);
+                    }
+
+                    function loadPurchaseGrid(gscode) {
+                        if (!PurchaseGridInstance) {
+                            console.error("PurchaseGrid not initialized");
+                            return;
+                        }
+
+                        const dataStore = new DevExpress.data.CustomStore({
+                            key: "Pono", // Ensure this key is unique
+                            load: function () {
+                                console.log("Fetching Purchase Grid Data for GsCode:", gscode);
+                                return $.getJSON("/api/StockInventory/GetPurchaseGridData", { gscode: gscode })
+                                    .then(data => {
+                                        console.log("Purchase Grid Data Loaded", data);
+                                        return data;
+                                    })
+                                             .fail(() => {
+                        alert("Failed to load purchase grid data.");
+                    });
+                                  
+                            }
+                        });
+
+                        PurchaseGridInstance.option("dataSource", dataStore);
+                    }
+                </script>
+
 
             </div>
         </div>
-        <div id="tab-content-12" class="tab-content">
+      @*   <div id="tab-content-12" class="tab-content">
             <div class="background">
 
                 @await Html.PartialAsync("~/Pages/Shared/IMS/StockDetails_MaterialRequest.cshtml")
 
             </div>
+        </div> *@
+        <div class="Footer">
+        @await Html.PartialAsync("~/Pages/Shared/IMS/StockEditFooter.cshtml")
         </div>
-        
         </div>
 
         
@@ -411,15 +2479,67 @@
     
 <script>
 
+            function onTabSelectionChanged(e) {
+        console.log("TAB CHANGED", e);
 
-  function onTabSelectionChanged(e) {
-        // Hide all tab content
         $(".tab-content").hide();
 
-        // Show the content of the selected tab
         var selectedTabIndex = e.component.option("selectedIndex");
+        console.log("Selected tab index:", selectedTabIndex);
+
+        // Show the corresponding content
         $("#tab-content-" + (selectedTabIndex + 1)).show();
+
+        const gscode = $("#StockNoItemCode").dxTextBox("instance").option("value");
+        console.log("GsCode:", gscode);
+
+        if (!gscode) {
+            console.warn("GsCode is empty.");
+            return;
+        }
+
+        // Load the correct grid based on selected tab
+        switch (selectedTabIndex) {
+            case 1: // Stock Control
+                loadStockCardGrid(gscode);
+                break;
+            case 3: 
+                loadInvoiceGrid(gscode);
+                break;
+            case 4:
+            loadQuotationGrid(gscode);
+            break;
+              case 5:
+            loadPurchaseOrderGrid(gscode); 
+            break;
+             break;
+              case 6:
+            loadItemDeliversGrid(gscode); 
+            break;
+              case 7:
+            loadItemReceivedGrid(gscode);
+            break;
+              case 8:
+            loadUnitConversionGrid(gscode);
+            break;
+            case 9:
+            loadDocumentGrid(gscode);
+            break;
+            case 10:
+            loadPurchaseGrid(gscode);
+            break;
+            // case 2 or 0 can be used similarly for Stock Images, Item Attributes if needed
+            default:
+                console.log("No grid loading required for this tab.");
+        }
     }
+
+        function inventoryDocumentBind(){
+                const url = `/${tenantName}/IMS/InventoryDocument`;
+              const title = "";
+                  openModal(url, title);
+          }
+
       function ItemStore(){
                 const url = `/${tenantName}/IMS/StockDetails_ItemStore`;
               const title = "";
@@ -455,6 +2575,287 @@
 
           });
       });
+
+      //////
+    let isEditMode = false;
+    let isViewMode = false;
+
+    function onStockGroupChange(e) {
+        var GsgroupId = e.value;
+
+        if (!isViewMode && !isEditMode && GsgroupId) {
+            $.get('/api/StockInventory/GetNextStockNumber', { GsgroupId: GsgroupId }, function (data) {
+                $("#StockNoItemCode").dxTextBox("instance").option("value", data);
+            });
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        const mode = urlParams.get('mode');
+
+        if (code) {
+            isEditMode = mode === "edit";
+            isViewMode = mode === "view";
+
+            setTimeout(() => {
+                fetch(`/api/StockInventory/GetByCode?code=${encodeURIComponent(code)}`)
+                    .then(response => {
+                        if (!response.ok) throw new Error("Failed to load");
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data) {
+                            $("#StockNoItemCode").dxTextBox("instance").option("value", data.Gscode);
+                            $("#ItemName").dxTextBox("instance").option("value", data.Gsdescrpition);
+                            $("#ItemNameArabic").dxTextBox("instance").option("value", data.GsdescriptionAr);
+                            $("#StockGroup").dxSelectBox("instance").option("value", data.GsgroupId);
+                            $("#ItemStore").dxSelectBox("instance").option("value", data.StoreId);
+                            $("#ItemClassification").dxSelectBox("instance").option("value", data.ItemClassificationId);
+                            $("#DetailedDescription").dxTextArea("instance").option("value", data.GsdetailedDesc);
+                            $("#ArabicDescription").dxTextArea("instance").option("value", data.GsdetailedDescAr);
+                            $("#UnitOfMeasure").dxSelectBox("instance").option("value", data.GsuoM);
+                            $("#PackingUnit").dxNumberBox("instance").option("value", data.GspackingUnit);
+                            $("#ItemSize").dxSelectBox("instance").option("value", data.ItemSize);
+                            $("#ItemThickness").dxSelectBox("instance").option("value", data.ItemThickness);
+                            $("#ItemDimension").dxSelectBox("instance").option("value", data.ItemDimension);
+                            $("#ActualSize").dxTextBox("instance").option("value", data.ActualSize);
+                            $("#OpeningBalance").dxNumberBox("instance").option("value", data.OpeningBalance);
+                            $("#CostPrice").dxNumberBox("instance").option("value", data.CostPrice);
+                            $("#ExFactoryPrice").dxNumberBox("instance").option("value", data.ExFactoryCostPrice);
+                            $("#SellingPrice").dxNumberBox("instance").option("value", data.GssellingRate);
+                            $("#MinSellingPrice").dxNumberBox("instance").option("value", data.MinSellingPrice);
+                            $("#MaxSellingPrice").dxNumberBox("instance").option("value", data.MaxSellingPrice);
+                            $("#ItemPartNo").dxTextBox("instance").option("value", data.ItemPartNo);
+                            $("#ItemHSCode").dxTextBox("instance").option("value", data.Hscode);
+                            $("#ItemColor").dxColorBox("instance").option("value", data.ItemColor);
+                            $("#ItemBrand").dxSelectBox("instance").option("value", data.ItemBrand);
+                            $("#ItemManufacturer").dxSelectBox("instance").option("value", data.ItemMake);
+                            $("#CountryOfOrigin").dxTextBox("instance").option("value", data.CountryOfOrigin);
+                            $("#EnteredBy").dxTextArea("instance").option("value", data.CreatedBy);
+                            $("#ModifiedBy").dxTextArea("instance").option("value", data.ModifiedBy);
+                            $("#ItemDiscontinued").dxCheckBox("instance").option("value", data.IsDiscontinued);
+                                // Load Item Image (Base64)
+                            if (data.ItemImage) {
+                                const imgHtml = `<img src="data:image/png;base64,${data.ItemImage}" alt="Item Image" style="max-width: 100%; height: auto;" />`;
+                                document.getElementById("imgBox1").innerHTML = imgHtml;
+                            } else {
+                                document.getElementById("imgBox1").innerHTML = "<span>No image data</span>";
+                            }
+
+                            $("#MinQty").dxNumberBox("instance").option("value", data.MinQty);
+                            $("#MaxQty").dxNumberBox("instance").option("value", data.MaxQty);
+                            $("#ReorderLevel").dxNumberBox("instance").option("value", data.ReorderLevel);
+                            $("#ReorderQty").dxNumberBox("instance").option("value", data.ReorderQty);
+                            $("#ReorderLeadTime").dxNumberBox("instance").option("value", data.ReorderLeadTime);
+
+                            if (isViewMode) {
+                                setTimeout(setReadOnlyMode, 500); 
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error loading record:", error);
+                        alert("Failed to load item details.");
+                    });
+            }, 100);
+        }
+    });
+
+        function setReadOnlyMode() {
+        const ids = [
+            "StockNoItemCode", "ItemName", "ItemNameArabic", "StockGroup", "ItemStore", "ItemClassification",
+            "DetailedDescription", "ArabicDescription", "UnitOfMeasure", "PackingUnit", "ItemSize",
+            "ItemThickness", "ItemDimension", "ActualSize", "OpeningBalance", "CostPrice", "ExFactoryPrice",
+            "SellingPrice", "MinSellingPrice", "MaxSellingPrice", "ItemPartNo", "ItemHSCode", "ItemColor",
+            "ItemBrand", "ItemManufacturer", "CountryOfOrigin", "EnteredBy", "ModifiedBy", "ItemDiscontinued",
+            "MinQty", "MaxQty", "ReorderLevel", "ReorderQty", "ReorderLeadTime"
+        ];
+
+        ids.forEach(id => {
+            const $el = $(`#${id}`);
+            if (!$el.length) return;
+
+            const types = [
+                "dxTextBox",
+                "dxNumberBox",
+                "dxTextArea",
+                "dxSelectBox",
+                "dxCheckBox",
+                "dxColorBox"
+            ];
+
+            for (const type of types) {
+                try {
+                    if ($el[type]) {
+                        const instance = $el[type]("instance");
+                        if (instance) {
+                            instance.option("disabled", true);
+                            break;
+                        }
+                    }
+                } catch (e) {
+                    // Ignore errors if component not initialized
+                }
+            }
+        });
+    }
+
+
+        let selectedGsCode = "";
+
+      $(() => {
+          const stockNoBox = $("#StockNoItemCode").dxTextBox("instance");
+
+          // Set initial value to the global variable
+          selectedGsCode = stockNoBox.option("value");
+
+          // Update global variable when value changes
+          stockNoBox.option("onValueChanged", function(e) {
+              selectedGsCode = e.value;
+          });
+      });
+
+    function OpeningBalanceOPB() {
+        // Get instances safely
+        const gscodeInstance = $("#StockNoItemCode").dxTextBox("instance");
+        const descriptionInstance = $("#DetailedDescription").dxTextArea("instance");
+
+        // Check if both controls exist
+        if (!gscodeInstance || !descriptionInstance) {
+            console.warn("DevExtreme controls not initialized.");
+            return;
+        }
+
+        // Safely get values
+        const gscode = gscodeInstance.option("value") || '';
+        const description = descriptionInstance.option("value") || '';
+
+        // Encode the parameters to ensure URL safety
+        const url = `/${tenantName}/IMS/OpeningBalance?gscode=${encodeURIComponent(gscode)}&description=${encodeURIComponent(description)}&modal=true`;
+        openModal(url, "Opening Balance");
+    }
+
+
+
+
+
+
+         
+
+    async function translateToArabic(text) {
+
+         try {
+
+             const response = await fetch(
+
+                 `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`
+
+             );
+
+             const data = await response.json();
+
+             return data.responseData.translatedText;
+
+         } catch (error) {
+
+             console.error("Translation failed:", error);
+
+             return "Translation Error";
+
+         }
+
+    }
+
+    async function convertToArabic() {
+
+         // Get the TextBox1 (input) instance
+
+         const textBox1Instance = $("#DetailedDescription").dxTextArea("instance");
+
+         // Get the TextBox2 (output) instance
+
+         const textBox2Instance = $("#ArabicDescription").dxTextArea("instance");
+
+         // Ensure both instances are initialized
+
+         if (!textBox1Instance || !textBox2Instance) {
+
+             console.error("TextBox instances are not properly initialized.");
+
+             return;
+
+         }
+
+
+         // Get the value from TextBox1
+
+         const englishText = textBox1Instance.option("value");
+
+         // Validate input
+
+         if (!englishText || englishText.trim() === "") {
+
+             alert("Please enter text to translate.");
+
+             return;
+
+         }
+
+         // Perform translation
+
+         const arabicTranslation = await translateToArabic(englishText);
+
+         // Update TextBox2 with the Arabic translation
+
+         textBox2Instance.option("value", arabicTranslation);
+
+    }
+      async function convertToArabic1() {
+
+         // Get the TextBox1 (input) instance
+
+         const textBox1Instance = $("#ItemName").dxTextBox("instance");
+
+         // Get the TextBox2 (output) instance
+
+         const textBox2Instance = $("#ItemNameArabic").dxTextBox("instance");
+
+         // Ensure both instances are initialized
+
+         if (!textBox1Instance || !textBox2Instance) {
+
+             console.error("TextBox instances are not properly initialized.");
+
+             return;
+
+         }
+
+
+         // Get the value from TextBox1
+
+         const englishText = textBox1Instance.option("value");
+
+         // Validate input
+
+         if (!englishText || englishText.trim() === "") {
+
+             alert("Please enter text to translate.");
+
+             return;
+
+         }
+
+         // Perform translation
+
+         const arabicTranslation = await translateToArabic(englishText);
+
+         // Update TextBox2 with the Arabic translation
+
+         textBox2Instance.option("value", arabicTranslation);
+
+    }
 
       
 </script>

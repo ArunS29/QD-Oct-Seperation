@@ -41,6 +41,7 @@
 
 .custom-submenu li:hover {
   background-color: #f0f0f0;
+				cursor: pointer;
 }
 
 
@@ -57,9 +58,10 @@
 		overflow: hidden;
 	}
 
-	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddReports)) {
+	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddReport12)) {
 		display: none !important;
 	}
+
 	#overlay-frame {
 		width: 100%;
 		height: 100%;
@@ -191,6 +193,10 @@
 
 	.mainContainer {
 		width: 97%;
+	}
+
+	.dx-fieldset.horizontal-container {
+		margin-top: 10px;
 	}
 </style>
 
@@ -486,9 +492,11 @@
 		}))
 </div>
 
+     
+
 
 <ul id="submenu" class="custom-submenu">
-	<li id="addCreditNote">Add New e-Invoice</li>
+	<li id="addCreditNote">Add New Proforma Invoice</li>
 </ul>
 <div id="overlay" class="overlay">
 	<div class="overlay-content">
@@ -496,7 +504,6 @@
 		<iframe id="overlay-frame" src="" frameborder="0"></iframe>
 	</div>
 </div>
-
 
 <script>
 	$(document).ready(function () {
@@ -670,13 +677,24 @@
 	}
 
 
-		$("#btnAddNew1").on("click", function (e) {
-			 var button = $("#btnAddNew1").dxButton("instance");
-			 button.option("text", "Add New Proforma Invoice");
-			const  url = `/${tenantName}/VAT/ProformaInvoiceEditForm`;
-			window.location.href = url;
-			});
 
+			$(document).ready(function () {
+		$('#btnAddNew1').on('click', function (e) {
+			e.stopPropagation(); // prevent click from bubbling up
+			$('#submenu').toggle(); // toggle visibility
+			const offset = $(this).offset();
+			$('#submenu').css({ top: offset.top + $(this).outerHeight(), left: offset.left });
+		});
 
+		// Hide submenu when clicking outside
+		$(document).on('click', function () {
+			$('#submenu').hide();
+		});
+		$(document).on('click', '#addCreditNote', function (e) {
+		e.stopPropagation();
+				const url = `/${tenantName}/VAT/ProformaInvoiceEditForm`;
+		window.location.href = url;
+	});
+	});
 	
 </script>

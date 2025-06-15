@@ -1,7 +1,13 @@
 ﻿@page
 @using DevExtreme.AspNet.Mvc
 @{
-    ViewData["ClaimerUserName"] = HttpContext.Session.GetString("UserName");
+    var userIdString = HttpContext.Session.GetString("UserId");
+    byte requesterIdByte = 0;
+    if (byte.TryParse(userIdString, out var byteVal))
+    {
+        requesterIdByte = byteVal;
+        ViewData["ClaimerUserName"] = byteVal;
+    }
 
 }
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -42,24 +48,40 @@
     /* .dx-button-content { */
     /*     background-color: white !important; */
     /* } */
-
     .context-menu {
-        display: none;
-        position: absolute;
-        background-color: white;
-        border: 1px solid #ccc;
-        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-        z-index: 1000;
+        width: 250px; /* More standard width */
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+        font-family: Arial, sans-serif;
     }
 
-    .context-menu-item {
+    .context-menu-item .menu-item {
+        display: flex;
+        align-items: center;
         padding: 10px 15px;
+        border-radius: 6px;
         cursor: pointer;
+        transition: background-color 0.2s ease;
+        margin-bottom: 5px;
+    }
+
+        .context-menu-item .menu-item:hover {
+            background-color: #d5e3f5;
+        }
+
+    .menu-item i {
+        font-size: 18px;
+        margin-right: 10px;
     }
 
     .spnRightClickGride {
-        margin-left: 10px;
+        font-size: 14px;
+        color: #333;
     }
+
 
     #dropdownContainer {
         position: absolute;
@@ -75,38 +97,35 @@
         color: black;
     }
 </style>
-<input id="formId" value="frn20107ExpenseClaimView" type="hidden" />
+<input id="formId" value="frm20107ExpenseClaimView" type="hidden" />
 <div class="title">
     <div class="header-container">
         <div id="ExpensesClaims" class="no-border-input"></div>
     </div>
 </div>
 <div>
-    @await Html.PartialAsync("_GridFooter", new ViewDataDictionary(ViewData) { { "HideDropdowns", true } })
+    @await Html.PartialAsync("_ExpenseClaimFooter")
 </div>
 
 <div class="content-container-top">
     <div class="context-menu" id="contextMenu">
-        <div id="contextMenuContent"></div>
         <div class="context-menu-item">
-            <div style="margin-bottom:5px">
-                <i style="color:cornflowerblue" class="fa fa-pencil-square-o">
-                    <span style="color:black" class="spnRightClickGride spneditJournal">Edit Claim</span>
-                </i>
+            <div class="menu-item">
+                <i class="fa fa-pencil-square-o" style="color:cornflowerblue;"></i>
+                <span class="spnRightClickGride">Edit Claim</span>
             </div>
-            <div style="margin-bottom:5px">
-                <i style="color:red" class="fa fa-times">
-                    <span class="spnRightClickGride">Delete Claim</span>
-                </i>
+            <div class="menu-item">
+                <i class="fa fa-times" style="color:red;"></i>
+                <span class="spnRightClickGride">Delete Claim</span>
             </div>
-            <div style="margin-bottom:5px">
-                <i style="color:orange" class="fa fa-unlock">
-                    <span style="color:black" class="spnRightClickGride">Unlock Claim</span>
-                </i>
+            <div class="menu-item">
+                <i class="fa fa-unlock" style="color:orange;"></i>
+                <span class="spnRightClickGride">Unlock Claim</span>
             </div>
-
         </div>
     </div>
+</div>
+
 
     <div class="dx-fieldset horizontal-container ">
 
@@ -162,6 +181,7 @@
             .Value(DateTime.Now)
             )
         @(Html.DevExtreme().Button()
+            .ID("ExpenseSubmission")
             .Text(new JS("formatMessage('Show all Submissions')"))
             .Type(ButtonType.Normal)
             .StylingMode(ButtonStylingMode.Contained)
@@ -206,13 +226,15 @@
                     columns.AddFor(m => m.ClaimerID).Caption(new JS("formatMessage('Claimer ID')")).Alignment(HorizontalAlignment.Center).Visible(false);
                 columns.AddFor(m => m.ClaimRefNo).Caption(new JS("formatMessage('Claim Ref No')")).Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
             <div>
-                <a href="javascript:void(0);" style="color: #007bff; font-weight: bold;"
-                   onclick="">
+                <a href="javascript:void(0);"
+                   style="color: #007bff; font-weight: bold;"
+                   onclick="onClaimRefNoClick('<%- data.ClaimRefNo %>')">
                     <%- data.ClaimRefNo %>
                 </a>
             </div>
         </text>).Visible(true);
-                    columns.AddFor(m => m.PaymentVoucherNo).Caption(new JS("formatMessage('Payment Voucher No')")).Alignment(HorizontalAlignment.Center).Visible(false);
+
+                    
                     columns.AddFor(m => m.ApprovedBy).Caption(new JS("formatMessage('Approved By')")).Alignment(HorizontalAlignment.Center).Visible(false);
                     columns.AddFor(m => m.ApprovedOn).Caption(new JS("formatMessage('Approved On')")).Alignment(HorizontalAlignment.Center).Format(format => format
                 .Type(Format.ShortDate)    // Custom type format
@@ -221,12 +243,33 @@
                     columns.AddFor(m => m.ClaimCreatedOn).Caption(new JS("formatMessage('Claim Created On')")).Alignment(HorizontalAlignment.Center).Format(format => format
                 .Type(Format.ShortDate)    // Custom type format
                 .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }")).Visible(false);
-                    columns.AddFor(m => m.ClaimerName).Caption(new JS("formatMessage('Claimer Name')")).Alignment(HorizontalAlignment.Center).Visible(false);
+               
+
+columns.AddFor(m => m.ClaimerName)
+.Caption("Claimer Name")
+.GroupIndex(0)
+.SortOrder(SortOrder.Asc)
+.Visible(true);
+
+
+columns.Add()
+.Caption("Total Consumed Amount")
+.DataField("TotalConsumedAmount")
+.CalculateCellValue("function(data) { return (data.ClaimedAmountTotal || 0) + (data.ApprovedAmountTotal || 0); }")
+.Format(f => f.Type(Format.FixedPoint).Precision(2))
+.Visible(false); // optional if you don't want it shown in detail rows
+
+
+
+
+
+
+
                     columns.AddFor(m => m.ClaimModifiedBy).Caption(new JS("formatMessage('Claim Modified By')")).Alignment(HorizontalAlignment.Center).Visible(false);
                     columns.AddFor(m => m.ClaimModifiedOn).Caption(new JS("formatMessage('Claim Modified On')")).Alignment(HorizontalAlignment.Center).Format(format => format
                 .Type(Format.ShortDate)    // Custom type format
                 .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }")).Visible(false);
-                    columns.AddFor(m => m.ClaimRemarks).Caption(new JS("formatMessage('Claim Remarks')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                   
                     columns.AddFor(m => m.PaidBy).Caption(new JS("formatMessage('Paid By')")).Alignment(HorizontalAlignment.Center).Visible(false);
                     columns.AddFor(m => m.PaidOn).Caption(new JS("formatMessage('Paid On')")).Alignment(HorizontalAlignment.Center).Format(format => format
                 .Type(Format.ShortDate)    // Custom type format
@@ -298,6 +341,7 @@
             .DisplayFormat("dd-MMM-yyyy")
             )
         </text>); 
+                    
                     columns.AddFor(m => m.ClaimRemarks).Caption(new JS("formatMessage('Claim Remarks')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
                     columns.AddFor(m => m.ClaimedAmountTotal)
                 .Caption(new JS("formatMessage('Claimed Amount')"))
@@ -362,23 +406,41 @@
 
                 })
             .Height(600)
+            .Grouping(grouping => grouping.AutoExpandAll(true)) // Optional
+            .GroupPanel(groupPanel => groupPanel.Visible(false))
+            .Scrolling(scrolling => scrolling
+            .Mode(GridScrollingMode.Virtual)
+            .UseNative(false)
+            )
+            .Paging(paging => paging.Enabled(false))
+
             .ColumnAutoWidth(true)
             .AllowColumnReordering(true) // Enable column reordering
             .AllowColumnResizing(true)   // Enable column resizing
             .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
             .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
-            .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
+            // Display group panel
             @*  .Editing(editing => editing
         .AllowUpdating(true)    // Allow updating of existing rows
         .AllowAdding(false)     // Disable adding new records
         .AllowDeleting(false)   // Disable deleting records
         .UseIcons(true))        // Enable edit icons (like pencil) *@
-            //.Paging(paging => paging.Enabled(false))
+            
             .ShowBorders(true)
             .Editing(editing => editing.Mode(GridEditMode.Cell).AllowAdding(false).AllowUpdating(true))
             .ColumnChooser(c => c.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
-            .OnEditorPreparing("onEditorPreparing")
+            
+
             .Summary(s => s
+            .GroupItems(groupItems =>
+            {
+                groupItems.Add()
+                .Column("TotalConsumedAmount")
+                .SummaryType(SummaryType.Sum)
+                .ShowInGroupFooter(false)
+                .AlignByColumn(false)
+                .CustomizeText("function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+            })
             .TotalItems(totalItems =>
             {
                 totalItems.Add()
@@ -482,6 +544,7 @@
 
 <script type="text/javascript">
     let accheadname, accheadid
+    let contextMenuRowData = null;
     $(function () {
         $("#ExpensesClaims").dxTextBox({
                 text:formatMessage("Expenses Claims"),
@@ -497,22 +560,247 @@
         $(document).on("click", function () {
             contextMenu.hide();
         });
-        // Apply the custom context menu plugin
-        $("#dataGrid").customizeGridContextMenu();
+        $(".context-menu").on("click", ".menu-item", function () {
+            const actionLabel = $(this).find(".spnRightClickGride").text().trim();
 
-        // Handle right-click event on the DataGrid rows
-        $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
-            e.preventDefault(); // Prevent the default context menu
-            var rowIndex = $(this).index(); // Get the row index
-            var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex]; // Get the data for the row
-            console.log(rowData); // Log or use the row data as needed
-            // Clear previous content
-            contextMenuContent.empty();
-            // Add column titles and values to the context menu
-            contextMenuContent.append("<div style='display:none'><strong>Voucher No:</strong> " + rowData.VoucherNo + "</div>");
-            // Show custom context menu
-            contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
+            switch (actionLabel) {
+                case "Edit Claim":
+                    handleEditJournalEntry();
+                    break;
+                case "Delete Claim":
+                    handleDeleteJournalEntry();
+                    break;
+                case "Unlock Claim":
+                    handleUnlockJournalEntry();
+                    break;
+               
+                default:
+                    DevExpress.ui.notify("Unknown action.", "warning", 2000);
+            }
         });
+
+        function handleEditJournalEntry() {
+            debugger;
+            if (contextMenuRowData) {
+                const claimRefNo = contextMenuRowData.items && contextMenuRowData.items.length > 0
+                    ? contextMenuRowData.items[0].ClaimRefNo
+                    : null;
+                if (claimRefNo && claimRefNo.trim() !== "") {
+                    let targetUrl = '';
+
+                    if (claimRefNo.startsWith('EXP')) {
+                        targetUrl = `/${tenantName}/finance/ExpensesClaimRequest?claimRefNo=${encodeURIComponent(claimRefNo)}`;
+                    } else if (claimRefNo.startsWith('PCQ')) {
+                        targetUrl = `/${tenantName}/finance/PettyCashRequest?claimRefNo=${encodeURIComponent(claimRefNo)}`;
+                    } else if (claimRefNo.startsWith('SRQ')) {
+                        targetUrl = `/${tenantName}/finance/SupplierPaymentRequest?claimRefNo=${encodeURIComponent(claimRefNo)}`;
+                    }
+
+                    if (targetUrl) {
+                        window.location.href = targetUrl;
+                    }
+                } else {
+                    alert("Claim Reference Number is missing.");
+                }
+            } else {
+                alert("Please right-click a row to edit.");
+            }
+        }
+
+
+        function handleDeleteJournalEntry() {
+            const dataGrid = $("#dataGrid").dxDataGrid("instance");
+            const selectedRow = dataGrid.getSelectedRowsData();
+
+            if (selectedRow.length > 0) {
+                const journalRefNo = selectedRow[0].JournalRefNo;
+
+                if (journalRefNo && journalRefNo.trim() !== "") {
+                    $.ajax({
+                        type: "GET",
+                        url: "/api/JournalRegister/GetJournalStatus",
+                        contentType: "application/json",
+                        data: { journalRefNo: journalRefNo },
+                        success: function (response) {
+                            if (response) {
+                                const { isSubmitted, isApproved, isPosted } = response;
+
+                                if (isSubmitted) {
+                                    DevExpress.ui.dialog.alert("Journal Entry is already Submitted, You cannot delete the Submitted JV.", "JV is submitted already");
+                                } else if (!isSubmitted && isApproved || isPosted) {
+                                    DevExpress.ui.dialog.alert("Journal Entry is already Approved, You cannot delete the Approved JV.", "JV is Approved already");
+                                } else if (isSubmitted && isApproved && isPosted) {
+                                    DevExpress.ui.dialog.alert("Journal Entry is already Paid, You cannot delete the Posted JV.", "Warning");
+                                } else if (!isSubmitted && !isApproved && !isPosted) {
+                                    let result = DevExpress.ui.dialog.confirm(
+                                        "You are about to delete the Journal Entry from the Register,<br/>Click Yes if you would like to continue.",
+                                        "Confirm Deletion"
+                                    );
+                                    result.done(function (dialogResult) {
+                                        if (dialogResult) {
+                                            $.ajax({
+                                                type: "POST",
+                                                url: `/api/JournalRegister/DeleteJournalEntry?journalRefNo=${encodeURIComponent(journalRefNo)}`,
+                                                contentType: "application/json",
+                                                success: function (deleteResponse) {
+                                                    if (deleteResponse.success) {
+                                                        getAllSubmissionJournal();
+                                                        DevExpress.ui.notify("Journal Entry deleted successfully.", "success", 2000);
+                                                    } else {
+                                                        DevExpress.ui.notify("Failed to delete Journal Entry.", "error", 2000);
+                                                    }
+                                                },
+                                                error: function () {
+                                                    DevExpress.ui.notify("Error occurred during deletion.", "error", 2000);
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            } else {
+                                DevExpress.ui.notify("Failed to fetch journal status.", "error", 2000);
+                            }
+                        },
+                        error: function () {
+                            DevExpress.ui.notify("Error fetching journal status.", "error", 2000);
+                        }
+                    });
+                } else {
+                    DevExpress.ui.dialog.alert("Journal Reference Number is missing.", "Error");
+                }
+            } else {
+                DevExpress.ui.dialog.alert("Please select a row to delete.", "Error");
+            }
+        }
+
+
+        function handleUnlockJournalEntry() {
+            const dataGrid = $("#dataGrid").dxDataGrid("instance");
+            const selectedRow = dataGrid.getSelectedRowsData();
+            if (!selectedRow || selectedRow.length === 0) {
+                DevExpress.ui.notify("Please select a row to unlock.", "warning", 2000);
+                return;
+            }
+
+
+            const journalRefNo = selectedRow[0].JournalRefNo;
+            const isPosted = selectedRow[0].IsPosted;
+
+            if (isPosted) {
+                DevExpress.ui.dialog.alert("Claim is already Posted, You can't unlock the Posted JV.", "JV is posted already");
+                return;
+            }
+
+            DevExpress.ui.dialog.confirm(
+                "You are about to unlock the JV.</br>Click Yes if you would like to continue.",
+                "Unlock Confirmation"
+            ).done(function (dialogResult) {
+                if (dialogResult) {
+                    // Perform AJAX request to update the database
+                    $.ajax({
+                        url: `/api/JournalRegister/UnlockJournalEntry?journalRefNo=${encodeURIComponent(journalRefNo)}`,
+                        type: 'POST',
+                        contentType: "application/json",
+
+                        success: function (response) {
+                            if (response.success) {
+                                getAllSubmissionJournal();
+                                DevExpress.ui.notify("Journal Entry unlocked successfully.", "success", 2000);
+                                // Optionally refresh your DataGrid here
+                            } else {
+                                DevExpress.ui.notify("Failed to unlock Journal Entry: " + response.message, "error", 3000);
+                            }
+                        },
+                        error: function () {
+                            DevExpress.ui.notify("An error occurred while unlocking the Journal Entry.", "error", 3000);
+                        }
+                    });
+                }
+            });
+        }
+        function handleCloneJournalEntry() {
+            const dataGrid = $("#dataGrid").dxDataGrid("instance");
+            const selectedRow = dataGrid.getSelectedRowsData();
+            if (!selectedRow || selectedRow.length === 0) {
+                DevExpress.ui.notify("No Journal Entry selected.", "warning", 2000);
+                return;
+            }
+
+            DevExpress.ui.dialog.confirm(
+                "You are about to clone the Journal Entry.</br>Click Yes if you would like to continue.",
+                "Confirm Clone"
+            ).done(function (dialogResult) {
+                if (dialogResult) {
+                    const journalRefNo = selectedRow[0].JournalRefNo;
+                    const requesterId = selectedRow[0].RequesterID;
+
+                    // Step 1: Get new voucher number
+                    $.get('/api/JournalEntryEdit/GetNewVoucherNo', function (newVoucherNo) {
+                        // Step 2: Call clone action
+                        $.ajax({
+                            url: '/api/JournalRegister/CloneJournalEntry',
+                            type: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify({
+                                fromJournalRefNo: journalRefNo,
+                                toJournalRefNo: newVoucherNo,
+                                requesterId: requesterId
+                            }),
+                            success: function (response) {
+                                if (response.success) {
+                                    getAllSubmissionJournal();
+                                    DevExpress.ui.notify("Journal Entry cloned successfully.", "success", 2000);
+                                    // Optionally refresh DataGrid
+                                } else {
+                                    DevExpress.ui.notify("Clone failed: " + response.message, "error", 3000);
+                                }
+                            },
+                            error: function (xhr) {
+                                DevExpress.ui.notify("Error: " + xhr.statusText, "error", 3000);
+                            }
+                        });
+                    });
+                }
+            });
+        }
+        $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            debugger;
+            const dataGrid = $("#dataGrid").dxDataGrid("instance");
+            const rowElements = dataGrid.getScrollable().content().find(".dx-data-row");
+            const clickedRowElement = $(this).get(0);
+
+            let rowIndex = -1;
+
+            rowElements.each(function (index) {
+                if (this === clickedRowElement) {
+                    rowIndex = index;
+                    return false; // break
+                }
+            });
+
+            const visibleRows = dataGrid.getVisibleRows();
+            const rowData = visibleRows[rowIndex]?.data;
+
+            contextMenuRowData = rowData;
+
+            if (!contextMenuRowData) {
+                console.warn("Clicked row is a group row or invalid.");
+                return;
+            }
+
+            console.log("Row Data:", contextMenuRowData);
+
+            // Show context menu
+            $("#contextMenuContent").empty();
+            $("#contextMenu").css({
+                top: e.pageY + "px",
+                left: e.pageX + "px"
+            }).show();
+        });
+
+
         $("#dataGrid").dxDataGrid({
             onRowUpdating: function (e) {
                 console.log("Row is updating", e);
@@ -533,7 +821,7 @@
         return formattedDate;
     }
     function getJournalOnLoad() {
-        var requesterID = 102;
+        var requesterId = accheadid || '@requesterIdByte';
         // Get the current date
         var currentDate = new Date();
         // Get the start date of the current month
@@ -547,7 +835,7 @@
             url: '/api/ExpenseClaim/GetExpenseClaim',  // API endpoint
             type: 'GET',
             data: {
-                RequesterID: requesterID, // Set this according to your logic
+                ClaimerID: requesterId, // Set this according to your logic
                 StartDate: startDate, // Start date
                 EndDate: endDate, // End date
                 IfShowAll: false // Set to
@@ -564,6 +852,9 @@
 
     }
     function getAllSubmissionJournal() {
+
+        var requesterId = accheadid || '@requesterIdByte';
+
         var startDateInstance = $("#startDate").dxDateBox("instance");
         var startDateval = startDateInstance.option("value");
         var startDate = formatedate(startDateval);
@@ -576,7 +867,7 @@
             url: '/api/ExpenseClaim/GetExpenseClaim',  // API endpoint
             type: 'GET',
             data: {
-                RequesterID: "", // Set this according to your logic
+                ClaimerID: requesterId, // Set this according to your logic
                 StartDate: startDate, // Start date
                 EndDate: endDate, // End date
                 IfShowAll: true
@@ -594,14 +885,10 @@
 
     // This function used to call API to get records for the selected values.
     function ddBtnShowRecords_click(duration) {
-        debugger;
-        var requester = parseInt(accheadid, 10); // Ensure it's a number
+        
+        var requesterId = accheadid || '@requesterIdByte';// Ensure it's a number
 
-        // Ensure requester is within the valid byte range (0-255)
-        if (isNaN(requester) || requester < 0 || requester > 255) {
-            DevExpress.ui.notify("Invalid Requester ID", "error", 2000);
-            return;
-        }
+        
         var frmDateBox = $("#startDate").dxDateBox("instance");
         var toDateBox = $("#endDate").dxDateBox("instance");
         var frmDate = new Date(frmDateBox.option("value"));
@@ -674,7 +961,7 @@
             url: '/api/ExpenseClaim/GetExpenseClaim',  // API endpoint
             type: 'GET',
             data: {
-                ClaimerID: requester, // Set this according to your logic
+                ClaimerID: requesterId, // Set this according to your logic
                 StartDate: frmDate, // Start date
                 EndDate: toDate, // End date
                 IfShowAll: false // Set to
@@ -698,7 +985,7 @@
             dataGrid.selectRows(e.value, false);
         }
         if (e.value) {
-            debugger;
+            
             let grid = $("#dataGrid").dxDataGrid("instance");
             let rowIndex = e.element.closest("tr").index(); // Get the edited row index
             let rowData = grid.getVisibleRows()[rowIndex].data;
@@ -742,59 +1029,7 @@
         // Close the dropdown after selection
         e.component.option("opened", false);
     }
-
-    function onEditorPreparing(e) {
-        if (e.dataField === 'ClaimRemarks') {
-            if (isUpdatingCell) {
-                return; // Prevent recursive triggering
-            }
-
-            e.cancel = true; // Prevent the default editor behavior
-
-            const dataGridInstance = e.component; // Get the DataGrid instance
-            const rowIndex = e.row.rowIndex; // Get the row index of the clicked cell
-            const fieldName = e.dataField; // Dynamic field name (EntryNarration or SysRemarks)
-            const initialValue = e.row.data[fieldName] || ""; // Get the current value of the cell
-
-            // Show Swal modal
-            Swal.fire({
-                title: `<i class="fas fa-edit" style="color:#007bff"></i> Edit ${fieldName.replace(/([A-Z])/g, ' $1')}`, // Format field name for title
-                html: `
-                <textarea id="swal-field-editor"
-                                          style="width:100%; height:100px; font-size:16px; padding:10px; border-radius:8px; border:1px solid #ddd;"
-                                          placeholder="Enter ${fieldName.replace(/([A-Z])/g, ' $1')}...">${initialValue}</textarea>
-                            `,
-                showCancelButton: true,
-                confirmButtonText: 'OK',
-                cancelButtonText: 'Cancel',
-                focusConfirm: false,
-                didOpen: () => {
-                    // Focus the textarea and move the cursor to the end
-                    const textarea = document.getElementById('swal-field-editor');
-                    textarea.focus();
-                    textarea.setSelectionRange(initialValue.length, initialValue.length);
-                },
-                preConfirm: () => {
-                    const newValue = document.getElementById('swal-field-editor').value.trim();
-                    return newValue; // Return the new value from the modal
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const newValue = result.value;
-
-                    if (newValue !== initialValue) {
-                        isUpdatingCell = true; // Set the flag before updating the cell
-                        dataGridInstance.cellValue(rowIndex, fieldName, newValue); // Update the specific cell dynamically
-                        dataGridInstance.saveEditData(); // Save the edit data
-                        dataGridInstance.refresh(); // Refresh the grid to reflect changes
-                        isUpdatingCell = false; // Reset the flag after updating
-                    }
-                } else if (result.isDismissed) {
-                    console.log('Edit cancelled');
-                }
-            });
-        }
-    }
+    
     function onOpened(e) {
         setTimeout(() => {
             e.component.focus();
@@ -840,5 +1075,41 @@
     function dataGridAccountHeadInitialized(e) {
         dataGrid = e.component;
     }
+   
+        function onClaimRefNoClick(claimRefNo) {
+            
+            if (!claimRefNo) return;
 
+       
+        let targetUrl = '';
+
+        if (claimRefNo.startsWith('EXP')) {
+            targetUrl = `/${tenantName}/finance/ExpensesClaimRequest?claimRefNo=${encodeURIComponent(claimRefNo)}`;
+            } else if (claimRefNo.startsWith('PCQ')) {
+            targetUrl = `/${tenantName}/finance/PettyCashRequest?claimRefNo=${encodeURIComponent(claimRefNo)}`;
+            } else if (claimRefNo.startsWith('SRQ')) {
+            targetUrl = `/${tenantName}/finance/SupplierPaymentRequest?claimRefNo=${encodeURIComponent(claimRefNo)}`;
+            }
+
+        if (targetUrl) {
+            window.location.href = targetUrl;
+            }
+        }
+
+    function createpayment() {
+        window.location.href = `/${tenantName}/Finance/CreatePaymentRequest`;
+    }
+    function togglesupplierGroupPanel() {
+        var dataGrid = $("#SupplierpaymentdataGrid").dxDataGrid("instance");
+        var isVisible = dataGrid.option("groupPanel.visible");
+        dataGrid.option("groupPanel.visible", !isVisible);
+    }
+    function togglesupplierFilterRow() {
+
+        var grid = $("#SupplierpaymentdataGrid").dxDataGrid("instance");
+        var currentVisibility = grid.option("filterRow.visible");
+
+        grid.option("filterRow.visible", !currentVisibility);
+    }
+   
 </script>

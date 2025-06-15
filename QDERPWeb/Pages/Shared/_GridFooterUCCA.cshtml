@@ -138,6 +138,9 @@
             .Type(ButtonType.Normal)
             .StylingMode(ButtonStylingMode.Outlined)
             .Width(180)
+            .OnClick("printGrid")
+
+
             )
     </div>
     <div class="btn-container">
@@ -182,7 +185,7 @@
         .Icon("rowfield")
         .Text(new JS("formatMessage('Show Row Totals')"))
         .Width(180)
-        .OnClick("toggleGroupPanel")
+        //.OnClick("toggleGroupPanel")
         )
 </div>
 
@@ -646,8 +649,9 @@
 
     };
 
-    function handleReportsClick(e) {
-        
+
+
+            function handleReportsClick(e) {
         const selectedText = e.itemData.text;
 
         // Get instances of SelectBox and DateBox components
@@ -666,7 +670,7 @@
             return;
         }
 
-        // Function to format date as D-MMM-YYYY
+        // Format date as D-MMM-YYYY
         function formatDate(date) {
             let dateObj = new Date(date);
             let day = dateObj.getDate();
@@ -681,15 +685,11 @@
         if (reportMappings[selectedText]) {
             const reportName = reportMappings[selectedText];
 
-            console.log(`Opening report: ${reportName}`);
-            console.log("From Date:", frmDateStr);
-            console.log("To Date:", toDateStr);
-            console.log("Cost Allocation Group:", requestedBy ? requestedBy : "Not provided");
-
-            // Construct the URL with frmDate and toDate as mandatory, and requestedBy if available
+            // Construct the URL with frmDate and toDate (always required)
             let url = `/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
 
-            if (requestedBy) {
+            // Append requestedBy only if selected
+            if (requestedBy && requestedBy !== '') {
                 url += `&requestedBy=${encodeURIComponent(requestedBy)}`;
             }
 
@@ -699,6 +699,75 @@
             console.warn('No report mapping found for:', selectedText);
         }
     }
+
+
+
+
+        function printGrid() {
+        const gridContainer = $("#costcenter-datagrid").closest('.some-container');
+        const wasHidden = gridContainer.is(":hidden");
+        if (wasHidden) {
+            gridContainer.show();
+        }
+        exportDataGridToPDF('costcenter-datagrid');
+        if (wasHidden) {
+            gridContainer.hide();
+        }
+    }
+
+    // function handleReportsClick(e) {
+        
+    //     const selectedText = e.itemData.text;
+
+    //     Get instances of SelectBox and DateBox components
+    //     var dropDownBox = $("#requestedBy").dxDropDownBox("instance");
+    //     var requestedBy = dropDownBox.option("value");
+
+    //     var frmDateBox = $("#frmdateBox").dxDateBox("instance");
+    //     var toDateBox = $("#todateBox").dxDateBox("instance");
+
+    //     var frmDate = frmDateBox.option("value");
+    //     var toDate = toDateBox.option("value");
+
+    //     Validate required fields
+    //     if (!frmDate || !toDate) {
+    //         alert("Please select both start and end dates.");
+    //         return;
+    //     }
+
+    //     Function to format date as D-MMM-YYYY
+    //     function formatDate(date) {
+    //         let dateObj = new Date(date);
+    //         let day = dateObj.getDate();
+    //         let month = dateObj.toLocaleString('en-US', { month: 'short' });
+    //         let year = dateObj.getFullYear();
+    //         return `${day}-${month}-${year}`;
+    //     }
+
+    //     var frmDateStr = formatDate(frmDate);
+    //     var toDateStr = formatDate(toDate);
+
+    //     if (reportMappings[selectedText]) {
+    //         const reportName = reportMappings[selectedText];
+
+    //         console.log(`Opening report: ${reportName}`);
+    //         console.log("From Date:", frmDateStr);
+    //         console.log("To Date:", toDateStr);
+    //         console.log("Cost Allocation Group:", requestedBy ? requestedBy : "Not provided");
+    
+    //            if (requestedBy) {
+    //             url += `&requestedBy=${encodeURIComponent(requestedBy)}`;
+    //         }
+    //         Construct the URL with frmDate and toDate as mandatory, and requestedBy if available
+    //         let url = `/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}&requestedBy&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
+
+
+    //         Open Document Viewer
+    //         window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+    //     } else {
+    //         console.warn('No report mapping found for:', selectedText);
+    //     }
+    // }
 
            
 

@@ -2,35 +2,35 @@
 @model QD.ERP.Web.Areas.IMS.Pages.QuotationAnalysisModel
 @{
 }
-@{
-    var dropDownData = new[] {
-        new { ID = 1, Request = "Req001", Enquiry = "ENQ001", Client = "Client A", Supplier = "Supplier X" },
-        new { ID = 2, Request = "Req002", Enquiry = "ENQ002", Client = "Client B", Supplier = "Supplier Y" },
-        new { ID = 3, Request = "Req003", Enquiry = "ENQ003", Client = "Client C", Supplier = "Supplier Z" }
-    };
-}
+@using DevExtreme.AspNet.Mvc
+@using DevExtreme.AspNet.Mvc.Builders
+
+<title>DevExtreme PivotGrid Export to PDF</title>
+<link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/23.2.3/css/dx.light.css">
+<script src="https://cdn3.devexpress.com/jslib/23.2.3/js/jquery.min.js"></script>
+<script src="https://cdn3.devexpress.com/jslib/23.2.3/js/jszip.min.js"></script>
+<script src="https://cdn3.devexpress.com/jslib/23.2.3/js/dx.all.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
 
 <style>
+    #pivotGridContainer {
+        margin-top: 20px;
+    }
+
+    button {
+        margin-top: 20px;
+    }
     .mainContainer{
         width:100%;
 
     }
 
-    .limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnColumnChooser,#btnCreateQuotations)) {
-        display: none !important
-    }
-
 </style>
-@using DevExtreme.AspNet.Mvc
-@using DevExtreme.AspNet.Mvc.Builders
-<div class="Head">
-    <div class="limited-footer">
-        @await Html.PartialAsync("InventoryModuleFooter")
-    </div>
-</div>
+        @await Html.PartialAsync("/Pages/Shared/IMS/QuotationAnalysisFooter.cshtml")
 <div style="padding: 10px; background-color: #c7cfdd;">
     <div style="display: flex; align-items: center; gap: 10px;">
-        <label style="font-weight: bold;">Select a Request / Enquiry:</label>
+        <label id="SelectRequest" style="font-weight: bold;"></label>
 
         @(Html.DevExtreme().DropDownBox()
             .ID("requestSelectBox")
@@ -42,7 +42,7 @@
             )
             .ValueExpr("Mprno")        // <--- This will be used as value
             .DisplayExpr("Mprno")      // <--- This will be shown in the DropDownBox input
-            .Placeholder("Select request")
+            .Placeholder(new JS("formatMessage('Select request')"))
             .ShowClearButton(true)
             .Width(300)
             .DropDownOptions(o => o.Width(1000)) // ✅ Width of the popup dropdown
@@ -69,11 +69,11 @@
             @* .GroupPanel(g => g.Visible(true)) *@///COLUMN GROUP IN TOP OF THE GRID
 
             .Columns(columns => {
-            columns.Add().DataField("Mprno").Caption("Request/Enquiry.No");
-            columns.Add().DataField("NoOfRfqissued").Caption("No of RFQ Issued");
-            columns.Add().DataField("ClientName").Caption("Client Name or Store Name");
-            columns.Add().DataField("Mprdate").Caption("MPR Date").DataType(GridColumnDataType.Date). Format("dd-MMM-yyyy");
-            columns.Add().DataField("RequestedBy").Caption("Requested By");
+            columns.Add().DataField("Mprno").Caption(new JS("formatMessage('Request/Enquiry.No')"));
+            columns.Add().DataField("NoOfRfqissued").Caption(new JS("formatMessage('No of RFQ Issued')"));
+            columns.Add().DataField("ClientName").Caption(new JS("formatMessage('Client Name or Store Name')"));
+            columns.Add().DataField("Mprdate").Caption(new JS("formatMessage('MPR Date')")).DataType(GridColumnDataType.Date). Format("dd-MMM-yyyy");
+            columns.Add().DataField("RequestedBy").Caption(new JS("formatMessage('Requested By')"));
 
             })
 
@@ -84,39 +84,20 @@
 
         @(Html.DevExtreme().Button()
             .ID("viewAnalysisButton")
-            .Text("View Analysis")
+            .Text(new JS("formatMessage('View Analysis')"))
             .Icon("chart")
             .Type(ButtonType.Normal)
+            .OnClick("onViewAnalysisClick")
             )
     </div>
-    <!-- ✅ Add this container for PivotGrid -->
-</div>
-@* @using (Html.DevExtreme().NamedTemplate("LedgerContentTemplate")) *@
-@* { *@
-@*     @(Html.DevExtreme().DataGrid() *@
-@*             .ID("dropDownGrid") *@
-@*             .DataSource(dropDownData) *@
-@*             .Selection(s => s.Mode(SelectionMode.Single)) *@
-@*             .HoverStateEnabled(true) *@
-@*             .Paging(p => p.PageSize(5)) *@
-@*             .Height(250) *@
-@*             .Columns(columns => *@
-@*             { *@
-@*                 columns.Add().DataField("Request").Caption("Request"); *@
-@*                 columns.Add().DataField("Enquiry").Caption("Enquiry"); *@
-@*                 columns.Add().DataField("Client").Caption("Client"); *@
-@*                 columns.Add().DataField("Supplier").Caption("Supplier"); *@
-@*             }) *@
-@*             .OnSelectionChanged("onSelectionChanged") *@
-@*         ) *@
-@* } *@
 
-<div id="pivotGridContainer" style="margin-top: 20px;"></div>
+    <div id="pivotGridContainerId" style="margin-top: 20px;"></div>
+</div>
 
 <script>
       
 
-     function onGridRowClick(e) {
+    function onGridRowClick(e) {
         var selectedData = e.data;
         if (selectedData) {
             var dropDownBox = $("#requestSelectBox").dxDropDownBox("instance");
@@ -125,59 +106,106 @@
         }
     }
 
-    const emptyData = []; // No data initially
-    $(function () {
-        $("#pivotGridContainer").dxPivotGrid({
-            dataSource: {
-                store: {
-                    type: "array",
-                    data: emptyData
-                },
-                fields: [
-                    // area: null → enables drag/drop via field panel
-                    { dataField: "SupplierName", caption: "Supplier Name", area: "row" },
-                    { dataField: "ItemDescription", caption: "Item Description", area: "column" },
-                    { dataField: "Quantity", caption: "Quantity", area: "data", dataType: "number", summaryType: "sum" }
-                ]
+    function onViewAnalysisClick() {
+        const mprno = $("#requestSelectBox").dxDropDownBox("instance").option("value");
+        if (!mprno) {
+            DevExpress.ui.notify("Please select a request/enquiry first.", "warning", 2000);
+            return;
+        }
+
+        loadPivotGridData(mprno);
+    }
+
+    let pivotGridInstance = null;
+    let currentPivotRawData = [];
+
+        function loadPivotGridData(mprno) {
+        $.ajax({
+            url: '/api/QuotationAnalysis/GetQuotationAnalysisPvg?mprno=' + mprno,
+            type: 'GET',
+            success: function (data) {
+                console.log("API Data: ", data);
+
+                currentPivotRawData = data; // Save raw data for export
+
+                pivotGridInstance = $("#pivotGridContainerId").dxPivotGrid({
+                    dataSource: {
+                        fields: [
+                            { dataField: "Gsdescrpition", area: "row", caption: formatMessage("Item Description") },
+                            { dataField: "QuotedQuantity", area: "row", caption: formatMessage("Quantity") },
+                            { dataField: "SupplierName", area: "column", caption: formatMessage("Supplier Name") },
+                            { dataField: "UnitPrice", area: "data", caption: formatMessage("Unit Price"), summaryType: "avg", format: "currency" },
+                            { dataField: "ItemDiscount", area: "data", caption: formatMessage("Discount"), summaryType: "sum", format: "fixedPoint" },
+                            { dataField: "LineTotalBeforeTax", area: "data", caption: formatMessage("Net Total"), summaryType: "sum", format: "currency" },
+                            { dataField: "IsWonForPo", area: "data", caption: formatMessage("IsWonForPo"), summaryType: "max", dataType: "boolean" }
+                        ],
+                        store: {
+                            type: "array",
+                            data: data
+                        }
+                    },
+                    allowSortingBySummary: true,
+                    allowSorting: true,
+                    allowFiltering: true,
+                    allowExpandAll: true,
+                    showBorders: true,
+                    showColumnHeaders: true,
+                    showColumnTotals: false,
+                    showRowTotals: false,
+                    showColumnGrandTotals: false,
+                    showRowGrandTotals: false,
+                    wordWrapEnabled: true,
+                    height: 500,
+                    fieldChooser: {
+                        enabled: true,
+                        allowSearch: true,
+                        layout: 0
+                    },
+                    fieldPanel: {
+                        visible: true,
+                        allowFieldDragging: true,
+                        showColumnFields: true,
+                        showDataFields: true,
+                        showFilterFields: true,
+                        showRowFields: true
+                    },
+                    loadPanel: { enabled: true },
+                    onCellPrepared: function (e) {
+                        if (e.area === "data" && e.cell?.dataType === "boolean") {
+                            const $cell = $(e.cellElement);
+                            $cell.empty();
+
+                            const isChecked = !!e.cell.value;
+                            const checkbox = $("<input>")
+                                .attr("type", "checkbox")
+                                .prop("checked", isChecked)
+                                .on("change", function () {
+                                    if ($(this).prop("checked")) {
+                                        const $row = $cell.closest("tr");
+                                        $row.find('input[type="checkbox"]').not(this).prop("checked", false);
+                                    }
+                                });
+
+                            $cell.append(checkbox);
+                        }
+                    }
+                }).dxPivotGrid("instance");
             },
+            error: function (xhr, status, error) {
+                console.error("Error fetching data: ", error);
+            }
+        });
+    }
 
-            allowSortingBySummary: true,
-            allowSorting: true,
-            allowFiltering: true,
-            allowExpandAll: true,
-            showBorders: true,
-            showColumnHeaders: true,
-            showColumnTotals: true,
-            showRowTotals: true,
-            showColumnGrandTotals: true,
-            showRowGrandTotals: true,
-            wordWrapEnabled: true,
-            height: 500,
+     $(function () {
+                    $("#SelectRequest").text(
+                         formatMessage("Select a Request / Enquiry:"));
+            });
 
-            // Same fieldChooser settings
-            fieldChooser: {
-                enabled: true,
-                allowSearch: true,
-                layout: 0, // Tree layout like your second example
-                applyChangesMode: "instantly"
-            },
+    
 
-            // Enable the drag-and-drop panel
-            fieldPanel: {
-                visible: true,
-                allowFieldDragging: true,
-                showColumnFields: true,
-                showDataFields: true,
-                showFilterFields: true,
-                showRowFields: true
-            },
-
-            loadPanel: { enabled: true }
-        }).dxPivotGrid("instance");
-    });
-
-
-
-
-
+    function printFun(){
+        console.log("Pivot");
+        exportPivotToPdf(pivotGridInstance,currentPivotRawData);
+    }
 </script>

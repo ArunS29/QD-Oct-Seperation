@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
@@ -42,36 +42,36 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                             i.ClientLedgerNo,
                             i.Category,
                             i.VatregistrationNo,
-                            //i.ClientCategory,
-                            //i.ContactPhone2,
-                            //i.ClientNameAr,
-                            //i.ClientAddress,
-                            //i.ContactMobile2,                          
-                            //i.ContactEmail,
-                            //i.ContactFaxNo,
-                            //i.ContactRemarks,
-                            //i.IsDiscontinued,
-                            //i.ReasonDiscontinued,
-                            //i.CreatedBy,
-                            //i.CreatedOn,
-                            //i.ModifiedBy,
-                            //i.ModifiedOn,
-                            //i.DiscontinuedBy,
-                            //i.DiscontinuedOn,
-                            //i.DateVisitedFirst,
+                            i.ClientCategory,
+                            i.ContactPhone2,
+                            i.ClientNameAr,
+                            i.ClientAddress,
+                            i.ContactMobile2,
+                            i.ContactEmail,
+                            i.ContactFaxNo,
+                            i.ContactRemarks,
+                            i.IsDiscontinued,
+                            i.ReasonDiscontinued,
+                            i.CreatedBy,
+                            i.CreatedOn,
+                            i.ModifiedBy,
+                            i.ModifiedOn,
+                            i.DiscontinuedBy,
+                            i.DiscontinuedOn,
+                            i.DateVisitedFirst,
 
-                            //i.ReportedBy,
-                            //i.ReportedOn,
-                            //i.StatusRemarks,
-                            //i.FollowupOn,
-                            //i.Status,
+                            i.ReportedBy,
+                            i.ReportedOn,
+                            i.StatusRemarks,
+                            i.FollowupOn,
+                            i.Status,
 
-                            //i.SalesPersonCode,
-                            //i.SalesPersonName,
-                            //i.UserCode,
-                            //i.VendorNo,
+                            i.SalesPersonCode,
+                            i.SalesPersonName,
+                            i.UserCode,
+                            i.VendorNo,
 
-                            //i.ClientLedgerName,
+                            i.ClientLedgerName,
                             DecodedBusinessCard1 = i.BusinessCard1 != null ? $"data:image/png;base64,{Convert.ToBase64String(i.BusinessCard1)}": null,
                             DecodedBusinessCard2 = i.BusinessCard2 != null ? $"data:image/png;base64,{Convert.ToBase64String(i.BusinessCard2)}": null,
                         })
@@ -84,11 +84,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
                 return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
             }
         }
-
-
-
     }
 }

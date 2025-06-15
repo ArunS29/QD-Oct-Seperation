@@ -130,16 +130,15 @@
                 .DropDownOptions(options => options.Width(230))
                 .Items(items =>
                 {
-                    items.Add().Text("Show Records").Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
-                    items.Add().Text("Today").Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
-                    items.Add().Text("Yesterday").Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-                    items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
+                     items.Add().Text("This Year Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+                   
                     items.Add().Text("This Month Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-                    items.Add().Text("This Month (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-                    items.Add().Text("This Year Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-                    items.Add().Text("This Year (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-                    items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+                    
                     items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+                    
+                    items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+                   
+                     items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
                 })
                 )
         <div class="dx-field dx-field-4" id="check">
@@ -155,8 +154,6 @@
     <!-- Pivot Grid (Will Always Appear Below Filters) -->
     <div id="pivotGridContainer" style="width: 100%;"></div>
 
-   <!-- Grid Footer Partial -->
-    @await Html.PartialAsync("_GridFooter")
 </div>
 
 
@@ -183,32 +180,32 @@
        
       
 
-      //  console.log("value", requestedBy);
-        var dataSource = selectBox.option("dataSource");
+      // //  console.log("value", requestedBy);
+      //   var dataSource = selectBox.option("dataSource");
 
-        if (dataSource && dataSource.store) {
-            var store = dataSource.store;
+      //   if (dataSource && dataSource.store) {
+      //       var store = dataSource.store;
 
-            if (store instanceof DevExpress.data.DataSource) {
-                // Apply a filter to the DataSource store
-                if (selectedValue) {
-                    store.filter(["AccountGroup", "=", selectedValue]);
-                } else {
-                    store.filter(null); // Remove the filter if no value is selected
-                }
+      //       if (store instanceof DevExpress.data.DataSource) {
+      //           // Apply a filter to the DataSource store
+      //           if (selectedValue) {
+      //               store.filter(["AccountGroup", "=", selectedValue]);
+      //           } else {
+      //               store.filter(null); // Remove the filter if no value is selected
+      //           }
 
-                // Reload the data to reflect the filter change
-                store.load();
-            } else if (Array.isArray(store)) {
-                // Apply filtering manually for array-based store
-                var filteredData = store.filter(item => item.AccountGroup === selectedValue);
-                selectBox.option("dataSource", filteredData);
-            } else {
-                console.error("The store is neither a DevExpress.data.DataSource nor an array:", store);
-            }
-        } else {
-            console.error("The dataSource does not have a store or is not structured as expected:", dataSource);
-        }
+      //           // Reload the data to reflect the filter change
+      //           store.load();
+      //       } else if (Array.isArray(store)) {
+      //           // Apply filtering manually for array-based store
+      //           var filteredData = store.filter(item => item.AccountGroup === selectedValue);
+      //           selectBox.option("dataSource", filteredData);
+      //       } else {
+      //           console.error("The store is neither a DevExpress.data.DataSource nor an array:", store);
+      //       }
+      //   } else {
+      //       console.error("The dataSource does not have a store or is not structured as expected:", dataSource);
+      //   }
     }
         $(document).ready(function () {
         // Load all records on page load (ignore default date values)
@@ -333,10 +330,10 @@
                     data: data
                 },
                 fields: [
-                    { dataField: "AccountGroup", area: "row", caption: "Account Group" },
+                    // { dataField: "AccountGroup", area: "row", caption: "Account Group" },
                     { dataField: "MasterGroup", area: "row", caption: "Master Group" },
                     { dataField: "LedgerNo", area: "row", caption: "Ledger No" },
-                    { dataField: "Category", area: "row", caption: "Category" },
+                    // { dataField: "Category", area: "row", caption: "Category" },
                     //{ dataField: "VoucherNo", area: "column", caption: "Voucher No" },
                    // { dataField: "VoucherDate", area: "column", caption: "Voucher Date", dataType: "date", format: "shortDate" },
                     //{ dataField: "VoucherEntryNo", area: "column", caption: "Voucher Entry No" },
@@ -372,6 +369,9 @@
                 enabled: true,
                 allowSearch: true
             },
+            scrolling: {
+                mode: "virtual"
+            },
             fieldPanel: {
                 visible: true,
                 allowFieldDragging: true,
@@ -383,7 +383,7 @@
             showColumnTotals: true,
             showColumnGrandTotals: true,
             showDataHeaders: true,
-            showRowTotals: true,
+            showRowTotals: false,
             showRowGrandTotals: true
         }).dxPivotGrid("instance");
 
@@ -421,9 +421,67 @@
             $(this).css("background-color", "");
         });
     }
+    $("#btnShowRowTotals").on("click", function (e) {
+        e.preventDefault();
+
+        const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
+
+        if (pivotGrid) {
+            const currentSetting = pivotGrid.option("showRowTotals");
+            pivotGrid.option("showRowTotals", !currentSetting);
+        }
+    });
+
+    $("#btnShowFields").on("click", function (e) {
+        e.preventDefault();
+
+        const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
+
+        if (!pivotGrid) return;
+
+        const dataSource = pivotGrid.getDataSource();
+        const currentFields = dataSource.fields();
+
+        const allFields = [
+
+            { dataField: "AccountGroup", caption: "Account Group" },
+            
+            { dataField: "Category",  caption: "Category" },
+            { dataField: "VoucherNo",  caption: "Voucher No" },
+            { dataField: "VoucherDate",  caption: "Voucher Date", dataType: "date", format: "shortDate" },
+            { dataField: "VoucherEntryNo",  caption: "Voucher Entry No" },
+           
+            { dataField: "VoucherNarration",  caption: "Voucher Narration" },
+            { dataField: "EntryNarration", caption: "Entry Narration" },
+            { dataField: "SysRemarks", caption: "System Remarks" },
+            { dataField: "VoucherRefNo",  caption: "Voucher Ref No" },
+            { dataField: "Transactions",  caption: "Transactions" },
+            
+            { dataField: "MonthYear",  caption: "Month Year" },
+            { dataField: "MonthNumber", caption: "Month Number" }
+        ];
+
+        // Check if all fields are already in the "filter" area
+        const allInFilter = allFields.every(f =>
+            currentFields.find(c => c.dataField === f.dataField && c.area === "filter")
+        );
+
+        const updatedFields = currentFields.map(field => {
+            const isTargetField = allFields.find(f => f.dataField === field.dataField);
+            if (isTargetField) {
+                return {
+                    ...field,
+                    area: allInFilter ? null : "filter"
+                };
+            }
+            return field;
+        });
+
+        dataSource.fields(updatedFields);
+        dataSource.load();
 
 
-
+    });
 
 </script>
 
