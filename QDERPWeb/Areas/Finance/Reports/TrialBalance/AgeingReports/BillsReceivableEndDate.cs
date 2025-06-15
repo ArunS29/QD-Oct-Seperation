@@ -21,12 +21,12 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance.AgeingReport
             Image logoImage,
             string companyNameAr,
             string companyAddressArb,
-            TenantDbContextHelper tenantDbContextHelper)
+            TenantDbContextHelper tenantDbContextHelper,string username)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
 
             InitializeComponent();
-            SetReportParameters(tenantName, toDate, companyName, companyAddress, logoImage, companyNameAr, companyAddressArb, accountGroup, frmDate);
+            SetReportParameters(tenantName, toDate, companyName, companyAddress, logoImage, companyNameAr, companyAddressArb, accountGroup, frmDate,username);
 
 
 
@@ -43,7 +43,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance.AgeingReport
         public BillsReceivableEndDate()
         {
             InitializeComponent();
-            SetReportParameters("", DateTime.MinValue, "", "", null, "", "", "", DateTime.MinValue);
+            SetReportParameters("", DateTime.MinValue, "", "", null, "", "", "", DateTime.MinValue,"");
         }
 
         private void SetReportParameters(
@@ -55,7 +55,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance.AgeingReport
             string companyNameAr,
             string companyAddressArb,
             string accountGroup,
-            DateTime frmDate)
+            DateTime frmDate,string username)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -84,7 +84,9 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance.AgeingReport
             AddOrUpdateParameter("CompanyAddressArb", companyAddressArb ?? "", typeof(string));
             AddOrUpdateParameter("AccountGroup", accountGroup ?? "", typeof(string));
             AddOrUpdateParameter("FromDate", frmDate, typeof(DateTime));
-
+            AddOrUpdateParameter("UserName", username ?? "", typeof(string), false);
+            if (FindControl("xrLabelUserName", true) is XRLabel userNameLabel)
+                userNameLabel.Text = username;
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
 
