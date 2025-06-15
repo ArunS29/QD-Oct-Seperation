@@ -35,7 +35,7 @@
         @(Html.DevExtreme().DropDownBox()
             .ID("requestSelectBox")
             .DataSource(d => d.WebApi()
-            .Controller("QuotationAnalysis")
+            .Controller("QuotationAnalysis1")
             .LoadAction("GetQuotationAnalysis")
             .LoadMode(DataSourceLoadMode.Raw)
             .Key("Mprno")
@@ -51,7 +51,7 @@
             @(Html.DevExtreme().DataGrid()
             .ID("dropDownGrid")
             .DataSource(d => d.WebApi()
-            .Controller("QuotationAnalysis")
+            .Controller("QuotationAnalysis1")
             .LoadAction("GetQuotationAnalysis")
             .LoadMode(DataSourceLoadMode.Raw)
             .Key("Mprno")
@@ -121,7 +121,7 @@
 
         function loadPivotGridData(mprno) {
         $.ajax({
-            url: '/api/QuotationAnalysis/GetQuotationAnalysisPvg?mprno=' + mprno,
+            url: '/api/QuotationAnalysis1/GetQuotationAnalysisPvg?mprno=' + mprno,
             type: 'GET',
             success: function (data) {
                 console.log("API Data: ", data);

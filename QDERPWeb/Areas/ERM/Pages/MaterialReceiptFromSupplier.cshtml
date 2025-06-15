@@ -300,7 +300,7 @@
 						@(Html.DevExtreme().DropDownBox()
 						.Label(new JS("formatMessage('Supplier Name:')"))
 						.DataSource(d => d.WebApi()
-						.Controller("MaterialReceipt")
+						.Controller("MaterialReceipt1")
 						.LoadAction("GetSupplierName")
 						.LoadMode(DataSourceLoadMode.Raw)
 						.Key("SupplierCode")
@@ -360,7 +360,7 @@
 						@(Html.DevExtreme().DropDownBox()
 						.Label(new JS("formatMessage('Client Name:')"))
 						.DataSource(d => d.WebApi()
-						.Controller("MaterialReceipt")
+						.Controller("MaterialReceipt1")
 						.LoadAction("GetClientName")
 						.LoadMode(DataSourceLoadMode.Raw)
 						.Key("ClientCode")
@@ -405,7 +405,7 @@
 						@(Html.DevExtreme().DropDownBox()
 						.Label(new JS("formatMessage('Sales Person:')"))
 						.DataSource(d => d.WebApi()
-						.Controller("MaterialReceipt")
+						.Controller("MaterialReceipt1")
 						.LoadAction("GetSalesPerson")
 						.LoadMode(DataSourceLoadMode.Raw)
 						.Key("SalesPersonCode")
@@ -433,7 +433,7 @@
 						@(Html.DevExtreme().DropDownBox()
 						.Label(new JS("formatMessage('Items Received In Store:')"))
 						.DataSource(d => d.WebApi()
-						.Controller("MaterialReceipt")
+						.Controller("MaterialReceipt1")
 						.LoadAction("GetStore")
 						.LoadMode(DataSourceLoadMode.Raw)
 						.Key("StoreId")
@@ -459,7 +459,7 @@
 						@(Html.DevExtreme().DropDownBox()
 						.Label(new JS("formatMessage('Project:')"))
 						.DataSource(d => d.WebApi()
-						.Controller("MaterialReceipt")
+						.Controller("MaterialReceipt1")
 						.LoadAction("GetProject")
 						.LoadMode(DataSourceLoadMode.Raw)
 						.Key("ProjectId")
@@ -497,7 +497,7 @@
 							@(Html.DevExtreme().DropDownBox()
 							.Label(new JS("formatMessage('Signatory:')"))
 							.DataSource(d => d.WebApi()
-							.Controller("MaterialReceipt")
+							.Controller("MaterialReceipt1")
 							.LoadAction("GetSignatory")
 							.LoadMode(DataSourceLoadMode.Raw)
 							.Key("SignatoryId")
@@ -553,7 +553,7 @@
 					@(Html.DevExtreme().DropDownBox()
 					.Label(new JS("formatMessage('Company Branch/Division')"))
 					.DataSource(d => d.WebApi()
-					.Controller("MaterialReceipt")
+					.Controller("MaterialReceipt1")
 					.LoadAction("GetCompany")
 					.LoadMode(DataSourceLoadMode.Raw)
 					.Key("CompanyId")
@@ -579,7 +579,7 @@
 					@(Html.DevExtreme().DropDownBox()
 					.Label(new JS("formatMessage('Inventory Group Master:*')"))
 					.DataSource(d => d.WebApi()
-					.Controller("MaterialReceipt")
+					.Controller("MaterialReceipt1")
 					.LoadAction("GetInventoryGroup")
 					.LoadMode(DataSourceLoadMode.Raw)
 					.Key("InventoryMasterGroupId")
@@ -605,7 +605,7 @@
 					@(Html.DevExtreme().DropDownBox()
 					.Label(new JS("formatMessage('Material Recieved Type')"))
 					.DataSource(d => d.WebApi()
-					.Controller("MaterialReceipt")
+					.Controller("MaterialReceipt1")
 					.LoadAction("GetMaterialReceivedType")
 					.LoadMode(DataSourceLoadMode.Raw)
 					.Key("ReceiptTypeCode")
@@ -841,7 +841,7 @@
 	@(Html.DevExtreme().DataGrid()
 								.ID("GetSupplier-datagrid")
 								.DataSource(d => d.WebApi()
-									.Controller("MaterialReceipt")
+									.Controller("MaterialReceipt1")
 									.LoadAction("GetSupplierName")
 								.LoadMode(DataSourceLoadMode.Raw)
 									.Key("SupplierCode")
@@ -875,7 +875,7 @@
 	@(Html.DevExtreme().DataGrid()
 									.ID("GetSalesPerson-datagrid")
 									.DataSource(d => d.WebApi()
-										.Controller("MaterialReceipt")
+										.Controller("MaterialReceipt1")
 											.LoadAction("GetSalesPerson")
 									.LoadMode(DataSourceLoadMode.Raw)
 											.Key("SalesPersonCode")
@@ -909,7 +909,7 @@
 	@(Html.DevExtreme().DataGrid()
 										.ID("GetStore-datagrid")
 										.DataSource(d => d.WebApi()
-											.Controller("MaterialReceipt")
+											.Controller("MaterialReceipt1")
 													.LoadAction("GetStore")
 										.LoadMode(DataSourceLoadMode.Raw)
 													.Key("StoreId")
@@ -943,7 +943,7 @@
 	@(Html.DevExtreme().DataGrid()
 											.ID("GetProject-datagrid")
 											.DataSource(d => d.WebApi()
-												.Controller("MaterialReceipt")
+												.Controller("MaterialReceipt1")
 															.LoadAction("GetProject")
 											.LoadMode(DataSourceLoadMode.Raw)
 															.Key("ProjectId")
@@ -977,7 +977,7 @@
 	@(Html.DevExtreme().DataGrid()
 												.ID("GetSignatory-datagrid")
 												.DataSource(d => d.WebApi()
-													.Controller("MaterialReceipt")
+													.Controller("MaterialReceipt1")
 																	.LoadAction("GetSignatory")
 												.LoadMode(DataSourceLoadMode.Raw)
 																	.Key("SignatoryId")
@@ -1011,7 +1011,7 @@
 	@(Html.DevExtreme().DataGrid()
 													.ID("GetCompany-datagrid")
 													.DataSource(d => d.WebApi()
-													.Controller("MaterialReceipt")
+													.Controller("MaterialReceipt1")
 														.LoadAction("GetCompany")
 													.LoadMode(DataSourceLoadMode.Raw)
 														.Key("CompanyId")
@@ -1042,7 +1042,7 @@
 	@(Html.DevExtreme().DataGrid()
 														.ID("GetInventory - datagrid")
 														.DataSource(d => d.WebApi()
-														.Controller("MaterialReceipt")
+														.Controller("MaterialReceipt1")
 														.LoadAction("GetInventoryGroup")
 														.LoadMode(DataSourceLoadMode.Raw)
 														.Key("InventoryMasterGroupId")
@@ -1076,7 +1076,7 @@
 	@(Html.DevExtreme().DataGrid()
 															.ID("GetReceivedtype - datagrid")
 															.DataSource(d => d.WebApi()
-															.Controller("MaterialReceipt")
+															.Controller("MaterialReceipt1")
 																.LoadAction("GetMaterialReceivedType")
 															.LoadMode(DataSourceLoadMode.Raw)
 																	.Key("ReceiptTypeCode")
@@ -1110,7 +1110,7 @@
 	@(Html.DevExtreme().DataGrid()
 																.ID("GetClient - datagrid")
 																.DataSource(d => d.WebApi()
-																.Controller("MaterialReceipt")
+																.Controller("MaterialReceipt1")
 																		.LoadAction("GetClientName")
 																.LoadMode(DataSourceLoadMode.Raw)
 																		.Key("ClientCode")
@@ -1362,7 +1362,7 @@
 			loadClientDetails(ReceiptNo);
 		} else {
 			$.ajax({
-				url: "/api/MaterialReceipt/GetNewDebitNoteNoApi",
+				url: "/api/MaterialReceipt1/GetNewDebitNoteNoApi",
 				type: "GET",
 				success: function (data) {
 					console.log("Success:", data);
@@ -1385,7 +1385,7 @@
 
 	function loadClientDetails(ReceiptNo) {
 		$.ajax({
-			url: `/api/MaterialReceipt/GetMaterialReceiptdata?ReceiptNo=${encodeURIComponent(ReceiptNo)}`,
+			url: `/api/MaterialReceipt1/GetMaterialReceiptdata?ReceiptNo=${encodeURIComponent(ReceiptNo)}`,
 			type: 'GET',
 			dataType: 'json',
 			success: function (response) {
@@ -1418,7 +1418,7 @@
 					// Fetch and initialize the data grid with invoice details
 					$.ajax({
 						type: "GET",
-						url: `/api/MaterialReceipt/GetMaterialReceiptChildren?ReceiptNo=${encodeURIComponent(ReceiptNo)}`,
+						url: `/api/MaterialReceipt1/GetMaterialReceiptChildren?ReceiptNo=${encodeURIComponent(ReceiptNo)}`,
 						dataType: 'json',
 						success: function (gridResponse) {
 							console.log("Grid", gridResponse);
@@ -2590,7 +2590,7 @@
 	}
 	function getUnitRateMethods1() {
 		return $.ajax({
-			url: "/api/addNewQuotationItemSubGroup/GetSubGroup", // This should match your actual backend endpoint
+			url: "/api/addNewQuotationItemSubGroup1GetSubGroup", // This should match your actual backend endpoint
 			method: "GET",
 			dataType: "json"
 		}).then(function (response) {
@@ -4433,7 +4433,7 @@
 
 			$.ajax({
 				type: "POST",
-				url: "/api/MaterialReceipt/SaveOrUpdateMaterialReceipt",
+				url: "/api/MaterialReceipt1/SaveOrUpdateMaterialReceipt",
 				contentType: "application/json",
 				data: JSON.stringify(model),
 				success: function (response) {
@@ -4480,7 +4480,7 @@
 			if (dialogResult) {
 				// User clicked 'Yes'
 				$.ajax({
-					url: `/api/MaterialReceipt/DeleteMaterialReceipt?ReceiptNo=${encodeURIComponent(ReceiptNo)}`,
+					url: `/api/MaterialReceipt1/DeleteMaterialReceipt?ReceiptNo=${encodeURIComponent(ReceiptNo)}`,
 					type: 'DELETE',
 					success: function (response) {
 						DevExpress.ui.dialog.alert("Material Receipt has been successfully removed from the database.", "Deleted").done(function () {
@@ -4554,7 +4554,7 @@
 
 			$.ajax({
 				type: "POST",
-				url: "/api/MaterialReceipt/SaveOrUpdateMaterialReceipt",
+				url: "/api/MaterialReceipt1/SaveOrUpdateMaterialReceipt",
 				contentType: "application/json",
 				data: JSON.stringify(model),
 				success: function (response) {
@@ -4852,7 +4852,7 @@
 			if (dialogResult) {
 				$.ajax({
 					type: "POST",
-					url: `/api/MaterialReceipt/SubmitMaterialReceipt?ReceiptNo=${encodeURIComponent(ReceiptNo)}`,
+					url: `/api/MaterialReceipt1/SubmitMaterialReceipt?ReceiptNo=${encodeURIComponent(ReceiptNo)}`,
 					contentType: "application/json",
 					success: function (response) {
 						//disableEditing();
@@ -4927,7 +4927,7 @@
 
 		$.ajax({
 			type: "POST",
-			url: `/api/MaterialReceipt/VerifyMaterialReceipt?ReceiptNo=${encodeURIComponent(ReceiptNo)}`,
+			url: `/api/MaterialReceipt1/VerifyMaterialReceipt?ReceiptNo=${encodeURIComponent(ReceiptNo)}`,
 			contentType: "application/json",
 			success: function (response) {
 				if (response && response.message) {
@@ -5002,7 +5002,7 @@
 
 		$.ajax({
 			type: "POST",
-			url: `/api/MaterialReceipt/ApproveMaterialReceipt?ReceiptNo=${encodeURIComponent(ReceiptNo)}`,
+			url: `/api/MaterialReceipt1/ApproveMaterialReceipt?ReceiptNo=${encodeURIComponent(ReceiptNo)}`,
 			contentType: "application/json",
 			success: function (response) {
 				if (response && response.Message) {

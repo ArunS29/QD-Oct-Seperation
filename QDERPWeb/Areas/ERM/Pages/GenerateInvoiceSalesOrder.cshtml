@@ -200,7 +200,7 @@
 			@(Html.DevExtreme().DropDownBox()
 						.ID("clientNameDropdown")
 						.DataSource(d => d.Mvc()
-						.Controller("DeliveryNote")
+						.Controller("DeliveryNote1")
 						.LoadAction("GetDeliveryNotesWithDetail") // You will create this API
 						.LoadMode(DataSourceLoadMode.Raw)
 						.Key("ClientCode")
@@ -220,7 +220,7 @@
 						.Label(new JS("formatMessage('Sales Order #:')"))
 						.LabelMode(EditorLabelMode.Outside)
 						.DataSource(d => d.Mvc()
-						.Controller("DeliveryNote")
+						.Controller("DeliveryNote1")
 						.LoadAction("GetDeliveryNotesWithDetail") // You will create this API
 						.LoadMode(DataSourceLoadMode.Raw)
 						.Key("SalesOrderNo")
@@ -248,7 +248,7 @@
 				.ShowBorders(true)
 				.ColumnAutoWidth(true)
 				.DataSource(d => d.Mvc()
-				.Controller("DeliveryNote")
+				.Controller("DeliveryNote1")
 				.LoadAction("GetDeliveryNotesWithDetail")
 				)
 				.Columns(columns =>
@@ -290,7 +290,7 @@
 			.ID("clientGrid")
 			.DataSource(ds => ds
 			.Mvc()
-			.Controller("DeliveryNote")
+			.Controller("DeliveryNote1")
 			.LoadAction("GetDeliveryNotesWithDetail")
 			.LoadMode(DataSourceLoadMode.Raw)
 			.Key("ClientCode")
@@ -315,7 +315,7 @@
 			.ID("SalesorderNoGrid")
 			.DataSource(ds => ds
 			.Mvc()
-			.Controller("DeliveryNote")
+			.Controller("DeliveryNote1")
 			.LoadAction("GetDeliveryNotesWithDetail")
 			.LoadMode(DataSourceLoadMode.Raw)
 			.Key("SalesOrderNo")
@@ -353,7 +353,7 @@
 		const clientCode = urlParams.get("clientCode");
 
 		// Load client dropdown
-		$.get("/api/SalesOrders/GetClientNames", function (clients) {
+		$.get("/api/ERSalesOrders/GetClientNames", function (clients) {
 			$("#clientNameDropdown").dxSelectBox("instance").option("dataSource", clients);
 			if (clientCode) {
 				$("#clientNameDropdown").dxSelectBox("instance").option("value", clientCode);
@@ -361,7 +361,7 @@
 		});
 
 		// Load sales order dropdown
-		$.get("/api/SalesOrders/GetSalesOrders", function (orders) {
+		$.get("/api/ERSalesOrders/GetSalesOrders", function (orders) {
 			$("#salesOrderDropdown").dxSelectBox("instance").option("dataSource", orders);
 			if (salesOrderNo) {
 				$("#salesOrderDropdown").dxSelectBox("instance").option("value", salesOrderNo);
@@ -370,7 +370,7 @@
 
 		// Only load delivery notes for the selected sales order
 		if (salesOrderNo) {
-			$.get("/api/DeliveryNote/GetDeliveryNotesWithDetailBySalesOrderNo", { salesOrderNo }, function (deliveryNotes) {
+			$.get("/api/DeliveryNote1/GetDeliveryNotesWithDetailBySalesOrderNo", { salesOrderNo }, function (deliveryNotes) {
 				$("#deliveryNotesGrid").dxDataGrid("instance").option("dataSource", deliveryNotes);
 			});
 		} else {

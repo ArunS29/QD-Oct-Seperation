@@ -311,7 +311,7 @@
 
 <script>
 		 $(function () {
-	$("#DeliveryNote").dxTextBox({
+	$("#DeliveryNote1").dxTextBox({
 	text: formatMessage("Delivery Note"),
 		readOnly: true,
 		onContentReady: function (e) {
@@ -388,7 +388,7 @@
 	toDate = toDate.toISOString().split('T')[0];
 
 				$.ajax({
-		url: '/api/PurchaseOrders/GetPurchaseOrders',
+		url: '/api/PurchaseOrders1/GetPurchaseOrders',
 		type: 'GET',
 		data: {
 			fromDate: frmDate,

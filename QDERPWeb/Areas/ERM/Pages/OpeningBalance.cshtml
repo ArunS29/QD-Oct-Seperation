@@ -325,7 +325,7 @@
         };
 
         $.ajax({
-            url: '/api/StoreCode/SaveOrUpdateStory',
+            url: '/api/ERStoreCode/SaveOrUpdateStory',
             method: "POST",
             contentType: "application/json",
             data: JSON.stringify(data),
@@ -358,7 +358,7 @@
         e.cancel = true; // prevents grid from doing its own update
 
         return $.ajax({
-            url: '/api/StoreCode/SaveOrUpdateStory',
+            url: '/api/ERStoreCode/SaveOrUpdateStory',
             method: "POST",
             contentType: "application/json",
             data: JSON.stringify(data),
@@ -399,7 +399,7 @@
         if (!gscode) return;
 
         $.ajax({
-            url: `/api/StockInventory/GetOpeningBalanceByGscode`,  // Your API endpoint
+            url: `/api/ERStockInventory/GetOpeningBalanceByGscode`,  // Your API endpoint
             data: { gscode: gscode },
             method: "GET",
             success: function(data) {

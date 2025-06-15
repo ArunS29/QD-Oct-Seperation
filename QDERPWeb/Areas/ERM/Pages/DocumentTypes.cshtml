@@ -182,7 +182,7 @@
             dataSource: new DevExpress.data.CustomStore({
                 key: "DocumentTypeId",
                 load: function () {
-                    return $.getJSON('/api/DocumentTypes/GetDocumentTypes'); // Fetch data from the API
+                    return $.getJSON('/api/DocumentTypes1/GetDocumentTypes'); // Fetch data from the API
                 },
                 update: function (key, values) {
                     var updatedBranch = {
@@ -198,7 +198,7 @@
                     // Send the updated data to the backend via AJAX
                     return $.ajax({
                         type: "POST",
-                        url: "/api/DocumentTypes/UpdateDocumentType",
+                        url: "/api/DocumentTypes1/UpdateDocumentType",
                         data: JSON.stringify(updatedBranch),
                         contentType: "application/json",
                         success: function (response) {
@@ -272,7 +272,7 @@
                                 // Send delete request to the API
                                 $.ajax({
                                     type: "POST",
-                                    url: "/api/DocumentTypes/DeleteDocumentType",
+                                    url: "/api/DocumentTypes1/DeleteDocumentType",
                                     data: JSON.stringify({ DocumentTypeId: DocumentTypeId }),
                                     contentType: "application/json",
                                     success: function (response) {
@@ -469,7 +469,7 @@
 
             // Send the data to the AddBranch API using AJAX
             $.ajax({
-                url: '/api/DocumentTypes/AddDocumentType',  // The API endpoint for adding a branch
+                url: '/api/DocumentTypes1/AddDocumentType',  // The API endpoint for adding a branch
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(branchData),  // Convert the data object to JSON string

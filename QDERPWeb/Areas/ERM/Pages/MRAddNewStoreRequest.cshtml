@@ -476,7 +476,7 @@
 							@(Html.DevExtreme().DropDownBox()
 														.Label(new JS("formatMessage('Store Code:')"))
 														.DataSource(d => d.WebApi()
-														.Controller("StoreCode")
+														.Controller("ERStoreCode")
 														.LoadAction("GetStoreData")
 														.LoadMode(DataSourceLoadMode.Raw)
 														.Key("StoreId")
@@ -1543,7 +1543,7 @@
     @(Html.DevExtreme().DataGrid()
                         .ID("GetStoreCode-datagrid")
                         .DataSource(d => d.WebApi()
-                            .Controller("StoreCode")
+                            .Controller("ERStoreCode")
                             .LoadAction("GetStoreData")
                         .LoadMode(DataSourceLoadMode.Raw)
                             .Key("StoreId")
@@ -3724,7 +3724,7 @@
 	}
 	function getUnitRateMethods1() {
 		return $.ajax({
-			url: "/api/addNewQuotationItemSubGroup/GetSubGroup", // This should match your actual backend endpoint
+			url: "/api/addNewQuotationItemSubGroup1GetSubGroup", // This should match your actual backend endpoint
 			method: "GET",
 			dataType: "json"
 		}).then(function (response) {

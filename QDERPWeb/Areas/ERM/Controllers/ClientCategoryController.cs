@@ -15,7 +15,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
     {
         private ERPMasterWtDataContext _context;
         private readonly TenantDbContextHelper _tenantDbContextHelper;
-        private readonly ILogger<SalesOrdersController> _logger;
+        private readonly ILogger<ClientCategoryController> _logger;
 
         public ClientCategoryController(ERPMasterWtDataContext context) {
       

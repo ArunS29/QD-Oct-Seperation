@@ -291,7 +291,7 @@
                                     .DisplayExpr("ClientName")
                                     .DataSource(ds => ds
                                     .Mvc()
-                                    .Controller("SalesOrders")
+                                    .Controller("ERSalesOrders")
                                     .LoadAction("GetClientNames")
                                     .LoadMode(DataSourceLoadMode.Raw)
                                     .Key("ClientCode")
@@ -399,7 +399,7 @@
                                     .DisplayExpr("ProjectDescription")
                                     .DataSource(ds => ds
                                     .Mvc()
-                                    .Controller("SalesOrders")
+                                    .Controller("ERSalesOrders")
                                     .LoadAction("GetProject")
                                     .LoadMode(DataSourceLoadMode.Raw)
                                     .Key("ProjectId")
@@ -426,7 +426,7 @@
                                     .DisplayExpr("TypeOfRequest")
                                     .DataSource(ds => ds
                                     .Mvc()
-                                    .Controller("SalesOrders")
+                                    .Controller("ERSalesOrders")
                                     .LoadAction("GetTypeOfSalesOrder")
                                     .LoadMode(DataSourceLoadMode.Raw)
                                     .Key("TypeOfRequestId")
@@ -475,7 +475,7 @@
                                 .DisplayExpr("SignatoryName")
                                 .DataSource(ds => ds
                                 .Mvc()
-                                .Controller("SalesOrders")
+                                .Controller("ERSalesOrders")
                                 .LoadAction("GetSignatory")
                                 .LoadMode(DataSourceLoadMode.Raw)
                                 .Key("SignatoryId")
@@ -565,7 +565,7 @@
                                 .DisplayExpr("CompanyName")
                                 .DataSource(ds => ds
                                 .Mvc()
-                                .Controller("SalesOrders")
+                                .Controller("ERSalesOrders")
                                 .LoadAction("GetCompanyBranch")
                                 .LoadMode(DataSourceLoadMode.Raw)
                                 .Key("CompanyId")
@@ -591,7 +591,7 @@
                                 .DisplayExpr("SalesPersonName")
                                 .DataSource(ds => ds
                                 .Mvc()
-                                .Controller("SalesOrders")
+                                .Controller("ERSalesOrders")
                                 .LoadAction("GetSalesPersonName")
                                 .LoadMode(DataSourceLoadMode.Raw)
                                 .Key("SalesPersonCode")
@@ -617,7 +617,7 @@
                             .DisplayExpr("InventoryMasterGroup")
                             .DataSource(ds => ds
                             .Mvc()
-                            .Controller("SalesOrders")
+                            .Controller("ERSalesOrders")
                             .LoadAction("GetGroupMaster")
                             .LoadMode(DataSourceLoadMode.Raw)
                             .Key("InventoryMasterGroupId")
@@ -636,7 +636,7 @@
                             .DisplayExpr("CostAllocationMasterGroup")
                             .DataSource(ds => ds
                             .Mvc()
-                            .Controller("SalesOrders")
+                            .Controller("ERSalesOrders")
                             .LoadAction("GetCostCenterMaster")
                             .LoadMode(DataSourceLoadMode.Raw)
                             .Key("CostAllocationUnitId")
@@ -866,7 +866,7 @@
                         .ID("clientGrid")
                         .DataSource(ds => ds
                             .Mvc()
-                                .Controller("SalesOrders")
+                                .Controller("ERSalesOrders")
                                 .LoadAction("GetClientNames")
                             .LoadMode(DataSourceLoadMode.Raw)
                             .Key("ClientCode")
@@ -891,7 +891,7 @@
                             .ID("projecttype")
                             .DataSource(ds => ds
                                 .Mvc()
-                                    .Controller("SalesOrders")
+                                    .Controller("ERSalesOrders")
                                     .LoadAction("GetProject")
                                 .LoadMode(DataSourceLoadMode.Raw)
                                     .Key("ProjectId")
@@ -915,7 +915,7 @@
                         .ID("typeofsalesorderGrid")
                         .DataSource(ds => ds
                             .Mvc()
-                            .Controller("SalesOrders")
+                            .Controller("ERSalesOrders")
                             .LoadAction("GetTypeOfSalesOrder")
                             .LoadMode(DataSourceLoadMode.Raw)
                             .Key("TypeOfRequestId")
@@ -940,7 +940,7 @@
                         .ID("SignatoryGrid")
                         .DataSource(ds => ds
                             .Mvc()
-                            .Controller("SalesOrders")
+                            .Controller("ERSalesOrders")
                             .LoadAction("GetSignatory")
                             .LoadMode(DataSourceLoadMode.Raw)
                                 .Key("SignatoryId")
@@ -964,7 +964,7 @@
                         .ID("CompanyBranchGrid")
                             .DataSource(ds => ds
                             .Mvc()
-                            .Controller("SalesOrders")
+                            .Controller("ERSalesOrders")
                             .LoadAction("GetCompanyBranch")
                             .LoadMode(DataSourceLoadMode.Raw)
                                .Key("CompanyId")
@@ -988,7 +988,7 @@
                         .ID("SalesPersonGrid")
                          .DataSource(ds => ds
                          .Mvc()
-                         .Controller("SalesOrders")
+                         .Controller("ERSalesOrders")
                          .LoadAction("GetSalesPersonName")
                          .LoadMode(DataSourceLoadMode.Raw)
                              .Key("SalesPersonCode")
@@ -1013,7 +1013,7 @@
                         .ID("MasterGroupGrid")
                          .DataSource(ds => ds
                          .Mvc()
-                         .Controller("SalesOrders")
+                         .Controller("ERSalesOrders")
                          .LoadAction("GetGroupMaster")
                          .LoadMode(DataSourceLoadMode.Raw)
                         .Key("InventoryMasterGroupId")
@@ -1038,7 +1038,7 @@
                         .ID("costcenterGroupGrid")
                          .DataSource(ds => ds
                          .Mvc()
-                         .Controller("SalesOrders")
+                         .Controller("ERSalesOrders")
                              .LoadAction("GetCostCenterMaster")
                          .LoadMode(DataSourceLoadMode.Raw)
                             .Key("CostAllocationUnitId")
@@ -1183,7 +1183,7 @@
 
         $(function () {
             // Load data once and reuse in dropdown
-            $.get("/api/SalesOrders/GetGoodsAndServices", function (data) {
+            $.get("/api/ERSalesOrders/GetGoodsAndServices", function (data) {
                 descriptionList = data;
             });
         });
@@ -1312,7 +1312,7 @@
             let unitCodesList = [];
 
         $(function () {
-            $.get("/api/SalesOrders/GetUnitCodes", function (data) {
+            $.get("/api/ERSalesOrders/GetUnitCodes", function (data) {
                 unitCodesList = data;
             });
         });
@@ -1421,7 +1421,7 @@
             let TaxSlab = [];
 
         $(function () {
-            $.get("/api/SalesOrders/GetTaxSlabs", function (data) {
+            $.get("/api/ERSalesOrders/GetTaxSlabs", function (data) {
               TaxSlabs = data;
             });
         });
@@ -1592,7 +1592,7 @@
 
             if (salesOrderNo) {
                 // Editing: fetch and bind existing order (do NOT generate new number)
-                $.get(`/api/SalesOrders/GetSalesOrderByNo`, { salesOrderNo: salesOrderNo })
+                $.get(`/api/ERSalesOrders/GetSalesOrderByNo`, { salesOrderNo: salesOrderNo })
                     .done(function (data) {
                         salesOrderTextBox.option("value", data.SalesOrderNo);
                         // ...populate other fields as needed...
@@ -1607,7 +1607,7 @@
                     });
             } else {
                 // Creating new: generate new order number
-                $.get("/api/SalesOrders/SalesOrderNoIncrease")
+                $.get("/api/ERSalesOrders/SalesOrderNoIncrease")
                     .done(function (response) {
                         if (response && response.salesOrderNo) {
                             salesOrderTextBox.option("value", response.salesOrderNo);
@@ -1837,14 +1837,14 @@
 
                 // ✅ AJAX Save Call
                 $.ajax({
-                    url: "/api/SalesOrders/SaveSalesOrder",
+                    url: "/api/ERSalesOrders/SaveSalesOrder",
                     type: "POST",
                     contentType: "application/json",
                     data: JSON.stringify(model),
                     success: function (response) {
                         DevExpress.ui.notify(response.message, "success", 2000);
                         // ✅ Reload grid after save
-                        $.get("/api/SalesOrders/GetSalesOrderChildren?quoteNo=" + model.SalesOrderNo, function (data) {
+                        $.get("/api/ERSalesOrders/GetSalesOrderChildren?quoteNo=" + model.SalesOrderNo, function (data) {
                             window.itemGridDataSource = data;
                             gridInstance.option("dataSource", data);
                         });
@@ -1869,7 +1869,7 @@
             const salesOrderNo = getQueryParam("SalesOrderNo");
             if (salesOrderNo) {
                 // Fetch sales order details from your API
-                $.get(`/api/SalesOrders/GetSalesOrderByNo`, { salesOrderNo: salesOrderNo })
+                $.get(`/api/ERSalesOrders/GetSalesOrderByNo`, { salesOrderNo: salesOrderNo })
                     .done(function (data) {
                       $("#btnSave").dxButton("instance").option("text", "Update");
                         // Populate fields using the IDs you listed
@@ -1930,7 +1930,7 @@
             };
 
             $.ajax({
-        url: "/api/SalesOrders/GenerateJobOrders",
+        url: "/api/ERSalesOrders/GenerateJobOrders",
                     type: "POST",
                 contentType: "application/json",
                 data: JSON.stringify(model),
@@ -2065,14 +2065,14 @@
 
                     // ✅ AJAX Save Call
                     $.ajax({
-                        url: "/api/SalesOrders/SaveSalesOrder",
+                        url: "/api/ERSalesOrders/SaveSalesOrder",
                         type: "POST",
                         contentType: "application/json",
                         data: JSON.stringify(model),
                         success: function (response) {
                             DevExpress.ui.notify(response.message, "success", 2000);
                             // ✅ Reload grid after save
-                            $.get("/api/SalesOrders/GetSalesOrderChildren?quoteNo=" + model.SalesOrderNo, function (data) {
+                            $.get("/api/ERSalesOrders/GetSalesOrderChildren?quoteNo=" + model.SalesOrderNo, function (data) {
                                 window.itemGridDataSource = data;
                                 gridInstance.option("dataSource", data);
 
@@ -2108,7 +2108,7 @@
                 if (dialogResult) {
                     // User confirmed deletion
                     $.ajax({
-                        url: `/api/SalesOrders/DeleteSalesOrder?salesOrderNo=${encodeURIComponent(salesOrderNo)}`,
+                        url: `/api/ERSalesOrders/DeleteSalesOrder?salesOrderNo=${encodeURIComponent(salesOrderNo)}`,
                         type: 'DELETE',
                         success: function (response) {
                             DevExpress.ui.dialog.alert("Sales Order deleted successfully.", "Deleted").done(function () {
@@ -2152,7 +2152,7 @@
         }
 
         $.ajax({
-            url: '/api/SalesOrders/SubmitSalesOrder',
+            url: '/api/ERSalesOrders/SubmitSalesOrder',
             type: 'POST',
             data: JSON.stringify(salesOrderNo),
             contentType: 'application/json',
@@ -2188,7 +2188,7 @@
         }
 
         $.ajax({
-            url: '/api/SalesOrders/VerifySalesOrder',
+            url: '/api/ERSalesOrders/VerifySalesOrder',
             type: 'POST',
             data: JSON.stringify(salesOrderNo),
             contentType: 'application/json',
@@ -2216,7 +2216,7 @@
         }
 
         $.ajax({
-            url: '/api/SalesOrders/ApproveSalesOrder',
+            url: '/api/ERSalesOrders/ApproveSalesOrder',
             type: 'POST',
             data: JSON.stringify(salesOrderNo),
             contentType: 'application/json',

@@ -165,7 +165,7 @@
 <input id="formId" value="frm201LedgerView" type="hidden" />
 <div class="title">
 	<div class="header-container">
-		<div id="MaterialReceipts" class="no-border-input"></div>
+		<div id="MaterialReceipts1" class="no-border-input"></div>
 	</div>
 </div>
 @await Html.PartialAsync("/Pages/Shared/ERM/MaterialReceiptFooter.cshtml")
@@ -307,7 +307,7 @@
 
 <script>
 		 $(function () {
-	$("#MaterialReceipts").dxTextBox({
+	$("#MaterialReceipts1").dxTextBox({
 	text: formatMessage("Material Receipts"),
 		readOnly: true,
 		onContentReady: function (e) {
@@ -384,7 +384,7 @@
 	toDate = toDate.toISOString().split('T')[0];
 
 				$.ajax({
-		url: '/api/MaterialReceipts/GetMaterialReceipt	',
+		url: '/api/MaterialReceipts1/GetMaterialReceipt	',
 		type: 'GET',
 		data: {
 			fromDate: frmDate,

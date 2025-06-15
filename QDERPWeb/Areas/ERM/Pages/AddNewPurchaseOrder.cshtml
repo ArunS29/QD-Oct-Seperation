@@ -351,7 +351,7 @@
                                 .StylingMode(EditorStylingMode.Outlined)
                                 .Width("100%")
                                 .DataSource(d => d.Mvc()
-                                .Controller("PurchaseOrders")
+                                .Controller("PurchaseOrders1")
                                 .LoadAction("GetClients")
                                 )
                                 .ValueExpr("ClientCode")
@@ -451,7 +451,7 @@
                                 .StylingMode(EditorStylingMode.Outlined)
                                 .Width("100%")
                                 .DataSource(d => d.Mvc()
-                                .Controller("PurchaseOrders")
+                                .Controller("PurchaseOrders1")
                                 .LoadAction("GetProjects")
                                 )
                                 .ValueExpr("ProjectId")
@@ -499,7 +499,7 @@
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%")
                             .DataSource(d => d.Mvc()
-                            .Controller("PurchaseOrders")      // Replace with your actual controller name
+                            .Controller("PurchaseOrders1")      // Replace with your actual controller name
                             .LoadAction("GetRequestingUnits")  // This should match the method name above
                             )
                             .ValueExpr("ProjectSubUnitCode")       // The ID field
@@ -731,7 +731,7 @@
                     .ID("CompanyName")
                     .Label(new JS("formatMessage('Company Branch')"))
                     .DataSource(d => d.Mvc()
-                    .Controller("DeliveryNote")
+                    .Controller("DeliveryNote1")
                     .LoadAction("GetCompanyBranch")
                     )
                     .DisplayExpr("CompanyName")
@@ -746,7 +746,7 @@
                             @(Html.DevExtreme().SelectBox()
                             .ID("RequestType")
                             .DataSource(d => d.Mvc()
-                            .Controller("PurchaseOrders") // replace with actual name
+                            .Controller("PurchaseOrders1") // replace with actual name
                             .LoadAction("GetTypeOfRequests")
                             )
                             .ValueExpr("TypeOfRequestID")
@@ -762,7 +762,7 @@
                                 @(Html.DevExtreme().SelectBox()
                                 .ID("POCategory")
                                 .DataSource(d => d.Mvc()
-                                .Controller("PurchaseOrders")
+                                .Controller("PurchaseOrders1")
                                 .LoadAction("GetPOCategories")
                                 )
                                 .ValueExpr("POCategoryCode")
@@ -786,7 +786,7 @@
                         @(Html.DevExtreme().SelectBox()
                         .ID("InventoryGroup")
                         .DataSource(d => d.Mvc()
-                        .Controller("PurchaseOrders") // Replace with your controller name
+                        .Controller("PurchaseOrders1") // Replace with your controller name
                         .LoadAction("GetInventoryGroups")
                         )
                         .ValueExpr("InventoryMasterGroupId")
@@ -807,7 +807,7 @@
                     @(Html.DevExtreme().SelectBox()
                     .ID("CurrencyExchange")
                     .DataSource(d => d.Mvc()
-                    .Controller("PurchaseOrders") // Replace with your controller
+                    .Controller("PurchaseOrders1") // Replace with your controller
                     .LoadAction("GetCurrencyList")
                     )
                     .ValueExpr("CurrencyExchangeId")
@@ -905,7 +905,7 @@
                                     @(Html.DevExtreme().SelectBox()
                                     .ID("preparedBy2")
                                     .DataSource(d => d.Mvc()
-                                    .Controller("PurchaseOrders")
+                                    .Controller("PurchaseOrders1")
                                     .LoadAction("GetDocumentSignatories")
                                     )
                                     .ValueExpr("SignatoryId")
@@ -921,7 +921,7 @@
                                     @(Html.DevExtreme().SelectBox()
                                     .ID("verifiedBy2")
                                     .DataSource(d => d.Mvc()
-                                    .Controller("PurchaseOrders") // 🔁 Same controller
+                                    .Controller("PurchaseOrders1") // 🔁 Same controller
                                     .LoadAction("GetDocumentSignatories")
                                     )
                                     .ValueExpr("SignatoryId")
@@ -937,7 +937,7 @@
                                     @(Html.DevExtreme().SelectBox()
                                     .ID("approvedBy2")
                                     .DataSource(d => d.Mvc()
-                                    .Controller("PurchaseOrders")
+                                    .Controller("PurchaseOrders1")
                                     .LoadAction("GetDocumentSignatories")
                                     )
                                     .ValueExpr("SignatoryId")
@@ -1108,7 +1108,7 @@
         });
     });
         $(function () {
-        $.get("/api/PurchaseOrders/GetAutoGeneratedPurchaseorderNumber", function (res) {
+        $.get("/api/PurchaseOrders1/GetAutoGeneratedPurchaseorderNumber", function (res) {
             if (res.success) {
                 $("#PurchaseOrderNo").dxTextBox("instance").option("value", res.Pono);
             } else {
@@ -1942,7 +1942,7 @@
         };
 
         $.ajax({
-            url: '/api/PurchaseOrders/SavePurchaseOrder',
+            url: '/api/PurchaseOrders1/SavePurchaseOrder',
             type: 'POST',
             data: JSON.stringify(data),
             contentType: 'application/json',
@@ -1954,7 +1954,7 @@
                 const gridItems = rawItems.map(item => ({ ...item, Pono: pono }));
 
                 $.ajax({
-                    url: '/api/PurchaseOrders/SaveItem',
+                    url: '/api/PurchaseOrders1/SaveItem',
                     type: 'POST',
                     data: JSON.stringify(gridItems),
                     contentType: 'application/json',

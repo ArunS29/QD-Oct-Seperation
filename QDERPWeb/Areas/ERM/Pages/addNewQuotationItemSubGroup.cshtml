@@ -209,7 +209,7 @@
             dataSource: new DevExpress.data.CustomStore({
                 load: function (loadOptions) {
                     return $.ajax({
-                        url: "/api/addNewQuotationItemSubGroup/GetSubGroup",
+                        url: "/api/addNewQuotationItemSubGroup1GetSubGroup",
                         dataType: "json",
                         data: loadOptions,
                         type: "GET"
@@ -217,7 +217,7 @@
                 },
                 byKey: function (key) {
                     return $.ajax({
-                        url: "/api/addNewQuotationItemSubGroup/GetCostCenterByKey",
+                        url: "/api/addNewQuotationItemSubGroup1GetCostCenterByKey",
                         data: { key: key },
                         type: "GET"
                     });
@@ -256,7 +256,7 @@
             dataSource: new DevExpress.data.CustomStore({
                 load: function (loadOptions) {
                     return $.ajax({
-                        url: "/api/addNewQuotationItemSubGroup/GetSubGroup",
+                        url: "/api/addNewQuotationItemSubGroup1GetSubGroup",
                         dataType: "json",
                         data: loadOptions,
                         type: "GET"
@@ -264,7 +264,7 @@
                 },
                 byKey: function (key) {
                     return $.ajax({
-                        url: "/api/addNewQuotationItemSubGroup/GetCostCenterMasterGroupByKey",
+                        url: "/api/addNewQuotationItemSubGroup1GetCostCenterMasterGroupByKey",
                         data: { key: key },
                         type: "GET"
                     });
@@ -336,7 +336,7 @@
             dataSource: new DevExpress.data.CustomStore({
                 key: "QuoteGroupItemSlNo",
                 load: function () {
-                    return $.getJSON('/api/addNewQuotationItemSubGroup/GetSubGroup'); // Fetch data from the API
+                    return $.getJSON('/api/addNewQuotationItemSubGroup1GetSubGroup'); // Fetch data from the API
                 },
                 update: function (key, values) {
                     var updatedBranch = {
@@ -353,7 +353,7 @@
                     // Send the updated data to the backend via AJAX
                     return $.ajax({
                         type: "POST",
-                        url: "/api/addNewQuotationItemSubGroup/UpdateSubGroup",
+                        url: "/api/addNewQuotationItemSubGroup1UpdateSubGroup",
                         data: JSON.stringify(updatedBranch),
                         contentType: "application/json",
                         success: function (response) {
@@ -460,7 +460,7 @@
                                 // Send delete request to the API
                                 $.ajax({
                                     type: "POST",
-                                    url: "/api/addNewQuotationItemSubGroup/DeleteSubGroup",
+                                    url: "/api/addNewQuotationItemSubGroup1DeleteSubGroup",
                                     data: JSON.stringify({ QuoteGroupItemSlNo: QuoteGroupItemSlNo }),
                                     contentType: "application/json",
                                     success: function (response) {
@@ -664,7 +664,7 @@
 
             // Send the data to the AddBranch API using AJAX
             $.ajax({
-                url: '/api/addNewQuotationItemSubGroup/AddSubGroup',  // The API endpoint for adding a branch
+                url: '/api/addNewQuotationItemSubGroup1AddSubGroup',  // The API endpoint for adding a branch
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(branchData),  // Convert the data object to JSON string

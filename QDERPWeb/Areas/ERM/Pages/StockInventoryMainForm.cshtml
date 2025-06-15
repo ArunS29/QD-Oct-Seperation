@@ -139,7 +139,7 @@
       @(Html.DevExtreme().DataGrid<Qry60001inventoryStockView>()
     .ID("dataGrid")
     .DataSource(ds => ds.Mvc()
-        .Controller("StockInventory")
+        .Controller("ERStockInventory")
         .LoadAction("GetInventory"))
     .RemoteOperations(false)
     .Columns(columns =>
@@ -266,7 +266,7 @@
         ).done(function (dialogResult) {
             if (dialogResult) {
                 $.ajax({
-                    url: "/api/StockInventory/DeleteStockItem",
+                    url: "/api/ERStockInventory/DeleteStockItem",
                     method: "POST",
                     contentType: "application/json",
                     data: JSON.stringify(code),

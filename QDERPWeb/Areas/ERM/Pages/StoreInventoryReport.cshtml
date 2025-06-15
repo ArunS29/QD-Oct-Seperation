@@ -175,7 +175,7 @@
 <div class="dx-field ledgerResult">
 	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry65315storeStockBalanceMaster>()
 		.ID("dataGrid")
-		.DataSource(d => d.Mvc().Controller("StockInventory").LoadAction("GetStockData"))
+		.DataSource(d => d.Mvc().Controller("ERStockInventory").LoadAction("GetStockData"))
 		.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
 		.ShowBorders(true)
 		.ShowColumnLines(true)

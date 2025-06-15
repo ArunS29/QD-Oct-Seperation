@@ -78,7 +78,7 @@
             @(Html.DevExtreme().DropDownBox()
                 .Label(new JS("formatMessage('Goods & Services Group:')"))
                 .DataSource(d => d.WebApi()
-                .Controller("GoodsandServices")
+                .Controller("GoodsandServices1")
                 .LoadAction("GetGoodsAndServicesGroups")
                 .LoadMode(DataSourceLoadMode.Raw)
                 .Key("GsgroupCode")
@@ -156,7 +156,7 @@
           
             @(Html.DevExtreme().DropDownBox()
                 .DataSource(d => d.WebApi()
-                .Controller("GoodsandServices")
+                .Controller("GoodsandServices1")
                 .LoadAction("GetUnitofMeasure")
                 .LoadMode(DataSourceLoadMode.Raw)
                 .Key("UnitCode")
@@ -303,7 +303,7 @@
         @(Html.DevExtreme().DataGrid()
             .ID("accounthead-datagrid")
             .DataSource(d => d.WebApi()
-            .Controller("GoodsandServices")
+            .Controller("GoodsandServices1")
             .LoadAction("GetGoodsAndServicesGroups")
             .LoadMode(DataSourceLoadMode.Raw)
             .Key("GsgroupId")
@@ -346,7 +346,7 @@
         @(Html.DevExtreme().DataGrid()
             .ID("GetProject-datagrid")
             .DataSource(d => d.WebApi()
-            .Controller("GoodsandServices")
+            .Controller("GoodsandServices1")
             .LoadAction("GetGoodsAndServicesGroups")
             .LoadMode(DataSourceLoadMode.Raw)
             .Key("GsgroupCode")
@@ -383,7 +383,7 @@
         @(Html.DevExtreme().DataGrid()
             .ID("GetLedgerNo-datagrid")
             .DataSource(d => d.WebApi()
-            .Controller("GoodsandServices")
+            .Controller("GoodsandServices1")
             .LoadAction("GetUnitofMeasure")
             .LoadMode(DataSourceLoadMode.Raw)
             .Key("UnitCode")
@@ -458,7 +458,7 @@
     function generateNextClientCode(categoryCode) {
 
         $.ajax({
-            url: `/api/GoodsandServices/GetLatestClientCode?categoryCode=${categoryCode}`,
+            url: `/api/GoodsandServices1/GetLatestClientCode?categoryCode=${categoryCode}`,
             type: 'GET',
             success: function (latestCode) {
                 let nextNumber = 1;
@@ -666,7 +666,7 @@
 
             // Send data via AJAX POST request
             $.ajax({
-                url: '/api/GoodsandServices/InsertOrUpdate', // Change this URL to your actual API endpoint
+                url: '/api/GoodsandServices1/InsertOrUpdate', // Change this URL to your actual API endpoint
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(data), // Send the data as a JSON string
@@ -706,7 +706,7 @@
         }
 
         $.ajax({
-            url: "/api/GoodsandServices/DeleteGoodsandService",
+            url: "/api/GoodsandServices1/DeleteGoodsandService",
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(GoodsCode), // 👈 plain string

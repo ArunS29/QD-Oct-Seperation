@@ -349,7 +349,7 @@
     function bindSupplierContactData(supplierContactSlNo) {
         
         $.ajax({
-            url: `/api/SupplierContactList/GetContactBySlNo?supplierContactSlNo=${supplierContactSlNo}`,
+            url: `/api/ERSupplierContactList/GetContactBySlNo?supplierContactSlNo=${supplierContactSlNo}`,
             type: 'GET',
             success: function (data) {
                 console.log("Supplier Contact Loaded:", data);
@@ -409,7 +409,7 @@
         }
 
         $.ajax({
-            url: '/api/SupplierContactList/SaveOrUpdateSupplierContact',
+            url: '/api/ERSupplierContactList/SaveOrUpdateSupplierContact',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(data),
@@ -448,7 +448,7 @@
         }
 
         $.ajax({
-            url: "/api/SupplierContactList/DeleteSupplierContactList",
+            url: "/api/ERSupplierContactList/DeleteSupplierContactList",
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(SupplierContactSlNo), // 👈 plain string

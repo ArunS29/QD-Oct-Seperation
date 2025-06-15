@@ -221,7 +221,7 @@
             dataSource: new DevExpress.data.CustomStore({
                 key: "SupplierCategoryCode",
                 load: function () {
-                    return $.getJSON('/api/SupplierCategory/GetBranches'); // Fetch data from the API
+                    return $.getJSON('/api/ERSupplierCategory/GetBranches'); // Fetch data from the API
                 },
                 update: function (key, values) {
                     var updatedBranch = {
@@ -236,7 +236,7 @@
                     // Send the updated data to the backend via AJAX
                     return $.ajax({
                         type: "POST",
-                        url: "/api/SupplierCategory/UpdateBranch",
+                        url: "/api/ERSupplierCategory/UpdateBranch",
                         data: JSON.stringify(updatedBranch),
                         contentType: "application/json",
                         success: function (response) {
@@ -309,7 +309,7 @@
                                 // Send delete request to the API
                                 $.ajax({
                                     type: "POST",
-                                    url: "/api/SupplierCategory/DeleteBranchMaster",
+                                    url: "/api/ERSupplierCategory/DeleteBranchMaster",
                                     data: JSON.stringify({ SupplierCategoryCode: supplierCategoryCode }),
                                     contentType: "application/json",
                                     success: function (response) {
@@ -502,7 +502,7 @@
 
             // Send the data to the AddBranch API using AJAX
             $.ajax({
-                url: '/api/SupplierCategory/AddBranch',  // The API endpoint for adding a branch
+                url: '/api/ERSupplierCategory/AddBranch',  // The API endpoint for adding a branch
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(branchData),  // Convert the data object to JSON string

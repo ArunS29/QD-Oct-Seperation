@@ -385,7 +385,7 @@
 	toDate = toDate.toISOString().split('T')[0];
 
 				$.ajax({
-		url: '/api/JobOrders/GetJobOrders',
+		url: '/api/JobOrders1/GetJobOrders',
 		type: 'GET',
 		data: {
 			fromDate: frmDate,
@@ -424,7 +424,7 @@
 
 						// switch (RequestEnquiry) {
 						// 	case "Client Request":
-						// 		url = `/${tenantName}/ERM/AddNewClientRequest1?Mprno=${Mprno}`;
+						// 		url = `/${tenantName}/ERM/AddNewClientRequest?Mprno=${Mprno}`;
 						// 		title = "Edit Client Request";
 						// 		break;
 						// 	case "Project Request":

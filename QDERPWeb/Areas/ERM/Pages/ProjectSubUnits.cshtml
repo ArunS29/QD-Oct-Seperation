@@ -101,7 +101,7 @@
 </style>
 <div class="title">
     <div class="header-container">
-        <div id="ProjectSubUnits" class="no-border-input"></div>
+        <div id="ProjectSubUnits1" class="no-border-input"></div>
     </div>
 </div>
 <div class="signatory-form-container">
@@ -144,7 +144,7 @@
         .KeyExpr("ProjectSubUnitCode")
             .RemoteOperations(false)
             .DataSource(d => d.WebApi()
-        .Controller("ProjectSubUnits")
+        .Controller("ProjectSubUnits1")
         .LoadAction("GetProjectSubUnit")
             .LoadMode(DataSourceLoadMode.Raw)
             )
@@ -219,7 +219,7 @@
             });
 
         $(function () {
-        $("#ProjectSubUnits").dxTextBox({
+        $("#ProjectSubUnits1").dxTextBox({
             text: formatMessage("Project Sub Units"),
                 readOnly: true,
                 onContentReady: function (e) {
@@ -288,7 +288,7 @@
             };
 
             $.ajax({
-            url: '/api/ProjectSubUnits/SaveOrUpdatede',
+            url: '/api/ProjectSubUnits1/SaveOrUpdatede',
                 method: "POST",
                 contentType: "application/json",
                 data: JSON.stringify(data),
@@ -319,7 +319,7 @@
             e.cancel = true; // prevents grid from doing its own update
 
             return $.ajax({
-            url: '/api/ProjectSubUnits/SaveOrUpdatede',
+            url: '/api/ProjectSubUnits1/SaveOrUpdatede',
                 method: "POST",
                 contentType: "application/json",
                 data: JSON.stringify(data),

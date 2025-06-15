@@ -278,7 +278,7 @@
                 columns.Add().DataField("CostAllocationUnitId").Caption("Cost Center Code").Width(200)
                 .Lookup(lookup => lookup
                 .DataSource(d => d.WebApi()
-                .Controller("StoreCode")
+                .Controller("ERStoreCode")
                 .LoadAction("GetCostCenter")
                 .LoadMode(DataSourceLoadMode.Raw)
                 .Key("CostAllocationUnitId")

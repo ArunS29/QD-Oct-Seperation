@@ -203,7 +203,7 @@
         @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Client Category')"))
             .LabelMode(EditorLabelMode.Outside)
      .DataSource(d => d.WebApi()
-     .Controller("ClientLeadMaster")
+     .Controller("ClientLeadMaster1")
      .LoadAction("GetClientCategory")
      .LoadMode(DataSourceLoadMode.Raw)
      .Key("CategoryCode")
@@ -289,7 +289,7 @@
                         @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Client Ledger No')"))
                         .LabelMode(EditorLabelMode.Outside)
      .DataSource(d => d.WebApi()
-     .Controller("ClientLeadMaster")
+     .Controller("ClientLeadMaster1")
      .LoadAction("GetClientLedgerNo")
      .LoadMode(DataSourceLoadMode.Raw)
      .Key("AccountId")
@@ -375,7 +375,7 @@
                         .Label(new JS("formatMessage('Sales Person')"))
                         .LabelMode(EditorLabelMode.Outside)
      .DataSource(d => d.WebApi()
-     .Controller("ClientLeadMaster")
+     .Controller("ClientLeadMaster1")
      .LoadAction("GetSalesPerson")
      .LoadMode(DataSourceLoadMode.Raw)
      .Key("CategoryCode")
@@ -605,7 +605,7 @@
      @(Html.DevExtreme().DataGrid()
                  .ID("GetProject-datagrid")
                  .DataSource(d => d.WebApi()
-                     .Controller("ClientLeadMaster")
+                     .Controller("ClientLeadMaster1")
                      .LoadAction("GetClientCategory")
                  .LoadMode(DataSourceLoadMode.Raw)
                  .Key("CategoryCode")
@@ -640,7 +640,7 @@
      @(Html.DevExtreme().DataGrid()
                  .ID("GetLedgerNo-datagrid")
                  .DataSource(d => d.WebApi()
-                 .Controller("ClientLeadMaster")
+                 .Controller("ClientLeadMaster1")
                  .LoadAction("GetClientLedgerNo")
                  .LoadMode(DataSourceLoadMode.Raw)
                  .Key("AccountId")
@@ -674,7 +674,7 @@
      @(Html.DevExtreme().DataGrid()
                  .ID("GetSalesPerson-datagrid")
                  .DataSource(d => d.WebApi()
-                     .Controller("ClientLeadMaster")
+                     .Controller("ClientLeadMaster1")
                      .LoadAction("GetSalesPerson")
                  .LoadMode(DataSourceLoadMode.Raw)
                  .Key("SalesPersonCode")
@@ -777,7 +777,7 @@
     function loadClientDetails(cleanClientCode) {
         
     $.ajax({
-        url: `/api/ClientLeadMaster/GetClientByCode?clientCode=${cleanClientCode}`,
+        url: `/api/ClientLeadMaster1/GetClientByCode?clientCode=${cleanClientCode}`,
         type: 'GET',
         success: function (data) {
               $("#btnSave").dxButton("instance").option("text", "Update");
@@ -825,7 +825,7 @@
 }
 function loadClientStatusGrid(clientCode) {
     $.ajax({
-        url: `/api/ClientLeadMaster/GetClientStatus?clientCode=${encodeURIComponent(clientCode)}`,
+        url: `/api/ClientLeadMaster1/GetClientStatus?clientCode=${encodeURIComponent(clientCode)}`,
         type: 'GET',
         success: function (statusData) {
             const grid = $("#ClientStatusdataGrid").dxDataGrid("instance");
@@ -841,7 +841,7 @@ function loadClientStatusGrid(clientCode) {
 }
 function loadContactListGrid(clientCode) {
     $.ajax({
-        url: `/api/ClientLeadMaster/GetContactList?clientCode=${encodeURIComponent(clientCode)}`,
+        url: `/api/ClientLeadMaster1/GetContactList?clientCode=${encodeURIComponent(clientCode)}`,
         type: 'GET',
         success: function (statusData) {
             const grid = $("#ContactListdataGrid").dxDataGrid("instance");
@@ -945,7 +945,7 @@ function loadContactListGrid(clientCode) {
 function generateNextClientCode(categoryCode) {
  
     $.ajax({
-        url: `/api/ClientLeadMaster/GetLatestClientCode?categoryCode=${categoryCode}`,
+        url: `/api/ClientLeadMaster1/GetLatestClientCode?categoryCode=${categoryCode}`,
         type: 'GET',
         success: function (latestCode) {
             let nextNumber = 1;
@@ -1044,7 +1044,7 @@ ContactRemarks:clientRemarks,
 
         // Send data via AJAX POST request
         $.ajax({
-            url: '/api/ClientLeadMaster/InsertOrUpdate', // Change this URL to your actual API endpoint
+            url: '/api/ClientLeadMaster1/InsertOrUpdate', // Change this URL to your actual API endpoint
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(data), // Send the data as a JSON string
@@ -1137,7 +1137,7 @@ ContactRemarks:clientRemarks,
 
             // Send data via AJAX POST request
             $.ajax({
-                url: '/api/ClientLeadMaster/InsertOrUpdate', // Change this URL to your actual API endpoint
+                url: '/api/ClientLeadMaster1/InsertOrUpdate', // Change this URL to your actual API endpoint
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(data), // Send the data as a JSON string
@@ -1180,7 +1180,7 @@ ContactRemarks:clientRemarks,
      }
 
      $.ajax({
-         url: "/api/ClientLeadMaster/DeleteClientLeadMaster",
+         url: "/api/ClientLeadMaster1/DeleteClientLeadMaster",
          type: 'POST',
          contentType: 'application/json',
          data: JSON.stringify(ClientCode), // 👈 plain string
@@ -1221,7 +1221,7 @@ ContactRemarks:clientRemarks,
                         .done(function (dialogResult) {
                             if (dialogResult) {
                                 $.ajax({
-                                    url: `/api/ClientLeadMaster/DeleteStatus?clientStatusNo=${ClientStatusNo}`,
+                                    url: `/api/ClientLeadMaster1/DeleteStatus?clientStatusNo=${ClientStatusNo}`,
                                     type: 'DELETE',
                                     success: function (res) {
                                         if (res.success) {
@@ -1287,7 +1287,7 @@ ContactRemarks:clientRemarks,
                         .done(function (dialogResult) {
                             if (dialogResult) {
                                 $.ajax({
-                                    url: `/api/ClientLeadMaster/DeleteContact?clientContactSlNo=${ClientContactSlNo}`,
+                                    url: `/api/ClientLeadMaster1/DeleteContact?clientContactSlNo=${ClientContactSlNo}`,
                                     type: 'DELETE',
                                     success: function (res) {
                                         if (res.success) {

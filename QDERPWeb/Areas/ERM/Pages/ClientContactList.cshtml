@@ -359,7 +359,7 @@
     function bindClientContactData(clientContactSlNo) {
 
         $.ajax({
-            url: `/api/ClientContactList/GetContactBySlNo?clientContactSlNo=${clientContactSlNo}`,
+            url: `/api/ClientContactList1/GetContactBySlNo?clientContactSlNo=${clientContactSlNo}`,
             type: 'GET',
             success: function (data) {
                 console.log("getdatasss:", data);
@@ -419,7 +419,7 @@
         }
 
         $.ajax({
-            url: '/api/ClientContactList/SaveOrUpdateClientContact', // use the API endpoint for save or update
+            url: '/api/ClientContactList1/SaveOrUpdateClientContact', // use the API endpoint for save or update
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(data),
@@ -466,7 +466,7 @@
         }
 
         $.ajax({
-            url: "/api/ClientContactList/DeleteClientCategory",
+            url: "/api/ClientContactList1/DeleteClientCategory",
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(ClientContactSlNo), // 👈 plain string

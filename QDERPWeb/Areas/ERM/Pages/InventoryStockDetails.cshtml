@@ -203,7 +203,7 @@
                                 .ValueExpr("GsgroupId")
 
                                 .DataSource(d => d.WebApi()
-                                .Controller("StockInventory")
+                                .Controller("ERStockInventory")
                                 .LoadAction("GetStockGroups")
                                 )
                                 .Label(new JS("formatMessage('Stock Group')"))
@@ -236,7 +236,7 @@
                                 .DisplayExpr("StoreName")
                                 .ValueExpr("StoreId")
                                 .DataSource(d => d.WebApi()
-                                .Controller("StockInventory")
+                                .Controller("ERStockInventory")
                                 .LoadAction("GetStores")
                                 )
                                 .Label(new JS("formatMessage('Item Store')"))
@@ -260,7 +260,7 @@
                                 .DisplayExpr("StockClassification")
                                 .ValueExpr("StockClassId")
                                 .DataSource(d => d.WebApi()
-                                .Controller("StockInventory")
+                                .Controller("ERStockInventory")
                                 .LoadAction("GetItemClassifications")
                                 )
                                 .Label(new JS("formatMessage('Item Classification')"))
@@ -509,7 +509,7 @@
                                     .DisplayExpr("UnitType")
                                     .ValueExpr("UnitCode")
                                     .DataSource(d => d.WebApi()
-                                    .Controller("StockInventory")
+                                    .Controller("ERStockInventory")
                                     .LoadAction("GetUnitCodes")
                                     )
                                     .Label(new JS("formatMessage('Unit of Measure : *')"))
@@ -1193,7 +1193,7 @@
                         load: function () {
                           console.log("Calling API for GsCode:", gscode);
 
-                          return $.getJSON(`/api/StockInventory/GetStockCardData`, { gscode })
+                          return $.getJSON(`/api/ERStockInventory/GetStockCardData`, { gscode })
                             .then(data => {
                               console.log(" Data loaded", data);
                               return data;
@@ -1438,7 +1438,7 @@
                             const dataStore = new DevExpress.data.CustomStore({
                                 load: function () {
                                     console.log("Fetching invoice data for GsCode:", gscode);
-                                    return $.getJSON(`/api/StockInventory/GetInvoiceGridData`, { gscode })
+                                    return $.getJSON(`/api/ERStockInventory/GetInvoiceGridData`, { gscode })
                                         .then(data => {
                                             console.log("Invoice Data Loaded", data);
                                             return data;
@@ -1537,7 +1537,7 @@
                 const dataStore = new DevExpress.data.CustomStore({
                 load: function () {
                 console.log("Fetching quotation data for GsCode:", gscode);
-                return $.getJSON(`/api/StockInventory/GetQuotationGridData`, { gscode })
+                return $.getJSON(`/api/ERStockInventory/GetQuotationGridData`, { gscode })
                 .then(data => {
                 console.log("Quotation Data Loaded", data);
                 return data;
@@ -1639,7 +1639,7 @@
                         const dataStore = new DevExpress.data.CustomStore({
                             load: function () {
                                 console.log("Fetching Purchase Order for GsCode:", gscode);
-                                return $.getJSON(`/api/StockInventory/GetPurchaseOrderGridData`, { gscode })
+                                return $.getJSON(`/api/ERStockInventory/GetPurchaseOrderGridData`, { gscode })
                                     .then(data => {
                                         console.log("Purchase Data Loaded", data);
                                         return data;
@@ -1738,7 +1738,7 @@
                             key: "DeliveryNoteNo", // set primary key or unique field
                             load: function() {
                                 console.log("Fetching Delivery Note Details for GsCode:", gscode);
-                                return $.getJSON("/api/StockInventory/GetItemDeliversGridData", { gscode: gscode })
+                                return $.getJSON("/api/ERStockInventory/GetItemDeliversGridData", { gscode: gscode })
                                     .then(data => {
                                         console.log("Item Delivery Data Loaded", data);
                                         return data;
@@ -1844,7 +1844,7 @@
                             key: "ReceiptNo", // assuming ReceiptNo is unique
                             load: function () {
                                 console.log("Fetching Material Receipt Data for GsCode:", gscode);
-                                return $.getJSON("/api/StockInventory/GetItemReceivedGridData", { gscode: gscode })
+                                return $.getJSON("/api/ERStockInventory/GetItemReceivedGridData", { gscode: gscode })
                                     .then(data => {
                                         console.log("Item Receipt Data Loaded", data);
                                         return data;
@@ -1936,7 +1936,7 @@
                     // ✅ Single correct version of unitCodeDropdown loader
                     function loadUnitCodeDropdown() {
                         return $.ajax({
-                            url: "/api/StockInventory/GetUnitCodeOptions", // Update as per your API
+                            url: "/api/ERStockInventory/GetUnitCodeOptions", // Update as per your API
                             method: "GET",
                             dataType: "json"
                         }).then(function (response) {
@@ -1954,7 +1954,7 @@
 
                         const dataStore = new DevExpress.data.CustomStore({
                             key: "UnitConversionId",
-                            load: () => $.getJSON("/api/StockInventory/GetUnitConversionGridData", { gscode })
+                            load: () => $.getJSON("/api/ERStockInventory/GetUnitConversionGridData", { gscode })
                         });
 
                         UnitConversionGridInstance.option("dataSource", dataStore);
@@ -2268,7 +2268,7 @@
 
                             const dataStore = new DevExpress.data.CustomStore({
                                 key: "DocumentRefNo",
-                                load: () => $.getJSON("/api/StockInventory/GetDocumentGridData", { gscode })
+                                load: () => $.getJSON("/api/ERStockInventory/GetDocumentGridData", { gscode })
                                     .then(data => data)
                                     .catch(err => {
                                         alert("Failed to load data.");
@@ -2292,7 +2292,7 @@
                             const selectedDocs = getSelectedDocumentNos();
                             if (!selectedDocs.length) return;
 
-                            fetch("/api/StockInventory/MergeSelectedDocuments", {
+                            fetch("/api/ERStockInventory/MergeSelectedDocuments", {
                                 method: "POST",
                                 headers: { "Content-Type": "application/json" },
                                 body: JSON.stringify(selectedDocs)
@@ -2315,7 +2315,7 @@
                             const selectedDocs = getSelectedDocumentNos();
                             if (!selectedDocs.length) return;
 
-                            fetch("/api/StockInventory/DownloadMultipleDocuments", {
+                            fetch("/api/ERStockInventory/DownloadMultipleDocuments", {
                                 method: "POST",
                                 headers: { "Content-Type": "application/json" },
                                 body: JSON.stringify(selectedDocs)
@@ -2439,7 +2439,7 @@
                             key: "Pono", // Ensure this key is unique
                             load: function () {
                                 console.log("Fetching Purchase Grid Data for GsCode:", gscode);
-                                return $.getJSON("/api/StockInventory/GetPurchaseGridData", { gscode: gscode })
+                                return $.getJSON("/api/ERStockInventory/GetPurchaseGridData", { gscode: gscode })
                                     .then(data => {
                                         console.log("Purchase Grid Data Loaded", data);
                                         return data;
@@ -2583,7 +2583,7 @@
         var GsgroupId = e.value;
 
         if (!isViewMode && !isEditMode && GsgroupId) {
-            $.get('/api/StockInventory/GetNextStockNumber', { GsgroupId: GsgroupId }, function (data) {
+            $.get('/api/ERStockInventory/GetNextStockNumber', { GsgroupId: GsgroupId }, function (data) {
                 $("#StockNoItemCode").dxTextBox("instance").option("value", data);
             });
         }
@@ -2599,7 +2599,7 @@
             isViewMode = mode === "view";
 
             setTimeout(() => {
-                fetch(`/api/StockInventory/GetByCode?code=${encodeURIComponent(code)}`)
+                fetch(`/api/ERStockInventory/GetByCode?code=${encodeURIComponent(code)}`)
                     .then(response => {
                         if (!response.ok) throw new Error("Failed to load");
                         return response.json();
