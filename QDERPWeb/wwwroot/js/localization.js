@@ -1,5 +1,6 @@
 ﻿var dictionary = {
     "en": {
+        "Terms":"Terms",
         "Name of the Requester:":"Name of the Requester:",
         "Name of the Store Incharge:":"Name of the Store Incharge:",
         "Edit Client Request": "Edit Client Request",
@@ -3008,8 +3009,36 @@
         "Store Inventory By Date": "Store Inventory By Date",
         "Stock Movement Report": "Stock Movement Report",
         "Add New Stock Item": "Add New Stock Item",
+        "Equipments / Assets": "Equipments / Assets",
+        "Equipment Enquiry": "Equipment Enquiry",
+        "Equipments Quotation": "Equipments Quotation",
+        "Equipment Sales Order": "Equipment Sales Order",
+        "Equipment Delivery": "Equipment Delivery",
+        "Equipment TimeSheet": "Equipment TimeSheet",
+        "Purchase Order": "Purchase Order",
+        "Supplier Inv Summary": "Supplier Inv Summary",
+        "Client Inv Summary": "Client Inv Summary",
+        "Service & Maintenance": "Service & Maintenance",
+        "Clients": "Clients",
+        "Suppliers": "Suppliers",
+        "Equipment Timesheet (New)": "Equipment Timesheet (New)",
+        "Equipment Rentals Dashboard":"Equipment Rentals Dashboard",
     },
-    "ar": {
+    ar: {
+        "Equipment Rentals Dashboard":"لوحة معلومات تأجير المعدات",
+        "Equipments / Assets": "المعدات / الأصول",
+        "Equipment Enquiry": "استعلام المعدات",
+        "Equipments Quotation": "عرض أسعار المعدات",
+        "Equipment Sales Order": "طلب مبيعات المعدات",
+        "Equipment Delivery": "تسليم المعدات",
+        "Equipment TimeSheet": "ورقة عمل المعدات",
+        "Purchase Order": "أمر الشراء",
+        "Supplier Inv Summary": "ملخص فواتير المورد",
+        "Client Inv Summary": "ملخص فواتير العميل",
+        "Service & Maintenance": "الخدمة والصيانة",
+        "Clients": "العملاء",
+        "Suppliers": "الموردين",
+        "Equipment Timesheet (New)": "ورقة عمل المعدات (جديد)",
         "Add New Stock Item": "إضافة عنصر مخزون جديد",
         "Stock Movement Report":"تقرير حركة الأسهم",
         "Store Inventory By Date":"مخزون المتجر حسب التاريخ",
@@ -5594,7 +5623,8 @@
         "Additional Cost On Items": "تكلفة إضافية على الأصناف",
         "By Quarter": "حسب الربع",
         "Name of the Requester:": "اسم مقدم الطلب:",
-        "Name of the Store Incharge:": "اسم مسؤول المخزن:"
+        "Name of the Store Incharge:": "اسم مسؤول المخزن:",
+        "Terms": "الشروط"
     }
 };
 

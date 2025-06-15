@@ -1,0 +1,595 @@
+﻿@page
+@model QD.ERP.Web.Areas.ERM.Pages.SignatoriesModel
+@{
+}
+
+
+@using DevExtreme.AspNet.Mvc
+@using DevExtreme.AspNet.Mvc.Builders
+<style>
+    .signatory-form-container {
+        padding: 20px;
+    }
+
+    .form-row {
+        display: flex;
+        gap:15px;
+        align-items: end;
+    }
+
+    .dx-datagrid-save-button,
+    .dx-datagrid-cancel-button {
+        display: none !important;
+    }
+
+    /* Also hide the entire right-aligned toolbar space */
+    .dx-toolbar-after {
+        display: none !important;
+    }
+
+    /* Optionally, remove padding/margin if needed */
+    .dx-datagrid-headers .dx-toolbar {
+        padding-right: 0 !important;
+    }
+    .form-row .form-row-btn {
+        margin: 2px;
+        
+        width: 340px;
+        padding: 0px;
+    }
+
+    .rtl-textbox input {
+        text-align: right;
+    }
+        .form-row input,
+        .form-row .dx-textbox,
+        .form-row .dx-selectbox {
+            flex: 1;
+        }
+
+    .dx-fileuploader-input-wrapper .dx-button {
+        float: left;
+        margin-top: -10px;
+    }
+    .image-upload-row {
+        align-items: center;
+        gap: 10px;
+    }
+
+    .signature-upload {
+        border: 1px solid #ccc;
+        background-color: #fff;
+    }
+
+    .limited-footer .btn-container:not(:has(#btnUpdate,#btnBack)) {
+        display: none !important;
+    }
+    
+    .upload{
+        display: block;
+        top: 26px;
+        position: relative;
+        left: 0px;
+    }
+
+    .grid{
+        padding:20px;
+    }
+
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: flex-start;
+        background-color: var(--background-color);
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+        overflow-x:hidden;
+    }
+
+    .imagecontainer {
+        background-color: #fff;
+        border: 1px solid #90caf9;
+        height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        overflow: hidden;
+        position: relative;
+    }
+
+        .imagecontainer img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .imagecontainer span {
+            color: #555;
+            font-style: italic;
+            position: absolute;
+        }
+
+    .playIcon {
+        display: none;
+    }
+</style>
+<div class="title">
+    <div class="header-container">
+        <div id="DatabaseSignatories1" class="no-border-title"></div>
+    </div>
+</div>
+<div class="signatory-form-container">
+        <table style="width: 100%;">
+            <tr>
+                <!-- LEFT CONTAINER -->
+                <td style="vertical-align: top; width: 50%; padding-right: 20px;">
+                    <div class="form-group">
+                        @(Html.DevExtreme().TextBox()
+                            .ID("SignatoryName")
+                            .Label(new JS("formatMessage('Signatory Name')"))
+                            .LabelMode(EditorLabelMode.Outside)
+                            .ValidationRules(rules =>
+                            {
+                                rules.AddRequired().Message("Signatory Name is required");
+                            })
+                            )
+                    </div>
+
+                    <div class="form-group">
+                        @(Html.DevExtreme().TextBox()
+                            .ID("SignatoryPosition")
+                            .Label(new JS("formatMessage('Signatory Position')"))
+                            .LabelMode(EditorLabelMode.Outside)
+                            .ValidationRules(rules =>
+                            {
+                                rules.AddRequired().Message("Signatory Position is required");
+                            })
+                            )
+                    </div>
+
+                    <div class="form-group">
+                        @(Html.DevExtreme().TextBox()
+                            .ID("SignatoryContact")
+                            .Label(new JS("formatMessage('Signatory Contact No.')"))
+                            .LabelMode(EditorLabelMode.Outside)
+                            )
+                    </div>
+
+                    <div class="form-group">
+                        <div style="display: flex; gap: 10px; align-items: flex-end;margin-top: 40px;flex-wrap: wrap;">
+                            <div style="flex: 1;">
+                                @(Html.DevExtreme().DropDownBox()
+                                    .ID("SignatoryUserId")
+                                    .Label(new JS("formatMessage('Signatory User ID:')"))
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .ShowClearButton(true)
+                                    .OpenOnFieldClick(true)
+                                    .AcceptCustomValue(false)
+                                    .DataSource(d => d.WebApi()
+                                    .Controller("ERSignatories")
+                                    .LoadAction("GetAllSignData")
+                                    .LoadMode(DataSourceLoadMode.Raw)
+                                    .Key("SignatoryID"))
+                                    .ValueExpr("SignatoryID")
+                                    .DisplayExpr("SignatoryName")
+                                    .ContentTemplate(@<text>
+                                    <div id="SignatoryGridContainer"></div>
+                                    <script>
+                                        $(function () {
+                                            $("#SignatoryGridContainer").dxDataGrid({
+                                                dataSource: DevExpress.data.AspNet.createStore({
+                                                    key: "SignatoryID",
+                                                    loadUrl: "/api/ERSignatories/GetAllSignData"
+                                                }),
+                                                height: 250,
+                                                selection: { mode: "single" },
+                                                hoverStateEnabled: true,
+                                                paging: { pageSize: 10 },
+                                                pager: {
+                                                    showPageSizeSelector: true,
+                                                    allowedPageSizes: [5, 10, 20]
+                                                },
+                                                columns: [
+                                        { dataField: "SignatoryID",caption: formatMessage("ID"), width: 60 },
+                                            { dataField: "SignatoryName",caption: formatMessage("Name"), width: 200 }
+                                                ],
+                                                onSelectionChanged: function (e) {
+                                                    var selected = e.selectedRowsData[0];
+                                                    if (selected) {
+                                                        $("#SignatoryUserId").dxDropDownBox("instance").option("value", selected.SignatoryID);
+                                                    }
+                                                }
+                                            });
+                                        });
+                                    </script>
+                                </text>)
+                                    )
+                            </div>
+                            <div>
+                                @(Html.DevExtreme().Button()
+                                    .ID("btnAddSalesPerson")
+                                    .Text(new JS("formatMessage('ADD')"))
+                                    .Icon("plus")
+                                    .OnClick("function() { addSignatoryToGrid(); }")
+                                    .ElementAttr(new { @class = "dx-button-add" })
+                                    )
+                            </div>
+                        </div>
+                    </div>
+                </td>
+
+                <!-- RIGHT CONTAINER -->
+                <td style="vertical-align: top; width: 50%;">
+                    <div class="form-group">
+                        <div style="display: flex; gap: 10px; align-items:end;">
+                            @(Html.DevExtreme().Button()
+                                .ID("btnConvertName")
+                                .Icon("fas fa-language")
+                                .ElementAttr(new { @class = "input-button" })
+                                .OnClick("function() { convertToArabic('SignatoryName', 'SignatoryNameArabic'); }")
+                                )
+
+                            @(Html.DevExtreme().TextBox()
+                                .ID("SignatoryNameArabic")
+                                .ElementAttr(new { dir = "rtl", @class = "rtl-textbox" })
+                                .Label(new JS("formatMessage('Signatory Name(Arabic)')"))
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Width("100%")
+                                )
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div style="display: flex; gap: 10px; align-items:end;">
+                            @(Html.DevExtreme().Button()
+                                .ID("btnConvertPosition")
+                                .Icon("fas fa-language")
+                                .ElementAttr(new { @class = "input-button" })
+                                .OnClick("function() { convertToArabic('SignatoryPosition', 'SignatoryPositionArabic'); }")
+                                )
+
+                            @(Html.DevExtreme().TextBox()
+                                .ID("SignatoryPositionArabic")
+                                .ElementAttr(new { dir = "rtl", @class = "rtl-textbox" })
+                                .Label(new JS("formatMessage('Signatory Position(Arabic)')"))
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Width("100%")
+                                )
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @(Html.DevExtreme().TextBox()
+                            .ID("SignatoryEmail")
+                            .Label(new JS("formatMessage('Signatory Email')"))
+                            .LabelMode(EditorLabelMode.Outside)
+                            .Width("100%")
+                            )
+                    </div>
+
+                    <div class="form-group">
+                        <div class="dx-fieldset" style="width: 375px;">
+                            <div class="imagecontainer" id="imgBox1" style="width: 142%; height: 100px; background-color: white;">
+                                <span>Upload Signature</span>
+                            </div>
+                            <input type="file" id="imageInput" accept="image/*" style="display:none;" />
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+  
+
+        
+    
+<div class="dx-field ledgerResult">
+    @(Html.DevExtreme().DataGrid()
+            .ID("SignatoryGrid")
+            .KeyExpr("SignatoryID")
+            .RemoteOperations(false)
+            .DataSource(d => d.WebApi()
+        .Controller("ERSignatories")
+        .LoadAction("GetAllSignData")
+            .LoadMode(DataSourceLoadMode.Raw)
+            )
+        .Editing(editing => editing
+        .Mode(GridEditMode.Batch)
+        .AllowUpdating(true)
+            .AllowDeleting(true)
+        )
+        .Toolbar(toolbar =>
+        {
+            toolbar.Items(items => { }); // hide default toolbar
+        })
+        .OnRowUpdating("onSignatoryUpdating")                       // Handles saving
+            .Columns(columns =>
+            {
+                columns.Add().DataField("SignatoryID").Caption(new JS("formatMessage('ID')")).Width(80).AllowEditing(false);
+                columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Name')")).Width(200);
+                columns.Add().DataField("SignatoryPosition").Caption(new JS("formatMessage('Position')")).Width(200);
+                columns.Add().DataField("SignatoryContact").Caption(new JS("formatMessage('Contact')")).Width(150);
+                columns.Add().DataField("SignatoryEmail").Caption(new JS("formatMessage('Email')")).Width(250);
+            // Image columns with cell template
+            columns.Add().DataField("DecodedBusinessCard1")
+            .Caption(new JS("formatMessage('Signature Image')"))
+            .CellTemplate(new JS(@"
+    function(cellElement, cellInfo) {
+    if (cellInfo.value) {
+    $('<img>')
+    .attr('src', cellInfo.value)
+    .css({ width: '100px', height: 'auto' })
+    .appendTo(cellElement);
+    }
+    }
+    ")).Width(150);
+                // Add delete button column
+                columns.Add()
+                .Type(GridCommandColumnType.Buttons)
+                .Buttons(buttons =>
+                {
+                    buttons.Add()
+                .Name(GridColumnButtonName.Delete)
+                .Icon("trash") // Use a trash icon
+                .Hint("Delete Row") // Tooltip
+                .OnClick("onDeleteButtonClick");
+                });
+               
+  })
+        .Height(500)
+        .ColumnAutoWidth(true)
+        .AllowColumnReordering(true)
+        .AllowColumnResizing(true)
+        .ColumnFixing(f => f.Enabled(true))
+        .Paging(p => p.Enabled(true))
+        .Scrolling(s => s
+        .Mode(GridScrollingMode.Virtual)
+        .RowRenderingMode(GridRowRenderingMode.Virtual)
+        .PreloadEnabled(true)
+        .ScrollByContent(true)
+        )
+        .ShowBorders(true)
+        .ShowRowLines(true)
+        .Width("100%")
+        )
+
+
+</div>
+
+</div>
+<div class="limited-footer">
+    @await Html.PartialAsync("InventoryModuleFooter")
+</div>
+ <script>
+
+    $(document).ready(function () {
+
+        $(".limited-footer .btn-container").each(function () {
+
+              if (!$(this).find("#btnUpdate,#btnBack").length) {
+
+                  $(this).remove();
+
+              }
+
+          });
+
+      });
+
+    $(document).on("click", "#btnBack", function () {
+        window.history.back();
+    });
+
+      $(function () {
+            $("#DatabaseSignatories").dxTextBox({
+                text: formatMessage("Database "),
+                readOnly: true,
+                           
+
+            });
+        });
+
+    $(function () {
+        $("#DatabaseSignatories1").dxTextBox({
+            text: formatMessage("Database Signatories"),
+            readOnly: true,
+            onContentReady: function (e) {
+                $(e.element).addClass("dx-textbox-heading");
+            }
+        });
+    });
+    async function convertToArabic(sourceId, targetId) {
+        const sourceBox = $("#" + sourceId).dxTextBox("instance");
+        const targetBox = $("#" + targetId).dxTextBox("instance");
+
+        if (!sourceBox || !targetBox) {
+            console.error("TextBox not initialized.");
+            return;
+        }
+
+        const sourceText = sourceBox.option("value");
+
+        if (!sourceText || sourceText.trim() === "") {
+            alert("Please enter a value to translate.");
+            return;
+        }
+
+        try {
+            const translatedText = await translateToArabic(sourceText);
+            targetBox.option("value", translatedText);
+        } catch (error) {
+            console.error("Translation failed", error);
+            alert("Translation failed. Please try again.");
+        }
+    }
+
+    async function translateToArabic(text) {
+        try {
+            const response = await fetch(
+                `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`
+            );
+
+            if (!response.ok) {
+                throw new Error("Translation API request failed.");
+            }
+
+            const data = await response.json();
+            return data?.responseData?.translatedText || "Translation not found";
+        } catch (error) {
+            console.error("Translation failed:", error);
+            throw error;
+        }
+    }
+    //img
+    let businessCard1Base64 = "";
+    function addSignatoryToGrid() {
+        // Validate fields using the Validator components
+        const nameValidationResult = $("#SignatoryName").dxValidator("instance").validate();
+        const positionValidationResult = $("#SignatoryPosition").dxValidator("instance").validate();
+
+        if (!nameValidationResult.isValid || !positionValidationResult.isValid) {
+            DevExpress.ui.notify("Please fill all required fields.", "warning", 2000);
+            return;
+        }
+
+        const data = {
+            SignatoryName: $("#SignatoryName").dxTextBox("instance").option("value"),
+            SignatoryNameArabic: $("#SignatoryNameArabic").dxTextBox("instance").option("value"),
+            SignatoryPosition: $("#SignatoryPosition").dxTextBox("instance").option("value"),
+            SignatoryPositionArabic: $("#SignatoryPositionArabic").dxTextBox("instance").option("value"),
+            SignatoryContact: $("#SignatoryContact").dxTextBox("instance").option("value"),
+            SignatoryEmail: $("#SignatoryEmail").dxTextBox("instance").option("value"),
+            SignatoryUserId: $("#SignatoryUserId").dxDropDownBox("instance").option("value"),
+                 // Add base64 data for images, removing the prefix
+                    SignatureImage: businessCard1Base64 ? businessCard1Base64.split(',')[1] : null,
+        };
+
+        $.ajax({
+            url: '/api/ERSignatories/SaveOrUpdateSignatory',
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function () {
+                DevExpress.ui.notify("Signatory saved successfully!", "success", 2000);
+                $("#SignatoryGrid").dxDataGrid("instance").refresh();
+            },
+            error: function () {
+                DevExpress.ui.notify("Failed to save signatory.", "error", 2000);
+            }
+        });
+    }
+
+
+    $("#btnUpdate").on("click", function () {
+        const grid = $("#SignatoryGrid").dxDataGrid("instance");
+        grid.saveEditData(); // 🔥 only triggers on manual click
+    });
+
+
+    function onSignatoryUpdating(e) {
+        const updatedSignatureImage = businessCard1Base64 ? businessCard1Base64.split(',')[1] : e.oldData.SignatureImage;
+
+        const data = {
+            SignatoryID: e.oldData.SignatoryID,
+            SignatoryName: e.newData.SignatoryName ?? e.oldData.SignatoryName,
+            SignatoryPosition: e.newData.SignatoryPosition ?? e.oldData.SignatoryPosition,
+            SignatoryContact: e.newData.SignatoryContact ?? e.oldData.SignatoryContact,
+            SignatoryEmail: e.newData.SignatoryEmail ?? e.oldData.SignatoryEmail,
+            SignatureImage: updatedSignatureImage
+        };
+
+        e.cancel = true;
+
+        return $.ajax({
+            url: '/api/ERSignatories/SaveOrUpdateSignatory',
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function () {
+                DevExpress.ui.notify("Data Updated Successfully!", "success", 1500);
+                $("#SignatoryGrid").dxDataGrid("instance").refresh();
+            },
+            error: function () {
+                DevExpress.ui.notify("Failed to save.", "error", 1500);
+            }
+        });
+    }
+
+    function onDeleteButtonClick(e) {
+        e.event.preventDefault(); // prevent default delete
+
+        var grid = $("#SignatoryGrid").dxDataGrid("instance");
+        var key = e.row.data.SignatoryID; // get the ID of the row
+
+        if (confirm("Are you sure you want to delete this row?")) {
+            $.ajax({
+                url: '/api/ERSignatories/Delete?key=' + key,
+                type: 'DELETE',
+                success: function () {
+                    // Refresh the grid after delete
+                    grid.refresh();
+                    DevExpress.ui.notify("Deleted successfully", "success", 2000);
+                },
+                error: function () {
+                    DevExpress.ui.notify("Delete failed", "error", 2000);
+                }
+            });
+        }
+    }
+
+
+    //Imageupload
+
+    let selectedContainer = null;
+ 
+
+    // Add event listeners after the DOM is ready
+    document.addEventListener("DOMContentLoaded", function () {
+        const containers = document.querySelectorAll('.imagecontainer');
+
+        containers.forEach(container => {
+            container.addEventListener('click', () => {
+                selectedContainer = container;
+                document.getElementById('imageInput').click();
+            });
+        });
+
+        document.getElementById('imageInput').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file && selectedContainer) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const base64Image = e.target.result;
+
+                    selectedContainer.innerHTML = '';
+                    const img = document.createElement('img');
+                    img.src = base64Image;
+                    img.style.maxWidth = '100%';
+                    selectedContainer.appendChild(img);
+
+                    businessCard1Base64 = base64Image;
+                };
+
+                reader.readAsDataURL(file);
+                event.target.value = '';
+            }
+        });
+    });
+
+
+
+    </script>

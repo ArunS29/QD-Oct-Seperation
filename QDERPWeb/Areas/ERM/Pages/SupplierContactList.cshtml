@@ -1,0 +1,468 @@
+﻿@page
+@model QD.ERP.Web.Areas.ERM.Pages.SupplierContactListModel
+@{
+    ViewData["Title"] = "Client Contact List";
+}
+
+<style>
+
+    .mainContainer {
+        width: 100%;
+        color: black;
+        border-radius: 6px;
+    }
+
+
+    .form-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 10px;
+    }
+
+    .form-field {
+        flex: 1;
+        margin-top: 20px;
+        margin-left: 10px;
+    }
+
+    .form-header {
+        padding: 10px;
+        text-align: center;
+        margin-top: 50px;
+    }
+
+    .white-bg .dx-icon {
+        font-size: 20px; /* Adjust the icon size */
+        color: #007bff; /* Change the icon color */
+    }
+
+    .dx-field-item-label-text  {
+        color: black !important;
+    }
+
+
+    .white-bg .dx-texteditor-input {
+        background-color: white !important;
+    }
+
+    .toolbar-buttons {
+        margin: 50px;
+        display: flex;
+        justify-content: flex-start; /* or center, or space-between */
+        gap: 20px; /* space between buttons */
+        margin-top: 20px;
+        padding: 10px 0;
+    }
+
+    .dx-button {
+        font-weight: bold;
+        font-size: 10px;
+    }
+    .black-text .dx-button-text {
+        color: black !important;
+    }
+
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+    }
+
+    .imagecontainer {
+        border-bottom: 2px;
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+        width: 100%;
+    }
+
+    .playIcon {
+        display: none;
+    }
+
+</style>
+<div class="title">
+    <div class="header-container">
+        <div id="SupplierContactList" class="no-border-title"></div>
+    </div>
+</div>
+<div class="formContainer" style="padding: 20px;">
+
+    <div class="form-row">
+        <div class="form-field">
+            @(Html.DevExtreme().TextBox()
+                .ID("txtSupplierCode")
+                .Value("")
+                .Label(new JS("formatMessage('Supplier Code')"))
+                .Width("100%")
+                .LabelMode(EditorLabelMode.Outside)
+                .ElementAttr("class", "white-bg"))
+
+        </div>
+        <div class="form-field">
+            @(Html.DevExtreme().TextBox()
+                .ID("txtSupplierHidden")
+                .Width("100%")
+                .Value("-1")
+                .ReadOnly(true)
+                .Label("")
+                .Disabled(true)
+                .LabelMode(EditorLabelMode.Outside)
+                .ElementAttr("class", "white-bg"))
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-field" style="display: flex;  align-items: end;">
+            @(Html.DevExtreme().TextBox()
+                .ID("txtSupplierName")
+                .Value("")
+                .Width("100%")
+            .Label(new JS("formatMessage('Supplier Name')"))
+                .LabelMode(EditorLabelMode.Outside)
+                .ElementAttr("class", "white-bg")
+                )
+            @(Html.DevExtreme().Button()
+                .Icon("font") // built-in person icon
+                .Type(ButtonType.Normal)
+                )
+
+
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-field" style="display: flex; align-items: end;">
+            @(Html.DevExtreme().TextBox()
+                .ID("contactPerson")
+                .Value("")
+            .Label(new JS("formatMessage('Contact Person')"))
+                .LabelMode(EditorLabelMode.Outside)
+                .Width("100%")
+                .ElementAttr("class", "white-bg")
+                )
+            @(Html.DevExtreme().Button()
+                .Icon("user") // built-in person icon
+
+                .Type(ButtonType.Normal)
+                )
+
+        </div>
+        <div class="form-field" style="display: flex;  align-items: end;">
+            @(Html.DevExtreme().TextBox()
+                .ID("title")
+                .Value("")
+                .Width("100%")
+            .Label(new JS("formatMessage('Title')"))
+                .LabelMode(EditorLabelMode.Outside)
+                .ElementAttr("class", "white-bg"))
+            @(Html.DevExtreme().Button()
+                .Icon("card") // built-in person icon
+                .Type(ButtonType.Normal)
+                )
+        </div>
+    </div>
+
+    @* <div class="form-row">
+        <div class="form-field" style="display: flex; align-items: end;">
+            @(Html.DevExtreme().TextBox()
+                .ID("division")
+                .Value("")
+                .Width("100%")
+               .Label(new JS("formatMessage('Division / Branch')"))
+                .LabelMode(EditorLabelMode.Outside)
+                .ElementAttr("class", "white-bg"))
+            @(Html.DevExtreme().Button()
+                .Icon("folder") // built-in person icon
+
+                .Type(ButtonType.Normal)
+                )
+        </div>
+        <div class="form-field" style="display: flex; align-items: end;">
+            @(Html.DevExtreme().TextBox()
+                .ID("location")
+                .Value("")
+                .Width("100%")
+               .Label(new JS("formatMessage('Location')"))
+                .LabelMode(EditorLabelMode.Outside)
+                .ElementAttr("class", "white-bg")
+                )
+            @(Html.DevExtreme().Button()
+                .Icon("map") // built-in person icon
+                .Type(ButtonType.Normal)
+                )
+        </div>
+    </div>
+ *@
+    <div class="form-row">
+        <div class="form-field" style="display: flex; align-items: end;">
+            @(Html.DevExtreme().TextBox()
+                .ID("mobile1")
+                .Value("")
+                .Width("100%")
+                            .Label(new JS("formatMessage('Mobile Number (1)')"))
+                .LabelMode(EditorLabelMode.Outside)
+                .ElementAttr("class", "white-bg"))
+            @(Html.DevExtreme().Button()
+                .Icon("tel") // built-in person icon
+                .Type(ButtonType.Normal)
+                )
+        </div>
+        <div class="form-field" style="display: flex; align-items: end;">
+            @(Html.DevExtreme().TextBox()
+                .ID("phone1")
+                .Value("")
+                .Width("100%")
+                .Label(new JS("formatMessage('Phone No (1)')"))
+                .LabelMode(EditorLabelMode.Outside)
+                .ElementAttr("class", "white-bg"))
+            @(Html.DevExtreme().Button()
+                .Icon("tel") // built-in person icon
+                .Type(ButtonType.Normal)
+                )
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-field" style="display: flex;  align-items: end;">
+            @(Html.DevExtreme().TextBox()
+                .ID("mobile2")
+                .Width("100%")
+                .Label(new JS("formatMessage('Mobile Number (2)')"))
+                .LabelMode(EditorLabelMode.Outside)
+                .ElementAttr("class", "white-bg"))
+            @(Html.DevExtreme().Button()
+                .Icon("tel") // built-in person icon
+                .Type(ButtonType.Normal)
+                )
+        </div>
+        <div class="form-field" style="display: flex; align-items: end;">
+            @(Html.DevExtreme().TextBox()
+                .ID("phone2")
+                .Value("")
+                .Width("100%")
+                .Label(new JS("formatMessage('Phone No (2)')"))
+                .LabelMode(EditorLabelMode.Outside)
+                .ElementAttr("class", "white-bg"))
+            @(Html.DevExtreme().Button()
+                .Icon("tel") // built-in person icon
+                .Type(ButtonType.Normal)
+                )
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-field" style="display: flex;  align-items: end;">
+            @(Html.DevExtreme().TextBox()
+                .ID("fax")
+                .Value("")
+                            .Label(new JS("formatMessage('Fax No')"))
+                .Width("100%")
+                .LabelMode(EditorLabelMode.Outside)
+                .ElementAttr("class", "white-bg"))
+            @(Html.DevExtreme().Button()
+                .Icon("print") // built-in person icon
+                .Type(ButtonType.Normal)
+                )
+        </div>
+        <div class="form-field" style="display: flex;  align-items: end;">
+            @(Html.DevExtreme().TextBox()
+                .ID("email")
+                .Value("")
+                .Width("100%")
+                 .Label(new JS("formatMessage('Email')"))
+                .LabelMode(EditorLabelMode.Outside)
+                .ElementAttr("class", "white-bg"))
+            @(Html.DevExtreme().Button()
+                .Icon("email") // built-in person icon
+                .Type(ButtonType.Normal)
+                )
+        </div>
+    </div>
+    <div class="d-flex justify-content-start" style="gap: 10px; margin-bottom: 20px;">
+        @(Html.DevExtreme().Button()
+            .ID("btnSave")
+            .Text(new JS("formatMessage('Save')"))
+            .Icon("save")
+            .Type(ButtonType.Success)
+            .OnClick("saveOrUpdateSupplierContact")
+            .ElementAttr("class", "black-text")
+            )
+
+        @(Html.DevExtreme().Button()
+            .ID("btnDelete")
+            .Text(new JS("formatMessage('Delete')"))
+            .Type(ButtonType.Danger)
+            .StylingMode(ButtonStylingMode.Outlined)
+            .Icon("trash")
+            .ElementAttr("class", "black-text")
+            )
+
+        @(Html.DevExtreme().Button()
+            .ID("btnBack")
+            .Text(new JS("formatMessage('Back')"))
+            .Icon("arrowleft")
+            .Type(ButtonType.Default)
+            .StylingMode(ButtonStylingMode.Outlined)
+            .ElementAttr("class", "black-text")
+            )
+    </div>
+
+
+
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        // Extract and clean parameters safely
+        const supplierContactSlNo = (urlParams.get("SupplierContactSlNo") || "").split(/[?&]/)[0];
+        const supplierCode = (urlParams.get("supplierCode") || "").split(/[?&]/)[0];
+        const supplierName = (urlParams.get("supplierName") || "").split(/[?&]/)[0];
+
+        // Bind hidden and visible values
+        $("#txtSupplierHidden").dxTextBox("instance").option("value", supplierContactSlNo);
+        $("#txtSupplierCode").dxTextBox("instance").option("value", supplierCode);
+        $("#txtSupplierName").dxTextBox("instance").option("value", supplierName);
+
+        // If editing existing contact
+        if (supplierContactSlNo) {
+            bindSupplierContactData(supplierContactSlNo);
+            $("#btnSave").dxButton("instance").option("text", "Update");
+        }
+    });
+
+    function bindSupplierContactData(supplierContactSlNo) {
+        
+        $.ajax({
+            url: `/api/ERSupplierContactList/GetContactBySlNo?supplierContactSlNo=${supplierContactSlNo}`,
+            type: 'GET',
+            success: function (data) {
+                console.log("Supplier Contact Loaded:", data);
+                if (data) {
+                    $("#txtSupplierHidden").dxTextBox("instance").option("value", data.SupplierContactSlNo); // hidden field
+                       $("#txtSupplierCode").dxTextBox("instance").option({
+                            value: data.SupplierCode,
+                            readOnly: true
+                        });
+                    $("#txtSupplierName").dxTextBox("instance").option("value", data.SupplierName);
+                    $("#contactPerson").dxTextBox("instance").option("value", data.ContactPerson);
+                    $("#title").dxTextBox("instance").option("value", data.ContactPersonTitle);
+                    $("#mobile1").dxTextBox("instance").option("value", data.ContactMobile1);
+                    $("#phone1").dxTextBox("instance").option("value", data.ContactPhone1);
+                    $("#mobile2").dxTextBox("instance").option("value", data.ContactMobile2);
+                    $("#phone2").dxTextBox("instance").option("value", data.ContactPhone2);
+                    $("#fax").dxTextBox("instance").option("value", data.ContactFaxNo);
+                    $("#email").dxTextBox("instance").option("value", data.ContactEmail);
+                }
+            },
+            error: function () {
+                DevExpress.ui.notify("Error loading supplier contact data", "error", 3000);
+            }
+        });
+    }
+
+
+     $(function () {
+        $("#SupplierContactList").dxTextBox({
+            text:formatMessage("Supplier Contact List"),
+            readOnly: true,
+            onContentReady: function(e) {
+                $(e.element).addClass("dx-textbox-heading");
+            }
+        });
+    });
+
+    function saveOrUpdateSupplierContact() {
+        
+        const supplierContactSlNo = $("#txtSupplierHidden").dxTextBox("instance").option("value"); // hidden ID
+
+        const data = {
+            SupplierCode: $("#txtSupplierCode").dxTextBox("instance").option("value"),
+            SupplierName: $("#txtSupplierName").dxTextBox("instance").option("value"),
+            ContactPerson: $("#contactPerson").dxTextBox("instance").option("value"),
+            ContactPersonTitle: $("#title").dxTextBox("instance").option("value"),
+            ContactMobile1: $("#mobile1").dxTextBox("instance").option("value"),
+            ContactPhone1: $("#phone1").dxTextBox("instance").option("value"),
+            ContactMobile2: $("#mobile2").dxTextBox("instance").option("value"),
+            ContactPhone2: $("#phone2").dxTextBox("instance").option("value"),
+            ContactFaxNo: $("#fax").dxTextBox("instance").option("value"),
+            ContactEmail: $("#email").dxTextBox("instance").option("value")
+        };
+
+        if (supplierContactSlNo) {
+            data.SupplierContactSlNo = supplierContactSlNo;
+        }
+
+        $.ajax({
+            url: '/api/ERSupplierContactList/SaveOrUpdateSupplierContact',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (res) {
+                if (res.success) {
+                    DevExpress.ui.notify(res.message, "success", 2000);
+                    $("#txtSupplierHidden").dxTextBox("instance").option("value", res.lastSupplierContactSlNo);
+
+                     // Refresh parent DataGrid with fresh data
+                if (window.parent && typeof window.parent.loadSupplierContactListGrid === "function") {
+                    const SupplierCode = $("#txtSupplierCode").dxTextBox("instance").option("value");
+                    if (SupplierCode) {
+                        window.parent.loadSupplierContactListGrid(SupplierCode);
+                    }
+                }
+                } else {
+                    DevExpress.ui.notify(res.message, "error", 3000);
+                }
+            },
+            error: function (err) {
+                DevExpress.ui.notify("Save or update failed: " + err.responseText, "error", 3000);
+            }
+        });
+    }
+
+    $("#btnDelete").on("click", function (e) {
+        e.preventDefault();
+        onDeleteButtonClick();
+    });
+    function onDeleteButtonClick(e) {
+        var SupplierContactSlNo = $("#txtSupplierHidden").dxTextBox("instance").option("value");
+
+        if (!txtSupplierCode) {
+            DevExpress.ui.notify("Please enter or select a Journal Entry to delete.", "warning", 3000);
+            return;
+        }
+
+        $.ajax({
+            url: "/api/ERSupplierContactList/DeleteSupplierContactList",
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(SupplierContactSlNo), // 👈 plain string
+            success: function (response) {
+                DevExpress.ui.notify(response.message, 'success', 3000);
+                setTimeout(function () {
+                    location.reload();
+                }, 1000);
+            },
+            error: function (xhr) {
+                const msg = xhr.responseJSON?.message || xhr.responseText || 'Error occurred while deleting.';
+                DevExpress.ui.notify(msg, 'error', 3000);
+            }
+        });
+    }
+
+</script>

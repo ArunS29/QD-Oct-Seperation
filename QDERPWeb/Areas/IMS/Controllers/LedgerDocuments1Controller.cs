@@ -14,12 +14,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class LedgerDocumentsController : Controller
+    public class LedgerDocuments1Controller : Controller
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
-        private readonly ILogger<LedgerDocumentsController> _logger;
+        private readonly ILogger<LedgerDocuments1Controller> _logger;
 
-        public LedgerDocumentsController(ILogger<LedgerDocumentsController> logger, TenantDbContextHelper tenantDbContextHelper)
+        public LedgerDocuments1Controller(ILogger<LedgerDocuments1Controller> logger, TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;

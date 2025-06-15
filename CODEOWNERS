@@ -1,0 +1,6 @@
+# This file defines code ownership and required reviewers for PRs
+# Only members of @Pulse-InfoTech/qd-approvers can approve changes to these files
+
+# Assign ownership to a team for all files
+* @Pulse-InfoTech/qd-approvers
+
