@@ -1,0 +1,389 @@
+﻿@page
+@model QD.ERP.Web.Areas.ERM.Pages.StockDetails_ItemStoreModel
+
+<style type="text/css">
+    .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+    }
+
+    .header-wrap {
+        white-space: normal !important;
+        text-align: center !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+    }
+
+    .dx-datagrid .dx-header-row .dx-datagrid-text-content {
+        white-space: normal !important;
+        text-align: center !important;
+    }
+
+    .dx-datagrid-headers .dx-datagrid-table .dx-row > td {
+        text-align: center !important;
+    }
+     
+    .dx-invalid-message, .dx-overlay-content {
+        text-align: left !important; /* or center, as you prefer */
+        font-size: 13px;
+        margin-top: 2px;
+    }
+    .overlay-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        height: 80%;
+        background: #fff;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    #overlay-frame {
+        width: 100%;
+        height: 100%;
+    }
+
+    .Maincontainer.Maincontainer {
+        background-color: white;
+    }
+
+    .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        font-size: 30px;
+        cursor: pointer;
+    }
+
+    /* Toolbar Styling */
+    .custom-toolbar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .filter-btn {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-family: 'Inter', sans-serif;
+    }
+
+        .filter-btn:hover {
+            background-color: #0056b3;
+        }
+
+    /* Text Editor Styling */
+    .dx-texteditor {
+        background-color: #909ead00 !important;
+        border: 1px solid #d6e4f0 !important;
+        border-radius: 4px !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+        font-size: 14px !important;
+        transition: all 0.2s ease-in-out !important;
+        height: 39px !important;
+    }
+
+        .dx-texteditor:hover,
+        .dx-texteditor.dx-state-hover,
+        .dx-button:hover {
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important;
+            border-color: #86b7fe !important;
+        }
+
+        .dx-texteditor.dx-state-focused {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+            border-color: #508ae1 !important;
+        }
+
+    #dataGrid .dx-header-row .dx-datagrid-text-content {
+        font-weight: bold;
+        color: black;
+    }
+
+    .dx-datagrid-header-panel {
+        background-color: #909ead00;
+    }
+
+    .no-border-input {
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        font-weight: bold;
+        font-size: 16px;
+        color: black;
+        pointer-events: none;
+    }
+
+    .dx-button-mode-contained.dx-button-default,
+    .dx-button-mode-contained.dx-button-success {
+        color: black;
+    }
+
+    .container,
+    .frame,
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+    }
+
+    .imagecontainer {
+        border-bottom: 2px solid transparent;
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+        width: 100%;
+    }
+
+    .playIcon {
+        display: none;
+    }
+
+    .form-row {
+        margin-bottom: 15px;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+    }
+
+    .multi-column > div {
+        flex: 1;
+    }
+
+    .add-button-wrap {
+        display: flex;
+        align-items: flex-end;
+    }
+</style>
+
+<div class="title">
+    <div class="header-container" style="text-align:center;">
+        <div id="StockDetailsItemStore" class="no-border-input"></div>
+    </div>
+</div>
+
+<!-- Filter/Info Section -->
+<div class="dx-fieldset" style="padding: 20px;" id="storeFormValidationGroup">
+    <div class="store-master-container">
+
+        <div class="form-row">
+            <label id="StoreNameq" class="form-label"></label>
+            @(Html.DevExtreme().TextBox()
+                .ID("StoreName")
+                .Width("75%")
+                .Name("StoreName")
+                .Placeholder("Enter Store Name")
+                .ValidationRules(rules =>
+                {
+                    rules.AddRequired().Message("Store Name is required");
+                })
+                )
+        </div>
+
+        <div class="form-row multi-column" style="display:flex; gap:30px;">
+            <div>
+                <label id="StoreIdq" for="StoreId" class="form-label">Store Code</label>
+                @(Html.DevExtreme().TextBox()
+                    .ID("StoreId")
+                    .Name("StoreId")
+                    .Placeholder("Enter Store Code")
+                    .ValidationRules(rules =>
+                    {
+                        rules.AddRequired().Message("Store Code is required");
+                    })
+                    )
+            </div>
+
+            <div>
+                <label id="CostCenterq" for="CostCenter" class="form-label">Cost Center</label>
+                <div style="display:flex; align-items:center; gap:20px;">
+                    @(Html.DevExtreme().SelectBox()
+                        .ID("CostCenter")
+                        .Width("70%")
+                        .Name("CostAllocationUnitId")
+                        .Placeholder("Select Cost Center")
+                        .DisplayExpr("CostAllocationUnit")
+                        .ValueExpr("CostAllocationUnitId")
+                        .DataSource(d => d.WebApi()
+                        .Controller("StockInventory")
+                        .LoadAction("GetCostCenters"))
+                        .ValidationRules(rules =>
+                        {
+                            rules.AddRequired().Message("Cost Center is required");
+                        })
+                        )
+                    <div class="add-button-wrap">
+                        @(Html.DevExtreme().Button()
+                            .Text(new JS("formatMessage('Add')"))
+                            .Type(ButtonType.Success)
+                            .Icon("plus")
+                            .Width("100%")
+                            .OnClick("onAddStoreClick")
+                            )
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br />
+
+        <!-- Data Grid -->
+        <div>
+            @(Html.DevExtreme().DataGrid()
+                .ID("storeGrid")
+                .Height(300)
+                .Width("100%")
+                .ShowBorders(true)
+                .ColumnAutoWidth(true)
+                .ShowColumnLines(true)
+                .ShowRowLines(true)
+                .RowAlternationEnabled(true)
+                .DataSource(d => d.WebApi()
+                .Controller("StockInventory")
+                .LoadAction("GetAllStores")
+                .UpdateAction("UpdateStore")
+                .UpdateMethod("PUT")
+                .Key("StoreId")
+                )
+
+             
+                .Columns(columns =>
+                {
+                    columns.Add().DataField("StoreId").Caption(new JS("formatMessage('Store ID')")).Width(200).Alignment(HorizontalAlignment.Center).AllowEditing(true);
+                    columns.Add().DataField("StoreName").Caption(new JS("formatMessage('Store Name')")).Width(300).Alignment(HorizontalAlignment.Center);
+                    columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('Cost Center for Consumption')")).Width(250).Alignment(HorizontalAlignment.Center);
+                })
+                .Editing(editing => editing
+                .Mode(GridEditMode.Row)
+                .AllowUpdating(true)
+                .AllowAdding(false)
+                .AllowDeleting(false)
+                .UseIcons(true)
+                )
+
+                )
+
+
+        </div>
+
+        <br />
+        <div style="display:flex; gap:1%;">
+            <div class="action-buttons">
+                @(Html.DevExtreme().Button()
+                    .Text(new JS("formatMessage('Back')"))
+                    .Icon("arrowleft")
+                    .OnClick("Goback")
+                    .Width(120)
+                    .Type(ButtonType.Default))
+            </div>
+       
+
+    </div>
+</div>
+
+<script>
+    function Goback() {
+		window.parent.closeModal();
+	}
+    $(function () {
+        // Set the header title text box (readonly)
+        $("#StockDetailsItemStore").dxTextBox({
+            value: "Item Store",
+            readOnly: true,
+            onContentReady: function (e) {
+                $(e.element).addClass("dx-textbox-heading");
+            }
+        });
+    });
+
+        function onAddStoreClick() {
+        // Trigger DevExtreme validation for each field
+        var isStoreIdValid = $("#StoreId").dxValidator("instance").validate().isValid;
+        var isStoreNameValid = $("#StoreName").dxValidator("instance").validate().isValid;
+        var isCostCenterValid = $("#CostCenter").dxValidator("instance").validate().isValid;
+
+        // If any field is invalid, DevExtreme will show the required message under the field
+        if (!isStoreIdValid || !isStoreNameValid || !isCostCenterValid) {
+                 DevExpress.ui.notify('Please fill all required fields correctly.', 'error', 3000);
+            return;
+        }
+
+        var storeId = $("#StoreId").dxTextBox("instance").option("value");
+        var storeName = $("#StoreName").dxTextBox("instance").option("value");
+        var costCenter = $("#CostCenter").dxSelectBox("instance").option("value");
+
+        var storeData = {
+            StoreId: storeId,
+            StoreName: storeName,
+            CostAllocationUnitId: costCenter
+        };
+        $.ajax({
+            url: '/api/StockInventory/AddStore',
+            type: 'POST',
+            data: JSON.stringify(storeData),
+            contentType: 'application/json',
+                success: function (res) {
+        DevExpress.ui.notify("Store added successfully!", "success", 2000);
+        // Reload grid data after add
+        $("#storeGrid").dxDataGrid("instance").refresh();
+        // Clear inputs
+        $("#StoreId").dxTextBox("instance").option("value", "");
+        $("#StoreName").dxTextBox("instance").option("value", "");
+        $("#CostCenter").dxSelectBox("instance").option("value", null);
+
+        // Reset validation state for inputs
+        $("#StoreId").dxValidator("instance").reset();
+        $("#StoreName").dxValidator("instance").reset();
+        $("#CostCenter").dxValidator("instance").reset();
+    },
+
+            error: function (err) {
+                DevExpress.ui.notify("Failed to add store.", "error", 3000);
+            }
+        });
+    }
+    $(function() {
+        var grid = $("#storeGrid").dxDataGrid("instance");
+        if(grid) {
+            grid.option("onRowUpdated", function(e) {
+                DevExpress.ui.notify("Store updated successfully.", "success", 2000);
+            });
+        }
+    });
+         $(function () {
+              $("#StoreNameq").text(
+               formatMessage("Store Name"));
+                });
+                $(function () {
+                  $("#CostCenterq").text(
+                   formatMessage("Cost Center"));
+                });
+                $(function () {
+                  $("#StoreIdq").text(
+                   formatMessage("Store ID"));
+                });
+
+</script>

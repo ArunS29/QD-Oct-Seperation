@@ -1,0 +1,240 @@
+﻿@page
+@using QD.ERP.Web.DAL.Entities
+@model QD.ERP.Web.Areas.Finance.Pages.SuppliersModel
+@{
+
+}
+
+@{
+    ViewData["Title"] = "Suppliers";
+
+}
+
+<style>
+    .header-box {
+        background-color: #3c8dbc;
+        color: white;
+        padding: 20px;
+        font-size: 20px;
+        font-weight: bold;
+        /* display: flex; */
+        align-items: center;
+        border-radius: 4px 4px 0 0;
+        width: 300px;
+        height:200px;
+        margin-left:15px;
+    }
+
+        .header-box i {
+            margin-right: 10px;
+            font-size: 24px;
+        }
+        .header-box h5{
+            margin-top: 40px;
+        }
+
+    .datagrid{
+        height:600px;
+        padding:18px;
+
+    }
+
+    .toolbar-buttons {
+        /* position: fixed; */
+        bottom: 20px; /* Distance from bottom */
+        left: 20px; /* Distance from left */
+        display: flex;
+        gap: 10px; /* Space between buttons */
+        /* z-index: 9999; /* Make sure it's on top */ */
+        /* background-color: white; /* Optional: background */ */
+        padding: 10px; /* Optional: inner spacing */
+        border-radius: 6px;
+        margin-top:10px;
+        /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
+    }
+
+    .mainContainer {
+        width: 96%;
+        overflow-x: hidden;
+    }
+</style>
+
+<!-- Client Header Box -->
+<div class="title">
+    <div class="header-container">
+        <div id="ClientLeads" class="no-border-input"></div>
+    </div>
+</div>
+@await Html.PartialAsync("/Pages/Shared/ERM/SupplierFooter.cshtml")
+<div>
+    @(
+            Html.DevExtreme().DataGrid<Qry30199QrySupplierList>()
+            .ID("dataGrid")
+            .DataSource(ds => ds.Mvc()
+            .Controller("Suppliers")
+            .LoadAction("Get"))
+            .KeyExpr("SupplierCode")
+            .ElementAttr("class", "datagrid")
+            .ShowBorders(true)
+            .ColumnAutoWidth(true)
+            .ShowColumnLines(true)
+            .ShowRowLines(true)
+            .Width("100%")
+            .OnCellPrepared("oncellPrepared")
+            .OnContextMenuPreparing("onSuppliersGridContextMenu")
+            .AllowColumnResizing(true) // Enable column resizing
+            .ColumnResizingMode(ColumnResizingMode.NextColumn) // Optional: can be "Widget" or "NextColumn"
+            .AllowColumnReordering(true) // Optional: allow dragging columns
+            .ColumnChooser(chooser => chooser
+            .Enabled(false)
+            .Mode(GridColumnChooserMode.Select) // You can also use "DragAndDrop"
+            )
+            .HeaderFilter(filter => filter.Visible(false))
+        .FilterRow(filterRow => filterRow.Visible(false).ApplyFilter(GridApplyFilterMode.Auto)) // ✅ Enables inline filter inputs
+
+        .Pager(pager =>
+        {
+            pager.ShowPageSizeSelector(true);
+            pager.AllowedPageSizes(new[] { 5, 10, 20, 50 });
+            pager.ShowNavigationButtons(true);
+            pager.Visible(true);
+        })
+            .Columns(columns =>
+            {
+        columns.Add().DataField("SupplierCategory").Caption(new JS("formatMessage('Supplier Category')")).Visible(true).GroupIndex(0);
+        columns.Add().DataField("SupplierCode").Caption(new JS("formatMessage('Supplier Code')")).Visible(true);
+        columns.Add().DataField("SupplierName").Caption(new JS("formatMessage('Supplier Name')")).Visible(true);
+        columns.Add().DataField("SupplierCategory").Caption(new JS("formatMessage('Supplier Type')")).Visible(true);
+        columns.Add().DataField("ContactPerson").Caption(new JS("formatMessage('Contact Person')")).Visible(true);
+        columns.Add().DataField("ContactMobile1").Caption(new JS("formatMessage('Contact Mobile')")).Visible(true);
+        columns.Add().DataField("ContactPhone1").Caption(new JS("formatMessage('Contact Phone')")).Visible(true);
+        columns.Add().DataField("ContactPersonTitle").Caption(new JS("formatMessage('Contact Person Title')")).Visible(true);
+        columns.Add().DataField("SupplierAccountLedgerNo").Caption(new JS("formatMessage('Supplier Ledger No')")).Visible(true);
+
+
+        columns.Add().DataField("SupplierCategoryCode").Caption(new JS("formatMessage('Supplier Category Code')")).Visible(false);
+        columns.Add().DataField("CategoryCode").Caption(new JS("formatMessage('Category Code')")).Visible(false);
+        columns.Add().DataField("SupplierName").Caption(new JS("formatMessage('Supplier Name')")).Visible(false);
+        columns.Add().DataField("SupplierNameAr").Caption(new JS("formatMessage('Supplier Name (Arabic)')")).Visible(false);
+        columns.Add().DataField("SupplierAddress").Caption(new JS("formatMessage('Supplier Address')")).Visible(false);
+        columns.Add().DataField("ContactMobile2").Caption(new JS("formatMessage('Contact Mobile 2')")).Visible(false);
+        columns.Add().DataField("ContactPhone2").Caption(new JS("formatMessage('Contact Phone 2')")).Visible(false);
+        columns.Add().DataField("ContactEmail").Caption(new JS("formatMessage('Contact Email')")).Visible(false);
+        columns.Add().DataField("ContactFaxNo").Caption(new JS("formatMessage('Contact Fax No')")).Visible(false);
+        columns.Add().DataField("ContactRemarks").Caption(new JS("formatMessage('Contact Remarks')")).Visible(false);
+        //columns.Add().DataField("BusinessCard1").Caption(new JS("formatMessage('Business Card 1')")).Visible(false);
+        //columns.Add().DataField("BusinessCard2").Caption(new JS("formatMessage('Business Card 2')")).Visible(false);
+            // Image columns with cell template
+            columns.Add().DataField("DecodedBusinessCard1").Visible(false)
+            .Caption(new JS("formatMessage('Business Card 1')"))
+            .CellTemplate(new JS(@"
+    function(cellElement, cellInfo) {
+    if (cellInfo.value) {
+    $('<img>')
+    .attr('src', cellInfo.value)
+    .css({ width: '100px', height: 'auto' })
+    .appendTo(cellElement);
+    }
+    }
+    "));
+
+            columns.Add().DataField("DecodedBusinessCard2").Visible(false)
+            .Caption(new JS("formatMessage('Business Card 2')"))
+            .CellTemplate(new JS(@"
+    function(cellElement, cellInfo) {
+    if (cellInfo.value) {
+    $('<img>')
+    .attr('src', cellInfo.value)
+    .css({ width: '100px', height: 'auto' })
+    .appendTo(cellElement);
+    }
+    }
+    "));
+        columns.Add().DataField("IsDiscontinued").Caption(new JS("formatMessage('Is Discontinued')")).Visible(false);
+        columns.Add().DataField("ReasonDiscontinued").Caption(new JS("formatMessage('Reason Discontinued')")).Visible(false);
+        columns.Add().DataField("CreatedBy").Caption(new JS("formatMessage('Created By')")).Visible(false);
+        columns.Add().DataField("CreatedOn").Caption(new JS("formatMessage('Created On')")).Visible(false);
+        columns.Add().DataField("ModifiedBy").Caption(new JS("formatMessage('Modified By')")).Visible(false);
+        columns.Add().DataField("ModifiedOn").Caption(new JS("formatMessage('Modified On')")).Visible(false);
+        columns.Add().DataField("DiscontinuedBy").Caption(new JS("formatMessage('Discontinued By')")).Visible(false);
+        columns.Add().DataField("DiscontinuedOn").Caption(new JS("formatMessage('Discontinued On')")).Visible(false);
+        columns.Add().DataField("DateVisitedFirst").Caption(new JS("formatMessage('Date Visited First')")).Visible(false);
+        columns.Add().DataField("SupplierLedgerName").Caption(new JS("formatMessage('Supplier Ledger Name')")).Visible(false);
+            columns.Add().DataField("SupplierVatno").Caption(new JS("formatMessage('Supplier VAT No')")).Visible(false);
+            })
+        .Summary(summary =>
+        {
+            summary.GroupItems(items =>
+            {
+                items.Add().Column("SupplierName")
+            .SummaryType(SummaryType.Count)
+            .ShowInGroupFooter(true)
+            .DisplayFormat(new JS("formatMessage('No of Suppliers: {0}')"));
+
+            });
+            summary.TotalItems(items =>
+            {
+
+                items.Add().Column("SupplierName")
+            .SummaryType(SummaryType.Count)
+            .DisplayFormat("Total No of Suppliers: {0}");
+
+
+
+            });
+        })
+        )
+
+</div>
+
+<!-- Bottom Toolbar -->
+
+
+<script>
+    $(document).ready(function () {
+
+          $(".limited-footer .btn-container").each(function () {
+
+            if (!$(this).find("#ddButtonLayout,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel,#btnColumnChooser,#btnRefresh,#btnAddSuppliers").length) {
+                  $(this).remove();
+              }
+
+          });
+
+          // Handle Back button click
+          $(document).on('click', '#btnBack', function () {
+              window.history.back();
+          });
+
+      });
+           function onSuppliersGridContextMenu(e) {
+            if (e.target === "content" && e.row) {
+                e.items = [{
+                    text: "Supplier Edit",
+                    onItemClick: function () {
+                        let supplierCode = e.row.data.SupplierCode;
+                        let tenantName = window.tenantName || "defaultTenant"; // replace with dynamic tenant logic if needed
+                            let url = `/${tenantName}/ERM/SupplierLeadMaster?supplierCode=${supplierCode}`;
+                            let title = `Edit Client - ${supplierCode}`;
+                        openModal(url, title);
+                    }
+                }];
+            }
+        }
+        $(function () {
+        $("#ClientLeads").dxTextBox({
+            text: formatMessage("Suppliers"),
+            readOnly: true,
+            onContentReady: function (e) {
+                $(e.element).addClass("dx-textbox-heading");
+            }
+        });
+    });
+         function oncellPrepared(e) {
+        if (e.rowType === "group" && (e.column.dataField === "SupplierCategory" || e.column.dataField === "SupplierCategory")) {
+            e.cellElement.css("font-weight", "bold");
+        }
+    }
+</script>
+
+
