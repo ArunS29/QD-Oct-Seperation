@@ -515,6 +515,7 @@
             this.xrLabel18.StylePriority.UseForeColor = false;
             this.xrLabel18.StylePriority.UseTextAlignment = false;
             this.xrLabel18.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
+            this.xrLabel18.TextFormatString = "{0:dd-MMM-yyyy}";
             // 
             // xrLabel17
             // 
@@ -531,6 +532,7 @@
             this.xrLabel17.StylePriority.UseForeColor = false;
             this.xrLabel17.StylePriority.UseTextAlignment = false;
             this.xrLabel17.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
+            this.xrLabel17.TextFormatString = "{0:dd-MMM-yyyy}";
             // 
             // xrLabel16
             // 
@@ -563,6 +565,7 @@
             this.xrLabel15.StylePriority.UseForeColor = false;
             this.xrLabel15.StylePriority.UseTextAlignment = false;
             this.xrLabel15.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
+            this.xrLabel15.TextFormatString = "{0:dd-MMM-yyyy}";
             // 
             // xrLabel14
             // 
@@ -762,6 +765,8 @@
             // 
             // xrLabel2
             // 
+            this.xrLabel2.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[SalesOrderNo]")});
             this.xrLabel2.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel2.ForeColor = System.Drawing.Color.Brown;
             this.xrLabel2.LocationFloat = new DevExpress.Utils.PointFloat(623.6111F, 24.19433F);
@@ -2048,7 +2053,7 @@
             this.xrLabel73,
             this.xrLabel72,
             this.xrLabel71});
-            this.ReportFooter.HeightF = 142.3541F;
+            this.ReportFooter.HeightF = 133.1945F;
             this.ReportFooter.Name = "ReportFooter";
             // 
             // xrPictureBox2

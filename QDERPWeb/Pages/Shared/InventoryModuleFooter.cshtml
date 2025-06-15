@@ -768,6 +768,48 @@
            .OnItemClick("handleSales") 
            ) 
  </div>
+
+
+
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("btnPrint3")
+            .Text(new JS("formatMessage('Print')"))
+            .Icon("print")
+            .ElementAttr(new { @class = "bold-button" })
+            .DropDownOptions(options => options.Width(230))
+            .ShowArrowIcon(false)
+            .Items(items =>
+            {
+                items.Add().Text("Custom Report Designs").Icon("print");
+                items.Add().Text("Preview RFQ").Icon("file");
+            })
+            .OnItemClick("handleRFQ")
+            )
+    </div>
+
+
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("btnPrint4")
+            .Text(new JS("formatMessage('Print')"))
+            .Icon("print")
+            .ElementAttr(new { @class = "bold-button" })
+            .DropDownOptions(options => options.Width(300))
+            .ShowArrowIcon(false)
+            .Items(items =>
+            {
+                items.Add().Text("Custom Report Designs").Icon("print");
+                items.Add().Text("Preview Purchase Order").Icon("file");
+                items.Add().Text("Preview Purchase Order(Wt VAT)").Icon("file");
+                items.Add().Text("Preview Purchase Order(Wt VAT / Wo Total Price)").Icon("file");
+                items.Add().Text("Preview Purchase Order(Foreign Currency)").Icon("file");
+                items.Add().Text("Distribute Discount Amount").Icon("file");
+            })
+            .OnItemClick("handlePurchase")
+            )
+    </div>
+
 </div>
 
 
@@ -1887,5 +1929,65 @@
     }
 
 
+    const RFQMap = {
+        "Preview RFQ": "RFQEdit"
+    };
+
+    function handleRFQ(e) {
+        const itemText = e.itemData?.text;
+        const tenantName = window.tenantName || "";
+        const rfqNo = $("#RFQNo").dxTextBox("instance").option("value");
+
+        if (!rfqNo) {
+            alert("RFQ number is required.");
+            return;
+        }
+
+        const reportName = RFQMap[itemText];
+
+        if (!reportName) {
+            alert("Invalid report format selected.");
+            return;
+        }
+
+    
+        const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&rfqNo=${encodeURIComponent(rfqNo)}`;
+
+        window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+    }
+   
+
+
+
+        const PurchaseMap = {
+        "Preview Purchase Order": "PreviewPurchaseOrder",
+        "Preview Purchase Order(Wt VAT)":"PreviewPurchaseOrderWithoutVAT",
+         "Preview Purchase Order(Wt VAT / Wo Total Price)":"WithoutVATTotalPrice",
+          "Preview Purchase Order(Foreign Currency)":"PreviewPurchaseOrderForeignCurrency"
+    };
+
+    function handlePurchase(e) {
+        const itemText = e.itemData?.text;
+        const tenantName = window.tenantName || "";
+        const purchaseNo = $("#PurchaseOrderNo").dxTextBox("instance").option("value");
+
+        if (!purchaseNo) {
+            alert("purchaseNo number is required.");
+            return;
+        }
+
+        const reportName = PurchaseMap[itemText];
+
+        if (!reportName) {
+            alert("Invalid report format selected.");
+            return;
+        }
+
+
+    const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&purchaseOrderNo=${encodeURIComponent(purchaseNo)}`;
+
+
+        window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+    }
 
 </script>
