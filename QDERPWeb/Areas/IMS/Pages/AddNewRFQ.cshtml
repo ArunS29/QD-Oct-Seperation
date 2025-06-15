@@ -4505,7 +4505,8 @@ LineTotalAfterDisc:0.00
 
 
 	function proceedWithApproval() {
-
+			const VerifyButton = $("#btnApprove").dxButton("instance");
+			VerifyButton.option("disabled", true);
 		const Rfqno = $('#RFQNo').dxTextBox("instance").option("value");
 
 		if (!Rfqno) {
@@ -4523,7 +4524,7 @@ LineTotalAfterDisc:0.00
 						response.Message,
 						"Approved"
 					).done(() => {
-						disableEditing(); // Function to disable editing controls
+						//disableEditing(); // Function to disable editing controls
 					});
 				} else {
 					DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
