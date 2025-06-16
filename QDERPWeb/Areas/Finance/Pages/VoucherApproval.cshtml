@@ -223,6 +223,11 @@
             .HeaderCellTemplate(@<text>
         <div class="headerBolder">Voucher Narration</div>
     </text>);
+                columns.Add().DataField("VoucherEffectiveDate").Caption("Effective On").Width(120)
+            .DataType(GridColumnDataType.Date).Format("MMM-yyyy").Visible(true)
+            .HeaderCellTemplate(@<text>
+        <div class="headerBolder">Effective On</div>
+    </text>);
 
                 columns.Add().DataField("DebitAmount").Caption(new JS("formatMessage('Debit')")).Width(100).Alignment(HorizontalAlignment.Right)
             .CustomizeText("function(e) { return e.value ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2 }) : ''; }").Visible(true)
@@ -246,9 +251,9 @@
         <div class="headerBolder">Verified By</div>
     </text>);
 
-                columns.Add().DataField("VoucherApprovedBy").Caption(new JS("formatMessage('Approved')")).Width(120).Visible(true)
+                columns.Add().DataField("VoucherApprovedBy").Caption(new JS("formatMessage('Approved By')")).Width(120).Visible(true)
             .HeaderCellTemplate(@<text>
-        <div class="headerBolder">Approved</div>
+        <div class="headerBolder">Approved By</div>
     </text>);
 
                 columns.Add().DataField("AuditVerifiedBy").Caption(new JS("formatMessage('Audit')")).Width(120).Visible(false)
@@ -268,10 +273,10 @@
         .OnValueChanged("function(e) { updateVoucherVerification(e.value, 'IsApproved', data); }"))
     </text>)
         .HeaderCellTemplate(@<text>
-        <div class="headerBolder">Approved</div>
+        <div class="headerBolder">Approved ?</div>
     </text>);
 
-                columns.Add().DataField("IsVerified").Caption(new JS("formatMessage('Verified')")).Width(120)
+                @* columns.Add().DataField("IsVerified").Caption(new JS("formatMessage('Verified')")).Width(120)
             .DataType(GridColumnDataType.Boolean)
             .CellTemplate(@<text>
         @(Html.DevExtreme().CheckBox()
@@ -280,7 +285,7 @@
     </text>)
         .HeaderCellTemplate(@<text>
         <div class="headerBolder">Verified</div>
-    </text>);
+    </text>); *@
                 columns.Add().Caption("Verify").Width(120).CellTemplate(@<text>
         <div class="text-center">
             @(Html.DevExtreme().Button()

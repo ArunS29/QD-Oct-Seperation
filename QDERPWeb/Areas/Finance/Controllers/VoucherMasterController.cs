@@ -107,10 +107,23 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         .Where(p => p.AccountGroupId == "A012")
                         .Select(i => new
                         {
-                            i.AccountHead,
                             i.AccountId,
+                            i.AccountHead,
+                            i.AccountGroup,
                             i.AccountHeadArabic,
-                            i.IsLedgerObselete
+                            i.ReferenceNo,
+                            i.AccountGroupId,
+                            i.IsLedgerObselete,
+                            i.MasterGroupId,
+                            i.MasterGroup,
+                            i.IsRestricted,
+                            i.IsUseInSales,
+                            i.IsUsedInPurchase,
+                            i.IsProfitLossAccount,
+                            i.IsBalanceSheetAccount,
+                            i.IsMaintainBillByBill,
+                            i.IsUseInReconciliation,
+                            i.IsSalaryPayable
                         });
 
                     var result = await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions);
@@ -134,10 +147,24 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 {
                     var qryListOfAccountlists = dbContext.Qry201ListOfAccounts.Where(p => p.AccountGroupId == "A013").Select(i => new
                     {
-                        i.AccountHead,
                         i.AccountId,
+                        i.AccountHead,
+                        i.AccountGroup,
                         i.AccountHeadArabic,
-                        i.IsLedgerObselete
+                        i.ReferenceNo,
+                        i.AccountGroupId,
+                        i.IsLedgerObselete,
+                        i.MasterGroupId,
+                        i.MasterGroup,
+                        i.IsRestricted,
+                        i.IsUseInSales,
+                        i.IsUsedInPurchase,
+                        i.IsProfitLossAccount,
+                        i.IsBalanceSheetAccount,
+                        i.IsMaintainBillByBill,
+                        i.IsUseInReconciliation,
+                        i.IsSalaryPayable
+
 
 
                     });
@@ -201,7 +228,18 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         i.AccountHeadArabic,
                         i.ReferenceNo,
                         i.AccountGroupId,
-                        i.IsLedgerObselete
+                        i.IsLedgerObselete,
+                        i.MasterGroupId,
+                        i.MasterGroup,
+                        i.IsRestricted,
+                        i.IsUseInSales,
+                        i.IsUsedInPurchase,
+                        i.IsProfitLossAccount,
+                        i.IsBalanceSheetAccount,
+                        i.IsMaintainBillByBill,
+                        i.IsUseInReconciliation,
+                        i.IsSalaryPayable
+                        
                     });
 
 
