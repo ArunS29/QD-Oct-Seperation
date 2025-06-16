@@ -1,4 +1,274 @@
 ﻿@page
-@model QD.ERP.Web.Areas.Finance.Pages.CreateDepreciationModel
+@model QDWEB.Pages.Shared.GridforAssetViewModel
 @{
 }
+<style type="text/css">
+        .dx-datagrid .dx-row {
+            border-bottom: 1px solid #ccc;
+        }
+
+        .dx-selectbox .dx-texteditor-input {
+            text-align: center;
+        }
+
+
+    .mainContainer{
+        width:100%;
+            overflow-x: hidden;
+    }
+
+        .button-alignment-down {
+            margin-bottom: 10px
+        }
+
+        #Narration {
+            overflow-y: auto;
+            resize: none;
+        }
+
+        .dx-datagrid {
+            color: #000000;
+        }
+
+        .center-checkbox {
+            display: block;
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .dx-datagrid .dx-cell {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+
+        #dataGrid .dx-header-row .dx-datagrid-text-content {
+            font-weight: bold;
+            color: black;
+        }
+
+        #DepreciationModal .modal-dialog.fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1050; /* Ensures it stays on top */
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            max-width: none;
+            overflow: hidden;
+        }
+
+        #DepreciationModal .modal-content {
+            display: flex;
+            flex-direction: column;
+            width:100%;
+        }
+
+        #DepreciationModal .modal-body {
+            flex: 1; /* Takes up remaining space */
+            overflow-y: auto; /* Enables vertical scrolling */
+            overflow-x: hidden; /* Disables horizontal scrolling */
+            padding: 15px; /* Optional: Adjust padding to make it visually better */
+        }
+
+        #DepreciationModal .card {
+            background-color: #ffffff !important;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+        }
+
+</style>
+<div class="title">
+    <div class="header-container">
+        <div id="Depreciation Register-Document" class="no-border-input"></div>
+    </div>
+</div>
+<div style="padding:10px;">
+    @await Html.PartialAsync("_DepreciationChildFooter")
+</div>
+
+<div class="dx-fieldset horizontal-container" style="margin-bottom: 0px;display: flex;align-items: baseline;">
+
+    @(Html.DevExtreme().TextBox().ID("Docno").Value("").ReadOnly(true).ValidationRules(rules =>
+        {
+            rules.AddRequired().Message("Doc No is required");
+    }))
+
+            @(Html.DevExtreme().DateBox()
+                
+                .ID("StartDate")
+               
+                .Type(DateBoxType.Date)
+                .DisplayFormat("dd-MMM-yyyy")
+                .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+                )
+
+
+            @(Html.DevExtreme().DateBox()
+                
+                .ID("EndDate")
+                
+                .Type(DateBoxType.Date)
+                .DisplayFormat("dd-MMM-yyyy")
+                .Value(DateTime.Now))
+
+
+    @(Html.DevExtreme().Button()
+        .ID("btndepreciationreportshow")
+        .Text("Show Data")
+        .Type(ButtonType.Normal)
+        .StylingMode(ButtonStylingMode.Outlined)
+    
+        .Width(180)
+
+        )
+    @(Html.DevExtreme().Button()
+        .ID("btnGenaeratedepreciation")
+        .Text("Generate Depreciation")
+        .Type(ButtonType.Normal)
+        .StylingMode(ButtonStylingMode.Outlined)
+        
+        .Width(180)
+
+        )
+</div>
+<div class="dx-field ledgerResult">
+
+    @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201206depreciationChild>()
+            .ID("dataGrid")
+            .KeyExpr("AssetLedgerNo")
+            .RemoteOperations(false)
+            .DataSource(ds => ds.Mvc()
+            .Controller("DepreciationMaster")
+            .LoadAction("GetDepreciationChild"))
+            .Columns(columns =>
+            {
+
+                columns.Add().DataField("DepreciationDocItemSlNo").Visible(false).Width(200);
+                columns.Add().Caption("Asset Details").Columns(band =>
+            {
+
+
+
+                band.Add().DataField("DepreciationDocNo").Caption(new JS("formatMessage('Depreciation Doc No')")).Width(200).Visible(false);
+                band.Add().DataField("AssetCategory").Caption("Asset Category").Width(200).GroupIndex(0).SortOrder(SortOrder.Asc);
+                band.Add().DataField("AssetLedgerNo").Caption("Ledger No").Width(200);
+                band.Add().DataField("PlateNo").Caption("Plate No").Width(200);
+                band.Add().DataField("AssetDescription").Caption("Asset Description").Width(200);
+                band.Add().DataField("AssetLocation").Caption("Asset Location").Width(200);
+                band.Add().DataField("DeprStartDate").Caption(new JS("formatMessage('Start Date')")).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy").Width(200);
+                band.Add().DataField("DeprEndDate").Caption(new JS("formatMessage('End Date')")).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy").Width(200);
+                band.Add().DataField("OpeningBalance").Caption(new JS("formatMessage('Opening Balance')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
+                band.Add().DataField("DebitTransaction").Caption("Asset Additions").DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
+                band.Add().DataField("CreditTransaction").Caption("Asset Removal").DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
+                band.Add().DataField("ClosingBalance").Caption(new JS("formatMessage('Closing Balance')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
+            });
+                
+                columns.Add().Caption("Accumulated Depreciation Details").Columns(band =>
+    {
+                band.Add().DataField("DepreciatedPercentage").Caption("Depreciation %").Width(100);
+                band.Add().DataField("AccDeprOpeningBalance").Caption("Accumulated Dep.Op.Balance").DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
+                band.Add().DataField("AccumulatedAdjusted").Caption("Accumulated Adjusted").DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
+                band.Add().DataField("DepreciationAmount").Caption("Depreciation Amount").DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
+                band.Add().DataField("AccDeprTotalAmount").Caption("Total Accumulated").DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
+                band.Add().DataField("BookValueAsOnDate").Caption("Book Value").DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
+               
+            });
+            })
+
+        .Paging(paging => paging.Enabled(false))
+        .AllowColumnReordering(true)
+        .AllowColumnResizing(true)
+        .ColumnFixing(fixing => fixing.Enabled(true))
+        .HeaderFilter(filter => filter.Visible(true))
+        .Height(401)
+        .Width("100%")
+        .ColumnAutoWidth(false) // Important: allows columns to overflow and scroll
+        .Scrolling(scrolling => scrolling
+        .Mode(GridScrollingMode.Standard) // or "virtual" if you want virtual scrolling
+        .UseNative(true)
+        .ShowScrollbar(ShowScrollbarMode.Always) // Always show scrollbar
+        )
+        .FilterRow(filterRow => filterRow.Visible(false))
+        .GroupPanel(groupPanel => groupPanel.Visible(false))
+        .Grouping(grouping => grouping.AutoExpandAll(true))
+        .ShowBorders(true)
+        .OnCellPrepared("handleCellPrepared")
+
+        )
+
+</div>
+
+<script>
+
+    $(document).ready(function () {
+           const voucherNoField = $("#Docno").dxTextBox("instance");
+           const voucherNoFromUrl = getUrlParameter('Docno');
+
+           if (voucherNoFromUrl) {
+               // ✅ Bind voucher number from URL
+               voucherNoField.option("value", voucherNoFromUrl);
+           } else {
+               // ❌ If not available, generate new one
+               $.ajax({
+                   url: '@Url.Action("GetNewDocNo", "DepreciationMaster")',
+                   type: 'GET',
+                   success: function (data) {
+                       voucherNoField.option("value", data);
+                   },
+                   error: function () {
+                       alert("Error generating voucher number.");
+                   }
+               });
+           }
+
+           // Helper to extract URL parameter
+           function getUrlParameter(name) {
+               name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+               const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+               const results = regex.exec(window.location.search);
+               return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+           }
+       });
+
+       function handleCellPrepared(e) {
+        if (e.rowType === "data") {
+            // Green for Opening & Closing Balances
+            const greenFields = ["OpeningBalance", "DebitTransaction", "CreditTransaction", "ClosingBalance"];
+            const lightGreenFields = ["AccDeprOpeningBalance", "AccumulatedAdjusted", "DepreciationAmount", "AccDeprTotalAmount", "BookValueAsOnDate"];
+
+            if (greenFields.includes(e.column.dataField)) {
+                e.cellElement.css("background-color", "#eeeeee"); // Change to "green" if darker preferred
+            }
+
+            if (lightGreenFields.includes(e.column.dataField)) {
+                e.cellElement.css("background-color", "#ccffcc"); // Lighter shade
+            }
+        }
+    }
+    function getSelectedDates() {
+        const startDate = $("#StartDate").dxDateBox("instance").option("value");
+        const endDate = $("#EndDate").dxDateBox("instance").option("value");
+
+        return { startDate, endDate };
+    }
+
+    $("#btndepreciationreportshow").on("click", function (e) {
+        e.preventDefault();
+        const { startDate, endDate } = getSelectedDates();
+
+        $("#dataGrid").dxDataGrid("instance").option("dataSource", DevExpress.data.AspNet.createStore({
+            key: "AssetLedgerNo",
+            loadUrl: "/api/DepreciationMaster/GetDepreciationChildshow",
+            loadParams: {
+                startDate: startDate.toISOString(),
+                endDate: endDate.toISOString()
+            }
+        }));
+    });
+</script>

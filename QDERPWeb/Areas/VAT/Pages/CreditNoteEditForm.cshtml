@@ -290,10 +290,10 @@
 	box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
 	background: #fff;
 	} */
-
+/* 
 	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint23,#btnAddNew,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
 	display: none !important;
-	}
+	} */
 
 	.playIcon {
 	display: none;
@@ -412,7 +412,7 @@
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
-<input id="formId" value="frm201LedgerAccount1" type="hidden" />
+<input id="formId" value="frm20168VATCreditNoteEdit" type="hidden" />
 <div class="title">
 	<div class="header-container">
 		<div id="CreditNoteEditForm" class="no-border-title"></div>
@@ -2002,11 +2002,10 @@
 									)
 		</div>
 
-		<div class="Head">
-			<div class="limited-footer">
-				@await Html.PartialAsync("VATModuleFooter")
-			</div>
-		</div>
+	
+<div class="Head">
+	@await Html.PartialAsync("/Pages/Shared/VAT/VATInvoiceEditFooter.cshtml")
+</div>
 		@using (Html.DevExtreme().NamedTemplate("PaymentmeansContentTemplate"))
 		{
 			@(Html.DevExtreme().DataGrid()
@@ -3111,22 +3110,6 @@
 		}
 
 			  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null;
-
-			$(document).ready(function () {
-
-			$(".limited-footer .btn-containerIvoiceEdit").each(function () {
-
-				if (!$(this).find("#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint23,#btnAddNew,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag").length) {
-
-					$(this).remove();
-
-				}
-
-			});
-
-		});
-
-		
 
 		//View e-Invoice
 
@@ -7369,6 +7352,91 @@ $(document).ready(function () {
 		button.option("text", "Update");
 	});
 
+		$(document).ready(function () {
+					console.log('Start permission handling');
+					// Form ID
+					var formId = "frm20168VATCreditNoteEdit";
 
+					// Call the API to get permissions
+					$.ajax({
+						url: '/api/Permissions/GetAccessDetails?formId=' + formId,
+						type: 'GET',
+						contentType: 'application/json',
+						success: function (response) {
+							console.log("API Response:", response); // Log the API response
+
+							if (response.success && response.permissions) {
+								// Default visibility and enable status for buttons
+								var controlStates = {
+									"ddButtonLayout": { "Visible": true, "Enabled": false },
+									"btnMoveDown": { "Visible": true, "Enabled": false },
+									"btnMoveUp": { "Visible": false, "Enabled": false },
+									"btnSave": { "Visible": false, "Enabled": false },
+									"btnSaveAndClose": { "Visible": false, "Enabled": false },
+									"btnPrint1": { "Visible": false, "Enabled": false },
+									"btnAddNew": { "Visible": false, "Enabled": false },
+									"btnDelete": { "Visible": true, "Enabled": false },
+									"btnVerify": { "Visible": false, "Enabled": false },
+									"btnApprove": { "Visible": false, "Enabled": false },
+									"btnAttach": { "Visible": false, "Enabled": false },
+									"btnPostToLedgers": { "Visible": false, "Enabled": false },
+									"btnPostTag": { "Visible": false, "Enabled": false }
+
+
+								};
+
+
+								// Check for full access
+								var fullAccess = response.permissions.find(p =>
+									p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
+								);
+
+								if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
+									// Grant full access: make all controls visible and enabled
+									Object.keys(controlStates).forEach(key => {
+										controlStates[key] = { "Visible": true, "Enabled": true };
+									});
+								} else {
+									// Update states based on specific permissions for each control
+									Object.keys(controlStates).forEach(key => {
+										var controlPermission = response.permissions.find(p =>
+											p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
+										);
+										if (controlPermission) {
+											controlStates[key] = {
+												"Visible": controlPermission.ItemVisible || false,
+												"Enabled": controlPermission.ItemEnabled || false
+											};
+										}
+									});
+								}
+
+								console.log("Control States:", controlStates); // Log the control states
+
+								// Dynamically update button visibility and enabled state
+								Object.keys(controlStates).forEach(key => {
+									var button = document.getElementById(key);
+									if (button) {
+										// Handle visibility
+										button.style.display = controlStates[key].Visible ? "inline-block" : "none";
+										// Handle enable/disable state
+										button.disabled = !controlStates[key].Enabled;
+										console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
+									} else {
+										console.warn(`Button with ID "${key}" not found in the DOM.`);
+									}
+								});
+							} else {
+								console.warn("Failed to fetch permissions or no permissions available.");
+							}
+						},
+						error: function (xhr, status, error) {
+							console.error("Error fetching permissions:", error);
+							alert('An error occurred while fetching permissions. Please try again.');
+						}
+					});
+					showColumnChooser();
+					console.log('End permission handling');
+				});
 </script>
 
