@@ -101,27 +101,36 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
                     DateTime toWithTime = to.Date.AddHours(23).AddMinutes(59).AddSeconds(59);
 
-                    IQueryable<Qry201607vatinvoiceRegisterMainView> query;
+                    string baseColumn = useEffectiveDate ? "InvoiceEffectiveDate" : "InvoiceDate";
 
-                    if (useEffectiveDate)
-                    {
-                        query = dbContext.Qry201607vatinvoiceRegisterMainViews
-                            .FromSqlRaw("SELECT * FROM Qry201_607vatinvoiceRegisterMainView WHERE InvoiceEffectiveDate BETWEEN @p0 AND @p1", from, toWithTime);
-                    }
-                    else
-                    {
-                        query = dbContext.Qry201607vatinvoiceRegisterMainViews
-                            .FromSqlRaw("SELECT * FROM Qry201_607vatinvoiceRegisterMainView WHERE InvoiceDate BETWEEN @p0 AND @p1", from, toWithTime);
-                    }
+                    string sql = $@"
 
-                    // Get total count before pagination
-                    int totalCount = await query.CountAsync();
+					SELECT *
 
-                    // Apply pagination
-                    List<Qry201607vatinvoiceRegisterMainView> pagedResults = await query
-                        .Skip((pageNumber - 1) * pageSize)
-                        .Take(pageSize)
+					FROM Qry201_607vatinvoiceRegisterMainView
+
+					WHERE {baseColumn} BETWEEN @p0 AND @p1
+
+					ORDER BY {baseColumn}
+
+					OFFSET @p2 ROWS FETCH NEXT @p3 ROWS ONLY
+
+";
+
+                    var pagedResults = await dbContext.Qry201607vatinvoiceRegisterMainViews
+
+                        .FromSqlRaw(sql, from, toWithTime, (pageNumber - 1) * pageSize, pageSize)
+
+                        .AsNoTracking()
+
                         .ToListAsync();
+
+                    var totalCount = await dbContext.Qry201607vatinvoiceRegisterMainViews
+
+                    .FromSqlRaw($"SELECT * FROM Qry201_607vatinvoiceRegisterMainView WHERE {baseColumn} BETWEEN @p0 AND @p1", from, toWithTime)
+
+                    .CountAsync();
+
 
                     // Return paged result with total count for frontend
                     return Json(new
