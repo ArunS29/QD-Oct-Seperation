@@ -2366,6 +2366,7 @@
 							});
 
 						})
+						
 						)
 		</div>
 
@@ -3506,7 +3507,7 @@
 			  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null,revaccheadid=null,InvoiceCurrencyExchangeId=null,TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
 					  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null,Gsdescrpition=null,GsdescriptionAr=null,ItemPartNo=null,CostPrice=null,GssellingRate=null,ReorderQty=null,IsDirectApproval=true,IsDirectVerify=true,IsClientCode=false
 							  ClientPostalCode=null,ClientCity=null,ClientAddressSt=null,Desc=null,rowIx=null, IsEdit = false;
-			  let dropDownInstance;
+				  let dropDownInstance;
 			  let vatListInstance;
 
 
@@ -6904,11 +6905,11 @@
 										// }
 
 											let rowData = response.map((item, index) => {
-		const currencyRate = (item.LineTotal || 0) * (ExchangeRate || 1);
+		
 		return {
 			SNo: index + 1,
-			...item,
-			LineTotal: currencyRate // overwrite with converted value
+			...item
+			//LineTotal: currencyRate // overwrite with converted value
 		};
 	});
 

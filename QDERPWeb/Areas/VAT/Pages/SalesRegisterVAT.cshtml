@@ -164,7 +164,10 @@
 	.dx-fieldset.horizontal-container {
 		margin-top:10px;
 	}
-
+	 .dx-datagrid .dx-header-row .dx-datagrid-text-content {
+        white-space: normal !important;
+        text-align: center;
+    }
 	
 </style>
 
@@ -248,12 +251,13 @@
 		})
 		)
 
-	@(Html.DevExtreme().CheckBox()
-		.ID("chkUseEffectiveDate")
-		.Text(new JS("formatMessage('Use Effective Date')"))
-		.Value(false)
-		.ElementAttr("class", "mt-4 ml-4") // Adjust margin as needed
-		)
+
+
+		@(Html.DevExtreme().CheckBox()
+    .ID("chkUseEffectiveDate")
+    .Text(new JS("formatMessage('Use Effective Date')"))
+    .Value(false)
+    .ElementAttr("class", "mt-4 ml-4"))
 </div>
 <div class="dx-field ledgerResult">
 	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201607vatinvoiceRegisterMainView>()
@@ -291,7 +295,8 @@
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				subColumns.AddFor(m => m.TotalInvoiceAmount)
-			.Caption(new JS("formatMessage('Invoiced Amount')"))
+			.Caption("Invoiced Amount (₹)") // Use DevExtreme icon
+			.EncodeHtml(false)
 			.Alignment(HorizontalAlignment.Right)
 			.Visible(true)
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
@@ -1068,6 +1073,9 @@
 		}
 	}
 
+
+
+	
 
 
 </script>
