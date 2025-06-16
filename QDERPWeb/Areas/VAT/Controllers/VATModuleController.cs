@@ -33,55 +33,114 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 			_tenantDbContextHelper = tenantDbContextHelper;
 			_logger = logger;
 		}
-	
-		[HttpGet]
-		public async Task<ActionResult> GetVatInvoices(string frmDate, string toDate, bool useEffectiveDate)
-		{
-			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				try
-				{
-					string[] acceptedFormats = { "MM/dd/yyyy", "yyyy-MM-dd" };
 
-					if (!DateTime.TryParseExact(frmDate, acceptedFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime from))
-						return BadRequest("Invalid from date format. Use MM/dd/yyyy or yyyy-MM-dd.");
+        //[HttpGet]
+        //public async Task<ActionResult> GetVatInvoices(string frmDate, string toDate, bool useEffectiveDate)
+        //{
+        //	if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //	{
+        //		try
+        //		{
+        //			string[] acceptedFormats = { "MM/dd/yyyy", "yyyy-MM-dd" };
 
-					if (!DateTime.TryParseExact(toDate, acceptedFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime to))
-						return BadRequest("Invalid to date format. Use MM/dd/yyyy or yyyy-MM-dd.");
+        //			if (!DateTime.TryParseExact(frmDate, acceptedFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime from))
+        //				return BadRequest("Invalid from date format. Use MM/dd/yyyy or yyyy-MM-dd.");
+
+        //			if (!DateTime.TryParseExact(toDate, acceptedFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime to))
+        //				return BadRequest("Invalid to date format. Use MM/dd/yyyy or yyyy-MM-dd.");
 
 
-					// Ensure end date includes the full day (up to 23:59:59)
-					DateTime toWithTime = to.Date.AddHours(23).AddMinutes(59).AddSeconds(59);
+        //			// Ensure end date includes the full day (up to 23:59:59)
+        //			DateTime toWithTime = to.Date.AddHours(23).AddMinutes(59).AddSeconds(59);
 
-					List<Qry201607vatinvoiceRegisterMainView> vatInvoices;
+        //			List<Qry201607vatinvoiceRegisterMainView> vatInvoices;
 
-					if (useEffectiveDate)
-					{
-						// If checkbox is enabled, use InvoiceEffectiveDate
-						vatInvoices = await dbContext.Qry201607vatinvoiceRegisterMainViews
-							.FromSqlRaw("SELECT * FROM Qry201_607vatinvoiceRegisterMainView WHERE InvoiceEffectiveDate BETWEEN @p0 AND @p1", from, toWithTime)
-							.ToListAsync();
-					}
-					else
-					{
-						// Default: use InvoiceDate (original logic)
-						vatInvoices = await dbContext.Qry201607vatinvoiceRegisterMainViews
-							.FromSqlRaw("SELECT * FROM Qry201_607vatinvoiceRegisterMainView WHERE InvoiceDate BETWEEN @p0 AND @p1", from, toWithTime)
-							.ToListAsync();
-					}
+        //			if (useEffectiveDate)
+        //			{
+        //				// If checkbox is enabled, use InvoiceEffectiveDate
+        //				vatInvoices = await dbContext.Qry201607vatinvoiceRegisterMainViews
+        //					.FromSqlRaw("SELECT * FROM Qry201_607vatinvoiceRegisterMainView WHERE InvoiceEffectiveDate BETWEEN @p0 AND @p1", from, toWithTime)
+        //					.ToListAsync();
+        //			}
+        //			else
+        //			{
+        //				// Default: use InvoiceDate (original logic)
+        //				vatInvoices = await dbContext.Qry201607vatinvoiceRegisterMainViews
+        //					.FromSqlRaw("SELECT * FROM Qry201_607vatinvoiceRegisterMainView WHERE InvoiceDate BETWEEN @p0 AND @p1", from, toWithTime)
+        //					.ToListAsync();
+        //			}
 
-					return Json(vatInvoices);
-				}
-				catch (Exception ex)
-				{
-					return StatusCode(500, $"Internal server error: {ex.Message}");
-				}
-			}
+        //			return Json(vatInvoices);
+        //		}
+        //		catch (Exception ex)
+        //		{
+        //			return StatusCode(500, $"Internal server error: {ex.Message}");
+        //		}
+        //	}
 
-			return Unauthorized(new { message = "Invalid tenant.", success = false });
-		}
+        //	return Unauthorized(new { message = "Invalid tenant.", success = false });
+        //}
+        public async Task<ActionResult> GetVatInvoices(
+    string frmDate,
+    string toDate,
+    bool useEffectiveDate,
+    int pageNumber = 1,
+    int pageSize = 10)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    string[] acceptedFormats = { "MM/dd/yyyy", "yyyy-MM-dd" };
 
-		[HttpGet]
+                    if (!DateTime.TryParseExact(frmDate, acceptedFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime from))
+                        return BadRequest("Invalid from date format. Use MM/dd/yyyy or yyyy-MM-dd.");
+
+                    if (!DateTime.TryParseExact(toDate, acceptedFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime to))
+                        return BadRequest("Invalid to date format. Use MM/dd/yyyy or yyyy-MM-dd.");
+
+                    DateTime toWithTime = to.Date.AddHours(23).AddMinutes(59).AddSeconds(59);
+
+                    IQueryable<Qry201607vatinvoiceRegisterMainView> query;
+
+                    if (useEffectiveDate)
+                    {
+                        query = dbContext.Qry201607vatinvoiceRegisterMainViews
+                            .FromSqlRaw("SELECT * FROM Qry201_607vatinvoiceRegisterMainView WHERE InvoiceEffectiveDate BETWEEN @p0 AND @p1", from, toWithTime);
+                    }
+                    else
+                    {
+                        query = dbContext.Qry201607vatinvoiceRegisterMainViews
+                            .FromSqlRaw("SELECT * FROM Qry201_607vatinvoiceRegisterMainView WHERE InvoiceDate BETWEEN @p0 AND @p1", from, toWithTime);
+                    }
+
+                    // Get total count before pagination
+                    int totalCount = await query.CountAsync();
+
+                    // Apply pagination
+                    List<Qry201607vatinvoiceRegisterMainView> pagedResults = await query
+                        .Skip((pageNumber - 1) * pageSize)
+                        .Take(pageSize)
+                        .ToListAsync();
+
+                    // Return paged result with total count for frontend
+                    return Json(new
+                    {
+                        data = pagedResults,
+                        totalCount,
+                        currentPage = pageNumber,
+                        pageSize
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpGet]
 		public async Task<ActionResult> GetVat(string frmDate, string toDate)
 		{
 			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
@@ -344,6 +403,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 						i.ClientProvince,
 						i.ClientProvinceAr,
 						i.ClientPostalCode,
+						i.ClientNeighborhood,
 						i.ClientNeighborhoodAr,
 						i.ClientCountryCode,
 						i.AccountHeadArabic

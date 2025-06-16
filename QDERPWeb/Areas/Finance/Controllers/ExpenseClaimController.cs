@@ -9,6 +9,7 @@ using QD.ERP.Web.Areas.Finance.Views;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
 using System;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -175,7 +176,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     var result = await dbContext.VoucherResults
                         .FromSqlInterpolated($@"
      SELECT MAX(CAST(RIGHT(ClaimRefNo, 5) AS INT)) AS MaxVoucherNo
-     FROM tbl20103ExpenseClaimChild
+     FROM tbl20102ExpenseClaimMaster
      WHERE ClaimRefNo LIKE {likePattern}")
                         .ToListAsync();
 
@@ -219,7 +220,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     var result = await dbContext.VoucherResults
                         .FromSqlInterpolated($@"
      SELECT MAX(CAST(RIGHT(ClaimRefNo, 5) AS INT)) AS MaxVoucherNo
-     FROM tbl20103ExpenseClaimChild
+     FROM tbl20102ExpenseClaimMaster
      WHERE ClaimRefNo LIKE {likePattern}")
                         .ToListAsync();
 
@@ -264,7 +265,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     var result = await dbContext.VoucherResults
                         .FromSqlInterpolated($@"
      SELECT MAX(CAST(RIGHT(ClaimRefNo, 5) AS INT)) AS MaxVoucherNo
-     FROM tbl20103ExpenseClaimChild
+     FROM tbl20102ExpenseClaimMaster
      WHERE ClaimRefNo LIKE {likePattern}")
                         .ToListAsync();
 
@@ -1161,6 +1162,56 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        [HttpPost]
+        public async Task<IActionResult> FinalizeClaimPayment([FromBody] ClaimPaymentDto dto, CancellationToken ct)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return BadRequest("Tenant context could not be determined.");
+
+            var strategy = dbContext.Database.CreateExecutionStrategy();
+
+            await strategy.ExecuteAsync(async () =>
+            {
+                await using var tx = await dbContext.Database.BeginTransactionAsync(ct);
+
+                var master = await dbContext.Tbl20102ExpenseClaimMasters
+                    .FirstOrDefaultAsync(x => x.ClaimRefNo == dto.ClaimRefNo, ct);
+
+                if (master is null)
+                    throw new Exception($"ClaimRefNo '{dto.ClaimRefNo}' not found.");
+
+                master.IsPaid = true;
+                master.PaidBy = HttpContext.Session.GetString("UserName") ?? "System";
+                master.PaidOn = DateTime.Now;
+                master.PaymentAccount = dto.SelectedAccountHead;
+                master.PaymentVoucherNo = dto.PaymentVoucherNo;
+                master.PaymentType = dto.SelectedPaymentType;
+
+                await dbContext.SaveChangesAsync(ct);
+
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "EXEC sp20105InsertClaimToVoucher @ClaimRefNo = {0}, @PaymentVoucherNo = {1}, @AddedBy = {2}, @AddedOn = {3}, @TotalAmount = {4}, @JustAddedVoucherEntryNo = {5}, @TypeOfClaim = {6}, @EffectiveDate = {7}",
+                    dto.ClaimRefNo,
+                    dto.PaymentVoucherNo,
+                    master.PaidBy,
+                    master.PaidOn,
+                    dto.TotalAmount,
+                    0,
+                    dto.TypeOfClaim,
+                    dto.EffectiveDate
+                );
+
+                await tx.CommitAsync(ct);
+            });
+
+            return Ok(new
+            {
+                IsPaid = true,
+                PaidBy = HttpContext.Session.GetString("UserName") ?? "System",
+                PaidOn = DateTime.Now.ToString("dd-MMM-yyyy")
+        });
+        }
+
     }
 }
 

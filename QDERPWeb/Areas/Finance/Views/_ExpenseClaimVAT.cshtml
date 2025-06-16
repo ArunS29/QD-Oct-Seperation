@@ -852,6 +852,7 @@
     }
     $(function () {
         $("#calculateVAT").dxButton("instance").option("onClick", function () {
+            debugger;
             // Step 1: Get billAmount and roundoff values
             let billAmount = $("#billAmount").dxNumberBox("instance").option("value");
             const roundoff = $("#roundoff").dxNumberBox("instance").option("value");
@@ -977,7 +978,7 @@
                     $("#taxableamount").dxNumberBox("instance").option("value", entry.TaxableAmount || 0);
                     $("#vatAmount").dxNumberBox("instance").option("value", entry.TaxAmount || 0);
                     $("#roundoff").dxNumberBox("instance").option("value", entry.RoundOff || null);
-                    $("#billAmount").dxNumberBox("instance").option("value", entry.ApprovedAmount || 0);
+                    $("#billAmount").dxNumberBox("instance").option("value", entry.ApprovedAmount || parseFloat('@voucherAmountParsed'));
                     $("#suppliername").dxDropDownBox("instance").option("value", suppliername);
                     $("#suppliervatno").dxTextBox("instance").option("value", entry.SupplierVatno || null);
                     $("#ar_supplierName").dxTextBox("instance").option("value", entry.SupplierNameAr || null);
