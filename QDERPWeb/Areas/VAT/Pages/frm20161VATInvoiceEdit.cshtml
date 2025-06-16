@@ -441,10 +441,10 @@
 		gap: 20px;
 		padding: 0px 10px;
 	}
-
+/* 
 	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
 		display: none !important;
-	}
+	} */
 
 	.playIcon {
 		display: none;
@@ -537,6 +537,14 @@
 		}
 	
 </style>
+
+<input id="formId" value="frm20161VATInvoiceEdit" type="hidden" />
+<div class="title">
+	<div class="header-container">
+		<div id="VATInvoiceEdit" class="no-border-input"></div>
+	</div>
+</div>
+
 
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
@@ -867,7 +875,7 @@
 								<td>
 									@(Html.DevExtreme().DropDownBox()
 																			.Label(new JS("formatMessage('Other ID Type')"))
-																			.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetVATInvoiceMaster").LoadMode(DataSourceLoadMode.Raw).Key("BuyerIdtypeName"))
+															.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetVATInvoiceMaster").LoadMode(DataSourceLoadMode.Raw).Key("BuyerOtherIdtype"))
 																			.LabelMode(EditorLabelMode.Outside)
 																			.ID("OtherIDType")
 																			.ShowClearButton(true)
@@ -876,7 +884,7 @@
 																			.ValueChangeEvent("input")
 																			.HoverStateEnabled(true)
 																			.Value(null)
-																			.ValueExpr("BuyerIdtypeName")
+																			.ValueExpr("BuyerOtherIdtype")
 																			.DisplayExpr("BuyerIdtypeName")
 																			.Width("100%")
 																			.TabIndex(1)
@@ -2362,9 +2370,7 @@
 		</div>
 
 		<div class="Head">
-			<div class="limited-footer">
-				@await Html.PartialAsync("VATModuleFooter")
-			</div>
+			@await Html.PartialAsync("/Pages/Shared/VAT/VATInvoiceEditFooter.cshtml")
 		</div>
 
 
@@ -2577,8 +2583,9 @@
         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
         .Columns(columns =>
         {
-						columns.Add().DataField("BuyerIdtypeName").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center);
-						columns.Add().DataField("BuyerOtherIdtype").Caption(new JS("formatMessage('Buyer ID Type')")).Alignment(HorizontalAlignment.Center);
+				columns.Add().DataField("BuyerOtherIdtype").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center);
+				columns.Add().DataField("BuyerIdtypeName").Caption(new JS("formatMessage('Buyer ID Type')")).Alignment(HorizontalAlignment.Center);
+					
 					})
         .OnSelectionChanged("dataGridSelectionChanged")   
         .OnInitialized("dataGridInitialized")  
@@ -3498,23 +3505,9 @@
 
 			  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null,revaccheadid=null,InvoiceCurrencyExchangeId=null,TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
 					  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null,Gsdescrpition=null,GsdescriptionAr=null,ItemPartNo=null,CostPrice=null,GssellingRate=null,ReorderQty=null,IsDirectApproval=true,IsDirectVerify=true,IsClientCode=false
-					  ClientPostalCode=null,ClientCity=null,ClientAddressSt=null,Desc=null,rowIx=null;
+							  ClientPostalCode=null,ClientCity=null,ClientAddressSt=null,Desc=null,rowIx=null, IsEdit = false;
 			  let dropDownInstance;
 			  let vatListInstance;
-
-			$(document).ready(function () {
-
-			$(".limited-footer .btn-containerIvoiceEdit").each(function () {
-
-				if (!$(this).find("#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag").length) {
-
-					$(this).remove();
-
-				}
-
-			});
-
-		});
 
 
 
@@ -3697,7 +3690,7 @@
                                     onSelectionChanged: function (selectedItems) {
                                         let selectedItem = selectedItems.selectedRowsData[0];
                                         if (selectedItem) {
-                                            e.component.option("value", selectedItem.GSCode);
+                                            // e.component.option("value", selectedItem.GSCode);
                                             cellInfo.setValue(selectedItem.GSDescrpition);
                                             let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
                                             let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
@@ -4092,7 +4085,7 @@
 	$(function () {
 		debugger;
 		dataGridInstance = $("#B2BdataGrid").dxDataGrid({
-
+		
 			dataSource: rowData,
 
 			keyExpr: "SNo",
@@ -4682,29 +4675,65 @@
 
 
 
+		$("#btnAddNew").on("click", function (e) {
+		const grid = $("#B2BdataGrid").dxDataGrid("instance");
+		const store = grid.getDataSource().store();
+		const currentData = grid.getDataSource().items();
+
+		// Calculate next SNo safely based on existing items
+		const nextSNo = currentData.length > 0
+			? Math.max(...currentData.map(row => row.SNo || 0)) + 1
+			: 1;
+
+		const newRow = {
+			SNo: nextSNo,
+			//ItemCode: ItemNo || "",  // Ensure this is defined or provide fallback
+            ItemCode:"", 
+			Description: "",
+			DescriptionDetails: "",
+			Qty: 0,
+			UnitPrice: 0.00,
+			TotalBeforeDiscount: 0.00,
+			Discount: 0,
+			DiscountDetails: "",
+			Amount: 0.00,
+			ExcemptionCode: "",
+			VAT: "",
+			Total: 0.00
+		};
+
+		// Efficient insert without replacing entire dataSource
+		store.insert(newRow)
+			.then(() => {
+				grid.refresh(); // Ensure the UI updates with the new row
+			})
+			.catch(error => {
+				DevExpress.ui.notify("Error adding row: " + error.message, "error", 3000);
+			});
+	});
 
 	
-		$("#btnAddNew").on("click", function (e) {
-				var newRow = {
-					SNo: rowData.length + 1, // Auto-generate SNo
-					ItemCode: ItemNo,
-					Description: "",
-					DescriptionDetails:"",
-					Qty: 0,
-					UnitPrice: 0.00,
-					TotalBeforeDiscount:0.00,
-					Discount:0,
-					DiscountDetails:"",
-					Amount:0.00,
-					ExcemptionCode:"",
-					VAT:"",
-					Total: 0.00
-				};
+		// $("#btnAddNew").on("click", function (e) {
+		// 		var newRow = {
+		// 			SNo: rowData.length + 1, // Auto-generate SNo
+		// 			ItemCode: ItemNo,
+		// 			Description: "",
+		// 			DescriptionDetails:"",
+		// 			Qty: 0,
+		// 			UnitPrice: 0.00,
+		// 			TotalBeforeDiscount:0.00,
+		// 			Discount:0,
+		// 			DiscountDetails:"",
+		// 			Amount:0.00,
+		// 			ExcemptionCode:"",
+		// 			VAT:"",
+		// 			Total: 0.00
+		// 		};
 
-				rowData.push(newRow);
-				dataGridInstance.option("dataSource", rowData);
-				dataGridInstance.refresh();
-			});
+		// 		rowData.push(newRow);
+		// 		dataGridInstance.option("dataSource", rowData);
+		// 		dataGridInstance.refresh();
+		// 	});
 
 
 				function onCardClick(cellElement) {
@@ -4958,6 +4987,8 @@
 			$("#PostalCode").dxTextBox("instance").option("value", selectedRowData[0].ClientPostalCode);
 		$("#District").dxTextBox("instance").option("value", selectedRowData[0].ClientNeighborhood);
 			$("#DistrictArabic").dxTextBox("instance").option("value", selectedRowData[0].ClientNeighborhoodAr);
+				$("#CountryCodeNumeric").dxDropDownBox("instance").option("value", selectedRowData[0].ClientCountryCode);
+				$("#District").dxTextBox("instance").option("value", selectedRowData[0].ClientNeighborhood);
 
 
 
@@ -5177,7 +5208,7 @@
 				var selectedRowData = $("#invoicecurrecy-datagrid").dxDataGrid("instance").getSelectedRowsData();
 				// Get ReferenceNo from selected row
 				if (selectedRowData.length > 0) {
-								InvoiceCurrencyExchangeId = selectedRowData[0].CurrencyExchangeId;
+								InvoiceCurrencyExchangeId = selectedRowData[0].CurrencyExchangeId.toString();
 								ExchangeRate=selectedRowData[0].ExchangeRate;
 								$("#currencyexchangerate").dxNumberBox("instance").option("value", ExchangeRate);
 								
@@ -5220,7 +5251,7 @@
 
 				if (selectedRowData.length > 0) {
 
-							TaxCurrencyExchangeId = selectedRowData[0].CurrencyExchangeId;
+							TaxCurrencyExchangeId = selectedRowData[0].CurrencyExchangeId.toString();
 
 
 				} else {
@@ -6861,11 +6892,15 @@
 										// 	return;
 										// }
 
-											let rowData = response.map((item, index) => ({
-				SNo: index + 1,
-				...item
-			}));
-										// let rowData = response;
+											let rowData = response.map((item, index) => {
+		const currencyRate = (item.LineTotal || 0) * (ExchangeRate || 1);
+		return {
+			SNo: index + 1,
+			...item,
+			LineTotal: currencyRate // overwrite with converted value
+		};
+	});
+
 
 										// ✅ Now safely initialize the grid here
 										initializeDataGrid(rowData);
@@ -8149,7 +8184,9 @@
 
 				function showLedgerAccountEditPopup() {
 
-				const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}`;
+
+						IsEdit = true;
+					const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&IsEdit=${IsEdit}`;
 			var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
 
 			// Add an event to refresh the page when the popup is closed
@@ -8384,10 +8421,6 @@
 	});
 
 
-		
-
-
-
 			$("#btnPrint1").on("click", function (e) {
 			var dropdown = $("#btnPrint1").dxDropDownButton("instance");
 			var items = dropdown.option("items");
@@ -8404,7 +8437,7 @@
 
 
 				function applyDiscount() {
-				debugger;
+				//debugger;
 		let grid = $("#B2BdataGrid").dxDataGrid("instance");
 
 		const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
@@ -8417,18 +8450,92 @@
 		DevExpress.ui.notify("Final Amount: ₹" + finalAmount.toFixed(2), "success", 2000);
 	}
 
+		$(document).ready(function () {
+				console.log('Start permission handling');
+				// Form ID
+				var formId = "frm20161VATInvoiceEdit";
 
-	// 		function applyDiscount(discountValue) {
-	// 			debugger;
-	// 	$("#totalAmount").dxNumberBox("instance").option("value",discountValue);
-	// 	const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
-	// 	const discount = $("#discount").dxNumberBox("instance").option("value") || 0;
-	// 	const finalAmount = total - discount;
+				// Call the API to get permissions
+				$.ajax({
+					url: '/api/Permissions/GetAccessDetails?formId=' + formId,
+					type: 'GET',
+					contentType: 'application/json',
+					success: function (response) {
+						console.log("API Response:", response); // Log the API response
 
-	// 	// Optionally show a notification
-	// 	DevExpress.ui.notify("Final Amount: ₹" + finalAmount.toFixed(2), "success", 2000);
+						if (response.success && response.permissions) {
+							// Default visibility and enable status for buttons
+							var controlStates = {
+								"ddButtonLayout": { "Visible": true, "Enabled": false },
+								"btnMoveDown": { "Visible": true, "Enabled": false },
+								"btnMoveUp": { "Visible": true, "Enabled": false },
+								"btnSave": { "Visible": true, "Enabled": false },
+								"btnSaveAndClose": { "Visible": true, "Enabled": false },
+								"btnPrint1": { "Visible": true, "Enabled": false },
+								"btnAddNew": { "Visible": true, "Enabled": false },
+								"btnDelete": { "Visible": true, "Enabled": false },
+								"btnVerify": { "Visible": true, "Enabled": false },
+								"btnApprove": { "Visible": true, "Enabled": false },
+								"btnAttach": { "Visible": true, "Enabled": false },
+								"btnPostToLedgers": { "Visible": true, "Enabled": false },
+									"btnPostTag": { "Visible": true, "Enabled": false }
+							
 
-	// }
+							};
+
+
+							// Check for full access
+							var fullAccess = response.permissions.find(p =>
+								p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
+							);
+
+							if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
+								// Grant full access: make all controls visible and enabled
+								Object.keys(controlStates).forEach(key => {
+									controlStates[key] = { "Visible": true, "Enabled": true };
+								});
+							} else {
+								// Update states based on specific permissions for each control
+								Object.keys(controlStates).forEach(key => {
+									var controlPermission = response.permissions.find(p =>
+										p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
+									);
+									if (controlPermission) {
+										controlStates[key] = {
+											"Visible": controlPermission.ItemVisible || false,
+											"Enabled": controlPermission.ItemEnabled || false
+										};
+									}
+								});
+							}
+
+							console.log("Control States:", controlStates); // Log the control states
+
+							// Dynamically update button visibility and enabled state
+							Object.keys(controlStates).forEach(key => {
+								var button = document.getElementById(key);
+								if (button) {
+									// Handle visibility
+									button.style.display = controlStates[key].Visible ? "inline-block" : "none";
+									// Handle enable/disable state
+									button.disabled = !controlStates[key].Enabled;
+									console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
+								} else {
+									console.warn(`Button with ID "${key}" not found in the DOM.`);
+								}
+							});
+						} else {
+							console.warn("Failed to fetch permissions or no permissions available.");
+						}
+					},
+					error: function (xhr, status, error) {
+						console.error("Error fetching permissions:", error);
+						alert('An error occurred while fetching permissions. Please try again.');
+					}
+				});
+				showColumnChooser();
+				console.log('End permission handling');
+			});
 
 </script>
 
