@@ -2,11 +2,7 @@
 @model QD.ERP.Web.Areas.IMS.Pages.StockDetails_ItemClassificationModel
 @{
 }
-
-
 <style type="text/css">
-
-
 	.overlay {
 		display: none;
 		position: fixed;
@@ -146,6 +142,7 @@
 	.dx-button-mode-contained.dx-button-success {
 		color: black;
 	}
+
 	.container {
 		display: none !important;
 	}
@@ -177,11 +174,11 @@
 	}
 </style>
 
-<div class="title"> 
- 	<div class="header-container"> 
-		<div id="ItemClassification" class="no-border-input"></div> 
- 	</div> 
- </div>
+<div class="title">
+	<div class="header-container">
+		<div id="ItemClassification" class="no-border-input"></div>
+	</div>
+</div>
 <!-- Filter/Info Section -->
 
 
@@ -189,31 +186,31 @@
 	<div class="store-master-container">
 		<!-- Store Name Input -->
 		<div>
-				<div>
+			<div>
 				<label id="TypenewStockClassification" class="form-label"></label>
 				<div style="display:flex; align-items:end;">
 					@(Html.DevExtreme().TextBox()
-						.ID("stockClassificationInput")
-						.Width("70%")
-						.Placeholder("Type new Stock Classification")
-						)
+										.ID("stockClassificationInput")
+										.Width("70%")
+										.Placeholder("Type new Stock Classification")
+										)
 					<div class="add-button-wrap" style="margin-left:50%; margin-top:10px;">
 						@(Html.DevExtreme().Button()
-							.ID("addStockClassBtn")
-							.Text(new JS("formatMessage('Add')"))
-							.Type(ButtonType.Success)
-							.Icon("plus")
-							.Width("100%")
-							)
-						</div>
+												.ID("addStockClassBtn")
+												.Text(new JS("formatMessage('Add')"))
+												.Type(ButtonType.Success)
+												.Icon("plus")
+												.Width("100%")
+												)
 					</div>
 				</div>
 			</div>
 		</div>
+	</div>
 
-		<!-- Data Grid -->
-		<br />
-		<div>
+	<!-- Data Grid -->
+	<br />
+	<div>
 		@(Html.DevExtreme().DataGrid()
 				.ID("storeGrid")
 				.Height(400)
@@ -257,9 +254,9 @@
 					.Width(150)
 					.Buttons(buttons =>
 					{
-						buttons.Add().Name("edit"); 
+						buttons.Add().Name("edit");
 						buttons.Add().Name("save");
-						buttons.Add().Name("cancel"); 
+						buttons.Add().Name("cancel");
 						buttons.Add().Name("customDelete")
 					.Icon("trash")
 					.Hint("Delete")
@@ -275,21 +272,21 @@
 
 
 
-		</div>
-		<br />
-		<!-- Buttons -->
-		<div style="display:flex; gap:1%;">
-			
-			<div class="action-buttons">
-				@(Html.DevExtreme().Button()
+	</div>
+	<br />
+	<!-- Buttons -->
+	<div style="display:flex; gap:1%;">
+
+		<div class="action-buttons">
+			@(Html.DevExtreme().Button()
 						.Text(new JS("formatMessage('Back')"))
 						.Icon("arrowleft")
 						.OnClick("Goback")
 						.Width(120)
 						.Type(ButtonType.Default))
-			</div>
 		</div>
 	</div>
+</div>
 <script>
 		function Goback() {
 		window.parent.closeModal();
@@ -369,4 +366,6 @@
 	   });
 	}
 </script>
+
+
 

@@ -1,5 +1,5 @@
-@page
-@model QD.ERP.Web.Areas.ERM.Pages.MaterialReceiptsModel
+﻿@page
+@model QD.ERP.Web.Areas.ERM.Pages.ClientInvoiceSummaryModel
 @{
 }
 <style>
@@ -25,6 +25,10 @@
 		box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
 		border-radius: 8px;
 		overflow: hidden;
+	}
+
+	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btntoggleGroupPanel,#btnColumnChooser,#btnAddSalesOrder,#btnSalesOrderDetails)) {
+		display: none !important
 	}
 
 	#overlay-frame {
@@ -115,43 +119,31 @@
 		pointer-events: none;
 	}
 
-	.context-menuInvoice {
-		position: absolute;
-		background: #fff;
-		border-radius: 8px;
-		box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-		width: 200px;
+
+
+	.context-menu {
 		display: none;
-		flex-direction: column;
-		padding: 5px 0;
+		position: relative;
+		background-color: white;
+		border: 1px solid #ccc;
+		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+		list-style: none;
+		padding: 8px 0;
 		z-index: 1000;
 	}
 
-	.context-menu-itemInvoice {
-		display: flex;
-		align-items: center;
-		padding: 10px 15px;
-		font-size: 14px;
-		cursor: pointer;
-		transition: background 0.2s ease-in-out;
-		color: #333;
-	}
-
-		.context-menu-itemInvoice i {
-			margin-right: 10px;
-			font-size: 16px;
-			color: #007bff;
+		.context-menu li {
+			padding: 8px 16px;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
 		}
 
-		.context-menu-itemInvoice:hover {
-			background: #f0f0f0;
-		}
+			.context-menu li:hover {
+				background-color: #f0f0f0;
+			}
 
-		.context-menu-itemInvoice:not(:last-child) {
-			border-bottom: 1px solid #e0e0e0;
-		}
-
-	.ledgerResult{
+	.ledgerResult {
 		overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
 		width: 100%;
 	}
@@ -165,9 +157,10 @@
 <input id="formId" value="frm201LedgerView" type="hidden" />
 <div class="title">
 	<div class="header-container">
-		<div id="MaterialReceipts1" class="no-border-input"></div>
+		<div id="ClientInvoiceSummary" class="no-border-input"></div>
 	</div>
 </div>
+
 @await Html.PartialAsync("/Pages/Shared/ERM/MaterialReceiptFooter.cshtml")
 <div class="dx-fieldset horizontal-container">
 	@(Html.DevExtreme().DateBox()
@@ -218,12 +211,12 @@
 </div>
 <div class="dx-field ledgerResult">
 	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60504materialReceiptViewMaster>()
-			.ID("dataGrid")
-			.RemoteOperations(false)
-			.DataSource(new JS("[]"))
-			.Columns(columns =>
-			{
-				columns.Add().Caption(new JS("formatMessage('Material Receipt Details')")).Columns(subColumns =>
+		.ID("dataGrid")
+		.RemoteOperations(false)
+		.DataSource(new JS("[]"))
+		.Columns(columns =>
+		{
+			columns.Add().Caption(new JS("formatMessage('Material Receipt Details')")).Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.ReceiptNo).Caption(new JS("formatMessage('Receipt No')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.ReceiptDate).Caption(new JS("formatMessage('Receipt Date')")).Alignment(HorizontalAlignment.Center).Visible(true);
@@ -234,15 +227,15 @@
 				subColumns.AddFor(m => m.VatpurchaseBillNo).Caption(new JS("formatMessage('VAT purchase Bill No')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
 				subColumns.AddFor(m => m.IsSubmitted).Caption(new JS("formatMessage('IsSubmitted')")).Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
-		<div class="dx-icon">
-			<%= data.IsSubmitted ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-		</div>
-	</text>).Visible(true);
+																																					  		<div class="dx-icon">
+																																					  			<%= data.IsSubmitted ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+																																					  		</div>
+																																					  	</text>).Visible(true);
 				subColumns.AddFor(m => m.IsVerified).Caption(new JS("formatMessage('IsVerified')")).Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
-		<div class="dx-icon">
-			<%= data.IsVerified ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-		</div>
-	</text>).Visible(true);
+																																							<div class="dx-icon">
+																																								<%= data.IsVerified ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+																																							</div>
+																																						</text>).Visible(true);
 				subColumns.AddFor(m => m.IsApproved).Caption(new JS("formatMessage('IsApproved')")).Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
 		<div class="dx-icon">
 			<%= data.IsApproved ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
@@ -252,20 +245,20 @@
 
 
 			});
-				columns.Add().Caption(new JS("formatMessage('Amount')")).Columns(subColumns =>
-	{
+			columns.Add().Caption(new JS("formatMessage('Amount')")).Columns(subColumns =>
+			{
 				subColumns.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No Of Items')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.TotalBeforeTax).Caption(new JS("formatMessage('Total Before Tax')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.TotalDiscount).Caption(new JS("formatMessage('Total Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.TotalAfterDiscount).Caption(new JS("formatMessage('Total After Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.TotalTaxAmount).Caption(new JS("formatMessage('Total Tax Amount')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.TotalWithTax).Caption(new JS("formatMessage('Total With Tax')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				
+
 
 
 			});
 
-			})
+		})
 		.Height(680) // Fixed height for the grid
 		.ColumnAutoWidth(true)
 		.Width("98%")
@@ -307,8 +300,8 @@
 
 <script>
 		 $(function () {
-	$("#MaterialReceipts1").dxTextBox({
-	text: formatMessage("Material Receipts"),
+	$("#ClientInvoiceSummary").dxTextBox({
+	text: formatMessage("Client Invoice Summary"),
 		readOnly: true,
 		onContentReady: function (e) {
 		$(e.element).addClass("dx-textbox-heading");

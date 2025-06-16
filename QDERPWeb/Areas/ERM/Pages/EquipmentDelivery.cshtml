@@ -166,7 +166,7 @@
 <input id="formId" value="frm201LedgerView" type="hidden" />
 <div class="title">
 	<div class="header-container">
-		<div id="DeliveryNote1" class="no-border-input"></div>
+		<div id="EquipmentDelivery" class="no-border-input"></div>
 	</div>
 </div>
 
@@ -302,8 +302,8 @@
 
 <script>
 		 $(function () {
-	$("#DeliveryNote1").dxTextBox({
-	text: formatMessage("Delivery Note"),
+	$("#EquipmentDelivery").dxTextBox({
+	text: formatMessage("Equipment Delivery"),
 		readOnly: true,
 		onContentReady: function (e) {
 		$(e.element).addClass("dx-textbox-heading");

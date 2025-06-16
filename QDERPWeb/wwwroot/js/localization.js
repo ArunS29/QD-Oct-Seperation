@@ -3022,9 +3022,41 @@
         "Clients": "Clients",
         "Suppliers": "Suppliers",
         "Equipment Timesheet (New)": "Equipment Timesheet (New)",
-        "Equipment Rentals Dashboard":"Equipment Rentals Dashboard",
+        "Equipment Rentals Dashboard": "Equipment Rentals Dashboard",
+        "Supplier Invoice Summary": "Supplier Invoice Summary",
+        "Equipment TimeSheet":"Equipment TimeSheet",
+        "Client Invoice Summary":"Client Invoice Summary",
+        "Service Maintenance":"Service Maintenance",
+        "Equipment Timesheet (New)": "Equipment Timesheet (New)",
+        "Job Order No": "Job Order No",
+        "Report Type":"Report Type",
+        "Value Type":"Value Type",
+        "Equipment Delivery":"Equipment Delivery",
+        "Equipment Enquiry":"Equipment Enquiry",
+        "Equipment Sales Order": "Equipment Sales Order",
+        "Equipments Assets":"Equipments Assets",
+        "Equipments Quotation":"Equipments Quotation",
+
+
+
     },
     ar: {
+
+
+
+        "Equipments Quotation":"المعدات الأصلية",
+        "Equipments Assets":"أصول المعدات",
+        "Equipment Sales Order":"طلب بيع المعدات",
+        "Equipment Enquiry": "استفسار عن المعدات",
+        "Equipment Delivery": "تسليم المعدات",
+        "Job Order No": "رقم أمر العمل",
+        "Report Type": "نوع التقرير",
+        "Value Type": "نوع القيمة",
+        "Equipment Timesheet (New)":"جدول أوقات عمل المعدات (جديد)",
+        "Service Maintenance":"صيانة الخدمة",
+        "Client Invoice Summary":"ملخص فاتورة العميل",
+        "Equipment TimeSheet":"جدول زمني للمعدات",
+        "Supplier Invoice Summary":"ملخص فاتورة المورد",
         "Equipment Rentals Dashboard":"لوحة معلومات تأجير المعدات",
         "Equipments / Assets": "المعدات / الأصول",
         "Equipment Enquiry": "استعلام المعدات",
