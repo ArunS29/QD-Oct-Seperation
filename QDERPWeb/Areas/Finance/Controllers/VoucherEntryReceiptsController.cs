@@ -42,8 +42,21 @@ namespace Form.Areas.Finance.Controllers
 
                     i.AccountId,
                     i.AccountHead,
+                    i.AccountGroup,
                     i.AccountHeadArabic,
-                    i.IsLedgerObselete
+                    i.ReferenceNo,
+                    i.AccountGroupId,
+                    i.IsLedgerObselete,
+                    i.MasterGroupId,
+                    i.MasterGroup,
+                    i.IsRestricted,
+                    i.IsUseInSales,
+                    i.IsUsedInPurchase,
+                    i.IsProfitLossAccount,
+                    i.IsBalanceSheetAccount,
+                    i.IsMaintainBillByBill,
+                    i.IsUseInReconciliation,
+                    i.IsSalaryPayable
                 });
 
                 return Json(await DataSourceLoader.LoadAsync(tbl20101salespersonmasters, loadOptions));
@@ -74,7 +87,18 @@ namespace Form.Areas.Finance.Controllers
                    i.AccountGroup,
                    i.AccountHeadArabic,
                    i.ReferenceNo,
-                   i.IsLedgerObselete
+                   i.AccountGroupId,
+                   i.IsLedgerObselete,
+                   i.MasterGroupId,
+                   i.MasterGroup,
+                   i.IsRestricted,
+                   i.IsUseInSales,
+                   i.IsUsedInPurchase,
+                   i.IsProfitLossAccount,
+                   i.IsBalanceSheetAccount,
+                   i.IsMaintainBillByBill,
+                   i.IsUseInReconciliation,
+                   i.IsSalaryPayable
                });
 
                 return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));

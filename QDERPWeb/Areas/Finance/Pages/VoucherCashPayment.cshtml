@@ -976,15 +976,28 @@
                     .FilterRow(f => f.Visible(true))
                     .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                     .Height(345)
-
+                    .ColumnChooser(c => c.Enabled(true))
                     .Selection(s => s.Mode(SelectionMode.Single))
                     .SelectedRowKeys(new JS("getSelectedRowKeys()"))
 
                     .Columns(columns =>
                     {
-                        columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')"));
-                        columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')"));
-                        columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')"));
+                        columns.Add().DataField("MasterGroupId").Caption("Master Group Id").Visible(false);
+                        columns.Add().DataField("MasterGroup").Caption("Master Group").Visible(false);
+                        columns.Add().DataField("AccountGroupId").Caption("Account Group Id").Visible(false);
+                        columns.Add().DataField("AccountGroup").Caption("Account Group").Visible(false);
+                        columns.Add().DataField("AccountId").Caption("Account Id").Visible(true);
+                        columns.Add().DataField("AccountHead").Caption("Account Head").Visible(true);
+                        columns.Add().DataField("AccountHeadArabic").Caption("Account Head Arabic").Visible(true);
+                        columns.Add().DataField("IsRestricted").Caption("Is Restricted").DataType(GridColumnDataType.Boolean).Visible(false);
+                        columns.Add().DataField("IsUseInSales").Caption("Use In Sales").DataType(GridColumnDataType.Boolean).Visible(false);
+                        columns.Add().DataField("IsUsedInPurchase").Caption("Used In Purchase").DataType(GridColumnDataType.Boolean).Visible(false);
+                        columns.Add().DataField("IsProfitLossAccount").Caption("Profit/Loss Account").DataType(GridColumnDataType.Boolean).Visible(false);
+                        columns.Add().DataField("IsBalanceSheetAccount").Caption("Balance Sheet Account").DataType(GridColumnDataType.Boolean).Visible(false);
+                        columns.Add().DataField("IsMaintainBillByBill").Caption("Maintain Bill By Bill").DataType(GridColumnDataType.Boolean).Visible(false);
+                        columns.Add().DataField("IsUseInReconciliation").Caption("Use In Reconciliation").DataType(GridColumnDataType.Boolean).Visible(false);
+                        columns.Add().DataField("IsSalaryPayable").Caption("Salary Payable").DataType(GridColumnDataType.Boolean).Visible(false);
+                        columns.Add().DataField("ReferenceNo").Caption("Reference No").Visible(false);
                         columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('Is Ledger Obselete')")).Alignment(HorizontalAlignment.Center)
                     .CellTemplate(@<text>
             <div class="dx-icon">
