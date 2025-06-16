@@ -288,7 +288,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 try
                 {
                     var nextAccountId = (from account in dbContext.Tbl201ChartOfAccounts
-                                         where account.AccountId.StartsWith("L0")
+                                         where account.AccountId.StartsWith("L")
                                          orderby account.AccountId descending
                                          select account.AccountId)
                         .Take(1)
@@ -544,7 +544,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         );
 
                         // Save changes
-                        await dbContext.SaveChangesAsync();
+                        //await dbContext.SaveChangesAsync();
 
                         // Commit the transaction if everything goes well
                         await transaction.CommitAsync();

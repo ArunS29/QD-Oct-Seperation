@@ -334,7 +334,8 @@
         .TabIndex(2) // Different tabindex to separate from the first
         .DropDownOptions(o => o.Width(700))
         .OnKeyDown("onKeyDown")
-        //.OnValueChanged("dropDownBoxValueChanged") // Optional
+                    .ReadOnly(true)
+                    //.OnValueChanged("dropDownBoxValueChanged") // Optional
         .ContentTemplate(new TemplateName("BaseCurrencyContentTemplate"))
     )
 </div>
@@ -349,6 +350,7 @@
             .LoadMode(DataSourceLoadMode.Raw)
             .Key("CurrencyExchangeId")
         )
+
         .WordWrapEnabled(true)
         .ShowBorders(true)
         .Selection(sl => sl.Mode(SelectionMode.Single))
