@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace QD.ERP.Web.Areas.ERM.Pages
 {
-    public class SalesOrdersModel : PageModel
+    public class EquipmentEnquiryModel : PageModel
     {
         public void OnGet()
         {
