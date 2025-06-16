@@ -1011,6 +1011,26 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public byte VATApplicableRate { get; set; }
         public bool IsTaxIncluded { get; set; }
     }
+    public  class ClaimPaymentDto
+    {
+        public string ClaimRefNo { get; set; } = default!;
+        public string PaymentVoucherNo { get; set; } = default!;
+        public decimal TotalAmount { get; set; }
+        public DateTime EffectiveDate { get; set; }
+        public byte TypeOfClaim { get; set; }
+
+        public string SelectedAccountHead { get; set; }
+        public string SelectedPaymentType { get; set; }
+    }
+    public class TrialBalanceRequest
+    {
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public string AccountGroup { get; set; }
+
+        public int Skip { get; set; }
+        public int Take { get; set; }
+    }
 
 }
 
