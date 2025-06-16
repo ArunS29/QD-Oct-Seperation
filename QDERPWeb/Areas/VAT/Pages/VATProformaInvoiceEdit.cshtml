@@ -275,9 +275,9 @@
 		background: #fff;
 	}
 
-	.limited-footer .btn-container:not(:has(#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
+	/* .limited-footer .btn-container:not(:has(#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
 		display: none !important;
-	}
+	} */
 
 	.playIcon {
 		display: none;
@@ -1285,19 +1285,7 @@
 
 			  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null;
 
-			$(document).ready(function () {
-
-			$(".limited-footer .btn-containerIvoiceEdit").each(function () {
-
-				if (!$(this).find("#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag").length) {
-
-					$(this).remove();
-
-				}
-
-			});
-
-		});
+		
 
 		//View e-Invoice
 

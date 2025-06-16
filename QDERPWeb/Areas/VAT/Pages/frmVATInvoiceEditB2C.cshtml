@@ -442,9 +442,9 @@
 		padding: 0px 10px;
 	}
 
-	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
+/* 	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
 		display: none !important;
-	}
+	} */
 
 	.playIcon {
 		display: none;
@@ -540,7 +540,7 @@
 
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
-<input id="formId" value="frm201LedgerAccount1" type="hidden" />
+<input id="formId" value="frm20161VATInvoiceEdit" type="hidden" />
 <div class="title">
 	<div class="header-container">
 		<div id="InvoiceEdit" class="no-border-title" style="width: 433px;"></div>
@@ -623,7 +623,7 @@
 																												.Value("Tax Invoice") // Ensure this matches an actual key value
 																												.ValueExpr("InvoiceType") // Ensure the value is mapped correctly
 																												.DisplayExpr("InvoiceType") // Set display value if needed
-																												.Disabled(true)
+																												.Disabled(false)
 																												)
 
 								</td>
@@ -638,7 +638,7 @@
 																												.ValueChangeEvent("input")
 																												.HoverStateEnabled(true)
 																												.LabelMode(EditorLabelMode.Outside)
-																												.Value("Payment to bank account")
+																												.Value("In Cash")
 																												.ValueExpr("PaymentMeansTypeCode")
 																												.DisplayExpr("PaymentMeansType")
 																												@*  .OnInput("dropDownBoxOnInput")
@@ -659,16 +659,17 @@
 							<tr>
 								<td>
 								@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('VAT Invoice Sub Type')")).ID("VATInvoiceSubType")
-																												.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getInvoiceSubTypes").LoadMode(DataSourceLoadMode.Raw).Key("SubType"))
+															.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("getInvoiceSubTypeCode").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceSubTypeCode"))
 																												.AcceptCustomValue(true)
 																												.OpenOnFieldClick(false)
 																												.ValueChangeEvent("input")
 																												.LabelMode(EditorLabelMode.Outside)
 																												.HoverStateEnabled(true)
-																												.Value("Tax Invoice") // Ensure this matches an actual key value
-																												.ValueExpr("InvoiceType") // Ensure the value is mapped correctly
-																												.DisplayExpr("InvoiceType") // Set display value if needed
-																												.Disabled(true))
+																												.Value("Simplified Tax Invoice") // Ensure this matches an actual key value
+															.ValueExpr("InvoiceSubTypeCode") // Ensure the value is mapped correctly
+															.DisplayExpr("InvoiceType") // Set display value if needed
+															.ContentTemplate(new JS("VATInvoiceSubTypeTemplate")) // Reference the NamedTemplate
+															.Disabled(false))
 								</td>
 								<td>
 
@@ -2363,9 +2364,7 @@
 		</div>
 
 		<div class="Head">
-			<div class="limited-footer">
-				@await Html.PartialAsync("VATModuleFooter")
-			</div>
+			@await Html.PartialAsync("/Pages/Shared/VAT/VATInvoiceEditFooter.cshtml")
 		</div>
 
 
@@ -3345,7 +3344,7 @@
 
 																					.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
 
-																					.OnSelectionChanged("dataGridApprovedByHeadSelectionChanged")
+																						.OnSelectionChanged("dataGridVATInvoiceSubTypeByHeadSelectionChanged")
 
 																					.OnInitialized("dataGridApprovedByHeadInitialized")
 
@@ -3453,6 +3452,74 @@
 
 }
 
+
+@using (Html.DevExtreme().NamedTemplate("VATInvoiceSubTypeTemplate"))
+
+{
+
+	@(
+
+									Html.DevExtreme().DataGrid()
+
+																							.ID("vatinvoicesubtype-datagrid")
+
+																						.DataSource(d => d.WebApi()
+
+																						.Controller("VATModule")
+
+																									.LoadAction("getInvoiceSubTypeCode")
+
+																						.LoadMode(DataSourceLoadMode.Raw)
+
+																										///   .Key("AccountHead") //salary paid entry
+
+																											.Key("InvoiceSubTypeCode")
+
+																						)
+
+																						.WordWrapEnabled(true)
+
+																						.ShowBorders(true)
+
+																						.SearchPanel(sp => sp.HighlightSearchText(true))
+
+																						.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+
+																							.OnSelectionChanged("dataGridVATInvoiceSubTypeByHeadSelectionChanged")
+
+																						.OnInitialized("dataGridApprovedByHeadInitialized")
+
+																						// .HeaderFilter(p => p.Visible(true))
+
+																						.ShowBorders(true)
+
+																						.HoverStateEnabled(true)
+
+																						.Paging(p => p.PageSize(15))
+
+																						.FilterRow(f => f.Visible(true))
+
+																						.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+
+																						.Height(345)
+
+																						.Selection(s => s.Mode(SelectionMode.Single))
+
+																						.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+
+																						.Columns(columns =>
+
+																						{
+
+																								columns.Add().DataField("InvoiceSubType").Caption(new JS("formatMessage('Invoice Sub Type')"));
+
+
+																						})
+
+																					)
+
+}
+
 <input type="file" id="fileInput" style="display: none;" />
 <div id="cardPopover"></div>
 <div id="CalcardPopover"></div>
@@ -3499,23 +3566,23 @@
 
 			  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null,revaccheadid=null,InvoiceCurrencyExchangeId=null,TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
 					  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null,Gsdescrpition=null,GsdescriptionAr=null,ItemPartNo=null,CostPrice=null,GssellingRate=null,ReorderQty=null,IsDirectApproval=true,IsDirectVerify=true,IsClientCode=false
-					  ClientPostalCode=null,ClientCity=null,ClientAddressSt=null,Desc=null,rowIx=null;
+						  ClientPostalCode=null,ClientCity=null,ClientAddressSt=null,Desc=null,rowIx=null, IsEdit = false;
 			  let dropDownInstance;
 			  let vatListInstance;
 
-			$(document).ready(function () {
+		// 	$(document).ready(function () {
 
-			$(".limited-footer .btn-containerIvoiceEdit").each(function () {
+		// 	$(".limited-footer .btn-containerIvoiceEdit").each(function () {
 
-				if (!$(this).find("#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag").length) {
+		// 		if (!$(this).find("#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag").length) {
 
-					$(this).remove();
+		// 			$(this).remove();
 
-				}
+		// 		}
 
-			});
+		// 	});
 
-		});
+		// });
 
 
 
@@ -5545,7 +5612,48 @@
 
 			}
 
+
 			function dataGridApprovedByHeadSelectionChanged(e) {
+
+			const selectedKey = e.selectedRowKeys[0];
+
+			const ddbInstance = $("#ddlGoodsGroup11").dxDropDownBox("instance");
+
+			acchead = selectedKey;
+
+			if (selectedKey) {
+
+				ddbInstance.option("value", selectedKey);
+
+				if (ddbInstance.option("opened")) {
+
+					ddbInstance.close();
+
+				}
+					if(IsCurrent!="true")
+				{
+				var selectedRowData = $("#approvedby-datagrid").dxDataGrid("instance").getSelectedRowsData();
+
+				// Get ReferenceNo from selected row
+
+				if (selectedRowData.length > 0) {
+						ApproedbySignatoryID = selectedRowData[0].SignatoryID;
+
+				} else {
+
+					DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
+
+					return;
+
+				}
+				}
+
+			}
+
+		}
+
+
+		function dataGridVATInvoiceSubTypeByHeadSelectionChanged(e) {
 
 			const selectedKey = e.selectedRowKeys[0];
 
@@ -8150,7 +8258,8 @@
 
 				function showLedgerAccountEditPopup() {
 
-				const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}`;
+					IsEdit=true;
+					const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&IsEdit=${IsEdit}`;
 			var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
 
 			// Add an event to refresh the page when the popup is closed
@@ -8412,18 +8521,92 @@
 		DevExpress.ui.notify("Final Amount: ₹" + finalAmount.toFixed(2), "success", 2000);
 	}
 
+			$(document).ready(function () {
+					console.log('Start permission handling');
+					// Form ID
+					var formId = "frm20161VATInvoiceEdit";
 
-	// 		function applyDiscount(discountValue) {
-	// 			debugger;
-	// 	$("#totalAmount").dxNumberBox("instance").option("value",discountValue);
-	// 	const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
-	// 	const discount = $("#discount").dxNumberBox("instance").option("value") || 0;
-	// 	const finalAmount = total - discount;
+					// Call the API to get permissions
+					$.ajax({
+						url: '/api/Permissions/GetAccessDetails?formId=' + formId,
+						type: 'GET',
+						contentType: 'application/json',
+						success: function (response) {
+							console.log("API Response:", response); // Log the API response
 
-	// 	// Optionally show a notification
-	// 	DevExpress.ui.notify("Final Amount: ₹" + finalAmount.toFixed(2), "success", 2000);
+							if (response.success && response.permissions) {
+								// Default visibility and enable status for buttons
+								var controlStates = {
+									"ddButtonLayout": { "Visible": true, "Enabled": false },
+									"btnMoveDown": { "Visible": true, "Enabled": false },
+									"btnMoveUp": { "Visible": false, "Enabled": false },
+									"btnSave": { "Visible": false, "Enabled": false },
+									"btnSaveAndClose": { "Visible": false, "Enabled": false },
+									"btnPrint1": { "Visible": false, "Enabled": false },
+									"btnAddNew": { "Visible": false, "Enabled": false },
+									"btnDelete": { "Visible": true, "Enabled": false },
+									"btnVerify": { "Visible": false, "Enabled": false },
+									"btnApprove": { "Visible": false, "Enabled": false },
+									"btnAttach": { "Visible": false, "Enabled": false },
+									"btnPostToLedgers": { "Visible": false, "Enabled": false },
+									"btnPostTag": { "Visible": false, "Enabled": false }
 
-	// }
+
+								};
+
+
+								// Check for full access
+								var fullAccess = response.permissions.find(p =>
+									p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
+								);
+
+								if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
+									// Grant full access: make all controls visible and enabled
+									Object.keys(controlStates).forEach(key => {
+										controlStates[key] = { "Visible": true, "Enabled": true };
+									});
+								} else {
+									// Update states based on specific permissions for each control
+									Object.keys(controlStates).forEach(key => {
+										var controlPermission = response.permissions.find(p =>
+											p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
+										);
+										if (controlPermission) {
+											controlStates[key] = {
+												"Visible": controlPermission.ItemVisible || false,
+												"Enabled": controlPermission.ItemEnabled || false
+											};
+										}
+									});
+								}
+
+								console.log("Control States:", controlStates); // Log the control states
+
+								// Dynamically update button visibility and enabled state
+								Object.keys(controlStates).forEach(key => {
+									var button = document.getElementById(key);
+									if (button) {
+										// Handle visibility
+										button.style.display = controlStates[key].Visible ? "inline-block" : "none";
+										// Handle enable/disable state
+										button.disabled = !controlStates[key].Enabled;
+										console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
+									} else {
+										console.warn(`Button with ID "${key}" not found in the DOM.`);
+									}
+								});
+							} else {
+								console.warn("Failed to fetch permissions or no permissions available.");
+							}
+						},
+						error: function (xhr, status, error) {
+							console.error("Error fetching permissions:", error);
+							alert('An error occurred while fetching permissions. Please try again.');
+						}
+					});
+					showColumnChooser();
+					console.log('End permission handling');
+				});
 
 </script>
 
