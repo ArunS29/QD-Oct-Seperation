@@ -20,10 +20,7 @@
     }
 
         /* Hover Effect for Button */
-        .dx-button:hover {
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important; /* Slightly reduced hover effect */
-            border-color: #86b7fe !important; /* Highlight border */
-        }
+     
 
     .dx-icon {
         font-size: 20px !important; /* Adjust size if needed */
@@ -96,80 +93,6 @@
         overflow: hidden;
     }
 
-        /* Initially hide the button text and set a fixed small width */
-        .btn-container .dx-button {
-            width: 40px !important; /* Small width for icons */
-            transition: width 0.3s ease-in-out;
-        }
-
-
-        /* Show full text when hovered */
-        .btn-container:hover .dx-button {
-            width: 200px !important; /* Expand to fit text */
-        }
-
-        /* Initially hide text */
-        .btn-container .dx-button .dx-button-text {
-            display: none;
-        }
-
-        /* Show text on hover */
-        .btn-container:hover .dx-button .dx-button-text {
-            display: inline-block;
-        }
-
-        /* Ensure dropdown button behaves similarly */
-        .btn-container .dx-dropdownbutton {
-            width: 55px !important;
-            transition: width 0.3s ease-in-out;
-        }
-
-        .btn-container:hover .dx-dropdownbutton {
-            width: 180px !important; /* Adjust as needed */
-        }
-
-        .btn-container .dx-dropdownbutton .dx-button-text {
-            display: none;
-        }
-
-        .btn-container:hover .dx-dropdownbutton .dx-button-text {
-            display: inline-block;
-        }
-
-
-        .btn-container .dx-button {
-            width: 40px !important; /* Small width for just the icon */
-            transition: width 0.3s ease-in-out;
-            overflow: hidden;
-            padding-left: 0 !important;
-            padding-right: 0 !important;
-            text-align: center;
-        }
-
-        /* On hover, expand the button */
-
-        .btn-container:hover .dx-button {
-            width: 200px !important;
-        }
-
-        /* Keep the icon always visible */
-
-        .btn-container .dx-button .dx-icon {
-            display: inline-block !important;
-        }
-
-        /* Initially hide text */
-
-        .btn-container .dx-button .dx-button-text {
-            display: none;
-        }
-
-    /* Show text on hover */
-    .btn-containerIvoiceEdit:hover .dx-button .dx-button-text {
-        display: inline-block;
-        margin-left: 8px; /* optional spacing between icon and text */
-    }
-
     .modal-content {
         position: absolute;
         top: 40%;
@@ -193,176 +116,96 @@
     }
 
 
-    .btn-containerIvoiceEdit .dx-button {
-        width: 40px !important; /* Small width for just the icon */
-        transition: width 0.3s ease-in-out;
-        overflow: hidden;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-        text-align: center;
-    }
-
-    /* On hover, expand the button */
-    .btn-containerIvoiceEdit:hover .dx-button {
-        width: 200px !important;
-    }
-
-    .btn-container:hover #btnAddNewPayment.dx-button {
-        width: 240px !important;
-    }
-
-    /* Keep the icon always visible */
-    .btn-containerIvoiceEdit .dx-button .dx-icon {
-        display: inline-block !important;
-    }
-
-    /* Initially hide text */
-    .btn-containerIvoiceEdit .dx-button .dx-button-text {
-        display: none;
-    }
-
-    /* Show text on hover */
-    .btn-containerIvoiceEdit:hover .dx-button .dx-button-text {
-        display: inline-block;
-        margin-left: 8px; /* optional spacing between icon and text */
-    }
-
-
     .multiline-button .dx-button-text {
         white-space: normal;
     }
+
 </style>
 
 <div class="dx-fieldset horizontal-container" style="width:1000px;background-color:transparent;">
 
 
     <div class="btn-container">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddButtonLayout")
-            .Icon("smalliconslayout")
-            .Width(50)
-            .Text(new JS("formatMessage('Layout')"))
-            .ElementAttr(new { style = "display: none;" })
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu");
-                items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
-                items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
-                items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
-                items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
-            })
-            .ShowArrowIcon(false)
+        @(Html.DevExtreme().Button()
+            .ID("btnSave")
+            .Text(new JS("formatMessage('Update')"))
+            .Type(ButtonType.Normal)
+            .StylingMode(ButtonStylingMode.Outlined)
+            .Icon("save")
+            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                                                         // .OnClick("saveInvoiceDetails") // Calls the JavaScript function
             )
+
     </div>
 
-    <div class="btn-containerIvoiceEdit">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddButtonLayout")
-            .Icon("smalliconslayout")
-            .Width(50)
-            .Text(new JS("formatMessage('Layout')"))
-            .ElementAttr(new { style = "display: none;" })
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
+    <div class="btn-container">
 
-                // items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu");
-
-               // items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu");
-
-                items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
-                items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
-                items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
-                items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
-            })
-            .ShowArrowIcon(false)
+        @(Html.DevExtreme().Button()
+            .ID("btnSaveAndClose")
+            .Text(new JS("formatMessage('Save and Close')"))
+            .Type(ButtonType.Normal)
+            .StylingMode(ButtonStylingMode.Outlined)
+            .Icon("save")
+            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
             )
     </div>
 
     <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnPrint")
-            .Icon("print")
+        @(Html.DevExtreme().DropDownButton()
+            .ID("btnPrint1")
             .Text(new JS("formatMessage('Print')"))
-            .ElementAttr(new { style = "display: none;" })
-            .Width(50)
-            .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
-            )
-    </div>
-
-
-
-
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnToggleSearch")
-            .Icon("search")
-            .Text(new JS("formatMessage('Search')"))
-            .ElementAttr(new { style = "display: none;" })
-            .Width(50)
-            .OnClick("toggleFilterRow")
-            )
-    </div>
-
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btntoggleGroupPanel")
-            .Icon("hierarchy")
-            .Width(50)
-            .Text(new JS("formatMessage('Group')"))
-            .ElementAttr(new { style = "display: none;" })
-            .OnClick("toggleGroupPanel")
-            )
-    </div>
-   
-
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnColumnChooser")
-            .Icon("columnchooser")
-            .Width(50)
-            .Text(new JS("formatMessage('Column Chooser')"))
-            .ElementAttr(new { style = "display: none;" })
-            .OnClick("showColumnChooser")
-            )
-    </div>
-      <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnAddNew1")
-            .Text(new JS("formatMessage('Add New')"))
-            .Icon("plus")
-            // .OnClick("addNewRow") // Attach function
+            .Icon("print")
             .ElementAttr(new { @class = "bold-button" })
-            // Apply custom CSS class
-            )
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddReport123")
-            .Icon("doc")
-            .Width(50)
-            .Text(new JS("formatMessage('Report')"))
-            @*   .ElementAttr(new { style = "display: none;" }) *@
-            .DropDownOptions(options => options.Width(285))
+            .DropDownOptions(options => options.Width(230))
+            .ShowArrowIcon(false)
             .Items(items =>
             {
-                items.Add().Text(new JS("formatMessage('Tax Summary Report-Credit Notes')")).Icon("search");
+                items.Add().Text("Print Regular TAX Invoice").Icon("print");
+                items.Add().Text("Print Simplified TAX Invoice").Icon("file");
+                items.Add().Text("Additional Formats").Icon("folder");
+                items.Add().Text("Edit Sales Voucher").Icon("edit");
+                items.Add().Text("Upload Items from Excel").Icon("upload").OnClick("navigateInventoryListtoUpload");
+                items.Add()
+                .Text("Profit On Sale")
+                .Icon("chart")
+                .OnClick("navigateToLoss");
 
-
+                items.Add().Text("Invoice Cost Posting").Icon("money").OnClick("navigateToInvoiceCostPosting");
+                items.Add().Text("Advance / Prepayment Adjustments").Icon("wallet");
             })
-            .OnItemClick("handleReportClick")
-            .ShowArrowIcon(false)
-
+            .OnItemClick("addPrintButton_click")
             )
     </div>
 
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnDelete")
+            .Text(new JS("formatMessage('Delete')"))
+            .Icon("close")
+            //  .OnClick("onDeleteButtonClick")
+            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+            )
+    </div>
+
+    <div class="btn-container">
+
+        @(Html.DevExtreme().Button()
+            .ID("btnBack")
+            .Text(new JS("formatMessage('Back')"))
+            .Icon("arrowleft")
+            // .OnClick("onBackButtonClick")
+            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+            )
+    </div>
+
+
+    
     <!-- Hidden anchor for submenu positioning -->
     <div id="additionalFormatsTrigger" style="position:absolute; width:1px; height:1px;"></div>
 
     <!-- Submenu placeholder -->
     <div id="additionalFormatsSubmenu"></div>
-
 
 </div>
 

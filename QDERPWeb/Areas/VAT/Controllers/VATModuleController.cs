@@ -123,7 +123,17 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                         .Take(pageSize)
                         .ToListAsync();
 
-                    // Return paged result with total count for frontend
+
+                    foreach (var item in pagedResults)
+                    {
+                        decimal total = item.TotalInvoiceAmount ?? 0;
+                        decimal rate = item.ExchangeRate ?? 1;
+                        decimal? currencyRate = total * rate;
+
+                        item.TotalInvoiceAmount = currencyRate; // If you are overwriting with converted amount
+                    }
+
+
                     return Json(new
                     {
                         data = pagedResults,
@@ -1976,6 +1986,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
 			return Unauthorized(new { message = "Invalid tenant.", success = false });
 		}
+
 
 		[HttpGet]
 		public async Task<ActionResult> GetCreditNoteDetails(string CreditNoteNo)
