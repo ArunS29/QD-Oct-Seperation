@@ -1,5 +1,9 @@
 ﻿@page
 @model QDWEB.Pages.Shared.GridforAssetViewModel
+@{
+    ViewData["Title"] = "Voucher Verification";
+
+}
 <style type="text/css">
     .dx-datagrid .dx-row {
         border-bottom: 1px solid #ccc;
@@ -136,9 +140,11 @@
 </style>
 <div class="title">
     <div class="header-container">
-        <div id="VoucherApproval" class="no-border-input"></div>
+        <div id="VoucherVerification" class="no-border-input"></div>
     </div>
 </div>
+
+<div class="content-container-top" style="background-color:#909ead00;">
 <input id="formId" value="VoucherApproval" type="hidden" />
     <div>
         @await Html.PartialAsync("GridFooterApproval")
@@ -388,7 +394,7 @@
 
         )
 </div>
-
+</div>
 
 
 <div id="voucherContextMenu"></div>
