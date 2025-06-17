@@ -794,6 +794,39 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 		}
 
 
+		[HttpGet]
+		public IActionResult GetClientsBySalesOrderNo(string salesOrderNo)
+		{
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+				return Unauthorized(new { message = "Invalid tenant." });
+
+			var clients = dbContext.Qry60311deliveryNotesWithDetails
+				.Where(x => x.SalesOrderNo == salesOrderNo)
+				.Select(x => new {
+					x.ClientCode,
+					x.ClientName
+				})
+				.Distinct()
+				.ToList();
+
+			return Ok(clients);
+		}
+
+		[HttpGet]
+		public IActionResult GetSalesOrders()
+		{
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+				return Unauthorized(new { message = "Invalid tenant." });
+
+			var orders = dbContext.Qry60311deliveryNotesWithDetails
+				.Select(x => new {
+					x.SalesOrderNo
+				})
+				.Distinct()
+				.ToList();
+
+			return Ok(orders);
+		}
 	}
 
 

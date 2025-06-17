@@ -5,17 +5,18 @@
 @using DevExtreme.AspNet.Mvc
 
 <style>
-    .filter-group {
-        display: flex;
-    }
-    .action-buttons {
-        display: flex;
-        margin-top: 20px;
-    }
+	.filter-group {
+		display: flex;
+	}
 
-        .action-buttons .dx-button {
-            width: 180px;
-        }
+	.action-buttons {
+		display: flex;
+		margin-top: 20px;
+	}
+
+		.action-buttons .dx-button {
+			width: 180px;
+		}
 
 	.overlay {
 		display: none;
@@ -199,19 +200,13 @@
 		<div class="filter-group">
 			@(Html.DevExtreme().DropDownBox()
 						.ID("clientNameDropdown")
-						.DataSource(d => d.Mvc()
-						.Controller("DeliveryNote")
-						.LoadAction("GetDeliveryNotesWithDetail") // You will create this API
-						.LoadMode(DataSourceLoadMode.Raw)
-						.Key("ClientCode")
-						)
 						.ValueExpr("ClientCode")
 						.DisplayExpr("ClientName")
-						.LabelMode(EditorLabelMode.Outside)
-						.ContentTemplate(new TemplateName("DeliveryClientNameTemplate"))
 						.Label(new JS("formatMessage('Client Name:')"))
 						.LabelMode(EditorLabelMode.Outside)
-						.Width(470))
+						.Width(470)
+						.ContentTemplate(new TemplateName("DeliveryClientNameTemplate")))
+
 		</div>
 
 		<div class="filter-group">
@@ -221,13 +216,11 @@
 						.LabelMode(EditorLabelMode.Outside)
 						.DataSource(d => d.Mvc()
 						.Controller("DeliveryNote")
-						.LoadAction("GetDeliveryNotesWithDetail") // You will create this API
+						.LoadAction("GetSalesOrders")
 						.LoadMode(DataSourceLoadMode.Raw)
-						.Key("SalesOrderNo")
-						)
+						.Key("SalesOrderNo"))
 						.ValueExpr("SalesOrderNo")
 						.DisplayExpr("SalesOrderNo")
-						.LabelMode(EditorLabelMode.Outside)
 						.ContentTemplate(new TemplateName("DeliverySalesOrderNoTemplate"))
 						.Width(470))
 		</div>
@@ -247,6 +240,10 @@
 				.Width("100%")
 				.ShowBorders(true)
 				.ColumnAutoWidth(true)
+				.Selection(s => s
+				.Mode(SelectionMode.Multiple)
+				.ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)
+				)
 				.DataSource(d => d.Mvc()
 				.Controller("DeliveryNote")
 				.LoadAction("GetDeliveryNotesWithDetail")
@@ -266,24 +263,25 @@
 
 	</div>
 
-    <!-- Action Buttons -->
+	<!-- Action Buttons -->
 	<div class="action-buttons" style=" display: flex;margin-top: 20px; padding:20px; gap:10px;">
-        @(Html.DevExtreme().Button()
-            .Text("Generate VAT Invoice")
-            .Icon("check")
-			.Width(270)
-            .Type(ButtonType.Success))
+		@(Html.DevExtreme().Button()
+				.ID("GenerateVATInvoice")
+				.Text("Generate VAT Invoice")
+				.Icon("check")
+				.Width(270)
+				.Type(ButtonType.Success))
 
-        @(Html.DevExtreme().Button()
-            .Text("Print")
-            .Icon("print")
-            .Type(ButtonType.Default))
+		@(Html.DevExtreme().Button()
+				.Text("Print")
+				.Icon("print")
+				.Type(ButtonType.Default))
 
-        @(Html.DevExtreme().Button()
-            .Text("Back")
-            .Icon("back")
-            .Type(ButtonType.Default))
-    </div>
+		@(Html.DevExtreme().Button()
+				.Text("Back")
+				.Icon("back")
+				.Type(ButtonType.Default))
+	</div>
 	@using (Html.DevExtreme().NamedTemplate("DeliveryClientNameTemplate"))
 	{
 		@(Html.DevExtreme().DataGrid()
@@ -308,7 +306,7 @@
 			.OnSelectionChanged("onClientSelected")  // Trigger onClientSelected on row selection
 			)
 	}
-	
+
 	@using (Html.DevExtreme().NamedTemplate("DeliverySalesOrderNoTemplate"))
 	{
 		@(Html.DevExtreme().DataGrid()
@@ -347,34 +345,43 @@
 	});
 
 		$(function () {
-		// Get query params
 		const urlParams = new URLSearchParams(window.location.search);
 		const salesOrderNo = urlParams.get("salesOrderNo");
 		const clientCode = urlParams.get("clientCode");
 
-		// Load client dropdown
-		$.get("/api/SalesOrders/GetClientNames", function (clients) {
-			$("#clientNameDropdown").dxSelectBox("instance").option("dataSource", clients);
-			if (clientCode) {
-				$("#clientNameDropdown").dxSelectBox("instance").option("value", clientCode);
-			}
-		});
-
-		// Load sales order dropdown
-		$.get("/api/SalesOrders/GetSalesOrders", function (orders) {
-			$("#salesOrderDropdown").dxSelectBox("instance").option("dataSource", orders);
+		// Load sales orders
+		$.get("/api/DeliveryNote/GetSalesOrders", function (orders) {
+			const salesOrderDropdown = $("#salesOrderDropdown").dxDropDownBox("instance");
+			salesOrderDropdown.option("dataSource", orders);
 			if (salesOrderNo) {
-				$("#salesOrderDropdown").dxSelectBox("instance").option("value", salesOrderNo);
+				salesOrderDropdown.option("value", salesOrderNo);
+				loadClients(salesOrderNo);
 			}
 		});
 
-		// Only load delivery notes for the selected sales order
+		// Load clients for a given sales order
+		function loadClients(salesOrderNo) {
+				 $.get("/api/DeliveryNote/GetClientsBySalesOrderNo", { salesOrderNo }, function (clients) {
+			const clientDropdown = $("#clientNameDropdown").dxDropDownBox("instance");
+			if (clientDropdown) {
+				clientDropdown.option("dataSource", clients);
+				if (clients.length === 1) {
+					clientDropdown.option("value", clients[0].ClientCode); // Auto-select if only 1
+				} else if (clientCode) {
+					clientDropdown.option("value", clientCode);
+				}
+			} else {
+				console.error("Client dropdown instance not found");
+			}
+		});
+	}
+
+		// Load delivery notes for selected sales order
 		if (salesOrderNo) {
-			$.get("/api/DeliveryNote/GetDeliveryNotesWithDetailBySalesOrderNo", { salesOrderNo }, function (deliveryNotes) {
-				$("#deliveryNotesGrid").dxDataGrid("instance").option("dataSource", deliveryNotes);
+			$.get("/api/DeliveryNote/GetDeliveryNotesWithDetailBySalesOrderNo", { salesOrderNo }, function (notes) {
+				$("#deliveryNotesGrid").dxDataGrid("instance").option("dataSource", notes);
 			});
 		} else {
-			// Optionally clear the grid if no sales order is selected
 			$("#deliveryNotesGrid").dxDataGrid("instance").option("dataSource", []);
 		}
 	});
@@ -391,7 +398,7 @@
 				}
 			}
 		}
-		
+
 		function onSalesOrderNoSelected(e) {
 			const selected = e.selectedRowsData[0];
 			if (selected) {
@@ -404,5 +411,36 @@
 				}
 			}
 		}
+				$("#GenerateVATInvoice").on("click", function () {
+		var grid = $("#deliveryNotesGrid").dxDataGrid("instance");
+		var selectedRows = grid.getSelectedRowsData();
+		if (!selectedRows.length) {
+			DevExpress.ui.notify("Please select a Delivery Note.", "warning", 2000);
+			return;
+		}
+
+		const deliveryNoteNo = selectedRows[0].DeliveryNoteNo;
+		const salesOrderNo = selectedRows[0].SalesOrderNo;
+		const tenantName = window.tenantName || "defaultTenant";
+
+		// Get auto-generated VAT invoice number
+		$.get("/api/VoucherMaster/GetAutoGeneratedVATInvoiceNo", { tenantName })
+			.done(function (res) {
+				if (res.success) {
+					const invoiceNo = res.invoiceNo;
+					// Navigate to edit page with deliveryNoteNo, invoiceNo and mode=create
+					const url = `/${tenantName}/VAT/frm20161VATInvoiceEdit?deliveryNoteNo=${encodeURIComponent(deliveryNoteNo)}&invoiceNo=${encodeURIComponent(invoiceNo)}&salesOrderNo=${encodeURIComponent(salesOrderNo)}&mode=create`;
+					window.location.href = url;
+				} else {
+					DevExpress.ui.notify(res.message || "Failed to generate invoice number.", "error", 3000);
+				}
+			})
+			.fail(function (xhr) {
+				let msg = xhr.responseJSON?.message || "Error generating invoice number.";
+				DevExpress.ui.notify(msg, "error", 3000);
+			});
+	});
+
+
 
 </script>

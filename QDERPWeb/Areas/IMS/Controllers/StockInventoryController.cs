@@ -1337,7 +1337,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 // Step 1: Get tenant info
                 if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
                     return Unauthorized("Invalid tenant context.");
-
+                var userName = User.Identity?.Name ?? "UnknownUser";
                 var tenantName = HttpContext.Session.GetString("TenantName")?.Trim();
                 if (string.IsNullOrWhiteSpace(tenantName))
                     return Unauthorized("Tenant name not found in session.");
@@ -1373,7 +1373,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 var connectionString = _configuration.GetConnectionString("AzureBlobStorage");
                 var containerName = "client-files";
                 var blobHelper = new AzureBlobHelper(connectionString, containerName);
-                var blobPath = await blobHelper.UploadFileAsync(file, filePathInBlob, tenantName);
+                var blobPath = await blobHelper.UploadFileAsync(file, filePathInBlob, tenantName,userName);
 
                 // Step 6: Save metadata
                 var model = new Tbl70003projectDocument

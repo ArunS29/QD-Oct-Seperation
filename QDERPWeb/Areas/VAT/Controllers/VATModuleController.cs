@@ -125,14 +125,17 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
                         .ToListAsync();
 
-                    var totalCount = await dbContext.Qry201607vatinvoiceRegisterMainViews
 
-                    .FromSqlRaw($"SELECT * FROM Qry201_607vatinvoiceRegisterMainView WHERE {baseColumn} BETWEEN @p0 AND @p1", from, toWithTime)
+                    foreach (var item in pagedResults)
+                    {
+                        decimal total = item.TotalInvoiceAmount ?? 0;
+                        decimal rate = item.ExchangeRate ?? 1;
+                        decimal? currencyRate = total * rate;
 
-                    .CountAsync();
+                        item.TotalInvoiceAmount = currencyRate; // If you are overwriting with converted amount
+                    }
 
 
-                    // Return paged result with total count for frontend
                     return Json(new
                     {
                         data = pagedResults,
@@ -1985,6 +1988,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
 			return Unauthorized(new { message = "Invalid tenant.", success = false });
 		}
+
 
 		[HttpGet]
 		public async Task<ActionResult> GetCreditNoteDetails(string CreditNoteNo)
