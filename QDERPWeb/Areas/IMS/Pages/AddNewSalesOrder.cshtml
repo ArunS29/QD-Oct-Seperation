@@ -37,7 +37,7 @@
             background-color: lightblue;
             color: white !important;
         }
-
+        
     .dx-tabpanel {
     }
 
@@ -2133,7 +2133,7 @@
         const vatRate = parseFloat(data.QuotedTaxSlab) || 0;
 
         // Your updated formula
-        const amount = (qty * unitPrice) + discount;
+        const amount = (qty * unitPrice) - discount;
         const vat = (amount * vatRate) / 100;
         const total = amount + vat;
 

@@ -1198,12 +1198,7 @@
                 "VoucherEffectiveDate": $("#EffectiveDate").dxDateBox("instance").option("value"),
                 "VoucherNarration": ($("#VoucherNarration").dxTextBox("instance").option("value") || "").trim(),
                 "BillRemarks": ($("#Remarks").dxTextBox("instance").option("value") || "").trim(),
-                "IsVerified": $("#VerifiedBy").dxCheckBox("instance").option("value"),
-                "IsApproved": $("#ApprovedBy").dxCheckBox("instance").option("value"),
-                "VoucherVerifiedBy": ($("#VerifiedBytext").dxTextBox("instance").option("value") || "").trim(),
-                "VoucherApprovedBy": ($("#ApprovedBytext").dxTextBox("instance").option("value") || "").trim(),
-                "VoucherVerifiedOn": ($("#VerifiedOnDate").dxTextBox("instance").option("value") || null),
-                "VoucherApprovedOn": ($("#ApprovedOntext").dxTextBox("instance").option("value") || null),
+                
                 "VoucherType": ($("#VoucherType").dxSelectBox("instance").option("value") || "").trim(),
             },
             VoucherEntries: gridData
@@ -1254,12 +1249,19 @@
         });
     };
     function disableFields() {
+        $("#VoucherNo").dxTextBox("instance").option("disabled", true);
+        $("#TemporaryNo").dxTextBox("instance").option("value", null);
     $("#TemporaryNo").dxTextBox("instance").option("disabled", true);
     $("#sbDrCr").dxSelectBox("instance").option("disabled", true);
     $("#ddAccountHead").dxDropDownBox("instance").option("disabled", true);
     $("#txtVoucherAmount").dxNumberBox("instance").option("disabled", true);
     $("#txtEntryNarration").dxTextArea("instance").option("disabled", true);
     $("#btnVoucherEntry").dxButton("instance").option("disabled", true);
+        // 🔒 Disable Context Menu
+        document.querySelector('#DeleteAllLineEntries').closest('li').style.display = 'none';
+
+        // 🗑️ Disable Delete Option in DataGrid
+        $("#dataGrid").dxDataGrid("instance").option("editing.allowDeleting", false);
 }
 
 
@@ -1584,7 +1586,7 @@
                         DevExpress.ui.notify("No voucher entries found.", "warning", 2000);
                         return;
                     }
-
+                    disableFields();
                         var lastRow = response.data[response.data.length - 1]; // Get the last row
                             var dropDownBox = $("#ddAccountHead").dxDropDownBox("instance");
 
@@ -1840,7 +1842,7 @@
                     $("#ApprovedOntext").dxTextBox("instance").option("value", formattedApprovedDate);
 
                     // Check if both VerifiedOnDate and ApprovedOntext have values
-                    if (formattedDate && formattedApprovedDate) {
+                    if (formattedApprovedDate) {
                         disableEditing();
                     }
 

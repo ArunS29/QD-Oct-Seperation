@@ -169,6 +169,18 @@
 	</div>
 </div>
 @await Html.PartialAsync("/Pages/Shared/IMS/PurchaseOrderFooter.cshtml")
+
+<div class="context-menuInvoice" id="contextMenu">
+	<div class="context-menu-itemInvoice" onclick="viewRecord()">
+		<i class="dx-icon-search"></i> View
+	</div>
+	<div class="context-menu-itemInvoice" onclick="editRecord()">
+		<i class="dx-icon-edit"></i> Edit
+	</div>
+	<div class="context-menu-itemInvoice" onclick="deleteRecord()">
+		<i class="dx-icon-trash"></i> Delete
+	</div>
+</div>
 <div class="dx-fieldset horizontal-container">
 	@(Html.DevExtreme().DateBox()
 		.ID("frmdateBox")
@@ -407,6 +419,82 @@
 
 
 	}
+	let selectedRowData = null;
 
+	   $(function () {
+		   const contextMenu = $("#contextMenu");
+
+		   $(document).on("click", function () {
+			   contextMenu.hide();
+		   });
+
+		  $("#dataGrid").customizeGridContextMenu();
+			 $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
+		   e.preventDefault();
+		   const dataGrid = $("#dataGrid").dxDataGrid("instance");
+		   const rowIndex = $(this).index();
+		   selectedRowData = dataGrid.getVisibleRows()[rowIndex].data;
+
+		   $("#contextMenu").css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
+	   });
+
+	   });
+	   function viewRecord() {
+		   if (selectedRowData) {
+			   const Pono = selectedRowData.Pono;
+			   window.location.href = `/${tenantName}/IMS/AddNewPurchaseOrder?Pono=${encodeURIComponent(Pono)}&mode=view`;
+		   }
+	   }
+
+	   function editRecord() {
+		   if (selectedRowData) {
+			   const Pono = selectedRowData.Pono;
+			   window.location.href = `/${tenantName}/IMS/AddNewPurchaseOrder?Pono=${encodeURIComponent(Pono)}&mode=edit`;
+		   }
+	   }
+
+
+			 function deleteRecord() {
+		   if (!selectedRowData) {
+			   DevExpress.ui.notify("Please select a row to delete.", "warning", 2000);
+			   return;
+		   }
+
+		   const Pono = selectedRowData.Pono;
+
+		   DevExpress.ui.dialog.confirm(
+			   `Are you sure you want to delete stock item: <b>${Pono}</b>?`,
+			   "Confirm Deletion"
+		   ).done(function (dialogResult) {
+			   if (dialogResult) {
+				   $.ajax({
+					   url: "/api/StockInventory/DeleteStockItem",
+					   method: "POST",
+					   contentType: "application/json",
+					   data: JSON.stringify(Pono),
+					   success: function (result) {
+						   const messageType = result.success ? "Success" : "Error";
+						   const messageColor = result.success ? "green" : "red";
+
+						   DevExpress.ui.dialog.alert(
+							   `<div style="color: ${messageColor}; font-weight: bold;">
+								   ${result.message}
+							   </div>`,
+							   messageType
+						   );
+
+						   if (result.success) {
+							   const grid = $("#dataGrid").dxDataGrid("instance");
+							   grid.refresh();
+						   }
+					   },
+					   error: function (xhr) {
+						   DevExpress.ui.notify("Error deleting stock item", "error", 2000);
+						   console.error(xhr);
+					   }
+				   });
+			   }
+		   });
+	   }
 
 </script>

@@ -599,6 +599,126 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, new { success = false, message = $"Server error: {ex.Message}" });
             }
         }
+  
+        [HttpGet]
+        public async Task<IActionResult> GetByPoNo(string poNo)
+        {
+            if (string.IsNullOrWhiteSpace(poNo))
+                return BadRequest(new { message = "PO No is required", success = false });
+
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { message = "Invalid tenant", success = false });
+
+            try
+            {
+                var master = await dbContext.Tbl60401purchaseOrderMasters
+                    .FirstOrDefaultAsync(x => x.Pono == poNo);
+
+                if (master == null)
+                    return NotFound(new { message = "Purchase Order not found", success = false });
+
+                var children = await dbContext.Tbl60402purchaseOrderChildren
+                    .Where(x => x.Pono == poNo)
+                    .ToListAsync();
+
+                return Ok(new
+                {
+                    success = true,
+
+                    // Master fields
+                    pono = master.Pono,
+                    podate = master.Podate,
+                    supplierCode = master.SupplierCode,
+                    supplierQuoteNo = master.SupplierQuoteNo,
+                    supplierQuoteDate = master.SupplierQuoteDate,
+                    supplierRefNo = master.SupplierRefNo,
+                    attention = master.Attention,
+                    supplierContactNo = master.SupplierContactNo,
+                    supplierContactEmail = master.SupplierContactEmail,
+                    subjectTitle = master.SubjectTitle,
+                    project = master.Project,
+                    projectMasterCode = master.ProjectMasterCode,
+                    projectSubUnitCode = master.ProjectSubUnitCode,
+                    podueDate = master.PodueDate,
+                    preparedBy = master.PreparedBy,
+                    preparedOn = master.PreparedOn,
+                    revisedBy = master.PorevisedBy,
+                    revisedOn = master.PorevisedOn,
+                    revisionNo = master.RevisionNo,
+                    isObseleteVersion = master.IsObseleteVersion,
+                    posignatory = master.Posignatory,
+                    popaymentTerm = master.PopaymentTerm,
+                    podeliveryTerm = master.PodeliveryTerm,
+                    podeliveryPeriod = master.PodeliveryPeriod,
+                    podocRequired = master.PodocRequired,
+                    powarrantyPeriod = master.PowarrantyPeriod,
+                    poshipTo = master.PoshipTo,
+                    pobillTo = master.PobillTo,
+                    currency = master.Currency,
+                    exchangeRate = master.ExchangeRate,
+                    pothanksNote = master.PothanksNote,
+                    additionsText = master.AdditionsText,
+                    discountsText = master.DiscountsText,
+                    additionsAmount = master.AdditionsAmount,
+                    deductionsAmount = master.DeductionsAmount,
+                    inventoryMasterGroupId = master.InventoryMasterGroupId,
+                    pocategoryId = master.PocategoryId,
+                    rfqno = master.Rfqno,
+                    typeOfRequest = master.TypeOfRequest,
+                    pointroduction = master.Pointroduction,
+                    posummary = master.Posummary,
+                    companyBranch = master.CompanyBranch,
+                    salesPersonCode = master.SalesPersonCode,
+                    preparedBySign = master.PoverifiedSign,
+                    approvedBySign = master.PoapprovedSign,
+
+                    isSubmitted = master.IsSubmitted,
+                    submittedBy = master.SubmittedBy,
+                    submittedOn = master.SubmittedOn,
+
+                    isVerified = master.IsVerified,
+                    verifiedBy = master.VerifiedBy,
+                    verifiedOn = master.VerifiedOn,
+
+                    isApproved = master.IsApproved,
+                    approvedBy = master.ApprovedBy,
+                    approvedOn = master.ApprovedOn,
+
+                    // Children
+                    items = children.Select(x => new
+                    {
+                        SlNo = x.PochildNo,
+                        pono = x.Pono,
+                        gscode = x.Gscode,
+                        addlDescription = x.AddlDescription,
+                        quotedQuantity = x.QuotedQuantity,
+                        unitRateMethod = x.UnitRateMethod,
+                        unitPrice = x.UnitPrice,
+                        itemDiscount = x.ItemDiscount,
+                        potaxSlab = x.PotaxSlab,
+                        poitemRemarks = x.PoitemRemarks,
+                        lineOrderNo = x.LineOrderNo,
+                        planNo = x.PlanNo,
+                        deliveryPeriod = x.DeliveryPeriod,
+                        mritemNo = x.MritemNo,
+                        currency = x.Currency,
+                        exchangeRate = x.ExchangeRate,
+                        unitRateInOc = x.UnitRateInOc,
+                        discountInOc = x.DiscountInOc
+                    })
+
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    message = "Error loading purchase order",
+                    success = false,
+                    error = ex.Message
+                });
+            }
+        }
 
     }
 }
