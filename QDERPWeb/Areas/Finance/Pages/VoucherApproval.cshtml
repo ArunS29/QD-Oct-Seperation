@@ -443,7 +443,15 @@
 				// 		$(e.element).addClass("dx-textbox-heading");
 				// }
     //     });
-        
+        $(function () {
+        $("#VoucherApproval").dxTextBox({
+            text: formatMessage("Voucher Approval"),
+            readOnly: true,
+                            onContentReady: function(e) {
+                $(e.element).addClass("dx-textbox-heading");
+            }
+        });
+    });
     // });
     // $(function () {
     //     $("#CurrentAssetsValue").dxTextBox({
