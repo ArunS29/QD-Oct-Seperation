@@ -639,7 +639,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
         }
       [HttpPost]
-public async Task<IActionResult> GenerateJobOrders([FromBody] SalesorderViewModel model)
+public async Task<IActionResult> GenerateJobOrders1([FromBody] SalesorderViewModel model)
 {
     try
     {
@@ -679,13 +679,96 @@ public async Task<IActionResult> GenerateJobOrders([FromBody] SalesorderViewMode
     }
 }
 
+		[HttpPost]
+		public async Task<IActionResult> GenerateJobOrders([FromBody] SalesorderViewModel model)
+		{
+			try
+			{
+				if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+					return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+				if (model.SalesOrderChildren == null || !model.SalesOrderChildren.Any())
+					return BadRequest(new { success = false, message = "No line items selected." });
+
+				// 🔹 Step 1: Get tenant name
+				string tenantName = HttpContext.Session.GetString("TenantName");
+				if (string.IsNullOrWhiteSpace(tenantName))
+					return Unauthorized(new { success = false, message = "Tenant name not found in session." });
+
+				// 🔹 Step 2: Get company details
+				var company = dbContext.Tbl901CompanyDetails.FirstOrDefault(c => c.CompanyNameShort == tenantName);
+				if (company == null)
+					return NotFound(new { success = false, message = "Company not found in Tbl901CompanyDetails." });
+
+				// 🔹 Step 3: Get digit settings
+				int noOfDigits = dbContext.Tbl901CompanyDetails02s
+										  .Where(c => c.CompanyId == company.CompanyId)
+										  .Select(c => c.NoOfDigitsToInventoryQuotation ?? 4)
+										  .FirstOrDefault();
+
+				string prefix = company.JobOrderAbbrv ?? "XXX";
+				int yearDigits = company.InvoiceYearDigits ?? 4;
+				DateTime invoiceDate = DateTime.Now;
+
+				// 🔹 Step 4: Generate JobOrderNo and assign to model
+				string newJobOrderNo = GetNewJobOrderNo(prefix, yearDigits, invoiceDate, noOfDigits, dbContext);
+				model.SalesOrderNo = newJobOrderNo;
+
+				// 🔹 Step 5: Loop and execute SP
+				foreach (var child in model.SalesOrderChildren)
+				{
+					if (child.SalesOrderChildId == 0)
+						return BadRequest(new { success = false, message = "Invalid SalesOrderChildId in line items." });
+
+					var parameters = new[]
+					{
+				new SqlParameter("@JobOrderNo", newJobOrderNo),
+				new SqlParameter("@AddedBy", model.AddedBy ?? User.Identity?.Name ?? (object)DBNull.Value),
+				new SqlParameter("@SalesOrderChildID", child.SalesOrderChildId),
+				new SqlParameter("@ValveType", model.ValveType ?? (object)DBNull.Value)
+			};
+
+					await dbContext.Database.ExecuteSqlRawAsync(
+						"EXEC [dbo].[sp608_01InsertToJobOrderFromSalesOrderChild] " +
+						"@JobOrderNo, @AddedBy, @SalesOrderChildID, @ValveType", parameters);
+				}
+
+				return Ok(new { success = true, message = "Job orders generated successfully.", jobOrderNo = newJobOrderNo });
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Error generating job orders");
+				return StatusCode(500, new { success = false, message = ex.Message });
+			}
+		}
+
+
+		private string GetNewJobOrderNo(string prefix, int yearDigits, DateTime date, int padLength, ERPMasterWtDataContext dbContext)
+		{
+			string yearPart = yearDigits == 4 ? date.Year.ToString("0000") : date.Year.ToString().Substring(2);
+			string basePrefix = $"{prefix}{yearPart}-";
+
+			var lastJobOrderNo = dbContext.Tbl60801jobOrderMasters
+				.Where(x => x.JobOrderNo.StartsWith(basePrefix))
+				.OrderByDescending(x => x.JobOrderNo)
+				.Select(x => x.JobOrderNo)
+				.FirstOrDefault();
+
+			int nextNumber = 1;
+			if (!string.IsNullOrWhiteSpace(lastJobOrderNo))
+			{
+				var numberPart = lastJobOrderNo.Substring(basePrefix.Length);
+				if (int.TryParse(numberPart, out int lastNumber))
+					nextNumber = lastNumber + 1;
+			}
+
+			return basePrefix + nextNumber.ToString().PadLeft(padLength, '0');
+		}
 
 
 
 
-
-
-        [HttpGet]
+		[HttpGet]
         public async Task<IActionResult> GetSalesOrderByNo(string salesOrderNo)
         {
             if (string.IsNullOrWhiteSpace(salesOrderNo))
@@ -1179,9 +1262,44 @@ public async Task<IActionResult> GenerateJobOrders([FromBody] SalesorderViewMode
 			return Ok(new { exists });
 		}
 
+        [HttpGet]
+        public async Task<IActionResult> GetStoreStockGrid()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var data = await dbContext.Qry65320storeStockAvaliabilityForSalesOrders
+                        .Select(i => new
+                        {
+                            i.Gscode,
+                            i.Gsdescrpition,
+                            i.IsServicesGroup,
+                            i.SalesOrderChildId,
+                            i.UnitDesc,
+                            i.TotalOrderedQty,
+                            i.TotalIssdQty,
+                            i.BalanceToDeliver,
+                            i.CurrentyQty,
+                            i.AvailabilityStatus,
+                            i.DeliveringQuantity,
 
+                        })
+                        .ToListAsync();
 
-	}
+                    return Json(data); // return raw data, paging/sorting done on client-side
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
+            }
+        }
+
+    }
 
 
 

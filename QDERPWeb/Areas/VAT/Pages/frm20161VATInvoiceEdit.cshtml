@@ -8576,7 +8576,9 @@
 				//		$("#ClientEmail").dxTextBox("instance").option("value", data.clientContactEmail || "");
 				//		$("#clientProject").dxTextBox("instance").option("value", data.clientProject || "");
 
-						// Bind grid
+							var grid = $("#B2BdataGrid").dxDataGrid("instance");
+					if (grid) {
+						grid.option("dataSource", []); // Clear before rebinding
 						if (Array.isArray(data.items)) {
 							const invoiceItems = data.items.map((item, idx) => ({
 								SNo: idx + 1,
@@ -8587,12 +8589,12 @@
 								UnitPrice: item.UnitCostPrice,
 								Discount: item.Discount || 0
 							}));
+							grid.option("dataSource", invoiceItems);
+						}
+					}
+	})
 
-								console.log("invoiceItems",invoiceItems)
-									
-								$("#B2BdataGrid").dxDataGrid("instance").option("dataSource", invoiceItems);
-							}
-					})
+
 					.fail(function () {
 						DevExpress.ui.notify("Failed to load delivery note details.", "error", 2000);
 					});
