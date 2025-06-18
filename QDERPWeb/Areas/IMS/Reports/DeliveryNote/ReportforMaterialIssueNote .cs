@@ -87,7 +87,7 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
             if (FindControl("xrPictureBox4", true) is XRPictureBox logoPictureBox)
                 logoPictureBox.Image = logoImage;
 
-            if (FindControl("xrPictureBox1", true) is XRPictureBox sealPictureBox)
+            if (FindControl("xrPictureBox2", true) is XRPictureBox sealPictureBox)
                 sealPictureBox.Image = sealImage;
         }
 
