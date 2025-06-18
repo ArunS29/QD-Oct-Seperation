@@ -421,6 +421,10 @@
 						toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); // Last day of month
 						break;
 				}
+				 // ✅ Update DateBoxes to reflect selection
+	frmDateBox.option("value", frmDate);
+	toDateBox.option("value", toDate);
+
 					frmDate = frmDate.toISOString().split('T')[0];
 		toDate = toDate.toISOString().split('T')[0];
 
