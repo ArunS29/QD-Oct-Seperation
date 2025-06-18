@@ -1514,7 +1514,7 @@
         const typedText = e.component.option("text");
         const grid = $(e.component.content()).find("#accounthead-datagrid").first().dxDataGrid("instance");
 
-        if (!grid) return;
+        if (!grid || !typedText) return;
 
         const visibleRows = grid.getVisibleRows();
         const match = visibleRows.find(r => r.data.AccountHead === typedText);
