@@ -2004,7 +2004,7 @@
 
 	
 <div class="Head"  style="margin-left: 15px;">
-	@await Html.PartialAsync("/Pages/Shared/VAT/VATInvoiceEditFooter.cshtml")
+	@await Html.PartialAsync("/Pages/Shared/VAT/VATCreditNoteEditFooter.cshtml")
 </div>
 		@using (Html.DevExtreme().NamedTemplate("PaymentmeansContentTemplate"))
 		{
@@ -6979,13 +6979,13 @@ grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
 								"Invoice Posted Successfully."
 							)
 						}
-						else if(response.IsPosted == true)
-							{
-									 DevExpress.ui.dialog.alert(
-									"This VAT Credit Note is already posted to your ledgers.",
-									"Credit Note Posted Already."
-								)
-							}
+						// else if(response.IsPosted == true)
+						// 	{
+						// 			 DevExpress.ui.dialog.alert(
+						// 			"This VAT Credit Note is already posted to your ledgers.",
+						// 			"Credit Note Posted Already."
+						// 		)
+						// 	}
 						else
 						{
 								   DevExpress.ui.dialog.custom({

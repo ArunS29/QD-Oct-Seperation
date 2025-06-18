@@ -342,9 +342,9 @@
 	
 	}
 
-	.limited-footer .btn-container:not(:has(#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint22,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btncreatevatinvoice)) {
+	/* .limited-footer .btn-container:not(:has(#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint22,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btncreatevatinvoice)) {
 		display: none !important;
-	}
+	} */
 
 	.playIcon {
 		display: none;
@@ -1479,9 +1479,7 @@
 		</div>
 
 		<div class="Head" style="margin-left: 15px;">
-			<div class="limited-footer">
-				@await Html.PartialAsync("VATModuleFooter")
-			</div>
+			@await Html.PartialAsync("/Pages/Shared/VAT/VATProformaInvoiceEditFooter.cshtml")
 		</div>
 		@using (Html.DevExtreme().NamedTemplate("PaymentmeansContentTemplate"))
 		{
