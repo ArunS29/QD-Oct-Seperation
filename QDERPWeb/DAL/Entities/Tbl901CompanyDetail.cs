@@ -240,4 +240,5 @@ public partial class Tbl901CompanyDetail
     public bool? IsBackupDbtoOurCloudDrive { get; set; }
 
     public string OurCloudDriveLocation { get; set; }
+    public string? CurrencyImage { get; set; }
 }

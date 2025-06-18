@@ -469,6 +469,7 @@
 						.TabIndex(2) // Different tabindex to separate from the first
 						.DropDownOptions(o => o.Width(700))
 						.OnKeyDown("onKeyDown")
+						.ReadOnly(true)
 						//.OnValueChanged("dropDownBoxValueChanged") // Optional
 						.ContentTemplate(new TemplateName("BaseCurrencyContentTemplate"))
 						)
@@ -538,13 +539,24 @@
 						)
 		</div>
 		<div class="form-group">
-			@(Html.DevExtreme().TextBox()
+			@(
+						Html.DevExtreme().NumberBox()
 						.Label(new JS("formatMessage('Convertion Rate')"))
 						.LabelMode(EditorLabelMode.Outside)
 						.ID("txtCurrencyRate")
-						.Value("0.00")
-						//  .ReadOnly(true) // Make it read-only
 						.Width(160)
+						.Value(1)
+
+						.Min(0)
+
+						.Format("#,##0.00")
+						.InputAttr(new
+						{
+							style = "font-family: Cambria; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;",
+							type = "number",
+							step = "0.01"
+						})
+
 						)
 		</div>
 		@using (Html.DevExtreme().NamedTemplate("CurrencyContentTemplate"))
@@ -1310,7 +1322,7 @@
 				var VM = {
 					  "basecurrencyid": $("#ddlBaseCurrency").dxDropDownBox("instance").option("value"),
 				"currencyid": $("#ddCurrency").dxDropDownBox("instance").option("value"),
-				"currencyrate": $("#txtCurrencyRate").dxTextBox("instance").option("value"),
+				"currencyrate": $("#txtCurrencyRate").dxNumberBox("instance").option("value"),
 					"VoucherNo": $("#VoucherNo").dxTextBox("instance").option("value"),
 					"VoucherDate": $("#VoucherDate").dxDateBox("instance").option("value"),
 					"VoucherEffectiveDate": $("#VoucherEffectiveDate").dxDateBox("instance").option("value"),
@@ -2528,7 +2540,7 @@
 				var VM = {
 					  "basecurrencyid": $("#ddlBaseCurrency").dxDropDownBox("instance").option("value"),
 				"currencyid": $("#ddCurrency").dxDropDownBox("instance").option("value"),
-				"currencyrate": $("#txtCurrencyRate").dxTextBox("instance").option("value"),
+				"currencyrate": $("#txtCurrencyRate").dxNumberBox("instance").option("value"),
 					"VoucherNo": $("#VoucherNo").dxTextBox("instance").option("value"),
 					"VoucherDate": $("#VoucherDate").dxDateBox("instance").option("value"),
 					"VoucherEffectiveDate": $("#VoucherEffectiveDate").dxDateBox("instance").option("value"),

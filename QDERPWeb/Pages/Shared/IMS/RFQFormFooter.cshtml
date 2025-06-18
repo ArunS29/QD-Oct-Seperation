@@ -64,30 +64,19 @@
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
-                .ID("btnPrint")
-                .Text(new JS("formatMessage('Print')"))
-                .Icon("print")
-                .ElementAttr(new { @class = "bold-button" })
-                .DropDownOptions(options => options.Width(230))
-                .ShowArrowIcon(false)
-                .Items(items =>
-                {
-                    items.Add().Text("Preview Quotation").Icon("folder");
-                    items.Add().Text("Preview Quotation(W/O Discount Column)").Icon("folder");
-                    items.Add().Text("Preview Quotation(W/o VAT)").Icon("folder");
-                    items.Add().Text("Preview Quotation(W/o VAT & W/o TotalPrice)").Icon("folder");
-                    items.Add().Text("Preview Quotation(W/o VAT & W/o Discount)").Icon("folder");
-                    items.Add().Text("Preview Quotation(With Addl Details)").Icon("folder");
-                    items.Add().Text("Preview Quotation(Without Price)").Icon("folder");
-                    items.Add().Text("Preview Quotation(With Item Image)").Icon("folder");
-                    items.Add().Text("Preview Quotation(With Group Code)").Icon("folder");
-                    items.Add().Text("Preview Quotation(With Sub Group)").Icon("folder");
-                    items.Add().Text("Prepare Cost Sheet").Icon("money");
-
-
-                })
-                .OnItemClick("handleQuatation")
-                )
+            .ID("btnPrint3")
+            .Text(new JS("formatMessage('Print')"))
+            .Icon("print")
+            .ElementAttr(new { @class = "bold-button" })
+            .DropDownOptions(options => options.Width(230))
+            .ShowArrowIcon(false)
+            .Items(items =>
+            {
+                items.Add().Text("Custom Report Designs").Icon("print");
+                items.Add().Text("Preview RFQ").Icon("file");
+            })
+            .OnItemClick("handleRFQ")
+            )
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
@@ -474,45 +463,34 @@
         }
 
     }
-           const quotationReportMap = {
-        "Preview Quotation": "PreviewQuotations",
-        "Preview Quotation(W/O Discount Column)": "wtDiscount",
-        "Preview Quotation(W/o VAT)":"QuotationWOvat",
-        "Preview Quotation(W/o VAT & W/o TotalPrice)":"vatTotalPricewithout",
-        "Preview Quotation(W/o VAT & W/o Discount)":"withoutvatDiscount",
-        "Preview Quotation(With Addl Details)":"PreviewQuotationwithadditionalDetails",
-        "Preview Quotation(Without Price)":"PreviewQuotationwithoutPrice",
-        "Preview Quotation(With Item Image)":"PreviewQuotationWithImage",
-        "Preview Quotation(With Group Code)":"GroupCode",
-        "Preview Quotation(With Sub Group)":"PreviewQuotationWithSubGroup"
-         };
+    
 
 
-    function handleQuatation(e) {
-        alert('History trig')
+
+    const RFQMap = {
+        "Preview RFQ": "RFQEdit"
+    };
+
+    function handleRFQ(e) {
         const itemText = e.itemData?.text;
         const tenantName = window.tenantName || "";
-        const quotationNo = $("#txtQuotationNo").dxTextBox("instance").option("value");
+        const rfqNo = $("#RFQNo").dxTextBox("instance").option("value");
 
-        if (!quotationNo && itemText.includes("Quotation")) {
-            alert("Quotation number is required.");
+        if (!rfqNo) {
+            alert("RFQ number is required.");
             return;
         }
 
-        try {
-            const reportName = quotationReportMap[itemText];
+        const reportName = RFQMap[itemText];
 
-            if (!reportName) {
-                alert("Invalid report format selected.");
-                return;
-            }
-
-            const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&QuotationNo=${encodeURIComponent(quotationNo)}`;
-            window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-
-        } catch (error) {
-            console.error("Failed to open report:", error);
-            alert("An error occurred while trying to open the report.");
+        if (!reportName) {
+            alert("Invalid report format selected.");
+            return;
         }
+
+
+        const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&rfqNo=${encodeURIComponent(rfqNo)}`;
+
+        window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
     }
 </script>

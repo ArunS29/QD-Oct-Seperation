@@ -535,7 +535,7 @@
             // 
             this.xrPictureBox2.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrPictureBox2.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Visible", "[CrAmount] != 0")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Visible", "[DrAmount] != 0")});
             this.xrPictureBox2.ImageAlignment = DevExpress.XtraPrinting.ImageAlignment.MiddleRight;
             this.xrPictureBox2.LocationFloat = new DevExpress.Utils.PointFloat(0F, 34.83332F);
             this.xrPictureBox2.Name = "xrPictureBox2";
