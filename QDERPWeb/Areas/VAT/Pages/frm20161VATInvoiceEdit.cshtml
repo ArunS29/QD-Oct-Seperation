@@ -8563,8 +8563,8 @@
 					.done(function (data) {
 						// Map master fields (add null checks as needed)
 						$("#InvoiceDate").dxDateBox("instance").option("value", data.deliveryDate || new Date());
-						$("#ddclientcode").dxDropDownBox("instance").option("value", data.clientCode || "");
-						$("#ddclientname").dxDropDownBox("instance").option("value", data.attention || "");
+						// $("#ddclientcode").dxDropDownBox("instance").option("value", data.clientCode || "");
+						// $("#ddclientname").dxDropDownBox("instance").option("value", data.attention || "");
 						$("#ClientPONo").dxTextBox("instance").option("value", data.clientPono || "");
 						$("#OurSalesOrderNo").dxDropDownBox("instance").option("value", data.salesOrderNo || "");
 						$("#QuotationNo").dxTextBox("instance").option("value", data.quotationNo || "");
@@ -8574,6 +8574,15 @@
 				//		$("#ClientEmail").dxTextBox("instance").option("value", data.clientContactEmail || "");
 				//		$("#clientProject").dxTextBox("instance").option("value", data.clientProject || "");
 
+				$.get("/api/ClientLeadMaster/GetClientByCode", { clientCode: data.clientCode })
+				.done(function (client) {
+					$("#ddclientcode").dxDropDownBox("instance").option("value", client.ClientAccountLedgerNo || "");
+					$("#ddclientname").dxDropDownBox("instance").option("value", client.ClientAccountLedgerNo || "");
+ 
+				})
+				.fail(function () {
+					DevExpress.ui.notify("Failed to load client details.", "error", 2000);
+				});
 							var grid = $("#B2BdataGrid").dxDataGrid("instance");
 					if (grid) {
 						grid.option("dataSource", []); // Clear before rebinding
