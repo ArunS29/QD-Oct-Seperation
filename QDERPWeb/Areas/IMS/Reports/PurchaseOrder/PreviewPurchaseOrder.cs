@@ -5,37 +5,36 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 
-namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
+namespace QD.ERP.Web.Areas.IMS.Reports.InventroryReports.PurchaseOrder
 {
-    public partial class PreviewQuotationWithImage : DevExpress.XtraReports.UI.XtraReport
+    public partial class PreviewPurchaseOrder : DevExpress.XtraReports.UI.XtraReport
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
 
-        public PreviewQuotationWithImage()
+        public PreviewPurchaseOrder()
         {
             InitializeComponent();
         }
 
-        public PreviewQuotationWithImage(
-            string quotationNo,
+        public PreviewPurchaseOrder(
+            string purchaseNo,
             string tenantName,
             string companyName,
-            Image logoImage,
+         
             Image sealImage,
             string companyAddress,
-          
             string companyNameAr,
             string companyAddressAr,
-      
             TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
+
             InitializeComponent();
-            SetReportParameters(quotationNo, tenantName, companyName, logoImage, sealImage, companyAddress, companyNameAr, companyAddressAr);
-            LoadReportData(quotationNo);
+            SetReportParameters(purchaseNo, tenantName, companyName,  sealImage, companyAddress, companyNameAr, companyAddressAr);
+            LoadReportData(purchaseNo);
         }
 
-        private void SetReportParameters(string quotationNo, string tenantName, string companyName, Image logoImage, Image sealImage,
+        private void SetReportParameters(string purchaseNo, string tenantName, string companyName,  Image sealImage,
             string companyAddress, string companyNameAr, string companyAddressAr)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
@@ -57,14 +56,12 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
                 }
             }
 
-            AddOrUpdateParameter("QuotationNo", quotationNo, typeof(string));
+            AddOrUpdateParameter("PurchaseNo", purchaseNo, typeof(string));
             AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string));
             AddOrUpdateParameter("CompanyName", companyName ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddress", companyAddress ?? "", typeof(string));
-          
             AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddressAr", companyAddressAr ?? "", typeof(string));
-           
 
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
@@ -80,19 +77,15 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
 
             if (FindControl("xrLabelCompanyAddressAr", true) is XRLabel addressArLabel)
                 addressArLabel.Text = companyAddressAr;
-           
 
-            if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
-                logoPictureBox.Image = logoImage;
 
-            if (FindControl("xrPictureBox5", true) is XRPictureBox sealPictureBox)
+            if (FindControl("xrPictureBox4", true) is XRPictureBox sealPictureBox)
                 sealPictureBox.Image = sealImage;
-
         }
 
-        private void LoadReportData(string quotationNo)
+        private void LoadReportData(string purchaseOrderNo)
         {
-            DataTable dt = GetReportData(quotationNo);
+            DataTable dt = GetReportData(purchaseOrderNo);
 
             if (dt.Rows.Count == 0)
             {
@@ -102,19 +95,16 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
             {
                 this.DataSource = dt;
                 this.DataMember = "";
-                
-                    decimal totalAmount = Convert.ToDecimal(dt.Compute("SUM(FinalTotal)", ""));
+                decimal totalAmount = Convert.ToDecimal(dt.Compute("SUM(GrandTotal)", ""));
 
-                if (FindControl("xrLabel62", true) is XRLabel labelEnglish)
+                if (FindControl("xrLabel44", true) is XRLabel labelEnglish)
                     labelEnglish.Text = $"Amount in Words: {NumberToWordsHelper.ToEnglishWords(totalAmount)}";
-
-
 
 
             }
         }
 
-        private DataTable GetReportData(string quotationNo)
+        private DataTable GetReportData(string purchaseOrderNo)
         {
             DataTable dt = new DataTable();
 
@@ -126,12 +116,12 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
 
                     using (SqlConnection conn = new SqlConnection(connectionString))
                     {
-                        string query = "SELECT * FROM qry601_05QuotationReport WHERE QuoteNo = @QuotationNo";
+                        string query = "SELECT * FROM qry604_05PurchaseOrderReport WHERE PONo = @PurchaseOrderNo";
 
                         using (SqlCommand cmd = new SqlCommand(query, conn))
                         {
                             cmd.CommandType = CommandType.Text;
-                            cmd.Parameters.AddWithValue("@QuotationNo", quotationNo);
+                            cmd.Parameters.AddWithValue("@PurchaseOrderNo", purchaseOrderNo);
 
                             SqlDataAdapter da = new SqlDataAdapter(cmd);
                             conn.Open();
@@ -141,7 +131,7 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
                 }
                 else
                 {
-                    throw new Exception("Unable to get tenant context.");
+                    throw new Exception("Unable to get tenant context. Please check session and cache.");
                 }
             }
             catch (Exception ex)
@@ -151,6 +141,12 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
 
             return dt;
         }
+
+        private void PreviewPurchaseOrder_BeforePrint(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            // You can place custom logic before printing if needed
+        }
+
         public static class NumberToWordsHelper
         {
             public static string ToEnglishWords(decimal number)
@@ -219,4 +215,3 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
         }
     }
 }
-

@@ -5,19 +5,19 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 
-namespace QD.ERP.Web.Areas.IMS.Reports.quotationstoClients
+namespace QD.ERP.Web.Areas.IMS.Reports.InventroryReports.Delivery_Note
 {
-    public partial class vatTotalPricewithout : DevExpress.XtraReports.UI.XtraReport
+    public partial class PreviewDeliveryNotewithPrice : DevExpress.XtraReports.UI.XtraReport
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
 
-        public vatTotalPricewithout()
+        public PreviewDeliveryNotewithPrice()
         {
             InitializeComponent();
         }
 
-        public vatTotalPricewithout(
-            string quotationNo,
+        public PreviewDeliveryNotewithPrice(
+            string deliveryNoteNo,
             string tenantName,
             string companyName,
             Image logoImage,
@@ -31,12 +31,13 @@ namespace QD.ERP.Web.Areas.IMS.Reports.quotationstoClients
             _tenantDbContextHelper = tenantDbContextHelper;
 
             InitializeComponent();
-            SetReportParameters(quotationNo, tenantName, companyName, logoImage, sealImage, companyAddress, companyNameAr, companyAddressAr,username);
-            LoadReportData(quotationNo);
+            SetReportParameters(deliveryNoteNo, tenantName, companyName, logoImage, sealImage, companyAddress, companyNameAr, companyAddressAr, username);
+            LoadReportData(deliveryNoteNo);
         }
 
-        private void SetReportParameters(string quotationNo, string tenantName, string companyName, Image logoImage, Image sealImage,
-            string companyAddress, string companyNameAr, string companyAddressAr,string username)
+        private void SetReportParameters(
+            string deliveryNoteNo, string tenantName, string companyName, Image logoImage, Image sealImage,
+            string companyAddress, string companyNameAr, string companyAddressAr, string username)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -57,15 +58,14 @@ namespace QD.ERP.Web.Areas.IMS.Reports.quotationstoClients
                 }
             }
 
-            AddOrUpdateParameter("QuotationNo", quotationNo, typeof(string));
+            AddOrUpdateParameter("DeliveryNoteNo", deliveryNoteNo, typeof(string));
             AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string));
             AddOrUpdateParameter("CompanyName", companyName ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddress", companyAddress ?? "", typeof(string));
             AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string));
-               AddOrUpdateParameter("CompanyAddressAr", companyAddressAr ?? "", typeof(string));
+            AddOrUpdateParameter("CompanyAddressAr", companyAddressAr ?? "", typeof(string));
             AddOrUpdateParameter("UserName", username ?? "", typeof(string));
 
-            // Assign to report controls
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
 
@@ -89,13 +89,11 @@ namespace QD.ERP.Web.Areas.IMS.Reports.quotationstoClients
 
             if (FindControl("xrPictureBox1", true) is XRPictureBox sealPictureBox)
                 sealPictureBox.Image = sealImage;
-
-          
         }
 
-        private void LoadReportData(string quotationNo)
+        private void LoadReportData(string deliveryNoteNo)
         {
-            DataTable dt = GetReportData(quotationNo);
+            DataTable dt = GetReportData(deliveryNoteNo);
 
             if (dt.Rows.Count == 0)
             {
@@ -104,16 +102,11 @@ namespace QD.ERP.Web.Areas.IMS.Reports.quotationstoClients
             else
             {
                 this.DataSource = dt;
-                this.DataMember = ""; // If you're using DataBinding directly, otherwise specify table name
-                                    
-                decimal totalAmount = Convert.ToDecimal(dt.Compute("SUM(TotalAfterDiscount)", ""));
-
-                if (FindControl("xrLabel2", true) is XRLabel labelEnglish)
-                    labelEnglish.Text = $"Amount in Words: {NumberToWordsHelper.ToEnglishWords(totalAmount)}";
+                this.DataMember = ""; // or set to "Table" if applicable
             }
         }
 
-        private DataTable GetReportData(string quotationNo)
+        private DataTable GetReportData(string deliveryNoteNo)
         {
             DataTable dt = new DataTable();
 
@@ -125,12 +118,12 @@ namespace QD.ERP.Web.Areas.IMS.Reports.quotationstoClients
 
                     using (SqlConnection conn = new SqlConnection(connectionString))
                     {
-                        string query = "SELECT * FROM qry601_05QuotationReport WHERE QuoteNo = @QuotationNo";
+                        string query = "SELECT * FROM qry603_05DeliveryNoteReport WHERE DeliveryNoteNo = @DeliveryNoteNo";
 
                         using (SqlCommand cmd = new SqlCommand(query, conn))
                         {
                             cmd.CommandType = CommandType.Text;
-                            cmd.Parameters.AddWithValue("@QuotationNo", quotationNo);
+                            cmd.Parameters.AddWithValue("@DeliveryNoteNo", deliveryNoteNo);
 
                             SqlDataAdapter da = new SqlDataAdapter(cmd);
                             conn.Open();
@@ -145,76 +138,10 @@ namespace QD.ERP.Web.Areas.IMS.Reports.quotationstoClients
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error loading quotation data: {ex.Message}");
+                Console.WriteLine($"Error fetching report data: {ex.Message}");
             }
 
             return dt;
-        }
-        public static class NumberToWordsHelper
-        {
-            public static string ToEnglishWords(decimal number)
-            {
-                var integer = (int)number;
-                var fraction = (int)((number - integer) * 100);
-
-                string result = NumberToWords(integer);
-
-                if (fraction > 0)
-                    result += " and " + NumberToWords(fraction);
-
-                return result + " Only";
-            }
-
-            private static string NumberToWords(int number)
-            {
-                if (number == 0)
-                    return "Zero";
-
-                if (number < 0)
-                    return "Minus " + NumberToWords(Math.Abs(number));
-
-                string words = "";
-
-                if ((number / 1000000) > 0)
-                {
-                    words += NumberToWords(number / 1000000) + " Million ";
-                    number %= 1000000;
-                }
-
-                if ((number / 1000) > 0)
-                {
-                    words += NumberToWords(number / 1000) + " Thousand ";
-                    number %= 1000;
-                }
-
-                if ((number / 100) > 0)
-                {
-                    words += NumberToWords(number / 100) + " Hundred ";
-                    number %= 100;
-                }
-
-                if (number > 0)
-                {
-                    var unitsMap = new[] {
-                 "Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
-                 "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"
-             };
-                    var tensMap = new[] {
-                 "Zero", "Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"
-             };
-
-                    if (number < 20)
-                        words += unitsMap[number];
-                    else
-                    {
-                        words += tensMap[number / 10];
-                        if ((number % 10) > 0)
-                            words += "-" + unitsMap[number % 10];
-                    }
-                }
-
-                return words.Trim();
-            }
         }
     }
 }

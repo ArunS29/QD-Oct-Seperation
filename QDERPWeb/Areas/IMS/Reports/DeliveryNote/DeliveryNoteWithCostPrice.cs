@@ -5,37 +5,38 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 
-namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
+namespace QD.ERP.Web.Areas.IMS.Reports.DeliveryNote
 {
-    public partial class PreviewQuotationWithImage : DevExpress.XtraReports.UI.XtraReport
+    public partial class DeliveryNoteWithCostPrice : DevExpress.XtraReports.UI.XtraReport
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
 
-        public PreviewQuotationWithImage()
+        public DeliveryNoteWithCostPrice()
         {
             InitializeComponent();
         }
 
-        public PreviewQuotationWithImage(
-            string quotationNo,
+        public DeliveryNoteWithCostPrice(
+            string deliveryNoteNo,
             string tenantName,
             string companyName,
             Image logoImage,
             Image sealImage,
             string companyAddress,
-          
             string companyNameAr,
             string companyAddressAr,
-      
+         
             TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
+
             InitializeComponent();
-            SetReportParameters(quotationNo, tenantName, companyName, logoImage, sealImage, companyAddress, companyNameAr, companyAddressAr);
-            LoadReportData(quotationNo);
+            SetReportParameters(deliveryNoteNo, tenantName, companyName, logoImage, sealImage, companyAddress, companyNameAr, companyAddressAr);
+            LoadReportData(deliveryNoteNo);
         }
 
-        private void SetReportParameters(string quotationNo, string tenantName, string companyName, Image logoImage, Image sealImage,
+        private void SetReportParameters(
+            string deliveryNoteNo, string tenantName, string companyName, Image logoImage, Image sealImage,
             string companyAddress, string companyNameAr, string companyAddressAr)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
@@ -57,14 +58,13 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
                 }
             }
 
-            AddOrUpdateParameter("QuotationNo", quotationNo, typeof(string));
+            AddOrUpdateParameter("DeliveryNoteNo", deliveryNoteNo, typeof(string));
             AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string));
             AddOrUpdateParameter("CompanyName", companyName ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddress", companyAddress ?? "", typeof(string));
-          
             AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddressAr", companyAddressAr ?? "", typeof(string));
-           
+            
 
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
@@ -80,19 +80,19 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
 
             if (FindControl("xrLabelCompanyAddressAr", true) is XRLabel addressArLabel)
                 addressArLabel.Text = companyAddressAr;
+
            
 
-            if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
+            if (FindControl("xrPictureBox4", true) is XRPictureBox logoPictureBox)
                 logoPictureBox.Image = logoImage;
 
-            if (FindControl("xrPictureBox5", true) is XRPictureBox sealPictureBox)
+            if (FindControl("xrPictureBox2", true) is XRPictureBox sealPictureBox)
                 sealPictureBox.Image = sealImage;
-
         }
 
-        private void LoadReportData(string quotationNo)
+        private void LoadReportData(string deliveryNoteNo)
         {
-            DataTable dt = GetReportData(quotationNo);
+            DataTable dt = GetReportData(deliveryNoteNo);
 
             if (dt.Rows.Count == 0)
             {
@@ -101,20 +101,11 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
             else
             {
                 this.DataSource = dt;
-                this.DataMember = "";
-                
-                    decimal totalAmount = Convert.ToDecimal(dt.Compute("SUM(FinalTotal)", ""));
-
-                if (FindControl("xrLabel62", true) is XRLabel labelEnglish)
-                    labelEnglish.Text = $"Amount in Words: {NumberToWordsHelper.ToEnglishWords(totalAmount)}";
-
-
-
-
+                this.DataMember = ""; // Or specify your dataset/table name
             }
         }
 
-        private DataTable GetReportData(string quotationNo)
+        private DataTable GetReportData(string deliveryNoteNo)
         {
             DataTable dt = new DataTable();
 
@@ -126,12 +117,12 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
 
                     using (SqlConnection conn = new SqlConnection(connectionString))
                     {
-                        string query = "SELECT * FROM qry601_05QuotationReport WHERE QuoteNo = @QuotationNo";
+                        string query = "SELECT * FROM qry603_05DeliveryNoteReport WHERE DeliveryNoteNo = @DeliveryNoteNo";
 
                         using (SqlCommand cmd = new SqlCommand(query, conn))
                         {
                             cmd.CommandType = CommandType.Text;
-                            cmd.Parameters.AddWithValue("@QuotationNo", quotationNo);
+                            cmd.Parameters.AddWithValue("@DeliveryNoteNo", deliveryNoteNo);
 
                             SqlDataAdapter da = new SqlDataAdapter(cmd);
                             conn.Open();
@@ -141,7 +132,7 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
                 }
                 else
                 {
-                    throw new Exception("Unable to get tenant context.");
+                    throw new Exception("Unable to get tenant context. Please check session and cache.");
                 }
             }
             catch (Exception ex)
@@ -150,72 +141,6 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
             }
 
             return dt;
-        }
-        public static class NumberToWordsHelper
-        {
-            public static string ToEnglishWords(decimal number)
-            {
-                var integer = (int)number;
-                var fraction = (int)((number - integer) * 100);
-
-                string result = NumberToWords(integer);
-
-                if (fraction > 0)
-                    result += " and " + NumberToWords(fraction);
-
-                return result + " Only";
-            }
-
-            private static string NumberToWords(int number)
-            {
-                if (number == 0)
-                    return "Zero";
-
-                if (number < 0)
-                    return "Minus " + NumberToWords(Math.Abs(number));
-
-                string words = "";
-
-                if ((number / 1000000) > 0)
-                {
-                    words += NumberToWords(number / 1000000) + " Million ";
-                    number %= 1000000;
-                }
-
-                if ((number / 1000) > 0)
-                {
-                    words += NumberToWords(number / 1000) + " Thousand ";
-                    number %= 1000;
-                }
-
-                if ((number / 100) > 0)
-                {
-                    words += NumberToWords(number / 100) + " Hundred ";
-                    number %= 100;
-                }
-
-                if (number > 0)
-                {
-                    var unitsMap = new[] {
-                 "Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
-                 "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"
-             };
-                    var tensMap = new[] {
-                 "Zero", "Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"
-             };
-
-                    if (number < 20)
-                        words += unitsMap[number];
-                    else
-                    {
-                        words += tensMap[number / 10];
-                        if ((number % 10) > 0)
-                            words += "-" + unitsMap[number % 10];
-                    }
-                }
-
-                return words.Trim();
-            }
         }
     }
 }
