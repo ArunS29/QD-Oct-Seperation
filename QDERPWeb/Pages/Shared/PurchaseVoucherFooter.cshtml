@@ -168,17 +168,7 @@
 </div>
 <script type="text/javascript">
 
-    function showColumnChooser() {
-        var dataGrid = $("#dataGrid").dxDataGrid("instance");
-        var isColumnChooserVisible = dataGrid.option("columnChooser.enabled");
-
-        if (isColumnChooserVisible) {
-            dataGrid.option("columnChooser.enabled", false); // Disable the column chooser
-        } else {
-            dataGrid.option("columnChooser.enabled", true); // Enable the column chooser
-            dataGrid.showColumnChooser(); // Show the column chooser
-        }
-    }
+    
 
 
 
@@ -187,7 +177,7 @@
     $(document).ready(function () {
         console.log('Start permission handling');
         // Form ID
-        var formId = "frm201VoucherCashPayment";
+        var formId = "PurchaseVoucher";
 
         // Call the API to get permissions
         $.ajax({
@@ -1010,7 +1000,17 @@
         );
     }
 
+        function showColumnChooser() {
+            var dataGrid = $("#dataGrid").dxDataGrid("instance");
+            var isColumnChooserVisible = dataGrid.option("columnChooser.enabled");
 
+            if (isColumnChooserVisible) {
+                dataGrid.option("columnChooser.enabled", false); // Disable the column chooser
+            } else {
+                dataGrid.option("columnChooser.enabled", true); // Enable the column chooser
+                dataGrid.showColumnChooser(); // Show the column chooser
+            }
+        }
 
 
 
