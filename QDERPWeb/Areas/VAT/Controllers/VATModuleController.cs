@@ -3420,19 +3420,20 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             {
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    // Step 1: Get company name from session
-                    // var companyNameShort = HttpContext.Session.GetString("TenantName");
-                    //if (string.IsNullOrEmpty(companyNameShort))
-                    //{
-                    //    return BadRequest("Company name not found in session.");
-                    //}
+					// Step 1: Get company name from session
+					var companyNameShort = HttpContext.Session.GetString("TenantName");
+					if (string.IsNullOrEmpty(companyNameShort))
+					{
+						return BadRequest("Company name not found in session.");
+					}
 
                     // Step 2: Get company details using dbContext
-                    //var company = dbContext.Tbl901CompanyDetails
-                    //                       .FirstOrDefault(c => c.CompanyNameShort == companyNameShort);
-
                     var company = dbContext.Tbl901CompanyDetails
-                                           .FirstOrDefault(c => c.CompanyNameShort == "Pulse Infotech");
+                       .FirstOrDefault(c => c.CompanyNameShort.Contains(companyNameShort));
+
+
+                    //var company = dbContext.Tbl901CompanyDetails
+                    //                       .FirstOrDefault(c => c.CompanyNameShort == "Pulse Infotech");
 
 
                     if (company == null)
