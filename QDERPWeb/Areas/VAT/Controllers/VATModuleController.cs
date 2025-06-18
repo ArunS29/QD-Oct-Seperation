@@ -4397,6 +4397,47 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             return PartialView("~/Areas/VAT/Pages/VATPercentageCal.cshtml");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetCurrencyImage()
+        {
+            // 1️⃣  Resolve the tenant‑scoped DbContext
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(
+                    out Tenant _,
+                    out ERPMasterWtDataContext dbContext))
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                                  "Tenant context is unavailable.");
+            }
+			try
+			{
+
+                // 2️⃣  Company short‑name comes from the session
+                var companyNameShort = HttpContext.Session.GetString("TenantName");
+                if (string.IsNullOrWhiteSpace(companyNameShort))
+                    return BadRequest("Company name not found in session.");
+
+                // 3️⃣  Fetch the SVG (single round‑trip, async)
+                string? svg = await dbContext.Tbl901CompanyDetails
+     .Where(c => c.CompanyNameShort.ToLower().Contains(companyNameShort.ToLower()))
+     .Select(c => c.CurrencyImage)
+     .FirstOrDefaultAsync();
+
+
+                if (string.IsNullOrWhiteSpace(svg))
+                    return NotFound();
+
+                // 4️⃣  Serve it *as* SVG so <img src="…"> works
+                return Content(svg, "image/svg+xml; charset=utf-8");
+            }
+			catch(Exception ex)
+			{
+				throw ex;
+			}
+
+        }
+
+
+
     }
 }
 
