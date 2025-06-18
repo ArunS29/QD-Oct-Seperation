@@ -1330,7 +1330,7 @@
 			<div id="tab-content-4" class="tab-content">
 				<div class="card-container">
 					
-						<table style="width:80%; font-size:14px; margin:5px;" cellpadding="5">
+						<table style="width:60%; font-size:14px; margin:5px;" cellpadding="5">
 							<tr>
 								<th>Foreign Currency Billing</th>
 							</tr>
@@ -1359,7 +1359,7 @@
 																				.TabIndex(1)
 																				.DropDownOptions(o => o.Width(1000))
 																				.ContentTemplate(new TemplateName("InvoiceCurrencyTemplate"))
-																				.Width("75%"))
+																				.Width("95%"))
 										@(Html.DevExtreme().Button()
 																				.ID("EditClient2")
 																				.Icon("edit")
@@ -1397,7 +1397,7 @@
 																				.DropDownOptions(o => o.Width(1000))
 																				@* .Disabled(true) *@
 																				.ContentTemplate(new TemplateName("TaxCurrencyTemplate"))
-																				.Width("75%"))
+																				.Width("95%"))
 										@(Html.DevExtreme().Button()	
 																				.ID("EditClient1")
 																				.Icon("edit")
@@ -1418,7 +1418,7 @@
 																			.Step(1)
 																			.ShowSpinButtons(true)
 																			.Value(1)
-																			.Width("75%")
+																			.Width("87%")
                                      )
 								</td>
 							</tr>
@@ -1559,7 +1559,7 @@
 
 							</tr>
 							<tr>
-								<td>
+							<td colspan="2">
 									@(Html.DevExtreme().CheckBox()
 																			.Text(new JS("formatMessage('Verified By')"))
 																			.ID("VerifiedBy")
@@ -1586,7 +1586,7 @@
 																			)
 								</td>
 
-								<td colspan="3">
+								<td colspan="2">
 
 									@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Approved By')"))
 																			.ID("ApprovedBy")

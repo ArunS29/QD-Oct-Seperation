@@ -169,52 +169,6 @@
         display: inline-block;
         margin-left: 8px; /* optional spacing between icon and text */
     }
-
-
-    /*     .btn-container:hover .dx-button { */
-    /*         width: 200px !important; /* Expand to fit text */ */
-    /*     } */
-    /*     .btn-container .dx-button .dx-button-text { */
-    /*         display: none; */
-    /*     } */
-    /*     .btn-container:hover .dx-button .dx-button-text { */
-    /*         display: inline-block; */
-    /*     } */
-    /*     .btn-container .dx-dropdownbutton { */
-    /*         width: 55px !important; */
-    /*         transition: width 0.3s ease-in-out; */
-    /*     } */
-    /*     .btn-container:hover .dx-dropdownbutton { */
-    /*         width: 180px !important; /* Adjust as needed */ */
-    /*     } */
-    /*     .btn-container .dx-dropdownbutton .dx-button-text { */
-    /*         display: none; */
-    /*     } */
-    /*     .btn-container:hover .dx-dropdownbutton .dx-button-text { */
-    /*         display: inline-block; */
-    /*     } */
-    /*     .btn-container .dx-button { */
-    /*         width: 40px !important; /* Small width for just the icon */ */
-    /*         transition: width 0.3s ease-in-out; */
-    /*         overflow: hidden; */
-    /*         padding-left: 0 !important; */
-    /*         padding-right: 0 !important; */
-    /*         text-align: center; */
-    /*     } */
-    /*     .btn-container:hover .dx-button { */
-    /*         width: 200px !important; */
-    /*     } */
-    /*     .btn-container .dx-button .dx-icon { */
-    /*         display: inline-block !important; */
-    /*     } */
-    /*     .btn-container .dx-button .dx-button-text { */
-    /*         display: none; */
-    /*     } */
-    /* .btn-containerIvoiceEdit:hover .dx-button .dx-button-text { */
-    /*     display: inline-block; */
-    /*     margin-left: 8px; */
-    /* } */
-
     .modal-content {
         position: absolute;
         top: 40%;
@@ -272,32 +226,6 @@
         margin-left: 8px; /* optional spacing between icon and text */
     }
 
-
-    /* .btn-containerIvoiceEdit .dx-button { */
-    /*     width: 40px !important; /* Small width for just the icon */ */
-    /*     transition: width 0.3s ease-in-out; */
-    /*     overflow: hidden; */
-    /*     padding-left: 0 !important; */
-    /*     padding-right: 0 !important; */
-    /*     text-align: center; */
-    /* } */
-    /* .btn-containerIvoiceEdit:hover .dx-button { */
-    /*     width: 200px !important; */
-    /* } */
-    /* .btn-container:hover #btnAddNewPayment.dx-button { */
-    /*     width: 240px !important; */
-    /* } */
-    /* .btn-containerIvoiceEdit .dx-button .dx-icon { */
-    /*     display: inline-block !important; */
-    /* } */
-    /* .btn-containerIvoiceEdit .dx-button .dx-button-text { */
-    /*     display: none; */
-    /* } */
-    /* .btn-containerIvoiceEdit:hover .dx-button .dx-button-text { */
-    /*     display: inline-block; */
-    /*     margin-left: 8px; /* optional spacing between icon and text */ */
-    /* } */
-
     .multiline-button .dx-button-text {
         white-space: normal;
     }
@@ -329,30 +257,6 @@
             )
     </div>
 
-
-    <div class="btn-containers">
-        @(Html.DevExtreme().Button()
-            .ID("btnMoveDown")
-            .Text(new JS("formatMessage('Move Down')"))
-            .Type(ButtonType.Normal)
-
-            .StylingMode(ButtonStylingMode.Outlined)
-            .Icon("spindown") // Change the icon to an up/down arrow option
-            .ElementAttr(new { @class = "bold-button" })
-            )
-    </div>
-    <div class="btn-containers">
-        @(Html.DevExtreme().Button()
-            .ID("btnMoveUp")
-            .Text(new JS("formatMessage('Move Up')"))
-            .Type(ButtonType.Normal)
-
-            .StylingMode(ButtonStylingMode.Outlined)
-            .Icon("spinup") // Change the icon to an up/down arrow option
-            .ElementAttr(new { @class = "bold-button" })
-            )
-    </div>
-
     <div class="btn-containers">
         @(Html.DevExtreme().Button()
             .ID("btnSave")
@@ -365,9 +269,6 @@
             )
 
     </div>
-
-
-
 
     <div class="btn-containers">
 
@@ -409,13 +310,7 @@
 
     </div>
 
-    <!-- Hidden anchor for submenu positioning -->
-    <div id="additionalFormatsTrigger" style="position:absolute; width:1px; height:1px;"></div>
-
-    <!-- Submenu placeholder -->
-    <div id="additionalFormatsSubmenu"></div>
-
-    @*     <div class="btn-containers">
+        <div class="btn-containers">
         @(Html.DevExtreme().Button()
             .ID("btnDelete")
             .Text(new JS("formatMessage('Delete')"))
@@ -423,7 +318,7 @@
             //  .OnClick("onDeleteButtonClick")
             .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
             )
-    </div> *@
+    </div>
     <div class="btn-containers">
 
         @(Html.DevExtreme().Button()
@@ -457,16 +352,6 @@
     </div>
     <div class="btn-containers">
         @(Html.DevExtreme().Button()
-            .ID("btnCancel")
-            .Text(new JS("formatMessage('Cancel')"))
-            .Icon("close")
-            // .OnClick("onVerifyButtonClick")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-
-            )
-    </div>
-    <div class="btn-containers">
-        @(Html.DevExtreme().Button()
             .ID("btnAttach")
             .Text(new JS("formatMessage('Attach')"))
             .Icon("link")
@@ -484,17 +369,12 @@
             .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
             )
     </div>
-    <div class="btn-containers">
-        @(Html.DevExtreme().Button()
-            .ID("btnPostTag")
-            .Text(new JS("formatMessage('Posting')"))
-            .Icon("upload")
-            //.OnClick("onAttachButtonClick")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-            )
-    </div>
 
+    <!-- Hidden anchor for submenu positioning -->
+    <div id="additionalFormatsTrigger" style="position:absolute; width:1px; height:1px;"></div>
 
+    <!-- Submenu placeholder -->
+    <div id="additionalFormatsSubmenu"></div>
 
 </div>
 
