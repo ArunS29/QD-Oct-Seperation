@@ -82,7 +82,7 @@
         .StylingMode(ButtonStylingMode.Outlined)
         .Icon("plus")
         .Width(180)
-
+        .OnClick("NewDepreciation")
         )
     @*     @(Html.DevExtreme().Button()
     .ID("btn1ChooseVoucher")
@@ -367,6 +367,9 @@
         location.reload(); // Reloads the entire page
         // Or refresh a specific grid, for example:
         // $("#YourGridID").dxDataGrid("instance").refresh();
+    }
+    function NewDepreciation() {
+        window.location.href = `/${tenantName}/Finance/CreateDepreciation`;
     }
 
 </script>

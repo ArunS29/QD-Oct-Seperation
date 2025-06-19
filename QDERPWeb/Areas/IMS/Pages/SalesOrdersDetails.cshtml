@@ -1,4 +1,4 @@
-@page
+﻿@page
 @model QD.ERP.Web.Areas.IMS.Pages.SalesOrdersDetailsModel
 @{
 }
@@ -367,7 +367,14 @@
 	});
 
 
-
+		$(function () {
+					var now = new Date();
+					var firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+					var tillmonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+					$("#frmdateBox").dxDateBox("instance").option("value", firstDay);
+					$("#todateBox").dxDateBox("instance").option("value", tillmonth);
+					ddBtnShowRecords_click('range');
+			});
 		function ddBtnShowRecords_click(duration) {
 			 var frmDateBox = $("#frmdateBox").dxDateBox("instance");
 				var toDateBox = $("#todateBox").dxDateBox("instance");
@@ -424,6 +431,11 @@
 						toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); // Last day of month
 						break;
 				}
+
+						 // ✅ Update DateBoxes to reflect selection
+					frmDateBox.option("value", frmDate);
+					toDateBox.option("value", toDate);
+
 					frmDate = frmDate.toISOString().split('T')[0];
 		toDate = toDate.toISOString().split('T')[0];
 

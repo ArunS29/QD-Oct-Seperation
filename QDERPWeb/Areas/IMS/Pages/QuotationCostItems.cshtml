@@ -133,8 +133,6 @@
     </div>
 
 
-
-
     <div class="dx-field ledgerResult">
         @(Html.DevExtreme().DataGrid()
             .ID("QuotationCostItemGrid")
@@ -142,7 +140,7 @@
             .RemoteOperations(false)
             .DataSource(d => d.WebApi()
             .Controller("Quotation")
-            .LoadAction("GetCostItem")
+        .LoadAction("GetCostItem")
             .LoadMode(DataSourceLoadMode.Raw)
             )
             .Editing(editing => editing

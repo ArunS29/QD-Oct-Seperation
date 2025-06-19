@@ -26,6 +26,10 @@ using QD.ERP.Web.Areas.IMS.Inventory_Reports;
 using QD.ERP.Web.Areas.IMS.Reports.quotationstoClients;
 using QD.ERP.Web.Areas.IMS.InventoryReports.MaterialPurchaseRequistion;
 using QD.ERP.Web.Areas.IMS.Report.Inventory_Report;
+using QD.ERP.Web.Areas.IMS.Reports.DeliveryNote;
+using QD.ERP.Web.Areas.IMS.Reports.InventroryReports.Delivery_Note;
+using QD.ERP.Web.Areas.IMS.Reports.InventroryReports.RFQ;
+using QD.ERP.Web.Areas.IMS.Reports.InventroryReports.PurchaseOrder;
 
 
 namespace QD.ERP.Web.Pages
@@ -44,7 +48,7 @@ namespace QD.ERP.Web.Pages
         public string VoucherNo { get; private set; }
         public string ReportName { get; private set; }
 
-        public IActionResult OnGet(string reportName, string voucherNo, string invoiceNo, bool isApproved, string debitNoteNo, string CreditNoteNo,string RequestNo,string quotationNo,string salesOrderNo)
+        public IActionResult OnGet(string reportName, string voucherNo, string invoiceNo, bool isApproved, string debitNoteNo, string CreditNoteNo,string RequestNo,string quotationNo,string salesOrderNo, string deliveryNoteNo,string rfqNo, string purchaseOrderNo)
         {
             if (string.IsNullOrEmpty(reportName))
             {
@@ -448,6 +452,145 @@ namespace QD.ERP.Web.Pages
 
 
 
+           
+
+            if (reportName == "PreviewDeliveryNote" || reportName == "PreviewDeliveryNotewithPrice" || reportName == "ReportforMaterialIssueNote" || reportName == "DotMatrics" || reportName == "DeliveryNoteWithCostPrice")
+            {
+                if (string.IsNullOrEmpty(deliveryNoteNo))
+                {
+                    return BadRequest("requestNo is required for IMS reports.");
+                }
+
+                deliveryNoteNo = deliveryNoteNo;
+
+                if (reportName == "PreviewDeliveryNote")
+
+                {
+                    Report = new previewDeliveryNote(deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress,companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                }
+                if (reportName == "ReportforMaterialIssueNote")
+
+                {
+                    Report = new ReportforMaterialIssueNote(deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                }
+                if (reportName == "PreviewDeliveryNotewithPrice")
+
+                {
+                    Report = new PreviewDeliveryNotewithPrice(deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                }
+                if (reportName == "DotMatrics")
+
+                {
+                    Report = new DotMatrics(deliveryNoteNo, tenantName, companyName,  companyAddress, companyNameAr, companyAddressAr,  _tenantDbContextHelper);
+                }
+                if (reportName == "DeliveryNoteWithCostPrice")
+
+                {
+                    Report = new DeliveryNoteWithCostPrice(deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr,  _tenantDbContextHelper);
+                }
+
+
+
+
+                return Page();
+            }
+
+            if (reportName == "RFQEdit")
+            {
+                if (string.IsNullOrEmpty(rfqNo))
+                {
+                    return BadRequest("rfqNo is required for IMS reports.");
+                }
+
+                if (reportName == "RFQEdit") {
+                    Report = new RFQEdit(
+                        rfqNo,
+                        tenantName,
+                        companyName,
+                        logoImage,
+                        companySealImage,
+                        companyAddress,
+                        companyNameAr,
+                        companyAddressAr,
+                        userName,
+                        _tenantDbContextHelper
+                    );
+                }
+
+                return Page();
+            }
+
+            if (reportName == "PreviewPurchaseOrder" || reportName == "PreviewPurchaseOrderForeignCurrency" || reportName == "PreviewPurchaseOrderWithoutVAT" 
+                || reportName == "WithoutVATTotalPrice")
+
+
+            {
+                if (string.IsNullOrEmpty(purchaseOrderNo))
+                {
+                    return BadRequest("purchaseOrderNo is required for IMS reports.");
+                }
+                if (reportName == "PreviewPurchaseOrder")
+                {
+                    Report = new PreviewPurchaseOrder(
+                        purchaseOrderNo,
+                        tenantName,
+                        companyName,
+                      
+                        companySealImage,
+                        companyAddress,
+                        companyNameAr,
+                        companyAddressAr,
+                        _tenantDbContextHelper
+                    );
+                }
+                if (reportName == "PreviewPurchaseOrderForeignCurrency")
+                {
+                    Report = new PreviewPurchaseOrderForeignCurrency(
+                        purchaseOrderNo,
+                        tenantName,
+                        companyName,
+                      
+                        companySealImage,
+                        companyAddress,
+                        companyNameAr,
+                        companyAddressAr,
+                        _tenantDbContextHelper
+                    );
+                }
+                if (reportName == "PreviewPurchaseOrderWithoutVAT")
+                {
+                    Report = new PreviewPurchaseOrderWithoutVAT(
+                        purchaseOrderNo,
+                        tenantName,
+                        companyName,
+                       
+                        companySealImage,
+                        companyAddress,
+                        companyNameAr,
+                        companyAddressAr,
+                        _tenantDbContextHelper
+                    );
+                }
+                if (reportName == "WithoutVATTotalPrice")
+                {
+                    Report = new PreviewPurchaseOrderWithoutVATwWithoutTotalPrice(
+                        purchaseOrderNo,
+                        tenantName,
+                        companyName,
+                       
+                        companySealImage,
+                        companyAddress,
+                        companyNameAr,
+                        companyAddressAr,
+                        _tenantDbContextHelper
+                    );
+                }
+
+
+                return Page();
+            }
+
+
 
             // 👉 Existing CASE 1: Old voucher reports
             if (string.IsNullOrEmpty(voucherNo))
@@ -478,16 +621,16 @@ namespace QD.ERP.Web.Pages
                     Report = new cashPayments(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                     break;
                 case "PreviewClaimRequestForm":
-                    Report = new PreviewClaimRequestForm(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                    Report = new PreviewClaimRequestForm(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper,userName);
                     break;
                 case "ClaimDetailed":
-                    Report = new ClaimDetailed(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                    Report = new ClaimDetailed(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
                     break;
                 case "ClaimEntryCheck":
-                    Report = new ClaimEntryCheck(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
+                    Report = new ClaimEntryCheck(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName);
                     break;
                 case "PreviewClaimRequestForm_wtVAT_":
-                    Report = new PreviewClaimRequestForm_wtVAT_(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                    Report = new PreviewClaimRequestForm_wtVAT_(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
                     break;
                 case "PaymentsAdviceSupplierPayments":
                     Report = new PaymentsAdviceSupplierPayments(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);

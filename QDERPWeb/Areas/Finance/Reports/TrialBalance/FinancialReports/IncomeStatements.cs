@@ -25,22 +25,23 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
                      string Company_Name_Ar,
                      string company_address_arb,
                      TenantDbContextHelper tenantDbContextHelper,
+                     string username,
                      bool isUseEffectiveDate = true)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
 
             InitializeComponent();
-            SetReportParameters(accountGroup, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb, isUseEffectiveDate);
+            SetReportParameters(accountGroup, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb, username,isUseEffectiveDate);
 
             try
             {
                 sqlDataSource1.Fill();
 
                 // Apply filter after data load
-                if (!string.IsNullOrEmpty(accountGroup))
-                {
-                    this.FilterString = $"[AccountGroup] = '{accountGroup}'";
-                }
+                //if (!string.IsNullOrEmpty(accountGroup))
+                //{
+                //    this.FilterString = $"[AccountGroup] = '{accountGroup}'";
+                //}
             }
             catch (Exception ex)
             {
@@ -50,7 +51,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
         }
 
 
-        private void SetReportParameters(string accountGroup, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb, bool isUseEffectiveDate)
+        private void SetReportParameters(string accountGroup, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb, string username,bool isUseEffectiveDate)
         {
             AddReportParameter("AccountGroup", typeof(string), accountGroup ?? "");
             AddReportParameter("StartDate", typeof(DateTime), frmDate == DateTime.MinValue ? DateTime.Today : frmDate);
@@ -61,13 +62,17 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
             AddReportParameter("CompanyNameAr", typeof(string), Company_Name_Ar ?? "");
             AddReportParameter("CompanyAddressArb", typeof(string), company_address_arb ?? "");
             AddReportParameter("IsUseEffectiveDate", typeof(bool), isUseEffectiveDate);
+            AddReportParameter("UserName",  typeof(string), username ?? "");
 
-            ApplyReportControls(tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
+            ApplyReportControls(tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb,username);
             ConfigureSqlQuery();
         }
 
-        private void ApplyReportControls(string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
+        private void ApplyReportControls(string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb,string username)
         {
+            if (FindControl("xrLabelUserName", true) is XRLabel userNameLabel)
+                userNameLabel.Text = username;
+
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
 

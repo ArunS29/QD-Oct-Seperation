@@ -18,6 +18,7 @@
     string companyName = "";
     string escapedJson = "{}"; // Initialize early to make available later
     string escapedJson1 = "{}"; // Initialize early to make available later
+    string equipmentJson = "{}"; // Initialize early to make available later
     List<string> userModules = new List<string>();
     string encryptedTenantName = EncryptionHelper.Encrypt(tenantName); // Encrypt tenantName
 
@@ -50,6 +51,9 @@
                 var inventoryMenuAccess = await UserAccessService.GetInventoryMenuAccessAsync(parsedUserId);
                 var json1 = System.Text.Json.JsonSerializer.Serialize(inventoryMenuAccess);
                 escapedJson1 = System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(json1);
+                var equipmentMenuAccess = await UserAccessService.GetEquipmentMenuAccessAsync(parsedUserId);
+                var json3 = System.Text.Json.JsonSerializer.Serialize(equipmentMenuAccess);
+                equipmentJson = System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(json3);
             }
         }
         catch (Exception ex)
@@ -1470,6 +1474,23 @@
 
             </div>
         </div>
+        <div id="quarterSubMenu" class="context-menu" style="display:none; width: 300px;">
+            <div class="context-menu-item1">
+                <div class="submenu-item" onclick="ddBtnShowRecords_click('q1')">
+                    <span class="no-border-input">1st Quarter (Jan - Mar)</span>
+                </div>
+                <div class="submenu-item" onclick="ddBtnShowRecords_click('q2')">
+                    <span class="no-border-input">2nd Quarter (Apr - Jun)</span>
+                </div>
+                <div class="submenu-item" onclick="ddBtnShowRecords_click('q3')">
+                    <span class="no-border-input">3rd Quarter (Jul - Sep)</span>
+                </div>
+                <div class="submenu-item" onclick="ddBtnShowRecords_click('q4')">
+                    <span class="no-border-input">4th Quarter (Oct - Dec)</span>
+                </div>
+            </div>
+        </div>
+
         <!-- Notification Popup -->
         <div id="notificationPopup" class="popup">
             <div class="popup-header">
@@ -1607,9 +1628,7 @@
             </div>
 
             <!-- Breadcrumb above Sidebar 2 -->
-            <div class="breadcrumb" id="breadcrumb">
-                <span onclick="resetBreadcrumb()">Home</span>
-            </div>
+     
 
             @* <div class="main-content" id="mainContent"> *@
             @*     <iframe id="contentIframe" *@
@@ -2387,10 +2406,11 @@
                         updateBreadcrumbFromSidebar2('');
                         //sidebar2.style.display = 'none';
                     } else if (name === 'Equipment Rentals') {
+                        showEquipmentRentalSubmenu();
                         breadcrumbTrail.length = 0;
                         updateBreadcrumb();
                         updateBreadcrumbFromSidebar2('');
-                        sidebar2.style.display = 'none';
+                        // sidebar2.style.display = 'none';
                     } else if (name === 'Camp Management') {
                         breadcrumbTrail.length = 0;
                         updateBreadcrumb();
@@ -2615,6 +2635,85 @@
 
                     }
                 }
+
+            function showEquipmentRentalSubmenu() {
+            const sidebar2 = document.getElementById('sidebar2');
+
+            const equipmentRentalDashboardItems = [
+                { key: "Equipments Dashboard", icon: "fas fa-tachometer-alt", href: `/${tenantName}/ERM/Dashboard` }
+            ];
+
+            const equipmentRentalMenuItems = [
+                { key: "Equipments / Assets", icon: "fas fa-cubes", href: `/${tenantName}/ERM/EquipmentsAssets`, label: "Equipments / Assets", hideOnClick: true },
+                { key: "Equipment Enquiry", icon: "fas fa-search", href: `/${tenantName}/ERM/EquipmentEnquiry`, label: "Equipment Enquiry", hideOnClick: true },
+                { key: "Equipments Quotation", icon: "fas fa-file-signature", href: `/${tenantName}/ERM/EquipmentsQuotation`, label: "Equipments Quotation", hideOnClick: true },
+                { key: "Equipment Sales Order", icon: "fas fa-shopping-cart", href: `/${tenantName}/ERM/EquipmentSalesOrder`, label: "Equipment Sales Order", hideOnClick: true },
+                { key: "Equipment Delivery", icon: "fas fa-truck", href: `/${tenantName}/ERM/EquipmentDelivery`, label: "Equipment Delivery", hideOnClick: true },
+                { key: "Equipment TimeSheet", icon: "fas fa-calendar-check", href: `/${tenantName}/ERM/EquipmentTimeSheet`, label: "Equipment TimeSheet", hideOnClick: true },
+                { key: "Purchase Order", icon: "fas fa-file-invoice-dollar", href: `/${tenantName}/ERM/PurchaseOrder`, label: "Purchase Order", hideOnClick: true },
+                { key: "Supplier Inv Summary", icon: "fas fa-file-invoice", href: `/${tenantName}/ERM/SupplierInvoiceSummary`, label: "Supplier Inv Summary", hideOnClick: true },
+                { key: "Client Inv Summary", icon: "fas fa-user-file", href: `/${tenantName}/ERM/ClientInvoiceSummary`, label: "Client Inv Summary", hideOnClick: true },
+                { key: "Service & Maintenance", icon: "fas fa-tools", href: `/${tenantName}/ERM/ServiceMaintenance`, label: "Service & Maintenance", hideOnClick: true },
+                { key: "Clients", icon: "fas fa-users", href: `/${tenantName}/ERM/Clients`, label: "Clients", hideOnClick: true },
+                { key: "Suppliers", icon: "fas fa-user-tie", href: `/${tenantName}/ERM/Suppliers`, label: "Suppliers", hideOnClick: true },
+                { key: "Equipment Timesheet (New)", icon: "fas fa-business-time", href: `/${tenantName}/ERM/EquipmentTimesheetNew`, label: "Equipment Timesheet (New)", hideOnClick: true }
+            ];
+
+            const access = (equipmentRentalMenuAccess || []).reduce((acc, x) => {
+                acc[x.ItemDescription] = x;
+                return acc;
+            }, {});
+
+            // Equipment Rental Dashboard
+            let dashboardHtml = `
+                <div class="submenu-item" onclick="toggleSubmenu('equipmentRentalDashboardSubmenu')" role="button" aria-expanded="false">
+                    <i class="fas fa-book-open"></i>
+                    <div class="text">${formatMessage("Equipment Rentals Dashboard")}</div>
+                </div>
+                <div id="equipmentRentalDashboardSubmenu" class="nested-submenu" style="display: none; margin-left: 30px;">
+            `;
+
+            equipmentRentalDashboardItems.forEach(item => {
+                const perm = access[item.key];
+                if (!perm || !perm.ItemVisible) return;
+                dashboardHtml += `
+                    <a class="submenu-item${!perm.ItemEnabled ? ' disabled' : ''}"
+                       ${perm.ItemEnabled ? 'onclick="hideSidebars()"' : 'onclick="return false;"'}
+                       href="${perm.ItemEnabled ? item.href : '#'}"
+                       style="${!perm.ItemEnabled ? 'pointer-events:none;opacity:0.5;cursor:not-allowed;' : ''}">
+                        <i class="${item.icon}"></i>
+                        <div class="text">${formatMessage(item.key)}</div>
+                    </a>
+                `;
+            });
+            dashboardHtml += '</div>';
+
+            // Other Equipment Rental Menus
+            const filteredMenuItems = equipmentRentalMenuItems
+                .filter(item => {
+                    const menuConfig = access[item.key];
+                    return menuConfig ? menuConfig.ItemVisible : false;
+                })
+                .map(item => {
+                    const menuConfig = access[item.key];
+                    return {
+                        ...item,
+                        enabled: menuConfig ? menuConfig.ItemEnabled : false
+                    };
+                });
+
+            let otherMenusHtml = filteredMenuItems.map(item => `
+                <a class="submenu-item${!item.enabled ? ' disabled' : ''}"
+                   ${item.enabled ? (item.hideOnClick ? 'onclick="hideSidebars()"' : '') : 'onclick="return false;"'}
+                   href="${item.enabled ? item.href : '#'}"
+                   style="${!item.enabled ? 'pointer-events:none;opacity:0.5;cursor:not-allowed;' : ''}">
+                    <i class="${item.icon}"></i>
+                    <div class="text">${formatMessage(item.label)}</div>
+                </a>
+            `).join('');
+
+            sidebar2.innerHTML = dashboardHtml + otherMenusHtml;
+        }
 
 
                        function showInventorySubmenu() {
@@ -3227,8 +3326,8 @@
 
                 // Report Mappings for Ageing Reports
                 const ageingReportMappings = {
-                    "Receivables Ageing Report": "AgeingReport",
-                    "Receivables Ageing Report (By Sales Person)": "XtraReportBillsReceivableAgeingReport",
+                    "Receivables Ageing Report": "XtraReportBillsReceivableAgeingReport",
+                    "Receivables Ageing Report (By Sales Person)": "XtraReportAgeingreportsummary",
                     "Receivables Ageing Report (Customizable)": "XtraReportAgeingCustomizable",
                     "Receivables Ageing Summary": "XtraReportAgeingreportsummary",
                     "Receivables Ageing Summary (Customizable)": "RptReceivableAgeingSummaryCustomizable"
@@ -3419,6 +3518,9 @@
 
                     doc.save("quotation-analysis.pdf");
                 }
+                function hidequarterSubmenus() {
+            $('#quarterSubMenu').hide();
+        }
                 function navigateToTenantHome() {
             if (tenantName) {
                 window.location.href = `/${tenantName}/Home`;
@@ -3427,6 +3529,7 @@
             }
         }
         inventoryMenuAccess1 = JSON.parse("@Html.Raw(escapedJson1)");
+        equipmentRentalMenuAccess = JSON.parse("@Html.Raw(equipmentJson)");
         window.financeMenuAccess = JSON.parse("@Html.Raw(escapedJson)");
     </script>
 </body>

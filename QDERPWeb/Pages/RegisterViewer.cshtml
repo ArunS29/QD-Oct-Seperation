@@ -56,10 +56,16 @@
 
 
 <a href="javascript:void(0);" id="btnOpenDesigner" class="btn-edit-report"
-   onclick="openReportDesigner('@Model.ReportName', '@Model.VoucherType', '@Model.FrmDate', '@Model.ToDate','@Model.requestedBy')">
+   onclick="openReportDesigner(
+       '@Model.ReportName',
+       '@Model.VoucherType',
+       '@Model.requestedBy',
+       '@(Model.FrmDate != null ? Model.FrmDate.ToString("yyyy-MM-dd") : "")',
+       '@(Model.ToDate != null ? Model.ToDate.ToString("yyyy-MM-dd") : "")')">
     <span class="btn-text">Open Designer</span>
     <i class="fa fa-pencil-alt"></i>
 </a>
+
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
 <!-- Email Popup -->
@@ -139,6 +145,7 @@
             transform: translate(-50%, -50%) rotate(360deg);
         }
     }
+
     .container {
         display: none !important;
     }
@@ -263,7 +270,7 @@
         }
 </style>
 
-<div id="webDocumentViewer"></div> 
+<div id="webDocumentViewer"></div>
 
 
 <script>
@@ -272,82 +279,33 @@
         return pathParts[1] || '';
     }
 
-       function openReportDesigner(reportName, voucherType, requestedBy, frmDate, toDate) {
+    function openReportDesigner(reportName, voucherType, requestedBy, frmDate, toDate) {
         const tenantName = getTenantNameFromUrl();
 
-        console.log("Opening Designer with:");
-        console.log("Tenant Name:", tenantName);
-        console.log("Report Name:", reportName);
-        console.log("Voucher Type:", voucherType);
-        console.log("Requested By:", requestedBy);
-        console.log("From Date:", frmDate);
-        console.log("To Date:", toDate);
-             console.log("requestedBy:",requestedBy );
-
-        let reportDesignerUrl;
-
-       
-        if (voucherType && voucherType.trim() !== "") {
-   
-            reportDesignerUrl = `/${tenantName}/RegisterDesigner?reportName=${encodeURIComponent(reportName)}&voucherType=${encodeURIComponent(voucherType)}&frmDate=${encodeURIComponent(frmDate)}&toDate=${encodeURIComponent(toDate)}`;
-        } 
-        else if (requestedBy && requestedBy.trim() !== "") {
-
-            let reportDesignerUrl = `/${tenantName}/RegisterDesigner?reportName=${encodeURIComponent(reportName)}&requestedBy=${encodeURIComponent(requestedBy)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
-
-
-           // reportDesignerUrl = `/${tenantName}/RegisterDesigner?reportName=${encodeURIComponent(reportName)}&voucherType=${encodeURIComponent(requestedBy)}&frmDate=${encodeURIComponent(frmDate)}&toDate=${encodeURIComponent(toDate)}`;
-        }
-        else {
-          
-            reportDesignerUrl = `/${tenantName}/RegisterDesigner?reportName=${encodeURIComponent(reportName)}&frmDate=${encodeURIComponent(frmDate)}&toDate=${encodeURIComponent(toDate)}`;
+        // Sanity check: ensure mandatory params are not null or blank
+        if (!tenantName || !reportName || !frmDate || !toDate) {
+            alert("Missing required parameters.");
+            console.warn({ tenantName, reportName, frmDate, toDate });
+            return;
         }
 
         let reportDesignerUrl = `/${tenantName}/RegisterDesigner?reportName=${encodeURIComponent(reportName)}&frmDate=${encodeURIComponent(frmDate)}&toDate=${encodeURIComponent(toDate)}`;
 
-        // Pass either voucherType or requestedBy, depending on what's provided
-        if (voucherType) {
+        // Conditionally add optional parameters
+        if (voucherType && voucherType !== 'null' && voucherType !== 'undefined') {
             reportDesignerUrl += `&voucherType=${encodeURIComponent(voucherType)}`;
-        } else if (requestedBy) {
+        } else if (requestedBy && requestedBy !== 'null' && requestedBy !== 'undefined') {
             reportDesignerUrl += `&requestedBy=${encodeURIComponent(requestedBy)}`;
         }
 
         window.open(reportDesignerUrl, "_blank", "noopener,noreferrer,width=1200,height=800");
     }
 
-    
+    // Optional: close/back button handler
     document.getElementById("btnClose")?.addEventListener("click", function () {
         window.history.back();
     });
 </script>
 
-
-@* 
-<script>
-    function getTenantNameFromUrl() {
-        const pathParts = window.location.pathname.split('/');
-        return pathParts[1] || '';
-    }
-    
-    function openReportDesigner(reportName, voucherType, frmDate, toDate,requestedBy) {
-        alert('hi');
-         alert("Voucher Type",voucherType);
-        const tenantName = getTenantNameFromUrl();
-        console.log("requestedBy",requestedBy);
-        console.log("Opening Designer with:");
-        console.log("Tenant Name:", tenantName);
-        console.log("Report Name:", reportName);
-        console.log("Voucher Type:", voucherType);
-        console.log("From Date:", frmDate);
-        console.log("To Date:", toDate);
-
-
-    document.getElementById("btnClose").addEventListener("click", function () {
-
-        window.history.back();
-
-    });
-
-</script> *@
 
 

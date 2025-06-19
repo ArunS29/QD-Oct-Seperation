@@ -160,38 +160,38 @@ namespace QD.ERP.Web.Pages
                     case "DetailReport":
                         Report = new DetailReport(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
                         );
                         break;
                     case "DetailedBydate":
                         Report = new DetailedBydate(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
                         );
                         break;
                     case "DetailedGroup":
                         Report = new DetailedGroup(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
                         );
                         break;
                     case "detailGroupBydate":
                         Report = new detailGroupBydate(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
                         );
                         break;
                     case "CostCenterMasterGroup":
                         Report = new CostCenterMasterGroup(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
                         );
                         break;
 
                     case "detailedMasterByDate":
                         Report = new detailedMasterByDate(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
                         );
                         break;
 

@@ -511,6 +511,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     existingEntity.CostAllocationMasterGroup = model.CostAllocationMasterGroup;
                     existingEntity.AddedBy = model.AddedBy ?? User.Identity?.Name;
                     existingEntity.AddedOn = DateTime.Now;
+                    existingEntity.IsVerified = true;
 
                     dbContext.Tbl60201salesOrderMasters.Update(existingEntity);
                 }
@@ -547,7 +548,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         DiscountsText = model.DiscountsText,
                         CostAllocationMasterGroup = model.CostAllocationMasterGroup,
                         AddedBy = model.AddedBy ?? User.Identity?.Name,
-                        AddedOn = DateTime.Now
+                        AddedOn = DateTime.Now,
+                         IsApproved = false,
+                        IsVerified = false,
+                        IsSubmitted = false
                     };
 
                     await dbContext.Tbl60201salesOrderMasters.AddAsync(entity);
@@ -615,30 +619,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				_logger.LogInformation($"Child records updated/added/deleted. Save result = {result}");
 
 
-				//if (model.IsGenerateJO)
-				//{
-				//    foreach (var child in incomingChildren)
-				//    {
-				//        var childParams = new[]
-				//        {
-				//    new SqlParameter("@JobOrderNo", salesOrderNo ?? (object)DBNull.Value),
-				//    new SqlParameter("@AddedBy", model.AddedBy ?? User.Identity?.Name ?? (object)DBNull.Value),
-				//    new SqlParameter("@SalesOrderChildID", child.SalesOrderChildId),
-				//    new SqlParameter("@ValveType", model.ValveType ?? (object)DBNull.Value)
-				//};
-
-				//        try
-				//        {
-				//            await dbContext.Database.ExecuteSqlRawAsync(
-				//                "EXEC [dbo].[sp608_01InsertToJobOrderFromSalesOrderChild] " +
-				//                "@JobOrderNo, @AddedBy, @SalesOrderChildID, @ValveType", childParams);
-				//        }
-				//        catch (Exception exChild)
-				//        {
-				//            _logger.LogError(exChild, $"Child SP error for SalesOrderChildId: {child.SalesOrderChildId}");
-				//        }
-				//    }
-				//}
+				
 
 				return Ok(new
                 {
@@ -658,7 +639,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
         }
       [HttpPost]
-public async Task<IActionResult> GenerateJobOrders([FromBody] SalesorderViewModel model)
+public async Task<IActionResult> GenerateJobOrders1([FromBody] SalesorderViewModel model)
 {
     try
     {
@@ -698,13 +679,96 @@ public async Task<IActionResult> GenerateJobOrders([FromBody] SalesorderViewMode
     }
 }
 
+		[HttpPost]
+		public async Task<IActionResult> GenerateJobOrders([FromBody] SalesorderViewModel model)
+		{
+			try
+			{
+				if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+					return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+				if (model.SalesOrderChildren == null || !model.SalesOrderChildren.Any())
+					return BadRequest(new { success = false, message = "No line items selected." });
+
+				// 🔹 Step 1: Get tenant name
+				string tenantName = HttpContext.Session.GetString("TenantName");
+				if (string.IsNullOrWhiteSpace(tenantName))
+					return Unauthorized(new { success = false, message = "Tenant name not found in session." });
+
+				// 🔹 Step 2: Get company details
+				var company = dbContext.Tbl901CompanyDetails.FirstOrDefault(c => c.CompanyNameShort == tenantName);
+				if (company == null)
+					return NotFound(new { success = false, message = "Company not found in Tbl901CompanyDetails." });
+
+				// 🔹 Step 3: Get digit settings
+				int noOfDigits = dbContext.Tbl901CompanyDetails02s
+										  .Where(c => c.CompanyId == company.CompanyId)
+										  .Select(c => c.NoOfDigitsToInventoryQuotation ?? 4)
+										  .FirstOrDefault();
+
+				string prefix = company.JobOrderAbbrv ?? "XXX";
+				int yearDigits = company.InvoiceYearDigits ?? 4;
+				DateTime invoiceDate = DateTime.Now;
+
+				// 🔹 Step 4: Generate JobOrderNo and assign to model
+				string newJobOrderNo = GetNewJobOrderNo(prefix, yearDigits, invoiceDate, noOfDigits, dbContext);
+				model.SalesOrderNo = newJobOrderNo;
+
+				// 🔹 Step 5: Loop and execute SP
+				foreach (var child in model.SalesOrderChildren)
+				{
+					if (child.SalesOrderChildId == 0)
+						return BadRequest(new { success = false, message = "Invalid SalesOrderChildId in line items." });
+
+					var parameters = new[]
+					{
+				new SqlParameter("@JobOrderNo", newJobOrderNo),
+				new SqlParameter("@AddedBy", model.AddedBy ?? User.Identity?.Name ?? (object)DBNull.Value),
+				new SqlParameter("@SalesOrderChildID", child.SalesOrderChildId),
+				new SqlParameter("@ValveType", model.ValveType ?? (object)DBNull.Value)
+			};
+
+					await dbContext.Database.ExecuteSqlRawAsync(
+						"EXEC [dbo].[sp608_01InsertToJobOrderFromSalesOrderChild] " +
+						"@JobOrderNo, @AddedBy, @SalesOrderChildID, @ValveType", parameters);
+				}
+
+				return Ok(new { success = true, message = "Job orders generated successfully.", jobOrderNo = newJobOrderNo });
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Error generating job orders");
+				return StatusCode(500, new { success = false, message = ex.Message });
+			}
+		}
+
+
+		private string GetNewJobOrderNo(string prefix, int yearDigits, DateTime date, int padLength, ERPMasterWtDataContext dbContext)
+		{
+			string yearPart = yearDigits == 4 ? date.Year.ToString("0000") : date.Year.ToString().Substring(2);
+			string basePrefix = $"{prefix}{yearPart}-";
+
+			var lastJobOrderNo = dbContext.Tbl60801jobOrderMasters
+				.Where(x => x.JobOrderNo.StartsWith(basePrefix))
+				.OrderByDescending(x => x.JobOrderNo)
+				.Select(x => x.JobOrderNo)
+				.FirstOrDefault();
+
+			int nextNumber = 1;
+			if (!string.IsNullOrWhiteSpace(lastJobOrderNo))
+			{
+				var numberPart = lastJobOrderNo.Substring(basePrefix.Length);
+				if (int.TryParse(numberPart, out int lastNumber))
+					nextNumber = lastNumber + 1;
+			}
+
+			return basePrefix + nextNumber.ToString().PadLeft(padLength, '0');
+		}
 
 
 
 
-
-
-        [HttpGet]
+		[HttpGet]
         public async Task<IActionResult> GetSalesOrderByNo(string salesOrderNo)
         {
             if (string.IsNullOrWhiteSpace(salesOrderNo))
@@ -772,9 +836,14 @@ public async Task<IActionResult> GenerateJobOrders([FromBody] SalesorderViewMode
                 order.DiscountsText,
                 order.Attention, 
                 order.QuoteTransport, 
-                order.QuoteDiscount, 
+                order.QuoteDiscount,
+                order.IsSubmitted,
+                order.IsVerified,
+                order.IsApproved,
 
-                order.CostAllocationMasterGroup,
+
+
+            order.CostAllocationMasterGroup,
                 SalesOrderChildren = children
             });
         }
@@ -862,7 +931,9 @@ public async Task<IActionResult> GenerateJobOrders([FromBody] SalesorderViewMode
                             i.GsdescriptionAr,
                             i.ItemPartNo,
                             i.GspackingUnit,
-                            i.IsDiscontinued
+                            i.IsDiscontinued,
+                            i.CostPrice,
+                            i.GsuoM
 
                         })
                         .ToListAsync();
@@ -939,44 +1010,298 @@ public async Task<IActionResult> GenerateJobOrders([FromBody] SalesorderViewMode
 				return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
 			}
 		}
+        [HttpGet]
+        public IActionResult GetTaxSlabs()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var vatTaxSlabs = dbContext.Tbl20163VatTaxSlabs
+         .Select(x => new
+         {
+             x.TaxSlabCode,
+             x.TaxSlab,
+             x.TaxRate,
+             x.TaxCodeToDisplay,
+             x.TaxRateInWord,
+            x.TaxRateIn100
+         })
+         .ToList();
 
-		//[HttpGet]
-		//public async Task<IActionResult> GetStoreStockAvailabilityGrid()
-		//{
-		//	try
-		//	{
-		//		if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-		//		{
-		//			var data = await dbContext.Qry65320storeStockAvaliabilityForSalesOrders
-		//				.Select(i => new
-		//				{
-		//					i.StoreId,
-		//					i.StoreName,
-		//					i.LedgerNo,
-		//					i.CostAllocationUnitId,
+                    return Ok(vatTaxSlabs); 
+                }
+            }
+            catch (Exception ex)
+            {
+                // Ideally log the exception, don't just throw
+                return StatusCode(500, new { message = ex.Message, success = false });
+            }
 
-		//				})
-		//				.ToListAsync();
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        //[HttpGet]
+        //public async Task<IActionResult> GetStoreStockAvailabilityGrid()
+        //{
+        //	try
+        //	{
+        //		if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //		{
+        //			var data = await dbContext.Qry65320storeStockAvaliabilityForSalesOrders
+        //				.Select(i => new
+        //				{
+        //					i.StoreId,
+        //					i.StoreName,
+        //					i.LedgerNo,
+        //					i.CostAllocationUnitId,
 
-		//			return Json(data); // return raw data, paging/sorting done on client-side
-		//		}
+        //				})
+        //				.ToListAsync();
 
-		//		return Unauthorized(new { message = "Invalid tenant.", success = false });
-		//	}
-		//	catch (Exception ex)
-		//	{
-		//		_logger.LogError($"Error in GetProject: {ex.Message}");
-		//		return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
-		//	}
-		//}
-	}
+        //			return Json(data); // return raw data, paging/sorting done on client-side
+        //		}
 
-    public class GenerateJOViewModel
-    {
-        public string SalesOrderNo { get; set; }
-        public string ValveType { get; set; }
-        public string AddedBy { get; set; }
+        //		return Unauthorized(new { message = "Invalid tenant.", success = false });
+        //	}
+        //	catch (Exception ex)
+        //	{
+        //		_logger.LogError($"Error in GetProject: {ex.Message}");
+        //		return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
+        //	}
+        //}
+
+        [HttpPost]
+        public async Task<IActionResult> SubmitSalesOrder([FromBody] string salesOrderNo)
+        {
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+                if (string.IsNullOrWhiteSpace(salesOrderNo))
+                    return BadRequest(new { success = false, message = "Invalid Sales Order No." });
+
+                var existingEntity = await dbContext.Tbl60201salesOrderMasters
+                    .FirstOrDefaultAsync(x => x.SalesOrderNo == salesOrderNo);
+
+                if (existingEntity == null)
+                    return NotFound(new { success = false, message = "Sales Order not found. Please save it first." });
+
+                existingEntity.IsSubmitted = true;
+                dbContext.Tbl60201salesOrderMasters.Update(existingEntity);
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Sales Order submitted successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while submitting Sales Order.");
+                return StatusCode(500, new { success = false, message = "Internal server error", details = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> VerifySalesOrder([FromBody] string salesOrderNo)
+        {
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+                var order = await dbContext.Tbl60201salesOrderMasters
+                    .FirstOrDefaultAsync(x => x.SalesOrderNo == salesOrderNo);
+
+                if (order == null)
+                    return NotFound(new { success = false, message = "Sales order not found." });
+
+                if (order.IsSubmitted != true)
+                    return BadRequest(new { success = false, message = "Please submit before verifying." });
+
+                order.IsVerified = true;
+
+                // ✅ Add this line to mark entity as modified
+                dbContext.Tbl60201salesOrderMasters.Update(order);
+
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Sales order verified successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "VerifySalesOrder error");
+                return StatusCode(500, new { success = false, message = "Internal error." });
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> ApproveSalesOrder([FromBody] string salesOrderNo)
+        {
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+                if (string.IsNullOrWhiteSpace(salesOrderNo))
+                    return BadRequest(new { success = false, message = "Sales Order No is required." });
+
+                var order = await dbContext.Tbl60201salesOrderMasters
+                    .FirstOrDefaultAsync(x => x.SalesOrderNo == salesOrderNo);
+
+                if (order == null)
+                    return NotFound(new { success = false, message = "Sales Order not found." });
+
+                if (order.IsVerified != true)
+                    return BadRequest(new { success = false, message = "Sales Order must be verified before approval." });
+
+                order.IsApproved = true;
+                dbContext.Tbl60201salesOrderMasters.Update(order);
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Sales Order approved successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error approving Sales Order");
+                return StatusCode(500, new { success = false, message = "Internal server error." });
+            }
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetSalesOrderStatus(string salesOrderNo)
+        {
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+                var entity = await dbContext.Tbl60201salesOrderMasters
+                    .Where(x => x.SalesOrderNo == salesOrderNo)
+                    .Select(x => new
+                    {
+                        x.IsSubmitted,
+                        x.IsVerified
+                    })
+                    .FirstOrDefaultAsync();
+
+                if (entity == null)
+                    return NotFound(new { success = false, message = "Sales order not found." });
+
+                return Ok(new { success = true, data = entity });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting sales order status.");
+                return StatusCode(500, new { success = false, message = "Internal server error." });
+            }
+        }
+
+		[HttpPost]
+		public async Task<IActionResult> UnlockSalesOrder([FromBody] SalesorderViewModel request)
+		{
+			try
+			{
+				if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+					return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+				if (string.IsNullOrWhiteSpace(request?.SalesOrderNo))
+					return BadRequest(new { success = false, message = "Sales Order No is required." });
+
+				var existingEntity = await dbContext.Tbl60201salesOrderMasters
+					.FirstOrDefaultAsync(x => x.SalesOrderNo == request.SalesOrderNo);
+
+				if (existingEntity == null)
+					return NotFound(new { success = false, message = "Sales Order not found." });
+
+				if (existingEntity.IsApproved != true)
+					return Ok(new { success = false, message = "Sales Order is already unlocked." });
+
+				existingEntity.IsApproved = false;
+				dbContext.Tbl60201salesOrderMasters.Update(existingEntity);
+				await dbContext.SaveChangesAsync();
+
+				return Ok(new { success = true, message = "Sales Order has been unlocked successfully." });
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Error while unlocking Sales Order.");
+				return StatusCode(500, new { success = false, message = "Internal server error", details = ex.Message });
+			}
+		}
+
+
+		[HttpGet]
+		public async Task<IActionResult> CheckIfApproved(string salesOrderNo)
+		{
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+			if (string.IsNullOrWhiteSpace(salesOrderNo))
+				return BadRequest(new { success = false, message = "Sales Order No is required." });
+
+			var existingEntity = await dbContext.Tbl60201salesOrderMasters
+				.Where(x => x.SalesOrderNo == salesOrderNo)
+				.Select(x => new { x.IsApproved })
+				.FirstOrDefaultAsync();
+
+			if (existingEntity == null)
+				return NotFound(new { success = false, message = "Sales Order not found." });
+
+			return Ok(new { success = true, isApproved = existingEntity.IsApproved == true });
+		}
+
+		[HttpGet]
+		public IActionResult CheckDeliveryExists(string salesOrderNo)
+		{
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+				return Unauthorized(new { message = "Invalid tenant." });
+
+			// Use the correct DbSet name here
+			bool exists = dbContext.Tbl60301deliveryNoteMasters.Any(d => d.SalesOrderNo == salesOrderNo);
+			return Ok(new { exists });
+		}
+
+        [HttpGet]
+        public async Task<IActionResult> GetStoreStockGrid()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var data = await dbContext.Qry65320storeStockAvaliabilityForSalesOrders
+                        .Select(i => new
+                        {
+                            i.Gscode,
+                            i.Gsdescrpition,
+                            i.IsServicesGroup,
+                            i.SalesOrderChildId,
+                            i.UnitDesc,
+                            i.TotalOrderedQty,
+                            i.TotalIssdQty,
+                            i.BalanceToDeliver,
+                            i.CurrentyQty,
+                            i.AvailabilityStatus,
+                            i.DeliveringQuantity,
+
+                        })
+                        .ToListAsync();
+
+                    return Json(data); // return raw data, paging/sorting done on client-side
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
+            }
+        }
+
     }
+
+
 
 }
 

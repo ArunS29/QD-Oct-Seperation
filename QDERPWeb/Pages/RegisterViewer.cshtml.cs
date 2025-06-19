@@ -177,38 +177,38 @@ namespace QD.ERP.Web.Pages
                     case "DetailReport":
                         Report = new DetailReport(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
                         );
                         break;
                     case "DetailedBydate":
                         Report = new DetailedBydate(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
                         );
                         break;
                     case "DetailedGroup":
                         Report = new DetailedGroup(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
                         );
                         break;
                     case "detailGroupBydate":
                         Report = new detailGroupBydate(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
                         );
                         break;
                     case "CostCenterMasterGroup":
                         Report = new CostCenterMasterGroup(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
                         );
                         break;
 
                     case "detailedMasterByDate":
                         Report = new detailedMasterByDate(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
                         );
                         break;
 
@@ -273,29 +273,29 @@ namespace QD.ERP.Web.Pages
                 switch (reportName)
                 {
                     case "XtraReportAgeingreportsummary":
-                        Report = new XtraReportAgeingreportsummary(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new XtraReportAgeingreportsummary(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
                         break;
                     case "XtraReportBillsReceivableAgeingReport":
-                        Report = new XtraReportBillsReceivableAgeingReport(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new XtraReportBillsReceivableAgeingReport(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
                         break;
                     case "BIllsPayable":
-                        Report = new BIllsPayable(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new BIllsPayable(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
                         break;
                     case "Summary":
                         Report = new Summary(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                         break;
                     case "BillsReceivableAgeingReport":
-                        Report = new BillsReceivableAgeingReport(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new BillsReceivableAgeingReport(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
                         break;
                     case "ReceivableReport(EffectiveDate)":
-                        Report = new ReceivableReport_EffectiveDate_(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new ReceivableReport_EffectiveDate_(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
                         break;
                     case "BillsRecivableReport1":
-                        Report = new BillsRecivableReport1(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new BillsRecivableReport1(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
                         break;
 
                     case "InventoryReportWithExpireDates":
-                        Report = new InventoryReportWithExpireDates(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        Report = new InventoryReportWithExpireDates(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr,  userName,_tenantDbContextHelper);
                         break;
 
 

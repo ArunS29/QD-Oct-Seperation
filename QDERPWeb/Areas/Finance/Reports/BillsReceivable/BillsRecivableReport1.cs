@@ -4,7 +4,8 @@ using DevExpress.DataAccess.Sql;
 using DevExpress.DataAccess.ConnectionParameters;
 using System;
 using System.Drawing;
-using QD.ERP.Web.Service; // For TenantDbContextHelper
+using QD.ERP.Web.Service;
+using DevExpress.CodeParser; // For TenantDbContextHelper
 
 namespace QD.ERP.Web.Areas.Finance.Reports.BillsReceivable
 {
@@ -19,20 +20,20 @@ namespace QD.ERP.Web.Areas.Finance.Reports.BillsReceivable
             Image logoImage,
             string companyNameAr,
             string companyAddressArb,
-            TenantDbContextHelper tenantDbContextHelper)
+            TenantDbContextHelper tenantDbContextHelper, string username)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             InitializeComponent();
-            SetReportParameters(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressArb);
+            SetReportParameters(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressArb,username);
         }
 
         public BillsRecivableReport1()
         {
             InitializeComponent();
-            SetReportParameters("", "", "", null, "", "");
+            SetReportParameters("", "", "", null, "", "","");
         }
 
-        private void SetReportParameters(string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressArb)
+        private void SetReportParameters(string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressArb,string username)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -58,7 +59,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports.BillsReceivable
             AddOrUpdateParameter("CompanyAddress", companyAddress ?? "", typeof(string));
             AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddressArb", companyAddressArb ?? "", typeof(string));
-
+            AddOrUpdateParameter(Name = "Username", value: username ?? "", type: typeof(string), visible: false);
+            SetLabelText("xrLabelUsername", username ?? "");
             SetLabelText("xrLabelTenantName", tenantName);
             SetLabelText("xrLabelCompanyName", companyName);
             SetLabelText("xrLabelCompanyAddress", companyAddress);
