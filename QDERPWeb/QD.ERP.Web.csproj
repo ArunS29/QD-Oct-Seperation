@@ -125,5 +125,9 @@
 			<UserProperties TemplateFeatures="NETCORE" />
 		</VisualStudio>
 	</ProjectExtensions>
+	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
+	  <RazorCompileOnBuild>false</RazorCompileOnBuild>
+	  <RazorCompileOnPublish>true</RazorCompileOnPublish>
+	</PropertyGroup>
 
 </Project>
