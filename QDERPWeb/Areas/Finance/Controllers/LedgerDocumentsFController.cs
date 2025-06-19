@@ -95,7 +95,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
                     return Unauthorized("Invalid tenant context.");
 
-                var userName = HttpContext.Session.GetString("UserName")?.Trim();
                 var tenantName = HttpContext.Session.GetString("TenantName")?.Trim();
 
                 if (string.IsNullOrWhiteSpace(tenantName))
@@ -143,7 +142,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     _configuration.GetConnectionString("AzureBlobStorage"),
                     "client-files"
                 );
-                var blobPath = await blobHelper.UploadFileAsync(file, filePathInBlob, tenantName, userName);
+                var blobPath = await blobHelper.UploadFileAsync(file, filePathInBlob, tenantName);
 
                 // 🔽 Optional date and Hijri conversion
                 DateTime? expDate = DateTime.TryParse(form["DocumentExpDate"], out var d) ? d : null;
