@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace QD.ERP.Web.Areas.ERM.Pages
 {
-    public class StockDetails_ItemClassificationModel : PageModel
+    public class PropertyCategoryModel : PageModel
     {
         public void OnGet()
         {
