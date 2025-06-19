@@ -30,7 +30,7 @@ public class AzureBlobHelper
         return Regex.Replace(tenantName.Trim(), @"[^a-zA-Z0-9\-]", "_");
     }
 
-    public async Task<string> UploadFileAsync(IFormFile file, string fileName, string tenantName, string userName)
+    public async Task<string> UploadFileAsync(IFormFile file, string fileName, string tenantName)
     {
         if (file == null || file.Length == 0)
             throw new ArgumentException("Invalid file.");
@@ -45,8 +45,8 @@ public class AzureBlobHelper
         await containerClient.CreateIfNotExistsAsync(PublicAccessType.None);
 
         var sanitizedTenant = SanitizeTenantName(tenantName);
-        var sanitizedUser = SanitizeTenantName(userName); // reuse same sanitizer
-        var blobPath = $"{sanitizedTenant}/{sanitizedUser}/{fileName}";
+        //var sanitizedUser = SanitizeTenantName(userName); // reuse same sanitizer
+        var blobPath = $"{sanitizedTenant}/{fileName}";
 
         var blobClient = containerClient.GetBlobClient(blobPath);
 

@@ -1601,6 +1601,9 @@
                     var grid = $("#itemGrid").dxDataGrid("instance");
                     grid.option("dataSource", data.SalesOrderChildren);
                 }
+                  if (data.IsApproved === true) {
+            disableAllControls();
+        }
                     })
                     .fail(function () {
                         DevExpress.ui.notify("Failed to load sales order details.", "error", 2000);

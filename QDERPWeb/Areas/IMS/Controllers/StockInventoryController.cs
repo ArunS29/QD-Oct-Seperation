@@ -1373,7 +1373,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 var connectionString = _configuration.GetConnectionString("AzureBlobStorage");
                 var containerName = "client-files";
                 var blobHelper = new AzureBlobHelper(connectionString, containerName);
-                var blobPath = await blobHelper.UploadFileAsync(file, filePathInBlob, tenantName,userName);
+                var blobPath = await blobHelper.UploadFileAsync(file, filePathInBlob, tenantName);
 
                 // Step 6: Save metadata
                 var model = new Tbl70003projectDocument

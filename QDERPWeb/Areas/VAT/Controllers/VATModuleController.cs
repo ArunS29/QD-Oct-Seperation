@@ -3234,14 +3234,14 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
 
 
-        [HttpGet]
-        public async Task<IActionResult> GetPurchaseVoucher(string supplierid)
-        {
-            try
-            {
-                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                {
-                    var result = dbContext.Qry20179PurchaseBillsWithBalances
+		[HttpGet]
+		public async Task<IActionResult> GetPurchaseVoucher(DataSourceLoadOptions loadOptions, string supplierid)
+		{
+			try
+			{
+				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+				{
+					var result = dbContext.Qry20179PurchaseBillsWithBalances
      .Where(p => p.SupplierCode == supplierid)
      .Select(p => new
      {
@@ -4113,10 +4113,10 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                         int JustAddedVoucherEntryNoSubLedger = 0;
                         int JustAddedVoucherEntryNoCostAlloc = 0;
                         bool IsCashOrBankAccount = false;
-                        bool IsExpensesAccount = false;
+    
 
                         // 🔁 Call the stored procedure sp201_62InsertVATtoVoucher
-                        var result = dbContext.Database.ExecuteSqlRaw("EXEC sp201_92InsertVATDebitNotetoVoucher_BHD @p0,@p1,@p2,@p3,@p4", DebitNoteNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc, IsCashOrBankAccount, IsExpensesAccount);
+                        var result = dbContext.Database.ExecuteSqlRaw("EXEC sp201_92InsertVATDebitNotetoVoucher_BHD @p0,@p1,@p2,@p3", DebitNoteNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc, IsCashOrBankAccount);
 
                         //   var result1 = dbContext.Database.ExecuteSqlRaw("EXEC sp201_62InsertVATtoVoucher_BHD @p0,@p1,@p2,@p3", InvoiceNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc, IsCashOrBankAccount);
                     }
