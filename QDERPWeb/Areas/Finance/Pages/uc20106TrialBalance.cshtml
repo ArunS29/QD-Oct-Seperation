@@ -8,7 +8,7 @@
         display: none !important;
     }
 
-    
+
     .dx-fieldset.horizontal-container {
         display: flex;
         align-items: center;
@@ -72,7 +72,7 @@
             @await Html.PartialAsync("UCTRIALBALANCEFOOTER")
         </div>
     </div>
-
+    <div id="loadPanel"></div>
     <!-- Input Controls in One Line -->
     <div class="dx-fieldset horizontal-container">
         <div class="dx-field">
@@ -119,28 +119,28 @@
                 .TabIndex(3)
                 )
         </div>
-            <!-- Dropdown Button to Show Records -->
-            @(Html.DevExtreme().DropDownButton()
-                .ID("ddBtnShowRecords")
-                .Text("Show Records")
-                .Icon("smalliconslayout")
-                .Width(180)
-                .ElementAttr("class", "button-alignment-down")
-                .TabIndex(4)
-                .DropDownOptions(options => options.Width(230))
-                .Items(items =>
-                {
-                     items.Add().Text("This Year Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-                   
-                    items.Add().Text("This Month Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-                    
-                    items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
-                    
-                    items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-                   
-                     items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
-                })
-                )
+        <!-- Dropdown Button to Show Records -->
+        @(Html.DevExtreme().DropDownButton()
+            .ID("ddBtnShowRecords")
+            .Text("Show Records")
+            .Icon("smalliconslayout")
+            .Width(180)
+            .ElementAttr("class", "button-alignment-down")
+            .TabIndex(4)
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add().Text("This Year Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+
+                items.Add().Text("This Month Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+
+                items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+
+                items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+
+                items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
+            })
+            )
         <div class="dx-field dx-field-4" id="check">
             <!-- Use Effective Date Checkbox -->
             @(Html.DevExtreme().CheckBox()
@@ -169,16 +169,27 @@
             }
         });
     });
+
+    $(function () {
+        $("#loadPanel").dxLoadPanel({
+            shadingColor: "rgba(0,0,0,0.4)",
+            position: { of: "body" }, // or change to "#mainContent" if you want to limit area
+            visible: false,
+            showIndicator: true,
+            showPane: true,
+            message: "Loading..."
+        });
+    });
     // Function to handle changes in the Account Group selection
     function onRequestedByChanged(e) {
         var selectedValue = e.value; // Get the selected value from the SelectBox
        // alert(selectedValue.CostAllocationUnit)
-    
+
 
      //   var selectBox = $("#requestedBy").dxSelectBox("instance");
         selectBox = selectedValue.AccountGroup;
-       
-      
+
+
 
       // //  console.log("value", requestedBy);
       //   var dataSource = selectBox.option("dataSource");
@@ -305,7 +316,8 @@
             endDate: endDate ? endDate.toISOString().split('T')[0] : "All Dates",
             accountGroup: accountGroup || "All Account Groups"
         });
-
+        var loadPanel = $("#loadPanel").dxLoadPanel("instance");
+        loadPanel.show();
         $.ajax({
             url: '/api/TrialBalance/GetTrialBalances',
             type: 'GET',
@@ -319,6 +331,9 @@
             },
             error: function (xhr, status, error) {
                 console.error("Error fetching filtered records: ", error);
+            },
+            complete: function () {
+                $("#loadPanel").dxLoadPanel("instance").hide(); // ✅ Always hide the loader
             }
         });
     }
@@ -421,6 +436,8 @@
             $(this).css("background-color", "");
         });
     }
+
+
     $("#btnShowRowTotals").on("click", function (e) {
         e.preventDefault();
 
@@ -445,18 +462,18 @@
         const allFields = [
 
             { dataField: "AccountGroup", caption: "Account Group" },
-            
+
             { dataField: "Category",  caption: "Category" },
             { dataField: "VoucherNo",  caption: "Voucher No" },
             { dataField: "VoucherDate",  caption: "Voucher Date", dataType: "date", format: "shortDate" },
             { dataField: "VoucherEntryNo",  caption: "Voucher Entry No" },
-           
+
             { dataField: "VoucherNarration",  caption: "Voucher Narration" },
             { dataField: "EntryNarration", caption: "Entry Narration" },
             { dataField: "SysRemarks", caption: "System Remarks" },
             { dataField: "VoucherRefNo",  caption: "Voucher Ref No" },
             { dataField: "Transactions",  caption: "Transactions" },
-            
+
             { dataField: "MonthYear",  caption: "Month Year" },
             { dataField: "MonthNumber", caption: "Month Number" }
         ];
