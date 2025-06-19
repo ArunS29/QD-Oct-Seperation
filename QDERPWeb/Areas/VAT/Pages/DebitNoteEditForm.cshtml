@@ -463,10 +463,10 @@
                                 .DataSource(d => d.WebApi()
                                     .Controller("VATModule")
                                     .LoadAction("GetPurchaseVoucher")
-															.LoadParams(new { supplierid = new JS("$('#VATSupplierName').dxDropDownBox('instance').option('value')") }) // Pass the selected Receiving Account value
+									.LoadParams(new { supplierid = new JS("$('#VATSupplierName').dxDropDownBox('instance').option('value')") })
 
 															//.LoadParams(new { supplierid = new JS("supplierid") }) // Fix: ensure `accheadid` is a proper parameter key
-															.LoadMode(DataSourceLoadMode.Raw)
+									.LoadMode(DataSourceLoadMode.Raw)
                                     .Key("PurchaseVoucherNo"))
 							      .ValidationRules(rules =>
                                     {
@@ -483,6 +483,39 @@
 								.DropDownOptions(o => o.Width(1000))
 			                    .ContentTemplate(new TemplateName("PurchaseVoucherNoTemplate"))
                             )
+@* 
+								@(Html.DevExtreme().DropDownBox()
+															.Label(new JS("formatMessage('Purchase Voucher No:')"))
+															.DataSource(d => d.WebApi()
+															.Controller("VATModule")
+															.LoadAction("GetPurchaseVoucher")
+														    .LoadParams(new { supplierid = new JS("$('#VATSupplierName').dxDropDownBox('instance').option('value')") })
+															.LoadMode(DataSourceLoadMode.Raw)
+															.Key("PurchaseVoucherNo")
+															)
+															.ValidationRules(rules =>
+															{
+																rules.AddRequired()
+																.Message("Supplier Name should be entered");
+															})
+															.LabelMode(EditorLabelMode.Outside)
+															.ID("VATPurchaseVoucherNo")
+															.ShowClearButton(true)
+															.AcceptCustomValue(true)
+															.OpenOnFieldClick(false)
+															.ValueChangeEvent("input")
+															.HoverStateEnabled(true)
+															.ValueExpr("PurchaseVoucherNo")
+															.DisplayExpr("PurchaseVoucherNo")
+															.OnInput("dropDownBoxOnInput")
+															//.OnClosed("onDropDownBoxClosed")
+															//.OnOpened("onOpened")
+															 .OnOpened("onDropDownBoxOpened") 
+															.TabIndex(1)
+															.DropDownOptions(o => o.Width(1000))
+															.OnKeyDown("onKeyDown")
+															.ContentTemplate(new TemplateName("PurchaseVoucherNoTemplate"))
+															) *@
                         </div>
 
                         <div class="col-6">
@@ -1359,7 +1392,9 @@
 											.DataSource(d => d.WebApi()
 											.Controller("VATModule")
 													.LoadAction("GetPurchaseVoucher")
-											.LoadMode(DataSourceLoadMode.Raw)
+													.LoadParams(new { supplierid = new JS("$('#VATSupplierName').dxDropDownBox('instance').option('value')") }) // Exclude Receiving Account
+
+												.LoadMode(DataSourceLoadMode.Raw)
 													///   .Key("AccountHead") //salary paid entry
 														.Key("PurchaseVoucherNo")
 
@@ -1390,6 +1425,45 @@
 										)
 
 }
+
+@* @using (Html.DevExtreme().NamedTemplate("PurchaseVoucherNoTemplate"))
+{
+	@(
+						Html.DevExtreme().DataGrid()
+							.ID("purchase-datagrid")
+						.DataSource(d => d.WebApi()
+							.Controller("VATModule")
+
+								.LoadAction("GetPurchaseVoucher")
+							.LoadParams(new {  supplierid = new JS("$('#VATSupplierName').dxDropDownBox('instance').option('value')") }) // Exclude Receiving Account
+							.LoadMode(DataSourceLoadMode.Raw)
+							.Key("PurchaseVoucherNo")
+						)
+						.WordWrapEnabled(true)
+						.ShowBorders(true)
+						.SearchPanel(sp => sp.HighlightSearchText(true))
+						.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+							.OnSelectionChanged("dataGridPurhaseVoucherSelectionChanged")
+							.OnInitialized("dataGridPurhaseVoucherInitialized")
+						.HeaderFilter(p => p.Visible(true))
+						.ShowBorders(true)
+											.ColumnChooser(c => c.Enabled(true))
+						.HoverStateEnabled(true)
+						.Paging(p => p.PageSize(15))
+						.FilterRow(f => f.Visible(true))
+						.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+						.Height(345)
+						.Selection(s => s.Mode(SelectionMode.Single))
+						.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+						.Columns(columns =>
+						{
+								columns.Add().DataField("PurchaseVoucherNo").Caption("Purchase Voucher No").Visible(false);
+								columns.Add().DataField("SupplierCode").Caption("Supplier account/Cash account").Visible(false);
+							
+						})
+						//.OnRowPrepared("onAccountHeadRowPrepared")
+					)
+} *@
 @using (Html.DevExtreme().NamedTemplate("TaxCurrencyTemplate"))
 {
 	@(Html.DevExtreme().DataGrid()
@@ -1696,6 +1770,7 @@
 
 	let accid=null,revaccheadid=null,InvoiceCurrencyExchangeId=null,TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
 			  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",supplierid=null,IsDirectApproval=true,IsDirectVerify=true;
+			  window.supplierid = 0; // must be global
 		function navigateToLedgerAccountForm() {
 		// make sure this is available in the view
 			const url = `/${tenantName}/VAT/VATDatabaseSignatories`;
@@ -3186,6 +3261,7 @@
 			const selectedKey = e.selectedRowKeys[0];
 			const ddbInstance = $("#VATSupplierName").dxDropDownBox("instance");
 			acchead = selectedKey;
+			debugger;
 			if (selectedKey) {
 				ddbInstance.option("value", selectedKey);
 				if (ddbInstance.option("opened")) {
@@ -3196,8 +3272,9 @@
 				if (selectedRowData.length > 0) {
 
 					accheadid=selectedRowData[0].AccountHead;
-	                supplierid=selectedRowData[0].AccountId;
-					alert(supplierid)
+					supplierid=selectedRowData[0].AccountId;
+					
+					
 
 				} else {
 					DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
@@ -4601,6 +4678,7 @@
 
 		var clientnameValidator = $("#VATSupplierName").dxValidator("instance");
 		var clientnameValidation = clientnameValidator.validate();
+		alert(supplierid)
 		if(clientnameValidation.isValid)
 		{
 	// Create JSON object for master invoice
@@ -4611,11 +4689,20 @@
 			DebitNoteDate: $("#CreditNoteIssuedDateTime").dxDateBox("instance").option("value") || null,
 	        PurchaseVoucherNo: $("#VATPurchaseVoucherNo").dxDropDownBox("instance").option("value") || null,
 			SupplierBillNo:$("#SupplierInvoiceNo").dxTextBox("instance").option("value") || null,
-			
+			SupplierCode: supplierid,
 			SupplierBillDate: $("#InvoiceDate").dxDateBox("instance").option("value") || null,
 			//SupplierNameAr:$("#ddItemsReturnfromstore1").dxDropDownBox("instance").option("value"),
 			ReferenceNo:$("#ddReferenceNo").dxTextBox("instance").option("value") || null,
 		    InvoicePeriod:$("#ddInvoicePeriod").dxTextBox("instance").option("value") || null,
+			ItemReturns:$("#ddItemsReturnfromstore").dxDropDownBox("instance").option("value")||null,
+			DebitNoteEffectiveDate:$("#EffectiveDate").dxDateBox("instance").option("value") || null,
+		// 	//PaymentMeansTypeCode: paymentmeanstypecode,
+		    RevenueAccount:$("#ddPurchaseAccount").dxDropDownBox("instance").option("value")||null,
+			CostCenterCode:$("#ddlCostCenterAccount").dxDropDownBox("instance").option("value")||null,
+			DebitNoteRemarks:$("#txtInvoiceNotes").dxTextArea("instance").option("value") || null,
+			DebitNoteRemarksAr:$("#txtNotesinArabic").dxTextArea("instance").option("value") || null,
+			BranchCode:$("#ddlDivision").dxDropDownBox("instance").option("value")||null,
+			CompanyId:$("#ddlDebitNoteDivision").dxDropDownBox("instance").option("value")||null
 		};
 
 		// Create JSON array for child records
@@ -4929,26 +5016,6 @@
 	}
 
 
-		function disableEditing() {
-			// Disable all input fields and buttons except for specific ones
-			$('input, select, textarea').prop('disabled', true);
-
-			$('.dx-button').each(function () {
-				const allowedButtons = ['btnMoveDown', 'btnMoveUp', 'btnSave','btnSaveAndClose','btnPostToLedgers','btnPostTag','btnPrint3'];
-				if (!allowedButtons.includes($(this).attr('id'))) {
-					$(this).dxButton('option', 'disabled', true);
-				}
-			});
-
-
-		// Disable DataGrid Editing and Deleting
-		var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-		if (dataGrid) {
-			dataGrid.option("editing.allowUpdating", false);
-			dataGrid.option("editing.allowDeleting", false);
-		}
-
-		}
 
 
 	$("#btnVerify").on("click", function (e) {
@@ -5089,7 +5156,7 @@
 			$("#ApprovedBy").dxCheckBox("instance").option("value", true);
 			IsDirectApproval=false;
 			const vno = $("#DebitNoteNo").dxTextBox("instance").option("value");
-
+			debugger;
 			if (!vno) {
 				DevExpress.ui.notify("Invoice number is required!", "error", 2000);
 				return;
@@ -5207,6 +5274,7 @@
 				// data: JSON.stringify({ voucherNo: vno }),
 				success: function (response) {
 					if (response && response.Message) {
+						debugger;
 						if(response.IsDirect == true)
 						{
 							DevExpress.ui.dialog.alert(
@@ -5337,6 +5405,8 @@
 							// Default visibility and enable status for buttons
 							var controlStates = {
 								"ddButtonLayout": { "Visible": true, "Enabled": false },
+								"btnMoveDown": { "Visible": true, "Enabled": false },
+								"btnMoveUp": { "Visible": true, "Enabled": false },
 								"btnSave": { "Visible": true, "Enabled": false },
 								"btnSaveAndClose": { "Visible": true, "Enabled": false },
 								"btnPrint3": { "Visible": true, "Enabled": false },
@@ -5346,8 +5416,7 @@
 								"btnApprove": { "Visible": true, "Enabled": false },
 								"btnAttach": { "Visible": true, "Enabled": false },
 								"btnPostToLedgers": { "Visible": true, "Enabled": false },
-
-
+								"btnPostTag": { "Visible": true, "Enabled": false }
 							};
 
 
@@ -5405,6 +5474,82 @@
 			});
 
 
+
+		// function disableEditing() {
+		// 	// Disable all input fields and buttons except for specific ones
+		// 	$('input, select, textarea').prop('disabled', true);
+		// 	debugger;
+		// 	$('.dx-button, .dx-dropdownbutton').each(function () {
+		// 	const allowedButtons = ['btnMoveDown', 'btnMoveUp', 'btnSave', 'btnSaveAndClose', 'btnPostToLedgers', 'btnPostTag', 'btnPrint1'];
+		// 		if (!allowedButtons.includes($(this).attr('id'))) {
+		// 			$(this).dxButton('option', 'disabled', true);
+		// 		}
+		// 	});
+
+
+		// // Disable DataGrid Editing and Deleting
+		// var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+		// if (dataGrid) {
+		// 	dataGrid.option("editing.allowUpdating", false);
+		// 	dataGrid.option("editing.allowDeleting", false);
+		// }
+
+		// }
+
+
+		function disableEditing() {
+			// Disable all input fields and buttons except for specific ones
+			$('input, select, textarea').prop('disabled', true);  // Disable inputs, selects, and textareas
+
+			const allowedButtons = ['btnMoveDown', 'btnMoveUp','btnPostToLedgers', 'btnPostTag', 'btnPrint3'];
+
+			// Disable all dxButton and dxDropDownButton controls
+			$('.dx-button, .dx-dropdownbutton').each(function () {
+				const id = $(this).attr('id');
+				if (id && !allowedButtons.includes(id)) {
+					// Disable dxButton and dxDropDownButton widgets except for allowed ones
+					if ($(this).data('dxButton')) {
+						$(this).dxButton('option', 'disabled', true);
+					} else if ($(this).data('dxDropDownButton')) {
+						$(this).dxDropDownButton('option', 'disabled', true);
+					}
+				}
+			});
+
+			// Disable DataGrid Editing and Deleting
+			var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+			if (dataGrid) {
+				dataGrid.option("editing.allowUpdating", false);
+				dataGrid.option("editing.allowDeleting", false);
+			}
+		}
+
+		// 	function disableEditing() {
+		// 	// Disable all input fields and buttons except for specific ones
+		// 	$('input, select, textarea').prop('disabled', true);  // Disable inputs, selects, and textareas
+
+		// 	const allowedButtons = ['btnMoveDown', 'btnMoveUp', 'btnSave', 'btnSaveAndClose', 'btnPostToLedgers', 'btnPostTag', 'btnPrint1'];
+
+		// 	// Disable all dxButton and dxDropDownButton controls
+		// 	$('.dx-button, .dx-dropdownbutton').each(function () {
+		// 		const id = $(this).attr('id');
+		// 		if (id && !allowedButtons.includes(id)) {
+		// 			// Disable dxButton and dxDropDownButton widgets except for allowed ones
+		// 			if ($(this).data('dxButton')) {
+		// 				$(this).dxButton('option', 'disabled', true);
+		// 			} else if ($(this).data('dxDropDownButton')) {
+		// 				$(this).dxDropDownButton('option', 'disabled', true);
+		// 			}
+		// 		}
+		// 	});
+
+		// 	// Disable DataGrid Editing and Deleting
+		// 	var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+		// 	if (dataGrid) {
+		// 		dataGrid.option("editing.allowUpdating", false);
+		// 		dataGrid.option("editing.allowDeleting", false);
+		// 	}
+		// }
 
 </script>
 
