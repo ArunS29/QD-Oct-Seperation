@@ -618,66 +618,66 @@
 
 
 
-	$(document).ready(function () {
-		console.log('Start permission handling AccountingLedgers');
-		var formId = "frm201LedgerView";
-		$.ajax({
-			url: '/api/Permissions/GetAccessDetails?formId=' + formId,
-			type: 'GET',
-			contentType: 'application/json',
-			success: function (response) {
-				console.log("API Response:", response);
+	// $(document).ready(function () {
+	// 	console.log('Start permission handling AccountingLedgers');
+	// 	var formId = "frm201LedgerView";
+	// 	$.ajax({
+	// 		url: '/api/Permissions/GetAccessDetails?formId=' + formId,
+	// 		type: 'GET',
+	// 		contentType: 'application/json',
+	// 		success: function (response) {
+	// 			console.log("API Response:", response);
 
-				if (response.success && response.permissions) {
-					var controlStates = {
-						"ddBtnShowRecords": { "Visible": false, "Enabled": false },
+	// 			if (response.success && response.permissions) {
+	// 				var controlStates = {
+	// 					"ddBtnShowRecords": { "Visible": false, "Enabled": false },
 
-					};
-					var fullAccess = response.permissions.find(p =>
-						p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
-					);
+	// 				};
+	// 				var fullAccess = response.permissions.find(p =>
+	// 					p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
+	// 				);
 
-					if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
-						Object.keys(controlStates).forEach(key => {
-							controlStates[key] = { "Visible": true, "Enabled": true };
-						});
-					} else {
-						Object.keys(controlStates).forEach(key => {
-							var controlPermission = response.permissions.find(p =>
-								p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
-							);
-							if (controlPermission) {
-								controlStates[key] = {
-									"Visible": controlPermission.ItemVisible || false,
-									"Enabled": controlPermission.ItemEnabled || false
-								};
-							}
-						});
-					}
-					console.log("Control States:", controlStates);
-					Object.keys(controlStates).forEach(key => {
-						var button = document.getElementById(key);
-						if (button) {
+	// 				if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
+	// 					Object.keys(controlStates).forEach(key => {
+	// 						controlStates[key] = { "Visible": true, "Enabled": true };
+	// 					});
+	// 				} else {
+	// 					Object.keys(controlStates).forEach(key => {
+	// 						var controlPermission = response.permissions.find(p =>
+	// 							p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
+	// 						);
+	// 						if (controlPermission) {
+	// 							controlStates[key] = {
+	// 								"Visible": controlPermission.ItemVisible || false,
+	// 								"Enabled": controlPermission.ItemEnabled || false
+	// 							};
+	// 						}
+	// 					});
+	// 				}
+	// 				console.log("Control States:", controlStates);
+	// 				Object.keys(controlStates).forEach(key => {
+	// 					var button = document.getElementById(key);
+	// 					if (button) {
 
-							button.style.display = controlStates[key].Visible ? "inline-block" : "none";
+	// 						button.style.display = controlStates[key].Visible ? "inline-block" : "none";
 
-							button.disabled = !controlStates[key].Enabled;
-							console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
-						} else {
-							console.warn(`Button with ID "${key}" not found in the DOM.`);
-						}
-					});
-				} else {
-					console.warn("Failed to fetch permissions or no permissions available.");
-				}
-			},
-			error: function (xhr, status, error) {
-				console.error("Error fetching permissions:", error);
-				alert('An error occurred while fetching permissions. Please try again.');
-			}
-		});
-		console.log('End permission handling');
-	});
+	// 						button.disabled = !controlStates[key].Enabled;
+	// 						console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
+	// 					} else {
+	// 						console.warn(`Button with ID "${key}" not found in the DOM.`);
+	// 					}
+	// 				});
+	// 			} else {
+	// 				console.warn("Failed to fetch permissions or no permissions available.");
+	// 			}
+	// 		},
+	// 		error: function (xhr, status, error) {
+	// 			console.error("Error fetching permissions:", error);
+	// 			alert('An error occurred while fetching permissions. Please try again.');
+	// 		}
+	// 	});
+	// 	console.log('End permission handling');
+	// });
 	let selectedVoucherNo = null;
 	$(function () {
 		$("#CreditNoteRegister").dxTextBox({
@@ -860,11 +860,11 @@
 									var controlStates = {
 											"ddButtonLayout": { "Visible": true, "Enabled": false },
 											"btnToggleSearch": { "Visible": true, "Enabled": false },
-											"btnPrint": { "Visible": false, "Enabled": false },
-											"btntoggleGroupPanel": { "Visible": false, "Enabled": false },
-											"btnAddNew1": { "Visible": false, "Enabled": false },
-											"ddReport123": { "Visible": false, "Enabled": false },
-											"btnColumnChooser": { "Visible": false, "Enabled": false }
+											"btnPrint": { "Visible": true, "Enabled": false },
+												"btntoggleGroupPanel": { "Visible": true, "Enabled": false },
+												"btnAddNew1": { "Visible": true, "Enabled": false },
+												"ddReport123": { "Visible": true, "Enabled": false },
+												"btnColumnChooser": { "Visible": true, "Enabled": false }
 									};
 
 

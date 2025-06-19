@@ -356,7 +356,7 @@
     <div class="btn-containers">
         @(Html.DevExtreme().Button()
             .ID("btnSave")
-            .Text(new JS("formatMessage('Save')"))
+            .Text(new JS("formatMessage('Update')"))
             .Type(ButtonType.Normal)
             .StylingMode(ButtonStylingMode.Outlined)
             .Icon("save")
@@ -365,9 +365,6 @@
             )
 
     </div>
-
-
-
 
     <div class="btn-containers">
 
@@ -391,7 +388,7 @@
     </div>
 
 
-    <div class="btn-containerIvoiceEdit">
+    <div class="btn-containers">
         @(Html.DevExtreme().DropDownButton()
             .ID("btnPrint2")
             .Text(new JS("formatMessage('Print')"))

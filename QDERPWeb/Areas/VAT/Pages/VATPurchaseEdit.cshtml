@@ -1033,18 +1033,17 @@
 														.Value(null)
 														.ElementAttr("style", "position:relative; right: 25px;")
 														)
-						@(Html.DevExtreme().DropDownBox()
-														.Label(new JS("formatMessage('Supplier Invoice Received On:')"))
-													.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetItemsReturned").LoadMode(DataSourceLoadMode.Raw).Key("ItemId")) // Replace LoadAction accordingly
-													.LabelMode(EditorLabelMode.Outside)
-													.ID("ddlinvoicesubmittedon")
-													.ShowClearButton(true)
-													.AcceptCustomValue(true)
-													.OpenOnFieldClick(false)
-													.ValueExpr("ItemId")
-													.DisplayExpr("ItemName")
-													.Width("90%")
-													)
+				
+				            @(Html.DevExtreme().DateBox()
+														.ID("ddlinvoicesubmittedon")
+														.Type(DateBoxType.Date)
+														.DisplayFormat("dd-MMM-yyyy")
+														.Label(new JS("formatMessage('Invoice Submitted On:')"))
+														.LabelMode(EditorLabelMode.Outside)
+														.ShowClearButton(true)
+														.Width("90%"))
+
+				       </div>
 					</td>
 					<td>
 						<div style="display: flex; align-items: flex-end; gap: 10px;">
@@ -1053,6 +1052,7 @@
 														.ID("SubmittedBy")
 														.Value(null)
 														.ElementAttr("style", "padding-bottom:40px;")
+											            .OnValueChanged("function(e) { onClientCodeChanged(accheadid); }") // replace currentAccHeadId with actual variable
 														)
 							@(Html.DevExtreme().TextBox()
 														.Label(new JS("formatMessage('Invoice Received By')"))
@@ -1198,6 +1198,7 @@
 													.LabelMode(EditorLabelMode.Outside)
 													.ID("VerifiedBytext")
 													.Value(null) // Default value		
+													.Disabled(true)
 													.Width("90%")
 													)
 
@@ -1206,6 +1207,7 @@
 													.LabelMode(EditorLabelMode.Outside)
 													.ID("VerifiedOnDate")
 													.Value(null) // Default value
+													.Disabled(true)
 													.Width("90%")
 													)
 					</td>
@@ -1221,13 +1223,15 @@
 													.ID("ApprovedBytext")
 													.Value(null) // Default value												
 													.Width("90%")
+													.Disabled(true)
 													@* .Disabled(true) *@
 													)
 						@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Approved On')"))
 													.LabelMode(EditorLabelMode.Outside)
 													.ID("ApprovedOntext")
-													.Value(null) // Default value												
+													.Value(null) // Default value
+													.Disabled(true)
 													.Width("90%")
 													)
 					</td>
@@ -2103,14 +2107,7 @@
 			.ShowBorders(true)
 			.SearchPanel(sp => sp.HighlightSearchText(true))
 			.Selection(sl => sl.Mode(SelectionMode.Single))
-			.OnSelectionChanged(@<text>
-	function(e) {
-	var selected = e.selectedRowsData[0];
-	if (selected) {
-	$("#ddlDivision").dxDropDownBox("instance").option("value", selected.BranchCode);
-	}
-	}
-</text>)
+					.OnSelectionChanged("dataGridDivisionHeadSelectionChanged")
 			.OnInitialized("dataGridDivisionHeadInitialized")
 			.HoverStateEnabled(true)
 			.Paging(p => p.PageSize(15))
@@ -2518,8 +2515,8 @@
 			.Columns(columns =>
 			{
 				columns.Add().DataField("SupplierCode").Caption("كود المورد"); // Arabic Caption
-				columns.Add().DataField("SupplierNameArabic").Caption("اسم المورد بالعربية");
-				columns.Add().DataField("SupplierName").Caption("الاسم الإنجليزي");
+					columns.Add().DataField("SupplierNameAr").Caption("اسم المورد بالعربية");
+	@* 			columns.Add().DataField("SupplierName").Caption("الاسم الإنجليزي"); *@
 			})
 			)
 	}
@@ -4770,7 +4767,7 @@
 								// Get ReferenceNo from selected row
 								if (selectedRowData.length > 0) {
 									accheadid = selectedRowData[0].AccountId;
-									debugger;
+									onClientCodeChanged(accheadid);
 									    let ClientAddressSt=selectedRowData[0].ClientAddressStreet;
 										let ClientCity= selectedRowData[0].ClientCity;
 										let ClientPostalCode=selectedRowData[0].ClientPostalCode;
@@ -5045,7 +5042,7 @@
 
 			const selectedKey = e.selectedRowKeys[0];
 
-			const ddbInstance = $("#ddlGoodsGroup5").dxDropDownBox("instance");
+			const ddbInstance = $("#ddlDivision").dxDropDownBox("instance");
 
 			acchead = selectedKey;
 
@@ -5086,6 +5083,47 @@
 				dataGrid = e.component;
 
 			}
+
+
+			function dataGridDivisionSelectionChanged(e) {
+
+			const selectedKey = e.selectedRowKeys[0];
+
+			const ddbInstance = $("#ddlGoodsGroup6").dxDropDownBox("instance");
+
+			acchead = selectedKey;
+
+			if (selectedKey) {
+
+				ddbInstance.option("value", selectedKey);
+
+				if (ddbInstance.option("opened")) {
+
+					ddbInstance.close();
+
+				}
+						if(IsCurrent!="true")
+					{
+				var selectedRowData = $("#salesperson-datagrid").dxDataGrid("instance").getSelectedRowsData();
+
+				// Get ReferenceNo from selected row
+
+				if (selectedRowData.length > 0) {
+
+							salespersoncode = selectedRowData[0].SalesPersonCode;
+
+				} else {
+
+					DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
+
+					return;
+
+				}
+					}
+
+			}
+
+		}
 
 			function dataGridSalesPersonHeadSelectionChanged(e) {
 
@@ -6956,27 +6994,6 @@
 		}
 
 
-		function disableEditing() {
-			// Disable all input fields and buttons except for specific ones
-			$('input, select, textarea').prop('disabled', true);
-
-			$('.dx-button').each(function () {
-				const allowedButtons = ['btnMoveDown',  'btnMoveUp', 'btnSave','btnSaveAndClose','btnPostToLedgers','btnPostTag'];
-				if (!allowedButtons.includes($(this).attr('id'))) {
-					$(this).dxButton('option', 'disabled', true);
-				}
-			});
-
-
-		// Disable DataGrid Editing and Deleting
-		var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-		if (dataGrid) {
-			dataGrid.option("editing.allowUpdating", false);
-			dataGrid.option("editing.allowDeleting", false);
-		}
-
-		}
-
 
 		$("#btnBack").on("click", function (e) {
 			history.back(); // Closes or navigates back
@@ -7754,5 +7771,77 @@
 					showColumnChooser();
 					console.log('End permission handling');
 				});
+
+		 function onClientCodeChanged(accheadid) {
+		$.ajax({
+			url: '/api/AccountLedgerMaster/GetAccountDetails',
+			type: 'GET',
+			data: { accountID: accheadid },
+			success: function (result) {
+				debugger;
+				// 1. Pick the first record regardless of the shape returned
+				const details = Array.isArray(result)
+					? result[0]
+					: (result.accountDetails || [])[0];
+
+				if (!details) {
+					DevExpress.ui.notify("No account details returned", "warning", 3000);
+					return;
+				}
+
+				// 2. Get your base Invoice Date (today fallback)
+				const invoiceDateBox = $("#InvoiceDate").dxDateBox("instance");
+				const baseDate = invoiceDateBox?.option("value")
+					? new Date(invoiceDateBox.option("value"))
+					: new Date();
+
+				// 3. Default credit days from master
+				let creditDays = Number(details.NoOfDaysCreditPeriod) || 0;
+				let NoOfDays = creditDays;
+				// 4. If the checkbox “Submitted By” is ticked, recompute creditDays
+				const isSubmitted = $('#SubmittedBy').dxCheckBox("instance")?.option("value");
+				if (isSubmitted) {
+					const invoiceSubmittedDate = $("#ddlinvoicesubmittedon")
+						.dxDateBox("instance")
+						.option("value");
+
+					if (invoiceSubmittedDate) {
+						const diffMs = new Date(invoiceSubmittedDate) - baseDate;
+						SubcreditDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+						NoOfDays = creditDays+SubcreditDays;
+					}
+				}
+
+				// 5. Calculate the due date and push it into the UI
+				const dueDate = new Date(baseDate);
+					dueDate.setDate(dueDate.getDate() + NoOfDays);
+				$("#InvoiceDueDate").dxDateBox("instance").option("value", dueDate);
+			},
+			error: function () {
+				DevExpress.ui.notify("Failed to fetch data for client", "error", 2000);
+			}
+		});
+	}
+
+		function disableEditing() {
+			// Disable all input fields and buttons except for specific ones
+			$('input, select, textarea').prop('disabled', true);
+
+			$('.dx-button').each(function () {
+				const allowedButtons = ['btnMoveDown',  'btnMoveUp', 'btnSave','btnSaveAndClose','btnPostToLedgers','btnPostTag'];
+				if (!allowedButtons.includes($(this).attr('id'))) {
+					$(this).dxButton('option', 'disabled', true);
+				}
+			});
+
+
+		// Disable DataGrid Editing and Deleting
+		var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+		if (dataGrid) {
+			dataGrid.option("editing.allowUpdating", false);
+			dataGrid.option("editing.allowDeleting", false);
+		}
+
+		}
 </script>
 
