@@ -303,7 +303,7 @@
     }
 </style>
 
-<div class="dx-fieldset horizontal-container" style="width:1000px;background-color:transparent;">
+<div class="dx-fieldset horizontal-container" style="width:1000px;background-color:transparent;gap:3px">
 
     <div class="btn-containers">
         @(Html.DevExtreme().DropDownButton()
@@ -335,9 +335,9 @@
             .ID("btnMoveDown")
             .Text(new JS("formatMessage('Move Down')"))
             .Type(ButtonType.Normal)
-
+             .Width(40)
             .StylingMode(ButtonStylingMode.Outlined)
-            .Icon("spindown") // Change the icon to an up/down arrow option
+            .Icon("arrowdown") // Change the icon to an up/down arrow option
             .ElementAttr(new { @class = "bold-button" })
             )
     </div>
@@ -346,9 +346,9 @@
             .ID("btnMoveUp")
             .Text(new JS("formatMessage('Move Up')"))
             .Type(ButtonType.Normal)
-
+            .Width(40)
             .StylingMode(ButtonStylingMode.Outlined)
-            .Icon("spinup") // Change the icon to an up/down arrow option
+            .Icon("arrowup") // Change the icon to an up/down arrow option
             .ElementAttr(new { @class = "bold-button" })
             )
     </div>
@@ -460,17 +460,8 @@
     </div>
     <div class="btn-containers">
         @(Html.DevExtreme().Button()
-            .ID("btnCancel")
-            .Text(new JS("formatMessage('Cancel')"))
-            .Icon("close")
-            // .OnClick("onVerifyButtonClick")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-
-            )
-    </div>
-    <div class="btn-containers">
-        @(Html.DevExtreme().Button()
             .ID("btnAttach")
+            .Width(40)
             .Text(new JS("formatMessage('Attach')"))
             .Icon("link")
             //.OnClick("onAttachButtonClick")

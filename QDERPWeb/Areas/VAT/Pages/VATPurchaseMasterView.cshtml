@@ -712,38 +712,6 @@
 		return [day, strmonth, year].join('-');
 	}
 	
-	// function cloneEInvoice() {
-	// 	const rowData = selectedRowData; // Make sure selectedRowData is available
-
-	// 	if (!rowData?.InvoiceNo || !rowData?.InvoiceDate) {
-	// 		DevExpress.ui.notify("Purchase Voucher No and Date cannot be empty.", "error", 3000);
-	// 		return;
-	// 	}
-
-	// 	DevExpress.ui.dialog.confirm("You are about to Duplicate this Purchase Invoice. Are you sure you want to continue?", "Confirm Duplication")
-	// 		.done(function (dialogResult) {
-	// 			if (dialogResult) {
-	// 				$.ajax({
-	// 					url: '/api/VATModule/DuplicateVatInvoice',
-	// 					method: 'POST',
-	// 					data: { invoiceNo: rowData.InvoiceNo },
-	// 					success: function (response) {
-	// 						if (response.success) {
-	// 							DevExpress.ui.notify("Purchase Invoice has been successfully added to the database.", "success", 3000);
-	// 							// Optional: Refresh grid
-	// 							$("#dataGrid").dxDataGrid("instance").refresh();
-	// 						} else {
-	// 							DevExpress.ui.notify(response.message || "Duplication failed.", "error", 3000);
-	// 						}
-	// 					},
-	// 					error: function () {
-	// 						DevExpress.ui.notify("Server error while duplicating invoice.", "error", 3000);
-	// 					}
-	// 				});
-	// 			}
-	// 		});
-	// }
-
 	 function cloneEInvoice() {
 		 
 		if (!invoiceNo) {
@@ -877,6 +845,7 @@
 											"ddButtonLayout": { "Visible": true, "Enabled": false },
 											"btnToggleSearch": { "Visible": true, "Enabled": false },
 											"btnPrint": { "Visible": true, "Enabled": false },
+											"btnPurchaseDetails": { "Visible": true, "Enabled": false },
 											"btntoggleGroupPanel": { "Visible": true, "Enabled": false },
 											"btnAddNew1": { "Visible": true, "Enabled": false },
 											"ddReport1": { "Visible": true, "Enabled": false },

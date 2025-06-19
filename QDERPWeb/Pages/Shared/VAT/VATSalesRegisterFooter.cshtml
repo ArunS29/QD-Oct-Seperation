@@ -229,31 +229,6 @@
     }
 
 
-    /* .btn-containerIvoiceEdit .dx-button { */
-    /*     width: 40px !important; /* Small width for just the icon */ */
-    /*     transition: width 0.3s ease-in-out; */
-    /*     overflow: hidden; */
-    /*     padding-left: 0 !important; */
-    /*     padding-right: 0 !important; */
-    /*     text-align: center; */
-    /* } */
-    /* .btn-containerIvoiceEdit:hover .dx-button { */
-    /*     width: 200px !important; */
-    /* } */
-    /* .btn-container:hover #btnAddNewPayment.dx-button { */
-    /*     width: 240px !important; */
-    /* } */
-    /* .btn-containerIvoiceEdit .dx-button .dx-icon { */
-    /*     display: inline-block !important; */
-    /* } */
-    /* .btn-containerIvoiceEdit .dx-button .dx-button-text { */
-    /*     display: none; */
-    /* } */
-    /* .btn-containerIvoiceEdit:hover .dx-button .dx-button-text { */
-    /*     display: inline-block; */
-    /*     margin-left: 8px; /* optional spacing between icon and text */ */
-    /* } */
-
     .multiline-button .dx-button-text {
         white-space: normal;
     }
@@ -262,7 +237,7 @@
 <div class="dx-fieldset horizontal-container" style="width:1000px;background-color:transparent;">
 
 
-    <div class="btn-container">
+ @*    <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
             .ID("ddButtonLayout")
             .Icon("smalliconslayout")
@@ -280,8 +255,7 @@
             })
             .ShowArrowIcon(false)
             )
-    </div>
-
+    </div> *@
     <div class="btn-containerIvoiceEdit">
         @(Html.DevExtreme().DropDownButton()
             .ID("ddButtonLayout")
@@ -295,7 +269,7 @@
 
                 // items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu");
 
-               // items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu");
+                // items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu");
 
                 items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
                 items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
@@ -305,6 +279,8 @@
             .ShowArrowIcon(false)
             )
     </div>
+
+ 
 
     <div class="btn-container">
         @(Html.DevExtreme().Button()
@@ -378,7 +354,7 @@
         @(Html.DevExtreme().Button()
             .ID("btnInvoiceDetails")
             .Text(new JS("formatMessage('Invoice Details')"))
-            .Icon("card")
+            .Icon("tableproperties")
             .Width(190)
             .OnClick("navigateToInvoiceEdit")
             )
@@ -390,7 +366,7 @@
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
             .ID("ddReports")
-            .Icon("doc")
+            .Icon("mergecells")
             .Width(50)
             .Text(new JS("formatMessage('Report')"))
             .ElementAttr(new { style = "display: none;" })
@@ -901,42 +877,6 @@
             openModal(url, title);
         }
 
-        // function addPaymentButton_click(e) {
-        //      let url = "";
-        //      let title = "Payments";
-        //      switch (e.itemData.text) {
-        //          case formatMessage('New Standard Tax Invoice(B2B Invoice)'):
-
-        //            DevExpress.ui.dialog.confirm(
-        //             "This option will create a New STANDARD TAX INVOICE (B2B)"
-        //             "After Creating the Invoice, you cannot remove or delete the Invoice".
-        //             "You can cancel only thru CREDIT NOTE."
-        //             "Click Yes if you want to continue.. or Click No to exit this option.",
-        //             "Confirm Creating new STANDARD TAX Invoice?"
-        //         ).done(function (dialogResult) {
-        //             if (dialogResult) {
-        //                 onConfirm(); // Proceed only if the user clicks "Yes"
-        //                  url = `/${tenantName}/Finance/frm20161VATInvoiceEdit`;
-        //             }
-        //         });
-
-        //              title = formatMessage('New Standard Tax Invoice(B2B Invoice)');
-        //              break;
-
-        //               case formatMessage('New Simplified Tax Invoice(B2C Invoice)'):
-        //              url = `/${tenantName}/Finance/frmVATInvoiceEditB2C`;
-
-        //              title = formatMessage('New Simplified Tax Invoice(B2C Invoice)');
-        //              break;
-
-        //          default:
-        //              console.log("Clicked item: ", e.itemData.text);
-        //              return;
-        //      }
-        //     openModal(url, title);
-        // }
-
-
         function addPaymentButton_click(e) {
        // let url = "";
         let title = "Payments";
@@ -1052,20 +992,6 @@
                 reader.readAsText(file);
             }
         });
-        // function addReportsButton_click(e) {
-        //     var selectedText = e.itemData.text; // Get selected item text
-
-
-        //     if (selectedText === "Account Statements") {
-        //         window.location.href = "/DocumentViewer?reportName=AccountReport"; // Pass the report name
-        //     } else if (selectedText === "Statement Of Account With Narration") {
-        //         window.location.href = "/DocumentViewer?reportName=AccountWithNarration"; // Pass the report name
-        //     } else if (selectedText === "Statement Of Account Export Formate") {
-        //         window.location.href = "/DocumentViewer?reportName=AccountExportFormatReport"; // Pass the report name
-        //     } else if (selectedText === "Statement Of Account Export Formate[Landscape]") {
-        //         window.location.href = "/DocumentViewer?reportName=AccountExportLandscapeReport"; // Pass the report name
-        //     }
-        // }
 
 
         function AccountGroupsOrdering() {
@@ -1646,24 +1572,6 @@
             }
         }
 
-        // Example handler function for debit note
-        // function handleDebitNotePrinting(itemText) {
-        //         const DebitNoBox = $("#DebitNoteNo").dxTextBox("instance");
-        //         const debitNoteNo = DebitNoBox.option("value");
-
-        //         if (!debitNoteNo) {
-        //             alert("debitNoteNo is required.");
-        //         return;
-        //     }
-
-        //     Assume all debit notes are not approved or apply same logic as other reports
-        //     window.open(
-        //             `/${tenantName}/VoucherViewer?reportName=DebitNoteInvoice&invoiceNo=${encodeURIComponent(debitNoteNo)}&skipPreview=true&watermark=Draft Copy&isApproved=false`,
-        //         '_blank',
-        //         'width=1200,height=800,scrollbars=yes,resizable=yes'
-        //     );
-        // }
-            // <script>
             // Handles all report printing logic
         function handleReportPrinting2(e) {
             const debitNoteBox = $("#DebitNoteNo").dxTextBox("instance");
