@@ -164,7 +164,10 @@
 	.dx-fieldset.horizontal-container {
 		margin-top:10px;
 	}
-
+	 .dx-datagrid .dx-header-row .dx-datagrid-text-content {
+        white-space: normal !important;
+        text-align: center;
+    }
 	
 </style>
 
@@ -248,12 +251,13 @@
 		})
 		)
 
-	@(Html.DevExtreme().CheckBox()
-		.ID("chkUseEffectiveDate")
-		.Text(new JS("formatMessage('Use Effective Date')"))
-		.Value(false)
-		.ElementAttr("class", "mt-4 ml-4") // Adjust margin as needed
-		)
+
+
+		@(Html.DevExtreme().CheckBox()
+    .ID("chkUseEffectiveDate")
+    .Text(new JS("formatMessage('Use Effective Date')"))
+    .Value(false)
+    .ElementAttr("class", "mt-4 ml-4"))
 </div>
 <div class="dx-field ledgerResult">
 	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201607vatinvoiceRegisterMainView>()
@@ -291,11 +295,14 @@
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				subColumns.AddFor(m => m.TotalInvoiceAmount)
-			.Caption(new JS("formatMessage('Invoiced Amount')"))
+		     .Caption("Invoiced Amount (SAR)") // Use DevExtreme icon
+			.EncodeHtml(false)
 			.Alignment(HorizontalAlignment.Right)
 			.Visible(true)
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
+
+
 
 			columns.Add().Caption(new JS("formatMessage('Revenue Classified')")).Columns(revenueColumns =>
 			{
@@ -570,6 +577,8 @@
 	<button id="nextPage" onclick="ddBtnShowRecords_click(null, currentPage + 1)">&#x3E;</button>
 
 </div>
+
+<div id="testSvgPreview" style="width:100px; height:100px; border:1px solid #ccc;"></div>
 
 <script>
 
@@ -1068,6 +1077,31 @@
 		}
 	}
 
+
+
+// $(document).ready(function () {
+//   $.ajax({
+//     url: '/api/VATModule/GetCurrencyImage',
+//     method: 'GET',            // no dataType → jQuery returns XML Document
+//     success: function (svgDoc) {
+//       const svgElement = svgDoc.documentElement.cloneNode(true); // <svg>...</svg>
+
+//       // Preview box
+//       $('#testSvgPreview').empty().append(svgElement.cloneNode(true));
+
+//       // Grid caption
+//       $('#invoicedAmountCaption').html('Invoiced Amount ');
+//       $('#invoicedAmountCaption').append(svgElement); // append the real SVG node
+//     },
+//     error: function () {
+//       console.warn('Currency icon could not be loaded.');
+//     }
+//   });
+// });
+
+
+
+	
 
 
 </script>

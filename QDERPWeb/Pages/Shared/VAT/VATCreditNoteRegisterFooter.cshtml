@@ -327,7 +327,16 @@
             .OnClick("showColumnChooser")
             )
     </div>
-
+      <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnAddNew1")
+            .Text(new JS("formatMessage('Add New')"))
+            .Icon("plus")
+            // .OnClick("addNewRow") // Attach function
+            .ElementAttr(new { @class = "bold-button" })
+            // Apply custom CSS class
+            )
+    </div>
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
             .ID("ddReport123")

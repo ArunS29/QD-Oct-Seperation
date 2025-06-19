@@ -684,7 +684,7 @@
 												.ID("ClientAddressDetails")
 												.Label(new JS("formatMessage('Client Address Details')"))
 												.ShowClearButton(true)
-												.Width(300)
+												.Width("100%")
 												.DropDownOptions(o => o.Width(900).Height(600))
 												.OpenOnFieldClick(true)
 												.LabelMode(EditorLabelMode.Outside)
@@ -2003,8 +2003,8 @@
 		</div>
 
 	
-<div class="Head">
-	@await Html.PartialAsync("/Pages/Shared/VAT/VATInvoiceEditFooter.cshtml")
+<div class="Head"  style="margin-left: 15px;">
+	@await Html.PartialAsync("/Pages/Shared/VAT/VATCreditNoteEditFooter.cshtml")
 </div>
 		@using (Html.DevExtreme().NamedTemplate("PaymentmeansContentTemplate"))
 		{
@@ -6979,13 +6979,13 @@ grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
 								"Invoice Posted Successfully."
 							)
 						}
-						else if(response.IsPosted == true)
-							{
-									 DevExpress.ui.dialog.alert(
-									"This VAT Credit Note is already posted to your ledgers.",
-									"Credit Note Posted Already."
-								)
-							}
+						// else if(response.IsPosted == true)
+						// 	{
+						// 			 DevExpress.ui.dialog.alert(
+						// 			"This VAT Credit Note is already posted to your ledgers.",
+						// 			"Credit Note Posted Already."
+						// 		)
+						// 	}
 						else
 						{
 								   DevExpress.ui.dialog.custom({

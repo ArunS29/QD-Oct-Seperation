@@ -5,6 +5,17 @@
 @{
 } *@
 <style>
+	.dx-datagrid-headers .center-header {
+		text-align: center !important;
+	}
+
+	.Head {
+		margin-bottom: 10px;
+	}
+
+	#B2BdataGrid {
+		height: 700px !important;
+	}
 	.form-wrapper {
 		border-radius: 6px;
 		width: 97%;
@@ -593,7 +604,7 @@
 				
 				<div class="card-container">
 					<!-- First Card (Left Side) -->
-						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
+					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 							<tr>
 								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice No')")).ID("InvoiceNo").Disabled(true).LabelMode(EditorLabelMode.Outside))</td>
 								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Date')")).ID("InvoiceDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).Disabled(true).LabelMode(EditorLabelMode.Outside))</td>
@@ -682,7 +693,7 @@
 
 									@(Html.DevExtreme().DropDownBox()
 																			.ID("InvoiceTransactionsCode")
-															                .Label(new JS("formatMessage('Invoice Transactions Code')"))
+															.Label(new JS("formatMessage('Invoice Transactions Code')"))
 																			.Value("0100000") // Default selected value
 																			.ValueExpr("ID")
 																			.DisplayExpr("ID")
@@ -733,6 +744,7 @@
 																			.ValueChangeEvent("input")
 																			.HoverStateEnabled(true)
 																			.ValueExpr("AccountHead")
+																			//.ValueExpr("AccountId")
 																			.DisplayExpr("AccountId")
 																			.OnInput("dropDownBoxOnInput")
 																			.OnClosed("onDropDownBoxClosed")
@@ -744,7 +756,7 @@
 																			.Width(1000)
 																			)
 																		@* 	.OnKeyDown("onKeyDown") *@
-																		@* 	.OnValueChanged("dropDownBoxValueChanged") *@
+																		 	@* .OnValueChanged("onClientCodeChanged") *@
 																			.ContentTemplate(new TemplateName("ClientCodeContentTemplate")))
 								</td>
 								<td style="width:10%; vertical-align: bottom; padding-bottom: 5px;">
@@ -844,17 +856,17 @@
 								</td>
 							</tr>
 							<tr>
-                                <td>
-									@(Html.DevExtreme().TextBox()
-																			.ID("GroupVATNo")
-																			.Label(new JS("formatMessage('Group VAT No')"))
-																			.LabelMode(EditorLabelMode.Outside)
-																			.MaxLength(15)
-																			.Mask("000000000000000") // 15 digits
-																			.MaskChar(" ") // Optional: makes it more readable
-																			//.ShowClearButton(true) // Optional: adds a clear (X) button
-																			)
-								</td>
+							<td>
+								@(Html.DevExtreme().TextBox()
+															.ID("GroupVATNo")
+															.Label(new JS("formatMessage('Group VAT No')"))
+															.LabelMode(EditorLabelMode.Outside)
+															.MaxLength(15)
+															.Mask("300000000000003") // 15 digits
+															.MaskChar("_") // Optional: makes it more readable
+																					//.ShowClearButton(true) // Optional: adds a clear (X) button
+															)
+							</td>
 							<td>
 
 								@(Html.DevExtreme().TextBox()
@@ -862,8 +874,8 @@
 															.Label(new JS("formatMessage('Client VAT No')"))
 															.LabelMode(EditorLabelMode.Outside)
 															.MaxLength(15)
-															.Mask("000000000000000") // 15 digits
-															.MaskChar(" ") // Optional: makes it more readable
+															.Mask("300000000000003") // 15 digits
+															.MaskChar("_") // Optional: makes it more readable
 																					//.ShowClearButton(true) // Optional: adds a clear (X) button
 															)
 							</td>
@@ -1090,7 +1102,7 @@
 
 															.LabelMode(EditorLabelMode.Outside)
 															.ID("ddlGoodsGroup2")
-															.Value("Income - Trading")
+															.Value("")
 															.ShowClearButton(true)
 															.AcceptCustomValue(true)
 															.OpenOnFieldClick(false)
@@ -1681,12 +1693,15 @@
 
 								<td>
 									<div style="display: flex; align-items: flex-end; gap: 10px;">
-										@(Html.DevExtreme().CheckBox()
-																				.Text(new JS("formatMessage('')"))
-																				.ID("SubmittedBy")
-																				.Value(null)
-																				.ElementAttr("style", "padding-bottom:40px;")
-																				)
+									@(
+																			Html.DevExtreme().CheckBox()
+																			.Text(new JS("formatMessage('')"))
+																			.ID("SubmittedBy")
+																			.Value(null)
+																			.ElementAttr("style", "padding-bottom:40px;")
+																			.OnValueChanged("function(e) { onClientCodeChanged(accheadid); }") // replace currentAccHeadId with actual variable
+																			)
+
 										@(Html.DevExtreme().TextBox()
 																				.Label(new JS("formatMessage('Invoice Submitted By')"))
 																				.LabelMode(EditorLabelMode.Outside)
@@ -2366,10 +2381,11 @@
 							});
 
 						})
+						
 						)
 		</div>
 
-		<div class="Head">
+		<div class="Head" style="margin-left: 15px;">
 			@await Html.PartialAsync("/Pages/Shared/VAT/VATInvoiceEditFooter.cshtml")
 		</div>
 
@@ -3506,7 +3522,7 @@
 			  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null,revaccheadid=null,InvoiceCurrencyExchangeId=null,TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
 					  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null,Gsdescrpition=null,GsdescriptionAr=null,ItemPartNo=null,CostPrice=null,GssellingRate=null,ReorderQty=null,IsDirectApproval=true,IsDirectVerify=true,IsClientCode=false
 							  ClientPostalCode=null,ClientCity=null,ClientAddressSt=null,Desc=null,rowIx=null, IsEdit = false;
-			  let dropDownInstance;
+				  let dropDownInstance;
 			  let vatListInstance;
 
 
@@ -3532,7 +3548,7 @@
 
 						if (response && response.length > 0) {
 							var account = response[0];
-
+							
 							accheadid=account.ClientCode;
 
 							$('#InvoiceNo').dxTextBox("instance")?.option("value", account.InvoiceNo);
@@ -4106,6 +4122,8 @@
 
 					caption: "#",
 
+						cssClass: "center-header",
+
 					width: 100,
 
 					allowEditing: false // Prevent manual editing
@@ -4118,6 +4136,8 @@
 
 					caption: formatMessage('Item Code'),
 
+					cssClass: "center-header",
+
 					width: 200
 
 				},
@@ -4127,6 +4147,8 @@
 					dataField: "Description",
 
 					caption: formatMessage('Description'),
+
+						cssClass: "center-header",
 
 					width: 550,
 						 sortOrder: "asc", // auto-sort
@@ -4317,8 +4339,9 @@
 				},
 		{
 					dataField: "Descriptions",
+						cssClass: "center-header",
 					caption: "...",
-					width: 50,
+					width: 80,
 					allowEditing: false,
 						cellTemplate: function (container, options) {
 			const buttonId = `popover-btn-${options.rowIndex}`;
@@ -4426,6 +4449,8 @@
 					dataField: "DescriptionDetails",
 
 					caption: formatMessage('Unit Rate Method'),
+
+						cssClass: "center-header",
 
 					width: 200,
 
@@ -4551,13 +4576,13 @@
 				},
 
 
-				{ dataField: "Qty", caption: formatMessage('Qty'), width: 150 },
+				{ dataField: "Qty", caption: formatMessage('Qty'),cssClass: "center-header", width: 150 },
 
-				{ dataField: "UnitPrice", caption: formatMessage('Unit Price'), width: 150 },
+				{ dataField: "UnitPrice", caption: formatMessage('Unit Price'),cssClass: "center-header", width: 150 },
 
-			    { dataField: "TotalBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 185, format: { type: "fixedPoint", precision: 2 } },
+			    { dataField: "TotalBeforeDiscount", caption: formatMessage('Total Before Discount'),cssClass: "center-header", width: 185, format: { type: "fixedPoint", precision: 2 } },
 
-				{ dataField: "Discount", caption: formatMessage('Discount'), width: 150 },
+					{ dataField: "Discount", caption: formatMessage('Discount'), cssClass: "center-header",width: 150 },
 
 				//{ dataField: "DiscountDetails", caption: "...", width: 50 },
 						{
@@ -4580,13 +4605,14 @@
 	}
 	,
 
-					{ dataField: "Amount", caption: formatMessage('Amount'), width: 150, format: { type: "fixedPoint", precision: 2 } },
+					{ dataField: "Amount", caption: formatMessage('Amount'), width: 150, cssClass: "center-header",format: { type: "fixedPoint", precision: 2 } },
 
 				//{ dataField: "VAT%", caption: "VAT%", width: 150 },
 
 				{
 					dataField: "VATPercentage",
 					caption: formatMessage('VAT%'),
+						cssClass: "center-header",
 					width: 150,
 					editCellTemplate: function (cellElement, cellInfo) {
 						getTaxSlabData().done(function (dropdownData) {
@@ -4637,11 +4663,11 @@
 					}
 				},
 
-				{ dataField: formatMessage('ExcemptionCode'), caption: "Excemption Code", width: 150 },
+				{ dataField: formatMessage('ExcemptionCode'), caption: "Excemption Code",cssClass: "center-header", width: 150 },
 
-				{ dataField: "VAT", caption: formatMessage('VAT'), width: 150 },
+				{ dataField: "VAT", caption: formatMessage('VAT'), cssClass: "center-header",width: 150 },
 
-				{ dataField: "Total", caption: formatMessage('Total'), width: 150, format: { type: "fixedPoint", precision: 2 } },
+					{ dataField: "Total", caption: formatMessage('Total'), cssClass: "center-header",width: 150, format: { type: "fixedPoint", precision: 2 } },
 
 				{ dataField: "TaxSlabCode", caption: formatMessage('TaxSlabCode'), width: 150, allowEditing: false, visible: false }
 
@@ -4892,29 +4918,40 @@
 				}));
 			});
 		}
-
 		$(document).ready(function () {
-			if (IsCurrent !== "true") {
-				$.ajax({
-					url: "/api/VATModule/GetVATInvoiceNo",
-					type: "GET",
-					success: function (data) {
-						console.log("Success:", data);
+			const urlParams = new URLSearchParams(window.location.search);
+			const invoiceNoFromUrl = urlParams.get("invoiceNo");
+			const isCreateMode = urlParams.get("mode") === "create";
 
-						const invoiceBox = $("#InvoiceNo").dxTextBox("instance");
-						if (invoiceBox) {
-							invoiceBox.option("value", data || "");
-						} else {
-							console.warn("Invoice TextBox not initialized.");
+			const invoiceBox = $("#InvoiceNo").dxTextBox("instance");
+
+			if (isCreateMode && invoiceNoFromUrl) {
+				// ✅ If URL has invoiceNo (from GenerateVATInvoice button)
+				if (invoiceBox) {
+					invoiceBox.option("value", invoiceNoFromUrl);
+				}
+			} else {
+				// 🔄 Otherwise, get default auto-generated invoice from API
+				if (IsCurrent !== "true") {
+					$.ajax({
+						url: "/api/VATModule/GetVATInvoiceNo",
+						type: "GET",
+						success: function (data) {
+							if (invoiceBox) {
+								invoiceBox.option("value", data || "");
+							} else {
+								console.warn("Invoice TextBox not initialized.");
+							}
+						},
+						error: function (xhr, status, error) {
+							console.error("Error fetching invoice number:", error);
+							DevExpress.ui.dialog.alert("Failed to load invoice number.", "Error");
 						}
-					},
-					error: function (xhr, status, error) {
-						console.error("Error loading Payment Accounts:", error);
-						DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
-					}
-				});
+					});
+				}
 			}
 		});
+
 
 
 
@@ -4955,6 +4992,7 @@
 								if (selectedRowData.length > 0) {
 									accheadid = selectedRowData[0].AccountId;
 									 IsClientCode=true;
+									 onClientCodeChanged(accheadid);
 										console.log("ClientData",selectedRowData[0])
 								  let  accheadname = selectedRowData[0].AccountHead;
 									  ClientAddressSt=selectedRowData[0].ClientAddressStreet;
@@ -6893,11 +6931,11 @@
 										// }
 
 											let rowData = response.map((item, index) => {
-		const currencyRate = (item.LineTotal || 0) * (ExchangeRate || 1);
+		
 		return {
 			SNo: index + 1,
-			...item,
-			LineTotal: currencyRate // overwrite with converted value
+			...item
+			//LineTotal: currencyRate // overwrite with converted value
 		};
 	});
 
@@ -7375,34 +7413,6 @@
 
 			dataGrid1.refresh();
 		}
-
-
-	function disableEditing() {
-		// Disable all input fields and buttons except for specific ones
-		$('input, select, textarea').prop('disabled', true);  // Disable inputs, selects, and textareas
-
-		const allowedButtons = ['btnMoveDown', 'btnMoveUp', 'btnSave', 'btnSaveAndClose', 'btnPostToLedgers', 'btnPostTag', 'btnPrint1', 'btnPrint'];
-
-		// Disable all dxButton and dxDropDownButton controls
-		$('.dx-button, .dx-dropdownbutton').each(function () {
-			const id = $(this).attr('id');
-			if (id && !allowedButtons.includes(id)) {
-				// Disable dxButton and dxDropDownButton widgets except for allowed ones
-				if ($(this).data('dxButton')) {
-					$(this).dxButton('option', 'disabled', true);
-				} else if ($(this).data('dxDropDownButton')) {
-					$(this).dxDropDownButton('option', 'disabled', true);
-				}
-			}
-		});
-
-		// Disable DataGrid Editing and Deleting
-		var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-		if (dataGrid) {
-			dataGrid.option("editing.allowUpdating", false);
-			dataGrid.option("editing.allowDeleting", false);
-		}
-	}
 
 
 		$("#btnBack").on("click", function (e) {
@@ -8536,6 +8546,170 @@
 				showColumnChooser();
 				console.log('End permission handling');
 			});
+	// }
+		$(function () {
+			const urlParams = new URLSearchParams(window.location.search);
+			const deliveryNoteNo = urlParams.get("deliveryNoteNo");
+			const salesOrderNo = urlParams.get("salesOrderNo");
+			const invoiceNo = urlParams.get("invoiceNo");
+			const mode = urlParams.get("mode");
+
+			if (deliveryNoteNo && invoiceNo && salesOrderNo && mode === "create") {
+				// Set generated invoice number
+				$("#InvoiceNo").dxTextBox("instance").option("value", invoiceNo);
+
+				// Get delivery note data by deliveryNoteNo
+				$.get("/api/DeliveryNote/GetByDeliveryNoteNo", { deliveryNoteNo })
+					.done(function (data) {
+						// Map master fields (add null checks as needed)
+						$("#InvoiceDate").dxDateBox("instance").option("value", data.deliveryDate || new Date());
+						// $("#ddclientcode").dxDropDownBox("instance").option("value", data.clientCode || "");
+						// $("#ddclientname").dxDropDownBox("instance").option("value", data.attention || "");
+						$("#ClientPONo").dxTextBox("instance").option("value", data.clientPono || "");
+						$("#OurSalesOrderNo").dxDropDownBox("instance").option("value", data.salesOrderNo || "");
+						$("#QuotationNo").dxTextBox("instance").option("value", data.quotationNo || "");
+						$("#PODate").dxDateBox("instance").option("value", data.clientPodate || null);
+						$("#ClientGRNReference").dxTextBox("instance").option("value", data.attention || "");
+				//		$("#ClientContactNo").dxTextBox("instance").option("value", data.clientContactNo || "");
+				//		$("#ClientEmail").dxTextBox("instance").option("value", data.clientContactEmail || "");
+				//		$("#clientProject").dxTextBox("instance").option("value", data.clientProject || "");
+
+				$.get("/api/ClientLeadMaster/GetClientByCode", { clientCode: data.clientCode })
+				.done(function (client) {
+					$("#ddclientcode").dxDropDownBox("instance").option("value", client.ClientAccountLedgerNo || "");
+					$("#ddclientname").dxDropDownBox("instance").option("value", client.ClientAccountLedgerNo || "");
+ 
+				})
+				.fail(function () {
+					DevExpress.ui.notify("Failed to load client details.", "error", 2000);
+				});
+							var grid = $("#B2BdataGrid").dxDataGrid("instance");
+					if (grid) {
+						grid.option("dataSource", []); // Clear before rebinding
+						if (Array.isArray(data.items)) {
+							const invoiceItems = data.items.map((item, idx) => ({
+								SNo: idx + 1,
+								ItemCode: item.ItemCode,
+								DescriptionDetails: item.UnitRateMethod,
+								Qty: item.Qty,
+								Description: item.StockDescription,
+								UnitPrice: item.UnitCostPrice,
+								Discount: item.Discount || 0
+							}));
+							grid.option("dataSource", invoiceItems);
+						}
+					}
+	})
+
+
+					.fail(function () {
+						DevExpress.ui.notify("Failed to load delivery note details.", "error", 2000);
+					});
+			}
+		});
+
+
+			$(function () {
+			// Get InvoiceNo from the page (from a hidden field or query string)
+			var invoiceNo = $("#InvoiceNo").dxTextBox("instance")?.option("value");
+			if (!invoiceNo) {
+				// Try to get from query string as fallback
+				const urlParams = new URLSearchParams(window.location.search);
+				invoiceNo = urlParams.get("invoiceNo") || urlParams.get("InvoiceNo");
+			}
+			if (invoiceNo) {
+				$.get("/api/VATModule/GetGridInvoiceDetails", { InvoiceNo: invoiceNo })
+					.done(function (data) {
+						var grid = $("#B2BdataGrid").dxDataGrid("instance");
+						if (grid) {
+							grid.option("dataSource", data);
+						}
+					})
+					.fail(function () {
+						DevExpress.ui.notify("Failed to load invoice line items.", "error", 3000);
+					});
+			}
+		});
+
+
+				 function onClientCodeChanged(accheadid) {
+		$.ajax({
+			url: '/api/AccountLedgerMaster/GetAccountDetails',
+			type: 'GET',
+			data: { accountID: accheadid },
+			success: function (result) {
+				debugger;
+				// 1. Pick the first record regardless of the shape returned
+				const details = Array.isArray(result)
+					? result[0]
+					: (result.accountDetails || [])[0];
+
+				if (!details) {
+					DevExpress.ui.notify("No account details returned", "warning", 3000);
+					return;
+				}
+
+				// 2. Get your base Invoice Date (today fallback)
+				const invoiceDateBox = $("#InvoiceDate").dxDateBox("instance");
+				const baseDate = invoiceDateBox?.option("value")
+					? new Date(invoiceDateBox.option("value"))
+					: new Date();
+
+				// 3. Default credit days from master
+				let creditDays = Number(details.NoOfDaysCreditPeriod) || 0;
+				let NoOfDays = creditDays;
+				// 4. If the checkbox “Submitted By” is ticked, recompute creditDays
+				const isSubmitted = $('#SubmittedBy').dxCheckBox("instance")?.option("value");
+				if (isSubmitted) {
+					const invoiceSubmittedDate = $("#ddlinvoicesubmittedon")
+						.dxDateBox("instance")
+						.option("value");
+
+					if (invoiceSubmittedDate) {
+						const diffMs = new Date(invoiceSubmittedDate) - baseDate;
+						SubcreditDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+						NoOfDays = creditDays+SubcreditDays;
+					}
+				}
+
+				// 5. Calculate the due date and push it into the UI
+				const dueDate = new Date(baseDate);
+					dueDate.setDate(dueDate.getDate() + NoOfDays);
+				$("#InvoiceDueDate").dxDateBox("instance").option("value", dueDate);
+			},
+			error: function () {
+				DevExpress.ui.notify("Failed to fetch data for client", "error", 2000);
+			}
+		});
+	}
+
+
+		function disableEditing() {
+			// Disable all input fields and buttons except for specific ones
+			$('input, select, textarea').prop('disabled', true);  // Disable inputs, selects, and textareas
+
+			const allowedButtons = ['btnMoveDown', 'btnMoveUp', 'btnSave', 'btnSaveAndClose', 'btnPostToLedgers', 'btnPostTag', 'btnPrint1'];
+
+			// Disable all dxButton and dxDropDownButton controls
+			$('.dx-button, .dx-dropdownbutton').each(function () {
+				const id = $(this).attr('id');
+				if (id && !allowedButtons.includes(id)) {
+					// Disable dxButton and dxDropDownButton widgets except for allowed ones
+					if ($(this).data('dxButton')) {
+						$(this).dxButton('option', 'disabled', true);
+					} else if ($(this).data('dxDropDownButton')) {
+						$(this).dxDropDownButton('option', 'disabled', true);
+					}
+				}
+			});
+
+			// Disable DataGrid Editing and Deleting
+			var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+			if (dataGrid) {
+				dataGrid.option("editing.allowUpdating", false);
+				dataGrid.option("editing.allowDeleting", false);
+			}
+		}
 
 </script>
 

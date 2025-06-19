@@ -5,6 +5,17 @@
 }
 
 <style>
+	.dx-datagrid-headers .center-header {
+		text-align: center !important;
+	}
+
+	.Head {
+		margin-bottom: 10px;
+	}
+
+	#B2BdataGrid {
+		height: 700px !important;
+	}
 
 	.toggle-switch {
 	position: relative;
@@ -1061,7 +1072,7 @@
 									)
 		</div>
 
-		<div class="Head">
+		<div class="Head" style="margin-left: 15px;">
 			@await Html.PartialAsync("/Pages/Shared/VAT/VATInvoiceEditFooter.cshtml")
 		</div>
 
@@ -2314,6 +2325,8 @@
 
 							caption: "#",
 
+							cssClass: "center-header",
+
 							width: 100,
 
 							allowEditing: false // Prevent manual editing
@@ -2326,6 +2339,8 @@
 
 							caption: "Item Code",
 
+							cssClass: "center-header",
+
 							width: 200
 
 						},
@@ -2335,6 +2350,8 @@
 			dataField: "Description",
 
 			caption: "Description",
+
+			cssClass: "center-header",
 
 			width: 550,
 
@@ -2523,7 +2540,8 @@
 					{
 			dataField: "Descriptions",
 			caption: "...",
-			width: 150,
+			cssClass: "center-header",
+			width: 80,
 			allowEditing: true,
 			cellTemplate: function (container, options) {
 			$("<div>").dxButton({
@@ -2551,6 +2569,8 @@
 						dataField: "DescriptionDetails",
 
 						caption: "Unit Rate Method",
+
+						cssClass: "center-header",
 
 						width: 200,
 
@@ -2674,10 +2694,10 @@
 
 					},
 
-						{ dataField: "Units Till Bill", caption: "Units To Bill", width: 150 },
-					{ dataField: "Qty", caption: "Qty", width: 150 },
+						{ dataField: "Units Till Bill", caption: "Units To Bill",cssClass: "center-header", width: 150 },
+					{ dataField: "Qty", caption: "Qty",cssClass: "center-header", width: 150 },
 
-					{ dataField: "UnitPrice", caption: "Unit Price", width: 150 },
+					{ dataField: "UnitPrice", caption: "Unit Price", cssClass: "center-header",width: 150 },
 
 					// { dataField: "TotalBeforeDiscount", caption: "Total Before Discount", width: 150 },
 
@@ -2685,13 +2705,14 @@
 
 					// { dataField: "DiscountDetails", caption: "...", width: 50 },
 
-					{ dataField: "Amount", caption: "Amount", width: 150 },
+					{ dataField: "Amount", caption: "Amount",cssClass: "center-header", width: 150 },
 
 					//{ dataField: "VAT%", caption: "VAT%", width: 150 },
 
 					{
 		dataField: "VATPercentage",
 		caption: "VAT Description",
+		cssClass: "center-header",
 		width: 150,
 		editCellTemplate: function(cellElement, cellInfo) {
 			getTaxSlabData().done(function (dropdownData) {
@@ -2761,7 +2782,7 @@
 
 					// { dataField: "ExcemptionCode", caption: "Excemption Code", width: 150 },
 
-					{ dataField: "VAT", caption: "VAT", width: 150 },
+					{ dataField: "VAT", caption: "VAT", cssClass: "center-header",width: 150 },
 
 					// { dataField: "Total", caption: "Total", width: 150 },
 
@@ -5438,13 +5459,13 @@
 								"Invoice Posted Successfully."
 							)
 						}
-							else if(response.IsPosted == true)
-							{
-									 DevExpress.ui.dialog.alert(
-									"This VAT Credit Note is already posted to your ledgers.",
-									"Credit Note Posted Already."
-								)
-							}
+							// else if(response.IsPosted == true)
+							// {
+							// 		 DevExpress.ui.dialog.alert(
+							// 		"This VAT Credit Note is already posted to your ledgers.",
+							// 		"Credit Note Posted Already."
+							// 	)
+							// }
 						else
 						{
 								   DevExpress.ui.dialog.custom({

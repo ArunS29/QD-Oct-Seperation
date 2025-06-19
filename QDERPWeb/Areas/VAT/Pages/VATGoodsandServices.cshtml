@@ -16,10 +16,10 @@
         padding: 10px;
     }
 
-    .limited-footer .btn-container:not(:has(#btnSave,#btnSaveAndClose,#btnPrint1,#btnDelete,#btnBack)) {
+/*     .limited-footer .btn-container:not(:has(#btnSave,#btnSaveAndClose,#btnPrint1,#btnDelete,#btnBack)) {
         display: none !important;
     }
-
+ */
     .icon-button .dx-button-content {
         display: flex;
         justify-content: center;
@@ -304,11 +304,9 @@
         </div>
 
     </div>
-        <div class="Head">
-            <div class="limited-footer">
-                @await Html.PartialAsync("VATModuleFooter")
-            </div>
-        </div>
+    <div class="Head">
+        @await Html.PartialAsync("/Pages/Shared/VAT/VATGoodsAndServicesFooter.cshtml")
+    </div>
     </div>
 
     @using (Html.DevExtreme().NamedTemplate("GoodsandServicesContentTemplate"))
@@ -642,13 +640,6 @@
     //         }
     //     });
     // });
-    $(document).ready(function () {
-        $(".limited-footer .btn-containerIvoiceEdit").each(function () {
-            if (!$(this).find("#btnUpdate,#btnSaveAndClose,#btnPrint1,#btnDelete,#btnBack").length) {
-                $(this).remove();
-            }
-        });
-    });
 
 
     function goBackToPreviousPage() {

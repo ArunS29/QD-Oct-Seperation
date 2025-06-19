@@ -4,6 +4,17 @@
 @{
 }
 <style>
+	.dx-datagrid-headers .center-header {
+		text-align: center !important;
+	}
+
+	.Head {
+		margin-bottom: 10px;
+	}
+
+	#B2BdataGrid {
+		height: 700px !important;
+	}
 	.toggle-switch {
 		position: relative;
 		display: inline-block;
@@ -1539,8 +1550,8 @@
 		</div>
 
 
-		<div class="Head">
-			@await Html.PartialAsync("/Pages/Shared/VAT/VATInvoiceEditFooter.cshtml")
+		<div class="Head" style="margin-left: 15px;">
+			@await Html.PartialAsync("/Pages/Shared/VAT/VATPurhaseInvoiceEditFooter.cshtml")
 		</div>
 
 		@using (Html.DevExtreme().NamedTemplate("SupplierInvoiceContentTemplate"))
