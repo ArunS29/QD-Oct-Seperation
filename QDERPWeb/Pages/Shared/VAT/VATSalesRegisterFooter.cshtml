@@ -235,28 +235,7 @@
 </style>
 
 <div class="dx-fieldset horizontal-container" style="width:1000px;background-color:transparent;">
-
-
- @*    <div class="btn-container">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddButtonLayout")
-            .Icon("smalliconslayout")
-            .Width(50)
-            .Text(new JS("formatMessage('Layout')"))
-            .ElementAttr(new { style = "display: none;" })
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu");
-                items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
-                items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
-                items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
-                items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
-            })
-            .ShowArrowIcon(false)
-            )
-    </div> *@
-    <div class="btn-containerIvoiceEdit">
+    <div class="btn-containers">
         @(Html.DevExtreme().DropDownButton()
             .ID("ddButtonLayout")
             .Icon("smalliconslayout")
@@ -279,6 +258,47 @@
             .ShowArrowIcon(false)
             )
     </div>
+
+   @*  <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("ddButtonLayout")
+            .Icon("smalliconslayout")
+           
+            .Text(new JS("formatMessage('Layout')"))
+           
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            { *@
+                @* items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu"); *@
+               @*  items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
+                items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
+                items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
+                items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
+            })
+            .ShowArrowIcon(false)
+            )
+    </div> *@
+   
+@*     <div class="btn-containerIvoiceEdit">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("ddButtonLayout")
+            .Icon("smalliconslayout")
+            .Width(50)
+            .Text(new JS("formatMessage('Layout')"))
+            .ElementAttr(new { style = "display: none;" })
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+
+                // items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu");
+                items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
+                items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
+                items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
+                items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
+            })
+            .ShowArrowIcon(false)
+            )
+    </div> *@
 
  
 

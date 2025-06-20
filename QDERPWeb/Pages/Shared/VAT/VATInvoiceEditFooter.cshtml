@@ -496,6 +496,57 @@
 
 <script type="text/javascript">
 
+ 
+      
+    function moveRow(direction) {
+        const grid = $("#B2BdataGrid").dxDataGrid("instance");
+        const dataSource = grid.getDataSource();
+        const items = dataSource.items();
+        const selectedKey = grid.option("selectedRowKeys")[0];
+
+        if (selectedKey === undefined) return;
+
+        const currentIndex = items.findIndex(item => item.SNo === selectedKey);
+        if (currentIndex === -1) return;
+
+        const targetIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+
+        // Boundary check
+        if (targetIndex < 0 || targetIndex >= items.length) return;
+
+        // Swap data
+        [items[currentIndex], items[targetIndex]] = [items[targetIndex], items[currentIndex]];
+
+        // Optional: Swap SNo for consistent display
+        const tempSno = items[currentIndex].SNo;
+        items[currentIndex].SNo = items[targetIndex].SNo;
+        items[targetIndex].SNo = tempSno;
+
+        // Replace array to trigger re-render
+        dataSource.store()._array = items;
+        grid.refresh();
+
+        // Reselect moved row
+        const newSelectedKey = items[targetIndex].SNo;
+        grid.selectRows([newSelectedKey], true);
+
+        // Scroll to the newly selected row
+        grid.navigateToRow(newSelectedKey);
+    }
+
+    $(function () {
+        $("#btnMoveUp").dxButton("instance").option("onClick", function () {
+            moveRow("up");
+        });
+
+        $("#btnMoveDown").dxButton("instance").option("onClick", function () {
+            moveRow("down");
+        });
+    });
+
+
+
+
              function navigateToInvoiceEdit() {
                // Replace with the actual tenant name dynamically
                     var url = `/${tenantName}/VAT/VATInvoiceWithDetails`;
