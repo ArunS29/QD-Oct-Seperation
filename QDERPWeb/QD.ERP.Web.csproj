@@ -138,4 +138,9 @@
 		<Features>experimental-data-section-string-literals</Features>
 	</PropertyGroup>
 
+
+	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
+		<RazorCompileOnBuild>false</RazorCompileOnBuild>
+		<RazorCompileOnPublish>true</RazorCompileOnPublish>
+	</PropertyGroup>
 </Project>
