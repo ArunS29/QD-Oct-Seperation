@@ -105,7 +105,7 @@
 
         /* Show full text when hovered */
         .btn-container:hover .dx-button {
-            width: 200px !important; /* Expand to fit text */
+            width: 150px !important; /* Expand to fit text */
         }
 
         /* Initially hide text */
@@ -252,9 +252,9 @@
         width: 200px !important;
     }
 
-    .btn-container:hover #btnAddNewPayment.dx-button {
-        width: 240px !important;
-    }
+    /* .btn-container:hover #btnAddNewPayment.dx-button { */
+    /*     width: 240px !important; */
+    /* } */
 
     /* Keep the icon always visible */
     .btn-containerIvoiceEdit .dx-button .dx-icon {
@@ -303,7 +303,7 @@
     }
 </style>
 
-<div class="dx-fieldset horizontal-container" style="width:1000px;background-color:transparent;">
+<div class="dx-fieldset horizontal-container" style="width:1000px;background-color:transparent;gap:3px">
 
     <div class="btn-containers">
         @(Html.DevExtreme().DropDownButton()
@@ -335,9 +335,9 @@
             .ID("btnMoveDown")
             .Text(new JS("formatMessage('Move Down')"))
             .Type(ButtonType.Normal)
-
+            .Width(40)
             .StylingMode(ButtonStylingMode.Outlined)
-            .Icon("spindown") // Change the icon to an up/down arrow option
+            .Icon("arrowdown") // Change the icon to an up/down arrow option
             .ElementAttr(new { @class = "bold-button" })
             )
     </div>
@@ -346,9 +346,9 @@
             .ID("btnMoveUp")
             .Text(new JS("formatMessage('Move Up')"))
             .Type(ButtonType.Normal)
-
+            .Width(40)
             .StylingMode(ButtonStylingMode.Outlined)
-            .Icon("spinup") // Change the icon to an up/down arrow option
+            .Icon("arrowup") // Change the icon to an up/down arrow option
             .ElementAttr(new { @class = "bold-button" })
             )
     </div>
@@ -384,6 +384,7 @@
         @(Html.DevExtreme().Button()
             .ID("btnAddNew")
             .Text(new JS("formatMessage('Add New Item')"))
+
             .Icon("plus")
             // .OnClick("addNewRow") // Attach function
             .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
@@ -418,21 +419,9 @@
             )
     </div>
     
-    <!-- Hidden anchor for submenu positioning -->
-    <div id="additionalFormatsTrigger" style="position:absolute; width:1px; height:1px;"></div>
+   
 
-    <!-- Submenu placeholder -->
-    <div id="additionalFormatsSubmenu"></div>
 
-@*     <div class="btn-containers">
-        @(Html.DevExtreme().Button()
-            .ID("btnDelete")
-            .Text(new JS("formatMessage('Delete')"))
-            .Icon("close")
-            //  .OnClick("onDeleteButtonClick")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-            )
-    </div> *@
     <div class="btn-containers">
 
         @(Html.DevExtreme().Button()
@@ -464,20 +453,12 @@
             .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
             )
     </div>
-    <div class="btn-containers">
-        @(Html.DevExtreme().Button()
-            .ID("btnCancel")
-            .Text(new JS("formatMessage('Cancel')"))
-            .Icon("close")
-            // .OnClick("onVerifyButtonClick")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-
-            )
-    </div>
+  
     <div class="btn-containers">
         @(Html.DevExtreme().Button()
             .ID("btnAttach")
             .Text(new JS("formatMessage('Attach')"))
+            .Width(40)
             .Icon("link")
             //.OnClick("onAttachButtonClick")
             .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
@@ -503,7 +484,11 @@
             )
     </div>
 
+    <!-- Hidden anchor for submenu positioning -->
+    <div id="additionalFormatsTrigger" style="position:absolute; width:1px; height:1px;"></div>
 
+    <!-- Submenu placeholder -->
+    <div id="additionalFormatsSubmenu"></div>
 
 </div>
 
