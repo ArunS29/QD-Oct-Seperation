@@ -801,11 +801,11 @@
                 <td style="display:flex;align-items: end;">
                     @(
                         Html.DevExtreme().TextBox()
-                        .Label(new JS("formatMessage('Cheque No/Reference No')"))
                         .ID("ChequeNoReferenceNo")
-                        .Value(null)
-                        .LabelMode(EditorLabelMode.Outside)
+                        .Label("Cheque No/Reference No")
+                        .LabelMode(EditorLabelMode.Floating) // or Static, Outside, Hidden dynamically
                         .Width("100%")
+                        .Value(null)
                         )
                     @(Html.DevExtreme().Button()
                         .ID("btnChequePopup")

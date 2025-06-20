@@ -272,7 +272,8 @@ namespace QD.ERP.Web.Reports
         new { Label = "xrLabel19", Picture = "xrPictureBox3" },
         new { Label = "xrLabel5", Picture = "xrPictureBox6" },
                 new { Label = "xrLabel11", Picture = "xrPictureBox5" },
-                        
+                new { Label = "xrLabel9", Picture = "xrPictureBox4" },
+
 
     };
 
