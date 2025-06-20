@@ -7952,7 +7952,7 @@
         "Physical Stock Counted By": "实物盘点人：",
         "Entry Date": "录入日期",
         "Issued to Project": "发往项目",
-        "Stock Counted On": "盘点日期"
+        "Stock Counted On": "盘点日期",
   "Stock Adjustment Entry": "库存调整条目",
         "Show Item Line No instead of SI,No.": "显示物品行号而不是 SI 编号",
         "Print Item Code With Description": "打印物品编码及描述",
