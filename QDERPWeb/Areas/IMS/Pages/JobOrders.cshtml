@@ -219,7 +219,7 @@
 
 </div>
 <div class="dx-field ledgerResult">
-@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl60801jobOrderMaster>()
+@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60801jobOrdersView>()
 		.ID("dataGrid")
 		.RemoteOperations(false)
 		.DataSource(new JS("[]"))
@@ -232,7 +232,7 @@
 				subColumns.AddFor(m => m.JobOrderNo).Caption(new JS("formatMessage('JobOrder No')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.JobOrderDate).Caption(new JS("formatMessage('Job Order Date')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
 				subColumns.AddFor(m => m.JobOrderDescription).Caption(new JS("formatMessage('Job Order Description')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.JobOrderStatus).Caption(new JS("formatMessage('Job Order Status Name')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.JobOrderStatusName).Caption(new JS("formatMessage('Job Order Status Name')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.JobOrderType).Caption(new JS("formatMessage('Job Order Type')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.TagNo).Caption(new JS("formatMessage('TagNo')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.Size).Caption(new JS("formatMessage('Size')")).Alignment(HorizontalAlignment.Center).Visible(true);
@@ -323,6 +323,7 @@
 			var tillmonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 			$("#frmdateBox").dxDateBox("instance").option("value", firstDay);
 			$("#todateBox").dxDateBox("instance").option("value", tillmonth);
+			ddBtnShowRecords_click('range');
 	});
 	function ddBtnShowRecords_click(duration) {
 		 var frmDateBox = $("#frmdateBox").dxDateBox("instance");
@@ -405,42 +406,17 @@
 
 	}
 	function onContextMenuPreparing(e) {
-		if (e.target === "content" && e.row) {
+		if (e.target === "content" && e.row && e.row.data) {
+			const rowData = e.row.data;
+			const JobOrderNo = encodeURIComponent(rowData.JobOrderNo);
+			const tenantName = window.tenantName || "defaultTenant";
+
 			e.items = [
 				{
 					text: "Edit Job Order",
 					icon: "edit",
 					onItemClick: function () {
-						const rowData = e.row.data;
-						if (!rowData) {
-							console.error("Row data is unavailable.");
-							return;
-						}
-
-						// const { Mprno, RequestEnquiry } = rowData;
-						// const tenantName = window.tenantName || "defaultTenant";
-						// let url = "";
-						// let title = "";
-
-						// switch (RequestEnquiry) {
-						// 	case "Client Request":
-						// 		url = `/${tenantName}/IMS/AddNewClientRequest?Mprno=${Mprno}`;
-						// 		title = "Edit Client Request";
-						// 		break;
-						// 	case "Project Request":
-						// 		url = `/${tenantName}/IMS/MRAddNewProjectRequest?Mprno=${Mprno}`;
-						// 		title = "Edit Project Request";
-						// 		break;
-						// 	case "Store Request":
-						// 		url = `/${tenantName}/IMS/MRAddNewStoreRequest?Mprno=${Mprno}`;
-						// 		title = "Edit Store Request";
-						// 		break;
-						// 	default:
-						// 		console.warn("Unknown RequestEnquiry type:", RequestEnquiry);
-						// 		return;
-						// }
-
-						//openModal(url, title);
+						const url = `/${tenantName}/IMS/EditJobOrderDetails?JobOrderNo=${JobOrderNo}`;
 						window.location.href = url;
 					}
 				},
