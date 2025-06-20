@@ -725,6 +725,7 @@
 																												.LoadMode(DataSourceLoadMode.Raw)
 																												.Key("AccountId"))
 																												.LabelMode(EditorLabelMode.Outside)
+																												.Value("L00508")
 																												.ID("ddclientcode")
 																												.ValidationRules(rules =>
 																												{
@@ -811,8 +812,8 @@
 																												.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetClientCode").LoadMode(DataSourceLoadMode.Raw).Key("ClientName"))
 																												.LabelMode(EditorLabelMode.Outside)
 
-																								.ID("ddclientname")
-
+																								                .ID("ddclientname")
+															                                                    .Value("Cash Customer")
 																												.ValidationRules(rules =>
 																												{
 																													rules.AddRequired()
@@ -871,7 +872,7 @@
 																												//.ShowClearButton(true) // Optional: adds a clear (X) button
 																						)
 							</td>
-							<td colspan="3">@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name in Arabic')")).ID("ClientNameArabic").LabelMode(EditorLabelMode.Outside))</td>
+							<td colspan="3">@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name in Arabic')")).ID("ClientNameArabic").Value("عميل نقدي").LabelMode(EditorLabelMode.Outside))</td>
 
 							</tr>
 							<tr>

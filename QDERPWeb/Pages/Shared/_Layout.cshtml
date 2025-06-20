@@ -1460,11 +1460,11 @@
         </div>
         <div id="submenuContainer9" class="context-menu" style="display:none; width: 300px;">
             <div class="context-menu-item1">
-                <div class="submenu-item">
+                <div class="submenu-item" onclick="stockInventoryReport()">
 
                     <span class="no-border-input">Stock Inventory Report</span>
                 </div>
-                <div class="submenu-item">
+                <div class="submenu-item" onclick="cogsposting()">
 
                     <span class="no-border-input">COGS Posting</span>
                 </div>
@@ -1584,7 +1584,7 @@
                     @if (userModules.Contains("VAT"))
                     {
                         <div class="menu-item vat" onclick="navigate('VAT Modules')">
-                            <i class="fas fa-certificate" id="VATModulesIcon"></i>
+                            <i class="fas fa-shopping-cart" id="VATModulesIcon"></i>
                             <div id="VATModules" class="text no-border-input"></div>
                         </div>
                     }
@@ -2287,7 +2287,12 @@
                         function handleBellClick() {
                   window.location.href = `/${tenantName}/Shared/Notification`;
                 }
-
+                function stockInventoryReport() {
+                  window.location.href = `/${tenantName}/VAT/VATSalesStockInventoryLists`;
+                }
+                function cogsposting() {
+                  window.location.href = `/${tenantName}/VAT/VATSalesReportCOGSPosting`;
+                }
                      let alertsData = [];
 
                 async function fetchUnseenCount() {
@@ -2604,15 +2609,15 @@
                         const sidebar2 = document.getElementById('sidebar2');
                         sidebar2.innerHTML = `
                                         <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/SalesRegisterVAT">
-                                            <i class="fas fa-book"></i>
+                                            <i class="fas fa-sort-numeric-up"></i>
                                             <div class="text">${formatMessage("Sales Invoice Register")}</div>
                                         </a>
                                         <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATCreditNotRegister">
-                                            <i class="fas fa-book"></i>
+                                            <i class="fas fa-file-invoice "></i>
                                             <div class="text">${formatMessage("Credit Note Register")}</div>
                                         </a>
                                         <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATPurchaseMasterView">
-                                            <i class="fas fa-book"></i>
+                                            <i class="fas fa-sort-numeric-down"></i>
                                             <div class="text">${formatMessage("Purchase Invoice Register")}</div>
                                         </a>
                                         <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATDebitNotRegister">
@@ -2620,15 +2625,15 @@
                                             <div class="text">${formatMessage("Debit Note Register")}</div>
                                         </a>
                                          <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATReturnsSalesandPurchase">
-                                            <i class="fas fa-book"></i>
+                                            <i class="fas fa-percentage"></i>
                                             <div class="text">${formatMessage("VAT Returns")}</div>
                                         </a>
                                                          <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATInvoiceReporting">
-                                            <i class="fas fa-book"></i>
+                                            <i class="fas fa-chart-pie"></i>
                                             <div class="text">${formatMessage("Sales Reporting")}</div>
                                         </a>
                                          <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/ProformaInvoiceMasterView">
-                                            <i class="fas fa-book"></i>
+                                            <i class="fas fa-align-justify"></i>
                                             <div class="text">${formatMessage("Proforma Invoices")}</div>
                                         </a>
                                         `;

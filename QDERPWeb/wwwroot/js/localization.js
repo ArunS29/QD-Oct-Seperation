@@ -3024,7 +3024,9 @@
         "Equipment Timesheet (New)": "Equipment Timesheet (New)",
         "Equipment Rentals Dashboard": "Equipment Rentals Dashboard",
         "Print Invoice": "Print Invoice",
-        "Create VAT Invoice":"Create VAT Invoice",
+        "Create VAT Invoice": "Create VAT Invoice",
+        "'Post Average Cost": "'Post Average Cost",
+        "Post COGS To Ledger":"Post COGS To Ledger,"
     },
     ar: {
     "Create VAT Invoice": "إنشاء فاتورة ضريبة القيمة المضافة",

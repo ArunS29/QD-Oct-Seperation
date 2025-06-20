@@ -149,30 +149,6 @@
 		color: black;
 		pointer-events: none;
 	}
-
-	/* .context-menu {
-		position: absolute;
-		background: #fff;
-		border-radius: 8px;
-		box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-		width: 20%;
-		display: none;
-		flex-direction: column;
-		padding: 5px 0;
-		z-index: 1000;
-	} */
-
-/* 	.context-menu-item {
-		 display: flex;
-		align-items: center;
-		padding: 10px 15px;
-		font-size: 14px;
-		cursor: pointer;
-		transition: background 0.2s ease-in-out;
-		color: #333;
-		width: 110%;
-	} */
-
 	.context-menu {
 		position: relative;
 		background: #fff;
@@ -238,16 +214,6 @@
 <div class="Head">
 	@await Html.PartialAsync("/Pages/Shared/VAT/VATCreditNoteRegisterFooter.cshtml")
 </div>
-
-@* <div class="context-menu" id="contextMenu">
-	<div class="context-menu-item">
-		<i class="dx-icon-search"></i> View e-Invoice Credit Note
-	</div>
-	<div class="context-menu-item">
-		<i class="dx-icon-file"></i> VAT Credit Notes (Obselete)
-	</div>
-
-</div> *@
 
 <div class="context-menu" id="contextMenu">
 	<div class="context-menu-item" onclick="viewInvoiceCreditNote()">

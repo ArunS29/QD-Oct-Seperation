@@ -609,19 +609,16 @@
 								</td> *@
 								</td>
 								<td colspan="2">
-
-
 									@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name')"))//.ID("ClientName")
-																													.LabelMode(EditorLabelMode.Outside)
-																													.ID("ddclientname")
-																			.ValidationRules(rules =>
-																			{
-																				rules.AddRequired()
-																				.Message(new JS("formatMessage('Client Name should be entered')"));
-																			})
-                                       )
-
-								</td>
+														.LabelMode(EditorLabelMode.Outside)
+														.ID("ddclientname")
+														.ValidationRules(rules =>
+														{
+															rules.AddRequired()
+															.Message(new JS("formatMessage('Client Name should be entered')"));
+														})
+                                                        )		
+													</td>
 							</tr>
 							<tr>
 								<td>
@@ -651,8 +648,19 @@
 								</td>
 
 								 
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name in Arabic')")).ID("ClientNameArabic").LabelMode(EditorLabelMode.Outside))</td>
+								<td>
+									<div style="display: flex; gap: 4px; align-items: flex-end;">
+									@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name in Arabic')")).ID("ClientNameArabic").LabelMode(EditorLabelMode.Outside))
+								@(
+														Html.DevExtreme().Button()
+														.ID("ClientNameconvertToArabic")
+														.Width("60")
+														.Height(50)
+														.Icon("fas fa-language") // Ensure Font Awesome class is correct
+														.ElementAttr(new { @class = "input-button" })
+														.OnClick("function() { convertToArabic(); }")
 
+														)	</div></td>
 							</tr>
 							<tr>
 								<td>
@@ -7158,9 +7166,53 @@ $(function () {
 		}
 
 	}
+	debugger
+	async function convertToArabic() {
+		
+		// Get the TextBox1 (input) instance
 
+		const textBox1Instance = $("#ddclientname").dxTextBox("instance");
+
+		// Get the TextBox2 (output) instance
+
+		const textBox2Instance = $("#ClientNameArabic").dxTextBox("instance");
+
+		// Ensure both instances are initialized
+
+		if (!textBox1Instance || !textBox2Instance) {
+
+			console.error("TextBox instances are not properly initialized.");
+
+			return;
+
+		}
+
+
+		// Get the value from TextBox1
+
+		const englishText = textBox1Instance.option("value");
+
+		// Validate input
+
+		if (!englishText || englishText.trim() === "") {
+
+			alert("Please enter text to translate.");
+
+			return;
+
+		}
+
+		// Perform translation
+
+		const arabicTranslation = await translateToArabic(englishText);
+
+		// Update TextBox2 with the Arabic translation
+
+		textBox2Instance.option("value", arabicTranslation);
+
+	}
 	 async function convertToArabic() {
-
+		 debugger
 		// Get the TextBox1 (input) instance
 
 		const textBox1Instance = $("#txtInvoiceNotes").dxTextArea("instance");
