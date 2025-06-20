@@ -6852,7 +6852,7 @@
 			$('input, select, textarea').prop('disabled', true);
 
 			$('.dx-button').each(function () {
-				const allowedButtons = ['btnMoveDown',  'btnMoveUp', 'btnSave','btnSaveAndClose','btnPostToLedgers','btnPostTag'];
+				const allowedButtons = ['btnMoveDown','btnMoveUp','btnPostToLedgers','btnPostTag','btnPrint2'];
 				if (!allowedButtons.includes($(this).attr('id'))) {
 					$(this).dxButton('option', 'disabled', true);
 				}
