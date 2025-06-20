@@ -6,6 +6,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Areas\ERM\Pages\**" />
+	  <Content Remove="Areas\ERM\Pages\**" />
+	  <EmbeddedResource Remove="Areas\ERM\Pages\**" />
+	  <None Remove="Areas\ERM\Pages\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Compile Remove="Areas\Finance\Controllers\VATModuleController.cs" />
 		<Compile Remove="Areas\Finance\Pages\ClientAddressDetailsDropdown.cshtml.cs" />
 		<Compile Remove="Areas\Finance\Pages\CreditNoteEditForm.cshtml.cs" />
