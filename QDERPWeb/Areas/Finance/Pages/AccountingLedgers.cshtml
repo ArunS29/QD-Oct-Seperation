@@ -502,6 +502,10 @@
 	.mint-green {
 		background: linear-gradient(135deg, #00c9a7, #92fe9d);
 	}
+
+	.ddBtnShowRecords{
+		background:blue;
+	}
 </style>
 
 <!-- ----------  KPI CARDS (populated dynamically from grid) ---------- -->
@@ -770,9 +774,11 @@
 				.ID("ddBtnShowRecords")
 				.Text(new JS("formatMessage('Show Records')"))
 				.Icon("smalliconslayout")
-				.Width(180)
+				.Width(250)
+				.SplitButton(true) // This enables main-button vs arrow split behavior
 				.ElementAttr("class", "button-alignment-down")
 				.TabIndex(4)
+				.OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }") // MAIN button click
 				.DropDownOptions(options => options.Width(230))
 				.Items(items =>
 				{
@@ -786,9 +792,9 @@
 					items.Add().Text(new JS("formatMessage('This Year (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
 					items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
 					items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
-
 				})
 				)
+
 		@* @(Html.DevExtreme().DropDownButton()
 		.ID("ddBtnGenerateReport")
 		.Text("Generate Report")
