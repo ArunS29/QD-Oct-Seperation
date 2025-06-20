@@ -211,18 +211,15 @@
 
 <div class="context-menu" id="contextMenu">
 	<div class="context-menu-item" onclick="viewInvoice()">
-		<i class="dx-icon-search"></i> View e-Invoice
+		<i class="dx-icon-edit"></i> Edit Debit Note
 	</div>
 
-	<div class="context-menu-item" onclick="cancelInvoice()">
-		<i class="dx-icon-close"></i> Cancel/Amend this Invoice (Invoice Credit Note)
-	</div>
-	<div class="context-menu-item">
-		<i class="dx-icon-file"></i> VAT Invoices (Obselete)
+	<div class="context-menu-item" onclick="UnlockInvoice()">
+		<i class="dx-icon-unlocked"></i> Unlock the Debit Note
 	</div>
 
-	<div class="context-menu-item" onclick="cloneEInvoice()">
-		<i class="dx-icon-copy"></i> Clone e-Invoice
+	<div class="context-menu-item" onclick="DeleteEInvoice()">
+		<i class="dx-icon-copy"></i> Delete Debit Note
 	</div>
 </div>
 
@@ -544,7 +541,7 @@
 
 <script>
 	// // Assuming tenantName is already defined globally
-	let CreditNoteNo = null;
+		let DebitNoteNo = null;
 		let IsEdit = false;
 
 		// Assuming tenantName is already defined globally
@@ -661,7 +658,7 @@
 			e.preventDefault();
 			var rowIndex = $(this).index();
 			var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex];
-					CreditNoteNo = rowData.CreditNoteNo;
+						DebitNoteNo = rowData.DebitNoteNo;
 			console.log(rowData);
 			contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
 		});
@@ -874,5 +871,77 @@
 							showColumnChooser();
 							console.log('End permission handling');
 						});
+
+
+
+							function UnlockInvoice() {
+
+			if (Status === "Posted") {
+				DevExpress.ui.dialog.alert(
+						"This VAT Debit Bill is already posted to your ledgers.\nPlease delete the Debit Entry from Accounting Books and continue.",
+						"Debit Bill Posted Already"
+				);
+				return;
+			}
+
+
+			DevExpress.ui.dialog.confirm("Are you sure you want to unlock this Debit Bill?", "Confirm Unlock")
+				.done(function (dialogResult) {
+					if (dialogResult) {
+						$.ajax({
+							//url: `/api/VATModule/UpdateToPurchaseUnlocktheBil?InvoiceNo=${encodeURIComponent(vno)}&IsDirectVerify=${encodeURIComponent(IsDirectVerify)}`,
+								url: '/api/VATModule/UpdateToDebitNoteUnlocktheBil',
+							method: 'POST',
+								data: { invoiceNo: DebitNoteNo },
+							success: function (response) {
+								if (response) {
+
+										DevExpress.ui.dialog.alert("Debit Bill has been unlocked successfully.", "Bill Unlocked");
+									// Optionally refresh the grid or perform additional actions
+								} else {
+									DevExpress.ui.notify(response.message || "Unlocking failed.", "error", 3000);
+								}
+							},
+							error: function () {
+								DevExpress.ui.notify("Server error while unlocking the invoice.", "error", 3000);
+							}
+						});
+					}
+				});
+		}
+
+
+			 function DeleteEInvoice() {
+
+			if (!invoiceNo) {
+				alert("InvoiceNo is required.");
+				return;
+			}
+
+					DevExpress.ui.dialog.confirm("You are about to Duplicate this Debit Invoice. Are you Sure want to Continue?", "Confirm Clone")
+				.done(function (dialogResult) {
+					if (dialogResult) {
+						$.ajax({
+							//url: `/api/VATModule/UpdateToPurchaseUnlocktheBil?InvoiceNo=${encodeURIComponent(vno)}&IsDirectVerify=${encodeURIComponent(IsDirectVerify)}`,
+							url: '/api/VATModule/DeleteDebitNoteCloneEInvoice',
+							method: 'POST',
+								data: { invoiceNo: DebitNoteNo },
+							success: function (response) {
+								if (response) {
+
+										DevExpress.ui.dialog.alert("Debit Invoice has been successfully added to the database.", "Cloned Successfully");
+									// Optionally refresh the grid or perform additional actions
+									$("#dataGrid").dxDataGrid("instance").refresh();
+								} else {
+									DevExpress.ui.notify(response.message || "Unlocking failed.", "error", 3000);
+								}
+							},
+							error: function () {
+								DevExpress.ui.notify("Server error while unlocking the invoice.", "error", 3000);
+							}
+						});
+					}
+				});
+		}
 
 </script>

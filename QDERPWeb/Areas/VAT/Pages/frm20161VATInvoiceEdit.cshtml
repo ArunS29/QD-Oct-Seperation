@@ -14,7 +14,7 @@
 	}
 
 	#B2BdataGrid {
-		height: 700px !important;
+		height: 325px !important;
 	}
 	.form-wrapper {
 		border-radius: 6px;
@@ -449,7 +449,7 @@
 	.card-container {
 		display: flex;
 		justify-content: space-between;
-		gap: 20px;
+		/* gap: 5px; */
 		padding: 0px 10px;
 	}
 /* 
@@ -606,8 +606,163 @@
 					<!-- First Card (Left Side) -->
 					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 							<tr>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice No')")).ID("InvoiceNo").Disabled(true).LabelMode(EditorLabelMode.Outside))</td>
-								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Date')")).ID("InvoiceDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).Disabled(true).LabelMode(EditorLabelMode.Outside))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice No')")).ID("InvoiceNo").Disabled(true).LabelMode(EditorLabelMode.Outside).Width(210))</td>
+							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Date')")).ID("InvoiceDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).Disabled(true).LabelMode(EditorLabelMode.Outside).Width(250))</td>
+							<td>
+								@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Client Code')"))//.ID("ClientCode")
+															.DataSource(d => d.WebApi().Controller("VATModule")
+															.LoadAction("GetClientCode")
+															.LoadMode(DataSourceLoadMode.Raw)
+															.Key("AccountId"))
+															.LabelMode(EditorLabelMode.Outside)
+															.ID("ddclientcode")
+															.ValidationRules(rules =>
+															{
+																rules.AddRequired()
+																.Message(new JS("formatMessage('Client Code should be entered')"));
+															})
+															.ShowClearButton(true)
+															.AcceptCustomValue(true)
+															.OpenOnFieldClick(true)
+															.ValueChangeEvent("input")	
+															.HoverStateEnabled(true)
+															.ValueExpr("AccountHead")
+															//.ValueExpr("AccountId")
+															.DisplayExpr("AccountId")
+															.OnInput("dropDownBoxOnInput")
+															.OnClosed("onDropDownBoxClosed")
+															.OnOpened("onOpened")
+															.Width("100%")
+															.TabIndex(4)
+															.Width(240)
+															.DropDownOptions(o => o
+															// .Width("100%") // Set the desired width for the dropdown content*@
+															.Width(1000)
+															)
+															@* 	.OnKeyDown("onKeyDown") *@
+															@* .OnValueChanged("onClientCodeChanged") *@
+															.ContentTemplate(new TemplateName("ClientCodeContentTemplate")))
+							</td>
+							<td style="width:10%; vertical-align: bottom; padding-bottom: 5px;">
+								<div style="display:flex; gap:5px;">
+									@(Html.DevExtreme().Button()
+																			.ID("AddClient")
+																			.Icon("plus")
+																			.Hint("Add Description")
+																			.Width(35)
+																			.ElementAttr("style", "display: flex; justify-content: center; align-items: center;")
+																			.OnClick("showLedgerAccountPopup")
+
+																			)
+
+									<!-- DevExtreme Popup -->
+									@(Html.DevExtreme().Popup()
+																			.ID("ledgerAccountPopup")
+																			.Width("80%")
+																			.Height("85%")
+																			.Title("Add Ledger Account")
+																			.ShowTitle(true)
+																			.CloseOnOutsideClick(true)
+																			.Visible(false)
+																			.ResizeEnabled(true)
+																			.ContentTemplate(@<text>
+										<div id="popupContent" class="background" style="width:100%; height:100%;">
+											<iframe id="ledgerAccountFrame" class="background" style="width:100%; height:100%; border:none;"></iframe>
+										</div>
+									</text>)
+																			)
+									@(Html.DevExtreme().Button()
+																			.ID("EditClient")
+																			.Icon("edit")
+																			.Hint("Edit Description")
+																			.Width(35)
+																			.ElementAttr("style", "display: flex; justify-content: center; align-items: center;")
+																			.OnClick("showLedgerAccountEditPopup")
+
+																			)
+
+									@(Html.DevExtreme().Popup()
+																			.ID("ledgerEditAccountPopup")
+																			.Width("80%")
+																			.Height("85%")
+																			.Title(new JS("formatMessage('Edit Ledger Account')"))
+																			.ShowTitle(true)
+																			.CloseOnOutsideClick(true)
+																			.Visible(false)  // Hidden by default
+																			.ResizeEnabled(true)
+																			.ContentTemplate(@<text>
+										<div id="popupContent" style="width:100%; height:100%;">
+											<iframe id="ledgerEditAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
+										</div>
+									</text>)
+																			)
+								</div>
+							</td>
+							<td>
+								@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Client Name')"))//.ID("ClientName")
+															.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetClientCode").LoadMode(DataSourceLoadMode.Raw).Key("ClientName"))
+															.LabelMode(EditorLabelMode.Outside)
+
+															.ID("ddclientname")
+
+															.ValidationRules(rules =>
+															{
+																rules.AddRequired()
+																.Message(new JS("formatMessage('Client Name should be entered')"));
+															})
+															.ShowClearButton(true)
+															.AcceptCustomValue(true)
+															.OpenOnFieldClick(false)
+															.ValueChangeEvent("input")
+															.HoverStateEnabled(true)
+															.Value(null)
+															.ValueExpr("AccountId")
+															.DisplayExpr("AccountHead")
+															.Width("100%")
+															.TabIndex(1)
+															.DropDownOptions(o => o
+															//.Width("100%") // Set the desired width for the dropdown content*@
+															.Width(1000)
+															)
+															.OnKeyDown("onKeyDown")
+															.Width(230)
+															.ContentTemplate(new TemplateName("ClientNameContentTemplate")))
+							</td>
+							<td style="width:10%; vertical-align: bottom; padding-bottom: 5px;">
+
+								@(Html.DevExtreme().Button()
+															.ID("btnLink")
+															.Text(new JS("formatMessage('Link')"))
+															.Icon("link")// Display text
+															.StylingMode(ButtonStylingMode.Text)   // Makes it look like a hyperlink
+															.Type(ButtonType.Normal)
+															// .OnClick("onLinkClick")
+															)
+							</td>
+
+							<td>
+								@(Html.DevExtreme().TextBox()
+															.ID("GroupVATNo")
+															.Label(new JS("formatMessage('Group VAT No')"))
+															.LabelMode(EditorLabelMode.Outside)
+															.MaxLength(15)
+															.Mask("300000000010000") // 15 digits
+															.MaskChar("_") // Optional: makes it more readable
+															.Width(150)                     //.ShowClearButton(true) // Optional: adds a clear (X) button
+															)
+							</td>
+							<td>
+
+								@(Html.DevExtreme().TextBox()
+															.ID("ClientVATNo")
+															.Label(new JS("formatMessage('Client VAT No')"))
+															.LabelMode(EditorLabelMode.Outside)
+															.MaxLength(15)
+															.Mask("300000000000003") // 15 digits
+															.MaskChar("_") // Optional: makes it more readable
+															.Width(150)                         //.ShowClearButton(true) // Optional: adds a clear (X) button
+															)
+							</td>
 							</tr>
 							<tr>
 								<td>
@@ -619,10 +774,193 @@
 																			.LabelMode(EditorLabelMode.Outside)
 																			.Value(DateTime.Now)
 																			.Disabled(true)
+																			.Width(210)
 																			
 																			)
 								</td>
-								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Supply Date')")).ID("SupplyDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside))</td>
+								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Supply Date')")).ID("SupplyDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside).Width(250))</td>
+
+							<td>
+								@(Html.DevExtreme().DropDownBox()
+															.Label(new JS("formatMessage('Other ID Type')"))
+															.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetVATInvoiceMaster").LoadMode(DataSourceLoadMode.Raw).Key("BuyerOtherIdtype"))
+															.LabelMode(EditorLabelMode.Outside)
+															.ID("OtherIDType")
+															.ShowClearButton(true)
+															.AcceptCustomValue(true)
+															.OpenOnFieldClick(false)
+															.ValueChangeEvent("input")
+															.HoverStateEnabled(true)
+															.Value(null)
+															.ValueExpr("BuyerOtherIdtype")
+															.DisplayExpr("BuyerIdtypeName")
+															.Width("100%")
+															.TabIndex(1)
+															.DropDownOptions(o => o.Width(1000))
+															.OnKeyDown("onKeyDown")
+															.Width(240)
+															.ContentTemplate(new TemplateName("ClientNameContent"))
+															)
+							</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Other ID')")).ID("ClientOtherID").LabelMode(EditorLabelMode.Outside).Width(205))</td>
+							<td colspan="2">
+								@(Html.DevExtreme().DropDownBox()
+															.ID("ClientAddressDetails")
+															.Label(new JS("formatMessage('Client Address Details')"))
+															.ShowClearButton(true)
+															.AcceptCustomValue(true)
+															 .Width("100%")
+															.LabelMode(EditorLabelMode.Outside)
+															.DropDownOptions(o => o.Width(650).Height(550))
+															.OpenOnFieldClick(true)
+															.Width(300)
+															.ContentTemplate(@<text>
+
+
+									<div class="address-form-container">
+
+
+										<table class="address-form-table" cellpadding="2">
+											<tr>
+												<td>
+													@(Html.DevExtreme().TextBox()
+													.Label(new JS("formatMessage('Address - Street Name:')"))
+													.ID("StreetName")
+													.LabelMode(EditorLabelMode.Outside)
+													.Width("100%"))
+												</td>
+												<td>
+													@(Html.DevExtreme().TextBox()
+													.Label(new JS("formatMessage('Address - Street Name: (Arabic)')"))
+													.ID("StreetNameArabic")
+													.LabelMode(EditorLabelMode.Outside)
+													.Width("100%"))
+												</td>
+												<td>
+													@(Html.DevExtreme().TextBox()
+													.Label(new JS("formatMessage('Building Number:')"))
+													.ID("BuildingNumber")
+													.LabelMode(EditorLabelMode.Outside)
+													.Width("100%"))
+												</td>
+											</tr>
+											<tr>
+												<td>
+													@(Html.DevExtreme().TextBox()
+													.Label(new JS("formatMessage('Address - Additional Address:')"))
+													.ID("AdditionalAddress")
+													.LabelMode(EditorLabelMode.Outside)
+													.Width("100%"))
+												</td>
+												<td>
+													@(Html.DevExtreme().TextBox()
+													.Label(new JS("formatMessage('Address - Additional Address: (Arabic)')"))
+													.ID("AdditionalAddressArabic")
+													.LabelMode(EditorLabelMode.Outside)
+													.Width("100%"))
+												</td>
+												<td>
+													@(Html.DevExtreme().TextBox()
+													.Label(new JS("formatMessage('Additional Number:')"))
+													.ID("AdditionalNumber")
+													.LabelMode(EditorLabelMode.Outside)
+													.Width("100%"))
+												</td>
+
+											</tr>
+											<tr>
+
+												<td>
+													@(Html.DevExtreme().TextBox()
+													.Label(new JS("formatMessage('Client City:')"))
+													.ID("ClientCity")
+													.LabelMode(EditorLabelMode.Outside)
+													.Width("100%"))
+												</td>
+												<td>
+													@(Html.DevExtreme().TextBox()
+													.Label(new JS("formatMessage('Client City: (Arabic)')"))
+													.ID("ClientCityArabic")
+													.LabelMode(EditorLabelMode.Outside)
+													.Width("100%"))
+												</td>
+												<td>
+													@(Html.DevExtreme().TextBox()
+													.Label(new JS("formatMessage('Postal Code:')"))
+													.ID("PostalCode")
+													.LabelMode(EditorLabelMode.Outside)
+													.Width("100%"))
+												</td>
+											</tr>
+											<tr>
+
+												<td>
+													@(Html.DevExtreme().TextBox()
+													.Label(new JS("formatMessage('Province / State:')"))
+													.ID("Province")
+													.LabelMode(EditorLabelMode.Outside)
+													.Width("100%"))
+												</td>
+												<td>
+													@(Html.DevExtreme().TextBox()
+													.Label(new JS("formatMessage('Province / State: (Arabic)')"))
+													.ID("ProvinceArabic")
+													.LabelMode(EditorLabelMode.Outside)
+													.Width("100%"))
+												</td>
+
+												<td>
+
+													@(Html.DevExtreme().DropDownBox()
+													.Label(new JS("formatMessage('Country Code:')"))
+													.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("Getcountrycode").LoadMode(DataSourceLoadMode.Raw).Key("CountryCodeAlpha2"))
+													.LabelMode(EditorLabelMode.Outside)
+													.ID("CountryCodeNumeric")
+													.ShowClearButton(true)
+													.AcceptCustomValue(true)
+													.OpenOnFieldClick(false)
+													.ValueChangeEvent("input")
+													.HoverStateEnabled(true)
+													.Value(null)
+													.ValueExpr("CountryCodeAlpha2")
+													.DisplayExpr("CountryCodeAlpha2")
+													.Width("100%")
+													.TabIndex(1)
+													.DropDownOptions(o => o.Width(1000))
+													.OnKeyDown("onKeyDown")
+													.ContentTemplate(new TemplateName("countrycode"))
+													)
+												</td>
+
+											</tr>
+											<tr>
+
+												<td>
+													@(Html.DevExtreme().TextBox()
+													.Label(new JS("formatMessage('District / Neighborhood:')"))
+													.ID("District")
+													.LabelMode(EditorLabelMode.Outside)
+													.Width("100%"))
+												</td>
+												<td colspan="2">
+													@(Html.DevExtreme().TextBox()
+													.Label(new JS("formatMessage('District / Neighborhood: (Arabic)')"))
+													.ID("DistrictArabic")
+													.LabelMode(EditorLabelMode.Outside)
+													.Width("100%"))
+												</td>
+
+											</tr>
+										</table>
+
+									</div>
+
+
+								</text>)
+															)
+							</td>
+	                     	<td colspan="3">@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name in Arabic')")).ID("ClientNameArabic").LabelMode(EditorLabelMode.Outside).Width(310))</td>
+
 							</tr>
 							<tr>
 								<td>
@@ -643,6 +981,7 @@
 																			.ValueExpr("InvoiceType") // Ensure the value is mapped correctly
 																			.DisplayExpr("InvoiceType") // Set display value if needed
 																			.Disabled(true)
+															.Width(210)
 																			)
 
 								</td>
@@ -663,6 +1002,7 @@
 																			@*  .OnInput("dropDownBoxOnInput")
                                                                                                                                                             .OnOpened("onOpened") *@
 																			.Width("100%")
+																			.Width(250)
 																			.TabIndex(1)
 																			.DropDownOptions(o => o
 																			//.Width("100%") // Set the desired width for the dropdown content*@
@@ -674,8 +1014,7 @@
 
 
 								</td>
-							</tr>
-							<tr>
+
 								<td>
 									@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('VAT Invoice Sub Type')")).ID("VATInvoiceSubType")
 																			.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getInvoiceSubTypes").LoadMode(DataSourceLoadMode.Raw).Key("SubType"))
@@ -687,7 +1026,9 @@
 																			.Value("Tax Invoice") // Ensure this matches an actual key value
 																			.ValueExpr("InvoiceType") // Ensure the value is mapped correctly
 																			.DisplayExpr("InvoiceType") // Set display value if needed
-																			.Disabled(true))
+																			.Disabled(true)
+																			.Width(240)
+																			)
 								</td>
 								<td>
 
@@ -712,11 +1053,17 @@
 									new { ID = 5, Name = "Self Billed Tax Invoice" }
 									})
 																			.OnInitialized("onDropDownInitialized")
+																			.Width(210)
 																			)
 
 																			
 
 								</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Counter Value')")).ID("InvoiceCounterValue").LabelMode(EditorLabelMode.Outside).Disabled(true).Width(230))</td>
+							<td colspan="3">@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('UUID')")).ID("UUID").LabelMode(EditorLabelMode.Outside).Disabled(true).Width(380))</td>
+							</tr>
+							<tr>
+								
 							</tr>
 						</table>
 					
@@ -725,347 +1072,18 @@
 					
 						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 							<tr>
-								<td>
-									@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Client Code')"))//.ID("ClientCode")
-																			.DataSource(d => d.WebApi().Controller("VATModule")
-																			.LoadAction("GetClientCode")
-																			.LoadMode(DataSourceLoadMode.Raw)
-																			.Key("AccountId"))
-																			.LabelMode(EditorLabelMode.Outside)
-																			.ID("ddclientcode")
-																			.ValidationRules(rules =>
-																			{
-																				rules.AddRequired()
-																				.Message(new JS("formatMessage('Client Code should be entered')"));
-																			})
-																			.ShowClearButton(true)
-																			.AcceptCustomValue(true)
-																			.OpenOnFieldClick(true)
-																			.ValueChangeEvent("input")
-																			.HoverStateEnabled(true)
-																			.ValueExpr("AccountHead")
-																			//.ValueExpr("AccountId")
-																			.DisplayExpr("AccountId")
-																			.OnInput("dropDownBoxOnInput")
-																			.OnClosed("onDropDownBoxClosed")
-																			.OnOpened("onOpened")
-																			.Width("100%")
-																			.TabIndex(4)
-																			.DropDownOptions(o => o
-																			// .Width("100%") // Set the desired width for the dropdown content*@
-																			.Width(1000)
-																			)
-																		@* 	.OnKeyDown("onKeyDown") *@
-																		 	@* .OnValueChanged("onClientCodeChanged") *@
-																			.ContentTemplate(new TemplateName("ClientCodeContentTemplate")))
-								</td>
-								<td style="width:10%; vertical-align: bottom; padding-bottom: 5px;">
-									<div style="display:flex; gap:5px;">
-										@(Html.DevExtreme().Button()
-																				.ID("AddClient")
-																				.Icon("plus")
-																				.Hint("Add Description")
-																				.Width(35)
-																				.ElementAttr("style", "display: flex; justify-content: center; align-items: center;")
-																			.OnClick("showLedgerAccountPopup")
-
-																				)
-
-									<!-- DevExtreme Popup -->
-									@(Html.DevExtreme().Popup()
-																			.ID("ledgerAccountPopup")
-																			.Width("80%")
-																			.Height("85%")
-																			.Title("Add Ledger Account")
-																			.ShowTitle(true)
-																			.CloseOnOutsideClick(true)
-																			.Visible(false)
-																			.ResizeEnabled(true)
-																			.ContentTemplate(@<text>
-										<div id="popupContent" class="background" style="width:100%; height:100%;">
-											<iframe id="ledgerAccountFrame" class="background" style="width:100%; height:100%; border:none;"></iframe>
-										</div>
-									</text>)
-																			)
-										@(Html.DevExtreme().Button()
-																				.ID("EditClient")
-																				.Icon("edit")
-																				.Hint("Edit Description")
-																				.Width(35)
-																				.ElementAttr("style", "display: flex; justify-content: center; align-items: center;")
-																		     	.OnClick("showLedgerAccountEditPopup")
-
-																				)
-
-									@(Html.DevExtreme().Popup()
-																			.ID("ledgerEditAccountPopup")
-																			.Width("80%")
-																			.Height("85%")
-																			.Title(new JS("formatMessage('Edit Ledger Account')"))
-																			.ShowTitle(true)
-																			.CloseOnOutsideClick(true)
-																			.Visible(false)  // Hidden by default
-																			.ResizeEnabled(true)
-																			.ContentTemplate(@<text>
-										<div id="popupContent" style="width:100%; height:100%;">
-											<iframe id="ledgerEditAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
-										</div>
-									</text>)
-																			)
-									</div>
-								</td>
-								<td>
-									@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Client Name')"))//.ID("ClientName")
-																			.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetClientCode").LoadMode(DataSourceLoadMode.Raw).Key("ClientName"))
-																			.LabelMode(EditorLabelMode.Outside)
-															
-															.ID("ddclientname")
-																			 
-																			.ValidationRules(rules =>
-																			{
-																				rules.AddRequired()
-																				.Message(new JS("formatMessage('Client Name should be entered')"));
-																			})
-																			.ShowClearButton(true)
-																			.AcceptCustomValue(true)
-																			.OpenOnFieldClick(false)
-																			.ValueChangeEvent("input")
-																			.HoverStateEnabled(true)
-																			.Value(null)
-																			.ValueExpr("AccountId")
-																			.DisplayExpr("AccountHead")
-																			.Width("100%")
-																			.TabIndex(1)
-																			.DropDownOptions(o => o
-																			//.Width("100%") // Set the desired width for the dropdown content*@
-																			.Width(1000)
-																			)
-																			.OnKeyDown("onKeyDown")
-															.ContentTemplate(new TemplateName("ClientNameContentTemplate")))
-							</td>
-							<td style="width:10%; vertical-align: bottom; padding-bottom: 5px;">
-
-																			@(Html.DevExtreme().Button()
-    .ID("btnLink")
-    .Text(new JS("formatMessage('Link')"))
-															.Icon("link")// Display text
-															.StylingMode(ButtonStylingMode.Text)   // Makes it look like a hyperlink
-    .Type(ButtonType.Normal)
-   // .OnClick("onLinkClick") 
-   )
-								</td>
+								
 							</tr>
 							<tr>
-							<td>
-								@(Html.DevExtreme().TextBox()
-															.ID("GroupVATNo")
-															.Label(new JS("formatMessage('Group VAT No')"))
-															.LabelMode(EditorLabelMode.Outside)
-															.MaxLength(15)
-															.Mask("300000000000003") // 15 digits
-															.MaskChar("_") // Optional: makes it more readable
-																					//.ShowClearButton(true) // Optional: adds a clear (X) button
-															)
-							</td>
-							<td>
-
-								@(Html.DevExtreme().TextBox()
-															.ID("ClientVATNo")
-															.Label(new JS("formatMessage('Client VAT No')"))
-															.LabelMode(EditorLabelMode.Outside)
-															.MaxLength(15)
-															.Mask("300000000000003") // 15 digits
-															.MaskChar("_") // Optional: makes it more readable
-																					//.ShowClearButton(true) // Optional: adds a clear (X) button
-															)
-							</td>
-							<td colspan="3">@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name in Arabic')")).ID("ClientNameArabic").LabelMode(EditorLabelMode.Outside))</td>
-
+							
 							</tr>
 							<tr>
 
-								<td>
-									@(Html.DevExtreme().DropDownBox()
-																			.Label(new JS("formatMessage('Other ID Type')"))
-															.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetVATInvoiceMaster").LoadMode(DataSourceLoadMode.Raw).Key("BuyerOtherIdtype"))
-																			.LabelMode(EditorLabelMode.Outside)
-																			.ID("OtherIDType")
-																			.ShowClearButton(true)
-																			.AcceptCustomValue(true)
-																			.OpenOnFieldClick(false)
-																			.ValueChangeEvent("input")
-																			.HoverStateEnabled(true)
-																			.Value(null)
-																			.ValueExpr("BuyerOtherIdtype")
-																			.DisplayExpr("BuyerIdtypeName")
-																			.Width("100%")
-																			.TabIndex(1)
-																			.DropDownOptions(o => o.Width(1000))
-																			.OnKeyDown("onKeyDown")
-																			.ContentTemplate(new TemplateName("ClientNameContent"))
-																			)
-								</td>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Other ID')")).ID("ClientOtherID").LabelMode(EditorLabelMode.Outside))</td>
-								<td colspan="2">
-									@(Html.DevExtreme().DropDownBox()
-																			.ID("ClientAddressDetails")
-																			.Label(new JS("formatMessage('Client Address Details')"))
-																			.ShowClearButton(true)
-														                	.AcceptCustomValue(true)
-																			.Width("100%")
-																			.LabelMode(EditorLabelMode.Outside)
-																			.DropDownOptions(o => o.Width(650).Height(550))
-																			.OpenOnFieldClick(true)
-																			.ContentTemplate(@<text>
-
-
-									<div class="address-form-container">
-										
-										
-												<table class="address-form-table" cellpadding="2">
-													<tr>
-														<td>
-															@(Html.DevExtreme().TextBox()
-															.Label(new JS("formatMessage('Address - Street Name:')"))
-															.ID("StreetName")
-															.LabelMode(EditorLabelMode.Outside)
-															.Width("100%"))
-														</td>
-														<td>
-															@(Html.DevExtreme().TextBox()
-															.Label(new JS("formatMessage('Address - Street Name: (Arabic)')"))
-															.ID("StreetNameArabic")
-															.LabelMode(EditorLabelMode.Outside)
-															.Width("100%"))
-														</td>
-														<td>
-															@(Html.DevExtreme().TextBox()
-															.Label(new JS("formatMessage('Building Number:')"))
-															.ID("BuildingNumber")
-															.LabelMode(EditorLabelMode.Outside)
-															.Width("100%"))
-														</td>
-													</tr>
-													<tr>
-														<td>
-															@(Html.DevExtreme().TextBox()
-															.Label(new JS("formatMessage('Address - Additional Address:')"))
-															.ID("AdditionalAddress")
-															.LabelMode(EditorLabelMode.Outside)
-															.Width("100%"))
-														</td>
-														<td>
-															@(Html.DevExtreme().TextBox()
-															.Label(new JS("formatMessage('Address - Additional Address: (Arabic)')"))
-															.ID("AdditionalAddressArabic")
-															.LabelMode(EditorLabelMode.Outside)
-															.Width("100%"))
-														</td>
-														<td>
-															@(Html.DevExtreme().TextBox()
-															.Label(new JS("formatMessage('Additional Number:')"))
-															.ID("AdditionalNumber")
-															.LabelMode(EditorLabelMode.Outside)
-															.Width("100%"))
-														</td>
-
-													</tr>
-													<tr>
-
-														<td>
-															@(Html.DevExtreme().TextBox()
-															.Label(new JS("formatMessage('Client City:')"))
-															.ID("ClientCity")
-															.LabelMode(EditorLabelMode.Outside)
-															.Width("100%"))
-														</td>
-														<td>
-															@(Html.DevExtreme().TextBox()
-															.Label(new JS("formatMessage('Client City: (Arabic)')"))
-															.ID("ClientCityArabic")
-															.LabelMode(EditorLabelMode.Outside)
-															.Width("100%"))
-														</td>
-														<td>
-															@(Html.DevExtreme().TextBox()
-															.Label(new JS("formatMessage('Postal Code:')"))
-															.ID("PostalCode")
-															.LabelMode(EditorLabelMode.Outside)
-															.Width("100%"))
-														</td>
-													</tr>
-													<tr>
-
-														<td>
-															@(Html.DevExtreme().TextBox()
-															.Label(new JS("formatMessage('Province / State:')"))
-															.ID("Province")
-															.LabelMode(EditorLabelMode.Outside)
-															.Width("100%"))
-														</td>
-														<td>
-															@(Html.DevExtreme().TextBox()
-															.Label(new JS("formatMessage('Province / State: (Arabic)')"))
-															.ID("ProvinceArabic")
-															.LabelMode(EditorLabelMode.Outside)
-															.Width("100%"))
-														</td>
-
-												<td>
-						
- 	@(Html.DevExtreme().DropDownBox()
-																	.Label(new JS("formatMessage('Country Code:')"))
-																	.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("Getcountrycode").LoadMode(DataSourceLoadMode.Raw).Key("CountryCodeAlpha2"))
-																	.LabelMode(EditorLabelMode.Outside)
-																	.ID("CountryCodeNumeric")
-																	.ShowClearButton(true)
-																	.AcceptCustomValue(true)
-																	.OpenOnFieldClick(false)
-																	.ValueChangeEvent("input")
-																	.HoverStateEnabled(true)
-																	.Value(null)
-																	.ValueExpr("CountryCodeAlpha2")
-																	.DisplayExpr("CountryCodeAlpha2")
-																	.Width("100%")
-																	.TabIndex(1)
-																	.DropDownOptions(o => o.Width(1000))
-																	.OnKeyDown("onKeyDown")
-																	.ContentTemplate(new TemplateName("countrycode"))
-																	)
-								</td>
-
-													</tr>
-													<tr>
-
-														<td>
-															@(Html.DevExtreme().TextBox()
-															.Label(new JS("formatMessage('District / Neighborhood:')"))
-															.ID("District")
-															.LabelMode(EditorLabelMode.Outside)
-															.Width("100%"))
-														</td>
-														<td colspan="2">
-															@(Html.DevExtreme().TextBox()
-															.Label(new JS("formatMessage('District / Neighborhood: (Arabic)')"))
-															.ID("DistrictArabic")
-															.LabelMode(EditorLabelMode.Outside)
-															.Width("100%"))
-														</td>
-
-													</tr>
-												</table>
-											
-										</div>
 								
 
-									</text>)
-																			)
-								</td>
-
 							</tr>
 							<tr>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Counter Value')")).ID("InvoiceCounterValue").LabelMode(EditorLabelMode.Outside).Disabled(true))</td>
-							<td colspan="3">@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('UUID')")).ID("UUID").LabelMode(EditorLabelMode.Outside).Disabled(true))</td>
+							
 							</tr>
 						</table>
 					
@@ -1121,6 +1139,7 @@
 															//.OnValueChanged("dropDownBoxValueChanged")
 															.ContentTemplate(new TemplateName("RevenueAccountTemplate"))
 															.Width("100%")
+														
 															)
 							</td>
 							<td>
@@ -2339,7 +2358,7 @@
 						.AllowColumnReordering(true)
 						.AllowColumnResizing(true)
 						.ColumnFixing(fixing => fixing.Enabled(true))
-						.Height(250)
+						.Height(100)
 						.ColumnAutoWidth(true)
 						.FilterRow(filterRow => filterRow.Visible(false))
 						.GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -8722,7 +8741,7 @@
 			// Disable all input fields and buttons except for specific ones
 			$('input, select, textarea').prop('disabled', true);  // Disable inputs, selects, and textareas
 
-			const allowedButtons = ['btnMoveDown', 'btnMoveUp', 'btnSave', 'btnSaveAndClose', 'btnPostToLedgers', 'btnPostTag', 'btnPrint1'];
+			const allowedButtons = ['btnMoveDown', 'btnMoveUp', 'btnPostToLedgers', 'btnPostTag', 'btnPrint1'];
 
 			// Disable all dxButton and dxDropDownButton controls
 			$('.dx-button, .dx-dropdownbutton').each(function () {
