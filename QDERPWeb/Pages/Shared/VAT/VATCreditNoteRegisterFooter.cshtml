@@ -236,7 +236,7 @@
 <div class="dx-fieldset horizontal-container" style="width:1000px;background-color:transparent;">
 
 
-    <div class="btn-container">
+  @*   <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
             .ID("ddButtonLayout")
             .Icon("smalliconslayout")
@@ -254,7 +254,7 @@
             })
             .ShowArrowIcon(false)
             )
-    </div>
+    </div> *@
 
     <div class="btn-containerIvoiceEdit">
         @(Html.DevExtreme().DropDownButton()
@@ -327,11 +327,20 @@
             .OnClick("showColumnChooser")
             )
     </div>
-
+      <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnAddNew1")
+            .Text(new JS("formatMessage('Add New')"))
+            .Icon("plus")
+            // .OnClick("addNewRow") // Attach function
+            .ElementAttr(new { @class = "bold-button" })
+            // Apply custom CSS class
+            )
+    </div>
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
             .ID("ddReport123")
-            .Icon("doc")
+            .Icon("mergecells")
             .Width(50)
             .Text(new JS("formatMessage('Report')"))
             @*   .ElementAttr(new { style = "display: none;" }) *@

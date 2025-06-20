@@ -1337,7 +1337,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 // Step 1: Get tenant info
                 if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
                     return Unauthorized("Invalid tenant context.");
-
+                var userName = User.Identity?.Name ?? "UnknownUser";
                 var tenantName = HttpContext.Session.GetString("TenantName")?.Trim();
                 if (string.IsNullOrWhiteSpace(tenantName))
                     return Unauthorized("Tenant name not found in session.");

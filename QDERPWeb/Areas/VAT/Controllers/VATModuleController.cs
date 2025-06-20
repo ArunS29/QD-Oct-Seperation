@@ -123,7 +123,17 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                         .Take(pageSize)
                         .ToListAsync();
 
-                    // Return paged result with total count for frontend
+
+                    foreach (var item in pagedResults)
+                    {
+                        decimal total = item.TotalInvoiceAmount ?? 0;
+                        decimal rate = item.ExchangeRate ?? 1;
+                        decimal? currencyRate = total * rate;
+
+                        item.TotalInvoiceAmount = currencyRate; // If you are overwriting with converted amount
+                    }
+
+
                     return Json(new
                     {
                         data = pagedResults,
@@ -1977,6 +1987,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 			return Unauthorized(new { message = "Invalid tenant.", success = false });
 		}
 
+
 		[HttpGet]
 		public async Task<ActionResult> GetCreditNoteDetails(string CreditNoteNo)
 		{
@@ -3224,7 +3235,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
 
 		[HttpGet]
-		public async Task<IActionResult> GetPurchaseVoucher(string supplierid)
+		public async Task<IActionResult> GetPurchaseVoucher(DataSourceLoadOptions loadOptions, string supplierid)
 		{
 			try
 			{
@@ -3409,19 +3420,20 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             {
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    // Step 1: Get company name from session
-                    // var companyNameShort = HttpContext.Session.GetString("TenantName");
-                    //if (string.IsNullOrEmpty(companyNameShort))
-                    //{
-                    //    return BadRequest("Company name not found in session.");
-                    //}
+					// Step 1: Get company name from session
+					var companyNameShort = HttpContext.Session.GetString("TenantName");
+					if (string.IsNullOrEmpty(companyNameShort))
+					{
+						return BadRequest("Company name not found in session.");
+					}
 
                     // Step 2: Get company details using dbContext
-                    //var company = dbContext.Tbl901CompanyDetails
-                    //                       .FirstOrDefault(c => c.CompanyNameShort == companyNameShort);
-
                     var company = dbContext.Tbl901CompanyDetails
-                                           .FirstOrDefault(c => c.CompanyNameShort == "Pulse Infotech");
+                       .FirstOrDefault(c => c.CompanyNameShort.Contains(companyNameShort));
+
+
+                    //var company = dbContext.Tbl901CompanyDetails
+                    //                       .FirstOrDefault(c => c.CompanyNameShort == "Pulse Infotech");
 
 
                     if (company == null)
@@ -4101,10 +4113,10 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                         int JustAddedVoucherEntryNoSubLedger = 0;
                         int JustAddedVoucherEntryNoCostAlloc = 0;
                         bool IsCashOrBankAccount = false;
-                        bool IsExpensesAccount = false;
+    
 
                         // 🔁 Call the stored procedure sp201_62InsertVATtoVoucher
-                        var result = dbContext.Database.ExecuteSqlRaw("EXEC sp201_92InsertVATDebitNotetoVoucher_BHD @p0,@p1,@p2,@p3,@p4", DebitNoteNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc, IsCashOrBankAccount, IsExpensesAccount);
+                        var result = dbContext.Database.ExecuteSqlRaw("EXEC sp201_92InsertVATDebitNotetoVoucher_BHD @p0,@p1,@p2,@p3", DebitNoteNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc, IsCashOrBankAccount);
 
                         //   var result1 = dbContext.Database.ExecuteSqlRaw("EXEC sp201_62InsertVATtoVoucher_BHD @p0,@p1,@p2,@p3", InvoiceNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc, IsCashOrBankAccount);
                     }
@@ -4385,6 +4397,47 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             ViewBag.Amount = amount;
             return PartialView("~/Areas/VAT/Pages/VATPercentageCal.cshtml");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCurrencyImage()
+        {
+            // 1️⃣  Resolve the tenant‑scoped DbContext
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(
+                    out Tenant _,
+                    out ERPMasterWtDataContext dbContext))
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                                  "Tenant context is unavailable.");
+            }
+			try
+			{
+
+                // 2️⃣  Company short‑name comes from the session
+                var companyNameShort = HttpContext.Session.GetString("TenantName");
+                if (string.IsNullOrWhiteSpace(companyNameShort))
+                    return BadRequest("Company name not found in session.");
+
+                // 3️⃣  Fetch the SVG (single round‑trip, async)
+                string? svg = await dbContext.Tbl901CompanyDetails
+     .Where(c => c.CompanyNameShort.ToLower().Contains(companyNameShort.ToLower()))
+     .Select(c => c.CurrencyImage)
+     .FirstOrDefaultAsync();
+
+
+                if (string.IsNullOrWhiteSpace(svg))
+                    return NotFound();
+
+                // 4️⃣  Serve it *as* SVG so <img src="…"> works
+                return Content(svg, "image/svg+xml; charset=utf-8");
+            }
+			catch(Exception ex)
+			{
+				throw ex;
+			}
+
+        }
+
+
 
     }
 }

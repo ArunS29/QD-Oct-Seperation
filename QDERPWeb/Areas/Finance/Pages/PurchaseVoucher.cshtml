@@ -55,6 +55,8 @@
 			}
 
 </style>
+<input id="formId" value="PurchaseVoucher" type="hidden" />
+
 <div id="costAllocationPopup" style="display:none;">
 	<div style="margin-bottom:10px">
 		@(Html.DevExtreme().Button()
@@ -426,6 +428,7 @@
 						.TabIndex(2) // Different tabindex to separate from the first
 						.DropDownOptions(o => o.Width(700))
 						.OnKeyDown("onKeyDown")
+						.ReadOnly(true)
 						//.OnValueChanged("dropDownBoxValueChanged") // Optional
 						.ContentTemplate(new TemplateName("BaseCurrencyContentTemplate"))
 						)
@@ -495,13 +498,24 @@
 						)
 		</div>
 		<div class="form-group">
-			@(Html.DevExtreme().TextBox()
-						.Label("Convertion Rate")
+			@(
+						Html.DevExtreme().NumberBox()
+						.Label(new JS("formatMessage('Convertion Rate')"))
 						.LabelMode(EditorLabelMode.Outside)
 						.ID("txtCurrencyRate")
-						.Value("0.00")
-						//  .ReadOnly(true) // Make it read-only
 						.Width(160)
+						.Value(1)
+
+						.Min(0)
+
+						.Format("#,##0.00")
+						.InputAttr(new
+						{
+							style = "font-family: Cambria; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;",
+							type = "number",
+							step = "0.01"
+						})
+
 						)
 		</div>
 		@using (Html.DevExtreme().NamedTemplate("CurrencyContentTemplate"))
@@ -927,15 +941,15 @@
 																		.Icon("fa fa-book")
 																		.Height(70)
 																		.Width(70)
-																		.OnClick("onAttachButtonClick")
+																		
 																		)
 				</div>
 				 <input type="file" id="fileInput" style="display:none;" />
 			</div>
-		</div>
+   </div>
 
 
-	<br />
+
 
 	<div>
 		@await Html.PartialAsync("PurchaseVoucherFooter")
@@ -2060,7 +2074,7 @@ $(function () {
 				"VoucherNo": $("#VoucherNo").dxTextBox("instance").option("value"),
 					"basecurrencyid": $("#ddlBaseCurrency").dxDropDownBox("instance").option("value"),
 					"currencyid": $("#ddCurrency").dxDropDownBox("instance").option("value"),
-					"currencyrate": $("#txtCurrencyRate").dxTextBox("instance").option("value"),
+					"currencyrate": $("#txtCurrencyRate").dxNumberBox("instance").option("value"),
 				"VoucherDate": $("#VoucherDate").dxDateBox("instance").option("value"),
 				"VoucherEffectiveDate": $("#VoucherEffectiveDate").dxDateBox("instance").option("value"),
 				"InvoiceSubmittedDate": $("#InvoiceSubmittedDate").dxDateBox("instance").option("value"),
@@ -3277,7 +3291,7 @@ $(function () {
 			var VM = {
 						"basecurrencyid": $("#ddlBaseCurrency").dxDropDownBox("instance").option("value"),
 						"currencyid": $("#ddCurrency").dxDropDownBox("instance").option("value"),
-						"currencyrate": $("#txtCurrencyRate").dxTextBox("instance").option("value"),
+						"currencyrate": $("#txtCurrencyRate").dxNumberBox("instance").option("value"),
 				"VoucherNo": $("#VoucherNo").dxTextBox("instance").option("value"),
 				"VoucherDate": $("#VoucherDate").dxDateBox("instance").option("value"),
 				"VoucherEffectiveDate": $("#VoucherEffectiveDate").dxDateBox("instance").option("value"),
@@ -3318,4 +3332,383 @@ $(function () {
 			DevExpress.ui.notify("Voucher has no line items to be saved, please enter transaction to save!", "error", 2000);
 		}
 	});
+
+	function handlePreviewClick1(e) {
+		var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
+		var voucherNo = voucherNoBox.option("value");
+
+		// Ensure Voucher No is available
+		if (!voucherNo) {
+			alert("Voucher No is required.");
+			return;
+		}
+
+		// Get the selected item text
+		var selectedText = e.itemData.text;
+		console.log("Selected Report:", selectedText);
+
+		// Determine the report name based on the selected text
+		var reportName = "";
+		if (selectedText === formatMessage('Preview Format 1')) {
+			reportName = "SalesVoucherReport";
+		} else if (selectedText === formatMessage('Preview Format 2')) {
+			reportName = "SalesReport2";
+		}
+
+		// Ensure a valid report is selected
+		if (!reportName) {
+			alert("Invalid report format selected.");
+			return;
+		}
+
+		// Open the XtraReport with Voucher No as a parameter
+		window.open(
+			`/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&voucherNo=${encodeURIComponent(voucherNo)}&skipPreview=true`,
+			'_blank',
+			'width=1200,height=800,scrollbars=yes,resizable=yes'
+		);
+	}
+
+	function onDeleteButtonClick() {
+		var dataGrid = $("#dataGrid").dxDataGrid("instance");
+		var rowCount = dataGrid.getVisibleRows().length;
+		var dataSource = dataGrid.option("dataSource");
+
+		if (rowCount === 0 || rowCount === null) {
+			DevExpress.ui.dialog.alert(
+				"No records available to delete. Please enter some transactions.",
+				"Data Not Found"
+			).done(function () {
+
+			});
+		} else {
+			// Retrieve the unique identifier for the row
+			var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+
+			// **Ask for confirmation before proceeding**
+			confirmToDeleteAllVoucher(function () {
+				// User clicked "Yes", proceed with deletion
+				$.ajax({
+					url: `/api/VoucherMaster/DeleteAllVoucherEntry?VoucherNo=${encodeURIComponent(voucherNo)}`,
+					type: "POST",
+					success: function (response) {
+						if (response.data) {
+							$("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
+							DevExpress.ui.dialog.alert("Voucher has been successfully removed from the database.",
+								"Data Deleted Successfully").done(function () {
+									history.back(); // Execute only when "OK" is clicked
+								});
+
+						} else {
+							DevExpress.ui.notify("No updated data returned from the server.", "error", 2000);
+						}
+					},
+					error: function (xhr, status, error) {
+						DevExpress.ui.notify("Error deleting record: " + error, "error", 2000);
+					}
+				});
+			});
+		}
+	}
+
+
+	function confirmToDeleteAllVoucher(onConfirm) {
+		DevExpress.ui.dialog.confirm(
+			"You are about to delete the Voucher Entries from the database. You cannot revert the changes. Are you sure you want to delete?",
+			"Delete Confirm."
+		).done(function (dialogResult) {
+			if (dialogResult) {
+				onConfirm(); // Proceed only if the user clicks "Yes"
+				// DevExpress.ui.dialog.alert(
+				//     "All Entries has been successfully removed from the database.",
+				//     "Data Deleted Successfully"
+				// );
+			}
+		});
+	}
+
+	function onBackButtonClick() {
+		const dataGrid = $("#dataGrid").dxDataGrid("instance");
+		const rowCount = dataGrid.getVisibleRows().length;
+
+		if (rowCount === 0) {
+			DevExpress.ui.dialog.confirm(
+				"No entries in the voucher, do you want to clear the voucher completely?",
+				"No line items"
+			).done(function (dialogResult) {
+				if (dialogResult) {
+					if (typeof onConfirm === "function") {
+						onConfirm(); // Ensure onConfirm is defined before calling
+					}
+					DevExpress.ui.dialog.alert(
+						"Voucher has been successfully removed from the database.",
+						"Data Deleted Successfully"
+					).done(function () {
+						history.back(); // Go back to the previous page
+					});
+				}
+			});
+		} else {
+			history.back(); // Closes or navigates back
+		}
+	}
+
+
+	function onVerifyButtonClick() {
+		const dataGrid = $("#dataGrid").dxDataGrid("instance");
+		IsDirect = false;
+		// Ensure dataGrid exists
+		if (!dataGrid) {
+			console.error("DataGrid instance not found.");
+			return;
+		}
+
+		const rowCount = dataGrid.getVisibleRows().length;
+
+		// Check if DataGrid contains rows
+		if (rowCount === 0) {
+			DevExpress.ui.dialog.custom({
+				title: "Voucher verification has failed.",
+				message: "Voucher has not been Verified. Please enter transactions to proceed with verification.",
+				buttons: [{ text: "Ok", onClick: () => false }],
+				showTitle: true
+			}).show();
+		} else {
+			DevExpress.ui.dialog.custom({
+				title: "Confirm Verification",
+				// message: "Voucher has not been Verified. Click Yes if you want to Verify this Voucher.",
+				message: "Are you sure want to verify this voucher?",
+				buttons: [
+					{ text: "Yes", onClick: () => true },
+					{ text: "No", onClick: () => false }
+				],
+				showTitle: true
+			}).show().done(function (dialogResult) {
+				if (dialogResult) {
+					proceedWithVerification(); // Proceed if user clicks Yes
+				}
+			});
+		}
+	}
+
+
+
+
+	function proceedWithVerification() {
+		// Set VerifiedBy checkbox to true
+		$("#VerifiedBy").dxCheckBox("instance").option("value", true);
+
+		const vno = $("#VoucherNo").dxTextBox("instance").option("value");
+
+		if (!vno) {
+			DevExpress.ui.notify("Voucher number is required!", "error", 2000);
+			return;
+		}
+
+		const currentDate = new Date();
+
+		const formattedDate = currentDate.toLocaleDateString("en-GB", {
+
+			day: "2-digit",
+
+			month: "short",
+
+			year: "numeric"
+
+		}).replace(/ /g, '-');
+
+		$.ajax({
+			type: "POST",
+			url: "/api/VoucherMaster/VerifyVoucher",
+			contentType: "application/json",
+			dataType: "json",
+			data: JSON.stringify({ voucherNo: vno }), // Send as JSON in request body
+			success: function (response) {
+				if (response && response.Message) {
+					DevExpress.ui.dialog.alert(
+						"Voucher has been Verified.",
+						"Verified"
+					).done(() => {
+						$("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherVerifiedBy || "N/A");
+						$("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
+					});
+				}
+				else {
+					DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
+				}
+			},
+			error: function (xhr, status, error) {
+				let errorMessage = xhr.responseJSON && xhr.responseJSON.Message
+					? xhr.responseJSON.Message
+					: "An error occurred.";
+			}
+		});
+	}
+
+
+
+	function disableEditing() {
+		// Disable all input fields and buttons except for specific ones
+		$('input, select, textarea').prop('disabled', true);
+
+		$('.dx-button').each(function () {
+			const allowedButtons = ['btnBack', 'btnPrint', 'btnAttach', 'btnAttachment', 'btnEditAHead', 'btnAddAHead', 'btncostBack'];
+			if (!allowedButtons.includes($(this).attr('id'))) {
+				$(this).dxButton('option', 'disabled', true);
+			}
+		});
+		// Enable the DropDownButton explicitly
+		const previewButton = $("#btnPreview1").dxDropDownButton("instance");
+
+		if (previewButton) {
+			previewButton.option("disabled", false);
+			previewButton.repaint();  // Force UI refresh
+		} else {
+			console.error("btnPreview1 instance not found");
+		}
+		// Modify context menu items
+		$("#EditCostAllocation").text("View Cost Allocation");
+		$("#EditBillReceivable").text("View Bill Receivable");
+		$("#EditSalaryPayable").text("View Salary Payable");
+		$("#EditEmployeeAllocation").text("View Employee Allocation");
+		$("#EditPropertyAllocation").text("View Property Allocation");
+
+		// Completely disable DeleteAllLineEntries
+		$("#DeleteAllLineEntries").parent().css({
+			"pointer-events": "none",  // Disables interaction
+			"opacity": "0.5",  // Makes it look disabled
+			"cursor": "default"  // Prevents pointer cursor
+		}).attr("aria-disabled", "true");
+
+		// Disable DevExtreme DateBox components
+		$("#VoucherDate").dxDateBox("instance").option("disabled", true);
+		$("#VoucherEffectiveDate").dxDateBox("instance").option("disabled", true);
+
+
+		// Disable DevExtreme DropDownBox component
+		$("#accountDropDownBox").dxDropDownBox("instance").option("disabled", true);
+
+		// Disable DataGrid Editing and Deleting
+		var dataGrid = $("#dataGrid").dxDataGrid("instance");
+		if (dataGrid) {
+			dataGrid.option("editing.allowUpdating", false);
+			dataGrid.option("editing.allowDeleting", false);
+		}
+
+	}
+
+
+	function onApproveButtonClick() {
+		const dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+		if (!dataGrid) {
+			console.error("DataGrid instance not found.");
+			return;
+		}
+
+		const rowCount = dataGrid.getVisibleRows().length;
+
+		if (rowCount === 0) {
+			DevExpress.ui.dialog.custom({
+				title: "Voucher approval has failed.",
+				message: "Voucher has not been Approved. Please enter transactions to proceed with approval.",
+				buttons: [{ text: "Ok", onClick: () => false }],
+				showTitle: true
+			}).show();
+			return;
+		}
+
+		// Assume verification status is fetched from a field or variable, update accordingly
+		const isVerified = $("#VerifiedBy").dxCheckBox("instance").option("value"); // or fetch it based on your model
+
+		if (!isVerified) {
+			DevExpress.ui.dialog.custom({
+				title: "Voucher Not Verified",
+				message: "Voucher has not been verified. Click Yes if you want to verify and approve this voucher.",
+				buttons: [
+					{ text: "Yes", onClick: () => true },
+					{ text: "No", onClick: () => false }
+				],
+				showTitle: true
+			}).show().done(function (dialogResult) {
+				if (dialogResult) {
+					// Mark as verified
+					$("#VerifiedBy").dxCheckBox("instance").option("value", true);
+					// Now proceed with approval
+					proceedWithApproval();
+				}
+			});
+		} else {
+			DevExpress.ui.dialog.custom({
+				title: "Confirm Approval",
+				message: "Are you sure you want to approve this voucher?",
+				buttons: [
+					{ text: "Yes", onClick: () => true },
+					{ text: "No", onClick: () => false }
+				],
+				showTitle: true
+			}).show().done(function (dialogResult) {
+				if (dialogResult) {
+					proceedWithApproval();
+				}
+			});
+		}
+	}
+	function proceedWithApproval() {
+		// Set ApprovedBy checkbox to true
+		$("#ApprovedBy").dxCheckBox("instance").option("value", true);
+
+		const vno = $("#VoucherNo").dxTextBox("instance").option("value");
+
+		if (!vno) {
+			DevExpress.ui.notify("Voucher number is required!", "error", 2000);
+			return;
+		}
+
+		// Define IsDirect if not already defined (adjust as needed)
+		const IsDirect = true; // or false, depending on your logic
+
+		const currentDate = new Date();
+		const formattedDate = currentDate.toLocaleDateString("en-GB", {
+			day: "2-digit",
+			month: "short",
+			year: "numeric"
+		}).replace(/ /g, '-');
+
+		$.ajax({
+			type: "POST",
+			url: `/api/VoucherMaster/ApproveVoucher?VoucherNo=${encodeURIComponent(vno)}&IsDirect=${encodeURIComponent(IsDirect)}`,
+			contentType: "application/json",
+			dataType: "json",
+			// Uncomment the following line if the API expects data in the request body:
+			// data: JSON.stringify({ voucherNo: vno }),
+			success: function (response) {
+				if (response && response.Message) {
+					DevExpress.ui.dialog.alert(
+						"Voucher has been Approved.",
+						"Approved"
+					).done(() => {
+						disableEditing();
+						$("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
+						$("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate || "N/A");
+
+						if (IsDirect === true) {
+							$("#VerifiedBy").dxCheckBox("instance").option("value", true);
+							$("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
+							$("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
+						}
+					});
+				} else {
+					DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
+				}
+			},
+			error: function (xhr, status, error) {
+				let errorMessage = (xhr.responseJSON && xhr.responseJSON.Message)
+					? xhr.responseJSON.Message
+					: "An error occurred.";
+				DevExpress.ui.notify(errorMessage, "error", 2000);
+			}
+		});
+	}
+
 </script>

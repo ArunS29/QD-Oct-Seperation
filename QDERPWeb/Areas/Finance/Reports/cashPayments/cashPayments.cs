@@ -412,8 +412,18 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
             }
 
         }
+
+        private void xrLabel9_BeforePrint(object sender, CancelEventArgs e)
+        {
+
+        }
+
+        private void cashPayments_BeforePrint(object sender, CancelEventArgs e)
+        {
+
+        }
         // Change the event handler signature to match DevExpress's BeforePrint event
-        
+
 
     }
 }

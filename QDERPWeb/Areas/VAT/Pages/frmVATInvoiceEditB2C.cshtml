@@ -5,6 +5,17 @@
 @{
 } *@
 <style>
+	.dx-datagrid-headers .center-header {
+		text-align: center !important;
+	}
+
+	.Head {
+		margin-bottom: 10px;
+	}
+
+	#B2BdataGrid {
+		height: 700px !important;
+	}
 	.form-wrapper {
 		border-radius: 6px;
 		width: 97%;
@@ -837,17 +848,17 @@
 								</td>
 							</tr>
 							<tr>
-								<td>
+							<td>
 								@(Html.DevExtreme().TextBox()
-																												.ID("GroupVATNo")
-																												.Label(new JS("formatMessage('Group VAT No')"))
-																												.LabelMode(EditorLabelMode.Outside)
-																												.MaxLength(15)
-																												.Mask("000000000000000") // 15 digits
-																												.MaskChar(" ") // Optional: makes it more readable
-																															//.ShowClearButton(true) // Optional: adds a clear (X) button
-																												)
-								</td>
+															.ID("GroupVATNo")
+															.Label(new JS("formatMessage('Group VAT No')"))
+															.LabelMode(EditorLabelMode.Outside)
+															.MaxLength(15)
+															.Mask("300000000000003") // 15 digits
+															.MaskChar("_") // Optional: makes it more readable
+																					//.ShowClearButton(true) // Optional: adds a clear (X) button
+															)
+							</td>
 							<td>
 
 								@(Html.DevExtreme().TextBox()
@@ -855,8 +866,8 @@
 																						.Label(new JS("formatMessage('Client VAT No')"))
 																						.LabelMode(EditorLabelMode.Outside)
 																						.MaxLength(15)
-																						.Mask("000000000000000") // 15 digits
-																						.MaskChar(" ") // Optional: makes it more readable
+																						.Mask("300000000000003") // 15 digits
+																						.MaskChar("_") // Optional: makes it more readable
 																												//.ShowClearButton(true) // Optional: adds a clear (X) button
 																						)
 							</td>
@@ -1083,7 +1094,7 @@
 
 																					.LabelMode(EditorLabelMode.Outside)
 																					.ID("ddlGoodsGroup2")
-																					.Value("Income - Trading")
+																					.Value("")
 																					.ShowClearButton(true)
 																					.AcceptCustomValue(true)
 																					.OpenOnFieldClick(false)
@@ -1680,6 +1691,7 @@
 																													.ID("SubmittedBy")
 																													.Value(null)
 																													.ElementAttr("style", "padding-bottom:40px;")
+																													.OnValueChanged("function(e) { onClientCodeChanged(accheadid); }")
 																													)
 									@(Html.DevExtreme().TextBox()
 																													.Label(new JS("formatMessage('Invoice Submitted By')"))
@@ -2363,7 +2375,7 @@
 									)
 		</div>
 
-		<div class="Head">
+		<div class="Head" style="margin-left: 15px;">
 			@await Html.PartialAsync("/Pages/Shared/VAT/VATInvoiceEditFooter.cshtml")
 		</div>
 
@@ -3668,6 +3680,34 @@
 											$('#LessAdvanceAr2').dxTextBox("instance")?.option("value", account.RetentionTextAr);
 
 
+														$("#StreetName")              .dxTextBox("instance").option("value",account.BuyerAddressStreet);
+														$("#StreetNameArabic")        .dxTextBox("instance").option("value", account.BuyerAddressStreetAr);
+														$("#AdditionalAddress")       .dxTextBox("instance").option("value", account.BuyerAdditionalStreet);
+														$("#AdditionalAddressArabic") .dxTextBox("instance").option("value", account.BuyerAdditionalStreetAr);
+													$("#BuildingNumber")          .dxTextBox("instance").option("value", account.BuyerBuildingNumber);
+													$("#ClientCity")              .dxTextBox("instance").option("value", account.BuyerCity);
+														$("#ClientCityArabic")        .dxTextBox("instance").option("value", account.BuyerCityAr);
+														$("#AdditionalNumber")        .dxTextBox("instance").option("value",  account.BuyerAdditionalNumber);
+													$("#Province")                .dxTextBox("instance").option("value", account.BuyerAdditionalNumber);
+														$("#ProvinceArabic")          .dxTextBox("instance").option("value", account.BuyerProvinceAr);
+														$("#PostalCode")              .dxTextBox("instance").option("value", account.BuyerPostalCode);
+													$("#District")                .dxTextBox("instance").option("value", account.BuyerNeighborhood);
+														$("#DistrictArabic")          .dxTextBox("instance").option("value", account.BuyerNeighborhoodAr);
+														$("#CountryCodeNumeric")      .dxDropDownBox("instance").option("value",account.BuyerCountryCode);
+
+					$("#OurStreetName").dxTextBox("instance").option("value", account.SellerAddressStreet);
+					$("#OurStreetNameArabic").dxTextBox("instance").option("value", account.SellerAddressStreetAr);
+					$("#OurAdditionalAddress").dxTextBox("instance").option("value", account.SellerAdditionalStreet);
+					$("#OurAdditionalAddressArabic").dxTextBox("instance").option("value", account.SellerAdditionalStreetAr);
+					$("#OurBuildingNumber").dxTextBox("instance").option("value", account.SellerBuildingNumber);
+					$("#OurClientCity").dxTextBox("instance").option("value", account.SellerCity);
+						$("#OurClientCityArabic").dxTextBox("instance").option("value", account.SellerCityAr);
+						$("#OurAdditionalNumber").dxTextBox("instance").option("value", account.SellerAdditionalNumber);
+						$("#OurProvince").dxTextBox("instance").option("value", account.SellerProvince);
+						$("#OurProvinceArabic").dxTextBox("instance").option("value", account.SellerProvinceAr);
+						$("#OurPostalCode").dxTextBox("instance").option("value", account.SellerPostalCode);
+						$("#OurDistrict").dxTextBox("instance").option("value", account.SellerNeighborhood);
+							$("#OurDistrictArabic").dxTextBox("instance").option("value", account.SellerNeighborhoodAr);
 
 											if(account.IsApproved==true)
 											{
@@ -4181,6 +4221,8 @@
 
 					caption: "#",
 
+						cssClass: "center-header",
+
 					width: 100,
 
 					allowEditing: false // Prevent manual editing
@@ -4193,6 +4235,8 @@
 
 					caption: formatMessage('Item Code'),
 
+					cssClass: "center-header",
+
 					width: 200
 
 				},
@@ -4202,6 +4246,8 @@
 					dataField: "Description",
 
 					caption: formatMessage('Description'),
+
+						cssClass: "center-header",
 
 					width: 550,
 						 sortOrder: "asc", // auto-sort
@@ -4392,8 +4438,9 @@
 				},
 		{
 					dataField: "Descriptions",
+					cssClass: "center-header",
 					caption: "...",
-					width: 50,
+					width: 80,
 					allowEditing: false,
 						cellTemplate: function (container, options) {
 			const buttonId = `popover-btn-${options.rowIndex}`;
@@ -4501,6 +4548,8 @@
 					dataField: "DescriptionDetails",
 
 					caption: formatMessage('Unit Rate Method'),
+
+						cssClass: "center-header",
 
 					width: 200,
 
@@ -4626,13 +4675,13 @@
 				},
 
 
-				{ dataField: "Qty", caption: formatMessage('Qty'), width: 150 },
+				{ dataField: "Qty", caption: formatMessage('Qty'), cssClass: "center-header",width: 150 },
 
-				{ dataField: "UnitPrice", caption: formatMessage('Unit Price'), width: 150 },
+				{ dataField: "UnitPrice", caption: formatMessage('Unit Price'), cssClass: "center-header",width: 150 },
 
-				{ dataField: "TotalBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 185, format: { type: "fixedPoint", precision: 2 } },
+				{ dataField: "TotalBeforeDiscount", caption: formatMessage('Total Before Discount'), cssClass: "center-header",width: 185, format: { type: "fixedPoint", precision: 2 } },
 
-				{ dataField: "Discount", caption: formatMessage('Discount'), width: 150 },
+				{ dataField: "Discount", caption: formatMessage('Discount'),cssClass: "center-header", width: 150 },
 
 				//{ dataField: "DiscountDetails", caption: "...", width: 50 },
 						{
@@ -4655,13 +4704,14 @@
 	}
 	,
 
-					{ dataField: "Amount", caption: formatMessage('Amount'), width: 150, format: { type: "fixedPoint", precision: 2 } },
+					{ dataField: "Amount", caption: formatMessage('Amount'), width: 150, cssClass: "center-header",format: { type: "fixedPoint", precision: 2 } },
 
 				//{ dataField: "VAT%", caption: "VAT%", width: 150 },
 
 				{
 					dataField: "VATPercentage",
 					caption: formatMessage('VAT%'),
+	cssClass: "center-header",
 					width: 150,
 					editCellTemplate: function (cellElement, cellInfo) {
 						getTaxSlabData().done(function (dropdownData) {
@@ -4712,11 +4762,11 @@
 					}
 				},
 
-				{ dataField: formatMessage('ExcemptionCode'), caption: "Excemption Code", width: 150 },
+				{ dataField: formatMessage('ExcemptionCode'), caption: "Excemption Code",cssClass: "center-header", width: 150 },
 
-				{ dataField: "VAT", caption: formatMessage('VAT'), width: 150 },
+				{ dataField: "VAT", caption: formatMessage('VAT'),cssClass: "center-header", width: 150 },
 
-				{ dataField: "Total", caption: formatMessage('Total'), width: 150, format: { type: "fixedPoint", precision: 2 } },
+					{ dataField: "Total", caption: formatMessage('Total'),cssClass: "center-header", width: 150, format: { type: "fixedPoint", precision: 2 } },
 
 				{ dataField: "TaxSlabCode", caption: formatMessage('TaxSlabCode'), width: 150, allowEditing: false, visible: false }
 
@@ -4993,6 +5043,7 @@
 								// Get ReferenceNo from selected row
 								if (selectedRowData.length > 0) {
 									accheadid = selectedRowData[0].AccountId;
+										 onClientCodeChanged(accheadid);
 									 IsClientCode=true;
 										console.log("ClientData",selectedRowData[0])
 								  let  accheadname = selectedRowData[0].AccountHead;
@@ -7451,34 +7502,6 @@
 		}
 
 
-	function disableEditing() {
-		// Disable all input fields and buttons except for specific ones
-		$('input, select, textarea').prop('disabled', true);  // Disable inputs, selects, and textareas
-
-		const allowedButtons = ['btnMoveDown', 'btnMoveUp', 'btnSave', 'btnSaveAndClose', 'btnPostToLedgers', 'btnPostTag', 'btnPrint1', 'btnPrint'];
-
-		// Disable all dxButton and dxDropDownButton controls
-		$('.dx-button, .dx-dropdownbutton').each(function () {
-			const id = $(this).attr('id');
-			if (id && !allowedButtons.includes(id)) {
-				// Disable dxButton and dxDropDownButton widgets except for allowed ones
-				if ($(this).data('dxButton')) {
-					$(this).dxButton('option', 'disabled', true);
-				} else if ($(this).data('dxDropDownButton')) {
-					$(this).dxDropDownButton('option', 'disabled', true);
-				}
-			}
-		});
-
-		// Disable DataGrid Editing and Deleting
-		var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-		if (dataGrid) {
-			dataGrid.option("editing.allowUpdating", false);
-			dataGrid.option("editing.allowDeleting", false);
-		}
-	}
-
-
 		$("#btnBack").on("click", function (e) {
 			history.back(); // Closes or navigates back
 		});
@@ -8539,17 +8562,17 @@
 								var controlStates = {
 									"ddButtonLayout": { "Visible": true, "Enabled": false },
 									"btnMoveDown": { "Visible": true, "Enabled": false },
-									"btnMoveUp": { "Visible": false, "Enabled": false },
-									"btnSave": { "Visible": false, "Enabled": false },
-									"btnSaveAndClose": { "Visible": false, "Enabled": false },
-									"btnPrint1": { "Visible": false, "Enabled": false },
-									"btnAddNew": { "Visible": false, "Enabled": false },
+										"btnMoveUp": { "Visible": true, "Enabled": false },
+										"btnSave": { "Visible": true, "Enabled": false },
+										"btnSaveAndClose": { "Visible": true, "Enabled": false },
+										"btnPrint1": { "Visible": true, "Enabled": false },
+										"btnAddNew": { "Visible": true, "Enabled": false },
 									"btnDelete": { "Visible": true, "Enabled": false },
-									"btnVerify": { "Visible": false, "Enabled": false },
-									"btnApprove": { "Visible": false, "Enabled": false },
-									"btnAttach": { "Visible": false, "Enabled": false },
-									"btnPostToLedgers": { "Visible": false, "Enabled": false },
-									"btnPostTag": { "Visible": false, "Enabled": false }
+										"btnVerify": { "Visible": true, "Enabled": false },
+									"btnApprove": { "Visible": true, "Enabled": false },
+										"btnAttach": { "Visible": true, "Enabled": false },
+										"btnPostToLedgers": { "Visible": true, "Enabled": false },
+										"btnPostTag": { "Visible": true, "Enabled": false }
 
 
 								};
@@ -8608,5 +8631,99 @@
 					console.log('End permission handling');
 				});
 
+
+						 function onClientCodeChanged(accheadid) {
+			$.ajax({
+				url: '/api/AccountLedgerMaster/GetAccountDetails',
+				type: 'GET',
+				data: { accountID: accheadid },
+				success: function (result) {
+					debugger;
+					// 1. Pick the first record regardless of the shape returned
+					const details = Array.isArray(result)
+						? result[0]
+						: (result.accountDetails || [])[0];
+
+					if (!details) {
+						DevExpress.ui.notify("No account details returned", "warning", 3000);
+						return;
+					}
+
+					// 2. Get your base Invoice Date (today fallback)
+					const invoiceDateBox = $("#InvoiceDate").dxDateBox("instance");
+					const baseDate = invoiceDateBox?.option("value")
+						? new Date(invoiceDateBox.option("value"))
+						: new Date();
+
+					// 3. Default credit days from master
+					let creditDays = Number(details.NoOfDaysCreditPeriod) || 0;
+					let NoOfDays = creditDays;
+					// 4. If the checkbox “Submitted By” is ticked, recompute creditDays
+					const isSubmitted = $('#SubmittedBy').dxCheckBox("instance")?.option("value");
+					if (isSubmitted) {
+						const invoiceSubmittedDate = $("#ddlinvoicesubmittedon")
+							.dxDateBox("instance")
+							.option("value");
+
+						if (invoiceSubmittedDate) {
+							const diffMs = new Date(invoiceSubmittedDate) - baseDate;
+							SubcreditDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+							NoOfDays = creditDays+SubcreditDays;
+						}
+					}
+
+					// 5. Calculate the due date and push it into the UI
+					const dueDate = new Date(baseDate);
+						dueDate.setDate(dueDate.getDate() + NoOfDays);
+					$("#InvoiceDueDate").dxDateBox("instance").option("value", dueDate);
+				},
+				error: function () {
+					DevExpress.ui.notify("Failed to fetch data for client", "error", 2000);
+				}
+			});
+		}
+
+					$("#btnPrint1").on("click", function (e) {
+				var dropdown = $("#btnPrint1").dxDropDownButton("instance");
+				var items = dropdown.option("items");
+
+				// Set disabled flag on specific items
+				items.forEach(function (item) {
+						if (item.text === "Print Simplified TAX Invoice" ) {
+						item.disabled = true;
+					}
+				});
+
+				dropdown.option("items", items);
+			});
+
+
+		
+	function disableEditing() {
+		// Disable all input fields and buttons except for specific ones
+		$('input, select, textarea').prop('disabled', true);  // Disable inputs, selects, and textareas
+
+		const allowedButtons = ['btnMoveDown', 'btnMoveUp', 'btnSave', 'btnSaveAndClose', 'btnPostToLedgers', 'btnPostTag', 'btnPrint1'];
+
+		// Disable all dxButton and dxDropDownButton controls
+		$('.dx-button, .dx-dropdownbutton').each(function () {
+			const id = $(this).attr('id');
+			if (id && !allowedButtons.includes(id)) {
+				// Disable dxButton and dxDropDownButton widgets except for allowed ones
+				if ($(this).data('dxButton')) {
+					$(this).dxButton('option', 'disabled', true);
+				} else if ($(this).data('dxDropDownButton')) {
+					$(this).dxDropDownButton('option', 'disabled', true);
+				}
+			}
+		});
+
+		// Disable DataGrid Editing and Deleting
+		var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+		if (dataGrid) {
+			dataGrid.option("editing.allowUpdating", false);
+			dataGrid.option("editing.allowDeleting", false);
+		}
+	}
 </script>
 

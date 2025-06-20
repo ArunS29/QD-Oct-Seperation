@@ -274,12 +274,7 @@ namespace QDWEB.Areas.Finance.Controllers
                                 VoucherNarration = VM.VoucherMaster.VoucherNarration,
                                 BillRemarks = VM.VoucherMaster.BillRemarks,
                                 VoucherType = VM.VoucherMaster.VoucherType,
-                                IsVerified = VM.VoucherMaster.IsVerified,
-                                IsApproved = VM.VoucherMaster.IsApproved,
-                                VoucherVerifiedBy = VM.VoucherMaster.VoucherVerifiedBy,
-                                VoucherApprovedBy = VM.VoucherMaster.VoucherApprovedBy,
-                                VoucherVerifiedOn = DateTime.Now,
-                                VoucherApprovedOn = DateTime.Now,
+                               
                                 basecurrencyid = VM.VoucherMaster.basecurrencyid,
                                 currencyid = VM.VoucherMaster.currencyid,
                                 currencyrate = VM.VoucherMaster.currencyrate

@@ -72,7 +72,7 @@ namespace QD.ERP.Web.Controllers
             var report = GenerateAccountReport(
      reportName,
      accountId,
-     frmDate ?? DateTime.MinValue, // or use an appropriate default
+     frmDate ?? DateTime.MinValue,  
      toDate ?? DateTime.Now,       // or DateTime.MaxValue
      tenantName,
      companyName,

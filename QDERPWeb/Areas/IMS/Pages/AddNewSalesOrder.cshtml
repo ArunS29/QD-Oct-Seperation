@@ -37,7 +37,7 @@
             background-color: lightblue;
             color: white !important;
         }
-
+        
     .dx-tabpanel {
     }
 
@@ -1601,6 +1601,9 @@
                     var grid = $("#itemGrid").dxDataGrid("instance");
                     grid.option("dataSource", data.SalesOrderChildren);
                 }
+                  if (data.IsApproved === true) {
+            disableAllControls();
+        }
                     })
                     .fail(function () {
                         DevExpress.ui.notify("Failed to load sales order details.", "error", 2000);
@@ -1843,6 +1846,7 @@
                     data: JSON.stringify(model),
                     success: function (response) {
                         DevExpress.ui.notify(response.message, "success", 2000);
+                         location.reload();
                         // ✅ Reload grid after save
                         $.get("/api/SalesOrders/GetSalesOrderChildren?quoteNo=" + model.SalesOrderNo, function (data) {
                             window.itemGridDataSource = data;
@@ -1887,15 +1891,15 @@
                         $("#ClientContact").dxTextBox("instance").option("value", data.ClientContactNo);
                         $("#TypeOFSalesOrder").dxDropDownBox("instance").option("value", data.TypeOfRequest);
                         $("#ClientNames").dxDropDownBox("instance").option("value", data.ClientCode);
-                         $("#ReferenceNo").dxTextBox("instance").option("value", data.Project);
+                        $("#ReferenceNo").dxTextBox("instance").option("value", data.Project);
                         $("#Project").dxDropDownBox("instance").option("value", data.ProjectMasterCode);
-                          $("#ReferenceNo1").dxTextBox("instance").option("value", data.ClientRefNo);
+                        $("#ReferenceNo1").dxTextBox("instance").option("value", data.ClientRefNo);
                         $("#preparedBy").dxDropDownBox("instance").option("value", data.QuoteSignatory);
                         $("#SalesPerson").dxDropDownBox("instance").option("value", data.SalesPersonCode);
                         $("#AdditionsText").dxTextBox("instance").option("value", data.AdditionsText);
                         $("#DeductionsText").dxTextBox("instance").option("value", data.DiscountsText);
-                          $("#AdditionsAmount").dxNumberBox("instance").option("value", data.QuoteTransport);
-                          $("#DeductionsAmount").dxNumberBox("instance").option("value", data.QuoteDiscount);
+                        $("#AdditionsAmount").dxNumberBox("instance").option("value", data.QuoteTransport);
+                        $("#DeductionsAmount").dxNumberBox("instance").option("value", data.QuoteDiscount);
                         $("#CostCenter").dxDropDownBox("instance").option("value", data.CostAllocationMasterGroup);
                         $("#CompanyBranch").dxDropDownBox("instance").option("value", data.CompanyBranch);
                         $("#InventoryGroup").dxDropDownBox("instance").option("value", data.InventoryMasterGroupId);
@@ -2133,7 +2137,7 @@
         const vatRate = parseFloat(data.QuotedTaxSlab) || 0;
 
         // Your updated formula
-        const amount = (qty * unitPrice) + discount;
+        const amount = (qty * unitPrice) - discount;
         const vat = (amount * vatRate) / 100;
         const total = amount + vat;
 

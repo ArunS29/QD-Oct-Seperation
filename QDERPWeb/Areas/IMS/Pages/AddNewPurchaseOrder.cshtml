@@ -263,7 +263,7 @@
         display: none !important;
     }
 
-    .limited-footer .btn-container:not(:has(#ddButtonLayout,#btnSave,#btnSaveAndClose,#btnPrint,#btnDelete,#btnAddNew,#btnAttach,#btnSubmit,#btnVerify,#btnApprove)) {
+    .limited-footer .btn-container:not(:has(#ddButtonLayout,#btnSave,#btnSaveAndClose,#btnPrint4,#btnDelete,#btnAddNew,#btnAttach,#btnSubmit,#btnVerify,#btnApprove)) {
         display: none !important
     }
 
@@ -993,6 +993,7 @@
     </div>
     @(Html.DevExtreme().DataGrid()
         .ID("itemGrid")
+
         .Height("600px")
         .Selection(s => s
         .Mode(SelectionMode.Multiple)
@@ -1212,7 +1213,7 @@
 
                 dataSource: rowData,
 
-                keyExpr: "SNo",
+                keyExpr: "SlNo",
 
                 columns: [
                               {
@@ -1226,7 +1227,7 @@
 
                     {
 
-                        dataField: "SNo",
+                        dataField: "SlNo",
 
                         caption: "#",
 
@@ -1665,7 +1666,7 @@
 
                 onInitNewRow: function (e) {
 
-                    e.data.SNo = rowData.length + 1; // Auto-generate SNo
+                    e.data.SlNo = rowData.length + 1; // Auto-generate SNo
 
                 },
 
@@ -1683,7 +1684,7 @@
 
             $("#btnAddNew").on("click", function (e) {
                     var newRow = {
-                        SNo: rowData.length + 1, // Auto-generate SNo
+                        SlNo: rowData.length + 1, // Auto-generate SNo
                         ItemCode: "",
                         Description: "",
                         UnitRateMethod:"",
@@ -1897,7 +1898,7 @@
 
      function savePurchaseOrder() {
         const data = {
-            Pono: $("#PurchaseOrderNo").dxTextBox("instance").option("value"),
+               Pono: $("#PurchaseOrderNo").dxTextBox("instance").option("value"),
             Podate: $("#PoDate").dxDateBox("instance").option("value"),
             SupplierCode: $("#SupplierName").dxSelectBox("instance").option("value"),
             SupplierQuoteNo: $("#SupplierQuotationNo").dxTextBox("instance").option("value"),
@@ -1909,27 +1910,34 @@
             ProjectMasterCode: $("#Project").dxSelectBox("instance").option("value"),
             SalesPersonCode: $("#SalesPerson").dxSelectBox("instance").option("value"),
             ProjectSubUnitCode: $("#RequestingUnit").dxSelectBox("instance").option("value"),
-            Subject: $("#Subject").dxTextBox("instance").option("value"),
-            PoSummary: $("#PoSummary").dxTextArea("instance").option("value"),
-            PoIntro: $("#PoIntro").dxTextBox("instance").option("value"),
-            Thanks: $("#Thanks").dxTextArea("instance").option("value"),
-            PaymentTerm: $("#PaymentTerm").dxSelectBox("instance").option("value"),
-            DocumentsRequired: $("#DocumentsRequired").dxSelectBox("instance").option("value"),
-            DeliveryTerm: $("#DeliveryTerm").dxSelectBox("instance").option("value"),
-            WarrantyPeriod: $("#WarrantyPeriod").dxSelectBox("instance").option("value"),
-            DeliveryPeriod: $("#DeliveryPeriod").dxSelectBox("instance").option("value"),
-            ShippingAddress: $("#ShippingAddress").dxTextArea("instance").option("value"),
-            BillingAddress: $("#BillingAddress").dxTextArea("instance").option("value"),
-            CompanyName: $("#CompanyName").dxSelectBox("instance").option("value"),
-            RequestType: $("#RequestType").dxSelectBox("instance").option("value"),
-            POCategory: $("#POCategory").dxSelectBox("instance").option("value"),
-            InventoryGroup: $("#InventoryGroup").dxSelectBox("instance").option("value"),
-            CurrencyExchange: $("#CurrencyExchange").dxSelectBox("instance").option("value"),
+
+            Posummary: $("#PoSummary").dxTextArea("instance").option("value"),
+            Pointroduction: $("#PoIntro").dxTextBox("instance").option("value"),
+            PothanksNote: $("#Thanks").dxTextArea("instance").option("value"),
+
+            PopaymentTerm: $("#PaymentTerm").dxSelectBox("instance").option("value"),
+            PodocRequired: $("#DocumentsRequired").dxSelectBox("instance").option("value"),
+            PodeliveryTerm: $("#DeliveryTerm").dxSelectBox("instance").option("value"),
+            PowarrantyPeriod: $("#WarrantyPeriod").dxSelectBox("instance").option("value"),
+            PodeliveryPeriod: $("#DeliveryPeriod").dxSelectBox("instance").option("value"),
+
+            PoshipTo: $("#ShippingAddress").dxTextArea("instance").option("value"),
+            PobillTo: $("#BillingAddress").dxTextArea("instance").option("value"),
+
+            CompanyBranch: $("#CompanyName").dxSelectBox("instance").option("value"),
+            // TypeOfRequest: $("#RequestType").dxSelectBox("instance").option("value"),
+            PocategoryId: $("#POCategory").dxSelectBox("instance").option("value"),
+            InventoryMasterGroupId: $("#InventoryGroup").dxSelectBox("instance").option("value"),
+
+            Currency: $("#CurrencyExchange").dxSelectBox("instance").option("value"),
             ExchangeRate: $("#ExchangeRate").dxNumberBox("instance").option("value"),
+
+            DiscountsText: $("#Discount").dxTextBox("instance").option("value"),
+            DiscountMethod: $("#DiscountMethod").dxSelectBox("instance").option("value"),
+
             ShipmentHandling: $("#ShipmentHandling").dxTextBox("instance").option("value"),
             ShipmentHandlingMethod: $("#ShipmentHandlingMethod").dxSelectBox("instance").option("value"),
-            Discount: $("#Discount").dxTextBox("instance").option("value"),
-            DiscountMethod: $("#DiscountMethod").dxSelectBox("instance").option("value"),
+
             SubmittedBy: $("#preparedBy2").dxSelectBox("instance").option("value"),
             VerifiedBy: $("#verifiedBy2").dxSelectBox("instance").option("value"),
             ApprovedBy: $("#approvedBy2").dxSelectBox("instance").option("value"),
@@ -2085,4 +2093,146 @@
                                 $("#ThanksNotes1").text(
                                      formatMessage("Thanks Notes:"));
                });
+                      document.addEventListener("DOMContentLoaded", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const Pono = urlParams.get("Pono");
+        const mode = urlParams.get("mode");
+
+        if (Pono) {
+            const isEditMode = mode === "edit";
+            const isViewMode = mode === "view";
+
+            setTimeout(() => {
+                fetch(`/api/PurchaseOrders/GetByPoNo?PoNo=${encodeURIComponent(Pono)}`)
+                    .then(response => {
+                        if (!response.ok) throw new Error("Failed to load delivery data");
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data) {
+                                    $("#PurchaseOrderNo").dxTextBox("instance").option("value", data.pono);
+    $("#PoDate").dxDateBox("instance").option("value", data.podate);
+    $("#SupplierName").dxSelectBox("instance").option("value", data.supplierCode);
+    $("#SupplierQuotationNo").dxTextBox("instance").option("value", data.supplierQuoteNo);
+    $("#SupplierQuoteDate").dxDateBox("instance").option("value", data.supplierQuoteDate);
+    $("#AttentionTo").dxTextBox("instance").option("value", data.attention);
+    $("#SupplierContactNo").dxTextBox("instance").option("value", data.supplierContactNo);
+    $("#SupplierEmail").dxTextBox("instance").option("value", data.supplierContactEmail);
+    $("#RFQNo").dxTextBox("instance").option("value", data.rfqno);
+    $("#Project").dxSelectBox("instance").option("value", data.projectMasterCode);
+    $("#SalesPerson").dxSelectBox("instance").option("value", data.salesPersonCode);
+    $("#RequestingUnit").dxSelectBox("instance").option("value", data.projectSubUnitCode);
+
+    $("#PoSummary").dxTextArea("instance").option("value", data.posummary);
+    $("#PoIntro").dxTextBox("instance").option("value", data.pointroduction);
+    $("#Thanks").dxTextArea("instance").option("value", data.pothanksNote);
+
+    $("#PaymentTerm").dxSelectBox("instance").option("value", data.popaymentTerm);
+    $("#DocumentsRequired").dxSelectBox("instance").option("value", data.podocRequired);
+    $("#DeliveryTerm").dxSelectBox("instance").option("value", data.podeliveryTerm);
+    $("#WarrantyPeriod").dxSelectBox("instance").option("value", data.powarrantyPeriod);
+    $("#DeliveryPeriod").dxSelectBox("instance").option("value", data.podeliveryPeriod);
+
+    $("#ShippingAddress").dxTextArea("instance").option("value", data.poshipTo);
+    $("#BillingAddress").dxTextArea("instance").option("value", data.pobillTo);
+
+    $("#CompanyName").dxSelectBox("instance").option("value", data.companyBranch);
+    $("#POCategory").dxSelectBox("instance").option("value", data.pocategoryId);
+    $("#InventoryGroup").dxSelectBox("instance").option("value", data.inventoryMasterGroupId);
+
+    $("#CurrencyExchange").dxSelectBox("instance").option("value", data.currency);
+    $("#ExchangeRate").dxNumberBox("instance").option("value", data.exchangeRate);
+
+    $("#Discount").dxTextBox("instance").option("value", data.discountsText);
+    $("#DiscountMethod").dxSelectBox("instance").option("value", data.discountMethod);
+
+    $("#ShipmentHandling").dxTextBox("instance").option("value", data.shipmentHandling);
+    $("#ShipmentHandlingMethod").dxSelectBox("instance").option("value", data.shipmentHandlingMethod);
+
+    $("#preparedBy2").dxSelectBox("instance").option("value", data.submittedBy);
+    $("#verifiedBy2").dxSelectBox("instance").option("value", data.verifiedBy);
+    $("#approvedBy2").dxSelectBox("instance").option("value", data.approvedBy);
+
+
+                            // Set item grid data
+                            const itemGridInstance = $("#itemGrid").dxDataGrid("instance");
+                            itemGridInstance.option("dataSource", data.items);
+
+                            // Approval logic
+                                const isApproved = data.IsApproved === true || data.IsApproved === 1;
+                                console.log("Is Approved:", isApproved);
+
+                            if (isViewMode || isApproved) {
+                                setReadOnlyMode();
+                                itemGridInstance.option("editing", {
+
+                                    allowUpdating: false,
+                                    allowAdding: false,
+                                    allowDeleting: false
+                                });
+
+                                DevExpress.ui.notify(
+                                    isApproved
+                                        ? "This Purchase Order is approved. You are not allowed to edit it."
+                                        : "This Purchase Order is in view mode. Fields are read-only.",
+                                    "info",
+                                    4000
+                                );
+                            } else if (isEditMode) {
+                                // Enable grid editing
+                                itemGridInstance.option("editing", {
+                                        mode: "cell",
+                                        allowUpdating: true,
+                                    allowAdding: true,
+                                    allowDeleting: true
+                                });
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error loading delivery note:", error);
+                        alert("Failed to load delivery details.");
+                    });
+            }, 100);
+        }
+
+        function setReadOnlyMode() {
+            const readOnlyFields = [
+                { selector: "#deliveryNoteNo", type: "dxTextBox" },
+                { selector: "#deliveryNoteDate", type: "dxDateBox" },
+                { selector: "#GetProjectDropDown", type: "dxDropDownBox" },
+                { selector: "#ddGetSalesPerson", type: "dxDropDownBox" },
+                { selector: "#clientPOnumber", type: "dxTextBox" },
+                { selector: "#ClientPODate", type: "dxDateBox" },
+                { selector: "#ClientRefName", type: "dxTextBox" },
+                { selector: "#ClientContactNo", type: "dxTextBox" },
+                { selector: "#ClientEmail", type: "dxTextBox" },
+                { selector: "#ddGetModeOfRequest", type: "dxDropDownBox" },
+                { selector: "#ddGetTypeOfRequest", type: "dxDropDownBox" },
+                { selector: "#clientProject", type: "dxTextBox" },
+                { selector: "#DeliveryNoteRemarks", type: "dxTextArea" },
+                { selector: "#Salesman", type: "dxTextBox" },
+                { selector: "#DeliveredBy", type: "dxTextBox" },
+                { selector: "#DriverName", type: "dxTextBox" },
+                { selector: "#DriverID", type: "dxTextBox" },
+                { selector: "#VehicleNo", type: "dxTextBox" },
+                { selector: "#CompanyName", type: "dxSelectBox" },
+                { selector: "#DeliveryType", type: "dxSelectBox" },
+                { selector: "#InventoryGroup", type: "dxSelectBox" },
+                { selector: "#SalesOrderNo", type: "dxTextBox" },
+                { selector: "#QuotationNo", type: "dxTextBox" },
+                { selector: "#EnquiryRequestNo", type: "dxTextBox" },
+                { selector: "#Dnsignatory", type: "dxDropDownBox" }
+            ];
+
+            readOnlyFields.forEach(field => {
+                const instance = $(field.selector)[field.type]("instance");
+                if (instance) {
+                    instance.option("readOnly", true);
+                }
+            });
+
+            $("#btnSave").prop("disabled", true);
+        }
+    });
 </script>

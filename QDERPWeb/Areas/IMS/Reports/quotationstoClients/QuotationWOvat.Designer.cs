@@ -1550,7 +1550,7 @@
             this.xrLabel51.Multiline = true;
             this.xrLabel51.Name = "xrLabel51";
             this.xrLabel51.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel51.SizeF = new System.Drawing.SizeF(235F, 23F);
+            this.xrLabel51.SizeF = new System.Drawing.SizeF(262.5F, 22.99998F);
             this.xrLabel51.StylePriority.UseFont = false;
             this.xrLabel51.Text = "Email : [SignatoryEmail]";
             // 
@@ -1596,7 +1596,7 @@
             this.xrLabel55.Multiline = true;
             this.xrLabel55.Name = "xrLabel55";
             this.xrLabel55.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel55.SizeF = new System.Drawing.SizeF(205.6667F, 23F);
+            this.xrLabel55.SizeF = new System.Drawing.SizeF(222.6666F, 23F);
             this.xrLabel55.StylePriority.UseFont = false;
             this.xrLabel55.Text = "Email : [VerifiedBySignatoryEmail]";
             // 
@@ -1642,7 +1642,7 @@
             this.xrLabel59.Multiline = true;
             this.xrLabel59.Name = "xrLabel59";
             this.xrLabel59.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel59.SizeF = new System.Drawing.SizeF(192.8333F, 23F);
+            this.xrLabel59.SizeF = new System.Drawing.SizeF(202.3334F, 23F);
             this.xrLabel59.StylePriority.UseFont = false;
             this.xrLabel59.Text = "Email : [ApprovedBySignatoryEmail]";
             // 
