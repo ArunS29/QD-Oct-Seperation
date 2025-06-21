@@ -3,7 +3,6 @@
     border-top-left-radius: 10px; /* Radius for top-left corner */
     border-top-right-radius: 10px; /* Radius for top-right corner */
     padding: 0.1px;
-    font-family: "Inter", Helvetica, Arial, sans-serif;
 }
 
 
@@ -57,11 +56,9 @@
     gap: 20px; /* Adds spacing between buttons */
     justify-content: start; /* Aligns buttons to the left */
     align-items: center; /* Vertically centers the buttons */
-    margin: 15px;
 }
 * {
     /*    color: #525252;*/
-    font-family: 'Inter', sans-serif;
     font-size: 14px;
     font-weight: 500;
     line-height: 20px;
@@ -82,7 +79,6 @@ a {
 
 
 body {
-    font-family: var(--font-family);
     margin: 0;
     color: black;
     display: flex;
@@ -127,7 +123,6 @@ body {
 }
 
 .dx-datagrid-rowsview .dx-row {
-    font-family: 'Inter', sans-serif;
     font-size: 14px;
 }
 
@@ -212,7 +207,6 @@ body {
 
 .form-group {
     color: black;
-    font-family: "Inter", Helvetica, Arial, sans-serif;
 }
 
 .no-border-input {
@@ -364,8 +358,7 @@ body {
     gap: 10px; /* Adds spacing between buttons */
     justify-content: start; /* Aligns buttons to the left */
     align-items: center; /* Vertically centers the buttons */
-    margin: 15px;
-    margin-top: 0px;
+    margin-top: 10px;
 }
 
 .button-alignment-down {
@@ -414,7 +407,7 @@ body {
 
     /* Initially hide the button text and set a fixed small width */
     .btn-container .dx-button {
-        width: 40px !important; /* Small width for icons */
+        width: 55px !important; /* Small width for icons */
         transition: width 0.3s ease-in-out;
     }
 
@@ -507,4 +500,35 @@ body {
     width: 250px !important; /* Expand to fit text */
 }
 
-</style >
+/* Print button icon color */
+#btnPrint .dx-icon {
+    color: green !important; /* Change to your desired color */
+}
+
+/* Search button icon color */
+#btnToggleSearch .dx-icon {
+    color: blue !important;
+}
+
+/* Group button icon color */
+#btntoggleGroupPanel .dx-icon {
+    color: orange !important;
+}
+
+/* Column chooser button icon color */
+#btnColumnChooser .dx-icon {
+    color: purple !important;
+}
+
+/* Dropdown button icon color */
+#ddButtonLayout .dx-icon {
+    color: crimson !important;
+}
+#languageSelectBox{
+    border : 1px solid transparent !important;
+}
+#rowHeightProperties .dx-icon
+{
+    color: #f75d59 !important;
+}
+

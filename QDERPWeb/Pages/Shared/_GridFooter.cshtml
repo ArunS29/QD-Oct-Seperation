@@ -164,6 +164,24 @@
             .ShowArrowIcon(false)
             )
     </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("rowHeightProperties")
+            .Icon("rowproperties")
+            .Width(50)
+            .Text(new JS("formatMessage('Set Row Height')"))
+            @* .ElementAttr(new { style = "display: none;" }) *@
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add().Text(new JS("formatMessage('Short')")).Icon("rowproperties").OnClick("ChangeRowHeight(30)");
+                items.Add().Text(new JS("formatMessage('Medium')")).Icon("lock").OnClick("ChangeRowHeight(40)");
+                items.Add().Text(new JS("formatMessage('Tall')")).Icon("revert").OnClick("ChangeRowHeight(60)");
+                items.Add().Text(new JS("formatMessage('Extra Tall')")).Icon("activefolder").OnClick("ChangeRowHeight(70)");
+            })
+            .ShowArrowIcon(false)
+            )
+    </div>
 
     <div class="btn-container">
         @(Html.DevExtreme().Button()
@@ -916,7 +934,7 @@
         var $submenu = $('#submenuContainer');
         var $target = $(e.event.target).closest('.dx-item-content');
         var offset = $target.offset();
-        var elementWidth = $target.outerWidth();
+        var elementWidth = $target.outerWisubmenuContainerdth();
 
         // Position submenu with a slight margin (e.g., 5px)
         $submenu.css({
