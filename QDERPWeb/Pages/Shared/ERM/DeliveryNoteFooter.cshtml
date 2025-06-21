@@ -92,9 +92,7 @@
             .Items(items =>
             {
                 items.Add().Text(new JS("formatMessage('Add New Delivery to Client')"));
-                items.Add().Text(new JS("formatMessage('Add Material Issued To Store(Consumption)')"));
-                items.Add().Text(new JS("formatMessage('Add Material Issued To Project(Consumption)')"));
-                items.Add().Text(new JS("formatMessage('Add Store Transfers')"));
+                items.Add().Text(new JS("formatMessage('Add New Delivery To Project')"));
 
             })
             .OnItemClick("addNewDeliveryNote")
@@ -330,15 +328,9 @@
             let url = ''; // Declare once
             switch (e.itemData.text) {
                case formatMessage('Add New Delivery to Client'):
-                    url = `/${tenantName}/ERM/AddNewDeliverytoClient`;
+                url = `/${tenantName}/ERM/PropertyDeliveryNote`;
                     break;
-                case formatMessage('Add Material Issued To Store(Consumption)'):
-                    url = `/${tenantName}/ERM/AddNewStoreRequest`;
-                    break;
-                case formatMessage('Add Material Issued To Project(Consumption)'):
-                    url = `/${tenantName}/ERM/AddNewProjectRequest`;
-                    break;
-                case formatMessage('Add Store Transfers'):
+            case formatMessage('Add New Delivery To Project'):
                     url = `/${tenantName}/ERM/AddNewProjectRequest`;
                     break;
                 default:

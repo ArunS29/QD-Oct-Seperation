@@ -288,7 +288,7 @@
                 'width': 180,
                 'position': 'absolute',
                 'top': offset.top,
-                'left': offset.left + elementWidth + 5, // Add margin
+                'left': offset.left + elementWidth + 5,
                 'display': 'block'
             });
         }
@@ -297,7 +297,7 @@
             exportDataGridToPDF('dataGrid');
         }
         function AddNewSalesOrder() {
-            window.location.href = `/${tenantName}/ERM/AddNewSalesOrder`;
+        window.location.href = `/${tenantName}/ERM/PropertySalesOrderEdit`;
         }
         function btnSalesOrderDetail() {
             window.location.href = `/${tenantName}/ERM/SalesOrdersDetails`;
