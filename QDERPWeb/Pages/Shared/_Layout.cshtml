@@ -1749,7 +1749,14 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
-                                document.getElementById('userLevel').innerText = data.userLevel;
+                                const userLevelElement = document.getElementById('userLevel');
+                                if (data.userLevel === 99) {
+                                    userLevelElement.innerText = "Full Access";
+                                } else if (data.userLevel === 1) {
+                                    userLevelElement.innerText = "Registered User";
+                                } else {
+                                    userLevelElement.innerText = data.userLevel;
+                                }
                             } else {
                                 document.getElementById('userLevel').innerText = "N/A";
                                 console.warn("User level not available.");
