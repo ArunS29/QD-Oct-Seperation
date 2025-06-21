@@ -1,17 +1,21 @@
 ﻿var dictionary = {
     "en": {
+
         "Client Contact List": "Client Contact List",
         "Division:": "Division:",
+
         "Create PO": "Create PO",
         "Delete": "Delete",
         "Report Type": "Report Type",
         "Job Order No": "Job Order No",
         "Job Order Status": "Job Order Status",
+
         "Terms": "Terms",
         "Name of the Requester:": "Name of the Requester:",
         "Name of the Store Incharge:": "Name of the Store Incharge:",
         "Name of the Requester:": "Name of the Requester:",
         "Name of the Store Incharge:": "Name of the Store Incharge:",
+
         "Edit Client Request": "Edit Client Request",
         "Clone Request / Enquiry": "Clone Request / Enquiry",
         "Stock Code": "Stock Code",
@@ -3034,6 +3038,8 @@
         "Equipment Rentals Dashboard": "Equipment Rentals Dashboard",
         "Print Invoice": "Print Invoice",
         "Create VAT Invoice": "Create VAT Invoice",
+
+
     },
     ar: {
         "Create VAT Invoice": "إنشاء فاتورة ضريبة القيمة المضافة",

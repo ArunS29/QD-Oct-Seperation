@@ -4634,7 +4634,7 @@
 				let grid = $("#B2BdataGrid").dxDataGrid("instance");
 				let rowIndex = e.row.rowIndex;
 
-
+				debugger;
 				// Get the updated value from the input field
 				let newValue = args.value;
 				console.log("gridnewvalue",newValue)
@@ -4667,7 +4667,7 @@
 				// Update values in the grid
 				grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
 				grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
-				grid.cellValue(rowIndex, "Unit Price",amount);
+				grid.cellValue(rowIndex, "Unit Price",unitPrice);
 				 grid.cellValue(rowIndex, "Qty",qty);
 				 grid.cellValue(rowIndex, "VAT%",vatRateStr);
 			};
@@ -4678,7 +4678,7 @@
 
 		var clientnameValidator = $("#VATSupplierName").dxValidator("instance");
 		var clientnameValidation = clientnameValidator.validate();
-		alert(supplierid)
+		
 		if(clientnameValidation.isValid)
 		{
 	// Create JSON object for master invoice
@@ -4774,7 +4774,7 @@
 		{
 	// Create JSON object for master invoice
 		let DebitNoteNo=$('#DebitNoteNo').dxTextBox("instance").option("value");
-		alert(accid)
+	
 		var InvoiceMaster = {
 			DebitNoteNo: $('#DebitNoteNo').dxTextBox("instance").option("value") || null,
 			DebitNoteDate: $("#CreditNoteIssuedDateTime").dxDateBox("instance").option("value") || null,
@@ -4890,7 +4890,7 @@
 					// Update values in the grid
 				grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
 				grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
-				grid.cellValue(rowIndex, "Unit Price",amount);
+				grid.cellValue(rowIndex, "Unit Price",unitPrice);
 				grid.cellValue(rowIndex, "Qty",qty);
 				grid.cellValue(rowIndex, "VAT%",vatRateStr);
 				 grid.cellValue(rowIndex, "TaxSlabCode",TaxSlabCode);
@@ -5475,26 +5475,7 @@
 
 
 
-		// function disableEditing() {
-		// 	// Disable all input fields and buttons except for specific ones
-		// 	$('input, select, textarea').prop('disabled', true);
-		// 	debugger;
-		// 	$('.dx-button, .dx-dropdownbutton').each(function () {
-		// 	const allowedButtons = ['btnMoveDown', 'btnMoveUp', 'btnSave', 'btnSaveAndClose', 'btnPostToLedgers', 'btnPostTag', 'btnPrint1'];
-		// 		if (!allowedButtons.includes($(this).attr('id'))) {
-		// 			$(this).dxButton('option', 'disabled', true);
-		// 		}
-		// 	});
-
-
-		// // Disable DataGrid Editing and Deleting
-		// var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-		// if (dataGrid) {
-		// 	dataGrid.option("editing.allowUpdating", false);
-		// 	dataGrid.option("editing.allowDeleting", false);
-		// }
-
-		// }
+	
 
 
 		function disableEditing() {
@@ -5524,32 +5505,7 @@
 			}
 		}
 
-		// 	function disableEditing() {
-		// 	// Disable all input fields and buttons except for specific ones
-		// 	$('input, select, textarea').prop('disabled', true);  // Disable inputs, selects, and textareas
-
-		// 	const allowedButtons = ['btnMoveDown', 'btnMoveUp', 'btnSave', 'btnSaveAndClose', 'btnPostToLedgers', 'btnPostTag', 'btnPrint1'];
-
-		// 	// Disable all dxButton and dxDropDownButton controls
-		// 	$('.dx-button, .dx-dropdownbutton').each(function () {
-		// 		const id = $(this).attr('id');
-		// 		if (id && !allowedButtons.includes(id)) {
-		// 			// Disable dxButton and dxDropDownButton widgets except for allowed ones
-		// 			if ($(this).data('dxButton')) {
-		// 				$(this).dxButton('option', 'disabled', true);
-		// 			} else if ($(this).data('dxDropDownButton')) {
-		// 				$(this).dxDropDownButton('option', 'disabled', true);
-		// 			}
-		// 		}
-		// 	});
-
-		// 	// Disable DataGrid Editing and Deleting
-		// 	var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-		// 	if (dataGrid) {
-		// 		dataGrid.option("editing.allowUpdating", false);
-		// 		dataGrid.option("editing.allowDeleting", false);
-		// 	}
-		// }
+		
 
 </script>
 

@@ -4438,6 +4438,117 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
         }
 
 
+        [HttpPost]
+        public async Task<ActionResult> UpdateToDebitNoteUnlocktheBil(string invoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+
+                    var records = dbContext.Tbl20172VatdebitNoteMasters
+                  .Where(x => x.DebitNoteNo == invoiceNo)
+                  .ToList();
+
+                    foreach (var record in records)
+                    {
+                        record.IsApproved = false;
+                        record.IsVerified = false;
+                    }
+
+                    dbContext.SaveChanges();
+
+
+                    return Ok(new
+                    {
+                        Message = "Unlocak the bill successfully.",
+
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> DeleteDebitNoteEInvoice(string InvoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    // Fetch the invoice master details using the given InvoiceNo
+                    var invoice = await dbContext.Tbl20172VatdebitNoteMasters
+                                                 .FirstOrDefaultAsync(i => i.DebitNoteNo == InvoiceNo);
+
+                    if (invoice == null)
+                    {
+                        return NotFound(new { Message = "Invoice not found." });
+                    }
+
+                    string invoiceAbbr = "PUR"; // Fixed abbreviation
+                    DateTime invoiceDate = DateTime.Now;
+                    string yearDigits = invoiceDate.ToString("yy");
+
+                    // Format: PUR-YY-
+                    string invoicePrefix = $"{invoiceAbbr}-{yearDigits}-";
+
+                    // Get last voucher number matching current year
+                    var lastInvoiceNumber = await dbContext.Tbl20172VatdebitNoteMasters
+                        .Where(i => i.DebitNoteNo.StartsWith(invoicePrefix))
+                        .OrderByDescending(i => i.DebitNoteNo)
+                        .Select(i => i.DebitNoteNo)
+                        .FirstOrDefaultAsync();
+
+
+                    int newNumber = 1;
+                    if (!string.IsNullOrEmpty(lastInvoiceNumber))
+                    {
+                        // Extract numeric part after last hyphen
+                        var match = Regex.Match(lastInvoiceNumber, @"(\d{6})$");
+                        if (match.Success)
+                        {
+                            newNumber = int.Parse(match.Groups[1].Value) + 1;
+                        }
+                    }
+
+                    // Build new voucher number: PUR-YY-000001
+                    string newPurchaseVoucherNo = $"{invoiceAbbr}-{yearDigits}-{newNumber:D6}";
+
+                    // Extract values from the fetched invoice
+                    string ToInvoiceNo = newPurchaseVoucherNo; // You can generate or assign this as needed
+                    DateTime InvoiceDate = invoice.DebitNoteDate ?? DateTime.Now;
+                    string AddedBy = invoice.AddedBy ?? "System"; // Fallback if null
+                    DateTime AddedOn = invoice.AddedOn ?? DateTime.Now;
+
+
+                    // Execute the stored procedure
+                    var result = dbContext.Database.ExecuteSqlRaw(
+                        "EXEC sp201_73InsertDuplicatePurchaseBill @p0,@p1,@p2,@p3,@p4",
+                        InvoiceNo, ToInvoiceNo, InvoiceDate, AddedBy, AddedOn);
+
+                    dbContext.SaveChanges();
+
+                    return Ok(new
+                    {
+                        Message = "Purchase Invoice cloned successfully.",
+                        VoucherVerifiedBy = User.Identity?.Name ?? "System"
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+
 
     }
 }
