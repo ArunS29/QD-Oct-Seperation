@@ -92,6 +92,43 @@
         font-weight: bold;
     }
 
+    .popup-content-container {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        box-sizing: border-box;
+        padding: 10px;
+    }
+
+    /* This controls row layout inside the popup */
+    .horizontal-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+        .horizontal-container .dx-field {
+            flex: 1 1 200px;
+            min-width: 200px;
+            box-sizing: border-box;
+        }
+
+    /* For the DataGrid section to take available space and shrink */
+    .ledgerResult {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow: auto;
+    }
+
+    /* Prevent popup content overflow */
+    .dx-popup-content {
+        overflow: hidden !important;
+    }
+
 </style>
 <div class="container5">
 
@@ -102,7 +139,7 @@
         </div>
     </div>
 
-
+  <div class="popup-content-container">
     <!-- Inputs and DataGrid Combined -->
     <div class="container2">
         <div class="dx-fieldset horizontal-container ">
@@ -113,7 +150,7 @@
                 .LabelMode(EditorLabelMode.Outside)
                 .DataSource(new[] { drCr })
                 .Value(drCr)
-                .Width(150)
+                 .ElementAttr("style", "min-width: 100px; max-width: 150px; flex: 1 1 auto;")
                 .ReadOnly(true)
                 )
 
@@ -123,7 +160,7 @@
                 .Label(new JS("formatMessage('Cost Allocation for the Expenses')"))
                 .LabelMode(EditorLabelMode.Outside)
                 .Value(voucherNo)
-                .Width(250)
+                 .ElementAttr("style", "min-width: 100px; max-width: 200px; flex: 1 1 auto;")
                 .ReadOnly(true)
                 )
 
@@ -167,7 +204,7 @@
                 .DataSource(new[] { accountHead }) // Only the selected AccountHead
                 .Value(accountHead) // Pre-selected value
                 .ReadOnly(true) // Make the dropdown read-onlyr
-                .Width(250)
+                 .ElementAttr("style", "min-width: 100px; max-width: 250px; flex: 1 1 auto;")
                 )
         </div>
         <div class="dx-field ledgerResult" style="padding-top:20px">
@@ -288,7 +325,7 @@
                 .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
                 .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
                 .ShowBorders(true)
-                .Width("100%")
+               .ElementAttr("style", "min-width: 100px; max-width: 100%; flex: 1 1 auto;")
                 .Selection(s => s.Mode(SelectionMode.Multiple).ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)) // Enable selection
                 .Editing(editing => editing.Mode(GridEditMode.Cell).AllowAdding(false).AllowUpdating(true))
                 // Add Summary
@@ -307,25 +344,6 @@
                 )
         </div>
 
-
-
-        @*  <div id="footerTotals" style="display: flex; justify-content: space-between; background-color: #F5F5F5; color: white; padding: 5px 10px; margin-top: -3px; font-size: 14px;">
-        <div style="flex: 6;">&nbsp;</div> <!-- Aligns with Dr/Cr column -->
-        <div style="flex: 5;">&nbsp;</div> <!-- Aligns with Account Head column -->
-        <!-- TextBox for Debit -->
-        <div style="flex: none; text-align: right;">
-        @(Html.DevExtreme().NumberBox()
-        .ID("totalAmountTextbox")
-        .Value(voucherAmountParsed)
-        .ReadOnly(true)
-        .Width("60%")
-        .Format("#,##0.00")
-        .InputAttr(new { style = "text-align: right;" })
-        )
-        </div>
-
-        <div style="flex: 2;">&nbsp;</div> <!-- Aligns with Entry Narration and Remarks columns -->
-        </div> *@
     </div>
 
 
@@ -411,6 +429,7 @@
                 )
         }
     </div>
+  </div>
     @*  <li onclick="confirmDelete()">
     <i class="fas fa-trash-alt" style="margin-right: 8px;"></i> Delete Line Items
     </li> *@
