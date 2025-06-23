@@ -1816,6 +1816,7 @@
         "Receivables Ageing Report": "Receivables Ageing Report",
         "Tall": "Tall",
         "Mediam": "Medium",
+        "Medium": "Medium",
         "Short": "Short",
         "Receivables Ageing Summary (Customizable)": "Receivables Ageing Summary (Customizable)",
         "Receivables Ageing Report (Customizable)": "Receivables Ageing Report (Customizable)",
@@ -3038,11 +3039,15 @@
         "Equipment Rentals Dashboard": "Equipment Rentals Dashboard",
         "Print Invoice": "Print Invoice",
         "Create VAT Invoice": "Create VAT Invoice",
-
-
+        "'Post Average Cost": "'Post Average Cost",
+        "Post COGS To Ledger": "Post COGS To Ledger,",
+        "Change Password": "Change Password",
+        "Company Details": "Company Details",
     },
     ar: {
-        "Create VAT Invoice": "إنشاء فاتورة ضريبة القيمة المضافة",
+        "Change Password": "تغيير كلمة المرور",
+        "Company Details": "تفاصيل الشركة",
+    "Create VAT Invoice": "إنشاء فاتورة ضريبة القيمة المضافة",
         "Print Invoice": "طباعة الفاتورة",
         "Equipment Rentals Dashboard": "لوحة معلومات تأجير المعدات",
         "Equipments / Assets": "المعدات / الأصول",

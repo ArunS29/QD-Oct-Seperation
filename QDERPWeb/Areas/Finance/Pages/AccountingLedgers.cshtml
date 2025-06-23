@@ -7,7 +7,7 @@
 	}
 	/* Column headers */
 	#dataGrid .dx-datagrid-headers .dx-row > td {
-		background: #f5f7f9;
+		background-color: var(--header-color) !important;
 		border-bottom: 1px solid #dee2e6;
 		color: #343a40;
 		font-weight: 600;
@@ -371,15 +371,17 @@
 			margin: 2px 0;
 		}
 
-	.kpi-toggle {
-		text-align: right;
-		padding: 8px 12px;
-		cursor: pointer;
-		font-size: 1.2rem;
-		color: white;
-		height:2px !important;
-		width: 1630px;
-	}
+		.kpi-toggle {
+			cursor: pointer;
+			font-size: 1.2rem;
+			height: 35px !important;
+			width: 35px;
+			background: var(--hover-bg-color);
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
 
 		.kpi-toggle:hover {
 			color: #000;
@@ -439,7 +441,6 @@
 		border-radius: 16px;
 		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 		padding: 20px;
-		margin: 12px;
 		width: 260px;
 		position: relative;
 		transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -520,8 +521,10 @@
 
 <!-- ----------  KPI CARDS (populated dynamically from grid) ---------- -->
 <!-- Toggle Button -->
-<div class="kpi-toggle" onclick="toggleKpiCarousel()">
-	<i id="kpiToggleIcon" class="fa-solid fa-chevron-up"></i>
+<div style="    display: flex;align-items: center;left: 97%;top: 7%;position: fixed;">
+	<div class="kpi-toggle" onclick="toggleKpiCarousel()">
+		<i id="kpiToggleIcon" class="fa-solid fa-chevron-up" style="color: white;"></i>
+	</div>
 </div>
 
 <!-- KPI Carousel -->
@@ -962,7 +965,7 @@
 				.Paging(p => p.Enabled(true).PageSize(15))
 				.Pager(p => p.Visible(true).ShowPageSizeSelector(true).AllowedPageSizes(new[] { 10, 15, 20 }).ShowInfo(true))
 				.ShowRowLines(true)
-				.Width(1600)
+				.Width("100%")
 				.Summary(s =>
 				{
 					s.TotalItems(t =>
@@ -981,13 +984,6 @@
 				})
 				.OnContentReady("function(e) { handleGridContentReady(e); }")
 				)
-	</div>
-
-	<div id="overlay" class="overlay">
-		<div class="overlay-content">
-			<span class="close-btn" onclick="closeOverlay()">×</span>
-			<iframe id="overlay-frame" src="" frameborder="0"></iframe>
-		</div>
 	</div>
 
 </div>
