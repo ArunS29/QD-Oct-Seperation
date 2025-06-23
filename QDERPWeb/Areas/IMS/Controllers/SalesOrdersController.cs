@@ -144,7 +144,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 
         [HttpGet]
-        public IActionResult SalesOrderNoIncrease()
+        public IActionResult SalesOrderNoIncrease1()
         {
             try
             {
@@ -211,6 +211,76 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             {
                 _logger.LogError($"Error in SalesOrderNoIncrease: {ex.Message}");
                 return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+            }
+        }
+        [HttpGet]
+        public IActionResult SalesOrderNoIncrease()
+        {
+            try
+            {
+                // Step 1: Get tenant name from session
+                string tenantName = HttpContext.Session.GetString("TenantName");
+                if (string.IsNullOrWhiteSpace(tenantName))
+                {
+                    _logger.LogWarning("Tenant name not found in session when generating SalesOrderNo.");
+                    return Unauthorized(new { message = "Tenant name not found in session." });
+                }
+
+                // Step 2: Get DB context
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    _logger.LogWarning("Invalid tenant context when generating SalesOrderNo.");
+                    return Unauthorized(new { message = "Invalid tenant." });
+                }
+
+                // Step 3: Get company details
+                var company = dbContext.Tbl901CompanyDetails
+                    .FirstOrDefault(c => c.CompanyNameShort == tenantName);
+
+                if (company == null)
+                    return NotFound("Company not found in Tbl901CompanyDetails.");
+
+                // Step 4: Get SalesOrderAbbrv, year digit, reset flag, and number of digits
+                string SalesOrderAbbrv = company.SalesOrderAbbrv ?? "";
+                int yearInDigit = company.InvoiceYearDigits ?? 0;
+                bool isResetByYear = company.IsResetInvoiceInYear ?? false;
+
+                int noOfDigits = dbContext.Tbl901CompanyDetails02s
+                    .Where(c => c.CompanyId == company.CompanyId)
+                    .Select(c => c.NoOfDigitsToInventoryQuotation ?? 5)
+                    .FirstOrDefault();
+
+                DateTime currentDate = DateTime.Now;
+                string yearPart = currentDate.Year.ToString();
+
+                if (yearInDigit > 0)
+                    yearPart = yearPart.Substring(yearPart.Length - yearInDigit, yearInDigit);
+                else
+                    yearPart = "";
+
+                string basePrefix = $"{SalesOrderAbbrv}{yearPart}-";
+
+                // Step 5: Get existing matching SalesOrderNos
+                var orderNos = dbContext.Tbl60201salesOrderMasters
+                    .Where(x => x.SalesOrderNo.StartsWith(basePrefix))
+                    .Select(x => x.SalesOrderNo)
+                    .ToList();
+
+                // Step 6: Extract and compute next number
+                int maxNumber = orderNos
+                    .Select(no => int.TryParse(no?.Substring(no.Length - noOfDigits), out int num) ? num : 0)
+                    .DefaultIfEmpty(0)
+                    .Max();
+
+                int nextNumber = maxNumber + 1;
+                string nextOrderNo = $"{basePrefix}{nextNumber.ToString().PadLeft(noOfDigits, '0')}";
+
+                return Ok(new { salesOrderNo = nextOrderNo });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in SalesOrderNoIncrease: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while generating Sales Order No.", error = ex.Message });
             }
         }
 
@@ -767,8 +837,7 @@ public async Task<IActionResult> GenerateJobOrders1([FromBody] SalesorderViewMod
 
 
 
-
-		[HttpGet]
+        [HttpGet]
         public async Task<IActionResult> GetSalesOrderByNo(string salesOrderNo)
         {
             if (string.IsNullOrWhiteSpace(salesOrderNo))
@@ -783,9 +852,8 @@ public async Task<IActionResult> GenerateJobOrders1([FromBody] SalesorderViewMod
             if (order == null)
                 return NotFound();
 
-            // Load children with description from Goods and Services
             var children = await (
-                from c in dbContext.Tbl60202salesOrderChildren
+                from c in dbContext.Qry60202salesOrderChildren
                 join g in dbContext.Tbl20164GoodsAndServicesMasters
                     on c.Gscode equals g.Gscode into gj
                 from g in gj.DefaultIfEmpty()
@@ -796,15 +864,17 @@ public async Task<IActionResult> GenerateJobOrders1([FromBody] SalesorderViewMod
                     c.SalesOrderNo,
                     c.QuoteNo,
                     c.Gscode,
-                    Gsdescrpition = g.Gsdescrpition, // <-- include description
+                    Gsdescrpition = g.Gsdescrpition,
                     c.UnitRateMethod,
                     c.QuotedQuantity,
                     c.CostPrice,
                     c.QuotedUnitPrice,
                     c.QuotedDiscount,
-					c.QuotedTaxSlab
-					// Add any other fields you need for the grid
-				}
+                    c.QuotedTaxSlab,
+                    c.LineTotalAfterDiscount,
+                    c.LineTotalWithTax,
+                    c.LineTaxAmount
+                }
             ).ToListAsync();
 
             // Return both master and children
@@ -834,21 +904,33 @@ public async Task<IActionResult> GenerateJobOrders1([FromBody] SalesorderViewMod
                 order.DeliveryPeriod,
                 order.DeliveryTerms,
                 order.DiscountsText,
-                order.Attention, 
-                order.QuoteTransport, 
+                order.Attention,
+                order.QuoteTransport,
                 order.QuoteDiscount,
                 order.IsSubmitted,
                 order.IsVerified,
                 order.IsApproved,
-
-
-
-            order.CostAllocationMasterGroup,
+                order.CostAllocationMasterGroup,
                 SalesOrderChildren = children
             });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetSalesOrderNoByChildId(int salesOrderChildId)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                return Unauthorized(new { success = false });
 
+            var salesOrderNo = await dbContext.Qry60202salesOrderChildren
+                .Where(c => c.SalesOrderChildId == salesOrderChildId)
+                .Select(c => c.SalesOrderNo)
+                .FirstOrDefaultAsync();
+
+            if (string.IsNullOrEmpty(salesOrderNo))
+                return NotFound(new { success = false, message = "Not found." });
+
+            return Ok(new { success = true, salesOrderNo });
+        }
 
         [HttpDelete]
         public async Task<IActionResult> DeleteSalesOrder(string salesOrderNo)
@@ -981,35 +1063,47 @@ public async Task<IActionResult> GenerateJobOrders1([FromBody] SalesorderViewMod
         }
 
 
-		[HttpGet]
-		public async Task<IActionResult> GetStoreToIssueItem()
-		{
-			try
-			{
-				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-				{
-					var data = await dbContext.Tbl60001storeMasters
-						.Select(i => new
-						{
-							i.StoreId,
-							i.StoreName,
-							i.LedgerNo,
-							i.CostAllocationUnitId,
+        [HttpGet]
+        public async Task<IActionResult> GetStoreToIssueItem(string salesOrderNo)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    if (string.IsNullOrWhiteSpace(salesOrderNo))
+                        return BadRequest(new { message = "SalesOrderNo is required.", success = false });
 
-						})
-						.ToListAsync();
+                    // Get StoreIds related to the selected SalesOrderNo from availability table
+                    var storeIds = await dbContext.Qry65320storeStockAvaliabilityForSalesOrders
+                        .Where(x => x.SalesOrderNo == salesOrderNo.Trim())
+                        .Select(x => x.StoreCode.Trim().ToUpper())
+                        .Distinct()
+                        .ToListAsync();
 
-					return Json(data); // return raw data, paging/sorting done on client-side
-				}
+                    // Now fetch matching store details from Tbl60001storeMasters
+                    var filteredStores = await dbContext.Tbl60001storeMasters
+                        .Where(s => storeIds.Contains(s.StoreId.Trim().ToUpper()))
+                        .Select(i => new
+                        {
+                            i.StoreId,
+                            i.StoreName,
+                            i.LedgerNo,
+                            i.CostAllocationUnitId,
+                        })
+                        .ToListAsync();
 
-				return Unauthorized(new { message = "Invalid tenant.", success = false });
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError($"Error in GetProject: {ex.Message}");
-				return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
-			}
-		}
+                    return Json(filteredStores); // filtered list for dropdown
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetStoreToIssueItem: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while loading store data.", details = ex.Message });
+            }
+        }
+
         [HttpGet]
         public IActionResult GetTaxSlabs()
         {
@@ -1251,51 +1345,120 @@ public async Task<IActionResult> GenerateJobOrders1([FromBody] SalesorderViewMod
 			return Ok(new { success = true, isApproved = existingEntity.IsApproved == true });
 		}
 
-		[HttpGet]
-		public IActionResult CheckDeliveryExists(string salesOrderNo)
-		{
-			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-				return Unauthorized(new { message = "Invalid tenant." });
+        [HttpGet]
+        public IActionResult CheckDeliveryExists(string salesOrderNo)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { message = "Invalid tenant." });
 
-			// Use the correct DbSet name here
-			bool exists = dbContext.Tbl60301deliveryNoteMasters.Any(d => d.SalesOrderNo == salesOrderNo);
-			return Ok(new { exists });
-		}
+            // ✅ Check the order status from the view
+            var order = dbContext.Qry60204salesOrderViewMasters
+                .FirstOrDefault(o => o.SalesOrderNo == salesOrderNo);
+
+            if (order == null)
+                return NotFound(new { message = "Sales order not found." });
+
+            if (order.OrderStatus != null && order.OrderStatus.ToLower().Contains("fully delivered"))
+            {
+                return Ok(new { exists = true, message = "Sales order is fully delivered. You cannot create anymore." });
+            }
+
+            // Default: allow creation
+            return Ok(new { exists = false });
+        }
+
+
 
         [HttpGet]
-        public async Task<IActionResult> GetStoreStockGrid()
+        public async Task<IActionResult> GetStoreStockGrid(string salesOrderNo, string storeId = null)
         {
             try
             {
-                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    var data = await dbContext.Qry65320storeStockAvaliabilityForSalesOrders
-                        .Select(i => new
-                        {
-                            i.Gscode,
-                            i.Gsdescrpition,
-                            i.IsServicesGroup,
-                            i.SalesOrderChildId,
-                            i.UnitDesc,
-                            i.TotalOrderedQty,
-                            i.TotalIssdQty,
-                            i.BalanceToDeliver,
-                            i.CurrentyQty,
-                            i.AvailabilityStatus,
-                            i.DeliveringQuantity,
-
-                        })
-                        .ToListAsync();
-
-                    return Json(data); // return raw data, paging/sorting done on client-side
+                    return Unauthorized(new { message = "Invalid tenant.", success = false });
                 }
 
-                return Unauthorized(new { message = "Invalid tenant.", success = false });
+                if (string.IsNullOrWhiteSpace(salesOrderNo))
+                {
+                    return BadRequest(new { message = "SalesOrderNo is required.", success = false });
+                }
+
+                // Step 1: Base query
+                var query = dbContext.Qry65320storeStockAvaliabilityForSalesOrders
+                    .Where(i => i.SalesOrderNo.Trim() == salesOrderNo.Trim());
+
+                // Step 2: Add store filter only if storeId is provided
+                if (!string.IsNullOrWhiteSpace(storeId))
+                {
+                    query = query.Where(i => i.StoreCode != null && i.StoreCode.Trim().ToUpper() == storeId.Trim().ToUpper());
+                }
+
+                // Step 3: Select only needed fields (with null checks)
+                var data = await query.Select(i => new
+                {
+                    i.Gscode,
+                    Gsdescrpition = i.Gsdescrpition ?? "",
+                    i.IsServicesGroup,
+                    i.SalesOrderChildId,
+                    UnitDesc = i.UnitDesc ?? "",
+                    i.TotalOrderedQty,
+                    i.TotalIssdQty,
+                    i.BalanceToDeliver,
+                    i.CurrentyQty,
+                    AvailabilityStatus = i.AvailabilityStatus ?? "",
+                    i.DeliveringQuantity,
+                    StoreCode = i.StoreCode ?? ""
+                    // If your view has StoreName, add it like:
+                    // StoreName = i.StoreName ?? ""
+                }).ToListAsync();
+
+                return Json(data);
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in GetProject: {ex.Message}");
-                return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
+                _logger.LogError($"❌ Error in GetStoreStockGrid: {ex.Message}");
+
+                // Send full error to client (for debugging only — remove in production)
+                return StatusCode(500, new
+                {
+                    message = "An error occurred while loading data.",
+                    details = ex.Message,
+                    stackTrace = ex.StackTrace
+                });
+            }
+        }
+
+
+
+
+        [HttpGet]
+        public IActionResult GetStoreAvailabilitySetting()
+        {
+            try
+            {
+                var tenantName = HttpContext.Session.GetString("TenantName");
+                if (string.IsNullOrWhiteSpace(tenantName))
+                    return Unauthorized(new { success = false, message = "Tenant name not found." });
+
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+                var company = dbContext.Tbl901CompanyDetails.FirstOrDefault(c => c.CompanyNameShort == tenantName);
+                if (company == null)
+                    return NotFound(new { success = false, message = "Company not found." });
+
+                var companyDetails02 = dbContext.Tbl901CompanyDetails02s
+                    .FirstOrDefault(x => x.CompanyId == company.CompanyId);
+
+                bool isUseStoreAvailability = companyDetails02?.IsUseStoreAvailabilityInDeliveryNote ?? false;
+
+                return Ok(new { success = true, isUseStoreAvailability });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetStoreAvailabilitySetting: {ex.Message}");
+                return StatusCode(500, new { success = false, message = "Internal server error." });
             }
         }
 
