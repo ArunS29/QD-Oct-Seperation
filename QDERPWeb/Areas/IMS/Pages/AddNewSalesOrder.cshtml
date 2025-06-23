@@ -736,7 +736,7 @@
             columns.Add().DataField("CostPrice").Caption("Cost Price");
             columns.Add().DataField("QuotedUnitPrice").Caption("Unit Price");
             columns.Add().DataField("QuotedDiscount").Caption("Quoted Discount");
-            columns.Add().DataField("LineTaxAmount").Caption("Amount").AllowEditing(false);
+            columns.Add().DataField("LineTotalAfterDiscount").Caption("Amount").AllowEditing(false);
             columns.Add()
             .DataField("QuotedTaxSlab")
             .Caption("VAT Desc")
@@ -747,8 +747,8 @@
     const found = TaxSlab.find(x => x.TaxRateIn100 === options.value);
     container.text(found ? found.TaxRateInWord : options.value);
     }
-    ")); columns.Add().DataField("VAT").Caption("VAT").AllowEditing(false);
-            columns.Add().DataField("Total").Caption("Total").AllowEditing(false);
+    ")); columns.Add().DataField("LineTaxAmount").Caption("VAT").AllowEditing(false);
+            columns.Add().DataField("LineTotalWithTax").Caption("Total").AllowEditing(false);
         })
         .ColumnAutoWidth(true)
         .Width("100%")
@@ -760,7 +760,7 @@
         .Mode(GridColumnChooserMode.Select)
         )
         .AllowColumnReordering(true)
-        .OnRowUpdating("onRowUpdating")
+        @* .OnRowUpdating("onRowUpdating") *@
         .AllowColumnResizing(true)
         .ColumnFixing(fixing => fixing.Enabled(true))
         .HeaderFilter(filter => filter.Visible(false))
@@ -1589,7 +1589,7 @@
                 console.warn("SalesOrderNO TextBox not initialized yet.");
                 return;
             }
-
+           
             if (salesOrderNo) {
                 // Editing: fetch and bind existing order (do NOT generate new number)
                 $.get(`/api/SalesOrders/GetSalesOrderByNo`, { salesOrderNo: salesOrderNo })
@@ -2128,24 +2128,24 @@
             });
         }
     
-        function onRowUpdating(e) {
-        const data = Object.assign({}, e.oldData, e.newData);
+    //     function onRowUpdating(e) {
+    //     const data = Object.assign({}, e.oldData, e.newData);
 
-        const qty = parseFloat(data.QuotedQuantity) || 0;
-        const unitPrice = parseFloat(data.QuotedUnitPrice) || 0;
-        const discount = parseFloat(data.QuotedDiscount) || 0;
-        const vatRate = parseFloat(data.QuotedTaxSlab) || 0;
+    //     const qty = parseFloat(data.QuotedQuantity) || 0;
+    //     const unitPrice = parseFloat(data.QuotedUnitPrice) || 0;
+    //     const discount = parseFloat(data.QuotedDiscount) || 0;
+    //     const vatRate = parseFloat(data.QuotedTaxSlab) || 0;
 
-        // Your updated formula
-        const amount = (qty * unitPrice) - discount;
-        const vat = (amount * vatRate) / 100;
-        const total = amount + vat;
+    //     Your updated formula
+    //     const amount = (qty * unitPrice) - discount;
+    //     const vat = (amount * vatRate) / 100;
+    //     const total = amount + vat;
 
-        // Add calculated values to update object
-        e.newData.LineTaxAmount = amount.toFixed(2);
-        e.newData.VAT = vat.toFixed(2);
-        e.newData.Total = total.toFixed(2);
-    }
+    //     Add calculated values to update object
+    //     e.newData.LineTaxAmount = amount.toFixed(2);
+    //     e.newData.VAT = vat.toFixed(2);
+    //     e.newData.Total = total.toFixed(2);
+    // }
     ///submitbutton
        $("#btnSubmit").on("click", function () {
         const salesOrderNo = $("#SalesOrderNO").dxTextBox("instance").option("value")?.trim();
