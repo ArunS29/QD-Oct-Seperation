@@ -21,6 +21,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
+        [FinancePermission("uc20101ChartOfAccounts")]
+        public IActionResult ChartOfAccounts() => View();
 
         [HttpGet]
         public async Task<ActionResult> GetChartOfAccounts()
