@@ -403,54 +403,47 @@
 						window.location.href = url;
 					}
 				},
-				{
+		{
 					text: "Delete RFQ",
 					icon: "trash",
 					onItemClick: function () {
-						if (confirm(`Are you sure you want to delete RFQ ${Rfqno}?`)) {
-							// Replace with your actual delete logic, e.g., an AJAX call
-							fetch(`/${tenantName}/IMS/DeleteRFQ?Rfqno=${Rfqno}`, {
-								method: 'DELETE'
-							})
-								.then(response => {
-									if (response.ok) {
-										alert(`RFQ ${Rfqno} deleted successfully.`);
-										// Refresh the DataGrid or remove the row
-										e.component.refresh();
-									} else {
-										alert(`Failed to delete RFQ ${Rfqno}.`);
-									}
-								})
-								.catch(error => {
-									console.error('Error deleting RFQ:', error);
-									alert('An error occurred while deleting the RFQ.');
-								});
-						}
+						DevExpress.ui.dialog.confirm(
+							"You are about to delete the RFQ.\nYou cannot revert the changes.\nAre you sure?",
+							"Confirm Delete"
+						).done(function (dialogResult) {
+							if (dialogResult) {
+								var Rfqno=e.row.data.Rfqno;
+								console.log("number", Rfqno);
+								onDeleteRequest(Rfqno);
+							}
+						});
 					}
 				},
 				{
-					text: "Unlock the RFQ",
-					icon: "unlock",
-					onItemClick: function () {
-						// Replace with your actual unlock logic, e.g., an AJAX call
-						fetch(`/${tenantName}/IMS/UnlockRFQ?Rfqno=${Rfqno}`, {
-							method: 'POST'
-						})
-							.then(response => {
-								if (response.ok) {
-									alert(`RFQ ${Rfqno} unlocked successfully.`);
-									// Optionally refresh the DataGrid
-									e.component.refresh();
-								} else {
-									alert(`Failed to unlock RFQ ${Rfqno}.`);
-								}
-							})
-							.catch(error => {
-								console.error('Error unlocking RFQ:', error);
-								alert('An error occurred while unlocking the RFQ.');
-							});
+		text: "Unlock the RFQ",  // ? Corrected closing quote
+		icon: "unlock",
+		onItemClick: function () {
+			const Rfqno = e.row.data.Rfqno;
+
+			$.ajax({
+				url: "/api/RequestforQuotationList/UnlockRFQ",
+				type: "POST",
+				contentType: "application/json",
+				data: JSON.stringify({ Rfqno: Rfqno }), // ? sending request data
+				success: function (response) {
+					DevExpress.ui.notify(response.message, response.success ? "success" : "warning", 2000);
+					if (response.success) {
+						ddBtnShowRecords_click('range'); // ? refresh or reload the grid
 					}
 				},
+				error: function (xhr) {
+					let msg = xhr.responseJSON?.message || "An error occurred while unlocking the RFQ.";
+					DevExpress.ui.notify(msg, "error", 2000);
+					console.error("Unlock failed:", xhr.responseJSON);
+				}
+			});
+		}
+	},
 				{
 					text: "Create Purchase Order",
 					icon: "add",
@@ -462,6 +455,27 @@
 			];
 		}
 	}
+	function onDeleteRequest(Rfqno) {
+		if (!Rfqno) {
+			DevExpress.ui.notify('Rfqno is missing.', 'error', 3000);
+			return;
+		}
 
+		$.ajax({
+			url: `/api/RequestforQuotationList/DeleteRFQView?Rfqno=${Rfqno}`,
+			method: 'POST',
+			success: function (response) {
+				if (response.success) {
+					DevExpress.ui.notify(response.message, 'success', 2000);
+					$("#dataGrid").dxDataGrid("instance").refresh();
+				} else {
+					DevExpress.ui.notify(response.message, 'error', 3000);
+				}
+			},
+			error: function () {
+				DevExpress.ui.notify('An error occurred while attempting to delete the request.', 'error', 3000);
+			}
+		});
+	}
 
 </script>

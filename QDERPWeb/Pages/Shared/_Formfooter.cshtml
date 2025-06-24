@@ -15,500 +15,199 @@
         gap: 10px; /* Adds spacing between buttons */
         justify-content: start; /* Aligns buttons to the left */
         align-items: center; /* Vertically centers the buttons */
-        margin: 15px;
-        margin-top: 0px;
-    }
-
-    .button-alignment-down {
-        margin-top: 23px;
-    }
-
-    .button-group {
-        margin-left: -10px !important;
-    }
-
-    /* Custom styles for context menu */
-    .context-menu {
-        display: none;
-        position: absolute;
-        /* background-color: aliceblue;
-                border: 1px solid aliceblue; */
-        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-        z-index: 1000;
-    }
-
-    .context-menu-item {
-        padding: 0px, 15px,10px 15px;
-        cursor: pointer;
-    }
-
-    .ledgerResult {
-        margin: 15px !important;
-    }
-
-    #rowHeightMenu {
-        position: absolute;
-        top: 100px; /* Adjust positioning as per your design */
-        left: 300px; /* Adjust positioning as per your design */
-        display: none; /* Keep it hidden until needed */
-    }
-
-    /* #previewModal {
-                border: 1px solid aliceblue;
-            } */
-
-    .bold-button .dx-button-text {
-        font-weight: bold;
-    }
-
-    .ui-button {
-        background-color: #f5f5f5 !important; /* Vibrant red */
-        color: white !important;
-        border: none !important;
-        border-radius: 8px;
-        padding: 8px 16px;
-        font-weight: 600;
-        box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
-        transition: background-color 0.3s ease, transform 0.2s ease;
-    }
-
-        
-
-    .green-gradient {
-        background-color: #f5f5f5 !important; /* Vibrant red */
-        color: white !important;
-        border: none !important;
-        border-radius: 8px;
-        padding: 8px 16px;
-        font-weight: 600;
-        box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
-        transition: background-color 0.3s ease, transform 0.2s ease;
-    }
-
-        .green-gradient:hover {
-            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%) !important;
-            transform: translateY(-2px);
-        }
-
-
-    .green-gradient .dx-button-text {
-        color: black !important;
-    }
-
-        .green-gradient .dx-icon {
-            background: linear-gradient(135deg, #27ae60, #2ecc71) !important;
-        }
-       
-
-    
-
-
-
-    #btnDelete {
-        background-color:  #f5f5f5 !important; /* Vibrant red */
-        color: black !important;
-        border: 1px solid #c0392b !important;
-        border-radius: 8px;
-        padding: 8px 16px;
-        font-weight: 600;
-        box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
-        transition: background-color 0.3s ease, transform 0.2s ease;
-    }
-
-        #btnDelete:hover {
-            background-color: #c0392b !important; /* Darker on hover */
-            transform: translateY(-2px); /* Slight pop on hover */
-            color: white !important;
-        }
-
-        #btnDelete:active {
-            transform: scale(0.98); /* Press feedback */
-        }
-
-        #btnDelete:hover .dx-button-text,
-        #btnDelete:hover .dx-icon {
-        color: white !important;
-    }
-   
-        #btnDelete .dx-icon
-         {
-            color: #e74c3c !important;
-        }
-
-
-    #btnBack {
-        background-color: white !important; /* Light gray */
-        color: black !important; /* Text color */
-        border: 1px solid #ccc !important; /* Light border */
-        border-radius: 8px;
-        padding: 8px 16px;
-        font-weight: 600;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        transition: background-color 0.3s ease, transform 0.2s ease, color 0.3s ease;
-    }
-
-        #btnBack:hover {
-            background-color: #d3d3d3 !important; /* Slightly darker gray */
-            transform: translateY(-2px);
-            color: white !important;
-        }
-
-        #btnBack:active {
-            transform: scale(0.97);
-        }
-
-        /* Text inside the button */
-        #btnBack .dx-button-text {
-            color: black !important;
-        }
-
-        /* Icon inside the button */
-        #btnBack .dx-icon {
-            color: black !important;
-        }
-
-        /* Ensure hover also applies white to text and icon */
-        #btnBack:hover .dx-button-text,
-        #btnBack:hover .dx-icon {
-            color: white !important;
-        }
-
-
-    #btnPrint {
-        background-color: #f5f5f5 !important; /* Indigo / Blue-Violet tone */
-        color: white !important;
-        border: 1px solid #434190 !important;
-        border-radius: 8px;
-        padding: 8px 16px;
-        font-weight: 600;
-        box-shadow: 0 4px 10px rgba(90, 103, 216, 0.3);
-        transition: background-color 0.3s ease, transform 0.2s ease;
-    }
-
-        #btnPrint:hover {
-            background-color: #434190 !important; /* Darker indigo */
-            transform: translateY(-2px);
-            color: white !important;
-        }
-
-        #btnPrint:active {
-            transform: scale(0.97);
-        }
-
-    #btnPrint .dx-button-text {
-        color: black !important;
-    }
-        #btnPrint .dx-icon {
-            color: #5A67D8 !important;
-        }
-
-        #btnPrint:hover .dx-button-text,
-        #btnPrint:hover .dx-icon {
-        color: white !important;
+        margin: 10px;
+        margin-top: 8px;
     }
 
 
 
-    #btnPreview1 {
-        background: #f5f5f5 !important; /* Blue-purple gradient */
-        color: white !important;
-        border: none !important;
+
+    /* Base button customization */
+    .dx-button-custom .dx-button-content {
         border-radius: 6px;
         font-weight: 600;
-        box-shadow: 0 3px 6px rgba(102, 126, 234, 0.25);
-        transition: background 0.3s ease, transform 0.2s ease;
-    }
-
-        /* Hover effect (no size change) */
-        
-
-    #btnPreview1:hover {
-            background: linear-gradient(135deg, #5a67d8, #6b46c1) !important; /* Darker on hover */
-            transform: translateY(-2px); /* Slight pop on hover */
-            color: white !important;
-        }
-
-    #btnPreview1:active {
-            transform: scale(0.98); /* Press feedback */
-        }
-
-    #btnPreview1:hover .dx-button-text,
-    #btnPreview1:hover .dx-icon,
-    #btnPreview1:hover .dx-dropdownbutton-arrow {
-            color: white !important;
-        }
-
-     
-        
-            #btnPreview1 .dx-icon,
-        #btnPreview1 .dx-button-text,
-        #btnPreview1 .dx-dropdownbutton-arrow {
-            color:black !important;
-        }
-
-    #btnAttach {
-        background-color: #f5f5f5 !important; /* Cyan 500 */
-        color: white !important;
-        border: 1px solid #c0392b !important;
-        border-radius: 8px;
+        min-width: 150px;
         padding: 8px 16px;
-        font-weight: 600;
-        box-shadow: 0 4px 10px rgba(0, 188, 212, 0.3);
-        transition: background-color 0.3s ease, transform 0.2s ease;
-        position: relative;
+        transition: background-color 0.3s, color 0.3s;
     }
 
-        /* Hover and active states */
-        #btnAttach:hover {
-            background-color: #c0392b !important;
-            transform: translateY(-2px);
-        }
-
-        #btnAttach:active {
-            transform: scale(0.97);
-        }
-
-        /* Icon and text color */
-        #btnAttach .dx-icon {
-            color: #c0392b !important;
-        }
-
-        #btnAttach .dx-button-text {
-        color: black !important;
+    /* Back */
+    .dx-button-custom.btn-back .dx-button-content {
+        background-color: #f5f5f5;
+        color: #333;
+        border: 1px solid #ccc;
     }
 
-        #btnAttach:hover .dx-button-text,
-        #btnAttach:hover .dx-icon {
-        color: white !important;
+    .dx-button-custom.btn-back:hover .dx-button-content {
+        background-color: #e4e4e4;
     }
 
-    .custom-icon-color .dx-icon.dx-icon-save {
-        color: limegreen !important;
-    } 
-    .custom-icon-color-approve .dx-icon-exportselected {
-        color: yellow !important;
+    /* Delete */
+    .dx-button-custom.btn-delete .dx-button-content {
+        background-color: #fff0f0;
+        color: #d9534f;
+        border: 1px solid #d9534f;
     }
 
-    #btnSave {
-        background-color: #4169E1 !important; /* Cyan 500 */
-        color: white !important;
-        border: none !important;
-        border-radius: 8px;
-        padding: 8px 16px;
-        font-weight: bold;
-        box-shadow: 0 4px 10px rgba(0, 188, 212, 0.3);
-        transition: background-color 0.3s ease, transform 0.2s ease;
-        position: relative;
+    .dx-button-custom.btn-delete:hover .dx-button-content {
+        background-color: #f8d7da;
+        color: #a94442;
     }
 
-        #btnSave .dx-icon {
-        color: white !important;
-    }
-        /* Hover and active states */
-        #btnSave:hover {
-            background-color: #4169E1 !important;
-            transform: translateY(-2px);
-            color: white !important;
-        }
-
-        #btnSave:active {
-            transform: scale(0.97);
-        }
-
-    #btnSaveAndClose {
-        background: linear-gradient(135deg, #27ae60, #2ecc71) !important;
-        color: white !important;
-        border: none !important;
-        border-radius: 8px;
-        padding: 8px 16px;
-        font-weight: bold;
-        box-shadow: 0 4px 10px rgba(0, 188, 212, 0.3);
-        transition: background-color 0.3s ease, transform 0.2s ease;
-        position: relative;
+    /* Attach */
+    .dx-button-custom.btn-attach .dx-button-content {
+        background-color: #ffffff;
+        color: #000;
+        border: 1px solid #444;
     }
 
-        /* Hover and active states */
-        #btnSaveAndClose:hover {
-            background: linear-gradient(135deg, #27ae60, #2ecc71) !important;
-            transform: translateY(-2px);
-            color: white !important;
-        }
-
-        #btnSaveAndClose .dx-icon {
-        color: white !important;
-    }
-        #btnSaveAndClose:active {
-            transform: scale(0.97);
-        }
-
-    #btnVerify {
-        background-color: #FFDB58 !important; /* Cyan 500 */
-        color: black !important;
-        border: none !important;
-        border-radius: 8px;
-        padding: 8px 16px;
-        font-weight: bold;
-        box-shadow: 0 4px 10px rgba(0, 188, 212, 0.3);
-        transition: background-color 0.3s ease, transform 0.2s ease;
-        position: relative;
+    .dx-button-custom.btn-attach:hover .dx-button-content {
+        background-color: #eee;
     }
 
-        /* Hover and active states */
-        #btnVerify:hover {
-            background-color: #FFDB58 !important;
-            transform: translateY(-2px);
-            color: black !important;
-        }
-
-        #btnVerify:active {
-            transform: scale(0.97);
-        }
-
-        #btnVerify .dx-icon {
-        color: black !important;
+    /* Preview */
+    .dx-button-custom.btn-preview .dx-button-content {
+        background-color: #e0faff;
+        color: #17a2b8;
+        border: 1px solid #17a2b8;
+       
     }
 
-    #btnApprove {
-        background-color: #00acc1 !important; /* Cyan 500 */
-        color: white !important;
-        border: none !important;
-        border-radius: 8px;
-        padding: 8px 16px;
-        font-weight: bold;
-        box-shadow: 0 4px 10px rgba(0, 188, 212, 0.3);
-        transition: background-color 0.3s ease, transform 0.2s ease;
-        position: relative;
+    .dx-button-custom.btn-preview:hover .dx-button-content {
+        background-color: #c2f1fa;
     }
 
-        /* Hover and active states */
-    #btnApprove:hover {
-            background-color: #00acc1 !important;
-            transform: translateY(-2px);
-            color: white !important;
-        }
-
-    #btnApprove:active {
-            transform: scale(0.97);
-        }
-
-    .null {
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-top: 10px;
-        box-sizing: border-box;
-
+    /* Save */
+    .dx-button-custom.btn-save .dx-button-content {
+        background-color: #007bff;
+        color: #fff;
+        border: 1px solid #007bff;
     }
 
-    .horizontal-container {
-      justify-content:center !important;
+    .dx-button-custom.btn-save:hover .dx-button-content {
+        background-color: #0069d9;
+    }
+
+    /* Save & Close */
+    .dx-button-custom.btn-save-close .dx-button-content {
+        background-color: #28a745;
+        color: #fff;
+        border: 1px solid #28a745;
+    }
+
+    .dx-button-custom.btn-save-close:hover .dx-button-content {
+        background-color: #218838;
+    }
+
+    /* Verify */
+    .dx-button-custom.btn-verify .dx-button-content {
+        background-color: #ffc107;
+        color: #fff;
+        border: 1px solid #ffc107;
+    }
+
+    .dx-button-custom.btn-verify:hover .dx-button-content {
+        background-color: #e0a800;
+    }
+
+    /* Approve */
+    .dx-button-custom.btn-approve .dx-button-content {
+        background-color: #17c1e8;
+        color: #fff;
+        border: 1px solid #17c1e8;
+    }
+
+    .dx-button-custom.btn-approve:hover .dx-button-content {
+        background-color: #12a5ca;
     }
 
 </style>
-<div class="dx-fieldset horizontal-container " >
-    <div class="null">
+<div class="dx-fieldset horizontal-container">
     @(Html.DevExtreme().Button()
-        .ID("btnSave")
-        .Text(new JS("formatMessage('Save')"))
-        .Type(ButtonType.Normal)
-        .StylingMode(ButtonStylingMode.Outlined)
-        .Icon("save")
-        .Hint("Click to save")
-        .ElementAttr("class", "custom-icon-color"))
+        .ID("btnBack")
+        .Text("Back")
+        .Icon("arrowleft")
+        .Width(180)
+        .Hint("Click to back")
+        .ElementAttr(new { @class = "dx-button-custom btn-back" }))
 
     @(Html.DevExtreme().Button()
-        .ID("btnSaveAndClose")
-        .Text(new JS("formatMessage('Save and Close')"))
-        .Type(ButtonType.Normal)
-        .StylingMode(ButtonStylingMode.Outlined)
-        .Icon("save")
-        .Hint("Click to save and close")
-        .ElementAttr("class", "custom-icon-color"))
+        .ID("btnDelete")
+        .Text("Delete")
+        .Icon("close")
+        .Width(180)
+        .Hint("Click to delete")
+        .OnClick("onDeleteButtonClick")
+        .ElementAttr(new { @class = "dx-button-custom btn-delete" }))
+
+    @(Html.DevExtreme().Button()
+        .ID("btnAttach")
+        .Text("Attach")
+        .Icon("link")
+        .Hint("Click to attach")
+        .Width(180)
+        .OnClick("onAttachButtonClick")
+        .ElementAttr(new { @class = "dx-button-custom btn-attach" }))
 
     @(Html.DevExtreme().DropDownButton()
         .ID("btnPreview1")
-        .Text(new JS("formatMessage('Preview')"))
+        .Text("Preview")
         .Icon("fullscreen")
         .Hint("Click to Preview")
-        .ElementAttr(new { @class = "bold-button" })
+        .ElementAttr(new { @class = "dx-button-custom btn-preview" })
         .Width(180)
-        .DropDownOptions(options => options.Width(220))
+        .DropDownOptions(o => o.Width(220))
         .Items(items =>
         {
-            items.Add().Text(new JS("formatMessage('Preview Format 1')")).Icon("textdocument");
-            items.Add().Text(new JS("formatMessage('Preview Format 2')")).Icon("textdocument");
-
+            items.Add().Text("Preview Format 1").Icon("textdocument");
+            items.Add().Text("Preview Format 2").Icon("textdocument");
         })
-        .OnItemClick("handlePreviewClick")
-        )
-
-      
-
-
-
+        .OnItemClick("handlePreviewClick"))
 
     @(Html.DevExtreme().Button()
-        .ID("btnPrint")
-        .Text(new JS("formatMessage('Print')"))
-        .Icon("print")
-        .Hint("Click to print")
-        .OnClick("function() { openPrint(); }")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-        )
+        .ID("btnSave")
+        .Text("Save")
+        .Icon("save")
+        .Width(180)
+        .Hint("Click to save")
+        .ElementAttr(new { @class = "dx-button-custom btn-save" }))
+
     @(Html.DevExtreme().Button()
-        .ID("btnDelete")
-        .Text(new JS("formatMessage('Delete')"))
-        .Icon("close")
-        .Hint("Click to close")
-        .OnClick("onDeleteButtonClick")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-        )
-    @(Html.DevExtreme().Button()
-        .ID("btnBack")
-        .Text(new JS("formatMessage('Back')"))
-        .Icon("arrowleft")
-        .Hint("Click to back")
-        .OnClick("onBackButtonClick")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-        )
+        .ID("btnSaveAndClose")
+        .Text("Save & Close")
+        .Icon("save")
+        .Width(180)
+        .Hint("Click to save and close")
+        .ElementAttr(new { @class = "dx-button-custom btn-save-close" }))
+
     @(Html.DevExtreme().Button()
         .ID("btnVerify")
-        .Text(new JS("formatMessage('Verify')"))
+        .Text("Verify")
         .Icon("check")
         .Hint("Click to Verify")
+        .Width(180)
         .OnClick("onVerifyButtonClick")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+        .ElementAttr(new { @class = "dx-button-custom btn-verify" }))
 
-        )
     @(Html.DevExtreme().Button()
         .ID("btnApprove")
-        .Text(new JS("formatMessage('Approve')"))
+        .Text("Approve")
         .Icon("exportselected")
         .Hint("Click to Approve")
+        .Width(180)
         .OnClick("onApproveButtonClickWithAnimation")
-        .ElementAttr("class", "custom-icon-color-approve")
-        )
+        .ElementAttr(new { @class = "dx-button-custom btn-approve" }))
+
     @(Html.DevExtreme().Button()
-        .ID("btnAttach")
-        .Text(new JS("formatMessage('Attach')"))
-        .Icon("link")
-        .Hint("Click to Attach")
-        .OnClick("onAttachButtonClick")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-        )
-   
-        @(Html.DevExtreme().Button()
-            .ID("btnColumnChooser")
-            .Icon("columnchooser")
-            .Width(40)
-            .Hint("Click to column chooser")
-            .Text(new JS("formatMessage('Column Chooser')"))
-            .OnClick("showColumnChooser")
-            )
-    
-    </div>
+        .ID("btnColumnChooser")
+        .Text("Column Chooser")
+        .Icon("columnchooser")
+        .Hint("Click to column chooser")
+        .Width(210)
+        .OnClick("showColumnChooser")
+        .ElementAttr(new { @class = "dx-button-custom btn-attach" }))
 </div>
+
 <script type="text/javascript">
 
     function showColumnChooser() {

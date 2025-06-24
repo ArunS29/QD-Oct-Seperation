@@ -1090,13 +1090,14 @@
 
                         <td>
 
-                        @(Html.DevExtreme().Button()
-                            .ID("btnPrint")
-                            .Text(new JS("formatMessage('Print')"))
-                            .Icon("print") // DevExtreme built-in icon
-                            .Width(160)
-                           
-                            )
+                    @(Html.DevExtreme().Button()
+                    .ID("printBtn1")
+                    .Text(new JS("formatMessage('Print')"))
+                    .Icon("print")
+                    .Hint("Click to print")
+                    .OnClick("function() { exportDataGridToPDF('stockCardGrid'); }")
+                    .ElementAttr(new { @class = "bold-button" }) 
+                    )
 
                         </td>
                         <td>
@@ -1224,7 +1225,7 @@
             </div>
 
             <div id="tab-content-3" class="tab-content" style="display: none;">
-                <div class="background">
+                <div>
                 <div class="imagecontainer" id="imgBox1">
                     <span>No image data</span>
                 </div>
@@ -1359,7 +1360,7 @@
             </div>
 
             <div id="tab-content-4" class="tab-content">
-                <div class="background">
+                <div>
                 <div>
 
                     @using DevExtreme.AspNet.Mvc
@@ -1367,20 +1368,13 @@
                 @{
                     ViewBag.Title = "Invoice Grid";
                 }
-                @(Html.DevExtreme().DropDownButton()
+                @(Html.DevExtreme().Button()
                     .ID("printButton")
                     .Text(new JS("formatMessage('Print')"))
                     .Icon("print")
-                    .ElementAttr("style", "padding:10px")
-                    .DisplayExpr("Text")
-                    .KeyExpr("Text")
-                    .NoDataText("Show Or Remove") // 👈 Custom message when there are no items
-                    .ItemTemplate(@<text>
-                        <div style="display: flex; align-items: center;">
-                            <i class="dx-icon-<%- Icon %>" style="padding:10px;"></i>
-                            <span><%- Text %></span>
-                        </div>
-                    </text>)
+                    .Hint("Click to print")
+                    .OnClick("function() { exportDataGridToPDF('invoiceGrid'); }")
+                    .ElementAttr(new { @class = "bold-button" }) 
                     )
 
                     <div class="dx-card " style="background-color:transparent; border:none;padding:10px;">
@@ -1459,29 +1453,21 @@
                 </div>
             </div>
             <div id="tab-content-5" class="tab-content">
-                <div class="background">
+                <div>
 
                 
             @{
                 ViewBag.Title = "Quotation Grid";
             }
 
-            @(Html.DevExtreme().DropDownButton()
-                .ID("Dropdown")
-                .Text(new JS("formatMessage('Print')"))
-                .Icon("print")
-                .ElementAttr("style", "padding:10px")
-                .DisplayExpr("Text")
-                .KeyExpr("Text")
-                .NoDataText("Show Or Remove")
-                .ItemTemplate(@<text>
-                    <div style="display: flex; align-items: center;">
-                        <i class="dx-icon-<%- Icon %>" style="padding:10px;"></i>
-                        <span><%- Text %></span>
-                    </div>
-                </text>)
-
-                )
+            @(Html.DevExtreme().Button()
+            .ID("printButton1")
+            .Text(new JS("formatMessage('Print')"))
+            .Icon("print")
+            .Hint("Click to print")
+            .OnClick("function() { exportDataGridToPDF('quotationGrid'); }")
+            .ElementAttr(new { @class = "bold-button" }) 
+            )
 
 
                 <div class="dx-card " style="background-color:transparent; border:none;padding:10px;">
@@ -1561,7 +1547,7 @@
            
 
             <div id="tab-content-6" class="tab-content">
-                <div class="background">
+                <div>
 
 
             @{
@@ -1569,21 +1555,14 @@
             }
 
                
-            @(Html.DevExtreme().DropDownButton()
-                .ID("PurchaseOrderDropdown")
-                .Text(new JS("formatMessage('Print')"))
-                .Icon("print")
-                .ElementAttr("style", "padding:10px")
-                .DisplayExpr("Text")
-                .KeyExpr("Text")
-                .NoDataText("Show Or Remove") // 👈 Custom message when there are no items
-                .ItemTemplate(@<text>
-                    <div style="display: flex; align-items: center;">
-                        <i class="dx-icon-<%- Icon %>" style="padding:10px;"></i>
-                        <span><%- Text %></span>
-                    </div>
-                </text>)
-                )
+            @(Html.DevExtreme().Button()
+            .ID("printButton2")
+            .Text(new JS("formatMessage('Print')"))
+            .Icon("print")
+            .Hint("Click to print")
+            .OnClick("function() { exportDataGridToPDF('PurchaseOrderGrid'); }")
+            .ElementAttr(new { @class = "bold-button" }) 
+            )
 
                 <div class="dx-card " style="background-color:transparent; border:none;padding:10px;">
                     
@@ -1660,29 +1639,21 @@
                 </div>
             </div>
         <div id="tab-content-7" class="tab-content">
-            <div class="background">
+            <div>
 
 
             @{
                 ViewBag.Title = "ItemDelivers Grid";
             }
 
-            @(Html.DevExtreme().DropDownButton()
-                .ID("ItemDeliversDropdown")
-                .Text(new JS("formatMessage('Print')"))
-                .Icon("print")
-                .ElementAttr("style", "padding:10px")
-                .DisplayExpr("Text")
-                .KeyExpr("Text")
-                .NoDataText("Show Or Remove") // 👈 Custom message when there are no items
-                .ItemTemplate(@<text>
-                    <div style="display: flex; align-items: center;">
-                        <i class="dx-icon-<%- Icon %>" style="padding:10px;"></i>
-                        <span><%- Text %></span>
-                    </div>
-                </text>)
-                )
-
+            @(Html.DevExtreme().Button()
+            .ID("printButton3")
+            .Text(new JS("formatMessage('Print')"))
+            .Icon("print")
+            .Hint("Click to print")
+            .OnClick("function() { exportDataGridToPDF('ItemDeliversGrid'); }")
+            .ElementAttr(new { @class = "bold-button" }) 
+            )
 
                 <div class="dx-card " style="background-color:transparent; border:none;padding:10px;">
 
@@ -1761,7 +1732,7 @@
         </div>
 
             <div id="tab-content-8" class="tab-content">
-                <div class="background">
+                <div>
 
                 @{
                 ViewBag.Title = "Item Received Grid";
@@ -1770,22 +1741,14 @@
 
 
              
-            @(Html.DevExtreme().DropDownButton()
-                .ID("ItemReceivedDropdown")
-                .Text(new JS("formatMessage('Print')"))
-                .Icon("print")
-                .ElementAttr("style", "padding:10px")
-                .DisplayExpr("Text")
-                .KeyExpr("Text")
-                .NoDataText("Show Or Remove")
-                .ItemTemplate(@<text>
-                    <div style="display: flex; align-items: center;">
-                        <i class="dx-icon-<%- Icon %>" style="padding:10px;"></i>
-                        <span><%- Text %></span>
-                    </div>
-                </text>)
-
-                )
+           @(Html.DevExtreme().Button()
+            .ID("printButton4")
+            .Text(new JS("formatMessage('Print')"))
+            .Icon("print")
+            .Hint("Click to print")
+            .OnClick("function() { exportDataGridToPDF('ItemReceivedGrid'); }")
+            .ElementAttr(new { @class = "bold-button" }) 
+            )
 
 
                 <div class="dx-card " style="background-color:transparent; border:none;padding:10px;">
@@ -1866,7 +1829,7 @@
                 </div>
             </div>
         <div id="tab-content-9" class="tab-content">
-            <div class="background">
+            <div>
 
 
             @{
@@ -2034,7 +1997,7 @@
             </div>
         </div>
         <div id="tab-content-10" class="tab-content">
-            <div class="background">
+            <div>
 
 
                 <style type="text/css">
@@ -2354,7 +2317,7 @@
             </div>
         </div>
         <div id="tab-content-11" class="tab-content">
-            <div class="background">
+            <div>
 
 
             @{
@@ -2365,23 +2328,14 @@
                 <style>
 
                 </style>
-            @(Html.DevExtreme().DropDownButton()
-                .ID("purchaseDropdown")
-                .Text(new JS("formatMessage('Print')"))
-                .Icon("print")
-                .ElementAttr("style", "padding:10px")
-                .DisplayExpr("Text")
-                .KeyExpr("Text")
-                .NoDataText("Show Or Remove") 
-                .ItemTemplate(@<text>
-                    <div style="display: flex; align-items: center;">
-                        <i class="dx-icon-<%- Icon %>" style="padding:10px;"></i>
-                        <span><%- Text %></span>
-                    </div>
-                </text>)
-
+                @(Html.DevExtreme().Button()
+                    .ID("printBtn6")
+                    .Text(new JS("formatMessage('Print')"))
+                    .Icon("print")
+                    .Hint("Click to print")
+                    .OnClick("function() { exportDataGridToPDF('PurchaseGrid'); }")
+                    .ElementAttr(new { @class = "bold-button" }) 
                 )
-
 
                 <div class="dx-card " style="background-color:transparent; border:none;padding:10px;">
 
@@ -2460,7 +2414,7 @@
             </div>
         </div>
       @*   <div id="tab-content-12" class="tab-content">
-            <div class="background">
+            <div>
 
                 @await Html.PartialAsync("~/Pages/Shared/IMS/StockDetails_MaterialRequest.cshtml")
 

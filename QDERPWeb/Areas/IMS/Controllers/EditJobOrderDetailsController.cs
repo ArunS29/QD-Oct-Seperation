@@ -313,5 +313,40 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        [HttpPost]
+        public IActionResult DeleteJobOrder([FromBody] string JobOrderNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var jobOrder = dbContext.Tbl60801jobOrderMasters
+                        .FirstOrDefault(x => x.JobOrderNo == JobOrderNo);
+
+                    if (jobOrder == null)
+                    {
+                        return NotFound(new { success = false, message = "Job Order not found." });
+                    }
+
+                    if (jobOrder.IsApproved == true)  // Or use (jobOrder.IsApproved ?? false)
+                    {
+                        return BadRequest(new { success = false, message = "Cannot delete. Job Order is already approved." });
+                    }
+
+                    dbContext.Tbl60801jobOrderMasters.Remove(jobOrder);
+                    dbContext.SaveChanges();
+
+                    return Ok(new { success = true, message = "Deleted successfully." });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error deleting job order: {ex.Message}");
+                    return StatusCode(500, new { success = false, message = $"Delete failed: {ex.Message}" });
+                }
+            }
+
+            return Unauthorized(new { success = false, message = "Invalid tenant." });
+        }
+
     }
 }
