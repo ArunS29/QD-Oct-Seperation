@@ -123,7 +123,7 @@
 
     <style>
         * {
-            font-family: var(--Font-family-Base, 'Inter', sans-serif); /* Font family */
+            /* font-family: var(--Font-family-Base, 'Inter', sans-serif); /* Font family */ */ font-family: 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
             font-size: var(--Font-size-300, 14px); /* Font size */
             font-style: normal; /* Font style */
             font-weight: 500; /* Font weight */
@@ -146,8 +146,9 @@
             background-color: var(--title-background-color);
             color: #fff;
         }
+
         :root {
-            font-family: "Inter", Helvetica, Arial, sans-serif;
+            font-family: 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             --highlight-color: var(--hover-bg-color);
             --text-color: #525252;
             --hover-bg-color: var(--hover-bg-color);
@@ -161,7 +162,8 @@
         }
 
         .title {
-            display: flex;
+            display: none;
+            /* display: flex; */
             align-items: center;
             justify-content: center;
             font-size: 20px;
@@ -251,7 +253,7 @@
 
             /* Hidden state of sidebar */
             .sidebar.hidden {
-                width: 60px; /* Minimized width to show icons only */
+                width: 65px; /* Minimized width to show icons only */
                 background-color: var(--menu-color);
                 /* height: inherit; */
                 /* margin-top: 20px; */
@@ -325,7 +327,7 @@
                 color: var(--highlight-color);
             }
 
-            .menu-item i::after {
+            .menu-item img::after {
                 content: attr(data-tooltip);
                 position: absolute;
                 top: 130%;
@@ -345,7 +347,7 @@
                 letter-spacing: 1px;
             }
 
-            .menu-item i:hover::after {
+            .menu-item img:hover::after {
                 opacity: 1;
                 visibility: visible;
                 transform: translateX(-50%) translateY(5px);
@@ -353,11 +355,12 @@
 
         .toggle-btn {
             position: fixed;
-            top: 70px;
-            left: calc(var(--sidebar-width, 4em)); /* Use the sidebar width */
+            top: 5px;
+            /* left: calc(var(--sidebar-width, 4em)); */
+            left: 1em;
             width: 30px;
             height: 30px;
-            background-color: var(--header-color);
+            background-color: white;
             border: 1px solid #ddd;
             box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
             border-radius: 50%;
@@ -369,9 +372,9 @@
             transition: left 0.3s ease; /* Smooth transition */
         }
 
-            .toggle-btn:hover {
-                background-color: var(--hover-bg-color);
-            }
+            /* .toggle-btn:hover { */
+            /*     background-color: var(--hover-bg-color); */
+            /* } */
 
         /* Sidebar hidden state */
         .sidebar.hidden ~ .toggle-btn {
@@ -526,14 +529,12 @@
             align-items: center; /* Vertically align items */
             justify-content: flex-end; /* Push items to the right */
             width: 100%; /* Occupy the full width of the screen */
-            padding: 10px; /* Add some spacing */
-            background-color: var(--header-color); /* Optional background color */
+            background-color: var(--title-background-color);
             position: fixed; /* Make it fixed to stay visible on scroll */
             top: 0; /* Position at the top */
             left: 0; /* Start from the very left */
             z-index: 100; /* Ensure it stays above other elements */
-            height: 5em;
-            border-bottom: 1px solid #ddd;
+            height: 3em;
         }
 
 
@@ -541,7 +542,6 @@
             .frame .img {
                 font-size: 20px; /* Set size of icons */
                 margin: 0 5px; /* Add spacing between icons */
-                color: #333; /* Set icon color */
                 cursor: pointer; /* Add pointer cursor for hover effect */
             }
 
@@ -624,15 +624,15 @@
         /* Base styling for all popups */
         .popup {
             display: none; /* Hidden by default */
-            position: absolute; /* Make it float above the content */
-            top: 10%;
-            right: 10%;
+            position: absolute;
+            top: 7%;
+            right: 2%;
             width: 300px;
             background-color: white;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: inset 10px 10px 10px rgba(0, 0, 0, 0.1);
             z-index: 9999;
             border-radius: 8px;
-            padding: 20px;
+            padding: 10px;
         }
 
         .popup-header {
@@ -648,6 +648,9 @@
             font-size: 20px;
             cursor: pointer;
             color: #888;
+            display: flex;
+            align-items: end;
+            justify-content: flex-end;
         }
 
             .popup-close:hover {
@@ -676,12 +679,12 @@
             /* font-family: "Playfair Display", serif; */
             /* font-family: "Lobster", serif; */
             /* font-family: "Pacifico", serif; */
-            font-family: "Roboto Slab", serif;
+            /* font-family: "Roboto Slab", serif; */
             /* font-family: 'book antiqua', sans-serif; */
             /* font-size: 48px; */
             /* font-weight: 700; */
-            color: var(--title-background-color);
-            text-transform: uppercase;
+            color: white;
+            /* text-transform: uppercase; */
             letter-spacing: 2px;
             text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
             /* margin-right: auto; */
@@ -702,7 +705,8 @@
 
         /* Main Content */
         .mainContainer {
-            margin-top: 5em;
+            background-color: white;
+            margin-top: 40px;
             /* width: 85%; */
             /* padding: 20px; */
         }
@@ -725,7 +729,15 @@
 
         .dropdown {
             position: relative;
-            display: inline-block;
+            background: white;
+            height: 30px;
+            width: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--title-background-color);
+            cursor: pointer;
         }
 
         .dropdown-menu {
@@ -733,26 +745,46 @@
             position: absolute;
             right: 0;
             background-color: white;
-            min-width: 150px;
+            min-width: 200px;
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
             border-radius: 5px;
             z-index: 1000;
+            top: 40px;
+            padding: 10px 0;
         }
 
-            .dropdown-menu a {
-                display: block;
-                padding: 10px;
-                text-decoration: none;
-                color: black;
+            .dropdown-menu .userName {
+                background-color: #eef0ff;
+                padding: 10px 15px;
+                font-weight: bold;
+                display: flex;
+                align-items: center;
+                gap: 10px;
             }
 
-                .dropdown-menu a:hover {
+            .dropdown-menu .dropdown-item {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 10px 15px;
+                color: black;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+                .dropdown-menu .dropdown-item:hover {
                     background-color: #f0f0f0;
                 }
+
+            .dropdown-menu i {
+                min-width: 16px;
+                text-align: center;
+            }
 
         .show {
             display: block;
         }
+
         /* Modal Styles */
         .modal {
             display: none; /* Hidden by default */
@@ -824,16 +856,24 @@
             left: 3.5em;
             bottom: 4em;
             z-index: 100;
+            width: 35px;
+            height: 35px;
+            background-color: var(--hover-bg-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
         }
 
             .playIcon i {
-                font-size: 40px;
-                color: var(--hover-bg-color);
+                color: white;
+                margin-left: 5px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
-
-                .playIcon i:hover {
-                    color: var(--title-background-color);
-                }
 
         #goToTopBtn {
             position: fixed;
@@ -954,11 +994,6 @@
                 display: none; /* hide when 0 */
             }
 
-            .notification-bell-wrapper i.fas.fa-bell {
-                font-size: 28px;
-                color: #444;
-            }
-
         .notification-tooltip {
             position: absolute;
             top: 120%;
@@ -1004,7 +1039,6 @@
             border-radius: 10px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
             z-index: 1000;
-            font-family: 'Poppins', sans-serif;
         }
 
         .popup-header {
@@ -1041,6 +1075,39 @@
             font-weight: 500;
             margin-bottom: 4px;
         }
+
+       
+        User icon
+        .dropdown .fa-user.img {
+            color: darkgreen;
+            background-color: #e0e0e0;
+            border-radius: 50%;
+            padding: 6px;
+            font-size: 16px;
+            width: 32px;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fas, .fa-solid, .fa {
+            font-size: 17px;
+        }
+
+        #fullscreenIcon,
+        .notification-bell-wrapper .fa-bell,
+        .fa-file-alt,
+        .fa-circle-info,
+        .fa-palette,
+        .fa-user {
+            font-size: 17px;
+            padding: 8px;
+            color: var(--title-background-color);
+            background-color: white;
+            border-radius: 50%;
+        }
+
     </style>
     @RenderSection("Styles", required: false)
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
@@ -1049,6 +1116,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div style="display:none" >musharaf</div>
     <!-- Modal Structure -->
     <div id="customModal" class="modal">
         <div class="modal-content">
@@ -1064,7 +1132,7 @@
     <div class="bodyContainer">
         <div class="playIcon">
             <a id="helpVideo" href="" target="_blank" rel="noopener noreferrer">
-                <i class="fa-solid fa-circle-play"></i>
+                <i class="fa-solid fa-play"></i>
             </a>
         </div>
         <button id="goToTopBtn" onclick="scrollToTop()">
@@ -1072,15 +1140,15 @@
         </button>
         <div class="frame">
             <div class="image">
-                <img src="@Tenant.Value.LogoUrl" alt="Tenant Logo" />
                 <div class="companyName">
                     @Tenant.Value.CompanyNameShort
                 </div>
 
 
             </div>
-            <div class="dropdownLang">
-                @*   <div>
+            <div class="mush" style="gap:10px;display:flex;align-items:center;">
+                <div class="dropdownLang">
+                    @*   <div>
                 @(Html.DevExtreme().SelectBox()
                     .ID("currencySelect")
                     .DataSource(currencies)
@@ -1092,57 +1160,66 @@
                     .Value(currencies.FirstOrDefault()?.CurrencyID)
                     )
             </div> *@
-                <div>
-                    @(Html.DevExtreme().SelectBox()
-                        .ID("languageSelectBox")
-                        .DataSource(new JS("locales")) // Ensure 'locales' is populated before rendering
-                        .DisplayExpr("name")
-                        .ValueExpr("value")
-                        .Width("10em")
-                        .Value(new JS("locale"))
-                        .OnValueChanged("changeLocale")
-                        .Label(new JS("formatMessage('Language')"))
-                        .LabelMode(EditorLabelMode.Outside)
-                        .ItemTemplate(@<text>
-                        <div style="display: flex; align-items: center;">
-                            <img src="<%- flag %>" alt="" style="width: 20px; height: 20px; border-radius: 50%; margin-right: 8px;" />
-                            <span><%- name %></span>
-                        </div>
-                    </text>)
-                        )
-                </div>
-            </div>
-            @* <button id="themeToggle">Toggle Dark Mode</button> *@
-            <button id="fullscreenToggle">
-                <i class="fas fa-expand" id="fullscreenIcon"></i>
-            </button>
-            <div class="notification-bell-wrapper"
-                 onmouseenter="showPopup()"
-                 onmouseleave="hidePopup()"
-                 onclick="handleBellClick()">
-                <i class="fas fa-bell"></i>
-                <div class="badge-count" id="notificationBadge">0</div>
-
-                <!-- Styled Popup Panel -->
-                <div class="notification-popup" id="notificationPopup">
-                    <div class="popup-header">Notifications</div>
-                    <div class="popup-body" id="notificationPopupContent">Loading...</div>
-                </div>
-            </div>
-
-
-
-            <i class="fas fa-cogs img" onclick="handleGearClick()"></i> <!-- Gear icon -->
-            <i class="fas fa-file-alt img" onclick="handleFileClick()"></i> <!-- File text icon -->
-            <i class="fas fa-circle-info img" onclick="handleInfoClick()"></i>
-            <i class="fas fa-circle-info img" onclick="handleReserpasswordClick()"></i>
-            <div class="dropdown">
-                <i class="fa-solid fa-user img" onclick="toggleDropdown()"></i>
-                <div id="userDropdown" class="dropdown-menu">
-                    <div class="userName">
-                        <a href="javascript:void(0);" onclick="window.location.href = '/@tenantName/General/frm201useracces';"><span id="userWelcome"></span> @userName &#128513;!</a>
+                    <div>
+                        @(Html.DevExtreme().SelectBox()
+                            .ID("languageSelectBox")
+                            .DataSource(new JS("locales")) // Ensure 'locales' is populated before rendering
+                            .DisplayExpr("name")
+                            .ValueExpr("value")
+                            .Width("7em")
+                            .Value(new JS("locale"))
+                            .OnValueChanged("changeLocale")
+                            .ItemTemplate(@<text>
+                            <div style="display: flex; align-items: center;">
+                                <img src="<%- flag %>" alt="" style="width: 20px; height: 20px; border-radius: 50%; margin-right: 8px;" />
+                                <span><%- name %></span>
+                            </div>
+                        </text>)
+                            )
                     </div>
-                    <a href="#" onclick="logout()" id="userLogout"></a>
+                </div>
+                @* <button id="themeToggle">Toggle Dark Mode</button> *@
+                <button id="fullscreenToggle">
+                    <i class="fas fa-expand" id="fullscreenIcon"></i>
+                </button>
+                <div class="notification-bell-wrapper"
+                     onmouseenter="showPopup()"
+                     onmouseleave="hidePopup()"
+                     onclick="handleBellClick()">
+                    <i class="fas fa-bell"></i>
+                    <div class="badge-count" id="notificationBadge">0</div>
+
+                    <!-- Styled Popup Panel -->
+                    <div class="notification-popup" id="notificationPopup">
+                        <div class="popup-header">Notifications</div>
+                        <div class="popup-body" id="notificationPopupContent">Loading...</div>
+                    </div>
+                </div>
+                <i class="fas fa-palette img" onclick="handleGearClick()"></i> <!-- Gear icon -->
+
+                <div class="dropdown" onclick="toggleDropdown()">
+                    <div class="user-icon" id="userIcon"></div>
+                    <div id="userDropdown" class="dropdown-menu">
+                        <div class="userName">
+                            <i class="fas fa-user"></i>
+                            <span id="userWelcome">Welcome, @userName</span>
+                        </div>
+
+                        <div class="dropdown-item" onclick="handleInfoClick()">
+                            <i class="fas fa-building"></i>
+                            <span>Company Details</span>
+                        </div>
+
+                        <div class="dropdown-item" onclick="handleReserpasswordClick()">
+                            <i class="fas fa-lock"></i>
+                            <span>Change Password</span>
+                        </div>
+
+                        <div class="dropdown-item" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1460,12 +1537,10 @@
         </div>
         <div id="submenuContainer9" class="context-menu" style="display:none; width: 300px;">
             <div class="context-menu-item1">
-                <div class="submenu-item">
-
+                <div class="submenu-item" onclick="stockInventoryReport()">
                     <span class="no-border-input">Stock Inventory Report</span>
                 </div>
-                <div class="submenu-item">
-
+                <div class="submenu-item" onclick="cogsposting()">
                     <span class="no-border-input">COGS Posting</span>
                 </div>
 
@@ -1474,6 +1549,23 @@
 
             </div>
         </div>
+        <div id="quarterSubMenu" class="context-menu" style="display:none; width: 300px;">
+            <div class="context-menu-item1">
+                <div class="submenu-item" onclick="ddBtnShowRecords_click('q1')">
+                    <span class="no-border-input">1st Quarter (Jan - Mar)</span>
+                </div>
+                <div class="submenu-item" onclick="ddBtnShowRecords_click('q2')">
+                    <span class="no-border-input">2nd Quarter (Apr - Jun)</span>
+                </div>
+                <div class="submenu-item" onclick="ddBtnShowRecords_click('q3')">
+                    <span class="no-border-input">3rd Quarter (Jul - Sep)</span>
+                </div>
+                <div class="submenu-item" onclick="ddBtnShowRecords_click('q4')">
+                    <span class="no-border-input">4th Quarter (Oct - Dec)</span>
+                </div>
+            </div>
+        </div>
+
         <!-- Notification Popup -->
         <div id="notificationPopup" class="popup">
             <div class="popup-header">
@@ -1488,10 +1580,7 @@
 
         <!-- Settings Popup -->
         <div id="settingsPopup" class="popup">
-            <div class="popup-header">
-                <span class="popup-header" id="Settings1"></span>
-                <span class="popup-close" onclick="closePopup('settingsPopup')">X</span>
-            </div>
+            <span class="popup-close" onclick="closePopup('settingsPopup')">X</span>
             <div class="popup-content">
                 <!-- Add settings content here -->
                 <p id="settingMessage1"></p>
@@ -1523,21 +1612,6 @@
             </div>
         </div>
 
-        <!-- Profile Popup -->
-        <div id="profilePopup" class="popup profile-popup">
-            <div class="popup-header">
-                User Profile
-                <span class="popup-close" onclick="closePopup('profilePopup')">X</span>
-            </div>
-            <div class="popup-content">
-                <!-- Add user profile content here -->
-                <p>Profile details go here...</p>
-            </div>
-        </div>
-
-
-
-
         <!-- Main container to hold sidebars and content -->
         <div class="container">
             <!-- Sidebar 1 Section -->
@@ -1545,7 +1619,7 @@
 
 
             <div id="sidebar" class="sidebar hidden">
-                <div class="menu-item1" style="cursor:pointer" onclick="navigateToTenantHome()" >
+                <div class="menu-item1" style="cursor:pointer" onclick="navigateToTenantHome()">
                     <img border="0" src="~/images/erp_logo.png" alt="QD-ERP" width="45" height="30">
                     <div id="HumanResources2" class="text no-border-input">Quick Dice</div>
                 </div>
@@ -1553,28 +1627,32 @@
                     @if (userModules.Contains("HR"))
                     {
                         <div class="menu-item hr" onclick="navigate('Human Resources')">
-                            <i class="fas fa-users" id="humanResourcesIcon"></i>
+                            @* <i class="fas fa-users" id="humanResourcesIcon"></i> *@
+                            <img src="~/images/human-resources.png" style="width:30px" id="humanResourcesIcon" />
                             <div id="HumanResources" class="text no-border-input"></div>
                         </div>
                     }
                     @if (userModules.Contains("Finance"))
                     {
                         <div class="menu-item finance" onclick="navigate('Finance')">
-                            <i class="fas fa-dollar-sign" id="FinanceIcon"></i>
+                            @* <i class="fas fa-dollar-sign" id="FinanceIcon"></i> *@
+                            <img src="~/images/coin.png" style="width:30px" id="FinanceIcon" />
                             <div id="Finance" class="text no-border-input"></div>
                         </div>
                     }
                     @if (userModules.Contains("VAT"))
                     {
                         <div class="menu-item vat" onclick="navigate('VAT Modules')">
-                            <i class="fas fa-certificate" id="VATModulesIcon"></i>
+                            @* <i class="fas fa-certificate" id="VATModulesIcon"></i> *@
+                            <img src="~/images/vat.png" style="width:30px" id="VATModulesIcon" />
                             <div id="VATModules" class="text no-border-input"></div>
                         </div>
                     }
                     @if (userModules.Contains("Equipment"))
                     {
                         <div class="menu-item rentals" onclick="navigate('Equipment Rentals')">
-                            <i class="fas fa-truck" id="EquipmentRentalsIcon"></i>
+                            @* <i class="fas fa-truck" id="EquipmentRentalsIcon"></i> *@
+                            <img src="~/images/renting.png" style="width:30px" id="EquipmentRentalsIcon" />
                             <div id="EquipmentRentals" class="text no-border-input"></div>
                         </div>
                     }
@@ -1588,7 +1666,8 @@
                     @if (userModules.Contains("IMS"))
                     {
                         <div class="menu-item inventory" onclick="navigate('Inventory Management')">
-                            <i class="fas fa-cogs" id="InventoryManagementIcon"></i>
+                            @* <i class="fas fa-cogs" id="InventoryManagementIcon"></i> *@
+                            <img src="~/images/inventory-list.png" style="width:30px" id="InventoryManagementIcon" />
                             <div id="InventoryManagement" class="text no-border-input"></div>
                         </div>
                     }
@@ -1607,11 +1686,13 @@
             </div>
 
             <div>
-                <button class="toggle-btn" onclick="toggleSidebar()">&#x3e;</button>
+                <button class="toggle-btn" onclick="toggleSidebar()">
+                    <i class="fas fa-bars" style="color:var(--title-background-color)"></i>
+                </button>
             </div>
 
             <!-- Breadcrumb above Sidebar 2 -->
-     
+
 
             @* <div class="main-content" id="mainContent"> *@
             @*     <iframe id="contentIframe" *@
@@ -1632,7 +1713,7 @@
     <footer class="text-center py-3 footerContainer" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem;">
         @if (!string.IsNullOrEmpty(licenseMessage))
         {
-            <div id="custom-watermark" style="position: fixed; bottom: 0; width: 100%; z-index: 9999; background-color: red; color: white; display: flex; align-items: center;justify-content: center;font-family: 'Segoe UI', sans-serif;font-size: 14px;padding: 0.5rem;box-shadow: 0 -2px 6px rgba(0,0,0,0.2);">
+            <div id="custom-watermark" style="position: fixed; bottom: 0; width: 100%; z-index: 9999; background-color: red; color: white; display: flex; align-items: center;justify-content: center;font-size: 14px;padding: 0.5rem;box-shadow: 0 -2px 6px rgba(0,0,0,0.2);">
                 <span>Your <strong>@licenseMessage</strong>. Please <a href="https://quickdiceerp.com/contact-us" target="_blank" style="color: white; text-decoration: underline;">purchase a license</a> to continue using this product.</span>
                 <button onclick="document.getElementById('custom-watermark').remove()" style=" margin-left: 1rem;background: transparent;border: none;color: white;font-size: 16px;cursor: pointer;" title="Close">&times;</button>
             </div>
@@ -1640,9 +1721,9 @@
         <div style="display:flex;flex-direction:column;align-items:center;gap:1em;">
             <div>
 
-                <span class="me-3">User ID:  <b>@userId</b></span>
-                <span class="me-3">User Name: <b>@userName</b> </span>
-                <span class="me-3">Level: <span id="userLevel" style="font-weight: bold;">Loading...</span></span>
+                @* <span class="me-3">User ID:  <b>@userId</b></span> *@
+                @* <span class="me-3">User Name: <b>@userName</b> </span> *@
+                @* <span class="me-3">Level: <span id="userLevel" style="font-weight: bold;">Loading...</span></span> *@
                 @* <span class="me-3"><b>@DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</b></span> *@
             </div>
             <div style="display:flex;">
@@ -1732,7 +1813,14 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
-                                document.getElementById('userLevel').innerText = data.userLevel;
+                                const userLevelElement = document.getElementById('userLevel');
+                                if (data.userLevel === 99) {
+                                    userLevelElement.innerText = "Full Access";
+                                } else if (data.userLevel === 1) {
+                                    userLevelElement.innerText = "Registered User";
+                                } else {
+                                    userLevelElement.innerText = data.userLevel;
+                                }
                             } else {
                                 document.getElementById('userLevel').innerText = "N/A";
                                 console.warn("User level not available.");
@@ -2342,13 +2430,6 @@
                         });
                 }
 
-                // Function for Avatar click - show user profile
-                function handleAvatarClick() {
-                    const profilePopup = document.getElementById('profilePopup');
-                    if (profilePopup) {
-                        profilePopup.style.display = 'block';
-                    }
-                }
                 function closePopup(popupId) {
                     const popup = document.getElementById(popupId);
                     if (popup) {
@@ -2411,8 +2492,8 @@
                         updateBreadcrumbFromSidebar2('');
                         sidebar2.style.display = 'none';
                     }
-
-                              function showFinanceSubmenu() {
+                    }
+                function showFinanceSubmenu() {
                     const sidebar2 = document.getElementById('sidebar2');
 
                     // Finance Dashboard submenu items
@@ -2587,15 +2668,15 @@
                         const sidebar2 = document.getElementById('sidebar2');
                         sidebar2.innerHTML = `
                                         <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/SalesRegisterVAT">
-                                            <i class="fas fa-book"></i>
+                                            <i class="fas fa-sort-numeric-up"></i>
                                             <div class="text">${formatMessage("Sales Invoice Register")}</div>
                                         </a>
                                         <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATCreditNotRegister">
-                                            <i class="fas fa-book"></i>
+                                            <i class="fas fa-file-invoice "></i>
                                             <div class="text">${formatMessage("Credit Note Register")}</div>
                                         </a>
                                         <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATPurchaseMasterView">
-                                            <i class="fas fa-book"></i>
+                                            <i class="fas fa-sort-numeric-down"></i>
                                             <div class="text">${formatMessage("Purchase Invoice Register")}</div>
                                         </a>
                                         <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATDebitNotRegister">
@@ -2603,21 +2684,20 @@
                                             <div class="text">${formatMessage("Debit Note Register")}</div>
                                         </a>
                                          <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATReturnsSalesandPurchase">
-                                            <i class="fas fa-book"></i>
+                                            <i class="fas fa-percentage"></i>
                                             <div class="text">${formatMessage("VAT Returns")}</div>
                                         </a>
                                                          <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATInvoiceReporting">
-                                            <i class="fas fa-book"></i>
+                                            <i class="fas fa-chart-pie"></i>
                                             <div class="text">${formatMessage("Sales Reporting")}</div>
                                         </a>
                                          <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/ProformaInvoiceMasterView">
-                                            <i class="fas fa-book"></i>
+                                            <i class="fas fa-align-justify"></i>
                                             <div class="text">${formatMessage("Proforma Invoices")}</div>
                                         </a>
                                         `;
 
                     }
-                }
 
             function showEquipmentRentalSubmenu() {
             const sidebar2 = document.getElementById('sidebar2');
@@ -2635,7 +2715,7 @@
                 { key: "Equipment TimeSheet", icon: "fas fa-calendar-check", href: `/${tenantName}/ERM/EquipmentTimeSheet`, label: "Equipment TimeSheet", hideOnClick: true },
                 { key: "Purchase Order", icon: "fas fa-file-invoice-dollar", href: `/${tenantName}/ERM/PurchaseOrder`, label: "Purchase Order", hideOnClick: true },
                 { key: "Supplier Inv Summary", icon: "fas fa-file-invoice", href: `/${tenantName}/ERM/SupplierInvoiceSummary`, label: "Supplier Inv Summary", hideOnClick: true },
-                { key: "Client Inv Summary", icon: "fas fa-user-file", href: `/${tenantName}/ERM/ClientInvoiceSummary`, label: "Client Inv Summary", hideOnClick: true },
+                { key: "Client Inv Summary", icon: "fas fa-file-invoice", href: `/${tenantName}/ERM/ClientInvoiceSummary`, label: "Client Inv Summary", hideOnClick: true },
                 { key: "Service & Maintenance", icon: "fas fa-tools", href: `/${tenantName}/ERM/ServiceMaintenance`, label: "Service & Maintenance", hideOnClick: true },
                 { key: "Clients", icon: "fas fa-users", href: `/${tenantName}/ERM/Clients`, label: "Clients", hideOnClick: true },
                 { key: "Suppliers", icon: "fas fa-user-tie", href: `/${tenantName}/ERM/Suppliers`, label: "Suppliers", hideOnClick: true },
@@ -2827,8 +2907,8 @@
                     sidebar2.style.marginTop = '70px'; // Adjust Sidebar 2 margin
 
                     // Adjust the toggle button symbol
-                    const toggleBtn = document.querySelector('.toggle-btn');
-                    toggleBtn.innerHTML = '&gt;';
+                    // const toggleBtn = document.querySelector('.toggle-btn');
+                    // toggleBtn.innerHTML = '&gt;';
                 }
 
 
@@ -2904,7 +2984,7 @@
                     }
 
                     // Adjust the toggle button symbol
-                    toggleBtn.innerHTML = sidebar.classList.contains('hidden') ? '&gt;' : '&lt;';
+                    // toggleBtn.innerHTML = sidebar.classList.contains('hidden') ? '&gt;' : '&lt;';
                 }
                 // function updateHeight() {
                 //   document.querySelector('.mainContainer').style.height = window.innerHeight + 'px';
@@ -3015,7 +3095,7 @@
 
 
                 window.onclick = function (event) {
-                    if (!event.target.matches('.fa-user')) {
+                    if (!event.target.matches('.dropdown')) {
                         let dropdowns = document.getElementsByClassName("dropdown-menu");
                         for (let i = 0; i < dropdowns.length; i++) {
                             let openDropdown = dropdowns[i];
@@ -3463,6 +3543,8 @@
                     $("#userWelcome").text(formatMessage("Welcome, "));
 
                     $("#userLogout").text(formatMessage("Logout"));
+                    $("#changePassword").text(formatMessage("Change Password"));
+                    $("#companyDetails").text(formatMessage("Company Details"));
 
                     $("#footerMessage1").text(formatMessage("Copyright "));
 
@@ -3501,6 +3583,9 @@
 
                     doc.save("quotation-analysis.pdf");
                 }
+                function hidequarterSubmenus() {
+            $('#quarterSubMenu').hide();
+        }
                 function navigateToTenantHome() {
             if (tenantName) {
                 window.location.href = `/${tenantName}/Home`;
@@ -3508,6 +3593,14 @@
                 console.warn("Tenant name is not set.");
             }
         }
+
+        window.onload = function () {
+            const userName = "@userName"; // Razor will render the actual name
+            if (userName) {
+                const firstLetter = userName.trim()[0].toUpperCase();
+                document.getElementById("userIcon").innerText = firstLetter;
+            }
+        };
         inventoryMenuAccess1 = JSON.parse("@Html.Raw(escapedJson1)");
         equipmentRentalMenuAccess = JSON.parse("@Html.Raw(equipmentJson)");
         window.financeMenuAccess = JSON.parse("@Html.Raw(escapedJson)");

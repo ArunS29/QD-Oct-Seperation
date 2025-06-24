@@ -45,6 +45,7 @@ public class AzureBlobHelper
         await containerClient.CreateIfNotExistsAsync(PublicAccessType.None);
 
         var sanitizedTenant = SanitizeTenantName(tenantName);
+        //var sanitizedUser = SanitizeTenantName(userName); // reuse same sanitizer
         var blobPath = $"{sanitizedTenant}/{fileName}";
 
         var blobClient = containerClient.GetBlobClient(blobPath);
@@ -56,6 +57,7 @@ public class AzureBlobHelper
 
         return blobPath; // Store only relative path in DB
     }
+
 
 
     public string GetBlobSasUrl(string blobPath, int validMinutes = 30)
