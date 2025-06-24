@@ -16,8 +16,8 @@
         justify-content: center;
     }
 
-    #check{
-        margin:50px;
+    #check {
+        margin: 50px;
     }
     /* Ensure the fourth column contains both "Use Effective Date" & "Show Records" */
     .dx-field-4 {
@@ -34,8 +34,8 @@
             display: block !important;
         }
 
-    .mainContainer{
-        width:100%;
+    .mainContainer {
+        width: 100%;
     }
 </style>
 
@@ -50,8 +50,8 @@
         @await Html.PartialAsync("_GridFooterUCCA")
     </div>
 </div>
-
-    <div class="dx-fieldset horizontal-container">
+<div id="loadPanel"></div>
+<div class="dx-fieldset horizontal-container">
     <div class="dx-field">
         @(Html.DevExtreme().DropDownBox()
             .ID("requestedBy")
@@ -70,94 +70,94 @@
     </div>
 
 
-        <div class="dx-field">
-            <!-- Start Date Picker -->
-            @(Html.DevExtreme().DateBox()
-                .ID("frmdateBox")
-                .Label("Start Date")
-                .LabelMode(EditorLabelMode.Outside)
-                .InputAttr("aria-label", "Date")
-                .Type(DateBoxType.Date)
-                .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
-                .DisplayFormat("dd-MMM-yyyy")
-                .TabIndex(2)
-                )
-        </div>
-
-        <div class="dx-field">
-            <!-- End Date Picker -->
-            @(Html.DevExtreme().DateBox()
-                .ID("todateBox")
-                .Label("End Date")
-                .LabelMode(EditorLabelMode.Outside)
-                .InputAttr("aria-label", "Date")
-                .Type(DateBoxType.Date)
-                .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
-                .DisplayFormat("dd-MMM-yyyy")
-                .TabIndex(3)
-                )
-        </div>
-
-        <div class="dx-field dx-field-4"id="check">
-            <!-- Use Effective Date Checkbox -->
-            @(Html.DevExtreme().CheckBox()
-                .ID("useEffectiveDate")
-                .Text("Use Effective Date")
-                .Value(true)
-                )
-
-            <!-- Dropdown Button to Show Records -->
-            @(Html.DevExtreme().DropDownButton()
-                .ID("ddBtnShowRecords")
-                .Text("Show Records")
-                .Icon("smalliconslayout")
-                .Width(180)
-                .ElementAttr("class", "button-alignment-down")
-                .TabIndex(4)
-                .DropDownOptions(options => options.Width(230))
-                .Items(items =>
-                {
-                    items.Add().Text("Show Records").Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
-                    items.Add().Text("Today").Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
-                    items.Add().Text("Yesterday").Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-                    items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
-                    items.Add().Text("This Month Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-                    items.Add().Text("This Month (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-                    items.Add().Text("This Year Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-                    items.Add().Text("This Year (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-                    items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-                    items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
-                })
-                )
-        </div>
+    <div class="dx-field">
+        <!-- Start Date Picker -->
+        @(Html.DevExtreme().DateBox()
+            .ID("frmdateBox")
+            .Label("Start Date")
+            .LabelMode(EditorLabelMode.Outside)
+            .InputAttr("aria-label", "Date")
+            .Type(DateBoxType.Date)
+            .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+            .DisplayFormat("dd-MMM-yyyy")
+            .TabIndex(2)
+            )
     </div>
+
+    <div class="dx-field">
+        <!-- End Date Picker -->
+        @(Html.DevExtreme().DateBox()
+            .ID("todateBox")
+            .Label("End Date")
+            .LabelMode(EditorLabelMode.Outside)
+            .InputAttr("aria-label", "Date")
+            .Type(DateBoxType.Date)
+            .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
+            .DisplayFormat("dd-MMM-yyyy")
+            .TabIndex(3)
+            )
+    </div>
+
+    <div class="dx-field dx-field-4" id="check">
+        <!-- Use Effective Date Checkbox -->
+        @(Html.DevExtreme().CheckBox()
+            .ID("useEffectiveDate")
+            .Text("Use Effective Date")
+            .Value(true)
+            )
+
+        <!-- Dropdown Button to Show Records -->
+        @(Html.DevExtreme().DropDownButton()
+            .ID("ddBtnShowRecords")
+            .Text("Show Records")
+            .Icon("smalliconslayout")
+            .Width(180)
+            .ElementAttr("class", "button-alignment-down")
+            .TabIndex(4)
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add().Text("Show Records").Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
+                items.Add().Text("Today").Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
+                items.Add().Text("Yesterday").Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+                items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
+                items.Add().Text("This Month Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+                items.Add().Text("This Month (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+                items.Add().Text("This Year Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+                items.Add().Text("This Year (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+                items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+                items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+            })
+            )
+    </div>
+</div>
 
 @using (Html.DevExtreme().NamedTemplate("CostCenterTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-            .ID("costcenter-datagrid")
-            .DataSource(d => d.Mvc()
-                .Controller("UCCostAnalysis")
-                .LoadAction("GetUser")
-                .LoadMode(DataSourceLoadMode.Raw))
-            .ShowBorders(true)
-            .SearchPanel(sp => sp.HighlightSearchText(true).Visible(true))
-            .FilterRow(f => f.Visible(true))
-            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-            .Selection(s => s.Mode(SelectionMode.Single))
-            .HoverStateEnabled(true)
-            .Height(300)
-            .SelectedRowKeys(new JS(@"component.option('value') ? [component.option('value')] : []"))
-            .OnSelectionChanged("onCostCenterSelected")
-            .Columns(columns =>
-            {
-                columns.Add().DataField("CostAllocationUnit").Caption("Cost Center").Width(250);
-                columns.Add().DataField("CostAllocationGroup").Caption("Group").Width(250);
-            })
-        )
+                .ID("costcenter-datagrid")
+                .DataSource(d => d.Mvc()
+                    .Controller("UCCostAnalysis")
+                    .LoadAction("GetUser")
+                    .LoadMode(DataSourceLoadMode.Raw))
+                .ShowBorders(true)
+                .SearchPanel(sp => sp.HighlightSearchText(true).Visible(true))
+                .FilterRow(f => f.Visible(true))
+                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                .Selection(s => s.Mode(SelectionMode.Single))
+                .HoverStateEnabled(true)
+                .Height(300)
+                .SelectedRowKeys(new JS(@"component.option('value') ? [component.option('value')] : []"))
+                .OnSelectionChanged("onCostCenterSelected")
+                .Columns(columns =>
+                {
+                    columns.Add().DataField("CostAllocationUnit").Caption("Cost Center").Width(250);
+                    columns.Add().DataField("CostAllocationGroup").Caption("Group").Width(250);
+                })
+            )
 }
 
-    <!-- Pivot Grid Container --><script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- Pivot Grid Container --><script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
 
@@ -177,7 +177,16 @@
             dropDownBox.close();
         }
     }
-
+    $(function () {
+        $("#loadPanel").dxLoadPanel({
+            shadingColor: "rgba(0,0,0,0.4)",
+            position: { of: "body" }, // or change to "#mainContent" if you want to limit area
+            visible: false,
+            showIndicator: true,
+            showPane: true,
+            message: "Loading..."
+        });
+    });
     $(function () {
         $("#costAnalysis").dxTextBox({
             text: formatMessage("Cost Analysis"),
@@ -221,11 +230,11 @@
 
     $(document).ready(function () {
         // Load all records on page load (ignore default date values)
-           // initializePivotGrid([]);
-           loadAllRecords();
+        // initializePivotGrid([]);
+        loadAllRecords();
     });
 
-        function loadAllRecords() {
+    function loadAllRecords() {
         console.log("Loading trial balance records...");
 
         const today = new Date();
@@ -233,7 +242,8 @@
         // Define date range: Jan 1st of last year to end of current month
         const firstDay = new Date(today.getFullYear() - 1, 0, 1); // Jan 1 last year
         const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0); // End of current month
-
+        var loadPanel = $("#loadPanel").dxLoadPanel("instance");
+        loadPanel.show();
         $.ajax({
             url: '/api/TransactionDetails/GetTrialBalance',
             type: 'GET',
@@ -252,6 +262,9 @@
             },
             error: function (xhr, status, error) {
                 console.error("Error fetching trial balance records:", xhr.responseText || error);
+            },
+            complete: function () {
+                $("#loadPanel").dxLoadPanel("instance").hide(); // ✅ Always hide the loader
             }
         });
     }
@@ -315,7 +328,7 @@
         $("#frmdateBox").dxDateBox("instance").option("value", startDate);
         $("#todateBox").dxDateBox("instance").option("value", endDate);
 
-        
+
 
         console.log("Fetching records with:", {
             startDate: startDate ? startDate.toISOString().split('T')[0] : "All Dates",
@@ -333,7 +346,7 @@
             },
             success: function (data) {
                 initializePivotGrid(data);
-                console.log("response",data)
+                console.log("response", data)
             },
             error: function (xhr, status, error) {
                 console.error("Error fetching filtered records: ", error);
@@ -394,7 +407,7 @@
             showRowTotals: false,
             showRowGrandTotals: false
         });
-       
+
 
         $(window).resize(function () {
             $("#pivotGridContainer").dxPivotGrid("instance").option("height", $(window).height() - 50);
@@ -415,11 +428,11 @@
         }, function () {
             $(this).css("background-color", "");
         });
-        
+
 
     }
 
-        function onDifferencesItemClick(e) {
+    function onDifferencesItemClick(e) {
         const selectedText = e.itemData.text;
 
         if (selectedText === "Clear All wrong Allocation of Cost") {
@@ -449,11 +462,11 @@
                             }).show();
 
                             // Refresh the pivot grid
-                               const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
-    if (pivotGrid) {
-        pivotGrid.refresh();
-        window.location.reload(); // Correct method to reload the page
-    }
+                            const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
+                            if (pivotGrid) {
+                                pivotGrid.refresh();
+                                window.location.reload(); // Correct method to reload the page
+                            }
 
                         },
                         error: function (xhr) {
@@ -503,7 +516,7 @@
     //         { dataField: "BranchName", area: "filter", caption: "Branch Name" },
     //         { dataField: "BranchCode", area: "filter", caption: "Branch Code" },
     //         { dataField: "ProjectMasterCode", area: "filter", caption: "Project Master Code" }
-           
+
 
     //     ]);
 
@@ -511,7 +524,7 @@
     // }
 
 
-        let extraFieldsVisible = false; // Flag to track toggle state
+    let extraFieldsVisible = false; // Flag to track toggle state
 
     function onShowFieldsClick(e) {
         const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
@@ -560,7 +573,7 @@
                 dataField: "VoucherMonth", area: "filter", caption: "Voucher Month", customizeText: function (cellInfo) {
                     const date = new Date(cellInfo.value);
                     if (isNaN(date)) return ""; // handle invalid dates
-                    
+
                     const month = date.toLocaleString('en-US', { month: 'short' });
                     const year = date.getFullYear();
                     return `${month}-${year}`;
@@ -571,7 +584,7 @@
                     const date = new Date(cellInfo.value);
                     if (isNaN(date)) return ""; // handle invalid dates
 
-                    
+
                     const year = date.getFullYear();
                     return `${year}`;
                 }
@@ -606,14 +619,16 @@
                     return `${month}-${year}`;
                 }
             },
-            { dataField: "AllocationEffectiveDate", area: "filter", caption: "Allocation Effective Date",customizeText: function (cellInfo) {
+            {
+                dataField: "AllocationEffectiveDate", area: "filter", caption: "Allocation Effective Date", customizeText: function (cellInfo) {
                     const date = new Date(cellInfo.value);
                     if (isNaN(date)) return ""; // handle invalid dates
                     const day = String(date.getDate()).padStart(2, '0');
                     const month = date.toLocaleString('en-US', { month: 'short' });
                     const year = date.getFullYear();
                     return `${day}-${month}-${year}`;
-                } },
+                }
+            },
             {
                 dataField: "AllocationEffectiveYear", area: "filter", caption: "Allocation Effective Year", customizeText: function (cellInfo) {
                     const date = new Date(cellInfo.value);
@@ -642,19 +657,19 @@
             // Hide extra fields
             dataSource.fields(baseFields);
             extraFieldsVisible = false;
-           // e.component.option("text", "Show Extra Fields"); // Optional: update button text
+            // e.component.option("text", "Show Extra Fields"); // Optional: update button text
         }
 
         dataSource.load();
     }
 
-        $('#btnShowRowTotals').click(function () {
+    $('#btnShowRowTotals').click(function () {
         showrowtotal(pivotData); // Correctly passing the data array
     });
 
 
-            function showrowtotal(pivotData) {
-         const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
+    function showrowtotal(pivotData) {
+        const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
         console.log("pivotData", pivotData);
 
         // Group by CostAllocationUnit (Cost Group)

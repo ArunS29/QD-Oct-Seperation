@@ -1,0 +1,452 @@
+﻿@page
+@model QD.ERP.Web.Areas.IMS.Pages.JobOrderTestModel
+@{
+}
+
+<style>
+
+    .form-row {
+
+        display: flex;
+
+        gap: 20px;
+
+        margin-bottom: 10px;
+
+        padding: 10px;
+
+        border-radius: 4px;
+
+    }
+ 
+    .form-group {
+
+        display: flex;
+
+        flex-direction: column;
+
+        min-width: 200px;
+
+    }
+ 
+    .form-group label {
+
+        font-weight: bold;
+
+        font-size: 13px;
+
+        margin-bottom: 3px;
+
+    }
+ 
+    .dx-datagrid-header-panel {
+
+        display: none !important;
+
+    }
+ 
+    .dx-datagrid .dx-row > td {
+
+        border: 1px solid #c0c0c0;
+
+    }
+ 
+    .dx-datagrid-headers .dx-header-row > td {
+
+        font-weight: bold;
+
+        background-color: #f0f5ff;
+
+        border: 1px solid #c0c0c0;
+
+    }
+ 
+    .dx-datagrid {
+
+        border: 1px solid #c0c0c0;
+
+    }
+
+    .overlay {
+
+		display: none;
+
+		position: fixed;
+
+		top: 0;
+
+		left: 0;
+
+		width: 100%;
+
+		height: 100%;
+
+		background: rgba(0, 0, 0, 0.5); /* Transparent background */
+
+		z-index: 1000;
+
+	}
+
+	/* Ensure word wrap and center alignment for grid headers */
+
+	.header-wrap {
+
+		white-space: normal !important; /* Enable word wrap */
+
+		text-align: center !important; /* Center align text */
+
+		display: flex;
+
+		justify-content: center;
+
+		align-items: center;
+
+		font-weight: bold;
+
+	}
+ 
+	/* Ensure text in grid headers is always centered */
+
+	.dx-datagrid .dx-header-row .dx-datagrid-text-content {
+
+		white-space: normal !important;
+
+		text-align: center !important;
+
+	}
+ 
+	/* Ensure column headers text aligns to center */
+
+	.dx-datagrid-headers .dx-datagrid-table .dx-row > td {
+
+		text-align: center !important;
+
+	}
+ 
+	.overlay-content {
+
+		position: absolute;
+
+		top: 50%;
+
+		left: 50%;
+
+		transform: translate(-50%, -50%);
+
+		width: 100%;
+
+		height: 80%;
+
+		background: #fff;
+
+		box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+
+		border-radius: 8px;
+
+		overflow: hidden;
+
+	}
+ 
+	#overlay-frame {
+
+		width: 100%;
+
+		height: 100%;
+
+	}
+ 
+	.Maincontainer.Maincontainer {
+
+		background-color: white;
+
+	}
+ 
+	.close-btn {
+
+		position: absolute;
+
+		top: 10px;
+
+		right: 20px;
+
+		font-size: 30px;
+
+		cursor: pointer;
+
+	}
+ 
+ 
+ 
+	/* Toolbar Styling */
+
+	.custom-toolbar {
+
+		display: flex;
+
+		align-items: center;
+
+		gap: 10px;
+
+	}
+ 
+	.filter-btn {
+
+		background-color: #007bff;
+
+		color: white;
+
+		border: none;
+
+		padding: 6px 12px;
+
+		border-radius: 5px;
+
+		cursor: pointer;
+
+		font-family: 'Inter', sans-serif;
+
+	}
+ 
+		.filter-btn:hover {
+
+			background-color: #0056b3;
+
+		}
+ 
+	/* Text Editor Styling */
+
+	.dx-texteditor {
+
+		background-color: #909ead00 !important; /* Light background */
+
+		border: 1px solid #d6e4f0 !important; /* Soft border */
+
+		border-radius: 4px !important; /* Smaller rounded corners */
+ 
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important; /* Reduced shadow */
+
+		font-size: 14px !important; /* Slightly smaller font */
+
+		transition: all 0.2s ease-in-out !important;
+
+		height: 39px !important; /* Fixed height */
+
+	}
+ 
+		/* Hover and Focus States */
+
+		.dx-texteditor:hover,
+
+		.dx-texteditor.dx-state-hover,
+
+		.dx-button:hover {
+
+			box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important; 
+
+			border-color: #86b7fe !important; 
+
+		}
+ 
+		.dx-texteditor.dx-state-focused {
+
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+
+			border-color: #508ae1 !important;
+
+		}
+ 
+	#dataGrid .dx-header-row .dx-datagrid-text-content {
+
+		font-weight: bold;
+
+		color: black;
+
+	}
+ 
+ 
+	.dx-datagrid-header-panel {
+
+		background-color: #909ead00;
+
+		/* display:none; */
+
+	}
+ 
+	.no-border-input {
+
+		border: none !important;
+
+		outline: none !important;
+
+		box-shadow: none !important;
+
+		background: transparent !important;
+
+		font-weight: bold;
+
+		font-size: 16px;
+
+		color: black;
+
+		pointer-events: none; /* Prevents hover and click effects */
+
+	}
+ 
+	.dx-button-mode-contained.dx-button-default {
+
+		color: black;
+
+	}
+ 
+	.dx-button-mode-contained.dx-button-success {
+
+		color: black;
+
+	}
+ 
+	.container {
+
+		display: none !important;
+
+	}
+ 
+	.frame {
+
+		display: none !important;
+
+	}
+ 
+	.footerContainer {
+
+		display: none !important;
+
+	}
+ 
+	.bodyContainer {
+
+		display: flex;
+
+		justify-content: center;
+
+	}
+ 
+	.imagecontainer {
+
+		border-bottom: 2px;
+
+	}
+ 
+	.mainContainer {
+
+		margin-top: 1em;
+
+		width: 100%;
+
+	}
+
+	.playIcon {
+
+		display: none;
+
+	}
+</style>
+<!-- Top Row of Inputs -->
+<div class="form-row" style="padding:20px;" >
+<div class="form-group">
+
+        @(Html.DevExtreme().TextBox()
+
+            .ID("jobOrderNo")
+
+			.LabelMode(EditorLabelMode.Outside)
+
+            .Label(new JS("formatMessage('Job Order No')"))
+
+            .Value("S-25-00001")
+
+            .ReadOnly(true)
+
+            .Width("200px"))
+</div>
+ 
+    <div class="form-group">
+
+        @(Html.DevExtreme().TextBox()
+
+            .ID("reportType")
+
+			.LabelMode(EditorLabelMode.Outside)
+
+            .Label(new JS("formatMessage('Report Type')"))
+
+            .Value("VIR")
+
+            .ReadOnly(true)
+
+            .Width("200px"))
+</div>
+ 
+    <div class="form-group">
+
+        @(Html.DevExtreme().TextBox()
+
+            .ID("valveType")
+
+			.LabelMode(EditorLabelMode.Outside)
+
+            .Label(new JS("formatMessage('Valve Type')"))
+
+            .Value("Safety Valves")
+
+            .ReadOnly(true)
+
+            .Width("200px"))
+</div>
+</div>
+<div style="padding:20px;">
+<!-- Data Grid for Item Details -->
+
+@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60803jobOrderTest>()
+
+    .ID("inspectionGrid")
+	     .DataSource(ds => ds.Mvc()
+            .Controller("JobOrders")
+            .LoadAction("GetJobOrderTest"))
+            .KeyExpr("SupplierCode")
+    .ShowBorders(true)
+
+    .ColumnAutoWidth(true)
+
+    .Editing(editing => editing
+
+    .Mode(GridEditMode.Cell)
+
+    .AllowUpdating(true)
+
+    )
+
+    .Columns(columns => {
+
+        columns.Add().DataField("ItemName").Caption("Item Name").AllowEditing(false);
+
+        columns.Add().DataField("Observations").Caption("Observations");
+
+        columns.Add().DataField("Requirements").Caption("Requirements");
+
+    })
+
+    .Height(400)
+
+)
+</div>
+<div style="text-align: left; padding:20px;">
+
+        @(Html.DevExtreme().Button().ID("btnsave").Text("Save").Icon("save"))
+
+        @(Html.DevExtreme().Button().ID("btnSaveclose").Text("Save & Close").Type(ButtonType.Success).Icon("save"))
+
+        @(Html.DevExtreme().Button().ID("btnDelete").Text("Delete").Icon("trash").Type(ButtonType.Danger))
+
+        @(Html.DevExtreme().Button().ID("btnBack").Text("Back").Icon("back").Type(ButtonType.Normal))
+</div>
+ 

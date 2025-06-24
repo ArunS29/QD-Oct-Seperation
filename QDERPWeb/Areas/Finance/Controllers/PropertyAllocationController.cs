@@ -84,35 +84,97 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
-        [HttpPost]
-        public async Task<ActionResult> SavePropertyAllocation([FromBody] Tbl20122PropertyAllocationMaster CM)
-        {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-            {
-                try
-                {
-                    long maxVoucherEntryID = await dbContext.Tbl20122PropertyAllocationMasters
-                        .OrderByDescending(x => x.VoucherEntryId)
-                        .Select(x => x.VoucherEntryId)
-                        .FirstOrDefaultAsync();
+		[HttpPost]
+		public IActionResult SavePropertyAllocations([FromBody] List<Tbl20122PropertyAllocationMaster> allocations)
+		{
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
 
-                    CM.VoucherEntryId = maxVoucherEntryID + 1;
+			if (allocations == null || !allocations.Any())
+			{
+				return BadRequest("No property allocation data received.");
+			}
 
-                    dbContext.Tbl20122PropertyAllocationMasters.Add(CM);
-                    await dbContext.SaveChangesAsync();
+			string userName = HttpContext.Session.GetString("UserName");
+			DateTime now = DateTime.Now;
+			var voucherEntryId = allocations.First().VoucherEntryId;
 
-                    return Ok(new { success = true, message = "Data inserted successfully!" });
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError($"Error in SavePropertyAllocation: {ex.Message}");
-                    return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
-                }
-            }
+			// Fetch all existing allocations for the VoucherEntryId
+			var existingAllocations = dbContext.Tbl20122PropertyAllocationMasters
+				.Where(x => x.VoucherEntryId == voucherEntryId)
+				.ToList();
 
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
-        }
-    }
+			foreach (var allocation in allocations)
+			{
+				var existing = dbContext.Tbl20122PropertyAllocationMasters
+					.FirstOrDefault(x => x.PropertyAllocationId == allocation.PropertyAllocationId);
+
+				if (existing != null && allocation.PropertyAllocationId > 0)
+				{
+					// Update existing record
+					existing.PropertyNo = allocation.PropertyNo;
+					existing.EffectiveDate = allocation.EffectiveDate;
+					existing.AmountAllocated = allocation.AmountAllocated;
+					existing.PropertyAllocRemarks = allocation.PropertyAllocRemarks;
+					existing.VoucherNo = allocation.VoucherNo;
+					existing.PropertyAllocDrCr = allocation.PropertyAllocDrCr;
+					existing.LedgerAccountNo = allocation.LedgerAccountNo;
+					existing.ModifiedBy = userName;
+					existing.ModifiedOn = now;
+				}
+				else
+				{
+					// Insert new record
+					dbContext.Tbl20122PropertyAllocationMasters.Add(new Tbl20122PropertyAllocationMaster
+					{
+						PropertyNo = allocation.PropertyNo,
+						EffectiveDate = allocation.EffectiveDate,
+						AmountAllocated = allocation.AmountAllocated,
+						PropertyAllocRemarks = allocation.PropertyAllocRemarks,
+						VoucherEntryId = allocation.VoucherEntryId,
+						VoucherNo = allocation.VoucherNo,
+						PropertyAllocDrCr = allocation.PropertyAllocDrCr,
+						LedgerAccountNo = allocation.LedgerAccountNo,
+						EnteredBy = userName,
+						EnteredOn = now
+					});
+				}
+			}
+
+			dbContext.SaveChanges();
+
+			return Ok(new { success = true, message = "Property allocations saved successfully." });
+		}
+
+		[HttpGet]
+		public IActionResult GetPropertyAllocationsBydatagrid(long voucherEntryId)
+		{
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+
+			var result = (from alloc in dbContext.Tbl20122PropertyAllocationMasters
+						  join unit in dbContext.Tbl40101PropertyMasters
+							  on alloc.PropertyNo equals unit.PropertyNo into gj
+						  from unit in gj.DefaultIfEmpty()
+						  where alloc.VoucherEntryId == voucherEntryId
+						  select new
+						  {
+							  PropertyAllocationId = alloc.PropertyAllocationId,
+							  DrCr = alloc.PropertyAllocDrCr,
+							  PropertyDescription = unit != null ? unit.PropertyDescription : "Common Overheads",
+							  PropertyNo = alloc.PropertyNo,
+							  EffectiveDate = alloc.EffectiveDate,
+							  VoucherAmount = alloc.AmountAllocated,
+							  Remarks = alloc.PropertyAllocRemarks
+						  }).ToList();
+
+			return Json(result);
+		}
+	}
 }
 
 

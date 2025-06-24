@@ -1979,45 +1979,67 @@
         const urlParams = new URLSearchParams(window.location.search);
         const deliveryNoteNo = urlParams.get("deliveryNoteNo");
         const salesOrderNo = urlParams.get("salesOrderNo");
+        const salesOrderChildIds = urlParams.getAll("salesOrderChildId") || [];
         const mode = urlParams.get("mode");
 
-        if (mode === "create" && deliveryNoteNo && salesOrderNo) {
-            // Set delivery note number
+        if (mode === "create" && deliveryNoteNo) {
             $("#deliveryNoteNo").dxTextBox("instance").option("value", deliveryNoteNo);
 
-            // Fetch sales order details
-            $.get(`/api/SalesOrders/GetSalesOrderByNo`, { salesOrderNo })
-                .done(function (data) {
-                    // Map fields from sales order to delivery note form
-                    $("#GetProjectDropDown").dxDropDownBox("instance").option("value", data.ClientCode);
-                    $("#clientPOnumber").dxTextBox("instance").option("value", data.ClientPono);
-                    $("#ClientPODate").dxDateBox("instance").option("value", data.ClientPodate);
-                    $("#ClientRefName").dxTextBox("instance").option("value", data.Attention);
-                    $("#ClientContactNo").dxTextBox("instance").option("value", data.ClientContactNo);
-                    $("#ClientEmail").dxTextBox("instance").option("value", data.ClientContactEmail);
-                    $("#clientProject").dxTextBox("instance").option("value", data.Project);
-                    $("#SalesOrderNo").dxTextBox("instance").option("value", data.SalesOrderNo);
-                    $("#QuotationNo").dxTextBox("instance").option("value", data.QuoteNo);
-                    // ...map other fields as needed...
-
-                                  // Map and bind child table
-                if (data.SalesOrderChildren) {
-                    // Map fields for delivery note grid
-                    const deliveryItems = data.SalesOrderChildren.map(child => ({
-                         SNo: rowData.length + 1, // Auto-increment SNo
-                        ItemCode: child.Gscode,
-                        StockDescription: child.Gsdescrpition,
-                       UnitRateMethod: child.UnitRateMethod,
-                        Qty: child.QuotedQuantity,
-                        UnitCostPrice: child.CostPrice,
-                        // Add other fields as needed
-                    }));
-                    $("#itemGrid").dxDataGrid("instance").option("dataSource", deliveryItems);
-                }
-            })
-                .fail(function () {
-                    DevExpress.ui.notify("Failed to load sales order details.", "error", 2000);
-                });
+            if (salesOrderNo) {
+                loadFullSalesOrder(salesOrderNo, salesOrderChildIds);
+            } else if (salesOrderChildIds.length > 0) {
+                $.get(`/api/SalesOrders/GetSalesOrderNoByChildId`, { salesOrderChildId: salesOrderChildIds[0] })
+                    .done(function (res) {
+                        if (res.success) {
+                            loadFullSalesOrder(res.salesOrderNo, salesOrderChildIds);
+                        } 
+                        else
+                        {
+                            DevExpress.ui.notify("Sales order not found.", "error", 2000);
+                        }
+                    })
+                    .fail(function () {
+                        DevExpress.ui.notify("Error getting sales order number.", "error", 2000);
+                    });
+            }
         }
     });
+
+    function loadFullSalesOrder(salesOrderNo, filterChildIds = []) {
+        $.get(`/api/SalesOrders/GetSalesOrderByNo`, { salesOrderNo })
+            .done(function (data) {
+                // Bind header fields
+                $("#GetProjectDropDown").dxDropDownBox("instance").option("value", data.ClientCode);
+                $("#clientPOnumber").dxTextBox("instance").option("value", data.ClientPono);
+                $("#ClientPODate").dxDateBox("instance").option("value", data.ClientPodate);
+                $("#ClientRefName").dxTextBox("instance").option("value", data.Attention);
+                $("#ClientContactNo").dxTextBox("instance").option("value", data.ClientContactNo);
+                $("#ClientEmail").dxTextBox("instance").option("value", data.ClientContactEmail);
+                $("#clientProject").dxTextBox("instance").option("value", data.Project);
+                $("#SalesOrderNo").dxTextBox("instance").option("value", data.SalesOrderNo);
+                $("#QuotationNo").dxTextBox("instance").option("value", data.QuoteNo);
+
+                let children = data.SalesOrderChildren || [];
+
+                // ✅ Correctly filter multiple child IDs
+                if (filterChildIds.length > 0) {
+                    children = children.filter(c => filterChildIds.includes(String(c.SalesOrderChildId)));
+                }
+
+                const deliveryItems = children.map((child, index) => ({
+                    SNo: index + 1,
+                    ItemCode: child.Gscode,
+                    StockDescription: child.Gsdescrpition,
+                    UnitRateMethod: child.UnitRateMethod,
+                    Qty: child.QuotedQuantity,
+                    UnitCostPrice: child.CostPrice
+                      }));
+
+                $("#itemGrid").dxDataGrid("instance").option("dataSource", deliveryItems);
+            })
+            .fail(function () {
+                DevExpress.ui.notify("Failed to load sales order details.", "error", 2000);
+            });
+    }   
+
    </script>

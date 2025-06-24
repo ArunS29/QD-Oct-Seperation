@@ -725,6 +725,7 @@
 																												.LoadMode(DataSourceLoadMode.Raw)
 																												.Key("AccountId"))
 																												.LabelMode(EditorLabelMode.Outside)
+																												.Value("L00508")
 																												.ID("ddclientcode")
 																												.ValidationRules(rules =>
 																												{
@@ -811,8 +812,8 @@
 																												.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetClientCode").LoadMode(DataSourceLoadMode.Raw).Key("ClientName"))
 																												.LabelMode(EditorLabelMode.Outside)
 
-																								.ID("ddclientname")
-
+																								                .ID("ddclientname")
+															                                                    .Value("Cash Customer")
 																												.ValidationRules(rules =>
 																												{
 																													rules.AddRequired()
@@ -854,7 +855,7 @@
 															.Label(new JS("formatMessage('Group VAT No')"))
 															.LabelMode(EditorLabelMode.Outside)
 															.MaxLength(15)
-															.Mask("300000000000003") // 15 digits
+															.Mask("300000000010000") // 15 digits
 															.MaskChar("_") // Optional: makes it more readable
 																					//.ShowClearButton(true) // Optional: adds a clear (X) button
 															)
@@ -871,7 +872,7 @@
 																												//.ShowClearButton(true) // Optional: adds a clear (X) button
 																						)
 							</td>
-							<td colspan="3">@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name in Arabic')")).ID("ClientNameArabic").LabelMode(EditorLabelMode.Outside))</td>
+							<td colspan="3">@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name in Arabic')")).ID("ClientNameArabic").Value("عميل نقدي").LabelMode(EditorLabelMode.Outside))</td>
 
 							</tr>
 							<tr>
@@ -8218,11 +8219,11 @@
 	// Generates the transaction code like "010110"
 	function setInvoiceTransactionCode(selectedIds) {
 		// Initialize the transaction code with a prefix
-		let strTransactionCode = "01";
+		let strTransactionCode = "02";
 
 		// Dynamically generate the binary string based on selections (1 for selected, 0 for unselected)
 		for (let i = 1; i <= 5; i++) {
-			strTransactionCode += selectedIds.includes(i) ? "1" : "0";
+			strTransactionCode += selectedIds.includes(i) ? "2" : "0";
 		}
 
 		return strTransactionCode;
@@ -8703,7 +8704,7 @@
 		// Disable all input fields and buttons except for specific ones
 		$('input, select, textarea').prop('disabled', true);  // Disable inputs, selects, and textareas
 
-		const allowedButtons = ['btnMoveDown', 'btnMoveUp', 'btnSave', 'btnSaveAndClose', 'btnPostToLedgers', 'btnPostTag', 'btnPrint1'];
+		const allowedButtons = ['btnMoveDown', 'btnMoveUp', 'btnPostToLedgers', 'btnPostTag', 'btnPrint1'];
 
 		// Disable all dxButton and dxDropDownButton controls
 		$('.dx-button, .dx-dropdownbutton').each(function () {
