@@ -425,26 +425,44 @@
 				{
 					text: "Delete Job Order",
 					icon: "trash",
-					// onItemClick: function () {
-					// 	DevExpress.ui.dialog.confirm(
-					// 		"You are about to delete the Request / Enquiry.\nYou cannot revert the changes.\nAre you sure?",
-					// 		"Confirm Delete"
-					// 	).done(function (dialogResult) {
-					// 		if (dialogResult) {
-					// 			var Mprno = e.row.data.Mprno;
-					// 			console.log("number", Mprno);
-					// 			onDeleteRequest(Mprno);
-					// 		}
-					// 	});
-					// }
-				},
-				{
-					text: "Unlock the Order",
-					icon: "unlock",
 					onItemClick: function () {
-						onUnlockRequest(e.row.data);
+						DevExpress.ui.dialog.confirm(
+							"You are about to delete the Job Order.\nYou cannot revert the changes.\nAre you sure?",
+							"Confirm Delete"
+						).done(function (dialogResult) {
+							if (dialogResult) {
+								var JobOrderNo=e.row.data.JobOrderNo;
+								console.log("number", JobOrderNo);
+								onDeleteJobOrder(JobOrderNo);
+							}
+						});
 					}
 				},
+				{
+		text: "Unlock the Order",  // ? Corrected closing quote
+		icon: "unlock",
+		onItemClick: function () {
+			const JobOrderNo = e.row.data.JobOrderNo;
+
+			$.ajax({
+				url: "/api/JobOrders/UnlockJobOrder",
+				type: "POST",
+				contentType: "application/json",
+				data: JSON.stringify({ JobOrderNo: JobOrderNo }), // ? sending request data
+				success: function (response) {
+					DevExpress.ui.notify(response.message, response.success ? "success" : "warning", 2000);
+					if (response.success) {
+						ddBtnShowRecords_click('range'); // ? refresh or reload the grid
+					}
+				},
+				error: function (xhr) {
+					let msg = xhr.responseJSON?.message || "An error occurred while unlocking the Ordrer.";
+					DevExpress.ui.notify(msg, "error", 2000);
+					console.error("Unlock failed:", xhr.responseJSON);
+				}
+			});
+		}
+	},
 				{
 					text: "Create the Delivery Note for this Order",
 					icon: "plus",
@@ -471,5 +489,26 @@
 			];
 		}
 	}
+	function onDeleteJobOrder(JobOrderNo) {
+			if (!JobOrderNo) {
+				DevExpress.ui.notify('JobOrderNo is missing.', 'error', 3000);
+				return;
+			}
 
+			$.ajax({
+				url: `/api/JobOrders/DeleteJobOrderView?JobOrderNo=${JobOrderNo}`,
+				method: 'POST',
+				success: function (response) {
+					if (response.success) {
+						DevExpress.ui.notify(response.message, 'success', 2000);
+						$("#dataGrid").dxDataGrid("instance").refresh();
+					} else {
+						DevExpress.ui.notify(response.message, 'error', 3000);
+					}
+				},
+				error: function () {
+					DevExpress.ui.notify('An error occurred while attempting to delete the Job Order.', 'error', 3000);
+				}
+			});
+		}
 </script>
