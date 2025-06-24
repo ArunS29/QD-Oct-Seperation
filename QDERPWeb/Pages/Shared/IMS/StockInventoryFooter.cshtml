@@ -36,7 +36,7 @@
         .Text(new JS("formatMessage('Print')"))
         .Icon("print")
         .Hint("Click to print")
-        .OnClick("function() { openPrint(); }")
+        .OnClick("printFun")
         .ElementAttr(new { @class = "bold-button" }) 
         )
         </div>
@@ -471,5 +471,7 @@
             window.location.href = url;
         }
     }
-    
+    function printFun() {
+        exportDataGridToPDF('dataGrid');
+    }
 </script>

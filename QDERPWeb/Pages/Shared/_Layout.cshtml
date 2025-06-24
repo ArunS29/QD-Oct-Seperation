@@ -201,6 +201,8 @@
 
         #dataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
             background-color: var(--header-color);
+            border: none;
+            border-radius: 0px;
         }
 
         .dx-datagrid-header-panel {
@@ -245,7 +247,7 @@
             /* padding: 16px; */
             padding-left: 10px;
             padding-right: 10px;
-            padding-top: 6.5em;
+            padding-top: 5.5em;
             transition: width 0.3s ease;
             height: 95vh;
         }
@@ -392,7 +394,7 @@
             border-left: 1px solid #ddd;
             border-right: 1px solid #ddd;
             /* padding-top: 50px; */
-            margin-top: 70px; /* Adjust to align with the rest of your layout */
+            margin-top: 50px; /* Adjust to align with the rest of your layout */
             height: calc(100vh - 75px); /* Sidebar takes full height minus the top margin */
             overflow-y: auto; /* Enable vertical scrolling */
             scrollbar-width: thin; /* For Firefox: thin scrollbar */
@@ -540,7 +542,6 @@
 
             /* Style for the icons */
             .frame .img {
-                font-size: 20px; /* Set size of icons */
                 margin: 0 5px; /* Add spacing between icons */
                 cursor: pointer; /* Add pointer cursor for hover effect */
             }
@@ -560,7 +561,6 @@
                 display: flex; /* Flex container for logo */
                 align-items: center; /* Center-align vertically */
                 margin-right: auto; /* Push other elements to the right */
-                margin-bottom: 10px;
                 padding-left: 30px;
             }
 
@@ -629,10 +629,10 @@
             right: 2%;
             width: 300px;
             background-color: white;
-            box-shadow: inset 10px 10px 10px rgba(0, 0, 0, 0.1);
             z-index: 9999;
             border-radius: 8px;
             padding: 10px;
+            border:1px solid #ddd;
         }
 
         .popup-header {
@@ -684,7 +684,7 @@
             /* font-size: 48px; */
             /* font-weight: 700; */
             color: white;
-            /* text-transform: uppercase; */
+            text-transform: uppercase;
             letter-spacing: 2px;
             text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
             /* margin-right: auto; */
@@ -1092,7 +1092,7 @@
         }
 
         .fas, .fa-solid, .fa {
-            font-size: 17px;
+            font-size: 14px;
         }
 
         #fullscreenIcon,
@@ -1101,7 +1101,7 @@
         .fa-circle-info,
         .fa-palette,
         .fa-user {
-            font-size: 17px;
+            font-size: 14px;
             padding: 8px;
             color: var(--title-background-color);
             background-color: white;
@@ -1116,7 +1116,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div style="display:none" >musharaf</div>
     <!-- Modal Structure -->
     <div id="customModal" class="modal">
         <div class="modal-content">
@@ -1197,12 +1196,12 @@
                 </div>
                 <i class="fas fa-palette img" onclick="handleGearClick()"></i> <!-- Gear icon -->
 
-                <div class="dropdown" onclick="toggleDropdown()">
-                    <div class="user-icon" id="userIcon"></div>
+                <div class="dropdown triggerDrop" onclick="toggleDropdown()">
+                    <div class="user-icon triggerDrop" id="userIcon"></div>
                     <div id="userDropdown" class="dropdown-menu">
                         <div class="userName">
                             <i class="fas fa-user"></i>
-                            <span id="userWelcome">Welcome, @userName</span>
+                            <a href="javascript:void(0);" onclick="window.location.href = '/@tenantName/General/frm201useracces';">@userName</a>
                         </div>
 
                         <div class="dropdown-item" onclick="handleInfoClick()">
@@ -3095,7 +3094,7 @@
 
 
                 window.onclick = function (event) {
-                    if (!event.target.matches('.dropdown')) {
+                    if (!event.target.matches('.triggerDrop')) {
                         let dropdowns = document.getElementsByClassName("dropdown-menu");
                         for (let i = 0; i < dropdowns.length; i++) {
                             let openDropdown = dropdowns[i];

@@ -428,8 +428,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 					var resultWithDetails = new List<ExpandoObject>();
 
 					// Query the Tbl60602purchaseRequestChildren table for the given Mprno
-					var result = dbContext.Tbl60502materialReceiptChildren
-						.Where(x => x.ReceiptNo == ReceiptNo)
+					var result = dbContext.Qry60502materialReceiptChildren 
+                        .Where(x => x.ReceiptNo == ReceiptNo)
 						.ToList();
 
 					foreach (var gridDetails in result)
