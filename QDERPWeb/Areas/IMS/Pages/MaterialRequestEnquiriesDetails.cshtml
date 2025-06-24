@@ -1,4 +1,4 @@
-@page
+﻿@page
 @model QD.ERP.Web.Areas.IMS.Pages.MaterialRequestEnquiriesDetailsModel
 @{
 }
@@ -674,13 +674,32 @@
 						});
 					}
 				},
-				{
-					text: "Unlock the Request / Enquiry",
-					icon: "unlock",
-					onItemClick: function () {
-						onUnlockRequest(e.row.data);
+	{
+		text: "Unlock the Request / Enquiry",  // ✅ Corrected closing quote
+		icon: "unlock",
+		onItemClick: function () {
+			const Mprno = e.row.data.Mprno;
+
+			$.ajax({
+				url: "/api/MaterialRequestEnquiriesDetails/UnlockMaterialRequest",
+				type: "POST",
+				contentType: "application/json",
+				data: JSON.stringify({ Mprno: Mprno }), // ✅ sending request data
+				success: function (response) {
+					DevExpress.ui.notify(response.message, response.success ? "success" : "warning", 2000);
+					if (response.success) {
+						ddBtnShowRecords_click('range'); // ✅ refresh or reload the grid
 					}
 				},
+				error: function (xhr) {
+					let msg = xhr.responseJSON?.message || "An error occurred while unlocking the Request / Enquiry.";
+					DevExpress.ui.notify(msg, "error", 2000);
+					console.error("Unlock failed:", xhr.responseJSON);
+				}
+			});
+		}
+	},
+
 				{
 					text: "Create a RFQ",
 					icon: "plus",

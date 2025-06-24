@@ -478,6 +478,29 @@
                         )
 }
 <script>
+
+
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const QuotationNos = urlParams.get('QuotationNo');
+        const QuotationNo = QuotationNos ? QuotationNos.split("?")[0] : null;
+         const ItemCodes = urlParams.get('ItemCode');
+        const ItemCode = ItemCodes ? ItemCodes.split("?")[0] : null;
+         const Descriptions = urlParams.get('Description');
+        const Description = Descriptions ? Descriptions.split("?")[0] : null;
+         const Quantitys = urlParams.get('Quantity');
+        const Quantity = Quantitys ? Quantitys.split("?")[0] : null;
+        
+
+
+
+       $("#QuotationNo").dxTextBox("instance").option("value", QuotationNo);
+    $("#StockCode").dxTextBox("instance").option("value", ItemCode);
+    $("#StockDescription").dxTextBox("instance").option("value", Description);
+    $("#Quantity").dxNumberBox("instance").option("value", Quantity);
+
+    });
+
     function onOpened(e) {
         setTimeout(() => {
             e.component.focus();
@@ -590,6 +613,8 @@
                             CostPercentage: $("#Percentage").dxNumberBox("instance").option("value"),
                             CostItemQty: $("#ItemQty").dxNumberBox("instance").option("value"),
                             CostItemPrice: $("#CostAmount").dxNumberBox("instance").option("value"),
+                            Gscode: $("#StockCode").dxTextBox("instance").option("value"),
+                            QuoteNo: $("#QuotationNo").dxTextBox("instance").option("value")
                         // CostAllocationUnitId: $("#TotalCost").dxNumberBox("instance").option("value"),
                     
 

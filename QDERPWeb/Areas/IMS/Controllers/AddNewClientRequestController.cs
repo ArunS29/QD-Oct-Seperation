@@ -683,7 +683,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 					var resultWithDetails = new List<ExpandoObject>(); 
 
 					// Query the Tbl60602purchaseRequestChildren table for the given Mprno
-					var result = dbContext.Tbl60602purchaseRequestChildren
+					var result = dbContext.Qry60602purchaseRequestChildren
 						.Where(x => x.Mprno == Mprno)
 						.ToList();
 

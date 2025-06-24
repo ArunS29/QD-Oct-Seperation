@@ -3,6 +3,7 @@ using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
 using System.Globalization;
@@ -193,6 +194,41 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 			return Json(new { success = false, message = "Invalid tenant context." });
 		}
+        [HttpPost]
+        public async Task<IActionResult> UnlockMaterialRequest([FromBody] PurchaseRequestViewModel request)
+        {
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized(new { success = false, message = "Invalid tenant." });
 
-	}
+                if (string.IsNullOrWhiteSpace(request?.Mprno))
+                    return BadRequest(new { success = false, message = "MPR No is required." });
+
+                var existingEntity = await dbContext.Tbl60601purchaseRequestMasters
+                    .FirstOrDefaultAsync(x => x.Mprno == request.Mprno);
+
+                if (existingEntity == null)
+                    return NotFound(new { success = false, message = "Request/Enquiry not found." });
+
+                if (existingEntity.IsApproved != true && existingEntity.IsSubmitted != true && existingEntity.IsVerified != true)
+                    return Ok(new { success = false, message = "Request/Enquiry is already unlocked." });
+
+                existingEntity.IsApproved = false;
+				existingEntity.IsSubmitted = false;
+				existingEntity.IsVerified = false;
+
+                dbContext.Tbl60601purchaseRequestMasters.Update(existingEntity);
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Request/Enquiry has been unlocked successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while unlocking Request/Enquiry.");
+                return StatusCode(500, new { success = false, message = "Internal server error", details = ex.Message });
+            }
+        }
+
+    }
 }

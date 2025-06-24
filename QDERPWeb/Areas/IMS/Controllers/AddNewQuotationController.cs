@@ -200,7 +200,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 					var resultWithDetails = new List<ExpandoObject>();
 
 					// Query the Tbl60602purchaseRequestChildren table for the given Mprno
-					var result = dbContext.Tbl60102quotationChildren
+					var result = dbContext.Qry60102quotationChildren
 						.Where(x => x.QuoteNo == QuoteNo)
 						.ToList();
 
@@ -615,5 +615,31 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 			return Unauthorized(new { message = "Invalid tenant", success = false });
 		}
-	}
+        //IMS DetailDescription Form 
+        [HttpGet]
+        public async Task<IActionResult> GetDetailDescriptiondata(long QuoteChildId)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+
+                    var client = await dbContext.Qry60102quotationChildren
+                        .Where(c => c.QuoteChildId == QuoteChildId)
+                        .FirstOrDefaultAsync();
+
+                    if (client == null)
+                        return NotFound("Quotation not found.");
+
+                    return Ok(client);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+    }
 }
