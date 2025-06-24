@@ -500,7 +500,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             i.CrAmount,
                             i.EntryNarration,
                             i.AccountHead,
-                            i.SysRemarks
+                            i.SysRemarks,
+                            AccountId = dbContext.Tbl201ChartOfAccounts
+                       .Where(c => c.AccountHead == i.AccountHead)
+                       .Select(c => c.AccountId)
+                       .FirstOrDefault()
                         })
                         .ToList();
 

@@ -1,7 +1,10 @@
 ﻿@page
 @model QD.ERP.Web.Areas.IMS.Pages.StoreStockAvalibilitysModel
+    
 @{
+    var salesOrderNoFromQuery = ViewContext.HttpContext.Request.Query["salesOrderNo"].ToString();
 }
+
 <style>
     .mainContainer{
         width:100%;
@@ -26,20 +29,22 @@
     <label id="Seletthestoretoissueitem" class="no-border-input" style="font-weight:100 bold; width: 220px; "></label>
 
     @(Html.DevExtreme().DropDownBox()
-            .ID("storeBox")
+        .ID("storeBox")
         .ValueExpr("StoreId")
         .DisplayExpr("StoreName")
         .DataSource(ds => ds
         .Mvc()
         .Controller("SalesOrders")
         .LoadAction("GetStoreToIssueItem")
+        .LoadParams(new { salesOrderNo = salesOrderNoFromQuery }) // ✅ Pass query param
         .LoadMode(DataSourceLoadMode.Raw)
         .Key("StoreId")
-        ).DropDownOptions(options => options.Width(450))
-
-            .Value(1)
-            .Width(250)
-        .ContentTemplate(new TemplateName("StoreToIssueItemDropDownTemplate")))
+        )
+        .DropDownOptions(options => options.Width(450))
+        .Value(null)
+        .Width(250)
+        .ContentTemplate(new TemplateName("StoreToIssueItemDropDownTemplate"))
+        )
     
 
     @(Html.DevExtreme().Button()
@@ -55,49 +60,50 @@
         .ShowBorders(true)
         .ColumnAutoWidth(true)
         .Height(350)
-
         .Selection(s => s.Mode(SelectionMode.Multiple).ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always))
         .Columns(columns =>
         {
             columns.Add().Type(GridCommandColumnType.Selection).Width(40);
-            columns.Add().DataField("Service").Caption("Service");
-            columns.Add().DataField("OrderID").Caption("Order ID");
-            columns.Add().DataField("GSCode").Caption("GS Code");
-            columns.Add().DataField("StockDescription").Caption("Stock Description");
-            columns.Add().DataField("Unit").Caption("Unit");
+            columns.Add().DataField("IsServicesGroup").Caption("Service");
+            columns.Add().DataField("SalesOrderChildId").Caption("Order ID");
+            columns.Add().DataField("Gscode").Caption("GS Code");
+            columns.Add().DataField("Gsdescrpition").Caption("Stock Description");
+            columns.Add().DataField("UnitDesc").Caption("Unit");
             columns.Add().DataField("TotalOrderedQty").Caption("Total Ordered Qty");
             columns.Add().DataField("TotalIssdQty").Caption("Total Issd Qty");
             columns.Add().DataField("BalanceToDeliver").Caption("Balance To Deliver");
-            columns.Add().DataField("CurrentQtyOrdered").Caption("Current Qty In Ordered Unit");
+            columns.Add().DataField("CurrentyQty").Caption("Current Qty In Ordered Unit");
             columns.Add().DataField("AvailabilityStatus").Caption("Availability Status");
             columns.Add().DataField("DeliveringQuantity").Caption("Delivering Quantity");
         }))
 </div>
 <div id="pivotGridContainer" style="margin-top: 20px; padding:20px;"></div>
-@using (Html.DevExtreme().NamedTemplate("StoreToIssueItemDropDownTemplate")) // ✅ Corrected name
+@using (Html.DevExtreme().NamedTemplate("StoreToIssueItemDropDownTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                        .ID("StoreToIssueItemDropDown")
-                         .DataSource(ds => ds
-                         .Mvc()
-                         .Controller("SalesOrders")
-                          .LoadAction("GetStoreToIssueItem")
-                         .LoadMode(DataSourceLoadMode.Raw)
-                         .Key("StoreId")
-                         )
-                        .Height(300)
-                        .ShowBorders(true)
-                        .FilterRow(f => f.Visible(true))
-                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                        .Selection(s => s.Mode(SelectionMode.Single))
-                        .Columns(columns =>
-                        {
-                                columns.Add().DataField("StoreId").Caption("Store Id");
-                                columns.Add().DataField("StoreName").Caption("Store Name");
-                        })
-                            .OnSelectionChanged("StoretoIssueItems")
-                    )
+            .ID("StoreToIssueItemDropDown")
+            .DataSource(ds => ds
+                .Mvc()
+                .Controller("SalesOrders")
+                .LoadAction("GetStoreToIssueItem")
+                .LoadParams(new { salesOrderNo = salesOrderNoFromQuery }) // ✅ Pass here too
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("StoreId")
+            )
+            .Height(300)
+            .ShowBorders(true)
+            .FilterRow(f => f.Visible(true))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .Columns(columns =>
+            {
+                columns.Add().DataField("StoreId").Caption("Store Id");
+                columns.Add().DataField("StoreName").Caption("Store Name");
+            })
+            .OnSelectionChanged("StoretoIssueItems")
+        )
 }
+@section Scripts {
 <script>
 
 
@@ -111,13 +117,13 @@
                     data: emptyData
                 },
                 fields: [
-                    { dataField: "SupplierName", caption: "GS Code", area: "row" },
-                    { dataField: "ItemDescription", caption: "GS Description", area: "column" },
-                    { dataField: "Quantity", caption: "Oredered UOM", area: "data", dataType: "number", summaryType: "sum" },
-                    { dataField: "Quantity", caption: "Oredered Qty", area: "data", dataType: "number", summaryType: "sum" },
-                    { dataField: "Quantity", caption: "Issd Qty", area: "data", dataType: "number", summaryType: "sum" },
-                    { dataField: "Storecode", caption: "Store Code", area: "data", dataType: "number", summaryType: "sum" },
-                    { dataField: "Quantity1", caption: "Balance ", area: "data", dataType: "number", summaryType: "sum" }
+                    { dataField: "Gscode", caption: "GS Code", area: "row" },
+                    { dataField: "Gsdescrpition", caption: "GS Description", area: "column" },
+                    { dataField: "QuotedUom", caption: "Oredered UOM", area: "data", dataType: "number", summaryType: "sum" },
+                    { dataField: "OrderedQty", caption: "Oredered Qty", area: "data", dataType: "number", summaryType: "sum" },
+                    { dataField: "TotalIssdQty", caption: "Issd Qty", area: "data", dataType: "number", summaryType: "sum" },
+                    { dataField: "StoreCode", caption: "Store Code", area: "data", dataType: "number", summaryType: "sum" },
+                    { dataField: "BalanceToDeliver", caption: "Balance", area: "data", dataType: "number", summaryType: "sum" }
                     // { dataField: "SalesOrderNo", caption: "Sales order No ", area: "data", dataType: "number", summaryType: "sum" }
                     // { dataField: "UnitRateMethod", caption: "Unit Rate Method ", area: "data", dataType: "number", summaryType: "sum" }
                     // { dataField: "GsgroupName", caption: "Gs group Name ", area: "data", dataType: "number", summaryType: "sum" }
@@ -168,7 +174,42 @@
         }).dxPivotGrid("instance");
     });
 
+          function loadPivotGridDataForAllStores() {
+        if (!salesOrderNoFromQuery) return;
 
+        $.ajax({
+            url: '/api/SalesOrders/GetStoreStockGrid',
+            type: 'GET',
+            data: {
+                salesOrderNo: salesOrderNoFromQuery
+            },
+            success: function (data) {
+                const pivotInstance = $("#pivotGridContainer").dxPivotGrid("instance");
+
+                if (pivotInstance) {
+                    pivotInstance.option("dataSource", {
+                        store: {
+                            type: "array",
+                            data: data
+                        },
+                        fields: [
+                            { dataField: "StoreCode", caption: "Store", area: "row" },
+                            { dataField: "Gscode", caption: "GS Code", area: "row" },
+                            { dataField: "Gsdescrpition", caption: "GS Description", area: "column" },
+                            { dataField: "UnitDesc", caption: "Ordered UOM", area: "column" },
+                            { dataField: "TotalOrderedQty", caption: "Ordered Qty", area: "data", dataType: "number", summaryType: "sum" },
+                            { dataField: "TotalIssdQty", caption: "Issued Qty", area: "data", dataType: "number", summaryType: "sum" },
+                            { dataField: "CurrentyQty", caption: "Current Stock", area: "data", dataType: "number", summaryType: "sum" },
+                            { dataField: "BalanceToDeliver", caption: "Balance", area: "data", dataType: "number", summaryType: "sum" }
+                        ]
+                    });
+                }
+            },
+            error: function () {
+                DevExpress.ui.notify("Failed to load pivot grid data.", "error", 3000);
+            }
+        });
+    }
 
      $(function () {
         $("#StoreStockAvalibility").dxTextBox({
@@ -187,16 +228,163 @@
             });
          });
          //Costcenter
-        function StoretoIssueItems(e) {
+
+      // ✅ Define salesOrderNoFromQuery at top
+    const salesOrderNoFromQuery = new URLSearchParams(window.location.search).get("salesOrderNo");
+
+    $(function () {
+        if (salesOrderNoFromQuery) {
+            // ✅ Load pivot grid for all stores immediately on page load
+            loadPivotGridDataForAllStores();
+        }
+    });
+             // Helper: Returns true if row is already delivered (customize as needed)
+            function isRowDelivered(rowData) {
+                // Adjust this logic if you have a different field for delivery status
+                return rowData.BalanceToDeliver === 0 || rowData.AvailabilityStatus === "Delivered";
+            }
+    function loadGridData(storeId) {
+        if (!salesOrderNoFromQuery || !storeId) return;
+
+        const grid = $("#deliveryNoteGrid").dxDataGrid("instance");
+
+        $.ajax({
+            url: '/api/SalesOrders/GetStoreStockGrid',
+            type: 'GET',
+            data: {
+                salesOrderNo: salesOrderNoFromQuery,
+                storeId: storeId
+            },
+                    success: function (data) {
+                        grid.option("dataSource", data);
+                        // Deselect delivered rows after data load
+                        setTimeout(function () {
+                            const deliveredKeys = data.filter(isRowDelivered).map(r => r.SalesOrderChildId);
+                            grid.deselectRows(deliveredKeys);
+                        }, 100);
+                    },
+            error: function () {
+                DevExpress.ui.notify("Failed to load store stock data.", "error", 3000);
+            }
+        });
+    }
+
+
+       function StoretoIssueItems(e) {
         const selected = e.selectedRowsData[0];
         if (selected) {
             const dropDownBox = $("#storeBox").dxDropDownBox("instance");
             if (dropDownBox) {
                 dropDownBox.option("value", selected.StoreId);
                 dropDownBox.close();
-            } else {
-                console.error("DropDownBox instance not found.");
+
+                // ✅ Only load delivery grid for selected store
+                loadGridData(selected.StoreId);
             }
         }
     }
+ // ...existing code...
+
+$(function () {
+    const buttonInstance = $("#prepareDeliveryNoteBtn").dxButton("instance");
+
+    if (buttonInstance) {
+        buttonInstance.option("onClick", function () {
+            const grid = $("#deliveryNoteGrid").dxDataGrid("instance");
+            const selectedData = grid.getSelectedRowsData();
+
+            if (!selectedData || selectedData.length === 0) {
+                DevExpress.ui.notify("Please select at least one row.", "warning", 3000);
+                return;
+            }
+
+            // Only allow undelivered rows
+            const undeliveredRows = selectedData.filter(function(row) {
+                return row.BalanceToDeliver !== 0 && row.AvailabilityStatus !== "Delivered";
+            });
+
+            if (undeliveredRows.length === 0) {
+                DevExpress.ui.notify("Selected row was already Created DeliveryNote.", "warning", 2000);
+                return;
+            }
+
+            // Get all selected SalesOrderChildIds from undelivered rows
+            const salesOrderChildIds = undeliveredRows
+                .map(row => row.SalesOrderChildId)
+                .filter(id => id != null);
+
+            if (salesOrderChildIds.length === 0) {
+                DevExpress.ui.notify("Selected rows do not have valid SalesOrderChildId.", "error", 3000);
+                return;
+            }
+
+            const tenantName = window.tenantName || "defaultTenant";
+            const firstChildId = salesOrderChildIds[0];
+
+            $.get("/api/SalesOrders/GetSalesOrderNoByChildId", { salesOrderChildId: firstChildId })
+                .done(function (res) {
+                    if (res.success) {
+                        const salesOrderNo = res.salesOrderNo;
+
+                        // Step 2: Generate Delivery Note No
+                        $.get("/api/DeliveryNote/GetAutoGeneratedDeliveryNoteNumberForTenant", {
+                            tenantName,
+                            salesOrderNo
+                        })
+                        .done(function (dnRes) {
+                            if (dnRes.success) {
+                                const deliveryNoteNo = dnRes.deliveryNoteNo;
+
+                                // Step 3: Pass all selected SalesOrderChildIds in query string
+                                const query = salesOrderChildIds.map(id => `salesOrderChildId=${id}`).join("&");
+                                const url = `/${tenantName}/IMS/DeliveryEditForm?deliveryNoteNo=${encodeURIComponent(deliveryNoteNo)}&${query}&mode=create`;
+
+                                window.location.href = url;
+                            } else {
+                                DevExpress.ui.notify(dnRes.message || "Failed to generate Delivery Note No.", "error", 3000);
+                            }
+                        })
+                        .fail(function (xhr) {
+                            const msg = xhr.responseJSON?.message || "Failed to generate Delivery Note No.";
+                            DevExpress.ui.notify(msg, "error", 3000);
+                        });
+                    } else {
+                        DevExpress.ui.notify("Failed to find Sales Order for selected child row.", "error", 3000);
+                    }
+                })
+                .fail(function () {
+                    DevExpress.ui.notify("Error fetching SalesOrderNo by child ID.", "error", 3000);
+                });
+        });
+    } else {
+        console.error("prepareDeliveryNoteBtn not initialized yet.");
+    }
+});
+
+            // Patch: On grid ready, set up row styling and selection logic
+            $(function () {
+                const grid = $("#deliveryNoteGrid").dxDataGrid("instance");
+                if (!grid) return;
+
+                grid.option({
+                    onRowPrepared: function (e) {
+                        if (e.rowType === "data" && isRowDelivered(e.data)) {
+                            e.rowElement.css({ background: "#f5f5f5", color: "#aaa" });
+                        }
+                    },
+                    onSelectionChanged: function (e) {
+                        // Deselect delivered rows if user tries to select them
+                        const grid = e.component;
+                        const deliveredKeys = e.selectedRowsData
+                            .filter(isRowDelivered)
+                            .map(r => r.SalesOrderChildId);
+
+                        if (deliveredKeys.length > 0) {
+                            grid.deselectRows(deliveredKeys);
+                            DevExpress.ui.notify("Already delivered rows cannot be selected.", "warning", 2000);
+                        }
+                    }
+                });
+            });
 </script>
+}
