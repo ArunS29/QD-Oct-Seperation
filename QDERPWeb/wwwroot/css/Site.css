@@ -498,6 +498,9 @@ body {
 #btnMaterialReceiptDetails:hover {
     width: 250px !important; /* Expand to fit text */
 }
+#btnPurchaseEditDetails:hover {
+    width: 240px !important;
+}
 
 /* Print button icon color */
 #btnPrint .dx-icon {

@@ -329,7 +329,7 @@
                 color: var(--highlight-color);
             }
 
-            .menu-item img::after {
+            .menu-item i::after {
                 content: attr(data-tooltip);
                 position: absolute;
                 top: 130%;
@@ -337,7 +337,9 @@
                 transform: translateX(-50%);
                 background: white;
                 color: black;
-                padding: 6px 10px;
+                padding: 5px 5px;
+                border: 1px solid #ddd;
+                font-weight: 700;
                 border-radius: 5px;
                 font-size: 10px !important;
                 white-space: nowrap;
@@ -349,7 +351,7 @@
                 letter-spacing: 1px;
             }
 
-            .menu-item img:hover::after {
+            .menu-item i:hover::after {
                 opacity: 1;
                 visibility: visible;
                 transform: translateX(-50%) translateY(5px);
@@ -1585,28 +1587,28 @@
                 <p id="settingMessage1"></p>
                 <div class="switcher-section">
                     <h3 id="settingMessage2"></h3>
-                    <button class="color-btn" style="background: #FFDDC1;" onclick="applyTheme('light-orange')"></button>
-                    <button class="color-btn" style="background: #FFD3E0;" onclick="applyTheme('light-pink')"></button>
-                    <button class="color-btn" style="background: #C3E8F7;" onclick="applyTheme('light-cyan')"></button>
-                    <button class="color-btn" style="background: #D4A5A5;" onclick="applyTheme('light-rose')"></button>
-                    <button class="color-btn" style="background: #FFF7D6;" onclick="applyTheme('light-gold')"></button>
-                    <button class="color-btn" style="background: #E1F7D5;" onclick="applyTheme('light-mint')"></button>
-                    <button class="color-btn" style="background: #FAE1DD;" onclick="applyTheme('light-peach')"></button>
-                    <button class="color-btn" style="background: #E6F0FF;" onclick="applyTheme('light-sky')"></button>
-                    <button class="color-btn" style="background: #D9E4DD;" onclick="applyTheme('light-olive')"></button>
-                    <button class="color-btn" style="background: #FDE2E4;" onclick="applyTheme('light-coral')"></button>
-                    <button class="color-btn" style="background: #E3D5CA;" onclick="applyTheme('light-sand')"></button>
-                    <button class="color-btn" style="background: #E6E6FA;" onclick="applyTheme('light-lavender')"></button>
-                    <button class="color-btn" style="background: #D1F2EB;" onclick="applyTheme('light-seafoam')"></button>
-                    <button class="color-btn" style="background: #FFF9E6;" onclick="applyTheme('light-butter')"></button>
-                    <button class="color-btn" style="background: #E0E7FF;" onclick="applyTheme('light-periwinkle')"></button>
-                    <button class="color-btn" style="background: #F5E0E6;" onclick="applyTheme('light-mauve')"></button>
-                    <button class="color-btn" style="background: #E0FFFF;" onclick="applyTheme('light-aqua')"></button>
-                    <button class="color-btn" style="background: #FFE4E1;" onclick="applyTheme('light-blush')"></button>
-                    <button class="color-btn" style="background: #F0F8FF;" onclick="applyTheme('light-mist')"></button>
-                    <button class="color-btn" style="background: #FAF0E6;" onclick="applyTheme('light-pearl')"></button>
-                    <button class="color-btn" style="background: #F5FFFA;" onclick="applyTheme('light-mint-cream')"></button>
-                    <button class="color-btn" style="background: #c2bfbf;" onclick="applyTheme('dark-charcoal')"></button>
+                    <button class="color-btn" style="background: #faa25a;" onclick="applyTheme('light-orange')"></button>
+                    <button class="color-btn" style="background: #fc6f99;" onclick="applyTheme('light-pink')"></button>
+                    <button class="color-btn" style="background: #4394b4;" onclick="applyTheme('light-cyan')"></button>
+                    <button class="color-btn" style="background: #8d5353;" onclick="applyTheme('light-rose')"></button>
+                    <button class="color-btn" style="background: #caae3b;" onclick="applyTheme('light-gold')"></button>
+                    <button class="color-btn" style="background: #97ce7a;" onclick="applyTheme('light-mint')"></button>
+                    <button class="color-btn" style="background: #af665b;" onclick="applyTheme('light-peach')"></button>
+                    <button class="color-btn" style="background: #5d82b9;" onclick="applyTheme('light-sky')"></button>
+                    <button class="color-btn" style="background: #5cb97e;" onclick="applyTheme('light-olive')"></button>
+                    <button class="color-btn" style="background: #ca6d73;" onclick="applyTheme('light-coral')"></button>
+                    <button class="color-btn" style="background: #a77b59;" onclick="applyTheme('light-sand')"></button>
+                    <button class="color-btn" style="background: #6262d6;" onclick="applyTheme('light-lavender')"></button>
+                    <button class="color-btn" style="background: #5aaa99;" onclick="applyTheme('light-seafoam')"></button>
+                    <button class="color-btn" style="background: #ceb45e;" onclick="applyTheme('light-butter')"></button>
+                    <button class="color-btn" style="background: #526bbd;" onclick="applyTheme('light-periwinkle')"></button>
+                    <button class="color-btn" style="background: #c45373;" onclick="applyTheme('light-mauve')"></button>
+                    <button class="color-btn" style="background: #48aaaa;" onclick="applyTheme('light-aqua')"></button>
+                    <button class="color-btn" style="background: #df7367;" onclick="applyTheme('light-blush')"></button>
+                    <button class="color-btn" style="background: #4a7fad;" onclick="applyTheme('light-mist')"></button>
+                    <button class="color-btn" style="background: #af7d4b;" onclick="applyTheme('light-pearl')"></button>
+                    <button class="color-btn" style="background: #54a77d;" onclick="applyTheme('light-mint-cream')"></button>
+                    <button class="color-btn" style="background: #050505;" onclick="applyTheme('dark-charcoal')"></button>
                 </div>
             </div>
         </div>
@@ -1626,54 +1628,49 @@
                     @if (userModules.Contains("HR"))
                     {
                         <div class="menu-item hr" onclick="navigate('Human Resources')">
-                            @* <i class="fas fa-users" id="humanResourcesIcon"></i> *@
-                            <img src="~/images/human-resources.png" style="width:30px" id="humanResourcesIcon" />
+                             <i id="humanResourcesIcon"><img src="~/images/hr-icon.png" style="width:30px"/></i>
                             <div id="HumanResources" class="text no-border-input"></div>
                         </div>
                     }
                     @if (userModules.Contains("Finance"))
                     {
                         <div class="menu-item finance" onclick="navigate('Finance')">
-                            @* <i class="fas fa-dollar-sign" id="FinanceIcon"></i> *@
-                            <img src="~/images/coin.png" style="width:30px" id="FinanceIcon" />
+                            <i id="FinanceIcon"><img src="~/images/finance.png" style="width:30px" /></i>
                             <div id="Finance" class="text no-border-input"></div>
                         </div>
                     }
                     @if (userModules.Contains("VAT"))
                     {
                         <div class="menu-item vat" onclick="navigate('VAT Modules')">
-                            @* <i class="fas fa-certificate" id="VATModulesIcon"></i> *@
-                            <img src="~/images/vat.png" style="width:30px" id="VATModulesIcon" />
+                            <i id="VATModulesIcon"><img src="~/images/vat_icon.png" style="width:30px" /></i>
                             <div id="VATModules" class="text no-border-input"></div>
                         </div>
                     }
                     @if (userModules.Contains("Equipment"))
                     {
                         <div class="menu-item rentals" onclick="navigate('Equipment Rentals')">
-                            @* <i class="fas fa-truck" id="EquipmentRentalsIcon"></i> *@
-                            <img src="~/images/renting.png" style="width:30px" id="EquipmentRentalsIcon" />
+                            <i id="EquipmentRentalsIcon"><img src="~/images/renting.png" style="width:30px" /></i>
                             <div id="EquipmentRentals" class="text no-border-input"></div>
                         </div>
                     }
                     @if (userModules.Contains("CAMP"))
                     {
                         <div class="menu-item camp" onclick="navigate('Camp Management')">
-                            <i class="fas fa-campground" id="CampManagementIcon"></i>
+                            <i id="CampManagementIcon"><img src="~/images/camp.png" style="width:30px" /></i>
                             <div id="CampManagement" class="text no-border-input"></div>
                         </div>
                     }
                     @if (userModules.Contains("IMS"))
                     {
                         <div class="menu-item inventory" onclick="navigate('Inventory Management')">
-                            @* <i class="fas fa-cogs" id="InventoryManagementIcon"></i> *@
-                            <img src="~/images/inventory-list.png" style="width:30px" id="InventoryManagementIcon" />
+                            <i id="InventoryManagementIcon"><img src="~/images/IMS_icon.png" style="width:30px" /></i>
                             <div id="InventoryManagement" class="text no-border-input"></div>
                         </div>
                     }
                     @if (userModules.Contains("Projects"))
                     {
                         <div class="menu-item projects" onclick="navigate('Projects Control')">
-                            <i class="fas fa-project-diagram" id="ProjectsControlIcon"></i>
+                            <i id="ProjectsControlIcon"><img src="~/images/project_control.png" style="width:30px" /></i>
                             <div id="ProjectsControl" class="text no-border-input"></div>
                         </div>
                     }
@@ -2455,42 +2452,28 @@
                     // Dynamically load submenu items for the first sidebar menu
                     if (name === 'Finance') {
                         showFinanceSubmenu();
-                        breadcrumbTrail[0] = name;
-                        updateBreadcrumb();
                     } else if (name === 'Human Resources') {
-                        breadcrumbTrail.length = 0;
-                        updateBreadcrumb();
-                        updateBreadcrumbFromSidebar2('');
-                        sidebar2.style.display = 'none';
+                        showHumanResourceSubmenu();
                     } else if (name === 'VAT Modules') {
-                        breadcrumbTrail.length = 0;
                         showVATModuleSubmenu();
-                        updateBreadcrumb();
-                        updateBreadcrumbFromSidebar2('');
-                        //sidebar2.style.display = 'none';
                     } else if (name === 'Equipment Rentals') {
                         showEquipmentRentalSubmenu();
-                        breadcrumbTrail.length = 0;
-                        updateBreadcrumb();
-                        updateBreadcrumbFromSidebar2('');
-                        // sidebar2.style.display = 'none';
                     } else if (name === 'Camp Management') {
-                        breadcrumbTrail.length = 0;
-                        updateBreadcrumb();
-                        updateBreadcrumbFromSidebar2('');
-                        sidebar2.style.display = 'none';
+                        showCampManagementSubmenu();
                     } else if (name === 'Inventory Management') {
                         showInventorySubmenu();
-                        breadcrumbTrail.length = 0;
-                        updateBreadcrumb();
-                        updateBreadcrumbFromSidebar2('');
-                        // sidebar2.style.display = 'none';
                     } else if (name === 'Projects Control') {
-                        breadcrumbTrail.length = 0;
-                        updateBreadcrumb();
-                        updateBreadcrumbFromSidebar2('');
-                        sidebar2.style.display = 'none';
+                        showProjectsControlSubmenu();
                     }
+                    }
+                    function showHumanResourceSubmenu() {
+                        console.log("showHumanResourceSubmenu");
+                    }
+                    function showCampManagementSubmenu() {
+                        console.log("showCampManagementSubmenu");
+                    }
+                    function showProjectsControlSubmenu() {
+                        console.log("showProjectsControlSubmenu");
                     }
                 function showFinanceSubmenu() {
                     const sidebar2 = document.getElementById('sidebar2');
@@ -2711,6 +2694,8 @@
                 { key: "Equipments Quotation", icon: "fas fa-file-signature", href: `/${tenantName}/ERM/EquipmentsQuotation`, label: "Equipments Quotation", hideOnClick: true },
                 { key: "Equipment Sales Order", icon: "fas fa-shopping-cart", href: `/${tenantName}/ERM/EquipmentSalesOrder`, label: "Equipment Sales Order", hideOnClick: true },
                 { key: "Equipment Delivery", icon: "fas fa-truck", href: `/${tenantName}/ERM/EquipmentDelivery`, label: "Equipment Delivery", hideOnClick: true },
+                { key: "Equipment RFQ Database", icon: "fas fa-database", href: `/${tenantName}/ERM/EquipmentRFQDatabase`, label: "Equipment RFQ Database", hideOnClick: true },
+                { key: "Equipment Quotation Analysis", icon: "fas fa-chart-line", href: `/${tenantName}/ERM/EquipmentQuotationAnalysis`, label: "Equipment Quotation Analysis", hideOnClick: true },
                 { key: "Equipment TimeSheet", icon: "fas fa-calendar-check", href: `/${tenantName}/ERM/EquipmentTimeSheet`, label: "Equipment TimeSheet", hideOnClick: true },
                 { key: "Purchase Order", icon: "fas fa-file-invoice-dollar", href: `/${tenantName}/ERM/PurchaseOrder`, label: "Purchase Order", hideOnClick: true },
                 { key: "Supplier Inv Summary", icon: "fas fa-file-invoice", href: `/${tenantName}/ERM/SupplierInvoiceSummary`, label: "Supplier Inv Summary", hideOnClick: true },
