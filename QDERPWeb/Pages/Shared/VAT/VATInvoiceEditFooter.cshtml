@@ -405,7 +405,7 @@
                 items.Add().Text("Print Regular TAX Invoice").Icon("print");
                 items.Add().Text("Print Simplified TAX Invoice").Icon("file");
                 items.Add().Text("Additional Formats").Icon("folder");
-                items.Add().Text("Edit Sales Voucher").Icon("edit");
+                    items.Add().Text("Edit Sales Voucher").Icon("edit").OnClick(" showSalesVoucherEditPopup");
                 items.Add().Text("Upload Items from Excel").Icon("upload").OnClick("navigateInventoryListtoUpload");
                 items.Add()
                 .Text("Profit On Sale")
@@ -1845,7 +1845,28 @@
                 }
             }
 
+          function showSalesVoucherEditPopup(salesVoucherId, tenantName, isPosted) {
+        if (!isPosted) {
+            DevExpress.ui.dialog.alert(
+                "This VAT Sales Invoice is not yet posted to your ledgers.\nPlease Post the Voucher and try edit the Voucher.",
+                "Sales Invoice is Not Posted."
+            );
+        } else {
+            const url = `/${tenantName}/Finance/SalesVoucher/Edit/${encodeURIComponent(salesVoucherId)}`;
+            const popup = $("#salesVoucherEditPopup").dxPopup("instance");
 
+            popup.show();
+
+            setTimeout(() => {
+                const iframe = document.getElementById("salesVoucherEditFrame");
+                if (iframe) {
+                    iframe.src = url;
+                } else {
+                    console.error("Error: salesVoucherEditFrame not found!");
+                }
+            }, 300);
+        }
+    }
 
 
 </script>
