@@ -457,53 +457,48 @@
                     .OnClick("redirectToStatusUpdate")
                     )
                 </div>
-
-
-
                <div class="dx-field ledgerResult" style="padding:10px;">
 
     @(
         Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry30102ClientStatus>()
                         
             .ID("ClientStatusdataGrid")
-                    .RemoteOperations(false)
-          .KeyExpr("ClientStatusNo")
             .RemoteOperations(false)
-          
+            .KeyExpr("ClientStatusNo")
+            .RemoteOperations(false)
+            .ColumnChooser(columnChooser => columnChooser
+            .Enabled(true)
+            .Title(new JS("formatMessage('Show/Hide Column')"))
+            .Mode(GridColumnChooserMode.Select)
+            )
             .Columns(columns =>
             {
-                                @*   columns.AddFor(m => m.)..Caption(new JS("formatMessage('"); *@
+                    @*   columns.AddFor(m => m.)..Caption(new JS("formatMessage('"); *@
                     columns.AddFor(m => m.ReportedOn).Caption(new JS("formatMessage('Reported On')"));
                     columns.AddFor(m => m.Status).Caption(new JS("formatMessage('Status')"));
                     columns.AddFor(m => m.FollowupOn).Caption(new JS("formatMessage('Followup On')"));
                     columns.AddFor(m => m.StatusRemarks).Caption(new JS("formatMessage('Status Remarks')"));
-                    columns.AddFor(m => m.ClientCode).Caption(new JS("formatMessage('Client Code')"));
-                    columns.AddFor(m => m.ClientStatusNo).Caption(new JS("formatMessage('Client Status No')"));
+                    columns.AddFor(m => m.ClientCode).Caption(new JS("formatMessage('Client Code')")).Visible(false);
+                    columns.AddFor(m => m.ClientStatusNo).Caption(new JS("formatMessage('Client Status No')")).Visible(false);
                     
                 
             })
-                    //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
-                    .AllowColumnReordering(true) // Enable column reordering
-                    .AllowColumnResizing(true)   // Enable column resizing
-                    .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
+            //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
+            .AllowColumnReordering(true) // Enable column reordering
+            .AllowColumnResizing(true)   // Enable column resizing
+            .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
             .HeaderFilter(filter => filter.Visible(true))
             .Height(250)
             .ColumnAutoWidth(true)
-                    .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
-                    .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
+            .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
+            .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
             .ShowBorders(true)
             .Width("100%")
             .OnContextMenuPreparing("onClientsGridContextMenu1")
     )
 </div>
-
-
-
             </div>
         </text>);
-
-
-
                     item.Add().Text("Contact List").Title(new JS("formatMessage('Contact List')")).Template(@<text>
 
             <div class="form-container" >
@@ -1206,7 +1201,7 @@ ContactRemarks:clientRemarks,
 
         e.items = [
             {
-                text: "Client Edit",
+                text: "Edit Client Status Report",
                 onItemClick: function () {
                     let tenantName = window.tenantName || "defaultTenant";
                     let url = `/${tenantName}/IMS/ClientStatusUpdate?clientStatusNo=${ClientStatusNo}`;
@@ -1215,7 +1210,7 @@ ContactRemarks:clientRemarks,
                 }
             },
             {
-                text: "Delete",
+                    text: "Delete Client Status Report",
                 onItemClick: function () {
                     DevExpress.ui.dialog.confirm("Are you sure you want to delete this status update?", "Confirm Delete")
                         .done(function (dialogResult) {
@@ -1272,7 +1267,7 @@ ContactRemarks:clientRemarks,
 
         e.items = [
             {
-                text: "Client Edit",
+                    text: "Edit Client Status Report",
                 onItemClick: function () {
                     let tenantName = window.tenantName || "defaultTenant";
                     let url = `/${tenantName}/IMS/ClientContactList?ClientContactSlNo=${ClientContactSlNo}&clientName=${encodedClientName}`;
@@ -1281,7 +1276,7 @@ ContactRemarks:clientRemarks,
                 }
             },
             {
-                text: "Delete",
+                 text: "Delete Client Status Report",
                 onItemClick: function () {
                     DevExpress.ui.dialog.confirm("Are you sure you want to delete this contact?", "Confirm Delete")
                         .done(function (dialogResult) {

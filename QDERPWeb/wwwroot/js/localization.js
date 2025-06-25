@@ -3045,9 +3045,11 @@
         "Post COGS To Ledger": "Post COGS To Ledger,",
         "Change Password": "Change Password",
         "Company Details": "Company Details",
-        "Add New e-Invoice Credit Note": "Add New e-Invoice Credit Note"
+         "Add New e-Invoice Credit Note": "Add New e-Invoice Credit Note",
+         "Expected VAT Rate":"Expected VAT Rate"
     },
-    ar: {
+     ar: {
+         "Expected VAT Rate":"معدل ضريبة القيمة المضافة المتوقع",
         "Update": "تحديث",
         "Add New e-Invoice Credit Note": "إضافة إشعار دائن جديد للفاتورة الإلكترونية",
         "Change Password": "تغيير كلمة المرور",
