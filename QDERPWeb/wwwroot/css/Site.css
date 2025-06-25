@@ -398,51 +398,6 @@ body {
 }
 
 
-.btn-container {
-    display: inline-block;
-    position: relative;
-    overflow: hidden;
-}
-
-    /* Initially hide the button text and set a fixed small width */
-    .btn-container .dx-button {
-        width: 55px !important; /* Small width for icons */
-        transition: width 0.3s ease-in-out;
-    }
-
-    /* Show full text when hovered */
-    .btn-container:hover .dx-button {
-        width: 200px !important; /* Expand to fit text */
-    }
-
-    /* Initially hide text */
-    .btn-container .dx-button .dx-button-text {
-        display: none;
-    }
-
-    /* Show text on hover */
-    .btn-container:hover .dx-button .dx-button-text {
-        display: inline-block;
-    }
-
-    /* Ensure dropdown button behaves similarly */
-    .btn-container .dx-dropdownbutton {
-        width: 55px !important;
-        transition: width 0.3s ease-in-out;
-    }
-
-    .btn-container:hover .dx-dropdownbutton {
-        width: 180px !important; /* Adjust as needed */
-    }
-
-    .btn-container .dx-dropdownbutton .dx-button-text {
-        display: none;
-    }
-
-    .btn-container:hover .dx-dropdownbutton .dx-button-text {
-        display: inline-block;
-    }
-
 #btnAddNewQuotation:hover {
     width: 240px !important; /* Expand to fit text */
 }
@@ -532,6 +487,55 @@ body {
 #rowHeightProperties .dx-icon
 {
     color: #f75d59 !important;
+}
+#btnToggleHeaderFilter .dx-icon
+{
+    color: #48aaaa !important;
+}
+#btnToggleHeaderFilter,
+#btnPrint,
+#btnToggleSearch,
+#btntoggleGroupPanel,
+#btnColumnChooser,
+#ddButtonLayout,
+#rowHeightProperties {
+    display: inline-block;
+    width: 55px !important;
+    overflow: hidden;
+    transition: width 0.3s ease-in-out;
+}
+
+/* Expand button width on hover */
+#btnToggleHeaderFilter:hover,
+#btnPrint:hover,
+#btnToggleSearch:hover,
+#btntoggleGroupPanel:hover,
+#btnColumnChooser:hover,
+#ddButtonLayout:hover,
+#rowHeightProperties:hover {
+    width: 200px !important; /* Adjust individually if needed */
+}
+
+/* Hide button text initially */
+#btnToggleHeaderFilter .dx-button-text,
+#btnPrint .dx-button-text,
+#btnToggleSearch .dx-button-text,
+#btntoggleGroupPanel .dx-button-text,
+#btnColumnChooser .dx-button-text,
+#ddButtonLayout .dx-button-text,
+#rowHeightProperties .dx-button-text {
+    display: none;
+}
+
+/* Show button text on hover */
+#btnToggleHeaderFilter:hover .dx-button-text,
+#btnPrint:hover .dx-button-text,
+#btnToggleSearch:hover .dx-button-text,
+#btntoggleGroupPanel:hover .dx-button-text,
+#btnColumnChooser:hover .dx-button-text,
+#ddButtonLayout:hover .dx-button-text,
+#rowHeightProperties:hover .dx-button-text {
+    display: inline-block;
 }
 .dx-loadpanel-content {
     display: flex !important;
