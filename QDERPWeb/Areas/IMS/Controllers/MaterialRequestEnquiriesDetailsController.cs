@@ -229,6 +229,154 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, new { success = false, message = "Internal server error", details = ex.Message });
             }
         }
+        [HttpGet]
+        public ActionResult<string> GetNewRequestNoApi()
+        {
+            try
+            {
+                var tenantName = HttpContext.Session.GetString("TenantName");
+                if (string.IsNullOrWhiteSpace(tenantName))
+                    return Unauthorized(new { message = "Tenant name not found in session.", success = false });
+
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var company = dbContext.Tbl901CompanyDetails
+                        .FirstOrDefault(c => c.CompanyNameShort == tenantName);
+
+                    if (company == null)
+                        return NotFound("Company not found.");
+
+                    string abbrv = company.RequestAbbrv;
+                    int yearDigits = company.InvoiceYearDigits ?? 0;
+                    bool isReset = company.IsResetInvoiceInYear ?? false;
+                    DateTime today = DateTime.Now;
+
+                    string newMprNo = GetNewMprNo(abbrv, yearDigits, today, isReset, dbContext);
+                    return Ok(newMprNo);
+                }
+
+                return BadRequest("Invalid tenant context.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error in GetNewRequestNoApi: " + ex.Message);
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        private string GetNewMprNo(string abbr, int yearDigits, DateTime date, bool resetByYear, ERPMasterWtDataContext db)
+        {
+            try
+            {
+                var mprList = db.Tbl60601purchaseRequestMasters
+                    .Where(m => m.Mprno != null &&
+                                (!resetByYear || (m.Mprdate.HasValue && m.Mprdate.Value.Year == date.Year)))
+                    .Select(m => m.Mprno)
+                    .ToList();
+
+                int maxRunNo = mprList
+                    .Select(m => int.TryParse(m.Substring(m.Length - 5), out int num) ? num : 0)
+                    .DefaultIfEmpty(0)
+                    .Max() + 1;
+
+                string yearPart = (yearDigits > 0) ? date.Year.ToString().Substring(4 - yearDigits) : "";
+                return $"{abbr}{yearPart}-{maxRunNo.ToString("D5")}";
+            }
+            catch
+            {
+                string yearPart = (yearDigits > 0) ? date.Year.ToString().Substring(4 - yearDigits) : "";
+                return $"{abbr}{yearPart}-00001";
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ClonePurchaseRequest([FromBody] string originalMprNo)
+        {
+            if (string.IsNullOrWhiteSpace(originalMprNo))
+                return BadRequest(new { success = false, message = "Invalid original request no." });
+
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { success = false, message = "Tenant context not found." });
+
+            try
+            {
+                // ✅ Retrieve tenantName from session
+                var tenantName = HttpContext.Session.GetString("TenantName");
+                if (string.IsNullOrWhiteSpace(tenantName))
+                    return Unauthorized(new { success = false, message = "Tenant name not found in session." });
+
+                var company = dbContext.Tbl901CompanyDetails.FirstOrDefault(c => c.CompanyNameShort == tenantName);
+                if (company == null)
+                    return NotFound("Company not found.");
+
+                // ✅ Generate new MPR No
+                string newMprNo = GetNewMprNo(
+                    company.RequestAbbrv,
+                    company.InvoiceYearDigits ?? 0,
+                    DateTime.Now,
+                    company.IsResetInvoiceInYear ?? false,
+                    dbContext
+                );
+
+                string userName = HttpContext.Session.GetString("UserName") ?? "System";
+                DateTime now = DateTime.Now;
+
+                // ✅ Call the stored procedure
+                var result = dbContext.Database.ExecuteSqlRaw(
+                    "EXEC sp600_20InsertDuplicatePurchaseRequest @p0, @p1, @p2, @p3, @p4",
+                    originalMprNo, newMprNo, now, userName, now
+                );
+
+                dbContext.SaveChanges();
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Purchase Request cloned successfully.",
+                    newMprNo
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error cloning purchase request: " + ex.Message);
+                return StatusCode(500, new { success = false, message = "Clone failed.", detail = ex.Message });
+            }
+        }
+        [HttpPost]
+        public IActionResult ReviseRequest([FromBody] string originalMprNo)
+        {
+            if (string.IsNullOrWhiteSpace(originalMprNo))
+                return BadRequest(new { success = false, message = "Original MPR No is required." });
+
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { success = false, message = "Tenant context not found." });
+
+            try
+            {
+                var currentRevision = dbContext.Tbl60601purchaseRequestMasters
+                    .Where(p => p.Mprno.StartsWith(originalMprNo))
+                    .Max(p => p.MprrevisionId ?? 0);
+
+                int nextRevision = currentRevision + 1;
+                string newMprNo = $"{originalMprNo}-(R{currentRevision})";
+                string user = HttpContext.Session.GetString("UserName") ?? "System";
+
+                dbContext.Database.ExecuteSqlRaw(
+                    "EXEC sp600_32CreateNewRevisedMPR @p0, @p1, @p2, @p3",
+                    originalMprNo, newMprNo, nextRevision, user
+                );
+
+                dbContext.SaveChanges();
+
+                return Ok(new { success = true, message = "Purchase Request revised successfully.", newMprNo });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error revising purchase request: " + ex.Message);
+                return StatusCode(500, new { success = false, message = "Revision failed", detail = ex.Message });
+            }
+        }
+
 
     }
 }
