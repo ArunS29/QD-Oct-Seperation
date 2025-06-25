@@ -434,15 +434,42 @@
 						window.location.href = url;
 					}
 				},
-				{
-					text: "Duplicate Quotation",
-					icon: "doc",
-					onItemClick: function () {
-						const url = `/${tenantName}/IMS/CreatePurchaseOrder?Rfqno=${Rfqno}`;
-						window.location.href = url;
-					}
-				},
-			
+					{
+		text: "Duplicate Quotation",
+		icon: "copy",
+		onItemClick: function () {
+			const quoteNo = e.row.data.QuoteNo;
+
+			if (!quoteNo) {
+				DevExpress.ui.notify("Quote No not found.", "error", 2000);
+				return;
+			}
+
+			DevExpress.ui.dialog.confirm(
+				"You are about to Duplicate this Quotation. Are you sure you want to continue?",
+				"Confirm Duplicate"
+			).done(function (result) {
+				if (result) {
+					$.ajax({
+						url: "/api/Quotation/DuplicateQuotation",
+						type: "POST",
+						contentType: "application/json",
+						data: JSON.stringify(quoteNo),
+						success: function (response) {
+							DevExpress.ui.notify(response.message, "success", 2000);
+							$("#dataGrid").dxDataGrid("instance").refresh();
+						},
+						error: function (xhr) {
+							let msg = xhr.responseJSON?.message || "Duplication failed.";
+							DevExpress.ui.notify(msg, "error", 2000);
+							console.error("Clone error:", xhr.responseJSON);
+						}
+					});
+				}
+			});
+		}
+	},
+
 				{
 					text: "Delete Quotation",
 					icon: "trash",
