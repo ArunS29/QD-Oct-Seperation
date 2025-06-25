@@ -105,6 +105,7 @@
                
                 .Type(DateBoxType.Date)
                 .DisplayFormat("dd-MMM-yyyy")
+                
                 .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
                 )
 
@@ -115,6 +116,7 @@
                 
                 .Type(DateBoxType.Date)
                 .DisplayFormat("dd-MMM-yyyy")
+                
                 .Value(DateTime.Now))
 
 
@@ -133,8 +135,8 @@
         .Type(ButtonType.Normal)
         .StylingMode(ButtonStylingMode.Outlined)
         
-        .Width(180)
-
+        .Width(200)
+        .OnClick("generateDepreciationAndReload")
         )
 </div>
 <div class="dx-field ledgerResult">
@@ -186,7 +188,7 @@
         .AllowColumnResizing(true)
         .ColumnFixing(fixing => fixing.Enabled(true))
         .HeaderFilter(filter => filter.Visible(true))
-        .Height(401)
+        .Height(501)
         .Width("100%")
         .ColumnAutoWidth(false) // Important: allows columns to overflow and scroll
         .Scrolling(scrolling => scrolling
@@ -208,7 +210,7 @@
 
     $(document).ready(function () {
            const voucherNoField = $("#Docno").dxTextBox("instance");
-           const voucherNoFromUrl = getUrlParameter('Docno');
+           const voucherNoFromUrl = getUrlParameter('DepreciationDocNo');
 
            if (voucherNoFromUrl) {
                // ✅ Bind voucher number from URL
@@ -234,7 +236,40 @@
                const results = regex.exec(window.location.search);
                return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
            }
-       });
+        if (voucherNoFromUrl) {
+            $.ajax({
+                url: '/api/DepreciationMaster/GetDepreciationMaster',
+                type: 'GET',
+                data: { depreciationdocno: voucherNoFromUrl },
+                success: function (data) {
+                     // optional check
+                     debugger;
+                    if (data) {
+                        $("#Docno").dxTextBox("instance").option("value", data[0].DepreciationDocNo);
+                        $("#StartDate").dxDateBox("instance").option("value", data[0].DeprStartDate);
+                        $("#EndDate").dxDateBox("instance").option("value", data[0].DeprEndDate);
+                        const startDateBox = $("#StartDate").dxDateBox("instance");
+                        const endDateBox = $("#EndDate").dxDateBox("instance");
+                       
+                        const generateButton = $("#btnGenaeratedepreciation").dxButton("instance");
+
+                         startDateBox.option("disabled", true);
+                         endDateBox.option("disabled", true);
+                         generateButton.option("disabled", true);
+                        
+                    } else {
+                        DevExpress.ui.notify("No entry found with the given reference number.", "warning", 3000);
+                    }
+                },
+                error: function () {
+                    DevExpress.ui.notify("Failed to load journal entry from URL.", "error", 3000);
+                }
+            });
+        } else {
+            // DevExpress.ui.notify("Journal Reference Number is missing in the URL.", "error", 3000);
+        }
+    });
+      
 
        function handleCellPrepared(e) {
         if (e.rowType === "data") {
@@ -271,4 +306,95 @@
             }
         }));
     });
+     function generateDepreciationAndReload() {
+         debugger;
+        const startDateBox = $("#StartDate").dxDateBox("instance");
+        const endDateBox = $("#EndDate").dxDateBox("instance");
+        const docNoBox = $("#Docno").dxTextBox("instance");
+        const generateButton = $("#btnGenaeratedepreciation").dxButton("instance");
+
+        const startDate = startDateBox.option("value");
+        const endDate = endDateBox.option("value");
+        const documentNo = docNoBox.option("value");
+
+        if (!startDate || !endDate || !documentNo) {
+            DevExpress.ui.notify("Start Date, End Date and Doc No are required.", "error", 3000);
+            return;
+        }
+        // ✅ Format the dates as strings (yyyy-MM-dd)
+        const formatDate = (date) => {
+            const yyyy = date.getFullYear();
+            const mm = String(date.getMonth() + 1).padStart(2, '0');
+            const dd = String(date.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        };
+        $.ajax({
+            url: '/api/DepreciationMaster/GenerateDepreciation',
+            method: 'POST',
+            contentType: 'application/json', // <--- this is the key
+            data: JSON.stringify({
+                startDate: formatDate(startDate),
+                endDate: formatDate(endDate),
+                documentNo: documentNo
+            }),
+            success: function (response) {
+                if (response.success) {
+                          // ✅ Disable the components
+                    startDateBox.option("disabled", true);
+                    endDateBox.option("disabled", true);
+                    generateButton.option("disabled", true);
+                     getdepreciationOnLoad();
+                    DevExpress.ui.notify(response.message, "success", 3000);
+                    
+                } else {
+                    DevExpress.ui.notify(response.message, "error", 3000);
+                }
+            },
+            error: function (xhr) {
+                DevExpress.ui.notify("Error: " + xhr.responseJSON?.message || "Unknown error", "error", 3000);
+            }
+        });
+    }
+    function getdepreciationOnLoad() {
+        const startDateBox = $("#StartDate").dxDateBox("instance");
+        const endDateBox = $("#EndDate").dxDateBox("instance");
+        const docNoBox = $("#Docno").dxTextBox("instance");
+
+        const startDate = startDateBox.option("value");
+        const endDate = endDateBox.option("value");
+        const documentNo = docNoBox.option("value");
+
+        if (!startDate || !endDate || !documentNo) {
+            DevExpress.ui.notify("Start Date, End Date and Doc No are required.", "error", 3000);
+            return;
+        }
+
+        // Format date as yyyy-MM-dd to avoid timezone issues
+        const formatDate = (date) => {
+            const yyyy = date.getFullYear();
+            const mm = String(date.getMonth() + 1).padStart(2, '0');
+            const dd = String(date.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        };
+
+        $.ajax({
+            url: `/api/DepreciationMaster/GetDepreciationbydocno?docNo=${encodeURIComponent(documentNo)}&startDate=${formatDate(startDate)}&endDate=${formatDate(endDate)}`,
+            type: 'GET',
+            contentType: 'application/json',
+            success: function (data) {
+                $("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+            },
+            error: function () {
+                DevExpress.ui.notify("Error while loading data", "error", 2000);
+            }
+        });
+    }
+
+    $("#btnDepchildSaveandclose").on("click", function (e) {
+        e.preventDefault();
+        history.back();
+        
+        
+    });
+  
 </script>

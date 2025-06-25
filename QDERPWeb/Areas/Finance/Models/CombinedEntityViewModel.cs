@@ -1032,6 +1032,12 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public int Skip { get; set; }
         public int Take { get; set; }
     }
+    public class DepreciationRequest
+    {
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public string DocumentNo { get; set; }
+    }
 
 }
 
