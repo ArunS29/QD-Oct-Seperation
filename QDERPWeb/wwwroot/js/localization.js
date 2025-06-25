@@ -71,6 +71,7 @@
         "Total Cost:": "Total Cost:",
         "Supplier Ledger No": "Supplier Ledger No",
         "Supplier Type": "Supplier Type",
+        "Projects Dashboard":"Projects Dashboard",
 
         "Request / Enquiry Details": "Request / Enquiry Details",
         "Purchase Request with Item Details": "Purchase Request with Item Details",
