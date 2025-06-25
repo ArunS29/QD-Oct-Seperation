@@ -211,7 +211,9 @@
 	<div class="context-menu-item" onclick="viewInvoice()">
 		<i class="dx-icon-edit"></i> Edit Invoice
 	</div>
-
+	<div class="context-menu-item" onclick="cancelInvoice()">
+		<i class="dx-icon-close"></i> Cancel/Amend this Invoice (Invoice Credit Note)
+	</div>
 	<div class="context-menu-item" onclick="UnlockInvoice()">
 		<i class="dx-icon-unlocked"></i> Unlock The Bill
 	</div>
@@ -905,5 +907,7 @@
 						showColumnChooser();
 						console.log('End permission handling');
 					});
+
+
 
 </script>

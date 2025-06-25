@@ -6558,9 +6558,11 @@
 		function showLedgerAccountPopup() {
 			var popup = $("#ledgerAccountPopup").dxPopup("instance");
 			popup.show();
-
+			let IsPurchaseEdit=true;
+			// alert("1")
+			// debugger;
 			// Correct URL to your LedgerAccount view
-			$("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
+			$("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount?IsPurchaseEdit=${encodeURIComponent(IsPurchaseEdit)}`);
 		}
 
 	function showLedgerAccountEditPopup() {

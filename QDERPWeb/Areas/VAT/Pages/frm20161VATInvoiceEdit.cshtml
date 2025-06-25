@@ -1422,6 +1422,7 @@
 																				.Icon("edit")
 																				.Hint("Edit Description")
 																				.Width(60)
+																		        .Disabled(true)
 																			.OnClick("CurrencySClick")
 																			)
 									</div>
@@ -3540,7 +3541,7 @@
 
 			  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null,revaccheadid=null,InvoiceCurrencyExchangeId=null,TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
 					  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null,Gsdescrpition=null,GsdescriptionAr=null,ItemPartNo=null,CostPrice=null,GssellingRate=null,ReorderQty=null,IsDirectApproval=true,IsDirectVerify=true,IsClientCode=false
-							  ClientPostalCode=null,ClientCity=null,ClientAddressSt=null,Desc=null,rowIx=null, IsEdit = false;
+							  ClientPostalCode=null,ClientCity=null,ClientAddressSt=null,Desc=null,rowIx=null, IsEdit = false,InvNo=null;
 				  let dropDownInstance;
 			  let vatListInstance;
 
@@ -3551,7 +3552,7 @@
 
 			$(document).ready(function () {
 			var urlParams = new URLSearchParams(window.location.search);
-					var InvoiceNo = urlParams.get('InvoiceNo');
+			var InvoiceNo = urlParams.get('InvoiceNo');
 			var IsEditflag = urlParams.get('IsEditflag');
 
 				IsCurrent=IsEditflag.toString();
@@ -3692,7 +3693,6 @@
 					}
 				});
 			}
-
 
 		});
 
@@ -4170,7 +4170,7 @@
 					caption: "#",
 
 						cssClass: "center-header",
-
+							 sortOrder: "asc", // auto-sort
 					width: 100,
 
 					allowEditing: false // Prevent manual editing
@@ -4198,7 +4198,7 @@
 						cssClass: "center-header",
 
 					width: 550,
-						 sortOrder: "asc", // auto-sort
+						
 					editCellTemplate: function (cellElement, cellInfo) {
 
 						getDropdownData().done(function (dropdownData) {
@@ -4470,7 +4470,7 @@
 							$("#DetailedDescription").dxTextBox({ label: "Detailed Description", labelMode: "outside", width: "100%" });
 							$("#DetailedDescriptionArabic").dxTextBox({ label: "Detailed Description (Arabic)", labelMode: "outside", width: "98%", height: 100 });
 							$("#DetailedDescription").dxTextBox("instance").option("value",Gsdescrpition);
-							$("#btnConvertDescription").dxButton({ icon: "fas fa-language", onClick: function () { convertToArabicbtn("DetailedDescription", "DetailedDescriptionArabic"); } });
+							$("#btnConvertDescription").dxButton({ icon: "fas fa-language", onClick: function () { convertToArabicbtn(); } });
 							$("#ServiceStartDate").dxDateBox({ label: "Service Start Date", labelMode: "outside" });
 							$("#ServiceEndDate").dxDateBox({ label: "Service End Date", labelMode: "outside" });
 							$("#ExpiryDate").dxDateBox({ label: "Expiry Date", labelMode: "outside", width: "100%" });
@@ -4478,7 +4478,7 @@
 							$("#CostAllocationProperty").dxSelectBox({ label: "Cost Allocation for Property/Equipments", labelMode: "outside", width: "100%", placeholder: "Select Property/Equipments" });
 							$("#BatchLotNo").dxTextBox({ label: "Batch/Lot No", labelMode: "outside", width: "100%" });
 							$("#DiscountText").dxTextBox({ label: "Discount Text", labelMode: "outside", width: "100%" });
-							$("#btnConvertDiscount").dxButton({ icon: "fas fa-language", onClick: function () { convertToArabicbtn2("DiscountText", "DiscountTextArabic"); } });
+							$("#btnConvertDiscount").dxButton({ icon: "fas fa-language", onClick: function () { convertToArabicbtn2(); } });
 							$("#DiscountTextArabic").dxTextBox({ label: "Discount Text (Arabic)", labelMode: "outside", width: "100%" });
 							$("#Remarks").dxTextBox({ label: "Remarks", labelMode: "outside" });
 						}, 0);
@@ -4965,6 +4965,122 @@
 				}));
 			});
 		}
+			$(document).ready(function () {
+			if (revaccheadid == null) {
+				revaccheadid = "L00343";
+			}
+
+				let InVoiceNo = InvNo;
+				alert(InVoiceNo)
+			var InvoiceMaster = {
+
+				InvoiceNo: InvNo,
+				InvoiceDate: $("#InvoiceDate").dxDateBox("instance").option("value") || null,
+				InvoiceDateWtTime: $("#InvoiceIssuedDateTime").dxDateBox("instance").option("value") || null,
+				InvoiceDeliveryDate: $("#SupplyDate").dxDateBox("instance").option("value") || null,
+				ClientCode: accheadid || null,
+				BuyerName: $("#ddclientname").dxDropDownBox("instance").option("value") || null,
+				BuyerNameAr: $("#ClientNameArabic").dxTextBox("instance").option("value") || null,
+				BuyerGroupVatnumber: $("#GroupVATNo").dxTextBox("instance").option("value") || null,
+				BuyerVatnumber: $("#ClientVATNo").dxTextBox("instance").option("value") || null,
+				BuyerOtherIdtype: $("#OtherIDType").dxDropDownBox("instance").option("value") || null,
+				BuyerOtherId: $("#ClientOtherID").dxTextBox("instance").option("value") || null,
+				BuyerAddressStreet: $("#StreetName").dxTextBox("instance").option("value") || null,
+				BuyerAddressStreetAr: $("#StreetNameArabic").dxTextBox("instance").option("value") || null,
+				BuyerAdditionalStreet: $("#AdditionalAddress").dxTextBox("instance").option("value") || null,
+				BuyerAdditionalStreetAr: $("#AdditionalAddressArabic").dxTextBox("instance").option("value") || null,
+				BuyerBuildingNumber: $("#BuildingNumber").dxTextBox("instance").option("value") || null,
+				BuyerCity: $("#ClientCity").dxTextBox("instance").option("value") || null,
+				BuyerCityAr: $("#ClientCityArabic").dxTextBox("instance").option("value") || null,
+				BuyerAdditionalNumber: $("#AdditionalNumber").dxTextBox("instance").option("value") || null,
+				BuyerProvince: $("#Province").dxTextBox("instance").option("value") || null,
+				BuyerProvinceAr: $("#ProvinceArabic").dxTextBox("instance").option("value") || null,
+				BuyerPostalCode: $("#PostalCode").dxTextBox("instance").option("value") || null,
+				BuyerNeighborhood: $("#District").dxTextBox("instance").option("value") || null,
+				BuyerNeighborhoodAr: $("#DistrictArabic").dxTextBox("instance").option("value") || null,
+				InvoiceCounterValue: $("#InvoiceCounterValue").dxTextBox("instance").option("value") || null,
+				InvoiceUuid: $("#UUID").dxTextBox("instance").option("value") || null,
+				InvoiceEffectiveDate: $("#EffectiveDate").dxDateBox("instance").option("value") || null,
+				InvoiceStartDate: $("#InvoiceStartDate").dxDateBox("instance").option("value") || null,
+				InvoiceEndDate: $("#InvoiceEndDate").dxDateBox("instance").option("value") || null,
+				RevenueAccount: revaccheadid || null,
+				CostCenterCode: $("#ddlGoodsGroup1").dxDropDownBox("instance").option("value") || null,
+				RemarksInEn: $("#txtInvoiceNotes").dxTextArea("instance").option("value") || null,
+				RemarksInAr: $("#txtNotesinArabic").dxTextArea("instance").option("value") || null,
+				SalesOrderNo: $("#OurSalesOrderNo").dxDropDownBox("instance").option("value") || null,
+				Pono: $("#ClientPONo").dxTextBox("instance").option("value") || null,
+				Podate: $("#PODate").dxDateBox("instance").option("value") || null,
+				ReferenceNo: $("#ProjectRef").dxTextBox("instance").option("value") || null,
+				SesreferenceNo: $("#SESReference").dxTextBox("instance").option("value") || null,
+				PaymentTerms: $("#PaymentTerms").dxTextBox("instance").option("value") || null,
+				QuotationNo: $("#QuotationNo").dxTextBox("instance").option("value") || null,
+				DeliveryNoteNos: $("#DeliveryNotes").dxTextBox("instance").option("value") || null,
+				InvoiceDueDate: $("#PODate").dxDateBox("instance").option("value") || null,
+				ClientGrnreferenceNo: $("#ClientGRNReference").dxTextBox("instance").option("value") || null,
+				AddedBy: $("#SubmittedBytext").dxTextBox("instance").option("value") || null,
+				AddedOn: $("#ddlinvoicesubmittedon").dxDateBox("instance").option("value") || null,
+				InvoiceCurrencyCode: InvoiceCurrencyExchangeId || null,
+				ExchangeRate: $("#currencyexchangerate").dxNumberBox("instance").option("value") || null,
+				AdvanceText: $("#LessAdvance").dxTextBox("instance").option("value") || null,
+				AdvanceAmount: $("#currencyexchangerate3").dxNumberBox("instance").option("value") || null,
+				AdvanceTextAr: $("#LessAdvanceAr").dxTextBox("instance").option("value") || null,
+				OtherDeductionText: $("#LessOtherDeductions").dxTextBox("instance").option("value") || null,
+				OtherDeductionAmount: $("#currencyexchangerate4").dxNumberBox("instance").option("value") || null,
+				OtherDeductionTextAr: $("#LessAdvanceAr1").dxTextBox("instance").option("value") || null,
+				RetentionText: $("#LessRetention").dxTextBox("instance").option("value") || null,
+				RetentionAmount: $("#currencyexchangerate5").dxNumberBox("instance").option("value") || null,
+				RetentionTextAr: $("#LessAdvanceAr2").dxTextBox("instance").option("value") || null,
+				BranchCode: branchcode || null,
+				InvoiceSalesPerson: salespersoncode || null,
+				CompanyId: companyid || null,
+				SellerName: $("#OurCompanyRegisteredName").dxTextBox("instance").option("value") || null,
+				SellerGroupVatnumber: $("#OurGroupVATNo").dxTextBox("instance").option("value") || null,
+				SellerVATNumber: $("#OurVATNo").dxTextBox("instance").option("value") || null,
+				SellerNameAr: $("#OurCompanyNameinArabic").dxTextBox("instance").option("value") || null,
+				SellerAddressStreet: $("#OurStreetName").dxTextBox("instance").option("value") || null,
+				SellerAddressStreetAr: $("#OurStreetNameArabic").dxTextBox("instance").option("value") || null,
+				SellerAdditionalStreet: $("#OurAdditionalAddress").dxTextBox("instance").option("value") || null,
+				SellerAdditionalStreetAr: $("#OurAdditionalAddressArabic").dxTextBox("instance").option("value") || null,
+				SellerBuildingNumber: $("#OurBuildingNumber").dxTextBox("instance").option("value") || null,
+				SellerCity: $("#OurClientCity").dxTextBox("instance").option("value") || null,
+				SellerCityAr: $("#OurClientCityArabic").dxTextBox("instance").option("value") || null,
+				SellerAdditionalNumber: $("#OurAdditionalNumber").dxTextBox("instance").option("value") || null,
+				SellerProvince: $("#OurProvince").dxTextBox("instance").option("value") || null,
+				SellerProvinceAr: $("#OurProvinceArabic").dxTextBox("instance").option("value") || null,
+				SellerPostalCode: $("#OurPostalCode").dxTextBox("instance").option("value") || null,
+				SellerNeighborhood: $("#OurDistrict").dxTextBox("instance").option("value") || null,
+				SellerNeighborhoodAr: $("#OurDistrictArabic").dxTextBox("instance").option("value") || null,
+				InvoiceSubmittedBy: $("#SubmittedBytext").dxTextBox("instance").option("value") || null,
+				InvoiceSubmittedOn: $("#ddlinvoicesubmittedon").dxDateBox("instance").option("value") || null,
+				SellerOtherIdtype: SellerOtherIdtype || null,
+				SellerOtherSellerId: $("#OtherID1").dxTextBox("instance").option("value") || null,
+				InvoicePreparedBy: SignatoryID || null,
+				InvoiceCheckedBy: ChkbySignatoryID || null,
+				InvoiceApprovedBy: ApproedbySignatoryID || null
+			};
+
+			let InvoiceChildren = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource") || [];
+
+			let updatedDataSource = InvoiceChildren.map(item => ({
+				...item,
+				InvoiceNo: InVoiceNo,
+				TaxAmount: amt
+			}));
+
+			console.log("InvoiceMaster:", InvoiceMaster);
+			console.log("InvoiceChildren:", updatedDataSource);
+
+			$.ajax({
+				type: "POST",
+				url: `/api/VoucherMaster/UpdateInvoiceMasterDetails`,
+				contentType: "application/json",
+				data: JSON.stringify(InvoiceMaster),
+				success: function () {
+				}
+
+			});
+		});
+
 		$(document).ready(function () {
 			const urlParams = new URLSearchParams(window.location.search);
 			const invoiceNoFromUrl = urlParams.get("invoiceNo");
@@ -4985,6 +5101,8 @@
 						type: "GET",
 						success: function (data) {
 							if (invoiceBox) {
+								InvNo=data;
+									alert(InvNo)
 								invoiceBox.option("value", data || "");
 							} else {
 								console.warn("Invoice TextBox not initialized.");
@@ -8224,7 +8342,7 @@
 				e.preventDefault();
 				var rowIndex = $(this).index();
 					var rowData = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex];
-				 // invoiceNo = rowData.InvoiceNo;
+				 invoiceNo = rowData.InvoiceNo;
 				console.log(rowData);
 				contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
 			});
@@ -8763,6 +8881,62 @@
 				dataGrid.option("editing.allowDeleting", false);
 			}
 		}
+
+
+			 async function translateToArabic(text) {
+			try {
+				const response = await fetch(
+					`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`
+				);
+				const data = await response.json();
+				console.log(data);
+				return data.responseData.translatedText;
+			} catch (error) {
+				console.error("Translation failed:", error);
+				return "Translation Error";
+			}
+		}
+		async function convertToArabicbtn() {
+			const textBox1Instance = $("#DetailedDescription").dxTextBox("instance");
+			const textBox2Instance = $("#DetailedDescriptionArabic").dxTextBox("instance");
+			debugger;
+			if (!textBox1Instance || !textBox2Instance) {
+				console.error("TextBox instances are not properly initialized.");
+				return;
+			}
+
+			const englishText = textBox1Instance.option("value");
+			if (!englishText || englishText.trim() === "") {
+				alert("Please enter text to translate.");
+				return;
+			}
+
+			const arabicTranslation = await translateToArabic(englishText);
+			textBox2Instance.option("value", arabicTranslation);
+		}
+
+
+			 async function convertToArabicbtn2() {
+			const textBox1Instance = $("#DiscountText").dxTextBox("instance");
+			const textBox2Instance = $("#DiscountTextArabic").dxTextBox("instance");
+			if (!textBox1Instance || !textBox2Instance) {
+				console.error("TextBox instances are not properly initialized.");
+				return;
+			}
+
+			const englishText = textBox1Instance.option("value");
+			if (!englishText || englishText.trim() === "") {
+				alert("Please enter text to translate.");
+				return;
+			}
+
+			const arabicTranslation = await translateToArabic(englishText);
+			textBox2Instance.option("value", arabicTranslation);
+		}
+
+
+				
+
 
 
 

@@ -8272,13 +8272,15 @@
 		});
 
 
-		function showLedgerAccountPopup() {
-			var popup = $("#ledgerAccountPopup").dxPopup("instance");
-			popup.show();
-
-			// Correct URL to your LedgerAccount view
-			$("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
-		}
+			function showLedgerAccountPopup() {
+				var popup = $("#ledgerAccountPopup").dxPopup("instance");
+				popup.show();
+				let IsB2CEdit=true;
+				// alert("1")
+				// debugger;
+				// Correct URL to your LedgerAccount view
+					$("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount?IsB2CEdit=${encodeURIComponent(IsB2CEdit)}`);
+			}
 
 				function showLedgerAccountEditPopup() {
 
