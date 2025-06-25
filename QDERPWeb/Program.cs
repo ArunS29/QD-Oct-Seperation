@@ -21,7 +21,6 @@ using DevExpress.XtraCharts;
 using QD.ERP.Web.Middleware;
 using QD.ERP.Web.Services.Logging;
 
-//using qd.utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 

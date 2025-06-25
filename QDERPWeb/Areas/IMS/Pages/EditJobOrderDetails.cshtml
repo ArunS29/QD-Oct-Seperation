@@ -2001,4 +2001,35 @@
               combo.option("items", [...combo.option("items"), newText]); // Append the new value
               e.customItem = newText; // Automatically select it
             }
+                        //delete
+             $("#btnDelete").on("click", function (e) {
+                 e.preventDefault();
+                 onDeleteButtonClick();
+             });
+             function onDeleteButtonClick(e) {
+
+                  var JobOrderNo = $('#txtJoborederNo').dxTextBox('instance').option("value");
+
+                             if (!JobOrderNo) {
+                                 DevExpress.ui.notify("Please enter or select a JobOrderNo Entry to delete.", "warning", 3000);
+                     return;
+                 }
+
+                 $.ajax({
+                  url: "/api/EditJobOrderDetails/DeleteJobOrder",
+                     type: 'POST',
+                     contentType: 'application/json',
+                                 data: JSON.stringify(JobOrderNo), // 👈 plain string
+                     success: function (response) {
+                         DevExpress.ui.notify(response.message, 'success', 3000);
+                         setTimeout(function () {
+                             location.reload();
+                         }, 2000);
+                     },
+                     error: function (xhr) {
+                         const msg = xhr.responseJSON?.message || xhr.responseText || 'Error occurred while deleting.';
+                         DevExpress.ui.notify(msg, 'error', 3000);
+                     }
+                 });
+             }
         </script>

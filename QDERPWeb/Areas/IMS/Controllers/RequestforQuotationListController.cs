@@ -372,8 +372,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 					var resultWithDetails = new List<ExpandoObject>();
 
 					// Query the Tbl60602purchaseRequestChildren table for the given Mprno
-					var result = dbContext.Tbl60702rfqchildren
-						.Where(x => x.Rfqno == RFQno)
+					var result = dbContext.Qry60702rfqchildren  
+                        .Where(x => x.Rfqno == RFQno)
 						.ToList();
 
 					foreach (var gridDetails in result)
@@ -755,5 +755,95 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 			return Unauthorized(new { Message = "Invalid tenant.", Success = false });
 		}
-	}
+        [HttpPost]
+        public IActionResult DeleteRFQView(string Rfqno)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Json(new { success = false, message = "Invalid tenant context." });
+
+            try
+            {
+                var rfqMaster = dbContext.Tbl60701rfqmasters.FirstOrDefault(x => x.Rfqno == Rfqno);
+
+                if (rfqMaster == null)
+                    return Json(new { success = false, message = "RFQ not found." });
+
+                // Check if RFQ is approved
+                if (rfqMaster.IsApproved == true)
+                    return Json(new { success = false, message = "RFQ is already approved. You cannot delete the approved Request/Enquiry." });
+
+                // Check if RFQ has PO issued
+                var rfqWithPO = dbContext.Qry60704rfqviewMasters.FirstOrDefault(x => x.Rfqno == Rfqno && !string.IsNullOrEmpty(x.Pono));
+                if (rfqWithPO != null)
+                    return Json(new { success = false, message = "RFQ has related Purchase Order issued. You cannot delete the RFQ." });
+
+                // Delete RFQ Child Records
+                var rfqChildren = dbContext.Tbl60702rfqchildren.Where(x => x.Rfqno == Rfqno);
+                dbContext.Tbl60702rfqchildren.RemoveRange(rfqChildren);
+
+                // Delete RFQ Master Record
+                dbContext.Tbl60701rfqmasters.Remove(rfqMaster);
+
+                // Optional: Delete scanned documents if needed
+                // DeleteDocumentPDF(Rfqno, "VoucherScanned\\IMS_RFQ");
+
+                // Save Changes
+                dbContext.SaveChanges();
+
+                // Log Deletion
+                //string userId = HttpContext.Session.GetString("UserID") ?? "Unknown";
+                //string userName = HttpContext.Session.GetString("UserName") ?? "Unknown";
+
+                //InsertUserEntryLogSheet(
+                //    "IMS RFQ",
+                //    $"IMS RFQ Ref No. {Rfqno} has been deleted by User ID: {userId} User Name: {userName}.",
+                //    userName,
+                //    Rfqno
+                //);
+
+                return Json(new { success = true, message = "RFQ has been successfully removed from the database." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting RFQ.");
+                return Json(new { success = false, message = "An error occurred while deleting the RFQ." });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UnlockRFQ([FromBody] RFQViewModel request)
+        {
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+                if (string.IsNullOrWhiteSpace(request?.Rfqno))
+                    return BadRequest(new { success = false, message = "RFQ No is required." });
+
+                var existingEntity = await dbContext.Tbl60701rfqmasters
+                    .FirstOrDefaultAsync(x => x.Rfqno == request.Rfqno);
+
+                if (existingEntity == null)
+                    return NotFound(new { success = false, message = "RFQ not found." });
+
+                if (existingEntity.IsApproved != true && existingEntity.IsSubmitted != true && existingEntity.IsVerified != true)
+                    return Ok(new { success = false, message = "RFQ is already unlocked." });
+
+                existingEntity.IsApproved = false;
+                existingEntity.IsSubmitted = false;
+                existingEntity.IsVerified = false;
+
+                dbContext.Tbl60701rfqmasters.Update(existingEntity);
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Quotation has been unlocked successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while unlocking Quotation.");
+                return StatusCode(500, new { success = false, message = "Internal server error", details = ex.Message });
+            }
+        }
+    }
 }

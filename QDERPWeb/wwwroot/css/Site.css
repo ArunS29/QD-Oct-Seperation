@@ -118,7 +118,8 @@ body {
 
 .dx-datagrid {
     border-radius: 15px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    /* box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); */
+    border: 1px solid #d3d3d3;
     overflow: hidden;
 }
 
@@ -309,12 +310,10 @@ body {
 
 /*IMS footer Styles*/
 
-<style type="text/css" >
-#dataGrid .dx-datagrid-headers .dx-datagrid-action {
+#dataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
     text-align: center !important;
 }
-
-#dataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
+#dataGrid .dx-datagrid-headers .dx-datagrid-action {
     text-align: center !important;
 }
 /* Button Styling */
@@ -531,4 +530,94 @@ body {
 {
     color: #f75d59 !important;
 }
+.dx-loadpanel-content {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    height: 150px !important;
+    width: 180px !important;
+    margin-top: 400px;
+}
+.dx-loadindicator-content {
+  position: absolute;
+  top: 0%;
+  left: 0%;
+}
+.dx-loadindicator-icon .dx-loadindicator-segment {
+  display: none;
+}
+/* Customize the background of the load panel */
+.dx-loadpanel {
+    background-color: rgba(255, 255, 255, 0.7) !important;
+    z-index: 9999 !important;
+}
 
+/* Customize the loading spinner */
+.dx-loadindicator-icon {
+    width: 54px;
+    height: 54px;
+    position: absolute;
+    top: 20%;
+    left: 35%;
+    border-radius: 4px;
+    background-color: #0a11db;
+    background-image: radial-gradient(circle 5px, #FFFFFF 100%, transparent 0), radial-gradient(circle 5px, #FFFFFF 100%, transparent 0), radial-gradient(circle 5px, #FFFFFF 100%, transparent 0), radial-gradient(circle 5px, #FFFFFF 100%, transparent 0), radial-gradient(circle 5px, #FFFFFF 100%, transparent 0), radial-gradient(circle 5px, #FFFFFF 100%, transparent 0);
+    background-repeat: no-repeat;
+    animation: move 4s linear infinite, rotate 2s linear infinite;
+}
+
+/* Optional: customize loading message */
+.dx-loadpanel-message {
+    font-size: 16px !important;
+    color: #333 !important;
+}
+
+
+@keyframes rotate {
+    0%, 20% {
+        transform: rotate(0deg)
+    }
+
+    30%, 40% {
+        transform: rotate(90deg)
+    }
+
+    50%, 60% {
+        transform: rotate(180deg)
+    }
+
+    70%, 80% {
+        transform: rotate(270deg)
+    }
+
+    90%, 100% {
+        transform: rotate(360deg)
+    }
+}
+
+@keyframes move {
+    0%, 9% {
+        background-position: -12px -15px, -12px 0px, -12px 15px, 12px -15px, 12px 0px, 12px 15px;
+    }
+
+    10%, 25% {
+        background-position: 0px -15px, -12px 0px, -12px 15px, 34px -15px, 12px 0px, 12px 15px;
+    }
+
+    30%, 45% {
+        background-position: 0px -34px, -12px -10px, -12px 12px, 34px -15px, 12px -10px, 12px 12px;
+    }
+
+    50%, 65% {
+        background-position: 0px -34px, -12px -34px, -12px 12px, 34px -12px, 0px -10px, 12px 12px;
+    }
+
+    70%, 85% {
+        background-position: 0px -34px, -12px -34px, 0px 12px, 34px -12px, 0px -10px, 34px 12px;
+    }
+
+    90%, 100% {
+        background-position: 0px -34px, -12px -34px, 0px 0px, 34px -12px, 0px 0px, 34px 12px;
+    }
+}
+    
