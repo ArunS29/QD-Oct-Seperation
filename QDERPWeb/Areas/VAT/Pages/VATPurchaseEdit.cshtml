@@ -1638,8 +1638,19 @@
 						.LoadMode(DataSourceLoadMode.Raw)
 						.Key("AccountId")
 						)
+					.WordWrapEnabled(true)
+					.ShowBorders(true)
+					.ShowColumnHeaders(true)
+					.FilterRow(f => f.Visible(true))
+					.SearchPanel(sp => sp.HighlightSearchText(true))
 						.Selection(sl => sl.Mode(SelectionMode.Single))
 						.OnSelectionChanged("ClientCodedataGridSelectionChanged")
+					.OnInitialized("ClientCodedataGridInitialized")
+					.OnRowPrepared("onClientCodeRowPrepared")
+					.HeaderFilter(p => p.Visible(false))
+					.ShowBorders(true)
+					.HoverStateEnabled(true)
+					
 						.Paging(p => p.PageSize(15))
 						.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 
@@ -1648,11 +1659,11 @@
 						.Height(250)
 						.Columns(columns =>
 						{
-							columns.Add().DataField("AccountId").Caption("Supplier Code");
-							columns.Add().DataField("AccountHead").Caption("AccountHead");
-							columns.Add().DataField("AccountHeadArabic").Caption("AccountHeadArabic");
-							columns.Add().DataField("SupplierVatno").Caption("SupplierVatno");
-							columns.Add().DataField("RecordStatus").Caption("RecordStatus");
+						columns.Add().DataField("AccountId").Caption("Supplier Code").Alignment(HorizontalAlignment.Center);
+						columns.Add().DataField("AccountHead").Caption("AccountHead").Alignment(HorizontalAlignment.Center);
+						columns.Add().DataField("AccountHeadArabic").Caption("AccountHeadArabic").Alignment(HorizontalAlignment.Center);
+						columns.Add().DataField("SupplierVatno").Caption("SupplierVatno").Alignment(HorizontalAlignment.Center);
+							columns.Add().DataField("RecordStatus").Caption("RecordStatus").Alignment(HorizontalAlignment.Center);
 							columns.Add().DataField("IsLedgerObselete")
 						.Caption(new JS("formatMessage('Is Ledger Obselete')"))
 						.Alignment(HorizontalAlignment.Center)
@@ -5291,6 +5302,7 @@
 
 				   var accountHeadValidation = accountHeadValidator.validate();
 				   var AccountGroupValidation = AccountGroupValidator.validate();
+				
 
 				   if (accountHeadValidation.isValid && AccountGroupValidation.isValid) {
 
@@ -6558,9 +6570,11 @@
 		function showLedgerAccountPopup() {
 			var popup = $("#ledgerAccountPopup").dxPopup("instance");
 			popup.show();
-
+			let IsPurchaseEdit=true;
+			// alert("1")
+			// debugger;
 			// Correct URL to your LedgerAccount view
-			$("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
+			$("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount?IsPurchaseEdit=${encodeURIComponent(IsPurchaseEdit)}`);
 		}
 
 	function showLedgerAccountEditPopup() {

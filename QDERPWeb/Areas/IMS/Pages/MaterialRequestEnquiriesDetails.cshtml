@@ -342,7 +342,7 @@
 
 			           });
 			
-				columns.Add().Caption(new JS("formatMessage('Quatation')")).Columns(band =>
+				columns.Add().Caption(new JS("formatMessage('Quotation')")).Columns(band =>
 	         {
 				band.AddFor(m => m.NoOfQuotations).Caption(new JS("formatMessage('No of Quotation')")).Alignment(HorizontalAlignment.Center);
 				band.AddFor(m => m.NetQuotedAmount).Caption(new JS("formatMessage('Net Quoted Amount')")).Alignment(HorizontalAlignment.Center);
@@ -644,20 +644,109 @@
 					}
 				},
 
-				{
-					text: "Clone Request / Enquiry",
-					icon: "copy",
-					onItemClick: function () {
-						onCloneRequest(e.row.data);
+							{
+		text: "Clone Request / Enquiry",
+		icon: "copy",
+		onItemClick: function () {
+			const mprNo = e.row.data.Mprno; // ✅ consistent name
+
+			if (!mprNo) {
+				DevExpress.ui.notify("MPR No not found.", "error", 2000);
+				return;
+			}
+
+			DevExpress.ui.dialog.confirm(
+				"You are about to Clone this Request/Enquiry. Are you sure you want to continue?",
+				"Confirm Clone"
+			).done(function (result) {
+				if (result) {
+					$.ajax({
+							url: "/api/MaterialRequestEnquiriesDetails/ClonePurchaseRequest",
+						type: "POST",
+						contentType: "application/json",
+						data: JSON.stringify(mprNo), // ✅ pass as string
+						success: function (response) {
+							DevExpress.ui.notify(response.message, "success", 2000);
+							$("#dataGrid").dxDataGrid("instance").refresh(); // ✅ refresh grid
+						},
+						error: function (xhr) {
+							let msg = xhr.responseJSON?.message || "Clone failed.";
+							DevExpress.ui.notify(msg, "error", 2000);
+							console.error("Clone error:", xhr.responseJSON);
+						}
+					});
+				}
+			});
+		}
+	},
+
+
+						{
+		text: "Revise the Request / Enquiry",
+		icon: "repeat",
+		onItemClick: function () {
+			const mprNo = e.row?.data?.Mprno;
+			const requestEnquiry = e.row?.data?.RequestEnquiry; // ✅ Get RequestEnquiry type
+
+			if (!mprNo) {
+				DevExpress.ui.notify("MPR No not found.", "error", 2000);
+				return;
+			}
+
+			DevExpress.ui.dialog.confirm(
+				"You are about to revise this Purchase Request. Are you sure you want to continue adding a new revised Purchase Request?",
+				"Confirm Revision"
+			).done(function (result) {
+				if (!result) return;
+
+				$.ajax({
+					url: "/api/MaterialRequestEnquiriesDetails/ReviseRequest",
+					type: "POST",
+					contentType: "application/json",
+					data: JSON.stringify(mprNo),
+					success: function (response) {
+						DevExpress.ui.notify(response.message, "success", 2000);
+						$("#dataGrid").dxDataGrid("instance").refresh();
+
+						// ✅ Navigate to new page based on RequestEnquiry
+						if (response.newMprNo) {
+							const tenantName = window.tenantName || "defaultTenant";
+							let url = "";
+							let title = "";
+
+							switch (requestEnquiry) {
+								case "Client Request":
+									url = `/${tenantName}/IMS/AddNewClientRequest?Mprno=${encodeURIComponent(response.newMprNo)}`;
+									title = "Edit Client Request";
+									break;
+								case "Project Request":
+									url = `/${tenantName}/IMS/MRAddNewProjectRequest?Mprno=${encodeURIComponent(response.newMprNo)}`;
+									title = "Edit Project Request";
+									break;
+								case "Store Request":
+									url = `/${tenantName}/IMS/MRAddNewStoreRequest?Mprno=${encodeURIComponent(response.newMprNo)}`;
+									title = "Edit Store Request";
+									break;
+								default:
+									console.warn("Unknown RequestEnquiry type:", requestEnquiry);
+									return;
+							}
+
+							// 👇 Navigate to the target page
+							window.location.href = url;
+						}
+					},
+					error: function (xhr) {
+						let msg = xhr.responseJSON?.message || "Revision failed.";
+						DevExpress.ui.notify(msg, "error", 2000);
+						console.error("Revision error:", xhr.responseJSON);
 					}
-				},
-				{
-					text: "Revise the Request / Enquiry",
-					icon: "repeat",
-					onItemClick: function () {
-						onReviseRequest(e.row.data);
-					}
-				},
+				});
+			});
+		}
+	},
+
+
 				{
 					text: "Delete Request / Enquiry",
 					icon: "trash",
@@ -783,39 +872,70 @@
 		});
 	}
 
-	function onCloneRequest(originalData) {
-    if (!originalData) {
-        console.error("No data to clone.");
-        return;
-    }
+function onCloneRequest(originalMprno) {
+		$.ajax({
+	url: `/api/MaterialRequestEnquiriesDetails/ClonePurchaseRequest?originalMprNo=${originalMprno}`,
+			type: "POST",
+			success: function (response) {
+				if (response.success) {
+					DevExpress.ui.notify(response.message, "success", 2000);
+					$("#dataGrid").dxDataGrid("instance").refresh(); // Refresh grid
+				} else {
+					DevExpress.ui.notify(response.message || "Cloning failed.", "error", 3000);
+				}
+			},
+			error: function (xhr) {
+				let msg = xhr.responseJSON?.message || "An error occurred while cloning the request.";
+				DevExpress.ui.notify(msg, "error", 3000);
+				console.error("Clone error:", xhr);
+			}
+		});
+	}
 
-    // Create a deep copy of the original data
-    const clonedData = JSON.parse(JSON.stringify(originalData));
 
-    // Reset fields that should be unique or re-initialized
-    clonedData.Mprno = null; // Assuming Mprno is a unique identifier
-    clonedData.MprrevisionNo = false;
-    clonedData.Mprdate = new Date().toISOString().split('T')[0]; // Set to today's date
-    clonedData.IsSubmitted = false;
-    clonedData.IsVerified = false;
-    clonedData.IsApproved = false;
-    clonedData.IsCancelled = false;
-    clonedData.AddedOn = new Date().toISOString().split('T')[0];
-    clonedData.ModifiedOn = null;
-    clonedData.SubmittedOn = null;
-    clonedData.VerifiedOn = null;
-    clonedData.ApprovedOn = null;
-    clonedData.CancelledOn = null;
-    clonedData.Remarks = "Cloned from MPR";
 
-    // Insert the cloned data into the DataGrid
-    const dataGrid = $("#dataGrid").dxDataGrid("instance");
-    dataGrid.getDataSource().store().insert(clonedData).then(() => {
-        dataGrid.refresh();
-    }).catch((error) => {
-        console.error("Error inserting cloned data:", error);
-    });
-}
+
+
+
+
+
+
+
+
+
+// 	function onCloneRequest(originalData) {
+//     if (!originalData) {
+//         console.error("No data to clone.");
+//         return;
+//     }
+
+//     // Create a deep copy of the original data
+//     const clonedData = JSON.parse(JSON.stringify(originalData));
+
+//     // Reset fields that should be unique or re-initialized
+//     clonedData.Mprno = null; // Assuming Mprno is a unique identifier
+//     clonedData.MprrevisionNo = false;
+//     clonedData.Mprdate = new Date().toISOString().split('T')[0]; // Set to today's date
+//     clonedData.IsSubmitted = false;
+//     clonedData.IsVerified = false;
+//     clonedData.IsApproved = false;
+//     clonedData.IsCancelled = false;
+//     clonedData.AddedOn = new Date().toISOString().split('T')[0];
+//     clonedData.ModifiedOn = null;
+//     clonedData.SubmittedOn = null;
+//     clonedData.VerifiedOn = null;
+//     clonedData.ApprovedOn = null;
+//     clonedData.CancelledOn = null;
+//     clonedData.Remarks = "Cloned from MPR";
+
+//     // Insert the cloned data into the DataGrid
+//     const dataGrid = $("#dataGrid").dxDataGrid("instance");
+//     dataGrid.getDataSource().store().insert(clonedData).then(() => {
+//         dataGrid.refresh();
+//     }).catch((error) => {
+//         console.error("Error inserting cloned data:", error);
+//     });
+// }
 
 
 </script>	

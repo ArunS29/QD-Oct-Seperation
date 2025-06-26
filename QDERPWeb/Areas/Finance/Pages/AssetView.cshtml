@@ -517,16 +517,8 @@
         });
     });
 
-      function showDepreciationSchedule() {
-            $("#DepreciationContent").load(`/${tenantName}/Finance/DepreciationMaster ` , function () {
-            $("#DepreciationModal").modal('show');
-                $(".modal-backdrop").remove();
-            $(".close").on("click", function () {
-                $("#DepreciationModal").modal('hide');
-            });
-
-
-        });
+    function showDepreciationSchedule() {
+       window.location.href = `/${tenantName}/Finance/DepreciationMaster`;
     }
     function applyShowWhenGroupedToAllGroupedColumns(grid) {
         const columns = grid.getVisibleColumns();

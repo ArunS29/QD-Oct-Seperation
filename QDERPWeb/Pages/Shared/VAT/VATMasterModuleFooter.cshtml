@@ -1,4 +1,5 @@
-﻿<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+﻿
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style type="text/css">
     #dataGrid .dx-datagrid-headers .dx-datagrid-action {
         text-align: center !important;
@@ -105,7 +106,7 @@
 
         /* Show full text when hovered */
         .btn-container:hover .dx-button {
-            width: 200px !important; /* Expand to fit text */
+            width: 150px !important; /* Expand to fit text */
         }
 
         /* Initially hide text */
@@ -169,6 +170,7 @@
         display: inline-block;
         margin-left: 8px; /* optional spacing between icon and text */
     }
+
     .modal-content {
         position: absolute;
         top: 40%;
@@ -206,9 +208,9 @@
         width: 200px !important;
     }
 
-    .btn-container:hover #btnAddNewPayment.dx-button {
-        width: 240px !important;
-    }
+    /* .btn-container:hover #btnAddNewPayment.dx-button { */
+    /*     width: 240px !important; */
+    /* } */
 
     /* Keep the icon always visible */
     .btn-containerIvoiceEdit .dx-button .dx-icon {
@@ -229,88 +231,34 @@
     .multiline-button .dx-button-text {
         white-space: normal;
     }
-
 </style>
 
-<div class="dx-fieldset horizontal-container" style="width:1000px;background-color:transparent;">
-
-
-    <div class="btn-containers">
-        @(Html.DevExtreme().Button()
-            .ID("btnSave")
-            .Text(new JS("formatMessage('Update')"))
-            .Type(ButtonType.Normal)
-            .StylingMode(ButtonStylingMode.Outlined)
-            .Icon("save")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-                                                         // .OnClick("saveInvoiceDetails") // Calls the JavaScript function
-            )
-
-    </div>
-
-    <div class="btn-containers">
-
-        @(Html.DevExtreme().Button()
-            .ID("btnSaveAndClose")
-            .Text(new JS("formatMessage('Save and Close')"))
-            .Type(ButtonType.Normal)
-            .StylingMode(ButtonStylingMode.Outlined)
-            .Icon("save")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-            )
-    </div>
-
-    <div class="btn-containers">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("btnPrint1")
-            .Text(new JS("formatMessage('Print')"))
-            .Icon("print")
-            .ElementAttr(new { @class = "bold-button" })
-            .DropDownOptions(options => options.Width(230))
-            .ShowArrowIcon(false)
-            .Items(items =>
-            {
-                items.Add().Text("Print Regular TAX Invoice").Icon("print");
-                items.Add().Text("Print Simplified TAX Invoice").Icon("file");
-                items.Add().Text("Additional Formats").Icon("folder");
-                items.Add().Text("Edit Sales Voucher").Icon("edit");
-                items.Add().Text("Upload Items from Excel").Icon("upload").OnClick("navigateInventoryListtoUpload");
-                items.Add()
-                .Text("Profit On Sale")
-                .Icon("chart")
-                .OnClick("navigateToLoss");
-
-                items.Add().Text("Invoice Cost Posting").Icon("money").OnClick("navigateToInvoiceCostPosting");
-                items.Add().Text("Advance / Prepayment Adjustments").Icon("wallet");
-            })
-            .OnItemClick("addPrintButton_click")
-            )
-    </div>
-
+<div class="dx-fieldset horizontal-container" style="width:1000px;background-color:transparent;gap:3px">
 
     <div class="btn-containers">
         @(Html.DevExtreme().Button()
-            .ID("btnDelete")
-            .Text(new JS("formatMessage('Delete')"))
-            .Icon("close")
-            //  .OnClick("onDeleteButtonClick")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-            )
+                .ID("btnSave")
+                .Text(new JS("formatMessage('Save')"))
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("save")
+                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                                                             // .OnClick("saveInvoiceDetails") // Calls the JavaScript function
+                )
+
     </div>
 
     <div class="btn-containers">
 
         @(Html.DevExtreme().Button()
-            .ID("btnBack")
-            .Text(new JS("formatMessage('Back')"))
-            .Icon("arrowleft")
-            // .OnClick("onBackButtonClick")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-            )
+                .ID("btnBack")
+                .Text(new JS("formatMessage('Back')"))
+                .Icon("arrowleft")
+                                   // .OnClick("onBackButtonClick")
+                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                )
     </div>
 
-
-    
     <!-- Hidden anchor for submenu positioning -->
     <div id="additionalFormatsTrigger" style="position:absolute; width:1px; height:1px;"></div>
 
@@ -322,6 +270,57 @@
 
 
 <script type="text/javascript">
+
+
+
+    function moveRow(direction) {
+        const grid = $("#B2BdataGrid").dxDataGrid("instance");
+        const dataSource = grid.getDataSource();
+        const items = dataSource.items();
+        const selectedKey = grid.option("selectedRowKeys")[0];
+
+        if (selectedKey === undefined) return;
+
+        const currentIndex = items.findIndex(item => item.SNo === selectedKey);
+        if (currentIndex === -1) return;
+
+        const targetIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+
+        // Boundary check
+        if (targetIndex < 0 || targetIndex >= items.length) return;
+
+        // Swap data
+        [items[currentIndex], items[targetIndex]] = [items[targetIndex], items[currentIndex]];
+
+        // Optional: Swap SNo for consistent display
+        const tempSno = items[currentIndex].SNo;
+        items[currentIndex].SNo = items[targetIndex].SNo;
+        items[targetIndex].SNo = tempSno;
+
+        // Replace array to trigger re-render
+        dataSource.store()._array = items;
+        grid.refresh();
+
+        // Reselect moved row
+        const newSelectedKey = items[targetIndex].SNo;
+        grid.selectRows([newSelectedKey], true);
+
+        // Scroll to the newly selected row
+        grid.navigateToRow(newSelectedKey);
+    }
+
+    $(function () {
+        $("#btnMoveUp").dxButton("instance").option("onClick", function () {
+            moveRow("up");
+        });
+
+        $("#btnMoveDown").dxButton("instance").option("onClick", function () {
+            moveRow("down");
+        });
+    });
+
+
+
 
              function navigateToInvoiceEdit() {
                // Replace with the actual tenant name dynamically
@@ -1409,7 +1408,7 @@
                         {text:"Print Regular Tax Invoice - without Signatories(with symbols)"},
                          {text:"Print Regular Tax Invoice - wt Document Level Discount"},
                       { text: "Print Regular Tax Invoice -  (Format 06)" },
-                   
+
                     { text: "Design 02 (W/o Signatories)" },
                     { text: "Design 02 (With Signatories)" }
                 ],
@@ -1428,7 +1427,7 @@
 
 
          // Function to determine if Simplified Invoice printing should be disabled
-   
+
         });
         ////Credit Note Function for reports
 
@@ -1621,6 +1620,28 @@
                 }
             }
 
+          function showSalesVoucherEditPopup(salesVoucherId, tenantName, isPosted) {
+        if (!isPosted) {
+            DevExpress.ui.dialog.alert(
+                "This VAT Sales Invoice is not yet posted to your ledgers.\nPlease Post the Voucher and try edit the Voucher.",
+                "Sales Invoice is Not Posted."
+            );
+        } else {
+            const url = `/${tenantName}/Finance/SalesVoucher/Edit/${encodeURIComponent(salesVoucherId)}`;
+            const popup = $("#salesVoucherEditPopup").dxPopup("instance");
+
+            popup.show();
+
+            setTimeout(() => {
+                const iframe = document.getElementById("salesVoucherEditFrame");
+                if (iframe) {
+                    iframe.src = url;
+                } else {
+                    console.error("Error: salesVoucherEditFrame not found!");
+                }
+            }, 300);
+        }
+    }
 
 
 </script>

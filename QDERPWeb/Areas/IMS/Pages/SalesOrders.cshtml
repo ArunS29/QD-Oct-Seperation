@@ -267,6 +267,35 @@
 		.Paging(p => p.Enabled(false))
 		.Pager(pager => pager.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
+		.Summary(s => s
+		.TotalItems(totalItems =>
+		{
+			totalItems.AddFor(m => m.TotalBeforeDiscount)
+			.SummaryType(SummaryType.Sum)
+			.DisplayFormat("Total: {0}")
+			.Alignment(HorizontalAlignment.Right);
+
+			totalItems.AddFor(m => m.Discount)
+			.SummaryType(SummaryType.Sum)
+			.DisplayFormat("Total: {0}")
+			.Alignment(HorizontalAlignment.Right);
+
+			totalItems.AddFor(m => m.TotalAfterDiscount)
+			.SummaryType(SummaryType.Sum)
+			.DisplayFormat("Total: {0}")
+			.Alignment(HorizontalAlignment.Right);
+
+			totalItems.AddFor(m => m.TotalTaxAmount)
+			.SummaryType(SummaryType.Sum)
+			.DisplayFormat("Total: {0}")
+			.Alignment(HorizontalAlignment.Right);
+
+			totalItems.AddFor(m => m.TotalWithTax)
+			.SummaryType(SummaryType.Sum)
+			.DisplayFormat("Total: {0}")
+			.Alignment(HorizontalAlignment.Right);
+		})
+		)
 		.ShowBorders(true)
 		.ShowRowLines(true)
 

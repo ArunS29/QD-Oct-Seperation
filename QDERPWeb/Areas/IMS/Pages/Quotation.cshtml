@@ -1,4 +1,4 @@
-@page
+﻿@page
 @model QD.ERP.Web.Areas.IMS.Pages.QuotationModel
 @{
 }
@@ -396,8 +396,13 @@
 					toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); // Last day of month
 					break;
 			}
-				frmDate = frmDate.toISOString().split('T')[0];
-	toDate = toDate.toISOString().split('T')[0];
+						frmDate = frmDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+		toDate = toDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+		FromDate = frmDate;
+		ToDate = toDate;
+
+		frmDateBox.option("value", frmDate);
+		toDateBox.option("value", toDate);
 
 				$.ajax({
 		url: '/api/Quotation/GetQuotation',
@@ -419,6 +424,18 @@
 
 
 	}
+		function formatDate(date) {
+		var d = new Date(date),
+			month = '' + (d.getMonth() + 1),
+			day = '' + d.getDate(),
+			year = d.getFullYear();
+
+		var strmonth = d.toLocaleString('default', { month: 'short' });
+		if (day.length < 2)
+			day = '0' + day;
+
+		return [day, strmonth, year].join('-');
+	}
 	function onContextMenuPreparing(e) {
 		if (e.target === "content" && e.row && e.row.data) {
 			const rowData = e.row.data;
@@ -434,15 +451,42 @@
 						window.location.href = url;
 					}
 				},
-				{
-					text: "Duplicate Quotation",
-					icon: "doc",
-					onItemClick: function () {
-						const url = `/${tenantName}/IMS/CreatePurchaseOrder?Rfqno=${Rfqno}`;
-						window.location.href = url;
-					}
-				},
-			
+					{
+		text: "Duplicate Quotation",
+		icon: "copy",
+		onItemClick: function () {
+			const quoteNo = e.row.data.QuoteNo;
+
+			if (!quoteNo) {
+				DevExpress.ui.notify("Quote No not found.", "error", 2000);
+				return;
+			}
+
+			DevExpress.ui.dialog.confirm(
+				"You are about to Duplicate this Quotation. Are you sure you want to continue?",
+				"Confirm Duplicate"
+			).done(function (result) {
+				if (result) {
+					$.ajax({
+						url: "/api/Quotation/DuplicateQuotation",
+						type: "POST",
+						contentType: "application/json",
+						data: JSON.stringify(quoteNo),
+						success: function (response) {
+							DevExpress.ui.notify(response.message, "success", 2000);
+							$("#dataGrid").dxDataGrid("instance").refresh();
+						},
+						error: function (xhr) {
+							let msg = xhr.responseJSON?.message || "Duplication failed.";
+							DevExpress.ui.notify(msg, "error", 2000);
+							console.error("Clone error:", xhr.responseJSON);
+						}
+					});
+				}
+			});
+		}
+	},
+
 				{
 					text: "Delete Quotation",
 					icon: "trash",
@@ -484,14 +528,46 @@
 			});
 		}
 	},
-				{
-					text: "Revise Quotation",
-					icon: "preferences",
-					onItemClick: function () {
-						const url = `/${tenantName}/IMS/CreatePurchaseOrder?Rfqno=${Rfqno}`;
-						window.location.href = url;
+					{
+		text: "Revise Quotation",
+		icon: "repeat",
+		onItemClick: function () {
+			const quoteNo = e.row?.data?.QuoteNo;
+			if (!quoteNo) {
+				DevExpress.ui.notify("Quote No not found.", "error", 2000);
+				return;
+			}
+
+			DevExpress.ui.dialog.confirm(
+				"You are about to revise this Quotation. Are you sure you want to continue adding a new revised Quotation?",
+				"Confirm Revision"
+			).done(function (result) {
+				if (!result) return;
+
+				$.ajax({
+					url: "/api/Quotation/ReviseQuotation",  // 🔁 Your new API
+					type: "POST",
+					contentType: "application/json",
+					data: JSON.stringify(quoteNo),
+					success: function (response) {
+						DevExpress.ui.notify(response.message, "success", 2000);
+						$("#dataGrid").dxDataGrid("instance").refresh();
+
+						if (response.newQuoteNo) {
+							const tenantName = window.tenantName || "defaultTenant";
+							window.location.href = `/${tenantName}/IMS/AddNewQuotation?QuoteNo=${encodeURIComponent(response.newQuoteNo)}`;
+						}
+					},
+					error: function (xhr) {
+						let msg = xhr.responseJSON?.message || "Revision failed.";
+						DevExpress.ui.notify(msg, "error", 2000);
+						console.error("Revision error:", xhr.responseJSON);
 					}
-				},
+				});
+			});
+		}
+	},
+
 				{
 					text: "Create Sales Order",
 					icon: "add",

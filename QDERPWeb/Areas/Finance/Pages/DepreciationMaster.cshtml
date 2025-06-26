@@ -3,9 +3,16 @@
 @using DevExtreme.AspNet.Mvc;
 @using DevExtreme.AspNet.Data;
 @{
-    Layout = null;
+  
 }
 <style type="text/css">
+    .dx-context-menu .context-menu-edit .dx-icon {
+        color: royalblue !important;
+    }
+
+    .dx-context-menu .context-menu-delete .dx-icon {
+        color: crimson !important;
+    }
 </style>
 <div class="title">
     <div class="header-container">
@@ -140,60 +147,66 @@
             .Columns(columns =>
             {
 
-                columns.Add().Caption(new JS("formatMessage('Depreciation Register Details')")).Columns(band =>
+                columns.Add().Caption(new JS("formatMessage('Depreciation Register Details')")).Alignment(HorizontalAlignment.Center).Columns(band =>
             {
 
-                band.Add().DataField("Postedon").Caption("Posted")
-            .CellTemplate(@<text>
-        <input type="checkbox" class="row-checkbox" data-claimrefno="<%= data.ClaimRefNo %>" onclick="highlightRow(this)" />
-    </text>).Width(200);
+                band.Add().DataField("IsPosted").Caption("Posted").Alignment(HorizontalAlignment.Center)
+                    .CellTemplate(@<text>
+                    @(Html.DevExtreme().CheckBox()
+                    .Value(new JS("data.IsPosted"))
+                            .Disabled(true)
+                            )
+                </text>);
 
-                band.Add().DataField("JournalVoucherNo").Caption(new JS("formatMessage('Voucher No')")).Width(200);
-                band.Add().DataField("DepreciationDocNo").Caption(new JS("formatMessage('Depreciation Doc No')")).Width(200);
-                band.Add().DataField("DeprStartDate").Caption(new JS("formatMessage('Start Date')")).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy").Width(200);
-                band.Add().DataField("DeprEndDate").Caption(new JS("formatMessage('End Date')")).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy").Width(200);
+                band.Add().DataField("JournalVoucherNo").Caption(new JS("formatMessage('Voucher No')"));
+                band.Add().DataField("DepreciationDocNo").Caption(new JS("formatMessage('Depreciation Doc No')"));
+                band.Add().DataField("DeprStartDate").Caption(new JS("formatMessage('Start Date')")).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy");
+                band.Add().DataField("DeprEndDate").Caption(new JS("formatMessage('End Date')")).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy");
 
 
             });
                 columns.Add().Caption("No of Assets").Columns(band =>
     {
 
-                band.Add().DataField("NoOfAssets").Caption("No of Assets").Width(200);
+                band.Add().DataField("NoOfAssets").Caption("No of Assets");
 
             });
                 columns.Add().Caption(new JS("formatMessage('Depreciation Amount')")).Columns(band =>
     {
 
-                band.Add().DataField("AssetOpeningBalance").Caption(new JS("formatMessage('Opening Balance')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
-                band.Add().DataField("AssetTotalDebitTrans").Caption(new JS("formatMessage('Debit Transactions')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
-                band.Add().DataField("AssetTotalCreditTrans").Caption(new JS("formatMessage('Credit Transactions')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
-                band.Add().DataField("AssetClosingBalance").Caption(new JS("formatMessage('Closing Balance')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
-                band.Add().DataField("AccumulatedOpeningBalance").Caption(new JS("formatMessage('Accumulated Opening Balance')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
-                band.Add().DataField("TotalDepreciationAmount").Caption(new JS("formatMessage('Total Depreciation Amount')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
-                band.Add().DataField("AccumulatedTotalBalance").Caption(new JS("formatMessage('Accumulated Closing Balance')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
-                band.Add().DataField("TotalBookValue").Caption(new JS("formatMessage('Total Book Value')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
+                band.Add().DataField("AssetOpeningBalance").Caption(new JS("formatMessage('Opening Balance')")).DataType(GridColumnDataType.Number).Format("#,##0.00");
+                band.Add().DataField("AssetTotalDebitTrans").Caption(new JS("formatMessage('Debit Transactions')")).DataType(GridColumnDataType.Number).Format("#,##0.00");
+                band.Add().DataField("AssetTotalCreditTrans").Caption(new JS("formatMessage('Credit Transactions')")).DataType(GridColumnDataType.Number).Format("#,##0.00");
+                band.Add().DataField("AssetClosingBalance").Caption(new JS("formatMessage('Closing Balance')")).DataType(GridColumnDataType.Number).Format("#,##0.00");
+                band.Add().DataField("AccumulatedOpeningBalance").Caption(new JS("formatMessage('Accumulated Opening Balance')")).DataType(GridColumnDataType.Number).Format("#,##0.00");
+                band.Add().DataField("TotalDepreciationAmount").Caption(new JS("formatMessage('Total Depreciation Amount')")).DataType(GridColumnDataType.Number).Format("#,##0.00");
+                band.Add().DataField("AccumulatedTotalBalance").Caption(new JS("formatMessage('Accumulated Closing Balance')")).DataType(GridColumnDataType.Number).Format("#,##0.00");
+                band.Add().DataField("TotalBookValue").Caption(new JS("formatMessage('Total Book Value')")).DataType(GridColumnDataType.Number).Format("#,##0.00");
 
             });
             })
 
-        .Paging(paging => paging.Enabled(false))
-        .AllowColumnReordering(true)
-        .AllowColumnResizing(true)
-        .ColumnFixing(fixing => fixing.Enabled(true))
-        .HeaderFilter(filter => filter.Visible(true))
-        .Height(401)
-        .Width("100%")
-        .ColumnAutoWidth(false) // Important: allows columns to overflow and scroll
-        .Scrolling(scrolling => scrolling
-        .Mode(GridScrollingMode.Standard) // or "virtual" if you want virtual scrolling
-        .UseNative(true)
-        .ShowScrollbar(ShowScrollbarMode.Always) // Always show scrollbar
-        )
-        .FilterRow(filterRow => filterRow.Visible(false))
-        .GroupPanel(groupPanel => groupPanel.Visible(false))
-        .Grouping(grouping => grouping.AutoExpandAll(true))
-        .ShowBorders(true)
-        )
+            .Paging(paging => paging.Enabled(false))
+            .AllowColumnReordering(true)
+            .AllowColumnResizing(true)
+            .ColumnFixing(fixing => fixing.Enabled(true))
+            .HeaderFilter(filter => filter.Visible(true))
+            .Height(401)
+            .Width("100%")
+            .ColumnAutoWidth(true) // Important: allows columns to overflow and scroll
+            .Scrolling(scrolling => scrolling
+            .Mode(GridScrollingMode.Standard) // or "virtual" if you want virtual scrolling
+            .UseNative(true)
+            .ShowScrollbar(ShowScrollbarMode.Always) // Always show scrollbar
+            )
+            .FilterRow(filterRow => filterRow.Visible(false))
+            .GroupPanel(groupPanel => groupPanel.Visible(false))
+            .Grouping(grouping => grouping.AutoExpandAll(true))
+            .ShowBorders(true)
+            .OnRowPrepared("onDepreciationRowPrepared")
+            .OnContextMenuPreparing("onDepreciationContextMenuPreparing")
+
+            )
 
         </div>
 
@@ -323,6 +336,11 @@
         }
     }
 
+        function onDepreciationRowPrepared(e) {
+            if (e.rowType === "data" && e.data.IsPosted === true) {
+                e.rowElement.css("background-color", "rgb(192, 255, 192)");
+            }
+        }
 
     // Remove previous click event handlers to avoid duplicates
     $(document).off("click", ".dx-data-row").on("click", ".dx-data-row", function (e) {
@@ -338,5 +356,45 @@
             $("#voucherPopup").dxPopup("instance").hide();
         }
     });
-    
+      function onDepreciationContextMenuPreparing(e) {
+        if (e.row && e.row.rowType === "data") {
+            e.items = [
+                {
+                    text: "Edit Depreciation",
+                    icon: "edit", // DevExtreme built-in icon
+                    onItemClick: () => {
+                        debugger;
+                        editDepreciation(e.row.data);
+                    },
+                    cssClass: "context-menu-edit"
+                },
+                {
+                    text: "Delete Depreciation",
+                    icon: "trash", // DevExtreme built-in icon
+                    onItemClick: () => {
+                        deleteDepreciation(e.row.data);
+                    },
+                    cssClass: "context-menu-delete"
+                }
+            ];
+        }
+      }
+     function editDepreciation(rowData) {
+      
+        const depreciationDocNo = rowData.DepreciationDocNo;
+
+        if (!depreciationDocNo) {
+            DevExpress.ui.notify("DepreciationDocNo not found.", "error", 3000);
+            return;
+        }
+
+        const targetUrl = `/${tenantName}/Finance/CreateDepreciation?DepreciationDocNo=${encodeURIComponent(depreciationDocNo)}`;
+
+        // Optionally open in new tab:
+        // window.open(targetUrl, '_blank');
+
+        // Or redirect in same tab:
+        window.location.href = targetUrl;
+     }
+
     </script>

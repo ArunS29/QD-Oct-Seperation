@@ -3156,6 +3156,7 @@ function syncSupVATNumbers(e) {
     let userNames=null;
     let accgrpId = null;
     console.log("agid:", accgrpId);
+
     $(document).ready(function () {
         var urlParams = new URLSearchParams(window.location.search);
         var accountGroupId = urlParams.get('AccountGroupId');
@@ -3166,6 +3167,10 @@ function syncSupVATNumbers(e) {
         accountgroup = accgroup;
         var isedit = urlParams.get('IsEdit') === "true"; // Explicit comparison to string "true"
         var accgroupid = urlParams.get('AccountGroupID') || "";
+         var IsPurchaseEdit=urlParams.get('IsPurchaseEdit') || "";
+         var IsB2CEdit=urlParams.get('IsB2CEdit') || "";
+             alert(IsB2CEdit)
+         debugger;
         acgid = accgroupid;
 
         var accheadar = urlParams.get('AccountHeadAr') || "";
@@ -3176,6 +3181,28 @@ function syncSupVATNumbers(e) {
             // Directly assign AccountId to the already declared accountheadid variable
             accountheadid = urlParams.get('AccountId');  // Use the already declared accountheadid
 
+        }
+        if(IsPurchaseEdit=='true')
+        { 
+             disableTabs(["tab-content-3", "tab-content-7"]);
+    var accountGroupTextBox = $("#ddlAccountGroup").dxTextBox("instance");
+
+    // Set the value
+    accountGroupTextBox.option("value", "SUNDRY CREDITORS");
+
+    // Disable the textbox
+    accountGroupTextBox.option("disabled", true);
+                 
+        }
+        if(IsB2CEdit=='true')
+        {
+    var accountGroupTextBox = $("#ddlAccountGroup").dxDropDownBox("instance");
+
+    // Set the value
+    accountGroupTextBox.option("value", "SUNDRY CREDITORS");
+
+    // Disable the textbox
+    accountGroupTextBox.option("disabled", true);      
         }
 
         // alert(IsCharOfAccounts);
@@ -5277,31 +5304,7 @@ function syncSupVATNumbers(e) {
 
     //english text convert to arabic
 
-    async function translateToArabic(text) {
-
-        try {
-
-
-            const response = await fetch(
-
-                `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`
-
-            );
-
-            const data = await response.json();
-            console.log(data);
-            return data.responseData.translatedText;
-
-        } catch (error) {
-
-            console.error("Translation failed:", error);
-
-            return "Translation Error";
-
-        }
-
-    }
-
+  
     async function convertToArabic() {
 
         // Get the TextBox1 (input) instance

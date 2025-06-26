@@ -3536,23 +3536,25 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
         }
 
         [HttpGet]
-        public ActionResult<string> GetVATProformaInvoiceNo()
-        {
-            try
-            {
-                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                {
-
+		public ActionResult<string> GetVATProformaInvoiceNo()
+		{
+			try
+			{
+				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+				{
+                    var companyNameShort = HttpContext.Session.GetString("TenantName");
+                    if (string.IsNullOrEmpty(companyNameShort))
+                    {
+                        return BadRequest("Company name not found in session.");
+                    }
                     var company = dbContext.Tbl901CompanyDetails
-                                           .FirstOrDefault(c => c.CompanyNameShort == "Pulse Infotech");
-
-                    // GET api/VATModule/GetInvoiceApprovalStatus/{invoiceNo}
+                       .FirstOrDefault(c => c.CompanyNameShort.Contains(companyNameShort));
 
 
                     if (company == null)
-                    {
-                        return NotFound("Company not found.");
-                    }
+					{
+						return NotFound("Company not found.");
+					}
 
                     string invoiceAbbrv = company.InvoiceAbbrv;
                     int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
@@ -3672,18 +3674,18 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetTaxCategory()
-        {
-            try
-            {
-                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                {
-                    var result = await dbContext.Tbl20163VatTaxSlabs
+		[HttpGet]
+		public async Task<IActionResult> GetTaxCategory()
+		{
+			try
+			{
+				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+				{
+					var result = await dbContext.Tbl20163VatTaxSlabs
                         .Select(g => new
-                        {
-                            g.TaxCategoryId,           // Value member for GridLookUpEdit
-                            g.TaxCategory     // Display member
+						{
+							g.TaxCategoryId,           // Value member for GridLookUpEdit
+							g.TaxCategory     // Display member
 
                         })
                         .ToListAsync();
@@ -4258,95 +4260,6 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
 
 
-        //[HttpPost]
-        //public async Task<ActionResult> UpdateProformaInvoiceChildDetails(List<Tbl20182ProformaInvoiceChild> InvoiceChildren)
-        //{
-        //    if (InvoiceChildren == null || InvoiceChildren.Count == 0)
-        //    {
-        //        return BadRequest(new { success = false, message = "Invalid or empty invoice data received." });
-        //    }
-
-        //    try
-        //    {
-
-        //        if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-        //        {
-        //            var savedChildren = new List<Tbl20162VatinvoiceChild>();
-
-        //            foreach (var child in InvoiceChildren)
-        //            {
-        //                if (child.ProformaInvChildSlNo == null || child.ProformaInvChildSlNo == 0)
-        //                {
-        //                    var newChild = new Tbl20182ProformaInvoiceChild
-        //                    {
-        //                        ProformaInvoiceNo = child.ProformaInvoiceNo,
-        //                        UnitRate = child.UnitRate,
-        //                        DetailedDescription = child.Description?.GetString() ?? string.Empty,
-        //                        QuantityInvoiced = child.Qty?.GetDecimal() ?? 0m,
-        //                        TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8,
-        //                        Discount = child.Discount,
-        //                        UnitRateInOc = child.UnitPrice?.GetDecimal() ?? 0m,
-        //                        DiscountInOc = child.Discount,
-        //                        UnitsToBill = 1,
-        //                        UnitRateMethod = 49,
-        //                        ItemCode = child.ItemCode ?? string.Empty,
-        //                        UoM = "Each"
-        //                    };
-
-        //                    await dbContext.Tbl20162VatinvoiceChildren.AddAsync(newChild);
-        //                    await dbContext.SaveChangesAsync();
-
-        //                    // Set the generated ID back to the input model if needed
-        //                    child.InvoiceChildSlNo = newChild.InvoiceChildSlNo;
-
-        //                    savedChildren.Add(newChild);
-        //                }
-        //                else
-        //                {
-        //                    var existingChild = await dbContext.Tbl20162VatinvoiceChildren
-        //                        .FirstOrDefaultAsync(x => x.InvoiceChildSlNo == child.InvoiceChildSlNo);
-
-        //                    if (existingChild != null)
-        //                    {
-
-        //                        existingChild.InvoiceNo = child.InvoiceNo;
-        //                        existingChild.UnitRate = child.UnitRate;
-        //                        existingChild.DetailedDescription = child.DetailedDescription;
-        //                        existingChild.QuantityInvoiced = child.QuantityInvoiced;
-        //                        existingChild.TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8;
-        //                        existingChild.UnitsToBill = 1;
-        //                        existingChild.UnitRateMethod = 49;
-        //                        existingChild.ItemCode = child.ItemCode ?? string.Empty;
-        //                        existingChild.UoM = "Each";
-        //                        existingChild.Discount = child.Discount;
-        //                        existingChild.UnitRateInOc = child.UnitPrice?.GetDecimal() ?? 0m;
-        //                        existingChild.DiscountInOc = child.Discount;
-        //                        dbContext.Tbl20162VatinvoiceChildren.Update(existingChild);
-        //                        savedChildren.Add(existingChild);
-        //                    }
-        //                }
-        //            }
-
-        //            await dbContext.SaveChangesAsync();
-
-        //            return Ok(new
-        //            {
-        //                success = true,
-        //                message = "Invoice child records saved successfully!",
-        //                data = savedChildren
-        //            });
-        //        }
-        //        else
-        //        {
-        //            return BadRequest(new { success = false, message = "Failed to retrieve tenant and database context." });
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
-        //    }
-        //}
-
         [HttpPost]
         public async Task<ActionResult> UpdateToPurchaseUnlocktheBil(string invoiceNo)
         {
@@ -4548,9 +4461,217 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetCompanyBranchAndDivision()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var result = await dbContext.Tbl901CompanyDetails
+                        .Select(g => new
+                        {
+                            g.CompanyName,           // Value member for GridLookUpEdit
+                            g.CompanyId     // Display member
+
+                        })
+                        .ToListAsync();
+
+                    return Ok(result);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetSalesPersonMaster()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var result = await dbContext.Tbl20101SalesPersonMasters
+                        .Select(g => new
+                        {
+                            g.SalesPersonName,        // Value member for GridLookUpEdit
+                            g.SalesPersonCode     // Display member
+
+                        })
+                        .ToListAsync();
+
+                    return Ok(result);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetProformaHeaderInvoiceDetails(string InvoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+
+                    var result = dbContext.Tbl20181ProformaInvoiceMasters
+                      .Where(x => x.ProformaInvoiceNo == InvoiceNo)
+                      .ToList();
 
 
-    }
+                    return Json(result);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+
+        [HttpGet]
+        public async Task<ActionResult> GetGridProformaInvoiceDetails(string InvoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var resultWithVAT = new List<ExpandoObject>();
+
+                    var result1 = dbContext.Qry201651proformaInvoiceChildren
+                        .Where(x => x.ProformaInvoiceNo == InvoiceNo)
+                        .ToList();
+
+                    foreach (var gridDetails in result1)
+                    {
+                        dynamic item = new ExpandoObject();
+                        var dict = (IDictionary<string, object>)item;
+
+                        // Copy all existing fields from gridDetails into dynamic object
+                        var properties = gridDetails.GetType().GetProperties();
+                        foreach (var prop in properties)
+                        {
+                            dict[prop.Name] = prop.GetValue(gridDetails);
+                        }
+
+                        // Get the TaxRateInWord from the TaxSlab table
+                        var taxRateInWord = dbContext.Tbl20163VatTaxSlabs
+                            .Where(x => x.TaxSlabCode == gridDetails.TaxSlabCode)
+                            .Select(x => x.TaxRateInWord)
+                            .FirstOrDefault();
+
+                        var UnitRateMethodDesc = dbContext.Tbl40111PropertyUnitCodes
+                   .Where(x => x.UnitCode == gridDetails.UnitRateMethod)
+                   .Select(x => x.UnitDesc)
+                   .FirstOrDefault();
+
+
+                        // Add new dynamic column
+                        dict["UnitRateMethodDesc"] = UnitRateMethodDesc;
+                        dict["VATPercentage"] = taxRateInWord;
+
+                        //dict["VAT"] = vatValue;
+                        //dict["TotalVAT"] = totalValue;
+
+                        resultWithVAT.Add(item);
+                    }
+
+                    return Json(resultWithVAT);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteProformaInvoiceChild([FromBody] int InvoiceChildSlNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+
+
+                    // Call the stored procedure with SerialNumber
+                    var result = await dbContext.Database.ExecuteSqlRawAsync(
+                        "EXEC sp201_61DeleteProformaInvoiceChild @p0", InvoiceChildSlNo);
+
+                    return Ok(new { success = true, message = "Line item deleted successfully." });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new { success = false, message = "Server error occurred.", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+		[HttpPost]
+		public async Task<IActionResult> CreateVATInvoice(string ProformaInvoiceNo,DateTime InvoiceDate)
+		{
+			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				try
+				{
+
+                    string yearSuffix = DateTime.Now.ToString("yyyy"); // Get last two digits of the year
+
+                    var lastInvoiceNumber = await dbContext.Tbl20161VatinvoiceMasters
+                        .Where(i => i.InvoiceNo.StartsWith($"{yearSuffix}-"))
+                        .OrderByDescending(i => i.InvoiceNo)
+                        .Select(i => i.InvoiceNo)
+                        .FirstOrDefaultAsync();
+
+                    int newNumber = 1; // Default if no previous invoices exist
+                    if (!string.IsNullOrEmpty(lastInvoiceNumber))
+                    {
+                        var match = Regex.Match(lastInvoiceNumber, @"-(\d+)$");
+                        if (match.Success)
+                        {
+                            newNumber = int.Parse(match.Groups[1].Value) + 1;
+                        }
+                    }
+
+                    // Generate new invoice number
+                    //string newInvoiceNumber = $"{invoiceAbbrv}{yearSuffix}-{newNumber:D5}";
+                    string ToInvoiceNo = $"{yearSuffix}-{newNumber:D5}";
+                    var AddedBy = HttpContext.Session.GetString("UserName");
+                    string InvoiceUUID = Guid.NewGuid().ToString();
+                    long? InvoiceCounterValue = 0;
+					string InvoiceTransactionCode = "0100000";
+                    DateTime AddedOn =  DateTime.Now;
+                    // Call the stored procedure with SerialNumber
+                    var result = await dbContext.Database.ExecuteSqlRawAsync(
+						"EXEC sp201_65InsertInvoiceFromProforma @p0,@p1,@p2,@p3,@p4,@p5,@p6,@p7", ProformaInvoiceNo, ToInvoiceNo, InvoiceDate, AddedBy, AddedOn, InvoiceUUID, InvoiceCounterValue, InvoiceTransactionCode);
+
+					return Ok(new { success = true, message = "Line item deleted successfully." });
+				}
+				catch (Exception ex)
+				{
+					return StatusCode(500, new { success = false, message = "Server error occurred.", error = ex.Message });
+				}
+			}
+
+			return Unauthorized(new { message = "Invalid tenant.", success = false });
+		}
+
+	}
 }
 
 

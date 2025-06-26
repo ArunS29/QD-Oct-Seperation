@@ -493,5 +493,143 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, new { success = false, message = "Internal server error", details = ex.Message });
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> DuplicateQuotation([FromBody] string originalQuoteNo)
+        {
+            if (string.IsNullOrWhiteSpace(originalQuoteNo))
+                return BadRequest(new { success = false, message = "Quote No is required." });
+
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { success = false, message = "Tenant context not found." });
+
+            try
+            {
+                // Get tenant name
+                var tenantName = HttpContext.Session.GetString("TenantName");
+                if (string.IsNullOrWhiteSpace(tenantName))
+                    return Unauthorized(new { success = false, message = "Tenant name missing from session." });
+
+                // Get company details
+                var company = dbContext.Tbl901CompanyDetails.FirstOrDefault(c => c.CompanyNameShort == tenantName);
+                if (company == null)
+                    return NotFound(new { success = false, message = "Company not found." });
+
+                // Get digit config
+                int digits = dbContext.Tbl901CompanyDetails02s
+                    .Where(c => c.CompanyId == company.CompanyId)
+                    .Select(c => c.NoOfDigitsToInventoryQuotation ?? 4)
+                    .FirstOrDefault();
+
+                // Generate new QuoteNo
+                string newQuoteNo = GetNewQuoteNo(
+                    company.QuotationAbbrv,
+                    company.InvoiceYearDigits ?? 0,
+                    DateTime.Now,
+                    company.IsResetInvoiceInYear ?? false,
+                    digits,
+                    dbContext
+                );
+
+                string user = HttpContext.Session.GetString("UserName") ?? "System";
+                DateTime quoteDate = dbContext.Tbl60101quotationMasters
+        .Where(q => q.QuoteNo == originalQuoteNo)
+        .Select(q => q.QuoteDate ?? DateTime.Now)
+        .FirstOrDefault();
+
+                // Call SP
+                dbContext.Database.ExecuteSqlRaw(
+                    "EXEC sp600_20InsertDuplicateQuotation @p0, @p1, @p2, @p3, @p4",
+                    originalQuoteNo, newQuoteNo, quoteDate, user, quoteDate
+                );
+
+                dbContext.SaveChanges();
+
+                return Ok(new { success = true, message = "Quotation duplicated successfully.", newQuoteNo });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error duplicating quotation: " + ex.Message);
+                return StatusCode(500, new { success = false, message = "Internal error", detail = ex.Message });
+            }
+        }
+
+        // Helper Method
+        private string GetNewQuoteNo(string abbr, int yearDigits, DateTime date, bool resetByYear, int digits, ERPMasterWtDataContext db)
+        {
+            try
+            {
+                var existing = db.Tbl60101quotationMasters
+                    .Where(q => q.QuoteNo != null &&
+                                q.QuoteNo.Length >= digits &&
+                                (!resetByYear || (q.QuoteDate.HasValue && q.QuoteDate.Value.Year == date.Year)))
+                    .Select(q => q.QuoteNo)
+                    .ToList();
+
+                int max = existing
+                    .Select(no => int.TryParse(no.Substring(no.Length - digits), out int num) ? num : 0)
+                    .DefaultIfEmpty(0)
+                    .Max() + 1;
+
+                string year = (yearDigits > 0) ? date.Year.ToString().Substring(4 - yearDigits) : "";
+                return $"{abbr}{year}-{max.ToString().PadLeft(digits, '0')}";
+            }
+            catch
+            {
+                string year = (yearDigits > 0) ? date.Year.ToString().Substring(4 - yearDigits) : "";
+                return $"{abbr}{year}-{"1".PadLeft(digits, '0')}";
+            }
+        }
+        [HttpPost]
+        public IActionResult ReviseQuotation([FromBody] string originalQuoteNo)
+        {
+            if (string.IsNullOrWhiteSpace(originalQuoteNo))
+                return BadRequest(new { success = false, message = "Quote No is required." });
+
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { success = false, message = "Tenant context not found." });
+
+            try
+
+            {
+                // Step 1: Trim quote base (remove -(R1) etc.)
+                string quoteBase = originalQuoteNo;
+                int bracketIndex = quoteBase.IndexOf("-(R");
+                if (bracketIndex > -1)
+                    quoteBase = quoteBase.Substring(0, bracketIndex);
+
+                // Step 2: Get latest revision number
+                int currentRevision = dbContext.Tbl60101quotationMasters
+                    .Where(q => q.QuoteNo.StartsWith(quoteBase))
+                    .Max(q => q.RevisionNo ?? 0);
+
+                int nextRevision = currentRevision + 1;
+                string newQuoteNo = $"{quoteBase}-(R{nextRevision})";
+                string user = HttpContext.Session.GetString("UserName") ?? "System";
+
+                // Step 3: Call stored procedure to duplicate with revision
+                dbContext.Database.ExecuteSqlRaw(
+                    "EXEC sp600_05CreateNewRevisedQuotation @p0, @p1, @p2, @p3",
+                    originalQuoteNo, newQuoteNo, nextRevision, user
+             );
+
+                // Step 4: Update status of old quotation (to 'Revised' = 5)
+                var oldQuote = dbContext.Tbl60101quotationMasters
+                    .FirstOrDefault(q => q.QuoteNo == originalQuoteNo);
+                if (oldQuote != null)
+                {
+                    oldQuote.QuoteStatus = 5;
+                    dbContext.SaveChanges();
+                }
+
+                return Ok(new { success = true, message = "Quotation revised successfully.", newQuoteNo });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error revising quotation: " + ex.Message);
+                return StatusCode(500, new { success = false, message = "Revision failed", detail = ex.Message });
+            }
+        }
+
     }
 }
