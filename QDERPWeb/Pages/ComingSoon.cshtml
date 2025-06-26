@@ -1,0 +1,98 @@
+﻿@page
+@model QD.ERP.Web.Pages.Shared.ComingSoonModel
+@{
+}
+@{
+    var tenantName = HttpContext.Session.GetString("TenantName") ?? "";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Under Construction</title>
+  <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f4f7fa;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            overflow-x: hidden;
+        }
+
+        .mainContainer {
+            width: 100%;
+            padding: 0px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            margin-top: 0px;
+            font-size: 40px;
+            font-weight: 800;
+            background: linear-gradient(90deg, #007bff, #00c6ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            z-index: 1;
+            position: relative;
+            animation: fadeSlide 1s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+    .cube-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .ribbon {
+      position: absolute;
+      bottom: 100px;
+      left: -50%;
+      width: 200%;
+      transform: rotate(-10deg);
+      text-align: center;
+    }
+
+    .ribbon span {
+      display: block;
+      background: #443ce1;
+      color: white;
+      padding: 10px 0;
+      font-weight: bold;
+      font-size: 16px;
+      letter-spacing: 2px;
+    }
+
+    .ribbon::after {
+      content: "";
+      position: absolute;
+      top: 40px;
+      left: 0;
+      width: 100%;
+      height: 30px;
+      background: rgba(68, 60, 225, 0.2);
+      z-index: -1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- <h1>Under Construction</h1> -->
+  <h1>COMING SOON</h1>
+
+  <div class="cube-container">
+        <img src="~/images/comingSoon.png">
+  </div>
+
+  <div class="ribbon">
+    <span>COMING SOON | COMING SOON | COMING SOON | COMING SOON</span>
+  </div>
+</body>
+</html>

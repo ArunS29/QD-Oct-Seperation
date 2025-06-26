@@ -383,7 +383,7 @@
                         .Width("100%")
                         )
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3" style="display:flex; align-items:end;">
                         @(Html.DevExtreme().TextBox()
                         .ID("ClientRefName")
 						.Label(new JS("formatMessage('Client Ref. Name / Attention To:')"))
@@ -568,13 +568,14 @@
                         <div class="field-header">
 							<label for="QuoteIntro" id="QuoteIntro1" class="field-label"></label>
                             <div class="field-buttons">
-                                <button class="btn-solid">Set Default</button>
+                                <button class="btn-solid" >Set Default</button>
                                 <button class="btn-outline"><i class="fa fa-font"></i></button>
                             </div>
                         </div>
                         @(Html.DevExtreme().TextBox()
                         .ID("QuoteIntro")
                         .LabelMode(EditorLabelMode.Hidden)
+						
                         .Width("100%")
                         )
                     </div>
@@ -1124,6 +1125,7 @@
 				columns.Add().DataField("VAT")
 	.Caption(new JS("formatMessage('VAT')"))
 	.Width(200);
+	
 
 				columns.Add().DataField("Total")
 	.Caption(new JS("formatMessage('Total')"))
@@ -1279,7 +1281,7 @@
                         .ShowBorders(true)
                         .HoverStateEnabled(true)
                         .Paging(p => p.PageSize(15))
-                        .FilterRow(f => f.Visible(false))//
+                        .FilterRow(f => f.Visible(true))//
                         .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                         .Height(345)
                         .Selection(s => s.Mode(SelectionMode.Single))
@@ -6267,9 +6269,4 @@ function onEditClientClick() {
 
     openModal(url, '');
 }
-
-
-
-
-
 </script>
