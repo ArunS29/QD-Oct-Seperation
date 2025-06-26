@@ -10,7 +10,7 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventroryReports.PurchaseOrder
     public partial class PreviewPurchaseOrder : DevExpress.XtraReports.UI.XtraReport
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
-        private bool _isApproved;
+       // private bool _isApproved;
         public PreviewPurchaseOrder()
         {
             InitializeComponent();
@@ -25,11 +25,11 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventroryReports.PurchaseOrder
             string companyAddress,
             string companyNameAr,
             string companyAddressAr,
-            bool isApproved,
+           // bool isApproved,
             TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
-            _isApproved = isApproved;
+           // _isApproved = isApproved;
 
             InitializeComponent();
             SetReportParameters(purchaseNo, tenantName, companyName,  sealImage, companyAddress, companyNameAr, companyAddressAr);
