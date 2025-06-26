@@ -67,15 +67,39 @@ namespace QD.ERP.Web.Service
 
             using (var tenantDbContext = new ERPMasterWtDataContext(optionsBuilder.Options))
             {
-                // Compare CompanyNameShort with tenant.Name (already lowercase)
-                var companyDetails = await tenantDbContext.Tbl901CompanyDetails
-                    .FirstOrDefaultAsync();
+                     var companyInfo = await tenantDbContext.Tbl901CompanyDetails
+                     .OrderBy(c =>
+                         !string.IsNullOrWhiteSpace(c.DefaultcompanyID) &&
+                         c.CompanyId.ToString() == c.DefaultcompanyID ? 0 : 1)
+                     .ThenBy(c => c.CompanyId)
+                     .Select(c => new {
+                         c.CompanyId,
+                         c.CompanyName,
+                         c.CompanyNameShort,
+                         c.CompanyLogo,
+                         c.DefaultcompanyID
+                     })
+                     .FirstOrDefaultAsync();
 
-                if (companyDetails?.CompanyLogo != null)
+                if (companyInfo != null)
                 {
-                    tenant.LogoUrl = $"data:image/png;base64,{Convert.ToBase64String(companyDetails.CompanyLogo)}";
+                    if (companyInfo.CompanyLogo != null)
+                    {
+                        tenant.LogoUrl = $"data:image/png;base64,{Convert.ToBase64String(companyInfo.CompanyLogo)}";
+                    }
+
+                    if (!string.IsNullOrEmpty(companyInfo.CompanyNameShort))
+                    {
+                        tenant.CompanyNameShort = companyInfo.CompanyNameShort.ToLower();
+                    }
+
+                    if (!string.IsNullOrEmpty(companyInfo.DefaultcompanyID))
+                    {
+                        tenant.DefaultcompanyID = companyInfo.CompanyId.ToString();
+                        tenant.DefaultcompanyName= companyInfo.CompanyName.ToString();
+                    }
                 }
-                tenant.CompanyNameShort = companyDetails.CompanyNameShort.ToLower();
+
             }
 
             // Cache and return the resolved tenant
