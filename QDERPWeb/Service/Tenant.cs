@@ -9,5 +9,8 @@
         public string LogoUrl { get; set; }
         public string schemaname { get; set; }
         public string CompanyNameShort { get;  set; }
+        public string DefaultcompanyID { get; set; }
+        public string DefaultcompanyName { get; set; }
+        public string? CompanyTextColor { get; set; }
     }
 }
