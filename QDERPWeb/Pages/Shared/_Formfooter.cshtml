@@ -12,24 +12,30 @@
 
     .horizontal-container {
         display: flex;
-        gap: 10px; /* Adds spacing between buttons */
-        justify-content: start; /* Aligns buttons to the left */
-        align-items: center; /* Vertically centers the buttons */
-        margin: 10px;
-        margin-top: 8px;
+        flex-wrap: inherit; /* Allow buttons to wrap */
+        gap: 12px;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 10px 15px;
     }
 
-
+    .dx-dropdownbutton-popup-wrapper {
+        z-index: 1050 !important; /* Higher than Bootstrap modals (1040) if used */
+        transform: translate(0px, -91px) !important;
+    }
 
 
     /* Base button customization */
     .dx-button-custom .dx-button-content {
         border-radius: 6px;
         font-weight: 600;
-        min-width: 150px;
-        padding: 8px 16px;
+        min-width: 120px; /* Reduced min-width for small screens */
+        max-width: 100%; /* Avoid overflow */
+        padding: 8px 14px;
         transition: background-color 0.3s, color 0.3s;
+        text-align: center;
     }
+   
 
     /* Back */
     .dx-button-custom.btn-back .dx-button-content {
@@ -121,6 +127,16 @@
         background-color: #12a5ca;
     }
 
+    @@media (max-width: 768px) {
+        .horizontal-container {
+            flex-direction: column; /* Stack vertically on small screens */
+            align-items: stretch;
+        }
+
+        .dx-button-custom {
+            width: 100% !important; /* Full width buttons */
+        }
+    }
 </style>
 <div class="dx-fieldset horizontal-container">
     @(Html.DevExtreme().Button()
