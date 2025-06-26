@@ -263,6 +263,31 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        [HttpGet]
+        public IActionResult GetDepreciationPivotData(DataSourceLoadOptions loadOptions)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+            {
+                return Unauthorized();
+            }
+
+            var data = dbContext.Qry201206depreciationChildren
+                .Select(x => new
+                {
+                    x.DepreciationDocNo,
+                    x.AccountGroup,
+                    x.AssetLedgerNo,
+                    x.AccountHead,
+                    x.DeprStartDate,
+                    x.AccDeprTotalAmount,
+
+                    Months = x.DeprStartDate.HasValue ? x.DeprStartDate.Value.ToString("MMM-yyyy") : null,
+
+                });
+
+            return Json(DataSourceLoader.Load(data, loadOptions));
+        }
+
 
     }
 }
