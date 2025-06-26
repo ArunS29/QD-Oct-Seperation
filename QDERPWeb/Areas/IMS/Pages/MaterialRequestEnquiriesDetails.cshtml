@@ -342,7 +342,7 @@
 
 			           });
 			
-				columns.Add().Caption(new JS("formatMessage('Quatation')")).Columns(band =>
+				columns.Add().Caption(new JS("formatMessage('Quotation')")).Columns(band =>
 	         {
 				band.AddFor(m => m.NoOfQuotations).Caption(new JS("formatMessage('No of Quotation')")).Alignment(HorizontalAlignment.Center);
 				band.AddFor(m => m.NetQuotedAmount).Caption(new JS("formatMessage('Net Quoted Amount')")).Alignment(HorizontalAlignment.Center);
@@ -681,11 +681,13 @@
 	},
 
 
-					{
+						{
 		text: "Revise the Request / Enquiry",
 		icon: "repeat",
 		onItemClick: function () {
 			const mprNo = e.row?.data?.Mprno;
+			const requestEnquiry = e.row?.data?.RequestEnquiry; // ✅ Get RequestEnquiry type
+
 			if (!mprNo) {
 				DevExpress.ui.notify("MPR No not found.", "error", 2000);
 				return;
@@ -698,13 +700,41 @@
 				if (!result) return;
 
 				$.ajax({
-				    url: "/api/MaterialRequestEnquiriesDetails/ReviseRequest", // ✅ Your API route
+					url: "/api/MaterialRequestEnquiriesDetails/ReviseRequest",
 					type: "POST",
 					contentType: "application/json",
 					data: JSON.stringify(mprNo),
 					success: function (response) {
 						DevExpress.ui.notify(response.message, "success", 2000);
 						$("#dataGrid").dxDataGrid("instance").refresh();
+
+						// ✅ Navigate to new page based on RequestEnquiry
+						if (response.newMprNo) {
+							const tenantName = window.tenantName || "defaultTenant";
+							let url = "";
+							let title = "";
+
+							switch (requestEnquiry) {
+								case "Client Request":
+									url = `/${tenantName}/IMS/AddNewClientRequest?Mprno=${encodeURIComponent(response.newMprNo)}`;
+									title = "Edit Client Request";
+									break;
+								case "Project Request":
+									url = `/${tenantName}/IMS/MRAddNewProjectRequest?Mprno=${encodeURIComponent(response.newMprNo)}`;
+									title = "Edit Project Request";
+									break;
+								case "Store Request":
+									url = `/${tenantName}/IMS/MRAddNewStoreRequest?Mprno=${encodeURIComponent(response.newMprNo)}`;
+									title = "Edit Store Request";
+									break;
+								default:
+									console.warn("Unknown RequestEnquiry type:", requestEnquiry);
+									return;
+							}
+
+							// 👇 Navigate to the target page
+							window.location.href = url;
+						}
 					},
 					error: function (xhr) {
 						let msg = xhr.responseJSON?.message || "Revision failed.";
@@ -715,6 +745,7 @@
 			});
 		}
 	},
+
 
 				{
 					text: "Delete Request / Enquiry",
