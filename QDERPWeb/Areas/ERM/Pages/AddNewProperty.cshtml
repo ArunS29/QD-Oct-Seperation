@@ -1,0 +1,1296 @@
+﻿@page
+@model QD.ERP.Web.Areas.ERM.Pages.AddNewPropertyModel
+@{
+}
+<style>
+    .form-tablee {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 6px;
+    }
+
+    .inline-icon {
+        vertical-align: bottom;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .body {
+        padding-top: 0px;
+    }
+
+    .content {
+        margin: 0px;
+    }
+
+    .content-container-top {
+        width: 100%;
+    }
+    /* Custom CSS to adjust the height of tab headers */
+    .dx-tabpanel .dx-tab {
+        padding: 10px 15px; /* Adjust padding to change height */
+        font-size: 16px; /* Adjust font size to change header height */
+    }
+
+    /* Ensuring the content area also adjusts in height */
+    .dx-tabpanel .dx-tab-content {
+        padding: 20px;
+        min-height: 200px; /* Minimum height for the tab content */
+    }
+
+    .dx-fieldset {
+        margin: 3px 3px !important;
+        padding: 0px;
+    }
+
+    .dx-datagrid-headers th {
+        text-align: center; /* Centers the text */
+    }
+
+    .columnheader {
+        text-align: center;
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .tab-content h3 {
+            color: #333;
+        }
+
+        .tab-content p {
+            line-height: 1.6;
+            color: #555;
+        }
+
+    .dx-dropdownbox .dx-dropdownbox-wrapper .dx-dropdownbox-header {
+        display: none;
+    }
+
+    .button-group {
+        margin-left: 1px !important;
+    }
+
+    .button-alignment-up {
+        margin-top: 25px !important;
+    }
+
+    .button-alignment-down {
+        margin-top: 0px !important;
+    }
+
+    .imagecontainer {
+        border-bottom: 2px;
+    }
+
+    .imagecontainer {
+        background-color: #e0f7fa;
+        border: 1px solid #90caf9;
+        height: 300px;
+        width: 40%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        overflow: hidden;
+        position: relative;
+    }
+
+        .imagecontainer img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .imagecontainer span {
+            color: #555;
+            font-style: italic;
+            position: absolute;
+        }
+
+
+    .containerInventoryStock {
+        align-items: center;
+        justify-content: center;
+    }
+
+    .no-border-input {
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        font-weight: bold;
+        font-size: 16px;
+        color: black;
+        pointer-events: none; /* Prevents hover and click effects */
+    }
+
+    .dx-dropdownlist-popup-wrapper .dx-list .dx-list-item {
+        color: #000 !important;
+        background-color: #fff !important;
+    }
+
+    .context-menu {
+        display: none;
+        position: absolute;
+        background-color: white;
+        border: 1px solid #ccc;
+        box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+        z-index: 1000;
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        min-width: 120px;
+    }
+
+        .context-menu li {
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+            .context-menu li:hover {
+                background-color: #eee;
+            }
+
+    .mainContainer {
+        width: 100%;
+    }
+
+</style>
+<div class="title">
+    <div class="header-container">
+        <div id="propertmaster" class="no-border-title"></div>
+    </div>
+</div>
+@using DevExtreme.AspNet.Mvc
+
+<style>
+    .property-form {
+        border-radius: 5px;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .form-columns {
+        flex: 1;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+        .form-group label {
+            font-weight: bold;
+            font-size: 13px;
+            margin-bottom: 3px;
+        }
+
+        .form-group span.dx-field-item-label-text::after {
+            content: "*";
+            color: red;
+            padding-left: 3px;
+        }
+
+    .form-image {
+        margin-left: 20px;
+        display: flex;
+        align-items: flex-end;
+    }
+
+        .form-image img {
+            width: 310px;
+            height: auto;
+        }
+</style>
+
+<div class="property-form">
+    <div class="form-columns">
+
+        <!-- Row 1: Property Type -->
+        <div class="form-group" style="grid-column: span 2; display:flex; align-items:end;flex-direction: row;">
+            @(Html.DevExtreme().SelectBox()
+                        .ID("PropertyType")
+                        .Label(new JS("formatMessage('Property Type:*')"))
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ShowClearButton(true)
+                        .Width("100%"))
+            @(Html.DevExtreme().Button()
+                        .ID("AddType")
+                        .Icon("plus")
+                        .OnClick("Protype")
+                        )
+        </div>
+
+        <!-- Row 2: Property No and Description -->
+        <div class="form-group">
+            @(Html.DevExtreme().TextBox()
+                        .Label(new JS("formatMessage('Property No:*')"))
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ID("PropertyNo")
+                        .Width("100%"))
+        </div>
+
+        <div class="form-group">
+            @(Html.DevExtreme().TextBox()
+                        .Label(new JS("formatMessage('Property Description:*')"))
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ID("PropertyDescription")
+                        .Width("100%"))
+        </div>
+
+        <!-- Row 3: Category and Specification -->
+        <div class="form-group" style=" display:flex; align-items:end;flex-direction: row;">
+            @(Html.DevExtreme().SelectBox()
+                        .ID("PropertyCategory")
+                        .Label(new JS("formatMessage('Property Category:')"))
+                        .LabelMode(EditorLabelMode.Outside)
+                        .DataSource(new[] { "Category A", "Category B" })
+                        .Width("100%"))
+            @(Html.DevExtreme().Button()
+                        .ID("AddCategory")
+                        .Icon("plus")
+
+                        )
+        </div>
+
+        <div class="form-group">
+            @(Html.DevExtreme().TextArea()
+                        .Label(new JS("formatMessage('Property Specification:')"))
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ID("PropertySpecification")
+                        .Height(60)
+                        .ElementAttr("style", "height: 60px !important;")
+                        .Width("100%")
+            )
+        </div>
+
+        <!-- Row 4: Property Group -->
+        <div class="form-group" style="display:flex; align-items:end;flex-direction: row;">
+            @(Html.DevExtreme().SelectBox()
+                        .Label(new JS("formatMessage('Property Group:')"))
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ID("PropertyGroup")
+                        .DataSource(new[] { "Group 1", "Group 2" })
+                        .Width("100%"))
+            @(Html.DevExtreme().Button()
+                        .ID("AddGroup")
+                        .Icon("plus")
+                        .OnClick("Progroup")
+                        )
+        </div>
+
+    </div>
+
+    <!-- Image -->
+    <div class="form-image">
+        <img src="~/images/ERMproperty.png" alt="Property Image" />
+    </div>
+</div>
+
+<div class="dx-fieldset horizontal-container">
+    @(
+        Html.DevExtreme().Tabs()
+        .Items(items =>
+        {
+            items.Add().Icon("preferences").Text(new JS("formatMessage('Specification')"));
+            items.Add().Icon("chart").Text(new JS("formatMessage('Purchased')"));
+            items.Add().Icon("image").Text(new JS("formatMessage('Hired')"));
+            items.Add().Icon("money").Text(new JS("formatMessage('Document')"));
+            items.Add().Icon("tags").Text(new JS("formatMessage('Mob/Demob Details')"));
+            items.Add().Icon("cart").Text(new JS("formatMessage('Maintenance Details')"));
+            items.Add().Icon("runner").Text(new JS("formatMessage('Cost Summary')"));
+            items.Add().Icon("repeat").Text(new JS("formatMessage('Operators')"));
+        })
+        .SelectedIndex(0)
+        .OnSelectionChanged("onTabSelectionChanged")
+        )
+</div>
+<!-- Tab Contents -->
+<div class="dx-fieldset">
+    <!-- Tab 1 Content -->
+    <div id="tab-content-1" class="tab-content">
+        <!-- Nested Tabs inside Tab 1 -->
+        @(
+                Html.DevExtreme().Tabs()
+                .Items(subTabs =>
+                {
+                    subTabs.Add().Icon("user").Text(new JS("formatMessage('General')"));
+                    subTabs.Add().Icon("info").Text(new JS("formatMessage('Attributes')"));
+                    subTabs.Add().Icon("dots").Text(new JS("formatMessage('Others')"));
+                })
+                .SelectedIndex(0)
+                .OnSelectionChanged("onNestedTabSelectionChanged")
+                )
+
+        <!-- Nested Tab Contents -->
+        <div id="nested-tab-1" class="nested-tab-content">
+
+            <style>
+                .property-spec-table {
+                    width: 100%;
+                    border-spacing: 10px;
+                }
+
+                    .property-spec-table td {
+                        vertical-align: top;
+                    }
+
+                .full-width {
+                    width: 100%;
+                }
+            </style>
+
+            <table class="property-spec-table">
+                <tr>
+                    <td >
+                        @(Html.DevExtreme().TextBox().ID("Brand").Label(new JS("formatMessage('Brand')")).LabelMode(EditorLabelMode.Outside).Width("95%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().TextBox().ID("SerialNo").Label(new JS("formatMessage('Serial No:')")).LabelMode(EditorLabelMode.Outside).Width("95%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().TextBox().ID("PlateNo").Label(new JS("formatMessage('Plate No:')")).LabelMode(EditorLabelMode.Outside).Width("95%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().TextBox().ID("EngineNo").Label(new JS("formatMessage('Engine No:')")).LabelMode(EditorLabelMode.Outside).Width("95%"))
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @(Html.DevExtreme().TextBox().ID("Model").Label(new JS("formatMessage('Model')")).LabelMode(EditorLabelMode.Outside).Width("95%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().TextBox().ID("Capacity").Label(new JS("formatMessage('Capacity')")).LabelMode(EditorLabelMode.Outside).Width("95%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().TextBox().ID("Type").Label(new JS("formatMessage('Type:')")).LabelMode(EditorLabelMode.Outside).Width("95%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().TextBox().ID("AlternatorNo").Label(new JS("formatMessage('Alternator No:')")).LabelMode(EditorLabelMode.Outside).Width("95%"))
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @(Html.DevExtreme().TextBox().ID("DoorNo").Label(new JS("formatMessage('Door No:')")).LabelMode(EditorLabelMode.Outside).Width("95%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().TextBox().ID("Color").Label(new JS("formatMessage('Color')")).LabelMode(EditorLabelMode.Outside).Width("95%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().TextBox().ID("Year").Label(new JS("formatMessage('Year')")).LabelMode(EditorLabelMode.Outside).Width("95%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().TextBox().ID("KVA_KW").Label(new JS("formatMessage('KVA / KW')")).LabelMode(EditorLabelMode.Outside).Width("95%"))
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @(Html.DevExtreme().TextBox().ID("Weight").Label(new JS("formatMessage('Weight:')")).LabelMode(EditorLabelMode.Outside).Width("95%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().TextBox().ID("PlatformHeight").Label(new JS("formatMessage('Platform Height:')")).LabelMode(EditorLabelMode.Outside).Width("95%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().TextBox().ID("OperatingWeight").Label(new JS("formatMessage('Operating Weight:')")).LabelMode(EditorLabelMode.Outside).Width("95%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().TextBox().ID("OperatingCapacity").Label(new JS("formatMessage('Operating Capacity:')")).LabelMode(EditorLabelMode.Outside).Width("95%"))
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @(Html.DevExtreme().TextBox().ID("Dimension").Label(new JS("formatMessage('L x W x H')")).LabelMode(EditorLabelMode.Outside).Width("95%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().TextBox().ID("Location").Label(new JS("formatMessage('Location / Site / Area')")).LabelMode(EditorLabelMode.Outside).Width("95%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().TextBox().ID("Ownership").Label(new JS("formatMessage('Ownership')")).LabelMode(EditorLabelMode.Outside).Width("95%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().SelectBox()
+                                                .ID("Certification")
+                                                .DataSource(new[] { "Yes", "No" })
+                                                .Label(new JS("formatMessage('Certification:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("95%"))
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @(Html.DevExtreme().TextBox().ID("Remarks").Label(new JS("formatMessage('Remarks:')")).LabelMode(EditorLabelMode.Outside).Width("95%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().SelectBox()
+                                                .ID("PWAS")
+                                                .DataSource(new[] { "Yes", "No" })
+                                                .Label(new JS("formatMessage('PWAS:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("95%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().SelectBox()
+                                                .ID("Attachment")
+                                                .DataSource(new[] { "Fork", "Bucket", "Crane" }) // example items
+                                                .Label(new JS("formatMessage('Attachment:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("95%"))
+                    </td>
+                    <td></td>
+                </tr>
+            </table>
+
+
+        </div>
+        <div id="nested-tab-2" class="nested-tab-content" style="display:none;">
+            <style>
+                .two-column-spec-table {
+                    width: 97%;
+                    border-spacing: 20px 15px; /* space between columns and rows */
+                }
+
+                    .two-column-spec-table td {
+                        vertical-align: top;
+                        width: 50%;
+                    }
+            </style>
+
+            <table class="two-column-spec-table">
+                <tr>
+                    <td>
+                        @(Html.DevExtreme().TextBox()
+                                                .ID("Specification1")
+                                                .Label(new JS("formatMessage('Specification 1:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().TextBox()
+                                                .ID("Field1")
+                                                .Label(new JS("formatMessage('Field 1:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @(Html.DevExtreme().TextBox()
+                                                .ID("Specification2")
+                                                .Label(new JS("formatMessage('Specification 2:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().TextBox()
+                                                .ID("Field2")
+                                                .Label(new JS("formatMessage('Field 2:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @(Html.DevExtreme().TextBox()
+                                                .ID("Specification3")
+                                                .Label(new JS("formatMessage('Specification 3:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().TextBox()
+                                                .ID("Field3")
+                                                .Label(new JS("formatMessage('Field 3:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="nested-tab-3" class="nested-tab-content" style="display:none;">
+
+            ?Img
+
+        </div>
+    </div>
+
+    <!-- Tab 2 - 10 Content -->
+    <div id="tab-content-2" class="tab-content" style="display:none;">
+        <style>
+            .form-section {
+                padding: 15px 20px;
+                margin-bottom: 20px;
+            }
+
+            .form-table {
+                width: 100%;
+                border-spacing: 20px 10px;
+            }
+
+                .form-table td {
+                    vertical-align: top;
+                    width: 25%;
+                }
+
+            .form-subtitle {
+                font-weight: bold;
+                margin-bottom: 10px;
+                display: block;
+            }
+        </style>
+
+        <!-- Purchase Info Section -->
+        <div class="form-section">
+            <table class="form-table">
+                <tr>
+                    <td>
+                        @(Html.DevExtreme().DateBox()
+                                                .ID("PurchasedDate")
+                                                .Label(new JS("formatMessage('Purchased Date:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().TextBox()
+                                                .ID("PurchasedFrom")
+                                                .Label(new JS("formatMessage('Purchased from:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().TextBox()
+                                                .ID("PurchasedAs")
+                                                .Label(new JS("formatMessage('Purchased as:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().SelectBox()
+                                                .ID("CurrentCondition")
+                                                .Label(new JS("formatMessage('Current Condition:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .DataSource(new[] { "New", "Used", "Refurbished" })
+                                                .Width("97%"))
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Property Financed Section -->
+        <div class="form-section">
+            <div class="form-subtitle">
+                @(Html.DevExtreme().CheckBox()
+                                .ID("IsPropertyFinanced")
+                                .Value(false)
+                                .Text(new JS("formatMessage('Is Property Financed ?')")))
+            </div>
+
+            <table class="form-table">
+                <tr>
+                    <td>
+                        @(Html.DevExtreme().TextBox()
+                                                .ID("FinancedBy")
+                                                .Label(new JS("formatMessage('Financed By:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().DateBox()
+                                                .ID("StartDate")
+                                                .Label(new JS("formatMessage('Start Date:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().DateBox()
+                                                .ID("EndDate")
+                                                .Label(new JS("formatMessage('End Date:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @(Html.DevExtreme().NumberBox()
+                                                .ID("Installments")
+                                                .Label(new JS("formatMessage('No of Installments:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().NumberBox()
+                                                .ID("DownPayment")
+                                                .Label(new JS("formatMessage('Down Payment:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().NumberBox()
+                                                .ID("MonthlyInstallment")
+                                                .Label(new JS("formatMessage('Monthly Installment:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().NumberBox()
+                                                .ID("FinalPayment")
+                                                .Label(new JS("formatMessage('Final Payment:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div id="tab-content-3" class="tab-content" style="display:none;">
+        <style>
+            .form-section {
+                padding: 15px 20px;
+                margin-bottom: 20px;
+            }
+
+            .form-table {
+                width: 100%;
+                border-spacing: 15px 10px;
+            }
+
+                .form-table td {
+                    vertical-align: top;
+                    width: 20%;
+                }
+
+            .form-subtitle {
+                margin-bottom: 10px;
+            }
+        </style>
+
+        <!-- Hired Info Section -->
+        <div class="form-section">
+            <table class="form-table">
+                <tr>
+                    <td>
+                        @(Html.DevExtreme().DateBox()
+                                                .ID("HiredOn")
+                                                .Label(new JS("formatMessage('Hired On:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().TextBox()
+                                                .ID("SupplierName")
+                                                .Label(new JS("formatMessage('Supplier Name:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().SelectBox()
+                                                .ID("OurPONo")
+                                                .Label(new JS("formatMessage('Our PO No:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().SelectBox()
+                                                .ID("SupplierRefNo")
+                                                .Label(new JS("formatMessage('Supplier Reference No:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Rates Section -->
+        <div class="form-section">
+            <table class="form-table">
+                <tr>
+                    <td>
+                        @(Html.DevExtreme().SelectBox()
+                                                .ID("HiredMode")
+                                                .Label(new JS("formatMessage('Hired Mode:')"))
+                                                .DataSource(new[] { "Hourly", "Daily", "Weekly", "Monthly" })
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().NumberBox()
+                                                .ID("RatePerHour")
+                                                .Label(new JS("formatMessage('Hired Rate / Hour:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().NumberBox()
+                                                .ID("RatePerDay")
+                                                .Label(new JS("formatMessage('Hired Rate / Day:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().NumberBox()
+                                                .ID("RatePerWeek")
+                                                .Label(new JS("formatMessage('Hired Rate / Weekly:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().NumberBox()
+                                                .ID("RatePerMonth")
+                                                .Label(new JS("formatMessage('Hired Rate / Month:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @(Html.DevExtreme().NumberBox()
+                                                .ID("AgreementHours")
+                                                .Label(new JS("formatMessage('Agreement Hours / Month:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().NumberBox()
+                                                .ID("OvertimeRate")
+                                                .Label(new JS("formatMessage('Overtime Rate / Hour:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().NumberBox()
+                                                .ID("MobRate")
+                                                .Label(new JS("formatMessage('Supplier Mob Rate:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().NumberBox()
+                                                .ID("DemobRate")
+                                                .Label(new JS("formatMessage('Supplier Demob Rate:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Operator Info -->
+        <div class="form-section">
+            <div class="form-subtitle">
+                @(Html.DevExtreme().CheckBox()
+                                .ID("IsOperatorIncluded")
+                                .Text(new JS("formatMessage('Is Operator Included')"))
+                                .Value(false))
+            </div>
+
+            <table class="form-table">
+                <tr>
+                    <td>
+                        @(Html.DevExtreme().TextBox()
+                                                .ID("OperatorName")
+                                                .Label(new JS("formatMessage('Operator Name:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().TextBox()
+                                                .ID("IqamaNo")
+                                                .Label(new JS("formatMessage('Iqama No:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().TextBox()
+                                                .ID("MobileNo")
+                                                .Label(new JS("formatMessage('Mobile No:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().TextBox()
+                                                .ID("MobileNo2")
+                                                .Label(new JS("formatMessage('Mobile No 2:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().NumberBox()
+                                                .ID("HourlyRate")
+                                                .Label(new JS("formatMessage('Hourly Rate:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Return Info -->
+        <div class="form-section">
+            <div class="form-subtitle">
+                @(Html.DevExtreme().CheckBox()
+                                .ID("IsReturned")
+                                .Text(new JS("formatMessage('Is Returned')"))
+                                .Value(false))
+            </div>
+
+            <table class="form-table">
+                <tr>
+                    <td>
+                        @(Html.DevExtreme().DateBox()
+                                                .ID("ReturnedOn")
+                                                .Label(new JS("formatMessage('Returned On:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().TextBox()
+                                                .ID("Remarks")
+                                                .Label(new JS("formatMessage('Remarks:')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .Width("97%"))
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div id="tab-content-4" class="tab-content" style="display:none;">
+        <style>
+            .toolbar-button {
+                margin-right: 10px;
+                font-weight: bold;
+            }
+
+            .custom-toolbar {
+                padding: 10px;
+                border-radius: 4px;
+                margin-bottom: 10px;
+            }
+        </style>
+
+        <!-- Toolbar -->
+        <div class="custom-toolbar" style="display:flex;">
+
+            @(Html.DevExtreme().Button()
+                        .ID("Addattach")
+                        .Icon("attach")
+                        .Text(new JS("formatMessage('Add & Attach File')"))
+                        .Width("97%")
+                        )
+
+            @(Html.DevExtreme().Button()
+                        .ID("Mergefile")
+                        .Icon("fas fa-file-pdf")
+                        .Text(new JS("formatMessage('Merge Selected Files')"))
+                        .Width("97%")
+                        )
+
+            @(Html.DevExtreme().Button()
+                        .ID("Save")
+                        .Icon("save")
+                        .Text(new JS("formatMessage('Save Separate Files')"))
+                        .Width("97%")
+                        )
+
+        </div>
+
+        <!-- Document DataGrid -->
+        @(Html.DevExtreme().DataGrid()
+                .ID("DocumentGrid")
+                .ShowBorders(true)
+                .ShowColumnLines(true)
+                .ColumnAutoWidth(true)
+                .RowAlternationEnabled(true)
+                .Height(300)
+                .Selection(s => s
+                .Mode(SelectionMode.Multiple)
+                .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always))
+                .Columns(columns =>
+                {
+                    columns.Add().Caption(new JS("formatMessage('Doc No')")).DataField("DocNo");
+                    columns.Add().Caption(new JS("formatMessage('Document Type')")).DataField("DocumentType");
+                    columns.Add().Caption(new JS("formatMessage('Document Ref No')")).DataField("DocumentRefNo");
+                    columns.Add().Caption(new JS("formatMessage('Document Remarks')")).DataField("DocumentRemarks");
+                    columns.Add().Caption(new JS("formatMessage('Expiry On')")).DataField("ExpiryOn").DataType(GridColumnDataType.Date);
+                    columns.Add().Caption(new JS("formatMessage('Expiry Arabic')")).DataField("ExpiryArabic");
+                    columns.Add().Caption(new JS("formatMessage('Notify On')")).DataField("NotifyOn").DataType(GridColumnDataType.Date);
+                })
+                )
+    </div>
+    <div id="tab-content-5" class="tab-content" style="display:none;">
+        <style>
+            .toolbar-button {
+                margin-right: 10px;
+                font-weight: bold;
+            }
+
+            .custom-toolbar {
+                padding: 10px;
+                border-radius: 4px;
+                margin-bottom: 10px;
+            }
+        </style>
+
+        <!-- Toolbar -->
+        <div class="custom-toolbar">
+            @(Html.DevExtreme().Button()
+                        .ID("Printdata")
+                        .Icon("print")
+                        .Text(new JS("formatMessage('Print Mobilization Data')"))
+                        .Width("20%")
+                        )
+        </div>
+
+        <!-- Document DataGrid -->
+        @(Html.DevExtreme().DataGrid()
+                .ID("mombGrid")
+                .ShowBorders(true)
+                .ShowColumnLines(true)
+                .ColumnAutoWidth(true)
+                .RowAlternationEnabled(true)
+                .Height(300)
+                .Selection(s => s
+                .Mode(SelectionMode.Multiple)
+                .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always))
+                .Columns(columns =>
+                {
+                    columns.Add().Caption(new JS("formatMessage('Delivery Note')")).DataField("DocNo");
+                    columns.Add().Caption(new JS("formatMessage('Delivered On')")).DataField("DocumentType");
+                    columns.Add().Caption(new JS("formatMessage('Client Name')")).DataField("DocumentRefNo");
+                    columns.Add().Caption(new JS("formatMessage('Demobilized Date')")).DataField("DocumentRemarks").DataType(GridColumnDataType.Date);
+                    columns.Add().Caption(new JS("formatMessage('Current Status')")).DataField("ExpiryOn");
+                    columns.Add().Caption(new JS("formatMessage('Gate Pass No')")).DataField("ExpiryArabic");
+                    columns.Add().Caption(new JS("formatMessage('Off Hire Note No')")).DataField("NotifyOn");
+                })
+                )
+    </div>
+    <div id="tab-content-6" class="tab-content" style="display:none;">
+        <!-- Toolbar -->
+        <div style="border:none;padding:20px;">
+            @(Html.DevExtreme().CheckBox().ID("Checkbox").Value(true).Text(new JS("formatMessage('Mark as Equipment / Property Under Maintenance')")))
+        </div>
+        <br />
+        <!-- Document DataGrid -->
+        @(Html.DevExtreme().DataGrid()
+                .ID("MaintenanceGrid")
+                .ShowBorders(true)
+                .ShowColumnLines(true)
+                .ColumnAutoWidth(true)
+                .RowAlternationEnabled(true)
+                .Height(300)
+                .Selection(s => s
+                .Mode(SelectionMode.Multiple)
+                .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always))
+                .Columns(columns =>
+                {
+                    columns.Add().Caption(new JS("formatMessage('Service Sheet No')")).DataField("DocNo");
+                    columns.Add().Caption(new JS("formatMessage('Service Date')")).DataField("DocumentType").DataType(GridColumnDataType.Date);
+                    columns.Add().Caption(new JS("formatMessage('Service Order Type')")).DataField("DocumentRefNo");
+                    columns.Add().Caption(new JS("formatMessage('Complaint')")).DataField("DocumentRemarks");
+                    columns.Add().Caption(new JS("formatMessage('Service Status')")).DataField("ExpiryOn");
+                    columns.Add().Caption(new JS("formatMessage('Service Cost')")).DataField("ExpiryArabic");
+                })
+                )
+    </div>
+    <div id="tab-content-7" class="tab-content" style="display:none;">
+        <div class="custom-toolbar">
+            @(Html.DevExtreme().Button()
+                        .ID("Printbtn")
+                        .Icon("print")
+                        .Text(new JS("formatMessage('Print')"))
+                        .Width(130)
+                        )
+            @(Html.DevExtreme().Button()
+                        .ID("Checkclick")
+                        .Icon("layout")
+                        .Text(new JS("formatMessage('Details Report By Date')"))
+                        )
+        </div>
+
+        <!-- Document DataGrid -->
+        @(Html.DevExtreme().DataGrid()
+                .ID("SeviceGrid")
+                .ShowBorders(true)
+                .ShowColumnLines(true)
+                .ColumnAutoWidth(true)
+                .RowAlternationEnabled(true)
+                .Height(300)
+                .Selection(s => s
+                .Mode(SelectionMode.Multiple)
+                .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always))
+                .Columns(columns =>
+                {
+                    columns.Add().Caption(new JS("formatMessage('Service Sheet No')")).DataField("DocNo");
+                    columns.Add().Caption(new JS("formatMessage('Service Date')")).DataField("DocumentType").DataType(GridColumnDataType.Date);
+                    columns.Add().Caption(new JS("formatMessage('Service Order Type')")).DataField("DocumentRefNo");
+                    columns.Add().Caption(new JS("formatMessage('Complaint')")).DataField("DocumentRemarks");
+                    columns.Add().Caption(new JS("formatMessage('Service Status')")).DataField("ExpiryOn");
+                    columns.Add().Caption(new JS("formatMessage('Service Cost')")).DataField("ExpiryArabic");
+                })
+                )
+    </div>
+    <div id="tab-content-8" class="tab-content" style="display:none;">
+        <div class="custom-toolbar">
+            @(Html.DevExtreme().Button()
+                        .ID("userid")
+                        .Icon("user")
+                        .Text(new JS("formatMessage('Add New Operator')"))
+                        .Width(230)
+                        )
+        </div>
+
+        <!-- Document DataGrid -->
+        @(Html.DevExtreme().DataGrid()
+                .ID("OperatorGrid")
+                .ShowBorders(true)
+                .ShowColumnLines(true)
+                .ColumnAutoWidth(true)
+                .RowAlternationEnabled(true)
+                .Height(300)
+                .Selection(s => s
+                .Mode(SelectionMode.Multiple)
+                .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always))
+                .Columns(columns =>
+                {
+                    columns.Add().Caption(new JS("formatMessage('Epmloye ID')")).DataField("DocNo");
+                    columns.Add().Caption(new JS("formatMessage('Operator Type')")).DataField("DocumentType");
+                    columns.Add().Caption(new JS("formatMessage('Operator Name')")).DataField("DocumentRefNo");
+                    columns.Add().Caption(new JS("formatMessage('Start Date')")).DataField("DocumentRemarks").DataType(GridColumnDataType.Date);
+                    columns.Add().Caption(new JS("formatMessage('End Date')")).DataField("ExpiryOn").DataType(GridColumnDataType.Date);
+                    columns.Add().Caption(new JS("formatMessage('Hourly Rate')")).DataField("ExpiryArabic");
+                    columns.Add().Caption(new JS("formatMessage('Overtime Rate')")).DataField("ExpiryArabic");
+                    columns.Add().Caption(new JS("formatMessage('Working Shift')")).DataField("ExpiryArabic");
+                })
+                )
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- JavaScript -->
+<script>
+          function onTabSelectionChanged(e) {
+              // Hide all main tab content
+              document.querySelectorAll('.tab-content').forEach(div => div.style.display = 'none');
+
+              // Show selected main tab
+              const selectedIndex = e.component.option('selectedIndex') + 1;
+              const selectedTabId = `tab-content-${selectedIndex}`;
+              const selectedContent = document.getElementById(selectedTabId);
+              if (selectedContent) {
+                  selectedContent.style.display = 'block';
+              }
+          }
+
+          function onNestedTabSelectionChanged(e) {
+              // Hide all nested tab content
+              document.querySelectorAll('.nested-tab-content').forEach(div => div.style.display = 'none');
+
+              // Show selected nested tab
+              const selectedIndex = e.component.option('selectedIndex') + 1;
+              const selectedTabId = `nested-tab-${selectedIndex}`;
+              const selectedContent = document.getElementById(selectedTabId);
+              if (selectedContent) {
+                  selectedContent.style.display = 'block';
+              }
+          }
+
+
+      
+
+        function Protype(){
+                  const url = `/${tenantName}/ERM/PropertyCategory`;
+                const title = "";
+                    openModal(url, title);
+            }
+
+        function Progroup(){
+                  const url = `/${tenantName}/IMS/PropertyGroup`;
+                const title = "";
+                    openModal(url, title);
+            }
+              function StockGroup(){
+                  const url = `/${tenantName}/IMS/StockDetails_StockGroup`;
+                const title = "";
+                    openModal(url, title);
+            }
+              function ItemClassification(){
+                  const url = `/${tenantName}/IMS/StockDetails_ItemClassification`;
+                const title = "";
+                    openModal(url, title);
+            }
+              $(document).ready(function () {
+            // Ensure dxTabs has loaded, then get the selected index
+            const tabsInstance = DevExpress.ui.dxTabs.getInstance($(".dx-tabs")[0]);
+            const selectedTabIndex = tabsInstance.option("selectedIndex");
+
+            // Show the corresponding content
+            $("#tab-content-" + (selectedTabIndex + 1)).show();
+        });
+
+
+           $(function () {
+                $("#propertmaster").dxTextBox({
+                  text: formatMessage("Property Master"),
+                readOnly: true,
+                onContentReady: function(e) {
+                            $(e.element).addClass("dx-textbox-heading");
+                    }
+
+            });
+        });
+
+        //////
+      let isEditMode = false;
+      let isViewMode = false;
+
+      function onStockGroupChange(e) {
+          var GsgroupId = e.value;
+
+          if (!isViewMode && !isEditMode && GsgroupId) {
+              $.get('/api/StockInventory/GetNextStockNumber', { GsgroupId: GsgroupId }, function (data) {
+                  $("#StockNoItemCode").dxTextBox("instance").option("value", data);
+              });
+          }
+      }
+
+    async function translateToArabic(text) {
+
+           try {
+
+               const response = await fetch(
+
+                   `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`
+
+               );
+
+               const data = await response.json();
+
+               return data.responseData.translatedText;
+
+           } catch (error) {
+
+               console.error("Translation failed:", error);
+
+               return "Translation Error";
+
+           }
+
+      }
+
+      async function convertToArabic() {
+
+           // Get the TextBox1 (input) instance
+
+           const textBox1Instance = $("#DetailedDescription").dxTextArea("instance");
+
+           // Get the TextBox2 (output) instance
+
+           const textBox2Instance = $("#ArabicDescription").dxTextArea("instance");
+
+           // Ensure both instances are initialized
+
+           if (!textBox1Instance || !textBox2Instance) {
+
+               console.error("TextBox instances are not properly initialized.");
+
+               return;
+
+           }
+
+
+           // Get the value from TextBox1
+
+           const englishText = textBox1Instance.option("value");
+
+           // Validate input
+
+           if (!englishText || englishText.trim() === "") {
+
+               alert("Please enter text to translate.");
+
+               return;
+
+           }
+
+           // Perform translation
+
+           const arabicTranslation = await translateToArabic(englishText);
+
+           // Update TextBox2 with the Arabic translation
+
+           textBox2Instance.option("value", arabicTranslation);
+
+      }
+        async function convertToArabic1() {
+
+           // Get the TextBox1 (input) instance
+
+           const textBox1Instance = $("#ItemName").dxTextBox("instance");
+
+           // Get the TextBox2 (output) instance
+
+           const textBox2Instance = $("#ItemNameArabic").dxTextBox("instance");
+
+           // Ensure both instances are initialized
+
+           if (!textBox1Instance || !textBox2Instance) {
+
+               console.error("TextBox instances are not properly initialized.");
+
+               return;
+
+           }
+
+
+           // Get the value from TextBox1
+
+           const englishText = textBox1Instance.option("value");
+
+           // Validate input
+
+           if (!englishText || englishText.trim() === "") {
+
+               alert("Please enter text to translate.");
+
+               return;
+
+           }
+
+           // Perform translation
+
+           const arabicTranslation = await translateToArabic(englishText);
+
+           // Update TextBox2 with the Arabic translation
+
+           textBox2Instance.option("value", arabicTranslation);
+
+      }
+
+</script>

@@ -1,5 +1,5 @@
-@page
-@model QD.ERP.Web.Areas.ERM.Pages.RequestforQuotationListModel
+﻿@page
+@model QD.ERP.Web.Areas.ERM.Pages.EquipmentTimeSheetModel
 @{
 }
 <style>
@@ -26,6 +26,7 @@
 		border-radius: 8px;
 		overflow: hidden;
 	}
+
 	#overlay-frame {
 		width: 100%;
 		height: 100%;
@@ -150,7 +151,7 @@
 			border-bottom: 1px solid #e0e0e0;
 		}
 
-	.ledgerResult{
+	.ledgerResult {
 		overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
 		width: 100%;
 	}
@@ -164,7 +165,7 @@
 <input id="formId" value="frm201LedgerView" type="hidden" />
 <div class="title">
 	<div class="header-container">
-		<div id="RequestforQuotationList" class="no-border-input"></div>
+		<div id="EquipmentTimeSheet" class="no-border-input"></div>
 	</div>
 </div>
 
@@ -227,7 +228,7 @@
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
-				columns.Add().Caption(new JS("formatMessage('RFQ Details')")).Columns(subColumns =>
+			columns.Add().Caption(new JS("formatMessage('RFQ Details')")).Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.Rfqno).Caption(new JS("formatMessage('RFQ No')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.Rfqdate).Caption(new JS("formatMessage('RFQ Date')")).Alignment(HorizontalAlignment.Center).Visible(true);
@@ -235,24 +236,24 @@
 				subColumns.AddFor(m => m.SupplierName).Caption(new JS("formatMessage('Supplier Name')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.SupplierQuotationNo).Caption(new JS("formatMessage('Supplier Quotation No')")).Alignment(HorizontalAlignment.Center);
 				subColumns.AddFor(m => m.QuoteHasItemsToPo).Caption(new JS("formatMessage('Quote Has Items To Po')")).Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
-		<div class="dx-icon">
-			<%= data.QuoteHasItemsToPo ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-		</div>
-	</text>
-		);
+																																									  		<div class="dx-icon">
+																																									  			<%= data.QuoteHasItemsToPo ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+																																									  		</div>
+																																									  	</text>
+			);
 				subColumns.AddFor(m => m.Pono).Caption(new JS("formatMessage('Po No')")).Alignment(HorizontalAlignment.Center);
 
 
 			});
-				columns.Add().Caption(new JS("formatMessage('No Of Items')")).Columns(subColumns =>
+			columns.Add().Caption(new JS("formatMessage('No Of Items')")).Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No Of Items')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.TotalBeforeTax).Caption(new JS("formatMessage('Total Before Tax')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.TotalDiscount).Caption(new JS("formatMessage('Total Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.TotalAfterDiscount).Caption(new JS("formatMessage('Total After Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
 			});
-			
-			
+
+
 		})
 		.Height(680) // Fixed height for the grid
 		.ColumnAutoWidth(true)
@@ -291,8 +292,8 @@
 
 <script>
 		 $(function () {
-	$("#RequestforQuotationList").dxTextBox({
-	text: formatMessage("Request for Quotation List"),
+	$("#EquipmentTimeSheet").dxTextBox({
+	text: formatMessage("Equipment TimeSheet"),
 		readOnly: true,
 		onContentReady: function (e) {
 		$(e.element).addClass("dx-textbox-heading");

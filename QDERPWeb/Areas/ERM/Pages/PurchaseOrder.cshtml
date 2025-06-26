@@ -1,6 +1,5 @@
 @page
-@using DevExtreme.AspNet.Mvc
-@model QD.ERP.Web.Areas.ERM.Pages.DeliveryNoteModel
+@model QD.ERP.Web.Areas.ERM.Pages.PurchaseOrderModel
 @{
 }
 <style>
@@ -166,23 +165,10 @@
 <input id="formId" value="frm201LedgerView" type="hidden" />
 <div class="title">
 	<div class="header-container">
-		<div id="DeliveryNote1" class="no-border-input"></div>
+		<div id="PurchaseOrders" class="no-border-input"></div>
 	</div>
 </div>
-
-
-		@await Html.PartialAsync("/Pages/Shared/ERM/DeliveryNoteFooter.cshtml")
-<div class="context-menuInvoice" id="contextMenu">
-	<div class="context-menu-itemInvoice" onclick="viewRecord()">
-		<i class="dx-icon-search"></i> View
-	</div>
-	<div class="context-menu-itemInvoice" onclick="editRecord()">
-		<i class="dx-icon-edit"></i> Edit
-	</div>
-	<div class="context-menu-itemInvoice" onclick="deleteRecord()">
-		<i class="dx-icon-trash"></i> Delete
-	</div>
-</div>
+@await Html.PartialAsync("/Pages/Shared/ERM/PurchaseOrderFooter.cshtml")
 <div class="dx-fieldset horizontal-container">
 	@(Html.DevExtreme().DateBox()
 		.ID("frmdateBox")
@@ -232,32 +218,55 @@
 
 </div>
 <div class="dx-field ledgerResult">
-	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60304deliveryNoteViewMaster>()
+	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60404purchaseOrderViewMaster>()
 		.ID("dataGrid")
 		.RemoteOperations(false)
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
-			columns.Add().Caption("Delivery Note Details").Columns(subColumns =>
+				columns.Add().Caption(new JS("formatMessage('Purchase Order Details')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.DeliveredTo).Caption("DeliveredTo To").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.DeliveryNoteNo).Caption("Delivery Note No").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.DeliveryDate).Caption("Delivery Date").Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
-				subColumns.AddFor(m => m.DeliveryIssuedTo).Caption("Delivery Issued To").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Mprno).Caption("Mpr no").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Pono).Caption(new JS("formatMessage('Po No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.RevisionNo).Caption(new JS("formatMessage('REV.No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Podate).Caption(new JS("formatMessage('PO Date')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
+				subColumns.AddFor(m => m.SupplierName).Caption(new JS("formatMessage('Supplier Name')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.IsSubmitted).Caption(new JS("formatMessage('IsSubmitted')")).Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
+		<div class="dx-icon">
+			<%= data.IsSubmitted ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+		</div>
+	</text>).Visible(true);
+				subColumns.AddFor(m => m.IsVerified).Caption(new JS("formatMessage('IsVerified')")).Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
+		<div class="dx-icon">
+			<%= data.IsVerified ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+		</div>
+	</text>).Visible(true);
+				subColumns.AddFor(m => m.IsApproved).Caption(new JS("formatMessage('IsApproved')")).Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
+		<div class="dx-icon">
+			<%= data.IsApproved ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+		</div>
+	</text>).Visible(true);
+				subColumns.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No Of Items')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.OrderStatus).Caption(new JS("formatMessage('Order Status')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.BillStatus).Caption(new JS("formatMessage('Bill Status')")).Alignment(HorizontalAlignment.Center).Visible(true);
+
+
+
 			});
-			columns.Add().Caption("Delivery To Client").Columns(subColumns =>
+				columns.Add().Caption(new JS("formatMessage('Amount')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.InvoiceNo).Caption("Invoice No").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.ClientName).Caption("Client Name").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.ClientPono).Caption("Client Po no").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.ClientProject).Caption("Client Project").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.SalesOrderNo).Caption("SalesOrder No").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.TotalBeforeTax).Caption(new JS("formatMessage('Total Before Tax')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.TotalDiscount).Caption(new JS("formatMessage('Total Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.TotalAfterDiscount).Caption(new JS("formatMessage('Total After Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.TotalTaxAmount).Caption(new JS("formatMessage('Total Tax Amount')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.TotalWithTax).Caption(new JS("formatMessage('Total With Tax')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.AdditionsAmount).Caption(new JS("formatMessage('Additions Amount')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.DeductionsAmount).Caption(new JS("formatMessage('Deductions Amount')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.GrandTotal).Caption(new JS("formatMessage('Grand Total')")).Alignment(HorizontalAlignment.Center).Visible(true);
+
+
+
 			});
-			columns.Add().Caption("Delivery To Store").Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.StoreName).Caption("Store Name").Alignment(HorizontalAlignment.Center).Visible(true);
-			});
+			
 		})
 		.Height(680) // Fixed height for the grid
 		.ColumnAutoWidth(true)
@@ -294,23 +303,20 @@
 		.OnInitialized("function(e) { loadGridState(); }")
 		)
 
-
-
-
 </div>
 <div id="invoiceErrorPopup"></div>
 
 <script>
 		 $(function () {
-	$("#DeliveryNote1").dxTextBox({
-	text: formatMessage("Delivery Note"),
+	$("#PurchaseOrders").dxTextBox({
+	text: formatMessage("Purchase Order"),
 		readOnly: true,
 		onContentReady: function (e) {
 		$(e.element).addClass("dx-textbox-heading");
 		}
 		});
 	});
-		$(function () {
+	$(function () {
 			var now = new Date();
 			var firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
 			var tillmonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
@@ -379,7 +385,7 @@
 	toDate = toDate.toISOString().split('T')[0];
 
 				$.ajax({
-		url: '/api/DeliveryNote1/GetDeliveryNotes',
+		url: '/api/PurchaseOrders1/GetPurchaseOrders',
 		type: 'GET',
 		data: {
 			fromDate: frmDate,
@@ -398,88 +404,6 @@
 
 
 	}
-	 let selectedRowData = null;
-
-	$(function () {
-		const contextMenu = $("#contextMenu");
-
-		$(document).on("click", function () {
-			contextMenu.hide();
-		});
-
-	   $("#dataGrid").customizeGridContextMenu();
-		  $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
-		e.preventDefault();
-		const dataGrid = $("#dataGrid").dxDataGrid("instance");
-		const rowIndex = $(this).index();
-		selectedRowData = dataGrid.getVisibleRows()[rowIndex].data;
-
-		$("#contextMenu").css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
-	});
-
-	});
-	function viewRecord() {
-		if (selectedRowData) {
-			const DeliveryNoteNo = selectedRowData.DeliveryNoteNo;
-			window.location.href = `/${tenantName}/ERM/DeliveryEditForm?DeliveryNoteNo=${encodeURIComponent(DeliveryNoteNo)}&mode=view`;
-		}
-	}
-
-	function editRecord() {
-		if (selectedRowData) {
-			const DeliveryNoteNo = selectedRowData.DeliveryNoteNo;
-			window.location.href = `/${tenantName}/ERM/DeliveryEditForm?DeliveryNoteNo=${encodeURIComponent(DeliveryNoteNo)}&mode=edit`;
-		}
-	}
-
-
-		function deleteRecord() {
-		if (selectedRowData) {
-			const code = selectedRowData.DeliveryNoteNo;
-
-			DevExpress.ui.dialog.confirm(
-				`Are you sure you want to delete stock item: <b>${code}</b>?`,
-				"Confirm Deletion"
-			).done(function (dialogResult) {
-				if (dialogResult) {
-					$.ajax({
-						url: "/api/DeliveryNote1/DeleteDeliveryItem",
-						method: "POST",
-						contentType: "application/json",
-						data: JSON.stringify(code),
-						success: function (result) {
-							const messageType = result.success ? "Success" : "Error";
-							const messageColor = result.success ? "green" : "red";
-
-							DevExpress.ui.dialog.alert(
-								`<div style="color: ${messageColor}; font-weight: bold;">
-									${result.message}
-								</div>`,
-								messageType
-							).done(function () {
-								if (result.success) {
-									window.refreshPage();
-								}
-							});
-						},
-						error: function (xhr) {
-							DevExpress.ui.dialog.alert(
-								`<div style="color: red; font-weight: bold;">
-									Error deleting stock item.
-								</div>`,
-								"Error"
-							);
-							console.error(xhr);
-						}
-					});
-				}
-			});
-		} else {
-			DevExpress.ui.notify("Please select a row to delete.", "warning", 2000);
-		}
-	}
-
-
 
 
 </script>

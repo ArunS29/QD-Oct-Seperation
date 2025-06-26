@@ -525,21 +525,20 @@
 
         </text>);
 
-						item.Add().Title(new JS("formatMessage('Quote Text')")).Icon("detailslayout").Text("Quote Text").Template(@<text>
+				item.Add().Title(new JS("formatMessage('Quote Text')")).Icon("detailslayout").Text("Quote Text").Template(@<text>
             <div class="dx-card layout-container">
                 <!-- Subject -->
                 <div class="form-row">
                     <div class="form-column">
                         <div class="field-header">
-							<label id="Subject1"  class="field-label"></label>
+							<label id="Subject1" class="field-label"></label>
                             <div class="field-buttons">
-                                <button class="btn-solid">Set Default</button>
+                                <button class="btn-solid" onclick="saveField('ReportSubject', 'Subjectt' ,'Subject')">Set Default</button>
                                 <button class="btn-outline"><i class="fa fa-font"></i></button>
                             </div>
                         </div>
                         @(Html.DevExtreme().TextBox()
-                        .ID("Subject")
-                        .LabelMode(EditorLabelMode.Hidden)
+                        .ID("Subjectt")
                         .Width("100%")
                         )
                     </div>
@@ -549,14 +548,13 @@
                         <div class="field-header">
 							<label for="QuoteSummary" id="QuoteSummary1" class="field-label"></label>
                             <div class="field-buttons">
-                                <button class="btn-solid">Set Default</button>
+                                <button class="btn-solid"  onclick="saveField('ReportSummary', 'QuoteSummaryy','Quote summary')">Set Default</button>
                                 <button class="btn-outline"><i class="fa fa-font"></i></button>
                             </div>
                         </div>
                         @(Html.DevExtreme().TextArea()
-                        .ID("QuoteSummary")
+                        .ID("QuoteSummaryy")
                         .Height(80)
-                        .LabelMode(EditorLabelMode.Hidden)
                         .Width("100%")
                         )
                     </div>
@@ -568,14 +566,12 @@
                         <div class="field-header">
 							<label for="QuoteIntro" id="QuoteIntro1" class="field-label"></label>
                             <div class="field-buttons">
-                                <button class="btn-solid" >Set Default</button>
+                                <button class="btn-solid"  onclick="saveField('ReportIntroduction', 'QuoteIntroo','Quote Introduction')" >Set Default</button>
                                 <button class="btn-outline"><i class="fa fa-font"></i></button>
                             </div>
                         </div>
                         @(Html.DevExtreme().TextBox()
-                        .ID("QuoteIntro")
-                        .LabelMode(EditorLabelMode.Hidden)
-						
+                        .ID("QuoteIntroo")
                         .Width("100%")
                         )
                     </div>
@@ -585,14 +581,13 @@
                         <div class="field-header">
                             <label for="QuoteThanks" id="QuoteThanks1" class="field-label"></label>
                             <div class="field-buttons">
-                                <button class="btn-solid">Set Default</button>
+                                <button class="btn-solid"  onclick="saveField('ReportThanksNote','QuoteThankss','Quote Thanks')">Set Default</button>
                                 <button class="btn-outline"><i class="fa fa-font"></i></button>
                             </div>
                         </div>
                         @(Html.DevExtreme().TextArea()
-                        .ID("QuoteThanks")
+                        .ID("QuoteThankss")
                         .Height(80)
-                        .LabelMode(EditorLabelMode.Hidden)
                         .Width("100%")
                         )
                     </div>
@@ -6269,4 +6264,63 @@ function onEditClientClick() {
 
     openModal(url, '');
 }
+
+
+ $(function () {
+    $.ajax({
+        url: "/api/Quotation/GetReportAttributes?reportNo=IMS-QTN-01", // ✅ fixed missing quote
+        type: "GET",
+        success: function (data) {
+            console.log("Loaded:", data);
+
+            $("#Subjectt").dxTextBox("instance")?.option("value", data.ReportSubject || "");
+            $("#QuoteSummaryy").dxTextArea("instance")?.option("value", data.ReportSummary || "");
+            $("#QuoteIntroo").dxTextBox("instance")?.option("value", data.ReportIntroduction || "");
+            $("#QuoteThankss").dxTextArea("instance")?.option("value", data.ReportThanksNote || "");
+        },
+        error: function (xhr, status, error) {
+            console.error("Error loading report data:", error);
+        }
+    });
+});
+
+function saveField(fieldName, dxId,name) {
+    let instance = null;
+
+    try {
+        instance = $("#" + dxId).dxTextBox("instance");
+    } catch (e) {
+        // Not a TextBox, try TextArea next
+    }
+
+    if (!instance) {
+        try {
+            instance = $("#" + dxId).dxTextArea("instance");
+        } catch (e) {
+            console.error(`Neither dxTextBox nor dxTextArea initialized for: ${dxId}`);
+            DevExpress.ui.dialog.alert("Component not initialized: " + dxId, "Error");
+            return;
+        }
+    }
+    const value = instance.option("value");
+
+    $.ajax({
+        url: "/api/Quotation/SaveReportAttribute",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({
+            reportNo: "IMS-QTN-01",
+            field: fieldName,
+            value: value
+        }),
+        success: function () {
+            DevExpress.ui.notify(`Quotation ${name} has been set as default.`, "success", 2000);
+        },
+        error: function (xhr) {
+            DevExpress.ui.dialog.alert("Failed to save data", "Error");
+            console.error("Save error:", xhr.responseText);
+        }
+    });
+}
+
 </script>
