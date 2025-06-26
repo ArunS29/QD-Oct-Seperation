@@ -537,6 +537,16 @@ body {
 #rowHeightProperties:hover .dx-button-text {
     display: inline-block;
 }
+/*.dx-loadpanel {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    height: 100vh !important;
+    width: 100vw !important;
+    background-color: rgba(255, 255, 255, 0.6) !important;
+    z-index: 99990 !important;
+}*/
+
 .dx-loadpanel-content {
     display: flex !important;
     justify-content: center;
@@ -544,6 +554,9 @@ body {
     height: 150px !important;
     width: 180px !important;
     margin-top: 400px;
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
 }
 .dx-loadindicator-content {
   position: absolute;
