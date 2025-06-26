@@ -1214,8 +1214,8 @@
 							<tr>
 								<th>Purchase Order Details</th>
 							</tr>
-						<tr colspan="2">
-								<td>
+						<tr>
+								<td colspan="2">
 								@* 	@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Our Sales Order No')")).ID("OurSalesOrderNo")
 																			.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")).LabelMode(EditorLabelMode.Outside)) *@
 
@@ -1264,10 +1264,10 @@
 							<tr>
 								<th>Contract / Project References</th>
 							</tr>
-							<tr colspan="2">
+							<tr>
 
 
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Project Ref./Contract No')")).ID("ProjectRef").LabelMode(EditorLabelMode.Outside))</td>
+							<td colspan ="2">@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Project Ref./Contract No')")).ID("ProjectRef").LabelMode(EditorLabelMode.Outside))</td>
 							</tr>
 							<tr>
 								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('SES Reference')")).ID("SESReference").LabelMode(EditorLabelMode.Outside))</td>
@@ -1284,9 +1284,9 @@
 							<tr>
 								<th>Quotation / Delivery Details</th>
 							</tr>
-							<tr colspan="2">					
+							<tr>
 
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Quotation No')")).ID("QuotationNo").LabelMode(EditorLabelMode.Outside))</td>
+							<td colspan="2">@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Quotation No')")).ID("QuotationNo").LabelMode(EditorLabelMode.Outside))</td>
 
 							</tr>
 							<tr>
@@ -1374,6 +1374,7 @@
 									@(Html.DevExtreme().Button()
 																													.ID("EditClient1")
 																													.Icon("edit")
+																		.Disabled(true)
 																													.Hint("Edit Description")
 																													.Width(60)
 																												.OnClick("CurrencySClick")
@@ -2342,7 +2343,7 @@
 		<div class="Head" style="margin-left: 15px;">
 			@await Html.PartialAsync("/Pages/Shared/VAT/VATInvoiceEditFooter.cshtml")
 		</div>
-
+		<div id="ExcemptioncodePopover"></div>
 
 		@using (Html.DevExtreme().NamedTemplate("countrycode"))
 		{
@@ -3499,6 +3500,7 @@
 <input type="file" id="fileInput" style="display: none;" />
 <div id="cardPopover"></div>
 <div id="CalcardPopover"></div>
+
 <!-- Modal Structure -->
 
 <script>
@@ -4656,7 +4658,7 @@
 		allowEditing: false,
 		cellTemplate: function (container, options) {  // ✅ fixed here
 			$("<div>").dxButton({
-				icon: "preferences", // or another valid icon
+				icon: "fas fa-calculator", // or another valid icon
 				hint: "VAT Calculator",
 				stylingMode: "text",
 				width: 60,
@@ -4726,7 +4728,30 @@
 					}
 				},
 
-				{ dataField: formatMessage('ExcemptionCode'), caption: "Excemption Code",cssClass: "center-header", width: 150 },
+					{
+		  dataField: formatMessage('ExcemptionCode'),
+		  caption: "Excemption Code",
+		  cssClass: "center-header",
+		  width: 150,
+		  allowEditing: false,
+		  cellTemplate: function (container, options) {
+			const buttonId = "ExcemptionCodeBtn_" + options.rowIndex;
+
+			// Create div and append first
+			const $btn = $("<div>").attr("id", buttonId).appendTo(container);
+
+			// Then initialize dxButton
+			$btn.dxButton({
+			  icon: "fa fa-percentage",
+			  hint: "Sales Exemption",
+			  stylingMode: "text",
+			  width: 60,
+			  onClick: function (e) {
+				onexemptionCodeClick(e.element[0]);
+			  }
+			});
+		  }
+		},
 
 				{ dataField: "VAT", caption: formatMessage('VAT'),cssClass: "center-header", width: 150 },
 
@@ -4815,6 +4840,31 @@
 				}
 			}
 
+				function onexemptionCodeClick(cellElement) {
+			const $popover = $("#ExcemptioncodePopover");
+
+			if (!$popover.length || !$popover.hasClass("dx-popover")) {
+				console.error("Popover not initialized or not rendered yet.");
+				return;
+			}
+
+			const popover = $popover.dxPopover("instance");
+
+			if (!popover) {
+				console.error("Popover instance not found.");
+				return;
+			}
+
+			popover.option("target", cellElement);
+
+			if (popover.option("visible")) {
+				popover.hide();
+			} else {
+				popover.show();
+			}
+		}
+
+
 			$(function () {
 				$("#cardPopover").dxPopover({
 					width: 1000,
@@ -4865,31 +4915,33 @@
 			}
 		});
 	});
+			$(function () {
+			if ($("#ExcemptioncodePopover").length && !$("#ExcemptioncodePopover").hasClass("dx-popover")) {
+				$("#ExcemptioncodePopover").dxPopover({
 
-				// $(function () {
-				// 	$("#CalcardPopover").dxPopover({
-				// 		width: 550,
-				// 		position: "bottom",
-				// 		showEvent: "", // Manual control
-				// 		hideEvent: "", // Manual control
-				// 		hideOnOutsideClick: true,
-				// 		contentTemplate: function (contentElement) {
-				// 			contentElement.empty();
-
-				// 			$.ajax({
-				// 				url: '/api/VATModule/VATPercentageCal', // Adjust for area if needed
-				// 				type: 'GET',
-				// 				success: function (data) {
-				// 					contentElement.html(data);
-				// 				},
-				// 				error: function () {
-				// 					contentElement.html("<div style='color:red;'>Failed to load content.</div>");
-				// 				}
-				// 			});
-				// 		}
-				// 	});
-				// });
-
+					width: 550,
+					position: "bottom",
+					showEvent: "", // manual control
+					hideEvent: "", // manual control
+					hideOnOutsideClick: true,
+					contentTemplate: function (contentElement) {
+						contentElement.empty();
+							debugger
+						$.ajax({
+							url: "/api/VATModule/VATSalesTaxExemption", // ✅ Make sure this exists
+							type: "GET",
+							success: function (data) {
+								contentElement.html(data);
+							},
+							error: function () {
+								contentElement.html("<div style='color:red;'>Failed to load content.</div>");
+							}
+						});
+					}
+				});
+				}
+				});
+				
 			// Fetch dropdown data (same API can be used if needed)
 		 function getDropdownData() {
 			return $.ajax({
@@ -8691,5 +8743,71 @@
 			dataGrid.option("editing.allowDeleting", false);
 		}
 	}
+		 $(function () {
+			const dateBox = $("#SupplyDate").dxDateBox("instance");
+
+		// When focus/typing starts, change to dd-MM-yyyy
+			$("#SupplyDate").on("focusin", function () {
+			dateBox.option("displayFormat", "dd-MM-yyyy");
+		});
+
+		// When focus/typing ends, change back to dd-MMM-yyyy
+			$("#SupplyDate").on("focusout", function () {
+			dateBox.option("displayFormat", "dd-MMM-yyyy");
+		});
+	});
+	 $(function () {
+			const dateBox = $("#InvoiceIssuedDateTime").dxDateBox("instance");
+
+		// When focus/typing starts, change to dd-MM-yyyy
+			$("#InvoiceIssuedDateTime").on("focusin", function () {
+			dateBox.option("displayFormat", "dd-MM-yyyy");
+		});
+
+		// When focus/typing ends, change back to dd-MMM-yyyy
+			$("#InvoiceIssuedDateTime").on("focusout", function () {
+			dateBox.option("displayFormat", "dd-MMM-yyyy");
+		});
+	});
+	 $(function () {
+			const dateBox = $("#InvoiceDate").dxDateBox("instance");
+
+		// When focus/typing starts, change to dd-MM-yyyy
+			$("#InvoiceDate").on("focusin", function () {
+			dateBox.option("displayFormat", "dd-MM-yyyy");
+		});
+
+		// When focus/typing ends, change back to dd-MMM-yyyy
+			$("#InvoiceDate").on("focusout", function () {
+			dateBox.option("displayFormat", "dd-MMM-yyyy");
+		});
+	});
+	 $(function () {
+				const dateBox = $("#InvoiceDueDate").dxDateBox("instance");
+
+		// When focus/typing starts, change to dd-MM-yyyy
+				$("#InvoiceDueDate").on("focusin", function () {
+			dateBox.option("displayFormat", "dd-MM-yyyy");
+		});
+
+		// When focus/typing ends, change back to dd-MMM-yyyy
+				$("#InvoiceDueDate").on("focusout", function () {
+			dateBox.option("displayFormat", "dd-MMM-yyyy");
+		});
+	});
+	 $(function () {
+				const dateBox = $("#EffectiveDate").dxDateBox("instance");
+
+		// When focus/typing starts, change to dd-MM-yyyy
+				$("#EffectiveDate").on("focusin", function () {
+			dateBox.option("displayFormat", "dd-MM-yyyy");
+		});
+
+		// When focus/typing ends, change back to dd-MMM-yyyy
+				$("#EffectiveDate").on("focusout", function () {
+			dateBox.option("displayFormat", "dd-MMM-yyyy");
+		});
+	});
+
 </script>
 

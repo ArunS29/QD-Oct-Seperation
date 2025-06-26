@@ -4302,6 +4302,13 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
             return PartialView("~/Areas/VAT/Pages/CreditDetailDescription.cshtml", Description); // Ensure this is inside /Views/VoucherEntryReceipts/
         }
+        [HttpGet]
+        public IActionResult VATSalesTaxExemption()
+        {
+
+            return PartialView("~/Areas/VAT/Pages/VATSalesTaxExemption.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
+        }
+
 
         [HttpGet]
         public IActionResult VATPercentageCal(decimal amount)

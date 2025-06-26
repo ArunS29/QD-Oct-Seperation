@@ -13,7 +13,7 @@
 	}
 
 	#B2BdataGrid {
-		height: 700px !important;
+		height: 325px !important;
 	}
 	.toggle-switch{
 		position: relative;
@@ -6653,8 +6653,6 @@
 				console.error("fileInput element not found");
 			}
 		}
-
-	
 		function onDropDownInitialized(e) {
 		dropDownInstance = e.component;
 	}
@@ -6761,6 +6759,73 @@
 			}
 		});
 	}
+
+
+	$(function () {
+			const dateBox = $("#InvoiceIssuedDateTime").dxDateBox("instance");
+
+		// When focus/typing starts, change to dd-MM-yyyy
+			$("#InvoiceIssuedDateTime").on("focusin", function () {
+			dateBox.option("displayFormat", "dd-MM-yyyy");
+		});
+
+		// When focus/typing ends, change back to dd-MMM-yyyy
+			$("#InvoiceIssuedDateTime").on("focusout", function () {
+			dateBox.option("displayFormat", "dd-MMM-yyyy");
+		});
+	});
+	 $(function () {
+			const dateBox = $("#SupplyDate").dxDateBox("instance");
+
+		// When focus/typing starts, change to dd-MM-yyyy
+			$("#SupplyDate").on("focusin", function () {
+			dateBox.option("displayFormat", "dd-MM-yyyy");
+		});
+
+		// When focus/typing ends, change back to dd-MMM-yyyy
+			$("#SupplyDate").on("focusout", function () {
+			dateBox.option("displayFormat", "dd-MMM-yyyy");
+		});
+	});
+		 $(function () {
+			const dateBox = $("#PODate").dxDateBox("instance");
+
+		// When focus/typing starts, change to dd-MM-yyyy
+			$("#PODate").on("focusin", function () {
+			dateBox.option("displayFormat", "dd-MM-yyyy");
+		});
+
+		// When focus/typing ends, change back to dd-MMM-yyyy
+			$("#PODate").on("focusout", function () {
+			dateBox.option("displayFormat", "dd-MMM-yyyy");
+		});
+	});
+	 $(function () {
+			const dateBox = $("#InvoiceDueDate").dxDateBox("instance");
+
+		// When focus/typing starts, change to dd-MM-yyyy
+			$("#InvoiceDueDate").on("focusin", function () {
+			dateBox.option("displayFormat", "dd-MM-yyyy");
+		});
+
+		// When focus/typing ends, change back to dd-MMM-yyyy
+			$("#InvoiceDueDate").on("focusout", function () {
+			dateBox.option("displayFormat", "dd-MMM-yyyy");
+		});
+	});
+	 $(function () {
+			const dateBox = $("#EffectiveDate").dxDateBox("instance");
+
+		// When focus/typing starts, change to dd-MM-yyyy
+			$("#EffectiveDate").on("focusin", function () {
+			dateBox.option("displayFormat", "dd-MM-yyyy");
+		});
+
+		// When focus/typing ends, change back to dd-MMM-yyyy
+			$("#EffectiveDate").on("focusout", function () {
+			dateBox.option("displayFormat", "dd-MMM-yyyy");
+		});
+	});
 
 
 </script>

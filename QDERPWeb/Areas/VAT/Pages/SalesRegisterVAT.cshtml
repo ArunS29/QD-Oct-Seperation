@@ -207,8 +207,8 @@
 		.LabelMode(EditorLabelMode.Outside)
 		.InputAttr("aria-label", "Date")
 		.Type(DateBoxType.Date)
-		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)) // First day of the month
-		.DisplayFormat("dd-MMM-yyyy")
+		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)) // First day of month
+		.DisplayFormat("dd-MMM-yyyy") // Display format when not editing
 		.TabIndex(2)
 		)
 
@@ -586,6 +586,35 @@
 @* <div id="testSvgPreview" style="width:100px; height:100px; border:1px solid #ccc;"></div> *@
 
 <script>
+	 $(function () {
+		const dateBox = $("#frmdateBox").dxDateBox("instance");
+
+		// When focus/typing starts, change to dd-MM-yyyy
+		$("#frmdateBox").on("focusin", function () {
+			dateBox.option("displayFormat", "dd-MM-yyyy");
+		});
+
+		// When focus/typing ends, change back to dd-MMM-yyyy
+		$("#frmdateBox").on("focusout", function () {
+			dateBox.option("displayFormat", "dd-MMM-yyyy");
+		});
+	});
+	 $(function () {
+		const dateBox = $("#todateBox").dxDateBox("instance");
+
+		// When focus/typing starts, change to dd-MM-yyyy
+		$("#todateBox").on("focusin", function () {
+			dateBox.option("displayFormat", "dd-MM-yyyy");
+		});
+
+		// When focus/typing ends, change back to dd-MMM-yyyy
+		$("#todateBox").on("focusout", function () {
+			dateBox.option("displayFormat", "dd-MMM-yyyy");
+		});
+	});
+
+
+
 		function invoiceStatusCellTemplate(cellElement, cellInfo) {
 		const status = cellInfo.value;
 		let backgroundColor = "";
@@ -796,6 +825,7 @@
 	});
 	let selectedVoucherNo = null;
 	$(function () {
+			ddBtnShowRecords_click("range")
 		$("#VATInvoiceRegister").dxTextBox({
 			text: formatMessage("Sales Invoice Register"),
 			readOnly: true,
