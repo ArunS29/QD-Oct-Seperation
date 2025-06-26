@@ -552,6 +552,35 @@
 
 <script>
 
+		 $(function () {
+			const dateBox = $("#frmdateBox").dxDateBox("instance");
+
+			// When focus/typing starts, change to dd-MM-yyyy
+			$("#frmdateBox").on("focusin", function () {
+				dateBox.option("displayFormat", "dd-MM-yyyy");
+			});
+
+			// When focus/typing ends, change back to dd-MMM-yyyy
+			$("#frmdateBox").on("focusout", function () {
+				dateBox.option("displayFormat", "dd-MMM-yyyy");
+			});
+		});
+		 $(function () {
+				const dateBox = $("#todateBox").dxDateBox("instance");
+
+			// When focus/typing starts, change to dd-MM-yyyy
+				$("#todateBox").on("focusin", function () {
+				dateBox.option("displayFormat", "dd-MM-yyyy");
+			});
+
+			// When focus/typing ends, change back to dd-MMM-yyyy
+				$("#todateBox").on("focusout", function () {
+				dateBox.option("displayFormat", "dd-MMM-yyyy");
+			});
+		});
+
+
+
 	function onToolbarPreparing(e) {
 		// Remove/hide the column chooser button on initial load
 		e.toolbarOptions.items = e.toolbarOptions.items.filter(function (item) {
@@ -583,8 +612,11 @@
 		}
 
 
+
+	
 	let selectedVoucherNo = null;
 	$(function () {
+			
 		$("#CreditNoteRegister").dxTextBox({
 			text: formatMessage("Credit Note Register"),
 			readOnly: true,
@@ -594,6 +626,7 @@
 		});
 	});
 	$(function () {
+			ddBtnShowRecords_click("range")
 		var inputPopupInstance = $("#inputPopupContainer").dxPopup({
 			width: 600,
 			height: 400,
@@ -632,6 +665,7 @@
 			case 'today':
 				frmDate = toDate = currentDate;
 				break;
+				debugger
 			case 'yesterday':
 				var dateObj = new Date();
 				dateObj.setDate(dateObj.getDate() - 1);
@@ -667,9 +701,7 @@
 				frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
 				toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
 				break;
-					default:
-					frmDate = frmDateBox.option("value");
-					toDate = toDateBox.option("value");
+					
 		}
 
 		frmDate = frmDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });

@@ -14,7 +14,7 @@
 	}
 
 	#B2BdataGrid {
-		height: 700px !important;
+		height: 325px !important;
 	}
 
 	.toggle-switch {
@@ -5504,6 +5504,45 @@
 				dataGrid.option("editing.allowDeleting", false);
 			}
 		}
+			 $(function () {
+		const dateBox = $("#EffectiveDate").dxDateBox("instance");
+
+		// When focus/typing starts, change to dd-MM-yyyy
+		$("#EffectiveDate").on("focusin", function () {
+			dateBox.option("displayFormat", "dd-MM-yyyy");
+		});
+
+		// When focus/typing ends, change back to dd-MMM-yyyy
+		$("#EffectiveDate").on("focusout", function () {
+			dateBox.option("displayFormat", "dd-MMM-yyyy");
+		});
+	});
+	 $(function () {
+		const dateBox = $("#InvoiceDate").dxDateBox("instance");
+
+		// When focus/typing starts, change to dd-MM-yyyy
+		$("#InvoiceDate").on("focusin", function () {
+			dateBox.option("displayFormat", "dd-MM-yyyy");
+		});
+
+		// When focus/typing ends, change back to dd-MMM-yyyy
+		$("#InvoiceDate").on("focusout", function () {
+			dateBox.option("displayFormat", "dd-MMM-yyyy");
+		});
+	});
+	 $(function () {
+		const dateBox = $("#CreditNoteIssuedDateTime").dxDateBox("instance");
+
+		// When focus/typing starts, change to dd-MM-yyyy
+		$("#CreditNoteIssuedDateTime").on("focusin", function () {
+			dateBox.option("displayFormat", "dd-MM-yyyy");
+		});
+
+		// When focus/typing ends, change back to dd-MMM-yyyy
+		$("#CreditNoteIssuedDateTime").on("focusout", function () {
+			dateBox.option("displayFormat", "dd-MMM-yyyy");
+		});
+	});
 
 		
 

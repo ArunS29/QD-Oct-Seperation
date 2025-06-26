@@ -285,7 +285,14 @@
                 },
                 fields: [
                     { dataField: "AccountHead", area: "row", caption: "Client Name" },
-                    { dataField: "InvoiceMonth", area: "column", caption: "Invoice Month", dataType: "date", format: "MMM-yyyy" },
+                   {
+    dataField: "InvoiceMonth",
+    area: "column",
+    caption: "Invoice Month",
+    dataType: "date",
+    groupInterval: "month",      // ✅ Only group by month
+    format: "MMM-yyyy"           // ✅ Show Jun-2025 or Jan-2024
+},
                     {
                         dataField: "TotalRevenue",
                         area: "data",
@@ -305,7 +312,7 @@
             showColumnHeaders: true,
             columnAutoWidth: true,
             allowColumnResizing: true,
-            rowHeaderLayout: "standard",
+            rowHeaderLayout: "virtual",
             wordWrapEnabled: true,
             fieldChooser: {
                 enabled: true,

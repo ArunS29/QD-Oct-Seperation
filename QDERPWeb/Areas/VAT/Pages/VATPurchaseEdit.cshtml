@@ -13,7 +13,7 @@
 	}
 
 	#B2BdataGrid {
-		height: 700px !important;
+		height: 325px !important;
 	}
 	.toggle-switch {
 		position: relative;
@@ -6881,5 +6881,71 @@
 		}
 
 		}
+		 $(function () {
+		const dateBox = $("#SupplyDates").dxDateBox("instance");
+
+		// When focus/typing starts, change to dd-MM-yyyy
+		$("#SupplyDates").on("focusin", function () {
+			dateBox.option("displayFormat", "dd-MM-yyyy");
+		});
+
+		// When focus/typing ends, change back to dd-MMM-yyyy
+		$("#SupplyDates").on("focusout", function () {
+			dateBox.option("displayFormat", "dd-MMM-yyyy");
+		});
+	});
+	 $(function () {
+		const dateBox = $("#OrderDate").dxDateBox("instance");
+
+		// When focus/typing starts, change to dd-MM-yyyy
+		$("#OrderDate").on("focusin", function () {
+			dateBox.option("displayFormat", "dd-MM-yyyy");
+		});
+
+		// When focus/typing ends, change back to dd-MMM-yyyy
+		$("#OrderDate").on("focusout", function () {
+			dateBox.option("displayFormat", "dd-MMM-yyyy");
+		});
+	});
+	 $(function () {
+		const dateBox = $("#InvoiceDate").dxDateBox("instance");
+
+		// When focus/typing starts, change to dd-MM-yyyy
+		$("#InvoiceDate").on("focusin", function () {
+			dateBox.option("displayFormat", "dd-MM-yyyy");
+		});
+
+		// When focus/typing ends, change back to dd-MMM-yyyy
+		$("#InvoiceDate").on("focusout", function () {
+			dateBox.option("displayFormat", "dd-MMM-yyyy");
+		});
+	});
+	 $(function () {
+		const dateBox = $("#EffectiveDate").dxDateBox("instance");
+
+		// When focus/typing starts, change to dd-MM-yyyy
+		$("#EffectiveDate").on("focusin", function () {
+			dateBox.option("displayFormat", "dd-MM-yyyy");
+		});
+
+		// When focus/typing ends, change back to dd-MMM-yyyy
+		$("#EffectiveDate").on("focusout", function () {
+			dateBox.option("displayFormat", "dd-MMM-yyyy");
+		});
+	});
+	 $(function () {
+		const dateBox = $("#InvoiceDueDate").dxDateBox("instance");
+
+		// When focus/typing starts, change to dd-MM-yyyy
+		$("#InvoiceDueDate").on("focusin", function () {
+			dateBox.option("displayFormat", "dd-MM-yyyy");
+		});
+
+		// When focus/typing ends, change back to dd-MMM-yyyy
+		$("#InvoiceDueDate").on("focusout", function () {
+			dateBox.option("displayFormat", "dd-MMM-yyyy");
+		});
+	});
+	
 </script>
 

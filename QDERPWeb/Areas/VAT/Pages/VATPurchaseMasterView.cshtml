@@ -572,6 +572,7 @@
 
 	let selectedVoucherNo = null;
 	$(function () {
+		ddBtnShowRecords_click("range")
 		$("#VATInvoiceRegister").dxTextBox({
 			text: formatMessage("VAT Invoice Register"),
 			readOnly: true,
@@ -908,6 +909,30 @@
 						console.log('End permission handling');
 					});
 
+					 $(function () {
+		const dateBox = $("#frmdateBox").dxDateBox("instance");
 
+		// When focus/typing starts, change to dd-MM-yyyy
+		$("#frmdateBox").on("focusin", function () {
+			dateBox.option("displayFormat", "dd-MM-yyyy");
+		});
 
+		// When focus/typing ends, change back to dd-MMM-yyyy
+		$("#frmdateBox").on("focusout", function () {
+			dateBox.option("displayFormat", "dd-MMM-yyyy");
+		});
+	});
+	 $(function () {
+		const dateBox = $("#todateBox").dxDateBox("instance");
+
+		// When focus/typing starts, change to dd-MM-yyyy
+		$("#todateBox").on("focusin", function () {
+			dateBox.option("displayFormat", "dd-MM-yyyy");
+		});
+
+		// When focus/typing ends, change back to dd-MMM-yyyy
+		$("#todateBox").on("focusout", function () {
+			dateBox.option("displayFormat", "dd-MMM-yyyy");
+		});
+	});
 </script>

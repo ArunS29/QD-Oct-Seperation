@@ -541,6 +541,7 @@
 		});
 	});
 	$(function () {
+			ddBtnShowRecords_click("range")
 					$("#ProformaInvoiceMasterView").dxTextBox({
 						text: formatMessage("Proforma Invoice Master View"),
 						readOnly: true,
@@ -982,6 +983,31 @@
 		});
 	});
 
+ $(function () {
+		const dateBox = $("#frmdateBox").dxDateBox("instance");
 
+		// When focus/typing starts, change to dd-MM-yyyy
+		$("#frmdateBox").on("focusin", function () {
+			dateBox.option("displayFormat", "dd-MM-yyyy");
+		});
+
+		// When focus/typing ends, change back to dd-MMM-yyyy
+		$("#frmdateBox").on("focusout", function () {
+			dateBox.option("displayFormat", "dd-MMM-yyyy");
+		});
+	});
+	 $(function () {
+		const dateBox = $("#todateBox").dxDateBox("instance");
+
+		// When focus/typing starts, change to dd-MM-yyyy
+		$("#todateBox").on("focusin", function () {
+			dateBox.option("displayFormat", "dd-MM-yyyy");
+		});
+
+		// When focus/typing ends, change back to dd-MMM-yyyy
+		$("#todateBox").on("focusout", function () {
+			dateBox.option("displayFormat", "dd-MMM-yyyy");
+		});
+	});
 
 </script>
