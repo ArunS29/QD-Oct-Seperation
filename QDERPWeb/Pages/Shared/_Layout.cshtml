@@ -1143,7 +1143,10 @@
         <div class="frame">
             <div class="image">
                 <div class="companyName">
-                    @* @($"{Tenant?.Value?.DefaultcompanyName}, {Tenant?.Value?.CompanyNameShort}") *@
+                  <span style="color:@Tenant?.Value?.CompanyTextColor">
+    @($"{Tenant?.Value?.DefaultcompanyName}, {Tenant?.Value?.CompanyNameShort}")
+</span>
+
                 </div>
 
 

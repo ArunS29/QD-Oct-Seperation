@@ -11,5 +11,6 @@
         public string CompanyNameShort { get;  set; }
         public string DefaultcompanyID { get; set; }
         public string DefaultcompanyName { get; set; }
+        public string? CompanyTextColor { get; set; }
     }
 }

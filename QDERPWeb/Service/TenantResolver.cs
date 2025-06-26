@@ -67,19 +67,23 @@ namespace QD.ERP.Web.Service
 
             using (var tenantDbContext = new ERPMasterWtDataContext(optionsBuilder.Options))
             {
-                     var companyInfo = await tenantDbContext.Tbl901CompanyDetails
-                     .OrderBy(c =>
-                         !string.IsNullOrWhiteSpace(c.DefaultcompanyID) &&
-                         c.CompanyId.ToString() == c.DefaultcompanyID ? 0 : 1)
-                     .ThenBy(c => c.CompanyId)
-                     .Select(c => new {
-                         c.CompanyId,
-                         c.CompanyName,
-                         c.CompanyNameShort,
-                         c.CompanyLogo,
-                         c.DefaultcompanyID
-                     })
-                     .FirstOrDefaultAsync();
+                // 1. Find the default company ID from any row (null if not set)
+                var defaultCompanyId = tenantDbContext.Tbl901CompanyDetails
+                    .Select(c => c.DefaultcompanyID)
+                    .FirstOrDefault(id => id.HasValue && id.Value != 0);
+
+                // 2. Try to find the default row
+                var companyInfo = tenantDbContext.Tbl901CompanyDetails
+                    .AsEnumerable()
+                    .FirstOrDefault(c => defaultCompanyId.HasValue && c.CompanyId == defaultCompanyId.Value);
+
+                // 3. Fallback to first row if no default
+                if (companyInfo == null)
+                {
+                    companyInfo = tenantDbContext.Tbl901CompanyDetails
+                        .OrderBy(c => c.CompanyId)
+                        .FirstOrDefault();
+                }
 
                 if (companyInfo != null)
                 {
@@ -93,14 +97,16 @@ namespace QD.ERP.Web.Service
                         tenant.CompanyNameShort = companyInfo.CompanyNameShort.ToLower();
                     }
 
-                    if (!string.IsNullOrEmpty(companyInfo.DefaultcompanyID))
-                    {
-                        tenant.DefaultcompanyID = companyInfo.CompanyId.ToString();
-                        tenant.DefaultcompanyName= companyInfo.CompanyName.ToString();
-                    }
+                    tenant.DefaultcompanyID = companyInfo.CompanyId.ToString();
+                    tenant.DefaultcompanyName = companyInfo.CompanyName;
+                    tenant.CompanyTextColor = companyInfo.CompanyTextColor.ToString();
                 }
-
             }
+
+
+
+
+        
 
             // Cache and return the resolved tenant
             tenantCache[tenantName.ToLower()] = tenant;
