@@ -57,6 +57,14 @@
             )
     </div>
     <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnPurchaseEditDetails")
+            .Icon("add")
+            .Text(new JS("formatMessage('Request / Enquiry Details')"))
+            .OnClick("PurchaseEditDetails")
+            )
+    </div>
+    <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
             .ID("btnAddMaterialRequest")
             .Icon("add")
@@ -314,5 +322,8 @@
         }
            function printFun() {
             exportDataGridToPDF('dataGrid');
+        }
+        function PurchaseEditDetails() {
+            window.location.href = `/${tenantName}/IMS/PurchaseRequestItemDetails`;
         }
 </script>

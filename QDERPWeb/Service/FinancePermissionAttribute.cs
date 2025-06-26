@@ -60,7 +60,7 @@ namespace QD.ERP.Web.Service
             }
 
             var accessList = await _accessService.GetFinanceMenuAccessAsync(userId);
-            var menuAccess = accessList.FirstOrDefault(x => x.ItemName == itemName);
+            var menuAccess = accessList.FirstOrDefault(x => x.ItemDescription == itemName);
 
             if (menuAccess == null || !menuAccess.ItemVisible || !menuAccess.ItemEnabled)
             {

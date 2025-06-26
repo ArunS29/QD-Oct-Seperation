@@ -21,6 +21,13 @@
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
+                .ID("Refreshbtnon")
+                .Text("Refresh")
+                .Icon("refresh")
+                .OnClick("function() { location.reload(); }"))
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
             .ID("btnPrint")
             .Icon("print")
             .Text(new JS("formatMessage('Print')"))
