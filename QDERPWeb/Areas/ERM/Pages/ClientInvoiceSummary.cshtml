@@ -1,5 +1,5 @@
-@page
-@model QD.ERP.Web.Areas.ERM.Pages.QuotationModel
+﻿@page
+@model QD.ERP.Web.Areas.ERM.Pages.ClientInvoiceSummaryModel
 @{
 }
 <style>
@@ -27,6 +27,9 @@
 		overflow: hidden;
 	}
 
+	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btntoggleGroupPanel,#btnColumnChooser,#btnAddSalesOrder,#btnSalesOrderDetails)) {
+		display: none !important
+	}
 
 	#overlay-frame {
 		width: 100%;
@@ -116,43 +119,31 @@
 		pointer-events: none;
 	}
 
-	.context-menuInvoice {
-		position: absolute;
-		background: #fff;
-		border-radius: 8px;
-		box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-		width: 200px;
+
+
+	.context-menu {
 		display: none;
-		flex-direction: column;
-		padding: 5px 0;
+		position: relative;
+		background-color: white;
+		border: 1px solid #ccc;
+		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+		list-style: none;
+		padding: 8px 0;
 		z-index: 1000;
 	}
 
-	.context-menu-itemInvoice {
-		display: flex;
-		align-items: center;
-		padding: 10px 15px;
-		font-size: 14px;
-		cursor: pointer;
-		transition: background 0.2s ease-in-out;
-		color: #333;
-	}
-
-		.context-menu-itemInvoice i {
-			margin-right: 10px;
-			font-size: 16px;
-			color: #007bff;
+		.context-menu li {
+			padding: 8px 16px;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
 		}
 
-		.context-menu-itemInvoice:hover {
-			background: #f0f0f0;
-		}
+			.context-menu li:hover {
+				background-color: #f0f0f0;
+			}
 
-		.context-menu-itemInvoice:not(:last-child) {
-			border-bottom: 1px solid #e0e0e0;
-		}
-
-	.ledgerResult{
+	.ledgerResult {
 		overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
 		width: 100%;
 	}
@@ -161,19 +152,16 @@
 		width: 100%;
 		overflow: hidden;
 	}
-
 </style>
 
 <input id="formId" value="frm201LedgerView" type="hidden" />
 <div class="title">
 	<div class="header-container">
-		<div id="Quotation" class="no-border-input"></div>
+		<div id="ClientInvoiceSummary" class="no-border-input"></div>
 	</div>
 </div>
 
-
-@await Html.PartialAsync("/Pages/Shared/ERM/QuotationFooter.cshtml")
-
+@await Html.PartialAsync("/Pages/Shared/ERM/MaterialReceiptFooter.cshtml")
 <div class="dx-fieldset horizontal-container">
 	@(Html.DevExtreme().DateBox()
 		.ID("frmdateBox")
@@ -220,65 +208,56 @@
 			items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
 		})
 		)
-  
 </div>
 <div class="dx-field ledgerResult">
-	@(
-		Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60104quotationViewMaster>()
+	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60504materialReceiptViewMaster>()
 		.ID("dataGrid")
 		.RemoteOperations(false)
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
-				columns.Add().Caption(new JS("formatMessage('Quotation Details')")).Columns(subColumns =>
+			columns.Add().Caption(new JS("formatMessage('Material Receipt Details')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.QuoteNo).Caption(new JS("formatMessage('Quote No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.ReceiptNo).Caption(new JS("formatMessage('Receipt No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.ReceiptDate).Caption(new JS("formatMessage('Receipt Date')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.SupplierCode).Caption(new JS("formatMessage('Supplier Code')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
+				subColumns.AddFor(m => m.SupplierName).Caption(new JS("formatMessage('Supplier Name')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.OurPurchaseOrderNo).Caption(new JS("formatMessage('PO No')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
-				subColumns.AddFor(m => m.QuoteDate).Caption(new JS("formatMessage('Quote Date')")).Alignment(HorizontalAlignment.Center).Visible(true).Format("dd-MMM-yyyy");
-				subColumns.AddFor(m => m.ClientName).Caption(new JS("formatMessage('Client Name')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Mprno).Caption(new JS("formatMessage('Mpr no')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.ClientRefNo).Caption(new JS("formatMessage('Client Ref No')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.SalesOrderNo).Caption(new JS("formatMessage('Sales Order No')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.SalesPersonName).Caption(new JS("formatMessage('Sales Person Name')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.IsSubmitted).Caption(new JS("formatMessage('IsSubmitted')")).Alignment(HorizontalAlignment.Center)
-			.CellTemplate(@<text>
-		<div class="dx-icon">
-			<%= data.IsSubmitted ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-		</div>
-	</text>).Visible(true);
-				subColumns.AddFor(m => m.IsVerified).Caption(new JS("formatMessage('IsVerified')")).Alignment(HorizontalAlignment.Center)
-			.CellTemplate(@<text>
-		<div class="dx-icon">
-			<%= data.IsVerified ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-		</div>
-	</text>).Visible(true);
-				subColumns.AddFor(m => m.IsApproved).Caption(new JS("formatMessage('IsApproved')")).Alignment(HorizontalAlignment.Center)
-			.CellTemplate(@<text>
+				subColumns.AddFor(m => m.VatpurchaseBillNo).Caption(new JS("formatMessage('VAT purchase Bill No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+
+				subColumns.AddFor(m => m.IsSubmitted).Caption(new JS("formatMessage('IsSubmitted')")).Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
+																																					  		<div class="dx-icon">
+																																					  			<%= data.IsSubmitted ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+																																					  		</div>
+																																					  	</text>).Visible(true);
+				subColumns.AddFor(m => m.IsVerified).Caption(new JS("formatMessage('IsVerified')")).Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
+																																							<div class="dx-icon">
+																																								<%= data.IsVerified ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+																																							</div>
+																																						</text>).Visible(true);
+				subColumns.AddFor(m => m.IsApproved).Caption(new JS("formatMessage('IsApproved')")).Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
 		<div class="dx-icon">
 			<%= data.IsApproved ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
 		</div>
 	</text>).Visible(true);
-			});
-			columns.Add().Caption(new JS("formatMessage('No Of Items')")).Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No Of Items')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
 
 
 
 			});
-
-
-			columns.Add().Caption(new JS("formatMessage('Quoted Amount')")).Columns(subColumns =>
+			columns.Add().Caption(new JS("formatMessage('Amount')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.TotalBeforeDiscount).Caption(new JS("formatMessage('Total Before Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
-
-				subColumns.AddFor(m => m.TotalAfterDiscount).Caption(new JS("formatMessage('Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
-
+				subColumns.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No Of Items')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.TotalBeforeTax).Caption(new JS("formatMessage('Total Before Tax')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.TotalDiscount).Caption(new JS("formatMessage('Total Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.TotalAfterDiscount).Caption(new JS("formatMessage('Total After Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.TotalTaxAmount).Caption(new JS("formatMessage('Total Tax Amount')")).Alignment(HorizontalAlignment.Center).Visible(true);
-
 				subColumns.AddFor(m => m.TotalWithTax).Caption(new JS("formatMessage('Total With Tax')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
+
+
 			});
+
 		})
 		.Height(680) // Fixed height for the grid
 		.ColumnAutoWidth(true)
@@ -290,6 +269,7 @@
 		.AllowColumnResizing(true)
 		.ColumnFixing(fixing => fixing.Enabled(true))
 		.HeaderFilter(filter => filter.Visible(false))
+		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.Paging(p => p.PageSize(10)) // Set desired page size (e.g., 10 rows per page)
 		.Pager(pager =>
 		{
@@ -299,14 +279,12 @@
 			pager.Visible(true);
 		})
 
-		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
 		.ShowRowLines(true)
-
-		.OnContextMenuPreparing("onContextMenuPreparing")
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
+		.OnContextMenuPreparing("onContextMenuPreparing")
 		.StateStoring(stateStoring =>
 		{
 			stateStoring
@@ -317,22 +295,20 @@
 		.OnInitialized("function(e) { loadGridState(); }")
 		)
 
-	
-
 </div>
 <div id="invoiceErrorPopup"></div>
 
 <script>
 		 $(function () {
-	$("#Quotation").dxTextBox({
-	text: formatMessage("Quotation"),
+	$("#ClientInvoiceSummary").dxTextBox({
+	text: formatMessage("Client Invoice Summary"),
 		readOnly: true,
 		onContentReady: function (e) {
 		$(e.element).addClass("dx-textbox-heading");
 		}
 		});
 	});
-			$(function () {
+	$(function () {
 			var now = new Date();
 			var firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
 			var tillmonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
@@ -381,6 +357,7 @@
 					frmDate = new Date(currentDate.getFullYear(), 0, 1); // First day of year (January 1)
 					toDate = currentDate;// Today
 					break;
+				case 'fullyear':
 					// Get the first and last day of the current year
 					frmDate = new Date(currentDate.getFullYear(), 0, 1); // First day of year (January 1)
 					toDate = new Date(currentDate.getFullYear(), 11, 31); // Last day of month
@@ -400,7 +377,7 @@
 	toDate = toDate.toISOString().split('T')[0];
 
 				$.ajax({
-		url: '/api/Quotation1/GetQuotation',
+		url: '/api/MaterialReceipts1/GetMaterialReceipt	',
 		type: 'GET',
 		data: {
 			fromDate: frmDate,
@@ -419,94 +396,87 @@
 
 
 	}
-	function onContextMenuPreparing(e) {
-		if (e.target === "content" && e.row && e.row.data) {
-			const rowData = e.row.data;
-			const QuoteNo = encodeURIComponent(rowData.QuoteNo);
-			const tenantName = window.tenantName || "defaultTenant";
+		function onContextMenuPreparing(e) {
+			if (e.target === "content" && e.row && e.row.data) {
+				const rowData = e.row.data;
+						const ReceiptNo = encodeURIComponent(rowData.ReceiptNo);
+				const tenantName = window.tenantName || "defaultTenant";
 
-			e.items = [
-				{
-					text: "Edit Quotation",
-					icon: "edit",
-					onItemClick: function () {
-						const url = `/${tenantName}/ERM/AddNewQuotation?QuoteNo=${QuoteNo}`;
-						window.location.href = url;
-					}
-				},
-				{
-					text: "Duplicate Quotation",
-					icon: "doc",
-					onItemClick: function () {
-						const url = `/${tenantName}/ERM/CreatePurchaseOrder?Rfqno=${Rfqno}`;
-						window.location.href = url;
-					}
-				},
-				{
-					text: "Delete Quotation",
-					icon: "trash",
-					onItemClick: function () {
-						if (confirm(`Are you sure you want to delete RFQ ${Rfqno}?`)) {
-							// Replace with your actual delete logic, e.g., an AJAX call
-							fetch(`/${tenantName}/ERM/DeleteRFQ?Rfqno=${Rfqno}`, {
-								method: 'DELETE'
+				e.items = [
+					{
+							text: "Edit Material Receipt",
+						icon: "edit",
+						onItemClick: function () {
+										const url = `/${tenantName}/ERM/MaterialReceiptFromSupplier?ReceiptNo=${ReceiptNo}`;
+							window.location.href = url;
+						}
+					},
+					{
+							text: "Preview Material Receipt",
+						icon: "doc",
+						onItemClick: function () {
+							const url = `/${tenantName}/ERM/CreatePurchaseOrder?Rfqno=${Rfqno}`;
+							window.location.href = url;
+						}
+					},
+					{
+							text: "Delete Material Receipt",
+						icon: "trash",
+						onItemClick: function () {
+							if (confirm(`Are you sure you want to delete RFQ ${Rfqno}?`)) {
+								// Replace with your actual delete logic, e.g., an AJAX call
+								fetch(`/${tenantName}/ERM/DeleteRFQ?Rfqno=${Rfqno}`, {
+									method: 'DELETE'
+								})
+									.then(response => {
+										if (response.ok) {
+											alert(`RFQ ${Rfqno} deleted successfully.`);
+											// Refresh the DataGrid or remove the row
+											e.component.refresh();
+										} else {
+											alert(`Failed to delete RFQ ${Rfqno}.`);
+										}
+									})
+									.catch(error => {
+										console.error('Error deleting RFQ:', error);
+										alert('An error occurred while deleting the RFQ.');
+									});
+							}
+						}
+					},
+					{
+							text: "Unlock the Material Receipt",
+						icon: "unlock",
+						onItemClick: function () {
+							// Replace with your actual unlock logic, e.g., an AJAX call
+							fetch(`/${tenantName}/ERM/UnlockRFQ?Rfqno=${Rfqno}`, {
+								method: 'POST'
 							})
 								.then(response => {
 									if (response.ok) {
-										alert(`RFQ ${Rfqno} deleted successfully.`);
-										// Refresh the DataGrid or remove the row
+										alert(`RFQ ${Rfqno} unlocked successfully.`);
+										// Optionally refresh the DataGrid
 										e.component.refresh();
 									} else {
-										alert(`Failed to delete RFQ ${Rfqno}.`);
+										alert(`Failed to unlock RFQ ${Rfqno}.`);
 									}
 								})
 								.catch(error => {
-									console.error('Error deleting RFQ:', error);
-									alert('An error occurred while deleting the RFQ.');
+									console.error('Error unlocking RFQ:', error);
+									alert('An error occurred while unlocking the RFQ.');
 								});
 						}
+					},
+					{
+							text: "Create a VAT Purchase Voucher",
+						icon: "add",
+						onItemClick: function () {
+							const url = `/${tenantName}/ERM/CreatePurchaseOrder?Rfqno=${Rfqno}`;
+							window.location.href = url;
+						}
 					}
-				},
-				{
-					text: "Unlock the Quotation",
-					icon: "unlock",
-					onItemClick: function () {
-						// Replace with your actual unlock logic, e.g., an AJAX call
-						fetch(`/${tenantName}/ERM/UnlockRFQ?Rfqno=${Rfqno}`, {
-							method: 'POST'
-						})
-							.then(response => {
-								if (response.ok) {
-									alert(`RFQ ${Rfqno} unlocked successfully.`);
-									// Optionally refresh the DataGrid
-									e.component.refresh();
-								} else {
-									alert(`Failed to unlock RFQ ${Rfqno}.`);
-								}
-							})
-							.catch(error => {
-								console.error('Error unlocking RFQ:', error);
-								alert('An error occurred while unlocking the RFQ.');
-							});
-					}
-				},
-				{
-					text: "Revise Quotation",
-					icon: "preferences",
-					onItemClick: function () {
-						const url = `/${tenantName}/ERM/CreatePurchaseOrder?Rfqno=${Rfqno}`;
-						window.location.href = url;
-					}
-				},
-				{
-					text: "Create Sales Order",
-					icon: "add",
-					onItemClick: function () {
-						const url = `/${tenantName}/ERM/CreatePurchaseOrder?Rfqno=${Rfqno}`;
-						window.location.href = url;
-					}
-				}
-			];
+				];
+			}
 		}
-	}
+
 </script>

@@ -1,26 +1,26 @@
 ﻿@page
-@model QD.ERP.Web.Areas.ERM.Pages.AddNewDeliverytoClientModel
+@model QD.ERP.Web.Areas.ERM.Pages.PropertyDeliveryNoteModel
 @{
 }
 <style>
     .dx-datagrid-headers {
     border: 1px solid #686868 !important;
-    width: 100%; /* Adjust to fit the container */
-    overflow-x: auto; /* Enable horizontal scrolling */
-    white-space: nowrap; /* Prevent wrapping of headings */
+    width: 100%; 
+    overflow-x: auto; 
+    white-space: nowrap; 
     overflow-y: hidden;
     }
 
     .dx-datagrid .dx-header-row .dx-datagrid-text-content {
     font-size: 12px !important;
-    white-space: nowrap !important; /* Prevent wrapping of text */
+    white-space: nowrap !important; 
     text-align: center !important;
     font-weight: bold;
     color: black;
     }
 
     .ledgerResult {
-    overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
+    overflow-x: auto;  
     width: 100%;
     }
 
@@ -335,7 +335,7 @@
                     <!-- Row 2 -->
                     <div class="col-md-2" style="display:flex; align-items:end;">
                         @(Html.DevExtreme().DropDownBox()
-                        .Label("Sales Person / Store Incharge :")
+                        .Label("Sales Order No:")
                         .DataSource(d => d.WebApi()
                         .Controller("AddNewClientRequest1")
                         .LoadAction("GetSalesPerson")
@@ -358,26 +358,11 @@
                         //.OnValueChanged("dropDownBoxValueChanged")
                         .ContentTemplate(new TemplateName("GetSalesPersonContentTemplate"))
                         )
-                        @(Html.DevExtreme().Button()
-                        .ID("btnAddSalesperson")
-                        .Icon("plus")
-                        .ElementAttr("class", "button-alignment-down button-group")
-                        .OnClick("redirecttosalespersonmaster")
-                        )
-
                     </div>
                     <div class="col-md-3">
                         @(Html.DevExtreme().TextBox()
                         .ID("clientPOnumber")
-                        .Label("Client PO No:")
-                        .LabelMode(EditorLabelMode.Outside)
-                        .Width("100%")
-                        )
-                    </div>
-                    <div class="col-md-2">
-                        @(Html.DevExtreme().DateBox()
-                        .ID("ClientPODate")
-                        .Label("Client PO Date:")
+                        .Label("Quotation No:")
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%")
                         )
@@ -386,6 +371,14 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("ClientRefName")
                         .Label("Client Ref. Name / Attention To:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%")
+                        )
+                    </div>
+                    <div class="col-md-2">
+                        @(Html.DevExtreme().DateBox()
+                        .ID("ClientPODate")
+                        .Label("Client PO Date:")
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%")
                         )
@@ -664,15 +657,15 @@
                         @(Html.DevExtreme().SelectBox()
                         .ID("DeliveryType")
                         .DataSource(new[] {
-                        new { Id = 1, Name = "Issued to Client" } // hardcoded item
+                        new { Id = 1, Name = "Issued to Client" }  
                         })
-                        .ValueExpr("Id")             // The value that will be posted (1)
-                        .DisplayExpr("Name")         // What is shown to user ("Issued to Client")
-                        .Value(1)                    // Default selected value
+                        .ValueExpr("Id")              
+                        .DisplayExpr("Name")   
+                        .Value(1)              
                         .Label("Delivery Type:")
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%")
-                        .Disabled(true)              // Make it readonly
+                        .Disabled(true)  
                         )
                         <!-- Make sure value is posted -->
                         <input type="hidden" name="DeliveryType" value="1" />
@@ -694,7 +687,7 @@
                         ) 
                     </div>
 
-                    <!-- Row 2: Sales Order No / Quotation No / Enquiry No -->
+                     
                     <div class="col-md-4">
                         @(Html.DevExtreme().TextBox()
                         .ID("SalesOrderNo")
@@ -731,6 +724,69 @@
                     })
                 )
 
+    </div>
+    <div style ="display: flex;align-items: flex-start;">
+   <div style="display:flex; align-items:end;" >
+   @(Html.DevExtreme().SelectBox()
+    .ID("EquipmentDeliveried")
+    .Label("Equipment Deliveried")
+    .Width("100%")
+    .LabelMode(EditorLabelMode.Outside) )
+  @(Html.DevExtreme().Button()
+    .ID("Quotebtn") 
+    .Icon("plus")
+    .Width("100%")
+  )
+   @(Html.DevExtreme().Button()
+    .ID("Quoteedtbtn")
+    .Width("100%")
+    .Icon("edit"))
+</div> 
+<div style="display:flex;">
+   @(Html.DevExtreme().SelectBox()
+    .ID("Quotemethod")
+    .Label("Quote Method")
+    .Width("100%")
+    .LabelMode(EditorLabelMode.Outside) )
+   @(Html.DevExtreme().SelectBox()
+    .ID("showUom")
+    .Label("UOM")
+    .LabelMode(EditorLabelMode.Outside)
+    .Width("100%"))
+   @(Html.DevExtreme().NumberBox()
+    .ID("showQuantity")
+    .Label("Quantity")
+    .LabelMode(EditorLabelMode.Outside)
+    .Width("100%"))
+   @(Html.DevExtreme().NumberBox()
+    .ID("showRatemonth")
+    .Label("Rate/Month")
+    .LabelMode(EditorLabelMode.Outside)
+    .Width("100%"))
+   @(Html.DevExtreme().NumberBox()
+    .ID("showRatehr")
+    .Label("Rate/Hour")
+    .LabelMode(EditorLabelMode.Outside)
+    .Width("100%"))
+   @(Html.DevExtreme().NumberBox()
+    .ID("showOthr")
+    .Label("OT/Hours")
+    .LabelMode(EditorLabelMode.Outside)
+    .Width("100%"))
+ <div style="align-items: flex-end; display:flex;">
+  @(Html.DevExtreme().SelectBox()
+    .ID("showNum")
+    .Label("")
+    .LabelMode(EditorLabelMode.Outside)
+    .Width("100%"))
+  @(Html.DevExtreme().Button()
+    .ID("showplusbtn")
+    .Text("ADD")
+    .Icon("plus")
+    .Width("100%")  
+         )
+            </div>
+        </div>
     </div>
     @(Html.DevExtreme().DataGrid()
             .ID("itemGrid")
