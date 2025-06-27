@@ -159,7 +159,7 @@
 		pointer-events: none; 
 	}
 
-	.kpi-carousel {
+	.titleCard-carousel {
 		display: flex;
 		overflow-x: auto;
 		gap: 20px;
@@ -170,14 +170,14 @@
         padding-left: 10px;
 	}
 
-	.kpi-cards {
+	.titleCard-cards {
 		display: flex;
 		gap: 20px;
 		min-width: max-content
 	}
 
 	/* --------------  KPI CARD (core) -------------- */
-	.kpi-card {
+	.titleCard-card {
 		flex: 0 0 240px; /* exact width */
 		position: relative;
 		padding: 18px 20px;
@@ -191,7 +191,7 @@
 		transition: transform .3s ease,box-shadow .3s ease
 	}
 
-		.kpi-card:hover {
+		.titleCard-card:hover {
 			transform: scale(1.03);
 			box-shadow: 0 8px 20px rgba(0,0,0,.25)
 		}
@@ -236,7 +236,7 @@
 	}
 
 	/* --------------  KPI inner elements -------------- */
-	.kpi-card .title {
+	.titleCard-card .title {
 		font-size: 14px;
 		opacity: .9
 	}
@@ -263,7 +263,7 @@
 		}
 
 	/* SVG icon inside value */
-	.kpi-card svg {
+	.titleCard-card svg {
 		width: 18px;
 		height: 18px;
 		margin-right: 5px;
@@ -272,14 +272,14 @@
 	}
 
 	/* trend + bar */
-	.kpi-card .trend {
+	.titleCard-card .trend {
 		font-size: 13px;
 		display: flex;
 		align-items: center;
 		gap: 4px
 	}
 
-	.kpi-card .bar {
+	.titleCard-card .bar {
 		height: 6px;
 		border-radius: 4px;
 		background: rgba(255, 255, 255, 0.25);
@@ -288,7 +288,7 @@
 		position: relative;
 	}
 
-		.kpi-card .bar span {
+		.titleCard-card .bar span {
 			display: block;
 			height: 100%;
 			border-radius: 4px;
@@ -298,7 +298,7 @@
 		}
 
 		/* Percentage label inside the bar */
-		.kpi-card .bar::after {
+		.titleCard-card .bar::after {
 			content: attr(data-percentage);
 			position: absolute;
 			right: 6px;
@@ -325,7 +325,7 @@
 		transition: opacity .3s
 	}
 
-	.kpi-card:hover .overlay {
+	.titleCard-card:hover .overlay {
 		opacity: 1
 	}
 
@@ -334,7 +334,7 @@
 		margin: 4px 0
 	}
 
-	.kpi-toggle {
+	.titleCard-toggle {
 		cursor: pointer;
 		font-size: 1.2rem;
 		height: 35px !important;
@@ -346,11 +346,11 @@
 		justify-content: center;
 	}
 
-		.kpi-toggle:hover {
+		.titleCard-toggle:hover {
 			color: #000;
 		}
 
-	.kpi-card .title {
+	.titleCard-card .header {
 		font-size: 15px !important;
 		font-weight: 600;
 		color: #fff !important;
@@ -362,7 +362,7 @@
 
 
 	/* Ensure SVGs are visible and consistent */
-	.kpi-card svg {
+	.titleCard-card svg {
 		width: 18px !important;
 		height: 18px !important;
 		margin-right: 5px;
@@ -388,14 +388,14 @@
 	}
 
 	/* ----------- KPI CARDS: quick fixes ----------- */
-	.kpi-carousel.collapsed {
+	.titleCard-carousel.collapsed {
 		max-height: 0;
 		padding: 0;
 		overflow: hidden;
 		transition: max-height .35s ease, padding .35s ease;
 	}
 
-	.kpi-card .title {
+	.titleCard-card .header {
 		position: relative;
 		
 	}
@@ -414,26 +414,19 @@
 		cursor: pointer; /* lets the user know it’s hoverable */
 	}
 
-	.title{
+	.header {
         display: flex !important;
         background-color: transparent !important;
 	}
+	.title{
+		background: transparent ! important;
+	}
 </style>
-
-<!-- ----------  KPI CARDS (populated dynamically from grid) ---------- -->
-<!-- Toggle Button -->
-<div style="    display: flex;align-items: center;left: 97%;top: 7%;position: fixed;">
-	<div class="kpi-toggle" onclick="toggleKpiCarousel()">
-		<i id="kpiToggleIcon" class="fa-solid fa-chevron-up" style="color: white;"></i>
-	</div>
-</div>
-
-<!-- ----------- KPI CARDS ----------- -->
-<div class="kpi-carousel" id="kpiCarousel">
-	<div class="kpi-cards">
+<div class="title" id="kpiCarousel">
+	<div class="titleCard-cards">
 
 		<!-- STATIC -->
-		<div id="Static" class="kpi-card vibrant-pink">
+		<div id="Static" class="titleCard-card vibrant-pink">
 			<div class="value-block">
 				
 					<h2>Accounting Ledger</h2>
@@ -443,8 +436,8 @@
 		</div>
 
 		<!-- BALANCE -->
-		<div id="cardBalance" class="kpi-card cool-blue">
-			<div class="title">Balance</div>
+		<div id="cardBalance" class="titleCard-card cool-blue">
+			<div class="header">Balance</div>
 			<div class="value-block">
 				<div class="value-slider">
 					<span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span>
@@ -462,8 +455,8 @@
 		</div>
 
 		<!-- DEBIT -->
-		<div id="cardDebit" class="kpi-card deep-purple">
-			<div class="title">Total Debit</div>
+		<div id="cardDebit" class="titleCard-card deep-purple">
+			<div class="header">Total Debit</div>
 			<div class="value-block">
 				<div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
 			</div>
@@ -477,8 +470,8 @@
 		</div>
 
 		<!-- CREDIT -->
-		<div id="cardCredit" class="kpi-card mint-green">
-			<div class="title">Total Credit</div>
+		<div id="cardCredit" class="titleCard-card mint-green">
+			<div class="header">Total Credit</div>
 			<div class="value-block">
 				<div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
 			</div>
@@ -2042,21 +2035,6 @@
 		}
 
 		// …if you reload or filter the grid from code elsewhere, just call updateKpis(aggregate(newRows)) again.
-		function toggleKpiCarousel() {
-		const carousel = document.getElementById("kpiCarousel");
-		const icon = document.getElementById("kpiToggleIcon");
-
-		carousel.classList.toggle("collapsed");
-
-		if (carousel.classList.contains("collapsed")) {
-		  icon.classList.remove("fa-chevron-up");
-		  icon.classList.add("fa-chevron-down");
-		} else {
-		  icon.classList.remove("fa-chevron-down");
-		  icon.classList.add("fa-chevron-up");
-		}
-	  }
-			/* ----------- JS helpers ----------- */
 	function updateValueSlider(cardId, values) {
 		const slider   = document.querySelector(`#${cardId} .value-slider`);
 		if (!slider) return;
@@ -2078,17 +2056,6 @@
 			slider.style.transform  = `translateY(-${idx * 28}px)`;
 		}, 2000);
 	}
-
-	function toggleKpiCarousel() {
-		const carousel = document.getElementById('kpiCarousel');
-		const icon     = document.getElementById('kpiToggleIcon');
-
-		carousel.classList.toggle('collapsed');
-		icon.classList.toggle('fa-chevron-up');
-		icon.classList.toggle('fa-chevron-down');
-	}
-
-
 		function updateKpis(t) {
 			// Balance
 			const balanceAbs = Math.abs(t.balance);
