@@ -125,5 +125,31 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        [HttpGet]
+       
+        public IActionResult GetAccountHeadName(string accountId)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var account = dbContext.Tbl201ChartOfAccounts
+                    .Where(a => a.AccountId == accountId)
+                    .Select(a => new
+                    {
+                        a.AccountId,
+                        AccountHead = a.AccountHead
+                    })
+                    .FirstOrDefault();
+
+                if (account == null)
+                {
+                    return NotFound(new { message = "Account not found" });
+                }
+
+                return Ok(account);
+            }
+
+            return BadRequest(new { message = "Invalid tenant context" });
+        }
+
     }
 }
