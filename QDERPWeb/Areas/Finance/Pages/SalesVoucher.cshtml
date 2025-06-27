@@ -1,25 +1,57 @@
 ﻿@page
 @using DevExtreme.AspNet.Mvc
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+<!-- SweetAlert2 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
+<!-- SweetAlert2 JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style type="text/css">
-	.dx-datagrid .dx-row {
-		border-bottom: 1px solid #ccc;
+	.overlay {
+		display: none;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.5); /* Transparent background */
+
+		z-index: 1000;
 	}
 
-
-	.error-message {
-		color: red;
-		font-size: 12px;
-		margin-top: 5px;
+	.dx-editor-outlined.dx-texteditor-label-outside .dx-label span {
+		font-size: 13px!important;
 	}
 
-	.dx-selectbox .dx-texteditor-input {
-		text-align: center;
+	.overlay-content {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 100%;
+		height: 80%;
+		background: #909ead00;
+		box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+		border-radius: 8px;
+		overflow: hidden;
+	}
+
+	#overlay-frame {
+		width: 100%;
+		height: 100%;
+	}
+
+	/* .mainContainer {
+		overflow-x: hidden;
+	} */
+
+	.close-btn {
+		position: absolute;
+		top: 10px;
+		right: 20px;
+		font-size: 30px;
+		cursor: pointer;
 	}
 
 	.context-menu {
@@ -44,581 +76,742 @@
 				background-color: #f0f0f0;
 			}
 
+	td {
+		padding: 5px;
+	}
+
+	.custom-popup-button {
+		width: 60px !important;
+		background-color: var(--title-background-color);
+	}
+
+	/* .content-container {
+							height: calc(100vh - 60px);
+							overflow-y: auto;
+							z-index: 1;
+							position: relative;
+						} */
+
+	.footer-fixed {
+		position: fixed;
+		bottom: 0;
+		left: 0px;
+		right: 0;
+		height: 60px;
+		background: #ffffff;
+		z-index: 9999;
+	}
+	/* Red background for the Attachment button */
+	.btn-attachment-red .dx-button-content {
+		background-color: #e74c3c !important; /* bright red */
+		color: white !important;
+		border: none !important;
+		border-radius: 4px;
+	}
+
+	.btn-attachment-red .dx-icon {
+		color: white !important;
+	}
+
+	.d-flex {
+		display: flex;
+	}
+
+	.align-items-end {
+		align-items: flex-end;
+	}
+
+	.gap-1 > * + * {
+		margin-left: 0px;
+	}
+
+	.centered-button .dx-button-content {
+		justify-content: center !important;
+	}
+
+
+
+	.custom-ui-button {
+		background: #f5f5f5 !important;
+		color: white !important;
+		border: none !important;
+		border-radius: 8px;
+		padding: 8px 16px;
+		font-weight: 600;
+		box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
+		position: relative;
+		overflow: hidden;
+		transition: background 0.3s ease, transform 0.2s ease;
+	}
+
+		.custom-ui-button:hover {
+			transform: translateY(-2px);
+		}
+
+		.custom-ui-button:active {
+			transform: scale(0.97);
+		}
+
+		.custom-ui-button .dx-icon,
+		.custom-ui-button .dx-button-text {
+			color: black !important;
+		}
+
+	.white-box .dx-texteditor-input-container {
+		background-color: white !important; /* Entire textbox area */
+		/* border-radius: 4px; */
+	}
+
+	.white-box .dx-numberbox {
+		background-color: white !important;
+	}
+
+	.white-box .dx-texteditor-input {
+		background-color: white !important;
+	}
+
+	.white-dropdownbox .dx-texteditor-input-container {
+		background-color: white !important;
+		/* border-radius: 4px; */
+	}
+
+	.white-dropdownbox .dx-texteditor-input {
+		background-color: white !important;
+	}
+
+	.white-dropdownbox .dx-texteditor-input-container:hover {
+		/* border: 1px solid #ccc; */
+		/* box-shadow: 0 0 4px rgba(0, 0, 0, 0.1); */
+	}
+
+
+
+	.custom-icon-color .dx-icon.fa-paperclip {
+		color: red !important;
+	}
+
+	/* Shared style for all DevExtreme editors */
+	.light-theme-input .dx-texteditor-input-container {
+		background-color: rgba(255, 255, 255, 0.95) !important; /* Semi-transparent white */
+		border: 1px solid #ccc !important; /* Light gray border */
+		/* border-radius: 6px; */
+		transition: all 0.2s ease-in-out;
+	}
+
+	/* Input text style */
+	.light-theme-input .dx-texteditor-input {
+		background-color: transparent !important;
+		color: #333 !important;
+		font-family: 'Segoe UI', sans-serif;
+	}
+
+	/* Hover and focus effect */
+	.light-theme-input .dx-texteditor-input-container:hover,
+	.light-theme-input .dx-texteditor.dx-state-focused .dx-texteditor-input-container {
+		/* border-color: #999 !important; */
+		box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+	}
+
+	/* Optional: remove outline when focused */
+	.light-theme-input .dx-texteditor.dx-state-focused {
+		outline: none;
+	}
+
+	.minimal-header {
+		display: flex;
+		margin-right: 18px;
+		align-items: center;
+		gap: 10px;
+		padding: 15px 10px;
+		position: relative;
+		overflow: hidden;
+		transform: translateY(-10px);
+		transition: opacity 0.5s ease, transform 0.5s ease;
+	}
+
+		.minimal-header.visible {
+			opacity: 1;
+			transform: translateY(0);
+		}
+
+		/* Underline animation on load */
+		.minimal-header::after {
+			content: '';
+			position: absolute;
+			bottom: 0;
+			left: 15px;
+			right: 45px;
+			height: 2px;
+			width: 80%;
+			background: #2a5298; /* deep blue or change to gold etc. */
+			transition: width 0.6s ease-in-out;
+		}
+
+		.minimal-header.visible::after {
+			width: 100%;
+		}
+
+	.card-title-icon i {
+		font-size: 22px;
+		color: #2a5298;
+		padding-left: 20px;
+	}
+
+
+	.card-title-text {
+		font-size: 24px;
+		font-weight: 700;
+		letter-spacing: 0.5px;
+		margin: 0;
+		font-family: 'Segoe UI', sans-serif;
+		color: #2a5298;
+	}
+
+	/* Background color for the disabled SelectBox */
+	.custom-disabled-selectbox .dx-dropdowneditor-input-wrapper,
+	.custom-disabled-selectbox .dx-texteditor-input {
+		background-color: #f5f5f5 !important;
+		color: black !important;
+	}
+
+	/* Label color */
+	.dx-field-label {
+		color: black !important;
+	}
+	/* Target the disabled textbox wrapper and input */
+	.custom-disabled-textbox .dx-texteditor-input {
+		background-color: #f5f5f5 !important;
+		color: black !important;
+	}
+
+	/* Optional: label color */
+	.dx-field-label {
+		color: black !important;
+	}
+
 </style>
-<div id="costAllocationPopup" style="display:none;">
-	<div style="margin-bottom:10px">
-		@(Html.DevExtreme().Button()
-				.ID("btnSaveCostAllocation")
-				.Icon("save")
-				.Text(new JS("formatMessage('Save')"))
-				.OnClick("function() { saveCostAllocation(); }")
-				)
-	</div>
-</div>
-<div class="title">
-	<div class="header-container">
-		<div id="SalesVoucher" class="no-border-input"></div>
-	</div>
-</div>
+
 <div class="content-container-top" style="background-color:#909ead00;">
-	<div class="container1">
-		<div class="row g-4">
-			<div class="col-md-3">
-				<div class="form-group">
-					@(
-												Html.DevExtreme().TextBox()
-												.Label(new JS("formatMessage('Sales Invoice No')"))
-												.LabelMode(EditorLabelMode.Outside)
-												.ID("VoucherNo")
-												.Value("")
-												.OnValueChanged("onVoucherNoChanged")
-												.ValidationRules(rules =>
-												{
-													rules.AddRequired()
-													.Message(new JS("formatMessage('Sales Invoice No is required')"));
-												})
-												)
-				</div>
+	<div class="dx-card-container">
+		<div class="dx-card-header minimal-header">
+			<div class="card-title-icon">
+				<i class="fas fa-file-invoice-dollar"></i>
 			</div>
-			<div class="col-md-3">
-				<div class="form-group">
-					@(Html.DevExtreme().DateBox()
-												.Label(new JS("formatMessage('Invoice Date')"))
-												.ID("VoucherDate")
-												.InputAttr("aria-label", "Date")
-												.LabelMode(EditorLabelMode.Outside)
-												.Type(DateBoxType.Date)
-												.DisplayFormat("dd-MMM-yyyy")
-												.Value(DateTime.Now)
-											    .OnValueChanged("onVoucherDateChange") // JS function name// JS function name
-																										)
-					
-				</div>
-			</div>
-
-			<div class="col-md-3">
-				<div class="form-group">
-					@(Html.DevExtreme().DateBox()
-												.Label(new JS("formatMessage('Effective Date')"))
-												.ID("VoucherEffectiveDate")
-												.InputAttr("aria-label", "Date")
-												.LabelMode(EditorLabelMode.Outside)
-												.Type(DateBoxType.Date)
-												.DisplayFormat("dd-MMM-yyyy")
-												.Value(DateTime.Now)
-							)
-				</div>
-			</div>
-			<div class="col-md-3">
-				<div class="form-group">
-					<div class="">
-						@(Html.DevExtreme().CheckBox()
-													.Text(new JS("formatMessage('Submitted Date')"))
-													.ID("UseSubmittedDate")
-													.OnValueChanged("updateDueDate")
-													)
-					</div>
-					@(Html.DevExtreme().DateBox()
-												.ID("InvoiceSubmittedDate")
-												.InputAttr("aria-label", "Date")
-												.LabelMode(EditorLabelMode.Outside)
-												.Type(DateBoxType.Date)
-												.DisplayFormat("dd-MMM-yyyy")
-												.Value(DateTime.Now)
-												@* .OnValueChanged("onDateChange") *@
-												)
-				</div>
-
-			</div>
+			<h3 class="card-title-text">Sales Voucher</h3>
 		</div>
 	</div>
-	<div class="row g-5" style="padding:1em;gap:1px">
-		<div class="col-md-6" style="padding-right:0px">
-			<div class="form-group">
-			@* 	@(Html.DevExtreme().DropDownBox()
-								.Label(new JS("formatMessage('Client Name')"))
-								.DataSource(d => d.WebApi()
-								.Controller("SalesVoucher")
-								.LoadAction("GetClientName")
-								.LoadMode(DataSourceLoadMode.Raw)
-								.Key("AccountId")
-								)
+</div>
+<div class="dx-card-body">
+	<div class="form-container" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; position: relative; padding: 0 15px; overflow-x: hidden;">
+		<!-- Top Row -->
+		<div style="display: flex; gap: 10px; align-items: flex-end; flex-wrap: nowrap; width: 100%;">
+			<div class="form-group" style="flex: 1 1 25px;">
+				@(
+								Html.DevExtreme().TextBox()
+								.Label(new JS("formatMessage('Sales Invoice No')"))
+								.LabelMode(EditorLabelMode.Outside)
+								.ID("VoucherNo")
+								.Value("")
+								.OnValueChanged("onVoucherNoChanged")
+								.ElementAttr(new { @class = "custom-disabled-textbox" })
 								.ValidationRules(rules =>
 								{
 									rules.AddRequired()
-									.Message(new JS("formatMessage('Client Name is required')"));
+									.Message(new JS("formatMessage('Sales Invoice No is required')"));
 								})
-
-
-								.LabelMode(EditorLabelMode.Outside)
-								.ID("accountDropDownBox")
-								.ShowClearButton(true)
-								.AcceptCustomValue(true)
-								.AcceptCustomValue(false)
-								.OpenOnFieldClick(false)
-								.ValueChangeEvent("input")
-								.HoverStateEnabled(true)
-								.ValueExpr("AccountId")
-								.DisplayExpr("AccountHead")
-								.OnInput("dropDownBoxOnInput")
-								.OnOpened("onOpened")
-								.TabIndex(1)
-								.OnKeyDown("onKeyDown")
-								.OnValueChanged("onSupplierNameChanged")
-								.ContentTemplate(new TemplateName("ClientNameContentTemplate"))
-								) *@
-
-
-				@(Html.DevExtreme().DropDownBox()
-								.Label(new JS("formatMessage('Client Name')"))
-								.DataSource(d => d.WebApi()
-								.Controller("SalesVoucher")
-								.LoadAction("GetClientName")
-								.LoadMode(DataSourceLoadMode.Raw)
-								.Key("AccountId")
 								)
-								.ValidationRules(rules =>
-								{
-									rules.AddRequired()
-									.Message(new JS("formatMessage('Client Name is required')"));
-								})
-								.LabelMode(EditorLabelMode.Outside)
-								.ID("accountDropDownBox")
-
-								.ShowClearButton(true)
-								.AcceptCustomValue(true)
-								.OpenOnFieldClick(false)
-								.ValueChangeEvent("input")
-								.HoverStateEnabled(true)
-
-								.ValueExpr("AccountId")
-								.DisplayExpr("AccountHead")
-								.OnInput("dropDownBoxOnInput")
-
-								.OnOpened("onOpened")
-								@* .Width(720) *@
-								.TabIndex(1)
-								@* .DropDownOptions(o => o
-								.Width(1000)
-								) *@
-								.OnKeyDown("onKeyDown")
-								.OnValueChanged("onSupplierNameChanged")
-								//.OnValueChanged("dropDownBoxValueChanged")
-								.ContentTemplate(new TemplateName("ClientNameContentTemplate"))
-								)
+								
 
 			</div>
-		</div>
+			<div class="form-group" style="flex: 1 1 35px;">
+				@(Html.DevExtreme().DateBox()
+								.Label(new JS("formatMessage('Invoice Date')"))
+								.ID("VoucherDate")
+								.InputAttr("aria-label", "Date")
+								.LabelMode(EditorLabelMode.Outside)
+								.Type(DateBoxType.Date)
+								.DisplayFormat("dd-MMM-yyyy")
+								.ElementAttr(new { @class = "light-theme-input" })
+								.Value(DateTime.Now)
+								.OnValueChanged("onVoucherDateChange") // JS function name// JS function name
+								)
+			</div>
+			<div class="form-group" style="flex: 1 1 35px;">
+				@(Html.DevExtreme().DateBox()
+								.Label(new JS("formatMessage('Effective Date')"))
+								.ID("VoucherEffectiveDate")
+								.InputAttr("aria-label", "Date")
+								.LabelMode(EditorLabelMode.Outside)
+								.Type(DateBoxType.Date)
+								.DisplayFormat("dd-MMM-yyyy")
+								.ElementAttr(new { @class = "light-theme-input" })
+								.Value(DateTime.Now)
+								)
+			</div>
 
-		<div class="col-md-1" style="margin-top: 67px;padding-left:0px;padding-right:0px;width: 4%;">
-			@* 	@(Html.DevExtreme().Button()
-								.ID("btnAddVoucher")
-								.Icon("plus")
-								.OnClick("navigateToLedger")
-								) *@
-
-			@(Html.DevExtreme().Button()
-						.ID("btnAddVoucher")
-						.Icon("plus")
-						.OnClick("showLedgerAccountPopup")
-						)
-
-			<!-- DevExtreme Popup -->
-			@(Html.DevExtreme().Popup()
-						.ID("ledgerAccountPopup")
-						.Width("93%")
-						.Height("85%")
-						.Title("Add Ledger Account")
-						.ShowTitle(true)
-						.CloseOnOutsideClick(true)
-						.Visible(false)
-						.ResizeEnabled(true)
-						.ContentTemplate(@<text>
-				<div id="popupContent" class="background" style="width:100%; height:100%;">
-					<iframe id="ledgerAccountFrame" class="background" style="width:100%; height:100%; border:none;"></iframe>
+			<div class="form-group" style="display: flex; flex-direction: column; min-width: 200px;">
+				<div style="display: flex; align-items: center; gap: 5px;">
+					@(Html.DevExtreme().CheckBox()
+										.Text("")
+										.ID("UseSubmittedDate")
+										.OnValueChanged("updateDueDate")
+										)
+					<label for="UseSubmittedDate" style="margin: 0; font-size: 13px;">@Html.Raw("Submitted Date")</label>
 				</div>
-			</text>)
-						)
 
-		</div>
-		<div class="col-md-1" style="margin-top: 67px;padding-left:0px;padding-right:0px;width: 4%;">
-			@* 			@(Html.DevExtreme().Button()
-								.ID("btnEditVoucher")
-								.Icon("edit")
-								) *@
-			@(Html.DevExtreme().Button()
-						.ID("btnEditVoucher")
-						.Icon("edit")
-						.OnClick("showLedgerAccountEditPopup")
-						)
-
-			@(Html.DevExtreme().Popup()
-						.ID("ledgerEditAccountPopup")
-						.Width("93%")
-						.Height("85%")
-						.Title("Edit Ledger Account")
-						.ShowTitle(true)
-						.CloseOnOutsideClick(true)
-						.Visible(false)  // Hidden by default
-						.ResizeEnabled(true)
-						.ContentTemplate(@<text>
-				<div id="popupContent" style="width:100%; height:100%;">
-					<iframe id="ledgerEditAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
+				<div style="margin-top: 5px;">
+					@(Html.DevExtreme().DateBox()
+										.ID("InvoiceSubmittedDate")
+										.InputAttr("aria-label", "Date")
+										.LabelMode(EditorLabelMode.Outside)
+										.Type(DateBoxType.Date)
+										.DisplayFormat("dd-MMM-yyyy")
+										.ElementAttr(new { @class = "light-theme-input" })
+										.Value(DateTime.Now)
+										@* .OnValueChanged("onDateChange") *@
+										)
 				</div>
-			</text>)
-						)
-		</div>
-		<div class="col-md-3">
-			<div class="form-group">
+			</div>
+
+			<div class="form-group" style="flex: 1 1 35px;">
 				@(Html.DevExtreme().DateBox()
 								.Label(new JS("formatMessage('Due Date or Payment Terms')"))
 								.ID("InvoiceDueDate")
 								.InputAttr("aria-label", "Date")
 								.LabelMode(EditorLabelMode.Outside)
+								.ElementAttr(new { @class = "light-theme-input" })
 								.Type(DateBoxType.Date)
 								.DisplayFormat("dd-MMM-yyyy")
 								.Value(DateTime.Now)
 								)
 			</div>
+			<div class="form-group" style="flex: 1 1 35px;">
+				@(Html.DevExtreme().NumberBox()
+								.Label(new JS("formatMessage('No. Of Days')"))
+								.LabelMode(EditorLabelMode.Outside)
+								.ID("InvoiceNoOfDays")
+								.Value(0)
+								.ShowSpinButtons(true)
+								.Min(0)
+								.Max(1000)
+								.Step(1)
+								.OnValueChanged("onDaysChange")
+								)
+			</div>
+			<div class="form-group" style="flex: 1 1 400px;">
+				@(
+								Html.DevExtreme().TextArea()
+								.Label(new JS("formatMessage('Narration')"))
+								.LabelMode(EditorLabelMode.Outside)
+								.ID("txtEntryNarration")
+								.Value("")
+								.Height(40)
+								.Placeholder(new JS("formatMessage('Enter your comments here...')"))
+								.MaxLength(500)
+								)
+			</div>
 		</div>
-		<div class="col-md-2">
+
+
+		<!-- Second Row -->
+		<div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; margin-top: 10px;">
 			<div class="form-group">
-				<div style="display:flex;">
-					@(Html.DevExtreme().NumberBox()
-												.Label(new JS("formatMessage('No. Of Days')"))
-												.LabelMode(EditorLabelMode.Outside)
-												.ID("InvoiceNoOfDays")
-												.Value(0)
-												.ShowSpinButtons(true)
-												.Min(0)
-												.Max(1000)
-												.Step(1)
-												.OnValueChanged("onDaysChange")
-												)
-					<label id="Days" class="no-border-input" style="margin-top:10px;" for="InvoiceNoOfDays"></label>
+				@(
+								Html.DevExtreme().SelectBox()
+								.Label(new JS("formatMessage('Dr/Cr')"))
+								.LabelMode(EditorLabelMode.Outside)
+								.ID("sbDrCr")
+								.DataSource(new[] { "Dr", "Cr" })
+								.Value("Cr")
+								.Placeholder(new JS("formatMessage('Select Transaction Type')"))
+								.Width(60)
+								)
+
+			</div>
+			<!-- Container for Account Head & Buttons -->
+			<div style="display: flex; align-items: flex-end; gap: 5px; min-width: 100px;">
+				<!-- DropDownBox: Flex-grow to fill available space -->
+				<div class="form-group">
+					@(Html.DevExtreme().DropDownBox()
+										.Label(new JS("formatMessage('Account Head')"))
+										.DataSource(d => d.WebApi()
+										.Controller("SalesVoucher")
+										.LoadAction("GetAccountHead")
+										.LoadMode(DataSourceLoadMode.Raw)
+										.Key("AccountHead")
+										)
+										.ValidationRules(rules =>
+										{
+											rules.AddRequired()
+											.Message(new JS("formatMessage('Ledger Account should be entered')"));
+										})
+										.LabelMode(EditorLabelMode.Outside)
+										.ID("ddAccountHead")
+										.ShowClearButton(true)
+										.AcceptCustomValue(true)
+										.AcceptCustomValue(false)
+										.OpenOnFieldClick(false)
+										.ValueChangeEvent("input")
+										.HoverStateEnabled(true)
+										.ValueExpr("AccountId")
+										.DisplayExpr("AccountHead")
+										.OnInput("dropDownBoxOnInput")
+										.OnOpened("onOpened")
+										.Width(290)
+										.TabIndex(1)
+										.DropDownOptions(o => o
+										.Width(1000)
+										)
+										.OnKeyDown("onKeyDown")
+																//.OnValueChanged("dropDownBoxValueChanged")
+										.ContentTemplate(new TemplateName("AccountHeadContentTemplate"))
+										)
 				</div>
+				<!-- Add Button -->
+				<div class="form-group" style="flex-shrink: 0;">
+					@(Html.DevExtreme().Button()
+										.ID("btnAddAHead")
+										.Icon("plus")
+										.ElementAttr(new { @class = "custom-ui-button" })
+
+										.OnClick("showLedgerAccountPopup")
+										)
+
+					<!-- DevExtreme Popup -->
+					@(Html.DevExtreme().Popup()
+										.ID("ledgerAccountPopup")
+										.Width("93%")
+										.Height("85%")
+										.Title("Add Ledger Account")
+										.ShowTitle(true)
+										.CloseOnOutsideClick(true)
+										.Visible(false)
+										.ResizeEnabled(true)
+
+										.ContentTemplate(@<text>
+									  						<div id="popupContent" class="background" style="width:100%; height:100%;">
+									  							<iframe id="ledgerAccountFrame" class="background" style="width:100%; height:100%; border:none;"></iframe>
+									  						</div>
+									  					</text>)
+										)
+				</div>
+				<!-- Edit Button -->
+
+				<div class="form-group" style="flex-shrink: 0;">
+
+					@(Html.DevExtreme().Button()
+										.ID("btnEditAHead")
+										.Icon("edit")
+										.ElementAttr(new { @class = "custom-ui-button" })
+
+										.OnClick("showLedgerAccountHeadEditPopup")
+										)
+
+					@(Html.DevExtreme().Popup()
+										.ID("ledgerEditAccountPopup")
+										.Width("93%")
+										.Height("85%")
+										.Title("Edit Ledger Account")
+										.ShowTitle(true)
+										.CloseOnOutsideClick(true)
+										.Visible(false)  // Hidden by default
+										.ResizeEnabled(true)
+										.ContentTemplate(@<text>
+									  						<div id="popupContent" style="width:100%; height:100%;">
+									  							<iframe id="ledgerEditAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
+									  						</div>
+									  					</text>)
+										)
+				</div>
+				<div class="form-group" style="flex-shrink: 0;">
+					@(Html.DevExtreme().DropDownBox()
+										.Label(new JS("formatMessage('Client Name')"))
+										.DataSource(d => d.WebApi()
+										.Controller("SalesVoucher")
+										.LoadAction("GetClientName")
+										.LoadMode(DataSourceLoadMode.Raw)
+										.Key("AccountId")
+										)
+										.ValidationRules(rules =>
+										{
+											rules.AddRequired()
+											.Message(new JS("formatMessage('Client Name is required')"));
+										})
+										.LabelMode(EditorLabelMode.Outside)
+										.ID("accountDropDownBox")
+
+										.ShowClearButton(true)
+										.AcceptCustomValue(true)
+										.OpenOnFieldClick(false)
+										.ValueChangeEvent("input")
+										.HoverStateEnabled(true)
+
+										.ValueExpr("AccountId")
+										.DisplayExpr("AccountHead")
+										.OnInput("dropDownBoxOnInput")
+
+										.OnOpened("onOpened")
+										  					@* .Width(720) *@
+										.TabIndex(1)
+								 					@* .DropDownOptions(o => o
+								.Width(1000)
+								) *@
+										.OnKeyDown("onKeyDown")
+										.OnValueChanged("onSupplierNameChanged")
+															 					//.OnValueChanged("dropDownBoxValueChanged")
+										.ContentTemplate(new TemplateName("ClientNameContentTemplate"))
+										)
+				</div>
+				<!-- Add Button -->
+				<div class="form-group" style="flex-shrink: 0;">
+					@(Html.DevExtreme().Button()
+										.ID("btnEditVoucher")
+										.Icon("edit")
+										.ElementAttr(new { @class = "custom-ui-button" })
+
+										.OnClick("showLedgerAccountEditPopup")
+										)
+
+					@(Html.DevExtreme().Popup()
+										.ID("ledgerEditAccountPopup")
+										.Width("93%")
+										.Height("85%")
+										.Title("Edit Ledger Account")
+										.ShowTitle(true)
+										.CloseOnOutsideClick(true)
+										.Visible(false)  // Hidden by default
+										.ResizeEnabled(true)
+										.ContentTemplate(@<text>
+									  						<div id="popupContent" style="width:100%; height:100%;">
+									  							<iframe id="ledgerEditAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
+									  						</div>
+									  					</text>)
+										)
+				</div>
+				<!-- Edit Button -->
+
+				<div class="form-group" style="flex-shrink: 0;">
+
+					@(Html.DevExtreme().Button()
+										.ID("btnAddVoucher")
+										.Icon("plus")
+										.ElementAttr(new { @class = "custom-ui-button" })
+
+										.OnClick("showLedgerAccountPopup")
+										)
+
+					<!-- DevExtreme Popup -->
+					@(Html.DevExtreme().Popup()
+										.ID("ledgerAccountPopup")
+										.Width("93%")
+										.Height("85%")
+										.Title("Add Ledger Account")
+										.ShowTitle(true)
+										.CloseOnOutsideClick(true)
+										.Visible(false)
+										.ResizeEnabled(true)
+										.ContentTemplate(@<text>
+									  						<div id="popupContent" class="background" style="width:100%; height:100%;">
+									  							<iframe id="ledgerAccountFrame" class="background" style="width:100%; height:100%; border:none;"></iframe>
+									  						</div>
+									  					</text>)
+										)
+				</div>
+
+				<div class="form-group" style="flex: 1 1 90px;">
+					@(
+										Html.DevExtreme().NumberBox()
+										.Label(new JS("formatMessage('Amount')"))
+										.LabelMode(EditorLabelMode.Outside)
+										.ID("txtVoucherAmount")
+										.Value(0.00)
+										.ValidationRules(rules =>
+										{
+											rules.AddRequired()
+											.Message("Amount cannot be empty");
+
+											rules.AddCustom()
+											.ValidationCallback("validateAmount")
+											.Message("Amount value must be greater than zero");
+										})
+										.Min(0)
+										.Placeholder("0.00")
+										.Format("#,##0.00")
+										.Width(170)
+										.InputAttr(new
+										{
+											style = "font-family: Inter; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;",
+											type = "number",
+											step = "0.01"
+										})
+
+										)
+				</div>
+				<div class="form-group">
+					@(Html.DevExtreme().DropDownBox()
+										.Label(new JS("formatMessage('Base Currency')"))
+										.DataSource(d => d.WebApi()
+										.Controller("Utility") // Use same controller or change if needed
+										.LoadAction("GetCurrencyList")
+										.LoadMode(DataSourceLoadMode.Raw)
+										.Key("CurrencyExchangeId")
+										)
+										.ValidationRules(rules =>
+										{
+											rules.AddRequired()
+											.Message("Please select a base currency.");
+										})
+										.LabelMode(EditorLabelMode.Outside)
+										.ID("ddlBaseCurrency")
+										.ShowClearButton(true)
+										.AcceptCustomValue(false)
+										.OpenOnFieldClick(true)
+										.Value(1) // Change default value if needed
+										.ValueExpr("CurrencyExchangeId")
+										.DisplayExpr("CurrencyName")
+										.OnInput("dropDownBoxOnInput") // Reuse or define separate handler if needed
+										.OnOpened("onOpened")
+										.Width(150)
+										.TabIndex(2) // Different tabindex to separate from the first
+										.DropDownOptions(o => o.Width(700))
+										.OnKeyDown("onKeyDown")
+										.ReadOnly(true)
+														//.OnValueChanged("dropDownBoxValueChanged") // Optional
+										.ContentTemplate(new TemplateName("BaseCurrencyContentTemplate"))
+										)
+				</div>
+
+				@using (Html.DevExtreme().NamedTemplate("BaseCurrencyContentTemplate"))
+				{
+					@(Html.DevExtreme().DataGrid()
+									.ID("basecurrency-datagrid")
+									.DataSource(d => d.WebApi()
+									.Controller("Utility")
+									.LoadAction("GetCurrencyList")
+									.LoadMode(DataSourceLoadMode.Raw)
+									.Key("CurrencyExchangeId")
+									)
+									.WordWrapEnabled(true)
+									.ShowBorders(true)
+									.Selection(sl => sl.Mode(SelectionMode.Single))
+									.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+									.SearchPanel(sp => sp.HighlightSearchText(true).Visible(true))
+									.OnSelectionChanged("onBaseCurrencySelectionChanged") // Define this JS function
+									.Paging(p => p.PageSize(10))
+									.Height(300)
+									.Columns(columns =>
+									{
+										columns.Add().DataField("CurrencyExchangeId").Caption(new JS("formatMessage('ID')")).Visible(true);
+										columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency Name')"));
+										columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Symbol')"));
+										columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('Exchange Rate')"));
+										columns.Add().DataField("CurrencyMasterCode").Caption(new JS("formatMessage('unicode')")).DataType(GridColumnDataType.Boolean);
+										columns.Add().DataField("CurrencyPoints").Caption(new JS("formatMessage('point')")).DataType(GridColumnDataType.Boolean);
+
+									})
+									)
+								}
 			</div>
-		</div>
-	</div>
+			<div class="form-group">
+				@(Html.DevExtreme().DropDownBox()
+								.Label(new JS("formatMessage('Convertion Currency')"))
+								.DataSource(d => d.WebApi()
+								.Controller("Utility") // Adjust if needed
+								.LoadAction("GetCurrencyList")
+								.LoadMode(DataSourceLoadMode.Raw)
+								.Key("CurrencyExchangeId")
+								)
+								.ValidationRules(rules =>
+								{
+									rules.AddRequired()
+									.Message("Please select a currency.");
+								})
+								.LabelMode(EditorLabelMode.Outside)
+								.ID("ddCurrency")
+								.ShowClearButton(true)
+								.AcceptCustomValue(false)
+								.OpenOnFieldClick(true)
+								.Value(1)
+								.ValueExpr("CurrencyExchangeId")
+								.DisplayExpr("CurrencyName")
+								.OnInput("dropDownBoxOnInput")
+								.OnOpened("onOpened")
+								.Width(170)
+								.TabIndex(1)
+								.DropDownOptions(o => o.Width(700))
+								.OnKeyDown("onKeyDown")
+														//.OnValueChanged("dropDownBoxValueChanged")
+								.ContentTemplate(new TemplateName("CurrencyContentTemplate"))
+								)
+				@using (Html.DevExtreme().NamedTemplate("CurrencyContentTemplate"))
+				{
+					@(Html.DevExtreme().DataGrid()
+									.ID("currency-datagrid")
+									.DataSource(d => d.WebApi()
+									.Controller("Utility")
+									.LoadAction("GetCurrencyList")
+									.LoadMode(DataSourceLoadMode.Raw)
+									.Key("CurrencyExchangeId")
+									)
+									.WordWrapEnabled(true)
+									.ShowBorders(true)
+									.Selection(sl => sl.Mode(SelectionMode.Single))
+									.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+									.SearchPanel(sp => sp.HighlightSearchText(true).Visible(true))
+									.OnSelectionChanged("onCurrencySelectionChanged")
+									.Paging(p => p.PageSize(10))
+									.Height(300)
+									.Columns(columns =>
+									{
+										columns.Add().DataField("CurrencyExchangeId").Caption(new JS("formatMessage('ID')")).Visible(true);
+										columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency Name')"));
+										columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Symbol')"));
+										columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('Exchange Rate')"));
+										columns.Add().DataField("CurrencyMasterCode").Caption(new JS("formatMessage('unicode')")).DataType(GridColumnDataType.Boolean);
+										columns.Add().DataField("CurrencyPoints").Caption(new JS("formatMessage('point')")).DataType(GridColumnDataType.Boolean);
 
-
-
-
-	<div class="dx-fieldset horizontal-container" style="margin-top:15px;margin-bottom:0px;">
-		<div class="form-group">
-			<div class="button-alignment-down">
+									})
+									)
+								}
 			</div>
-			@(
-						Html.DevExtreme().SelectBox()
-						.Label(new JS("formatMessage('Dr/Cr')"))
-						.LabelMode(EditorLabelMode.Outside)
-						.ID("sbDrCr")
-						.DataSource(new[] { "Dr", "Cr" })
-						.Value("Cr")
-						.Placeholder(new JS("formatMessage('Select Transaction Type')"))
-						.Width(90)
-						)
-		</div>
-		<div class="form-group">
-			@(Html.DevExtreme().DropDownBox()
-						.Label(new JS("formatMessage('Account Head')"))
-						.DataSource(d => d.WebApi()
-						.Controller("SalesVoucher")
-						.LoadAction("GetAccountHead")
-						.LoadMode(DataSourceLoadMode.Raw)
-						.Key("AccountHead")
-						)
-						.ValidationRules(rules =>
-						{
-							rules.AddRequired()
-							.Message(new JS("formatMessage('Ledger Account should be entered')"));
-						})
-						.LabelMode(EditorLabelMode.Outside)
-						.ID("ddAccountHead")
-						.ShowClearButton(true)
-						.AcceptCustomValue(true)
-						.AcceptCustomValue(false)
-						.OpenOnFieldClick(false)
-						.ValueChangeEvent("input")
-						.HoverStateEnabled(true)
-						.ValueExpr("AccountId")
-						.DisplayExpr("AccountHead")
-						.OnInput("dropDownBoxOnInput")
-						.OnOpened("onOpened")
-						.Width(315)
-						.TabIndex(1)
-						.DropDownOptions(o => o
-						.Width(1000)
-						)
-						.OnKeyDown("onKeyDown")
-						//.OnValueChanged("dropDownBoxValueChanged")
-						.ContentTemplate(new TemplateName("AccountHeadContentTemplate"))
-						)
-		</div>
-		<div class="form-group" style="margin-top:25px;">
-			@* 	@(Html.DevExtreme().Button()
-								.ID("btnAddAHead")
+			<div class="form-group" style="flex: 1 1 70px;">
+				@(
+								Html.DevExtreme().NumberBox()
+								.Label(new JS("formatMessage('CVR')"))
+								.LabelMode(EditorLabelMode.Outside)
+								.ID("txtCurrencyRate")
+								.Width(100)
+								.Value(1)
+
+								.Min(0)
+
+								.Format("#,##0.00")
+								.InputAttr(new
+								{
+									style = "font-family: Cambria; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;",
+									type = "number",
+									step = "0.01"
+								})
+
+								)
+
+			</div>
+			<div class="form-group plusBtn" style="flex: 1 1 30px;">
+				@(Html.DevExtreme().Button()
+								.ID("btnVoucherEntry")
+								.Text(new JS("formatMessage('ADD')"))
+								.Height(40)
+								.Width(130)
 								.Icon("plus")
-								.OnClick("navigateToLedger")
-								) *@
-
-			@(Html.DevExtreme().Button()
-						.ID("btnAddAHead")
-						.Icon("plus")
-						.OnClick("showLedgerAccountPopup")
-						)
-
-			<!-- DevExtreme Popup -->
-			@(Html.DevExtreme().Popup()
-						.ID("ledgerAccountPopup")
-						.Width("93%")
-						.Height("85%")
-						.Title("Add Ledger Account")
-						.ShowTitle(true)
-						.CloseOnOutsideClick(true)
-						.Visible(false)
-						.ResizeEnabled(true)
-						.ContentTemplate(@<text>
-				<div id="popupContent" class="background" style="width:100%; height:100%;">
-					<iframe id="ledgerAccountFrame" class="background" style="width:100%; height:100%; border:none;"></iframe>
-				</div>
-			</text>)
-						)
-		</div>
-		<div class="form-group" style="margin-top:25px;">
-			@* 	@(Html.DevExtreme().Button()
-								.ID("btnEditAHead")
-								.Icon("edit")
-								) *@
-			@(Html.DevExtreme().Button()
-						.ID("btnEditAHead")
-						.Icon("edit")
-						.OnClick("showLedgerAccountHeadEditPopup")
-						)
-
-			@(Html.DevExtreme().Popup()
-						.ID("ledgerEditAccountPopup")
-						.Width("93%")
-						.Height("85%")
-						.Title("Edit Ledger Account")
-						.ShowTitle(true)
-						.CloseOnOutsideClick(true)
-						.Visible(false)  // Hidden by default
-						.ResizeEnabled(true)
-						.ContentTemplate(@<text>
-				<div id="popupContent" style="width:100%; height:100%;">
-					<iframe id="ledgerEditAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
-				</div>
-			</text>)
-						)
-		</div>
-		<div class="form-group">
-
-			@(
-						Html.DevExtreme().NumberBox()
-						.Label(new JS("formatMessage('Amount')"))
-						.LabelMode(EditorLabelMode.Outside)
-						.ID("txtVoucherAmount")
-						.Value(0.00)
-						.ValidationRules(rules =>
-						{
-							rules.AddRequired()
-							.Message("Amount cannot be empty");
-
-							rules.AddCustom()
-							.ValidationCallback("validateAmount")
-							.Message("Amount value must be greater than zero");
-						})
-						.Min(0)
-						.Placeholder("0.00")
-						.Format("#,##0.00")
-						.InputAttr(new
-						{
-							style = "font-family: Inter; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;",
-							type = "number",
-							step = "0.01"
-						})
-
-						)
-		</div>
-		<div class="form-group">
-			@(Html.DevExtreme().DropDownBox()
-						.Label(new JS("formatMessage('Base Currency')"))
-						.DataSource(d => d.WebApi()
-						.Controller("Utility") // Use same controller or change if needed
-						.LoadAction("GetCurrencyList")
-						.LoadMode(DataSourceLoadMode.Raw)
-						.Key("CurrencyExchangeId")
-						)
-						.ValidationRules(rules =>
-						{
-							rules.AddRequired()
-							.Message("Please select a base currency.");
-						})
-						.LabelMode(EditorLabelMode.Outside)
-						.ID("ddlBaseCurrency")
-						.ShowClearButton(true)
-						.AcceptCustomValue(false)
-						.OpenOnFieldClick(true)
-						.Value(1) // Change default value if needed
-						.ValueExpr("CurrencyExchangeId")
-						.DisplayExpr("CurrencyName")
-						.OnInput("dropDownBoxOnInput") // Reuse or define separate handler if needed
-						.OnOpened("onOpened")
-						.Width(210)
-						.TabIndex(2) // Different tabindex to separate from the first
-						.DropDownOptions(o => o.Width(700))
-						.OnKeyDown("onKeyDown")
-						.ReadOnly(true)
-						//.OnValueChanged("dropDownBoxValueChanged") // Optional
-						.ContentTemplate(new TemplateName("BaseCurrencyContentTemplate"))
-						)
-		</div>
-
-		@using (Html.DevExtreme().NamedTemplate("BaseCurrencyContentTemplate"))
-		{
-			@(Html.DevExtreme().DataGrid()
-					.ID("basecurrency-datagrid")
-					.DataSource(d => d.WebApi()
-					.Controller("Utility")
-					.LoadAction("GetCurrencyList")
-					.LoadMode(DataSourceLoadMode.Raw)
-					.Key("CurrencyExchangeId")
-					)
-					.WordWrapEnabled(true)
-					.ShowBorders(true)
-					.Selection(sl => sl.Mode(SelectionMode.Single))
-					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-					.SearchPanel(sp => sp.HighlightSearchText(true).Visible(true))
-					.OnSelectionChanged("onBaseCurrencySelectionChanged") // Define this JS function
-					.Paging(p => p.PageSize(10))
-					.Height(300)
-					.Columns(columns =>
-					{
-						columns.Add().DataField("CurrencyExchangeId").Caption(new JS("formatMessage('ID')")).Visible(true);
-						columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency Name')"));
-						columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Symbol')"));
-						columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('Exchange Rate')"));
-						columns.Add().DataField("CurrencyMasterCode").Caption(new JS("formatMessage('unicode')")).DataType(GridColumnDataType.Boolean);
-						columns.Add().DataField("CurrencyPoints").Caption(new JS("formatMessage('point')")).DataType(GridColumnDataType.Boolean);
-
-					})
-					)
-		}
-
-		<div class="form-group">
-			@(Html.DevExtreme().DropDownBox()
-						.Label(new JS("formatMessage('Convertion Currency')"))
-						.DataSource(d => d.WebApi()
-						.Controller("Utility") // Adjust if needed
-						.LoadAction("GetCurrencyList")
-						.LoadMode(DataSourceLoadMode.Raw)
-						.Key("CurrencyExchangeId")
-						)
-						.ValidationRules(rules =>
-						{
-							rules.AddRequired()
-							.Message("Please select a currency.");
-						})
-						.LabelMode(EditorLabelMode.Outside)
-						.ID("ddCurrency")
-						.ShowClearButton(true)
-						.AcceptCustomValue(false)
-						.OpenOnFieldClick(true)
-						.Value(1)
-						.ValueExpr("CurrencyExchangeId")
-						.DisplayExpr("CurrencyName")
-						.OnInput("dropDownBoxOnInput")
-						.OnOpened("onOpened")
-						.Width(210)
-						.TabIndex(1)
-						.DropDownOptions(o => o.Width(700))
-						.OnKeyDown("onKeyDown")
-						//.OnValueChanged("dropDownBoxValueChanged")
-						.ContentTemplate(new TemplateName("CurrencyContentTemplate"))
-						)
-		</div>
-		<div class="form-group">
-			@(
-						Html.DevExtreme().NumberBox()
-						.Label(new JS("formatMessage('Convertion Rate')"))
-						.LabelMode(EditorLabelMode.Outside)
-						.ID("txtCurrencyRate")
-						.Width(160)
-						.Value(1)
-
-						.Min(0)
-
-						.Format("#,##0.00")
-						.InputAttr(new
-						{
-							style = "font-family: Cambria; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;",
-							type = "number",
-							step = "0.01"
-						})
-
-						)
-		</div>
-		@using (Html.DevExtreme().NamedTemplate("CurrencyContentTemplate"))
-		{
-			@(Html.DevExtreme().DataGrid()
-					.ID("currency-datagrid")
-					.DataSource(d => d.WebApi()
-					.Controller("Utility")
-					.LoadAction("GetCurrencyList")
-					.LoadMode(DataSourceLoadMode.Raw)
-					.Key("CurrencyExchangeId")
-					)
-					.WordWrapEnabled(true)
-					.ShowBorders(true)
-					.Selection(sl => sl.Mode(SelectionMode.Single))
-					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-					.SearchPanel(sp => sp.HighlightSearchText(true).Visible(true))
-					.OnSelectionChanged("onCurrencySelectionChanged")
-					.Paging(p => p.PageSize(10))
-					.Height(300)
-					.Columns(columns =>
-					{
-						columns.Add().DataField("CurrencyExchangeId").Caption(new JS("formatMessage('ID')")).Visible(true);
-						columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency Name')"));
-						columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Symbol')"));
-						columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('Exchange Rate')"));
-						columns.Add().DataField("CurrencyMasterCode").Caption(new JS("formatMessage('unicode')")).DataType(GridColumnDataType.Boolean);
-						columns.Add().DataField("CurrencyPoints").Caption(new JS("formatMessage('point')")).DataType(GridColumnDataType.Boolean);
-
-					})
-					)
-		}
-	</div>
-	<div class="dx-fieldset horizontal-container" style="margin-top:0px;margin-bottom:0px;padding-top:15px;padding-bottom:30px">
-		<div class="form-group">
-		</div>
-		<div class="form-group">
-			@(
-						Html.DevExtreme().TextArea()
-						.Label(new JS("formatMessage('Narration')"))
-						.LabelMode(EditorLabelMode.Outside)
-						.ID("txtEntryNarration")
-						.Value("")
-						.Height(40)
-						.Width(720)
-						.Placeholder(new JS("formatMessage('Enter your comments here...')"))
-						.MaxLength(500)
-						)
-		</div>
-		<div class="form-group" style="margin-top:25px;">
-			@(Html.DevExtreme().Button()
-						.ID("btnVoucherEntry")
-						.Text(new JS("formatMessage('ADD')"))
-						.Height(40)
-						.Width(178)
-						.Icon("plus")
-						.OnClick("function() { addVoucherEntry(); }")
-						)
+								.OnClick("function() { addVoucherEntry(); }")
+								)
+			</div>
 		</div>
 	</div>
 
+</div>
 
+<div class="dx-card-body">
 	<div class="dx-field ledgerResult">
 		@(
 				Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
@@ -627,43 +820,43 @@
 				.Columns(columns =>
 				{
 					columns.AddFor(m => m.DrCr).Caption(new JS("formatMessage('Dr/Cr')"));
-						columns.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('Account Head')"))
+					columns.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('Account Head')"))
 					.CellTemplate(@<text>
-			<div style="display: flex; justify-content: space-between; align-items: center;">
-				<span>
-					<%- data.AccountHead ? data.AccountHead : "No Selection" %>
-				</span>
-			</div>
-		</text>)
-				.EditCellTemplate(@<text>
+						   			<div style="display: flex; justify-content: space-between; align-items: center;">
+						   				<span>
+						   					<%- data.AccountHead ? data.AccountHead : "No Selection" %>
+						   				</span>
+						   			</div>
+						   		</text>)
+					.EditCellTemplate(@<text>
 
 
-			@(Html.DevExtreme().DropDownBox()
-			.DataSource(d => d.WebApi()
-			.Controller("VoucherMaster")
-			.LoadAction("GetEditAccountHead")
-			.LoadMode(DataSourceLoadMode.Raw)
-			.Key("AccountId")
-			)
-			.LabelMode(EditorLabelMode.Outside)
-			.ID("accountDropDownBoxEdit")
-			.ShowClearButton(true)
-			.AcceptCustomValue(false)
-			.AcceptCustomValue(true)
-			.OpenOnFieldClick(false)
-			.ValueChangeEvent("change")
-			.HoverStateEnabled(true)
-			.Value(new JS("data.AccountHead"))
-			.ValueExpr("AccountId")
-			.DisplayExpr("AccountHead")
-			.OnValueChanged("gridpurchase_valueChanged")
-			.OnOpened("onOpened")
-                @* .Width(250) *@
-			.TabIndex(1)
-			.DropDownOptions(o => o.Width(500))
-			.OnKeyDown("onKeyDown")
-			.ContentTemplate(new TemplateName("AccountHeadEditDropdownContentTemplate"))
-			)
+				@(Html.DevExtreme().DropDownBox()
+							.DataSource(d => d.WebApi()
+							.Controller("VoucherMaster")
+							.LoadAction("GetEditAccountHead")
+							.LoadMode(DataSourceLoadMode.Raw)
+							.Key("AccountId")
+							)
+							.LabelMode(EditorLabelMode.Outside)
+							.ID("accountDropDownBoxEdit")
+							.ShowClearButton(true)
+							.AcceptCustomValue(false)
+							.AcceptCustomValue(true)
+							.OpenOnFieldClick(false)
+							.ValueChangeEvent("change")
+							.HoverStateEnabled(true)
+							.Value(new JS("data.AccountHead"))
+							.ValueExpr("AccountId")
+							.DisplayExpr("AccountHead")
+							.OnValueChanged("gridpurchase_valueChanged")
+							.OnOpened("onOpened")
+									  			@* .Width(250) *@
+							.TabIndex(1)
+							.DropDownOptions(o => o.Width(500))
+							.OnKeyDown("onKeyDown")
+							.ContentTemplate(new TemplateName("AccountHeadEditDropdownContentTemplate"))
+							)
 
 
 		</text>);
@@ -695,10 +888,10 @@
 				.OnRowUpdating("onRowUpdating")
 				.OnRowRemoving("onRowRemoving")
 				.OnRowPrepared(@"function(e) {
-		if (e.rowType === 'data' && e.data.DrCr === 'Cr') {
-		$(e.rowElement).css('background-color', 'lightgray');
-		}
-		}")
+				if (e.rowType === 'data' && e.data.DrCr === 'Cr') {
+				$(e.rowElement).css('background-color', 'lightgray');
+				}
+				}")
 				.Editing(editing => editing
 				.Mode(GridEditMode.Cell)
 				.AllowUpdating(true)
@@ -720,36 +913,33 @@
 				)
 	</div>
 
-
-
-
-	<!-- Context Menu for Actions -->
-	<ul id="contextMenu" class="context-menu" style="display: none;">
-		<li onclick="editCostAllocation()">
-			<i class="fas fa-edit" style="margin-right: 8px;"></i><div id="EditCostAllocation" class="no-border-input"></div>
-		</li>
-		<li onclick="editBillsReceivable()">
-			<i class="fas fa-file-invoice" style="margin-right: 8px;"></i><div id="EditBillReceivable" class="no-border-input"></div>
-		</li>
-		<li onclick="editPropertyAllocation()">
-			<i class="fas fa-cogs" style="margin-right: 8px;"></i><div id="EditPropertyAllocation" class="no-border-input"></div>
-		</li>
-		<li onclick="onAllRowRemoving()">
-			<i class="fas fa-trash-alt" style="margin-right: 8px;"></i> Delete All Line Entries
-		</li>
-	</ul>
-	<div id="popupContainer">
-		@(Html.DevExtreme().Popup()
-				.ID("CostAllocationPopup")
-				.Title("Cost Allocation")
-				.Width("90%")
-				.Height(500)
-				.Visible(false)
-				.ShowCloseButton(true)
-				.ResizeEnabled(true)
-				.DragEnabled(true)
-				.ShowTitle(true)
-				@* .ToolbarItems(toolbar =>
+<!-- Context Menu for Actions -->
+<ul id="contextMenu" class="context-menu" style="display: none;">
+	<li onclick="editCostAllocation()">
+		<i class="fas fa-edit" style="margin-right: 8px;"></i><div id="EditCostAllocation" class="no-border-input"></div>
+	</li>
+	<li onclick="editBillsReceivable()">
+		<i class="fas fa-file-invoice" style="margin-right: 8px;"></i><div id="EditBillReceivable" class="no-border-input"></div>
+	</li>
+	<li onclick="editPropertyAllocation()">
+		<i class="fas fa-cogs" style="margin-right: 8px;"></i><div id="EditPropertyAllocation" class="no-border-input"></div>
+	</li>
+	<li onclick="onAllRowRemoving()">
+		<i class="fas fa-trash-alt" style="margin-right: 8px;"></i> Delete All Line Entries
+	</li>
+</ul>
+<div id="popupContainer">
+	@(Html.DevExtreme().Popup()
+		.ID("CostAllocationPopup")
+		.Title("Cost Allocation")
+		.Width("90%")
+		.Height(500)
+		.Visible(false)
+		.ShowCloseButton(true)
+		.ResizeEnabled(true)
+		.DragEnabled(true)
+		.ShowTitle(true)
+					 	@* .ToolbarItems(toolbar =>
             {
             toolbar.Add()
             .Widget(w => w.Button()
@@ -764,20 +954,20 @@
             )
             .Location(ToolbarItemLocation.After);
             }) *@
-				)
-	</div>
-	<div id="popupContainer">
-		@(Html.DevExtreme().Popup()
-				.ID("PropertyAllocationPopup")
-				.Title("Property Allocation")
-				.Width("90%")
-				.Height(500)
-				.Visible(false)
-				.ShowCloseButton(true)
-				.ResizeEnabled(true)
-				.DragEnabled(true)
-				.ShowTitle(true)
-				@* .ToolbarItems(toolbar =>
+		)
+</div>
+<div id="popupContainer">
+	@(Html.DevExtreme().Popup()
+		.ID("PropertyAllocationPopup")
+		.Title("Property Allocation")
+		.Width("90%")
+		.Height(500)
+		.Visible(false)
+		.ShowCloseButton(true)
+		.ResizeEnabled(true)
+		.DragEnabled(true)
+		.ShowTitle(true)
+					 	@* .ToolbarItems(toolbar =>
 		{
 		toolbar.Add()
 		.Widget(w => w.Button()
@@ -792,21 +982,21 @@
 		)
 		.Location(ToolbarItemLocation.After);
 		}) *@
-				)
-	</div>
-	
-	<div id="popupContainer">
-		@(Html.DevExtreme().Popup()
-				.ID("BillsReceivablePopup")
-				.Title("Finance Module: Receivables / Payables")
-				.Width("90%")
-				.Height(500)
-				.Visible(false)
-				.ShowCloseButton(true)
-				.ResizeEnabled(true)
-				.DragEnabled(true)
-				.ShowTitle(true)
-				@* .ToolbarItems(toolbar =>
+		)
+</div>
+
+<div id="popupContainer">
+	@(Html.DevExtreme().Popup()
+		.ID("BillsReceivablePopup")
+		.Title("Finance Module: Receivables / Payables")
+		.Width("90%")
+		.Height(500)
+		.Visible(false)
+		.ShowCloseButton(true)
+		.ResizeEnabled(true)
+		.DragEnabled(true)
+		.ShowTitle(true)
+					 	@* .ToolbarItems(toolbar =>
 		{
 		toolbar.Add()
 		.Widget(w => w.Button()
@@ -821,126 +1011,149 @@
 		)
 		.Location(ToolbarItemLocation.After);
 		}) *@
-				)
-	</div>
+		)
+</div>
+<div class="dx-card-body">
+	<div class="form-container" style="display: flex; flex-direction: column; gap: 20px; padding: 0 15px;">
 
-	<div class="row g-3" style="padding:1em">
-		<div class="col-md-2" style="padding-top:10px;padding-bottom:10px">
-			<div class="form-group">
-				@(
-								Html.DevExtreme().TextBox()
-								.Label(new JS("formatMessage('Client PO No')"))
-								.LabelMode(EditorLabelMode.Outside)
-								.ID("VoucherRefNo")
+		<!-- Row 1: Cheque No, Popup, Voucher Narration, Attachment -->
+		<div class="form-group" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end;">
 
-								.Value(null)
-								)
-			</div>
-			<div class="form-group mt-3">
-				@(
-								Html.DevExtreme().SelectBox()
-								.Label(new JS("formatMessage('Voucher Type')"))
-								.LabelMode(EditorLabelMode.Outside)
-								.ID("VoucherType")
-								.DataSource(new[] { "Sales", "Purchase", "Journal" })
-								.Value("Sales")
-								.Disabled(true)
-								)
+			<div style="display: flex; gap: 8px; align-items: flex-end;">
+				<div class="form-group">
+					@(
+										Html.DevExtreme().SelectBox()
+										.Label(new JS("formatMessage('Voucher Type')"))
+										.LabelMode(EditorLabelMode.Outside)
+										.ID("VoucherType")
+										.Width(225)
+										.DataSource(new[] { "Sales", "Purchase", "Journal" })
+										.Value("Sales")
+										.Disabled(true)
+										)
+				</div>
+				<div style="flex-grow: 1;">
+					@(
+										Html.DevExtreme().TextBox()
+										.Label(new JS("formatMessage('Client PO No')"))
+										.LabelMode(EditorLabelMode.Outside)
+										.ID("VoucherRefNo")
+										.Width(223)
+										.Value(null)
+										)
+				</div>
+				<div class="form-group">
+					@(
+										Html.DevExtreme().TextBox()
+										.Label(new JS("formatMessage('Voucher Narration')"))
+										.LabelMode(EditorLabelMode.Outside)
+										.Width(1050)
+										.ID("VoucharNarration")
+										.Value(null)
+										)
+				</div>
 
+
+
+				<div class="form-group ">
+					@(Html.DevExtreme().Button()
+										.ID("btnAttachment")
+										.Icon("fa fa-book")
+										.Height(70)
+										.Width(70)
+
+										)
+				</div>
 			</div>
 		</div>
-		<div class="col-md-9" style="padding-top:10px;padding-bottom:10px">
-			<div class="form-group">
-				@(
-								Html.DevExtreme().TextBox()
-								.Label(new JS("formatMessage('Voucher Narration')"))
-								.LabelMode(EditorLabelMode.Outside)
-								.ID("VoucharNarration")
+
+		<!-- Row 3: VoucherType, Verified By, Approved By, Dates -->
+		<div class="form-group" style="display: flex;flex-wrap: wrap;gap: 10px;width: 1600px;">
+			<div style="flex: 1 1 200px; min-width: 180px;">
+				@(Html.DevExtreme().CheckBox()
+								.Text(new JS("formatMessage('Verified By')"))
+								.ID("VerifiedBy")
+								.ReadOnly(true))
+				@(Html.DevExtreme().TextBox()
+								.ID("VerifiedBytext")
 								.Value(null)
-								)
+								.Disabled(true)
+								.Width("100%")
+								.ElementAttr(new { @class = "custom-disabled-textbox" }))
+																		 			</div>
+																		 			<div style="flex: 1 1 200px; min-width: 180px;">
+				@(Html.DevExtreme().CheckBox()
+								.Text(new JS("formatMessage('Approved By')"))
+								.ID("ApprovedBy")
+								.ReadOnly(true))
+				@(Html.DevExtreme().TextBox()
+								.ID("ApprovedBytext")
+								.Value(null)
+								.Disabled(true)
+								.Width("100%")
+								.ElementAttr(new { @class = "custom-disabled-textbox" }))
+																		 			</div>
+																		 			<div style="flex: 1 1 200px; min-width: 180px;">
+				@(Html.DevExtreme().TextBox()
+								.Label(new JS("formatMessage('Verified On')"))
+								.LabelMode(EditorLabelMode.Outside)
+								.ID("VerifiedOnDate")
+								.Value(null)
+								.Disabled(true)
+								.Width("100%")
+								.ElementAttr(new { @class = "custom-disabled-textbox" }))
+																		 			</div>
+
+			<div style="flex: 1 1 200px; min-width: 180px;">
+				@(Html.DevExtreme().TextBox()
+								.Label(new JS("formatMessage('Approved On')"))
+								.LabelMode(EditorLabelMode.Outside)
+								.ID("ApprovedOntext")
+								.Value(null)
+								.Disabled(true)
+								.Width("100%")
+								.ElementAttr(new { @class = "custom-disabled-textbox" }))
 			</div>
-			<div class="form-group mt-3">
+			<div class="form-group">
 				@(
 								Html.DevExtreme().TextBox()
 								.Label(new JS("formatMessage('Remarks')"))
 								.LabelMode(EditorLabelMode.Outside)
+								.Width(660)
 								.ID("BillRemarks")
 								.Value(null)
 
 								)
+			</div>
+								
 
 			</div>
-			<div class="row">
-				<div class="col-md-6">
-					<div class="form-group d-flex align-items-center" style="padding-top:10px; padding-bottom:10px">
-						@(Html.DevExtreme().CheckBox()
-													.ID("VerifiedBy")
-													.Text(new JS("formatMessage('Verified By:')"))
-													.Disabled(true) // 🔥 Users cannot check/uncheck
-													)
-						@(Html.DevExtreme().TextBox()
-													.ID("VerifiedBytext")
-													.Value(null)
-													.Disabled(true)
-													.Width("200px")
-													)
-					</div>
 
-					<div class="form-group d-flex align-items-center mt-2">
-						<span id="VerifiedOn" class="no-border-input"></span>
-						@(Html.DevExtreme().TextBox()
-													.ID("VerifiedOnDate")
-													.Value(null)
-													.Disabled(true)
-													.Width("200px")
-													.ElementAttr(new { style = "margin-left: 10px;" })
-													)
-					</div>
-				</div>
-
-				<div class="col-md-6">
-					<div class="form-group d-flex align-items-center" style="padding-top:10px; padding-bottom:10px">
-						@(Html.DevExtreme().CheckBox()
-													.ID("ApprovedBy")
-													.Text(new JS("formatMessage('Approved By:')"))
-													.Disabled(true) // 🔥 Users cannot check/uncheck
-													)
-						@(Html.DevExtreme().TextBox()
-													.ID("ApprovedBytext")
-													.Value(null)
-													.Disabled(true)
-													.Width("200px")
-													)
-					</div>
-
-					<div class="form-group d-flex align-items-center mt-2">
-						<span id="ApprovedOn" class="no-border-input"></span>
-						@(Html.DevExtreme().TextBox()
-													.ID("ApprovedOntext")
-													.Value(null)
-													.Disabled(true)
-													.Width("200px")
-													.ElementAttr(new { style = "margin-left: 10px;" })
-													)
-					</div>
-				</div>
-			</div>
-
-		</div>
-		<div class="col-md-1">
-			<div class="form-group " style="padding-top:50px;padding-left:7px;">
-				@(Html.DevExtreme().Button()
-								.ID("btnAttachment")
-								.Icon("fa fa-book")
-								.Height(70)
-								.Width(70)
-								.OnClick("openAttachmentOptions")
-								)
-			</div>
-			<input type="file" id="fileInput" style="display:none;" />
 		</div>
 	</div>
-	<div>
+</div>
+
+
+
+<div class="col-md-1">
+
+	<input type="file" id="fileInput" style="display:none;" />
+</div>
+
+
+<div id="costAllocationPopup" style="display:none;">
+	<div style="margin-bottom:10px">
+		@(Html.DevExtreme().Button()
+				.ID("btnSaveCostAllocation")
+				.Icon("save")
+				.Text(new JS("formatMessage('Save')"))
+				.OnClick("function() { saveCostAllocation(); }")
+				)
+	</div>
+</div>
+
+
+<div class="footer-fixed">
 		@await Html.PartialAsync("SalesVoucherFooter")
 	</div>
 
