@@ -3751,29 +3751,59 @@
 			});
 		}
 
-		$(document).ready(function () {
-			if (IsCurrent !== "true") {
-				$.ajax({
-				url: "/api/VATModule/GetNewPurchaseVoucherNo",
-					type: "GET",
-					success: function (data) {
-						console.log("Success:", data);
+		// $(document).ready(function () {
+		// 	if (IsCurrent !== "true") {
+		// 		$.ajax({
+		// 		url: "/api/VATModule/GetNewPurchaseVoucherNo",
+		// 			type: "GET",
+		// 			success: function (data) {
+		// 				console.log("Success:", data);
 
-						const invoiceBox = $("#InvoiceNo").dxTextBox("instance");
-						if (invoiceBox) {
-							invoiceBox.option("value", data || "");
-						} else {
-							console.warn("Invoice TextBox not initialized.");
-						}
-					},
-					error: function (xhr, status, error) {
-						console.error("Error loading Payment Accounts:", error);
-						DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
-					}
-				});
-			}
-		});
+		// 				const invoiceBox = $("#InvoiceNo").dxTextBox("instance");
+		// 				if (invoiceBox) {
+		// 					invoiceBox.option("value", data || "");
+		// 				} else {
+		// 					console.warn("Invoice TextBox not initialized.");
+		// 				}
+		// 			},
+		// 			error: function (xhr, status, error) {
+		// 				console.error("Error loading Payment Accounts:", error);
+		// 				DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+		// 			}
+		// 		});
+		// 	}
+		// });
 
+$(document).ready(function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const receiptNo = urlParams.get("receiptNo");
+    const poNo = urlParams.get("poNo");
+    const purchaseVoucherNo = urlParams.get("invoiceNo");
+    const mode = urlParams.get("mode");
+
+    // Only set InvoiceNo from integration if all params are present
+    if (receiptNo && poNo && purchaseVoucherNo && mode === "create") {
+        $("#InvoiceNo").dxTextBox("instance").option("value", purchaseVoucherNo);
+        // ... (your integration logic for loading data)
+    } else {
+		if (IsCurrent !== "true") {
+        // Default: get new voucher number from API
+        $.ajax({
+            url: "/api/VATModule/GetNewPurchaseVoucherNo",
+            type: "GET",
+            success: function (data) {
+                const invoiceBox = $("#InvoiceNo").dxTextBox("instance");
+                if (invoiceBox) {
+                    invoiceBox.option("value", data || "");
+                }
+            },
+            error: function (xhr, status, error) {
+                DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+            }
+        });
+		}
+    }
+});
 
 
 		  function PaymentMeansdataGridSelectionChanged(e) {
@@ -6947,5 +6977,79 @@
 		});
 	});
 	
+	$(function () {
+		debugger;
+    const urlParams = new URLSearchParams(window.location.search);
+    const receiptNo = urlParams.get("receiptNo");
+    const poNo = urlParams.get("poNo");
+    const purchaseVoucherNo = urlParams.get("invoiceNo"); // This is the generated PurchaseVoucherNo
+    const mode = urlParams.get("mode");
+
+    if (receiptNo && poNo && purchaseVoucherNo && mode === "create") {
+        // Set generated purchase voucher number
+        $("#InvoiceNo").dxTextBox("instance").option("value", purchaseVoucherNo);
+
+        // Get material receipt data by receiptNo and poNo
+        $.get("/api/MaterialReceipt/GetMaterialReceiptdata", { receiptNo, poNo })
+            .done(function (data) {
+                // Map master fields (add null checks as needed)
+                $("#InvoiceDate").dxDateBox("instance").option("value", data.receiptDate || new Date());
+							$("#VATInvoiceType").dxTextBox("instance").option("value", data.OurPurchaseOrderNo);
+                // $("#SupplierInvoiceNo").dxDropDownBox("instance").option("value", data.supplierInvoiceNo || "");
+                // $("#ddclientcode").dxDropDownBox("instance").option("value", data.supplierCode || "");
+                // $("#ddclientname").dxDropDownBox("instance").option("value", data.supplierName || "");
+                // $("#UUID").dxTextBox("instance").option("value", data.referenceNo || "");
+                // $("#MaterialReceipt").dxTextBox("instance").option("value", data.receiptNo || "");
+                // $("#VATInvoiceType").dxTextBox("instance").option("value", data.poNo || "");
+                // Add more mappings as needed for your fields
+							  $.get("/api/SupplierMaster/GetSupplierByCode", { SupplierCode: data.SupplierCode })
+    .done(function (client) {
+        // Set code and name separately
+        $("#ddclientcode").dxDropDownBox("instance").option("value", client.SupplierAccountLedgerNo || "");
+				$("#ddclientname").dxDropDownBox("instance").option("value", client.SupplierAccountLedgerNo || "");
+    })
+						.fail(function () {
+
+							DevExpress.ui.notify("Failed to load client details.", "error", 2000);
+
+						});
+
+                // Bind child items to grid
+               $.get("/api/MaterialReceipt/GetMaterialReceiptChildren", { receiptNo, poNo })
+                .done(function (childData) {
+                    var grid = $("#B2BdataGrid").dxDataGrid("instance");
+                    if (grid && Array.isArray(childData)) {
+                      const invoiceItems = childData.map((item, idx) => ({
+    SNo: idx + 1,
+    ItemCode: item.Gscode || "",
+    Description: item.Gsdescrpition || item.AddlDescription || "",
+    DescriptionDetails: item.UnitRateMethod || "",
+    Qty: item.QtyReceived || 0,
+    UnitPrice: item.UnitPrice || 0,
+    TotalBeforeDiscount: item.LineTotalBeforeTax || 0,
+    Discount: item.ItemDiscount || 0,
+    Amount: item.LineTotalAfterDisc || 0,
+    VATPercentage: item.PotaxSlab || "",
+    VAT: item.LineTaxAmount || 0,
+    Total: item.LineTotalWithTax || 0,
+    TaxSlabCode: item.PotaxSlab || "",
+    ItemPartNo: item.ItemPartNo || "",
+    // Add more fields if your grid needs them
+}));
+grid.option("dataSource", invoiceItems);
+grid.option("editing", { mode: "cell", allowUpdating: true, allowAdding: true, allowDeleting: true });
+                        grid.option("dataSource", invoiceItems);
+                        grid.option("editing", { mode: "cell", allowUpdating: true, allowAdding: true, allowDeleting: true });
+                    }
+                })
+                .fail(function () {
+                    DevExpress.ui.notify("Failed to load material receipt child details.", "error", 2000);
+                });
+            })
+            .fail(function () {
+                DevExpress.ui.notify("Failed to load material receipt details.", "error", 2000);
+            });
+    }
+});
 </script>
 
