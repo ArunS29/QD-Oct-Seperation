@@ -3723,9 +3723,14 @@
             else if(argsledno==null)
             {
                 $(function () {
+                    const tenantName = sessionStorage.getItem("tenantName");
+                    debugger;
                     $.ajax({
                         url: "/api/VoucherMaster/GetNewBPVoucherNo",
                         type: 'GET',
+                        headers: {
+                            'X-Tenant-Name': tenantName
+                        },
                         success: function (data) {
                             // Set the value in the VoucherNo TextBox
                             $("#VoucherNo").dxTextBox("instance").option("value", data);

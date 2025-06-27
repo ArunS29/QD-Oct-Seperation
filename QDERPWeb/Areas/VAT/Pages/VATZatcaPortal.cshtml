@@ -1,0 +1,933 @@
+﻿@page
+@model QD.ERP.Web.Areas.VAT.Pages.VATZatcaPortalModel
+@{
+}
+<style>
+	.dx-datagrid-headers .center-header {
+		text-align: center !important;
+	}
+
+	.Head {
+		margin-bottom: 10px;
+	}
+
+	#B2BdataGrid {
+		height: 750px !important;
+	}
+	.form-wrapper {
+		border-radius: 6px;
+		width: 97%;
+		height: 85%;
+	}
+
+	.form-group {
+		position: relative;
+		padding: 10px;
+	}
+
+		.form-group label {
+			display: block;
+			margin-bottom: 15px;
+		}
+
+	.form-row {
+		display: flex;
+		gap: 20px;
+		flex-wrap: wrap;
+	}
+
+	.arabic-button {
+		background: transparent;
+		border: none;
+		cursor: pointer;
+	}
+
+	.top-buttons {
+		position: absolute;
+		top: 0;
+		right: 0;
+		display: flex;
+		gap: 8px;
+	}
+
+		.top-buttons .dx-button {
+			height: 30px;
+			color: black;
+		}
+
+	.arabic-textbox-wrapper {
+		position: relative;
+		width: 100%;
+	}
+	.dx-datagrid-headers .center-header {
+		text-align: center !important;
+	}
+
+	.toggle-switch {
+		position: relative;
+		display: inline-block;
+		width: 40px;
+		height: 20px;
+		margin-right: 10px;
+		transition: transform 0.2s;
+	}
+
+		.toggle-switch input {
+			opacity: 0;
+			width: 0;
+			height: 0;
+		}
+
+	.toggle-switch {
+		position: relative;
+		display: inline-block;
+		width: 40px;
+		height: 20px;
+	}
+
+		.toggle-switch input {
+			opacity: 0;
+			width: 0;
+			height: 0;
+		}
+
+	.slider {
+		position: absolute;
+		cursor: pointer;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: #e53935; /* Red by default */
+
+		transition: 0.4s;
+		border-radius: 20px;
+	}
+
+		.slider:before {
+			position: absolute;
+			content: "";
+			height: 16px;
+			width: 16px;
+			left: 2px;
+			bottom: 2px;
+			background-color: white;
+			transition: 0.4s;
+			border-radius: 50%;
+		}
+
+	.toggle-switch input:checked + .slider {
+		background-color: #4CAF50; /* Green when checked */
+	}
+
+		.toggle-switch input:checked + .slider:before {
+			transform: translateX(20px);
+		}
+
+	.vat-item {
+		display: flex;
+		align-items: center;
+		padding: 6px 10px;
+		color: #666666; /* grey text */
+
+		background-color: transparent !important; /* remove any background */
+	}
+
+	.vat-label {
+		font-weight: bold;
+		color: #666666; /* grey label */
+	}
+
+	/* Remove list background */
+
+	#vatTransactionList {
+		background-color: transparent !important;
+	}
+
+	.address-form-container {
+		padding: 1px;
+		box-sizing: border-box;
+		width: 100%;
+		height: 100%;
+		font-size: 12px;
+	}
+
+	/* .dx-overlay-content dx-popup-normal dx-resizable{
+
+			max-height: 369.13px ! important;
+
+			width: 600px;
+
+			height: 550px;
+
+			z-index: 1501;
+
+			left: 0px;
+
+			top: 0px;
+
+			transform: translate(-366px, -329px);
+
+			transition: all;
+
+			opacity: 1;
+
+			visibility: visible;
+
+		} */
+
+	.dx-overlay-content dx-popup-normal dx-resizable dx-dropdowneditor-overlay-flipped {
+		max-height: 378.13px !important;
+		width: 600px;
+		height: 550px;
+		z-index: 1501;
+		left: 0px;
+		top: 0px;
+		transform: translate(-366px, -379px);
+		transition: all;
+		opacity: 1;
+		visibility: visible;
+	}
+
+	.address-form-table {
+		border-collapse: collapse;
+		table-layout: fixed;
+	}
+
+		.address-form-table td {
+			padding: 1px;
+			vertical-align: top;
+			width: 30%;
+		}
+
+		.address-form-table label {
+			display: block;
+			font-weight: bold;
+			margin-bottom: 2px;
+			white-space: nowrap;
+			color: black;
+		}
+
+		.address-form-table input[type="text"],
+		.address-form-table select {
+			width: 100%;
+			border: 1px solid #aaa;
+			border-radius: 3px;
+			box-sizing: border-box;
+		}
+
+	.body {
+		padding-top: 0px;
+	}
+
+	.content {
+		margin: 0px;
+	}
+
+	.icon-btn {
+		background-color: #ffffff;
+		border: 1px solid #d1d5db; /* soft gray border */
+
+		border-radius: 6px;
+		margin-top: 24px; /* aligns with DevExtreme label */
+
+		padding: 0;
+		height: 38px;
+		width: 38px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+	}
+
+		.icon-btn:hover {
+			background-color: #f3f4f6; /* light hover */
+
+			border-color: #9ca3af;
+		}
+
+		.icon-btn i {
+			font-size: 14px;
+			color: #374151; /* neutral icon */
+		}
+
+
+
+
+	/* Custom CSS to adjust the height of tab headers */
+
+	.dx-tabpanel .dx-tab {
+		padding: 10px 15px; /* Adjust padding to change height */
+
+		font-size: 16px; /* Adjust font size to change header height */
+	}
+
+	/* Ensuring the content area also adjusts in height */
+
+	.dx-tabpanel .dx-tab-content {
+		padding: 20px;
+		min-height: 200px; /* Minimum height for the tab content */
+	}
+
+	.dx-fieldset {
+		margin: 3px 3px !important;
+		padding: 0px;
+	}
+
+	.dx-datagrid-headers th {
+		text-align: center; /* Centers the text */
+	}
+
+	.columnheader {
+		text-align: center;
+	}
+
+	.tab-content {
+		display: none;
+	}
+
+		.tab-content.active {
+			display: block;
+		}
+
+		.tab-content h3 {
+			color: #333;
+		}
+
+		.tab-content p {
+			line-height: 1.6;
+			color: #555;
+		}
+
+	.dx-dropdownbox .dx-dropdownbox-wrapper .dx-dropdownbox-header {
+		display: none;
+	}
+
+	.button-group {
+		margin-left: 1px !important;
+	}
+
+	.button-alignment-up {
+		margin-top: 25px !important;
+	}
+
+	.button-alignment-down {
+		margin-top: 0px !important;
+	}
+
+	/*     .dx-editor-outlined .dx-label span {
+
+			font-weight:bold !important;
+
+			} */
+
+	.custom-textbox input {
+		font-weight: bold !important;
+		color: black !important; /* Use !important to override DevExtreme styles */
+		/*   border: 3px solid #282222;
+
+			border-radius: 8px !important; */
+	}
+
+	.custom-textbox1 input {
+		border: 3px solid #282222;
+		/* border-radius: 8px !important; */
+	}
+
+	.custom-textbox1 .dx-dropdowneditor-icon {
+		border: 3px solid #282222 !important;
+		/*  border-radius: 8px !important; */
+	}
+
+
+	.close {
+		color: #aaa;
+		float: right;
+		font-size: 28px;
+		font-weight: bold;
+		cursor: pointer;
+	}
+
+		.close:hover,
+		.close:focus {
+			color: black;
+		}
+
+	.containerLedgerAccount {
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+	}
+
+	.titleLedgerAccount {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 1.5em;
+	}
+
+	.no-border-input {
+		border: none !important;
+		outline: none !important;
+		box-shadow: none !important;
+		background: transparent !important;
+		font-weight: bold;
+		font-size: 16px;
+		color: black;
+		pointer-events: none; /* Prevents hover and click effects */
+	}
+
+	/* .container {
+
+			display: none !important;
+
+		}
+
+		.frame {
+
+			display: none !important;
+
+		}
+
+		.footerContainer {
+
+			display: none !important;
+
+		}
+
+		.bodyContainer {
+
+			display: flex;
+
+			justify-content: center;
+
+		} */
+
+	/* .mainContainer {
+
+			margin-top: 1em;
+
+			width: 100%;
+
+		} */
+
+	/* .card-container {
+
+			display: flex;
+
+			justify-content: space-between;
+
+			gap: 20px;
+
+			} */
+
+	.card {
+		flex: 1;
+		border: 1px solid #ddd;
+		border-radius: 5px;
+		box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+		background: #fff;
+		padding-left: 10px;
+	}
+
+	.card1 {
+		padding: 15px;
+		border: 1px solid #ddd;
+		border-radius: 5px;
+		box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+		background: #fff;
+	}
+
+
+
+
+
+	.card-container {
+		display: flex;
+		justify-content: space-between;
+		/* gap: 5px; */
+		padding: 0px 10px;
+	}
+/* 
+	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
+		display: none !important;
+	} */
+
+	.playIcon {
+		display: none;
+	}
+
+	.plusbtn {
+		justify-content: center;
+	}
+
+	.center-icon-button {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.mainContainer {
+		width: 95.5%;
+	}
+
+	.content-container-top {
+		width: 100%;
+	}
+
+	.context-menuInvoice {
+		position: absolute;
+		background: #fff;
+		border-radius: 8px;
+		box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+		width: 200px;
+		display: none;
+		flex-direction: column;
+		padding: 5px 0;
+		z-index: 1000;
+	}
+
+	.context-menu-itemInvoice {
+		display: flex;
+		align-items: center;
+		padding: 10px 15px;
+		font-size: 14px;
+		cursor: pointer;
+		transition: background 0.2s ease-in-out;
+		color: #333;
+	}
+
+		.context-menu-itemInvoice i {
+			margin-right: 10px;
+			font-size: 16px;
+			color: #007bff;
+		}
+
+		.context-menu-itemInvoice:hover {
+			background: #f0f0f0;
+		}
+
+		.context-menu-itemInvoice:not(:last-child) {
+			border-bottom: 1px solid #e0e0e0;
+		}
+
+	#btnClearNotes .dx-button-content,
+	#btnSetDefault .dx-button-content {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.dx-popup-content {
+		-webkit-user-drag: none;
+		padding: 1px;
+	}
+
+	/* .full-height-container {
+		height: 100%;
+	} */
+	  .context-menuInvoice {
+		background: white;
+		border: 1px solid #ccc;
+		width: 200px;
+		box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+		font-family: Arial, sans-serif;
+	}
+
+	.context-menu-itemInvoice {
+		padding: 8px 12px;
+		cursor: pointer;
+	}
+
+		.context-menu-itemInvoice:hover {
+			background: #f0f0f0;
+		}
+	
+</style>
+
+<input id="formId" value="frm20161VATInvoiceEdit" type="hidden" />
+<div class="title">
+	<div class="header-container">
+		<div id="VATInvoiceEdit" class="no-border-input"></div>
+	</div>
+</div>
+
+
+<link rel="stylesheet" href="~/css/Site.css" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<input id="formId" value="frm201LedgerAccount1" type="hidden" />
+<div class="title">
+	<div class="header-container">
+		<div id="InvoiceEdit" class="no-border-title" style="width: 433px;"></div>
+	</div>
+</div>
+
+<div class="context-menuInvoice" id="contextMenu" style="display:none; position:absolute; z-index:9999;">
+	<div class="context-menu-itemInvoice" data-action="add">
+		<i class="dx-icon-plus"></i> Add Line Item
+	</div>
+	<div class="context-menu-itemInvoice" data-action="delete">
+		<i class="dx-icon-close"></i> Delete Line Item
+	</div>
+	<div class="context-menu-itemInvoice" data-action="deleteAll">
+		<i class="dx-icon-trash"></i> Delete All Line Items
+	</div>
+</div>
+
+<div class="containerLedgerAccount">
+	<div class="content-container-top">
+		<div class="dx-fieldset horizontal-container">
+			@(Html.DevExtreme().Tabs()
+						.Items(items =>
+						{
+							items.Add().Icon("optionsgear").Text(new JS("formatMessage('Main')"));
+							items.Add().Icon("accountbox").Text(new JS("formatMessage('Invoice Master')"));
+							items.Add().Icon("description").Text(new JS("formatMessage('Seller & Buyer Details')"));
+							items.Add().Icon("card").Text(new JS("formatMessage('Payment Details')"));
+							items.Add().Icon("group").Text(new JS("formatMessage('Item Details')"));
+							items.Add().Icon("attach").Text(new JS("formatMessage('Validations')"));
+							items.Add().Icon("attach").Text(new JS("formatMessage('XML')"));
+
+						})
+						.SelectedIndex(0)
+						.OnSelectionChanged("onTabSelectionChanged")
+						)
+		</div>
+
+		<!-- Tab Content -->
+		<div class="dx-fieldset">
+			<div id="tab-content-1" class="tab-content">
+				<div class="card-container" style="display: flex; gap: 20px;">
+
+					<!-- Left Side: QR Code Table -->
+					<div style="flex: 1; max-width: 40%;">
+						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5" border="1">
+							<tr>
+								<td>
+									<h3>QR Code(Phase 2):</h3>
+									<div id="qrCodeBox" style="min-height: 322px; border: 1px solid #ccc; padding: 10px; text-align: center;">
+										@* <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhAQMAAADdX3nOAAAABlBMVEUAAAD///+l2Z/dAAAAAXRSTlMAQObYZgAAAJZJREFUGJVjYAACAAAFAAABBAABAAAAAABAAgAGBAAIAAAFAAAGAAABAAABAAAGAAAGAAABAAABAAAGAAAGAAABAAAGAAAGAAABAAAGAAAGAAABAAAGAAAGAAABAAAGAAAGAAABAAAGAAAGAAABAAAGAAAGAAABAAAGAAAGAAABAAAGAAAGAAABAAAGAAAGAAABAAAGAAAGAAABAAAGAAAGAAABAAAGAAAGAAABAAAGAAAGAAABAAAGAAAGAAABAAAGAAAGAAABAAAGAAAGAAABAAAGAAAGAAABAAAGAAAGAAA="
+											 alt="Dummy QR" style="max-width: 150px; max-height: 150px;" /> *@
+										<div id="qrcode"></div>
+										<div style="margin-top: 10px;">Sample QR Data</div>
+									</div>
+								</td>
+							
+							</tr>
+						</table>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('')")).ID("XMLResponse").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+						<div style="margin-top: 10px;">Connection Status:</div>
+					</div>
+
+					<!-- Right Side: DataGrid -->
+					<div style="flex: 2;">
+						<h3>eInvoice Submission Log to Zatca Fatoora Portal</h3>
+						<div class="dx-field ledgerResult">
+							@(
+														Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
+														.ID("B2BdataGrid")
+														.RemoteOperations(false)
+														.Columns(columns =>
+														{
+															columns.Add()
+															.Caption(new JS("formatMessage('Invoice No')"))
+															.Visible(true);
+
+															columns.Add()
+															.Caption(new JS("formatMessage('Invoice Date')"))
+															.Visible(true);
+
+															columns.Add()
+															.Caption(new JS("formatMessage('Invoice Status')"))
+															.Visible(true);
+
+															columns.Add()
+															.Caption(new JS("formatMessage('Submission Status')"))
+															.Visible(true);
+
+															columns.Add()
+															.Caption(new JS("formatMessage('Submitted By')"))
+															.Visible(true);
+
+															columns.Add()
+															.Caption(new JS("formatMessage('Submitted On')"))
+															.Visible(true);
+
+															columns.Add()
+															.Caption(new JS("formatMessage('Zatca Response')"))
+															.Visible(true);
+														})
+														.Selection(selection => selection.Mode(SelectionMode.Single))
+														.AllowColumnReordering(true)
+														.AllowColumnResizing(true)
+														.ColumnFixing(fixing => fixing.Enabled(true))
+														.Height(400)
+														.ColumnAutoWidth(true)
+														.FilterRow(filterRow => filterRow.Visible(false))
+														.GroupPanel(groupPanel => groupPanel.Visible(false))
+														.ShowBorders(true)
+														.Width("100%")
+														.Editing(editing => editing
+														.Mode(GridEditMode.Cell)
+														.AllowUpdating(true)
+														.UseIcons(true)
+														)
+														)
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+			</div>
+
+
+		<div id="tab-content-2" class="tab-content" style="align-items: flex-start; padding: 0 13px; min-height: 100%;">
+
+			<h2>eInvoice Master Data</h2>
+
+			<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
+				<tr>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice No')")).ID("txtInvoiceNo").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Unique Invoice ID')")).ID("txtUniqueInvoiceID").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Issue Date')")).ID("txtInvoiceIssueDate").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Issue Time')")).ID("txtInvoiceIssueTime").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+				</tr>
+				<tr>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Type Code')")).ID("txtInvoiceTypeCode").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Transaction Code')")).ID("txtTransactionCode").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Note')")).ID("txtInvoiceNote").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Currency Code')")).ID("txtInvoiceCurrencyCode").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+				</tr>
+				<tr>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Tax Currency Code')")).ID("txtTaxCurrencyCode").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Purchase Order No')")).ID("txtPurchaseOrderNo").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Contract No')")).ID("txtContractNo").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Counter Value')")).ID("txtInvoiceCounterValue").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+				</tr>
+				<tr>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Reference Invoice No')")).ID("txtReferenceInvoiceNo").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Reason for Credit Note')")).ID("txtReasonForCreditNote").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+				</tr>
+			</table>
+
+			<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
+				<tr>
+					<td>
+						@(Html.DevExtreme().Button()
+												.ID("btnValidate")
+												.Text("Validate")
+												.Type(ButtonType.Normal)
+												.StylingMode(ButtonStylingMode.Outlined)
+												.Icon("save"))
+					</td>
+				</tr>
+				<tr>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Previous Invoice HASH of XML Files')")).ID("txtPreInvHash").LabelMode(EditorLabelMode.Outside).Width(350))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Hash of XML File')")).ID("txtHashXmlFile").LabelMode(EditorLabelMode.Outside).Width(350))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('ECDSA signature of the XML Hash(Digest Value)-Base64')")).ID("txtECDSASignatureBase64").LabelMode(EditorLabelMode.Outside).Width(350))</td>
+				</tr>
+				<tr>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('ECDSA public key extracted from the signing private key-HEX Format')")).ID("txtECDSAPublicKeyHex").LabelMode(EditorLabelMode.Outside).Width(350))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('The ECDSA signature of the cryptographic stamp-HEX Format')")).ID("txtECDSASignatureStampHex").LabelMode(EditorLabelMode.Outside).Width(350))</td>
+				</tr>
+			</table>
+
+		</div>
+
+		<div id="tab-content-3" class="tab-content">
+			<div class="card-container" style="display: flex; flex-direction: column;">
+
+				<h3>Buyer Details</h3>
+				<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
+					<tr> 
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Other Buyer ID')")).ID("txtOtherBuyerID").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Street')")).ID("txtBuyerStreet").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Addl Street')")).ID("txtBuyerAddlStreet").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Building Number')")).ID("txtBuyerBuildingNumber").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+					</tr>
+					<tr>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Addl Number')")).ID("txtBuyerAddlNumber").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer City')")).ID("txtBuyerCity").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Postal Code')")).ID("txtBuyerPostalCode").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Province/State')")).ID("txtBuyerProvinceState").LabelMode(EditorLabelMode.Outside).Width(300))</td> <!-- FIXED duplicate ID -->
+					</tr>
+					<tr>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer District')")).ID("txtBuyerDistrict").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Country Code')")).ID("txtBuyerCountryCode").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer VAT No')")).ID("txtBuyerVATNo").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Name')")).ID("txtBuyerName").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+					</tr>
+					<tr>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Name in Arabic')")).ID("txtBuyerNameinArabic").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Street in Arabic')")).ID("txtBuyerStreetinArabic").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer City in Arabic')")).ID("txtBuyerCityinArabic").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer District in Arabic')")).ID("txtBuyerDistrictinArabic").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+					</tr>
+				</table>
+
+				<h3>Seller Details</h3>
+				<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
+					<tr>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Other Seller ID')")).ID("txtOtherSellerID").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Street')")).ID("txtSellerStreet").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Addl Street')")).ID("txtSellerAddlStreet").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Building Number')")).ID("txtSellerBuildingNumber").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+					</tr>
+					<tr>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Addl Number')")).ID("txtSellerAddlNumber").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller City')")).ID("txtSellerCity").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Postal Code')")).ID("txtSellerPostalCode").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Province/State')")).ID("txtSellerProvinceState").LabelMode(EditorLabelMode.Outside).Width(300))</td> <!-- FIXED duplicate ID -->
+					</tr>
+					<tr>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller District')")).ID("txtSellerDistrict").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Country Code')")).ID("txtSellerCountryCode").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller VAT No')")).ID("txtSellerVATNo").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Name')")).ID("txtSellerName").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+					</tr>
+					<tr>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Name in Arabic')")).ID("txtSellerNameinArabic").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Street in Arabic')")).ID("txtSellerStreetinArabic").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller City in Arabic')")).ID("txtSellerCityinArabic").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller District in Arabic')")).ID("txtSellerDistrictinArabic").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
+
+
+		<div id="tab-content-4" class="tab-content">
+			<div class="card-container" style="display: flex; gap: 20px;">
+				<!-- Payment & Supply Details -->
+				<div style="flex: 1;">
+					<h3>Payment & Supply Details</h3>
+					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
+						<tr>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Supply Date')")).ID("txtSupplyDate1").LabelMode(EditorLabelMode.Outside).Width(210))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Supply End Date')")).ID("txtSupplyEndDate1").LabelMode(EditorLabelMode.Outside).Width(210))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Payment Means Type Code')")).ID("txtPaymentMeansTypeCode1").LabelMode(EditorLabelMode.Outside).Width(210))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Payment Terms')")).ID("txtPaymentTerms1").LabelMode(EditorLabelMode.Outside).Width(210))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Payment Account Identifier')")).ID("txtPaymentAccountIdentifier1").LabelMode(EditorLabelMode.Outside).Width(210))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Issue Date & Time')")).ID("txtInvoiceIssueDateTime1").LabelMode(EditorLabelMode.Outside).Width(210))</td>
+						</tr>
+					</table>
+				</div>
+
+				<!-- Print Settings -->
+				<div style="flex: 1;">
+					<h3>Print Settings</h3>
+					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
+						<tr>
+							<td>@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Show Company Seal')")).ID("cbxShowCompanySeal").Value(null))</td>
+							<td>@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Show Signature')")).ID("cbxShowSignature").Value(null))</td>
+							<td>@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Print Invoice in Letter Head')")).ID("cbxPrintInvoice").Value(null))</td>
+							<td>@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Use Date Format (YYYY-MM-DD)')")).ID("cbxUseDateFormat1").Value(null))</td>
+							<td>@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Use Date Format (DD-MM-YYYY)')")).ID("cbxUseDateFormat2").Value(null))</td>
+							<td>@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Print Signature At Bottom')")).ID("cbxSignature").Value(null))</td>
+							<td>@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Use 2 Digits in Total Before Tax in Line Item')")).ID("cbxUseTotalBeforeTax").Value(null))</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+
+			<!-- Advance & Retention Section -->
+			<div class="card-container">
+				<h3>Advance & Retention</h3>
+				<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
+					<!-- Row 1 -->
+					<tr>
+						<td>@(Html.DevExtreme().TextBox().ID("LessAdvance").Value("Less: Advance").Width("90%"))</td>
+						<td>@(Html.DevExtreme().NumberBox().ID("currencyexchangerate3").Min(1).Step(1).ShowSpinButtons(true).Width("90%"))</td>
+						<td>@(Html.DevExtreme().Button().ID("convertToArabic1").Height(0).Icon("fas fa-language").ElementAttr(new { @class = "input-button" }).OnClick("function() { AdvanceconvertToArabic(); }"))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('')")).LabelMode(EditorLabelMode.Outside).ID("LessAdvanceAr").Value("اقب المسبق").Width("100%").RtlEnabled(true))</td>
+					</tr>
+
+					<!-- Row 2 -->
+					<tr>
+						<td>@(Html.DevExtreme().TextBox().ID("LessOtherDeductions").Value("Less: Other Deductions").Width("90%"))</td>
+						<td>@(Html.DevExtreme().NumberBox().ID("currencyexchangerate4").Min(1).Step(1).ShowSpinButtons(true).Width("90%"))</td>
+						<td><span class="input-group-prepend" style="margin-right: 10px;">@(Html.DevExtreme().Button().ID("convertToArabic2").Height(30).Icon("fas fa-language").ElementAttr(new { @class = "input-button" }).OnClick("function() { OtherDeductionsconvertToArabic(); }"))</span></td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('')")).LabelMode(EditorLabelMode.Outside).ID("LessAdvanceAr1").Value("ناقص قيمة الخصومات الأخرى").Width("100%").RtlEnabled(true))</td>
+					</tr>
+
+					<!-- Row 3 -->
+					<tr>
+						<td>@(Html.DevExtreme().TextBox().ID("LessRetention").Value("Less: Retention").Width("90%"))</td>
+						<td>@(Html.DevExtreme().NumberBox().ID("currencyexchangerate5").Min(1).Step(1).ShowSpinButtons(true).Width("90%"))</td>
+						<td><span class="input-group-prepend" style="margin-right: 10px;">@(Html.DevExtreme().Button().ID("convertToArabic3").Height(30).Icon("fas fa-language").ElementAttr(new { @class = "input-button" }).OnClick("function() { RetentionconvertToArabic(); }"))</span></td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('')")).LabelMode(EditorLabelMode.Outside).ID("LessAdvanceAr2").Value("احتفاظ أقل").Width("100%").RtlEnabled(true))</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
+
+
+		<div id="tab-content-5" class="tab-content" style="align-items: flex-start;min-height: 100%;">
+				<div class="card-container">
+					<table  style="width:100%; font-size:14px;" cellpadding="5">
+					
+						
+					</table>
+				</div>
+			</div>
+
+
+			<div id="tab-content-6" class="tab-content">
+				<div class="card-container">
+					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
+
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+		<div class="Head" style="margin-left: 15px;">
+			@await Html.PartialAsync("/Pages/Shared/VAT/ZatcaFooter.cshtml")
+		</div>
+
+
+
+
+<script>
+
+	$(document).ready(function () {
+
+				var selectedTabIndex = 0;
+				$("#tab-content-" + (selectedTabIndex + 1)).show();
+			});
+				function onTabSelectionChanged(e) {
+					// Hide all tab content
+					$(".tab-content").hide();
+
+					// Show the content of the selected tab
+					var selectedTabIndex = e.component.option("selectedIndex");
+					$("#tab-content-" + (selectedTabIndex + 1)).show();
+				}
+
+   var qrText = "Sample QR Data for Invoice or anything else";
+
+	// Generate QR code
+	var qrcode = new QRCode(document.getElementById("qrcode"), {
+		text: qrText,
+		width: 450,
+		height: 450
+	});
+
+
+
+</script>
+
+<script>
+			  
+
+
+</script>
+
