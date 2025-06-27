@@ -62,3 +62,919 @@ update tbl20113ChequeMaster
 
 set basecurrencyid=1,  currencyid=1 
 
+CREATE TABLE dbo.tblUserAccessWeb (  
+
+  
+
+[SlNo] [int] IDENTITY(1,1) NOT NULL,  
+
+  
+
+[UserID] [tinyint] NOT NULL,  
+
+  
+
+[ItemForm] [varchar](max) NULL,  
+
+  
+
+[ItemName] [varchar](max) NULL,  
+
+  
+
+[ItemDescription] [varchar](max) NULL,  
+
+  
+
+[ItemEnabled] [bit] NULL,  
+
+  
+
+[ItemVisible] [bit] NULL,  
+
+  
+
+[ItemRemarks] [varchar](max) NULL,  
+
+  
+
+[Module] [varchar](max) NULL,  
+
+  
+
+[MasterSlNo] [decimal](18, 0) NULL,  
+
+  
+
+[GroupSlNo] [decimal](18, 0) NULL,  
+
+  
+
+[ItemSlNo] [decimal](18, 0) NULL,  
+
+  
+
+[IsFullAccess] [bit] NULL,  
+
+  
+
+[ItemNotes] [varchar](max) NULL,  
+
+  
+
+[ISWeb] [int] NULL,  
+
+  
+
+)  
+
+  
+
+  
+
+CREATE TABLE dbo.tbl901UserAccessMasterWeb(  
+
+  
+
+[SlNo] [int] NOT NULL,  
+
+  
+
+[ItemForm] [varchar](max) NULL,  
+
+  
+
+[ItemName] [varchar](max) NULL,  
+
+  
+
+[ItemDescription] [varchar](max) NULL,  
+
+  
+
+[ItemEnabled] [bit] NULL,  
+
+  
+
+[ItemVisible] [bit] NULL,  
+
+  
+
+[ItemRemarks] [varchar](max) NULL,  
+
+  
+
+[Module] [varchar](max) NULL,  
+
+  
+
+[MasterSlNo] [decimal](18, 0) NULL,  
+
+  
+
+[GroupSlNo] [decimal](18, 0) NULL,  
+
+  
+
+[ItemSlNo] [decimal](18, 0) NULL,  
+
+  
+
+[IsFullAccess] [bit] NULL,  
+
+  
+
+)  
+
+  
+
+  
+
+create PROCEDURE [dbo].[stPro901_04ReplicateUserAccessPermissionsWeb]    
+
+  
+
+(    
+
+@FromUser tinyint,    
+
+@ToUser tinyint    
+
+)    
+
+AS    
+
+DELETE dbo.tblUserAccessweb where UserID = @ToUser    
+
+Insert into    dbo.tblUserAccessweb    
+
+(UserID, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module,  MasterSlNo, GroupSlNo, ItemSlNo)    
+
+  
+
+select @ToUser, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module,  MasterSlNo, GroupSlNo, ItemSlNo    
+
+  
+
+FROM         dbo.tblUserAccessweb    
+
+  
+
+where UserID = @FromUser    
+
+  
+
+   
+
+  
+
+CREATE PROCEDURE dbo.stPro901_03InsertUserAccessPermissionsforweb  
+
+(    
+
+@ToUser tinyint    
+
+)    
+
+AS    
+
+DELETE dbo.tblUserAccessWeb where UserID = @ToUser    
+
+insert into    dbo.tblUserAccessWeb    
+
+  
+
+(UserID, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module,  MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)    
+
+  
+
+select @ToUser, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module,  MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess    
+
+  
+
+FROM         dbo.tbl901UserAccessMasterWeb    
+
+  
+
+  
+
+insert into dbo.tblUserAccessweb (UserID,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,Module)    
+
+values   
+
+  
+
+(1,'Finance Voucher Entry Screen','frm201VoucherCashPayment_FullAccess','Full Access',1,1,'Finance'),    
+
+  
+
+(1,'Finance Voucher Entry Screen','frm201VoucherCashPayment_btnSave','Save',1,1,'Finance'),    
+
+  
+
+(1,'Finance Voucher Entry Screen','frm201VoucherCashPayment_btnSaveAndClose','Save & Close ',1,1,'Finance'),    
+
+  
+
+(1,'Finance Voucher Entry Screen','frm201VoucherCashPayment_btnPreview1','Preview',1,1,'Finance'),    
+
+  
+
+(1,'Finance Voucher Entry Screen','frm201VoucherCashPayment_btnPrint','Print',1,1,'Finance'),    
+
+  
+
+(1,'Finance Voucher Entry Screen','frm201VoucherCashPayment_btnDelete','Delete',0,0,'Finance'),    
+
+  
+
+(1,'Finance Voucher Entry Screen','frm201VoucherCashPayment_btnBack','Back',1,1,'Finance'),    
+
+  
+
+(1,'Finance Voucher Entry Screen','frm201VoucherCashPayment_btnVerify','Verify',0,0,'Finance'),    
+
+  
+
+(1,'Finance Voucher Entry Screen','frm201VoucherCashPayment_btnApprove','Approve',0,0,'Finance'),    
+
+  
+
+(1,'Finance Voucher Entry Screen','frm201VoucherCashPayment_btnAttach','Attach',1,1,'Finance')  , 
+
+  
+
+(1, 'Finance Accounting Ledger', 'frm201LedgerView_FullAccess','Full Access', 1, 1, 'Finance'),  
+
+  
+
+    (1, 'Finance Accounting Ledger', 'frm201LedgerView_btnShowRecords','Show Records', 1, 1, 'Finance'),   
+
+  
+
+    (1,'Finance Accounting Ledger', 'frm201LedgerView_btnPrint','Print', 1, 1, 'Finance'),   
+
+  
+
+    --(1, 'Finance Accounting Ledger', 'frm201LedgerView_btnSearch','Search', 1, 1, 'Finance'),  
+
+  
+
+    (1, 'Finance Accounting Ledger', 'frm201LedgerView_btnToggleSearch','Search', 1, 1, 'Finance'),   
+
+  
+
+    (1, 'Finance Accounting Ledger', 'frm201LedgerView_btntoggleGroupPanel','Group', 1, 1, 'Finance'),   
+
+  
+
+    (1, 'Finance Accounting Ledger', 'frm201LedgerView_btnToggleHeaderFilter','Toggle Filter', 1, 1, 'Finance'),   
+
+  
+
+    (1, 'Finance Accounting Ledger', 'frm201LedgerView_btnColumnChooser','Column Chooser', 1, 1, 'Finance'),   
+
+  
+
+    (1, 'Finance Accounting Ledger', 'frm201LedgerView_ddButtonReceipts','ADD Receipt', 1, 1, 'Finance'),   
+
+  
+
+    (1, 'Finance Accounting Ledger', 'frm201LedgerView_ddButtonPayment','ADD Payment', 1, 1, 'Finance'),   
+
+  
+
+    (1, 'Finance Accounting Ledger', 'frm201LedgerView_ddOtherVouchers','Other Vouchers', 1, 1, 'Finance'),   
+
+  
+
+    (1, 'Finance Accounting Ledger', 'frm201LedgerView_ddReports','Report', 1, 1, 'Finance'),   
+
+  
+
+    (1, 'Finance Accounting Ledger', 'frm201LedgerView_ddBtnShowRecords','Show Records', 1, 1, 'Finance') 
+
+  
+
+  --  (1, 'Finance Accounting  Ledger','frm201LedgerView_ddButtonExpense,'Expenses',1,1,'Finance')  ,  
+
+  
+
+--    (1, 'Finance Accounting  Ledger','frm201LedgerView_ddButtonExpense,'Expenses',1,1,'Finance')    
+
+  
+
+insert into tblUserAccessweb (UserID,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,Module)     
+
+values  
+
+      (1, 'Finance Accounting Register','frm201LedgerViewByVoucherType_FullAccess','Full Acsess',1,1,'Finance') ,   
+
+    (1, 'Finance Accounting Register','frm201LedgerViewByVoucherType_ddButtonLayout','Layout',1,1,'Finance') ,   
+
+  
+
+    (1, 'Finance Accounting Register','frm201LedgerViewByVoucherType_btnPrint','Print',1,1,'Finance') ,   
+
+  
+
+    (1, 'Finance Accounting Register','frm201LedgerViewByVoucherType_btnToggleSearch','Search',1,1,'Finance') ,   
+
+  
+
+    (1, 'Finance Accounting Register','frm201LedgerViewByVoucherType_btntoggleGroupPanel','Group',1,1,'Finance') ,   
+
+  
+
+    (1, 'Finance Accounting Register','frm201LedgerViewByVoucherType_btnToggleHeaderFilter','Toggle Filter',1,1,'Finance') ,   
+
+  
+
+    (1, 'Finance Accounting Register','frm201LedgerViewByVoucherType_btnColumnChooser','Column Chooser',1,1,'Finance') ,   
+
+  
+
+    (1, 'Finance Accounting Register','frm201LedgerViewByVoucherType_ddReports','Reports',1,1,'Finance') ,   
+
+  
+
+    (1, 'Finance Accounting Register','frm201LedgerViewByVoucherType_btnShowDayBooks','Show DayBooks',1,1,'Finance') ,   
+
+  
+
+(1, 'Finance Accounting Register','frm201LedgerViewByVoucherType_InternalAudit','Internal Audit',1,1,'Finance')    
+
+  
+
+  
+
+  
+
+INSERT INTO [dbo].[tbl901UserAccessMasterWeb] (  
+
+  
+
+    [SlNo], [ItemForm], [ItemName], [ItemDescription],  
+
+  
+
+    [ItemEnabled], [ItemVisible], [ItemRemarks], [Module]  
+
+  
+
+)  
+
+  
+
+VALUES  
+
+  
+
+(1, 'Finance Accounting Ledger', 'frm201LedgerView_FullAccess', 'Full Access', 1, 1, NULL, 'Finance'),  
+
+ (2, 'Finance Accounting Ledger', 'frm201LedgerView_btnShowRecords', 'Show Records', 1, 1, NULL, 'Finance'),  
+
+ (3, 'Finance Accounting Ledger', 'frm201LedgerView_btnPrint', 'Print', 1, 1, NULL, 'Finance'),  
+
+ (4, 'Finance Accounting Ledger', 'frm201LedgerView_btnToggleSearch', 'Search', 1, 1, NULL, 'Finance'),  
+
+ (5, 'Finance Accounting Ledger', 'frm201LedgerView_btntoggleGroupPanel', 'Group', 1, 1, NULL, 'Finance'),  
+
+ (6, 'Finance Accounting Ledger', 'frm201LedgerView_btnToggleHeaderFilter', 'Toggle Filter', 1, 1, NULL, 'Finance'),  
+
+ (7, 'Finance Accounting Ledger', 'frm201LedgerView_btnColumnChooser', 'Column Chooser', 1, 1, NULL, 'Finance'),  
+
+ (8, 'Finance Accounting Ledger', 'frm201LedgerView_ddButtonReceipts', 'ADD Receipt', 1, 1, NULL, 'Finance'),  
+
+ (9, 'Finance Accounting Ledger', 'frm201LedgerView_ddButtonPayment', 'ADD Payment', 1, 1, NULL, 'Finance'),  
+
+ (10, 'Finance Accounting Ledger', 'frm201LedgerView_ddOtherVouchers', 'Other Vouchers', 1, 1, NULL, 'Finance'),  
+
+ (11, 'Finance Accounting Ledger', 'frm201LedgerView_ddReports', 'Report', 1, 1, NULL, 'Finance'),  
+
+ (12, 'Finance Accounting Ledger', 'frm201LedgerView_ddBtnShowRecords', 'Show Records', 1, 1, NULL, 'Finance'),  
+
+  
+
+(13, 'Finance Accounting Register', 'frm201LedgerViewByVoucherType_FullAccess', 'Full Access', 1, 1, NULL, 'Finance'),  
+
+(14, 'Finance Accounting Register', 'frm201LedgerViewByVoucherType_ddButtonLayout', 'Layout', 1, 1, NULL, 'Finance'),  
+
+(15, 'Finance Accounting Register', 'frm201LedgerViewByVoucherType_btnPrint', 'Print', 1, 1, NULL, 'Finance'),  
+
+(16, 'Finance Accounting Register', 'frm201LedgerViewByVoucherType_btnToggleSearch', 'Search', 1, 1, NULL, 'Finance'),  
+
+(17, 'Finance Accounting Register', 'frm201LedgerViewByVoucherType_btntoggleGroupPanel', 'Group', 1, 1, NULL, 'Finance'),  
+
+(18, 'Finance Accounting Register', 'frm201LedgerViewByVoucherType_btnToggleHeaderFilter', 'Toggle Filter', 1, 1, NULL, 'Finance'),  
+
+(19, 'Finance Accounting Register', 'frm201LedgerViewByVoucherType_btnColumnChooser', 'Column Chooser', 1, 1, NULL, 'Finance'),  
+
+(20, 'Finance Accounting Register', 'frm201LedgerViewByVoucherType_ddReports', 'Reports', 1, 1, NULL, 'Finance'),  
+
+(21, 'Finance Accounting Register', 'frm201LedgerViewByVoucherType_btnShowDayBooks', 'Show DayBooks', 1, 1, NULL, 'Finance'),  
+
+(22, 'Finance Accounting Register', 'frm201LedgerViewByVoucherType_InternalAudit', 'Internal Audit', 1, 1, NULL, 'Finance'),  
+
+ 
+
+(23, 'Finance Voucher Entry Screen', 'frm201VoucherCashPayment_FullAccess', 'Full Access', 1, 1, NULL, 'Finance'),  
+
+(24, 'Finance Voucher Entry Screen', 'frm201VoucherCashPayment_btnSave', 'Save', 1, 1, NULL, 'Finance'),  
+
+(25, 'Finance Voucher Entry Screen', 'frm201VoucherCashPayment_btnSaveAndClose', 'Save & Close', 1, 1, NULL, 'Finance'),  
+
+(26, 'Finance Voucher Entry Screen', 'frm201VoucherCashPayment_btnPreview1', 'Preview', 1, 1, NULL, 'Finance'),  
+
+(27, 'Finance Voucher Entry Screen', 'frm201VoucherCashPayment_btnPrint', 'Print', 1, 1, NULL, 'Finance'),  
+
+(28, 'Finance Voucher Entry Screen', 'frm201VoucherCashPayment_btnDelete', 'Delete', 0, 0, NULL, 'Finance'),  
+
+(29, 'Finance Voucher Entry Screen', 'frm201VoucherCashPayment_btnBack', 'Back', 1, 1, NULL, 'Finance'),  
+
+(30, 'Finance Voucher Entry Screen', 'frm201VoucherCashPayment_btnVerify', 'Verify', 0, 0, NULL, 'Finance'),  
+
+(31, 'Finance Voucher Entry Screen', 'frm201VoucherCashPayment_btnApprove', 'Approve', 0, 0, NULL, 'Finance'),  
+
+(32, 'Finance Voucher Entry Screen', 'frm201VoucherCashPayment_btnAttach', 'Attach', 1, 1, NULL, 'Finance'),  
+
+  
+
+(33, 'ERP Module Access', 'Finance', 'Finance Home Page', 1, 1, NULL, 'Finance'),  
+
+(34, 'ERP Module Access', 'VAT', 'VAT Home Page', 1, 1, NULL, 'VAT'),  
+
+(35, 'ERP Module Access', 'Finance', 'Projects Control Home Page', 1, 1, NULL, 'Projects'),  
+
+(37, 'ERP Module Access', 'Finance', 'CAMP Management Home Page', 1, 1, NULL, 'CAMP'),  
+
+(38, 'ERP Module Access', 'Finance', 'IMS Home Page', 1, 1, NULL, 'IMS'),  
+
+(39, 'ERP Module Access', 'Finance', 'HR Home Page', 1, 1, NULL, 'HR'),  
+
+(40, 'ERP Module Access', 'Equipment', 'Equipment Rentals Home Page', 1, 1, NULL, 'Equipment'), 
+
+    
+
+  
+
+(41, 'Finance Journal Register Main', 'frm20128JournalRegisterMain_FullAccess', 'Full Access', 1, 1, NULL, 'Finance'),   
+
+ (42, 'Finance Journal Register Main', 'frm20128JournalRegisterMain_btnShowRecords', 'Show Records', 1, 1, NULL, 'Finance'), 
+
+ (43, 'Finance Journal Register Main', 'frm20128JournalRegisterMain_btnPrint', 'Print', 1, 1, NULL, 'Finance'), 
+
+(44, 'Finance Journal Register Main', 'frm20128JournalRegisterMain_ddButtonLayout', 'layout', 1, 1, NULL, 'Finance'), 
+
+(45, 'Finance Journal Register Main', 'frm20128JournalRegisterMain_btntoggleGroupPanel', 'Group', 1, 1, NULL, 'Finance'), 
+
+(46, 'Finance Journal Register Main', 'frm20128JournalRegisterMain_btnToggleHeaderFilter', 'Filter', 1, 1, NULL, 'Finance'), 
+
+(47, 'Finance Journal Register Main', 'frm20128JournalRegisterMain_btnToggleSearch', 'Search', 1, 1, NULL, 'Finance'), 
+
+(48, 'Finance Journal Register Main', 'frm20128JournalRegisterMain_btnCreateNew', 'Create Journal', 1, 1, NULL, 'Finance'), 
+
+(49, 'Finance Journal Register Main', 'frm20128JournalRegisterMain_btnShowallsubmission', 'Show All Submission', 1, 1, NULL, 'Finance'), 
+
+(50, 'Finance Journal Register Main', 'frm20128JournalRegisterMain_btnColumnChooser', 'Column Chooser', 1, 1, NULL, 'Finance'),  
+
+ 
+
+(51, 'Finance Journal Entry Edit', 'JournalEntryEdit_FullAccess', 'Full Access', 1, 1, NULL, 'Finance'),    
+
+(52, 'Finance Journal Entry Edit', 'JournalEntryEdit_journaleditButtonLayout1', 'Layout', 1, 1, NULL, 'Finance'),   
+
+(53, 'Finance Journal Entry Edit', 'JournalEntryEdit_btnMoveUp', 'Move up', 1, 1, NULL, 'Finance'), 
+
+(54, 'Finance Journal Entry Edit', 'JournalEntryEdit_btnMoveDown', 'Move Down', 1, 1, NULL, 'Finance'), 
+
+(55, 'Finance Journal Entry Edit', 'JournalEntryEdit_btnSave', 'Save', 1, 1, NULL, 'Finance'), 
+
+(56, 'Finance Journal Entry Edit', 'JournalEntryEdit_btnSaveAndClose', 'Save and Close', 1, 1, NULL, 'Finance'), 
+
+(57, 'Finance Journal Entry Edit', 'JournalEntryEdit_btnAddLine', 'Add Line', 1, 1, NULL, 'Finance'), 
+
+(58, 'Finance Journal Entry Edit', 'JournalEntryEdit_btnSubmit', 'Submit', 1, 1, NULL, 'Finance'), 
+
+(59, 'Finance Journal Entry Edit', 'JournalEntryEdit_btnPreview2', 'Preview', 1, 1, NULL, 'Finance'), 
+
+(60, 'Finance Journal Entry Edit', 'JournalEntryEdit_btnDelete', 'Delete', 1, 1, NULL, 'Finance'),  
+
+(61, 'Finance Journal Entry Edit', 'JournalEntryEdit_btnjournalBack', 'Back', 1, 1, NULL, 'Finance'), 
+
+(62, 'Finance Journal Entry Edit', 'JournalEntryEdit_btnVerify', 'Verify', 1, 1, NULL, 'Finance'), 
+
+(63, 'Finance Journal Entry Edit', 'JournalEntryEdit_btnApprove', 'Approve', 1, 1, NULL, 'Finance'), 
+
+(64, 'Finance Journal Entry Edit', 'JournalEntryEdit_btnAttach', 'Attach', 1, 1, NULL, 'Finance'),  
+
+(65, 'Finance Journal Entry Edit', 'JournalEntryEdit_btnColumnChooser', 'Column chooser', 1, 1, NULL, 'Finance'), 
+
+(66, 'Finance Journal Entry Edit', 'JournalEntryEdit_btnPostJournal', 'Post Journal', 1, 1, NULL, 'Finance'),  
+
+  
+
+(67, 'Finance voucher Approval', 'VoucherApproval_FullAccess', 'Full Access', 1, 1, NULL, 'Finance'),   
+
+ (68, 'Finance voucher Approval', 'VoucherApproval_btnRefresh', 'Refresh', 1, 1, NULL, 'Finance'), 
+
+ (69, 'Finance voucher Approval', 'VoucherApproval_ddButtonLayout', 'Layout', 1, 1, NULL, 'Finance'), 
+
+(70, 'Finance voucher Approval', 'VoucherApproval_btnPrint', 'Print', 1, 1, NULL, 'Finance'), 
+
+(71, 'Finance voucher Approval', 'VoucherApproval_btnToggleSearch', 'Search', 1, 1, NULL, 'Finance'), 
+
+(72, 'Finance voucher Approval', 'VoucherApproval_btntoggleGroupPanel', 'Group', 1, 1, NULL, 'Finance'), 
+
+(73, 'Finance voucher Approval', 'VoucherApproval_btnToggleHeaderFilter', 'Filter', 1, 1, NULL, 'Finance'), 
+
+(74, 'Finance voucher Approval', 'VoucherApproval_btnColumnChooser', 'Column Chooser', 1, 1, NULL, 'Finance'), 
+
+(75, 'Finance voucher Approval', 'VoucherApproval_ddButtonVouchers', 'Vouchers', 1, 1, NULL, 'Finance'), 
+
+(76, 'Finance voucher Approval', 'VoucherApproval_ddBtnShowRecords', 'Show Records', 1, 1, NULL, 'Finance'),  
+
+(77, 'Finance voucher Approval', 'VoucherApproval_DeleteVouchers', 'Delete Vouchers ', 1, 1, NULL, 'Finance'), 
+
+(78, 'Finance voucher Approval', 'VoucherApproval_UnlockVouchers', 'Unlock Vouchers ', 1, 1, NULL, 'Finance'), 
+
+(79, 'Finance voucher Approval', 'VoucherApproval_ApproveAllSelectedVouchers', 'Approve Vouchers ', 1, 1, NULL, 'Finance'), 
+
+(80, 'Finance voucher Approval', 'VoucherApproval_VerifyAllSelectedVouchers', 'Verify Vouchers', 1, 1, NULL, 'Finance'), 
+
+  
+
+(81, 'Finance ExpenseClaim Main', 'frm20107ExpenseClaimView_FullAccess', 'Full Access', 1, 1, NULL, 'Finance'),   
+
+ (82, 'Finance ExpenseClaim Main', 'frm20107ExpenseClaimView_ddButtonExpense', 'Create Expense', 1, 1, NULL, 'Finance'), 
+
+(83, 'Finance ExpenseClaim Main', 'frm20107ExpenseClaimView_ExpenseSubmission', 'Show all Submission', 1, 1, NULL, 'Finance'), 
+
+(84, 'Finance ExpenseClaim Main', 'frm20107ExpenseClaimView_btnColumnChooser', 'Column Chooser', 1, 1, NULL, 'Finance'), 
+
+(85, 'Finance ExpenseClaim Main', 'frm20107ExpenseClaimView_btnToggleHeaderFilter', 'Filter', 1, 1, NULL, 'Finance'), 
+
+(86, 'Finance ExpenseClaim Main', 'frm20107ExpenseClaimView_btntoggleGroupPanel', 'Group', 1, 1, NULL, 'Finance'), 
+
+(87, 'Finance ExpenseClaim Main', 'frm20107ExpenseClaimView_btnToggleSearch', 'Search', 1, 1, NULL, 'Finance'), 
+
+(88, 'Finance ExpenseClaim Main', 'frm20107ExpenseClaimView_ddButtonLayout', 'Layout', 1, 1, NULL, 'Finance'), 
+
+(89, 'Finance ExpenseClaim Main', 'frm20107ExpenseClaimView_btnPrint', 'Print', 1, 1, NULL, 'Finance'), 
+
+(90, 'Finance ExpenseClaim Main', 'frm20107ExpenseClaimView_ddBtnShowRecords', 'Show Records', 1, 1, NULL, 'Finance'), 
+
+ 
+
+ (91, 'Finance ExpenseClaim Edit', 'ExpenseClaimEdit_FullAccess', 'Full Access', 1, 1, NULL, 'Finance'),   
+
+ (92, 'Finance ExpenseClaim Edit', 'ExpenseClaimEdit_expenseButtonLayout1', 'Layout', 1, 1, NULL, 'Finance'), 
+
+ (93, 'Finance ExpenseClaim Edit', 'ExpenseClaimEdit_btnSave', 'Save', 1, 1, NULL, 'Finance'), 
+
+(94, 'Finance ExpenseClaim Edit', 'ExpenseClaimEdit_btnSaveAndClose', 'Save and Close', 1, 1, NULL, 'Finance'), 
+
+(95, 'Finance ExpenseClaim Edit', 'ExpenseClaimEdit_btnPrint', 'Print', 1, 1, NULL, 'Finance'), 
+
+(96, 'Finance ExpenseClaim Edit', 'ExpenseClaimEdit_btnDelete', 'Delete', 1, 1, NULL, 'Finance'), 
+
+(97, 'Finance ExpenseClaim Edit', 'ExpenseClaimEdit_btnExpenceBack', 'Back', 1, 1, NULL, 'Finance'), 
+
+(98, 'Finance ExpenseClaim Edit', 'ExpenseClaimEdit_btnSubmit', 'Submit', 1, 1, NULL, 'Finance'), 
+
+(99, 'Finance ExpenseClaim Edit', 'ExpenseClaimEdit_btnExpenseVerify', 'Verify', 1, 1, NULL, 'Finance'), 
+
+(100, 'Finance ExpenseClaim Edit', 'ExpenseClaimEdit_btnExpenseApprove', 'Approve', 1, 1, NULL, 'Finance'), 
+
+(101, 'Finance ExpenseClaim Edit', 'ExpenseClaimEdit_btnAttach', 'Attach', 1, 1, NULL, 'Finance'), 
+
+(102, 'Finance ExpenseClaim Edit', 'ExpenseClaimEdit_btnPaytheClaim', 'Pay Claim', 1, 1, NULL, 'Finance'), 
+
+(103, 'Finance Menu', 'AccountingLedgers', 'Accounting Ledgers', 1, 1, NULL, 'Finance'), 
+
+(104, 'Finance Menu', 'AccountingRegister', 'Accounting Register', 1, 1, NULL, 'Finance'), 
+
+(105, 'Finance Menu', 'Voucherjournal', 'Voucher journal', 1, 1, NULL, 'Finance'), 
+
+(106, 'Finance Menu', 'VoucherCashPayment', 'Voucher CashPayment', 1, 1, NULL, 'Finance'), 
+
+(107, 'Finance Menu', 'VoucherBankPayment', 'Voucher BankPayment', 1, 1, NULL, 'Finance'), 
+
+(108, 'Finance Menu', 'purchasevoucher', 'Purchase Voucher', 1, 1, NULL, 'Finance'), 
+
+(109, 'Finance Menu', 'VoucherEntryCashReceipts', 'Voucher CashReceipts', 1, 1, NULL, 'Finance'), 
+
+(110, 'Finance Menu', 'VoucherEntryReceipts', 'Voucher BankPayment', 1, 1, NULL, 'Finance'), 
+
+(111, 'Finance Menu', 'salesVoucher', 'Voucher Sales', 1, 1, NULL, 'Finance'), 
+
+(112, 'Finance Menu', 'ExpensesClaims', 'Expenses Claims', 1, 1, NULL, 'Finance'), 
+
+(113, 'Finance Menu', 'ChartOfAccounts', 'Chart Of Accounts', 1, 1, NULL, 'Finance'), 
+
+(114, 'Finance Menu', 'JournalRegister', 'Journal Register', 1, 1, NULL, 'Finance'), 
+
+(115, 'Finance Menu', 'uc20101ChartOfAccounts', 'Chart Of Accounts', 1, 1, NULL, 'Finance') 
+
+(116, 'Finance Menu', 'My Dashboard', 'My Dashboard', 1, 1, NULL, 'Finance'), 
+
+(117, 'Finance Menu', 'Voucher Verification', 'Voucher Verification', 1, 1, NULL, 'Finance'), 
+
+(118, 'Finance Menu', 'Bills Receivable', 'Bills Receivable', 1, 1, NULL, 'Finance'), 
+
+(119, 'Finance Menu', 'Bills Payable', 'Bills Payable', 1, 1, NULL, 'Finance'), 
+
+(120, 'Finance Menu', 'Cost Analysis', 'Cost Analysis', 1, 1, NULL, 'Finance'), 
+
+(121, 'Finance Menu', 'Salary Payable', 'Salary Payable', 1, 1, NULL, 'Finance'), 
+
+(122, 'Finance Menu', 'Chart Of Accounts', 'Chart Of Accounts', 1, 1, NULL, 'Finance'), 
+
+(123, 'Finance Menu', 'Chart of Cost Centers', 'Chart of Cost Centers', 1, 1, NULL, 'Finance'), 
+
+(124, 'Finance Menu', 'Financial Reports', 'Financial Reports', 1, 1, NULL, 'Finance'), 
+
+(125, 'Finance Menu', 'Asset Register', 'Asset Register', 1, 1, NULL, 'Finance') 
+
+   
+
+---------------------------Voucher ---------------------------  
+
+  
+
+alter table dbo.tbl201vouchermaster  
+
+  
+
+add Currencyid int   
+
+  
+
+update dbo.tbl201vouchermaster  
+
+  
+
+set currencyid=1  
+
+  
+
+   
+
+  
+
+  alter table dbo.tbl201vouchermaster  
+
+  
+
+add basecurrencyid int   
+
+  
+
+  
+
+  
+
+update dbo.tbl201Vouchermaster   
+
+  
+
+set basecurrencyid=1   
+
+  
+
+    
+
+  
+
+ALTER TABLE dbo.tbl201Vouchermaster  
+
+  
+
+ADD CurrencyRate DECIMAL(18, 2);  
+
+  
+
+   
+
+  
+
+  
+
+   
+
+  
+
+select * from dbo.tbl201Vouchermaster  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+---------------------------Cheque---------------------------  
+
+  
+
+alter table dbo.tbl20113ChequeMaster   
+
+  
+
+add Currencyid int       
+
+  
+
+update dbo.tbl20113ChequeMaster    
+
+  
+
+set currencyid=1   
+
+  
+
+   
+
+  
+
+  
+
+  
+
+  
+
+  
+
+ALTER TABLE dbo.tbl20113ChequeMaster    
+
+  
+
+ADD CurrencyRate DECIMAL(18, 2);    
+
+  
+
+   
+
+  
+
+alter table dbo.tbl20113ChequeMaster    
+
+  
+
+add basecurrencyid int;   
+
+  
+
+  
+
+  
+
+update dbo.tbl20113ChequeMaster     
+
+  
+
+set basecurrencyid=1,  currencyid=1  
+
+  
+
+  select * from dbo.tblUserMaster 
+
+  
+
+  select * from dbo.tbl901CompanyDetails 
+
+  
+
+  
+
+  
+
+  CREATE TABLE dbo.language (  
+
+  
+
+    id INT IDENTITY(1,1) PRIMARY KEY,  
+
+  
+
+    name NVARCHAR(100) COLLATE Arabic_BIN,  -- Arabic collation for Arabic text support  
+
+  
+
+    value NVARCHAR(10),  
+
+  
+
+    flag NVARCHAR(255)  
+
+  
+
+);  
+
+  
+
+-- Alter the collation of the value column  
+
+  
+
+ALTER TABLE dbo.language  
+
+  
+
+ALTER COLUMN value NVARCHAR(20) COLLATE Arabic_BIN;  
+
+  
+
+   
+
+  
+
+-- Alter the collation of the flag column  
+
+  
+
+ALTER TABLE dbo.language  
+
+  
+
+ALTER COLUMN flag NVARCHAR(510) COLLATE Arabic_BIN;  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+-- Insert data with Unicode string  
+
+  
+
+INSERT INTO dbo.language (name, value, flag)  
+
+  
+
+VALUES  
+
+  
+
+    (N'English', 'en', 'https://flagcdn.com/w40/us.png'),  
+
+  
+
+    (N'العربية', 'ar', 'https://flagcdn.com/w40/ae.png');  
+
+  
+
+  
+
+ALTER TABLE dbo.tbl901AlertUsers 
+ADD Isseen BIT NOT NULL DEFAULT 0; 
+
+ 
+
+ 
+ALTER TABLE tbl901CompanyDetails 
+ADD 
+    DefaultcompanyID TINYINT NULL, 
+    CompanyTextColor NVARCHAR(20) NULL; 
+
+ 
+
+Alter PROCEDURE [dbo].[sp901_01UpdateLayout]   
+ 
+(   
+  @LayoutXML NVARCHAR(MAX), 
+    @FormID VARCHAR(MAX), 
+    @UserID VARCHAR(50), 
+    @IsFromWeb BIT = 1 -- ✅ default TRUE 
+ 
+ 
+)   
+ 
+AS   
+ 
+ 
+Update tbl90111LayoutMaster    
+Set LayoutXml = @LayoutXML    
+Where FormID = @FormID and UserID = @UserID   
+ 
+ 
+--UPDATE tblStockMaster   
+--SET OpeningBalance = @QtyReceived   
+--Where StockNo = @StockNo   
+ 
+--qry651_01StockOpeningBalance 
+
+  
+
