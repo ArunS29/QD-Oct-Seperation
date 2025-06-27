@@ -1701,6 +1701,22 @@
         <div class="mainContainer">
             <main>
                 @RenderBody()
+
+                <div id="changePasswordPopupContainer">
+                    @(Html.DevExtreme().Popup()
+                        .ID("changePasswordPopup")
+                        .Title("Change Your Password")
+                        .Width("50%")
+                        .Height(430)
+                        .Visible(false)
+                        .ShowCloseButton(true)
+                        .ResizeEnabled(true)
+                        .DragEnabled(true)
+                        .ShowTitle(true)
+                        .ContentTemplate(@<text><div id="popupContentPlaceholder">Loading...</div></text>)
+                        )
+                </div>
+
                 @RenderSection("Scripts", required: false)
 
             </main>
@@ -3173,10 +3189,109 @@
                         }
                     }
                 };
+                // function handleReserpasswordClick() {
+                //     window.location.href = `/${tenantName}/General/frm90108ChangePassword`;
+                // }
+                // change password partial view
                 function handleReserpasswordClick() {
-                    window.location.href = `/${tenantName}/General/frm90108ChangePassword`;
+                       $.ajax({
+
+                        url: `/api/CompanyDetails/ChangePassword`, // This returns partial HTML
+                        type: "GET",
+                        dataType: "html",
+                        success: function (data) {
+                            debugger;
+                             let popupInstance = $("#changePasswordPopup").dxPopup("instance");
+
+                        popupInstance.option({
+
+                            contentTemplate: function () {
+                                return $("<div>")
+
+                                    .html(data);
+                            }
+                        });
+
+                        popupInstance.show();
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error loading change password view:", error);
+                            DevExpress.ui.notify("Failed to load password change form.", "error", 2000);
+                        }
+                  });
                 }
-                function toggleDropdown() {
+
+
+                function getPasswordStrength(password) {
+                    let score = 0;
+                    if (password.length >= 10) score++;
+                    if (/[A-Z]/.test(password)) score++;
+                    if (/[a-z]/.test(password)) score++;
+                    if (/\d/.test(password)) score++;
+                    if (/[$!%*?&]/.test(password)) score++;
+
+                    if (score <= 2) return { level: "Weak", color: "red" };
+                    if (score === 3 || score === 4) return { level: "Medium", color: "orange" };
+                    if (score === 5) return { level: "Strong", color: "green" };
+                    return { level: "Unknown", color: "gray" };
+                }
+
+                function onNewPasswordChanged(e) {
+                    const password = e.value;
+                    const strength = getPasswordStrength(password);
+                    const strengthDiv = document.getElementById("passwordStrength");
+                    strengthDiv.textContent = `Strength: ${strength.level}`;
+                    strengthDiv.style.color = strength.color;
+                }
+
+                function onResetPasswordClick() {
+                    const currentPassword = $("#currentPassword").dxTextBox("instance").option("value");
+                    const newPassword = $("#newPassword").dxTextBox("instance").option("value");
+                    const confirmPassword = $("#confirmPassword").dxTextBox("instance").option("value");
+
+                    if (!currentPassword || !newPassword || !confirmPassword) {
+                        DevExpress.ui.notify("All fields are required.", "error", 2000);
+                        return;
+                    }
+
+                    if (newPassword.length < 10) {
+                        DevExpress.ui.notify("New password must be at least 10 characters long.", "error", 2000);
+                        return;
+                    }
+                    if (newPassword !== confirmPassword) {
+                        DevExpress.ui.notify("New Password and Confirm Password do not match.", "error", 2000);
+                        return;
+                    }
+                    const strongPasswordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[$!%*?&]).{10,}$/;
+                    if (!strongPasswordRegex.test(newPassword)) {
+                        DevExpress.ui.notify("Password must contain uppercase, lowercase, digit, and special character.", "error", 3000);
+                        return;
+                    }
+
+                    if (newPassword !== confirmPassword) {
+                        DevExpress.ui.notify("New Password and Confirm Password do not match.", "error", 2000);
+                        return;
+                    }
+
+                    $.ajax({
+                        url: '@Url.Page("frm90108ChangePassword", "ResetPassword")',
+                        type: 'POST',
+                        data: {
+                            currentPassword: currentPassword,
+                            newPassword: newPassword,
+                            __RequestVerificationToken: token
+                        },
+                        success: function (response) {
+                            DevExpress.ui.notify(response, "success", 3000);
+                        },
+                        error: function (xhr) {
+                            DevExpress.ui.notify("Failed to reset password: " + xhr.responseText, "error", 3000);
+                        }
+                    });
+                }
+
+
+                       function toggleDropdown() {
                     document.getElementById("userDropdown").classList.toggle("show");
                 }
                 function logout() {
