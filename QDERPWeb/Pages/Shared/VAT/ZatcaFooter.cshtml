@@ -1,0 +1,346 @@
+﻿@page
+@model QD.ERP.Web.Pages.Shared.VAT.ZatcaFooterModel
+@{
+}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style type="text/css">
+    #dataGrid .dx-datagrid-headers .dx-datagrid-action {
+        text-align: center !important;
+    }
+
+    #dataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
+        text-align: center !important;
+    }
+    /* Button Styling */
+    .dx-button {
+        background-color: #909ead00 !important;
+        border: 1px solid #d6e4f0 !important;
+        border-radius: 4px !important;
+        padding: 6px 12px !important; /* Reduced button padding */
+        font-size: 14px !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+        transition: all 0.2s ease-in-out !important;
+        height: 39px !important; /* Fixed height */
+    }
+
+        /* Hover Effect for Button */
+        .dx-button:hover {
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important; /* Slightly reduced hover effect */
+            border-color: #86b7fe !important; /* Highlight border */
+        }
+
+    .dx-icon {
+        font-size: 20px !important; /* Adjust size if needed */
+        color: gray !important; /* Adjust color if needed */
+    }
+
+    .dx-button-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .dx-dropdownbutton .dx-button-content {
+        padding: 0 !important;
+    }
+
+    /* .modalTitle{ */
+    /*     display:none; */
+    /* } */
+    .horizontal-container {
+        display: flex;
+        gap: 10px; /* Adds spacing between buttons */
+        justify-content: start; /* Aligns buttons to the left */
+        align-items: center; /* Vertically centers the buttons */
+        margin: 15px;
+        margin-top: 0px;
+    }
+
+    .button-alignment-down {
+        margin-top: 23px;
+    }
+
+    .button-group {
+        margin-left: 1px !important;
+    }
+
+    .dx-datagrid .dx-row {
+        margin-bottom: 50px;
+    }
+    /* Custom styles for context menu */
+    .context-menu {
+        display: none;
+        position: absolute;
+        background-color: white;
+        border: 1px solid #ccc;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+    }
+
+    .context-menu-item {
+        padding: 0px, 15px,10px 15px;
+        cursor: pointer;
+    }
+
+    .ledgerResult {
+        margin: 15px !important;
+    }
+
+    #rowHeightMenu {
+        position: absolute;
+        top: 100px; /* Adjust positioning as per your design */
+        left: 300px; /* Adjust positioning as per your design */
+        display: none; /* Keep it hidden until needed */
+    }
+
+
+    .btn-container {
+        display: inline-block;
+        position: relative;
+        overflow: hidden;
+    }
+
+        /* Initially hide the button text and set a fixed small width */
+        .btn-container .dx-button {
+            width: 40px !important; /* Small width for icons */
+            transition: width 0.3s ease-in-out;
+        }
+
+
+        /* Show full text when hovered */
+        .btn-container:hover .dx-button {
+            width: 200px !important; /* Expand to fit text */
+        }
+
+        /* Initially hide text */
+        .btn-container .dx-button .dx-button-text {
+            display: none;
+        }
+
+        /* Show text on hover */
+        .btn-container:hover .dx-button .dx-button-text {
+            display: inline-block;
+        }
+
+        /* Ensure dropdown button behaves similarly */
+        .btn-container .dx-dropdownbutton {
+            width: 55px !important;
+            transition: width 0.3s ease-in-out;
+        }
+
+        .btn-container:hover .dx-dropdownbutton {
+            width: 180px !important; /* Adjust as needed */
+        }
+
+        .btn-container .dx-dropdownbutton .dx-button-text {
+            display: none;
+        }
+
+        .btn-container:hover .dx-dropdownbutton .dx-button-text {
+            display: inline-block;
+        }
+
+
+        .btn-container .dx-button {
+            width: 40px !important; /* Small width for just the icon */
+            transition: width 0.3s ease-in-out;
+            overflow: hidden;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            text-align: center;
+        }
+
+        /* On hover, expand the button */
+
+        .btn-container:hover .dx-button {
+            width: 200px !important;
+        }
+
+        /* Keep the icon always visible */
+
+        .btn-container .dx-button .dx-icon {
+            display: inline-block !important;
+        }
+
+        /* Initially hide text */
+
+        .btn-container .dx-button .dx-button-text {
+            display: none;
+        }
+
+    /* Show text on hover */
+    .btn-containerIvoiceEdit:hover .dx-button .dx-button-text {
+        display: inline-block;
+        margin-left: 8px; /* optional spacing between icon and text */
+    }
+
+
+    /*     .btn-container:hover .dx-button { */
+    /*         width: 200px !important; /* Expand to fit text */ */
+    /*     } */
+    /*     .btn-container .dx-button .dx-button-text { */
+    /*         display: none; */
+    /*     } */
+    /*     .btn-container:hover .dx-button .dx-button-text { */
+    /*         display: inline-block; */
+    /*     } */
+    /*     .btn-container .dx-dropdownbutton { */
+    /*         width: 55px !important; */
+    /*         transition: width 0.3s ease-in-out; */
+    /*     } */
+    /*     .btn-container:hover .dx-dropdownbutton { */
+    /*         width: 180px !important; /* Adjust as needed */ */
+    /*     } */
+    /*     .btn-container .dx-dropdownbutton .dx-button-text { */
+    /*         display: none; */
+    /*     } */
+    /*     .btn-container:hover .dx-dropdownbutton .dx-button-text { */
+    /*         display: inline-block; */
+    /*     } */
+    /*     .btn-container .dx-button { */
+    /*         width: 40px !important; /* Small width for just the icon */ */
+    /*         transition: width 0.3s ease-in-out; */
+    /*         overflow: hidden; */
+    /*         padding-left: 0 !important; */
+    /*         padding-right: 0 !important; */
+    /*         text-align: center; */
+    /*     } */
+    /*     .btn-container:hover .dx-button { */
+    /*         width: 200px !important; */
+    /*     } */
+    /*     .btn-container .dx-button .dx-icon { */
+    /*         display: inline-block !important; */
+    /*     } */
+    /*     .btn-container .dx-button .dx-button-text { */
+    /*         display: none; */
+    /*     } */
+    /* .btn-containerIvoiceEdit:hover .dx-button .dx-button-text { */
+    /*     display: inline-block; */
+    /*     margin-left: 8px; */
+    /* } */
+
+    .modal-content {
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        height: 90%;
+        max-height: 800px;
+        background: white;
+        border-radius: 8px;
+        padding: 0;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+        overflow: hidden; /* Prevents content overflow */
+    }
+
+    .update-button {
+        font-weight: bold;
+        padding: 10px 20px;
+        background-color: #e0e7f0;
+        border-radius: 6px;
+    }
+
+
+    .btn-containerIvoiceEdit .dx-button {
+        width: 40px !important; /* Small width for just the icon */
+        transition: width 0.3s ease-in-out;
+        overflow: hidden;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        text-align: center;
+    }
+
+    /* On hover, expand the button */
+    .btn-containerIvoiceEdit:hover .dx-button {
+        width: 200px !important;
+    }
+
+    .btn-container:hover #btnAddNewPayment.dx-button {
+        width: 240px !important;
+    }
+
+    /* Keep the icon always visible */
+    .btn-containerIvoiceEdit .dx-button .dx-icon {
+        display: inline-block !important;
+    }
+
+    /* Initially hide text */
+    .btn-containerIvoiceEdit .dx-button .dx-button-text {
+        display: none;
+    }
+
+    /* Show text on hover */
+    .btn-containerIvoiceEdit:hover .dx-button .dx-button-text {
+        display: inline-block;
+        margin-left: 8px; /* optional spacing between icon and text */
+    }
+
+
+
+    .multiline-button .dx-button-text {
+        white-space: normal;
+    }
+</style>
+
+<div class="dx-fieldset horizontal-container" style="width:1000px;background-color:transparent;gap:3px">
+
+
+    <div class="btn-containers">
+        @(Html.DevExtreme().Button()
+            .ID("btnZatcaPortal")
+            .Text(new JS("formatMessage('Connect to Zatca Portal')"))
+            .Type(ButtonType.Normal)
+             .Width(40)
+            .StylingMode(ButtonStylingMode.Outlined)
+            .Icon("editconnection") // Change the icon to an up/down arrow option
+            .ElementAttr(new { @class = "bold-button" })
+            )
+    </div>
+    <div class="btn-containers">
+        @(Html.DevExtreme().Button()
+            .ID("btnSubmitInvoiceToZatca")
+                .Text(new JS("formatMessage('Submit Invoice To Zatca')"))
+            .Type(ButtonType.Normal)
+            .Width(40)
+            .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("save") // Change the icon to an up/down arrow option
+            .ElementAttr(new { @class = "bold-button" })
+            )
+    </div>
+
+    <div class="btn-containers">
+        @(Html.DevExtreme().Button()
+            .ID("btnPrintPreview")
+            .Text(new JS("formatMessage('Save')"))
+            .Type(ButtonType.Normal)
+            .StylingMode(ButtonStylingMode.Outlined)
+            .Icon("preview")
+            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                                                         // .OnClick("saveInvoiceDetails") // Calls the JavaScript function
+            )
+
+    </div>
+
+    <div class="btn-containers">
+
+        @(Html.DevExtreme().Button()
+            .ID("btnBack")
+            .Text(new JS("formatMessage('Back')"))
+            .Type(ButtonType.Normal)
+            .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("arrowleft")
+            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+            )
+    </div>
+
+</div>
+
+
+
+<script type="text/javascript">
+
+          
+
+
+</script>
