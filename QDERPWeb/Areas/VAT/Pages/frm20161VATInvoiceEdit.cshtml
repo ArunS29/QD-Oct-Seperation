@@ -4987,13 +4987,15 @@
 				}));
 			});
 		}
+
+
 			$(document).ready(function () {
 			if (revaccheadid == null) {
 				revaccheadid = "L00343";
 			}
 
 				let InVoiceNo = InvNo;
-				alert(InVoiceNo)
+			
 			var InvoiceMaster = {
 
 				InvoiceNo: InvNo,
@@ -5124,7 +5126,7 @@
 						success: function (data) {
 							if (invoiceBox) {
 								InvNo=data;
-									alert(InvNo)
+								
 								invoiceBox.option("value", data || "");
 							} else {
 								console.warn("Invoice TextBox not initialized.");
