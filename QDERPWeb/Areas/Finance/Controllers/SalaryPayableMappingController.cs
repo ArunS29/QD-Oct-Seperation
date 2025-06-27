@@ -68,7 +68,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetSalaryMappings(DateTime? startDate, DateTime? endDate)
+        public IActionResult GetSalaryMappings(string accountId , DateTime? startDate, DateTime? endDate)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 var claims = dbContext.Qry20191SalaryPayableMasterMapped02s.AsQueryable();
 
                 if (startDate.HasValue && endDate.HasValue)
-                    claims = claims.Where(c => c.VoucherDate >= startDate && c.VoucherDate <= endDate);
+                    claims = claims.Where(c => c.VoucherDate >= startDate && c.VoucherDate <= endDate && c.LedgerNo == accountId);
 
                 return Ok(claims.Select(e => new
                 {

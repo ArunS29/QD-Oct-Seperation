@@ -6,11 +6,13 @@
     .pivot-row-total {
         background-color: royalblue !important;
         color: white !important;
+        font-weight: bold;
     }
 
     .pivot-grand-total {
-        background-color: white !important;
-        color: navy !important;
+        background-color: royalblue !important;
+        color: white !important;
+        font-weight: bold;
     }
 </style>
 
@@ -119,23 +121,24 @@
                     },
 
                         onCellPrepared: function (e) {
-                            // ✅ 1. Style ROW TOTAL in data area (only for AssetGroup level)
-                            if (e.area === "data" && e.rowType === "T" && e.rowPath.length === 1) {
-                                e.cellElement.addClass("pivot-row-total"); // Royal blue
+                            if (e.area === "data") {
+                                const isRowTotal = e.rowType === "T";
+                                const isRowGrandTotal = e.rowType === "GT";
+                                const isColGrandTotal = e.columnType === "GT";
+
+                                // ✅ Row Total (only at AccountGroup level)
+                                if (isRowTotal && e.rowPath.length === 1) {
+                                    e.cellElement.addClass("pivot-row-total");
+                                }
+
+                                // ✅ Grand Total in data cells (either row or column GT)
+                                if (isRowGrandTotal || isColGrandTotal) {
+                                    e.cellElement.addClass("pivot-grand-total");
+                                }
                             }
 
-                            // ✅ 2. Style GRAND TOTAL data cells (data area)
-                            if (e.area === "data" && (e.rowType === "GT" || e.columnType === "GT")) {
-                                e.cellElement.addClass("pivot-grand-total"); // Navy blue
-                            }
-
-                            // ✅ 3. Style header cell for ROW Grand Total label
-                            if (e.area === "row" && e.cell?.type === "GT") {
-                                e.cellElement.addClass("pivot-grand-total");
-                            }
-
-                            // ✅ 4. Style header cell for COLUMN Grand Total label
-                            if (e.area === "column" && e.cell?.type === "GT") {
+                            // ✅ Grand Total labels (header cells)
+                            if ((e.area === "row" || e.area === "column") && e.cell?.type === "GT") {
                                 e.cellElement.addClass("pivot-grand-total");
                             }
                         }

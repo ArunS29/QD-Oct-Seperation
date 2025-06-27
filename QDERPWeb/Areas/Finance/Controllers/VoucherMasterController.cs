@@ -1176,40 +1176,74 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
+                string tenantName = HttpContext.Request.Headers["X-Tenant-Name"];
+
+                if (string.IsNullOrWhiteSpace(tenantName))
+                    return BadRequest(new { message = "Session expired or tenant name missing.", success = false });
+
+                // Step 1: Get CompanyId
+                var company = await dbContext.Tbl901CompanyDetails
+                    .Where(c => c.CompanyNameShort == tenantName)
+                    .Select(c => new { c.CompanyId })
+                    .FirstOrDefaultAsync();
+
+                if (company == null)
+                    return NotFound(new { message = "Company not found.", success = false });
+
+                byte companyId = company.CompanyId;
+
+                // Step 2: Get NoOfDigitsInVouchers
+                var companyConfig = await dbContext.Tbl901CompanyDetails02s
+                    .Where(c => c.CompanyId == companyId)
+                    .Select(c => new { c.NoOfDigitsInVouchers })
+                    .FirstOrDefaultAsync();
+
+                byte configuredDigitCount = companyConfig?.NoOfDigitsInVouchers ?? 3; // Default to 3 if not found
+
+                // Step 3: Prepare voucher prefix
                 DateTime currentDate = DateTime.Now;
-                string currentYear = currentDate.Year.ToString();
-                string currentMonth = currentDate.Month.ToString("00");
-                string voucherString = "CP-" + currentYear.Substring(currentYear.Length - 2, 2) + "-" + currentMonth + "-";
+                string yearPart = currentDate.Year.ToString().Substring(2); // "25"
+                string monthPart = currentDate.Month.ToString("00"); // "06"
+                string voucherPrefix = $"CP-{yearPart}-{monthPart}-";
+                string likePattern = voucherPrefix + "%";
+
+                int digitCountToUse = configuredDigitCount; // this might change if series already exists
                 string strNewReceiptNo;
-
-                // SQL query with interpolated string
-                string likePattern = voucherString + "%";
-
                 try
                 {
-                    // Use raw SQL query to fetch the maximum voucher number
+                    // Step 4: Check if any vouchers already exist for current month
+                    var existingVoucher = await dbContext.Tbl201VoucherEntries
+                        .Where(v => v.VoucherNo.StartsWith(voucherPrefix))
+                        .OrderByDescending(v => v.VoucherNo)
+                        .Select(v => v.VoucherNo)
+                        .FirstOrDefaultAsync();
+
+                    if (!string.IsNullOrEmpty(existingVoucher))
+                    {
+                        // Step 5: Existing series found → infer digit count from length of number part
+                        string numberPart = existingVoucher.Substring(voucherPrefix.Length);
+                        digitCountToUse = numberPart.Length;
+                    }
+
+                    // Step 6: Fetch max number using resolved digit count
                     var result = await dbContext.VoucherResults
                         .FromSqlInterpolated($@"
-                SELECT MAX(CAST(RIGHT(VoucherNo, 3) AS INT)) AS MaxVoucherNo
-                FROM Tbl201VoucherEntry
-                WHERE VoucherNo LIKE {likePattern}")
+                    SELECT MAX(CAST(RIGHT(VoucherNo, {digitCountToUse}) AS INT)) AS MaxVoucherNo
+                    FROM Tbl201VoucherMaster
+                    WHERE VoucherNo LIKE {likePattern}")
                         .ToListAsync();
 
                     int maxVoucherNo = result.FirstOrDefault()?.MaxVoucherNo ?? 0;
-
                     int newVoucherNo = maxVoucherNo + 1;
 
-                    // Format the new voucher number with leading zeros
-                    strNewReceiptNo = "000" + newVoucherNo.ToString();
-                    strNewReceiptNo = strNewReceiptNo.Substring(strNewReceiptNo.Length - 3);
-
-                    // Concatenate with the voucher string
-                    strNewReceiptNo = voucherString + strNewReceiptNo;
+                    string paddedNo = newVoucherNo.ToString().PadLeft(digitCountToUse, '0');
+                    strNewReceiptNo = voucherPrefix + paddedNo;
                 }
                 catch (Exception)
                 {
-                    // Handle cases where there's no existing voucher number
-                    strNewReceiptNo = voucherString + "001";
+                    // fallback if any failure
+                    string fallback = "1".PadLeft(configuredDigitCount, '0');
+                    strNewReceiptNo = voucherPrefix + fallback;
                 }
 
                 return Json(strNewReceiptNo);
@@ -1278,7 +1312,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     var result = await dbContext.VoucherResults
                         .FromSqlInterpolated($@"
                     SELECT MAX(CAST(RIGHT(VoucherNo, {digitCountToUse}) AS INT)) AS MaxVoucherNo
-                    FROM Tbl201VoucherEntry
+                    FROM Tbl201VoucherMaster
                     WHERE VoucherNo LIKE {likePattern}")
                         .ToListAsync();
 
