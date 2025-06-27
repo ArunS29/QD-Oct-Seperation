@@ -2944,21 +2944,26 @@
                 else if(argsledno==null)
                 {
                     $(function () {
-                        $.ajax({
-                                url: "/api/VoucherEntryReceipts/GetNewBRVoucherNo",
-                            type: 'GET',
-                            success: function (data) {
-                                // Set the value in the VoucherNo TextBox
-                                $("#VoucherNo").dxTextBox("instance").option("value", data);
+                             const tenantName = sessionStorage.getItem("tenantName");
 
-                                // Retrieve the value from the TextBox
-                                var popvno = $("#VoucherNo").dxTextBox("instance").option("value");
+                         $.ajax({
+                             url: "/api/VoucherEntryReceipts/GetNewBRVoucherNo",
+                             type: 'GET',
+                             headers: {
+                                 'X-Tenant-Name': tenantName
+                             },
+                             success: function (data) {
+                                 // Set the value in the VoucherNo TextBox
+                                 $("#VoucherNo").dxTextBox("instance").option("value", data);
 
-                            },
-                            error: function (xhr, status, error) {
-                                console.error("Error loading Voucher No:", error);
-                            }
-                        });
+                                 // Retrieve the value from the TextBox
+                                 var popvno = $("#VoucherNo").dxTextBox("instance").option("value");
+
+                             },
+                             error: function (xhr, status, error) {
+                                 console.error("Error loading Voucher No:", error);
+                             }
+                         });
                     });
                 }
             });

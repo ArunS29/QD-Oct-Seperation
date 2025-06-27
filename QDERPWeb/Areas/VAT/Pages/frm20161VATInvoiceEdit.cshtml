@@ -550,13 +550,6 @@
 </style>
 
 <input id="formId" value="frm20161VATInvoiceEdit" type="hidden" />
-<div class="title">
-	<div class="header-container">
-		<div id="VATInvoiceEdit" class="no-border-input"></div>
-	</div>
-</div>
-
-
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
 <input id="formId" value="frm201LedgerAccount1" type="hidden" />
@@ -4987,13 +4980,15 @@
 				}));
 			});
 		}
+
+
 			$(document).ready(function () {
 			if (revaccheadid == null) {
 				revaccheadid = "L00343";
 			}
 
 				let InVoiceNo = InvNo;
-				alert(InVoiceNo)
+			
 			var InvoiceMaster = {
 
 				InvoiceNo: InvNo,
@@ -5124,7 +5119,7 @@
 						success: function (data) {
 							if (invoiceBox) {
 								InvNo=data;
-									alert(InvNo)
+								
 								invoiceBox.option("value", data || "");
 							} else {
 								console.warn("Invoice TextBox not initialized.");

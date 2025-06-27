@@ -11,6 +11,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
@@ -26,16 +27,27 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
+        public class LayoutRequest
+        {
+            public string? Layout { get; set; }
+            public string? Form { get; set; }
+        }
 
         [HttpPost]
-        public async Task<ActionResult> SaveLayout(string layout, string form)
+        public async Task<ActionResult> SaveLayout([FromBody] LayoutRequest model)
+
         {
+   
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 try
                 {
+                    var Layout = model.Layout;
+                    var form = model.Form;
+                    string UserID = HttpContext.Session.GetString("UserId");
+                    byte currentUserId = Convert.ToByte(UserID);
                     ERPMasterWtDataContextProcedures _procedures = new ERPMasterWtDataContextProcedures(dbContext);
-                    var ledgerData = await _procedures.sp901_01UpdateLayoutAsync(layout, form, "101", true);
+                    var ledgerData = await _procedures.sp901_01UpdateLayoutAsync(Layout, form, UserID, true);
                     return Json(ledgerData);
                 }
                 catch (Exception ex)

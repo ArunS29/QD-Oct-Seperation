@@ -163,14 +163,19 @@
         }
 
         .title {
-            display: none;
-            /* display: flex; */
+            /* display: none; */
+            display: flex;
             align-items: center;
             justify-content: center;
             font-size: 20px;
             font-weight: bold;
-            background-color: var(--title-background-color);
+            background: linear-gradient(135deg, #6a11cb, #2575fc) !important;
             color: white;
+            width: max-content;
+            padding: 15px;
+            border-radius: 10px;
+            margin:10px;
+            height: 140px;
         }
 
         body {
@@ -1111,6 +1116,46 @@
             border-radius: 50%;
         }
 
+        .titleCard-toggle {
+            cursor: pointer;
+            font-size: 1.2rem;
+            height: 35px !important;
+            width: 35px;
+            background: var(--hover-bg-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .titleCard-toggle:hover {
+                color: #000;
+            }
+
+        .titleCard-carousel.collapsed {
+            max-height: 0;
+            padding: 0;
+            overflow: hidden;
+            transition: max-height .35s ease, padding .35s ease;
+        }
+
+        .title.collapsed {
+            max-height: 0;
+            padding: 0;
+            overflow: hidden;
+            transition: max-height .35s ease, padding .35s ease;
+        }
+
+        .titleCard-carousel {
+            display: flex;
+            overflow-x: auto;
+            gap: 20px;
+            padding: 16px 24px 0 calc(var(--nav-w,0) + 24px);
+            scroll-snap-type: x mandatory;
+            padding-top: 15px;
+            padding-bottom: 15px;
+            padding-left: 10px;
+        }
     </style>
     @RenderSection("Styles", required: false)
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
@@ -1120,6 +1165,11 @@
 </head>
 <body>
     <!-- Modal Structure -->
+            <div style="display: flex;align-items: center;left: 97%;top: 7%;position: fixed;">
+                <div class="titleCard-toggle" onclick="toggleKpiCarousel()">
+                    <i id="kpiToggleIcon" class="fa-solid fa-chevron-up" style="color: white;"></i>
+                </div>
+             </div>
     <div id="customModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -1704,6 +1754,22 @@
         <div class="mainContainer">
             <main>
                 @RenderBody()
+
+                <div id="changePasswordPopupContainer">
+                    @(Html.DevExtreme().Popup()
+                        .ID("changePasswordPopup")
+                        .Title("Change Your Password")
+                        .Width("50%")
+                        .Height(430)
+                        .Visible(false)
+                        .ShowCloseButton(true)
+                        .ResizeEnabled(true)
+                        .DragEnabled(true)
+                        .ShowTitle(true)
+                        .ContentTemplate(@<text><div id="popupContentPlaceholder">Loading...</div></text>)
+                        )
+                </div>
+
                 @RenderSection("Scripts", required: false)
 
             </main>
@@ -3218,10 +3284,109 @@
                         }
                     }
                 };
+                // function handleReserpasswordClick() {
+                //     window.location.href = `/${tenantName}/General/frm90108ChangePassword`;
+                // }
+                // change password partial view
                 function handleReserpasswordClick() {
-                    window.location.href = `/${tenantName}/General/frm90108ChangePassword`;
+                       $.ajax({
+
+                        url: `/api/CompanyDetails/ChangePassword`, // This returns partial HTML
+                        type: "GET",
+                        dataType: "html",
+                        success: function (data) {
+                            debugger;
+                             let popupInstance = $("#changePasswordPopup").dxPopup("instance");
+
+                        popupInstance.option({
+
+                            contentTemplate: function () {
+                                return $("<div>")
+
+                                    .html(data);
+                            }
+                        });
+
+                        popupInstance.show();
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error loading change password view:", error);
+                            DevExpress.ui.notify("Failed to load password change form.", "error", 2000);
+                        }
+                  });
                 }
-                function toggleDropdown() {
+
+
+                function getPasswordStrength(password) {
+                    let score = 0;
+                    if (password.length >= 10) score++;
+                    if (/[A-Z]/.test(password)) score++;
+                    if (/[a-z]/.test(password)) score++;
+                    if (/\d/.test(password)) score++;
+                    if (/[$!%*?&]/.test(password)) score++;
+
+                    if (score <= 2) return { level: "Weak", color: "red" };
+                    if (score === 3 || score === 4) return { level: "Medium", color: "orange" };
+                    if (score === 5) return { level: "Strong", color: "green" };
+                    return { level: "Unknown", color: "gray" };
+                }
+
+                function onNewPasswordChanged(e) {
+                    const password = e.value;
+                    const strength = getPasswordStrength(password);
+                    const strengthDiv = document.getElementById("passwordStrength");
+                    strengthDiv.textContent = `Strength: ${strength.level}`;
+                    strengthDiv.style.color = strength.color;
+                }
+
+                function onResetPasswordClick() {
+                    const currentPassword = $("#currentPassword").dxTextBox("instance").option("value");
+                    const newPassword = $("#newPassword").dxTextBox("instance").option("value");
+                    const confirmPassword = $("#confirmPassword").dxTextBox("instance").option("value");
+
+                    if (!currentPassword || !newPassword || !confirmPassword) {
+                        DevExpress.ui.notify("All fields are required.", "error", 2000);
+                        return;
+                    }
+
+                    if (newPassword.length < 10) {
+                        DevExpress.ui.notify("New password must be at least 10 characters long.", "error", 2000);
+                        return;
+                    }
+                    if (newPassword !== confirmPassword) {
+                        DevExpress.ui.notify("New Password and Confirm Password do not match.", "error", 2000);
+                        return;
+                    }
+                    const strongPasswordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[$!%*?&]).{10,}$/;
+                    if (!strongPasswordRegex.test(newPassword)) {
+                        DevExpress.ui.notify("Password must contain uppercase, lowercase, digit, and special character.", "error", 3000);
+                        return;
+                    }
+
+                    if (newPassword !== confirmPassword) {
+                        DevExpress.ui.notify("New Password and Confirm Password do not match.", "error", 2000);
+                        return;
+                    }
+
+                    $.ajax({
+                        url: '@Url.Page("frm90108ChangePassword", "ResetPassword")',
+                        type: 'POST',
+                        data: {
+                            currentPassword: currentPassword,
+                            newPassword: newPassword,
+                            __RequestVerificationToken: token
+                        },
+                        success: function (response) {
+                            DevExpress.ui.notify(response, "success", 3000);
+                        },
+                        error: function (xhr) {
+                            DevExpress.ui.notify("Failed to reset password: " + xhr.responseText, "error", 3000);
+                        }
+                    });
+                }
+
+
+                       function toggleDropdown() {
                     document.getElementById("userDropdown").classList.toggle("show");
                 }
                 function logout() {
@@ -3717,6 +3882,55 @@
         inventoryMenuAccess1 = JSON.parse("@Html.Raw(escapedJson1)");
         equipmentRentalMenuAccess = JSON.parse("@Html.Raw(equipmentJson)");
         window.financeMenuAccess = JSON.parse("@Html.Raw(escapedJson)");
+
+        function isModal() {
+            return new URLSearchParams(window.location.search).get("modal") === "true";
+        }
+
+        $(document).ready(function () {
+
+           if (isModal()) {
+                const style = document.createElement("style");
+                style.innerHTML = `
+                          .container { display: none !important; }
+                          .title { display: flex !important;
+                            align-items: center !important;
+                            justify-content: center !important;
+                            font-size: 20px !important;
+                            font-weight: bold !important;
+                            background: linear-gradient(135deg, #6a11cb, #2575fc) !important;
+                            color: white !important;
+                            width: 100% !important;
+                            padding: 0px !important;
+                            border-radius: 0px !important;
+                            margin: 0px !important ;
+                            height: 50px !important;}
+                          .titleCard-toggle {display: none !important;}
+                          .frame { display: none !important; }
+                          .footerContainer { display: none !important; }
+                          .bodyContainer { display: flex; justify-content: center; }
+                          .mainContainer { margin-top: 1em;width:100%; }
+                          .playIcon {display: none;	}`;
+                document.head.appendChild(style);
+            }
+        });
+        function toggleKpiCarousel() {
+            const carousel = document.getElementsByClassName("title")[0]; // Get the first element
+            const icon = document.getElementById("kpiToggleIcon");
+
+            if (!carousel) return; // Safeguard if element not found
+            carousel.classList.toggle("collapsed");
+
+            if (carousel.classList.contains("collapsed")) {
+                icon.classList.remove("fa-chevron-up");
+                icon.classList.add("fa-chevron-down");
+            } else {
+                    icon.classList.remove("fa-chevron-down");
+                    icon.classList.add("fa-chevron-up");
+            }
+        }
+
+
     </script>
 </body>
 </html>

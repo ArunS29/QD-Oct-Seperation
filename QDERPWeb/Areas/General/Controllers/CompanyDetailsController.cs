@@ -12,11 +12,11 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace QD.ERP.Web.Areas.General.Controller
+namespace QD.ERP.Web.Areas.General.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class CompanyDetailsController : ControllerBase
+    public class CompanyDetailsController : Controller
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<CompanyDetailsController> _logger;
@@ -497,6 +497,14 @@ namespace QD.ERP.Web.Areas.General.Controller
 
             return Unauthorized(new { message = "Invalid tenant." });
         }
+
+        public IActionResult ChangePassword()
+        {
+            return PartialView("~/Areas/General/Pages/frm90108ChangePassword.cshtml"); // Use a partial view
+        }
+
+
+
 
     }
 

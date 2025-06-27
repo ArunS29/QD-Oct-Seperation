@@ -29,7 +29,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 try
                 {
-                    var result = await dbContext.Qry20176VouchersForAudits.ToListAsync();
+                    var oneMonthAgo = DateTime.UtcNow.AddMonths(-1);
+
+                    // Add filtering here for last 1 month
+                    var result = await dbContext.Qry20176VouchersForAudits
+                        .Where(item => item.VoucherDate >= oneMonthAgo)
+                        .ToListAsync();
 
                     var pivotGridData = result.Select(item => new
                     {
@@ -97,6 +102,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
 
 
         [HttpGet]

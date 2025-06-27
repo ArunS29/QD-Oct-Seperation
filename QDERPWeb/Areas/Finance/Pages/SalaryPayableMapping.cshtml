@@ -271,6 +271,7 @@
         const dataGrid = $("#dataGrid").dxDataGrid("instance");
         const startDateBox = $("#StartDate").dxDateBox("instance");
         const endDateBox = $("#EndDate").dxDateBox("instance");
+        const accountId = $("#AccountLedgerNo").dxTextBox("instance").option("value");
         const today = new Date();
         let startDate = null, endDate = null;
 
@@ -319,12 +320,14 @@
         // ✅ Update the DateBox values
         startDateBox.option("value", startDate);
         endDateBox.option("value", endDate);
+        debugger;
 
         // ✅ Apply filter to DataGrid
         dataGrid.option("dataSource", {
             store: DevExpress.data.AspNet.createStore({
                 loadUrl: "/api/SalaryPayableMapping/GetSalaryMappings",  // ✅ Match with API method name
                 loadParams: {
+                    accountId:accountId,
                     startDate: startDate.toISOString(),
                     endDate: endDate.toISOString()
                 }
@@ -364,8 +367,8 @@
 
         const acchedid = getQueryParam("acchedid") || "";
         const accheadname = getQueryParam("accheadname") || "";
-        const startDate = getQueryParam("FromDate");
-        const endDate = getQueryParam("ToDate");
+        const startDate = $("#StartDate").dxDateBox("instance");
+        const endDate = $("#EndDate").dxDateBox("instance");
 
         if (acchedid) {
             $("#AccountLedgerNo").dxTextBox("instance").option("value", acchedid);

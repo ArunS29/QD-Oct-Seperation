@@ -459,6 +459,22 @@
                                 .OnClick("showLedgerAccountPopup")
                                 .Width(60)
                                 )
+                            <!-- DevExtreme Popup -->
+                            @(Html.DevExtreme().Popup()
+                                                        .ID("ledgerAccountPopup")
+                                                        .Width("93%")
+                                                        .Height("85%")
+                                                        .Title("Add Ledger Account")
+                                                        .ShowTitle(true)
+                                                       
+                                                        .Visible(false)
+                                                        .ResizeEnabled(true)
+                                                        .ContentTemplate(@<text>
+                                <div id="popupContent" class="background" style="width:100%; height:100%;">
+                                    <iframe id="ledgerAccountFrame" class="background" style="width:100%; height:100%; border:none;"></iframe>
+                                </div>
+                            </text>)
+                                                        )
                         </div>
 
                         <!-- Edit Button -->
@@ -470,6 +486,21 @@
                                 .OnClick("showLedgerAccountEditPopup")
                                 .Width(60)
                                 )
+                            @(Html.DevExtreme().Popup()
+                                                        .ID("ledgerEditAccountPopup")
+                                                        .Width("93%")
+                                                        .Height("85%")
+                                                        .Title("Edit Ledger Account")
+                                                        .ShowTitle(true)
+                                                        
+                                                        .Visible(false)  // Hidden by default
+                                                        .ResizeEnabled(true)
+                                                        .ContentTemplate(@<text>
+                                <div id="popupContent" style="width:100%; height:100%;">
+                                    <iframe id="ledgerEditAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
+                                </div>
+                            </text>)
+                                                        )
                         </div>
 
                     </div>
@@ -575,37 +606,36 @@
                             .ElementAttr(new { @class = "light-theme-input" })
                             .ContentTemplate(new TemplateName("CurrencyContentTemplate"))
                             )
-                        @(Html.DevExtreme().DropDownBox()
-                            .Label(new JS("formatMessage('Convertion Currency')"))
-                            .DataSource(d => d.WebApi()
-                            .Controller("Utility") // Adjust if needed
-                            .LoadAction("GetCurrencyList")
-                            .LoadMode(DataSourceLoadMode.Raw)
-                            .Key("CurrencyExchangeId")
-                            )
-                            .ValidationRules(rules =>
-                            {
-                                rules.AddRequired()
-                                .Message("Please select a currency.");
-                            })
-                            .LabelMode(EditorLabelMode.Floating)
-                            .ID("ddCurrency")
-                            .ShowClearButton(false)
-                            .AcceptCustomValue(false)
-                            .OpenOnFieldClick(true)
-                            .Value(1)
-                            .ValueExpr("CurrencyExchangeId")
-                            .DisplayExpr("CurrencyName")
-                            .OnInput("dropDownBoxOnInput")
-                            .OnOpened("onOpened")
-                            .Width(217)
-                            .TabIndex(1)
-                            .DropDownOptions(o => o.Width(700))
-                            .OnKeyDown("onKeyDown")
-                            .ElementAttr(new { @class = "light-theme-input" })
-                            //.OnValueChanged("dropDownBoxValueChanged")
-                            .ContentTemplate(new TemplateName("CurrencyContentTemplate"))
-                            )
+                        @using (Html.DevExtreme().NamedTemplate("CurrencyContentTemplate"))
+                        {
+                            @(Html.DevExtreme().DataGrid()
+                                                    .ID("currency-datagrid")
+                                                    .DataSource(d => d.WebApi()
+                                                    .Controller("Utility")
+                                                    .LoadAction("GetCurrencyList")
+                                                    .LoadMode(DataSourceLoadMode.Raw)
+                                                    .Key("CurrencyExchangeId")
+                                                    )
+                                                    .WordWrapEnabled(true)
+                                                    .ShowBorders(true)
+                                                    .Selection(sl => sl.Mode(SelectionMode.Single))
+                                                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                                    .SearchPanel(sp => sp.HighlightSearchText(true).Visible(true))
+                                                    .OnSelectionChanged("onCurrencySelectionChanged")
+                                                    .Paging(p => p.PageSize(10))
+                                                    .Height(300)
+                                                    .Columns(columns =>
+                                                    {
+                                                        columns.Add().DataField("CurrencyExchangeId").Caption(new JS("formatMessage('ID')")).Visible(true);
+                                                        columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency Name')"));
+                                                        columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Symbol')"));
+                                                        columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('Exchange Rate')"));
+                                                        columns.Add().DataField("CurrencyMasterCode").Caption(new JS("formatMessage('code')")).DataType(GridColumnDataType.Boolean);
+                                                        columns.Add().DataField("CurrencyPoints").Caption(new JS("formatMessage('point')")).DataType(GridColumnDataType.Boolean);
+
+                                                    })
+                                                    )
+                         }
 
 
                     </div>
@@ -3723,9 +3753,14 @@
             else if(argsledno==null)
             {
                 $(function () {
+                    const tenantName = sessionStorage.getItem("tenantName");
+                    debugger;
                     $.ajax({
                         url: "/api/VoucherMaster/GetNewBPVoucherNo",
                         type: 'GET',
+                        headers: {
+                            'X-Tenant-Name': tenantName
+                        },
                         success: function (data) {
                             // Set the value in the VoucherNo TextBox
                             $("#VoucherNo").dxTextBox("instance").option("value", data);
