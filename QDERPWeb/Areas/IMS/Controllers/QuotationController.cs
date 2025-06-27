@@ -30,6 +30,81 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             _logger = logger;
         }
         [HttpGet]
+        public IActionResult GetReportAttributes(string reportNo)
+        {
+            if (string.IsNullOrEmpty(reportNo))
+                return BadRequest(new { message = "Report number is required." });
+
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var result = dbContext.Tbl90112ReportAttributes
+                    .Where(r => r.ReportNo == reportNo)
+                    .Select(r => new
+                    {
+                       r.ReportSubject,
+                       r.ReportSummary,
+                       r.ReportIntroduction,
+                       r.ReportThanksNote
+                    })
+                    .FirstOrDefault();
+
+                if (result == null)
+                    return NotFound(new { message = "No report found" });
+
+                return Json(result);
+            }
+
+            return Unauthorized();
+        }
+        public class ReportAttributeUpdateModel
+        {
+            public string ReportNo { get; set; }       // Always "IMS-QTN-01"
+            public string Field { get; set; }          // e.g., "ReportSubject"
+            public string Value { get; set; }          // The new value
+        }
+        [HttpPost]
+        public IActionResult SaveReportAttribute([FromBody] ReportAttributeUpdateModel model)
+        {
+            if (model == null || string.IsNullOrEmpty(model.ReportNo) || string.IsNullOrEmpty(model.Field))
+            {
+                return BadRequest(new { message = "Invalid input data" });
+            }
+
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var record = dbContext.Tbl90112ReportAttributes
+                    .FirstOrDefault(r => r.ReportNo == model.ReportNo);
+
+                if (record == null)
+                    return NotFound(new { message = "Report not found." });
+
+                // Update only the requested field
+                switch (model.Field)
+                {
+                    case "ReportSubject":
+                        record.ReportSubject = model.Value;
+                        break;
+                    case "ReportSummary":
+                        record.ReportSummary = model.Value;
+                        break;
+                    case "ReportIntroduction":
+                        record.ReportIntroduction = model.Value;
+                        break;
+                    case "ReportThanksNote":
+                        record.ReportThanksNote = model.Value;
+                        break;
+                    default:
+                        return BadRequest(new { message = "Invalid field name." });
+                }
+
+                dbContext.SaveChanges();
+                return Ok(new { message = "Field updated successfully." });
+            }
+
+            return Unauthorized();
+        }
+
+        [HttpGet]
         public async Task<IActionResult> GetQuotation(DateTime? fromDate, DateTime? toDate)
         {
             try
@@ -578,6 +653,56 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             {
                 string year = (yearDigits > 0) ? date.Year.ToString().Substring(4 - yearDigits) : "";
                 return $"{abbr}{year}-{"1".PadLeft(digits, '0')}";
+            }
+        }
+        [HttpPost]
+        public IActionResult ReviseQuotation([FromBody] string originalQuoteNo)
+        {
+            if (string.IsNullOrWhiteSpace(originalQuoteNo))
+                return BadRequest(new { success = false, message = "Quote No is required." });
+
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { success = false, message = "Tenant context not found." });
+
+            try
+
+            {
+                // Step 1: Trim quote base (remove -(R1) etc.)
+                string quoteBase = originalQuoteNo;
+                int bracketIndex = quoteBase.IndexOf("-(R");
+                if (bracketIndex > -1)
+                    quoteBase = quoteBase.Substring(0, bracketIndex);
+
+                // Step 2: Get latest revision number
+                int currentRevision = dbContext.Tbl60101quotationMasters
+                    .Where(q => q.QuoteNo.StartsWith(quoteBase))
+                    .Max(q => q.RevisionNo ?? 0);
+
+                int nextRevision = currentRevision + 1;
+                string newQuoteNo = $"{quoteBase}-(R{nextRevision})";
+                string user = HttpContext.Session.GetString("UserName") ?? "System";
+
+                // Step 3: Call stored procedure to duplicate with revision
+                dbContext.Database.ExecuteSqlRaw(
+                    "EXEC sp600_05CreateNewRevisedQuotation @p0, @p1, @p2, @p3",
+                    originalQuoteNo, newQuoteNo, nextRevision, user
+             );
+
+                // Step 4: Update status of old quotation (to 'Revised' = 5)
+                var oldQuote = dbContext.Tbl60101quotationMasters
+                    .FirstOrDefault(q => q.QuoteNo == originalQuoteNo);
+                if (oldQuote != null)
+                {
+                    oldQuote.QuoteStatus = 5;
+                    dbContext.SaveChanges();
+                }
+
+                return Ok(new { success = true, message = "Quotation revised successfully.", newQuoteNo });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error revising quotation: " + ex.Message);
+                return StatusCode(500, new { success = false, message = "Revision failed", detail = ex.Message });
             }
         }
 

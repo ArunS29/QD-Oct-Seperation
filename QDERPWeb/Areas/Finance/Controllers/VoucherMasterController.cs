@@ -1225,48 +1225,85 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
+                string tenantName = HttpContext.Request.Headers["X-Tenant-Name"];
+
+                if (string.IsNullOrWhiteSpace(tenantName))
+                    return BadRequest(new { message = "Session expired or tenant name missing.", success = false });
+
+                // Step 1: Get CompanyId
+                var company = await dbContext.Tbl901CompanyDetails
+                    .Where(c => c.CompanyNameShort == tenantName)
+                    .Select(c => new { c.CompanyId })
+                    .FirstOrDefaultAsync();
+
+                if (company == null)
+                    return NotFound(new { message = "Company not found.", success = false });
+
+                byte companyId = company.CompanyId;
+
+                // Step 2: Get NoOfDigitsInVouchers
+                var companyConfig = await dbContext.Tbl901CompanyDetails02s
+                    .Where(c => c.CompanyId == companyId)
+                    .Select(c => new { c.NoOfDigitsInVouchers })
+                    .FirstOrDefaultAsync();
+
+                byte configuredDigitCount = companyConfig?.NoOfDigitsInVouchers ?? 3; // Default to 3 if not found
+
+                // Step 3: Prepare voucher prefix
                 DateTime currentDate = DateTime.Now;
-                string currentYear = currentDate.Year.ToString();
-                string currentMonth = currentDate.Month.ToString("00");
-                string voucherString = "BP-" + currentYear.Substring(currentYear.Length - 2, 2) + "-" + currentMonth + "-";
+                string yearPart = currentDate.Year.ToString().Substring(2); // "25"
+                string monthPart = currentDate.Month.ToString("00"); // "06"
+                string voucherPrefix = $"BP-{yearPart}-{monthPart}-";
+                string likePattern = voucherPrefix + "%";
+
+                int digitCountToUse = configuredDigitCount; // this might change if series already exists
                 string strNewReceiptNo;
-
-                // SQL query with interpolated string
-                string likePattern = voucherString + "%";
-
                 try
                 {
-                    // Use raw SQL query to fetch the maximum voucher number
+                    // Step 4: Check if any vouchers already exist for current month
+                    var existingVoucher = await dbContext.Tbl201VoucherEntries
+                        .Where(v =>  v.VoucherNo.StartsWith(voucherPrefix))
+                        .OrderByDescending(v => v.VoucherNo)
+                        .Select(v => v.VoucherNo)
+                        .FirstOrDefaultAsync();
+
+                    if (!string.IsNullOrEmpty(existingVoucher))
+                    {
+                        // Step 5: Existing series found → infer digit count from length of number part
+                        string numberPart = existingVoucher.Substring(voucherPrefix.Length);
+                        digitCountToUse = numberPart.Length;
+                    }
+
+                    // Step 6: Fetch max number using resolved digit count
                     var result = await dbContext.VoucherResults
                         .FromSqlInterpolated($@"
-                SELECT MAX(CAST(RIGHT(VoucherNo, 3) AS INT)) AS MaxVoucherNo
-                FROM Tbl201VoucherEntry
-                WHERE VoucherNo LIKE {likePattern}")
+                    SELECT MAX(CAST(RIGHT(VoucherNo, {digitCountToUse}) AS INT)) AS MaxVoucherNo
+                    FROM Tbl201VoucherEntry
+                    WHERE VoucherNo LIKE {likePattern}")
                         .ToListAsync();
 
                     int maxVoucherNo = result.FirstOrDefault()?.MaxVoucherNo ?? 0;
-
                     int newVoucherNo = maxVoucherNo + 1;
 
-                    // Format the new voucher number with leading zeros
-                    strNewReceiptNo = "000" + newVoucherNo.ToString();
-                    strNewReceiptNo = strNewReceiptNo.Substring(strNewReceiptNo.Length - 3);
-
-                    // Concatenate with the voucher string
-                    strNewReceiptNo = voucherString + strNewReceiptNo;
+                    string paddedNo = newVoucherNo.ToString().PadLeft(digitCountToUse, '0');
+                    strNewReceiptNo = voucherPrefix + paddedNo;
                 }
                 catch (Exception)
                 {
-                    // Handle cases where there's no existing voucher number
-                    strNewReceiptNo = voucherString + "001";
+                    // fallback if any failure
+                    string fallback = "1".PadLeft(configuredDigitCount, '0');
+                    strNewReceiptNo = voucherPrefix + fallback;
                 }
 
                 return Json(strNewReceiptNo);
             }
 
-        
-         return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
+
+
 
         [HttpPost]
         public async Task<ActionResult> DeleteCheque([FromBody] string chequeNo)
@@ -3312,7 +3349,47 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 			return Ok(new { success = true, invoiceNo });
 		}
 
+        [HttpGet]
+        public async Task<IActionResult> GetAutoGeneratedVATPurchaseInvoiceNo(string tenantName)
+        {
+            if (string.IsNullOrWhiteSpace(tenantName))
+                return BadRequest(new { message = "Tenant name is required.", success = false });
 
-	}
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+            string tenantShort;
+            var words = tenantName.Split(new[] { ' ', '-', '_' }, StringSplitOptions.RemoveEmptyEntries);
+            if (words.Length == 1)
+                tenantShort = $"{tenantName[0]}{tenantName[^1]}".ToUpper();
+            else
+                tenantShort = string.Concat(words.Select(w => w[0])).ToUpper();
+
+            var year = DateTime.Now.Year;
+            var prefix = $"{tenantShort}-VIPUR-{year}-";
+
+            var existingNos = await dbContext.Tbl20166VatpurchaseMasters
+                .Where(inv => inv.PurchaseVoucherNo.StartsWith(prefix))
+                .Select(inv => inv.PurchaseVoucherNo)
+                .ToListAsync();
+
+            int maxIncrement = 0;
+            foreach (var no in existingNos)
+            {
+                var parts = no.Split('-');
+                if (parts.Length == 4 && int.TryParse(parts[3], out int inc))
+                    if (inc > maxIncrement) maxIncrement = inc;
+            }
+
+            var newIncrement = maxIncrement + 1;
+            var purchaseVoucherNo = $"{prefix}{newIncrement:D3}";
+
+            bool exists = await dbContext.Tbl20166VatpurchaseMasters.AnyAsync(inv => inv.PurchaseVoucherNo == purchaseVoucherNo);
+            if (exists)
+                return Conflict(new { success = false, message = "Voucher No already exists." });
+
+            return Ok(new { success = true, invoiceNo = purchaseVoucherNo });
+        }
+    }
 
 }

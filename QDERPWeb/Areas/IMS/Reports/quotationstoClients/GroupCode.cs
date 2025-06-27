@@ -1,6 +1,4 @@
-﻿using DevExpress.XtraPrinting.Drawing;
-using DevExpress.XtraReports.UI;
-using System;
+﻿using DevExpress.XtraReports.UI;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
@@ -31,13 +29,13 @@ namespace QD.ERP.Web.Areas.IMS.Reports.quotationstoClients
             _tenantDbContextHelper = tenantDbContextHelper;
 
             InitializeComponent();
-            SetReportParameters(quotationNo, tenantName, companyName, logoImage, sealImage, companyAddress, companyNameAr, companyAddressAr,username);
+            SetReportParameters(quotationNo, tenantName, companyName, logoImage, sealImage, companyAddress, companyNameAr, companyAddressAr, username);
             LoadReportData(quotationNo);
         }
 
         private void SetReportParameters(
             string quotationNo, string tenantName, string companyName, Image logoImage, Image sealImage,
-            string companyAddress,string companyNameAr, string companyAddressAr,string username)
+            string companyAddress, string companyNameAr, string companyAddressAr, string username)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -62,7 +60,7 @@ namespace QD.ERP.Web.Areas.IMS.Reports.quotationstoClients
             AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string));
             AddOrUpdateParameter("CompanyName", companyName ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddress", companyAddress ?? "", typeof(string));
-          
+
             AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddressAr", companyAddressAr ?? "", typeof(string));
             AddOrUpdateParameter("UserName", username ?? "", typeof(string));
@@ -106,11 +104,11 @@ namespace QD.ERP.Web.Areas.IMS.Reports.quotationstoClients
                 this.DataSource = dt;
                 this.DataMember = "";
 
-                
 
 
 
-         decimal totalAmount = Convert.ToDecimal(dt.Compute("SUM(TotalAfterDiscount)", ""));
+
+                decimal totalAmount = Convert.ToDecimal(dt.Compute("SUM(TotalAfterDiscount)", ""));
 
                 if (FindControl("xrLabel2", true) is XRLabel labelEnglish)
                     labelEnglish.Text = $"Amount in Words: {NumberToWordsHelper.ToEnglishWords(totalAmount)}";

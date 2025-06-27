@@ -398,64 +398,64 @@ body {
 }
 
 
-#btnAddNewQuotation:hover {
-    width: 240px !important; /* Expand to fit text */
+/*#btnAddNewQuotation:hover {
+    width: 240px !important;
 }
 
 #btnDeliveryNoteDetails:hover {
-    width: 210px !important; /* Expand to fit text */
+    width: 210px !important;
 }
 
 #btnDeliveryNotePosting:hover {
-    width: 210px !important; /* Expand to fit text */
+    width: 210px !important;
 }
 
 #btnDeliveryNoteDetails:hover {
-    width: 220px !important; /* Expand to fit text */
+    width: 220px !important;
 }
 
 #btnAddDeliverynote:hover {
-    width: 210px !important; /* Expand to fit text */
+    width: 210px !important;
 }
 
 #btnAddSalesOrder:hover {
-    width: 220px !important; /* Expand to fit text */
+    width: 220px !important;
 }
 
 #btnSalesOrderDetails:hover {
-    width: 210px !important; /* Expand to fit text */
+    width: 210px !important;
 }
 
 #btnCreateQuotations:hover {
-    width: 240px !important; /* Expand to fit text */
+    width: 240px !important;
 }
 
 #btnPurchaseOrderDetails:hover {
-    width: 230px !important; /* Expand to fit text */
+    width: 230px !important;
 }
 
 #btnNewPurchaseOrder:hover {
-    width: 230px !important; /* Expand to fit text */
+    width: 230px !important;
 }
 
 #btnAddNewStockAdjustment:hover {
-    width: 30px !important; /* Expand to fit text */
+    width: 30px !important;
 }
 
 #btnAddNewJobOrder:hover {
-    width: 230px !important; /* Expand to fit text */
+    width: 230px !important;
 }
 
 #btnStockAdjustmentDetails:hover {
-    width: 250px !important; /* Expand to fit text */
+    width: 250px !important;
 }
 
 #btnMaterialReceiptDetails:hover {
-    width: 250px !important; /* Expand to fit text */
+    width: 250px !important;
 }
 #btnPurchaseEditDetails:hover {
     width: 240px !important;
-}
+}*/
 
 /* Print button icon color */
 #btnPrint .dx-icon {
@@ -537,6 +537,16 @@ body {
 #rowHeightProperties:hover .dx-button-text {
     display: inline-block;
 }
+/*.dx-loadpanel {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    height: 100vh !important;
+    width: 100vw !important;
+    background-color: rgba(255, 255, 255, 0.6) !important;
+    z-index: 99990 !important;
+}*/
+
 .dx-loadpanel-content {
     display: flex !important;
     justify-content: center;
@@ -544,6 +554,9 @@ body {
     height: 150px !important;
     width: 180px !important;
     margin-top: 400px;
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
 }
 .dx-loadindicator-content {
   position: absolute;

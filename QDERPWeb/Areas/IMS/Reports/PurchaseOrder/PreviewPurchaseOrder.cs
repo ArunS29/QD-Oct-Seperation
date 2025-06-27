@@ -10,7 +10,7 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventroryReports.PurchaseOrder
     public partial class PreviewPurchaseOrder : DevExpress.XtraReports.UI.XtraReport
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
-
+       // private bool _isApproved;
         public PreviewPurchaseOrder()
         {
             InitializeComponent();
@@ -25,9 +25,11 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventroryReports.PurchaseOrder
             string companyAddress,
             string companyNameAr,
             string companyAddressAr,
+           // bool isApproved,
             TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
+           // _isApproved = isApproved;
 
             InitializeComponent();
             SetReportParameters(purchaseNo, tenantName, companyName,  sealImage, companyAddress, companyNameAr, companyAddressAr);
@@ -95,6 +97,8 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventroryReports.PurchaseOrder
             {
                 this.DataSource = dt;
                 this.DataMember = "";
+               // SetWatermark();
+
                 decimal totalAmount = Convert.ToDecimal(dt.Compute("SUM(GrandTotal)", ""));
 
                 if (FindControl("xrLabel44", true) is XRLabel labelEnglish)
@@ -141,7 +145,19 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventroryReports.PurchaseOrder
 
             return dt;
         }
-
+        //private void SetWatermark()
+        //{
+        //    if (!_isApproved)
+        //    {
+        //        this.Watermark.Text = "DRAFT COPY";
+        //        this.Watermark.Font = new Font("Arial", 70, FontStyle.Bold);
+        //        this.Watermark.ForeColor = Color.FromArgb(80, 173, 216, 230);
+        //        this.Watermark.TextDirection = DirectionMode.ForwardDiagonal;
+        //        this.Watermark.ShowBehind = true;
+        //        this.Watermark.ImageTiling = false;
+        //        this.Watermark.ImageViewMode = ImageViewMode.Stretch;
+        //    }
+        //}
         private void PreviewPurchaseOrder_BeforePrint(object sender, System.ComponentModel.CancelEventArgs e)
         {
             // You can place custom logic before printing if needed

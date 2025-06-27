@@ -147,7 +147,25 @@
     .playIcon{
         display:none;
     }
-    
+
+    .title {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 20px !important;
+        font-weight: bold !important;
+        background: linear-gradient(135deg, #6a11cb, #2575fc) !important;
+        color: white !important;
+        width: 100% !important;
+        padding: 0px !important;
+        border-radius: 0px !important;
+        margin:0px !important;
+        height: 50px !important;
+    }
+
+    .kpi-toggle {
+        display: none !important;
+    }
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
@@ -5304,31 +5322,7 @@ function syncSupVATNumbers(e) {
 
     //english text convert to arabic
 
-    async function translateToArabic(text) {
-
-        try {
-
-
-            const response = await fetch(
-
-                `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`
-
-            );
-
-            const data = await response.json();
-            console.log(data);
-            return data.responseData.translatedText;
-
-        } catch (error) {
-
-            console.error("Translation failed:", error);
-
-            return "Translation Error";
-
-        }
-
-    }
-
+  
     async function convertToArabic() {
 
         // Get the TextBox1 (input) instance

@@ -1,0 +1,405 @@
+﻿@page
+@model QD.ERP.Web.Areas.ERM.Pages.ServiceMaintenanceModel
+@{
+}
+<style>
+	.overlay {
+		display: none;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.5);
+		z-index: 1000;
+	}
+
+	.overlay-content {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 100%;
+		height: 80%;
+		background: #fff;
+		box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+		border-radius: 8px;
+		overflow: hidden;
+	}
+
+	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btntoggleGroupPanel,#btnColumnChooser,#btnAddSalesOrder,#btnSalesOrderDetails)) {
+		display: none !important
+	}
+
+	#overlay-frame {
+		width: 100%;
+		height: 100%;
+	}
+
+	.dx-datagrid-headers {
+		border: 1px solid #686868 !important;
+		width: 100%; /* Adjust to fit the container */
+		overflow-x: auto; /* Enable horizontal scrolling */
+		white-space: nowrap; /* Prevent wrapping of headings */
+		overflow-y: hidden;
+	}
+
+		.dx-datagrid-headers .dx-row > td {
+			border: 1px solid #686868 !important;
+			text-align: center !important;
+			/* 	width:1000px; */
+		}
+
+	.dx-datagrid .dx-header-row .dx-datagrid-text-content {
+		font-size: 12px !important;
+		white-space: nowrap !important; /* Prevent wrapping of text */
+		text-align: center !important;
+		font-weight: bold;
+		color: black;
+	}
+
+	.close-btn {
+		position: absolute;
+		top: 10px;
+		right: 20px;
+		font-size: 30px;
+		cursor: pointer;
+	}
+
+	.custom-toolbar {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.filter-btn {
+		background-color: #007bff;
+		color: white;
+		border: none;
+		padding: 6px 12px;
+		border-radius: 5px;
+		cursor: pointer;
+		font-family: 'Inter', sans-serif;
+	}
+
+		.filter-btn:hover {
+			background-color: #0056b3;
+		}
+
+	.dx-texteditor {
+		background-color: transparent !important;
+		border: 1px solid #d6e4f0 !important;
+		border-radius: 4px !important;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+		font-size: 14px !important;
+		transition: all 0.2s ease-in-out !important;
+		height: 39px !important;
+	}
+
+		.dx-texteditor:hover,
+		.dx-texteditor.dx-state-hover,
+		.dx-button:hover {
+			box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important;
+			border-color: #86b7fe !important;
+		}
+
+		.dx-texteditor.dx-state-focused {
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+			border-color: #508ae1 !important;
+		}
+
+	.no-border-input {
+		border: none !important;
+		outline: none !important;
+		box-shadow: none !important;
+		background: transparent !important;
+		font-weight: bold;
+		font-size: 16px;
+		color: black;
+		pointer-events: none;
+	}
+
+
+
+	.context-menu {
+		display: none;
+		position: relative;
+		background-color: white;
+		border: 1px solid #ccc;
+		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+		list-style: none;
+		padding: 8px 0;
+		z-index: 1000;
+	}
+
+		.context-menu li {
+			padding: 8px 16px;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+		}
+
+			.context-menu li:hover {
+				background-color: #f0f0f0;
+			}
+
+	.ledgerResult {
+		overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
+		width: 100%;
+	}
+
+	.mainContainer {
+		width: 100%;
+		overflow: hidden;
+	}
+</style>
+
+<input id="formId" value="frm201LedgerView" type="hidden" />
+<div class="title">
+	<div class="header-container">
+		<div id="ServiceMaintenance" class="no-border-input"></div>
+	</div>
+</div>
+
+
+@await Html.PartialAsync("/Pages/Shared/ERM/StockAdjustmentFooter.cshtml")
+<div class="dx-fieldset horizontal-container">
+	@(Html.DevExtreme().DateBox()
+		.ID("frmdateBox")
+		.Label(new JS("formatMessage('Start Date')"))
+		.LabelMode(EditorLabelMode.Outside)
+		.InputAttr("aria-label", "Date")
+		.Type(DateBoxType.Date)
+		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)) // First day of the month
+		.DisplayFormat("dd-MMM-yyyy")
+		.TabIndex(2)
+		)
+
+	@(Html.DevExtreme().DateBox()
+		.ID("todateBox")
+		.Label(new JS("formatMessage('End Date')"))
+		.LabelMode(EditorLabelMode.Outside)
+		.InputAttr("aria-label", "Date")
+		.Type(DateBoxType.Date)
+		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))) // Last day of the month
+		.DisplayFormat("dd-MMM-yyyy")
+		.TabIndex(3)
+		)
+
+
+	@(Html.DevExtreme().DropDownButton()
+		.ID("ddBtnShowRecords")
+		.Text(new JS("formatMessage('Show Records')"))
+		.Icon("smalliconslayout")
+		.Width(180)
+		.ElementAttr("class", "button-alignment-down")
+		.TabIndex(4)
+		.DropDownOptions(options => options.Width(230))
+		.Items(items =>
+		{
+			items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
+			items.Add().Text(new JS("formatMessage('Today')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
+			items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+			items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
+			items.Add().Text(new JS("formatMessage('This Month Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+			items.Add().Text(new JS("formatMessage('This Month (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+			items.Add().Text(new JS("formatMessage('This Year Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+			items.Add().Text(new JS("formatMessage('This Year (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+			items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+			items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+		})
+		)
+
+</div>
+<div class="dx-field ledgerResult">
+	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201607vatinvoiceRegisterMainView>()
+		.ID("dataGrid")
+		.RemoteOperations(false)
+		.DataSource(new JS("[]"))
+		.Columns(columns =>
+		{
+			columns.Add().Caption(new JS("formatMessage('Stock Adjustments Entries')")).Columns(subColumns =>
+			{
+				subColumns.AddFor(m => m.InvoiceZatcaStatus).Caption(new JS("formatMessage('Invoice Zatca Status')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.InvoiceType).Caption(new JS("formatMessage('Invoice Type')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.InvoiceNo).Caption(new JS("formatMessage('Invoice No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.InvoiceDate).Caption(new JS("formatMessage('Invoice Date')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
+				subColumns.AddFor(m => m.InvoiceEffectiveDate).Caption(new JS("formatMessage('Invoice Effective Date')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
+				subColumns.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('Account Head')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.InvoiceStatus).Caption(new JS("formatMessage('Invoice Status')")).Alignment(HorizontalAlignment.Center).Visible(true);
+			});
+			columns.Add().Caption(new JS("formatMessage('No Of Items')")).Columns(subColumns =>
+			{
+				subColumns.AddFor(m => m.CalcLineAmount)
+			.Caption(new JS("formatMessage('Amount Before Tax')"))
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.AllowEditing(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+
+				subColumns.AddFor(m => m.CalcTaxAmount)
+			.Caption(new JS("formatMessage('Total VAT Amount')"))
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+
+				subColumns.AddFor(m => m.TotalInvoiceAmount)
+			.Caption(new JS("formatMessage('Invoiced Amount')"))
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			});
+
+			columns.Add().Caption(new JS("formatMessage('Revenue Classified')")).Columns(revenueColumns =>
+			{
+				revenueColumns.Add().Caption(new JS("formatMessage('Domestic')")).Columns(subColumns =>
+			{
+				subColumns.AddFor(m => m.DomesticStandartRatedRevenue)
+			.Caption(new JS("formatMessage('Domestic Revenue @5%')"))
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+
+				subColumns.AddFor(m => m.TotalRevenueOf10Perc)
+			.Caption(new JS("formatMessage('Domestic Revenue @10%')"))
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+
+				subColumns.AddFor(m => m.TotalRevenueOf15Perc)
+			.Caption(new JS("formatMessage('Domestic Revenue @15%')"))
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+
+				subColumns.AddFor(m => m.DomesticZeroRatedRevenue)
+			.Caption(new JS("formatMessage('Domestic Zero Rated Revenue')"))
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+
+				subColumns.AddFor(m => m.DomesticExemptedRevenue)
+			.Caption(new JS("formatMessage('Domestic Exempted Revenue')"))
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			});
+
+				revenueColumns.Add().Caption(new JS("formatMessage('GCC Countries')")).Columns(subColumns =>
+			{
+				subColumns.AddFor(m => m.GccstandardRatedRevenue)
+			.Caption(new JS("formatMessage('GCC Revenue')"))
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			});
+
+				revenueColumns.Add().Caption(new JS("formatMessage('Other Countries')")).Columns(subColumns =>
+			{
+				subColumns.AddFor(m => m.ExportsRevenue)
+			.Caption(new JS("formatMessage('Exports Revenue')"))
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			});
+			});
+
+			columns.Add().Caption(new JS("formatMessage('VAT Amount Classified')")).Columns(vatColumns =>
+			{
+				vatColumns.Add().Caption(new JS("formatMessage('Domestic VAT')")).Columns(subColumns =>
+			{
+				subColumns.AddFor(m => m.DomesticStandartRatedTax)
+			.Caption(new JS("formatMessage('Domestic VAT @5%')"))
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+
+				subColumns.AddFor(m => m.TotalTaxOf10Perc)
+			.Caption(new JS("formatMessage('Domestic VAT @10%')"))
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+
+				subColumns.AddFor(m => m.TotalTaxOf15Perc)
+			.Caption(new JS("formatMessage('Domestic VAT @15%')"))
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+
+				subColumns.AddFor(m => m.DomesticZeroRatedTax)
+			.Caption(new JS("formatMessage('Domestic Zero Rated VAT')"))
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+
+				subColumns.AddFor(m => m.DomesticExemptedTax)
+			.Caption(new JS("formatMessage('Domestic Exempted VAT')"))
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			});
+
+				vatColumns.Add().Caption(new JS("formatMessage('GCC VAT')")).Columns(subColumns =>
+			{
+				subColumns.AddFor(m => m.GccstandardRatedTax)
+			.Caption(new JS("formatMessage('GCC Tax')"))
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			});
+
+				vatColumns.Add().Caption(new JS("formatMessage('Exports VAT')")).Columns(subColumns =>
+			{
+				subColumns.AddFor(m => m.ExportsTax)
+			.Caption(new JS("formatMessage('Exports Tax')"))
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			});
+			});
+		})
+		.Height(680) // Fixed height for the grid
+		.ColumnAutoWidth(true)
+		.Width("98%")
+		.WordWrapEnabled(true)
+		.OnCellClick("function(e) {handleCellClick(e);}")
+		.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+		.AllowColumnReordering(true)
+		.AllowColumnResizing(true)
+		.ColumnFixing(fixing => fixing.Enabled(true))
+		.HeaderFilter(filter => filter.Visible(false))
+		.Paging(p => p.Enabled(false))
+		.Pager(pager => pager.Visible(false))
+		.GroupPanel(groupPanel => groupPanel.Visible(false))
+		.ShowBorders(true)
+		.ShowRowLines(true)
+
+
+		.FilterRow(filterRow => filterRow.Visible(false))
+		.GroupPanel(groupPanel => groupPanel.Visible(false))
+		.ShowBorders(true)
+		.StateStoring(stateStoring =>
+		{
+			stateStoring
+			.Enabled(true)
+			.Type(StateStoringType.LocalStorage)
+			.StorageKey("gridContainerState");
+		})
+		.OnInitialized("function(e) { loadGridState(); }")
+		)
+
+
+
+</div>
+<div id="invoiceErrorPopup"></div>
+<script>
+	 $(function () {
+		$("#ServiceMaintenance").dxTextBox({
+		text: formatMessage("Service Maintenance"),
+			readOnly: true,
+			onContentReady: function (e) {
+			$(e.element).addClass("dx-textbox-heading");
+			}
+			});
+		});
+</script>

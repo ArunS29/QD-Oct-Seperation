@@ -1195,6 +1195,220 @@
                     )
 }
 
+<script>
+    // $(function () {
+    // $("#CompanyDetails").dxTextBox({
+    // text: formatMessage("Company Details"),
+    //     readOnly: true,
+    //     onContentReady: function (e) {
+    //     $(e.element).addClass("dx-textbox-heading");
+    //     }
+    //     });
+    // });
+
+    //CountryCode
+        function onCodeSelected(e) {
+        const selected = e.selectedRowsData[0];
+        if (selected) {
+            const dropDownBox = $("#CountryCode").dxDropDownBox("instance");
+            if (dropDownBox) {
+                // Set the value to ClientCode, not ClientName
+                dropDownBox.option("value", selected.CountryCodeAlpha2);
+                dropDownBox.close();
+            } else {
+                console.error("DropDownBox instance not found.");
+            }
+        }
+    }  
+   //IDtype 
+    function onIDSelected(e) {
+        const selected = e.selectedRowsData[0];
+        if (selected) {
+             const dropDownBox = $("#IDType").dxDropDownBox("instance");
+            if (dropDownBox) {
+                // Set the value to ClientCode, not ClientName
+                 dropDownBox.option("value", selected.SellerOtherIdtype);
+                dropDownBox.close();
+            } else {
+                console.error("DropDownBox instance not found.");
+            }
+        }
+    }
+
+
+
+    // Translate value from one DevExtreme TextBox to another
+    async function translateFieldToArabic(sourceId, targetId) {
+        const sourceInstance = $(`#${sourceId}`).dxTextBox("instance");
+        const targetInstance = $(`#${targetId}`).dxTextBox("instance");
+
+        if (!sourceInstance || !targetInstance) {
+            console.error("TextBox instances not initialized.");
+            alert("Textbox instances not found. Check IDs and that DevExtreme is loaded.");
+            return;
+        }
+
+        const englishText = sourceInstance.option("value");
+        if (!englishText || englishText.trim() === "") {
+            alert("Please enter text to translate.");
+            return;
+        }
+
+        const arabicTranslation = await translateToArabic(englishText);
+        targetInstance.option("value", arabicTranslation);
+    }
+
+    // Attach handlers after DOM is ready
+    $(document).ready(function () {
+           // Translation buttons - bind after dxTextBoxes are initialized
+    $("#ar_CompanyName1").off("click").on("click", function () {
+        translateFieldToArabic("CompanyName", "ar_CompanyName");
+    });
+
+    $("#ar_StreetName1").off("click").on("click", function () {
+        translateFieldToArabic("StreetName", "ar_StreetName");
+    });
+
+    $("#ar_AdditionalAddress1").off("click").on("click", function () {
+        translateFieldToArabic("AdditionalAddress", "ar_AdditionalAddress");
+    });
+    $("#ar_City1").off("click").on("click", function () {
+        translateFieldToArabic("City", "ar_City");
+    });
+    $("#ar_Province1").off("click").on("click", function () {
+        translateFieldToArabic("Province", "ar_Province");
+    });
+    $("#ar_District1").off("click").on("click", function () {
+        translateFieldToArabic("District", "ar_District");
+    })
+    $("#ar_ShortName1").off("click").on("click", function () {
+        translateFieldToArabic("ShortName", "ar_ShortName");
+    }); 
+    
+
+    });
+
+
+    /////////////////
+        $(function () {
+        $.getJSON("/api/CompanyDetails/GetAllCompanyDetails1", function (data) {
+            const company = data.data?.[0];
+            if (!company) {
+                DevExpress.ui.notify("❌ Company short name does not match the tenant name. No data found.", "error", 4000);
+                return;
+            }
+            $("#CompanyID").dxTextBox("instance").option("value", company.CompanyId);
+            $("#CompanyName").dxTextBox("instance").option("value", company.CompanyName);
+            $("#StreetName").dxTextBox("instance").option("value", company.CompanyAddress1);
+            $("#AdditionalAddress").dxTextBox("instance").option("value", company.CompanyAddress2);
+            $("#BuildingNumber").dxTextBox("instance").option("value", company.SellerBuildingNumber);
+            $("#City").dxTextBox("instance").option("value", company.CompanyCity);
+            $("#AdditionalNumber").dxTextBox("instance").option("value", company.SellerAdditionalNumber);
+            $("#Province").dxTextBox("instance").option("value", company.SellerProvince);
+            $("#PostalCode").dxTextBox("instance").option("value", company.SellerPostalCode);
+            $("#District").dxTextBox("instance").option("value", company.SellerNeighborhood);
+            $("#CountryCode").dxDropDownBox("instance").option("value", company.SellerCountryCode);
+            $("#ShortName").dxTextBox("instance").option("value", company.CompanyNameShort);
+            $("#FullAddress").dxTextBox("instance").option("value", company.CompanyFullAddress);
+            $("#ProductName").dxTextBox("instance").option("value", company.ProductName);
+            $("#CompanySlogan").dxTextBox("instance").option("value", company.CompanySlogan);
+            $("#Phone").dxTextBox("instance").option("value", company.CompanyPhone);
+            $("#Fax").dxTextBox("instance").option("value", company.CompanyFax);
+            $("#Email").dxTextBox("instance").option("value", company.EmailAddress);
+            $("#Website").dxTextBox("instance").option("value", company.Website);
+            $("#VAT").dxTextBox("instance").option("value", company.CompanyVatno);
+            $("#GroupVAT").dxTextBox("instance").option("value", company.SellerGroupVatnumber);
+            $("#TIN").dxTextBox("instance").option("value", company.CompanyTin);
+             $("#IDType").dxDropDownBox("instance").option("value", company.SellerOtherIdtype);
+            $("#IDNumber").dxTextBox("instance").option("value", company.SellerOtherSellerId);
+            // $("#CRNumber").dxTextBox("instance").option("value", company.CRNumber);
+
+            $("#AuditorName").dxTextBox("instance").option("value", company.AuditorName);
+            $("#AuditorFax").dxTextBox("instance").option("value", company.AuditorFaxNo);
+            $("#AuditorAddress").dxTextArea("instance").option("value", company.AuditorAddress);
+            $("#AuditorEmail").dxTextBox("instance").option("value", company.AuditorEmail);
+
+            $("#ERPDBLocation").dxTextBox("instance").option("value", company.ErpdatabaseLocation);
+            $("#DMSLocation").dxTextBox("instance").option("value", company.Erpdmslocation);
+            $("#AutoBackupLocation").dxTextBox("instance").option("value", company.ErpAutoBackupLocation);
+            $("#ReceivableLocation").dxTextBox("instance").option("value", company.BillsReceivableLocation);
+
+            $("#BackupEmail").dxTextBox("instance").option("value", company.BackupOperatorEmail);
+            $("#SendSuccess").dxCheckBox("instance").option("value", company.IsSendSuccessEmail ?? true);
+            $("#SendFailed").dxCheckBox("instance").option("value", company.IsSendFailedEmail ?? true);
+
+            $("#OnlineBackup").dxTextBox("instance").option("value", company.OnlineBackupLocation);
+            $("#CloudBackup").dxCheckBox("instance").option("value", company.IsOnlineBackup ?? true);
+            $("#OnlyDB").dxCheckBox("instance").option("value", company.IsBackupDatabaseOnly ?? false);
+
+            // Arabic side
+            // $("#CompanyID_Ar").dxTextBox("instance").option("value", company.CompanyId);
+            $("#CompanyName_Ar").dxTextBox("instance").option("value", company.CompanyNameAr);
+            $("#StreetName_Ar").dxTextBox("instance").option("value", company.CompanyAddress1Ar);
+            $("#AdditionalAddress_Ar").dxTextBox("instance").option("value", company.CompanyAddress2Ar);
+            $("#ShortName_Ar").dxTextBox("instance").option("value", company.CompanyShortNameAr);
+            $("#CompanyCity_Ar").dxTextBox("instance").option("value", company.CompanyCityAr);
+          
+            // Arabic side
+            // $("#ar_CompanyID").dxTextBox("instance").option("value", company.CompanyId);
+            $("#ar_CompanyName").dxTextBox("instance").option("value", company.CompanyNameAr);
+            $("#ar_StreetName").dxTextBox("instance").option("value", company.CompanyAddress1Ar);
+            $("#ar_AdditionalAddress").dxTextBox("instance").option("value", company.CompanyAddress2Ar);
+            $("#ar_City").dxTextBox("instance").option("value", company.CompanyCityAr);
+            $("#ar_Province").dxTextBox("instance").option("value", company.SellerProvinceAr);
+            $("#ar_District").dxTextBox("instance").option("value", company.SellerNeighborhoodAr);
+            $("#ar_ShortName").dxTextBox("instance").option("value", company.CompanyShortNameAr);
+           
+
+            // $("#CompanyID1").dxTextBox("instance").option("value", company.CompanyId);
+            $("#CompanyName1").dxTextBox("instance").option("value", company.CompanyName);
+            $("#StreetName1").dxTextBox("instance").option("value", company.CompanyAddress1);
+            $("#AdditionalAddress1").dxTextBox("instance").option("value", company.CompanyAddress2);
+            $("#ShortName1").dxTextBox("instance").option("value", company.CompanyNameShort);
+             $("#CompanyCity").dxTextBox("instance").option("value", company.CompanyCity);
+
+
+            // Logo
+            if (company.CompanyLogo) {
+                const logoBase64 = `data:image/png;base64,${company.CompanyLogo}`;
+                $("#CompanyLogoPreview").html(`<img src="${logoBase64}" alt="Logo" style="max-width:100%; height:auto;">`);
+            } else {
+                $("#CompanyLogoPreview").html(`<span>Right click to upload logo</span>`);
+            }
+            // Seal
+            if (company.CompanySeal) {
+                const sealBase64 = `data:image/png;base64,${company.CompanySeal}`;
+                $("#CompanySealPreview").html(`<img src="${sealBase64}" alt="Seal" style="max-width:100%; height:auto;">`);
+            } else {
+                $("#CompanySealPreview").html(`<span>Right click to upload seal</span>`);
+            }
+            // LetterHead
+            if (company.LetterHead) {
+                const LetterHeadBase64 = `data:image/png;base64,${company.LetterHead}`;
+                $("#imgBox1").html(`<img src="${LetterHeadBase64}" alt="Seal" style="max-width:100%; height:auto;">`);
+            } else {
+                $("#imgBox1").html(`<span>Right click to upload seal</span>`);
+            }
+        }).fail(function (error) {
+            console.error("❌ Failed to load company details:", error);
+            let message = error?.responseJSON?.message || "An unexpected error occurred while fetching company details.";
+            DevExpress.ui.notify(`❌ ${message}`, "error", 5000);
+        });
+    });
+
+    /////////////////////
+        let uploadedLogoBase64 = null;
+    let uploadedSealBase64 = null;
+    let uploadedLetterHeadBase64 = null;
+
+    function triggerUpload(inputId) {
+        const input = document.getElementById(inputId);
+        if (input) {
+            input.click();
+        }
+    }
+
+
 @using (Html.DevExtreme().NamedTemplate("IDDropDownTemplate"))
 {
     @(Html.DevExtreme().DataGrid()

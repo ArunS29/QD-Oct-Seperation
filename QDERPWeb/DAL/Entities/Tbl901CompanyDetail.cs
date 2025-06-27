@@ -7,6 +7,9 @@ namespace QD.ERP.Web.DAL.Entities;
 
 public partial class Tbl901CompanyDetail
 {
+    public byte? DefaultcompanyID { get; set; }
+    public string? CompanyTextColor { get; set; }
+
     public byte CompanyId { get; set; }
 
     public string CompanyName { get; set; }

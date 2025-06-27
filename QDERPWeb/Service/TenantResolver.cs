@@ -67,16 +67,46 @@ namespace QD.ERP.Web.Service
 
             using (var tenantDbContext = new ERPMasterWtDataContext(optionsBuilder.Options))
             {
-                // Compare CompanyNameShort with tenant.Name (already lowercase)
-                var companyDetails = await tenantDbContext.Tbl901CompanyDetails
-                    .FirstOrDefaultAsync();
+                // 1. Find the default company ID from any row (null if not set)
+                var defaultCompanyId = tenantDbContext.Tbl901CompanyDetails
+                    .Select(c => c.DefaultcompanyID)
+                    .FirstOrDefault(id => id.HasValue && id.Value != 0);
 
-                if (companyDetails?.CompanyLogo != null)
+                // 2. Try to find the default row
+                var companyInfo = tenantDbContext.Tbl901CompanyDetails
+                    .AsEnumerable()
+                    .FirstOrDefault(c => defaultCompanyId.HasValue && c.CompanyId == defaultCompanyId.Value);
+
+                // 3. Fallback to first row if no default
+                if (companyInfo == null)
                 {
-                    tenant.LogoUrl = $"data:image/png;base64,{Convert.ToBase64String(companyDetails.CompanyLogo)}";
+                    companyInfo = tenantDbContext.Tbl901CompanyDetails
+                        .OrderBy(c => c.CompanyId)
+                        .FirstOrDefault();
                 }
-                tenant.CompanyNameShort = companyDetails.CompanyNameShort.ToLower();
+
+                if (companyInfo != null)
+                {
+                    if (companyInfo.CompanyLogo != null)
+                    {
+                        tenant.LogoUrl = $"data:image/png;base64,{Convert.ToBase64String(companyInfo.CompanyLogo)}";
+                    }
+
+                    if (!string.IsNullOrEmpty(companyInfo.CompanyNameShort))
+                    {
+                        tenant.CompanyNameShort = companyInfo.CompanyNameShort.ToLower();
+                    }
+
+                    tenant.DefaultcompanyID = companyInfo.CompanyId.ToString();
+                    tenant.DefaultcompanyName = companyInfo.CompanyName;
+                    tenant.CompanyTextColor = companyInfo.CompanyTextColor.ToString();
+                }
             }
+
+
+
+
+        
 
             // Cache and return the resolved tenant
             tenantCache[tenantName.ToLower()] = tenant;

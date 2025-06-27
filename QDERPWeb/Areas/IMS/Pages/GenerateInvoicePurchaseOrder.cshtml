@@ -197,25 +197,36 @@
 	<!-- Filter Bar -->
 	<div class="filter-row" style=" display: flex; gap: 5px; align-items: flex-end; margin-bottom: 15px; padding:20px;">
 		<div class="filter-group">
-			@(Html.DevExtreme().SelectBox()
-						.ID("clientNameDropdown")
-						.SearchEnabled(true)
-						.Label(new JS("formatMessage('Client Name:')"))
-						.LabelMode(EditorLabelMode.Outside)
-						.Width(470))
+		@(Html.DevExtreme().SelectBox()
+    .ID("SuppliertNameDropdown")
+    .DataSource(d => d.Mvc()
+        .Controller("PurchaseOrders")
+        .LoadAction("GetAllSuppliers")) // <-- Add this action
+    .ValueExpr("SupplierName")
+    .DisplayExpr("SupplierName")
+    .SearchEnabled(true)
+    .Label("Supplier Name")
+    .LabelMode(EditorLabelMode.Outside)
+    .Width(470))
 		</div>
 
 		<div class="filter-group">
-			@(Html.DevExtreme().SelectBox()
-						.ID("salesOrderDropdown")
-						.SearchEnabled(true)
-						.Label(new JS("formatMessage('Sales Order #:')"))
-						.LabelMode(EditorLabelMode.Outside)
-						.Width(470))
+		@(Html.DevExtreme().SelectBox()
+    .ID("PurchaseOrderNo")
+    .DataSource(d => d.Mvc()
+        .Controller("PurchaseOrders")
+        .LoadAction("GetAllPurchaseOrders")) // <-- Add this action
+    .ValueExpr("Pono")
+    .DisplayExpr("Pono")
+    .SearchEnabled(true)
+    .Label("Purchase Order #:")
+    .LabelMode(EditorLabelMode.Outside)
+    .Width(470))
 		</div>
 
 		<div class="filter-button">
 			@(Html.DevExtreme().Button()
+					    .ID("ShowDeliveryNotes")
 						.Text("Show Delivery Notes")
 						.Icon("doc")
 						.Type(ButtonType.Default)
@@ -233,20 +244,20 @@
 				.Columns(columns =>
 				{
 					columns.Add().Type(GridCommandColumnType.Selection).Width(50); // ✅ Checkbox column
-					columns.Add().Caption("Delivery Note No").DataField("DeliveryNoteNo").Width(150);
-					columns.Add().Caption("Delivery Date").DataField("DeliveryDate").DataType(GridColumnDataType.Date).Width(130);
-					columns.Add().Caption("Client Name").DataField("ClientName").Width(200);
-					columns.Add().Caption("Client PONo").DataField("ClientPONo").Width(150);
-					columns.Add().Caption("Sales Order No").DataField("SalesOrderNo").Width(150);
+					columns.Add().Caption("Receipt No").DataField("ReceiptNo").Width(150);
+					columns.Add().Caption("Receipt Date").DataField("ReceiptDate").DataType(GridColumnDataType.Date).Width(130);
+					columns.Add().Caption("Supplier Name").DataField("SupplierName").Width(200);
+					columns.Add().Caption("PONo").DataField("OurPurchaseOrderNo").Width(150);
 					columns.Add().Caption("Order Status").DataField("OrderStatus").Width(130);
-					columns.Add().Caption("Invoice No").DataField("InvoiceNo").Width(130);
-					columns.Add().Caption("Invoice Status").DataField("InvoiceStatus").Width(130);
+					@* <!-- columns.Add().Caption("Purchase Order Voucher No").DataField("OrderStatus").Width(130); --> *@
+					columns.Add().Caption("Bill Status ").DataField("BillStatus").Width(130);
 				}))
 	</div>
 
     <!-- Action Buttons -->
 	<div class="action-buttons" style=" display: flex;margin-top: 20px; padding:20px; gap:10px;">
         @(Html.DevExtreme().Button()
+			.ID("GenerateInvoiceButton")
             .Text("Generate VAT Invoice")
             .Icon("check")
 			.Width(270)
@@ -275,5 +286,75 @@
 		});
 	});
 
+$(function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const selectedPONo = urlParams.get("PONo");
 
+    if (selectedPONo) {
+        // Set PurchaseOrderNo after dataSource loads
+        const poSelectBox = $("#PurchaseOrderNo").dxSelectBox("instance");
+        poSelectBox.getDataSource().load().done(function(items) {
+            poSelectBox.option("value", selectedPONo);
+        });
+
+        // Fetch supplier name for this PO and set SuppliertNameDropdown after dataSource loads
+        $.get(`/api/PurchaseOrders/GetSupplierByPoNo?poNo=${encodeURIComponent(selectedPONo)}`, function (data) {
+            if (data && data.supplierName) {
+                const supplierSelectBox = $("#SuppliertNameDropdown").dxSelectBox("instance");
+                supplierSelectBox.getDataSource().load().done(function(items) {
+                    supplierSelectBox.option("value", data.supplierName);
+                });
+            }
+        });
+
+        // Load grid data filtered by PO number (should use correct endpoint)
+        $("#deliveryNotesGrid").dxDataGrid("instance").option("dataSource", {
+            load: function () {
+                return $.getJSON(`/api/PurchaseOrders/GetDeliveryNotes?poNo=${encodeURIComponent(selectedPONo)}`);
+            }
+        });
+    }
+});
+$(function () {
+    $("#ShowDeliveryNotes").dxButton("instance").option("onClick", function () {
+        const poNo = $("#PurchaseOrderNo").dxSelectBox("instance").option("value");
+        const supplierName = $("#SuppliertNameDropdown").dxSelectBox("instance").option("value");
+
+        $("#deliveryNotesGrid").dxDataGrid("instance").option("dataSource", {
+            load: function () {
+                return $.getJSON(`/api/PurchaseOrders/GetDeliveryNotes?poNo=${encodeURIComponent(poNo ?? "")}&supplierName=${encodeURIComponent(supplierName ?? "")}`);
+            }
+        });
+    });
+});
+
+$(function () {
+    $("#GenerateInvoiceButton").dxButton("instance").option("onClick", function () {
+        var grid = $("#deliveryNotesGrid").dxDataGrid("instance");
+        var selectedRows = grid.getSelectedRowsData();
+        if (!selectedRows.length) {
+            DevExpress.ui.notify("Please select a Delivery Note.", "warning", 2000);
+            return;
+        }
+
+        const receiptNo = selectedRows[0].ReceiptNo;
+        const poNo = selectedRows[0].OurPurchaseOrderNo; // Use the correct field from your grid
+        const tenantName = window.tenantName || "defaultTenant";
+
+        $.get("/api/VoucherMaster/GetAutoGeneratedVATPurchaseInvoiceNo", { tenantName })
+            .done(function (res) {
+                if (res.success) {
+                    const invoiceNo = res.invoiceNo;
+                    const url = `/${tenantName}/VAT/VATPurchaseEdit?receiptNo=${encodeURIComponent(receiptNo)}&poNo=${encodeURIComponent(poNo)}&invoiceNo=${encodeURIComponent(invoiceNo)}&mode=create`;
+                    window.location.href = url;
+                } else {
+                    DevExpress.ui.notify(res.message || "Failed to generate voucher number.", "error", 3000);
+                }
+            })
+            .fail(function (xhr) {
+                let msg = xhr.responseJSON?.message || "Error generating voucher number.";
+                DevExpress.ui.notify(msg, "error", 3000);
+            });
+    });
+});
 </script>

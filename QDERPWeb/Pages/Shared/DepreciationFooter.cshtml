@@ -73,7 +73,7 @@
         .StylingMode(ButtonStylingMode.Outlined)
         .Icon("smalliconslayout")
         .Width(150)
-        
+        .OnClick("DepreciationReport")
         )
     @(Html.DevExtreme().Button()
         .ID("btnnewdepreciation")
@@ -370,6 +370,9 @@
     }
     function NewDepreciation() {
         window.location.href = `/${tenantName}/Finance/CreateDepreciation`;
+    }
+    function DepreciationReport() {
+        window.location.href = `/${tenantName}/Finance/DepreciationReporting`;
     }
 
 </script>
