@@ -53,6 +53,11 @@
     .playIcon {
         display: none;
     }
+
+    #pivotLoader .dx-loadindicator {
+    margin: auto;
+}
+
 </style>
 
 <div class="title">
@@ -87,7 +92,11 @@
 @*     <!-- Single Container for Title, PivotGrid & Footer --> *@
 @* <div class="finance-container"> *@
         @*    <div class="pivot-title">Cash Inflow & Outflow</div> *@
-    <div id="pivotGridContainer"></div>
+<div id="pivotLoader" style="display: none; text-align: center; margin-top: 30px;">
+    <div class="dx-loadindicator dx-loadindicator-large"></div>
+    <div style="margin-top: 10px; color: #666;">Loading vouchers, please wait...</div>
+</div>
+<div id="pivotGridContainer"></div>
 
 <!-- Include DevExtreme Scripts & Styles -->
 <link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/22.2/css/dx.light.css">
@@ -160,12 +169,14 @@
 
 
 function loadPivotGridData() {
+    // Show loader
+    $("#pivotLoader").show();
+    $("#pivotGridContainer").hide(); // Hide grid until ready
+
     $.ajax({
         url: '/api/TransactionDetails/GetVoucherForAudits',
         type: 'GET',
         success: function (data) {
-            console.log("API Data: ", data);
-
             // Filter out rows with "Opening Balance"
             const filteredData = data.filter(item => item.VoucherNo !== "Opening Balance");
 
@@ -176,31 +187,19 @@ function loadPivotGridData() {
                         data: filteredData
                     },
                     fields: [
+                        // Your fields here (as before)
                         { dataField: "VoucherNo", area: "row", caption:"Voucher No", expanded: true, width: 150, allowSorting: true, allowFiltering: true },
                         { dataField: "AccountHeadName", area: "row", caption: "AccountHead Name", expanded: true, width: 250, allowSorting: true, allowFiltering: true },
                         { dataField: "DrCr", area: "row", caption: "DrCr", expanded: true, width: 100, allowSorting: true, allowFiltering: true },
                         { dataField: "CrAmount", area: "data", caption: "CrAmount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 }, width: 180 },
-                        { dataField: "DrAmount", area: "data", caption: "DrAmount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 }, width: 180 },
-                        // { dataField: "VoucherDate", area: "column", caption: "Voucher Date", allowSorting: true, allowFiltering: true },
-                        // { dataField: "VoucherRefNo", area: "column", caption: "Voucher Ref No", allowSorting: true, allowFiltering: true },
-                        // { dataField: "VoucherNarration", area: "column", caption: "Voucher Narration", allowSorting: true, allowFiltering: true },
-                        // { dataField: "VoucherEnteredBy", area: "column", caption: "Voucher Entered By", allowSorting: true, allowFiltering: true },
-                        // { dataField: "VoucherEnteredOn", area: "column", caption: "Voucher Entered On", allowSorting: true, allowFiltering: true },
-                        // { dataField: "VoucherVerifiedBy", area: "column", caption: "Voucher Verified By", allowSorting: true, allowFiltering: true },
-                        // { dataField: "VoucherVerifiedOn", area: "column", caption: "Voucher Verified On", allowSorting: true, allowFiltering: true },
-                        // { dataField: "VoucherApprovedBy", area: "column", caption: "Voucher Approved By", allowSorting: true, allowFiltering: true },
-                        // { dataField: "VoucherApprovedOn", area: "column", caption: "Voucher Approved On", allowSorting: true, allowFiltering: true },
-                        // { dataField: "VoucherEntryNo", area: "column", caption: "Voucher Entry No", allowSorting: true, allowFiltering: true },
-                        // { dataField: "AccountHead", area: "column", caption: "Account Head", allowSorting: true, allowFiltering: true },
-                        // { dataField: "VoucherAmountFormatted", area: "column", caption: "Voucher Amount Formatted", allowSorting: true, allowFiltering: true },
-                        // { dataField: "EntryNarration", area: "column", caption: "Entry Narration", allowSorting: true, allowFiltering: true },
-                        // { dataField: "AccountGroup", area: "column", caption: "Account Group", allowSorting: true, allowFiltering: true }
+                        { dataField: "DrAmount", area: "data", caption: "DrAmount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 }, width: 180 }
                     ]
                 },
+                // ... Other pivotGrid options ...
                 allowSortingBySummary: true,
                 allowSorting: true,
                 allowFiltering: true,
-                allowExpandAll: true,   
+                allowExpandAll: true,
                 showBorders: true,
                 showColumnHeaders: true,
                 showColumnTotals: true,
@@ -211,14 +210,14 @@ function loadPivotGridData() {
                 height: 500,
                 fieldChooser: {
                     enabled: true,
-                    allowSearch: true, 
-                    layout: 0 // 0 for a tree structure, 1 for a list structure
+                    allowSearch: true,
+                    layout: 0
                 },
-                        scrolling: {
-                            mode: "virtual"
-                        },
+                scrolling: {
+                    mode: "virtual"
+                },
                 fieldPanel: {
-                    visible: true, // Allows drag-and-drop functionality
+                    visible: true,
                     allowFieldDragging: true,
                     showColumnFields: true,
                     showDataFields: true,
@@ -227,14 +226,19 @@ function loadPivotGridData() {
                 },
                 loadPanel: { enabled: true }
             }).dxPivotGrid("instance");
-                     
-        },
 
+            // Hide loader and show grid
+            $("#pivotLoader").hide();
+            $("#pivotGridContainer").show();
+        },
         error: function (xhr, status, error) {
+            $("#pivotLoader").hide();
+            $("#pivotGridContainer").show();
             console.error("Error fetching data: ", error);
         }
     });
 }
+
 
         $("#btnShowRowTotals").on("click", function (e) {
             e.preventDefault();

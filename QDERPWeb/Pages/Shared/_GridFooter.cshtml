@@ -614,47 +614,81 @@
             }
         });
     }
-    function setDefaultLayoutClick(e) {
-        var grid = $("#dataGrid").dxDataGrid("instance");
-        var form = $('#formId').val();
-        var layout = grid.state();
-        const layoutJson = JSON.stringify(layout, null, 2);
-        console.log(layoutJson);
+    function jsonToXml(obj, rootName = 'Layout') {
+    let xml = `<${rootName}>`;
 
-        $.ajax({
-            url: '/api/Utility/SaveLayout',  // API endpoint
-            type: 'POST',
-            data: {
-                layout: layoutJson,
-                form: form
-            },
-            success: function (data) {
-                DevExpress.ui.notify("Layout saved successfully", "success", 2000);
-            },
-            error: function () {
-                DevExpress.ui.notify("Error while saving data", "error", 2000);
-            }
-        });
+    for (const prop in obj) {
+        if (Array.isArray(obj[prop])) {
+            xml += `<${prop}>`;
+            obj[prop].forEach(item => {
+                xml += jsonToXml(item, 'Item');
+            });
+            xml += `</${prop}>`;
+        } else if (typeof obj[prop] === 'object' && obj[prop] !== null) {
+            xml += jsonToXml(obj[prop], prop);
+        } else {
+            const value = obj[prop] != null ? obj[prop] : '';
+            xml += `<${prop}>${value}</${prop}>`;
+        }
     }
-    function resetLayoutClick(e) {
-        var grid = $("#dataGrid").dxDataGrid("instance");
-        var form = $('#formId').val();
-        $.ajax({
-            url: '/api/Utility/SaveLayout',  // API endpoint
-            type: 'POST',
-            data: {
-                layout: null,
-                form: form
-            },
-            success: function (data) {
-                DevExpress.ui.notify("Layout reset successfull", "success", 2000);
-                grid.state({});
-            },
-            error: function () {
-                DevExpress.ui.notify("Error while saving data", "error", 2000);
-            }
-        });
-    }
+
+    xml += `</${rootName}>`;
+    return xml;
+}
+
+
+function setDefaultLayoutClick(e) {
+    var grid = $("#dataGrid").dxDataGrid("instance");
+    var form = $('#formId').val();
+    var layout = grid.state();
+
+    // Convert to XML
+    var layoutXml = jsonToXml(layout, 'Layout');
+
+    console.log(layoutXml);
+
+    $.ajax({
+        url: '/api/Utility/SaveLayout',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            layout: layoutXml,
+            form: form
+        }),
+        success: function (data) {
+            DevExpress.ui.notify("Layout saved successfully", "success", 2000);
+        },
+        error: function (xhr) {
+            console.error("SaveLayout error:", xhr.responseText);
+            DevExpress.ui.notify("Error while saving data", "error", 2000);
+        }
+    });
+}
+
+  function resetLayoutClick(e) {
+      debugger;
+    var grid = $("#dataGrid").dxDataGrid("instance");
+    var form = $('#formId').val(); // Make sure this input exists and has a value
+
+    $.ajax({
+        url: '/api/Utility/SaveLayout',
+        type: 'POST',
+        contentType: 'application/json', // Important for [FromBody]
+        data: JSON.stringify({
+            layout: null, // or '' if null causes issues
+            form: form
+        }),
+        success: function (data) {
+            DevExpress.ui.notify("Layout reset successful", "success", 2000);
+            grid.state({});
+        },
+        error: function (xhr) {
+            console.error("SaveLayout error:", xhr.responseText);
+            DevExpress.ui.notify("Error while saving data", "error", 2000);
+        }
+    });
+}
+
     // Footer Group Pannel button click event
     function toggleGroupPanel() {
         var dataGrid = $("#dataGrid").dxDataGrid("instance");
