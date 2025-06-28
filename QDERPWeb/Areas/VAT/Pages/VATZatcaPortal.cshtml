@@ -888,10 +888,10 @@
 		</div>
 	</div>
 
-
+@* 
 		<div class="Head" style="margin-left: 15px;">
 			@await Html.PartialAsync("/Pages/Shared/VAT/ZatcaFooter.cshtml")
-		</div>
+		</div> *@
 
 
 
@@ -922,12 +922,63 @@
 	});
 
 
+	 $(document).ready(function () {
+		 // Example: bind to a button click
+			 DevExpress.ui.dialog.custom({
+				 title: "Fatoora Portal",
+				 message: "Connection to Fatoora Portal is available,Would you like to Submit the Invoice to Zatca Portal?",
+				 buttons: [
+					 { text: "Yes", onClick: () => true },
+					 { text: "No", onClick: () => false }
+				 ],
+				 showTitle: true
+			 }).show().done(function (dialogResult) {
+				 if (dialogResult) {
+					  generateZatcaInvoice(); // Your custom logic here
+				 }
+			 });
+	 });
+
+
+		function generateZatcaInvoice() {
+			debugger;
+		const invoiceData = {
+			invoiceNo: "INV-001",
+			buyerName: "Customer ABC",
+			buyerVATNumber: "312345678900003",
+			invoiceDate: new Date().toISOString(),
+			invoiceTotal: 115.00,
+			vatAmount: 15.00,
+			sellerName: "JUICE SHOP",
+			sellerVATNumber: "123456789000003"
+		};
+
+		$.ajax({
+			type: "POST",
+			url: "/api/VATModule/GenerateZatcaInvoiceXml",
+			contentType: "application/json",
+			data: JSON.stringify(invoiceData),
+			success: function (response) {
+				console.log("ZATCA XML:", response.InvoiceXml);
+				 console.log("TLV Base64:", response.TLVBase64);
+				 console.log("QR Code Base64:", response.QRBase64);
+
+				// Show QR image on the page
+				  $("#qrcode").attr("src", "data:image/png;base64," + response.QRBase64);
+
+				// Show raw XML (optional)
+				$("#zatcaXml").text(response.invoiceXml);
+			},
+			error: function (xhr) {
+				console.error("Error:", xhr.responseText);
+				DevExpress.ui.notify("Failed to generate ZATCA Invoice XML", "error", 3000);
+			}
+		});
+	}
+
+		
+
 
 </script>
 
-<script>
-			  
-
-
-</script>
 

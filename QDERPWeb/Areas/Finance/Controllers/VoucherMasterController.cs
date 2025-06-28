@@ -2813,6 +2813,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return BadRequest("Failed to retrieve tenant and database context.");
         }
 
+
         [HttpPost]
         public async Task<ActionResult> UpdateInvoiceMasterDetails(Tbl20161VatinvoiceMaster InvoiceMaster)
         {
@@ -2855,7 +2856,9 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return BadRequest("Failed to retrieve tenant and database context.");
         }
-      
+
+
+
 
         [HttpPost]
         public async Task<ActionResult> UpdateInvoiceChildDetails(List<InvoiceItem> InvoiceChildren)
