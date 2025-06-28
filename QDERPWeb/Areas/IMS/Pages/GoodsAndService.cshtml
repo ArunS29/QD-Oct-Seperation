@@ -599,7 +599,7 @@
         onSaveClientMasterClick();
     });
     function onSaveClientMasterClick(e) {
-        
+       
         // Collecting form data from client master form
         var Gscode = $('#txtGoodsCode7').dxTextBox("instance").option("value");
       
@@ -704,8 +704,39 @@
         });
     }
 
+function bindGoodsAndServiceData() {
+    debugger
+    const urlParams = new URLSearchParams(window.location.search);
+    const gscode = urlParams.get("gscode");
+    if (gscode) {
+        $.get("/api/GoodsandServices/GetByGscode", { gscode: gscode })
+            .done(function (data) {
+                      console.log("Received data:", data);
+                if (data) {
+                    $('#txtGoodsCode7').dxTextBox("instance").option("value", data.Gscode || "");
+                    $('#GetProjectDropDown').dxDropDownBox("instance").option("value", data.GsgroupId || "");
+                    $('#txtItemPartNo4').dxTextBox("instance").option("value", data.ItemPartNo || "");
+                    $('#txtDescription8').dxTextArea("instance").option("value", data.Gsdescrpition || "");
+                    $('#txtDescriptionArabic').dxTextArea("instance").option("value", data.GsdescriptionAr || "");
+                    $('#GetLedgerNoDropDown').dxDropDownBox("instance").option("value", data.GsuoM || "");
+                    $('#packingUnit').dxNumberBox("instance").option("value", data.GspackingUnit || 1);
+                    $('#sellingRate').dxNumberBox("instance").option("value", data.GssellingRate || 1);
+                    $('#txtCostPrice3').dxNumberBox("instance").option("value", data.CostPrice || 1);
+                    $('#txtDetailedDescription').dxTextArea("instance").option("value", data.GsdetailedDesc || "");
+                    $('#txtDetailedDescriptionArabic').dxTextArea("instance").option("value", data.GsdetailedDescAr || "");
+                }
+            })
+            .fail(function () {
+                DevExpress.ui.notify("Failed to load Goods & Service details.", "error", 2000);
+            });
+    }
+}
 
+// Call this function on page load (for direct navigation)
+$(function () {
+    bindGoodsAndServiceData();
+});
 
-
+// If your modal loads content via AJAX, make sure to call bindGoodsAndServiceData() after the modal content is loaded.// After modal content is loaded:
 
 </script>
