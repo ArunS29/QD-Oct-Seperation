@@ -255,6 +255,8 @@
     }
 
 </style>
+
+
 <meta charset="UTF-8">
 <div class="title">
     <div class="header-container">
@@ -279,11 +281,11 @@
                     <!-- Row 1 -->
                     <div class="col-md-2">
                         @(Html.DevExtreme().TextBox()
-                        .ID("Joboreder1")
-                        .Value("") // leave it blank initially
+                         .ID("txtJoborederNo")
+                        
                         .Label("Job Order No:")
                         .LabelMode(EditorLabelMode.Outside)
-                        .ReadOnly(false)
+                        
                         .Width("100%")
                         )
 
@@ -291,7 +293,7 @@
                     </div>
                     <div class="col-md-3">
                         @(Html.DevExtreme().DateBox()
-                        .ID("deliveryNoteDate1")
+                        .ID("txtJobOrderDate")
                         .Value(DateTime.Now)
                         .Label("Job Order Date:")
                         .LabelMode(EditorLabelMode.Outside)
@@ -299,15 +301,31 @@
                         )
                     </div>
                     <div class="col-md-6" style="display:flex; align-items:end;">
-                        @(Html.DevExtreme().DropDownBox()
-                        .ID("GetProjectDropDown1")
-                        .Label(new JS("formatMessage('Client Name:')"))
-                        .LabelMode(EditorLabelMode.Outside)
-                        .ValueExpr("ClientCode")
-                        .DisplayExpr("ClientName")
-                        .Width("100%")
-                        )
-
+                            @(Html.DevExtreme().DropDownBox()
+                                                    .Label(new JS("formatMessage('Client Name:')"))
+                                                    .AcceptCustomValue(true)
+                                                    .DataSource(d => d.WebApi()
+                                                    .Controller("EditJobOrderDetails")
+                                                    .LoadAction("GetClientDetails")
+                                                    .LoadMode(DataSourceLoadMode.Raw)
+                                                    .Key("CategoryCode")
+                                                    )
+                                                    .LabelMode(EditorLabelMode.Outside)
+                                                    .ID("GetProjectDropDown")
+                                                    .Width(900)
+                                                    .OpenOnFieldClick(false)
+                                                    .ValueChangeEvent("input")
+                                                    .HoverStateEnabled(true)
+                                                    .ValueExpr("ClientCode")
+                                                    .DisplayExpr("ClientName")
+                                                    .OnInput("dropDownBoxOnInput")
+                                                    .OnOpened("onOpened")
+                                                    .TabIndex(1)
+                                                    .Width("100%")
+                                                    .OnKeyDown("onKeyDown")
+                                                            .ContentTemplate(new TemplateName("GetProjectContentTemplate"))
+                                                    )
+                        
 
                         @(Html.DevExtreme().Button()
                         .ID("editClient1")
@@ -330,7 +348,7 @@
                     <!-- Row 2 -->
                     <div class="col-md-2" style="display:flex; align-items:end;">
                         @(Html.DevExtreme().TextBox()
-                        .ID("clientPOnumber1")
+                        .ID("txtSalesNo")
                         .Label("Work Order/Sales Order No:")
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%")
@@ -338,21 +356,30 @@
 
                     </div>
                     <div class="col-md-3" style="display:flex;align-items:end;">
-                      
-                        @(Html.DevExtreme().DropDownBox()
-                        .Label("Job Order Status")
-                        .LabelMode(EditorLabelMode.Outside)
-                        .ID("ddGetSalesPerson")
-                        .Width(900)
-                        .OpenOnFieldClick(false)//
-                        .ValueChangeEvent("input")
-                        .HoverStateEnabled(true)
-                        .ValueExpr("SalesPersonCode")
-                        .TabIndex(1)
-                        .Width("100%")
-                        .OnKeyDown("onKeyDown")
-                        .ContentTemplate(new TemplateName("GetSalesPersonContentTemplate"))
-                        )
+                            @(Html.DevExtreme().DropDownBox()
+                                                    .Label(new JS("formatMessage('Job Order Status')"))
+                                                    .AcceptCustomValue(true)
+                                                    .DataSource(d => d.WebApi()
+                                                    .Controller("EditJobOrderDetails")
+                                                    .LoadAction("GetJobOrderStatus")
+                                                    .LoadMode(DataSourceLoadMode.Raw)
+                                                    .Key("JobOrderStatusId")
+                                                    )
+                                                    .LabelMode(EditorLabelMode.Outside)
+                                                    .ID("ddJobOrderStatus")
+                                                    .Width(900)
+                                                    .OpenOnFieldClick(false)
+                                                    .ValueChangeEvent("input")
+                                                    .HoverStateEnabled(true)
+                                                    .ValueExpr("JobOrderStatusId")
+                                                    .DisplayExpr("JobOrderStatus")
+                                                    .OnInput("dropDownBoxOnInput")
+                                                    .OnOpened("onOpened")
+                                                    .TabIndex(1)
+                                                    .Width("100%")
+                                                    .OnKeyDown("onKeyDown")
+                                                    .ContentTemplate(new TemplateName("GetJobOrderStatusContentTemplate"))
+                                                    )
                         @(Html.DevExtreme().Button()
                         .ID("btnAddSalesperson")
                         .Icon("plus")
@@ -362,8 +389,8 @@
                     </div>
                     <div class="col-md-2" style="display:flex; align-items:end;">
                         @(Html.DevExtreme().TextBox()
-                        .ID("ClientPODate")
-                        .Label("Client PO Date:")
+                        .ID("txtJobDescription")
+                         .Label("Job Description:")
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%")
                         )
@@ -381,15 +408,32 @@
              item.Add().Text("Branch / Division").Icon("home").Title("Branch / Division").Template(@<text>
             <div class="dx-card p-3">
                 <div class="row g-3">
-                    <!-- Row 1: Branch / Delivery Type / Inventory Group -->
+                                                                                                                       <!-- Row 1: Branch / Delivery Type / Inventory Group -->  
                     <div class="col-md-4" style="display:flex;">
-                        @(Html.DevExtreme().SelectBox()
-                        .ID("CompanyName")
-                        .Label("Company Branch")
-                        .ValueExpr("CompanyId")
-                        .LabelMode(EditorLabelMode.Outside)
-                        .Width("100%")
-                        )
+                            @(Html.DevExtreme().DropDownBox()
+                                                    .Label(new JS("formatMessage('Company Branch')"))
+                                                    .AcceptCustomValue(true)
+                                                    .DataSource(d => d.WebApi()
+                                                    .Controller("EditJobOrderDetails")
+                                                    .LoadAction("GetCompany")
+                                                    .LoadMode(DataSourceLoadMode.Raw)
+                                                    .Key("JobOrderStatusId")
+                                                    )
+                                                    .LabelMode(EditorLabelMode.Outside)
+                                                    .ID("ddCompanyBranch")
+                                                    .Width(900)
+                                                    .OpenOnFieldClick(false)
+                                                    .ValueChangeEvent("input")
+                                                    .HoverStateEnabled(true)
+                                                    .ValueExpr("CompanyId")
+                                                    .DisplayExpr("CompanyName")
+                                                    .OnInput("dropDownBoxOnInput")
+                                                    .OnOpened("onOpened")
+                                                    .TabIndex(1)
+                                                    .Width("100%")
+                                                    .OnKeyDown("onKeyDown")
+                                                    .ContentTemplate(new TemplateName("GetCompanyBranchContentTemplate"))
+                                                    )
                         @(Html.DevExtreme().CheckBox()
                         .ID("Printinhead")
                         .Text("Print In Letter Head")
@@ -487,16 +531,44 @@
                 <div id="tabContent_1">
                     <form>
                         <table class="joborder-form-table">
+                          
                             <tr>
                                 <td>
-                                    @(Html.DevExtreme().SelectBox().ID("Type").Width("100%").Label(new JS("formatMessage('Type:')"))
-                                        .LabelMode(EditorLabelMode.Outside)
-                                        )
+                                    @(Html.DevExtreme().SelectBox()
+                                                                        .ID("cbTypeValue")
+                                                                        .Items(new[] {
+                                                                        "GATE VALVE", "GLOBE VALVE", "BALL VALVE TMBV", "BALL VALVE DBB", "BALL VALVE",
+                                                                        "BUTTERFLY VALVE", "DIAPHRAGM VALVE", "CHECK VALVE", "PLUG VALVE", "NEEDLE VALVE",
+                                                                        "PRESSURE CONTROL VALVE", "AUTO RECIRCULATION VALVE", "BREATHER VALVE", "PISTON CHECK VALVE",
+                                                                        "FLUSH BOTTOM VALVE", "KNIFE EDGE GATE VALVE", "CHOKE VALVE", "DE-COCKING VALVE",
+                                                                        "DE-SUPER HEATER VALVE", "HALF BALL VALVE", "ORBIT VALVE", "DAMPER VALVE", "SNAP VALVE",
+                                                                        "GEAR BOX ONLY", "ACTUATOR ONLY", "MOV ONLY"
+                                                                        })
+                                                                        .Placeholder("Select or type valve type")
+                                                                        .SearchEnabled(true)
+                                                                        .ShowClearButton(true)
+                                                                        .AcceptCustomValue(true)                            // Enables typing new values :contentReference[oaicite:1]{index=1}
+                                                                        .OnCustomItemCreating("onComboValve_CustomItemCreating")
+                                                                        .Label(new JS("formatMessage('Type:')"))
+                                                                        .LabelMode(EditorLabelMode.Outside)
+                                                                        )
                                 </td>
                                 <td>
-                                    @(Html.DevExtreme().TextBox().ID("Operator").Width("100%").Label(new JS("formatMessage('Operator:')"))
-                                        .LabelMode(EditorLabelMode.Outside)
-                                        )
+                                    @(Html.DevExtreme().SelectBox()
+                                                                        .ID("cbOperatorValue")
+                                                                        .Items(new[] {
+                                                                        "LEVER", "HAND WHEEL", "WRENCH", "GEAR",
+                                                                        "PNEUMATIC ACTUATOR", "ELECTRO PNEUMATIC ACTUATOR",
+                                                                        "MOV", "SELF ACTING", "BARE STEM"
+                                                                        })
+                                                                        //.Placeholder("Select or type valve type")
+                                                                        .SearchEnabled(true)
+                                                                        .ShowClearButton(true)
+                                                                        .AcceptCustomValue(true)                            // Enables typing new values :contentReference[oaicite:1]{index=1}
+                                                                        .OnCustomItemCreating("onComboValve_Operator")
+                                                                        .Label(new JS("formatMessage('Operator:')"))
+                                                                        .LabelMode(EditorLabelMode.Outside)
+                                                                        )
                                 </td>
                                 <td>
                                     @(Html.DevExtreme().TextBox().ID("ModelNo").Width("100%").Label(new JS("formatMessage('Model No:')"))
@@ -511,14 +583,49 @@
                             </tr>
                             <tr>
                                 <td>
-                                    @(Html.DevExtreme().TextBox().ID("Size").Width("100%").Label(new JS("formatMessage('Size:')"))
-                                        .LabelMode(EditorLabelMode.Outside)
-                                        )
+                                    @(Html.DevExtreme().SelectBox()
+                                                                        .ID("cbSizeValue")
+                                                                        .Items(new[] {
+                                                                        @"1/4""", @"1/2""", @"3/4""", @"1""", @"1.5""", @"2""",
+                                                                        @"3""", @"4""", @"5""", @"6""", @"8""", @"10""",
+                                                                        @"12""", @"14""", @"16""", @"18""", @"20""", @"22""",
+                                                                        @"24""", @"26""", @"28""", @"30""", @"32""", @"36""",
+                                                                        @"38""", @"40""", @"42""", @"46""", @"48""", @"50""",
+                                                                        @"52""", @"54""", @"58""", @"60""", @"62""", @"64""",
+                                                                        @"68""", @"70""", @"72""", @"74""", @"76""", @"78""",
+                                                                        @"80""", @"82""", @"84""", @"86""", @"88""", @"90""",
+                                                                        @"92""", @"94""", @"96""", @"98""", @"100"""
+                                                                        })
+                                                                        .Placeholder("Select or type size")
+                                                                        .SearchEnabled(true)
+                                                                        .ShowClearButton(true)
+                                                                        .AcceptCustomValue(true)
+                                                                        .OnCustomItemCreating("onComboSize_CustomItemCreating")
+                                                                        .Label(new JS("formatMessage('Size:')"))
+                                                                        .LabelMode(EditorLabelMode.Outside)
+                                                                        )
+
                                 </td>
                                 <td>
-                                    @(Html.DevExtreme().TextBox().ID("Material").Width("100%").Label(new JS("formatMessage('Material:')"))
-                                        .LabelMode(EditorLabelMode.Outside)
-                                        )
+                                    @(Html.DevExtreme().SelectBox()
+                                                                        .ID("cbMaterialValue")
+                                                                        .Items(new[] {
+                                                                        "WCB", "WCC", "WC6", "CF8", "CF8M", "CF8C", "CF3M",
+                                                                        "LCB", "LF2", "DI", "CI", "CARBON STEEL", "STAINLESS STEEL",
+                                                                        "MILD STEEL", "A105", "A105N", "A516 GR.70", "ALUMINIUM",
+                                                                        "BRONZE", "C5", "C12", "CD4MCU", "CD4MCUN", "CD3MN",
+                                                                        "CF3M", "CN7M", "316", "GGG 25", "LCC", "HCPH2",
+                                                                        "WC1", "WC9"
+                                                                        })
+                                                                        .Placeholder("Select or type material")
+                                                                        .SearchEnabled(true)
+                                                                        .ShowClearButton(true)
+                                                                        .AcceptCustomValue(true)
+                                                                        .OnCustomItemCreating("onComboMaterial_CustomItemCreating")
+                                                                        .Label(new JS("formatMessage('Material:')"))
+                                                                        .LabelMode(EditorLabelMode.Outside)
+                                                                        )
+
                                 </td>
                                 <td>
                                     @(Html.DevExtreme().TextBox().ID("TagNo").Width("100%").Label(new JS("formatMessage('Tag No:')"))
@@ -533,9 +640,21 @@
                             </tr>
                             <tr>
                                 <td>
-                                    @(Html.DevExtreme().TextBox().ID("Class").Width("100%").Label(new JS("formatMessage('Class:')"))
-                                        .LabelMode(EditorLabelMode.Outside)
-                                        )
+                                    @(Html.DevExtreme().SelectBox()
+                                                                        .ID("cbClassValue")
+                                                                        .Items(new[] {
+                                                                        "125", "150", "300", "600", "800",
+                                                                        "900", "1500", "2500"
+                                                                        })
+                                                                        .Placeholder("Select or type class")
+                                                                        .SearchEnabled(true)
+                                                                        .ShowClearButton(true)
+                                                                        .AcceptCustomValue(true)  // Enables custom entries :contentReference[oaicite:2]{index=2}
+                                                                        .OnCustomItemCreating("onComboClass_CustomItemCreating")
+                                                                        .Label(new JS("formatMessage('Class:')"))
+                                                                        .LabelMode(EditorLabelMode.Outside)
+                                                                        )
+
                                 </td>
                                 <td>
                                     @(Html.DevExtreme().TextBox().ID("Make").Width("100%").Label(new JS("formatMessage('Make:')"))
@@ -548,14 +667,14 @@
                                         )
                                 </td>
                                 <td>
-                                    @(Html.DevExtreme().TextArea().ID("valuetype").Placeholder(new JS("formatMessage('Manual Valves')")).Width("100%").Label(new JS("formatMessage('Valve Type:')"))
+                                    @(Html.DevExtreme().TextBox().ID("txtvaluetype").Placeholder(new JS("formatMessage('Manual Valves')")).Width("100%").Label(new JS("formatMessage('Valve Type:')"))
                                     .LabelMode(EditorLabelMode.Outside)
                                     )
                                 </td>
                             </tr>
                         </table>
                         <div style="margin-top: 10px;">
-                            @(Html.DevExtreme().TextArea().ID("JobOrderDescription").Width("100%").ElementAttr("style", "  height: 400px ! important;").Label(new JS("formatMessage('Job Order Description (Detailed)')"))
+                            @(Html.DevExtreme().TextArea().ID("txtJobOrderDescription").Width("100%").ElementAttr("style", "  height: 400px ! important;").Label(new JS("formatMessage('Job Order Description (Detailed)')"))
                                 .LabelMode(EditorLabelMode.Outside)
                                 )
                         </div>
@@ -632,8 +751,6 @@
                                     .ID("observationDate")
                                     .Label(new JS("formatMessage('Observation Date:')"))
                                     .LabelMode(EditorLabelMode.Outside)
-
-                                    .ElementAttr("id", "observationDate")
                                     .Width("100%"))
                             </div>
                         </div>
@@ -641,10 +758,9 @@
                         <div class="form-row">
                             <div class="form-group" style="flex: 1;">
                                 @(Html.DevExtreme().TextArea()
-                                    .ID("remarks")
+                                      .ID("ObservationRemarks1")
                                     .Label(new JS("formatMessage('Initial Observation Remarks:')"))
                                     .LabelMode(EditorLabelMode.Outside)
-                                    .ElementAttr(new { id = "remarks", style = "height: 150px !important;" })
                                     .Width("100%"))
                             </div>
                         </div>
@@ -655,8 +771,6 @@
                                     .ID("preparedBy")
                                     .Label(new JS("formatMessage('Observation Prepared By:')"))
                                     .LabelMode(EditorLabelMode.Outside)
-
-                                    .ElementAttr("id", "preparedBy")
                                     .Width("100%"))
                             </div>
                             <div class="form-group">
@@ -664,8 +778,6 @@
                                     .ID("preparedOn")
                                     .Label(new JS("formatMessage('Prepared On:')"))
                                     .LabelMode(EditorLabelMode.Outside)
-
-                                    .ElementAttr("id", "preparedOn")
                                     .Width("100%"))
                             </div>
                         </div>
@@ -676,8 +788,6 @@
                                     .ID("approvedBy")
                                     .Label(new JS("formatMessage('Observation Approved By:')"))
                                     .LabelMode(EditorLabelMode.Outside)
-
-                                    .ElementAttr("id", "approvedBy")
                                     .Width("100%"))
                             </div>
                             <div class="form-group">
@@ -685,7 +795,6 @@
                                     .ID("approvedOn")
                                     .Label(new JS("formatMessage('Approved On:')"))
                                     .LabelMode(EditorLabelMode.Outside)
-                                    .ElementAttr("id", "approvedOn")
                                     .Width("100%"))
                             </div>
                         </div>
@@ -795,28 +904,28 @@
                         <div class="form-row">
                             <div class="form-group">
                                 @(Html.DevExtreme().TextBox()
-                                    .ID("preparedBy1")
+                                    .ID("InspectionPreparedBy")
                                     .Label(new JS("formatMessage('Inspection Report Prepared By:')"))
                                     .LabelMode(EditorLabelMode.Outside)
                                     .Width("100%"))
                             </div>
                             <div class="form-group">
                                 @(Html.DevExtreme().DateBox()
-                                    .ID("preparedOn1")
+                                    .ID("InspectionPreparedOn")
                                     .Label(new JS("formatMessage('Prepared On:')"))
                                     .LabelMode(EditorLabelMode.Outside)
                                     .Width("100%"))
                             </div>
                             <div class="form-group">
                                 @(Html.DevExtreme().TextBox()
-                                    .ID("approvedBy1")
+                                    .ID("InspectionApprovedBy")
                                     .Label(new JS("formatMessage('Inspection Report Approved By:')"))
                                     .LabelMode(EditorLabelMode.Outside)
                                     .Width("100%"))
                             </div>
                             <div class="form-group">
                                 @(Html.DevExtreme().DateBox()
-                                    .ID("approvedOn1")
+                                    .ID("InspectionApprovedOn")
                                     .Label(new JS("formatMessage('Approved On:')"))
                                     .LabelMode(EditorLabelMode.Outside)
                                     .Width("100%"))
@@ -898,42 +1007,130 @@
                             </div>
                             <div class="form-group">
                                 @(Html.DevExtreme().SelectBox()
-                                    .ID("standard")
-                                    .Label(new JS("formatMessage('Standard:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
-                                    .Items(new[] { "API", "ISO", "DIN" })
-                                    .Placeholder("Select Standard")
-                                    .Width("100%"))
+                                                                .ID("cbStandardValue")
+                                                                .Items(new[] {
+                                                                "API 598", "API 6D", "FCI 70-2",
+                                                                "AS PER DATA SHEET", "AS PER CLIENT REQUEST",
+                                                                "ISO 5208", "BS EN 12266", "BS EN 12255"
+                                                                })
+                                                                .Placeholder("Select or type standard")
+                                                                .SearchEnabled(true)
+                                                                .ShowClearButton(true)
+                                                                .AcceptCustomValue(true) // Enables typing custom values :contentReference[oaicite:1]{index=1}
+                                                                .OnCustomItemCreating("onComboStandard_CustomItemCreating")
+                                                                .Label(new JS("formatMessage('Standard:')"))
+                                                                .LabelMode(EditorLabelMode.Outside)
+                                                                )
+
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
-                                @(Html.DevExtreme().SelectBox().ID("shell").Label(new JS("formatMessage('Shell:')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                @(Html.DevExtreme().SelectBox()
+                                                                .ID("cbShell")
+                                                                .Items(new[] {
+                                                                "31 BAR", "78 BAR", "154 BAR",
+                                                                "207 BAR", "231 BAR", "391 BAR",
+                                                                "640 BAR"
+                                                                })
+                                                                .Placeholder("Select or type shell")
+                                                                .SearchEnabled(true)
+                                                                .ShowClearButton(true)
+                                                                .AcceptCustomValue(true)      // Allow typing new custom values :contentReference[oaicite:2]{index=2}
+                                                                .OnCustomItemCreating("onComboShell_CustomItemCreating")
+                                                                .Label(new JS("formatMessage('Shell')"))
+                                                                .LabelMode(EditorLabelMode.Outside)
+                                                                )
+
                             </div>
                             <div class="form-group">
-                                @(Html.DevExtreme().SelectBox().ID("backSeat").Label(new JS("formatMessage('Back Seat:')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                @(Html.DevExtreme().SelectBox()
+                                                                .ID("cbBackSeat")
+                                                                .Items(new[] {
+                                                                "22 BAR", "56 BAR", "114 BAR",
+                                                                "152 BAR", "169 BAR", "283 BAR",
+                                                                "489 BAR"
+                                                                })
+                                                                .Placeholder("Select or type back sheet")
+                                                                .SearchEnabled(true)
+                                                                .ShowClearButton(true)
+                                                                .AcceptCustomValue(true)      // Enables custom user input
+                                                                .OnCustomItemCreating("onComboBackSeat_CustomItemCreating")
+                                                                .Label(new JS("formatMessage('Back Seat:')"))
+                                                                .LabelMode(EditorLabelMode.Outside)
+                                                                )
                             </div>
                             <div class="form-group">
-                                @(Html.DevExtreme().SelectBox().ID("media").Label(new JS("formatMessage('Media:')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                @(Html.DevExtreme().SelectBox()
+                                                                .ID("cbMediaValue")
+                                                                .Items(new[] {
+                                                                "WATER", "AIR", "WATER & AIR", "NITROGEN", "HELIUM"
+                                                                })
+                                                                .Placeholder("Select or type media")
+                                                                .SearchEnabled(true)
+                                                                .ShowClearButton(true)
+                                                                .AcceptCustomValue(true) // Enables typing custom values :contentReference[oaicite:2]{index=2}
+                                                                .OnCustomItemCreating("onComboMedia_CustomItemCreating")
+                                                                .Label(new JS("formatMessage('Media:')"))
+                                                                .LabelMode(EditorLabelMode.Outside)
+                                                                )
+
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
-                                @(Html.DevExtreme().SelectBox().ID("seatHP").Label(new JS("formatMessage('Seat(HP):')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                @(Html.DevExtreme().SelectBox()
+                                                                .ID("cbSeatHP")
+                                                                .Items(new[] {
+                                                                "22 BAR", "56 BAR", "114 BAR",
+                                                                "152 BAR", "169 BAR", "283 BAR",
+                                                                "489 BAR"
+                                                                })
+                                                                .Placeholder("Select or type Seat (H.P.)")
+                                                                .SearchEnabled(true)
+                                                                .ShowClearButton(true)
+                                                                .AcceptCustomValue(true)   // Allow user-entered values :contentReference[oaicite:2]{index=2}
+                                                                .OnCustomItemCreating("onComboSeatHP_CustomItemCreating")
+                                                                .Label(new JS("formatMessage('Seat(HP):')"))
+                                                                .LabelMode(EditorLabelMode.Outside)
+                                                                )
+
                             </div>
                             <div class="form-group">
-                                @(Html.DevExtreme().SelectBox().ID("seatLP").Label(new JS("formatMessage('Seat (LP):')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                @(Html.DevExtreme().SelectBox()
+                                                                .ID("cbSeatLP")
+                                                                .Items(new[] {
+                                                                "4 BAR", "6 BAR", "7 BAR", "8 BAR", "9 BAR", "10 BAR"
+                                                                })
+                                                                .Placeholder("Select or type Seat (L.P.)")
+                                                                .SearchEnabled(true)
+                                                                .ShowClearButton(true)
+                                                                .AcceptCustomValue(true)   // Enables entering custom values :contentReference[oaicite:2]{index=2}
+                                                                .OnCustomItemCreating("onComboSeatLP_CustomItemCreating")
+                                                                .Label(new JS("formatMessage('Seat(LP):')"))
+                                                                .LabelMode(EditorLabelMode.Outside)
+                                                                )
+
                             </div>
                             <div class="form-group">
-                                @(Html.DevExtreme().SelectBox().ID("shellTime").Label(new JS("formatMessage('Shell Time:')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                @(Html.DevExtreme().SelectBox()
+                                                                .ID("cbShellTime")
+                                                                .Items(new[] {
+                                                                "1 MINUTE", "2 MINUTE", "3 MINUTE",
+                                                                "5 MINUTE", "10 MINUTE", "15 MINUTE",
+                                                                "30 MINUTE"
+                                                                })
+                                                                .Placeholder("Select or type shell time")
+                                                                .SearchEnabled(true)
+                                                                .ShowClearButton(true)
+                                                                .AcceptCustomValue(true)  // Enables custom input :contentReference[oaicite:0]{index=0}
+                                                                .OnCustomItemCreating("onComboShellTime_CustomItemCreating")
+                                                                .Label(new JS("formatMessage('Shell Time:')"))
+                                                                .LabelMode(EditorLabelMode.Outside)
+                                                                )
+
                             </div>
                         </div>
 
@@ -943,12 +1140,34 @@
                                     .LabelMode(EditorLabelMode.Outside).Width("100%"))
                             </div>
                             <div class="form-group">
-                                @(Html.DevExtreme().SelectBox().ID("seatLeakage").Label(new JS("formatMessage('Seat Leakage Class:')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                @(Html.DevExtreme().SelectBox()
+                                                                .ID("cbLeakageClass")
+                                                                .Items(new[] { "I", "II", "III", "IV", "V", "VI", "NA", "TSO" })
+                                                                .Placeholder("Select or type leakage class")
+                                                                .SearchEnabled(true)
+                                                                .ShowClearButton(true)
+                                                                .AcceptCustomValue(true) // Allows entering custom values :contentReference[oaicite:1]{index=1}
+                                                                .OnCustomItemCreating("onComboLeakageClass_CustomItemCreating")
+                                                                .Label(new JS("formatMessage('Seat Leakage Class:')"))
+                                                                .LabelMode(EditorLabelMode.Outside)
+                                                                )
+
                             </div>
                             <div class="form-group">
-                                @(Html.DevExtreme().SelectBox().ID("seatTime").Label(new JS("formatMessage('Seat Time :')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                @(Html.DevExtreme().SelectBox()
+                                                                .ID("cbSeatTime")
+                                                                .Items(new[] {
+                                                                "1 MINUTE", "2 MINUTE", "5 MINUTE", "10 MINUTE", "15 MINUTE"
+                                                                })
+                                                                .Placeholder("Select or type seat time")
+                                                                .SearchEnabled(true)
+                                                                .ShowClearButton(true)
+                                                                .AcceptCustomValue(true)   // Enables user to enter custom values :contentReference[oaicite:1]{index=1}
+                                                                .OnCustomItemCreating("onComboSeatTime_CustomItemCreating")
+                                                                .Label(new JS("formatMessage('Seat Time:')"))
+                                                                .LabelMode(EditorLabelMode.Outside)
+                                                                )
+
                             </div>
                         </div>
                     </fieldset>
@@ -957,12 +1176,22 @@
                         <legend>Signatories</legend>
                         <div class="form-row">
                             <div class="form-group">
-                                @(Html.DevExtreme().TextBox().ID("preparedBy3").Label(new JS("formatMessage('Repair Report Prepared By:')"))
+                                @(Html.DevExtreme().TextBox().ID("ReportpreparedBy").Label(new JS("formatMessage('Repair Report Prepared By:')"))
                                     .LabelMode(EditorLabelMode.Outside).Width("100%"))
                             </div>
                             <div class="form-group">
                                 @(Html.DevExtreme().TextBox().ID("preparedByPosition").Label(new JS("formatMessage('Prepared By (Position):')"))
                                     .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                @(Html.DevExtreme().DateBox().ID("RepairPreparedOn").Label(new JS("formatMessage('Prepared On:')"))
+                                                                .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                            </div>
+                            <div class="form-group">
+                                @(Html.DevExtreme().DateBox().ID("RepairWitnessedOn").Label(new JS("formatMessage('Witnessed On:')"))
+                                                                .LabelMode(EditorLabelMode.Outside).Width("100%"))
                             </div>
                         </div>
                         <div class="form-row">
@@ -1064,22 +1293,22 @@
 
                         <div class="form-row">
                             <div class="form-group">
-                                @(Html.DevExtreme().TextBox().ID("preparedBytx").Label(new JS("formatMessage('Dispatch Report Prepared By:')"))
+                                @(Html.DevExtreme().TextBox().ID("DispatchPreparedBy").Label(new JS("formatMessage('Dispatch Report Prepared By:')"))
                                     .LabelMode(EditorLabelMode.Outside).Width("100%"))
                             </div>
                             <div class="form-group">
-                                @(Html.DevExtreme().DateBox().ID("preparedOntx").Label(new JS("formatMessage('Prepared On:')"))
+                                @(Html.DevExtreme().DateBox().ID("DispatchPreparedOn").Label(new JS("formatMessage('Prepared On:')"))
                                     .LabelMode(EditorLabelMode.Outside).Width("100%"))
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
-                                @(Html.DevExtreme().TextBox().ID("approvedBytx").Label(new JS("formatMessage('Dispatch Report Approved By:')"))
+                                @(Html.DevExtreme().TextBox().ID("DispatchApprovedBy").Label(new JS("formatMessage('Dispatch Report Approved By:')"))
                                     .LabelMode(EditorLabelMode.Outside).Width("100%"))
                             </div>
                             <div class="form-group">
-                                @(Html.DevExtreme().DateBox().ID("approvedOntx").Label(new JS("formatMessage('Approved On:')"))
+                                @(Html.DevExtreme().DateBox().ID("DispatchApprovedOn").Label(new JS("formatMessage('Approved On:')"))
                                     .LabelMode(EditorLabelMode.Outside).Width("100%"))
                             </div>
                         </div>
@@ -1097,7 +1326,112 @@
                 </div>
             </div>
         </div>
+        <div>
+            @await Html.PartialAsync("/Pages/Shared/IMS/EditJobOrderFormFooter.cshtml")
+        </div>
 
+@using (Html.DevExtreme().NamedTemplate("GetProjectContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+            .ID("GetProject-datagrid")
+            .DataSource(d => d.WebApi()
+            .Controller("EditJobOrderDetails")
+            .LoadAction("GetClientDetails")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("ClientCode")
+            )
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+                               @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+            .OnSelectionChanged("dataGridSelectionChanged1")
+            .OnInitialized("dataGridInitialized1")
+            .HeaderFilter(p => p.Visible(true))
+            .ShowBorders(true)
+            .HoverStateEnabled(true)
+            .Paging(p => p.PageSize(15))
+            .FilterRow(f => f.Visible(true))//
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Height(345)
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .Columns(columns =>
+            {
+                columns.Add().DataField("ClientName");
+
+
+
+            })
+            )
+        }
+@using (Html.DevExtreme().NamedTemplate("GetJobOrderStatusContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+            .ID("GetJobOrderStatus-datagrid")
+            .DataSource(d => d.WebApi()
+            .Controller("EditJobOrderDetails")
+            .LoadAction("GetJobOrderStatus")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("JobOrderStatusId")
+            )
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+                               @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+            .OnSelectionChanged("dataGridSelectionChanged2")
+            .OnInitialized("dataGridInitialized2")
+            .HeaderFilter(p => p.Visible(true))
+            .ShowBorders(true)
+            .HoverStateEnabled(true)
+            .Paging(p => p.PageSize(15))
+            .FilterRow(f => f.Visible(true))//
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Height(345)
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .Columns(columns =>
+            {
+                columns.Add().DataField("JobOrderStatusId");
+                columns.Add().DataField("JobOrderStatus");
+
+
+            })
+            )
+        }
+@using (Html.DevExtreme().NamedTemplate("GetCompanyBranchContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+            .ID("GetCompanyBranch-datagrid")
+            .DataSource(d => d.WebApi()
+            .Controller("EditJobOrderDetails")
+            .LoadAction("GetCompany")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("CompanyId")
+            )
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+                               @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+            .OnSelectionChanged("dataGridSelectionChanged3")
+            .OnInitialized("dataGridInitialized3")
+            .HeaderFilter(p => p.Visible(true))
+            .ShowBorders(true)
+            .HoverStateEnabled(true)
+            .Paging(p => p.PageSize(15))
+            .FilterRow(f => f.Visible(true))//
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Height(345)
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .Columns(columns =>
+            {
+                columns.Add().DataField("CompanyId");
+                columns.Add().DataField("CompanyName");
+
+
+            })
+            )
+        }
 
 
 <script>
@@ -1165,17 +1499,13 @@
     function dataGridInitialized1(e) {
         dataGrid = e.component;
     }
-    function AddModeReq(){
-        const url = `/${tenantName}/IMS/QuotationModeOfRequest`;
-        const title = "";
-        openModal(url, title);
-    }
-    function dataGridInitialized2(e) {
-        dataGrid = e.component;
-    }
+
+
+    
+
     function dataGridSelectionChanged2(e) {
         const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-        const ddbInstance = $("#ddGetModeOfRequest").dxDropDownBox("instance");
+                const ddbInstance = $("#ddJobOrderStatus").dxDropDownBox("instance");
 
         if (selectedKey) {
             ddbInstance.option("value", selectedKey);
@@ -1184,45 +1514,12 @@
             }
         }
     }
-    function AddTypeReq(){
-        const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
-        const title = "";
-            openModal(url, title);
+    function dataGridInitialized2(e) {
+        dataGrid = e.component;
     }
-    function AddQuoteStatus(){
-        const url = `/${tenantName}/IMS/PurchaseOrderCategories`;
-        const title = "";
-            openModal(url, title);
-    }
-    function redirecttosalespersonmaster(){
-        const url = `/${tenantName}/VAT/SalesPersonMaster`;
-        const title = "";
-            openModal(url, title);
-    }
-    function redirecttoClientLeadmaster1(){
-        const url = `/${tenantName}/IMS/ClientLeadMaster`;
-        const title = "";
-            openModal(url, title);
-    }
-        function redirecttoClientLeadmaster() {
-        // Get the selected client code from the DropDownBox
-        var clientCode = $("#GetProjectDropDown").dxDropDownBox("instance").option("value");
-
-        if (!clientCode) {
-            alert("Please select a client to edit.");
-            return;
-        }
-
-        // Assuming tenantName is defined globally or you can set it here
-        const url = `/${tenantName}/IMS/ClientLeadMaster?clientCode=${clientCode}`;
-        const title = "Edit Client";
-
-        openModal(url, title);
-    }
-
     function dataGridSelectionChanged3(e) {
         const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-        const ddbInstance = $("#ddGetTypeOfRequest").dxDropDownBox("instance");
+        const ddbInstance = $("#ddCompanyBranch").dxDropDownBox("instance");
 
         if (selectedKey) {
             ddbInstance.option("value", selectedKey);
@@ -1234,32 +1531,505 @@
     function dataGridInitialized3(e) {
         dataGrid = e.component;
     }
-    function dataGridSelectionChanged4(e) {
-        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-        const ddbInstance = $("#ddGetSalesPerson").dxDropDownBox("instance");
 
-        if (selectedKey) {
-            ddbInstance.option("value", selectedKey);
-            if (ddbInstance.option("opened")) {
-                ddbInstance.close();
-            }
-        }
-    }
-    function dataGridInitialized4(e) {
-        dataGrid = e.component;
-    }
-    function dataGridSelectionChanged5(e) {
-        const selectedKey = e.selectedRowKeys[0]; 
-        const ddbInstance = $("#ddGetSalesPerson").dxDropDownBox("instance");
 
-        if (selectedKey) {
-            ddbInstance.option("value", selectedKey);
-            if (ddbInstance.option("opened")) {
-                ddbInstance.close();
+       $(document).ready(function () {
+              const params = new URLSearchParams(window.location.search);
+              const jobOrderNos = params.get('JobOrderNo') || null;
+              const jobOrderNo = jobOrderNos ? jobOrderNos.split("?")[0] : null;
+
+              if (jobOrderNo) {
+                console.log('Got JobOrderNo:', jobOrderNo);
+                loadJobOrderDetails(jobOrderNo);
+              } else {
+                console.warn('No JobOrderNo in URL');
+              }
+            });
+
+            function loadJobOrderDetails(jobOrderNo) {
+              $.ajax({
+               url: `/api/EditJobOrderDetails/GetByJobOrderNo?JobOrderNo=${encodeURIComponent(jobOrderNo)}`,
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+
+
+                                      $('#txtJoborederNo').dxTextBox('instance').option('value', response.JobOrderNo);
+                                    $('#txtJobOrderDate').dxDateBox('instance').option('value', response.JobOrderDate);
+                                   $('#GetProjectDropDown').dxDropDownBox('instance').option('value', response.ClientCode);
+                                   $('#txtSalesNo').dxTextBox('instance').option('value', response.WorkOrderNo);
+                                   $('#ddJobOrderStatus').dxDropDownBox('instance').option('value', response.JobOrderStatus);
+                                   $('#txtJobDescription').dxTextBox('instance').option('value', response.JobOrderDescription);
+                                    $('#txtvaluetype').dxTextBox('instance').option('value', response.ValveType);
+                                   $('#ClientWorkOrderNo').dxTextBox("instance").option('value', response.ClientWorkOrderNo);
+
+
+
+                                $('#ddCompanyBranch').dxDropDownBox('instance').option('value', response.CompanyBranch);
+                                $("#cbTypeValue").dxSelectBox("instance").option('value', response.JobOrderType);
+                                $("#cbOperatorValue").dxSelectBox("instance").option('value', response.Operator);
+                                              
+                                $('#ModelNo').dxTextBox("instance").option('value', response.Operator);
+
+                                $("#cbSizeValue").dxSelectBox("instance").option('value', response.Size);
+                                $("#cbMaterialValue").dxSelectBox("instance").option('value', response.TagNo);
+                                $('#TagNo').dxTextBox('instance').option('value', response.Materials);
+                                $('#ClientProject').dxTextBox('instance').option('value', response.ClientProject);
+                                 $("#cbClassValue").dxSelectBox("instance").option('value', response.Class);
+                                $('#Make').dxTextBox('instance').option('value', response.Make);
+                               $('#SerialNo').dxTextBox('instance').option('value', response.ItemSlNo);
+
+                              $('#txtJobOrderDescription').dxTextArea('instance').option('value', response.JobDetailedDescription);
+                             $('#observationDate').dxDateBox('instance').option('value', response.InitialObsrvDate);
+                             $('#ObservationRemarks1').dxTextArea('instance').option('value', response.InitialObservationNotes);
+                             $('#preparedBy').dxTextBox('instance').option('value', response.InitialObsrvPreparedBy);
+                            $('#preparedOn').dxDateBox('instance').option('value', response.InitialObsrvPreparedOn);
+                            //$('#preparedBy').dxTextBox('instance').option('value', response.InitialObsrvApprovedBy);
+                            $('#approvedOn').dxDateBox('instance').option('value', response.InitialObsrvApprovedOn);
+
+                            $('#inspectionDate').dxDateBox('instance').option('value', response.InspectionDate);
+                            $('#preTested').dxTextBox('instance').option('value', response.InspectionPreTested);
+                           $('#scope').dxTextBox('instance').option('value', response.InspectionScope);
+                            $('#inspectionRemarks').dxTextArea('instance').option('value', response.InspectionNotes);
+                          $('#InspectionPreparedBy').dxTextBox('instance').option('value', response.InspectionPreparedBy);
+                          $('#InspectionPreparedOn').dxDateBox('instance').option('value', response.InspectionPreparedOn);
+                          $('#InspectionApprovedBy').dxTextBox('instance').option('value', response.InspectionApprovedBy);
+                          $('#InspectionApprovedOn').dxDateBox('instance').option('value', response.InspectionApprovedOn);
+
+                         $('#repairReportDate').dxDateBox('instance').option('value', response.RepairReportdate);
+                         $("#cbStandardValue").dxSelectBox("instance").option('value', response.ResultStandard);
+                         $("#cbShell").dxSelectBox("instance").option('value', response.ResultShell);
+                         $("#cbBackSeat").dxSelectBox("instance").option('value', response.ResultBackSeat);
+                         $("#cbMediaValue").dxSelectBox("instance").option('value', response.ResultMedia);
+                         $("#cbSeatHP").dxSelectBox("instance").option('value', response.ResultSeatHp);
+                         $("#cbSeatLP").dxSelectBox("instance").option('value', response.ResultSeatLp);
+                         $("#cbShellTime").dxSelectBox("instance").option('value', response.ResultShellTime);
+                         $("#cbLeakageClass").dxSelectBox("instance").option('value', response.ResultSeatLeakage);
+                         $("#cbSeatTime").dxSelectBox("instance").option('value', response.ResultSeatTime2);
+
+                         $('#ReportpreparedBy').dxTextBox('instance').option('value', response.RepairPreparedBy);
+                         $('#preparedByPosition').dxTextBox('instance').option('value', response.RepairPreparedByPosition);
+                         $('#witnessedByPosition').dxTextBox('instance').option('value', response.RepairWitnessedBy);
+                       //  $('#ReportpreparedBy').dxTextBox('instance').option('value', response.RepairWitnessedByPosition);
+                         $('#RepairPreparedOn').dxDateBox('instance').option('value', response.RepairPreparedOn);
+                         $('#RepairWitnessedOn').dxDateBox('instance').option('value', response.RepairWitnessedOn);
+
+                         $('#dispatchDate').dxDateBox('instance').option('value', response.DispatchReportDate);
+                          $('#dispatchRemarks').dxTextArea('instance').option('value', response.DispatchNotes);
+                         $('#DispatchPreparedBy').dxTextBox('instance').option('value', response.DispatchPreparedBy);
+                         $('#DispatchPreparedOn').dxDateBox('instance').option('value', response.DispatchPreparedOn);
+                          $('#DispatchApprovedBy').dxTextBox('instance').option('value', response.DispatchApprovedBy);
+                        $('#DispatchApprovedOn').dxDateBox('instance').option('value', response.DispatchApprovedOn);
+
+                }
+              });
             }
-        }
-    }
-    function dataGridInitialized5(e) {
-        dataGrid = e.component;
-    }
-   </script>
+
+//Save         
+  $("#btnSave").on("click", function (e) {
+                      debugger;
+                
+            let master = {
+                       JobOrderNo: $('#txtJoborederNo').dxTextBox('instance').option("value") || null,
+
+                       JobOrderDate:$('#txtJobOrderDate').dxDateBox('instance').option("value") || null,
+                       ClientCode :$('#GetProjectDropDown').dxDropDownBox('instance').option("value") || null,
+                       WorkOrderNo:$('#txtSalesNo').dxTextBox('instance').option("value") || null,
+                      JobOrderStatus:$('#ddJobOrderStatus').dxDropDownBox('instance').option("value") || null,
+                     JobOrderDescription:$('#txtJobDescription').dxTextBox('instance').option("value") || null,
+                      CompanyBranch:$('#ddCompanyBranch').dxDropDownBox('instance').option("value") || null,
+                      JobOrderType: $("#cbTypeValue").dxSelectBox("instance").option("value") || null,
+                      Operator: $("#cbOperatorValue").dxSelectBox("instance").option("value") || null,
+                      ModelNo:$('#ModelNo').dxTextBox("instance").option("value") || null,
+                      ClientWorkOrderNo:$('#ClientWorkOrderNo').dxTextBox("instance").option("value") || null,
+                   Size:$("#cbSizeValue").dxSelectBox("instance").option("value") || null,
+                   Materials:$("#cbMaterialValue").dxSelectBox("instance").option("value") || null,
+                   TagNo:$('#TagNo').dxTextBox('instance').option("value") || null,
+                   ClientProject:$('#ClientProject').dxTextBox('instance').option("value") || null,
+                     Class:$("#cbClassValue").dxSelectBox("instance").option("value") || null,
+                     Make:$('#Make').dxTextBox('instance').option("value") || null,
+                     ItemSlNo:$('#SerialNo').dxTextBox('instance').option("value") || null,
+                     ValveType:$('#txtvaluetype').dxTextBox('instance').option("value") || null,
+                  JobDetailedDescription:$('#txtJobOrderDescription').dxTextArea('instance').option("value") || null,
+
+                 InitialObsrvDate:$('#observationDate').dxDateBox('instance').option("value") || null,
+                InitialObservationNotes:$('#ObservationRemarks1').dxTextArea('instance').option("value") || null,
+                 InitialObsrvPreparedBy:$('#preparedBy').dxTextBox('instance').option("value") || null,
+                 InitialObsrvPreparedOn:$('#preparedOn').dxDateBox('instance').option("value") || null,
+              //InitialObsrvApprovedBy:$('#preparedBy').dxTextBox('instance').option("value") || null,
+              InitialObsrvApprovedOn:$('#approvedOn').dxDateBox('instance').option("value") || null,
+
+               InspectionDate:$('#inspectionDate').dxDateBox('instance').option("value") || null,
+               InspectionPreTested:$('#preTested').dxTextBox('instance').option("value") || null,
+               InspectionScope:$('#scope').dxTextBox('instance').option("value") || null,
+               InspectionNotes:$('#inspectionRemarks').dxTextArea('instance').option("value") || null,
+              InspectionPreparedBy:$('#InspectionPreparedBy').dxTextBox('instance').option("value") || null,
+              InspectionPreparedOn:$('#InspectionPreparedOn').dxDateBox('instance').option("value") || null,
+              InspectionApprovedBy:$('#InspectionApprovedBy').dxTextBox('instance').option("value") || null,
+              InspectionApprovedOn:$('#InspectionApprovedOn').dxDateBox('instance').option("value") || null,
+
+              RepairReportdate:$('#repairReportDate').dxDateBox('instance').option("value") || null,
+            ResultStandard:$("#cbStandardValue").dxSelectBox("instance").option("value") || null,
+             ResultShell: $("#cbShell").dxSelectBox("instance").option("value") || null,
+           ResultBackSeat: $("#cbBackSeat").dxSelectBox("instance").option("value") || null,
+           ResultMedia: $("#cbMediaValue").dxSelectBox("instance").option("value") || null,
+            ResultSeatHp:$("#cbSeatHP").dxSelectBox("instance").option("value") || null,
+                        ResultSeatLp:$("#cbSeatLP").dxSelectBox("instance").option("value") || null,
+           ResultShellTime:$("#cbShellTime").dxSelectBox("instance").option("value") || null,
+         ResultSeatLeakage:$("#cbLeakageClass").dxSelectBox("instance").option("value") || null,
+          ResultSeatTime2:$("#cbSeatTime").dxSelectBox("instance").option("value") || null,
+
+        RepairPreparedBy:$('#ReportpreparedBy').dxTextBox('instance').option("value") || null,
+        RepairPreparedByPosition:$('#preparedByPosition').dxTextBox('instance').option("value") || null,
+        RepairWitnessedBy:$('#witnessedByPosition').dxTextBox('instance').option("value") || null,
+      // RepairWitnessedByPosition:$('#ReportpreparedBy').dxTextBox('instance').option("value") || null,
+        RepairPreparedOn:$('#RepairPreparedOn').dxDateBox('instance').option("value") || null,
+       RepairWitnessedOn:$('#RepairWitnessedOn').dxDateBox('instance').option("value") || null,
+                                           
+       DispatchReportDate:$('#dispatchDate').dxDateBox('instance').option("value") || null,
+      DispatchNotes:$('#dispatchRemarks').dxTextArea('instance').option("value") || null,
+      DispatchPreparedBy:$('#DispatchPreparedBy').dxTextBox('instance').option("value") || null,
+      DispatchPreparedOn:$('#DispatchPreparedOn').dxDateBox('instance').option("value") || null,
+      DispatchApprovedBy:$('#DispatchApprovedBy').dxTextBox('instance').option("value") || null,
+      DispatchApprovedOn:$('#DispatchApprovedOn').dxDateBox('instance').option("value") || null
+
+ };
+
+                    $.ajax({
+                        type: "POST",
+                                url: '/api/EditJobOrderDetails/InsertOrUpdate',
+                        contentType: "application/json",
+                         data: JSON.stringify(master),
+                        success: function (response) {
+                            DevExpress.ui.notify(response.message, "success", 3000);
+                            // Refresh parent DataGrid (ensure the correct selector is used)
+                            if (window.parent && window.parent.$("#dataGrid").length) {
+                                let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+                                if (dataGrid) {
+                                    dataGrid.refresh();
+                                }
+                            }
+
+
+                        },
+                        error: function (xhr) {
+                            DevExpress.ui.notify("Error: " + xhr.responseJSON?.message, "error", 3000);
+                        }
+                    });
+             
+                });
+
+                //SaveAndClose
+                     $("#btnSaveAndClose").on("click", function (e) {
+                                  debugger;
+
+                        let master = {
+                                   JobOrderNo: $('#txtJoborederNo').dxTextBox('instance').option("value") || null,
+
+                                   JobOrderDate:$('#txtJobOrderDate').dxDateBox('instance').option("value") || null,
+                                   ClientCode :$('#GetProjectDropDown').dxDropDownBox('instance').option("value") || null,
+                                   WorkOrderNo:$('#txtSalesNo').dxTextBox('instance').option("value") || null,
+                                  JobOrderStatus:$('#ddJobOrderStatus').dxDropDownBox('instance').option("value") || null,
+                                 JobOrderDescription:$('#txtJobDescription').dxTextBox('instance').option("value") || null,
+                                  CompanyBranch:$('#ddCompanyBranch').dxDropDownBox('instance').option("value") || null,
+                                  JobOrderType: $("#cbTypeValue").dxSelectBox("instance").option("value") || null,
+                                  Operator: $("#cbOperatorValue").dxSelectBox("instance").option("value") || null,
+                                  ModelNo:$('#ModelNo').dxTextBox("instance").option("value") || null,
+                                  ClientWorkOrderNo:$('#ClientWorkOrderNo').dxTextBox("instance").option("value") || null,
+                               Size:$("#cbSizeValue").dxSelectBox("instance").option("value") || null,
+                               Materials:$("#cbMaterialValue").dxSelectBox("instance").option("value") || null,
+                               TagNo:$('#TagNo').dxTextBox('instance').option("value") || null,
+                               ClientProject:$('#ClientProject').dxTextBox('instance').option("value") || null,
+                                 Class:$("#cbClassValue").dxSelectBox("instance").option("value") || null,
+                                 Make:$('#Make').dxTextBox('instance').option("value") || null,
+                                 ItemSlNo:$('#SerialNo').dxTextBox('instance').option("value") || null,
+                                 ValveType:$('#txtvaluetype').dxTextBox('instance').option("value") || null,
+                              JobDetailedDescription:$('#txtJobOrderDescription').dxTextArea('instance').option("value") || null,
+
+                             InitialObsrvDate:$('#observationDate').dxDateBox('instance').option("value") || null,
+                            InitialObservationNotes:$('#ObservationRemarks1').dxTextArea('instance').option("value") || null,
+                             InitialObsrvPreparedBy:$('#preparedBy').dxTextBox('instance').option("value") || null,
+                             InitialObsrvPreparedOn:$('#preparedOn').dxDateBox('instance').option("value") || null,
+                          //InitialObsrvApprovedBy:$('#preparedBy').dxTextBox('instance').option("value") || null,
+                          InitialObsrvApprovedOn:$('#approvedOn').dxDateBox('instance').option("value") || null,
+
+                           InspectionDate:$('#inspectionDate').dxDateBox('instance').option("value") || null,
+                           InspectionPreTested:$('#preTested').dxTextBox('instance').option("value") || null,
+                           InspectionScope:$('#scope').dxTextBox('instance').option("value") || null,
+                           InspectionNotes:$('#inspectionRemarks').dxTextArea('instance').option("value") || null,
+                          InspectionPreparedBy:$('#InspectionPreparedBy').dxTextBox('instance').option("value") || null,
+                          InspectionPreparedOn:$('#InspectionPreparedOn').dxDateBox('instance').option("value") || null,
+                          InspectionApprovedBy:$('#InspectionApprovedBy').dxTextBox('instance').option("value") || null,
+                          InspectionApprovedOn:$('#InspectionApprovedOn').dxDateBox('instance').option("value") || null,
+
+                          RepairReportdate:$('#repairReportDate').dxDateBox('instance').option("value") || null,
+                        ResultStandard:$("#cbStandardValue").dxSelectBox("instance").option("value") || null,
+                         ResultShell: $("#cbShell").dxSelectBox("instance").option("value") || null,
+                       ResultBackSeat: $("#cbBackSeat").dxSelectBox("instance").option("value") || null,
+                       ResultMedia: $("#cbMediaValue").dxSelectBox("instance").option("value") || null,
+                        ResultSeatHp:$("#cbSeatHP").dxSelectBox("instance").option("value") || null,
+                                    ResultSeatLp:$("#cbSeatLP").dxSelectBox("instance").option("value") || null,
+                       ResultShellTime:$("#cbShellTime").dxSelectBox("instance").option("value") || null,
+                     ResultSeatLeakage:$("#cbLeakageClass").dxSelectBox("instance").option("value") || null,
+                      ResultSeatTime2:$("#cbSeatTime").dxSelectBox("instance").option("value") || null,
+
+                    RepairPreparedBy:$('#ReportpreparedBy').dxTextBox('instance').option("value") || null,
+                    RepairPreparedByPosition:$('#preparedByPosition').dxTextBox('instance').option("value") || null,
+                    RepairWitnessedBy:$('#witnessedByPosition').dxTextBox('instance').option("value") || null,
+                  // RepairWitnessedByPosition:$('#ReportpreparedBy').dxTextBox('instance').option("value") || null,
+                    RepairPreparedOn:$('#RepairPreparedOn').dxDateBox('instance').option("value") || null,
+                   RepairWitnessedOn:$('#RepairWitnessedOn').dxDateBox('instance').option("value") || null,
+
+                   DispatchReportDate:$('#dispatchDate').dxDateBox('instance').option("value") || null,
+                  DispatchNotes:$('#dispatchRemarks').dxTextArea('instance').option("value") || null,
+                  DispatchPreparedBy:$('#DispatchPreparedBy').dxTextBox('instance').option("value") || null,
+                  DispatchPreparedOn:$('#DispatchPreparedOn').dxDateBox('instance').option("value") || null,
+                  DispatchApprovedBy:$('#DispatchApprovedBy').dxTextBox('instance').option("value") || null,
+                  DispatchApprovedOn:$('#DispatchApprovedOn').dxDateBox('instance').option("value") || null
+
+             };
+
+                                $.ajax({
+                                    type: "POST",
+                                            url: '/api/EditJobOrderDetails/InsertOrUpdate',
+                                    contentType: "application/json",
+                                     data: JSON.stringify(master),
+                                    success: function (response) {
+                                        DevExpress.ui.notify(response.message, "success", 3000);
+                                        // Refresh parent DataGrid (ensure the correct selector is used)
+                                        if (window.parent && window.parent.$("#dataGrid").length) {
+                                            let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+                                            if (dataGrid) {
+                                                dataGrid.refresh();
+                                            }
+                                        }
+                                        history.back;
+
+                                    },
+                                    error: function (xhr) {
+                                        DevExpress.ui.notify("Error: " + xhr.responseJSON?.message, "error", 3000);
+                                    }
+                                });
+
+                            });
+   
+                   function AddModeReq(){
+                const url = `/${tenantName}/IMS/QuotationModeOfRequest`;
+                const title = "";
+                openModal(url, title);
+            }
+
+            function AddTypeReq(){
+                const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
+                const title = "";
+                    openModal(url, title);
+            }
+            function AddQuoteStatus(){
+                const url = `/${tenantName}/IMS/PurchaseOrderCategories`;
+                const title = "";
+                    openModal(url, title);
+            }
+            function redirecttosalespersonmaster(){
+                        const url = `/${tenantName}/IMS/JobOrderStatus`;
+                const title = "";
+                    openModal(url, title);
+            }
+            function redirecttoClientLeadmaster1(){
+                const url = `/${tenantName}/IMS/ClientLeadMaster`;
+                const title = "";
+                    openModal(url, title);
+            }
+            //     function redirecttoClientLeadmaster() {
+            //     // Get the selected client code from the DropDownBox
+            //     var clientCode = $("#GetProjectDropDown").dxDropDownBox("instance").option("value");
+
+            //     if (!clientCode) {
+            //         alert("Please select a client to edit.");
+            //         return;
+            //     }
+
+            //     // Assuming tenantName is defined globally or you can set it here
+            //     const url = `/${tenantName}/IMS/ClientLeadMaster?clientCode=${clientCode}`;
+            //     const title = "Edit Client";
+
+            //     openModal(url, title);
+            // }
+
+            function onComboValve_CustomItemCreating(e) {
+              const newText = e.text && e.text.trim();
+              if (!newText) {
+                e.customItem = null;
+                return;
+              }
+              const combo = e.component;
+              combo.option("items", [...combo.option("items"), newText]);
+              e.customItem = newText;
+            }
+               function onComboValve_Operator(e) {
+                              const newText = e.text && e.text.trim();
+                      if (!newText) {
+                        e.customItem = null;
+                        return;
+                      }
+                      const combo = e.component;
+                      combo.option("items", [...combo.option("items"), newText]);
+                      e.customItem = newText;
+                    }
+
+            function onComboSize_CustomItemCreating(e) {
+               const newText = (e.text || "").trim();
+               if (!newText) {
+                 e.customItem = null; // ignore empty entries
+                 return;
+               }
+               const combo = e.component;
+               combo.option("items", [...combo.option("items"), newText]);
+               e.customItem = newText; // select the newly added size
+             }
+          function onComboMaterial_CustomItemCreating(e) {
+              const newText = (e.text || "").trim();
+              if (!newText) {
+                e.customItem = null; // ignore empty submissions
+                return;
+              }
+              const combo = e.component;
+              // Append the new material to the dropdown list
+              combo.option("items", [...combo.option("items"), newText]);
+              // Select the newly added value
+              e.customItem = newText;
+            }
+                       function onComboClass_CustomItemCreating(e) {
+              const newText = (e.text || "").trim();
+              if (!newText) {
+                e.customItem = null; // Ignore blank input
+                return;
+              }
+              const combo = e.component;
+              combo.option("items", [...combo.option("items"), newText]);  // Add to list
+              e.customItem = newText; // Select newly added value
+            }
+                       function onComboStandard_CustomItemCreating(e) {
+              const newText = (e.text || "").trim();
+              if (!newText) {
+                e.customItem = null; // Prevent empty entries
+                return;
+              }
+              const combo = e.component;
+              // Append the custom entry to the dropdown items
+              combo.option("items", [...combo.option("items"), newText]);
+              e.customItem = newText; // Select the newly added value
+            }
+                       function onComboShell_CustomItemCreating(e) {
+              const newText = (e.text || "").trim();
+              if (!newText) {
+                e.customItem = null;  // Ignore blank submissions
+                return;
+              }
+              const combo = e.component;
+              // Add the new value to the dropdown list
+              combo.option("items", [...combo.option("items"), newText]);
+              // Select the newly entered value
+              e.customItem = newText;
+            }
+                       function onComboBackSeat_CustomItemCreating(e) {
+              const newText = (e.text || "").trim();
+              if (!newText) {
+                e.customItem = null; // Ignore blank entries
+                return;
+              }
+              const combo = e.component;
+              combo.option("items", [...combo.option("items"), newText]); // Append to list
+              e.customItem = newText; // Automatically select the custom value
+            }
+                      function onComboMedia_CustomItemCreating(e) {
+              const newText = (e.text || "").trim();
+              if (!newText) {
+                e.customItem = null; // Ignore blank entries
+                return;
+              }
+              const combo = e.component;
+              combo.option("items", [...combo.option("items"), newText]); // Append to list
+              e.customItem = newText; // Select the newer value
+            }
+                      function onComboSeatHP_CustomItemCreating(e) {
+              const newText = (e.text || "").trim();
+              if (!newText) {
+                e.customItem = null;  // Skip if empty
+                return;
+              }
+              const combo = e.component;
+              combo.option("items", [...combo.option("items"), newText]); // Add to list
+              e.customItem = newText; // Select the new value
+            }
+                        function onComboSeatLP_CustomItemCreating(e) {
+              const newText = (e.text || "").trim();
+              if (!newText) {
+                e.customItem = null; // Prevent empty entries
+                return;
+              }
+              const combo = e.component;
+              combo.option("items", [...combo.option("items"), newText]); // Append new value
+              e.customItem = newText; // Automatically select it
+            }
+                       function onComboShellTime_CustomItemCreating(e) {
+              const newText = (e.text || "").trim();
+              if (!newText) {
+                e.customItem = null; // prevents adding empty entries
+                return;
+              }
+              const combo = e.component;
+              combo.option("items", [...combo.option("items"), newText]); // Append new entry
+              e.customItem = newText; // Select the newly entered value
+            }
+                        function onComboLeakageClass_CustomItemCreating(e) {
+              const newText = (e.text || "").trim();
+              if (!newText) {
+                e.customItem = null;  // Prevent empty entries
+                return;
+              }
+              const combo = e.component;
+              combo.option("items", [...combo.option("items"), newText]); // Append custom entry
+              e.customItem = newText; // Automatically select it
+            }
+                        function onComboSeatTime_CustomItemCreating(e) {
+              const newText = (e.text || "").trim();
+              if (!newText) {
+                e.customItem = null; // Prevent blank entries
+                return;
+              }
+              const combo = e.component;
+              combo.option("items", [...combo.option("items"), newText]); // Append the new value
+              e.customItem = newText; // Automatically select it
+            }
+                        //delete
+             $("#btnDelete").on("click", function (e) {
+                 e.preventDefault();
+                 onDeleteButtonClick();
+             });
+             function onDeleteButtonClick(e) {
+
+                  var JobOrderNo = $('#txtJoborederNo').dxTextBox('instance').option("value");
+
+                             if (!JobOrderNo) {
+                                 DevExpress.ui.notify("Please enter or select a JobOrderNo Entry to delete.", "warning", 3000);
+                     return;
+                 }
+
+                 $.ajax({
+                  url: "/api/EditJobOrderDetails/DeleteJobOrder",
+                     type: 'POST',
+                     contentType: 'application/json',
+                                 data: JSON.stringify(JobOrderNo), // 👈 plain string
+                     success: function (response) {
+                         DevExpress.ui.notify(response.message, 'success', 3000);
+                         setTimeout(function () {
+                             location.reload();
+                         }, 2000);
+                     },
+                     error: function (xhr) {
+                         const msg = xhr.responseJSON?.message || xhr.responseText || 'Error occurred while deleting.';
+                         DevExpress.ui.notify(msg, 'error', 3000);
+                     }
+                 });
+             }
+        </script>

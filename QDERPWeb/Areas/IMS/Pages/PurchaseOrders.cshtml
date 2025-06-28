@@ -169,6 +169,37 @@
 	</div>
 </div>
 @await Html.PartialAsync("/Pages/Shared/IMS/PurchaseOrderFooter.cshtml")
+
+<div class="context-menuInvoice" id="contextMenu">
+	<div class="context-menu-itemInvoice" onclick="viewRecord()">
+		<i class="dx-icon-search"></i> View
+	</div>
+	<div class="context-menu-itemInvoice" onclick="editRecord()">
+		<i class="dx-icon-edit"></i> Edit
+	</div>
+	<div class="context-menu-itemInvoice" onclick="deleteRecord()">
+		<i class="dx-icon-trash"></i> Delete
+	</div>
+	<div class="context-menu-itemInvoice" onclick="unlockRecord()">
+		<i class="dx-icon-unlock"></i> Unlock the Purchase Order
+	</div>
+	<div class="context-menu-itemInvoice" onclick="reviseRecord()">
+		<i class="dx-icon-repeat"></i> Revise The Purchase Order
+	</div>
+	<div class="context-menu-itemInvoice" onclick="receiveItemPartially()">	
+		<i class="dx-icon-cart"></i>Receice Item Partially for  this PO
+	</div>
+	<div class="context-menu-itemInvoice" onclick="receiveItemFully()">
+		<i class="dx-icon-cart"></i>Receice Item Fully for  this PO
+	</div>
+	<div class="context-menu-itemInvoice" onclick="createVatPurchaseForPO()">
+		<i class="dx-icon-money"></i>Create VAT Purchase for this PO
+	</div>
+	<div class="context-menu-itemInvoice" onclick="deleteRecord()">
+
+		<i class="dx-icon-clock"></i>View Revision History
+	</div>
+</div>
 <div class="dx-fieldset horizontal-container">
 	@(Html.DevExtreme().DateBox()
 		.ID("frmdateBox")
@@ -227,7 +258,7 @@
 				columns.Add().Caption(new JS("formatMessage('Purchase Order Details')")).Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.Pono).Caption(new JS("formatMessage('Po No')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.RevisionNo).Caption(new JS("formatMessage('REV.No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.PorevisionNo).Caption(new JS("formatMessage('REV.No')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.Podate).Caption(new JS("formatMessage('PO Date')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
 				subColumns.AddFor(m => m.SupplierName).Caption(new JS("formatMessage('Supplier Name')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.IsSubmitted).Caption(new JS("formatMessage('IsSubmitted')")).Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
@@ -310,16 +341,16 @@
 <div id="invoiceErrorPopup"></div>
 
 <script>
-		 $(function () {
-	$("#DeliveryNote").dxTextBox({
-	text: formatMessage("Delivery Note"),
-		readOnly: true,
-		onContentReady: function (e) {
-		$(e.element).addClass("dx-textbox-heading");
-		}
-		});
-	});
-	$(function () {
+		  $(function () {
+		  $("#PurchaseOrders").dxTextBox({
+		  text: formatMessage("Purchase Order"),
+		  readOnly: true,
+		  onContentReady: function (e) {
+		  $(e.element).addClass("dx-textbox-heading");
+		  }
+		  });
+	  });
+		$(function () {
 			var now = new Date();
 			var firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
 			var tillmonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
@@ -388,7 +419,7 @@
 	toDate = toDate.toISOString().split('T')[0];
 
 				$.ajax({
-		url: '/api/PurchaseOrders/GetPurchaseOrders',
+		url: '/api/PurchaseOrders/GetGroupedPurchaseOrders',
 		type: 'GET',
 		data: {
 			fromDate: frmDate,
@@ -405,7 +436,291 @@
 	});
 
 
+}
 
+	let selectedRowData = null;
+
+	$(function () {
+    const contextMenu = $("#contextMenu");
+
+    $(document).on("click", function () {
+        contextMenu.hide();
+    });
+
+    $("#dataGrid").customizeGridContextMenu();
+    $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
+        e.preventDefault();
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        const rowIndex = $(this).index();
+        selectedRowData = dataGrid.getVisibleRows()[rowIndex].data;
+
+        // Calculate menu position
+        const menuHeight = contextMenu.outerHeight() || 220; // fallback height
+        const menuWidth = contextMenu.outerWidth() || 200;   // fallback width
+        const pageY = e.pageY;
+        const pageX = e.pageX;
+        const windowHeight = $(window).height();
+        const windowWidth = $(window).width();
+
+        let top = pageY;
+        let left = pageX;
+
+        // If not enough space below, show above
+        if (pageY + menuHeight > windowHeight) {
+            top = pageY - menuHeight;
+            if (top < 0) top = 0; // Don't go off the top
+        }
+
+        // If not enough space to the right, shift left
+        if (pageX + menuWidth > windowWidth) {
+            left = windowWidth - menuWidth - 10;
+            if (left < 0) left = 0;
+        }
+
+        contextMenu.css({ top: top + "px", left: left + "px" }).show();
+    });
+
+	   });
+	   function viewRecord() {
+		   if (selectedRowData) {
+			   const Pono = selectedRowData.Pono;
+			   window.location.href = `/${tenantName}/IMS/AddNewPurchaseOrder?Pono=${encodeURIComponent(Pono)}&mode=view`;
+		   }
+	   }
+
+	   function editRecord() {
+		   if (selectedRowData) {
+			   const Pono = selectedRowData.Pono;
+			   window.location.href = `/${tenantName}/IMS/AddNewPurchaseOrder?Pono=${encodeURIComponent(Pono)}&mode=edit`;
+		   }
+	   }
+
+
+			function deleteRecord() {
+    if (!selectedRowData) {
+        DevExpress.ui.notify("Please select a row to delete.", "warning", 2000);
+        return;
+    }
+
+    const Pono = selectedRowData.Pono;
+
+    DevExpress.ui.dialog.confirm(
+        `Are you sure you want to delete Purchase Order: <b>${Pono}</b>?`,
+        "Confirm Deletion"
+    ).done(function (dialogResult) {
+        if (dialogResult) {
+            $.ajax({
+                url: `/api/PurchaseOrders/DeletePurchaseOrder?Pono=${encodeURIComponent(Pono)}`,
+                method: "DELETE",
+                success: function (result) {
+                    const messageType = result.success ? "Success" : "Error";
+                    const messageColor = result.success ? "green" : "red";
+
+                    DevExpress.ui.dialog.alert(
+                        `<div style="color: ${messageColor}; font-weight: bold;">
+                            ${result.message}
+                        </div>`,
+                        messageType
+                    );
+
+                    if (result.success) {
+                        const grid = $("#dataGrid").dxDataGrid("instance");
+                        grid.refresh();
+                    }
+                },
+                error: function (xhr) {
+                    DevExpress.ui.notify("Error deleting purchase order", "error", 2000);
+                    console.error(xhr);
+                }
+            });
+        }
+    });
+}
+
+
+function unlockRecord() {
+    if (!selectedRowData) {
+        DevExpress.ui.notify("Please select a row to unlock.", "warning", 2000);
+        return;
+    }
+
+    const Pono = selectedRowData.Pono;
+
+    DevExpress.ui.dialog.confirm(
+        `Are you sure you want to unlock Purchase Order: <b>${Pono}</b>?<br>This will set all approval statuses to <b>true</b>.`,
+        "Confirm Unlock"
+    ).done(function (dialogResult) {
+        if (dialogResult) {
+            $.ajax({
+                url: "/api/PurchaseOrders/UnlockPurchaseOrder",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ Pono: Pono }),
+                success: function (result) {
+                    if (result.success) {
+                        DevExpress.ui.notify(result.message, "success", 2000);
+                        // Optionally refresh the grid to show updated status
+                        const grid = $("#dataGrid").dxDataGrid("instance");
+                        grid.refresh();
+                    } else {
+                        DevExpress.ui.notify(result.message, "warning", 2000);
+                    }
+                },
+                error: function (xhr) {
+                    DevExpress.ui.notify("Error unlocking purchase order", "error", 2000);
+                    console.error(xhr);
+                }
+            });
+        }
+    });
+}
+
+function receiveItemPartially() {
+    if (!selectedRowData) {
+        DevExpress.ui.notify("Please select a row to receive.", "warning", 2000);
+        return;
+    }
+
+    const Pono = selectedRowData.Pono;
+
+    // 1. Check OrderStatus from the server for the selected PO
+    $.get(`/api/PurchaseOrders/GetOrderStatus?pono=${encodeURIComponent(Pono)}`, function (result) {
+        if (!result.success) {
+            DevExpress.ui.notify(result.message || "Could not check order status.", "error", 2000);
+            return;
+        }
+
+        const status = (result.orderStatus || "").toLowerCase();
+
+        if (status === "fully received") {
+            DevExpress.ui.dialog.alert(
+                "This PO is already fully received. You cannot receive anymore.",
+                "Information"
+            );
+            return;
+        }
+
+        // 2. If not fully received (including partially received), proceed as before
+        $.ajax({
+            url: "/api/PurchaseOrders/ReceiveItemPartially",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({ Pono: Pono }),
+            success: function (result) {
+                if (result.success) {
+                    DevExpress.ui.notify(result.message, "success", 2000);
+                    // Redirect to MaterialReceiptFromSupplier with the PO number
+                    window.location.href = `/${tenantName}/IMS/MaterialReceiptFromSupplier?ReceiptNo=${encodeURIComponent(result.receiptNoteNo)}&PurchaseOrderNo=${encodeURIComponent(Pono)}`;
+                } else {
+                    DevExpress.ui.notify(result.message, "error", 2000);
+                }
+                // Optionally refresh the grid after action
+                const grid = $("#dataGrid").dxDataGrid("instance");
+                if (grid) grid.refresh();
+            },
+            error: function (xhr) {
+                DevExpress.ui.notify("Error creating material receipt", "error", 2000);
+                console.error(xhr);
+            }
+        });
+    });
+}
+
+function receiveItemFully() {
+    if (!selectedRowData) {
+        DevExpress.ui.notify("Please select a row to receive.", "warning", 2000);
+        return;
+    }
+    const Pono = selectedRowData.Pono;
+
+    // 1. Check OrderStatus from the server for the selected PO
+    $.get(`/api/PurchaseOrders/GetOrderStatus?pono=${encodeURIComponent(Pono)}`, function (result) {
+        if (!result.success) {
+            DevExpress.ui.notify(result.message || "Could not check order status.", "error", 2000);
+            return;
+        }
+
+        const status = (result.orderStatus || "").toLowerCase();
+
+        if (status === "partially received") {
+            DevExpress.ui.notify("This PO is already partially received. You cannot create a full PO.", "warning", 3000);
+            return;
+        }
+        if (status === "fully received") {
+            DevExpress.ui.notify("This PO is already fully received. You cannot receive again.", "warning", 3000);
+            return;
+        }
+
+        // 2. If not partially/fully received, proceed as before
+        DevExpress.ui.dialog.confirm(
+            `Are you sure you want to create a Material Receipt for PO: <b>${Pono}</b>?`,
+            "Confirm Material Receipt"
+        ).done(function (dialogResult) {
+            if (dialogResult) {
+                $.ajax({
+                    url: "/api/PurchaseOrders/ReceiveItemFully",
+                    method: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({ Pono: Pono }),
+                    success: function (result) {
+                        if (result.success) {
+                            DevExpress.ui.notify(result.message, "success", 2000);
+							window.location.href = `/${tenantName}/IMS/MaterialReceiptFromSupplier?ReceiptNo=${encodeURIComponent(result.receiptNoteNo)}&PurchaseOrderNo=${encodeURIComponent(Pono)}`;
+                        }
+                    },
+                    error: function (xhr) {
+                        DevExpress.ui.notify("Error creating material receipt", "error", 2000);
+                        console.error(xhr);
+                    }
+                });
+            }
+        });
+    });
+}
+
+function createVatPurchaseForPO() {
+    if (!selectedRowData || !selectedRowData.Pono) {
+        DevExpress.ui.notify("Please select a Purchase Order.", "warning", 2000);
+        return;
+    }
+    window.location.href = `/${tenantName}/IMS/GenerateInvoicePurchaseOrder?PONo=${encodeURIComponent(selectedRowData.Pono)}`;
+}
+
+
+		function reviseRecord() {
+		if (!selectedRowData) {
+			DevExpress.ui.notify("Please select a row to revise.", "warning", 2000);
+			return;
+		}
+
+		const Pono = selectedRowData.Pono;
+
+		DevExpress.ui.dialog.confirm(
+			`Are you sure you want to revise Purchase Order: <b>${Pono}</b>?<br>This will reset all approval statuses.`,
+			"Confirm Revision"
+		).done(function (dialogResult) {
+			if (dialogResult) {
+				$.ajax({
+					url: "/api/PurchaseOrders/RevisePurchaseOrder",
+					method: "POST",
+					contentType: "application/json",
+					data: JSON.stringify({ Pono: Pono }),
+					success: function (result) {
+						if (result.success) {
+							DevExpress.ui.notify(result.message, "success", 2000);
+						 window.location.href =
+									`/${tenantName}/IMS/AddNewPurchaseOrder?Pono=${encodeURIComponent(Pono)}&RevId=${encodeURIComponent(result.newRevisionNo)}&mode=edit`;
+										} else {
+							DevExpress.ui.notify(result.message, "warning", 2000);
+						}
+					},
+					error: function (xhr) {
+						DevExpress.ui.notify("Error revising purchase order", "error", 2000);
+						console.error(xhr);
+					}
+				});
+			}
+		});
 	}
 
 

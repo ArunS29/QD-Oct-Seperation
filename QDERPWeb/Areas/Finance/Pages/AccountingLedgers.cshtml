@@ -2,44 +2,62 @@
 @using DevExtreme.AspNet.Mvc
 
 <style type="text/css">
+	#dataGrid .dx-datagrid-header-panel {
+		background: #f8f9fa;
+	}
+	/* Column headers */
+	#dataGrid .dx-datagrid-headers .dx-row > td {
+		background-color: var(--header-color) !important;
+		border-bottom: 1px solid #dee2e6;
+		color: #343a40;
+		font-weight: 600;
+	}
+	/* Zebra rows & hover */
+	#dataGrid .dx-data-row:nth-child(even) {
+		background: #fafbfc;
+	}
+
+	#dataGrid .dx-data-row:hover {
+		background: #eef7ff;
+	}
+
+	/* VoucherNo link */
+	#dataGrid a.voucher-link {
+		color: #007bff;
+		font-weight: 600;
+		text-decoration: none;
+	}
+
+		#dataGrid a.voucher-link:hover {
+			text-decoration: underline;
+		}
+
+	/* Pill badges for Dr / Cr */
+	#dataGrid .debit-pill, #dataGrid .credit-pill {
+		display: inline-block;
+		padding: 2px 10px;
+		border-radius: 14px;
+		font-weight: 600;
+		font-variant-numeric: tabular-nums;
+	}
+
+	#dataGrid .debit-pill {
+		background: rgba(255, 77, 79, .15);
+		color: #ff4d4f;
+	}
+
+	#dataGrid .credit-pill {
+		background: rgba(82, 196, 26, .15);
+		color: #52c41a;
+	}
+
+	/* Long text truncation */
 	.ellipsis-column {
+		max-width: 220px;
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
-		display: block;
 	}
-	.overlay {
-		display: none;
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background: rgba(0, 0, 0, 0.5); /* Transparent background */
-
-		z-index: 1000;
-	}
-	/* Ensure word wrap and center alignment for grid headers */
-	.header-wrap {
-		white-space: normal !important; /* Enable word wrap */
-		text-align: center !important; /* Center align text */
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		font-weight: bold;
-	}
-
-	/* Ensure text in grid headers is always centered */
-	.dx-datagrid .dx-header-row .dx-datagrid-text-content {
-		white-space: normal !important;
-		text-align: center !important;
-	}
-
-	/* Ensure column headers text aligns to center */
-	.dx-datagrid-headers .dx-datagrid-table .dx-row > td {
-		text-align: center !important;
-	}
-
 	.overlay-content {
 		position: absolute;
 		top: 50%;
@@ -138,34 +156,347 @@
 		font-weight: bold;
 		font-size: 16px;
 		color: black;
-		pointer-events: none; /* Prevents hover and click effects */
+		pointer-events: none; 
+	}
+
+	.titleCard-carousel {
+		display: flex;
+		overflow-x: auto;
+		gap: 20px;
+		padding: 16px 24px 0 calc(var(--nav-w,0) + 24px);
+		scroll-snap-type: x mandatory;
+		padding-top:15px;
+        padding-bottom: 15px;
+        padding-left: 10px;
+	}
+
+	.titleCard-cards {
+		display: flex;
+		gap: 20px;
+		min-width: max-content
+	}
+
+	/* --------------  KPI CARD (core) -------------- */
+	.titleCard-card {
+		flex: 0 0 240px; /* exact width */
+		position: relative;
+		padding: 18px 20px;
+		border-radius: 16px;
+		box-shadow: 0 4px 10px rgba(0,0,0,.12);
+		color: #fff;
+		font-weight: 600;
+		overflow: hidden;
+		scroll-snap-align: start;
+		padding-top:10px;
+		transition: transform .3s ease,box-shadow .3s ease
+	}
+
+		.titleCard-card:hover {
+			transform: scale(1.03);
+			box-shadow: 0 8px 20px rgba(0,0,0,.25)
+		}
+
+	/* gradients */
+	.vibrant-pink {
+		background: linear-gradient(135deg,#ff0066,#ff66cc)
+	}
+
+	.cool-blue {
+		background: linear-gradient(135deg,#0066ff,#33ccff)
+	}
+
+	.deep-purple {
+		background: linear-gradient(135deg,#6a11cb,#2575fc)
+	}
+
+	.mint-green {
+		background: linear-gradient(135deg,#00c9a7,#92fe9d)
+	}
+
+	/* headline + subhead (static card only) */
+	#Static .value-block {
+		height: auto
+	}
+	/* let it grow */
+	#Static .value-slider {
+		position: static
+	}
+	/* stop slide animation */
+	#Static h2 {
+		font-size: 20px;
+		margin: 0;
+		font-weight: 700
+	}
+
+	#Static h6 {
+		font-size: 12px;
+		margin: 2px 0 0;
+		font-weight: 500;
+		opacity: .85
+	}
+
+	/* --------------  KPI inner elements -------------- */
+	.titleCard-card .title {
+		font-size: 14px;
+		opacity: .9
+	}
+
+	.value-block {
+		height: 28px;
+		overflow: hidden;
+		position: relative;
+		margin: 6px 0
+	}
+
+	.value-slider {
+		position: absolute;
+		top: 0;
+		display: flex;
+		flex-direction: column;
+		animation: slideValues 6s linear infinite
+	}
+
+		.value-slider span {
+			font-size: 24px;
+			line-height: 28px;
+			height: 28px
+		}
+
+	/* SVG icon inside value */
+	.titleCard-card svg {
+		width: 18px;
+		height: 18px;
+		margin-right: 5px;
+		vertical-align: middle;
+		fill: #fff
+	}
+
+	/* trend + bar */
+	.titleCard-card .trend {
+		font-size: 13px;
+		display: flex;
+		align-items: center;
+		gap: 4px
+	}
+
+	.titleCard-card .bar {
+		height: 6px;
+		border-radius: 4px;
+		background: rgba(255, 255, 255, 0.25);
+		margin-top: 10px;
+		overflow: hidden;
+		position: relative;
+	}
+
+		.titleCard-card .bar span {
+			display: block;
+			height: 100%;
+			border-radius: 4px;
+			background: #fff;
+			width: 0%;
+			transition: width 0.6s ease;
+		}
+
+		/* Percentage label inside the bar */
+		.titleCard-card .bar::after {
+			content: attr(data-percentage);
+			position: absolute;
+			right: 6px;
+			top: -22px;
+			font-size: 12px;
+			font-weight: 500;
+			color: #fff;
+			opacity: 0.85;
+		}
+
+
+	/* overlay on hover */
+	.overlay {
+		position: absolute;
+		inset: 0;
+		background: rgba(0,0,0,.55);
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		padding: 12px;
+		text-align: center;
+		opacity: 0;
+		transition: opacity .3s
+	}
+
+	.titleCard-card:hover .overlay {
+		opacity: 1
+	}
+
+	.overlay .detail {
+		font-size: 13px;
+		margin: 4px 0
+	}
+
+	.titleCard-toggle {
+		cursor: pointer;
+		font-size: 1.2rem;
+		height: 35px !important;
+		width: 35px;
+		background: var(--hover-bg-color);
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+		.titleCard-toggle:hover {
+			color: #000;
+		}
+
+	.titleCard-card .header {
+		font-size: 15px !important;
+		font-weight: 600;
+		color: #fff !important;
+		opacity: 1 !important;
+		margin-bottom: 4px;
+		position: relative;
+		
+	}
+
+
+	/* Ensure SVGs are visible and consistent */
+	.titleCard-card svg {
+		width: 18px !important;
+		height: 18px !important;
+		margin-right: 5px;
+		vertical-align: middle;
+		fill: white !important;
+	}
+	/* simple slide animation (balance, debit, credit) */
+	@@keyframes slideValues {
+		0%,33%
+
+	{
+		transform: translateY(0)
+	}
+
+	34%, 66% {
+		transform: translateY(-28px)
+	}
+
+	67%, 100% {
+		transform: translateY(-56px)
+	}
+
+	}
+
+	/* ----------- KPI CARDS: quick fixes ----------- */
+	.titleCard-carousel.collapsed {
+		max-height: 0;
+		padding: 0;
+		overflow: hidden;
+		transition: max-height .35s ease, padding .35s ease;
+	}
+
+	.titleCard-card .header {
+		position: relative;
+		
+	}
+
+	.value-slider span {
+		display: flex;
+		align-items: center;
+		gap: 5px;
+	}
+
+	.ellipsis-cell {
+		max-width: 100%; /* let the column decide exact width */
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		cursor: pointer; /* lets the user know it’s hoverable */
+	}
+
+	.header {
+        display: flex !important;
+        background-color: transparent !important;
+	}
+	.title{
+		background: transparent ! important;
 	}
 </style>
+<div class="title" id="kpiCarousel">
+	<div class="titleCard-cards">
+
+		<!-- STATIC -->
+		<div id="Static" class="titleCard-card vibrant-pink">
+			<div class="value-block">
+				
+					<h2>Accounting Ledger</h2>
+					<h6>Quick Dice ERP Solutions</h6>
+				
+			</div>
+		</div>
+
+		<!-- BALANCE -->
+		<div id="cardBalance" class="titleCard-card cool-blue">
+			<div class="header">Balance</div>
+			<div class="value-block">
+				<div class="value-slider">
+					<span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span>
+					<span>0.00</span>
+					<span>0.00</span>
+				</div>
+			</div>
+			<div class="trend">0% <i class="fa-solid fa-arrow-right"></i></div>
+			@* <div class="bar"><span style="width:50%"></span></div> *@
+			<div class="overlay">
+				<div class="detail">Today: 0.00</div>
+				<div class="detail">This Week: 0.00</div>
+				<div class="detail">This Month: 0.00</div>
+			</div>
+		</div>
+
+		<!-- DEBIT -->
+		<div id="cardDebit" class="titleCard-card deep-purple">
+			<div class="header">Total Debit</div>
+			<div class="value-block">
+				<div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
+			</div>
+			<div class="trend">0% <i class="fa-solid fa-arrow-right"></i></div>
+			@* <div class="bar"><span style="width:50%"></span></div> *@
+			<div class="overlay">
+				<div class="detail">Today: 0.00</div>
+				<div class="detail">This Week: 0.00</div>
+				<div class="detail">This Month: 0.00</div>
+			</div>
+		</div>
+
+		<!-- CREDIT -->
+		<div id="cardCredit" class="titleCard-card mint-green">
+			<div class="header">Total Credit</div>
+			<div class="value-block">
+				<div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
+			</div>
+			<div class="trend">0% <i class="fa-solid fa-arrow-up"></i></div>
+			@* <div class="bar"><span style="width:50%"></span></div> *@
+			<div class="overlay">
+				<div class="detail">Today: 0.00</div>
+				<div class="detail">This Week: 0.00</div>
+				<div class="detail">This Month: 0.00</div>
+			</div>
+		</div>
+
+	</div>
+</div>
 
 
 <input id="formId" value="frm201LedgerView" type="hidden" />
-<div class="title">
-	<div class="header-container">
-		<div id="AccountingLedger" class="no-border-input"></div>
-	</div>
-</div>
+
 <div id="loadPanel"></div>
 <div class="Head">
 	<div class="header-container">
 		<div class="footer">@await Html.PartialAsync("_GridFooter", new ViewDataDictionary(ViewData) { { "HideDropdown", true } })</div>
 	</div>
 </div>
-@* <div id="errorPopup">
-	<div style="text-align: center; padding: 20px;">
-		<img src="https://i.gifer.com/origin/f7/f748a43312487000f282968b97aa60fe_w200.gif" alt="Doll Error" style="width: 100px; height: 100px;" />
-		<h5 style="margin-top: 10px; color: #ff5f5f;">Please Select AccountID</h5>
 
-		<div style="margin-top: 20px;">
-			<button id="errorCloseBtn" class="dx-button dx-button-danger"></button>
-		</div>
-	</div>
-</div>
- *@
 
 
 <div id="inputPopupContainer"></div>
@@ -342,9 +673,11 @@
 				.ID("ddBtnShowRecords")
 				.Text(new JS("formatMessage('Show Records')"))
 				.Icon("smalliconslayout")
-				.Width(180)
+				.Width(250)
+				.SplitButton(true) // This enables main-button vs arrow split behavior
 				.ElementAttr("class", "button-alignment-down")
 				.TabIndex(4)
+				.OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }") // MAIN button click
 				.DropDownOptions(options => options.Width(230))
 				.Items(items =>
 				{
@@ -358,9 +691,9 @@
 					items.Add().Text(new JS("formatMessage('This Year (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
 					items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
 					items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
-
 				})
 				)
+
 		@* @(Html.DevExtreme().DropDownButton()
 		.ID("ddBtnGenerateReport")
 		.Text("Generate Report")
@@ -382,17 +715,19 @@
 
 	<div class="dx-field ledgerResult">
 		<!-- Toolbar for Column Chooser and Filter -->
-		@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.StProAccountLedgerResult>()
+		@(
+					Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.StProAccountLedgerResult>()
 					.ID("dataGrid")
 					.RemoteOperations(false)
 					.DataSource(new JS("[]"))
 					.Columns(columns =>
 					{
-						columns.AddFor(m => m.VoucherNo).Caption(new JS("formatMessage('Voucher No')"))
+						columns.AddFor(m => m.VoucherNo)
+					.Caption(new JS("formatMessage('Voucher No')"))
 					.Alignment(HorizontalAlignment.Center)
 					.CellTemplate(@<text>
 			<div>
-				<a href="javascript:void(0);" style="color: #007bff; font-weight: bold;"
+				<a href="javascript:void(0);" class="voucher-link"
 				   onclick="navigateToVoucherPage('<%- data.VoucherNo %>', '<%- data.VoucherType %>')">
 					<%- data.VoucherNo %>
 				</a>
@@ -400,62 +735,75 @@
 		</text>)
 					.Visible(true);
 
-
-						columns.AddFor(m => m.VoucherDate).Caption(new JS("formatMessage('VoucherDate')"))
+						columns.AddFor(m => m.VoucherDate)
+					.Caption(new JS("formatMessage('VoucherDate')"))
 					.Alignment(HorizontalAlignment.Center)
 					.Format(format => format.Type(Format.ShortDate)
 					.Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"))
 					.Visible(true);
 
-						columns.AddFor(m => m.VoucherEffectiveDate).Caption(new JS("formatMessage('Effective On')"))
+						columns.AddFor(m => m.VoucherEffectiveDate)
+					.Caption(new JS("formatMessage('Effective On')"))
 					.Alignment(HorizontalAlignment.Center)
 					.Format(format => format.Type(Format.ShortDate)
 					.Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'MMM-yyyy'); }"))
 					.Visible(true);
 
-						columns.AddFor(m => m.AccountHeadName).Caption(new JS("formatMessage('Account Ledger')"))
+						columns.AddFor(m => m.AccountHeadName)
+					.Caption(new JS("formatMessage('Account Ledger')"))
 					.Alignment(HorizontalAlignment.Left)
 					.Visible(true);
 
-						columns.AddFor(m => m.DrAmount).Caption(new JS("formatMessage('Debit')")).Alignment(HorizontalAlignment.Right)
+						/* Debit */
+						columns.AddFor(m => m.DrAmount)
+					.Caption(new JS("formatMessage('Debit')"))
+					.Alignment(HorizontalAlignment.Right)
 					.CellTemplate(@<text>
-			<div style="color: red; font-weight: bold;">
+			<div class="debit-pill">
 				<%- data.DrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
 			</div>
 		</text>)
 					.Visible(true);
 
-						columns.AddFor(m => m.CrAmount).Caption(new JS("formatMessage('Credit')")).Alignment(HorizontalAlignment.Right)
+						/* Credit */
+						columns.AddFor(m => m.CrAmount)
+					.Caption(new JS("formatMessage('Credit')"))
+					.Alignment(HorizontalAlignment.Right)
 					.CellTemplate(@<text>
-			<div style="color: green; font-weight: bold;">
+			<div class="credit-pill">
 				<%- data.CrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
 			</div>
 		</text>)
-				.Visible(true);
+					.Visible(true);
 
-						columns.AddFor(m => m.VoucherAmountFormatted).Caption(new JS("formatMessage('VoucherAmountFormatted')")).Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.VoucherAmountFormatted)
+					.Caption(new JS("formatMessage('VoucherAmountFormatted')"))
+					.Alignment(HorizontalAlignment.Left)
+					.Visible(false);
+
 						columns.Add()
-			.Caption(new JS("formatMessage('Balance')"))
-			.Alignment(HorizontalAlignment.Right)
-			.DataType(GridColumnDataType.Number)
-			.CalculateCellValue("function(rowData) { " +
-			"let balance = 0;" +
-			"let gridInstance = $('#dataGrid').dxDataGrid('instance');" +
-			"if (!gridInstance) return '0.00 Dr'; " +
-			"let dataSource = gridInstance.option('dataSource');" +
-			"if (!dataSource) return '0.00 Dr';" +
+					.Caption(new JS("formatMessage('Balance')"))
+					.Alignment(HorizontalAlignment.Right)
+					.DataType(GridColumnDataType.Number)
+					.CalculateCellValue(
+					"function(rowData) { " +
+					"let balance = 0;" +
+					"let gridInstance = $('#dataGrid').dxDataGrid('instance');" +
+					"if (!gridInstance) return '0.00 Dr'; " +
+					"let dataSource = gridInstance.option('dataSource');" +
+					"if (!dataSource) return '0.00 Dr';" +
+					"for (let i = 0; i <= dataSource.indexOf(rowData); i++) {" +
+					"  let item = dataSource[i];" +
+					"  let voucherAmount = parseFloat(item.VoucherAmountFormatted ? item.VoucherAmountFormatted.toString().replace(/,/g, '') : 0);" +
+					"  balance += voucherAmount;" +
+					"}" +
+					"let formattedBalance = Math.abs(balance).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });" +
+					"let balanceType = balance >= 0 ? 'Dr' : 'Cr';" +
+					"return `${formattedBalance} ${balanceType}`;" +
+					"}")
+					.Visible(true);
 
-			"for (let i = 0; i <= dataSource.indexOf(rowData); i++) {" +
-			"let item = dataSource[i];" +
-			" let voucherAmount = parseFloat(item.VoucherAmountFormatted ? item.VoucherAmountFormatted.toString().replace(/,/g, '') : 0);" +
-			"  balance += voucherAmount" +
-			"}" +
-			//  "let formattedBalance = balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });"+
-			"let formattedBalance = Math.abs(balance).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });" +
-
-			"let balanceType = balance >= 0 ? 'Dr' : 'Cr'; " +
-			" return `${formattedBalance} ${balanceType}`;" +
-			"}").Visible(true);
+						/* … unchanged hidden columns … */
 						columns.AddFor(m => m.ReferenceNote).Caption(new JS("formatMessage('ReferenceNote')")).Alignment(HorizontalAlignment.Left).Visible(false);
 						columns.AddFor(m => m.AccountHeadArabic).Caption(new JS("formatMessage('AccountHeadArabic')")).Alignment(HorizontalAlignment.Left).Visible(false);
 						columns.AddFor(m => m.BillPaidTo).Caption(new JS("formatMessage('BillPaidTo')")).Alignment(HorizontalAlignment.Left).Visible(false);
@@ -474,92 +822,55 @@
 						columns.AddFor(m => m.VoucherApprovedOn).Caption(new JS("formatMessage('VoucherApprovedOn')")).Alignment(HorizontalAlignment.Left).Visible(false);
 						columns.AddFor(m => m.VoucherVerifiedOn).Caption(new JS("formatMessage('VoucherVerifiedOn')")).Alignment(HorizontalAlignment.Left).Visible(false);
 						columns.AddFor(m => m.VoucherVerifiedBy).Caption(new JS("formatMessage('VoucherVerifiedBy')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.VoucherNarration).Caption(new JS("formatMessage('Narration')")).Alignment(HorizontalAlignment.Left).Visible(true).Width(70).CellTemplate(@<text>
+						columns.AddFor(m => m.VoucherNarration)
+					.Caption(new JS("formatMessage('Narration')"))
+					.Alignment(HorizontalAlignment.Left)
+					.Visible(true)
+					.Width(70)
+					.CellTemplate(@<text>
 			<div title="<%- data.VoucherNarration %>" class="ellipsis-column">
 				<%- data.VoucherNarration %>
 			</div>
 		</text>);
 					})
+				/* >>> ALL GRID OPTIONS BELOW ARE EXACTLY AS YOU PROVIDED <<< */
 				.OnCellClick("function(e) {handleCellClick(e);}")
-				.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
+				.ColumnChooser(c => c.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
 				.OnToolbarPreparing("onToolbarPreparing")
-                     .WordWrapEnabled(true)
-				.AllowColumnReordering(true) // Enable column reordering
-				.AllowColumnResizing(true)   // Enable column resizing
-				.ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
-				.HeaderFilter(filter => filter.Visible(false))
-				.Height(600)
+				.WordWrapEnabled(false)
+				.AllowColumnReordering(true)
+				.AllowColumnResizing(true)
+				.ColumnFixing(f => f.Enabled(true))
+				.HeaderFilter(f => f.Visible(false))
+				.Height(577)
 				.ColumnAutoWidth(true)
-				.FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
-				.GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
+				.FilterRow(f => f.Visible(false))
+				.GroupPanel(g => g.Visible(false))
 				.ShowBorders(true)
-				.Paging(p => p.Enabled(true).PageSize(15))    // enable paging with 15 rows per page
-				.Pager(pager => pager
-				.Visible(true)                            // show pager UI (page numbers etc)
-				.ShowPageSizeSelector(true)              // allow user to change page size
-				.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
-				.ShowInfo(true)                          // show info like "Page 1 of 10"
-				)
-
-				.ShowRowLines(true) // Enable row lines
-				@* 	.ColumnChooser(columnChooser => columnChooser
-		.Enabled(false) // Enable the column chooser for hiding and showing columns
-		.Title("Column Chooser") // Optional: Set a custom title
-		.Mode (GridColumnChooserMode.Select)
-		)*@
-
-
+				.Paging(p => p.Enabled(true).PageSize(15))
+				.Pager(p => p.Visible(true).ShowPageSizeSelector(true).AllowedPageSizes(new[] { 10, 15, 20 }).ShowInfo(true))
+				.ShowRowLines(true)
 				.Width("100%")
-				.Summary(summary =>
+				.Summary(s =>
 				{
-					summary.TotalItems(totalItems =>
+					s.TotalItems(t =>
 					{
-						totalItems.Add()
-					.Column("VoucherNo") // Count of VoucherNo
-					.SummaryType(SummaryType.Count)
-					.DisplayFormat(new JS("formatMessage('Count: {0}')")); // Customize the display format
-
-						totalItems.Add()
-					.Column("DrAmount") // Sum of DrAmount
-					.SummaryType(SummaryType.Sum)
-					.CustomizeText(
-					"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
-
-					);
-
-						totalItems.Add()
-					.Column("CrAmount") // Sum of CrAmount
-					.SummaryType(SummaryType.Sum)
-					.CustomizeText(
-					"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
-
-					);      // Customize the display format to currency
+						t.Add().Column("VoucherNo").SummaryType(SummaryType.Count).DisplayFormat(new JS("formatMessage('Count: {0}')"));
+						t.Add().Column("DrAmount").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+						t.Add().Column("CrAmount").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 					});
 				})
-				.FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
-				.GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
+				.FilterRow(f => f.Visible(false))
+				.GroupPanel(g => g.Visible(false))
 				.ShowBorders(true)
-				.StateStoring(stateStoring =>
+				.StateStoring(ss =>
 				{
-					stateStoring
-					.Enabled(true)                       // Enable state storing
-					.Type(StateStoringType.LocalStorage)  // Store in localStorage (or use SessionStorage or Custom)
-					.StorageKey("gridContainerState");    // Set a unique key to identify the state in storage
+					ss.Enabled(true).Type(StateStoringType.LocalStorage).StorageKey("gridContainerState");
 				})
-				//.OnInitialized("function(e) { loadGridState(); }")
+				.OnCellPrepared("handleCellPrepared")  // add this beside your other events
+
 				.OnContentReady("function(e) { handleGridContentReady(e); }")
 				)
-
-
-
-
-	</div>
-
-	<div id="overlay" class="overlay">
-		<div class="overlay-content">
-			<span class="close-btn" onclick="closeOverlay()">×</span>
-			<iframe id="overlay-frame" src="" frameborder="0"></iframe>
-		</div>
 	</div>
 
 </div>
@@ -1622,6 +1933,190 @@
 		}
 	}
 
+		function slideValue($slider, newText) {
+		const current = $slider.find('span').first().text();
+		if (current === newText) return;                    // nothing changed
+
+		// add new span at end
+		$slider.append(`<span>${newText}</span>`);
+
+		const spanH = $slider.find('span').first().outerHeight();
+		$slider.css({ transition: 'transform .45s ease', transform: `translateY(-${spanH}px)` });
+
+		// after animation, reset to show only new span
+		setTimeout(() => {
+			$slider.css({ transition: 'none', transform: 'translateY(0)' });
+			$slider.find('span').first().remove();
+		}, 450);
+	}
+
+		 const fmt = v => v.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+		function startOf(type) {
+			const now = new Date();
+			if (type === 'today')   return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+			if (type === 'week')    return new Date(startOf('today').setDate(startOf('today').getDate() - startOf('today').getDay()));
+			if (type === 'month')   return new Date(now.getFullYear(), now.getMonth(), 1);
+		}
+
+		/* ---------- crunch the numbers ---------- */
+		function aggregate(rows) {
+			const sToday  = startOf('today'),
+				  sWeek   = startOf('week'),
+				  sMonth  = startOf('month');
+
+			const totals = {
+				count: rows.length,
+				debit: 0,  credit: 0,  balance: 0,
+				debitToday: 0,  creditToday: 0,
+				debitWeek: 0,   creditWeek: 0,
+				debitMonth: 0,  creditMonth: 0
+			};
+
+			rows.forEach(r => {
+				const vd = new Date(r.VoucherDate);
+				const dr = +r.DrAmount || 0;
+				const cr = +r.CrAmount || 0;
+
+				totals.debit  += dr;
+				totals.credit += cr;
+
+				if (vd >= sToday) { totals.debitToday  += dr; totals.creditToday  += cr; }
+				if (vd >= sWeek)  { totals.debitWeek   += dr; totals.creditWeek   += cr; }
+				if (vd >= sMonth) { totals.debitMonth  += dr; totals.creditMonth  += cr; }
+			});
+
+			totals.balance = totals.debit - totals.credit;
+			return totals;
+		}
+
+		/* ---------- paint the KPI cards ---------- */
+			function updateKpis(t) {
+		// Helper to update bar width and percentage label
+		function updateTrend(cardId, percent) {
+			const bar = document.querySelector(`#${cardId} .bar`);
+			const fill = bar?.querySelector('span');
+			const pct = Math.max(0, Math.min(100, percent)); // clamp 0–100
+
+			if (fill) fill.style.width = `${pct}%`;
+			if (bar)  bar.setAttribute('data-percentage', `${pct.toFixed(0)}%`);
+		}
+
+		// 1) Accounting‑Ledger (row count)
+		$('#Static .value-slider span:last').text(t.count);
+
+		// 2) Debit
+		$('#cardDebit .value-slider span:last').text(fmt(t.debit));
+		$('#cardDebit .overlay .detail').eq(0).text(`Today: ${fmt(t.debitToday)}`);
+		$('#cardDebit .overlay .detail').eq(1).text(`This Week: ${fmt(t.debitWeek)}`);
+		$('#cardDebit .overlay .detail').eq(2).text(`This Month: ${fmt(t.debitMonth)}`);
+		updateTrend("cardDebit", (t.debit / ((t.debit + t.credit) || 1)) * 100);
+
+		// 3) Credit
+		$('#cardCredit .value-slider span:last').text(fmt(t.credit));
+		$('#cardCredit .overlay .detail').eq(0).text(`Today: ${fmt(t.creditToday)}`);
+		$('#cardCredit .overlay .detail').eq(1).text(`This Week: ${fmt(t.creditWeek)}`);
+		$('#cardCredit .overlay .detail').eq(2).text(`This Month: ${fmt(t.creditMonth)}`);
+		updateTrend("cardCredit", (t.credit / ((t.debit + t.credit) || 1)) * 100);
+
+		// 4) Balance
+		$('#cardBalance .value-slider span:last').text(fmt(Math.abs(t.balance)));
+		const balTrend = $('#cardBalance .trend i');
+		balTrend.toggleClass('fa-arrow-up', t.balance >= 0)
+				 .toggleClass('fa-arrow-down', t.balance < 0);
+		updateTrend("cardBalance", Math.abs(t.balance) === 0 ? 0 : (t.balance / (t.debit || 1)) * 100);
+	}
 
 
+		/* ---------- wire it to the grid ---------- */
+		function handleGridContentReady(e) {
+			const data = e.component.option('dataSource') || [];
+			updateKpis(aggregate(data));
+		}
+
+		// …if you reload or filter the grid from code elsewhere, just call updateKpis(aggregate(newRows)) again.
+	function updateValueSlider(cardId, values) {
+		const slider   = document.querySelector(`#${cardId} .value-slider`);
+		if (!slider) return;
+
+		const iconHtml = slider.querySelector('span svg')?.outerHTML || '';
+
+		slider.innerHTML = '';
+		values.forEach(v => {
+			const span = document.createElement('span');
+			span.innerHTML = iconHtml + v;
+			slider.appendChild(span);
+		});
+
+		let idx = 0;
+		clearInterval(slider._interval);
+		slider._interval = setInterval(() => {
+			idx = (idx + 1) % values.length;
+			slider.style.transition = 'transform .45s ease';
+			slider.style.transform  = `translateY(-${idx * 28}px)`;
+		}, 2000);
+	}
+		function updateKpis(t) {
+			// Balance
+			const balanceAbs = Math.abs(t.balance);
+			updateValueSlider("cardBalance", [
+				fmt(balanceAbs),
+				fmt(t.debit),
+				fmt(t.credit)
+			]);
+			$('#cardBalance .overlay .detail').eq(0).text(`Today: ${fmt(t.debitToday - t.creditToday)}`);
+			$('#cardBalance .overlay .detail').eq(1).text(`This Week: ${fmt(t.debitWeek - t.creditWeek)}`);
+			$('#cardBalance .overlay .detail').eq(2).text(`This Month: ${fmt(t.debitMonth - t.creditMonth)}`);
+			$('#cardBalance .trend i')
+				.toggleClass('fa-arrow-up', t.balance >= 0)
+				.toggleClass('fa-arrow-down', t.balance < 0);
+
+			// Debit
+			updateValueSlider("cardDebit", [
+				fmt(t.debit),
+				fmt(t.debitWeek),
+				fmt(t.debitMonth)
+			]);
+			$('#cardDebit .overlay .detail').eq(0).text(`Today: ${fmt(t.debitToday)}`);
+			$('#cardDebit .overlay .detail').eq(1).text(`This Week: ${fmt(t.debitWeek)}`);
+			$('#cardDebit .overlay .detail').eq(2).text(`This Month: ${fmt(t.debitMonth)}`);
+
+			// Credit
+			updateValueSlider("cardCredit", [
+				fmt(t.credit),
+				fmt(t.creditWeek),
+				fmt(t.creditMonth)
+			]);
+			$('#cardCredit .overlay .detail').eq(0).text(`Today: ${fmt(t.creditToday)}`);
+			$('#cardCredit .overlay .detail').eq(1).text(`This Week: ${fmt(t.creditWeek)}`);
+			$('#cardCredit .overlay .detail').eq(2).text(`This Month: ${fmt(t.creditMonth)}`);
+		}
+		function handleCellPrepared(e) {
+              
+		if (e.rowType !== "data") return;
+
+		const targetFields = ["VoucherNarration", "SysRemarks"];
+
+		if (!targetFields.includes(e.column.dataField)) return;
+
+		const $cell = $(e.cellElement);
+		$cell.addClass("ellipsis-cell");
+
+		// Destroy any existing tooltip (important if grid re-renders)
+		if ($cell.data("dxTooltip")) {
+			$cell.dxTooltip("instance").dispose();
+		}
+
+		$cell.dxTooltip({
+			target: e.cellElement,
+			showEvent: "mouseenter",
+			hideEvent: "mouseleave",
+			contentTemplate: () => $("<div>").text(e.value),
+			position: {
+				my: "top center",
+				at: "bottom center",
+				collision: "flipfit"
+			}
+		});
+	}
 </script>

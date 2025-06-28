@@ -5195,32 +5195,7 @@
 
 
 
-	//english text convert to arabic
-
-	async function translateToArabic(text) {
-
-		try {
-
-
-			const response = await fetch(
-
-				`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`
-
-			);
-
-			const data = await response.json();
-			console.log(data);
-			return data.responseData.translatedText;
-
-		} catch (error) {
-
-			console.error("Translation failed:", error);
-
-			return "Translation Error";
-
-		}
-
-	}
+	
 
 
 	async function convertToArabic() {
@@ -5588,5 +5563,72 @@
 		});
 	});
 
+// $(function () {
+//     const urlParams = new URLSearchParams(window.location.search);
+//     const purchaseOrderNo = urlParams.get("PurchaseOrderNo");
+//     if (purchaseOrderNo) {
+//         $("#PurchaseOrderNo").dxTextBox("instance").option("value", purchaseOrderNo);
+//     }
+// });
+	$(document).ready(function () {
+		const urlParams = new URLSearchParams(window.location.search);
+		const purchaseOrderNo = urlParams.get("PurchaseOrderNo") || urlParams.get("Pono");
+		const receiptNoteNo = urlParams.get("ReceiptNo");
 
+		if (receiptNoteNo) {
+			// Editing or viewing an existing receipt: load receipt details (this will set the grid)
+			loadClientDetails(receiptNoteNo);
+		} else if (purchaseOrderNo) {
+			// Creating a new receipt from a PO: load PO lines into the grid
+			$.get(`/api/PurchaseOrders/GetByPoNo?poNo=${encodeURIComponent(purchaseOrderNo)}`, function(data) {
+				if (data.success) {
+					// Bind master fields
+					$("#PurchaseOrderNo").dxTextBox("instance").option("value", data.pono);
+					$("#SupplierQuotationNo").dxTextBox("instance").option("value", data.supplierQuoteNo);
+					$("#RFQNo").dxTextBox("instance").option("value", data.Rfqno);
+
+					// DropDownBox: Supplier
+					const supplierDropDown = $("#GetProjectDropDown").dxDropDownBox("instance");
+					if (supplierDropDown && data.supplierCode) {
+						supplierDropDown.getDataSource().load().done(function(items) {
+							supplierDropDown.option("value", data.supplierCode);
+						});
+					}
+
+					// DropDownBox: Sales Person
+					const salesPersonDropDown = $("#ddSalesPerson").dxDropDownBox("instance");
+					if (salesPersonDropDown && data.salesPersonCode) {
+						salesPersonDropDown.getDataSource().load().done(function() {
+							salesPersonDropDown.option("value", data.salesPersonCode);
+						});
+					}
+
+					// ...bind other fields as needed...
+			  const deliveryItems = (data.items || []).map((child, index) => ({
+				QuoteChildId: child.QuoteChildId ?? 0,
+				LineOrderNo: index + 1,
+				GScode: child.Gscode ?? "",
+				Gscode: child.AddlDescription ?? "",
+				UnitRateMethod: child.UnitRateMethod ?? "",
+				QtyReceived: child.QuotedQuantity ?? 0,
+				UnitPrice: child.UnitPrice ?? 0,
+				ItemDiscount: child.ItemDiscount ?? 0,
+				PotaxSlab: child.PotaxSlab ?? "",
+				LineTaxAmount: child.DiscountInOc ?? 0,
+				LineTotalWithTax: child.UnitRateInOc ?? 0
+			}));
+	 const grid = $("#B2BdataGrid").dxDataGrid("instance");
+			if (grid) {
+				grid.dispose();                     // Remove old instance
+				$("#B2BdataGrid").empty();          // Clear grid container
+			}
+
+			initializeDataGrid(deliveryItems);
+					}
+			});
+		} else {
+			// New blank receipt, or other logic as needed
+			// You can generate a new receipt number here if needed
+		}
+	});
 </script>

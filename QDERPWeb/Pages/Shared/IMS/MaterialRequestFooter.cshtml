@@ -24,7 +24,6 @@
             .ID("btnPrint")
             .Icon("print")
             .Text(new JS("formatMessage('Print')"))
-            .Width(50)
             .OnClick("printFun")
             )
     </div>
@@ -33,7 +32,6 @@
             .ID("btnToggleSearch")
             .Icon("search")
             .Text(new JS("formatMessage('Search')"))
-            .Width(50)
             .OnClick("toggleFilterRow")
             )
     </div>
@@ -42,7 +40,6 @@
         @(Html.DevExtreme().Button()
             .ID("btntoggleGroupPanel")
             .Icon("hierarchy")
-            .Width(50)
             .Text(new JS("formatMessage('Group')"))
             .OnClick("toggleGroupPanel")
             )
@@ -51,9 +48,16 @@
         @(Html.DevExtreme().Button()
             .ID("btnColumnChooser")
             .Icon("columnchooser")
-            .Width(50)
             .Text(new JS("formatMessage('Column Chooser')"))
             .OnClick("showColumnChooser")
+            )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnPurchaseEditDetails")
+            .Icon("add")
+            .Text(new JS("formatMessage('Request / Enquiry Details')"))
+            .OnClick("PurchaseEditDetails")
             )
     </div>
     <div class="btn-container">
@@ -314,5 +318,8 @@
         }
            function printFun() {
             exportDataGridToPDF('dataGrid');
+        }
+        function PurchaseEditDetails() {
+            window.location.href = `/${tenantName}/IMS/PurchaseRequestItemDetails`;
         }
 </script>

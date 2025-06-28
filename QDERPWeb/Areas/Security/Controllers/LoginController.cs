@@ -204,7 +204,7 @@ namespace QD.ERP.Web.Areas.Security.Controllers
                             return Unauthorized(new { message = "Invalid credentials.", success = false });
                         }
 
-                        var permissions = dbContext.TblUserAccesses
+                        var permissions = dbContext.TblUserAccessWebs
                             .Where(p => p.UserId == user.UserId)
                             .Select(p => new Permission
                             {
@@ -275,15 +275,15 @@ namespace QD.ERP.Web.Areas.Security.Controllers
                     using (var dbContext = _dbContextFactory.CreateDbContext(tenant.ConnectionString))
                     {
 
-                        var permissions = dbContext.TblUserAccesses
+                        var permissions = dbContext.TblUserAccessWebs
                     .Where(p => p.UserId == byte.Parse(userId))
                     .Select(p => new Permission
                     {
-                        //UserId = p.UserId,
-                        //ItemForm = p.ItemForm,
-                        //ItemName = p.ItemName,
-                        //ItemEnabled = p.ItemEnabled,
-                        //ItemVisible = p.ItemVisible
+                        UserId = p.UserId,
+                        ItemForm = p.ItemForm,
+                        ItemName = p.ItemName,
+                        ItemEnabled = p.ItemEnabled,
+                        ItemVisible = p.ItemVisible
                     })
                     .ToList();
                         

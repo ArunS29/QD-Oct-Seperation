@@ -35,6 +35,7 @@ namespace QD.ERP.Web.Service
         public class UserMenuAccess
         {
             public string ItemDescription { get; set; }
+            public string ItemName { get; set; }
             public bool ItemEnabled { get; set; }
             public bool ItemVisible { get; set; }
         }
@@ -49,6 +50,7 @@ namespace QD.ERP.Web.Service
                     .Select(x => new UserMenuAccess
                     {
                         ItemDescription = x.ItemDescription,
+                        ItemName = x.ItemName,
                         ItemEnabled = x.ItemEnabled == true,
                         ItemVisible = x.ItemVisible == true
                     })

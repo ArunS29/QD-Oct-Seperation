@@ -25,10 +25,6 @@
 		overflow: hidden;
 	}
 
-/* 	.limited-footer .btn-containerIvoiceEdit:not(:has(#ddButtonLayout,#btnPrint, #btnToggleSearch,#btntoggleGroupPanel,#btnInvoiceDetails,#ddReports,#ddButtonPayment,#btnColumnChooser)) {
-		display: none !important
-	} */
-
 	#overlay-frame {
 		width: 100%;
 		height: 100%;
@@ -164,7 +160,10 @@
 	.dx-fieldset.horizontal-container {
 		margin-top:10px;
 	}
-
+	 .dx-datagrid .dx-header-row .dx-datagrid-text-content {
+        white-space: normal !important;
+        text-align: center;
+    }
 	
 </style>
 
@@ -208,8 +207,8 @@
 		.LabelMode(EditorLabelMode.Outside)
 		.InputAttr("aria-label", "Date")
 		.Type(DateBoxType.Date)
-		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)) // First day of the month
-		.DisplayFormat("dd-MMM-yyyy")
+		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)) // First day of month
+		.DisplayFormat("dd-MMM-yyyy") // Display format when not editing
 		.TabIndex(2)
 		)
 
@@ -248,12 +247,13 @@
 		})
 		)
 
-	@(Html.DevExtreme().CheckBox()
-		.ID("chkUseEffectiveDate")
-		.Text(new JS("formatMessage('Use Effective Date')"))
-		.Value(false)
-		.ElementAttr("class", "mt-4 ml-4") // Adjust margin as needed
-		)
+
+
+		@(Html.DevExtreme().CheckBox()
+    .ID("chkUseEffectiveDate")
+    .Text(new JS("formatMessage('Use Effective Date')"))
+    .Value(false)
+    .ElementAttr("class", "mt-4 ml-4"))
 </div>
 <div class="dx-field ledgerResult">
 	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201607vatinvoiceRegisterMainView>()
@@ -272,8 +272,15 @@
 				subColumns.AddFor(m => m.InvoiceDate).Caption(new JS("formatMessage('Invoice Date')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
 				subColumns.AddFor(m => m.InvoiceEffectiveDate).Caption(new JS("formatMessage('Invoice Effective Date')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
 				subColumns.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('Account Head')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.InvoiceStatus).Caption(new JS("formatMessage('Invoice Status')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				@* subColumns.AddFor(m => m.InvoiceStatus).Caption(new JS("formatMessage('Invoice Status')")).DataField("InvoiceStatus").Alignment(HorizontalAlignment.Center).Visible(true); *@
+				subColumns.AddFor(m => m.InvoiceStatus)
+		.Caption(new JS("formatMessage('Invoice Status')"))
+		.Alignment(HorizontalAlignment.Center)
+		.Visible(true)
+		.CellTemplate(new JS("invoiceStatusCellTemplate"));
+
 			});
+		
 
 			columns.Add().Caption(new JS("formatMessage('Revenue & Tax Amount')")).Columns(subColumns =>
 			{
@@ -291,11 +298,14 @@
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				subColumns.AddFor(m => m.TotalInvoiceAmount)
-			.Caption(new JS("formatMessage('Invoiced Amount')"))
+		     .Caption("Invoiced Amount (SAR)") // Use DevExtreme icon
+			.EncodeHtml(false)
 			.Alignment(HorizontalAlignment.Right)
 			.Visible(true)
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
+
+
 
 			columns.Add().Caption(new JS("formatMessage('Revenue Classified')")).Columns(revenueColumns =>
 			{
@@ -542,9 +552,11 @@
 		.ShowInfo(true)
 		.Visible(true)
 		) *@
+		
+		.OnCellPrepared("invoiceStatusCellPrepared")
+
+
 		)
-
-
 
 </div>
 <div id="invoiceErrorPopup"></div>
@@ -572,8 +584,75 @@
 
 </div>
 
-<script>
+@* <div id="testSvgPreview" style="width:100px; height:100px; border:1px solid #ccc;"></div> *@
 
+<script>
+	 $(function () {
+		const dateBox = $("#frmdateBox").dxDateBox("instance");
+
+		// When focus/typing starts, change to dd-MM-yyyy
+		$("#frmdateBox").on("focusin", function () {
+			dateBox.option("displayFormat", "dd-MM-yyyy");
+		});
+
+		// When focus/typing ends, change back to dd-MMM-yyyy
+		$("#frmdateBox").on("focusout", function () {
+			dateBox.option("displayFormat", "dd-MMM-yyyy");
+		});
+	});
+	 $(function () {
+		const dateBox = $("#todateBox").dxDateBox("instance");
+
+		// When focus/typing starts, change to dd-MM-yyyy
+		$("#todateBox").on("focusin", function () {
+			dateBox.option("displayFormat", "dd-MM-yyyy");
+		});
+
+		// When focus/typing ends, change back to dd-MMM-yyyy
+		$("#todateBox").on("focusout", function () {
+			dateBox.option("displayFormat", "dd-MMM-yyyy");
+		});
+	});
+
+
+
+		function invoiceStatusCellTemplate(cellElement, cellInfo) {
+		const status = cellInfo.value;
+		let backgroundColor = "";
+		let textColor = "black";
+
+		switch (status) {
+			case "Not Processed":
+				backgroundColor = "#f8d7da"; // light red
+				textColor = "#721c24";       // dark red text
+				break;
+			case "Verified":
+				backgroundColor = "#d4edda"; // light green
+				textColor = "#155724";       // dark green text
+				break;
+			case "Approved":
+				backgroundColor = "#c3e6cb"; // darker green
+				textColor = "#0b3d18";
+				break;
+			case "Posted":
+				backgroundColor = "#ffeeba"; // light orange/yellow
+				textColor = "#856404";
+				break;
+			default:
+				backgroundColor = "#f0f0f0";
+				textColor = "#000000";
+		}
+
+		cellElement.text(status);
+		cellElement.css({
+			"background-color": backgroundColor,
+			"color": textColor,
+			"font-weight": "bold",
+			"padding": "5px",
+			"border-radius": "4px",
+			"text-align": "center"
+		});
+	}
 		let invoiceNo = null;
 	let IsEdit = false,CreditNoteNo=null;
 
@@ -747,6 +826,7 @@
 	});
 	let selectedVoucherNo = null;
 	$(function () {
+			ddBtnShowRecords_click("range")
 		$("#VATInvoiceRegister").dxTextBox({
 			text: formatMessage("Sales Invoice Register"),
 			readOnly: true,
@@ -783,96 +863,6 @@
 		});
 	});
 
-	// function ddBtnShowRecords_click(duration) {
-	// 	var frmDateBox = $("#frmdateBox").dxDateBox("instance");
-	// 	var toDateBox = $("#todateBox").dxDateBox("instance");
-	// 	var chkEffective = $("#chkUseEffectiveDate").dxCheckBox("instance");
-	// 	var useEffective = chkEffective.option("value");
-	// 	var currentDate = new Date();
-	// 	var frmDate, toDate;
-		
-
-	// 	switch (duration) {
-	// 		case 'today':
-	// 			frmDate = toDate = currentDate;
-	// 			break;
-	// 		case 'yesterday':
-	// 			var dateObj = new Date();
-	// 			// Subtract one day from current time
-	// 			dateObj.setDate(dateObj.getDate() - 1);
-	// 			frmDate = toDate = dateObj;
-	// 			break;
-	// 		case 'week':
-	// 		 var dayOfWeek = currentDate.getDay(); // Sunday is 0, Monday is 1, ..., Saturday is 6
-
-	// 					 // Calculate the start of the week (Saturday)
-	// 					 var startOfWeek = currentDate.getDate() - (dayOfWeek + 1) % 7; // Adjust to get Saturday
-
-	// 					 // Calculate the start date (7 days before Saturday) and end date (the day before Saturday)
-	// 				 frmDate = new Date(currentDate.setDate(startOfWeek)); // 7 days before Saturday
-	// 					 toDate = new Date(currentDate.setDate(startOfWeek + 6));
-	// 					 break;
-	// 		case 'tillmonth':
-	// 			// Get the first and last day of the current month
-	// 			frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1); // First day of month
-	// 			toDate = currentDate; //Today
-	// 			break;
-	// 		case 'fullmonth':
-	// 			// Get the first and last day of the current month
-	// 			frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1); // First day of month
-	// 			toDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0); // Last day of month
-	// 			break;
-	// 		case 'tillyear':
-	// 			// Get the first and last day of the current year
-	// 			frmDate = new Date(currentDate.getFullYear(), 0, 1); // First day of year (January 1)
-	// 			toDate = currentDate;// Today
-	// 			break;
-	// 		case 'fullyear':
-	// 			// Get the first and last day of the current year
-	// 			frmDate = new Date(currentDate.getFullYear(), 0, 1); // First day of year (January 1)
-	// 			toDate = new Date(currentDate.getFullYear(), 11, 31); // Last day of month
-	// 			break;
-	// 		case 'lastyear':
-	// 			// Get the first and last day of the last year
-	// 			frmDate = new Date(currentDate.getFullYear() - 1, 0, 1); // First day of year (January 1)
-	// 			toDate = new Date(currentDate.getFullYear() - 1, 11, 31); // Last day of month
-	// 			break;
-	// 		case 'lastmonth':
-	// 			frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
-	// 			toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
-	// 			break;
-	// 		default:
-	// 			frmDate = frmDateBox.option("value");
-	// 			toDate = toDateBox.option("value");
-	// 	}
-
-	// 	frmDate = new Date(frmDate).toLocaleDateString('en-CA'); // yyyy-MM-dd
-	// 	toDate = new Date(toDate).toLocaleDateString('en-CA');
-
-	// 	frmDateBox.option("value", frmDate);
-	// 	toDateBox.option("value", toDate);
-
-	// 	$.ajax({
-	// 		url: '/api/VATModule/GetVatInvoices',
-	// 		type: 'GET',
-	// 		data: {
-	// 			frmDate: frmDate,
-	// 			toDate: toDate,
-	// 			useEffectiveDate: useEffective
-	// 		},
-	// 		success: function (data) {
-	// 			var grid = $("#dataGrid").dxDataGrid("instance");
-	// 			grid.option("dataSource", data);
-	// 			if (data && data.length > 0) {
-	// 				VoucherAmountFormatted = data[data.length - 1].VoucherAmountFormatted;
-	// 				firstrowVoucherAmountFormatted = data[0].VoucherAmountFormatted;
-	// 			}
-	// 		},
-	// 		error: function () {
-	// 			DevExpress.ui.notify("Error while loading data", "error", 2000);
-	// 		}
-	// 	});
-	// }
 	let currentPage = 1;
 	let pageSize = 10;
 
@@ -966,6 +956,7 @@
 				currentPage = Number(data.currentPage);
 				var grid = $("#dataGrid").dxDataGrid("instance");
 				grid.option("dataSource", data.data);
+				console.log("SalesRegisterGrid",data.data)
 				if (data.data && data.data.length > 0) {
 					VoucherAmountFormatted = data.data[data.data.length - 1].VoucherAmountFormatted;
 					firstrowVoucherAmountFormatted = data.data[0].VoucherAmountFormatted;
@@ -1013,13 +1004,7 @@
 
 		return [day, strmonth, year].join('-');
 	}
-	// $(document).ready(function () {
-	// 	$(".limited-footer .btn-container").each(function () {
-	// 		if (!$(this).find("#ddButtonLayout,#btnPrint, #btnToggleSearch,#btntoggleGroupPanel,#btnInvoiceDetails,#ddReports,#ddButtonPayment,#btnColumnChooser").length) {
-	// 			$(this).remove();
-	// 		}
-	// 	});
-	// });
+
 	function checkIfOldVATInvoice(invoiceNo) {
 		$.ajax({
 			url: '/api/VATModule/IsOldVATInvoice',
@@ -1069,6 +1054,37 @@
 		}
 	}
 
+
+		function invoiceStatusCellPrepared(e) {
+		// Only target data rows (not header, group, etc.)
+		if (e.rowType !== 'data') return;
+
+		// Get the status value for this row
+		var status = e.data?.InvoiceStatus;
+
+		// Define status-to-color mapping
+		var colors = {
+			'Not Processed': { bg: '#f28b82', fg: '#000' },   // light red
+			'Verified'     : { bg: '#ccffcc', fg: '#000' },   // light green
+			'Approved'     : { bg: '#228B22', fg: '#fff' },   // dark green
+			'Posted'       : { bg: '#FFA500', fg: '#000' }    // orange
+		};
+
+		// If this status is not in our list, do nothing
+		var c = colors[status];
+		if (!c) return;
+
+		// Only apply style to the InvoiceStatus column
+		if (e.column && e.column.dataField === 'InvoiceStatus') {
+			e.cellElement.css({
+				'background-color': c.bg,
+				'color'           : c.fg
+			});
+		}
+
+		// Debug log (optional)
+		console.log("Styled row for InvoiceStatus:", status);
+	}
 
 
 </script>

@@ -83,7 +83,8 @@
 	<ItemGroup>
 		<Folder Include="Areas\Finance\Data\" />
 		<Folder Include="Areas\Finance\Reports\Journal Register\" />
-		<Folder Include="Areas\General\Controllers\" />
+		<Folder Include="Areas\General\Controller\" />
+		<Folder Include="logs\" />
 		<Folder Include="Models\DALCommon\" />
 	</ItemGroup>
 
@@ -130,4 +131,9 @@
 		<Features>experimental-data-section-string-literals</Features>
 	</PropertyGroup>
 
+
+	<!--<PropertyGroup Condition="'$(Configuration)' == 'Release'">
+		<RazorCompileOnBuild>false</RazorCompileOnBuild>
+		<RazorCompileOnPublish>true</RazorCompileOnPublish>
+	</PropertyGroup>-->
 </Project>

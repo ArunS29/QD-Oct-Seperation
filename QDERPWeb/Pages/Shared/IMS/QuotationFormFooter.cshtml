@@ -481,7 +481,7 @@
 
         }
 
-    }
+     }
            const quotationReportMap = {
         "Preview Quotation": "PreviewQuotations",
         "Preview Quotation(W/O Discount Column)": "wtDiscount",
@@ -497,10 +497,11 @@
 
 
     function handleQuatation(e) {
-        alert('History trig')
+       
         const itemText = e.itemData?.text;
         const tenantName = window.tenantName || "";
-        const quotationNo = $("#txtQuotationNo").dxTextBox("instance").option("value");
+      const quotationNo = $("#txtQuotationNo").dxTextBox("instance").option("value");
+
 
         if (!quotationNo && itemText.includes("Quotation")) {
             alert("Quotation number is required.");
@@ -523,4 +524,6 @@
             alert("An error occurred while trying to open the report.");
         }
     }
+
+
 </script>

@@ -3,6 +3,7 @@ using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
 using System;
@@ -48,7 +49,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         e.AccumulatedOpeningBalance,
                         e.TotalDepreciationAmount,
                         e.AccumulatedTotalBalance,
-                        e.TotalBookValue
+                        e.TotalBookValue,
+                        e.IsPosted
                     }).ToList();
 
                     return Json(data);
@@ -120,8 +122,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     // Use raw SQL query to fetch the maximum voucher number
                     var result = await dbContext.VoucherResults
                         .FromSqlInterpolated($@"
-     SELECT MAX(CAST(RIGHT(ClaimRefNo, 4) AS INT)) AS MaxVoucherNo
-     FROM tbl20120DepreciationChild
+     SELECT MAX(CAST(RIGHT(DepreciationDocNo, 4) AS INT)) AS MaxVoucherNo
+     FROM tbl20119DepreciationMaster
      WHERE DepreciationDocNo LIKE {likePattern}")
                         .ToListAsync();
 
@@ -130,8 +132,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     int newVoucherNo = maxVoucherNo + 1;
 
                     // Format the new voucher number with leading zeros
-                    strNewReceiptNo = "0000" + newVoucherNo.ToString();
-                    strNewReceiptNo = strNewReceiptNo.Substring(strNewReceiptNo.Length - 5);
+                    strNewReceiptNo = "000" + newVoucherNo.ToString();
+                    strNewReceiptNo = strNewReceiptNo.Substring(strNewReceiptNo.Length - 4);
 
                     // Concatenate with the voucher string
                     strNewReceiptNo = voucherString + strNewReceiptNo;
@@ -164,6 +166,126 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpPost]
+        public async Task<IActionResult> GenerateDepreciation([FromBody] DepreciationRequest request)
+        {
+            
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            try
+            {
+                var startDate = request.StartDate;
+                var endDate = request.EndDate;
+                var documentNo = request.DocumentNo;
+                string userId = HttpContext.Session.GetString("UserId") ?? "Unknown";
+                DateTime createdOn = DateTime.Now;
+
+                await dbContext.Database.ExecuteSqlRawAsync(
+                        @"EXEC sp20127GetAssetTransactionsReport 
+                    @StartDate = {0}, 
+                    @EndDate = {1}, 
+                    @DocumentNo = {2}, 
+                    @CreatedBy = {3}, 
+                    @CreatedOn = {4}",
+                    startDate,
+                    endDate,
+                    documentNo,
+                    userId,
+                    createdOn
+                );
+
+                return Ok(new { success = true, message = "Depreciation generated successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error generating depreciation: {ex.Message}");
+                return BadRequest(new { success = false, message = "Failed to generate depreciation.", error = ex.Message });
+            }
+        }
+        [HttpGet]
+        public async Task<ActionResult> GetDepreciationbydocno( [FromQuery] DataSourceLoadOptions loadOptions, [FromQuery] string docNo,
+        [FromQuery] string startDate,[FromQuery] string endDate)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+
+            try
+            {
+                // Parse dates safely
+                if (!DateTime.TryParse(startDate, out DateTime sDate) ||
+                    !DateTime.TryParse(endDate, out DateTime eDate))
+                {
+                    return BadRequest(new { message = "Invalid date format." });
+                }
+
+                var ledgerData = dbContext.Qry201206depreciationChildren
+                    .Where(x => x.DepreciationDocNo == docNo && x.DeprStartDate >= sDate && x.DeprEndDate <= eDate)
+                    .AsQueryable();
+
+                return Json(await DataSourceLoader.LoadAsync(ledgerData, loadOptions));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetDepreciationbydocno: {ex.Message}");
+                return BadRequest(new { message = "An error occurred while fetching data.", error = ex.Message });
+            }
+        }
+        [HttpGet]
+        public async Task<ActionResult> GetDepreciationMaster(string depreciationdocno)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var result = await dbContext.Tbl20119DepreciationMasters
+                                    .Where(x => x.DepreciationDocNo == depreciationdocno)
+                                    .ToListAsync();
+
+                    if (result != null && result.Any())
+                    {
+                        return Json(result);
+                    }
+
+                    return Json(new { success = false, message = "No child records found." });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetJournalChild: {ex.Message}");
+                    return Json(new { success = false, message = "An error occurred while fetching child records." });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpGet]
+        public IActionResult GetDepreciationPivotData(DataSourceLoadOptions loadOptions)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+            {
+                return Unauthorized();
+            }
+
+            var data = dbContext.Qry201206depreciationChildren
+                .Select(x => new
+                {
+                    x.DepreciationDocNo,
+                    x.AccountGroup,
+                    x.AssetLedgerNo,
+                    x.AccountHead,
+                    x.DeprStartDate,
+                    x.AccDeprTotalAmount,
+
+                    Months = x.DeprStartDate.HasValue ? x.DeprStartDate.Value.ToString("MMM-yyyy") : null,
+
+                });
+
+            return Json(DataSourceLoader.Load(data, loadOptions));
         }
 
 

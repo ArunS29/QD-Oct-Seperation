@@ -7,6 +7,9 @@ namespace QD.ERP.Web.DAL.Entities;
 
 public partial class Tbl901CompanyDetail
 {
+    public byte? DefaultcompanyID { get; set; }
+    public string? CompanyTextColor { get; set; }
+
     public byte CompanyId { get; set; }
 
     public string CompanyName { get; set; }
@@ -240,4 +243,5 @@ public partial class Tbl901CompanyDetail
     public bool? IsBackupDbtoOurCloudDrive { get; set; }
 
     public string OurCloudDriveLocation { get; set; }
+    public string? CurrencyImage { get; set; }
 }

@@ -188,7 +188,9 @@
     .containers{
         display:flex;
     }
-
+	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint3,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnAttach,#btnUpload)) {
+		display: none !important;
+	}
     .dx-card{ 
         background: var(--background-color);
     }
@@ -1112,6 +1114,23 @@
 			  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null;
 			  let dropDownInstance;
 			  let vatListInstance;
+
+			$(document).ready(function () {
+
+			$(".limited-footer .btn-containerIvoiceEdit").each(function () {
+
+			if (!$(this).find("#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint3,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnAttach,#btnUpload").length) {
+
+					$(this).remove();
+
+				}
+
+			});
+
+		});
+
+
+
 
 	//View e-Invoice
 
@@ -2076,7 +2095,7 @@
 
 		$("#btnAddNew").on("click", function (e) {
 				var newRow = {
-			LineOrderNo: rowData.length + 1, // Auto-generate SNo
+			LineOrderNo: rowData.length + 1, // Auto-generate SNo  
 					
 GSCode: ItemNo,
 Description:null,
@@ -4709,32 +4728,7 @@ LineTotalAfterDisc:0.00
 					
 
 
-			 //english text convert to arabic
-
-		async function translateToArabic(text) {
-
-			try {
-
-
-				const response = await fetch(
-
-					`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`
-
-				);
-
-				const data = await response.json();
-				console.log(data);
-				return data.responseData.translatedText;
-
-			} catch (error) {
-
-				console.error("Translation failed:", error);
-
-				return "Translation Error";
-
-			}
-
-		}
+			
 
 
 		 async function convertToArabic() {

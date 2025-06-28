@@ -890,17 +890,16 @@
 															@*  .ShowClearButton(true)
 								.AcceptCustomValue(true) *@
 															.OpenOnFieldClick(false)
-																	.Value(4)
-															.ValueChangeEvent("input")
+														   .ValueChangeEvent("input")
 															.HoverStateEnabled(true)
 															.ValueExpr("RequestedByCode")
 															.DisplayExpr("RequestedBy")
+															.Value(4)
 															.OnInput("dropDownBoxOnInput")
 															.OnOpened("onOpened")
 															.TabIndex(1)
 															.Width("100%")
 															.OnKeyDown("onKeyDown")
-															.Disabled(true)
 															//.OnValueChanged("dropDownBoxValueChanged")
 															.ContentTemplate(new TemplateName("GetMPRRequesterByContentTemplate"))
 															)
@@ -6412,35 +6411,6 @@
 
 					}
 
-
-
-
-				 //english text convert to arabic
-
-			async function translateToArabic(text) {
-
-				try {
-
-
-					const response = await fetch(
-
-						`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`
-
-					);
-
-					const data = await response.json();
-					console.log(data);
-					return data.responseData.translatedText;
-
-				} catch (error) {
-
-					console.error("Translation failed:", error);
-
-					return "Translation Error";
-
-				}
-
-			}
 
 
 			 async function convertToArabic() {

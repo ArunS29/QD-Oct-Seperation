@@ -1,4 +1,4 @@
-@using System.IdentityModel.Tokens.Jwt
+﻿@using System.IdentityModel.Tokens.Jwt
 @using System.Linq
 @using Microsoft.AspNetCore.Http
 @using QD.ERP.Web.DAL.Entities
@@ -117,13 +117,14 @@
     <script src="https://cdn3.devexpress.com/jslib/23.1.4/js/dx.all.js"></script>
 
 
+    <script src="~/js/translator.js"></script>
 
 
 
 
     <style>
         * {
-            font-family: var(--Font-family-Base, 'Inter', sans-serif); /* Font family */
+            /* font-family: var(--Font-family-Base, 'Inter', sans-serif); /* Font family */ */ font-family: 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
             font-size: var(--Font-size-300, 14px); /* Font size */
             font-style: normal; /* Font style */
             font-weight: 500; /* Font weight */
@@ -146,8 +147,9 @@
             background-color: var(--title-background-color);
             color: #fff;
         }
+
         :root {
-            font-family: "Inter", Helvetica, Arial, sans-serif;
+            font-family: 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             --highlight-color: var(--hover-bg-color);
             --text-color: #525252;
             --hover-bg-color: var(--hover-bg-color);
@@ -161,13 +163,19 @@
         }
 
         .title {
+            /* display: none; */
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 20px;
             font-weight: bold;
-            background-color: var(--title-background-color);
+            background: linear-gradient(135deg, #6a11cb, #2575fc) !important;
             color: white;
+            width: max-content;
+            padding: 15px;
+            border-radius: 10px;
+            margin:10px;
+            height: 140px;
         }
 
         body {
@@ -199,6 +207,8 @@
 
         #dataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
             background-color: var(--header-color);
+            border: none;
+            border-radius: 0px;
         }
 
         .dx-datagrid-header-panel {
@@ -243,7 +253,7 @@
             /* padding: 16px; */
             padding-left: 10px;
             padding-right: 10px;
-            padding-top: 6.5em;
+            padding-top: 5.5em;
             transition: width 0.3s ease;
             height: 95vh;
         }
@@ -251,7 +261,7 @@
 
             /* Hidden state of sidebar */
             .sidebar.hidden {
-                width: 60px; /* Minimized width to show icons only */
+                width: 65px; /* Minimized width to show icons only */
                 background-color: var(--menu-color);
                 /* height: inherit; */
                 /* margin-top: 20px; */
@@ -333,7 +343,9 @@
                 transform: translateX(-50%);
                 background: white;
                 color: black;
-                padding: 6px 10px;
+                padding: 5px 5px;
+                border: 1px solid #ddd;
+                font-weight: 700;
                 border-radius: 5px;
                 font-size: 10px !important;
                 white-space: nowrap;
@@ -353,11 +365,12 @@
 
         .toggle-btn {
             position: fixed;
-            top: 70px;
-            left: calc(var(--sidebar-width, 4em)); /* Use the sidebar width */
+            top: 5px;
+            /* left: calc(var(--sidebar-width, 4em)); */
+            left: 1em;
             width: 30px;
             height: 30px;
-            background-color: var(--header-color);
+            background-color: white;
             border: 1px solid #ddd;
             box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
             border-radius: 50%;
@@ -369,9 +382,9 @@
             transition: left 0.3s ease; /* Smooth transition */
         }
 
-            .toggle-btn:hover {
-                background-color: var(--hover-bg-color);
-            }
+            /* .toggle-btn:hover { */
+            /*     background-color: var(--hover-bg-color); */
+            /* } */
 
         /* Sidebar hidden state */
         .sidebar.hidden ~ .toggle-btn {
@@ -389,7 +402,7 @@
             border-left: 1px solid #ddd;
             border-right: 1px solid #ddd;
             /* padding-top: 50px; */
-            margin-top: 70px; /* Adjust to align with the rest of your layout */
+            margin-top: 50px; /* Adjust to align with the rest of your layout */
             height: calc(100vh - 75px); /* Sidebar takes full height minus the top margin */
             overflow-y: auto; /* Enable vertical scrolling */
             scrollbar-width: thin; /* For Firefox: thin scrollbar */
@@ -526,22 +539,18 @@
             align-items: center; /* Vertically align items */
             justify-content: flex-end; /* Push items to the right */
             width: 100%; /* Occupy the full width of the screen */
-            padding: 10px; /* Add some spacing */
-            background-color: var(--header-color); /* Optional background color */
+            background-color: var(--title-background-color);
             position: fixed; /* Make it fixed to stay visible on scroll */
             top: 0; /* Position at the top */
             left: 0; /* Start from the very left */
             z-index: 100; /* Ensure it stays above other elements */
-            height: 5em;
-            border-bottom: 1px solid #ddd;
+            height: 3em;
         }
 
 
             /* Style for the icons */
             .frame .img {
-                font-size: 20px; /* Set size of icons */
                 margin: 0 5px; /* Add spacing between icons */
-                color: #333; /* Set icon color */
                 cursor: pointer; /* Add pointer cursor for hover effect */
             }
 
@@ -560,7 +569,6 @@
                 display: flex; /* Flex container for logo */
                 align-items: center; /* Center-align vertically */
                 margin-right: auto; /* Push other elements to the right */
-                margin-bottom: 10px;
                 padding-left: 30px;
             }
 
@@ -624,15 +632,15 @@
         /* Base styling for all popups */
         .popup {
             display: none; /* Hidden by default */
-            position: absolute; /* Make it float above the content */
-            top: 10%;
-            right: 10%;
+            position: absolute;
+            top: 7%;
+            right: 2%;
             width: 300px;
             background-color: white;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             z-index: 9999;
             border-radius: 8px;
-            padding: 20px;
+            padding: 10px;
+            border:1px solid #ddd;
         }
 
         .popup-header {
@@ -648,6 +656,9 @@
             font-size: 20px;
             cursor: pointer;
             color: #888;
+            display: flex;
+            align-items: end;
+            justify-content: flex-end;
         }
 
             .popup-close:hover {
@@ -676,11 +687,11 @@
             /* font-family: "Playfair Display", serif; */
             /* font-family: "Lobster", serif; */
             /* font-family: "Pacifico", serif; */
-            font-family: "Roboto Slab", serif;
+            /* font-family: "Roboto Slab", serif; */
             /* font-family: 'book antiqua', sans-serif; */
             /* font-size: 48px; */
             /* font-weight: 700; */
-            color: var(--title-background-color);
+            color: white;
             text-transform: uppercase;
             letter-spacing: 2px;
             text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
@@ -702,7 +713,8 @@
 
         /* Main Content */
         .mainContainer {
-            margin-top: 5em;
+            background-color: white;
+            margin-top: 40px;
             /* width: 85%; */
             /* padding: 20px; */
         }
@@ -725,7 +737,15 @@
 
         .dropdown {
             position: relative;
-            display: inline-block;
+            background: white;
+            height: 30px;
+            width: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--title-background-color);
+            cursor: pointer;
         }
 
         .dropdown-menu {
@@ -733,26 +753,46 @@
             position: absolute;
             right: 0;
             background-color: white;
-            min-width: 150px;
+            min-width: 200px;
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
             border-radius: 5px;
             z-index: 1000;
+            top: 40px;
+            padding: 10px 0;
         }
 
-            .dropdown-menu a {
-                display: block;
-                padding: 10px;
-                text-decoration: none;
-                color: black;
+            .dropdown-menu .userName {
+                background-color: #eef0ff;
+                padding: 10px 15px;
+                font-weight: bold;
+                display: flex;
+                align-items: center;
+                gap: 10px;
             }
 
-                .dropdown-menu a:hover {
+            .dropdown-menu .dropdown-item {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 10px 15px;
+                color: black;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+                .dropdown-menu .dropdown-item:hover {
                     background-color: #f0f0f0;
                 }
+
+            .dropdown-menu i {
+                min-width: 16px;
+                text-align: center;
+            }
 
         .show {
             display: block;
         }
+
         /* Modal Styles */
         .modal {
             display: none; /* Hidden by default */
@@ -824,16 +864,24 @@
             left: 3.5em;
             bottom: 4em;
             z-index: 100;
+            width: 35px;
+            height: 35px;
+            background-color: var(--hover-bg-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
         }
 
             .playIcon i {
-                font-size: 40px;
-                color: var(--hover-bg-color);
+                color: white;
+                margin-left: 5px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
-
-                .playIcon i:hover {
-                    color: var(--title-background-color);
-                }
 
         #goToTopBtn {
             position: fixed;
@@ -954,11 +1002,6 @@
                 display: none; /* hide when 0 */
             }
 
-            .notification-bell-wrapper i.fas.fa-bell {
-                font-size: 28px;
-                color: #444;
-            }
-
         .notification-tooltip {
             position: absolute;
             top: 120%;
@@ -1004,7 +1047,6 @@
             border-radius: 10px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
             z-index: 1000;
-            font-family: 'Poppins', sans-serif;
         }
 
         .popup-header {
@@ -1041,6 +1083,79 @@
             font-weight: 500;
             margin-bottom: 4px;
         }
+
+       
+        User icon
+        .dropdown .fa-user.img {
+            color: darkgreen;
+            background-color: #e0e0e0;
+            border-radius: 50%;
+            padding: 6px;
+            font-size: 16px;
+            width: 32px;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fas, .fa-solid, .fa {
+            font-size: 14px;
+        }
+
+        #fullscreenIcon,
+        .notification-bell-wrapper .fa-bell,
+        .fa-file-alt,
+        .fa-circle-info,
+        .fa-palette,
+        .fa-user {
+            font-size: 14px;
+            padding: 8px;
+            color: var(--title-background-color);
+            background-color: white;
+            border-radius: 50%;
+        }
+
+        .titleCard-toggle {
+            cursor: pointer;
+            font-size: 1.2rem;
+            height: 35px !important;
+            width: 35px;
+            background: var(--hover-bg-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .titleCard-toggle:hover {
+                color: #000;
+            }
+
+        .titleCard-carousel.collapsed {
+            max-height: 0;
+            padding: 0;
+            overflow: hidden;
+            transition: max-height .35s ease, padding .35s ease;
+        }
+
+        .title.collapsed {
+            max-height: 0;
+            padding: 0;
+            overflow: hidden;
+            transition: max-height .35s ease, padding .35s ease;
+        }
+
+        .titleCard-carousel {
+            display: flex;
+            overflow-x: auto;
+            gap: 20px;
+            padding: 16px 24px 0 calc(var(--nav-w,0) + 24px);
+            scroll-snap-type: x mandatory;
+            padding-top: 15px;
+            padding-bottom: 15px;
+            padding-left: 10px;
+        }
     </style>
     @RenderSection("Styles", required: false)
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
@@ -1050,6 +1165,11 @@
 </head>
 <body>
     <!-- Modal Structure -->
+            <div style="display: flex;align-items: center;left: 97%;top: 7%;position: fixed;">
+                <div class="titleCard-toggle" onclick="toggleKpiCarousel()">
+                    <i id="kpiToggleIcon" class="fa-solid fa-chevron-up" style="color: white;"></i>
+                </div>
+             </div>
     <div id="customModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -1064,7 +1184,7 @@
     <div class="bodyContainer">
         <div class="playIcon">
             <a id="helpVideo" href="" target="_blank" rel="noopener noreferrer">
-                <i class="fa-solid fa-circle-play"></i>
+                <i class="fa-solid fa-play"></i>
             </a>
         </div>
         <button id="goToTopBtn" onclick="scrollToTop()">
@@ -1072,15 +1192,19 @@
         </button>
         <div class="frame">
             <div class="image">
-                <img src="@Tenant.Value.LogoUrl" alt="Tenant Logo" />
                 <div class="companyName">
-                    @Tenant.Value.CompanyNameShort
+                  <span style="color:@Tenant?.Value?.CompanyTextColor">
+    @($"{Tenant?.Value?.DefaultcompanyName}, {Tenant?.Value?.CompanyNameShort}")
+</span>
+
                 </div>
 
 
+
             </div>
-            <div class="dropdownLang">
-                @*   <div>
+            <div class="mush" style="gap:10px;display:flex;align-items:center;">
+                <div class="dropdownLang">
+                    @*   <div>
                 @(Html.DevExtreme().SelectBox()
                     .ID("currencySelect")
                     .DataSource(currencies)
@@ -1092,57 +1216,66 @@
                     .Value(currencies.FirstOrDefault()?.CurrencyID)
                     )
             </div> *@
-                <div>
-                    @(Html.DevExtreme().SelectBox()
-                        .ID("languageSelectBox")
-                        .DataSource(new JS("locales")) // Ensure 'locales' is populated before rendering
-                        .DisplayExpr("name")
-                        .ValueExpr("value")
-                        .Width("10em")
-                        .Value(new JS("locale"))
-                        .OnValueChanged("changeLocale")
-                        .Label(new JS("formatMessage('Language')"))
-                        .LabelMode(EditorLabelMode.Outside)
-                        .ItemTemplate(@<text>
-                        <div style="display: flex; align-items: center;">
-                            <img src="<%- flag %>" alt="" style="width: 20px; height: 20px; border-radius: 50%; margin-right: 8px;" />
-                            <span><%- name %></span>
-                        </div>
-                    </text>)
-                        )
-                </div>
-            </div>
-            @* <button id="themeToggle">Toggle Dark Mode</button> *@
-            <button id="fullscreenToggle">
-                <i class="fas fa-expand" id="fullscreenIcon"></i>
-            </button>
-            <div class="notification-bell-wrapper"
-                 onmouseenter="showPopup()"
-                 onmouseleave="hidePopup()"
-                 onclick="handleBellClick()">
-                <i class="fas fa-bell"></i>
-                <div class="badge-count" id="notificationBadge">0</div>
-
-                <!-- Styled Popup Panel -->
-                <div class="notification-popup" id="notificationPopup">
-                    <div class="popup-header">Notifications</div>
-                    <div class="popup-body" id="notificationPopupContent">Loading...</div>
-                </div>
-            </div>
-
-
-
-            <i class="fas fa-cogs img" onclick="handleGearClick()"></i> <!-- Gear icon -->
-            <i class="fas fa-file-alt img" onclick="handleFileClick()"></i> <!-- File text icon -->
-            <i class="fas fa-circle-info img" onclick="handleInfoClick()"></i>
-            <i class="fas fa-circle-info img" onclick="handleReserpasswordClick()"></i>
-            <div class="dropdown">
-                <i class="fa-solid fa-user img" onclick="toggleDropdown()"></i>
-                <div id="userDropdown" class="dropdown-menu">
-                    <div class="userName">
-                        <a href="javascript:void(0);" onclick="window.location.href = '/@tenantName/General/frm201useracces';"><span id="userWelcome"></span> @userName &#128513;!</a>
+                    <div>
+                        @(Html.DevExtreme().SelectBox()
+                            .ID("languageSelectBox")
+                            .DataSource(new JS("locales")) // Ensure 'locales' is populated before rendering
+                            .DisplayExpr("name")
+                            .ValueExpr("value")
+                            .Width("7em")
+                            .Value(new JS("locale"))
+                            .OnValueChanged("changeLocale")
+                            .ItemTemplate(@<text>
+                            <div style="display: flex; align-items: center;">
+                                <img src="<%- flag %>" alt="" style="width: 20px; height: 20px; border-radius: 50%; margin-right: 8px;" />
+                                <span><%- name %></span>
+                            </div>
+                        </text>)
+                            )
                     </div>
-                    <a href="#" onclick="logout()" id="userLogout"></a>
+                </div>
+                @* <button id="themeToggle">Toggle Dark Mode</button> *@
+                <button id="fullscreenToggle">
+                    <i class="fas fa-expand" id="fullscreenIcon"></i>
+                </button>
+                <div class="notification-bell-wrapper"
+                     onmouseenter="showPopup()"
+                     onmouseleave="hidePopup()"
+                     onclick="handleBellClick()">
+                    <i class="fas fa-bell"></i>
+                    <div class="badge-count" id="notificationBadge">0</div>
+
+                    <!-- Styled Popup Panel -->
+                    <div class="notification-popup" id="notificationPopup">
+                        <div class="popup-header">Notifications</div>
+                        <div class="popup-body" id="notificationPopupContent">Loading...</div>
+                    </div>
+                </div>
+                <i class="fas fa-palette img" onclick="handleGearClick()"></i> <!-- Gear icon -->
+
+                <div class="dropdown triggerDrop" onclick="toggleDropdown()">
+                    <div class="user-icon triggerDrop" id="userIcon"></div>
+                    <div id="userDropdown" class="dropdown-menu">
+                        <div class="userName">
+                            <i class="fas fa-user"></i>
+                            <a href="javascript:void(0);" onclick="window.location.href = '/@tenantName/General/frm201useracces';">@userName</a>
+                        </div>
+
+                        <div class="dropdown-item" onclick="handleInfoClick()">
+                            <i class="fas fa-building"></i>
+                            <span>Company Details</span>
+                        </div>
+
+                        <div class="dropdown-item" onclick="handleReserpasswordClick()">
+                            <i class="fas fa-lock"></i>
+                            <span>Change Password</span>
+                        </div>
+
+                        <div class="dropdown-item" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1460,12 +1593,10 @@
         </div>
         <div id="submenuContainer9" class="context-menu" style="display:none; width: 300px;">
             <div class="context-menu-item1">
-                <div class="submenu-item">
-
+                <div class="submenu-item" onclick="stockInventoryReport()">
                     <span class="no-border-input">Stock Inventory Report</span>
                 </div>
-                <div class="submenu-item">
-
+                <div class="submenu-item" onclick="cogsposting()">
                     <span class="no-border-input">COGS Posting</span>
                 </div>
 
@@ -1474,6 +1605,23 @@
 
             </div>
         </div>
+        <div id="quarterSubMenu" class="context-menu" style="display:none; width: 300px;">
+            <div class="context-menu-item1">
+                <div class="submenu-item" onclick="ddBtnShowRecords_click('q1')">
+                    <span class="no-border-input">1st Quarter (Jan - Mar)</span>
+                </div>
+                <div class="submenu-item" onclick="ddBtnShowRecords_click('q2')">
+                    <span class="no-border-input">2nd Quarter (Apr - Jun)</span>
+                </div>
+                <div class="submenu-item" onclick="ddBtnShowRecords_click('q3')">
+                    <span class="no-border-input">3rd Quarter (Jul - Sep)</span>
+                </div>
+                <div class="submenu-item" onclick="ddBtnShowRecords_click('q4')">
+                    <span class="no-border-input">4th Quarter (Oct - Dec)</span>
+                </div>
+            </div>
+        </div>
+
         <!-- Notification Popup -->
         <div id="notificationPopup" class="popup">
             <div class="popup-header">
@@ -1484,59 +1632,39 @@
                 <p><span id="notificationMessage"></span></p>
             </div>
         </div>
-
-
         <!-- Settings Popup -->
         <div id="settingsPopup" class="popup">
-            <div class="popup-header">
-                <span class="popup-header" id="Settings1"></span>
-                <span class="popup-close" onclick="closePopup('settingsPopup')">X</span>
-            </div>
+            <span class="popup-close" onclick="closePopup('settingsPopup')">X</span>
             <div class="popup-content">
                 <!-- Add settings content here -->
                 <p id="settingMessage1"></p>
                 <div class="switcher-section">
                     <h3 id="settingMessage2"></h3>
-                    <button class="color-btn" style="background: #FFDDC1;" onclick="applyTheme('light-orange')"></button>
-                    <button class="color-btn" style="background: #FFD3E0;" onclick="applyTheme('light-pink')"></button>
-                    <button class="color-btn" style="background: #C3E8F7;" onclick="applyTheme('light-cyan')"></button>
-                    <button class="color-btn" style="background: #D4A5A5;" onclick="applyTheme('light-rose')"></button>
-                    <button class="color-btn" style="background: #FFF7D6;" onclick="applyTheme('light-gold')"></button>
-                    <button class="color-btn" style="background: #E1F7D5;" onclick="applyTheme('light-mint')"></button>
-                    <button class="color-btn" style="background: #FAE1DD;" onclick="applyTheme('light-peach')"></button>
-                    <button class="color-btn" style="background: #E6F0FF;" onclick="applyTheme('light-sky')"></button>
-                    <button class="color-btn" style="background: #D9E4DD;" onclick="applyTheme('light-olive')"></button>
-                    <button class="color-btn" style="background: #FDE2E4;" onclick="applyTheme('light-coral')"></button>
-                    <button class="color-btn" style="background: #E3D5CA;" onclick="applyTheme('light-sand')"></button>
-                    <button class="color-btn" style="background: #E6E6FA;" onclick="applyTheme('light-lavender')"></button>
-                    <button class="color-btn" style="background: #D1F2EB;" onclick="applyTheme('light-seafoam')"></button>
-                    <button class="color-btn" style="background: #FFF9E6;" onclick="applyTheme('light-butter')"></button>
-                    <button class="color-btn" style="background: #E0E7FF;" onclick="applyTheme('light-periwinkle')"></button>
-                    <button class="color-btn" style="background: #F5E0E6;" onclick="applyTheme('light-mauve')"></button>
-                    <button class="color-btn" style="background: #E0FFFF;" onclick="applyTheme('light-aqua')"></button>
-                    <button class="color-btn" style="background: #FFE4E1;" onclick="applyTheme('light-blush')"></button>
-                    <button class="color-btn" style="background: #F0F8FF;" onclick="applyTheme('light-mist')"></button>
-                    <button class="color-btn" style="background: #FAF0E6;" onclick="applyTheme('light-pearl')"></button>
-                    <button class="color-btn" style="background: #F5FFFA;" onclick="applyTheme('light-mint-cream')"></button>
-                    <button class="color-btn" style="background: #c2bfbf;" onclick="applyTheme('dark-charcoal')"></button>
+                    <button class="color-btn" style="background: #faa25a;" onclick="applyTheme('light-orange')"></button>
+                    <button class="color-btn" style="background: #fc6f99;" onclick="applyTheme('light-pink')"></button>
+                    <button class="color-btn" style="background: #4394b4;" onclick="applyTheme('light-cyan')"></button>
+                    <button class="color-btn" style="background: #8d5353;" onclick="applyTheme('light-rose')"></button>
+                    <button class="color-btn" style="background: #caae3b;" onclick="applyTheme('light-gold')"></button>
+                    <button class="color-btn" style="background: #97ce7a;" onclick="applyTheme('light-mint')"></button>
+                    <button class="color-btn" style="background: #af665b;" onclick="applyTheme('light-peach')"></button>
+                    <button class="color-btn" style="background: #5d82b9;" onclick="applyTheme('light-sky')"></button>
+                    <button class="color-btn" style="background: #5cb97e;" onclick="applyTheme('light-olive')"></button>
+                    <button class="color-btn" style="background: #ca6d73;" onclick="applyTheme('light-coral')"></button>
+                    <button class="color-btn" style="background: #a77b59;" onclick="applyTheme('light-sand')"></button>
+                    <button class="color-btn" style="background: #6262d6;" onclick="applyTheme('light-lavender')"></button>
+                    <button class="color-btn" style="background: #5aaa99;" onclick="applyTheme('light-seafoam')"></button>
+                    <button class="color-btn" style="background: #ceb45e;" onclick="applyTheme('light-butter')"></button>
+                    <button class="color-btn" style="background: #526bbd;" onclick="applyTheme('light-periwinkle')"></button>
+                    <button class="color-btn" style="background: #c45373;" onclick="applyTheme('light-mauve')"></button>
+                    <button class="color-btn" style="background: #48aaaa;" onclick="applyTheme('light-aqua')"></button>
+                    <button class="color-btn" style="background: #df7367;" onclick="applyTheme('light-blush')"></button>
+                    <button class="color-btn" style="background: #4a7fad;" onclick="applyTheme('light-mist')"></button>
+                    <button class="color-btn" style="background: #af7d4b;" onclick="applyTheme('light-pearl')"></button>
+                    <button class="color-btn" style="background: #54a77d;" onclick="applyTheme('light-mint-cream')"></button>
+                    <button class="color-btn" style="background: #050505;" onclick="applyTheme('dark-charcoal')"></button>
                 </div>
             </div>
         </div>
-
-        <!-- Profile Popup -->
-        <div id="profilePopup" class="popup profile-popup">
-            <div class="popup-header">
-                User Profile
-                <span class="popup-close" onclick="closePopup('profilePopup')">X</span>
-            </div>
-            <div class="popup-content">
-                <!-- Add user profile content here -->
-                <p>Profile details go here...</p>
-            </div>
-        </div>
-
-
-
 
         <!-- Main container to hold sidebars and content -->
         <div class="container">
@@ -1545,7 +1673,7 @@
 
 
             <div id="sidebar" class="sidebar hidden">
-                <div class="menu-item1" style="cursor:pointer" onclick="navigateToTenantHome()" >
+                <div class="menu-item1" style="cursor:pointer" onclick="navigateToTenantHome()">
                     <img border="0" src="~/images/erp_logo.png" alt="QD-ERP" width="45" height="30">
                     <div id="HumanResources2" class="text no-border-input">Quick Dice</div>
                 </div>
@@ -1553,49 +1681,49 @@
                     @if (userModules.Contains("HR"))
                     {
                         <div class="menu-item hr" onclick="navigate('Human Resources')">
-                            <i class="fas fa-users" id="humanResourcesIcon"></i>
+                             <i id="humanResourcesIcon"><img src="~/images/hr-icon.png" style="width:30px"/></i>
                             <div id="HumanResources" class="text no-border-input"></div>
                         </div>
                     }
                     @if (userModules.Contains("Finance"))
                     {
                         <div class="menu-item finance" onclick="navigate('Finance')">
-                            <i class="fas fa-dollar-sign" id="FinanceIcon"></i>
+                            <i id="FinanceIcon"><img src="~/images/finance.png" style="width:30px" /></i>
                             <div id="Finance" class="text no-border-input"></div>
                         </div>
                     }
                     @if (userModules.Contains("VAT"))
                     {
                         <div class="menu-item vat" onclick="navigate('VAT Modules')">
-                            <i class="fas fa-certificate" id="VATModulesIcon"></i>
+                            <i id="VATModulesIcon"><img src="~/images/vat_icon.png" style="width:30px" /></i>
                             <div id="VATModules" class="text no-border-input"></div>
                         </div>
                     }
                     @if (userModules.Contains("Equipment"))
                     {
                         <div class="menu-item rentals" onclick="navigate('Equipment Rentals')">
-                            <i class="fas fa-truck" id="EquipmentRentalsIcon"></i>
+                            <i id="EquipmentRentalsIcon"><img src="~/images/renting.png" style="width:30px" /></i>
                             <div id="EquipmentRentals" class="text no-border-input"></div>
                         </div>
                     }
                     @if (userModules.Contains("CAMP"))
                     {
                         <div class="menu-item camp" onclick="navigate('Camp Management')">
-                            <i class="fas fa-campground" id="CampManagementIcon"></i>
+                            <i id="CampManagementIcon"><img src="~/images/camp.png" style="width:30px" /></i>
                             <div id="CampManagement" class="text no-border-input"></div>
                         </div>
                     }
                     @if (userModules.Contains("IMS"))
                     {
                         <div class="menu-item inventory" onclick="navigate('Inventory Management')">
-                            <i class="fas fa-cogs" id="InventoryManagementIcon"></i>
+                            <i id="InventoryManagementIcon"><img src="~/images/IMS_icon.png" style="width:30px" /></i>
                             <div id="InventoryManagement" class="text no-border-input"></div>
                         </div>
                     }
                     @if (userModules.Contains("Projects"))
                     {
                         <div class="menu-item projects" onclick="navigate('Projects Control')">
-                            <i class="fas fa-project-diagram" id="ProjectsControlIcon"></i>
+                            <i id="ProjectsControlIcon"><img src="~/images/project_control.png" style="width:30px" /></i>
                             <div id="ProjectsControl" class="text no-border-input"></div>
                         </div>
                     }
@@ -1607,11 +1735,13 @@
             </div>
 
             <div>
-                <button class="toggle-btn" onclick="toggleSidebar()">&#x3e;</button>
+                <button class="toggle-btn" onclick="toggleSidebar()">
+                    <i class="fas fa-bars" style="color:var(--title-background-color)"></i>
+                </button>
             </div>
 
             <!-- Breadcrumb above Sidebar 2 -->
-     
+
 
             @* <div class="main-content" id="mainContent"> *@
             @*     <iframe id="contentIframe" *@
@@ -1624,6 +1754,22 @@
         <div class="mainContainer">
             <main>
                 @RenderBody()
+
+                <div id="changePasswordPopupContainer">
+                    @(Html.DevExtreme().Popup()
+                        .ID("changePasswordPopup")
+                        .Title("Change Your Password")
+                        .Width("50%")
+                        .Height(430)
+                        .Visible(false)
+                        .ShowCloseButton(true)
+                        .ResizeEnabled(true)
+                        .DragEnabled(true)
+                        .ShowTitle(true)
+                        .ContentTemplate(@<text><div id="popupContentPlaceholder">Loading...</div></text>)
+                        )
+                </div>
+
                 @RenderSection("Scripts", required: false)
 
             </main>
@@ -1632,7 +1778,7 @@
     <footer class="text-center py-3 footerContainer" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem;">
         @if (!string.IsNullOrEmpty(licenseMessage))
         {
-            <div id="custom-watermark" style="position: fixed; bottom: 0; width: 100%; z-index: 9999; background-color: red; color: white; display: flex; align-items: center;justify-content: center;font-family: 'Segoe UI', sans-serif;font-size: 14px;padding: 0.5rem;box-shadow: 0 -2px 6px rgba(0,0,0,0.2);">
+            <div id="custom-watermark" style="position: fixed; bottom: 0; width: 100%; z-index: 9999; background-color: red; color: white; display: flex; align-items: center;justify-content: center;font-size: 14px;padding: 0.5rem;box-shadow: 0 -2px 6px rgba(0,0,0,0.2);">
                 <span>Your <strong>@licenseMessage</strong>. Please <a href="https://quickdiceerp.com/contact-us" target="_blank" style="color: white; text-decoration: underline;">purchase a license</a> to continue using this product.</span>
                 <button onclick="document.getElementById('custom-watermark').remove()" style=" margin-left: 1rem;background: transparent;border: none;color: white;font-size: 16px;cursor: pointer;" title="Close">&times;</button>
             </div>
@@ -1640,9 +1786,9 @@
         <div style="display:flex;flex-direction:column;align-items:center;gap:1em;">
             <div>
 
-                <span class="me-3">User ID:  <b>@userId</b></span>
-                <span class="me-3">User Name: <b>@userName</b> </span>
-                <span class="me-3">Level: <span id="userLevel" style="font-weight: bold;">Loading...</span></span>
+                @* <span class="me-3">User ID:  <b>@userId</b></span> *@
+                @* <span class="me-3">User Name: <b>@userName</b> </span> *@
+                @* <span class="me-3">Level: <span id="userLevel" style="font-weight: bold;">Loading...</span></span> *@
                 @* <span class="me-3"><b>@DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</b></span> *@
             </div>
             <div style="display:flex;">
@@ -1732,7 +1878,14 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
-                                document.getElementById('userLevel').innerText = data.userLevel;
+                                const userLevelElement = document.getElementById('userLevel');
+                                if (data.userLevel === 99) {
+                                    userLevelElement.innerText = "Full Access";
+                                } else if (data.userLevel === 1) {
+                                    userLevelElement.innerText = "Registered User";
+                                } else {
+                                    userLevelElement.innerText = data.userLevel;
+                                }
                             } else {
                                 document.getElementById('userLevel').innerText = "N/A";
                                 console.warn("User level not available.");
@@ -2270,6 +2423,12 @@
                         function handleBellClick() {
                   window.location.href = `/${tenantName}/Shared/Notification`;
                 }
+                        function stockInventoryReport() {
+                  window.location.href = `/${tenantName}/VAT/VATSalesStockInventoryList`;
+                }
+                        function cogsposting() {
+                  window.location.href = `/${tenantName}/VAT/VATSalesReportCOGSPosting`;
+                }
 
                      let alertsData = [];
 
@@ -2342,13 +2501,6 @@
                         });
                 }
 
-                // Function for Avatar click - show user profile
-                function handleAvatarClick() {
-                    const profilePopup = document.getElementById('profilePopup');
-                    if (profilePopup) {
-                        profilePopup.style.display = 'block';
-                    }
-                }
                 function closePopup(popupId) {
                     const popup = document.getElementById(popupId);
                     if (popup) {
@@ -2375,44 +2527,152 @@
                     // Dynamically load submenu items for the first sidebar menu
                     if (name === 'Finance') {
                         showFinanceSubmenu();
-                        breadcrumbTrail[0] = name;
-                        updateBreadcrumb();
                     } else if (name === 'Human Resources') {
-                        breadcrumbTrail.length = 0;
-                        updateBreadcrumb();
-                        updateBreadcrumbFromSidebar2('');
-                        sidebar2.style.display = 'none';
+                        showHumanResourceSubmenu();
                     } else if (name === 'VAT Modules') {
-                        breadcrumbTrail.length = 0;
                         showVATModuleSubmenu();
-                        updateBreadcrumb();
-                        updateBreadcrumbFromSidebar2('');
-                        //sidebar2.style.display = 'none';
                     } else if (name === 'Equipment Rentals') {
                         showEquipmentRentalSubmenu();
-                        breadcrumbTrail.length = 0;
-                        updateBreadcrumb();
-                        updateBreadcrumbFromSidebar2('');
-                        // sidebar2.style.display = 'none';
                     } else if (name === 'Camp Management') {
-                        breadcrumbTrail.length = 0;
-                        updateBreadcrumb();
-                        updateBreadcrumbFromSidebar2('');
-                        sidebar2.style.display = 'none';
+                        showCampManagementSubmenu();
                     } else if (name === 'Inventory Management') {
                         showInventorySubmenu();
-                        breadcrumbTrail.length = 0;
-                        updateBreadcrumb();
-                        updateBreadcrumbFromSidebar2('');
-                        // sidebar2.style.display = 'none';
                     } else if (name === 'Projects Control') {
-                        breadcrumbTrail.length = 0;
-                        updateBreadcrumb();
-                        updateBreadcrumbFromSidebar2('');
-                        sidebar2.style.display = 'none';
+                        showProjectsControlSubmenu();
                     }
-
-                              function showFinanceSubmenu() {
+                    }
+                    function showHumanResourceSubmenu() {
+                        const sidebar2 = document.getElementById('sidebar2');
+                        sidebar2.innerHTML = `
+                                       <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/ComingSoon">
+                                            <i class="	fas fa-chart-line"></i>
+                                            <div class="text">${formatMessage("Executive DashBoard")}</div>
+                                        </a>
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/ComingSoon">
+                                            <i class="fas fa-users"></i>
+                                            <div class="text">${formatMessage("Employees Database")}</div>
+                                        </a>
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/ComingSoon">
+                                            <i class="fas fa-sitemap"></i>
+                                            <div class="text">${formatMessage("Organization Structure")}</div>
+                                        </a>
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/ComingSoon">
+                                            <i class="fas fa-file-invoice-dollar"></i>
+                                            <div class="text">${formatMessage("Employee Payroll")}</div>
+                                        </a>
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/ComingSoon">
+                                            <i class="fas fa-clock"></i>
+                                            <div class="text">${formatMessage("Time Sheet")}</div>
+                                        </a>
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/ComingSoon">
+                                            <i class="fas fa-file-invoice-dollar"></i>
+                                            <div class="text">${formatMessage("Manpower Invoices")}</div>
+                                        </a>
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/ComingSoon">
+                                            <i class="fas fa-tags"></i>
+                                            <div class="text">${formatMessage("Categories")}</div>
+                                        </a>
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/ComingSoon">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                            <div class="text">${formatMessage("WorkSites")}</div>
+                                        </a>
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/ComingSoon">
+                                            <i class="fas fa-handshake"></i>
+                                            <div class="text">${formatMessage("Sponsors")}</div>
+                                        </a>
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/ComingSoon">
+                                            <i class="fas fa-building"></i>
+                                            <div class="text">${formatMessage("Agencies")}</div>
+                                        </a>
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/ComingSoon">
+                                            <i class="fas fa-sitemap"></i>
+                                            <div class="text">${formatMessage("Departments")}</div>
+                                        </a>
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/ComingSoon">
+                                            <i class="fas fa-th-large"></i>
+                                            <div class="text">${formatMessage("Units / Sections")}</div>
+                                        </a>
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/ComingSoon">
+                                            <i class="fas fa-id-badge"></i>
+                                            <div class="text">${formatMessage("Positions")}</div>
+                                        </a>
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/ComingSoon">
+                                            <i class="fas fa-people-carry"></i>
+                                            <div class="text">${formatMessage("Manpower Rentals")}</div>
+                                        </a>
+                                        `;
+                    }
+                    function showCampManagementSubmenu() {
+                        const sidebar2 = document.getElementById('sidebar2');
+                        sidebar2.innerHTML = `
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/ComingSoon">
+                                            <i class="fas fa-door-open"></i>
+                                            <div class="text">${formatMessage("Rooms")}</div>
+                                        </a>
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/ComingSoon">
+                                            <i class="fas fa-users-cog"></i>
+                                            <div class="text">${formatMessage("Tenants List")}</div>
+                                        </a>
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/ComingSoon">
+                                            <i class="fas fa-plus-circle"></i>
+                                            <div class="text">${formatMessage("Add New Room")}</div>
+                                        </a>
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/ComingSoon">
+                                            <i class="fas fa-building"></i>
+                                            <div class="text">${formatMessage("Camp Modules - Buildings")}</div>
+                                        </a>
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/ComingSoon">
+                                            <i class="fas fa-th-large"></i>
+                                            <div class="text">${formatMessage("Camp Modules - Blocks")}</div>
+                                        </a>
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/ComingSoon">
+                                            <i class="fas fa-layer-group"></i>
+                                            <div class="text">${formatMessage("Room Categories")}</div>
+                                        </a>
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/ComingSoon">
+                                            <i class="fas fa-hotel"></i>
+                                            <div class="text">${formatMessage("Room Type")}</div>
+                                        </a>
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/ComingSoon">
+                                            <i class="fas fa-flag"></i>
+                                            <div class="text">${formatMessage("Tenant Nationality")}</div>
+                                        </a>
+                                        `;
+                    }
+                    function showProjectsControlSubmenu() {
+                        const sidebar2 = document.getElementById('sidebar2');
+                        sidebar2.innerHTML = `
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/ComingSoon">
+                                            <i class="fas fa-project-diagram"></i>
+                                            <div class="text">${formatMessage("Projects Dashboard")}</div>
+                                        </a>
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/ComingSoon">
+                                            <i class="fas fa-database"></i>
+                                            <div class="text">${formatMessage("Projects Database")}</div>
+                                        </a>
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/ComingSoon">
+                                            <i class="fas fa-file-alt"></i>
+                                            <div class="text">${formatMessage("Material Requirements")}</div>
+                                        </a>
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/ComingSoon">
+                                            <i class="fas fa-tools"></i>
+                                            <div class="text">${formatMessage("Equipment Requests")}</div>
+                                        </a>
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/ComingSoon">
+                                            <i class="fas fa-user-tie"></i>
+                                            <div class="text">${formatMessage("Project Managers")}</div>
+                                        </a>
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/ComingSoon">
+                                            <i class="fas fa-users"></i>
+                                            <div class="text">${formatMessage("Project Groups")}</div>
+                                        </a>
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/ComingSoon">
+                                            <i class="fas fa-chart-bar"></i>
+                                            <div class="text">${formatMessage("Cost Report (By Division)")}</div>
+                                        </a>
+                                        `;
+                    }
+                function showFinanceSubmenu() {
                     const sidebar2 = document.getElementById('sidebar2');
 
                     // Finance Dashboard submenu items
@@ -2587,15 +2847,15 @@
                         const sidebar2 = document.getElementById('sidebar2');
                         sidebar2.innerHTML = `
                                         <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/SalesRegisterVAT">
-                                            <i class="fas fa-book"></i>
+                                            <i class="fas fa-sort-numeric-up"></i>
                                             <div class="text">${formatMessage("Sales Invoice Register")}</div>
                                         </a>
                                         <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATCreditNotRegister">
-                                            <i class="fas fa-book"></i>
+                                            <i class="fas fa-file-invoice "></i>
                                             <div class="text">${formatMessage("Credit Note Register")}</div>
                                         </a>
                                         <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATPurchaseMasterView">
-                                            <i class="fas fa-book"></i>
+                                            <i class="fas fa-sort-numeric-down"></i>
                                             <div class="text">${formatMessage("Purchase Invoice Register")}</div>
                                         </a>
                                         <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATDebitNotRegister">
@@ -2603,21 +2863,18 @@
                                             <div class="text">${formatMessage("Debit Note Register")}</div>
                                         </a>
                                          <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATReturnsSalesandPurchase">
-                                            <i class="fas fa-book"></i>
+                                            <i class="fas fa-percentage"></i>
                                             <div class="text">${formatMessage("VAT Returns")}</div>
                                         </a>
                                                          <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATInvoiceReporting">
-                                            <i class="fas fa-book"></i>
+                                            <i class="fas fa-chart-pie"></i>
                                             <div class="text">${formatMessage("Sales Reporting")}</div>
                                         </a>
                                          <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/ProformaInvoiceMasterView">
-                                            <i class="fas fa-book"></i>
+                                            <i class="fas fa-align-justify"></i>
                                             <div class="text">${formatMessage("Proforma Invoices")}</div>
-                                        </a>
-                                        `;
-
+                                        </a>`; 
                     }
-                }
 
             function showEquipmentRentalSubmenu() {
             const sidebar2 = document.getElementById('sidebar2');
@@ -2632,10 +2889,12 @@
                 { key: "Equipments Quotation", icon: "fas fa-file-signature", href: `/${tenantName}/ERM/EquipmentsQuotation`, label: "Equipments Quotation", hideOnClick: true },
                 { key: "Equipment Sales Order", icon: "fas fa-shopping-cart", href: `/${tenantName}/ERM/EquipmentSalesOrder`, label: "Equipment Sales Order", hideOnClick: true },
                 { key: "Equipment Delivery", icon: "fas fa-truck", href: `/${tenantName}/ERM/EquipmentDelivery`, label: "Equipment Delivery", hideOnClick: true },
+                { key: "Equipment RFQ Database", icon: "fas fa-database", href: `/${tenantName}/ERM/EquipmentRFQDatabase`, label: "Equipment RFQ Database", hideOnClick: true },
+                { key: "Equipment Quotation Analysis", icon: "fas fa-chart-line", href: `/${tenantName}/ERM/EquipmentQuotationAnalysis`, label: "Equipment Quotation Analysis", hideOnClick: true },
                 { key: "Equipment TimeSheet", icon: "fas fa-calendar-check", href: `/${tenantName}/ERM/EquipmentTimeSheet`, label: "Equipment TimeSheet", hideOnClick: true },
                 { key: "Purchase Order", icon: "fas fa-file-invoice-dollar", href: `/${tenantName}/ERM/PurchaseOrder`, label: "Purchase Order", hideOnClick: true },
                 { key: "Supplier Inv Summary", icon: "fas fa-file-invoice", href: `/${tenantName}/ERM/SupplierInvoiceSummary`, label: "Supplier Inv Summary", hideOnClick: true },
-                { key: "Client Inv Summary", icon: "fas fa-user-file", href: `/${tenantName}/ERM/ClientInvoiceSummary`, label: "Client Inv Summary", hideOnClick: true },
+                { key: "Client Inv Summary", icon: "fas fa-file-invoice", href: `/${tenantName}/ERM/ClientInvoiceSummary`, label: "Client Inv Summary", hideOnClick: true },
                 { key: "Service & Maintenance", icon: "fas fa-tools", href: `/${tenantName}/ERM/ServiceMaintenance`, label: "Service & Maintenance", hideOnClick: true },
                 { key: "Clients", icon: "fas fa-users", href: `/${tenantName}/ERM/Clients`, label: "Clients", hideOnClick: true },
                 { key: "Suppliers", icon: "fas fa-user-tie", href: `/${tenantName}/ERM/Suppliers`, label: "Suppliers", hideOnClick: true },
@@ -2827,8 +3086,8 @@
                     sidebar2.style.marginTop = '70px'; // Adjust Sidebar 2 margin
 
                     // Adjust the toggle button symbol
-                    const toggleBtn = document.querySelector('.toggle-btn');
-                    toggleBtn.innerHTML = '&gt;';
+                    // const toggleBtn = document.querySelector('.toggle-btn');
+                    // toggleBtn.innerHTML = '&gt;';
                 }
 
 
@@ -2904,7 +3163,7 @@
                     }
 
                     // Adjust the toggle button symbol
-                    toggleBtn.innerHTML = sidebar.classList.contains('hidden') ? '&gt;' : '&lt;';
+                    // toggleBtn.innerHTML = sidebar.classList.contains('hidden') ? '&gt;' : '&lt;';
                 }
                 // function updateHeight() {
                 //   document.querySelector('.mainContainer').style.height = window.innerHeight + 'px';
@@ -3015,7 +3274,7 @@
 
 
                 window.onclick = function (event) {
-                    if (!event.target.matches('.fa-user')) {
+                    if (!event.target.matches('.triggerDrop')) {
                         let dropdowns = document.getElementsByClassName("dropdown-menu");
                         for (let i = 0; i < dropdowns.length; i++) {
                             let openDropdown = dropdowns[i];
@@ -3025,10 +3284,109 @@
                         }
                     }
                 };
+                // function handleReserpasswordClick() {
+                //     window.location.href = `/${tenantName}/General/frm90108ChangePassword`;
+                // }
+                // change password partial view
                 function handleReserpasswordClick() {
-                    window.location.href = `/${tenantName}/General/frm90108ChangePassword`;
+                       $.ajax({
+
+                        url: `/api/CompanyDetails/ChangePassword`, // This returns partial HTML
+                        type: "GET",
+                        dataType: "html",
+                        success: function (data) {
+                            debugger;
+                             let popupInstance = $("#changePasswordPopup").dxPopup("instance");
+
+                        popupInstance.option({
+
+                            contentTemplate: function () {
+                                return $("<div>")
+
+                                    .html(data);
+                            }
+                        });
+
+                        popupInstance.show();
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error loading change password view:", error);
+                            DevExpress.ui.notify("Failed to load password change form.", "error", 2000);
+                        }
+                  });
                 }
-                function toggleDropdown() {
+
+
+                function getPasswordStrength(password) {
+                    let score = 0;
+                    if (password.length >= 10) score++;
+                    if (/[A-Z]/.test(password)) score++;
+                    if (/[a-z]/.test(password)) score++;
+                    if (/\d/.test(password)) score++;
+                    if (/[$!%*?&]/.test(password)) score++;
+
+                    if (score <= 2) return { level: "Weak", color: "red" };
+                    if (score === 3 || score === 4) return { level: "Medium", color: "orange" };
+                    if (score === 5) return { level: "Strong", color: "green" };
+                    return { level: "Unknown", color: "gray" };
+                }
+
+                function onNewPasswordChanged(e) {
+                    const password = e.value;
+                    const strength = getPasswordStrength(password);
+                    const strengthDiv = document.getElementById("passwordStrength");
+                    strengthDiv.textContent = `Strength: ${strength.level}`;
+                    strengthDiv.style.color = strength.color;
+                }
+
+                function onResetPasswordClick() {
+                    const currentPassword = $("#currentPassword").dxTextBox("instance").option("value");
+                    const newPassword = $("#newPassword").dxTextBox("instance").option("value");
+                    const confirmPassword = $("#confirmPassword").dxTextBox("instance").option("value");
+
+                    if (!currentPassword || !newPassword || !confirmPassword) {
+                        DevExpress.ui.notify("All fields are required.", "error", 2000);
+                        return;
+                    }
+
+                    if (newPassword.length < 10) {
+                        DevExpress.ui.notify("New password must be at least 10 characters long.", "error", 2000);
+                        return;
+                    }
+                    if (newPassword !== confirmPassword) {
+                        DevExpress.ui.notify("New Password and Confirm Password do not match.", "error", 2000);
+                        return;
+                    }
+                    const strongPasswordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[$!%*?&]).{10,}$/;
+                    if (!strongPasswordRegex.test(newPassword)) {
+                        DevExpress.ui.notify("Password must contain uppercase, lowercase, digit, and special character.", "error", 3000);
+                        return;
+                    }
+
+                    if (newPassword !== confirmPassword) {
+                        DevExpress.ui.notify("New Password and Confirm Password do not match.", "error", 2000);
+                        return;
+                    }
+
+                    $.ajax({
+                        url: '@Url.Page("frm90108ChangePassword", "ResetPassword")',
+                        type: 'POST',
+                        data: {
+                            currentPassword: currentPassword,
+                            newPassword: newPassword,
+                            __RequestVerificationToken: token
+                        },
+                        success: function (response) {
+                            DevExpress.ui.notify(response, "success", 3000);
+                        },
+                        error: function (xhr) {
+                            DevExpress.ui.notify("Failed to reset password: " + xhr.responseText, "error", 3000);
+                        }
+                    });
+                }
+
+
+                       function toggleDropdown() {
                     document.getElementById("userDropdown").classList.toggle("show");
                 }
                 function logout() {
@@ -3463,6 +3821,8 @@
                     $("#userWelcome").text(formatMessage("Welcome, "));
 
                     $("#userLogout").text(formatMessage("Logout"));
+                    $("#changePassword").text(formatMessage("Change Password"));
+                    $("#companyDetails").text(formatMessage("Company Details"));
 
                     $("#footerMessage1").text(formatMessage("Copyright "));
 
@@ -3501,6 +3861,9 @@
 
                     doc.save("quotation-analysis.pdf");
                 }
+                function hidequarterSubmenus() {
+            $('#quarterSubMenu').hide();
+        }
                 function navigateToTenantHome() {
             if (tenantName) {
                 window.location.href = `/${tenantName}/Home`;
@@ -3508,9 +3871,66 @@
                 console.warn("Tenant name is not set.");
             }
         }
+
+        window.onload = function () {
+            const userName = "@userName"; // Razor will render the actual name
+            if (userName) {
+                const firstLetter = userName.trim()[0].toUpperCase();
+                document.getElementById("userIcon").innerText = firstLetter;
+            }
+        };
         inventoryMenuAccess1 = JSON.parse("@Html.Raw(escapedJson1)");
         equipmentRentalMenuAccess = JSON.parse("@Html.Raw(equipmentJson)");
         window.financeMenuAccess = JSON.parse("@Html.Raw(escapedJson)");
+
+        function isModal() {
+            return new URLSearchParams(window.location.search).get("modal") === "true";
+        }
+
+        $(document).ready(function () {
+
+           if (isModal()) {
+                const style = document.createElement("style");
+                style.innerHTML = `
+                          .container { display: none !important; }
+                          .title { display: flex !important;
+                            align-items: center !important;
+                            justify-content: center !important;
+                            font-size: 20px !important;
+                            font-weight: bold !important;
+                            background: linear-gradient(135deg, #6a11cb, #2575fc) !important;
+                            color: white !important;
+                            width: 100% !important;
+                            padding: 0px !important;
+                            border-radius: 0px !important;
+                            margin: 0px !important ;
+                            height: 50px !important;}
+                          .titleCard-toggle {display: none !important;}
+                          .frame { display: none !important; }
+                          .footerContainer { display: none !important; }
+                          .bodyContainer { display: flex; justify-content: center; }
+                          .mainContainer { margin-top: 1em;width:100%; }
+                          .playIcon {display: none;	}`;
+                document.head.appendChild(style);
+            }
+        });
+        function toggleKpiCarousel() {
+            const carousel = document.getElementsByClassName("title")[0]; // Get the first element
+            const icon = document.getElementById("kpiToggleIcon");
+
+            if (!carousel) return; // Safeguard if element not found
+            carousel.classList.toggle("collapsed");
+
+            if (carousel.classList.contains("collapsed")) {
+                icon.classList.remove("fa-chevron-up");
+                icon.classList.add("fa-chevron-down");
+            } else {
+                    icon.classList.remove("fa-chevron-down");
+                    icon.classList.add("fa-chevron-up");
+            }
+        }
+
+
     </script>
 </body>
 </html>

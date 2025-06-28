@@ -1,10 +1,7 @@
 ﻿@page
-@using QD.ERP.Web.DAL.Entities
 @model QD.ERP.Web.Areas.ERM.Pages.ClientsModel
 @{
-
 }
-
 @{
     ViewData["Title"] = "Clients";
 
@@ -28,19 +25,19 @@
         display: flex;
         gap: 10px; /* Space between buttons */
         /* z-index: 9999; /* Make sure it's on top */
-        /* background-color: white; /* Optional: background */  padding: 10px; /* Optional: inner spacing */
+        /* background-color: white; /* Optional: background */ padding: 10px; /* Optional: inner spacing */
         border-radius: 6px;
         margin-top: 10px;
         /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
     }
 
     .mainContainer {
-        width:96%;
-        overflow-x:hidden;
+        width: 96%;
+        overflow-x: hidden;
     }
 
 </style>
-<div class="title" >
+<div class="title">
     <div class="header-container">
         <div id="ClientLeads" class="no-border-input"></div>
     </div>
@@ -113,37 +110,37 @@
             columns.Add().DataField("UserCode").Caption(new JS("formatMessage('User Code')")).Visible(false);
             columns.Add().DataField("VendorNo").Caption(new JS("formatMessage('Vendor No')")).Visible(false);
             columns.Add().DataField("ClientLedgerName").Caption(new JS("formatMessage('Client Ledger Name')")).Visible(false);
-            // Image columns with cell template
+                                                                                                                               // Image columns with cell template
             columns.Add().DataField("DecodedBusinessCard1")
             .Caption(new JS("formatMessage('Business Card 1')"))
             .CellTemplate(new JS(@"
-                function(cellElement, cellInfo) {
-                    if (cellInfo.value) {
-                        $('<img>')
-                        .attr('src', cellInfo.value)
-                        .css({ width: '100px', height: 'auto' })
-                        .appendTo(cellElement);
-                    }
-                }
-            "));
+        function(cellElement, cellInfo) {
+        if (cellInfo.value) {
+        $('<img>')
+        .attr('src', cellInfo.value)
+        .css({ width: '100px', height: 'auto' })
+        .appendTo(cellElement);
+        }
+        }
+        "));
 
             columns.Add().DataField("DecodedBusinessCard2")
             .Caption(new JS("formatMessage('Business Card 2')"))
             .CellTemplate(new JS(@"
-            function(cellElement, cellInfo) {
-                if (cellInfo.value) {
-                    $('<img>')
-                    .attr('src', cellInfo.value)
-                    .css({ width: '100px', height: 'auto' })
-                    .appendTo(cellElement);
-                }
-            }
-            "));
+        function(cellElement, cellInfo) {
+        if (cellInfo.value) {
+        $('<img>')
+        .attr('src', cellInfo.value)
+        .css({ width: '100px', height: 'auto' })
+        .appendTo(cellElement);
+        }
+        }
+        "));
         })
 
         .Summary(s => s.TotalItems(items =>
         {
-            // Count for ClientName column
+          // Count for ClientName column
             items.Add().Column("ClientCode")
             .SummaryType(SummaryType.Count)
             .DisplayFormat(new JS("formatMessage('Total Clients: {0}')"));

@@ -24,7 +24,6 @@
             .ID("btnPrint")
             .Icon("print")
             .Text(new JS("formatMessage('Print')"))
-            .Width(50)
             .OnClick("printFun")
             )
     </div>
@@ -33,7 +32,6 @@
             .ID("btnToggleSearch")
             .Icon("search")
             .Text(new JS("formatMessage('Search')"))
-            .Width(50)
             .OnClick("toggleFilterRow")
             )
     </div>
@@ -42,7 +40,6 @@
         @(Html.DevExtreme().Button()
             .ID("btntoggleGroupPanel")
             .Icon("hierarchy")
-            .Width(50)
             .Text(new JS("formatMessage('Group')"))
             .OnClick("toggleGroupPanel")
             )
@@ -51,7 +48,6 @@
         @(Html.DevExtreme().Button()
             .ID("btnColumnChooser")
             .Icon("columnchooser")
-            .Width(50)
             .Text(new JS("formatMessage('Column Chooser')"))
             .OnClick("showColumnChooser")
             )
@@ -60,7 +56,6 @@
         @(Html.DevExtreme().Button()
             .ID("btnAddSalesOrder")
             .Icon("folder")
-            .Width(50)
             .Text(new JS("formatMessage('Add New Sales Order')"))
             .OnClick("AddNewSalesOrder")
             )
@@ -70,7 +65,6 @@
         @(Html.DevExtreme().Button()
             .ID("btnSalesOrderDetails")
             .Icon("overflow")
-            .Width(50)
             .Text(new JS("formatMessage('Sales Order Details')"))
             .OnClick("btnSalesOrderDetail")
             )
@@ -288,7 +282,7 @@
                 'width': 180,
                 'position': 'absolute',
                 'top': offset.top,
-                'left': offset.left + elementWidth + 5, // Add margin
+                'left': offset.left + elementWidth + 5,
                 'display': 'block'
             });
         }
@@ -297,7 +291,7 @@
             exportDataGridToPDF('dataGrid');
         }
         function AddNewSalesOrder() {
-            window.location.href = `/${tenantName}/ERM/AddNewSalesOrder`;
+        window.location.href = `/${tenantName}/ERM/PropertySalesOrderEdit`;
         }
         function btnSalesOrderDetail() {
             window.location.href = `/${tenantName}/ERM/SalesOrdersDetails`;

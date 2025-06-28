@@ -96,49 +96,65 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     return Unauthorized("Invalid tenant context.");
 
                 var tenantName = HttpContext.Session.GetString("TenantName")?.Trim();
+
                 if (string.IsNullOrWhiteSpace(tenantName))
                     return Unauthorized("Tenant name not found in session.");
 
                 var form = await Request.ReadFormAsync();
                 var file = form.Files.FirstOrDefault();
+
                 if (file == null || file.Length == 0)
                     return BadRequest(new { success = false, message = "No file uploaded." });
 
-                // Robust way to determine module and formName
+                var referer = Request.Headers["Referer"].ToString();
+                Uri? refererUri = !string.IsNullOrWhiteSpace(referer) ? new Uri(referer) : null;
+
+                string area = "UnknownArea";
+                string module = "UnknownModule";
+
+                if (refererUri != null)
+                {
+                    var pathSegments = refererUri.AbsolutePath.Trim('/').Split('/', StringSplitOptions.RemoveEmptyEntries);
+                    if (pathSegments.Length >= 3)
+                    {
+                        // pathSegments[0] = tenant, [1] = area, [2] = module
+                        area = pathSegments[1];
+                        module = pathSegments[2];
+                    }
+                }
+
+                area = area.Replace(" ", "_");
+                module = module.Replace(" ", "_");
+                tenantName = tenantName?.Replace(" ", "_");
+
+                // Fallback for Razor Pages/controller-based naming
                 var routeData = HttpContext.GetRouteData();
-                var module = routeData.Values["area"]?.ToString();
-                var formName = routeData.Values["page"]?.ToString();
+                var formName = routeData.Values["page"]?.ToString() ??
+                               routeData.Values["controller"]?.ToString() ??
+                               "UnknownForm";
+                formName = formName.Replace(" ", "_");
 
-                // Fallback for Razor Pages or missing route values
-                if (string.IsNullOrWhiteSpace(module))
-                {
-                    var segments = HttpContext.Request.Path.Value?.Split('/', StringSplitOptions.RemoveEmptyEntries);
-                    module = segments?.Length > 0 ? segments[0] : "UnknownModule";
-                }
-
-                if (string.IsNullOrWhiteSpace(formName))
-                {
-                    formName = routeData.Values["controller"]?.ToString() ?? "UnknownForm";
-                }
-
-                module = module?.Replace(" ", "_") ?? "UnknownModule";
-                formName = formName?.Replace(" ", "_") ?? "UnknownForm";
-                tenantName = tenantName.Replace(" ", "_");
-
+                // Construct full file name and blob path
                 var fileName = $"{form["DocumentNo"]}_{Path.GetFileName(file.FileName)}";
-                var filePathInBlob = $"Finance/{module}/{fileName}";
+                var filePathInBlob = $"{area}/CashReceipt/{fileName}";
 
-                var blobHelper = new AzureBlobHelper(_configuration.GetConnectionString("AzureBlobStorage"), "client-files");
+                var blobHelper = new AzureBlobHelper(
+                    _configuration.GetConnectionString("AzureBlobStorage"),
+                    "client-files"
+                );
                 var blobPath = await blobHelper.UploadFileAsync(file, filePathInBlob, tenantName);
 
+                // 🔽 Optional date and Hijri conversion
                 DateTime? expDate = DateTime.TryParse(form["DocumentExpDate"], out var d) ? d : null;
                 string? hijriDate = null;
+
                 if (expDate.HasValue)
                 {
                     HijriCalendar hijri = new HijriCalendar();
                     hijriDate = $"{hijri.GetYear(expDate.Value)}/{hijri.GetMonth(expDate.Value):D2}/{hijri.GetDayOfMonth(expDate.Value):D2}";
                 }
 
+                // 🔽 Save to database
                 var documentDetails = new Tbl20116LedgerDocument
                 {
                     DocumentNo = form["DocumentNo"],
@@ -156,6 +172,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 dbContext.Tbl20116LedgerDocuments.Add(documentDetails);
                 await dbContext.SaveChangesAsync();
 
+                // 🔽 Filter documents expiring in current month
                 var currentMonth = DateTime.Now.Month;
                 var currentYear = DateTime.Now.Year;
 
@@ -175,11 +192,21 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     })
                     .ToListAsync();
 
-                return Ok(new { success = true, message = "Document saved and uploaded successfully.", data = filteredList });
+                return Ok(new
+                {
+                    success = true,
+                    message = "Document saved and uploaded successfully.",
+                    data = filteredList
+                });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { success = false, message = "Internal server error.", error = ex.Message });
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "Internal server error.",
+                    error = ex.Message
+                });
             }
         }
 

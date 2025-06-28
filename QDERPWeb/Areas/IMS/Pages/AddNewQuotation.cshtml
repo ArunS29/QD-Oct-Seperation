@@ -303,7 +303,7 @@
                         .Controller("AddNewClientRequest")
 						.LoadAction("GetClientDetails")
                         .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("CategoryCode")
+                        .Key("ClientCode")
 
                         )
                         .LabelMode(EditorLabelMode.Outside)
@@ -383,13 +383,20 @@
                         .Width("100%")
                         )
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3" style="display:flex; align-items:end;">
                         @(Html.DevExtreme().TextBox()
                         .ID("ClientRefName")
 						.Label(new JS("formatMessage('Client Ref. Name / Attention To:')"))
                         .LabelMode(EditorLabelMode.Outside) 
                         .Width("100%")
+
                         )
+				@(Html.DevExtreme().Button()
+    .ID("btnEditClient")
+    .Icon("plus")
+    .ElementAttr("class", "button-alignment-up button-group")
+    .OnClick("onEditClientClick")
+)
                     </div>
                     <div class="col-md-2">
                         @(Html.DevExtreme().TextBox()
@@ -518,21 +525,20 @@
 
         </text>);
 
-						item.Add().Title(new JS("formatMessage('Quote Text')")).Icon("detailslayout").Text("Quote Text").Template(@<text>
+				item.Add().Title(new JS("formatMessage('Quote Text')")).Icon("detailslayout").Text("Quote Text").Template(@<text>
             <div class="dx-card layout-container">
                 <!-- Subject -->
                 <div class="form-row">
                     <div class="form-column">
                         <div class="field-header">
-							<label id="Subject1"  class="field-label"></label>
+							<label id="Subject1" class="field-label"></label>
                             <div class="field-buttons">
-                                <button class="btn-solid">Set Default</button>
+                                <button class="btn-solid" onclick="saveField('ReportSubject', 'Subjectt' ,'Subject')">Set Default</button>
                                 <button class="btn-outline"><i class="fa fa-font"></i></button>
                             </div>
                         </div>
                         @(Html.DevExtreme().TextBox()
-                        .ID("Subject")
-                        .LabelMode(EditorLabelMode.Hidden)
+                        .ID("Subjectt")
                         .Width("100%")
                         )
                     </div>
@@ -542,14 +548,13 @@
                         <div class="field-header">
 							<label for="QuoteSummary" id="QuoteSummary1" class="field-label"></label>
                             <div class="field-buttons">
-                                <button class="btn-solid">Set Default</button>
+                                <button class="btn-solid"  onclick="saveField('ReportSummary', 'QuoteSummaryy','Quote summary')">Set Default</button>
                                 <button class="btn-outline"><i class="fa fa-font"></i></button>
                             </div>
                         </div>
                         @(Html.DevExtreme().TextArea()
-                        .ID("QuoteSummary")
+                        .ID("QuoteSummaryy")
                         .Height(80)
-                        .LabelMode(EditorLabelMode.Hidden)
                         .Width("100%")
                         )
                     </div>
@@ -561,13 +566,12 @@
                         <div class="field-header">
 							<label for="QuoteIntro" id="QuoteIntro1" class="field-label"></label>
                             <div class="field-buttons">
-                                <button class="btn-solid">Set Default</button>
+                                <button class="btn-solid"  onclick="saveField('ReportIntroduction', 'QuoteIntroo','Quote Introduction')" >Set Default</button>
                                 <button class="btn-outline"><i class="fa fa-font"></i></button>
                             </div>
                         </div>
                         @(Html.DevExtreme().TextBox()
-                        .ID("QuoteIntro")
-                        .LabelMode(EditorLabelMode.Hidden)
+                        .ID("QuoteIntroo")
                         .Width("100%")
                         )
                     </div>
@@ -577,14 +581,13 @@
                         <div class="field-header">
                             <label for="QuoteThanks" id="QuoteThanks1" class="field-label"></label>
                             <div class="field-buttons">
-                                <button class="btn-solid">Set Default</button>
+                                <button class="btn-solid"  onclick="saveField('ReportThanksNote','QuoteThankss','Quote Thanks')">Set Default</button>
                                 <button class="btn-outline"><i class="fa fa-font"></i></button>
                             </div>
                         </div>
                         @(Html.DevExtreme().TextArea()
-                        .ID("QuoteThanks")
+                        .ID("QuoteThankss")
                         .Height(80)
-                        .LabelMode(EditorLabelMode.Hidden)
                         .Width("100%")
                         )
                     </div>
@@ -1117,6 +1120,7 @@
 				columns.Add().DataField("VAT")
 	.Caption(new JS("formatMessage('VAT')"))
 	.Width(200);
+	
 
 				columns.Add().DataField("Total")
 	.Caption(new JS("formatMessage('Total')"))
@@ -1272,7 +1276,7 @@
                         .ShowBorders(true)
                         .HoverStateEnabled(true)
                         .Paging(p => p.PageSize(15))
-                        .FilterRow(f => f.Visible(false))//
+                        .FilterRow(f => f.Visible(true))//
                         .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                         .Height(345)
                         .Selection(s => s.Mode(SelectionMode.Single))
@@ -2137,7 +2141,26 @@
 
 				},
 
-				{ dataField: "Descriptions", caption: "...", width: 50 },
+				//{ dataField: "Descriptions", caption: "...", width: 50 },
+			{
+    dataField: "Descriptions",
+    caption: "...",
+    width: 50,
+    allowEditing: false,
+    cellTemplate: function (container, options) {
+        const quoteChildId = options.data.QuoteChildId; // ✅ Get QuoteChildId from row
+        const url = `/${tenantName}/IMS/IMSDetailsDescription?quoteChildId=${encodeURIComponent(quoteChildId)}`;
+
+        $("<div>")
+            .addClass("dx-link")
+            .text("...")
+            .css({ cursor: "pointer", color: "#337ab7", textDecoration: "underline" })
+            .on("click", function () {
+                openModal(url, ""); // ✅ Open the page with QuoteChildId
+            })
+            .appendTo(container);
+    }
+},
 
 				{
 
@@ -2286,7 +2309,13 @@
 					caption: formatMessage('VAT Desc'),
 
 					width: 200,
-
+					cellTemplate: function (cellElement, cellInfo) {
+						getTaxSlabData().done(function (unitRates1) {
+							let selectedItem = unitRates1.find(item => item.TaxSlabCode === cellInfo.value);
+							let displayText = selectedItem ? selectedItem.TaxSlab : (cellInfo.value || "");
+							$("<span>").text(displayText).appendTo(cellElement);
+						});
+					},
 					editCellTemplate: function (cellElement, cellInfo) {
 
 						getTaxSlabData().done(function (unitRates1) {
@@ -2410,8 +2439,6 @@
 				{ dataField: "TotalCostOfItem", caption: formatMessage('Total Cost'), width: 150 },
 				{ dataField: "ItemProfitOrLoss", caption: formatMessage('Profit or Loss'), width: 150 },
 				{ dataField: "QuoteChildId", caption: formatMessage('QuoteChildId'), width: 150 }
-
-
 
 			],
 
@@ -2649,6 +2676,14 @@
 													dataGrid.cellValue(rowIndex, "Qty", 1);
 
 													dataGrid.cellValue(rowIndex, "VAT%", "15%");
+													
+												ItemNo = selectedItem.GSCode;
+												Gsdescrpition = selectedItem.GSDescrpition;
+												GsdescriptionAr = selectedItem.GsdescriptionAr;
+												ItemPartNo = selectedItem.ItemPartNo;
+												CostPrice = selectedItem.CostPrice;
+												GssellingRate = selectedItem.GSSellingRate;
+												ReorderQty = selectedItem.ReorderQty;
 
 												}
 
@@ -2718,8 +2753,112 @@
 
 				},
 
-				{ dataField: "Descriptions", caption: "...", width: 50 },
+				//{ dataField: "Descriptions", caption: "...", width: 50 },
+				{
+					dataField: "Descriptions",
+						cssClass: "center-header",
+					caption: "...",
+					width: 80,
+					allowEditing: false,
+						cellTemplate: function (container, options) {
+			const buttonId = `popover-btn-${options.rowIndex}`;
+			const popoverId = `popover-${options.rowIndex}`;
+				const url = `/${tenantName}/VAT/CreditDetailDescription`;
+			$("<div>")
+				.attr("id", buttonId)
+				.appendTo(container)
+				.dxButton({
+						icon: "user",
+					onClick: function () {
+						$(`#${popoverId}`).dxPopover("instance").show(`#${buttonId}`);
+					}
+				});
 
+			// Add a hidden div for popover content
+			$("<div>")
+				.attr("id", popoverId)
+				.appendTo("body") // Append to body so it's not restricted to grid layout
+				.dxPopover({
+					width: 900,
+					height: "auto",
+					position: "bottom",
+					showTitle: true,
+					title: "VAT Description",
+							contentTemplate: function () {
+						const formHtml = `
+		<div class="form-wrapper">
+			<div class="form-group">
+				<div class="top-buttons">
+					<div id="btnUseDetailedDesc"></div>
+					<div id="btnUseItemDesc"></div>
+				</div>
+			</div>
+			<table style="width: 100%; border-spacing: 10px; border-collapse: separate;">
+				<tr>
+					<td colspan="4">
+						<div id="DetailedDescription"></div>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3">
+						<div style="display: flex; align-items: end; gap: 10px;">
+							<div id="DetailedDescriptionArabic"></div>
+							<div id="btnConvertDescription"></div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td><div id="ServiceStartDate"></div></td>
+					<td><div id="ServiceEndDate"></div></td>
+					<td><div id="ExpiryDate"></div></td>
+				</tr>
+				<tr>
+					<td><div id="CostAllocationEmployees"></div></td>
+					<td><div id="CostAllocationProperty"></div></td>
+					<td><div id="BatchLotNo"></div></td>
+				</tr>
+				<tr>
+					<td><div id="DiscountText"></div></td>
+					<td>
+						<div style="display: flex; align-items: end; gap: 10px;">
+							<div id="btnConvertDiscount"></div>
+							<div id="DiscountTextArabic"></div>
+						</div>
+					</td>
+					<td><div id="Remarks"></div></td>
+				</tr>
+			</table>
+		</div>
+						`;
+
+						const $container = $("<div>").html(formHtml);
+
+						// Initialize DevExtreme controls after rendering
+						setTimeout(function () {
+							$("#btnUseDetailedDesc").dxButton({ text: "Use Detailed Description" });
+							$("#btnUseItemDesc").dxButton({ text: "Use Item Description" });
+							$("#DetailedDescription").dxTextBox({ label: "Detailed Description", labelMode: "outside", width: "100%" });
+							$("#DetailedDescriptionArabic").dxTextBox({ label: "Detailed Description (Arabic)", labelMode: "outside", width: "98%", height: 100 });
+							//$("#DetailedDescription").dxTextBox("instance").option("value",Gsdescrpition);
+							$("#btnConvertDescription").dxButton({ icon: "fas fa-language", onClick: function () { convertToArabicbtn("DetailedDescription", "DetailedDescriptionArabic"); } });
+							$("#ServiceStartDate").dxDateBox({ label: "Service Start Date", labelMode: "outside" });
+							$("#ServiceEndDate").dxDateBox({ label: "Service End Date", labelMode: "outside" });
+							$("#ExpiryDate").dxDateBox({ label: "Expiry Date", labelMode: "outside", width: "100%" });
+							$("#CostAllocationEmployees").dxSelectBox({ label: "Cost Allocation for Employees", labelMode: "outside", width: "100%", placeholder: "Select Employees" });
+							$("#CostAllocationProperty").dxSelectBox({ label: "Cost Allocation for Property/Equipments", labelMode: "outside", width: "100%", placeholder: "Select Property/Equipments" });
+							$("#BatchLotNo").dxTextBox({ label: "Batch/Lot No", labelMode: "outside", width: "100%" });
+							$("#DiscountText").dxTextBox({ label: "Discount Text", labelMode: "outside", width: "100%" });
+							$("#btnConvertDiscount").dxButton({ icon: "fas fa-language", onClick: function () { convertToArabicbtn2("DiscountText", "DiscountTextArabic"); } });
+							$("#DiscountTextArabic").dxTextBox({ label: "Discount Text (Arabic)", labelMode: "outside", width: "100%" });
+							$("#Remarks").dxTextBox({ label: "Remarks", labelMode: "outside" });
+						}, 0);
+
+						return $container;
+					}
+				});
+		}
+
+				},
 				{
 
 					dataField: "UnitRateMethod",
@@ -2855,7 +2994,13 @@
 					caption: formatMessage('VAT Desc'),
 
 					width: 200,
-
+					cellTemplate: function (cellElement, cellInfo) {
+						getTaxSlabData().done(function (unitRates1) {
+							let selectedItem = unitRates1.find(item => item.TaxSlabCode === cellInfo.value);
+							let displayText = selectedItem ? selectedItem.TaxSlab : (cellInfo.value || "");
+							$("<span>").text(displayText).appendTo(cellElement);
+						});
+					},
 					editCellTemplate: function (cellElement, cellInfo) {
 
 						getTaxSlabData().done(function (unitRates1) {
@@ -5659,32 +5804,7 @@
 
 
 
-	//english text convert to arabic
-
-	async function translateToArabic(text) {
-
-		try {
-
-
-			const response = await fetch(
-
-				`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`
-
-			);
-
-			const data = await response.json();
-			console.log(data);
-			return data.responseData.translatedText;
-
-		} catch (error) {
-
-			console.error("Translation failed:", error);
-
-			return "Translation Error";
-
-		}
-
-	}
+	
 
 
 	async function convertToArabic() {
@@ -6072,24 +6192,110 @@
 								 formatMessage("Subject:"));
 				});
 
-		 $(function() {
-	  const tenantName = window.tenantName || "defaultTenant";
-	  const dd = $("#btnPrint").dxDropDownButton("instance");
-
-	  dd.option("onItemClick", function(e) {
-		if (e.itemData.text === "Prepare Cost Sheet") {
-		  const quotationNo = $('#txtQuotationNo').dxTextBox("instance")
-								.option("value");
-		  if (!quotationNo) {
-			DevExpress.ui.notify("QuotationNo not found!", "error", 3000);
-			return;
-		  }
-		  const url = `/${tenantName}/IMS/QuotedCostSummary?quotationNo=${encodeURIComponent(quotationNo)}`;
-		  window.location.href = url;
-		}
-	  });
-	});
+	// 	 $(function() {
+	//   const tenantName = window.tenantName || "defaultTenant";
+	//   const dd = $("#btnPrint").dxDropDownButton("instance");
 
 
+	//   dd.option("onItemClick", function(e) {
+	// 	if (e.itemData.text === "Prepare Cost Sheet") {
+	// 	  const quotationNo = $('#txtQuotationNo').dxTextBox("instance")
+	// 							.option("value");
+	// 	  if (!quotationNo) {
+	// 		DevExpress.ui.notify("QuotationNo not found!", "error", 3000);
+	// 		return;
+	// 	  }
+	// 	  const url = `/${tenantName}/IMS/QuotedCostSummary?quotationNo=${encodeURIComponent(quotationNo)}`;
+	// 	  window.location.href = url;
+	// 	}
+	//   });
+	// });
+function onEditClientClick() {
+    var dropDownBox = $('#GetProjectDropDown').dxDropDownBox('instance');
+    var selectedValue = dropDownBox.option('value'); // clientCode
+
+    if (!selectedValue) {
+        DevExpress.ui.notify('Please select a client.', 'warning', 2000);
+        return;
+    }
+
+    // Get the DataGrid inside the DropDownBox template
+    var grid = $('#GetProject-datagrid').dxDataGrid('instance');
+    var selectedRows = grid.getSelectedRowsData();
+    var selectedItem = selectedRows.length > 0 ? selectedRows[0] : null;
+
+    if (!selectedItem || !selectedItem.ClientName) {
+        DevExpress.ui.notify('Client details not found.', 'error', 2000);
+        return;
+    }
+
+    var clientCode = selectedValue;
+    var clientName = selectedItem.ClientName;
+	console.log("CNAme",clientName);
+
+    var url = '/' + tenantName + '/IMS/QuotationClientContactList?clientCode=' + 
+              encodeURIComponent(clientCode) + '&clientName=' + 
+              encodeURIComponent(clientName);
+
+    openModal(url, '');
+}
+
+
+ $(function () {
+    $.ajax({
+        url: "/api/Quotation/GetReportAttributes?reportNo=IMS-QTN-01", // ✅ fixed missing quote
+        type: "GET",
+        success: function (data) {
+            console.log("Loaded:", data);
+
+            $("#Subjectt").dxTextBox("instance")?.option("value", data.ReportSubject || "");
+            $("#QuoteSummaryy").dxTextArea("instance")?.option("value", data.ReportSummary || "");
+            $("#QuoteIntroo").dxTextBox("instance")?.option("value", data.ReportIntroduction || "");
+            $("#QuoteThankss").dxTextArea("instance")?.option("value", data.ReportThanksNote || "");
+        },
+        error: function (xhr, status, error) {
+            console.error("Error loading report data:", error);
+        }
+    });
+});
+
+function saveField(fieldName, dxId,name) {
+    let instance = null;
+
+    try {
+        instance = $("#" + dxId).dxTextBox("instance");
+    } catch (e) {
+        // Not a TextBox, try TextArea next
+    }
+
+    if (!instance) {
+        try {
+            instance = $("#" + dxId).dxTextArea("instance");
+        } catch (e) {
+            console.error(`Neither dxTextBox nor dxTextArea initialized for: ${dxId}`);
+            DevExpress.ui.dialog.alert("Component not initialized: " + dxId, "Error");
+            return;
+        }
+    }
+    const value = instance.option("value");
+
+    $.ajax({
+        url: "/api/Quotation/SaveReportAttribute",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({
+            reportNo: "IMS-QTN-01",
+            field: fieldName,
+            value: value
+        }),
+        success: function () {
+            DevExpress.ui.notify(`Quotation ${name} has been set as default.`, "success", 2000);
+        },
+        error: function (xhr) {
+            DevExpress.ui.dialog.alert("Failed to save data", "Error");
+            console.error("Save error:", xhr.responseText);
+        }
+    });
+}
 
 </script>

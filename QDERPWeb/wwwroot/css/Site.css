@@ -3,7 +3,6 @@
     border-top-left-radius: 10px; /* Radius for top-left corner */
     border-top-right-radius: 10px; /* Radius for top-right corner */
     padding: 0.1px;
-    font-family: "Inter", Helvetica, Arial, sans-serif;
 }
 
 
@@ -57,11 +56,9 @@
     gap: 20px; /* Adds spacing between buttons */
     justify-content: start; /* Aligns buttons to the left */
     align-items: center; /* Vertically centers the buttons */
-    margin: 15px;
 }
 * {
     /*    color: #525252;*/
-    font-family: 'Inter', sans-serif;
     font-size: 14px;
     font-weight: 500;
     line-height: 20px;
@@ -82,7 +79,6 @@ a {
 
 
 body {
-    font-family: var(--font-family);
     margin: 0;
     color: black;
     display: flex;
@@ -122,12 +118,12 @@ body {
 
 .dx-datagrid {
     border-radius: 15px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    /* box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); */
+    border: 1px solid #d3d3d3;
     overflow: hidden;
 }
 
 .dx-datagrid-rowsview .dx-row {
-    font-family: 'Inter', sans-serif;
     font-size: 14px;
 }
 
@@ -212,7 +208,6 @@ body {
 
 .form-group {
     color: black;
-    font-family: "Inter", Helvetica, Arial, sans-serif;
 }
 
 .no-border-input {
@@ -315,12 +310,10 @@ body {
 
 /*IMS footer Styles*/
 
-<style type="text/css" >
-#dataGrid .dx-datagrid-headers .dx-datagrid-action {
+#dataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
     text-align: center !important;
 }
-
-#dataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
+#dataGrid .dx-datagrid-headers .dx-datagrid-action {
     text-align: center !important;
 }
 /* Button Styling */
@@ -364,8 +357,7 @@ body {
     gap: 10px; /* Adds spacing between buttons */
     justify-content: start; /* Aligns buttons to the left */
     align-items: center; /* Vertically centers the buttons */
-    margin: 15px;
-    margin-top: 0px;
+    margin-top: 10px;
 }
 
 .button-alignment-down {
@@ -406,105 +398,246 @@ body {
 }
 
 
-.btn-container {
-    display: inline-block;
-    position: relative;
-    overflow: hidden;
-}
-
-    /* Initially hide the button text and set a fixed small width */
-    .btn-container .dx-button {
-        width: 40px !important; /* Small width for icons */
-        transition: width 0.3s ease-in-out;
-    }
-
-    /* Show full text when hovered */
-    .btn-container:hover .dx-button {
-        width: 200px !important; /* Expand to fit text */
-    }
-
-    /* Initially hide text */
-    .btn-container .dx-button .dx-button-text {
-        display: none;
-    }
-
-    /* Show text on hover */
-    .btn-container:hover .dx-button .dx-button-text {
-        display: inline-block;
-    }
-
-    /* Ensure dropdown button behaves similarly */
-    .btn-container .dx-dropdownbutton {
-        width: 55px !important;
-        transition: width 0.3s ease-in-out;
-    }
-
-    .btn-container:hover .dx-dropdownbutton {
-        width: 180px !important; /* Adjust as needed */
-    }
-
-    .btn-container .dx-dropdownbutton .dx-button-text {
-        display: none;
-    }
-
-    .btn-container:hover .dx-dropdownbutton .dx-button-text {
-        display: inline-block;
-    }
-
-#btnAddNewQuotation:hover {
-    width: 240px !important; /* Expand to fit text */
+/*#btnAddNewQuotation:hover {
+    width: 240px !important;
 }
 
 #btnDeliveryNoteDetails:hover {
-    width: 210px !important; /* Expand to fit text */
+    width: 210px !important;
 }
 
 #btnDeliveryNotePosting:hover {
-    width: 210px !important; /* Expand to fit text */
+    width: 210px !important;
 }
 
 #btnDeliveryNoteDetails:hover {
-    width: 220px !important; /* Expand to fit text */
+    width: 220px !important;
 }
 
 #btnAddDeliverynote:hover {
-    width: 210px !important; /* Expand to fit text */
+    width: 210px !important;
 }
 
 #btnAddSalesOrder:hover {
-    width: 220px !important; /* Expand to fit text */
+    width: 220px !important;
 }
 
 #btnSalesOrderDetails:hover {
-    width: 210px !important; /* Expand to fit text */
+    width: 210px !important;
 }
 
 #btnCreateQuotations:hover {
-    width: 240px !important; /* Expand to fit text */
+    width: 240px !important;
 }
 
 #btnPurchaseOrderDetails:hover {
-    width: 230px !important; /* Expand to fit text */
+    width: 230px !important;
 }
 
 #btnNewPurchaseOrder:hover {
-    width: 230px !important; /* Expand to fit text */
+    width: 230px !important;
 }
 
 #btnAddNewStockAdjustment:hover {
-    width: 30px !important; /* Expand to fit text */
+    width: 30px !important;
 }
 
 #btnAddNewJobOrder:hover {
-    width: 230px !important; /* Expand to fit text */
+    width: 230px !important;
 }
 
 #btnStockAdjustmentDetails:hover {
-    width: 250px !important; /* Expand to fit text */
+    width: 250px !important;
 }
 
 #btnMaterialReceiptDetails:hover {
-    width: 250px !important; /* Expand to fit text */
+    width: 250px !important;
+}
+#btnPurchaseEditDetails:hover {
+    width: 240px !important;
+}*/
+
+/* Print button icon color */
+#btnPrint .dx-icon {
+    color: green !important; /* Change to your desired color */
 }
 
-</style >
+/* Search button icon color */
+#btnToggleSearch .dx-icon {
+    color: blue !important;
+}
+
+/* Group button icon color */
+#btntoggleGroupPanel .dx-icon {
+    color: orange !important;
+}
+
+/* Column chooser button icon color */
+#btnColumnChooser .dx-icon {
+    color: purple !important;
+}
+
+/* Dropdown button icon color */
+#ddButtonLayout .dx-icon {
+    color: crimson !important;
+}
+#languageSelectBox{
+    border : 1px solid transparent !important;
+}
+#rowHeightProperties .dx-icon
+{
+    color: #f75d59 !important;
+}
+#btnToggleHeaderFilter .dx-icon
+{
+    color: #48aaaa !important;
+}
+#btnToggleHeaderFilter,
+#btnPrint,
+#btnToggleSearch,
+#btntoggleGroupPanel,
+#btnColumnChooser,
+#ddButtonLayout,
+#rowHeightProperties {
+    display: inline-block;
+    width: 55px !important;
+    overflow: hidden;
+    transition: width 0.3s ease-in-out;
+}
+
+/* Expand button width on hover */
+#btnToggleHeaderFilter:hover,
+#btnPrint:hover,
+#btnToggleSearch:hover,
+#btntoggleGroupPanel:hover,
+#btnColumnChooser:hover,
+#ddButtonLayout:hover,
+#rowHeightProperties:hover {
+    width: 200px !important; /* Adjust individually if needed */
+}
+
+/* Hide button text initially */
+#btnToggleHeaderFilter .dx-button-text,
+#btnPrint .dx-button-text,
+#btnToggleSearch .dx-button-text,
+#btntoggleGroupPanel .dx-button-text,
+#btnColumnChooser .dx-button-text,
+#ddButtonLayout .dx-button-text,
+#rowHeightProperties .dx-button-text {
+    display: none;
+}
+
+/* Show button text on hover */
+#btnToggleHeaderFilter:hover .dx-button-text,
+#btnPrint:hover .dx-button-text,
+#btnToggleSearch:hover .dx-button-text,
+#btntoggleGroupPanel:hover .dx-button-text,
+#btnColumnChooser:hover .dx-button-text,
+#ddButtonLayout:hover .dx-button-text,
+#rowHeightProperties:hover .dx-button-text {
+    display: inline-block;
+}
+/*.dx-loadpanel {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    height: 100vh !important;
+    width: 100vw !important;
+    background-color: rgba(255, 255, 255, 0.6) !important;
+    z-index: 99990 !important;
+}*/
+
+.dx-loadpanel-content {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    height: 150px !important;
+    width: 180px !important;
+    margin-top: 400px;
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+.dx-loadindicator-content {
+  position: absolute;
+  top: 0%;
+  left: 0%;
+}
+.dx-loadindicator-icon .dx-loadindicator-segment {
+  display: none;
+}
+/* Customize the background of the load panel */
+.dx-loadpanel {
+    background-color: rgba(255, 255, 255, 0.7) !important;
+    z-index: 9999 !important;
+}
+
+/* Customize the loading spinner */
+.dx-loadindicator-icon {
+    width: 54px;
+    height: 54px;
+    position: absolute;
+    top: 20%;
+    left: 35%;
+    border-radius: 4px;
+    background-color: #0a11db;
+    background-image: radial-gradient(circle 5px, #FFFFFF 100%, transparent 0), radial-gradient(circle 5px, #FFFFFF 100%, transparent 0), radial-gradient(circle 5px, #FFFFFF 100%, transparent 0), radial-gradient(circle 5px, #FFFFFF 100%, transparent 0), radial-gradient(circle 5px, #FFFFFF 100%, transparent 0), radial-gradient(circle 5px, #FFFFFF 100%, transparent 0);
+    background-repeat: no-repeat;
+    animation: move 4s linear infinite, rotate 2s linear infinite;
+}
+
+/* Optional: customize loading message */
+.dx-loadpanel-message {
+    font-size: 16px !important;
+    color: #333 !important;
+}
+
+
+@keyframes rotate {
+    0%, 20% {
+        transform: rotate(0deg)
+    }
+
+    30%, 40% {
+        transform: rotate(90deg)
+    }
+
+    50%, 60% {
+        transform: rotate(180deg)
+    }
+
+    70%, 80% {
+        transform: rotate(270deg)
+    }
+
+    90%, 100% {
+        transform: rotate(360deg)
+    }
+}
+
+@keyframes move {
+    0%, 9% {
+        background-position: -12px -15px, -12px 0px, -12px 15px, 12px -15px, 12px 0px, 12px 15px;
+    }
+
+    10%, 25% {
+        background-position: 0px -15px, -12px 0px, -12px 15px, 34px -15px, 12px 0px, 12px 15px;
+    }
+
+    30%, 45% {
+        background-position: 0px -34px, -12px -10px, -12px 12px, 34px -15px, 12px -10px, 12px 12px;
+    }
+
+    50%, 65% {
+        background-position: 0px -34px, -12px -34px, -12px 12px, 34px -12px, 0px -10px, 12px 12px;
+    }
+
+    70%, 85% {
+        background-position: 0px -34px, -12px -34px, 0px 12px, 34px -12px, 0px -10px, 34px 12px;
+    }
+
+    90%, 100% {
+        background-position: 0px -34px, -12px -34px, 0px 0px, 34px -12px, 0px 0px, 34px 12px;
+    }
+}
+    

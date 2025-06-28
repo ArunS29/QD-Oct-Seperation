@@ -27,6 +27,9 @@
             overflow-x: hidden;
         }
 
+        .titleCard-toggle {
+            display: none !important;
+        }
         .mainContainer {
             width: 100%;
             padding: 0px;
@@ -232,24 +235,24 @@
 
     <script>
 
-         $(document).ready(function () {
-                     fetch('/api/Dashboard/RunAllOutstandingProcedures', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert(data.message);
-            } else {
-                alert("Error: " + data.message);
-            }
-        })
-        .catch(error => {
-            alert("API call failed: " + error);
-        });
+        //  $(document).ready(function () {
+        //              fetch('/api/Dashboard/RunAllOutstandingProcedures', {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' }
+        // })
+        // .then(response => response.json())
+        // .then(data => {
+        //     if (data.success) {
+        //         alert(data.message);
+        //     } else {
+        //         alert("Error: " + data.message);
+        //     }
+        // })
+        // .catch(error => {
+        //     alert("API call failed: " + error);
+        // });
 
-         });
+        //  });
 
                window.addEventListener('DOMContentLoaded', () => {
             const container = document.getElementById('radialContainer');

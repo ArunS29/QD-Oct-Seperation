@@ -77,7 +77,6 @@
         @(Html.DevExtreme().DropDownButton()
             .ID("ddButtonLayout")
             .Icon("smalliconslayout")
-            .Width(50)
             .Text(new JS("formatMessage('Layout')"))
             .DropDownOptions(options => options.Width(230))
             .Items(items =>
@@ -113,7 +112,7 @@
             .OnClick("onSaveAndCloseClicked") // Save and go back
             )
     </div>
-    <div class="btn-container">
+   @*  <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnPrint")
             .Text(new JS("formatMessage('Print')"))
@@ -121,6 +120,29 @@
             .Hint("Click to print")
             .OnClick("function() { openPrint(); }")
             .ElementAttr(new { @class = "bold-button" })
+            )
+    </div> *@
+
+
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("btnPrint")
+            .Text(new JS("formatMessage('Print')"))
+            .Icon("print")
+            .ElementAttr(new { @class = "bold-button" })
+            .DropDownOptions(options => options.Width(280))
+            .ShowArrowIcon(false)
+            .Items(items =>
+            {
+                items.Add().Text("Custom Report Designs ").Icon("print");
+                items.Add().Text("Preview Delivery Note").Icon("file");
+                items.Add().Text("Preview Material Issue Note").Icon("folder");
+                items.Add().Text("Preview Delivery Note (Dot Matrix)").Icon("folder");
+                items.Add().Text("Preview Delivery Note (with Price)").Icon("folder");
+                items.Add().Text("Preview Delivery Note (WIth Cost Price)").Icon("folder");
+
+            })
+            .OnItemClick("handleDeliveryNote")
             )
     </div>
     <div class="btn-container">
@@ -768,6 +790,42 @@
 
 
 
+     const DeliverynoteReportMap = {
+        "Preview Delivery Note": "PreviewDeliveryNote", // Fixed: matches the item text exactly
+        "Preview Material Issue Note": "ReportforMaterialIssueNote",
+        "Preview Delivery Note (with Price)": "PreviewDeliveryNotewithPrice",
+        "Preview Delivery Note (Dot Matrix)": "DotMatrics",
+        "Preview Delivery Note (WIth Cost Price)": "DeliveryNoteWithCostPrice"
+    };
+
+       function handleDeliveryNote(e) {
+        const itemText = e.itemData?.text?.trim();
+        const tenantName = window.tenantName || "";
+        const deliveryNote = $("#deliveryNoteNo").dxTextBox("instance").option("value");
+
+        if (!deliveryNote) {
+            alert("DeliveryNote number is required.");
+            return;
+        }
+
+        const DeliverynoteReportMap = {
+            "Preview Delivery Note": "PreviewDeliveryNote",
+            "Preview Material Issue Note": "ReportforMaterialIssueNote",
+            "Preview Delivery Note (with Price)": "PreviewDeliveryNotewithPrice",
+            "Preview Delivery Note (Dot Matrix)": "DotMatrics",
+            "Preview Delivery Note (WIth Cost Price)": "DeliveryNoteWithCostPrice"
+        };
+
+        const reportName = DeliverynoteReportMap[itemText];
+
+        if (!reportName) {
+            alert("Invalid report format selected.");
+            return;
+        }
+
+        const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&DeliveryNoteNo=${encodeURIComponent(deliveryNote)}`;
+        window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+    }
 
 
 

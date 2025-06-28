@@ -1,4 +1,4 @@
-@page
+﻿@page
 @model QD.ERP.Web.Areas.IMS.Pages.QuotationModel
 @{
 }
@@ -396,8 +396,13 @@
 					toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); // Last day of month
 					break;
 			}
-				frmDate = frmDate.toISOString().split('T')[0];
-	toDate = toDate.toISOString().split('T')[0];
+						frmDate = frmDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+		toDate = toDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+		FromDate = frmDate;
+		ToDate = toDate;
+
+		frmDateBox.option("value", frmDate);
+		toDateBox.option("value", toDate);
 
 				$.ajax({
 		url: '/api/Quotation/GetQuotation',
@@ -419,6 +424,18 @@
 
 
 	}
+		function formatDate(date) {
+		var d = new Date(date),
+			month = '' + (d.getMonth() + 1),
+			day = '' + d.getDate(),
+			year = d.getFullYear();
+
+		var strmonth = d.toLocaleString('default', { month: 'short' });
+		if (day.length < 2)
+			day = '0' + day;
+
+		return [day, strmonth, year].join('-');
+	}
 	function onContextMenuPreparing(e) {
 		if (e.target === "content" && e.row && e.row.data) {
 			const rowData = e.row.data;
@@ -434,70 +451,123 @@
 						window.location.href = url;
 					}
 				},
-				{
-					text: "Duplicate Quotation",
-					icon: "doc",
-					onItemClick: function () {
-						const url = `/${tenantName}/IMS/CreatePurchaseOrder?Rfqno=${Rfqno}`;
-						window.location.href = url;
-					}
-				},
+					{
+		text: "Duplicate Quotation",
+		icon: "copy",
+		onItemClick: function () {
+			const quoteNo = e.row.data.QuoteNo;
+
+			if (!quoteNo) {
+				DevExpress.ui.notify("Quote No not found.", "error", 2000);
+				return;
+			}
+
+			DevExpress.ui.dialog.confirm(
+				"You are about to Duplicate this Quotation. Are you sure you want to continue?",
+				"Confirm Duplicate"
+			).done(function (result) {
+				if (result) {
+					$.ajax({
+						url: "/api/Quotation/DuplicateQuotation",
+						type: "POST",
+						contentType: "application/json",
+						data: JSON.stringify(quoteNo),
+						success: function (response) {
+							DevExpress.ui.notify(response.message, "success", 2000);
+							$("#dataGrid").dxDataGrid("instance").refresh();
+						},
+						error: function (xhr) {
+							let msg = xhr.responseJSON?.message || "Duplication failed.";
+							DevExpress.ui.notify(msg, "error", 2000);
+							console.error("Clone error:", xhr.responseJSON);
+						}
+					});
+				}
+			});
+		}
+	},
+
 				{
 					text: "Delete Quotation",
 					icon: "trash",
 					onItemClick: function () {
-						if (confirm(`Are you sure you want to delete RFQ ${Rfqno}?`)) {
-							// Replace with your actual delete logic, e.g., an AJAX call
-							fetch(`/${tenantName}/IMS/DeleteRFQ?Rfqno=${Rfqno}`, {
-								method: 'DELETE'
-							})
-								.then(response => {
-									if (response.ok) {
-										alert(`RFQ ${Rfqno} deleted successfully.`);
-										// Refresh the DataGrid or remove the row
-										e.component.refresh();
-									} else {
-										alert(`Failed to delete RFQ ${Rfqno}.`);
-									}
-								})
-								.catch(error => {
-									console.error('Error deleting RFQ:', error);
-									alert('An error occurred while deleting the RFQ.');
-								});
+						DevExpress.ui.dialog.confirm(
+							"You are about to delete the Quotation.\nYou cannot revert the changes.\nAre you sure?",
+							"Confirm Delete"
+						).done(function (dialogResult) {
+							if (dialogResult) {
+								var QuoteNo=e.row.data.QuoteNo;
+								console.log("number", QuoteNo);
+								onDeleteRequest(QuoteNo);
+							}
+						});
+					}
+				},
+				{
+		text: "Unlock the Quotation",  // ? Corrected closing quote
+		icon: "unlock",
+		onItemClick: function () {
+			const QuoteNo = e.row.data.QuoteNo;
+
+			$.ajax({
+				url: "/api/Quotation/UnlockQuotation",
+				type: "POST",
+				contentType: "application/json",
+				data: JSON.stringify({ QuoteNo: QuoteNo }), // ? sending request data
+				success: function (response) {
+					DevExpress.ui.notify(response.message, response.success ? "success" : "warning", 2000);
+					if (response.success) {
+						ddBtnShowRecords_click('range'); // ? refresh or reload the grid
+					}
+				},
+				error: function (xhr) {
+					let msg = xhr.responseJSON?.message || "An error occurred while unlocking the Quotation.";
+					DevExpress.ui.notify(msg, "error", 2000);
+					console.error("Unlock failed:", xhr.responseJSON);
+				}
+			});
+		}
+	},
+					{
+		text: "Revise Quotation",
+		icon: "repeat",
+		onItemClick: function () {
+			const quoteNo = e.row?.data?.QuoteNo;
+			if (!quoteNo) {
+				DevExpress.ui.notify("Quote No not found.", "error", 2000);
+				return;
+			}
+
+			DevExpress.ui.dialog.confirm(
+				"You are about to revise this Quotation. Are you sure you want to continue adding a new revised Quotation?",
+				"Confirm Revision"
+			).done(function (result) {
+				if (!result) return;
+
+				$.ajax({
+					url: "/api/Quotation/ReviseQuotation",  // 🔁 Your new API
+					type: "POST",
+					contentType: "application/json",
+					data: JSON.stringify(quoteNo),
+					success: function (response) {
+						DevExpress.ui.notify(response.message, "success", 2000);
+						$("#dataGrid").dxDataGrid("instance").refresh();
+
+						if (response.newQuoteNo) {
+							const tenantName = window.tenantName || "defaultTenant";
+							window.location.href = `/${tenantName}/IMS/AddNewQuotation?QuoteNo=${encodeURIComponent(response.newQuoteNo)}`;
 						}
+					},
+					error: function (xhr) {
+						let msg = xhr.responseJSON?.message || "Revision failed.";
+						DevExpress.ui.notify(msg, "error", 2000);
+						console.error("Revision error:", xhr.responseJSON);
 					}
-				},
-				{
-					text: "Unlock the Quotation",
-					icon: "unlock",
-					onItemClick: function () {
-						// Replace with your actual unlock logic, e.g., an AJAX call
-						fetch(`/${tenantName}/IMS/UnlockRFQ?Rfqno=${Rfqno}`, {
-							method: 'POST'
-						})
-							.then(response => {
-								if (response.ok) {
-									alert(`RFQ ${Rfqno} unlocked successfully.`);
-									// Optionally refresh the DataGrid
-									e.component.refresh();
-								} else {
-									alert(`Failed to unlock RFQ ${Rfqno}.`);
-								}
-							})
-							.catch(error => {
-								console.error('Error unlocking RFQ:', error);
-								alert('An error occurred while unlocking the RFQ.');
-							});
-					}
-				},
-				{
-					text: "Revise Quotation",
-					icon: "preferences",
-					onItemClick: function () {
-						const url = `/${tenantName}/IMS/CreatePurchaseOrder?Rfqno=${Rfqno}`;
-						window.location.href = url;
-					}
-				},
+				});
+			});
+		}
+	},
+
 				{
 					text: "Create Sales Order",
 					icon: "add",
@@ -508,5 +578,29 @@
 				}
 			];
 		}
+	}
+
+
+	function onDeleteRequest(QuoteNo) {
+		if (!QuoteNo) {
+			DevExpress.ui.notify('MPRNo is missing.', 'error', 3000);
+			return;
+		}
+
+		$.ajax({
+			url: `/api/Quotation/DeleteQuotationView?QuoteNo=${QuoteNo}`,
+			method: 'POST',
+			success: function (response) {
+				if (response.success) {
+					DevExpress.ui.notify(response.message, 'success', 2000);
+					$("#dataGrid").dxDataGrid("instance").refresh();
+				} else {
+					DevExpress.ui.notify(response.message, 'error', 3000);
+				}
+			},
+			error: function () {
+				DevExpress.ui.notify('An error occurred while attempting to delete the request.', 'error', 3000);
+			}
+		});
 	}
 </script>

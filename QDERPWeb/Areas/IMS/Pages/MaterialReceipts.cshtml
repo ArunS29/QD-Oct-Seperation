@@ -427,53 +427,47 @@
 						}
 					},
 					{
-							text: "Delete Material Receipt",
-						icon: "trash",
-						onItemClick: function () {
-							if (confirm(`Are you sure you want to delete RFQ ${Rfqno}?`)) {
-								// Replace with your actual delete logic, e.g., an AJAX call
-								fetch(`/${tenantName}/IMS/DeleteRFQ?Rfqno=${Rfqno}`, {
-									method: 'DELETE'
-								})
-									.then(response => {
-										if (response.ok) {
-											alert(`RFQ ${Rfqno} deleted successfully.`);
-											// Refresh the DataGrid or remove the row
-											e.component.refresh();
-										} else {
-											alert(`Failed to delete RFQ ${Rfqno}.`);
-										}
-									})
-									.catch(error => {
-										console.error('Error deleting RFQ:', error);
-										alert('An error occurred while deleting the RFQ.');
-									});
+					text: "Delete Material Receipt",
+					icon: "trash",
+					onItemClick: function () {
+						DevExpress.ui.dialog.confirm(
+							"You are about to delete the Material Receipt.\nYou cannot revert the changes.\nAre you sure?",
+							"Confirm Delete"
+						).done(function (dialogResult) {
+							if (dialogResult) {
+								var ReceiptNo=e.row.data.ReceiptNo;
+								console.log("number", ReceiptNo);
+								onDeleteReceipt(ReceiptNo);
 							}
-						}
-					},
+						});
+					}
+				},
+					
 					{
-							text: "Unlock the Material Receipt",
-						icon: "unlock",
-						onItemClick: function () {
-							// Replace with your actual unlock logic, e.g., an AJAX call
-							fetch(`/${tenantName}/IMS/UnlockRFQ?Rfqno=${Rfqno}`, {
-								method: 'POST'
-							})
-								.then(response => {
-									if (response.ok) {
-										alert(`RFQ ${Rfqno} unlocked successfully.`);
-										// Optionally refresh the DataGrid
-										e.component.refresh();
-									} else {
-										alert(`Failed to unlock RFQ ${Rfqno}.`);
-									}
-								})
-								.catch(error => {
-									console.error('Error unlocking RFQ:', error);
-									alert('An error occurred while unlocking the RFQ.');
-								});
-						}
-					},
+		text: "Unlock the Material Receipt",  // ? Corrected closing quote
+		icon: "unlock",
+		onItemClick: function () {
+			const ReceiptNo = e.row.data.ReceiptNo;
+
+			$.ajax({
+				url: "/api/MaterialReceipts/UnlockMaterialReceipt",
+				type: "POST",
+				contentType: "application/json",
+				data: JSON.stringify({ ReceiptNo: ReceiptNo }), // ? sending request data
+				success: function (response) {
+					DevExpress.ui.notify(response.message, response.success ? "success" : "warning", 2000);
+					if (response.success) {
+						ddBtnShowRecords_click('range'); // ? refresh or reload the grid
+					}
+				},
+				error: function (xhr) {
+					let msg = xhr.responseJSON?.message || "An error occurred while unlocking the Material Receipt.";
+					DevExpress.ui.notify(msg, "error", 2000);
+					console.error("Unlock failed:", xhr.responseJSON);
+				}
+			});
+		}
+	},
 					{
 							text: "Create a VAT Purchase Voucher",
 						icon: "add",
@@ -485,5 +479,26 @@
 				];
 			}
 		}
+		function onDeleteReceipt(ReceiptNo) {
+		if (!ReceiptNo) {
+			DevExpress.ui.notify('ReceiptNo is missing.', 'error', 3000);
+			return;
+		}
 
+		$.ajax({
+			url: `/api/MaterialReceipts/DeleteMaterialReceiptView?ReceiptNo=${ReceiptNo}`,
+			method: 'POST',
+			success: function (response) {
+				if (response.success) {
+					DevExpress.ui.notify(response.message, 'success', 2000);
+					$("#dataGrid").dxDataGrid("instance").refresh();
+				} else {
+					DevExpress.ui.notify(response.message, 'error', 3000);
+				}
+			},
+			error: function () {
+				DevExpress.ui.notify('An error occurred while attempting to delete the receipt.', 'error', 3000);
+			}
+		});
+	}
 </script>

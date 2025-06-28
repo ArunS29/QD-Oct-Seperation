@@ -114,7 +114,7 @@
         @(Html.DevExtreme().Button()
             .ID("btnAddNewPayment")
             .Icon("money")
-            .Text(new JS("formatMessage('Add New Stock Item')"))
+            .Text(new JS("formatMessage('Add New Property')"))
             .Width(200)
             .OnClick("addStock")
             )
@@ -390,12 +390,12 @@
             reader.readAsText(file);
         }
     });
-
+     
 
 
 
     function addStock() {
-        var url = `/${tenantName}/ERM/InventoryStockDetails`;
+        var url = `/${tenantName}/ERM/AddNewProperty`;
         window.location.href = url;
     }
 

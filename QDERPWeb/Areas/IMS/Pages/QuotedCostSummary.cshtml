@@ -12,14 +12,18 @@
         @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60102quotationChild>()
                 .ID("quotedItemsGrid")
                 .RemoteOperations(false)
-                .KeyExpr("QuoteNo")
+                .KeyExpr("QuoteChildId")
                 .Columns(columns =>
                 {
                   @*   columns.AddFor(m => m.)..Caption(new JS("formatMessage('"); *@
                     columns.AddFor(m => m.Gsdescrpition).Caption(new JS("formatMessage('Item Description')"));
+                    columns.AddFor(m => m.Gscode).Caption(new JS("formatMessage('GS Code')")).Visible(false);
+                    columns.AddFor(m => m.QuoteNo).Caption(new JS("formatMessage('Quotation No')")).Visible(false);
+                    columns.AddFor(m => m.QuoteChildId).Caption(new JS("formatMessage('Quote Child Id')")).Visible(false);
                     columns.AddFor(m => m.UnitDesc).Caption(new JS("formatMessage('UoM')"));
                     columns.AddFor(m => m.QuotedQuantity).Caption(new JS("formatMessage('Qty')"));
                     columns.AddFor(m => m.CostPrice).Caption(new JS("formatMessage('Cost Price')"));
+                    columns.AddFor(m => m.TotalCostOfItem).Caption(new JS("formatMessage('Total Cost OfItem')")).Visible(false);
 
 
 
@@ -30,7 +34,7 @@
                 .ColumnAutoWidth(true)
 
                 .WordWrapEnabled(true)
-                .OnCellClick("function(e) {handleCellClick(e);}")
+               // .OnCellClick("function(e) {handleCellClick(e);}")
                 .ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
                 .AllowColumnReordering(true)
                 .AllowColumnResizing(true)
@@ -43,9 +47,8 @@
                 .ShowBorders(true)
                 .ShowRowLines(true)
                 .FilterRow(filterRow => filterRow.Visible(false))
-                .GroupPanel(groupPanel => groupPanel.Visible(false))
-                .ShowBorders(true)
                 .Selection(s => s.Mode(SelectionMode.Multiple).ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always))
+
                 //.OnInitialized("function(e) { loadGridState(); }")
                 )
     </div>
@@ -104,6 +107,11 @@
         <div id="pivotGridContainer" style="margin-top: 20px; padding:20px;"></div>
 
     </div>
+   </div>
+<!-- Footer Partial View (Full Width) -->
+@await Html.PartialAsync("/Pages/Shared/IMS/QuotedSummaryFooter.cshtml")
+    
+
     @using (Html.DevExtreme().NamedTemplate("GetCostItemContentTemplate"))
     {
         @(Html.DevExtreme().DataGrid()
@@ -131,6 +139,7 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
+                    columns.Add().DataField("CostItemCode");
                 columns.Add().DataField("CostItem");
 
 
@@ -254,6 +263,85 @@
                  const title = "";
                       openModal(url, title);
               }
+
+
+
+//Footer button click event
+                     
+ function onDistributeCostClick(distributionMethod) {
+     debugger;
+        const grid = $("#quotedItemsGrid").dxDataGrid("instance");
+        const selectedRows = grid.getSelectedRowsData();
+     console.log("Selected count:", selectedRows.length); // Should be > 1
+    console.table(selectedRows);
+        
+   
+
+            const costItemCode = $("#ddCostItemDropDown").dxDropDownBox("instance").option("value");
+        const postingAmount = $(".dx-numberbox").eq(1).dxNumberBox("instance").option("value");
+        const postingPercentage = $(".dx-numberbox").eq(0).dxNumberBox("instance").option("value");
+
+        const quotationNo = new URLSearchParams(window.location.search).get("quotationNo");
+
+        if (!selectedRows.length) {
+            DevExpress.ui.notify("No Items are selected for Posting, Please Check again.", "warning", 3000);
+            return;
+        }
+
+        // Build model array
+        const models = selectedRows.map(row => ({
+            QuotationNo: quotationNo,
+            QuoteChildID: row.QuoteChildId,
+            GSCode: row.Gscode,
+            QuotedQuantity: row.QuotedQuantity,
+            QuotedCostPrice: row.CostPrice,
+            PostingAmount: postingAmount,
+            PostingPercentage: postingPercentage,
+            PostingCostItemCode: costItemCode,
+            TotalCostOfItemInclAll: row.TotalCostOfItem
+        }));
+
+        // Single AJAX call with all rows
+        $.ajax({
+            url: `/api/QuotedCostSummary/InsertCostDistribution`,
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(models)
+        }).done(() => {
+            // Run distribution after successful insert/update
+            let endpoint = "";
+
+            if (costItemCode === "PM-001") {
+                endpoint = distributionMethod === 1 ? "ProfitMarginByEqual"
+                    : distributionMethod === 2 ? "ProfitMarginByProportion"
+                    : "ProfitMarginByPercentage";
+            } else if (costItemCode === "DIS-001") {
+                endpoint = distributionMethod === 1 ? "DiscountByEqual"
+                    : distributionMethod === 2 ? "DiscountByProportion"
+                    : "DiscountByPercentage";
+            } else {
+                endpoint = distributionMethod === 1 ? "DistributeEqually"
+                    : distributionMethod === 2 ? "DistributeByProportion"
+                    : "DistributeByPercentage";
+            }
+
+            $.ajax({
+                url: `/api/QuotedCostSummary/${endpoint}`,
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(quotationNo)
+            }).done(() => {
+                DevExpress.ui.notify("Cost distributed successfully", "success", 3000);
+                loadPivotGridData(quotationNo);
+            }).fail(err => {
+                DevExpress.ui.notify("Distribution failed: " + err.responseText, "error", 3000);
+            });
+
+        }).fail(err => {
+            DevExpress.ui.notify("Insert failed: " + err.responseText, "error", 3000);
+        });
+    }
+
 </script>
 
 

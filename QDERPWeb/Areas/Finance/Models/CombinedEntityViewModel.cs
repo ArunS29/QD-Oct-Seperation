@@ -1032,6 +1032,32 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public int Skip { get; set; }
         public int Take { get; set; }
     }
+    public class DepreciationRequest
+    {
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public string DocumentNo { get; set; }
+    }
+    public class InsertCostDistributionDto
+    {
+        public string QuotationNo { get; set; }
+
+        public long QuoteChildId { get; set; }
+
+        public decimal? QuotedQuantity { get; set; }
+
+        public decimal? QuotedCostPrice { get; set; }
+
+        public decimal? PostingAmount { get; set; }
+
+        public decimal? PostingPercentage { get; set; }
+
+        public string Gscode { get; set; }
+
+        public string PostingCostItemCode { get; set; }
+
+        public decimal? TotalCostOfItemInclAll { get; set; }
+    }
 
 }
 

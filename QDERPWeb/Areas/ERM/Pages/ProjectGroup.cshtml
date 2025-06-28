@@ -270,19 +270,7 @@
         const arabicTranslation = await translateToArabic(englishText);
         textBox2Instance.option("value", arabicTranslation);
     }
-     async function translateToArabic(text) {
-        try {
-            const response = await fetch(
-                `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`
-            );
-            const data = await response.json();
-            console.log(data);
-            return data.responseData.translatedText;
-        } catch (error) {
-            console.error("Translation failed:", error);
-            return "Translation Error";
-        }
-    }
+    
     function addProjectGroupToGrid() {
         // Validate fields using the Validator components
         const nameValidationResult = $("#txtGroup").dxValidator("instance").validate();

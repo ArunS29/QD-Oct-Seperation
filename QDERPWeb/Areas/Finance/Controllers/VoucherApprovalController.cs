@@ -39,6 +39,7 @@ namespace QDWEB.Areas.Finance.Controllers
                     {
                         v.VoucherNo,
                         VoucherDate = v.VoucherDate.ToString("dd-MMM-yyyy"),
+                        v.VoucherEffectiveDate,
                         v.VoucherRefNo,
                         v.VoucherNarration,
                         v.VoucherEnteredBy,
