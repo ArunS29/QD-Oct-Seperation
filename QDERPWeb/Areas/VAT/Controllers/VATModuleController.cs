@@ -1,20 +1,24 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using QD.ERP.Web.DAL.Entities;
-using QD.ERP.Web.Service;
-using System.Globalization;
-using Microsoft.EntityFrameworkCore;
-using DevExtreme.AspNet.Mvc;
-using DevExtreme.AspNet.Data;
-using QD.ERP.Web.Areas.VAT.Models;
-using QD.ERP.Web.Areas.Finance.Models;
-using System.Text.RegularExpressions;
+﻿using System.Data;
 using System.Data.SqlClient;
 using System.Dynamic;
-using DevExpress.DataProcessing.InMemoryDataProcessor;
-using System.Numerics;
-using System.Data;
+using System.Globalization;
 using System.IO;
+using System.Numerics;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Xml.Linq;
+using DevExpress.DataProcessing.InMemoryDataProcessor;
+using DevExpress.XtraPrinting.BarCode;
+using DevExtreme.AspNet.Data;
+using DevExtreme.AspNet.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using QD.ERP.Web.Areas.Finance.Models;
+using QD.ERP.Web.Areas.VAT.Models;
+using QD.ERP.Web.DAL.Entities;
+using QD.ERP.Web.Service;
+using QRCoder;
 
 
 
@@ -4678,7 +4682,123 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 			return Unauthorized(new { message = "Invalid tenant.", success = false });
 		}
 
-	}
+
+        public static string GetTLVBase64(string sellerName, string vatNumber, DateTime? timeStamp)
+        {
+            using (var ms = new MemoryStream())
+            {
+                void AddTLV(int tag, string value)
+                {
+                    byte[] valueBytes = Encoding.UTF8.GetBytes(value);
+                    ms.WriteByte((byte)tag);
+                    ms.WriteByte((byte)valueBytes.Length);
+                    ms.Write(valueBytes, 0, valueBytes.Length);
+                }
+
+                AddTLV(1, sellerName ?? "");
+                AddTLV(2, vatNumber ?? "");
+                AddTLV(3, timeStamp.HasValue
+                    ? timeStamp.Value.ToString("yyyy-MM-ddTHH:mm:ssZ")
+                    : "");
+
+                return Convert.ToBase64String(ms.ToArray());
+            }
+        }
+
+
+        public static string GenerateInvoiceXml(Tbl20161VatinvoiceMaster InvoiceMaster, List<InvoiceItem> children)
+        {
+            var xml = new XElement("Invoice",
+                new XElement("InvoiceNo", InvoiceMaster.InvoiceNo),
+                new XElement("InvoiceDate", InvoiceMaster.InvoiceDate,
+                new XElement("SellerName", InvoiceMaster.SellerName),
+                new XElement("SellerVAT", InvoiceMaster.SellerVatnumber),
+                new XElement("BuyerName", InvoiceMaster.BuyerName),
+                new XElement("BuyerVAT", InvoiceMaster.BuyerVatnumber)
+            //new XElement("Total", children.Total.ToString("F2")),
+            //new XElement("VATAmount", InvoiceMaster.VATAmount.ToString("F2")),
+            //new XElement("InvoiceLines",
+            //    children.Select(c =>
+            //        new XElement("Item",
+            //            new XElement("Name", c.ItemName),
+            //            new XElement("LineTotal", c.LineTotal.ToString("F2")),
+            //            new XElement("TaxAmount", c.TaxAmount.ToString("F2"))
+            //        )
+            //    )
+            //)
+            ));
+
+            return xml.ToString();
+        }
+
+        public static string GenerateQrCodeBase64(string tlvBase64)
+        {
+            var qrGenerator = new QRCoder.QRCodeGenerator(); // No using here
+
+            using QRCodeData qrCodeData = qrGenerator.CreateQrCode(tlvBase64, QRCoder.QRCodeGenerator.ECCLevel.Q);
+            var qrCode = new PngByteQRCode(qrCodeData);
+            byte[] qrBytes = qrCode.GetGraphic(20);
+            return Convert.ToBase64String(qrBytes);
+        }
+
+        [HttpPost]
+        public IActionResult GenerateZatcaInvoiceXml(Tbl20161VatinvoiceMaster InvoiceMaster)
+        {
+            // Sample mock child data (replace with actual)
+            var children = new List<InvoiceItem>
+        {
+            new InvoiceItem { InvoiceNo = InvoiceMaster.InvoiceNo, Description = "", Total = 100, TaxAmount = 15 }
+        };
+
+            // 1. Generate XML string
+            string xml = GenerateInvoiceXml(InvoiceMaster, children);
+
+            // 2. Create TLV QR base64
+            string tlvBase64 = GetTLVBase64(
+                InvoiceMaster.SellerName,
+                InvoiceMaster.SellerVatnumber,
+                InvoiceMaster.InvoiceDate
+            );
+
+            // 3. Generate QR image
+            string qrCodeImageBase64 = GenerateQrCodeBase64(tlvBase64);
+
+            return Ok(new
+            {
+                InvoiceXml = xml,
+                TLVBase64 = tlvBase64,
+                QRBase64 = qrCodeImageBase64
+            });
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetInvoiceSubType(DataSourceLoadOptions loadOptions)
+        {
+            try
+            {
+
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var qryListOfAccountlists = dbContext.Tbl00108InvoiceSubTypeCodes.Select(i => new
+                    {
+
+                        i.InvoiceSubTypeCode,
+                        i.InvoiceSubType
+
+                    });
+
+
+                    return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+                }
+
+            }
+            catch (Exception ex) { throw ex; }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+        }
+    }
 }
 
 
