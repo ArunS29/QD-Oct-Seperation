@@ -2134,6 +2134,7 @@ $("#btnAddNew").on("click", function () {
 
     const grid = $("#itemGrid").dxDataGrid("instance");
 const children = grid.getDataSource().items().map(item => {
+
         return {
             PochildNo: Number(item.PochildNo) || 0,
             Pono: master.Pono,

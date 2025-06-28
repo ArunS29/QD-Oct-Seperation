@@ -1,4 +1,4 @@
-using DevExtreme.AspNet.Data;
+﻿using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Humanizer;
 using DevExtreme.AspNet.Data.ResponseModel;
@@ -461,6 +461,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 					existingMaster.Rfqsubject = VM.Rfqsubject;
 					existingMaster.Rfqintro = VM.Rfqintro;
 					existingMaster.Rfqsummary = VM.Rfqsummary;
+					existingMaster.SalesPersonCode = VM.SalesPersonCode;
 
 
 					existingMaster.Rfqsignatory = VM.Rfqsignatory.HasValue ? (byte?)VM.Rfqsignatory.Value : null;
@@ -491,8 +492,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 						Rfqsummary=VM.Rfqsummary,
 						Rfqsignatory = Convert.ToByte(VM.Rfqsignatory),
 						CompanyBranch = Convert.ToByte(VM.CompanyBranch),
-						InventoryMasterGroupId=Convert.ToByte(VM.InventoryMasterGroupId)
-,
+						InventoryMasterGroupId=Convert.ToByte(VM.InventoryMasterGroupId),
+						SalesPersonCode=VM.SalesPersonCode,
+
 
 					};
 
@@ -524,8 +526,17 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 						}
 					}
 				}
+                // ✅ Update MPR Status
+                //if (!string.IsNullOrEmpty(VM.Mprno))
+                //{
+                //    var mpr = await dbContext.Tbl60601purchaseRequestMasters.FirstOrDefaultAsync(x => x.Mprno == VM.Mprno);
+                //    if (mpr != null)
+                //    {
+                //        mpr.PurchaseRequestStatusId = 2;
+                //    }
+                //}
 
-				await dbContext.SaveChangesAsync();
+                await dbContext.SaveChangesAsync();
 
 				return Ok(new { success = true, message = "RFQ Details saved/updated successfully." });
 			}
@@ -845,5 +856,110 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, new { success = false, message = "Internal server error", details = ex.Message });
             }
         }
+        [HttpPost]
+        public async Task<IActionResult> AutoInsertRFQFromMPR([FromForm] string rfqNo, [FromForm] string mprNo)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                return Unauthorized();
+
+            try
+            {
+                string user = User.Identity?.Name ?? "System";
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "EXEC sp600_01InsertToRfqFromEnquiry @RFQNo = {0}, @MPRNo = {1}, @AddedBy = {2}",
+                    rfqNo, mprNo, user
+                );
+
+                var pr = await dbContext.Tbl60601purchaseRequestMasters.FirstOrDefaultAsync(x => x.Mprno == mprNo);
+                if (pr != null)
+                {
+                    pr.PurchaseRequestStatusId = 2;
+                    await dbContext.SaveChangesAsync();
+                }
+
+                return Ok(new { message = "RFQ inserted from MPR successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> CreatePOFromRFQ([FromBody] string rfqNo)
+        {
+            if (string.IsNullOrWhiteSpace(rfqNo))
+                return BadRequest(new { message = "RFQ No is required", success = false });
+
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { message = "Invalid tenant", success = false });
+
+            try
+            {
+                string addedBy = User.Identity?.Name ?? "System";
+
+                // Step 1: Get Company Info
+                var company = await dbContext.Tbl901CompanyDetails
+                    .FirstOrDefaultAsync(c => c.CompanyNameShort == tenant.Name);
+
+                if (company == null)
+                    return NotFound(new { message = "Company not found in Tbl901CompanyDetails.", success = false });
+
+                // Step 2: Setup PO number prefix
+                string prefix = company.PurchaseOrderAbbrv ?? "";
+                int yearDigits = company.InvoiceYearDigits ?? 0;
+                bool resetByYear = company.IsResetInvoiceInYear ?? false;
+
+                int noOfDigits = await dbContext.Tbl901CompanyDetails02s
+                    .Where(c => c.CompanyId == company.CompanyId)
+                    .Select(c => c.NoOfDigitsToInventoryQuotation ?? 5)
+                    .FirstOrDefaultAsync();
+
+                string yearPart = DateTime.Now.Year.ToString();
+                if (yearDigits > 0)
+                    yearPart = yearPart.Substring(yearPart.Length - yearDigits);
+
+                string basePrefix = $"{prefix}{yearPart}-";
+
+                // Step 3: Get existing POs with same prefix
+                var existingPos = await dbContext.Tbl60401purchaseOrderMasters
+                    .Where(x => x.Pono.StartsWith(basePrefix))
+                    .Select(x => x.Pono)
+                    .ToListAsync();
+
+                int maxNumber = existingPos
+                    .Select(no => int.TryParse(no.Substring(no.Length - noOfDigits), out int num) ? num : 0)
+                    .DefaultIfEmpty(0)
+                    .Max();
+
+                int nextNumber = maxNumber + 1;
+                string newPoNo = $"{basePrefix}{nextNumber.ToString().PadLeft(noOfDigits, '0')}";
+
+                // Step 4: Execute stored procedure to insert PO from RFQ
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "EXEC sp600_02InsertToPOfromRFQ @PONo = {0}, @RFQNo = {1}, @AddedBy = {2}",
+                    newPoNo, rfqNo, addedBy
+                );
+
+                return Ok(new
+                {
+                    success = true,
+                    poNo = newPoNo,
+                    message = "Purchase Order created successfully."
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in CreatePOFromRFQ: {ex.Message}");
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "An error occurred while creating the Purchase Order.",
+                    error = ex.Message
+                });
+            }
+        }
+
     }
 }

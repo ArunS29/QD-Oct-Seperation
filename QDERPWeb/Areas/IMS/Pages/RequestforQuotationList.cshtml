@@ -443,15 +443,46 @@
 				}
 			});
 		}
-	},
-				{
-					text: "Create Purchase Order",
-					icon: "add",
-					onItemClick: function () {
-						const url = `/${tenantName}/IMS/CreatePurchaseOrder?Rfqno=${Rfqno}`;
-						window.location.href = url;
-					}
-				}
+		},{
+		text: "Create Purchase Order",
+		icon: "add",
+		onItemClick: function () {
+			const rfqNo = e.row.data.Rfqno;
+			const tenantName = window.tenantName || "defaultTenant";
+
+			if (!rfqNo) {
+				DevExpress.ui.notify("RFQ No is missing.", "error", 2000);
+				return;
+			}
+
+			DevExpress.ui.dialog.confirm("Do you want to create a Purchase Order from this RFQ?", "Confirmation")
+				.done(function (dialogResult) {
+					if (!dialogResult) return;
+
+					$.ajax({
+						url: "/api/RequestforQuotationList/CreatePOFromRFQ",
+						type: "POST",
+						contentType: "application/json",
+						data: JSON.stringify(rfqNo),
+						success: function (res) {
+							if (res.success) {
+								DevExpress.ui.notify("Purchase Order created: " + res.poNo, "success", 2000);
+
+								// Redirect to PO form in edit mode
+								window.location.href = `/${tenantName}/IMS/AddNewPurchaseOrder?Pono=${encodeURIComponent(res.poNo)}&RFQNo=${encodeURIComponent(rfqNo)}&mode=edit`;
+								
+							} else {
+								DevExpress.ui.notify(res.message || "Failed to create Purchase Order.", "error", 3000);
+							}
+						},
+						error: function (xhr) {
+							DevExpress.ui.notify("Server error while creating Purchase Order.", "error", 3000);
+						}
+					});
+				});
+		}
+	}
+
 			];
 		}
 	}

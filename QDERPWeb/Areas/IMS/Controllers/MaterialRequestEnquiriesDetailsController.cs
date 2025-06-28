@@ -376,6 +376,368 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, new { success = false, message = "Revision failed", detail = ex.Message });
             }
         }
+        //New RFQ
+        [HttpGet]
+        public async Task<IActionResult> CheckIfApproved(string mprNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var isApproved = await dbContext.Tbl60601purchaseRequestMasters
+                    .Where(x => x.Mprno == mprNo)
+                    .Select(x => x.IsApproved ?? false)
+                    .FirstOrDefaultAsync();
+
+                return Ok(isApproved);
+            }
+
+            return BadRequest("Invalid tenant or DB context.");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ReceiveItemFully([FromBody] Tbl60401purchaseOrderMaster data)
+        {
+            try
+            {
+                string pono = data?.Pono;
+                if (string.IsNullOrWhiteSpace(pono))
+                    return BadRequest(new { success = false, message = "PO number is required." });
+
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                    return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+                // --- Generate receiptNoteNo using company settings and last number in Tbl60501materialReceiptMasters ---
+                string tenantName = HttpContext.Session.GetString("TenantName");
+                if (string.IsNullOrWhiteSpace(tenantName))
+                    return Unauthorized(new { message = "Tenant name not found in session.", success = false });
+
+                var company = dbContext.Tbl901CompanyDetails
+                    .FirstOrDefault(c => c.CompanyNameShort == tenantName);
+
+                if (company == null)
+                    return NotFound("Company not found.");
+
+                string requestAbbrv = company.RequestAbbrv ?? "MRN";
+                int yearInDigit = company.InvoiceYearDigits ?? 0;
+                bool isResetByYear = company.IsResetInvoiceInYear ?? false;
+                DateTime receiptDate = DateTime.Now;
+
+                // Get the last receipt number for this year/company
+                var receiptNumbers = dbContext.Tbl60501materialReceiptMasters
+                    .Where(d => d.ReceiptNo != null && d.ReceiptNo.Length >= 5 &&
+                                (!isResetByYear || (d.ReceiptDate.HasValue && d.ReceiptDate.Value.Year == receiptDate.Year)))
+                    .Select(d => d.ReceiptNo)
+                    .ToList();
+
+                int maxRunningNumber = receiptNumbers
+                    .Select(no => int.TryParse(no.Substring(no.Length - 5), out int num) ? num : 0)
+                    .DefaultIfEmpty(0)
+                    .Max();
+
+                maxRunningNumber += 1;
+
+                string strNewReceiptNoteNo = maxRunningNumber.ToString().PadLeft(5, '0');
+
+                string strYear = receiptDate.Year.ToString();
+                if (yearInDigit > 0)
+                {
+                    strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
+                }
+                else
+                {
+                    strYear = "";
+                }
+
+                string receiptNoteNo = $"{requestAbbrv}{strYear}-{strNewReceiptNoteNo}";
+
+                byte modeOfReceiptId = 1; // Set as needed
+                string addedBy = HttpContext.Session.GetString("UserName") ?? "System";
+
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "EXEC sp600_16InsertToPartialReceiptFromPurchaseOrder @ReceiptNoteNo = {0}, @ModeOfReceiptID = {1}, @PONo = {2}, @AddedBy = {3}",
+                    receiptNoteNo, modeOfReceiptId, pono, addedBy
+                );
+
+                return Ok(new { success = true, message = "Material Receipt created.", receiptNoteNo = receiptNoteNo, pono = pono });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Server error: " + ex.Message });
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> CreateRfqFromMpr([FromBody] string mprNo)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(mprNo))
+                    return BadRequest(new { success = false, message = "MPR No is required." });
+
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                    return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+                // 1. Get tenant name from session
+                string tenantName = HttpContext.Session.GetString("TenantName");
+                if (string.IsNullOrWhiteSpace(tenantName))
+                    return Unauthorized(new { success = false, message = "Tenant name not found in session." });
+
+                // 2. Get company settings
+                var company = dbContext.Tbl901CompanyDetails.FirstOrDefault(c => c.CompanyNameShort == tenantName);
+                if (company == null)
+                    return NotFound(new { success = false, message = "Company not found." });
+
+                string rfqAbbrv = company.Rfqabbrv ?? "RFQ";
+                int yearDigits = company.InvoiceYearDigits ?? 0;
+                bool isResetByYear = company.IsResetInvoiceInYear ?? false;
+                DateTime currentDate = DateTime.Now;
+
+                // 3. Generate new RFQ No
+                var existingRfqNos = dbContext.Tbl60701rfqmasters
+                    .Where(r => r.Rfqno != null && r.Rfqno.Length >= 5 &&
+                               (!isResetByYear || (r.Rfqdate.HasValue && r.Rfqdate.Value.Year == currentDate.Year)))
+                    .Select(r => r.Rfqno)
+                    .ToList();
+
+                int maxRunningNumber = existingRfqNos
+                    .Select(no => int.TryParse(no.Substring(no.Length - 5), out int num) ? num : 0)
+                    .DefaultIfEmpty(0)
+                    .Max() + 1;
+
+                string paddedNumber = maxRunningNumber.ToString().PadLeft(5, '0');
+                string yearPart = yearDigits > 0 ? currentDate.Year.ToString().Substring(4 - yearDigits) : "";
+
+                string rfqNo = $"{rfqAbbrv}{yearPart}-{paddedNumber}";
+
+                // 4. Execute SP
+                string addedBy = HttpContext.Session.GetString("UserName") ?? "System";
+
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "EXEC sp600_01InsertToRfqFromEnquiry @RFQNo = {0}, @MPRNo = {1}, @AddedBy = {2}",
+                    rfqNo, mprNo, addedBy
+                );
+
+                // 5. Update MPR status
+                var mpr = await dbContext.Tbl60601purchaseRequestMasters.FirstOrDefaultAsync(x => x.Mprno == mprNo);
+                if (mpr != null)
+                {
+                    mpr.PurchaseRequestStatusId = 2; // Assuming '2' is the 'converted to RFQ' status
+                    await dbContext.SaveChangesAsync();
+                }
+
+                // 6. Return success
+                return Ok(new { success = true, message = "RFQ created successfully.", rfqno = rfqNo, mprno = mprNo });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Server error: " + ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateQuotationFromMpr([FromBody] string mprNo)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(mprNo))
+                    return BadRequest(new { success = false, message = "MPR No is required." });
+
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                    return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+                string tenantName = HttpContext.Session.GetString("TenantName");
+                if (string.IsNullOrWhiteSpace(tenantName))
+                    return Unauthorized(new { success = false, message = "Tenant name not found in session." });
+
+                // Step 1: Get company info
+                var company = dbContext.Tbl901CompanyDetails.FirstOrDefault(c => c.CompanyNameShort == tenantName);
+                if (company == null)
+                    return NotFound(new { success = false, message = "Company not found." });
+
+                // Step 2: Get NoOfDigits for quotation from CompanyDetails02
+                int noOfDigits = dbContext.Tbl901CompanyDetails02s
+                                          .Where(x => x.CompanyId == company.CompanyId)
+                                          .Select(x => x.NoOfDigitsToInventoryQuotation ?? 4)
+                                          .FirstOrDefault();
+
+                // Step 3: Generate Quotation No directly here
+                string abbrv = company.QuotationAbbrv ?? "QT";
+                int yearDigits = company.InvoiceYearDigits ?? 0;
+                bool isResetByYear = company.IsResetInvoiceInYear ?? false;
+                DateTime today = DateTime.Now;
+
+                var existingQuoteNos = dbContext.Tbl60101quotationMasters
+                    .Where(q => q.QuoteNo != null &&
+                                q.QuoteNo.Length >= noOfDigits &&
+                                (!isResetByYear || (q.QuoteDate.HasValue && q.QuoteDate.Value.Year == today.Year)))
+                    .Select(q => q.QuoteNo)
+                    .ToList();
+
+                int maxRunningNo = existingQuoteNos
+                    .Select(no => int.TryParse(no.Substring(no.Length - noOfDigits), out int num) ? num : 0)
+                    .DefaultIfEmpty(0)
+                    .Max() + 1;
+
+                string paddedNumber = maxRunningNo.ToString().PadLeft(noOfDigits, '0');
+
+                string yearPart = yearDigits > 0 ? today.Year.ToString().Substring(4 - yearDigits) : "";
+
+                string quoteNo = $"{abbrv}{yearPart}-{paddedNumber}";
+
+                // Step 4: Execute SP
+                string addedBy = HttpContext.Session.GetString("UserName") ?? "System";
+
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "EXEC sp600_03InsertToQuotationFromEnquiry @QuotationNo = {0}, @MPRNo = {1}, @AddedBy = {2}",
+                    quoteNo, mprNo, addedBy
+                );
+
+                // Step 5: Update MPR status
+                var mpr = await dbContext.Tbl60601purchaseRequestMasters.FirstOrDefaultAsync(x => x.Mprno == mprNo);
+                if (mpr != null)
+                {
+                    mpr.PurchaseRequestStatusId = 4; // Assume 3 = Quotation created
+                    await dbContext.SaveChangesAsync();
+                }
+
+                return Ok(new { success = true, message = "Quotation created successfully.", quoteno = quoteNo });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Server error: " + ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateMaterialReceiptFromMpr([FromBody] string mprNo)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(mprNo))
+                    return BadRequest(new { success = false, message = "MPR No is required." });
+
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                    return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+                string tenantName = HttpContext.Session.GetString("TenantName");
+                if (string.IsNullOrWhiteSpace(tenantName))
+                    return Unauthorized(new { success = false, message = "Tenant name not found in session." });
+
+                // Step 1: Get company details
+                var company = dbContext.Tbl901CompanyDetails.FirstOrDefault(c => c.CompanyNameShort == tenantName);
+                if (company == null)
+                    return NotFound(new { success = false, message = "Company not found." });
+
+                // Step 2: Generate Receipt No
+                string abbrv = company.RequestAbbrv ?? "MR";
+                int yearDigits = company.InvoiceYearDigits ?? 0;
+                bool isResetByYear = company.IsResetInvoiceInYear ?? false;
+                DateTime today = DateTime.Now;
+
+                var existingNos = dbContext.Tbl60501materialReceiptMasters
+                    .Where(r => r.ReceiptNo != null &&
+                                r.ReceiptNo.Length >= 5 &&
+                                (!isResetByYear || (r.ReceiptDate.HasValue && r.ReceiptDate.Value.Year == today.Year)))
+                    .Select(r => r.ReceiptNo)
+                    .ToList();
+
+                int maxRunning = existingNos
+                    .Select(no => int.TryParse(no.Substring(no.Length - 5), out int num) ? num : 0)
+                    .DefaultIfEmpty(0)
+                    .Max() + 1;
+
+                string padded = maxRunning.ToString().PadLeft(5, '0');
+                string yearPart = yearDigits > 0 ? today.Year.ToString().Substring(4 - yearDigits) : "";
+                string receiptNo = $"{abbrv}{yearPart}-{padded}";
+
+                string addedBy = HttpContext.Session.GetString("UserName") ?? "System";
+
+                // Step 3: Call stored procedure
+                byte modeOfReceiptId = 1; // Set in backend
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "EXEC sp600_31InsertToMaterialReceiptfromEnquiry @ReceiptNoteNo = {0}, @ModeOfReceiptID = {1}, @MPRNo = {2}, @AddedBy = {3}",
+                    receiptNo, modeOfReceiptId, mprNo, addedBy
+                );
+
+                // ✅ Step 4: Update MPR status
+                var mpr = await dbContext.Tbl60601purchaseRequestMasters.FirstOrDefaultAsync(x => x.Mprno == mprNo);
+                if (mpr != null)
+                {
+                    mpr.PurchaseRequestStatusId = 8; // ✅ Set status for "Material Receipt Created"
+                    await dbContext.SaveChangesAsync();
+                }
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Material Receipt created successfully.",
+                    receiptNo = receiptNo
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Server error: " + ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreatePOFromMpr([FromBody] string mprNo)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(mprNo))
+                    return BadRequest(new { success = false, message = "MPR No is required." });
+
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                    return Unauthorized(new { success = false, message = "Invalid tenant context." });
+
+                string tenantName = HttpContext.Session.GetString("TenantName");
+                string addedBy = HttpContext.Session.GetString("UserName") ?? "System";
+
+                // 1. Generate new PO No
+                var company = dbContext.Tbl901CompanyDetails.FirstOrDefault(c => c.CompanyNameShort == tenantName);
+                var config = dbContext.Tbl901CompanyDetails02s.FirstOrDefault(c => c.CompanyId == company.CompanyId);
+                string prefix = company.PurchaseOrderAbbrv ?? "PO";
+                int yearDigits = company.InvoiceYearDigits ?? 0;
+                int digits = config?.NoOfDigitsToInventoryQuotation ?? 5;
+                bool resetYearly = company.IsResetInvoiceInYear ?? false;
+
+                DateTime now = DateTime.Now;
+                string year = yearDigits > 0 ? now.Year.ToString().Substring(4 - yearDigits) : "";
+                string basePrefix = $"{prefix}{year}-";
+
+                var existing = dbContext.Tbl60401purchaseOrderMasters
+                    .Where(p => p.Pono.StartsWith(basePrefix))
+                    .Select(p => p.Pono)
+                    .ToList();
+
+                int max = existing
+                    .Select(no => int.TryParse(no.Substring(no.Length - digits), out int n) ? n : 0)
+                    .DefaultIfEmpty(0)
+                    .Max();
+
+                string newPoNo = $"{basePrefix}{(max + 1).ToString().PadLeft(digits, '0')}";
+
+                // 2. Execute stored procedure
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "EXEC sp600_01InsertToPOfromEnquiry @PONo = {0}, @MPRNo = {1}, @AddedBy = {2}",
+                    newPoNo, mprNo, addedBy);
+
+                // 3. Update MPR status (6 = Converted to PO)
+                var mpr = await dbContext.Tbl60601purchaseRequestMasters.FirstOrDefaultAsync(x => x.Mprno == mprNo);
+                if (mpr != null)
+                {
+                    mpr.PurchaseRequestStatusId = 6;
+                    await dbContext.SaveChangesAsync();
+                }
+
+                return Ok(new { success = true, poNo = newPoNo, message = "Purchase Order created successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Error: " + ex.Message });
+            }
+        }
 
 
     }
