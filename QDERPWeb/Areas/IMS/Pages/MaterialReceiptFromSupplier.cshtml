@@ -1456,7 +1456,7 @@
 		let grid = $("#B2BdataGrid").dxDataGrid({
 			dataSource: rowData,
 			keyExpr: "LineOrderNo",
-			// âœ… your columns, editing, dropdowns, and templates go here, unchanged
+			// ✅ your columns, editing, dropdowns, and templates go here, unchanged
 			// Just make sure to close all functions properly
 			// For brevity, I'm skipping repeating all the column config here
 			columns: [
@@ -1571,7 +1571,7 @@
 
 										keyExpr: "GSCode",
 
-										height: 300, // âœ… Add fixed height to enable scrolling
+										height: 300, // ✅ Add fixed height to enable scrolling
 
 										scrolling: { mode: "virtual" },
 
@@ -1633,7 +1633,7 @@
 
 							});
 
-							// âœ… Add icon with navigation
+							// ✅ Add icon with navigation
 
 							$("<div>").dxButton({
 
@@ -1657,7 +1657,7 @@
 
 							}).appendTo($container);
 
-							// âœ… Edit icon with navigation
+							// ✅ Edit icon with navigation
 
 							$("<div>").dxButton({
 
@@ -1795,7 +1795,7 @@
 
 							});
 
-							// âœ… Add Button
+							// ✅ Add Button
 
 							$("<div>").dxButton({
 
@@ -1932,7 +1932,7 @@
 
 							});
 
-							// âœ… Add Button
+							// ✅ Add Button
 
 							$("<div>").dxButton({
 
@@ -2152,7 +2152,7 @@
 
 										keyExpr: "GSCode",
 
-										height: 300, // âœ… Add fixed height to enable scrolling
+										height: 300, // ✅ Add fixed height to enable scrolling
 
 										scrolling: { mode: "virtual" },
 
@@ -2214,7 +2214,7 @@
 
 							});
 
-							// âœ… Add icon with navigation
+							// ✅ Add icon with navigation
 
 							$("<div>").dxButton({
 
@@ -2238,7 +2238,7 @@
 
 							}).appendTo($container);
 
-							// âœ… Edit icon with navigation
+							// ✅ Edit icon with navigation
 
 							$("<div>").dxButton({
 
@@ -2364,7 +2364,7 @@
 
 							});
 
-							// âœ… Add Button
+							// ✅ Add Button
 
 							$("<div>").dxButton({
 
@@ -4389,7 +4389,7 @@
 	// 			let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex, "VAT%") || "0%";
 	// 			console.log("vatRateStr", vatRateStr)
 
-	// 			let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100; // Convert "15%" â†’ 15 â†’ 0.15
+	// 			let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100; // Convert "15%" → 15 → 0.15
 	// 			console.log("vatRate", vatRate)
 
 	// 			// Calculate values
@@ -5609,7 +5609,6 @@
 		const urlParams = new URLSearchParams(window.location.search);
 		const purchaseOrderNo = urlParams.get("PurchaseOrderNo") || urlParams.get("Pono");
 		const receiptNoteNo = urlParams.get("ReceiptNo");
-
 		if (receiptNoteNo) {
 			// Editing or viewing an existing receipt: load receipt details (this will set the grid)
 			loadClientDetails(receiptNoteNo);

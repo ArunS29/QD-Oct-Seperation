@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QD.ERP.Web.Service;
 using QD.ERP.Web.DAL.Entities;
@@ -196,5 +196,37 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
+    [HttpGet]
+public IActionResult GetByGscode(string gscode)
+{
+    if (string.IsNullOrWhiteSpace(gscode))
+        return BadRequest(new { success = false, message = "Gscode is required." });
+
+    if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+    {
+       var entity = dbContext.Tbl20164GoodsAndServicesMasters
+    .FirstOrDefault(x => x.Gscode.Trim() == gscode.Trim());
+
+        if (entity == null)
+            return NotFound(new { success = false, message = "Goods & Service not found." });
+
+        return Ok(new
+        {
+            entity.Gscode,
+            entity.GsgroupId,
+            entity.ItemPartNo,
+            entity.Gsdescrpition,
+            entity.GsdescriptionAr,
+            entity.GsuoM,
+            entity.GspackingUnit,
+            entity.GssellingRate,
+            entity.CostPrice,
+            entity.GsdetailedDesc,
+            entity.GsdetailedDescAr
+        });
+    }
+
+    return Unauthorized(new { success = false, message = "Invalid tenant." });
+}
     }
 }
