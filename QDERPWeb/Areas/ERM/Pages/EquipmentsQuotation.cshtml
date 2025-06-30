@@ -224,7 +224,7 @@
 </div>
 <div class="dx-field ledgerResult">
 	@(
-		Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60104quotationViewMaster>()
+		Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry40103PropertyQuoteMasterView>()
 		.ID("dataGrid")
 		.RemoteOperations(false)
 		.DataSource(new JS("[]"))
@@ -236,28 +236,8 @@
 
 				subColumns.AddFor(m => m.QuoteDate).Caption(new JS("formatMessage('Quote Date')")).Alignment(HorizontalAlignment.Center).Visible(true).Format("dd-MMM-yyyy");
 				subColumns.AddFor(m => m.ClientName).Caption(new JS("formatMessage('Client Name')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Mprno).Caption(new JS("formatMessage('Mpr no')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.ClientRefNo).Caption(new JS("formatMessage('Client Ref No')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.SalesOrderNo).Caption(new JS("formatMessage('Sales Order No')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.SalesPersonName).Caption(new JS("formatMessage('Sales Person Name')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.IsSubmitted).Caption(new JS("formatMessage('IsSubmitted')")).Alignment(HorizontalAlignment.Center)
-			.CellTemplate(@<text>
-		<div class="dx-icon">
-			<%= data.IsSubmitted ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-		</div>
-	</text>).Visible(true);
-				subColumns.AddFor(m => m.IsVerified).Caption(new JS("formatMessage('IsVerified')")).Alignment(HorizontalAlignment.Center)
-			.CellTemplate(@<text>
-		<div class="dx-icon">
-			<%= data.IsVerified ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-		</div>
-	</text>).Visible(true);
-				subColumns.AddFor(m => m.IsApproved).Caption(new JS("formatMessage('IsApproved')")).Alignment(HorizontalAlignment.Center)
-			.CellTemplate(@<text>
-		<div class="dx-icon">
-			<%= data.IsApproved ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-		</div>
-	</text>).Visible(true);
+			
 			});
 			columns.Add().Caption(new JS("formatMessage('No Of Items')")).Columns(subColumns =>
 			{
@@ -269,14 +249,14 @@
 
 
 			columns.Add().Caption(new JS("formatMessage('Quoted Amount')")).Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.TotalBeforeDiscount).Caption(new JS("formatMessage('Total Before Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				{
+				subColumns.AddFor(m => m.TotalGrossAmount).Caption(new JS("formatMessage('Total Gross Amount')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
-				subColumns.AddFor(m => m.TotalAfterDiscount).Caption(new JS("formatMessage('Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.MobilizationAmount).Caption(new JS("formatMessage('Mobilixation Amount')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
-				subColumns.AddFor(m => m.TotalTaxAmount).Caption(new JS("formatMessage('Total Tax Amount')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.DemobilizationAmount).Caption(new JS("formatMessage('Demomobilization Amount')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
-				subColumns.AddFor(m => m.TotalWithTax).Caption(new JS("formatMessage('Total With Tax')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.TotalNetAmount).Caption(new JS("formatMessage('Total Net Amount')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
 			});
 		})

@@ -86,4 +86,6 @@ public partial class Qry40501propertyServiceView
     public string Project { get; set; }
 
     public string ServiceOrderType { get; set; }
+
+    public decimal TotalCost { get; set; }
 }

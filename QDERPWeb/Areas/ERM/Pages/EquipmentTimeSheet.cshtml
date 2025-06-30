@@ -172,7 +172,7 @@
 
 @await Html.PartialAsync("/Pages/Shared/ERM/RFQFooter.cshtml")
 
-
+@* 
 <div class="dx-fieldset horizontal-container">
 	@(Html.DevExtreme().DateBox()
 		.ID("frmdateBox")
@@ -220,7 +220,7 @@
 		)
 
 
-</div>
+</div> *@
 <div class="dx-field ledgerResult">
 	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60704rfqviewMaster>()
 		.ID("dataGrid")
@@ -283,9 +283,6 @@
 		.OnInitialized("function(e) { loadGridState(); }")
 		.OnContextMenuPreparing("onContextMenuPreparing")
 		)
-
-
-
 
 </div>
 <div id="invoiceErrorPopup"></div>
