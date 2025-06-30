@@ -26,10 +26,17 @@ function fetchLocales() {
         })
         .catch(error => console.error("Error fetching locales:", error));
 }
-
-
 $(document).ready(function () {
-    fetchLocales();
+    const locale = getLocale(); // Get saved or default locale
+
+    loadLocaleMessages(locale)
+        .then(() => {
+            DevExpress.localization.locale(locale); // Set locale globally
+            return fetchLocales(); // Now fetch available languages
+        })
+        .catch(error => {
+            console.error("Localization setup failed:", error);
+        });
 });
 function getCurrentTenantId() {
     return localStorage.getItem("tenantId") || "defaultTenant"; // Modify based on your logic
