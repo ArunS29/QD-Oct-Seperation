@@ -492,8 +492,13 @@ body {
 {
     color: #48aaaa !important;
 }
+#btnRefresh .dx-icon
+{
+    color: #00ff11 !important;
+}
 #btnToggleHeaderFilter,
 #btnPrint,
+#btnRefresh,
 #btnToggleSearch,
 #btntoggleGroupPanel,
 #btnColumnChooser,
@@ -508,6 +513,7 @@ body {
 /* Expand button width on hover */
 #btnToggleHeaderFilter:hover,
 #btnPrint:hover,
+#btnRefresh:hover,
 #btnToggleSearch:hover,
 #btntoggleGroupPanel:hover,
 #btnColumnChooser:hover,
@@ -518,6 +524,7 @@ body {
 
 /* Hide button text initially */
 #btnToggleHeaderFilter .dx-button-text,
+#btnRefresh .dx-button-text,
 #btnPrint .dx-button-text,
 #btnToggleSearch .dx-button-text,
 #btntoggleGroupPanel .dx-button-text,
@@ -529,6 +536,7 @@ body {
 
 /* Show button text on hover */
 #btnToggleHeaderFilter:hover .dx-button-text,
+#btnRefresh .dxe-button-text,
 #btnPrint:hover .dx-button-text,
 #btnToggleSearch:hover .dx-button-text,
 #btntoggleGroupPanel:hover .dx-button-text,
