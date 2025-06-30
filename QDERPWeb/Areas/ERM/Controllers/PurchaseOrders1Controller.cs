@@ -36,7 +36,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
             {
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    var query = dbContext.Qry60404purchaseOrderViewMasters.AsQueryable();
+                    var query = dbContext.Qry40132PropertyPoviewMasters.AsQueryable();
 
 
                     // Default dates if not provided
@@ -57,23 +57,15 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     var data = await query.Select(i => new
                     {
                         i.Pono,
-                        i.RevisionNo,
+                        i.SupplierCode,
                         i.Podate,
                         i.SupplierName,
-                        i.IsSubmitted,
-                        i.IsVerified,
-                        i.IsApproved,
+                        i.SupplierCategory,
+                        i.SupplierQuoteNo,
+                        i.SupplierRefNo,
                         i.NoOfItems,
-                        i.OrderStatus,
-                        i.BillStatus,
-                        i.TotalBeforeTax,
-                        i.TotalDiscount,
-                        i.TotalAfterDiscount,
-                        i.TotalTaxAmount,
-                        i.TotalWithTax,
-                        i.AdditionsAmount,
-                        i.DeductionsAmount,
-                        i.GrandTotal,
+                        i.Postatus,
+                        i.TotalAmount,
                     }).ToListAsync();
 
                     return Json(data);

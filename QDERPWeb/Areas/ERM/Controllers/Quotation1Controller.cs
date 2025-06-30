@@ -36,7 +36,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
             {
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    var query = dbContext.Qry60104quotationViewMasters.AsQueryable();
+                    var query = dbContext.Qry40103PropertyQuoteMasterViews.AsQueryable();
 
 
                     // Default dates if not provided
@@ -59,18 +59,12 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                         i.QuoteNo,
                         i.QuoteDate,
                         i.ClientName,
-                        i.ClientRefNo,
-                        i.Mprno,
+                        i.TotalNetAmount,
                         i.SalesOrderNo,
-                        i.SalesPersonName,
-                        i.IsSubmitted,
-                        i.IsApproved,
-                        i.IsVerified,
                         i.NoOfItems,
-                        i.TotalBeforeDiscount,
-                        i.TotalWithTax,
-                        i.TotalTaxAmount,
-                        i.TotalAfterDiscount,
+                        i.DemobilizationAmount,
+                        i.MobilizationAmount,
+                        i.TotalGrossAmount,
                     }).ToListAsync();
 
                     return Json(data);

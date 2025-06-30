@@ -226,31 +226,25 @@
 						    subColumns.AddFor(m => m.SalesOrderDate).Caption(new JS("formatMessage('Sales Order Date')")).Alignment(HorizontalAlignment.Center).Visible(true).Format("dd-MMM-yyyy");
 							subColumns.AddFor(m => m.ClientName).Caption(new JS("formatMessage('Client Name')")).Alignment(HorizontalAlignment.Center).Visible(true);
 							subColumns.AddFor(m => m.ClientPono).Caption(new JS("formatMessage('Client PO No')")).Alignment(HorizontalAlignment.Center).Visible(true);
-							subColumns.AddFor(m => m.Mprno).Caption(new JS("formatMessage('Mpr no')")).Alignment(HorizontalAlignment.Center).Visible(true);
-							subColumns.AddFor(m => m.QuoteNo).Caption(new JS("formatMessage('Quotation No')")).Alignment(HorizontalAlignment.Center).Visible(true);
-							subColumns.AddFor(m => m.OrderStatus).Caption(new JS("formatMessage('Delivery Status')")).Alignment(HorizontalAlignment.Center).Visible(true);
-							subColumns.AddFor(m => m.InvoiceStatus).Caption(new JS("formatMessage('Invoice Status')")).Alignment(HorizontalAlignment.Center).Visible(true);
+							subColumns.AddFor(m => m.Mprno).Caption(new JS("formatMessage('Quotation No')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
 						});
 						columns.Add().Caption(new JS("formatMessage('No Of Items')")).Columns(subColumns =>
 						{
-				subColumns.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No Of Items')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
-
-
-
+						subColumns.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No Of Items')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
 						});
 
 
 						columns.Add().Caption(new JS("formatMessage('Sales Order Amount')")).Columns(subColumns =>
-	{
-		        subColumns.AddFor(m => m.TotalBeforeDiscount).Caption(new JS("formatMessage('Total Before Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
+							{
+						subColumns.AddFor(m => m.TotalBeforeDiscount).Caption(new JS("formatMessage('Grand Total')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
-				subColumns.AddFor(m => m.Discount).Caption(new JS("formatMessage('Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.TotalAfterDiscount).Caption(new JS("formatMessage('Total After Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
+						subColumns.AddFor(m => m.Discount).Caption(new JS("formatMessage('Mobillzation Amount')")).Alignment(HorizontalAlignment.Center).Visible(true);
+						subColumns.AddFor(m => m.TotalAfterDiscount).Caption(new JS("formatMessage('Demobilization Amount')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
-				subColumns.AddFor(m => m.TotalTaxAmount).Caption(new JS("formatMessage('Total Tax Amount')")).Alignment(HorizontalAlignment.Center).Visible(true);
+						subColumns.AddFor(m => m.TotalTaxAmount).Caption(new JS("formatMessage('Net Total')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
-				subColumns.AddFor(m => m.TotalWithTax).Caption(new JS("formatMessage('Total With Tax')")).Alignment(HorizontalAlignment.Center).Visible(true);
+						subColumns.AddFor(m => m.TotalWithTax).Caption(new JS("formatMessage('')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
 	});
 		})

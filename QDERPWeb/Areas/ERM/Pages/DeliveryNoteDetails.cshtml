@@ -352,6 +352,14 @@
 
 	}
 
-
+		 $(function () {
+		$("#DeliveryNoteDetails").dxTextBox({
+		text: formatMessage("Delivery Note Details"),
+			readOnly: true,
+			onContentReady: function (e) {
+			$(e.element).addClass("dx-textbox-heading");
+			}
+			});
+		});
 
 </script>

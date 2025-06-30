@@ -37,7 +37,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
             {
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    var query = dbContext.Qry60504materialReceiptViewMasters.AsQueryable();
+                    var query = dbContext.Qry40901supplierSummInvoiceViews.AsQueryable();
 
 
                     // Default dates if not provided
@@ -52,26 +52,19 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     }
 
                     // Filtering by date range
-                    query = query.Where(i => i.ReceiptDate >= fromDate && i.ReceiptDate <= toDate);
+                    query = query.Where(i => i.SuppTimesheetSummaryDate >= fromDate && i.SuppTimesheetSummaryDate <= toDate);
 
                     // Fetching the data
                     var data = await query.Select(i => new
                     {
-                        i.ReceiptNo,
-                        i.ReceiptDate,
+                        i.InvoiceEffectiveDate,
+                        i.Pono,
                         i.SupplierCode,
                         i.SupplierName,
-                        i.OurPurchaseOrderNo,
-                        i.VatpurchaseBillNo,
-                        i.IsSubmitted,
-                        i.IsVerified,
-                        i.IsApproved,
-                        i.NoOfItems,
-                        i.TotalBeforeTax,
-                        i.TotalDiscount,
-                        i.TotalAfterDiscount,
-                        i.TotalTaxAmount,
-                        i.TotalWithTax,
+                        i.ReferenceNo,
+                        i.SuppTimesheetSummaryDate,
+                        i.SuppTimesheetSummaryNo,
+                        i.VatpurchaseVoucherNo,
 
                     }).ToListAsync();
 
@@ -86,7 +79,106 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 				return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
 			}
         }
-		[HttpGet]
+        [HttpGet]
+        public async Task<IActionResult> GetInvoiceSumm(DateTime? fromDate, DateTime? toDate)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var query = dbContext.Qry40113PropertyInvoiceMasterViews.AsQueryable();
+
+
+                    // Default dates if not provided
+                    if (!fromDate.HasValue)
+                    {
+                        fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1); // Start of the current month
+                    }
+
+                    if (!toDate.HasValue)
+                    {
+                        toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)); // End of the current month
+                    }
+
+                    // Filtering by date range
+                    query = query.Where(i => i.InvoiceDate >= fromDate && i.InvoiceDate <= toDate);
+
+                    // Fetching the data
+                    var data = await query.Select(i => new
+                    {
+                        i.InvoiceNo,
+                        i.Pono,
+                        i.InvoiceDate,
+                        i.InvoiceEffectiveDate,
+                        i.ClientName,
+                        i.QuotationNo,
+                        i.InvoicePeriod,
+                        i.VatinvoiceNo,
+                        i.GrossBeforeTax,
+
+                    }).ToListAsync();
+
+                    return Json(data);
+                }
+
+                return Unauthorized(new { message = "Invalid tenant." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"An error occurred while fetching the data : {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> Getservicemaintance(DateTime? fromDate, DateTime? toDate)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var query = dbContext.Qry40501propertyServiceViews.AsQueryable();
+
+
+                    // Default dates if not provided
+                    if (!fromDate.HasValue)
+                    {
+                        fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1); // Start of the current month
+                    }
+
+                    if (!toDate.HasValue)
+                    {
+                        toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)); // End of the current month
+                    }
+
+                    // Filtering by date range
+                    query = query.Where(i => i.ServiceDate >= fromDate && i.ServiceDate <= toDate);
+
+                    // Fetching the data
+                    var data = await query.Select(i => new
+                    {
+                        i.ServiceSheetNo,
+                        i.ServiceDate,
+                        i.ServiceStatus,
+                        i.PropertyDescription,
+                        i.ServicedBy,
+                        i.OperatorName,
+                        i.Complaint,
+                        i.TotalCost,
+
+                    }).ToListAsync();
+
+                    return Json(data);
+                }
+
+                return Unauthorized(new { message = "Invalid tenant." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"An error occurred while fetching the data : {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+            }
+        }
+        [HttpGet]
 		public async Task<IActionResult> GetVatCreditNoteDetails(string frmDate, string toDate)
 		{
 			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))

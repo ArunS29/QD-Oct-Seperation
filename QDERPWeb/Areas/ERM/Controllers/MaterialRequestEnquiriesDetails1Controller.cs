@@ -36,8 +36,8 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 					if (!DateTime.TryParseExact(toDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime to))
 						return BadRequest("Invalid toDate format. Use MM/dd/yyyy.");
 
-					var data = await dbContext.Qry60604purchaseRequestViewMasters
-						.Where(x => x.Mprdate >= from && x.Mprdate <= to)
+					var data = await dbContext.Qry40604propertyRequestViewMasters
+                        .Where(x => x.RequestDate >= from && x.RequestDate <= to)
 						.ToListAsync();
 
 					return Ok(data);
