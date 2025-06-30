@@ -156,7 +156,59 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
                                     Bitmap bitmap = svgDoc.Draw(); // original quality
 
                                     pictureBox.Image = bitmap;
-                                    pictureBox.Sizing = ImageSizeMode.Normal; // Best for scaling inside the box
+                                    pictureBox.Sizing = ImageSizeMode.StretchImage;
+
+                                    // Match the corresponding label for alignment
+                                    string pictureName = pictureBox.Name;
+                                    XRLabel matchingLabel = null;
+
+                                    switch (pictureName)
+                                    {
+                                        case "xrPictureBox2":
+                                            {
+                                                if (FindControl("xrLabel15", true) is XRPanel panel)
+                                                    matchingLabel = panel.FindControl("xrLabel25", true) as XRLabel;
+                                                break;
+                                            }
+                                        case "xrPictureBox3":
+                                            {
+                                                if (FindControl("xrLabel17", true) is XRPanel panel)
+                                                    matchingLabel = panel.FindControl("xrLabel17", true) as XRLabel;
+                                                break;
+                                            }
+                                        case "xrPictureBox4": matchingLabel = FindControl("xrLabel21", true) as XRLabel; break;
+                                        case "xrPictureBox5":
+                                            matchingLabel = FindControl("xrLabel22", true) as XRLabel ?? FindControl("xrLabel22", true) as XRLabel;
+                                            break;
+                                    }
+
+                                    if (matchingLabel != null)
+                                    {
+                                        matchingLabel.BeforePrint += (s, e) =>
+                                        {
+                                            float iconWidth = 10f;
+                                            float iconHeight = 10f;
+
+                                            pictureBox.WidthF = iconWidth;
+                                            pictureBox.HeightF = iconHeight;
+
+                                            float posY = matchingLabel.LocationF.Y + (matchingLabel.HeightF - iconHeight) / 2f;
+
+                                            using (var g = Graphics.FromImage(new Bitmap(1, 1)))
+                                            using (var sysFont = new Font(matchingLabel.Font.Name, matchingLabel.Font.Size, (FontStyle)(int)matchingLabel.Font.Style))
+                                            {
+                                                var format = StringFormat.GenericTypographic;
+                                                format.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
+
+                                                float textWidth = g.MeasureString(matchingLabel.Text ?? "", sysFont, int.MaxValue, format).Width;
+                                                float rightEdge = matchingLabel.LocationF.X + matchingLabel.WidthF;
+
+                                                float posX = rightEdge - textWidth - iconWidth - 8f;
+
+                                                pictureBox.LocationF = new PointF(posX, posY);
+                                            }
+                                        };
+                                    }
                                 }
                             }
                             catch (Exception ex)
@@ -165,11 +217,12 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
                             }
                         }
                     }
-
                 }
             }
-            
+
         }
+            
+        
 
 
         private (string Symbol, bool HasImage) GetCurrencySymbolOrImageStatus(int currencyId)
