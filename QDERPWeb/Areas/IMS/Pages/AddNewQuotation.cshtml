@@ -1445,6 +1445,7 @@
                         .OnInitialized("dataGridInitialized10")
                         .HeaderFilter(p => p.Visible(true))
                         .ShowBorders(true)
+						.Width(450)
                         .HoverStateEnabled(true)
                         .Paging(p => p.PageSize(15))
                         .FilterRow(f => f.Visible(false))//
@@ -1479,6 +1480,7 @@
                         .OnInitialized("dataGridInitialized11")
                         .HeaderFilter(p => p.Visible(true))
                         .ShowBorders(true)
+						.Width(450)
                         .HoverStateEnabled(true)
                         .Paging(p => p.PageSize(15))
                         .FilterRow(f => f.Visible(false))//
@@ -1518,6 +1520,7 @@
                         .FilterRow(f => f.Visible(false))//
                         .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                         .Height(345)
+						.Width(540)
                         .Selection(s => s.Mode(SelectionMode.Single))
                         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                         .Columns(columns =>

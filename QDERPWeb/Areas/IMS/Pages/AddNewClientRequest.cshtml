@@ -1723,45 +1723,45 @@
 					.Columns(columns =>
 					{
 
-						columns.Add().DataField("ProjectSubUnitName").Caption(new JS("formatMessage('Project Unit Name')")).Alignment(HorizontalAlignment.Center).Width(200);
+						columns.Add().DataField("ProjectSubUnitName").Caption(new JS("formatMessage('Project Unit Name')")).Alignment(HorizontalAlignment.Center).Width(270);
 
 					})
 					)
 				}
-		@using (Html.DevExtreme().NamedTemplate("GetPreparedByContentTemplate"))
-		{
-			@(Html.DevExtreme().DataGrid()
-					.ID("GetPreparedby-datagrid")
-					.DataSource(d => d.WebApi()
-					.Controller("AddNewClientRequest")
-					.LoadAction("GetSignatory")
-					.LoadMode(DataSourceLoadMode.Raw)
-					.Key("SignatoryId")
-					)
-					.WordWrapEnabled(true)
-					.ShowBorders(true)
-							   		@* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
-					.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-					.OnSelectionChanged("dataGridSelectionChanged10")
-					.OnInitialized("dataGridInitialized10")
-					.HeaderFilter(p => p.Visible(true))
-					.ShowBorders(true)
-					.HoverStateEnabled(true)
-					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(false))//
-					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-					.Height(345)
-					.Selection(s => s.Mode(SelectionMode.Single))
-					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-					.Columns(columns =>
-					{
-						columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('Signatory Id')")).Alignment(HorizontalAlignment.Center).Width(200);
+				@using (Html.DevExtreme().NamedTemplate("GetPreparedByContentTemplate"))
+				{
+					@(Html.DevExtreme().DataGrid()
+							.ID("GetPreparedby-datagrid")
+							.DataSource(d => d.WebApi()
+							.Controller("AddNewClientRequest")
+							.LoadAction("GetSignatory")
+							.LoadMode(DataSourceLoadMode.Raw)
+							.Key("SignatoryId")
+							)
+							.WordWrapEnabled(true)
+							.ShowBorders(true)
+							   				@* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+							.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+							.OnSelectionChanged("dataGridSelectionChanged10")
+							.OnInitialized("dataGridInitialized10")
+							.HeaderFilter(p => p.Visible(true))
+							.ShowBorders(true)
+							.HoverStateEnabled(true)
+							.Paging(p => p.PageSize(15))
+							.FilterRow(f => f.Visible(false))//
+							.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+							.Height(345)
+							.Selection(s => s.Mode(SelectionMode.Single))
+							.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+							.Columns(columns =>
+							{
+								columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('Signatory Id')")).Alignment(HorizontalAlignment.Center).Width(150);
 
-						columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center).Width(200);
+								columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center).Width(200);
 
-					})
-					)
-				}
+							})
+							)
+						}
 		@using (Html.DevExtreme().NamedTemplate("GetVerifiedByContentTemplate"))
 		{
 			@(Html.DevExtreme().DataGrid()
@@ -1789,7 +1789,7 @@
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
-						columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('Signatory Id')")).Alignment(HorizontalAlignment.Center).Width(200);
+						columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('Signatory Id')")).Alignment(HorizontalAlignment.Center).Width(150);
 
 						columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center).Width(200);
 
@@ -1823,7 +1823,7 @@
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
-						columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('Signatory Id')")).Alignment(HorizontalAlignment.Center).Width(200);
+						columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('Signatory Id')")).Alignment(HorizontalAlignment.Center).Width(150);
 
 						columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center).Width(200);
 
