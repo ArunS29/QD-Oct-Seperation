@@ -3652,24 +3652,60 @@
 
 
 
+	// $("#btnAddNew").on("click", function (e) {
+	// 	var newRow = {
+	// 		LineOrderNo: rowData.length + 1, // Auto-generate SNo
+	// 		QuoteGroupItemSlNo: null,
+	// 		GSCode: ItemNo,
+	// 		Description: null,
+	// 		UnitRateMethod: null,
+	// 		QtyRequested: 0,
+	// 		ExpectedUnitRate: 0.00,
+	// 		LineTotal: 0
+	// 	};
+
+	// 	rowData.push(newRow);
+	// 	dataGridInstance.option("dataSource", rowData);
+	// 	dataGridInstance.refresh();
+	// 	var button = $("#btnSave").dxButton("instance");
+	// 	button.option("text", "Update");
+	// });
+
 	$("#btnAddNew").on("click", function (e) {
-		var newRow = {
-			LineOrderNo: rowData.length + 1, // Auto-generate SNo
-			QuoteGroupItemSlNo: null,
-			GSCode: ItemNo,
-			Description: null,
-			UnitRateMethod: null,
-			QtyRequested: 0,
-			ExpectedUnitRate: 0.00,
-			LineTotal: 0
+		const grid = $("#B2BdataGrid").dxDataGrid("instance");
+		const store = grid.getDataSource().store();
+		const currentData = grid.getDataSource().items();
+
+		// Calculate next SNo safely based on existing items
+		const nextLineOrderNo = currentData.length > 0
+			? Math.max(...currentData.map(row => row.LineOrderNo || 0)) + 1
+			: 1;
+
+		const newRow = {
+			LineOrderNo: nextLineOrderNo,
+			//ItemCode: ItemNo || "",  // Ensure this is defined or provide fallback
+			QuoteGroupItemSlNo:null,
+	GSCode: ItemNo,
+	Description:null,
+	UnitRateMethod:null,
+	QtyRequested: 0,
+	ExpectedUnitRate: 0,
+	LineTotal: 0
 		};
 
-		rowData.push(newRow);
-		dataGridInstance.option("dataSource", rowData);
-		dataGridInstance.refresh();
-		var button = $("#btnSave").dxButton("instance");
-		button.option("text", "Update");
+		// Efficient insert without replacing entire dataSource
+		store.insert(newRow)
+			.then(() => {
+				grid.refresh(); // Ensure the UI updates with the new row
+					// ✅ Update Save button text here
+				var button = $("#btnSave").dxButton("instance");
+				button.option("text", "Update");
+			})
+			.catch(error => {
+				DevExpress.ui.notify("Error adding row: " + error.message, "error", 3000);
+			});
 	});
+
 
 
 	// Fetch dropdown data (same API can be used if needed)

@@ -234,8 +234,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 						dict["UnitDesc"] = unitDesc;
 
 						dict["GsDescription"] = gsDescription;
+                        dict["GScode"] = gridDetails.Gscode;
 
-						resultWithDetails.Add(item);
+                        resultWithDetails.Add(item);
 					}
 
 					return Json(resultWithDetails);
