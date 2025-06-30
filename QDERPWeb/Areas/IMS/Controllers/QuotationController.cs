@@ -705,6 +705,80 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, new { success = false, message = "Revision failed", detail = ex.Message });
             }
         }
+        [HttpPost]
+        public async Task<IActionResult> CreateSalesOrderFromQuotation([FromBody] string quotationNo)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(quotationNo))
+                    return BadRequest(new { success = false, message = "Quotation No is required." });
+
+                // Step 1: Get DB Context
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+                // Step 2: Get tenant name from session
+                string tenantName = HttpContext.Session.GetString("TenantName");
+                if (string.IsNullOrWhiteSpace(tenantName))
+                    return Unauthorized(new { success = false, message = "Tenant name not found in session." });
+
+                // Step 3: Get company info
+                var company = dbContext.Tbl901CompanyDetails
+                    .FirstOrDefault(c => c.CompanyNameShort == tenantName);
+                if (company == null)
+                    return NotFound(new { success = false, message = "Company not found." });
+
+                string salesOrderAbbrv = company.SalesOrderAbbrv ?? "SO";
+                int yearDigits = company.InvoiceYearDigits ?? 0;
+                bool isResetByYear = company.IsResetInvoiceInYear ?? false;
+                int noOfDigits = dbContext.Tbl901CompanyDetails02s
+                    .Where(c => c.CompanyId == company.CompanyId)
+                    .Select(c => c.NoOfDigitsToInventoryQuotation ?? 5)
+                    .FirstOrDefault();
+
+                DateTime now = DateTime.Now;
+                string yearPart = (yearDigits > 0) ? now.Year.ToString().Substring(4 - yearDigits) : "";
+                string basePrefix = $"{salesOrderAbbrv}{yearPart}-";
+
+                var existingNos = dbContext.Tbl60201salesOrderMasters
+                    .Where(x => x.SalesOrderNo.StartsWith(basePrefix))
+                    .Select(x => x.SalesOrderNo)
+                    .ToList();
+
+                int maxRunning = existingNos
+                    .Select(no => int.TryParse(no?.Substring(no.Length - noOfDigits), out int num) ? num : 0)
+                    .DefaultIfEmpty(0)
+                    .Max() + 1;
+
+                string padded = maxRunning.ToString().PadLeft(noOfDigits, '0');
+                string newSalesOrderNo = $"{basePrefix}{padded}";
+
+                string addedBy = HttpContext.Session.GetString("UserName") ?? "System";
+
+                // Step 4: Execute SP
+                bool isCreateCostCenter = true;
+                string defaultCostCenterGroup = "DEFAULT-GROUP"; // You can retrieve from company settings if needed
+
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "EXEC sp600_04InsertToSalesOrderFromQuotation @SalesOrderNo = {0}, @QuotationNo = {1}, @AddedBy = {2}, @IsCreateCostCenterFromSalesOrder = {3}, @DefaultCostCenterMasterFromSalesOrder = {4}",
+                    newSalesOrderNo, quotationNo, addedBy, isCreateCostCenter, defaultCostCenterGroup
+                );
+
+              
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Sales Order created successfully.",
+                    salesOrderNo = newSalesOrderNo,
+                    quotationNo = quotationNo
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Server error: " + ex.Message });
+            }
+        }
 
     }
 }

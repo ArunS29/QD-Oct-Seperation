@@ -278,6 +278,7 @@
 				.Type(ButtonType.Default))
 
 		@(Html.DevExtreme().Button()
+				.ID("btnBack")
 				.Text("Back")
 				.Icon("back")
 				.Type(ButtonType.Default))
@@ -334,6 +335,10 @@
 
 <script>
 
+
+			$("#btnBack").on("click", function (e) {
+				history.back();
+					});
 		$(function () {
 			$("#Generateinvoice").dxTextBox({
 				text: formatMessage("Generate Invoice Sales Order"),

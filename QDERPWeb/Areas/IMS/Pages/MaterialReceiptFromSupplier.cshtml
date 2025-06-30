@@ -1456,7 +1456,7 @@
 		let grid = $("#B2BdataGrid").dxDataGrid({
 			dataSource: rowData,
 			keyExpr: "LineOrderNo",
-			// âœ… your columns, editing, dropdowns, and templates go here, unchanged
+			// ✅ your columns, editing, dropdowns, and templates go here, unchanged
 			// Just make sure to close all functions properly
 			// For brevity, I'm skipping repeating all the column config here
 			columns: [
@@ -1571,7 +1571,7 @@
 
 										keyExpr: "GSCode",
 
-										height: 300, // âœ… Add fixed height to enable scrolling
+										height: 300, // ✅ Add fixed height to enable scrolling
 
 										scrolling: { mode: "virtual" },
 
@@ -1633,7 +1633,7 @@
 
 							});
 
-							// âœ… Add icon with navigation
+							// ✅ Add icon with navigation
 
 							$("<div>").dxButton({
 
@@ -1657,7 +1657,7 @@
 
 							}).appendTo($container);
 
-							// âœ… Edit icon with navigation
+							// ✅ Edit icon with navigation
 
 							$("<div>").dxButton({
 
@@ -1795,7 +1795,7 @@
 
 							});
 
-							// âœ… Add Button
+							// ✅ Add Button
 
 							$("<div>").dxButton({
 
@@ -1932,7 +1932,7 @@
 
 							});
 
-							// âœ… Add Button
+							// ✅ Add Button
 
 							$("<div>").dxButton({
 
@@ -2152,7 +2152,7 @@
 
 										keyExpr: "GSCode",
 
-										height: 300, // âœ… Add fixed height to enable scrolling
+										height: 300, // ✅ Add fixed height to enable scrolling
 
 										scrolling: { mode: "virtual" },
 
@@ -2214,7 +2214,7 @@
 
 							});
 
-							// âœ… Add icon with navigation
+							// ✅ Add icon with navigation
 
 							$("<div>").dxButton({
 
@@ -2238,7 +2238,7 @@
 
 							}).appendTo($container);
 
-							// âœ… Edit icon with navigation
+							// ✅ Edit icon with navigation
 
 							$("<div>").dxButton({
 
@@ -2364,7 +2364,7 @@
 
 							});
 
-							// âœ… Add Button
+							// ✅ Add Button
 
 							$("<div>").dxButton({
 
@@ -2529,10 +2529,42 @@
 
 
 
-	$("#btnAddNew").on("click", function (e) {
-		var newRow = {
-			LineOrderNo: rowData.length + 1, // Auto-generate SNo
+	// $("#btnAddNew").on("click", function (e) {
+	// 	var newRow = {
+	// 		LineOrderNo: rowData.length + 1, // Auto-generate SNo
 
+	// 		GSCode: ItemNo,
+	// 		Description: null,
+	// 		UnitRateMethod: null,
+	// 		QtyReceived: 0,
+	// 		UnitPrice: 0,
+	// 		ItemDiscount: 0,
+	// 		PotaxSlab: null,
+	// 		LineTaxAmount: 0.00,
+	// 		LineTotalWithTax: 0.00
+
+	// 	};
+
+	// 	rowData.push(newRow);
+	// 	dataGridInstance.option("dataSource", rowData);
+	// 	dataGridInstance.refresh();
+	// 	var button = $("#btnSave").dxButton("instance");
+	// 	button.option("text", "Update");
+	// });
+
+	$("#btnAddNew").on("click", function (e) {
+		const grid = $("#B2BdataGrid").dxDataGrid("instance");
+		const store = grid.getDataSource().store();
+		const currentData = grid.getDataSource().items();
+
+		// Calculate next SNo safely based on existing items
+		const nextLineOrderNo = currentData.length > 0
+			? Math.max(...currentData.map(row => row.LineOrderNo || 0)) + 1
+			: 1;
+
+		const newRow = {
+			LineOrderNo: nextLineOrderNo,
+			//ItemCode: ItemNo || "",  // Ensure this is defined or provide fallback
 			GSCode: ItemNo,
 			Description: null,
 			UnitRateMethod: null,
@@ -2542,17 +2574,20 @@
 			PotaxSlab: null,
 			LineTaxAmount: 0.00,
 			LineTotalWithTax: 0.00
-
 		};
 
-		rowData.push(newRow);
-		dataGridInstance.option("dataSource", rowData);
-		dataGridInstance.refresh();
-		var button = $("#btnSave").dxButton("instance");
-		button.option("text", "Update");
+		// Efficient insert without replacing entire dataSource
+		store.insert(newRow)
+			.then(() => {
+				grid.refresh(); // Ensure the UI updates with the new row
+					// ✅ Update Save button text here
+				var button = $("#btnSave").dxButton("instance");
+				button.option("text", "Update");
+			})
+			.catch(error => {
+				DevExpress.ui.notify("Error adding row: " + error.message, "error", 3000);
+			});
 	});
-
-
 	// Fetch dropdown data (same API can be used if needed)
 	function getDropdownData() {
 		return $.ajax({
@@ -4354,7 +4389,7 @@
 	// 			let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex, "VAT%") || "0%";
 	// 			console.log("vatRateStr", vatRateStr)
 
-	// 			let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100; // Convert "15%" â†’ 15 â†’ 0.15
+	// 			let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100; // Convert "15%" → 15 → 0.15
 	// 			console.log("vatRate", vatRate)
 
 	// 			// Calculate values
@@ -5574,7 +5609,6 @@
 		const urlParams = new URLSearchParams(window.location.search);
 		const purchaseOrderNo = urlParams.get("PurchaseOrderNo") || urlParams.get("Pono");
 		const receiptNoteNo = urlParams.get("ReceiptNo");
-
 		if (receiptNoteNo) {
 			// Editing or viewing an existing receipt: load receipt details (this will set the grid)
 			loadClientDetails(receiptNoteNo);

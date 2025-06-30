@@ -810,8 +810,15 @@ public async Task<IActionResult> GetByPoNo(string poNo, byte? revisionId)
                 var children = await dbContext.Tbl60402purchaseOrderChildren
                     .Where(x => x.Pono == poNo)
             .ToListAsync();
+                // Load descriptions into dictionaries
+                //var gsDescriptions = await dbContext.Tbl20164GoodsAndServicesMasters
+                //    .ToDictionaryAsync(x => x.Gscode, x => x.Gsdescrpition);
 
-        return Ok(new
+                //var unitDescriptions = await dbContext.Tbl40111PropertyUnitCodes
+                //    .ToDictionaryAsync(x => x.UnitCode, x => x.UnitDesc);
+
+
+                return Ok(new
         {
             success = true,
 
@@ -879,8 +886,15 @@ public async Task<IActionResult> GetByPoNo(string poNo, byte? revisionId)
                 Pono = x.Pono,
                 Gscode = x.Gscode,
                 AddlDescription = x.AddlDescription,
+        //    AddlDescription = !string.IsNullOrWhiteSpace(x.AddlDescription)
+        //? x.AddlDescription
+        //: (gsDescriptions.ContainsKey(x.Gscode) ? gsDescriptions[x.Gscode] : null),
                 QuotedQuantity = x.QuotedQuantity,
                 UnitRateMethod = x.UnitRateMethod,
+    //            UnitRateMethod = x.UnitRateMethod.HasValue
+    //? (unitDescriptions.ContainsKey(x.UnitRateMethod.Value) ? unitDescriptions[x.UnitRateMethod.Value] : null)
+    //: null,
+
                 UnitPrice = x.UnitPrice,
                 ItemDiscount = x.ItemDiscount,
                 PotaxSlab = x.PotaxSlab,
