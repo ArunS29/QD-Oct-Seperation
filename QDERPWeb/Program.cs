@@ -20,9 +20,16 @@ using QD.ERP.Web.Middlewares;
 using DevExpress.XtraCharts;
 using QD.ERP.Web.Middleware;
 using QD.ERP.Web.Services.Logging;
+using System.Text;
+using System.Text.Json;
+using System.Diagnostics;
+using Microsoft.AspNetCore.Http.Features;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+// builder.WebHost.UseUrls("http://*:44300");
 
 #region **1. Configure Services**
 
@@ -85,7 +92,7 @@ builder.Services.AddMemoryCache();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.IdleTimeout = TimeSpan.FromMinutes(20);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
@@ -188,16 +195,70 @@ app.UseRouting();
 //    }
 //});
 
+app.UseSession();
 
 app.Use(async (context, next) =>
 {
-    var tenantName = context.GetRouteValue("tenantName")?.ToString();
+    string tenantName = null;
+
+    // ✅ 1. Try from route value
+    tenantName = context.GetRouteValue("tenantName")?.ToString();
+
+    // ✅ 2. If not found, try from body (for POST/PUT/PATCH with JSON)
+    if (string.IsNullOrEmpty(tenantName) &&
+        (context.Request.Method == HttpMethods.Post ||
+         context.Request.Method == HttpMethods.Put ||
+         context.Request.Method == HttpMethods.Patch) &&
+        context.Request.ContentType != null &&
+        context.Request.ContentType.Contains("application/json"))
+    {
+        context.Request.EnableBuffering();
+
+        using (var reader = new StreamReader(
+            context.Request.Body,
+            encoding: Encoding.UTF8,
+            detectEncodingFromByteOrderMarks: false,
+            bufferSize: 1024,
+            leaveOpen: true))
+        {
+            var body = await reader.ReadToEndAsync();
+            context.Request.Body.Position = 0;
+
+            if (!string.IsNullOrWhiteSpace(body))
+            {
+                try
+                {
+                    var json = JsonSerializer.Deserialize<Dictionary<string, object>>(body);
+                    if (json != null && json.TryGetValue("TenantName", out var tn))
+                    {
+                        tenantName = tn?.ToString();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error fetching Tenant Name: {ex.Message}");
+                }
+            }
+        }
+    }
+
+    // ✅ 3. If still not found, try from session
+    if (string.IsNullOrEmpty(tenantName))
+    {
+        tenantName = context.User?.FindFirst("TenantName")?.Value;
+        //tenantName = context.Session.GetString("TenantName");
+        Debug.WriteLine($"Session TenantName: {tenantName}");
+    }
+
+    // ✅ Store for the rest of the request
     if (!string.IsNullOrEmpty(tenantName))
     {
         context.Items["TenantName"] = tenantName;
     }
+
     await next();
 });
+
 
 if (!app.Environment.IsDevelopment())
 {
@@ -212,7 +273,7 @@ if (!app.Environment.IsDevelopment())
 //}
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.UseSession();
+
 app.UseMiddleware<TokenValidationMiddleware>();
 app.UseMultitenancy<Tenant>();
 app.UseAuthentication();
