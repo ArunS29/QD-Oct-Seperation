@@ -223,6 +223,8 @@ namespace QD.ERP.Web.Areas.Security.Controllers
                         // var sessionCookie = Request.Cookies[".AspNetCore.Session"];
 
                         HttpContext.Session.SetString("TenantName", request.TenantName);
+                        HttpContext.Session.SetString("UserName", request.Username);
+                        HttpContext.Session.SetString("UserId", user.UserId.ToString());
 
                         return Ok(new
                         {
@@ -230,7 +232,7 @@ namespace QD.ERP.Web.Areas.Security.Controllers
                             success = true,
                             token,
                             permissions
-                            
+
                         });
                     }
                 }
