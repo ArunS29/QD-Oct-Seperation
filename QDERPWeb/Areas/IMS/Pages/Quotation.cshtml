@@ -568,14 +568,47 @@
 		}
 	},
 
-				{
-					text: "Create Sales Order",
-					icon: "add",
-					onItemClick: function () {
-						const url = `/${tenantName}/IMS/CreatePurchaseOrder?Rfqno=${Rfqno}`;
-						window.location.href = url;
+					{
+		text: "Create Sales Order",
+		icon: "add",
+		onItemClick: function () {
+			const quotationNo = e.row.data.QuoteNo;
+			const tenantName = window.tenantName || "defaultTenant";
+
+			if (!quotationNo) {
+				DevExpress.ui.notify("Quotation No not available.", "error", 2000);
+				return;
+			}
+
+			// Confirm before proceeding
+			DevExpress.ui.dialog.confirm("You are about to create a Sales Order from this Quotation. Continue?", "Confirmation")
+				.done(function (confirmResult) {
+					if (confirmResult) {
+						$.ajax({
+							url: "/api/Quotation/CreateSalesOrderFromQuotation", // your backend API
+							method: "POST",
+							contentType: "application/json",
+							data: JSON.stringify(quotationNo),
+							success: function (result) {
+								if (result.success) {
+									DevExpress.ui.notify(result.message, "success", 2000);
+
+									// Navigate to Sales Order creation page
+									const url = `/${tenantName}/IMS/AddNewSalesOrder?QuotationNo=${encodeURIComponent(result.quotationNo)}&SalesOrderNo=${encodeURIComponent(result.salesOrderNo)}`;
+									window.location.href = url;
+								} else {
+									DevExpress.ui.notify(result.message || "Failed to create Sales Order.", "error", 3000);
+								}
+							},
+							error: function () {
+								DevExpress.ui.notify("Server error while creating Sales Order.", "error", 3000);
+							}
+						});
 					}
-				}
+				});
+		}
+	}
+
 			];
 		}
 	}

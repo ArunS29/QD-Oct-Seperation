@@ -538,7 +538,7 @@
                             </div>
                         </div>
                         @(Html.DevExtreme().TextBox()
-                        .ID("Subjectt")
+                        .ID("Subject")
                         .Width("100%")
                         )
                     </div>
@@ -553,7 +553,7 @@
                             </div>
                         </div>
                         @(Html.DevExtreme().TextArea()
-                        .ID("QuoteSummaryy")
+                        .ID("QuoteSummary")
                         .Height(80)
                         .Width("100%")
                         )
@@ -571,7 +571,7 @@
                             </div>
                         </div>
                         @(Html.DevExtreme().TextBox()
-                        .ID("QuoteIntroo")
+                        .ID("QuoteIntro")
                         .Width("100%")
                         )
                     </div>
@@ -586,7 +586,7 @@
                             </div>
                         </div>
                         @(Html.DevExtreme().TextArea()
-                        .ID("QuoteThankss")
+                        .ID("QuoteThanks")
                         .Height(80)
                         .Width("100%")
                         )
@@ -1814,6 +1814,7 @@
 
 
 	function loadClientDetails(QuoteNo) {
+		debugger;
 		$.ajax({
 			url: `/api/AddNewQuotation/GetQuotationdataByCode?QuoteNo=${encodeURIComponent(QuoteNo)}`,
 			type: 'GET',
@@ -1832,7 +1833,7 @@
 					$('#GetProjectDropDown').dxDropDownBox("instance").option("value", response.ClientCode);
 					$('#ddGetSalesPerson').dxDropDownBox("instance").option("value", response.SalesPersonCode);
 
-					$('#MprNumber').dxTextBox("instance").option("value", response.MPRNo);
+					$('#MprNumber').dxTextBox("instance").option("value", response.Mprno);
 					$('#ClientRefName').dxTextBox("instance").option("value", response.Attention);
 					$('#ClientEmail').dxTextBox("instance").option("value", response.ClientContactEmail);
 					$('#ClientContactNo').dxTextBox("instance").option("value", response.ClientContactNo);
@@ -3121,10 +3122,45 @@
 
 
 
-	$("#btnAddNew").on("click", function (e) {
-		var newRow = {
-			LineOrderNo: rowData.length + 1, // Auto-generate SNo
+	// $("#btnAddNew").on("click", function (e) {
+	// 	var newRow = {
+	// 		LineOrderNo: rowData.length + 1, // Auto-generate SNo
 
+	// 		GSCode: ItemNo,
+	// 		Description: null,
+	// 		UnitRateMethod: null,
+	// 		QuotedQuantity: 0,
+	// 		CostPrice: 0.00,
+	// 		QuotedUnitPrice: 0.00,
+	// 		QuotedDiscount:0,
+	// 		TaxSlabCode: null,
+	// 		LineTaxAmount: 0.00,
+	// 		LineTotalWithTax: 0,
+	// 		TotalCostOfItem: 0.00,
+	// 		ItemProfitOrLoss: 0.00
+
+	// 	};
+
+	// 	rowData.push(newRow);
+	// 	dataGridInstance.option("dataSource", rowData);
+	// 	dataGridInstance.refresh();
+	// 	var button = $("#btnSave").dxButton("instance");
+	// 	button.option("text", "Update");
+	//});
+
+	$("#btnAddNew").on("click", function (e) {
+		const grid = $("#B2BdataGrid").dxDataGrid("instance");
+		const store = grid.getDataSource().store();
+		const currentData = grid.getDataSource().items();
+
+		// Calculate next SNo safely based on existing items
+		const nextLineOrderNo = currentData.length > 0
+			? Math.max(...currentData.map(row => row.LineOrderNo || 0)) + 1
+			: 1;
+
+		const newRow = {
+			LineOrderNo: nextLineOrderNo,
+	// 		//ItemCode: ItemNo || "",  // Ensure this is defined or provide fallback
 			GSCode: ItemNo,
 			Description: null,
 			UnitRateMethod: null,
@@ -3137,15 +3173,21 @@
 			LineTotalWithTax: 0,
 			TotalCostOfItem: 0.00,
 			ItemProfitOrLoss: 0.00
-
 		};
 
-		rowData.push(newRow);
-		dataGridInstance.option("dataSource", rowData);
-		dataGridInstance.refresh();
-		var button = $("#btnSave").dxButton("instance");
-		button.option("text", "Update");
+		// Efficient insert without replacing entire dataSource
+		store.insert(newRow)
+			.then(() => {
+				grid.refresh(); // Ensure the UI updates with the new row
+					// ✅ Update Save button text here
+				var button = $("#btnSave").dxButton("instance");
+				button.option("text", "Update");
+			})
+			.catch(error => {
+				DevExpress.ui.notify("Error adding row: " + error.message, "error", 3000);
+			});
 	});
+
 
 
 	// Fetch dropdown data (same API can be used if needed)
@@ -4986,7 +5028,7 @@
 				ClientCode: $('#GetProjectDropDown').dxDropDownBox("instance").option("value") || null,
 				SalesPersonCode: $('#ddGetSalesPerson').dxDropDownBox("instance").option("value") || null,
 
-				MPRNo: $('#MprNumber').dxTextBox("instance").option("value") || null,
+				Mprno: $('#MprNumber').dxTextBox("instance").option("value") || null,
 				Attention: $('#ClientRefName').dxTextBox("instance").option("value") || null,
 				ClientContactEmail: $('#ClientEmail').dxTextBox("instance").option("value") || null,
 				ClientContactNo: $('#ClientContactNo').dxTextBox("instance").option("value") || null,
@@ -5194,38 +5236,38 @@
 	});
 
 
-	$(document).ready(function () {
-		$.ajax({
-			url: "/api/VATModule/CreateNewInvoiceCounter",
-			type: 'POST',
-			success: function (data) {
-				console.log("Success:", data);
+	// $(document).ready(function () {
+	// 	$.ajax({
+	// 		url: "/api/VATModule/CreateNewInvoiceCounter",
+	// 		type: 'POST',
+	// 		success: function (data) {
+	// 			console.log("Success:", data);
 
-				$("#InvoiceCounterValue").dxTextBox("instance").option("value", data);
-			},
-			error: function (xhr, status, error) {
-				console.error("Error loading Payment Accounts:", error);
-				DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
-			}
-		});
-	});
+	// 			$("#InvoiceCounterValue").dxTextBox("instance").option("value", data);
+	// 		},
+	// 		error: function (xhr, status, error) {
+	// 			console.error("Error loading Payment Accounts:", error);
+	// 			DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+	// 		}
+	// 	});
+	// });
 
 
-	$(document).ready(function () {
-		$.ajax({
-			url: "/api/VATModule/GenerateGuid",
-			type: 'POST',
-			success: function (data) {
-				console.log("Success:", data);
+	// $(document).ready(function () {
+	// 	$.ajax({
+	// 		url: "/api/VATModule/GenerateGuid",
+	// 		type: 'POST',
+	// 		success: function (data) {
+	// 			console.log("Success:", data);
 
-				$("#UUID").dxTextBox("instance").option("value", data);
-			},
-			error: function (xhr, status, error) {
-				console.error("Error loading Payment Accounts:", error);
-				DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
-			}
-		});
-	});
+	// 			$("#UUID").dxTextBox("instance").option("value", data);
+	// 		},
+	// 		error: function (xhr, status, error) {
+	// 			console.error("Error loading Payment Accounts:", error);
+	// 			DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+	// 		}
+	// 	});
+	// });
 
 
 	function VATPercentage(newValue, rowIndex, TaxSlabCode) {
@@ -6248,10 +6290,10 @@ function onEditClientClick() {
         success: function (data) {
             console.log("Loaded:", data);
 
-            $("#Subjectt").dxTextBox("instance")?.option("value", data.ReportSubject || "");
-            $("#QuoteSummaryy").dxTextArea("instance")?.option("value", data.ReportSummary || "");
-            $("#QuoteIntroo").dxTextBox("instance")?.option("value", data.ReportIntroduction || "");
-            $("#QuoteThankss").dxTextArea("instance")?.option("value", data.ReportThanksNote || "");
+            $("#Subject").dxTextBox("instance")?.option("value", data.ReportSubject || "");
+            $("#QuoteSummary").dxTextArea("instance")?.option("value", data.ReportSummary || "");
+            $("#QuoteIntro").dxTextBox("instance")?.option("value", data.ReportIntroduction || "");
+            $("#QuoteThanks").dxTextArea("instance")?.option("value", data.ReportThanksNote || "");
         },
         error: function (xhr, status, error) {
             console.error("Error loading report data:", error);
