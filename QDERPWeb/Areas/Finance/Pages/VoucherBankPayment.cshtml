@@ -555,6 +555,7 @@
                             .ReadOnly(true)
                             .ElementAttr(new { @class = "custom-disabled-selectbox" })
                             .ContentTemplate(new TemplateName("BaseCurrencyContentTemplate"))
+                            
                             )
                         @using (Html.DevExtreme().NamedTemplate("BaseCurrencyContentTemplate"))
                         {
@@ -600,7 +601,7 @@
                             .ShowClearButton(false)
                             .AcceptCustomValue(false)
                             .OpenOnFieldClick(true)
-                            .Value(1)
+                          
                             .ValueExpr("CurrencyExchangeId")
                             .DisplayExpr("CurrencyName")
                             .OnInput("dropDownBoxOnInput")
@@ -609,6 +610,7 @@
                             .DropDownOptions(o => o.Width(700))
                             .ElementAttr(new { @class = "light-theme-input" })
                             .ContentTemplate(new TemplateName("CurrencyContentTemplate"))
+                            .OnInitialized("onBaseCurrencyInit")
                             )
                         @using (Html.DevExtreme().NamedTemplate("CurrencyContentTemplate"))
                         {
@@ -4387,5 +4389,23 @@ function onAccountHeadRowPrepared(e) {
             });
         }
     });
+            function onBaseCurrencyInit(e) {
+            const dropDown = e.component;
+
+            // Delay to ensure dataSource is ready
+            setTimeout(() => {
+                const ds = dropDown.getDataSource();
+                if (!ds) return;
+
+                // Skip if already has value
+                if (dropDown.option("value")) return;
+
+                ds.load().done(items => {
+                    if (items && items.length > 0) {
+                        dropDown.option("value", items[0].CurrencyExchangeId);
+                    }
+                });
+            }, 200); // 100ms is usually enough
+        }
 
 </script>
