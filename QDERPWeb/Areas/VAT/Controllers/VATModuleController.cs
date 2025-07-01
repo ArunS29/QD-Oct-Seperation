@@ -4798,6 +4798,95 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
 
         }
+
+        [HttpGet]
+        public async Task<ActionResult> GetDebitNoteDetails(string DebitNoteNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+
+                    var result = dbContext.Tbl20172VatdebitNoteMasters
+                      .Where(x => x.DebitNoteNo == DebitNoteNo)
+                      .ToList();
+
+
+                    return Json(result);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetGridDebitNoteDetails(string DebitNoteNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var resultWithVAT = new List<ExpandoObject>();
+
+                    var result1 = dbContext.Qry201901vatdebitNoteChildren
+                        .Where(x => x.DebitNoteNo == DebitNoteNo)
+                        .ToList();
+
+                    foreach (var gridDetails in result1)
+                    {
+                        dynamic item = new ExpandoObject();
+                        var dict = (IDictionary<string, object>)item;
+
+                        // Copy all existing fields from gridDetails into dynamic object
+                        var properties = gridDetails.GetType().GetProperties();
+                        foreach (var prop in properties)
+                        {
+                            dict[prop.Name] = prop.GetValue(gridDetails);
+                        }
+
+                        // Get the TaxRateInWord from the TaxSlab table
+                        var taxRateInWord = dbContext.Tbl20163VatTaxSlabs
+                            .Where(x => x.TaxSlabCode == gridDetails.TaxSlabCode)
+                            .Select(x => x.TaxRateInWord)
+                            .FirstOrDefault();
+
+                        var UnitRateMethodDesc = dbContext.Tbl40111PropertyUnitCodes
+                   .Where(x => x.UnitCode == gridDetails.UnitRateMethod)
+                   .Select(x => x.UnitDesc)
+                   .FirstOrDefault();
+
+                        //var qty = gridDetails.UnitsToBill;
+                        //var unitPrice = gridDetails.UnitRate;
+                        //var vatRate = decimal.TryParse(taxRateInWord.Replace("%", ""), out decimal rate) ? rate / 100 : 0;
+
+                        //var amount = qty * unitPrice;
+                        //var vatValue = amount * vatRate;
+                        //var totalValue = amount + vatValue;
+
+                        // Add new dynamic column
+                        dict["UnitRateMethodDesc"] = UnitRateMethodDesc;
+                        dict["VATPercentage"] = taxRateInWord;
+
+                        //dict["VAT"] = vatValue;
+                        //dict["TotalVAT"] = totalValue;
+
+                        resultWithVAT.Add(item);
+                    }
+
+                    return Json(resultWithVAT);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
     }
 }
 

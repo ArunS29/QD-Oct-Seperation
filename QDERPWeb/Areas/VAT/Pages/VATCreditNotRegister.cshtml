@@ -600,13 +600,7 @@
 
 			IsEdit = true;
 
-			const params = new URLSearchParams({
-				CreditNoteNo: CreditNoteNo,
-			    IsEditflag: IsEdit,
-				modal: true // If you want to explicitly include modal=true
-			});
-
-			const url = `/${tenantName}/VAT/CreditNoteEditForm?${params.toString()}`;
+		    const url = `/${tenantName}/VAT/CreditNoteEditForm?CreditNoteNo=${encodeURIComponent(CreditNoteNo)}&IsEditflag=${encodeURIComponent(IsEdit)}`;
 		    window.location.href = url;
 		//	openModal(url, title);
 		}
@@ -857,6 +851,8 @@
 						showColumnChooser();
 						console.log('End permission handling');
 					});
+
+
 
 
 		

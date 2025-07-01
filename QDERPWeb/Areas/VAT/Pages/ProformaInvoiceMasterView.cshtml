@@ -563,14 +563,9 @@
 
 		IsEditCr = true;
 
-		const params = new URLSearchParams({
-			InvoiceNo: invoiceNoCr,
-			IsEditflagCr: IsEditCr,
-			modal: true // If you want to explicitly include modal=true
-		});
 
-		const url = `/${tenantName}/VAT/CreditNoteEditForm?${params.toString()}`;
-		const title = "VAT Credit Note Edit(B2B)";
+		  const url = `/${tenantName}/VAT/ProformaInvoiceEditForm?InvoiceNo=${encodeURIComponent(ProformaInvoiceNo)}&IsEditflag=${encodeURIComponent(IsEditCr)}`;
+		   const title = "VAT Proforma Invoice Edit";
 		openModal(url, title);
 	}
 
