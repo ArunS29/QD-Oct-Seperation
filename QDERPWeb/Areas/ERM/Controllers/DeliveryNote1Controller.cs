@@ -37,7 +37,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
             {
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    var query = dbContext.Qry60304deliveryNoteViewMasters.AsQueryable();
+                    var query = dbContext.Qry40110PropertyIssuesViews.AsQueryable();
 
 
                     // Default dates if not provided
@@ -52,22 +52,17 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     }
 
                     // Filtering by date range
-                    query = query.Where(i => i.DeliveryDate >= fromDate && i.DeliveryDate <= toDate);
+                    query = query.Where(i => i.PropertyIssuedDate >= fromDate && i.PropertyIssuedDate <= toDate);
 
                     // Fetching the data
                     var data = await query.Select(i => new
                     {
-                        i.DeliveredTo,
-                        i.DeliveryNoteNo,
-                        i.DeliveryDate,
-                        i.DeliveryIssuedTo,
-                        i.Mprno,
-                        i.InvoiceNo,
+                        i.PropertyIssueNo,
+                        i.PropertyIssuedDate,
                         i.ClientName,
                         i.ClientPono,
-                        i.ClientProject,
-                        i.SalesOrderNo,
-                        i.StoreName
+                        i.QuotationNo,
+                        i.OrderNo,
                     }).ToListAsync();
 
                     return Json(data);

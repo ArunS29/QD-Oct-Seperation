@@ -474,7 +474,7 @@
                         <!-- Left: Signatories -->
                         <td style="width: 50%; vertical-align: top;">
                             <div style="font-weight: bold;">Signatories:</div>
-                            <div class="mb-3">
+                            <div class="mb-3" style="display:flex;">
                                 @(Html.DevExtreme().DropDownBox()
                                 .ID("preparedBy")
                                 .ValueExpr("SignatoryId")
@@ -1564,7 +1564,7 @@
         // }
         $(function () {
         $("#EditsalesOrders").dxTextBox({
-        text: formatMessage("Edit Sales Order"),
+        text: formatMessage("Sales Order Details"),
             readOnly: true,
             onContentReady: function (e) {
             $(e.element).addClass("dx-textbox-heading");

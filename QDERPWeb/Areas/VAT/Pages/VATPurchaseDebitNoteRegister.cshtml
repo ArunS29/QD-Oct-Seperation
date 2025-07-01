@@ -519,8 +519,8 @@
 					});
 				});
 	// Assuming tenantName is already defined globally
-	let invoiceNoCr = null;
-	let IsEditCr = false;
+	let DebitNoteNo = null;
+	let IsEdit = false;
 
 	function viewInvoice() {
 		if (!invoiceNoCr) {
@@ -528,15 +528,10 @@
 			return;
 		}
 
-		IsEditCr = true;
+		IsEdit = true;
 
-		const params = new URLSearchParams({
-			InvoiceNo: invoiceNoCr,
-			IsEditflagCr: IsEditCr,
-			modal: true // If you want to explicitly include modal=true
-		});
+		const url = `/${tenantName}/VAT/DebitNoteEditForm?InvoiceNo=${encodeURIComponent(DebitNoteNo)}&IsEditflag=${encodeURIComponent(IsEdit)}`;
 
-		const url = `/${tenantName}/VAT/CreditNoteEditForm?${params.toString()}`;
 		const title = "VAT Credit Note Edit(B2B)";
 		openModal(url, title);
 	}
@@ -693,5 +688,36 @@
 						showColumnChooser();
 						console.log('End permission handling');
 					});
+
+
+					$(function () {
+			ddBtnShowRecords_click("range")
+		var inputPopupInstance = $("#inputPopupContainer").dxPopup({
+			width: 600,
+			height: 400,
+			showTitle: true,
+			title: "Details",
+			visible: false,
+			dragEnabled: true,
+			closeOnOutsideClick: true,
+			contentTemplate: function () {
+				return $("<div>").attr("id", "popupFormContent");
+			}
+		}).dxPopup("instance");
+		var contextMenu = $("#contextMenu");
+		$(document).on("click", function () {
+			contextMenu.hide();
+		});
+		$("#dataGrid").customizeGridContextMenu();
+		$("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
+			e.preventDefault();
+			var rowIndex = $(this).index();
+			var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex];
+					DebitNoteNo = rowData.DebitNoteNo;
+			console.log(rowData);
+			contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
+		});
+	});
+
 
 </script>

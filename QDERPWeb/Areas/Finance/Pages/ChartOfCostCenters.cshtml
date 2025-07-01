@@ -18,12 +18,12 @@
 
 
     /*  .horizontal-container {
-            display: flex;
-            gap: 10px;
-            justify-content: start;
-            align-items: center;
-            margin: 15px;
-        } */
+                display: flex;
+                gap: 10px;
+                justify-content: start;
+                align-items: center;
+                margin: 15px;
+            } */
 
     .dx-selectbox .dx-texteditor-input {
         text-align: center;
@@ -33,18 +33,18 @@
 
 
     /*  .button-alignment-down {
-            margin-bottom: 10px
-        } */
+                margin-bottom: 10px
+            } */
 
     /*    #Narration {
-            overflow-y: auto;
-            resize: none;
-        }
+                overflow-y: auto;
+                resize: none;
+            }
 
-        .dx-datagrid {
-            color: #000000;
-        }
-     */
+            .dx-datagrid {
+                color: #000000;
+            }
+         */
     .center-checkbox {
         display: block;
         margin-left: 0;
@@ -56,17 +56,334 @@
         justify-content: center;
         align-items: center;
     }
-    
+
     .custom-checkbox .dx-checkbox-icon {
         color: #0398fc !important; /* ✅ Sets checkmark color */
     }
 
+    .titleCard-carousel {
+        display: flex;
+        overflow-x: auto;
+        gap: 20px;
+        padding: 16px 24px 0 calc(var(--nav-w,0) + 24px);
+        scroll-snap-type: x mandatory;
+        padding-top: 15px;
+        padding-bottom: 15px;
+        padding-left: 10px;
+    }
+
+    .titleCard-cards {
+        display: flex;
+        gap: 20px;
+        min-width: max-content
+    }
+
+    /* --------------  KPI CARD (core) -------------- */
+    .titleCard-card {
+        flex: 0 0 240px; /* exact width */
+        position: relative;
+        padding: 18px 20px;
+        border-radius: 16px;
+        box-shadow: 0 4px 10px rgba(0,0,0,.12);
+        color: #fff;
+        font-weight: 600;
+        overflow: hidden;
+        scroll-snap-align: start;
+        padding-top: 10px;
+        transition: transform .3s ease,box-shadow .3s ease
+    }
+
+        .titleCard-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 20px rgba(0,0,0,.25)
+        }
+
+    /* gradients */
+    .vibrant-pink {
+        background: linear-gradient(135deg,#ff0066,#ff66cc)
+    }
+
+    .cool-blue {
+        background: linear-gradient(135deg,#0066ff,#33ccff)
+    }
+
+    .deep-purple {
+        background: linear-gradient(135deg,#6a11cb,#2575fc)
+    }
+
+    .mint-green {
+        background: linear-gradient(135deg,#00c9a7,#92fe9d)
+    }
+
+    /* headline + subhead (static card only) */
+    #Static .value-block {
+        height: auto
+    }
+    /* let it grow */
+    #Static .value-slider {
+        position: static
+    }
+    /* stop slide animation */
+    #Static h2 {
+        font-size: 20px;
+        margin: 0;
+        font-weight: 700
+    }
+
+    #Static h6 {
+        font-size: 12px;
+        margin: 2px 0 0;
+        font-weight: 500;
+        opacity: .85
+    }
+
+    /* --------------  KPI inner elements -------------- */
+    .titleCard-card .title {
+        font-size: 14px;
+        opacity: .9
+    }
+
+    .value-block {
+        height: 28px;
+        overflow: hidden;
+        position: relative;
+        margin: 6px 0
+    }
+
+    .value-slider {
+        position: absolute;
+        top: 0;
+        display: flex;
+        flex-direction: column;
+        animation: slideValues 6s linear infinite
+    }
+
+        .value-slider span {
+            font-size: 24px;
+            line-height: 28px;
+            height: 28px
+        }
+
+    /* SVG icon inside value */
+    .titleCard-card svg {
+        width: 18px;
+        height: 18px;
+        margin-right: 5px;
+        vertical-align: middle;
+        fill: #fff
+    }
+
+    /* trend + bar */
+    .titleCard-card .trend {
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        gap: 4px
+    }
+
+    .titleCard-card .bar {
+        height: 6px;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.25);
+        margin-top: 10px;
+        overflow: hidden;
+        position: relative;
+    }
+
+        .titleCard-card .bar span {
+            display: block;
+            height: 100%;
+            border-radius: 4px;
+            background: #fff;
+            width: 0%;
+            transition: width 0.6s ease;
+        }
+
+        /* Percentage label inside the bar */
+        .titleCard-card .bar::after {
+            content: attr(data-percentage);
+            position: absolute;
+            right: 6px;
+            top: -22px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #fff;
+            opacity: 0.85;
+        }
+
+
+    /* overlay on hover */
+    .overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,.55);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 12px;
+        text-align: center;
+        opacity: 0;
+        transition: opacity .3s
+    }
+
+    .titleCard-card:hover .overlay {
+        opacity: 1
+    }
+
+    .overlay .detail {
+        font-size: 13px;
+        margin: 4px 0
+    }
+
+    .titleCard-toggle {
+        cursor: pointer;
+        font-size: 1.2rem;
+        height: 35px !important;
+        width: 35px;
+        background: var(--hover-bg-color);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .titleCard-toggle:hover {
+            color: #000;
+        }
+
+    .titleCard-card .header {
+        font-size: 15px !important;
+        font-weight: 600;
+        color: #fff !important;
+        opacity: 1 !important;
+        margin-bottom: 4px;
+        position: relative;
+    }
+
+
+    /* Ensure SVGs are visible and consistent */
+    .titleCard-card svg {
+        width: 18px !important;
+        height: 18px !important;
+        margin-right: 5px;
+        vertical-align: middle;
+        fill: white !important;
+    }
+    /* simple slide animation (balance, debit, credit) */
+    @@keyframes slideValues {
+        0%, 33% {
+            transform: translateY(0)
+        }
+
+        34%, 66% {
+            transform: translateY(-28px)
+        }
+
+        67%, 100% {
+            transform: translateY(-56px)
+        }
+    }
+
+    /* ----------- KPI CARDS: quick fixes ----------- */
+    .titleCard-carousel.collapsed {
+        max-height: 0;
+        padding: 0;
+        overflow: hidden;
+        transition: max-height .35s ease, padding .35s ease;
+    }
+
+    .titleCard-card .header {
+        position: relative;
+    }
+
+    .value-slider span {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .ellipsis-cell {
+        max-width: 100%; /* let the column decide exact width */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        cursor: pointer; /* lets the user know it’s hoverable */
+    }
+
+    .header {
+        display: flex !important;
+        background-color: transparent !important;
+    }
+
+    .title {
+        background: transparent !important;
+    }
 
 </style>
 <input id="formId" value="uc20103ChartOfCostCenters" type="hidden" />
-<div class="title">
-    <div class="header-container">
-        <div id="ChartOfCostCenters" class="no-border-input"></div>
+<div class="title" id="kpiCarousel">
+    <div class="titleCard-cards">
+
+        <!-- STATIC -->
+        <div id="Static" class="titleCard-card vibrant-pink">
+            <div class="value-block">
+
+                <h2>Chart Of Cost Center</h2>
+                <h6>Quick Dice ERP Solutions</h6>
+
+            </div>
+        </div>
+
+        <!-- BALANCE -->
+        <div id="cardBalance" class="titleCard-card cool-blue">
+            <div class="header">CostAllocationGroup</div>
+            <div class="value-block">
+                <div class="value-slider">
+                    <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span>
+                    <span>0.00</span>
+                    <span>0.00</span>
+                </div>
+            </div>
+            <div class="trend">0% <i class="fa-solid fa-arrow-right"></i></div>
+            @* <div class="bar"><span style="width:50%"></span></div> *@
+            <div class="overlay">
+                <div class="detail">Today: 0.00</div>
+                <div class="detail">This Week: 0.00</div>
+                <div class="detail">This Month: 0.00</div>
+            </div>
+        </div>
+
+        <!-- DEBIT -->
+        <div id="cardDebit" class="titleCard-card deep-purple">
+            <div class="header">Total Debit</div>
+            <div class="value-block">
+                <div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
+            </div>
+            <div class="trend">0% <i class="fa-solid fa-arrow-right"></i></div>
+            @* <div class="bar"><span style="width:50%"></span></div> *@
+            <div class="overlay">
+                <div class="detail">Today: 0.00</div>
+                <div class="detail">This Week: 0.00</div>
+                <div class="detail">This Month: 0.00</div>
+            </div>
+        </div>
+
+        <!-- CREDIT -->
+        <div id="cardCredit" class="titleCard-card mint-green">
+            <div class="header">Total Credit</div>
+            <div class="value-block">
+                <div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
+            </div>
+            <div class="trend">0% <i class="fa-solid fa-arrow-up"></i></div>
+            @* <div class="bar"><span style="width:50%"></span></div> *@
+            <div class="overlay">
+                <div class="detail">Today: 0.00</div>
+                <div class="detail">This Week: 0.00</div>
+                <div class="detail">This Month: 0.00</div>
+            </div>
+        </div>
+
     </div>
 </div>
 <div>
@@ -86,11 +403,11 @@
         .Columns(columns =>
         {
             columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('Cost Center Code')")).Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
-        <div onclick="redirectToCostCenterMaster(`/${tenantName}/Finance/CostCenterMaster?CostAllocationUnitId=<%-data.CostAllocationUnitId%>`)" style="color: #0398fc; text-decoration: underline;"><%-data.CostAllocationUnitId%></div>
-        @* <a href="/${tenantName}/Finance/CostCenterMaster?CostAllocationUnitId=<%-data.CostAllocationUnitId%>" target="_blank" style="color: #0398fc; text-decoration: underline;"> *@
-        @*     <%-data.CostAllocationUnitId%> *@
-        @* </a> *@
-    </text>);
+                                                                                                                                                                         <div onclick="redirectToCostCenterMaster(`/${tenantName}/Finance/CostCenterMaster?CostAllocationUnitId=<%-data.CostAllocationUnitId%>`)" style="color: #0398fc; text-decoration: underline;"><%-data.CostAllocationUnitId%></div>
+                                                                                                                                                                         @* <a href="/${tenantName}/Finance/CostCenterMaster?CostAllocationUnitId=<%-data.CostAllocationUnitId%>" target="_blank" style="color: #0398fc; text-decoration: underline;"> *@
+                                                                                                                                                                         @*     <%-data.CostAllocationUnitId%> *@
+                                                                                                                                                                         @* </a> *@
+                                                                                                                                                                     </text>);
             columns.Add().DataField("CostAllocationUnit").Caption(new JS("formatMessage('Cost Center Unit')")).Alignment(HorizontalAlignment.Left);
             columns.Add().DataField("CostAllocationMasterGroup").Caption(new JS("formatMessage('Cost Center Master')")).Alignment(HorizontalAlignment.Center).GroupIndex(0);
             columns.Add().DataField("CostAllocationGroup").Caption(new JS("formatMessage('Cost Center Group')")).Alignment(HorizontalAlignment.Center).GroupIndex(1);
@@ -98,16 +415,16 @@
             .DataField("IsDisabled")
             .Caption(new JS("formatMessage('Is Disabled')"))
             .CellTemplate(new JS(@"
-    function(cellElement, cellInfo) {
-    $('<div>')
-    .addClass('custom-checkbox') // ✅ Apply the CSS class
-    .appendTo(cellElement)
-    .dxCheckBox({
-    value: cellInfo.data.IsDisabled,
-    disabled: true
-    });
-    }
-    "));
+        function(cellElement, cellInfo) {
+        $('<div>')
+        .addClass('custom-checkbox') // ✅ Apply the CSS class
+        .appendTo(cellElement)
+        .dxCheckBox({
+        value: cellInfo.data.IsDisabled,
+        disabled: true
+        });
+        }
+        "));
 
 
             columns.AddFor(m => m.CreatedBy)
@@ -209,146 +526,146 @@
 
 
 <script>
-    $(function () {
+        $(function () {
 
-										$("#ChartOfCostCenters").dxTextBox({
-													text:formatMessage("Chart Of Cost Centers"),
-                                                        readOnly: true,
-													onContentReady: function(e) {
-				$(e.element).addClass("dx-textbox-heading");
-		}
-
-                                    });
-									});
-    function redirectToCostCenterMaster(url) {
-                window.location.href = url;
-
-
-        window.onclick = (event) => {
-            if (event.target === modal) {
-                modal.style.display = "none";
-              refreshDataGrid(); // Refresh when clicking outside
+                                            $("#ChartOfCostCenters").dxTextBox({
+                                                        text:formatMessage("Chart Of Cost Centers"),
+                                                            readOnly: true,
+                                                        onContentReady: function(e) {
+                    $(e.element).addClass("dx-textbox-heading");
             }
-        };
+
+                                        });
+                                        });
+        function redirectToCostCenterMaster(url) {
+                    window.location.href = url;
+
+
+            window.onclick = (event) => {
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                  refreshDataGrid(); // Refresh when clicking outside
+                }
+            };
+        }
+        // Function to refresh the DataGrid
+    function refreshDataGrid() {
+         var dataGrid = $("#dataGrid").dxDataGrid("instance");
+                dataGrid.refresh(); // Refresh the DataGrid
     }
-    // Function to refresh the DataGrid
-function refreshDataGrid() {
-     var dataGrid = $("#dataGrid").dxDataGrid("instance");
-            dataGrid.refresh(); // Refresh the DataGrid
-}
-    function refreshChartOfCostCenters() {
-        // const accountledgerselectbox = $("#ddlAccountGroup").dxSelectBox("instance"); Ensure ID matches Razor
+        function refreshChartOfCostCenters() {
+            // const accountledgerselectbox = $("#ddlAccountGroup").dxSelectBox("instance"); Ensure ID matches Razor
 
-        // if (assetLocationSelectBox) {
-        //     const dataSource = accountledgerselectbox.getDataSource();
+            // if (assetLocationSelectBox) {
+            //     const dataSource = accountledgerselectbox.getDataSource();
 
 
-        //     if (dataSource) {
-        //         dataSource.reload()
-        //             .then(() => {
-        //                 console.log("Sales person  SelectBox updated successfully.");
-        //             })
-        //             .catch(error => {
-        //                 console.error("Error updatingLedger Sales person SelectBox:", error);
-        //             });
-        //     } else {
-        //         console.warn("DataSource is not defined for the Ledger Sales person  SelectBox.");
-        //     }
-        // } else {
-        //     console.error("Sales person SelectBox instance not found. Ensure the ID matches.");
-        // }
-        console.log("test");
-    }
-    let dataGridInstance = null; // Store the DataGrid instance globally
-    let selectedRowData = null; // Store the selected row data
+            //     if (dataSource) {
+            //         dataSource.reload()
+            //             .then(() => {
+            //                 console.log("Sales person  SelectBox updated successfully.");
+            //             })
+            //             .catch(error => {
+            //                 console.error("Error updatingLedger Sales person SelectBox:", error);
+            //             });
+            //     } else {
+            //         console.warn("DataSource is not defined for the Ledger Sales person  SelectBox.");
+            //     }
+            // } else {
+            //     console.error("Sales person SelectBox instance not found. Ensure the ID matches.");
+            // }
+            console.log("test");
+        }
+        let dataGridInstance = null; // Store the DataGrid instance globally
+        let selectedRowData = null; // Store the selected row data
 
-    // Store the DataGrid instance when it's initialized
-    function dataGridInitialized(e) {
-        dataGridInstance = e.component;
-    }
+        // Store the DataGrid instance when it's initialized
+        function dataGridInitialized(e) {
+            dataGridInstance = e.component;
+        }
 
-    // Handle the context menu event
-    function onContextMenuPreparing(e) {
-        if (e.row && e.row.rowType === "data") {
-            // Row was right-clicked
-            e.items = [
-                {
-                    text: "Edit Cost Center",
-                    onItemClick: function () {
-                        selectedRowData = e.row.data; // Get the row data
-                        //   alert(selectedRowData.IsDisabled);
-                        //    alert(selectedRowData.CostUnitRemarks);
-                        // alert(selectedRowData.CostCenterIncharge);
-                        if (!selectedRowData) {
-                            alert("No row selected");
-                        } else {
-                                // const modal = document.getElementById("masterModal");
-                                // const iframe = document.getElementById("modalIframe");
+        // Handle the context menu event
+        function onContextMenuPreparing(e) {
+            if (e.row && e.row.rowType === "data") {
+                // Row was right-clicked
+                e.items = [
+                    {
+                        text: "Edit Cost Center",
+                        onItemClick: function () {
+                            selectedRowData = e.row.data; // Get the row data
+                            //   alert(selectedRowData.IsDisabled);
+                            //    alert(selectedRowData.CostUnitRemarks);
+                            // alert(selectedRowData.CostCenterIncharge);
+                            if (!selectedRowData) {
+                                alert("No row selected");
+                            } else {
+                                    // const modal = document.getElementById("masterModal");
+                                    // const iframe = document.getElementById("modalIframe");
 
-                                //  iframe.src = `/${tenantName}/Finance/CostCenterMaster?CostAllocationUnitId=${selectedRowData.CostAllocationUnitId}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}`;;
+                                    //  iframe.src = `/${tenantName}/Finance/CostCenterMaster?CostAllocationUnitId=${selectedRowData.CostAllocationUnitId}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}`;;
 
-                                // // modal.style.display = "none";
+                                    // // modal.style.display = "none";
 
-                                // const closeBtn = modal.querySelector(".close");
-                                // closeBtn.onclick = () => {
-                                //     modal.style.display = "none";
-                                //     refreshDataGrid(); // Refresh the DataGrid when closing
-                                // };
+                                    // const closeBtn = modal.querySelector(".close");
+                                    // closeBtn.onclick = () => {
+                                    //     modal.style.display = "none";
+                                    //     refreshDataGrid(); // Refresh the DataGrid when closing
+                                    // };
 
-                                // window.onclick = (event) => {
-                                //     if (event.target === modal) {
-                                //         modal.style.display = "none";
-                                //       refreshDataGrid(); // Refresh when clicking outside
-                                //     }
-                                // };
-                            // Navigate to the EditCostCenter page
-                            window.location.href = `/${tenantName}/Finance/CostCenterMaster?CostAllocationUnitId=${selectedRowData.CostAllocationUnitId}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}`;
-                            // &CostAllocationUnit=${encodeURIComponent(selectedRowData.CostAllocationUnit)}&CostAllocationMasterGroup=${encodeURIComponent(selectedRowData.CostAllocationMasterGroup)}&CostAllocationGroup=${encodeURIComponent(selectedRowData.CostAllocationGroup)}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}
+                                    // window.onclick = (event) => {
+                                    //     if (event.target === modal) {
+                                    //         modal.style.display = "none";
+                                    //       refreshDataGrid(); // Refresh when clicking outside
+                                    //     }
+                                    // };
+                                // Navigate to the EditCostCenter page
+                                window.location.href = `/${tenantName}/Finance/CostCenterMaster?CostAllocationUnitId=${selectedRowData.CostAllocationUnitId}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}`;
+                                // &CostAllocationUnit=${encodeURIComponent(selectedRowData.CostAllocationUnit)}&CostAllocationMasterGroup=${encodeURIComponent(selectedRowData.CostAllocationMasterGroup)}&CostAllocationGroup=${encodeURIComponent(selectedRowData.CostAllocationGroup)}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}
+                            }
                         }
-                    }
-                },
-                {
-                    text: "Delete Cost Center",
-                    onItemClick: function () {
-                        selectedRowData = e.row.data; // Get the row data
-                        // alert(selectedRowData.CostAllocationUnitId);
-                        // alret(selectedRowData.CreatedBy);
-                        // alert(selectedRowData.CreatedOn);
+                    },
+                    {
+                        text: "Delete Cost Center",
+                        onItemClick: function () {
+                            selectedRowData = e.row.data; // Get the row data
+                            // alert(selectedRowData.CostAllocationUnitId);
+                            // alret(selectedRowData.CreatedBy);
+                            // alert(selectedRowData.CreatedOn);
 
-                        if (!selectedRowData) {
-                            alert("No row selected");
-                        } else {
-                            if (confirm(`You are about to delete the Cost Center from the database, Click Ok if you would like to continue.`)) {
-                                // Perform delete operation via AJAX
-                                $.post(`/api/ChartOfCostCenters/DeleteCostCenter?id=${encodeURIComponent(selectedRowData.CostAllocationUnitId)}`, function (response) {
-                                    if (response.success) {
-                                        alert("Cost Center has been successfully removed from the database.");
-                                        dataGridInstance.refresh(); // Refresh the grid
-                                    } else {
-                                        // Display the error message from the server response
-                                        alert(response.message); // Display the custom error message (e.g., for Common Overheads)
-                                    }
-                                });
+                            if (!selectedRowData) {
+                                alert("No row selected");
+                            } else {
+                                if (confirm(`You are about to delete the Cost Center from the database, Click Ok if you would like to continue.`)) {
+                                    // Perform delete operation via AJAX
+                                    $.post(`/api/ChartOfCostCenters/DeleteCostCenter?id=${encodeURIComponent(selectedRowData.CostAllocationUnitId)}`, function (response) {
+                                        if (response.success) {
+                                            alert("Cost Center has been successfully removed from the database.");
+                                            dataGridInstance.refresh(); // Refresh the grid
+                                        } else {
+                                            // Display the error message from the server response
+                                            alert(response.message); // Display the custom error message (e.g., for Common Overheads)
+                                        }
+                                    });
+                                }
                             }
                         }
                     }
-                }
 
-            ];
+                ];
+            }
         }
-    }
-    function onRowPrepared(e) {
-        // Check if the rowType is "data" and the rowElement is available
-        if (e.rowType === "data" && e.rowElement && e.data.IsDisabled) {
-            // Set the background color for the row
-            $(e.rowElement).css("background-color", "rgb(255, 192, 192)"); // Light red for disabled rows
+        function onRowPrepared(e) {
+            // Check if the rowType is "data" and the rowElement is available
+            if (e.rowType === "data" && e.rowElement && e.data.IsDisabled) {
+                // Set the background color for the row
+                $(e.rowElement).css("background-color", "rgb(255, 192, 192)"); // Light red for disabled rows
+            }
         }
-    }
-        function oncellPrepared(e) {
-        if (e.rowType === "group" && (e.column.dataField === "CostAllocationMasterGroup" || e.column.dataField === "CostAllocationGroup")) {
-            e.cellElement.css("font-weight", "bold");
+            function oncellPrepared(e) {
+            if (e.rowType === "group" && (e.column.dataField === "CostAllocationMasterGroup" || e.column.dataField === "CostAllocationGroup")) {
+                e.cellElement.css("font-weight", "bold");
+            }
         }
-    }
 
 </script>
 

@@ -170,7 +170,6 @@
         margin-left: 8px; /* optional spacing between icon and text */
     }
 
-
     .modal-content {
         position: absolute;
         top: 40%;
@@ -228,180 +227,44 @@
         margin-left: 8px; /* optional spacing between icon and text */
     }
 
-
     .multiline-button .dx-button-text {
         white-space: normal;
     }
 </style>
 
 <div class="dx-fieldset horizontal-container" style="width:1000px;background-color:transparent;">
-    <div class="btn-containers">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddButtonLayout")
-            .Icon("smalliconslayout")
-            .Width(50)
-            .Text(new JS("formatMessage('Layout')"))
-            .ElementAttr(new { style = "display: none;" })
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-
-                // items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu");
-
-                // items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu");
-
-                items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
-                items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
-                items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
-                items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
-            })
-            .ShowArrowIcon(false)
-            )
-    </div>
-
-   @*  <div class="btn-container">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddButtonLayout")
-            .Icon("smalliconslayout")
-           
-            .Text(new JS("formatMessage('Layout')"))
-           
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            { *@
-                @* items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu"); *@
-               @*  items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
-                items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
-                items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
-                items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
-            })
-            .ShowArrowIcon(false)
-            )
-    </div> *@
-   
-@*     <div class="btn-containerIvoiceEdit">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddButtonLayout")
-            .Icon("smalliconslayout")
-            .Width(50)
-            .Text(new JS("formatMessage('Layout')"))
-            .ElementAttr(new { style = "display: none;" })
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-
-                // items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu");
-                items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
-                items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
-                items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
-                items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
-            })
-            .ShowArrowIcon(false)
-            )
-    </div> *@
-
- 
 
     <div class="btn-container">
         @(Html.DevExtreme().Button()
-            .ID("btnPrint")
-            .Icon("print")
-            .Text(new JS("formatMessage('Print')"))
-            .ElementAttr(new { style = "display: none;" })
-            .Width(50)
-            .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
-            )
+                .ID("btnPrint")
+                .Icon("print")
+                .Text(new JS("formatMessage('Print')"))
+                .ElementAttr(new { style = "display: none;" })
+                .Width(50)
+                .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
+                )
     </div>
-
-
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnToggleSearch")
-            .Icon("search")
-            .Text(new JS("formatMessage('Search')"))
-            .ElementAttr(new { style = "display: none;" })
-            .Width(50)
-            .OnClick("toggleFilterRow")
-            )
-    </div>
-
-
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btntoggleGroupPanel")
-            .Icon("hierarchy")
-            .Width(50)
-            .Text(new JS("formatMessage('Group')"))
-            .ElementAttr(new { style = "display: none;" })
-            .OnClick("toggleGroupPanel")
-            )
-    </div>
- 
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnColumnChooser")
-            .Icon("columnchooser")
-            .Width(50)
-            .Text(new JS("formatMessage('Column Chooser')"))
-            .ElementAttr(new { style = "display: none;" })
-            .OnClick("showColumnChooser")
-            )
-    </div>
- 
-   
 
 
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
-            .ID("ddButtonPayment")
-            .Icon("add")
-            .Width("100%")
-            .Text(new JS("formatMessage('Add New')"))
-            .ElementAttr(new { style = "display: none;" })
-            .DropDownOptions(options => options.Width(500))
-            .Items(items =>
-            {
-                items.Add().Text(new JS("formatMessage('New Standard Tax Invoice(B2B Invoice)')")).Icon("money");
-                items.Add().Text(new JS("formatMessage('New Simplified Tax Invoice(B2C Invoice)')")).Icon("product");
-                items.Add().Text(new JS("formatMessage('New Prepayment Tax Invoice(B2B Invoice) for Advance Payments')")).Icon("product");
-            })
-            .OnItemClick("addPaymentButton_click")
-            .ShowArrowIcon(false)
-            )
-    </div>
-  
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnInvoiceDetails")
-            .Text(new JS("formatMessage('Invoice Details')"))
-            .Icon("tableproperties")
-            .Width(190)
-            .OnClick("navigateToInvoiceEdit")
-            )
+                .ID("ddReports4")
+                .Icon("mergecells")
+                .Width(100)
+                .Text(new JS("formatMessage('Report')"))
+                .DropDownOptions(options => options.Width(230))
+                .Items(items =>
+                {
+                    items.Add().Text("VAT Returns Form").Icon("file");
+                    items.Add().Text("VAT Summary Report").Icon("file").OnClick("showSubmenu10");
+
+                })
+                .OnItemClick("handleReportClick")
+                .ShowArrowIcon(false)
+                )
     </div>
 
-
-   
-
-    <div class="btn-container">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddReports")
-            .Icon("mergecells")
-            .Width(50)
-            .Text(new JS("formatMessage('Report')"))
-            .ElementAttr(new { style = "display: none;" })
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text(new JS("formatMessage('Tax Report')")).Icon("file").OnClick("showSubmenu8");
-                items.Add().Text(new JS("formatMessage('Inventory Report')")).Icon("file").OnClick("showSubmenu9");
-
-            })
-            .OnItemClick("addReportsButton_click")
-            .ShowArrowIcon(false)
-            )
-    </div>
-
+    
     <!-- Hidden anchor for submenu positioning -->
     <div id="additionalFormatsTrigger" style="position:absolute; width:1px; height:1px;"></div>
 
@@ -409,13 +272,21 @@
     <div id="additionalFormatsSubmenu"></div>
 
 
-
-
 </div>
 
 
 
-<script type="text/javascript">
+<script type="text/javascript">   
+    
+     
+            // Extract tenant name from URL
+            let pathParts = window.location.pathname.split('/');
+            let tenantName = pathParts[1] || "defaultTenant";
+
+            if (!tenantName) {
+                console.error("tenantName is not defined.");
+                return;
+            }
 
              function navigateToInvoiceEdit() {
                // Replace with the actual tenant name dynamically
@@ -466,14 +337,6 @@
             var url = `/${tenantName}/VAT/DebtorsCollection`;
             window.location.href = url; // Navigate to the page
         }
-
-        // function getDropdownData() {
-        //     return [
-        //         { id: 1, name: "Item A" },
-        //         { id: 2, name: "Item B" },
-        //         { id: 3, name: "Item C" }
-        //     ];
-        // }
 
         // Fetch dropdown data (same API can be used if needed)
      function getDropdownData() {
@@ -869,9 +732,6 @@
             }
         }
 
-
-
-
         function closeOverlay() {
             $("#overlay").fadeOut();
             $("#overlay-frame").attr("src", ""); // Clear iframe to stop loading
@@ -896,7 +756,6 @@
             }
             openModal(url, title);
         }
-
         function addPaymentButton_click(e) {
        // let url = "";
         let title = "Payments";
@@ -927,7 +786,7 @@
 
                DevExpress.ui.dialog.confirm(
                 "<div style='white-space: pre-wrap;'>"
-                + "This option will create a New STANDARD TAX INVOICE (B2C).\n"
+                + "This option will create a New STANDARD TAX INVOICE (B2B).\n"
                 + "After creating the invoice, you cannot remove or delete the invoice.\n"
                 + "You can cancel only through a CREDIT NOTE.\n"
                 + "Click Yes if you want to continue, or click No to exit this option."
@@ -958,9 +817,6 @@
                 closeModal();
             }
         }
-
-
-
 
         function ChangeRowHeight(newHeight) {
             // Update the row height
@@ -1012,7 +868,6 @@
                 reader.readAsText(file);
             }
         });
-
 
         function AccountGroupsOrdering() {
 
@@ -1228,9 +1083,6 @@
            "VAT Returns Form":"VATReturnsform"
 
          }
-
-
-
 
                     function handleReportClick(e) {
             const selectedText = e.itemData.text;
@@ -1453,7 +1305,7 @@
                         {text:"Print Regular Tax Invoice - without Signatories(with symbols)"},
                          {text:"Print Regular Tax Invoice - wt Document Level Discount"},
                       { text: "Print Regular Tax Invoice -  (Format 06)" },
-                   
+
                     { text: "Design 02 (W/o Signatories)" },
                     { text: "Design 02 (With Signatories)" }
                 ],
@@ -1470,13 +1322,8 @@
                 }
             });
 
-
-         // Function to determine if Simplified Invoice printing should be disabled
-   
         });
         ////Credit Note Function for reports
-
-
 
         async function handleCreditReportPrinting(e) {
             const itemText = e.itemData?.text;
@@ -1591,7 +1438,6 @@
                 console.warn("Unknown print option selected.");
             }
         }
-
             // Handles all report printing logic
         function handleReportPrinting2(e) {
             const debitNoteBox = $("#DebitNoteNo").dxTextBox("instance");
@@ -1649,87 +1495,5 @@
 
 
 
-    $(document).ready(function () {
-            console.log('Start permission handling');
-            // Form ID
-            var formId = "frm20162VATInvoiceMasterView";
-
-            // Call the API to get permissions
-            $.ajax({
-                url: '/api/Permissions/GetAccessDetails?formId=' + formId,
-                type: 'GET',
-                contentType: 'application/json',
-                success: function (response) {
-                    console.log("API Response:", response); // Log the API response
-
-                    if (response.success && response.permissions) {
-                        // Default visibility and enable status for buttons
-                        var controlStates = {
-                            "ddButtonLayout": { "Visible": true, "Enabled": false },
-                            "btnPrint": { "Visible": true, "Enabled": false },
-                            "btnToggleSearch": { "Visible": true, "Enabled": false },
-                            "btntoggleGroupPanel": { "Visible": true, "Enabled": false },
-                            "btnInvoiceDetails": { "Visible": true, "Enabled": false },
-                            "btntoggleGroupPanel": { "Visible": true, "Enabled": false },
-                            "ddReports": { "Visible": true, "Enabled": false },
-                            "ddButtonPayment": { "Visible": true, "Enabled": false },
-                            "btnColumnChooser": { "Visible": true, "Enabled": false }
-
-                        };
-
-
-                        // Check for full access
-                        var fullAccess = response.permissions.find(p =>
-                            p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
-                        );
-
-                        if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
-                            // Grant full access: make all controls visible and enabled
-                            Object.keys(controlStates).forEach(key => {
-                                controlStates[key] = { "Visible": true, "Enabled": true };
-                            });
-                        } else {
-                            // Update states based on specific permissions for each control
-                            Object.keys(controlStates).forEach(key => {
-                                var controlPermission = response.permissions.find(p =>
-                                    p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
-                                );
-                                if (controlPermission) {
-                                    controlStates[key] = {
-                                        "Visible": controlPermission.ItemVisible || false,
-                                        "Enabled": controlPermission.ItemEnabled || false
-                                    };
-                                }
-                            });
-                        }
-
-                        console.log("Control States:", controlStates); // Log the control states
-
-                        // Dynamically update button visibility and enabled state
-                        Object.keys(controlStates).forEach(key => {
-                            var button = document.getElementById(key);
-                            if (button) {
-                                // Handle visibility
-                                button.style.display = controlStates[key].Visible ? "inline-block" : "none";
-                                // Handle enable/disable state
-                                button.disabled = !controlStates[key].Enabled;
-                                console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
-                            } else {
-                                console.warn(`Button with ID "${key}" not found in the DOM.`);
-                            }
-                        });
-                    } else {
-                        console.warn("Failed to fetch permissions or no permissions available.");
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error fetching permissions:", error);
-                    alert('An error occurred while fetching permissions. Please try again.');
-                }
-            });
-            showColumnChooser();
-            console.log('End permission handling');
-        });
-
-
 </script>
+

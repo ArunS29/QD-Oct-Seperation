@@ -2639,6 +2639,11 @@
 											{
 												disableEditing();
 											}
+								        else if(account.IsPosted==true)
+	{
+					btnPostToLedgerdisableEditing();
+	}
+
 											 var button = $("#btnSave").dxButton("instance");
 											 button.option("text", "Update");
 								// Now call the second AJAX to get grid details
@@ -6145,6 +6150,7 @@
 						else {
 							DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
 						}
+						btnVerifydisableEditing();
 					},
 					error: function (xhr, status, error) {
 						let errorMessage = xhr.responseJSON && xhr.responseJSON.Message
@@ -6322,17 +6328,7 @@
 								"VAT Invoice has been posted to the Accounting Books.",
 								"Invoice Posted Successfully."
 							)
-							// .done(() => {
-							// 	disableEditing();
-							// 	$("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
-							// 	$("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate || "N/A");
-
-							// 	if (IsDirect === true) {
-							// 		$("#VerifiedBy").dxCheckBox("instance").option("value", true);
-							// 		$("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
-							// 		$("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
-							// 	}
-							// });
+							btnPostToLedgerdisableEditing();
 						} else {
 							DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
 						}
@@ -6827,6 +6823,52 @@
 		});
 	});
 
+
+
+	function btnPostToLedgerdisableEditing() {
+					// Disable all input fields and buttons except for specific ones
+					$('input, select, textarea').prop('disabled', true);  // Disable inputs, selects, and textareas
+							const allowedButtons = ['btnMoveDown',  'btnMoveUp','btnPostTag','btnPrint2','btnBack'];
+
+					// Disable all dxButton and dxDropDownButton controls
+					$('.dx-button, .dx-dropdownbutton').each(function () {
+						const id = $(this).attr('id');
+						if (id && !allowedButtons.includes(id)) {
+							// Disable dxButton and dxDropDownButton widgets except for allowed ones
+							if ($(this).data('dxButton')) {
+								$(this).dxButton('option', 'disabled', true);
+							} else if ($(this).data('dxDropDownButton')) {
+								$(this).dxDropDownButton('option', 'disabled', true);
+							}
+						}
+					});
+
+					// Disable DataGrid Editing and Deleting
+					var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+					if (dataGrid) {
+						dataGrid.option("editing.allowUpdating", false);
+						dataGrid.option("editing.allowDeleting", false);
+					}
+				}
+
+
+					function btnVerifydisableEditing() {
+
+							const allowedButtons = ['btnPostTag','btnPostToLedgers','btnAttach','btnApprove','btnBack','btnPrint2','btnAddNew','btnSaveAndClose','btnSave','ddButtonLayout','btnMoveDown', 'btnMoveUp', 'btnPostTag'];
+
+						// Disable all dxButton and dxDropDownButton controls
+						$('.dx-button').each(function () {
+							const id = $(this).attr('id');
+							if (id && !allowedButtons.includes(id)) {
+								// Disable dxButton and dxDropDownButton widgets except for allowed ones
+								if ($(this).data('dxButton')) {
+									$(this).dxButton('option', 'disabled', true);
+								}
+							}
+						});
+
+
+					}
 
 </script>
 

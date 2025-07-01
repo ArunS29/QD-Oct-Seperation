@@ -232,32 +232,18 @@
 
 </div>
 <div class="dx-field ledgerResult">
-	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60304deliveryNoteViewMaster>()
+	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry40110PropertyIssuesView>()
 		.ID("dataGrid")
 		.RemoteOperations(false)
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
-			columns.Add().Caption("Delivery Note Details").Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.DeliveredTo).Caption("DeliveredTo To").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.DeliveryNoteNo).Caption("Delivery Note No").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.DeliveryDate).Caption("Delivery Date").Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
-				subColumns.AddFor(m => m.DeliveryIssuedTo).Caption("Delivery Issued To").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Mprno).Caption("Mpr no").Alignment(HorizontalAlignment.Center).Visible(true);
-			});
-			columns.Add().Caption("Delivery To Client").Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.InvoiceNo).Caption("Invoice No").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.ClientName).Caption("Client Name").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.ClientPono).Caption("Client Po no").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.ClientProject).Caption("Client Project").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.SalesOrderNo).Caption("SalesOrder No").Alignment(HorizontalAlignment.Center).Visible(true);
-			});
-			columns.Add().Caption("Delivery To Store").Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.StoreName).Caption("Store Name").Alignment(HorizontalAlignment.Center).Visible(true);
-			});
+			columns.Add().DataField("PropertyIssueNo").Caption(new JS("formatMessage('Delivery Note #')")).Visible(true).GroupIndex(0);
+			columns.Add().DataField("PropertyIssuedDate").Caption(new JS("formatMessage('Delivery Date')")).Visible(true);
+			columns.Add().DataField("ClientName").Caption(new JS("formatMessage('Client')")).Visible(true);
+			columns.Add().DataField("ClientPono").Caption(new JS("formatMessage('Client Po No')")).Visible(true);
+			columns.Add().DataField("QuotationNo").Caption(new JS("formatMessage('Quotation No')")).Visible(true);
+			columns.Add().DataField("OrderNo").Caption(new JS("formatMessage('Our Order No')")).Visible(true);
 		})
 		.Height(680) // Fixed height for the grid
 		.ColumnAutoWidth(true)
