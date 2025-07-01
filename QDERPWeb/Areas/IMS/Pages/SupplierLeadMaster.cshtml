@@ -198,7 +198,7 @@
 
                 <!-- Asset Ledger No Field -->
                 <div class="col-md-2">
-                    @(Html.DevExtreme().TextBox().ID("txtSupplierCode").Label(new JS("formatMessage('Supplier Name')")).LabelMode(EditorLabelMode.Outside).Value("").ReadOnly(true)
+                    @(Html.DevExtreme().TextBox().ID("txtSupplierCode").Label(new JS("formatMessage('Supplier Code')")).LabelMode(EditorLabelMode.Outside).Value("").ReadOnly(true)
             .ValidationRules(r => r.AddRequired().Message("Supplier Code is required.")))
                 </div>
                 <!-- Asset Category Dropdown -->
@@ -211,7 +211,7 @@
             .Controller("SupplierMaster")
             .LoadAction("GetSupplierCategory")
             .LoadMode(DataSourceLoadMode.Raw)
-            .Key("CategoryCode")
+            .Key("SupplierCategoryCode")
             )
             .LabelMode(EditorLabelMode.Outside)
             .ID("GetSupplierCategoryDropDown")
@@ -257,7 +257,7 @@
                             <!-- Asset Description Field -->
                             <div class="col-md-12">
         @( Html.DevExtreme().TextBox()
-            .Label(new JS("formatMessage('Supplier Code')"))
+            .Label(new JS("formatMessage('Supplier Name')"))
             .LabelMode(EditorLabelMode.Outside)
             .ID("txtSupplierName")
             .ValidationRules(r => r.AddRequired().Message("Supplier Name is required."))
@@ -656,6 +656,19 @@
         window.parent.location.reload(); // Reload the parent page
         window.parent.closeModal();
     }
+        $(document).ready(function () {
+        $.ajax({
+           url: "/api/SupplierMaster/GetNewSupplierNo",
+            method: "GET",
+            success: function (newCode) {
+                    $("#txtSupplierCode").dxTextBox("instance").option("value", newCode);
+            },
+            error: function () {
+                DevExpress.ui.notify("Failed to generate Supplier Code", "error", 3000);
+            }
+        });
+    });
+
     $(document).ready(function () {
         const urlParams = new URLSearchParams(window.location.search);
         const supplierCode = urlParams.get("supplierCode");
