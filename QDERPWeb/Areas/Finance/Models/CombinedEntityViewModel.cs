@@ -86,6 +86,7 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string CurrencyImage { get; set; }
         public string CurrencyName { get; set; }
         public string EntryNarration { get; set; }
+        public string TransactionCurrencySymbol { get; set; }
         public string AccountGroup { get; set; }
         public string MasterGroup { get; set; }
         public string VoucherType { get; set; }
