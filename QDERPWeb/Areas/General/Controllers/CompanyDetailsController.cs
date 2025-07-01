@@ -27,6 +27,34 @@ namespace QD.ERP.Web.Areas.General.Controllers
             _logger = logger;
         }
 
+        [HttpPost]
+        public async Task<IActionResult> ValidateCurrentPassword([FromBody] string currentPassword)
+        {
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized();
+
+                string userIdStr = HttpContext.Session.GetString("UserId");
+                if (!byte.TryParse(userIdStr, out byte currentUserId))
+                    return Unauthorized("Invalid or missing UserId in session.");
+
+                var user = await dbContext.TblUserMasters.FirstOrDefaultAsync(u => u.UserId == currentUserId);
+                if (user == null)
+                    return NotFound("User not found.");
+
+                // Compare plaintext password (or use hashed check if using hashing)
+                if (user.Password != currentPassword)
+                    return BadRequest("Current password is incorrect.");
+
+                return Ok(); // Valid password
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error validating current password.");
+                return StatusCode(500, "Internal server error.");
+            }
+        }
 
         [HttpPost]
         public async Task<IActionResult> ResetPassword( string newPassword)
@@ -51,7 +79,7 @@ namespace QD.ERP.Web.Areas.General.Controllers
 
                 await dbContext.SaveChangesAsync();
 
-                return Ok("Password reset successful.");
+                return Ok("Password changed  successfully.");
             }
             catch (Exception ex)
             {

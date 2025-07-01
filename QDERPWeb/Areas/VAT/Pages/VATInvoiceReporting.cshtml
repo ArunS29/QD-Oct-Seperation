@@ -72,7 +72,7 @@
 
     <div class="Head">
         <div class="limited-footer">
-            @await Html.PartialAsync("VATModuleFooter")
+            @await Html.PartialAsync("/Pages/Shared/VAT/VATInvoiceReportingFooter.cshtml")
         </div>
     </div>
 
@@ -150,8 +150,10 @@
 
 
 <script type="text/javascript">
+
     let pivotData = [];
     $(function () {
+            ddBtnShowRecords_click("range")
         $("#VATInvoiceReporting").dxTextBox({
             text: formatMessage("Sales Reporting"),
             readOnly: true,
@@ -550,4 +552,109 @@
             return value.toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 });
         }
     }
+        $(document).ready(function () {
+                                console.log('Start permission handling');
+                                // Form ID
+                                                var formId = "frm20174VATInvoiceReporting";
+
+                                // Call the API to get permissions
+                                $.ajax({
+                                    url: '/api/Permissions/GetAccessDetails?formId=' + formId,
+                                    type: 'GET',
+                                    contentType: 'application/json',
+                                    success: function (response) {
+                                        console.log("API Response:", response); // Log the API response
+
+                                        if (response.success && response.permissions) {
+                                            // Default visibility and enable status for buttons
+                                            var controlStates = {
+                                                                "ddReport0": { "Visible": true, "Enabled": false },
+                                                        "btnPrint": { "Visible": true, "Enabled": false },
+                                                            "btnColumnChooser": { "Visible": true, "Enabled": false },
+                                                            "ddReport0": { "Visible": true, "Enabled": false },
+                                                            "btnShowFields": { "Visible": true, "Enabled": false },
+                                                            "btnShowRowTotals": { "Visible": true, "Enabled": false },
+                                                      
+                                            };
+
+
+                                            // Check for full access
+                                            var fullAccess = response.permissions.find(p =>
+                                                p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
+                                            );
+
+                                            if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
+                                                // Grant full access: make all controls visible and enabled
+                                                Object.keys(controlStates).forEach(key => {
+                                                    controlStates[key] = { "Visible": true, "Enabled": true };
+                                                });
+                                            } else {
+                                                // Update states based on specific permissions for each control
+                                                Object.keys(controlStates).forEach(key => {
+                                                    var controlPermission = response.permissions.find(p =>
+                                                        p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
+                                                    );
+                                                    if (controlPermission) {
+                                                        controlStates[key] = {
+                                                            "Visible": controlPermission.ItemVisible || false,
+                                                            "Enabled": controlPermission.ItemEnabled || false
+                                                        };
+                                                    }
+                                                });
+                                            }
+
+                                            console.log("Control States:", controlStates); // Log the control states
+
+                                            // Dynamically update button visibility and enabled state
+                                            Object.keys(controlStates).forEach(key => {
+                                                var button = document.getElementById(key);
+                                                if (button) {
+                                                    // Handle visibility
+                                                    button.style.display = controlStates[key].Visible ? "inline-block" : "none";
+                                                    // Handle enable/disable state
+                                                    button.disabled = !controlStates[key].Enabled;
+                                                    console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
+                                                } else {
+                                                    console.warn(`Button with ID "${key}" not found in the DOM.`);
+                                                }
+                                            });
+                                        } else {
+                                            console.warn("Failed to fetch permissions or no permissions available.");
+                                        }
+                                    },
+                                    error: function (xhr, status, error) {
+                                        console.error("Error fetching permissions:", error);
+                                        alert('An error occurred while fetching permissions. Please try again.');
+                                    }
+                                });
+                                showColumnChooser();
+                                console.log('End permission handling');
+                            });
+
+                                 $(function () {
+            const dateBox = $("#frmdateBox").dxDateBox("instance");
+
+            // When focus/typing starts, change to dd-MM-yyyy
+            $("#frmdateBox").on("focusin", function () {
+                dateBox.option("displayFormat", "dd-MM-yyyy");
+            });
+
+            // When focus/typing ends, change back to dd-MMM-yyyy
+            $("#frmdateBox").on("focusout", function () {
+                dateBox.option("displayFormat", "dd-MMM-yyyy");
+            });
+        });
+         $(function () {
+            const dateBox = $("#todateBox").dxDateBox("instance");
+
+            // When focus/typing starts, change to dd-MM-yyyy
+            $("#todateBox").on("focusin", function () {
+                dateBox.option("displayFormat", "dd-MM-yyyy");
+            });
+
+            // When focus/typing ends, change back to dd-MMM-yyyy
+            $("#todateBox").on("focusout", function () {
+                dateBox.option("displayFormat", "dd-MMM-yyyy");
+            });
+        });
 </script>

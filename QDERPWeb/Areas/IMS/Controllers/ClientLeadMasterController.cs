@@ -71,6 +71,32 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
                 return Unauthorized(new { message = "Invalid tenant." });
         }
+        [HttpGet]
+        public async Task<IActionResult> GetNewClientCode()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var allCodes = await dbContext.Tbl30101ClientMasters
+                    .Where(c => c.ClientCode != null && c.ClientCode.Length >= 4)
+                    .Select(c => c.ClientCode)
+                    .ToListAsync(); // fetch all valid codes
+
+                int maxCode = allCodes
+                    .Select(code =>
+                    {
+                        string last4Digits = code.Substring(code.Length - 4);
+                        return int.TryParse(last4Digits, out int val) ? val : 0;
+                    })
+                    .DefaultIfEmpty(0)
+                    .Max();
+
+                string newCode = (maxCode + 1).ToString("D4"); // Pad with leading zeroes
+                return Ok(newCode);
+            }
+
+            return BadRequest("Invalid tenant.");
+        }
+
 
 
         [HttpGet]

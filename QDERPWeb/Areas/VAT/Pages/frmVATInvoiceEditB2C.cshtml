@@ -949,27 +949,29 @@
 							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name in Arabic')")).ID("ClientNameArabic").Value("عميل نقدي").LabelMode(EditorLabelMode.Outside))</td>
 							</tr>
 							<tr>
-								<td>
+							<td>
 								@(Html.DevExtreme().DropDownBox()
-																												.Label(new JS("formatMessage('VAT Invoice Type')"))
-																												.ID("VATInvoiceType")
-																												.DataSource(d => d.WebApi()
-																												.Controller("AccountLedgerMaster")
-																												.LoadAction("getVATInvoiceTypes")
-																												.LoadMode(DataSourceLoadMode.Raw)
-																												.Key("InvoiceType"))
-																												.AcceptCustomValue(true)
-																												.LabelMode(EditorLabelMode.Outside)
-																												.OpenOnFieldClick(false)
-																												.ValueChangeEvent("input")
-																												.HoverStateEnabled(true)
-																												.Value("Tax Invoice") // Ensure this matches an actual key value
-																												.ValueExpr("InvoiceType") // Ensure the value is mapped correctly
-																												.DisplayExpr("InvoiceType") // Set display value if needed
-																												.Disabled(false)
-																												)
+																.Label(new JS("formatMessage('VAT Invoice Type')"))
+																.ID("VATInvoiceType")
+																.DataSource(d => d.WebApi()
+																.Controller("VATModule")
+																.LoadAction("GetInvoiceSubType")
+																.LoadMode(DataSourceLoadMode.Raw)
+																.Key("InvoiceSubTypeCode"))
+																.AcceptCustomValue(true)
+																.LabelMode(EditorLabelMode.Outside)
+																.OpenOnFieldClick(false)
+																.ValueChangeEvent("input")
+																.HoverStateEnabled(true)
+																.Value("Tax Invoice") // Use the corresponding InvoiceSubTypeCode
+																.ValueExpr("InvoiceSubTypeCode") // Passes this value
+																.DisplayExpr("InvoiceSubType")   // Shows this to the user
+																.Disabled(true)
+																.Width(210)
+																.ContentTemplate(new TemplateName("VATInvoiceTypeTemplate"))
+																)
 
-								</td>
+							</td>
 								<td>
 
 								@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Payment Means')"))
@@ -1070,6 +1072,11 @@
 																					.LoadMode(DataSourceLoadMode.Raw)
 																					.Key("IncomeLedger")
 																					)
+														.ValidationRules(rules =>
+														{
+															rules.AddRequired()
+															.Message(new JS("formatMessage('Revenue Account should be entered')"));
+														})
 
 																					.LabelMode(EditorLabelMode.Outside)
 																					.ID("ddlGoodsGroup2")
@@ -3544,23 +3551,11 @@
 
 			  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null,revaccheadid=null,InvoiceCurrencyExchangeId=null,TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
 					  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null,Gsdescrpition=null,GsdescriptionAr=null,ItemPartNo=null,CostPrice=null,GssellingRate=null,ReorderQty=null,IsDirectApproval=true,IsDirectVerify=true,IsClientCode=false
-						  ClientPostalCode=null,ClientCity=null,ClientAddressSt=null,Desc=null,rowIx=null, IsEdit = false;
+					  ClientPostalCode=null,ClientCity=null,ClientAddressSt=null,Desc=null,rowIx=null, IsEdit = false,transcode=null;
 			  let dropDownInstance;
 			  let vatListInstance;
 
-		// 	$(document).ready(function () {
 
-		// 	$(".limited-footer .btn-containerIvoiceEdit").each(function () {
-
-		// 		if (!$(this).find("#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag").length) {
-
-		// 			$(this).remove();
-
-		// 		}
-
-		// 	});
-
-		// });
 
 
 
@@ -3679,6 +3674,10 @@
 											{
 												disableEditing();
 											}
+												else if(account.IsPosted==true)
+		{
+						btnPostToLedgerdisableEditing();
+		}
 											 var button = $("#btnSave").dxButton("instance");
 											 button.option("text", "Update");
 								// Now call the second AJAX to get grid details
@@ -5035,7 +5034,8 @@
 				{
 				var selectedRowData = $("#paymentmeans-datagrid").dxDataGrid("instance").getSelectedRowsData();
 				  if (selectedRowData.length > 0) {
-								//paymentmeanstypecode = selectedRowData[0].Code;
+						  paymentmeanstypecode = parseInt(selectedRowData[0].PaymentMeansTypeCode);
+							
 
 							} else {
 								//DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
@@ -6443,32 +6443,6 @@
 				let dataGrid;
 
 
-
-
-// function dataGridSelectionChanged(e) {
-//     const selectedKey = e.selectedRowKeys[0]; // Get the first selected key
-// 		const ddbInstance = $("#OtherIDType").dxDropDownBox("instance");
-// 			alert("1")
-//     if (selectedKey) {
-//         // Ensure the DropDownBox data is loaded before setting value
-//         ddbInstance.getDataSource().load().done(() => {
-//             ddbInstance.option("value", selectedKey);
-//             ddbInstance.close();
-//         });
-//     }
-
-//     // Only run this block if IsCurrent is not "true"
-//     if (IsCurrent !== "true") {
-//         const selectedRowData = $("#clientname").dxDataGrid("instance").getSelectedRowsData();
-//         if (selectedRowData.length > 0) {
-//             paymentmeanstypecode = selectedRowData[0].PaymentMeansTypeCode;
-//         } else {
-//             DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
-//             return;
-//         }
-//     }
-// }
-
 </script>
 
 <script>
@@ -6884,10 +6858,10 @@
 				InvoiceDate: $("#InvoiceDate").dxDateBox("instance").option("value")|| null,
 				InvoiceDateWtTime: $("#InvoiceIssuedDateTime").dxDateBox("instance").option("value")|| null,
 				InvoiceDeliveryDate: $("#SupplyDate").dxDateBox("instance").option("value")|| null,
-				//PaymentMeansTypeCode: paymentmeanstypecode,
-				 //  InvoiceTypeCode: $("#VATInvoiceType").dxDropDownBox("instance").option("value")|| null,
-				 // InvoiceTypeCodeSubType: $("#VATInvoiceSubType").dxDropDownBox("instance").option("value")|| null,
-				 // InvoiceTransactionCode: $("#InvoiceTransactionsCode").dxDropDownBox("instance").option("value")|| null,
+			    PaymentMeansTypeCode: paymentmeanstypecode,
+				  // InvoiceTypeCode: $("#VATInvoiceType").dxDropDownBox("instance").option("value")|| null,
+				  // InvoiceTypeCodeSubType: $("#VATInvoiceSubType").dxDropDownBox("instance").option("value")|| null,
+				  // InvoiceTransactionCode: $("#InvoiceTransactionsCode").dxDropDownBox("instance").option("value")|| null,
 
 				 ClientCode: accheadid|| null,
 				 BuyerName: $("#ddclientname").dxDropDownBox("instance").option("value")|| null,
@@ -7077,9 +7051,7 @@
 		 });
 
 
-
-
-				$("#btnSaveAndClose").on("click", function (e) {
+						$("#btnSaveAndClose").on("click", function (e) {
 
 				var clientnameValidator = $("#ddclientname").dxValidator("instance");
 				var clientnameValidation = clientnameValidator.validate();
@@ -7099,10 +7071,10 @@
 					InvoiceDate: $("#InvoiceDate").dxDateBox("instance").option("value")|| null,
 					InvoiceDateWtTime: $("#InvoiceIssuedDateTime").dxDateBox("instance").option("value")|| null,
 					InvoiceDeliveryDate: $("#SupplyDate").dxDateBox("instance").option("value")|| null,
-					//PaymentMeansTypeCode: paymentmeanstypecode,
-					 //  InvoiceTypeCode: $("#VATInvoiceType").dxDropDownBox("instance").option("value")|| null,
-					 // InvoiceTypeCodeSubType: $("#VATInvoiceSubType").dxDropDownBox("instance").option("value")|| null,
-					 // InvoiceTransactionCode: $("#InvoiceTransactionsCode").dxDropDownBox("instance").option("value")|| null,
+					PaymentMeansTypeCode: paymentmeanstypecode,
+					  InvoiceTypeCode: $("#VATInvoiceType").dxDropDownBox("instance").option("value")|| null,
+					  InvoiceTypeCodeSubType: $("#VATInvoiceSubType").dxDropDownBox("instance").option("value")|| null,
+					  InvoiceTransactionCode: $("#InvoiceTransactionsCode").dxDropDownBox("instance").option("value")|| null,
 
 					 ClientCode: accheadid|| null,
 					 BuyerName: $("#ddclientname").dxDropDownBox("instance").option("value")|| null,
@@ -7270,7 +7242,7 @@
 							"Invoice Details updated Successfully.",
 							"Update successful"
 						);
-							history.back();
+						history.back();
 							},
 							error: function (xhr) {
 								DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
@@ -7293,6 +7265,9 @@
 			 });
 
 
+
+
+			
 
 
 		 $(document).ready(function () {
@@ -7714,6 +7689,11 @@
 		$("#btnPostToLedgers").on("click", function (e) {
 			const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 
+				var PostToLedgerValidator = $("#ddlGoodsGroup2").dxValidator("instance");
+				var PostToLedgerValidation = PostToLedgerValidator.validate();
+
+				if(PostToLedgerValidation.isValid)
+			   {
 			// Ensure dataGrid exists
 			if (!dataGrid) {
 				console.error("DataGrid instance not found.");
@@ -7745,6 +7725,15 @@
 					}
 				});
 			}
+			}
+				else{
+					DevExpress.ui.dialog.custom({
+							title: "Invoice postal has failed.",
+							message: "The invoice has not been posted. Please specify the Revenue Account.",
+							buttons: [{ text: "Ok", onClick: () => false }],
+							showTitle: true
+						}).show();
+				}
 		});
 
 
@@ -8209,6 +8198,7 @@
 
 	const ddbInstance = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
 
+	transcode = transactionCode;
 	let dataSource = ddbInstance.option("dataSource");
 	let currentData = Array.isArray(dataSource) ? dataSource : (dataSource?.items?.() || []);
 
@@ -8809,5 +8799,52 @@
 		});
 	});
 
+
+
+					function btnPostToLedgerdisableEditing() {
+					// Disable all input fields and buttons except for specific ones
+					$('input, select, textarea').prop('disabled', true);  // Disable inputs, selects, and textareas
+
+						const allowedButtons = ['btnMoveDown', 'btnMoveUp','btnBack','btnPostTag', 'btnPrint1'];
+
+					// Disable all dxButton and dxDropDownButton controls
+					$('.dx-button, .dx-dropdownbutton').each(function () {
+						const id = $(this).attr('id');
+						if (id && !allowedButtons.includes(id)) {
+							// Disable dxButton and dxDropDownButton widgets except for allowed ones
+							if ($(this).data('dxButton')) {
+								$(this).dxButton('option', 'disabled', true);
+							} else if ($(this).data('dxDropDownButton')) {
+								$(this).dxDropDownButton('option', 'disabled', true);
+							}
+						}
+					});
+
+					// Disable DataGrid Editing and Deleting
+					var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+					if (dataGrid) {
+						dataGrid.option("editing.allowUpdating", false);
+						dataGrid.option("editing.allowDeleting", false);
+					}
+				}
+
+
+					function btnVerifydisableEditing() {
+
+						const allowedButtons = ['btnPostTag','btnPostToLedgers','btnAttach','btnApprove','btnBack','btnPrint1','btnAddNew','btnSaveAndClose','btnSave','ddButtonLayout','btnMoveDown', 'btnMoveUp', 'btnPostTag', 'btnPrint1'];
+
+						// Disable all dxButton and dxDropDownButton controls
+						$('.dx-button').each(function () {
+							const id = $(this).attr('id');
+							if (id && !allowedButtons.includes(id)) {
+								// Disable dxButton and dxDropDownButton widgets except for allowed ones
+								if ($(this).data('dxButton')) {
+									$(this).dxButton('option', 'disabled', true);
+								}
+							}
+						});
+
+
+					}
 </script>
 

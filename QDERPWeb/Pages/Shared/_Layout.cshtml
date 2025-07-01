@@ -3386,6 +3386,87 @@
                 }
 
 
+                function getPasswordStrength(password) {
+                    let score = 0;
+                    if (password.length >= 10) score++;
+                    if (/[A-Z]/.test(password)) score++;
+                    if (/[a-z]/.test(password)) score++;
+                    if (/\d/.test(password)) score++;
+                    if (/[$!%*?&]/.test(password)) score++;
+                    if (score <= 2) return { level: "Weak", color: "red" };
+                    if (score === 3 || score === 4) return { level: "Medium", color: "orange" };
+                    if (score === 5) return { level: "Strong", color: "green" };
+                    return { level: "Unknown", color: "gray" };
+                }
+        function showPasswordCondition() {
+            document.getElementById("password-condition").style.display = "block";
+        }
+        function hidePasswordCondition() {
+            document.getElementById("password-condition").style.display = "none";
+        }
+        function validatePassword(e) {
+            var password = e.event.target.value;
+            var isLongEnough = password.length >= 15;
+            var hasNumber = /\d/.test(password);
+            var hasLowercase = /[a-z]/.test(password);
+            var firstIsUpper = password.length > 0 && password[0] === password[0].toUpperCase() && /[A-Z]/.test(password[0]);
+            var isMediumValid = password.length >= 8 && hasNumber && hasLowercase && firstIsUpper;
+            var isValid = isLongEnough || isMediumValid;
+            var statusText = document.getElementById("password-status-text");
+            statusText.style.color = isValid ? "green" : "red";
+        }
+        function onResetPasswordClick() {
+            debugger;
+            const currentPassword = $("#currentPassword").dxTextBox("instance").option("value");
+            const newPassword = $("#newPassword").dxTextBox("instance").option("value");
+            const confirmPassword = $("#confirmPassword").dxTextBox("instance").option("value");
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                DevExpress.ui.notify("All fields are required.", "error", 2000);
+                return;
+            }
+            if (newPassword !== confirmPassword) {
+                DevExpress.ui.notify("New Password and Confirm Password do not match.", "error", 2000);
+                return;
+            }
+            const isLongEnough = newPassword.length >= 15;
+            const hasNumber = /\d/.test(newPassword);
+            const hasLowercase = /[a-z]/.test(newPassword);
+            const firstIsUpper = newPassword.length > 0 && newPassword[0] === newPassword[0].toUpperCase() && /[A-Z]/.test(newPassword[0]);
+            const isMediumValid = newPassword.length >= 8 && hasNumber && hasLowercase && firstIsUpper;
+            const isValidPassword = isLongEnough || isMediumValid;
+            if (!isValidPassword) {
+                DevExpress.ui.notify("Password must be at least 15 characters OR at least 8 characters with a number, a lowercase letter, and first letter uppercase.", "error", 3000);
+                return;
+            }
+            // First validate the current password
+            $.ajax({
+                url: "/api/CompanyDetails/ValidateCurrentPassword",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(currentPassword),
+                success: function () {
+                    // If success, continue with resetting the password
+                    $.ajax({
+                        url: `/api/CompanyDetails/ResetPassword?newPassword=${encodeURIComponent(newPassword)}`,
+                        type: 'POST',
+                        contentType: "application/json",
+                        success: function (response) {
+                            DevExpress.ui.notify(response, "success", 3000);
+                        },
+                        error: function (xhr) {
+                            DevExpress.ui.notify("Failed to reset password: " + xhr.responseText, "error", 3000);
+                        }
+                    });
+                },
+                error: function (xhr) {
+                    DevExpress.ui.notify("Current password is incorrect.", "error", 3000);
+                }
+            });
+        }
+
+
+
+
                        function toggleDropdown() {
                     document.getElementById("userDropdown").classList.toggle("show");
                 }

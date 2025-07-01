@@ -47,6 +47,33 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
         [HttpGet]
+        public async Task<IActionResult> GetNewSupplierNo()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                // Fetch valid SupplierCodes and process them in memory
+                var allCodes = await dbContext.Tbl30199SupplierMasters
+                    .Where(s => s.SupplierCode != null && s.SupplierCode.Length >= 4)
+                    .Select(s => s.SupplierCode)
+                    .ToListAsync();
+
+                int maxCode = allCodes
+                    .Select(code =>
+                    {
+                        string last4Digits = code.Substring(code.Length - 4);
+                        return int.TryParse(last4Digits, out int val) ? val : 0;
+                    })
+                    .DefaultIfEmpty(0)
+                    .Max();
+
+                string newCode = (maxCode + 1).ToString("D4"); // e.g., "0001", "0012", "0100", etc.
+                return Ok(newCode);
+            }
+
+            return BadRequest("Invalid tenant.");
+        }
+
+        [HttpGet]
         public IActionResult GetLatestSupplierCode(string categoryCode)//SW
         {
             try

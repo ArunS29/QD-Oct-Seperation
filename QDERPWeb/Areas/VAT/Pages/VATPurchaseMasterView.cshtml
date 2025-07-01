@@ -194,12 +194,418 @@
 	.dx-fieldset.horizontal-container {
 		margin-top: 10px;
 	}
+
+	body {
+		font-family: 'Segoe UI', sans-serif;
+		margin: 0;
+		padding: 20px;
+		background: #f4f6fa;
+	}
+
+	.dashboard {
+		display: flex;
+		gap: 20px;
+		align-items: stretch;
+	}
+
+	.card {
+		flex: 1;
+		padding: 15px;
+		border-radius: 12px;
+		color: white;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+		height: 110px;
+	}
+
+		.card h1 {
+			margin: 0;
+			font-size: 20px;
+			font-weight: 600;
+		}
+
+		.card p {
+			margin: 4px 0;
+			font-size: 14px;
+		}
+
+		.card .amount {
+			font-size: 26px;
+			margin: 5px 0;
+			font-weight: bold;
+		}
+
+		.card .percent {
+			font-size: 14px;
+			display: flex;
+			align-items: center;
+		}
+
+
+	.tabs {
+		display: flex;
+		justify-content: space-between;
+		margin-bottom: 12px;
+	}
+
+	.tab-text {
+		flex: 1;
+		text-align: center;
+		cursor: pointer;
+		font-weight: bold;
+		padding: 2px 0;
+		border-radius: 6px;
+		transition: background 0.3s ease;
+	}
+
+		.tab-text.active {
+			background: rgba(255, 255, 255, 0.9);
+			color: #333;
+		}
+
+	.tab-content {
+		display: none;
+		text-align: center;
+		animation: fadeSlideIn 0.4s ease;
+	}
+
+		.tab-content.active {
+			display: block;
+		}
+
+	h4 {
+		margin-bottom: 4px;
+		font-size: 16px;
+	}
+
+	.count {
+		font-size: 28px;
+		font-weight: bold;
+		margin: 4px 0;
+	}
+
+		.count.bounce {
+			animation: bounceIn 0.4s ease;
+		}
+
+	.trend {
+		font-size: 14px;
+		margin-bottom: 8px;
+	}
+
+	.message {
+		font-size: 14px;
+		font-weight: 500;
+		margin-top: 6px;
+	}
+
+	/* Backgrounds per tab */
+	.today-bg {
+		background: linear-gradient(270deg, #2196f3, #64b5f6);
+		background-size: 400% 400%;
+		animation: gradientPulse 6s ease infinite;
+	}
+
+	.week-bg {
+		background: linear-gradient(270deg, #009688, #4db6ac);
+		background-size: 400% 400%;
+		animation: gradientPulse 6s ease infinite;
+	}
+
+	.month-bg {
+		background: linear-gradient(270deg, #9c27b0, #ba68c8);
+		background-size: 400% 400%;
+		animation: gradientPulse 6s ease infinite;
+	}
+
+	/* Keyframes */
+	@@keyframes fadeSlideIn {
+		from {
+			opacity: 0;
+			transform: translateY(10px);
+		}
+
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	@@keyframes bounceIn {
+		0% {
+			transform: scale(0.9);
+			opacity: 0;
+		}
+
+		50% {
+			transform: scale(1.05);
+			opacity: 1;
+		}
+
+		100% {
+			transform: scale(1);
+		}
+	}
+
+	@@keyframes gradientPulse {
+		0% {
+			background-position: 0% 50%;
+		}
+
+		50% {
+			background-position: 100% 50%;
+		}
+
+		100% {
+			background-position: 0% 50%;
+		}
+	}
+
+	.card.purple {
+		background: linear-gradient(135deg, #8e24aa, #ba68c8);
+		position: relative;
+		overflow: hidden;
+	}
+
+	.card:hover {
+		transform: translateY(-6px);
+		box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+	}
+
+	h1 {
+		font-size: 42px;
+		margin: 10px 0 5px;
+	}
+
+	h3 {
+		font-size: 14px;
+		font-weight: 500;
+		margin: 0;
+	}
+
+	/* Count animation bounce */
+	h1.bounce {
+		animation: bounceIn 0.5s ease;
+	}
+
+	@@keyframes bounceIn {
+		0% {
+			transform: scale(0.9);
+			opacity: 0;
+		}
+
+		50% {
+			transform: scale(1.05);
+			opacity: 1;
+		}
+
+		100% {
+			transform: scale(1);
+		}
+	}
+
+	/* Sparkle effect (optional) */
+	.sparkle::after {
+		content: '✨';
+		position: absolute;
+		top: 10px;
+		right: 15px;
+		font-size: 18px;
+		animation: sparkle 1.8s infinite ease-in-out;
+	}
+
+	@@keyframes sparkle {
+		0%, 100% {
+			transform: scale(0.8) rotate(0deg);
+			opacity: 0.8;
+		}
+
+		50% {
+			transform: scale(1.2) rotate(30deg);
+			opacity: 1;
+		}
+	}
+
+	.card.green {
+		background: linear-gradient(135deg, #43a047, #66bb6a);
+	}
+
+	.card:hover {
+		transform: translateY(-6px);
+		box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+	}
+
+	h4 {
+		font-size: 13px;
+		margin-bottom: 1px;
+		font-weight: 500;
+		text-transform: capitalize;
+		letter-spacing: 1px;
+	}
+
+	h1 {
+		font-size: 36px;
+		margin: 4px 0;
+		font-weight: 700;
+		animation: bounceIn 0.4s ease;
+	}
+
+	h2 {
+		font-size: 14px;
+		margin-top: 8px;
+		opacity: 0;
+		animation: fadeIn 1s forwards;
+		animation-delay: 0.5s;
+	}
+
+	/* Animations */
+	@@keyframes bounceIn {
+		0% {
+			transform: scale(0.9);
+			opacity: 0;
+		}
+
+		50% {
+			transform: scale(1.05);
+			opacity: 1;
+		}
+
+		100% {
+			transform: scale(1);
+		}
+	}
+
+	@@keyframes fadeIn {
+		to {
+			opacity: 1;
+		}
+	}
+
+	/* Optional shine effect */
+	/*  .shine::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: -75%;
+			width: 50%;
+			height: 100%;
+			background: linear-gradient( 120deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.6) 50%, rgba(255, 255, 255, 0.05) 100% );
+			transform: skewX(-25deg);
+			animation: shineMove 2.5s infinite ease-in-out;
+			pointer-events: none;
+			z-index: 1;
+		}
+
+		 @@keyframes shineMove {
+			0% {
+				left: -75%;
+			}
+
+			100% {
+				left: 125%;
+			}
+		} */
+
+	.card.compact {
+		padding: 14px 16px;
+		min-height: unset;
+	}
+
+	.pink {
+		background: linear-gradient(135deg, #ec407a, #f48fb1);
+		background-size: 400% 400%;
+		animation: gradientPulse 6s ease infinite;
+	}
+
+	/* Text Styles */
+	.card.compact h4 {
+		font-size: 14px;
+		font-weight: 500;
+		letter-spacing: 0.5px;
+		margin-bottom: 4px;
+	}
+
+	.card.compact h2 {
+		font-size: 18px;
+		font-weight: 600;
+		margin-top: 2px;
+	}
+
+	/* Animations */
+	.fade-in {
+		animation: fadeIn 0.8s ease forwards;
+		opacity: 0;
+	}
+
+	.title-slide {
+		animation: titleSlide 0.9s ease forwards;
+		opacity: 0;
+	}
+
+	@@keyframes fadeIn {
+		to {
+			opacity: 1;
+		}
+	}
+
+	@@keyframes titleSlide {
+		0% {
+			opacity: 0;
+			transform: translateY(8px);
+		}
+
+		100% {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
 </style>
 
+<div class="dashboard" style="display: flex; align-items: center; padding: 10px;width:55%">
 <input id="formId" value="frm20165VATPurchaseMasterView" type="hidden" />
-<div class="title">
-	<div class="header-container">
-		<div id="VATPurchase" class="no-border-input"></div>
+
+	<div class="card pink shine compact">
+		<h4 class="fade-in">QuickDice ERP Solutions</h4>
+		<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
+		<h2 class="title-slide">VAT Purchase Register</h2>
+
+	</div>
+
+
+	<div id="mainCard" class="card today-bg">
+		<div class="tabs">
+			<div class="tab-text active" onclick="switchTab(0)">Today</div>
+			<div class="tab-text" onclick="switchTab(1)">Week</div>
+			<div class="tab-text" onclick="switchTab(2)">Month</div>
+		</div>
+
+		<div class="tab-content active">
+			<h4>🔔 Pending Verifications</h4>
+			<div class="count" id="count0">0</div>
+			@* <div class="trend">🔺 12% more than yesterday</div> *@
+			@* <div class="message">You're getting things moving!</div> *@
+		</div>
+
+		<div class="tab-content">
+			<h4>✅ Vouchers Verified</h4>
+			<div class="count" id="count1">0</div>
+			@* <div class="trend">🔼 25% higher than last week</div> *@
+			@* <div class="message">Awesome pace — keep it up!</div> *@
+		</div>
+
+		<div class="tab-content">
+			<h4>📥 New Vouchers</h4>
+			<div class="count" id="count2">0</div>
+			@* <div class="trend">🔽 10% drop this month</div> *@
+			@* <div class="message">Fewer vouchers — time to catch up?</div> *@
+		</div>
+	</div>
+
+	<div class="card purple sparkle">
+		<h1 id="invoiceCount">0</h1>
+		<h3>No of Invoices</h3>
 	</div>
 </div>
 
@@ -289,18 +695,65 @@
 			.Format("dd-MMM-yyyy");
 
 				detail.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('Account Head')"));
-				detail.AddFor(m => m.VoucherStatus).Caption(new JS("formatMessage('Voucher Status')"));
+				detail.AddFor(m => m.VoucherStatus).Caption(new JS("formatMessage('Voucher Status')")).CellTemplate(new JS("VoucherStatusCellTemplate"));
 			});
 
 			// 🔹 PURCHASE & TAX AMOUNT
 			columns.Add().Caption(new JS("formatMessage('Purchase & Tax Amount')")).Columns(amount =>
 			{
-				amount.AddFor(m => m.CalcLineAmount).Caption(new JS("formatMessage('Amount Before Tax')"))
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				amount.AddFor(m => m.CalcTaxAmount).Caption(new JS("formatMessage('Total VAT Amount')"))
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				amount.AddFor(m => m.TotalPurchaseAmount).Caption(new JS("formatMessage('Bill Amount')"))
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				amount.AddFor(m => m.CalcLineAmount)
+			.Caption(new JS("formatMessage('Amount Before Tax')"))
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false) // Required for HTML styling to render
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
+
+				amount.AddFor(m => m.CalcTaxAmount)
+			.Caption(new JS("formatMessage('Total VAT Amount')"))
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false) // Enables HTML formatting for colored styling
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
+
+				amount.AddFor(m => m.TotalPurchaseAmount)
+			.Caption(new JS("formatMessage('Bill Amount')"))
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false) // Enables HTML formatting
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#fff9cc; color:#b58900; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
 			});
 
 			// 🔹 PURCHASE CLASSIFIED - Domestic & Imports
@@ -309,33 +762,198 @@
 				// Domestic
 				pclass.Add().Caption(new JS("formatMessage('Domestic')")).Columns(domestic =>
 			{
-				domestic.AddFor(m => m.DomesticStandardPurchases).Caption(new JS("formatMessage('Domestic Purchases @5%')"))
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				domestic.AddFor(m => m.TotalDspurchase10Perc).Caption(new JS("formatMessage('Domestic Purchases @10%')"))
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				domestic.AddFor(m => m.TotalDspurchase15Perc).Caption(new JS("formatMessage('Domestic Purchases @15%')"))
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				domestic.AddFor(m => m.DomesticZeroTaxPurchases).Caption(new JS("formatMessage('Domestic Zero Rated Purchases')"))
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				domestic.AddFor(m => m.DomesticExemptedTaxPurchases).Caption(new JS("formatMessage('Domestic Exempted Purchases')"))
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				domestic.AddFor(m => m.DomesticStandardPurchases)
+			.Caption(new JS("formatMessage('Domestic Purchases @5%')"))
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
+				domestic.AddFor(m => m.TotalDspurchase10Perc)
+			.Caption(new JS("formatMessage('Domestic Purchases @10%')"))
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
+				domestic.AddFor(m => m.TotalDspurchase15Perc)
+			.Caption(new JS("formatMessage('Domestic Purchases @15%')"))
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
+				domestic.AddFor(m => m.DomesticZeroTaxPurchases)
+			.Caption(new JS("formatMessage('Domestic Zero Rated Purchases')"))
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
+				domestic.AddFor(m => m.DomesticExemptedTaxPurchases)
+			.Caption(new JS("formatMessage('Domestic Exempted Purchases')"))
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
 			});
 
 				// Imports
 				pclass.Add().Caption(new JS("formatMessage('Imports')")).Columns(imports =>
 			{
-				imports.AddFor(m => m.ImportsVatpaidAtCustoms).Caption(new JS("formatMessage('Imports Purchases thru Customs 5%')"))
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				imports.AddFor(m => m.TotalImportPurchase10Perc).Caption("").Caption(new JS("formatMessage('Imports Purchases thru Customs 10%')"))
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				imports.AddFor(m => m.TotalImportPurchase15Perc).Caption(new JS("formatMessage('Imports Purchases thru Customs 15%')"))
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				imports.AddFor(m => m.ImportsVatthruRcm).Caption(new JS("formatMessage('Imports RCM 5%')"))
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				imports.AddFor(m => m.TotalRcmpurchase10Perc).Caption(new JS("formatMessage('Imports RCM 10%')"))
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				imports.AddFor(m => m.TotalRcmpurchase15Perc).Caption(new JS("formatMessage('Imports RCM 15%')"))
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				imports.AddFor(m => m.ImportsVatpaidAtCustoms)
+			.Caption(new JS("formatMessage('Imports Purchases thru Customs 5%')"))
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
+				imports.AddFor(m => m.TotalImportPurchase10Perc)
+			.Caption(new JS("formatMessage('Imports Purchases thru Customs 10%')"))
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
+				imports.AddFor(m => m.TotalImportPurchase15Perc)
+			.Caption(new JS("formatMessage('Imports Purchases thru Customs 15%')"))
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
+				imports.AddFor(m => m.ImportsVatthruRcm)
+			.Caption(new JS("formatMessage('Imports RCM 5%')"))
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
+				imports.AddFor(m => m.TotalRcmpurchase10Perc)
+			.Caption(new JS("formatMessage('Imports RCM 10%')"))
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
+				imports.AddFor(m => m.TotalRcmpurchase15Perc)
+			.Caption(new JS("formatMessage('Imports RCM 15%')"))
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
 			});
 			});
 
@@ -345,33 +963,179 @@
 				// Domestic VAT
 				vat.Add().Caption(new JS("formatMessage('Domestic VAT')")).Columns(domesticVAT =>
 			{
-				domesticVAT.AddFor(m => m.DomesticStandardPurTax).Caption(new JS("formatMessage('Domestic Purchases VAT @5%')"))
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				domesticVAT.AddFor(m => m.TotalDspurchaseTax10Perc).Caption(new JS("formatMessage('Domestic Purchases VAT @10%')"))
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				domesticVAT.AddFor(m => m.TotalDspurchaseTax15Perc).Caption(new JS("formatMessage('Domestic Purchases VAT @15%')"))
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				domesticVAT.AddFor(m => m.DomesticZeroTaxPurTax).Caption(new JS("formatMessage('Domestic Zero Rated VAT')"))
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				domesticVAT.AddFor(m => m.DomesticExemptedTaxPurTax).Caption(new JS("formatMessage('Domestic Exempted VAT')"))
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				domesticVAT.AddFor(m => m.DomesticStandardPurTax)
+			.Caption(new JS("formatMessage('Domestic Purchases VAT @5%')"))
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
+				domesticVAT.AddFor(m => m.TotalDspurchaseTax10Perc)
+			.Caption(new JS("formatMessage('Domestic Purchases VAT @10%')"))
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
+				domesticVAT.AddFor(m => m.TotalDspurchaseTax15Perc)
+			.Caption(new JS("formatMessage('Domestic Purchases VAT @15%')"))
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
+				domesticVAT.AddFor(m => m.DomesticZeroTaxPurTax)
+			.Caption(new JS("formatMessage('Domestic Zero Rated VAT')"))
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
+				domesticVAT.AddFor(m => m.DomesticExemptedTaxPurTax)
+			.Caption(new JS("formatMessage('Domestic Exempted VAT')"))
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
 			});
 
 				// Imports VAT
 				vat.Add().Caption(new JS("formatMessage('Imports VAT')")).Columns(importsVAT =>
 			{
-				importsVAT.AddFor(m => m.ImportsVatpaidAtCustomsTax).Caption(new JS("formatMessage('VAT Paid in Customs 5%')"))
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				importsVAT.AddFor(m => m.TotalImportPurchaseTax10Perc).Caption(new JS("formatMessage('VAT Paid in Customs 10%')"))
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				importsVAT.AddFor(m => m.TotalImportPurchaseTax15Perc).Caption(new JS("formatMessage('VAT Paid in Customs 15%')"))
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				importsVAT.AddFor(m => m.ImportsVatthruRcmtax).Caption(new JS("formatMessage('VAT thru RCM 5%')"))
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				importsVAT.AddFor(m => m.TotalRcmpurchaseTax10Perc).Caption(new JS("formatMessage('VAT thru RCM 10%')"))
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				importsVAT.AddFor(m => m.TotalRcmpurchaseTax15Perc).Caption(new JS("formatMessage('VAT thru RCM 15%')"))
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				importsVAT.AddFor(m => m.ImportsVatpaidAtCustomsTax)
+			.Caption(new JS("formatMessage('VAT Paid in Customs 5%')"))
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
+				importsVAT.AddFor(m => m.TotalImportPurchaseTax10Perc)
+			.Caption(new JS("formatMessage('VAT Paid in Customs 10%')"))
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
+				importsVAT.AddFor(m => m.TotalImportPurchaseTax15Perc)
+			.Caption(new JS("formatMessage('VAT Paid in Customs 15%')"))
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
+				importsVAT.AddFor(m => m.ImportsVatthruRcmtax)
+			.Caption(new JS("formatMessage('VAT thru RCM 5%')"))
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
+				importsVAT.AddFor(m => m.TotalRcmpurchaseTax10Perc)
+			.Caption(new JS("formatMessage('VAT thru RCM 10%')"))
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
+				importsVAT.AddFor(m => m.TotalRcmpurchaseTax15Perc)
+			.Caption(new JS("formatMessage('VAT thru RCM 15%')"))
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
 			});
 			});
 		})
@@ -382,7 +1146,7 @@
 		.Height(680) // <<< fixed height
 		.ColumnAutoWidth(true)
 		.Width("98%")
-		.WordWrapEnabled(true)
+		@* .WordWrapEnabled(true) *@
 		.OnCellClick("function(e) {handleCellClick(e);}")
 		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
 		.AllowColumnReordering(true)
@@ -484,6 +1248,145 @@
 
 <script>
 
+		function animateInvoiceCount(target) {
+	  let i = 0;
+	  const el = document.getElementById("invoiceCount");
+	  el.classList.remove('bounce');
+
+	  const timer = setInterval(() => {
+		if (i >= target) {
+		  el.innerText = target;
+		  el.classList.add('bounce');
+		  clearInterval(timer);
+		} else {
+		  el.innerText = i++;
+		}
+	  }, 30);
+	}
+
+	// Animate to 40
+	animateInvoiceCount(40);
+
+
+	function countUpTurnover(targetStr) {
+	  const el = document.getElementById("turnover");
+	  const target = parseFloat(targetStr);
+	  let current = 0.0;
+
+	  const interval = setInterval(() => {
+		current += 0.5;
+		if (current >= target) {
+		  el.textContent = targetStr + " K";
+		  clearInterval(interval);
+		} else {
+		  el.textContent = current.toFixed(1) + " K";
+		}
+	  }, 30);
+	}
+
+	// Animate to 46.2 K
+	countUpTurnover("46.2");
+
+	  const card = document.getElementById('mainCard');
+	const counts = [8, 15, 5];
+	const countEls = [
+	  document.getElementById("count0"),
+	  document.getElementById("count1"),
+	  document.getElementById("count2"),
+	];
+	const tabs = document.querySelectorAll(".tab-text");
+	const contents = document.querySelectorAll(".tab-content");
+
+	function animateCount(el, target) {
+	  let i = 0;
+	  el.innerText = i;
+	  el.classList.remove('bounce');
+	  const interval = setInterval(() => {
+		if (i >= target) {
+		  el.innerText = target;
+		  el.classList.add('bounce');
+		  clearInterval(interval);
+		} else {
+		  el.innerText = i++;
+		}
+	  }, 30);
+	}
+
+	function switchTab(index) {
+	  tabs.forEach((tab, i) => {
+		tab.classList.toggle('active', i === index);
+		contents[i].classList.toggle('active', i === index);
+	  });
+
+	  // Change background class
+	  card.className = "card";
+	  if (index === 0) card.classList.add("today-bg");
+	  if (index === 1) card.classList.add("week-bg");
+	  if (index === 2) card.classList.add("month-bg");
+
+	  // Animate count
+	  animateCount(countEls[index], counts[index]);
+	}
+
+	// Start "Today" count immediately
+	animateCount(countEls[0], counts[0]);
+
+	function switchTab(index) {
+	  tabs.forEach((tab, i) => {
+		tab.classList.toggle('active', i === index);
+		contents[i].classList.toggle('active', i === index);
+	  });
+
+	  // Change background class
+	  card.className = "card";
+	  if (index === 0) card.classList.add("today-bg");
+	  if (index === 1) card.classList.add("week-bg");
+	  if (index === 2) card.classList.add("month-bg");
+
+	  // Animate count
+	  animateCount(countEls[index], counts[index]);
+	}
+
+	// Auto-start animation for "Today"
+	animateCount(countEls[0], counts[0]);
+	function VoucherStatusCellTemplate(cellElement, cellInfo) {
+		const status = cellInfo.value;
+		let backgroundColor = "";
+		let textColor = "black";
+
+		switch (status) {
+			case "Not Processed":
+				backgroundColor = "#f8d7da"; // light red
+				textColor = "#721c24";       // dark red text
+				break;
+			case "Verified":
+				backgroundColor = "#d4edda"; // light green
+				textColor = "#155724";       // dark green text
+				break;
+			case "Approved":
+				backgroundColor = "#c3e6cb"; // darker green
+				textColor = "#0b3d18";
+				break;
+			case "Posted":
+				backgroundColor = "#ffeeba"; // light orange/yellow
+				textColor = "#856404";
+				break;
+			default:
+				backgroundColor = "#f0f0f0";
+				textColor = "#000000";
+		}
+
+		cellElement.text(status);
+		cellElement.css({
+			"background-color": backgroundColor,
+			"color": textColor,
+			"font-weight": "bold",
+			"padding": "5px",
+			"border-radius": "4px",
+			"text-align": "center"
+		});
+	}
+
 	let invoiceNo = null,Status=null;
 	// Assuming tenantName is already defined globally
 		// Assuming tenantName is already defined globally
@@ -495,80 +1398,13 @@
 
 		IsEdit = true;
 
-		const params = new URLSearchParams({
-			InvoiceNo: invoiceNo,
-			IsEditflag: IsEdit,
-			modal: true // If you want to explicitly include modal=true
-		});
+		const url = `/${tenantName}/VAT/VATPurchaseEdit?InvoiceNo=${encodeURIComponent(invoiceNo)}&IsEditflag=${encodeURIComponent(IsEdit)}`;
 
-		const url = `/${tenantName}/VAT/VATPurchaseEdit?${params.toString()}`;
 		const title = "VAT Purchase Edit";
 		//openModal(url, title);
 		 window.location.href = url; // Navigate to the page
 	}
 
-
-
-	// $(document).ready(function () {
-	// 	console.log('Start permission handling AccountingLedgers');
-	// 	var formId = "frm201LedgerView";
-	// 	$.ajax({
-	// 		url: '/api/Permissions/GetAccessDetails?formId=' + formId,
-	// 		type: 'GET',
-	// 		contentType: 'application/json',
-	// 		success: function (response) {
-	// 			console.log("API Response:", response);
-
-	// 			if (response.success && response.permissions) {
-	// 				var controlStates = {
-	// 					"ddBtnShowRecords": { "Visible": false, "Enabled": false },
-
-	// 				};
-	// 				var fullAccess = response.permissions.find(p =>
-	// 					p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
-	// 				);
-
-	// 				if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
-	// 					Object.keys(controlStates).forEach(key => {
-	// 						controlStates[key] = { "Visible": true, "Enabled": true };
-	// 					});
-	// 				} else {
-	// 					Object.keys(controlStates).forEach(key => {
-	// 						var controlPermission = response.permissions.find(p =>
-	// 							p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
-	// 						);
-	// 						if (controlPermission) {
-	// 							controlStates[key] = {
-	// 								"Visible": controlPermission.ItemVisible || false,
-	// 								"Enabled": controlPermission.ItemEnabled || false
-	// 							};
-	// 						}
-	// 					});
-	// 				}
-	// 				console.log("Control States:", controlStates);
-	// 				Object.keys(controlStates).forEach(key => {
-	// 					var button = document.getElementById(key);
-	// 					if (button) {
-
-	// 						button.style.display = controlStates[key].Visible ? "inline-block" : "none";
-
-	// 						button.disabled = !controlStates[key].Enabled;
-	// 						console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
-	// 					} else {
-	// 						console.warn(`Button with ID "${key}" not found in the DOM.`);
-	// 					}
-	// 				});
-	// 			} else {
-	// 				console.warn("Failed to fetch permissions or no permissions available.");
-	// 			}
-	// 		},
-	// 		error: function (xhr, status, error) {
-	// 			console.error("Error fetching permissions:", error);
-	// 			alert('An error occurred while fetching permissions. Please try again.');
-	// 		}
-	// 	});
-	// 	console.log('End permission handling');
-	// });
 
 	let selectedVoucherNo = null;
 	$(function () {
@@ -935,4 +1771,6 @@
 			dateBox.option("displayFormat", "dd-MMM-yyyy");
 		});
 	});
+
+
 </script>
