@@ -164,17 +164,170 @@
         white-space: normal !important;
         text-align: center;
     }
-	
+
+	.custom-submenu {
+		display: none;
+		position: absolute;
+		background-color: #ffffff;
+		border: 1px solid #ddd;
+		border-radius: 8px;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+		list-style: none;
+		padding: 10px 0;
+		min-width: 160px;
+		height: 40px;
+		z-index: 999;
+	}
+
+		.custom-submenu li {
+			padding: 8px 16px;
+			transition: background-color 0.3s ease;
+		}
+
+			.custom-submenu li a {
+				text-decoration: none;
+				color: #333;
+				font-size: 14px;
+				display: block;
+			}
+
+			.custom-submenu li:hover {
+				background-color: #f0f0f0;
+				cursor: pointer;
+			}
+
+	.context-menuInvoice {
+		position: absolute;
+		background: #fff;
+		border: 1px solid #ccc;
+		width: 25%;
+		padding: 5px;
+	}
+
+	.context-menu-itemInvoice {
+		padding: 8px 12px;
+		cursor: pointer;
+		position: relative;
+		white-space: nowrap;
+	}
+
+		.context-menu-itemInvoice:hover {
+			background: #f0f0f0;
+		}
+
+		.context-menu-itemInvoice:not(:last-child) {
+			border-bottom: 1px solid #e0e0e0;
+		}
+
+	.has-submenu .submenu {
+		display: none;
+		position: absolute;
+		top: 0;
+		left: 100%;
+		background: #fff;
+		border: 1px solid #ccc;
+		min-width: 200px;
+		z-index: 1000;
+	}
+
+	.has-submenu:hover .submenu {
+		display: block;
+	}
+
+	body {
+		font-family: 'Segoe UI', sans-serif;
+		margin: 0;
+		padding: 20px;
+		background: #f4f6fa;
+	}
+
+	.dashboard {
+		display: flex;
+		gap: 20px;
+		align-items: stretch;
+	}
+
+	.card {
+		flex: 1;
+		padding: 20px;
+		border-radius: 7px;
+		color: white;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+		height: 150px;
+	}
+
+		.card h1 {
+			margin: 0;
+			font-size: 20px;
+			font-weight: 600;
+		}
+
+		.card p {
+			margin: 4px 0;
+			font-size: 14px;
+		}
+
+		.card .amount {
+			font-size: 26px;
+			margin: 5px 0;
+			font-weight: bold;
+		}
+
+		.card .percent {
+			font-size: 14px;
+			display: flex;
+			align-items: center;
+		}
+
+	.pink {
+		background: linear-gradient(to right, #ff0066, #ff66cc);
+		width: 100%
+	}
+
+	.blue {
+		background: linear-gradient(to right, #0099ff, #33ccff);
+	}
+
+	.purple {
+		background: linear-gradient(to right, #4b00b4, #4a90e2);
+	}
+
+	.green {
+		background: linear-gradient(to right, #00cc66, #99ffcc);
+	}
+
 </style>
 
-<input id="formId" value="frm20162VATInvoiceMasterView" type="hidden" />
-<div class="title">
-	<div class="header-container">
-		<div id="VATInvoiceRegister" class="no-border-input"></div>
+<div class="dashboard" style="display: flex; align-items: center; padding: 10px;width:85%">
+	<input id="formId" value="frm20162VATInvoiceMasterView" type="hidden" />
+	
+		<div class="card pink">
+			<h4>QuickDice ERP Solutions</h4>
+			<h1>VAT Invoice Register</h1>
+		</div>
+	
+
+	<div class="card blue">
+		<div class="icon">🔔</div>
+		<h4>Today</h4>
+		<h1>0</h1>
+		<h1>Pending Verifications</h1>
+	</div>
+
+	<div class="card purple">
+		<h1>40</h1>
+		<h3>No of Invoices</h3>
+	</div>
+
+	<div class="card green">
+		<h4>Total Turnover</h4>
+		<h1>46.2 K</h1>
+		<h2>for this period</h2>
 	</div>
 </div>
-
-
 
 
 <div class="Head">
@@ -190,8 +343,13 @@
 	<div class="context-menu-itemInvoice" onclick="cancelInvoice()">
 		<i class="dx-icon-close"></i> Cancel/Amend this Invoice (Invoice Credit Note)
 	</div>
-	<div class="context-menu-itemInvoice" onclick="checkIfOldVATInvoice('INV001')">
+	<div class="context-menu-itemInvoice has-submenu">
 		<i class="dx-icon-file"></i> VAT Invoices (Obselete)
+		<div class="submenu">
+			<div class="context-menu-itemInvoice" onclick="checkIfOldVATInvoice('INV001')">
+				<i class="dx-icon-file"></i> View VAT Invoice
+			</div>
+		</div>
 	</div>
 
 	<div class="context-menu-itemInvoice" onclick="cloneEInvoice()">
@@ -280,7 +438,7 @@
 		.CellTemplate(new JS("invoiceStatusCellTemplate"));
 
 			});
-		
+
 
 			columns.Add().Caption(new JS("formatMessage('Revenue & Tax Amount')")).Columns(subColumns =>
 			{
@@ -289,20 +447,61 @@
 			.Alignment(HorizontalAlignment.Right)
 			.Visible(true)
 			.AllowEditing(true)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.EncodeHtml(false) // 🔹 Required for HTML formatting
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+			
+
+
 
 				subColumns.AddFor(m => m.CalcTaxAmount)
 			.Caption(new JS("formatMessage('Total VAT Amount')"))
 			.Alignment(HorizontalAlignment.Right)
 			.Visible(true)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.EncodeHtml(false) // required for rendering HTML
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display: inline-block; background-color: #ffe6e6; color: #ff4d4d; font-weight: bold; padding: 4px 10px; border-radius: 20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
 
 				subColumns.AddFor(m => m.TotalInvoiceAmount)
-		     .Caption("Invoiced Amount (SAR)") // Use DevExtreme icon
-			.EncodeHtml(false)
+			.Caption("Invoiced Amount (SAR)")
+			.EncodeHtml(false) // Required to render HTML content
 			.Alignment(HorizontalAlignment.Right)
 			.Visible(true)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#fff9cc; color:#b58900; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
+
 			});
 
 
@@ -315,31 +514,92 @@
 			.Caption(new JS("formatMessage('Domestic Revenue @5%')"))
 			.Alignment(HorizontalAlignment.Right)
 			.Visible(true)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
 
 				subColumns.AddFor(m => m.TotalRevenueOf10Perc)
 			.Caption(new JS("formatMessage('Domestic Revenue @10%')"))
 			.Alignment(HorizontalAlignment.Right)
 			.Visible(true)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
 
 				subColumns.AddFor(m => m.TotalRevenueOf15Perc)
 			.Caption(new JS("formatMessage('Domestic Revenue @15%')"))
 			.Alignment(HorizontalAlignment.Right)
 			.Visible(true)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
 
 				subColumns.AddFor(m => m.DomesticZeroRatedRevenue)
 			.Caption(new JS("formatMessage('Domestic Zero Rated Revenue')"))
 			.Alignment(HorizontalAlignment.Right)
 			.Visible(true)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
 
 				subColumns.AddFor(m => m.DomesticExemptedRevenue)
 			.Caption(new JS("formatMessage('Domestic Exempted Revenue')"))
 			.Alignment(HorizontalAlignment.Right)
 			.Visible(true)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
 			});
 
 				revenueColumns.Add().Caption(new JS("formatMessage('GCC Countries')")).Columns(subColumns =>
@@ -348,7 +608,20 @@
 			.Caption(new JS("formatMessage('GCC Revenue')"))
 			.Alignment(HorizontalAlignment.Right)
 			.Visible(true)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.EncodeHtml(false) // Required to render styled HTML
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
 			});
 
 				revenueColumns.Add().Caption(new JS("formatMessage('Other Countries')")).Columns(subColumns =>
@@ -357,7 +630,20 @@
 			.Caption(new JS("formatMessage('Exports Revenue')"))
 			.Alignment(HorizontalAlignment.Right)
 			.Visible(true)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.EncodeHtml(false) // Allows HTML rendering for the styled span
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
 			});
 			});
 
@@ -369,31 +655,92 @@
 			.Caption(new JS("formatMessage('Domestic VAT @5%')"))
 			.Alignment(HorizontalAlignment.Right)
 			.Visible(true)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
 
 				subColumns.AddFor(m => m.TotalTaxOf10Perc)
 			.Caption(new JS("formatMessage('Domestic VAT @10%')"))
 			.Alignment(HorizontalAlignment.Right)
 			.Visible(true)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
 
 				subColumns.AddFor(m => m.TotalTaxOf15Perc)
 			.Caption(new JS("formatMessage('Domestic VAT @15%')"))
 			.Alignment(HorizontalAlignment.Right)
 			.Visible(true)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
 
 				subColumns.AddFor(m => m.DomesticZeroRatedTax)
 			.Caption(new JS("formatMessage('Domestic Zero Rated VAT')"))
 			.Alignment(HorizontalAlignment.Right)
 			.Visible(true)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
 
 				subColumns.AddFor(m => m.DomesticExemptedTax)
 			.Caption(new JS("formatMessage('Domestic Exempted VAT')"))
 			.Alignment(HorizontalAlignment.Right)
 			.Visible(true)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
 			});
 
 				vatColumns.Add().Caption(new JS("formatMessage('GCC VAT')")).Columns(subColumns =>
@@ -402,7 +749,20 @@
 			.Caption(new JS("formatMessage('GCC Tax')"))
 			.Alignment(HorizontalAlignment.Right)
 			.Visible(true)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.EncodeHtml(false) // Enables HTML rendering
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
 			});
 
 				vatColumns.Add().Caption(new JS("formatMessage('Exports VAT')")).Columns(subColumns =>
@@ -411,14 +771,27 @@
 			.Caption(new JS("formatMessage('Exports Tax')"))
 			.Alignment(HorizontalAlignment.Right)
 			.Visible(true)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.EncodeHtml(false) // Required to allow styled HTML rendering
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
 			});
 			});
 		})
 		.Height(680) // <<< fixed height
 		.ColumnAutoWidth(true)
 		.Width("98%")
-		.WordWrapEnabled(true)
+	@* 	.WordWrapEnabled(true) *@
 		//.OnCellClick("function(e) {handleCellClick(e);}")
 		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
 		.AllowColumnReordering(true)
