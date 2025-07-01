@@ -252,6 +252,34 @@
             .ShowArrowIcon(false)
             )
     </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+                .ID("rowHeightProperties")
+                .Icon("rowproperties") // fallback to standard icon if "rowproperties" not working
+                .Width(50)
+                .Text(new JS("formatMessage('Set Row Height')"))
+                .DropDownOptions(options => options.Width(230))
+                .Items(items =>
+                {
+                    items.Add().Text(new JS("formatMessage('Short')"))
+                    .Icon("chevrondown")
+                    .OnClick("function() { ChangeRowHeight('30'); }");
+
+                    items.Add().Text(new JS("formatMessage('Medium')"))
+                    .Icon("lock")
+                    .OnClick("function() { ChangeRowHeight('40'); }");
+
+                    items.Add().Text(new JS("formatMessage('Tall')"))
+                    .Icon("edit")
+                    .OnClick("function() { ChangeRowHeight('60'); }");
+
+                    items.Add().Text(new JS("formatMessage('Extra Tall')"))
+                    .Icon("folder")
+                    .OnClick("function() { ChangeRowHeight('70'); }");
+                })
+                .ShowArrowIcon(false)
+                )
+    </div>
 
   
 
@@ -644,47 +672,86 @@
                 }
             });
         }
-        function setDefaultLayoutClick(e) {
-            var grid = $("#dataGrid").dxDataGrid("instance");
-            var form = $('#formId').val();
-            var layout = grid.state();
-            const layoutJson = JSON.stringify(layout, null, 2);
-            console.log(layoutJson);
 
-            $.ajax({
-                url: '/api/Utility/SaveLayout',  // API endpoint
-                type: 'POST',
-                data: {
-                    layout: layoutJson,
-                    form: form
-                },
-                success: function (data) {
-                    DevExpress.ui.notify("Layout saved successfully", "success", 2000);
-                },
-                error: function () {
-                    DevExpress.ui.notify("Error while saving data", "error", 2000);
-                }
-            });
+          function setDefaultLayoutClick(e) {
+        const grid = $("#dataGrid").dxDataGrid("instance");
+        const form = $('#formId').val();
+
+        if (!grid) {
+            DevExpress.ui.notify("Grid not found", "error", 2000);
+            return;
         }
-        function resetLayoutClick(e) {
-            var grid = $("#dataGrid").dxDataGrid("instance");
-            var form = $('#formId').val();
-            $.ajax({
-                url: '/api/Utility/SaveLayout',  // API endpoint
-                type: 'POST',
-                data: {
-                    layout: null,
-                    form: form
-                },
-                success: function (data) {
-                    DevExpress.ui.notify("Layout reset successfull", "success", 2000);
-                    grid.state({});
-                },
-                error: function () {
-                    DevExpress.ui.notify("Error while saving data", "error", 2000);
-                }
-            });
-        }
+
+        const layout = grid.state();
+     //   const layoutJson = JSON.stringify(layout, null, 2); // JSON string
+        const layoutJson = convertLayoutToXml(layout); // Optional: to get XML string
+
+       // console.log("JSON Layout:", layoutJson);
+        console.log("XML Layout:", layoutJson); // Comment if not needed
+
+        $.ajax({
+            url: '/api/Utility/SaveLayout',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                layout: layoutJson, // or use layoutXml if backend expects XML
+                form: form
+            }),
+            success: function (data) {
+                DevExpress.ui.notify("Layout saved successfully", "success", 2000);
+            },
+            error: function (xhr) {
+                console.error("SaveLayout error:", xhr.responseText);
+                DevExpress.ui.notify("Error while saving data", "error", 2000);
+            }
+        });
+    }
+
+      function convertLayoutToXml(layout) {
+        let xml = `<XtraSerializer version="1.0" application="View">\n`;
+        xml += `  <property name="columns">\n`;
+
+        layout.columns?.forEach(col => {
+            xml += `    <property name="${col.dataField}" iskey="true">\n`;
+            xml += `      <property name="DataType">${col.dataType || ''}</property>\n`;
+            xml += `      <property name="VisibleIndex">${col.visibleIndex ?? -1}</property>\n`;
+            xml += `      <property name="Visible">${col.visible}</property>\n`;
+            xml += `    </property>\n`;
+        });
+
+        xml += `  </property>\n</XtraSerializer>`;
+        return xml;
+    }
+
+
+              function resetLayoutClick(e) {
+           var grid = $("#dataGrid").dxDataGrid("instance");
+           var form = $('#formId').val();
+
+           const layout = grid.state();
+    //   const layoutJson = JSON.stringify(layout, null, 2); // JSON string
+       const layoutJson = convertLayoutToXml(layout); // Optional: to get XML string
+
+      // console.log("JSON Layout:", layoutJson);
+       console.log("XML Layout:", layoutJson); // Comment if not needed
+
+       $.ajax({
+           url: '/api/Utility/SaveLayout',
+           type: 'POST',
+           contentType: 'application/json',
+           data: JSON.stringify({
+               layout: layoutJson, // or use layoutXml if backend expects XML
+               form: form
+           }),
+               success: function (data) {
+                   DevExpress.ui.notify("Layout reset successfull", "success", 2000);
+                   grid.state({});
+               },
+               error: function () {
+                   DevExpress.ui.notify("Error while saving data", "error", 2000);
+               }
+           });
+       }
         // Footer Group Pannel button click event
         function toggleGroupPanel() {
             var dataGrid = $("#dataGrid").dxDataGrid("instance");

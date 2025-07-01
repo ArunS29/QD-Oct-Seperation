@@ -731,8 +731,9 @@
 																			.Label(new JS("formatMessage('Group VAT No')"))
 																			.LabelMode(EditorLabelMode.Outside)
 																			.MaxLength(15)
-																			.Mask("000000000000000")
-																			.MaskChar(" "))
+														.Mask("300000000010000") // 15 digits
+														.MaskChar("_") // Optional: makes it more readable
+									)
 								</td>
 
 								<!-- 12. Supplier VAT No (TextEdit) -->
@@ -741,6 +742,8 @@
 																			.ID("ClientVATNo")
 																			.Label(new JS("formatMessage('Supplier VAT No')"))
 																			.LabelMode(EditorLabelMode.Outside)
+														.Mask("300000000000003") // 15 digits
+														.MaskChar("_") // Optional: makes it more readable
 																			)
 
 								</td>
@@ -5744,8 +5747,32 @@ $(document).ready(function () {
 						data: JSON.stringify(updatedDataSource),
 						success: function (response) {
 							//DevExpress.ui.notify(response.message, "success", 3000);
+														$.ajax({
+									type: "GET",
+									url: `/api/VATModule/GetPurchaseChildInvoiceDetails?InvoiceNo=${encodeURIComponent(InvoiceNo)}`,
+									dataType: 'json',
+									success: function (response) {
+											console.log("Grid",response)
+
+											let rowData = response.map((item, index) => {
+
+		return {
+			SNo: index + 1,
+			...item
+			//LineTotal: currencyRate // overwrite with converted value
+		};
+	});
+
+
+										// ✅ Now safely initialize the grid here
+										initializeDataGrid(rowData);
+									},
+									error: function (xhr, status, error) {
+										console.error("Error fetching grid data:", error);
+									}
+								});
 							  DevExpress.ui.dialog.alert(
-						"Invoice Details updated Successfully.",
+						"Purchase Invoice Details updated Successfully.",
 						"Update successful"
 					);
 						}
@@ -5770,7 +5797,7 @@ $(document).ready(function () {
 		 });
 
 
-	$("#btnSaveAndClose").on("click", function (e) {
+				 $("#btnSaveAndClose").on("click", function (e) {
 
 				var clientnameValidator = $("#ddclientname").dxValidator("instance");
 				var clientnameValidation = clientnameValidator.validate();
@@ -5790,7 +5817,7 @@ $(document).ready(function () {
 						PurchaseVoucherDate: $("#InvoiceDate").dxDateBox("instance").option("value") || null,
 						PurchaseBillNo: $("#SupplierInvoiceNo").dxDropDownBox("instance").option("value") || null,
 						PurchaseEffectiveDate: $("#SupplyDate").dxDateBox("instance").option("value") || null,
-					///	PurchaseTaxCategoryCode: $("#VATInvoiceType").dxTextBox("instance").option("value") || null,
+					 //   PurchaseTaxCategoryCode: $("#VATInvoiceType").dxTextBox("instance").option("value") || null,
 						PurchaseOrderNo: $("#VATInvoiceType").dxTextBox("instance").option("value") || null,
 						PurchaseOrderDate: $("#OrderDate").dxDateBox("instance").option("value") || null,
 						PurchaseBillDate: $("#OrderDate").dxDateBox("instance").option("value") || null,
@@ -5857,13 +5884,6 @@ $(document).ready(function () {
 				console.log("InvoiceMaster:", InvoiceMaster);
 				console.log("InvoiceChildren:", updatedDataSource);
 
-				// Ensure InvoiceChildren is not empty or undefined
-				// if (!InvoiceChildren || InvoiceChildren.length === 0) {
-				// 	console.error("InvoiceChildren is empty or undefined");
-				// 	DevExpress.ui.notify("No child records found.", "error", 3000);
-				// 	return;  // Exit if there are no child records
-				// }
-
 				// Send AJAX request to update the invoice master details
 				$.ajax({
 					type: "POST",
@@ -5880,8 +5900,32 @@ $(document).ready(function () {
 							data: JSON.stringify(updatedDataSource),
 							success: function (response) {
 								//DevExpress.ui.notify(response.message, "success", 3000);
+															$.ajax({
+										type: "GET",
+										url: `/api/VATModule/GetPurchaseChildInvoiceDetails?InvoiceNo=${encodeURIComponent(InvoiceNo)}`,
+										dataType: 'json',
+										success: function (response) {
+												console.log("Grid",response)
+
+												let rowData = response.map((item, index) => {
+
+			return {
+				SNo: index + 1,
+				...item
+				//LineTotal: currencyRate // overwrite with converted value
+			};
+		});
+
+
+											// ✅ Now safely initialize the grid here
+											initializeDataGrid(rowData);
+										},
+										error: function (xhr, status, error) {
+											console.error("Error fetching grid data:", error);
+										}
+									});
 								  DevExpress.ui.dialog.alert(
-							"Invoice Details updated Successfully.",
+							"Purchase Invoice Details updated Successfully.",
 							"Update successful"
 						);
 						history.back();
@@ -5905,6 +5949,8 @@ $(document).ready(function () {
 				}
 
 			 });
+
+
 
 				
 		 $(document).ready(function () {
