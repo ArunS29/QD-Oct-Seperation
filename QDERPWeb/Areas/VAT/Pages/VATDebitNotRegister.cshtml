@@ -1022,23 +1022,18 @@
 
 		// Assuming tenantName is already defined globally
 		function viewInvoice() {
-			if (!CreditNoteNo) {
-					alert("CreditNoteNo is not set.");
+				if (!DebitNoteNo) {
+						alert("DebitNoteNo is not set.");
 				return;
 			}
 
 			IsEdit = true;
 
-			const params = new URLSearchParams({
-				CreditNoteNo: CreditNoteNo,
-			    IsEditflag: IsEdit,
-				modal: true // If you want to explicitly include modal=true
-			});
-
-			const url = `/${tenantName}/VAT/CreditNoteEditForm?${params.toString()}`;
+			const url = `/${tenantName}/VAT/DebitNoteEditForm?DebitNoteNo=${encodeURIComponent(DebitNoteNo)}&IsEditflag=${encodeURIComponent(IsEdit)}`;
 		    window.location.href = url;
 		//	openModal(url, title);
 		}
+
 
 	let selectedVoucherNo = null;
 	$(function () {

@@ -1037,13 +1037,8 @@
 
 		IsEdit = true;
 
-		const params = new URLSearchParams({
-			InvoiceNo: invoiceNo,
-			IsEditflag: IsEdit,
-			modal: true // If you want to explicitly include modal=true
-		});
+		const url = `/${tenantName}/VAT/frm20161VATInvoiceEdit?InvoiceNo=${encodeURIComponent(invoiceNo)}&IsEditflag=${encodeURIComponent(IsEdit)}`;
 
-		const url = `/${tenantName}/VAT/frm20161VATInvoiceEdit?${params.toString()}`;
 		const title = "VAT Invoice Edit(B2B)";
 		//openModal(url, title);
 		 window.location.href = url; // Navigate to the page
