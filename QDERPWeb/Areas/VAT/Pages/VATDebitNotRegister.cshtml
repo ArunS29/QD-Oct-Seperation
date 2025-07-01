@@ -572,86 +572,19 @@
 
 		// Assuming tenantName is already defined globally
 		function viewInvoice() {
-			if (!CreditNoteNo) {
-					alert("CreditNoteNo is not set.");
+				if (!DebitNoteNo) {
+						alert("DebitNoteNo is not set.");
 				return;
 			}
 
 			IsEdit = true;
 
-			const params = new URLSearchParams({
-				CreditNoteNo: CreditNoteNo,
-			    IsEditflag: IsEdit,
-				modal: true // If you want to explicitly include modal=true
-			});
-
-			const url = `/${tenantName}/VAT/CreditNoteEditForm?${params.toString()}`;
+			const url = `/${tenantName}/VAT/DebitNoteEditForm?DebitNoteNo=${encodeURIComponent(DebitNoteNo)}&IsEditflag=${encodeURIComponent(IsEdit)}`;
 		    window.location.href = url;
 		//	openModal(url, title);
 		}
 
 
-
-	// $(document).ready(function () {
-	// 	console.log('Start permission handling AccountingLedgers');
-	// 	var formId = "frm201LedgerView";
-	// 	$.ajax({
-	// 		url: '/api/Permissions/GetAccessDetails?formId=' + formId,
-	// 		type: 'GET',
-	// 		contentType: 'application/json',
-	// 		success: function (response) {
-	// 			console.log("API Response:", response);
-
-	// 			if (response.success && response.permissions) {
-	// 				var controlStates = {
-	// 					"ddBtnShowRecords": { "Visible": false, "Enabled": false },
-
-	// 				};
-	// 				var fullAccess = response.permissions.find(p =>
-	// 					p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
-	// 				);
-
-	// 				if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
-	// 					Object.keys(controlStates).forEach(key => {
-	// 						controlStates[key] = { "Visible": true, "Enabled": true };
-	// 					});
-	// 				} else {
-	// 					Object.keys(controlStates).forEach(key => {
-	// 						var controlPermission = response.permissions.find(p =>
-	// 							p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
-	// 						);
-	// 						if (controlPermission) {
-	// 							controlStates[key] = {
-	// 								"Visible": controlPermission.ItemVisible || false,
-	// 								"Enabled": controlPermission.ItemEnabled || false
-	// 							};
-	// 						}
-	// 					});
-	// 				}
-	// 				console.log("Control States:", controlStates);
-	// 				Object.keys(controlStates).forEach(key => {
-	// 					var button = document.getElementById(key);
-	// 					if (button) {
-
-	// 						button.style.display = controlStates[key].Visible ? "inline-block" : "none";
-
-	// 						button.disabled = !controlStates[key].Enabled;
-	// 						console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
-	// 					} else {
-	// 						console.warn(`Button with ID "${key}" not found in the DOM.`);
-	// 					}
-	// 				});
-	// 			} else {
-	// 				console.warn("Failed to fetch permissions or no permissions available.");
-	// 			}
-	// 		},
-	// 		error: function (xhr, status, error) {
-	// 			console.error("Error fetching permissions:", error);
-	// 			alert('An error occurred while fetching permissions. Please try again.');
-	// 		}
-	// 	});
-	// 	console.log('End permission handling');
-	// });
 	let selectedVoucherNo = null;
 	$(function () {
 				ddBtnShowRecords_click("range")

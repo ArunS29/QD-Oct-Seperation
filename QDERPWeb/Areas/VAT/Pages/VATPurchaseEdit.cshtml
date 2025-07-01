@@ -966,6 +966,11 @@
 													.LoadMode(DataSourceLoadMode.Raw)
 													.Key("IncomeLedger")
 													)
+												.ValidationRules(rules =>
+												{
+													rules.AddRequired()
+													.Message(new JS("formatMessage('Revenue Account should be entered')"));
+												})
 
 													.LabelMode(EditorLabelMode.Outside)
 													.ID("ddlGoodsGroup2")
@@ -2687,6 +2692,10 @@
 											{
 												disableEditing();
 											}
+												else if(account.IsPosted==true)
+	{
+					btnPostToLedgerdisableEditing();
+	}
 
 								// Now call the second AJAX to get grid details
 							$.ajax({
@@ -6154,6 +6163,8 @@ $(document).ready(function () {
 					else {
 						DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
 					}
+				
+					btnVerifydisableEditing();
 				},
 				error: function (xhr, status, error) {
 					let errorMessage = xhr.responseJSON && xhr.responseJSON.Message
@@ -6262,6 +6273,11 @@ $(document).ready(function () {
 	$("#btnPostToLedgers").on("click", function (e) {
 				const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 
+					var PostToLedgerValidator = $("#ddlGoodsGroup2").dxValidator("instance");
+					var PostToLedgerValidation = PostToLedgerValidator.validate();
+
+					if(PostToLedgerValidation.isValid)
+				   {
 				// Ensure dataGrid exists
 				if (!dataGrid) {
 					console.error("DataGrid instance not found.");
@@ -6293,6 +6309,15 @@ $(document).ready(function () {
 						}
 					});
 				}
+					}
+					else{
+						DevExpress.ui.dialog.custom({
+								title: "Invoice postal has failed.",
+								message: "The invoice has not been posted. Please specify the Revenue Account.",
+								buttons: [{ text: "Ok", onClick: () => false }],
+								showTitle: true
+							}).show();
+					}
 			});
 
 
@@ -6357,17 +6382,7 @@ $(document).ready(function () {
 						});
 							}
 
-							// .done(() => {
-							// 	disableEditing();
-							// 	$("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
-							// 	$("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate || "N/A");
-
-							// 	if (IsDirect === true) {
-							// 		$("#VerifiedBy").dxCheckBox("instance").option("value", true);
-							// 		$("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
-							// 		$("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
-							// 	}
-							// });
+							btnPostToLedgerdisableEditing();
 						} else {
 							DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
 						}
@@ -6380,45 +6395,7 @@ $(document).ready(function () {
 					}
 				});
 			}
-		// $(function () {
-		// 	const dropDown = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
-
-		// 	// On initial load - set checkboxes
-		// 	const selectedVals = dropDown.option("value") || [];
-		// 	selectedVals.forEach(id => {
-		// 		$(`input[name="vatOption"][value="${id}"]`)
-		// 			.prop("checked", true)
-		// 			.closest(".vat-item").addClass("selected");
-		// 	});
-		// });
-
-		// Handle checkbox change
-		// $(document).on("change", 'input[name="vatOption"]', function () {
-		// 	const selectedIds = $('input[name="vatOption"]:checked')
-		// 		.map(function () { return parseInt(this.value); }).get();
-
-		// 	const dropDown = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
-		// 	dropDown.option("value", selectedIds);
-
-		// 	// Highlight selected
-		// 	$(".vat-item").removeClass("selected");
-		// 	$('input[name="vatOption"]:checked').each(function () {
-		// 		$(this).closest(".vat-item").addClass("selected");
-		// 	});
-		// });
-
-		// // Close only on outside click
-		// $(document).on("click", function (e) {
-		// 	const $target = $(e.target);
-		// 	const isInside = $target.closest(".dx-dropdowneditor-overlay, #InvoiceTransactionsCode").length > 0;
-
-		// 	if (!isInside) {
-		// 		const dropDown = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
-		// 		dropDown.close();
-		// 	}
-		// });
-	// Function to handle selection change in the DataGrid
-
+		
 
 	// Function to handle initialization of the DataGrid (optional)
 	function dataGridInitialized(e) {
@@ -6891,26 +6868,54 @@ $(document).ready(function () {
 		});
 	}
 
-		function disableEditing() {
-			// Disable all input fields and buttons except for specific ones
-			$('input, select, textarea').prop('disabled', true);
+		// function disableEditing() {
+		// 	// Disable all input fields and buttons except for specific ones
+		// 	$('input, select, textarea').prop('disabled', true);
+		// 	debugger;
 
-			$('.dx-button').each(function () {
-				const allowedButtons = ['btnMoveDown','btnMoveUp','btnPostToLedgers','btnPostTag','btnPrint2'];
-				if (!allowedButtons.includes($(this).attr('id'))) {
-					$(this).dxButton('option', 'disabled', true);
+		// 		$('.dx-button','.dx-dropdownbutton').each(function () {
+		// 			const allowedButtons = ['btnMoveDown','btnMoveUp','btnPostToLedgers','btnPostTag','btnPrint2','btnBack'];
+		// 		if (!allowedButtons.includes($(this).attr('id'))) {
+		// 			$(this).dxButton('option', 'disabled', true);
+		// 		}
+		// 	});
+
+
+		// // Disable DataGrid Editing and Deleting
+		// var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+		// if (dataGrid) {
+		// 	dataGrid.option("editing.allowUpdating", false);
+		// 	dataGrid.option("editing.allowDeleting", false);
+		// }
+
+		// }
+
+				function disableEditing() {
+				// Disable all input fields and buttons except for specific ones
+				$('input, select, textarea').prop('disabled', true);  // Disable inputs, selects, and textareas
+
+					const allowedButtons = ['btnPrint2', 'btnPostToLedgers','btnBack','btnPostTag'];
+
+				// Disable all dxButton and dxDropDownButton controls
+				$('.dx-button, .dx-dropdownbutton').each(function () {
+					const id = $(this).attr('id');
+					if (id && !allowedButtons.includes(id)) {
+						// Disable dxButton and dxDropDownButton widgets except for allowed ones
+						if ($(this).data('dxButton')) {
+							$(this).dxButton('option', 'disabled', true);
+						} else if ($(this).data('dxDropDownButton')) {
+							$(this).dxDropDownButton('option', 'disabled', true);
+						}
+					}
+				});
+
+				// Disable DataGrid Editing and Deleting
+				var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+				if (dataGrid) {
+					dataGrid.option("editing.allowUpdating", false);
+					dataGrid.option("editing.allowDeleting", false);
 				}
-			});
-
-
-		// Disable DataGrid Editing and Deleting
-		var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-		if (dataGrid) {
-			dataGrid.option("editing.allowUpdating", false);
-			dataGrid.option("editing.allowDeleting", false);
-		}
-
-		}
+			}
 		 $(function () {
 		const dateBox = $("#SupplyDates").dxDateBox("instance");
 
@@ -7051,5 +7056,51 @@ grid.option("editing", { mode: "cell", allowUpdating: true, allowAdding: true, a
             });
     }
 });
+
+
+		function btnPostToLedgerdisableEditing() {
+					// Disable all input fields and buttons except for specific ones
+					$('input, select, textarea').prop('disabled', true);  // Disable inputs, selects, and textareas
+							const allowedButtons = ['btnMoveDown',  'btnMoveUp','btnPostTag','btnPrint2','btnBack'];
+
+					// Disable all dxButton and dxDropDownButton controls
+					$('.dx-button, .dx-dropdownbutton').each(function () {
+						const id = $(this).attr('id');
+						if (id && !allowedButtons.includes(id)) {
+							// Disable dxButton and dxDropDownButton widgets except for allowed ones
+							if ($(this).data('dxButton')) {
+								$(this).dxButton('option', 'disabled', true);
+							} else if ($(this).data('dxDropDownButton')) {
+								$(this).dxDropDownButton('option', 'disabled', true);
+							}
+						}
+					});
+
+					// Disable DataGrid Editing and Deleting
+					var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+					if (dataGrid) {
+						dataGrid.option("editing.allowUpdating", false);
+						dataGrid.option("editing.allowDeleting", false);
+					}
+				}
+
+
+					function btnVerifydisableEditing() {
+
+							const allowedButtons = ['btnPostTag','btnPostToLedgers','btnAttach','btnApprove','btnBack','btnPrint2','btnAddNew','btnSaveAndClose','btnSave','ddButtonLayout','btnMoveDown', 'btnMoveUp', 'btnPostTag'];
+
+						// Disable all dxButton and dxDropDownButton controls
+						$('.dx-button').each(function () {
+							const id = $(this).attr('id');
+							if (id && !allowedButtons.includes(id)) {
+								// Disable dxButton and dxDropDownButton widgets except for allowed ones
+								if ($(this).data('dxButton')) {
+									$(this).dxButton('option', 'disabled', true);
+								}
+							}
+						});
+
+
+					}
 </script>
 
