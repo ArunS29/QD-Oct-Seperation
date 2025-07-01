@@ -1419,7 +1419,9 @@
 						.OnEditorPreparing("onEditorPreparing")
 						)
 		</div>
-				@await Html.PartialAsync("/Pages/Shared/IMS/MaterialRequestFormFooter.cshtml")
+		<div id="materialRequestFooter">
+			@await Html.PartialAsync("/Pages/Shared/IMS/MaterialRequestFormFooter.cshtml")
+		</div>
 
 		@using (Html.DevExtreme().NamedTemplate("GetProjectContentTemplate"))
 		{
@@ -1446,6 +1448,7 @@
 					.Height(345)
 					.Selection(s => s.Mode(SelectionMode.Single))
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+					.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true).Width(250))
 					.Columns(columns =>
 					{
 						columns.Add().DataField("ClientName");
@@ -2421,7 +2424,7 @@
 		function dataGridInitialized14(e) {
 			dataGrid = e.component;
 		}
-
+		let Approved=null;
 		$(document).ready(function () {
 			const urlParams = new URLSearchParams(window.location.search);
 			const mprnos = urlParams.get('Mprno');
@@ -2464,6 +2467,18 @@
 
 				if (response) {
 					console.log("res",response);
+						 Approved = response.IsApproved;
+
+		// ✅ Disable buttons if already approved
+		if (Approved === true) {
+			disableAllButtonsExcept([
+				"btnPrint1",
+				"ddButtonLayout",
+				"btnBack",
+				"btnAttach"
+			]);
+		}
+
 						$("#btnSave").dxButton("instance").option("text", "Update");
 					// Populate DevExtreme controls with the response data
 					$('#txtRequestNo').dxTextBox("instance").option("value", response.Mprno);
@@ -2493,7 +2508,7 @@
 					$("#ddPreparedby").dxDropDownBox("instance").option("value",response.RequestSignatory);
 					$("#ddVerifiedby").dxDropDownBox("instance").option("value", response.MprverifiedSign);
 						$("#ddApprovedby").dxDropDownBox("instance").option("value", response.MprapprovedSign);
-						$("#ddApprovedby").dxDropDownBox("instance").option("value", response.MprapprovedSign);
+
 						$("#ddRequestedBy").dxDropDownBox("instance").option("value", response.TypeOfMpr);
 
 
@@ -3582,6 +3597,9 @@
 
 
 $("#btnAddNew").on("click", function (e) {
+			const $btn = $("#btnSave");
+		$btn.dxButton("instance").option("disabled", false);
+
 		const grid = $("#B2BdataGrid").dxDataGrid("instance");
 		const store = grid.getDataSource().store();
 		const currentData = grid.getDataSource().items();
@@ -5475,6 +5493,8 @@ $("#btnAddNew").on("click", function (e) {
 
 
 		$("#btnSave").on("click", function (e) {
+				 const $btn = $(this);
+		         $btn.dxButton("instance").option("disabled", true); // disable the button
 				var clientnameValidator = $("#GetProjectDropDown").dxValidator("instance");
 		         var clientnameValidation = clientnameValidator.validate();
 		if (clientnameValidation.isValid) {
@@ -6206,43 +6226,74 @@ $("#btnAddNew").on("click", function (e) {
 						});
 					}
 				});
+	function proceedWithApproval() {
+		const approveBtn = $("#btnApprove").dxButton("instance");
+		approveBtn.option("disabled", true);
 
+		const mprNo = $('#txtRequestNo').dxTextBox("instance").option("value");
 
-		function proceedWithApproval() {
-			const VerifyButton = $("#btnApprove").dxButton("instance");
-			VerifyButton.option("disabled", true);
-
-			const mprNo = $('#txtRequestNo').dxTextBox("instance").option("value");
-
-			if (!mprNo) {
-				DevExpress.ui.notify("Invoice number is required!", "error", 2000);
-				return;
-			}
-
-			$.ajax({
-				type: "POST",
-				url: `/api/AddNewClientRequest/ApproveMPR?mprNo=${encodeURIComponent(mprNo)}`,
-				contentType: "application/json",
-					success: function (response) {
-					if (response && response.Message) {
-						DevExpress.ui.dialog.alert(
-							response.Message,
-							"Approved"
-						).done(() => {
-							//disableEditing(); // Function to disable editing controls
-						});
-					} else {
-						DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
-					}
-				},
-				error: function (xhr, status, error) {
-					let errorMessage = (xhr.responseJSON && xhr.responseJSON.Message)
-						? xhr.responseJSON.Message
-						: "An error occurred.";
-					DevExpress.ui.notify(errorMessage, "error", 2000);
-				}
-			});
+		if (!mprNo) {
+			DevExpress.ui.notify("Invoice number is required!", "error", 2000);
+			return;
 		}
+
+		$.ajax({
+			type: "POST",
+			url: `/api/AddNewClientRequest/ApproveMPR?mprNo=${encodeURIComponent(mprNo)}`,
+			contentType: "application/json",
+			success: function (response) {
+				if (response && response.Message) {
+					DevExpress.ui.dialog.alert(response.Message, "Approved").done(() => {
+						disableAllButtonsExcept([
+							"btnPrint1",
+							"ddButtonLayout",
+							"btnBack",
+							"btnAttach"
+						]);
+					});
+				} else {
+					DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
+				}
+			},
+			error: function (xhr) {
+				const message = xhr.responseJSON?.Message || "An error occurred.";
+				DevExpress.ui.notify(message, "error", 2000);
+			}
+		});
+	}
+
+
+
+
+				function disableAllButtonsExcept(exceptions) {
+		const footer = $("#materialRequestFooter");
+
+		// Disable dxButton controls
+		footer.find(".dx-button").each(function () {
+			const $el = $(this);
+			const instance = $el.dxButton("instance");
+			const id = $el.attr("id") || $el.find("[id]").attr("id");
+
+			if (instance && (!id || !exceptions.includes(id))) {
+				instance.option("disabled", true);
+			}
+		});
+
+		// Disable dxDropDownButton controls
+		footer.find(".dx-dropdownbutton").each(function () {
+			const $el = $(this);
+			const instance = $el.dxDropDownButton("instance");
+			const id = $el.attr("id") || $el.find("[id]").attr("id"); // fallback to child ID if missing
+
+			if (instance && (!id || !exceptions.includes(id))) {
+				instance.option("disabled", false);
+			}
+		});
+	}
+
+
+
+
 		$("#btnCancel").on("click", function (e) {
 			const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 
@@ -6296,7 +6347,7 @@ $("#btnAddNew").on("click", function (e) {
 							response.Message,
 							"Cancelled"
 						).done(() => {
-							disableEditing(); // Function to disable editing controls
+							//disableEditing(); // Function to disable editing controls
 						});
 					} else {
 						DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);

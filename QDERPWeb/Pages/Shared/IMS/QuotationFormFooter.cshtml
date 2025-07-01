@@ -537,14 +537,22 @@
 
         try {
             const reportName = quotationReportMap[itemText];
-
-            if (!reportName) {
+            if(e.itemData?.text == "Prepare Cost Sheet"){
+                const quotationNo = $('#txtQuotationNo').dxTextBox("instance").option("value");
+    	        if (!quotationNo) {
+    		    DevExpress.ui.notify("QuotationNo not found!", "error", 3000);
+    		    return;
+    	        }
+    	        const url = `/${tenantName}/IMS/QuotedCostSummary?quotationNo=${encodeURIComponent(quotationNo)}`;
+    	        window.location.href = url;
+            }else if (!reportName) {
                 alert("Invalid report format selected.");
                 return;
             }
-
-            const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&QuotationNo=${encodeURIComponent(quotationNo)}`;
-            window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+            if (reportName) {
+                const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&QuotationNo=${encodeURIComponent(quotationNo)}`;
+                window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+            }
 
         } catch (error) {
             console.error("Failed to open report:", error);

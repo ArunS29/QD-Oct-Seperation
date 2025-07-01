@@ -606,33 +606,53 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 					await dbContext.Tbl60601purchaseRequestMasters.AddAsync(newMaster);
 				}
 
-				// Handle child entries
-				var existingChildren = await dbContext.Tbl60602purchaseRequestChildren
-					.Where(x => x.Mprno == VM.Mprno)
-					.ToListAsync();
+                // Handle child entries
+                // Handle child entries properly
+                var existingChildren = await dbContext.Tbl60602purchaseRequestChildren
+                    .Where(x => x.Mprno == VM.Mprno)
+                    .ToListAsync();
 
-				foreach (var child in VM.PurchaseRequestDetails)
-				{
-					if (child.MprchildSlNo == 0)
-					{
-						// New child entry
-						child.Mprno = VM.Mprno; // Ensure foreign key is set
-						await dbContext.Tbl60602purchaseRequestChildren.AddAsync(child);
-					}
-					else
-					{
-						// Existing child entry
-						var existingChild = existingChildren
-							.FirstOrDefault(x => x.MprchildSlNo == child.MprchildSlNo);
+                // Track IDs received from frontend
+                var incomingIds = VM.PurchaseRequestDetails
+                    .Where(x => x.MprchildSlNo > 0)
+                    .Select(x => x.MprchildSlNo)
+                    .ToList();
 
-						if (existingChild != null)
-						{
-							dbContext.Entry(existingChild).CurrentValues.SetValues(child);
-						}
-					}
-				}
+                // Delete children that are in DB but not in the updated list
+                var toDelete = existingChildren
+                    .Where(x => !incomingIds.Contains(x.MprchildSlNo))
+                    .ToList();
 
-				await dbContext.SaveChangesAsync();
+                if (toDelete.Any())
+                {
+                    dbContext.Tbl60602purchaseRequestChildren.RemoveRange(toDelete);
+                }
+
+                // Now handle Add or Update
+                foreach (var child in VM.PurchaseRequestDetails)
+                {
+                    child.Mprno = VM.Mprno; // ensure FK set
+
+                    if (child.MprchildSlNo == 0)
+                    {
+                        // New row
+                        await dbContext.Tbl60602purchaseRequestChildren.AddAsync(child);
+                    }
+                    else
+                    {
+                        // Update existing
+                        var existingChild = existingChildren
+                            .FirstOrDefault(x => x.MprchildSlNo == child.MprchildSlNo);
+
+                        if (existingChild != null)
+                        {
+                            dbContext.Entry(existingChild).CurrentValues.SetValues(child);
+                        }
+                    }
+                }
+
+
+                await dbContext.SaveChangesAsync();
 
 				return Ok(new { success = true, message = "Purchase Request saved/updated successfully." });
 			}
