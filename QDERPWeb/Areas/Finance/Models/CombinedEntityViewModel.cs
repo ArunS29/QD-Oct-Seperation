@@ -80,6 +80,11 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public decimal? DrAmount { get; set; }
         public decimal? CrAmount { get; set; }
         public decimal? VoucherAmountFormatted { get; set; }
+        public decimal? ConvertedDrAmount { get; set; }
+        public decimal? ConvertedCrAmount { get; set; }
+        public decimal? ConvertedAmount { get; set; }
+        public string CurrencyImage { get; set; }
+        public string CurrencyName { get; set; }
         public string EntryNarration { get; set; }
         public string AccountGroup { get; set; }
         public string MasterGroup { get; set; }

@@ -88,7 +88,19 @@
 		cursor: pointer;
 	}
 
+	/* Column divider after every header cell */
+	.dx-datagrid-headers .dx-header-row > td {
+		border-right: 1px solid Black !important;
+	}
 
+		/* Remove border from last column */
+		.dx-datagrid-headers .dx-header-row > td:last-child {
+			border-right: none !important;
+		}
+		/* Remove border from last column */
+		.dx-datagrid-headers .dx-header-row > td:first-child {
+			border-right: none !important;
+		}
 
 
 	/* Toolbar Styling */
@@ -755,34 +767,75 @@
 					.Visible(true);
 
 						/* Debit */
-						columns.AddFor(m => m.DrAmount)
+						columns.AddFor(m => m.ConvertedDrAmount)
 					.Caption(new JS("formatMessage('Debit')"))
 					.Alignment(HorizontalAlignment.Right)
+					.HeaderCellTemplate(@<text>
+						<div class="credit-header" style="font-weight: bold;">
+							<%= column.caption %>
+						</div>
+					</text>)
 					.CellTemplate(@<text>
 			<div class="debit-pill">
-				<%- data.DrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+				<%- data.ConvertedDrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
 			</div>
 		</text>)
 					.Visible(true);
 
 						/* Credit */
-						columns.AddFor(m => m.CrAmount)
+						columns.AddFor(m => m.ConvertedCrAmount)
 					.Caption(new JS("formatMessage('Credit')"))
+					.Alignment(HorizontalAlignment.Right)
+					.HeaderCellTemplate(@<text>
+						<div class="debit-header" style="font-weight: bold;">
+							<%= column.caption %>
+						</div>
+					</text>)
+					.CellTemplate(@<text>
+			<div class="credit-pill">
+				<%- data.ConvertedCrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+			</div>
+		</text>)
+					.Visible(true);
+					columns.AddFor(m => m.CrAmount)
+					.Caption("Trans Credit")
 					.Alignment(HorizontalAlignment.Right)
 					.CellTemplate(@<text>
 			<div class="credit-pill">
 				<%- data.CrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
 			</div>
 		</text>)
-					.Visible(true);
+					.Visible(false);
+					columns.AddFor(m => m.DrAmount)
+					.Caption("Trans Debit")
+					.Alignment(HorizontalAlignment.Right)
+					.CellTemplate(@<text>
+			<div class="debit-pill">
+				<%- data.DrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+			</div>
+		</text>)
+					.Visible(false);
 
-						columns.AddFor(m => m.VoucherAmountFormatted)
+					columns.AddFor(m => m.ConvertedAmount)
 					.Caption(new JS("formatMessage('VoucherAmountFormatted')"))
 					.Alignment(HorizontalAlignment.Left)
 					.Visible(false);
 
+					columns.Add()
+					.DataField("GroupCurrencyName")
+					.Caption("Conversion Currency")
+					.GroupIndex(0)
+					.Visible(false);
+							 		// This makes CurrencyName the first grouping level
+
+
 						columns.Add()
 					.Caption(new JS("formatMessage('Balance')"))
+					.HeaderCellTemplate(@<text>
+						<div class="balance-header" style="font-weight: bold;">
+							<%= column.caption %>
+						</div>
+					</text>)
 					.Alignment(HorizontalAlignment.Right)
 					.DataType(GridColumnDataType.Number)
 					.CalculateCellValue(
@@ -845,7 +898,9 @@
 				.Height(577)
 				.ColumnAutoWidth(true)
 				.FilterRow(f => f.Visible(false))
-				.GroupPanel(g => g.Visible(false))
+				.Grouping(g => g.AutoExpandAll(true))
+				.GroupPanel(g => g.Visible(true))
+
 				.ShowBorders(true)
 				.Paging(p => p.Enabled(true).PageSize(15))
 				.Pager(p => p.Visible(true).ShowPageSizeSelector(true).AllowedPageSizes(new[] { 10, 15, 20 }).ShowInfo(true))
@@ -868,8 +923,10 @@
 					ss.Enabled(true).Type(StateStoringType.LocalStorage).StorageKey("gridContainerState");
 				})
 				.OnCellPrepared("handleCellPrepared")  // add this beside your other events
+				.OnRowPrepared("handleRowPrepared")
 
 				.OnContentReady("function(e) { handleGridContentReady(e); }")
+				.OnOptionChanged("handleGridOptionChanged")
 				)
 	</div>
 
@@ -1568,21 +1625,30 @@
 				frmDate: frmDate,
 				toDate: toDate
 			},
-			success: function (data) {
+				success: function (data) {
+			// Add a new column for grouping control
+				data.forEach(item => {
+					item.GroupCurrencyName = item.CurrencyName ?? "(Opening Balance)"; // flag to detect non-grouped
+				});
 
-				// Bind the data to the DataGrid
-				$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
-				var dataGrid = $("#dataGrid").dxDataGrid("instance");
-				var dataSource = dataGrid.option("dataSource");
-				if (dataSource && dataSource.length > 0) {
-					var lastRow = dataSource[dataSource.length - 1]; // Get the last row
-					VoucherAmountFormatted = lastRow.VoucherAmountFormatted; // Return the value
-					var firstRow = dataSource[0]; // Get the first row
-					firstrowVoucherAmountFormatted = firstRow.VoucherAmountFormatted; // Return the value
-				}
-				// DevExpress.ui.notify("Data fetched successfully", "success", 2000);
-				//loadPanel.hide();
-			},
+			// Bind the data to the DataGrid
+			const dataGrid = $("#dataGrid").dxDataGrid("instance");
+			dataGrid.option("dataSource", data);
+			dataGrid.expandAll(); // Optional: Expand all groups
+
+			const dataSource = dataGrid.option("dataSource");
+			if (dataSource && dataSource.length > 0) {
+				const lastRow = dataSource[dataSource.length - 1];
+				VoucherAmountFormatted = lastRow.VoucherAmountFormatted;
+
+				const firstRow = dataSource[0];
+				firstrowVoucherAmountFormatted = firstRow.VoucherAmountFormatted;
+			}
+
+			// DevExpress.ui.notify("Data fetched successfully", "success", 2000);
+			// loadPanel.hide();
+		},
+
 			error: function () {
 				DevExpress.ui.notify("Error while loading data", "error", 2000);
 			},
@@ -1776,10 +1842,12 @@
 
 
 
-			function handleGridContentReady(e) {
+   function handleGridContentReady(e){
+	   
+	  
 		let gridElement = $('#dataGrid');
 		let gridInstance = gridElement.dxDataGrid('instance');
-
+		
 		if (gridInstance) {
 			// Check if already calculated to prevent re-entry
 			if (gridElement.data('balanceCalculated')) {
@@ -1793,8 +1861,6 @@
 
 					gridElement.data('balanceCalculated', true); // Set flag before making changes
 
-					//gridInstance.beginCustomLoading("Calculating...");
-
 					let balance = 0;
 
 					dataSource.forEach((item) => {
@@ -1807,28 +1873,86 @@
 						}) + " " + (balance >= 0 ? "Dr" : "Cr");
 					});
 
-					//gridInstance.endCustomLoading();
-
-					// No refresh/repaint here to avoid stack overflow
-
-					// Optionally trigger repaint of a specific row/cell later if needed
-
 					let visibleRows = gridInstance.getVisibleRows();
 
 					if (visibleRows && visibleRows.length > 0) {
 						let firstRow = visibleRows[0].data;
 						let lastRow = visibleRows[visibleRows.length - 1].data;
 
-						 firstRowBalance = firstRow ? firstRow.CalculatedBalance : null;
-						 lastRowBalance = lastRow ? lastRow.CalculatedBalance : null;
+						let firstRowBalance = firstRow ? firstRow.CalculatedBalance : null;
+						let lastRowBalance = lastRow ? lastRow.CalculatedBalance : null;
 
 						console.log("First Row Balance: ", firstRowBalance);
 						console.log("Last Row Balance: ", lastRowBalance);
 					}
+					injectHeaderSVG();
 				}
 			}
 		}
 	}
+
+
+    function handleGridOptionChanged(e) {
+		if (e.name === "columns" || e.name === "visible") {
+			// Columns changed, so re-inject SVG
+			setTimeout(() => injectHeaderSVG(), 50); // slight delay to wait for DOM re-render
+		}
+	}
+	function injectHeaderSVG() {
+		let gridElement = $('#dataGrid');
+		let dataGrid = gridElement.dxDataGrid("instance");
+		if (!dataGrid) return;
+
+		let dataSource = dataGrid.option("dataSource");
+		if (!dataSource || dataSource.length === 0) return;
+
+		let svgIcon = dataSource[0].CurrencyImage;
+		if (!svgIcon) return;
+
+		svgIcon = svgIcon.replace(/<svg\b([^>]*)>/, `<svg width="12" height="12" $1>`);
+
+		gridElement.find(".dx-header-row td").each(function () {
+				debugger;
+			const $cell = $(this);
+			const dataField = $cell.attr("data-field");  // 👈 This is key
+
+				const $debitHeader = $(".debit-header");
+				const debitText = $debitHeader.data("original-text") || $debitHeader.text().trim();
+				$debitHeader.data("original-text", debitText); // Save original once
+
+				$debitHeader.html(`
+					<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+						${svgIcon}
+						<span style="font-weight: bold;">${debitText}</span>
+					</div>
+				`);
+				debugger;
+				// 👉 Credit
+				const $creditHeader = $(".credit-header");
+				const creditText = $creditHeader.data("original-text") || $creditHeader.text().trim();
+				$creditHeader.data("original-text", creditText);
+
+				$creditHeader.html(`
+					<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+						${svgIcon}
+						<span style="font-weight: bold;">${creditText}</span>
+					</div>
+				`);
+
+				const $balanceHeader = $(".balance-header");
+					const balanceText = $balanceHeader.data("original-text") || $balanceHeader.text().trim();
+					$balanceHeader.data("original-text", balanceText);
+
+					$balanceHeader.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${balanceText}</span>
+						</div>
+					`);
+		});
+	}
+
+
 
 
 
@@ -2028,11 +2152,11 @@
 	}
 
 
-		/* ---------- wire it to the grid ---------- */
-		function handleGridContentReady(e) {
-			const data = e.component.option('dataSource') || [];
-			updateKpis(aggregate(data));
-		}
+		// /* ---------- wire it to the grid ---------- */
+		// function handleGridContentReady(e) {
+		// 	const data = e.component.option('dataSource') || [];
+		// 	updateKpis(aggregate(data));
+		// }
 
 		// …if you reload or filter the grid from code elsewhere, just call updateKpis(aggregate(newRows)) again.
 	function updateValueSlider(cardId, values) {
@@ -2091,7 +2215,8 @@
 			$('#cardCredit .overlay .detail').eq(1).text(`This Week: ${fmt(t.creditWeek)}`);
 			$('#cardCredit .overlay .detail').eq(2).text(`This Month: ${fmt(t.creditMonth)}`);
 		}
-		function handleCellPrepared(e) {
+	function handleCellPrepared(e) {
+		
               
 		if (e.rowType !== "data") return;
 
@@ -2119,4 +2244,10 @@
 			}
 		});
 	}
+		function handleRowPrepared(e) {
+		if (e.rowType === "group" && e.key === "Opening Balance") {
+			$(e.rowElement).css("background-color", "#f2f2f2");
+		}
+	}
+
 </script>

@@ -381,49 +381,7 @@
 		pointer-events: none; /* Prevents hover and click effects */
 	}
 
-	/* .container {
-
-			display: none !important;
-
-		}
-
-		.frame {
-
-			display: none !important;
-
-		}
-
-		.footerContainer {
-
-			display: none !important;
-
-		}
-
-		.bodyContainer {
-
-			display: flex;
-
-			justify-content: center;
-
-		} */
-
-	/* .mainContainer {
-
-			margin-top: 1em;
-
-			width: 100%;
-
-		} */
-
-	/* .card-container {
-
-			display: flex;
-
-			justify-content: space-between;
-
-			gap: 20px;
-
-			} */
+	
 
 	.card {
 		flex: 1;
@@ -959,13 +917,13 @@
 																.Controller("VATModule")
 																.LoadAction("GetInvoiceSubType")
 																.LoadMode(DataSourceLoadMode.Raw)
-																.Key("InvoiceType"))
+																.Key("InvoiceSubTypeCode"))
 																.AcceptCustomValue(true)
 																.LabelMode(EditorLabelMode.Outside)
 																.OpenOnFieldClick(false)
 																.ValueChangeEvent("input")
 																.HoverStateEnabled(true)
-																.Value("TAX_INV") // Use the corresponding InvoiceSubTypeCode
+																.Value("Tax Invoice") // Use the corresponding InvoiceSubTypeCode
 																.ValueExpr("InvoiceSubTypeCode") // Passes this value
 																.DisplayExpr("InvoiceSubType")   // Shows this to the user
 																.Disabled(true)
@@ -3498,7 +3456,7 @@
 			var urlParams = new URLSearchParams(window.location.search);
 			var InvoiceNo = urlParams.get('InvoiceNo');
 			var IsEditflag = urlParams.get('IsEditflag');
-
+			debugger;
 				IsCurrent=IsEditflag.toString();
 
 				// console.log("Iseditflag",IsEditflag)
@@ -3608,7 +3566,10 @@
 											if(account.IsApproved==true)
 											{
 												disableEditing();
-													btnPostToLedgerdisableEditing();
+											}
+										    else if(account.IsPosted==true)
+										    {
+											    btnPostToLedgerdisableEditing();
 											}
 											 var button = $("#btnSave").dxButton("instance");
 						                     button.option("text", "Update");
@@ -6949,7 +6910,9 @@
 				InvoiceDeliveryDate: $("#SupplyDate").dxDateBox("instance").option("value")|| null,
 				PaymentMeansTypeCode: paymentmeanstypecode,
 			    //InvoiceTypeCode: $("#VATInvoiceType").dxDropDownBox("instance").option("value")|| null,
-			    // InvoiceTypeCodeSubType: $("#VATInvoiceSubType").dxDropDownBox("instance").option("value")|| null,
+				InvoiceTypeCode:388,
+			   // InvoiceTypeCodeSubType: $("#VATInvoiceSubType").dxDropDownBox("instance").option("value")|| null,
+			    InvoiceTypeCodeSubType:"01",
 				InvoiceTransactionCode: transcode,
 
 				 ClientCode: accheadid|| null,
@@ -7143,6 +7106,7 @@
 
 		 });
 
+
 			 $("#btnSaveAndClose").on("click", function (e) {
 
 			var clientnameValidator = $("#ddclientname").dxValidator("instance");
@@ -7163,10 +7127,12 @@
 				InvoiceDate: $("#InvoiceDate").dxDateBox("instance").option("value")|| null,
 				InvoiceDateWtTime: $("#InvoiceIssuedDateTime").dxDateBox("instance").option("value")|| null,
 				InvoiceDeliveryDate: $("#SupplyDate").dxDateBox("instance").option("value")|| null,
-				//PaymentMeansTypeCode: paymentmeanstypecode,
-				 //  InvoiceTypeCode: $("#VATInvoiceType").dxDropDownBox("instance").option("value")|| null,
-				 // InvoiceTypeCodeSubType: $("#VATInvoiceSubType").dxDropDownBox("instance").option("value")|| null,
-				 // InvoiceTransactionCode: $("#InvoiceTransactionsCode").dxDropDownBox("instance").option("value")|| null,
+				PaymentMeansTypeCode: paymentmeanstypecode,
+			    //InvoiceTypeCode: $("#VATInvoiceType").dxDropDownBox("instance").option("value")|| null,
+				InvoiceTypeCode:388,
+			   // InvoiceTypeCodeSubType: $("#VATInvoiceSubType").dxDropDownBox("instance").option("value")|| null,
+			   InvoiceTypeCodeSubType:01,
+				InvoiceTransactionCode: transcode,
 
 				 ClientCode: accheadid|| null,
 				 BuyerName: $("#ddclientname").dxDropDownBox("instance").option("value")|| null,
@@ -7293,7 +7259,7 @@
 			// Send AJAX request to update the invoice master details
 			$.ajax({
 				type: "POST",
-				url: `/api/VoucherMaster/UpdateInvoiceMasterDetails`,
+					url: `/api/VoucherMaster/UpdateInvoiceMasterDetails`,
 				contentType: "application/json",
 				data: JSON.stringify(InvoiceMaster),
 				success: function (response) {
@@ -7359,7 +7325,6 @@
 			}
 
 		 });
-
 
 		 $(document).ready(function () {
 			$.ajax({
@@ -7674,6 +7639,7 @@
 					else {
 						DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
 					}
+					btnVerifydisableEditing();
 				},
 				error: function (xhr, status, error) {
 					let errorMessage = xhr.responseJSON && xhr.responseJSON.Message
@@ -7817,6 +7783,14 @@
 					}
 				});
 			}
+			}
+			else{
+				DevExpress.ui.dialog.custom({
+						title: "Invoice postal has failed.",
+						message: "The invoice has not been posted. Please specify the Revenue Account.",
+						buttons: [{ text: "Ok", onClick: () => false }],
+						showTitle: true
+					}).show();
 			}
 		});
 
@@ -8886,7 +8860,7 @@
 			// Disable all input fields and buttons except for specific ones
 			$('input, select, textarea').prop('disabled', true);  // Disable inputs, selects, and textareas
 
-			const allowedButtons = ['btnMoveDown', 'btnMoveUp', 'btnPostToLedgers', 'btnPostTag', 'btnPrint1'];
+			const allowedButtons = ['btnMoveDown', 'btnMoveUp', 'btnPostToLedgers','btnBack','btnPostTag', 'btnPrint1'];
 
 			// Disable all dxButton and dxDropDownButton controls
 			$('.dx-button, .dx-dropdownbutton').each(function () {
@@ -9035,7 +9009,7 @@
 				// Disable all input fields and buttons except for specific ones
 				$('input, select, textarea').prop('disabled', true);  // Disable inputs, selects, and textareas
 
-				const allowedButtons = ['btnMoveDown', 'btnMoveUp', 'btnPostTag', 'btnPrint1'];
+					const allowedButtons = ['btnMoveDown', 'btnMoveUp','btnBack','btnPostTag', 'btnPrint1'];
 
 				// Disable all dxButton and dxDropDownButton controls
 				$('.dx-button, .dx-dropdownbutton').each(function () {
@@ -9057,6 +9031,25 @@
 					dataGrid.option("editing.allowDeleting", false);
 				}
 			}
+
+
+				function btnVerifydisableEditing() {
+	
+					const allowedButtons = ['btnPostTag','btnPostToLedgers','btnAttach','btnApprove','btnBack','btnPrint1','btnAddNew','btnSaveAndClose','btnSave','ddButtonLayout','btnMoveDown', 'btnMoveUp', 'btnPostTag', 'btnPrint1'];
+
+					// Disable all dxButton and dxDropDownButton controls
+					$('.dx-button').each(function () {
+						const id = $(this).attr('id');
+						if (id && !allowedButtons.includes(id)) {
+							// Disable dxButton and dxDropDownButton widgets except for allowed ones
+							if ($(this).data('dxButton')) {
+								$(this).dxButton('option', 'disabled', true);
+							}
+						}
+					});
+
+					
+				}
 
 
 </script>

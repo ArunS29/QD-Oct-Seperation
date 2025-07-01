@@ -483,39 +483,7 @@
 								.DropDownOptions(o => o.Width(1000))
 			                    .ContentTemplate(new TemplateName("PurchaseVoucherNoTemplate"))
                             )
-@* 
-								@(Html.DevExtreme().DropDownBox()
-															.Label(new JS("formatMessage('Purchase Voucher No:')"))
-															.DataSource(d => d.WebApi()
-															.Controller("VATModule")
-															.LoadAction("GetPurchaseVoucher")
-														    .LoadParams(new { supplierid = new JS("$('#VATSupplierName').dxDropDownBox('instance').option('value')") })
-															.LoadMode(DataSourceLoadMode.Raw)
-															.Key("PurchaseVoucherNo")
-															)
-															.ValidationRules(rules =>
-															{
-																rules.AddRequired()
-																.Message("Supplier Name should be entered");
-															})
-															.LabelMode(EditorLabelMode.Outside)
-															.ID("VATPurchaseVoucherNo")
-															.ShowClearButton(true)
-															.AcceptCustomValue(true)
-															.OpenOnFieldClick(false)
-															.ValueChangeEvent("input")
-															.HoverStateEnabled(true)
-															.ValueExpr("PurchaseVoucherNo")
-															.DisplayExpr("PurchaseVoucherNo")
-															.OnInput("dropDownBoxOnInput")
-															//.OnClosed("onDropDownBoxClosed")
-															//.OnOpened("onOpened")
-															 .OnOpened("onDropDownBoxOpened") 
-															.TabIndex(1)
-															.DropDownOptions(o => o.Width(1000))
-															.OnKeyDown("onKeyDown")
-															.ContentTemplate(new TemplateName("PurchaseVoucherNoTemplate"))
-															) *@
+
                         </div>
 
                         <div class="col-6">
@@ -559,7 +527,7 @@
                                         .LoadMode(DataSourceLoadMode.Raw)
                                         .Key("AccountId"))
                                     .LabelMode(EditorLabelMode.Outside)
-                                    .ID("ddItemsReturnfromstore1")
+                                    .ID("ddlSupplierNameArabic")
                                     .ShowClearButton(true)
                                     .AcceptCustomValue(true)
                                     .OpenOnFieldClick(false)
@@ -591,7 +559,7 @@
                             @(Html.DevExtreme().TextBox()
                                 .Label(new JS("formatMessage('Reference No')"))
                                 .LabelMode(EditorLabelMode.Outside)
-                                .ID("ddReferenceNo")
+                                .ID("txtReferenceNo")
                                 .ValidationRules(rules =>
                                 {
                                     rules.AddRequired()
@@ -604,7 +572,7 @@
                             @(Html.DevExtreme().TextBox()
                                 .Label(new JS("formatMessage('Invoice Period')"))
                                 .LabelMode(EditorLabelMode.Outside)
-                                .ID("ddInvoicePeriod")
+                                .ID("txtInvoicePeriod")
                                 .ValidationRules(rules =>
                                 {
                                     rules.AddRequired()
@@ -674,6 +642,11 @@
 											.LoadAction("GetItemsPurchaseAccount")
 											.LoadMode(DataSourceLoadMode.Raw)
 											.Key("IncomeLedger"))
+														.ValidationRules(rules =>
+														{
+															rules.AddRequired()
+															.Message(new JS("formatMessage('Revenue Account should be entered')"));
+														})
 											.ID("ddPurchaseAccount")
 											.LabelMode(EditorLabelMode.Outside)
 											.ShowClearButton(true)
@@ -1795,7 +1768,7 @@
 
 			$(document).ready(function () {
 			var urlParams = new URLSearchParams(window.location.search);
-					var CreditNoteNo = urlParams.get('CreditNoteNo');
+			var DebitNoteNo		 = urlParams.get('DebitNoteNo');
 			var IsEditflag = urlParams.get('IsEditflag');
 
 				IsCurrent=IsEditflag.toString();
@@ -1803,65 +1776,55 @@
 				// console.log("Iseditflag",IsEditflag)
 				if (IsCurrent === "true") {
 				$.ajax({
-					url: `/api/VATModule/GetCreditNoteDetails?CreditNoteNo=${encodeURIComponent(CreditNoteNo)}`,
+					url: `/api/VATModule/GetDebitNoteDetails?DebitNoteNo=${encodeURIComponent(DebitNoteNo)}`,
 					type: 'GET',
 					dataType: 'json',
 					success: function (response) {
-						console.log("InvoiceDetails", response);
+						console.log("DebitInvoiceDetails", response);
 
 						if (response && response.length > 0) {
 							var account = response[0];
 
 							console.log(account)
 
-							$('#CreditNoteNo').dxTextBox("instance")?.option("value", account.CreditNoteNo);
-							ClientCodedataGridSelectionChanged({ selectedRowKeys: [account.ClientCode] });
-							// ClientNamedataGridSelectionChanged({ selectedRowKeys: [account.BuyerName] });
-							$('#ddclientname').dxTextBox("instance")?.option("value", account.BuyerName);
+							$('#DebitNoteNo').dxTextBox("instance")?.option("value", account.DebitNoteNo);
+							$('#VATSupplierName').dxDropDownBox("instance")?.option("value", account.SupplierCode);
 
-					     	$('#GroupVATNo').dxTextBox("instance")?.option("value", account.BuyerGroupVatnumber);
-							$('#ClientVATNo').dxTextBox("instance")?.option("value", account.BuyerVatnumber);
-						    $('#ClientNameArabic').dxTextBox("instance")?.option("value", account.BuyerNameAr);
-							// dataGridSelectionChanged({ selectedRowKeys: [account.BuyerOtherIdtype] });
-							 $('#ClientOtherID').dxTextBox("instance")?.option("value", account.BuyerOtherId);
-							 $('#InvoiceCounterValue').dxTextBox("instance")?.option("value", account.InvoiceCounterValue);
-						     //$('#InvoiceNo').dxTextBox("instance")?.option("value", account.InvoiceNo);
-								dataGridRevenueAccountSelectionChanged({ selectedRowKeys: [account.RevenueAccount]});
-								dataGridCostCenterAccountHeadSelectionChanged({ selectedRowKeys: [account.CostCenterCode]});
-
-									$('#txtInvoiceNotes').dxTextArea("instance")?.option("value", account.RemarksInEn);
-									$('#txtNotesinArabic').dxTextArea("instance")?.option("value", account.RemarksInAr);
-									  $('#ClientPONo').dxTextBox("instance")?.option("value", account.Pono);
-
-							// 		   $('#PODate').dxDateBox("instance")?.option("value", account.Podate);
-										 $('#ProjectRef').dxTextBox("instance")?.option("value", account.ReferenceNo);
-							 			 $('#SESReference').dxTextBox("instance")?.option("value", account.SesreferenceNo);
-							//  		 $('#PaymentTerms').dxTextBox("instance")?.option("value", account.PaymentTerms);
-							// 			 $('#QuotationNo').dxTextBox("instance")?.option("value", account.ReferenceNo);
-							// 			 $('#DeliveryNotes').dxTextBox("instance")?.option("value", accounvaluet.DeliveryNoteNos);
-							// 				 $('#ClientGRNReference').dxTextBox("instance")?.option("", account.ClientGrnreferenceNo);
-											 $('#OurCompanyRegisteredName').dxTextBox("instance")?.option("value", account.SellerName);
-							         		 $('#OurVATNo').dxTextBox("instance")?.option("value", account.SellerVATNumber);
-						        			 $('#OurGroupVATNo').dxTextBox("instance")?.option("value", account.SellerGroupVatnumber);
-							 				 $('#OurCompanyNameinArabic').dxTextBox("instance")?.option("value", account.SellerNameAr);
-											 $('#SellerOtherSellerId').dxTextBox("instance")?.option("value", account.SellerOtherSellerId);
-						
-											dataGridDivisionHeadSelectionChanged({ selectedRowKeys: [account.BranchCode]});
-							     			dataGridCompanyBranchHeadSelectionChanged({ selectedRowKeys: [account.CompanyId]});
-							 				//dataGridPreparedByHeadSelectionChanged({ selectedRowKeys: [account.InvoicePreparedBy]});
+							$('#CreditNoteIssuedDateTime').dxDateBox("instance")?.option("value", account.DebitNoteDate);
+							$('#VATPurchaseVoucherNo').dxDropDownBox("instance")?.option("value", account.PurchaseVoucherNo);
+							$('#SupplierInvoiceNo').dxTextBox("instance")?.option("value", account.SupplierBillNo);
 							
+							 $('#InvoiceDate').dxTextBox("instance")?.option("value", account.SupplierBillDate);
+							 $('#ddlSupplierNameArabic').dxDropDownBox("instance")?.option("value", account.SupplierNameAr);
+							 $('#txtReferenceNo').dxTextBox("instance")?.option("value", account.SupplierBillDate);
+							 $('#txtInvoicePeriod').dxTextBox("instance")?.option("value", account.SupplierBillDate);
+							 $("#ddItemsReturnfromstore").dxDropDownBox("instance").option("value",account.ItemReturns);
+							 $("#EffectiveDate").dxDateBox("instance").option("value",account.DebitNoteEffectiveDate);
+		// 	//PaymentMeansTypeCode: paymentmeanstypecode,
+			                $("#ddPurchaseAccount").dxDropDownBox("instance").option("value",account.RevenueAccount);
+			                $("#ddlCostCenterAccount").dxDropDownBox("instance").option("value",account.CostCenterCode);
+							$("#txtInvoiceNotes").dxTextArea("instance").option("value",account.DebitNoteRemarks);
+							$("#txtNotesinArabic").dxTextArea("instance").option("value",account.DebitNoteRemarksAr);
+							$("#ddlDivision").dxDropDownBox("instance").option("value",account.BranchCode);
+							$("#ddlDebitNoteDivision").dxDropDownBox("instance").option("value",account.CompanyId);
+
 											if(account.IsApproved==true)
 											{
 												disableEditing();
+												
+											}
+											else if(account.IsPosted==true)
+											{
+												btnPostToLedgerdisableEditing();
 											}
 
 								// Now call the second AJAX to get grid details
 							$.ajax({
 								type: "GET",
-								url: `/api/VATModule/GetGridCreditNoteDetails?CreditNoteNo=${encodeURIComponent(CreditNoteNo)}`,
+								url: `/api/VATModule/GetGridDebitNoteDetails?DebitNoteNo=${encodeURIComponent(DebitNoteNo)}`,
 									dataType: 'json',
 								success: function (response) {
-										console.log("Grid",response)
+										console.log("DebitGrid",response)
 					
 										let rowData = response.map((item, index) => ({
 			SNo: index + 1,
@@ -4691,9 +4654,9 @@
 			SupplierBillNo:$("#SupplierInvoiceNo").dxTextBox("instance").option("value") || null,
 			SupplierCode: supplierid,
 			SupplierBillDate: $("#InvoiceDate").dxDateBox("instance").option("value") || null,
-			//SupplierNameAr:$("#ddItemsReturnfromstore1").dxDropDownBox("instance").option("value"),
-			ReferenceNo:$("#ddReferenceNo").dxTextBox("instance").option("value") || null,
-		    InvoicePeriod:$("#ddInvoicePeriod").dxTextBox("instance").option("value") || null,
+			//SupplierNameAr:$("#ddlSupplierNameArabic").dxDropDownBox("instance").option("value"),
+			ReferenceNo:$("#txtReferenceNo").dxTextBox("instance").option("value") || null,
+			InvoicePeriod:$("#txtInvoicePeriod").dxTextBox("instance").option("value") || null,
 			ItemReturns:$("#ddItemsReturnfromstore").dxDropDownBox("instance").option("value")||null,
 			DebitNoteEffectiveDate:$("#EffectiveDate").dxDateBox("instance").option("value") || null,
 		// 	//PaymentMeansTypeCode: paymentmeanstypecode,
@@ -4740,6 +4703,30 @@
 					data: JSON.stringify(updatedDataSource),
 					success: function (response) {
 						//DevExpress.ui.notify(response.message, "success", 3000);
+						$.ajax({
+									type: "GET",
+					                url: `/api/VATModule/GetDebitNoteDetails?DebitNoteNo=${encodeURIComponent(DebitNoteNo)}`,
+									dataType: 'json',
+									success: function (response) {
+											console.log("Grid",response)
+
+											let rowData = response.map((item, index) => {
+
+		return {
+			SNo: index + 1,
+			...item
+			//LineTotal: currencyRate // overwrite with converted value
+		};
+	});
+
+
+										// ✅ Now safely initialize the grid here
+										initializeDataGrid(rowData);
+									},
+									error: function (xhr, status, error) {
+										console.error("Error fetching grid data:", error);
+									}
+								});
 						  DevExpress.ui.dialog.alert(
 					"Invoice Details updated Successfully.",
 					"Update successful"
@@ -4766,26 +4753,35 @@
 	 });
 
 
-	  $("#btnSaveAndClose").on("click", function (e) {
+	  $("#btnSave").on("click", function (e) {
 
 		var clientnameValidator = $("#VATSupplierName").dxValidator("instance");
 		var clientnameValidation = clientnameValidator.validate();
+
 		if(clientnameValidation.isValid)
 		{
 	// Create JSON object for master invoice
 		let DebitNoteNo=$('#DebitNoteNo').dxTextBox("instance").option("value");
-	
+
 		var InvoiceMaster = {
 			DebitNoteNo: $('#DebitNoteNo').dxTextBox("instance").option("value") || null,
 			DebitNoteDate: $("#CreditNoteIssuedDateTime").dxDateBox("instance").option("value") || null,
-	        PurchaseVoucherNo: $("#VATPurchaseVoucherNo").dxDropDownBox("instance").option("value") || null,
+			PurchaseVoucherNo: $("#VATPurchaseVoucherNo").dxDropDownBox("instance").option("value") || null,
 			SupplierBillNo:$("#SupplierInvoiceNo").dxTextBox("instance").option("value") || null,
-			
+			SupplierCode: supplierid,
 			SupplierBillDate: $("#InvoiceDate").dxDateBox("instance").option("value") || null,
-			//SupplierNameAr:$("#ddItemsReturnfromstore1").dxDropDownBox("instance").option("value"),
-			ReferenceNo:$("#ddReferenceNo").dxTextBox("instance").option("value") || null,
-		    InvoicePeriod:$("#ddInvoicePeriod").dxTextBox("instance").option("value") || null,
-			 SupplierCode: supplierid
+			//SupplierNameAr:$("#ddlSupplierNameArabic").dxDropDownBox("instance").option("value"),
+			ReferenceNo:$("#txtReferenceNo").dxTextBox("instance").option("value") || null,
+			InvoicePeriod:$("#txtInvoicePeriod").dxTextBox("instance").option("value") || null,
+			ItemReturns:$("#ddItemsReturnfromstore").dxDropDownBox("instance").option("value")||null,
+			DebitNoteEffectiveDate:$("#EffectiveDate").dxDateBox("instance").option("value") || null,
+		// 	//PaymentMeansTypeCode: paymentmeanstypecode,
+			RevenueAccount:$("#ddPurchaseAccount").dxDropDownBox("instance").option("value")||null,
+			CostCenterCode:$("#ddlCostCenterAccount").dxDropDownBox("instance").option("value")||null,
+			DebitNoteRemarks:$("#txtInvoiceNotes").dxTextArea("instance").option("value") || null,
+			DebitNoteRemarksAr:$("#txtNotesinArabic").dxTextArea("instance").option("value") || null,
+			BranchCode:$("#ddlDivision").dxDropDownBox("instance").option("value")||null,
+			CompanyId:$("#ddlDebitNoteDivision").dxDropDownBox("instance").option("value")||null
 		};
 
 		// Create JSON array for child records
@@ -4823,8 +4819,148 @@
 					data: JSON.stringify(updatedDataSource),
 					success: function (response) {
 						//DevExpress.ui.notify(response.message, "success", 3000);
+						$.ajax({
+									type: "GET",
+									url: `/api/VATModule/GetDebitNoteDetails?DebitNoteNo=${encodeURIComponent(DebitNoteNo)}`,
+									dataType: 'json',
+									success: function (response) {
+											console.log("Grid",response)
+
+											let rowData = response.map((item, index) => {
+
+		return {
+			SNo: index + 1,
+			...item
+			//LineTotal: currencyRate // overwrite with converted value
+		};
+	});
+
+
+										// ✅ Now safely initialize the grid here
+										initializeDataGrid(rowData);
+									},
+									error: function (xhr, status, error) {
+										console.error("Error fetching grid data:", error);
+									}
+								});
 						  DevExpress.ui.dialog.alert(
-					"Invoice Details updated Successfully.",
+					"Debit Note Details updated Successfully.",
+					"Update successful"
+				);
+					},
+					error: function (xhr) {
+						DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+					}
+				});
+			},
+			error: function (xhr) {
+				DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+			}
+		});
+		}
+		else
+		{
+			  DevExpress.ui.dialog.alert(
+					"Cannot continue saving with errors,please clear the errors and continue.",
+					"Clear Errors"
+				);
+		}
+
+	 });
+
+
+	   $("#btnSaveAndClose").on("click", function (e) {
+
+		var clientnameValidator = $("#VATSupplierName").dxValidator("instance");
+		var clientnameValidation = clientnameValidator.validate();
+
+		if(clientnameValidation.isValid)
+		{
+	// Create JSON object for master invoice
+		let DebitNoteNo=$('#DebitNoteNo').dxTextBox("instance").option("value");
+
+		var InvoiceMaster = {
+			DebitNoteNo: $('#DebitNoteNo').dxTextBox("instance").option("value") || null,
+			DebitNoteDate: $("#CreditNoteIssuedDateTime").dxDateBox("instance").option("value") || null,
+			PurchaseVoucherNo: $("#VATPurchaseVoucherNo").dxDropDownBox("instance").option("value") || null,
+			SupplierBillNo:$("#SupplierInvoiceNo").dxTextBox("instance").option("value") || null,
+			SupplierCode: supplierid,
+			SupplierBillDate: $("#InvoiceDate").dxDateBox("instance").option("value") || null,
+			//SupplierNameAr:$("#ddlSupplierNameArabic").dxDropDownBox("instance").option("value"),
+			ReferenceNo:$("#txtReferenceNo").dxTextBox("instance").option("value") || null,
+			InvoicePeriod:$("#txtInvoicePeriod").dxTextBox("instance").option("value") || null,
+			ItemReturns:$("#ddItemsReturnfromstore").dxDropDownBox("instance").option("value")||null,
+			DebitNoteEffectiveDate:$("#EffectiveDate").dxDateBox("instance").option("value") || null,
+		// 	//PaymentMeansTypeCode: paymentmeanstypecode,
+			RevenueAccount:$("#ddPurchaseAccount").dxDropDownBox("instance").option("value")||null,
+			CostCenterCode:$("#ddlCostCenterAccount").dxDropDownBox("instance").option("value")||null,
+			DebitNoteRemarks:$("#txtInvoiceNotes").dxTextArea("instance").option("value") || null,
+			DebitNoteRemarksAr:$("#txtNotesinArabic").dxTextArea("instance").option("value") || null,
+			BranchCode:$("#ddlDivision").dxDropDownBox("instance").option("value")||null,
+			CompanyId:$("#ddlDebitNoteDivision").dxDropDownBox("instance").option("value")||null
+		};
+
+		// Create JSON array for child records
+		var InvoiceChildren = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
+
+		// Add InvoiceNo to each item
+	let updatedDataSource = InvoiceChildren.map(item => ({
+		...item,
+		InvoiceNo: DebitNoteNo,
+		TaxAmount:amt
+	}));
+
+		console.log("InvoiceMaster:", InvoiceMaster);
+		console.log("InvoiceChildren:", updatedDataSource);
+
+		// Ensure InvoiceChildren is not empty or undefined
+		if (!InvoiceChildren || InvoiceChildren.length === 0) {
+			console.error("InvoiceChildren is empty or undefined");
+			DevExpress.ui.notify("No child records found.", "error", 3000);
+			return;  // Exit if there are no child records
+		}
+
+		// Send AJAX request to update the invoice master details
+		$.ajax({
+			type: "POST",
+			url: `/api/VoucherMaster/UpdateDebitNoteMasterDetails`,
+			contentType: "application/json",
+			data: JSON.stringify(InvoiceMaster),
+			success: function (response) {
+				// Send AJAX request to update the invoice child details after master is updated
+				$.ajax({
+					type: "POST",
+					url: `/api/VoucherMaster/UpdateDebitNoteChildDetails`,
+					contentType: "application/json",
+					data: JSON.stringify(updatedDataSource),
+					success: function (response) {
+						//DevExpress.ui.notify(response.message, "success", 3000);
+						$.ajax({
+									type: "GET",
+									url: `/api/VATModule/GetDebitNoteDetails?DebitNoteNo=${encodeURIComponent(DebitNoteNo)}`,
+									dataType: 'json',
+									success: function (response) {
+											console.log("Grid",response)
+
+											let rowData = response.map((item, index) => {
+
+		return {
+			SNo: index + 1,
+			...item
+			//LineTotal: currencyRate // overwrite with converted value
+		};
+	});
+
+
+										// ✅ Now safely initialize the grid here
+										initializeDataGrid(rowData);
+									},
+									error: function (xhr, status, error) {
+										console.error("Error fetching grid data:", error);
+									}
+								});
+						  DevExpress.ui.dialog.alert(
+					"Debit Note Details updated Successfully.",
 					"Update successful"
 				);
 				history.back();
@@ -5103,6 +5239,7 @@
 					else {
 						DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
 					}
+					btnVerifydisableEditing();
 				},
 				error: function (xhr, status, error) {
 					let errorMessage = xhr.responseJSON && xhr.responseJSON.Message
@@ -5209,7 +5346,11 @@
 
 		$("#btnPostToLedgers").on("click", function (e) {
 			const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+				var PostToLedgerValidator = $("#ddPurchaseAccount").dxValidator("instance");
+				var PostToLedgerValidation = PostToLedgerValidator.validate();
 
+				if(PostToLedgerValidation.isValid)
+			   {
 			// Ensure dataGrid exists
 			if (!dataGrid) {
 				console.error("DataGrid instance not found.");
@@ -5241,6 +5382,15 @@
 					}
 				});
 			}
+			}
+				else{
+					DevExpress.ui.dialog.custom({
+							title: "Invoice postal has failed.",
+							message: "The invoice has not been posted. Please specify the Revenue Account.",
+							buttons: [{ text: "Ok", onClick: () => false }],
+							showTitle: true
+						}).show();
+				}
 		});
 
 
@@ -5306,6 +5456,7 @@
 					});
 						}
 
+						btnPostToLedgerdisableEditing();
 
 
 					} else {
@@ -5482,7 +5633,7 @@
 			// Disable all input fields and buttons except for specific ones
 			$('input, select, textarea').prop('disabled', true);  // Disable inputs, selects, and textareas
 
-			const allowedButtons = ['btnMoveDown', 'btnMoveUp','btnPostToLedgers', 'btnPostTag', 'btnPrint3'];
+			const allowedButtons = ['btnMoveDown', 'btnMoveUp','btnPostToLedgers', 'btnPostTag', 'btnPrint3','btnBack'];
 
 			// Disable all dxButton and dxDropDownButton controls
 			$('.dx-button, .dx-dropdownbutton').each(function () {
@@ -5544,6 +5695,52 @@
 		});
 	});
 
+
+			function btnPostToLedgerdisableEditing() {
+		// Disable all input fields and buttons except for specific ones
+		$('input, select, textarea').prop('disabled', true);  // Disable inputs, selects, and textareas
+
+		const allowedButtons = ['btnMoveDown', 'btnMoveUp','btnBack', 'btnPostTag', 'btnPrint3'];
+
+		// Disable all dxButton and dxDropDownButton controls
+		$('.dx-button, .dx-dropdownbutton').each(function () {
+			const id = $(this).attr('id');
+			if (id && !allowedButtons.includes(id)) {
+				// Disable dxButton and dxDropDownButton widgets except for allowed ones
+				if ($(this).data('dxButton')) {
+					$(this).dxButton('option', 'disabled', true);
+				} else if ($(this).data('dxDropDownButton')) {
+					$(this).dxDropDownButton('option', 'disabled', true);
+				}
+			}
+		});
+
+		// Disable DataGrid Editing and Deleting
+		var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+		if (dataGrid) {
+			dataGrid.option("editing.allowUpdating", false);
+			dataGrid.option("editing.allowDeleting", false);
+		}
+	}
+
+
+		function btnVerifydisableEditing() {
+
+					const allowedButtons = ['btnPostTag','btnPostToLedgers','btnAttach','btnApprove','btnBack','btnPrint3','btnAddNew','btnSaveAndClose','btnSave','ddButtonLayout','btnMoveDown', 'btnMoveUp', 'btnPostTag', 'btnPrint1'];
+
+					// Disable all dxButton and dxDropDownButton controls
+					$('.dx-button').each(function () {
+						const id = $(this).attr('id');
+						if (id && !allowedButtons.includes(id)) {
+							// Disable dxButton and dxDropDownButton widgets except for allowed ones
+							if ($(this).data('dxButton')) {
+								$(this).dxButton('option', 'disabled', true);
+							}
+						}
+					});
+
+
+				}
 		
 
 </script>

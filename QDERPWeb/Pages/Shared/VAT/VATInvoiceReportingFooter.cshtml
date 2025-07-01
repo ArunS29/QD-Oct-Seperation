@@ -1,4 +1,5 @@
-﻿<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+﻿
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style type="text/css">
     #dataGrid .dx-datagrid-headers .dx-datagrid-action {
         text-align: center !important;
@@ -227,7 +228,6 @@
         margin-left: 8px; /* optional spacing between icon and text */
     }
 
-
     .multiline-button .dx-button-text {
         white-space: normal;
     }
@@ -236,125 +236,95 @@
 <div class="dx-fieldset horizontal-container" style="width:1000px;background-color:transparent;">
 
 
-    <div class="btn-containerIvoiceEdit">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddButtonLayout")
-            .Icon("smalliconslayout")
-            .Width(50)
-            .Text(new JS("formatMessage('Layout')"))
-            .ElementAttr(new { style = "display: none;" })
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-
-                // items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu");
-
-               // items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu");
-
-                items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
-                items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
-                items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
-                items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
-            })
-            .ShowArrowIcon(false)
-            )
-    </div>
-
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
-                .ID("rowHeightProperties")
-                .Icon("rowproperties") // fallback to standard icon if "rowproperties" not working
+                .ID("ddButtonLayout")
+                .Icon("smalliconslayout")
                 .Width(50)
-                .Text(new JS("formatMessage('Set Row Height')"))
+                .Text(new JS("formatMessage('Layout')"))
+                .ElementAttr(new { style = "display: none;" })
                 .DropDownOptions(options => options.Width(230))
                 .Items(items =>
                 {
-                    items.Add().Text(new JS("formatMessage('Short')"))
-                    .Icon("chevrondown")
-                    .OnClick("function() { ChangeRowHeight('30'); }");
-
-                    items.Add().Text(new JS("formatMessage('Medium')"))
-                    .Icon("lock")
-                    .OnClick("function() { ChangeRowHeight('40'); }");
-
-                    items.Add().Text(new JS("formatMessage('Tall')"))
-                    .Icon("edit")
-                    .OnClick("function() { ChangeRowHeight('60'); }");
-
-                    items.Add().Text(new JS("formatMessage('Extra Tall')"))
-                    .Icon("folder")
-                    .OnClick("function() { ChangeRowHeight('70'); }");
+                    items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu");
+                    items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
+                    items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
+                    items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
+                    items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
                 })
                 .ShowArrowIcon(false)
                 )
     </div>
 
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnPrint")
-            .Icon("print")
-            .Text(new JS("formatMessage('Print')"))
-            .ElementAttr(new { style = "display: none;" })
-            .Width(50)
-            .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
-            )
-    </div>
-
-
 
 
     <div class="btn-container">
         @(Html.DevExtreme().Button()
-            .ID("btnToggleSearch")
-            .Icon("search")
-            .Text(new JS("formatMessage('Search')"))
-            .ElementAttr(new { style = "display: none;" })
-            .Width(50)
-            .OnClick("toggleFilterRow")
-            )
+                .ID("btnPrint")
+                .Icon("print")
+                .Text(new JS("formatMessage('Print')"))
+                .ElementAttr(new { style = "display: none;" })
+                .Width(50)
+                .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
+                )
     </div>
 
     <div class="btn-container">
         @(Html.DevExtreme().Button()
-            .ID("btntoggleGroupPanel")
-            .Icon("hierarchy")
-            .Width(50)
-            .Text(new JS("formatMessage('Group')"))
-            .ElementAttr(new { style = "display: none;" })
-            .OnClick("toggleGroupPanel")
-            )
+                .ID("btnColumnChooser")
+                .Icon("columnchooser")
+                .Width(50)
+                .Text(new JS("formatMessage('Column Chooser')"))
+                .ElementAttr(new { style = "display: none;" })
+                .OnClick("showColumnChooser")
+                )
     </div>
-   
 
     <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnColumnChooser")
-            .Icon("columnchooser")
-            .Width(50)
-            .Text(new JS("formatMessage('Column Chooser')"))
-            .ElementAttr(new { style = "display: none;" })
-            .OnClick("showColumnChooser")
-            )
-    </div>
-  
+        @(Html.DevExtreme().DropDownButton()
+                .ID("ddReport0")
+                .Icon("mergecells")
+                .Width("100%")
+                .Text(new JS("formatMessage('Report')"))
+                .ElementAttr(new { @class = "report-button" }) // changed here
+                .DropDownOptions(options => options.Width(280))
+                .Items(items =>
+                {
+                    items.Add().Text("Invoice Collection Report").Icon("file").OnClick("navigateToDebtorsCollection");
+                    items.Add().Text("Sales Reporting with Line Details").Icon("file").OnClick("navigateToReportingInDetails");
+                })
 
+                .ShowArrowIcon(false)
+                )
+    </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
-            .ID("btnAddNew1")
-            .Text(new JS("formatMessage('Add New')"))
-            .Icon("plus")
-            // .OnClick("addNewRow") // Attach function
-            .ElementAttr(new { @class = "bold-button" })
-            // Apply custom CSS class
-            )
+                .ID("btnShowFields")
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("hierarchy")
+                .Text(new JS("formatMessage('Show Fields')"))
+                )
+
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnShowRowTotals")
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("fields")
+                .Text(new JS("formatMessage('Show Row Totals')"))
+
+                )
+
     </div>
 
-    
     <!-- Hidden anchor for submenu positioning -->
     <div id="additionalFormatsTrigger" style="position:absolute; width:1px; height:1px;"></div>
 
     <!-- Submenu placeholder -->
     <div id="additionalFormatsSubmenu"></div>
+
 
 </div>
 
@@ -661,86 +631,47 @@
                 }
             });
         }
+        function setDefaultLayoutClick(e) {
+            var grid = $("#dataGrid").dxDataGrid("instance");
+            var form = $('#formId').val();
+            var layout = grid.state();
+            const layoutJson = JSON.stringify(layout, null, 2);
+            console.log(layoutJson);
 
-          function setDefaultLayoutClick(e) {
-        const grid = $("#dataGrid").dxDataGrid("instance");
-        const form = $('#formId').val();
-
-        if (!grid) {
-            DevExpress.ui.notify("Grid not found", "error", 2000);
-            return;
+            $.ajax({
+                url: '/api/Utility/SaveLayout',  // API endpoint
+                type: 'POST',
+                data: {
+                    layout: layoutJson,
+                    form: form
+                },
+                success: function (data) {
+                    DevExpress.ui.notify("Layout saved successfully", "success", 2000);
+                },
+                error: function () {
+                    DevExpress.ui.notify("Error while saving data", "error", 2000);
+                }
+            });
         }
-
-        const layout = grid.state();
-     //   const layoutJson = JSON.stringify(layout, null, 2); // JSON string
-        const layoutJson = convertLayoutToXml(layout); // Optional: to get XML string
-
-       // console.log("JSON Layout:", layoutJson);
-        console.log("XML Layout:", layoutJson); // Comment if not needed
-
-        $.ajax({
-            url: '/api/Utility/SaveLayout',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                layout: layoutJson, // or use layoutXml if backend expects XML
-                form: form
-            }),
-            success: function (data) {
-                DevExpress.ui.notify("Layout saved successfully", "success", 2000);
-            },
-            error: function (xhr) {
-                console.error("SaveLayout error:", xhr.responseText);
-                DevExpress.ui.notify("Error while saving data", "error", 2000);
-            }
-        });
-    }
-
-      function convertLayoutToXml(layout) {
-        let xml = `<XtraSerializer version="1.0" application="View">\n`;
-        xml += `  <property name="columns">\n`;
-
-        layout.columns?.forEach(col => {
-            xml += `    <property name="${col.dataField}" iskey="true">\n`;
-            xml += `      <property name="DataType">${col.dataType || ''}</property>\n`;
-            xml += `      <property name="VisibleIndex">${col.visibleIndex ?? -1}</property>\n`;
-            xml += `      <property name="Visible">${col.visible}</property>\n`;
-            xml += `    </property>\n`;
-        });
-
-        xml += `  </property>\n</XtraSerializer>`;
-        return xml;
-    }
-
-
-              function resetLayoutClick(e) {
-           var grid = $("#dataGrid").dxDataGrid("instance");
-           var form = $('#formId').val();
-
-           const layout = grid.state();
-    //   const layoutJson = JSON.stringify(layout, null, 2); // JSON string
-       const layoutJson = convertLayoutToXml(layout); // Optional: to get XML string
-
-      // console.log("JSON Layout:", layoutJson);
-       console.log("XML Layout:", layoutJson); // Comment if not needed
-
-       $.ajax({
-           url: '/api/Utility/SaveLayout',
-           type: 'POST',
-           contentType: 'application/json',
-           data: JSON.stringify({
-               layout: layoutJson, // or use layoutXml if backend expects XML
-               form: form
-           }),
-               success: function (data) {
-                   DevExpress.ui.notify("Layout reset successfull", "success", 2000);
-                   grid.state({});
-               },
-               error: function () {
-                   DevExpress.ui.notify("Error while saving data", "error", 2000);
-               }
-           });
-       }
+        function resetLayoutClick(e) {
+            var grid = $("#dataGrid").dxDataGrid("instance");
+            var form = $('#formId').val();
+            $.ajax({
+                url: '/api/Utility/SaveLayout',  // API endpoint
+                type: 'POST',
+                data: {
+                    layout: null,
+                    form: form
+                },
+                success: function (data) {
+                    DevExpress.ui.notify("Layout reset successfull", "success", 2000);
+                    grid.state({});
+                },
+                error: function () {
+                    DevExpress.ui.notify("Error while saving data", "error", 2000);
+                }
+            });
+        }
         // Footer Group Pannel button click event
         function toggleGroupPanel() {
             var dataGrid = $("#dataGrid").dxDataGrid("instance");
@@ -880,43 +811,6 @@
             }
             openModal(url, title);
         }
-
-        // function addPaymentButton_click(e) {
-        //      let url = "";
-        //      let title = "Payments";
-        //      switch (e.itemData.text) {
-        //          case formatMessage('New Standard Tax Invoice(B2B Invoice)'):
-
-        //            DevExpress.ui.dialog.confirm(
-        //             "This option will create a New STANDARD TAX INVOICE (B2B)"
-        //             "After Creating the Invoice, you cannot remove or delete the Invoice".
-        //             "You can cancel only thru CREDIT NOTE."
-        //             "Click Yes if you want to continue.. or Click No to exit this option.",
-        //             "Confirm Creating new STANDARD TAX Invoice?"
-        //         ).done(function (dialogResult) {
-        //             if (dialogResult) {
-        //                 onConfirm(); // Proceed only if the user clicks "Yes"
-        //                  url = `/${tenantName}/Finance/frm20161VATInvoiceEdit`;
-        //             }
-        //         });
-
-        //              title = formatMessage('New Standard Tax Invoice(B2B Invoice)');
-        //              break;
-
-        //               case formatMessage('New Simplified Tax Invoice(B2C Invoice)'):
-        //              url = `/${tenantName}/Finance/frmVATInvoiceEditB2C`;
-
-        //              title = formatMessage('New Simplified Tax Invoice(B2C Invoice)');
-        //              break;
-
-        //          default:
-        //              console.log("Clicked item: ", e.itemData.text);
-        //              return;
-        //      }
-        //     openModal(url, title);
-        // }
-
-
         function addPaymentButton_click(e) {
        // let url = "";
         let title = "Payments";
@@ -1487,7 +1381,7 @@
                         {text:"Print Regular Tax Invoice - without Signatories(with symbols)"},
                          {text:"Print Regular Tax Invoice - wt Document Level Discount"},
                       { text: "Print Regular Tax Invoice -  (Format 06)" },
-                   
+
                     { text: "Design 02 (W/o Signatories)" },
                     { text: "Design 02 (With Signatories)" }
                 ],
@@ -1506,7 +1400,7 @@
 
 
          // Function to determine if Simplified Invoice printing should be disabled
-   
+
         });
         ////Credit Note Function for reports
 
@@ -1625,25 +1519,6 @@
                 console.warn("Unknown print option selected.");
             }
         }
-
-        // Example handler function for debit note
-        // function handleDebitNotePrinting(itemText) {
-        //         const DebitNoBox = $("#DebitNoteNo").dxTextBox("instance");
-        //         const debitNoteNo = DebitNoBox.option("value");
-
-        //         if (!debitNoteNo) {
-        //             alert("debitNoteNo is required.");
-        //         return;
-        //     }
-
-        //     Assume all debit notes are not approved or apply same logic as other reports
-        //     window.open(
-        //             `/${tenantName}/VoucherViewer?reportName=DebitNoteInvoice&invoiceNo=${encodeURIComponent(debitNoteNo)}&skipPreview=true&watermark=Draft Copy&isApproved=false`,
-        //         '_blank',
-        //         'width=1200,height=800,scrollbars=yes,resizable=yes'
-        //     );
-        // }
-            // <script>
             // Handles all report printing logic
         function handleReportPrinting2(e) {
             const debitNoteBox = $("#DebitNoteNo").dxTextBox("instance");

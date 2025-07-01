@@ -41,6 +41,7 @@ namespace QD.ERP.Web.DAL.Entities
         public decimal? ConvertedDrAmount { get; set; }
         public decimal? ConvertedCrAmount { get; set; }
         public decimal? ConvertedAmount { get; set; }
-        
+        public string CurrencyName { get; set; }
+
     }
 }

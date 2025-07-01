@@ -477,7 +477,7 @@
 											.ValueChangeEvent("input")
 											.HoverStateEnabled(true)
 
-											.ValueExpr("AccountHead")
+											.ValueExpr("AccountId")
 											.DisplayExpr("AccountId")
 
 											.Width("100%")
@@ -510,8 +510,8 @@
 																			.Label(new JS("formatMessage('Group VAT No')"))
 																			.LabelMode(EditorLabelMode.Outside)
 																			.MaxLength(15)
-																			.Mask("000000000000000") // 15 digits
-																			.MaskChar(" ") // Optional: makes it more readable
+																			.Mask("300000000010000") // 15 digits
+														                	.MaskChar("_") // Optional: makes it more readable
 																			//.ShowClearButton(true) // Optional: adds a clear (X) button
 																			)
 								</td>
@@ -910,10 +910,14 @@
 																					.LoadMode(DataSourceLoadMode.Raw)
 																					.Key("IncomeLedger")
 																					)
+																					.ValidationRules(rules =>
+														{
+															rules.AddRequired()
+															.Message(new JS("formatMessage('Revenue Account should be entered')"));
+														})
 
 																					.LabelMode(EditorLabelMode.Outside)
 																					.ID("ddlRevenueAccount")
-																					.Value("Income - Trading")
 																					.ShowClearButton(true)
 																					.AcceptCustomValue(true)
 																					.OpenOnFieldClick(false)
@@ -2072,7 +2076,7 @@
 								.Controller("VATModule")
 								.LoadAction("GetClientCode")
 								.LoadMode(DataSourceLoadMode.Raw)
-								.Key("AccountHead")
+								.Key("AccountId")
 								)
 								.WordWrapEnabled(true)
 								.ShowBorders(true)
@@ -3173,6 +3177,10 @@
 											{
 												disableEditing();
 											}
+											else if(account.IsPosted==true)
+{
+				btnPostToLedgerdisableEditing();
+}
 
 								// Now call the second AJAX to get grid details
 							$.ajax({
@@ -4335,7 +4343,7 @@ openModal(url, title);
 								  $("#GroupVATNo").dxTextBox("instance").option("value",selectedRowData[0].ClientGroupVatnumber)
 								  $("#ClientVATNo").dxTextBox("instance").option("value",selectedRowData[0].VatregistrationNo)
 								  $("#ClientOtherID").dxTextBox("instance").option("value",selectedRowData[0].ClientOtherId)
-								  $("#OtherIDType").dxTextBox("instance").option("value",selectedRowData[0].ClientOtherIdtype)
+								  $("#OtherIDType").dxDropDownBox("instance").option("value",selectedRowData[0].ClientOtherIdtype)
 
 								  $("#StreetName").dxTextBox("instance").option("value",selectedRowData[0].ClientAddressStreet)
 								  $("#StreetNameArabic").dxTextBox("instance").option("value",selectedRowData[0].ClientAddressStreetAr)
@@ -6320,6 +6328,34 @@ openModal(url, title);
 					data: JSON.stringify(updatedDataSource),
 					success: function (response) {
 						//DevExpress.ui.notify(response.message, "success", 3000);
+							$.ajax({
+									type: "GET",
+									url: `/api/VATModule/GetGridCreditNoteDetails?CreditNoteNo=${encodeURIComponent(CreditNoteNo)}`,
+									dataType: 'json',
+									success: function (response) {
+											console.log("Grid",response)
+										// if (!response || !response.data || response.data.length === 0) {
+										// 	console.warn("No voucher entries found.");
+										// 	return;
+										// }
+
+											let rowData = response.map((item, index) => {
+		
+		return {
+			SNo: index + 1,
+			...item
+			//LineTotal: currencyRate // overwrite with converted value
+		};
+	});
+
+
+										// ✅ Now safely initialize the grid here
+										initializeDataGrid(rowData);
+									},
+									error: function (xhr, status, error) {
+										console.error("Error fetching grid data:", error);
+									}
+								});
 						  DevExpress.ui.dialog.alert(
 					"Credit Note Details updated Successfully.",
 					"Update successful"
@@ -6346,6 +6382,9 @@ openModal(url, title);
 	 });
 
 
+
+
+
 	 $(document).ready(function () {
 		$.ajax({
 			url: "/api/VATModule/CreateNewInvoiceCounter",
@@ -6363,14 +6402,20 @@ openModal(url, title);
 	});
 
 	$("#btnSaveAndClose").on("click", function (e) {
-
+		debugger;
 		var clientnameValidator = $("#ddclientname").dxValidator("instance");
-		var clientnameValidation = clientnameValidator.validate();
+		var clientnameValidation = clientnameValidator.validate();	
 		if(clientnameValidation.isValid)
 		{
 	// Create JSON object for master invoice
 		let CreditNoteNo=$('#CreditNoteNo').dxTextBox("instance").option("value");
+
+		if(revaccheadid==null)
+{
+	revaccheadid="L00343"
+}
 		
+
 		var InvoiceMaster = {
 			CreditNoteNo: $('#CreditNoteNo').dxTextBox("instance").option("value"),
 			CreditNoteDate: $("#CreditNoteDate").dxDateBox("instance").option("value"),
@@ -6385,10 +6430,10 @@ openModal(url, title);
 			 BuyerNameAr: $("#ClientNameArabic").dxTextBox("instance").option("value"),
 			 SellerGroupVatnumber: $("#GroupVATNo").dxTextBox("instance").option("value"),
 			 BuyerVatnumber: $("#ClientVATNo").dxTextBox("instance").option("value"),
-			 BuyerOtherIdtype: $("#OtherIDType").dxTextBox("instance").option("value"),
+			// BuyerOtherIdtype: $("#OtherIDType").dxTextBox("instance").option("value"),
 			 BuyerOtherId: $("#ClientOtherID").dxTextBox("instance").option("value"),
 		     InvoiceCounterValue: $("#InvoiceCounterValue").dxTextBox("instance").option("value"),
-			 InvoiceNo: $("#InvoiceNo").dxTextBox("instance").option("value")|| null,
+			// InvoiceNo: $("#InvoiceNo").dxTextBox("instance").option("value")|| null,
 
 			 InvoiceEffectiveDate:$("#EffectiveDate").dxDateBox("instance").option("value")|| null,
 			InvoiceStartDate: $("#InvoiceStartDate").dxDateBox("instance").option("value")|| null,
@@ -6465,6 +6510,30 @@ openModal(url, title);
 					data: JSON.stringify(updatedDataSource),
 					success: function (response) {
 						//DevExpress.ui.notify(response.message, "success", 3000);
+							$.ajax({
+									type: "GET",
+									url: `/api/VATModule/GetGridCreditNoteDetails?CreditNoteNo=${encodeURIComponent(CreditNoteNo)}`,
+									dataType: 'json',
+									success: function (response) {
+											console.log("Grid",response)
+
+											let rowData = response.map((item, index) => {
+		
+		return {
+			SNo: index + 1,
+			...item
+			//LineTotal: currencyRate // overwrite with converted value
+		};
+	});
+
+
+										// ✅ Now safely initialize the grid here
+										initializeDataGrid(rowData);
+									},
+									error: function (xhr, status, error) {
+										console.error("Error fetching grid data:", error);
+									}
+								});
 						  DevExpress.ui.dialog.alert(
 					"Credit Note Details updated Successfully.",
 					"Update successful"
@@ -6688,7 +6757,7 @@ grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
 			$('input, select, textarea').prop('disabled', true);
 
 			$('.dx-button').each(function () {
-				const allowedButtons = ['btnMoveDown',  'btnMoveUp', 'btnSave','btnSaveAndClose','btnPostToLedgers','btnPostTag'];
+				const allowedButtons = ['btnMoveDown',  'btnMoveUp','btnPostToLedgers','btnPostTag','btnPrint23'];
 				if (!allowedButtons.includes($(this).attr('id'))) {
 					$(this).dxButton('option', 'disabled', true);
 				}
@@ -6790,6 +6859,7 @@ grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
 					else {
 						DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
 					}
+					btnVerifydisableEditing();
 				},
 				error: function (xhr, status, error) {
 					let errorMessage = xhr.responseJSON && xhr.responseJSON.Message
@@ -6899,7 +6969,11 @@ grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
 
 		$("#btnPostToLedgers").on("click", function (e) {
 			const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+				var PostToLedgerValidator = $("#ddlRevenueAccount").dxValidator("instance");
+				var PostToLedgerValidation = PostToLedgerValidator.validate();
 
+				if(PostToLedgerValidation.isValid)
+			   {
 			// Ensure dataGrid exists
 			if (!dataGrid) {
 				console.error("DataGrid instance not found.");
@@ -6931,6 +7005,15 @@ grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
 					}
 				});
 			}
+			}
+				else{
+					DevExpress.ui.dialog.custom({
+							title: "Invoice postal has failed.",
+							message: "The invoice has not been posted. Please specify the Revenue Account.",
+							buttons: [{ text: "Ok", onClick: () => false }],
+							showTitle: true
+						}).show();
+				}
 		});
 
 
@@ -6995,18 +7078,10 @@ grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
 						}
 					});
 						}
-						
-						// .done(() => {
-						// 	disableEditing();
-						// 	$("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
-						// 	$("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate || "N/A");
 
-						// 	if (IsDirect === true) {
-						// 		$("#VerifiedBy").dxCheckBox("instance").option("value", true);
-						// 		$("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
-						// 		$("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
-						// 	}
-						// });
+						btnPostToLedgerdisableEditing();
+						
+					
 					} else {
 						DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
 					}
@@ -7021,53 +7096,6 @@ grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
 		}
 
 
-		//   function proceedWithPost() {
-		// 	// Set ApprovedBy checkbox to true
-		// //	$("#ApprovedBy").dxCheckBox("instance").option("value", true);
-
-		// 	const vno = $("#CreditNoteNo").dxTextBox("instance").option("value");
-
-		// 	if (!vno) {
-		// 		DevExpress.ui.notify("Credit number is required!", "error", 2000);
-		// 		return;
-		// 	}
-
-		// 	// Define IsDirect if not already defined (adjust as needed)
-		// 	const IsDirect = true; // or false, depending on your logic
-
-		// 	const currentDate = new Date();
-		// 	const formattedDate = currentDate.toLocaleDateString("en-GB", {
-		// 		day: "2-digit",
-		// 		month: "short",
-		// 		year: "numeric"
-		// 	}).replace(/ /g, '-');
-
-		// 	$.ajax({
-		// 		type: "POST",
-		// 		url: `/api/VATModule/CreditPostInvoice?CreditNoteNo=${encodeURIComponent(vno)}`,
-		// 		contentType: "application/json",
-		// 		dataType: "json",
-		// 		// Uncomment the following line if the API expects data in the request body:
-		// 		// data: JSON.stringify({ voucherNo: vno }),
-		// 		success: function (response) {
-		// 			if (response && response.Message) {
-		// 				DevExpress.ui.dialog.alert(
-		// 					"VAT Invoice has been posted to the Accounting Books.",
-		// 					"Invoice Posted Successfully."
-		// 				)
-					
-		// 			} else {
-		// 				DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
-		// 			}
-		// 		},
-		// 		error: function (xhr, status, error) {
-		// 			let errorMessage = (xhr.responseJSON && xhr.responseJSON.Message)
-		// 				? xhr.responseJSON.Message
-		// 				: "An error occurred.";
-		// 			DevExpress.ui.notify(errorMessage, "error", 2000);
-		// 		}
-		// 	});
-		// }
 
 		$("#btnBack").on("click", function (e) {
     e.preventDefault(); // Prevent default behavior, just in case
@@ -7542,5 +7570,51 @@ $(document).ready(function () {
 	});
 });
 
+
+
+				function btnPostToLedgerdisableEditing() {
+				// Disable all input fields and buttons except for specific ones
+				$('input, select, textarea').prop('disabled', true);  // Disable inputs, selects, and textareas
+		        const allowedButtons = ['btnMoveDown',  'btnMoveUp','btnPostTag','btnPrint23'];
+
+				// Disable all dxButton and dxDropDownButton controls
+				$('.dx-button, .dx-dropdownbutton').each(function () {
+					const id = $(this).attr('id');
+					if (id && !allowedButtons.includes(id)) {
+						// Disable dxButton and dxDropDownButton widgets except for allowed ones
+						if ($(this).data('dxButton')) {
+							$(this).dxButton('option', 'disabled', true);
+						} else if ($(this).data('dxDropDownButton')) {
+							$(this).dxDropDownButton('option', 'disabled', true);
+						}
+					}
+				});
+
+				// Disable DataGrid Editing and Deleting
+				var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+				if (dataGrid) {
+					dataGrid.option("editing.allowUpdating", false);
+					dataGrid.option("editing.allowDeleting", false);
+				}
+			}
+
+
+				function btnVerifydisableEditing() {
+	
+					const allowedButtons = ['btnPostTag','btnPostToLedgers','btnAttach','btnApprove','btnBack','btnPrint23','btnAddNew','btnSaveAndClose','btnSave','ddButtonLayout','btnMoveDown', 'btnMoveUp', 'btnPostTag'];
+
+					// Disable all dxButton and dxDropDownButton controls
+					$('.dx-button').each(function () {
+						const id = $(this).attr('id');
+						if (id && !allowedButtons.includes(id)) {
+							// Disable dxButton and dxDropDownButton widgets except for allowed ones
+							if ($(this).data('dxButton')) {
+								$(this).dxButton('option', 'disabled', true);
+							}
+						}
+					});
+
+					
+				}
 </script>
 

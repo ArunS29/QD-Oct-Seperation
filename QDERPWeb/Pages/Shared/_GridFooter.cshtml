@@ -614,80 +614,90 @@
             }
         });
     }
-    function jsonToXml(obj, rootName = 'Layout') {
-    let xml = `<${rootName}>`;
 
-    for (const prop in obj) {
-        if (Array.isArray(obj[prop])) {
-            xml += `<${prop}>`;
-            obj[prop].forEach(item => {
-                xml += jsonToXml(item, 'Item');
-            });
-            xml += `</${prop}>`;
-        } else if (typeof obj[prop] === 'object' && obj[prop] !== null) {
-            xml += jsonToXml(obj[prop], prop);
-        } else {
-            const value = obj[prop] != null ? obj[prop] : '';
-            xml += `<${prop}>${value}</${prop}>`;
+
+    function setDefaultLayoutClick(e) {
+        const grid = $("#dataGrid").dxDataGrid("instance");
+        const form = $('#formId').val();
+
+        if (!grid) {
+            DevExpress.ui.notify("Grid not found", "error", 2000);
+            return;
         }
+
+        const layout = grid.state();
+     //   const layoutJson = JSON.stringify(layout, null, 2); // JSON string
+        const layoutJson = convertLayoutToXml(layout); // Optional: to get XML string
+
+       // console.log("JSON Layout:", layoutJson);
+        console.log("XML Layout:", layoutJson); // Comment if not needed
+
+        $.ajax({
+            url: '/api/Utility/SaveLayout',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                layout: layoutJson, // or use layoutXml if backend expects XML
+                form: form
+            }),
+            success: function (data) {
+                DevExpress.ui.notify("Layout saved successfully", "success", 2000);
+            },
+            error: function (xhr) {
+                console.error("SaveLayout error:", xhr.responseText);
+                DevExpress.ui.notify("Error while saving data", "error", 2000);
+            }
+        });
+    }
+     
+    // Optional: Convert DevExtreme JSON to custom XML format (not real XtraSerializer)
+    function convertLayoutToXml(layout) {
+        let xml = `<XtraSerializer version="1.0" application="View">\n`;
+        xml += `  <property name="columns">\n`;
+
+        layout.columns?.forEach(col => {
+            xml += `    <property name="${col.dataField}" iskey="true">\n`;
+            xml += `      <property name="DataType">${col.dataType || ''}</property>\n`;
+            xml += `      <property name="VisibleIndex">${col.visibleIndex ?? -1}</property>\n`;
+            xml += `      <property name="Visible">${col.visible}</property>\n`;
+            xml += `    </property>\n`;
+        });
+
+        xml += `  </property>\n</XtraSerializer>`;
+        return xml;
     }
 
-    xml += `</${rootName}>`;
-    return xml;
-}
 
 
-function setDefaultLayoutClick(e) {
-    var grid = $("#dataGrid").dxDataGrid("instance");
-    var form = $('#formId').val();
-    var layout = grid.state();
 
-    // Convert to XML
-    var layoutXml = jsonToXml(layout, 'Layout');
+        function resetLayoutClick(e) {
+            var grid = $("#dataGrid").dxDataGrid("instance");
+            var form = $('#formId').val();
 
-    console.log(layoutXml);
+            const layout = grid.state();
+     //   const layoutJson = JSON.stringify(layout, null, 2); // JSON string
+        const layoutJson = convertLayoutToXml(layout); // Optional: to get XML string
 
-    $.ajax({
-        url: '/api/Utility/SaveLayout',
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({
-            layout: layoutXml,
-            form: form
-        }),
-        success: function (data) {
-            DevExpress.ui.notify("Layout saved successfully", "success", 2000);
-        },
-        error: function (xhr) {
-            console.error("SaveLayout error:", xhr.responseText);
-            DevExpress.ui.notify("Error while saving data", "error", 2000);
+       // console.log("JSON Layout:", layoutJson);
+        console.log("XML Layout:", layoutJson); // Comment if not needed
+
+        $.ajax({
+            url: '/api/Utility/SaveLayout',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                layout: layoutJson, // or use layoutXml if backend expects XML
+                form: form
+            }),
+                success: function (data) {
+                    DevExpress.ui.notify("Layout reset successfull", "success", 2000);
+                    grid.state({});
+                },
+                error: function () {
+                    DevExpress.ui.notify("Error while saving data", "error", 2000);
+                }
+            });
         }
-    });
-}
-
-  function resetLayoutClick(e) {
-      debugger;
-    var grid = $("#dataGrid").dxDataGrid("instance");
-    var form = $('#formId').val(); // Make sure this input exists and has a value
-
-    $.ajax({
-        url: '/api/Utility/SaveLayout',
-        type: 'POST',
-        contentType: 'application/json', // Important for [FromBody]
-        data: JSON.stringify({
-            layout: null, // or '' if null causes issues
-            form: form
-        }),
-        success: function (data) {
-            DevExpress.ui.notify("Layout reset successful", "success", 2000);
-            grid.state({});
-        },
-        error: function (xhr) {
-            console.error("SaveLayout error:", xhr.responseText);
-            DevExpress.ui.notify("Error while saving data", "error", 2000);
-        }
-    });
-}
 
     // Footer Group Pannel button click event
     function toggleGroupPanel() {

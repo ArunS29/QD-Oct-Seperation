@@ -196,13 +196,124 @@
 	.dx-fieldset.horizontal-container {
 		margin-top: 10px;
 	}
-</style>
 
+	body {
+		font-family: 'Segoe UI', sans-serif;
+		margin: 0;
+		padding: 20px;
+		background: #f4f6fa;
+	}
+
+	.dashboard {
+		display: flex;
+		gap: 20px;
+		align-items: stretch;
+	}
+
+	.card {
+		flex: 1;
+		padding: 20px;
+		border-radius: 7px;
+		color: white;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+		height: 120px;
+	}
+
+		.card h1 {
+			margin: 0;
+			font-size: 20px;
+			font-weight: 600;
+		}
+
+		.card p {
+			margin: 4px 0;
+			font-size: 14px;
+		}
+
+
+		.card .icon {
+			font-size: 38px;
+			text-align: justify;
+		}
+
+		.card h4 {
+			margin: 0;
+			font-size: 18px;
+			text-align: justify;
+		}
+
+		.card .right-text {
+			position: absolute;
+			right: 20px;
+			top: 30px;
+			text-align: right;
+		}
+
+			.card .right-text h5 {
+				margin: 0;
+				font-size: 14px;
+				font-weight: 400;
+			}
+
+			.card .right-text h1 {
+				margin: 0;
+				font-size: 32px;
+			}
+
+		.card .footer {
+			position: absolute;
+			bottom: 15px;
+			right: 20px;
+			font-size: 14px;
+			font-weight: bold;
+		}
+
+	.pink {
+		background: linear-gradient(to right, #ff0066, #ff66cc);
+		width: 100%
+	}
+
+	.blue {
+		background: linear-gradient(to right, #0099ff, #33ccff);
+	}
+
+	.purple {
+		background: linear-gradient(to right, #4b00b4, #4a90e2);
+	}
+
+	.green {
+		background: linear-gradient(to right, #00cc66, #99ffcc);
+	}
+
+</style>
+<div class="dashboard" style="display: flex; align-items: center; padding: 10px;width:65%">
 <input id="formId" value="frm20171VATDebitNoteView" type="hidden" />
-<div class="title">
-	<div class="header-container">
-		<div id="DebitNoteRegister" class="no-border-input"></div>
+<div class="card pink">
+	<h4>QuickDice ERP Solutions</h4>
+	<h1>VAT Debit Note Register</h1>
+</div>
+
+
+
+<div class="card blue">
+		<div class="icon">🔔</div>
+	<h4>Today</h4>
+
+	<div class="right-text">
+		<h5>You have</h5>
+		<h1>0</h1>
 	</div>
+
+	<div class="footer">Pending Verifications</div>
+</div>
+
+<div class="card purple">
+	<h1>1</h1>
+	<h3>No of Debit Notes</h3>
+</div>
 </div>
 
 <div class="Head">
@@ -296,30 +407,70 @@
 			subColumns.AddFor(m => m.AccountHead)
 			.Caption("Account Head")
 			.Alignment(HorizontalAlignment.Center)
-			.Width(341).MinWidth(23);
+			.Width(100).MinWidth(23);
 
 			subColumns.AddFor(m => m.DebitNoteStatus)
 			.Caption("Debit Note Status")
 			.Alignment(HorizontalAlignment.Center)
-			.Width(87).MinWidth(23);
+			.CellTemplate(new JS("DebitStatusCellTemplate"))
+			.Width(180).MinWidth(23);
 		});
 			
 			columns.Add().Caption("Debit Note & Tax Amount").Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.CalcLineAmount)
 			.Caption("Amount Before Tax")
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false) // Required to render HTML
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
 
 				subColumns.AddFor(m => m.CalcTaxAmount)
 			.Caption("Total VAT Amount")
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false) // Required to apply HTML styles
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
 
 				subColumns.AddFor(m => m.TotalDebitNoteAmount)
 			.Caption("Total Amount")
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false) // Needed for custom HTML styling
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#fff9e6; color:#b38f00; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
 			});
 
 			
@@ -328,62 +479,197 @@
 			{
 				purchaseColumns.Add().Caption("Domestic").Columns(subColumns =>
 			{
-		subColumns.AddFor(m => m.DomesticStandardPurchases)
-		.Caption("Domestic 5% Purchase")
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				subColumns.AddFor(m => m.DomesticStandardPurchases)
+			.Caption("Domestic 5% Purchase")
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
 
-		subColumns.AddFor(m => m.TotalDspurchase10Perc)
-		.Caption("Domestic 10% Purchase")
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				subColumns.AddFor(m => m.TotalDspurchase10Perc)
+			.Caption("Domestic 10% Purchase")
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
 
-		subColumns.AddFor(m => m.TotalDspurchase15Perc)
-		.Caption("Domestic 15% Purchase")
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				subColumns.AddFor(m => m.TotalDspurchase15Perc)
+			.Caption("Domestic 15% Purchase")
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
 
 				subColumns.AddFor(m => m.DomesticZeroTaxPurchases)
 			.Caption("Domestic Zero Rated Purchase")
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
 
-		subColumns.AddFor(m => m.DomesticExemptedTaxPurchases)
-		.Caption("Domestic Exempted Purchase")
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				subColumns.AddFor(m => m.DomesticExemptedTaxPurchases)
+			.Caption("Domestic Exempted Purchase")
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
 			});		
 
 			purchaseColumns.Add().Caption("Imports").Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.ImportsVatpaidAtCustoms)
 			.Caption("Imports @5% Purchase")
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
 
 				subColumns.AddFor(m => m.TotalImportPurchase10Perc)
 			.Caption("Imports 10% Purchase")
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
 
 				subColumns.AddFor(m => m.TotalImportPurchase15Perc)
 			.Caption("Imports 15% Purchase")
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
 				subColumns.AddFor(m => m.ImportsVatthruRcm)
 			.Caption("RCM @5% Purchase")
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
 
 				subColumns.AddFor(m => m.TotalRcmpurchase10Perc)
 			.Caption("RCM 10% Purchase")
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
 
 				subColumns.AddFor(m => m.TotalRcmpurchase15Perc)
 			.Caption("RCM 15% Purchase")
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
 			});
 
 			});
@@ -393,51 +679,177 @@
 			{
 				subColumns.AddFor(m => m.DomesticStandardPurTax)
 			.Caption("Domestic 5% VAT")
-			.Alignment(HorizontalAlignment.Right);
-
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
 
 				subColumns.AddFor(m => m.TotalDspurchaseTax10Perc)
 			.Caption("Domestic 10% VAT")
-			.Alignment(HorizontalAlignment.Right);
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
 
 				subColumns.AddFor(m => m.TotalDspurchaseTax15Perc)
 			.Caption("Domestic 15% VAT")
-			.Alignment(HorizontalAlignment.Right);
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
 
 				subColumns.AddFor(m => m.DomesticZeroTaxPurTax)
 			.Caption("Domestic Zero Rated VAT")
-			.Alignment(HorizontalAlignment.Right);
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
 
 				subColumns.AddFor(m => m.DomesticExemptedTaxPurTax)
 			.Caption("Domestic Exempted VAT")
-			.Alignment(HorizontalAlignment.Right);
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		return '<span style=""display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
 			});
 
 				vatColumns.Add().Caption("Imports VAT").Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.ImportsVatpaidAtCustomsTax)
 			.Caption("Imports @5% VAT")
-			.Alignment(HorizontalAlignment.Right);
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+		return '<span style=""display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
 
 				subColumns.AddFor(m => m.TotalRcmpurchaseTax10Perc)
 			.Caption("Imports @10% VAT")
-			.Alignment(HorizontalAlignment.Right);
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+		return '<span style=""display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
 
 				subColumns.AddFor(m => m.TotalRcmpurchaseTax15Perc)
 			.Caption("Imports @15% VAT")
-			.Alignment(HorizontalAlignment.Right);
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+		return '<span style=""display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
 
 				subColumns.AddFor(m => m.ImportsVatthruRcmtax)
 			.Caption("RCM @5% VAT")
-			.Alignment(HorizontalAlignment.Right);
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+		return '<span style=""display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
 
 				subColumns.AddFor(m => m.TotalImportPurchase10Perc)
 			.Caption("RCM @10% VAT")
-			.Alignment(HorizontalAlignment.Right);
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+		return '<span style=""display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
 
 				subColumns.AddFor(m => m.TotalRcmpurchaseTax15Perc)
 			.Caption("RCM @15% VAT")
-			.Alignment(HorizontalAlignment.Right);
+			.Alignment(HorizontalAlignment.Center)
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+		return '<span style=""display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		");
+
 			});
 			});
 		})
@@ -448,7 +860,7 @@
 		.Height(680) // <<< fixed height
 		.ColumnAutoWidth(true)
 		.Width("98%")
-		.WordWrapEnabled(true)
+		@* .WordWrapEnabled(true) *@
 		.OnCellClick("function(e) {handleCellClick(e);}")
 		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
 		.AllowColumnReordering(true)
@@ -540,6 +952,44 @@
 
 
 <script>
+
+			function DebitStatusCellTemplate(cellElement, cellInfo) {
+		const status = cellInfo.value;
+		let backgroundColor = "";
+		let textColor = "black";
+
+		switch (status) {
+			case "Not Processed":
+				backgroundColor = "#f8d7da"; // light red
+				textColor = "#721c24";       // dark red text
+				break;
+			case "Verified":
+				backgroundColor = "#d4edda"; // light green
+				textColor = "#155724";       // dark green text
+				break;
+			case "Approved":
+				backgroundColor = "#c3e6cb"; // darker green
+				textColor = "#0b3d18";
+				break;
+			case "Posted":
+				backgroundColor = "#ffeeba"; // light orange/yellow
+				textColor = "#856404";
+				break;
+			default:
+				backgroundColor = "#f0f0f0";
+				textColor = "#000000";
+		}
+
+		cellElement.text(status);
+		cellElement.css({
+			"background-color": backgroundColor,
+			"color": textColor,
+			"font-weight": "bold",
+			"padding": "5px",
+			"border-radius": "4px",
+			"text-align": "center"
+		});
+	}
 		 $(function () {
 		const dateBox = $("#frmdateBox").dxDateBox("instance");
 
@@ -572,86 +1022,19 @@
 
 		// Assuming tenantName is already defined globally
 		function viewInvoice() {
-			if (!CreditNoteNo) {
-					alert("CreditNoteNo is not set.");
+				if (!DebitNoteNo) {
+						alert("DebitNoteNo is not set.");
 				return;
 			}
 
 			IsEdit = true;
 
-			const params = new URLSearchParams({
-				CreditNoteNo: CreditNoteNo,
-			    IsEditflag: IsEdit,
-				modal: true // If you want to explicitly include modal=true
-			});
-
-			const url = `/${tenantName}/VAT/CreditNoteEditForm?${params.toString()}`;
+			const url = `/${tenantName}/VAT/DebitNoteEditForm?DebitNoteNo=${encodeURIComponent(DebitNoteNo)}&IsEditflag=${encodeURIComponent(IsEdit)}`;
 		    window.location.href = url;
 		//	openModal(url, title);
 		}
 
 
-
-	// $(document).ready(function () {
-	// 	console.log('Start permission handling AccountingLedgers');
-	// 	var formId = "frm201LedgerView";
-	// 	$.ajax({
-	// 		url: '/api/Permissions/GetAccessDetails?formId=' + formId,
-	// 		type: 'GET',
-	// 		contentType: 'application/json',
-	// 		success: function (response) {
-	// 			console.log("API Response:", response);
-
-	// 			if (response.success && response.permissions) {
-	// 				var controlStates = {
-	// 					"ddBtnShowRecords": { "Visible": false, "Enabled": false },
-
-	// 				};
-	// 				var fullAccess = response.permissions.find(p =>
-	// 					p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
-	// 				);
-
-	// 				if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
-	// 					Object.keys(controlStates).forEach(key => {
-	// 						controlStates[key] = { "Visible": true, "Enabled": true };
-	// 					});
-	// 				} else {
-	// 					Object.keys(controlStates).forEach(key => {
-	// 						var controlPermission = response.permissions.find(p =>
-	// 							p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
-	// 						);
-	// 						if (controlPermission) {
-	// 							controlStates[key] = {
-	// 								"Visible": controlPermission.ItemVisible || false,
-	// 								"Enabled": controlPermission.ItemEnabled || false
-	// 							};
-	// 						}
-	// 					});
-	// 				}
-	// 				console.log("Control States:", controlStates);
-	// 				Object.keys(controlStates).forEach(key => {
-	// 					var button = document.getElementById(key);
-	// 					if (button) {
-
-	// 						button.style.display = controlStates[key].Visible ? "inline-block" : "none";
-
-	// 						button.disabled = !controlStates[key].Enabled;
-	// 						console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
-	// 					} else {
-	// 						console.warn(`Button with ID "${key}" not found in the DOM.`);
-	// 					}
-	// 				});
-	// 			} else {
-	// 				console.warn("Failed to fetch permissions or no permissions available.");
-	// 			}
-	// 		},
-	// 		error: function (xhr, status, error) {
-	// 			console.error("Error fetching permissions:", error);
-	// 			alert('An error occurred while fetching permissions. Please try again.');
-	// 		}
-	// 	});
-	// 	console.log('End permission handling');
-	// });
 	let selectedVoucherNo = null;
 	$(function () {
 				ddBtnShowRecords_click("range")
