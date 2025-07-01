@@ -240,14 +240,14 @@
 
 	.card {
 		flex: 1;
-		padding: 20px;
-		border-radius: 7px;
+		padding: 15px;
+		border-radius: 12px;
 		color: white;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
 		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-		height: 120px;
+		height: 110px;
 	}
 
 		.card h1 {
@@ -261,86 +261,379 @@
 			font-size: 14px;
 		}
 
-
-		.card .icon {
-			font-size: 38px;
-			text-align: justify;
-		}
-
-		.card h4 {
-			margin: 0;
-			font-size: 18px;
-			text-align: justify;
-		}
-
-		.card .right-text {
-			position: absolute;
-			right: 20px;
-			top: 30px;
-			text-align: right;
-		}
-
-			.card .right-text h5 {
-				margin: 0;
-				font-size: 14px;
-				font-weight: 400;
-			}
-
-			.card .right-text h1 {
-				margin: 0;
-				font-size: 32px;
-			}
-
-		.card .footer {
-			position: absolute;
-			bottom: 15px;
-			right: 20px;
-			font-size: 14px;
+		.card .amount {
+			font-size: 26px;
+			margin: 5px 0;
 			font-weight: bold;
 		}
 
+		.card .percent {
+			font-size: 14px;
+			display: flex;
+			align-items: center;
+		}
+
+
+	.tabs {
+		display: flex;
+		justify-content: space-between;
+		margin-bottom: 12px;
+	}
+
+	.tab-text {
+		flex: 1;
+		text-align: center;
+		cursor: pointer;
+		font-weight: bold;
+		padding: 2px 0;
+		border-radius: 6px;
+		transition: background 0.3s ease;
+	}
+
+		.tab-text.active {
+			background: rgba(255, 255, 255, 0.9);
+			color: #333;
+		}
+
+	.tab-content {
+		display: none;
+		text-align: center;
+		animation: fadeSlideIn 0.4s ease;
+	}
+
+		.tab-content.active {
+			display: block;
+		}
+
+	h4 {
+		margin-bottom: 4px;
+		font-size: 16px;
+	}
+
+	.count {
+		font-size: 28px;
+		font-weight: bold;
+		margin: 4px 0;
+	}
+
+		.count.bounce {
+			animation: bounceIn 0.4s ease;
+		}
+
+	.trend {
+		font-size: 14px;
+		margin-bottom: 8px;
+	}
+
+	.message {
+		font-size: 14px;
+		font-weight: 500;
+		margin-top: 6px;
+	}
+
+	/* Backgrounds per tab */
+	.today-bg {
+		background: linear-gradient(270deg, #2196f3, #64b5f6);
+		background-size: 400% 400%;
+		animation: gradientPulse 6s ease infinite;
+	}
+
+	.week-bg {
+		background: linear-gradient(270deg, #009688, #4db6ac);
+		background-size: 400% 400%;
+		animation: gradientPulse 6s ease infinite;
+	}
+
+	.month-bg {
+		background: linear-gradient(270deg, #9c27b0, #ba68c8);
+		background-size: 400% 400%;
+		animation: gradientPulse 6s ease infinite;
+	}
+
+	/* Keyframes */
+	@@keyframes fadeSlideIn {
+		from {
+			opacity: 0;
+			transform: translateY(10px);
+		}
+
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	@@keyframes bounceIn {
+		0% {
+			transform: scale(0.9);
+			opacity: 0;
+		}
+
+		50% {
+			transform: scale(1.05);
+			opacity: 1;
+		}
+
+		100% {
+			transform: scale(1);
+		}
+	}
+
+	@@keyframes gradientPulse {
+		0% {
+			background-position: 0% 50%;
+		}
+
+		50% {
+			background-position: 100% 50%;
+		}
+
+		100% {
+			background-position: 0% 50%;
+		}
+	}
+
+	.card.purple {
+		background: linear-gradient(135deg, #8e24aa, #ba68c8);
+		position: relative;
+		overflow: hidden;
+	}
+
+	.card:hover {
+		transform: translateY(-6px);
+		box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+	}
+
+	h1 {
+		font-size: 42px;
+		margin: 10px 0 5px;
+	}
+
+	h3 {
+		font-size: 14px;
+		font-weight: 500;
+		margin: 0;
+	}
+
+	/* Count animation bounce */
+	h1.bounce {
+		animation: bounceIn 0.5s ease;
+	}
+
+	@@keyframes bounceIn {
+		0% {
+			transform: scale(0.9);
+			opacity: 0;
+		}
+
+		50% {
+			transform: scale(1.05);
+			opacity: 1;
+		}
+
+		100% {
+			transform: scale(1);
+		}
+	}
+
+	/* Sparkle effect (optional) */
+	.sparkle::after {
+		content: '✨';
+		position: absolute;
+		top: 10px;
+		right: 15px;
+		font-size: 18px;
+		animation: sparkle 1.8s infinite ease-in-out;
+	}
+
+	@@keyframes sparkle {
+		0%, 100% {
+			transform: scale(0.8) rotate(0deg);
+			opacity: 0.8;
+		}
+
+		50% {
+			transform: scale(1.2) rotate(30deg);
+			opacity: 1;
+		}
+	}
+
+	.card.green {
+		background: linear-gradient(135deg, #43a047, #66bb6a);
+	}
+
+	.card:hover {
+		transform: translateY(-6px);
+		box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+	}
+
+	h4 {
+		font-size: 13px;
+		margin-bottom: 1px;
+		font-weight: 500;
+		text-transform: capitalize;
+		letter-spacing: 1px;
+	}
+
+	h1 {
+		font-size: 36px;
+		margin: 4px 0;
+		font-weight: 700;
+		animation: bounceIn 0.4s ease;
+	}
+
+	h2 {
+		font-size: 14px;
+		margin-top: 8px;
+		opacity: 0;
+		animation: fadeIn 1s forwards;
+		animation-delay: 0.5s;
+	}
+
+	/* Animations */
+	@@keyframes bounceIn {
+		0% {
+			transform: scale(0.9);
+			opacity: 0;
+		}
+
+		50% {
+			transform: scale(1.05);
+			opacity: 1;
+		}
+
+		100% {
+			transform: scale(1);
+		}
+	}
+
+	@@keyframes fadeIn {
+		to {
+			opacity: 1;
+		}
+	}
+
+	/* Optional shine effect */
+	/*  .shine::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: -75%;
+			width: 50%;
+			height: 100%;
+			background: linear-gradient( 120deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.6) 50%, rgba(255, 255, 255, 0.05) 100% );
+			transform: skewX(-25deg);
+			animation: shineMove 2.5s infinite ease-in-out;
+			pointer-events: none;
+			z-index: 1;
+		}
+
+		 @@keyframes shineMove {
+			0% {
+				left: -75%;
+			}
+
+			100% {
+				left: 125%;
+			}
+		} */
+
+	.card.compact {
+		padding: 14px 16px;
+		min-height: unset;
+	}
+
 	.pink {
-		background: linear-gradient(to right, #ff0066, #ff66cc);
-		width: 100%
+		background: linear-gradient(135deg, #ec407a, #f48fb1);
+		background-size: 400% 400%;
+		animation: gradientPulse 6s ease infinite;
 	}
 
-	.blue {
-		background: linear-gradient(to right, #0099ff, #33ccff);
+	/* Text Styles */
+	.card.compact h4 {
+		font-size: 14px;
+		font-weight: 500;
+		letter-spacing: 0.5px;
+		margin-bottom: 4px;
 	}
 
-	.purple {
-		background: linear-gradient(to right, #4b00b4, #4a90e2);
+	.card.compact h2 {
+		font-size: 18px;
+		font-weight: 600;
+		margin-top: 2px;
 	}
 
-	.green {
-		background: linear-gradient(to right, #00cc66, #99ffcc);
+	/* Animations */
+	.fade-in {
+		animation: fadeIn 0.8s ease forwards;
+		opacity: 0;
+	}
+
+	.title-slide {
+		animation: titleSlide 0.9s ease forwards;
+		opacity: 0;
+	}
+
+	@@keyframes fadeIn {
+		to {
+			opacity: 1;
+		}
+	}
+
+	@@keyframes titleSlide {
+		0% {
+			opacity: 0;
+			transform: translateY(8px);
+		}
+
+		100% {
+			opacity: 1;
+			transform: translateY(0);
+		}
 	}
 </style>
-<div class="dashboard" style="display: flex; align-items: center; padding: 10px;width:65%">
+<div class="dashboard" style="display: flex; align-items: center; padding: 10px;width:55%">
 <input id="formId" value="frm201LedgerView" type="hidden" />
-<div class="card pink">
-	<h4>QuickDice ERP Solutions</h4>
-	<h1>Proforma Invoice Register</h1>
-</div>
+	<div class="card pink shine compact">
+		<h4 class="fade-in">QuickDice ERP Solutions</h4>
+		<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
+		<h2 class="title-slide">Proforma Invoice Register</h2>
 
-
-
-<div class="card blue">
-	<div class="icon">👥</div>
-	<h4>Today</h4>
-
-	<div class="right-text">
-		<h5>You have</h5>
-		<h1>0</h1>
 	</div>
 
-	<div class="footer">New Vouchers </div>
-</div>
+	<div id="mainCard" class="card today-bg">
+		<div class="tabs">
+			<div class="tab-text active" onclick="switchTab(0)">Today</div>
+			<div class="tab-text" onclick="switchTab(1)">Week</div>
+			<div class="tab-text" onclick="switchTab(2)">Month</div>
+		</div>
 
-<div class="card purple">
-	<h1>5</h1>
-	<h3>No of Invoices</h3>
-</div>
+		<div class="tab-content active">
+			<h4>🔔 Pending Verifications</h4>
+			<div class="count" id="count0">0</div>
+			@* <div class="trend">🔺 12% more than yesterday</div> *@
+			@* <div class="message">You're getting things moving!</div> *@
+		</div>
+
+		<div class="tab-content">
+			<h4>✅ Vouchers Verified</h4>
+			<div class="count" id="count1">0</div>
+			@* <div class="trend">🔼 25% higher than last week</div> *@
+			@* <div class="message">Awesome pace — keep it up!</div> *@
+		</div>
+
+		<div class="tab-content">
+			<h4>📥 New Vouchers</h4>
+			<div class="count" id="count2">0</div>
+			@* <div class="trend">🔽 10% drop this month</div> *@
+			@* <div class="message">Fewer vouchers — time to catch up?</div> *@
+		</div>
+	</div>
+
+	<div class="card purple sparkle">
+		<h1 id="invoiceCount">0</h1>
+		<h3>No of Invoices</h3>
+	</div>
 </div>
 
 
@@ -442,13 +735,16 @@
 					subColumns.AddFor(m => m.AccountHead)
 				.Caption(new JS("formatMessage('Account Head')"))
 				.Alignment(HorizontalAlignment.Center)
+				.Width(100)
+    .MinWidth(23)
 			.Visible(true)
 			;
 
 					subColumns.AddFor(m => m.InvoiceStatus)
 				.Caption(new JS("formatMessage('Invoice Status')"))
 				.Alignment(HorizontalAlignment.Center)
-			.CellTemplate(new JS("invoiceStatusCellTemplate"))
+			.CellTemplate(new JS("invoiceStatusCellTemplate")).Width(180)
+			.MinWidth(23)
 				;
 				});
 
@@ -763,6 +1059,111 @@
 </div>
 
 <script>
+
+
+
+		function animateInvoiceCount(target) {
+	  let i = 0;
+	  const el = document.getElementById("invoiceCount");
+	  el.classList.remove('bounce');
+
+	  const timer = setInterval(() => {
+		if (i >= target) {
+		  el.innerText = target;
+		  el.classList.add('bounce');
+		  clearInterval(timer);
+		} else {
+		  el.innerText = i++;
+		}
+	  }, 30);
+	}
+
+	// Animate to 40
+	animateInvoiceCount(40);
+
+
+	function countUpTurnover(targetStr) {
+	  const el = document.getElementById("turnover");
+	  const target = parseFloat(targetStr);
+	  let current = 0.0;
+
+	  const interval = setInterval(() => {
+		current += 0.5;
+		if (current >= target) {
+		  el.textContent = targetStr + " K";
+		  clearInterval(interval);
+		} else {
+		  el.textContent = current.toFixed(1) + " K";
+		}
+	  }, 30);
+	}
+
+	// Animate to 46.2 K
+	countUpTurnover("46.2");
+
+
+		  const card = document.getElementById('mainCard');
+		const counts = [8, 15, 5];
+		const countEls = [
+		  document.getElementById("count0"),
+		  document.getElementById("count1"),
+		  document.getElementById("count2"),
+		];
+		const tabs = document.querySelectorAll(".tab-text");
+		const contents = document.querySelectorAll(".tab-content");
+
+		function animateCount(el, target) {
+		  let i = 0;
+		  el.innerText = i;
+		  el.classList.remove('bounce');
+		  const interval = setInterval(() => {
+			if (i >= target) {
+			  el.innerText = target;
+			  el.classList.add('bounce');
+			  clearInterval(interval);
+			} else {
+			  el.innerText = i++;
+			}
+		  }, 30);
+		}
+
+		function switchTab(index) {
+		  tabs.forEach((tab, i) => {
+			tab.classList.toggle('active', i === index);
+			contents[i].classList.toggle('active', i === index);
+		  });
+
+		  // Change background class
+		  card.className = "card";
+		  if (index === 0) card.classList.add("today-bg");
+		  if (index === 1) card.classList.add("week-bg");
+		  if (index === 2) card.classList.add("month-bg");
+
+		  // Animate count
+		  animateCount(countEls[index], counts[index]);
+		}
+
+		// Start "Today" count immediately
+		animateCount(countEls[0], counts[0]);
+
+		function switchTab(index) {
+		  tabs.forEach((tab, i) => {
+			tab.classList.toggle('active', i === index);
+			contents[i].classList.toggle('active', i === index);
+		  });
+
+		  // Change background class
+		  card.className = "card";
+		  if (index === 0) card.classList.add("today-bg");
+		  if (index === 1) card.classList.add("week-bg");
+		  if (index === 2) card.classList.add("month-bg");
+
+		  // Animate count
+		  animateCount(countEls[index], counts[index]);
+		}
+
+		// Auto-start animation for "Today"
+		animateCount(countEls[0], counts[0]);
 			function invoiceStatusCellTemplate(cellElement, cellInfo) {
 		const status = cellInfo.value;
 		let backgroundColor = "";
