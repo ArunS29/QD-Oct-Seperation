@@ -18,6 +18,11 @@
 
 
 <style type="text/css">
+    .custom-disabled-textbox .dx-texteditor-input {
+        background-color: #f5f5f5;
+        color: black;
+        cursor: not-allowed;
+    }
     .overlay {
         display: none;
         position: fixed;
@@ -30,6 +35,9 @@
         z-index: 1000;
     }
 
+    .dx-button{
+        padding:0px!important;
+    }
     .titleCard-toggle {
         display: none !important;
     }
@@ -201,11 +209,14 @@
     .custom-icon-color .dx-icon.fa-paperclip {
         color: red !important; 
     }
-    
+
+    .dx-texteditor-container{
+    padding-top:0px!important;
+    }
     /* Shared style for all DevExtreme editors */
     .light-theme-input .dx-texteditor-input-container {
         background-color: rgba(255, 255, 255, 0.95) !important; /* Semi-transparent white */
-        border: 1px solid #ccc !important; /* Light gray border */
+        /* border: 1px solid #ccc !important; /* Light gray border */ */
         /* border-radius: 6px; */
         transition: all 0.2s ease-in-out;
     }
@@ -302,7 +313,102 @@
     .dx-field-label {
         color: black !important;
     }
+    /* Common round style */
+/* Common hover-button base style */
+.custom-hover-button {
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    padding: 0 !important;
+    border: none !important;
+    background-color: transparent !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    border-radius: 4px !important; /* square by default */
+}
 
+/* Icon size and color (default state) */
+.custom-hover-button .dx-icon {
+    font-size: 16px !important;
+    color: #555 !important; /* default icon color */
+    transition: color 0.2s ease;
+}
+
+/* Round + colored on hover */
+.custom-hover-button:hover {
+    border-radius: 50% !important;
+}
+
+/* Hover background + icon white */
+.add-hover:hover {
+    background-color: #28a745 !important;
+}
+
+.edit-hover:hover {
+    background-color: #007bff !important;
+}
+
+.add-hover:hover .dx-icon,
+.edit-hover:hover .dx-icon {
+    color: white !important;
+}
+
+/* Default style for built-in clear & dropdown buttons */
+.dx-dropdowneditor-button,
+.dx-clear-button-area {
+    border-radius: 4px !important; /* square by default */
+    background-color: transparent !important;
+    transition: all 0.2s ease;
+    width: 30px;
+    height: 30px;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+/* Default icon color */
+.dx-dropdowneditor-button .dx-icon,
+.dx-clear-button-area .dx-icon {
+    color: #555 !important;
+    font-size: 16px !important;
+    transition: color 0.2s ease;
+}
+
+/* Hover effect — turns round, changes color, icon becomes white */
+.dx-dropdowneditor-button:hover,
+.dx-clear-button-area:hover {
+    border-radius: 50% !important;
+    background-color: red !important; /* muted gray, adjust as needed */
+}
+
+.dx-dropdowneditor-button:hover .dx-icon,
+.dx-clear-button-area:hover .dx-icon {
+    color: white !important;
+}
+
+.dx-texteditor{
+    border:none!important;
+}
+.custom-ui-button {
+    background-color: #5bc0de !important;  /* light blue */
+    color: white !important;
+    border: none !important;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Hover style: darker blue */
+.custom-ui-button:hover {
+    background-color: #0275d8 !important; /* dark blue */
+    color: white !important;
+}
+
+/* Icon color (to keep white) */
+.custom-ui-button .dx-icon {
+    color: white !important;
+}
 </style>
 
 
@@ -321,21 +427,25 @@
         </div>
 
         <div class="dx-card-body">
-            <div class="form-container" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; position: relative; padding: 0 15px; overflow-x: hidden;">
+            <div class="form-container" style="display: flex; flex-wrap: wrap;  align-items: flex-end; position: relative; padding: 0 15px; overflow-x: hidden;">
 
                 <!-- Top Row -->
                 <div style="display: flex; gap: 10px; align-items: flex-end; flex-wrap: nowrap; width: 100%;">
                     <div class="form-group" style="flex: 1 1 25px;">
                         @(Html.DevExtreme().TextBox()
-                            .Label(new JS("formatMessage('Voucher No')"))
-                            .LabelMode(EditorLabelMode.Floating)
-                            .ID("VoucherNo")
-                            .Value("")
-                            .Disabled(true)
-                            .OnValueChanged("onVoucherNoChanged")
-                            .ValidationRules(rules => rules.AddRequired().Message("VoucherNo is required"))
-                            .ElementAttr(new { @class = "custom-disabled-textbox" })
-                            )
+                                                .ID("VoucherNo")
+                                                .Label(new JS("formatMessage('Voucher No')"))
+                                                .LabelMode(EditorLabelMode.Floating) // Consider 'Floating' for modern floating label
+                                                .Value("")
+                                                .Disabled(true)
+                                                .OnValueChanged("onVoucherNoChanged")
+                                                .ValidationRules(rules =>
+                                                {
+                                                    rules.AddRequired()
+                                                    .Message("Voucher No is required"); // Add spacing in the error message
+                                                })
+                                                .ElementAttr(new { @class = "custom-disabled-textbox" }) // Use CSS for better disabled styling
+                                                )
                     </div>
 
                     <div class="form-group" style="flex: 1 1 35px;">
@@ -393,9 +503,9 @@
                             .Label(new JS("formatMessage('Narration')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .ID("txtEntryNarration")
+                            .Placeholder("")
                             .Value("")
-                            .Height(40)
-                            
+                            .Height(40)                          
                             .MaxLength(111500)
                             .ElementAttr(new { @class = "light-theme-input" })
                             )
@@ -403,7 +513,7 @@
                 </div>
 
                 <!-- Second Row -->
-                <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; width: 100%; margin-top: 10px;">
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; width: 100%; ">
                     <div class="form-group" style="flex: 1 1 20px;">
                         @(Html.DevExtreme().SelectBox()
                             .Label(new JS("formatMessage('Dr/Cr')"))
@@ -419,50 +529,70 @@
                     </div>
 
                     <!-- Container for Account Head & Buttons -->
-                    <div style="display: flex; align-items: flex-end; gap: 5px; flex: 0 0 400px; min-width: 100px;">
+                    <div style="display: flex; align-items: flex-end;  flex: 0 0 500px; min-width: 100px;">
 
                         <!-- DropDownBox: Flex-grow to fill available space -->
                         <div class="form-group" style="flex-grow: 1;">
-                            @(Html.DevExtreme().DropDownBox()
-                                .Label(new JS("formatMessage('Account Head')"))
-                                .DataSource(d => d.WebApi()
-                                .Controller("VoucherMaster")
-                                .LoadAction("GetAccountHead")
-                                .LoadMode(DataSourceLoadMode.Raw)
-                                .Key("AccountHead"))
-                                .ValidationRules(rules => rules
-                                .AddRequired()
-                                .Message(new JS("formatMessage('Ledger Account should be entered')")))
-                                .LabelMode(EditorLabelMode.Floating)
-                                .ID("ddAccountHead")
-                                .ShowClearButton(true)
-                                .AcceptCustomValue(true)
-                                .OpenOnFieldClick(false)
-                                .ValueChangeEvent("input")
-                                .HoverStateEnabled(true)
-                                .ValueExpr("AccountId")
-                                .DisplayExpr("AccountHead")
-                                .OnInput("dropDownBoxInput")
-                                .OnClosed("onDropDownBoxClosed")
-                                .OnOpened("onOpened")
-                                .TabIndex(1)
-                                .DropDownOptions(o => o.Width(1000))
-                                .ElementAttr(new { @class = "white-dropdownbox" })
-                                .OnKeyDown("onKeyDown")
-                                .ContentTemplate(new TemplateName("AccountHeadContentTemplate"))
-                                .Width("100%") 
-                                            )
+                            @(
+                                    Html.DevExtreme().DropDownBox()
+    .ID("ddAccountHead")
+    .DataSource(d => d.WebApi()
+        .Controller("VoucherMaster")
+        .LoadAction("GetAccountHead")
+        .LoadMode(DataSourceLoadMode.Raw)
+        .Key("AccountHead"))
+    .ValueExpr("AccountId")
+    .DisplayExpr("AccountHead")
+    .Label(new JS("formatMessage('Account Head')"))
+    .LabelMode(EditorLabelMode.Floating)
+    .ValidationRules(rules => rules
+        .AddRequired()
+        .Message(new JS("formatMessage('Ledger Account should be entered')")))
+    .ShowClearButton(true)
+    .AcceptCustomValue(true)
+    .OpenOnFieldClick(false)
+    .ValueChangeEvent("input")
+    .HoverStateEnabled(true)
+    .DropDownOptions(o => o.Width(1000))
+    .ElementAttr(new { @class = "white-dropdownbox" })
+    .Width("100%")
+    .ContentTemplate(new TemplateName("AccountHeadContentTemplate"))
+    .Buttons(buttons => {
+        // Built-in clear button
+        buttons.Add()
+            .Name("clear");
+
+     buttons.Add()
+    .Name("addLedger")
+    .Location(TextEditorButtonLocation.After)
+    .Widget(w => w.Button()
+        .Type(ButtonType.Default)
+        .Icon("plus")
+        .ElementAttr(new { @class = "custom-hover-button add-hover" })
+        .OnClick("showLedgerAccountPopup"));
+
+buttons.Add()
+    .Name("editLedger")
+    .Location(TextEditorButtonLocation.After)
+    .Widget(w => w.Button()
+        .Type(ButtonType.Default)
+        .Icon("edit")
+        .ElementAttr(new { @class = "custom-hover-button edit-hover" })
+        .OnClick("showLedgerAccountEditPopup"));
+
+
+
+        buttons.Add()
+        .Name("dropDown");
+    })
+)
+
+
                         </div>
 
                         <!-- Add Button -->
                         <div class="form-group" style="flex-shrink: 0;">
-                            @(Html.DevExtreme().Button()
-                                .ID("btnAddAHead")
-                                .Icon("plus")
-                                .ElementAttr(new { @class = "custom-ui-button" })
-                                .OnClick("showLedgerAccountPopup")
-                                .Width(60)
-                                )
+                           
                             <!-- DevExtreme Popup -->
                             @(Html.DevExtreme().Popup()
                                                         .ID("ledgerAccountPopup")
@@ -483,13 +613,7 @@
 
                         <!-- Edit Button -->
                         <div class="form-group" style="flex-shrink: 0;">
-                            @(Html.DevExtreme().Button()
-                                .ID("btnEditAHead")
-                                .Icon("edit")
-                                .ElementAttr(new { @class = "custom-ui-button" })
-                                .OnClick("showLedgerAccountEditPopup")
-                                .Width(60)
-                                )
+                           
                             @(Html.DevExtreme().Popup()
                                                         .ID("ledgerEditAccountPopup")
                                                         .Width("93%")
@@ -535,7 +659,7 @@
                             )
                     </div>
 
-                    <div class="form-group" style="flex: 1 1 130px;">
+                    <div class="form-group" style="flex: 1 1 70px;">
                         @(Html.DevExtreme().DropDownBox()
                             .Label(new JS("formatMessage('Base Currency')"))
                             .DataSource(d => d.WebApi().Controller("Utility").LoadAction("GetCurrencyList").LoadMode(DataSourceLoadMode.Raw).Key("CurrencyExchangeId"))
@@ -590,7 +714,7 @@
 
                     </div>
 
-                    <div class="form-group" style="flex: 1 1 50px;">
+                    <div class="form-group" style="flex: 1 1 93px;">
                         @(Html.DevExtreme().DropDownBox()
                             .Label(new JS("formatMessage('Convertion Currency')"))
                             .DataSource(d => d.WebApi().Controller("Utility").LoadAction("GetCurrencyList").LoadMode(DataSourceLoadMode.Raw).Key("CurrencyExchangeId"))
@@ -667,7 +791,7 @@
                             .ID("btnVoucherEntry")
                             .Text(new JS("formatMessage('ADD')"))
                             .Height(40)
-                           
+                           .Width(110)
                             .StylingMode(ButtonStylingMode.Contained)
                             .ElementAttr(new { @class = "custom-ui-button" })
                             .Icon("plus")
@@ -4387,5 +4511,21 @@ function onAccountHeadRowPrepared(e) {
             });
         }
     });
+    function onAddLedgerClicked(e) {
+    console.log("Add clicked");
+    // Show your ledger popup here
+    showLedgerAccountAddPopup();
+}
 
+function onEditLedgerClicked(e) {
+    const dropDownBox = $("#ddAccountHead").dxDropDownBox("instance");
+    const selectedValue = dropDownBox.option("value");
+    if (!selectedValue) {
+        DevExpress.ui.notify("Please select an account head to edit", "warning", 2000);
+        return;
+    }
+
+    // You can pass the selected value to your popup
+    showLedgerAccountEditPopup(selectedValue);
+}
 </script>
