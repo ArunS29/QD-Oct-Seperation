@@ -3,10 +3,11 @@
 <!-- SweetAlert2 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="~/css/Style.css" />
 
 <!-- SweetAlert2 JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<style type="text/css">
+@* <style type="text/css">
     .overlay {
         display: none;
         position: fixed;
@@ -293,7 +294,7 @@
         color: black !important;
     }
 
-</style>
+</style> *@
 
 <div class="content-container-top" style="background-color:#909ead00;">
     <div class="dx-card-container">
@@ -429,17 +430,40 @@
                                                 .DropDownOptions(o => o.Width(1000))
                                                 .OnKeyDown("onKeyDown")
                                                 .ContentTemplate(new TemplateName("AccountHeadContentTemplate"))
+                                                  .Buttons(buttons => {
+        // Built-in clear button
+        buttons.Add()
+            .Name("clear");
+
+     buttons.Add()
+    .Name("addLedger")
+    .Location(TextEditorButtonLocation.After)
+    .Widget(w => w.Button()
+        .Type(ButtonType.Default)
+        .Icon("plus")
+        .ElementAttr(new { @class = "custom-hover-button add-hover" })
+        .OnClick("showLedgerAccountPopup"));
+
+buttons.Add()
+    .Name("editLedger")
+    .Location(TextEditorButtonLocation.After)
+    .Widget(w => w.Button()
+        .Type(ButtonType.Default)
+        .Icon("edit")
+        .ElementAttr(new { @class = "custom-hover-button edit-hover" })
+        .OnClick("showLedgerAccountEditPopup"));
+
+
+
+        buttons.Add()
+        .Name("dropDown");
+    })
 
                                                 )
                     </div>
                     <!-- Add Button -->
                     <div class="form-group" style="flex-shrink: 0;">
-                        @(Html.DevExtreme().Button()
-                                                .ID("btnAddAHead")
-                                                .Icon("plus")
-                                                .OnClick("showLedgerAccountPopup")
-                                                .ElementAttr(new { @class = "custom-ui-button" })
-                                                )
+                        
                         <!-- DevExtreme Popup -->
                         @(Html.DevExtreme().Popup()
                                                 .ID("ledgerAccountPopup")
@@ -461,12 +485,7 @@
 
                     <div class="form-group" style="flex-shrink: 0;">
 
-                        @(Html.DevExtreme().Button()
-                                                .ID("btnEditAHead")
-                                                .Icon("edit")
-                                                .OnClick("showLedgerAccountEditPopup")
-                                                .ElementAttr(new { @class = "custom-ui-button" })
-                                                )
+                      
                         @(Html.DevExtreme().Popup()
                                                 .ID("ledgerEditAccountPopup")
                                                 .Width("93%")
@@ -529,7 +548,7 @@
                                                 .DisplayExpr("CurrencyName")
                                                 .OnInput("dropDownBoxOnInput") // Reuse or define separate handler if needed
                                                 .OnOpened("onOpened")
-                                                .Width(180)
+                                                .Width(155)
                                                 .TabIndex(2) // Different tabindex to separate from the first
                                                 .DropDownOptions(o => o.Width(700))
                                                 .OnKeyDown("onKeyDown")
@@ -537,6 +556,7 @@
 
                                                 //.OnValueChanged("dropDownBoxValueChanged") // Optional
                                                 .ContentTemplate(new TemplateName("BaseCurrencyContentTemplate"))
+
                                                 )
                     </div>
 
@@ -649,7 +669,7 @@
                                         .ID("btnVoucherEntry")
                                         .Text(new JS("formatMessage('Add')"))
                                         .Height(40)
-                                        .Width(108)
+                                       
                                         .Icon("plus")
                                         .OnClick("function() { addVoucherEntry(); }")
                                         )

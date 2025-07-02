@@ -1665,7 +1665,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
 
                         // Add new dynamic column
-                        dict["UnitRateMethodDesc"] = UnitRateMethodDesc;
+                        dict["UnitRateMethod"] = UnitRateMethodDesc;
                         dict["VATPercentage"] = taxRateInWord;
 
                         //dict["VAT"] = vatValue;
