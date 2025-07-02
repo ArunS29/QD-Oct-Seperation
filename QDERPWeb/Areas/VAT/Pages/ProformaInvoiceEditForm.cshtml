@@ -428,7 +428,6 @@
 																				.OpenOnFieldClick(false)
 																				.ValueChangeEvent("input")
 																				.HoverStateEnabled(true)
-																				.Value("Tax Invoice")
 																				.ValueExpr("AccountId")
 																				.DisplayExpr("AccountHead")
 																				.LabelMode(EditorLabelMode.Outside)
@@ -1036,7 +1035,6 @@
                 .OpenOnFieldClick(false)
                 .ValueChangeEvent("input")
                 .HoverStateEnabled(true)
-                .Value("Tax Invoice")
 				.ValueExpr("CompanyId")
 				.DisplayExpr("CompanyName")
                 .LabelMode(EditorLabelMode.Outside)
@@ -1056,7 +1054,6 @@
                 .OpenOnFieldClick(false)
                 .ValueChangeEvent("input")
                 .HoverStateEnabled(true)
-                .Value("Tax Invoice")
 				.Width("100%")
 				.ValueExpr("SalesPersonCode")
                 .DisplayExpr("SalesPersonName")
@@ -2552,7 +2549,7 @@
 		}
 
 			  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null,revaccheadid=null,InvoiceCurrencyExchangeId=null,TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
-			  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null;
+			  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null,UnitCode=null;
 			  let dropDownInstance;
 			  let vatListInstance;
 
@@ -3213,7 +3210,7 @@
 
 				{
 
-					dataField: "Description",
+					dataField: "DetailedDescription",
 
 					caption: formatMessage('Description'),
 
@@ -3404,7 +3401,7 @@
 				},
 
 			{
-			dataField: "Descriptions",
+			dataField: "DetailedDescription",
 			caption: "...",
 			cssClass: "center-header",
 			width: 80,
@@ -3560,17 +3557,17 @@
 				},
 
 
-				{ dataField: "Qty", caption: formatMessage('Qty'), cssClass: "center-header",width: 150 },
+				{ dataField: "QuantityInvoiced", caption: formatMessage('Qty'), cssClass: "center-header",width: 150 },
 
-				{ dataField: "UnitPrice", caption: formatMessage('Unit Price'), cssClass: "center-header",width: 150 },
+				{ dataField: "UnitRate", caption: formatMessage('Unit Price'), cssClass: "center-header",width: 150 },
 
-				{ dataField: "TotalBeforeDiscount", caption: formatMessage('Total Before Discount'),cssClass: "center-header", width: 185 },
+				{ dataField: "CalcLineAmountBeforeDiscount", caption: formatMessage('Total Before Discount'),cssClass: "center-header", width: 185 },
 
 				{ dataField: "Discount", caption: formatMessage('Discount'),cssClass: "center-header", width: 150 },
 
 				{ dataField: "DiscountDetails", caption: "...",cssClass: "center-header", width: 50 },
 
-				{ dataField: "Amount", caption: formatMessage('Amount'), cssClass: "center-header",width: 150 },
+				{ dataField: "CalcLineAmount", caption: formatMessage('Amount'), cssClass: "center-header",width: 150 },
 
 				//{ dataField: "VAT%", caption: "VAT%", width: 150 },
 
@@ -3629,9 +3626,9 @@
 
 				// { dataField: formatMessage('ExcemptionCode'), caption: "Excemption Code", width: 150 },
 
-				{ dataField: "VAT", caption: formatMessage('VAT'), cssClass: "center-header",width: 150 },
+				{ dataField: "CalcTaxAmount", caption: formatMessage('VAT'), cssClass: "center-header",width: 150 },
 
-				{ dataField: "Total", caption: formatMessage('Total'), cssClass: "center-header",width: 150 },
+				{ dataField: "LineTotal", caption: formatMessage('Total'), cssClass: "center-header",width: 150 },
 
 				{ dataField: "TaxSlabCode", caption: formatMessage('TaxSlabCode'), width: 150, allowEditing: false, visible: false }
 
@@ -3664,30 +3661,42 @@
 	});
 
 
-
-
-
 		$("#btnAddNew").on("click", function (e) {
-				var newRow = {
-					SNo: rowData.length + 1, // Auto-generate SNo
-					ItemCode: ItemNo,
-					Description: "",
-					DescriptionDetails:"",
-					Qty: 0,
-					UnitPrice: 0.00,
-					TotalBeforeDiscount:0.00,
-					Discount:0,
-					DiscountDetails:"",
-					Amount:0.00,
-					ExcemptionCode:"",
-					VAT:"",
-					Total: 0.00
-				};
+		const grid = $("#B2BdataGrid").dxDataGrid("instance");
+		const store = grid.getDataSource().store();
+		const currentData = grid.getDataSource().items();
 
-				rowData.push(newRow);
-				dataGridInstance.option("dataSource", rowData);
-				dataGridInstance.refresh();
+		// Calculate next SNo safely based on existing items
+		const nextSNo = currentData.length > 0
+			? Math.max(...currentData.map(row => row.SNo || 0)) + 1
+			: 1;
+
+		const newRow = {
+			SNo: nextSNo,
+			//ItemCode: ItemNo || "",  // Ensure this is defined or provide fallback
+			ItemCode:"",
+			DetailedDescription: "",
+			DescriptionDetails: "",
+			QuantityInvoiced: 0,
+			UnitRate: 0.00,
+			CalcLineAmountBeforeDiscount: 0.00,
+			Discount: 0,
+			DiscountDetails: "",
+			CalcLineAmount: 0.00,
+			ExcemptionCode: "",
+			CalcTaxAmount: "",
+			LineTotal: 0.00
+		};
+
+		// Efficient insert without replacing entire dataSource
+		store.insert(newRow)
+			.then(() => {
+				grid.refresh(); // Ensure the UI updates with the new row
+			})
+			.catch(error => {
+				DevExpress.ui.notify("Error adding row: " + error.message, "error", 3000);
 			});
+	});
 
 
 			// Fetch dropdown data (same API can be used if needed)
@@ -5533,7 +5542,7 @@
 
 					function onEditorPreparing(e) {
 
-				if (e.parentType === "dataRow" && (e.dataField === "Qty" || e.dataField === "UnitPrice" || e.dataField === "VATPercentage")) {
+				if (e.parentType === "dataRow" && (e.dataField === "QuantityInvoiced" || e.dataField === "UnitRate" || e.dataField === "VATPercentage")) {
 					e.editorOptions.onValueChanged = function (args) {
 						let grid = $("#B2BdataGrid").dxDataGrid("instance");
 						let rowIndex = e.row.rowIndex;
@@ -5543,10 +5552,10 @@
 						let newValue = args.value;
 						console.log("gridnewvalue",newValue)
 						// Get existing values
-						let qty = e.dataField === "Qty" ? newValue : grid.cellValue(rowIndex, "Qty") || 0;
+						let qty = e.dataField === "QuantityInvoiced" ? newValue : grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
 						console.log("qty",qty)
 
-						 let unitPrice = e.dataField === "UnitPrice" ? newValue : grid.cellValue(rowIndex, "UnitPrice") || 0;
+						 let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex, "UnitRate") || 0;
 						 console.log("unitPrice",unitPrice)
 						// let vatRate = (e.dataField === "VAT%" ? newValue : grid.cellValue(rowIndex, "VAT%")) || 0;
 						let vatval=grid.cellValue(rowIndex, "VAT%");
@@ -5569,11 +5578,14 @@
 						console.log("totalValue",vatValue)
 
 						// Update values in the grid
-						grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
-						grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
-						grid.cellValue(rowIndex, "Unit Price",amount);
-						 grid.cellValue(rowIndex, "Qty",qty);
-						 grid.cellValue(rowIndex, "VAT%",vatRateStr);
+	            grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
+				grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
+				grid.cellValue(rowIndex, "Unit Price",unitPrice);
+				grid.cellValue(rowIndex, "Total Before Discount",unitPrice);
+				grid.cellValue(rowIndex, "Amount",amount.toFixed(2));
+				//grid.cellValue(rowIndex, "Discount",discount);
+				grid.cellValue(rowIndex, "Qty", qty);
+				grid.cellValue(rowIndex, "VAT Description", vatRateStr);
 					};
 				}
 			}
@@ -5608,7 +5620,7 @@
 				   CostCenterCode:$("#ddlGoodsGroup1").dxDropDownBox("instance").option("value")|| null,
 				   RemarksInEn:$("#txtInvoiceNotes").dxTextArea("instance").option("value")|| null,
 			       RemarksInAr:$("#txtNotesinArabic").dxTextArea("instance").option("value")|| null,
-                   Currency:$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value")|| null,
+                  // Currency:$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value")|| null,
 				   ExchangeRate:$("#currencyexchangerate").dxNumberBox("instance").option("value")|| null,
 				   AdvanceText:$("#LessAdvance").dxTextBox("instance").option("value")|| null,
 				   AdvanceAmount:$("#currencyexchangerate3").dxNumberBox("instance").option("value")|| null,
@@ -5644,7 +5656,8 @@
 				// Add InvoiceNo to each item
 			let updatedDataSource = InvoiceChildren.map(item => ({
 				...item,
-				InvoiceNo: InVoiceNo,
+				ProformaInvoiceNo: InVoiceNo,
+				UnitRateMethod:UnitCode,
 				TaxAmount:amt
 			}));
 
@@ -5674,7 +5687,7 @@
 							success: function (response) {
 								$.ajax({
 									type: "GET",
-							     	url: `/api/VATModule/GetGridProformaInvoiceDetails?InvoiceNo=${encodeURIComponent(InvoiceNo)}`,
+									url: `/api/VATModule/GetGridProformaInvoiceDetails?InvoiceNo=${encodeURIComponent(InVoiceNo)}`,
 										dataType: 'json',
 									success: function (response) {
 											console.log("Grid",response)
@@ -5750,7 +5763,7 @@
 				   CostCenterCode:$("#ddlGoodsGroup1").dxDropDownBox("instance").option("value")|| null,
 				   RemarksInEn:$("#txtInvoiceNotes").dxTextArea("instance").option("value")|| null,
 				   RemarksInAr:$("#txtNotesinArabic").dxTextArea("instance").option("value")|| null,
-				   Currency:$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value")|| null,
+				 //  Currency:$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value")|| null,
 				   ExchangeRate:$("#currencyexchangerate").dxNumberBox("instance").option("value")|| null,
 				   AdvanceText:$("#LessAdvance").dxTextBox("instance").option("value")|| null,
 				   AdvanceAmount:$("#currencyexchangerate3").dxNumberBox("instance").option("value")|| null,
@@ -5786,7 +5799,8 @@
 				// Add InvoiceNo to each item
 			let updatedDataSource = InvoiceChildren.map(item => ({
 				...item,
-				InvoiceNo: InVoiceNo,
+				ProformaInvoiceNo: InVoiceNo,
+				UnitRateMethod:UnitCode,
 				TaxAmount:amt
 			}));
 
@@ -5816,7 +5830,7 @@
 							success: function (response) {
 								$.ajax({
 									type: "GET",
-									url: `/api/VATModule/GetGridProformaInvoiceDetails?InvoiceNo=${encodeURIComponent(InvoiceNo)}`,
+									url: `/api/VATModule/GetGridProformaInvoiceDetails?InvoiceNo=${encodeURIComponent(InVoiceNo)}`,
 										dataType: 'json',
 									success: function (response) {
 											console.log("Grid",response)
@@ -5885,12 +5899,23 @@
 				let totalValue = amount + vatValue;
 				//alert(vatValue)
 							// Update values in the grid
-						grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
-						grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
-						grid.cellValue(rowIndex, "Unit Price",amount);
-						grid.cellValue(rowIndex, "Qty",qty);
-						grid.cellValue(rowIndex, "VAT%",vatRateStr);
-						 grid.cellValue(rowIndex, "TaxSlabCode",TaxSlabCode);
+						// grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
+						// grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
+						// grid.cellValue(rowIndex, "Unit Price",unitPrice);
+						// grid.cellValue(rowIndex, "Qty",qty);
+						// grid.cellValue(rowIndex, "VAT%",vatRateStr);
+						//  grid.cellValue(rowIndex, "TaxSlabCode",TaxSlabCode);
+
+
+	              grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
+				  grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
+				  grid.cellValue(rowIndex, "Unit Price",unitPrice);
+				  grid.cellValue(rowIndex, "Total Before Discount",unitPrice);
+				  grid.cellValue(rowIndex, "Amount",amount.toFixed(2));
+				  //grid.cellValue(rowIndex, "Discount",discount);
+				  grid.cellValue(rowIndex, "Qty", qty);
+				  grid.cellValue(rowIndex, "VAT Description", vatRateStr);
+					 grid.cellValue(rowIndex, "TaxSlabCode",TaxSlabCode);
 
 			}
 
