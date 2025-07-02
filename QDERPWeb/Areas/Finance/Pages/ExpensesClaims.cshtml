@@ -96,11 +96,330 @@
         font-weight: bold;
         color: black;
     }
+
+    .titleCard-carousel {
+        display: flex;
+        overflow-x: auto;
+        gap: 20px;
+        padding: 16px 24px 0 calc(var(--nav-w,0) + 24px);
+        scroll-snap-type: x mandatory;
+        padding-top: 15px;
+        padding-bottom: 15px;
+        padding-left: 10px;
+    }
+
+    .titleCard-cards {
+        display: flex;
+        gap: 20px;
+        min-width: max-content
+    }
+
+    /* --------------  KPI CARD (core) -------------- */
+    .titleCard-card {
+        flex: 0 0 240px; /* exact width */
+        position: relative;
+        padding: 18px 20px;
+        border-radius: 16px;
+        box-shadow: 0 4px 10px rgba(0,0,0,.12);
+        color: #fff;
+        font-weight: 600;
+        overflow: hidden;
+        scroll-snap-align: start;
+        padding-top: 10px;
+        transition: transform .3s ease,box-shadow .3s ease
+    }
+
+        .titleCard-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 20px rgba(0,0,0,.25)
+        }
+
+    /* gradients */
+    .vibrant-pink {
+        background: linear-gradient(135deg,#ff0066,#ff66cc)
+    }
+
+    .cool-blue {
+        background: linear-gradient(135deg,#0066ff,#33ccff)
+    }
+
+    .deep-purple {
+        background: linear-gradient(135deg,#6a11cb,#2575fc)
+    }
+
+    .mint-green {
+        background: linear-gradient(135deg,#00c9a7,#92fe9d)
+    }
+
+    /* headline + subhead (static card only) */
+    #Static .value-block {
+        height: auto
+    }
+    /* let it grow */
+    #Static .value-slider {
+        position: static
+    }
+    /* stop slide animation */
+    #Static h2 {
+        font-size: 20px;
+        margin: 0;
+        font-weight: 700
+    }
+
+    #Static h6 {
+        font-size: 12px;
+        margin: 2px 0 0;
+        font-weight: 500;
+        opacity: .85
+    }
+
+    /* --------------  KPI inner elements -------------- */
+    .titleCard-card .title {
+        font-size: 14px;
+        opacity: .9
+    }
+
+    .value-block {
+        height: 28px;
+        overflow: hidden;
+        position: relative;
+        margin: 6px 0
+    }
+
+    .value-slider {
+        position: absolute;
+        top: 0;
+        display: flex;
+        flex-direction: column;
+        animation: slideValues 6s linear infinite
+    }
+
+        .value-slider span {
+            font-size: 24px;
+            line-height: 28px;
+            height: 28px
+        }
+
+    /* SVG icon inside value */
+    .titleCard-card svg {
+        width: 18px;
+        height: 18px;
+        margin-right: 5px;
+        vertical-align: middle;
+        fill: #fff
+    }
+
+    /* trend + bar */
+    .titleCard-card .trend {
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        gap: 4px
+    }
+
+    .titleCard-card .bar {
+        height: 6px;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.25);
+        margin-top: 10px;
+        overflow: hidden;
+        position: relative;
+    }
+
+        .titleCard-card .bar span {
+            display: block;
+            height: 100%;
+            border-radius: 4px;
+            background: #fff;
+            width: 0%;
+            transition: width 0.6s ease;
+        }
+
+        /* Percentage label inside the bar */
+        .titleCard-card .bar::after {
+            content: attr(data-percentage);
+            position: absolute;
+            right: 6px;
+            top: -22px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #fff;
+            opacity: 0.85;
+        }
+
+
+    /* overlay on hover */
+    .overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,.55);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 12px;
+        text-align: center;
+        opacity: 0;
+        transition: opacity .3s
+    }
+
+    .titleCard-card:hover .overlay {
+        opacity: 1
+    }
+
+    .overlay .detail {
+        font-size: 13px;
+        margin: 4px 0
+    }
+
+    .titleCard-toggle {
+        cursor: pointer;
+        font-size: 1.2rem;
+        height: 35px !important;
+        width: 35px;
+        background: var(--hover-bg-color);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .titleCard-toggle:hover {
+            color: #000;
+        }
+
+    .titleCard-card .header {
+        font-size: 15px !important;
+        font-weight: 600;
+        color: #fff !important;
+        opacity: 1 !important;
+        margin-bottom: 4px;
+        position: relative;
+    }
+
+
+    /* Ensure SVGs are visible and consistent */
+    .titleCard-card svg {
+        width: 18px !important;
+        height: 18px !important;
+        margin-right: 5px;
+        vertical-align: middle;
+        fill: white !important;
+    }
+    /* simple slide animation (balance, debit, credit) */
+    @@keyframes slideValues {
+        0%, 33% {
+            transform: translateY(0)
+        }
+
+        34%, 66% {
+            transform: translateY(-28px)
+        }
+
+        67%, 100% {
+            transform: translateY(-56px)
+        }
+    }
+
+    /* ----------- KPI CARDS: quick fixes ----------- */
+    .titleCard-carousel.collapsed {
+        max-height: 0;
+        padding: 0;
+        overflow: hidden;
+        transition: max-height .35s ease, padding .35s ease;
+    }
+
+    .titleCard-card .header {
+        position: relative;
+    }
+
+    .value-slider span {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .ellipsis-cell {
+        max-width: 100%; /* let the column decide exact width */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        cursor: pointer; /* lets the user know it’s hoverable */
+    }
+
+    .header {
+        display: flex !important;
+        background-color: transparent !important;
+    }
+
+    .title {
+        background: transparent !important;
+    }
 </style>
 <input id="formId" value="frm20107ExpenseClaimView" type="hidden" />
-<div class="title">
-    <div class="header-container">
-        <div id="ExpensesClaims" class="no-border-input"></div>
+
+<div class="title" id="kpiCarousel">
+    <div class="titleCard-cards">
+
+        <!-- STATIC -->
+        <div id="Static" class="titleCard-card vibrant-pink">
+            <div class="value-block">
+
+                <h2>Accounting Ledger</h2>
+                <h6>Quick Dice ERP Solutions</h6>
+
+            </div>
+        </div>
+
+        <!-- BALANCE -->
+        <div id="cardBalance" class="titleCard-card cool-blue">
+            <div class="header">Balance</div>
+            <div class="value-block">
+                <div class="value-slider">
+                    <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span>
+                    <span>0.00</span>
+                    <span>0.00</span>
+                </div>
+            </div>
+            <div class="trend">0% <i class="fa-solid fa-arrow-right"></i></div>
+            @* <div class="bar"><span style="width:50%"></span></div> *@
+            <div class="overlay">
+                <div class="detail">Today: 0.00</div>
+                <div class="detail">This Week: 0.00</div>
+                <div class="detail">This Month: 0.00</div>
+            </div>
+        </div>
+
+        <!-- DEBIT -->
+        <div id="cardDebit" class="titleCard-card deep-purple">
+            <div class="header">Total Debit</div>
+            <div class="value-block">
+                <div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
+            </div>
+            <div class="trend">0% <i class="fa-solid fa-arrow-right"></i></div>
+            @* <div class="bar"><span style="width:50%"></span></div> *@
+            <div class="overlay">
+                <div class="detail">Today: 0.00</div>
+                <div class="detail">This Week: 0.00</div>
+                <div class="detail">This Month: 0.00</div>
+            </div>
+        </div>
+
+        <!-- CREDIT -->
+        <div id="cardCredit" class="titleCard-card mint-green">
+            <div class="header">Total Credit</div>
+            <div class="value-block">
+                <div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
+            </div>
+            <div class="trend">0% <i class="fa-solid fa-arrow-up"></i></div>
+            @* <div class="bar"><span style="width:50%"></span></div> *@
+            <div class="overlay">
+                <div class="detail">Today: 0.00</div>
+                <div class="detail">This Week: 0.00</div>
+                <div class="detail">This Month: 0.00</div>
+            </div>
+        </div>
+
     </div>
 </div>
 <div>

@@ -50,7 +50,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
             var subReport = new subCostReport();
             subReport.LoadData(voucherNo, tenant.ConnectionString);
 
-            // ✅ Set the subreport directly
+           
             xrSubreport1.ReportSource = subReport;
         }
 
@@ -139,7 +139,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
                         label.Text = currencyInfo.Symbol;
                 }
             }
-            else if (currencyInfo.HasImage)
+            if (currencyInfo.HasImage)
             {
                 string svgXml = GetCurrencySvgXml(currencyId);
                 if (!string.IsNullOrEmpty(svgXml))
@@ -153,76 +153,63 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
                                 using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(svgXml)))
                                 {
                                     SvgDocument svgDoc = SvgDocument.Open<SvgDocument>(stream);
-                                    Bitmap bitmap = svgDoc.Draw(); // original quality
+                                    Bitmap bitmap = svgDoc.Draw();
+
+                                    float iconWidth = 10f;
+                                    float iconHeight = 10f;
 
                                     pictureBox.Image = bitmap;
                                     pictureBox.Sizing = ImageSizeMode.StretchImage;
+                                    pictureBox.SizeF = new SizeF(iconWidth, iconHeight);
 
-                                    // Match the corresponding label for alignment
-                                    string pictureName = pictureBox.Name;
-                                    XRLabel matchingLabel = null;
-
-                                    switch (pictureName)
+                                    // Hook to BeforePrint to position the icon dynamically
+                                    pictureBox.BeforePrint += (s, e) =>
                                     {
-                                        case "xrPictureBox2":
-                                            {
-                                                if (FindControl("xrLabel15", true) is XRPanel panel)
-                                                    matchingLabel = panel.FindControl("xrLabel25", true) as XRLabel;
-                                                break;
-                                            }
-                                        case "xrPictureBox3":
-                                            {
-                                                if (FindControl("xrLabel17", true) is XRPanel panel)
-                                                    matchingLabel = panel.FindControl("xrLabel17", true) as XRLabel;
-                                                break;
-                                            }
-                                        case "xrPictureBox4": matchingLabel = FindControl("xrLabel21", true) as XRLabel; break;
-                                        case "xrPictureBox5":
-                                            matchingLabel = FindControl("xrLabel22", true) as XRLabel ?? FindControl("xrLabel22", true) as XRLabel;
-                                            break;
-                                    }
-
-                                    if (matchingLabel != null)
-                                    {
-                                        matchingLabel.BeforePrint += (s, e) =>
+                                        XRLabel lbl = pictureBox.Name switch
                                         {
-                                            float iconWidth = 10f;
-                                            float iconHeight = 10f;
+                                            "xrPictureBox2" => (FindControl("xrLabel15", true) as XRLabel),
+                                            "xrPictureBox3" => (FindControl("xrLabel17", true) as XRLabel),
+                                            "xrPictureBox4" => (FindControl("xrLabel21", true) as XRLabel),
+                                            "xrPictureBox5" => (FindControl("xrLabel22", true) as XRLabel),
+                                            _ => null
+                                        };
 
-                                            pictureBox.WidthF = iconWidth;
-                                            pictureBox.HeightF = iconHeight;
+                                        if (lbl != null)
+                                        {
+                                            float posY = lbl.LocationF.Y + (lbl.HeightF - iconHeight) / 2f;
 
-                                            float posY = matchingLabel.LocationF.Y + (matchingLabel.HeightF - iconHeight) / 2f;
-
+                                            // Use GDI+ to measure text width (same as in your label alignment logic)
                                             using (var g = Graphics.FromImage(new Bitmap(1, 1)))
-                                            using (var sysFont = new Font(matchingLabel.Font.Name, matchingLabel.Font.Size, (FontStyle)(int)matchingLabel.Font.Style))
+                                            using (var sysFont = new Font(lbl.Font.Name, lbl.Font.Size, (FontStyle)(int)lbl.Font.Style))
                                             {
                                                 var format = StringFormat.GenericTypographic;
                                                 format.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
 
-                                                float textWidth = g.MeasureString(matchingLabel.Text ?? "", sysFont, int.MaxValue, format).Width;
-                                                float rightEdge = matchingLabel.LocationF.X + matchingLabel.WidthF;
+                                                float textWidth = g.MeasureString(lbl.Text ?? "", sysFont, int.MaxValue, format).Width;
 
-                                                float posX = rightEdge - textWidth - iconWidth - 8f;
-
+                                                // Align icon just before the actual text starts, with small padding
+                                                float posX = lbl.LocationF.X ; // 2f = tight icon-to-text padding
                                                 pictureBox.LocationF = new PointF(posX, posY);
+
                                             }
-                                        };
-                                    }
+                                        }
+                                    };
                                 }
                             }
                             catch (Exception ex)
                             {
-                                Console.WriteLine($"Failed to render SVG: {ex.Message}");
+                                Console.WriteLine($"Failed to render SVG for {pictureBoxName}: {ex.Message}");
                             }
                         }
                     }
                 }
             }
 
+
+
         }
-            
-        
+
+
 
 
         private (string Symbol, bool HasImage) GetCurrencySymbolOrImageStatus(int currencyId)

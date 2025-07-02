@@ -127,13 +127,13 @@
 	/* Text Editor Styling */
 	.dx-texteditor {
 		background-color: #909ead00 !important; /* Light background */
-		border: 1px solid #d6e4f0 !important; /* Soft border */
+		/* border: 1px solid #d6e4f0 !important; /* Soft border */ */
 		border-radius: 4px !important; /* Smaller rounded corners */
 
 		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important; /* Reduced shadow */
 		font-size: 14px !important; /* Slightly smaller font */
 		transition: all 0.2s ease-in-out !important;
-		height: 39px !important; /* Fixed height */
+		/* height: 39px !important; /* Fixed height */ */
 	}
 
 		/* Hover and Focus States */
@@ -434,6 +434,7 @@
 		background: transparent ! important;
 	}
 </style>
+
 <div class="title" id="kpiCarousel">
 	<div class="titleCard-cards">
 
@@ -579,7 +580,7 @@
 				.OnInput("dropDownBoxOnInput")
 				.OnClosed("onDropDownBoxClosed")
 				.OnOpened("onOpened")
-				.Width(500)
+				.Width(650)
 				.TabIndex(1)
 				.DropDownOptions(o => o
 				.Width(1400) // Set the desired width for the dropdown content
@@ -587,6 +588,34 @@
 				.OnKeyDown("onKeyDown")
 				.OnValueChanged("dropDownBoxValueChanged")
 				.ContentTemplate(new TemplateName("LedgerContentTemplate"))
+				.Buttons(buttons => {
+        // Built-in clear button
+        buttons.Add()
+            .Name("clear");
+
+     buttons.Add()
+    .Name("addLedger")
+    .Location(TextEditorButtonLocation.After)
+    .Widget(w => w.Button()
+        .Type(ButtonType.Default)
+        .Icon("plus")
+        .ElementAttr(new { @class = "custom-hover-button add-hover" })
+        .OnClick("showLedgerAccountPopup"));
+
+buttons.Add()
+    .Name("editLedger")
+    .Location(TextEditorButtonLocation.After)
+    .Widget(w => w.Button()
+        .Type(ButtonType.Default)
+        .Icon("edit")
+        .ElementAttr(new { @class = "custom-hover-button edit-hover" })
+        .OnClick("showLedgerAccountEditPopup"));
+
+
+
+        buttons.Add()
+        .Name("dropDown");
+    })
 				)
 		@* @(Html.DevExtreme().DropDownBox()
 		.ID("accountDropDownBox")
@@ -614,12 +643,7 @@
 
 		) *@
 		<!-- Button to Open Modal -->
-		@(Html.DevExtreme().Button()
-				.ID("btnAddAccount")
-				.Icon("plus")
-				.ElementAttr("class", "button-alignment-down button-group")
-				.OnClick("showLedgerAccountPopup")
-				)
+		
 
 		<!-- DevExtreme Popup -->
 		@(Html.DevExtreme().Popup()
@@ -638,12 +662,7 @@
 		</text>)
 				)
 
-		@(Html.DevExtreme().Button()
-				.ID("btnEditAccount")
-				.Icon("edit")
-				.ElementAttr("class", "button-alignment-down button-group")
-				.OnClick("showLedgerAccountEditPopup")
-				)
+		
 		@(Html.DevExtreme().Popup()
 				.ID("ledgerEditAccountPopup")
 				.Width("80%")
