@@ -161,29 +161,34 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Getsupplieroustanding (DataSourceLoadOptions loadOptions)
+        public async Task<IActionResult> GetBankCashSummary(DataSourceLoadOptions loadOptions)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
             {
                 try
                 {
-                    var data = dbContext.Qry01Bankandcashbalance
-                        .AsNoTracking()
-                        .OrderByDescending(x => x.Balance)
-                        //.Take(5)
-                        .AsQueryable();
+                    var data = dbContext.Qry201MainVoucherEntriesWithMasters
+                     .Where(x => x.AccountGroup == "BANK ACCOUNTS" || x.AccountGroup == "CASH IN HAND")
+                     .GroupBy(x => x.AccountGroup)
+                     .Select(g => new
+                     {
+                         AccountGroup = g.Key,
+                         Balance = g.Sum(x => (x.DrAmount ?? 0) - (x.CrAmount ?? 0))
+                     });
+
 
                     return Json(await DataSourceLoader.LoadAsync(data, loadOptions));
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error in Getsupplieroustanding");
+                    _logger.LogError(ex, "Error in GetBankCashSummary");
                     return StatusCode(500, "Internal server error");
                 }
             }
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
 
 
         [HttpGet]
@@ -193,15 +198,15 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 try
                 {
-                    var data = dbContext.Qry01SupplierOutstanding
+                    var data = dbContext.Qry20115BillsPayableOutStandings
                      .AsNoTracking()
                      .OrderByDescending(b => b.Balance)
-                     //.Take(5)
+                     .Take(5)
                      .AsQueryable()
                         .Where(b => b.Balance > 0) // Only bills with outstanding balance
                         .OrderByDescending(b => b.Balance) // Highest balance first
                         .ThenByDescending(b => b.OverdueDays) // Highest overdue days next
-                        .Take(5) // Top 5 only
+                        //.Take(5) // Top 5 only
                         .AsQueryable();
 
                     return Json(await DataSourceLoader.LoadAsync(data, loadOptions));
@@ -224,7 +229,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 try
                 {
-                    var data = dbContext.Qry01SupplierOutstanding
+                    var data = dbContext.Qry20115BillsPayableOutStandings
                  .AsNoTracking()
                  .OrderByDescending(b => b.Balance)
                  //.Take(5)
@@ -248,6 +253,35 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetBillsPayableOutstandingSupplierChart()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var data = await dbContext.Qry20115BillsPayableOutStandings
+                        .AsNoTracking()
+                        .Where(b => b.Balance > 0)
+                        .OrderByDescending(b => b.Balance)
+                        .ThenByDescending(b => b.OverdueDays)
+                        .Select(b => new {
+                            b.AccountHead,
+                            b.Balance,
+                            b.OverdueDays
+                        })
+                        .ToListAsync();
+
+                    return Json(new { success = true, data });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetBillsPayableOutstandingSupplierChart: {ex}");
+                    return Json(new { success = false, message = "Internal server error", data = (object)null });
+                }
+            }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetOutstandingChartData()
