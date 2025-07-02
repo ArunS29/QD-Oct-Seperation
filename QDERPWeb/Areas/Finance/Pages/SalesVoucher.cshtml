@@ -4,10 +4,11 @@
 <!-- SweetAlert2 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="~/css/Style.css" />
 
 <!-- SweetAlert2 JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<style type="text/css">
+@* <style type="text/css">
 	.overlay {
 		display: none;
 		position: fixed;
@@ -289,7 +290,7 @@
 		color: black !important;
 	}
 
-</style>
+</style> *@
 
 <div class="content-container-top" style="background-color:#909ead00;">
 	<div class="dx-card-container">
@@ -309,7 +310,7 @@
 				@(
 								Html.DevExtreme().TextBox()
 								.Label(new JS("formatMessage('Sales Invoice No')"))
-								.LabelMode(EditorLabelMode.Outside)
+								.LabelMode(EditorLabelMode.Floating)
 								.ID("VoucherNo")
 								.Value("")
 								.OnValueChanged("onVoucherNoChanged")
@@ -328,7 +329,7 @@
 								.Label(new JS("formatMessage('Invoice Date')"))
 								.ID("VoucherDate")
 								.InputAttr("aria-label", "Date")
-								.LabelMode(EditorLabelMode.Outside)
+								.LabelMode(EditorLabelMode.Floating)
 								.Type(DateBoxType.Date)
 								.DisplayFormat("dd-MMM-yyyy")
 								.ElementAttr(new { @class = "light-theme-input" })
@@ -341,7 +342,7 @@
 								.Label(new JS("formatMessage('Effective Date')"))
 								.ID("VoucherEffectiveDate")
 								.InputAttr("aria-label", "Date")
-								.LabelMode(EditorLabelMode.Outside)
+								.LabelMode(EditorLabelMode.Floating)
 								.Type(DateBoxType.Date)
 								.DisplayFormat("dd-MMM-yyyy")
 								.ElementAttr(new { @class = "light-theme-input" })
@@ -359,11 +360,11 @@
 					<label for="UseSubmittedDate" style="margin: 0; font-size: 13px;">@Html.Raw("Submitted Date")</label>
 				</div>
 
-				<div style="margin-top: 5px;">
+				<div >
 					@(Html.DevExtreme().DateBox()
 										.ID("InvoiceSubmittedDate")
 										.InputAttr("aria-label", "Date")
-										.LabelMode(EditorLabelMode.Outside)
+										.LabelMode(EditorLabelMode.Floating)
 										.Type(DateBoxType.Date)
 										.DisplayFormat("dd-MMM-yyyy")
 										.ElementAttr(new { @class = "light-theme-input" })
@@ -378,7 +379,7 @@
 								.Label(new JS("formatMessage('Due Date or Payment Terms')"))
 								.ID("InvoiceDueDate")
 								.InputAttr("aria-label", "Date")
-								.LabelMode(EditorLabelMode.Outside)
+								.LabelMode(EditorLabelMode.Floating)
 								.ElementAttr(new { @class = "light-theme-input" })
 								.Type(DateBoxType.Date)
 								.DisplayFormat("dd-MMM-yyyy")
@@ -388,7 +389,7 @@
 			<div class="form-group" style="flex: 1 1 35px;">
 				@(Html.DevExtreme().NumberBox()
 								.Label(new JS("formatMessage('No. Of Days')"))
-								.LabelMode(EditorLabelMode.Outside)
+								.LabelMode(EditorLabelMode.Floating)
 								.ID("InvoiceNoOfDays")
 								.Value(0)
 								.ShowSpinButtons(true)
@@ -402,7 +403,7 @@
 				@(
 								Html.DevExtreme().TextArea()
 								.Label(new JS("formatMessage('Narration')"))
-								.LabelMode(EditorLabelMode.Outside)
+								.LabelMode(EditorLabelMode.Floating)
 								.ID("txtEntryNarration")
 								.Value("")
 								.Height(40)
@@ -414,17 +415,17 @@
 
 
 		<!-- Second Row -->
-		<div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; margin-top: 10px;">
+		<div style="display: flex; flex-wrap: wrap; gap: 5px; align-items: flex-end; margin-bottom: 10px;">
 			<div class="form-group">
 				@(
 								Html.DevExtreme().SelectBox()
 								.Label(new JS("formatMessage('Dr/Cr')"))
-								.LabelMode(EditorLabelMode.Outside)
+								.LabelMode(EditorLabelMode.Floating)
 								.ID("sbDrCr")
 								.DataSource(new[] { "Dr", "Cr" })
 								.Value("Cr")
 								.Placeholder(new JS("formatMessage('Select Transaction Type')"))
-								.Width(60)
+								.Width(80)
 								)
 
 			</div>
@@ -445,7 +446,7 @@
 											rules.AddRequired()
 											.Message(new JS("formatMessage('Ledger Account should be entered')"));
 										})
-										.LabelMode(EditorLabelMode.Outside)
+										.LabelMode(EditorLabelMode.Floating)
 										.ID("ddAccountHead")
 										.ShowClearButton(true)
 										.AcceptCustomValue(true)
@@ -465,17 +466,39 @@
 										.OnKeyDown("onKeyDown")
 																//.OnValueChanged("dropDownBoxValueChanged")
 										.ContentTemplate(new TemplateName("AccountHeadContentTemplate"))
+										                                                         .Buttons(buttons => {
+        // Built-in clear button
+        buttons.Add()
+            .Name("clear");
+
+     buttons.Add()
+    .Name("addLedger")
+    .Location(TextEditorButtonLocation.After)
+    .Widget(w => w.Button()
+        .Type(ButtonType.Default)
+        .Icon("plus")
+        .ElementAttr(new { @class = "custom-hover-button add-hover" })
+        .OnClick("showLedgerAccountPopup"));
+
+buttons.Add()
+    .Name("editLedger")
+    .Location(TextEditorButtonLocation.After)
+    .Widget(w => w.Button()
+        .Type(ButtonType.Default)
+        .Icon("edit")
+        .ElementAttr(new { @class = "custom-hover-button edit-hover" })
+        .OnClick("showLedgerAccountEditPopup"));
+
+
+
+        buttons.Add()
+        .Name("dropDown");
+    })
 										)
 				</div>
 				<!-- Add Button -->
 				<div class="form-group" style="flex-shrink: 0;">
-					@(Html.DevExtreme().Button()
-										.ID("btnAddAHead")
-										.Icon("plus")
-										.ElementAttr(new { @class = "custom-ui-button" })
-
-										.OnClick("showLedgerAccountPopup")
-										)
+					
 
 					<!-- DevExtreme Popup -->
 					@(Html.DevExtreme().Popup()
@@ -499,13 +522,7 @@
 
 				<div class="form-group" style="flex-shrink: 0;">
 
-					@(Html.DevExtreme().Button()
-										.ID("btnEditAHead")
-										.Icon("edit")
-										.ElementAttr(new { @class = "custom-ui-button" })
-
-										.OnClick("showLedgerAccountHeadEditPopup")
-										)
+					
 
 					@(Html.DevExtreme().Popup()
 										.ID("ledgerEditAccountPopup")
@@ -537,7 +554,7 @@
 											rules.AddRequired()
 											.Message(new JS("formatMessage('Client Name is required')"));
 										})
-										.LabelMode(EditorLabelMode.Outside)
+										.LabelMode(EditorLabelMode.Floating)
 										.ID("accountDropDownBox")
 
 										.ShowClearButton(true)
@@ -560,17 +577,39 @@
 										.OnValueChanged("onSupplierNameChanged")
 															 					//.OnValueChanged("dropDownBoxValueChanged")
 										.ContentTemplate(new TemplateName("ClientNameContentTemplate"))
+										                                                         .Buttons(buttons => {
+        // Built-in clear button
+        buttons.Add()
+            .Name("clear");
+
+     buttons.Add()
+    .Name("addLedger")
+    .Location(TextEditorButtonLocation.After)
+    .Widget(w => w.Button()
+        .Type(ButtonType.Default)
+        .Icon("plus")
+        .ElementAttr(new { @class = "custom-hover-button add-hover" })
+        .OnClick("showLedgerAccountPopup"));
+
+buttons.Add()
+    .Name("editLedger")
+    .Location(TextEditorButtonLocation.After)
+    .Widget(w => w.Button()
+        .Type(ButtonType.Default)
+        .Icon("edit")
+        .ElementAttr(new { @class = "custom-hover-button edit-hover" })
+        .OnClick("showLedgerAccountEditPopup"));
+
+
+
+        buttons.Add()
+        .Name("dropDown");
+    })
 										)
 				</div>
 				<!-- Add Button -->
 				<div class="form-group" style="flex-shrink: 0;">
-					@(Html.DevExtreme().Button()
-										.ID("btnEditVoucher")
-										.Icon("edit")
-										.ElementAttr(new { @class = "custom-ui-button" })
-
-										.OnClick("showLedgerAccountEditPopup")
-										)
+					
 
 					@(Html.DevExtreme().Popup()
 										.ID("ledgerEditAccountPopup")
@@ -592,13 +631,7 @@
 
 				<div class="form-group" style="flex-shrink: 0;">
 
-					@(Html.DevExtreme().Button()
-										.ID("btnAddVoucher")
-										.Icon("plus")
-										.ElementAttr(new { @class = "custom-ui-button" })
-
-										.OnClick("showLedgerAccountPopup")
-										)
+					
 
 					<!-- DevExtreme Popup -->
 					@(Html.DevExtreme().Popup()
@@ -622,7 +655,7 @@
 					@(
 										Html.DevExtreme().NumberBox()
 										.Label(new JS("formatMessage('Amount')"))
-										.LabelMode(EditorLabelMode.Outside)
+										.LabelMode(EditorLabelMode.Floating)
 										.ID("txtVoucherAmount")
 										.Value(0.00)
 										.ValidationRules(rules =>
@@ -661,7 +694,7 @@
 											rules.AddRequired()
 											.Message("Please select a base currency.");
 										})
-										.LabelMode(EditorLabelMode.Outside)
+										.LabelMode(EditorLabelMode.Floating)
 										.ID("ddlBaseCurrency")
 										.ShowClearButton(true)
 										.AcceptCustomValue(false)
@@ -726,7 +759,7 @@
 									rules.AddRequired()
 									.Message("Please select a currency.");
 								})
-								.LabelMode(EditorLabelMode.Outside)
+								.LabelMode(EditorLabelMode.Floating)
 								.ID("ddCurrency")
 								.ShowClearButton(true)
 								.AcceptCustomValue(false)
@@ -778,7 +811,7 @@
 				@(
 								Html.DevExtreme().NumberBox()
 								.Label(new JS("formatMessage('CVR')"))
-								.LabelMode(EditorLabelMode.Outside)
+								.LabelMode(EditorLabelMode.Floating)
 								.ID("txtCurrencyRate")
 								.Width(100)
 								.Value(1)
@@ -796,12 +829,12 @@
 								)
 
 			</div>
-			<div class="form-group plusBtn" style="flex: 1 1 30px;">
+			<div class="form-group plusBtn" >
 				@(Html.DevExtreme().Button()
 								.ID("btnVoucherEntry")
 								.Text(new JS("formatMessage('ADD')"))
 								.Height(40)
-								.Width(130)
+								.Width(90)
 								.Icon("plus")
 								.OnClick("function() { addVoucherEntry(); }")
 								)
@@ -838,7 +871,7 @@
 							.LoadMode(DataSourceLoadMode.Raw)
 							.Key("AccountId")
 							)
-							.LabelMode(EditorLabelMode.Outside)
+							.LabelMode(EditorLabelMode.Floating)
 							.ID("accountDropDownBoxEdit")
 							.ShowClearButton(true)
 							.AcceptCustomValue(false)
@@ -1024,7 +1057,7 @@
 					@(
 										Html.DevExtreme().SelectBox()
 										.Label(new JS("formatMessage('Voucher Type')"))
-										.LabelMode(EditorLabelMode.Outside)
+										.LabelMode(EditorLabelMode.Floating)
 										.ID("VoucherType")
 										.Width(225)
 										.DataSource(new[] { "Sales", "Purchase", "Journal" })
@@ -1036,7 +1069,7 @@
 					@(
 										Html.DevExtreme().TextBox()
 										.Label(new JS("formatMessage('Client PO No')"))
-										.LabelMode(EditorLabelMode.Outside)
+										.LabelMode(EditorLabelMode.Floating)
 										.ID("VoucherRefNo")
 										.Width(223)
 										.Value(null)
@@ -1046,7 +1079,7 @@
 					@(
 										Html.DevExtreme().TextBox()
 										.Label(new JS("formatMessage('Voucher Narration')"))
-										.LabelMode(EditorLabelMode.Outside)
+										.LabelMode(EditorLabelMode.Floating)
 										.Width(1050)
 										.ID("VoucharNarration")
 										.Value(null)
@@ -1096,7 +1129,7 @@
 																		 			<div style="flex: 1 1 200px; min-width: 180px;">
 				@(Html.DevExtreme().TextBox()
 								.Label(new JS("formatMessage('Verified On')"))
-								.LabelMode(EditorLabelMode.Outside)
+								.LabelMode(EditorLabelMode.Floating)
 								.ID("VerifiedOnDate")
 								.Value(null)
 								.Disabled(true)
@@ -1107,7 +1140,7 @@
 			<div style="flex: 1 1 200px; min-width: 180px;">
 				@(Html.DevExtreme().TextBox()
 								.Label(new JS("formatMessage('Approved On')"))
-								.LabelMode(EditorLabelMode.Outside)
+								.LabelMode(EditorLabelMode.Floating)
 								.ID("ApprovedOntext")
 								.Value(null)
 								.Disabled(true)
@@ -1118,7 +1151,7 @@
 				@(
 								Html.DevExtreme().TextBox()
 								.Label(new JS("formatMessage('Remarks')"))
-								.LabelMode(EditorLabelMode.Outside)
+								.LabelMode(EditorLabelMode.Floating)
 								.Width(660)
 								.ID("BillRemarks")
 								.Value(null)
