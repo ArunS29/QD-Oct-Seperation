@@ -423,10 +423,10 @@
                                                 .DataSource(new[] { "Dr", "Cr" })
                                                 .Value("Cr")
                                                 .Placeholder("Select Transaction Type")
-                                                .Width(60)
+                                                .Width(80)
                                                 .ElementAttr(new { @class = "custom-disabled-selectbox" })
 
-                                                .ReadOnly(true)
+                                                .ReadOnly(false)
                                                 )
                     </div>
                     <!-- Container for Account Head & Buttons -->
@@ -461,7 +461,7 @@
                                                         .OnInput("dropDownBoxOnInput")
                                                         .OnClosed("onDropDownBoxClosed")
                                                         .OnOpened("onOpened")
-                                                        .Width(400)
+                                                        .Width(454)
                                                         .TabIndex(1)
                                                         .DropDownOptions(o => o
                                                         .Width(1000)
@@ -542,12 +542,12 @@ buttons.Add()
 
 
                     </div>
-                    <div class="form-group" style="flex: 1 1 90px;">
+                    <div class="form-group">
                         @(Html.DevExtreme().NumberBox()
                                                 .Label(new JS("formatMessage('Amount')"))
                                                 .LabelMode(EditorLabelMode.Floating)
                                                 .ID("Amount")
-                                               
+                                               .Width(150)
                                                 .Value(null)
                                                 .ValidationRules(rules =>
                                                 {
@@ -804,7 +804,7 @@ buttons.Add()
                                 .AllowColumnReordering(true) // Enable column reordering
                                 .AllowColumnResizing(true)   // Enable column resizing
                                 .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
-                                .HeaderFilter(filter => filter.Visible(true))
+                                @* .HeaderFilter(filter => filter.Visible(true)) *@
                                 .Height(250)
                                 .ColumnAutoWidth(true)
                                 .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
