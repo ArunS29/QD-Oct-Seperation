@@ -1,23 +1,17 @@
-﻿
-
-
-
-using System;
-using System.Drawing;
-using System.Text;
-using DevExpress.DataAccess.ConnectionParameters;
+﻿using DevExpress.DataAccess.ConnectionParameters;
 using DevExpress.DataAccess.Sql;
 using DevExpress.XtraPrinting;
 using DevExpress.XtraReports.UI;
 using Microsoft.Data.SqlClient;
-using QD.ERP.Web.Service;
 using Svg;
+using System.Drawing;
+using System.Text;
 
 namespace QD.ERP.Web.Areas.Finance.Reports
 {
     public partial class BillsReceivableAgeingToday : XtraReport
     {
-     
+
         private readonly TenantDbContextHelper _tenantDbContextHelper;
 
         public BillsReceivableAgeingToday(
@@ -40,7 +34,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             sqlDataSource1 = new SqlDataSource();
             this.DataSource = sqlDataSource1;
 
-            SetReportParameters(accountId, frmDate,toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressArb, username);
+            SetReportParameters(accountId, frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressArb, username);
 
             try
             {
@@ -93,7 +87,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             if (FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
                 addressArbLabel.Text = companyAddressArb;
 
-            ConfigureDataSource(accountId, frmDate,toDate);
+            ConfigureDataSource(accountId, frmDate, toDate);
         }
 
         private void AddOrUpdateParameter(string paramName, object paramValue, Type paramType, bool visible)
