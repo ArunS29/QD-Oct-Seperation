@@ -757,7 +757,38 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 			return Unauthorized(new { message = "Invalid tenant.", success = false });
 		}
-		[HttpDelete]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteChildById(int childId)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant context." });
+            }
+
+            try
+            {
+                var child = await dbContext.Tbl60602purchaseRequestChildren
+                    .FirstOrDefaultAsync(x => x.MprchildSlNo == childId);
+
+                if (child == null)
+                {
+                    return NotFound(new { success = false, message = "Child record not found." });
+                }
+
+                dbContext.Tbl60602purchaseRequestChildren.Remove(child);
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Child row deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in DeleteChildById: {ex.Message}");
+                return StatusCode(500, new { success = false, message = "Internal server error." });
+            }
+        }
+
+
+        [HttpDelete]
 		public async Task<IActionResult> DeletePurchaseRequest([FromQuery] string Mprno)
 		{
 			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
