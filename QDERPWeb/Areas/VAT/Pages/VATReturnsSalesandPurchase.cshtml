@@ -21,7 +21,7 @@
         background-color: #ffffff;
        /*  border: 1px solid #cccccc; */
         border-radius: 0;
-        width: 400px;
+        width: 550px;
     }
 
     #vatOnSalesForm {
@@ -89,19 +89,511 @@
         }
 
     .dx-fieldset.horizontal-container {
-        margin-top: 10px;
+        margin-top: 0px;
     }
+    /* Targets all DevExtreme tab items */
+    .dx-tab {
+        padding: 6px 16px;
+        border-radius: 15px;
+        font-weight: 500;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+        
+    .dx-tabs .dx-tab {
+        padding: 8px 16px;
+    }
+
+    .dx-tabs .dx-tab {
+        border-radius: 5px;
+    }
+
+     /* First tab: Sales => green text, light green background */
+    .dx-tabs .dx-tab:nth-child(1) {
+        background-color: #e6ffe6; /* light green */
+    }
+
+    .dx-tabs .dx-tab:nth-child(1) .dx-tab-text {
+        color: #28a745;
+        font-weight: bold;
+    }
+
+    /* Second tab: Purchase => red text, light red background */
+    .dx-tabs .dx-tab:nth-child(2) {
+        background-color: #ffe6e6; /* light red */
+    }
+
+        .dx-tabs .dx-tab:nth-child(2) .dx-tab-text {
+            color: #ff4d4d;
+            font-weight: bold;
+        }
+
+
+    .vat-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: 'Segoe UI', sans-serif;
+        font-size: 14px;
+        margin-bottom: 30px;
+    }
+
+    .vat-table th,
+    .vat-table td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: center;
+    }
+
+    .vat-table th {
+            background-color: var(--background-color);
+            
+        font-weight: bold;
+    }
+
+    .vat-table td:nth-child(2) {
+        text-align: left;
+    }
+
+    .vat-table .total-row {
+            background-color: #f8f9fa;
+        font-weight: bold;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background: #f4f6fa;
+    }
+
+    .dashboard {
+        display: flex;
+        gap: 20px;
+        align-items: stretch;
+    }
+
+    .card {
+        flex: 1;
+        padding: 15px;
+        border-radius: 12px;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        height: 110px;
+    }
+
+        .card h1 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .card p {
+            margin: 4px 0;
+            font-size: 14px;
+        }
+
+        .card .amount {
+            font-size: 26px;
+            margin: 5px 0;
+            font-weight: bold;
+        }
+
+        .card .percent {
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+
+
+    .tabs {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 12px;
+    }
+
+    .tab-text {
+        flex: 1;
+        text-align: center;
+        cursor: pointer;
+        font-weight: bold;
+        padding: 2px 0;
+        border-radius: 6px;
+        transition: background 0.3s ease;
+    }
+
+        .tab-text.active {
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+        }
+
+    .tab-content {
+        display: none;
+        text-align: center;
+        animation: fadeSlideIn 0.4s ease;
+    }
+
+        .tab-content.active {
+            display: block;
+        }
+
+    h4 {
+        margin-bottom: 4px;
+        font-size: 16px;
+    }
+
+    .count {
+        font-size: 28px;
+        font-weight: bold;
+        margin: 4px 0;
+    }
+
+        .count.bounce {
+            animation: bounceIn 0.4s ease;
+        }
+
+    .trend {
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+
+    .message {
+        font-size: 14px;
+        font-weight: 500;
+        margin-top: 6px;
+    }
+
+    /* Backgrounds per tab */
+    .today-bg {
+        background: linear-gradient(270deg, #2196f3, #64b5f6);
+        background-size: 400% 400%;
+        animation: gradientPulse 6s ease infinite;
+    }
+
+    .week-bg {
+        background: linear-gradient(270deg, #009688, #4db6ac);
+        background-size: 400% 400%;
+        animation: gradientPulse 6s ease infinite;
+    }
+
+    .month-bg {
+        background: linear-gradient(270deg, #9c27b0, #ba68c8);
+        background-size: 400% 400%;
+        animation: gradientPulse 6s ease infinite;
+    }
+
+    /* Keyframes */
+    @@keyframes fadeSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes bounceIn {
+        0% {
+            transform: scale(0.9);
+            opacity: 0;
+        }
+
+        50% {
+            transform: scale(1.05);
+            opacity: 1;
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    @@keyframes gradientPulse {
+        0% {
+            background-position: 0% 50%;
+        }
+
+        50% {
+            background-position: 100% 50%;
+        }
+
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+
+    .card.green {
+        background: linear-gradient(135deg, #43a047, #81c784); /* green gradient */
+        position: relative;
+        overflow: hidden;
+    }
+
+
+    .card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    h1 {
+        font-size: 42px;
+        margin: 10px 0 5px;
+    }
+
+    h3 {
+        font-size: 14px;
+        font-weight: 500;
+        margin: 0;
+    }
+
+    /* Count animation bounce */
+    h1.bounce {
+        animation: bounceIn 0.5s ease;
+    }
+
+    @@keyframes bounceIn {
+        0% {
+            transform: scale(0.9);
+            opacity: 0;
+        }
+
+        50% {
+            transform: scale(1.05);
+            opacity: 1;
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    /* Sparkle effect (optional) */
+    .sparkle::after {
+        content: '✨';
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 18px;
+        animation: sparkle 1.8s infinite ease-in-out;
+    }
+
+    @@keyframes sparkle {
+        0%, 100%
+
+    {
+        transform: scale(0.8) rotate(0deg);
+        opacity: 0.8;
+    }
+
+    50% {
+        transform: scale(1.2) rotate(30deg);
+        opacity: 1;
+    }
+
+    }
+
+
+    .card.red {
+        background: linear-gradient(135deg, #e53935, #ef5350); /* rich red gradient */
+    }
+
+    .card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    h4 {
+        font-size: 13px;
+        margin-bottom: 1px;
+        font-weight: 500;
+        text-transform: capitalize;
+        letter-spacing: 1px;
+    }
+
+    h1 {
+        font-size: 36px;
+        margin: 4px 0;
+        font-weight: 700;
+        animation: bounceIn 0.4s ease;
+    }
+
+    h2 {
+        font-size: 14px;
+        margin-top: 8px;
+        opacity: 0;
+        animation: fadeIn 1s forwards;
+        animation-delay: 0.5s;
+    }
+
+    /* Animations */
+    @@keyframes bounceIn {
+        0% {
+            transform: scale(0.9);
+            opacity: 0;
+        }
+
+        50% {
+            transform: scale(1.05);
+            opacity: 1;
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    @@keyframes fadeIn {
+        to {
+            opacity: 1;
+        }
+    }
+
+    /* Optional shine effect */
+    /*  .shine::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -75%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient( 120deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.6) 50%, rgba(255, 255, 255, 0.05) 100% );
+            transform: skewX(-25deg);
+            animation: shineMove 2.5s infinite ease-in-out;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+         @@keyframes shineMove {
+            0% {
+                left: -75%;
+            }
+
+            100% {
+                left: 125%;
+            }
+        } */
+
+    .card.compact {
+        padding: 14px 16px;
+        min-height: unset;
+    }
+
+    .blue {
+        background: linear-gradient(135deg, #6a11cb, #2575fc) !important; /* soft blue tones */
+        background-size: 400% 400%;
+        animation: gradientPulse 6s ease infinite;
+    }
+    @@keyframes gradientPulse {
+        0%
+
+    {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+
+    }
+
+
+    /* Text Styles */
+    .card.compact h4 {
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+    }
+
+    .card.compact h2 {
+        font-size: 18px;
+        font-weight: 600;
+        margin-top: 2px;
+    }
+
+    /* Animations */
+    .fade-in {
+        animation: fadeIn 0.8s ease forwards;
+        opacity: 0;
+    }
+
+    .title-slide {
+        animation: titleSlide 0.9s ease forwards;
+        opacity: 0;
+    }
+
+    @@keyframes fadeIn {
+        to {
+            opacity: 1;
+        }
+    }
+
+    @@keyframes titleSlide {
+        0% {
+            opacity: 0;
+            transform: translateY(8px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .Head {
+        margin-bottom: 10px;
+    }
+
+    .dx-tabs {
+        border-radius: 4px; /* reduced from 6px or more */
+    }
+
+    .text-right-number .dx-texteditor-input {
+        text-align: right;
+    }
+
+
+
 </style>
+
+
+
 
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
-
+<div class="dashboard" style="display: flex; align-items: center; padding: 10px;width:55%">
 @* <input id="formId" value="frm201LedgerAccount1" type="hidden" /> *@
 
-<div class="title">
-    <div class="header-container">
-        <div id="VATReturns" class="no-border-title no-border-input"></div>
+
+    <div class="card blue shine compact">
+        <h2 class="title-slide">VAT Invoice Register</h2>
+        <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
+        <h6 class="fade-in">QuickDice ERP Solutions</h6>
     </div>
+
+    <div class="card green sparkle">
+        <h1 class="title-slide">VAT on Sales</h1>
+        <h2 id="vatSalesTurnover">0</h2>
+
+        <i class="dx-icon-cart" style="font-size: 24px; color: white;"></i>
+    </div>
+
+
+    <div class="card red shine">
+        <h1 class="title-slide">VAT on Purchase</h1>
+        <h2 id="vatPurchaseTurnover">0</h2>
+
+        <i class="dx-icon-box" style="font-size: 24px; color: white;"></i>
+    </div>
+
 </div>
 
 <div class="dx-fieldset horizontal-container">
@@ -153,148 +645,250 @@
     <div class="content-container-top">
         <div class="dx-fieldset horizontal-container">
             @(Html.DevExtreme().Tabs()
-                .Items(items =>
-                {
-                    items.Add().Icon("").Text(new JS("formatMessage('VAT on Sales')"));
-                    items.Add().Icon("").Text(new JS("formatMessage('VAT on Purchase')"));
-                })
-                .SelectedIndex(0)
-                .OnSelectionChanged("onTabSelectionChanged")
-                )
+                        .Items(items =>
+                        {
+                            items.Add().Icon("").Text(new JS("formatMessage('VAT on Sales')"));
+                            items.Add().Icon("").Text(new JS("formatMessage('VAT on Purchase')"));
+                        })
+                        .SelectedIndex(0)
+                        .OnSelectionChanged("onTabSelectionChanged")
+                        )
+            
         </div>
 
         <div>
 
             <!-- Right Forms -->
-            <div style="padding: 0px 20px;">
-                <!-- VAT on Sales Form -->
-                <div id="vatOnSalesForm" style="display: flex; flex-direction: column; gap: 15px;">
-                    <div style="display: flex; align-items: center; gap: 20px;">
-                        <div id="StandardratedSales" style="width: 300px;"></div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DssRevenue"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DssCreditNote"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DssSalesTaxAfterAdj"))
-                    </div>
+            <div id="vatOnSalesForm" style="padding: 0px 20px;display: flex;width: 90%;">
+                <table class="vat-table">
+                  
+                        <thead>
+                        <tr style="width: 100%; border-collapse: collapse; background-color: var(--background-color);">
+                                <th>S.No</th>
+                                <th>Description</th>
+                                <th style="width:12%">Purchases</th>
+                            <th style="width: 12%;">Debit Note</th>
+                                <th style="width:20%">Tax After Adjustment</th>
+                            </tr>
+                        </thead>
+                    <tbody>
+                        <tr>
+            <td>1</td>
+                            <td>Standard rated Sales 5%</td>
 
-                    <div style="display: flex; align-items: center; gap: 20px;">
-                        <div id="Standardrated" style="width: 300px;"></div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("Dss15Revenue"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("Dss15CreditNote"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("Dss15SalesTaxAfterAdj"))
-                    </div>
+                            <td>
+                                @(Html.DevExtreme().NumberBox().ID("DssRevenue").Disabled(true).Format("#,##0.00") // 👈 Formats as 4,216.00
+                                                                .ShowSpinButtons(false).ElementAttr("class", "text-right-number"))
+                            </td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("DssCreditNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("DssSalesTaxAfterAdj").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+        </tr>
+        <tr>
+            <td>1a</td>
+            <td>Standard Rated Sales 15%</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("Dss15Revenue").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("Dss15CreditNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("Dss15SalesTaxAfterAdj").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>Sales to GCC Customer</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("GccRevenue").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("GccCreditNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>Zero Rated Domestic Sales</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("DzrRevenue").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("DzrCreditNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>Exports</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("ExpRevenue").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("ExpCreditNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td>Exempt Sales</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("DexRevenue").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("DexCreditNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+            <td></td>
+        </tr>
+        <tr class="total-row">
+            <td>6</td>
+            <td>Total Sales</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("RevenueTotal").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("CreditNoteTotal").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("DSSTotalSalesTax").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+        </tr>
 
-                    <div style="display: flex; align-items: center; gap: 20px;">
-                        <div id="Salestocustomer" style="width: 300px;"></div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("GccRevenue"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("GccCreditNote"))
-                    </div>
+                    </tbody>
+                </table>
+            </div>
 
-                    <div style="display: flex; align-items: center; gap: 20px;">
-                        <div id="ZeroratedDomesticSales" style="width: 300px;"></div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DzrRevenue"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DzrCreditNote"))
-                    </div>
-
-                    <div style="display: flex; align-items: center; gap: 20px;">
-                        <div id="Exports" style="width: 300px;"></div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("ExpRevenue"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("ExpCreditNote"))
-                    </div>
-
-                    <div style="display: flex; align-items: center; gap: 20px;">
-                        <div id="ExemptSales" style="width: 300px;"></div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DexRevenue"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DexCreditNote"))
-                    </div>
-
-                    <div style="display: flex; align-items: center; gap: 20px;">
-                        <div id="TotalSales" style="width: 300px;"></div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("RevenueTotal"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("CreditNoteTotal"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DSSTotalSalesTax"))
-                    </div>
-                </div>
 
                 <!-- VAT on Purchase Form -->
-                <div id="vatOnPurchaseForm" style="display: none; flex-direction: column; gap: 15px;">
-                    <div style="display: flex; align-items: center; gap: 20px;">
-                        <div id="StandardratedDomestics" style="width: 300px;"></div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DssPurchases"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DssDebitNote"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DssPurTaxAfterAdj"))
-                    </div>
-
-                    <div style="display: flex; align-items: center; gap: 20px;">
-                        <div id="StandardratedDomestic" style="width: 300px;"></div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DssPurchases15Perc"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("Dss15PerDebitNote"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("Dss15PerPurTaxAfterAdj"))
-                    </div>
-
-                    <div style="display: flex; align-items: center; gap: 20px;">
-                        <div id="ImportssubjecttoVATpaidatCustomer" style="width: 300px;"></div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("IPCPurchases"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("IPCDebitNote"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("IPCPurTaxAfterAdj"))
-                    </div>
-
-                    <div style="display: flex; align-items: center; gap: 20px;">
-                        <div id="Importssubject" style="width: 300px;"></div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("IPCPurchases15Perc"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("IPC15PerDebitNote"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("IPC15PerPurTaxAfterAdj"))
-
-                    </div>
-
-                    <div style="display: flex; align-items: center; gap: 20px;">
-                        <div id="ImportssubjecttoVAT" style="width: 300px;"></div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("RCMPurchases"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("RCMDebitNote"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("RCMPurTaxAfterAdj"))
-                    </div>
-
-                    <div style="display: flex; align-items: center; gap: 20px;">
-                        <div id="ImportssubjecttoVATthru" style="width: 300px;"></div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("RCMPurchases15Perc"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("RCM15PerDebitNote"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("RCM15PerPurTaxAfterAdj"))
-                    </div>
-
-                    <div style="display: flex; align-items: center; gap: 20px;">
-                        <div id="ZeroratePurchase" style="width: 300px;"></div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DZRPurchases"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DZRDebitNote"))
-                    </div>
-
-                    <div style="display: flex; align-items: center; gap: 20px;">
-                        <div id="ExemptPurchase" style="width: 300px;"></div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DEXPurchases"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DEXDebitNote"))
-@*                         @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DssRevenue"))
- *@                    </div>
-
-                    <div style="display: flex; align-items: center; gap: 20px;">
-                        <div id="TotalPurchase" style="width: 300px;"></div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("PurchaseTotal"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DebitNoteTotal"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("TotalPurchaseTax"))
-                    </div>
-                </div>
-
+            <div id="vatOnPurchaseForm" style="display: none;padding: 0px 20px;width: 90%;">
+                <table class="vat-table" style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Description</th>
+                            <th style="width:12%">Purchases</th>
+                            <th style="width: 12%;">Debit Note</th>
+                            <th style="width:20%">Tax After Adjustment</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>7</td>
+                            <td>Standard rated Domestic Purchase 5%</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("DssPurchases").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("DssDebitNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("DssPurTaxAfterAdj").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        </tr>
+                        <tr>
+                            <td>7a</td>
+                            <td>Standard rated Domestic Purchase 15%</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("DssPurchases15Perc").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("Dss15PerDebitNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("Dss15PerPurTaxAfterAdj").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>Imports subject to VAT Paid at Customer 5%</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("IPCPurchases").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("IPCDebitNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("IPCPurTaxAfterAdj").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        </tr>
+                        <tr>
+                            <td>8a</td>
+                            <td>Imports subject to VAT Paid at Customer 15%</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("IPCPurchases15Perc").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("IPC15PerDebitNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("IPC15PerPurTaxAfterAdj").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>Imports Subject to VAT - thru RCM 5%</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("RCMPurchases").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("RCMDebitNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("RCMPurTaxAfterAdj").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        </tr>
+                        <tr>
+                            <td>9a</td>
+                            <td>Imports Subject to VAT - thru RCM 15%</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("RCMPurchases15Perc").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("RCM15PerDebitNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("RCM15PerPurTaxAfterAdj").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>Zero rate Purchases</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("DZRPurchases").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("DZRDebitNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>11</td>
+                            <td>Exempt Purchases</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("DEXPurchases").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("DEXDebitNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                            <td></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td>12</td>
+                            <td>Total Purchases</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("PurchaseTotal").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("DebitNoteTotal").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                            <td>@(Html.DevExtreme().NumberBox().ID("TotalPurchaseTax").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
+
 
         </div>
     </div>
 </div>
 
 
-<div class="Head">
-    <div class="limited-footer">
+<div class="Head" style="margin-left: 15px;">
+   
         @await Html.PartialAsync("/Pages/Shared/VAT/VATReturnsSalesandPurchaseFooter.cshtml")
     </div>
-</div>
+
 
 <script>
+
+
+    function animateInvoiceCount(target) {
+      let i = 0;
+      const el = document.getElementById("invoiceCount");
+      el.classList.remove('bounce');
+
+      const timer = setInterval(() => {
+        if (i >= target) {
+          el.innerText = target;
+          el.classList.add('bounce');
+          clearInterval(timer);
+        } else {
+          el.innerText = i++;
+        }
+      }, 30);
+    }
+
+    // Animate to 40
+    animateInvoiceCount(40);
+
+
+    function countUpTurnover(targetStr) {
+      const el = document.getElementById("turnover");
+      const target = parseFloat(targetStr);
+      let current = 0.0;
+
+      const interval = setInterval(() => {
+        current += 0.5;
+        if (current >= target) {
+          el.textContent = targetStr + " K";
+          clearInterval(interval);
+        } else {
+          el.textContent = current.toFixed(1) + " K";
+        }
+      }, 30);
+    }
+
+    // Animate to 46.2 K
+    countUpTurnover("46.2");
+
+      const card = document.getElementById('mainCard');
+    const counts = [8, 15, 5];
+    const countEls = [
+      document.getElementById("count0"),
+      document.getElementById("count1"),
+      document.getElementById("count2"),
+    ];
+    const tabs = document.querySelectorAll(".tab-text");
+    const contents = document.querySelectorAll(".tab-content");
+
+    function animateCount(el, target) {
+      let i = 0;
+      el.innerText = i;
+      el.classList.remove('bounce');
+      const interval = setInterval(() => {
+        if (i >= target) {
+          el.innerText = target;
+          el.classList.add('bounce');
+          clearInterval(interval);
+        } else {
+          el.innerText = i++;
+        }
+      }, 30);
+    }
     $(document).ready(function () {
         ddBtnShowRecords_click("range")
         $("#VATReturns").dxTextBox({
@@ -445,6 +1039,8 @@
               $("#DEXPurchases").dxNumberBox("instance").option("value", data[0].DEX_Purchases);
               $("#DEXDebitNote").dxNumberBox("instance").option("value", data[0].DEX_DebitNote);
               $("#TotalPurchaseTax").dxNumberBox("instance").option("value", data[0].TotalPurchaseTax);
+              $("#vatSalesTurnover").text(new Intl.NumberFormat().format(data[0].RevenueTotal));
+              $("#vatPurchaseTurnover").text(new Intl.NumberFormat().format(data[0].TotalPurchaseTax));
 
             },
             error: function () {
@@ -453,32 +1049,33 @@
         });
     }
     $(function () {
-                    $("#StandardratedSales").text(
-                         formatMessage("1 - Standard rated Sales 5%"));
-            });
+        $("#StandardratedSales").text(
+            formatMessage("Standard rated Sales 5%"));
+     });
+
     $(function () {
                     $("#Standardrated").text(
-                         formatMessage("1a - Standard rated Sales 15%"));
+                         formatMessage("Standard rated Sales 15%"));
             });
     $(function () {
                     $("#Salestocustomer").text(
-                         formatMessage("2 - Sales to customers in VAT Implementing GCC"));
+                         formatMessage("Sales to customers in VAT Implementing GCC"));
             });
     $(function () {
                     $("#ZeroratedDomesticSales").text(
-                         formatMessage("3 - Zero rated Domestic Sales"));
+                         formatMessage("Zero rated Domestic Sales"));
             });
     $(function () {
                     $("#Exports").text(
-                         formatMessage("4 - Exports"));
+                         formatMessage("Exports"));
             });
     $(function () {
                     $("#ExemptSales").text(
-                         formatMessage("5 - Exempt Sales"));
+                         formatMessage("Exempt Sales"));
             });
     $(function () {
                     $("#TotalSales").text(
-                         formatMessage("6 - Total Sales"));
+                         formatMessage("Total Sales"));
             });
     $(function () {
                     $("#StandardratedDomestics").text(
@@ -618,4 +1215,4 @@
                                 showColumnChooser();
                                 console.log('End permission handling');
                             });
-</script> 
+</script>
