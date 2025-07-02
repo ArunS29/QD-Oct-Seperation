@@ -801,19 +801,21 @@
 					.Caption("Trans Credit")
 					.Alignment(HorizontalAlignment.Right)
 					.CellTemplate(@<text>
-			<div class="credit-pill">
-				<%- data.CrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
-			</div>
-		</text>)
+						   			<div class="credit-pill">
+						   				<span style="color: black; font-weight: bold;"><%- data.TransactionCurrencySymbol %></span>
+						   				<%- data.CrAmount != null ? data.CrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
+						   			</div>
+						   		</text>)
 					.Visible(false);
 					columns.AddFor(m => m.DrAmount)
 					.Caption("Trans Debit")
 					.Alignment(HorizontalAlignment.Right)
 					.CellTemplate(@<text>
-			<div class="debit-pill">
-				<%- data.DrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
-			</div>
-		</text>)
+						   			<div class="debit-pill">
+						   				<span style="color: black; font-weight: bold;"><%- data.TransactionCurrencySymbol %></span>
+						   				<%- data.DrAmount != null ? data.DrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
+						   			</div>
+						   		</text>)
 					.Visible(false);
 
 					columns.AddFor(m => m.ConvertedAmount)
@@ -916,7 +918,7 @@
 					});
 				})
 				.FilterRow(f => f.Visible(false))
-				.GroupPanel(g => g.Visible(false))
+				
 				.ShowBorders(true)
 				.StateStoring(ss =>
 				{
@@ -2153,10 +2155,10 @@
 
 
 		// /* ---------- wire it to the grid ---------- */
-		// function handleGridContentReady(e) {
-		// 	const data = e.component.option('dataSource') || [];
-		// 	updateKpis(aggregate(data));
-		// }
+		function handleGridContentReady(e) {
+			const data = e.component.option('dataSource') || [];
+			updateKpis(aggregate(data));
+		}
 
 		// …if you reload or filter the grid from code elsewhere, just call updateKpis(aggregate(newRows)) again.
 	function updateValueSlider(cardId, values) {

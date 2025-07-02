@@ -33,5 +33,10 @@ namespace QD.ERP.Web.DAL.Entities
         public string SubGroupName { get; set; }
         public string VoucherModifiedBy { get; set; }
         public DateTime? VoucherModifiedOn { get; set; }
+        public decimal? ConvertedDrAmount { get; set; }
+        public decimal? ConvertedCrAmount { get; set; }
+        public decimal? ConvertedAmount { get; set; }
+        public string TransactionCurrencyName { get; set; }
+        public string TransactionCurrencySymbol { get; set; }
     }
 }
