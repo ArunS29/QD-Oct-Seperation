@@ -1,716 +1,270 @@
 ﻿@page
 @model QD.ERP.Web.Areas.Finance.Pages.DashboardSupplierModel
-@{
-}
+
+<!-- Page Loader Overlay -->
+<div id="dashboardPageLoader" style="position:fixed;z-index:9999;top:0;left:0;width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.7)">
+    <img src="/images/dicerol.gif" alt="Loading..." style="height:54px;">
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 <script src="https://www.gstatic.com/charts/loader.js"></script>
-<div class="title">
-    <div class="header-container">
-        <div id="OutstandingDetails" class="no-border-title"></div>
-    </div>
-</div><!-- DevExtreme Scripts & Styles -->
+<link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/latest/css/dx.common.css">
 <link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/latest/css/dx.light.css">
 <script src="https://cdn3.devexpress.com/jslib/latest/js/dx.all.js"></script>
-
-<!-- Include Excel Export Libraries -->
+<script src="https://cdn3.devexpress.com/jslib/latest/js/dx.viz.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
-<!-- Total Outstanding Cards -->
+<div class="dashboard-card-header">Supplier Outstanding Details</div>
+
+<!-- Summary Cards -->
 <div class="dx-card-container">
-    <!-- Total Client Outstanding Card -->
     <div class="Popupcard" id="clientcard">
         <div class="dx-card-header">
             <div id="TotalClientOutstanding" class="no-border-input"></div>
         </div>
         <div class="dx-card-content">
+            <span class="card-loader" id="loaderClientOutstanding" style="display:none;">
+                <img src="/images/dicerol.gif" alt="Loading..." style="height:16px;">
+            </span>
             <div id="totalClientOutstandingValue" class="total-value"></div>
         </div>
     </div>
-    <!-- New Cash Balance Card -->
     <div class="Popupcard" id="DashboardBankAccount">
         <div class="dx-card-header">
             <div id="TotalCashBalance" class="no-border-input"></div>
         </div>
         <div class="dx-card-content">
+            <span class="card-loader" id="loaderCashBalance" style="display:none;">
+                <img src="/images/dicerol.gif" alt="Loading..." style="height:16px;">
+            </span>
             <div id="cashBalanceValue" class="total-value"></div>
         </div>
     </div>
-
-    <!-- Total Bills Outstanding Card -->
-    <div class="Popupcard" id="DashboardSupplier">
+    <div class="Popupcard" id="SupplierCard">
         <div class="dx-card-header">
             <div id="TotalSupplierOutstanding" class="no-border-input"></div>
         </div>
         <div class="dx-card-content">
+            <span class="card-loader" id="loaderBillsOutstanding" style="display:none;">
+                <img src="/images/dicerol.gif" alt="Loading..." style="height:16px;">
+            </span>
             <div id="totalBillsOutstandingValue" class="total-value"></div>
         </div>
     </div>
 </div>
+
+<!-- Grids & Chart -->
 <div class="grid-container">
     <div class="grid-section">
         <div id="SupplierOutstanding" class="no-border-title" style="width:90%;"></div>
-        <div id="billsPayableGrid" ></div>
+        <div id="billsPayableGrid"></div>
     </div>
     <div class="chart-container">
         <div id="SupplierOutstandingAgingChart" class="no-border-title"></div>
-        <canvas id="billsOutstandingChart" style="width:800px; height:750px"></canvas>
-
+        <canvas id="billsOutstandingChart" style="width:750px; height:650px"></canvas>
     </div>
+</div>
 
-    
 <script>
-            $("#clientcard").on("click", function () {
-        // Your click logic here
-     window.location.href = `/${tenantName}/Finance/DashboardClient`;    });
+$(document).ready(function () {
+    $("#dashboardPageLoader").show();
+    let pendingLoads = [];
 
-          $("#SupplierCard").on("click", function () {
-        // Your click logic here
-        window.location.href = `/${tenantName}/Finance/DashboardSupplier`;    });
-
-              $("#DashboardBankAccount").on("click", function () {
-            // Your click logic here
-         window.location.href = `/${tenantName}/Finance/DashboardBankAccount`;    });
-
-
-    $(document).ready(function () {
-        const apiEndpoints = [
-            { url: "/api/Dashboard/supplieroutstanding", target: "#totalBillsOutstandingValue ", key: "balance" },
-            { url: "/api/Dashboard/GetTotalClientOutstanding", target: "#totalClientOutstandingValue", key: "balance" },
-            { url: "/api/Dashboard/GetCashBalance", target: "#cashBalanceValue", key: "balance" }
-        ];
-
-        const fetchData = async (endpoint) => {
-            const startTime = performance.now();
-            try {
-                const response = await $.getJSON(endpoint.url);
+    // ---- Summary Cards (AJAX, with mini-loader for each) ----
+    const apiEndpoints = [
+        { url: "/api/Dashboard/supplieroutstanding", target: "#totalBillsOutstandingValue", loader: "#loaderBillsOutstanding", key: "balance" },
+        { url: "/api/Dashboard/GetTotalClientOutstanding", target: "#totalClientOutstandingValue", loader: "#loaderClientOutstanding", key: "balance" },
+        { url: "/api/Dashboard/GetCashBalance", target: "#cashBalanceValue", loader: "#loaderCashBalance", key: "balance" }
+    ];
+    apiEndpoints.forEach(endpoint => {
+        $(endpoint.loader).show();
+        let p = $.getJSON(endpoint.url)
+            .done(response => {
                 if (response.success) {
                     $(endpoint.target).text(response[endpoint.key].toLocaleString('en-US'));
-                } else {
-                    console.error(`Error loading data from ${endpoint.url}`);
                 }
-            } catch (error) {
-                console.error(`Error fetching data from ${endpoint.url}:`, error);
-            } finally {
-                const endTime = performance.now();
-                console.log(`Response time for ${endpoint.url}: ${(endTime - startTime).toFixed(2)} ms`);
-            }
-        };
-
-        apiEndpoints.forEach(fetchData);
+            })
+            .always(() => $(endpoint.loader).hide());
+        pendingLoads.push(p);
     });
 
-    $(document).ready(function () {
-        const apiEndpoints = [
-            { url: "/api/Dashboard/supplieroutstanding", target: "#totalBillsOutstandingValue ", key: "balance" },
-            { url: "/api/Dashboard/GetTotalClientOutstanding", target: "#totalClientOutstandingValue", key: "balance" },
-            { url: "/api/Dashboard/GetCashBalance", target: "#cashBalanceValue", key: "balance" }
-        ];
-
-        const fetchData = async (endpoint) => {
-            const startTime = performance.now();
-            try {
-                const response = await $.getJSON(endpoint.url);
-                if (response.success) {
-                    $(endpoint.target).text(response[endpoint.key].toLocaleString('en-US'));
-                } else {
-                    console.error(`Error loading data from ${endpoint.url}`);
+    // ---- Grid Section (DevExtreme loader) ----
+    function loadbillsPayableGrid() {
+        let deferred = $.Deferred();
+        $("#billsPayableGrid").dxDataGrid({
+            dataSource: {
+                load: function () {
+                    return $.ajax({
+                        url: "/api/Dashboard/GetBillsPayableOutstandingSupplier",
+                        dataType: "json"
+                    }).then(function (response) {
+                        deferred.resolve();
+                        return response.data;
+                    });
                 }
-            } catch (error) {
-                console.error(`Error fetching data from ${endpoint.url}:`, error);
-            } finally {
-                const endTime = performance.now();
-                console.log(`Response time for ${endpoint.url}: ${(endTime - startTime).toFixed(2)} ms`);
+            },
+            columns: [
+                { dataField: "AccountHead", caption: "Account Head", width: 180, allowReordering: true,
+                    headerCellTemplate: function (header, info) {
+                        $("<div>").text(info.column.caption).css({"text-align":"center","font-weight":"bold"}).appendTo(header);}
+                },
+                { dataField: "Balance", caption: "Balance Amount", format: {type: "fixedPoint", precision: 2}, allowReordering: true,
+                    headerCellTemplate: function (header, info) {
+                        $("<div>").text(info.column.caption).css({"text-align":"center","font-weight":"bold"}).appendTo(header);}
+                },
+                // SPARKLINE COLUMN (Trend)
+                {
+                    caption: "Trend",
+                    width: 110,
+                    allowExporting: false,
+                    cellTemplate: function(container, options) {
+                        var trend = options.data.BalanceHistory ||
+                            [
+                                options.data.Balance * 0.7,
+                                options.data.Balance * 0.85,
+                                options.data.Balance * 0.95,
+                                options.data.Balance
+                            ];
+                        $("<div>").dxSparkline({
+                            dataSource: trend,
+                            type: "line",
+                            showMinMax: true,
+                            minColor: "#e91e63",
+                            maxColor: "#1976d2",
+                            lineColor: "#0088cc",
+                            pointSize: 3,
+                            size: { width: 80, height: 28 }
+                        }).appendTo(container);
+                    }
+                },
+                { dataField: "OverdueDays", caption: "Overdue Days", visible: false, allowHiding: true },
+                { dataField: "AccountGroupId", caption: "Account Group", visible: false, allowHiding: true },
+                { dataField: "AccountHeadNo", caption: "Account Head No", visible: false, allowHiding: true }
+            ],
+            columnAutoWidth: true,
+            showBorders: true,
+            filterRow: { visible: false },
+            paging: { enabled: true, pageSize: 15 },
+            pager: { visible: true, showPageSizeSelector: true, allowedPageSizes: [10, 15, 20], showInfo: true },
+            height: 500,
+            width: 700,
+            scrolling: { mode: "virtual" },
+            searchPanel: { visible: false },
+            allowColumnReordering: true,
+            allowColumnResizing: true,
+            columnChooser: { enabled: true, mode: "select" },
+            loadPanel: { enabled: true },
+            summary: {
+                totalItems: [
+                    { column: "Balance", summaryType: "sum", valueFormat: {type: "fixedPoint", precision: 2}, displayFormat: "Total : {0}" },
+                    { column: "AccountHead", summaryType: "count", displayFormat: "Count : {0}" }
+                ]
             }
-        };
+        });
+        return deferred.promise();
+    }
+    pendingLoads.push(loadbillsPayableGrid());
 
-        apiEndpoints.forEach(fetchData);
-    });
-
-    $(document).ready(function () {
-       
-          $.ajax({
-    url: "/api/Dashboard/GetOutstandingChartData",
-    type: "GET",
-    dataType: "json",
-    success: function (response) {
-        if (response.success) {
-            const data = response.data;
-
-            const clientData = data.filter(item => item.Type === "Client");
-            const supplierData = data.filter(item => item.Type === "Supplier");
-
-            const labels = [...new Set(data.map(item => item.AccountHead))];
-
-            const clientBalances = labels.map(label => {
-                const item = clientData.find(d => d.AccountHead === label);
-                return item ? item.Balance : 0;
-            });
-
-            const supplierBalances = labels.map(label => {
-                const item = supplierData.find(d => d.AccountHead === label);
-                return item ? item.Balance : 0;
-            });
-
-            new Chart("outstandingChart", {
-                type: "bar", // Correct chart type to "bar"
+    // ---- Chart Load (AJAX) ----
+    let chartLoad = $.ajax({
+        url: '/api/Dashboard/GetBillsPayableOutstandingSupplierChart',
+        type: 'GET'
+    }).done(function (result) {
+        if (result.success) {
+            const data = result.data;
+            const labels = data.map(item => item.AccountHead ?? "Unknown");
+            const balances = data.map(item => item.TotalBalance || item.Balance || 0);
+            const ctx = document.getElementById('billsOutstandingChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
                 data: {
-                    labels: labels, // Set labels directly for x-axis
-                    datasets: [
-                        {
-                            label: formatMessage("Client Outstanding"),
-                            backgroundColor: "rgba(0, 123, 255, 0.5)",
-                            borderColor: "rgba(0, 123, 255, 1)",
-                            data: clientBalances, // Use the prepared balances directly
-                        },
-                        {
-                            label: formatMessage("Supplier Outstanding"),
-                            backgroundColor: "rgba(255, 99, 132, 0.5)",
-                            borderColor: "rgba(255, 99, 132, 1)",
-                            data: supplierBalances, // Use the prepared balances directly
-                        }
-                    ]
+                    labels: labels,
+                    datasets: [{
+                        label: 'Outstanding Balance',
+                        data: balances,
+                        backgroundColor: '#007acc',
+                        borderColor: '#007acc',
+                    }]
                 },
                 options: {
-                    responsive: true,
+                    responsive: false,
                     scales: {
-                        x: {
-                            title: { display: true, text: formatMessage("Accounts") },
-                            // Optionally, you can set the "category" scale if needed
-                        },
-                        y: {
-                            title: { display: true, text: formatMessage("Outstanding Amount") }
-                        }
+                        y: { beginAtZero: true, title: { display: true, text: 'Balance (₹)' } },
+                        x: { title: { display: true, text: 'Account Head' } }
                     }
                 }
             });
-        } else {
-            console.error("Error fetching data");
         }
-    },
-    error: function (error) {
-        console.error("Error fetching data: ", error);
-    }
+    });
+    pendingLoads.push(chartLoad);
+
+    // ---- Hide page loader when ALL loads are done ----
+    $.when.apply($, pendingLoads).always(function () {
+        setTimeout(function () {
+            $("#dashboardPageLoader").fadeOut(200);
+        }, 120);
+    });
+
+    // Card click handlers (Make sure you set tenantName variable in your layout)
+    $("#clientcard").on("click", function () {
+        window.location.href = `/${tenantName}/Finance/DashboardClient`;
+    });
+    $("#SupplierCard").on("click", function () {
+        window.location.href = `/${tenantName}/Finance/DashboardSupplier`;
+    });
+    $("#DashboardBankAccount").on("click", function () {
+        window.location.href = `/${tenantName}/Finance/DashboardBankAccount`;
+    });
+
+    // Optional: TextBox Headings
+    $("#TotalClientOutstanding").dxTextBox({
+        text: "Total Client Outstanding", readOnly: true,
+        onContentReady: function(e) { $(e.element).addClass("dx-textbox-heading10"); }
+    });
+    $("#TotalCashBalance").dxTextBox({
+        text: "Total Cash Balance", readOnly: true,
+        onContentReady: function(e) { $(e.element).addClass("dx-textbox-heading10"); }
+    });
+    $("#TotalSupplierOutstanding").dxTextBox({
+        text: "Total Supplier Outstanding", readOnly: true,
+        onContentReady: function(e) { $(e.element).addClass("dx-textbox-heading10"); }
+    });
+    $("#SupplierOutstanding").dxTextBox({
+        text: "Supplier Outstanding", readOnly: true,
+        onContentReady: function(e) { $(e.element).addClass("dx-textbox-heading10"); }
+    });
+    $("#SupplierOutstandingAgingChart").dxTextBox({
+        text: "Supplier Outstanding Aging Chart", readOnly: true,
+        onContentReady: function(e) { $(e.element).addClass("dx-textbox-heading10"); }
+    });
 });
-
-        });
-
-    // Handle click on "Total Client Outstanding" card
-    $("#totalClientOutstandingCard").click(function () {
-        $(".dx-card-container, .grid-container, .chart-container").hide(); // Hide other sections
-        $("#clientOutstandingSection").show(); // Show Client Outstanding
-    });
-
-    // Back button functionality
-    $("#backToDashboard").click(function () {
-        $("#clientOutstandingSection").hide(); // Hide Client Outstanding
-        $(".dx-card-container, .grid-container, .chart-container").show(); // Show main dashboard
-    });
-            google.charts.load('current', { 'packages': ['corechart'] });
-        google.charts.setOnLoadCallback(loadChartData);
-
-        function loadChartData() {
-            $.ajax({
-                url: "/api/Dashboard/GetOutstandingChartData",
-                type: "GET",
-                dataType: "json",
-                success: function (response) {
-                    if (response.success) {
-                        const data = response.data;
-
-                        // Aggregate data for ranking
-                        const accountBalances = [...new Set(data.map(item => item.AccountHead))].map(label => {
-                            const totalBalance = data
-                                .filter(item => item.AccountHead === label)
-                                .reduce((sum, item) => sum + item.Balance, 0);
-
-                            return { label: label, balance: totalBalance };
-                        });
-
-                        // Sort by balance and take top 5
-                        const topAccounts = accountBalances
-                            .sort((a, b) => b.balance - a.balance) // Descending order
-                            .slice(0, 5); // Top 5
-
-                        // Prepare data for Google Charts
-                        const chartData = [['Account Head', 'Outstanding Balance']];
-                        topAccounts.forEach(item => {
-                            chartData.push([item.label, item.balance]);
-                        });
-
-                        drawChart(chartData);
-                    } else {
-                        console.error("Error fetching data");
-                    }
-                },
-                error: function (error) {
-                    console.error("Error fetching data: ", error);
-                }
-            });
-        }
-
-        function drawChart(chartData) {
-            // Convert to Google Charts format
-            const data = google.visualization.arrayToDataTable(chartData);
-
-            // Set Options
-            const options = {
-                title: formatMessage('Top 5 Outstanding Accounts'),
-                is3D: true,
-                pieSliceText: 'value',
-                height: 400
-            };
-
-            // Draw Chart
-            const chart = new google.visualization.PieChart(document.getElementById('myChart2'));
-            chart.draw(data, options);
-        }
-      $(document).ready(function () {
-        $.ajax({
-            url: "/api/Dashboard/GetBillsPayableOutstandingSupplier",
-            type: "GET",
-            dataType: "json",
-            success: function (response) {
-                if (response && response.data) {
-                    $("#billsPayableGrid").dxDataGrid({
-                        dataSource: response.data,
-                        columns: [
-                            {
-                                dataField: "AccountHead",
-                                caption: formatMessage("Account Head"),
-                                width: 200,
-                                headerCellTemplate: function (header, info) {
-                                    $("<div>")
-                                        .text(info.column.caption)
-                                        .css({
-                                            "text-align": "center",
-                                            "font-weight": "bold"
-                                        })
-                                        .appendTo(header);
-                                }
-                            },
-                            {
-                                dataField: "Balance",
-                                caption: formatMessage("Balance Amount"),
-                                format: { type: "fixedPoint", precision: 2 },
-                                headerCellTemplate: function (header, info) {
-                                    $("<div>")
-                                        .text(info.column.caption)
-                                        .css({
-                                            "text-align": "center",
-                                            "font-weight": "bold"
-                                        })
-                                        .appendTo(header);
-                                }
-                            },
-                            {
-                                dataField: "OverdueDays",
-                                caption: formatMessage("Overdue Days"),
-                                visible: false,
-                                allowHiding: true
-                            },
-                            {
-                                dataField: "AccountHeadNo",
-                                caption: formatMessage("Account Head No"),
-                                visible: false,
-                                allowHiding: true
-                            }
-                        ],
-                        columnAutoWidth: true,
-                        showBorders: true,
-                        filterRow: { visible: false },
-                                 paging: {
-                enabled: true,
-                pageSize: 15
-            },
-            pager: {
-                visible: true,
-                showPageSizeSelector: true,
-                allowedPageSizes: [10, 15, 20],
-                showInfo: true
-            },
-                        height: 500,
-                        width: 580,
-                        scrolling: {
-                            mode: "virtual"
-                        },
-                        searchPanel: { visible: false },
-                        allowColumnReordering: true,
-                        allowColumnResizing: true,
-                        columnChooser: {
-                            enabled: true,
-                            mode: "select"
-                        },
-                        toolbar: {
-                            items: [
-                                {
-                                    location: "after",
-                                    widget: "dxButton",
-                                    options: {
-                                        icon: "columnchooser",
-                                        text: formatMessage("Column Chooser"),
-                                        onClick: function () {
-                                            $("#billsPayableGrid").dxDataGrid("instance").showColumnChooser();
-                                        }
-                                    }
-                                }
-                            ]
-                        },
-                        summary: {
-                            totalItems: [
-                                {
-                                    column: "Balance",
-                                    summaryType: "sum",
-                                    valueFormat: { type: "fixedPoint", precision: 2 },
-                                    displayFormat: formatMessage("Total : {0}")
-                                    }, {
-                                            column: "AccountHead",
-                                            summaryType: "count",
-                                                displayFormat: formatMessage('Count : {0}')
-                                        }
-                            ]
-                        }
-                    });
-                } else {
-                    console.error("No data found in the response.");
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error("Error fetching data:", error);
-            }
-        });
-    });
-
-       
-        $(document).ready(function () {
-            $.ajax({
-                url: "/api/Dashboard/GetBillsOutstandingAgingForChartSupplier",
-                type: "GET",
-                dataType: "json",
-                success: function (response) {
-                    if (response.success) {
-                            const labels = response.data.map(item => `${item.AccountHead?? formatMessage("Unknown")}`);
-                        const balances = response.data.map(item => item.Balance);
-
-                        const ctx = document.getElementById("billsOutstandingChart").getContext("2d");
-
-                       
-
-                   
-
-
-                        new Chart(ctx, {
-                            type: "bar",
-                            data: {
-                                labels: labels,
-                                datasets: [{
-                                    label: formatMessage("Balance Amount"),
-                                    data: balances,
-                                    backgroundColor: "#007acc",
-                                    borderColor: "#007acc",
-                                    borderWidth: 1
-                                }]
-                            },
-                            options: {
-                                responsive: false,
-                                plugins: {
-                                    legend: {
-                                        display: true,
-                                        labels: {
-                                            font: {
-                                                size: 12
-                                            }
-                                        }
-                                    },
-                                    tooltip: {
-                                        enabled: true,
-                                        callbacks: {
-                                            label: function (context) {
-                                                return `Balance: ${context.raw.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
-                                            }
-                                        }
-                                    },
-                                    title: {
-                                        display: true,
-                                        text: "Top 5 Bills Outstanding by Overdue Group",
-                                        font: {
-                                            size: 16,
-                                            weight: "bold"
-                                        }
-                                    }
-                                },
-                                scales: {
-                                    x: {
-                                        title: {
-                                            display: true,
-                                            text: "Overdue Groups",
-                                            font: {
-                                                size: 14,
-                                                weight: "bold"
-                                            }
-                                        },
-                                        ticks: {
-                                            autoSkip: false,
-                                            maxRotation: 45,
-                                            minRotation: 0
-                                        }
-                                    },
-                                    y: {
-                                        beginAtZero: true,
-                                        title: {
-                                            display: true,
-                                            text: "Balance Amount",
-                                            font: {
-                                                size: 14,
-                                                weight: "bold"
-                                            }
-                                        },
-                                        ticks: {
-                                            callback: function (value) {
-                                                return value.toLocaleString();
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        });
-                    } else {
-                        console.error("Error loading data: ", response.message);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error fetching data: ", error);
-                }
-            });
-        });
-
-        $.getJSON("/api/Dashboard/GetCashBalance", function (response) {
-            if (response.success) {
-                    $("#cashBalanceValue").text(response.cashBalance.toLocaleString('en-US'));
-            } else {
-                alert("Error loading cash balance data.");
-            }
-        });
-    });
-
-
-             $(function () {
-                                                         $("#OutstandingDetails").dxTextBox({
-                                                                     text:formatMessage("Supplier Outstanding Details"),
-                                                             readOnly: true,
-                                                                 onContentReady: function(e) {
-                                $(e.element).addClass("dx-textbox-heading");
-                                    }
-                                                     });
-                                     });
-             $(function () {
-                                                     $("#TotalClientOutstanding").dxTextBox({
-                                                             text:formatMessage("Total Client Outstanding"),
-                                                         readOnly: true,
-                                                             onContentReady: function(e) {
-                            $(e.element).addClass("dx-textbox-heading10");
-                                }
-                                                 });
-                                 });
-                                     $(function () {
-                                                         $("#TotalCashBalance").dxTextBox({
-                                                                     text:formatMessage("Total Cash Balance"),
-                                                             readOnly: true,
-                                                                 onContentReady: function(e) {
-                            $(e.element).addClass("dx-textbox-heading10");
-                                }
-                                                     });
-                                     });
-                                         $(function () {
-                                                         $("#TotalSupplierOutstanding").dxTextBox({
-                                                                     text:formatMessage("Total Supplier Outstanding"),
-                                                             readOnly: true,
-                                                                 onContentReady: function(e) {
-                            $(e.element).addClass("dx-textbox-heading10");
-                                }
-                                                     });
-                                     });
-
-                                         $(function () {
-                                                                 $("#ClientOutstanding").dxTextBox({
-                                                                             text:formatMessage("Client Outstanding"),
-                                                                 readOnly: true,
-                                                                     onContentReady: function(e) {
-                            $(e.element).addClass("dx-textbox-heading10");
-                                }
-                                                         });
-                                         });
-                                             $(function () {
-                                                                 $("#SupplierOutstanding").dxTextBox({
-                                                                             text:formatMessage("Supplier Outstanding"),
-                                                                 readOnly: true,
-                                                                     onContentReady: function(e) {
-                            $(e.element).addClass("dx-textbox-heading10");
-                                }
-                                                         });
-                                         });
-                                             $(function () {
-                                                                 $("#BankAccountDetails").dxTextBox({
-                                                                             text:formatMessage("Bank Account Details"),
-                                                                 readOnly: true,
-                                                                     onContentReady: function(e) {
-                            $(e.element).addClass("dx-textbox-heading10");
-                                }
-                                                         });
-                                         });
-                                             $(function () {
-                                                                 $("#ClientOutstandingAgingChart").dxTextBox({
-                                                                             text:formatMessage("Client Outstanding Aging Chart"),
-                                                                 readOnly: true,
-                                                                     onContentReady: function(e) {
-                            $(e.element).addClass("dx-textbox-heading10");
-                                }
-                                                         });
-                                         });
-                                             $(function () {
-                                                                 $("#SupplierOutstandingAgingChart").dxTextBox({
-                                                                             text:formatMessage("Supplier Outstanding Aging Chart"),
-                                                                 readOnly: true,
-                                                                     onContentReady: function(e) {
-                            $(e.element).addClass("dx-textbox-heading10");
-                                }
-                                                         });
-                                         });
-                                             $(function () {
-                                                                 $("#BankAccountsChart").dxTextBox({
-                                                                             text:formatMessage("Bank Accounts Chart"),
-                                                                 readOnly: true,
-                                                                     onContentReady: function(e) {
-                            $(e.element).addClass("dx-textbox-heading10");
-                                }
-                                                         });
-                                         });
 </script>
 
 <style>
-
-    .chart-row1 {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-        .chart-row1 rect {
-            fill: transparent;
-        }
-
-    .grid-section div {
-        text-align: center; /* Center the title */
-    }
-
-    .dx-card-container {
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-        padding: 1em;
-    }
-
-    .Popupcard:hover {
-        box-shadow: 0px 0px 10px 2px var(--title-background-color);
-        transform: translateY(-5px);
-        cursor: pointer;
-        background-color: #f9fbff;
-    }
-
-    .Popupcard {
-        display: inline-block;
-        padding: 20px;
-        background: var(--background-color);
-        border-radius: 10px;
-        box-shadow: 5px 5px 5px 5px var(--title-background-color);
-        text-align: center;
-        transition: transform 0.2s ease, box-shadow 0.3s ease;
-        cursor: pointer;
-    }
-
-    .dx-card-header {
-        font-size: 24px;
-        font-weight: bold;
-        margin-bottom: 10px;
-        text-align: center;
-    }
-  
-    #billsOutstandingChart {
-        width: 850px !important;
-        height: 750px !important;
-    }
-
-    .mainContainer {
-        overflow-x: hidden;
-        width: 100%;
-    }
-    .dx-card-header {
-        font-size: 24px;
-        font-weight: bold;
-        margin-bottom: 10px;
-        text-align: center;
-    }
-
-    .dx-card-content .total-value {
-        font-size: 24px;
-        font-weight: bold;
-        color: #007acc;
-    }
-    
-    .dx-texteditor-container {
-        width: 125%;
-    }
-    .grid-container {
-        display: flex;
-        padding: 15px;
-        justify-content: center;
-    }
-
-    .grid-section {
-        width: 40%;
-        text-align: center;
-    }
-
-    .chart-row {
-        display: flex;
-        justify-content: space-around;
-        padding: 15px;
-        align-items: center;
-    }
-
-    .chart-container {
-        /* width: 32%; */
-        text-align: center;
-    }
-
-   
-    .mainContainer{
-        width:100%;
-    }
-
-    /* .billsOutstandingChart{
-        width: 850px;
-        height: 700px;
-    } */
-    .dx-card {
-        padding: 20px;
-        background: #f5f5f5;
-        border-radius: 10px;
-        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-        text-align: center;
-        width: 400px;
-    }
-
-    .dx-card-header {
-        font-size: 18px;
-        font-weight: bold;
-        margin-bottom: 10px;
-    }
-
-    .dx-card-content .total-value {
-        font-size: 24px;
-        font-weight: bold;
-        color: #007acc;
-    }
+.dashboard-card-header {
+    text-align: center; font-size: 1.6rem; font-weight: bold; color: #004080;
+    letter-spacing: 0.5px; padding: 14px 0 8px 0; margin-top: 10px; margin-bottom: 0;
+    background: #f7fbff; border-radius: 10px 10px 0 0;
+}
+.dx-card-container {
+    display: flex; justify-content: center; gap: 20px; padding: 1em;
+}
+.Popupcard {
+    display: inline-block; padding: 20px; background: var(--background-color);
+    border-radius: 10px; box-shadow: 5px 5px 5px 5px var(--title-background-color);
+    text-align: center; transition: transform 0.2s ease, box-shadow 0.3s ease; cursor: pointer;
+}
+.Popupcard:hover {
+    box-shadow: 0px 0px 10px 2px var(--title-background-color);
+    transform: translateY(-5px); background-color: #f9fbff;
+}
+.dx-card-header { font-size: 24px; font-weight: bold; margin-bottom: 10px; text-align: center; }
+.dx-card-content .total-value { font-size: 24px; font-weight: bold; color: #007acc; }
+.grid-container { display: flex; padding: 15px; justify-content: center; }
+.grid-section { width: 38%; text-align: center; }
+.chart-container { text-align: center; }
+#billsOutstandingChart { width: 850px !important; height: 700px !important; }
+#dashboardPageLoader { display: none; }
 </style>
-
