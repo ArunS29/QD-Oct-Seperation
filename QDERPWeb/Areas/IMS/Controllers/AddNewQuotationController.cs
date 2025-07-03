@@ -262,11 +262,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				return BadRequest(new { success = false, message = "Quote No. is required." });
 			}
 
-			try//
+			try
 			{
-				// Ensure child list is initialized
-				//VM.RFQDetailses = VM.RFQDetailses ?? new List<Tbl60702rfqchild>();
-
 				// Check if the master record exists
 				var existingMaster = await dbContext.Tbl60101quotationMasters
 					.FirstOrDefaultAsync(x => x.QuoteNo == VM.QuoteNo);
@@ -357,7 +354,24 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 					.Where(x => x.QuoteNo == VM.QuoteNo)
 					.ToListAsync();
 
-				foreach (var child in VM.QuotationDetailses)
+                // Track QuoteChildId from client
+                var incomingIds = VM.QuotationDetailses
+                    .Where(x => x.QuoteChildId > 0)
+                    .Select(x => x.QuoteChildId)
+                    .ToList();
+
+                // Delete missing children
+                var toDelete = existingChildren
+                    .Where(x => !incomingIds.Contains(x.QuoteChildId))
+                    .ToList();
+
+                if (toDelete.Any())
+                {
+                    dbContext.Tbl60102quotationChildren.RemoveRange(toDelete);
+                }
+
+
+                foreach (var child in VM.QuotationDetailses)
 				{
 					if (child.QuoteChildId == 0)
 					{
@@ -642,5 +656,35 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        [HttpDelete]
+        public async Task<IActionResult> DeleteChildById(int childId)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant context." });
+            }
+
+            try
+            {
+                var child = await dbContext.Tbl60102quotationChildren
+                    .FirstOrDefaultAsync(x => x.QuoteChildId == childId);
+
+                if (child == null)
+                {
+                    return NotFound(new { success = false, message = "Child record not found." });
+                }
+
+                dbContext.Tbl60102quotationChildren.Remove(child);
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Child row deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in DeleteChildById: {ex.Message}");
+                return StatusCode(500, new { success = false, message = "Internal server error." });
+            }
+        }
+
     }
 }

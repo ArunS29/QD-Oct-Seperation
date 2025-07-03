@@ -188,9 +188,7 @@
     .containers{
         display:flex;
     }
-	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint3,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnAttach,#btnUpload)) {
-		display: none !important;
-	}
+	
     .dx-card{ 
         background: var(--background-color);
     }
@@ -1134,25 +1132,11 @@
 			  let dropDownInstance;
 			  let vatListInstance;
 
-			$(document).ready(function () {
+	
 
-			$(".limited-footer .btn-containerIvoiceEdit").each(function () {
-
-			if (!$(this).find("#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint3,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnAttach,#btnUpload").length) {
-
-					$(this).remove();
-
-				}
-
-			});
-
-		});
-
-
-
-
-	//View e-Invoice
-
+			  
+	//View RFQ
+				let Approved=null;
 	$(document).ready(function () {
 
 		const urlParams = new URLSearchParams(window.location.search);
@@ -1194,10 +1178,21 @@
         type: 'GET',
         dataType: 'json',
         success: function (response) {
-            
 
-            if (response) {
-				console.log("res",response);
+
+			  if (response) {
+
+				 Approved = response.IsApproved;
+
+			// ✅ Disable buttons if already approved
+			if (Approved === true) {
+					hideAllButtonsExcept([
+					"btnPrint3",
+					"ddButtonLayout",
+					"btnBack",
+				   "btnCreatePo"
+				]);
+			}
 					$("#btnSave").dxButton("instance").option("text", "Update");
                 // Populate DevExtreme controls with the response data
                
@@ -1706,7 +1701,49 @@
 				{ dataField: "ItemDiscount", caption: formatMessage('Item Discount'), width: 150 },
 
 				{ dataField: "LineTotalAfterDisc", caption: formatMessage('Net Total'), width: 150 },
-				{ dataField: "RfqchildSlNo", caption: formatMessage('RfqchildSlNo'), width: 150 }
+				{ dataField: "RfqchildSlNo", caption: formatMessage('RfqchildSlNo'), width: 150 },
+				{
+			type: "buttons",
+			caption: "Delete",
+			width: 80,
+			buttons: [{
+				hint: "Delete Row",
+				icon: "trash",
+				onClick: function (e) {
+					const grid = $("#B2BdataGrid").dxDataGrid("instance");
+						const childId = e.row.data.RfqchildSlNo;
+
+					DevExpress.ui.dialog.confirm("Do you want to delete this row?", "Confirm").done(function (result) {
+						if (!result) return;
+
+						if (childId) {
+							// Delete from DB via API
+							$.ajax({
+									url: `/api/RequestforQuotationList/DeleteChildById?childId=${encodeURIComponent(childId)}`,
+								type: "DELETE",
+								success: function (res) {
+									if (res.success) {
+										grid.deleteRow(e.row.rowIndex);
+										DevExpress.ui.notify("Row deleted successfully", "success", 2000);
+									} else {
+										DevExpress.ui.notify(res.message, "error", 2000);
+									}
+								},
+								error: function () {
+									DevExpress.ui.notify("Failed to delete row", "error", 2000);
+								}
+							});
+						} else {
+							// Delete unsaved row
+							grid.deleteRow(e.row.rowIndex);
+							DevExpress.ui.notify("Row removed", "success", 1500);
+						}
+					});
+
+					e.event.preventDefault();
+				}
+			}]
+		}
 
 						
 
@@ -1714,7 +1751,9 @@
 
 					editing: {
 
-						mode: "cell"
+						mode: "cell",
+								 allowDeleting: true,
+						  confirmDelete: false
 
 						//allowUpdating: true,
 
@@ -2147,12 +2186,57 @@
 				{ dataField: "ItemDiscount", caption: formatMessage('Item Discount'), width: 150 },
 
 				{ dataField: "LineTotalAfterDisc", caption: formatMessage('Net Total'), width: 150 },
-				{ dataField: "RfqchildSlNo", caption: formatMessage('RfqchildSlNo'), width: 150 }
+				{ dataField: "RfqchildSlNo", caption: formatMessage('RfqchildSlNo'), width: 150 },
+					{
+			type: "buttons",
+			caption: "Delete",
+			width: 80,
+			buttons: [{
+				hint: "Delete Row",
+				icon: "trash",
+				onClick: function (e) {
+					const grid = $("#B2BdataGrid").dxDataGrid("instance");
+						const childId = e.row.data.RfqchildSlNo;
+
+					DevExpress.ui.dialog.confirm("Do you want to delete this row?", "Confirm").done(function (result) {
+						if (!result) return;
+
+						if (childId) {
+							// Delete from DB via API
+							$.ajax({
+							url: `/api/RequestforQuotationList/DeleteChildById?childId=${encodeURIComponent(childId)}`,
+								type: "DELETE",
+								success: function (res) {
+									if (res.success) {
+										grid.deleteRow(e.row.rowIndex);
+										DevExpress.ui.notify("Row deleted successfully", "success", 2000);
+									} else {
+										DevExpress.ui.notify(res.message, "error", 2000);
+									}
+								},
+								error: function () {
+									DevExpress.ui.notify("Failed to delete row", "error", 2000);
+								}
+							});
+						} else {
+							// Delete unsaved row
+							grid.deleteRow(e.row.rowIndex);
+							DevExpress.ui.notify("Row removed", "success", 1500);
+						}
+					});
+
+					e.event.preventDefault();
+				}
+			}]
+		}
+
 			],
 
 			editing: {
 
-				mode: "cell"
+				mode: "cell",
+						 allowDeleting: true,
+						  confirmDelete: false
 
 				// allowUpdating: true,
 
@@ -2178,31 +2262,10 @@
 
 
 
+	$("#btnAddNew").on("click", function (e) {
+					const $btn = $("#btnSave");
+		$btn.dxButton("instance").option("disabled", false);
 
-
-// 		$("#btnAddNew").on("click", function (e) {
-// 				var newRow = {
-// 			LineOrderNo: rowData.length + 1, // Auto-generate SNo  
-					
-// GSCode: ItemNo,
-// Description:null,
-// UnitRateMethod:null,
-// QuotedQuantity:0,
-// UnitPrice:0.00,
-// LineTotalBeforeTax:0.00,
-// ItemDiscount:0,
-// LineTotalAfterDisc:0.00
-
-// 				};
-
-// 				rowData.push(newRow);
-// 				dataGridInstance.option("dataSource", rowData);
-// 				dataGridInstance.refresh();
-// 		var button = $("#btnSave").dxButton("instance");
-// 		button.option("text", "Update");
-// 			});
-
-				$("#btnAddNew").on("click", function (e) {
 			const grid = $("#B2BdataGrid").dxDataGrid("instance");
 			const store = grid.getDataSource().store();
 			const currentData = grid.getDataSource().items();
@@ -4077,9 +4140,25 @@
 	
 
 	$("#btnSave").on("click", function (e) {
-		var clientnameValidator = $("#GetProjectDropDown").dxValidator("instance");
-		var clientnameValidation = clientnameValidator.validate();
-		if (clientnameValidation.isValid) {
+			const $btn = $(this).dxButton("instance");
+
+			// ✅ Step 1: Validate required field
+			const clientnameValidator = $("#GetProjectDropDown").dxValidator("instance");
+			const clientnameValidation = clientnameValidator.validate();
+
+			if (!clientnameValidation.isValid) {
+				DevExpress.ui.dialog.alert(
+					"Cannot continue saving with errors, please clear the errors and continue.",
+					"Clear Errors"
+				);
+				return;
+			}
+
+			// ✅ Step 2: Disable the button after validation passes
+			$btn.option("disabled", true);
+
+		
+
 		let master = {
 	Rfqno: $('#RFQNo').dxTextBox("instance").option("value") || null,
 	Rfqdate: $("#RFQDate").dxDateBox("instance").option("value") || null,
@@ -4135,13 +4214,7 @@
 				DevExpress.ui.notify("Error: " + xhr.responseJSON?.message, "error", 3000);
 			}
 		});
-		}
-		else {
-			DevExpress.ui.dialog.alert(
-				"Cannot continue saving with errors,please clear the errors and continue.",
-				"Clear Errors"
-			);
-		}
+		
 	});
 	 $("#btnDelete").on("click", function (e) {
         e.preventDefault();
@@ -4176,9 +4249,22 @@
 
 					$("#btnSaveAndClose").on("click", function (e) {
 
-		var clientnameValidator = $("#GetProjectDropDown").dxValidator("instance");
-		var clientnameValidation = clientnameValidator.validate();
-		if (clientnameValidation.isValid) {
+			const $btn = $(this).dxButton("instance");
+
+				// ✅ Step 1: Validate required field
+				const clientnameValidator = $("#GetProjectDropDown").dxValidator("instance");
+				const clientnameValidation = clientnameValidator.validate();
+
+				if (!clientnameValidation.isValid) {
+					DevExpress.ui.dialog.alert(
+						"Cannot continue saving with errors, please clear the errors and continue.",
+						"Clear Errors"
+					);
+					return;
+				}
+
+				// ✅ Step 2: Disable the button after validation passes
+				$btn.option("disabled", true);
 			let master = {
 				Rfqno: $('#RFQNo').dxTextBox("instance").option("value") || null,
 				Rfqdate: $("#RFQDate").dxDateBox("instance").option("value") || null,
@@ -4233,14 +4319,7 @@
 					DevExpress.ui.notify("Error: " + xhr.responseJSON?.message, "error", 3000);
 				}
 			});
-		}
-		else {
-			DevExpress.ui.dialog.alert(
-				"Cannot continue saving with errors,please clear the errors and continue.",
-				"Clear Errors"
-			);
-		}
-
+	
 				 });
 
 
@@ -4479,9 +4558,9 @@
 			}
 
 
-			$("#btnBack").on("click", function (e) {
-				history.back(); // Closes or navigates back
-			});
+	$("#btnBack").on("click", function (e) {
+		 window.location.href = `/${tenantName}/IMS/RequestforQuotationList`;
+	});
 
 
 
@@ -4665,12 +4744,14 @@
 			contentType: "application/json",
 				success: function (response) {
 				if (response && response.Message) {
-					DevExpress.ui.dialog.alert(
-						response.Message,
-						"Approved"
-					).done(() => {
-						//disableEditing(); // Function to disable editing controls
-					});
+						DevExpress.ui.dialog.alert(response.Message, "Approved").done(() => {
+									hideAllButtonsExcept([
+								"btnPrint3",
+								"ddButtonLayout",
+								"btnBack",
+								"btnCreatePo"
+									]);
+						});
 				} else {
 					DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
 				}
@@ -4683,7 +4764,41 @@
 			}
 		});
 	}
-	
+		function hideAllButtonsExcept(exceptions) {
+				const allButtonIds = [
+					 "ddButtonLayout",
+	  "rowHeightProperties",
+	  "btnMoveUp",
+	  "btnMoveDown",
+	  "btnSave",
+	  "btnSaveAndClose",
+	  "btnPrint3",
+	  "btnDelete",
+	  "btnAddNew",
+	  "btnBack",
+	  "btnSubmit",
+	  "btnVerify",
+	  "btnApprove",
+	  "btnCreatePo"
+				];
+				allButtonIds.forEach(id => {
+					const keepEnabled = exceptions.includes(id);
+					const $el = $("#" + id);
+
+					if ($el.length) {
+						let instance = DevExpress.ui.dxButton.getInstance($el[0]);
+						if (!instance) {
+							instance = DevExpress.ui.dxDropDownButton.getInstance($el[0]);
+						}
+
+						if (instance) {
+							instance.option("disabled", !keepEnabled);
+						} else {
+							console.warn("Instance not found for:", id);
+						}
+					}
+				});
+			}
 
 
 			$("#btnPostToLedgers").on("click", function (e) {

@@ -454,7 +454,13 @@
 				DevExpress.ui.notify("RFQ No is missing.", "error", 2000);
 				return;
 			}
-
+			// Step 1: Check approval status
+							$.get(`/api/RequestforQuotationList/CheckIfApproved?Rfqno=${encodeURIComponent(rfqNo)}`)
+						.done(function (isApproved) {
+							if (!isApproved) {
+								DevExpress.ui.notify("RFQ is not approved.", "error", 3000);
+								return;
+							}
 			DevExpress.ui.dialog.confirm("Do you want to create a Purchase Order from this RFQ?", "Confirmation")
 				.done(function (dialogResult) {
 					if (!dialogResult) return;
@@ -480,6 +486,10 @@
 						}
 					});
 				});
+				})
+						.fail(function () {
+							DevExpress.ui.notify("Failed to check approval status.", "error", 3000);
+						});
 		}
 	}
 
