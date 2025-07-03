@@ -20,7 +20,7 @@
 <link rel="stylesheet" href="~/css/Style.css" />
 
 
-<div class="footer-fixed">
+<div  id="mainFooter" class="footer-fixed">
     @await Html.PartialAsync("_Formfooter")
 </div>
     
@@ -610,7 +610,8 @@ buttons.Add()
                     .ResizeEnabled(true)
                     .DragEnabled(true)
                     .ShowTitle(true)
-                   
+                   .OnShowing("hideMainFooter")
+                        .OnHiding("showMainFooter")
                     )
         </div>
         <div id="popupContainer">
@@ -624,6 +625,8 @@ buttons.Add()
                     .ResizeEnabled(true)
                     .DragEnabled(true)
                     .ShowTitle(true)
+                    .OnShowing("hideMainFooter")
+                        .OnHiding("showMainFooter")
                     @* .ToolbarItems(toolbar =>
             {
             toolbar.Add()
@@ -652,6 +655,8 @@ buttons.Add()
                     .ResizeEnabled(true)
                     .DragEnabled(true)
                     .ShowTitle(true)
+                    .OnShowing("hideMainFooter")
+                        .OnHiding("showMainFooter")
                     @* .ToolbarItems(toolbar =>
             {
             toolbar.Add()
@@ -680,6 +685,8 @@ buttons.Add()
                     .ResizeEnabled(true)
                     .DragEnabled(true)
                     .ShowTitle(true)
+.OnShowing("hideMainFooter")
+                        .OnHiding("showMainFooter")
                     @* .ToolbarItems(toolbar =>
             {
             toolbar.Add()
@@ -709,6 +716,8 @@ buttons.Add()
                     .ResizeEnabled(true)
                     .DragEnabled(true)
                     .ShowTitle(true)
+                    .OnShowing("hideMainFooter")
+                        .OnHiding("showMainFooter")
                     @* .ToolbarItems(toolbar =>
             {
             toolbar.Add()
@@ -4140,5 +4149,11 @@ function onAccountHeadRowPrepared(e) {
                 });
             }, 200); // 100ms is usually enough
         }
+            function hideMainFooter() {
+    document.getElementById("mainFooter")?.classList.add("footer-hidden");
+}
 
+function showMainFooter() {
+    document.getElementById("mainFooter")?.classList.remove("footer-hidden");
+}
 </script>

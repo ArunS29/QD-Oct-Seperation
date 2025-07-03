@@ -4,6 +4,12 @@
     color: black;
     cursor: not-allowed;
 }
+.footer-hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(100%);
+    transition: all 0.2s ease-in-out;
+}
 
 .overlay {
     display: none;

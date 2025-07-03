@@ -301,7 +301,7 @@
 </style> *@
 
 
-<div class="footer-fixed">
+<div  id="mainFooter" class="footer-fixed">
     @await Html.PartialAsync("_Formfooter")
 </div>
 
@@ -871,6 +871,8 @@ buttons.Add()
                         .ResizeEnabled(true)
                         .DragEnabled(true)
                         .ShowTitle(true)
+                        .OnShowing("hideMainFooter")
+.OnHiding("showMainFooter")
             @* .ToolbarItems(toolbar =>
         {
         toolbar.Add()
@@ -899,6 +901,8 @@ buttons.Add()
                         .ResizeEnabled(true)
                         .DragEnabled(true)
                         .ShowTitle(true)
+                        .OnShowing("hideMainFooter")
+.OnHiding("showMainFooter")
             @* .ToolbarItems(toolbar =>
         {
         toolbar.Add()
@@ -927,6 +931,8 @@ buttons.Add()
                         .ResizeEnabled(true)
                         .DragEnabled(true)
                         .ShowTitle(true)
+                        .OnShowing("hideMainFooter")
+.OnHiding("showMainFooter")
             @* .ToolbarItems(toolbar =>
         {
         toolbar.Add()
@@ -955,6 +961,8 @@ buttons.Add()
                         .ResizeEnabled(true)
                         .DragEnabled(true)
                         .ShowTitle(true)
+                        .OnShowing("hideMainFooter")
+.OnHiding("showMainFooter")
             @* .ToolbarItems(toolbar =>
         {
         toolbar.Add()
@@ -3473,4 +3481,11 @@ buttons.Add()
             const title = "";
                 openModal(url, title);
         }
+            function hideMainFooter() {
+    document.getElementById("mainFooter")?.classList.add("footer-hidden");
+}
+
+function showMainFooter() {
+    document.getElementById("mainFooter")?.classList.remove("footer-hidden");
+}
 </script>

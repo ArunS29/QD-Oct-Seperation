@@ -1,7 +1,7 @@
 ﻿
 var dictionary = {
     "en": {
-
+        "Expenses / Returns for":"Expenses / Returns for",
         "Client Contact List": "Client Contact List",
         "Division:": "Division:",
 
