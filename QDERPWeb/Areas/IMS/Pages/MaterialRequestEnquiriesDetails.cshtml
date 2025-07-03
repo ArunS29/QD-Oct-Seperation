@@ -854,7 +854,7 @@
 			$.get(`/api/MaterialRequestEnquiriesDetails/CheckIfApproved?mprNo=${encodeURIComponent(mprNo)}`)
 				.done(function (isApproved) {
 					if (!isApproved) {
-						DevExpress.ui.notify("Request/Enquiry is not approved.", "error", 3000);
+							DevExpress.ui.notify("Request/Enquiry is not approved.", "error", 3000);
 						return;
 					}
 
@@ -900,8 +900,15 @@
 				DevExpress.ui.notify("MPR No is missing.", "error", 2000);
 				return;
 			}
-
-			DevExpress.ui.dialog.confirm("Do you want to create a Purchase Order from this MPR?", "Confirmation")
+				// Step 1: Check approval status
+		          $.get(`/api/MaterialRequestEnquiriesDetails/CheckIfApproved?mprNo=${encodeURIComponent(mprNo)}`)
+			      .done(function (isApproved) {
+				if (!isApproved) {
+						DevExpress.ui.notify("Request/Enquiry is not approved.", "error", 3000);
+					return;
+				}
+				// Step 2: Confirm with user
+					  DevExpress.ui.dialog.confirm("Do you want to create a Purchase Order from this MPR?", "Confirmation")
 				.done(function (dialogResult) {
 					if (!dialogResult) return;
 
@@ -927,6 +934,10 @@
 
 						}
 					});
+				});
+					})
+				.fail(function () {
+					DevExpress.ui.notify("Failed to check approval status.", "error", 3000);
 				});
 		}
 	},

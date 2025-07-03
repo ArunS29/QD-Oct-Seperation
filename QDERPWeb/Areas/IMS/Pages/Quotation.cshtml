@@ -579,7 +579,13 @@
 				DevExpress.ui.notify("Quotation No not available.", "error", 2000);
 				return;
 			}
-
+				// Step 1: Check approval status
+							$.get(`/api/Quotation/CheckIfApproved?QuoteNo=${encodeURIComponent(quotationNo)}`)
+						.done(function (isApproved) {
+							if (!isApproved) {
+								DevExpress.ui.notify("Quotation is not approved.", "error", 3000);
+								return;
+							}
 			// Confirm before proceeding
 			DevExpress.ui.dialog.confirm("You are about to create a Sales Order from this Quotation. Continue?", "Confirmation")
 				.done(function (confirmResult) {
@@ -606,6 +612,10 @@
 						});
 					}
 				});
+					})
+						.fail(function () {
+							DevExpress.ui.notify("Failed to check approval status.", "error", 3000);
+						});
 		}
 	}
 
