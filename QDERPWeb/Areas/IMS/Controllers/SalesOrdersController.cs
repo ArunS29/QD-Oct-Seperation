@@ -964,8 +964,38 @@ public async Task<IActionResult> GenerateJobOrders1([FromBody] SalesorderViewMod
             return Ok(new { success = true, message = "Sales order and its child items deleted successfully." });
         }
 
+[HttpGet]
+public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
+{
+    if (string.IsNullOrWhiteSpace(salesOrderNo))
+        return BadRequest(new { success = false, message = "SalesOrderNo is required." });
 
-        //[HttpGet]
+    if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+    var entity = await dbContext.Tbl60201salesOrderMasters
+        .FirstOrDefaultAsync(x => x.SalesOrderNo == salesOrderNo);
+
+    if (entity == null)
+        return NotFound(new { success = false, message = "Sales order not found." });
+
+    bool isVerified = entity.IsVerified ?? false;
+    bool isApproved = entity.IsApproved ?? false;
+
+    // Add this log line
+    _logger.LogInformation($"CanDeleteSalesOrder: SalesOrderNo={salesOrderNo}, IsVerified={entity.IsVerified}, IsApproved={entity.IsApproved}");
+
+    if (isVerified || isApproved)
+    {
+        return Ok(new
+        {
+            success = false,
+            message = "The selected sales order was verified/approved. You cannot delete it."
+        });
+    }
+
+    return Ok(new { success = true });
+}   //[HttpGet]
         //public IActionResult GetGoodsAndServices()
         //{
         //    try
@@ -1418,38 +1448,58 @@ public async Task<IActionResult> GenerateJobOrders1([FromBody] SalesorderViewMod
             }
         }
 
-		[HttpPost]
-		public async Task<IActionResult> UnlockSalesOrder([FromBody] SalesorderViewModel request)
-		{
-			try
-			{
-				if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-					return Unauthorized(new { success = false, message = "Invalid tenant." });
+	[HttpPost]
+public async Task<IActionResult> UnlockSalesOrder([FromBody] SalesorderViewModel request)
+{
+    try
+    {
+        if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            return Unauthorized(new { success = false, message = "Invalid tenant." });
 
-				if (string.IsNullOrWhiteSpace(request?.SalesOrderNo))
-					return BadRequest(new { success = false, message = "Sales Order No is required." });
+        if (string.IsNullOrWhiteSpace(request?.SalesOrderNo))
+            return BadRequest(new { success = false, message = "Sales Order No is required." });
 
-				var existingEntity = await dbContext.Tbl60201salesOrderMasters
-					.FirstOrDefaultAsync(x => x.SalesOrderNo == request.SalesOrderNo);
+        var existingEntity = await dbContext.Tbl60201salesOrderMasters
+            .FirstOrDefaultAsync(x => x.SalesOrderNo == request.SalesOrderNo);
 
-				if (existingEntity == null)
-					return NotFound(new { success = false, message = "Sales Order not found." });
+        if (existingEntity == null)
+            return NotFound(new { success = false, message = "Sales Order not found." });
 
-				if (existingEntity.IsApproved != true)
-					return Ok(new { success = false, message = "Sales Order is already unlocked." });
+        bool wasChanged = false;
 
-				existingEntity.IsApproved = false;
-				dbContext.Tbl60201salesOrderMasters.Update(existingEntity);
-				await dbContext.SaveChangesAsync();
+        if (existingEntity.IsApproved == true)
+        {
+            existingEntity.IsApproved = false;
+            wasChanged = true;
+        }
+        if (existingEntity.IsVerified == true)
+        {
+            existingEntity.IsVerified = false;
+            wasChanged = true;
+        }
+        if (existingEntity.IsSubmitted == true)
+        {
+            existingEntity.IsSubmitted = false;
+            wasChanged = true;
+        }
 
-				return Ok(new { success = true, message = "Sales Order has been unlocked successfully." });
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError(ex, "Error while unlocking Sales Order.");
-				return StatusCode(500, new { success = false, message = "Internal server error", details = ex.Message });
-			}
-		}
+        if (wasChanged)
+        {
+            dbContext.Tbl60201salesOrderMasters.Update(existingEntity);
+            await dbContext.SaveChangesAsync();
+            return Ok(new { success = true, message = "Sales Order has been unlocked successfully." });
+        }
+        else
+        {
+            return Ok(new { success = false, message = "Sales Order is already unlocked." });
+        }
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, "Error while unlocking Sales Order.");
+        return StatusCode(500, new { success = false, message = "Internal server error", details = ex.Message });
+    }
+}
 
 
 		[HttpGet]
@@ -1495,7 +1545,25 @@ public async Task<IActionResult> GenerateJobOrders1([FromBody] SalesorderViewMod
         }
 
 
+[HttpGet]
+public async Task<IActionResult> GetInvoiceStatus(string salesOrderNo)
+{
+    if (string.IsNullOrWhiteSpace(salesOrderNo))
+        return BadRequest(new { success = false, message = "SalesOrderNo is required." });
 
+    if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+    var status = await dbContext.Qry60204salesOrderViewMasters
+        .Where(x => x.SalesOrderNo == salesOrderNo)
+        .Select(x => x.OrderStatus)
+        .FirstOrDefaultAsync();
+
+    if (status == null)
+        return NotFound(new { success = false, message = "Sales order not found." });
+
+    return Ok(new { success = true, OrderStatus = status });
+}
         [HttpGet]
         public async Task<IActionResult> GetStoreStockGrid(string salesOrderNo, string storeId = null)
         {

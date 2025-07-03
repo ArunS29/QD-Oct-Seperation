@@ -235,9 +235,6 @@
 						columns.Add().Caption(new JS("formatMessage('No Of Items')")).Columns(subColumns =>
 						{
 				subColumns.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No Of Items')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
-
-
-
 						});
 
 
@@ -494,33 +491,43 @@
 
 						},
 
-							{
-			text: "Delete Sales Order",
-			icon: "trash",
-						onItemClick: function () {
-			const salesOrderNo = e.row.data.SalesOrderNo;
-			DevExpress.ui.dialog.confirm(
-				"You are about to delete the Sales Order.\nYou cannot revert the changes.\nAre you sure?",
-				"Confirm Delete"
-			).done(function (dialogResult) {
-				if (dialogResult) {
-					$.ajax({
-						url: `/api/SalesOrders/DeleteSalesOrder?salesOrderNo=${encodeURIComponent(salesOrderNo)}`,
-						type: "DELETE",
-						success: function (response) {
-							DevExpress.ui.notify(response.message, "success", 2000);
-							// Optionally refresh the grid
-							ddBtnShowRecords_click('range');
-						},
-						error: function (xhr) {
-							DevExpress.ui.notify("Failed to delete sales order.", "error", 2000);
-						}
-					});
-				}
-			});
-		}
-		},
-
+						{
+    text: "Delete Sales Order",
+    icon: "trash",
+    onItemClick: function () {
+        const salesOrderNo = e.row.data.SalesOrderNo;
+        DevExpress.ui.dialog.confirm(
+            "You are about to delete the Sales Order.\nYou cannot revert the changes.\nAre you sure?",
+            "Confirm Delete"
+        ).done(function (dialogResult) {
+            if (dialogResult) {
+                // First, check if deletable
+                $.get(`/api/SalesOrders/CanDeleteSalesOrder?salesOrderNo=${encodeURIComponent(salesOrderNo)}`)
+                    .done(function (checkRes) {
+                        if (checkRes.success) {
+                            // Now call delete
+                            $.ajax({
+                                url: `/api/SalesOrders/DeleteSalesOrder?salesOrderNo=${encodeURIComponent(salesOrderNo)}`,
+                                type: "DELETE",
+                                success: function (response) {
+                                    DevExpress.ui.notify(response.message, "success", 2000);
+                                    ddBtnShowRecords_click('range');
+                                },
+                                error: function (xhr) {
+                                    DevExpress.ui.notify("Failed to delete sales order.", "error", 2000);
+                                }
+                            });
+                        } else {
+                            DevExpress.ui.notify(checkRes.message, "error", 3000);
+                        }
+                    })
+                    .fail(function (xhr) {
+                        DevExpress.ui.notify("Failed to check if sales order can be deleted.", "error", 3000);
+                    });
+            }
+        });
+    }
+},
 							{
 		text: "Unlock the Order",
 		icon: "unlock",
@@ -556,19 +563,9 @@
 					}, "Proforma Invoice");
 				}
 						},
-						{
-							text: "Create Paartial Delivery for this sales Order",
-							icon: "plus",
-							onItemClick: function () {
-					const salesOrderNo = e.row.data.SalesOrderNo;
-					checkIfApprovedAndProceed(salesOrderNo, function () {
-						onCreateQuotation(e.row.data);
-					}, "Partial Delivery");
-				}
-						},
-					{
-		text: "Create full Delivery for this sales order",
-		icon: "cart",
+							{
+		text: "Create Partial Delivery for this Sales Order",
+		icon: "plus",
 		onItemClick: function () {
 			const salesOrderNo = e.row.data.SalesOrderNo;
 			let tenantName = window.tenantName || "defaultTenant";
@@ -591,12 +588,12 @@
 											.done(function (settingRes) {
 												if (settingRes.success) {
 													if (settingRes.isUseStoreAvailability) {
-														// Navigate to Store Stock Availability page
-														let url = `/${tenantName}/IMS/StoreStockAvalibilitys?salesOrderNo=${encodeURIComponent(salesOrderNo)}`;
+														// Navigate to Store Stock Availability page with partial=true
+														let url = `/${tenantName}/IMS/StoreStockAvalibilitys?salesOrderNo=${encodeURIComponent(salesOrderNo)}&partial=true`;
 														window.location.href = url;
 													} else {
-														// Navigate to regular Delivery Edit form
-														let url = `/${tenantName}/IMS/DeliveryEditForm?deliveryNoteNo=${encodeURIComponent(deliveryNoteNo)}&salesOrderNo=${encodeURIComponent(salesOrderNo)}&mode=create`;
+														// Navigate to regular Delivery Edit form with partial=true
+														let url = `/${tenantName}/IMS/DeliveryEditForm?deliveryNoteNo=${encodeURIComponent(deliveryNoteNo)}&salesOrderNo=${encodeURIComponent(salesOrderNo)}&mode=create&partial=true`;
 														window.location.href = url;
 													}
 												} else {
@@ -619,9 +616,77 @@
 					.fail(function () {
 						DevExpress.ui.notify("Error checking delivery status.", "error", 3000);
 					});
-			}, "Create full Delivery for this sales order");
+			}, "Create Partial Delivery for this sales order");
 		}
 	},
+
+				{
+    text: "Create full Delivery for this sales order",
+    icon: "cart",
+    onItemClick: function () {
+        const salesOrderNo = e.row.data.SalesOrderNo;
+        let tenantName = window.tenantName || "defaultTenant";
+
+        checkIfApprovedAndProceed(salesOrderNo, function () {
+            // Step 1: Check if delivery already exists
+            $.get("/api/SalesOrders/CheckDeliveryExists", { salesOrderNo })
+                .done(function (res) {
+                    if (res.exists) {
+                        DevExpress.ui.notify("Sales order delivered successfully. You cannot create anymore.", "warning", 3000);
+                    } else {
+                        // Step 1.5: Check if InvoiceStatus is 'Partially Delivered'
+                        $.get("/api/SalesOrders/GetInvoiceStatus", { salesOrderNo })
+                            .done(function (statusRes) {
+									if (statusRes.success && statusRes.OrderStatus === "Partially Delivered") {
+                                    DevExpress.ui.notify("Partially delivered. You cannot create full delivery.", "warning", 3000);
+                                } else {
+                                    // Step 2: Get delivery note number
+                                    $.get("/api/DeliveryNote/GetAutoGeneratedDeliveryNoteNumberForTenant", { tenantName, salesOrderNo })
+                                        .done(function (res) {
+                                            if (res.success) {
+                                                const deliveryNoteNo = res.deliveryNoteNo;
+
+                                                // Step 3: Check if IsUseStoreAvailabilityInDeliveryNote is enabled
+                                                $.get("/api/SalesOrders/GetStoreAvailabilitySetting")
+                                                    .done(function (settingRes) {
+                                                        if (settingRes.success) {
+                                                            if (settingRes.isUseStoreAvailability) {
+                                                                // Navigate to Store Stock Availability page
+                                                                let url = `/${tenantName}/IMS/StoreStockAvalibilitys?salesOrderNo=${encodeURIComponent(salesOrderNo)}`;
+                                                                window.location.href = url;
+                                                            } else {
+                                                                // Navigate to regular Delivery Edit form
+                                                                let url = `/${tenantName}/IMS/DeliveryEditForm?deliveryNoteNo=${encodeURIComponent(deliveryNoteNo)}&salesOrderNo=${encodeURIComponent(salesOrderNo)}&mode=create`;
+                                                                window.location.href = url;
+                                                            }
+                                                        } else {
+                                                            DevExpress.ui.notify(settingRes.message || "Failed to fetch delivery settings.", "error", 3000);
+                                                        }
+                                                    })
+                                                    .fail(function () {
+                                                        DevExpress.ui.notify("Error checking store availability setting.", "error", 3000);
+                                                    });
+                                            } else {
+                                                DevExpress.ui.notify(res.message || "Failed to generate Delivery Note No.", "error", 3000);
+                                            }
+                                        })
+                                        .fail(function (xhr) {
+                                            let msg = xhr.responseJSON?.message || "Failed to generate Delivery Note No.";
+                                            DevExpress.ui.notify(msg, "error", 3000);
+                                        });
+                                }
+                            })
+                            .fail(function () {
+                                DevExpress.ui.notify("Error checking invoice status.", "error", 3000);
+                            });
+                    }
+                })
+                .fail(function () {
+                    DevExpress.ui.notify("Error checking delivery status.", "error", 3000);
+                });
+        }, "Create full Delivery for this sales order");
+    }
+},
 							{
 		text: "create invoice for this sales order",
 		icon: "box",
