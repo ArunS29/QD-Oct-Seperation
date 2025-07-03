@@ -80,7 +80,7 @@ namespace QDWEB.Areas.Finance.Controllers
                     if (!string.IsNullOrEmpty(voucherTypes) && voucherTypes != "all" && startDate.HasValue && endDate.HasValue)
                     {
                         var typesList = voucherTypes.Split(',').ToList();
-                        vouchers = vouchers.Where(v => v.VoucherDate >= startDate && v.VoucherDate <= endDate && typesList.Contains(v.VoucherType));
+                        vouchers = vouchers.Where(v => v.VoucherDate.Date >= startDate && v.VoucherDate.Date <= endDate && typesList.Contains(v.VoucherType));
                     }
 
                     return Ok(vouchers.ToList());

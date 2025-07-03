@@ -2489,7 +2489,7 @@
 	let vatListInstance;
 
 	
-
+	let Approved=null;
 	//View e-Invoice
 	$(document).ready(function () {
 		const urlParams = new URLSearchParams(window.location.search);
@@ -2523,78 +2523,86 @@
 	});
 
 	function loadClientDetails(mprno) {
-		$.ajax({
-			url: `/api/AddNewClientRequest/GetClientdataByCode?Mprno=${encodeURIComponent(mprno)}`,
-			type: 'GET',
-			dataType: 'json',
-			success: function (response) {
-				console.log("ClientDetails", response);
-				$("#btnSave").dxButton("instance").option("text", "Update");
-				if (response) {
-					// Populate DevExtreme controls with the response data
-					$('#txtRequestNo').dxTextBox("instance").option("value", response.Mprno);
-					$("#InvoiceDueDate").dxDateBox("instance").option("value", response.Mprdate);
-					$("#GetProjectDropDown").dxDropDownBox("instance").option("value", response.ClientCode);
-					$('#txtContactName').dxTextBox("instance").option("value", response.RequestedBy);
-					$('#txtReqEmail').dxTextBox("instance").option("value", response.RequesterContactEmail);
-					$('#ContactNo').dxTextBox("instance").option("value", response.RequesterContact);
-					$("#ddGetModeOfRequest").dxDropDownBox("instance").option("value", response.ModeOfRequest);
-					$("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value", response.TypeOfRequest);
-					$("#ddGetSalesPerson").dxDropDownBox("instance").option("value", response.SalesPersonCode);
-					$('#txtReferenceNo').dxTextBox("instance").option("value", response.ClientRefNo);
-					$('#txtPurpose').dxTextBox("instance").option("value", response.PurposeOfRequest);
-					$('#txtPriority').dxTextBox("instance").option("value", response.Priority);
-					$('#txtCostCenter').dxTextBox("instance").option("value", response.CostCenterText);
-					$("#txtExpectedDate").dxDateBox("instance").option("value", response.ExpectedDate);
-					$("#ddGetTax").dxDropDownBox("instance").option("value", response.ExpectedVatrate);
-					$("#txtRemarks").dxTextArea("instance").option("value", response.Remarks);
-					$("#ddGetCompany").dxDropDownBox("instance").option("value", response.CompanyBranch);
-					$("#ddGetEnquiry").dxDropDownBox("instance").option("value", response.PurchaseRequestStatusId);
-					$("#ddGetInventoryGroup").dxDropDownBox("instance").option("value", response.InventoryMasterGroupId);
-					$("#ddGetRequesstingUnit").dxDropDownBox("instance").option("value", response.ProjectSubUnitCode);
-					$("#ddBitCls").dxDateBox("instance").option("value", response.BidClosingDate);
-					$("#ddReminder").dxDateBox("instance").option("value", response.BidReminderOn);
-					$('#txtClientProject').dxTextBox("instance").option("value", response.ClientProject);
-					$("#ddPreparedby").dxDropDownBox("instance").option("value", response.RequestSignatory);
-					$("#ddVerifiedby").dxDropDownBox("instance").option("value", response.MprverifiedSign);
-					$("#ddApprovedby").dxDropDownBox("instance").option("value", response.MprapprovedSign);
-					$("#ddApprovedby").dxDropDownBox("instance").option("value", response.MprapprovedSign);
-					$("#ddRequestedBy").dxDropDownBox("instance").option("value", response.TypeOfMpr);
-					$("#ddStoreCodeDropDown").dxDropDownBox("instance").option("value", response.StoreCode);
-	
+	$.ajax({
+		url: `/api/AddNewClientRequest/GetClientdataByCode?Mprno=${encodeURIComponent(mprno)}`,
+		type: 'GET',
+		dataType: 'json',
+		success: function (response) {
+			console.log("ClientDetails", response);
 
+			if (response) {
+				const Approved = response.IsApproved;
 
-
-					// Fetch and initialize the data grid with invoice details
-					$.ajax({
-						type: "GET",
-						url: `/api/AddNewClientRequest/GetPurchaseRequestChildren?Mprno=${encodeURIComponent(mprno)}`,
-						dataType: 'json',
-						success: function (gridResponse) {
-							console.log("Grid", gridResponse);
-
-							const rowData = gridResponse.map((item, index) => ({
-								SNo: index + 1,
-								...item
-							}));
-
-							// Initialize the data grid with the fetched row data
-							initializeDataGrid(rowData);
-						},
-						error: function (xhr, status, error) {
-							console.error("Error fetching grid data:", error);
-						}
-					});
-
-				} else {
-					console.warn("No client details found in the response.");
+				if (Approved === true) {
+					hideAllButtonsExcept([
+						"btnPrint1",
+						"ddButtonLayout",
+						"btnBack",
+						"btnAttach"
+					]);
 				}
-			},
-			error: function (xhr, status, error) {
-				console.error("Error fetching client details:", error);
+
+				$("#btnSave").dxButton("instance").option("text", "Update");
+
+				// Populate DevExtreme controls
+				$('#txtRequestNo').dxTextBox("instance").option("value", response.Mprno);
+				$("#InvoiceDueDate").dxDateBox("instance").option("value", response.Mprdate);
+				$("#GetProjectDropDown").dxDropDownBox("instance").option("value", response.ClientCode);
+				$('#txtContactName').dxTextBox("instance").option("value", response.RequestedBy);
+				$('#txtReqEmail').dxTextBox("instance").option("value", response.RequesterContactEmail);
+				$('#ContactNo').dxTextBox("instance").option("value", response.RequesterContact);
+				$("#ddGetModeOfRequest").dxDropDownBox("instance").option("value", response.ModeOfRequest);
+				$("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value", response.TypeOfRequest);
+				$("#ddGetSalesPerson").dxDropDownBox("instance").option("value", response.SalesPersonCode);
+				$('#txtReferenceNo').dxTextBox("instance").option("value", response.ClientRefNo);
+				$('#txtPurpose').dxTextBox("instance").option("value", response.PurposeOfRequest);
+				$('#txtPriority').dxTextBox("instance").option("value", response.Priority);
+				$('#txtCostCenter').dxTextBox("instance").option("value", response.CostCenterText);
+				$("#txtExpectedDate").dxDateBox("instance").option("value", response.ExpectedDate);
+				$("#ddGetTax").dxDropDownBox("instance").option("value", response.ExpectedVatrate);
+				$("#txtRemarks").dxTextArea("instance").option("value", response.Remarks);
+				$("#ddGetCompany").dxDropDownBox("instance").option("value", response.CompanyBranch);
+				$("#ddGetEnquiry").dxDropDownBox("instance").option("value", response.PurchaseRequestStatusId);
+				$("#ddGetInventoryGroup").dxDropDownBox("instance").option("value", response.InventoryMasterGroupId);
+				$("#ddGetRequesstingUnit").dxDropDownBox("instance").option("value", response.ProjectSubUnitCode);
+				$("#ddBitCls").dxDateBox("instance").option("value", response.BidClosingDate);
+				$("#ddReminder").dxDateBox("instance").option("value", response.BidReminderOn);
+				$('#txtClientProject').dxTextBox("instance").option("value", response.ClientProject);
+				$("#ddPreparedby").dxDropDownBox("instance").option("value", response.RequestSignatory);
+				$("#ddVerifiedby").dxDropDownBox("instance").option("value", response.MprverifiedSign);
+				$("#ddApprovedby").dxDropDownBox("instance").option("value", response.MprapprovedSign);
+				$("#ddRequestedBy").dxDropDownBox("instance").option("value", response.TypeOfMpr);
+				$("#ddStoreCodeDropDown").dxDropDownBox("instance").option("value", response.StoreCode);
+
+				// Load child grid data
+				$.ajax({
+					type: "GET",
+					url: `/api/AddNewClientRequest/GetPurchaseRequestChildren?Mprno=${encodeURIComponent(mprno)}`,
+					dataType: 'json',
+					success: function (gridResponse) {
+						console.log("Grid", gridResponse);
+
+						const rowData = gridResponse.map((item, index) => ({
+							SNo: index + 1,
+							...item
+						}));
+
+						initializeDataGrid(rowData);
+					},
+					error: function (xhr, status, error) {
+						console.error("Error fetching grid data:", error);
+					}
+				});
+			} else {
+				console.warn("No client details found in the response.");
 			}
-		});
-	}
+		},
+		error: function (xhr, status, error) {
+			console.error("Error fetching client details:", error);
+		}
+	});
+}
+
 
 
 
@@ -3108,7 +3116,49 @@
 				{ dataField: "ExpectedUnitRate", caption: formatMessage('Expected Price'), width: 150 },
 
 				{ dataField: "LineTotal", caption: formatMessage('Total'), width: 150 },
-				{ dataField: "MprchildSlNo", caption: formatMessage('MprchildSlNo'), width: 150 }
+				{ dataField: "MprchildSlNo", caption: formatMessage('MprchildSlNo'), width: 150 },
+				{
+		type: "buttons",
+		caption: "Delete",
+		width: 80,
+		buttons: [{
+			hint: "Delete Row",
+			icon: "trash",
+			onClick: function (e) {
+				const grid = $("#B2BdataGrid").dxDataGrid("instance");
+				const childId = e.row.data.MprchildSlNo;
+
+				DevExpress.ui.dialog.confirm("Do you want to delete this row?", "Confirm").done(function (result) {
+					if (!result) return;
+
+					if (childId) {
+						// Delete from DB via API
+						$.ajax({
+							url: `/api/AddNewClientRequest/DeleteChildById?childId=${encodeURIComponent(childId)}`,
+							type: "DELETE",
+							success: function (res) {
+								if (res.success) {
+									grid.deleteRow(e.row.rowIndex);
+									DevExpress.ui.notify("Row deleted successfully", "success", 2000);
+								} else {
+									DevExpress.ui.notify(res.message, "error", 2000);
+								}
+							},
+							error: function () {
+								DevExpress.ui.notify("Failed to delete row", "error", 2000);
+							}
+						});
+					} else {
+						// Delete unsaved row
+						grid.deleteRow(e.row.rowIndex);
+						DevExpress.ui.notify("Row removed", "success", 1500);
+					}
+				});
+
+				e.event.preventDefault();
+			}
+		}]
+	}
 
 
 
@@ -3116,7 +3166,9 @@
 
 			editing: {
 
-				mode: "cell"
+				mode: "cell",
+					 allowDeleting: true,
+                      confirmDelete: false
 
 				//allowUpdating: true,
 
@@ -3619,12 +3671,56 @@
 				{ dataField: "ExpectedUnitRate", caption: formatMessage('Expected Price'), width: 150 },
 
 				{ dataField: "LineTotal", caption: formatMessage(' Line Total'), width: 150 },
-				{ dataField: "MprchildSlNo", caption: formatMessage('MprchildSlNo'), width: 150 }
+				{ dataField: "MprchildSlNo", caption: formatMessage('MprchildSlNo'), width: 150 },
+				{
+		type: "buttons",
+		caption: "Delete",
+		width: 80,
+		buttons: [{
+			hint: "Delete Row",
+			icon: "trash",
+			onClick: function (e) {
+				const grid = $("#B2BdataGrid").dxDataGrid("instance");
+				const childId = e.row.data.MprchildSlNo;
+
+				DevExpress.ui.dialog.confirm("Do you want to delete this row?", "Confirm").done(function (result) {
+					if (!result) return;
+
+					if (childId) {
+						// Delete from DB via API
+						$.ajax({
+							url: `/api/AddNewClientRequest/DeleteChildById?childId=${encodeURIComponent(childId)}`,
+							type: "DELETE",
+							success: function (res) {
+								if (res.success) {
+									grid.deleteRow(e.row.rowIndex);
+									DevExpress.ui.notify("Row deleted successfully", "success", 2000);
+								} else {
+									DevExpress.ui.notify(res.message, "error", 2000);
+								}
+							},
+							error: function () {
+								DevExpress.ui.notify("Failed to delete row", "error", 2000);
+							}
+						});
+					} else {
+						// Delete unsaved row
+						grid.deleteRow(e.row.rowIndex);
+						DevExpress.ui.notify("Row removed", "success", 1500);
+					}
+				});
+
+				e.event.preventDefault();
+			}
+		}]
+	}
 			],
 
 			editing: {
 
-				mode: "cell"
+				mode: "cell",
+					 allowDeleting: true,
+                      confirmDelete: false
 
 				// allowUpdating: true,
 
@@ -3650,28 +3746,10 @@
 
 
 
-
-
-	// $("#btnAddNew").on("click", function (e) {
-	// 	var newRow = {
-	// 		LineOrderNo: rowData.length + 1, // Auto-generate SNo
-	// 		QuoteGroupItemSlNo: null,
-	// 		GSCode: ItemNo,
-	// 		Description: null,
-	// 		UnitRateMethod: null,
-	// 		QtyRequested: 0,
-	// 		ExpectedUnitRate: 0.00,
-	// 		LineTotal: 0
-	// 	};
-
-	// 	rowData.push(newRow);
-	// 	dataGridInstance.option("dataSource", rowData);
-	// 	dataGridInstance.refresh();
-	// 	var button = $("#btnSave").dxButton("instance");
-	// 	button.option("text", "Update");
-	// });
-
 	$("#btnAddNew").on("click", function (e) {
+		const $btn = $("#btnSave");
+		$btn.dxButton("instance").option("disabled", false);
+
 		const grid = $("#B2BdataGrid").dxDataGrid("instance");
 		const store = grid.getDataSource().store();
 		const currentData = grid.getDataSource().items();
@@ -5530,7 +5608,8 @@
 
 
 	$("#btnSave").on("click", function (e) {
-	
+	const $btn = $(this).dxButton("instance");
+	$btn.option("disabled", true);
 		let master = {
 			Mprno: $('#txtRequestNo').dxTextBox("instance").option("value") || null,
 			Mprdate: $("#InvoiceDueDate").dxDateBox("instance").option("value") || null,
@@ -5629,7 +5708,8 @@
 
 	$("#btnSaveAndClose").on("click", function (e) {
 
-		
+		const $btn = $(this).dxButton("instance");
+		$btn.option("disabled", true);
 	
 		let master = {
 			Mprno: $('#txtRequestNo').dxTextBox("instance").option("value") || null,
@@ -5934,9 +6014,9 @@
 	}
 
 
-	$("#btnBack").on("click", function (e) {
-		history.back(); // Closes or navigates back
-	});
+$("#btnBack").on("click", function (e) {
+ window.location.href = `/${tenantName}/IMS/MaterialRequestEnquiriesDetails`;
+				});
 
 
 
@@ -6105,8 +6185,8 @@
 
 
 	function proceedWithApproval() {
-			const VerifyButton = $("#btnApprove").dxButton("instance");
-		VerifyButton.option("disabled", true);
+		const approveBtn = $("#btnApprove").dxButton("instance");
+		approveBtn.option("disabled", true);
 
 		const mprNo = $('#txtRequestNo').dxTextBox("instance").option("value");
 
@@ -6121,24 +6201,63 @@
 			contentType: "application/json",
 			success: function (response) {
 				if (response && response.Message) {
-					DevExpress.ui.dialog.alert(
-						response.Message,
-						"Approved"
-					).done(() => {
-						//disableEditing(); // Function to disable editing controls
+					DevExpress.ui.dialog.alert(response.Message, "Approved").done(() => {
+								hideAllButtonsExcept([
+							"btnPrint1",
+							"ddButtonLayout",
+							"btnBack",
+							"btnAttach"
+						]);
 					});
 				} else {
 					DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
 				}
 			},
-			error: function (xhr, status, error) {
-				let errorMessage = (xhr.responseJSON && xhr.responseJSON.Message)
-					? xhr.responseJSON.Message
-					: "An error occurred.";
-				DevExpress.ui.notify(errorMessage, "error", 2000);
+			error: function (xhr) {
+				const message = xhr.responseJSON?.Message || "An error occurred.";
+				DevExpress.ui.notify(message, "error", 2000);
 			}
 		});
 	}
+	function hideAllButtonsExcept(exceptions) {
+			const allButtonIds = [
+				"btnAddNew",
+				"btnSave",
+				"btnSaveAndClose",
+				"btnDelete",
+				"btnSubmit",
+				"btnVerify",
+				"btnApprove",
+				"btnCancel",
+				"btnUpload",
+				"btnMoveUp",
+				"btnMoveDown",
+				"rowHeightProperties",
+				"btnPrint1",         // should stay enabled
+				"ddButtonLayout",    // should stay enabled
+				"btnBack",           // should stay enabled
+				"btnAttach"          // should stay enabled
+			];
+
+			allButtonIds.forEach(id => {
+				const keepEnabled = exceptions.includes(id);
+				const $el = $("#" + id);
+
+				if ($el.length) {
+					let instance = DevExpress.ui.dxButton.getInstance($el[0]);
+					if (!instance) {
+						instance = DevExpress.ui.dxDropDownButton.getInstance($el[0]);
+					}
+
+					if (instance) {
+						instance.option("disabled", !keepEnabled);
+					} else {
+						console.warn("Instance not found for:", id);
+					}
+				}
+			});
+		}
+
 	$("#btnCancel").on("click", function (e) {
 		const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 

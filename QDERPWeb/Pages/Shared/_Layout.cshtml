@@ -124,9 +124,92 @@
 
 
     <style>
+        /* Container for sidebar (assumes #sidebar2 exists) */
+        #sidebar2 {
+            display: none;
+            padding: 10px;
+            background-color: var(--title-background-color);
+            /* border-right: 1px solid #ccc; */
+            min-height: 100vh;
+            width: 250px;
+            box-sizing: border-box;
+            overflow-y: scroll !important;
+            height: 100vh;
+        }
+
+        /* Main submenu items */
+        .submenu-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            border-radius: 6px;
+            margin: 5px 0;
+            color: #333;
+            background-color: #ffffff;
+            text-decoration: none;
+            transition: background 0.2s ease, transform 0.1s ease;
+            cursor: pointer;
+        }
+        
+            .submenu-item:hover {
+                background-color: #e8f0fe;
+                transform: translateX(2px);
+            }
+
+            /* Icon next to text */
+            .submenu-item i {
+                margin-right: 10px;
+                color: var(--title-background-color);
+                min-width: 20px;
+                text-align: center;
+            }
+
+            /* Text inside menu */
+            .submenu-item .text {
+                flex: 1;
+                font-size: 12px;
+            }
+
+        /* Nested submenu under collapsible section */
+        .nested-submenu {
+            margin-left: 20px;
+            margin-top: 5px;
+            border-left: 2px solid #ccc;
+            padding-left: 10px;
+        }
+
+        /* Disabled state styling */
+        .submenu-item.disabled {
+            background-color: #f9f9f9;
+            color: #999;
+        }
+
+            .submenu-item.disabled i {
+                color: #ccc;
+            }
+
+        /* Collapsible submenu toggle (inventory dashboard) */
+        /* .submenu-item[role="button"] { */
+        /*     font-weight: bold; */
+        /*     background-color: #dfefff; */
+        /* } */
+
+        /*     .submenu-item[role="button"]:hover { */
+        /*         background-color: #cfe1ff; */
+        /*     } */
+
+        /* Optional: Smooth transition for submenu toggle */
+        .nested-submenu {
+            transition: all 0.3s ease;
+        }
+
+        .backgroundWhite{
+            background-color:white !important;
+        }
+
         * {
             /* font-family: var(--Font-family-Base, 'Inter', sans-serif); /* Font family */ */ font-family: 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
-            font-size: var(--Font-size-300, 14px); /* Font size */
+            font-size: var(--Font-size-300, 12px); /* Font size */
             font-style: normal; /* Font style */
             font-weight: 500; /* Font weight */
             line-height: var(--Line-height-300, 20px); /* Line height */
@@ -228,9 +311,11 @@
             padding: 0px;
             margin-left: 0px;
             margin-right: 0px;
-            background-color: #909ead00;
+            background-color: var(--title-background-color);
             /* height: 100vh; */
             width: max-content;
+            position:fixed;
+            z-index:10;
         }
 
         .container1 {
@@ -245,8 +330,8 @@
         }
         /* Sidebar 1 styles */
         .sidebar {
-            width: 250px;
-            background-color: var(--menu-color);
+            width: 225px;
+            background-color: var(--title-background-color);
             /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
             display: flex;
             flex-direction: column;
@@ -256,17 +341,18 @@
             padding-right: 10px;
             padding-top: 5.5em;
             transition: width 0.3s ease;
-            height: 95vh;
+            height: 100vh;
+            z-index:11;
         }
 
 
             /* Hidden state of sidebar */
             .sidebar.hidden {
                 width: 65px; /* Minimized width to show icons only */
-                background-color: var(--menu-color);
+                background-color: var(--title-background-color);
                 /* height: inherit; */
                 /* margin-top: 20px; */
-                border-right: 1px solid #ddd;
+                /* border-right: 1px solid #ddd; */
             }
 
 
@@ -274,6 +360,7 @@
         /* Expanded state of sidebar 2 */
         .sidebar2.expanded {
             margin-left: 0px; /* Sidebar 2 moves left when sidebar1 is collapsed */
+            z-index: 10;
             /* margin-top: 45px; */
         }
 
@@ -328,7 +415,7 @@
 
         .menu-item {
             color: var(--text-color);
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 500;
         }
 
@@ -379,7 +466,7 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            z-index: 999;
+            z-index: 10001;
             transition: left 0.3s ease; /* Smooth transition */
         }
 
@@ -400,10 +487,10 @@
             background-color: var(--menu-color);
             display: flex;
             flex-direction: column;
-            border-left: 1px solid #ddd;
-            border-right: 1px solid #ddd;
+            /* border-left: 1px solid #ddd; */
+            /* border-right: 1px solid #ddd; */
             /* padding-top: 50px; */
-            margin-top: 50px; /* Adjust to align with the rest of your layout */
+            margin-top: 35px; /* Adjust to align with the rest of your layout */
             height: calc(100vh - 75px); /* Sidebar takes full height minus the top margin */
             overflow-y: auto; /* Enable vertical scrolling */
             scrollbar-width: thin; /* For Firefox: thin scrollbar */
@@ -413,6 +500,7 @@
             transition: margin-left 0.3s ease;
             color: black;
             height: inherit;
+            z-index:10;
         }
 
             /* Scrollbar styles for Webkit-based browsers */
@@ -438,7 +526,7 @@
             /* Make the inner elements unbold */
             .sidebar2 .submenu-item {
                 font-weight: normal;
-                font-size: 15px;
+                font-size: 12px;
                 color: black;
             }
 
@@ -715,8 +803,9 @@
         /* Main Content */
         .mainContainer {
             background-color: white;
-            margin-top: 40px;
-            /* width: 85%; */
+            margin-top: 37px;
+            margin-left: 65px;
+            width: 97%;
             /* padding: 20px; */
         }
 
@@ -861,6 +950,7 @@
         }
 
         .playIcon {
+            display:none;
             position: fixed;
             left: 3.5em;
             bottom: 4em;
@@ -1192,6 +1282,11 @@
             <i class="fa-solid fa-arrow-up"></i>
         </button>
         <div class="frame">
+            <div>
+                <button class="toggle-btn" onclick="toggleSidebar()">
+                    <i class="fas fa-bars" style="color:var(--title-background-color)"></i>
+                </button>
+            </div>
             <div class="image">
                 <div class="companyName">
                   <span style="color:@Tenant?.Value?.CompanyTextColor">
@@ -1676,56 +1771,56 @@
             <div id="sidebar" class="sidebar hidden">
                 <div class="menu-item1" style="cursor:pointer" onclick="navigateToTenantHome()">
                     <img border="0" src="~/images/erp_logo.png" alt="QD-ERP" width="45" height="30">
-                    <div id="HumanResources2" class="text no-border-input">Quick Dice</div>
+                    <div id="HumanResources2" style="color:white;" class="text no-border-input">Quick Dice</div>
                 </div>
                 <div class="menu">
                     @if (userModules.Contains("HR"))
                     {
                         <div class="menu-item hr" onclick="navigate('Human Resources')">
                              <i id="humanResourcesIcon"><img src="~/images/hr-icon.png" style="width:30px"/></i>
-                            <div id="HumanResources" class="text no-border-input"></div>
+                            <div id="HumanResources" class="text backgroundWhite"></div>
                         </div>
                     }
                     @if (userModules.Contains("Finance"))
                     {
                         <div class="menu-item finance" onclick="navigate('Finance')">
                             <i id="FinanceIcon"><img src="~/images/finance.png" style="width:30px" /></i>
-                            <div id="Finance" class="text no-border-input"></div>
+                            <div id="Finance" class="text backgroundWhite"></div>
                         </div>
                     }
                     @if (userModules.Contains("VAT"))
                     {
                         <div class="menu-item vat" onclick="navigate('VAT Modules')">
                             <i id="VATModulesIcon"><img src="~/images/vat_icon.png" style="width:30px" /></i>
-                            <div id="VATModules" class="text no-border-input"></div>
+                            <div id="VATModules" class="text backgroundWhite" backgroundWhite></div>
                         </div>
                     }
                     @if (userModules.Contains("Equipment"))
                     {
                         <div class="menu-item rentals" onclick="navigate('Equipment Rentals')">
                             <i id="EquipmentRentalsIcon"><img src="~/images/renting.png" style="width:30px" /></i>
-                            <div id="EquipmentRentals" class="text no-border-input"></div>
+                            <div id="EquipmentRentals" class="text backgroundWhite"></div>
                         </div>
                     }
                     @if (userModules.Contains("CAMP"))
                     {
                         <div class="menu-item camp" onclick="navigate('Camp Management')">
                             <i id="CampManagementIcon"><img src="~/images/camp.png" style="width:30px" /></i>
-                            <div id="CampManagement" class="text no-border-input"></div>
+                            <div id="CampManagement" class="text backgroundWhite"></div>
                         </div>
                     }
                     @if (userModules.Contains("IMS"))
                     {
                         <div class="menu-item inventory" onclick="navigate('Inventory Management')">
                             <i id="InventoryManagementIcon"><img src="~/images/IMS_icon.png" style="width:30px" /></i>
-                            <div id="InventoryManagement" class="text no-border-input"></div>
+                            <div id="InventoryManagement" class="text backgroundWhite"></div>
                         </div>
                     }
                     @if (userModules.Contains("Projects"))
                     {
                         <div class="menu-item projects" onclick="navigate('Projects Control')">
                             <i id="ProjectsControlIcon"><img src="~/images/project_control.png" style="width:30px" /></i>
-                            <div id="ProjectsControl" class="text no-border-input"></div>
+                            <div id="ProjectsControl" class="text no-border-input backgroundWhite"></div>
                         </div>
                     }
                 </div>
@@ -1735,11 +1830,7 @@
                 <!-- Content for Sidebar 2 -->
             </div>
 
-            <div>
-                <button class="toggle-btn" onclick="toggleSidebar()">
-                    <i class="fas fa-bars" style="color:var(--title-background-color)"></i>
-                </button>
-            </div>
+            
 
             <!-- Breadcrumb above Sidebar 2 -->
 
@@ -2959,7 +3050,7 @@
         }
 
 
-                       function showInventorySubmenu() {
+        function showInventorySubmenu() {
             const sidebar2 = document.getElementById('sidebar2');
 
             const inventoryDashboardItems = [
@@ -2982,62 +3073,49 @@
                 { key: "Stock Adjustments", icon: "fas fa-sliders-h", href: `/${tenantName}/IMS/StockAdjustments`, label: "Stock Adjustments", hideOnClick: false }
             ];
 
-            // Access config from backend
-            const access = (inventoryMenuAccess1 || []).reduce((acc, x) => {
-                acc[x.ItemDescription] = x;
-                return acc;
+            // Create access map
+            const accessMap = (inventoryMenuAccess1 || []).reduce((map, item) => {
+                map[item.ItemDescription] = item;
+                return map;
             }, {});
 
-            // Build Inventory Dashboard submenu
+            // Utility: Generate submenu item HTML
+            function generateMenuItem({ key, label, icon, href, hideOnClick }, access) {
+                const perm = access[key];
+                if (!perm?.ItemVisible) return '';
+
+                const enabled = perm.ItemEnabled;
+                const onclick = enabled ? (hideOnClick ? 'hideSidebars()' : '') : 'return false;';
+                const styles = enabled ? '' : 'pointer-events:none;opacity:0.5;cursor:not-allowed;';
+                const cls = `submenu-item${enabled ? '' : ' disabled'}`;
+
+                return `
+                    <a class="${cls}" href="${enabled ? href : '#'}" onclick="${onclick}" style="${styles}">
+                        <i class="${icon}"></i>
+                        <div class="text">${formatMessage(label ?? key)}</div>
+                    </a>
+                `;
+            }
+
+            // Inventory Dashboard Section
             let dashboardHtml = `
                 <div class="submenu-item" onclick="toggleSubmenu('inventoryDashboardSubmenu')" role="button" aria-expanded="false">
                     <i class="fas fa-book-open"></i>
                     <div class="text">${formatMessage("Inventory Dashboard")}</div>
                 </div>
                 <div id="inventoryDashboardSubmenu" class="nested-submenu" style="display: none; margin-left: 30px;">
+                    ${inventoryDashboardItems.map(item => generateMenuItem(item, accessMap)).join('')}
+                </div>
             `;
 
-            inventoryDashboardItems.forEach(item => {
-                const perm = access[item.key];
-                if (!perm || !perm.ItemVisible) return;
-                dashboardHtml += `
-                    <a class="submenu-item${!perm.ItemEnabled ? ' disabled' : ''}"
-                       ${perm.ItemEnabled ? 'onclick="hideSidebars()"' : 'onclick="return false;"'}
-                       href="${perm.ItemEnabled ? item.href : '#'}"
-                       style="${!perm.ItemEnabled ? 'pointer-events:none;opacity:0.5;cursor:not-allowed;' : ''}">
-                        <i class="${item.icon}"></i>
-                        <div class="text">${formatMessage(item.key)}</div>
-                    </a>
-                `;
-            });
-            dashboardHtml += '</div>';
-
-            // Build other inventory menu items
-            const filteredMenuItems = inventoryMenuItems
-                .filter(item => {
-                    const menuConfig = access[item.key];
-                    return menuConfig ? menuConfig.ItemVisible : false;
-                })
-                .map(item => {
-                    const menuConfig = access[item.key];
-                    return {
-                        ...item,
-                        enabled: menuConfig ? menuConfig.ItemEnabled : false
-                    };
-                });
-
-            let otherMenusHtml = filteredMenuItems.map(item => `
-                <a class="submenu-item${!item.enabled ? ' disabled' : ''}"
-                   ${item.enabled ? (item.hideOnClick ? 'onclick="hideSidebars()"' : '') : 'onclick="return false;"'}
-                   href="${item.enabled ? item.href : '#'}"
-                   style="${!item.enabled ? 'pointer-events:none;opacity:0.5;cursor:not-allowed;' : ''}">
-                    <i class="${item.icon}"></i>
-                    <div class="text">${formatMessage(item.label)}</div>
-                </a>
-            `).join('');
+            // Other Inventory Menus
+            const otherMenusHtml = inventoryMenuItems
+                .map(item => generateMenuItem(item, accessMap))
+                .join('');
 
             sidebar2.innerHTML = dashboardHtml + otherMenusHtml;
         }
+
 
 
                 // Function to toggle visibility of nested submenus
