@@ -42,6 +42,7 @@ namespace QD.ERP.Web.DAL.Entities
         public decimal? ConvertedCrAmount { get; set; }
         public decimal? ConvertedAmount { get; set; }
         public string CurrencyName { get; set; }
+        public string TransactionCurrencySymbol { get; set; }
 
     }
 }

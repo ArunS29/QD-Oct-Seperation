@@ -9,6 +9,7 @@
 
 }
 
+<link rel="stylesheet" href="~/css/Style.css" />
 
 
 
@@ -19,288 +20,7 @@
 
 <!-- SweetAlert2 JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<style type="text/css">
-    .overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5); /* Transparent background */
 
-        z-index: 1000;
-    }
-
-    .titleCard-toggle {
-        display: none !important;
-    }
-    .overlay-content {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 100%;
-        height: 80%;
-        background: #909ead00;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-        border-radius: 8px;
-        overflow: hidden;
-    }
-
-    #overlay-frame {
-        width: 100%;
-        height: 100%;
-    }
-
-    .mainContainer {
-        overflow-x: hidden;
-    }
-
-    .close-btn {
-        position: absolute;
-        top: 10px;
-        right: 20px;
-        font-size: 30px;
-        cursor: pointer;
-    }
-
-    .context-menu {
-        display: none;
-        position: absolute;
-        background-color: white;
-        border: 1px solid #ccc;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        list-style: none;
-        padding: 8px 0;
-        z-index: 1000;
-    }
-
-        .context-menu li {
-            padding: 8px 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-        }
-
-            .context-menu li:hover {
-                background-color: #f0f0f0;
-            }
-
-    td {
-        padding: 5px;
-    }
-
-    .custom-popup-button {
-        width: 60px !important;
-        background-color: var(--title-background-color);
-    }
-
-    /* .content-container {
-                        height: calc(100vh - 60px);
-                        overflow-y: auto;
-                        z-index: 1;
-                        position: relative;
-                    } */
-
-    .footer-fixed {
-        position: fixed;
-        bottom: 0;
-        left: 0px;
-        right: 0;
-        height: 60px;
-        background: #ffffff;
-        z-index: 9999;
-    }
-    /* Red background for the Attachment button */
-    .btn-attachment-red .dx-button-content {
-        background-color: #e74c3c !important; /* bright red */
-        color: white !important;
-        border: none !important;
-        border-radius: 4px;
-    }
-
-    .btn-attachment-red .dx-icon {
-        color: white !important;
-    }
-
-    .d-flex {
-        display: flex;
-    }
-
-    .align-items-end {
-        align-items: flex-end;
-    }
-
-    .gap-1 > * + * {
-        margin-left: 0px;
-    }
-
-    .centered-button .dx-button-content {
-        justify-content: center !important;
-    }
-
-
-
-    .custom-ui-button {
-        background: #f5f5f5 !important;
-        color: white !important;
-        border: none !important;
-        border-radius: 8px;
-        padding: 8px 16px;
-        font-weight: 600;
-        box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
-        position: relative;
-        overflow: hidden;
-        transition: background 0.3s ease, transform 0.2s ease;
-    }
-
-        .custom-ui-button:hover {
-            transform: translateY(-2px);
-        }
-
-        .custom-ui-button:active {
-            transform: scale(0.97);
-        }
-
-        .custom-ui-button .dx-icon,
-        .custom-ui-button .dx-button-text {
-            color: black !important;
-        }
-
-    .white-box .dx-texteditor-input-container {
-        background-color: white !important; /* Entire textbox area */
-        /* border-radius: 4px; */
-    }
-
-    .white-box .dx-numberbox {
-        background-color: white !important;
-    }
-
-    .white-box .dx-texteditor-input {
-        background-color: white !important;
-    }
-
-    .white-dropdownbox .dx-texteditor-input-container {
-        background-color: white !important;
-        /* border-radius: 4px; */
-    }
-
-    .white-dropdownbox .dx-texteditor-input {
-        background-color: white !important;
-    }
-
-    .white-dropdownbox .dx-texteditor-input-container:hover {
-        /* border: 1px solid #ccc; */
-        /* box-shadow: 0 0 4px rgba(0, 0, 0, 0.1); */
-    }
-
-
-
-    .custom-icon-color .dx-icon.fa-paperclip {
-        color: red !important;
-    }
-
-    /* Shared style for all DevExtreme editors */
-    .light-theme-input .dx-texteditor-input-container {
-        background-color: rgba(255, 255, 255, 0.95) !important; /* Semi-transparent white */
-        border: 1px solid #ccc !important; /* Light gray border */
-        /* border-radius: 6px; */
-        transition: all 0.2s ease-in-out;
-    }
-
-    /* Input text style */
-    .light-theme-input .dx-texteditor-input {
-        background-color: transparent !important;
-        color: #333 !important;
-        font-family: 'Segoe UI', sans-serif;
-    }
-
-    /* Hover and focus effect */
-    .light-theme-input .dx-texteditor-input-container:hover,
-    .light-theme-input .dx-texteditor.dx-state-focused .dx-texteditor-input-container {
-        /* border-color: #999 !important; */
-        box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Optional: remove outline when focused */
-    .light-theme-input .dx-texteditor.dx-state-focused {
-        outline: none;
-    }
-
-    .minimal-header {
-        display: flex;
-        margin-right: 18px;
-        align-items: center;
-        gap: 10px;
-        padding: 15px 10px;
-        position: relative;
-        overflow: hidden;
-        transform: translateY(-10px);
-        transition: opacity 0.5s ease, transform 0.5s ease;
-    }
-
-        .minimal-header.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Underline animation on load */
-        .minimal-header::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 15px;
-            right: 45px;
-            height: 2px;
-            width: 80%;
-            background: #2a5298; /* deep blue or change to gold etc. */
-            transition: width 0.6s ease-in-out;
-        }
-
-        .minimal-header.visible::after {
-            width: 100%;
-        }
-
-    .card-title-icon i {
-        font-size: 22px;
-        color: #2a5298;
-        padding-left: 20px;
-    }
-
-
-    .card-title-text {
-        font-size: 24px;
-        font-weight: 700;
-        letter-spacing: 0.5px;
-        margin: 0;
-        font-family: 'Segoe UI', sans-serif;
-        color: #2a5298;
-    }
-
-    /* Background color for the disabled SelectBox */
-    .custom-disabled-selectbox .dx-dropdowneditor-input-wrapper,
-    .custom-disabled-selectbox .dx-texteditor-input {
-        background-color: #f5f5f5 !important;
-        color: black !important;
-    }
-
-    /* Label color */
-    .dx-field-label {
-        color: black !important;
-    }
-    /* Target the disabled textbox wrapper and input */
-    .custom-disabled-textbox .dx-texteditor-input {
-        background-color: #f5f5f5 !important;
-        color: black !important;
-    }
-
-    /* Optional: label color */
-    .dx-field-label {
-        color: black !important;
-    }
-
-</style>
 
 
 <div class="footer-fixed">
@@ -324,7 +44,7 @@
                         @(
                                                 Html.DevExtreme().TextBox()
                                                 .Label(new JS("formatMessage('Voucher No')"))
-                                                .LabelMode(EditorLabelMode.Outside)
+                                                .LabelMode(EditorLabelMode.Floating)
                                                 .ID("VoucherNo")
                                                 .OnValueChanged("onVoucherNoChanged")
                                                 .Value(null)
@@ -343,7 +63,7 @@
                                                 .Label(new JS("formatMessage('Voucher Date')"))
                                                 .ID("VoucherDate")
                                                 .OnValueChanged("onVoucherDateChanged")
-                                                .LabelMode(EditorLabelMode.Outside)
+                                                .LabelMode(EditorLabelMode.Floating)
                                                 .InputAttr("aria-label", "Date")
                                                 .Type(DateBoxType.Date)
                                                 .DisplayFormat("dd-MMM-yyyy")
@@ -357,7 +77,7 @@
                                                 .Label(new JS("formatMessage('Effective Date')"))
                                                 .ID("VoucherEffectiveDate")
                                                 .InputAttr("aria-label", "Date")
-                                                .LabelMode(EditorLabelMode.Outside)
+                                                .LabelMode(EditorLabelMode.Floating)
                                                 .Type(DateBoxType.Date)
                                                 .DisplayFormat("dd-MMM-yyyy")
                                                 .Value(DateTime.Now)
@@ -380,7 +100,7 @@
                                                     rules.AddRequired()
                                                     .Message("Receiving Account is required");
                                                 })
-                                                .LabelMode(EditorLabelMode.Outside)
+                                                .LabelMode(EditorLabelMode.Floating)
                                                 .ID("accountDropDownBox")
                                                 .ShowClearButton(true)
                                                 .AcceptCustomValue(true)
@@ -406,7 +126,7 @@
                                                 .ID("Narration")
                                                 .Value("")
                                                 .Label(new JS("formatMessage('Narration')"))
-                                                .LabelMode(EditorLabelMode.Outside)
+                                                .LabelMode(EditorLabelMode.Floating)
                                                 .Height(40)
                                                 .MaxLength(111500)
                                                 .ElementAttr(new { @class = "light-theme-input" })
@@ -419,7 +139,7 @@
                     <div class="form-group">
                         @(
                                                 Html.DevExtreme().SelectBox()
-                                                .LabelMode(EditorLabelMode.Outside)
+                                                .LabelMode(EditorLabelMode.Floating)
                                                 .Label(new JS("formatMessage('Dr/Cr')"))
                                                 .ID("TransactionTypeComboBox")
                                                 .DataSource(new[] { "Dr", "Cr" })
@@ -428,7 +148,7 @@
                                                 .Width(60)
                                                 .ElementAttr(new { @class = "custom-disabled-selectbox" })
 
-                                                .ReadOnly(true)
+                                                .ReadOnly(false)
                                                 )
                     </div>
                     <!-- Container for Account Head & Buttons -->
@@ -449,7 +169,7 @@
                                                             rules.AddRequired()
                                                             .Message("Account Head is required");
                                                         })
-                                                        .LabelMode(EditorLabelMode.Outside)
+                                                        .LabelMode(EditorLabelMode.Floating)
                                                         .ID("AccountHeadDropDown")
                                                         .ShowClearButton(true)
                                                         .AcceptCustomValue(true)
@@ -471,17 +191,39 @@
                                                         .OnKeyDown("onKeyDown")
                                                                                 //.OnValueChanged("dropDownBoxValueChanged")
                                                         .ContentTemplate(new TemplateName("AccountHeadContentTemplate"))
+                                                         .Buttons(buttons => {
+        // Built-in clear button
+        buttons.Add()
+            .Name("clear");
+
+     buttons.Add()
+    .Name("addLedger")
+    .Location(TextEditorButtonLocation.After)
+    .Widget(w => w.Button()
+        .Type(ButtonType.Default)
+        .Icon("plus")
+        .ElementAttr(new { @class = "custom-hover-button add-hover" })
+        .OnClick("showLedgerAccountPopup"));
+
+buttons.Add()
+    .Name("editLedger")
+    .Location(TextEditorButtonLocation.After)
+    .Widget(w => w.Button()
+        .Type(ButtonType.Default)
+        .Icon("edit")
+        .ElementAttr(new { @class = "custom-hover-button edit-hover" })
+        .OnClick("showLedgerAccountEditPopup"));
+
+
+
+        buttons.Add()
+        .Name("dropDown");
+    })
                                                         )
                         </div>
                         <!-- Add Button -->
                         <div class="form-group" style="flex-shrink: 0;">
-                            @(Html.DevExtreme().Button()
-                                                        .ID("btnAddAHead")
-                                                        .Icon("plus")
-                                                        .ElementAttr(new { @class = "custom-ui-button" })
-                                                        .OnClick("showLedgerAccountPopup")
-                                                        .Width(60)
-                                                        )
+                         
                             <!-- DevExtreme Popup -->
                             @(Html.DevExtreme().Popup()
                                                         .ID("ledgerAccountPopup")
@@ -502,13 +244,7 @@
 
                         <!-- Edit Button -->
                         <div class="form-group" style="flex-shrink: 0;">
-                            @(Html.DevExtreme().Button()
-                                                        .ID("btnEditAHead")
-                                                        .Icon("edit")
-                                                        .ElementAttr(new { @class = "custom-ui-button" })
-                                                        .OnClick("showLedgerAccountEditPopup")
-                                                        .Width(60)
-                                                        )
+                         
                             @(Html.DevExtreme().Popup()
                                                         .ID("ledgerEditAccountPopup")
                                                         .Width("93%")
@@ -531,7 +267,7 @@
                     <div class="form-group" style="flex: 1 1 90px;">
                         @(Html.DevExtreme().NumberBox()
                                                 .Label(new JS("formatMessage('Amount')"))
-                                                .LabelMode(EditorLabelMode.Outside)
+                                                .LabelMode(EditorLabelMode.Floating)
                                                 .ID("Amount")
 
                                                 .Value(null)
@@ -563,7 +299,7 @@
                                                     rules.AddRequired()
                                                     .Message("Please select a base currency.");
                                                 })
-                                                .LabelMode(EditorLabelMode.Outside)
+                                                .LabelMode(EditorLabelMode.Floating)
                                                 .ID("ddlBaseCurrency")
                                                 .ShowClearButton(true)
                                                 .AcceptCustomValue(false)
@@ -627,7 +363,7 @@
                                                     rules.AddRequired()
                                                     .Message("Please select a currency.");
                                                 })
-                                                .LabelMode(EditorLabelMode.Outside)
+                                                .LabelMode(EditorLabelMode.Floating)
                                                 .ID("ddCurrency")
                                                 .ShowClearButton(true)
                                                 .AcceptCustomValue(false)
@@ -677,7 +413,7 @@
                     <div class="form-group" style="flex: 1 1 70px;">
                         @(Html.DevExtreme().NumberBox()
                                                 .Label("CVR")
-                                                .LabelMode(EditorLabelMode.Outside)
+                                                .LabelMode(EditorLabelMode.Floating)
                                                 .ID("txtCurrencyRate")
                                                 .Value(1)
                                                 .Min(0)
@@ -749,7 +485,7 @@
                                             .Key("AccountId")
                                             )
 
-                                            .LabelMode(EditorLabelMode.Outside)
+                                            .LabelMode(EditorLabelMode.Floating)
                                             .ID("accountDropDownBoxEdit")
                                             .ShowClearButton(true)
                                             .AcceptCustomValue(false)
@@ -790,7 +526,7 @@
                                 .AllowColumnReordering(true) // Enable column reordering
                                 .AllowColumnResizing(true)   // Enable column resizing
                                 .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
-                                .HeaderFilter(filter => filter.Visible(true))
+                                .HeaderFilter(filter => filter.Visible(false))
                                 .Height(250)
                                 .ColumnAutoWidth(true)
                                 .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
@@ -970,7 +706,7 @@
                                                         .Label(new JS("formatMessage('Cheque No/Reference No')"))
                                                         .ID("ChequeNoReferenceNo")
                                                         .Value(null)
-                                                        .LabelMode(EditorLabelMode.Outside)
+                                                        .LabelMode(EditorLabelMode.Floating)
                                                         .Width("100%")
                                                         .ElementAttr(new { @class = "light-theme-input" }))
                         </div>
@@ -980,7 +716,7 @@
                     <div style="flex: 1 1 300px; min-width: 280px;">
                         @(Html.DevExtreme().TextBox()
                                                 .Label(new JS("formatMessage('Voucher Narration')"))
-                                                .LabelMode(EditorLabelMode.Outside)
+                                                .LabelMode(EditorLabelMode.Floating)
                                                 .ID("VoucherNarration")
                                                 .Value(null)
                                                 .Height(60)
@@ -990,7 +726,7 @@
                     <div style=" margin-right: 8px;">
                         @(Html.DevExtreme().TextBox()
                                                 .Label(new JS("formatMessage('Remarks')"))
-                                                .LabelMode(EditorLabelMode.Outside)
+                                                .LabelMode(EditorLabelMode.Floating)
                                                 .ID("Remarks")
                                                 .Value(null)
                                                 .Width("550px")
@@ -1014,7 +750,7 @@
                     <div style="flex: 1 1 220px; min-width: 200px;">
                         @(Html.DevExtreme().SelectBox()
                                                 .Label(new JS("formatMessage('Cash Receipt')"))
-                                                .LabelMode(EditorLabelMode.Outside)
+                                                .LabelMode(EditorLabelMode.Floating)
                                                 .ID("VoucherType")
                                                 .DataSource(new[] { "Cash Receipt" })
                                                 .Value(new JS("formatMessage('Cash Receipt')"))
@@ -1051,7 +787,7 @@
                     <div style="flex: 1 1 200px; min-width: 180px;">
                         @(Html.DevExtreme().TextBox()
                                                 .Label(new JS("formatMessage('Verified On')"))
-                                                .LabelMode(EditorLabelMode.Outside)
+                                                .LabelMode(EditorLabelMode.Floating)
                                                 .ID("VerifiedOnDate")
                                                 .Value(null)
                                                 .Disabled(true)
@@ -1062,7 +798,7 @@
                     <div style="flex: 1 1 200px; min-width: 180px;">
                         @(Html.DevExtreme().TextBox()
                                                 .Label(new JS("formatMessage('Approved On')"))
-                                                .LabelMode(EditorLabelMode.Outside)
+                                                .LabelMode(EditorLabelMode.Floating)
                                                 .ID("ApprovedOntext")
                                                 .Value(null)
                                                 .Disabled(true)

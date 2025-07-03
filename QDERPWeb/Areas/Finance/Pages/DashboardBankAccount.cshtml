@@ -5,18 +5,20 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 <script src="https://www.gstatic.com/charts/loader.js"></script>
-<div class="title">
+@* <div class="title">
     <div class="header-container">
         <div id="OutstandingDetails" class="no-border-title"></div>
     </div>
-</div><!-- DevExtreme Scripts & Styles -->
+</div><!-- DevExtreme Scripts & Styles --> *@
 <link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/latest/css/dx.light.css">
 <script src="https://cdn3.devexpress.com/jslib/latest/js/dx.all.js"></script>
 
 <!-- Include Excel Export Libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-
+<div class="dashboard-card-header">
+    Outstanding Dashboard Summary
+</div>
 <!-- Total Outstanding Cards -->
 <div class="dx-card-container">
     <!-- Total Client Outstanding Card -->
@@ -111,7 +113,7 @@
 
          $(document).ready(function () {
             $.ajax({
-            url: '/api/Dashboard/GetAccountSummaryBank',
+            url: '/api/Dashboard/GetBankCashSummary',
             type: 'GET',
             dataType: 'json',
             success: function (result) {
@@ -129,8 +131,8 @@
 
                         const ctx = canvas.getContext('2d');
 
-                        const labels = result.data.map(item => item.AccountHeadName);
-                        const dataValues = result.data.map(item => item.TotalBalance);
+                        const labels = result.data.map(item => item.AccountGroup);
+                        const dataValues = result.data.map(item => item.Balance);
 
                         new Chart(ctx, {
                             type: 'bar',
@@ -511,7 +513,7 @@
             $(document).ready(function () {
                 // Fetch data using AJAX
                 $.ajax({
-                    url: "/api/Dashboard/GetAccountSummaryBank", // API endpoint
+                    url: "/api/Dashboard/GetBankCashSummary", // API endpoint
                     type: "GET",
                     dataType: "json",
                     success: function (response) {
@@ -521,8 +523,8 @@
                             $("#accountSummaryGrid").dxDataGrid({
                                 dataSource: response.data, // Use the data from the response
                                 columns: [
-                                    { dataField: "AccountHeadName", caption: formatMessage("Account Head"), width: 200, allowReordering: true },
-                                            { dataField: "TotalBalance", caption: formatMessage("Balance Amount"), format: { type: "fixedPoint", precision: 2 }, allowReordering: true },
+                                    { dataField: "AccountGroup", caption: formatMessage("Account Group"), width: 200, allowReordering: true },
+                                            { dataField: "Balance", caption: formatMessage("Balance Amount"), format: { type: "fixedPoint", precision: 2 }, allowReordering: true },
                                         { dataField: "AccountGroup", caption: formatMessage("Account Group"), visible: false, allowHiding: true }
                                 ],
                                 columnAutoWidth: true, // Automatically adjust column widths
@@ -579,12 +581,12 @@
                                 summary: {
                                     totalItems: [
                                         {
-                                            column: "TotalBalance",
+                                            column: "Balance",
                                             summaryType: "sum",
                                             valueFormat: { type: "fixedPoint", precision: 2 },
                                                 displayFormat: formatMessage('Total : {0}')
                                             },{
-                                                column: "AccountHeadName",
+                                                column: "AccountGroup",
                                             summaryType: "count",
                                                 displayFormat: formatMessage('Count : {0}')
                                         }
@@ -817,5 +819,10 @@
         font-weight: bold;
         color: #007acc;
     }
+
+    .dashboard-card-header {
+    text-align: center;    font-size: 1.6rem;    font-weight: bold;    color: #004080;    letter-spacing: 0.5px;    padding: 14px 0 8px 0;    margin-top: 10px;    margin-bottom: 0;    background: #f7fbff;    border-radius: 10px 10px 0 0;
+}
+
 </style>
 
