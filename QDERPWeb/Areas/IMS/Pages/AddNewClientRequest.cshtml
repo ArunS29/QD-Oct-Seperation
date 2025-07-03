@@ -2465,9 +2465,9 @@
 			success: function (response) {
 
 
-		if (response) {
-				
-			 Approved = response.IsApproved;
+				if (response) {
+					console.log("res",response);
+						 Approved = response.IsApproved;
 
 		// ✅ Disable buttons if already approved
 		if (Approved === true) {
@@ -2478,7 +2478,7 @@
 				"btnAttach"
 			]);
 		}
-				
+
 						$("#btnSave").dxButton("instance").option("text", "Update");
 					// Populate DevExtreme controls with the response data
 					$('#txtRequestNo').dxTextBox("instance").option("value", response.Mprno);
@@ -3102,12 +3102,14 @@
 
 						editing: {
 
-							mode: "cell",
-							allowDeleting: true,
-                             confirmDelete: false
+							mode: "cell"
+
 							//allowUpdating: true,
 
-							//allowAdding: false, // We'll add manuall
+							//allowAdding: false, // We'll add manually
+
+							//allowDeleting: true
+
 						},
 
 						onInitNewRow: function (e) {
@@ -3654,9 +3656,7 @@
 
 				editing: {
 
-					mode: "cell",
-					 allowDeleting: true,
-                      confirmDelete: false
+					mode: "cell"
 
 					// allowUpdating: true,
 
@@ -6466,7 +6466,7 @@ $("#btnAddNew").on("click", function (e) {
 
 
 
-	function hideAllButtonsExcept(exceptions) {
+						function hideAllButtonsExcept(exceptions) {
 			const allButtonIds = [
 				"btnAddNew",
 				"btnSave",
