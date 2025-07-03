@@ -813,7 +813,7 @@
 									.AllowUpdating(true)
 									.UseIcons(true)
 									)
-									.OnEditorPreparing("onEditorPreparing")
+									//.OnEditorPreparing("onEditorPreparing")
 									)
 		</div>
 	@await Html.PartialAsync("/Pages/Shared/IMS/RFQFormFooter.cshtml")
@@ -1423,7 +1423,7 @@
 
 												}
 
-												let unitprice = dataGrid.cellValue(rowIndex, "Unit Price");
+												//let unitprice = dataGrid.cellValue(rowIndex, "Unit Price");
 
 											}
 
@@ -1922,7 +1922,7 @@
 
 										}
 
-										let unitprice = dataGrid.cellValue(rowIndex, "Unit Price");
+										//let unitprice = dataGrid.cellValue(rowIndex, "Unit Price");
 
 									}
 
@@ -4089,52 +4089,52 @@
 
 						}
 
-					function onEditorPreparing(e) {
+			// 		function onEditorPreparing(e) {
 
-				if (e.parentType === "dataRow" && (e.dataField === "Qty" || e.dataField === "UnitPrice" || e.dataField === "VATPercentage")) {
-					e.editorOptions.onValueChanged = function (args) {
-						let grid = $("#B2BdataGrid").dxDataGrid("instance");
-						let rowIndex = e.row.rowIndex;
+			// 	if (e.parentType === "dataRow" && (e.dataField === "Qty" || e.dataField === "UnitPrice" || e.dataField === "VATPercentage")) {
+			// 		e.editorOptions.onValueChanged = function (args) {
+			// 			let grid = $("#B2BdataGrid").dxDataGrid("instance");
+			// 			let rowIndex = e.row.rowIndex;
 
 
-						// Get the updated value from the input field
-						let newValue = args.value;
-						console.log("gridnewvalue",newValue)
-						// Get existing values
-						let qty = e.dataField === "Qty" ? newValue : grid.cellValue(rowIndex, "Qty") || 0;
-						console.log("qty",qty)
+			// 			// Get the updated value from the input field
+			// 			let newValue = args.value;
+			// 			console.log("gridnewvalue",newValue)
+			// 			// Get existing values
+			// 			let qty = e.dataField === "Qty" ? newValue : grid.cellValue(rowIndex, "Qty") || 0;
+			// 			console.log("qty",qty)
 
-						 let unitPrice = e.dataField === "UnitPrice" ? newValue : grid.cellValue(rowIndex, "UnitPrice") || 0;
-						 console.log("unitPrice",unitPrice)
-						// let vatRate = (e.dataField === "VAT%" ? newValue : grid.cellValue(rowIndex, "VAT%")) || 0;
-						let vatval=grid.cellValue(rowIndex, "VAT%");
-						 console.log("VATVal",vatval)
+			// 			 let unitPrice = e.dataField === "UnitPrice" ? newValue : grid.cellValue(rowIndex, "UnitPrice") || 0;
+			// 			 console.log("unitPrice",unitPrice)
+			// 			// let vatRate = (e.dataField === "VAT%" ? newValue : grid.cellValue(rowIndex, "VAT%")) || 0;
+			// 			let vatval=grid.cellValue(rowIndex, "VAT%");
+			// 			 console.log("VATVal",vatval)
 
-						let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex, "VAT%") || "0%";
-						console.log("vatRateStr",vatRateStr)
+			// 			let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex, "VAT%") || "0%";
+			// 			console.log("vatRateStr",vatRateStr)
 
-						let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100; // Convert "15%" â†’ 15 â†’ 0.15
-						console.log("vatRate",vatRate)
+			// 			let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100; // Convert "15%" â†’ 15 â†’ 0.15
+			// 			console.log("vatRate",vatRate)
 
-						// Calculate values
-						let amount = qty * unitPrice;
-						 console.log("amount",amount)
+			// 			// Calculate values
+			// 			let amount = qty * unitPrice;
+			// 			 console.log("amount",amount)
 
-						let vatValue = amount * vatRate;
-						console.log("vatValue",vatValue)
+			// 			let vatValue = amount * vatRate;
+			// 			console.log("vatValue",vatValue)
 
-						let totalValue = amount + vatValue;
-						console.log("totalValue",vatValue)
+			// 			let totalValue = amount + vatValue;
+			// 			console.log("totalValue",vatValue)
 
-						// Update values in the grid
-						grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
-						grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
-						grid.cellValue(rowIndex, "Unit Price",amount);
-						 grid.cellValue(rowIndex, "Qty",qty);
-						 grid.cellValue(rowIndex, "VAT%",vatRateStr);
-					};
-				}
-			}
+			// 			// Update values in the grid
+			// 			grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
+			// 			grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
+			// 			grid.cellValue(rowIndex, "Unit Price",amount);
+			// 			 grid.cellValue(rowIndex, "Qty",qty);
+			// 			 grid.cellValue(rowIndex, "VAT%",vatRateStr);
+			// 		};
+			// 	}
+			// }
 
 
 	
@@ -4357,66 +4357,66 @@
 			});
 
 
-			function VATPercentage(newValue, rowIndex,TaxSlabCode) {
-				let grid = $("#B2BdataGrid").dxDataGrid("instance");
+			// function VATPercentage(newValue, rowIndex,TaxSlabCode) {
+			// 	let grid = $("#B2BdataGrid").dxDataGrid("instance");
 
-				// Get current row values
-				let qty = grid.cellValue(rowIndex, "Qty") || 0;
-
-
-				let unitPrice = grid.cellValue(rowIndex, "UnitPrice") || 0;
-				let vatRateStr = newValue || "0%";
+			// 	// Get current row values
+			// 	let qty = grid.cellValue(rowIndex, "Qty") || 0;
 
 
-				//let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100;
-				let vatRate = parseFloat(vatRateStr);
+			// 	let unitPrice = grid.cellValue(rowIndex, "UnitPrice") || 0;
+			// 	let vatRateStr = newValue || "0%";
 
 
-				// Calculate amount and VAT
-				let amount = qty * unitPrice;
-				let vatValue = amount * vatRate;
-				let totalValue = amount + vatValue;
-				//alert(vatValue)
-							// Update values in the grid
-						grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
-						grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
-						grid.cellValue(rowIndex, "Unit Price",amount);
-						grid.cellValue(rowIndex, "Qty",qty);
-						grid.cellValue(rowIndex, "VAT%",vatRateStr);
-						 grid.cellValue(rowIndex, "TaxSlabCode",TaxSlabCode);
-
-			}
+			// 	//let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100;
+			// 	let vatRate = parseFloat(vatRateStr);
 
 
-				function ViewInvoiceVATPercentage(newValue, rowIndex,TaxSlabCode) {
-					let grid = $("#B2BdataGrid").dxDataGrid("instance");
+			// 	// Calculate amount and VAT
+			// 	let amount = qty * unitPrice;
+			// 	let vatValue = amount * vatRate;
+			// 	let totalValue = amount + vatValue;
+			// 	//alert(vatValue)
+			// 				// Update values in the grid
+			// 			grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
+			// 			grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
+			// 			grid.cellValue(rowIndex, "Unit Price",amount);
+			// 			grid.cellValue(rowIndex, "Qty",qty);
+			// 			grid.cellValue(rowIndex, "VAT%",vatRateStr);
+			// 			 grid.cellValue(rowIndex, "TaxSlabCode",TaxSlabCode);
 
-					// Get current row values
-						let qty = grid.cellValue(rowIndex, "UnitsToBill") || 0;
+			// }
 
 
-					let unitPrice = grid.cellValue(rowIndex, "UnitRate") || 0;
-					let vatRateStr = newValue || "0%";
+				// function ViewInvoiceVATPercentage(newValue, rowIndex,TaxSlabCode) {
+				// 	let grid = $("#B2BdataGrid").dxDataGrid("instance");
+
+				// 	// Get current row values
+				// 		let qty = grid.cellValue(rowIndex, "UnitsToBill") || 0;
 
 
-					//let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100;
-					let vatRate = parseFloat(vatRateStr);
+				// 	let unitPrice = grid.cellValue(rowIndex, "UnitRate") || 0;
+				// 	let vatRateStr = newValue || "0%";
 
 
-					// Calculate amount and VAT
-					let amount = qty * unitPrice;
-					let vatValue = amount * vatRate;
-					let totalValue = amount + vatValue;
-					//alert(vatValue)
-								// Update values in the grid
-							grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
-							grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
-							grid.cellValue(rowIndex, "Unit Price",amount);
-							grid.cellValue(rowIndex, "Qty",qty);
-							grid.cellValue(rowIndex, "VAT%",vatRateStr);
-							 grid.cellValue(rowIndex, "TaxSlabCode",TaxSlabCode);
+				// 	//let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100;
+				// 	let vatRate = parseFloat(vatRateStr);
 
-				}
+
+				// 	// Calculate amount and VAT
+				// 	let amount = qty * unitPrice;
+				// 	let vatValue = amount * vatRate;
+				// 	let totalValue = amount + vatValue;
+				// 	//alert(vatValue)
+				// 				// Update values in the grid
+				// 			grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
+				// 			grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
+				// 			grid.cellValue(rowIndex, "Unit Price",amount);
+				// 			grid.cellValue(rowIndex, "Qty",qty);
+				// 			grid.cellValue(rowIndex, "VAT%",vatRateStr);
+				// 			 grid.cellValue(rowIndex, "TaxSlabCode",TaxSlabCode);
+
+				// }
 
 			$(document).ready(function () {
 				var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");

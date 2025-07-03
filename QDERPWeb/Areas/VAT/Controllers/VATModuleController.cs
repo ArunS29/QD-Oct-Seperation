@@ -454,7 +454,8 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                         g.ReorderQty,
                         g.StoreCode,
                         g.MaxQty,
-                        g.MinQty
+                        g.MinQty,
+                        g.GsuoM
 
                     })
                     .ToListAsync();

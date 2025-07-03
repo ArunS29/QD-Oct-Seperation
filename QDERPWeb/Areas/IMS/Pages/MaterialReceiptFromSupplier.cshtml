@@ -1564,6 +1564,7 @@
 											dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
 
 											dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
+											dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.GsuoM || null); // ✅ Assign UOM
 
 										}
 
@@ -1601,7 +1602,8 @@
 
 											{ dataField: "GSSellingRate", caption: formatMessage('Selling Rate'), width: 100 },
 
-											{ dataField: "ReorderQty",caption: formatMessage('Current Qty'), width: 100 }
+											{ dataField: "ReorderQty",caption: formatMessage('Current Qty'), width: 100 },
+											{ dataField: "GsuoM", caption: formatMessage('UOM'), width: 100 }
 
 										],
 
@@ -1630,6 +1632,14 @@
 													dataGrid.cellValue(rowIndex, "Qty", 1);
 
 													dataGrid.cellValue(rowIndex, "VAT%", "15%");
+													dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.GsuoM || null); // ✅ Assign UOM
+															// Set PotaxSlab to correct value
+	getTaxSlabData().done(function (taxSlabs) {
+		const defaultSlab = taxSlabs.find(x => x.TaxSlab === "15% Domestic Standard Sales");
+		if (defaultSlab) {
+			dataGrid.cellValue(rowIndex, "PotaxSlab", defaultSlab.TaxSlabCode); // ✅ Use ID/code
+		}
+	});
 
 												}
 
@@ -2189,6 +2199,8 @@
 											dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
 
 											dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
+											dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.GsuoM || null); // ✅ Assign UOM
+
 
 										}
 
@@ -2226,7 +2238,9 @@
 
 											{ dataField: "GSSellingRate",caption: formatMessage('Selling Rate'), width: 100 },
 
-											{ dataField: "ReorderQty",caption: formatMessage('Current Qty'), width: 100 }
+											{ dataField: "ReorderQty",caption: formatMessage('Current Qty'), width: 100 },
+											{ dataField: "GsuoM",caption: formatMessage('UOM'), width: 100 }
+
 
 										],
 
@@ -2255,6 +2269,14 @@
 													dataGrid.cellValue(rowIndex, "Qty", 1);
 
 													dataGrid.cellValue(rowIndex, "VAT%", "15%");
+													dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.GsuoM || null); // ✅ Assign UOM
+														  // Set PotaxSlab to correct value
+	getTaxSlabData().done(function (taxSlabs) {
+		const defaultSlab = taxSlabs.find(x => x.TaxSlab === "15% Domestic Standard Sales");
+		if (defaultSlab) {
+			dataGrid.cellValue(rowIndex, "PotaxSlab", defaultSlab.TaxSlabCode); // ✅ Use ID/code
+		}
+	});
 
 												}
 
@@ -2681,7 +2703,9 @@
 				ItemPartNo: item.ItemPartNo,
 				CostPrice: item.CostPrice,
 				GSSellingRate: item.GssellingRate,
-				ReorderQty: item.ReorderQty
+				ReorderQty: item.ReorderQty,
+				GsuoM:item.GsuoM
+		
 			}));
 		});
 	}
@@ -4494,7 +4518,6 @@
 
 
 	$("#btnSave").on("click", function (e) {
-
 
 			const $btn = $(this).dxButton("instance");
 
