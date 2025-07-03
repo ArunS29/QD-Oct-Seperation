@@ -42,8 +42,77 @@
 	<script src="https://cdn3.devexpress.com/jslib/22.2.5/js/dx.all.js"></script> *@
 
 <style type="text/css">
+	.dx-popup-title.dx-toolbar {
+		background-color: blue !important;
+		color: white !important;
+	}
 
 
+
+	/* Fixed floating footer */
+	.fixed-footer-toolbar {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		z-index: 1055;
+		background-color: #fff;
+		border-top: 1px solid #dee2e6;
+		padding: 10px 20px;
+		display: flex;
+		justify-content: flex-end;
+		flex-wrap: wrap;
+		gap: 10px;
+		box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+	}
+
+	/* Common button style */
+	.footer-button.dx-button {
+		font-weight: 600;
+		border-radius: 6px;
+		transition: background-color 0.2s ease;
+		color: #fff;
+	}
+
+	/* Save button - Blue */
+	.save-btn .dx-button-content {
+		background-color: #007bff;
+		border-color: #007bff;
+	}
+
+	.save-btn:hover .dx-button-content {
+		background-color: #0056b3;
+	}
+
+	/* Print button - Purple */
+	.print-btn .dx-button-content {
+		background-color: #6f42c1;
+		border-color: #6f42c1;
+	}
+
+	.print-btn:hover .dx-button-content {
+		background-color: #5936a5;
+	}
+
+	/* Back button - Gray */
+	.back-btn .dx-button-content {
+		background-color: #6c757d;
+		border-color: #6c757d;
+	}
+
+	.back-btn:hover .dx-button-content {
+		background-color: #495057;
+	}
+
+	/* Delete button - Red */
+	.delete-btn .dx-button-content {
+		background-color: #dc3545;
+		border-color: #dc3545;
+	}
+
+	.delete-btn:hover .dx-button-content {
+		background-color: #a71d2a;
+	}
 
 
 	.horizontal-container {
@@ -116,77 +185,80 @@
 </div> *@
 <div class="container5">
 
-	<div class="title">
-		<div class="header-container" style="gap:10px;padding:10px">
-			<i class="fa-duotone fa-solid fas fa-pen-nib" style="font-size: 1.5rem; color: goldenrod;"></i>
-			<div id="CostAllocationPopup" class="no-border-title">Expenses /Reimbursement-Allocation for Employees</div>
-		</div>
+	
+
+	<div class="container-fluid mt-3">
+		<div class="row gy-3 align-items-end flex-wrap">
+
+			<!-- Dr/Cr -->
+			<div class="row g-3 align-items-end">
+
+				<!-- Dr/Cr Dropdown -->
+				<div class="col-md-1">
+					@(Html.DevExtreme().SelectBox()
+										.ID("EADrCr")
+										.DataSource(new[] { drCr })
+										.Value(drCr)
+										.Label(new JS("formatMessage('Dr/Cr')"))
+										.LabelMode(EditorLabelMode.Floating)
+										.Placeholder("Type")
+										.Width("100%")
+										)
+				</div>
+
+				<!-- Account Head -->
+				<div class="col-md-2">
+					@(Html.DevExtreme().TextBox()
+										.ID("AccountHd")
+										.Value(accountHead)
+										.ReadOnly(true)
+										.Label(new JS("formatMessage('Expenses / Returns for')"))
+										.LabelMode(EditorLabelMode.Floating)
+										.Width("100%")
+										)
+				</div>
+
+				<!-- Amount -->
+				<div class="col-md-1">
+					@(Html.DevExtreme().NumberBox()
+										.ID("vAmount")
+										.Value(voucherAmountParsed)
+										.Format("#,##0.000")
+										.Label(new JS("formatMessage('Amount')"))
+										.LabelMode(EditorLabelMode.Floating)
+										.Width("100%") 
+										)
+				</div>
+
+				<!-- Voucher No -->
+				<div class="col-md-2">
+					@(Html.DevExtreme().TextBox()
+										.ID("AEVoucherNo")
+										.Value(VoucherNo)
+										.Disabled(true)
+										.Label(new JS("formatMessage('Voucher No')"))
+										.LabelMode(EditorLabelMode.Floating)
+										.Width("100%")
+										)
+				</div>
+
+				<!-- Account ID -->
+				<div class="col-md-2">
+					@(Html.DevExtreme().TextBox()
+										.ID("AEVoucherNo1")
+										.Value(accountId)
+										.Disabled(true)
+										.Label(new JS("formatMessage('Account ID')"))
+										.LabelMode(EditorLabelMode.Floating)
+										.Width("100%")
+										)
+				</div>
+
+			</div>
+
+
 	</div>
 
-	<div class="container2">
-		<div class="dx-fieldset horizontal-container ">
-			<label for="DrCr">Dr/Cr</label>
-			@(
-						Html.DevExtreme().SelectBox()
-						.ID("EADrCr")
-						.DataSource(new[] { drCr })
-						.Value(drCr)
-						.Placeholder("Select Transaction Type")
-						.Width(90)
-						)
-
-			<label for="VoucherRefNo">Expenses / Returns for</label>
-			@(
-						Html.DevExtreme().TextBox()
-						.ID("AccountHd")
-						.Value(accountHead)
-						.ReadOnly(true)
-						)
-
-			<label for="txtVoucherAmount">Amount</label>
-			@(
-						Html.DevExtreme().NumberBox()
-						.ID("vAmount")
-						.Value(voucherAmountParsed)
-
-
-						.Format("#,##0.000")
-
-						)
-
-			@(
-						Html.DevExtreme().CheckBox()
-						.ID("IsApproved1")
-						)
-			<span style="margin-left:5px">Approved By:</span>
-		</div>
-		<div style="display:flex;gap:15px">
-		<div style="margin-left:25px">
-			Approved On: <span id="VoucherApprovedOn"></span>
-		</div>
-
-		<div>
-			@(
-						Html.DevExtreme().TextBox()
-						.ID("AEVoucherNo")
-						.Value(VoucherNo)
-						//.OnValueChanged("onVoucherNoChanged")
-						.Disabled(true)
-						.Width(250)
-						)
-		</div>
-		<div>
-			@(
-						Html.DevExtreme().TextBox()
-						.ID("AEVoucherNo1")
-						.Value(accountId)
-						//.OnValueChanged("onVoucherNoChanged")
-						.Disabled(true)
-						.Width(250)
-						)
-		</div>
-		</div>
-	</div>
 
 	<!-- DataGrid Section -->
 	<div class="dx-field ledgerResult" style="padding-top:20px">
@@ -300,7 +372,7 @@
 				.AllowColumnReordering(true) // Enable column reordering
 				.AllowColumnResizing(true)   // Enable column resizing
 				.ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
-				.HeaderFilter(filter => filter.Visible(true))
+				.HeaderFilter(filter => filter.Visible(false))
 				.ColumnAutoWidth(true)
 				.Height(250)
 				.ColumnAutoWidth(true)
@@ -325,37 +397,44 @@
 				)
 	</div>
 	<div class="container">
-		<div class="card-footer">
-			<div class="dx-fieldset horizontal-container mt-2">
+		<!-- Fixed Floating Footer -->
+		<div class="fixed-footer-toolbar">
+			@(Html.DevExtreme().Button()
+						.ID("AEbtnSave")
+						.Text("Save & Close")
+						.Type(ButtonType.Normal)
+						.StylingMode(ButtonStylingMode.Contained)
+						.Icon("save")
+						.ElementAttr(new { @class = "footer-button me-2 save-btn" })
+						)
 
-				@(Html.DevExtreme().Button()
-								.ID("AEbtnSave")
-								.Text("Save & Close")
-								.Type(ButtonType.Normal)
-								.StylingMode(ButtonStylingMode.Outlined)
-								.Icon("save")
-								)
-				@(Html.DevExtreme().Button()
-								.ID("AEbtnPrint")
-								.Text("Print")
-								.Type(ButtonType.Normal)
-								.StylingMode(ButtonStylingMode.Outlined)
-								.Icon("print")
+			@(Html.DevExtreme().Button()
+						.ID("AEbtnPrint")
+						.Text("Print")
+						.Type(ButtonType.Normal)
+						.StylingMode(ButtonStylingMode.Contained)
+						.Icon("print")
+						.ElementAttr(new { @class = "footer-button me-2 print-btn" })
+						)
 
-								)
-				@(Html.DevExtreme().Button()
-								.ID("AEbtnBack")
-								.Text("Back")
-								.Icon("arrowleft")
-								.OnClick("CloseEmployeeModel")
-								)
-				@(Html.DevExtreme().Button()
-								.ID("AEbtnDelete")
-								.Text("Delete")
-								.Icon("close")
-								)
-			</div>
+			@(Html.DevExtreme().Button()
+						.ID("AEbtnBack")
+						.Text("Back")
+						.Icon("arrowleft")
+						.StylingMode(ButtonStylingMode.Contained)
+						.OnClick("CloseEmployeeModel")
+						.ElementAttr(new { @class = "footer-button me-2 back-btn" })
+						)
+
+			@(Html.DevExtreme().Button()
+						.ID("AEbtnDelete")
+						.Text("Delete")
+						.Icon("close")
+						.StylingMode(ButtonStylingMode.Contained)
+						.ElementAttr(new { @class = "footer-button delete-btn" })
+						)
 		</div>
+
 
 		@using (Html.DevExtreme().NamedTemplate("JournalEmployeeAllocationDropdownContentTemplate"))
 		{
