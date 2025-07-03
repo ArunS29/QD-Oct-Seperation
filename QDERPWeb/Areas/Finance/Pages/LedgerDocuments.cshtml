@@ -8,6 +8,34 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
 <style>
+    .drop-zone {
+        border: 2px dashed #999;
+        border-radius: 10px;
+        padding: 30px;
+        text-align: center;
+        color: #666;
+        cursor: pointer;
+    }
+
+        .drop-zone.hover {
+            border-color: #007bff;
+            background-color: #f0f8ff;
+        }
+
+        .drop-zone span {
+            display: block;
+            margin-top: 10px;
+        }
+
+    .drop-preview {
+        margin-top: 10px;
+    }
+
+    .dx-fieldset {
+        margin: 0px 10px;
+        padding: 0;
+    }
+
     .overlay {
         display: none;
         position: fixed;
@@ -20,7 +48,7 @@
     }
 
     .dx-button-mode-contained.dx-button-success .dx-icon {
-       color: black;
+        color: black;
     }
     /* Ensure word wrap and center alignment for grid headers */
     .header-wrap {
@@ -170,18 +198,13 @@
 
     .mainContainer {
         width: 100%;
+        overflow-x:hidden;
     }
 
     .playIcon {
         display: none;
     }
 
-    .form-wrapper {
-        display: flex;
-        gap: 30px;
-        flex-wrap: wrap;
-        margin-bottom: 40px;
-    }
 
     .left-column {
         flex: 2;
@@ -201,23 +224,14 @@
         text-align: center;
     }
 
-    .form-row {
-        display: flex;
-        gap: 15px;
-        flex-wrap: wrap;
+
+
+    .form-row > div {
+        flex: 1;
+        min-width: 140px;
     }
 
-        .form-row > div {
-            flex: 1;
-            min-width: 140px;
-        }
 
-    .doc-type-row {
-        display: flex;
-        align-items: flex-end;
-        gap: 10px;
-        flex-wrap: nowrap;
-    }
 
     .bottom-buttons {
         display: flex;
@@ -231,28 +245,85 @@
         gap: 15px;
     }
 
-    .notification-text {
-        font-size: 14px;
-        text-align: right;
-        margin-top: 5px;
-    }
-
     .grid-section {
         margin-top: 30px;
     }
+
+    .title {
+        display: none !important;
+    }
+
+    .form-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 10px;
+    }
+
+    .doc-type-row {
+        display: flex;
+        gap: 5px;
+        align-items: flex-end;
+    }
+
+    .notification-text {
+        font-size: 12px;
+        color: #555;
+        padding-left: 10px;
+        /* align-self: center; */
+        white-space: nowrap;
+    }
+
+    .bottom-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 20px;
+        /* margin-top: 10px; */
+    }
+
+    .dx-datagrid-headers .dx-header-row > td {
+        padding-top: 4px !important;
+        padding-bottom: 4px !important;
+    }
+
+    .custom-drop-zone {
+        border: 2px dashed #ccc;
+        padding: 20px;
+        text-align: center;
+        margin-top: 20px;
+        background-color: #f8f8f8;
+    }
+
+    .file-name-display img {
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
 </style>
-<div class="title">
+@* <div class="title">
     <div class="header-container">
         <div id="LedgerDocuments" class="no-border-input"></div>
     </div>
-</div>
-<div style="padding:20px;">
+</div> *@
 
-    <div class="form-wrapper">
-        <!-- Left Column -->
-        <div class="left-column">
+<div id="customModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle" class="modalTitle">Ledger Document</h2>
+        </div>
+    </div>
+</div>
+<div class="form-wrapper">
+    <!-- Left Column -->
+    <div>
+        <div class="form-wrapper">
+            <!-- Row 1 -->
             <div class="form-row">
-                <div>
+                <div style="flex: 1;">
                     @(Html.DevExtreme().TextBox()
                         .ID("DocumentNo")
                         .Label("Document No:")
@@ -262,49 +333,65 @@
                 </div>
 
                 <div class="doc-type-row" style="flex: 2;">
-                    @(Html.DevExtreme().SelectBox()
-                        .ID("DocType")
-                        .Label("Type of the Document Attached:")
-                        .LabelMode(EditorLabelMode.Outside)
-                        .Width("100%")
-                        .DataSource(d => d.Mvc().Controller("StockInventory").LoadAction("GetDocumentTypes"))
-                        .DisplayExpr("text")
-                        .ValueExpr("id")
-                        .ValidationRules(rules =>
-                        {
-                            rules.AddRequired().Message("Document Type is required.");
-                        }))
-                    @(Html.DevExtreme().Button()
-                        .ID("btnAdd")
-                        .Icon("plus")
-                        .Type(ButtonType.Success)
-                        .Width(65)
-                        .ElementAttr("style", "color:black;")
-                        .OnClick("onAddDocType"))
+                    <div style="flex: 1;">
+                        @(
+                            Html.DevExtreme().SelectBox()
+                            .ID("DocType")
+                            .Label("Type of the Document Attached:")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .Width("100%")
+                            .DataSource(d => d.Mvc().Controller("StockInventory").LoadAction("GetDocumentTypes"))
+                            .DisplayExpr("text")
+                            .ValueExpr("id")
+                            .ValidationRules(rules =>
+                            {
+                                rules.AddRequired().Message("Document Type is required.");
+                            })
+                            .Buttons(buttons =>
+                            {
+                                buttons.Add()
+                                .Name("addLedger")
+                                .Location(TextEditorButtonLocation.After)
+                                .Widget(w => w.Button()
+                                .Type(ButtonType.Default)
+                                .Icon("plus")
+                                .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                .OnClick("onAddDocType"));
+                                buttons.Add()
+                                .Name("dropDown");
+                            }))
+                    </div>
+                    @* <div>
+                            @(Html.DevExtreme().Button()
+                                .ID("btnAdd")
+                                .Icon("plus")
+                                .Type(ButtonType.Success)
+                                .Width(65)
+                                .ElementAttr("style", "color:black;")
+                                .OnClick("onAddDocType"))
+                        </div> *@
                 </div>
 
-            </div>
-
-            <div class="form-row">
-                <div>
+                <div style="flex: 1;">
                     @(Html.DevExtreme().TextBox()
                         .ID("ReferenceNo")
                         .Label("Reference No:")
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%"))
                 </div>
+            </div>
 
-                <div>
+            <!-- Row 2 -->
+            <div class="form-row">
+                <div style="flex: 1;">
                     @(Html.DevExtreme().TextBox()
                         .ID("Remarks")
                         .Label("Remarks / Notes:")
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%"))
                 </div>
-            </div>
 
-            <div class="form-row">
-                <div>
+                <div style="flex: 1;">
                     @(Html.DevExtreme().DateBox()
                         .ID("DocumentExpiryDate")
                         .Label("Document Expiry Date:")
@@ -312,7 +399,7 @@
                         .Width("100%"))
                 </div>
 
-                <div>
+                <div style="flex: 1;">
                     @(Html.DevExtreme().DateBox()
                         .ID("HijriExpiryDate")
                         .Label("Expiry Date (Hijri):")
@@ -321,7 +408,7 @@
                         .Width("100%"))
                 </div>
 
-                <div>
+                <div style="flex: 1;">
                     @(Html.DevExtreme().DateBox()
                         .ID("NotificationDate")
                         .Label("Notification Date:")
@@ -332,68 +419,31 @@
                 </div>
             </div>
 
-            <div class="notification-text">
-                * A Notification will be issued to corresponding user at this date.
+            <div class="bottom-row">
+                <div class="drop-zone" id="dropZone">
+                    <i class="dx-icon dx-icon-upload" id="uploadIcon"></i>
+                    <span id="dropZoneText">Drag & drop a file here or click to browse</span>
+                    <div class="drop-preview" id="preview"></div>
+                </div>
+                <input type="file" id="fileUploader" accept="*/*" style="display:none;" />
+              
+
+                <div style="margin-left:150px;">
+                    @(Html.DevExtreme().Button()
+                        .Text("Add")
+                        .Icon("fas fa-plus")
+                        .Type(ButtonType.Success)
+                        .OnClick("onSaveDocument")
+                        .ElementAttr("style", "background-color:#007bff ! important; color: black;"))
+                </div>
             </div>
         </div>
-
-        <!-- Right Column -->
-        <div class="right-column">
-            <div>
-                @(Html.DevExtreme().FileUploader()
-                    .ID("fileUploader")
-                    .SelectButtonText("Attach a Document")
-                    .LabelText("")
-                    .Accept("*/*")
-                    .UploadMode(FileUploadMode.UseForm)
-                    .OnValueChanged("onFileSelected")
-                    )
-
-            </div>
-
-            <div>
-                @(Html.DevExtreme().Button()
-                    .Text("Add")
-                    .Icon("fas fa-plus")
-                    .Type(ButtonType.Success)
-                    .Width("100%")
-                    .OnClick("onSaveDocument"))
-            </div>
+        <input type="hidden" id="hiddenVoucherType" name="VoucherType" />
+        <!-- Grid Section -->
+        <div class="dx-field ledgerResult" style="margin-top: 10px;">
+            <div id="documentsGrid"></div>
         </div>
     </div>
-
-    <!-- Grid Section -->
-    <div class="grid-section">
-        @(Html.DevExtreme().DataGrid()
-            .ID("documentsGrid")
-            .Height(600)
-            .ShowBorders(true)
-            .ColumnAutoWidth(true)
-            .DataSource(d => d.Mvc().Controller("LedgerDocumentsF").LoadAction("GetDocuments"))
-            .Columns(columns =>
-            {
-                columns.Add().DataField("DocumentNo").Caption("Doc No").AllowEditing(false);
-                columns.Add().DataField("DocumentType").Caption("Document Type");
-                columns.Add().DataField("DocumentRefNo").Caption("Reference No");
-                columns.Add().DataField("DocumentRemarks").Caption("Remarks");
-                columns.Add().DataField("DocumentExpDate").Caption("Expiry On");
-                columns.Add().DataField("DocumentExpDateAr").Caption("Expiry (Hijri)");
-                columns.Add().DataField("DocumentNotificationDate").Caption("Notify On");
-                columns.Add().DataField("DocumentStatus").Caption("Status");
-                columns.Add().DataField("DocumentStatusRemarks").Caption("Status Remarks");
-            })
-            .Paging(p => p.Enabled(false))
-            .ShowRowLines(true)
-            .Editing(e =>
-            {
-                e.Mode(GridEditMode.Row);
-                e.AllowUpdating(true);
-                e.AllowAdding(false);
-                e.AllowDeleting(false);
-            })
-            .OnRowUpdating("onGridRowUpdating"))
-    </div>
-
     <!-- Bottom Buttons -->
     <div class="bottom-buttons">
         <div class="right-buttons">
@@ -418,9 +468,50 @@
 </div>
 
 <script>
+
     $(function () {
         loadInitialDocumentNo();
     });
+
+
+
+    $(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const referenceNo = urlParams.get("ReferenceNo");
+        const voucherType = urlParams.get("VoucherType");
+
+        $("#documentsGrid").dxDataGrid({
+            dataSource: DevExpress.data.AspNet.createStore({
+                key: "DocumentNo",
+                loadUrl: `/api/LedgerDocumentsF/GetDocuments?module=${encodeURIComponent(voucherType)}`,
+
+            }),
+            height: 600,
+            showBorders: true,
+            columnAutoWidth: true,
+            showRowLines: true,
+            paging: { enabled: false },
+            editing: {
+                mode: "row",
+                allowUpdating: true,
+                allowAdding: false,
+                allowDeleting: false
+            },
+            columns: [
+                { dataField: "DocumentNo", caption: "Doc No", allowEditing: false },
+                { dataField: "DocumentType", caption: "Document Type" },
+                { dataField: "DocumentRefNo", caption: "Reference No" },
+                { dataField: "DocumentRemarks", caption: "Remarks" },
+                { dataField: "DocumentExpDate", caption: "Expiry On" },
+                { dataField: "DocumentExpDateAr", caption: "Expiry (Hijri)" },
+                { dataField: "DocumentNotificationDate", caption: "Notify On" },
+                { dataField: "DocumentStatus", caption: "Status" },
+                { dataField: "DocumentStatusRemarks", caption: "Status Remarks" }
+            ],
+            onRowUpdating: onGridRowUpdating
+        });
+    });
+
 
     function loadInitialDocumentNo() {
         $.get("/api/LedgerDocumentsF/GetNewDocumentNo", function (data) {
@@ -436,20 +527,24 @@
          function onAddDocType(){
         const url = `/${tenantName}/IMS/DocumentTypes`;
         const title = "";
-            openModal(url, title);
+        openModal(url, title);
     }
 
 
 
-           function onSaveDocument() {
-        const files = $("#fileUploader").dxFileUploader("instance").option("value");
+    function onSaveDocument() {
+    
+        const urlParams = new URLSearchParams(window.location.search);
+        const referenceNo = urlParams.get("ReferenceNo");
+        const voucherType = urlParams.get("VoucherType");
 
-        if (!files || files.length === 0) {
+        console.log(voucherType)
+        
+        if (!selectedFile) {
             DevExpress.ui.notify("Please select a document to attach.", "warning", 2000);
             return;
         }
-
-        const file = files[0];
+        const file = selectedFile;
 
         const formData = new FormData();
         formData.append("File", file);
@@ -462,7 +557,7 @@
         formData.append("NotificationDate", $("#NotificationDate").dxDateBox("instance").option("value"));
 
         $.ajax({
-            url: "/api/LedgerDocumentsF/AddDocumentsEntry",
+           url: `/api/LedgerDocumentsF/AddDocumentsEntry?module=${encodeURIComponent(voucherType)}`,
             type: "POST",
             data: formData,
             contentType: false,
@@ -477,8 +572,6 @@
             }
         });
     }
-
-
 
     function onGridRowUpdating(e) {
         // Add update logic if needed
@@ -540,4 +633,111 @@
             const refNo = '@(ViewData["RefNo"] ?? "")';
             $("#ReferenceNo").dxTextBox("instance").option("value", refNo);
         });
+
+    let selectedFile = null;
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileUploader');
+    const preview = document.getElementById('preview');
+    const dropText = document.getElementById('dropZoneText');
+    const uploadIcon = document.getElementById('uploadIcon');
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
+    // Click to browse
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    // File selection via browse
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) handleFile(file);
+    });
+
+    // Drag effects
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('hover');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('hover');
+    });
+
+    // Drop file handler
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('hover');
+
+        const file = e.dataTransfer.files[0];
+        if (file) handleFile(file);
+    });
+
+    function handleFile(file) {
+        if (file.size > MAX_FILE_SIZE) {
+            DevExpress.ui.notify("File size exceeds 5MB limit.", "error", 2000);
+            return;
+        }
+        selectedFile = file;
+        // ✅ Clear existing content
+        preview.innerHTML = "";
+
+        // ✅ Hide text and icon
+        dropText.style.display = "none";
+        uploadIcon.style.display = "none";
+
+        // Show image preview
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.maxHeight = '120px';
+                img.style.maxWidth = '100%';
+                preview.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            // Show icon + file name
+            const fileInfo = document.createElement('div');
+            fileInfo.style.display = 'flex';
+            fileInfo.style.alignItems = 'center';
+
+            const icon = document.createElement('i');
+            icon.className = 'dx-icon dx-icon-file';
+            icon.style.marginRight = '5px';
+
+            const fileName = document.createElement('span');
+            fileName.textContent = file.name;
+
+            fileInfo.appendChild(icon);
+            fileInfo.appendChild(fileName);
+            preview.appendChild(fileInfo);
+        }
+
+        // Optional: Store file or base64 for upload
+    }
+
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const referenceNo = urlParams.get("ReferenceNo");
+        const voucherType = urlParams.get("VoucherType");
+
+        // 1. Bind ReferenceNo in the TextBox
+        if (referenceNo) {
+            const textboxInstance = $("#ReferenceNo").dxTextBox("instance");
+            if (textboxInstance) {
+                textboxInstance.option("value", referenceNo);
+            }
+        }
+        // 2. Store voucherType in hidden field
+        if (voucherType) {
+
+            const trimmedVoucherType = voucherType.trim();
+            $("#hiddenVoucherType").val(trimmedVoucherType);
+
+        } else {
+            console.warn("VoucherType is missing. API call not made.");
+        }
+
+
+    });
+
 </script>

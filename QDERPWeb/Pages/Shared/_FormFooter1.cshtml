@@ -181,7 +181,7 @@
         .ID("btnAttach")
         .Text(new JS("formatMessage('Attach')"))
         .Icon("link")
-        .OnClick("onAttachButtonClick")
+        .OnClick("onAttachmentButtonClick")
         .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
         )
     <div class="btn-container">
@@ -1023,7 +1023,17 @@
             'width=1200,height=800,scrollbars=yes,resizable=yes'
         );
     }
+    function onAttachmentButtonClick() {
+        var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
+        var voucherNo = voucherNoBox.option("value");
 
+        var voucherTypeBox = $("#VoucherType").dxSelectBox("instance"); // or dxTextBox
+        var voucherType = voucherTypeBox.option("value");
+        console.log(voucherType)
+        const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&VoucherType=${encodeURIComponent(voucherType)}&modal=true`;
+        const title = "Ledger Documents";
+        openModal(url, title);
+    }
 
     
 

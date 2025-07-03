@@ -997,13 +997,14 @@
                                                 .ElementAttr(new { @class = "light-theme-input" }))
                     </div>
 
-                    <div style="flex-shrink: 0;">
-                        @(Html.DevExtreme().Button()
-                                                .ID("btnAttachment")
-                                                .Icon("fa fa-paperclip")
-                                                .ElementAttr("class", "custom-popup-button custom-icon-color")
-                                                .OnClick("onAttachButtonClick"))
-                    </div>
+                    @* <div style="flex-shrink: 0;"> *@
+                    @*     @(Html.DevExtreme().Button() *@
+                    @*                             .ID("btnAttachment") *@
+                    @*                             .Icon("fa fa-paperclip") *@
+                    @*                             .ElementAttr("class", "custom-popup-button custom-icon-color") *@
+                    @*                            // .OnClick("onAttachmentButtonClick") *@
+                    @*                             ) *@
+                    @* </div> *@
                 </div>
 
 
@@ -3409,5 +3410,11 @@ function fetchUpdatedData(voucherEntryNo) {
                     $("#narration").text(
                          formatMessage("Narration"));
             });
+
+    //                 function onAttachmentButtonClick(){
+    //     const url = `/${tenantName}/Finance/LedgerDocuments`;
+    //     const title = "";
+    //         openModal(url, title);
+    // }
 
 </script>
