@@ -697,7 +697,260 @@ VALUES
 (125, 'Finance Menu', 'Asset Register', 'Asset Register', 1, 1, NULL, 'Finance') 
 
    
+INSERT INTO [tbl901UserAccessMasterWeb] (  
 
+    [SlNo], [ItemForm], [ItemName], [ItemDescription],  
+
+    [ItemEnabled], [ItemVisible], [ItemRemarks], [Module]  
+
+)  
+
+VALUES  
+
+(212, 'Inventory Menu', 'Stock Inventory', 'Stock Inventory', 1, 1, NULL, 'Inventory'),
+
+(213, 'Inventory Menu', 'Material Requests', 'Material Requests', 1, 1, NULL, 'Inventory'),
+
+(214, 'Inventory Menu', 'Quotations To Clients', 'Quotations To Clients', 1, 1, NULL, 'Inventory'),
+
+(215, 'Inventory Menu', 'Sales Orders', 'Sales Orders', 1, 1, NULL, 'Inventory'),
+
+(216, 'Inventory Menu', 'Delivery Note', 'Delivery Note', 1, 1, NULL, 'Inventory'),
+
+(217, 'Inventory Menu', 'RFQ Database', 'RFQ Database', 1, 1, NULL, 'Inventory'),
+
+(218, 'Inventory Menu', 'Quotation Analysis', 'Quotation Analysis', 1, 1, NULL, 'Inventory'),
+
+(219, 'Inventory Menu', 'Purchase Orders', 'Purchase Orders', 1, 1, NULL, 'Inventory'),
+
+(220, 'Inventory Menu', 'Material Receipts', 'Material Receipts', 1, 1, NULL, 'Inventory'),
+
+(221, 'Inventory Menu', 'Client Leads', 'Client Leads', 1, 1, NULL, 'Inventory'),
+
+(222, 'Inventory Menu', 'Suppliers', 'Suppliers', 1, 1, NULL, 'Inventory'),
+
+(223, 'Inventory Menu', 'Job Orders', 'Job Orders', 1, 1, NULL, 'Inventory'),
+
+(224, 'Inventory Menu', 'Stock Adjustments', 'Stock Adjustments', 1, 1, NULL, 'Inventory'),
+
+(225, 'Inventory Menu', 'My Dashboard', 'My Dashboard', 1, 1, NULL, 'Inventory'),
+
+(226, 'Equipment Rental Menu', 'frm401Dashboard', 'Equipments Dashboard', 1, 1, NULL, 'Equipment Rental'),
+
+(227, 'Equipment Rental Menu', 'frm402Assets', 'Equipments / Assets', 1, 1, NULL, 'Equipment Rental'),
+
+(228, 'Equipment Rental Menu', 'frm403Enquiry', 'Equipment Enquiry', 1, 1, NULL, 'Equipment Rental'),
+
+(229, 'Equipment Rental Menu', 'frm404Quotation', 'Equipments Quotation', 1, 1, NULL, 'Equipment Rental'),
+
+(230, 'Equipment Rental Menu', 'frm405SalesOrder', 'Equipment Sales Order', 1, 1, NULL, 'Equipment Rental'),
+
+(231, 'Equipment Rental Menu', 'frm406Delivery', 'Equipment Delivery', 1, 1, NULL, 'Equipment Rental'),
+
+(232, 'Equipment Rental Menu', 'frm407Timesheet', 'Equipment TimeSheet', 1, 1, NULL, 'Equipment Rental'),
+
+(233, 'Equipment Rental Menu', 'frm408PurchaseOrder', 'Purchase Order', 1, 1, NULL, 'Equipment Rental'),
+
+(234, 'Equipment Rental Menu', 'frm409SupplierSummary', 'Supplier Inv Summary', 1, 1, NULL, 'Equipment Rental'),
+
+(235, 'Equipment Rental Menu', 'frm410ClientSummary', 'Client Inv Summary', 1, 1, NULL, 'Equipment Rental'),
+
+(236, 'Equipment Rental Menu', 'frm411ServiceMaintenance', 'Service & Maintenance', 1, 1, NULL, 'Equipment Rental'),
+
+(237, 'Equipment Rental Menu', 'frm412Clients', 'Clients', 1, 1, NULL, 'Equipment Rental'),
+
+(238, 'Equipment Rental Menu', 'frm413Suppliers', 'Suppliers', 1, 1, NULL, 'Equipment Rental'),
+
+(239, 'Equipment Rental Menu', 'frm414TimesheetNew', 'Equipment Timesheet (New)', 1, 1, NULL, 'Equipment Rental');
+ 
+
+
+   INSERT INTO [tbl901UserAccessMasterWeb] (
+    [SlNo], [ItemForm], [ItemName], [ItemDescription],
+    [ItemEnabled], [ItemVisible], [ItemRemarks], [Module]
+)
+VALUES
+(226, 'VAT Menu', 'frm301SalesRegisterVAT', 'Sales Invoice Register', 1, 1, NULL, 'VAT'),
+(227, 'VAT Menu', 'frm302VATCreditNoteRegister', 'Credit Note Register', 1, 1, NULL, 'VAT'),
+(228, 'VAT Menu', 'frm303VATPurchaseRegister', 'Purchase Invoice Register', 1, 1, NULL, 'VAT'),
+(229, 'VAT Menu', 'frm304VATDebitNoteRegister', 'Debit Note Register', 1, 1, NULL, 'VAT'),
+(230, 'VAT Menu', 'frm305VATReturns', 'VAT Returns', 1, 1, NULL, 'VAT'),
+(231, 'VAT Menu', 'frm306VATSalesReporting', 'Sales Reporting', 1, 1, NULL, 'VAT'),
+(232, 'VAT Menu', 'frm307ProformaInvoices', 'Proforma Invoices', 1, 1, NULL, 'VAT');
+
+
+SET IDENTITY_INSERT tbl901UserAccessMasterWeb ON;
+
+INSERT INTO tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+    (300,'VAT Module SalesRegister Main View Screen','frm20162VATInvoiceMasterView_ddButtonLayout','Layout',1,1,null,'VAT',null,null,null,null), 
+    (301,'VAT Module SalesRegister Main View Screen', 'frm20162VATInvoiceMasterView_btnMoveDown','Print',1, 1,null,'VAT',null,null,null,null), 
+    (302,'VAT Module SalesRegister Main View Screen', 'frm20162VATInvoiceMasterView_btnMoveUp','Search', 1, 1,null, 'VAT',null,null,null,null), 
+    (303,'VAT Module SalesRegister Main View Screen', 'frm20162VATInvoiceMasterView_btnSaveAndClose','GroupPanel', 1, 1,null, 'VAT',null,null,null,null), 
+    (304,'VAT Module SalesRegister Main View Screen', 'frm20162VATInvoiceMasterView_btnAddNew','InvoiceDetails',1, 1,null, 'VAT',null,null,null,null), 
+    (305,'VAT Module SalesRegister Main View Screen', 'frm20162VATInvoiceMasterView_ddReports','Reports',1, 1,null,'VAT',null,null,null,null), 
+    (306,'VAT Module SalesRegister Main View Screen', 'frm20162VATInvoiceMasterView_ddButtonPayment','Payment', 1, 1,null, 'VAT',null,null,null,null), 
+    (307,'VAT Module SalesRegister Main View Screen', 'frm20162VATInvoiceMasterView_btnColumnChooser','ColumnChooser', 1, 1,null, 'VAT',null,null,null,null);
+
+
+INSERT INTO tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES  
+    (308,'VAT Invoice Edit','frm20161VATInvoiceEdit_ddButtonLayout','Layout',1, 1,null,'VAT', 0, 0, 0, 0, 0), 
+    (309,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnMoveDown','MoveDown',1, 1,null,'VAT', 0, 0, 0, 0, 0), 
+    (310,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnMoveUp','MoveUp', 1, 1,null, 'VAT', 0, 0, 0, 0, 0), 
+    (311,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnPrint1','Print', 1, 1,null, 'VAT', 0, 0, 0, 0, 0), 
+    (312,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnSave','Save',1, 1,null, 'VAT', 0, 0, 0, 0, 0), 
+    (313,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnSaveAndClose','SaveandClose',1, 1,null,'VAT', 0, 0, 0, 0, 0), 
+    (314,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnAddNew','AddNew', 1, 1,null, 'VAT', 0, 0, 0, 0, 0), 
+    (315,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnDelete','Delete', 1, 1,null, 'VAT', 0, 0, 0, 0, 0),
+    (316,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnBack','Back', 1, 1,null, 'VAT', 0, 0, 0, 0, 0),
+    (317,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnVerify','Verify', 1, 1,null, 'VAT', 0, 0, 0, 0, 0),
+    (318,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnApprove','Approve', 1, 1,null, 'VAT', 0, 0, 0, 0, 0),
+    (319,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnAttach','Attach', 1, 1,null, 'VAT', 0, 0, 0, 0, 0),
+    (320,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnPostToLedgers','PostToLedger', 1, 1,null, 'VAT', 0, 0, 0, 0, 0),
+    (321,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnPostTag','PostTag', 1, 1,null, 'VAT', 0, 0, 0, 0, 0);
+
+
+
+
+		   insert into tbl901UserAccessMasterWeb (SlNo,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,ItemRemarks,Module)  
+values 
+    (322,'VAT Module Credit Note Register Screen ','frm20169VATCreditNoteView_ddButtonLayout','Layout',1, 1,null,'VAT'), 
+    (323,'VAT Module Credit Note Register Screen', 'frm20169VATCreditNoteView_btnToggleSearch','ToogleSearch',1, 1,null,'VAT'), 
+    (324,'VAT Module Credit Note Register Screen', 'frm20169VATCreditNoteView_btntoggleGroupPanel','ToggleGroupPanel', 1, 1,null, 'VAT'), 
+    (325,'VAT Module Credit Note Register Screen', 'frm20169VATCreditNoteView_btnPrint','Print', 1, 1,null, 'VAT'), 
+    (326,'VAT Module Credit Note Register Screen', 'frm20169VATCreditNoteView_btnAddNew1','AddNew',1, 1,null, 'VAT'), 
+    (327,'VAT Module Credit Note Register Screen', 'frm20169VATCreditNoteView_ddReport123','Report',1, 1,null,'VAT')
+   
+
+
+
+		   insert into tbl901UserAccessMasterWeb (SlNo,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,ItemRemarks,Module)  
+values 
+    (328,'VAT Module New e-Invoice Credit Note Screen','frm20168VATCreditNoteEdit_ddButtonLayout','Layout',1, 1,null,'VAT'), 
+    (329,'VAT Module New e-Invoice Credit Note Screen', 'frm20168VATCreditNoteEdit_btnMoveDown','MoveDown',1, 1,null,'VAT'), 
+    (330,'VAT Module New e-Invoice Credit Note Screen', 'frm20168VATCreditNoteEdit_btnMoveUp','MoveUp', 1, 1,null, 'VAT'), 
+    (331,'VAT Module New e-Invoice Credit Note Screen', 'frm20168VATCreditNoteEdit_btnPrint23','Print', 1, 1,null, 'VAT',), 
+    (332,'VAT Module New e-Invoice Credit Note Screen', 'frm20168VATCreditNoteEdit_btnSave','Save',1, 1,null, 'VAT'), 
+    (333,'VAT Module New e-Invoice Credit Note Screen', 'frm20168VATCreditNoteEdit_btnSaveAndClose','SaveandClose',1, 1,null,'VAT'), 
+    (334,'VAT Module New e-Invoice Credit Note Screen', 'frm20168VATCreditNoteEdit_btnAddNew','AddNew', 1, 1,null, 'VAT'), 
+    (335,'VAT Module New e-Invoice Credit Note Screen', 'frm20168VATCreditNoteEdit_btnBack','Back', 1, 1,null, 'VAT'),
+    (336,'VAT Module New e-Invoice Credit Note Screen', 'frm20168VATCreditNoteEdit_btnVerify','Verify', 1, 1,null, 'VAT'),
+    (337,'VAT Module New e-Invoice Credit Note Screen', 'frm20168VATCreditNoteEdit_btnApprove','Approve', 1, 1,null, 'VAT'),
+    (338,'VAT Module New e-Invoice Credit Note Screen', 'frm20168VATCreditNoteEdit_btnAttach','Attach', 1, 1,null, 'VAT'),
+    (339,'VAT Module New e-Invoice Credit Note Screen', 'frm20168VATCreditNoteEdit_btnPostToLedgers','PostToLedger', 1, 1,null, 'VAT'),
+    (340,'VAT Module New e-Invoice Credit Note Screen', 'frm20168VATCreditNoteEdit_btnPostTag','PostTag', 1, 1,null, 'VAT')
+
+
+
+
+		  insert into tbl901UserAccessMasterWeb (SlNo,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,ItemRemarks,Module)  
+values 
+    (341,'VAT Module Purchase Master View Screen','frm20165VATPurchaseMasterView_ddButtonLayout','Layout',1, 1,null,'VAT'), 
+    (342,'VAT Module Purchase Master View Screen', 'frm20165VATPurchaseMasterView_btnToggleSearch','ToogleSearch',1, 1,null,'VAT'), 
+    (343,'VAT Module Purchase Master View Screen', 'frm20165VATPurchaseMasterView_btntoggleGroupPanel','ToggleGroupPanel', 1, 1,null, 'VAT'), 
+    (344,'VAT Module Purchase Master View Screen', 'frm20165VATPurchaseMasterView_btnPrint','Print', 1, 1,null, 'VAT'), 
+    (345,'VAT Module Purchase Master View Screen', 'frm20165VATPurchaseMasterView_btnAddNew1','AddNew',1, 1,null, 'VAT'), 
+    (346,'VAT Module Purchase Master View Screen', 'frm20165VATPurchaseMasterView_btnPurchaseDetails','Purchasedetails',1, 1,null, 'VAT'), 
+    (347,'VAT Module Purchase Master View Screen', 'frm20165VATPurchaseMasterView_ddReport12','Report',1, 1,null,'VAT')
+
+
+
+
+	insert into tbl901UserAccessMasterWeb (SlNo,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,ItemRemarks,Module)  
+values 
+    (348,'VAT Module New VAT Purchase Bill Screen','frm20164VATPurchaseEdit_ddButtonLayout','Layout',1, 1,null,'VAT'), 
+    (349,'VAT Module New VAT Purchase Bill Screen', 'frm20164VATPurchaseEdit_btnPrint2','Print', 1, 1,null, 'VAT'), 
+    (350,'VAT Module New VAT Purchase Bill Screen', 'frm20164VATPurchaseEdit_btnSave','Save',1, 1,null, 'VAT'), 
+    (351,'VAT Module New VAT Purchase Bill Screen', 'frm20164VATPurchaseEdit_btnSaveAndClose','SaveandClose',1, 1,null,'VAT'), 
+    (352,'VAT Module New VAT Purchase Bill Screen', 'frm20164VATPurchaseEdit_btnAddNew','AddNew', 1, 1,null, 'VAT'), 
+    (353,'VAT Module New VAT Purchase Bill Screen', 'frm20164VATPurchaseEdit_btnBack','Back', 1, 1,null, 'VAT'),
+    (354,'VAT Module New VAT Purchase Bill Screen', 'frm20164VATPurchaseEdit_btnVerify','Verify', 1, 1,null, 'VAT'),
+    (355,'VAT Module New VAT Purchase Bill Screen', 'frm20164VATPurchaseEdit_btnApprove','Approve', 1, 1,null, 'VAT'),
+    (356,'VAT Module New VAT Purchase Bill Screen', 'frm20164VATPurchaseEdit_btnAttach','Attach', 1, 1,null, 'VAT'),
+    (357,'VAT Module New VAT Purchase Bill Screen', 'frm20164VATPurchaseEdit_btnPostToLedgers','PostToLedger', 1, 1,null, 'VAT')
+
+
+
+
+
+	 insert into tbl901UserAccessMasterWeb (SlNo,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,ItemRemarks,Module)  
+values 
+    (358,'VAT Module Debit Note Register Screen','frm20171VATDebitNoteView_ddButtonLayout','Layout',1, 1,null,'VAT'), 
+    (359,'VAT Module Debit Note Register Screen', 'frm20171VATDebitNoteView_btnPrint','Print', 1, 1,null, 'VAT'), 
+    (360,'VAT Module Debit Note Register Screen', 'frm20171VATDebitNoteView_btnAddNew1','AddNew', 1, 1,null, 'VAT'), 
+    (361,'VAT Module Debit Note Register Screen', 'frm20171VATDebitNoteView_ddReport12','Report',1, 1,null,'VAT'),
+    (362,'VAT Module Debit Note Register Screen', 'frm20171VATDebitNoteView_btnToggleSearch','ToggleSearch',1, 1,null,'VAT'), 
+    (363,'VAT Module Debit Note Register Screen', 'frm20171VATDebitNoteView_btntoggleGroupPanel','ToggleGroupPanel', 1, 1,null, 'VAT')
+
+
+
+
+
+
+		insert into tbl901UserAccessMasterWeb (SlNo,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,ItemRemarks,Module)  
+values 
+    (364,'VAT Module New e-Invoice Debit Note Screen','frm20170VATDebitNoteEdit_ddButtonLayout','Layout',1, 1,null,'VAT'), 
+    (365,'VAT Module New e-Invoice Debit Note Screen', 'frm20170VATDebitNoteEdit_btnPrint3','Print', 1, 1,null, 'VAT'), 
+    (366,'VAT Module New e-Invoice Debit Note Screen', 'frm20170VATDebitNoteEdit_btnSave','Save',1, 1,null, 'VAT'), 
+    (367,'VAT Module New e-Invoice Debit Note Screen', 'frm20170VATDebitNoteEdit_btnSaveAndClose','SaveandClose',1, 1,null,'VAT'), 
+    (368,'VAT Module New e-Invoice Debit Note Screen', 'frm20170VATDebitNoteEdit_btnAddNew','AddNew', 1, 1,null, 'VAT'), 
+    (369,'VAT Module New e-Invoice Debit Note Screen', 'frm20170VATDebitNoteEdit_btnDelete','Delete', 1, 1,null, 'VAT'),
+    (370,'VAT Module New e-Invoice Debit Note Screen', 'frm20170VATDebitNoteEdit_btnBack','Back', 1, 1,null, 'VAT'),
+    (371,'VAT Module New e-Invoice Debit Note Screen', 'frm20170VATDebitNoteEdit_btnVerify','Verify', 1, 1,null, 'VAT'),
+    (372,'VAT Module New e-Invoice Debit Note Screen', 'frm20170VATDebitNoteEdit_btnApprove','Approve', 1, 1,null, 'VAT'),
+    (373,'VAT Module New e-Invoice Debit Note Screen', 'frm20170VATDebitNoteEdit_btnAttach','Attach', 1, 1,null, 'VAT'),
+    (374,'VAT Module New e-Invoice Debit Note Screen', 'frm20170VATDebitNoteEdit_btnPostToLedgers','PostToLedger', 1, 1,null, 'VAT'),
+    (375,'VAT Module New e-Invoice Debit Note Screen', 'frm20170VATDebitNoteEdit_btnPostTag','PostTag', 1, 1,null, 'VAT')
+
+
+
+	 insert into tbl901UserAccessMasterWeb (SlNo,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,ItemRemarks,Module)  
+values 
+    (376,'VAT Module VAT Returns Screen', 'frm20166VATReturnsForm_btnPrint','Print', 1, 1,null, 'VAT'), 
+    (377,'VAT Module VAT Returns Screen', 'frm20166VATReturnsForm_ddReports4','Report',1, 1,null,'VAT')
+
+
+
+
+	 insert into tbl901UserAccessMasterWeb (SlNo,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,ItemRemarks,Module)  
+values 
+    (378,'VAT Module Sales Reporting Screen','frm20184VATInvoiceReportingInDe_ddButtonLayout','Layout',1, 1,null,'VAT'), 
+    (379,'VAT Module Sales Reporting Screen', 'frm20184VATInvoiceReportingInDe_btnPrint','Print', 1, 1,null, 'VAT'), 
+    (380,'VAT Module Sales Reporting Screen', 'frm20184VATInvoiceReportingInDe_ddReport0','Report',1, 1,null,'VAT'),
+    (381,'VAT Module Sales Reporting Screen', 'frm20184VATInvoiceReportingInDe_btnShowFields','ShowFields',1, 1,null,'VAT'), 
+    (382,'VAT Module Sales Reporting Screen', 'frm20184VATInvoiceReportingInDe_btnShowRowTotals','ShowRowTotals', 1, 1,null, 'VAT')
+
+
+
+	 insert into tbl901UserAccessMasterWeb (SlNo,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,ItemRemarks,Module)  
+values 
+    (383,'VAT Module Proforma Invoice Master View Screen','frm20182ProInvoiceMasterView_ddButtonLayout','Layout',1, 1,null,'VAT'), 
+    (384,'VAT Module Proforma Invoice Master View Screen','frm20182ProInvoiceMasterView_btnPrint','Print', 1, 1,null, 'VAT'), 
+    (385,'VAT Module Proforma Invoice Master View Screen','frm20182ProInvoiceMasterView_btnAddNew1','AddNew', 1, 1,null, 'VAT'), 
+    (386,'VAT Module Proforma Invoice Master View Screen','frm20182ProInvoiceMasterView_btnToggleSearch','ToggleSearch',1, 1,null,'VAT'), 
+    (387,'VAT Module Proforma Invoice Master View Screen','frm20182ProInvoiceMasterView_btntoggleGroupPanel','ToggleGroupPanel', 1, 1,null, 'VAT')
+
+
+
+
+	insert into tbl901UserAccessMasterWeb (SlNo,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,ItemRemarks,Module)  
+values 
+    (388,'VAT Module Proforma Invoice Edit Form Screen', 'frm20181ProformaInvoiceEdit_btnPrint22','Print', 1, 1,null, 'VAT'), 
+    (389,'VAT Module Proforma Invoice Edit Form Screen', 'frm20181ProformaInvoiceEdit_btnMoveDown','MoveDown',1, 1,null,'VAT'), 
+    (390,'VAT Module Proforma Invoice Edit Form Screen', 'frm20181ProformaInvoiceEdit_btnMoveUp','MoveUp', 1, 1,null, 'VAT'), 
+    (391,'VAT Module Proforma Invoice Edit Form Screen', 'frm20181ProformaInvoiceEdit_btnSave','Save',1, 1,null, 'VAT'), 
+    (392,'VAT Module Proforma Invoice Edit Form Screen', 'frm20181ProformaInvoiceEdit_btnSaveAndClose','SaveandClose',1, 1,null,'VAT'), 
+    (393,'VAT Module Proforma Invoice Edit Form Screen', 'frm20181ProformaInvoiceEdit_btnAddNew','AddNew', 1, 1,null, 'VAT'), 
+    (394,'VAT Module Proforma Invoice Edit Form Screen', 'frm20181ProformaInvoiceEdit_btnDelete','Delete', 1, 1,null, 'VAT'),
+    (395,'VAT Module Proforma Invoice Edit Form Screen', 'frm20181ProformaInvoiceEdit_btnBack','Back', 1, 1,null, 'VAT'),
+    (396,'VAT Module Proforma Invoice Edit Form Screen', 'frm20181ProformaInvoiceEdit_btnVerify','Verify', 1, 1,null, 'VAT'),
+    (397,'VAT Module Proforma Invoice Edit Form Screen', 'frm20181ProformaInvoiceEdit_btnApprove','Approve', 1, 1,null, 'VAT'),
+    (398,'VAT Module Proforma Invoice Edit Form Screen', 'frm20181ProformaInvoiceEdit_btncreatevatinvoice','createvatinvoice', 1, 1,null, 'VAT')
+
+    	SET IDENTITY_INSERT tbl901UserAccessMasterWeb OFF; 
 ---------------------------Voucher ---------------------------  
 
   
@@ -935,8 +1188,19 @@ VALUES
     (N'العربية', 'ar', 'https://flagcdn.com/w40/ae.png');  
 
   
+  INSERT INTO Language (Name, Value, Flag)
+VALUES (N'普通话中国', N'zh', N'https://flagcdn.com/w40/cn.png');
+   
+INSERT INTO Language (Name, Value, Flag)
+VALUES (N'한국어', N'ko', N'https://flagcdn.com/w40/kr.png');
+ 
+INSERT INTO Language (Name, Value, Flag)
+VALUES (N'हिन्दी', N'hi', N'https://flagcdn.com/w40/in.png');
+ 
+INSERT INTO Language (Name, Value, Flag)
+VALUES (N'اُردُو', N'ur', N'https://flagcdn.com/w40/pk.png');
 
-  
+
 
 ALTER TABLE dbo.tbl901AlertUsers 
 ADD Isseen BIT NOT NULL DEFAULT 0; 
@@ -978,3 +1242,1098 @@ Where FormID = @FormID and UserID = @UserID
 
   
 
+  ALTER PROCEDURE [dbo].[StProAccountLedger]    
+
+    @ParamAccountNo VARCHAR(50),    
+
+    @StartDate DATETIME,   
+
+    @EndDate DATETIME   
+
+AS   
+
+BEGIN   
+
+    SET NOCOUNT ON;   
+ 
+    DECLARE  
+
+        @BaseCurrencyCode VARCHAR(10), 
+
+        @BaseCurrencyImage NVARCHAR(MAX), 
+
+        @BaseCurrencySymbole VARCHAR(50), 
+
+        @BaseCurrencyNote VARCHAR(50), 
+
+        @BaseCurrencyDisplayCode VARCHAR(50);
+ 
+    -- Get Base Currency Code from Company Table 
+
+    SELECT TOP 1  
+
+        @BaseCurrencyCode = CurrencyType  
+
+    FROM tbl901CompanyDetails;
+ 
+    -- Get Base Currency Details 
+
+    SELECT TOP 1 
+
+        @BaseCurrencyImage = CurrencyImage, 
+
+        @BaseCurrencySymbole = CurrencySymbole, 
+
+        @BaseCurrencyNote = CurrencyNote, 
+
+        @BaseCurrencyDisplayCode = CurrencyCode 
+
+    FROM tbl20169CurrencyExchange  
+
+    WHERE CurrencyMasterCode = @BaseCurrencyCode;
+ 
+    -- Opening Balance Section (no CurrencyId for historical opening, so CurrencyName not applicable)
+
+    SELECT  
+
+        '.Opening Balance' AS VoucherNo,  
+
+        @StartDate AS VoucherDate,    
+
+        '' AS VoucherRefNo, 
+
+        'Opening Balance' AS VoucherNarration,   
+
+        '' AS VoucherEnteredBy, 
+
+        '' AS VoucherEnteredOn,   
+
+        '' AS VoucherVerifiedBy, 
+
+        '' AS VoucherVerifiedOn,   
+
+        '' AS VoucherApprovedBy, 
+
+        '' AS VoucherApprovedOn,   
+
+        0 AS VoucherEntryNo, 
+
+        AccountHead,    
+
+        AccountHeadName, 
+
+        '' AS DrCr, 
+
+        0 AS DrAmount,    
+
+        0 AS CrAmount,  
+
+        SUM(VoucherAmountFormatted) AS VoucherAmountFormatted, 
+
+        SUM(VoucherAmountFormatted * ISNULL(CurrencyRate, 1)) AS ConvertedAmount, 
+
+        0 AS ConvertedDrAmount, 
+
+        0 AS ConvertedCrAmount, 
+
+        'Opening Balance' AS EntryNarration,  
+
+        AccountGroup,  
+
+        MasterGroup,  
+
+        'Opening Balance' AS VoucherType,  
+
+        'Opening Balance' AS SysRemarks,  
+
+        '' AS VoucherModifiedBy,  
+
+        '' AS VoucherModifiedOn,   
+
+        '' AS BillNo,  
+
+        '' AS BillDate,  
+
+        '' AS BillPaidTo,  
+
+        '' AS BillRemarks,  
+
+        @StartDate AS VoucherEffectiveDate,  
+
+        AccountHeadArabic,  
+
+        '' AS ReferenceNote, 
+
+        @BaseCurrencyCode AS CurrencyType, 
+
+        1 AS ExchangeRate, 
+
+        @BaseCurrencyImage AS CurrencyImage, 
+
+        @BaseCurrencySymbole AS CurrencySymbole, 
+
+        @BaseCurrencyNote AS CurrencyNote, 
+
+        @BaseCurrencyDisplayCode AS CurrencyCode,
+
+        NULL AS CurrencyName,
+
+		NULL AS TransactionCurrencySymbol
+
+		 -- No CurrencyName for opening
+
+    FROM dbo.qry201MainVoucherEntriesWithMaster   
+
+    WHERE AccountHead = @ParamAccountNo  
+
+      AND VoucherDate < @StartDate  
+
+      AND ISNULL(IsCalculateOpeningBalance, 0) = 1   
+
+    GROUP BY  
+
+        AccountHead,  
+
+        AccountHeadName,  
+
+        AccountGroup,  
+
+        MasterGroup,  
+
+        AccountHeadArabic   
+ 
+    UNION ALL   
+ 
+    -- Transaction Records Section
+
+    SELECT      
+
+        q.VoucherNo,  
+
+        q.VoucherDate,    
+
+        q.VoucherRefNo,  
+
+        q.VoucherNarration,    
+
+        q.VoucherEnteredBy,  
+
+        q.VoucherEnteredOn,    
+
+        q.VoucherVerifiedBy,  
+
+        q.VoucherVerifiedOn,    
+
+        q.VoucherApprovedBy,  
+
+        q.VoucherApprovedOn,    
+
+        q.VoucherEntryNo,  
+
+        q.AccountHead,    
+
+        q.AccountHeadName,  
+
+        q.DrCr,  
+
+        q.DrAmount,    
+
+        q.CrAmount,  
+
+        q.VoucherAmountFormatted, 
+
+        q.VoucherAmountFormatted * ISNULL(q.CurrencyRate, 1) AS ConvertedAmount, 
+
+        q.DrAmount * ISNULL(q.CurrencyRate, 1) AS ConvertedDrAmount, 
+
+        q.CrAmount * ISNULL(q.CurrencyRate, 1) AS ConvertedCrAmount, 
+
+        q.EntryNarration,  
+
+        ag.AccountGroup,  
+
+        mg.MasterGroup,   
+
+        q.VoucherType,  
+
+        q.SysRemarks,  
+
+        q.VoucherModifiedBy,  
+
+        q.VoucherModifiedOn,    
+
+        q.BillNo,  
+
+        q.BillDate,  
+
+        q.BillPaidTo,   
+
+        q.BillRemarks,  
+
+        q.VoucherEffectiveDate,  
+
+        q.AccountHeadArabic,  
+
+        q.ReferenceNote, 
+
+        @BaseCurrencyCode AS CurrencyType, 
+
+        q.CurrencyRate AS ExchangeRate, 
+
+        @BaseCurrencyImage AS CurrencyImage, 
+
+        @BaseCurrencySymbole AS CurrencySymbole, 
+
+        @BaseCurrencyNote AS CurrencyNote, 
+
+        @BaseCurrencyDisplayCode AS CurrencyCode,
+
+        cex.CurrencyName,
+
+		cex.CurrencySymbole AS TransactionCurrencySymbol
+ 
+    FROM dbo.qry201MainVoucherEntriesWithMaster q 
+
+    INNER JOIN dbo.tbl201ChartOfAccounts ca ON ca.AccountID = q.AccountHead 
+
+    LEFT JOIN dbo.tbl201AccountGroups ag ON ca.AccountGroupID = ag.AccountGroupID 
+
+    LEFT JOIN dbo.tbl201MasterGroup mg ON ag.AccountGroupUnder = mg.MasterGroupID 
+
+    LEFT JOIN dbo.tbl20169CurrencyExchange cex ON q.CurrencyId = cex.CurrencyExchangeID
+
+    WHERE q.AccountHead = @ParamAccountNo  
+
+      AND q.VoucherDate BETWEEN @StartDate AND DATEADD(SECOND, 86399, @EndDate) 
+
+END
+ 
+
+ ALTER PROCEDURE [dbo].[sp901_01UpdateLayout]      
+(      
+    @LayoutXML NVARCHAR(MAX),    
+    @FormID VARCHAR(MAX),    
+    @UserID VARCHAR(50),    
+    @IsFromWeb BIT = 1  -- Default: TRUE  
+)      
+AS      
+BEGIN  
+    SET NOCOUNT ON;  
+    IF EXISTS (  
+        SELECT 1   
+        FROM tbl90111LayoutMaster   
+        WHERE FormID = @FormID AND UserID = @UserID  
+    )  
+    BEGIN  
+        -- Update existing layout  
+        UPDATE tbl90111LayoutMaster  
+        SET LayoutXml = @LayoutXML  
+        WHERE FormID = @FormID AND UserID = @UserID;  
+    END  
+    ELSE  
+    BEGIN  
+        -- Insert new layout record  
+        INSERT INTO tbl90111LayoutMaster (FormID, UserID, LayoutXml)  
+        VALUES (@FormID, @UserID, @LayoutXML);  
+    END  
+END  
+
+
+
+	 update tbl20169CurrencyExchange
+set  CurrencyImage= '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>'
+     where CurrencyExchangeID=1
+
+
+     update tbl901CompanyDetails
+set  CurrencyImage= '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>'
+     
+
+ 
+
+ALTER PROCEDURE [dbo].[StProAccountLedgerByVoucherType]     
+
+  
+
+    @VoucherType VARCHAR(50),     
+
+  
+
+    @StartDate DATETIME,    
+
+  
+
+    @EndDate DATETIME    
+
+  
+
+AS    
+
+  
+
+BEGIN    
+
+  
+
+    SET NOCOUNT ON;    
+
+  
+
+   
+
+  
+
+    -- Declare currency-related variables  
+
+  
+
+    DECLARE     
+
+  
+
+        @BaseCurrencyCode VARCHAR(10),    
+
+  
+
+        @BaseCurrencyImage NVARCHAR(MAX),    
+
+  
+
+        @BaseCurrencySymbole NVARCHAR(50),    
+
+  
+
+        @BaseCurrencyNote NVARCHAR(50),    
+
+  
+
+        @BaseCurrencyDisplayCode VARCHAR(50);    
+
+  
+
+   
+
+  
+
+    -- Get Base Currency Code from Company Table    
+
+  
+
+    SELECT TOP 1 @BaseCurrencyCode = CurrencyType     
+
+  
+
+    FROM tbl901CompanyDetails;    
+
+  
+
+   
+
+  
+
+    -- Get Base Currency Details    
+
+  
+
+    SELECT TOP 1    
+
+  
+
+        @BaseCurrencyImage = CurrencyImage,    
+
+  
+
+        @BaseCurrencySymbole = CurrencySymbole,    
+
+  
+
+        @BaseCurrencyNote = CurrencyNote,    
+
+  
+
+        @BaseCurrencyDisplayCode = CurrencyCode    
+
+  
+
+    FROM tbl20169CurrencyExchange     
+
+  
+
+    WHERE CurrencyMasterCode = @BaseCurrencyCode;    
+
+  
+
+   
+
+  
+
+    IF @VoucherType IS NOT NULL    
+
+  
+
+    BEGIN    
+
+  
+
+        SELECT  
+
+  
+
+            q.VoucherNo,  
+
+  
+
+            q.VoucherDate,  
+
+  
+
+            q.VoucherRefNo,  
+
+  
+
+            q.VoucherNarration,  
+
+  
+
+            q.VoucherEnteredBy,  
+
+  
+
+            q.VoucherEnteredOn,  
+
+  
+
+            q.VoucherVerifiedBy,  
+
+  
+
+            q.VoucherVerifiedOn,  
+
+  
+
+            q.VoucherApprovedBy,  
+
+  
+
+            q.VoucherApprovedOn,  
+
+  
+
+            q.VoucherEntryNo,  
+
+  
+
+            q.AccountHead,  
+
+  
+
+            q.AccountHeadName,  
+
+  
+
+            q.DrCr,  
+
+  
+
+            q.DrAmount,  
+
+  
+
+            q.CrAmount,  
+
+  
+
+            q.VoucherAmountFormatted,  
+
+  
+
+            q.EntryNarration,  
+
+  
+
+            ag.AccountGroup,  
+
+  
+
+            mg.MasterGroup,  
+
+  
+
+            q.VoucherType,  
+
+  
+
+            q.SysRemarks,  
+
+  
+
+            q.VoucherEffectiveDate,  
+
+  
+
+            q.SubGroupName,  
+
+  
+
+            q.VoucherModifiedBy,  
+
+  
+
+            q.VoucherModifiedOn,  
+
+  
+
+            cex.CurrencyName AS TransactionCurrencyName, 
+
+            cex.CurrencySymbole AS TransactionCurrencySymbol, 
+
+  
+
+            -- Injected currency conversion fields  
+
+  
+
+            q.VoucherAmountFormatted * ISNULL(q.CurrencyRate, 1) AS ConvertedAmount,  
+
+  
+
+            q.DrAmount * ISNULL(q.CurrencyRate, 1) AS ConvertedDrAmount,  
+
+  
+
+            q.CrAmount * ISNULL(q.CurrencyRate, 1) AS ConvertedCrAmount,  
+
+  
+
+            q.CurrencyRate AS ExchangeRate,  
+
+  
+
+            @BaseCurrencyCode AS CurrencyType,  
+
+  
+
+            @BaseCurrencyImage AS CurrencyImage,  
+
+  
+
+            @BaseCurrencySymbole AS CurrencySymbole,  
+
+  
+
+            @BaseCurrencyNote AS CurrencyNote,  
+
+  
+
+            @BaseCurrencyDisplayCode AS CurrencyCode  
+
+  
+
+             
+
+  
+
+        FROM dbo.tbl201MasterGroup mg  
+
+  
+
+        RIGHT OUTER JOIN dbo.tbl201AccountGroups ag ON mg.MasterGroupID = ag.AccountGroupUnder  
+
+  
+
+        RIGHT OUTER JOIN dbo.tbl201ChartOfAccounts ca ON ag.AccountGroupID = ca.AccountGroupID  
+
+  
+
+        RIGHT OUTER JOIN dbo.qry201MainVoucherEntriesWithMaster q ON ca.AccountID = q.AccountHead  
+
+LEFT JOIN dbo.tbl20169CurrencyExchange cex ON cex.CurrencyExchangeId = q.Currencyid 
+
+  
+
+  
+
+        WHERE   
+
+  
+
+            q.VoucherType = @VoucherType  
+
+  
+
+            AND q.VoucherDate BETWEEN @StartDate AND DATEADD(SECOND, 86399, @EndDate)  
+
+  
+
+    END    
+
+  
+
+    ELSE    
+
+  
+
+    BEGIN    
+
+  
+
+        SELECT  
+
+  
+
+            q.VoucherNo,  
+
+  
+
+            q.VoucherDate,  
+
+  
+
+            q.VoucherRefNo,  
+
+  
+
+            q.VoucherNarration,  
+
+  
+
+            q.VoucherEnteredBy,  
+
+  
+
+            q.VoucherEnteredOn,  
+
+  
+
+            q.VoucherVerifiedBy,  
+
+  
+
+            q.VoucherVerifiedOn,  
+
+  
+
+            q.VoucherApprovedBy,  
+
+  
+
+            q.VoucherApprovedOn,  
+
+  
+
+            q.VoucherEntryNo,  
+
+  
+
+            q.AccountHead,  
+
+  
+
+            q.AccountHeadName,  
+
+  
+
+            q.DrCr,  
+
+  
+
+            q.DrAmount,  
+
+  
+
+            q.CrAmount,  
+
+  
+
+            q.VoucherAmountFormatted,  
+
+  
+
+            q.EntryNarration,  
+
+  
+
+            ag.AccountGroup,  
+
+  
+
+            mg.MasterGroup,  
+
+  
+
+            q.VoucherType,  
+
+  
+
+            q.SysRemarks,  
+
+  
+
+            q.VoucherEffectiveDate,  
+
+  
+
+            q.SubGroupName,  
+
+  
+
+            q.VoucherModifiedBy,  
+
+  
+
+            q.VoucherModifiedOn,  
+
+  
+
+             cex.CurrencyName AS TransactionCurrencyName, 
+
+            cex.CurrencySymbole AS TransactionCurrencySymbol, 
+
+  
+
+            -- Injected currency conversion fields  
+
+  
+
+            q.VoucherAmountFormatted * ISNULL(q.CurrencyRate, 1) AS ConvertedAmount,  
+
+  
+
+            q.DrAmount * ISNULL(q.CurrencyRate, 1) AS ConvertedDrAmount,  
+
+  
+
+            q.CrAmount * ISNULL(q.CurrencyRate, 1) AS ConvertedCrAmount,  
+
+  
+
+            q.CurrencyRate AS ExchangeRate,  
+
+  
+
+            @BaseCurrencyCode AS CurrencyType,  
+
+  
+
+            @BaseCurrencyImage AS CurrencyImage,  
+
+  
+
+            @BaseCurrencySymbole AS CurrencySymbole,  
+
+  
+
+            @BaseCurrencyNote AS CurrencyNote,  
+
+  
+
+            @BaseCurrencyDisplayCode AS CurrencyCode  
+
+  
+
+   
+
+  
+
+        FROM dbo.tbl201MasterGroup mg  
+
+  
+
+        RIGHT OUTER JOIN dbo.tbl201AccountGroups ag ON mg.MasterGroupID = ag.AccountGroupUnder  
+
+  
+
+        RIGHT OUTER JOIN dbo.tbl201ChartOfAccounts ca ON ag.AccountGroupID = ca.AccountGroupID  
+
+  
+
+        RIGHT OUTER JOIN dbo.qry201MainVoucherEntriesWithMaster q ON ca.AccountID = q.AccountHead  
+
+LEFT JOIN dbo.tbl20169CurrencyExchange cex ON cex.CurrencyExchangeId = q.Currencyid 
+
+  
+
+        WHERE   
+
+  
+
+            q.VoucherDate BETWEEN @StartDate AND DATEADD(SECOND, 86399, @EndDate)  
+
+  
+
+    END    
+
+  
+
+END  
+
+
+------------ Azure Attachment------------------ 
+
+ 
+
+IF COL_LENGTH('dbo.tbl700_03ProjectDocuments', 'AzurePath') IS NULL 
+
+BEGIN 
+
+    ALTER TABLE dbo.tbl700_03ProjectDocuments 
+
+        ADD AzurePath VARCHAR(MAX) NULL; 
+
+    PRINT 'Added column: AzurePath'; 
+
+END 
+
+ELSE 
+
+BEGIN 
+
+    PRINT 'Column already exists: AzurePath'; 
+
+END 
+
+GO 
+
+ 
+
+ 
+
+---- Add Alert Notify Is Seen column to tbl901AlertUsers if it does not exist ----- 
+
+IF COL_LENGTH('dbo.tbl901AlertUsers', 'IsSeen') IS NULL 
+
+BEGIN 
+
+    ALTER TABLE dbo.tbl901AlertUsers 
+
+        ADD [IsSeen] BIT NOT NULL DEFAULT 0; 
+
+    PRINT 'Added column: IsSeen'; 
+
+END 
+
+ELSE 
+
+BEGIN 
+
+    PRINT 'Column already exists: IsSeen'; 
+
+END 
+
+GO 
+
+ 
+
+---------- Alter PO ------------ 
+
+ 
+
+IF EXISTS ( 
+
+    SELECT 1 
+
+    FROM INFORMATION_SCHEMA.COLUMNS 
+
+    WHERE TABLE_NAME = 'Tbl20164GoodsAndServicesMaster' 
+
+      AND COLUMN_NAME = 'StoreID' 
+
+) 
+
+BEGIN 
+
+    -- Modify column type 
+
+    ALTER TABLE dbo.Tbl20164GoodsAndServicesMaster 
+
+    ALTER COLUMN StoreID VARCHAR(30); 
+
+     
+
+    PRINT 'Column StoreID altered to VARCHAR(30)'; 
+
+END 
+
+ELSE 
+
+BEGIN 
+
+    PRINT 'Column StoreID does not exist in Tbl20164GoodsAndServicesMaster'; 
+
+END 
+
+GO 
+
+
+d Currency Image column if it does not exist ---- 
+
+IF COL_LENGTH('dbo.Tbl20169CurrencyExchange', 'CurrencyImage') IS NULL 
+
+BEGIN 
+
+    ALTER TABLE dbo.Tbl20169CurrencyExchange 
+
+        ADD [CurrencyImage] NVARCHAR(MAX) NULL; 
+
+    PRINT 'Added column: CurrencyImage'; 
+
+END 
+
+ELSE 
+
+BEGIN 
+
+    PRINT 'Column already exists: CurrencyImage'; 
+
+END 
+
+GO 
+
+  
+
+----- Add Currency Symbole column if it does not exist ----- 
+
+IF COL_LENGTH('dbo.Tbl20169CurrencyExchange', 'CurrencySymbole') IS NULL 
+
+BEGIN 
+
+    ALTER TABLE dbo.Tbl20169CurrencyExchange 
+
+        ADD [CurrencySymbole] VARCHAR(30) NULL; 
+
+    PRINT 'Added column: CurrencySymbole'; 
+
+END 
+
+ELSE 
+
+BEGIN 
+
+    PRINT 'Column already exists: CurrencySymbole'; 
+
+END 
+
+GO 
+
+  
+
+  
+
+---- Add Email Templates table only if it doesn't exist---- 
+
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES  
+
+               WHERE TABLE_SCHEMA = 'dbo'  
+
+               AND TABLE_NAME = 'EmailTemplates') 
+
+BEGIN 
+
+    CREATE TABLE dbo.EmailTemplates ( 
+
+        Id INT PRIMARY KEY IDENTITY,  
+
+        TemplateName NVARCHAR(200),  
+
+        Category NVARCHAR(100),  
+
+        Subject NVARCHAR(500),  
+
+        Body NVARCHAR(MAX),  
+
+        Status NVARCHAR(20) -- Active or Inactive 
+
+    ); 
+
+    PRINT 'Created table: EmailTemplates'; 
+
+END 
+
+ELSE 
+
+BEGIN 
+
+    PRINT 'Table already exists: EmailTemplates'; 
+
+END 
+
+GO 
+
+ 
+
+-------- Alter 901Company Details -------- 
+
+ 
+
+ALTER TABLE Tbl201CompanyDetails 
+
+  
+
+ADD   
+
+  
+
+    [CurrencyImage] NVARCHAR(MAX) NULL,  
+
+  
+
+    [CurrencySymbol] VARCHAR(30) NULL;  
+	
+	
+	
+	
+	
+	ALTER VIEW [dbo].[qry201MainVoucherEntriesWithMaster] 
+
+AS 
+
+SELECT dbo.tbl201VoucherMaster.VoucherNo, dbo.tbl201VoucherMaster.VoucherDate, dbo.tbl201VoucherMaster.VoucherRefNo, ISNULL(dbo.tbl201VoucherMaster.VoucherNarration, N'') AS VoucherNarration,  
+
+                  dbo.tbl201VoucherMaster.VoucherEnteredBy, dbo.tbl201VoucherMaster.VoucherEnteredOn, dbo.tbl201VoucherMaster.VoucherVerifiedBy, dbo.tbl201VoucherMaster.VoucherVerifiedOn, dbo.tbl201VoucherMaster.VoucherApprovedBy,  
+
+                  dbo.tbl201VoucherMaster.VoucherApprovedOn, dbo.qry201MainVoucherEntries.VoucherEntryNo, dbo.qry201MainVoucherEntries.AccountHead, dbo.qry201MainVoucherEntries.AccountHeadName, dbo.qry201MainVoucherEntries.DrCr,  
+
+                  dbo.qry201MainVoucherEntries.DrAmount, dbo.qry201MainVoucherEntries.CrAmount, dbo.qry201MainVoucherEntries.VoucherAmountFormatted, ISNULL(dbo.qry201MainVoucherEntries.EntryNarration, N'') AS EntryNarration,  
+
+                  dbo.tbl201AccountGroups.AccountGroup, dbo.tbl201MasterGroup.MasterGroup, dbo.tbl201VoucherMaster.IsApproved, dbo.tbl201VoucherMaster.VoucherType, dbo.qry201MainVoucherEntries.SysRemarks,  
+
+                  dbo.tbl201MasterGroup.IsCalculateOpeningBalance, dbo.qry201MainVoucherEntries.BankClearedOn, dbo.tbl201AccountGroups.AccountGroupID, dbo.tbl201MasterGroup.MasterGroupID, dbo.tbl201MasterGroup.IsProfitLossAccount,  
+
+                  dbo.tbl201MasterGroup.IsBalanceSheetAccount, dbo.tbl201MasterGroup.MasterOrderNo, dbo.tbl201MasterGroup.MasterGroupCategory, DATEADD(dd, DATEDIFF(dd, 0, dbo.tbl201VoucherMaster.VoucherEffectiveDate), 0)  
+
+                  AS VoucherEffectiveDate, dbo.tbl201VoucherMaster.BillNo, dbo.tbl201VoucherMaster.BillDate, dbo.tbl201VoucherMaster.BillPaidTo, dbo.tbl201VoucherMaster.BillRemarks, dbo.tbl201VoucherMaster.VoucherModifiedBy,  
+
+                  dbo.tbl201VoucherMaster.VoucherModifiedOn, dbo.tbl201ChartOfAccounts.AccountHeadArabic, dbo.tbl201AccountGroups.AccountGroupAr, dbo.tbl201MasterGroup.MasterGroupAr, dbo.tbl201VoucherTypes.VoucherTypeAr,  
+
+                  dbo.tbl201MasterGroup.ChartOfAccountsOrder, dbo.tbl201AccountGroups.AccountGroupOrderNo, dbo.tbl201MasterGroup.MasterGroupCategoryAr, dbo.tbl201AccountGroups.IsAccumulatedDepAcc,  
+
+                  dbo.tbl201ChartOfAccounts.AccountSubGroup, dbo.tbl20123LedgerSubGroups.SubGroupName, dbo.tbl20123LedgerSubGroups.SubGroupNameAr, dbo.tbl201MasterGroup.MainGroup, dbo.tbl201VoucherMaster.ReferenceNote,  
+
+                  dbo.tbl201VoucherMaster.Currencyid, dbo.tbl201VoucherMaster.CurrencyRate 
+
+FROM     dbo.tbl201MasterGroup RIGHT OUTER JOIN 
+
+                  dbo.tbl201AccountGroups ON dbo.tbl201MasterGroup.MasterGroupID = dbo.tbl201AccountGroups.AccountGroupUnder RIGHT OUTER JOIN 
+
+                  dbo.qry201MainVoucherEntries LEFT OUTER JOIN 
+
+                  dbo.tbl201ChartOfAccounts LEFT OUTER JOIN 
+
+                  dbo.tbl20123LedgerSubGroups ON dbo.tbl201ChartOfAccounts.AccountSubGroup = dbo.tbl20123LedgerSubGroups.LedgerSubGroupCode ON dbo.qry201MainVoucherEntries.AccountHead = dbo.tbl201ChartOfAccounts.AccountID ON  
+
+                  dbo.tbl201AccountGroups.AccountGroupID = dbo.tbl201ChartOfAccounts.AccountGroupID RIGHT OUTER JOIN 
+
+                  dbo.tbl201VoucherTypes RIGHT OUTER JOIN 
+
+                  dbo.tbl201VoucherMaster ON dbo.tbl201VoucherTypes.VoucherType = dbo.tbl201VoucherMaster.VoucherType ON dbo.qry201MainVoucherEntries.VoucherNo = dbo.tbl201VoucherMaster.VoucherNo 
+
+GO 
+
+ 
+
+ 
+ 
+
+ 
+
+ 
