@@ -543,45 +543,63 @@
 
 
 			function deleteRecord() {
-    if (!selectedRowData) {
-        DevExpress.ui.notify("Please select a row to delete.", "warning", 2000);
-        return;
-    }
+		if (!selectedRowData) {
+			DevExpress.ui.notify("Please select a row to delete.", "warning", 2000);
+			return;
+		}
 
-    const Pono = selectedRowData.Pono;
+		const Pono = selectedRowData.Pono;
 
-    DevExpress.ui.dialog.confirm(
-        `Are you sure you want to delete Purchase Order: <b>${Pono}</b>?`,
-        "Confirm Deletion"
-    ).done(function (dialogResult) {
-        if (dialogResult) {
-            $.ajax({
-                url: `/api/PurchaseOrders/DeletePurchaseOrder?Pono=${encodeURIComponent(Pono)}`,
-                method: "DELETE",
-                success: function (result) {
-                    const messageType = result.success ? "Success" : "Error";
-                    const messageColor = result.success ? "green" : "red";
+		// Step 1: Check if PO is approved
+		$.get(`/api/PurchaseOrders/CheckIfApproved?pono=${encodeURIComponent(Pono)}`, function (approvalResult) {
+			if (!approvalResult.success) {
+				DevExpress.ui.notify(approvalResult.message || "Could not check approval status.", "error", 2000);
+				return;
+			}
 
-                    DevExpress.ui.dialog.alert(
-                        `<div style="color: ${messageColor}; font-weight: bold;">
-                            ${result.message}
-                        </div>`,
-                        messageType
-                    );
+			if (approvalResult.isApproved) {
+				DevExpress.ui.dialog.alert(
+					"You are not allowed to delete a Purchase Order after it has been approved.",
+					"Not Allowed"
+				);
+				return;
+			}
 
-                    if (result.success) {
-                        const grid = $("#dataGrid").dxDataGrid("instance");
-                        grid.refresh();
-                    }
-                },
-                error: function (xhr) {
-                    DevExpress.ui.notify("Error deleting purchase order", "error", 2000);
-                    console.error(xhr);
-                }
-            });
-        }
-    });
-}
+			// Step 2: Confirm Deletion
+			DevExpress.ui.dialog.confirm(
+				`Are you sure you want to delete Purchase Order: <b>${Pono}</b>?`,
+				"Confirm Deletion"
+			).done(function (dialogResult) {
+				if (dialogResult) {
+					$.ajax({
+						url: `/api/PurchaseOrders/DeletePurchaseOrder?Pono=${encodeURIComponent(Pono)}`,
+						method: "DELETE",
+						success: function (result) {
+							const messageType = result.success ? "Success" : "Error";
+							const messageColor = result.success ? "green" : "red";
+
+							DevExpress.ui.dialog.alert(
+								`<div style="color: ${messageColor}; font-weight: bold;">
+									${result.message}
+								</div>`,
+								messageType
+							);
+
+							if (result.success) {
+								const grid = $("#dataGrid").dxDataGrid("instance");
+								grid.refresh();
+							}
+						},
+						error: function (xhr) {
+							DevExpress.ui.notify("Error deleting purchase order", "error", 2000);
+							console.error(xhr);
+						}
+					});
+				}
+			});
+		});
+	}
+
 
 
 function unlockRecord() {
@@ -621,108 +639,137 @@ function unlockRecord() {
     });
 }
 
-function receiveItemPartially() {
-    if (!selectedRowData) {
-        DevExpress.ui.notify("Please select a row to receive.", "warning", 2000);
-        return;
-    }
+	function receiveItemPartially() {
+		if (!selectedRowData) {
+			DevExpress.ui.notify("Please select a row to receive.", "warning", 2000);
+			return;
+		}
 
-    const Pono = selectedRowData.Pono;
+		const Pono = selectedRowData.Pono;
 
-    // 1. Check OrderStatus from the server for the selected PO
-    $.get(`/api/PurchaseOrders/GetOrderStatus?pono=${encodeURIComponent(Pono)}`, function (result) {
-        if (!result.success) {
-            DevExpress.ui.notify(result.message || "Could not check order status.", "error", 2000);
-            return;
-        }
+		// Step 1: Check if PO is approved
+		$.get(`/api/PurchaseOrders/CheckIfApproved?pono=${encodeURIComponent(Pono)}`, function (approvalResult) {
+			if (!approvalResult.success) {
+				DevExpress.ui.notify(approvalResult.message || "Could not check approval status.", "error", 2000);
+				return;
+			}
 
-        const status = (result.orderStatus || "").toLowerCase();
+			if (!approvalResult.isApproved) {
+				DevExpress.ui.notify("Please approve the Purchase Order before receiving.", "warning", 3000);
+				return;
+			}
 
-        if (status === "fully received") {
-            DevExpress.ui.dialog.alert(
-                "This PO is already fully received. You cannot receive anymore.",
-                "Information"
-            );
-            return;
-        }
+			// Step 2: Check PO status
+			$.get(`/api/PurchaseOrders/GetOrderStatus?pono=${encodeURIComponent(Pono)}`, function (result) {
+				if (!result.success) {
+					DevExpress.ui.notify(result.message || "Could not check order status.", "error", 2000);
+					return;
+				}
 
-        // 2. If not fully received (including partially received), proceed as before
-        $.ajax({
-            url: "/api/PurchaseOrders/ReceiveItemPartially",
-            method: "POST",
-            contentType: "application/json",
-            data: JSON.stringify({ Pono: Pono }),
-            success: function (result) {
-                if (result.success) {
-                    DevExpress.ui.notify(result.message, "success", 2000);
-                    // Redirect to MaterialReceiptFromSupplier with the PO number
-                    window.location.href = `/${tenantName}/IMS/MaterialReceiptFromSupplier?ReceiptNo=${encodeURIComponent(result.receiptNoteNo)}&PurchaseOrderNo=${encodeURIComponent(Pono)}`;
-                } else {
-                    DevExpress.ui.notify(result.message, "error", 2000);
-                }
-                // Optionally refresh the grid after action
-                const grid = $("#dataGrid").dxDataGrid("instance");
-                if (grid) grid.refresh();
-            },
-            error: function (xhr) {
-                DevExpress.ui.notify("Error creating material receipt", "error", 2000);
-                console.error(xhr);
-            }
-        });
-    });
-}
+				const status = (result.orderStatus || "").toLowerCase();
 
-function receiveItemFully() {
-    if (!selectedRowData) {
-        DevExpress.ui.notify("Please select a row to receive.", "warning", 2000);
-        return;
-    }
-    const Pono = selectedRowData.Pono;
+				if (status === "fully received") {
+					DevExpress.ui.dialog.alert(
+						"This PO is already fully received. You cannot receive anymore.",
+						"Information"
+					);
+					return;
+				}
 
-    // 1. Check OrderStatus from the server for the selected PO
-    $.get(`/api/PurchaseOrders/GetOrderStatus?pono=${encodeURIComponent(Pono)}`, function (result) {
-        if (!result.success) {
-            DevExpress.ui.notify(result.message || "Could not check order status.", "error", 2000);
-            return;
-        }
+				// Step 3: Proceed with partial receipt
+				$.ajax({
+					url: "/api/PurchaseOrders/ReceiveItemPartially",
+					method: "POST",
+					contentType: "application/json",
+					data: JSON.stringify({ Pono: Pono }),
+					success: function (result) {
+						if (result.success) {
+							DevExpress.ui.notify(result.message, "success", 2000);
+							window.location.href = `/${tenantName}/IMS/MaterialReceiptFromSupplier?ReceiptNo=${encodeURIComponent(result.receiptNoteNo)}&PurchaseOrderNo=${encodeURIComponent(Pono)}&mode=edit`;
+						} else {
+							DevExpress.ui.notify(result.message, "error", 2000);
+						}
 
-        const status = (result.orderStatus || "").toLowerCase();
+						const grid = $("#dataGrid").dxDataGrid("instance");
+						if (grid) grid.refresh();
+					},
+					error: function (xhr) {
+						DevExpress.ui.notify("Error creating material receipt", "error", 2000);
+						console.error(xhr);
+					}
+				});
+			});
+		});
+	}
 
-        if (status === "partially received") {
-            DevExpress.ui.notify("This PO is already partially received. You cannot create a full PO.", "warning", 3000);
-            return;
-        }
-        if (status === "fully received") {
-            DevExpress.ui.notify("This PO is already fully received. You cannot receive again.", "warning", 3000);
-            return;
-        }
 
-        // 2. If not partially/fully received, proceed as before
-        DevExpress.ui.dialog.confirm(
-            `Are you sure you want to create a Material Receipt for PO: <b>${Pono}</b>?`,
-            "Confirm Material Receipt"
-        ).done(function (dialogResult) {
-            if (dialogResult) {
-                $.ajax({
-                    url: "/api/PurchaseOrders/ReceiveItemFully",
-                    method: "POST",
-                    contentType: "application/json",
-                    data: JSON.stringify({ Pono: Pono }),
-                    success: function (result) {
-                        if (result.success) {
-                            DevExpress.ui.notify(result.message, "success", 2000);
-							window.location.href = `/${tenantName}/IMS/MaterialReceiptFromSupplier?ReceiptNo=${encodeURIComponent(result.receiptNoteNo)}&PurchaseOrderNo=${encodeURIComponent(Pono)}`;
-                        }
-                    },
-                    error: function (xhr) {
-                        DevExpress.ui.notify("Error creating material receipt", "error", 2000);
-                        console.error(xhr);
-                    }
-                });
-            }
-        });
-    });
-}
+	function receiveItemFully() {
+
+		if (!selectedRowData) {
+			DevExpress.ui.notify("Please select a row to receive.", "warning", 2000);
+			return;
+		}
+
+		const Pono = selectedRowData.Pono;
+
+		// Step 1: Check if PO is approved
+		$.get(`/api/PurchaseOrders/CheckIfApproved?pono=${encodeURIComponent(Pono)}`, function (approvalResult) {
+			if (!approvalResult.success) {
+				DevExpress.ui.notify(approvalResult.message || "Could not check approval status.", "error", 2000);
+				return;
+			}
+
+			if (!approvalResult.isApproved) {
+				DevExpress.ui.notify("Please approve the Purchase Order before receiving.", "warning", 3000);
+				return;
+			}
+
+			// Step 2: Check Order Status if approved
+			$.get(`/api/PurchaseOrders/GetOrderStatus?pono=${encodeURIComponent(Pono)}`, function (statusResult) {
+				if (!statusResult.success) {
+					DevExpress.ui.notify(statusResult.message || "Could not check order status.", "error", 2000);
+					return;
+				}
+
+				const status = (statusResult.orderStatus || "").toLowerCase();
+
+				if (status === "partially received") {
+					DevExpress.ui.notify("This PO is already partially received. You cannot create a full PO.", "warning", 3000);
+					return;
+				}
+
+				if (status === "fully received") {
+					DevExpress.ui.notify("This PO is already fully received. You cannot receive again.", "warning", 3000);
+					return;
+				}
+
+				// Step 3: Confirm and proceed to receive
+				DevExpress.ui.dialog.confirm(
+					`Are you sure you want to create a Material Receipt for PO: <b>${Pono}</b>?`,
+					"Confirm Material Receipt"
+				).done(function (dialogResult) {
+					if (dialogResult) {
+						$.ajax({
+							url: "/api/PurchaseOrders/ReceiveItemFully",
+							method: "POST",
+							contentType: "application/json",
+							data: JSON.stringify({ Pono: Pono }),
+							success: function (result) {
+								if (result.success) {
+									DevExpress.ui.notify(result.message, "success", 2000);
+									window.location.href = `/${tenantName}/IMS/MaterialReceiptFromSupplier?ReceiptNo=${encodeURIComponent(result.receiptNoteNo)}&PurchaseOrderNo=${encodeURIComponent(Pono)}&mode=create`;
+								}
+							},
+							error: function (xhr) {
+								DevExpress.ui.notify("Error creating material receipt", "error", 2000);
+								console.error(xhr);
+							}
+						});
+					}
+				});
+			});
+		});
+	}
 
 function createVatPurchaseForPO() {
     if (!selectedRowData || !selectedRowData.Pono) {

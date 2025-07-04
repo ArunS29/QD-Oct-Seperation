@@ -807,7 +807,7 @@ public async Task<IActionResult> GetByPoNo(string poNo, byte? revisionId)
         if (master == null)
             return NotFound(new { message = "Purchase Order not found", success = false });
 
-                var children = await dbContext.Tbl60402purchaseOrderChildren
+                var children = await dbContext.Qry60402purchaseOrderChildren
                     .Where(x => x.Pono == poNo)
             .ToListAsync();
                 // Load descriptions into dictionaries
@@ -905,6 +905,8 @@ public async Task<IActionResult> GetByPoNo(string poNo, byte? revisionId)
                 MritemNo = x.MritemNo,
                 Currency = x.Currency,
                 ExchangeRate = x.ExchangeRate,
+                LineTotalWithTax = x.LineTotalWithTax,
+                LineTaxAmount = x.LineTaxAmount,
                 UnitRateInOc = x.UnitRateInOc,
                 DiscountInOc = x.DiscountInOc
             })
@@ -1591,6 +1593,40 @@ public async Task<IActionResult> GetOrderStatus(string pono)
 
     return Ok(new { success = true, orderStatus = po.OrderStatus });
 }
+
+        [HttpGet]
+        public IActionResult CheckIfApproved(string pono)
+        {
+            // Step 1: Get tenant and DB context
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { message = "Invalid tenant", success = false });
+            }
+
+            // Step 2: Validate input
+            if (string.IsNullOrWhiteSpace(pono))
+            {
+                return BadRequest(new { message = "Invalid PO number.", success = false });
+            }
+
+            // Step 3: Fetch PO and check IsApproved
+            var po = dbContext.Tbl60401purchaseOrderMasters
+                .Where(p => p.Pono == pono)
+                .Select(p => new { p.IsApproved })
+                .FirstOrDefault();
+
+            if (po == null)
+            {
+                return NotFound(new { message = "Purchase Order not found.", success = false });
+            }
+
+            return Ok(new
+            {
+                success = true,
+                isApproved = po.IsApproved
+            });
+        }
+
 
     }
     public class PurchaseOrderViewModel
