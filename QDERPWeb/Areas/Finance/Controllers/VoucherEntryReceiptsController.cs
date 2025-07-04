@@ -834,11 +834,11 @@ namespace Form.Areas.Finance.Controllers
         [HttpGet]
         public async Task<IActionResult> CheckIsMaintainBillByBill(string AccountHead, string AccountID)
         {
-			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				return Unauthorized(new { success = false, message = "Invalid tenant." });
-			}
-			try
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+            try
             {
                 var allocation = await dbContext.Qry201ListOfAccounts
                     .Where(x => x.AccountHead == AccountHead && x.AccountId == AccountID && x.IsMaintainBillByBill == true)
@@ -859,6 +859,36 @@ namespace Form.Areas.Finance.Controllers
                 return StatusCode(500, new { message = "An error occurred while checking property allocation.", error = ex.Message });
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> CheckCostAllocation(string AccountHead, string AccountID)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+            try
+            {
+                var allocation = await dbContext.Qry20111ListOfPandLitems
+                    .Where(x => x.AccountHead == AccountHead && x.AccountId == AccountID && x.IsProfitLossAccount == true)
+                    .FirstOrDefaultAsync();
+
+                if (allocation != null)
+                {
+                    return Ok(new { isAllocated = true });
+                }
+                else
+                {
+                    return Ok(new { isAllocated = false });
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the error here if necessary
+                return StatusCode(500, new { message = "An error occurred while checking property allocation.", error = ex.Message });
+            }
+        }
+
         [HttpGet]
         public async Task<IActionResult> CheckPropertyAllocation(string AccountHead, string AccountID)
         {

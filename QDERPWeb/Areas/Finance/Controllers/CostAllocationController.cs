@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
 using System;
@@ -117,6 +118,45 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Ok();
         }
+        [HttpPost]
+        public IActionResult InsertDefaultCostAllocation([FromBody] CostAllocationDto dto)
+        {
+            // Validate tenant and get context
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            if (dto == null)
+            {
+                return BadRequest(new { success = false, message = "Invalid data." });
+            }
+
+            try
+            {
+                // Map DTO to Entity
+                var entity = new Tbl201CostAllocationMaster
+                {
+                    CostAllocationId = 0,
+                    CostAllocDrCr = dto.CostAllocDrCr,
+                    CostAllocationUnitId = dto.CostAllocationUnitId,
+                    EffectiveDate = dto.EffectiveDate,
+                    AmountAllocated = dto.AmountAllocated,
+                    CostAllocRemarks = dto.CostAllocRemarks,
+                    VoucherEntryId = dto.VoucherEntryId,
+                    VoucherNo = dto.VoucherNo
+                };
+
+                dbContext.Tbl201CostAllocationMasters.Add(entity);
+                dbContext.SaveChanges();
+
+                return Ok(new { success = true, id = entity.CostAllocationId });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Error inserting cost allocation.", error = ex.Message });
+            }
+        }
         [HttpGet]
         public IActionResult GetCostAllocationsBydatagrid(long voucherEntryId)
         {
@@ -143,6 +183,107 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Json(result);
         }
+        public IActionResult UpdateCostAllocationWithFields([FromBody] UpdateCostAllocationFieldsDto dto)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+            var record = dbContext.Tbl201CostAllocationMasters.FirstOrDefault(x => x.CostAllocationId == dto.CostAllocationId);
+            if (record == null)
+                return NotFound(new { success = false, message = "Record not found." });
+
+            record.AmountAllocated = dto.VoucherAmount;
+            record.CostAllocRemarks = dto.CostAllocRemarks;
+            record.CostAllocationUnitId = dto.CostAllocationUnitId;
+            record.EffectiveDate = dto.EffectiveDate;
+
+            dbContext.SaveChanges();
+
+            return Ok(new { success = true });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CheckCostAllocation(string AccountHead)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+            try
+            {
+                var allocation = await dbContext.Qry20111ListOfPandLitems
+                    .Where(x => x.AccountHead == AccountHead && x.IsProfitLossAccount == true)
+                    .FirstOrDefaultAsync();
+
+                if (allocation != null)
+                {
+                    return Ok(new { isAllocated = true });
+                }
+                else
+                {
+                    return Ok(new { isAllocated = false });
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the error here if necessary
+                return StatusCode(500, new { message = "An error occurred while checking property allocation.", error = ex.Message });
+            }
+        }
+        [HttpPost]
+
+        public IActionResult DeleteByVoucherNo([FromBody] VoucherDeleteRequest request)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            if (string.IsNullOrEmpty(request.VoucherNo))
+            {
+                return BadRequest(new { success = false, message = "Voucher number is required." });
+            }
+
+            var allocations = dbContext.Tbl201CostAllocationMasters
+                .Where(x => x.VoucherNo == request.VoucherNo)
+                .ToList();
+
+            if (!allocations.Any())
+            {
+                return NotFound(new { success = false, message = "No records found to delete." });
+            }
+
+            dbContext.Tbl201CostAllocationMasters.RemoveRange(allocations);
+            dbContext.SaveChanges();
+
+            return Ok(new { success = true, message = "All cost allocation records deleted for voucher." });
+        }
+        [HttpPost]
+
+        public IActionResult DeleteCostAllocation(long costAllocationId)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            
+
+            var allocations = dbContext.Tbl201CostAllocationMasters
+                .Where(x => x.CostAllocationId == costAllocationId)
+                .ToList();
+
+            if (!allocations.Any())
+            {
+                return NotFound(new { success = false, message = "No records found to delete." });
+            }
+
+            dbContext.Tbl201CostAllocationMasters.RemoveRange(allocations);
+            dbContext.SaveChanges();
+
+            return Ok(new { success = true, message = "All cost allocation records deleted for voucher." });
+        }
+
     }
 }
 
