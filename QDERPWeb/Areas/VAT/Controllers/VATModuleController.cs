@@ -23,6 +23,7 @@ using QRCoder;
 
 
 
+
 namespace QD.ERP.Web.Areas.VAT.Controllers
 {
 
@@ -454,7 +455,8 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                         g.ReorderQty,
                         g.StoreCode,
                         g.MaxQty,
-                        g.MinQty
+                        g.MinQty,
+                        g.GsuoM
 
                     })
                     .ToListAsync();
@@ -3050,14 +3052,10 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                 {
                     var query = dbContext.Qry201620salesReportings.AsQueryable();
 
-                    // Removed accountGroup check
-
-                    if (startDate.HasValue)
-                        query = query.Where(x => x.InvoiceDate >= startDate.Value);
-
-                    if (endDate.HasValue)
-                        query = query.Where(x => x.InvoiceDate <= endDate.Value);
-
+                    if (startDate.HasValue && endDate.HasValue)
+                    {
+                        query = query.Where(x => x.InvoiceDate >= startDate.Value && x.InvoiceDate <= endDate.Value);
+                    }
                     var result = await query.Select(item => new
                     {
                         item.InvoiceNo,

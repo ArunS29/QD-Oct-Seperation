@@ -964,8 +964,38 @@ public async Task<IActionResult> GenerateJobOrders1([FromBody] SalesorderViewMod
             return Ok(new { success = true, message = "Sales order and its child items deleted successfully." });
         }
 
+[HttpGet]
+public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
+{
+    if (string.IsNullOrWhiteSpace(salesOrderNo))
+        return BadRequest(new { success = false, message = "SalesOrderNo is required." });
 
-        //[HttpGet]
+    if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+    var entity = await dbContext.Tbl60201salesOrderMasters
+        .FirstOrDefaultAsync(x => x.SalesOrderNo == salesOrderNo);
+
+    if (entity == null)
+        return NotFound(new { success = false, message = "Sales order not found." });
+
+    bool isVerified = entity.IsVerified ?? false;
+    bool isApproved = entity.IsApproved ?? false;
+
+    // Add this log line
+    _logger.LogInformation($"CanDeleteSalesOrder: SalesOrderNo={salesOrderNo}, IsVerified={entity.IsVerified}, IsApproved={entity.IsApproved}");
+
+    if (isVerified || isApproved)
+    {
+        return Ok(new
+        {
+            success = false,
+            message = "The selected sales order was verified/approved. You cannot delete it."
+        });
+    }
+
+    return Ok(new { success = true });
+}   //[HttpGet]
         //public IActionResult GetGoodsAndServices()
         //{
         //    try
@@ -1165,7 +1195,7 @@ public async Task<IActionResult> GenerateJobOrders1([FromBody] SalesorderViewMod
         //}
 
         [HttpPost]
-        public async Task<IActionResult> SubmitSalesOrder([FromBody] string salesOrderNo)
+        public async Task<IActionResult> SubmitSalesOrder1([FromBody] string salesOrderNo)
         {
             try
             {
@@ -1194,8 +1224,63 @@ public async Task<IActionResult> GenerateJobOrders1([FromBody] SalesorderViewMod
             }
         }
 
+           [HttpPost]
+
+   public async Task<IActionResult> SubmitSalesOrder([FromBody] string salesOrderNo)
+
+   {
+
+       try
+
+       {
+
+           if (string.IsNullOrWhiteSpace(salesOrderNo))
+
+               return BadRequest(new { success = false, message = "Sales Order number is required." });
+ 
+           if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+
+               return Unauthorized(new { success = false, message = "Invalid tenant." });
+ 
+           var salesOrder = await dbContext.Tbl60201salesOrderMasters
+
+               .FirstOrDefaultAsync(x => x.SalesOrderNo == salesOrderNo);
+ 
+           if (salesOrder == null)
+
+               return Ok(new { success = false, message = "Please save the sales order before submitting." });
+ 
+           if (salesOrder.IsSubmitted == true)
+
+               return Ok(new { success = false, message = "This sales order is already submitted." });
+ 
+           salesOrder.IsSubmitted = true;
+
+           salesOrder.SubmittedBy = HttpContext.Session.GetString("UserName") ?? "System";
+
+           salesOrder.SubmittedOn = DateTime.Now;
+ 
+           await dbContext.SaveChangesAsync();
+ 
+           return Ok(new { success = true, message = "Sales order submitted successfully." });
+
+       }
+
+       catch (Exception ex)
+
+       {
+
+           _logger.LogError(ex, "Error while submitting sales order.");
+
+           return StatusCode(500, new { success = false, message = "Server error: " + ex.Message });
+
+       }
+
+   }
+
+ 
         [HttpPost]
-        public async Task<IActionResult> VerifySalesOrder([FromBody] string salesOrderNo)
+        public async Task<IActionResult> VerifySalesOrder1([FromBody] string salesOrderNo)
         {
             try
             {
@@ -1227,9 +1312,45 @@ public async Task<IActionResult> GenerateJobOrders1([FromBody] SalesorderViewMod
             }
         }
 
-
         [HttpPost]
-        public async Task<IActionResult> ApproveSalesOrder([FromBody] string salesOrderNo)
+        public async Task<IActionResult> VerifySalesOrder([FromBody] string salesOrderNo)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(salesOrderNo))
+                    return BadRequest(new { success = false, message = "Sales Order number is required." });
+
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                    return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+                var order = await dbContext.Tbl60201salesOrderMasters
+                    .FirstOrDefaultAsync(x => x.SalesOrderNo == salesOrderNo);
+
+                if (order == null)
+                    return Ok(new { success = false, message = "Please save and submit the sales order before verifying." });
+
+                if (order.IsSubmitted != true)
+                    return Ok(new { success = false, message = "Please submit before verifying." });
+
+                if (order.IsVerified == true)
+                    return Ok(new { success = false, message = "This sales order is already verified." });
+
+                order.IsVerified = true;
+                order.VerifiedBy = HttpContext.Session.GetString("UserName") ?? "System";
+                order.VerifiedOn = DateTime.Now;
+
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Sales order verified successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while verifying sales order.");
+                return StatusCode(500, new { success = false, message = "Server error: " + ex.Message });
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> ApproveSalesOrder1([FromBody] string salesOrderNo)
         {
             try
             {
@@ -1260,7 +1381,43 @@ public async Task<IActionResult> GenerateJobOrders1([FromBody] SalesorderViewMod
                 return StatusCode(500, new { success = false, message = "Internal server error." });
             }
         }
+        [HttpPost]
+        public async Task<IActionResult> ApproveSalesOrder([FromBody] string salesOrderNo)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(salesOrderNo))
+                    return BadRequest(new { success = false, message = "Sales Order No is required." });
 
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                    return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+                var order = await dbContext.Tbl60201salesOrderMasters
+                    .FirstOrDefaultAsync(x => x.SalesOrderNo == salesOrderNo);
+
+                if (order == null)
+                    return Ok(new { success = false, message = "Please save and submit the sales order before approving." });
+
+                if (order.IsVerified != true)
+                    return Ok(new { success = false, message = "Please verify before approving." });
+
+                if (order.IsApproved == true)
+                    return Ok(new { success = false, message = "This sales order is already approved." });
+
+                order.IsApproved = true;
+                order.ApprovedBy = HttpContext.Session.GetString("UserName") ?? "System";
+                order.ApprovedOn = DateTime.Now;
+
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Sales order approved successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error approving Sales Order");
+                return StatusCode(500, new { success = false, message = "Server error: " + ex.Message });
+            }
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetSalesOrderStatus(string salesOrderNo)
@@ -1291,38 +1448,58 @@ public async Task<IActionResult> GenerateJobOrders1([FromBody] SalesorderViewMod
             }
         }
 
-		[HttpPost]
-		public async Task<IActionResult> UnlockSalesOrder([FromBody] SalesorderViewModel request)
-		{
-			try
-			{
-				if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-					return Unauthorized(new { success = false, message = "Invalid tenant." });
+	[HttpPost]
+public async Task<IActionResult> UnlockSalesOrder([FromBody] SalesorderViewModel request)
+{
+    try
+    {
+        if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            return Unauthorized(new { success = false, message = "Invalid tenant." });
 
-				if (string.IsNullOrWhiteSpace(request?.SalesOrderNo))
-					return BadRequest(new { success = false, message = "Sales Order No is required." });
+        if (string.IsNullOrWhiteSpace(request?.SalesOrderNo))
+            return BadRequest(new { success = false, message = "Sales Order No is required." });
 
-				var existingEntity = await dbContext.Tbl60201salesOrderMasters
-					.FirstOrDefaultAsync(x => x.SalesOrderNo == request.SalesOrderNo);
+        var existingEntity = await dbContext.Tbl60201salesOrderMasters
+            .FirstOrDefaultAsync(x => x.SalesOrderNo == request.SalesOrderNo);
 
-				if (existingEntity == null)
-					return NotFound(new { success = false, message = "Sales Order not found." });
+        if (existingEntity == null)
+            return NotFound(new { success = false, message = "Sales Order not found." });
 
-				if (existingEntity.IsApproved != true)
-					return Ok(new { success = false, message = "Sales Order is already unlocked." });
+        bool wasChanged = false;
 
-				existingEntity.IsApproved = false;
-				dbContext.Tbl60201salesOrderMasters.Update(existingEntity);
-				await dbContext.SaveChangesAsync();
+        if (existingEntity.IsApproved == true)
+        {
+            existingEntity.IsApproved = false;
+            wasChanged = true;
+        }
+        if (existingEntity.IsVerified == true)
+        {
+            existingEntity.IsVerified = false;
+            wasChanged = true;
+        }
+        if (existingEntity.IsSubmitted == true)
+        {
+            existingEntity.IsSubmitted = false;
+            wasChanged = true;
+        }
 
-				return Ok(new { success = true, message = "Sales Order has been unlocked successfully." });
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError(ex, "Error while unlocking Sales Order.");
-				return StatusCode(500, new { success = false, message = "Internal server error", details = ex.Message });
-			}
-		}
+        if (wasChanged)
+        {
+            dbContext.Tbl60201salesOrderMasters.Update(existingEntity);
+            await dbContext.SaveChangesAsync();
+            return Ok(new { success = true, message = "Sales Order has been unlocked successfully." });
+        }
+        else
+        {
+            return Ok(new { success = false, message = "Sales Order is already unlocked." });
+        }
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, "Error while unlocking Sales Order.");
+        return StatusCode(500, new { success = false, message = "Internal server error", details = ex.Message });
+    }
+}
 
 
 		[HttpGet]
@@ -1368,7 +1545,25 @@ public async Task<IActionResult> GenerateJobOrders1([FromBody] SalesorderViewMod
         }
 
 
+[HttpGet]
+public async Task<IActionResult> GetInvoiceStatus(string salesOrderNo)
+{
+    if (string.IsNullOrWhiteSpace(salesOrderNo))
+        return BadRequest(new { success = false, message = "SalesOrderNo is required." });
 
+    if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+    var status = await dbContext.Qry60204salesOrderViewMasters
+        .Where(x => x.SalesOrderNo == salesOrderNo)
+        .Select(x => x.OrderStatus)
+        .FirstOrDefaultAsync();
+
+    if (status == null)
+        return NotFound(new { success = false, message = "Sales order not found." });
+
+    return Ok(new { success = true, OrderStatus = status });
+}
         [HttpGet]
         public async Task<IActionResult> GetStoreStockGrid(string salesOrderNo, string storeId = null)
         {

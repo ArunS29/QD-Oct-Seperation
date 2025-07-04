@@ -34,8 +34,12 @@
 
 
 <style type="text/css">
-	
 
+
+	.dx-popup-title.dx-toolbar {
+		background-color: lightskyblue !important;
+		color: white !important;
+	}
 
 
 	.horizontal-container {
@@ -129,105 +133,152 @@
 		border: none;
 		border-radius: 5px;
 	}
+
+	.fixed-footer-toolbar {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		z-index: 1060;
+		background-color: #ffffff;
+		border-top: 1px solid #dee2e6;
+		padding: 10px 20px;
+		display: flex;
+		justify-content: flex-end;
+		gap: 10px;
+		box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+	}
+
+	/* Base styling for all footer buttons */
+	.footer-button.dx-button {
+		font-weight: 600;
+		border-radius: 6px;
+		transition: background-color 0.2s ease;
+		color: #fff;
+	}
+
+	/* Save Button - Blue */
+	.save-btn .dx-button-content {
+		background-color: #007bff;
+		border-color: #007bff;
+	}
+
+	.save-btn:hover .dx-button-content {
+		background-color: #0056b3;
+	}
+
+	/* Print Button - Indigo */
+	.print-btn .dx-button-content {
+		background-color: #6610f2;
+		border-color: #6610f2;
+	}
+
+	.print-btn:hover .dx-button-content {
+		background-color: #520dc2;
+	}
+
+	/* Back Button - Gray */
+	.back-btn .dx-button-content {
+		background-color: #6c757d;
+		border-color: #6c757d;
+	}
+
+	.back-btn:hover .dx-button-content {
+		background-color: #495057;
+	}
+
+	
 </style>
 
 <div class="content-container-top background" >
-	<div class="card-header">
-		<i class="fas fa-pen-nib header-icon"></i> <!-- Font Awesome pen nib icon -->
-		<span class="header-text">Cost Allocation for Property</span>
-	</div>
 
-	<br />
+
+	
 	<div class="container1">
-		<div class="row" style="padding:5px;gap: 20px;">
-			<!-- Align items vertically -->
-			<!-- Dr/Cr Dropdown -->
-			<div class="col-md-1">
-				<!-- Adjust width as necessary -->
-				<div class="form-group">
-					<label for="DrCr">Dr/Cr</label>
-					@(
-												Html.DevExtreme().SelectBox()
-												.ID("PaDrCr")
-												.DataSource(new[] { drCr })
-												.Value(drCr)
-												.ReadOnly(true)
+		<div class="row g-3 align-items-end">
 
-												.Width(90)
-												)
-				</div>
+			<!-- Dr/Cr Dropdown -->
+			<div class="col-md-1 col-6">
+				@(Html.DevExtreme().SelectBox()
+								.ID("PaDrCr")
+								.DataSource(new[] { drCr })
+								.Value(drCr)
+								.ReadOnly(true)
+								.Label(new JS("formatMessage('Dr/Cr')"))
+								.LabelMode(EditorLabelMode.Floating)
+								.Width("100%")
+								)
 			</div>
 
-			<!-- Expenses / Returns -->
-			<div class="col-md-3">
-				<div class="form-group">
-					<label for="VoucherRefNo">Expenses Ledger Account</label>
-					@(
-												Html.DevExtreme().SelectBox()
-												.ID("PropertyExpenses")
-												.DataSource(new[] { accountHead }) // Only the selected AccountHead
-												.Value(accountHead) // Pre-selected value
-												.ReadOnly(true)
-												)
-				</div>
+			<!-- Expenses Ledger Account -->
+			<div class="col-md-3 col-6">
+				@(Html.DevExtreme().SelectBox()
+								.ID("PropertyExpenses")
+								.DataSource(new[] { accountHead })
+								.Value(accountHead)
+								.ReadOnly(true)
+								.Label(new JS("formatMessage('Ledger')"))
+								.LabelMode(EditorLabelMode.Floating)
+								.Width("100%")
+								)
 			</div>
 
 			<!-- Amount -->
-			<div class="col-md-2">
-				<div class="form-group">
-					<label for="txtVoucherAmount">Amount</label>
-					@(
-												Html.DevExtreme().NumberBox()
-												.ID("propertyAmount")
-												.Value(voucherAmountParsed)
-												.ShowSpinButtons(true)
-												.ReadOnly(true)
-												.Format("#,##0.00")
-												)
+			<div class="col-md-2 col-6">
+				@(Html.DevExtreme().NumberBox()
+								.ID("propertyAmount")
+								.Value(voucherAmountParsed)
+								.ShowSpinButtons(true)
+								.ReadOnly(true)
+								.Format("#,##0.00")
+								.Label(new JS("formatMessage('Amount')"))
+								.LabelMode(EditorLabelMode.Floating)
+								.Width("100%")
+								)
+			</div>
+
+			<!-- Approved By + On -->
+			<div class="col-md-2 col-6">
+				<div class="d-flex flex-column">
+					@(Html.DevExtreme().CheckBox()
+										.ID("IsApproved")
+										.Text(new JS("formatMessage('Approved')"))
+										)
+					<div class="text-muted mt-1 small">
+						<label class="form-label mb-0">Approved On:</label>
+						<span id="VoucherApprovedOn" class="fw-semibold text-dark"></span>
+					</div>
 				</div>
 			</div>
 
-			<!-- IsApproved Checkbox -->
-			<div class="col-md-2">
-				<div class="form-group">
-					<div>
-						@(
-													Html.DevExtreme().CheckBox()
-													.ID("IsApproved")
-													)
-						<span style="margin-left:5px">Approved By:</span>
-					</div>
-					<div style="margin-left:25px">
-						Approved On: <span id="VoucherApprovedOn"></span>
-					</div>
-				</div>
+			<!-- Voucher No -->
+			<div class="col-md-2 col-6">
+				@(Html.DevExtreme().TextBox()
+								.ID("propertyVoucherNo")
+								.Value(voucherNo)
+								.Disabled(true)
+								.Label(new JS("formatMessage('Voucher No')"))
+								.LabelMode(EditorLabelMode.Floating)
+								.Width("100%")
+								)
 			</div>
 
-			<!-- VoucherNo and VoucherNo1 -->
-			<div class="col-md-3">
-				<div class="form-group">
-
-					<div>
-						@(
-													Html.DevExtreme().TextBox()
-													.ID("propertyVoucherNo")
-													.Value(voucherNo)
-													.ReadOnly(true)
-													.Disabled(true)
-													)
-					</div>
-					<div style="margin-top: 5px;">
-						@(
-													Html.DevExtreme().TextBox()
-													.ID("propertyId")
-													.Value(accountId)
-													.ReadOnly(true)
-													.Disabled(true)
-													)
-					</div>
-				</div>
+			<!-- Account ID -->
+			<div class="col-md-2 col-6">
+				@(Html.DevExtreme().TextBox()
+								.ID("propertyId")
+								.Value(accountId)
+								.Disabled(true)
+								.Label(new JS("formatMessage('Account ID')"))
+								.LabelMode(EditorLabelMode.Floating)
+								.Width("100%")
+								)
 			</div>
+
 		</div>
+
+
+
 	</div>
 	<br />
 	<div class="clear"></div>
@@ -376,42 +427,45 @@
 	<div class="clear"></div>
 
 
-
-
-	<br />
-
 	<div class="container">
-		<div class="card-footer">
-			<div class="dx-fieldset horizontal-container mt-2">
+		<!-- Fixed Floating Footer -->
+		<div class="fixed-footer-toolbar">
+			@(Html.DevExtreme().Button()
+						.ID("btnpropertySave")
+						.Text("Save & Close")
+						.Type(ButtonType.Normal)
+						.StylingMode(ButtonStylingMode.Contained)
+						.Icon("save")
+						.ElementAttr(new { @class = "footer-button me-2 save-btn" })
+						)
 
-				@(Html.DevExtreme().Button()
-								.ID("btnpropertySave")
-								.Text("Save & Close")
-								.Type(ButtonType.Normal)
-								.StylingMode(ButtonStylingMode.Outlined)
-								.Icon("save")
-								)
-				@(Html.DevExtreme().Button()
-								.ID("btnpropertyPrint")
-								.Text("Print")
-								.Type(ButtonType.Normal)
-								.StylingMode(ButtonStylingMode.Outlined)
-								.Icon("print")
+			@(Html.DevExtreme().Button()
+						.ID("btnpropertyPrint")
+						.Text("Print")
+						.Type(ButtonType.Normal)
+						.StylingMode(ButtonStylingMode.Contained)
+						.Icon("print")
+						.ElementAttr(new { @class = "footer-button me-2 print-btn" })
+						)
 
-								)
-				@(Html.DevExtreme().Button()
-								.ID("btnPropertyBack")
-								.Text("Back")
-								.Icon("arrowleft")
-								.OnClick("ClosePropertyModel")
-								)
-				@(Html.DevExtreme().Button()
-								.ID("btnpropertyDelete")
-								.Text("Delete")
-								.Icon("close")
-								)
-			</div>
+			@(Html.DevExtreme().Button()
+						.ID("btnPropertyBack")
+						.Text("Back")
+						.StylingMode(ButtonStylingMode.Contained)
+						.Icon("arrowleft")
+						.OnClick("ClosePropertyModel")
+						.ElementAttr(new { @class = "footer-button me-2 back-btn" })
+						)
+
+			@(Html.DevExtreme().Button()
+						.ID("btnpropertyDelete")
+						.Text("Delete")
+						.StylingMode(ButtonStylingMode.Contained)
+						.Icon("close")
+						.ElementAttr(new { @class = "footer-button delete-btn" })
+						)
 		</div>
+
 
 	</div>
 
