@@ -59,21 +59,25 @@
     <div class="chart-container" style="position:relative;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
             <div id="ClientOutstandingAgingChart" class="no-border-title"></div>
-            <!-- Fullscreen optional, not needed for donut -->
         </div>
-        <!-- DevExpress Donut Chart container -->
-        <div id="clientOutstandingDonutChart" style="width:750px; height:650px; margin:auto;"></div>
+        <div id="clientOutstandingDonutChart" style="width:900px; height:700px; margin:auto;"></div>
     </div>
 </div>
 
 <script>
 let donutChartInstance;
 
+// Utility: Safe text set
+function safeSetText(selector, value) {
+    const elem = document.querySelector(selector);
+    if (elem) elem.innerText = value;
+}
+
 $(document).ready(function () {
     $("#dashboardPageLoader").show();
     let pendingLoads = [];
 
-    // Summary cards with mini-loaders
+    // Summary Cards Loader
     const apiEndpoints = [
         { url: "/api/Dashboard/supplieroutstanding", target: "#totalBillsOutstandingValue", loader: "#loaderBillsOutstanding", key: "balance" },
         { url: "/api/Dashboard/GetTotalClientOutstanding", target: "#totalClientOutstandingValue", loader: "#loaderClientOutstanding", key: "balance" },
@@ -83,15 +87,15 @@ $(document).ready(function () {
         $(endpoint.loader).show();
         let p = $.getJSON(endpoint.url)
             .done(response => {
-                if (response.success) {
-                    $(endpoint.target).text(response[endpoint.key].toLocaleString('en-US'));
+                if (response && response.success && response[endpoint.key] != null) {
+                    safeSetText(endpoint.target, Number(response[endpoint.key]).toLocaleString('en-US'));
                 }
             })
             .always(() => $(endpoint.loader).hide());
         pendingLoads.push(p);
     });
 
-    // DataGrid load
+    // DataGrid Load
     function loadClientOutstandingGrid() {
         let deferred = $.Deferred();
         $("#clientOutstandingGrid").dxDataGrid({
@@ -141,45 +145,54 @@ $(document).ready(function () {
     }
     pendingLoads.push(loadClientOutstandingGrid());
 
-    // Donut chart load (AJAX)
+    // Donut Chart Loader and Mapping (NO UNDEFINED!)
     let donutChartLoad = $.ajax({
         url: '/api/Dashboard/GetClientOutstandingByAccountHead',
         type: 'GET'
     }).done(function (result) {
-        if (result.success) {
-            const data = result.data || [];
+        if (result && result.success) {
+            // Only valid entries (name and positive balance)
+            const validData = (result.data || []).filter(x =>
+                x && x.AccountHead && String(x.AccountHead).trim().length > 0 && Number(x.TotalBalance) > 0
+            );
 
-            // Sort by TotalBalance descending
-            const sorted = data.slice().sort((a, b) => (b.TotalBalance || 0) - (a.TotalBalance || 0));
+            let chartData = [];
+            if (validData.length > 10) {
+                const topItems = validData.slice(0, 10);
+                const otherItems = validData.slice(10);
 
-            // Top 10 + Others
-            const topN = 10;
-            const topItems = sorted.slice(0, topN);
-            const otherItems = sorted.slice(topN);
+                chartData = topItems.map(item => ({
+                    accountHead: item.AccountHead,
+                    balance: Number(item.TotalBalance)
+                }));
 
-            const chartData = topItems.map(item => ({
-                accountHead: item.AccountHead ?? "Unknown",
-                balance: item.TotalBalance
-            }));
-
-            if (otherItems.length > 0) {
-                const othersTotal = otherItems.reduce((sum, item) => sum + (item.TotalBalance || 0), 0);
-                chartData.push({ accountHead: "Others", balance: othersTotal });
+                const othersTotal = otherItems.reduce((sum, item) => sum + Number(item.TotalBalance), 0);
+                if (othersTotal > 0) {
+                    chartData.push({ accountHead: "Others", balance: othersTotal });
+                }
+            } else {
+                chartData = validData.map(item => ({
+                    accountHead: item.AccountHead,
+                    balance: Number(item.TotalBalance)
+                }));
             }
+
+            // Final guarantee (100% safe)
+            chartData = chartData.filter(x => x.accountHead && String(x.accountHead).trim().length > 0 && x.balance > 0);
 
             renderDonutChart(chartData);
         }
     });
     pendingLoads.push(donutChartLoad);
 
-    // Hide loader when all
+    // Loader hide logic
     $.when.apply($, pendingLoads).always(function () {
         setTimeout(function () {
             $("#dashboardPageLoader").fadeOut(200);
         }, 120);
     });
 
-    // Card click handlers (make sure tenantName JS variable is defined!)
+    // Card click handlers (require tenantName to be defined)
     $("#clientcard").on("click", function () {
         window.location.href = `/${tenantName}/Finance/DashboardClient`;
     });
@@ -212,34 +225,48 @@ $(document).ready(function () {
         onContentReady: function(e) { $(e.element).addClass("dx-textbox-heading10"); }
     });
 });
-
-// DevExpress Donut Chart function
 function renderDonutChart(chartData) {
     if (donutChartInstance) {
         $("#clientOutstandingDonutChart").dxPieChart("dispose");
     }
+    const total = chartData.reduce((sum, item) => sum + (item.balance || 0), 0);
+
     $("#clientOutstandingDonutChart").dxPieChart({
         dataSource: chartData,
         type: "doughnut",
-        innerRadius: 0.55,
-        palette: "Ocean",
+        innerRadius: 0.6,
+        palette: ["#5b9bd5", "#ed7d31", "#a5a5a5", "#ffc000", "#4472c4", "#70ad47", "#255e91", "#9e480e", "#636363", "#997300", "#264478", "#43682b"],
+        paletteExtensionMode: "blend",
         animation: { enabled: true, duration: 1200, easing: "bounce" },
-        title: "Top 10 Client Outstanding (Donut)",
+        size: { height: 700, width: 900 },
+        title: {
+            text: "Top 10 Client Outstanding (Donut)",
+            font: { size: 22, weight: 700, color: "#004080" },
+            subtitle: { text: "Including 'Others' as summary", font: { size: 14, color: "#666" } }
+        },
         legend: {
             visible: true,
             position: "right",
             horizontalAlignment: "right",
             verticalAlignment: "center",
-            itemTextPosition: "right"
+            itemTextPosition: "right",
+            customizeText: function (arg) {
+                // Show full name and value in legend
+                return `${arg.argument}: SAR ${(arg.value || 0).toLocaleString("en-US")}`;
+            },
+            wordWrap: "none"
         },
         export: { enabled: true },
         tooltip: {
             enabled: true,
-            format: "fixedPoint",
-            precision: 2,
             customizeTooltip: function (pointInfo) {
+                let percent = ((pointInfo.value / total) * 100).toFixed(2);
                 return {
-                    text: `<b>${pointInfo.argument}</b>: ₹${pointInfo.value.toLocaleString("en-IN")}`
+                    html: `<div style='padding:6px 14px;max-width:320px;word-break:break-word'>
+                            <b>${pointInfo.argument}</b><br>
+                            SAR ${pointInfo.value.toLocaleString("en-US")}<br>
+                            <span style="color:#007acc;font-weight:600">${percent}% of Total</span>
+                          </div>`
                 };
             }
         },
@@ -248,18 +275,48 @@ function renderDonutChart(chartData) {
             valueField: "balance",
             label: {
                 visible: true,
-                connector: { visible: true, width: 1 },
+                connector: { visible: true, width: 2 },
+                // Only show percent on slice for clarity (no wrapping)
                 customizeText: function (pointInfo) {
-                    return `${pointInfo.argumentText}\n₹${pointInfo.value.toLocaleString("en-IN")}`;
-                }
-            }
-        }]
+                    let percent = ((pointInfo.value / total) * 100).toFixed(1);
+                    return `${percent}%`;
+                },
+                font: { size: 15, weight: 600, color: "#003366" },
+                backgroundColor: "rgba(255,255,255,0.85)"
+            },
+            border: { visible: true, width: 2, color: "#eee" },
+            minSegmentSize: 2,
+            resolveLabelOverlapping: "shift"
+        }],
+        centerTemplate: function(pieChart, container) {
+            const $center = $("<div>")
+                .css({
+                    textAlign: "center",
+                    fontSize: 22,
+                    color: "#007acc",
+                    fontWeight: 700,
+                    marginTop: "35%",
+                    textShadow: "0 2px 8px #bbb"
+                })
+                .html(`Total<br>SAR ${total.toLocaleString("en-US")}`);
+            container.appendChild($center[0]);
+        },
+        onDrawn: function () {
+            $("#clientOutstandingDonutChart .dxc-content").css({
+                filter: "drop-shadow(0 8px 28px rgba(44,62,80,0.24))"
+            });
+        }
     });
     donutChartInstance = $("#clientOutstandingDonutChart").dxPieChart("instance");
 }
+
 </script>
 
 <style>
+
+    .dxc-legend .dxc-item text, .dxc-tooltip text {
+    word-break: normal !important;
+}
 .dashboard-card-header {
     text-align: center; font-size: 1.6rem; font-weight: bold; color: #004080;
     letter-spacing: 0.5px; padding: 14px 0 8px 0; margin-top: 10px; margin-bottom: 0;
@@ -282,8 +339,15 @@ function renderDonutChart(chartData) {
 .grid-container { display: flex; padding: 15px; justify-content: center; }
 .grid-section { width: 38%; text-align: center; }
 .chart-container { text-align: center; position:relative; }
-#clientOutstandingDonutChart { width: 100% !important; height: 650px !important; background:white; }
 #dashboardPageLoader { display: none; }
 button#toggleFullscreen { background:#007acc; color:#fff; border:none; border-radius:4px; padding:7px 18px; font-weight:bold; cursor:pointer; }
 button#toggleFullscreen:hover { background:#005c99; }
+#clientOutstandingDonutChart .dxc-content {
+    filter: drop-shadow(0 4px 12px rgba(44,62,80,0.18));
+}
+/* Allow legend items to wrap if too long */
+.dxc-legend .dxc-item text, .dxc-tooltip text {
+    word-break: break-word;
+    max-width: 180px;
+}
 </style>
