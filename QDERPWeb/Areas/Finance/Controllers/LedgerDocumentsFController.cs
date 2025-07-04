@@ -1,4 +1,5 @@
-﻿using DevExpress.XtraRichEdit.Import.Html;
+﻿using DevExpress.Office.Drawing;
+using DevExpress.XtraRichEdit.Import.Html;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Http;
@@ -88,7 +89,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> AddDocumentsEntry()
+        public async Task<IActionResult> AddDocumentsEntry(string module)
         {
             try
             {
@@ -110,7 +111,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 Uri? refererUri = !string.IsNullOrWhiteSpace(referer) ? new Uri(referer) : null;
 
                 string area = "UnknownArea";
-                string module = "UnknownModule";
+               // module = "UnknownModule";
 
                 if (refererUri != null)
                 {
@@ -119,7 +120,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     {
                         // pathSegments[0] = tenant, [1] = area, [2] = module
                         area = pathSegments[1];
-                        module = pathSegments[2];
+                       // module = pathSegments[2];
                     }
                 }
 
@@ -136,7 +137,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                 // Construct full file name and blob path
                 var fileName = $"{form["DocumentNo"]}_{Path.GetFileName(file.FileName)}";
-                var filePathInBlob = $"{area}/CashReceipt/{fileName}";
+                var filePathInBlob = $"{area}/{module}/{fileName}";
 
                 var blobHelper = new AzureBlobHelper(
                     _configuration.GetConnectionString("AzureBlobStorage"),
@@ -212,24 +213,50 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetDocuments()
+        public async Task<IActionResult> GetDocuments(string module)
         {
             try
             {
-                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
                     return Unauthorized("Invalid tenant context.");
 
+                var tenantName = HttpContext.Session.GetString("TenantName")?.Trim();
+                if (string.IsNullOrWhiteSpace(tenantName))
+                    return Unauthorized("Tenant name not found in session.");
+
+                if (string.IsNullOrWhiteSpace(module))
+                    return BadRequest("Module parameter is required.");
+
+                string area = "UnknownArea";
+
+                var referer = Request.Headers["Referer"].ToString();
+                if (!string.IsNullOrWhiteSpace(referer) && Uri.IsWellFormedUriString(referer, UriKind.Absolute))
+                {
+                    var refererUri = new Uri(referer);
+                    var pathSegments = refererUri.AbsolutePath.Trim('/').Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+                    if (pathSegments.Length >= 3)
+                    {
+                        area = pathSegments[1];
+                    }
+                }
+
+                area = area.Replace(" ", "_");
+                module = module.Replace(" ", "_");
+                tenantName = tenantName.Replace(" ", "_");
+
                 var documents = await dbContext.Tbl20116LedgerDocuments
+                    .Where(d => !string.IsNullOrEmpty(d.AzurePath) &&
+                                EF.Functions.Like(d.AzurePath, $"%{area}%{module}%"))
                     .Select(d => new
                     {
-                        DocumentNo = d.DocumentNo,
-                        DocumentType = d.DocumentType,
-                        DocumentRefNo = d.DocumentRefNo,
-                        DocumentRemarks = d.DocumentRemarks,
-                        DocumentExpDate = d.DocumentExpDate,
-                        DocumentExpDateAr = d.DocumentExpDateAr,
-                        DocumentNotificationDate = d.DocumentNotificationDate,
-                    
+                        d.DocumentNo,
+                        d.DocumentType,
+                        d.DocumentRefNo,
+                        d.DocumentRemarks,
+                        d.DocumentExpDate,
+                        d.DocumentExpDateAr,
+                        d.DocumentNotificationDate
                     })
                     .ToListAsync();
 
@@ -237,10 +264,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in GetProject: {ex.Message}");
+                _logger.LogError($"Error in GetDocuments: {ex}");
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
+
+
         [HttpPost]
         public async Task<IActionResult> UpdateDocumentEntries([FromBody] List<Tbl20116LedgerDocument> documents)
         {
