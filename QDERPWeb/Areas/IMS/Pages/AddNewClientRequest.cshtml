@@ -410,7 +410,7 @@
 														)
 						</td>
 						<td style="display: flex; align-items: end; width:100%;" colspan="2">
-							@(Html.DevExtreme().DropDownBox()
+							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 														.Label(new JS("formatMessage('Client Name:')"))
 														.AcceptCustomValue(true)
 														.DataSource(d => d.WebApi()
@@ -477,7 +477,7 @@
 					</tr>
 					<tr style="display: flex; gap: 10px;align-items:end; width:100%;">
 						<td style="display: flex; align-items:end;width:100%;" colspan="2">
-							@(Html.DevExtreme().DropDownBox()
+							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 														.Label(new JS("formatMessage('Store Code:')"))
 														.ID("ddStoreCode")
 														.DataSource(d => d.WebApi()
@@ -507,7 +507,7 @@
 
 						</td>
 						<td style="display: flex; align-items:end;width:100%;" colspan="2">
-							@(Html.DevExtreme().DropDownBox()
+							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 														.Label(new JS("formatMessage('Department Requested By:')"))
 														.ID("ddDep")
 														.DataSource(d => d.WebApi()
@@ -570,7 +570,7 @@
 					</tr>
 					<tr style="display: flex; align-items:end;gap: 10px; width:100%;">
 						<td style="display: flex; align-items:end;width:100%;" colspan="2">
-							@(Html.DevExtreme().DropDownBox()
+							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 														.Label(new JS("formatMessage('Mode of Request:')"))
 														.DataSource(d => d.WebApi()
 														.Controller("AddNewClientRequest")
@@ -606,7 +606,7 @@
 														)
 						</td>
 						<td style="display: flex; align-items:end;width:100%;" colspan="2">
-							@(Html.DevExtreme().DropDownBox()
+							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 														.Label(new JS("formatMessage('Type of Request:')"))
 														.DataSource(d => d.WebApi()
 														.Controller("AddNewClientRequest")
@@ -642,7 +642,7 @@
 														)
 						</td>
 						<td colspan="2" style="width:100%;">
-							@(Html.DevExtreme().DropDownBox()
+							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 														.Label(new JS("formatMessage('Sales Person:')"))
 														.DataSource(d => d.WebApi()
 														.Controller("AddNewClientRequest")
@@ -678,7 +678,7 @@
 														)
 						</td>
 						<td style="display: flex;align-items:end;width:100%;" colspan="2">
-							@(Html.DevExtreme().DropDownBox()
+							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 														.Label(new JS("formatMessage('Project:')"))
 														.ID("ddProject")
 														.DataSource(d => d.WebApi()
@@ -756,7 +756,7 @@
 						<!-- Row 3 -->
 						<tr>
 							<td colspan="1">
-								@(Html.DevExtreme().DropDownBox()
+								@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 																.Label(new JS("formatMessage('Expected VAT %')"))
 																.DataSource(d => d.WebApi()
 																.Controller("AddNewClientRequest")
@@ -834,7 +834,7 @@
 
 						<div class="row" style="font-size:14px;padding:20px;">
 							<div class="col-12">
-								@(Html.DevExtreme().DropDownBox()
+								@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 																.Label(new JS("formatMessage('Company Branch/Division:')"))
 																.DataSource(d => d.WebApi()
 																.Controller("AddNewClientRequest")
@@ -864,7 +864,7 @@
 
 							</div>
 							<div class="col-6">
-								@(Html.DevExtreme().DropDownBox()
+								@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 																.Label(new JS("formatMessage('Requested By(MPR Type):')"))
 																.DataSource(d => d.WebApi()
 																.Controller("AddNewClientRequest")
@@ -895,7 +895,7 @@
 
 							</div>
 							<div class="col-6">
-								@(Html.DevExtreme().DropDownBox()
+								@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 																.Label(new JS("formatMessage('Requested/Enquiry Status:')"))
 																.DataSource(d => d.WebApi()
 																.Controller("AddNewClientRequest")
@@ -925,7 +925,7 @@
 
 							</div>
 							<div class="col-6">
-								@(Html.DevExtreme().DropDownBox()
+								@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 																.Label(new JS("formatMessage('Inventory Group Master:')"))
 																.DataSource(d => d.WebApi()
 																.Controller("AddNewClientRequest")
@@ -957,32 +957,32 @@
 							<div class="col-6">
 								<div style="display: flex; align-items: center; gap: 8px;">
 									<div style="flex-grow: 1;">
-										@(Html.DevExtreme().DropDownBox()
-																				.Label(new JS("formatMessage('Requesting Unit:')"))
-																				.DataSource(d => d.WebApi()
-																				.Controller("AddNewClientRequest")
-																				.LoadAction("GetRequesstingUnit")
-																				.LoadMode(DataSourceLoadMode.Raw)
-																				.Key("ProjectSubUnitCode")
-																				)
-																				.LabelMode(EditorLabelMode.Outside)
-																				.ID("ddGetRequesstingUnit")
-																				.Width(900)
-																							@*  .ShowClearButton(true)
-										                                      .AcceptCustomValue(true) *@
-																				.OpenOnFieldClick(false)//
-																				.ValueChangeEvent("input")
-																				.HoverStateEnabled(true)
-																				.ValueExpr("ProjectSubUnitCode")
-																				.DisplayExpr("ProjectSubUnitName")
-																				.OnInput("dropDownBoxOnInput")
-																				.OnOpened("onOpened")
-																				.TabIndex(1)
-																				.Width("100%")
-																				.OnKeyDown("onKeyDown")
-																										//.OnValueChanged("dropDownBoxValueChanged")
-																				.ContentTemplate(new TemplateName("GetRequesstingUnitContentTemplate"))
-																				)
+										@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+												.Label(new JS("formatMessage('Requesting Unit:')"))
+												.DataSource(d => d.WebApi()
+												.Controller("AddNewClientRequest")
+												.LoadAction("GetRequesstingUnit")
+												.LoadMode(DataSourceLoadMode.Raw)
+												.Key("ProjectSubUnitCode")
+												)
+												.LabelMode(EditorLabelMode.Outside)
+												.ID("ddGetRequesstingUnit")
+												.Width(900)
+															@*  .ShowClearButton(true)
+										        .AcceptCustomValue(true) *@
+												.OpenOnFieldClick(false)//
+												.ValueChangeEvent("input")
+												.HoverStateEnabled(true)
+												.ValueExpr("ProjectSubUnitCode")
+												.DisplayExpr("ProjectSubUnitName")
+												.OnInput("dropDownBoxOnInput")
+												.OnOpened("onOpened")
+												.TabIndex(1)
+												.Width("100%")
+												.OnKeyDown("onKeyDown")
+																		//.OnValueChanged("dropDownBoxValueChanged")
+												.ContentTemplate(new TemplateName("GetRequesstingUnitContentTemplate"))
+												)
 									</div>
 
 									@(Html.DevExtreme().Button()
@@ -1074,7 +1074,7 @@
 				<div class="row">
 					<!-- Add margin bottom to separate rows -->
 					<div class="col-3">
-						@(Html.DevExtreme().DropDownBox()
+						@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 												.Label(new JS("formatMessage('Prepared By:')"))
 												.DataSource(d => d.WebApi()
 												.Controller("AddNewClientRequest")
@@ -1114,7 +1114,7 @@
 					</div>
 
 					<div class="col-3">
-						@(Html.DevExtreme().DropDownBox()
+						@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 												.Label(new JS("formatMessage('Verified By:')"))
 												.DataSource(d => d.WebApi()
 												.Controller("AddNewClientRequest")
@@ -1143,7 +1143,7 @@
 					</div>
 
 					<div class="col-3">
-						@(Html.DevExtreme().DropDownBox()
+						@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 												.Label(new JS("formatMessage('Approved By:')"))
 												.DataSource(d => d.WebApi()
 												.Controller("AddNewClientRequest")
@@ -1264,7 +1264,7 @@
 				</text>)
 							.EditCellTemplate(@<text>
 								   				<div style="display: flex; justify-content: space-between; align-items:end;">
-						@(Html.DevExtreme().DropDownBox()
+						@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 											.DataSource(d => d.WebApi()
 											.Controller("VATModule")
 											.LoadAction("GetGoodsAndServices")
@@ -1305,7 +1305,7 @@
 							.Width(200)
 							.AllowEditing(true)
 							.EditCellTemplate(@<text>
-					@(Html.DevExtreme().DropDownBox()
+					@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 									.ID("unitRateDropDownBoxEdit")
 									.DataSource(d => d.WebApi()
 									.Controller("VATModule")
@@ -1361,7 +1361,7 @@
 			</text>); *@
 							.EditCellTemplate(@<text>
 								   				<div style="display: flex; justify-content: space-between; align-items:end;">
-						@(Html.DevExtreme().DropDownBox()
+						@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 											.DataSource(d => d.WebApi()
 											.Controller("VATModule")
 											.LoadAction("GetVatTaxSlabs")
@@ -1751,7 +1751,7 @@
 							.ShowBorders(true)
 							.HoverStateEnabled(true)
 							.Paging(p => p.PageSize(15))
-							.FilterRow(f => f.Visible(false))//
+							.FilterRow(f => f.Visible(true))//
 							.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 							.Height(345)
 							.Selection(s => s.Mode(SelectionMode.Single))
@@ -1785,7 +1785,7 @@
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(false))//
+					.FilterRow(f => f.Visible(true))//
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 					.Height(345)
 					.Selection(s => s.Mode(SelectionMode.Single))
@@ -1853,7 +1853,7 @@
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(false))//
+					.FilterRow(f => f.Visible(true))//
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 					.Height(345)
 					.Selection(s => s.Mode(SelectionMode.Single))
@@ -1890,7 +1890,7 @@
 					.Selection(sl => sl.Mode(SelectionMode.Single))
 					.OnSelectionChanged("PaymentMeansdataGridSelectionChanged")
 					.OnInitialized("CommondataGridInitialized")
-					.HeaderFilter(p => p.Visible(false))
+					.HeaderFilter(p => p.Visible(true))
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
@@ -1930,7 +1930,7 @@
 					.OnSelectionChanged("ClientCodedataGridSelectionChanged")
 					.OnInitialized("ClientCodedataGridInitialized")
 					.OnRowPrepared("onClientCodeRowPrepared")
-					.HeaderFilter(p => p.Visible(false))
+					.HeaderFilter(p => p.Visible(true))
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
@@ -1969,7 +1969,7 @@
 					.Selection(sl => sl.Mode(SelectionMode.Single))
 					.OnSelectionChanged("ClientNamedataGridSelectionChanged")
 					.OnInitialized("ClientCodedataGridInitialized")
-					.HeaderFilter(p => p.Visible(false))
+					.HeaderFilter(p => p.Visible(true))
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
@@ -1996,11 +1996,11 @@
 					)
 					.WordWrapEnabled(true)
 					.ShowBorders(true)
-					.ShowColumnHeaders(false)
-					.FilterRow(f => f.Visible(false))
+					.ShowColumnHeaders(true)
+					.FilterRow(f => f.Visible(true))
 					.SearchPanel(sp => sp.HighlightSearchText(true))
 					.Selection(sl => sl.Mode(SelectionMode.Single))
-					.HeaderFilter(p => p.Visible(false))
+					.HeaderFilter(p => p.Visible(true))
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
@@ -2032,7 +2032,7 @@
 					.FilterRow(f => f.Visible(true))
 					.SearchPanel(sp => sp.HighlightSearchText(true))
 					.Selection(sl => sl.Mode(SelectionMode.Single))
-					.HeaderFilter(p => p.Visible(false))
+					.HeaderFilter(p => p.Visible(true))
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
@@ -2479,7 +2479,7 @@
 			]);
 		}
 
-						$("#btnSave").dxButton("instance").option("text", "Update");
+					$("#btnSave").dxButton("instance").option("text", "Update");
 					// Populate DevExtreme controls with the response data
 					$('#txtRequestNo').dxTextBox("instance").option("value", response.Mprno);
 
@@ -2507,9 +2507,8 @@
 					$('#txtClientProject').dxTextBox("instance").option("value", response.ClientProject);
 					$("#ddPreparedby").dxDropDownBox("instance").option("value",response.RequestSignatory);
 					$("#ddVerifiedby").dxDropDownBox("instance").option("value", response.MprverifiedSign);
-						$("#ddApprovedby").dxDropDownBox("instance").option("value", response.MprapprovedSign);
-
-						$("#ddRequestedBy").dxDropDownBox("instance").option("value", response.TypeOfMpr);
+					$("#ddApprovedby").dxDropDownBox("instance").option("value", response.MprapprovedSign);
+					$("#ddRequestedBy").dxDropDownBox("instance").option("value", response.TypeOfMpr);
 
 
 
@@ -2636,13 +2635,14 @@
 
 													height: 300,
 
-													scrolling: { mode: "virtual" },
+													width : 550,
 
-													columns: [
+													scrolling: { mode: "virtual" },
+														columns: [
 														 { dataField: "QuoteGroupItemSlNo", caption: "ID", width: 60 },
 															{ dataField: "GroupCode", caption: "Group Code", width: 80 },
 
-														{ dataField: "GroupName", caption: "Group Name", width: 200 }
+														{ dataField: "GroupName", caption: "Group Name", width: 590 }
 
 
 													],
@@ -2798,7 +2798,7 @@
 													height: 300, // âœ… Add fixed height to enable scrolling
 
 													scrolling: { mode: "virtual" },
-
+											
 													columns: [
 
 														{ dataField: "GSCode", caption: "Code", width: 80 },
@@ -2973,8 +2973,8 @@
 													height: 300,
 
 													scrolling: { mode: "virtual" },
-
-													columns: [
+													
+														columns: [
 
 															{ dataField: "UnitCode", caption: "Code", width: 80 },
 
@@ -3237,10 +3237,19 @@
 						selection: { mode: "single" },
 						height: 300,
 						scrolling: { mode: "virtual" },
+							searchPanel: { // optional: global search box
+							visible: true,
+							width: 250,
+							placeholder: "Search..."
+									},
+						filterRow: { // column-wise filters
+						visible: true,
+						applyFilter: "auto"
+									},
 						columns: [
 							{ dataField: "QuoteGroupItemSlNo",caption: formatMessage("ID"), width: 60 },
-								{ dataField: "GroupCode",caption: formatMessage("Group Code"), width: 80 },
-							{ dataField: "GroupName", caption: formatMessage("Group Name"), width: 200 }
+								{ dataField: "GroupCode",caption: formatMessage("Group Code"), width: 110 },
+							{ dataField: "GroupName", caption: formatMessage("Group Name"), width: 550 }
 						],
 						onSelectionChanged: function (selectedItems) {
 							let selectedItem = selectedItems.selectedRowsData[0];
@@ -3364,7 +3373,15 @@
 											height: 300, // âœ… Add fixed height to enable scrolling
 
 											scrolling: { mode: "virtual" },
-
+													searchPanel: { // optional: global search box
+														visible: true,
+														width: 250,
+														placeholder: "Search..."
+													},
+													filterRow: { // column-wise filters
+														visible: true,
+														applyFilter: "auto"
+													},
 											columns: [
 
 														{ dataField: "GSCode", caption: formatMessage("Code"), width: 80 },
@@ -3377,9 +3394,9 @@
 
 													{ dataField: "CostPrice", caption: formatMessage("Cost Price"), width: 100 },
 
-												{ dataField: "GSSellingRate", caption: formatMessage("Selling Rate"), width: 100 },
+													{ dataField: "GSSellingRate", caption: formatMessage("Selling Rate"), width: 100 },
 
-														{ dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100 }
+													{ dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100 }
 
 											],
 
@@ -3539,7 +3556,15 @@
 											height: 300,
 
 											scrolling: { mode: "virtual" },
-
+												searchPanel: { // optional: global search box
+													visible: true,
+													width: 250,
+													placeholder: "Search..."
+												},
+												filterRow: { // column-wise filters
+													visible: true,
+													applyFilter: "auto"
+												},
 											columns: [
 
 
@@ -3699,12 +3724,12 @@ $("#btnAddNew").on("click", function (e) {
 			LineOrderNo: nextLineOrderNo,
 			//ItemCode: ItemNo || "",  // Ensure this is defined or provide fallback
 			QuoteGroupItemSlNo:null,
-	GSCode: ItemNo,
-	Description:null,
-	UnitRateMethod:null,
-	QtyRequested: 0,
-	ExpectedUnitRate: 0,
-	LineTotal: 0
+			GSCode: ItemNo,
+			Description:null,
+			UnitRateMethod:null,
+			QtyRequested: 0,
+			ExpectedUnitRate: 0,
+			LineTotal: 0
 		};
 
 		// Efficient insert without replacing entire dataSource

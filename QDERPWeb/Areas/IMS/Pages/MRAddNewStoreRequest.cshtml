@@ -422,7 +422,7 @@
 														)
 						</td>
 						<td style="display: flex; align-items: end; width:100%;" colspan="2">
-							@(Html.DevExtreme().DropDownBox()
+							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 														.Label(new JS("formatMessage('Client Name:')"))
 														.DataSource(d => d.WebApi()
 														.Controller("AddNewClientRequest")
@@ -470,7 +470,7 @@
 					</tr>
 					<tr style="display: flex; gap: 10px;align-items:end; width:100%;">
 						<td style="display: flex; align-items:end;width:100%;" colspan="2">
-							@(Html.DevExtreme().DropDownBox()
+							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 														.Label(new JS("formatMessage('Store Code:')"))
 														.DataSource(d => d.WebApi()
 														.Controller("StoreCode")
@@ -509,7 +509,7 @@
 
 						</td>
 						<td style="display: flex; align-items:end;width:100%;" colspan="2">
-							@(Html.DevExtreme().DropDownBox()
+							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 														.Label(new JS("formatMessage('Department Requested By:')"))
 														.ID("ddDep")
 														.DataSource(d => d.WebApi()
@@ -575,7 +575,7 @@
 					</tr>
 					<tr style="display: flex; align-items:end;gap: 10px; width:100%;">
 						<td style="display: flex; align-items:end;width:100%;" colspan="2">
-							@(Html.DevExtreme().DropDownBox()
+							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 														.Label(new JS("formatMessage('Mode of Request:')"))
 														.DataSource(d => d.WebApi()
 														.Controller("AddNewClientRequest")
@@ -611,7 +611,7 @@
 														)
 						</td>
 						<td style="display: flex; align-items:end;width:100%;" colspan="2">
-							@(Html.DevExtreme().DropDownBox()
+							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 														.Label(new JS("formatMessage('Type of Request:')"))
 														.DataSource(d => d.WebApi()
 														.Controller("AddNewClientRequest")
@@ -647,7 +647,7 @@
 														)
 						</td>
 						<td colspan="2" style="width:100%;">
-							@(Html.DevExtreme().DropDownBox()
+							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 														.Label(new JS("formatMessage('Sales Person:')"))
 														.DataSource(d => d.WebApi()
 														.Controller("AddNewClientRequest")
@@ -683,7 +683,7 @@
 														)
 						</td>
 						<td style="display: flex;align-items:end;width:100%;" colspan="2">
-							@(Html.DevExtreme().DropDownBox()
+							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 														.Label(new JS("formatMessage('Project:')"))
 														.ID("ddProject")
 														.DataSource(d => d.WebApi()
@@ -761,7 +761,7 @@
 						<!-- Row 3 -->
 						<tr>
 							<td colspan="1">
-								@(Html.DevExtreme().DropDownBox()
+								@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 															.Label(new JS("formatMessage('Expected VAT %')"))
 															.DataSource(d => d.WebApi()
 															.Controller("AddNewClientRequest")
@@ -840,7 +840,7 @@
 
 						<div class="row" style="font-size:14px;">
 							<div class="col-12">
-								@(Html.DevExtreme().DropDownBox()
+								@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 															.Label(new JS("formatMessage('Company Branch/Division:')"))
 															.DataSource(d => d.WebApi()
 															.Controller("AddNewClientRequest")
@@ -869,7 +869,7 @@
 
 							</div>
 							<div class="col-6">
-								@(Html.DevExtreme().DropDownBox()
+								@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 															.Label(new JS("formatMessage('Requested By(MPR Type):')"))
 															.DataSource(d => d.WebApi()
 															.Controller("AddNewClientRequest")
@@ -900,7 +900,7 @@
 
 							</div>
 							<div class="col-6">
-								@(Html.DevExtreme().DropDownBox()
+								@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 															.Label(new JS("formatMessage('Requested/Enquiry Status:')"))
 															.DataSource(d => d.WebApi()
 															.Controller("AddNewClientRequest")
@@ -929,7 +929,7 @@
 
 							</div>
 							<div class="col-6">
-								@(Html.DevExtreme().DropDownBox()
+								@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 															.Label(new JS("formatMessage('Inventory Group Master:')"))
 															.DataSource(d => d.WebApi()
 															.Controller("AddNewClientRequest")
@@ -961,7 +961,7 @@
 							<div class="col-6">
 								<div style="display: flex; align-items: center; gap: 8px;">
 									<div style="flex-grow: 1;">
-										@(Html.DevExtreme().DropDownBox()
+										@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 																				.Label(new JS("formatMessage('Requesting Unit:')"))
 																				.DataSource(d => d.WebApi()
 																				.Controller("AddNewClientRequest")
@@ -1080,7 +1080,7 @@
 				<div class="row">
 					<!-- Add margin bottom to separate rows -->
 					<div class="col-3">
-						@(Html.DevExtreme().DropDownBox()
+						@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 													.Label(new JS("formatMessage('Prepared By:')"))
 													.DataSource(d => d.WebApi()
 													.Controller("AddNewClientRequest")
@@ -1120,7 +1120,7 @@
 					</div>
 
 					<div class="col-3">
-						@(Html.DevExtreme().DropDownBox()
+						@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 													.Label(new JS("formatMessage('Verified By:')"))
 													.DataSource(d => d.WebApi()
 													.Controller("AddNewClientRequest")
@@ -1149,7 +1149,7 @@
 					</div>
 
 					<div class="col-3">
-						@(Html.DevExtreme().DropDownBox()
+						@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 													.Label(new JS("formatMessage('Approved By:')"))
 													.DataSource(d => d.WebApi()
 													.Controller("AddNewClientRequest")
@@ -1270,7 +1270,7 @@
 			</text>)
 						.EditCellTemplate(@<text>
 				<div style="display: flex; justify-content: space-between; align-items:end;">
-					@(Html.DevExtreme().DropDownBox()
+					@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 					.DataSource(d => d.WebApi()
 					.Controller("VATModule")
 					.LoadAction("GetGoodsAndServices")
@@ -1311,7 +1311,7 @@
 							.Width(200)
 							.AllowEditing(true)
 							.EditCellTemplate(@<text>
-				@(Html.DevExtreme().DropDownBox()
+				@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 				.ID("unitRateDropDownBoxEdit")
 				.DataSource(d => d.WebApi()
 				.Controller("VATModule")
@@ -1367,7 +1367,7 @@
 			</text>); *@
 				.EditCellTemplate(@<text>
 				<div style="display: flex; justify-content: space-between; align-items:end;">
-					@(Html.DevExtreme().DropDownBox()
+					@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 					.DataSource(d => d.WebApi()
 					.Controller("VATModule")
 					.LoadAction("GetVatTaxSlabs")
@@ -3303,7 +3303,16 @@
 										selection: { mode: "single" },
 										height: 300,
 										scrolling: { mode: "virtual" },
-										columns: [
+										searchPanel: { // optional: global search box
+													visible: true,
+													width: 250,
+													placeholder: "Search..."
+										},
+										filterRow: { // column-wise filters
+													visible: true,
+													applyFilter: "auto"
+										},
+											columns: [
 											{ dataField: "QuoteGroupItemSlNo", caption: "ID", width: 60 },
 											{ dataField: "GroupCode", caption: "Group Code", width: 80 },
 											{ dataField: "GroupName", caption: "Group Name", width: 200 }
@@ -3430,6 +3439,15 @@
 										height: 300, // âœ… Add fixed height to enable scrolling
 
 										scrolling: { mode: "virtual" },
+										searchPanel: { // optional: global search box
+													visible: true,
+													width: 250,
+													placeholder: "Search..."
+										},
+										filterRow: { // column-wise filters
+													visible: true,
+													applyFilter: "auto"
+										},
 
 										columns: [
 
@@ -3605,6 +3623,15 @@
 										height: 300,
 
 										scrolling: { mode: "virtual" },
+										searchPanel: { // optional: global search box
+													visible: true,
+													width: 250,
+													placeholder: "Search..."
+										},
+										filterRow: { // column-wise filters
+													visible: true,
+													applyFilter: "auto"
+										},
 
 										columns: [
 

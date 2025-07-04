@@ -4,7 +4,7 @@
 }
 <style>
     .dx-datagrid-headers {
-        border: 1px solid #686868 !important;
+        /* border: 1px solid #686868 !important; */
         width: 100%; /* Adjust to fit the container */
         overflow-x: auto; /* Enable horizontal scrolling */
         white-space: nowrap; /* Prevent wrapping of headings */
@@ -297,14 +297,14 @@
                         )
                     </div>
                     <div class="col-md-6" style="display:flex; align-items:end;">
-                        @(Html.DevExtreme().DropDownBox()
+                        @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+						.AcceptCustomValue(true)
                         .Label(new JS("formatMessage('Client Name:')"))
                         .DataSource(d => d.WebApi()
                         .Controller("AddNewClientRequest")
 						.LoadAction("GetClientDetails")
                         .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("ClientCode")
-
+                        .Key("ClientCode")    
                         )
                         .LabelMode(EditorLabelMode.Outside)
                         .ID("GetProjectDropDown")
@@ -340,7 +340,7 @@
 
                     <!-- Row 2 -->
                     <div class="col-md-2" style="display:flex; align-items:end;">
-                        @(Html.DevExtreme().DropDownBox()
+                        @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                         .Label(new JS("formatMessage('Sales Person:')"))
                         .DataSource(d => d.WebApi()
                         .Controller("AddNewClientRequest")
@@ -391,12 +391,12 @@
                         .Width("100%")
 
                         )
-				@(Html.DevExtreme().Button()
-    .ID("btnEditClient")
-    .Icon("plus")
-    .ElementAttr("class", "button-alignment-up button-group")
-    .OnClick("onEditClientClick")
-)
+					@(Html.DevExtreme().Button()
+						.ID("btnEditClient")
+						.Icon("plus")
+						.ElementAttr("class", "button-alignment-up button-group")
+						.OnClick("onEditClientClick")
+						)
                     </div>
                     <div class="col-md-2">
                         @(Html.DevExtreme().TextBox()
@@ -418,7 +418,7 @@
 
                     <!-- Row 3 -->
                     <div class="col-md-2" style="display:flex; align-items:end;">
-                        @(Html.DevExtreme().DropDownBox()
+                        @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                         .Label(new JS("formatMessage('Mode of Request:')"))
                         .DataSource(d => d.WebApi()
                         .Controller("AddNewClientRequest")
@@ -452,7 +452,7 @@
                         )
                     </div>
                     <div class="col-md-3" style="display:flex; align-items:end;">
-                        @(Html.DevExtreme().DropDownBox()
+                        @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                         .Label(new JS("formatMessage('Type of Request:')"))
                         .DataSource(d => d.WebApi()
                         .Controller("AddNewClientRequest")
@@ -487,7 +487,7 @@
                     </div>
 
                     <div class="col-md-3">
-                        @(Html.DevExtreme().DropDownBox()
+                        @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                         .Label(new JS("formatMessage('Project:')"))
                         .DataSource(d => d.WebApi()
                         .Controller("AddNewClientRequest")
@@ -549,7 +549,7 @@
 							<label for="QuoteSummary" id="QuoteSummary1" class="field-label"></label>
                             <div class="field-buttons">
                                 <button class="btn-solid"  onclick="saveField('ReportSummary', 'QuoteSummary','Quote summary')">Set Default</button>
-                                <button class="btn-outline"><i class="fa fa-font"></i></button>
+                                <button class="btn-outline" onclick=""><i class="fa fa-font"></i></button>
                             </div>
                         </div>
                         @(Html.DevExtreme().TextArea()
@@ -598,7 +598,7 @@
                 <div class="row g-2">
                     <div class="col-md-4">
                         <div>
-                            @(Html.DevExtreme().DropDownBox()
+                            @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                             .Label(new JS("formatMessage('Company Branch/Division:')"))
                             .DataSource(d => d.WebApi()
                             .Controller("AddNewClientRequest")
@@ -625,7 +625,7 @@
                             .ContentTemplate(new TemplateName("GetCompanyContentTemplate"))
                             )
 
-                            @(Html.DevExtreme().DropDownBox()
+                            @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                             .Label(new JS("formatMessage('Inventory Group Master:')"))
                             .DataSource(d => d.WebApi()
                             .Controller("AddNewClientRequest")
@@ -753,7 +753,7 @@
                             <!-- Quotation Status with add button -->
                             <div class="row mb-2 align-items-end">
                                 <div class="col-10">
-                                    @(Html.DevExtreme().DropDownBox()
+                                    @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                                     .Label(new JS("formatMessage('Quotation Status:')"))
                                     .DataSource(d => d.WebApi()
 									.Controller("AddNewQuotation")
@@ -819,7 +819,7 @@
                             <tr>
                                 <!-- Prepared By SelectBox -->
                                 <td>
-                                    @(Html.DevExtreme().DropDownBox()
+                                    @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                                     .Label(new JS("formatMessage('Prepared By:')"))
                                     .DataSource(d => d.WebApi()
                                     .Controller("AddNewClientRequest")
@@ -849,7 +849,7 @@
 
                                 <!-- Verified By SelectBox -->
                                 <td>
-                                    @(Html.DevExtreme().DropDownBox()
+                                    @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                                     .Label(new JS("formatMessage('Verified By:')"))
                                     .DataSource(d => d.WebApi()
                                     .Controller("AddNewClientRequest")
@@ -879,7 +879,7 @@
 
                                 <!-- Approved By SelectBox -->
                                 <td>
-                                    @(Html.DevExtreme().DropDownBox()
+                                    @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                                     .Label(new JS("formatMessage('Approved By:')"))
                                     .DataSource(d => d.WebApi()
                                     .Controller("AddNewClientRequest")
@@ -992,7 +992,7 @@
 	</text>)
 		.EditCellTemplate(@<text>
 		<div style="display: flex; justify-content: space-between; align-items:end;">
-			@(Html.DevExtreme().DropDownBox()
+			@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 			.DataSource(d => d.WebApi()
 			.Controller("VATModule")
 			.LoadAction("GetGoodsAndServices")
@@ -1028,12 +1028,12 @@
 			</div>
 		</div>
 	</text>);
-				columns.Add().DataField("DescriptionDetails")
-			.Caption(new JS("formatMessage('Unit Rate Method')"))
-			.Width(200)
-			.AllowEditing(true)
-			.EditCellTemplate(@<text>
-		@(Html.DevExtreme().DropDownBox()
+		columns.Add().DataField("DescriptionDetails")
+		.Caption(new JS("formatMessage('Unit Rate Method')"))
+		.Width(200)
+		.AllowEditing(true)
+		.EditCellTemplate(@<text>
+		@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 		.ID("unitRateDropDownBoxEdit")
 		.DataSource(d => d.WebApi()
 		.Controller("VATModule")
@@ -1089,7 +1089,7 @@
 	</text>); *@
 	.EditCellTemplate(@<text>
 		<div style="display: flex; justify-content: space-between; align-items:end;">
-			@(Html.DevExtreme().DropDownBox()
+			@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 			.DataSource(d => d.WebApi()
 			.Controller("VATModule")
 			.LoadAction("GetVatTaxSlabs")
