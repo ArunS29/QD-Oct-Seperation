@@ -402,7 +402,7 @@
 
 	/* Sparkle effect (optional) */
 	.sparkle::after {
-		content: '✨';
+		content: '\2728'; /* ✨ emoji */
 		position: absolute;
 		top: 10px;
 		right: 15px;
@@ -411,16 +411,20 @@
 	}
 
 	@@keyframes sparkle {
-		0%, 100% {
-			transform: scale(0.8) rotate(0deg);
-			opacity: 0.8;
-		}
+		0%, 100%
 
-		50% {
-			transform: scale(1.2) rotate(30deg);
-			opacity: 1;
-		}
+	{
+		transform: scale(0.8) rotate(0deg);
+		opacity: 0.8;
 	}
+
+	50% {
+		transform: scale(1.2) rotate(30deg);
+		opacity: 1;
+	}
+
+	}
+
 
 	.card.green {
 		background: linear-gradient(135deg, #43a047, #66bb6a);
@@ -596,21 +600,21 @@
 		</div>
 
 		<div class="tab-content active">
-			<h4>🔔 Pending Verifications</h4>
+			<h4>&#128276; Pending Verifications</h4>
 			<div class="count" id="count0">0</div>
 			@* <div class="trend">🔺 12% more than yesterday</div> *@
 			@* <div class="message">You're getting things moving!</div> *@
 		</div>
 
 		<div class="tab-content">
-			<h4>✅ Vouchers Verified</h4>
+			<h4>&#9989; Vouchers Verified</h4>
 			<div class="count" id="count1">0</div>
 			@* <div class="trend">🔼 25% higher than last week</div> *@
 			@* <div class="message">Awesome pace — keep it up!</div> *@
 		</div>
 
 		<div class="tab-content">
-			<h4>📥 New Vouchers</h4>
+			<h4>&#128229; New Vouchers</h4>
 			<div class="count" id="count2">0</div>
 			@* <div class="trend">🔽 10% drop this month</div> *@
 			@* <div class="message">Fewer vouchers — time to catch up?</div> *@
