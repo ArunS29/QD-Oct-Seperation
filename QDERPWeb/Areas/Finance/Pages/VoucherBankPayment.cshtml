@@ -1797,20 +1797,8 @@ buttons.Add()
         var latestEntry = filteredData.length > 0 ? filteredData[filteredData.length - 1] : null;
         console.log(latestEntry);
         
-          if (accheadname != null) {
-
-                if (accheadname && accheadname.startsWith("Cost")) {
-
-                     const params = {
-                           VoucherNo: encodeURIComponent(voucherNo),
-                           VoucherEntryNo: encodeURIComponent(latestEntry.VoucherEntryNo),
-                           AccountHead: encodeURIComponent(accheadname),
-                           VoucherAmount: encodeURIComponent(amount),
-                           DrCr: encodeURIComponent(sbDrCr)
-        };
-        openCostAllocationPopup(params); // Open DevExtreme Popup with dynamic content
-    }
-            else if (accheadname) {
+          
+                       if (accheadname) {
                             // Function to check allocation
                             function checkAllocation(url, successCallback) {
                                 $.ajax({
@@ -1838,7 +1826,7 @@ buttons.Add()
                                     }
                                 });
                             }
-
+                             checkAllocation(`/api/VoucherEntryReceipts/CheckCostAllocation`, openCostAllocationPopup);
                             // Check Property Allocation
                             checkAllocation(`/api/VoucherEntryReceipts/CheckPropertyAllocation`, openPropertyAllocationPopup);
 
@@ -1848,8 +1836,8 @@ buttons.Add()
                             checkAllocation(`/api/VoucherEntryReceipts/CheckIsMaintainBillByBill`, openBillsReceivablePopup);
 
                             checkAllocation(`/api/VoucherMaster/CheckIsMaintainSalary`, openSalaryPopup);
-            }
-        }
+                       }
+        
 
                         var button = $("#btnSave").dxButton("instance");
                         button.option("text", "Update");
@@ -1934,17 +1922,7 @@ buttons.Add()
                     });
                 }
 
-                  else if (accheadname && accheadname.startsWith("Cost")) {
-
-                     const params = {
-                           VoucherNo: encodeURIComponent(voucherNo),
-                           VoucherEntryNo: encodeURIComponent(latestEntry.VoucherEntryNo),
-                           AccountHead: encodeURIComponent(accheadname),
-                           VoucherAmount: encodeURIComponent(amount),
-                           DrCr: encodeURIComponent(sbDrCr)
-        };
-        openCostAllocationPopup(params); // Open DevExtreme Popup with dynamic content
-    }
+                 
             else if (accheadname) {
                             // Function to check allocation
                             function checkAllocation(url, successCallback) {
@@ -1973,6 +1951,7 @@ buttons.Add()
                                     }
                                 });
                             }
+                             checkAllocation(`/api/VoucherEntryReceipts/CheckCostAllocation`, openCostAllocationPopup);
 
                             // Check Property Allocation
                             checkAllocation(`/api/VoucherEntryReceipts/CheckPropertyAllocation`, openPropertyAllocationPopup);
