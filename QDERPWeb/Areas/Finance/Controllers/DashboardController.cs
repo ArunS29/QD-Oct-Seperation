@@ -79,6 +79,31 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
         }
         [HttpGet]
+        public async Task<IActionResult> GetBankbalance()
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+
+            try
+            {
+                var cashbalance = await dbContext.SupplierOutstandings
+              .AsNoTracking()
+              .Where(x => x.AccountHead == "Bank Balance")
+              .Select(x => x.Balance)
+              .FirstOrDefaultAsync(); // Or .SingleOrDefaultAsync() if exactly one row is expected
+
+                return Ok(new { success = true, balance = cashbalance });
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in GetBankbalance");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+        [HttpGet]
         public async Task<IActionResult> supplieroutstanding()
         {
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
@@ -646,7 +671,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 try
                 {
                     var groupedData = dbContext.Qry20115BillsOutStandings
-                        .Where(b => b.Balance > 0)
+                        .Where(b => b.Balance > 0 && !string.IsNullOrEmpty(b.AccountHead))
                         .GroupBy(b => b.AccountHead)
                         .Select(g => new
                         {
@@ -667,6 +692,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Task.FromResult<IActionResult>(Unauthorized(new { message = "Invalid tenant.", success = false }));
         }
+
 
 
     }
