@@ -422,131 +422,124 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 			return Unauthorized(new { message = "Invalid tenant.", success = false });
 		}
 
-		[HttpPost]
-		public async Task<IActionResult> SaveOrUpdateRFQ([FromBody] RFQViewModel VM)
-		{
-			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				return Unauthorized(new { success = false, message = "Invalid tenant context." });
-			}
+        [HttpPost]
+        public async Task<IActionResult> SaveOrUpdateRFQ([FromBody] RFQViewModel VM)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant context." });
+            }
 
-			if (VM == null || string.IsNullOrEmpty(VM.Rfqno))
-			{
-				return BadRequest(new { success = false, message = "RFQ No. is required." });
-			}
+            if (VM == null || string.IsNullOrEmpty(VM.Rfqno))
+            {
+                return BadRequest(new { success = false, message = "RFQ No. is required." });
+            }
 
-			try//
-			{
-				// Ensure child list is initialized
-				//VM.RFQDetailses = VM.RFQDetailses ?? new List<Tbl60702rfqchild>();
+            try
+            {
+                var existingMaster = await dbContext.Tbl60701rfqmasters
+                    .FirstOrDefaultAsync(x => x.Rfqno == VM.Rfqno);
 
-				// Check if the master record exists
-				var existingMaster = await dbContext.Tbl60701rfqmasters
-					.FirstOrDefaultAsync(x => x.Rfqno == VM.Rfqno);
+                if (existingMaster != null)
+                {
+                    existingMaster.Rfqdate = VM.Rfqdate;
+                    existingMaster.SupplierCode = VM.SupplierCode;
+                    existingMaster.Mprno = VM.Mprno;
+                    existingMaster.Project = VM.Project;
+                    existingMaster.Attention = VM.Attention;
+                    existingMaster.SupplierContactEmail = VM.SupplierContactEmail;
+                    existingMaster.SupplierContactNo = VM.SupplierContactNo;
+                    existingMaster.SupplierQuotationNo = VM.SupplierQuotationNo;
+                    existingMaster.SupplierQuotationDt = VM.SupplierQuotationDt;
+                    existingMaster.ProjectMasterCode = VM.ProjectMasterCode;
+                    existingMaster.Rfqsubject = VM.Rfqsubject;
+                    existingMaster.Rfqintro = VM.Rfqintro;
+                    existingMaster.Rfqsummary = VM.Rfqsummary;
+                    existingMaster.SalesPersonCode = VM.SalesPersonCode;
+                    existingMaster.Rfqsignatory = VM.Rfqsignatory.HasValue ? (byte?)VM.Rfqsignatory.Value : null;
+                    existingMaster.CompanyBranch = VM.CompanyBranch.HasValue ? (byte?)VM.CompanyBranch.Value : null;
+                    existingMaster.InventoryMasterGroupId = VM.InventoryMasterGroupId.HasValue ? (byte?)VM.InventoryMasterGroupId.Value : null;
+                }
+                else
+                {
+                    var newMaster = new Tbl60701rfqmaster
+                    {
+                        Rfqno = VM.Rfqno,
+                        Rfqdate = VM.Rfqdate,
+                        SupplierCode = VM.SupplierCode,
+                        Mprno = VM.Mprno,
+                        Project = VM.Project,
+                        Attention = VM.Attention,
+                        SupplierContactEmail = VM.SupplierContactEmail,
+                        SupplierContactNo = VM.SupplierContactNo,
+                        SupplierQuotationNo = VM.SupplierQuotationNo,
+                        SupplierQuotationDt = VM.SupplierQuotationDt,
+                        ProjectMasterCode = VM.ProjectMasterCode,
+                        Rfqsubject = VM.Rfqsubject,
+                        Rfqintro = VM.Rfqintro,
+                        Rfqsummary = VM.Rfqsummary,
+                        SalesPersonCode = VM.SalesPersonCode,
+                        Rfqsignatory = Convert.ToByte(VM.Rfqsignatory),
+                        CompanyBranch = Convert.ToByte(VM.CompanyBranch),
+                        InventoryMasterGroupId = Convert.ToByte(VM.InventoryMasterGroupId)
+                    };
 
-				if (existingMaster != null)
-				{
-					//Update existing master with manual property mapping
+                    await dbContext.Tbl60701rfqmasters.AddAsync(newMaster);
+                }
 
-					//existingMaster.Rfqno = VM.Rfqno;
-					existingMaster.Rfqdate = VM.Rfqdate;
-					existingMaster.SupplierCode = VM.SupplierCode;
-					existingMaster.Mprno = VM.Mprno;
-					existingMaster.Project = VM.Project;
-					existingMaster.Attention = VM.Attention;
-					existingMaster.SupplierContactEmail = VM.SupplierContactEmail;
-					existingMaster.SupplierContactNo = VM.SupplierContactNo;
-					existingMaster.SupplierQuotationNo = VM.SupplierQuotationNo;
-					existingMaster.SupplierQuotationDt = VM.SupplierQuotationDt;
-					existingMaster.ProjectMasterCode = VM.ProjectMasterCode;
-					existingMaster.Rfqsubject = VM.Rfqsubject;
-					existingMaster.Rfqintro = VM.Rfqintro;
-					existingMaster.Rfqsummary = VM.Rfqsummary;
-					existingMaster.SalesPersonCode = VM.SalesPersonCode;
+                // ✅ Handle child records
+                var existingChildren = await dbContext.Tbl60702rfqchildren
+                    .Where(x => x.Rfqno == VM.Rfqno)
+                    .ToListAsync();
 
+                // ✅ Track RFQChild IDs received from client
+                var incomingIds = VM.RFQDetailses
+                    .Where(x => x.RfqchildSlNo > 0)
+                    .Select(x => x.RfqchildSlNo)
+                    .ToList();
 
-					existingMaster.Rfqsignatory = VM.Rfqsignatory.HasValue ? (byte?)VM.Rfqsignatory.Value : null;
-					existingMaster.CompanyBranch = VM.CompanyBranch.HasValue ? (byte?)VM.CompanyBranch.Value : null; 
-					existingMaster.InventoryMasterGroupId = VM.InventoryMasterGroupId.HasValue ? (byte?)VM.InventoryMasterGroupId.Value : null;
+                // ✅ Find and delete missing children
+                var toDelete = existingChildren
+                    .Where(x => !incomingIds.Contains(x.RfqchildSlNo))
+                    .ToList();
 
-				}
-				else
-				{
-					// Insert new master
-					var newMaster = new Tbl60701rfqmaster
-					{
-						Rfqno = VM.Rfqno,
-						Rfqdate=VM.Rfqdate,
-						SupplierCode= VM.SupplierCode,
+                if (toDelete.Any())
+                {
+                    dbContext.Tbl60702rfqchildren.RemoveRange(toDelete);
+                }
 
-						Mprno = VM.Mprno,
-						Project = VM.Project,
-						Attention = VM.Attention,
-						SupplierContactEmail = VM.SupplierContactEmail,
-						SupplierContactNo = VM.SupplierContactNo,
+                // ✅ Insert or update child records
+                foreach (var child in VM.RFQDetailses)
+                {
+                    child.Rfqno = VM.Rfqno;
 
-						SupplierQuotationNo = VM.SupplierQuotationNo,
-						SupplierQuotationDt = VM.SupplierQuotationDt,
-						ProjectMasterCode = VM.ProjectMasterCode,
-						Rfqsubject=VM.Rfqsubject,
-						Rfqintro = VM.Rfqintro,
-						Rfqsummary=VM.Rfqsummary,
-						Rfqsignatory = Convert.ToByte(VM.Rfqsignatory),
-						CompanyBranch = Convert.ToByte(VM.CompanyBranch),
-						InventoryMasterGroupId=Convert.ToByte(VM.InventoryMasterGroupId),
-						SalesPersonCode=VM.SalesPersonCode,
+                    if (child.RfqchildSlNo == 0)
+                    {
+                        await dbContext.Tbl60702rfqchildren.AddAsync(child);
+                    }
+                    else
+                    {
+                        var existingChild = existingChildren
+                            .FirstOrDefault(x => x.RfqchildSlNo == child.RfqchildSlNo);
 
-
-					};
-
-					await dbContext.Tbl60701rfqmasters.AddAsync(newMaster);
-				}
-
-				// Handle child entries
-				var existingChildren = await dbContext.Tbl60702rfqchildren
-					.Where(x => x.Rfqno == VM.Rfqno)
-					.ToListAsync();
-
-				foreach (var child in VM.RFQDetailses)
-				{
-					if (child.RfqchildSlNo == 0)
-					{
-						// New child entry
-						child.Rfqno = VM.Rfqno; // Ensure foreign key is set
-						await dbContext.Tbl60702rfqchildren.AddAsync(child);
-					}
-					else
-					{
-						// Existing child entry
-						var existingChild = existingChildren
-							.FirstOrDefault(x => x.RfqchildSlNo == child.RfqchildSlNo);
-
-						if (existingChild != null)
-						{
-							dbContext.Entry(existingChild).CurrentValues.SetValues(child);
-						}
-					}
-				}
-                // ✅ Update MPR Status
-                //if (!string.IsNullOrEmpty(VM.Mprno))
-                //{
-                //    var mpr = await dbContext.Tbl60601purchaseRequestMasters.FirstOrDefaultAsync(x => x.Mprno == VM.Mprno);
-                //    if (mpr != null)
-                //    {
-                //        mpr.PurchaseRequestStatusId = 2;
-                //    }
-                //}
+                        if (existingChild != null)
+                        {
+                            dbContext.Entry(existingChild).CurrentValues.SetValues(child);
+                        }
+                    }
+                }
 
                 await dbContext.SaveChangesAsync();
 
-				return Ok(new { success = true, message = "RFQ Details saved/updated successfully." });
-			}
-			catch (Exception ex)
-			{
-				return StatusCode(500, new { success = false, message = ex.Message });
-			}
-		}
-		private async Task<int?> GetSignatoryIDfromUserID(int? userId)
+                return Ok(new { success = true, message = "RFQ Details saved/updated successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
+
+        private async Task<int?> GetSignatoryIDfromUserID(int? userId)
 		{
 			if (userId == null)
 				return null;
@@ -959,6 +952,51 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     message = "An error occurred while creating the Purchase Order.",
                     error = ex.Message
                 });
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> CheckIfApproved(string Rfqno)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var isApproved = await dbContext.Tbl60701rfqmasters
+                    .Where(x => x.Rfqno == Rfqno)
+                    .Select(x => x.IsApproved ?? false)
+                    .FirstOrDefaultAsync();
+
+                return Ok(isApproved);
+            }
+
+            return BadRequest("Invalid tenant or DB context.");
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteChildById(int childId)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant context." });
+            }
+
+            try
+            {
+                var child = await dbContext.Tbl60702rfqchildren
+                    .FirstOrDefaultAsync(x => x.RfqchildSlNo == childId);
+
+                if (child == null)
+                {
+                    return NotFound(new { success = false, message = "Child record not found." });
+                }
+
+                dbContext.Tbl60702rfqchildren.Remove(child);
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Child row deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in DeleteChildById: {ex.Message}");
+                return StatusCode(500, new { success = false, message = "Internal server error." });
             }
         }
 

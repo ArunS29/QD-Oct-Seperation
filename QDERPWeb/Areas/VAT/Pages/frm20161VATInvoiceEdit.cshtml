@@ -511,11 +511,11 @@
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
 <input id="formId" value="frm201LedgerAccount1" type="hidden" />
-<div class="title">
+@* <div class="title">
 	<div class="header-container">
 		<div id="InvoiceEdit" class="no-border-title" style="width: 433px;"></div>
 	</div>
-</div>
+</div> *@
 
 <div class="context-menuInvoice" id="contextMenu" style="display:none; position:absolute; z-index:9999;">
 	<div class="context-menu-itemInvoice" data-action="add">
@@ -3442,7 +3442,7 @@
 
 				  let ItemNo=null,amt=0, accheadid =null,paymentmeanstypecode=null,revaccheadid=null,InvoiceCurrencyExchangeId=null,TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
 					  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null,Gsdescrpition=null,GsdescriptionAr=null,ItemPartNo=null,CostPrice=null,GssellingRate=null,ReorderQty=null,IsDirectApproval=true,IsDirectVerify=true,IsClientCode=false
-							  ClientPostalCode=null,ClientCity=null,ClientAddressSt=null,Desc=null,rowIx=null, IsEdit = false,InvNo=null,transcode=null;
+					  ClientPostalCode=null,ClientCity=null,ClientAddressSt=null,Desc=null,rowIx=null, IsEdit = false,InvNo=null,transcode=null,UnitCode=null;
 			   
 			  let dropDownInstance;
 			  let vatListInstance;
@@ -3607,6 +3607,7 @@
 
 
 		function initializeDataGrid(rowData) {
+						debugger;
     let grid = $("#B2BdataGrid").dxDataGrid({
         dataSource: rowData,
        // keyExpr: "SNo",
@@ -3848,6 +3849,7 @@
                                             let rowIndex = grid.getRowIndexByKey(cellInfo.key);
                                             if (rowIndex !== -1) {
                                                 grid.cellValue(rowIndex, "DescriptionDetailsText", selectedItem.UnitDesc);
+													UnitCode=selectedItem.UnitCode;
                                             }
                                             e.component.close();
                                         }
@@ -4101,7 +4103,7 @@
 
 				{
 
-					dataField: "Description",
+						dataField: "DetailedDescription",
 
 					caption: formatMessage('Description'),
 
@@ -4403,14 +4405,17 @@
 
 				{
 
-					dataField: "DescriptionDetails",
+						dataField: "UnitRateMethod",
 
 					caption: formatMessage('Unit Rate Method'),
 
 						cssClass: "center-header",
 
 					width: 200,
-
+  cellTemplate: function(container, options) {
+        // Show the text, not the code
+        container.text(options.data.UnitRateMethodText || "");
+    },
 					editCellTemplate: function (cellElement, cellInfo) {
 
 						getUnitRateMethods().done(function (unitRates) {
@@ -4488,6 +4493,7 @@
 												if (rowIndex !== -1) {
 
 													grid.cellValue(rowIndex, "DescriptionDetailsText", selectedItem.UnitDesc);
+													UnitCode=selectedItem.UnitCode;
 
 												}
 
@@ -4533,11 +4539,11 @@
 				},
 
 
-				{ dataField: "Qty", caption: formatMessage('Qty'),cssClass: "center-header", width: 150 },
+				{ dataField: "QuantityInvoiced", caption: formatMessage('Qty'),cssClass: "center-header", width: 150 },
 
-				{ dataField: "UnitPrice", caption: formatMessage('Unit Price'),cssClass: "center-header", width: 150 },
+				{ dataField: "UnitRate", caption: formatMessage('Unit Price'),cssClass: "center-header", width: 150 },
 
-			    { dataField: "TotalBeforeDiscount", caption: formatMessage('Total Before Discount'),cssClass: "center-header", width: 185, format: { type: "fixedPoint", precision: 2 } },
+					{ dataField: "CalcLineAmountBeforeDiscount", caption: formatMessage('Total Before Discount'),cssClass: "center-header", width: 185, format: { type: "fixedPoint", precision: 2 } },
 
 					{ dataField: "Discount", caption: formatMessage('Discount'), cssClass: "center-header",width: 150 },
 
@@ -4562,7 +4568,7 @@
 	}
 	,
 
-					{ dataField: "Amount", caption: formatMessage('Amount'), width: 150, cssClass: "center-header",format: { type: "fixedPoint", precision: 2 } },
+						{ dataField: "CalcLineAmount", caption: formatMessage('Amount'), width: 150, cssClass: "center-header",format: { type: "fixedPoint", precision: 2 } },
 
 				//{ dataField: "VAT%", caption: "VAT%", width: 150 },
 
@@ -4648,11 +4654,11 @@
 
 
 
-				{ dataField: "VAT", caption: formatMessage('VAT'), cssClass: "center-header",width: 150 },
+					{ dataField: "CalcTaxAmount", caption: formatMessage('VAT'), cssClass: "center-header",width: 150 },
 
-					{ dataField: "Total", caption: formatMessage('Total'), cssClass: "center-header",width: 150, format: { type: "fixedPoint", precision: 2 } },
+					{ dataField: "LineTotal", caption: formatMessage('Total'), cssClass: "center-header",width: 150, format: { type: "fixedPoint", precision: 2 } },
 
-				{ dataField: "TaxSlabCode", caption: formatMessage('TaxSlabCode'), width: 150, allowEditing: false, visible: false }
+					{ dataField: "TaxSlabCode", caption: formatMessage('TaxSlabCode'), width: 150, allowEditing: false, visible: false }
 
 			],
 
@@ -4698,17 +4704,17 @@
 			SNo: nextSNo,
 			//ItemCode: ItemNo || "",  // Ensure this is defined or provide fallback
             ItemCode:"", 
-			Description: "",
+			DetailedDescription: "",
 			DescriptionDetails: "",
-			Qty: 0,
-			UnitPrice: 0.00,
-			TotalBeforeDiscount: 0.00,
+			QuantityInvoiced: 0,
+			UnitRate: 0.00,
+			CalcLineAmountBeforeDiscount: 0.00,
 			Discount: 0,
 			DiscountDetails: "",
-			Amount: 0.00,
+			CalcLineAmount: 0.00,
 			ExcemptionCode: "",
-			VAT: "",
-			Total: 0.00
+			CalcTaxAmount: "",
+			LineTotal: 0.00
 		};
 
 		// Efficient insert without replacing entire dataSource
@@ -6839,8 +6845,8 @@
 					//Discount
 						function onEditorPreparing(e) {
 		if (e.parentType === "dataRow" &&
-			(e.dataField === "Qty" ||
-			 e.dataField === "UnitPrice" ||
+				(e.dataField === "QuantityInvoiced" ||
+				 e.dataField === "UnitRate" ||
 			// e.dataField === "VATPercentage" ||
 			 e.dataField === "Discount")) {
 				 
@@ -6853,8 +6859,8 @@
 
 
 				// Get existing values or updated ones
-				let qty = e.dataField === "Qty" ? newValue : grid.cellValue(rowIndex, "Qty") || 0;
-				let unitPrice = e.dataField === "UnitPrice" ? newValue : grid.cellValue(rowIndex, "UnitPrice") || 0;
+					let qty = e.dataField === "QuantityInvoiced" ? newValue : grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
+						let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex, "UnitRate") || 0;
 				let discount = e.dataField === "Discount" ? newValue : grid.cellValue(rowIndex, "Discount") || 0;
 
 				// VAT rate handling
@@ -7017,13 +7023,10 @@
 			  InvoiceChildren = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
 
 
-			// Create JSON array for child records
-			
-
-			// Add InvoiceNo to each item
 		let updatedDataSource = InvoiceChildren.map(item => ({
 			...item,
 			InvoiceNo: InVoiceNo,
+			UnitRateMethod:UnitCode,
 			TaxAmount:amt
 		}));
 
@@ -7106,7 +7109,6 @@
 
 		 });
 
-
 			 $("#btnSaveAndClose").on("click", function (e) {
 
 			var clientnameValidator = $("#ddclientname").dxValidator("instance");
@@ -7131,7 +7133,7 @@
 			    //InvoiceTypeCode: $("#VATInvoiceType").dxDropDownBox("instance").option("value")|| null,
 				InvoiceTypeCode:388,
 			   // InvoiceTypeCodeSubType: $("#VATInvoiceSubType").dxDropDownBox("instance").option("value")|| null,
-			   InvoiceTypeCodeSubType:01,
+			    InvoiceTypeCodeSubType:"01",
 				InvoiceTransactionCode: transcode,
 
 				 ClientCode: accheadid|| null,
@@ -7236,13 +7238,10 @@
 			  InvoiceChildren = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
 
 
-			// Create JSON array for child records
-			
-
-			// Add InvoiceNo to each item
 		let updatedDataSource = InvoiceChildren.map(item => ({
 			...item,
 			InvoiceNo: InVoiceNo,
+			UnitRateMethod:UnitCode,
 			TaxAmount:amt
 		}));
 
@@ -7304,7 +7303,7 @@
 						"Invoice Details updated Successfully.",
 						"Update successful"
 					);
-					history.back();
+						history.back();
 						},
 						error: function (xhr) {
 							DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
@@ -7325,6 +7324,7 @@
 			}
 
 		 });
+
 
 		 $(document).ready(function () {
 			$.ajax({
@@ -7366,8 +7366,8 @@
 					debugger;
 
 					// Get existing values or updated ones
-					let qty = grid.cellValue(rowIndex, "Qty") || 0;
-					let unitPrice =  grid.cellValue(rowIndex, "UnitPrice") || 0;
+					let qty = grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
+						let unitPrice =  grid.cellValue(rowIndex, "UnitRate") || 0;
 					let discount = grid.cellValue(rowIndex, "Discount") || 0;
 
 					// VAT rate handling
@@ -7933,7 +7933,7 @@
 						ddbInstance.close();
 				}
 			  if(IsCurrent!="true")
-				{
+				{	
 				var selectedRowData = $("#clientname").dxDataGrid("instance").getSelectedRowsData();
 				  if (selectedRowData.length > 0) {
 								
@@ -8701,85 +8701,77 @@
 				console.log('End permission handling');
 			});
 
-	//Need clarification for IMS
-		$(function () {
-			 const urlParams = new URLSearchParams(window.location.search);
-			const deliveryNoteNos = urlParams.get("deliveryNoteNo");
-			const deliveryNoteNoArray = deliveryNoteNos ? deliveryNoteNos.split(",") : [];
-			const salesOrderNo = urlParams.get("salesOrderNo");
-			const invoiceNo = urlParams.get("invoiceNo");
-			const mode = urlParams.get("mode");
+	$(function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const deliveryNoteNo = urlParams.get("deliveryNoteNo");
+    const salesOrderNo = urlParams.get("salesOrderNo");
+    const invoiceNo = urlParams.get("invoiceNo");
+    const mode = urlParams.get("mode");
 
-    if (deliveryNoteNoArray.length && invoiceNo && salesOrderNo && mode === "create") {
-				// Set generated invoice number
-				$("#InvoiceNo").dxTextBox("instance").option("value", invoiceNo);
+   if (salesOrderNo && invoiceNo && mode === "create") {
+    // Set generated invoice number
+    $("#InvoiceNo").dxTextBox("instance").option("value", invoiceNo);
 
-				// Get delivery note data by deliveryNoteNo
-				$.get("/api/DeliveryNote/GetByDeliveryNoteNo", { deliveryNoteNo: deliveryNoteNoArray[0]  })
-					.done(function (data) {
-						// Map master fields (add null checks as needed)
-						$("#InvoiceDate").dxDateBox("instance").option("value", data.deliveryDate || new Date());
-						// $("#ddclientcode").dxDropDownBox("instance").option("value", data.clientCode || "");
-						// $("#ddclientname").dxDropDownBox("instance").option("value", data.attention || "");
-						$("#ClientPONo").dxTextBox("instance").option("value", data.clientPono || "");
-						$("#OurSalesOrderNo").dxDropDownBox("instance").option("value", data.salesOrderNo || "");
-						$("#QuotationNo").dxTextBox("instance").option("value", data.quotationNo || "");
-						$("#PODate").dxDateBox("instance").option("value", data.clientPodate || null);
-						$("#ClientGRNReference").dxTextBox("instance").option("value", data.attention || "");
-				//		$("#ClientContactNo").dxTextBox("instance").option("value", data.clientContactNo || "");
-				//		$("#ClientEmail").dxTextBox("instance").option("value", data.clientContactEmail || "");
-				//		$("#clientProject").dxTextBox("instance").option("value", data.clientProject || "");
-					$.get("/api/ClientLeadMaster/GetClientByCode", { clientCode: data.clientCode })
+    // Get sales order data by salesOrderNo
+    $.get("/api/SalesOrders/GetSalesOrderByNo", { salesOrderNo: salesOrderNo })
+        .done(function (data) {
+            // Map master fields from sales order
+           $("#InvoiceDate").dxDateBox("instance").option("value", data.SalesOrderDate || new Date());
+$("#ClientPONo").dxTextBox("instance").option("value", data.ClientPono || "");
+$("#OurSalesOrderNo").dxDropDownBox("instance").option("value", data.SalesOrderNo || "");
+$("#QuotationNo").dxTextBox("instance").option("value", data.QuoteNo || "");
+$("#PODate").dxDateBox("instance").option("value", data.ClientPodate || null);
+$("#ClientGRNReference").dxTextBox("instance").option("value", data.Attention || "");
 
-					.done(function (client) {
+            // Bind client info if available
+            if (data.ClientCode) {
+    $.get("/api/ClientLeadMaster/GetClientByCode", { clientCode: data.ClientCode })
+        .done(function (client) {
+            $("#ddclientcode").dxDropDownBox("instance").option("value", client.ClientAccountLedgerNo || "");
+            $("#ddclientname").dxDropDownBox("instance").option("value", client.ClientAccountLedgerNo || "");
+        })
+        .fail(function () {
+            DevExpress.ui.notify("Failed to load client details.", "error", 2000);
+        });
+} else {
+    DevExpress.ui.notify("Client code not found in sales order.", "error", 2000);
+}
 
-						$("#ddclientcode").dxDropDownBox("instance").option("value", client.ClientAccountLedgerNo || "");
-
-						$("#ddclientname").dxDropDownBox("instance").option("value", client.ClientAccountLedgerNo || "");
-
-					})
-
-					.fail(function () {
-
-						DevExpress.ui.notify("Failed to load client details.", "error", 2000);
-
-					});
-
-						  let childPromises = deliveryNoteNoArray.map(dn =>
-                    $.get("/api/DeliveryNote/GetByDeliveryNoteNo", { deliveryNoteNo: dn })
-                );
-                Promise.all(childPromises).then(results => {
-                    // Merge all child items from all delivery notes
-                    let allItems = [];
-                    results.forEach(res => {
-                        if (Array.isArray(res.items)) allItems = allItems.concat(res.items);
-                    });
-                    // Map to grid columns
-                    const invoiceItems = allItems.map((item, idx) => ({
-                        SNo: idx + 1,
-                        ItemCode: item.ItemCode || item.Gscode || "",
-                        Description: item.StockDescription || item.Gsdescrpition || item.AddlDescription || "",
-                        DescriptionDetails: item.UnitRateMethod || "",
-                        Qty: item.Qty || item.QtyReceived || 0,
-                        UnitPrice: item.UnitCostPrice || item.UnitPrice || 0,
-                        Discount: item.Discount || 0,
-                        // ...map other fields as needed...
-                    }));
-                    var grid = $("#B2BdataGrid").dxDataGrid("instance");
-                    if (grid) {
-                        grid.option("dataSource", invoiceItems);
-                        grid.option("editing", { mode: "cell", allowUpdating: true, allowAdding: true, allowDeleting: true });
-                    }
-                });
-	})
-
-
-					.fail(function () {
-						DevExpress.ui.notify("Failed to load delivery note details.", "error", 2000);
-					});
-			}
-		});
-
+            // Bind child grid 	
+           getDropdownData().done(function (dropdownData) {
+    getUnitRateMethods().done(function (unitRates) {
+        const invoiceItems = (data.SalesOrderChildren || []).map((item, idx) => {
+            let found = dropdownData.find(d => d.GSCode === item.Gscode);
+            let unitRateObj = unitRates.find(u => u.UnitCode == item.UnitRateMethod);
+            return {
+                SNo: idx + 1,
+                ItemCode: item.Gscode || "",
+					DetailedDescription: found ? found.GSDescrpition : item.Gsdescrpition || "",
+                UnitRateMethod: item.UnitRateMethod, // store the code (number)
+   			 UnitRateMethodText: unitRateObj ? unitRateObj.UnitDesc : "", // store the text
+				UnitRate: item.QuotedUnitPrice || item.CostPrice || 0,
+                VATPercentage: item.QuotedTaxSlab || "",
+					QuantityInvoiced: item.QuotedQuantity || 0, 	
+                Discount: item.QuotedDiscount || 0,
+					CalcLineAmount: item.LineTotalAfterDiscount || 0,
+				CalcTaxAmount: item.LineTaxAmount || 0,
+						LineTotal: item.LineTotalWithTax || 0,
+                ...item
+            };
+        });
+        var grid = $("#B2BdataGrid").dxDataGrid("instance");
+        if (grid) {
+            grid.option("dataSource", invoiceItems);
+            grid.option("editing", { mode: "cell", allowUpdating: true, allowAdding: true, allowDeleting: true });
+        }
+    });
+});
+        })
+        .fail(function () {
+            DevExpress.ui.notify("Failed to load sales order details.", "error", 2000);
+        });
+}
+});
 
 			$(function () {
 			// Get InvoiceNo from the page (from a hidden field or query string)

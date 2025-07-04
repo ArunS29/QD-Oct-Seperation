@@ -779,6 +779,20 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, new { success = false, message = "Server error: " + ex.Message });
             }
         }
+        [HttpGet]
+        public async Task<IActionResult> CheckIfApproved(string QuoteNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var isApproved = await dbContext.Tbl60101quotationMasters
+                    .Where(x => x.QuoteNo == QuoteNo)
+                    .Select(x => x.IsApproved ?? false)
+                    .FirstOrDefaultAsync();
 
+                return Ok(isApproved);
+            }
+
+            return BadRequest("Invalid tenant or DB context.");
+        }
     }
 }

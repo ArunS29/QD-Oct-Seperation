@@ -478,119 +478,128 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 			return Unauthorized(new { message = "Invalid tenant.", success = false });
 		}
-		[HttpPost]
-		public async Task<IActionResult> SaveOrUpdateMaterialReceipt([FromBody] MaterialReceiptViewModel VM)
-		{
-			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				return Unauthorized(new { success = false, message = "Invalid tenant context." });
-			}
+        [HttpPost]
+        public async Task<IActionResult> SaveOrUpdateMaterialReceipt([FromBody] MaterialReceiptViewModel VM)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant context." });
+            }
 
-			if (VM == null || string.IsNullOrEmpty(VM.ReceiptNo))
-			{
-				return BadRequest(new { success = false, message = "Receipt No is required." });
-			}
+            if (VM == null || string.IsNullOrEmpty(VM.ReceiptNo))
+            {
+                return BadRequest(new { success = false, message = "Receipt No is required." });
+            }
 
-			try//
-			{
-				// Ensure child list is initialized
-				//VM.RFQDetailses = VM.RFQDetailses ?? new List<Tbl60702rfqchild>();
+            try
+            {
+                // Check if the master record exists
+                var existingMaster = await dbContext.Tbl60501materialReceiptMasters
+                    .FirstOrDefaultAsync(x => x.ReceiptNo == VM.ReceiptNo);
 
-				// Check if the master record exists
-				var existingMaster = await dbContext.Tbl60501materialReceiptMasters
-					.FirstOrDefaultAsync(x => x.ReceiptNo == VM.ReceiptNo);
+                if (existingMaster != null)
+                {
+                    // Update existing master
+                    existingMaster.ReceiptDate = VM.ReceiptDate;
+                    existingMaster.SupplierDeliveryNoteNo = VM.SupplierDeliveryNoteNo;
+                    existingMaster.SupplierCode = VM.SupplierCode;
+                    existingMaster.Mprno = VM.Mprno;
+                    existingMaster.SupplierQuotationNo = VM.SupplierQuotationNo;
+                    existingMaster.JobCode = VM.JobCode;
+                    existingMaster.ClientCode = VM.ClientCode;
+                    existingMaster.Rfqno = VM.Rfqno;
+                    existingMaster.OurPurchaseOrderNo = VM.OurPurchaseOrderNo;
+                    existingMaster.SalesPersonCode = VM.SalesPersonCode;
+                    existingMaster.StoreReceivedIn = VM.StoreReceivedIn;
+                    existingMaster.ProjectMasterCode = VM.ProjectMasterCode;
+                    existingMaster.ReceiptSignatory = VM.ReceiptSignatory.HasValue ? (byte?)VM.ReceiptSignatory.Value : null;
+                    existingMaster.IssueRemarks = VM.IssueRemarks;
+                    existingMaster.CompanyBranch = VM.CompanyBranch.HasValue ? (byte?)VM.CompanyBranch.Value : null;
+                    existingMaster.InventoryMasterGroupId = VM.InventoryMasterGroupId.HasValue ? (byte?)VM.InventoryMasterGroupId.Value : null;
+                    existingMaster.ModeOfReceiptId = VM.ModeOfReceiptId.HasValue ? (byte?)VM.ModeOfReceiptId.Value : null;
+                }
+                else
+                {
+                    // Insert new master
+                    var newMaster = new Tbl60501materialReceiptMaster
+                    {
+                        ReceiptNo = VM.ReceiptNo,
+                        ReceiptDate = VM.ReceiptDate,
+                        SupplierDeliveryNoteNo = VM.SupplierDeliveryNoteNo,
+                        SupplierCode = VM.SupplierCode,
+                        Mprno = VM.Mprno,
+                        SupplierQuotationNo = VM.SupplierQuotationNo,
+                        JobCode = VM.JobCode,
+                        ClientCode = VM.ClientCode,
+                        Rfqno = VM.Rfqno,
+                        OurPurchaseOrderNo = VM.OurPurchaseOrderNo,
+                        SalesPersonCode = VM.SalesPersonCode,
+                        StoreReceivedIn = VM.StoreReceivedIn,
+                        ProjectMasterCode = VM.ProjectMasterCode,
+                        ReceiptSignatory = Convert.ToByte(VM.ReceiptSignatory),
+                        IssueRemarks = VM.IssueRemarks,
+                        CompanyBranch = Convert.ToByte(VM.CompanyBranch),
+                        InventoryMasterGroupId = Convert.ToByte(VM.InventoryMasterGroupId),
+                        ModeOfReceiptId = Convert.ToByte(VM.ModeOfReceiptId)
+                    };
 
-				if (existingMaster != null)
-				{
-					//Update existing master with manual property mapping
-					existingMaster.ReceiptDate = VM.ReceiptDate;
-					existingMaster.SupplierDeliveryNoteNo = VM.SupplierDeliveryNoteNo;
-					existingMaster.SupplierCode = VM.SupplierCode;
-					existingMaster.Mprno = VM.Mprno;
-					existingMaster.SupplierQuotationNo = VM.SupplierQuotationNo;
-					existingMaster.JobCode = VM.JobCode;
-					existingMaster.ClientCode = VM.ClientCode;
-					existingMaster.Rfqno = VM.Rfqno;
-					existingMaster.OurPurchaseOrderNo = VM.OurPurchaseOrderNo;
-					existingMaster.SalesPersonCode = VM.SalesPersonCode;
-					existingMaster.StoreReceivedIn = VM.StoreReceivedIn;
-					existingMaster.ProjectMasterCode = VM.ProjectMasterCode;
-				    existingMaster.ReceiptSignatory = VM.ReceiptSignatory.HasValue ? (byte?)VM.ReceiptSignatory.Value : null;
-					existingMaster.IssueRemarks = VM.IssueRemarks;
-				    existingMaster.CompanyBranch = VM.CompanyBranch.HasValue ? (byte?)VM.CompanyBranch.Value : null;
-					existingMaster.InventoryMasterGroupId = VM.InventoryMasterGroupId.HasValue ? (byte?)VM.InventoryMasterGroupId.Value : null;
-					existingMaster.ModeOfReceiptId = VM.ModeOfReceiptId.HasValue ? (byte?)VM.ModeOfReceiptId.Value : null;
+                    await dbContext.Tbl60501materialReceiptMasters.AddAsync(newMaster);
+                }
 
+                // ✅ Handle child entries
+                var existingChildren = await dbContext.Tbl60502materialReceiptChildren
+                    .Where(x => x.ReceiptNo == VM.ReceiptNo)
+                    .ToListAsync();
 
-				}
-				else
-				{
-					// Insert new master
-					var newMaster = new Tbl60501materialReceiptMaster
-					{
+                // ✅ Track incoming child IDs
+                var incomingIds = VM.MaterialReceiptDetailses
+                    .Where(x => x.ReceiptChildSlNo > 0)
+                    .Select(x => x.ReceiptChildSlNo)
+                    .ToList();
 
-				ReceiptNo=VM.ReceiptNo,
-				ReceiptDate=VM.ReceiptDate,
-				SupplierDeliveryNoteNo=VM.SupplierDeliveryNoteNo,
-				SupplierCode=VM.SupplierCode,
-				Mprno=VM.Mprno,
-				SupplierQuotationNo=VM.SupplierQuotationNo,
-				JobCode=VM.JobCode,
-				ClientCode=VM.ClientCode,
-				Rfqno = VM.Rfqno,
-				OurPurchaseOrderNo=VM.OurPurchaseOrderNo,
-				SalesPersonCode=VM.SalesPersonCode,
-				StoreReceivedIn=VM.StoreReceivedIn,
-				ProjectMasterCode=VM.ProjectMasterCode,
-				ReceiptSignatory=Convert.ToByte(VM.ReceiptSignatory),
-				IssueRemarks=VM.IssueRemarks,
-				CompanyBranch=Convert.ToByte(VM.CompanyBranch),
-				InventoryMasterGroupId =Convert.ToByte(VM.InventoryMasterGroupId),
-				ModeOfReceiptId=Convert.ToByte(VM.ModeOfReceiptId)
-			
-			
-					};
+                // ✅ Delete removed child rows
+                var toDelete = existingChildren
+                    .Where(x => !incomingIds.Contains(x.ReceiptChildSlNo))
+                    .ToList();
 
-					await dbContext.Tbl60501materialReceiptMasters.AddAsync(newMaster);
-				}
+                if (toDelete.Any())
+                {
+                    dbContext.Tbl60502materialReceiptChildren.RemoveRange(toDelete);
+                }
 
-				// Handle child entries
-				var existingChildren = await dbContext.Tbl60502materialReceiptChildren
-					.Where(x => x.ReceiptNo == VM.ReceiptNo)
-					.ToListAsync();
+                // ✅ Add or Update current children
+                foreach (var child in VM.MaterialReceiptDetailses)
+                {
+                    child.ReceiptNo = VM.ReceiptNo;
 
-				foreach (var child in VM.MaterialReceiptDetailses)
-				{
-					if (child.ReceiptChildSlNo == 0)
-					{
-						// New child entry
-						child.ReceiptNo = VM.ReceiptNo; // Ensure foreign key is set
-						await dbContext.Tbl60502materialReceiptChildren.AddAsync(child);
-					}
-					else
-					{
-						// Existing child entry
-						var existingChild = existingChildren
-							.FirstOrDefault(x => x.ReceiptChildSlNo == child.ReceiptChildSlNo);
+                    if (child.ReceiptChildSlNo == 0)
+                    {
+                        await dbContext.Tbl60502materialReceiptChildren.AddAsync(child);
+                    }
+                    else
+                    {
+                        var existingChild = existingChildren
+                            .FirstOrDefault(x => x.ReceiptChildSlNo == child.ReceiptChildSlNo);
 
-						if (existingChild != null)
-						{
-							dbContext.Entry(existingChild).CurrentValues.SetValues(child);
-						}
-					}
-				}
+                        if (existingChild != null)
+                        {
+                            dbContext.Entry(existingChild).CurrentValues.SetValues(child);
+                        }
+                    }
+                }
 
-				await dbContext.SaveChangesAsync();
+                await dbContext.SaveChangesAsync();
 
-				return Ok(new { success = true, message = "Material Receipt Details saved/updated successfully." });
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError($"An error occurred while fetching the data : {ex.Message}");
-				return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
-			}
-		}
-		[HttpDelete]
+                return Ok(new { success = true, message = "Material Receipt Details saved/updated successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"An error occurred while saving material receipt: {ex.Message}");
+                return StatusCode(500, new { success = false, message = "An error occurred while saving data.", error = ex.Message });
+            }
+        }
+
+        [HttpDelete]
 		public async Task<IActionResult> DeleteMaterialReceipt([FromQuery] string ReceiptNo)
 		{
 			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
@@ -815,6 +824,35 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 			return Unauthorized(new { Message = "Invalid tenant.", Success = false });
 		}
+        [HttpDelete]
+        public async Task<IActionResult> DeleteChildById(int childId)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant context." });
+            }
 
-	}
+            try
+            {
+                var child = await dbContext.Tbl60502materialReceiptChildren
+                    .FirstOrDefaultAsync(x => x.ReceiptChildSlNo == childId);
+
+                if (child == null)
+                {
+                    return NotFound(new { success = false, message = "Child record not found." });
+                }
+
+                dbContext.Tbl60502materialReceiptChildren.Remove(child);
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Child row deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in DeleteChildById: {ex.Message}");
+                return StatusCode(500, new { success = false, message = "Internal server error." });
+            }
+        }
+
+    }
 }
