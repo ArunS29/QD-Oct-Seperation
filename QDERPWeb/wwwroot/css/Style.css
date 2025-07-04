@@ -223,7 +223,9 @@ td {
     /* border-color: #999 !important; */
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
 }
-
+.dx-texteditor-label {
+   color: var(--title-background-color)!important;
+}
 /* Optional: remove outline when focused */
 .light-theme-input .dx-texteditor.dx-state-focused {
     outline: none;
@@ -277,7 +279,7 @@ td {
     letter-spacing: 0.5px;
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
-    color: #2a5298;
+    color: var(--title-background-color);
 }
 
 /* Background color for the disabled SelectBox */
