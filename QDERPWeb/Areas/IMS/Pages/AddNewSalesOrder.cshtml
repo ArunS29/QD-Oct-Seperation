@@ -764,8 +764,8 @@
             .EditCellTemplate(new JS("vatDescDropDownTemplate"))
             .CellTemplate(new JS(@"
     function (container, options) {
-    const found = TaxSlab.find(x => x.TaxRateIn100 === options.value);
-    container.text(found ? found.TaxRateInWord : options.value);
+    const found = TaxSlab.find(x => x.TaxSlabCode === options.value);
+    container.text(found ? found.TaxCodeToDisplay : options.value);
     }
     ")); columns.Add().DataField("LineTaxAmount").Caption("VAT").AllowEditing(false);
             columns.Add().DataField("LineTotalWithTax").Caption("Total").AllowEditing(false);
@@ -1440,8 +1440,8 @@
     function vatDescDropDownTemplate(cellElement, cellInfo) {
         const dropDownBox = $("<div>").dxDropDownBox({
             value: cellInfo.value,
-            valueExpr: "TaxRateIn100",
-            displayExpr: "TaxRateInWord",
+                    valueExpr: "TaxSlabCode",
+                displayExpr: "TaxCodeToDisplay",
             dataSource: TaxSlabs,
             showClearButton: true,
             showDropDownButton: true,
@@ -1451,7 +1451,7 @@
             contentTemplate: function (e) {
                 const gridBox = $("<div>").dxDataGrid({
                     dataSource: TaxSlabs,
-                    keyExpr: "TaxRateIn100",
+                            keyExpr: "TaxSlabCode",
                     selection: { mode: "single" },
                     columns: [
                         { dataField: "TaxSlabCode", caption: "Code", width: 100 },
@@ -1468,8 +1468,8 @@
                     onSelectionChanged: function (selectedItems) {
                         const selected = selectedItems.selectedRowsData[0];
                         if (selected) {
-                            cellInfo.setValue(selected.TaxRateIn100);  // ✅ set correct value
-                            e.component.option("value", selected.TaxRateIn100); // ✅ sync dropdown
+                                        cellInfo.setValue(selected.TaxCodeToDisplay);  // ✅ set correct value
+                                        e.component.option("value", selected.TaxCodeToDisplay); // ✅ sync dropdown
                             e.component.close();
                         }
                     }

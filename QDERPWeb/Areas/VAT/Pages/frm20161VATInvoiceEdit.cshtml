@@ -4412,7 +4412,10 @@
 						cssClass: "center-header",
 
 					width: 200,
-
+  cellTemplate: function(container, options) {
+        // Show the text, not the code
+        container.text(options.data.UnitRateMethodText || "");
+    },
 					editCellTemplate: function (cellElement, cellInfo) {
 
 						getUnitRateMethods().done(function (unitRates) {
@@ -8698,85 +8701,77 @@
 				console.log('End permission handling');
 			});
 
-	//Need clarification for IMS
-		$(function () {
-			 const urlParams = new URLSearchParams(window.location.search);
-			const deliveryNoteNos = urlParams.get("deliveryNoteNo");
-			const deliveryNoteNoArray = deliveryNoteNos ? deliveryNoteNos.split(",") : [];
-			const salesOrderNo = urlParams.get("salesOrderNo");
-			const invoiceNo = urlParams.get("invoiceNo");
-			const mode = urlParams.get("mode");
+	$(function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const deliveryNoteNo = urlParams.get("deliveryNoteNo");
+    const salesOrderNo = urlParams.get("salesOrderNo");
+    const invoiceNo = urlParams.get("invoiceNo");
+    const mode = urlParams.get("mode");
 
-    if (deliveryNoteNoArray.length && invoiceNo && salesOrderNo && mode === "create") {
-				// Set generated invoice number
-				$("#InvoiceNo").dxTextBox("instance").option("value", invoiceNo);
+   if (salesOrderNo && invoiceNo && mode === "create") {
+    // Set generated invoice number
+    $("#InvoiceNo").dxTextBox("instance").option("value", invoiceNo);
 
-				// Get delivery note data by deliveryNoteNo
-				$.get("/api/DeliveryNote/GetByDeliveryNoteNo", { deliveryNoteNo: deliveryNoteNoArray[0]  })
-					.done(function (data) {
-						// Map master fields (add null checks as needed)
-						$("#InvoiceDate").dxDateBox("instance").option("value", data.deliveryDate || new Date());
-						// $("#ddclientcode").dxDropDownBox("instance").option("value", data.clientCode || "");
-						// $("#ddclientname").dxDropDownBox("instance").option("value", data.attention || "");
-						$("#ClientPONo").dxTextBox("instance").option("value", data.clientPono || "");
-						$("#OurSalesOrderNo").dxDropDownBox("instance").option("value", data.salesOrderNo || "");
-						$("#QuotationNo").dxTextBox("instance").option("value", data.quotationNo || "");
-						$("#PODate").dxDateBox("instance").option("value", data.clientPodate || null);
-						$("#ClientGRNReference").dxTextBox("instance").option("value", data.attention || "");
-				//		$("#ClientContactNo").dxTextBox("instance").option("value", data.clientContactNo || "");
-				//		$("#ClientEmail").dxTextBox("instance").option("value", data.clientContactEmail || "");
-				//		$("#clientProject").dxTextBox("instance").option("value", data.clientProject || "");
-					$.get("/api/ClientLeadMaster/GetClientByCode", { clientCode: data.clientCode })
+    // Get sales order data by salesOrderNo
+    $.get("/api/SalesOrders/GetSalesOrderByNo", { salesOrderNo: salesOrderNo })
+        .done(function (data) {
+            // Map master fields from sales order
+           $("#InvoiceDate").dxDateBox("instance").option("value", data.SalesOrderDate || new Date());
+$("#ClientPONo").dxTextBox("instance").option("value", data.ClientPono || "");
+$("#OurSalesOrderNo").dxDropDownBox("instance").option("value", data.SalesOrderNo || "");
+$("#QuotationNo").dxTextBox("instance").option("value", data.QuoteNo || "");
+$("#PODate").dxDateBox("instance").option("value", data.ClientPodate || null);
+$("#ClientGRNReference").dxTextBox("instance").option("value", data.Attention || "");
 
-					.done(function (client) {
+            // Bind client info if available
+            if (data.ClientCode) {
+    $.get("/api/ClientLeadMaster/GetClientByCode", { clientCode: data.ClientCode })
+        .done(function (client) {
+            $("#ddclientcode").dxDropDownBox("instance").option("value", client.ClientAccountLedgerNo || "");
+            $("#ddclientname").dxDropDownBox("instance").option("value", client.ClientAccountLedgerNo || "");
+        })
+        .fail(function () {
+            DevExpress.ui.notify("Failed to load client details.", "error", 2000);
+        });
+} else {
+    DevExpress.ui.notify("Client code not found in sales order.", "error", 2000);
+}
 
-						$("#ddclientcode").dxDropDownBox("instance").option("value", client.ClientAccountLedgerNo || "");
-
-						$("#ddclientname").dxDropDownBox("instance").option("value", client.ClientAccountLedgerNo || "");
-
-					})
-
-					.fail(function () {
-
-						DevExpress.ui.notify("Failed to load client details.", "error", 2000);
-
-					});
-
-						  let childPromises = deliveryNoteNoArray.map(dn =>
-                    $.get("/api/DeliveryNote/GetByDeliveryNoteNo", { deliveryNoteNo: dn })
-                );
-                Promise.all(childPromises).then(results => {
-                    // Merge all child items from all delivery notes
-                    let allItems = [];
-                    results.forEach(res => {
-                        if (Array.isArray(res.items)) allItems = allItems.concat(res.items);
-                    });
-                    // Map to grid columns
-                    const invoiceItems = allItems.map((item, idx) => ({
-                        SNo: idx + 1,
-                        ItemCode: item.ItemCode || item.Gscode || "",
-                        Description: item.StockDescription || item.Gsdescrpition || item.AddlDescription || "",
-                        DescriptionDetails: item.UnitRateMethod || "",
-                        Qty: item.Qty || item.QtyReceived || 0,
-                        UnitPrice: item.UnitCostPrice || item.UnitPrice || 0,
-                        Discount: item.Discount || 0,
-                        // ...map other fields as needed...
-                    }));
-                    var grid = $("#B2BdataGrid").dxDataGrid("instance");
-                    if (grid) {
-                        grid.option("dataSource", invoiceItems);
-                        grid.option("editing", { mode: "cell", allowUpdating: true, allowAdding: true, allowDeleting: true });
-                    }
-                });
-	})
-
-
-					.fail(function () {
-						DevExpress.ui.notify("Failed to load delivery note details.", "error", 2000);
-					});
-			}
-		});
-
+            // Bind child grid 	
+           getDropdownData().done(function (dropdownData) {
+    getUnitRateMethods().done(function (unitRates) {
+        const invoiceItems = (data.SalesOrderChildren || []).map((item, idx) => {
+            let found = dropdownData.find(d => d.GSCode === item.Gscode);
+            let unitRateObj = unitRates.find(u => u.UnitCode == item.UnitRateMethod);
+            return {
+                SNo: idx + 1,
+                ItemCode: item.Gscode || "",
+					DetailedDescription: found ? found.GSDescrpition : item.Gsdescrpition || "",
+                UnitRateMethod: item.UnitRateMethod, // store the code (number)
+   			 UnitRateMethodText: unitRateObj ? unitRateObj.UnitDesc : "", // store the text
+				UnitRate: item.QuotedUnitPrice || item.CostPrice || 0,
+                VATPercentage: item.QuotedTaxSlab || "",
+					QuantityInvoiced: item.QuotedQuantity || 0, 	
+                Discount: item.QuotedDiscount || 0,
+					CalcLineAmount: item.LineTotalAfterDiscount || 0,
+				CalcTaxAmount: item.LineTaxAmount || 0,
+						LineTotal: item.LineTotalWithTax || 0,
+                ...item
+            };
+        });
+        var grid = $("#B2BdataGrid").dxDataGrid("instance");
+        if (grid) {
+            grid.option("dataSource", invoiceItems);
+            grid.option("editing", { mode: "cell", allowUpdating: true, allowAdding: true, allowDeleting: true });
+        }
+    });
+});
+        })
+        .fail(function () {
+            DevExpress.ui.notify("Failed to load sales order details.", "error", 2000);
+        });
+}
+});
 
 			$(function () {
 			// Get InvoiceNo from the page (from a hidden field or query string)

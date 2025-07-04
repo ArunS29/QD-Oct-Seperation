@@ -3,7 +3,7 @@
 @using System.Text.Json
 
 @{
-    // Layout = null;
+     Layout = null;
     string voucherNo = ViewBag.VoucherNo;
     string drCr = ViewBag.DrCr;
     string accountHead = ViewBag.AccountHead;
@@ -39,6 +39,12 @@
     #costdataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
         text-align: center !important;
     }
+
+    .dx-popup-title.dx-toolbar{
+        background-color: deepskyblue !important;
+        color:white!important;
+    }
+
 
     .horizontal-container {
         display: flex;
@@ -100,6 +106,7 @@
         overflow: hidden;
         box-sizing: border-box;
         padding: 10px;
+        background-color: white !important;
     }
 
     /* This controls row layout inside the popup */
@@ -129,84 +136,162 @@
         overflow: hidden !important;
     }
 
+    .fixed-footer-toolbar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1050;
+        background-color: #fff;
+        border-top: 1px solid #dee2e6;
+        padding: 10px 20px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        box-shadow: 0 -1px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .bold-button .dx-button-text {
+        font-weight: 600;
+    }
+
+    /* Common button base style */
+    .bold-button.dx-button {
+        font-weight: 600;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+        color: #fff; /* White text */
+    }
+
+    /* Save and Close - Blue */
+    #btnCostmasterSaveAndClose .dx-button-content {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    #btnCostmasterSaveAndClose:hover .dx-button-content {
+        background-color: #0056b3;
+        border-color: #0056b3;
+    }
+
+    /* Delete - Red */
+    #btnCostDelete .dx-button-content {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+    #btnCostDelete:hover .dx-button-content {
+        background-color: #a71d2a;
+        border-color: #a71d2a;
+    }
+
+    /* Back - Gray */
+    #btncostBack .dx-button-content {
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+
+    #btncostBack:hover .dx-button-content {
+        background-color: #495057;
+        border-color: #495057;
+    }
+
+    /* Add New Cost Center - Green */
+    #btnaddcost .dx-button-content {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+
+    #btnaddcost:hover .dx-button-content {
+        background-color: #1e7e34;
+        border-color: #1e7e34;
+    }
+
+    .dx-popup-content-container {
+    background-color:white!important;
+    }
 </style>
 <div class="container5">
 
-    <div class="title">
-        <div class="header-container" style="gap:10px;padding:10px">
-            <i class="fa-duotone fa-solid fa-clipboard" style="font-size: 1.5rem; color: goldenrod;"></i>
-            <div id="CostAllocationPopup" class="no-border-title">Cost Allocation</div>
-        </div>
-    </div>
-
+  
   <div class="popup-content-container">
     <!-- Inputs and DataGrid Combined -->
     <div class="container2">
-        <div class="dx-fieldset horizontal-container ">
+            <div class="d-flex flex-wrap align-items-end gap-3" style="margin-left:15px;">
 
-            @(Html.DevExtreme().SelectBox()
-                .ID("DrCr")
-                .Label(new JS("formatMessage('Dr/Cr')"))
-                .LabelMode(EditorLabelMode.Outside)
-                .DataSource(new[] { drCr })
-                .Value(drCr)
-                 .ElementAttr("style", "min-width: 100px; max-width: 150px; flex: 1 1 auto;")
-                .ReadOnly(true)
-                )
+                <div style="min-width: 60px; max-width: 80px;">
+                    @(Html.DevExtreme().SelectBox()
+                                        .ID("DrCr")
+                                        .Label(new JS("formatMessage('Dr/Cr')"))
+                                        .LabelMode(EditorLabelMode.Floating)
+                                        .DataSource(new[] { drCr })
+                                        .Value(drCr)
+                                        .ReadOnly(true)
+                                        )
+                </div>
 
-            <!-- DevExtreme Popup -->
-            @(Html.DevExtreme().TextBox()
-                .ID("Textbox")
-                .Label(new JS("formatMessage('Cost Allocation for the Expenses')"))
-                .LabelMode(EditorLabelMode.Outside)
-                .Value(voucherNo)
-                 .ElementAttr("style", "min-width: 100px; max-width: 200px; flex: 1 1 auto;")
-                .ReadOnly(true)
-                )
+                <div style="min-width: 200px; max-width: 250px;">
+                    @(Html.DevExtreme().TextBox()
+                                        .ID("Textbox")
+                                        .Label(new JS("formatMessage('Cost Allocation for the Expenses')"))
+                                        .LabelMode(EditorLabelMode.Floating)
+                                        .Value(voucherNo)
+                                        .ReadOnly(true)
+                                        )
+                </div>
 
-            
-            @(Html.DevExtreme().NumberBox()
-                .ID("CostAmount")
-                .Label(new JS("formatMessage('Amount')"))
-                .LabelMode(EditorLabelMode.Outside)
-                .Value(voucherAmountParsed)
-                .ShowSpinButtons(true)
-                .ReadOnly(true)
-                .Format("#,##0.00")
-                )
-            <div>
-                @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Approved By')"))
-                    .ID("Approvedcost").ReadOnly(true)
+                <div style="min-width: 120px; max-width: 150px;">
+                    @(Html.DevExtreme().NumberBox()
+                                        .ID("CostAmount")
+                                        .Label(new JS("formatMessage('Amount')"))
+                                        .LabelMode(EditorLabelMode.Floating)
+                                        .Value(voucherAmountParsed)
+                                        .ShowSpinButtons(true)
+                                        .ReadOnly(true)
+                                        .Format("#,##0.00")
+                                        )
+                </div>
 
-                    )
-                @(Html.DevExtreme().TextBox()
-                    @* .Label(new JS("formatMessage('Approved By')")) *@
-                    @* .LabelMode(EditorLabelMode.Outside) *@
-                    .ID("ApprovedBycost")
-                    .Value(null) // Default value
-                    .ReadOnly(true)
-                    )
+              
+
+                <div style="min-width: 320px; max-width: 350px;">
+                    @(Html.DevExtreme().SelectBox()
+                                        .ID("CostAllocationExpense")
+                                        .Label(new JS("formatMessage('Account Head')"))
+                                        .LabelMode(EditorLabelMode.Floating)
+                                        .DataSource(new[] { accountHead })
+                                        .Value(accountHead)
+                                        .ReadOnly(true)
+                                        )
+                </div>
+                <div style="min-width: 180px; max-width: 200px;">
+                    @(Html.DevExtreme().CheckBox()
+                                        .ID("Approvedcost")
+                                        .Text(new JS("formatMessage('Approved By')"))
+                                        .ReadOnly(true)
+                                        )
+                    @(Html.DevExtreme().TextBox()
+                                        .ID("ApprovedBycost")
+                                        .Value(null)
+                                        .ReadOnly(true)
+                                        .Label("")
+                                        .LabelMode(EditorLabelMode.Floating)
+                                        )
+                </div>
+
+                <div style="min-width: 160px; max-width: 180px;">
+                    @(Html.DevExtreme().TextBox()
+                                        .ID("ApprovedOncost")
+                                        .Label(new JS("formatMessage('Approved On')"))
+                                        .LabelMode(EditorLabelMode.Floating)
+                                        .Value(null)
+                                        .ReadOnly(true)
+                                        )
+                </div>
             </div>
-            @(Html.DevExtreme().TextBox()
-                .Label(new JS("formatMessage('Approved On')"))
-                .LabelMode(EditorLabelMode.Outside)
-                .ID("ApprovedOncost")
-                .Value(null) // Default value
-                .ReadOnly(true)
-                )
 
-        </div>
-        <div class="dx-fieldset horizontal-container ">
-            @(Html.DevExtreme().SelectBox()
-                .ID("CostAllocationExpense")
-                .Label(new JS("formatMessage('Account Head')"))
-                .LabelMode(EditorLabelMode.Outside)
-                .DataSource(new[] { accountHead }) // Only the selected AccountHead
-                .Value(accountHead) // Pre-selected value
-                .ReadOnly(true) // Make the dropdown read-onlyr
-                 .ElementAttr("style", "min-width: 100px; max-width: 250px; flex: 1 1 auto;")
-                )
-        </div>
+
+
         <div class="dx-field ledgerResult" style="padding-top:20px">
             @(
                     Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl201CostAllocationMaster>()
@@ -218,7 +303,7 @@
                     .Columns(columns =>
                     {
                         columns.AddFor(m => m.CostAllocationId).Caption("CostAllocation Id").DataField("CostAllocationId").Width(100).Visible(false).AllowEditing(false);
-                        columns.AddFor(m => m.CostAllocDrCr).Caption("Dr/Cr").DataField("DrCr").Width(100).AllowEditing(false);
+                        columns.AddFor(m => m.CostAllocDrCr).Caption("Dr/Cr").DataField("DrCr").Width(60).AllowEditing(false);
                         columns.AddFor(m => m.CostAllocationUnitId)
                     .DataField("CostAllocationUnit")
                     .Caption("Cost Allocated (Projects/Jobs)")
@@ -295,6 +380,7 @@
                     .Caption("Effective Date")
                     .DataField("EffectiveDate").DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
                     .AllowEditing(true)
+                    .Width(95)
                     // Normal Grid Mode
                     .CellTemplate(@<text>
                 <span>
@@ -310,7 +396,7 @@
                 .DisplayFormat("dd-MMM-yyyy")
                 )
             </text>);
-                        columns.AddFor(m => m.AmountAllocated).Caption("Amount").DataField("VoucherAmount").DataType(GridColumnDataType.Number).Format("#,##0.00").AllowEditing(true);
+                        columns.AddFor(m => m.AmountAllocated).Caption("Amount").DataField("VoucherAmount").DataType(GridColumnDataType.Number).Format("#,##0.00").AllowEditing(true).Width(90);
                         columns.AddFor(m => m.CostAllocRemarks).Caption("Remarks").DataField("Remarks").AllowEditing(true);
 
                     })
@@ -318,7 +404,7 @@
                 .AllowColumnReordering(true) // Enable column reordering
                 .AllowColumnResizing(true)   // Enable column resizing
                 .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
-                .HeaderFilter(filter => filter.Visible(true))
+                .HeaderFilter(filter => filter.Visible(false))
                 .ColumnAutoWidth(true)
                 .Height(250)
                 .ColumnAutoWidth(true)
@@ -348,38 +434,39 @@
 
 
     <div class="container2">
-        <div class="dx-fieldset horizontal-container mt-2" style="padding:5px;">
+            <!-- Floating Fixed Footer Buttons -->
+            <div class="fixed-footer-toolbar">
+                @(Html.DevExtreme().Button()
+                                .ID("btnCostmasterSaveAndClose")
+                                .Text("Save and Close")
+                                .Type(ButtonType.Normal)
+                                .StylingMode(ButtonStylingMode.Outlined)
+                                .Icon("save")
+                                .ElementAttr(new { @class = "bold-button me-2" })
+                                )
 
+                @(Html.DevExtreme().Button()
+                                .ID("btnCostDelete")
+                                .Text("Delete")
+                                .Icon("close")
+                                .ElementAttr(new { @class = "bold-button me-2" })
+                                )
 
-            @(Html.DevExtreme().Button()
-                .ID("btnCostmasterSaveAndClose")
-                .Text("Save and Close")
-                .Type(ButtonType.Normal)
-                .StylingMode(ButtonStylingMode.Outlined)
-                .Icon("save")
-                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-                )
+                @(Html.DevExtreme().Button()
+                                .ID("btncostBack")
+                                .Text("Back")
+                                .Icon("arrowleft")
+                                .ElementAttr(new { @class = "bold-button me-2" })
+                                .OnClick("closeParentModal")
+                                )
 
-            @(Html.DevExtreme().Button()
-                .ID("btnCostDelete")
-                .Text("Delete")
-                .Icon("close")
-                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-                )
-            @(Html.DevExtreme().Button()
-                .ID("btncostBack")
-                .Text("Back")
-                .Icon("arrowleft")
-                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-                .OnClick("closeParentModal")
-                )
-            @(Html.DevExtreme().Button()
-                .ID("btnaddcost")
-                .Text("Add New Cost Center")
-                .Icon("plus")
-                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-                )
-        </div>
+                @(Html.DevExtreme().Button()
+                                .ID("btnaddcost")
+                                .Text("Add New Cost Center")
+                                .Icon("plus")
+                                .ElementAttr(new { @class = "bold-button" })
+                                )
+            </div>
         @using (Html.DevExtreme().NamedTemplate("JournalcostAllocationDropdownContentTemplate"))
         {
             @(

@@ -3,13 +3,9 @@
 
 <!-- Page Loader Overlay -->
 <div id="dashboardPageLoader" style="position:fixed;z-index:9999;top:0;left:0;width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.7)">
-    <img src="/images/dicerol.gif" alt="Loading..." style="height:54px;">
+    <img src="/images/dicerol.gif" alt="Loading..." style="height:150px;">
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
-<script src="https://www.gstatic.com/charts/loader.js"></script>
 <link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/latest/css/dx.light.css">
 <script src="https://cdn3.devexpress.com/jslib/latest/js/dx.all.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
@@ -54,7 +50,7 @@
     </div>
 </div>
 
-<!-- Grids & Chart -->
+<!-- Grids & Donut Chart -->
 <div class="grid-container">
     <div class="grid-section">
         <div id="ClientOutstanding" class="no-border-title" style="width:90%;"></div>
@@ -63,14 +59,15 @@
     <div class="chart-container" style="position:relative;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
             <div id="ClientOutstandingAgingChart" class="no-border-title"></div>
-            <button id="toggleFullscreen" style="margin-bottom:4px;">View Full Screen</button>
+            <!-- Fullscreen optional, not needed for donut -->
         </div>
-        <canvas id="clientOutstandingChart" style="width:750px; height:650px"></canvas>
+        <!-- DevExpress Donut Chart container -->
+        <div id="clientOutstandingDonutChart" style="width:750px; height:650px; margin:auto;"></div>
     </div>
 </div>
 
 <script>
-let chartInstance;
+let donutChartInstance;
 
 $(document).ready(function () {
     $("#dashboardPageLoader").show();
@@ -144,20 +141,36 @@ $(document).ready(function () {
     }
     pendingLoads.push(loadClientOutstandingGrid());
 
-    // Chart load (AJAX)
-    let chartLoad = $.ajax({
+    // Donut chart load (AJAX)
+    let donutChartLoad = $.ajax({
         url: '/api/Dashboard/GetClientOutstandingByAccountHead',
         type: 'GET'
     }).done(function (result) {
         if (result.success) {
-            const data = result.data;
-            const labels = data.map(item => item.AccountHead ?? "Unknown");
-            const balances = data.map(item => item.TotalBalance);
+            const data = result.data || [];
 
-            createClientOutstandingChart(labels, balances);
+            // Sort by TotalBalance descending
+            const sorted = data.slice().sort((a, b) => (b.TotalBalance || 0) - (a.TotalBalance || 0));
+
+            // Top 10 + Others
+            const topN = 10;
+            const topItems = sorted.slice(0, topN);
+            const otherItems = sorted.slice(topN);
+
+            const chartData = topItems.map(item => ({
+                accountHead: item.AccountHead ?? "Unknown",
+                balance: item.TotalBalance
+            }));
+
+            if (otherItems.length > 0) {
+                const othersTotal = otherItems.reduce((sum, item) => sum + (item.TotalBalance || 0), 0);
+                chartData.push({ accountHead: "Others", balance: othersTotal });
+            }
+
+            renderDonutChart(chartData);
         }
     });
-    pendingLoads.push(chartLoad);
+    pendingLoads.push(donutChartLoad);
 
     // Hide loader when all
     $.when.apply($, pendingLoads).always(function () {
@@ -195,61 +208,54 @@ $(document).ready(function () {
         onContentReady: function(e) { $(e.element).addClass("dx-textbox-heading10"); }
     });
     $("#ClientOutstandingAgingChart").dxTextBox({
-        text: "Client Outstanding Aging Chart", readOnly: true,
+        text: "Client Outstanding Donut Chart", readOnly: true,
         onContentReady: function(e) { $(e.element).addClass("dx-textbox-heading10"); }
-    });
-
-    // Fullscreen & zoom features
-    $("#toggleFullscreen").on("click", function () {
-        let chartContainer = document.getElementById('clientOutstandingChart').parentElement;
-        if (!document.fullscreenElement) {
-            chartContainer.requestFullscreen();
-            setTimeout(() => { if (chartInstance) chartInstance.resize(); }, 300);
-        } else {
-            document.exitFullscreen();
-            setTimeout(() => { if (chartInstance) chartInstance.resize(); }, 300);
-        }
-    });
-    $('#clientOutstandingChart').dblclick(function() {
-        if (chartInstance) chartInstance.resetZoom();
     });
 });
 
-// Chart.js instance with zoom/pan support
-function createClientOutstandingChart(labels, balances) {
-    const ctx = document.getElementById('clientOutstandingChart').getContext('2d');
-    if (chartInstance) chartInstance.destroy();
-    chartInstance = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Outstanding Balance',
-                data: balances,
-                backgroundColor: '#007acc',
-                borderColor: '#007acc',
-            }]
+// DevExpress Donut Chart function
+function renderDonutChart(chartData) {
+    if (donutChartInstance) {
+        $("#clientOutstandingDonutChart").dxPieChart("dispose");
+    }
+    $("#clientOutstandingDonutChart").dxPieChart({
+        dataSource: chartData,
+        type: "doughnut",
+        innerRadius: 0.55,
+        palette: "Ocean",
+        animation: { enabled: true, duration: 1200, easing: "bounce" },
+        title: "Top 10 Client Outstanding (Donut)",
+        legend: {
+            visible: true,
+            position: "right",
+            horizontalAlignment: "right",
+            verticalAlignment: "center",
+            itemTextPosition: "right"
         },
-        options: {
-            responsive: false,
-            plugins: {
-                legend: { display: true },
-                zoom: {
-                    zoom: {
-                        drag: { enabled: true },
-                        wheel: { enabled: true },
-                        pinch: { enabled: true },
-                        mode: 'xy'
-                    },
-                    pan: { enabled: true, mode: 'xy' }
-                }
-            },
-            scales: {
-                y: { beginAtZero: true, title: { display: true, text: 'Balance (₹)' } },
-                x: { title: { display: true, text: 'Account Head' } }
+        export: { enabled: true },
+        tooltip: {
+            enabled: true,
+            format: "fixedPoint",
+            precision: 2,
+            customizeTooltip: function (pointInfo) {
+                return {
+                    text: `<b>${pointInfo.argument}</b>: ₹${pointInfo.value.toLocaleString("en-IN")}`
+                };
             }
-        }
+        },
+        series: [{
+            argumentField: "accountHead",
+            valueField: "balance",
+            label: {
+                visible: true,
+                connector: { visible: true, width: 1 },
+                customizeText: function (pointInfo) {
+                    return `${pointInfo.argumentText}\n₹${pointInfo.value.toLocaleString("en-IN")}`;
+                }
+            }
+        }]
     });
+    donutChartInstance = $("#clientOutstandingDonutChart").dxPieChart("instance");
 }
 </script>
 
@@ -276,7 +282,7 @@ function createClientOutstandingChart(labels, balances) {
 .grid-container { display: flex; padding: 15px; justify-content: center; }
 .grid-section { width: 38%; text-align: center; }
 .chart-container { text-align: center; position:relative; }
-#clientOutstandingChart { width: 100% !important; height: 650px !important; background:white; }
+#clientOutstandingDonutChart { width: 100% !important; height: 650px !important; background:white; }
 #dashboardPageLoader { display: none; }
 button#toggleFullscreen { background:#007acc; color:#fff; border:none; border-radius:4px; padding:7px 18px; font-weight:bold; cursor:pointer; }
 button#toggleFullscreen:hover { background:#005c99; }

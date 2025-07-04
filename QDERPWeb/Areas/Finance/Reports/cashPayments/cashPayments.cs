@@ -188,7 +188,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
                                                 float textWidth = g.MeasureString(lbl.Text ?? "", sysFont, int.MaxValue, format).Width;
 
                                                 // Align icon just before the actual text starts, with small padding
-                                                float posX = lbl.LocationF.X ; // 2f = tight icon-to-text padding
+                                                float posX = lbl.LocationF.X -2f; // 2f = tight icon-to-text padding
                                                 pictureBox.LocationF = new PointF(posX, posY);
 
                                             }

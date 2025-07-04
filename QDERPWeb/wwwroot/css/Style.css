@@ -4,6 +4,12 @@
     color: black;
     cursor: not-allowed;
 }
+.footer-hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(100%);
+    transition: all 0.2s ease-in-out;
+}
 
 .overlay {
     display: none;
@@ -352,7 +358,7 @@ td {
 }
 
     /* Default icon color */
-    .dx-dropdowneditor-button .dx-icon,
+    
     .dx-clear-button-area .dx-icon {
         color: #555 !important;
         font-size: 16px !important;
@@ -360,7 +366,7 @@ td {
     }
 
     /* Hover effect — turns round, changes color, icon becomes white */
-    .dx-dropdowneditor-button:hover,
+   
     .dx-clear-button-area:hover {
         border-radius: 50% !important;
         background-color: red !important; /* muted gray, adjust as needed */
