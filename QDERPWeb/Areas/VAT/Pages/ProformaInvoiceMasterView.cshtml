@@ -3,6 +3,7 @@
 @{
 }
 @using DevExtreme.AspNet.Mvc
+
 <style>
 	.overlay {
 		display: none;
@@ -14,35 +15,36 @@
 		background: rgba(0, 0, 0, 0.5);
 		z-index: 1000;
 	}
-.custom-submenu {
-  display: none;
-  position: absolute;
-  background-color: #ffffff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  list-style: none;
-  padding: 10px 0;
-  min-width: 160px;
-  z-index: 999;
-}
 
-.custom-submenu li {
-  padding: 8px 16px;
-  transition: background-color 0.3s ease;
-}
+	.custom-submenu {
+		display: none;
+		position: absolute;
+		background-color: #ffffff;
+		border: 1px solid #ddd;
+		border-radius: 8px;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+		list-style: none;
+		padding: 10px 0;
+		min-width: 160px;
+		z-index: 999;
+	}
 
-.custom-submenu li a {
-  text-decoration: none;
-  color: #333;
-  font-size: 14px;
-  display: block;
-}
+		.custom-submenu li {
+			padding: 8px 16px;
+			transition: background-color 0.3s ease;
+		}
 
-.custom-submenu li:hover {
-  background-color: #f0f0f0;
+			.custom-submenu li a {
+				text-decoration: none;
+				color: #333;
+				font-size: 14px;
+				display: block;
+			}
+
+			.custom-submenu li:hover {
+				background-color: #f0f0f0;
 				cursor: pointer;
-}
+			}
 
 
 	.overlay-content {
@@ -58,10 +60,10 @@
 		overflow: hidden;
 	}
 
-/* 	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddReport12)) {
-		display: none !important;
-	}
- */
+	/* 	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddReport12)) {
+			display: none !important;
+		}
+	 */
 	#overlay-frame {
 		width: 100%;
 		height: 100%;
@@ -168,7 +170,7 @@
 	}
 
 	.context-menu-item {
-		display: flex;
+		/* display: flex; */
 		align-items: center;
 		padding: 10px 15px;
 		font-size: 14px;
@@ -190,39 +192,13 @@
 		.context-menu-item:not(:last-child) {
 			border-bottom: 1px solid #e0e0e0;
 		}
-/* 	.context-menu {
-		display: none;
-		position: absolute;
-		z-index: 10000;
-		background-color: #fff;
-		border: 1px solid #ccc;
-		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-		padding: 5px 0;
-		border-radius: 4px;
-		width: 220px;
-	}
 
-	.context-menu-item {
-		padding: 8px 16px;
-		cursor: pointer;
-		font-size: 14px;
-	}
-
-		.context-menu-item:hover {
-			background-color: #f0f0f0;
-		} */
 	.mainContainer {
 		width: 97%;
-		overflow: hidden;
 	}
 
 	.dx-fieldset.horizontal-container {
 		margin-top: 10px;
-	}
-
-	.dx-datagrid .dx-header-row .dx-datagrid-text-content {
-		white-space: normal !important;
-		text-align: center;
 	}
 
 	.dashboard {
@@ -344,6 +320,7 @@
 		animation: gradientPulse 6s ease infinite;
 	}
 
+
 	/* Keyframes */
 	@@keyframes fadeSlideIn {
 		from {
@@ -388,10 +365,12 @@
 	}
 
 	.card.purple {
-		background: linear-gradient(135deg, #8e24aa, #ba68c8);
+		background: linear-gradient(135deg, #6a1b9a, #e1bee7); /* dark to light purple */
 		position: relative;
 		overflow: hidden;
+		color: white; /* Optional for readability */
 	}
+
 
 	.card:hover {
 		transform: translateY(-6px);
@@ -453,8 +432,11 @@
 	}
 
 	.card.green {
-		background: linear-gradient(135deg, #43a047, #66bb6a);
+		background: linear-gradient(135deg, #2e7d32, #a5d6a7); /* dark green to light green */
+		/* color: white; /* Optional: ensures text is readable */ */
 	}
+
+
 
 	.card:hover {
 		transform: translateY(-6px);
@@ -606,15 +588,24 @@
 		}
 	}
 </style>
+
+@* <input id="formId" value="frm201LedgerView" type="hidden" />
+<div class="title">
+	<div class="header-container">
+		<div id="ProformaInvoiceMasterView" class="no-border-input" style="width:400px;"></div>
+	</div>
+</div>
+ *@
 <div class="dashboard" style="display: flex; align-items: center; padding: 10px;width:55%">
-<input id="formId" value="frm201LedgerView" type="hidden" />
+
+	 <input id="formId" value="frm201LedgerView" type="hidden" />
+
 	<div class="card blue shine compact">
 		<h2 class="title-slide">Proforma Invoice Register</h2>
 		<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
 		<h6 class="fade-in">QuickDice ERP Solutions</h6>
 
 	</div>
-
 	<div id="mainCard" class="card today-bg">
 		<div class="tabs">
 			<div class="tab-text active" onclick="switchTab(0)">Today</div>
@@ -623,21 +614,21 @@
 		</div>
 
 		<div class="tab-content active">
-			<h4>🔔 Pending Verifications</h4>
+			<h4>&#128276; Pending Verifications</h4>
 			<div class="count" id="count0">0</div>
 			@* <div class="trend">🔺 12% more than yesterday</div> *@
 			@* <div class="message">You're getting things moving!</div> *@
 		</div>
 
 		<div class="tab-content">
-			<h4>✅ Vouchers Verified</h4>
+			<h4>&#9989; Vouchers Verified</h4>
 			<div class="count" id="count1">0</div>
 			@* <div class="trend">🔼 25% higher than last week</div> *@
 			@* <div class="message">Awesome pace — keep it up!</div> *@
 		</div>
 
 		<div class="tab-content">
-			<h4>📥 New Vouchers</h4>
+			<h4>&#128229; New Vouchers</h4>
 			<div class="count" id="count2">0</div>
 			@* <div class="trend">🔽 10% drop this month</div> *@
 			@* <div class="message">Fewer vouchers — time to catch up?</div> *@
@@ -650,27 +641,26 @@
 	</div>
 </div>
 
-
-
 <div class="Head">
 	@await Html.PartialAsync("/Pages/Shared/VAT/VATProformaInvoiceRegisterFooter.cshtml")
 </div>
 
 <div class="context-menu" id="contextMenu">
 	<div class="context-menu-item" onclick="viewInvoice()">
-		<i class="dx-icon-edit"></i> Edit Proforma Invoice
+		<i class="dx-icon-search"></i> View e-Invoice
 	</div>
+
 	<div class="context-menu-item" onclick="cancelInvoice()">
-		<i class="dx-icon-close"></i> Delete Proforma Invoice
+		<i class="dx-icon-close"></i> Cancel/Amend this Invoice (Invoice Credit Note)
 	</div>
-	<div class="context-menu-item" onclick="UnlockInvoice()">
-		<i class="dx-icon-unlocked"></i> Unlock Proforma Invoice
+	<div class="context-menu-item">
+		<i class="dx-icon-file"></i> VAT Invoices (Obselete)
 	</div>
+
 	<div class="context-menu-item" onclick="cloneEInvoice()">
-		<i class="dx-icon-copy"></i> Duplicate Proforma Invoice
+		<i class="dx-icon-copy"></i> Clone e-Invoice
 	</div>
 </div>
-
 
 
 <div class="dx-fieldset horizontal-container">
@@ -722,344 +712,218 @@
 
 </div>
 <div class="dx-field ledgerResult">
-	@(
-		Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201657proformaInvoiceRegisterMainView>()
-			.ID("dataGrid")
-			.RemoteOperations(false)
-			.DataSource(new JS("[]"))
-			.Columns(columns =>
+	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201657proformaInvoiceRegisterMainView>()
+		.ID("dataGrid")
+		.RemoteOperations(false)
+		.DataSource(new JS("[]"))
+		.Columns(columns =>
+		{
+			columns.Add().Caption(new JS("formatMessage('Invoice Details')")).Columns(subColumns =>
 			{
-				columns.Add().Caption(new JS("formatMessage('Invoice Details')")).Columns(subColumns =>
-				{
-					subColumns.AddFor(m => m.ProformaInvoiceNo)
-				.Caption(new JS("formatMessage('Proforma Invoice No')"))
-				.Alignment(HorizontalAlignment.Center)
-				.Width(135).MinWidth(23);
+				subColumns.AddFor(m => m.ProformaInvoiceNo)
+			.Caption(new JS("formatMessage('Proforma Invoice No')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Width(135).MinWidth(23);
 
-					subColumns.AddFor(m => m.ProformaInvoiceDate)
-				.Caption(new JS("formatMessage('Proforma Invoice Date')"))
-				.Alignment(HorizontalAlignment.Center)
-				.Width(135).MinWidth(23);
+				subColumns.AddFor(m => m.ProformaInvoiceDate)
+			.Caption(new JS("formatMessage('Proforma Invoice Date')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Width(135).MinWidth(23);
 
-					subColumns.AddFor(m => m.InvoiceEffectiveDate)
-				.Caption(new JS("formatMessage('Invoice Effective Date')"))
-				.Alignment(HorizontalAlignment.Center)
-				.Width(135).MinWidth(23);
+				subColumns.AddFor(m => m.InvoiceEffectiveDate)
+			.Caption(new JS("formatMessage('Invoice Effective Date')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Width(135).MinWidth(23);
 
-					subColumns.AddFor(m => m.AccountHead)
-				.Caption(new JS("formatMessage('Account Head')"))
-				.Alignment(HorizontalAlignment.Center)
-				.Width(100)
-    .MinWidth(23)
-			.Visible(true)
-			;
+				subColumns.AddFor(m => m.AccountHead)
+			.Caption(new JS("formatMessage('Account Head')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Width(341).MinWidth(23);
 
-					subColumns.AddFor(m => m.InvoiceStatus)
-				.Caption(new JS("formatMessage('Invoice Status')"))
-				.Alignment(HorizontalAlignment.Center)
-			.CellTemplate(new JS("invoiceStatusCellTemplate")).Width(180)
-			.MinWidth(23)
-				;
-				});
+				subColumns.AddFor(m => m.InvoiceStatus)
+			.Caption(new JS("formatMessage('Invoice Status')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Width(87).MinWidth(23);
+			});
 
-				columns.Add().Caption(new JS("formatMessage('Revenue & Tax Amount')")).Columns(subColumns =>
-				{
+			columns.Add().Caption(new JS("formatMessage('Revenue & Tax Amount')")).Columns(subColumns =>
+			{
 				subColumns.AddFor(m => m.CalcLineAmount)
 			.Caption(new JS("formatMessage('Amount Before Tax')"))
-			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false) // Allows rendering the HTML styling
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-		return '<span style=""display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		");
-
+			.Alignment(HorizontalAlignment.Right)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
 				subColumns.AddFor(m => m.CalcTaxAmount)
 			.Caption(new JS("formatMessage('Total VAT Amount')"))
-			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false) // Enables rendering of HTML in the value
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-		return '<span style=""display:inline-block; background-color:#fdecea; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		");
-
+			.Alignment(HorizontalAlignment.Right)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
 				subColumns.AddFor(m => m.CalcLineAmount) // Ensure this line is not duplicated
 			.Caption(new JS("formatMessage('Invoiced Amount')"))
-			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false) // Required to render styled HTML
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-		return '<span style=""display:inline-block; background-color:#fff9c4; color:#f9a825; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		");
+			.Alignment(HorizontalAlignment.Right)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+			});
 
-				});
-
-				columns.Add().Caption(new JS("formatMessage('Revenue Classified')")).Columns(revenueColumns =>
-				{
-					revenueColumns.Add().Caption(new JS("formatMessage('Domestic')")).Columns(subColumns =>
-				{
+			columns.Add().Caption(new JS("formatMessage('Revenue Classified')")).Columns(revenueColumns =>
+			{
+				revenueColumns.Add().Caption(new JS("formatMessage('Domestic')")).Columns(subColumns =>
+			{
 				subColumns.AddFor(m => m.DomesticStandartRatedRevenue)
 			.Caption(new JS("formatMessage('Domestic Standard Rated Revenue')"))
-			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-		return '<span style=""display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		");
+			.Alignment(HorizontalAlignment.Right)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
 				subColumns.AddFor(m => m.DomesticZeroRatedRevenue)
 			.Caption(new JS("formatMessage('Domestic Zero Rated Revenue')"))
-			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-		return '<span style=""display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		");
+			.Alignment(HorizontalAlignment.Right)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
 				subColumns.AddFor(m => m.DomesticExemptedRevenue)
 			.Caption(new JS("formatMessage('Domestic Exempted Revenue')"))
-			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-		return '<span style=""display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		");
-
+			.Alignment(HorizontalAlignment.Right)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 			});
 
-					revenueColumns.Add().Caption(new JS("formatMessage('GCC Countries')")).Columns(subColumns =>
-				{
+				revenueColumns.Add().Caption(new JS("formatMessage('GCC Countries')")).Columns(subColumns =>
+			{
 				subColumns.AddFor(m => m.InvoiceStatus)
 			.Caption(new JS("formatMessage('GCC Revenue')"))
 			.Alignment(HorizontalAlignment.Right)
-			.CellTemplate(new JS("invoiceStatusCellTemplate"))
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
-
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 			});
 
-					revenueColumns.Add().Caption(new JS("formatMessage('Others Countries')")).Columns(subColumns =>
-				{
+				revenueColumns.Add().Caption(new JS("formatMessage('Others Countries')")).Columns(subColumns =>
+			{
 				subColumns.AddFor(m => m.ExportsRevenue)
 			.Caption(new JS("formatMessage('Exports Revenue')"))
-			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false) // Required to render styled HTML
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-		return '<span style=""display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		");
-
+			.Alignment(HorizontalAlignment.Right)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 			});
-				});
+			});
 
-				columns.Add().Caption(new JS("formatMessage('VAT Amount Classified')")).Columns(vatColumns =>
-				{
-					vatColumns.Add().Caption(new JS("formatMessage('Domestic VAT')")).Columns(subColumns =>
-				{
+			columns.Add().Caption(new JS("formatMessage('VAT Amount Classified')")).Columns(vatColumns =>
+			{
+				vatColumns.Add().Caption(new JS("formatMessage('Domestic VAT')")).Columns(subColumns =>
+			{
 				subColumns.AddFor(m => m.DomesticStandartRatedTax)
 			.Caption(new JS("formatMessage('Domestic Standard Rated Tax')"))
-			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-		return '<span style=""display:inline-block; background-color:#fdecea; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		");
+			.Alignment(HorizontalAlignment.Right)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
 				subColumns.AddFor(m => m.DomesticZeroRatedTax)
 			.Caption(new JS("formatMessage('Domestic Zero Rated Tax')"))
-			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-		return '<span style=""display:inline-block; background-color:#fdecea; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		");
+			.Alignment(HorizontalAlignment.Right)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
 				subColumns.AddFor(m => m.DomesticExemptedTax)
 			.Caption(new JS("formatMessage('Domestic Exempted Tax')"))
-			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-		return '<span style=""display:inline-block; background-color:#fdecea; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		");
-
+			.Alignment(HorizontalAlignment.Right)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 			});
 
-					vatColumns.Add().Caption(new JS("formatMessage('GCC VAT')")).Columns(subColumns =>
-				{
+				vatColumns.Add().Caption(new JS("formatMessage('GCC VAT')")).Columns(subColumns =>
+			{
 				subColumns.AddFor(m => m.GccstandardRatedRevenue)
 			.Caption(new JS("formatMessage('GCC Tax')"))
-			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-		return '<span style=""display:inline-block; background-color:#fdecea; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		");
-
+			.Alignment(HorizontalAlignment.Right)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 			});
 
-					vatColumns.Add().Caption(new JS("formatMessage('Exports VAT')")).Columns(subColumns =>
-				{
+				vatColumns.Add().Caption(new JS("formatMessage('Exports VAT')")).Columns(subColumns =>
+			{
 				subColumns.AddFor(m => m.GccstandardRatedTax)
 			.Caption(new JS("formatMessage('Exports Tax')"))
-			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-		return '<span style=""display:inline-block; background-color:#fdecea; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		");
-
+			.Alignment(HorizontalAlignment.Right)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 			});
-				});
-			})
-			.Editing(editing => editing
-			.Mode(GridEditMode.Row)
-			)
-			.Height(680) // <<< fixed height
-			.ColumnAutoWidth(true)
-			.Width("98%")
-			@* .WordWrapEnabled(true) *@
-			.OnCellClick("function(e) {handleCellClick(e);}")
-			.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
-			.AllowColumnReordering(true)
-			.AllowColumnResizing(true)
-			.ColumnFixing(fixing => fixing.Enabled(true))
-			.HeaderFilter(filter => filter.Visible(false))
-			.Paging(p => p.Enabled(true).PageSize(15))    // enable paging with 15 rows per page
-			.Pager(pager => pager
-			.Visible(true)                            // show pager UI (page numbers etc)
-			.ShowPageSizeSelector(true)              // allow user to change page size
-			.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
-			.ShowInfo(true))
-			.Grouping(grouping => grouping.AutoExpandAll(true))
-			.FilterRow(filterRow => filterRow.Visible(false))
-			.GroupPanel(groupPanel => groupPanel.Visible(false))
-			.ShowBorders(true)
-			.ShowRowLines(true)
-			.Summary(summary =>
-			{
-				summary.TotalItems(totalItems =>
-				{
-					totalItems.Add().Column("AccountHead").SummaryType(SummaryType.Count)
-				.DisplayFormat(new JS("formatMessage('Count: {0}')"));
-
-					totalItems.Add().Column("CalcLineAmount").SummaryType(SummaryType.Sum)
-                .CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
-					totalItems.Add().Column("CalcTaxAmount").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
-					totalItems.Add().Column("TotalCreditNoteAmount").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
-					totalItems.Add().Column("DomesticStandartRatedRevenue").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
-					totalItems.Add().Column("TotalRevenueOf10Perc").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
-					totalItems.Add().Column("TotalRevenueOf15Perc").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
-					totalItems.Add().Column("DomesticZeroRatedRevenue").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
-					totalItems.Add().Column("DomesticExemptedRevenue").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
-					totalItems.Add().Column("GccstandardRatedRevenue").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
-					totalItems.Add().Column("ExportsRevenue").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
-					totalItems.Add().Column("DomesticStandartRatedTax").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
-					totalItems.Add().Column("TotalTaxOf10Perc").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
-					totalItems.Add().Column("TotalTaxOf15Perc").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
-					totalItems.Add().Column("DomesticZeroRatedTax").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
-					totalItems.Add().Column("DomesticExemptedTax").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
-					totalItems.Add().Column("GccstandardRatedTax").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
-					totalItems.Add().Column("ExportsTax").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
 		})
-	)
+		.Editing(editing => editing
+		.Mode(GridEditMode.Row)
+		)
+		.Height(680) // <<< fixed height
+		.ColumnAutoWidth(true)
+		.Width("98%")
+		.WordWrapEnabled(true)
+		.OnCellClick("function(e) {handleCellClick(e);}")
+		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+		.AllowColumnReordering(true)
+		.AllowColumnResizing(true)
+		.ColumnFixing(fixing => fixing.Enabled(true))
+		.HeaderFilter(filter => filter.Visible(false))
+		.Paging(p => p.Enabled(true).PageSize(15))    // enable paging with 15 rows per page
+		.Pager(pager => pager
+		.Visible(true)                            // show pager UI (page numbers etc)
+		.ShowPageSizeSelector(true)              // allow user to change page size
+		.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+		.ShowInfo(true))
+		.Grouping(grouping => grouping.AutoExpandAll(true))
+		.FilterRow(filterRow => filterRow.Visible(false))
+		.GroupPanel(groupPanel => groupPanel.Visible(false))
+		.ShowBorders(true)
+		.ShowRowLines(true)
+		.Summary(summary =>
+		{
+			summary.TotalItems(totalItems =>
+			{
+				totalItems.Add().Column("AccountHead").SummaryType(SummaryType.Count)
+			.DisplayFormat(new JS("formatMessage('Count: {0}')"));
+
+				totalItems.Add().Column("CalcLineAmount").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				totalItems.Add().Column("CalcTaxAmount").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				totalItems.Add().Column("TotalCreditNoteAmount").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				totalItems.Add().Column("DomesticStandartRatedRevenue").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				totalItems.Add().Column("TotalRevenueOf10Perc").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				totalItems.Add().Column("TotalRevenueOf15Perc").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				totalItems.Add().Column("DomesticZeroRatedRevenue").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				totalItems.Add().Column("DomesticExemptedRevenue").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				totalItems.Add().Column("GccstandardRatedRevenue").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				totalItems.Add().Column("ExportsRevenue").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				totalItems.Add().Column("DomesticStandartRatedTax").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				totalItems.Add().Column("TotalTaxOf10Perc").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				totalItems.Add().Column("TotalTaxOf15Perc").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				totalItems.Add().Column("DomesticZeroRatedTax").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				totalItems.Add().Column("DomesticExemptedTax").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				totalItems.Add().Column("GccstandardRatedTax").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				totalItems.Add().Column("ExportsTax").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+			});
+		}))
 </div>
 
-     
+
 
 
 <ul id="submenu" class="custom-submenu">
@@ -1073,155 +937,13 @@
 </div>
 
 <script>
-
-
-
-		function animateInvoiceCount(target) {
-	  let i = 0;
-	  const el = document.getElementById("invoiceCount");
-	  el.classList.remove('bounce');
-
-	  const timer = setInterval(() => {
-		if (i >= target) {
-		  el.innerText = target;
-		  el.classList.add('bounce');
-		  clearInterval(timer);
-		} else {
-		  el.innerText = i++;
-		}
-	  }, 30);
-	}
-
-	// Animate to 40
-	animateInvoiceCount(40);
-
-
-	function countUpTurnover(targetStr) {
-	  const el = document.getElementById("turnover");
-	  const target = parseFloat(targetStr);
-	  let current = 0.0;
-
-	  const interval = setInterval(() => {
-		current += 0.5;
-		if (current >= target) {
-		  el.textContent = targetStr + " K";
-		  clearInterval(interval);
-		} else {
-		  el.textContent = current.toFixed(1) + " K";
-		}
-	  }, 30);
-	}
-
-	// Animate to 46.2 K
-	countUpTurnover("46.2");
-
-
-		  const card = document.getElementById('mainCard');
-		const counts = [8, 15, 5];
-		const countEls = [
-		  document.getElementById("count0"),
-		  document.getElementById("count1"),
-		  document.getElementById("count2"),
-		];
-		const tabs = document.querySelectorAll(".tab-text");
-		const contents = document.querySelectorAll(".tab-content");
-
-		function animateCount(el, target) {
-		  let i = 0;
-		  el.innerText = i;
-		  el.classList.remove('bounce');
-		  const interval = setInterval(() => {
-			if (i >= target) {
-			  el.innerText = target;
-			  el.classList.add('bounce');
-			  clearInterval(interval);
-			} else {
-			  el.innerText = i++;
+	$(document).ready(function () {
+		$(".limited-footer .btn-containerIvoiceEdit").each(function () {
+			if (!$(this).find("#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddButtonPayment,#ddReports").length) {
+				$(this).remove();
 			}
-		  }, 30);
-		}
-
-		function switchTab(index) {
-		  tabs.forEach((tab, i) => {
-			tab.classList.toggle('active', i === index);
-			contents[i].classList.toggle('active', i === index);
-		  });
-
-		  // Change background class
-		  card.className = "card";
-		  if (index === 0) card.classList.add("today-bg");
-		  if (index === 1) card.classList.add("week-bg");
-		  if (index === 2) card.classList.add("month-bg");
-
-		  // Animate count
-		  animateCount(countEls[index], counts[index]);
-		}
-
-		// Start "Today" count immediately
-		animateCount(countEls[0], counts[0]);
-
-		function switchTab(index) {
-		  tabs.forEach((tab, i) => {
-			tab.classList.toggle('active', i === index);
-			contents[i].classList.toggle('active', i === index);
-		  });
-
-		  // Change background class
-		  card.className = "card";
-		  if (index === 0) card.classList.add("today-bg");
-		  if (index === 1) card.classList.add("week-bg");
-		  if (index === 2) card.classList.add("month-bg");
-
-		  // Animate count
-		  animateCount(countEls[index], counts[index]);
-		}
-
-		// Auto-start animation for "Today"
-		animateCount(countEls[0], counts[0]);
-			function invoiceStatusCellTemplate(cellElement, cellInfo) {
-		const status = cellInfo.value;
-		let backgroundColor = "";
-		let textColor = "black";
-
-		switch (status) {
-			case "Not Processed":
-				backgroundColor = "#f8d7da"; // light red
-				textColor = "#721c24";       // dark red text
-				break;
-			case "Verified":
-				backgroundColor = "#d4edda"; // light green
-				textColor = "#155724";       // dark green text
-				break;
-			case "Approved":
-				backgroundColor = "#c3e6cb"; // darker green
-				textColor = "#0b3d18";
-				break;
-			case "Posted":
-				backgroundColor = "#ffeeba"; // light orange/yellow
-				textColor = "#856404";
-				break;
-			default:
-				backgroundColor = "#f0f0f0";
-				textColor = "#000000";
-		}
-
-		cellElement.text(status);
-		cellElement.css({
-			"background-color": backgroundColor,
-			"color": textColor,
-			"font-weight": "bold",
-			"padding": "5px",
-			"border-radius": "4px",
-			"text-align": "center"
 		});
-	}
-	// $(document).ready(function () {
-	// 	$(".limited-footer .btn-containerIvoiceEdit").each(function () {
-	// 		if (!$(this).find("#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddButtonPayment,#ddReports").length) {
-	// 			$(this).remove();
-	// 		}
-	// 	});
-	// });
+	});
 	$(function () {
 			ddBtnShowRecords_click("range")
 					$("#ProformaInvoiceMasterView").dxTextBox({
@@ -1234,20 +956,24 @@
 					});
 				});
 	// Assuming tenantName is already defined globally
-	// let ProformaInvoiceNo = null;
-	// let IsEditCr = false;
+	let invoiceNoCr = null;
+	let IsEditCr = false;
 
-	// function viewInvoice() {
-	// 	if (!ProformaInvoiceNo) {
-	// 		alert("Invoice number is not set.");
-	// 		return;
-	// 	}
+	function viewInvoice() {
+		if (!invoiceNoCr) {
+			alert("Invoice number is not set.");
+			return;
+		}
 
-	// 	IsEditCr = true;
+		IsEditCr = true;
 
+		const params = new URLSearchParams({
+			InvoiceNo: invoiceNoCr,
+			IsEditflagCr: IsEditCr,
+			modal: true // If you want to explicitly include modal=true
+		});
 
-
-		  const url = `/${tenantName}/VAT/ProformaInvoiceEditForm?InvoiceNo=${encodeURIComponent(ProformaInvoiceNo)}&IsEditflag=${encodeURIComponent(IsEditCr)}`;
+		const url = `/${tenantName}/VAT/ProformaInvoiceEditForm?InvoiceNo=${encodeURIComponent(ProformaInvoiceNo)}&IsEditflag=${encodeURIComponent(IsEditCr)}`;
 		   const title = "VAT Proforma Invoice Edit";
 		openModal(url, title);
 	}
@@ -1423,388 +1149,7 @@
 						showColumnChooser();
 						console.log('End permission handling');
 					});
-
-	// 				$(function () {
-	// 	var inputPopupInstance = $("#inputPopupContainer").dxPopup({
-	// 		width: 600,
-	// 		height: 400,
-	// 		showTitle: true,
-	// 		title: "Details",
-	// 		visible: false,
-	// 		dragEnabled: true,
-	// 		closeOnOutsideClick: true,
-	// 		contentTemplate: function () {
-	// 			return $("<div>").attr("id", "popupFormContent");
-	// 		}
-	// 	}).dxPopup("instance");
-	// 	var contextMenu = $("#contextMenu");
-	// 	$(document).on("click", function () {
-	// 		contextMenu.hide();
-	// 	});
-	// 	$("#dataGrid").customizeGridContextMenu();
-	// 	$("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
-	// 		e.preventDefault();
-	// 		var rowIndex = $(this).index();
-	// 		var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex];
-	// 		 ProformaInvoiceNo = rowData.InvoiceNo;
-	// 		console.log(rowData);
-	// 		contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
-	// 	});
-	// });
-
-
-		function cancelInvoice(invoiceNo) {
-		if (!invoiceNo) {
-			alert("InvoiceNo is required.");
-			return;
-		}
-
-		console.log("Deleting invoice:", invoiceNo);
-		// Your actual deletion logic here
-	}
-
-	// function cancelInvoice() {
-	// 	if (!invoiceNo) {
-	// 		alert("InvoiceNo is required.");
-	// 		return;
-	// 	}
-	// 	let IsAmend=true;
-
-	// 	$.ajax({
-	// 		url: `/api/VATModule/InsertAmendEInvoice?InvoiceNo=${encodeURIComponent(invoiceNo)}`,
-	// 		type: 'POST',
-	// 		success: function (response) {
-	// 			CreditNoteNo=response.CreditNoteNo;
-	// 				if (response.IsPosted == null) {
-	// 	DevExpress.ui.dialog.alert(
-	// 		"Invoice is not Posted. You must post the invoice before cancelling or amending the invoice.",
-	// 		"Invoice is not Posted"
-	// 	);
-	// }
-	// else if (response.CreditInvoiceNo!=null && response.IsPosted === true)
-	// {
-	// 	DevExpress.ui.dialog.alert(
-	// 		"Invoice is already Issued with full Credit Note,Please review the Invoice & Credit Note Details.",
-	// 		"Invoice is already Credit Note Issued."
-	// 	);
-	// }
-	// 	else if (response.IsPosted === true) {
-	// 	DevExpress.ui.dialog.custom({
-	// 		title: "Cancel/Amend Confirmation",
-	// 		message: "You are about to Cancel/Amend this VAT Invoice.<br>This will create a new CREDIT NOTE for Invoice Amendment.<br>Click Yes if you would like to continue.",
-	// 			buttons: [
-	// 			{ text: "Yes", onClick: () => true },
-	// 			{ text: "No", onClick: () => false }
-	// 		],
-	// 		showTitle: true
-	// 	}).show().done(function (dialogResult) {
-	// 		if (dialogResult) {
-	// 			DevExpress.ui.dialog.alert(
-	// 				"Credit Note has been added to the database.",
-	// 				"Data Insertion Successful"
-	// 			).done(function () {
-	// 				window.location.href = `/${tenantName}/VAT/CreditNoteEditForm?InvoiceNo=${encodeURIComponent(invoiceNo)}&IsAmend=${encodeURIComponent(IsAmend)}&CreditNoteNo=${encodeURIComponent(CreditNoteNo)}`;
-	// 			});
-	// 		}
-	// 	});
-	// }
-	// 			console.log("Clone success:", response);
-	// 			// You can redirect to the Credit Note Edit page now
-
-	// 		},
-	// 		error: function (xhr) {
-	// 			let message = xhr.responseJSON?.message || "Unknown error";
-	// 			console.error("Clone error:", message);
-	// 			alert("Error: " + message);
-	// 		}
-	// 	});
-	// }
-
-	function UnlockInvoice() {
-
-		if (Status === "Posted") {
-			DevExpress.ui.dialog.alert(
-				"This VAT Purchase Bill is already posted to your ledgers.\nPlease delete the Purchase Entry from Accounting Books and continue.",
-				"Purchase Bill Posted Already"
-			);
-			return;
-		}
-
-
-		DevExpress.ui.dialog.confirm("Are you sure you want to unlock this Purchase Bill?", "Confirm Unlock")
-			.done(function (dialogResult) {
-				if (dialogResult) {
-					$.ajax({
-						//url: `/api/VATModule/UpdateToPurchaseUnlocktheBil?InvoiceNo=${encodeURIComponent(vno)}&IsDirectVerify=${encodeURIComponent(IsDirectVerify)}`,
-						url: '/api/VATModule/UpdateToPurchaseUnlocktheBil',
-						method: 'POST',
-						data: { invoiceNo: invoiceNo },
-						success: function (response) {
-							if (response) {
-
-								DevExpress.ui.dialog.alert("Purchase Bill has been unlocked successfully.", "Bill Unlocked");
-								// Optionally refresh the grid or perform additional actions
-							} else {
-								DevExpress.ui.notify(response.message || "Unlocking failed.", "error", 3000);
-							}
-						},
-						error: function () {
-							DevExpress.ui.notify("Server error while unlocking the invoice.", "error", 3000);
-						}
-					});
-				}
-			});
-	}
-
-	function cloneEInvoice() {
-
-		if (!invoiceNo) {
-			alert("InvoiceNo is required.");
-			return;
-		}
-
-			DevExpress.ui.dialog.confirm("You are about to Duplicate this Purchase Invoice. Are you Sure want to Continue?", "Confirm Clone")
-			.done(function (dialogResult) {
-				if (dialogResult) {
-					$.ajax({
-						//url: `/api/VATModule/UpdateToPurchaseUnlocktheBil?InvoiceNo=${encodeURIComponent(vno)}&IsDirectVerify=${encodeURIComponent(IsDirectVerify)}`,
-						url: '/api/VATModule/InsertPurchaseCloneEInvoice',
-						method: 'POST',
-						data: { invoiceNo: invoiceNo },
-						success: function (response) {
-							if (response) {
-
-								DevExpress.ui.dialog.alert("Purchase Invoice has been successfully added to the database.", "Cloned Successfully");
-								// Optionally refresh the grid or perform additional actions
-								$("#dataGrid").dxDataGrid("instance").refresh();
-							} else {
-								DevExpress.ui.notify(response.message || "Unlocking failed.", "error", 3000);
-							}
-						},
-						error: function () {
-							DevExpress.ui.notify("Server error while unlocking the invoice.", "error", 3000);
-						}
-					});
-				}
-			});
-	}
-
-	// 	$(function () {
-	// 	var contextMenu = $("#contextMenu");
-
-	// 	// Hide context menu on any click outside
-	// 	$(document).on("click", function () {
-	// 		contextMenu.hide();
-	// 	});
-
-	// 	// Handle right-click on data rows
-	// 	$("#dataGrid").on("dxcontextmenu", function (e) {
-	// 		var originalEvent = e.event;
-
-	// 		// Check if originalEvent and preventDefault are available
-	// 		if (originalEvent && typeof originalEvent.preventDefault === "function") {
-	// 			originalEvent.preventDefault();
-
-	// 			// Get clicked row data
-	// 			var dataGrid = $("#dataGrid").dxDataGrid("instance");
-	// 			var rowElement = $(originalEvent.target).closest(".dx-data-row");
-	// 			var rowIndex = rowElement.index();
-	// 			var rowData = dataGrid.getVisibleRows()[rowIndex]?.data;
-
-	// 			if (!rowData) return;
-
-	// 			// Store rowData globally if needed
-	// 			window.selectedInvoiceRowData = rowData;
-
-	// 			// Show context menu at mouse position
-	// 			contextMenu.css({
-	// 				top: originalEvent.pageY + "px",
-	// 				left: originalEvent.pageX + "px",
-	// 				display: "block"
-	// 			});
-	// 		}
-	// 	});
-	// });
-
-
-			function handleCellClick(e) {
-		if (e.rowType === "data" && e.data) {
-			 ProformaInvoiceNo = e.data.ProformaInvoiceNo;
-			console.log("Proforma Invoice No:", ProformaInvoiceNo);
-			// You can use the value as needed, for example:
-			// alert("Proforma Invoice No: " + proformaInvoiceNo);
-		}
-	}
-	
-
-
-	$(document).ready(function () {
-		$("#dataGrid").dxDataGrid({
-			onContextMenuPreparing: function (e) {
-				if (e.row && e.target === "content") {
-					e.event.preventDefault();
-
-					e.items = [
-						{
-							text: "Edit Proforma Invoice",
-							onItemClick: function () {
-							if (!ProformaInvoiceNo) {
-			alert("Invoice number is not set.");
-			return;
-		}
-
-		IsEditCr = true;
-
-		const params = new URLSearchParams({
-			InvoiceNo: ProformaInvoiceNo,
-			IsEditflagCr: IsEditCr,
-			modal: true // If you want to explicitly include modal=true
-		});
-
-		const url = `/${tenantName}/VAT/ProformaInvoiceEditForm?${params.toString()}`;
-		const title = "Proforma Invoice Edit";
-		// openModal(url, title);
-			 window.location.href = url;
-							}
-						},
-							{
-		text: "Delete Proforma Invoice",
-		onItemClick: function () {
-			const selectedInvoiceNo = ProformaInvoiceNo; // or however you're getting the invoice number
-
-			const dialog = DevExpress.ui.dialog.custom({
-				title: "Delete Confirmation",
-				messageHtml: `
-					<div style="font-size: 14px; padding: 10px 0;">
-						You are about to delete the <strong>Proforma Invoice</strong> from the Register.<br/>
-						Click Yes if you would like to continue.
-					</div>
-				`,
-				buttons: [
-					{
-						text: "Yes",
-							type: "normal",
-						onClick: () => true
-					},
-					{
-						text: "No",
-						type: "normal",
-						onClick: () => false
-					}
-				]
-			});
-
-			dialog.show().done(function (dialogResult) {
-				if (dialogResult === true) {
-					cancelInvoice(selectedInvoiceNo); // ✅ pass invoice number
-
-					DevExpress.ui.dialog.custom({
-						title: "Data Deleted Successfully",
-						messageHtml: `
-							<div style="font-size: 14px; padding: 10px 0;">
-								Proforma Invoice has been successfully removed from the database.
-							</div>
-						`,
-						buttons: [{
-							text: "OK",
-								type: "normal",
-							onClick: () => true
-						}]
-					}).show();
-				}
-			});
-		}
-	},
-							{
-		text: "Unlock Proforma Invoice",
-		onItemClick: function () {
-			UnlockInvoice(); // This will show the alert
-		}
-	},
-							{
-		text: "Duplicate Proforma Invoice",
-		onItemClick: function () {
-			cloneEInvoice(); // trigger the function with confirmation
-		}
-	},
-					];
-				}
-			}
-		});
-	});
-
-		function UnlockInvoice() {
-		// Call your unlock logic here, if any
-		console.log("Invoice unlocked.");
-
-		// Then show success popup
-		DevExpress.ui.dialog.custom({
-			title: "Proforma Invoice Unlocked",
-			messageHtml: `
-				<div style="display: flex; align-items: flex-start; font-size: 14px; padding: 10px;">
-					<div style="margin-right: 10px; font-size: 20px; color: #0078D4;">&#9432;</div>
-					<div>Proforma Invoice has been unlocked successfully.</div>
-				</div>
-			`,
-			buttons: [{
-				text: "OK",
-					type: "normal",
-				onClick: () => true
-			}]
-		}).show();
-	}
-
-	function cloneEInvoice() {
-    DevExpress.ui.dialog.custom({
-        title: "Confirm Duplication",
-        messageHtml: `
-            <div style="display: flex; align-items: flex-start; font-size: 14px; padding: 10px;">
-                <div style="margin-right: 10px; font-size: 20px; color: #ffcc00;">&#9888;</div>
-                <div>
-                    You are about to Duplicate this <strong>Proforma Invoice</strong>.<br/>
-                    Are you sure you want to continue?
-                </div>
-            </div>
-        `,
-        buttons: [
-            {
-                text: "Yes",
-					type: "normal",
-					onClick: () => true
-            },
-            {
-                text: "No",
-                type: "normal",
-                onClick: () => false
-            }
-        ]
-    }).show().done(function (result) {
-        if (result === true) {
-            // Perform duplication logic here
-            console.log("Duplicating invoice...");
-
-            // After duplication success, show confirmation
-            DevExpress.ui.dialog.custom({
-                title: "Data insertion Successfull",
-                messageHtml: `
-                    <div style="display: flex; align-items: flex-start; font-size: 14px; padding: 10px;">
-                        <div style="margin-right: 10px; font-size: 20px; color: #0078D4;">&#9432;</div>
-                        <div>Proforma Invoice has been successfully added to the database.</div>
-                    </div>
-                `,
-					buttons: [{
-					text: "OK",
-						type: "normal",
-					onClick: () => true
-				}]
-            }).show();
-        }
-    });
-}
-
-
-
- $(function () {
+						 $(function () {
 		const dateBox = $("#frmdateBox").dxDateBox("instance");
 
 		// When focus/typing starts, change to dd-MM-yyyy
@@ -1830,5 +1175,85 @@
 			dateBox.option("displayFormat", "dd-MMM-yyyy");
 		});
 	});
+		function countUpTurnover(targetStr) {
+	  const el = document.getElementById("turnover");
+	  const target = parseFloat(targetStr);
+	  let current = 0.0;
 
+	  const interval = setInterval(() => {
+		current += 0.5;
+		if (current >= target) {
+		  el.textContent = targetStr + " K";
+		  clearInterval(interval);
+		} else {
+		  el.textContent = current.toFixed(1) + " K";
+		}
+	  }, 30);
+	}
+
+	// Animate to 46.2 K
+	countUpTurnover("46.2");
+
+	  const card = document.getElementById('mainCard');
+	const counts = [8, 15, 5];
+	const countEls = [
+	  document.getElementById("count0"),
+	  document.getElementById("count1"),
+	  document.getElementById("count2"),
+	];
+	const tabs = document.querySelectorAll(".tab-text");
+	const contents = document.querySelectorAll(".tab-content");
+
+	function animateCount(el, target) {
+	  let i = 0;
+	  el.innerText = i;
+	  el.classList.remove('bounce');
+	  const interval = setInterval(() => {
+		if (i >= target) {
+		  el.innerText = target;
+		  el.classList.add('bounce');
+		  clearInterval(interval);
+		} else {
+		  el.innerText = i++;
+		}
+	  }, 30);
+	}
+
+	function switchTab(index) {
+	  tabs.forEach((tab, i) => {
+		tab.classList.toggle('active', i === index);
+		contents[i].classList.toggle('active', i === index);
+	  });
+
+	  // Change background class
+	  card.className = "card";
+	  if (index === 0) card.classList.add("today-bg");
+	  if (index === 1) card.classList.add("week-bg");
+	  if (index === 2) card.classList.add("month-bg");
+
+	  // Animate count
+	  animateCount(countEls[index], counts[index]);
+	}
+
+	// Start "Today" count immediately
+	animateCount(countEls[0], counts[0]);
+
+	function switchTab(index) {
+	  tabs.forEach((tab, i) => {
+		tab.classList.toggle('active', i === index);
+		contents[i].classList.toggle('active', i === index);
+	  });
+
+	  // Change background class
+	  card.className = "card";
+	  if (index === 0) card.classList.add("today-bg");
+	  if (index === 1) card.classList.add("week-bg");
+	  if (index === 2) card.classList.add("month-bg");
+
+	  // Animate count
+	  animateCount(countEls[index], counts[index]);
+	}
+
+	// Auto-start animation for "Today"
+	animateCount(countEls[0], counts[0]);
 </script>
