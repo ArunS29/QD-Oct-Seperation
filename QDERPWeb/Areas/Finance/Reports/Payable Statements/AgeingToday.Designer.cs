@@ -144,6 +144,7 @@
             this.DetailData1 = new DevExpress.XtraReports.UI.XRControlStyle();
             this.DetailData3_Odd = new DevExpress.XtraReports.UI.XRControlStyle();
             this.PageInfo = new DevExpress.XtraReports.UI.XRControlStyle();
+            this.xrLabel17 = new DevExpress.XtraReports.UI.XRLabel();
             ((System.ComponentModel.ISupportInitialize)(this.xrTable1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xrTable2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
@@ -209,11 +210,12 @@
             // ReportHeader
             // 
             this.ReportHeader.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
+            this.xrLabel17,
             this.xrLabel40,
             this.xrPictureBox1,
             this.xrLabel18,
             this.xrLabel21});
-            this.ReportHeader.HeightF = 93.55796F;
+            this.ReportHeader.HeightF = 116.4746F;
             this.ReportHeader.Name = "ReportHeader";
             // 
             // xrLabel40
@@ -578,7 +580,7 @@
             this.xrTableCell9.StylePriority.UseTextAlignment = false;
             this.xrTableCell9.Text = "Overdue  \r\n< 30 Days";
             this.xrTableCell9.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
-            this.xrTableCell9.Weight = 0.090269063177153441D;
+            this.xrTableCell9.Weight = 0.090269186968379822D;
             // 
             // xrTableCell10
             // 
@@ -602,7 +604,7 @@
             this.xrTableCell10.StylePriority.UseTextAlignment = false;
             this.xrTableCell10.Text = "Overdue \r\n31 to 60 Days";
             this.xrTableCell10.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
-            this.xrTableCell10.Weight = 0.081788238057759227D;
+            this.xrTableCell10.Weight = 0.092116848435982029D;
             // 
             // xrTableCell11
             // 
@@ -626,7 +628,7 @@
             this.xrTableCell11.StylePriority.UseTextAlignment = false;
             this.xrTableCell11.Text = "Overdue \r\n61 to  90 Days";
             this.xrTableCell11.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
-            this.xrTableCell11.Weight = 0.093517754644928827D;
+            this.xrTableCell11.Weight = 0.09257878443821646D;
             // 
             // xrTableCell12
             // 
@@ -650,7 +652,7 @@
             this.xrTableCell12.StylePriority.UseTextAlignment = false;
             this.xrTableCell12.Text = "Overdue\r\n91-180 Days";
             this.xrTableCell12.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
-            this.xrTableCell12.Weight = 0.093600260658783546D;
+            this.xrTableCell12.Weight = 0.084210496696046716D;
             // 
             // xrTableCell13
             // 
@@ -926,7 +928,7 @@
             this.xrTableCell23.StylePriority.UseTextAlignment = false;
             this.xrTableCell23.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.xrTableCell23.TextFormatString = "{0:#,##0.00;(#,##0.00)}";
-            this.xrTableCell23.Weight = 0.074183699324908134D;
+            this.xrTableCell23.Weight = 0.074183863227305677D;
             // 
             // xrTableCell24
             // 
@@ -947,7 +949,7 @@
             this.xrTableCell24.StylePriority.UseTextAlignment = false;
             this.xrTableCell24.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.xrTableCell24.TextFormatString = "{0:#,##0.00;(#,##0.00)}";
-            this.xrTableCell24.Weight = 0.067214252347914658D;
+            this.xrTableCell24.Weight = 0.0672140884455171D;
             // 
             // xrTableCell25
             // 
@@ -1263,7 +1265,6 @@
             this.xrLabel12.StylePriority.UseTextAlignment = false;
             this.xrLabel12.Text = "xrLabel5";
             this.xrLabel12.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel12.TextFormatString = "{0:#,##0.00;(#,##0.00)}";
             // 
             // xrLabel11
             // 
@@ -1274,11 +1275,11 @@
             this.xrLabel11.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Sum([Less30to60])")});
             this.xrLabel11.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
-            this.xrLabel11.LocationFloat = new DevExpress.Utils.PointFloat(885.0453F, 0F);
+            this.xrLabel11.LocationFloat = new DevExpress.Utils.PointFloat(885.0452F, 0F);
             this.xrLabel11.Multiline = true;
             this.xrLabel11.Name = "xrLabel11";
             this.xrLabel11.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel11.SizeF = new System.Drawing.SizeF(90.73279F, 27.99996F);
+            this.xrLabel11.SizeF = new System.Drawing.SizeF(90.73285F, 27.99996F);
             this.xrLabel11.StylePriority.UseBackColor = false;
             this.xrLabel11.StylePriority.UseBorderColor = false;
             this.xrLabel11.StylePriority.UseBorders = false;
@@ -1301,7 +1302,7 @@
             this.xrLabel10.Multiline = true;
             this.xrLabel10.Name = "xrLabel10";
             this.xrLabel10.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel10.SizeF = new System.Drawing.SizeF(100.141F, 27.99996F);
+            this.xrLabel10.SizeF = new System.Drawing.SizeF(100.1407F, 27.99996F);
             this.xrLabel10.StylePriority.UseBackColor = false;
             this.xrLabel10.StylePriority.UseBorderColor = false;
             this.xrLabel10.StylePriority.UseBorders = false;
@@ -1560,6 +1561,19 @@
             this.PageInfo.Name = "PageInfo";
             this.PageInfo.Padding = new DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100F);
             // 
+            // xrLabel17
+            // 
+            this.xrLabel17.Font = new DevExpress.Drawing.DXFont("Cambria", 10F);
+            this.xrLabel17.LocationFloat = new DevExpress.Utils.PointFloat(451.4167F, 91.39134F);
+            this.xrLabel17.Multiline = true;
+            this.xrLabel17.Name = "xrLabel17";
+            this.xrLabel17.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 96F);
+            this.xrLabel17.SizeF = new System.Drawing.SizeF(386.8681F, 24.45828F);
+            this.xrLabel17.StylePriority.UseFont = false;
+            this.xrLabel17.StylePriority.UseTextAlignment = false;
+            this.xrLabel17.Text = "as on";
+            this.xrLabel17.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            // 
             // AgeingToday
             // 
             this.Bands.AddRange(new DevExpress.XtraReports.UI.Band[] {
@@ -1671,5 +1685,6 @@
         private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox7;
         private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox6;
         private DevExpress.XtraReports.UI.XRLabel xrLabel1;
+        private DevExpress.XtraReports.UI.XRLabel xrLabel17;
     }
 }

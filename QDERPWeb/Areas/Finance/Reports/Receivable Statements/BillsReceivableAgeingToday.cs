@@ -52,7 +52,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports
         }
 
         private void SetReportParameters(string accountId, DateTime frmDate,
-            DateTime toDate, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressArb, string username)
+     DateTime toDate, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressArb, string username)
         {
             var today = DateTime.Today;
 
@@ -67,29 +67,46 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             AddOrUpdateParameter("UserName", username ?? "", typeof(string), false);
 
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
-                tenantLabel.Text = tenantName;
+            {
+                tenantLabel.ExpressionBindings.Clear();
+                tenantLabel.ExpressionBindings.Add(new ExpressionBinding("BeforePrint", "Text", "?TenantName"));
+            }
 
             if (FindControl("xrLabelUserName", true) is XRLabel userNameLabel)
-                userNameLabel.Text = username;
+            {
+                userNameLabel.ExpressionBindings.Clear();
+                userNameLabel.ExpressionBindings.Add(new ExpressionBinding("BeforePrint", "Text", "?UserName"));
+            }
 
             if (FindControl("xrLabelCompanyName", true) is XRLabel companyNameLabel)
-                companyNameLabel.Text = companyName;
+            {
+                companyNameLabel.ExpressionBindings.Clear();
+                companyNameLabel.ExpressionBindings.Add(new ExpressionBinding("BeforePrint", "Text", "?CompanyName"));
+            }
 
             if (FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
-                addressLabel.Text = companyAddress;
+            {
+                addressLabel.ExpressionBindings.Clear();
+                addressLabel.ExpressionBindings.Add(new ExpressionBinding("BeforePrint", "Text", "?CompanyAddress"));
+            }
 
             if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
                 logoPictureBox.Image = logoImage;
 
             if (FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
-                companyNameArLabel.Text = companyNameAr;
+            {
+                companyNameArLabel.ExpressionBindings.Clear();
+                companyNameArLabel.ExpressionBindings.Add(new ExpressionBinding("BeforePrint", "Text", "?CompanyNameAr"));
+            }
 
             if (FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
-                addressArbLabel.Text = companyAddressArb;
+            {
+                addressArbLabel.ExpressionBindings.Clear();
+                addressArbLabel.ExpressionBindings.Add(new ExpressionBinding("BeforePrint", "Text", "?CompanyAddressArb"));
+            }
 
             ConfigureDataSource(accountId, frmDate, toDate);
         }
-
         private void AddOrUpdateParameter(string paramName, object paramValue, Type paramType, bool visible)
         {
             var parameter = Parameters[paramName];
