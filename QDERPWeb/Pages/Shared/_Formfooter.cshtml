@@ -1097,7 +1097,7 @@
         var voucherTypeBox = $("#VoucherType").dxSelectBox("instance"); // or dxTextBox
         var voucherType = voucherTypeBox.option("value");
         console.log(voucherType)
-        const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&VoucherType=${encodeURIComponent(voucherType)}&modal=true`;
+        const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&modal=true`;
         const title = "Ledger Documents";
         openModal(url, title);
 }

@@ -439,7 +439,7 @@
                
             </div>
         </div>
-        <input type="hidden" id="hiddenVoucherType" name="VoucherType" />
+        <input type="hidden" id="hiddenModuleType" name="moduleType" />
         <!-- Grid Section -->
         <div class="dx-field ledgerResult" style="margin-top: 10px;">
             <div id="documentsGrid"></div>
@@ -479,12 +479,12 @@
     $(function () {
         const urlParams = new URLSearchParams(window.location.search);
         const referenceNo = urlParams.get("ReferenceNo");
-        const voucherType = urlParams.get("VoucherType");
+        const moduleType = urlParams.get("ModuleType");
 
         $("#documentsGrid").dxDataGrid({
             dataSource: DevExpress.data.AspNet.createStore({
                 key: "DocumentNo",
-                loadUrl: `/api/LedgerDocumentsF/GetDocuments?module=${encodeURIComponent(voucherType)}`,
+                loadUrl: `/api/LedgerDocumentsF/GetDocuments?module=${encodeURIComponent(moduleType)}`,
 
             }),
             height: 480,
@@ -537,9 +537,9 @@
     
         const urlParams = new URLSearchParams(window.location.search);
         const referenceNo = urlParams.get("ReferenceNo");
-        const voucherType = urlParams.get("VoucherType");
+        const moduleType = urlParams.get("ModuleType");
 
-        console.log(voucherType)
+        console.log(moduleType)
         
         if (!selectedFile) {
             DevExpress.ui.notify("Please select a document to attach.", "warning", 2000);
@@ -558,7 +558,7 @@
         formData.append("NotificationDate", $("#NotificationDate").dxDateBox("instance").option("value"));
 
         $.ajax({
-           url: `/api/LedgerDocumentsF/AddDocumentsEntry?module=${encodeURIComponent(voucherType)}`,
+           url: `/api/LedgerDocumentsF/AddDocumentsEntry?module=${encodeURIComponent(moduleType)}`,
             type: "POST",
             data: formData,
             contentType: false,
@@ -719,7 +719,7 @@
     $(document).ready(function () {
         const urlParams = new URLSearchParams(window.location.search);
         const referenceNo = urlParams.get("ReferenceNo");
-        const voucherType = urlParams.get("VoucherType");
+        const moduleType = urlParams.get("ModuleType");
 
         // 1. Bind ReferenceNo in the TextBox
         if (referenceNo) {
@@ -728,14 +728,14 @@
                 textboxInstance.option("value", referenceNo);
             }
         }
-        // 2. Store voucherType in hidden field
-        if (voucherType) {
+        // 2. Store moduleType in hidden field
+        if (moduleType) {
 
-            const trimmedVoucherType = voucherType.trim();
-            $("#hiddenVoucherType").val(trimmedVoucherType);
+            const trimmedmoduleType = moduleType.trim();
+            $("#hiddenModuleType").val(trimmedmoduleType);
 
         } else {
-            console.warn("VoucherType is missing. API call not made.");
+            console.warn("moduleType is missing. API call not made.");
         }
 
 
