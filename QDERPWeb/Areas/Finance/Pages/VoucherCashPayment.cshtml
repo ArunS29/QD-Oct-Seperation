@@ -1717,7 +1717,8 @@ buttons.Add()
                         "AddedBy": "102",
                         "AddedOn": new Date(),
                         "EntryNarration": $("#txtEntryNarration").dxTextArea("instance").option("value"),
-                        "SysRemarks": sysRemarks1
+                        "SysRemarks": sysRemarks1,
+                        "Type":"AccountHead"
 
                     },
                     {
@@ -1728,7 +1729,8 @@ buttons.Add()
                         "AddedBy": "102",
                         "AddedOn": new Date(),
                         "EntryNarration": $("#txtEntryNarration").dxTextArea("instance").option("value", ""),
-                        "SysRemarks": sysRemarks2
+                        "SysRemarks": sysRemarks2,
+                        "Type":"PaymentAccount"
 
                     }
                 ];
@@ -1744,7 +1746,8 @@ buttons.Add()
                         "AddedBy": "102",
                         "AddedOn": new Date(),
                         "EntryNarration": $("#txtEntryNarration").dxTextArea("instance").option("value"),
-                        "SysRemarks": sysRemarks1
+                        "SysRemarks": sysRemarks1,
+                        "Type":"AccountHead"
 
                     },
                     {
@@ -1755,7 +1758,8 @@ buttons.Add()
                         "AddedBy": "102",
                         "AddedOn": new Date(),
                         "EntryNarration": $("#txtEntryNarration").dxTextArea("instance").option("value", ""),
-                        "SysRemarks": sysRemarks2
+                        "SysRemarks": sysRemarks2,
+                        "Type":"PaymentAccount"
 
                     }
                 ];
@@ -1771,7 +1775,9 @@ buttons.Add()
                         "AddedBy": "102",
                         "AddedOn": new Date(),
                         "EntryNarration": $("#txtEntryNarration").dxTextArea("instance").option("value"),
-                        "SysRemarks": sysRemarks1
+                        "SysRemarks": sysRemarks1,
+                        "Type":"AccountHead"
+
 
                     }
                 ];
@@ -1878,7 +1884,7 @@ buttons.Add()
                 // Perform the AJAX request
                 $.ajax({
                     type: "POST",
-                    url: `/api/VoucherMaster/AddCPCrVoucherEntry?AccountHead=${encodeURIComponent(sysRemarks2)}&PaymentAccoutHeadName=${encodeURIComponent(paymentaccheadId)}&Gridcount=${encodeURIComponent(griddatacount)}`,
+                    url: `/api/VoucherEntryReceipts/AddCPCrVoucherEntry?AccountHead=${encodeURIComponent(sysRemarks2)}&PaymentAccoutHeadName=${encodeURIComponent(paymentaccheadId)}&Gridcount=${encodeURIComponent(griddatacount)}`,
                     contentType: "application/json",
                     data: JSON.stringify(VE),
                     dataType: "json",
