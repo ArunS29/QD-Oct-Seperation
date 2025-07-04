@@ -1916,7 +1916,7 @@ buttons.Add()
     function handleGridOptionChanged(e) {
 		if (e.name === "columns" || e.name === "visible") {
 			// Columns changed, so re-inject SVG
-			setTimeout(() => injectHeaderSVG(), 50); // slight delay to wait for DOM re-render
+			injectHeaderSVG(); // slight delay to wait for DOM re-render
 		}
 	}
 	function injectHeaderSVG() {
