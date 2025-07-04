@@ -918,7 +918,7 @@
 					});
 				})
 				.FilterRow(f => f.Visible(false))
-				.GroupPanel(g => g.Visible(false))
+				
 				.ShowBorders(true)
 				.StateStoring(ss =>
 				{
@@ -2155,10 +2155,10 @@
 
 
 		// /* ---------- wire it to the grid ---------- */
-		// function handleGridContentReady(e) {
-		// 	const data = e.component.option('dataSource') || [];
-		// 	updateKpis(aggregate(data));
-		// }
+		function handleGridContentReady(e) {
+			const data = e.component.option('dataSource') || [];
+			updateKpis(aggregate(data));
+		}
 
 		// …if you reload or filter the grid from code elsewhere, just call updateKpis(aggregate(newRows)) again.
 	function updateValueSlider(cardId, values) {
