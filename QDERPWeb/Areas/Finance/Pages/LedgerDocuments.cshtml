@@ -15,6 +15,7 @@
         text-align: center;
         color: #666;
         cursor: pointer;
+        width: 90%;
     }
 
         .drop-zone.hover {
@@ -428,14 +429,14 @@
                 <input type="file" id="fileUploader" accept="*/*" style="display:none;" />
               
 
-                <div style="margin-left:150px;">
+               
                     @(Html.DevExtreme().Button()
                         .Text("Add")
                         .Icon("fas fa-plus")
                         .Type(ButtonType.Success)
                         .OnClick("onSaveDocument")
-                        .ElementAttr("style", "background-color:#007bff ! important; color: black;"))
-                </div>
+                        .ElementAttr("style", "background-color:#007bff !important; color: black; width:120px; max-height: 100px;"))
+               
             </div>
         </div>
         <input type="hidden" id="hiddenVoucherType" name="VoucherType" />
@@ -486,7 +487,7 @@
                 loadUrl: `/api/LedgerDocumentsF/GetDocuments?module=${encodeURIComponent(voucherType)}`,
 
             }),
-            height: 600,
+            height: 480,
             showBorders: true,
             columnAutoWidth: true,
             showRowLines: true,

@@ -731,11 +731,8 @@
             });
         }
     function onAttachmentButtonClick() {
-        var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
-        var voucherNo = voucherNoBox.option("value");
-
-        var voucherTypeBox = $("#VoucherType").dxSelectBox("instance"); // or dxTextBox
-        var voucherType = voucherTypeBox.option("value");
+        var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+        var voucherType = $("#VoucherNo").dxTextBox("instance").option("value");
         console.log(voucherType)
         const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&VoucherType=${encodeURIComponent(voucherType)}&modal=true`;
         const title = "Ledger Documents";

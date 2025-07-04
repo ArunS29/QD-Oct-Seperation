@@ -1023,19 +1023,15 @@
             'width=1200,height=800,scrollbars=yes,resizable=yes'
         );
     }
-    function onAttachmentButtonClick() {
-        var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
-        var voucherNo = voucherNoBox.option("value");
 
-        var voucherTypeBox = $("#VoucherType").dxSelectBox("instance"); // or dxTextBox
-        var voucherType = voucherTypeBox.option("value");
-        console.log(voucherType)
-        const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&VoucherType=${encodeURIComponent(voucherType)}&modal=true`;
-        const title = "Ledger Documents";
-        openModal(url, title);
-    }
-
-    
-
+        function onAttachmentButtonClick() {
+            
+            var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+            var voucherType = $("#VoucherNo").dxTextBox("instance").option("value");
+            console.log(voucherType)
+            const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&VoucherType=${encodeURIComponent(voucherType)}&modal=true`;
+            const title = "Ledger Documents";
+            openModal(url, title);
+        }
 
 </script>
