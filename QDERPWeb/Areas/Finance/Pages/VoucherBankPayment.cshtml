@@ -855,55 +855,56 @@ buttons.Add()
                     )
             </div>
 
-            <div class="form-group" style="flex: 1 1 95px;">
-                @(Html.DevExtreme().CheckBox()
-                    .Text(new JS("formatMessage('Verified By')"))
-                    .ID("VerifiedBy")
-                    .ReadOnly(true)
-                    )
-                @(Html.DevExtreme().TextBox()
-                    .ID("VerifiedBytext")
-                    .Value(null)
-                    .Disabled(true)
-                        .ElementAttr(new { @class = "custom-disabled-textbox" })
-                    )
-            </div>
+              <div id="verifiedBySection" class="form-group" style="flex: 1 1 95px; display: none;">
+    @(Html.DevExtreme().CheckBox()
+        .Text(new JS("formatMessage('Verified By')"))
+        .ID("VerifiedBy")
+        .ReadOnly(true)
+    )
+    @(Html.DevExtreme().TextBox()
+        .ID("VerifiedBytext")
+        .Value(null)
+        .Disabled(true)
+        .ElementAttr(new { @class = "custom-disabled-textbox" })
+    )
+</div>
 
-            <div class="form-group" style="flex: 1 1 95px;">
-                @(Html.DevExtreme().CheckBox()
-                    .Text(new JS("formatMessage('Approved By')"))
-                    .ID("ApprovedBy")
-                    .ReadOnly(true)
-                    )
-                @(Html.DevExtreme().TextBox()
-                    .ID("ApprovedBytext")
-                    .Value(null)
-                    .Disabled(true)
-                        .ElementAttr(new { @class = "custom-disabled-textbox" })
-                    )
-            </div>
+<div id="approvedBySection" class="form-group" style="flex: 1 1 95px; display: none;">
+    @(Html.DevExtreme().CheckBox()
+        .Text(new JS("formatMessage('Approved By')"))
+        .ID("ApprovedBy")
+        .ReadOnly(true)
+    )
+    @(Html.DevExtreme().TextBox()
+        .ID("ApprovedBytext")
+        .Value(null)
+        .Disabled(true)
+        .ElementAttr(new { @class = "custom-disabled-textbox" })
+    )
+</div>
 
-            <div class="form-group" style="flex: 1 1 95px;">
-                @(Html.DevExtreme().TextBox()
-                    .Label(new JS("formatMessage('Verified On')"))
-                    .LabelMode(EditorLabelMode.Floating)
-                    .ID("VerifiedOnDate")
-                    .Value(null)
-                    .Disabled(true)
-                        .ElementAttr(new { @class = "custom-disabled-textbox" })
-                    )
-            </div>
+<div id="verifiedOnSection" class="form-group" style="flex: 1 1 95px; display: none;">
+    @(Html.DevExtreme().TextBox()
+        .Label(new JS("formatMessage('Verified On')"))
+        .LabelMode(EditorLabelMode.Floating)
+        .ID("VerifiedOnDate")
+        .Value(null)
+        .Disabled(true)
+        .ElementAttr(new { @class = "custom-disabled-textbox" })
+    )
+</div>
 
-            <div class="form-group" style="flex: 1 1 95px;">
-                @(Html.DevExtreme().TextBox()
-                    .Label(new JS("formatMessage('Approved On')"))
-                    .LabelMode(EditorLabelMode.Floating)
-                    .ID("ApprovedOntext")
-                    .Value(null)
-                    .Disabled(true)
-                        .ElementAttr(new { @class = "custom-disabled-textbox" })
-                    )
-            </div>
+<div id="approvedOnSection" class="form-group" style="flex: 1 1 95px; display: none;">
+    @(Html.DevExtreme().TextBox()
+        .Label(new JS("formatMessage('Approved On')"))
+        .LabelMode(EditorLabelMode.Floating)
+        .ID("ApprovedOntext")
+        .Value(null)
+        .Disabled(true)
+        .ElementAttr(new { @class = "custom-disabled-textbox" })
+    )
+</div>
+
 
         </div>
       </div>
@@ -4156,4 +4157,21 @@ function onAccountHeadRowPrepared(e) {
 function showMainFooter() {
     document.getElementById("mainFooter")?.classList.remove("footer-hidden");
 }
+
+  $(function () {
+
+        setTimeout(function () {
+            const showIfHasValue = (editorId, sectionId) => {
+                const editor = DevExpress.ui.dxTextBox.getInstance(document.getElementById(editorId));
+                if (editor && editor.option("value")) {
+                    document.getElementById(sectionId).style.display = "flex"; // restore flex
+                }
+            };
+
+            showIfHasValue("VerifiedBytext", "verifiedBySection");
+            showIfHasValue("ApprovedBytext", "approvedBySection");
+            showIfHasValue("VerifiedOnDate", "verifiedOnSection");
+            showIfHasValue("ApprovedOntext", "approvedOnSection");
+        }, 300); // wait a bit to ensure DevExtreme is ready
+    });
 </script>

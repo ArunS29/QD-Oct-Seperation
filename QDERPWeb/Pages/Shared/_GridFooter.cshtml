@@ -131,15 +131,15 @@
 
                 items.Add().Text(new JS("formatMessage('Medium')"))
                     .Icon("lock")
-                    .OnClick("function() { ChangeRowHeight('40'); }");
+                    .OnClick("function() { ChangeRowHeight('60'); }");
 
                 items.Add().Text(new JS("formatMessage('Tall')"))
                     .Icon("edit")
-                    .OnClick("function() { ChangeRowHeight('60'); }");
+                    .OnClick("function() { ChangeRowHeight('90'); }");
 
                 items.Add().Text(new JS("formatMessage('Extra Tall')"))
                     .Icon("folder")
-                    .OnClick("function() { ChangeRowHeight('70'); }");
+                    .OnClick("function() { ChangeRowHeight('130'); }");
             })
             .ShowArrowIcon(false)
         )
@@ -705,15 +705,11 @@
         var isVisible = dataGrid.option("groupPanel.visible");
         dataGrid.option("groupPanel.visible", !isVisible);
     }
-    function showColumnChooser() {
-        var dataGrid = $("#dataGrid").dxDataGrid("instance");
-        var isColumnChooserVisible = dataGrid.option("columnChooser.enabled");
+      function showColumnChooser() {
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
 
-        if (isColumnChooserVisible) {
-            dataGrid.option("columnChooser.enabled", false); // Disable the column chooser
-        } else {
-            dataGrid.option("columnChooser.enabled", true); 
-            dataGrid.showColumnChooser(); 
+        if (dataGrid) {
+            dataGrid.showColumnChooser(); // that's all you need
         }
     }
 
