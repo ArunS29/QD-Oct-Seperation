@@ -342,10 +342,11 @@
 
 	/* Backgrounds per tab */
 	.today-bg {
-		background: linear-gradient(270deg, #2196f3, #64b5f6);
+		background: linear-gradient(270deg, #fb8c00, #ffe0b2); /* deep orange to light peach-orange */
 		background-size: 400% 400%;
 		animation: gradientPulse 6s ease infinite;
 	}
+
 
 	.week-bg {
 		background: linear-gradient(270deg, #009688, #4db6ac);
@@ -354,10 +355,11 @@
 	}
 
 	.month-bg {
-		background: linear-gradient(270deg, #9c27b0, #ba68c8);
+		background: linear-gradient(270deg, #ad1457, #f8bbd0); /* dark pink to light pink */
 		background-size: 400% 400%;
 		animation: gradientPulse 6s ease infinite;
 	}
+
 
 	/* Keyframes */
 	@@keyframes fadeSlideIn {
@@ -412,10 +414,12 @@
 	}
 
 	.card.purple {
-		background: linear-gradient(135deg, #8e24aa, #ba68c8);
+		background: linear-gradient(135deg, #6a1b9a, #e1bee7); /* dark to light purple */
 		position: relative;
 		overflow: hidden;
+		color: white; /* Optional for readability */
 	}
+
 
 	.card:hover {
 		transform: translateY(-6px);
@@ -481,10 +485,14 @@
 	}
 
 	}
+		.card.green
 
-	.card.green {
-		background: linear-gradient(135deg, #43a047, #66bb6a);
+	{
+		background: linear-gradient(135deg, #2e7d32, #a5d6a7); /* dark green to light green */
+		/* color: white; /* Optional: ensures text is readable */ */
 	}
+
+	
 
 	.card:hover {
 		transform: translateY(-6px);
@@ -627,12 +635,32 @@
 	}
 
 	}
+
+	.blue {
+		background: linear-gradient(135deg, #6a11cb, #2575fc) !important; /* soft blue tones */
+		background-size: 400% 400%;
+		animation: gradientPulse 6s ease infinite;
+	}
+
+	@@keyframes gradientPulse {
+		0% {
+			background-position: 0% 50%;
+		}
+
+		50% {
+			background-position: 100% 50%;
+		}
+
+		100% {
+			background-position: 0% 50%;
+		}
+	}
 </style>
 
 <div class="dashboard" style="display: flex; align-items: center; padding: 10px;width:65%">
 	<input id="formId" value="frm20162VATInvoiceMasterView" type="hidden" />
 
-	<div class="card pink shine compact">
+	<div class="card blue shine compact">
 		<h2 class="title-slide">VAT Invoice Register</h2>
 		<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
 		<h6 class="fade-in">QuickDice ERP Solutions</h6>
@@ -668,12 +696,15 @@
 		</div>
 	</div>
 
-	<div class="card purple sparkle">
-		<h1 id="invoiceCount">0</h1>
-		<h3>No of Invoices</h3>
+	<div class="card green shine">
+	<h1 id="invoiceCount">0</h1>
+
+		<h3>Today's Invoices</h3>
 	</div>
 
-	<div class="card green shine">
+
+
+	<div class="card purple sparkle">
 		<h4>Total Turnover</h4>
 		<h1 id="turnover">0</h1>
 		<h3>for this period</h3>
@@ -768,6 +799,7 @@
 		.ID("dataGrid")
 		.RemoteOperations(false)
 		.DataSource(new JS("[]"))
+		.OnContentReady("onGridContentReady")
 		.Paging(paging => paging.Enabled(false))
 		.Pager(pager => pager.Visible(false))
 		.Columns(columns =>
@@ -1309,26 +1341,45 @@
 @* <div id="testSvgPreview" style="width:100px; height:100px; border:1px solid #ccc;"></div> *@
 
 <script>
+		function onGridContentReady(e) {
+		const today = new Date();
+		today.setHours(0, 0, 0, 0); // normalize time
 
+		const data = e.component.getDataSource().items();
+		let todayCount = 0;
 
-	function animateInvoiceCount(target) {
-	  let i = 0;
-	  const el = document.getElementById("invoiceCount");
-	  el.classList.remove('bounce');
+		data.forEach(row => {
+			if (row.InvoiceDate) {
+				const invoiceDate = new Date(row.InvoiceDate);
+				invoiceDate.setHours(0, 0, 0, 0);
 
-	  const timer = setInterval(() => {
-		if (i >= target) {
-		  el.innerText = target;
-		  el.classList.add('bounce');
-		  clearInterval(timer);
-		} else {
-		  el.innerText = i++;
-		}
-	  }, 30);
+				if (invoiceDate.getTime() === today.getTime()) {
+					todayCount++;
+				}
+			}
+		});
+
+		// Animate the count
+		animateInvoiceCount(todayCount);
 	}
 
-	// Animate to 40
-	animateInvoiceCount(40);
+	function animateInvoiceCount(target) {
+		let i = 0;
+		const el = document.getElementById("invoiceCount");
+		if (!el) return;
+
+		el.classList.remove('bounce');
+
+		const timer = setInterval(() => {
+			if (i >= target) {
+				el.innerText = target;
+				el.classList.add('bounce');
+				clearInterval(timer);
+			} else {
+				el.innerText = i++;
+			}
+		}, 30);
+	}
 
 
 	function countUpTurnover(targetStr) {
