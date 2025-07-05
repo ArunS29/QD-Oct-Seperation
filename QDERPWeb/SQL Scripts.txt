@@ -64,126 +64,37 @@ set basecurrencyid=1,  currencyid=1
 
 CREATE TABLE dbo.tblUserAccessWeb (  
 
-  
-
 [SlNo] [int] IDENTITY(1,1) NOT NULL,  
-
-  
-
 [UserID] [tinyint] NOT NULL,  
-
-  
-
 [ItemForm] [varchar](max) NULL,  
-
-  
-
 [ItemName] [varchar](max) NULL,  
-
-  
-
 [ItemDescription] [varchar](max) NULL,  
-
-  
-
 [ItemEnabled] [bit] NULL,  
-
-  
-
 [ItemVisible] [bit] NULL,  
-
-  
-
 [ItemRemarks] [varchar](max) NULL,  
-
-  
-
 [Module] [varchar](max) NULL,  
-
-  
-
 [MasterSlNo] [decimal](18, 0) NULL,  
-
-  
-
 [GroupSlNo] [decimal](18, 0) NULL,  
-
-  
-
 [ItemSlNo] [decimal](18, 0) NULL,  
-
-  
-
 [IsFullAccess] [bit] NULL,  
-
-  
-
 [ItemNotes] [varchar](max) NULL,  
-
-  
-
 [ISWeb] [int] NULL,  
-
-  
 
 )  
 
-  
-
-  
-
 CREATE TABLE dbo.tbl901UserAccessMasterWeb(  
-
-  
-
 [SlNo] [int] NOT NULL,  
-
-  
-
 [ItemForm] [varchar](max) NULL,  
-
-  
-
 [ItemName] [varchar](max) NULL,  
-
-  
-
 [ItemDescription] [varchar](max) NULL,  
-
-  
-
 [ItemEnabled] [bit] NULL,  
-
-  
-
 [ItemVisible] [bit] NULL,  
-
-  
-
 [ItemRemarks] [varchar](max) NULL,  
-
-  
-
 [Module] [varchar](max) NULL,  
-
-  
-
 [MasterSlNo] [decimal](18, 0) NULL,  
-
-  
-
 [GroupSlNo] [decimal](18, 0) NULL,  
-
-  
-
 [ItemSlNo] [decimal](18, 0) NULL,  
-
-  
-
 [IsFullAccess] [bit] NULL,  
-
-  
-
 )  
 
   
@@ -191,34 +102,19 @@ CREATE TABLE dbo.tbl901UserAccessMasterWeb(
   
 
 create PROCEDURE [dbo].[stPro901_04ReplicateUserAccessPermissionsWeb]    
-
-  
-
 (    
-
 @FromUser tinyint,    
-
 @ToUser tinyint    
-
 )    
-
 AS    
-
 DELETE dbo.tblUserAccessweb where UserID = @ToUser    
 
 Insert into    dbo.tblUserAccessweb    
 
 (UserID, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module,  MasterSlNo, GroupSlNo, ItemSlNo)    
 
-  
-
 select @ToUser, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module,  MasterSlNo, GroupSlNo, ItemSlNo    
-
-  
-
 FROM         dbo.tblUserAccessweb    
-
-  
 
 where UserID = @FromUser    
 
@@ -229,41 +125,18 @@ where UserID = @FromUser
   
 
 CREATE PROCEDURE dbo.stPro901_03InsertUserAccessPermissionsforweb  
-
 (    
-
 @ToUser tinyint    
-
 )    
-
 AS    
-
 DELETE dbo.tblUserAccessWeb where UserID = @ToUser    
-
 insert into    dbo.tblUserAccessWeb    
-
-  
-
 (UserID, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module,  MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)    
-
-  
-
 select @ToUser, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module,  MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess    
-
-  
-
 FROM         dbo.tbl901UserAccessMasterWeb    
 
-  
-
-  
-
 insert into dbo.tblUserAccessweb (UserID,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,Module)    
-
 values   
-
-  
-
 (1,'Finance Voucher Entry Screen','frm201VoucherCashPayment_FullAccess','Full Access',1,1,'Finance'),    
 
   
@@ -674,7 +547,7 @@ VALUES
 
 (114, 'Finance Menu', 'JournalRegister', 'Journal Register', 1, 1, NULL, 'Finance'), 
 
-(115, 'Finance Menu', 'uc20101ChartOfAccounts', 'Chart Of Accounts', 1, 1, NULL, 'Finance') 
+(115, 'Finance Menu', 'uc20101ChartOfAccounts', 'Chart Of Accounts', 1, 1, NULL, 'Finance') ,
 
 (116, 'Finance Menu', 'My Dashboard', 'My Dashboard', 1, 1, NULL, 'Finance'), 
 
@@ -696,6 +569,7 @@ VALUES
 
 (125, 'Finance Menu', 'Asset Register', 'Asset Register', 1, 1, NULL, 'Finance') 
 
+select * from [tbl901UserAccessMasterWeb]
    
 INSERT INTO [tbl901UserAccessMasterWeb] (  
 
@@ -779,7 +653,7 @@ VALUES
 (232, 'VAT Menu', 'frm307ProformaInvoices', 'Proforma Invoices', 1, 1, NULL, 'VAT');
 
 
-SET IDENTITY_INSERT tbl901UserAccessMasterWeb ON;
+--SET IDENTITY_INSERT tbl901UserAccessMasterWeb ON;
 
 INSERT INTO tbl901UserAccessMasterWeb 
     (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
@@ -797,20 +671,20 @@ VALUES
 INSERT INTO tbl901UserAccessMasterWeb 
     (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
 VALUES  
-    (308,'VAT Invoice Edit','frm20161VATInvoiceEdit_ddButtonLayout','Layout',1, 1,null,'VAT', 0, 0, 0, 0, 0), 
-    (309,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnMoveDown','MoveDown',1, 1,null,'VAT', 0, 0, 0, 0, 0), 
-    (310,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnMoveUp','MoveUp', 1, 1,null, 'VAT', 0, 0, 0, 0, 0), 
-    (311,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnPrint1','Print', 1, 1,null, 'VAT', 0, 0, 0, 0, 0), 
-    (312,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnSave','Save',1, 1,null, 'VAT', 0, 0, 0, 0, 0), 
-    (313,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnSaveAndClose','SaveandClose',1, 1,null,'VAT', 0, 0, 0, 0, 0), 
-    (314,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnAddNew','AddNew', 1, 1,null, 'VAT', 0, 0, 0, 0, 0), 
-    (315,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnDelete','Delete', 1, 1,null, 'VAT', 0, 0, 0, 0, 0),
-    (316,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnBack','Back', 1, 1,null, 'VAT', 0, 0, 0, 0, 0),
-    (317,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnVerify','Verify', 1, 1,null, 'VAT', 0, 0, 0, 0, 0),
-    (318,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnApprove','Approve', 1, 1,null, 'VAT', 0, 0, 0, 0, 0),
-    (319,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnAttach','Attach', 1, 1,null, 'VAT', 0, 0, 0, 0, 0),
-    (320,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnPostToLedgers','PostToLedger', 1, 1,null, 'VAT', 0, 0, 0, 0, 0),
-    (321,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnPostTag','PostTag', 1, 1,null, 'VAT', 0, 0, 0, 0, 0);
+    (308,'VAT Invoice Edit','frm20161VATInvoiceEdit_ddButtonLayout','Layout',1, 1,null,'VAT', 0, 0, 0, 0), 
+    (309,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnMoveDown','MoveDown',1, 1,null,'VAT', 0, 0, 0, 0), 
+    (310,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnMoveUp','MoveUp', 1, 1,null, 'VAT', 0, 0, 0, 0), 
+    (311,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnPrint1','Print', 1, 1,null, 'VAT', 0, 0, 0, 0), 
+    (312,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnSave','Save',1, 1,null, 'VAT', 0, 0, 0, 0), 
+    (313,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnSaveAndClose','SaveandClose',1, 1,null,'VAT',0, 0, 0, 0), 
+    (314,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnAddNew','AddNew', 1, 1,null, 'VAT', 0, 0, 0, 0), 
+    (315,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnDelete','Delete', 1, 1,null, 'VAT', 0, 0, 0, 0),
+    (316,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnBack','Back', 1, 1,null, 'VAT', 0, 0, 0, 0),
+    (317,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnVerify','Verify', 1, 1,null, 'VAT', 0, 0, 0, 0),
+    (318,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnApprove','Approve', 1, 1,null, 'VAT', 0, 0, 0, 0),
+    (319,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnAttach','Attach', 1, 1,null, 'VAT', 0, 0, 0, 0),
+    (320,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnPostToLedgers','PostToLedger', 1, 1,null, 'VAT', 0, 0, 0, 0),
+    (321,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnPostTag','PostTag', 1, 1,null, 'VAT', 0, 0, 0, 0);
 
 
 
@@ -832,7 +706,7 @@ values
     (328,'VAT Module New e-Invoice Credit Note Screen','frm20168VATCreditNoteEdit_ddButtonLayout','Layout',1, 1,null,'VAT'), 
     (329,'VAT Module New e-Invoice Credit Note Screen', 'frm20168VATCreditNoteEdit_btnMoveDown','MoveDown',1, 1,null,'VAT'), 
     (330,'VAT Module New e-Invoice Credit Note Screen', 'frm20168VATCreditNoteEdit_btnMoveUp','MoveUp', 1, 1,null, 'VAT'), 
-    (331,'VAT Module New e-Invoice Credit Note Screen', 'frm20168VATCreditNoteEdit_btnPrint23','Print', 1, 1,null, 'VAT',), 
+    (331,'VAT Module New e-Invoice Credit Note Screen', 'frm20168VATCreditNoteEdit_btnPrint23','Print', 1, 1,null, 'VAT'), 
     (332,'VAT Module New e-Invoice Credit Note Screen', 'frm20168VATCreditNoteEdit_btnSave','Save',1, 1,null, 'VAT'), 
     (333,'VAT Module New e-Invoice Credit Note Screen', 'frm20168VATCreditNoteEdit_btnSaveAndClose','SaveandClose',1, 1,null,'VAT'), 
     (334,'VAT Module New e-Invoice Credit Note Screen', 'frm20168VATCreditNoteEdit_btnAddNew','AddNew', 1, 1,null, 'VAT'), 
@@ -950,7 +824,294 @@ values
     (397,'VAT Module Proforma Invoice Edit Form Screen', 'frm20181ProformaInvoiceEdit_btnApprove','Approve', 1, 1,null, 'VAT'),
     (398,'VAT Module Proforma Invoice Edit Form Screen', 'frm20181ProformaInvoiceEdit_btncreatevatinvoice','createvatinvoice', 1, 1,null, 'VAT')
 
-    	SET IDENTITY_INSERT tbl901UserAccessMasterWeb OFF; 
+
+	
+
+select * from tbl901UserAccessMasterWeb
+
+INSERT INTO tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+    (320,'Client Leads Main View Screen','frm30106ClientMaster_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
+    (321,'Client Leads Main View Screen', 'frm30106ClientMaster_rowHeightProperties','Row Height Properties',1, 1,null,'IMS',null,null,null,null), 
+    (322,'Client Leads Main View Screen', 'frm30106ClientMaster_btnRefresh','Refresh Button', 1, 1,null, 'IMS',null,null,null,null), 
+    (323,'Client Leads Main View Screen', 'frm30106ClientMaster_btnPrint','Print', 1, 1,null, 'IMS',null,null,null,null), 
+    (324,'Client Leads Main View Screen', 'frm30106ClientMaster_btnToggleSearch','Toggle Search',1, 1,null, 'IMS',null,null,null,null), 
+    (325,'Client Leads Main View Screen', 'frm30106ClientMaster_btntoggleGroupPanel','Toggle Group Panel',1, 1,null,'IMS',null,null,null,null), 
+    (326,'Client Leads Main View Screen', 'frm30106ClientMaster_btnColumnChooser','Column Chooser', 1, 1,null, 'IMS',null,null,null,null), 
+    (327,'Client Leads Main View Screen', 'frm30106ClientMaster_btnAddClientLeads','Add Client Leads', 1, 1,null, 'IMS',null,null,null,null),
+    (328,'Client Leads Main View Screen', 'frm30106ClientMaster_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
+
+	update tbl901UserAccessMasterWeb set ItemEnabled =0, ItemVisible=0 where ItemForm = 'Client Leads Main View Screen'
+	update tbl901UserAccessMasterWeb set ItemEnabled =1, ItemVisible=1 where ItemForm = 'Client Leads Main View Screen'
+
+	INSERT INTO tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+    (329,'Suppliers Main View Screen','frm30110SupplierMaster_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
+    (330,'Suppliers Main View Screen', 'frm30110SupplierMaster_rowHeightProperties','Row Height Properties',1, 1,null,'IMS',null,null,null,null), 
+    (331,'Suppliers Main View Screen', 'frm30110SupplierMaster_btnPrint','Print', 1, 1,null, 'IMS',null,null,null,null), 
+    (332,'Suppliers Main View Screen', 'frm30110SupplierMaster_btnToggleSearch','Toggle Search', 1, 1,null, 'IMS',null,null,null,null), 
+    (333,'Suppliers Main View Screen', 'frm30110SupplierMaster_btntoggleGroupPanel','Toggle Group Panel',1, 1,null, 'IMS',null,null,null,null), 
+    (334,'Suppliers Main View Screen', 'frm30110SupplierMaster_btnColumnChooser','Column Chooser',1, 1,null,'IMS',null,null,null,null), 
+    (335,'Suppliers Main View Screen', 'frm30110SupplierMaster_btnAddSuppliers','Add Suppliers', 1, 1,null, 'IMS',null,null,null,null),
+    (336,'Suppliers Main View Screen', 'frm30110SupplierMaster_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
+
+	INSERT INTO tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+    (337,'Stock Inventory Main View Screen','frmIMSStockInventory_btnRefresh','Refresh',1,1,null,'IMS',null,null,null,null), 
+    (338,'Stock Inventory Main View Screen','frmIMSStockInventory_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
+    (339,'Stock Inventory Main View Screen','frmIMSStockInventory_rowHeightProperties','Row Height Properties',1,1,null,'IMS',null,null,null,null), 
+    (340,'Stock Inventory Main View Screen','frmIMSStockInventory_btnPrint','Print',1,1,null,'IMS',null,null,null,null), 
+    (341,'Stock Inventory Main View Screen','frmIMSStockInventory_btnToggleSearch','Toggle Search',1,1,null,'IMS',null,null,null,null), 
+    (342,'Stock Inventory Main View Screen','frmIMSStockInventory_btntoggleGroupPanel','Toggle Group Panel',1,1,null,'IMS',null,null,null,null), 
+    (343,'Stock Inventory Main View Screen','frmIMSStockInventory_btnColumnChooser','Column Chooser',1,1,null,'IMS',null,null,null,null), 
+    (344,'Stock Inventory Main View Screen','frmIMSStockInventory_ddButtonShow','Show Options',1,1,null,'IMS',null,null,null,null), 
+    (345,'Stock Inventory Main View Screen','frmIMSStockInventory_ddReports','Reports',1,1,null,'IMS',null,null,null,null), 
+    (346,'Stock Inventory Main View Screen','frmIMSStockInventory_btnAddNewPayment','Add New Stock Item',1,1,null,'IMS',null,null,null,null),
+    (347,'Stock Inventory Main View Screen','frmIMSStockInventory_FullAccess','Full Access',1,1,null,'IMS',null,null,null,null);
+
+	INSERT INTO tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+	(365,'Material Request Enquiries Details Main View Screen','frm60112PurchaseRequestView_ddBtnShowRecords','Show Recorrds',1,1,null,'IMS',null,null,null,null), 
+    (348,'Material Request Enquiries Details Main View Screen','frm60112PurchaseRequestView_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
+    (349,'Material Request Enquiries Details Main View Screen', 'frm60112PurchaseRequestView_rowHeightProperties','Row Height Properties',1, 1,null,'IMS',null,null,null,null), 
+    (350,'Material Request Enquiries Details Main View Screen', 'frm60112PurchaseRequestView_btnPrint','Print', 1, 1,null, 'IMS',null,null,null,null), 
+    (351,'Material Request Enquiries Details Main View Screen', 'frm60112PurchaseRequestView_btnToggleSearch','Toggle Search', 1, 1,null, 'IMS',null,null,null,null), 
+    (352,'Material Request Enquiries Details Main View Screen', 'frm60112PurchaseRequestView_btntoggleGroupPanel','Toggle Group Panel',1, 1,null, 'IMS',null,null,null,null), 
+    (353,'Material Request Enquiries Details Main View Screen', 'frm60112PurchaseRequestView_btnColumnChooser','Column Chooser',1, 1,null,'IMS',null,null,null,null), 
+    (354,'Material Request Enquiries Details Main View Screen', 'frm60112PurchaseRequestView_btnPurchaseEditDetails','Purchase Edit Details', 1, 1,null, 'IMS',null,null,null,null),
+    (355,'Material Request Enquiries Details Main View Screen', 'frm60112PurchaseRequestView_btnAddbtnAddMaterialRequestSuppliers','Add Material Request Suppliers', 1, 1,null, 'IMS',null,null,null,null),
+    (356,'Material Request Enquiries Details Main View Screen', 'frm60112PurchaseRequestView_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
+
+	INSERT INTO tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+    (357,'Quotation Main View Screen','frm60102QuotationView_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
+    (358,'Quotation Main View Screen', 'frm60102QuotationView_rowHeightProperties','Row Height Properties',1, 1,null,'IMS',null,null,null,null), 
+    (359,'Quotation Main View Screen', 'frm60102QuotationView_btnPrint','Print', 1, 1,null, 'IMS',null,null,null,null), 
+    (360,'Quotation Main View Screen', 'frm60102QuotationView_btnToggleSearch','Toggle Search', 1, 1,null, 'IMS',null,null,null,null), 
+    (361,'Quotation Main View Screen', 'frm60102QuotationView_btntoggleGroupPanel','Toggle Group Panel',1, 1,null, 'IMS',null,null,null,null), 
+    (362,'Quotation Main View Screen', 'frm60102QuotationView_btnColumnChooser','Column Chooser',1, 1,null,'IMS',null,null,null,null), 
+    (363,'Quotation Main View Screen', 'frm60102QuotationView_btnAddNewQuotation','Add New Quotation', 1, 1,null, 'IMS',null,null,null,null),
+    (364,'Quotation Main View Screen', 'frm60102QuotationView_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null),
+	(366,'Quotation Main View Screen','frm60102QuotationView_ddBtnShowRecords','Layout',1,1,null,'IMS',null,null,null,null);
+
+	INSERT INTO tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+    (367,'Sales Orders Main View Screen','frm60103SalesOrderEdit_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
+    (368,'Sales Orders Main View Screen', 'frm60103SalesOrderEdit_rowHeightProperties','Row Height Properties',1, 1,null,'IMS',null,null,null,null), 
+    (369,'Sales Orders Main View Screen', 'frm60103SalesOrderEdit_btnPrint','Print', 1, 1,null, 'IMS',null,null,null,null), 
+    (370,'Sales Orders Main View Screen', 'frm60103SalesOrderEdit_btnToggleSearch','Toggle Search', 1, 1,null, 'IMS',null,null,null,null), 
+    (371,'Sales Orders Main View Screen', 'frm60103SalesOrderEdit_btntoggleGroupPanel','Toggle Group Panel',1, 1,null, 'IMS',null,null,null,null), 
+    (372,'Sales Orders Main View Screen', 'frm60103SalesOrderEdit_btnColumnChooser','Column Chooser',1, 1,null,'IMS',null,null,null,null), 
+    (373,'Sales Orders Main View Screen', 'frm60103SalesOrderEdit_btnSalesOrderDetails','Sales Order Details', 1, 1,null, 'IMS',null,null,null,null),
+    (374,'Sales Orders Main View Screen', 'frm60103SalesOrderEdit_btnAddSalesOrder','Add Sales Order', 1, 1,null, 'IMS',null,null,null,null),
+    (375,'Sales Orders Main View Screen', 'frm60103SalesOrderEdit_ddBtnShowRecords','Show Records Dropdown', 1, 1,null, 'IMS',null,null,null,null),
+    (376,'Sales Orders Main View Screen', 'frm60103SalesOrderEdit_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
+
+	INSERT INTO tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+    (377,'Delivery Note Main View Screen','frm60106DeliveryNoteView_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
+    (378,'Delivery Note Main View Screen', 'frm60106DeliveryNoteView_rowHeightProperties','Row Height Properties',1, 1,null,'IMS',null,null,null,null), 
+    (379,'Delivery Note Main View Screen', 'frm60106DeliveryNoteView_btnPrint','Print', 1, 1,null, 'IMS',null,null,null,null), 
+    (380,'Delivery Note Main View Screen', 'frm60106DeliveryNoteView_btnToggleSearch','Toggle Search', 1, 1,null, 'IMS',null,null,null,null), 
+    (381,'Delivery Note Main View Screen', 'frm60106DeliveryNoteView_btntoggleGroupPanel','Toggle Group Panel',1, 1,null, 'IMS',null,null,null,null), 
+    (382,'Delivery Note Main View Screen', 'frm60106DeliveryNoteView_btnColumnChooser','Column Chooser',1, 1,null,'IMS',null,null,null,null), 
+    (383,'Delivery Note Main View Screen', 'frm60106DeliveryNoteView_btnDeliveryNoteDetails','Delivery Note Details', 1, 1,null, 'IMS',null,null,null,null),
+	(384,'Delivery Note Main View Screen', 'frm60106DeliveryNoteView_btnDeliveryNotePosting','Delivery Note Details', 1, 1,null, 'IMS',null,null,null,null),
+    (385,'Delivery Note Main View Screen', 'frm60106DeliveryNoteView_btnAddDeliveryNote','Add Delivery Note', 1, 1,null, 'IMS',null,null,null,null),
+    (386,'Delivery Note Main View Screen', 'frm60106DeliveryNoteView_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
+
+	INSERT INTO tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+    (387,'Request for Quotation List Main View Screen','frm60114RFQView_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
+    (388,'Request for Quotation List Main View Screen', 'frm60114RFQView_rowHeightProperties','Row Height Properties',1, 1,null,'IMS',null,null,null,null), 
+    (389,'Request for Quotation List Main View Screen', 'frm60114RFQView_btnPrint','Print', 1, 1,null, 'IMS',null,null,null,null), 
+    (390,'Request for Quotation List Main View Screen', 'frm60114RFQView_btnToggleSearch','Toggle Search', 1, 1,null, 'IMS',null,null,null,null), 
+    (391,'Request for Quotation List Main View Screen', 'frm60114RFQView_btntoggleGroupPanel','Toggle Group Panel',1, 1,null, 'IMS',null,null,null,null), 
+    (392,'Request for Quotation List Main View Screen', 'frm60114RFQView_btnColumnChooser','Column Chooser',1, 1,null,'IMS',null,null,null,null), 
+    (393,'Request for Quotation List Main View Screen', 'frm60114RFQView_btnRfqDetails','RFQ Details', 1, 1,null, 'IMS',null,null,null,null),
+    (394,'Request for Quotation List Main View Screen', 'frm60114RFQView_btnAddNewRFQ','Add New RFQ', 1, 1,null, 'IMS',null,null,null,null),
+    (395,'Request for Quotation List Main View Screen', 'frm60114RFQView_ddBtnShowRecords','Show Records Dropdown', 1, 1,null, 'IMS',null,null,null,null),
+    (396,'Request for Quotation List Main View Screen', 'frm60114RFQView_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
+
+
+	INSERT INTO tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+    (397,'Quotation Analysis Main View Screen','frm60115QuotationAnalysis_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
+    (398,'Quotation Analysis Main View Screen', 'frm60115QuotationAnalysis_rowHeightProperties','Row Height Properties',1, 1,null,'IMS',null,null,null,null), 
+    (399,'Quotation Analysis Main View Screen', 'frm60115QuotationAnalysis_btnPrint','Print', 1, 1,null, 'IMS',null,null,null,null), 
+    (400,'Quotation Analysis Main View Screen', 'frm60115QuotationAnalysis_btnToggleSearch','Toggle Search', 1, 1,null, 'IMS',null,null,null,null), 
+    (401,'Quotation Analysis Main View Screen', 'frm60115QuotationAnalysis_btntoggleGroupPanel','Toggle Group Panel',1, 1,null, 'IMS',null,null,null,null), 
+    (402,'Quotation Analysis Main View Screen', 'frm60115QuotationAnalysis_btnColumnChooser','Column Chooser',1, 1,null,'IMS',null,null,null,null), 
+    (403,'Quotation Analysis Main View Screen', 'frm60115QuotationAnalysis_btnCreateQuotations','Create Quotations', 1, 1,null, 'IMS',null,null,null,null),
+	(404,'Quotation Analysis Main View Screen', 'frm60115QuotationAnalysis_viewAnalysisButton','View Analysis Button', 1, 1,null, 'IMS',null,null,null,null),
+    (405,'Quotation Analysis Main View Screen', 'frm60115QuotationAnalysis_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
+
+	INSERT INTO tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+    (406,'Purchase Orders Main View Screen','frm60108PurchaseOrderView_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
+    (407,'Purchase Orders Main View Screen', 'frm60108PurchaseOrderView_rowHeightProperties','Row Height Properties',1, 1,null,'IMS',null,null,null,null), 
+    (408,'Purchase Orders Main View Screen', 'frm60108PurchaseOrderView_btnPrint','Print', 1, 1,null, 'IMS',null,null,null,null), 
+    (409,'Purchase Orders Main View Screen', 'frm60108PurchaseOrderView_btnToggleSearch','Toggle Search', 1, 1,null, 'IMS',null,null,null,null), 
+    (410,'Purchase Orders Main View Screen', 'frm60108PurchaseOrderView_btntoggleGroupPanel','Toggle Group Panel',1, 1,null, 'IMS',null,null,null,null), 
+    (411,'Purchase Orders Main View Screen', 'frm60108PurchaseOrderView_btnColumnChooser','Column Chooser',1, 1,null,'IMS',null,null,null,null), 
+    (412,'Purchase Orders Main View Screen', 'frm60108PurchaseOrderView_btnPurchaseOrderDetails','Purchase Order Details', 1, 1,null, 'IMS',null,null,null,null),
+    (413,'Purchase Orders Main View Screen', 'frm60108PurchaseOrderView_btnNewPurchaseOrder','New Purchase Order', 1, 1,null, 'IMS',null,null,null,null),
+    (414,'Purchase Orders Main View Screen', 'frm60108PurchaseOrderView_ddBtnShowRecords','Show Records Dropdown', 1, 1,null, 'IMS',null,null,null,null),
+    (415,'Purchase Orders Main View Screen', 'frm60108PurchaseOrderView_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
+
+	INSERT INTO tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+    (416,'Material Receipts Main View Screen','frm60110MaterialReceiptView_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
+    (417,'Material Receipts Main View Screen', 'frm60110MaterialReceiptView_rowHeightProperties','Row Height Properties',1, 1,null,'IMS',null,null,null,null), 
+    (418,'Material Receipts Main View Screen', 'frm60110MaterialReceiptView_btnPrint','Print', 1, 1,null, 'IMS',null,null,null,null), 
+    (419,'Material Receipts Main View Screen', 'frm60110MaterialReceiptView_btnToggleSearch','Toggle Search', 1, 1,null, 'IMS',null,null,null,null), 
+    (420,'Material Receipts Main View Screen', 'frm60110MaterialReceiptView_btntoggleGroupPanel','Toggle Group Panel',1, 1,null, 'IMS',null,null,null,null), 
+    (421,'Material Receipts Main View Screen', 'frm60110MaterialReceiptView_btnColumnChooser','Column Chooser',1, 1,null,'IMS',null,null,null,null), 
+    (422,'Material Receipts Main View Screen', 'frm60110MaterialReceiptView_btnMaterialReceiptDetails','Material Receipt Details', 1, 1,null, 'IMS',null,null,null,null),
+    (423,'Material Receipts Main View Screen', 'frm60110MaterialReceiptView_btnAddNewReceipt','Add New Receipt', 1, 1,null, 'IMS',null,null,null,null),
+    (424,'Material Receipts Main View Screen', 'frm60110MaterialReceiptView_ddBtnShowRecords','Show Records Dropdown', 1, 1,null, 'IMS',null,null,null,null),
+    (425,'Material Receipts Main View Screen', 'frm60110MaterialReceiptView_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
+
+	INSERT INTO tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+    (426,'Job Orders Main View Screen','frm60128JobOrdersView_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
+    (427,'Job Orders Main View Screen', 'frm60128JobOrdersView_rowHeightProperties','Row Height Properties',1, 1,null,'IMS',null,null,null,null), 
+    (428,'Job Orders Main View Screen', 'frm60128JobOrdersView_btnPrint','Print', 1, 1,null, 'IMS',null,null,null,null), 
+    (429,'Job Orders Main View Screen', 'frm60128JobOrdersView_btnToggleSearch','Toggle Search', 1, 1,null, 'IMS',null,null,null,null), 
+    (430,'Job Orders Main View Screen', 'frm60128JobOrdersView_btntoggleGroupPanel','Toggle Group Panel',1, 1,null, 'IMS',null,null,null,null), 
+    (431,'Job Orders Main View Screen', 'frm60128JobOrdersView_btnColumnChooser','Column Chooser',1, 1,null,'IMS',null,null,null,null), 
+    (432,'Job Orders Main View Screen', 'frm60128JobOrdersView_btnJobOrderDetails','Job Order Details', 1, 1,null, 'IMS',null,null,null,null),
+    (433,'Job Orders Main View Screen', 'frm60128JobOrdersView_btnAddNewJobOrder','Add New Job Order', 1, 1,null, 'IMS',null,null,null,null),
+    (434,'Job Orders Main View Screen', 'frm60128JobOrdersView_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
+
+	INSERT INTO tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+    (435,'Stock Adjustments Main View Screen','frm60143StockAdjustmentEdit_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
+    (436,'Stock Adjustments Main View Screen', 'frm60143StockAdjustmentEdit_rowHeightProperties','Row Height Properties',1, 1,null,'IMS',null,null,null,null), 
+    (437,'Stock Adjustments Main View Screen', 'frm60143StockAdjustmentEdit_btnPrint','Print', 1, 1,null, 'IMS',null,null,null,null), 
+    (438,'Stock Adjustments Main View Screen', 'frm60143StockAdjustmentEdit_btnToggleSearch','Toggle Search', 1, 1,null, 'IMS',null,null,null,null), 
+    (439,'Stock Adjustments Main View Screen', 'frm60143StockAdjustmentEdit_btntoggleGroupPanel','Toggle Group Panel',1, 1,null, 'IMS',null,null,null,null), 
+    (440,'Stock Adjustments Main View Screen', 'frm60143StockAdjustmentEdit_btnColumnChooser','Column Chooser',1, 1,null,'IMS',null,null,null,null), 
+    (441,'Stock Adjustments Main View Screen', 'frm60143StockAdjustmentEdit_btnAddNewStockAdjustment','Add New Stock Adjustment', 1, 1,null, 'IMS',null,null,null,null),
+    (442,'Stock Adjustments Main View Screen', 'frm60143StockAdjustmentEdit_ddBtnShowRecords','Show Records Dropdown', 1, 1,null, 'IMS',null,null,null,null),
+    (443,'Stock Adjustments Main View Screen', 'frm60143StockAdjustmentEdit_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
+
+	INSERT INTO tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+    (444,'Material Request Form','frm60111PurchaseRequestEdit_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
+    (445,'Material Request Form', 'frm60111PurchaseRequestEdit_rowHeightProperties','Row Height Properties',1, 1,null,'IMS',null,null,null,null), 
+    (446,'Material Request Form', 'frm60111PurchaseRequestEdit_btnMoveUp','Move Up', 1, 1,null, 'IMS',null,null,null,null), 
+    (447,'Material Request Form', 'frm60111PurchaseRequestEdit_btnMoveDown','Move Down', 1, 1,null, 'IMS',null,null,null,null), 
+    (448,'Material Request Form', 'frm60111PurchaseRequestEdit_btnSave','Save',1, 1,null, 'IMS',null,null,null,null), 
+    (449,'Material Request Form', 'frm60111PurchaseRequestEdit_btnSaveAndClose','Save and Close',1, 1,null,'IMS',null,null,null,null), 
+    (450,'Material Request Form', 'frm60111PurchaseRequestEdit_btnPrint1','Print', 1, 1,null, 'IMS',null,null,null,null), 
+    (451,'Material Request Form', 'frm60111PurchaseRequestEdit_btnAddNew','Add New Item', 1, 1,null, 'IMS',null,null,null,null),
+    (452,'Material Request Form', 'frm60111PurchaseRequestEdit_btnDelete','Delete', 1, 1,null, 'IMS',null,null,null,null),
+    (453,'Material Request Form', 'frm60111PurchaseRequestEdit_btnBack','Back', 1, 1,null, 'IMS',null,null,null,null),
+    (454,'Material Request Form', 'frm60111PurchaseRequestEdit_btnSubmit','Submit', 1, 1,null, 'IMS',null,null,null,null),
+    (455,'Material Request Form', 'frm60111PurchaseRequestEdit_btnVerify','Verify', 1, 1,null, 'IMS',null,null,null,null),
+    (456,'Material Request Form', 'frm60111PurchaseRequestEdit_btnApprove','Approve', 1, 1,null, 'IMS',null,null,null,null),
+    (457,'Material Request Form', 'frm60111PurchaseRequestEdit_btnCancel','Cancel', 1, 1,null, 'IMS',null,null,null,null),
+    (458,'Material Request Form', 'frm60111PurchaseRequestEdit_btnAttach','Attach', 1, 1,null, 'IMS',null,null,null,null),
+    (459,'Material Request Form', 'frm60111PurchaseRequestEdit_btnUpload','Upload', 1, 1,null, 'IMS',null,null,null,null),
+    (460,'Material Request Form', 'frm60111PurchaseRequestEdit_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
+
+
+	INSERT INTO tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+    (461,'Quotation Form','frm60101QuotationEdit_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
+    (462,'Quotation Form', 'frm60101QuotationEdit_rowHeightProperties','Row Height Properties',1, 1,null,'IMS',null,null,null,null), 
+    (463,'Quotation Form', 'frm60101QuotationEdit_btnMoveUp','Move Up', 1, 1,null, 'IMS',null,null,null,null), 
+    (464,'Quotation Form', 'frm60101QuotationEdit_btnMoveDown','Move Down', 1, 1,null, 'IMS',null,null,null,null), 
+    (465,'Quotation Form', 'frm60101QuotationEdit_btnSave','Save',1, 1,null, 'IMS',null,null,null,null), 
+    (466,'Quotation Form', 'frm60101QuotationEdit_btnSaveAndClose','Save and Close',1, 1,null,'IMS',null,null,null,null), 
+    (467,'Quotation Form', 'frm60101QuotationEdit_btnPrint','Print', 1, 1,null, 'IMS',null,null,null,null), 
+    (468,'Quotation Form', 'frm60101QuotationEdit_btnDelete','Delete', 1, 1,null, 'IMS',null,null,null,null),
+    (469,'Quotation Form', 'frm60101QuotationEdit_btnAddNew','Add New Item', 1, 1,null, 'IMS',null,null,null,null),
+    (470,'Quotation Form', 'frm60101QuotationEdit_btnTerms','Terms', 1, 1,null, 'IMS',null,null,null,null),
+    (471,'Quotation Form', 'frm60101QuotationEdit_btnBack','Back', 1, 1,null, 'IMS',null,null,null,null),
+    (472,'Quotation Form', 'frm60101QuotationEdit_btnAttach','Attach', 1, 1,null, 'IMS',null,null,null,null),
+    (473,'Quotation Form', 'frm60101QuotationEdit_btnSubmit','Submit', 1, 1,null, 'IMS',null,null,null,null),
+    (474,'Quotation Form', 'frm60101QuotationEdit_btnVerify','Verify', 1, 1,null, 'IMS',null,null,null,null),
+    (475,'Quotation Form', 'frm60101QuotationEdit_btnApprove','Approve', 1, 1,null, 'IMS',null,null,null,null),
+    (476,'Quotation Form', 'frm60101QuotationEdit_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
+	
+	INSERT INTO tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+    (477,'Sales Order Edit Form','frm60103SalesOrderEdit_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
+    (478,'Sales Order Edit Form', 'frm60103SalesOrderEdit_btnMoveUp','Move Up',1, 1,null,'IMS',null,null,null,null), 
+    (479,'Sales Order Edit Form', 'frm60103SalesOrderEdit_btnMoveDown','Move Down', 1, 1,null, 'IMS',null,null,null,null), 
+    (480,'Sales Order Edit Form', 'frm60103SalesOrderEdit_btnPrint','Print', 1, 1,null, 'IMS',null,null,null,null), 
+    (481,'Sales Order Edit Form', 'frm60103SalesOrderEdit_btnToggleSearch','Toggle Search',1, 1,null, 'IMS',null,null,null,null), 
+    (482,'Sales Order Edit Form', 'frm60103SalesOrderEdit_btntoggleGroupPanel','Toggle Group Panel',1, 1,null,'IMS',null,null,null,null), 
+    (483,'Sales Order Edit Form', 'frm60103SalesOrderEdit_btnColumnChooser','Column Chooser', 1, 1,null, 'IMS',null,null,null,null),
+    (484,'Sales Order Edit Form', 'frm60103SalesOrderEdit_btnSave','Save', 1, 1,null, 'IMS',null,null,null,null),
+    (485,'Sales Order Edit Form', 'frm60103SalesOrderEdit_btnSaveAndClose','Save and Close', 1, 1,null, 'IMS',null,null,null,null),
+    (486,'Sales Order Edit Form', 'frm60103SalesOrderEdit_btnAddNew','Add New Item', 1, 1,null, 'IMS',null,null,null,null),
+    (487,'Sales Order Edit Form', 'frm60103SalesOrderEdit_btnDelete','Delete', 1, 1,null, 'IMS',null,null,null,null),
+    (488,'Sales Order Edit Form', 'frm60103SalesOrderEdit_btnBack','Back', 1, 1,null, 'IMS',null,null,null,null),
+    (489,'Sales Order Edit Form', 'frm60103SalesOrderEdit_btnSubmit','Submit', 1, 1,null, 'IMS',null,null,null,null),
+    (490,'Sales Order Edit Form', 'frm60103SalesOrderEdit_btnVerify','Verify', 1, 1,null, 'IMS',null,null,null,null),
+    (491,'Sales Order Edit Form', 'frm60103SalesOrderEdit_btnApprove','Approve', 1, 1,null, 'IMS',null,null,null,null),
+    (492,'Sales Order Edit Form', 'frm60103SalesOrderEdit_btnSoreStock','Stock Availability', 1, 1,null, 'IMS',null,null,null,null),
+    (493,'Sales Order Edit Form', 'frm60103SalesOrderEdit_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
+
+	INSERT INTO tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+    (494,'RFQ Master Form','frm60113RFQMaster_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
+    (495,'RFQ Master Form', 'frm60113RFQMaster_rowHeightProperties','Row Height Properties',1, 1,null,'IMS',null,null,null,null), 
+    (496,'RFQ Master Form', 'frm60113RFQMaster_btnMoveUp','Move Up', 1, 1,null, 'IMS',null,null,null,null), 
+    (497,'RFQ Master Form', 'frm60113RFQMaster_btnMoveDown','Move Down', 1, 1,null, 'IMS',null,null,null,null), 
+    (498,'RFQ Master Form', 'frm60113RFQMaster_btnSave','Save',1, 1,null, 'IMS',null,null,null,null), 
+    (499,'RFQ Master Form', 'frm60113RFQMaster_btnSaveAndClose','Save and Close',1, 1,null,'IMS',null,null,null,null), 
+    (500,'RFQ Master Form', 'frm60113RFQMaster_btnPrint3','Print', 1, 1,null, 'IMS',null,null,null,null), 
+    (501,'RFQ Master Form', 'frm60113RFQMaster_btnDelete','Delete', 1, 1,null, 'IMS',null,null,null,null),
+    (502,'RFQ Master Form', 'frm60113RFQMaster_btnAddNew','Add New Item', 1, 1,null, 'IMS',null,null,null,null),
+    (503,'RFQ Master Form', 'frm60113RFQMaster_btnBack','Back', 1, 1,null, 'IMS',null,null,null,null),
+    (504,'RFQ Master Form', 'frm60113RFQMaster_btnSubmit','Submit', 1, 1,null, 'IMS',null,null,null,null),
+    (505,'RFQ Master Form', 'frm60113RFQMaster_btnVerify','Verify', 1, 1,null, 'IMS',null,null,null,null),
+    (506,'RFQ Master Form', 'frm60113RFQMaster_btnApprove','Approve', 1, 1,null, 'IMS',null,null,null,null),
+    (507,'RFQ Master Form', 'frm60113RFQMaster_btnAttach','Create PO', 1, 1,null, 'IMS',null,null,null,null),
+    (508,'RFQ Master Form', 'frm60113RFQMaster_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
+
+	INSERT INTO tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+    (509,'Material Receipt Edit Form','frm60109MaterialReceiptEdit_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
+    (510,'Material Receipt Edit Form', 'frm60109MaterialReceiptEdit_rowHeightProperties','Row Height Properties',1, 1,null,'IMS',null,null,null,null), 
+    (511,'Material Receipt Edit Form', 'frm60109MaterialReceiptEdit_btnMoveUp','Move Up', 1, 1,null, 'IMS',null,null,null,null), 
+    (512,'Material Receipt Edit Form', 'frm60109MaterialReceiptEdit_btnMoveDown','Move Down', 1, 1,null, 'IMS',null,null,null,null), 
+    (513,'Material Receipt Edit Form', 'frm60109MaterialReceiptEdit_btnSave','Save',1, 1,null, 'IMS',null,null,null,null), 
+    (514,'Material Receipt Edit Form', 'frm60109MaterialReceiptEdit_btnSaveAndClose','Save and Close',1, 1,null,'IMS',null,null,null,null), 
+    (515,'Material Receipt Edit Form', 'frm60109MaterialReceiptEdit_btnPrint','Print', 1, 1,null, 'IMS',null,null,null,null), 
+    (516,'Material Receipt Edit Form', 'frm60109MaterialReceiptEdit_btnDelete','Delete', 1, 1,null, 'IMS',null,null,null,null),
+    (517,'Material Receipt Edit Form', 'frm60109MaterialReceiptEdit_btnAddNew','Add New Item', 1, 1,null, 'IMS',null,null,null,null),
+    (518,'Material Receipt Edit Form', 'frm60109MaterialReceiptEdit_btnBack','Back', 1, 1,null, 'IMS',null,null,null,null),
+    (519,'Material Receipt Edit Form', 'frm60109MaterialReceiptEdit_btnSubmit','Submit', 1, 1,null, 'IMS',null,null,null,null),
+    (520,'Material Receipt Edit Form', 'frm60109MaterialReceiptEdit_btnVerify','Verify', 1, 1,null, 'IMS',null,null,null,null),
+    (521,'Material Receipt Edit Form', 'frm60109MaterialReceiptEdit_btnApprove','Approve', 1, 1,null, 'IMS',null,null,null,null),
+    (522,'Material Receipt Edit Form', 'frm60109MaterialReceiptEdit_btnAttach','Attach', 1, 1,null, 'IMS',null,null,null,null),
+    (523,'Material Receipt Edit Form', 'frm60109MaterialReceiptEdit_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
+
+
+    	--SET IDENTITY_INSERT tbl901UserAccessMasterWeb OFF; 
 ---------------------------Voucher ---------------------------  
 
   
@@ -1205,9 +1366,13 @@ VALUES (N'اُردُو', N'ur', N'https://flagcdn.com/w40/pk.png');
 ALTER TABLE dbo.tbl901AlertUsers 
 ADD Isseen BIT NOT NULL DEFAULT 0; 
 
+sp_help tbl901CompanyDetails
  
+ select DefaultcompanyID,CompanyTextColor from tbl901CompanyDetails
+ 
+ update tbl901CompanyDetails 
+ set CompanyTextColor='white'
 
- 
 ALTER TABLE tbl901CompanyDetails 
 ADD 
     DefaultcompanyID TINYINT NULL, 
@@ -2165,7 +2330,7 @@ END
 GO 
 
 
-d Currency Image column if it does not exist ---- 
+--d Currency Image column if it does not exist ---- 
 
 IF COL_LENGTH('dbo.Tbl20169CurrencyExchange', 'CurrencyImage') IS NULL 
 
@@ -2329,11 +2494,118 @@ FROM     dbo.tbl201MasterGroup RIGHT OUTER JOIN
 
 GO 
 
- 
+ select * from tblUserMaster
 
  
  
 
  
 
+ sp_helptext sp_01totClientOutstanding
+
+
+ -- Step 1: Create the table 
+
+CREATE TABLE tbl01supplieroutstanding ( 
+
+    AccountHead NVARCHAR(100), 
+
+    Balance DECIMAL(18, 2) 
+
+); 
+
+  
+
+-- Procedure to calculate total Supplier Outstanding 
+
+CREATE PROCEDURE sp_01totSupOutstanding 
+
+AS 
+
+BEGIN 
+
+    DELETE FROM tbl01supplieroutstanding 
+
+    WHERE AccountHead = 'supplier outstanding'; 
+
+  
+
+    INSERT INTO tbl01supplieroutstanding (AccountHead, Balance) 
+
+    SELECT 'supplier outstanding', SUM([Balance]) 
+
+    FROM qry20115BillsPayableOutStanding 
+
+    WHERE Balance > 0; 
+
+END; 
+
+  
+
+-- Procedure to calculate total Client Outstanding 
+
+CREATE PROCEDURE sp_01totClientOutstanding 
+
+AS 
+
+BEGIN 
+
+    DELETE FROM tbl01supplieroutstanding 
+
+    WHERE AccountHead = 'Client outstanding'; 
+
+  
+
+    INSERT INTO tbl01supplieroutstanding (AccountHead, Balance) 
+
+    SELECT 'Client outstanding', SUM(Balance) 
+
+    FROM Qry20115BillsOutStanding 
+
+    WHERE Balance > 0; 
+
+END; 
+
+  
+
+-- Procedure to calculate total Cash Balance 
+
+CREATE PROCEDURE sp_01totcashbalance 
+
+AS 
+
+BEGIN 
+
+    DELETE FROM tbl01supplieroutstanding 
+
+    WHERE AccountHead = 'Cash Balance'; 
+
+  
+
+    INSERT INTO tbl01supplieroutstanding (AccountHead, Balance) 
+
+    SELECT 'Cash balance', SUM(ISNULL(DrAmount, 0) - ISNULL(CrAmount, 0)) AS CashBalance 
+
+    FROM Qry201MainVoucherEntriesWithMaster 
+
+    WHERE AccountGroup IN ('BANK ACCOUNTS', 'CASH-IN-HAND'); 
+
+END; 
+
+  
+
+-- Execute the procedures 
+
+EXEC sp_01totClientOutstanding; 
+
+EXEC sp_01totSupOutstanding; 
+
+EXEC sp_01totcashbalance; 
+
  
+
+  
+
+  
+
+  ALTER TABLE Tbl201VoucherEntry ADD [Type] VARCHAR(30);
