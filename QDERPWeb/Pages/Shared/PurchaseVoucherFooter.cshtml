@@ -228,7 +228,7 @@
         .Text(new JS("formatMessage('Attach')"))
         .Icon("link")
         .Hint("Click to Attach")
-        .OnClick("onAttachButtonClick")
+        .OnClick("onAttachmentButtonClick")
         .ElementAttr(new { @class = "dx-button-custom btn-attach" })
     )
     <div class="btn-container">
@@ -723,7 +723,7 @@
         $('input, select, textarea').prop('disabled', true);
 
         $('.dx-button').each(function () {
-            const allowedButtons = ['btnBack', 'btnPrint', 'btnAttach', 'btnAttachment', 'btnEditAHead', 'btnAddAHead', 'btncostBack'];
+            const allowedButtons = ['btnBack', 'btnPrint', 'btnAttach',  'btnEditAHead', 'btnAddAHead', 'btncostBack'];
             if (!allowedButtons.includes($(this).attr('id'))) {
                 $(this).dxButton('option', 'disabled', true);
             }
@@ -1090,7 +1090,17 @@
             }
         }
 
+    function onAttachmentButtonClick() {
+        var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
+        var voucherNo = voucherNoBox.option("value");
 
+        var voucherTypeBox = $("#VoucherType").dxSelectBox("instance"); // or dxTextBox
+        var voucherType = voucherTypeBox.option("value");
+        console.log(voucherType)
+        const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&modal=true`;
+        const title = "Ledger Documents";
+        openModal(url, title);
+    }
 
 
 </script>

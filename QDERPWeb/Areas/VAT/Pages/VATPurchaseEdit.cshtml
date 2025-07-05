@@ -3595,6 +3595,12 @@
 					   caption: formatMessage('VAT Description'),
 					   cssClass: "center-header",
 					   width: 150,
+					     cellTemplate: function (container, options) {
+							getTaxSlabData().done(function (dropdownData) {
+								let found = dropdownData.find(d => d.TaxSlabCode == options.data.VATPercentage);
+								container.text(found ? found.TaxCodeToDisplay : "");
+							});
+						},
 					   editCellTemplate: function (cellElement, cellInfo) {
 						   getTaxSlabData().done(function (dropdownData) {
 							   $("<div>").appendTo(cellElement).dxDropDownBox({
@@ -7053,11 +7059,12 @@ $(document).ready(function () {
         $("#InvoiceNo").dxTextBox("instance").option("value", purchaseVoucherNo);
 
         // Get material receipt data by receiptNo and poNo
-        $.get("/api/MaterialReceipt/GetMaterialReceiptdata", { receiptNo, poNo })
+		$.get("/api/PurchaseOrders/GetByPoNo", {receiptNo, poNo })
+
             .done(function (data) {
                 // Map master fields (add null checks as needed)
                 $("#InvoiceDate").dxDateBox("instance").option("value", data.receiptDate || new Date());
-							$("#VATInvoiceType").dxTextBox("instance").option("value", data.OurPurchaseOrderNo);
+					$("#VATInvoiceType").dxTextBox("instance").option("value", data.pono);
                 // $("#SupplierInvoiceNo").dxDropDownBox("instance").option("value", data.supplierInvoiceNo || "");
                 // $("#ddclientcode").dxDropDownBox("instance").option("value", data.supplierCode || "");
                 // $("#ddclientname").dxDropDownBox("instance").option("value", data.supplierName || "");
@@ -7065,49 +7072,60 @@ $(document).ready(function () {
                 // $("#MaterialReceipt").dxTextBox("instance").option("value", data.receiptNo || "");
                 // $("#VATInvoiceType").dxTextBox("instance").option("value", data.poNo || "");
                 // Add more mappings as needed for your fields
-							  $.get("/api/SupplierMaster/GetSupplierByCode", { SupplierCode: data.SupplierCode })
-    .done(function (client) {
-        // Set code and name separately
-        $("#ddclientcode").dxDropDownBox("instance").option("value", client.SupplierAccountLedgerNo || "");
-				$("#ddclientname").dxDropDownBox("instance").option("value", client.SupplierAccountLedgerNo || "");
-    })
-						.fail(function () {
-
-							DevExpress.ui.notify("Failed to load client details.", "error", 2000);
-
-						});
-
-                // Bind child items to grid
-               $.get("/api/MaterialReceipt/GetMaterialReceiptChildren", { receiptNo, poNo })
-                .done(function (childData) {
-                    var grid = $("#B2BdataGrid").dxDataGrid("instance");
-                    if (grid && Array.isArray(childData)) {
-                      const invoiceItems = childData.map((item, idx) => ({
-    SNo: idx + 1,
-    ItemCode: item.Gscode || "",
-    Description: item.Gsdescrpition || item.AddlDescription || "",
-    DescriptionDetails: item.UnitRateMethod || "",
-    Qty: item.QtyReceived || 0,
-    UnitPrice: item.UnitPrice || 0,
-    TotalBeforeDiscount: item.LineTotalBeforeTax || 0,
-    Discount: item.ItemDiscount || 0,
-    Amount: item.LineTotalAfterDisc || 0,
-    VATPercentage: item.PotaxSlab || "",
-    VAT: item.LineTaxAmount || 0,
-    Total: item.LineTotalWithTax || 0,
-    TaxSlabCode: item.PotaxSlab || "",
-    ItemPartNo: item.ItemPartNo || "",
-    // Add more fields if your grid needs them
-}));
-grid.option("dataSource", invoiceItems);
-grid.option("editing", { mode: "cell", allowUpdating: true, allowAdding: true, allowDeleting: true });
-                        grid.option("dataSource", invoiceItems);
-                        grid.option("editing", { mode: "cell", allowUpdating: true, allowAdding: true, allowDeleting: true });
-                    }
+							 if (data.supplierCode) {
+            $.get("/api/SupplierMaster/GetSupplierByCode", { SupplierCode: data.supplierCode })
+                .done(function (client) {
+                    $("#ddclientcode").dxDropDownBox("instance").option("value", client.SupplierAccountLedgerNo || "");
+                    $("#ddclientname").dxDropDownBox("instance").option("value", client.SupplierAccountLedgerNo || "");
                 })
                 .fail(function () {
-                    DevExpress.ui.notify("Failed to load material receipt child details.", "error", 2000);
+                    DevExpress.ui.notify("Failed to load client details.", "error", 2000);
                 });
+        }
+                // Bind child items to grid
+               getDropdownData().done(function (dropdownData) {
+			getUnitRateMethods().done(function (unitRates) {
+				  getTaxSlabData().done(function (taxSlabData) {
+		const invoiceItems = (data.items || []).map((item, idx) => {
+			let found = dropdownData.find(d => d.GSCode === item.Gscode);
+			let unitRateObj = unitRates.find(u => u.UnitCode == item.UnitRateMethod);
+			let taxSlabObj = taxSlabData.find(t => t.TaxSlabCode == item.PotaxSlab);
+
+			// Extract numeric discount from TaxCodeToDisplay if needed
+			let discountValue = item.ItemDiscount;
+			if (!discountValue && taxSlabObj && taxSlabObj.TaxCodeToDisplay) {
+				// Try to extract number from "5%" or "0% (E)"
+				let match = taxSlabObj.TaxCodeToDisplay.match(/(\d+(\.\d+)?)/);
+				discountValue = match ? parseFloat(match[1]) : 0;
+			}
+
+			return {
+				SNo: idx + 1,
+				ItemCode: item.Gscode || "",
+				DetailedDescription: found ? found.GSDescrpition : (item.Gsdescrpition || ""),
+				DescriptionDetails: unitRateObj ? unitRateObj.UnitDesc : "",
+				UnitRateMethod: item.UnitRateMethod,
+				UnitRate: item.UnitPrice || 0,
+				VATPercentage: item.PotaxSlab || "",
+				QuantityInvoiced: item.QuotedQuantity || 0,
+				Discount: discountValue, // <-- always a number for backend
+				DiscountDisplay: taxSlabObj ? taxSlabObj.TaxCodeToDisplay : "", 
+				CalcLineAmount: item.LineTotalAfterDiscount || 0,
+				CalcTaxAmount: item.LineTaxAmount || 0,
+				LineTotal: item.LineTotalWithTax || 0,
+				...item
+    };
+});
+        // Now bind invoiceItems to your grid
+        const grid = $("#B2BdataGrid").dxDataGrid("instance");
+        if (grid) {
+            grid.option("dataSource", invoiceItems);
+            grid.option("editing", { mode: "cell", allowUpdating: true, allowAdding: true, allowDeleting: true });
+        }
+		 });
+    });
+});
+              
             })
             .fail(function () {
                 DevExpress.ui.notify("Failed to load material receipt details.", "error", 2000);
