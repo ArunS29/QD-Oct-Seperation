@@ -195,13 +195,6 @@
 		margin-top: 10px;
 	}
 
-	body {
-		font-family: 'Segoe UI', sans-serif;
-		margin: 0;
-		padding: 20px;
-		background: #f4f6fa;
-	}
-
 	.dashboard {
 		display: flex;
 		gap: 20px;
@@ -303,10 +296,11 @@
 
 	/* Backgrounds per tab */
 	.today-bg {
-		background: linear-gradient(270deg, #2196f3, #64b5f6);
+		background: linear-gradient(270deg, #fb8c00, #ffe0b2); /* deep orange to light peach-orange */
 		background-size: 400% 400%;
 		animation: gradientPulse 6s ease infinite;
 	}
+
 
 	.week-bg {
 		background: linear-gradient(270deg, #009688, #4db6ac);
@@ -315,7 +309,7 @@
 	}
 
 	.month-bg {
-		background: linear-gradient(270deg, #9c27b0, #ba68c8);
+		background: linear-gradient(270deg, #ad1457, #f8bbd0); /* dark pink to light pink */
 		background-size: 400% 400%;
 		animation: gradientPulse 6s ease infinite;
 	}
@@ -408,7 +402,7 @@
 
 	/* Sparkle effect (optional) */
 	.sparkle::after {
-		content: '✨';
+		content: '\2728'; /* ✨ emoji */
 		position: absolute;
 		top: 10px;
 		right: 15px;
@@ -417,16 +411,20 @@
 	}
 
 	@@keyframes sparkle {
-		0%, 100% {
-			transform: scale(0.8) rotate(0deg);
-			opacity: 0.8;
-		}
+		0%, 100%
 
-		50% {
-			transform: scale(1.2) rotate(30deg);
-			opacity: 1;
-		}
+	{
+		transform: scale(0.8) rotate(0deg);
+		opacity: 0.8;
 	}
+
+	50% {
+		transform: scale(1.2) rotate(30deg);
+		opacity: 1;
+	}
+
+	}
+
 
 	.card.green {
 		background: linear-gradient(135deg, #43a047, #66bb6a);
@@ -561,12 +559,32 @@
 			transform: translateY(0);
 		}
 	}
+
+	.blue {
+		background: linear-gradient(135deg, #6a11cb, #2575fc) !important; /* soft blue tones */
+		background-size: 400% 400%;
+		animation: gradientPulse 6s ease infinite;
+	}
+
+	@@keyframes gradientPulse {
+		0% {
+			background-position: 0% 50%;
+		}
+
+		50% {
+			background-position: 100% 50%;
+		}
+
+		100% {
+			background-position: 0% 50%;
+		}
+	}
 </style>
 
 <div class="dashboard" style="display: flex; align-items: center; padding: 10px;width:55%">
 <input id="formId" value="frm20165VATPurchaseMasterView" type="hidden" />
 
-	<div class="card pink shine compact">
+	<div class="card blue shine compact">
 		<h2 class="title-slide">VAT Purchase Register</h2>
 		<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
 		<h6 class="fade-in">QuickDice ERP Solutions</h6>
@@ -582,21 +600,21 @@
 		</div>
 
 		<div class="tab-content active">
-			<h4>🔔 Pending Verifications</h4>
+			<h4>&#128276; Pending Verifications</h4>
 			<div class="count" id="count0">0</div>
 			@* <div class="trend">🔺 12% more than yesterday</div> *@
 			@* <div class="message">You're getting things moving!</div> *@
 		</div>
 
 		<div class="tab-content">
-			<h4>✅ Vouchers Verified</h4>
+			<h4>&#9989; Vouchers Verified</h4>
 			<div class="count" id="count1">0</div>
 			@* <div class="trend">🔼 25% higher than last week</div> *@
 			@* <div class="message">Awesome pace — keep it up!</div> *@
 		</div>
 
 		<div class="tab-content">
-			<h4>📥 New Vouchers</h4>
+			<h4>&#128229; New Vouchers</h4>
 			<div class="count" id="count2">0</div>
 			@* <div class="trend">🔽 10% drop this month</div> *@
 			@* <div class="message">Fewer vouchers — time to catch up?</div> *@

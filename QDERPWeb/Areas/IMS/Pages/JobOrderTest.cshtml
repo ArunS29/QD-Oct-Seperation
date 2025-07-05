@@ -362,8 +362,6 @@
 
             .Label(new JS("formatMessage('Job Order No')"))
 
-            .Value("S-25-00001")
-
             .ReadOnly(true)
 
             .Width("200px"))
@@ -378,8 +376,6 @@
 			.LabelMode(EditorLabelMode.Outside)
 
             .Label(new JS("formatMessage('Report Type')"))
-
-            .Value("VIR")
 
             .ReadOnly(true)
 
@@ -396,8 +392,6 @@
 
             .Label(new JS("formatMessage('Valve Type')"))
 
-            .Value("Safety Valves")
-
             .ReadOnly(true)
 
             .Width("200px"))
@@ -409,9 +403,9 @@
 @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60803jobOrderTest>()
 
     .ID("inspectionGrid")
-	     .DataSource(ds => ds.Mvc()
+	.DataSource(ds => ds.Mvc()
             .Controller("JobOrders")
-            .LoadAction("GetJobOrderTest"))
+            .LoadAction("GetJobOrderTest")) 
             .KeyExpr("SupplierCode")
     .ShowBorders(true)
 
@@ -450,3 +444,7 @@
         @(Html.DevExtreme().Button().ID("btnBack").Text("Back").Icon("back").Type(ButtonType.Normal))
 </div>
  
+<script>
+
+
+</script>

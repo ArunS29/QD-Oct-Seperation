@@ -656,18 +656,6 @@
         window.parent.location.reload(); // Reload the parent page
         window.parent.closeModal();
     }
-        $(document).ready(function () {
-        $.ajax({
-           url: "/api/SupplierMaster/GetNewSupplierNo",
-            method: "GET",
-            success: function (newCode) {
-                    $("#txtSupplierCode").dxTextBox("instance").option("value", newCode);
-            },
-            error: function () {
-                DevExpress.ui.notify("Failed to generate Supplier Code", "error", 3000);
-            }
-        });
-    });
 
     $(document).ready(function () {
         const urlParams = new URLSearchParams(window.location.search);
@@ -677,6 +665,18 @@
 
         if (cleanSupplierCode) {
             loadSupplierDetails(cleanSupplierCode);
+        }else{
+                  $.ajax({
+               url: "/api/SupplierMaster/GetNewSupplierNo",
+                method: "GET",
+                success: function (newCode) {
+                        $("#txtSupplierCode").dxTextBox("instance").option("value", newCode);
+                },
+                error: function () {
+                    DevExpress.ui.notify("Failed to generate Supplier Code", "error", 3000);
+                }
+            });
+
         }
     });
     function loadSupplierDetails(cleanSupplierCode) {

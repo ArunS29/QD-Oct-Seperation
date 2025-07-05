@@ -396,8 +396,14 @@
                 .DisplayFormat("dd-MMM-yyyy")
                 )
             </text>);
-                        columns.AddFor(m => m.AmountAllocated).Caption("Amount").DataField("VoucherAmount").DataType(GridColumnDataType.Number).Format("#,##0.00").AllowEditing(true).Width(90);
-                        columns.AddFor(m => m.CostAllocRemarks).Caption("Remarks").DataField("Remarks").AllowEditing(true);
+                                    columns.AddFor(m => m.AmountAllocated)
+                                    .Caption("Amount")
+                                    .DataField("VoucherAmount")
+                                    .DataType(GridColumnDataType.Number)
+                                    .Alignment(HorizontalAlignment.Right)
+                                    .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+
+                                    columns.AddFor(m => m.CostAllocRemarks).Caption("Remarks").DataField("Remarks").AllowEditing(true);
 
                     })
                 //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
@@ -412,8 +418,8 @@
                 .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
                 .ShowBorders(true)
                .ElementAttr("style", "min-width: 100px; max-width: 100%; flex: 1 1 auto;")
-                .Selection(s => s.Mode(SelectionMode.Multiple).ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)) // Enable selection
-                .Editing(editing => editing.Mode(GridEditMode.Cell).AllowAdding(false).AllowUpdating(true))
+                // Enable selection
+                .Editing(editing => editing.Mode(GridEditMode.Cell).AllowAdding(false).AllowUpdating(true).AllowDeleting(true).UseIcons(true))
                 // Add Summary
                 .Summary(s => s
                 .TotalItems(items =>
@@ -426,6 +432,7 @@
 
                 })
                 )
+               
 
                 )
         </div>
@@ -548,61 +555,100 @@
 
     $(document).ready(function () {
 
-    const VoucherEntryId = parseInt('@voucherEntryNo'.trim(), 10);
-    const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
-    const drCr = '@drCr';
-    const costdataGrid = $('#costdataGrid').dxDataGrid('instance');
+            const VoucherEntryId = parseInt('@voucherEntryNo'.trim(), 10);
+            const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
+            const drCr = '@drCr';
+            const accountHead = '@accountHead';
+            const voucherno = '@voucherNo'; // You declared this in your message
+            const costdataGrid = $('#costdataGrid').dxDataGrid('instance');
 
-    $.ajax({
-        url: `/api/CostAllocation/GetCostAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
-        type: 'GET',
-        success: function (data) {
-            if (data && data.length > 0) {
-                costdataGrid.option('dataSource', data);
-            } else {
-                 // Check if accountHead starts with "Cost"
-        var accountHead = '@accountHead';
-        if (!accountHead.startsWith("Cost")) {
-            return; // Exit if condition is not met
-        }
-                // No data found – insert a default row
-                const defaultRow = [{
-                    DrCr: drCr,
-                    EffectiveDate: new Date().toISOString(),
-                    VoucherAmount: initialVoucherAmount.toFixed(2),
-                    Remarks: '',
-                    // default fallback value
-                }];
-                costdataGrid.option('dataSource', defaultRow);
+            $.ajax({
+                url: `/api/CostAllocation/GetCostAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
+                type: 'GET',
+                success: function (data) {
+                    if (data && data.length > 0) {
+                        costdataGrid.option('dataSource', data);
+                    } else {
+                        // Check if account is cost-allocated
+                        $.ajax({
+                            type: "GET",
+                            url: "/api/CostAllocation/CheckCostAllocation",
+                            data: { AccountHead: accountHead },
+                            success: function (response) {
+                                if (response.isAllocated) {
+                                    // Create default row for backend insertion
+                                    const newRow = {
+                                        CostAllocationId: 0,
+                                        CostAllocDrCr: drCr,
+                                        CostAllocationUnitId:  'ADMIN-0001',
+                                        EffectiveDate: new Date(),
+                                        AmountAllocated: initialVoucherAmount.toFixed(2),
+                                        CostAllocRemarks: null,
+                                        VoucherEntryId: VoucherEntryId,
+                                        VoucherNo: voucherno
+                                    };
+
+                                    // Save to backend
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "/api/CostAllocation/InsertDefaultCostAllocation",
+                                        data: JSON.stringify(newRow),
+                                        contentType: "application/json",
+                                        success: function (insertedResponse) {
+                                            // After successful insert, fetch updated data
+                                            $.ajax({
+                                                url: `/api/CostAllocation/GetCostAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
+                                                type: 'GET',
+                                                success: function (refreshedData) {
+                                                    costdataGrid.option('dataSource', refreshedData);
+                                                },
+                                                error: function () {
+                                                    DevExpress.ui.notify("Failed to refresh cost allocation data after insert.", "error", 4000);
+                                                }
+                                            });
+                                        },
+                                        error: function () {
+                                            DevExpress.ui.notify("Failed to insert default cost allocation.", "error", 4000);
+                                        }
+                                    });
+                                }
+                            },
+                            error: function () {
+                                DevExpress.ui.notify("Failed to check cost allocation eligibility.", "error", 4000);
+                            }
+                        });
+                    }
+                },
+                error: function () {
+                    DevExpress.ui.notify("Failed to load cost allocation data.", "error", 4000);
+                }
+            });
+
+          
+    
+
+            $('#CostAmount').dxNumberBox({
+                valueChanged: function (e) {
+                    const newVoucherAmount = e.value.toFixed(2);
+                    const updatedData = [{
+                        DrCr: drCr,
+                        EffectiveDate: new Date().toISOString(),
+                        VoucherAmount: newVoucherAmount,
+                        Remarks: ''
+                    }];
+                    costdataGrid.option('dataSource', updatedData);
+                }
+            });
+
+            // Function to format the EffectiveDate
+            function formatEffectiveDate(dateString) {
+                if (!dateString) return 'N/A'; // Handle null or empty dates
+
+                const dateObj = new Date(dateString);
+                const options = { day: 'numeric', month: 'short', year: 'numeric' };
+                return dateObj.toLocaleDateString('en-GB', options).replace(/ /g, '-');
             }
-        },
-        error: function () {
-            DevExpress.ui.notify("Failed to load cost allocation data.", "error", 4000);
-        }
     });
-
-    $('#CostAmount').dxNumberBox({
-        valueChanged: function (e) {
-            const newVoucherAmount = e.value.toFixed(2);
-            const updatedData = [{
-                DrCr: drCr,
-                EffectiveDate: new Date().toISOString(),
-                VoucherAmount: newVoucherAmount,
-                Remarks: ''
-            }];
-            costdataGrid.option('dataSource', updatedData);
-        }
-    });
-
-    // Function to format the EffectiveDate
-    function formatEffectiveDate(dateString) {
-        if (!dateString) return 'N/A'; // Handle null or empty dates
-
-        const dateObj = new Date(dateString);
-        const options = { day: 'numeric', month: 'short', year: 'numeric' };
-        return dateObj.toLocaleDateString('en-GB', options).replace(/ /g, '-');
-    }
-});
 
 
     
@@ -709,10 +755,23 @@
         let allRowsData = grid.getDataSource().items();
         let voucherchildno = parseInt('@voucherEntryNo'.trim(), 10);
         let voucherno = '@voucherNo';
-        
+        let expectedVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0; // Parsed from Razor
 
+        // Sum the VoucherAmount from all rows
+        let totalAmount = allRowsData.reduce((sum, row) => sum + (parseFloat(row.VoucherAmount) || 0), 0);
+
+        // Compare rounded to 2 decimals
+        if (Math.abs(totalAmount - expectedVoucherAmount) > 0.01) {
+            DevExpress.ui.dialog.alert(
+                `The total allocated amount (${totalAmount.toFixed(2)}) does not match the voucher amount (${expectedVoucherAmount.toFixed(2)}). Please adjust the cost allocations.`,
+                "Amount Mismatch"
+            );
+            return; // Stop execution
+        }
+
+        // Prepare data for submission
         let costAllocations = allRowsData.map(row => ({
-            CostAllocationId: row.CostAllocationId || 0, // 0 if it's a new record
+            CostAllocationId: row.CostAllocationId || 0,
             CostAllocDrCr: row.DrCr,
             CostAllocationUnitId: row.CostAllocationUnitId,
             EffectiveDate: row.EffectiveDate ? new Date(row.EffectiveDate).toISOString() : null,
@@ -722,34 +781,27 @@
             VoucherNo: voucherno
         }));
 
-
-        // Optional: validate before sending
-
+        // Submit to backend
         $.ajax({
             type: "POST",
-            url: "/api/CostAllocation/SaveCostAllocations", // adjust area/controller path if needed
+            url: "/api/CostAllocation/SaveCostAllocations",
             contentType: "application/json",
             data: JSON.stringify(costAllocations),
             success: function (response) {
-               
                 DevExpress.ui.dialog.alert(
                     "Cost Allocation Details updated Successfully.",
                     "Update Successful"
                 ).then(function () {
-                   let popupInstance = $("#CostAllocationPopup").dxPopup("instance");
+                    let popupInstance = $("#CostAllocationPopup").dxPopup("instance");
                     popupInstance.hide();
                 });
-
-                //     window.location.reload();
-                // CostAllocationPopup.hide();
-                // Hide the popup
-                
             },
             error: function (xhr) {
                 DevExpress.ui.notify("Error saving data: " + xhr.responseText, "error", 4000);
             }
         });
     });
+
 
     
 
@@ -809,98 +861,135 @@
     // });
 
 
-    $(document).ready(function () {
-        setTimeout(function () {
-            let btnInstance = $("#btnCostDelete").dxButton("instance");
-            if (btnInstance) {
-                btnInstance.on("click", function () {
-                    DevExpress.ui.dialog.confirm("You are about to reset Cost allocation details for the voucher entry. Are you sure you want to reset the Cost Allocation?", "Are you sure?")
-                        .done(function (result) {
-                            if (result) {
-                                resetCostDataGrid();
-                            }
-                        });
-                });
-            } else {
-                console.error("btnCostDelete instance not found.");
-            }
-        }, 500);
-    });
+    // $(document).ready(function () {
+    //     setTimeout(function () {
+    //         let btnInstance = $("#btnCostDelete").dxButton("instance");
+    //         if (btnInstance) {
+    //             btnInstance.on("click", function () {
+    //                 DevExpress.ui.dialog.confirm("You are about to reset Cost allocation details for the voucher entry. Are you sure you want to reset the Cost Allocation?", "Are you sure?")
+    //                     .done(function (result) {
+    //                         if (result) {
+    //                            confirmDelete();
+    //                         }
+    //                     });
+    //             });
+    //         } else {
+    //             console.error("btnCostDelete instance not found.");
+    //         }
+    //     }, 500);
+    // });
 
     // Function to reset the DataGrid
-    function resetCostDataGrid() {
+    // function resetCostDataGrid() {
         
-        const costdataGrid = $('#costdataGrid').dxDataGrid('instance');
+    //     const costdataGrid = $('#costdataGrid').dxDataGrid('instance');
 
-        if (costdataGrid) {
-            costdataGrid.option('dataSource', []); // Clear the grid data
-        }
+    //     if (costdataGrid) {
+    //         costdataGrid.option('dataSource', []); // Clear the grid data
+    //     }
 
-        reinitializeGrid();
-    }
+    //     reinitializeGrid();
+    // }
 
-    // Function to reinitialize the grid
-    function reinitializeGrid() {
-        const initialVoucherAmount = $("#CostAmount").dxNumberBox("instance")?.option("value") || 0;
-        const drcr = $("#DrCr").dxSelectBox("instance")?.option("value") || "";
+    // // Function to reinitialize the grid
+    // function reinitializeGrid() {
+    //     const initialVoucherAmount = $("#CostAmount").dxNumberBox("instance")?.option("value") || 0;
+    //     const drcr = $("#DrCr").dxSelectBox("instance")?.option("value") || "";
 
-        const costData = [
-            {
-                DrCr: drcr,
-                EffectiveDate: new Date().toLocaleDateString('en-GB', {
-                    day: 'numeric',
-                    month: 'short',
-                    year: 'numeric',
-                }),
-                VoucherAmount: initialVoucherAmount.toFixed(2),
-                Remarks: ''
-            }
-        ];
+    //     const costData = [
+    //         {
+    //             DrCr: drcr,
+    //             EffectiveDate: new Date().toLocaleDateString('en-GB', {
+    //                 day: 'numeric',
+    //                 month: 'short',
+    //                 year: 'numeric',
+    //             }),
+    //             VoucherAmount: initialVoucherAmount.toFixed(2),
+    //             Remarks: ''
+    //         }
+    //     ];
 
-        const costdataGrid = $('#costdataGrid').dxDataGrid('instance');
+    //     const costdataGrid = $('#costdataGrid').dxDataGrid('instance');
 
-        if (costdataGrid) {
-            costdataGrid.option('dataSource', costData);
-        }
-    }
-
-
-
-    function confirmDelete() {
-        var dataGrid = $("#costdataGrid").dxDataGrid("instance");
-        var selectedRows = dataGrid.getSelectedRowKeys();
-
-        if (selectedRows.length === 0) {
-            DevExpress.ui.dialog.alert("Please select at least one row to delete.", "Warning");
-            return;
-        }
-
-        DevExpress.ui.dialog.confirm("You are about to delete this line entry Item for the Cost Allocated. Delete Line Item.", "Confirm Deletion").done(function (dialogResult) {
-            if (dialogResult) {
-                selectedRows.forEach(function (key) {
-                    dataGrid.getDataSource().store().remove(key).done(function () {
-                        dataGrid.refresh();
-                    }).fail(function (error) {
-                        console.error("Error deleting row:", error);
-                    });
-                });
-            }
-        });
-    }
+    //     if (costdataGrid) {
+    //         costdataGrid.option('dataSource', costData);
+    //     }
+    // }
 
 
 
-    $(document).ready(function () {
-        let dataGrid = $("#costdataGrid").dxDataGrid("instance");
+    // function confirmDelete() {
+    //     const dataGrid = $("#costdataGrid").dxDataGrid("instance");
 
-        // Handle right-click (context menu event)
-        dataGrid.option("onContextMenuPreparing", function (e) {
-            if (e.row && e.target === "content") { // Ensure right-click is on a row, not the header
-                e.event.preventDefault(); // Prevent the default browser context menu
-                confirmDelete(e.row.data); // Show delete confirmation
-            }
-        });
-    });
+    //     const VoucherEntryId = parseInt('@voucherEntryNo'.trim(), 10);
+    //     const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
+    //     const drCr = '@drCr';
+    //     const voucherno = '@voucherNo';
+
+        
+    //             // Step 1: Delete all by VoucherNo
+    //             $.ajax({
+    //                 type: "POST",
+    //                 url: "/api/CostAllocation/DeleteByVoucherNo",
+    //                 contentType: "application/json",
+    //                 data: JSON.stringify({ voucherNo: voucherno }),
+    //                 success: function () {
+    //                     // Step 2: Insert default row
+    //                     const newRow = {
+    //                         CostAllocationId: 0,
+    //                         CostAllocDrCr: drCr,
+    //                         CostAllocationUnitId: 'ADMIN-0001',
+    //                         EffectiveDate: new Date(),
+    //                         AmountAllocated: initialVoucherAmount.toFixed(2),
+    //                         CostAllocRemarks: null,
+    //                         VoucherEntryId: VoucherEntryId,
+    //                         VoucherNo: voucherno
+    //                     };
+
+    //                     $.ajax({
+    //                         type: "POST",
+    //                         url: "/api/CostAllocation/InsertDefaultCostAllocation",
+    //                         contentType: "application/json",
+    //                         data: JSON.stringify(newRow),
+    //                         success: function () {
+    //                             // Step 3: Refresh grid
+    //                             $.ajax({
+    //                                 url: `/api/CostAllocation/GetCostAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
+    //                                 type: 'GET',
+    //                                 success: function (refreshedData) {
+    //                                     dataGrid.option('dataSource', refreshedData);
+    //                                 },
+    //                                 error: function () {
+    //                                     DevExpress.ui.notify("Failed to refresh cost allocation data.", "error", 4000);
+    //                                 }
+    //                             });
+    //                         },
+    //                         error: function () {
+    //                             DevExpress.ui.notify("Failed to insert default cost allocation.", "error", 3000);
+    //                         }
+    //                     });
+    //                 },
+    //                 error: function () {
+    //                     DevExpress.ui.notify("Failed to delete cost allocations.", "error", 3000);
+    //                 }
+    //             });
+            
+    // }
+
+
+
+
+    // $(document).ready(function () {
+    //     let dataGrid = $("#costdataGrid").dxDataGrid("instance");
+
+    //     // Handle right-click (context menu event)
+    //     dataGrid.option("onContextMenuPreparing", function (e) {
+    //         if (e.row && e.target === "content") { // Ensure right-click is on a row, not the header
+    //             e.event.preventDefault(); // Prevent the default browser context menu
+    //             confirmDelete(e.row.data); // Show delete confirmation
+    //         }
+    //     });
+    // });
 
     function setEffectiveDate(e) {
         var $dataGrid = $("#costdataGrid");
@@ -929,35 +1018,489 @@
     }
 
     $(document).ready(function () {
-        var costDataGrid = $("#costdataGrid").dxDataGrid({
-            onRowUpdating: function (e) {
-                let costAmount = $("#CostAmount").dxNumberBox("instance").option("value"); // Get CostAmount value
-                let newAmount = e.newData.VoucherAmount; // New value entered in the grid
-                let oldAmount = e.oldData.VoucherAmount; // Previously loaded value
-                let dataSource = $("#costdataGrid").dxDataGrid("instance").option("dataSource");
+        const dataGrid = $("#costdataGrid").dxDataGrid("instance");
+           dataGrid.option("onRowUpdating", function (e) {
+                debugger;
+                        const VoucherEntryId = parseInt('@voucherEntryNo'.trim(), 10);
+                        const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
+                        const drCr = '@drCr';
+                        const accountHead = '@accountHead';
+                        const voucherno = '@voucherNo'; // You declared this in your message
+                        
+                    const oldData = e.oldData;
+                    const newData = e.newData;
 
-                if (newAmount > oldAmount) {
-                    // Prevent increasing the amount, reset to old value
-                    e.newData.VoucherAmount = oldAmount;
+                    const updatedAmount = newData.VoucherAmount !== undefined ? parseFloat(newData.VoucherAmount) : parseFloat(oldData.VoucherAmount);
+                    const originalAmount = parseFloat(oldData.VoucherAmount);
+
+                    // Check if VoucherAmount changed
+                    const isVoucherAmountChanged = newData.VoucherAmount !== undefined && updatedAmount !== originalAmount;
+                    if (updatedAmount <=  0 ) {
+                        DevExpress.ui.notify("Negative or invalid voucher amounts are not allowed.", "warning", 3000);
+                        e.cancel = true;
+                        return;
+                    }
+
+
+                    // Prevent increasing the amount
+                    if (isVoucherAmountChanged && updatedAmount > originalAmount) {
+                        DevExpress.ui.notify("Updated amount cannot be greater than the original amount.", "warning", 3000);
+                        e.cancel = true;
+                        return;
+                    }
+
+                    // Cancel default update — we'll do it manually
                     e.cancel = true;
-                    // DevExpress.ui.notify("Amount cannot be increased! Resetting to " + oldAmount, "error", 2000);
+
+                    // Case 1: Amount changed and is lower than original — split
+                    if (isVoucherAmountChanged && updatedAmount < originalAmount) {
+                        const remainingAmount = originalAmount - updatedAmount;
+
+                        const adjustOldRow = {
+                            CostAllocationId: oldData.CostAllocationId,
+                            VoucherAmount: updatedAmount,
+                            CostAllocRemarks: newData.CostAllocRemarks ?? oldData.CostAllocRemarks,
+                            CostAllocationUnitId: newData.CostAllocationUnitId ?? oldData.CostAllocationUnitId,
+                            EffectiveDate: newData.EffectiveDate ?? oldData.EffectiveDate
+                        };
+
+                                                const newRow = {
+                                                    CostAllocationId: 0,
+                                                    CostAllocDrCr: drCr,
+                                                    CostAllocationUnitId:  'ADMIN-0001',
+                                                    EffectiveDate: new Date(),
+                                                    AmountAllocated: remainingAmount.toFixed(2),
+                                                    CostAllocRemarks: null,
+                                                    VoucherEntryId: VoucherEntryId,
+                                                    VoucherNo: voucherno
+                                                };
+
+                        // Update old amount first
+                        $.ajax({
+                            type: "POST",
+                            url: "/api/CostAllocation/UpdateCostAllocationWithFields",
+                            contentType: "application/json",
+                            data: JSON.stringify(adjustOldRow),
+                            success: function () {
+                                // Insert new row
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/api/CostAllocation/InsertDefaultCostAllocation",
+                                    contentType: "application/json",
+                                    data: JSON.stringify(newRow),
+                                    success: function (refreshedData) {
+                                        $.ajax({
+                                                url: `/api/CostAllocation/GetCostAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
+                                                type: 'GET',
+                                                success: function (refreshedData) {
+                                                    dataGrid.option('dataSource', refreshedData);
+                                                },
+                                                error: function () {
+                                                    DevExpress.ui.notify("Failed to refresh cost allocation data after insert.", "error", 4000);
+                                                }
+                                        });
+                                    },
+                                    error: function () {
+                                        DevExpress.ui.notify("Failed to insert new cost allocation.", "error", 3000);
+                                    }
+                                });
+                            },
+                            error: function () {
+                                DevExpress.ui.notify("Failed to update original cost allocation.", "error", 3000);
+                            }
+                        });
+                    }
+                    // Case 2: Other fields updated — update existing row directly
+                    else {
+                        const updateRow = {
+                            CostAllocationId: oldData.CostAllocationId,
+                            VoucherAmount: updatedAmount,
+                            CostAllocRemarks: newData.Remarks ?? oldData.Remarks,
+                            CostAllocationUnitId: newData.CostAllocationUnitId ?? oldData.CostAllocationUnitId,
+                            EffectiveDate: newData.EffectiveDate ?? oldData.EffectiveDate
+                        };
+
+                        $.ajax({
+                            type: "POST",
+                            url: "/api/CostAllocation/UpdateCostAllocationWithFields",
+                            contentType: "application/json",
+                            data: JSON.stringify(updateRow),
+                            success:  function () {
+                               
+                               $.ajax({
+                                                url: `/api/CostAllocation/GetCostAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
+                                                type: 'GET',
+                                                success: function (Data) {
+                                                     dataGrid.option('dataSource', Data);
+                                                    dataGrid.refresh(); // ✅ Fix: Properly call refresh
+                                                    dataGrid.cancelEditData(); // ✅ Fix: Exit edit mode
+                                                },
+                                                error: function () {
+                                                    DevExpress.ui.notify("Failed to refresh cost allocation data after insert.", "error", 4000);
+                                                }
+                               });
+                            },
+                            error: function () {
+                                DevExpress.ui.notify("Failed to update cost allocation.", "error", 3000);
+                            }
+                        });
+                    }
+           });
+           dataGrid.option("onRowRemoving", function (e) {
+               debugger;
+                const rowData = e.data;
+                const VoucherEntryId = parseInt('@voucherEntryNo'.trim(), 10);
+                const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
+                const drCr = '@drCr';
+                const voucherno = '@voucherNo';
+
+                e.cancel = true; // Cancel default deletion — we handle it manually
+
+                const allRows = dataGrid.option("dataSource");
+
+                if (allRows.length === 1) {
+                    // Only one row - call confirmDelete
+                    confirmDelete();
                     return;
                 }
 
-                if (newAmount < oldAmount) {
-                    let balanceAmount = oldAmount - newAmount; // Calculate the remaining balance
+                const deletedRowIndex = allRows.findIndex(row => row.CostAllocationId === rowData.CostAllocationId);
+                if (deletedRowIndex == 0) {
+                    const previousRow = allRows[deletedRowIndex + 1];
+                    const currentRow = allRows[deletedRowIndex];
+                    const CostAllocationId = currentRow.CostAllocationId;;
 
-                    // Add new row with the balance amount
-                    let newRow = { ...e.oldData, CostAllocationUnit: "Common Overheads",CostAllocationUnitId:"ADMIN-0001", VoucherAmount: balanceAmount,CostAllocationId: 0,Remarks:null,EffectiveDate:new Date()   };
-                    // Add the new row to the grid
-                    dataSource.push(newRow);
-                    $("#costdataGrid").dxDataGrid("instance").option("dataSource", dataSource);
-                    // DevExpress.ui.notify("Balance amount of " + balanceAmount + " added as a new row.", "success", 2000);
+
+                    const updatedPreviousRow = {
+                        CostAllocationId: previousRow.CostAllocationId,
+                        VoucherAmount: parseFloat(previousRow.VoucherAmount) + parseFloat(rowData.VoucherAmount),
+                        CostAllocRemarks: previousRow.CostAllocRemarks,
+                        CostAllocationUnitId: previousRow.CostAllocationUnitId,
+                        EffectiveDate: previousRow.EffectiveDate
+                    };
+
+                    // Step 1: Update previous row
+                    $.ajax({
+                           type: "POST",
+                            url: `/api/CostAllocation/DeleteCostAllocation?costAllocationId=${CostAllocationId}`,
+                            contentType: "application/json",
+
+                        success: function () {
+                            // Step 2: Delete selected row
+                            $.ajax({
+                                    type: "POST",
+                                    url: "/api/CostAllocation/UpdateCostAllocationWithFields",
+                                    contentType: "application/json",
+                                    data: JSON.stringify(updatedPreviousRow),
+                                success: function () {
+                                    // Step 3: Refresh grid
+                                    $.ajax({
+                                        url: `/api/CostAllocation/GetCostAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
+                                        type: 'GET',
+                                        success: function (refreshedData) {
+                                            dataGrid.option('dataSource', refreshedData);
+                                            dataGrid.refresh();
+                                        },
+                                        error: function () {
+                                            DevExpress.ui.notify("Failed to refresh cost allocation data after deletion.", "error", 4000);
+                                        }
+                                    });
+                                },
+                                error: function () {
+                                    DevExpress.ui.notify("Failed to delete selected cost allocation row.", "error", 3000);
+                                }
+                            });
+                        },
+                        error: function () {
+                            DevExpress.ui.notify("Failed to update previous row with merged amount.", "error", 3000);
+                        }
+                    });
+                } else {
+                    // DevExpress.ui.notify("Cannot merge the first row with any previous entry.", "warning", 3000);
                 }
-            }
-        }).dxDataGrid("instance");
+
+                if (deletedRowIndex > 0) {
+                    const previousRow = allRows[deletedRowIndex - 1];
+                    const currentRow = allRows[deletedRowIndex];
+                    const CostAllocationId = currentRow.CostAllocationId;;
+
+
+                    const updatedPreviousRow = {
+                        CostAllocationId: previousRow.CostAllocationId,
+                        VoucherAmount: parseFloat(previousRow.VoucherAmount) + parseFloat(rowData.VoucherAmount),
+                        CostAllocRemarks: previousRow.CostAllocRemarks,
+                        CostAllocationUnitId: previousRow.CostAllocationUnitId,
+                        EffectiveDate: previousRow.EffectiveDate
+                    };
+
+                    // Step 1: Update previous row
+                    $.ajax({
+                           type: "POST",
+                            url: `/api/CostAllocation/DeleteCostAllocation?costAllocationId=${CostAllocationId}`,
+                            contentType: "application/json",
+                            
+                        success: function () {
+                            // Step 2: Delete selected row
+                            $.ajax({
+                                    type: "POST",
+                                    url: "/api/CostAllocation/UpdateCostAllocationWithFields",
+                                    contentType: "application/json",
+                                    data: JSON.stringify(updatedPreviousRow),
+                                success: function () {
+                                    // Step 3: Refresh grid
+                                    $.ajax({
+                                        url: `/api/CostAllocation/GetCostAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
+                                        type: 'GET',
+                                        success: function (refreshedData) {
+                                            dataGrid.option('dataSource', refreshedData);
+                                            dataGrid.refresh();
+                                        },
+                                        error: function () {
+                                            DevExpress.ui.notify("Failed to refresh cost allocation data after deletion.", "error", 4000);
+                                        }
+                                    });
+                                },
+                                error: function () {
+                                    DevExpress.ui.notify("Failed to delete selected cost allocation row.", "error", 3000);
+                                }
+                            });
+                        },
+                        error: function () {
+                            DevExpress.ui.notify("Failed to update previous row with merged amount.", "error", 3000);
+                        }
+                    });
+                } else {
+                    // DevExpress.ui.notify("Cannot merge the first row with any previous entry.", "warning", 3000);
+                }
+           });
+            setTimeout(function () {
+                let btnInstance = $("#btnCostDelete").dxButton("instance");
+                if (btnInstance) {
+                    btnInstance.on("click", function () {
+                        DevExpress.ui.dialog.confirm("You are about to reset Cost allocation details for the voucher entry. Are you sure you want to reset the Cost Allocation?", "Are you sure?")
+                            .done(function (result) {
+                                if (result) {
+                                   confirmDelete();
+                                }
+                            });
+                    });
+                } else {
+                    console.error("btnCostDelete instance not found.");
+                }
+            }, 500);
+
+        function confirmDelete() {
+                const dataGrid = $("#costdataGrid").dxDataGrid("instance");
+
+                const VoucherEntryId = parseInt('@voucherEntryNo'.trim(), 10);
+                const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
+                const drCr = '@drCr';
+                const voucherno = '@voucherNo';
+
+
+                // Step 1: Delete all by VoucherNo
+                $.ajax({
+                    type: "POST",
+                    url: "/api/CostAllocation/DeleteByVoucherNo",
+                    contentType: "application/json",
+                    data: JSON.stringify({ voucherNo: voucherno }),
+                    success: function () {
+                        // Step 2: Insert default row
+                        const newRow = {
+                            CostAllocationId: 0,
+                            CostAllocDrCr: drCr,
+                            CostAllocationUnitId: 'ADMIN-0001',
+                            EffectiveDate: new Date(),
+                            AmountAllocated: initialVoucherAmount.toFixed(2),
+                            CostAllocRemarks: null,
+                            VoucherEntryId: VoucherEntryId,
+                            VoucherNo: voucherno
+                        };
+
+                        $.ajax({
+                            type: "POST",
+                            url: "/api/CostAllocation/InsertDefaultCostAllocation",
+                            contentType: "application/json",
+                            data: JSON.stringify(newRow),
+                            success: function () {
+                                // Step 3: Refresh grid
+                                $.ajax({
+                                    url: `/api/CostAllocation/GetCostAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
+                                    type: 'GET',
+                                    success: function (refreshedData) {
+                                        dataGrid.option('dataSource', refreshedData);
+                                    },
+                                    error: function () {
+                                        DevExpress.ui.notify("Failed to refresh cost allocation data.", "error", 4000);
+                                    }
+                                });
+                            },
+                            error: function () {
+                                DevExpress.ui.notify("Failed to insert default cost allocation.", "error", 3000);
+                            }
+                        });
+                    },
+                    error: function () {
+                        DevExpress.ui.notify("Failed to delete cost allocations.", "error", 3000);
+                    }
+                });
+
+        }
+
+
+        
     });
 
+
+
+    //     function onCostAmountChanged(e) {
+    //     debugger;
+
+    //     const grid = $("#costdataGrid").dxDataGrid("instance");
+    //     let dataSource = grid.option("dataSource");
+
+    //     const drCr = '@drCr';
+    //     const oldValue = parseFloat(e.previousValue) || 0;
+    //     const newValue = parseFloat(e.value);
+    //     const balance = oldValue - newValue;
+
+    //     if (newValue > oldValue) {
+    //         DevExpress.ui.notify("Allocated amount cannot exceed the voucher amount.", "error", 3000);
+    //         grid.cellValue(e.row.rowIndex, "VoucherAmount", oldValue);
+    //         return;
+    //     }
+
+    //     // ✅ Use visible rows and row.rowIndex to get actual row data
+    //     const visibleRows = grid.getVisibleRows();
+    //     const currentRow = visibleRows[e.row.rowIndex];
+    //     const rowData = currentRow?.data;
+
+    //     if (rowData) {
+    //         rowData.VoucherAmount = newValue;
+    //     }
+
+    //     // ✅ Add balance row if needed
+    //     if (balance > 0.01) {
+    //         const newRow = {
+    //             ...rowData,
+    //             DrCr: drCr,
+    //             CostAllocationUnit: "Common Overheads",
+    //             CostAllocationUnitId: "ADMIN-0001",
+    //             VoucherAmount: balance,
+    //             CostAllocationId: 0,
+    //             Remarks: null,
+    //             EffectiveDate: new Date()
+    //         };
+
+    //         dataSource.push(newRow);
+    //     }
+
+    //     // ✅ Rebind data and refresh
+    //     grid.option("dataSource", dataSource);
+    //     grid.refresh();
+    // }
+
+    // function onCostAllocationRowUpdating(e) {
+    //     debugger;
+    //         const VoucherEntryId = parseInt('@voucherEntryNo'.trim(), 10);
+    //         const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
+    //         const drCr = '@drCr';
+    //         const accountHead = '@accountHead';
+    //         const voucherno = '@voucherNo'; // You declared this in your message
+    //         const costdataGrid = $('#costdataGrid').dxDataGrid('instance');
+    //     const oldData = e.oldData;
+    //     const newData = e.newData;
+
+    //     const updatedAmount = newData.VoucherAmount !== undefined ? parseFloat(newData.VoucherAmount) : parseFloat(oldData.VoucherAmount);
+    //     const originalAmount = parseFloat(oldData.VoucherAmount);
+
+    //     // Check if VoucherAmount changed
+    //     const isVoucherAmountChanged = newData.VoucherAmount !== undefined && updatedAmount !== originalAmount;
+
+    //     // Prevent increasing the amount
+    //     if (isVoucherAmountChanged && updatedAmount > originalAmount) {
+    //         DevExpress.ui.notify("Updated amount cannot be greater than the original amount.", "warning", 3000);
+    //         e.cancel = true;
+    //         return;
+    //     }
+
+    //     // Cancel default update — we'll do it manually
+    //     e.cancel = true;
+
+    //     // Case 1: Amount changed and is lower than original — split
+    //     if (isVoucherAmountChanged && updatedAmount < originalAmount) {
+    //         const remainingAmount = originalAmount - updatedAmount;
+
+    //         const adjustOldRow = {
+    //             CostAllocationId: oldData.CostAllocationId,
+    //             VoucherAmount: updatedAmount,
+    //             CostAllocRemarks: newData.CostAllocRemarks ?? oldData.CostAllocRemarks,
+    //             CostAllocationUnitId: newData.CostAllocationUnitId ?? oldData.CostAllocationUnitId,
+    //             EffectiveDate: newData.EffectiveDate ?? oldData.EffectiveDate
+    //         };
+
+    //                                 const newRow = {
+    //                                     CostAllocationId: 0,
+    //                                     CostAllocDrCr: drCr,
+    //                                     CostAllocationUnitId:  'ADMIN-0001',
+    //                                     EffectiveDate: new Date(),
+    //                                     AmountAllocated: remainingAmount.toFixed(2),
+    //                                     CostAllocRemarks: null,
+    //                                     VoucherEntryId: VoucherEntryId,
+    //                                     VoucherNo: voucherno
+    //                                 };
+
+    //         // Update old amount first
+    //         $.ajax({
+    //             type: "POST",
+    //             url: "/api/CostAllocation/UpdateCostAllocationWithFields",
+    //             contentType: "application/json",
+    //             data: JSON.stringify(adjustOldRow),
+    //             success: function () {
+    //                 // Insert new row
+    //                 $.ajax({
+    //                     type: "POST",
+    //                     url: "/api/CostAllocation/InsertDefaultCostAllocation",
+    //                     contentType: "application/json",
+    //                     data: JSON.stringify(newRow),
+    //                     success: function (refreshedData) {
+    //                         costdataGrid.option('dataSource', refreshedData);
+    //                     },
+    //                     error: function () {
+    //                         DevExpress.ui.notify("Failed to insert new cost allocation.", "error", 3000);
+    //                     }
+    //                 });
+    //             },
+    //             error: function () {
+    //                 DevExpress.ui.notify("Failed to update original cost allocation.", "error", 3000);
+    //             }
+    //         });
+    //     }
+    //     // Case 2: Other fields updated — update existing row directly
+    //     else {
+    //         const updateRow = {
+    //             CostAllocationId: oldData.CostAllocationId,
+    //             VoucherAmount: updatedAmount,
+    //             CostAllocRemarks: newData.CostAllocRemarks ?? oldData.CostAllocRemarks,
+    //             CostAllocationUnitId: newData.CostAllocationUnitId ?? oldData.CostAllocationUnitId,
+    //             EffectiveDate: newData.EffectiveDate ?? oldData.EffectiveDate
+    //         };
+
+    //         $.ajax({
+    //             type: "POST",
+    //             url: "/api/CostAllocation/UpdateCostAllocationWithFields",
+    //             contentType: "application/json",
+    //             data: JSON.stringify(updateRow),
+    //             success: function (refreshedData) {
+    //                 DevExpress.ui.notify("Cost allocation updated.", "success", 3000);
+    //                costdataGrid.option('dataSource', refreshedData);
+    //             },
+    //             error: function () {
+    //                 DevExpress.ui.notify("Failed to update cost allocation.", "error", 3000);
+    //             }
+    //         });
+    //     }
+    // }
 
 
 

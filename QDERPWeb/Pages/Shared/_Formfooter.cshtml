@@ -162,7 +162,7 @@
         .Icon("link")
         .Hint("Click to attach")
         .Width(180)
-        .OnClick("onAttachButtonClick")
+        .OnClick("onAttachmentButtonClick")
         .ElementAttr(new { @class = "dx-button-custom btn-attach" }))
 
     @(Html.DevExtreme().DropDownButton()
@@ -689,18 +689,22 @@
                     DevExpress.ui.dialog.alert(
                         "Voucher has been Verified.",
                         "Verified"
-                    ).done(() => {
-                        $("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherVerifiedBy || "N/A");
-                        $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
-                        const btn = document.getElementById("btnVerify");
-                        btn.classList.add("verified");
+                        ).done(() => {
+                $("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherVerifiedBy || "N/A");
+                $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
 
-                        // Optional: revert after 2 seconds
-                        setTimeout(() => {
-                            btn.classList.remove("verified");
-                        }, 2000);
-                        
-                    });
+                // ✅ Show hidden verified sections
+                $("#verifiedBySection").css("display", "flex");
+                $("#verifiedOnSection").css("display", "flex");
+
+                // Add visual confirmation
+                const btn = document.getElementById("btnVerify");
+                btn.classList.add("verified");
+
+                setTimeout(() => {
+                    btn.classList.remove("verified");
+                }, 2000);
+            });
                 }
                 else {
                     DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
@@ -919,17 +923,28 @@
                     DevExpress.ui.dialog.alert(
                         "Voucher has been Approved.",
                         "Approved"
-                    ).done(() => {
-                        disableEditing();
-                        $("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
-                        $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate || "N/A");
+                        ).done(() => {
+        disableEditing();
 
-                        if (IsDirect === true) {
-                            $("#VerifiedBy").dxCheckBox("instance").option("value", true);
-                            $("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
-                            $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
-                        }
-                    });
+        // Set Approved values
+        $("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
+        $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate || "N/A");
+
+        // ✅ Show Approved fields
+        $("#approvedBySection").css("display", "flex");
+        $("#approvedOnSection").css("display", "flex");
+
+        if (IsDirect === true) {
+            // Set Verified values as well
+            $("#VerifiedBy").dxCheckBox("instance").option("value", true);
+            $("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
+            $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
+
+            // ✅ Show Verified fields
+            $("#verifiedBySection").css("display", "flex");
+            $("#verifiedOnSection").css("display", "flex");
+        }
+    });
                 } else {
                     DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
                 }
@@ -1090,7 +1105,17 @@
         }, 2000);
     }
 
+    function onAttachmentButtonClick() {
+        var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
+        var voucherNo = voucherNoBox.option("value");
 
+        var voucherTypeBox = $("#VoucherType").dxSelectBox("instance"); // or dxTextBox
+        var voucherType = voucherTypeBox.option("value");
+        console.log(voucherType)
+        const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&modal=true`;
+        const title = "Ledger Documents";
+        openModal(url, title);
+}
 
 
 </script>

@@ -4,7 +4,7 @@
 }
 <style>
     .dx-datagrid-headers {
-        border: 1px solid #686868 !important;
+        /* border: 1px solid #686868 !important; */
         width: 100%; /* Adjust to fit the container */
         overflow-x: auto; /* Enable horizontal scrolling */
         white-space: nowrap; /* Prevent wrapping of headings */
@@ -291,20 +291,21 @@
                         @(Html.DevExtreme().DateBox()
                         .ID("QuotationDate")
                         .Value(DateTime.Now)
+						.DisplayFormat("dd-MMM-yyyy")
 						.Label(new JS("formatMessage('Quotation Date:')"))
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%")
                         )
                     </div>
                     <div class="col-md-6" style="display:flex; align-items:end;">
-                        @(Html.DevExtreme().DropDownBox()
+                        @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+						.AcceptCustomValue(true)
                         .Label(new JS("formatMessage('Client Name:')"))
                         .DataSource(d => d.WebApi()
                         .Controller("AddNewClientRequest")
 						.LoadAction("GetClientDetails")
                         .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("ClientCode")
-
+                        .Key("ClientCode")    
                         )
                         .LabelMode(EditorLabelMode.Outside)
                         .ID("GetProjectDropDown")
@@ -333,14 +334,28 @@
                         .Hint("Add Client")
                         .Width(35)
                         .ElementAttr("style", "margin-left: 5px; vertical-align: top;")
-                       // .OnClick("redirecttoClientLeadmaster")
+                       .OnClick("AddNewClient")
                         )
-
+						 @(Html.DevExtreme().Button()
+        .ID("btnEditClient")
+        .Icon("edit")
+        .ElementAttr("class", "button-alignment-up button-group")
+        .OnClick(@"function() {
+            var dropDownBox = $('#GetProjectDropDown').dxDropDownBox('instance');
+            var selectedValue = dropDownBox.option('value');
+            if (!selectedValue) {
+                DevExpress.ui.notify('Please select a client.', 'warning', 2000);
+                return;
+            }
+            var url = '/' + tenantName + '/IMS/ClientLeadMaster?clientCode=' + encodeURIComponent(selectedValue);
+            openModal(url, '');
+        }")
+    )
                     </div>
 
                     <!-- Row 2 -->
                     <div class="col-md-2" style="display:flex; align-items:end;">
-                        @(Html.DevExtreme().DropDownBox()
+                        @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                         .Label(new JS("formatMessage('Sales Person:')"))
                         .DataSource(d => d.WebApi()
                         .Controller("AddNewClientRequest")
@@ -353,7 +368,7 @@
                         .Width(900)
 														@*  .ShowClearButton(true)
 							                           .AcceptCustomValue(true) *@
-                        .OpenOnFieldClick(false)//
+                        .OpenOnFieldClick(false)
                         .ValueChangeEvent("input")
                         .HoverStateEnabled(true)
                         .ValueExpr("SalesPersonCode")
@@ -391,12 +406,14 @@
                         .Width("100%")
 
                         )
+
 				@(Html.DevExtreme().Button()
-    .ID("btnEditClient")
-    .Icon("plus")
-    .ElementAttr("class", "button-alignment-up button-group")
-    .OnClick("onEditClientClick")
+						.ID("btnClientContact")
+						.Icon("plus")
+						.ElementAttr("class", "button-alignment-up button-group")
+						.OnClick("onClientContactClick")
 )
+
                     </div>
                     <div class="col-md-2">
                         @(Html.DevExtreme().TextBox()
@@ -418,7 +435,7 @@
 
                     <!-- Row 3 -->
                     <div class="col-md-2" style="display:flex; align-items:end;">
-                        @(Html.DevExtreme().DropDownBox()
+                        @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                         .Label(new JS("formatMessage('Mode of Request:')"))
                         .DataSource(d => d.WebApi()
                         .Controller("AddNewClientRequest")
@@ -452,7 +469,7 @@
                         )
                     </div>
                     <div class="col-md-3" style="display:flex; align-items:end;">
-                        @(Html.DevExtreme().DropDownBox()
+                        @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                         .Label(new JS("formatMessage('Type of Request:')"))
                         .DataSource(d => d.WebApi()
                         .Controller("AddNewClientRequest")
@@ -487,7 +504,7 @@
                     </div>
 
                     <div class="col-md-3">
-                        @(Html.DevExtreme().DropDownBox()
+                        @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                         .Label(new JS("formatMessage('Project:')"))
                         .DataSource(d => d.WebApi()
                         .Controller("AddNewClientRequest")
@@ -549,7 +566,7 @@
 							<label for="QuoteSummary" id="QuoteSummary1" class="field-label"></label>
                             <div class="field-buttons">
                                 <button class="btn-solid"  onclick="saveField('ReportSummary', 'QuoteSummary','Quote summary')">Set Default</button>
-                                <button class="btn-outline"><i class="fa fa-font"></i></button>
+                                <button class="btn-outline" onclick=""><i class="fa fa-font"></i></button>
                             </div>
                         </div>
                         @(Html.DevExtreme().TextArea()
@@ -598,7 +615,7 @@
                 <div class="row g-2">
                     <div class="col-md-4">
                         <div>
-                            @(Html.DevExtreme().DropDownBox()
+                            @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                             .Label(new JS("formatMessage('Company Branch/Division:')"))
                             .DataSource(d => d.WebApi()
                             .Controller("AddNewClientRequest")
@@ -625,7 +642,7 @@
                             .ContentTemplate(new TemplateName("GetCompanyContentTemplate"))
                             )
 
-                            @(Html.DevExtreme().DropDownBox()
+                            @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                             .Label(new JS("formatMessage('Inventory Group Master:')"))
                             .DataSource(d => d.WebApi()
                             .Controller("AddNewClientRequest")
@@ -679,6 +696,7 @@
                                     @(Html.DevExtreme().DateBox()
                                     .ID("SubmittedOn")
                                     .Value(DateTime.Now)
+									.DisplayFormat("dd-MMM-yyyy")
 									.Label(new JS("formatMessage('Quote Submitted On:')"))
                                     .LabelMode(EditorLabelMode.Outside)
                                     .Width("100%")
@@ -687,6 +705,7 @@
                                 <div class="col-md-6">
                                     @(Html.DevExtreme().DateBox()
                                     .ID("BidClosingDate")
+									.DisplayFormat("dd-MMM-yyyy")
 									.Label(new JS("formatMessage('Bid Closing Date:')"))
                                     .LabelMode(EditorLabelMode.Outside)
                                     .Width("100%")
@@ -753,7 +772,7 @@
                             <!-- Quotation Status with add button -->
                             <div class="row mb-2 align-items-end">
                                 <div class="col-10">
-                                    @(Html.DevExtreme().DropDownBox()
+                                    @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                                     .Label(new JS("formatMessage('Quotation Status:')"))
                                     .DataSource(d => d.WebApi()
 									.Controller("AddNewQuotation")
@@ -819,7 +838,7 @@
                             <tr>
                                 <!-- Prepared By SelectBox -->
                                 <td>
-                                    @(Html.DevExtreme().DropDownBox()
+                                    @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                                     .Label(new JS("formatMessage('Prepared By:')"))
                                     .DataSource(d => d.WebApi()
                                     .Controller("AddNewClientRequest")
@@ -849,7 +868,7 @@
 
                                 <!-- Verified By SelectBox -->
                                 <td>
-                                    @(Html.DevExtreme().DropDownBox()
+                                    @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                                     .Label(new JS("formatMessage('Verified By:')"))
                                     .DataSource(d => d.WebApi()
                                     .Controller("AddNewClientRequest")
@@ -879,7 +898,7 @@
 
                                 <!-- Approved By SelectBox -->
                                 <td>
-                                    @(Html.DevExtreme().DropDownBox()
+                                    @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                                     .Label(new JS("formatMessage('Approved By:')"))
                                     .DataSource(d => d.WebApi()
                                     .Controller("AddNewClientRequest")
@@ -992,7 +1011,7 @@
 	</text>)
 		.EditCellTemplate(@<text>
 		<div style="display: flex; justify-content: space-between; align-items:end;">
-			@(Html.DevExtreme().DropDownBox()
+			@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 			.DataSource(d => d.WebApi()
 			.Controller("VATModule")
 			.LoadAction("GetGoodsAndServices")
@@ -1028,12 +1047,12 @@
 			</div>
 		</div>
 	</text>);
-				columns.Add().DataField("DescriptionDetails")
-			.Caption(new JS("formatMessage('Unit Rate Method')"))
-			.Width(200)
-			.AllowEditing(true)
-			.EditCellTemplate(@<text>
-		@(Html.DevExtreme().DropDownBox()
+		columns.Add().DataField("DescriptionDetails")
+		.Caption(new JS("formatMessage('Unit Rate Method')"))
+		.Width(200)
+		.AllowEditing(true)
+		.EditCellTemplate(@<text>
+		@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 		.ID("unitRateDropDownBoxEdit")
 		.DataSource(d => d.WebApi()
 		.Controller("VATModule")
@@ -1089,7 +1108,7 @@
 	</text>); *@
 	.EditCellTemplate(@<text>
 		<div style="display: flex; justify-content: space-between; align-items:end;">
-			@(Html.DevExtreme().DropDownBox()
+			@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 			.DataSource(d => d.WebApi()
 			.Controller("VATModule")
 			.LoadAction("GetVatTaxSlabs")
@@ -1563,17 +1582,34 @@
 			dataGrid.option("searchPanel.text", text);
 		}
 	}
-	function dataGridSelectionChanged1(e) {
-		const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-		const ddbInstance = $("#GetProjectDropDown").dxDropDownBox("instance");
 
-		if (selectedKey) {
-			ddbInstance.option("value", selectedKey);
-			if (ddbInstance.option("opened")) {
-				ddbInstance.close();
+	function dataGridSelectionChanged1(e) {
+			const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+			const ddbInstance = $("#GetProjectDropDown").dxDropDownBox("instance");
+
+			if (selectedKey) {
+				ddbInstance.option("value", selectedKey);
+				if (ddbInstance.option("opened")) {
+					ddbInstance.close();
+				}
+				 // Make an AJAX call to fetch contact details
+			$.ajax({
+				url: '/api/AddNewClientRequest/GetClientContactDetails',
+				type: 'GET',
+				data: { clientCode: selectedKey },
+				success: function (data) {
+					// Assuming 'data' contains ContactName, ContactEmail, and ContactMobile
+
+	 $('#ClientRefName').dxTextBox("instance").option("value", data.ContactName);
+		 $('#ClientEmail').dxTextBox("instance").option("value",data.ContactEmail);
+	 $('#ClientContactNo').dxTextBox("instance").option("value", data.ContactMobile);
+				},
+				error: function (xhr, status, error) {
+					console.error('Error fetching contact details:', error);
+				}
+			});
 			}
 		}
-	}
 	function dataGridInitialized1(e) {
 		dataGrid = e.component;
 	}
@@ -6319,6 +6355,11 @@
 		const title = "";
 		openModal(url, title);
 	}
+	 function AddNewClient(){
+				const url = `/${tenantName}/IMS/ClientLeadMaster`;
+  const title = "";
+				  openModal(url, title);
+  }
 	$(function () {
 		$("#AddNewQuotation").dxTextBox({
 			text: formatMessage("Add New Quotation"),
@@ -6367,7 +6408,7 @@
 	// 	}
 	//   });
 	// });
-function onEditClientClick() {
+function onClientContactClick() {
     var dropDownBox = $('#GetProjectDropDown').dxDropDownBox('instance');
     var selectedValue = dropDownBox.option('value'); // clientCode
 
@@ -6376,27 +6417,27 @@ function onEditClientClick() {
         return;
     }
 
-    // Get the DataGrid inside the DropDownBox template
-    var grid = $('#GetProject-datagrid').dxDataGrid('instance');
-    var selectedRows = grid.getSelectedRowsData();
-    var selectedItem = selectedRows.length > 0 ? selectedRows[0] : null;
+    // Get the full item directly from dataSource using selected value
+    var dataSource = dropDownBox.getDataSource();
 
-    if (!selectedItem || !selectedItem.ClientName) {
-        DevExpress.ui.notify('Client details not found.', 'error', 2000);
-        return;
-    }
+    dataSource.load().done(function (data) {
+        var selectedItem = data.find(x => x.ClientCode === selectedValue);
 
-    var clientCode = selectedValue;
-    var clientName = selectedItem.ClientName;
-	console.log("CNAme",clientName);
+        if (!selectedItem || !selectedItem.ClientName) {
+            DevExpress.ui.notify('Client details not found.', 'error', 2000);
+            return;
+        }
 
-    var url = '/' + tenantName + '/IMS/QuotationClientContactList?clientCode=' + 
-              encodeURIComponent(clientCode) + '&clientName=' + 
-              encodeURIComponent(clientName);
+        var clientCode = selectedValue;
+        var clientName = selectedItem.ClientName;
 
-    openModal(url, '');
+        var url = '/' + tenantName + '/IMS/QuotationClientContactList?clientCode=' +
+            encodeURIComponent(clientCode) + '&clientName=' +
+            encodeURIComponent(clientName);
+
+        openModal(url, '');
+    });
 }
-
 
  $(function () {
     $.ajax({

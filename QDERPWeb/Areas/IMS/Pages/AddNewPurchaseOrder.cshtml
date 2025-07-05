@@ -1236,11 +1236,17 @@
 
                     {
 
-                        dataField: "AddlDescription",
+                        dataField: "GSCode",
 
                         caption: formatMessage('Description'),
 
                         width: 550,
+                         cellTemplate: function(container, options) {
+            getDropdownData().done(function(dropdownData) {
+                let found = dropdownData.find(d => d.GSCode === options.data.Gscode);
+                container.text(found ? found.GSDescrpition : "");
+            });
+        },
                              sortOrder: "asc", // auto-sort
                         editCellTemplate: function (cellElement, cellInfo) {
 
@@ -1332,7 +1338,7 @@
 
                                                 if (selectedItem) {
 
-                                                    //e.component.option("value", selectedItem.GSCode);
+                                                    e.component.option("value", selectedItem.GSCode);
 
                                                     cellInfo.setValue(selectedItem.GSDescrpition);
 
@@ -1574,68 +1580,67 @@
 
 
                     {
-                        dataField: "VATDesc",
-                        caption: formatMessage('VAT%'),
-                        width: 150,
-                        editCellTemplate: function (cellElement, cellInfo) {
-                            getTaxSlabData().done(function (dropdownData) {
-                                $("<div>").appendTo(cellElement).dxDropDownBox({
-                                    dataSource: dropdownData,
-                                    valueExpr: "TaxSlabCode",
-                                    displayExpr: "TaxCodeToDisplay",
-                                    value: cellInfo.value,
-                                    dropDownOptions: { width: 400 },
-                                    placeholder: "Select an Item / Services",
-                                    onValueChanged: function (e) {
-                                        let selectedItem = dropdownData.find(item => item.TaxSlabCode === e.value);
-                                        if (selectedItem) {
-                                            cellInfo.setValue(selectedItem.TaxCodeToDisplay);
-                                            let dataGrid = $("#itemGrid").dxDataGrid("instance");
-                                            let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
-                                            let TaxSlabCode = selectedItem.TaxSlabCode;
-
-                                            VATPercentage(selectedItem.TaxRate, rowIndex, TaxSlabCode)
-
-
-                                        }
-                                    },
-                                    contentTemplate: function (e) {
-                                        return $("<div>").dxDataGrid({
-                                            dataSource: dropdownData,
-                                            selection: { mode: "single" },
-                                            keyExpr: "TaxSlabCode",
-                                            height: 300,
-                                            scrolling: { mode: "virtual" },
-                                            columns: [
-                                                { dataField: "TaxSlab", caption: "TaxSlab", width: 200 },
-                                                { dataField: "TaxRate", caption: "TaxRate", width: 80 }
-                                            ],
-                                            onSelectionChanged: function (selectedItems) {
-                                                let selectedItem = selectedItems.selectedRowsData[0];
-                                                if (selectedItem) {
-                                                    e.component.option("value", selectedItem.TaxSlabCode);
-                                                    cellInfo.setValue(selectedItem.TaxCodeToDisplay);
-
-                                                    e.component.close();
-                                                }
-                                            }
-                                        });
-                                    }
-                                });
-                            });
+        dataField: "PotaxSlab",
+        caption: formatMessage('VAT%'),
+        width: 150,
+        editCellTemplate: function (cellElement, cellInfo) {
+            getTaxSlabData().done(function (dropdownData) {
+                $("<div>").appendTo(cellElement).dxDropDownBox({
+                    dataSource: dropdownData,
+                    valueExpr: "TaxSlabCode",
+                    displayExpr: "TaxCodeToDisplay",
+                    value: cellInfo.value,
+                    dropDownOptions: { width: 400 },
+                    placeholder: "Select VAT %",
+                    onValueChanged: function (e) {
+                        let selectedItem = dropdownData.find(item => item.TaxSlabCode === e.value);
+                        if (selectedItem) {
+                            cellInfo.setValue(selectedItem.TaxSlabCode); // <-- Store the code, not the display string!
+                            // Optionally update other fields if needed
                         }
                     },
+                    contentTemplate: function (e) {
+                        return $("<div>").dxDataGrid({
+                            dataSource: dropdownData,
+                            selection: { mode: "single" },
+                            keyExpr: "TaxSlabCode",
+                            height: 300,
+                            scrolling: { mode: "virtual" },
+                            columns: [
+                                { dataField: "TaxSlab", caption: "TaxSlab", width: 200 },
+                                { dataField: "TaxRate", caption: "TaxRate", width: 80 }
+                            ],
+                            onSelectionChanged: function (selectedItems) {
+                                let selectedItem = selectedItems.selectedRowsData[0];
+                                if (selectedItem) {
+                                    e.component.option("value", selectedItem.TaxSlabCode);
+                                    cellInfo.setValue(selectedItem.TaxSlabCode); // <-- Store the code!
+                                    e.component.close();
+                                }
+                            }
+                        });
+                    }
+                });
+            });
+        },
+        cellTemplate: function(container, options) {
+            getTaxSlabData().done(function(dropdownData) {
+                let found = dropdownData.find(d => d.TaxSlabCode === options.data.PotaxSlab);
+                container.text(found ? found.TaxCodeToDisplay : "");
+            });
+        }
+    },
 
 
                         { dataField: "Amount", caption: formatMessage('Amount'), width: 150, format: { type: "fixedPoint", precision: 2 } ,visible: false },
-                    { dataField: "DiscountInOc", caption: formatMessage('VAT'), width: 150 },
+                        { dataField: "LineTaxAmount",  caption: formatMessage('VAT'), width: 150 },
 
-                    { dataField: "UnitRateInOc", caption: formatMessage('Amount'), width: 150, format: { type: "fixedPoint", precision: 2 } },
+                        { dataField: "LineTotalWithTax",  caption: formatMessage('Amount'), width: 150, format: { type: "fixedPoint", precision: 2 } },
 
-                    { dataField: "MRItemNumber", caption: formatMessage('MR Item NO'), width: 150 },
+                        { dataField:"MRItemNo", caption: formatMessage('MR Item NO'), width: 150 },
 
 
-                    { dataField: "TaxSlabCode", caption: formatMessage('TaxSlabCode'), width: 150, allowEditing: false, visible: false }
+                    // { dataField: "TaxSlabCode", caption: formatMessage('TaxSlabCode'), width: 150, allowEditing: false, visible: false }
 
                 ],
 
@@ -2136,24 +2141,26 @@ $("#btnAddNew").on("click", function () {
 const children = grid.getDataSource().items().map(item => {
 
         return {
-            PochildNo: Number(item.PochildNo) || 0,
-            Pono: master.Pono,
-            Gscode: item.Gscode,
-            AddlDescription: item.AddlDescription,
-            QuotedQuantity: item.QuotedQuantity,
-            UnitRateMethod: item.UnitRateMethod !== undefined && item.UnitRateMethod !== null && item.UnitRateMethod !== "" ? Number(item.UnitRateMethod) : null,
-            UnitPrice: item.UnitPrice,
-            ItemDiscount: item.ItemDiscount,
-            PotaxSlab: item.PotaxSlab !== undefined && item.PotaxSlab !== null && item.PotaxSlab !== "" ? Number(item.PotaxSlab) : null,
-            PoitemRemarks: item.PoitemRemarks,
-            LineOrderNo: item.LineOrderNo,
-            PlanNo: item.PlanNo,
-            DeliveryPeriod: item.DeliveryPeriod,
-            MritemNo: item.MritemNo,
-            Currency: item.Currency !== undefined && item.Currency !== null && item.Currency !== "" ? Number(item.Currency) : null,
-            ExchangeRate: item.ExchangeRate,
-            UnitRateInOc: item.UnitRateInOc,
-            DiscountInOc: item.DiscountInOc
+                PochildNo: Number(item.PochildNo) || 0,
+                Pono: master.Pono,
+                Gscode: item.Gscode,
+                // AddlDescription: item.AddlDescription,
+                QuotedQuantity: item.QuotedQuantity,
+                UnitRateMethod: item.UnitRateMethod !== undefined && item.UnitRateMethod !== null && item.UnitRateMethod !== "" ? Number(item.UnitRateMethod) : null,
+                UnitPrice: item.UnitPrice,
+                ItemDiscount: item.ItemDiscount,
+                PotaxSlab: item.PotaxSlab !== undefined && item.PotaxSlab !== null && item.PotaxSlab !== "" ? Number(item.PotaxSlab) : null,
+                    PoitemRemarks: item.PoitemRemarks,
+                LineOrderNo: item.LineOrderNo,
+                PlanNo: item.PlanNo,
+                DeliveryPeriod: item.DeliveryPeriod,
+                MritemNo: item.MritemNo,
+                LineTaxAmount: item.LineTaxAmount,
+                LineTotalWithTax: item.LineTotalWithTax,
+                Currency: item.Currency !== undefined && item.Currency !== null && item.Currency !== "" ? Number(item.Currency) : null,
+                ExchangeRate: item.ExchangeRate,
+                UnitRateInOc: item.UnitRateInOc,
+                DiscountInOc: item.DiscountInOc
         };
     });
 
@@ -2498,6 +2505,6 @@ setDxFieldValue("approvedBy2", data.approvedBy);
         }
     });
 
-
+         
 
 </script>
