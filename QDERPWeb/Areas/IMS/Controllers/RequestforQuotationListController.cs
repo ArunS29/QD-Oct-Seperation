@@ -999,6 +999,33 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, new { success = false, message = "Internal server error." });
             }
         }
+        [HttpGet]
+        public IActionResult GetSupplierContactDetails(string supplierCode)
 
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                // Replace with your actual data retrieval logic
+                var supplier = dbContext.Tbl30199SupplierMasters
+                                 .FirstOrDefault(c => c.SupplierCode == supplierCode);
+
+                if (supplier != null)
+                {
+                    return Json(new
+                    {
+                        ContactName =supplier.ContactPerson,
+                        ContactEmail = supplier.ContactEmail,
+                        ContactMobile = supplier.ContactMobile1
+                    });
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+
+            return Unauthorized(new { Message = "Invalid tenant.", Success = false });
+
+        }
     }
 }

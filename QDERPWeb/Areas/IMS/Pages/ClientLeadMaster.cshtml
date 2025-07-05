@@ -752,32 +752,27 @@
     <a href="javascript:void(0);" onclick="deleteRow(this)">Delete</a>
 </script>
 <script>
-        $(document).ready(function () {
-        $.ajax({
-                url: "/api/ClientLeadMaster/GetNewClientCode",
-            method: "GET",
-            success: function (newCode) {
-                    $("#txtClientCode").dxTextBox("instance").option("value", newCode);
-            },
-            error: function () {
-                DevExpress.ui.notify("Error generating new Client Code", "error", 3000);
-            }
-        });
-    });
-
-    
+   
     $(document).ready(function () {
         const urlParams = new URLSearchParams(window.location.search);
         const clientCode = urlParams.get("clientCode");
        
          const cleanClientCode = clientCode ? clientCode.split("?")[0] : null;   // Trim off anything after '?' if it's accidentally included in value
-        // ✅ Define globally so Razor grid can access it
-    // window.getClientCodeParams = function () {
-    //     return { cleanClientCode: cleanClientCode };
-    // };
+    
 
         if (cleanClientCode) {
             loadClientDetails(cleanClientCode); 
+        }else{
+                 $.ajax({
+                 url: "/api/ClientLeadMaster/GetNewClientCode",
+                method: "GET",
+                success: function (newCode) {
+                        $("#txtClientCode").dxTextBox("instance").option("value", newCode);
+                },
+                error: function () {
+                    DevExpress.ui.notify("Error generating new Client Code", "error", 3000);
+                }
+            });
         }
     
     });
