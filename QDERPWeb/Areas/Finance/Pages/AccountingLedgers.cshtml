@@ -757,7 +757,7 @@ buttons.Add()
 				.Icon("smalliconslayout")
 				.Width(250)
 				.SplitButton(true) // This enables main-button vs arrow split behavior
-				.ElementAttr("class", "button-alignment-down")
+				  .ElementAttr(new { @class = "button-alignment-down", style = "margin-top: 5px;" }) 
 				.TabIndex(4)
 				.OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }") // MAIN button click
 				.DropDownOptions(options => options.Width(230))
