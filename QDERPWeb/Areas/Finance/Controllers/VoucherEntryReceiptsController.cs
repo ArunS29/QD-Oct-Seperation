@@ -467,7 +467,7 @@ namespace Form.Areas.Finance.Controllers
 				return Unauthorized(new { success = false, message = "Invalid tenant." });
 			}
 
-            string tenantName = HttpContext.Request.Headers["X-Tenant-Name"];
+            string tenantName = HttpContext.Session.GetString("TenantName");
 
             if (string.IsNullOrWhiteSpace(tenantName))
                 return BadRequest(new { message = "Session expired or tenant name missing.", success = false });
