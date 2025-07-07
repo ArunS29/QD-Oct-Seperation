@@ -16,7 +16,7 @@ using System.Linq;
 using QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims;
 using ERPMasterWtDataContext = QD.ERP.Web.DAL.Entities.ERPMasterWtDataContext;
 using QD.ERP.Web.Areas.VAT.Reports.VATCreditNote;
-using QD.ERP.Web.Areas.Finance.Reports.journalEntry;
+//using QD.ERP.Web.Areas.Finance.Reports.journalEntry;
 using QD.ERP.Web.Areas.Finance.Reports.Journal_Register;
 using QD.ERP.Web.Areas.VAT.Reports.Inventory_Reports;
 
