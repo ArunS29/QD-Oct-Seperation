@@ -6,427 +6,64 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-    /* (Same CSS as your previous post, unchanged for brevity) */
-    body {
-        background: #F7F8FA;
-        font-family: 'Inter', sans-serif;
-        margin: 0;
-        padding: 0;
-    }
-
-    .main-wrap {
-        margin-right: 10px;
-        margin-left: 10px;
-        max-width: 2000px;
-        margin: 30px auto 0 auto;
-        padding: 0 0 60px 0;
-    }
-
-    .header-greet {
-        font-size: 1.38rem;
-        font-weight: 800;
-        color: #181B32;
-        margin-bottom: 12px;
-        margin-top: 5px;
-        letter-spacing: -0.5px;
-    }
-
-    .header-greet span {
-        color: #9EA1B4;
-        font-size: 1.1rem;
-        font-weight: 400;
-        margin-left: 12px;
-    }
-
-    .summary-row {
-        display: flex;
-        gap: 24px;
-        margin-bottom: 8px;
-    }
-
-    .summary-card {
-        flex: 1;
-        background: lightskyblue;
-        border-radius: 20px;
-        box-shadow: 0 2px 14px 0 rgba(80, 92, 186, 0.07);
-        padding: 28px 20px 22px 26px;
-        display: flex;
-        flex-direction: column;
-        min-width: 0;
-        position: relative;
-        transition: box-shadow 0.16s;
-    }
-
-    .summary-card:not(:last-child)::after {
-        content: '';
-        position: absolute;
-        right: 0;
-        top: 20%;
-        width: 1.5px;
-        height: 60%;
-        background: linear-gradient(to bottom, #eceefe 40%, #f8fafd 90%);
-        border-radius: 1px;
-        opacity: 0.6;
-        pointer-events: none;
-        z-index: 1;
-    }
-
-    .summary-card:hover {
-        box-shadow: 0 4px 18px 0 rgba(80, 92, 186, 0.14);
-    }
-
-    .summary-label {
-        color: darkblue;
-        font-size: 13.5px;
-        letter-spacing: 1px;
-        font-weight: 700;
-        text-transform: uppercase;
-        margin-bottom: 3px;
-        letter-spacing: 0.6px;
-    }
-
-    .summary-value {
-        font-size: 2.45rem;
-        font-weight: 700;
-        color: #292949;
-        margin-bottom: 7px;
-        margin-top: 2px;
-        display: flex;
-        align-items: center;
-        min-height: 42px;
-        letter-spacing: 0.2px;
-    }
-
-    .summary-currency {
-        font-size: 1.3rem;
-        color: #b8b8d5;
-        margin-right: 4px;
-    }
-
-    .summary-loader {
-        display: inline-block;
-        width: 24px;
-        height: 24px;
-        vertical-align: middle;
-        margin-left: 7px;
-    }
-
-    .summary-loader:after {
-        content: " ";
-        display: block;
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        border: 2.5px solid #aaa;
-        border-color: #aaa #eee #eee #eee;
-        animation: summarySpin 1s linear infinite;
-    }
-
-    #keyframes summarySpin {
-        to {
-            transform: rotate(360deg);
-        }
-    }
-
-    .summary-trend {
-        display: flex;
-        align-items: center;
-        margin-top: 2px;
-        font-size: 15px;
-    }
-
-    .trend-up,
-    .trend-down {
-        display: flex;
-        align-items: center;
-        font-size: 14.6px;
-        font-weight: 600;
-        border-radius: 13px;
-        padding: 1.5px 13px 1.5px 8px;
-        margin-left: 0;
-        letter-spacing: 0.1px;
-    }
-
-    .trend-up {
-        color: #26A664;
-        background: #ECF9F0;
-    }
-
-    .trend-down {
-        color: #EC4D56;
-        background: #FFF2F1;
-    }
-
-    .trend-up svg,
-    .trend-down svg {
-        width: 15px;
-        height: 15px;
-        margin-right: 3px;
-        vertical-align: middle;
-    }
-
-    .dashboard-grid {
-        display: grid;
-        grid-template-columns: 2.2fr 1.1fr;
-        gap: 24px;
-        margin-top: 18px;
-    }
-
-    .dashboard-table-card,
-    .dashboard-chart-card {
-        background: #fff;
-        border-radius: 18px;
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-        padding: 30px 22px 20px 26px;
-    }
-
-    .dashboard-table-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-        margin-bottom: 14px;
-    }
-
-    .dashboard-table-title {
-        font-size: 20px;
-        font-weight: 700;
-        color: #292949;
-        margin-bottom: 6px;
-    }
-
-    .dashboard-tabs {
-        display: flex;
-        gap: 9px;
-        align-items: center;
-        margin-top: 1px;
-    }
-
-    .dashboard-tab {
-        border: 2px solid transparent;
-        background: transparent;
-        color: #292949;
-        font-weight: 600;
-        padding: 8px 20px;
-        border-radius: 24px;
-        font-size: 15.5px;
-        cursor: pointer;
-        transition: .2s;
-    }
-
-    .dashboard-tab.active {
-        border-color: #7648FE;
-        color: #7648FE;
-        background: #F7F6FF;
-    }
-
-    .dashboard-tab .count-badge {
-        margin-left: 8px;
-        background: #7648FE;
-        color: #fff;
-        border-radius: 12px;
-        font-size: 13px;
-        padding: 1px 7px;
-        font-weight: 600;
-    }
-
-    .see-all-link {
-        color: #7648FE;
-        font-weight: 600;
-        text-decoration: none;
-        font-size: 15px;
-        margin-bottom: 2px;
-        transition: color .18s;
-    }
-
-    .see-all-link:hover {
-        color: #4227A0;
-    }
-
-    .dashboard-table {
-        width: 100%;
-        border-collapse: separate;
-        border-spacing: 0 5px;
-        font-size: 16px;
-    }
-
-    .dashboard-table th,
-    .dashboard-table td {
-        text-align: left;
-        padding: 11px 7px;
-        background: #fff;
-    }
-
-    .dashboard-table th {
-        color: #999;
-        font-size: 15px;
-        font-weight: 600;
-        background: #F9F9FB;
-        border-bottom: 1.5px solid #F2F2F4;
-    }
-
-    .dashboard-table td {
-        font-size: 16px;
-        color: #232323;
-        border-bottom: 1px solid #F5F5F7;
-    }
-
-    .dashboard-table tr:last-child td {
-        border-bottom: none;
-    }
-
-    .dashboard-table td:first-child {
-        font-weight: 500;
-        color: #28294A;
-        max-width: 210px;
-    }
-
-    .dashboard-table td:nth-child(2) {
-        font-weight: 700;
-        color: #222;
-    }
-
-    .dashboard-chart-card {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        min-height: 330px;
-        padding: 30px 16px 16px 16px;
-    }
-
-    .chart-header {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        font-weight: 700;
-        color: #222;
-        font-size: 17px;
-        margin-bottom: 8px;
-        align-items: center;
-    }
-
-    .chart-period-dropdown {
-        color: #8686A4;
-        font-size: 14px;
-        font-weight: 500;
-        background: none;
-        border: none;
-        outline: none;
-        cursor: pointer;
-        margin-right: 4px;
-    }
-
-    #donutChart,
-    #lineChart {
-        max-width: 320px;
-    }
-
-    #donutChart {
-        margin-top: 18px;
-    }
-
-    #donutChart {
-        max-height: 230px;
-    }
-
-    .dashboard-bottom-grid {
-        display: grid;
-        grid-template-columns: 2.2fr 1.1fr;
-        gap: 24px;
-        margin-top: 20px;
-    }
-
-    .dashboard-card {
-        background: #fff;
-        border-radius: 18px;
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-        padding: 26px 20px 14px 23px;
-    }
-
-    .chart-tab-bar {
-        display: flex;
-        gap: 6px;
-        align-items: center;
-        margin-bottom: 14px;
-    }
-
-    .chart-tab-bar button {
-        border: 2px solid transparent;
-        background: transparent;
-        color: #292949;
-        font-weight: 600;
-        padding: 7px 16px;
-        border-radius: 17px;
-        font-size: 14.5px;
-        cursor: pointer;
-        margin-right: 2px;
-    }
-
-    .chart-tab-bar button.active {
-        border-color: #7648FE;
-        background: #F6F3FF;
-        color: #7648FE;
-    }
-
-    .expenses-list {
-        display: flex;
-        flex-direction: column;
-        gap: 21px;
-        margin-top: 17px;
-    }
-
-    .expense-item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .expense-title {
-        font-size: 15.3px;
-        color: #232323;
-        min-width: 130px;
-        font-weight: 600;
-    }
-
-    .expense-bar-bg {
-        background: #ECE9FA;
-        border-radius: 5px;
-        height: 8px;
-        width: 46%;
-        margin: 0 12px 0 22px;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .expense-bar-inner {
-        height: 100%;
-        border-radius: 5px;
-        transition: width 0.4s;
-    }
-
-    .expense-bar1 {
-        background: linear-gradient(90deg, #7648FE, #FD4EB0 90%);
-    }
-
-    .expense-bar2 {
-        background: linear-gradient(90deg, #7BC0FE, #9976FE);
-    }
-
-    .expense-bar3 {
-        background: linear-gradient(90deg, #FF84AC, #8A56F6);
-    }
-
-    .expense-bar4 {
-        background: linear-gradient(90deg, #9CE3B2, #5145CD);
-    }
-
-    .expense-amount {
-        font-size: 15.5px;
-        font-weight: 700;
-        color: #43435B;
-        letter-spacing: 0.5px;
-        min-width: 80px;
-        text-align: right;
-    }
+/* (Same CSS as your previous post, unchanged for brevity) */
+body { background: #F7F8FA; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
+.main-wrap { margin-right: 10px; margin-left: 10px; max-width: 2000px; margin: 30px auto 0 auto; padding: 0 0 60px 0; }
+.header-greet { font-size: 1.38rem; font-weight: 700; color: #181B32; margin-bottom: 12px; margin-top: 5px; letter-spacing: -0.5px; }
+.header-greet span { color: #9EA1B4; font-size: 1.1rem; font-weight: 400; margin-left: 12px; }
+.summary-row { display: flex; gap: 24px; margin-bottom: 8px; }
+.summary-card { flex: 1; background: lightskyblue; border-radius: 20px; box-shadow: 0 2px 14px 0 rgba(80,92,186,0.07); padding: 28px 20px 22px 26px; display: flex; flex-direction: column; min-width: 0; position: relative; transition: box-shadow 0.16s; }
+.summary-card:not(:last-child)::after { content: ''; position: absolute; right: 0; top: 20%; width: 1.5px; height: 60%; background: linear-gradient(to bottom,#eceefe 40%,#f8fafd 90%); border-radius: 1px; opacity: 0.6; pointer-events: none; z-index: 1; }
+.summary-card:hover { box-shadow: 0 4px 18px 0 rgba(80,92,186,0.14); }
+.summary-label { color: darkblue; font-size: 13.5px; letter-spacing: 1px; font-weight: 700; text-transform: uppercase; margin-bottom: 3px; letter-spacing: 0.6px; }
+.summary-value { font-size: 2.45rem; font-weight: 700; color: #292949; margin-bottom: 7px; margin-top: 2px; display: flex; align-items: center; min-height: 42px; letter-spacing: 0.2px; }
+.summary-currency { font-size: 1.3rem; color: #b8b8d5; margin-right: 4px; }
+.summary-loader { display: inline-block; width: 24px; height: 24px; vertical-align: middle; margin-left: 7px; }
+.summary-loader:after { content: " "; display: block; width: 18px; height: 18px; border-radius: 50%; border: 2.5px solid #aaa; border-color: #aaa #eee #eee #eee; animation: summarySpin 1s linear infinite; }
+#keyframes summarySpin { to { transform: rotate(360deg); } }
+.summary-trend { display: flex; align-items: center; margin-top: 2px; font-size: 15px; }
+.trend-up, .trend-down { display: flex; align-items: center; font-size: 14.6px; font-weight: 600; border-radius: 13px; padding: 1.5px 13px 1.5px 8px; margin-left: 0; letter-spacing: 0.1px; }
+.trend-up { color: #26A664; background: #ECF9F0; }
+.trend-down { color: #EC4D56; background: #FFF2F1; }
+.trend-up svg, .trend-down svg { width: 15px; height: 15px; margin-right: 3px; vertical-align: middle; }
+.dashboard-grid { display: grid; grid-template-columns: 2.2fr 1.1fr; gap: 24px; margin-top: 18px; }
+.dashboard-table-card, .dashboard-chart-card { background: #fff; border-radius: 18px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); padding: 30px 22px 20px 26px; }
+.dashboard-table-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 14px; }
+.dashboard-table-title { font-size: 20px; font-weight: 700; color: #292949; margin-bottom: 6px; }
+.dashboard-tabs { display: flex; gap: 9px; align-items: center; margin-top: 1px; }
+.dashboard-tab { border: 2px solid transparent; background: transparent; color: #292949; font-weight: 600; padding: 8px 20px; border-radius: 24px; font-size: 15.5px; cursor: pointer; transition: .2s; }
+.dashboard-tab.active { border-color: #7648FE; color: #7648FE; background: #F7F6FF; }
+.dashboard-tab .count-badge { margin-left: 8px; background: #7648FE; color: #fff; border-radius: 12px; font-size: 13px; padding: 1px 7px; font-weight: 600; }
+.see-all-link { color: #7648FE; font-weight: 600; text-decoration: none; font-size: 15px; margin-bottom: 2px; transition: color .18s; }
+.see-all-link:hover { color: #4227A0; }
+.dashboard-table { width: 100%; border-collapse: separate; border-spacing: 0 5px; font-size: 16px; }
+.dashboard-table th, .dashboard-table td { text-align: left; padding: 11px 7px; background: #fff; }
+.dashboard-table th { color: #999; font-size: 15px; font-weight: 600; background: #F9F9FB; border-bottom: 1.5px solid #F2F2F4; }
+.dashboard-table td { font-size: 16px; color: #232323; border-bottom: 1px solid #F5F5F7; }
+.dashboard-table tr:last-child td { border-bottom: none; }
+.dashboard-table td:first-child { font-weight: 500; color: #28294A; max-width: 210px; }
+.dashboard-table td:nth-child(2) { font-weight: 700; color: #222; }
+.dashboard-chart-card { display: flex; flex-direction: column; align-items: center; min-height: 330px; padding: 30px 16px 16px 16px; }
+.chart-header { width: 100%; display: flex; justify-content: space-between; font-weight: 700; color: #222; font-size: 17px; margin-bottom: 8px; align-items: center; }
+.chart-period-dropdown { color: #8686A4; font-size: 14px; font-weight: 500; background: none; border: none; outline: none; cursor: pointer; margin-right: 4px; }
+#donutChart, #lineChart { max-width: 320px; }
+#donutChart { margin-top:18px;}
+#donutChart { max-height:230px;}
+.dashboard-bottom-grid { display: grid; grid-template-columns: 2.2fr 1.1fr; gap: 24px; margin-top: 20px; }
+.dashboard-card { background: #fff; border-radius: 18px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); padding: 26px 20px 14px 23px; }
+.chart-tab-bar { display:flex;gap:6px;align-items:center;margin-bottom:14px; }
+.chart-tab-bar button { border:2px solid transparent; background:transparent; color:#292949; font-weight:600; padding:7px 16px; border-radius:17px; font-size:14.5px; cursor:pointer; margin-right:2px; }
+.chart-tab-bar button.active { border-color:#7648FE; background:#F6F3FF; color:#7648FE; }
+.expenses-list { display: flex; flex-direction: column; gap: 21px; margin-top: 17px; }
+.expense-item { display: flex; align-items: center; justify-content: space-between; }
+.expense-title { font-size: 15.3px; color: #232323; min-width: 130px; font-weight: 600; }
+.expense-bar-bg { background: #ECE9FA; border-radius: 5px; height: 8px; width: 46%; margin: 0 12px 0 22px; position: relative; overflow: hidden; }
+.expense-bar-inner { height:100%; border-radius:5px; transition: width 0.4s;}
+.expense-bar1 { background: linear-gradient(90deg,#7648FE,#FD4EB0 90%);}
+.expense-bar2 { background: linear-gradient(90deg,#7BC0FE,#9976FE);}
+.expense-bar3 { background: linear-gradient(90deg,#FF84AC,#8A56F6);}
+.expense-bar4 { background: linear-gradient(90deg,#9CE3B2,#5145CD);}
+.expense-amount { font-size: 15.5px; font-weight: 700; color: #43435B; letter-spacing: 0.5px; min-width: 80px; text-align: right; }
 </style>
 
 <div class="main-wrap">
@@ -443,9 +80,7 @@
             </span>
             <span class="summary-trend">
                 <span class="trend-up">
-                    <svg viewBox="0 0 16 16" fill="none">
-                        <path d="M4 9l4-4 4 4" stroke="#26A664" stroke-width="2" stroke-linecap="round" />
-                    </svg>
+                    <svg viewBox="0 0 16 16" fill="none"><path d="M4 9l4-4 4 4" stroke="#26A664" stroke-width="2" stroke-linecap="round"/></svg>
                     36%
                 </span>
             </span>
@@ -457,9 +92,7 @@
             </span>
             <span class="summary-trend">
                 <span class="trend-down">
-                    <svg viewBox="0 0 16 16" fill="none">
-                        <path d="M4 7l4 4 4-4" stroke="#EC4D56" stroke-width="2" stroke-linecap="round" />
-                    </svg>
+                    <svg viewBox="0 0 16 16" fill="none"><path d="M4 7l4 4 4-4" stroke="#EC4D56" stroke-width="2" stroke-linecap="round"/></svg>
                     14%
                 </span>
             </span>
@@ -471,9 +104,7 @@
             </span>
             <span class="summary-trend">
                 <span class="trend-up">
-                    <svg viewBox="0 0 16 16" fill="none">
-                        <path d="M4 9l4-4 4 4" stroke="#26A664" stroke-width="2" stroke-linecap="round" />
-                    </svg>
+                    <svg viewBox="0 0 16 16" fill="none"><path d="M4 9l4-4 4 4" stroke="#26A664" stroke-width="2" stroke-linecap="round"/></svg>
                     36%
                 </span>
             </span>
@@ -485,9 +116,7 @@
             </span>
             <span class="summary-trend">
                 <span class="trend-up">
-                    <svg viewBox="0 0 16 16" fill="none">
-                        <path d="M4 9l4-4 4 4" stroke="#26A664" stroke-width="2" stroke-linecap="round" />
-                    </svg>
+                    <svg viewBox="0 0 16 16" fill="none"><path d="M4 9l4-4 4 4" stroke="#26A664" stroke-width="2" stroke-linecap="round"/></svg>
                     36%
                 </span>
             </span>
@@ -502,8 +131,7 @@
                 <div>
                     <div class="dashboard-table-title">Top 5 Outstanding Summary</div>
                     <div class="dashboard-tabs">
-                        <span class="dashboard-tab active" id="tabClientOutstanding">Client Outstanding <span
-                                class="count-badge">5</span></span>
+                        <span class="dashboard-tab active" id="tabClientOutstanding">Client Outstanding <span class="count-badge">5</span></span>
                         <span class="dashboard-tab" id="tabSupplierOutstanding">Supplier Outstanding</span>
                         <span class="dashboard-tab" id="tabBankBalance">Bank Balance</span>
                         <span class="dashboard-tab" id="tabCashBalance">Cash Balance</span>
@@ -539,13 +167,11 @@
             <canvas id="donutChart" width="250" height="220"></canvas>
             <div style="display:flex; gap:26px; margin-top:22px;">
                 <span style="display:flex;align-items:center;gap:5px;">
-                    <span
-                        style="width:17px;height:7px;background:#9172F5;display:inline-block;border-radius:3px;"></span>
+                    <span style="width:17px;height:7px;background:#9172F5;display:inline-block;border-radius:3px;"></span>
                     <span style="color:#7648FE;font-size:14px;">Cash Balance</span>
                 </span>
                 <span style="display:flex;align-items:center;gap:5px;">
-                    <span
-                        style="width:17px;height:7px;background:#62C7F8;display:inline-block;border-radius:3px;"></span>
+                    <span style="width:17px;height:7px;background:#62C7F8;display:inline-block;border-radius:3px;"></span>
                     <span style="color:#4A88F7;font-size:14px;">Bank Balance</span>
                 </span>
             </div>
@@ -575,26 +201,22 @@
             <div class="expenses-list">
                 <div class="expense-item">
                     <span class="expense-title">Operating Expenses</span>
-                    <span class="expense-bar-bg"><span class="expense-bar-inner expense-bar1"
-                            style="width:82%"></span></span>
+                    <span class="expense-bar-bg"><span class="expense-bar-inner expense-bar1" style="width:82%"></span></span>
                     <span class="expense-amount">1,43,382</span>
                 </div>
                 <div class="expense-item">
                     <span class="expense-title">COGS</span>
-                    <span class="expense-bar-bg"><span class="expense-bar-inner expense-bar2"
-                            style="width:66%"></span></span>
+                    <span class="expense-bar-bg"><span class="expense-bar-inner expense-bar2" style="width:66%"></span></span>
                     <span class="expense-amount">87,974</span>
                 </div>
                 <div class="expense-item">
                     <span class="expense-title">Dept Spent</span>
-                    <span class="expense-bar-bg"><span class="expense-bar-inner expense-bar3"
-                            style="width:34%"></span></span>
+                    <span class="expense-bar-bg"><span class="expense-bar-inner expense-bar3" style="width:34%"></span></span>
                     <span class="expense-amount">45,211</span>
                 </div>
                 <div class="expense-item">
                     <span class="expense-title">Salary</span>
-                    <span class="expense-bar-bg"><span class="expense-bar-inner expense-bar4"
-                            style="width:18%"></span></span>
+                    <span class="expense-bar-bg"><span class="expense-bar-inner expense-bar4" style="width:18%"></span></span>
                     <span class="expense-amount">21,893</span>
                 </div>
             </div>
@@ -603,140 +225,140 @@
 </div>
 
 <script>
-    $(document).ready(function () {
-        // 1. Summary Cards AJAX
-        const apiEndpoints = [
-            { url: "/api/Dashboard/GetTotalClientOutstanding", target: "#totalClientOutstandingValue", loader: "#loaderClientOutstanding", key: "balance" },
-            { url: "/api/Dashboard/supplieroutstanding", target: "#totalSupplierOutstandingValue", loader: "#loaderBillsOutstanding", key: "balance" },
-            { url: "/api/Dashboard/GetBankBalance", target: "#totalBankBalanceValue", loader: "#loaderBankBalance", key: "balance" },
-            { url: "/api/Dashboard/GetCashBalance", target: "#cashBalanceValue", loader: "#loaderCashBalance", key: "balance" }
-        ];
-        function safeSetText(selector, value) { $(selector).text(value); }
-        apiEndpoints.forEach(endpoint => {
-            $(endpoint.loader).show();
-            $.getJSON(endpoint.url)
-                .done(response => {
-                    if (response && (response.success === undefined || response.success) && response[endpoint.key] != null) {
-                        safeSetText(endpoint.target, Number(response[endpoint.key]).toLocaleString('en-US'));
-                    } else {
-                        safeSetText(endpoint.target, '0');
-                    }
-                })
-                .fail(() => { safeSetText(endpoint.target, '0'); })
-                .always(() => $(endpoint.loader).hide());
-        });
+$(document).ready(function () {
+    // 1. Summary Cards AJAX
+    const apiEndpoints = [
+        { url: "/api/Dashboard/GetTotalClientOutstanding",   target: "#totalClientOutstandingValue",  loader: "#loaderClientOutstanding",  key: "balance" },
+        { url: "/api/Dashboard/supplieroutstanding",         target: "#totalSupplierOutstandingValue",loader: "#loaderBillsOutstanding",    key: "balance" },
+        { url: "/api/Dashboard/GetBankBalance",              target: "#totalBankBalanceValue",        loader: "#loaderBankBalance",         key: "balance" },
+        { url: "/api/Dashboard/GetCashBalance",              target: "#cashBalanceValue",             loader: "#loaderCashBalance",         key: "balance" }
+    ];
+    function safeSetText(selector, value) { $(selector).text(value); }
+    apiEndpoints.forEach(endpoint => {
+        $(endpoint.loader).show();
+        $.getJSON(endpoint.url)
+            .done(response => {
+                if (response && (response.success === undefined || response.success) && response[endpoint.key] != null) {
+                    safeSetText(endpoint.target, Number(response[endpoint.key]).toLocaleString('en-US'));
+                } else {
+                    safeSetText(endpoint.target, '0');
+                }
+            })
+            .fail(() => { safeSetText(endpoint.target, '0'); })
+            .always(() => $(endpoint.loader).hide());
+    });
 
-        // Table Loader (General)
-        function loadOutstandingTable(apiUrl) {
-            const $body = $("#topOutstandingTableBody");
-            $body.html('<tr><td colspan="5" style="text-align:center;color:#b9b9b9;">Loading...</td></tr>');
-            $.getJSON(apiUrl, function (data) {
-                if (data && Array.isArray(data.data) && data.data.length > 0) {
-                    let rows = "";
-                    data.data.forEach(function (row) {
-                        rows += `<tr>
+    // Table Loader (General)
+    function loadOutstandingTable(apiUrl) {
+        const $body = $("#topOutstandingTableBody");
+        $body.html('<tr><td colspan="5" style="text-align:center;color:#b9b9b9;">Loading...</td></tr>');
+        $.getJSON(apiUrl, function (data) {
+            if (data && Array.isArray(data.data) && data.data.length > 0) {
+                let rows = "";
+                data.data.forEach(function(row) {
+                    rows += `<tr>
                         <td>${row.AccountHead || row.accountHead || ''}</td>
                         <td>${row.Balance != null ? Number(row.Balance).toLocaleString('en-US') : (row.balance != null ? Number(row.balance).toLocaleString('en-US') : '')}</td>
                         <td>${row.OverdueDays != null ? row.OverdueDays : (row.overdueDays != null ? row.overdueDays : '')}</td>
                         <td>${row.AccountGroup || row.accountGroup || ''}</td>
                         <td>${row.AccountHeadNo || row.accountHeadNo || ''}</td>
                     </tr>`;
-                    });
-                    $body.html(rows);
-                } else {
-                    $body.html('<tr><td colspan="5" style="text-align:center;color:#e66a6a;">No data found</td></tr>');
-                }
-            }).fail(function () {
-                $body.html('<tr><td colspan="5" style="text-align:center;color:#e66a6a;">Failed to load data</td></tr>');
-            });
+                });
+                $body.html(rows);
+            } else {
+                $body.html('<tr><td colspan="5" style="text-align:center;color:#e66a6a;">No data found</td></tr>');
+            }
+        }).fail(function(){
+            $body.html('<tr><td colspan="5" style="text-align:center;color:#e66a6a;">Failed to load data</td></tr>');
+        });
+    }
+
+    // Load default (Client Outstanding)
+    loadOutstandingTable("/api/Dashboard/GetClientOutstanding");
+
+    // Tab click handlers
+    $(".dashboard-tab").click(function () {
+        $(".dashboard-tab").removeClass("active");
+        $(this).addClass("active");
+        if (this.id === "tabClientOutstanding") {
+            loadOutstandingTable("/api/Dashboard/GetClientOutstanding");
         }
-
-        // Load default (Client Outstanding)
-        loadOutstandingTable("/api/Dashboard/GetClientOutstanding");
-
-        // Tab click handlers
-        $(".dashboard-tab").click(function () {
-            $(".dashboard-tab").removeClass("active");
-            $(this).addClass("active");
-            if (this.id === "tabClientOutstanding") {
-                loadOutstandingTable("/api/Dashboard/GetClientOutstanding");
-            }
-            else if (this.id === "tabSupplierOutstanding") {
-                loadOutstandingTable("/api/Dashboard/GetBillsPayableOutstanding");
-            }
-            // Optionally, handle bank/cash tabs
-        });
-
-        // Donut Chart
-        const donutCtx = document.getElementById('donutChart').getContext('2d');
-        new Chart(donutCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['12%', '7%', '7%', '6%', '5%', '2%'],
-                datasets: [{
-                    data: [12, 7, 7, 6, 5, 2],
-                    backgroundColor: [
-                        '#9172F5', '#62C7F8', '#98D1B3', '#FEC6E0', '#B4B7E8', '#D2C7FD'
-                    ],
-                    borderWidth: 3,
-                    borderColor: '#fff',
-                    hoverOffset: 4
-                }]
-            },
-            options: {
-                cutout: '70%',
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { enabled: true }
-                }
-            }
-        });
-
-        // Line Chart
-        const lineCtx = document.getElementById('lineChart').getContext('2d');
-        new Chart(lineCtx, {
-            type: 'line',
-            data: {
-                labels: [
-                    'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan'
-                ],
-                datasets: [
-                    {
-                        label: 'Revenue',
-                        data: [40000, 41500, 43000, 42500, 45591, 47000, 48000, 49000, 50500, 52000, 53500, 55000],
-                        borderColor: '#7648FE',
-                        backgroundColor: 'rgba(118,72,254,0.08)',
-                        tension: 0.4,
-                        pointBackgroundColor: '#fff',
-                        pointBorderColor: '#7648FE',
-                        pointRadius: 4,
-                        fill: true,
-                        borderWidth: 2
-                    },
-                    {
-                        label: 'Expense',
-                        data: [32000, 33500, 34500, 33800, 35591, 37000, 37800, 38500, 39000, 40000, 40500, 41500],
-                        borderColor: '#62C7F8',
-                        backgroundColor: 'rgba(98,199,248,0.08)',
-                        tension: 0.4,
-                        pointBackgroundColor: '#fff',
-                        pointBorderColor: '#62C7F8',
-                        pointRadius: 4,
-                        fill: true,
-                        borderWidth: 2
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { grid: { display: false }, ticks: { color: "#B3B3C2", font: { size: 13 } } },
-                    y: { grid: { color: "#F2F2F7" }, ticks: { color: "#B3B3C2", font: { size: 13 }, callback: (v) => v.toLocaleString() } }
-                },
-                interaction: { mode: 'nearest', intersect: false }
-            }
-        });
-
+        else if (this.id === "tabSupplierOutstanding") {
+            loadOutstandingTable("/api/Dashboard/GetBillsPayableOutstanding");
+        }
+        // Optionally, handle bank/cash tabs
     });
+
+    // Donut Chart
+    const donutCtx = document.getElementById('donutChart').getContext('2d');
+    new Chart(donutCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['12%', '7%', '7%', '6%', '5%', '2%'],
+            datasets: [{
+                data: [12, 7, 7, 6, 5, 2],
+                backgroundColor: [
+                    '#9172F5', '#62C7F8', '#98D1B3', '#FEC6E0', '#B4B7E8', '#D2C7FD'
+                ],
+                borderWidth: 3,
+                borderColor: '#fff',
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            cutout: '70%',
+            plugins: {
+                legend: { display: false },
+                tooltip: { enabled: true }
+            }
+        }
+    });
+
+    // Line Chart
+    const lineCtx = document.getElementById('lineChart').getContext('2d');
+    new Chart(lineCtx, {
+        type: 'line',
+        data: {
+            labels: [
+                'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan'
+            ],
+            datasets: [
+                {
+                    label: 'Revenue',
+                    data: [40000, 41500, 43000, 42500, 45591, 47000, 48000, 49000, 50500, 52000, 53500, 55000],
+                    borderColor: '#7648FE',
+                    backgroundColor: 'rgba(118,72,254,0.08)',
+                    tension: 0.4,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: '#7648FE',
+                    pointRadius: 4,
+                    fill: true,
+                    borderWidth: 2
+                },
+                {
+                    label: 'Expense',
+                    data: [32000, 33500, 34500, 33800, 35591, 37000, 37800, 38500, 39000, 40000, 40500, 41500],
+                    borderColor: '#62C7F8',
+                    backgroundColor: 'rgba(98,199,248,0.08)',
+                    tension: 0.4,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: '#62C7F8',
+                    pointRadius: 4,
+                    fill: true,
+                    borderWidth: 2
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { grid: { display: false }, ticks: { color: "#B3B3C2", font: { size: 13 } } },
+                y: { grid: { color: "#F2F2F7" }, ticks: { color: "#B3B3C2", font: { size: 13 }, callback: (v) => v.toLocaleString() } }
+            },
+            interaction: { mode: 'nearest', intersect: false }
+        }
+    });
+
+});
 </script>
