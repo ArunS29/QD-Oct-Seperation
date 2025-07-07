@@ -929,7 +929,7 @@
 
         })
         .Editing(editing => editing
-        .Mode(GridEditMode.Cell) // ✅ Ensure inline cell editing is enabled
+        .Mode(GridEditMode.Batch)        // ✅ Ensure inline cell editing is enabled
         .AllowUpdating(true) // ✅ Enable editing
         )
         .Height(665)
@@ -954,21 +954,19 @@
 </div>
 <!-- Context Menu (hidden initially) -->
 <div id="contextMenu" class="context-menu">
-    <div class="context-menu-item" onclick="editLedger()">
-        <i class="fa fa-edit"></i><div id="EditLedgerAccount" class="no-border-input"></div>
+    <div class="context-menu-item" onclick="editLedger()" style="display:flex;">
+        <i class="fa fa-edit" style="margin-top:13px;"></i><div id="EditLedgerAccount" class="no-border-input"></div>
     </div>
-    <div class="context-menu-item" onclick="viewTransactions()">
-        <i class="fa fa-search"></i><div id="ViewLedgerTransactions" class="no-border-input"></div>
+    <div class="context-menu-item" onclick="viewTransactions()" style="display:flex;">
+        <i class="fa fa-search" style="margin-top:13px;"></i><div id="ViewLedgerTransactions" class="no-border-input"></div>
     </div>
     <div id="EditLedgerAccount"></div>
-    <div class="context-menu-item" onclick="deleteLedger()">
-        <i class="fa fa-trash"></i><div id="DeleteLedgerAccount" class="no-border-input"></div>
+    <div class="context-menu-item" onclick="deleteLedger()" style="display:flex;">
+        <i class="fa fa-trash" style="margin-top:13px;"></i><div id="DeleteLedgerAccount" class="no-border-input"></div>
     </div>
 </div>
 
 <script type="text/javascript">
-
-
         // Initialize the Ledger Account Popup
         $("#ledgerAccountPopup").dxPopup({
             width: 1200,
