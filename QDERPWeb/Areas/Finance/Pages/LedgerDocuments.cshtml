@@ -535,7 +535,10 @@
     var urlParams = new URLSearchParams(window.location.search);
     var referenceNo = urlParams.get("ReferenceNo");
     var moduleType = urlParams.get("ModuleType");
-    document.getElementById("documentTitle").textContent = moduleType + " Documents";
+    const isMaster = urlParams.get("isMaster") === "true";
+
+    const title = isMaster ? "Master Documents" : "Transaction Documents";
+    document.getElementById("documentTitle").textContent = title + " - " + moduleType;
     $(function () {
         loadInitialDocumentNo();
     });
@@ -667,6 +670,7 @@
         const urlParams = new URLSearchParams(window.location.search);
         const referenceNo = urlParams.get("ReferenceNo");
         const moduleType = urlParams.get("ModuleType");
+        
 
         console.log(moduleType)
         
@@ -690,7 +694,7 @@
         formData.append("NotificationDate", formatDateForServer($("#NotificationDate").dxDateBox("instance").option("value")));
 
         $.ajax({
-           url: `/api/LedgerDocumentsF/AddDocumentsEntry?module=${encodeURIComponent(moduleType)}`,
+           url: `/api/LedgerDocumentsF/AddDocumentsEntry?folderId=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&modal=true&isMaster=${title}`,
             type: "POST",
             data: formData,
             contentType: false,
