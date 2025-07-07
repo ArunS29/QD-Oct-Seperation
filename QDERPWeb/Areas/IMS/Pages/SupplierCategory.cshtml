@@ -208,9 +208,26 @@
 
 <script type="text/javascript">
 
-    function btnbackbt() {
-         window.parent.closeModal(); 
-     }
+    // function btnbackbt() {
+    //      window.parent.closeModal(); 
+    //  }
+         function btnbackbt() {
+        // Optional: confirm before closing
+        DevExpress.ui.dialog.confirm("Do you want to go back and refresh the list?", "Back").done(function (result) {
+            if (result) {
+                // Call parent to refresh dropdown
+                if (window.parent && typeof window.parent.refreshSupplierCategoryDropDown === "function") {
+                    window.parent.refreshSupplierCategoryDropDown();
+                }
+
+                // Call parent to close modal
+                if (window.parent && typeof window.parent.closeModal === "function") {
+                    window.parent.closeModal();
+                }
+            }
+        });
+    }
+
 
     $(function () {
         var updatedRows = []; // To store the updated rows

@@ -1823,7 +1823,7 @@
 		const urlParams = new URLSearchParams(window.location.search);
 		const QuoteNos = urlParams.get('QuoteNo');
 		const QuoteNo = QuoteNos ? QuoteNos.split("?")[0] : null;
-		
+		getSalesPersonByUser();
 		loadClientDetails(QuoteNo);
 
 		if (QuoteNo) {
@@ -1951,7 +1951,23 @@
 		});
 	}
 
-
+	function getSalesPersonByUser() {
+	$.ajax({
+		type: "GET",
+		url: "/api/AddNewClientRequest/GetSalesPersonByUser",
+		success: function (data) {
+			if (data && data.SalesPersonCode) { 
+					const salesPersonDropDown = $("#ddGetSalesPerson").dxDropDownBox("instance");
+				if (salesPersonDropDown) {
+						salesPersonDropDown.option("value", data.SalesPersonCode);
+				}
+			}
+		},
+		error: function (xhr) {
+			console.log("SalesPerson fetch failed:", xhr.responseText);
+		}
+	});
+}
 
 
 

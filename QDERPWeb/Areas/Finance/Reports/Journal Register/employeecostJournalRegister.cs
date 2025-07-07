@@ -144,6 +144,37 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Journal_Register
         }
 
 
+        private void xrLabel9_BeforePrint(object sender, System.Drawing.Printing.PrintEventArgs e)
+        {
+            XRLabel label = sender as XRLabel;
+
+            string text = label.Text?.Trim();
+
+            if (string.IsNullOrEmpty(text))
+            {
+                label.BackColor = Color.LightPink;
+            }
+            else
+            {
+                label.BackColor = Color.White;
+            }
+        }
+        private void xrLabel21_BeforePrint(object sender, System.Drawing.Printing.PrintEventArgs e)
+        {
+            XRLabel label = sender as XRLabel;
+
+            string text = label.Text?.Trim();
+
+            if (string.IsNullOrEmpty(text))
+            {
+                label.BackColor = Color.LightPink;
+            }
+            else
+            {
+                label.BackColor = Color.White;
+            }
+        }
+
 
 
     }

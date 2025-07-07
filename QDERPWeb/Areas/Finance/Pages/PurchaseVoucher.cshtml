@@ -1898,8 +1898,9 @@ $(function () {
 			}
 
 			// Perform the AJAX request
-
-			$.ajax({
+			if(IsDrCr==false)
+			{
+	$.ajax({
 
 				type: "POST",
 
@@ -2004,6 +2005,142 @@ $(function () {
 				}
 
 			});
+			}
+			else if(IsDrCr==true)
+                {
+                // Perform the AJAX request
+                $.ajax({
+                    type: "POST",
+                    url: `/api/VoucherEntryReceipts/AddCPCrVoucherEntry?AccountHead=${encodeURIComponent(sysRemarks2)}&PaymentAccoutHeadName=${encodeURIComponent(paymentaccheadId)}&Gridcount=${encodeURIComponent(griddatacount)}`,
+                    contentType: "application/json",
+                    data: JSON.stringify(VE),
+                    dataType: "json",
+                    success: function (response) {
+                        $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
+
+                        $("#txtEntryNarration").dxTextArea("instance").option("value", "");
+                        var accountHeadValidator = $("#ddAccountHead").dxValidator("instance");
+                        accountHeadValidator.reset();
+                        var voucherAmtValidator = $("#txtVoucherAmount").dxValidator("instance");
+                        voucherAmtValidator.reset();
+
+                        //console.log(response.data);
+                        // Retrieve the newly added row from response or datagrid instance
+                        var updatedGridData = $("#dataGrid").dxDataGrid("instance").option("dataSource");
+
+                        // Filter entries where DrCr is "Cr"
+                        var filteredData = updatedGridData.filter(entry => entry.DrCr === "Dr");
+
+                        // Get the latest entry from the filtered data
+                        var latestEntry = filteredData.length > 0 ? filteredData[filteredData.length - 1] : null;
+                        console.log(latestEntry);
+                        
+                        if (accheadname != null) {
+
+                            if (accheadname && accheadname.startsWith("Salary Payable")) {
+                                $("#SalaryPaidEntryPopup").dxPopup({
+                                    title: "Salary Paid Entry",
+                                    width: 1250,
+                                    height: 860,
+                                    showCloseButton: true,
+                                    visible: true
+                                });
+                            }
+
+                            //  $("#txtVoucherAmount").dxNumberBox("instance").option("value", "0.00")
+                            else if (accheadname.startsWith("Salary Payable")) {
+                                var voucherNo1 = $("#VoucherNo").dxTextBox("instance").option("value");
+
+                                $("#VoucherEntryID").dxTextBox("instance").option("value", voucherNo1);
+                                dataGridSelectionChangedPaymentAccount({ selectedRowKeys: [accheadname] });
+                                $("#SPtxtVoucherAmount").dxNumberBox("instance").option("value", amount + ".00");
+
+                            }
+                            else if (accheadname.startsWith("Salary Advance") || accheadname.startsWith("Salary Paid") || accheadname.startsWith("SALARY ADVANCE")) {
+
+
+                                const params = {
+                                    VoucherNo: encodeURIComponent(voucherNo),
+                                    AccountHeadVal: encodeURIComponent(accheadname),
+                                    VoucherAmount: encodeURIComponent(amount),
+                                    DrCr: encodeURIComponent(sbDrCr),
+                                    AccountID: encodeURIComponent(paymentaccheadId)
+
+                                };
+
+                                const queryString = Object.keys(params)
+                                    .map(key => `${key}=${params[key]}`)
+                                    .join("&");
+
+                                $("#CostAllocationContent").load(`/${tenantName}/Finance/AE?${queryString}`, function () {
+                                    $("#CostAllocationModal").modal("show");
+                                    $(".close").on("click", function () {
+                                        $("#CostAllocationModal").modal("hide");
+                                    });
+                                    DevExpress.ui.repaintFloatingActionButton();
+                                });
+                            }
+
+                            else if (accheadname && accheadname.startsWith("Cost")) {
+
+                                const params = {
+                                    VoucherNo: encodeURIComponent(voucherNo),
+                                    VoucherEntryNo: encodeURIComponent(latestEntry.VoucherEntryNo),
+                                    AccountHead: encodeURIComponent(accheadname),
+                                    VoucherAmount: encodeURIComponent(amount),
+                                    DrCr: encodeURIComponent(sbDrCr)
+                                };
+                                openCostAllocationPopup(params); // Open DevExtreme Popup with dynamic content
+                            }
+                            else if (accheadname) {
+                                // Function to check allocation
+                                function checkAllocation(url, successCallback) {
+                                    $.ajax({
+                                        type: "GET",
+                                        url: url,
+                                        data: {
+                                            AccountHead: accheadname,
+                                            AccountID: accheadid
+                                        },
+                                        success: function (response) {
+                                            if (response.isAllocated) {
+                                                const params = {
+                                                    VoucherNo: encodeURIComponent(voucherNo),
+                                                    VoucherEntryNo: encodeURIComponent(latestEntry.VoucherEntryNo),
+                                                    AccountHead: encodeURIComponent(accheadname),
+                                                    VoucherAmount: encodeURIComponent(amount),
+                                                    DrCr: encodeURIComponent(sbDrCr),
+                                                    AccountID: encodeURIComponent(accheadid)
+                                                };
+                                                successCallback(params);
+                                            }
+                                        },
+                                        error: function (xhr, status, error) {
+                                            console.error(`Error checking allocation: ${error}`);
+                                        }
+                                    });
+                                }
+
+                                // Check Property Allocation
+                                checkAllocation(`/api/VoucherEntryReceipts/CheckPropertyAllocation`, openPropertyAllocationPopup);
+
+                                // Check Employee Allocation
+                                checkAllocation(`/api/VoucherEntryReceipts/CheckEmployeeAllocation`, openEmployeeAllocationPopup);
+
+                                checkAllocation(`/api/VoucherEntryReceipts/CheckIsMaintainBillByBill`, openBillsReceivablePopup);
+                            }
+                        }
+
+                        var button = $("#btnSave").dxButton("instance");
+                        button.option("text", "Update");
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Error occurred while updating data: " + error);
+                    }
+                });
+            }
+
+		
 
 		} else {
 			IsNotification = true;
@@ -2495,7 +2632,7 @@ $(function () {
 
 		// Send an AJAX request to the API to delete the record
 		$.ajax({
-			url: `/api/PurchaseVoucher/DeleteVoucherEntry?voucherEntryNo=${encodeURIComponent(voucherEntryNo)}&VoucherNo=${encodeURIComponent(voucherNo)}`, // API URL with the identifier
+			url: `/api/VoucherMaster/DeleteBPVoucherEntry?voucherEntryNo=${encodeURIComponent(voucherEntryNo)}&VoucherNo=${encodeURIComponent(voucherNo)}`, // API URL with the identifier
 			type: "POST", // HTTP POST request
 			success: function (response) {
 				if (response.data) {

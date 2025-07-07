@@ -256,6 +256,9 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
             }
         }
 
+        private void tableRow1_BeforePrint(object sender, CancelEventArgs e)
+        {
 
+        }
     }
 }

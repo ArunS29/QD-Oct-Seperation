@@ -1214,7 +1214,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                string tenantName = HttpContext.Request.Headers["X-Tenant-Name"];
+                string tenantName = HttpContext.Session.GetString("TenantName");
 
                 if (string.IsNullOrWhiteSpace(tenantName))
                     return BadRequest(new { message = "Session expired or tenant name missing.", success = false });
@@ -1297,7 +1297,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                string tenantName = HttpContext.Request.Headers["X-Tenant-Name"];
+                string tenantName = HttpContext.Session.GetString("TenantName");
 
                 if (string.IsNullOrWhiteSpace(tenantName))
                     return BadRequest(new { message = "Session expired or tenant name missing.", success = false });
