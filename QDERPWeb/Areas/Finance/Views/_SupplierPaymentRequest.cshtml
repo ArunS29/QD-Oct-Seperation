@@ -67,13 +67,9 @@
     }
 </style>
 
-<div class="title">
-    <div class="header-container">
-        <div id="SupplierPaymentRequest" class="no-border-title"></div>
-    </div>
-</div>
 
 <div class="container2">
+    <div class="ddw" style="margin-left:20px">
     @(Html.DevExtreme().DropDownBox()
         .DataSource(d => d.WebApi()
         .Controller("ExpenseClaim")
@@ -101,7 +97,7 @@
         .OnKeyDown("onKeyDown")
         .ContentTemplate(new TemplateName("SupplierContentTemplate"))
         )
-
+    </div>
 	<div class="dx-field ledgerResult">
         @(
                 Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201SubLedgerPayablesMaster>()

@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="xrLabel10.Text" xml:space="preserve">
+    <value>  SupplierName:                                                        [AccountHead]                                		                                                                                     [AccountHeadNo]</value>
+  </data>
   <data name="sqlDataSource1.ResultSchemaSerializable" xml:space="preserve">
     <value>PERhdGFTZXQgTmFtZT0ic3FsRGF0YVNvdXJjZTEiPjxWaWV3IE5hbWU9InFyeTIwNV8wMTdBZ2VpbmdCaWxsc1BheWFibGVXdENvbHVtbnMiPjxGaWVsZCBOYW1lPSJBY2NvdW50SGVhZE5vIiBUeXBlPSJTdHJpbmciIC8+PEZpZWxkIE5hbWU9IkFjY291bnRIZWFkIiBUeXBlPSJTdHJpbmciIC8+PEZpZWxkIE5hbWU9IlJlZmVyZW5jZU5vIiBUeXBlPSJTdHJpbmciIC8+PEZpZWxkIE5hbWU9IkJpbGxBbW91bnQiIFR5cGU9IkRlY2ltYWwiIC8+PEZpZWxkIE5hbWU9IlBhaWRBbW91bnQiIFR5cGU9IkRlY2ltYWwiIC8+PEZpZWxkIE5hbWU9IkRyQ3IiIFR5cGU9IlN0cmluZyIgLz48RmllbGQgTmFtZT0iQmFsYW5jZUFtb3VudCIgVHlwZT0iRGVjaW1hbCIgLz48RmllbGQgTmFtZT0iVm91Y2hlckRhdGUiIFR5cGU9IkRhdGVUaW1lIiAvPjxGaWVsZCBOYW1lPSJJbnZvaWNlRHVlRGF0ZSIgVHlwZT0iRGF0ZVRpbWUiIC8+PEZpZWxkIE5hbWU9Ik92ZXJEdWVEYXlzIiBUeXBlPSJJbnQxNiIgLz48RmllbGQgTmFtZT0iTm90T3ZlcmR1ZSIgVHlwZT0iRGVjaW1hbCIgLz48RmllbGQgTmFtZT0iTGVzczMwIiBUeXBlPSJEZWNpbWFsIiAvPjxGaWVsZCBOYW1lPSJMZXNzMzB0bzYwIiBUeXBlPSJEZWNpbWFsIiAvPjxGaWVsZCBOYW1lPSJMZXNzNjB0bzkwIiBUeXBlPSJEZWNpbWFsIiAvPjxGaWVsZCBOYW1lPSJMZXNzOTB0bzE4MCIgVHlwZT0iRGVjaW1hbCIgLz48RmllbGQgTmFtZT0iTW9yZTE4MCIgVHlwZT0iRGVjaW1hbCIgLz48RmllbGQgTmFtZT0iTGVzczE4MHRvMzY1IiBUeXBlPSJEZWNpbWFsIiAvPjxGaWVsZCBOYW1lPSJNb3JlMzY1IiBUeXBlPSJEZWNpbWFsIiAvPjwvVmlldz48L0RhdGFTZXQ+</value>
   </data>

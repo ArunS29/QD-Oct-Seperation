@@ -1169,7 +1169,8 @@
 		const urlParams = new URLSearchParams(window.location.search);
 		const Rfqnos = urlParams.get('Rfqno');
 		const Rfqno = Rfqnos ? Rfqnos.split("?")[0] : null;
-		//alert(mprno);
+
+			getSalesPersonByUser();
 		loadClientDetails(Rfqno);
 
 		if (Rfqno) {
@@ -1274,77 +1275,23 @@
     });
 }
 
-	// $(document).ready(function () {
-
-	// 			const urlParams = new URLSearchParams(window.location.search);
-	// 			const mprnos = urlParams.get('Mprno');
-	// 			const mprno = mprnos ? mprnos.split("?")[0] : null;
-	// 		//alert(mprno);
-	// 			loadMRDetails(mprno);
-	// 	});
-	// 			function loadMRDetails(mprno) {
-	// 	$.ajax({
-	// 		url: `/api/AddNewClientRequest/GetClientdataByCode?Mprno=${encodeURIComponent(mprno)}`,
-	// 		type: 'GET',
-	// 		dataType: 'json',
-	// 		success: function (response) {
-
-
-	// 			if (response) {
-	// 				console.log("resMRData",response);
-	// 					$("#btnSave").dxButton("instance").option("text", "Update");
-	// 				// Populate DevExtreme controls with the response data
-
-						
-						
-					
-	// 					$('#RequestNo').dxTextBox("instance").option("value", response.Mprno);
-	// 					$('#ProjectRef').dxTextBox("instance").option("value", response.Project);
-	// 					$('#AttentionTo').dxTextBox("instance").option("value", response.Attention);
-	// 					$('#SupplierEmail').dxTextBox("instance").option("value", response.SupplierContactEmail);
-	// 					$('#SupplierContact').dxTextBox("instance").option("value", response.SupplierContactNo);
-	// 					$('#SupplierQuoteNo').dxTextBox("instance").option("value", response.SupplierQuotationNo);
-	// 					$('#SupplierQuoteDate').dxDateBox("instance").option("value", response.SupplierQuotationDt);
-	// 					$("#ddProject").dxDropDownBox("instance").option("value", response.ProjectMasterCode);
-	// 					$('#Subject').dxTextBox("instance").option("value", response.Rfqsubject);
-	// 					$('#QuoteSummary').dxTextArea("instance").option("value", response.Rfqsummary);
-	// 					$("#ddSignatory").dxDropDownBox("instance").option("value", response.Rfqsignatory);
-	// 					$('#ddCompany').dxDropDownBox("instance").option("value", response.CompanyBranch);
-	// 					$("#ddInventoryGroup").dxDropDownBox("instance").option("value", response.InventoryMasterGroupId);
-	// 						$("#SalesPerson").dxDropDownBox("instance").option("value", response.SalesPersonCode);
-
-
-	// 			   // Fetch and initialize the data grid with invoice details
-	// 				$.ajax({
-	// 					type: "GET",
-	// 					url: `/api/AddNewClientRequest/GetPurchaseRequestChildren?Mprno=${encodeURIComponent(mprno)}`,
-	// 					dataType: 'json',
-	// 					success: function (gridResponse) {
-	// 						console.log("GridMRdata", gridResponse);
-
-	// 						const rowData = gridResponse.map((item, index) => ({
-	// 							SNo: index + 1,
-	// 							...item
-	// 						}));
-
-	// 						// Initialize the data grid with the fetched row data
-	// 						initializeDataGrid(rowData);
-	// 					},
-	// 					error: function (xhr, status, error) {
-	// 						console.error("Error fetching grid data:", error);
-	// 					}
-	// 				});
-
-	// 			} else {
-	// 				console.warn("No client details found in the response.");
-	// 			}
-	// 		},
-	// 		error: function (xhr, status, error) {
-	// 			console.error("Error fetching client details:", error);
-	// 		}
-	// 	});
-	// }
-
+			function getSalesPersonByUser() {
+		$.ajax({
+			type: "GET",
+			url: "/api/AddNewClientRequest/GetSalesPersonByUser",
+			success: function (data) {
+				if (data && data.SalesPersonCode) {
+							const salesPersonDropDown = $("#SalesPerson").dxDropDownBox("instance");
+					if (salesPersonDropDown) {
+							salesPersonDropDown.option("value", data.SalesPersonCode);
+					}
+				}
+			},
+			error: function (xhr) {
+				console.log("SalesPerson fetch failed:", xhr.responseText);
+			}
+		});
+	}
 	// Move the DataGrid configuration into a function for cleanliness
 		function initializeDataGrid(rowData) {
 

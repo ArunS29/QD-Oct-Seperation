@@ -74,15 +74,16 @@
     }
 
 </style>
-<div class="title">
-    <div class="header-container">
-        <div id="JournalVoucherEdit" class="no-border-input"></div>
+<div class="dx-card-header minimal-header">
+    <div class="card-title-icon">
+        <i class="fas fa-file-invoice-dollar"></i>
     </div>
+    <h3 class="card-title-text">Journal Entry Edit</h3>
 </div>
 
 
 <div class="container-fluid">
-    <div class="d-flex align-items-center justify-content-between flex-wrap">
+    <div class="d-flex align-items-center flex-wrap" style="margin-left:20px">
         <div class="form-group me-3">
             <label for="VoucherNo" class="form-label">Journal Reference No</label>
             @(Html.DevExtreme().TextBox()
@@ -112,90 +113,88 @@
                 )
         </div>
 
-        <div class="form-group flex-grow-1">
-            <label for="VoucherNarration" class="form-label">Voucher Narration</label>
-            @(Html.DevExtreme().TextArea()
-                .ID("VoucherNarration")
-                .Width(800)
-                )
-        </div>
-    </div>
-
-    <div class="form-group mt-3">
-        
+       
         <div class="col-md-5">
             @(Html.DevExtreme().DropDownBox()
-                .DataSource(d => d.WebApi()
-                .Controller("CostAllocation")
-                .LoadAction("GetCostAllocationUnits")
-                .LoadMode(DataSourceLoadMode.Raw)
-                .Key("CostAllocationUnitId")
-                )
-                .Label("Claim Name:")
-                .LabelMode(EditorLabelMode.Outside)
-                .ID("accountDropDownBox")
-                .ShowClearButton(true)
-                .AcceptCustomValue(true)
-                .OpenOnFieldClick(false)
-                .ValueChangeEvent("change") // Detects changes in the dropdown
-                .HoverStateEnabled(true)
+                        .DataSource(d => d.WebApi()
+                        .Controller("CostAllocation")
+                        .LoadAction("GetCostAllocationUnits")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("CostAllocationUnitId")
+                        )
+                        .Label("Claim Name:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ID("accountDropDownBox")
+                        .ShowClearButton(true)
+                        .AcceptCustomValue(true)
+                        .OpenOnFieldClick(false)
+                        .ValueChangeEvent("change") // Detects changes in the dropdown
+                        .HoverStateEnabled(true)
 
-                .ValueExpr("CostAllocationUnitId")
-                .DisplayExpr("CostAllocationUnit")
+                        .ValueExpr("CostAllocationUnitId")
+                        .DisplayExpr("CostAllocationUnit")
 
-                .OnInput("dropDownBoxOnInput")
-                .OnOpened("onOpened")
-                .Width(440)
-                .TabIndex(1)
-                .DropDownOptions(o => o.Width(1000))
-                .OnKeyDown("onKeyDown")
-                .ContentTemplate(new TemplateName("PaymentAmountContentTemplate"))
-                )
+                        .OnInput("dropDownBoxOnInput")
+                        .OnOpened("onOpened")
+                        .Width(440)
+                        .TabIndex(1)
+                        .DropDownOptions(o => o.Width(1000))
+                        .OnKeyDown("onKeyDown")
+                        .ContentTemplate(new TemplateName("PaymentAmountContentTemplate"))
+                        )
             @using (Html.DevExtreme().NamedTemplate("PaymentAmountContentTemplate"))
             {
                 @(
-                    Html.DevExtreme().DataGrid()
-                    .ID("suppliername-datagrid")
-                    .DataSource(d => d.WebApi()
-                    .Controller("CostAllocation")
-                    .LoadAction("GetCostAllocationUnits")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                    .Key("CostAllocationUnitId")
-                    )
-                    .WordWrapEnabled(true)
-                    .ShowBorders(true)
-                    .SearchPanel(sp => sp.HighlightSearchText(true))
-                    .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                    .OnSelectionChanged("dataGridSelectionChanged")
+                            Html.DevExtreme().DataGrid()
+                            .ID("suppliername-datagrid")
+                            .DataSource(d => d.WebApi()
+                            .Controller("CostAllocation")
+                            .LoadAction("GetCostAllocationUnits")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("CostAllocationUnitId")
+                            )
+                            .WordWrapEnabled(true)
+                            .ShowBorders(true)
+                            .SearchPanel(sp => sp.HighlightSearchText(true))
+                            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                            .OnSelectionChanged("dataGridSelectionChanged")
 
-                    .OnInitialized("dataGridInitialized")
-                    .HeaderFilter(p => p.Visible(true))
-                    .ShowBorders(true)
-                    .HoverStateEnabled(true)
-                    .Paging(p => p.PageSize(15))
-                    .FilterRow(f => f.Visible(true))
-                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                    .Height(345)
-                    .Selection(s => s.Mode(SelectionMode.Single))
-                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-
-
-                    .Columns(columns =>
-                    {
-                        columns.Add().DataField("CostAllocationUnitId");
-                        columns.Add().DataField("CostAllocationUnit")
+                            .OnInitialized("dataGridInitialized")
+                            .HeaderFilter(p => p.Visible(true))
+                            .ShowBorders(true)
+                            .HoverStateEnabled(true)
+                            .Paging(p => p.PageSize(15))
+                            .FilterRow(f => f.Visible(true))
+                            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                            .Height(345)
+                            .Selection(s => s.Mode(SelectionMode.Single))
+                            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 
 
+                            .Columns(columns =>
+                            {
+                                columns.Add().DataField("CostAllocationUnitId");
+                                columns.Add().DataField("CostAllocationUnit")
 
-                        .Alignment(HorizontalAlignment.Center);
 
 
-                    })
+                            .Alignment(HorizontalAlignment.Center);
 
-                    )
-            }
+
+                            })
+
+                            )
+                        }
+        </div>
+        <div class="form-group flex-grow-1">
+            <label for="VoucherNarration" class="form-label">Voucher Narration</label>
+            @(Html.DevExtreme().TextArea()
+                        .ID("VoucherNarration")
+                        .Width(800)
+                        )
         </div>
     </div>
+
 
     <div id="customModal" class="modal fade" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg" role="document">
@@ -485,6 +484,7 @@
                     <div style="margin-top: 5px;">Post the Journal</div>
                 </div>
             </text>)
+            .Height(100)
                 .OnClick("onPostJournalClick")
                 )
         </div>
@@ -549,7 +549,7 @@
     }
 
     <input id="formId" value="JournalEntryEdit" type="hidden" />
-    <div class="footerform">
+    <div class ="footer-fixed">
         @await Html.PartialAsync("_FormFooter1")
     </div>
 </div>
