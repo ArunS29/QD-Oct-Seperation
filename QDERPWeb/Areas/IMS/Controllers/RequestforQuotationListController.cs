@@ -636,130 +636,107 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 			master.ModifiedBy = userName;
 			master.ModifiedOn = DateTime.Now;
 
-			// Retrieve signatory ID
-			//var signatoryId = await GetSignatoryIDfromUserID(userId);
-			//if (signatoryId.HasValue)
-			//{
-			//	master.RequestSignatory = (byte)signatoryId.Value;
-			//}
-			//else
-			//{
-			//	master.RequestSignatory = null;
-			//}
-
-
-			//master.PurchaseRequestStatusId = 31; // Enquiry/Request Submitted
-
+			
 			// Save changes to the database
 			await dbContext.SaveChangesAsync();
 
 			return Ok(new { success = true, message = "RFQ submitted successfully." });
 		}
-		[HttpPost]
-		public async Task<IActionResult> VerifyRFQ(string Rfqno)
-		{
-			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				return Unauthorized(new { message = "Invalid tenant context." });
-			}
+        [HttpPost]
+        public async Task<IActionResult> VerifyRFQ(string Rfqno)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { message = "Invalid tenant context." });
 
-			if (string.IsNullOrEmpty(Rfqno))
-			{
-				return BadRequest(new { message = "Rfqno is required." });
-			}
+            if (string.IsNullOrEmpty(Rfqno))
+                return BadRequest(new { message = "RFQ No is required." });
 
-			var voucher = await dbContext.Tbl60701rfqmasters
-				.FirstOrDefaultAsync(v => v.Rfqno == Rfqno);
+            var voucher = await dbContext.Tbl60701rfqmasters
+                .FirstOrDefaultAsync(v => v.Rfqno == Rfqno);
+            if (voucher == null)
+                return NotFound(new { message = "RFQ not found." });
 
-			if (voucher == null)
-			{
-				return NotFound(new { message = "Credit note not found." });
-			}
+            var userName = HttpContext.Session.GetString("UserName");
+            var userIdString = HttpContext.Session.GetString("UserId");
+            if (!int.TryParse(userIdString, out int userId))
+                return Unauthorized(new { message = "Invalid or missing UserId in session." });
 
-			var userName = HttpContext.Session.GetString("UserName");
-			var userIdString = HttpContext.Session.GetString("UserId");
+            // ✅ Check Workflow Condition
+            var companySetting = await dbContext.Tbl901CompanyDetails02s.FirstOrDefaultAsync();
+            bool isWorkflowEnabled = companySetting?.IsEnableQuotationWorkflow == true;
 
-			if (!int.TryParse(userIdString, out int userId))
-			{
-				return Unauthorized(new { message = "Invalid or missing UserId in session." });
-			}
+            if (isWorkflowEnabled)
+            {
+                if (voucher.IsSubmitted != true)
+                    return BadRequest(new { message = "You need to submit the RFQ before verification." });
+            }
 
-			// Update voucher fields
-			voucher.IsVerified = true;
-			voucher.VerifiedOn = DateTime.Now;
-			voucher.VerifiedBy = userName;
-			//voucher.PurchaseRequestStatusId = 32; // Enquiry/Request Verified
+            // ✅ Proceed with verification
+            voucher.IsVerified = true;
+            voucher.VerifiedOn = DateTime.Now;
+            voucher.VerifiedBy = userName;
 
-			//var signatoryId = await GetSignatoryIDfromUserID(userId);
-			//if (signatoryId.HasValue)
-			//{
-			//	voucher.MprverifiedSign = (byte)signatoryId.Value;
-			//}
+            await dbContext.SaveChangesAsync();
 
-			await dbContext.SaveChangesAsync();
+            return Ok(new
+            {
+                message = "RFQ has been Verified and processed for Approval.",
+               
+            });
+        }
 
-			return Ok(new
-			{
-				message = "RFQ has been Verified and processed for Approval."
-			});
-		}
-		[HttpPost]
-		public async Task<ActionResult> ApproveRFQ(string Rfqno)
-		{
-			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				try
-				{
-					var userName = HttpContext.Session.GetString("UserName");
-					var userIdString = HttpContext.Session.GetString("UserId");
-					if (!int.TryParse(userIdString, out int userId))
-					{
-						return Unauthorized(new { message = "Invalid or missing UserId in session." });
-					}
+        [HttpPost]
+        public async Task<IActionResult> ApproveRFQ(string Rfqno)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { Message = "Invalid tenant.", Success = false });
 
+            try
+            {
+                var userName = HttpContext.Session.GetString("UserName");
+                var userIdString = HttpContext.Session.GetString("UserId");
+                if (!int.TryParse(userIdString, out int userId))
+                    return Unauthorized(new { message = "Invalid or missing UserId in session." });
 
-					if (string.IsNullOrEmpty(Rfqno))
-					{
-						return BadRequest(new { Message = "RFQ No number is required." });
-					}
+                if (string.IsNullOrEmpty(Rfqno))
+                    return BadRequest(new { Message = "RFQ No is required." });
 
-					var voucher = dbContext.Tbl60701rfqmasters
-										   .FirstOrDefault(v => v.Rfqno == Rfqno);
+                var voucher = await dbContext.Tbl60701rfqmasters
+                                              .FirstOrDefaultAsync(v => v.Rfqno == Rfqno);
+                if (voucher == null)
+                    return NotFound(new { Message = "RFQ not found." });
 
-					if (voucher == null)
-					{
-						return NotFound(new { Message = "CreditNoteNo not found." });
-					}
+                // Optional: workflow checks (e.g., submitted and verified)
+                var companySetting = await dbContext.Tbl901CompanyDetails02s.FirstOrDefaultAsync();
+                bool isWorkflowEnabled = companySetting?.IsEnableQuotationWorkflow == true;
+                if (isWorkflowEnabled)
+                {
+                    if (voucher.IsSubmitted != true || voucher.IsVerified != true)
+                        return BadRequest(new { Message = "Please submit and verify RFQ before approval." });
+                }
 
-					// Update approval details
-					voucher.IsApproved = true;
-					voucher.ApprovedOn = DateTime.Now;
-					voucher.ApprovedBy = userName;
-					//voucher.PurchaseRequestStatusId = 33; // Status: Enquiry/Request Approved
-					//var signatoryId = await GetSignatoryIDfromUserID(userId);
-					//if (signatoryId.HasValue)
-					//{
-					//	voucher.MprapprovedSign = (byte)signatoryId.Value;
-					//}
+                voucher.IsApproved = true;
+                voucher.ApprovedOn = DateTime.Now;
+                voucher.ApprovedBy = userName;
 
+                var signatoryId = await GetSignatoryIDfromUserID(userId);
+                if (signatoryId.HasValue)
+                    voucher.Rfqsignatory = (byte)signatoryId.Value;
 
+                await dbContext.SaveChangesAsync();
 
-					dbContext.SaveChanges();
+                return Ok(new
+                {
+                    Message = "RFQ has been Approved.",
+                    VoucherApprovedBy = signatoryId
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
 
-					return Ok(new
-					{
-						Message = "RFQ has been Approved.",
-						VoucherApprovedBy = userName
-					});
-				}
-				catch (Exception ex)
-				{
-					return BadRequest(new { Message = ex.Message });
-				}
-			}
-
-			return Unauthorized(new { Message = "Invalid tenant.", Success = false });
-		}
         [HttpPost]
         public IActionResult DeleteRFQView(string Rfqno)
         {
