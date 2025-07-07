@@ -1378,7 +1378,7 @@
 		const ReceiptNos = urlParams.get('ReceiptNo');
 		const ReceiptNo = ReceiptNos ? ReceiptNos.split("?")[0] : null;
 
-
+		getSalesPersonByUser();
 		loadClientDetails(ReceiptNo);
 
 		if (ReceiptNo) {
@@ -1482,7 +1482,23 @@
 		});
 	}
 
-
+			function getSalesPersonByUser() {
+		$.ajax({
+			type: "GET",
+			url: "/api/AddNewClientRequest/GetSalesPersonByUser",
+			success: function (data) {
+				if (data && data.SalesPersonCode) {
+						const salesPersonDropDown = $("#ddSalesPerson").dxDropDownBox("instance");
+					if (salesPersonDropDown) {
+							salesPersonDropDown.option("value", data.SalesPersonCode);
+					}
+				}
+			},
+			error: function (xhr) {
+				console.log("SalesPerson fetch failed:", xhr.responseText);
+			}
+		});
+	}
 
 
 
