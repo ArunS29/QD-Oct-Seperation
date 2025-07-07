@@ -177,7 +177,10 @@
 		background-color: #909ead00;
 		/* display:none; */
 	}
-
+	.dx-datagrid .font-times {
+        font-family: 'Times New Roman', Times, serif !important;
+		font-weight:bold;
+    }
 	.no-border-input {
 		border: none !important;
 		outline: none !important;
@@ -930,7 +933,7 @@ buttons.Add()
 
 						/* … unchanged hidden columns … */
 						columns.AddFor(m => m.ReferenceNote).Caption(new JS("formatMessage('ReferenceNote')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.AccountHeadArabic).Caption(new JS("formatMessage('AccountHeadArabic')")).Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.AccountHeadArabic).Caption(new JS("formatMessage('AccountHeadArabic')")).Alignment(HorizontalAlignment.Left).Visible(false).CssClass("font-times");;
 						columns.AddFor(m => m.BillPaidTo).Caption(new JS("formatMessage('BillPaidTo')")).Alignment(HorizontalAlignment.Left).Visible(false);
 						columns.AddFor(m => m.BillDate).Caption(new JS("formatMessage('BillDate')")).Alignment(HorizontalAlignment.Left).Visible(false);
 						columns.AddFor(m => m.BillNo).Caption(new JS("formatMessage('BillNo')")).Alignment(HorizontalAlignment.Left).Visible(false);
@@ -1058,7 +1061,7 @@ buttons.Add()
 								{
 									columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')"));
 									columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')")).Width(400);
-									columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')"));
+									columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')")).CssClass("font-times");
 									columns.Add().DataField("MasterGroup").Caption(new JS("formatMessage('Master Group')"));
 									columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Group')"));
 									columns.Add().DataField("ReferenceNo").Caption(new JS("formatMessage('ReferenceNo')"));
@@ -1078,6 +1081,7 @@ buttons.Add()
 									columns.Add().DataField("IsSalaryPayable").Caption(new JS("formatMessage('Is Salary Payable')")).Alignment(HorizontalAlignment.Left).Visible(false);
 									columns.Add().DataField("Expr1").Caption(new JS("formatMessage('Expr1')")).Alignment(HorizontalAlignment.Left).Visible(false);
 								})
+
 										)
 }
 
