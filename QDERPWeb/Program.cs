@@ -29,7 +29,7 @@ using Microsoft.AspNetCore.Http.Features;
 var builder = WebApplication.CreateBuilder(args);
 
 
-// builder.WebHost.UseUrls("http://*:44300");
+builder.WebHost.UseUrls("http://*:44300");
 
 #region **1. Configure Services**
 

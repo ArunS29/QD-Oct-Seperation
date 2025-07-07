@@ -157,7 +157,7 @@ body {
 .plusBtn {
     display: flex;
     gap: 15px;
-    margin-top: 23px
+    margin-top: 8px;
 }
 
 /* Text Editor Styling */
@@ -386,9 +386,9 @@ body {
     cursor: pointer;
 }
 
-.ledgerResult {
+/* .ledgerResult {
     margin: 15px !important;
-}
+} */
 
 #rowHeightMenu {
     position: absolute;
