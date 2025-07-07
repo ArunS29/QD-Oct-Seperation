@@ -748,18 +748,7 @@
 
     }
     // Fetch translated Arabic text using MyMemory API
-    async function translateToArabic(text) {
-        try {
-            const response = await fetch(
-                `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`
-            );
-            const data = await response.json();
-            return data.responseData.translatedText;
-        } catch (error) {
-            console.error("Translation failed:", error);
-            return "Translation Error";
-        }
-    }
+ 
     // Translate value from one DevExtreme TextBox to another
     async function translateFieldToArabic(sourceId, targetId) {
         const sourceInstance = $(`#${sourceId}`).dxDropDownBox("instance");
