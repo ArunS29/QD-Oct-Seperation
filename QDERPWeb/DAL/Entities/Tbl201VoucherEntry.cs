@@ -48,4 +48,6 @@ public partial class Tbl201VoucherEntry
     public string SupplierVoucherNo { get; set; }
 
     public long? JournalChildNo { get; set; }
+
+    public string Type { get; set; }
 }

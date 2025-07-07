@@ -77,8 +77,8 @@
     <div class="btn-container">
         @(Html.DevExtreme().Button()
                 .ID("btnShowRowTotals")
-                .Icon("sum")
-                .Width(50)
+                .Icon("export")
+                .Width(150)
                 .Text(new JS("formatMessage('Show Row Totals')"))
                // .OnClick("showColumnChooser")
                 )
@@ -86,8 +86,11 @@
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
                 .ID("btnDistributeCost")
-                .Text(new JS("formatMessage('Print')"))
-                .Icon("print")
+                .Text(new JS("formatMessage('Distribute Cost')"))
+                .Icon("repeat")
+                .Width("160%")
+                .Icon("smalliconslayout")
+
                 .ElementAttr(new { @class = "bold-button" })
                 .DropDownOptions(options => options.Width(230))
                 .ShowArrowIcon(false)

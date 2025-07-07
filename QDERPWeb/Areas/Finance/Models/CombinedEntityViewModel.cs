@@ -59,6 +59,7 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string AddedBy { get; set; }
 
         public DateTime? AddedOn { get; set; }
+        public string Type { get; set; }
 
     }
     public class AccountLedger

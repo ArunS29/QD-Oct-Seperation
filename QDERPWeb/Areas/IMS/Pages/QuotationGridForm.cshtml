@@ -1,0 +1,189 @@
+﻿@page
+@model QD.ERP.Web.Areas.IMS.Pages.QuotationGridFormModel
+@{
+}
+<style>
+    .calc-container {
+        width: 460px;
+        padding: 10px;
+        margin-left: 35%;
+    }
+
+    .calc-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        gap: 8px;
+    }
+
+    .calc-label {
+        flex: 1;
+    }
+
+    .calc-input {
+        flex: 1;
+    }
+
+    .add-btn {
+        margin-top: 2px;
+    }
+
+    .light-section {
+        padding: 10px;
+    }
+
+    .dark-section {
+        padding: 10px;
+    }
+
+    .highlight-box input {
+        font-weight: bold;
+    } 
+
+    .loss-box input {
+        font-weight: bold;
+    }
+
+    .dx-button-text {
+        font-weight: 600;
+        color:black;
+    }
+
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .imagecontainer {
+        border-bottom: 2px;
+    }
+
+    .mainContainer {
+        width: 100%;
+    }
+
+    .playIcon {
+        display: none;
+    }
+
+
+</style>
+
+<div class="calc-container">
+    <!-- Light Section -->
+    <div class="light-section">
+        <div class="calc-row">
+            <div class="calc-input">
+                @(Html.DevExtreme().NumberBox()
+                    .ID("ItemCost")
+                      .Label("Items Cost Price:")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Value(1.00)
+                    .Format("#,##0.00")
+                    .Width("100%"))
+            </div>
+        </div>
+        <div class="calc-row">
+            <div class="calc-input">
+                @(Html.DevExtreme().TextBox().ID("OtherCharges").Width("100%").Label("All Other Charges:")
+                                .LabelMode(EditorLabelMode.Outside))
+            </div>
+            <div class="add-btn">
+                @(Html.DevExtreme().Button().Icon("plus").Text("Add").Type(ButtonType.Default))
+            </div>
+        </div>
+
+        <div class="calc-row">
+            <div class="calc-input">
+                @(Html.DevExtreme().NumberBox()
+                        .ID("TotalCost").Label("Total Cost of the Item:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Value(1.00)
+                        .Format("#,##0.00")
+                        .Width("100%")
+                        .ElementAttr("class", "highlight-box"))
+            </div>
+        </div>
+    </div>
+
+    <!-- Dark Section -->
+    <div class="dark-section">
+        <div class="calc-row">
+            <div class="calc-label">
+                @(Html.DevExtreme().Button()
+                        .ID("AddMargin")
+                        .Icon("edit") 
+                        .Text("Add Profit Margin"))
+            </div>
+            <div class="calc-input">
+                @(Html.DevExtreme().NumberBox()
+                        .ID("ProfitMargin")
+                        .Value(25.00)
+                        .Format("#0.00'%")
+                        .Width("100%"))
+            </div>
+            <div class="calc-label" style="text-align: right;"></div>
+            <div class="calc-input">
+                @(Html.DevExtreme().NumberBox()
+                        .ID("UnitPriceProfit")
+                        .Label("Unit Price with Profit:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Value(1.00)
+                        .Format("#,##0.00")
+                        .Width("100%"))
+            </div>
+        </div>
+
+        <div class="calc-row">
+            <div class="calc-input">
+                @(Html.DevExtreme().NumberBox()
+                        .ID("QuotedPrice")
+                        .Label("Quoted Item Total Price:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Value(1.00)
+                        .Format("#,##0.00")
+                        .Width("100%"))
+            </div>
+        </div>
+
+        <div class="calc-row">
+            <div class="calc-input">
+                @(Html.DevExtreme().NumberBox()
+                                .ID("Discount")
+                                .Label("Discount on the Items:")
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Value(0.00)
+                                .Format("#,##0.00")
+                                .Width("100%"))
+            </div>
+        </div>
+
+        <div class="calc-row">
+            <div class="calc-input">
+                @(Html.DevExtreme().NumberBox()
+                                .ID("ProfitLoss")
+                                .Value(0.00)
+                                .Label("Item Profit / Loss:")
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Format("#,##0.00")
+                                .Width("100%")
+                                .ElementAttr("class", "loss-box"))
+            </div>
+        </div>
+
+        <div class="calc-row" style="justify-content: flex-end;">
+            @(Html.DevExtreme().Button()
+                        .Text("Save")
+                        .Type(ButtonType.Success)
+                        .Icon("save"))
+        </div>
+    </div>
+</div>
+

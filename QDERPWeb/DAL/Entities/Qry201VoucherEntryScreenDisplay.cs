@@ -30,4 +30,6 @@ public partial class Qry201VoucherEntryScreenDisplay
     public decimal? VoucherAmountFormatted { get; set; }
 
     public string SysRemarks { get; set; }
+
+    public string Type { get; set; }
 }

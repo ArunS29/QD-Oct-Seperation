@@ -90,7 +90,7 @@
 
 	/* Column divider after every header cell */
 	.dx-datagrid-headers .dx-header-row > td {
-		border-right: 1px solid Black !important;
+		border-right: 1px solid var(--title-background-color) !important;
 	}
 
 		/* Remove border from last column */
@@ -98,9 +98,9 @@
 			border-right: none !important;
 		}
 		/* Remove border from last column */
-		.dx-datagrid-headers .dx-header-row > td:first-child {
+		/* .dx-datagrid-headers .dx-header-row > td:first-child {
 			border-right: none !important;
-		}
+		} */
 
 
 	/* Toolbar Styling */
@@ -154,7 +154,22 @@
 		color: black;
 	}
 
+	 .narration-cell {
+        white-space: normal;
+        word-break: break-word;
+        overflow: hidden;
+        padding: 4px 6px;
+        line-height: 1.4em;
+    }
 
+    .max-lines-1  { max-height: calc(1.4em * 1); }
+    .max-lines-2  { max-height: calc(1.4em * 2); }
+    .max-lines-4  { max-height: calc(1.4em * 4); }
+    .max-lines-8  { max-height: calc(1.4em * 8); }
+
+    .dx-datagrid-rowsview .dx-row > td {
+        vertical-align: top;
+    }
 	.dx-datagrid-header-panel {
 		background-color: #909ead00;
 		/* display:none; */
@@ -433,6 +448,39 @@
 	.title{
 		background: transparent ! important;
 	}
+	  #popupModal .modal-content {
+        border-radius: 10px;
+        padding: 15px;
+        background-color: #fff;
+    }
+.modal-backdrop{
+	--bs-backdrop-zindex: 0!important;
+}
+    #popupModal .modal-header {
+        border-bottom: 1px solid #ddd;
+    }
+
+    #popupModal .modal-title {
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    #popupModal .modal-body {
+        padding: 20px;
+        font-size: 15px;
+        line-height: 1.6;
+        color: #333;
+        white-space: pre-wrap;
+        background-color: #f9f9f9;
+        border-radius: 6px;
+    }
+
+    .btn-close {
+        background: transparent;
+        border: none;
+        font-size: 1.4rem;
+        color: #000;
+    }
 </style>
 
 <div class="title" id="kpiCarousel">
@@ -506,7 +554,7 @@
 <div id="loadPanel"></div>
 <div class="Head">
 	<div class="header-container">
-		<div class="footer">@await Html.PartialAsync("_GridFooter", new ViewDataDictionary(ViewData) { { "HideDropdown", true } })</div>
+		<div class="footer" style="margin-left:0px">@await Html.PartialAsync("_GridFooter", new ViewDataDictionary(ViewData) { { "HideDropdown", true } })</div>
 	</div>
 </div>
 
@@ -845,7 +893,7 @@ buttons.Add()
 					columns.Add()
 					.DataField("GroupCurrencyName")
 					.Caption("Conversion Currency")
-					.GroupIndex(0)
+					
 					.Visible(false);
 							 		// This makes CurrencyName the first grouping level
 
@@ -896,20 +944,22 @@ buttons.Add()
 						columns.AddFor(m => m.VoucherApprovedOn).Caption(new JS("formatMessage('VoucherApprovedOn')")).Alignment(HorizontalAlignment.Left).Visible(false);
 						columns.AddFor(m => m.VoucherVerifiedOn).Caption(new JS("formatMessage('VoucherVerifiedOn')")).Alignment(HorizontalAlignment.Left).Visible(false);
 						columns.AddFor(m => m.VoucherVerifiedBy).Caption(new JS("formatMessage('VoucherVerifiedBy')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.VoucherNarration)
-					.Caption(new JS("formatMessage('Narration')"))
-					.Alignment(HorizontalAlignment.Left)
-					.Visible(true)
-					.Width(70)
-					.CellTemplate(@<text>
-			<div title="<%- data.VoucherNarration %>" class="ellipsis-column">
-				<%- data.VoucherNarration %>
-			</div>
-		</text>);
+	
+    
+    columns.AddFor(m => m.VoucherNarration)
+    .Caption(new JS("formatMessage('Narration')"))
+    .CellTemplate(@<text>
+        <div title="<%- data.VoucherNarration %>" class="narration-cell">
+            <%- data.VoucherNarration %>
+        </div>
+    </text>)
+    .Visible(true);
+
+
 					})
-				/* >>> ALL GRID OPTIONS BELOW ARE EXACTLY AS YOU PROVIDED <<< */
+		
 				.OnCellClick("function(e) {handleCellClick(e);}")
-				.ColumnChooser(c => c.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
+				.ColumnChooser(c => c.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.DragAndDrop))
 				.OnToolbarPreparing("onToolbarPreparing")
 				.WordWrapEnabled(false)
 				.AllowColumnReordering(true)
@@ -919,9 +969,8 @@ buttons.Add()
 				.Height(577)
 				.ColumnAutoWidth(true)
 				.FilterRow(f => f.Visible(false))
-				.Grouping(g => g.AutoExpandAll(true))
-				.GroupPanel(g => g.Visible(true))
-
+				.Grouping(g => g.AutoExpandAll(false))
+				.GroupPanel(g => g.Visible(false))
 				.ShowBorders(true)
 				.Paging(p => p.Enabled(true).PageSize(15))
 				.Pager(p => p.Visible(true).ShowPageSizeSelector(true).AllowedPageSizes(new[] { 10, 15, 20 }).ShowInfo(true))
@@ -951,6 +1000,20 @@ buttons.Add()
 				)
 	</div>
 
+</div>
+<div id="popupModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="popupModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content" style="
+    width: 631.6px;
+    height: 181.6px;">
+      <div class="modal-header">
+        <h5 class="modal-title" id="popupModalLabel">Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="popupModalContent" style="white-space: pre-line; font-size: 15px; line-height: 1.5;">
+      </div>
+    </div>
+  </div>
 </div>
 
 @using (Html.DevExtreme().NamedTemplate("LedgerContentTemplate"))
@@ -1655,7 +1718,7 @@ buttons.Add()
 			// Bind the data to the DataGrid
 			const dataGrid = $("#dataGrid").dxDataGrid("instance");
 			dataGrid.option("dataSource", data);
-			dataGrid.expandAll(); // Optional: Expand all groups
+			
 
 			const dataSource = dataGrid.option("dataSource");
 			if (dataSource && dataSource.length > 0) {
@@ -2270,5 +2333,37 @@ buttons.Add()
 			$(e.rowElement).css("background-color", "#f2f2f2");
 		}
 	}
+	function handleCellClick(e) {
+    const field = e.column?.dataField;
+    if (field === "VoucherNarration" || field === "SysRemarks") {
+        const value = e.value || "No data available";
+        showNarrationOrRemarkModal(field, value);
+    }
+}
+function showNarrationOrRemarkModal(field, value) {
+    const title = field === "VoucherNarration" ? "Narration" : "Remarks";
+    document.getElementById("popupModalLabel").innerText = title;
+    document.getElementById("popupModalContent").innerText = value || "N/A";
+    const modal = new bootstrap.Modal(document.getElementById('popupModal'));
+    modal.show();
+}
+  function ChangeRowHeight(height) {
+        const grid = $("#dataGrid").dxDataGrid("instance");
 
+        // Set row height
+        $(".dx-datagrid-rowsview .dx-row").css("height", height + "px");
+
+        // Remove previous line-limit classes
+        $(".narration-cell").removeClass("max-lines-1 max-lines-2 max-lines-4 max-lines-8");
+
+        // Apply based on height
+        let classToAdd = "";
+
+        if (height <= 30) classToAdd = "max-lines-1";
+        else if (height <= 60) classToAdd = "max-lines-2";
+        else if (height <= 90) classToAdd = "max-lines-4";
+        else classToAdd = "max-lines-8";
+
+        $(".narration-cell").addClass(classToAdd);
+    }
 </script>

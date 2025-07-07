@@ -159,7 +159,11 @@
             { dataField: "Gsdescrpition", area: "row", caption: formatMessage("Stock Description") },
             { dataField: "Group1", area: "column", caption: formatMessage("Cost Group") },
             { dataField: "CostItem", area: "column", caption: formatMessage("Cost Item") },
-            { dataField: "UnitCostPriceTotal", area: "data", caption: formatMessage("Cost Total"), summaryType: "sum", format: "currency" }
+                { dataField: "UnitCostPriceTotal", area: "data", caption: formatMessage("Cost Total"), summaryType: "sum",format: {
+            type: "fixedPoint",
+            precision: 2,
+            useGrouping: true // adds the comma separator
+          }}
           ],
           store: {
             type: "array",
