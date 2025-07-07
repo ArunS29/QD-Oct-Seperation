@@ -1412,7 +1412,7 @@ buttons.Add()
             IsNotification = false, storedAccountHead, IsObeselete = false,IsDrCr=false;
 
         function addVoucherEntry() {
-
+           
             var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
 
             var amount = $("#Amount").dxNumberBox("instance").option("value");
@@ -1597,9 +1597,9 @@ buttons.Add()
 
                 }
 
-                   if(IsDrCr===false)
+                   if(IsDrCr==false)
                 {
-                    alert("1")
+                   
                 $.ajax({
 
                     type: "POST",
@@ -1648,6 +1648,12 @@ buttons.Add()
                         var latestEntry = filteredData.length > 0 ? filteredData[filteredData.length - 1] : null;
                         console.log(latestEntry);
                         if (accheadname) {
+
+
+                            };
+                            openCostAllocationPopup(params); // Open DevExtreme Popup with dynamic content
+                        }
+                        else if (accheadname) {
 
 
                             // Function to check allocation
@@ -1699,9 +1705,6 @@ buttons.Add()
                 });
 
             }
-            
-        }
-            
              else if(IsDrCr==true)
                 {
                 // Perform the AJAX request
@@ -1714,10 +1717,10 @@ buttons.Add()
                     success: function (response) {
                         $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
 
-                        $("#txtEntryNarration").dxTextArea("instance").option("value", "");
-                        var accountHeadValidator = $("#ddAccountHead").dxValidator("instance");
+                        $("#Narration").dxTextArea("instance").option("value", "");
+                        var accountHeadValidator = $("#AccountHeadDropDown").dxValidator("instance");
                         accountHeadValidator.reset();
-                        var voucherAmtValidator = $("#txtVoucherAmount").dxValidator("instance");
+                        var voucherAmtValidator = $("#Amount").dxValidator("instance");
                         voucherAmtValidator.reset();
 
                         //console.log(response.data);
@@ -1731,100 +1734,56 @@ buttons.Add()
                         var latestEntry = filteredData.length > 0 ? filteredData[filteredData.length - 1] : null;
                         console.log(latestEntry);
                         
-                        if (accheadname != null) {
+                         if (accheadname && accheadname.startsWith("Cost")) {
 
-                            if (accheadname && accheadname.startsWith("Salary Payable")) {
-                                $("#SalaryPaidEntryPopup").dxPopup({
-                                    title: "Salary Paid Entry",
-                                    width: 1250,
-                                    height: 860,
-                                    showCloseButton: true,
-                                    visible: true
-                                });
-                            }
+                            const params = {
+                                VoucherNo: encodeURIComponent(voucherNo),
+                                VoucherEntryNo: encodeURIComponent(latestEntry.VoucherEntryNo),
+                                AccountHead: encodeURIComponent(accheadname),
+                                VoucherAmount: encodeURIComponent(amount),
+                                DrCr: encodeURIComponent(sbDrCr)
 
-                            //  $("#txtVoucherAmount").dxNumberBox("instance").option("value", "0.00")
-                            else if (accheadname.startsWith("Salary Payable")) {
-                                var voucherNo1 = $("#VoucherNo").dxTextBox("instance").option("value");
-
-                                $("#VoucherEntryID").dxTextBox("instance").option("value", voucherNo1);
-                                dataGridSelectionChangedPaymentAccount({ selectedRowKeys: [accheadname] });
-                                $("#SPtxtVoucherAmount").dxNumberBox("instance").option("value", amount + ".00");
-
-                            }
-                            else if (accheadname.startsWith("Salary Advance") || accheadname.startsWith("Salary Paid") || accheadname.startsWith("SALARY ADVANCE")) {
+                            };
+                            openCostAllocationPopup(params); // Open DevExtreme Popup with dynamic content
+                        }
+                        else if (accheadname) {
 
 
-                                const params = {
-                                    VoucherNo: encodeURIComponent(voucherNo),
-                                    AccountHeadVal: encodeURIComponent(accheadname),
-                                    VoucherAmount: encodeURIComponent(amount),
-                                    DrCr: encodeURIComponent(sbDrCr),
-                                    AccountID: encodeURIComponent(paymentaccheadId)
-
-                                };
-
-                                const queryString = Object.keys(params)
-                                    .map(key => `${key}=${params[key]}`)
-                                    .join("&");
-
-                                $("#CostAllocationContent").load(`/${tenantName}/Finance/AE?${queryString}`, function () {
-                                    $("#CostAllocationModal").modal("show");
-                                    $(".close").on("click", function () {
-                                        $("#CostAllocationModal").modal("hide");
-                                    });
-                                    DevExpress.ui.repaintFloatingActionButton();
-                                });
-                            }
-
-                            else if (accheadname && accheadname.startsWith("Cost")) {
-
-                                const params = {
-                                    VoucherNo: encodeURIComponent(voucherNo),
-                                    VoucherEntryNo: encodeURIComponent(latestEntry.VoucherEntryNo),
-                                    AccountHead: encodeURIComponent(accheadname),
-                                    VoucherAmount: encodeURIComponent(amount),
-                                    DrCr: encodeURIComponent(sbDrCr)
-                                };
-                                openCostAllocationPopup(params); // Open DevExtreme Popup with dynamic content
-                            }
-                            else if (accheadname) {
-                                // Function to check allocation
-                                function checkAllocation(url, successCallback) {
-                                    $.ajax({
-                                        type: "GET",
-                                        url: url,
-                                        data: {
-                                            AccountHead: accheadname,
-                                            AccountID: accheadid
-                                        },
-                                        success: function (response) {
-                                            if (response.isAllocated) {
-                                                const params = {
-                                                    VoucherNo: encodeURIComponent(voucherNo),
-                                                    VoucherEntryNo: encodeURIComponent(latestEntry.VoucherEntryNo),
-                                                    AccountHead: encodeURIComponent(accheadname),
-                                                    VoucherAmount: encodeURIComponent(amount),
-                                                    DrCr: encodeURIComponent(sbDrCr),
-                                                    AccountID: encodeURIComponent(accheadid)
-                                                };
-                                                successCallback(params);
-                                            }
-                                        },
-                                        error: function (xhr, status, error) {
-                                            console.error(`Error checking allocation: ${error}`);
+                            // Function to check allocation
+                            function checkAllocation(url, successCallback) {
+                                $.ajax({
+                                    type: "GET",
+                                    url: url,
+                                    data: {
+                                        AccountHead: accheadname,
+                                        AccountID: accheadid
+                                    },
+                                    success: function (response) {
+                                        if (response.isAllocated) {
+                                            const params = {
+                                                VoucherNo: encodeURIComponent(voucherNo),
+                                                VoucherEntryNo: encodeURIComponent(latestEntry.VoucherEntryNo),
+                                                AccountHead: encodeURIComponent(accheadname),
+                                                VoucherAmount: encodeURIComponent(amount),
+                                                DrCr: encodeURIComponent(sbDrCr),
+                                                AccountID: encodeURIComponent(accheadid)
+                                            };
+                                            successCallback(params);
                                         }
-                                    });
-                                }
-
-                                // Check Property Allocation
-                                checkAllocation(`/api/VoucherEntryReceipts/CheckPropertyAllocation`, openPropertyAllocationPopup);
-
-                                // Check Employee Allocation
-                                checkAllocation(`/api/VoucherEntryReceipts/CheckEmployeeAllocation`, openEmployeeAllocationPopup);
-
-                                checkAllocation(`/api/VoucherEntryReceipts/CheckIsMaintainBillByBill`, openBillsReceivablePopup);
+                                    },
+                                    error: function (xhr, status, error) {
+                                        console.error(`Error checking allocation: ${error}`);
+                                    }
+                                });
                             }
+
+                            // Check Property Allocation
+                            checkAllocation(`/api/VoucherEntryCashReceipts/CheckPropertyAllocation`, openPropertyAllocationPopup);
+
+                            // Check Employee Allocation
+                            checkAllocation(`/api/VoucherEntryCashReceipts/CheckEmployeeAllocation`, openEmployeeAllocationPopup);
+
+                            checkAllocation(`/api/VoucherEntryReceipts/CheckIsMaintainBillByBill`, openBillsReceivablePopup);
                         }
 
                         var button = $("#btnSave").dxButton("instance");
@@ -1835,6 +1794,10 @@ buttons.Add()
                     }
                 });
             }
+            
+        }
+            
+            
             
             else {
                 IsNotification=true;
@@ -2049,7 +2012,7 @@ buttons.Add()
         if (selectedValue === "Cr") {
             // Code to handle Debit logic.
             console.log("Credit selected");
-        IsDrCr=false;
+        IsDrCr==false;
             // Example: update another control or perform a calculation.
         } else if (selectedValue === "Dr") {
             // Code to handle Credit logic.
@@ -2882,7 +2845,7 @@ buttons.Add()
             var voucherEntryNo =  e.data.VoucherEntryNo;
             // Optionally, call API to delete from the backend
             $.ajax({
-               url: `/api/VoucherEntryCashReceipts/DeleteVoucherEntry?voucherEntryNo=${encodeURIComponent(voucherEntryNo)}&VoucherNo=${encodeURIComponent(voucherNo)}&PaymentAccoutHeadName=${encodeURIComponent(paymentaccheadId)}&Gridcount=${encodeURIComponent(griddatacount)}`,
+               url: `/api/VoucherEntryReceipts/DeleteVoucherEntries?voucherEntryNo=${encodeURIComponent(voucherEntryNo)}&VoucherNo=${encodeURIComponent(voucherNo)}&PaymentAccoutHeadName=${encodeURIComponent(paymentaccheadId)}&Gridcount=${encodeURIComponent(griddatacount)}`,
 
                // url: "/api/VoucherMaster/DeleteVoucherEntry", // Change to your actual API
                 type: "POST",
