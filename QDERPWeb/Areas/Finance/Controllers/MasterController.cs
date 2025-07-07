@@ -891,5 +891,25 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
+        [HttpPost("DeleteAssetCategories")]
+        public async Task<IActionResult> DeleteAssetCategories([FromBody] Tbl20106AssetCategory branch)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var BranchToDelete = await dbContext.Tbl20106AssetCategories.FindAsync(branch.AssetCategoryCode);
+                if (BranchToDelete == null)
+                {
+                    return NotFound();
+                }
+
+                dbContext.Tbl20106AssetCategories.Remove(BranchToDelete);
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "AssetLocation deleted successfully." });
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
     }
 }

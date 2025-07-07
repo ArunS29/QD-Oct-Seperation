@@ -196,10 +196,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 try
                 {
-                    var result = dbContext.Database.ExecuteSqlRaw("EXEC sp20121DeleteAssetRegister @AssetLedgerNo = {0}", assetLedgerNo);
+                    var result = dbContext.Database.ExecuteSqlRaw("EXEC sp20121DeleteAssetRegister @p0", assetLedgerNo);
 
-                    if (result == 0)
-                        return NotFound(new { message = "Asset not found or could not be deleted." });
 
                     return Ok(new { message = "Asset deleted successfully." });
                 }
