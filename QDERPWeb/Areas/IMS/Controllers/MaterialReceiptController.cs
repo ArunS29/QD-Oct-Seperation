@@ -249,49 +249,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 			return Unauthorized(new { message = "Invalid tenant.", success = false });
 		}
-		//[HttpGet]
-		//public ActionResult<string> GetNewDebitNoteNoApi()
-		//{
-		//	try
-		//	{
-		//		if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-		//		{
-
-
-		//			var company = dbContext.Tbl901CompanyDetails
-		//								   .FirstOrDefault(c => c.CompanyNameShort == "Pulse Infotech");
-
-
-		//			if (company == null)
-		//			{
-		//				return NotFound("Company not found.");
-		//			}
-
-		//			string invoiceAbbrv = company.InvoiceAbbrv;
-		//			int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
-
-		//			bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
-
-		//			DateTime invoiceDate = DateTime.Now;
-
-
-
-		//			// Step 4: Generate New Debit Note No
-		//			string newDebitNoteNo = GetNewDebitNoteNo(invoiceAbbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear, dbContext);
-
-		//			return Ok(newDebitNoteNo);
-		//		}
-		//		else
-		//		{
-		//			return BadRequest("Tenant or DB Context not found.");
-		//		}
-		//	}
-		//	catch (Exception ex)
-		//	{
-		//		_logger.LogError($"An error occurred while fetching the data : {ex.Message}");
-		//		return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
-		//	}
-		//}
+		
 
 		[HttpGet]
 		public ActionResult<string> GetNewDebitNoteNoApi()
@@ -683,20 +641,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				master.ModifiedBy = userName;
 				master.ModifiedOn = DateTime.Now;
 
-				// Optional: Assign signatory if required
-				/*
-				var signatoryId = await GetSignatoryIDfromUserID(userId);
-				if (signatoryId.HasValue)
-				{
-					master.RequestSignatory = (byte)signatoryId.Value;
-				}
-				else
-				{
-					master.RequestSignatory = null;
-				}
-				*/
-
-				// Save changes
+					// Save changes
 				await dbContext.SaveChangesAsync();
 
 				return Ok(new { success = true, message = "Material Receipt submitted successfully." });
@@ -708,122 +653,115 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
 			}
 		}
+        private async Task<int?> GetSignatoryIDfromUserID(int? userId)
+        {
+            if (userId == null)
+                return null;
 
-		[HttpPost]
-		public async Task<IActionResult> VerifyMaterialReceipt(string ReceiptNo)
-		{
-			try
-			{
-				if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-				{
-					return Unauthorized(new { message = "Invalid tenant context." });
-				}
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return await dbContext.Tbl90104DocumentSignatories
+                    .Where(x => x.UserId == userId)
+                    .Select(x => x.SignatoryId)
+                    .FirstOrDefaultAsync();
+            }
 
-				if (string.IsNullOrEmpty(ReceiptNo))
-				{
-					return BadRequest(new { message = "Material Receipt is required." });
-				}
+            // Tenant context is invalid; return null
+            return null;
+        }
 
-				var voucher = await dbContext.Tbl60501materialReceiptMasters
-					.FirstOrDefaultAsync(v => v.ReceiptNo == ReceiptNo);
+        [HttpPost]
+        public async Task<IActionResult> VerifyMaterialReceipt(string ReceiptNo)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { message = "Invalid tenant context." });
 
-				if (voucher == null)
-				{
-					return NotFound(new { message = "Credit note not found." });
-				}
+            if (string.IsNullOrEmpty(ReceiptNo))
+                return BadRequest(new { message = "Material Receipt No is required." });
 
-				var userName = HttpContext.Session.GetString("UserName");
-				var userIdString = HttpContext.Session.GetString("UserId");
+            var voucher = await dbContext.Tbl60501materialReceiptMasters
+                .FirstOrDefaultAsync(v => v.ReceiptNo == ReceiptNo);
+            if (voucher == null)
+                return NotFound(new { message = "Material Receipt not found." });
 
-				if (!int.TryParse(userIdString, out int userId))
-				{
-					return Unauthorized(new { message = "Invalid or missing UserId in session." });
-				}
+            var userName = HttpContext.Session.GetString("UserName");
+            var userIdString = HttpContext.Session.GetString("UserId");
+            if (!int.TryParse(userIdString, out int userId))
+                return Unauthorized(new { message = "Invalid or missing UserId in session." });
 
-				// Update voucher fields
-				voucher.IsVerified = true;
-				voucher.VerifiedOn = DateTime.Now;
-				voucher.VerifiedBy = userName;
+            // Workflow enforcement
+            var companySetting = await dbContext.Tbl901CompanyDetails02s.FirstOrDefaultAsync();
+            bool isWorkflowEnabled = companySetting?.IsEnableReceiptWorkflow == true;
+            if (isWorkflowEnabled && voucher.IsSubmitted != true)
+                return BadRequest(new { message = "Please submit the receipt before verification." });
 
-				// Optional: Assign signatory if needed
-				/*
-				var signatoryId = await GetSignatoryIDfromUserID(userId);
-				if (signatoryId.HasValue)
-				{
-					voucher.MprverifiedSign = (byte)signatoryId.Value;
-				}
-				*/
+            // Verification logic
+            voucher.IsVerified = true;
+            voucher.VerifiedOn = DateTime.Now;
+            voucher.VerifiedBy = userName;
 
-				await dbContext.SaveChangesAsync();
+             await dbContext.SaveChangesAsync();
 
-				return Ok(new
-				{
-					message = "Material Receipt has been Verified and processed for Approval."
-				});
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError($"An error occurred while fetching the data : {ex.Message}");
-				return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
-			}
-		}
+            return Ok(new
+            {
+                message = "Material Receipt has been Verified and processed for approval."
+            });
+        }
 
-		[HttpPost]
-		public async Task<ActionResult> ApproveMaterialReceipt(string ReceiptNo)
-		{
-			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				try
-				{
-					var userName = HttpContext.Session.GetString("UserName");
-					var userIdString = HttpContext.Session.GetString("UserId");
-					if (!int.TryParse(userIdString, out int userId))
-					{
-						return Unauthorized(new { message = "Invalid or missing UserId in session." });
-					}
+        [HttpPost]
+        public async Task<IActionResult> ApproveMaterialReceipt(string ReceiptNo)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { Message = "Invalid tenant context." });
 
+            try
+            {
+                var userName = HttpContext.Session.GetString("UserName");
+                if (!int.TryParse(HttpContext.Session.GetString("UserId"), out int userId))
+                    return Unauthorized(new { message = "Invalid or missing UserId in session." });
 
-					if (string.IsNullOrEmpty(ReceiptNo))
-					{
-						return BadRequest(new { Message = "Receipt number is required." });
-					}
+                if (string.IsNullOrEmpty(ReceiptNo))
+                    return BadRequest(new { Message = "Receipt number is required." });
 
-					var voucher = dbContext.Tbl60501materialReceiptMasters
-										   .FirstOrDefault(v => v.ReceiptNo == ReceiptNo);
+                var voucher = await dbContext.Tbl60501materialReceiptMasters
+                    .FirstOrDefaultAsync(v => v.ReceiptNo == ReceiptNo);
+                if (voucher == null)
+                    return NotFound(new { Message = "Material Receipt not found." });
 
-					if (voucher == null)
-					{
-						return NotFound(new { Message = "CreditNoteNo not found." });
-					}
+                // 🔍 Optional: enforce workflow (e.g., verify & submit)
+                var companySetting = await dbContext.Tbl901CompanyDetails02s.FirstOrDefaultAsync();
+                bool isWorkflowEnabled = companySetting?.IsEnableReceiptWorkflow == true;
+                if (isWorkflowEnabled)
+                {
+                    if (voucher.IsSubmitted != true || voucher.IsVerified != true)
+                        return BadRequest(new
+                        { Message = "Please submit and verify the receipt before approval." });
+                }
 
-					// Update approval details
-					voucher.IsApproved = true;
-					voucher.ApprovedOn = DateTime.Now;
-					voucher.ApprovedBy = userName;
-					//voucher.PurchaseRequestStatusId = 33; // Status: Enquiry/Request Approved
-					//var signatoryId = await GetSignatoryIDfromUserID(userId);
-					//if (signatoryId.HasValue)
-					//{
-					//	voucher.MprapprovedSign = (byte)signatoryId.Value;
-					//}
+                // ✅ Apply approval
+                voucher.IsApproved = true;
+                voucher.ApprovedOn = DateTime.Now;
+                voucher.ApprovedBy = userName;
 
-					dbContext.SaveChanges();
+                var signatoryId = await GetSignatoryIDfromUserID(userId);
+                if (signatoryId.HasValue)
+                    voucher.ReceiptSignatory = (byte)signatoryId.Value;
 
-					return Ok(new
-					{
-						Message = "Material Receipt has been Approved.",
-						VoucherApprovedBy = userName
-					});
-				}
-				catch (Exception ex)
-				{
-					_logger.LogError($"An error occurred while fetching the data : {ex.Message}");
-					return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
-				}
-			}
+                await dbContext.SaveChangesAsync();
 
-			return Unauthorized(new { Message = "Invalid tenant.", Success = false });
-		}
+                return Ok(new
+                {
+                    Message = "Material Receipt has been Approved.",
+                    VoucherApprovedBy = signatoryId 
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in ApproveMaterialReceipt: {ex.Message}");
+                return StatusCode(500, new { Message = ex.Message });
+            }
+        }
+
         [HttpDelete]
         public async Task<IActionResult> DeleteChildById(int childId)
         {

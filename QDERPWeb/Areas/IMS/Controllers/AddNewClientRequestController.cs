@@ -847,9 +847,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 			// Tenant context is invalid; return null
 			return null;
 		}
-
-
-		
+				
 		[HttpPost]
 		public async Task<IActionResult> SubmitMPR(string mprNo)
 		{
@@ -906,7 +904,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 			await dbContext.SaveChangesAsync();
 
 			return Ok(new { success = true, message = "MPR submitted successfully.",
-                VoucherApprovedBy = userId
+                VoucherApprovedBy = signatoryId
             });
 		}
         [HttpPost]
@@ -969,7 +967,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return Ok(new
                 {
                     message = "Material Purchase Request has been Verified and processed for Approval.",
-                    VoucherApprovedBy = userId
+                    VoucherApprovedBy = signatoryId
                 });
             }
             catch (Exception ex)
@@ -1035,7 +1033,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     return Ok(new
                     {
                         Message = "Material Purchase Request has been Approved.",
-                        VoucherApprovedBy = userId
+                        VoucherApprovedBy = signatoryId
                     });
                 }
                 catch (Exception ex)
