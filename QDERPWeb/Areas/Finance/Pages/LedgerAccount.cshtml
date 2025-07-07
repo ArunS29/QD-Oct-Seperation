@@ -4987,7 +4987,9 @@ function syncSupVATNumbers(e) {
         
 
     function GoToAttachment(){
-        window.location.href = `/${tenantName}/Finance/LedgerDocuments`;
+        var sAccountID = $('#txtAccountId').dxTextBox("instance").option("value");
+        console.log(sAccountID)
+        window.location.href = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(sAccountID)}&ModuleType=${encodeURIComponent(sAccountID)}`;
     }
      function onPostButtonClick(e) {
     

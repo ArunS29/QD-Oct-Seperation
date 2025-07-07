@@ -227,6 +227,7 @@
                         @(Html.DevExtreme().DateBox()
                         .ID("RFQDate")
 						.Value(DateTime.Now)
+						.DisplayFormat("dd-MMM-yyyy")
                         .Label(new JS("formatMessage('RFQ Date')"))
                         .LabelMode(EditorLabelMode.Outside)
                         .StylingMode(EditorStylingMode.Outlined)
@@ -249,8 +250,8 @@
      .OpenOnFieldClick(false)//
      .ValueChangeEvent("input")
      .HoverStateEnabled(true)
-														.ValueExpr("SupplierCode")
-														.DisplayExpr("SupplierName")
+	.ValueExpr("SupplierCode")
+	.DisplayExpr("SupplierName")
      .OnInput("dropDownBoxOnInput")
      .OnOpened("onOpened")
      .TabIndex(1)
@@ -270,14 +271,23 @@
                         .Icon("plus")
                         .Hint("Add Supplier")
                         .Width(35)
-                        .ElementAttr("style", "margin-left: 5px;"))
-						@(Html.DevExtreme().Button()
-								.ID("EditDebits1")
-								.Icon("edit")
-								.Hint("Edit Description")
-								.Width(40)
-								.ElementAttr("style", "margin-top: 20px;")
-								)
+                        .ElementAttr("style", "margin-left: 5px;")
+						.OnClick("AddNewSupplier"))
+							@(Html.DevExtreme().Button()
+													.ID("btnEditSupplier")
+													.Icon("edit")
+													.ElementAttr("class", "button-alignment-up button-group")
+													.OnClick(@"function() {
+												var dropDownBox = $('#GetProjectDropDown').dxDropDownBox('instance');
+												var selectedValue = dropDownBox.option('value');
+												if (!selectedValue) {
+												DevExpress.ui.notify('Please select a client.', 'warning', 2000);
+												return;
+												}
+												var url = '/' + tenantName + '/IMS/SupplierLeadMaster?supplierCode=' + encodeURIComponent(selectedValue);
+												openModal(url, '');
+												}")
+													)
                         <div style="flex: 1; margin-left: 10px;">
                             @(Html.DevExtreme().TextBox()
                             .ID("RequestNo")
@@ -340,6 +350,7 @@
                     <div class="col-md-3">
                         @(Html.DevExtreme().DateBox()
                         .ID("SupplierQuoteDate")
+													.DisplayFormat("dd-MMM-yyyy")
 						.Label(new JS("formatMessage('Supplier Quote Date:')"))
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%"))
@@ -1028,16 +1039,32 @@
         }
     }
 	function dataGridSelectionChanged1(e) {
-		const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-		const ddbInstance = $("#GetProjectDropDown").dxDropDownBox("instance");
+    const selectedKey = e.selectedRowKeys[0];
+    const ddbInstance = $("#GetProjectDropDown").dxDropDownBox("instance");
 
-		if (selectedKey) {
-			ddbInstance.option("value", selectedKey);
-			if (ddbInstance.option("opened")) {
-				ddbInstance.close();
-			}
-		}
-	}
+    if (selectedKey) {
+        ddbInstance.option("value", selectedKey);
+        if (ddbInstance.option("opened")) {
+            ddbInstance.close();
+        }
+
+        // ✅ Corrected key name
+        $.ajax({
+            url: '/api/RequestforQuotationList/GetSupplierContactDetails',
+            type: 'GET',
+            data: { supplierCode: selectedKey },
+            success: function (data) {
+                $('#AttentionTo').dxTextBox("instance").option("value", data.ContactName);
+                $('#SupplierEmail').dxTextBox("instance").option("value", data.ContactEmail);
+                $('#SupplierContact').dxTextBox("instance").option("value", data.ContactMobile);
+            },
+            error: function (xhr, status, error) {
+                console.error('Error fetching contact details:', error);
+            }
+        });
+    }
+}
+
 	function dataGridInitialized1(e) {
 		dataGrid = e.component;
 	}
@@ -5327,6 +5354,11 @@
 			  const title = "";
 				  openModal(url, title);
 		  }
+		   function AddNewSupplier(){
+				const url = `/${tenantName}/IMS/SupplierLeadMaster`;
+               const title = "";
+				  openModal(url, title);
+            } 
 			   $(function () {
 	$("#RequestForQuotation").dxTextBox({
 	text: formatMessage("Request for Quotation(RFQ) Edit"),

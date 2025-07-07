@@ -59,6 +59,7 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string AddedBy { get; set; }
 
         public DateTime? AddedOn { get; set; }
+        public string Type { get; set; }
 
     }
     public class AccountLedger
@@ -1070,6 +1071,31 @@ namespace QD.ERP.Web.Areas.Finance.Models
 
         public decimal? TotalCostOfItemInclAll { get; set; }
     }
+    public class CostAllocationDto
+    {
+        public byte CostAllocationId { get; set; }
+        public string CostAllocDrCr { get; set; }
+        public string CostAllocationUnitId { get; set; }
+        public DateTime EffectiveDate { get; set; }
+        public decimal AmountAllocated { get; set; }
+        public string CostAllocRemarks { get; set; }
+        public long VoucherEntryId { get; set; }
+        public string VoucherNo { get; set; }
+    }
+    public class UpdateCostAllocationFieldsDto
+    {
+        public int CostAllocationId { get; set; }
+        public decimal VoucherAmount { get; set; }
+        public string CostAllocRemarks { get; set; }
+        public string CostAllocationUnitId { get; set; }
+        public DateTime EffectiveDate { get; set; }
+    }
+    public class VoucherDeleteRequest
+    {
+        public string VoucherNo { get; set; }
+    }
+
+
 
 }
 

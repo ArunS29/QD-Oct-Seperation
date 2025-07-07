@@ -9,7 +9,7 @@
     ViewData["Title"] = "Clients";
 
 }
-
+<link rel="stylesheet" href="~/css/animationCard.css" />
 <style>
     #dataGrid .dx-header-row .dx-datagrid-text-content {
         font-weight: bold;
@@ -21,6 +21,17 @@
         padding: 18px;
     }
 
+    .dx-fieldset {
+        margin: 3px 1px ! important;
+        padding: 7px ! important;
+    }
+
+    /* .title{
+        margin: 3px;
+        height: 116px;
+        width: 16%;
+        align-items: flex-start;
+    } */
     .toolbar-buttons {
         /* position: fixed; */
         bottom: 20px; /* Distance from bottom */
@@ -40,11 +51,56 @@
     }
 
 </style>
-<div class="title" >
+<div class="dashboard" style="display: flex; align-items: center; padding: 10px;width:50%;gap:10px">
+   
+
+    <div class="card blue shine compact">
+        <h2 class="title-slide">Client Leads</h2>
+        <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
+        <h6 class="fade-in">QuickDice ERP Solutions</h6>
+
+    </div>
+
+    <div id="mainCard" class="card today-bg">
+        <div class="tabs">
+            <div class="tab-text active" onclick="switchTab(0)">Today</div>
+            <div class="tab-text" onclick="switchTab(1)">Week</div>
+            <div class="tab-text" onclick="switchTab(2)">Month</div>
+        </div>
+
+        <div class="tab-content active">
+            <h4>&#128276; Pending Verifications</h4>
+            <div class="count" id="count0">0</div>
+            @* <div class="trend">🔺 12% more than yesterday</div> *@
+            @* <div class="message">You're getting things moving!</div> *@
+        </div>
+
+        <div class="tab-content">
+            <h4>&#9989; Vouchers Verified</h4>
+            <div class="count" id="count1">0</div>
+            @* <div class="trend">🔼 25% higher than last week</div> *@
+            @* <div class="message">Awesome pace — keep it up!</div> *@
+        </div>
+
+        <div class="tab-content">
+            <h4>&#128229; New Vouchers</h4>
+            <div class="count" id="count2">0</div>
+            @* <div class="trend">🔽 10% drop this month</div> *@
+            @* <div class="message">Fewer vouchers — time to catch up?</div> *@
+        </div>
+    </div>
+    <div class="card purple sparkle">
+        <p>&#10024;</p>
+        <h4>No of Items</h4>
+        <h1 id="turnover">0</h1>
+        <h3>for this period</h3>
+    </div>
+</div>
+@* <div class="title" >
     <div class="header-container">
         <div id="ClientLeads" class="no-border-input"></div>
     </div>
-</div>
+</div> *@
 @await Html.PartialAsync("/Pages/Shared/IMS/ClientLeadFooter.cshtml")
 <div>
     @(
@@ -277,5 +333,85 @@
 
 		console.log('End permission handling');
 	});
+    function countUpTurnover(targetStr) {
+          const el = document.getElementById("turnover");
+          const target = parseFloat(targetStr);
+          let current = 0.0;
 
+          const interval = setInterval(() => {
+            current += 0.5;
+            if (current >= target) {
+              el.textContent = targetStr + " K";
+              clearInterval(interval);
+            } else {
+              el.textContent = current.toFixed(1) + " K";
+            }
+          }, 30);
+        }
+
+        // Animate to 46.2 K
+        countUpTurnover("46.2");
+
+          const card = document.getElementById('mainCard');
+        const counts = [8, 15, 5];
+        const countEls = [
+          document.getElementById("count0"),
+          document.getElementById("count1"),
+          document.getElementById("count2"),
+        ];
+        const tabs = document.querySelectorAll(".tab-text");
+        const contents = document.querySelectorAll(".tab-content");
+
+        function animateCount(el, target) {
+          let i = 0;
+          el.innerText = i;
+          el.classList.remove('bounce');
+          const interval = setInterval(() => {
+            if (i >= target) {
+              el.innerText = target;
+              el.classList.add('bounce');
+              clearInterval(interval);
+            } else {
+              el.innerText = i++;
+            }
+          }, 30);
+        }
+
+        function switchTab(index) {
+          tabs.forEach((tab, i) => {
+            tab.classList.toggle('active', i === index);
+            contents[i].classList.toggle('active', i === index);
+          });
+
+          // Change background class
+          card.className = "card";
+          if (index === 0) card.classList.add("today-bg");
+          if (index === 1) card.classList.add("week-bg");
+          if (index === 2) card.classList.add("month-bg");
+
+          // Animate count
+          animateCount(countEls[index], counts[index]);
+        }
+
+        // Start "Today" count immediately
+        animateCount(countEls[0], counts[0]);
+
+        function switchTab(index) {
+          tabs.forEach((tab, i) => {
+            tab.classList.toggle('active', i === index);
+            contents[i].classList.toggle('active', i === index);
+          });
+
+          // Change background class
+          card.className = "card";
+          if (index === 0) card.classList.add("today-bg");
+          if (index === 1) card.classList.add("week-bg");
+          if (index === 2) card.classList.add("month-bg");
+
+          // Animate count
+          animateCount(countEls[index], counts[index]);
+        }
+
+        // Auto-start animation for "Today"
+        animateCount(countEls[0], counts[0]);
 </script>

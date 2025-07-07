@@ -116,6 +116,12 @@
 
     <!-- DevExpress PDF Exporter -->
     <script src="https://cdn3.devexpress.com/jslib/23.1.4/js/dx.all.js"></script>
+    <!-- Chart.js core -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <!-- Chart.js 3D plugin -->
+    <script src="https://cdn.jsdelivr.net/gh/3dgithub/chartjs-chart-3d@latest/dist/chartjs-chart-3d.umd.min.js"></script>
+
 
 
     <script src="~/js/translator.js"></script>
@@ -125,16 +131,21 @@
 
     <style>
         /* Container for sidebar (assumes #sidebar2 exists) */
+        .sidebar2div{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         #sidebar2 {
             display: none;
             padding: 10px;
-            background-color: var(--title-background-color);
+            background-color: white;
             /* border-right: 1px solid #ccc; */
-            min-height: 100vh;
             width: 250px;
             box-sizing: border-box;
             overflow-y: scroll !important;
-            height: 100vh;
+            height: 95vh;
+            border-radius: 20px 0px 0px 20px;
         }
 
         /* Main submenu items */
@@ -244,6 +255,7 @@
             --primary-color: var(--primary-color-1);
             --background-color: var(--background-color-1);
             --dx-card-hover-box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            --sidebar-width: 256px;
         }
 
         .title {
@@ -258,7 +270,7 @@
             width: max-content;
             padding: 15px;
             border-radius: 10px;
-            margin:10px;
+            /* margin:10px; */
             height: 140px;
         }
 
@@ -376,6 +388,29 @@
         .sidebar.hidden .menu-item1 .text {
             display: none; /* Hide text */
         }
+
+        .sidebar.hidden .menu-item.active {
+            width: 55px;
+        }
+
+        .sidebar.hidden .menu-item:hover {
+            width: 55px;
+        }
+
+            .menu-item.active {
+                background-color: white;
+                color: white;
+                font-weight: bold;
+                border-radius: 10px 0px 0px 10px;
+                width: 215px;
+            }
+
+        #main-content.blur {
+            filter: blur(4px);
+            pointer-events: none;
+            opacity: 0.5;
+            transition: 0.3s;
+        }
         /* Menu items */
         .menu-item {
             display: flex;
@@ -394,7 +429,7 @@
 
         .menu-item:hover {
             background-color: var(--hover-bg-color);
-            border-radius: 4px;
+            border-radius: 10px 10px 10px 10px;
             color: white;
         }
 
@@ -474,13 +509,6 @@
             /*     background-color: var(--hover-bg-color); */
             /* } */
 
-        /* Sidebar hidden state */
-        .sidebar.hidden ~ .toggle-btn {
-            left: calc(var(--sidebar-width, 4em)); /* Adjust position dynamically */
-        }
-
-
-
         /* Sidebar 2 styles */
         .sidebar2 {
             transition: background-color 0.3s ease;
@@ -528,6 +556,7 @@
                 font-weight: normal;
                 font-size: 12px;
                 color: black;
+                border: 1px solid var(--title-background-color);
             }
 
             .sidebar2 .text {
@@ -950,7 +979,7 @@
         }
 
         .playIcon {
-            display:none;
+            display:none !important;
             position: fixed;
             left: 3.5em;
             bottom: 4em;
@@ -1736,28 +1765,28 @@
                 <p id="settingMessage1"></p>
                 <div class="switcher-section">
                     <h3 id="settingMessage2"></h3>
-                    <button class="color-btn" style="background: #faa25a;" onclick="applyTheme('light-orange')"></button>
-                    <button class="color-btn" style="background: #fc6f99;" onclick="applyTheme('light-pink')"></button>
-                    <button class="color-btn" style="background: #4394b4;" onclick="applyTheme('light-cyan')"></button>
-                    <button class="color-btn" style="background: #8d5353;" onclick="applyTheme('light-rose')"></button>
-                    <button class="color-btn" style="background: #caae3b;" onclick="applyTheme('light-gold')"></button>
-                    <button class="color-btn" style="background: #97ce7a;" onclick="applyTheme('light-mint')"></button>
-                    <button class="color-btn" style="background: #af665b;" onclick="applyTheme('light-peach')"></button>
-                    <button class="color-btn" style="background: #5d82b9;" onclick="applyTheme('light-sky')"></button>
-                    <button class="color-btn" style="background: #5cb97e;" onclick="applyTheme('light-olive')"></button>
-                    <button class="color-btn" style="background: #ca6d73;" onclick="applyTheme('light-coral')"></button>
-                    <button class="color-btn" style="background: #a77b59;" onclick="applyTheme('light-sand')"></button>
-                    <button class="color-btn" style="background: #6262d6;" onclick="applyTheme('light-lavender')"></button>
-                    <button class="color-btn" style="background: #5aaa99;" onclick="applyTheme('light-seafoam')"></button>
-                    <button class="color-btn" style="background: #ceb45e;" onclick="applyTheme('light-butter')"></button>
-                    <button class="color-btn" style="background: #526bbd;" onclick="applyTheme('light-periwinkle')"></button>
-                    <button class="color-btn" style="background: #c45373;" onclick="applyTheme('light-mauve')"></button>
-                    <button class="color-btn" style="background: #48aaaa;" onclick="applyTheme('light-aqua')"></button>
-                    <button class="color-btn" style="background: #df7367;" onclick="applyTheme('light-blush')"></button>
-                    <button class="color-btn" style="background: #4a7fad;" onclick="applyTheme('light-mist')"></button>
-                    <button class="color-btn" style="background: #af7d4b;" onclick="applyTheme('light-pearl')"></button>
-                    <button class="color-btn" style="background: #54a77d;" onclick="applyTheme('light-mint-cream')"></button>
-                    <button class="color-btn" style="background: #050505;" onclick="applyTheme('dark-charcoal')"></button>
+                    <button class="color-btn" style="background: #FFDDC1;" onclick="applyTheme('light-orange')"></button>
+                    <button class="color-btn" style="background: #FFD3E0;" onclick="applyTheme('light-pink')"></button>
+                    <button class="color-btn" style="background: #C3E8F7;" onclick="applyTheme('light-cyan')"></button>
+                    <button class="color-btn" style="background: #D4A5A5;" onclick="applyTheme('light-rose')"></button>
+                    <button class="color-btn" style="background: #FFF7D6;" onclick="applyTheme('light-gold')"></button>
+                    <button class="color-btn" style="background: #E1F7D5;" onclick="applyTheme('light-mint')"></button>
+                    <button class="color-btn" style="background: #FAE1DD;" onclick="applyTheme('light-peach')"></button>
+                    <button class="color-btn" style="background: #E6F0FF;" onclick="applyTheme('light-sky')"></button>
+                    <button class="color-btn" style="background: #D9E4DD;" onclick="applyTheme('light-olive')"></button>
+                    <button class="color-btn" style="background: #FDE2E4;" onclick="applyTheme('light-coral')"></button>
+                    <button class="color-btn" style="background: #E3D5CA;" onclick="applyTheme('light-sand')"></button>
+                    <button class="color-btn" style="background: #E6E6FA;" onclick="applyTheme('light-lavender')"></button>
+                    <button class="color-btn" style="background: #D1F2EB;" onclick="applyTheme('light-seafoam')"></button>
+                    <button class="color-btn" style="background: #FFF9E6;" onclick="applyTheme('light-butter')"></button>
+                    <button class="color-btn" style="background: #E0E7FF;" onclick="applyTheme('light-periwinkle')"></button>
+                    <button class="color-btn" style="background: #F5E0E6;" onclick="applyTheme('light-mauve')"></button>
+                    <button class="color-btn" style="background: #E0FFFF;" onclick="applyTheme('light-aqua')"></button>
+                    <button class="color-btn" style="background: #FFE4E1;" onclick="applyTheme('light-blush')"></button>
+                    <button class="color-btn" style="background: #F0F8FF;" onclick="applyTheme('light-mist')"></button>
+                    <button class="color-btn" style="background: #FAF0E6;" onclick="applyTheme('light-pearl')"></button>
+                    <button class="color-btn" style="background: #F5FFFA;" onclick="applyTheme('light-mint-cream')"></button>
+                    <button class="color-btn" style="background: #c2bfbf;" onclick="applyTheme('dark-charcoal')"></button>
                 </div>
             </div>
         </div>
@@ -1820,14 +1849,14 @@
                     {
                         <div class="menu-item projects" onclick="navigate('Projects Control')">
                             <i id="ProjectsControlIcon"><img src="~/images/project_control.png" style="width:30px" /></i>
-                            <div id="ProjectsControl" class="text no-border-input backgroundWhite"></div>
+                            <div id="ProjectsControl" class="text backgroundWhite"></div>
                         </div>
                     }
                 </div>
             </div>
-
-            <div id="sidebar2" class="sidebar2">
-                <!-- Content for Sidebar 2 -->
+            <div class="sidebar2div">
+                <div id="sidebar2" class="sidebar2">
+            </div>
             </div>
 
             
@@ -1843,7 +1872,7 @@
 
         </div>
         <!-- Main Content -->
-        <div class="mainContainer">
+        <div id="main-content" class="mainContainer">
             <main>
                 @RenderBody()
 
@@ -2611,10 +2640,19 @@
                 const breadcrumbTrail = [];
                 function navigate(name) {
                     const sidebar2 = document.getElementById('sidebar2');
+                    document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+
+                    const clickedMenu = Array.from(document.querySelectorAll('.menu-item')).find(el =>
+                        el.onclick?.toString().includes(name)
+                    );
+                    if (clickedMenu) clickedMenu.classList.add('active');
+                    const mainContent = document.getElementById('main-content');
                     if (sidebar2.style.display === 'block') {
                         sidebar2.style.display = 'none';
+                        mainContent.classList.remove('blur');
                     } else {
                         sidebar2.style.display = 'block'; // Show sidebar2
+                        mainContent.classList.add('blur');
                     }
                     // Dynamically load submenu items for the first sidebar menu
                     if (name === 'Finance') {
@@ -3159,6 +3197,8 @@
                     sidebar.classList.add('hidden');
                     sidebar2.classList.add('hidden');
                     sidebar2.style.display = 'none'; // Set display to none for sidebar2
+                    document.getElementById('main-content').classList.remove('blur');
+
 
                     // Update the CSS variable based on the sidebar state
                     root.style.setProperty('--sidebar-width', '4em'); // No sidebar

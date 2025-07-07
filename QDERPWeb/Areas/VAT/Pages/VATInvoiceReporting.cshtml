@@ -4,7 +4,13 @@
     ViewData["Title"] = "Trial Balance";
 }
 <style>
-
+    body {
+        margin: 0;
+        color: black;
+        display: flex;
+        height: 100px;
+        flex-direction: column;
+    }
     .limited-footer .btn-containerIvoiceEdit:not(:has(#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#ddButtonLayout,#btntoggleGroupPanel,#btnColumnChooser,#ddReport0,#btnShowRowTotals,#btnShowFields)) {
         display: none !important;
     }
@@ -61,19 +67,19 @@
         margin-top: 10px;
     }
 </style>
-<div class="title">
+@* <div class="title">
     <div class="header-container">
         <div id="VATInvoiceReporting" class="no-border-input"></div>
     </div>
-</div>
+</div> *@
 
 
-<div class="container" style="display: flex; flex-direction: column;width:100%;">
+<div class="container" style="display: flex; flex-direction: column;width:100%;background:white;">
 
     <div class="Head">
-        <div class="limited-footer">
+       
             @await Html.PartialAsync("/Pages/Shared/VAT/VATInvoiceReportingFooter.cshtml")
-        </div>
+      
     </div>
 
     <!-- Input Controls in One Line -->
@@ -143,7 +149,9 @@
     </div>
 
     <!-- Pivot Grid (Will Always Appear Below Filters) -->
-    <div id="pivotGridContainer" style="width: 100%;"></div>
+    <div class="mua" style="width: 95%;">
+    <div id="pivotGridContainer" style="width: 100%;height:140px;"></div>
+    </div>
 
 </div>
 
@@ -220,7 +228,7 @@
                 startDate = new Date(today.getFullYear() - 1, 0, 1);
                 endDate = new Date(today.getFullYear() - 1, 11, 31);
                 break;
-                case 'q1': // Jan - Mar
+            case 'q1': // Jan - Mar
                 startDate = new Date(today.getFullYear(), 0, 1);
                 endDate = new Date(today.getFullYear(), 2, 31);
                 break;
@@ -285,27 +293,36 @@
                     type: "array",
                     data: data
                 },
-                fields: [
-                    { dataField: "AccountHead", area: "row", caption: "Client Name" },
-                   {
-    dataField: "InvoiceMonth",
-    area: "column",
-    caption: "Invoice Month",
-    dataType: "date",
-    groupInterval: "month",      // ✅ Only group by month
-    format: "MMM-yyyy"           // ✅ Show Jun-2025 or Jan-2024
-},
-                    {
-                        dataField: "TotalRevenue",
-                        area: "data",
-                        caption: "Net Revenue",
-                        summaryType: "sum",
-                        format: { type: "fixedPoint", precision: 2 }
-                    }
-                ]
-            },
+                         fields: [
+          { dataField: "AccountHead", area: "row", caption: "Client Name",arguments, width: 250 },
+          { dataField: "InvMonth", area: "column", caption: "Inv Month",arguments, width: 100 ,
+            customizeText: function (cellInfo) {
+            if (cellInfo.value) {
+                const date = new Date(cellInfo.value);
+                const month = date.toLocaleString("en-US", { month: "short" }); // Jan, Feb, etc.
+                const year = date.getFullYear();
+                return `${month} - ${year}`;
+            }
+            return "";
+        }
+      },
+          {
+            dataField: "TotalRevenue",
+            area: "data",
+            caption: "Revenue",
+            summaryType: "sum",
+            format: { type: "fixedPoint", precision: 2 }
+          }
+        ]
+      },
+     
+   
+
+           
+             height: 500,
+      rowHeaderLayout: "virtual",
+      showBorders: true,
             width: "100%",
-            height: $(window).height() - 50,
             allowSortingBySummary: true,
             allowSorting: true,
             allowFiltering: true,
@@ -368,12 +385,12 @@
             $(this).css("background-color", "");
         });
     }
-
+    
     function formatDate(date) {
         if (!date) return null;
         if (typeof date === 'string') date = new Date(date);
         return date.toISOString().split('T')[0];
-    }
+    }   
     	$(document).ready(function () {
 		$(".limited-footer .btn-container").each(function () {
             if (!$(this).find("#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#ddButtonLayout,#btntoggleGroupPanel,#btnColumnChooser,#ddReport0,#btnShowRowTotals,#btnShowFields").length) {
@@ -568,7 +585,7 @@
                                         if (response.success && response.permissions) {
                                             // Default visibility and enable status for buttons
                                             var controlStates = {
-                                                                "ddReport0": { "Visible": true, "Enabled": false },
+                                                            "ddReport0": { "Visible": true, "Enabled": false },
                                                         "btnPrint": { "Visible": true, "Enabled": false },
                                                             "btnColumnChooser": { "Visible": true, "Enabled": false },
                                                             "ddReport0": { "Visible": true, "Enabled": false },
