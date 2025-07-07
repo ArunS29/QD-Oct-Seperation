@@ -5978,6 +5978,7 @@ var dictionary = {
         "Type new Job Order Status Master && Add to the Existing List:": ":أدخل حالة أمر العمل الجديدة وأضفها إلى القائمة الحالية"
     },
     zh: {
+        "Attach": "附件",
         "Save and Close": "保存并关闭",
         "Update": "업데이트",
         "Exemption Code": "면제 코드",
@@ -8720,6 +8721,9 @@ var dictionary = {
 
     },
     hi: {
+        "Attach": "संलग्न करें",
+        "Approve": "स्वीकृति दें",
+        "VoucherDate": "वाउचर की तिथि", 
         "Save and Close": "सहेजें और बंद करें",
         "Update": "अपडेट",
         "Exemption Code": "छूट कोड",
@@ -11610,6 +11614,8 @@ var dictionary = {
         "Manpower Rentals": "मानव बल किराया"
     },
     ur: {
+        
+    "VoucherDate": "واؤچر کی تاریخ",
         "Update": "اپڈیٹ",
         "Exemption Code": "چھوٹ کا کوڈ",
         "Invoiced Amount (SAR)": " انوائس شدہ رقم (ایس اے آر)",
