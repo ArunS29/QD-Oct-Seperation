@@ -256,7 +256,9 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         d.DocumentRemarks,
                         d.DocumentExpDate,
                         d.DocumentExpDateAr,
-                        d.DocumentNotificationDate
+                        d.DocumentNotificationDate,
+                        d.DocumentStatus,
+                        d.DocumentStatusRemarks
                     })
                     .ToListAsync();
 

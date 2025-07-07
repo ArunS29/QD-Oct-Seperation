@@ -200,6 +200,8 @@
     .mainContainer {
         width: 100%;
         overflow-x:hidden;
+        margin-top: 5px;
+        margin-left: 5px;
     }
 
     .playIcon {
@@ -250,9 +252,7 @@
         margin-top: 30px;
     }
 
-    .title {
-        display: none !important;
-    }
+    
 
     .form-wrapper {
         display: flex;
@@ -284,6 +284,7 @@
         display: flex;
         align-items: flex-start;
         gap: 20px;
+        justify-content: center;
         /* margin-top: 10px; */
     }
 
@@ -304,21 +305,50 @@
         border: 1px solid #ddd;
         border-radius: 5px;
     }
-</style>
-@* <div class="title">
-    <div class="header-container">
-        <div id="LedgerDocuments" class="no-border-input"></div>
-    </div>
-</div> *@
+    
+    .icon-button-ledger {
+        margin-top: 27px;
+        background-color: #65bcfc !important;
+        min-width: 100px;
+        min-height: 70px;
+        color: white !important;
+        font-size: 1rem;
 
-<div id="customModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2 id="modalTitle" class="modalTitle">Ledger Document</h2>
+    }
+
+    .icon-button-ledger .dx-icon {
+        color: black !important;
+        font-size: 1rem; /* Optional: make the icon larger */
+    }
+
+    .icon-button-ledgerother {
+        margin-top: 0px;
+        background-color: #65bcfc !important;
+        min-width: 100px;
+        min-height: 50px;
+        color: white !important;
+        font-size: 1rem;
+    }
+
+    .icon-button-ledgerother .dx-icon {
+        color: black !important;
+        font-size: 1rem; /* Optional: make the icon larger */
+    }
+    
+</style>
+
+
+
+<div class="form-wrapper">
+    <div class="dx-card-container">
+        <div class="dx-card-header minimal-header">
+            <div class="card-title-icon">
+                <i class="fas fas fa-folder"></i>
+            </div>
+            <h3 class="card-title-text" id="documentTitle"></h3>
         </div>
     </div>
-</div>
-<div class="form-wrapper">
+   
     <!-- Left Column -->
     <div>
         <div class="form-wrapper">
@@ -372,13 +402,21 @@
                                 .OnClick("onAddDocType"))
                         </div> *@
                 </div>
-
+                <div style="flex: 1;">
+                    @(Html.DevExtreme().TextBox()
+                        .ID("LedgerNo")
+                        .Label("FolderId:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%")
+                        .ReadOnly(true))
+                </div>
                 <div style="flex: 1;">
                     @(Html.DevExtreme().TextBox()
                         .ID("ReferenceNo")
-                        .Label("Reference No:")
+                        .Label("ReferenceNo: Can change it")
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%"))
+
                 </div>
             </div>
 
@@ -397,6 +435,7 @@
                         .ID("DocumentExpiryDate")
                         .Label("Document Expiry Date:")
                         .LabelMode(EditorLabelMode.Outside)
+                        .Value(DateTime.Today.AddMonths(1))
                         .Width("100%"))
                 </div>
 
@@ -406,8 +445,29 @@
                         .Label("Expiry Date (Hijri):")
                         .LabelMode(EditorLabelMode.Outside)
                         .DisplayFormat("dd-MMM-yyyy")
+                        .ReadOnly(true)
+                        .Value(DateTime.Today.AddMonths(1))
                         .Width("100%"))
                 </div>
+                @section Scripts {
+                    <script>
+                        $(function () {
+                            const docExpDateBox = $("#DocumentExpiryDate").dxDateBox("instance");
+                            const hijriDateBox = $("#HijriExpiryDate").dxDateBox("instance");
+
+                            docExpDateBox.option("onValueChanged", function(e) {
+                                const selectedDate = e.value;
+
+                                if (selectedDate) {
+                                    hijriDateBox.option("value", selectedDate); // sets the same date
+                                } else {
+                                    hijriDateBox.option("value", null);
+                                }
+                            });
+                        });
+                    </script>
+                }
+
 
                 <div style="flex: 1;">
                     @(Html.DevExtreme().DateBox()
@@ -427,16 +487,16 @@
                     <div class="drop-preview" id="preview"></div>
                 </div>
                 <input type="file" id="fileUploader" accept="*/*" style="display:none;" />
-              
 
-               
-                    @(Html.DevExtreme().Button()
-                        .Text("Add")
-                        .Icon("fas fa-plus")
-                        .Type(ButtonType.Success)
-                        .OnClick("onSaveDocument")
-                        .ElementAttr("style", "background-color:#007bff !important; color: black; width:120px; max-height: 100px;"))
-               
+
+
+                @(Html.DevExtreme().Button()
+                    .Text("Add")
+                    .Icon("fas fa-plus")
+                    .Type(ButtonType.Success)
+                    .OnClick("onSaveDocument")
+                    .ElementAttr(new { @class = "icon-button-ledger" }))
+
             </div>
         </div>
         <input type="hidden" id="hiddenModuleType" name="moduleType" />
@@ -448,19 +508,21 @@
     <!-- Bottom Buttons -->
     <div class="bottom-buttons">
         <div class="right-buttons">
-            @(Html.DevExtreme().Button()
-                .Text("Show All Documents")
-                .Type(ButtonType.Normal)
-                .Icon("fas fa-folder-open")
-                .Width(350)
-                .OnClick("showAllDocuments"))
+            @* @(Html.DevExtreme().Button() *@
+            @*     .Text("Show All Documents") *@
+            @*     .Type(ButtonType.Normal) *@
+            @*     .Icon("fas fa-folder-open") *@
+            @*     .Width(250) *@
+            @*     .OnClick("showAllDocuments") *@
+            @*     .ElementAttr(new { @class = "icon-button-ledgerother" })) *@
 
             @(Html.DevExtreme().Button()
                 .Text("Back")
                 .Icon("fas fa-arrow-left")
                 .Type(ButtonType.Normal)
-                .Width(120)
-                .OnClick("Goback"))
+                .Width(100)
+                .OnClick("Goback")
+                .ElementAttr(new { @class = "icon-button-ledgerother" }))
         </div>
     </div>
     <!-- Popup to show all documents -->
@@ -470,6 +532,10 @@
 
 <script>
 
+    var urlParams = new URLSearchParams(window.location.search);
+    var referenceNo = urlParams.get("ReferenceNo");
+    var moduleType = urlParams.get("ModuleType");
+    document.getElementById("documentTitle").textContent = moduleType + " Documents";
     $(function () {
         loadInitialDocumentNo();
     });
@@ -487,7 +553,7 @@
                 loadUrl: `/api/LedgerDocumentsF/GetDocuments?module=${encodeURIComponent(moduleType)}`,
 
             }),
-            height: 480,
+            height: 350,
             showBorders: true,
             columnAutoWidth: true,
             showRowLines: true,
@@ -500,14 +566,72 @@
             },
             columns: [
                 { dataField: "DocumentNo", caption: "Doc No", allowEditing: false },
-                { dataField: "DocumentType", caption: "Document Type" },
+                { dataField: "DocumentType", caption: "Document Type", dataType: "text" },
                 { dataField: "DocumentRefNo", caption: "Reference No" },
-                { dataField: "DocumentRemarks", caption: "Remarks" },
-                { dataField: "DocumentExpDate", caption: "Expiry On" },
-                { dataField: "DocumentExpDateAr", caption: "Expiry (Hijri)" },
-                { dataField: "DocumentNotificationDate", caption: "Notify On" },
-                { dataField: "DocumentStatus", caption: "Status" },
-                { dataField: "DocumentStatusRemarks", caption: "Status Remarks" }
+                { dataField: "DocumentRemarks", caption: "Remarks", dataType: "text" },
+                {
+                  dataField: "DocumentExpDate",
+                  caption: "Expiry On",
+                  dataType: "date",
+                  format: "dd/MM/yyyy",
+                  cellTemplate: function(container, options) {
+                    const rawValue = options.data.DocumentExpDate;
+
+                    if (!rawValue) {
+                      // Handle null/undefined/empty
+                      $("<div>")
+                        .text(" null ")
+                        .css({
+                          backgroundColor: "#fff3cd",  // yellowish warning
+                          color: "#856404",            // dark yellow text
+                          padding: "4px 8px",
+                          borderRadius: "6px",
+                          textAlign: "center"
+                        })
+                        .appendTo(container);
+                      return;
+                    }
+
+                    const expDate = new Date(rawValue);
+                    const today = new Date();
+
+                    const isExpired = expDate < today;
+                    const bgColor = isExpired ? "#f8d7da" : "#d4edda"; // red/green
+                    const color = isExpired ? "#721c24" : "#155724";   // text color
+
+                    const formattedDate = expDate.toLocaleDateString('en-GB');
+
+                    $("<div>")
+                      .text(formattedDate)
+                      .css({
+                        backgroundColor: bgColor,
+                        color: color,
+                        padding: "4px 8px",
+                        borderRadius: "6px",
+                        textAlign: "center"
+                      })
+                      .appendTo(container);
+                  }
+                },
+
+
+                { dataField: "DocumentExpDateAr", caption: "Expiry (Hijri)", dataType: "date" },
+                { dataField: "DocumentNotificationDate", caption: "Notify On", dataType: "date" },
+                {
+                    dataField: "DocumentStatusRemarks",
+                    caption: "Status Remarks"
+                },
+                {
+                    caption: "Download",
+                    cellTemplate: function (container, options) {
+                        $("<a>")
+                            .text("Download")
+                            .attr("href", options.data.FileUrl) // Your DB field with blob URL
+                            .attr("target", "_blank")
+                            .addClass("dx-link")
+                            .appendTo(container);
+                    }
+                }
             ],
             onRowUpdating: onGridRowUpdating
         });
@@ -531,7 +655,12 @@
         openModal(url, title);
     }
 
-
+    function formatDateForServer(dateValue) {
+        if (!dateValue) return "";
+        const date = new Date(dateValue);
+        if (isNaN(date.getTime())) return "";
+        return date.toISOString().split("T")[0];
+    }
 
     function onSaveDocument() {
     
@@ -545,6 +674,9 @@
             DevExpress.ui.notify("Please select a document to attach.", "warning", 2000);
             return;
         }
+            console.log("DocumentExpDate:", formatDateForServer($("#DocumentExpiryDate").dxDateBox("instance").option("value")));
+            console.log("NotificationDate:", formatDateForServer($("#NotificationDate").dxDateBox("instance").option("value")));
+            console.log("HijriExpDate:", formatDateForServer($("#HijriExpiryDate").dxDateBox("instance").option("value")));
         const file = selectedFile;
 
         const formData = new FormData();
@@ -553,9 +685,9 @@
         formData.append("DocumentType", $("#DocType").dxSelectBox("instance").option("value"));
         formData.append("DocumentRefNo", $("#ReferenceNo").dxTextBox("instance").option("value"));
         formData.append("DocumentRemarks", $("#Remarks").dxTextBox("instance").option("value"));
-        formData.append("DocumentExpDate", $("#DocumentExpiryDate").dxDateBox("instance").option("value"));
-        formData.append("HijriExpDate", $("#HijriExpiryDate").dxDateBox("instance").option("value"));
-        formData.append("NotificationDate", $("#NotificationDate").dxDateBox("instance").option("value"));
+        formData.append("DocumentExpDate", formatDateForServer($("#DocumentExpiryDate").dxDateBox("instance").option("value")));
+        formData.append("HijriExpDate", formatDateForServer($("#HijriExpiryDate").dxDateBox("instance").option("value")));
+        formData.append("NotificationDate", formatDateForServer($("#NotificationDate").dxDateBox("instance").option("value")));
 
         $.ajax({
            url: `/api/LedgerDocumentsF/AddDocumentsEntry?module=${encodeURIComponent(moduleType)}`,
@@ -581,6 +713,7 @@
     function Goback() {
         window.history.back();
     }
+
      $(function () {
         $("#InventoryDocuments").dxTextBox({
             text: formatMessage("Inventory Documents"),
@@ -720,12 +853,18 @@
         const urlParams = new URLSearchParams(window.location.search);
         const referenceNo = urlParams.get("ReferenceNo");
         const moduleType = urlParams.get("ModuleType");
+        
 
         // 1. Bind ReferenceNo in the TextBox
         if (referenceNo) {
             const textboxInstance = $("#ReferenceNo").dxTextBox("instance");
+            
             if (textboxInstance) {
                 textboxInstance.option("value", referenceNo);
+            }
+            const ledgerBox = $("#LedgerNo").dxTextBox("instance");
+            if (ledgerBox) {
+                ledgerBox.option("value", referenceNo);
             }
         }
         // 2. Store moduleType in hidden field
@@ -737,7 +876,7 @@
         } else {
             console.warn("moduleType is missing. API call not made.");
         }
-
+        
 
     });
 

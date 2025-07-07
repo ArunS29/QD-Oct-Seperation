@@ -139,6 +139,23 @@
     }
 </style>
 <div class="dx-fieldset horizontal-container">
+
+    @(Html.DevExtreme().Button()
+        .ID("btnSave")
+        .Text("Save")
+        .Icon("save")
+        .Width(180)
+        .Hint("Click to save")
+        .ElementAttr(new { @class = "dx-button-custom btn-save" }))
+
+    @(Html.DevExtreme().Button()
+        .ID("btnSaveAndClose")
+        .Text("Save & Close")
+        .Icon("save")
+        .Width(180)
+        .Hint("Click to save and close")
+        .ElementAttr(new { @class = "dx-button-custom btn-save-close" }))
+
     @(Html.DevExtreme().Button()
         .ID("btnBack")
         .Text("Back")
@@ -146,24 +163,6 @@
         .Width(180)
         .Hint("Click to back")
         .ElementAttr(new { @class = "dx-button-custom btn-back" }))
-
-    @(Html.DevExtreme().Button()
-        .ID("btnDelete")
-        .Text("Delete")
-        .Icon("close")
-        .Width(180)
-        .Hint("Click to delete")
-        .OnClick("onDeleteButtonClick")
-        .ElementAttr(new { @class = "dx-button-custom btn-delete" }))
-
-    @(Html.DevExtreme().Button()
-        .ID("btnAttach")
-        .Text("Attach")
-        .Icon("link")
-        .Hint("Click to attach")
-        .Width(180)
-        .OnClick("onAttachmentButtonClick")
-        .ElementAttr(new { @class = "dx-button-custom btn-attach" }))
 
     @(Html.DevExtreme().DropDownButton()
         .ID("btnPreview1")
@@ -181,20 +180,23 @@
         .OnItemClick("handlePreviewClick"))
 
     @(Html.DevExtreme().Button()
-        .ID("btnSave")
-        .Text("Save")
-        .Icon("save")
+        .ID("btnAttach")
+        .Text("Attach")
+        .Icon("link")
+        .Hint("Click to attach")
         .Width(180)
-        .Hint("Click to save")
-        .ElementAttr(new { @class = "dx-button-custom btn-save" }))
+        .OnClick("onAttachmentButtonClick")
+        .ElementAttr(new { @class = "dx-button-custom btn-attach" }))
 
     @(Html.DevExtreme().Button()
-        .ID("btnSaveAndClose")
-        .Text("Save & Close")
-        .Icon("save")
+        .ID("btnDelete")
+        .Text("Delete")
+        .Icon("close")
         .Width(180)
-        .Hint("Click to save and close")
-        .ElementAttr(new { @class = "dx-button-custom btn-save-close" }))
+        .Hint("Click to delete")
+        .OnClick("onDeleteButtonClick")
+        .ElementAttr(new { @class = "dx-button-custom btn-delete" }))
+
 
     @(Html.DevExtreme().Button()
         .ID("btnVerify")
