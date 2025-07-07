@@ -443,7 +443,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 // Get the max voucher number or default to 0 if no records are found
                 int maxVoucherNo = result.FirstOrDefault()?.MaxVoucherNo ?? 0;
                 int newVoucherNo = maxVoucherNo + 1;
-
+                
                 // Format the new voucher number with leading zeros
                 //    var formattedVoucherNo = newVoucherNo.ToString("D3"); // Ensures 3 digits
                 documentdetails.AssetLedgerNo = voucherPrefix + newVoucherNo;
@@ -809,33 +809,37 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
         private async Task<string> GenerateDocumentNoAsync()
         {
-			
-			string documentNo = "1"; // Default value if no records exist.
-            int newAccountGroupID;
+            string documentNo = "1"; // Default if no records exist
 
             try
             {
-                // Query to get the maximum document number.
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    // Log error or handle gracefully if tenant context is invalid
+                    return "InvalidTenant"; // or throw exception based on your flow
+                }
 
-                var results = await _context.VoucherResults
-    .FromSqlInterpolated($"SELECT MAX(CAST(RIGHT(DocumentNo, 3) AS INT)) AS MaxDocumentNo FROM Tbl20116LedgerDocuments")
-    .ToListAsync();
+                var result = await dbContext.VoucherResults
+                    .FromSqlInterpolated($@"
+                SELECT MAX(CAST(RIGHT(DocumentNo, 3) AS INT)) AS MaxDocumentNo 
+                FROM Tbl20116LedgerDocuments")
+                    .ToListAsync();
 
-                int MaxAccountGroupID = results.FirstOrDefault()?.MaxVoucherNo ?? 0; // Handle null result
+                int maxDocumentNo = result.FirstOrDefault()?.MaxVoucherNo ?? 0;
 
+                int newDocumentNo = maxDocumentNo + 1;
 
-                newAccountGroupID = MaxAccountGroupID + 1;
-                documentNo = newAccountGroupID.ToString();
-
+                documentNo = newDocumentNo.ToString("D3"); // Format like 001, 002, etc.
             }
-            catch
+            catch (Exception ex)
             {
-                // Handle any potential errors by using default "1".
+                // Log exception if necessary
                 documentNo = "1";
             }
 
             return documentNo;
         }
+
 
 
         [HttpGet]
@@ -851,9 +855,15 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             try
             {
+
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    // Log error or handle gracefully if tenant context is invalid
+                    return "InvalidTenant"; // or throw exception based on your flow
+                }
                 // Query to get the maximum document number.
 
-                var results = await _context.VoucherResults
+                var results = await dbContext.VoucherResults
     .FromSqlInterpolated($"SELECT MAX(CAST(RIGHT(DocumentNo, 3) AS INT)) AS MaxDocumentNo FROM Tbl20108AssetDocuments")
     .ToListAsync();
 

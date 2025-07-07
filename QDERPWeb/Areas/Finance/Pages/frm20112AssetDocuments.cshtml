@@ -89,7 +89,7 @@
                 <div class="row mb-3">
                     <div class="col-12 col-md-4">
                         @(Html.DevExtreme().TextBox()
-                                .Label(new JS("formatMessage('Document No:')"))
+                                .Label(new JS("formatMessage('Document No')"))
                                 .LabelMode(EditorLabelMode.Outside)
                                 .ID("DocumentNo")
                                 .Value(null)
@@ -100,7 +100,7 @@
                     </div>
                     <div class="col-12 col-md-6">
                         @(Html.DevExtreme().DropDownBox()
-                            .Label(new JS("formatMessage('Type of the Document Attached:')"))
+                            .Label(new JS("formatMessage('Type of the Document Attached')"))
                                 .DataSource(d => d.WebApi()
                                 .Controller("LedgerAccountMaster")
                                 .LoadAction("GetDocumentType")
@@ -143,6 +143,7 @@
                             .ID("btnEditAHead")
                             .Icon("edit")
                             .Width("100%")
+                            .OnClick("redirecttoEditledgersubgroup")
                             )
                     </div>
                 </div>
@@ -151,7 +152,7 @@
                 <div class="row mb-3">
                     <div class="col-12 col-md-4">
                         @(Html.DevExtreme().TextBox()
-                            .Label(new JS("formatMessage('Reference No:')"))
+                            .Label(new JS("formatMessage('Reference No')"))
                             .LabelMode(EditorLabelMode.Outside)
                                 .ID("ReferenceNo")
                                 .Value(null)
@@ -200,7 +201,7 @@
                     </div> *@
                     <div class="col-12 col-md-4">
                         @(Html.DevExtreme().DateBox()
-                            .Label(new JS("formatMessage('Document Expiry Date:')"))
+                            .Label(new JS("formatMessage('Document Expiry Date')"))
                                 .LabelMode(EditorLabelMode.Outside)
                                 .Type(DateBoxType.Date)
                                 .DisplayFormat("dd-MMM-yyyy")
@@ -212,7 +213,7 @@
 
                                 })
                                 .ShowClearButton(true)
-                                .Value(DateTime.Now)
+                                //.Value(DateTime.Now)
                                 .Width("100%"))
                     </div>
 
@@ -239,7 +240,7 @@
 
                             })
                             .ShowClearButton(true)
-                            .Value(DateTime.Now)
+                            //.Value(DateTime.Now)
                             .Width("100%"))
                     </div>
                     <div class="col-6 col-md-2">
@@ -570,13 +571,13 @@ $(function () {
         if (accountMasterDropDownBoxValidation.isValid && accountMasterDropDownBoxNotificationValidation.isValid && accountMasterDropDownBoxNotificationValidation.isValid) {
             // Prepare the VM (View Model) for the API call
             var VM = {
-                "DocumentNo": $("#DocumentNo").dxTextBox("instance").option("value"),
-                "DocumentType": $("#accountMasterDropDownBox").dxDropDownBox("instance").option("value"),
-                "DocumentRefNo": $("#ReferenceNo").dxTextBox("instance").option("value"),
-                "DocumentRemarks": $("#Remarks").dxTextBox("instance").option("value"),
-                "DocumentExpDate": $("#accountMasterDropDownBoxExpiry").dxDateBox("instance").option("value"),
-                "DocumentExpDateAr": $("#ExpiryDate").dxTextBox("instance").option("value"),
-                "DocumentNotificationDate": $("#accountMasterDropDownBoxNotification").dxDateBox("instance").option("value")
+                "DocumentNo": $("#DocumentNo").dxTextBox("instance").option("value") ||null,
+                    "DocumentType": $("#accountMasterDropDownBox").dxDropDownBox("instance").option("value")||null,
+                    "DocumentRefNo": $("#ReferenceNo").dxTextBox("instance").option("value")||null,
+                    "DocumentRemarks": $("#Remarks").dxTextBox("instance").option("value")||null,
+                    "DocumentExpDate": $("#accountMasterDropDownBoxExpiry").dxDateBox("instance").option("value")||null,
+                    "DocumentExpDateAr": $("#ExpiryDate").dxTextBox("instance").option("value")||null,
+                    "DocumentNotificationDate": $("#accountMasterDropDownBoxNotification").dxDateBox("instance").option("value")||null
             };
 
             // Get selected row data from the data grid
@@ -654,7 +655,7 @@ $(function () {
     $("#btnBack").on("click", function (e) {
         e.preventDefault();
         alert("Are you sure want to exit?");
-        window.location.href = "http://localhost:5000/";
+        history.back();
         
     });
 
@@ -898,8 +899,26 @@ $(function () {
                 let url = `/${tenantName}/Finance/AssetsDocTypeMaster`;
             let title = "";
             openModal(url, title);
-            refreshAssetCategorySelectBox()
+            //refreshAssetCategorySelectBox()
         }
+
+                  function redirecttoEditledgersubgroup() {
+        const dropDownBox = $("#accountMasterDropDownBox").dxDropDownBox("instance");
+        const documentType = dropDownBox ? dropDownBox.option("value") : "";
+      alert(documentType)
+        if (!documentType) {
+            DevExpress.ui.notify("Please select a Document Type.", "warning", 2000);
+            return;
+        }
+
+        const url = `/${tenantName}/Finance/AssetsDocTypeMaster?DocumentType=${encodeURIComponent(documentType)}`;
+        const title = "Edit Ledger Subgroup";
+        openModal(url, title);
+
+        // Optionally refresh the related UI
+        // refreshAssetCategorySelectBox();
+    }
+
 
      function onRowUpdated(e) {
         const updatedData = e.data; // The updated row data

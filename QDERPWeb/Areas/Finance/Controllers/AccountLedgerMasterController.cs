@@ -770,7 +770,18 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             RecordCreatedOn = chartAccount.RecordCreatedOn
                         };
 
+
+
+                        var newAssetMaster = new Tbl20105AssetMaster
+                        {
+                            AssetLedgerNo = chartAccount.AccountId,
+                            
+                        };
+
+                  
+
                         dbContext.Tbl201ChartOfAccounts.Add(newAccount);
+                        dbContext.Tbl20105AssetMasters.Add(newAssetMaster);
                         dbContext.SaveChanges();
                         return Json(new { success = true, message = "Account Ledger Information Saved Successfully" });
                     }
