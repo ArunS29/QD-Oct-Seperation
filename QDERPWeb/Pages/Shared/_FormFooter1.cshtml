@@ -1,6 +1,7 @@
 ﻿
 
 
+
 <style type="text/css">
     #dataGrid .dx-datagrid-headers .dx-datagrid-action {
         text-align: center !important;
@@ -12,62 +13,142 @@
 
     .horizontal-container {
         display: flex;
-        gap: 10px; /* Adds spacing between buttons */
-        justify-content: start; /* Aligns buttons to the left */
-        align-items: center; /* Vertically centers the buttons */
-        margin: 15px;
-        margin-top: 0px;
+        flex-wrap: inherit; /* Allow buttons to wrap */
+        gap: 12px;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 10px 15px;
     }
 
-    .button-alignment-down {
-        margin-top: 23px;
+    .dx-dropdownbutton-popup-wrapper {
+        z-index: 1050 !important; /* Higher than Bootstrap modals (1040) if used */
+        transform: translate(0px, -91px) !important;
     }
 
-    .button-group {
-        margin-left: -10px !important;
+
+    /* Base button customization */
+    .dx-button-custom .dx-button-content {
+        border-radius: 6px;
+        font-weight: 600;
+        min-width: 120px; /* Reduced min-width for small screens */
+        max-width: 100%; /* Avoid overflow */
+        padding: 8px 14px;
+        transition: background-color 0.3s, color 0.3s;
+        text-align: center;
     }
 
-    /* Custom styles for context menu */
-    .context-menu {
-        display: none;
-        position: absolute;
-        /* background-color: aliceblue;
-                    border: 1px solid aliceblue; */
-        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-        z-index: 1000;
+
+    /* Back */
+    .dx-button-custom.btn-back .dx-button-content {
+        background-color: #f5f5f5;
+        color: #333;
+        border: 1px solid #ccc;
     }
 
-    .context-menu-item {
-        padding: 0px, 15px,10px 15px;
-        cursor: pointer;
+    .dx-button-custom.btn-back:hover .dx-button-content {
+        background-color: #e4e4e4;
     }
 
-    .ledgerResult {
-        margin: 15px !important;
+    /* Delete */
+    .dx-button-custom.btn-delete .dx-button-content {
+        background-color: #fff0f0;
+        color: #d9534f;
+        border: 1px solid #d9534f;
     }
 
-    #rowHeightMenu {
-        position: absolute;
-        top: 100px; /* Adjust positioning as per your design */
-        left: 300px; /* Adjust positioning as per your design */
-        display: none; /* Keep it hidden until needed */
+    .dx-button-custom.btn-delete:hover .dx-button-content {
+        background-color: #f8d7da;
+        color: #a94442;
     }
 
-    /* #previewModal {
-                    border: 1px solid aliceblue;
-                } */
+    /* Attach */
+    .dx-button-custom.btn-attach .dx-button-content {
+        background-color: #ffffff;
+        color: #000;
+        border: 1px solid #444;
+    }
 
-    .bold-button .dx-button-text {
-        font-weight: bold;
+    .dx-button-custom.btn-attach:hover .dx-button-content {
+        background-color: #eee;
+    }
+
+    /* Preview */
+    .dx-button-custom.btn-preview .dx-button-content {
+        background-color: #e0faff;
+        color: #17a2b8;
+        border: 1px solid #17a2b8;
+    }
+
+    .dx-button-custom.btn-preview:hover .dx-button-content {
+        background-color: #c2f1fa;
+    }
+
+    /* Save */
+    .dx-button-custom.btn-save .dx-button-content {
+        background-color: #007bff;
+        color: #fff;
+        border: 1px solid #007bff;
+    }
+
+    .dx-button-custom.btn-save:hover .dx-button-content {
+        background-color: #0069d9;
+    }
+
+    /* Save & Close */
+    .dx-button-custom.btn-save-close .dx-button-content {
+        background-color: #28a745;
+        color: #fff;
+        border: 1px solid #28a745;
+    }
+
+    .dx-button-custom.btn-save-close:hover .dx-button-content {
+        background-color: #218838;
+    }
+
+    /* Verify */
+    .dx-button-custom.btn-verify .dx-button-content {
+        background-color: #ffc107;
+        color: #fff;
+        border: 1px solid #ffc107;
+    }
+
+    .dx-button-custom.btn-verify:hover .dx-button-content {
+        background-color: #e0a800;
+    }
+
+    .horizontal-container{
+        gap:5px !important;
+        padding: 10px 0px!important;
+    }
+    /* Approve */
+    .dx-button-custom.btn-approve .dx-button-content {
+        background-color: #17c1e8;
+        color: #fff;
+        border: 1px solid #17c1e8;
+    }
+
+    .dx-button-custom.btn-approve:hover .dx-button-content {
+        background-color: #12a5ca;
+    }
+
+    @@media (max-width: 768px) {
+        .horizontal-container {
+            flex-direction: column; /* Stack vertically on small screens */
+            align-items: stretch;
+        }
+
+        .dx-button-custom {
+            width: 100% !important; /* Full width buttons */
+        }
     }
 </style>
 <div class="dx-fieldset horizontal-container mt-2">
     @(Html.DevExtreme().DropDownButton()
         .ID("journaleditButtonLayout1")
         .Icon("smalliconslayout")
-        .Width(50)
+        .Width(100)
         .Text(new JS("formatMessage('Layout')"))
-        .ElementAttr(new { @class = "bold-button" })
+        .ElementAttr(new { @class = "dx-button-custom btn-attach" })
         .DropDownOptions(options => options.Width(230))
         .Items(items =>
         {
@@ -79,7 +160,7 @@
         })
         .ShowArrowIcon(false)
         )
-    @(Html.DevExtreme().Button()
+    @* @(Html.DevExtreme().Button()
         .ID("btnMoveUp")
         
         .Type(ButtonType.Normal)
@@ -96,24 +177,22 @@
         .StylingMode(ButtonStylingMode.Outlined)
         .Icon("spindown") // Change the icon to an up/down arrow option
         .ElementAttr(new { @class = "bold-button" })
-        )
+        ) *@
     @(Html.DevExtreme().Button()
         .ID("btnSave")
         .Text(new JS("formatMessage('Save')"))
         .Type(ButtonType.Normal)
         .StylingMode(ButtonStylingMode.Outlined)
         .Icon("save")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-
-        )
+        .ElementAttr(new { @class = "dx-button-custom btn-save" }))
     @(Html.DevExtreme().Button()
         .ID("btnSaveAndClose")
         .Text(new JS("formatMessage('Save and Close')"))
         .Type(ButtonType.Normal)
         .StylingMode(ButtonStylingMode.Outlined)
         .Icon("save")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-        )
+        .ElementAttr(new { @class = "dx-button-custom btn-save-close" }))
+
 
 
 
@@ -129,14 +208,14 @@
         .Text(new JS("formatMessage('Submit')"))
         .Icon("upload")
         //.OnClick("function() { addRow(); }")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+        .ElementAttr(new { @class = "bold-button button-submit" })
         )
     @(Html.DevExtreme().DropDownButton()
         .ID("btnPreview2")
         .Text(new JS("formatMessage('Print')"))
         .Icon("fullscreen")
         .Hint("Click to Preview")
-        .ElementAttr(new { @class = "bold-button" })
+        .ElementAttr(new { @class = "dx-button-custom btn-preview" })
         .Width(180)
         .DropDownOptions(options => options.Width(220))
         .Items(items =>
@@ -152,38 +231,32 @@
         .Text(new JS("formatMessage('Delete')"))
         .Icon("close")
        // .OnClick("onDeleteButtonClick")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-        )
+        .ElementAttr(new { @class = "dx-button-custom btn-delete" }))
+    
     @(Html.DevExtreme().Button()
         .ID("btnjournalBack")
         .Text(new JS("formatMessage('Back')"))
         .Icon("arrowleft")
-        
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+        .ElementAttr(new { @class = "dx-button-custom btn-back" })
         )
     @(Html.DevExtreme().Button()
         .ID("btnVerify")
         .Text(new JS("formatMessage('Verify')"))
         .Icon("check")
-        
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+        .ElementAttr(new { @class = "dx-button-custom btn-verify" }))
 
-        )
     @(Html.DevExtreme().Button()
         .ID("btnApprove")
         .Text(new JS("formatMessage('Approve')"))
         .Icon("exportselected")
-        
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+        .ElementAttr(new { @class = "dx-button-custom btn-approve" }))
 
-        )
     @(Html.DevExtreme().Button()
         .ID("btnAttach")
         .Text(new JS("formatMessage('Attach')"))
         .Icon("link")
         .OnClick("onAttachmentButtonClick")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-        )
+        .ElementAttr(new { @class = "dx-button-custom btn-attach" }))
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnColumnChooser")
