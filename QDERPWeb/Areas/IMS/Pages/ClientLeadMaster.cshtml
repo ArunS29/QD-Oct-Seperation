@@ -200,7 +200,7 @@
                 <!-- Asset Category Dropdown -->
                 <div class="col-md-8 " >
                     <div class="form-group-row" style="display:flex; align-items:end;">
-        @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Client Category')"))
+        @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true).Label(new JS("formatMessage('Client Category')"))
             .LabelMode(EditorLabelMode.Outside)
      .DataSource(d => d.WebApi()
      .Controller("ClientLeadMaster")
@@ -286,7 +286,7 @@
                         .LabelMode(EditorLabelMode.Outside).DisplayFormat("dd-MMM-yyyy"))
                     </div>
                     <div class="col-md-6">
-                        @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Client Ledger No')"))
+                        @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true).Label(new JS("formatMessage('Client Ledger No')"))
                         .LabelMode(EditorLabelMode.Outside)
      .DataSource(d => d.WebApi()
      .Controller("ClientLeadMaster")
@@ -366,7 +366,7 @@
                         @(Html.DevExtreme().TextBox().ID("Email").Label(new JS("formatMessage('Email')"))
                         .LabelMode(EditorLabelMode.Outside))
                     </div>
-                </div>
+                </div
 
                 <div class="form-row">
                     <div class="col-md-6">
@@ -566,12 +566,7 @@
 
     </div>
 
-   
-       
-          
-       
-                    
-              
+        
          
    <div class="form-container">
         <div class="footer-buttons">
@@ -615,16 +610,16 @@
                  .ShowBorders(true)
                  .HoverStateEnabled(true)
                  .Paging(p => p.PageSize(15))
-                 .FilterRow(f => f.Visible(true))//
+                 //.FilterRow(f => f.Visible(true))//
                  .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                  .Height(345)
                  .Selection(s => s.Mode(SelectionMode.Single))
                  .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                  .Columns(columns =>
                  {
-                                columns.Add().DataField("ClientCategoryCode").Caption(new JS("formatMessage('Client Category Code')"));
-                                columns.Add().DataField("CategoryCode").Caption(new JS("formatMessage('Category Code')"));
-                                columns.Add().DataField("ClientCategory").Caption(new JS("formatMessage('Client Category')"));
+                                columns.Add().DataField("ClientCategoryCode").Caption(new JS("formatMessage('ID')"));
+                                columns.Add().DataField("CategoryCode").Caption(new JS("formatMessage('Code')"));
+                                columns.Add().DataField("ClientCategory").Caption(new JS("formatMessage('Category')"));
 
 
                  })
@@ -759,7 +754,7 @@
        
          const cleanClientCode = clientCode ? clientCode.split("?")[0] : null;   // Trim off anything after '?' if it's accidentally included in value
     
-
+         getSalesPersonByUser();
         if (cleanClientCode) {
             loadClientDetails(cleanClientCode); 
         }else{
@@ -858,7 +853,23 @@ function loadContactListGrid(clientCode) {
         }
     });
 }
-
+	function getSalesPersonByUser() {
+	$.ajax({
+		type: "GET",
+		url: "/api/AddNewClientRequest/GetSalesPersonByUser",
+		success: function (data) {
+			if (data && data.SalesPersonCode) {
+					const salesPersonDropDown = $("#GetSalesPersonDropDown").dxDropDownBox("instance");
+				if (salesPersonDropDown) {
+						salesPersonDropDown.option("value", data.SalesPersonCode);
+				}
+			}
+		},
+		error: function (xhr) {
+			console.log("SalesPerson fetch failed:", xhr.responseText);
+		}
+	});
+}
      function onOpened(e) {
         setTimeout(() => {
             e.component.focus();
@@ -1324,7 +1335,6 @@ ContactRemarks:clientRemarks,
 
 
 
-//
  function redirectToClientCategory() {
         let url = `/${tenantName}/IMS/ClientCategory1`;
         let title = "";

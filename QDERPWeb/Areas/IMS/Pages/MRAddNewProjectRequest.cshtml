@@ -2557,7 +2557,7 @@
 			const urlParams = new URLSearchParams(window.location.search);
 			const mprnos = urlParams.get('Mprno');
 			const mprno = mprnos ? mprnos.split("?")[0] : null;
-
+			getSalesPersonByUser();
 			if (mprno) {
 				// If Mprno is present, load client details
 				loadClientDetails(mprno);
@@ -2669,7 +2669,23 @@
 		});
 	}
 
-
+	function getSalesPersonByUser() {
+		$.ajax({
+			type: "GET",
+			url: "/api/AddNewClientRequest/GetSalesPersonByUser",
+			success: function (data) {
+				if (data && data.SalesPersonCode) {
+						const salesPersonDropDown = $("#ddGetSalesPerson").dxDropDownBox("instance");
+					if (salesPersonDropDown) {
+							salesPersonDropDown.option("value", data.SalesPersonCode);
+					}
+				}
+			},
+			error: function (xhr) {
+				console.log("SalesPerson fetch failed:", xhr.responseText);
+			}
+		});
+	}
 
 
 

@@ -1152,6 +1152,45 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             return Unauthorized("Unable to fetch tenant information.");
         }
+        [HttpGet]
+        public IActionResult GetSalesPersonByUser()
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                _logger.LogWarning("GetSalesPersonByUser failed: Invalid tenant context.");
+                return Unauthorized("Invalid tenant.");
+            }
+
+            var userIdStr = HttpContext.Session.GetString("UserId");
+            var userName = HttpContext.Session.GetString("UserName") ?? "Unknown";
+
+            if (!int.TryParse(userIdStr, out int userId))
+            {
+                _logger.LogWarning("GetSalesPersonByUser failed: User not logged in or invalid UserId. Username: {UserName}", userName);
+                return Unauthorized("User not logged in.");
+            }
+
+            _logger.LogInformation("GetSalesPersonByUser called by UserId: {UserId}, UserName: {UserName}", userId, userName);
+
+            var salesPerson = dbContext.Tbl20101SalesPersonMasters
+                .Where(s => s.UserCode == userId)
+                .Select(s => new
+                {
+                    s.SalesPersonCode,
+                    s.SalesPersonName
+                })
+                .FirstOrDefault();
+
+            if (salesPerson == null)
+            {
+                _logger.LogWarning("Sales person not found for UserId: {UserId}", userId);
+                return NotFound("Sales person not found for this user.");
+            }
+
+            _logger.LogInformation("Sales person found for UserId: {UserId} -> Code: {Code}, Name: {Name}", userId, salesPerson.SalesPersonCode, salesPerson.SalesPersonName);
+
+            return Ok(salesPerson);
+        }
 
 
     }
