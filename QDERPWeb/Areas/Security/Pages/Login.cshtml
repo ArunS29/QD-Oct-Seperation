@@ -315,6 +315,8 @@
                 document.getElementById('loadingSpinner').style.display = 'none';
 
                 if (data.success) {
+                    // Set tenant cookie to current tenant on successful login
+                    document.cookie = "CurrentTenant=" + encodeURIComponent(tenantName) + "; path=/; expires=" + new Date(Date.now() + 86400000).toUTCString();
                     sessionStorage.setItem('AuthToken', data.token);
                     sessionStorage.setItem('Permissions', JSON.stringify(data.permissions));
                     sessionStorage.setItem('tenantName', tenantName);
@@ -358,4 +360,39 @@
         passwordField.attr('type', passwordField.attr('type') === 'password' ? 'text' : 'password');
         $(this).find('i').toggleClass('fa-eye fa-eye-slash');
     });
+    debugger;
+
+    // --- Tenant Switch Detection ---
+    (function() {
+        var currentTenant = "@Model.TenantName";
+        var cookieName = "CurrentTenant";
+        // Helper to get cookie value
+        function getCookie(name) {
+            var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+            if (match) return decodeURIComponent(match[2]);
+            return null;
+        }
+        // Helper to set cookie
+        function setCookie(name, value, days) {
+            var expires = "";
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days*24*60*60*1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + encodeURIComponent(value) + expires + "; path=/";
+        }
+        // On page load, check if tenant changed
+        var lastTenant = getCookie(cookieName);
+        if (lastTenant && lastTenant !== currentTenant) {
+            // Tenant switched in another tab, force logout
+            sessionStorage.clear();
+            // Optionally, call signout API to clear server session/cookies
+            fetch('/api/Login/SignOut').then(function() {
+                window.location.href = `/${currentTenant}/Security/Login`;
+            });
+        }
+        // Always update cookie to current tenant
+        setCookie(cookieName, currentTenant, 1);
+    })();
 </script>

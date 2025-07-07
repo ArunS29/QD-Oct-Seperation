@@ -145,6 +145,7 @@
         .Icon("arrowleft")
         .Width(180)
         .Hint("Click to back")
+        .OnClick("onBackButtonClick")
         .ElementAttr(new { @class = "dx-button-custom btn-back" }))
 
     @(Html.DevExtreme().Button()
@@ -692,6 +693,7 @@
                         ).done(() => {
                 $("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherVerifiedBy || "N/A");
                 $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
+                  $("#btnVerify").dxButton("instance").option("disabled", true);
 
                 // ✅ Show hidden verified sections
                 $("#verifiedBySection").css("display", "flex");

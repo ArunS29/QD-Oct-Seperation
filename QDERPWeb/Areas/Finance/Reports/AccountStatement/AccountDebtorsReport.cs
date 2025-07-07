@@ -144,5 +144,10 @@ namespace QD.ERP.Web.Areas.Finance.Reports.AccountStatement
                 throw new Exception("Unable to get tenant context. Please check session and cache.");
             }
         }
+
+        private void AccountDebtorsReport_BeforePrint(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+
+        }
     }
 }

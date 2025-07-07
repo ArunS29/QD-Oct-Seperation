@@ -74,15 +74,16 @@
     }
 
 </style>
-<div class="title">
-    <div class="header-container">
-        <div id="JournalVoucherEdit" class="no-border-input"></div>
+<div class="dx-card-header minimal-header">
+    <div class="card-title-icon">
+        <i class="fas fa-file-invoice-dollar"></i>
     </div>
+    <h3 class="card-title-text">Journal Entry Edit</h3>
 </div>
 
 
 <div class="container-fluid">
-    <div class="d-flex align-items-center justify-content-between flex-wrap">
+    <div class="d-flex align-items-center flex-wrap" style="margin-left:20px">
         <div class="form-group me-3">
             <label for="VoucherNo" class="form-label">Journal Reference No</label>
             @(Html.DevExtreme().TextBox()
@@ -112,90 +113,88 @@
                 )
         </div>
 
-        <div class="form-group flex-grow-1">
-            <label for="VoucherNarration" class="form-label">Voucher Narration</label>
-            @(Html.DevExtreme().TextArea()
-                .ID("VoucherNarration")
-                .Width(800)
-                )
-        </div>
-    </div>
-
-    <div class="form-group mt-3">
-        
+       
         <div class="col-md-5">
             @(Html.DevExtreme().DropDownBox()
-                .DataSource(d => d.WebApi()
-                .Controller("CostAllocation")
-                .LoadAction("GetCostAllocationUnits")
-                .LoadMode(DataSourceLoadMode.Raw)
-                .Key("CostAllocationUnitId")
-                )
-                .Label("Claim Name:")
-                .LabelMode(EditorLabelMode.Outside)
-                .ID("accountDropDownBox")
-                .ShowClearButton(true)
-                .AcceptCustomValue(true)
-                .OpenOnFieldClick(false)
-                .ValueChangeEvent("change") // Detects changes in the dropdown
-                .HoverStateEnabled(true)
+                        .DataSource(d => d.WebApi()
+                        .Controller("CostAllocation")
+                        .LoadAction("GetCostAllocationUnits")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("CostAllocationUnitId")
+                        )
+                        .Label("Claim Name:")
+                        .LabelMode(EditorLabelMode.Floating)
+                        .ID("accountDropDownBox")
+                        .ShowClearButton(true)
+                        .AcceptCustomValue(true)
+                        .OpenOnFieldClick(false)
+                        .ValueChangeEvent("change") // Detects changes in the dropdown
+                        .HoverStateEnabled(true)
 
-                .ValueExpr("CostAllocationUnitId")
-                .DisplayExpr("CostAllocationUnit")
+                        .ValueExpr("CostAllocationUnitId")
+                        .DisplayExpr("CostAllocationUnit")
 
-                .OnInput("dropDownBoxOnInput")
-                .OnOpened("onOpened")
-                .Width(440)
-                .TabIndex(1)
-                .DropDownOptions(o => o.Width(1000))
-                .OnKeyDown("onKeyDown")
-                .ContentTemplate(new TemplateName("PaymentAmountContentTemplate"))
-                )
+                        .OnInput("dropDownBoxOnInput")
+                        .OnOpened("onOpened")
+                        .Width(740)
+                        .TabIndex(1)
+                        .DropDownOptions(o => o.Width(1000))
+                        .OnKeyDown("onKeyDown")
+                        .ContentTemplate(new TemplateName("PaymentAmountContentTemplate"))
+                        )
             @using (Html.DevExtreme().NamedTemplate("PaymentAmountContentTemplate"))
             {
                 @(
-                    Html.DevExtreme().DataGrid()
-                    .ID("suppliername-datagrid")
-                    .DataSource(d => d.WebApi()
-                    .Controller("CostAllocation")
-                    .LoadAction("GetCostAllocationUnits")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                    .Key("CostAllocationUnitId")
-                    )
-                    .WordWrapEnabled(true)
-                    .ShowBorders(true)
-                    .SearchPanel(sp => sp.HighlightSearchText(true))
-                    .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                    .OnSelectionChanged("dataGridSelectionChanged")
+                            Html.DevExtreme().DataGrid()
+                            .ID("suppliername-datagrid")
+                            .DataSource(d => d.WebApi()
+                            .Controller("CostAllocation")
+                            .LoadAction("GetCostAllocationUnits")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("CostAllocationUnitId")
+                            )
+                            .WordWrapEnabled(true)
+                            .ShowBorders(true)
+                            .SearchPanel(sp => sp.HighlightSearchText(true))
+                            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                            .OnSelectionChanged("dataGridSelectionChanged")
 
-                    .OnInitialized("dataGridInitialized")
-                    .HeaderFilter(p => p.Visible(true))
-                    .ShowBorders(true)
-                    .HoverStateEnabled(true)
-                    .Paging(p => p.PageSize(15))
-                    .FilterRow(f => f.Visible(true))
-                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                    .Height(345)
-                    .Selection(s => s.Mode(SelectionMode.Single))
-                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-
-
-                    .Columns(columns =>
-                    {
-                        columns.Add().DataField("CostAllocationUnitId");
-                        columns.Add().DataField("CostAllocationUnit")
+                            .OnInitialized("dataGridInitialized")
+                            .HeaderFilter(p => p.Visible(true))
+                            .ShowBorders(true)
+                            .HoverStateEnabled(true)
+                            .Paging(p => p.PageSize(15))
+                            .FilterRow(f => f.Visible(true))
+                            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                            .Height(345)
+                            .Selection(s => s.Mode(SelectionMode.Single))
+                            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 
 
+                            .Columns(columns =>
+                            {
+                                columns.Add().DataField("CostAllocationUnitId");
+                                columns.Add().DataField("CostAllocationUnit")
 
-                        .Alignment(HorizontalAlignment.Center);
 
 
-                    })
+                            .Alignment(HorizontalAlignment.Center);
 
-                    )
-            }
+
+                            })
+
+                            )
+                        }
+        </div>
+        <div class="form-group flex-grow-1">
+            <label for="VoucherNarration" class="form-label">Voucher Narration</label>
+            @(Html.DevExtreme().TextArea()
+                        .ID("VoucherNarration")
+                        .Width(1390)
+                        )
         </div>
     </div>
+
 
     <div id="customModal" class="modal fade" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg" role="document">
@@ -238,7 +237,7 @@
                 .LoadAction("GetCostAllocationUnits")
                 .LoadMode(DataSourceLoadMode.Raw)
                 .Key("AccountId"))
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .ID("accountDropDownBoxEdit")
                 .ShowClearButton(false)
                 .AcceptCustomValue(true)
@@ -359,138 +358,123 @@
     </div>
 
 
-    <div class="row">
-        <div class="col-md-2 me-3">
-            <div>
-                @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Submitted By')"))
-                    .ID("SubmittedBy")
-                    .Value(null) // Default value
-                    .ReadOnly(true)
-
-                    )
-                @(Html.DevExtreme().TextBox()
-
-                    .LabelMode(EditorLabelMode.Outside)
-                    .ID("SubmittedBytext")
-                    .Value(null) // Default value
-                    .Disabled(true)
-                    .Width(250)
-                    )
-            </div>
+    <div class="row g-3 align-items-end">
+        <!-- Submitted -->
+        <div class="col-md-2 col-sm-6">
+            @(Html.DevExtreme().CheckBox()
+                        .ID("SubmittedBy")
+                        .Text(new JS("formatMessage('Submitted By')"))
+                        .ReadOnly(true)
+                        )
             @(Html.DevExtreme().TextBox()
-                .Label(new JS("formatMessage('Submitted On')"))
-                .LabelMode(EditorLabelMode.Outside)
-                .ID("SubmittedOnDate")
-                .Value(null) // Default value
-                .Disabled(true)
-                .Width(250)
-                )
+                        .ID("SubmittedBytext")
+                        .LabelMode(EditorLabelMode.Floating)
+                        .Disabled(true)
+                        .Height(36)
+                        .Width("100%")
+                        )
+            @(Html.DevExtreme().TextBox()
+                        .ID("SubmittedOnDate")
+                        .Label(new JS("formatMessage('Submitted On')"))
+                        .LabelMode(EditorLabelMode.Floating)
+                        .Disabled(true)
+                        .Height(36)
+                        .Width("100%")
+                        )
         </div>
 
-        <div class="col-md-2 me-3">
-            <div>
-                @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Verified By')"))
-                    .ID("VerifiedBy")
-                    .Value(null) // Default value
-                    .ReadOnly(true)
-                    )
-                @(Html.DevExtreme().TextBox()
-
-                    .LabelMode(EditorLabelMode.Outside)
-                    .ID("VerifiedBytext")
-                    .Value(null) // Default value
-                    .Disabled(true)
-                    .Width(250)
-                    )
-            </div>
+        <!-- Verified -->
+        <div class="col-md-2 col-sm-6">
+            @(Html.DevExtreme().CheckBox()
+                        .ID("VerifiedBy")
+                        .Text(new JS("formatMessage('Verified By')"))
+                        .ReadOnly(true)
+                        )
             @(Html.DevExtreme().TextBox()
-                .Label(new JS("formatMessage('Verified On')"))
-                .LabelMode(EditorLabelMode.Outside)
-                .ID("VerifiedOnDate")
-                .Value(null) // Default value
-                .Disabled(true)
-                .Width(250)
-                )
-        </div>
-        <div class="col-md-2 me-3">
-            <div>
-                @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Approved By')"))
-                    .ID("ApprovedBy")
-                    .Value(null) // Default value
-                    .ReadOnly(true)
-                    )
-                @(Html.DevExtreme().TextBox()
-
-                    .LabelMode(EditorLabelMode.Outside)
-                    .ID("ApprovedBytext")
-                    .Value(null) // Default value
-                    .Disabled(true)
-                    .Width(250)
-                    )
-            </div>
+                        .ID("VerifiedBytext")
+                        .LabelMode(EditorLabelMode.Floating)
+                        .Disabled(true)
+                        .Height(36)
+                        .Width("100%")
+                        )
             @(Html.DevExtreme().TextBox()
-                .Label(new JS("formatMessage('Approved On')"))
-                .LabelMode(EditorLabelMode.Outside)
-                .ID("ApprovedOntext")
-                .Value(null) // Default value
-                .Disabled(true)
-                .Width(250)
-                )
+                        .ID("VerifiedOnDate")
+                        .Label(new JS("formatMessage('Verified On')"))
+                        .LabelMode(EditorLabelMode.Floating)
+                        .Disabled(true)
+                        .Height(36)
+                        .Width("100%")
+                        )
         </div>
 
-
-
-        <div class="col-md-2 me-3">
-            <div>
-                @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Posted By')"))
-                    .ID("PostedBy")
-                    .Value(null) // Default value
-                    .ReadOnly(true)
-                    )
-                @(Html.DevExtreme().TextBox()
-
-                    .LabelMode(EditorLabelMode.Outside)
-                    .ID("PostedBytext")
-                    .Value(null) // Default value
-                    .Disabled(true)
-                    .Width(250)
-                    )
-            </div>
+        <!-- Approved -->
+        <div class="col-md-2 col-sm-6">
+            @(Html.DevExtreme().CheckBox()
+                        .ID("ApprovedBy")
+                        .Text(new JS("formatMessage('Approved By')"))
+                        .ReadOnly(true)
+                        )
             @(Html.DevExtreme().TextBox()
-                .Label(new JS("formatMessage('Posted On')"))
-                .LabelMode(EditorLabelMode.Outside)
-                .ID("PostedOnDate")
-                .Value(null) // Default value
-                .Disabled(true)
-                .Width(250)
-                )
+                        .ID("ApprovedBytext")
+                        .LabelMode(EditorLabelMode.Floating)
+                        .Disabled(true)
+                        .Height(36)
+                        .Width("100%")
+                        )
+            @(Html.DevExtreme().TextBox()
+                        .ID("ApprovedOntext")
+                        .Label(new JS("formatMessage('Approved On')"))
+                        .LabelMode(EditorLabelMode.Floating)
+                        .Disabled(true)
+                        .Height(36)
+                        .Width("100%")
+                        )
         </div>
-        <div class="col-md-2 me-3">
-            @(Html.DevExtreme().TextBox()
 
-                .LabelMode(EditorLabelMode.Outside)
-                .ID("journalvoucher")
-                .Value(null) // Default value
-                .Disabled(true)
-                .Width(250)
-                )
+        <!-- Posted -->
+        <div class="col-md-2 col-sm-6">
+            @(Html.DevExtreme().CheckBox()
+                        .ID("PostedBy")
+                        .Text(new JS("formatMessage('Posted By')"))
+                        .ReadOnly(true)
+                        )
+            @(Html.DevExtreme().TextBox()
+                        .ID("PostedBytext")
+                        .LabelMode(EditorLabelMode.Floating)
+                        .Disabled(true)
+                        .Height(36)
+                        .Width("100%")
+                        )
+            @(Html.DevExtreme().TextBox()
+                        .ID("PostedOnDate")
+                        .Label(new JS("formatMessage('Posted On')"))
+                        .LabelMode(EditorLabelMode.Floating)
+                        .Disabled(true)
+                        .Height(36)
+                        .Width("100%")
+                        )
+        </div>
+
+        <!-- Post Journal Button -->
+        <div class="col-md-2 col-sm-6 d-flex align-items-end justify-content-center">
             @(Html.DevExtreme().Button()
-                .ID("btnPostJournal")
-                .Template(@<text>
-                <div style="text-align:center; height: 100px; display: flex; flex-direction: column; justify-content: center;">
-                    <span class="fa-stack fa-2x">
+                        .ID("btnPostJournal")
+                        .Template(@<text>
+                <div class="text-center" style="line-height: 1;">
+                    <span class="fa-stack fa-lg">
                         <i class="fa fa-file fa-stack-2x"></i>
-                        <i class="fa fa-cog fa-stack-1x" style="color: #3366cc; margin-top: 10px;"></i>
+                        <i class="fa fa-cog fa-stack-1x" style="color: #3366cc; top: 2px;"></i>
                     </span>
-                    <div style="margin-top: 5px;">Post the Journal</div>
+                    <div style="font-size: 13px;">Post the Journal</div>
                 </div>
             </text>)
-                .OnClick("onPostJournalClick")
-                )
+                        .Height(80)
+                        .Width("100%")
+                        .OnClick("onPostJournalClick")
+                        )
         </div>
-
-
     </div>
+
 
     @using (Html.DevExtreme().NamedTemplate("ReceivingAccountDropdownContentTemplate"))
     {
@@ -549,7 +533,7 @@
     }
 
     <input id="formId" value="JournalEntryEdit" type="hidden" />
-    <div class="footerform">
+    <div class ="footer-fixed">
         @await Html.PartialAsync("_FormFooter1")
     </div>
 </div>

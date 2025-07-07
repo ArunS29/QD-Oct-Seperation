@@ -403,7 +403,7 @@
 														.Label(new JS("formatMessage('Requested On')"))
 														.ID("InvoiceDueDate")
 														.Type(DateBoxType.Date)
-																				//.DisplayFormat("dd-MMM-yyyy")
+														.DisplayFormat("dd-MMM-yyyy")
 														.Value(DateTime.Now)
 														.LabelMode(EditorLabelMode.Outside)
 														.Width("100%")
@@ -686,8 +686,7 @@
 														.LoadAction("getVATInvoiceTypes")
 														.LoadMode(DataSourceLoadMode.Raw)
 														.Key("InvoiceType"))
-														.AcceptCustomValue(true)
-														.OpenOnFieldClick(false)
+																											.OpenOnFieldClick(false)
 														.ValueChangeEvent("input")
 														.HoverStateEnabled(true)
 
@@ -789,7 +788,6 @@
 																.ID("txtExpectedDate")
 																.Type(DateBoxType.Date)
 																.DisplayFormat("dd-MMM-yyyy")
-
 																.LabelMode(EditorLabelMode.Outside)
 																)
 							</td>
@@ -1023,7 +1021,7 @@
 																.ID("ddBitCls")
 																.Label(new JS("formatMessage('Bid Closing Date:')"))
 																.Type(DateBoxType.Date) // Other options: DateTime, Time
-																.DisplayFormat("dd/MM/yyyy")
+																.DisplayFormat("dd-MMM-yyyy")
 																.LabelMode(EditorLabelMode.Outside)
 																.Width("100%")
 																)
@@ -1035,7 +1033,7 @@
 																.ID("ddReminder")
 																.Label(new JS("formatMessage('Set Reminder On:')"))
 																.Type(DateBoxType.Date) // Other options: DateTime, Time
-																.DisplayFormat("dd/MM/yyyy")
+																.DisplayFormat("dd-MMM-yyyy")
 																.LabelMode(EditorLabelMode.Outside)
 																.Width("100%")
 																)
@@ -1443,17 +1441,15 @@
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(true))//
+					//.FilterRow(f => f.Visible(true))//
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 					.Height(345)
 					.Selection(s => s.Mode(SelectionMode.Single))
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-					.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true).Width(250))
+					.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true).Width(235))
 					.Columns(columns =>
 					{
 						columns.Add().DataField("ClientName");
-
-
 
 					})
 					)
@@ -1480,7 +1476,7 @@
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(true))//
+					.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true).Width(235))
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 					.Height(345)
 					.Selection(s => s.Mode(SelectionMode.Single))
@@ -1515,7 +1511,7 @@
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(true))//
+					.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true).Width(235))
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 					.Height(345)
 					.Selection(s => s.Mode(SelectionMode.Single))
@@ -1549,7 +1545,7 @@
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(true))//
+					.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true).Width(235))
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 					.Height(345)
 					.Selection(s => s.Mode(SelectionMode.Single))
@@ -1557,8 +1553,6 @@
 					.Columns(columns =>
 					{
 						columns.Add().DataField("SalesPersonName");
-
-
 
 					})
 					)
@@ -1583,7 +1577,7 @@
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(true))//
+					.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true).Width(235))
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 					.Height(345)
 					.Selection(s => s.Mode(SelectionMode.Single))
@@ -2226,7 +2220,7 @@
 					// Assuming 'data' contains ContactName, ContactEmail, and ContactMobile
 
 	 $('#txtContactName').dxTextBox("instance").option("value", data.ContactName);
-	 $('#txtReqEmail').dxTextBox("instance").option("value",data.ContactEmail);
+	  $('#txtReqEmail').dxTextBox("instance").option("value",data.ContactEmail);
 	 $('#ContactNo').dxTextBox("instance").option("value", data.ContactMobile);
 				},
 				error: function (xhr, status, error) {
@@ -2429,7 +2423,7 @@
 			const urlParams = new URLSearchParams(window.location.search);
 			const mprnos = urlParams.get('Mprno');
 			const mprno = mprnos ? mprnos.split("?")[0] : null;
-
+				getSalesPersonByUser();
 			if (mprno) {
 				// If Mprno is present, load client details
 				loadClientDetails(mprno);
@@ -2542,6 +2536,23 @@
 			}
 		});
 	}
+		function getSalesPersonByUser() {
+		$.ajax({
+			type: "GET",
+			url: "/api/AddNewClientRequest/GetSalesPersonByUser",
+			success: function (data) {
+				if (data && data.SalesPersonCode) {
+						const salesPersonDropDown = $("#ddGetSalesPerson").dxDropDownBox("instance");
+					if (salesPersonDropDown) {
+							salesPersonDropDown.option("value", data.SalesPersonCode);
+					}
+				}
+			},
+			error: function (xhr) {
+				console.log("SalesPerson fetch failed:", xhr.responseText);
+			}
+		});
+	}
 
 		// Move the DataGrid configuration into a function for cleanliness
 			function initializeDataGrid(rowData) {
@@ -2636,6 +2647,15 @@
 													height: 300,
 
 													width : 550,
+
+													scrolling: { mode: "virtual" },
+														searchPanel: {
+													visible: true,
+													highlightCaseSensitive: true,
+													width: 300,
+													placeholder: "Search..."
+													},
+
 
 													scrolling: { mode: "virtual" },
 														columns: [
@@ -2776,7 +2796,7 @@
 														dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
 
 														dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
-
+															dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.GsuoM || null); // ✅ Assign UOM
 													}
 
 													let unitprice = dataGrid.cellValue(rowIndex, "Unit Price");
@@ -2798,7 +2818,15 @@
 													height: 300, // âœ… Add fixed height to enable scrolling
 
 													scrolling: { mode: "virtual" },
-											
+
+														searchPanel: {
+													visible: true,
+													highlightCaseSensitive: true,
+													width: 300,
+													placeholder: "Search..."
+													},
+
+
 													columns: [
 
 														{ dataField: "GSCode", caption: "Code", width: 80 },
@@ -2813,7 +2841,8 @@
 
 														{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
 
-														{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+														{ dataField: "ReorderQty", caption: "Current Qty", width: 100 },
+															{ dataField: "GsuoM", caption: formatMessage('UOM'), width: 100 }
 
 													],
 
@@ -2842,6 +2871,7 @@
 																dataGrid.cellValue(rowIndex, "Qty", 1);
 
 																dataGrid.cellValue(rowIndex, "VAT%", "15%");
+																	dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.GsuoM || null); // ✅ Assign UOM
 
 															}
 
@@ -2973,8 +3003,16 @@
 													height: 300,
 
 													scrolling: { mode: "virtual" },
-													
-														columns: [
+
+	                                                searchPanel: {
+													visible: true,
+													highlightCaseSensitive: true,
+													width: 300,
+													placeholder: "Search..."
+													},
+
+													columns: [
+
 
 															{ dataField: "UnitCode", caption: "Code", width: 80 },
 
@@ -3237,15 +3275,15 @@
 						selection: { mode: "single" },
 						height: 300,
 						scrolling: { mode: "virtual" },
-							searchPanel: { // optional: global search box
-							visible: true,
-							width: 250,
-							placeholder: "Search..."
-									},
-						filterRow: { // column-wise filters
-						visible: true,
-						applyFilter: "auto"
-									},
+
+
+						searchPanel: {
+													visible: true,
+													highlightCaseSensitive: true,
+													width: 300,
+													placeholder: "Search..."
+													},
+
 						columns: [
 							{ dataField: "QuoteGroupItemSlNo",caption: formatMessage("ID"), width: 60 },
 								{ dataField: "GroupCode",caption: formatMessage("Group Code"), width: 110 },
@@ -3351,7 +3389,7 @@
 												dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
 
 												dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
-
+													dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.GsuoM || null); // ✅ Assign UOM
 											}
 
 											let unitprice = dataGrid.cellValue(rowIndex, "Unit Price");
@@ -3373,15 +3411,15 @@
 											height: 300, // âœ… Add fixed height to enable scrolling
 
 											scrolling: { mode: "virtual" },
-													searchPanel: { // optional: global search box
-														visible: true,
-														width: 250,
-														placeholder: "Search..."
-													},
-													filterRow: { // column-wise filters
-														visible: true,
-														applyFilter: "auto"
-													},
+
+												searchPanel: {
+		                                        visible: true,
+												highlightCaseSensitive: true,
+												width: 300,
+												placeholder: "Search..."
+												},
+
+
 											columns: [
 
 														{ dataField: "GSCode", caption: formatMessage("Code"), width: 80 },
@@ -3396,7 +3434,9 @@
 
 													{ dataField: "GSSellingRate", caption: formatMessage("Selling Rate"), width: 100 },
 
-													{ dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100 }
+
+														{ dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100 },
+															{ dataField: "GsuoM", caption: formatMessage('UOM'), width: 100 }
 
 											],
 
@@ -3425,6 +3465,7 @@
 														dataGrid.cellValue(rowIndex, "Qty", 1);
 
 														dataGrid.cellValue(rowIndex, "VAT%", "15%");
+															dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.GsuoM || null); // ✅ Assign UOM
 
 													}
 
@@ -3556,15 +3597,14 @@
 											height: 300,
 
 											scrolling: { mode: "virtual" },
-												searchPanel: { // optional: global search box
+
+												searchPanel: {
 													visible: true,
-													width: 250,
+													highlightCaseSensitive: true,
+													width: 300,
 													placeholder: "Search..."
-												},
-												filterRow: { // column-wise filters
-													visible: true,
-													applyFilter: "auto"
-												},
+													},
+
 											columns: [
 
 
@@ -3762,7 +3802,8 @@ $("#btnAddNew").on("click", function (e) {
 						ItemPartNo: item.ItemPartNo,
 						CostPrice: item.CostPrice,
 						GSSellingRate: item.GssellingRate,
-						ReorderQty:item.ReorderQty
+						ReorderQty:item.ReorderQty,
+						GsuoM:item.GsuoM
 					}));
 				});
 			}
@@ -6292,14 +6333,18 @@ $("#btnAddNew").on("click", function (e) {
 
 
 		$("#btnSubmit").on("click", function () {
-			var $btn = $(this);
-			$btn.prop('disabled', true);
-			const SubmitButton = $("#btnSubmit").dxButton("instance");
-			SubmitButton.option("disabled", true);
+		var $btn = $(this);
+		$btn.prop('disabled', true);
+
+		const SubmitButton = $("#btnSubmit").dxButton("instance");
+		SubmitButton.option("disabled", true);
+
 		const mprNo = $('#txtRequestNo').dxTextBox("instance").option("value");
 
 		if (!mprNo) {
 			DevExpress.ui.notify("MPR number is required!", "error", 2000);
+			$btn.prop('disabled', false);
+			SubmitButton.option("disabled", false);
 			return;
 		}
 
@@ -6318,26 +6363,28 @@ $("#btnAddNew").on("click", function (e) {
 					url: `/api/AddNewClientRequest/SubmitMPR?mprNo=${encodeURIComponent(mprNo)}`,
 					contentType: "application/json",
 					success: function (response) {
-						//disableEditing();
-						DevExpress.ui.dialog.alert("Material Purchase Request has been submitted for Approval.", "Submit Successful");
-						// Update UI elements as needed
+						// ✅ Show alert and bind dropdown only after clicking OK
+						DevExpress.ui.dialog.alert(
+							"Material Purchase Request has been submitted for Approval.",
+							"Submit Successful"
+						).done(() => {
+							// ✅ Bind dropdown before reload
+							const approvedByBox = $("#ddPreparedby").dxDropDownBox("instance");
+							if (approvedByBox && response.VoucherApprovedBy) {
+								approvedByBox.option("value", response.VoucherApprovedBy);
+							}
+							//location.reload(); // ✅ Reload the page
+						});
 					},
 					error: function (xhr, status, error) {
-							$btn.prop('disabled', false);
+						$btn.prop('disabled', false);
+						SubmitButton.option("disabled", false);
 						DevExpress.ui.notify("Submission failed.", "error", 2000);
 					}
 				});
 			}
 		});
 	});
-
-
-
-
-
-
-
-
 
 
 				$("#btnVerify").on("click", function (e) {
@@ -6394,10 +6441,13 @@ $("#btnAddNew").on("click", function (e) {
 				contentType: "application/json",
 				success: function (response) {
 					if (response && response.message) {
-						DevExpress.ui.dialog.alert(
-							response.message,
-							"Verified"
-						);
+							console.log("verifier",response.VoucherApprovedBy);
+			const approvedByBox = $("#ddVerifiedby").dxDropDownBox("instance");
+		if (approvedByBox) {
+			approvedByBox.option("value", response.VoucherApprovedBy);
+		}
+						DevExpress.ui.dialog.alert(response.message,"Verified");
+						//location.reload();
 					} else {
 						DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
 					}
@@ -6453,8 +6503,8 @@ $("#btnAddNew").on("click", function (e) {
 					}
 				});
 	function proceedWithApproval() {
-		const approveBtn = $("#btnApprove").dxButton("instance");
-		approveBtn.option("disabled", true);
+		// const approveBtn = $("#btnApprove").dxButton("instance");
+		// approveBtn.option("disabled", true);
 
 		const mprNo = $('#txtRequestNo').dxTextBox("instance").option("value");
 
@@ -6467,20 +6517,31 @@ $("#btnAddNew").on("click", function (e) {
 			type: "POST",
 			url: `/api/AddNewClientRequest/ApproveMPR?mprNo=${encodeURIComponent(mprNo)}`,
 			contentType: "application/json",
-			success: function (response) {
-				if (response && response.Message) {
-					DevExpress.ui.dialog.alert(response.Message, "Approved").done(() => {
-								hideAllButtonsExcept([
-							"btnPrint1",
-							"ddButtonLayout",
-							"btnBack",
-							"btnAttach"
-						]);
-					});
-				} else {
-					DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
+		success: function (response) {
+		if (response && response.Message) {
+			// ✅ Only set dropdown if approval is truly successful
+			if (response.VoucherApprovedBy) {
+				const approvedByBox = $("#ddApprovedby").dxDropDownBox("instance");
+				if (approvedByBox) {
+					approvedByBox.option("value", response.VoucherApprovedBy);
 				}
-			},
+			}
+
+			DevExpress.ui.dialog.alert(response.Message, "Approved").done(() => {
+				hideAllButtonsExcept([
+					"btnPrint1",
+					"ddButtonLayout",
+					"btnBack",
+					"btnAttach"
+				]);
+
+				location.reload();
+			});
+		} else {
+			DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
+		}
+	},
+
 			error: function (xhr) {
 				const message = xhr.responseJSON?.Message || "An error occurred.";
 				DevExpress.ui.notify(message, "error", 2000);

@@ -80,8 +80,7 @@
     .custom-textbox input {
         font-weight: bold !important;
         color: black !important; /* Use !important to override DevExtreme styles */
-        /*   border: 3px solid #282222;
-                    border-radius: 8px !important; */
+      
     }
 
     .custom-textbox1 input {
@@ -137,8 +136,10 @@
     }
 
     .mainContainer {
-        margin-top: 1em;
-        width:100%;
+        background-color: white;
+        margin-top: 0px!important; 
+        margin-left: 0px !important;
+        width: 100%!important;
     }
 
     .playIcon{
@@ -176,6 +177,73 @@
     .titleCard-toggle{
         display:none!important;
     }
+
+    .two-row-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .form-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        align-items: flex-end;
+    }
+
+    .field-25 {
+        /* flex: 1 1 calc(25% - 15px); */
+        min-width: 200px;
+    }
+
+    .field-expand {
+        flex: 1 1 calc(37.5% - 15px);
+        min-width: 260px;
+        position: relative;
+    }
+
+    .arabic-icon-inside {
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
+        z-index: 2;
+        pointer-events: none;
+        font-size: 16px;
+        color: #888;
+    }
+
+    .btn-save {
+        background-color: #0d6efd !important;
+        color: #fff;
+        padding: 6px 16px;
+        border-radius: 6px;
+        font-weight: 500;
+        min-width: 90px;
+    }
+
+    .btn-close {
+        background-color: red!important;
+        color: #fff;
+        padding: 6px 16px;
+        border-radius: 6px;
+        font-weight: 500;
+        min-width: 90px;
+    }
+
+    @@media (max-width: 992px) {
+        .field-25, .field-expand
+
+    {
+        flex: 1 1 100%;
+    }
+
+    }
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
@@ -184,130 +252,104 @@
 <div class="containerLedgerAccount">
 
     <div class="content-container-top">
-        <div class="dx-fieldset horizontal-container">
-            @(Html.DevExtreme().TextBox()
-                .ID("txtAccountId")
-                .Label(new JS("formatMessage('Account ID')"))
-                .Disabled(true)
-                .LabelMode(EditorLabelMode.Outside)
-                .InputAttr("aria-label", "Text")
-                .ElementAttr(new { @class = "custom-textbox" })
-                .Width("20%")
-                .TabIndex(1)
-                )
-            @(Html.DevExtreme().TextBox()
-                .ID("txtReferenceNo")
-                .Label(new JS("formatMessage('Reference No')"))
-                .LabelMode(EditorLabelMode.Outside)
-                .InputAttr("aria-label", "Text")
-                @* .ElementAttr(new { @class = "custom-textbox1" }) *@
-                .Width("30%")
-                .TabIndex(2)
-                )
-            @(Html.DevExtreme().TextBox()
-                .ID("txtAccountHead")
-                .Label(new JS("formatMessage('Account Head Name')"))
-                .LabelMode(EditorLabelMode.Outside)
-                .InputAttr("aria-label", "Text")
-                @*  .ElementAttr(new { @class = "custom-textbox1" }) *@
-                .TabIndex(3)
-                .Width("100%")
-                .ValidationRules(value => value.AddRequired().Message(new JS("formatMessage('Account Head Name cannot be empty')")))
-                .OnFocusOut("txtAccountHeadFocusOut")
-                )
-            <!-- Container for txtAccountHeadAr and button -->
-            <div style="display: flex; align-items: center; width: 100%;gap:5px;">
-                @(Html.DevExtreme().TextBox()
-                    .ID("txtAccountHeadAr")
-                    .Label(new JS("formatMessage('Account Head in Arabic')"))
-                    .LabelMode(EditorLabelMode.Outside)
-                    .InputAttr("aria-label", "Text")
+        <div class="form-wrapper" style="display: flex; flex-direction: column; gap: 16px;">
 
-                    .Width("100%")
-                    .TabIndex(2)
-                    //.ValidationRules(value => value.AddRequired().Message("Account Head Name cannot be empty"))
-                    .OnFocusOut("txtAccountHeadFocusOut")
-                    )
-                <span class="input-group-prepend" style="margin-top: 22px;">
+            <!-- 🔹 Row 1 -->
+            <div class="form-row" style="display: flex; flex-wrap: wrap; gap: 16px;">
+                <div class="field-25">
+                    @(Html.DevExtreme().TextBox()
+                                        .ID("txtAccountId")
+                                        .Label(new JS("formatMessage('Account ID')"))
+                                        .Disabled(true)
+                                        .LabelMode(EditorLabelMode.Floating)
+                                        .Width(200)
+                                        .TabIndex(1))
+                </div>
 
-                    @(  
-                        Html.DevExtreme().Button()
-                        .ID("convertToArabic1")
-                        .Width(75)
-                        .Height(33)
-                        .Icon("fas fa-language") // Ensure Font Awesome class is correct
-                        .ElementAttr(new { @class = "input-button" })
-                        .OnClick("function() { convertToArabic(); }")
-                        )
-                </span>
+                <div class="field-25">
+                    @(Html.DevExtreme().TextBox()
+                                        .ID("txtReferenceNo")
+                                        .Label(new JS("formatMessage('Reference No')"))
+                                        .LabelMode(EditorLabelMode.Floating)
+                                        .Width(215)
+                                        .TabIndex(2))
+                </div>
+                <div class="field-expand">
+                    @(Html.DevExtreme().DropDownBox()
+                                        .ID("ddlAccountGroup")
+                                        .Label(new JS("formatMessage('Account Group')"))
+                                        .LabelMode(EditorLabelMode.Floating)
+                                        .DataSource(d => d.WebApi()
+                                        .Controller("AccountLedgerMaster")
+                                        .LoadAction("getAccountingLedger")
+                                        .LoadMode(DataSourceLoadMode.Raw)
+                                        .Key("AccountGroupId"))
+                                        .ValueExpr("AccountGroupId")
+                                        .DisplayExpr("AccountGroup")
+                                        .ShowClearButton(true)
+                                        .AcceptCustomValue(true)
+                                        .OpenOnFieldClick(false)
+                                        .ValueChangeEvent("input")
+                                        .HoverStateEnabled(true)
+                                        .Width("100%")
+                                        .TabIndex(5)
+                                        .ValidationRules(value => value.AddRequired().Message(new JS("formatMessage('Account Group cannot be empty')")))
+                                        .ValidationMessageMode(ValidationMessageMode.Auto)
+                                        .DropDownOptions(o => o.Width("100%"))
+                                        .OnInput("ddlAccountGroupOnInput")
+                                        .OnOpened("ddlAccountGrouponOpened")
+                                        .OnKeyDown("ddlAccountGrouponKeyDown")
+                                        .OnValueChanged("ddlAccountGroupValueChanged")
+                                        .ContentTemplate(new TemplateName("AccountGroupContentTemplate")))
 
+                </div>
+                <div class="field-expand">
+                    @(Html.DevExtreme().TextBox()
+                                        .ID("txtAccountHead")
+                                        .Label(new JS("formatMessage('Account Head Name')"))
+                                        .LabelMode(EditorLabelMode.Floating)
+                                        .Width("100%")
+                                        .TabIndex(3)
+                                        .ValidationRules(v => v.AddRequired().Message(new JS("formatMessage('Account Head Name cannot be empty')")))
+                                        .OnFocusOut("txtAccountHeadFocusOut"))
+                </div>
+               
+                <div class="field-expand" >
+                    @(Html.DevExtreme().TextBox()
+                                        .ID("txtAccountHeadAr")
+                                        .Label(new JS("formatMessage('Account Head in Arabic')"))
+                                        .LabelMode(EditorLabelMode.Floating)
+                                        .Width("100%")
+                                        .TabIndex(4)
+                                        .OnFocusOut("txtAccountHeadFocusOut"))
 
+                    <i class="fas fa-language arabic-icon-inside"
+                       onclick="convertToArabic()"
+                       style="cursor:pointer; position:absolute; right: 10px;"></i>
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                    @(Html.DevExtreme().Button()
+                                        .ID("btnSave")
+                                        .Icon("save")
+                                        .Text(new JS("formatMessage('Save')"))
+                                        .ElementAttr("class", "btn-save")
+                                        .OnClick("onsaveLedgerAccountClick"))
+
+                    @(Html.DevExtreme().Button()
+                                        .ID("btnCLose")
+                                        .Icon("")
+                                        .Text(new JS("formatMessage('Close')"))
+                                        .ElementAttr("class", "btn-close")
+                                        .OnClick("PageClose"))
+                </div>
             </div>
 
-        </div>
-        <!-- Create a wrapper div for the row layout -->
-        <div class="d-flex align-items-center">
-            @(Html.DevExtreme().DropDownBox()
-                .DataSource(d => d.WebApi()
-                .Controller("AccountLedgerMaster")
-                .LoadAction("getAccountingLedger")
-                .LoadMode(DataSourceLoadMode.Raw)
-                .Key("AccountGroupId") // This is the unique key for the data source
-                )
-                .LabelMode(EditorLabelMode.Outside)
-                .Label(new JS("formatMessage('Account Group')"))
-                .ID("ddlAccountGroup")
-                .ShowClearButton(true)
-                .AcceptCustomValue(true)
-                .OpenOnFieldClick(false)
-                .ValueChangeEvent("input")
-                .HoverStateEnabled(true)
-                .ValueExpr("AccountGroupId")
-                .DisplayExpr("AccountGroup")
-                .OnInput("ddlAccountGroupOnInput")
-                .OnOpened("ddlAccountGrouponOpened")
-                .Width("540px")
-                .TabIndex(4)
-                .ValidationRules(value => value.AddRequired().Message(new JS("formatMessage('Account Group cannot be empty')")))
-                .ValidationMessageMode(ValidationMessageMode.Auto)
-                .DropDownOptions(o => o
-                .Width("100%")
-                )
-                .OnKeyDown("ddlAccountGrouponKeyDown")
-                .OnValueChanged("ddlAccountGroupValueChanged")
-                .ContentTemplate(new TemplateName("AccountGroupContentTemplate"))
-                )
 
-            @(Html.DevExtreme().Button()
-                .ID("btnAddAccount")
-                .Icon("plus")
-                .ElementAttr("class", "button-alignment-up button-group")
-                .OnClick("redirectledgerAccountMaster")
-                )
-            @(Html.DevExtreme().Button()
-                .ID("btnEditAccount")
-                .Icon("edit")
-                .ElementAttr("class", "button-alignment-up button-group")
-                .OnClick("function() {  var dropDownBox = $('#ddlAccountGroup').dxDropDownBox('instance');  var selectedValue = dropDownBox.option('value');  if (selectedValue === null || selectedValue === '') { alert('Please Select the Account Group.');  return;  } redirectledgerAccountMaster() }")
-                )
-           
-            @(Html.DevExtreme().Button()
-                .ID("btnSave")
-                .Icon("save")
-                .Text(new JS("formatMessage('Save')"))
-                .Width("100%")
-                .OnClick("onsaveLedgerAccountClick")
-                )
 
-            @(Html.DevExtreme().Button()
-                .ID("btnCLose")
-                .Icon("arrowleft")
-                .Text(new JS("formatMessage('Close')"))
-                .Width("100%")
-                .OnClick("PageClose")
-                )
-       
+
         </div>
+
         <br />
 
         <div class="dx-fieldset horizontal-container">
@@ -745,7 +787,7 @@
                             </td>
                             <td colspan="2">
                                 @(Html.DevExtreme().TextBox()
-                                    @*  .Label(new JS("formatMessage('Remarks')")).LabelMode(EditorLabelMode.Outside) *@
+                                    @*  .Label(new JS("formatMessage('Remarks')")).LabelMode(EditorLabelMode.Floating) *@
                                     .ID("txtRemarks")
                                     .InputAttr("aria-label", "Text")
                                     .Width("100%")
@@ -919,7 +961,7 @@
                                         .AddRequired()  // This adds the required validation rule
                                         ) *@
                                         .Label(new JS("formatMessage('Client Billing Name: *')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         )
                                       
                                         
@@ -943,7 +985,7 @@
                                         .Width("100%")
                                         .InputAttr("aria-label", "Client Billing")
                                             .Label(new JS("formatMessage('Client Billing Name(Arabic):')"))
-                                            .LabelMode(EditorLabelMode.Outside)
+                                            .LabelMode(EditorLabelMode.Floating)
 
                                         )
                                 </div>
@@ -965,7 +1007,7 @@
                                         .Format("###########") // Ensures only integers (up to 15 digits)
                                         .OnValueChanged("syncVATNumbers")
                                         .Label(new JS("formatMessage('Client VAT No')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                        // .ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
                                         )
 
@@ -983,7 +1025,7 @@
                                         .InputAttr("maxlength", "15") // Set max length to 15
                                         .Format("###########") // Format for numeric input (max 15 digits)
                                         .Label(new JS("formatMessage('Group VAT Number:')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                         
                                         //  .ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
                                         )
@@ -1021,7 +1063,7 @@
                                     .OnValueChanged("ddlOtherTypeValueChanged")
                                     .ContentTemplate(new TemplateName("OtherTypeContentTemplate"))
                                         .Label(new JS("formatMessage('Other ID Type: *')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                     )
                             </td>
                           @*   <td colspan="1"> 
@@ -1033,7 +1075,7 @@
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtOtherId")
                                     .Label(new JS("formatMessage('Client Other ID')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                    @*  .ValidationRules(rules => rules
                                     .AddRequired()  // This adds the required validation rule
                                     ) *@
@@ -1051,7 +1093,7 @@
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtClientAddress")
                                     .Label(new JS("formatMessage('Client Address - Street Name: *')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     )
                             </td>
                         @*     <td colspan="3">
@@ -1071,7 +1113,7 @@
                                         .InputAttr("aria-label", "Client Address")
                                         .ValidationRules(rules => rules.AddRequired())
                                             .Label(new JS("formatMessage('Client Address - Street Name (Arabic):')"))
-                                            .LabelMode(EditorLabelMode.Outside)
+                                            .LabelMode(EditorLabelMode.Floating)
                                         )
                                 </div>
                             </td>
@@ -1087,7 +1129,7 @@
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtClientAdditionalAddress")
                                         .Label(new JS("formatMessage('Client Address - Additional Address:')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
 
                                     )
                             </td>
@@ -1107,7 +1149,7 @@
                                         .Width("100%")
                                         .InputAttr("aria-label", "Client Additional Address")
                                             .Label(new JS("formatMessage('Client Address - Additional Address (Arabic):')"))
-                                            .LabelMode(EditorLabelMode.Outside)
+                                            .LabelMode(EditorLabelMode.Floating)
                                         )
                                 </div>
                             </td>
@@ -1131,7 +1173,7 @@
                                         .AddRequired()  // This adds the required validation rule
                                         )
                                         .Label(new JS("formatMessage('Building No: *')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         )
                                         
 
@@ -1148,7 +1190,7 @@
                                     .AddRequired()  // This adds the required validation rule
                                     ) *@
                                         .Label(new JS("formatMessage('Client City: *')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         )
                                     
                             </td>
@@ -1168,7 +1210,7 @@
                                         .Width("100%")
                                         .InputAttr("aria-label", "Client Additional Address")
                                         .Label(new JS("formatMessage('Client City(Arabic):')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
 
                                         )
                                 </div>
@@ -1189,7 +1231,7 @@
                                         .InputAttr("maxlength", "4") // Set max length to 4
                                         .Format("####") // Format for numeric input (max 4 digits)
                                         .Label(new JS("formatMessage('Additional Number:*')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         //.ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
                                         )
 
@@ -1203,7 +1245,7 @@
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtClientCity")
                                         .Label(new JS("formatMessage('Province/State:')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         )
                                     
                                 
@@ -1224,7 +1266,7 @@
                                         .Width("100%")
                                         .InputAttr("aria-label", "Client Additional Address")
                                             .Label(new JS("formatMessage('Province/State(Arabic)')"))
-                                            .LabelMode(EditorLabelMode.Outside)
+                                            .LabelMode(EditorLabelMode.Floating)
                                             )
                                         
                                 </div>
@@ -1249,7 +1291,7 @@
                                         .AddRequired()  // This adds the required validation rule
                                         )
                                         .Label(new JS("formatMessage('Postal Code: *')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         )
                                         
 
@@ -1263,7 +1305,7 @@
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtDistrict")
                                         .Label(new JS("formatMessage('District/Neighbourhood: *')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                   @*   .ValidationRules(rules => rules
                                     .AddRequired()  // This adds the required validation rule
                                     ) *@
@@ -1285,7 +1327,7 @@
                                         .Width("100%")
                                         .InputAttr("aria-label", "District")
                                             .Label(new JS("formatMessage('District/Neighborhood (Arabic):')"))
-                                            .LabelMode(EditorLabelMode.Outside)
+                                            .LabelMode(EditorLabelMode.Floating)
                                       @*   .ValidationRules(rules => rules.AddRequired()) *@
                                         )
                                 </div>
@@ -1322,7 +1364,7 @@
                                         .OnValueChanged("ddlCountryCodeValueChanged")
                                         .ContentTemplate(new TemplateName("CountryCodeContentTemplate"))
                                     .Label(new JS("formatMessage('Country Code: *')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                         )
 
                             </td>
@@ -1364,7 +1406,7 @@
                                         .AddRequired()  // This adds the required validation rule
                                         )
                                         .Label(new JS("formatMessage('Supplier Billing Name:')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         )
                                         
                                 </div>
@@ -1385,7 +1427,7 @@
                                     .Value("")
                                     .Width("100%")
                                     .Label(new JS("formatMessage('Supplier Billing Name(Arabic):')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     )
                                     
 
@@ -1412,7 +1454,7 @@
                                     )
                                     .OnValueChanged("syncSupVATNumbers")
                                     .Label(new JS("formatMessage('Supplier VAT Number: *')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     )
 
                             </td>
@@ -1429,7 +1471,7 @@
                                 .InputAttr("maxlength", "15") // Set max length to 15
                                 .Format("###########") // Format for numeric input (max 15 digits)
                                 .Label(new JS("formatMessage('Group VAT Number:')"))
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 // .ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
 )
 
@@ -1466,7 +1508,7 @@
                                     .OnValueChanged("ddlSupOtherTypeValueChanged")
                                     .ContentTemplate(new TemplateName("SupOtherTypeContentTemplate"))
                                     .Label(new JS("formatMessage('Other ID Type: *')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     )
                                     
                             </td>
@@ -1479,7 +1521,7 @@
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtSupOtherId")
                                     .Label(new JS("formatMessage('Supplier Other ID: *')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                  @*    .ValidationRules(rules => rules
                                     .AddRequired()  // This adds the required validation rule
                                     ) *@
@@ -1502,7 +1544,7 @@
                                     .AddRequired()  // This adds the required validation rule
                                     )
                                     .Label(new JS("formatMessage('Supplier Address - Street Name: *')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     )
                                     
                             </td>
@@ -1522,7 +1564,7 @@
                                     .Value("")
                                     .Width("200%")
                                     .Label(new JS("formatMessage('Supplier Address-Street Name (Arabic):')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     )
                                     
                             </td>
@@ -1538,7 +1580,7 @@
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtSupAdditionalAddress")
                                     .Label(new JS("formatMessage('Supplier Address - Street Name: *')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     )
                                     
                             </td>
@@ -1557,7 +1599,7 @@
                                     .Value("")
                                     .Width("100%")
                                     .Label(new JS("formatMessage('Address-Additional Address (Arabic):')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     )
                                     
                             </td>
@@ -1581,7 +1623,7 @@
                                     .AddRequired()  // This adds the required validation rule
                                     )
                                     .Label(new JS("formatMessage('Building No: *')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     )
                                     
 
@@ -1598,7 +1640,7 @@
                                     .AddRequired()  // This adds the required validation rule
                                     )
                                     .Label(new JS("formatMessage('Client City: *')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     )
                             </td>
                             @* <td>
@@ -1616,7 +1658,7 @@
                                     .Value("")
                                     .Width("100%")
                                     .Label(new JS("formatMessage('Client City(Arabic):')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     )
                             </td>
                         </tr>
@@ -1636,7 +1678,7 @@
                                     .Format("####") // Format for numeric input (max 4 digits)
                                     //.ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
                                     .Label(new JS("formatMessage('Additional Number: *')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     )
 
                             </td>
@@ -1649,7 +1691,7 @@
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtSupState")
                                     .Label(new JS("formatMessage('Province/State:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     )
                                     
                             </td>
@@ -1668,7 +1710,7 @@
                                     .Value("")
                                     .Width("100%")
                                     .Label(new JS("formatMessage('Province/State(Arabic):')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     )
                                     
                             </td>
@@ -1692,7 +1734,7 @@
                             .AddRequired()  // This adds the required validation rule 
                             )
                             .Label(new JS("formatMessage('Postal Code: *')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             )
                 
 
@@ -1709,7 +1751,7 @@
                                     .AddRequired()  // This adds the required validation rule
                                     )
                                     .Label(new JS("formatMessage('District/Neighbourhood: *')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     )
                             </td>
                            @*  <td>
@@ -1727,7 +1769,7 @@
                                     .Value("")
                                     .Width("100%")
                                     .Label(new JS("formatMessage('Neighborhood (Arabic):')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     )
                             </td>
                         </tr>
@@ -1762,7 +1804,7 @@
                                     .OnValueChanged("ddlSupCountryCodeValueChanged")
                                     .ContentTemplate(new TemplateName("SupCountryCodeContentTemplate"))
                                     .Label(new JS("formatMessage('Country Code: *')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     )
                                     
 

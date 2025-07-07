@@ -204,7 +204,7 @@
                 <!-- Asset Category Dropdown -->
                 <div class="col-md-8 ">
                     <div class="form-group-row" style="align-items:end;">
-        @(Html.DevExtreme().DropDownBox()
+                        @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
             .Label(new JS("formatMessage('Supplier Category')"))
             .LabelMode(EditorLabelMode.Outside)
             .DataSource(d => d.WebApi()
@@ -287,7 +287,7 @@
                 <div class="form-row">
 
                     <div class="col-md-6" style="display:flex; align-items:end; gap:30px; width: 70%; ">
-                        @(Html.DevExtreme().DropDownBox()
+                            @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                         .DataSource(d => d.WebApi()
                         .Controller("SupplierMaster")
                         .LoadAction("GetSupplierLedgerNo")
@@ -570,7 +570,7 @@
                             .ShowBorders(true)
                             .HoverStateEnabled(true)
                             .Paging(p => p.PageSize(15))
-                            .FilterRow(f => f.Visible(false))//
+                            //.FilterRow(f => f.Visible(false))//
                             .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                             .Height(345)
                             .FilterRow(filterRow => filterRow.Visible(true).ApplyFilter(GridApplyFilterMode.Auto))
@@ -578,9 +578,9 @@
                             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                             .Columns(columns =>
                             {
-                                columns.Add().DataField("SupplierCategoryCode");
-                                columns.Add().DataField("SupplierCategory");
-                                columns.Add().DataField("CategoryCode");
+                                    columns.Add().DataField("SupplierCategoryCode").Caption(new JS("formatMessage('ID')"));
+                                    columns.Add().DataField("SupplierCategory").Caption(new JS("formatMessage('Category')"));
+                                columns.Add().DataField("CategoryCode").Caption(new JS("formatMessage('Code')"));
 
 
                             })
@@ -656,18 +656,6 @@
         window.parent.location.reload(); // Reload the parent page
         window.parent.closeModal();
     }
-        $(document).ready(function () {
-        $.ajax({
-           url: "/api/SupplierMaster/GetNewSupplierNo",
-            method: "GET",
-            success: function (newCode) {
-                    $("#txtSupplierCode").dxTextBox("instance").option("value", newCode);
-            },
-            error: function () {
-                DevExpress.ui.notify("Failed to generate Supplier Code", "error", 3000);
-            }
-        });
-    });
 
     $(document).ready(function () {
         const urlParams = new URLSearchParams(window.location.search);
@@ -677,6 +665,18 @@
 
         if (cleanSupplierCode) {
             loadSupplierDetails(cleanSupplierCode);
+        }else{
+                  $.ajax({
+               url: "/api/SupplierMaster/GetNewSupplierNo",
+                method: "GET",
+                success: function (newCode) {
+                        $("#txtSupplierCode").dxTextBox("instance").option("value", newCode);
+                },
+                error: function () {
+                    DevExpress.ui.notify("Failed to generate Supplier Code", "error", 3000);
+                }
+            });
+
         }
     });
     function loadSupplierDetails(cleanSupplierCode) {
@@ -1128,11 +1128,19 @@
 
 
 
-    function redirectToSupplierCategory() {
-        let url = `/${tenantName}/IMS/SupplierCategory`;
-        let title = "";
+      function redirectToSupplierCategory() {
+        const url = `/${tenantName}/IMS/SupplierCategory`;
+        const title = "Add Supplier Category";
+
         openModal(url, title);
-        refreshClientCategorySelectBox()
+    }
+
+    // This function is called by the modal (child window)
+    function refreshSupplierCategoryDropDown() {
+        const dropDownInstance = $("#GetSupplierCategoryDropDown").dxDropDownBox("instance");
+        if (dropDownInstance) {
+            dropDownInstance.getDataSource().reload();
+        }
     }
 
     function redirectToSupplierContact() {

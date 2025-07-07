@@ -256,5 +256,11 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
                 currencyLabel.Text = "";
             }
         }
+
+        private void PageFooter_BeforePrint(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+
+
+        }
     }
 }

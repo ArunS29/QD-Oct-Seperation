@@ -284,6 +284,7 @@
 					<div style="flex: 1;">
 						@(Html.DevExtreme().DateBox()
 						.ID("ReceiptDate")
+				       .DisplayFormat("dd-MMM-yyyy")
 						.Label(new JS("formatMessage('Receipt Date')"))
 						.LabelMode(EditorLabelMode.Outside)
 						.Value(DateTime.Now)
@@ -327,10 +328,28 @@
 						})
 						)
 
-						@(Html.DevExtreme()
-						.Button()
-						.ID("Addplusbtn")
-						.Icon("plus"))
+						 @(Html.DevExtreme().Button()
+                        .ID("AddSupplier")
+                        .Icon("plus")
+                        .Hint("Add Supplier")
+                        .Width(35)
+                        .ElementAttr("style", "margin-left: 5px;")
+						.OnClick("AddNewSupplier"))
+							@(Html.DevExtreme().Button()
+													.ID("btnEditSupplier")
+													.Icon("edit")
+													.ElementAttr("class", "button-alignment-up button-group")
+													.OnClick(@"function() {
+												var dropDownBox = $('#GetProjectDropDown').dxDropDownBox('instance');
+												var selectedValue = dropDownBox.option('value');
+												if (!selectedValue) {
+												DevExpress.ui.notify('Please select a client.', 'warning', 2000);
+												return;
+												}
+												var url = '/' + tenantName + '/IMS/SupplierLeadMaster?supplierCode=' + encodeURIComponent(selectedValue);
+												openModal(url, '');
+												}")
+													)
 					</div>
 				</div>
 				<!-- Row 2 -->
@@ -1210,6 +1229,11 @@
 		const title = "";
 		openModal(url, title);
 	}
+	 function AddNewSupplier(){
+				const url = `/${tenantName}/IMS/SupplierLeadMaster`;
+			   const title = "";
+				  openModal(url, title);
+			}
 	function AddQuoteStatus() {
 		const url = `/${tenantName}/IMS/AddNewQuotationStatus`;
 		const title = "";
@@ -1354,7 +1378,7 @@
 		const ReceiptNos = urlParams.get('ReceiptNo');
 		const ReceiptNo = ReceiptNos ? ReceiptNos.split("?")[0] : null;
 
-
+		getSalesPersonByUser();
 		loadClientDetails(ReceiptNo);
 
 		if (ReceiptNo) {
@@ -1458,7 +1482,23 @@
 		});
 	}
 
-
+			function getSalesPersonByUser() {
+		$.ajax({
+			type: "GET",
+			url: "/api/AddNewClientRequest/GetSalesPersonByUser",
+			success: function (data) {
+				if (data && data.SalesPersonCode) {
+						const salesPersonDropDown = $("#ddSalesPerson").dxDropDownBox("instance");
+					if (salesPersonDropDown) {
+							salesPersonDropDown.option("value", data.SalesPersonCode);
+					}
+				}
+			},
+			error: function (xhr) {
+				console.log("SalesPerson fetch failed:", xhr.responseText);
+			}
+		});
+	}
 
 
 

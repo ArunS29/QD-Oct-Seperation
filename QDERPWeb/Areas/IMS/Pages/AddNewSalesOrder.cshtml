@@ -764,10 +764,11 @@
             .EditCellTemplate(new JS("vatDescDropDownTemplate"))
             .CellTemplate(new JS(@"
     function (container, options) {
-    const found = TaxSlab.find(x => x.TaxSlabCode === options.value);
+    const found = TaxSlabs.find(x => x.TaxSlabCode === options.value);
     container.text(found ? found.TaxCodeToDisplay : options.value);
     }
-    ")); columns.Add().DataField("LineTaxAmount").Caption("VAT").AllowEditing(false);
+    "));
+                columns.Add().DataField("LineTaxAmount").Caption("VAT").AllowEditing(false);
             columns.Add().DataField("LineTotalWithTax").Caption("Total").AllowEditing(false);
         })
         .ColumnAutoWidth(true)
@@ -1468,8 +1469,8 @@
                     onSelectionChanged: function (selectedItems) {
                         const selected = selectedItems.selectedRowsData[0];
                         if (selected) {
-                                        cellInfo.setValue(selected.TaxCodeToDisplay);  // ✅ set correct value
-                                        e.component.option("value", selected.TaxCodeToDisplay); // ✅ sync dropdown
+                                        cellInfo.setValue(selected.TaxSlabCode);  // ✅ set correct value
+                                            e.component.option("value", selected.TaxSlabCode); // ✅ sync dropdown
                             e.component.close();
                         }
                     }

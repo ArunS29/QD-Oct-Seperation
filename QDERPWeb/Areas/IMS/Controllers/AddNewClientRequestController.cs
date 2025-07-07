@@ -905,124 +905,151 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 			// Save changes to the database
 			await dbContext.SaveChangesAsync();
 
-			return Ok(new { success = true, message = "MPR submitted successfully." });
+			return Ok(new { success = true, message = "MPR submitted successfully.",
+                VoucherApprovedBy = userId
+            });
 		}
-		[HttpPost]
-		public async Task<IActionResult> VerifyMPR(string mprNo)
-		{
-			try
-			{
-				if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-				{
-					return Unauthorized(new { message = "Invalid tenant context." });
-				}
+        [HttpPost]
+        public async Task<IActionResult> VerifyMPR(string mprNo)
+        {
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    return Unauthorized(new { message = "Invalid tenant context." });
+                }
 
-				if (string.IsNullOrEmpty(mprNo))
-				{
-					return BadRequest(new { message = "Mprno is required." });
-				}
+                if (string.IsNullOrEmpty(mprNo))
+                {
+                    return BadRequest(new { message = "MPR No is required." });
+                }
 
-				var voucher = await dbContext.Tbl60601purchaseRequestMasters
-					.FirstOrDefaultAsync(v => v.Mprno == mprNo);
+                var voucher = await dbContext.Tbl60601purchaseRequestMasters
+                    .FirstOrDefaultAsync(v => v.Mprno == mprNo);
 
-				if (voucher == null)
-				{
-					return NotFound(new { message = "Credit note not found." });
-				}
+                if (voucher == null)
+                {
+                    return NotFound(new { message = "MPR not found." });
+                }
 
-				var userName = HttpContext.Session.GetString("UserName");
-				var userIdString = HttpContext.Session.GetString("UserId");
+                var userName = HttpContext.Session.GetString("UserName");
+                var userIdString = HttpContext.Session.GetString("UserId");
 
-				if (!int.TryParse(userIdString, out int userId))
-				{
-					return Unauthorized(new { message = "Invalid or missing UserId in session." });
-				}
+                if (!int.TryParse(userIdString, out int userId))
+                {
+                    return Unauthorized(new { message = "Invalid or missing UserId in session." });
+                }
 
-				// Update voucher fields
-				voucher.IsVerified = true;
-				voucher.VerifiedOn = DateTime.Now;
-				voucher.VerifiedBy = userName;
-				voucher.PurchaseRequestStatusId = 32; // Enquiry/Request Verified
+                // ✅ Check Workflow Condition
+                var companySetting = await dbContext.Tbl901CompanyDetails02s.FirstOrDefaultAsync();
+                bool isWorkflowEnabled = companySetting?.IsEnableMprworkflow == true;
 
-				var signatoryId = await GetSignatoryIDfromUserID(userId);
-				if (signatoryId.HasValue)
-				{
-					voucher.MprverifiedSign = (byte)signatoryId.Value;
-				}
+                if (isWorkflowEnabled)
+                {
+                    if (voucher.IsSubmitted != true)
+                    {
+                        return BadRequest(new { message = "You need to submit the request before verification." });
+                    }
+                }
 
-				await dbContext.SaveChangesAsync();
+                // ✅ Proceed with verification
+                voucher.IsVerified = true;
+                voucher.VerifiedOn = DateTime.Now;
+                voucher.VerifiedBy = userName;
+                voucher.PurchaseRequestStatusId = 32; // Enquiry/Request Verified
 
-				return Ok(new
-				{
-					message = "Material Purchase Request has been Verified and processed for Approval."
-				});
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError($"Error in GetProject: {ex.Message}");
-				return StatusCode(500, new { message = "Internal Server Error", ex.Message });
-			}
-		}
-		[HttpPost]
-		public async Task<ActionResult> ApproveMPR(string mprNo)
-		{
-			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				try
-				{
-					var userName = HttpContext.Session.GetString("UserName");
-					var userIdString = HttpContext.Session.GetString("UserId");
-					if (!int.TryParse(userIdString, out int userId))
-					{
-						return Unauthorized(new { message = "Invalid or missing UserId in session." });
-					}
+                var signatoryId = await GetSignatoryIDfromUserID(userId);
+                if (signatoryId.HasValue)
+                {
+                    voucher.MprverifiedSign = (byte)signatoryId.Value;
+                }
+
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    message = "Material Purchase Request has been Verified and processed for Approval.",
+                    VoucherApprovedBy = userId
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in VerifyMPR: {ex.Message}");
+                return StatusCode(500, new { message = "Internal Server Error", ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> ApproveMPR(string mprNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var userName = HttpContext.Session.GetString("UserName");
+                    var userIdString = HttpContext.Session.GetString("UserId");
+                    if (!int.TryParse(userIdString, out int userId))
+                    {
+                        return Unauthorized(new { message = "Invalid or missing UserId in session." });
+                    }
+
+                    if (string.IsNullOrEmpty(mprNo))
+                    {
+                        return BadRequest(new { Message = "MPR No is required." });
+                    }
+
+                    var voucher = dbContext.Tbl60601purchaseRequestMasters
+                                           .FirstOrDefault(v => v.Mprno == mprNo);
+
+                    if (voucher == null)
+                    {
+                        return NotFound(new { Message = "MPR No not found." });
+                    }
+
+                    // 🔍 Step 1: Check MPR workflow setting
+                    var companySetting = await dbContext.Tbl901CompanyDetails02s.FirstOrDefaultAsync();
+                    bool isWorkflowEnabled = companySetting?.IsEnableMprworkflow == true;
+
+                    if (isWorkflowEnabled)
+                    {
+                        if (voucher.IsSubmitted != true || voucher.IsVerified != true)
+                        {
+                            return BadRequest(new { Message = "Please verify and submit the request before approval." });
+                        }
+                    }
+
+                    // ✅ Step 2: Proceed with approval
+                    voucher.IsApproved = true;
+                    voucher.ApprovedOn = DateTime.Now;
+                    voucher.ApprovedBy = userName;
+                    voucher.PurchaseRequestStatusId = 33; // Status: Enquiry/Request Approved
+
+                    var signatoryId = await GetSignatoryIDfromUserID(userId);
+                    if (signatoryId.HasValue)
+                    {
+                        voucher.MprapprovedSign = (byte)signatoryId.Value;
+                    }
+
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(new
+                    {
+                        Message = "Material Purchase Request has been Approved.",
+                        VoucherApprovedBy = userId
+                    });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in ApproveMPR: {ex.Message}");
+                    return BadRequest(new { Message = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { Message = "Invalid tenant." });
+        }
 
 
-					if (string.IsNullOrEmpty(mprNo))
-					{
-						return BadRequest(new { Message = "Mprno number is required." });
-					}
-
-					var voucher = dbContext.Tbl60601purchaseRequestMasters
-										   .FirstOrDefault(v => v.Mprno == mprNo);
-
-					if (voucher == null)
-					{
-						return NotFound(new { Message = "CreditNoteNo not found." });
-					}
-
-					// Update approval details
-					voucher.IsApproved = true;
-					voucher.ApprovedOn = DateTime.Now;
-					voucher.ApprovedBy = userName;
-					voucher.PurchaseRequestStatusId = 33; // Status: Enquiry/Request Approved
-					var signatoryId = await GetSignatoryIDfromUserID(userId);
-					if (signatoryId.HasValue)
-					{
-						voucher.MprapprovedSign = (byte)signatoryId.Value;
-					}
-
-					
-
-					dbContext.SaveChanges();
-
-					return Ok(new
-					{
-						Message = "Material Purchase Request has been Approved.",
-						VoucherApprovedBy = userName
-					});
-				}
-				catch (Exception ex)
-				{
-					_logger.LogError($"Error in GetProject: {ex.Message}");
-					return BadRequest(new { Message = ex.Message });
-				}
-			}
-
-			return Unauthorized(new { Message = "Invalid tenant.", Success = false });
-		}
-
-		[HttpPost]
+        [HttpPost]
 		public async Task<ActionResult> CancelMPR(string mprNo)
 		{
 			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
@@ -1082,9 +1109,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				return Json(new
 				{
 					ContactName = client.ContactPerson,
-					ContactEmail = client.ContactMobile1,
-					ContactMobile = client.ContactEmail
-				});
+					ContactEmail = client.ContactEmail,
+                    ContactMobile = client.ContactMobile1
+                });
 			}
 			else
 			{
@@ -1124,6 +1151,45 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
 
             return Unauthorized("Unable to fetch tenant information.");
+        }
+        [HttpGet]
+        public IActionResult GetSalesPersonByUser()
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                _logger.LogWarning("GetSalesPersonByUser failed: Invalid tenant context.");
+                return Unauthorized("Invalid tenant.");
+            }
+
+            var userIdStr = HttpContext.Session.GetString("UserId");
+            var userName = HttpContext.Session.GetString("UserName") ?? "Unknown";
+
+            if (!int.TryParse(userIdStr, out int userId))
+            {
+                _logger.LogWarning("GetSalesPersonByUser failed: User not logged in or invalid UserId. Username: {UserName}", userName);
+                return Unauthorized("User not logged in.");
+            }
+
+            _logger.LogInformation("GetSalesPersonByUser called by UserId: {UserId}, UserName: {UserName}", userId, userName);
+
+            var salesPerson = dbContext.Tbl20101SalesPersonMasters
+                .Where(s => s.UserCode == userId)
+                .Select(s => new
+                {
+                    s.SalesPersonCode,
+                    s.SalesPersonName
+                })
+                .FirstOrDefault();
+
+            if (salesPerson == null)
+            {
+                _logger.LogWarning("Sales person not found for UserId: {UserId}", userId);
+                return NotFound("Sales person not found for this user.");
+            }
+
+            _logger.LogInformation("Sales person found for UserId: {UserId} -> Code: {Code}, Name: {Name}", userId, salesPerson.SalesPersonCode, salesPerson.SalesPersonName);
+
+            return Ok(salesPerson);
         }
 
 

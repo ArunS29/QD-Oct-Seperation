@@ -8,9 +8,12 @@
 	/* Column headers */
 	#dataGrid .dx-datagrid-headers .dx-row > td {
 		background-color: var(--header-color) !important;
-		border-bottom: 1px solid #dee2e6;
+		border-bottom: 1px solid var(--header-color);
 		color: #343a40;
 		font-weight: 600;
+	}
+	.dx-datagrid{
+		border-color:var(--header-color) !important;
 	}
 	/* Zebra rows & hover */
 	#dataGrid .dx-data-row:nth-child(even) {
@@ -615,7 +618,7 @@
 				.LoadMode(DataSourceLoadMode.Raw)
 				.Key("AccountId")
 				)
-				.LabelMode(EditorLabelMode.Outside)
+				.LabelMode(EditorLabelMode.Floating)
 				.Label(new JS("formatMessage('Select Ledger Account')"))
 				.ID("accountDropDownBox")
 				.ShowClearButton(true)
@@ -667,7 +670,7 @@ buttons.Add()
 				)
 		@* @(Html.DevExtreme().DropDownBox()
 		.ID("accountDropDownBox")
-		.LabelMode(EditorLabelMode.Outside)
+		.LabelMode(EditorLabelMode.Floating)
 		.Label("Select a Ledger Account")
 		.ValueExpr("AccountId")
 		.InputAttr("aria-label", "Owner")
@@ -729,7 +732,7 @@ buttons.Add()
 		@(Html.DevExtreme().DateBox()
 				.ID("frmdateBox")
 				.Label(new JS("formatMessage('Start Date')"))
-				.LabelMode(EditorLabelMode.Outside)
+				.LabelMode(EditorLabelMode.Floating)
 				.InputAttr("aria-label", "Date")
 				.Type(DateBoxType.Date)
 				.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
@@ -741,7 +744,7 @@ buttons.Add()
 		@(Html.DevExtreme().DateBox()
 				.ID("todateBox")
 				.Label(new JS("formatMessage('End Date')"))
-				.LabelMode(EditorLabelMode.Outside)
+				.LabelMode(EditorLabelMode.Floating)
 				.InputAttr("aria-label", "Time")
 				.Type(DateBoxType.Date)
 				.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
@@ -754,7 +757,7 @@ buttons.Add()
 				.Icon("smalliconslayout")
 				.Width(250)
 				.SplitButton(true) // This enables main-button vs arrow split behavior
-				.ElementAttr("class", "button-alignment-down")
+				  .ElementAttr(new { @class = "button-alignment-down", style = "margin-top: 5px;" }) 
 				.TabIndex(4)
 				.OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }") // MAIN button click
 				.DropDownOptions(options => options.Width(230))

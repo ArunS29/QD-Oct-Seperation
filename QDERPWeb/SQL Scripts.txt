@@ -2609,3 +2609,28 @@ EXEC sp_01totcashbalance;
   
 
   ALTER TABLE Tbl201VoucherEntry ADD [Type] VARCHAR(30);
+
+
+  --for IMS
+
+  UPDATE tbl901CompanyDetails
+SET
+    CompanyNameShort = 'DhaferContracting',
+    RequestAbbrv = 'AI-ENQ-',
+    InvoiceYearDigits = 2,
+    IsResetInvoiceInYear = 1,
+    QuotationAbbrv = 'AIC-QUO-',
+    Rfqabbrv = 'AICON-RFQ-',PurchaseOrderAbbrv='AI-PO',SalesOrderAbbrv='AICON-SO-'
+WHERE CompanyID =2 
+
+UPDATE tbl901CompanyDetails02
+
+SET NoOfDigitsToInventoryQuotation = 4
+
+WHERE CompanyID=2
+ 
+
+  ALTER TABLE tbl901CompanyDetails02
+  ALTER COLUMN IsEnableQuotationWorkflow BIT NOT NULL DEFAULT 1,
+  ALTER COLUMN IsEnableRFQWorkflow       BIT NOT NULL DEFAULT 1,
+  ALTER COLUMN IsEnableReceiptWorkflow   BIT NOT NULL DEFAULT 1;

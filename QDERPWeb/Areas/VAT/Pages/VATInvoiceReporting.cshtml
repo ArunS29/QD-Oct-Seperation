@@ -149,7 +149,9 @@
     </div>
 
     <!-- Pivot Grid (Will Always Appear Below Filters) -->
+    <div class="mua" style="width: 95%;">
     <div id="pivotGridContainer" style="width: 100%;height:140px;"></div>
+    </div>
 
 </div>
 
@@ -226,7 +228,7 @@
                 startDate = new Date(today.getFullYear() - 1, 0, 1);
                 endDate = new Date(today.getFullYear() - 1, 11, 31);
                 break;
-                case 'q1': // Jan - Mar
+            case 'q1': // Jan - Mar
                 startDate = new Date(today.getFullYear(), 0, 1);
                 endDate = new Date(today.getFullYear(), 2, 31);
                 break;
@@ -292,34 +294,18 @@
                     data: data
                 },
                          fields: [
-          { dataField: "AccountHead", area: "row", caption: "Client Name",arguments, width: "50%" },
-              {
-        dataField: "InvoiceMonth",          // Your date field
-        area: "column",                     // Grouped by column
-        caption: "Invoice Month",           // Column name
-        dataType: "date",                   // Treat as date
-        groupInterval: "month",             // Group by month
-        format: "MMM-yyyy",                 // Default display format
-        customizeText: function (cellInfo) {
-            if (cellInfo.value && !isNaN(new Date(cellInfo.value))) {
+          { dataField: "AccountHead", area: "row", caption: "Client Name",arguments, width: 250 },
+          { dataField: "InvMonth", area: "column", caption: "Inv Month",arguments, width: 100 ,
+            customizeText: function (cellInfo) {
+            if (cellInfo.value) {
                 const date = new Date(cellInfo.value);
-                const month = date.toLocaleString("en-US", { month: "short" }); // Jan, Feb...
+                const month = date.toLocaleString("en-US", { month: "short" }); // Jan, Feb, etc.
                 const year = date.getFullYear();
-                return `${month}-${year}`;
+                return `${month} - ${year}`;
             }
-
-            if (cellInfo.valueText === "Total") {
-                return "Grand Total";
-            }
-
-            return cellInfo.valueText;
-        },
-        sortingMethod: function (a, b) {
-            const dateA = new Date(a.value);
-            const dateB = new Date(b.value);
-            return dateA - dateB;
+            return "";
         }
-    },
+      },
           {
             dataField: "TotalRevenue",
             area: "data",
@@ -333,11 +319,10 @@
    
 
            
-             height: 400,
+             height: 500,
       rowHeaderLayout: "virtual",
       showBorders: true,
             width: "100%",
-            height: $(window).height() - 50,
             allowSortingBySummary: true,
             allowSorting: true,
             allowFiltering: true,
@@ -405,7 +390,7 @@
         if (!date) return null;
         if (typeof date === 'string') date = new Date(date);
         return date.toISOString().split('T')[0];
-    }
+    }   
     	$(document).ready(function () {
 		$(".limited-footer .btn-container").each(function () {
             if (!$(this).find("#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#ddButtonLayout,#btntoggleGroupPanel,#btnColumnChooser,#ddReport0,#btnShowRowTotals,#btnShowFields").length) {
