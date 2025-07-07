@@ -3456,4 +3456,23 @@ function onBaseCurrencyInit(e) {
 
              }
     }
+
+
+    
+  $(function () {
+
+        setTimeout(function () {
+            const showIfHasValue = (editorId, sectionId) => {
+                const editor = DevExpress.ui.dxTextBox.getInstance(document.getElementById(editorId));
+                if (editor && editor.option("value")) {
+                    document.getElementById(sectionId).style.display = "flex"; // restore flex
+                }
+            };
+
+            showIfHasValue("VerifiedBytext", "verifiedBySection");
+            showIfHasValue("ApprovedBytext", "approvedBySection");
+            showIfHasValue("VerifiedOnDate", "verifiedOnSection");
+            showIfHasValue("ApprovedOntext", "approvedOnSection");
+        }, 300); // wait a bit to ensure DevExtreme is ready
+    });
 </script>

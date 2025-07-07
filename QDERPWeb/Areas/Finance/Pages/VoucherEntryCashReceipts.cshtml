@@ -1647,13 +1647,8 @@ buttons.Add()
                         // Get the latest entry from the filtered data
                         var latestEntry = filteredData.length > 0 ? filteredData[filteredData.length - 1] : null;
                         console.log(latestEntry);
-                        if (accheadname) {
-
-
-                            };
-                            openCostAllocationPopup(params); // Open DevExtreme Popup with dynamic content
-                        }
-                        else if (accheadname) {
+                       
+                         if (accheadname) {
 
 
                             // Function to check allocation
@@ -3162,7 +3157,7 @@ buttons.Add()
 
                     const urlParams = new URLSearchParams(window.location.search);
                     const argsledno = urlParams.get("argsledno");
-
+                    debugger;
 
                     console.log("Formatted Voucher in ready block:", argsledno);
 
@@ -3765,4 +3760,22 @@ function onBaseCurrencyInit(e) {
 
              }
     }
+
+    
+  $(function () {
+
+        setTimeout(function () {
+            const showIfHasValue = (editorId, sectionId) => {
+                const editor = DevExpress.ui.dxTextBox.getInstance(document.getElementById(editorId));
+                if (editor && editor.option("value")) {
+                    document.getElementById(sectionId).style.display = "flex"; // restore flex
+                }
+            };
+
+            showIfHasValue("VerifiedBytext", "verifiedBySection");
+            showIfHasValue("ApprovedBytext", "approvedBySection");
+            showIfHasValue("VerifiedOnDate", "verifiedOnSection");
+            showIfHasValue("ApprovedOntext", "approvedOnSection");
+        }, 300); // wait a bit to ensure DevExtreme is ready
+    });
 </script>
