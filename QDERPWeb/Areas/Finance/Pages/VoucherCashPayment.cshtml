@@ -39,7 +39,7 @@
         </div>
 
         <div class="dx-card-body">
-            <div class="form-container" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; position: relative; padding: 0 15px; overflow-x: hidden;">
+            <div class="form-container" style="display: flex; flex-wrap: wrap; align-items: flex-end; position: relative; padding: 0 15px; overflow-x: hidden;">
 
                 <!-- Top Row -->
                 <div style="display: flex; gap: 10px; align-items: flex-end; flex-wrap: nowrap; width: 100%;">
@@ -112,24 +112,10 @@
                             .ContentTemplate(new TemplateName("PaymentAmountContentTemplate"))
                             )
                     </div>
-
-                    <div class="form-group" style="flex: 1 1 400px;">
-                        @(Html.DevExtreme().TextArea()
-                            .Label(new JS("formatMessage('Narration')"))
-                            .LabelMode(EditorLabelMode.Floating)
-                            .ID("txtEntryNarration")
-                            .Placeholder("")
-                            .Value("")
-                            .Height(40)
-                             .TabIndex(4)
-                            .MaxLength(111500)
-                            .ElementAttr(new { @class = "light-theme-input" })
-                            )
-                    </div>
                 </div>
 
                 <!-- Second Row -->
-                <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; width: 100%; margin-top: 10px;">
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; width: 100%; margin-top: 8px;">
                     <div class="form-group" style="flex: 1 1 20px;">
                         @(Html.DevExtreme().SelectBox()
                             .Label(new JS("formatMessage('Dr/Cr')"))
@@ -141,7 +127,7 @@
                             .Placeholder("Select Transaction Type")
                             .ReadOnly(false)
                             .ElementAttr(new { @class = "custom-disabled-selectbox" })
-                             .TabIndex(5)
+                             .TabIndex(0)
                             )
                     </div>
 
@@ -178,7 +164,7 @@
                                 .OnInput("dropDownBoxOnInput")
                                 .OnOpened("onOpened")
                                 .OnClosed("onDropDownBoxClosed")
-                                 .TabIndex(6)
+                                 .TabIndex(4)
                                 .ContentTemplate(new TemplateName("AccountHeadContentTemplate"))
     .Buttons(buttons => {
         // Built-in clear button
@@ -261,7 +247,7 @@ buttons.Add()
                             .LabelMode(EditorLabelMode.Floating)
                             .ID("txtVoucherAmount")
                             .Value(0)
-                            .TabIndex(7)
+                            .TabIndex(5)
                             .ValidationRules(rules =>
                             {
                                 rules.AddRequired().Message("Voucher Amount Cannot be Zero Or Negative");
@@ -296,7 +282,7 @@ buttons.Add()
                             .DisplayExpr("CurrencyName")
                             .OnInput("dropDownBoxOnInput")
                             .OnOpened("onOpened")
-                            .TabIndex(8)
+                            .TabIndex(0)
                             .DropDownOptions(o => o.Width(700))
                             .ReadOnly(true)
                             .ElementAttr(new { @class = "custom-disabled-selectbox" })
@@ -347,7 +333,7 @@ buttons.Add()
                             .ShowClearButton(false)
                             .AcceptCustomValue(false)
                             .OpenOnFieldClick(true)
-                              .TabIndex(9)
+                              .TabIndex(6)
                             .ValueExpr("CurrencyExchangeId")
                             .DisplayExpr("CurrencyName")
                             .OnInput("dropDownBoxOnInput")
@@ -399,7 +385,7 @@ buttons.Add()
                             .ID("txtCurrencyRate")
                             .Value(1)
                             .Min(0)
-                             .TabIndex(10)
+                             .TabIndex(7)
                             .Format("#,##0.00")
                             .InputAttr(new
                             {
@@ -410,14 +396,27 @@ buttons.Add()
                             .ElementAttr(new { @class = "white-box" })
                             )
                     </div>
+                </div>
 
-                    <div class="form-group plusBtn" style="flex: 1 1 30px;">
+                <!-- Third Row -->
+                <div class="row w-100 align-items-center" style="margin-top: 8px;">
+                    <div class="form-group col-11">
+                        @(Html.DevExtreme().TextArea()
+                            .Label(new JS("formatMessage('Narration')"))
+                            .LabelMode(EditorLabelMode.Floating)
+                            .ID("txtEntryNarration")
+                            .Placeholder("")
+                            .Value("")
+                            .TabIndex(8)
+                            .ElementAttr(new { @class = "light-theme-input" })
+                            )
+                    </div>
+                    <div class="form-group plusBtn col-1 mt-0 h-100">
                         @(Html.DevExtreme().Button()
                             .ID("btnVoucherEntry")
                             .Text(new JS("formatMessage('ADD')"))
                             .Height(40)
-                           .Width(110)
-                            .TabIndex(11)
+                            .TabIndex(9)
                             .StylingMode(ButtonStylingMode.Contained)
                             .ElementAttr(new { @class = "custom-ui-button" })
                             .Icon("plus")
@@ -871,8 +870,8 @@ buttons.Add()
                     .Label(new JS("formatMessage('Bank Payment')"))
                     .LabelMode(EditorLabelMode.Floating)
                     .ID("VoucherType")
-                    .DataSource(new[] { "Bank Payment" })
-                    .Value(new JS("formatMessage('Bank Payment')"))
+                    .DataSource(new[] { "Cash Payment" })
+                    .Value(new JS("formatMessage('Cash Payment')"))
                     .Width("100%")
                     .Disabled(true)
                         .ElementAttr(new { @class = "custom-disabled-selectbox" })

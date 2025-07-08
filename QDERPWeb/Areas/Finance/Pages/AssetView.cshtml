@@ -80,6 +80,12 @@
         border-radius: 5px;
     }
 
+    .wrap-text {
+        white-space: normal !important;
+        word-wrap: break-word;
+        word-break: break-word;
+    }
+
 </style>
         <div class="title">
             <div class="header-container">
@@ -118,10 +124,11 @@
                    @*  columns.Add().DataField("AccountID").Visible(true); *@
                     columns.Add().Caption(new JS("formatMessage('AssetDetails')")).Columns(group =>
                     {
-                        group.Add().DataField("AssetLedgerNo").Caption(new JS("formatMessage('AssetLedgerNo')"));
+                      //  group.Add().DataField("AssetLedgerNo").Caption(new JS("formatMessage('AssetLedgerNo')"));
+                        group.Add().DataField("AccountId").Caption(new JS("formatMessage('AssetLedgerNo')"));
                         group.Add().DataField("AccountHead").Caption(new JS("formatMessage('AccountHead')"));
                         group.Add().DataField("AssetDescription").Caption(new JS("formatMessage('AssetDescription')"));
-                        group.Add().DataField("Specifications").Caption(new JS("formatMessage('Specifications')"));
+                       group.Add().DataField("Specifications").Caption(new JS("formatMessage('Specifications')")).CssClass("wrap-text");
                         group.Add().DataField("AccountGroup").Caption(new JS("formatMessage('AccountGroup')")).GroupIndex(0);;
                         group.Add().DataField("PropertyNo").Caption(new JS("formatMessage('PropertyNo')"));
 
@@ -186,27 +193,27 @@
                 group.Add().DataField("NoOfInstallments")
             .Caption(new JS("formatMessage('NoOfInstallments')"))
             .DataType(GridColumnDataType.Number)
-            .Alignment(HorizontalAlignment.Right);
+            .Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
 
                 group.Add().DataField("InitialDownPayment")
             .Caption(new JS("formatMessage('InitialDownPayment')"))
             .DataType(GridColumnDataType.Number)
-            .Alignment(HorizontalAlignment.Right);
+            .Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
 
                 group.Add().DataField("InitialDocCharges")
             .Caption(new JS("formatMessage('InitialDocCharges')"))
             .DataType(GridColumnDataType.Number)
-            .Alignment(HorizontalAlignment.Right);
+            .Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
 
                 group.Add().DataField("MonthlyInstallment")
             .Caption(new JS("formatMessage('MonthlyInstallment')"))
             .DataType(GridColumnDataType.Number)
-            .Alignment(HorizontalAlignment.Right);
+            .Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
 
                 group.Add().DataField("FinalInstallment")
             .Caption(new JS("formatMessage('FinalInstallment')"))
             .DataType(GridColumnDataType.Number)
-            .Alignment(HorizontalAlignment.Right);
+            .Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
 
                 group.Add().DataField("InstallmentStartDate")
             .Caption(new JS("formatMessage('InstallmentStartDate')"))
@@ -487,7 +494,8 @@
             onSelectionChanged: function (e) {
                 const selectedRows = e.selectedRowsData;
                 if (selectedRows.length > 0) {
-                    selectedVoucherId = selectedRows[0].AssetLedgerNo;
+                    //selectedVoucherId = selectedRows[0].AssetLedgerNo;
+                    selectedVoucherId = selectedRows[0].AccountId;
                 } else {
                     selectedVoucherId = null;
                 }
@@ -501,7 +509,8 @@
         const rowData = dataGrid.getVisibleRows()[rowIndex]?.data;
 
         if (rowData) {
-            selectedVoucherId = rowData.AssetLedgerNo; // Set selected ID manually
+            //selectedVoucherId = rowData.AssetLedgerNo; // Set selected ID manually
+            selectedVoucherId = rowData.AccountId;
             dataGrid.selectRowsByIndexes([rowIndex]); // Visually select the row
         }
 

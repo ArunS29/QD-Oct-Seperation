@@ -366,7 +366,15 @@
                         <div class="form-label">
                             <label for="PurchasedDate">Purchased Date</label>
                         </div>
-                        @(Html.DevExtreme().DateBox().ID("txtPurchasedDate").DisplayFormat("dd-MMM-yyyy").Value(""))
+@*                         @(Html.DevExtreme().DateBox().ID("txtPurchasedDate").DisplayFormat("dd-MMM-yyyy").Value(""))
+ *@
+                        @(Html.DevExtreme().DateBox()
+                                                .ID("txtPurchasedDate")
+                                                .DisplayFormat("dd-MMM-yyyy")
+                                                .ShowClearButton(true)
+                                                .Value((DateTime?)null) // Use nullable DateTime
+                                                )
+
                     </div>
 
                     <div class="col-md-3">
@@ -475,14 +483,14 @@
                         <div class="form-label">
                             <label for="StartDate">Start Date</label>
                         </div>
-                        @(Html.DevExtreme().DateBox().ID("txtStartDate").DisplayFormat("dd-MMM-yyyy").Value("") )
+                        @(Html.DevExtreme().DateBox().ID("txtStartDate").DisplayFormat("dd-MMM-yyyy").ShowClearButton(true).Value((DateTime?)null))
                     </div>
 
                     <div class="col-md-3">
                         <div class="form-label">
                             <label for="EndDate">End Date</label>
                         </div>
-                        @Html.DevExtreme().DateBox().ID("txtEndDate").Value("").DisplayFormat("dd-MMM-yyyy")
+                        @(Html.DevExtreme().DateBox().ID("txtEndDate").Value("").DisplayFormat("dd-MMM-yyyy").ShowClearButton(true).Value((DateTime?)null))
                     </div>
                     <div class="col-md-3">
                     </div>
@@ -508,7 +516,7 @@
 
                     <div class="col-md-2">
                         <div class="form-label">
-                            <label for="Downpayment">Downpayment</label>
+                            <label for="Downpayment">Down Payment</label>
                         </div>
                         @(
                         Html.DevExtreme().NumberBox()
@@ -918,11 +926,11 @@
                     );
 
                         columns.AddFor(m => m.MaintenanceReading).Caption("Maintenance Reading");
-                        columns.AddFor(m => m.MaintenanceDate).Caption("Maintenance Scheduled On");
-                        columns.AddFor(m => m.ReminderDate).Caption("Reminder Date");
+                        columns.AddFor(m => m.MaintenanceDate).Caption("Maintenance Scheduled On").Format("dd-MMM-yyyy");
+                        columns.AddFor(m => m.ReminderDate).Caption("Reminder Date").Format("dd-MMM-yyyy"); 
                         columns.AddFor(m => m.IsMaintenanceDone).Caption("Maintenance Done?");
-                         
-                        columns.AddFor(m => m.ActualMaintenanceDoneOn).Caption("ActualMaintenanceDoneOn");
+
+                        columns.AddFor(m => m.ActualMaintenanceDoneOn).Caption("ActualMaintenanceDoneOn").Format("dd-MMM-yyyy"); 
                         columns.AddFor(m => m.MaintenanceRemarks).Caption("Remarks");
                       
                         })
@@ -943,6 +951,13 @@
                     .AllowDeleting(false)
                     .UseIcons(true)
                     )
+                     .Summary(summary => {
+            summary.TotalItems(items => {
+            items.Add().SummaryType(SummaryType.Count)
+                .DisplayFormat("Total Rows: {0}")
+                .ShowInColumn("MaintenanceReading"); // You can use any visible column name
+        });
+    })
 
                     .OnContextMenuPreparing("onContextMenuPreparing")
                    
@@ -1769,6 +1784,9 @@
        
             $("#txtenteredon").dxTextBox("instance").option("value", formatDate(assetData.AddedOn));
             $("#txtmodifiedby").dxTextBox("instance").option("value", assetData.ModifiedBy);
+            $("#txtmodifiedon").dxTextBox("instance").option("value", formatDate(assetData.ModifiedOn));
+
+                
             console.log("uan:", getUN);
            
             function formatDate(date) {

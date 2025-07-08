@@ -238,7 +238,56 @@
             },
             columns: [
                 { dataField: "AssetCategoryCode", caption: "Asset Category Code", width: 100, editorOptions: { readOnly: true } },
-                { dataField: "AssetCategory", caption: "Asset Category" }
+                    { dataField: "AssetCategory", caption: "Asset Category",allowSearch: true },
+                    {
+                        type: "buttons",
+                        width: 100,
+                        buttons: [
+                            {
+                                icon: "trash",
+                                hint: "Delete",
+                                onClick: function (e) {
+                                    var dataGrid = $("#gridContainer").dxDataGrid("instance");
+                                    var selectedData = e.row.data;
+                                           var AssetCategoryCode = selectedData.AssetCategoryCode;
+
+                                    // Send delete request to the API
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "/api/Master/DeleteAssetCategories",
+                                                data: JSON.stringify({ AssetCategoryCode: AssetCategoryCode }),
+                                        contentType: "application/json",
+                                        success: function (response) {
+                                            if (response.success) {
+                                                dataGrid.refresh(); // Refresh the grid
+                                                Swal.fire({
+                                                    icon: 'success',
+                                                    title: 'Success',
+                                                    text: formatMessage(' deleted successfully.'),
+                                                    confirmButtonText: 'OK'
+                                                });
+                                            } else {
+                                                Swal.fire({
+                                                    icon: 'error',
+                                                    title: 'Error',
+                                                    text: response.message,
+                                                    confirmButtonText: 'OK'
+                                                });
+                                            }
+                                        },
+                                        error: function (xhr) {
+                                            Swal.fire({
+                                                icon: 'error',
+                                                title: 'Error',
+                                                text: xhr.responseText,
+                                                confirmButtonText: 'OK'
+                                            });
+                                        }
+                                    });
+                                }
+                            }
+                        ]
+                    }
             ],
             showBorders: true,
             paging: { pageSize: 10 },
@@ -247,6 +296,11 @@
                 allowedPageSizes: [5, 10, 20],
                 showInfo: true
             },
+                 searchPanel: {
+            visible: true,
+            width: 240,
+            placeholder: 'Search...'
+        },
             filterRow: {
                 visible: false,
                 applyFilter: "auto"

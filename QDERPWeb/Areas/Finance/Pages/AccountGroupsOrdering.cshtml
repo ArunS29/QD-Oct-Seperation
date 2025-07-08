@@ -118,9 +118,9 @@
             .AllowEditing(true);
 
         })
-        .Selection(selection => selection.Mode(SelectionMode.Multiple))
+        @* .Selection(selection => selection.Mode(SelectionMode.Multiple)) *@
         .Editing(editing => editing
-        .Mode(GridEditMode.Cell) // ✅ Ensure inline cell editing is enabled
+        .Mode(GridEditMode.Batch)// ✅ Ensure inline cell editing is enabled
         .AllowUpdating(true) // ✅ Enable editing
         )
 

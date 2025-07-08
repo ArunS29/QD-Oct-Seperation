@@ -1,4 +1,4 @@
-﻿@page
+@page
 @model QD.ERP.Web.Areas.Finance.Pages.PurchaseVoucherModel
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 <!-- SweetAlert2 CSS -->
@@ -301,6 +301,9 @@ buttons.Add()
 										.DisplayExpr("AccountHead")
 										.OnInput("dropDownBoxOnInput")
 										.OnOpened("onOpened")
+													.DropDownOptions(o => o
+													.Width(1000)
+													)
 										.TabIndex(1)
 										.OnKeyDown("onKeyDown")
 										.OnValueChanged("onSupplierNameChanged")

@@ -772,11 +772,11 @@ buttons.Add()
                 <div class="form-group" style="display: flex; flex-wrap: wrap; gap: 10px;">
                     <div style="flex: 1 1 220px; min-width: 200px;">
                         @(Html.DevExtreme().SelectBox()
-                                                .Label(new JS("formatMessage('Cash Receipt')"))
+                                                .Label(new JS("formatMessage('Bank Receipt')"))
                                                 .LabelMode(EditorLabelMode.Floating)
                                                 .ID("VoucherType")
-                                                .DataSource(new[] { "Cash Receipts" })
-                                                .Value(new JS("formatMessage('Cash Receipts')"))
+                                                .DataSource(new[] { "Bank Receipts" })
+                                                .Value(new JS("formatMessage('Bank Receipts')"))
                                                 .Width("100%")
                                                 .Disabled(true))
                     </div>
