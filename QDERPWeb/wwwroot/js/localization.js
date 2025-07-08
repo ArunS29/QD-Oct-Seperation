@@ -912,6 +912,7 @@ var dictionary = {
         "Supplier Name is required": "Supplier Name is required",
         "Received Date": "Received Date",
         "Submitted Date": "Submitted Date",
+        "VAT Invoice Register":"VATInvoiceRegister",
         "Voucher Date": "Voucher Date",
         "Debit": "Debit",
         "Credit": "Credit",
@@ -3309,9 +3310,11 @@ var dictionary = {
         "Demobilization Amount": "Demobilization Amount",
         "Add New Delivery To Project": "Add New Delivery To Project",
         "Project Request Master": "Project Request Master",
-        "Distribute Cost":"Distribute Cost",
+        "Distribute Cost": "Distribute Cost",
+        "QuickDice ERP Solutions":"QuickDice ERP Solutions",
     },
     ar: {
+        "QuickDice ERP Solutions": "كويك دايس لحلول تخطيط موارد المؤسسات",
         "Update": "تحديث",
         "Add New e-Invoice Credit Note": "إضافة إشعار دائن جديد للفاتورة الإلكترونية",
         "Change Password": "تغيير كلمة المرور",
@@ -5942,6 +5945,7 @@ var dictionary = {
         "ECDSA public key extracted from the signing private key-HEX Format": "المفتاح العام لـ ECDSA المستخرج من المفتاح الخاص للتوقيع - بصيغة HEX",
         "The ECDSA signature of the cryptographic stamp-HEX Format": "توقيع ECDSA للطابع التشفيري - بصيغة HEX",
         "Buyer Street": "شارع المشتري",
+        "VAT Invoice Register":"سجل فواتير ضريبة القيمة المضافة",
         "Buyer Addl Street": "شارع إضافي للمشتري",
         "Buyer Building Number": "رقم مبنى المشتري",
         "Buyer Addl Number": "رقم إضافي للمشتري",
@@ -5978,6 +5982,7 @@ var dictionary = {
         "Type new Job Order Status Master && Add to the Existing List:": ":أدخل حالة أمر العمل الجديدة وأضفها إلى القائمة الحالية"
     },
     zh: {
+        "Attach": "附件",
         "Save and Close": "保存并关闭",
         "Update": "업데이트",
         "Exemption Code": "면제 코드",
@@ -8720,6 +8725,9 @@ var dictionary = {
 
     },
     hi: {
+        "Attach": "संलग्न करें",
+        "Approve": "स्वीकृति दें",
+        "VoucherDate": "वाउचर की तिथि", 
         "Save and Close": "सहेजें और बंद करें",
         "Update": "अपडेट",
         "Exemption Code": "छूट कोड",
@@ -11610,6 +11618,8 @@ var dictionary = {
         "Manpower Rentals": "मानव बल किराया"
     },
     ur: {
+        
+    "VoucherDate": "واؤچر کی تاریخ",
         "Update": "اپڈیٹ",
         "Exemption Code": "چھوٹ کا کوڈ",
         "Invoiced Amount (SAR)": " انوائس شدہ رقم (ایس اے آر)",
