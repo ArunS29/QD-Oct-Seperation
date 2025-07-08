@@ -443,170 +443,200 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				return StatusCode(500, new { success = false, message = ex.Message });
 			}
 		}
+        private async Task<int?> GetSignatoryIDfromUserID(int? userId)
+        {
+            if (userId == null)
+                return null;
+
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return await dbContext.Tbl90104DocumentSignatories
+                    .Where(x => x.UserId == userId)
+                    .Select(x => x.SignatoryId)
+                    .FirstOrDefaultAsync();
+            }
+
+            // Tenant context is invalid; return null
+            return null;
+        }
 
 
 
-		[HttpPost]
-		public async Task<IActionResult> SubmitQuotation(string QuoteNo)
-		{
-			// Validate tenant context
-			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				return Unauthorized(new { success = false, message = "Invalid tenant context." });
-			}
+        [HttpPost]
+        public async Task<IActionResult> SubmitQuotation(string QuoteNo)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { success = false, message = "Invalid tenant context." });
 
-			// Validate MPR number
-			if (string.IsNullOrEmpty(QuoteNo))
-			{
-				return BadRequest(new { success = false, message = "Quote No. is required." });
-			}
+            if (string.IsNullOrEmpty(QuoteNo))
+                return BadRequest(new { success = false, message = "Quote No. is required." });
 
-			// Retrieve MPR master record
-			var master = await dbContext.Tbl60101quotationMasters.FirstOrDefaultAsync(x => x.QuoteNo == QuoteNo);
-			if (master == null)
-			{
-				return NotFound(new { success = false, message = "MPR not found." });
-			}
+            var master = await dbContext.Tbl60101quotationMasters
+                            .FirstOrDefaultAsync(x => x.QuoteNo == QuoteNo);
+            if (master == null)
+                return NotFound(new { success = false, message = "Quotation not found." });
 
-			// Retrieve session values
-			var userName = HttpContext.Session.GetString("UserName");
-			var userIdString = HttpContext.Session.GetString("UserId");
+            var userName = HttpContext.Session.GetString("UserName");
+            var userIdString = HttpContext.Session.GetString("UserId");
+            if (!int.TryParse(userIdString, out int userId))
+                return Unauthorized(new { success = false, message = "Invalid or missing UserId in session." });
 
-			if (!int.TryParse(userIdString, out int userId))
-			{
-				return Unauthorized(new { success = false, message = "Invalid or missing UserId in session." });
-			}
-
-			// Update MPR master record
-			master.IsSubmitted = true;
-			master.SubmittedBy = userName;
-			master.SubmittedOn = DateTime.Now;
-			master.ModifiedBy = userName;
-			master.ModifiedOn = DateTime.Now;
-
-			// Retrieve signatory ID
-			//var signatoryId = await GetSignatoryIDfromUserID(userId);
-			//if (signatoryId.HasValue)
-			//{
-			//	master.RequestSignatory = (byte)signatoryId.Value;
-			//}
-			//else
-			//{
-			//	master.RequestSignatory = null;
-			//}
+            master.IsSubmitted = true;
+            master.SubmittedBy = userName;
+            master.SubmittedOn = DateTime.Now;
+            master.ModifiedBy = userName;
+            master.ModifiedOn = DateTime.Now;
+            // Retrieve signatory ID
+            var signatoryId = await GetSignatoryIDfromUserID(userId);
+            if (signatoryId.HasValue)
+            {
+                master.QuoteSignatory = (byte)signatoryId.Value;
+            }
+            else
+            {
+                master.QuoteSignatory = null;
+            }
 
 
-			//master.PurchaseRequestStatusId = 31; // Enquiry/Request Submitted
+           // master.PurchaseRequestStatusId = 31; // Enquiry/Request Submitted
 
-			// Save changes to the database
-			await dbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
 
-			return Ok(new { success = true, message = "Quotation submitted successfully." });
-		}
-		[HttpPost]
-		public async Task<IActionResult> VerifyQuotation(string QuoteNo)
-		{
-			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				return Unauthorized(new { message = "Invalid tenant context." });
-			}
+            return Ok(new
+            {
+                success = true,
+                message = "Quotation submitted successfully.",
+                VoucherApprovedBy = signatoryId
+            });
+        }
 
-			if (string.IsNullOrEmpty(QuoteNo))
-			{
-				return BadRequest(new { message = "Quote is required." });
-			}
+        [HttpPost]
+        public async Task<IActionResult> VerifyQuotation(string quoteNo)
+        {
+            try
+            {
+                // 1. Tenant context validation
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized(new { message = "Invalid tenant context." });
 
-			var voucher = await dbContext.Tbl60101quotationMasters
-				.FirstOrDefaultAsync(v => v.QuoteNo == QuoteNo);
+                // 2. Input validation
+                if (string.IsNullOrEmpty(quoteNo))
+                    return BadRequest(new { message = "Quote number is required." });
 
-			if (voucher == null)
-			{
-				return NotFound(new { message = "Credit note not found." });
-			}
+                // 3. Fetch the quotation
+                var quotation = await dbContext.Tbl60101quotationMasters
+                                               .FirstOrDefaultAsync(q => q.QuoteNo == quoteNo);
+                if (quotation == null)
+                    return NotFound(new { message = "Quotation not found." });
 
-			var userName = HttpContext.Session.GetString("UserName");
-			var userIdString = HttpContext.Session.GetString("UserId");
+                // 4. User session retrieval
+                var userName = HttpContext.Session.GetString("UserName");
+                var userIdString = HttpContext.Session.GetString("UserId");
+                if (!int.TryParse(userIdString, out int userId))
+                    return Unauthorized(new { message = "Invalid or missing UserId in session." });
 
-			if (!int.TryParse(userIdString, out int userId))
-			{
-				return Unauthorized(new { message = "Invalid or missing UserId in session." });
-			}
+                // ✅ 5. Workflow enforcement based on company setting
+                var companySetting = await dbContext.Tbl901CompanyDetails02s.FirstOrDefaultAsync();
+                bool isWorkflowEnabled = companySetting?.IsEnableQuotationWorkflow == true;
 
-			// Update voucher fields
-			voucher.IsVerified = true;
-			voucher.VerifiedOn = DateTime.Now;
-			voucher.VerifiedBy = userName;
-			//voucher.PurchaseRequestStatusId = 32; // Enquiry/Request Verified
+                if (isWorkflowEnabled && quotation.IsSubmitted != true)
+                {
+                    return BadRequest(new { message = "You need to submit the quotation before verification." });
+                }
 
-			//var signatoryId = await GetSignatoryIDfromUserID(userId);
-			//if (signatoryId.HasValue)
-			//{
-			//	voucher.MprverifiedSign = (byte)signatoryId.Value;
-			//}
+                // 6. Verification update
+                quotation.IsVerified = true;
+                quotation.VerifiedOn = DateTime.Now;
+                quotation.VerifiedBy = userName;
+              //  quotation.PurchaseRequestStatusId = 32; // Enquiry/Request Verified
 
-			await dbContext.SaveChangesAsync();
+                var signatoryId = await GetSignatoryIDfromUserID(userId);
+                if (signatoryId.HasValue)
+                {
+                    quotation.VerifiedSignatory = (byte)signatoryId.Value;
+                }
 
-			return Ok(new
-			{
-				message = "Quotation has been Verified and processed for Approval."
-			});
-		}
-		[HttpPost]
-		public async Task<ActionResult> ApproveQuotation(string QuoteNo)
-		{
-			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				try
-				{
-					var userName = HttpContext.Session.GetString("UserName");
-					var userIdString = HttpContext.Session.GetString("UserId");
-					if (!int.TryParse(userIdString, out int userId))
-					{
-						return Unauthorized(new { message = "Invalid or missing UserId in session." });
-					}
+                await dbContext.SaveChangesAsync();
 
+                return Ok(new
+                {
+                    message = "Quotation has been verified and processed for Approval.",
+                    VerifiedBy = signatoryId
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in VerifyQuotation: {ex.Message}");
+                return StatusCode(500, new { message = "Internal Server Error", details = ex.Message });
+            }
+        }
 
-					if (string.IsNullOrEmpty(QuoteNo))
-					{
-						return BadRequest(new { Message = "Quote number is required." });
-					}
+        [HttpPost]
+        public async Task<ActionResult> ApproveQuotation(string QuoteNo)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { Message = "Invalid tenant." });
 
-					var voucher = dbContext.Tbl60101quotationMasters
-										   .FirstOrDefault(v => v.QuoteNo == QuoteNo);
+            try
+            {
+                // ⚙️ Get session user
+                var userName = HttpContext.Session.GetString("UserName");
+                var userIdString = HttpContext.Session.GetString("UserId");
+                if (!int.TryParse(userIdString, out int userId))
+                    return Unauthorized(new { Message = "Invalid or missing UserId in session." });
 
-					if (voucher == null)
-					{
-						return NotFound(new { Message = "CreditNoteNo not found." });
-					}
+                // ✅ Validate input
+                if (string.IsNullOrEmpty(QuoteNo))
+                    return BadRequest(new { Message = "Quote number is required." });
 
-					// Update approval details
-					voucher.IsApproved = true;
-					voucher.ApprovedOn = DateTime.Now;
-					voucher.ApprovedBy = userName;
-					//voucher.PurchaseRequestStatusId = 33; // Status: Enquiry/Request Approved
-					//var signatoryId = await GetSignatoryIDfromUserID(userId);
-					//if (signatoryId.HasValue)
-					//{
-					//	voucher.MprapprovedSign = (byte)signatoryId.Value;
-					//}
+                var voucher = await dbContext.Tbl60101quotationMasters
+                                             .FirstOrDefaultAsync(v => v.QuoteNo == QuoteNo);
+                if (voucher == null)
+                    return NotFound(new { Message = "Quotation not found." });
 
-					dbContext.SaveChanges();
+                // 🔍 Step 1: Workflow enabled?
+                var companySetting = await dbContext.Tbl901CompanyDetails02s.FirstOrDefaultAsync();
+                bool isWorkflowEnabled = companySetting?.IsEnableQuotationWorkflow == true;
 
-					return Ok(new
-					{
-						Message = "Quotation has been Approved.",
-						VoucherApprovedBy = userName
-					});
-				}
-				catch (Exception ex)
-				{
-					return BadRequest(new { Message = ex.Message });
-				}
-			}
+                // If workflow is enabled, ensure prior steps: submitted + verified
+                if (isWorkflowEnabled)
+                {
+                    if (voucher.IsSubmitted != true || voucher.IsVerified != true)
+                    {
+                        return BadRequest(new
+                        {
+                            Message = "Please submit and verify the quotation before approval."
+                        });
+                    }
+                }
 
-			return Unauthorized(new { Message = "Invalid tenant.", Success = false });
-		}
-		[HttpGet]
+                // ✅ Step 2: Apply approval
+                voucher.IsApproved = true;
+                voucher.ApprovedOn = DateTime.Now;
+                voucher.ApprovedBy = userName;
+              //  voucher.PurchaseRequestStatusId = 33; // Status: Enquiry/Request Approved
+
+                var signatoryId = await GetSignatoryIDfromUserID(userId);
+                if (signatoryId.HasValue)
+                {
+                    voucher.ApprovedSignatory = (byte)signatoryId.Value;
+                }
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    Message = "Quotation has been Approved.",
+                    VoucherApprovedBy = signatoryId  // or userName
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in ApproveQuotation: {ex}");
+                return StatusCode(500, new { Message = "Internal Server Error", Details = ex.Message });
+            }
+        }
+
+        [HttpGet]
 		public async Task<IActionResult> GetQuotationStatus(DataSourceLoadOptions loadOptions)
 		{
 			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))

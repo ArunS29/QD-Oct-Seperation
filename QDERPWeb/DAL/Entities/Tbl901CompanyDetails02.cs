@@ -72,6 +72,9 @@ public partial class Tbl901CompanyDetails02
     public string DefaultCostCenterMasterFromSalesOrder { get; set; }
 
     public bool? IsEnableMprworkflow { get; set; }
+    public bool? IsEnableQuotationWorkflow { get; set; }
+    public bool? IsEnableRFQWorkflow { get; set; }
+    public bool? IsEnableReceiptWorkflow { get; set; }
 
     public byte? NoOfDigitsInVouchers { get; set; }
 

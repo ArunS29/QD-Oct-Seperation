@@ -4625,41 +4625,36 @@
 					});
 				}
 			});
-	function proceedWithVerification() {
-		const VerifyButton = $("#btnVerify").dxButton("instance");
-		VerifyButton.option("disabled", true);
+			function proceedWithVerification() {
+	  const verifyBtn = $("#btnVerify").dxButton("instance");
+	  verifyBtn.option("disabled", true);
 
-		const Rfqno = $('#RFQNo').dxTextBox("instance").option("value");
+	  const rfqNo = $('#RFQNo').dxTextBox("instance").option("value");
+	  if (!rfqNo) {
+		DevExpress.ui.notify("RFQ No is required!", "error", 2000);
+		verifyBtn.option("disabled", false);
+		return;
+	  }
 
-		if (!Rfqno) {
-			DevExpress.ui.notify("RFQ No is required!", "error", 2000);
-			return;
+	  $.ajax({
+		type: "POST",
+		url: `/api/RequestforQuotationList/VerifyRFQ?Rfqno=${encodeURIComponent(rfqNo)}`,
+		contentType: "application/json",
+		success: function(response) {
+		  if (response?.message) {
+			DevExpress.ui.dialog.alert(response.message, "Verified");
+		  } else {
+			DevExpress.ui.notify("Verification failed: No valid response.", "error", 2000);
+			verifyBtn.option("disabled", false);
+		  }
+		},
+		error: function(xhr) {
+		  verifyBtn.option("disabled", false);
+		  const msg = xhr.responseJSON?.message || "An error occurred.";
+		  DevExpress.ui.notify(msg, "error", 2000);
 		}
-
-		$.ajax({
-			type: "POST",
-			url: `/api/RequestforQuotationList/VerifyRFQ?Rfqno=${encodeURIComponent(Rfqno)}`,
-			contentType: "application/json",
-			success: function (response) {
-				if (response && response.message) {
-					DevExpress.ui.dialog.alert(
-						response.message,
-						"Verified"
-					);
-				} else {
-					DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
-				}
-			},
-			error: function (xhr, status, error) {
-				VerifyButton.option("disabled", false);
-				let errorMessage = xhr.responseJSON && xhr.responseJSON.message
-					? xhr.responseJSON.message
-					: "An error occurred.";
-				DevExpress.ui.notify(errorMessage, "error", 2000);
-			}
-		});
+	  });
 	}
-
 
 
 
@@ -4702,42 +4697,55 @@
 			});
 
 
-	function proceedWithApproval() {
-			const VerifyButton = $("#btnApprove").dxButton("instance");
-			VerifyButton.option("disabled", true);
-		const Rfqno = $('#RFQNo').dxTextBox("instance").option("value");
+			function proceedWithApproval() {
+	  const approveBtn = $("#btnApprove").dxButton("instance");
+	  approveBtn.option("disabled", true);
 
-		if (!Rfqno) {
-			DevExpress.ui.notify("Rfq No is required!", "error", 2000);
-			return;
-		}
+	  const rfqNo = $('#RFQNo').dxTextBox("instance").option("value");
+	  if (!rfqNo) {
+		DevExpress.ui.notify("RFQ No is required!", "error", 2000);
+		approveBtn.option("disabled", false);
+		return;
+	  }
 
-		$.ajax({
-			type: "POST",
-			url: `/api/RequestforQuotationList/ApproveRFQ?Rfqno=${encodeURIComponent(Rfqno)}`,
-			contentType: "application/json",
-				success: function (response) {
-				if (response && response.Message) {
-						DevExpress.ui.dialog.alert(response.Message, "Approved").done(() => {
-									hideAllButtonsExcept([
-								"btnPrint3",
-								"ddButtonLayout",
-								"btnBack",
-								"btnCreatePo"
-									]);
-						});
-				} else {
-					DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
-				}
-			},
-			error: function (xhr, status, error) {
-				let errorMessage = (xhr.responseJSON && xhr.responseJSON.Message)
-					? xhr.responseJSON.Message
-					: "An error occurred.";
-				DevExpress.ui.notify(errorMessage, "error", 2000);
+	  $.ajax({
+		type: "POST",
+		url: `/api/RequestforQuotationList/ApproveRFQ?Rfqno=${encodeURIComponent(rfqNo)}`,
+		contentType: "application/json",
+		success: function (response) {
+		  if (response?.VoucherApprovedBy) {
+				const approvedByBox = $("#ddSignatory").dxDropDownBox("instance");
+			if (approvedByBox) {
+			  approvedByBox.option("value", response.VoucherApprovedBy);
+			  approvedByBox.getDataSource().reload();  // refresh data
+			  approvedByBox.repaint();                // update UI display :contentReference[oaicite:1]{index=1}
 			}
-		});
+		  }
+
+		  if (response?.Message) {
+			DevExpress.ui.dialog.alert(response.Message, "Approved").done(() => {
+			  hideAllButtonsExcept([
+				"btnPrint3",
+				"ddButtonLayout",
+				"btnBack",
+				"btnCreatePo"
+			  ]);
+			  // Optional: reload or refresh other UI components
+			});
+		  } else {
+			DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
+			approveBtn.option("disabled", false);
+		  }
+		},
+		error: function (xhr) {
+		  approveBtn.option("disabled", false);
+		  const msg = xhr.responseJSON?.Message || "An error occurred.";
+		  DevExpress.ui.notify(msg, "error", 2000);
+		}
+	  });
 	}
+
+
 		function hideAllButtonsExcept(exceptions) {
 				const allButtonIds = [
 					 "ddButtonLayout",

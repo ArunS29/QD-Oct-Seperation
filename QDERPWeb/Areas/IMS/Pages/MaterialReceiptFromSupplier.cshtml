@@ -5163,42 +5163,54 @@ $("#btnBack").on("click", function (e) {
 	});
 
 
-	function proceedWithApproval() {
-		const VerifyButton = $("#btnApprove").dxButton("instance");
-		VerifyButton.option("disabled", true);
-		var ReceiptNo = $('#txtMaterialReceiptNo').dxTextBox("instance").option("value");;
+		function proceedWithApproval() {
+	  const approveBtn = $("#btnApprove").dxButton("instance");
+	  approveBtn.option("disabled", true);
 
-		if (!ReceiptNo) {
-			DevExpress.ui.notify("Receipt No is required!", "error", 2000);
-			return;
-		}
+		var ReceiptNo = $('#txtMaterialReceiptNo').dxTextBox("instance").option("value");
+		  if (!ReceiptNo) {
+			DevExpress.ui.notify("ReceiptNo No is required!", "error", 2000);
+		approveBtn.option("disabled", false);
+		return;
+	  }
 
-		$.ajax({
-			type: "POST",
-			url: `/api/MaterialReceipt/ApproveMaterialReceipt?ReceiptNo=${encodeURIComponent(ReceiptNo)}`,
-			contentType: "application/json",
-			success: function (response) {
-				if (response && response.Message) {
-						DevExpress.ui.dialog.alert(response.Message, "Approved").done(() => {
-									hideAllButtonsExcept([
-								"btnPrint",
-								"ddButtonLayout",
-								"btnBack",
-								"btnAttach"
-							]);
-						});
-				} else {
-					DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
-				}
-			},
-			error: function (xhr, status, error) {
-				let errorMessage = (xhr.responseJSON && xhr.responseJSON.Message)
-					? xhr.responseJSON.Message
-					: "An error occurred.";
-				DevExpress.ui.notify(errorMessage, "error", 2000);
+	  $.ajax({
+		type: "POST",
+					url: `/api/MaterialReceipt/ApproveMaterialReceipt?ReceiptNo=${encodeURIComponent(ReceiptNo)}`,
+		contentType: "application/json",
+		success: function (response) {
+		  if (response?.VoucherApprovedBy) {
+				const approvedByBox = $("#ddSignatory").dxDropDownBox("instance");
+			if (approvedByBox) {
+			  approvedByBox.option("value", response.VoucherApprovedBy);
+			  approvedByBox.getDataSource().reload();  // refresh data
+			  approvedByBox.repaint();                // update display
 			}
-		});
+		  }
+
+		  if (response?.Message) {
+			DevExpress.ui.dialog.alert(response.Message, "Approved").done(() => {
+			  hideAllButtonsExcept([
+				"btnPrint3",
+				"ddButtonLayout",
+				"btnBack",
+				"btnCreatePo"
+			  ]);
+			  // Optionally: reload or refresh UI
+			});
+		  } else {
+			DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
+			approveBtn.option("disabled", false);
+		  }
+		},
+		error: function (xhr) {
+		  approveBtn.option("disabled", false);
+		  const msg = xhr.responseJSON?.Message || "An error occurred.";
+		  DevExpress.ui.notify(msg, "error", 2000);
+		}
+	  });
 	}
+
 	function hideAllButtonsExcept(exceptions) {
 				const allButtonIds = [
 						 "ddButtonLayout",
