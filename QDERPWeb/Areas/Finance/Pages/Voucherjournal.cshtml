@@ -4,7 +4,11 @@
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link rel="stylesheet" href="~/css/Style.css" />
-
+<style>
+    .titleCard-toggle1{
+        display:none;
+    }
+</style>
 <!-- SweetAlert2 JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -48,6 +52,8 @@
                                         .DisplayFormat("dd-MMM-yyyy")
                                         .ElementAttr(new { @class = "light-theme-input" })
                                         .Value(DateTime.Now)
+                                        .TabIndex(0)
+                                        .ShowClearButton(true)
                                         )
                 </div>
                 <div class="form-group" style="flex: 1 1 35px;">
@@ -60,6 +66,8 @@
                                         .ElementAttr(new { @class = "light-theme-input" })
                                         .DisplayFormat("dd-MMM-yyyy")
                                         .Value(DateTime.Now)
+                                        .TabIndex(1)
+                                        .ShowClearButton(true)
                                         )
                 </div>
 
@@ -92,7 +100,7 @@
                                         .ID("txtEntryNarration")
                                         .Value("")
                                         .Height(40)
-                                       
+                                       .TabIndex(2)
                                         .Placeholder(new JS("formatMessage('Enter your comments here...')"))
                                         .MaxLength(500)
                                         )
@@ -110,6 +118,7 @@
                                         .ID("sbDrCr")
                                         .DataSource(new[] { "Dr", "Cr" })
                                         .Value("Dr")
+                                        .TabIndex(3)
                                         .Placeholder(new JS("formatMessage('Select Transaction Type')"))
                                         .Width(100)
                                         )
@@ -139,7 +148,7 @@
                                                 .OnInput("dropDownBoxOnInput")
                                                 .OnOpened("onOpened")
                                                 .Width(500)
-                                                .TabIndex(1)
+                                                .TabIndex(4)
                                                 .DropDownOptions(o => o.Width(1000))
                                                 .OnKeyDown("onKeyDown")
                                                 .ContentTemplate(new TemplateName("AccountHeadContentTemplate"))
@@ -224,7 +233,7 @@ buttons.Add()
                                                 .LabelMode(EditorLabelMode.Floating)
                                                 .ID("txtVoucherAmount")
                                                 .Value(0.00)
-
+                                                .TabIndex(5)
                                                 .Min(0)
                                                 .Placeholder("0.00")
                                                 .Format("#,##0.00")
@@ -262,7 +271,7 @@ buttons.Add()
                                                 .OnInput("dropDownBoxOnInput") // Reuse or define separate handler if needed
                                                 .OnOpened("onOpened")
                                                 .Width(155)
-                                                .TabIndex(2) // Different tabindex to separate from the first
+                                                // Different tabindex to separate from the first
                                                 .DropDownOptions(o => o.Width(700))
                                                 .OnKeyDown("onKeyDown")
                                                 .ReadOnly(true)
@@ -323,16 +332,16 @@ buttons.Add()
                                         .ShowClearButton(true)
                                         .AcceptCustomValue(false)
                                         .OpenOnFieldClick(true)
-                                        .Value(1)
+                                        
                                         .ValueExpr("CurrencyExchangeId")
                                         .DisplayExpr("CurrencyName")
                                         .OnInput("dropDownBoxOnInput")
                                         .OnOpened("onOpened")
                                         .Width(210)
-                                        .TabIndex(1)
+                                        .TabIndex(6)
                                         .DropDownOptions(o => o.Width(700))
                                         .OnKeyDown("onKeyDown")
-                                                                //.OnValueChanged("dropDownBoxValueChanged")
+                                         .OnInitialized("onBaseCurrencyInit")                       //.OnValueChanged("dropDownBoxValueChanged")
                                         .ContentTemplate(new TemplateName("CurrencyContentTemplate"))
                                         )
                     @using (Html.DevExtreme().NamedTemplate("CurrencyContentTemplate"))
@@ -367,14 +376,22 @@ buttons.Add()
                                         }
                 </div>
                 <div class="form-group" style="flex: 1 1 70px;">
-                    @(Html.DevExtreme().TextBox()
-                                        .Label("Convertion Rate")
-                                        .LabelMode(EditorLabelMode.Floating)
-                                        .ID("txtCurrencyRate")
-                                        .Value("0.00")
-                                                       //  .ReadOnly(true) // Make it read-only
-                                        .Width(100)
-                                        )
+                    @(Html.DevExtreme().NumberBox()
+                            .Label("CVR")
+                            .LabelMode(EditorLabelMode.Floating)
+                            .ID("txtCurrencyRate")
+                            .Value(1)
+                            .Min(0)
+                             .TabIndex(7)
+                            .Format("#,##0.00")
+                            .InputAttr(new
+                            {
+                                style = "font-family: Cambria; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;",
+                                type = "number",
+                                step = "0.01"
+                            })
+                            .ElementAttr(new { @class = "white-box" })
+                            )
 
                 </div>
                 <div class="form-group plusBtn" style="flex: 1 1 30px;">
@@ -383,7 +400,7 @@ buttons.Add()
                                         .Text(new JS("formatMessage('Add')"))
                                         .Height(40)
                                         .ElementAttr(new { @class = "custom-ui-button" })
-
+                                        .TabIndex(8)
                                         .Icon("plus")
                                         .OnClick("function() { addVoucherEntry(); }")
                                         )
@@ -645,6 +662,7 @@ buttons.Add()
                                                 .Value(null)
                                                 .Width("750")
                                                 .Height("30px")
+                                                .TabIndex(9)
                                                 )
                     </div>
 
@@ -657,6 +675,7 @@ buttons.Add()
                                                 .Value(null)
                                                 .Width("750")
                                                 .Height("30px")
+                                                .TabIndex(10)
                                                 )
                     </div>
 
@@ -1167,6 +1186,13 @@ buttons.Add()
                 console.log(response.data);
                 
                   $("#txtEntryNarration").dxTextArea("instance").option("value","");
+                  var accountGrid = $("#accounthead-datagrid").dxDataGrid("instance");
+
+                  $("#ddCurrency").dxDropDownBox("instance").option("readOnly", true);
+                   $("#txtCurrencyRate").dxNumberBox("instance").option("readOnly", true);
+
+                    // Unselect the selected row
+                    accountGrid.clearSelection();  
                 // Update the data grid with the new data
                 $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
 
@@ -1176,20 +1202,30 @@ buttons.Add()
 
 
                 // Calculate total Dr and Cr amounts IsEqual clear Amount field 
-    let totalDr = 0;
-    let totalCr = 0;
-    response.data.forEach(entry => {
-        if (entry.DrCr === "Dr") {
-            totalDr += entry.VoucherAmount || 0;
-        } else if (entry.DrCr === "Cr") {
-            totalCr += entry.VoucherAmount || 0;
-        }
-    });
+                   let totalDr = 0;
+                let totalCr = 0;
 
-    // If Dr == Cr, clear amount box
-    if (totalDr === totalCr) {
-        $("#txtVoucherAmount").dxNumberBox("instance").option("value", null);
-    }
+                response.data.forEach(entry => {
+                    if (entry.DrCr === "Dr") {
+                        totalDr += entry.VoucherAmount || 0;
+                    } else if (entry.DrCr === "Cr") {
+                        totalCr += entry.VoucherAmount || 0;
+                    }
+                });
+
+                const voucherAmountBox = $("#txtVoucherAmount").dxNumberBox("instance");
+
+                if (totalDr === totalCr) {
+                    // Amounts are balanced, clear the box
+                    voucherAmountBox.option("value", null);
+                } else if (totalDr < totalCr) {
+                    // Credit is more, set difference as debit
+                    voucherAmountBox.option("value", totalCr - totalDr);
+                } else {
+                    // Debit is more, set difference as credit
+                    voucherAmountBox.option("value", totalDr - totalCr);
+                }
+
 
                 // Toggle DrCr for next entry and update the dropdown value
                 lastDrCr = (lastDrCr === "Dr") ? "Cr" : "Dr"; // Toggle Dr and Cr
@@ -1315,7 +1351,7 @@ buttons.Add()
             VoucherMaster: {
                     "basecurrencyid": $("#ddlBaseCurrency").dxDropDownBox("instance").option("value"),
                         "currencyid": $("#ddCurrency").dxDropDownBox("instance").option("value"),
-                        "currencyrate": $("#txtCurrencyRate").dxTextBox("instance").option("value"),
+                        "currencyrate": $("#txtCurrencyRate").dxNumberBox("instance").option("value"),
                    "VoucherNo" : finalVoucherNo, // Pass the latest VoucherNo
                 "VoucherDate": $("#VoucherDate").dxDateBox("instance").option("value"),
                 "VoucherEffectiveDate": $("#EffectiveDate").dxDateBox("instance").option("value"),
@@ -1373,7 +1409,7 @@ buttons.Add()
     };
     function disableFields() {
         $("#VoucherNo").dxTextBox("instance").option("disabled", true);
-        $("#TemporaryNo").dxTextBox("instance").option("value", null);
+       
     $("#TemporaryNo").dxTextBox("instance").option("disabled", true);
     $("#sbDrCr").dxSelectBox("instance").option("disabled", true);
     $("#ddAccountHead").dxDropDownBox("instance").option("disabled", true);
@@ -1427,7 +1463,7 @@ buttons.Add()
             VoucherMaster: {
                      "basecurrencyid": $("#ddlBaseCurrency").dxDropDownBox("instance").option("value"),
                         "currencyid": $("#ddCurrency").dxDropDownBox("instance").option("value"),
-                        "currencyrate": $("#txtCurrencyRate").dxTextBox("instance").option("value"),
+                        "currencyrate": $("#txtCurrencyRate").dxNumberBox("instance").option("value"),
                     "VoucherNo": finalVoucherNo, // Pass the latest VoucherNo
                     "VoucherDate": $("#VoucherDate").dxDateBox("instance").option("value"),
                     "VoucherEffectiveDate": $("#EffectiveDate").dxDateBox("instance").option("value"),
@@ -2380,12 +2416,19 @@ buttons.Add()
         const dropDown = $("#ddCurrency").dxDropDownBox("instance");
 
         if (selectedKey) {
-            dropDown.option("value", selectedKey); // This should bind the selected CurrencyID to the DropDownBox
+            dropDown.option("value", selectedKey); // Set DropDownBox value
+
+            const selectedRow = e.selectedRowsData[0];
+
+            // ✅ Set ExchangeRate in NumberBox
+            if (selectedRow && selectedRow.ExchangeRate !== undefined) {
+                $("#txtCurrencyRate").dxNumberBox("instance").option("value", selectedRow.ExchangeRate);
+            }
             if (dropDown.option("opened")) {
                 dropDown.close();
             }
 
-            const selectedRow = e.selectedRowsData[0];
+            
             console.log("Selected Currency:", selectedRow.CurrencyName);
         } else {
             DevExpress.ui.notify("Please select a currency", "warning", 2000);
@@ -3230,5 +3273,22 @@ buttons.Add()
         const title = "Transaction Documents";
         openModal(url, title);
     }
+    function onBaseCurrencyInit(e) {
+    const dropDown = e.component;
 
+    // Delay to ensure dataSource is ready
+    setTimeout(() => {
+        const ds = dropDown.getDataSource();
+        if (!ds) return;
+
+        // Skip if already has value
+        if (dropDown.option("value")) return;
+
+        ds.load().done(items => {
+            if (items && items.length > 0) {
+                dropDown.option("value", items[0].CurrencyExchangeId);
+            }
+        });
+    }, 200); // 100ms is usually enough
+}
 </script>

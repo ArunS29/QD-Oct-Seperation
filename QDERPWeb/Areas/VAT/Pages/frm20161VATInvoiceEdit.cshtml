@@ -9,6 +9,11 @@
 		text-align: center !important;
 	}
 
+	
+	.titleCard-toggle1 {
+		display: none;
+	}
+
 	.Head {
 		margin-bottom: 10px;
 	}
@@ -7953,32 +7958,7 @@
 
 
 
-		 //english text convert to arabic
-
-	async function translateToArabic(text) {
-
-		try {
-
-
-			const response = await fetch(
-
-				`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`
-
-			);
-
-			const data = await response.json();
-			console.log(data);
-			return data.responseData.translatedText;
-
-		} catch (error) {
-
-			console.error("Translation failed:", error);
-
-			return "Translation Error";
-
-		}
-
-	}
+	
 
 
 	 async function convertToArabic() {
@@ -8877,19 +8857,7 @@ $("#ClientGRNReference").dxTextBox("instance").option("value", data.Attention ||
 
 
 
-			 async function translateToArabic(text) {
-			try {
-				const response = await fetch(
-					`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`
-				);
-				const data = await response.json();
-				console.log(data);
-				return data.responseData.translatedText;
-			} catch (error) {
-				console.error("Translation failed:", error);
-				return "Translation Error";
-			}
-		}
+		
 		async function convertToArabicbtn() {
 			const textBox1Instance = $("#DetailedDescription").dxTextBox("instance");
 			const textBox2Instance = $("#DetailedDescriptionArabic").dxTextBox("instance");

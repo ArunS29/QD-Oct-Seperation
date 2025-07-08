@@ -158,16 +158,34 @@
 
     @(Html.DevExtreme().Button()
         .ID("btnBack")
-        .Text("Back")
+        .Text(new JS("formatMessage('Back')"))
         .Icon("arrowleft")
         .Width(180)
         .Hint("Click to back")
         .OnClick("onBackButtonClick")
         .ElementAttr(new { @class = "dx-button-custom btn-back" }))
 
+    @(Html.DevExtreme().Button()
+        .ID("btnDelete")
+        .Text(new JS("formatMessage('Delete')"))
+        .Icon("close")
+        .Width(180)
+        .Hint("Click to delete")
+        .OnClick("onDeleteButtonClick")
+        .ElementAttr(new { @class = "dx-button-custom btn-delete" }))
+
+    @(Html.DevExtreme().Button()
+        .ID("btnAttach")
+        .Text(new JS("formatMessage('Attach')"))
+        .Icon("link")
+        .Hint("Click to attach")
+        .Width(180)
+        .OnClick("onAttachmentButtonClick")
+        .ElementAttr(new { @class = "dx-button-custom btn-attach" }))
+
     @(Html.DevExtreme().DropDownButton()
         .ID("btnPreview1")
-        .Text("Preview")
+        .Text(new JS("formatMessage('Preview')"))
         .Icon("fullscreen")
         .Hint("Click to Preview")
         .ElementAttr(new { @class = "dx-button-custom btn-preview" })
@@ -175,24 +193,23 @@
         .DropDownOptions(o => o.Width(220))
         .Items(items =>
         {
-            items.Add().Text("Preview Format 1").Icon("textdocument");
+            items.Add().Text(new JS("formatMessage('Preview Format 1')")).Icon("textdocument");
             items.Add().Text("Preview Format 2").Icon("textdocument");
         })
         .OnItemClick("handlePreviewClick"))
 
     @(Html.DevExtreme().Button()
-        .ID("btnAttach")
-        .Text("Attach")
-        .Icon("link")
-        .Hint("Click to attach")
+        .ID("btnSave")
+        .Text(new JS("formatMessage('Save')"))
+        .Icon("save")
         .Width(180)
         .OnClick("onAttachmentButtonClick")
         .ElementAttr(new { @class = "dx-button-custom btn-attach" }))
 
     @(Html.DevExtreme().Button()
-        .ID("btnDelete")
-        .Text("Delete")
-        .Icon("close")
+        .ID("btnSaveAndClose")
+        .Text(new JS("formatMessage('Save & Close')"))
+        .Icon("save")
         .Width(180)
         .Hint("Click to delete")
         .OnClick("onDeleteButtonClick")
@@ -201,7 +218,7 @@
 
     @(Html.DevExtreme().Button()
         .ID("btnVerify")
-        .Text("Verify")
+        .Text(new JS("formatMessage('Verify')"))
         .Icon("check")
         .Hint("Click to Verify")
         .Width(180)
@@ -210,7 +227,7 @@
 
     @(Html.DevExtreme().Button()
         .ID("btnApprove")
-        .Text("Approve")
+        .Text(new JS("formatMessage('Approve')"))
         .Icon("exportselected")
         .Hint("Click to Approve")
         .Width(180)
@@ -219,7 +236,7 @@
 
     @(Html.DevExtreme().Button()
         .ID("btnVoucherColumnChooser")
-        .Text("Column Chooser")
+        .Text(new JS("formatMessage('Column Chooser')"))
         .Icon("columnchooser")
         .Hint("Click to column chooser")
         .Width(210)

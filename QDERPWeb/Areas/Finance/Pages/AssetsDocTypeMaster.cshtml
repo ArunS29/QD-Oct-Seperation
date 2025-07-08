@@ -114,16 +114,23 @@
 </div>
 
 <script type="text/javascript">
-$(function () {
-        $("#AssetsDocumentTypes").dxTextBox({
-            text: formatMessage("Assets Document Types"),
-            readOnly: true,
-            onContentReady: function(e) {
-						$(e.element).addClass("dx-textbox-heading");
-				}
-						
 
-        });
+    //     $("#AssetsDocumentTypes").dxTextBox({
+    //         text: formatMessage("Assets Document Types"),
+    //         readOnly: true,
+    //         onContentReady: function(e) {
+				// 		$(e.element).addClass("dx-textbox-heading");
+				// }	
+
+    //     });
+
+      $(document).ready(function () {
+         // Extract assetLedgerNo from the URL
+         debugger;
+         const urlParams = new URLSearchParams(window.location.search);
+          const DocumentType = urlParams.get("DocumentType");  // Get assetLedgerNo from the URL query string
+           $("#txtDocumentType").dxTextBox("instance").option("value",DocumentType);
+     });
     $(function () {
         var updatedRows = [];
 

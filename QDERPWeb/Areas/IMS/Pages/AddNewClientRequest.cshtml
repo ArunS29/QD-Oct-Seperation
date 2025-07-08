@@ -20,6 +20,9 @@
 			height: 0;
 		}
 
+	.titleCard-toggle1 {
+		display: none;
+	}
 	.slider {
 		position: absolute;
 		cursor: pointer;
@@ -6535,7 +6538,7 @@ $("#btnAddNew").on("click", function (e) {
 					"btnAttach"
 				]);
 
-				location.reload();
+				//location.reload();
 			});
 		} else {
 			DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);

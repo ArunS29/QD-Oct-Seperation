@@ -12,6 +12,10 @@
 		margin-bottom: 10px;
 	}
 
+	.titleCard-toggle1 {
+		display: none;
+	}
+
 	#B2BdataGrid {
 		height: 325px !important;
 	}
@@ -6598,30 +6602,7 @@ $(document).ready(function () {
 
 	}
 
-	async function translateToArabic(text) {
 
-		try {
-
-
-			const response = await fetch(
-
-				`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`
-
-			);
-
-			const data = await response.json();
-			console.log(data);
-			return data.responseData.translatedText;
-
-		} catch (error) {
-
-			console.error("Translation failed:", error);
-
-			return "Translation Error";
-
-		}
-
-	}
 
 	function onSupplierArabicSelected(e) {
 		const selected = e.selectedRowsData[0];

@@ -131,6 +131,10 @@
         background-color: #12a5ca;
     }
 
+    .bold-button button-submit{
+        background-color:burlywood;
+        color:white;
+    }
     @@media (max-width: 768px) {
         .horizontal-container {
             flex-direction: column; /* Stack vertically on small screens */
@@ -201,7 +205,7 @@
         .Text(new JS("formatMessage('Add Line')"))
         .Icon("add")
         .OnClick("function() { addRow(); }")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+        .ElementAttr(new { @class = "dx-button-custom btn-attach" }) // Apply custom CSS class
         )
     @(Html.DevExtreme().Button()
         .ID("btnSubmit")
