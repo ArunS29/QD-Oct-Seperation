@@ -2075,4 +2075,23 @@ function generateVoucherNo() {
         });
     }
 
+    function onAttachmentButtonClick() {
+        // Get Voucher No safely
+        const voucherNoBox = $("#VoucherNo").dxTextBox("instance");
+        const voucherNo = voucherNoBox ? voucherNoBox.option("value") : null;
+
+
+
+        var voucherType ="Expense ClaimRequest"
+        // Log and build URL
+        console.log("Voucher No:", voucherNo);
+        console.log("Voucher Type:", voucherType);
+
+        const isMaster = false;
+        const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&modal=true&isMaster=${isMaster}`;
+        const title = "Transaction Documents";
+
+        openModal(url, title);
+    }
+
 </script>
