@@ -1,0 +1,362 @@
+﻿@page
+@model QD.ERP.Web.Areas.IMS.Pages.ImportdatagridPOCModel
+@{
+}
+@using DevExtreme.AspNet.Mvc
+<!-- DevExtreme CSS -->
+@using DevExtreme.AspNet.Mvc.Builders
+<style>
+    .titleCard-toggle1 {
+        display:none;
+    }
+</style>
+
+<div class="dx-field ledgerResult">
+    @(Html.DevExtreme().DataGrid()
+                        .ID("gridContainer")
+                        .RemoteOperations(false)
+                        .Height(600)
+                        .Width("100%")
+                        .ColumnAutoWidth(true)
+                        .ShowBorders(true)
+                        .AllowColumnResizing(true)
+                        .AllowColumnReordering(true)
+                        .Selection(s => s.Mode(SelectionMode.Single))
+                        .FilterRow(f => f.Visible(false))
+                        .GroupPanel(g => g.Visible(false))
+                        .ColumnFixing(f => f.Enabled(true))
+                        .Paging(p => p.PageSize(20))
+                        .Pager(pager => pager
+                            .ShowPageSizeSelector(true)
+                            .AllowedPageSizes(new[] { 10, 20, 50 })
+                            .ShowInfo(true)
+                        )
+                        .Toolbar(t => t.Items(items =>
+                    {
+                    items.Add()
+                    .Widget(widget =>
+                    widget.DropDownButton()
+                    .ID("exportDropDown")
+                    .Text("Export")
+                    .Icon("export")
+                    .DropDownOptions(opt => opt.Width(160))
+                    .Items(i =>
+                    {
+	                    i.Add().Text("Export to Excel").Icon("exportxlsx").OnClick("function() { onExportGridData(); }");
+	                    i.Add().Text("Export to PDF").Icon("exportpdf").OnClick("function() { onExportPDF(); }");
+                    })
+                    )
+                    .Location(ToolbarItemLocation.After);
+                    }))
+
+                        .Columns(columns => {
+                            columns.Add().DataField("SNo").Caption("#").Width(100);
+                            columns.Add().DataField("ItemCode").Caption("Item Code").Width(200);
+                            columns.Add().DataField("QuoteGroupItemSlNo").Caption("Sub Group").Width(100);
+                            columns.Add().DataField("Description").Caption("Description").Width(300);
+                            columns.Add().DataField("DescriptionDetails").Caption("...").Width(100);
+                            columns.Add().DataField("UnitRateMethod").Caption("Unit Rate Method").Width(200);
+                            columns.Add().DataField("Qty").Caption("Qty").Width(100).DataType(GridColumnDataType.Number) 
+                            .ValidationRules(rules => {
+                            rules.AddRequired(); 
+                            rules.AddNumeric();});
+                            columns.Add().DataField("ExpectedUnitRate").Caption("Expected Price").Width(120);
+                            columns.Add().DataField("LineTotal").Caption("Total").Width(150);
+                            columns.Add().DataField("Mprdate").Caption("Date").Width(120).Format("dd-MMM-yyyy");
+                            columns.Add().DataField("ExcemptionCode").Caption("Excemption Code").Width(150).Visible(false);
+                            columns.Add().DataField("VAT").Caption("VAT").Width(100).Visible(false);
+                            columns.Add().DataField("Total").Caption("Total").Width(120).Visible(false);
+                        }))
+                  </div>
+                <input style="display:none;" type="file" id="excel-file" accept=".xlsx, .xls" />
+                <div>
+	                @(Html.DevExtreme().Button()
+                    .ID("btnfromExcel")
+                    .Text(new JS("formatMessage('Paste from Excel')"))
+                    .Icon("card")
+                    .Width(250)
+                    .OnClick("OnPasteExcel") // ✅ Make sure this matches exactly
+                )
+                </div>
+
+  <script>
+    function OnPasteExcel() {
+        document.getElementById('excel-file').click();
+    }
+    document.getElementById('excel-file').addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        if (!file) {
+            DevExpress.ui.notify("No file selected.", "error", 2000);
+            return;
+        }
+
+        const reader = new FileReader();
+
+    reader.onload = function (e) {
+        try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+
+            const sheet = workbook.Sheets[workbook.SheetNames[0]];
+            const jsonData = XLSX.utils.sheet_to_json(sheet, { defval: "", header: 1 });
+
+            if (jsonData.length < 2) {
+                DevExpress.ui.notify("The Excel file does not contain any data.", "error", 3000);
+                return;
+            }
+
+            const headerMap = {
+                "#": "SNo",
+                "Item Code": "ItemCode",
+                "Sub Group": "QuoteGroupItemSlNo",
+                "Description": "Description",
+                "...": "DescriptionDetails",
+                "Unit Rate Method": "UnitRateMethod",
+                "Qty": "Qty",
+                "Expected Price": "ExpectedUnitRate",
+                "Total": "LineTotal",
+                "Date": "Mprdate"
+            };
+
+            const excelHeaders = jsonData[0].map(h => h.toString().trim());
+            const missingHeaders = Object.keys(headerMap).filter(h => !excelHeaders.includes(h));
+
+            if (missingHeaders.length > 0) {
+                DevExpress.ui.notify("Missing columns: " + missingHeaders.join(", "), "error", 4000);
+                return;
+            }
+
+            const numberFields = ["Qty", "ExpectedUnitRate"];
+            const requiredFields = ["Qty", "UnitRateMethod"];
+
+            const rows = [];
+            const qtyMissingRows = [];
+            const unitMethodMissingRows = [];
+
+            jsonData.slice(1).forEach((row, rowIndex) => {
+                const obj = {};
+                const currentRow = rowIndex + 2;
+
+                Object.entries(headerMap).forEach(([excelKey, internalKey]) => {
+                    const index = excelHeaders.indexOf(excelKey);
+                    const value = row[index] ?? "";
+
+                    obj[internalKey] = value;
+
+                    if (internalKey === "Qty") {
+                        const isValid = !isNaN(value) && value !== "";
+                        if (!isValid) {
+                            qtyMissingRows.push(currentRow);
+                            obj["Qty_invalid"] = true;
+                        }
+                    }
+
+                    if (internalKey === "UnitRateMethod") {
+                        if (value.toString().trim() === "") {
+                            unitMethodMissingRows.push(currentRow);
+                            obj["UnitRateMethod_invalid"] = true;
+                        }
+                    }
+                });
+
+                rows.push(obj);
+            });
+
+            if (qtyMissingRows.length > 0) {
+                DevExpress.ui.notify("Qty missing at rows: " + qtyMissingRows.join(", "), "error", 5000);
+            }
+
+            if (unitMethodMissingRows.length > 0) {
+                DevExpress.ui.notify("Unit Rate Method missing at rows: " + unitMethodMissingRows.join(", "), "error", 5000);
+            }
+
+            if (qtyMissingRows.length > 0 || unitMethodMissingRows.length > 0) {
+                return;
+            }
+
+            const grid = $("#gridContainer").dxDataGrid("instance");
+            grid.option("dataSource", []);      // ✅ Clear previous data
+            grid.option("dataSource", rows);    // ✅ Bind new data
+
+            DevExpress.ui.notify("Excel data imported successfully.", "success", 2000);
+        } catch (ex) {
+            DevExpress.ui.notify("Error reading Excel file: " + ex.message, "error", 4000);
+        }
+
+        document.getElementById('excel-file').value = ""; // ✅ Allow same file again
+    };
+
+    reader.readAsArrayBuffer(file);
+});
+
+
+
+
+
+
+function onExportGridData() {
+    const grid = $("#gridContainer").dxDataGrid("instance");
+    if (!grid) {
+        DevExpress.ui.notify("Grid instance not found", "error", 3000);
+        return;
+    }
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Samplexls");
+
+    const gridColumns = grid.getVisibleColumns();
+    const rowCount = grid.getVisibleRows().length || 1000; // fallback to 20 if grid is empty
+
+    // Prepare header row
+    const header = gridColumns.map(col => col.caption);
+    const headerRow = worksheet.addRow(header);
+
+    headerRow.eachCell((cell) => {
+        cell.font = { bold: true };
+        cell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FFFFFF00' }  // Yellow
+        };
+        cell.alignment = { vertical: 'middle', horizontal: 'center' };
+        cell.protection = { locked: true }; // Header always locked
+    });
+
+    // Add empty data rows
+    for (let i = 0; i < rowCount; i++) {
+        worksheet.addRow(Array(gridColumns.length).fill(""));
+    }
+
+    // Lock only the specified columns in data rows
+    const lockedFields = ["ItemCode", "Description", "QuoteGroupItemSlNo"];
+    const lockedIndexes = gridColumns
+        .map((col, idx) => lockedFields.includes(col.dataField) ? idx : -1)
+        .filter(idx => idx !== -1);
+
+    worksheet.eachRow((row, rowNumber) => {
+        if (rowNumber === 1) return; // skip header
+        row.eachCell((cell, colNumber) => {
+            if (lockedIndexes.includes(colNumber - 1)) {
+                cell.protection = { locked: true };
+                cell.fill = {
+                    type: 'pattern',
+                    pattern: 'solid',
+                    fgColor: { argb: 'FFD9D9D9' } // Light gray for locked
+                };
+            } else {
+                cell.protection = { locked: false };
+            }
+        });
+    });
+
+    // Add validation to Qty column (numbers only)
+    const qtyColIndex = gridColumns.findIndex(col => col.dataField === "Qty","ExpectedUnitRate","LineTotal") + 1;
+    if (qtyColIndex > 0) {
+        worksheet.getColumn(qtyColIndex).eachCell({ includeEmpty: true }, (cell, rowNumber) => {
+            if (rowNumber === 1) return;
+            cell.dataValidation = {
+                type: 'decimal',
+                operator: 'between',
+                allowBlank: false,
+                formula1: '-999999999',
+                formula2: '999999999',
+                showInputMessage: true,
+                promptTitle: 'Number Only',
+                prompt: 'Enter a valid number for Qty.',
+                showErrorMessage: true,
+                errorTitle: 'Invalid Input',
+                error: 'Only numeric values are allowed.'
+            };
+        });
+    }
+
+    // Add validation to Date column (dates only)
+    const dateColIndex = gridColumns.findIndex(col => col.dataField === "Mprdate") + 1;
+    if (dateColIndex > 0) {
+        worksheet.getColumn(dateColIndex).eachCell({ includeEmpty: true }, (cell, rowNumber) => {
+            if (rowNumber === 1) return;
+            cell.dataValidation = {
+                type: 'date',
+                operator: 'between',
+                allowBlank: false,
+                formula1: new Date(1900, 0, 1),
+                formula2: new Date(9999, 11, 31),
+                showInputMessage: true,
+                promptTitle: 'Date Only',
+                prompt: 'Enter a valid date (e.g., 01-Jan-2024).',
+                showErrorMessage: true,
+                errorTitle: 'Invalid Date',
+                error: 'Only valid dates are allowed in this column.'
+            };
+        });
+    }
+
+    // Enable worksheet protection but allow edits except locked columns
+    worksheet.protect('readonly', {
+        selectLockedCells: true,
+        selectUnlockedCells: true,
+        formatCells: true,
+        formatColumns: true,
+        formatRows: true,
+        insertColumns: true,
+        insertRows: true,
+        deleteColumns: true,
+        deleteRows: true,
+        sort: true,
+        autoFilter: false
+    });
+
+    // Adjust column widths
+    worksheet.columns.forEach((column) => {
+        let maxLength = rowCount;
+        column.eachCell({ includeEmpty: true }, (cell) => {
+            const columnLength = cell.value ? cell.value.toString().length : rowCount;
+            if (columnLength > maxLength) {
+                maxLength = columnLength;
+            }
+        });
+        column.width = maxLength + 2;
+    });
+
+    // Export the file
+    workbook.xlsx.writeBuffer().then((buffer) => {
+        const blob = new Blob([buffer], { type: "application/octet-stream" });
+        saveAs(blob, "IMS_Template.xlsx");
+    }).catch(error => {
+        DevExpress.ui.notify("Export failed: " + error.message, "error", 3000);
+    });
+}
+
+	function onExportPDF() {
+	const grid = $("#gridContainer").dxDataGrid("instance");
+
+	const doc = new jspdf.jsPDF();
+	const dataSource = grid.getDataSource().items();
+	const columns = grid.getVisibleColumns().map(col => col.caption);
+
+	const rows = dataSource.map(row =>
+		grid.getVisibleColumns().map(col => row[col.dataField])
+	);
+
+	doc.autoTable({
+		head: [columns],
+		body: rows,
+		styles: { fontSize: 8 },
+		margin: { top: 20 }
+	});
+
+	doc.save("Samplexls.pdf"); 
+}
+
+</script>
+<script src="https://cdn3.devexpress.com/jslib/23.2.4/js/dx.all.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
