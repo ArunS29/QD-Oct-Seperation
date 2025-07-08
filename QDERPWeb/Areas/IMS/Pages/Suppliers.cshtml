@@ -235,22 +235,7 @@
 
 
 <script>
-    $(document).ready(function () {
-
-          $(".limited-footer .btn-container").each(function () {
-
-            if (!$(this).find("#ddButtonLayout,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel,#btnColumnChooser,#btnRefresh,#btnAddSuppliers").length) {
-                  $(this).remove();
-              }
-
-          });
-
-          // Handle Back button click
-          $(document).on('click', '#btnBack', function () {
-              window.history.back();
-          });
-
-      });
+    
            function onSuppliersGridContextMenu(e) {
             if (e.target === "content" && e.row) {
                 e.items = [{

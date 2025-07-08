@@ -10,7 +10,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class ClientStatusCodeController : Controller
+    public class ClientStatusCode1Controller : Controller
     {
         private ERPMasterWtDataContext _context;
         private readonly TenantDbContextHelper _tenantDbContextHelper;
@@ -18,7 +18,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
        
 
-        public ClientStatusCodeController(ILogger<ClientLeads1Controller> logger, TenantDbContextHelper tenantDbContextHelper)
+        public ClientStatusCode1Controller(ILogger<ClientLeads1Controller> logger, TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;

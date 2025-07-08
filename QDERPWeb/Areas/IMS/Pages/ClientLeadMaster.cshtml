@@ -327,7 +327,10 @@
                 <div class="form-row">
                     <div class="col-md-6">
                         @(Html.DevExtreme().TextBox().ID("ContactPerson").Label(new JS("formatMessage('Contact Person')"))
-                        .LabelMode(EditorLabelMode.Outside) )
+                        .LabelMode(EditorLabelMode.Outside) 
+                        .ValidationRules(r => r.AddRequired().Message("Contact Person is required."))
+
+                        )
                     </div>
                     <div class="col-md-6">
                         @(Html.DevExtreme().TextBox().ID("Title").Label(new JS("formatMessage('Title')"))
@@ -434,18 +437,7 @@
                     item.Add().Text("Client Status").Title(new JS("formatMessage('Client Status')")).Template(@<text>
             <div class="form-container" >
 
-                        @* <div class="form-group" style="display: flex; justify-content: flex-end; width: 100%;">
-                            @(Html.DevExtreme().Button()
-                            .ID("docbtnAttach")
-                            .Text("Add & Attach Files")
-                            .Type(ButtonType.Normal)
-                            .StylingMode(ButtonStylingMode.Outlined)
-                            .Icon("save")
-                            .OnClick("function() { alert('This feature is currently in progress. Please check back later.'); }")
-                            )
-
-                        </div> *@
-
+                     
 
                 <div class="form-group" style="display: flex; justify-content: flex-end; width: 100%;padding:8px;">
                     @(Html.DevExtreme().Button()
@@ -474,9 +466,9 @@
             .Columns(columns =>
             {
                     @*   columns.AddFor(m => m.)..Caption(new JS("formatMessage('"); *@
-                    columns.AddFor(m => m.ReportedOn).Caption(new JS("formatMessage('Reported On')"));
+                    columns.AddFor(m => m.ReportedOn).Format("dd-MMM-yyyy").Caption(new JS("formatMessage('Reported On')"));
                     columns.AddFor(m => m.Status).Caption(new JS("formatMessage('Status')"));
-                    columns.AddFor(m => m.FollowupOn).Caption(new JS("formatMessage('Followup On')"));
+                    columns.AddFor(m => m.FollowupOn).Format("dd-MMM-yyyy").Caption(new JS("formatMessage('Followup On')"));
                     columns.AddFor(m => m.StatusRemarks).Caption(new JS("formatMessage('Status Remarks')"));
                     columns.AddFor(m => m.ClientCode).Caption(new JS("formatMessage('Client Code')")).Visible(false);
                     columns.AddFor(m => m.ClientStatusNo).Caption(new JS("formatMessage('Client Status No')")).Visible(false);
@@ -1020,11 +1012,13 @@ function onSaveClientMasterClick(e) {
     // Validate required fields
     var clientNameValidator = $("#txtClientName").dxValidator("instance");
     var clientCodeValidator = $("#txtClientCode").dxValidator("instance");
+    var contactPersonValidator = $("#ContactPerson").dxValidator("instance");
 
     var clientNameValidation = clientNameValidator.validate();
     var clientCodeValidation = clientCodeValidator.validate();
+    var contactPersonValidation = contactPersonValidator.validate();
 
-    if (clientNameValidation.isValid && clientCodeValidation.isValid) {
+    if (clientNameValidation.isValid && clientCodeValidation.isValid && contactPersonValidation.isValid) {
         // Construct the data object to send to the API
         const data = {
  ClientCode:clientCode,
@@ -1049,9 +1043,6 @@ ContactRemarks:clientRemarks,
             BusinessCard1: businessCard1Base64 ? businessCard1Base64.split(',')[1] : null,
             BusinessCard2: businessCard2Base64 ? businessCard2Base64.split(',')[1] : null
 
-
-
-            
         };
 
         console.log(data);
@@ -1142,9 +1133,6 @@ ContactRemarks:clientRemarks,
                 BusinessCard1: businessCard1Base64 ? businessCard1Base64.split(',')[1] : null,
                 BusinessCard2: businessCard2Base64 ? businessCard2Base64.split(',')[1] : null
 
-
-
-
             };
 
             console.log(data);
@@ -1165,7 +1153,7 @@ ContactRemarks:clientRemarks,
                                     dataGrid.refresh();
                                 }
                             }
-                              history.back();
+                               window.parent.closeModal();
                     } else {
                         DevExpress.ui.notify("Error: " + response.message, "error", 3000);
                     }

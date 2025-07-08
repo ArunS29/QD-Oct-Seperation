@@ -89,7 +89,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> AddDocumentsEntry(string module)
+        public async Task<IActionResult> AddDocumentsEntry(string folderId, string moduleType, string isMaster)
         {
             try
             {
@@ -97,13 +97,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     return Unauthorized("Invalid tenant context.");
 
                 var tenantName = HttpContext.Session.GetString("TenantName")?.Trim();
-
                 if (string.IsNullOrWhiteSpace(tenantName))
                     return Unauthorized("Tenant name not found in session.");
 
                 var form = await Request.ReadFormAsync();
                 var file = form.Files.FirstOrDefault();
-
                 if (file == null || file.Length == 0)
                     return BadRequest(new { success = false, message = "No file uploaded." });
 
@@ -111,22 +109,24 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 Uri? refererUri = !string.IsNullOrWhiteSpace(referer) ? new Uri(referer) : null;
 
                 string area = "UnknownArea";
-               // module = "UnknownModule";
 
                 if (refererUri != null)
                 {
                     var pathSegments = refererUri.AbsolutePath.Trim('/').Split('/', StringSplitOptions.RemoveEmptyEntries);
                     if (pathSegments.Length >= 3)
                     {
-                        // pathSegments[0] = tenant, [1] = area, [2] = module
                         area = pathSegments[1];
-                       // module = pathSegments[2];
                     }
                 }
 
-                area = area.Replace(" ", "_");
-                module = module.Replace(" ", "_");
-                tenantName = tenantName?.Replace(" ", "_");
+                // Clean up values
+                string Clean(string val) => string.IsNullOrWhiteSpace(val) ? "unknown" : val.Trim().Replace(" ", "_").ToLower();
+                string CleanFolderId(string val) => string.IsNullOrWhiteSpace(val) ? "unknown" : val.Trim().Replace(" ", "_");
+
+                area = Clean(area);
+                moduleType = Clean(moduleType);
+                folderId = CleanFolderId(folderId);
+                tenantName = Clean(tenantName);
 
                 // Fallback for Razor Pages/controller-based naming
                 var routeData = HttpContext.GetRouteData();
@@ -135,17 +135,54 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                "UnknownForm";
                 formName = formName.Replace(" ", "_");
 
-                // Construct full file name and blob path
+                // Construct full file name
                 var fileName = $"{form["DocumentNo"]}_{Path.GetFileName(file.FileName)}";
-                var filePathInBlob = $"{area}/{module}/{fileName}";
 
+                // Determine file path in blob
+                string filePathInBlob;
+                string isMasterNormalized = isMaster?.Trim().ToLower();
+                string documentType = (isMasterNormalized == "true" || isMasterNormalized == "master documents")
+                    ? "Master Documents"
+                    : "Transaction Documents";
+
+                if (documentType == "Transaction Documents")
+                {
+                    // Get VoucherDate from Tbl201VoucherEntries using folderId (which is VoucherNo)
+                    DateTime? voucherDate = await dbContext.Tbl201VoucherEntries
+                        .Where(v => v.VoucherNo == folderId)
+                        .Select(v => (DateTime?)v.AddedOn) // cast to nullable
+                        .FirstOrDefaultAsync();
+
+                    int year;
+                    string month;
+
+                    if (voucherDate.HasValue && voucherDate.Value != DateTime.MinValue)
+                    {
+                        year = voucherDate.Value.Year;
+                        month = voucherDate.Value.Month.ToString("00");
+                    }
+                    else
+                    {
+                        year = DateTime.Now.Year;
+                        month = DateTime.Now.Month.ToString("00");
+                    }
+
+
+                    filePathInBlob = $"transaction_documents/{area}/year{year}/{month}/{moduleType}/{folderId}/{fileName}";
+                }
+                else
+                {
+                    filePathInBlob = $"master_documents/{area}/{moduleType}/{folderId}/{fileName}";
+                }
+
+                // Upload file
                 var blobHelper = new AzureBlobHelper(
                     _configuration.GetConnectionString("AzureBlobStorage"),
                     "client-files"
                 );
                 var blobPath = await blobHelper.UploadFileAsync(file, filePathInBlob, tenantName);
 
-                // 🔽 Optional date and Hijri conversion
+                // Optional Hijri date conversion
                 DateTime? expDate = DateTime.TryParse(form["DocumentExpDate"], out var d) ? d : null;
                 string? hijriDate = null;
 
@@ -155,7 +192,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     hijriDate = $"{hijri.GetYear(expDate.Value)}/{hijri.GetMonth(expDate.Value):D2}/{hijri.GetDayOfMonth(expDate.Value):D2}";
                 }
 
-                // 🔽 Save to database
+                // Save document details
                 var documentDetails = new Tbl20116LedgerDocument
                 {
                     DocumentNo = form["DocumentNo"],
@@ -168,12 +205,14 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     AzurePath = blobPath,
                     DocumentStatus = 1,
                     DocumentStatusRemarks = "Active",
+                    AddedBy = User.Identity.Name,
+                    AddedOn = DateTime.UtcNow,
                 };
 
                 dbContext.Tbl20116LedgerDocuments.Add(documentDetails);
                 await dbContext.SaveChangesAsync();
 
-                // 🔽 Filter documents expiring in current month
+                // Return documents expiring this month
                 var currentMonth = DateTime.Now.Month;
                 var currentYear = DateTime.Now.Year;
 
@@ -213,7 +252,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetDocuments(string module)
+        public async Task<IActionResult> GetDocuments(string folderId, string module)
         {
             try
             {
@@ -224,30 +263,25 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 if (string.IsNullOrWhiteSpace(tenantName))
                     return Unauthorized("Tenant name not found in session.");
 
-                if (string.IsNullOrWhiteSpace(module))
-                    return BadRequest("Module parameter is required.");
+                if (string.IsNullOrWhiteSpace(module) || string.IsNullOrWhiteSpace(folderId))
+                    return BadRequest("Both module and folderId are required.");
 
-                string area = "UnknownArea";
+                // Azure Blob configuration
+                var connectionString = _configuration.GetConnectionString("AzureBlobStorage");
+                var containerName = "client-files";
+                if (string.IsNullOrWhiteSpace(connectionString) || string.IsNullOrWhiteSpace(containerName))
+                    return StatusCode(500, "Azure Blob configuration is missing.");
 
-                var referer = Request.Headers["Referer"].ToString();
-                if (!string.IsNullOrWhiteSpace(referer) && Uri.IsWellFormedUriString(referer, UriKind.Absolute))
-                {
-                    var refererUri = new Uri(referer);
-                    var pathSegments = refererUri.AbsolutePath.Trim('/').Split('/', StringSplitOptions.RemoveEmptyEntries);
+                var blobHelper = new AzureBlobHelper(connectionString, containerName);
 
-                    if (pathSegments.Length >= 3)
-                    {
-                        area = pathSegments[1];
-                    }
-                }
+                // Normalize inputs for matching
+                var normalizedModule = module.Replace(" ", "_").Trim();
+                var normalizedFolderId = folderId.Trim();
 
-                area = area.Replace(" ", "_");
-                module = module.Replace(" ", "_");
-                tenantName = tenantName.Replace(" ", "_");
-
-                var documents = await dbContext.Tbl20116LedgerDocuments
+                var matchingDocs = await dbContext.Tbl20116LedgerDocuments
                     .Where(d => !string.IsNullOrEmpty(d.AzurePath) &&
-                                EF.Functions.Like(d.AzurePath, $"%{area}%{module}%"))
+                                d.AzurePath.Contains(normalizedModule) &&
+                                d.AzurePath.Contains(normalizedFolderId))
                     .Select(d => new
                     {
                         d.DocumentNo,
@@ -256,11 +290,28 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         d.DocumentRemarks,
                         d.DocumentExpDate,
                         d.DocumentExpDateAr,
-                        d.DocumentNotificationDate
+                        d.DocumentNotificationDate,
+                        d.DocumentStatus,
+                        d.DocumentStatusRemarks,
+                        d.AzurePath
                     })
                     .ToListAsync();
 
-                return Json(documents);
+                var result = matchingDocs.Select(doc => new
+                {
+                    doc.DocumentNo,
+                    doc.DocumentType,
+                    doc.DocumentRefNo,
+                    doc.DocumentRemarks,
+                    doc.DocumentExpDate,
+                    doc.DocumentExpDateAr,
+                    doc.DocumentNotificationDate,
+                    doc.DocumentStatus,
+                    doc.DocumentStatusRemarks,
+                    FileUrl = blobHelper.GetBlobSasUrl(doc.AzurePath)
+                });
+
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -268,7 +319,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
-
 
         [HttpPost]
         public async Task<IActionResult> UpdateDocumentEntries([FromBody] List<Tbl20116LedgerDocument> documents)
