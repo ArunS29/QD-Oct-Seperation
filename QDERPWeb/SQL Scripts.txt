@@ -1,68 +1,256 @@
-﻿ALTER TABLE tbl700_03ProjectDocuments 
+﻿--------------------------- Azure  ---------------------------  
 
+ALTER TABLE Aicon.tbl700_03ProjectDocuments 
 ADD AzurePath VARCHAR(MAX) NULL; 
 
 
-alter table tbl201vouchermaster 
 
+------------ Azure Attachment------------------ 
+
+ 
+
+IF COL_LENGTH('Aicon.tbl700_03ProjectDocuments', 'AzurePath') IS NULL 
+
+BEGIN 
+
+    ALTER TABLE Aicon.tbl700_03ProjectDocuments 
+
+        ADD AzurePath VARCHAR(MAX) NULL; 
+
+    PRINT 'Added column: AzurePath'; 
+
+END 
+
+ELSE 
+
+BEGIN 
+
+    PRINT 'Column already exists: AzurePath'; 
+
+END 
+
+GO 
+
+ 
+
+ 
+
+---- Add Alert Notify Is Seen column to tbl901AlertUsers if it does not exist ----- 
+
+IF COL_LENGTH('Aicon.tbl901AlertUsers', 'IsSeen') IS NULL 
+
+BEGIN 
+
+    ALTER TABLE Aicon.tbl901AlertUsers 
+
+        ADD [IsSeen] BIT NOT NULL DEFAULT 0; 
+
+    PRINT 'Added column: IsSeen'; 
+
+END 
+
+ELSE 
+
+BEGIN 
+
+    PRINT 'Column already exists: IsSeen'; 
+
+END 
+
+GO 
+
+ 
+
+---------- Alter PO ------------ 
+
+ 
+
+IF EXISTS ( 
+
+    SELECT 1 
+
+    FROM INFORMATION_SCHEMA.COLUMNS 
+
+    WHERE TABLE_NAME = 'Aicon.Tbl20164GoodsAndServicesMaster' 
+
+      AND COLUMN_NAME = 'StoreID' 
+
+) 
+
+BEGIN 
+
+    -- Modify column type 
+
+    ALTER TABLE Aicon.Tbl20164GoodsAndServicesMaster 
+
+    ALTER COLUMN StoreID VARCHAR(30); 
+
+     
+
+    PRINT 'Column StoreID altered to VARCHAR(30)'; 
+
+END 
+
+ELSE 
+
+BEGIN 
+
+    PRINT 'Column StoreID does not exist in Tbl20164GoodsAndServicesMaster'; 
+
+END 
+
+GO 
+
+
+--d Currency Image column if it does not exist ---- 
+
+IF COL_LENGTH('Aicon.Tbl20169CurrencyExchange', 'CurrencyImage') IS NULL 
+
+BEGIN 
+
+    ALTER TABLE Aicon.Tbl20169CurrencyExchange 
+
+        ADD [CurrencyImage] NVARCHAR(MAX) NULL; 
+
+    PRINT 'Added column: CurrencyImage'; 
+
+END 
+
+ELSE 
+
+BEGIN 
+
+    PRINT 'Column already exists: CurrencyImage'; 
+
+END 
+
+GO 
+
+  
+
+----- Add Currency Symbole column if it does not exist ----- 
+
+IF COL_LENGTH('Aicon.Tbl20169CurrencyExchange', 'CurrencySymbole') IS NULL 
+
+BEGIN 
+
+    ALTER TABLE Aicon.Tbl20169CurrencyExchange 
+
+        ADD [CurrencySymbole] VARCHAR(30) NULL; 
+
+    PRINT 'Added column: CurrencySymbole'; 
+
+END 
+
+ELSE 
+
+BEGIN 
+
+    PRINT 'Column already exists: CurrencySymbole'; 
+
+END 
+
+GO 
+
+  
+
+  
+
+---- Add Email Templates table only if it doesn't exist---- 
+
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES  
+
+               WHERE TABLE_SCHEMA = 'Aicon'  
+
+               AND TABLE_NAME = 'EmailTemplates') 
+
+BEGIN 
+
+    CREATE TABLE Aicon.EmailTemplates ( 
+
+        Id INT PRIMARY KEY IDENTITY,  
+
+        TemplateName NVARCHAR(200),  
+
+        Category NVARCHAR(100),  
+
+        Subject NVARCHAR(500),  
+
+        Body NVARCHAR(MAX),  
+
+        Status NVARCHAR(20) -- Active or Inactive 
+
+    ); 
+
+    PRINT 'Created table: EmailTemplates'; 
+
+END 
+
+ELSE 
+
+BEGIN 
+
+    PRINT 'Table already exists: EmailTemplates'; 
+
+END 
+
+GO 
+
+ 
+
+-------- Alter 901Company Details -------- 
+ALTER TABLE Aicon.tbl901CompanyDetails 
+ADD 
+    DefaultcompanyID TINYINT NULL, 
+    CompanyTextColor NVARCHAR(20) NULL; 
+ 
+ 
+ALTER TABLE Aicon.Tbl901CompanyDetails 
+ADD   
+    [CurrencyImage] NVARCHAR(MAX) NULL,  
+    [CurrencySymbol] VARCHAR(30) NULL;  
+
+ALTER TABLE Aicon.tbl901AlertUsers 
+ADD Isseen BIT NOT NULL DEFAULT 0; 	
+---------------------------Voucher ---------------------------  
+
+ALTER TABLE Aicon.Tbl201VoucherEntry ADD [Type] VARCHAR(30);
+
+
+alter table Aicon.tbl201vouchermaster 
 add Currencyid int  
 
-update tbl201vouchermaster 
-
-set currencyid=1 
-
-  
-
-
- 
-
-update tbl201Vouchermaster  
-
- set basecurrencyid=1  
-
-   
-
-ALTER TABLE tbl201Vouchermaster 
-
+ALTER TABLE Aicon.tbl201Vouchermaster 
 ADD CurrencyRate DECIMAL(18, 2); 
 
-  
-
-alter table tbl201vouchermaster 
-
+alter table Aicon.tbl201vouchermaster 
 add basecurrencyid int; 
 
-  
 
-select * from tbl201Vouchermaster 
-
-
-alter table tbl20113ChequeMaster  
-
+alter table Aicon.tbl20113ChequeMaster  
 add Currencyid int      
 
-update tbl20113ChequeMaster   
-
-set currencyid=1  
-
-
-ALTER TABLE tbl20113ChequeMaster   
-
+ALTER TABLE Aicon.tbl20113ChequeMaster   
 ADD CurrencyRate DECIMAL(18, 2);   
 
-  
-
-alter table tbl20113ChequeMaster   
-
+alter table Aicon.tbl20113ChequeMaster   
 add basecurrencyid int;  
 
+update Aicon.tbl201vouchermaster 
+set currencyid=1 
+
+update Aicon.tbl201Vouchermaster  
+set basecurrencyid=1  
+
+update Aicon.tbl20113ChequeMaster   
+set currencyid=1  
  
 
-update tbl20113ChequeMaster    
-
+update Aicon.tbl20113ChequeMaster    
 set basecurrencyid=1,  currencyid=1 
 
-CREATE TABLE dbo.tblUserAccessWeb (  
+
+CREATE TABLE Aicon.tblUserAccessWeb (  
 
 [SlNo] [int] IDENTITY(1,1) NOT NULL,  
 [UserID] [tinyint] NOT NULL,  
@@ -82,7 +270,7 @@ CREATE TABLE dbo.tblUserAccessWeb (
 
 )  
 
-CREATE TABLE dbo.tbl901UserAccessMasterWeb(  
+CREATE TABLE Aicon.tbl901UserAccessMasterWeb(  
 [SlNo] [int] NOT NULL,  
 [ItemForm] [varchar](max) NULL,  
 [ItemName] [varchar](max) NULL,  
@@ -99,22 +287,20 @@ CREATE TABLE dbo.tbl901UserAccessMasterWeb(
 
   
 
-  
-
-create PROCEDURE [dbo].[stPro901_04ReplicateUserAccessPermissionsWeb]    
+create PROCEDURE [Aicon].[stPro901_04ReplicateUserAccessPermissionsWeb]    
 (    
 @FromUser tinyint,    
 @ToUser tinyint    
 )    
 AS    
-DELETE dbo.tblUserAccessweb where UserID = @ToUser    
+DELETE Aicon.tblUserAccessweb where UserID = @ToUser    
 
-Insert into    dbo.tblUserAccessweb    
+Insert into    Aicon.tblUserAccessweb    
 
 (UserID, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module,  MasterSlNo, GroupSlNo, ItemSlNo)    
 
 select @ToUser, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module,  MasterSlNo, GroupSlNo, ItemSlNo    
-FROM         dbo.tblUserAccessweb    
+FROM         Aicon.tblUserAccessweb    
 
 where UserID = @FromUser    
 
@@ -124,186 +310,102 @@ where UserID = @FromUser
 
   
 
-CREATE PROCEDURE dbo.stPro901_03InsertUserAccessPermissionsforweb  
+CREATE PROCEDURE Aicon.stPro901_03InsertUserAccessPermissionsforweb  
 (    
 @ToUser tinyint    
 )    
 AS    
-DELETE dbo.tblUserAccessWeb where UserID = @ToUser    
-insert into    dbo.tblUserAccessWeb    
+DELETE Aicon.tblUserAccessWeb where UserID = @ToUser    
+insert into    Aicon.tblUserAccessWeb    
 (UserID, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module,  MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)    
 select @ToUser, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module,  MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess    
-FROM         dbo.tbl901UserAccessMasterWeb    
+FROM         Aicon.tbl901UserAccessMasterWeb    
 
-insert into dbo.tblUserAccessweb (UserID,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,Module)    
+insert into Aicon.tblUserAccessweb (UserID,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,Module)    
 values   
 (1,'Finance Voucher Entry Screen','frm201VoucherCashPayment_FullAccess','Full Access',1,1,'Finance'),    
 
-  
-
 (1,'Finance Voucher Entry Screen','frm201VoucherCashPayment_btnSave','Save',1,1,'Finance'),    
-
-  
 
 (1,'Finance Voucher Entry Screen','frm201VoucherCashPayment_btnSaveAndClose','Save & Close ',1,1,'Finance'),    
 
-  
-
 (1,'Finance Voucher Entry Screen','frm201VoucherCashPayment_btnPreview1','Preview',1,1,'Finance'),    
-
-  
 
 (1,'Finance Voucher Entry Screen','frm201VoucherCashPayment_btnPrint','Print',1,1,'Finance'),    
 
-  
-
 (1,'Finance Voucher Entry Screen','frm201VoucherCashPayment_btnDelete','Delete',0,0,'Finance'),    
-
-  
 
 (1,'Finance Voucher Entry Screen','frm201VoucherCashPayment_btnBack','Back',1,1,'Finance'),    
 
-  
-
 (1,'Finance Voucher Entry Screen','frm201VoucherCashPayment_btnVerify','Verify',0,0,'Finance'),    
-
-  
 
 (1,'Finance Voucher Entry Screen','frm201VoucherCashPayment_btnApprove','Approve',0,0,'Finance'),    
 
-  
-
 (1,'Finance Voucher Entry Screen','frm201VoucherCashPayment_btnAttach','Attach',1,1,'Finance')  , 
-
-  
 
 (1, 'Finance Accounting Ledger', 'frm201LedgerView_FullAccess','Full Access', 1, 1, 'Finance'),  
 
-  
+(1, 'Finance Accounting Ledger', 'frm201LedgerView_btnShowRecords','Show Records', 1, 1, 'Finance'),   
 
-    (1, 'Finance Accounting Ledger', 'frm201LedgerView_btnShowRecords','Show Records', 1, 1, 'Finance'),   
-
-  
-
-    (1,'Finance Accounting Ledger', 'frm201LedgerView_btnPrint','Print', 1, 1, 'Finance'),   
-
-  
+(1,'Finance Accounting Ledger', 'frm201LedgerView_btnPrint','Print', 1, 1, 'Finance'),   
 
     --(1, 'Finance Accounting Ledger', 'frm201LedgerView_btnSearch','Search', 1, 1, 'Finance'),  
 
-  
-
     (1, 'Finance Accounting Ledger', 'frm201LedgerView_btnToggleSearch','Search', 1, 1, 'Finance'),   
-
-  
 
     (1, 'Finance Accounting Ledger', 'frm201LedgerView_btntoggleGroupPanel','Group', 1, 1, 'Finance'),   
 
-  
-
     (1, 'Finance Accounting Ledger', 'frm201LedgerView_btnToggleHeaderFilter','Toggle Filter', 1, 1, 'Finance'),   
-
-  
 
     (1, 'Finance Accounting Ledger', 'frm201LedgerView_btnColumnChooser','Column Chooser', 1, 1, 'Finance'),   
 
-  
-
     (1, 'Finance Accounting Ledger', 'frm201LedgerView_ddButtonReceipts','ADD Receipt', 1, 1, 'Finance'),   
-
-  
 
     (1, 'Finance Accounting Ledger', 'frm201LedgerView_ddButtonPayment','ADD Payment', 1, 1, 'Finance'),   
 
-  
-
     (1, 'Finance Accounting Ledger', 'frm201LedgerView_ddOtherVouchers','Other Vouchers', 1, 1, 'Finance'),   
-
-  
 
     (1, 'Finance Accounting Ledger', 'frm201LedgerView_ddReports','Report', 1, 1, 'Finance'),   
 
-  
-
     (1, 'Finance Accounting Ledger', 'frm201LedgerView_ddBtnShowRecords','Show Records', 1, 1, 'Finance') 
 
-  
-
   --  (1, 'Finance Accounting  Ledger','frm201LedgerView_ddButtonExpense,'Expenses',1,1,'Finance')  ,  
-
-  
-
 --    (1, 'Finance Accounting  Ledger','frm201LedgerView_ddButtonExpense,'Expenses',1,1,'Finance')    
-
   
 
-insert into tblUserAccessweb (UserID,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,Module)     
+insert into Aicon.tblUserAccessweb (UserID,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,Module)     
 
 values  
 
-      (1, 'Finance Accounting Register','frm201LedgerViewByVoucherType_FullAccess','Full Acsess',1,1,'Finance') ,   
+    (1, 'Finance Accounting Register','frm201LedgerViewByVoucherType_FullAccess','Full Acsess',1,1,'Finance') ,   
 
     (1, 'Finance Accounting Register','frm201LedgerViewByVoucherType_ddButtonLayout','Layout',1,1,'Finance') ,   
 
-  
-
     (1, 'Finance Accounting Register','frm201LedgerViewByVoucherType_btnPrint','Print',1,1,'Finance') ,   
-
-  
 
     (1, 'Finance Accounting Register','frm201LedgerViewByVoucherType_btnToggleSearch','Search',1,1,'Finance') ,   
 
-  
-
     (1, 'Finance Accounting Register','frm201LedgerViewByVoucherType_btntoggleGroupPanel','Group',1,1,'Finance') ,   
-
-  
 
     (1, 'Finance Accounting Register','frm201LedgerViewByVoucherType_btnToggleHeaderFilter','Toggle Filter',1,1,'Finance') ,   
 
-  
-
     (1, 'Finance Accounting Register','frm201LedgerViewByVoucherType_btnColumnChooser','Column Chooser',1,1,'Finance') ,   
-
-  
 
     (1, 'Finance Accounting Register','frm201LedgerViewByVoucherType_ddReports','Reports',1,1,'Finance') ,   
 
-  
-
     (1, 'Finance Accounting Register','frm201LedgerViewByVoucherType_btnShowDayBooks','Show DayBooks',1,1,'Finance') ,   
 
+    (1, 'Finance Accounting Register','frm201LedgerViewByVoucherType_InternalAudit','Internal Audit',1,1,'Finance')    
   
 
-(1, 'Finance Accounting Register','frm201LedgerViewByVoucherType_InternalAudit','Internal Audit',1,1,'Finance')    
-
-  
-
-  
-
-  
-
-INSERT INTO [dbo].[tbl901UserAccessMasterWeb] (  
-
-  
-
-    [SlNo], [ItemForm], [ItemName], [ItemDescription],  
-
-  
-
-    [ItemEnabled], [ItemVisible], [ItemRemarks], [Module]  
-
-  
-
+INSERT INTO [Aicon].[tbl901UserAccessMasterWeb] (  
+    [SlNo], [ItemForm], [ItemName], [ItemDescription],[ItemEnabled], [ItemVisible], [ItemRemarks], [Module]  
 )  
 
-  
-
 VALUES  
-
   
 
-(1, 'Finance Accounting Ledger', 'frm201LedgerView_FullAccess', 'Full Access', 1, 1, NULL, 'Finance'),  
+ (1, 'Finance Accounting Ledger', 'frm201LedgerView_FullAccess', 'Full Access', 1, 1, NULL, 'Finance'),  
 
  (2, 'Finance Accounting Ledger', 'frm201LedgerView_btnShowRecords', 'Show Records', 1, 1, NULL, 'Finance'),  
 
@@ -393,9 +495,9 @@ VALUES
 
 (41, 'Finance Journal Register Main', 'frm20128JournalRegisterMain_FullAccess', 'Full Access', 1, 1, NULL, 'Finance'),   
 
- (42, 'Finance Journal Register Main', 'frm20128JournalRegisterMain_btnShowRecords', 'Show Records', 1, 1, NULL, 'Finance'), 
+(42, 'Finance Journal Register Main', 'frm20128JournalRegisterMain_btnShowRecords', 'Show Records', 1, 1, NULL, 'Finance'), 
 
- (43, 'Finance Journal Register Main', 'frm20128JournalRegisterMain_btnPrint', 'Print', 1, 1, NULL, 'Finance'), 
+(43, 'Finance Journal Register Main', 'frm20128JournalRegisterMain_btnPrint', 'Print', 1, 1, NULL, 'Finance'), 
 
 (44, 'Finance Journal Register Main', 'frm20128JournalRegisterMain_ddButtonLayout', 'layout', 1, 1, NULL, 'Finance'), 
 
@@ -449,9 +551,9 @@ VALUES
 
 (67, 'Finance voucher Approval', 'VoucherApproval_FullAccess', 'Full Access', 1, 1, NULL, 'Finance'),   
 
- (68, 'Finance voucher Approval', 'VoucherApproval_btnRefresh', 'Refresh', 1, 1, NULL, 'Finance'), 
+(68, 'Finance voucher Approval', 'VoucherApproval_btnRefresh', 'Refresh', 1, 1, NULL, 'Finance'), 
 
- (69, 'Finance voucher Approval', 'VoucherApproval_ddButtonLayout', 'Layout', 1, 1, NULL, 'Finance'), 
+(69, 'Finance voucher Approval', 'VoucherApproval_ddButtonLayout', 'Layout', 1, 1, NULL, 'Finance'), 
 
 (70, 'Finance voucher Approval', 'VoucherApproval_btnPrint', 'Print', 1, 1, NULL, 'Finance'), 
 
@@ -479,7 +581,7 @@ VALUES
 
 (81, 'Finance ExpenseClaim Main', 'frm20107ExpenseClaimView_FullAccess', 'Full Access', 1, 1, NULL, 'Finance'),   
 
- (82, 'Finance ExpenseClaim Main', 'frm20107ExpenseClaimView_ddButtonExpense', 'Create Expense', 1, 1, NULL, 'Finance'), 
+(82, 'Finance ExpenseClaim Main', 'frm20107ExpenseClaimView_ddButtonExpense', 'Create Expense', 1, 1, NULL, 'Finance'), 
 
 (83, 'Finance ExpenseClaim Main', 'frm20107ExpenseClaimView_ExpenseSubmission', 'Show all Submission', 1, 1, NULL, 'Finance'), 
 
@@ -499,11 +601,11 @@ VALUES
 
  
 
- (91, 'Finance ExpenseClaim Edit', 'ExpenseClaimEdit_FullAccess', 'Full Access', 1, 1, NULL, 'Finance'),   
+(91, 'Finance ExpenseClaim Edit', 'ExpenseClaimEdit_FullAccess', 'Full Access', 1, 1, NULL, 'Finance'),   
 
- (92, 'Finance ExpenseClaim Edit', 'ExpenseClaimEdit_expenseButtonLayout1', 'Layout', 1, 1, NULL, 'Finance'), 
+(92, 'Finance ExpenseClaim Edit', 'ExpenseClaimEdit_expenseButtonLayout1', 'Layout', 1, 1, NULL, 'Finance'), 
 
- (93, 'Finance ExpenseClaim Edit', 'ExpenseClaimEdit_btnSave', 'Save', 1, 1, NULL, 'Finance'), 
+(93, 'Finance ExpenseClaim Edit', 'ExpenseClaimEdit_btnSave', 'Save', 1, 1, NULL, 'Finance'), 
 
 (94, 'Finance ExpenseClaim Edit', 'ExpenseClaimEdit_btnSaveAndClose', 'Save and Close', 1, 1, NULL, 'Finance'), 
 
@@ -569,9 +671,9 @@ VALUES
 
 (125, 'Finance Menu', 'Asset Register', 'Asset Register', 1, 1, NULL, 'Finance') 
 
-select * from [tbl901UserAccessMasterWeb]
+
    
-INSERT INTO [tbl901UserAccessMasterWeb] (  
+INSERT INTO [Aicon].[tbl901UserAccessMasterWeb] (  
 
     [SlNo], [ItemForm], [ItemName], [ItemDescription],  
 
@@ -639,7 +741,7 @@ VALUES
  
 
 
-   INSERT INTO [tbl901UserAccessMasterWeb] (
+   INSERT INTO [Aicon].[tbl901UserAccessMasterWeb] (
     [SlNo], [ItemForm], [ItemName], [ItemDescription],
     [ItemEnabled], [ItemVisible], [ItemRemarks], [Module]
 )
@@ -655,7 +757,7 @@ VALUES
 
 --SET IDENTITY_INSERT tbl901UserAccessMasterWeb ON;
 
-INSERT INTO tbl901UserAccessMasterWeb 
+INSERT INTO Aicon.tbl901UserAccessMasterWeb 
     (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
 VALUES 
     (300,'VAT Module SalesRegister Main View Screen','frm20162VATInvoiceMasterView_ddButtonLayout','Layout',1,1,null,'VAT',null,null,null,null), 
@@ -668,7 +770,7 @@ VALUES
     (307,'VAT Module SalesRegister Main View Screen', 'frm20162VATInvoiceMasterView_btnColumnChooser','ColumnChooser', 1, 1,null, 'VAT',null,null,null,null);
 
 
-INSERT INTO tbl901UserAccessMasterWeb 
+INSERT INTO Aicon.tbl901UserAccessMasterWeb 
     (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
 VALUES  
     (308,'VAT Invoice Edit','frm20161VATInvoiceEdit_ddButtonLayout','Layout',1, 1,null,'VAT', 0, 0, 0, 0), 
@@ -687,9 +789,7 @@ VALUES
     (321,'VAT Invoice Edit', 'frm20161VATInvoiceEdit_btnPostTag','PostTag', 1, 1,null, 'VAT', 0, 0, 0, 0);
 
 
-
-
-		   insert into tbl901UserAccessMasterWeb (SlNo,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,ItemRemarks,Module)  
+		   insert into Aicon.tbl901UserAccessMasterWeb (SlNo,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,ItemRemarks,Module)  
 values 
     (322,'VAT Module Credit Note Register Screen ','frm20169VATCreditNoteView_ddButtonLayout','Layout',1, 1,null,'VAT'), 
     (323,'VAT Module Credit Note Register Screen', 'frm20169VATCreditNoteView_btnToggleSearch','ToogleSearch',1, 1,null,'VAT'), 
@@ -697,11 +797,8 @@ values
     (325,'VAT Module Credit Note Register Screen', 'frm20169VATCreditNoteView_btnPrint','Print', 1, 1,null, 'VAT'), 
     (326,'VAT Module Credit Note Register Screen', 'frm20169VATCreditNoteView_btnAddNew1','AddNew',1, 1,null, 'VAT'), 
     (327,'VAT Module Credit Note Register Screen', 'frm20169VATCreditNoteView_ddReport123','Report',1, 1,null,'VAT')
-   
 
-
-
-		   insert into tbl901UserAccessMasterWeb (SlNo,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,ItemRemarks,Module)  
+		   insert into Aicon.tbl901UserAccessMasterWeb (SlNo,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,ItemRemarks,Module)  
 values 
     (328,'VAT Module New e-Invoice Credit Note Screen','frm20168VATCreditNoteEdit_ddButtonLayout','Layout',1, 1,null,'VAT'), 
     (329,'VAT Module New e-Invoice Credit Note Screen', 'frm20168VATCreditNoteEdit_btnMoveDown','MoveDown',1, 1,null,'VAT'), 
@@ -717,10 +814,7 @@ values
     (339,'VAT Module New e-Invoice Credit Note Screen', 'frm20168VATCreditNoteEdit_btnPostToLedgers','PostToLedger', 1, 1,null, 'VAT'),
     (340,'VAT Module New e-Invoice Credit Note Screen', 'frm20168VATCreditNoteEdit_btnPostTag','PostTag', 1, 1,null, 'VAT')
 
-
-
-
-		  insert into tbl901UserAccessMasterWeb (SlNo,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,ItemRemarks,Module)  
+		  insert into Aicon.tbl901UserAccessMasterWeb (SlNo,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,ItemRemarks,Module)  
 values 
     (341,'VAT Module Purchase Master View Screen','frm20165VATPurchaseMasterView_ddButtonLayout','Layout',1, 1,null,'VAT'), 
     (342,'VAT Module Purchase Master View Screen', 'frm20165VATPurchaseMasterView_btnToggleSearch','ToogleSearch',1, 1,null,'VAT'), 
@@ -731,9 +825,7 @@ values
     (347,'VAT Module Purchase Master View Screen', 'frm20165VATPurchaseMasterView_ddReport12','Report',1, 1,null,'VAT')
 
 
-
-
-	insert into tbl901UserAccessMasterWeb (SlNo,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,ItemRemarks,Module)  
+	insert into Aicon.tbl901UserAccessMasterWeb (SlNo,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,ItemRemarks,Module)  
 values 
     (348,'VAT Module New VAT Purchase Bill Screen','frm20164VATPurchaseEdit_ddButtonLayout','Layout',1, 1,null,'VAT'), 
     (349,'VAT Module New VAT Purchase Bill Screen', 'frm20164VATPurchaseEdit_btnPrint2','Print', 1, 1,null, 'VAT'), 
@@ -747,10 +839,7 @@ values
     (357,'VAT Module New VAT Purchase Bill Screen', 'frm20164VATPurchaseEdit_btnPostToLedgers','PostToLedger', 1, 1,null, 'VAT')
 
 
-
-
-
-	 insert into tbl901UserAccessMasterWeb (SlNo,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,ItemRemarks,Module)  
+	 insert into Aicon.tbl901UserAccessMasterWeb (SlNo,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,ItemRemarks,Module)  
 values 
     (358,'VAT Module Debit Note Register Screen','frm20171VATDebitNoteView_ddButtonLayout','Layout',1, 1,null,'VAT'), 
     (359,'VAT Module Debit Note Register Screen', 'frm20171VATDebitNoteView_btnPrint','Print', 1, 1,null, 'VAT'), 
@@ -760,11 +849,7 @@ values
     (363,'VAT Module Debit Note Register Screen', 'frm20171VATDebitNoteView_btntoggleGroupPanel','ToggleGroupPanel', 1, 1,null, 'VAT')
 
 
-
-
-
-
-		insert into tbl901UserAccessMasterWeb (SlNo,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,ItemRemarks,Module)  
+		insert into Aicon.tbl901UserAccessMasterWeb (SlNo,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,ItemRemarks,Module)  
 values 
     (364,'VAT Module New e-Invoice Debit Note Screen','frm20170VATDebitNoteEdit_ddButtonLayout','Layout',1, 1,null,'VAT'), 
     (365,'VAT Module New e-Invoice Debit Note Screen', 'frm20170VATDebitNoteEdit_btnPrint3','Print', 1, 1,null, 'VAT'), 
@@ -779,17 +864,13 @@ values
     (374,'VAT Module New e-Invoice Debit Note Screen', 'frm20170VATDebitNoteEdit_btnPostToLedgers','PostToLedger', 1, 1,null, 'VAT'),
     (375,'VAT Module New e-Invoice Debit Note Screen', 'frm20170VATDebitNoteEdit_btnPostTag','PostTag', 1, 1,null, 'VAT')
 
-
-
-	 insert into tbl901UserAccessMasterWeb (SlNo,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,ItemRemarks,Module)  
+	 insert into Aicon.tbl901UserAccessMasterWeb (SlNo,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,ItemRemarks,Module)  
 values 
     (376,'VAT Module VAT Returns Screen', 'frm20166VATReturnsForm_btnPrint','Print', 1, 1,null, 'VAT'), 
     (377,'VAT Module VAT Returns Screen', 'frm20166VATReturnsForm_ddReports4','Report',1, 1,null,'VAT')
 
 
-
-
-	 insert into tbl901UserAccessMasterWeb (SlNo,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,ItemRemarks,Module)  
+	 insert into Aicon.tbl901UserAccessMasterWeb (SlNo,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,ItemRemarks,Module)  
 values 
     (378,'VAT Module Sales Reporting Screen','frm20184VATInvoiceReportingInDe_ddButtonLayout','Layout',1, 1,null,'VAT'), 
     (379,'VAT Module Sales Reporting Screen', 'frm20184VATInvoiceReportingInDe_btnPrint','Print', 1, 1,null, 'VAT'), 
@@ -799,7 +880,7 @@ values
 
 
 
-	 insert into tbl901UserAccessMasterWeb (SlNo,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,ItemRemarks,Module)  
+	 insert into Aicon.tbl901UserAccessMasterWeb (SlNo,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,ItemRemarks,Module)  
 values 
     (383,'VAT Module Proforma Invoice Master View Screen','frm20182ProInvoiceMasterView_ddButtonLayout','Layout',1, 1,null,'VAT'), 
     (384,'VAT Module Proforma Invoice Master View Screen','frm20182ProInvoiceMasterView_btnPrint','Print', 1, 1,null, 'VAT'), 
@@ -810,7 +891,7 @@ values
 
 
 
-	insert into tbl901UserAccessMasterWeb (SlNo,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,ItemRemarks,Module)  
+	insert into Aicon.tbl901UserAccessMasterWeb (SlNo,ItemForm,ItemName,ItemDescription,ItemEnabled,ItemVisible,ItemRemarks,Module)  
 values 
     (388,'VAT Module Proforma Invoice Edit Form Screen', 'frm20181ProformaInvoiceEdit_btnPrint22','Print', 1, 1,null, 'VAT'), 
     (389,'VAT Module Proforma Invoice Edit Form Screen', 'frm20181ProformaInvoiceEdit_btnMoveDown','MoveDown',1, 1,null,'VAT'), 
@@ -825,11 +906,7 @@ values
     (398,'VAT Module Proforma Invoice Edit Form Screen', 'frm20181ProformaInvoiceEdit_btncreatevatinvoice','createvatinvoice', 1, 1,null, 'VAT')
 
 
-	
-
-select * from tbl901UserAccessMasterWeb
-
-INSERT INTO tbl901UserAccessMasterWeb 
+INSERT INTO Aicon.tbl901UserAccessMasterWeb 
     (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
 VALUES 
     (320,'Client Leads Main View Screen','frm30106ClientMaster_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
@@ -842,10 +919,10 @@ VALUES
     (327,'Client Leads Main View Screen', 'frm30106ClientMaster_btnAddClientLeads','Add Client Leads', 1, 1,null, 'IMS',null,null,null,null),
     (328,'Client Leads Main View Screen', 'frm30106ClientMaster_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
 
-	update tbl901UserAccessMasterWeb set ItemEnabled =0, ItemVisible=0 where ItemForm = 'Client Leads Main View Screen'
-	update tbl901UserAccessMasterWeb set ItemEnabled =1, ItemVisible=1 where ItemForm = 'Client Leads Main View Screen'
+	update Aicon.tbl901UserAccessMasterWeb set ItemEnabled =0, ItemVisible=0 where ItemForm = 'Client Leads Main View Screen'
+	update Aicon.tbl901UserAccessMasterWeb set ItemEnabled =1, ItemVisible=1 where ItemForm = 'Client Leads Main View Screen'
 
-	INSERT INTO tbl901UserAccessMasterWeb 
+	INSERT INTO Aicon.tbl901UserAccessMasterWeb 
     (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
 VALUES 
     (329,'Suppliers Main View Screen','frm30110SupplierMaster_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
@@ -857,7 +934,7 @@ VALUES
     (335,'Suppliers Main View Screen', 'frm30110SupplierMaster_btnAddSuppliers','Add Suppliers', 1, 1,null, 'IMS',null,null,null,null),
     (336,'Suppliers Main View Screen', 'frm30110SupplierMaster_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
 
-	INSERT INTO tbl901UserAccessMasterWeb 
+	INSERT INTO Aicon.tbl901UserAccessMasterWeb 
     (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
 VALUES 
     (337,'Stock Inventory Main View Screen','frmIMSStockInventory_btnRefresh','Refresh',1,1,null,'IMS',null,null,null,null), 
@@ -872,7 +949,7 @@ VALUES
     (346,'Stock Inventory Main View Screen','frmIMSStockInventory_btnAddNewPayment','Add New Stock Item',1,1,null,'IMS',null,null,null,null),
     (347,'Stock Inventory Main View Screen','frmIMSStockInventory_FullAccess','Full Access',1,1,null,'IMS',null,null,null,null);
 
-	INSERT INTO tbl901UserAccessMasterWeb 
+	INSERT INTO Aicon.tbl901UserAccessMasterWeb 
     (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
 VALUES 
 	(365,'Material Request Enquiries Details Main View Screen','frm60112PurchaseRequestView_ddBtnShowRecords','Show Recorrds',1,1,null,'IMS',null,null,null,null), 
@@ -886,7 +963,7 @@ VALUES
     (355,'Material Request Enquiries Details Main View Screen', 'frm60112PurchaseRequestView_btnAddbtnAddMaterialRequestSuppliers','Add Material Request Suppliers', 1, 1,null, 'IMS',null,null,null,null),
     (356,'Material Request Enquiries Details Main View Screen', 'frm60112PurchaseRequestView_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
 
-	INSERT INTO tbl901UserAccessMasterWeb 
+	INSERT INTO Aicon.tbl901UserAccessMasterWeb 
     (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
 VALUES 
     (357,'Quotation Main View Screen','frm60102QuotationView_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
@@ -899,7 +976,7 @@ VALUES
     (364,'Quotation Main View Screen', 'frm60102QuotationView_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null),
 	(366,'Quotation Main View Screen','frm60102QuotationView_ddBtnShowRecords','Layout',1,1,null,'IMS',null,null,null,null);
 
-	INSERT INTO tbl901UserAccessMasterWeb 
+	INSERT INTO Aicon.tbl901UserAccessMasterWeb 
     (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
 VALUES 
     (367,'Sales Orders Main View Screen','frm60103SalesOrderEdit_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
@@ -913,7 +990,7 @@ VALUES
     (375,'Sales Orders Main View Screen', 'frm60103SalesOrderEdit_ddBtnShowRecords','Show Records Dropdown', 1, 1,null, 'IMS',null,null,null,null),
     (376,'Sales Orders Main View Screen', 'frm60103SalesOrderEdit_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
 
-	INSERT INTO tbl901UserAccessMasterWeb 
+	INSERT INTO Aicon.tbl901UserAccessMasterWeb 
     (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
 VALUES 
     (377,'Delivery Note Main View Screen','frm60106DeliveryNoteView_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
@@ -927,7 +1004,7 @@ VALUES
     (385,'Delivery Note Main View Screen', 'frm60106DeliveryNoteView_btnAddDeliveryNote','Add Delivery Note', 1, 1,null, 'IMS',null,null,null,null),
     (386,'Delivery Note Main View Screen', 'frm60106DeliveryNoteView_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
 
-	INSERT INTO tbl901UserAccessMasterWeb 
+	INSERT INTO Aicon.tbl901UserAccessMasterWeb 
     (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
 VALUES 
     (387,'Request for Quotation List Main View Screen','frm60114RFQView_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
@@ -942,7 +1019,7 @@ VALUES
     (396,'Request for Quotation List Main View Screen', 'frm60114RFQView_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
 
 
-	INSERT INTO tbl901UserAccessMasterWeb 
+	INSERT INTO Aicon.tbl901UserAccessMasterWeb 
     (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
 VALUES 
     (397,'Quotation Analysis Main View Screen','frm60115QuotationAnalysis_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
@@ -955,7 +1032,7 @@ VALUES
 	(404,'Quotation Analysis Main View Screen', 'frm60115QuotationAnalysis_viewAnalysisButton','View Analysis Button', 1, 1,null, 'IMS',null,null,null,null),
     (405,'Quotation Analysis Main View Screen', 'frm60115QuotationAnalysis_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
 
-	INSERT INTO tbl901UserAccessMasterWeb 
+	INSERT INTO Aicon.tbl901UserAccessMasterWeb 
     (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
 VALUES 
     (406,'Purchase Orders Main View Screen','frm60108PurchaseOrderView_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
@@ -969,7 +1046,7 @@ VALUES
     (414,'Purchase Orders Main View Screen', 'frm60108PurchaseOrderView_ddBtnShowRecords','Show Records Dropdown', 1, 1,null, 'IMS',null,null,null,null),
     (415,'Purchase Orders Main View Screen', 'frm60108PurchaseOrderView_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
 
-	INSERT INTO tbl901UserAccessMasterWeb 
+	INSERT INTO Aicon.tbl901UserAccessMasterWeb 
     (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
 VALUES 
     (416,'Material Receipts Main View Screen','frm60110MaterialReceiptView_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
@@ -983,7 +1060,7 @@ VALUES
     (424,'Material Receipts Main View Screen', 'frm60110MaterialReceiptView_ddBtnShowRecords','Show Records Dropdown', 1, 1,null, 'IMS',null,null,null,null),
     (425,'Material Receipts Main View Screen', 'frm60110MaterialReceiptView_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
 
-	INSERT INTO tbl901UserAccessMasterWeb 
+	INSERT INTO Aicon.tbl901UserAccessMasterWeb 
     (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
 VALUES 
     (426,'Job Orders Main View Screen','frm60128JobOrdersView_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
@@ -996,7 +1073,7 @@ VALUES
     (433,'Job Orders Main View Screen', 'frm60128JobOrdersView_btnAddNewJobOrder','Add New Job Order', 1, 1,null, 'IMS',null,null,null,null),
     (434,'Job Orders Main View Screen', 'frm60128JobOrdersView_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
 
-	INSERT INTO tbl901UserAccessMasterWeb 
+	INSERT INTO Aicon.tbl901UserAccessMasterWeb 
     (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
 VALUES 
     (435,'Stock Adjustments Main View Screen','frm60143StockAdjustmentEdit_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
@@ -1009,7 +1086,7 @@ VALUES
     (442,'Stock Adjustments Main View Screen', 'frm60143StockAdjustmentEdit_ddBtnShowRecords','Show Records Dropdown', 1, 1,null, 'IMS',null,null,null,null),
     (443,'Stock Adjustments Main View Screen', 'frm60143StockAdjustmentEdit_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
 
-	INSERT INTO tbl901UserAccessMasterWeb 
+	INSERT INTO Aicon.tbl901UserAccessMasterWeb 
     (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
 VALUES 
     (444,'Material Request Form','frm60111PurchaseRequestEdit_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
@@ -1031,7 +1108,7 @@ VALUES
     (460,'Material Request Form', 'frm60111PurchaseRequestEdit_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
 
 
-	INSERT INTO tbl901UserAccessMasterWeb 
+	INSERT INTO Aicon.tbl901UserAccessMasterWeb 
     (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
 VALUES 
     (461,'Quotation Form','frm60101QuotationEdit_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
@@ -1051,7 +1128,7 @@ VALUES
     (475,'Quotation Form', 'frm60101QuotationEdit_btnApprove','Approve', 1, 1,null, 'IMS',null,null,null,null),
     (476,'Quotation Form', 'frm60101QuotationEdit_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
 	
-	INSERT INTO tbl901UserAccessMasterWeb 
+	INSERT INTO Aicon.tbl901UserAccessMasterWeb 
     (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
 VALUES 
     (477,'Sales Order Edit Form','frm60103SalesOrderEdit_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
@@ -1072,7 +1149,7 @@ VALUES
     (492,'Sales Order Edit Form', 'frm60103SalesOrderEdit_btnSoreStock','Stock Availability', 1, 1,null, 'IMS',null,null,null,null),
     (493,'Sales Order Edit Form', 'frm60103SalesOrderEdit_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
 
-	INSERT INTO tbl901UserAccessMasterWeb 
+	INSERT INTO Aicon.tbl901UserAccessMasterWeb 
     (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
 VALUES 
     (494,'RFQ Master Form','frm60113RFQMaster_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
@@ -1091,7 +1168,7 @@ VALUES
     (507,'RFQ Master Form', 'frm60113RFQMaster_btnAttach','Create PO', 1, 1,null, 'IMS',null,null,null,null),
     (508,'RFQ Master Form', 'frm60113RFQMaster_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
 
-	INSERT INTO tbl901UserAccessMasterWeb 
+	INSERT INTO Aicon.tbl901UserAccessMasterWeb 
     (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
 VALUES 
     (509,'Material Receipt Edit Form','frm60109MaterialReceiptEdit_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
@@ -1111,243 +1188,54 @@ VALUES
     (523,'Material Receipt Edit Form', 'frm60109MaterialReceiptEdit_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
 
 
-    	--SET IDENTITY_INSERT tbl901UserAccessMasterWeb OFF; 
----------------------------Voucher ---------------------------  
 
-  
 
-alter table dbo.tbl201vouchermaster  
-
-  
-
-add Currencyid int   
-
-  
-
-update dbo.tbl201vouchermaster  
-
-  
-
-set currencyid=1  
-
-  
-
-   
-
-  
-
-  alter table dbo.tbl201vouchermaster  
-
-  
-
-add basecurrencyid int   
-
-  
-
-  
-
-  
-
-update dbo.tbl201Vouchermaster   
-
-  
-
-set basecurrencyid=1   
-
-  
-
-    
-
-  
-
-ALTER TABLE dbo.tbl201Vouchermaster  
-
-  
-
-ADD CurrencyRate DECIMAL(18, 2);  
-
-  
-
-   
-
-  
-
-  
-
-   
-
-  
-
-select * from dbo.tbl201Vouchermaster  
-
-  
-
-  
-
-  
-
-  
-
-  
 
 ---------------------------Cheque---------------------------  
-
-  
-
-alter table dbo.tbl20113ChequeMaster   
-
-  
-
+alter table Aicon.tbl20113ChequeMaster   
 add Currencyid int       
 
-  
-
-update dbo.tbl20113ChequeMaster    
-
-  
-
+update Aicon.tbl20113ChequeMaster    
 set currencyid=1   
-
   
-
-   
-
-  
-
-  
-
-  
-
-  
-
-  
-
-ALTER TABLE dbo.tbl20113ChequeMaster    
-
-  
-
+ALTER TABLE Aicon.tbl20113ChequeMaster    
 ADD CurrencyRate DECIMAL(18, 2);    
-
   
 
-   
-
-  
-
-alter table dbo.tbl20113ChequeMaster    
-
-  
-
+alter table Aicon.tbl20113ChequeMaster    
 add basecurrencyid int;   
 
-  
-
-  
-
-  
-
-update dbo.tbl20113ChequeMaster     
-
-  
-
+update Aicon.tbl20113ChequeMaster     
 set basecurrencyid=1,  currencyid=1  
-
   
 
-  select * from dbo.tblUserMaster 
-
-  
-
-  select * from dbo.tbl901CompanyDetails 
-
-  
-
-  
-
-  
-
-  CREATE TABLE dbo.language (  
-
-  
+  CREATE TABLE Aicon.language (  
 
     id INT IDENTITY(1,1) PRIMARY KEY,  
-
-  
-
     name NVARCHAR(100) COLLATE Arabic_BIN,  -- Arabic collation for Arabic text support  
-
-  
-
     value NVARCHAR(10),  
-
-  
-
     flag NVARCHAR(255)  
-
-  
-
 );  
 
   
 
 -- Alter the collation of the value column  
-
   
 
-ALTER TABLE dbo.language  
-
-  
-
+ALTER TABLE Aicon.language  
 ALTER COLUMN value NVARCHAR(20) COLLATE Arabic_BIN;  
-
-  
-
-   
-
-  
 
 -- Alter the collation of the flag column  
 
-  
-
-ALTER TABLE dbo.language  
-
-  
-
+ALTER TABLE Aicon.language  
 ALTER COLUMN flag NVARCHAR(510) COLLATE Arabic_BIN;  
 
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
 -- Insert data with Unicode string  
-
-  
-
-INSERT INTO dbo.language (name, value, flag)  
-
-  
+INSERT INTO Aicon.language (name, value, flag)  
 
 VALUES  
-
-  
-
     (N'English', 'en', 'https://flagcdn.com/w40/us.png'),  
-
-  
-
     (N'العربية', 'ar', 'https://flagcdn.com/w40/ae.png');  
-
   
   INSERT INTO Language (Name, Value, Flag)
 VALUES (N'普通话中国', N'zh', N'https://flagcdn.com/w40/cn.png');
@@ -1363,51 +1251,65 @@ VALUES (N'اُردُو', N'ur', N'https://flagcdn.com/w40/pk.png');
 
 
 
-ALTER TABLE dbo.tbl901AlertUsers 
-ADD Isseen BIT NOT NULL DEFAULT 0; 
-
-sp_help tbl901CompanyDetails
+sp_help Aicon.tbl901CompanyDetails
  
- select DefaultcompanyID,CompanyTextColor from tbl901CompanyDetails
+ select DefaultcompanyID,CompanyTextColor from Aicon.tbl901CompanyDetails
  
- update tbl901CompanyDetails 
- set CompanyTextColor='white'
-
-ALTER TABLE tbl901CompanyDetails 
-ADD 
-    DefaultcompanyID TINYINT NULL, 
-    CompanyTextColor NVARCHAR(20) NULL; 
+ update Aicon.tbl901CompanyDetails 
+ set CompanyTextColor='Black'
 
  
+	
+	ALTER VIEW [Aicon].[qry201MainVoucherEntriesWithMaster] 
 
-Alter PROCEDURE [dbo].[sp901_01UpdateLayout]   
- 
-(   
-  @LayoutXML NVARCHAR(MAX), 
-    @FormID VARCHAR(MAX), 
-    @UserID VARCHAR(50), 
-    @IsFromWeb BIT = 1 -- ✅ default TRUE 
- 
- 
-)   
- 
-AS   
- 
- 
-Update tbl90111LayoutMaster    
-Set LayoutXml = @LayoutXML    
-Where FormID = @FormID and UserID = @UserID   
- 
- 
---UPDATE tblStockMaster   
---SET OpeningBalance = @QtyReceived   
---Where StockNo = @StockNo   
- 
---qry651_01StockOpeningBalance 
+AS 
 
-  
+SELECT Aicon.tbl201VoucherMaster.VoucherNo, Aicon.tbl201VoucherMaster.VoucherDate, Aicon.tbl201VoucherMaster.VoucherRefNo, ISNULL(Aicon.tbl201VoucherMaster.VoucherNarration, N'') AS VoucherNarration,  
 
-  ALTER PROCEDURE [dbo].[StProAccountLedger]    
+                  Aicon.tbl201VoucherMaster.VoucherEnteredBy, Aicon.tbl201VoucherMaster.VoucherEnteredOn, Aicon.tbl201VoucherMaster.VoucherVerifiedBy, Aicon.tbl201VoucherMaster.VoucherVerifiedOn, Aicon.tbl201VoucherMaster.VoucherApprovedBy,  
+
+                  Aicon.tbl201VoucherMaster.VoucherApprovedOn, Aicon.qry201MainVoucherEntries.VoucherEntryNo, Aicon.qry201MainVoucherEntries.AccountHead, Aicon.qry201MainVoucherEntries.AccountHeadName, Aicon.qry201MainVoucherEntries.DrCr,  
+
+                  Aicon.qry201MainVoucherEntries.DrAmount, Aicon.qry201MainVoucherEntries.CrAmount, Aicon.qry201MainVoucherEntries.VoucherAmountFormatted, ISNULL(Aicon.qry201MainVoucherEntries.EntryNarration, N'') AS EntryNarration,  
+
+                  Aicon.tbl201AccountGroups.AccountGroup, Aicon.tbl201MasterGroup.MasterGroup, Aicon.tbl201VoucherMaster.IsApproved, Aicon.tbl201VoucherMaster.VoucherType, Aicon.qry201MainVoucherEntries.SysRemarks,  
+
+                  Aicon.tbl201MasterGroup.IsCalculateOpeningBalance, Aicon.qry201MainVoucherEntries.BankClearedOn, Aicon.tbl201AccountGroups.AccountGroupID, Aicon.tbl201MasterGroup.MasterGroupID, Aicon.tbl201MasterGroup.IsProfitLossAccount,  
+
+                  Aicon.tbl201MasterGroup.IsBalanceSheetAccount, Aicon.tbl201MasterGroup.MasterOrderNo, Aicon.tbl201MasterGroup.MasterGroupCategory, DATEADD(dd, DATEDIFF(dd, 0, Aicon.tbl201VoucherMaster.VoucherEffectiveDate), 0)  
+
+                  AS VoucherEffectiveDate, Aicon.tbl201VoucherMaster.BillNo, Aicon.tbl201VoucherMaster.BillDate, Aicon.tbl201VoucherMaster.BillPaidTo, Aicon.tbl201VoucherMaster.BillRemarks, Aicon.tbl201VoucherMaster.VoucherModifiedBy,  
+
+                  Aicon.tbl201VoucherMaster.VoucherModifiedOn, Aicon.tbl201ChartOfAccounts.AccountHeadArabic, Aicon.tbl201AccountGroups.AccountGroupAr, Aicon.tbl201MasterGroup.MasterGroupAr, Aicon.tbl201VoucherTypes.VoucherTypeAr,  
+
+                  Aicon.tbl201MasterGroup.ChartOfAccountsOrder, Aicon.tbl201AccountGroups.AccountGroupOrderNo, Aicon.tbl201MasterGroup.MasterGroupCategoryAr, Aicon.tbl201AccountGroups.IsAccumulatedDepAcc,  
+
+                  Aicon.tbl201ChartOfAccounts.AccountSubGroup, Aicon.tbl20123LedgerSubGroups.SubGroupName, Aicon.tbl20123LedgerSubGroups.SubGroupNameAr, Aicon.tbl201MasterGroup.MainGroup, Aicon.tbl201VoucherMaster.ReferenceNote,  
+
+                  Aicon.tbl201VoucherMaster.Currencyid, Aicon.tbl201VoucherMaster.CurrencyRate 
+
+FROM     Aicon.tbl201MasterGroup RIGHT OUTER JOIN 
+
+                  Aicon.tbl201AccountGroups ON Aicon.tbl201MasterGroup.MasterGroupID = Aicon.tbl201AccountGroups.AccountGroupUnder RIGHT OUTER JOIN 
+
+                  Aicon.qry201MainVoucherEntries LEFT OUTER JOIN 
+
+                  Aicon.tbl201ChartOfAccounts LEFT OUTER JOIN 
+
+                  Aicon.tbl20123LedgerSubGroups ON Aicon.tbl201ChartOfAccounts.AccountSubGroup = Aicon.tbl20123LedgerSubGroups.LedgerSubGroupCode ON Aicon.qry201MainVoucherEntries.AccountHead = Aicon.tbl201ChartOfAccounts.AccountID ON  
+
+                  Aicon.tbl201AccountGroups.AccountGroupID = Aicon.tbl201ChartOfAccounts.AccountGroupID RIGHT OUTER JOIN 
+
+                  Aicon.tbl201VoucherTypes RIGHT OUTER JOIN 
+
+                  Aicon.tbl201VoucherMaster ON Aicon.tbl201VoucherTypes.VoucherType = Aicon.tbl201VoucherMaster.VoucherType ON Aicon.qry201MainVoucherEntries.VoucherNo = Aicon.tbl201VoucherMaster.VoucherNo 
+
+GO 
+
+
+
+
+  ALTER PROCEDURE [Aicon].[StProAccountLedger]    
 
     @ParamAccountNo VARCHAR(50),    
 
@@ -1547,7 +1449,7 @@ BEGIN
 
 		 -- No CurrencyName for opening
 
-    FROM dbo.qry201MainVoucherEntriesWithMaster   
+    FROM Aicon.qry201MainVoucherEntriesWithMaster   
 
     WHERE AccountHead = @ParamAccountNo  
 
@@ -1657,15 +1559,15 @@ BEGIN
 
 		cex.CurrencySymbole AS TransactionCurrencySymbol
  
-    FROM dbo.qry201MainVoucherEntriesWithMaster q 
+    FROM Aicon.qry201MainVoucherEntriesWithMaster q 
 
-    INNER JOIN dbo.tbl201ChartOfAccounts ca ON ca.AccountID = q.AccountHead 
+    INNER JOIN Aicon.tbl201ChartOfAccounts ca ON ca.AccountID = q.AccountHead 
 
-    LEFT JOIN dbo.tbl201AccountGroups ag ON ca.AccountGroupID = ag.AccountGroupID 
+    LEFT JOIN Aicon.tbl201AccountGroups ag ON ca.AccountGroupID = ag.AccountGroupID 
 
-    LEFT JOIN dbo.tbl201MasterGroup mg ON ag.AccountGroupUnder = mg.MasterGroupID 
+    LEFT JOIN Aicon.tbl201MasterGroup mg ON ag.AccountGroupUnder = mg.MasterGroupID 
 
-    LEFT JOIN dbo.tbl20169CurrencyExchange cex ON q.CurrencyId = cex.CurrencyExchangeID
+    LEFT JOIN Aicon.tbl20169CurrencyExchange cex ON q.CurrencyId = cex.CurrencyExchangeID
 
     WHERE q.AccountHead = @ParamAccountNo  
 
@@ -1674,7 +1576,7 @@ BEGIN
 END
  
 
- ALTER PROCEDURE [dbo].[sp901_01UpdateLayout]      
+ ALTER PROCEDURE [Aicon].[sp901_01UpdateLayout]      
 (      
     @LayoutXML NVARCHAR(MAX),    
     @FormID VARCHAR(MAX),    
@@ -1686,827 +1588,192 @@ BEGIN
     SET NOCOUNT ON;  
     IF EXISTS (  
         SELECT 1   
-        FROM tbl90111LayoutMaster   
+        FROM Aicon.tbl90111LayoutMaster   
         WHERE FormID = @FormID AND UserID = @UserID  
     )  
     BEGIN  
         -- Update existing layout  
-        UPDATE tbl90111LayoutMaster  
+        UPDATE Aicon.tbl90111LayoutMaster  
         SET LayoutXml = @LayoutXML  
         WHERE FormID = @FormID AND UserID = @UserID;  
     END  
     ELSE  
     BEGIN  
         -- Insert new layout record  
-        INSERT INTO tbl90111LayoutMaster (FormID, UserID, LayoutXml)  
+        INSERT INTO Aicon.tbl90111LayoutMaster (FormID, UserID, LayoutXml)  
         VALUES (@FormID, @UserID, @LayoutXML);  
     END  
 END  
 
 
 
-	 update tbl20169CurrencyExchange
+	 update Aicon.tbl20169CurrencyExchange
 set  CurrencyImage= '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>'
      where CurrencyExchangeID=1
 
 
-     update tbl901CompanyDetails
+     update Aicon.tbl901CompanyDetails
 set  CurrencyImage= '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>'
      
 
  
 
-ALTER PROCEDURE [dbo].[StProAccountLedgerByVoucherType]     
-
-  
-
+ALTER PROCEDURE [Aicon].[StProAccountLedgerByVoucherType]     
     @VoucherType VARCHAR(50),     
-
-  
-
     @StartDate DATETIME,    
-
-  
-
     @EndDate DATETIME    
-
-  
-
 AS    
-
-  
 
 BEGIN    
 
-  
-
     SET NOCOUNT ON;    
-
-  
-
-   
-
-  
-
     -- Declare currency-related variables  
-
-  
 
     DECLARE     
 
-  
-
         @BaseCurrencyCode VARCHAR(10),    
-
-  
-
         @BaseCurrencyImage NVARCHAR(MAX),    
-
-  
-
         @BaseCurrencySymbole NVARCHAR(50),    
-
-  
-
         @BaseCurrencyNote NVARCHAR(50),    
-
-  
-
         @BaseCurrencyDisplayCode VARCHAR(50);    
-
-  
-
-   
-
-  
-
     -- Get Base Currency Code from Company Table    
-
-  
 
     SELECT TOP 1 @BaseCurrencyCode = CurrencyType     
 
-  
-
-    FROM tbl901CompanyDetails;    
-
-  
-
-   
-
-  
+    FROM Aicon.tbl901CompanyDetails;    
 
     -- Get Base Currency Details    
 
-  
-
     SELECT TOP 1    
 
-  
-
         @BaseCurrencyImage = CurrencyImage,    
-
-  
-
         @BaseCurrencySymbole = CurrencySymbole,    
-
-  
-
         @BaseCurrencyNote = CurrencyNote,    
-
-  
-
         @BaseCurrencyDisplayCode = CurrencyCode    
-
-  
-
-    FROM tbl20169CurrencyExchange     
-
-  
+    FROM Aicon.tbl20169CurrencyExchange     
 
     WHERE CurrencyMasterCode = @BaseCurrencyCode;    
 
-  
-
-   
-
-  
-
     IF @VoucherType IS NOT NULL    
 
-  
-
     BEGIN    
-
-  
-
         SELECT  
 
-  
-
             q.VoucherNo,  
-
-  
-
             q.VoucherDate,  
-
-  
-
             q.VoucherRefNo,  
-
-  
-
             q.VoucherNarration,  
-
-  
-
             q.VoucherEnteredBy,  
-
-  
-
             q.VoucherEnteredOn,  
-
-  
-
             q.VoucherVerifiedBy,  
-
-  
-
             q.VoucherVerifiedOn,  
-
-  
-
             q.VoucherApprovedBy,  
-
-  
-
             q.VoucherApprovedOn,  
-
-  
-
             q.VoucherEntryNo,  
-
-  
-
             q.AccountHead,  
-
-  
-
             q.AccountHeadName,  
-
-  
-
             q.DrCr,  
-
-  
-
             q.DrAmount,  
-
-  
-
             q.CrAmount,  
-
-  
-
             q.VoucherAmountFormatted,  
-
-  
-
             q.EntryNarration,  
-
-  
-
             ag.AccountGroup,  
-
-  
-
             mg.MasterGroup,  
-
-  
-
             q.VoucherType,  
-
-  
-
             q.SysRemarks,  
-
-  
-
             q.VoucherEffectiveDate,  
-
-  
-
             q.SubGroupName,  
-
-  
-
             q.VoucherModifiedBy,  
-
-  
-
             q.VoucherModifiedOn,  
-
-  
-
             cex.CurrencyName AS TransactionCurrencyName, 
-
             cex.CurrencySymbole AS TransactionCurrencySymbol, 
-
-  
-
             -- Injected currency conversion fields  
-
-  
-
             q.VoucherAmountFormatted * ISNULL(q.CurrencyRate, 1) AS ConvertedAmount,  
-
-  
-
             q.DrAmount * ISNULL(q.CurrencyRate, 1) AS ConvertedDrAmount,  
-
-  
-
             q.CrAmount * ISNULL(q.CurrencyRate, 1) AS ConvertedCrAmount,  
-
-  
-
             q.CurrencyRate AS ExchangeRate,  
-
-  
-
             @BaseCurrencyCode AS CurrencyType,  
-
-  
-
             @BaseCurrencyImage AS CurrencyImage,  
-
-  
-
             @BaseCurrencySymbole AS CurrencySymbole,  
-
-  
-
             @BaseCurrencyNote AS CurrencyNote,  
-
-  
-
             @BaseCurrencyDisplayCode AS CurrencyCode  
-
   
 
-             
-
-  
-
-        FROM dbo.tbl201MasterGroup mg  
-
-  
-
-        RIGHT OUTER JOIN dbo.tbl201AccountGroups ag ON mg.MasterGroupID = ag.AccountGroupUnder  
-
-  
-
-        RIGHT OUTER JOIN dbo.tbl201ChartOfAccounts ca ON ag.AccountGroupID = ca.AccountGroupID  
-
-  
-
-        RIGHT OUTER JOIN dbo.qry201MainVoucherEntriesWithMaster q ON ca.AccountID = q.AccountHead  
-
-LEFT JOIN dbo.tbl20169CurrencyExchange cex ON cex.CurrencyExchangeId = q.Currencyid 
-
-  
-
+        FROM Aicon.tbl201MasterGroup mg  
+        RIGHT OUTER JOIN Aicon.tbl201AccountGroups ag ON mg.MasterGroupID = ag.AccountGroupUnder  
+        RIGHT OUTER JOIN Aicon.tbl201ChartOfAccounts ca ON ag.AccountGroupID = ca.AccountGroupID  
+        RIGHT OUTER JOIN Aicon.qry201MainVoucherEntriesWithMaster q ON ca.AccountID = q.AccountHead  
+LEFT JOIN Aicon.tbl20169CurrencyExchange cex ON cex.CurrencyExchangeId = q.Currencyid 
   
 
         WHERE   
-
-  
-
             q.VoucherType = @VoucherType  
-
-  
-
             AND q.VoucherDate BETWEEN @StartDate AND DATEADD(SECOND, 86399, @EndDate)  
-
-  
-
     END    
-
-  
-
     ELSE    
-
-  
-
     BEGIN    
-
-  
-
         SELECT  
-
-  
-
             q.VoucherNo,  
-
-  
-
             q.VoucherDate,  
-
-  
-
             q.VoucherRefNo,  
-
-  
-
             q.VoucherNarration,  
-
-  
-
             q.VoucherEnteredBy,  
-
-  
-
             q.VoucherEnteredOn,  
-
-  
-
             q.VoucherVerifiedBy,  
-
-  
-
             q.VoucherVerifiedOn,  
-
-  
-
             q.VoucherApprovedBy,  
-
-  
-
             q.VoucherApprovedOn,  
-
-  
-
             q.VoucherEntryNo,  
-
-  
-
             q.AccountHead,  
-
-  
-
             q.AccountHeadName,  
-
-  
-
             q.DrCr,  
-
-  
-
             q.DrAmount,  
-
-  
-
             q.CrAmount,  
-
-  
-
             q.VoucherAmountFormatted,  
-
-  
-
             q.EntryNarration,  
-
-  
-
             ag.AccountGroup,  
-
-  
-
             mg.MasterGroup,  
-
-  
-
             q.VoucherType,  
-
-  
-
             q.SysRemarks,  
-
-  
-
             q.VoucherEffectiveDate,  
-
-  
-
             q.SubGroupName,  
-
-  
-
             q.VoucherModifiedBy,  
-
-  
-
             q.VoucherModifiedOn,  
-
-  
-
              cex.CurrencyName AS TransactionCurrencyName, 
-
             cex.CurrencySymbole AS TransactionCurrencySymbol, 
-
-  
-
             -- Injected currency conversion fields  
-
-  
-
             q.VoucherAmountFormatted * ISNULL(q.CurrencyRate, 1) AS ConvertedAmount,  
-
-  
-
             q.DrAmount * ISNULL(q.CurrencyRate, 1) AS ConvertedDrAmount,  
-
-  
-
             q.CrAmount * ISNULL(q.CurrencyRate, 1) AS ConvertedCrAmount,  
-
-  
-
             q.CurrencyRate AS ExchangeRate,  
-
-  
-
             @BaseCurrencyCode AS CurrencyType,  
-
-  
-
             @BaseCurrencyImage AS CurrencyImage,  
-
-  
-
             @BaseCurrencySymbole AS CurrencySymbole,  
-
-  
-
             @BaseCurrencyNote AS CurrencyNote,  
-
-  
-
             @BaseCurrencyDisplayCode AS CurrencyCode  
 
-  
-
-   
-
-  
-
-        FROM dbo.tbl201MasterGroup mg  
-
-  
-
-        RIGHT OUTER JOIN dbo.tbl201AccountGroups ag ON mg.MasterGroupID = ag.AccountGroupUnder  
-
-  
-
-        RIGHT OUTER JOIN dbo.tbl201ChartOfAccounts ca ON ag.AccountGroupID = ca.AccountGroupID  
-
-  
-
-        RIGHT OUTER JOIN dbo.qry201MainVoucherEntriesWithMaster q ON ca.AccountID = q.AccountHead  
-
-LEFT JOIN dbo.tbl20169CurrencyExchange cex ON cex.CurrencyExchangeId = q.Currencyid 
-
-  
+        FROM Aicon.tbl201MasterGroup mg  
+        RIGHT OUTER JOIN Aicon.tbl201AccountGroups ag ON mg.MasterGroupID = ag.AccountGroupUnder  
+        RIGHT OUTER JOIN Aicon.tbl201ChartOfAccounts ca ON ag.AccountGroupID = ca.AccountGroupID  
+        RIGHT OUTER JOIN Aicon.qry201MainVoucherEntriesWithMaster q ON ca.AccountID = q.AccountHead  
+LEFT JOIN Aicon.tbl20169CurrencyExchange cex ON cex.CurrencyExchangeId = q.Currencyid 
 
         WHERE   
-
-  
-
             q.VoucherDate BETWEEN @StartDate AND DATEADD(SECOND, 86399, @EndDate)  
-
-  
-
     END    
-
-  
-
 END  
 
 
------------- Azure Attachment------------------ 
 
  
-
-IF COL_LENGTH('dbo.tbl700_03ProjectDocuments', 'AzurePath') IS NULL 
-
-BEGIN 
-
-    ALTER TABLE dbo.tbl700_03ProjectDocuments 
-
-        ADD AzurePath VARCHAR(MAX) NULL; 
-
-    PRINT 'Added column: AzurePath'; 
-
-END 
-
-ELSE 
-
-BEGIN 
-
-    PRINT 'Column already exists: AzurePath'; 
-
-END 
-
-GO 
-
- 
-
- 
-
----- Add Alert Notify Is Seen column to tbl901AlertUsers if it does not exist ----- 
-
-IF COL_LENGTH('dbo.tbl901AlertUsers', 'IsSeen') IS NULL 
-
-BEGIN 
-
-    ALTER TABLE dbo.tbl901AlertUsers 
-
-        ADD [IsSeen] BIT NOT NULL DEFAULT 0; 
-
-    PRINT 'Added column: IsSeen'; 
-
-END 
-
-ELSE 
-
-BEGIN 
-
-    PRINT 'Column already exists: IsSeen'; 
-
-END 
-
-GO 
-
- 
-
----------- Alter PO ------------ 
-
- 
-
-IF EXISTS ( 
-
-    SELECT 1 
-
-    FROM INFORMATION_SCHEMA.COLUMNS 
-
-    WHERE TABLE_NAME = 'Tbl20164GoodsAndServicesMaster' 
-
-      AND COLUMN_NAME = 'StoreID' 
-
-) 
-
-BEGIN 
-
-    -- Modify column type 
-
-    ALTER TABLE dbo.Tbl20164GoodsAndServicesMaster 
-
-    ALTER COLUMN StoreID VARCHAR(30); 
-
-     
-
-    PRINT 'Column StoreID altered to VARCHAR(30)'; 
-
-END 
-
-ELSE 
-
-BEGIN 
-
-    PRINT 'Column StoreID does not exist in Tbl20164GoodsAndServicesMaster'; 
-
-END 
-
-GO 
-
-
---d Currency Image column if it does not exist ---- 
-
-IF COL_LENGTH('dbo.Tbl20169CurrencyExchange', 'CurrencyImage') IS NULL 
-
-BEGIN 
-
-    ALTER TABLE dbo.Tbl20169CurrencyExchange 
-
-        ADD [CurrencyImage] NVARCHAR(MAX) NULL; 
-
-    PRINT 'Added column: CurrencyImage'; 
-
-END 
-
-ELSE 
-
-BEGIN 
-
-    PRINT 'Column already exists: CurrencyImage'; 
-
-END 
-
-GO 
-
   
-
------ Add Currency Symbole column if it does not exist ----- 
-
-IF COL_LENGTH('dbo.Tbl20169CurrencyExchange', 'CurrencySymbole') IS NULL 
-
-BEGIN 
-
-    ALTER TABLE dbo.Tbl20169CurrencyExchange 
-
-        ADD [CurrencySymbole] VARCHAR(30) NULL; 
-
-    PRINT 'Added column: CurrencySymbole'; 
-
-END 
-
-ELSE 
-
-BEGIN 
-
-    PRINT 'Column already exists: CurrencySymbole'; 
-
-END 
-
-GO 
-
-  
-
-  
-
----- Add Email Templates table only if it doesn't exist---- 
-
-IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES  
-
-               WHERE TABLE_SCHEMA = 'dbo'  
-
-               AND TABLE_NAME = 'EmailTemplates') 
-
-BEGIN 
-
-    CREATE TABLE dbo.EmailTemplates ( 
-
-        Id INT PRIMARY KEY IDENTITY,  
-
-        TemplateName NVARCHAR(200),  
-
-        Category NVARCHAR(100),  
-
-        Subject NVARCHAR(500),  
-
-        Body NVARCHAR(MAX),  
-
-        Status NVARCHAR(20) -- Active or Inactive 
-
-    ); 
-
-    PRINT 'Created table: EmailTemplates'; 
-
-END 
-
-ELSE 
-
-BEGIN 
-
-    PRINT 'Table already exists: EmailTemplates'; 
-
-END 
-
-GO 
-
- 
-
--------- Alter 901Company Details -------- 
-
- 
-
-ALTER TABLE Tbl201CompanyDetails 
-
-  
-
-ADD   
-
-  
-
-    [CurrencyImage] NVARCHAR(MAX) NULL,  
-
-  
-
-    [CurrencySymbol] VARCHAR(30) NULL;  
-	
-	
-	
-	
-	
-	ALTER VIEW [dbo].[qry201MainVoucherEntriesWithMaster] 
-
-AS 
-
-SELECT dbo.tbl201VoucherMaster.VoucherNo, dbo.tbl201VoucherMaster.VoucherDate, dbo.tbl201VoucherMaster.VoucherRefNo, ISNULL(dbo.tbl201VoucherMaster.VoucherNarration, N'') AS VoucherNarration,  
-
-                  dbo.tbl201VoucherMaster.VoucherEnteredBy, dbo.tbl201VoucherMaster.VoucherEnteredOn, dbo.tbl201VoucherMaster.VoucherVerifiedBy, dbo.tbl201VoucherMaster.VoucherVerifiedOn, dbo.tbl201VoucherMaster.VoucherApprovedBy,  
-
-                  dbo.tbl201VoucherMaster.VoucherApprovedOn, dbo.qry201MainVoucherEntries.VoucherEntryNo, dbo.qry201MainVoucherEntries.AccountHead, dbo.qry201MainVoucherEntries.AccountHeadName, dbo.qry201MainVoucherEntries.DrCr,  
-
-                  dbo.qry201MainVoucherEntries.DrAmount, dbo.qry201MainVoucherEntries.CrAmount, dbo.qry201MainVoucherEntries.VoucherAmountFormatted, ISNULL(dbo.qry201MainVoucherEntries.EntryNarration, N'') AS EntryNarration,  
-
-                  dbo.tbl201AccountGroups.AccountGroup, dbo.tbl201MasterGroup.MasterGroup, dbo.tbl201VoucherMaster.IsApproved, dbo.tbl201VoucherMaster.VoucherType, dbo.qry201MainVoucherEntries.SysRemarks,  
-
-                  dbo.tbl201MasterGroup.IsCalculateOpeningBalance, dbo.qry201MainVoucherEntries.BankClearedOn, dbo.tbl201AccountGroups.AccountGroupID, dbo.tbl201MasterGroup.MasterGroupID, dbo.tbl201MasterGroup.IsProfitLossAccount,  
-
-                  dbo.tbl201MasterGroup.IsBalanceSheetAccount, dbo.tbl201MasterGroup.MasterOrderNo, dbo.tbl201MasterGroup.MasterGroupCategory, DATEADD(dd, DATEDIFF(dd, 0, dbo.tbl201VoucherMaster.VoucherEffectiveDate), 0)  
-
-                  AS VoucherEffectiveDate, dbo.tbl201VoucherMaster.BillNo, dbo.tbl201VoucherMaster.BillDate, dbo.tbl201VoucherMaster.BillPaidTo, dbo.tbl201VoucherMaster.BillRemarks, dbo.tbl201VoucherMaster.VoucherModifiedBy,  
-
-                  dbo.tbl201VoucherMaster.VoucherModifiedOn, dbo.tbl201ChartOfAccounts.AccountHeadArabic, dbo.tbl201AccountGroups.AccountGroupAr, dbo.tbl201MasterGroup.MasterGroupAr, dbo.tbl201VoucherTypes.VoucherTypeAr,  
-
-                  dbo.tbl201MasterGroup.ChartOfAccountsOrder, dbo.tbl201AccountGroups.AccountGroupOrderNo, dbo.tbl201MasterGroup.MasterGroupCategoryAr, dbo.tbl201AccountGroups.IsAccumulatedDepAcc,  
-
-                  dbo.tbl201ChartOfAccounts.AccountSubGroup, dbo.tbl20123LedgerSubGroups.SubGroupName, dbo.tbl20123LedgerSubGroups.SubGroupNameAr, dbo.tbl201MasterGroup.MainGroup, dbo.tbl201VoucherMaster.ReferenceNote,  
-
-                  dbo.tbl201VoucherMaster.Currencyid, dbo.tbl201VoucherMaster.CurrencyRate 
-
-FROM     dbo.tbl201MasterGroup RIGHT OUTER JOIN 
-
-                  dbo.tbl201AccountGroups ON dbo.tbl201MasterGroup.MasterGroupID = dbo.tbl201AccountGroups.AccountGroupUnder RIGHT OUTER JOIN 
-
-                  dbo.qry201MainVoucherEntries LEFT OUTER JOIN 
-
-                  dbo.tbl201ChartOfAccounts LEFT OUTER JOIN 
-
-                  dbo.tbl20123LedgerSubGroups ON dbo.tbl201ChartOfAccounts.AccountSubGroup = dbo.tbl20123LedgerSubGroups.LedgerSubGroupCode ON dbo.qry201MainVoucherEntries.AccountHead = dbo.tbl201ChartOfAccounts.AccountID ON  
-
-                  dbo.tbl201AccountGroups.AccountGroupID = dbo.tbl201ChartOfAccounts.AccountGroupID RIGHT OUTER JOIN 
-
-                  dbo.tbl201VoucherTypes RIGHT OUTER JOIN 
-
-                  dbo.tbl201VoucherMaster ON dbo.tbl201VoucherTypes.VoucherType = dbo.tbl201VoucherMaster.VoucherType ON dbo.qry201MainVoucherEntries.VoucherNo = dbo.tbl201VoucherMaster.VoucherNo 
-
-GO 
-
- select * from tblUserMaster
-
- 
- 
-
- 
 
  sp_helptext sp_01totClientOutstanding
 
 
  -- Step 1: Create the table 
 
-CREATE TABLE tbl01supplieroutstanding ( 
+CREATE TABLE Aicon.tbl01supplieroutstanding ( 
 
     AccountHead NVARCHAR(100), 
 
@@ -2518,23 +1785,23 @@ CREATE TABLE tbl01supplieroutstanding (
 
 -- Procedure to calculate total Supplier Outstanding 
 
-CREATE PROCEDURE sp_01totSupOutstanding 
+CREATE PROCEDURE Aicon.sp_01totSupOutstanding 
 
 AS 
 
 BEGIN 
 
-    DELETE FROM tbl01supplieroutstanding 
+    DELETE FROM Aicon.tbl01supplieroutstanding 
 
     WHERE AccountHead = 'supplier outstanding'; 
 
   
 
-    INSERT INTO tbl01supplieroutstanding (AccountHead, Balance) 
+    INSERT INTO Aicon.tbl01supplieroutstanding (AccountHead, Balance) 
 
     SELECT 'supplier outstanding', SUM([Balance]) 
 
-    FROM qry20115BillsPayableOutStanding 
+    FROM Aicon.qry20115BillsPayableOutStanding 
 
     WHERE Balance > 0; 
 
@@ -2544,23 +1811,23 @@ END;
 
 -- Procedure to calculate total Client Outstanding 
 
-CREATE PROCEDURE sp_01totClientOutstanding 
+CREATE PROCEDURE Aicon.sp_01totClientOutstanding 
 
 AS 
 
 BEGIN 
 
-    DELETE FROM tbl01supplieroutstanding 
+    DELETE FROM Aicon.tbl01supplieroutstanding 
 
     WHERE AccountHead = 'Client outstanding'; 
 
   
 
-    INSERT INTO tbl01supplieroutstanding (AccountHead, Balance) 
+    INSERT INTO Aicon.tbl01supplieroutstanding (AccountHead, Balance) 
 
     SELECT 'Client outstanding', SUM(Balance) 
 
-    FROM Qry20115BillsOutStanding 
+    FROM Aicon.Qry20115BillsOutStanding 
 
     WHERE Balance > 0; 
 
@@ -2570,23 +1837,23 @@ END;
 
 -- Procedure to calculate total Cash Balance 
 
-CREATE PROCEDURE sp_01totcashbalance 
+CREATE PROCEDURE Aicon.sp_01totcashbalance 
 
 AS 
 
 BEGIN 
 
-    DELETE FROM tbl01supplieroutstanding 
+    DELETE FROM Aicon.tbl01supplieroutstanding 
 
     WHERE AccountHead = 'Cash Balance'; 
 
   
 
-    INSERT INTO tbl01supplieroutstanding (AccountHead, Balance) 
+    INSERT INTO Aicon.tbl01supplieroutstanding (AccountHead, Balance) 
 
     SELECT 'Cash balance', SUM(ISNULL(DrAmount, 0) - ISNULL(CrAmount, 0)) AS CashBalance 
 
-    FROM Qry201MainVoucherEntriesWithMaster 
+    FROM Aicon.Qry201MainVoucherEntriesWithMaster 
 
     WHERE AccountGroup IN ('BANK ACCOUNTS', 'CASH-IN-HAND'); 
 
@@ -2608,12 +1875,12 @@ EXEC sp_01totcashbalance;
 
   
 
-  ALTER TABLE Tbl201VoucherEntry ADD [Type] VARCHAR(30);
+  select * from Aicon.tbl901CompanyDetails
 
 
   --for IMS
 
-  UPDATE tbl901CompanyDetails
+  UPDATE Aicon.tbl901CompanyDetails
 SET
     CompanyNameShort = 'DhaferContracting',
     RequestAbbrv = 'AI-ENQ-',
@@ -2621,16 +1888,23 @@ SET
     IsResetInvoiceInYear = 1,
     QuotationAbbrv = 'AIC-QUO-',
     Rfqabbrv = 'AICON-RFQ-',PurchaseOrderAbbrv='AI-PO',SalesOrderAbbrv='AICON-SO-'
-WHERE CompanyID =2 
+WHERE CompanyID =1
 
-UPDATE tbl901CompanyDetails02
+UPDATE Aicon.tbl901CompanyDetails02
 
 SET NoOfDigitsToInventoryQuotation = 4
 
-WHERE CompanyID=2
- 
+WHERE CompanyID=1
 
-  ALTER TABLE tbl901CompanyDetails02
-  ALTER COLUMN IsEnableQuotationWorkflow BIT NOT NULL DEFAULT 1,
-  ALTER COLUMN IsEnableRFQWorkflow       BIT NOT NULL DEFAULT 1,
-  ALTER COLUMN IsEnableReceiptWorkflow   BIT NOT NULL DEFAULT 1;
+ALTER TABLE Aicon.tbl901CompanyDetails02
+ADD IsEnableQuotationWorkflow BIT CONSTRAINT DF_tbl901CompanyDetails02_IsEnableQuotationWorkflow DEFAULT 1;
+
+ALTER TABLE Aicon.tbl901CompanyDetails02
+ADD IsEnableRFQWorkflow BIT CONSTRAINT DF_tbl901CompanyDetails02_IsEnableRFQWorkflow DEFAULT 1;
+
+ALTER TABLE Aicon.tbl901CompanyDetails02
+ADD IsEnableReceiptWorkflow BIT CONSTRAINT DF_tbl901CompanyDetails02_IsEnableReceiptWorkflow DEFAULT 1;
+
+ALTER TABLE Aicon.tbl901CompanyDetails02
+ADD CONSTRAINT DF_tbl901CompanyDetails02_IsAllowUnlockPO DEFAULT 1 FOR IsAllowUnlockPO;
+

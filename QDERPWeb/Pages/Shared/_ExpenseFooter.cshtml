@@ -12,11 +12,10 @@
 
     .horizontal-container {
         display: flex;
-        flex-wrap: inherit; /* Allow buttons to wrap */
-        gap: 12px;
+        gap: 10px;
         justify-content: flex-start;
         align-items: center;
-        padding: 10px 15px;
+        margin: 0px 20px;
     }
 
     .dx-dropdownbutton-popup-wrapper {
@@ -138,43 +137,31 @@
     }
 </style>
 <div class="dx-fieldset horizontal-container mt-2">
-    @(Html.DevExtreme().DropDownButton()
-        .ID("expenseButtonLayout1")
-        .Icon("smalliconslayout")
-        .Width(120)
-        .Text(new JS("formatMessage('Layout')"))
-        .ElementAttr(new { @class = "dx-button-custom btn-attach" })
-        .DropDownOptions(options => options.Width(230))
-        .Items(items =>
-        {
-            items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu");
-            items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
-            items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
-            items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
-            items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
-        })
-        .ShowArrowIcon(false)
+
+    @(Html.DevExtreme().Button()
+        .ID("btnExpenceBack")
+        .Text(new JS("formatMessage('Back')"))
+        .Icon("arrowleft")
+        .Width(180)
+        .OnClick("onBackButtonClick")
+        .ElementAttr(new { @class = "dx-button-custom btn-back" })
         )
-
     @(Html.DevExtreme().Button()
-        .ID("btnSave")
-        .Text(new JS("formatMessage('Save')"))
-        .Type(ButtonType.Normal)
-        .StylingMode(ButtonStylingMode.Outlined)
-        .Icon("save")
-        .ElementAttr(new { @class = "dx-button-custom btn-save" }))
-
+        .ID("btnDelete")
+        .Text(new JS("formatMessage('Delete')"))
+        .Width(180)
+        .Icon("close")
+        .ElementAttr(new { @class = "dx-button-custom btn-delete" }))
     @(Html.DevExtreme().Button()
-        .ID("btnSaveAndClose")
-        .Text(new JS("formatMessage('Save and Close')"))
-        .Type(ButtonType.Normal)
-        .StylingMode(ButtonStylingMode.Outlined)
-        .Icon("save")
-        .ElementAttr(new { @class = "dx-button-custom btn-save-close" }))
-
+        .ID("btnAttach")
+        .Text(new JS("formatMessage('Attach')"))
+        .Width(180)
+        .Icon("link")
+        .OnClick("onAttachmentButtonClick")
+        .ElementAttr(new { @class = "dx-button-custom btn-attach" }))
     @(Html.DevExtreme().DropDownButton()
-        .ID("btnPrint")
-        .Text("Preview")
+        .ID("btnPrintnew")
+        .Text(new JS("formatMessage('Preview')"))
         .Icon("fullscreen")
         .Hint("Click to Preview")
         .ElementAttr(new { @class = "dx-button-custom btn-preview" })
@@ -192,32 +179,28 @@
         )
 
     @(Html.DevExtreme().Button()
-        .ID("btnDelete")
-        .Text(new JS("formatMessage('Delete')"))
-        .Icon("close")
-        .ElementAttr(new { @class = "dx-button-custom btn-delete" }))
+        .ID("btnSave")
+        .Text(new JS("formatMessage('Save')"))
+        .Type(ButtonType.Normal)
+        .StylingMode(ButtonStylingMode.Outlined)
+        .Width(180)
+        .Icon("save")
+        .ElementAttr(new { @class = "dx-button-custom btn-save" }))
 
     @(Html.DevExtreme().Button()
-        .ID("btnExpenceBack")
-        .Text(new JS("formatMessage('Back')"))
-        .Icon("arrowleft")
-        .OnClick("onBackButtonClick")
-        .ElementAttr(new { @class = "dx-button-custom btn-back" })
-        )
-
-    @(Html.DevExtreme().Button()
-        .ID("btnSubmit")
-        .Text(new JS("formatMessage('Submit')"))
+        .ID("btnSaveAndClose")
+        .Text(new JS("formatMessage('Save and Close')"))
         .Type(ButtonType.Normal)
         .StylingMode(ButtonStylingMode.Outlined)
         .Icon("save")
-        .ElementAttr(new { @class = "bold-button button-submit" })
-        )
+        .Width(180)
+        .ElementAttr(new { @class = "dx-button-custom btn-save-close" }))
 
     @(Html.DevExtreme().Button()
         .ID("btnExpenseVerify")
         .Text(new JS("formatMessage('Verify')"))
         .Icon("check")
+        .Width(180)
         .OnClick("onVerifyButtonClick")
         .ElementAttr(new { @class = "dx-button-custom btn-verify" }))
 
@@ -225,20 +208,46 @@
         .ID("btnExpenseApprove")
         .Text(new JS("formatMessage('Approve')"))
         .Icon("exportselected")
+        .Width(180)
         .OnClick("onApproveButtonClick")
         .ElementAttr(new { @class = "dx-button-custom btn-approve" }))
 
+    @*     @(Html.DevExtreme().DropDownButton()
+        .ID("expenseButtonLayout1")
+        .Icon("smalliconslayout")
+        .Width(120)
+        .Text(new JS("formatMessage('Layout')"))
+        .ElementAttr(new { @class = "dx-button-custom btn-attach" })
+        .DropDownOptions(options => options.Width(230))
+        .Items(items =>
+        {
+            items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu");
+            items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
+            items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
+            items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
+            items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
+        })
+        .ShowArrowIcon(false)
+        )
+ *@
     @(Html.DevExtreme().Button()
-        .ID("btnAttach")
-        .Text(new JS("formatMessage('Attach')"))
-        .Icon("link")
-        .OnClick("onAttachmentButtonClick")
-        .ElementAttr(new { @class = "dx-button-custom btn-attach" }))
+        .ID("btnSubmit")
+        .Width(180)
+        .Text(new JS("formatMessage('Submit')"))
+        .Type(ButtonType.Normal)
+        .StylingMode(ButtonStylingMode.Outlined)
+        .Icon("save")
+        .ElementAttr(new { @class = "bold-button button-submit" })
+        )
+
+
+
+
 </div>
 
 
 <script type="text/javascript">
-    
+
     $(document).ready(function () {
         console.log('Start permission handling');
         // Form ID
@@ -258,7 +267,7 @@
                         "expenseButtonLayout1": { "Visible": false, "Enabled": false },
                         "btnSave": { "Visible": false, "Enabled": false },
                         "btnSaveAndClose": { "Visible": false, "Enabled": false },
-                        "btnPrint": { "Visible": false, "Enabled": false },
+                        "btnPrintnew": { "Visible": false, "Enabled": false },
                         "btnDelete": { "Visible": false, "Enabled": false },
                         "btnExpenceBack": { "Visible": false, "Enabled": false },
                         "btnSubmit": { "Visible": false, "Enabled": false },
@@ -415,7 +424,7 @@
             }
         });
     }
-    
+
 
     function loadGridState() {
         var form = $('#formId').val();
@@ -450,7 +459,7 @@
         });
     }
     function saveLayoutClick(e) {
-        
+
         var grid = $("#dataGrid").dxDataGrid("instance");
         var layout = grid.state();
         const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
@@ -473,7 +482,7 @@
         //DevExpress.ui.notify("Layout", "success", 600);
     }
     function openLayoutClick(e) {
-        
+
         // Create an input element dynamically
         const input = document.createElement("input");
         input.type = "file";
@@ -502,8 +511,8 @@
         // Trigger the file input click event
         input.click();
     }
-    function onBackButtonClick() { 
-    
+    function onBackButtonClick() {
+
         history.back();
     }
     function handlePreviewClick(e) {
@@ -535,7 +544,7 @@
         }
 
 
-        
+
         // Add more conditions here if you plan to support additional formats
         else {
             reportName = "";
@@ -561,7 +570,7 @@
      const grid = $("#dataGrid").dxDataGrid("instance");
     const data = grid.getDataSource().items();
 
-        
+
     // Step 1: Check if ClaimRefNo exists in the DB
     $.ajax({
         url: '/api/ExpenseClaim/CheckClaimRefNo',
@@ -798,6 +807,3 @@
         openModal(url, title);
     }
 </script>
-
-
-

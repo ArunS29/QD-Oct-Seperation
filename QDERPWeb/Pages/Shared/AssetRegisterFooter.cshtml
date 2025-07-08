@@ -77,72 +77,13 @@
         padding: 0px, 15px,10px 15px;
         cursor: pointer;
     }
-
-    .ledgerResult {
-        margin: 15px !important;
-    }
-
-    #rowHeightMenu {
-        position: absolute;
-        top: 100px; /* Adjust positioning as per your design */
-        left: 300px; /* Adjust positioning as per your design */
-        display: none; /* Keep it hidden until needed */
-    }
-
-   
-    .btn-container {
-        display: inline-block;
-        position: relative;
-        overflow: hidden;
-    }
-
-    /* Initially hide the button text and set a fixed small width */
-    .btn-container .dx-button {
-        width: 40px !important; /* Small width for icons */
-        transition: width 0.3s ease-in-out;
-    }
-
-    /* Show full text when hovered */
-    .btn-container:hover .dx-button {
-        width: 200px !important; /* Expand to fit text */
-    }
-
-    /* Initially hide text */
-    .btn-container .dx-button .dx-button-text {
-        display: none;
-    }
-
-    /* Show text on hover */
-    .btn-container:hover .dx-button .dx-button-text {
-        display: inline-block;
-    }
-
-    /* Ensure dropdown button behaves similarly */
-    .btn-container .dx-dropdownbutton {
-        width: 55px !important;
-        transition: width 0.3s ease-in-out;
-    }
-
-    .btn-container:hover .dx-dropdownbutton {
-        width: 180px !important; /* Adjust as needed */
-    }
-
-    .btn-container .dx-dropdownbutton .dx-button-text {
-        display: none;
-    }
-
-    .btn-container:hover .dx-dropdownbutton .dx-button-text {
-        display: inline-block;
-    }
-
-    
 </style>
 <div class="dx-fieldset horizontal-container">
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
             .ID("ddButtonLayout")
             .Icon("smalliconslayout")
-            .Width(40)
+            .Width("100%")
             .Text(new JS("formatMessage('Layout')"))
             .DropDownOptions(options => options.Width(230))
             .Items(items =>
@@ -163,7 +104,7 @@
                         .ID("btnPrint")
                         .Icon("print")
                         .Text(new JS("formatMessage('Print')"))
-                        .Width(40)
+                        .Width("100%")
             .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
         )
     </div>
@@ -173,7 +114,7 @@
             .ID("btnToggleSearch")
             .Icon("search")
             .Text(new JS("formatMessage('Search')"))
-            .Width(40)
+            .Width("100%")
             .OnClick("toggleFilterRow")
             )
     </div>
@@ -182,7 +123,7 @@
         @(Html.DevExtreme().Button()
             .ID("btntoggleGroupPanel")
             .Icon("hierarchy")
-            .Width(40)
+            .Width("100%")
             .Text(new JS("formatMessage('Group')"))
             .OnClick("toggleGroupPanel")
             )
@@ -200,7 +141,7 @@
         @(Html.DevExtreme().Button()
             .ID("btnColumnChooser")
             .Icon("columnchooser")
-            .Width(40)
+            .Width("100%")
             .Text(new JS("formatMessage('Column Chooser')"))
             .OnClick("showColumnChooser")
             )
@@ -210,7 +151,7 @@
         @(Html.DevExtreme().DropDownButton()
             .ID("ddReports")
             .Icon("doc")
-            .Width(40)
+            .Width("100%")
             .Text(new JS("formatMessage('Report')"))
             .DropDownOptions(options => options.Width(485))
             .Items(items =>
@@ -232,7 +173,7 @@
         @(Html.DevExtreme().Button()
             .ID("btnShowDayBooks")
             .Icon("bookmark")
-            .Width(40)
+            .Width("100%")
             .Text(new JS("formatMessage('Show Day Books')"))
             .OnClick("loadAllVouchers")
             )
@@ -242,7 +183,7 @@
         @(Html.DevExtreme().DropDownButton()
             .ID("InternalAudit")
             .Icon("doc")
-            .Width(45)
+            .Width("100%")
             .Text(new JS("formatMessage('Internal Audit')"))
             .DropDownOptions(options => options.Width(300))
             .Items(items =>

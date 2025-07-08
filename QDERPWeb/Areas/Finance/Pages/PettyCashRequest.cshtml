@@ -28,12 +28,20 @@
     }
 
     .form-container {
-        padding: 5px;
-        border-radius: 8px;
-        background-color: white;
-        max-width: 900px;
-        margin: auto;
-        color: black;
+        display: flex;
+        gap: 10px;
+        padding: 0px 20px;
+    }
+
+    .titleCard-toggle1 {
+        display: none;
+    }
+    .form-container1{
+        display: flex;
+        width: 100%;
+        gap: 10px;
+        align-items: center;
+        justify-content: space-between;
     }
 
     table {
@@ -200,9 +208,13 @@
     }
 </style>
 
-
-<div class="content-container">
-    <div class="dx-fieldset horizontal-container">
+<div class="dx-card-header minimal-header">
+    <div class="card-title-icon">
+        <i class="fas fa-file-invoice-dollar"></i>
+    </div>
+    <h3 class="card-title-text">Petty Cash Request</h3>
+</div>
+    <div class="horizontal-container">
         <div class="form-group">
             @(Html.DevExtreme().TextBox()
                 .Label("Claim Reference No:")
@@ -457,48 +469,10 @@
             .OnRowRemoving("onexpenserowremoving")
             )
     </div>
-
-    <!-- =================== Row 1: Status & Claim Details =================== -->
     <div class="dx-card-body">
-        <div class="form-container" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; position: relative; padding: 0 15px;">
-
-            <!-- Top Row -->
-            <!-- Single Row for Cheque No, Popup, Voucher Narration, Attachment -->
-            @* <div style="display: flex; gap: 10px; align-items: flex-end; flex-wrap: nowrap; width: 100%;">
-
-                <!-- Cheque No: Smaller width -->
-                <div style="display: flex; align-items: flex-end; gap: 5px; flex: 0 0 320px; min-width: 300px;">
-                    <div style="flex-grow: 1;">
-                        @(Html.DevExtreme().CheckBox().ID("IsSubmitted").Disabled(true))
-                        <span class="form-label-inline">Submitted By:</span>
-                        @(Html.DevExtreme().TextBox().ID("SubmittedBytext").Disabled(true).Width(120))
-
-                    </div>
-                    <div style="flex-shrink: 0;">
-                        <span class="form-label-inline">Submitted On:</span>
-                        @(Html.DevExtreme().TextBox().ID("SubmittedOnDate").Disabled(true).Width(120))
-                        </div>
-                    <div style="flex-shrink: 0;">
-                        @(Html.DevExtreme().CheckBox().ID("IsApproved").Disabled(true))
-                        <span class="form-label-inline">Approved By:</span>
-                        @(Html.DevExtreme().TextBox().ID("ApprovedBytext").Disabled(true).Width(120))
-                        </div>
-                    <div style="flex-shrink: 0;">
-                        <span class="form-label-inline">Approved On:</span>
-                        @(Html.DevExtreme().TextBox().ID("ApprovedOntext").Disabled(true).Width(120))
-                        </div>
-                </div> 
-             </div> *@
-            <!-- MIDDLE ROW GROUPING -->
-            <div style="display: flex; width: 100%; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 10px;">
-                @* <div class="form-group" style="flex: 1 1 100px;">
-                    @(Html.DevExtreme().CheckBox().ID("IsVerified").Disabled(true))
-                    <span class="form-label-inline">Verified By:</span>
-                    @(Html.DevExtreme().TextBox().ID("VerifiedBytext").Disabled(true).Width(120))
-                </div>
-                </div> *@
-
-                <div class="form-group" style="flex: 1 1 80px;">
+        <div class="form-container">
+        <div class="form-container1">
+                <div>
                 @(Html.DevExtreme().SelectBox()
                                 .Label("Type of Claim:")
                                 .ID("ClaimType")
@@ -508,8 +482,7 @@
                                 .Disabled(true)
                                 .Width(200))
                 </div>
-
-                <div class="form-group" style="flex: 1 1 80px;">
+                <div>
                 @(Html.DevExtreme().RadioGroup()
                                 .ID("radioGroup")
                                 .Items(new[] { "Cash Payment", "Bank Payment" })
@@ -517,36 +490,14 @@
                                 .Layout(Orientation.Horizontal)
                                 .OnValueChanged("onRadioGroupValueChanged"))
                 </div>
-
-                <div class="form-group" style="flex: 1 1 370px;">
+                <div>
                 <label for="GenerateVoucher">Generated Voucher</label>
                 @(Html.DevExtreme().TextBox()
                                 .ID("GenerateVoucher")
                                 .Value(null)
                                 .ReadOnly(true))
                 </div>
-
-
-            </div>
-
-        <!-- =================== Row 2: Payment & Account =================== -->
-        <div class="row g-3 mt-2">
-            <!-- Paid Info -->
-            @* <div class="col-md-6 col-xl-4">
-                <div class="mb-3 d-flex align-items-center gap-2">
-                    @(Html.DevExtreme().CheckBox().ID("IsPaid").Disabled(true))
-                    <span class="form-label-inline">Paid By:</span>
-                    @(Html.DevExtreme().TextBox().ID("paidBytext").Disabled(true).Width(120))
-                </div>
-                <div class="mb-3 d-flex align-items-center gap-2 ps-4">
-                    <span class="form-label-inline">Paid On:</span>
-                    @(Html.DevExtreme().TextBox().ID("paidOntext").Disabled(true).Width(120))
-                </div>
-            </div> *@
-
-            <!-- Account Head Dropdown -->
-            <div class="col-md-6 col-xl-4">
-                <div class="mb-3">
+            <div>
                     <label for="AccountHead">Payment Accounts:</label>
                     @(Html.DevExtreme().DropDownBox()
                                         .LabelMode(EditorLabelMode.Outside)
@@ -565,11 +516,8 @@
                                         .DropDownOptions(o => o.Width(1000))
                                         .OnKeyDown("onKeyDown")
                                         .ContentTemplate(new TemplateName("AccountHeadContentTemplate")))
-                </div>
             </div>
-
-            <!-- Pay Button -->
-            <div class="col-md-12 col-xl-4 d-flex align-items-end justify-content-end">
+            <div>
                 @(Html.DevExtreme().Button()
                                 .ID("btnPaytheClaim")
                                 .Text("Pay the Claim")
@@ -581,7 +529,6 @@
             </div>
         </div>
         </div>
-
     </div>
 
    
@@ -2057,6 +2004,24 @@
 
                 }
             });
+        }
+
+        function onAttachmentButtonClick() {
+            // Get Voucher No safely
+            const voucherNoBox = $("#VoucherNo").dxTextBox("instance");
+            const voucherNo = voucherNoBox ? voucherNoBox.option("value") : null;
+
+
+            var voucherType ="Petty CashRequest"
+            // Log and build URL
+            console.log("Voucher No:", voucherNo);
+            console.log("Voucher Type:", voucherType);
+
+            const isMaster = false;
+            const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&modal=true&isMaster=${isMaster}`;
+            const title = "Transaction Documents";
+
+            openModal(url, title);
         }
 
 </script>

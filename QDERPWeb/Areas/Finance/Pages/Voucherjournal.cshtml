@@ -4,7 +4,11 @@
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link rel="stylesheet" href="~/css/Style.css" />
-
+<style>
+    .titleCard-toggle1{
+        display:none;
+    }
+</style>
 <!-- SweetAlert2 JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -3258,6 +3262,7 @@ buttons.Add()
             iframe.src = url;
         });
     }
+
     function onAttachmentButtonClick() {
         var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
         var voucherNo = voucherNoBox.option("value");
@@ -3266,7 +3271,7 @@ buttons.Add()
         var voucherType = voucherTypeBox.option("value");
         console.log(voucherType)
         const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&modal=true`;
-        const title = "Ledger Documents";
+        const title = "Transaction Documents";
         openModal(url, title);
     }
     function onBaseCurrencyInit(e) {

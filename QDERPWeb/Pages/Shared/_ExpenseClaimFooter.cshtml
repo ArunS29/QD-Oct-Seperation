@@ -50,8 +50,7 @@
         gap: 10px; /* Adds spacing between buttons */
         justify-content: start; /* Aligns buttons to the left */
         align-items: center; /* Vertically centers the buttons */
-        margin: 15px;
-        margin-top: 0px;
+        margin: 0px 20px;
     }
 
     .button-alignment-down {
@@ -92,51 +91,6 @@
     }
 
 
-    .btn-container {
-        display: inline-block;
-        position: relative;
-        overflow: hidden;
-    }
-
-        /* Initially hide the button text and set a fixed small width */
-        .btn-container .dx-button {
-            width: 55px !important; /* Small width for icons */
-            transition: width 0.3s ease-in-out;
-        }
-
-        /* Show full text when hovered */
-        .btn-container:hover .dx-button {
-            width: 200px !important; /* Expand to fit text */
-        }
-
-        /* Initially hide text */
-        .btn-container .dx-button .dx-button-text {
-            display: none;
-        }
-
-        /* Show text on hover */
-        .btn-container:hover .dx-button .dx-button-text {
-            display: inline-block;
-        }
-
-        /* Ensure dropdown button behaves similarly */
-        .btn-container .dx-dropdownbutton {
-            width: 55px !important;
-            transition: width 0.3s ease-in-out;
-        }
-
-        .btn-container:hover .dx-dropdownbutton {
-            width: 180px !important; /* Adjust as needed */
-        }
-
-        .btn-container .dx-dropdownbutton .dx-button-text {
-            display: none;
-        }
-
-        .btn-container:hover .dx-dropdownbutton .dx-button-text {
-            display: inline-block;
-        }
-
 
 </style>
 
@@ -146,13 +100,12 @@
         @(Html.DevExtreme().DropDownButton()
             .ID("ddButtonLayout")
             .Icon("smalliconslayout")
-            .Width(50)
+            .Width("100%")
             .Text(new JS("formatMessage('Layout')"))
             .ElementAttr(new { style = "display: none;" })
             .DropDownOptions(options => options.Width(230))
             .Items(items =>
             {
-                items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu");
                 items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
                 items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
                 items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
@@ -161,14 +114,65 @@
             .ShowArrowIcon(false)
             )
     </div>
-
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+                .ID("rowHeightProperties")
+                .Icon("") // fallback to standard icon if "rowproperties" not working
+                .Width("100%")
+                .Text(new JS("formatMessage('Set Row Height')"))
+                .DropDownOptions(options => options.Width(230))
+                .Items(items =>
+                {
+                    items.Add()
+                .Text("Short (1 Line)")
+                .Template(@<text>
+            <svg width="20" height="20" viewBox="0 0 20 20">
+                <rect x="2" y="9" width="16" height="2" fill="var(--title-background-color)" />
+            </svg> Short
+        </text>)
+                .OnClick("function() { ChangeRowHeight('30'); }");
+                    items.Add()
+                .Text("Medium (2 Lines)")
+                .Template(@<text>
+            <svg width="20" height="20" viewBox="0 0 20 20">
+                <rect x="2" y="6" width="16" height="2" fill="var(--title-background-color)" />
+                <rect x="2" y="12" width="16" height="2" fill="var(--title-background-color)" />
+            </svg> Medium
+        </text>)
+                .OnClick("function() { ChangeRowHeight('60'); }");
+                    items.Add()
+                .Text("Tall (4 Lines)")
+                .Template(@<text>
+            <svg width="20" height="20" viewBox="0 0 20 20">
+                <rect x="2" y="4" width="16" height="2" fill="var(--title-background-color)" />
+                <rect x="2" y="8" width="16" height="2" fill="var(--title-background-color)" />
+                <rect x="2" y="12" width="16" height="2" fill="var(--title-background-color)" />
+                <rect x="2" y="16" width="16" height="2" fill="var(--title-background-color)" />
+            </svg> Tall
+        </text>)
+                .OnClick("function() { ChangeRowHeight('90'); }");
+                    items.Add()
+                .Text("Extra Tall (8 Lines)")
+                .Template(@<text>
+            <svg width="20" height="20" viewBox="0 0 20 20">
+                @for (var i = 1; i <= 8; i++)
+                {
+                var y = 1 + (i - 1) * 2;
+                <text><rect x="2" y="@y" width="16" height="1" fill="var(--title-background-color)" /></text>
+                }
+            </svg> Extra Tall
+        </text>)
+            .OnClick("function() { ChangeRowHeight('130'); }");
+                })
+            .ShowArrowIcon(false))
+    </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnPrint")
             .Icon("print")
             .Text(new JS("formatMessage('Print')"))
             .ElementAttr(new { style = "display: none;" })
-            .Width(50)
+            .Width("100%")
             .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
             )
     </div>
@@ -181,7 +185,7 @@
             .Icon("search")
             .Text(new JS("formatMessage('Search')"))
             .ElementAttr(new { style = "display: none;" })
-            .Width(50)
+            .Width("100%")
             .OnClick("toggleFilterRow")
             )
     </div>
@@ -192,7 +196,7 @@
         @(Html.DevExtreme().Button()
             .ID("btntoggleGroupPanel")
             .Icon("hierarchy")
-            .Width(50)
+            .Width("100%")
             .Text(new JS("formatMessage('Group')"))
             .ElementAttr(new { style = "display: none;" })
             .OnClick("toggleGroupPanel")
@@ -214,7 +218,7 @@
         @(Html.DevExtreme().Button()
             .ID("btnColumnChooser")
             .Icon("columnchooser")
-            .Width(50)
+            .Width("100%")
             .Text(new JS("formatMessage('Column Chooser')"))
             .ElementAttr(new { style = "display: none;" })
             .OnClick("showColumnChooser")
@@ -226,7 +230,7 @@
                 Html.DevExtreme().DropDownButton()
                 .ID("ddButtonExpense")
                 .Icon("tags")
-                .Width(50)
+                .Width("100%")
                 .Text("Create New")
                 .ElementAttr(new { style = "display: none;" })
                 .DropDownOptions(options => options.Width(230))
@@ -1186,5 +1190,22 @@
         function onCreateNewClick() {
             window.location.href = `/${tenantName}/Finance/JournalEntryEdit`;
         }
-
+        $(function () {
+                const svgIcon = `
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 399.58 279.97" width="20" height="20">
+                    <defs>
+                        <style>
+                                .cls-1 { fill: var(--title-background-color); }
+                            .cls-2 { fill: #a4abb8; }
+                        </style>
+                    </defs>
+                    <g>
+                        <path class="cls-1" d="M80.09,69.88v140h32.5c5.3,0,10.16,10.7,5.95,14.96l-52.43,52.56c-2.45,2.54-5.8,3.15-9.07,2.03L1.64,224.83c-4.4-3.99.95-14.96,5.95-14.96h32.5V69.88H7.59c-4.9,0-10.4-10.76-5.95-14.96L54.05,2.34c3.68-3.11,8.37-3.13,12.08,0l52.41,52.58c4.45,4.2-1.05,14.96-5.95,14.96h-32.5Z"/>
+                        <path class="cls-2" d="M396.81,57.6c-1.35,1.36-5.16,2.32-7.17,2.33l-221.99-.12c-12.32.52-9.65-32.56-6.04-36.91,1.34-1.61,4.84-2.8,6.95-3.05l222.97.08c3.57.56,6.93,3.91,7.5,7.5.75,4.72.63,19.02.08,23.97-.18,1.66-1.2,5.09-2.31,6.2Z"/>
+                        <path class="cls-2" d="M396.81,257.6c-1.35,1.36-5.16,2.32-7.17,2.33l-223-.11c-9.5-1.57-8.29-22.11-7.44-29.33.73-6.22,2.7-9.84,9.37-10.63l222.97.08c2.79.42,7,3.65,7.53,6.47.78,4.09.56,20.45.05,25-.18,1.66-1.2,5.09-2.31,6.2Z"/>
+                        <path class="cls-2" d="M162.4,122.19c1.56-1.44,4.97-2.34,7.14-2.36l221.99.11c3.14.47,6.66,3.59,7.35,6.65.74,3.29.83,23.39.19,26.77-.76,4-6.65,6.8-10.44,6.56l-220.97-.1c-6.07-1.16-7.78-4.8-8.45-10.55s-1.2-23,3.2-27.08Z"/>
+                    </g>
+                </svg>`;
+                $('#rowHeightProperties .dx-button-content').prepend(svgIcon);
+            });
 </script>

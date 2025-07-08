@@ -158,7 +158,7 @@
 
     @(Html.DevExtreme().Button()
         .ID("btnBack")
-        .Text("Back")
+        .Text(new JS("formatMessage('Back')"))
         .Icon("arrowleft")
         .Width(180)
         .Hint("Click to back")
@@ -169,7 +169,7 @@
 
     @(Html.DevExtreme().Button()
         .ID("btnAttach")
-        .Text("Attach")
+        .Text(new JS("formatMessage('Attach')"))
         .Icon("link")
         .Hint("Click to attach")
         .Width(180)
@@ -178,7 +178,7 @@
 
     @(Html.DevExtreme().DropDownButton()
         .ID("btnPreview1")
-        .Text("Preview")
+        .Text(new JS("formatMessage('Preview')"))
         .Icon("fullscreen")
         .Hint("Click to Preview")
         .ElementAttr(new { @class = "dx-button-custom btn-preview" })
@@ -186,7 +186,7 @@
         .DropDownOptions(o => o.Width(220))
         .Items(items =>
         {
-            items.Add().Text("Preview Format 1").Icon("textdocument");
+            items.Add().Text(new JS("formatMessage('Preview Format 1')")).Icon("textdocument");
             items.Add().Text("Preview Format 2").Icon("textdocument");
         })
         .OnItemClick("handlePreviewClick"))
@@ -201,7 +201,7 @@
 
     @(Html.DevExtreme().Button()
         .ID("btnVerify")
-        .Text("Verify")
+        .Text(new JS("formatMessage('Verify')"))
         .Icon("check")
         .Hint("Click to Verify")
         .Width(180)
@@ -210,7 +210,7 @@
 
     @(Html.DevExtreme().Button()
         .ID("btnApprove")
-        .Text("Approve")
+        .Text(new JS("formatMessage('Approve')"))
         .Icon("exportselected")
         .Hint("Click to Approve")
         .Width(180)
@@ -219,7 +219,7 @@
 
     @(Html.DevExtreme().Button()
         .ID("btnVoucherColumnChooser")
-        .Text("Column Chooser")
+        .Text(new JS("formatMessage('Column Chooser')"))
         .Icon("columnchooser")
         .Hint("Click to column chooser")
         .Width(210)
@@ -1115,9 +1115,10 @@
 
         var voucherTypeBox = $("#VoucherType").dxSelectBox("instance"); // or dxTextBox
         var voucherType = voucherTypeBox.option("value");
+        const isMaster = false;
         console.log(voucherType)
-        const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&modal=true`;
-        const title = "Ledger Documents";
+        const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&modal=true&isMaster=${isMaster}`;
+        const title = "Transaction Documents";
         openModal(url, title);
 }
 

@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Trial Balance";
 }
+<link rel="stylesheet" href="~/css/animationCardVAT.css" />
 <style>
     body {
         margin: 0;
@@ -66,6 +67,13 @@
     .dx-fieldset.horizontal-container {
         margin-top: 10px;
     }
+
+    .title {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        width: 35% !important;
+    }
 </style>
 @* <div class="title">
     <div class="header-container">
@@ -73,13 +81,26 @@
     </div>
 </div> *@
 
+<div class="title">
+   
+    <div class="card blue shine compact">
+        <h2 class="title-slide">Sales Reporting</h2>
+        <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
+        <h6 class="fade-in">Quick Dice ERP Solutions</h6>
+
+    </div>
+
+    <div class="card green shine">
+        <h2>This Month Grand Total</h2>
+        <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
+        <h1 id="invoiceCount">0</h1>
+    </div>
+</div>
 
 <div class="container" style="display: flex; flex-direction: column;width:100%;background:white;">
 
-    <div class="Head">
-       
+    <div class="Head">    
             @await Html.PartialAsync("/Pages/Shared/VAT/VATInvoiceReportingFooter.cshtml")
-      
     </div>
 
     <!-- Input Controls in One Line -->
@@ -276,14 +297,35 @@
                 startDate: formatDate(startDate),
                 endDate: formatDate(endDate)
             },
-            success: function (data) {
-                 pivotData = data; // Set global
-                initializePivotGrid(data);
-            },
+            // success: function (data) {
+            //      pivotData = data; // Set global
+            //     initializePivotGrid(data);
+            // },
+                success: function (data) {
+        pivotData = data; // Set global
+        updateGrandTotalCard(data); // 👈 Add this function
+        initializePivotGrid(data);
+    },
+
             error: function (xhr, status, error) {
                 console.error("Error fetching records:", error);
             }
         });
+    }
+        function updateGrandTotalCard(data) {
+        let total = 0;
+        if (Array.isArray(data)) {
+            total = data.reduce((sum, item) => {
+                const value = parseFloat(item.TotalRevenue);
+                return sum + (isNaN(value) ? 0 : value);
+            }, 0);
+        }
+
+        // Format to K/M if needed or just to fixed decimal
+        const formatted = total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+        // Update the card
+        $("#invoiceCount").text(formatted);
     }
 
     function initializePivotGrid(data) {
@@ -674,4 +716,5 @@
                 dateBox.option("displayFormat", "dd-MMM-yyyy");
             });
         });
+ 
 </script>
