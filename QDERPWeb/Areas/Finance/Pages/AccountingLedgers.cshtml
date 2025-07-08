@@ -1107,6 +1107,8 @@ buttons.Add()
 
 
 	$(document).ready(function () {
+
+		 
 		
    $("#btnCreateNew").css("display", "none");
 
@@ -1721,6 +1723,7 @@ buttons.Add()
 				data.forEach(item => {
 					item.GroupCurrencyName = item.CurrencyName ?? "(Opening Balance)"; // flag to detect non-grouped
 				});
+               injectHeaderSVG();
 
 			// Bind the data to the DataGrid
 			const dataGrid = $("#dataGrid").dxDataGrid("instance");

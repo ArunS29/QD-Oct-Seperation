@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
 using System;
@@ -165,7 +166,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 						  {
 							  PropertyAllocationId = alloc.PropertyAllocationId,
 							  DrCr = alloc.PropertyAllocDrCr,
-							  PropertyDescription = unit != null ? unit.PropertyDescription : "Common Overheads",
+							  PropertyDescription = unit != null ? unit.PropertyDescription : "",
 							  PropertyNo = alloc.PropertyNo,
 							  EffectiveDate = alloc.EffectiveDate,
 							  VoucherAmount = alloc.AmountAllocated,
@@ -173,8 +174,119 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 						  }).ToList();
 
 			return Json(result);
-		}
-	}
+        }
+        [HttpPost]
+        public IActionResult InsertDefaultPropertyAllocation([FromBody] PropertyAllocationDto dto)
+        {
+            // Validate tenant and get context
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            if (dto == null)
+            {
+                return BadRequest(new { success = false, message = "Invalid data." });
+            }
+
+            try
+            {
+                // Map DTO to Entity
+                var entity = new Tbl20122PropertyAllocationMaster
+                {
+                    PropertyAllocationId = 0,
+                    PropertyAllocDrCr = dto.PropertyAllocDrCr,
+                    PropertyNo = dto.PropertyNo,
+                    EffectiveDate = dto.EffectiveDate,
+                    AmountAllocated = dto.AmountAllocated,
+                    PropertyAllocRemarks = dto.PropertyAllocRemarks,
+                    VoucherEntryId = dto.VoucherEntryId,
+                    VoucherNo = dto.VoucherNo,
+                    LedgerAccountNo = dto.LedgerAccountNo,
+                };
+
+                dbContext.Tbl20122PropertyAllocationMasters.Add(entity);
+                dbContext.SaveChanges();
+
+                return Ok(new { success = true, id = entity.PropertyAllocationId });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Error inserting cost allocation.", error = ex.Message });
+            }
+        }
+        public IActionResult UpdatePropertyAllocationWithFields([FromBody] UpdatePropertyAllocationFieldsDto dto)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+            var record = dbContext.Tbl20122PropertyAllocationMasters.FirstOrDefault(x => x.PropertyAllocationId == dto.PropertyAllocationId);
+            if (record == null)
+                return NotFound(new { success = false, message = "Record not found." });
+
+            record.AmountAllocated = dto.VoucherAmount;
+            record.PropertyAllocRemarks = dto.PropertyAllocRemarks;
+            record.PropertyNo = dto.PropertyNo;
+            record.EffectiveDate = dto.EffectiveDate;
+
+            dbContext.SaveChanges();
+
+            return Ok(new { success = true });
+        }
+        [HttpPost]
+
+        public IActionResult DeletePropertyAllocation(long propertyAllocationId)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+
+
+            var allocations = dbContext.Tbl20122PropertyAllocationMasters
+                .Where(x => x.PropertyAllocationId == propertyAllocationId)
+                .ToList();
+
+            if (!allocations.Any())
+            {
+                return NotFound(new { success = false, message = "No records found to delete." });
+            }
+
+            dbContext.Tbl20122PropertyAllocationMasters.RemoveRange(allocations);
+            dbContext.SaveChanges();
+
+            return Ok(new { success = true, message = "All cost allocation records deleted for voucher." });
+        }
+        [HttpPost]
+
+        public IActionResult DeleteByVoucherNo([FromBody] VoucherDeleteRequest request)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            if (string.IsNullOrEmpty(request.VoucherNo))
+            {
+                return BadRequest(new { success = false, message = "Voucher number is required." });
+            }
+
+            var allocations = dbContext.Tbl20122PropertyAllocationMasters
+                .Where(x => x.VoucherNo == request.VoucherNo)
+                .ToList();
+
+            if (!allocations.Any())
+            {
+                return NotFound(new { success = false, message = "No records found to delete." });
+            }
+
+            dbContext.Tbl20122PropertyAllocationMasters.RemoveRange(allocations);
+            dbContext.SaveChanges();
+
+            return Ok(new { success = true, message = "All cost allocation records deleted for voucher." });
+        }
+    }
 }
 
 
