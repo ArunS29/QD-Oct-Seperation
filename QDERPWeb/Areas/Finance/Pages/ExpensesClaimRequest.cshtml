@@ -7,6 +7,41 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link rel="stylesheet" href="~/css/Style.css" />
 <style>
+    .form-row {
+        display: flex;
+        /* flex-wrap: wrap; */
+        align-items: flex-start;
+        padding: 0px 0px 0px 10px;
+    }
+
+    .form-row > .form-group {
+        margin-right: 20px;
+        display: flex;
+        /* flex-direction: column; */
+    }
+
+    .form-row .inline-field {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+    }
+
+        .form-row .inline-field span {
+            margin-left: 5px;
+            margin-right: 5px;
+            white-space: nowrap;
+        }
+
+    .pay-button-container {
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+    }
+
+    .form-group .form-label {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
     .dx-button-mode-contained.dx-button-default .dx-icon{
         color: var(--title-background-color);
     }
@@ -29,14 +64,14 @@
             padding: 3px;
         }
 
-    input[type="text"], textarea {
-        width: 100%;
-        padding: 2px;
-        box-sizing: border-box;
-        border-radius: 2px;
-        border: 1px solid #ccc;
-        color: black;
-    }
+    /* input[type="text"], textarea { */
+    /*     width: 100%; */
+    /*     padding: 2px; */
+    /*     box-sizing: border-box; */
+    /*     border-radius: 2px; */
+    /*     border: 1px solid #ccc; */
+    /*     color: black; */
+    /* } */
 
     textarea {
         resize: none;
@@ -149,6 +184,10 @@
         z-index: 1000;
     }
 
+    .titleCard-toggle1 {
+        display: none;
+    }
+
     /* ✅ Force borders for all cells in the grid */
     #dataGrid .dx-row > td {
         border: 1px solid #ddd !important;
@@ -183,8 +222,14 @@
 
 
 
-<div class="content-container">
-    <div class="dx-fieldset horizontal-container">
+<div>
+    <div class="dx-card-header minimal-header">
+        <div class="card-title-icon">
+            <i class="fas fa-file-invoice-dollar"></i>
+        </div>
+        <h3 class="card-title-text">Expenses Claim Request</h3>
+    </div>
+    <div class="horizontal-container">
         <div class="form-group">
             @(Html.DevExtreme().TextBox()
                 .Label("Claim Reference No:")
@@ -220,6 +265,7 @@
                 .Label("Claim Remarks:")
                 .LabelMode(EditorLabelMode.Floating)
                 .ID("txtEntryNarration")
+                .ElementAttr("style", "padding : 10px 0px;")
                 .Value("")
                 .Height(100)
                 .Width(720)
@@ -229,7 +275,7 @@
         </div>
     </div>
 
-    <div class="dx-fieldset horizontal-container">
+    <div class="horizontal-container">
         <div class="form-group">
             @(Html.DevExtreme().DropDownBox()
                 .DataSource(d => d.WebApi()
@@ -439,140 +485,120 @@
             .OnRowRemoving("onexpenserowremoving")
             )
     </div>
-
     <!-- First Row -->
-    <div class="row g-2 flex-wrap align-items-start">
+    <div class="form-row">
 
         <!-- Claim Type -->
-        <div class="col-sm-3 col-md-2">
-            @(
-                        Html.DevExtreme().SelectBox()
-                        .Label("Type of Claim:")
-                        .ID("ClaimType")
-                        .LabelMode(EditorLabelMode.Floating)
-                        .DataSource(new[] { "Expenses Claim Request" })
-                        .Value("Expenses Claim Request")
-                        .Disabled(true)
-                        .Width(180)
-                        )
-            @* <div class="mt-2">
-                @(
-                                Html.DevExtreme().TextBox()
-                                .ID("Voucher")
-                                .Value(null)
-                                .ReadOnly(true)
-                                .Width(100)
-                                )
-            </div> *@
+        <div class="form-group">
+            @(Html.DevExtreme().SelectBox()
+                .Label("Type of Claim:")
+                .ID("ClaimType")
+                .LabelMode(EditorLabelMode.Floating)
+                .DataSource(new[] { "Expenses Claim Request" })
+                .Value("Expenses Claim Request")
+                .Disabled(true)
+                .Width(180))
         </div>
 
-        <!-- Payment Type Radio Group -->
-        <div class="col-sm-3 col-md-2">
-            <label class="form-label" >Payment Type</label>
+        <!-- Payment Type -->
+        <div class="form-group">
+            <label class="form-label">Payment Type</label>
             @(Html.DevExtreme().RadioGroup()
-                        .ID("radioGroup")
-                        .Items(new[] { "Cash Payment", "Bank Payment" })
-                        .Value(null)
-                        .Layout(Orientation.Horizontal)
-                        .OnValueChanged("onRadioGroupValueChanged"))
+                .ID("radioGroup")
+                .Items(new[] { "Cash Payment", "Bank Payment" })
+                .Value(null)
+                .Layout(Orientation.Horizontal)
+                .OnValueChanged("onRadioGroupValueChanged"))
         </div>
 
-        <!-- Account Head Dropdown -->
-        <div class="col-sm-4 col-md-3">
+        <!-- Payment Accounts -->
+        <div class="form-group">
             <label class="form-label">Payment Accounts:</label>
             @(Html.DevExtreme().DropDownBox()
-                        .LabelMode(EditorLabelMode.Floating)
-                        .ID("ddAccountHead")
-                        .ShowClearButton(true)
-                        .AcceptCustomValue(true)
-                        .OpenOnFieldClick(false)
-                        .ValueChangeEvent("input")
-                        .HoverStateEnabled(true)
-                        .ValueExpr("AccountId")
-                        .DisplayExpr("AccountHead")
-                        .OnInput("dropDownBoxOnInput")
-                        .OnOpened("onPaymentOpened")
-                        .Width(200)
-                        .TabIndex(1)
-                        .DropDownOptions(o => o.Width(800))
-                        .OnKeyDown("onKeyDown")
-                        .ContentTemplate(new TemplateName("AccountHeadContentTemplate"))
-                        )
+                .LabelMode(EditorLabelMode.Floating)
+                .ID("ddAccountHead")
+                .ShowClearButton(true)
+                .AcceptCustomValue(true)
+                .OpenOnFieldClick(false)
+                .ValueChangeEvent("input")
+                .HoverStateEnabled(true)
+                .ValueExpr("AccountId")
+                .DisplayExpr("AccountHead")
+                .OnInput("dropDownBoxOnInput")
+                .OnOpened("onPaymentOpened")
+                .Width(200)
+                .TabIndex(1)
+                .DropDownOptions(o => o.Width(800))
+                .OnKeyDown("onKeyDown")
+                .ContentTemplate(new TemplateName("AccountHeadContentTemplate")))
         </div>
 
-        <!-- Pay the Claim Button -->
-        <div class="col-sm-2 col-md-2 d-flex align-items-end justify-content-center" style="margin-top: 30px;">
+        <!-- Pay Button -->
+        <div class="pay-button-container">
             @(Html.DevExtreme().Button()
-                        .ID("btnPaytheClaim")
-                        .Text("Pay")
-                        .Icon("money")
-                        .ElementAttr(new { @class = "bold-button" })
-                        .Height(50)
-                        .Width(100)
-                        .OnClick("generateVoucherNo"))
+                .ID("btnPaytheClaim")
+                .Text("Pay")
+                .Icon("money")
+                .ElementAttr(new { @class = "bold-button" })
+                .Height(50)
+                .Width(100)
+                .OnClick("generateVoucherNo"))
         </div>
 
     </div>
-
     <hr />
-
     <!-- Second Row -->
-    <div class="row g-2 flex-wrap align-items-start" style="width: 100%;">
+    <div class="form-row">
 
-        <!-- Submitted By Section -->
-        <div class="col-sm-3 col-md-2">
-            <div class="d-flex align-items-center mb-1">
-                @(Html.DevExtreme().CheckBox().ID("IsSubmitted").Disabled(true))
-                <span class="ms-1">Submitted By:</span>
+        <!-- Submitted -->
+        <div class="form-group">
+            <div class="inline-field">
+                <span>Submitted By:</span>
                 @(Html.DevExtreme().TextBox().ID("SubmittedBytext").Value(null).Disabled(true).Width(100))
             </div>
-            <div class="d-flex align-items-center mb-1 ms-3">
+            <div class="inline-field">
                 <span>Submitted On:</span>
                 @(Html.DevExtreme().TextBox().ID("SubmittedOnDate").Value(null).Disabled(true).Width(100))
             </div>
         </div>
 
-        <!-- Approved By Section -->
-        <div class="col-sm-3 col-md-2">
-            <div class="d-flex align-items-center mb-1">
-                @(Html.DevExtreme().CheckBox().ID("IsApproved").Disabled(true))
-                <span class="ms-1">Approved By:</span>
+        <!-- Approved -->
+        <div class="form-group">
+            <div class="inline-field">
+                <span>Approved By:</span>
                 @(Html.DevExtreme().TextBox().ID("ApprovedBytext").Value(null).Disabled(true).Width(100))
             </div>
-            <div class="d-flex align-items-center mb-1 ms-3">
+            <div class="inline-field">
                 <span>Approved On:</span>
                 @(Html.DevExtreme().TextBox().ID("ApprovedOntext").Value(null).Disabled(true).Width(100))
             </div>
         </div>
 
-        <!-- Verified By Section -->
-        <div class="col-sm-3 col-md-2">
-            <div class="d-flex align-items-center mb-1">
-                @(Html.DevExtreme().CheckBox().ID("IsVerified").Disabled(true))
-                <span class="ms-1">Verified By:</span>
+        <!-- Verified -->
+        <div class="form-group">
+            <div class="inline-field">
+                <span>Verified By:</span>
                 @(Html.DevExtreme().TextBox().ID("VerifiedBytext").Value(null).Disabled(true).Width(100))
             </div>
-            <div class="d-flex align-items-center mb-1 ms-3">
+            <div class="inline-field">
                 <span>Verified On:</span>
                 @(Html.DevExtreme().TextBox().ID("VerifiedOntext").Value(null).Disabled(true).Width(100))
             </div>
         </div>
 
-        <!-- Paid By Section -->
-        <div class="col-sm-4 col-md-3">
-            <div class="d-flex align-items-center mb-1">
-                @(Html.DevExtreme().CheckBox().ID("IsPaid").Disabled(true))
-                <span class="ms-1">Paid By:</span>
+        <!-- Paid -->
+        <div class="form-group">
+            <div class="inline-field">
+                <span>Paid By:</span>
                 @(Html.DevExtreme().TextBox().ID("paidBytext").Value(null).Disabled(true).Width(100))
             </div>
-            <div class="d-flex align-items-center ms-3">
+            <div class="inline-field">
                 <span>Paid On:</span>
                 @(Html.DevExtreme().TextBox().ID("paidOntext").Value(null).Disabled(true).Width(100))
             </div>
         </div>
 
     </div>
-
 
 
     </div>
