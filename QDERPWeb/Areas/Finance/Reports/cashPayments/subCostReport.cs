@@ -10,10 +10,13 @@ namespace QD.ERP.Web.Areas.Finance.Reports.cashPayments
         public subCostReport()
         {
             InitializeComponent();
+
         }
 
+
+
         // Load data dynamically for subreport with tenant connection string and voucherNo
-        public void LoadData(string voucherNo, string connectionString)
+        public void LoadData(string voucherNo, string accountHeadName, string connectionString)
         {
             DataTable dt = new DataTable();
 
@@ -21,12 +24,14 @@ namespace QD.ERP.Web.Areas.Finance.Reports.cashPayments
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    // Use your actual table here
-                    string query = "SELECT * FROM [tbl201CostAllocationMaster] WHERE voucherno = @VoucherNo";
+                    string query = @"SELECT * FROM [qry201RptVoucherWithCost] 
+                             WHERE VoucherNo = @VoucherNo AND AccountHeadName = @AccountHeadName";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@VoucherNo", voucherNo);
+                        cmd.Parameters.AddWithValue("@AccountHeadName", accountHeadName);
+
                         SqlDataAdapter da = new SqlDataAdapter(cmd);
                         conn.Open();
                         da.Fill(dt);
@@ -38,10 +43,10 @@ namespace QD.ERP.Web.Areas.Finance.Reports.cashPayments
             }
             catch (Exception ex)
             {
-                // Handle error properly or log it
                 Console.WriteLine($"Error loading subreport data: {ex.Message}");
             }
         }
+
     }
 
 }

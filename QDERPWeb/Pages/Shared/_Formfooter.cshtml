@@ -139,6 +139,23 @@
     }
 </style>
 <div class="dx-fieldset horizontal-container">
+
+    @(Html.DevExtreme().Button()
+        .ID("btnSave")
+        .Text("Save")
+        .Icon("save")
+        .Width(180)
+        .Hint("Click to save")
+        .ElementAttr(new { @class = "dx-button-custom btn-save" }))
+
+    @(Html.DevExtreme().Button()
+        .ID("btnSaveAndClose")
+        .Text("Save & Close")
+        .Icon("save")
+        .Width(180)
+        .Hint("Click to save and close")
+        .ElementAttr(new { @class = "dx-button-custom btn-save-close" }))
+
     @(Html.DevExtreme().Button()
         .ID("btnBack")
         .Text("Back")
@@ -148,14 +165,7 @@
         .OnClick("onBackButtonClick")
         .ElementAttr(new { @class = "dx-button-custom btn-back" }))
 
-    @(Html.DevExtreme().Button()
-        .ID("btnDelete")
-        .Text("Delete")
-        .Icon("close")
-        .Width(180)
-        .Hint("Click to delete")
-        .OnClick("onDeleteButtonClick")
-        .ElementAttr(new { @class = "dx-button-custom btn-delete" }))
+  
 
     @(Html.DevExtreme().Button()
         .ID("btnAttach")
@@ -180,22 +190,14 @@
             items.Add().Text("Preview Format 2").Icon("textdocument");
         })
         .OnItemClick("handlePreviewClick"))
-
     @(Html.DevExtreme().Button()
-        .ID("btnSave")
-        .Text("Save")
-        .Icon("save")
+        .ID("btnDelete")
+        .Text("Delete")
+        .Icon("close")
         .Width(180)
-        .Hint("Click to save")
-        .ElementAttr(new { @class = "dx-button-custom btn-save" }))
-
-    @(Html.DevExtreme().Button()
-        .ID("btnSaveAndClose")
-        .Text("Save & Close")
-        .Icon("save")
-        .Width(180)
-        .Hint("Click to save and close")
-        .ElementAttr(new { @class = "dx-button-custom btn-save-close" }))
+        .Hint("Click to delete")
+        .OnClick("onDeleteButtonClick")
+        .ElementAttr(new { @class = "dx-button-custom btn-delete" }))
 
     @(Html.DevExtreme().Button()
         .ID("btnVerify")

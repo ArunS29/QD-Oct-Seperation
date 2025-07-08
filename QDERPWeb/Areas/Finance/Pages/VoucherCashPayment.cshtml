@@ -20,11 +20,9 @@
 <link rel="stylesheet" href="~/css/Style.css" />
 
 
-<div  id="mainFooter" class="footer-fixed">
-    @await Html.PartialAsync("_Formfooter")
-</div>
+
     
-<div class="content-container-top" style="background-color:#909ead00;">
+<div class="content-container-top">
 
     <div class="dx-card-container">
         <div class="dx-card-header minimal-header">
@@ -38,8 +36,8 @@
             <div class="form-container" style="display: flex; flex-wrap: wrap; align-items: flex-end; position: relative; padding: 0 15px; overflow-x: hidden;">
 
                 <!-- Top Row -->
-                <div style="display: flex; gap: 10px; align-items: flex-end; flex-wrap: nowrap; width: 100%;">
-                    <div class="form-group" style="flex: 1 1 25px;">
+                <div class="row w-100 align-items-center" style="margin-top: 8px;">
+                  <div class="form-group col-md-1 col-sm-6">
                         @(Html.DevExtreme().TextBox()
                             .Label(new JS("formatMessage('Voucher No')"))
                             .LabelMode(EditorLabelMode.Floating)
@@ -57,7 +55,7 @@
                             )
                     </div>
 
-                    <div class="form-group" style="flex: 1 1 35px;">
+                  <div class="form-group col-md-2 col-sm-6">
                         @(Html.DevExtreme().DateBox()
                             .Label(new JS("formatMessage('Voucher Date')"))
                             .ID("VoucherDate")
@@ -72,7 +70,7 @@
                             )
                     </div>
 
-                    <div class="form-group" style="flex: 1 1 35px;">
+                  <div class="form-group col-md-2 col-sm-6">
                         @(Html.DevExtreme().DateBox()
                             .Label(new JS("formatMessage('Effective Date')"))
                             .ID("VoucherEffectiveDate")
@@ -86,7 +84,7 @@
                             )
                     </div>
 
-                    <div class="form-group" style="flex: 1 1 170px;">
+                  <div class="form-group col-md-7 col-sm-12">
                         @(Html.DevExtreme().DropDownBox()
                             .Label(new JS("formatMessage('Payment Account')"))
                             .DataSource(d => d.WebApi().Controller("VoucherMaster").LoadAction("GetCPPaymentAccounts").LoadMode(DataSourceLoadMode.Raw).Key("AccountHead"))
@@ -111,8 +109,8 @@
                 </div>
 
                 <!-- Second Row -->
-                <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; width: 100%; margin-top: 8px;">
-                    <div class="form-group" style="flex: 1 1 20px;">
+             <div class="row w-100 align-items-center" style="margin-top: 8px;">
+                     <div class="form-group col-md-1 col-sm-6">
                         @(Html.DevExtreme().SelectBox()
                             .Label(new JS("formatMessage('Dr/Cr')"))
                             .LabelMode(EditorLabelMode.Floating)
@@ -128,12 +126,12 @@
                     </div>
 
                     <!-- Container for Account Head & Buttons -->
-                    <div style="display: flex; align-items: flex-end;  flex: 0 0 500px; min-width: 100px;">
+                    
 
                         <!-- DropDownBox: Flex-grow to fill available space -->
-                        <div class="form-group" style="flex-grow: 1;">
-                            @(
-                                    Html.DevExtreme().DropDownBox()
+                        <div class="form-group col-md-4 col-sm-12">
+
+                            @( Html.DevExtreme().DropDownBox()
                                 .ID("ddAccountHead")
                                 .DataSource(d => d.WebApi()
                                 .Controller("VoucherMaster")
@@ -193,8 +191,7 @@ buttons.Add()
                                             )
                         </div>
 
-                        <!-- Add Button -->
-                        <div class="form-group" style="flex-shrink: 0;">
+          
                            
                             <!-- DevExtreme Popup -->
                             @(Html.DevExtreme().Popup()
@@ -212,10 +209,9 @@ buttons.Add()
                                 </div>
                             </text>)
                                                         )
-                        </div>
+                    
 
-                        <!-- Edit Button -->
-                        <div class="form-group" style="flex-shrink: 0;">
+                
                            
                             @(Html.DevExtreme().Popup()
                                                         .ID("ledgerEditAccountPopup")
@@ -232,12 +228,12 @@ buttons.Add()
                                 </div>
                             </text>)
                                                         )
-                        </div>
+                       
 
-                    </div>
+                   
 
 
-                    <div class="form-group" style="flex: 1 1 90px;">
+                  <div class="form-group col-md-2 col-sm-6">
                         @(Html.DevExtreme().NumberBox()
                             .Label(new JS("formatMessage('Amount')"))
                             .LabelMode(EditorLabelMode.Floating)
@@ -263,7 +259,7 @@ buttons.Add()
                             )
                     </div>
 
-                    <div class="form-group" style="flex: 1 1 70px;">
+                  <div class="form-group col-md-2 col-sm-6">
                         @(Html.DevExtreme().DropDownBox()
                             .Label(new JS("formatMessage('Base Currency')"))
                             .DataSource(d => d.WebApi().Controller("Utility").LoadAction("GetCurrencyList").LoadMode(DataSourceLoadMode.Raw).Key("CurrencyExchangeId"))
@@ -319,7 +315,7 @@ buttons.Add()
 
                     </div>
 
-                    <div class="form-group" style="flex: 1 1 93px;">
+                  <div class="form-group col-md-2 col-sm-6">
                         @(Html.DevExtreme().DropDownBox()
                             .Label(new JS("formatMessage('Convertion Currency')"))
                             .DataSource(d => d.WebApi().Controller("Utility").LoadAction("GetCurrencyList").LoadMode(DataSourceLoadMode.Raw).Key("CurrencyExchangeId"))
@@ -374,7 +370,7 @@ buttons.Add()
 
                     </div>
 
-                    <div class="form-group" style="flex: 1 1 70px;">
+                  <div class="form-group col-md-1 col-sm-6">
                         @(Html.DevExtreme().NumberBox()
                             .Label("CVR")
                             .LabelMode(EditorLabelMode.Floating)
@@ -751,11 +747,11 @@ buttons.Add()
 
             <!-- Top Row -->
             <!-- Single Row for Cheque No, Popup, Voucher Narration, Attachment -->
-            <div style="display: flex; gap: 10px; align-items: flex-end; flex-wrap: nowrap; width: 100%;">
+           <div class="row w-100 align-items-end g-2">
 
-                <!-- Cheque No: Smaller width -->
-                <div style="display: flex; align-items: flex-end; gap: 5px; flex: 0 0 320px; min-width: 300px;">
-                    <div style="flex-grow: 1;">
+                    <!-- Cheque No and Button -->
+                    <div class="col-md-4 d-flex align-items-end">
+                        <div class="flex-grow-1 me-2">
                         @(Html.DevExtreme().TextBox()
                             .Label(new JS("formatMessage('Cheque No/Reference No')"))
                             .ID("ChequeNoReferenceNo")
@@ -781,8 +777,8 @@ buttons.Add()
                 </div>
 
                 <!-- Voucher Narration: Wider -->
-                <div style="flex: 1 1 auto; min-width: 280px;">
-                    @(Html.DevExtreme().TextBox()
+                <div class="col-md-8">
+                        @(Html.DevExtreme().TextBox()
                         .Label(new JS("formatMessage('Voucher Narration')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .ID("VoucherNarration")
@@ -794,24 +790,15 @@ buttons.Add()
                         )
                 </div>
 
-                <!-- Attachment Button: Fixed width -->
-                <div style="flex-shrink: 0;">
-                    @(Html.DevExtreme().Button()
-                        .ID("btnAttachment")
-                        .Icon("fa fa-paperclip")
-                        .ElementAttr("class", "custom-popup-button")
-                        .OnClick("onAttachButtonClick")
-                         .TabIndex(16)
-                                  .ElementAttr("class", "custom-icon-color"))
-                </div>
-
+               
             </div>
 
 
 
             <!-- MIDDLE ROW GROUPING -->
-            <div style="display: flex; width: 100%; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 10px;">
-                <div class="form-group" style="flex: 1 1 100px;">
+            <div class="row w-100 align-items-end g-2">
+
+                <div class="col-md-2">
                     @(Html.DevExtreme().TextBox()
                         .Label(new JS("formatMessage('Bill No')"))
                         .LabelMode(EditorLabelMode.Floating)
@@ -822,8 +809,8 @@ buttons.Add()
                         )
                 </div>
 
-                <div class="form-group" style="flex: 1 1 80px;">
-                    @(Html.DevExtreme().DateBox()
+                <div class="col-md-2">
+                         @(Html.DevExtreme().DateBox()
                         .Label(new JS("formatMessage('Bill Date')"))
                         .ID("BillDate")
                         .InputAttr("aria-label", "Date")
@@ -836,7 +823,7 @@ buttons.Add()
                         )
                 </div>
 
-                <div class="form-group" style="flex: 1 1 80px;">
+                <div class="col-md-2">
                     @(Html.DevExtreme().TextBox()
                         .Label(new JS("formatMessage('Bill Paid To')"))
                         .LabelMode(EditorLabelMode.Floating)
@@ -847,7 +834,7 @@ buttons.Add()
                         )
                 </div>
 
-                <div class="form-group" style="flex: 1 1 370px;">
+                <div class="col-md-2">
                     @(Html.DevExtreme().TextBox()
                         .Label(new JS("formatMessage('Remarks')"))
                         .LabelMode(EditorLabelMode.Floating)
@@ -926,6 +913,9 @@ buttons.Add()
 
 
         </div>
+ <div  id="mainFooter" class="footer-fixed">
+    @await Html.PartialAsync("_Formfooter")
+</div>
       </div>
 
 

@@ -135,6 +135,48 @@
             width: 100% !important; /* Full width buttons */
         }
     }
+
+    /* Common button base */
+    .dx-button-custom {
+        border-radius: 8px;
+        color: #fff !important;
+        font-weight: 500;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* Print Button - Blue */
+    .btn-preview {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+        .btn-preview:hover {
+            background-color: #0056b3;
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+        }
+
+    /* Column Chooser - Orange */
+    .btn-attach.column-chooser {
+        background-color: #fd7e14;
+        border-color: #fd7e14;
+    }
+
+        .btn-attach.column-chooser:hover {
+            background-color: #e8590c;
+            box-shadow: 0 0 10px rgba(253, 126, 20, 0.5);
+        }
+
+    /* Attach Button - Green */
+    .btn-attach:not(.column-chooser) {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+
+        .btn-attach:not(.column-chooser):hover {
+            background-color: #1e7e34;
+            box-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
+        }
+
 </style>
 <div class="dx-fieldset horizontal-container mt-2">
 
@@ -157,7 +199,22 @@
         .Hint("Click to save and close")
         .ElementAttr(new { @class = "dx-button-custom btn-save-close" })
     )
-
+    @(Html.DevExtreme().Button()
+        .ID("btnBack")
+        .Text(new JS("formatMessage('Back')"))
+        .Icon("arrowleft")
+        .Hint("Click to back")
+        .OnClick("onBackButtonClick")
+        .ElementAttr(new { @class = "dx-button-custom btn-back" })
+        )
+    @(Html.DevExtreme().Button()
+        .ID("btnAttach")
+        .Text(new JS("formatMessage('Attach')"))
+        .Icon("link")
+        .Hint("Click to Attach")
+        .OnClick("onAttachmentButtonClick")
+        .ElementAttr(new { @class = "dx-button-custom btn-attach" })
+        )
     @(Html.DevExtreme().DropDownButton()
         .ID("btnPreview2")
         .Text(new JS("formatMessage('Preview')"))
@@ -182,7 +239,7 @@
 
 
     @(Html.DevExtreme().Button()
-        .ID("btnPrint")
+        .ID("btnPrintp")
         .Text(new JS("formatMessage('Print')"))
         .Icon("print")
         .Hint("Click to print")
@@ -197,14 +254,7 @@
         .OnClick("onDeleteButtonClick")
         .ElementAttr(new { @class = "dx-button-custom btn-delete" }) // Apply custom CSS class
         )
-    @(Html.DevExtreme().Button()
-        .ID("btnBack")
-        .Text(new JS("formatMessage('Back')"))
-        .Icon("arrowleft")
-        .Hint("Click to back")
-        .OnClick("onBackButtonClick")
-        .ElementAttr(new { @class = "dx-button-custom btn-back" })
-    )
+   
     @(Html.DevExtreme().Button()
         .ID("btnVerify")
         .Text(new JS("formatMessage('Verify')"))
@@ -223,26 +273,18 @@
         .ElementAttr(new { @class = "dx-button-custom btn-approve" })
 
         )
-    @(Html.DevExtreme().Button()
-        .ID("btnAttach")
-        .Text(new JS("formatMessage('Attach')"))
-        .Icon("link")
-        .Hint("Click to Attach")
-        .OnClick("onAttachmentButtonClick")
-        .ElementAttr(new { @class = "dx-button-custom btn-attach" })
-    )
-    <div class="btn-container">
+  
+   
         @(Html.DevExtreme().Button()
             .ID("btnColumnChooser")
             .Icon("columnchooser")
             .Width(40)
-                .ElementAttr(new { @class = "dx-button-custom btn-attach" })
-
+        .ElementAttr(new { @class = "dx-button-custom btn-attach column-chooser" })
             .Hint("Click to column chooser")
             .Text(new JS("formatMessage('Column Chooser')"))
             .OnClick("showColumnChooser")
             )
-    </div>
+ 
 </div>
 <script type="text/javascript">
 
@@ -271,7 +313,7 @@
                         "btnSave": { "Visible": true, "Enabled": true },
                         "btnSaveAndClose": { "Visible": false, "Enabled": false },
                         "btnPreview1": { "Visible": true, "Enabled": true },
-                        "btnPrint": { "Visible": true, "Enabled": true },
+                        "btnPrintp": { "Visible": true, "Enabled": true },
                         "btnDelete": { "Visible": false, "Enabled": false },
                         "btnBack": { "Visible": false, "Enabled": false },
                         "btnVerify": { "Visible": true, "Enabled": true },
@@ -665,7 +707,7 @@
 
 
 
-    function proceedWithVerification() {
+     function proceedWithVerification() {
         // Set VerifiedBy checkbox to true
         $("#VerifiedBy").dxCheckBox("instance").option("value", true);
 
@@ -699,10 +741,23 @@
                     DevExpress.ui.dialog.alert(
                         "Voucher has been Verified.",
                         "Verified"
-                    ).done(() => {
-                        $("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherVerifiedBy || "N/A");
-                        $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
-                    });
+                        ).done(() => {
+                $("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherVerifiedBy || "N/A");
+                $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
+                  $("#btnVerify").dxButton("instance").option("disabled", true);
+
+                // ✅ Show hidden verified sections
+                $("#verifiedBySection").css("display", "flex");
+                $("#verifiedOnSection").css("display", "flex");
+
+                // Add visual confirmation
+                const btn = document.getElementById("btnVerify");
+                btn.classList.add("verified");
+
+                setTimeout(() => {
+                    btn.classList.remove("verified");
+                }, 2000);
+            });
                 }
                 else {
                     DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
@@ -723,7 +778,7 @@
         $('input, select, textarea').prop('disabled', true);
 
         $('.dx-button').each(function () {
-            const allowedButtons = ['btnBack', 'btnPrint', 'btnAttach',  'btnEditAHead', 'btnAddAHead', 'btncostBack'];
+            const allowedButtons = ['btnBack', 'btnPrintp', 'btnAttach',  'btnEditAHead', 'btnAddAHead', 'btncostBack'];
             if (!allowedButtons.includes($(this).attr('id'))) {
                 $(this).dxButton('option', 'disabled', true);
             }
@@ -921,17 +976,28 @@
                     DevExpress.ui.dialog.alert(
                         "Voucher has been Approved.",
                         "Approved"
-                    ).done(() => {
-                        disableEditing();
-                        $("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
-                        $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate || "N/A");
+                        ).done(() => {
+        disableEditing();
 
-                        if (IsDirect === true) {
-                            $("#VerifiedBy").dxCheckBox("instance").option("value", true);
-                            $("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
-                            $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
-                        }
-                    });
+        // Set Approved values
+        $("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
+        $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate || "N/A");
+
+        // ✅ Show Approved fields
+        $("#approvedBySection").css("display", "flex");
+        $("#approvedOnSection").css("display", "flex");
+
+        if (IsDirect === true) {
+            // Set Verified values as well
+            $("#VerifiedBy").dxCheckBox("instance").option("value", true);
+            $("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
+            $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
+
+            // ✅ Show Verified fields
+            $("#verifiedBySection").css("display", "flex");
+            $("#verifiedOnSection").css("display", "flex");
+        }
+    });
                 } else {
                     DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
                 }
