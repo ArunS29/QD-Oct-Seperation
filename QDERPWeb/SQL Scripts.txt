@@ -1,16 +1,224 @@
-﻿ALTER TABLE Aicon.tbl700_03ProjectDocuments 
+﻿--------------------------- Azure  ---------------------------  
+
+ALTER TABLE Aicon.tbl700_03ProjectDocuments 
 ADD AzurePath VARCHAR(MAX) NULL; 
+
+
+
+------------ Azure Attachment------------------ 
+
+ 
+
+IF COL_LENGTH('Aicon.tbl700_03ProjectDocuments', 'AzurePath') IS NULL 
+
+BEGIN 
+
+    ALTER TABLE Aicon.tbl700_03ProjectDocuments 
+
+        ADD AzurePath VARCHAR(MAX) NULL; 
+
+    PRINT 'Added column: AzurePath'; 
+
+END 
+
+ELSE 
+
+BEGIN 
+
+    PRINT 'Column already exists: AzurePath'; 
+
+END 
+
+GO 
+
+ 
+
+ 
+
+---- Add Alert Notify Is Seen column to tbl901AlertUsers if it does not exist ----- 
+
+IF COL_LENGTH('Aicon.tbl901AlertUsers', 'IsSeen') IS NULL 
+
+BEGIN 
+
+    ALTER TABLE Aicon.tbl901AlertUsers 
+
+        ADD [IsSeen] BIT NOT NULL DEFAULT 0; 
+
+    PRINT 'Added column: IsSeen'; 
+
+END 
+
+ELSE 
+
+BEGIN 
+
+    PRINT 'Column already exists: IsSeen'; 
+
+END 
+
+GO 
+
+ 
+
+---------- Alter PO ------------ 
+
+ 
+
+IF EXISTS ( 
+
+    SELECT 1 
+
+    FROM INFORMATION_SCHEMA.COLUMNS 
+
+    WHERE TABLE_NAME = 'Aicon.Tbl20164GoodsAndServicesMaster' 
+
+      AND COLUMN_NAME = 'StoreID' 
+
+) 
+
+BEGIN 
+
+    -- Modify column type 
+
+    ALTER TABLE Aicon.Tbl20164GoodsAndServicesMaster 
+
+    ALTER COLUMN StoreID VARCHAR(30); 
+
+     
+
+    PRINT 'Column StoreID altered to VARCHAR(30)'; 
+
+END 
+
+ELSE 
+
+BEGIN 
+
+    PRINT 'Column StoreID does not exist in Tbl20164GoodsAndServicesMaster'; 
+
+END 
+
+GO 
+
+
+--d Currency Image column if it does not exist ---- 
+
+IF COL_LENGTH('Aicon.Tbl20169CurrencyExchange', 'CurrencyImage') IS NULL 
+
+BEGIN 
+
+    ALTER TABLE Aicon.Tbl20169CurrencyExchange 
+
+        ADD [CurrencyImage] NVARCHAR(MAX) NULL; 
+
+    PRINT 'Added column: CurrencyImage'; 
+
+END 
+
+ELSE 
+
+BEGIN 
+
+    PRINT 'Column already exists: CurrencyImage'; 
+
+END 
+
+GO 
+
+  
+
+----- Add Currency Symbole column if it does not exist ----- 
+
+IF COL_LENGTH('Aicon.Tbl20169CurrencyExchange', 'CurrencySymbole') IS NULL 
+
+BEGIN 
+
+    ALTER TABLE Aicon.Tbl20169CurrencyExchange 
+
+        ADD [CurrencySymbole] VARCHAR(30) NULL; 
+
+    PRINT 'Added column: CurrencySymbole'; 
+
+END 
+
+ELSE 
+
+BEGIN 
+
+    PRINT 'Column already exists: CurrencySymbole'; 
+
+END 
+
+GO 
+
+  
+
+  
+
+---- Add Email Templates table only if it doesn't exist---- 
+
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES  
+
+               WHERE TABLE_SCHEMA = 'Aicon'  
+
+               AND TABLE_NAME = 'EmailTemplates') 
+
+BEGIN 
+
+    CREATE TABLE Aicon.EmailTemplates ( 
+
+        Id INT PRIMARY KEY IDENTITY,  
+
+        TemplateName NVARCHAR(200),  
+
+        Category NVARCHAR(100),  
+
+        Subject NVARCHAR(500),  
+
+        Body NVARCHAR(MAX),  
+
+        Status NVARCHAR(20) -- Active or Inactive 
+
+    ); 
+
+    PRINT 'Created table: EmailTemplates'; 
+
+END 
+
+ELSE 
+
+BEGIN 
+
+    PRINT 'Table already exists: EmailTemplates'; 
+
+END 
+
+GO 
+
+ 
+
+-------- Alter 901Company Details -------- 
+ALTER TABLE Aicon.tbl901CompanyDetails 
+ADD 
+    DefaultcompanyID TINYINT NULL, 
+    CompanyTextColor NVARCHAR(20) NULL; 
+ 
+ 
+ALTER TABLE Aicon.Tbl901CompanyDetails 
+ADD   
+    [CurrencyImage] NVARCHAR(MAX) NULL,  
+    [CurrencySymbol] VARCHAR(30) NULL;  
+
+ALTER TABLE Aicon.tbl901AlertUsers 
+ADD Isseen BIT NOT NULL DEFAULT 0; 	
+---------------------------Voucher ---------------------------  
+
+ALTER TABLE Aicon.Tbl201VoucherEntry ADD [Type] VARCHAR(30);
 
 
 alter table Aicon.tbl201vouchermaster 
 add Currencyid int  
-
-update Aicon.tbl201vouchermaster 
-set currencyid=1 
-
-update Aicon.tbl201Vouchermaster  
- set basecurrencyid=1  
-
 
 ALTER TABLE Aicon.tbl201Vouchermaster 
 ADD CurrencyRate DECIMAL(18, 2); 
@@ -18,23 +226,24 @@ ADD CurrencyRate DECIMAL(18, 2);
 alter table Aicon.tbl201vouchermaster 
 add basecurrencyid int; 
 
-select * from Aicon.tbl201Vouchermaster 
 
 alter table Aicon.tbl20113ChequeMaster  
 add Currencyid int      
 
-update Aicon.tbl20113ChequeMaster   
-set currencyid=1  
-
-
 ALTER TABLE Aicon.tbl20113ChequeMaster   
 ADD CurrencyRate DECIMAL(18, 2);   
-
-  
 
 alter table Aicon.tbl20113ChequeMaster   
 add basecurrencyid int;  
 
+update Aicon.tbl201vouchermaster 
+set currencyid=1 
+
+update Aicon.tbl201Vouchermaster  
+set basecurrencyid=1  
+
+update Aicon.tbl20113ChequeMaster   
+set currencyid=1  
  
 
 update Aicon.tbl20113ChequeMaster    
@@ -697,10 +906,6 @@ values
     (398,'VAT Module Proforma Invoice Edit Form Screen', 'frm20181ProformaInvoiceEdit_btncreatevatinvoice','createvatinvoice', 1, 1,null, 'VAT')
 
 
-	
-
-select * from Aicon.tbl901UserAccessMasterWeb
-
 INSERT INTO Aicon.tbl901UserAccessMasterWeb 
     (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
 VALUES 
@@ -983,29 +1188,8 @@ VALUES
     (523,'Material Receipt Edit Form', 'frm60109MaterialReceiptEdit_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
 
 
-    	--SET IDENTITY_INSERT tbl901UserAccessMasterWeb OFF; 
----------------------------Voucher ---------------------------  
 
-  
 
-alter table Aicon.tbl201vouchermaster  
-add Currencyid int   
-
-update Aicon.tbl201vouchermaster  
-set currencyid=1  
-
-alter table Aicon.tbl201vouchermaster  
-add basecurrencyid int   
-  
-
-update Aicon.tbl201Vouchermaster   
-set basecurrencyid=1   
-  
-
-ALTER TABLE Aicon.tbl201Vouchermaster  
-ADD CurrencyRate DECIMAL(18, 2);  
-
-select * from Aicon.tbl201Vouchermaster  
 
 ---------------------------Cheque---------------------------  
 alter table Aicon.tbl20113ChequeMaster   
@@ -1023,9 +1207,6 @@ add basecurrencyid int;
 
 update Aicon.tbl20113ChequeMaster     
 set basecurrencyid=1,  currencyid=1  
-
-  select * from Aicon.tblUserMaster 
-  select * from Aicon.tbl901CompanyDetails 
   
 
   CREATE TABLE Aicon.language (  
@@ -1069,48 +1250,64 @@ INSERT INTO Language (Name, Value, Flag)
 VALUES (N'اُردُو', N'ur', N'https://flagcdn.com/w40/pk.png');
 
 
-ALTER TABLE Aicon.tbl901AlertUsers 
-ADD Isseen BIT NOT NULL DEFAULT 0; 
 
 sp_help Aicon.tbl901CompanyDetails
  
  select DefaultcompanyID,CompanyTextColor from Aicon.tbl901CompanyDetails
  
  update Aicon.tbl901CompanyDetails 
- set CompanyTextColor='white'
+ set CompanyTextColor='Black'
 
-ALTER TABLE Aicon.tbl901CompanyDetails 
-ADD 
-    DefaultcompanyID TINYINT NULL, 
-    CompanyTextColor NVARCHAR(20) NULL; 
  
+	
+	ALTER VIEW [Aicon].[qry201MainVoucherEntriesWithMaster] 
 
-Alter PROCEDURE [Aicon].[sp901_01UpdateLayout]   
- 
-(   
-  @LayoutXML NVARCHAR(MAX), 
-    @FormID VARCHAR(MAX), 
-    @UserID VARCHAR(50), 
-    @IsFromWeb BIT = 1 -- ✅ default TRUE 
- 
- 
-)   
- 
-AS   
- 
- 
-Update Aicon.tbl90111LayoutMaster    
-Set LayoutXml = @LayoutXML    
-Where FormID = @FormID and UserID = @UserID   
- 
- 
---UPDATE tblStockMaster   
---SET OpeningBalance = @QtyReceived   
---Where StockNo = @StockNo   
- 
---qry651_01StockOpeningBalance 
+AS 
 
-  
+SELECT Aicon.tbl201VoucherMaster.VoucherNo, Aicon.tbl201VoucherMaster.VoucherDate, Aicon.tbl201VoucherMaster.VoucherRefNo, ISNULL(Aicon.tbl201VoucherMaster.VoucherNarration, N'') AS VoucherNarration,  
+
+                  Aicon.tbl201VoucherMaster.VoucherEnteredBy, Aicon.tbl201VoucherMaster.VoucherEnteredOn, Aicon.tbl201VoucherMaster.VoucherVerifiedBy, Aicon.tbl201VoucherMaster.VoucherVerifiedOn, Aicon.tbl201VoucherMaster.VoucherApprovedBy,  
+
+                  Aicon.tbl201VoucherMaster.VoucherApprovedOn, Aicon.qry201MainVoucherEntries.VoucherEntryNo, Aicon.qry201MainVoucherEntries.AccountHead, Aicon.qry201MainVoucherEntries.AccountHeadName, Aicon.qry201MainVoucherEntries.DrCr,  
+
+                  Aicon.qry201MainVoucherEntries.DrAmount, Aicon.qry201MainVoucherEntries.CrAmount, Aicon.qry201MainVoucherEntries.VoucherAmountFormatted, ISNULL(Aicon.qry201MainVoucherEntries.EntryNarration, N'') AS EntryNarration,  
+
+                  Aicon.tbl201AccountGroups.AccountGroup, Aicon.tbl201MasterGroup.MasterGroup, Aicon.tbl201VoucherMaster.IsApproved, Aicon.tbl201VoucherMaster.VoucherType, Aicon.qry201MainVoucherEntries.SysRemarks,  
+
+                  Aicon.tbl201MasterGroup.IsCalculateOpeningBalance, Aicon.qry201MainVoucherEntries.BankClearedOn, Aicon.tbl201AccountGroups.AccountGroupID, Aicon.tbl201MasterGroup.MasterGroupID, Aicon.tbl201MasterGroup.IsProfitLossAccount,  
+
+                  Aicon.tbl201MasterGroup.IsBalanceSheetAccount, Aicon.tbl201MasterGroup.MasterOrderNo, Aicon.tbl201MasterGroup.MasterGroupCategory, DATEADD(dd, DATEDIFF(dd, 0, Aicon.tbl201VoucherMaster.VoucherEffectiveDate), 0)  
+
+                  AS VoucherEffectiveDate, Aicon.tbl201VoucherMaster.BillNo, Aicon.tbl201VoucherMaster.BillDate, Aicon.tbl201VoucherMaster.BillPaidTo, Aicon.tbl201VoucherMaster.BillRemarks, Aicon.tbl201VoucherMaster.VoucherModifiedBy,  
+
+                  Aicon.tbl201VoucherMaster.VoucherModifiedOn, Aicon.tbl201ChartOfAccounts.AccountHeadArabic, Aicon.tbl201AccountGroups.AccountGroupAr, Aicon.tbl201MasterGroup.MasterGroupAr, Aicon.tbl201VoucherTypes.VoucherTypeAr,  
+
+                  Aicon.tbl201MasterGroup.ChartOfAccountsOrder, Aicon.tbl201AccountGroups.AccountGroupOrderNo, Aicon.tbl201MasterGroup.MasterGroupCategoryAr, Aicon.tbl201AccountGroups.IsAccumulatedDepAcc,  
+
+                  Aicon.tbl201ChartOfAccounts.AccountSubGroup, Aicon.tbl20123LedgerSubGroups.SubGroupName, Aicon.tbl20123LedgerSubGroups.SubGroupNameAr, Aicon.tbl201MasterGroup.MainGroup, Aicon.tbl201VoucherMaster.ReferenceNote,  
+
+                  Aicon.tbl201VoucherMaster.Currencyid, Aicon.tbl201VoucherMaster.CurrencyRate 
+
+FROM     Aicon.tbl201MasterGroup RIGHT OUTER JOIN 
+
+                  Aicon.tbl201AccountGroups ON Aicon.tbl201MasterGroup.MasterGroupID = Aicon.tbl201AccountGroups.AccountGroupUnder RIGHT OUTER JOIN 
+
+                  Aicon.qry201MainVoucherEntries LEFT OUTER JOIN 
+
+                  Aicon.tbl201ChartOfAccounts LEFT OUTER JOIN 
+
+                  Aicon.tbl20123LedgerSubGroups ON Aicon.tbl201ChartOfAccounts.AccountSubGroup = Aicon.tbl20123LedgerSubGroups.LedgerSubGroupCode ON Aicon.qry201MainVoucherEntries.AccountHead = Aicon.tbl201ChartOfAccounts.AccountID ON  
+
+                  Aicon.tbl201AccountGroups.AccountGroupID = Aicon.tbl201ChartOfAccounts.AccountGroupID RIGHT OUTER JOIN 
+
+                  Aicon.tbl201VoucherTypes RIGHT OUTER JOIN 
+
+                  Aicon.tbl201VoucherMaster ON Aicon.tbl201VoucherTypes.VoucherType = Aicon.tbl201VoucherMaster.VoucherType ON Aicon.qry201MainVoucherEntries.VoucherNo = Aicon.tbl201VoucherMaster.VoucherNo 
+
+GO 
+
+
+
 
   ALTER PROCEDURE [Aicon].[StProAccountLedger]    
 
@@ -1567,273 +1764,9 @@ LEFT JOIN Aicon.tbl20169CurrencyExchange cex ON cex.CurrencyExchangeId = q.Curre
 END  
 
 
------------- Azure Attachment------------------ 
 
  
-
-IF COL_LENGTH('Aicon.tbl700_03ProjectDocuments', 'AzurePath') IS NULL 
-
-BEGIN 
-
-    ALTER TABLE Aicon.tbl700_03ProjectDocuments 
-
-        ADD AzurePath VARCHAR(MAX) NULL; 
-
-    PRINT 'Added column: AzurePath'; 
-
-END 
-
-ELSE 
-
-BEGIN 
-
-    PRINT 'Column already exists: AzurePath'; 
-
-END 
-
-GO 
-
- 
-
- 
-
----- Add Alert Notify Is Seen column to tbl901AlertUsers if it does not exist ----- 
-
-IF COL_LENGTH('Aicon.tbl901AlertUsers', 'IsSeen') IS NULL 
-
-BEGIN 
-
-    ALTER TABLE Aicon.tbl901AlertUsers 
-
-        ADD [IsSeen] BIT NOT NULL DEFAULT 0; 
-
-    PRINT 'Added column: IsSeen'; 
-
-END 
-
-ELSE 
-
-BEGIN 
-
-    PRINT 'Column already exists: IsSeen'; 
-
-END 
-
-GO 
-
- 
-
----------- Alter PO ------------ 
-
- 
-
-IF EXISTS ( 
-
-    SELECT 1 
-
-    FROM INFORMATION_SCHEMA.COLUMNS 
-
-    WHERE TABLE_NAME = 'Aicon.Tbl20164GoodsAndServicesMaster' 
-
-      AND COLUMN_NAME = 'StoreID' 
-
-) 
-
-BEGIN 
-
-    -- Modify column type 
-
-    ALTER TABLE Aicon.Tbl20164GoodsAndServicesMaster 
-
-    ALTER COLUMN StoreID VARCHAR(30); 
-
-     
-
-    PRINT 'Column StoreID altered to VARCHAR(30)'; 
-
-END 
-
-ELSE 
-
-BEGIN 
-
-    PRINT 'Column StoreID does not exist in Tbl20164GoodsAndServicesMaster'; 
-
-END 
-
-GO 
-
-
---d Currency Image column if it does not exist ---- 
-
-IF COL_LENGTH('Aicon.Tbl20169CurrencyExchange', 'CurrencyImage') IS NULL 
-
-BEGIN 
-
-    ALTER TABLE Aicon.Tbl20169CurrencyExchange 
-
-        ADD [CurrencyImage] NVARCHAR(MAX) NULL; 
-
-    PRINT 'Added column: CurrencyImage'; 
-
-END 
-
-ELSE 
-
-BEGIN 
-
-    PRINT 'Column already exists: CurrencyImage'; 
-
-END 
-
-GO 
-
   
-
------ Add Currency Symbole column if it does not exist ----- 
-
-IF COL_LENGTH('Aicon.Tbl20169CurrencyExchange', 'CurrencySymbole') IS NULL 
-
-BEGIN 
-
-    ALTER TABLE Aicon.Tbl20169CurrencyExchange 
-
-        ADD [CurrencySymbole] VARCHAR(30) NULL; 
-
-    PRINT 'Added column: CurrencySymbole'; 
-
-END 
-
-ELSE 
-
-BEGIN 
-
-    PRINT 'Column already exists: CurrencySymbole'; 
-
-END 
-
-GO 
-
-  
-
-  
-
----- Add Email Templates table only if it doesn't exist---- 
-
-IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES  
-
-               WHERE TABLE_SCHEMA = 'Aicon'  
-
-               AND TABLE_NAME = 'EmailTemplates') 
-
-BEGIN 
-
-    CREATE TABLE Aicon.EmailTemplates ( 
-
-        Id INT PRIMARY KEY IDENTITY,  
-
-        TemplateName NVARCHAR(200),  
-
-        Category NVARCHAR(100),  
-
-        Subject NVARCHAR(500),  
-
-        Body NVARCHAR(MAX),  
-
-        Status NVARCHAR(20) -- Active or Inactive 
-
-    ); 
-
-    PRINT 'Created table: EmailTemplates'; 
-
-END 
-
-ELSE 
-
-BEGIN 
-
-    PRINT 'Table already exists: EmailTemplates'; 
-
-END 
-
-GO 
-
- 
-
--------- Alter 901Company Details -------- 
-
- 
-
-ALTER TABLE Tbl201CompanyDetails 
-
-  
-
-ADD   
-
-  
-
-    [CurrencyImage] NVARCHAR(MAX) NULL,  
-
-  
-
-    [CurrencySymbol] VARCHAR(30) NULL;  
-	
-	
-	
-	
-	
-	ALTER VIEW [Aicon].[qry201MainVoucherEntriesWithMaster] 
-
-AS 
-
-SELECT Aicon.tbl201VoucherMaster.VoucherNo, Aicon.tbl201VoucherMaster.VoucherDate, Aicon.tbl201VoucherMaster.VoucherRefNo, ISNULL(Aicon.tbl201VoucherMaster.VoucherNarration, N'') AS VoucherNarration,  
-
-                  Aicon.tbl201VoucherMaster.VoucherEnteredBy, Aicon.tbl201VoucherMaster.VoucherEnteredOn, Aicon.tbl201VoucherMaster.VoucherVerifiedBy, Aicon.tbl201VoucherMaster.VoucherVerifiedOn, Aicon.tbl201VoucherMaster.VoucherApprovedBy,  
-
-                  Aicon.tbl201VoucherMaster.VoucherApprovedOn, Aicon.qry201MainVoucherEntries.VoucherEntryNo, Aicon.qry201MainVoucherEntries.AccountHead, Aicon.qry201MainVoucherEntries.AccountHeadName, Aicon.qry201MainVoucherEntries.DrCr,  
-
-                  Aicon.qry201MainVoucherEntries.DrAmount, Aicon.qry201MainVoucherEntries.CrAmount, Aicon.qry201MainVoucherEntries.VoucherAmountFormatted, ISNULL(Aicon.qry201MainVoucherEntries.EntryNarration, N'') AS EntryNarration,  
-
-                  Aicon.tbl201AccountGroups.AccountGroup, Aicon.tbl201MasterGroup.MasterGroup, Aicon.tbl201VoucherMaster.IsApproved, Aicon.tbl201VoucherMaster.VoucherType, Aicon.qry201MainVoucherEntries.SysRemarks,  
-
-                  Aicon.tbl201MasterGroup.IsCalculateOpeningBalance, Aicon.qry201MainVoucherEntries.BankClearedOn, Aicon.tbl201AccountGroups.AccountGroupID, Aicon.tbl201MasterGroup.MasterGroupID, Aicon.tbl201MasterGroup.IsProfitLossAccount,  
-
-                  Aicon.tbl201MasterGroup.IsBalanceSheetAccount, Aicon.tbl201MasterGroup.MasterOrderNo, Aicon.tbl201MasterGroup.MasterGroupCategory, DATEADD(dd, DATEDIFF(dd, 0, Aicon.tbl201VoucherMaster.VoucherEffectiveDate), 0)  
-
-                  AS VoucherEffectiveDate, Aicon.tbl201VoucherMaster.BillNo, Aicon.tbl201VoucherMaster.BillDate, Aicon.tbl201VoucherMaster.BillPaidTo, Aicon.tbl201VoucherMaster.BillRemarks, Aicon.tbl201VoucherMaster.VoucherModifiedBy,  
-
-                  Aicon.tbl201VoucherMaster.VoucherModifiedOn, Aicon.tbl201ChartOfAccounts.AccountHeadArabic, Aicon.tbl201AccountGroups.AccountGroupAr, Aicon.tbl201MasterGroup.MasterGroupAr, Aicon.tbl201VoucherTypes.VoucherTypeAr,  
-
-                  Aicon.tbl201MasterGroup.ChartOfAccountsOrder, Aicon.tbl201AccountGroups.AccountGroupOrderNo, Aicon.tbl201MasterGroup.MasterGroupCategoryAr, Aicon.tbl201AccountGroups.IsAccumulatedDepAcc,  
-
-                  Aicon.tbl201ChartOfAccounts.AccountSubGroup, Aicon.tbl20123LedgerSubGroups.SubGroupName, Aicon.tbl20123LedgerSubGroups.SubGroupNameAr, Aicon.tbl201MasterGroup.MainGroup, Aicon.tbl201VoucherMaster.ReferenceNote,  
-
-                  Aicon.tbl201VoucherMaster.Currencyid, Aicon.tbl201VoucherMaster.CurrencyRate 
-
-FROM     Aicon.tbl201MasterGroup RIGHT OUTER JOIN 
-
-                  Aicon.tbl201AccountGroups ON Aicon.tbl201MasterGroup.MasterGroupID = Aicon.tbl201AccountGroups.AccountGroupUnder RIGHT OUTER JOIN 
-
-                  Aicon.qry201MainVoucherEntries LEFT OUTER JOIN 
-
-                  Aicon.tbl201ChartOfAccounts LEFT OUTER JOIN 
-
-                  Aicon.tbl20123LedgerSubGroups ON Aicon.tbl201ChartOfAccounts.AccountSubGroup = Aicon.tbl20123LedgerSubGroups.LedgerSubGroupCode ON Aicon.qry201MainVoucherEntries.AccountHead = Aicon.tbl201ChartOfAccounts.AccountID ON  
-
-                  Aicon.tbl201AccountGroups.AccountGroupID = Aicon.tbl201ChartOfAccounts.AccountGroupID RIGHT OUTER JOIN 
-
-                  Aicon.tbl201VoucherTypes RIGHT OUTER JOIN 
-
-                  Aicon.tbl201VoucherMaster ON Aicon.tbl201VoucherTypes.VoucherType = Aicon.tbl201VoucherMaster.VoucherType ON Aicon.qry201MainVoucherEntries.VoucherNo = Aicon.tbl201VoucherMaster.VoucherNo 
-
-GO 
-
- select * from Aicon.tblUserMaster
-
- 
- 
-
- 
 
  sp_helptext sp_01totClientOutstanding
 
@@ -1852,7 +1785,7 @@ CREATE TABLE Aicon.tbl01supplieroutstanding (
 
 -- Procedure to calculate total Supplier Outstanding 
 
-CREATE PROCEDURE sp_01totSupOutstanding 
+CREATE PROCEDURE Aicon.sp_01totSupOutstanding 
 
 AS 
 
@@ -1878,7 +1811,7 @@ END;
 
 -- Procedure to calculate total Client Outstanding 
 
-CREATE PROCEDURE sp_01totClientOutstanding 
+CREATE PROCEDURE Aicon.sp_01totClientOutstanding 
 
 AS 
 
@@ -1904,7 +1837,7 @@ END;
 
 -- Procedure to calculate total Cash Balance 
 
-CREATE PROCEDURE sp_01totcashbalance 
+CREATE PROCEDURE Aicon.sp_01totcashbalance 
 
 AS 
 
@@ -1942,7 +1875,7 @@ EXEC sp_01totcashbalance;
 
   
 
-  ALTER TABLE Aicon.Tbl201VoucherEntry ADD [Type] VARCHAR(30);
+  select * from Aicon.tbl901CompanyDetails
 
 
   --for IMS
@@ -1955,16 +1888,23 @@ SET
     IsResetInvoiceInYear = 1,
     QuotationAbbrv = 'AIC-QUO-',
     Rfqabbrv = 'AICON-RFQ-',PurchaseOrderAbbrv='AI-PO',SalesOrderAbbrv='AICON-SO-'
-WHERE CompanyID =2 
+WHERE CompanyID =1
 
 UPDATE Aicon.tbl901CompanyDetails02
 
 SET NoOfDigitsToInventoryQuotation = 4
 
-WHERE CompanyID=2
- 
+WHERE CompanyID=1
 
-  ALTER TABLE Aicon.tbl901CompanyDetails02
-  ALTER COLUMN IsEnableQuotationWorkflow BIT NOT NULL DEFAULT 1,
-  ALTER COLUMN IsEnableRFQWorkflow       BIT NOT NULL DEFAULT 1,
-  ALTER COLUMN IsEnableReceiptWorkflow   BIT NOT NULL DEFAULT 1;
+ALTER TABLE Aicon.tbl901CompanyDetails02
+ADD IsEnableQuotationWorkflow BIT CONSTRAINT DF_tbl901CompanyDetails02_IsEnableQuotationWorkflow DEFAULT 1;
+
+ALTER TABLE Aicon.tbl901CompanyDetails02
+ADD IsEnableRFQWorkflow BIT CONSTRAINT DF_tbl901CompanyDetails02_IsEnableRFQWorkflow DEFAULT 1;
+
+ALTER TABLE Aicon.tbl901CompanyDetails02
+ADD IsEnableReceiptWorkflow BIT CONSTRAINT DF_tbl901CompanyDetails02_IsEnableReceiptWorkflow DEFAULT 1;
+
+ALTER TABLE Aicon.tbl901CompanyDetails02
+ADD CONSTRAINT DF_tbl901CompanyDetails02_IsAllowUnlockPO DEFAULT 1 FOR IsAllowUnlockPO;
+
