@@ -1214,11 +1214,11 @@
 
             if (e.value) {
                 // When switched ON, update text and apply red color
-                textBoxInstance.option("value", "Supplier is set as obsolete:");
+                    textBoxInstance.option("value", "Local Supplier:");
                 $("#LedgerActive .dx-texteditor-input").css("color", "red");
             } else {
                 // When switched OFF, update text and reset color
-                textBoxInstance.option("value", "Ledger is Currently Active:");
+                textBoxInstance.option("value", "International Supplier:");
                 $("#LedgerActive .dx-texteditor-input").css("color", "black");
             }
         });
