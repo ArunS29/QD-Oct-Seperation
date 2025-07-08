@@ -3311,9 +3311,29 @@ var dictionary = {
         "Add New Delivery To Project": "Add New Delivery To Project",
         "Project Request Master": "Project Request Master",
         "Distribute Cost": "Distribute Cost",
-        "QuickDice ERP Solutions":"QuickDice ERP Solutions",
+        "QuickDice ERP Solutions": "QuickDice ERP Solutions",
+        "Today": "Today",
+        "Week": "Week",
+        "Month": "Month",
+        "Pending Verifications": "Pending Verifications",
+        "for this period": "for this period",
+        "Total Turnover": "Total Turnover",
+        "Today's Invoices": "Today's Invoices",
+        "New Vouchers": "New Vouchers",
+        "Vouchers Verified": "Vouchers Verified",
+        "Tax Summary Report-Debit Notes":"Tax Summary Report-Debit Notes",
     },
     ar: {
+        "Tax Summary Report – Debit Notes": "تقرير ملخص الضريبة - إشعارات الخصم",
+        "for this period": "لهذه الفترة",
+        "Total Turnover": "إجمالي المبيعات",
+        "Today's Invoices": "فواتير اليوم",
+        "New Vouchers": "قسائم جديدة",
+        "Vouchers Verified": "تم التحقق من القسائم",
+        "Pending Verifications": "التحققات المعلقة",
+        "Today": "اليوم",
+        "Week": "الأسبوع",
+        "Month": "الشهر",
         "QuickDice ERP Solutions": "كويك دايس لحلول تخطيط موارد المؤسسات",
         "Update": "تحديث",
         "Add New e-Invoice Credit Note": "إضافة إشعار دائن جديد للفاتورة الإلكترونية",
@@ -8719,7 +8739,8 @@ var dictionary = {
         "Departments": "部门",
         "Units / Sections": "单位/部门",
         "Positions": "职位",
-        "Manpower Rentals": "人力租赁"
+        "Manpower Rentals": "人力租赁",
+        "Tax Summary Report – Debit Notes": "税务汇总报告 - 借项通知单"
 
 
 
@@ -11615,11 +11636,12 @@ var dictionary = {
         "Departments": "विभाग",
         "Units / Sections": "इकाइयाँ / अनुभाग",
         "Positions": "पद",
-        "Manpower Rentals": "मानव बल किराया"
+        "Manpower Rentals": "मानव बल किराया",
+        "Tax Summary Report – Debit Notes": "कर सारांश रिपोर्ट - डेबिट नोट्स"
     },
     ur: {
-        
-    "VoucherDate": "واؤچر کی تاریخ",
+        "Tax Summary Report – Debit Notes":"ٹیکس کا خلاصہ رپورٹ - ڈیبٹ نوٹس",
+        "VoucherDate": "واؤچر کی تاریخ",
         "Update": "اپڈیٹ",
         "Exemption Code": "چھوٹ کا کوڈ",
         "Invoiced Amount (SAR)": " انوائس شدہ رقم (ایس اے آر)",
@@ -17371,7 +17393,8 @@ var dictionary = {
         "Departments": "부서",
         "Units / Sections": "단위 / 섹션",
         "Positions": "직위",
-        "Manpower Rentals": "인력 대여"
+        "Manpower Rentals": "인력 대여",
+        "Tax Summary Report – Debit Notes": "세금 요약 보고서 - 차변 노트",
     },
 
 
