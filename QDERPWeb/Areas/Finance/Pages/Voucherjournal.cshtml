@@ -3218,6 +3218,7 @@ buttons.Add()
             iframe.src = url;
         });
     }
+
     function onAttachmentButtonClick() {
         var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
         var voucherNo = voucherNoBox.option("value");
@@ -3226,7 +3227,7 @@ buttons.Add()
         var voucherType = voucherTypeBox.option("value");
         console.log(voucherType)
         const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&modal=true`;
-        const title = "Ledger Documents";
+        const title = "Transaction Documents";
         openModal(url, title);
     }
 

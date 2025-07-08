@@ -1118,7 +1118,7 @@
         const isMaster = false;
         console.log(voucherType)
         const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&modal=true&isMaster=${isMaster}`;
-        const title = "Ledger Documents";
+        const title = "Transaction Documents";
         openModal(url, title);
 }
 

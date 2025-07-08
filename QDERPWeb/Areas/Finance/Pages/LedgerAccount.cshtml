@@ -5026,13 +5026,18 @@ function syncSupVATNumbers(e) {
 
         window.parent.$("#popupContainer").dxPopup("instance").hide();
       }
-        
 
-    function GoToAttachment(){
+
+        function GoToAttachment() {
         var sAccountID = $('#txtAccountId').dxTextBox("instance").option("value");
-        console.log(sAccountID)
-        window.location.href = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(sAccountID)}&ModuleType=${encodeURIComponent(sAccountID)}`;
+        var module = "Ledger Account";
+        var isMaster = "true"; // Already a string
+
+       
+
+        window.location.href = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(sAccountID)}&ModuleType=${encodeURIComponent(module)}&isMaster=${isMaster}`;
     }
+
      function onPostButtonClick(e) {
     
      var sAccountID = $('#txtAccountId').dxTextBox("instance").option("value");

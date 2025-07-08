@@ -9,13 +9,20 @@
 
 <style>
     .drop-zone {
-        border: 2px dashed #999;
-        border-radius: 10px;
+        border: 2px dashed #007bff;
         padding: 30px;
+        border-radius: 8px;
         text-align: center;
-        color: #666;
         cursor: pointer;
-        width: 90%;
+        background-color: #f9f9f9;
+        transition: background-color 0.3s ease;
+        margin-bottom: 15px;
+    }
+
+    .drag-over {
+        background-color: #f8f9fa;
+        border-color: #007bff;
+        transition: 0.3s ease;
     }
 
         .drop-zone.hover {
@@ -30,6 +37,8 @@
 
     .drop-preview {
         margin-top: 10px;
+        font-size: 14px;
+        color: #333;
     }
 
     .dx-fieldset {
@@ -350,161 +359,51 @@
     </div>
    
     <!-- Left Column -->
+
     <div>
         <div class="form-wrapper">
-            <!-- Row 1 -->
             <div class="form-row">
-                <div style="flex: 1;">
+               
+
+                <div style="display:none;">
                     @(Html.DevExtreme().TextBox()
                         .ID("DocumentNo")
-                        .Label("Document No:")
-                        .LabelMode(EditorLabelMode.Outside)
-                        .Width("100%")
                         .ReadOnly(true))
-                </div>
-
-                <div class="doc-type-row" style="flex: 2;">
-                    <div style="flex: 1;">
-                        @(
-                            Html.DevExtreme().SelectBox()
-                            .ID("DocType")
-                            .Label("Type of the Document Attached:")
-                            .LabelMode(EditorLabelMode.Outside)
-                            .Width("100%")
-                            .DataSource(d => d.Mvc().Controller("StockInventory").LoadAction("GetDocumentTypes"))
-                            .DisplayExpr("text")
-                            .ValueExpr("id")
-                            .ValidationRules(rules =>
-                            {
-                                rules.AddRequired().Message("Document Type is required.");
-                            })
-                            .Buttons(buttons =>
-                            {
-                                buttons.Add()
-                                .Name("addLedger")
-                                .Location(TextEditorButtonLocation.After)
-                                .Widget(w => w.Button()
-                                .Type(ButtonType.Default)
-                                .Icon("plus")
-                                .ElementAttr(new { @class = "custom-hover-button add-hover" })
-                                .OnClick("onAddDocType"));
-                                buttons.Add()
-                                .Name("dropDown");
-                            }))
-                    </div>
-                    @* <div>
-                            @(Html.DevExtreme().Button()
-                                .ID("btnAdd")
-                                .Icon("plus")
-                                .Type(ButtonType.Success)
-                                .Width(65)
-                                .ElementAttr("style", "color:black;")
-                                .OnClick("onAddDocType"))
-                        </div> *@
                 </div>
                 <div style="flex: 1;">
                     @(Html.DevExtreme().TextBox()
                         .ID("LedgerNo")
-                        .Label("FolderId:")
+                        .Label("Folder ID")
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%")
                         .ReadOnly(true))
                 </div>
+
                 <div style="flex: 1;">
                     @(Html.DevExtreme().TextBox()
                         .ID("ReferenceNo")
-                        .Label("ReferenceNo: Can change it")
+                        .Label("Reference No")
                         .LabelMode(EditorLabelMode.Outside)
                         .Width("100%"))
-
                 </div>
+                
             </div>
 
-            <!-- Row 2 -->
-            <div class="form-row">
-                <div style="flex: 1;">
-                    @(Html.DevExtreme().TextBox()
-                        .ID("Remarks")
-                        .Label("Remarks / Notes:")
-                        .LabelMode(EditorLabelMode.Outside)
-                        .Width("100%"))
-                </div>
-
-                <div style="flex: 1;">
-                    @(Html.DevExtreme().DateBox()
-                        .ID("DocumentExpiryDate")
-                        .Label("Document Expiry Date:")
-                        .LabelMode(EditorLabelMode.Outside)
-                        .Value(DateTime.Today.AddMonths(1))
-                        .Width("100%"))
-                </div>
-
-                <div style="flex: 1;">
-                    @(Html.DevExtreme().DateBox()
-                        .ID("HijriExpiryDate")
-                        .Label("Expiry Date (Hijri):")
-                        .LabelMode(EditorLabelMode.Outside)
-                        .DisplayFormat("dd-MMM-yyyy")
-                        .ReadOnly(true)
-                        .Value(DateTime.Today.AddMonths(1))
-                        .Width("100%"))
-                </div>
-                @section Scripts {
-                    <script>
-                        $(function () {
-                            const docExpDateBox = $("#DocumentExpiryDate").dxDateBox("instance");
-                            const hijriDateBox = $("#HijriExpiryDate").dxDateBox("instance");
-
-                            docExpDateBox.option("onValueChanged", function(e) {
-                                const selectedDate = e.value;
-
-                                if (selectedDate) {
-                                    hijriDateBox.option("value", selectedDate); // sets the same date
-                                } else {
-                                    hijriDateBox.option("value", null);
-                                }
-                            });
-                        });
-                    </script>
-                }
-
-
-                <div style="flex: 1;">
-                    @(Html.DevExtreme().DateBox()
-                        .ID("NotificationDate")
-                        .Label("Notification Date:")
-                        .LabelMode(EditorLabelMode.Outside)
-                        .DisplayFormat("dd-MMM-yyyy")
-                        .Value(DateTime.Now.AddDays(7))
-                        .Width("100%"))
-                </div>
+            <!-- Drag & Drop Zone -->
+            <div class="drop-zone" id="dropZone" style="height: 200px; border: 2px dashed #aaa; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 20px;">
+                <i class="dx-icon dx-icon-upload" style="font-size: 36px; color: #6c757d;"></i>
+                <p style="margin: 10px 0; font-weight: 500;">Drag & drop files here or click to browse</p>
+                <input type="file" id="fileUploader" accept="*/*" multiple style="display:none;" />
+                <div class="drop-preview" id="preview"></div>
             </div>
 
-            <div class="bottom-row">
-                <div class="drop-zone" id="dropZone">
-                    <i class="dx-icon dx-icon-upload" id="uploadIcon"></i>
-                    <span id="dropZoneText">Drag & drop a file here or click to browse</span>
-                    <div class="drop-preview" id="preview"></div>
-                </div>
-                <input type="file" id="fileUploader" accept="*/*" style="display:none;" />
-
-
-
-                @(Html.DevExtreme().Button()
-                    .Text("Add")
-                    .Icon("fas fa-plus")
-                    .Type(ButtonType.Success)
-                    .OnClick("onSaveDocument")
-                    .ElementAttr(new { @class = "icon-button-ledger" }))
-
+            <!-- Documents Grid -->
+            <div class="dx-field ledgerResult" style="margin-top: 20px;">
+                <div id="documentsGrid"></div>
             </div>
         </div>
-        <input type="hidden" id="hiddenModuleType" name="moduleType" />
-        <!-- Grid Section -->
-        <div class="dx-field ledgerResult" style="margin-top: 10px;">
-            <div id="documentsGrid"></div>
-        </div>
-    </div>
+
+        
     <!-- Bottom Buttons -->
     <div class="bottom-buttons">
         <div class="right-buttons">
@@ -527,7 +426,7 @@
     </div>
     <!-- Popup to show all documents -->
     <div id="popupDocumentList"></div>
-
+ </div>
 </div>
 
 <script>
@@ -535,17 +434,15 @@
     var urlParams = new URLSearchParams(window.location.search);
     var referenceNo = urlParams.get("ReferenceNo");
     var moduleType = urlParams.get("ModuleType");
-    const isMaster = urlParams.get("isMaster") === "true";
+    var isMaster = urlParams.get("isMaster");
 
-    const title = isMaster ? "Master Documents" : "Transaction Documents";
+    var title = (isMaster === "true") ? "Master Documents" : "Transaction Documents";
     document.getElementById("documentTitle").textContent = title + " - " + moduleType;
     $(function () {
         loadInitialDocumentNo();
     });
 
-
-
-    $(function () {
+        $(function () {
         const urlParams = new URLSearchParams(window.location.search);
         const referenceNo = urlParams.get("ReferenceNo");
         const moduleType = urlParams.get("ModuleType");
@@ -553,99 +450,75 @@
         $("#documentsGrid").dxDataGrid({
             dataSource: DevExpress.data.AspNet.createStore({
                 key: "DocumentNo",
-                loadUrl: `/api/LedgerDocumentsF/GetDocuments?module=${encodeURIComponent(moduleType)}`,
-
+                loadUrl: `/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(referenceNo)}&module=${encodeURIComponent(moduleType)}`
             }),
-            height: 350,
+            height: 400,
             showBorders: true,
             columnAutoWidth: true,
-            showRowLines: true,
             paging: { enabled: false },
-            editing: {
-                mode: "row",
-                allowUpdating: true,
-                allowAdding: false,
-                allowDeleting: false
-            },
             columns: [
                 { dataField: "DocumentNo", caption: "Doc No", allowEditing: false },
-                { dataField: "DocumentType", caption: "Document Type", dataType: "text" },
+                    {
+        caption: "Document",
+        dataField: "FileUrl", // 🔁 use this instead of AzurePath
+        cellTemplate: function (container, options) {
+            const fileUrl = options.value;
+            if (typeof fileUrl === "string" && fileUrl.startsWith("http")) {
+                const fileName = decodeURIComponent(fileUrl.split('/').pop().split('?')[0]);
+                $("<a>")
+                    .text(fileName)
+                    .attr("href", fileUrl)
+                    .attr("target", "_blank")
+                    .addClass("dx-link")
+                    .appendTo(container);
+            } else {
+                $("<div>").text("-").appendTo(container);
+            }
+        }
+    },
+
+
+
+                { dataField: "DocumentType", caption: "Document Type" },
                 { dataField: "DocumentRefNo", caption: "Reference No" },
-                { dataField: "DocumentRemarks", caption: "Remarks", dataType: "text" },
+                { dataField: "DocumentRemarks", caption: "Remarks" },
+               
                 {
-                  dataField: "DocumentExpDate",
-                  caption: "Expiry On",
-                  dataType: "date",
-                  format: "dd/MM/yyyy",
-                  cellTemplate: function(container, options) {
-                    const rawValue = options.data.DocumentExpDate;
-
-                    if (!rawValue) {
-                      // Handle null/undefined/empty
-                      $("<div>")
-                        .text(" null ")
-                        .css({
-                          backgroundColor: "#fff3cd",  // yellowish warning
-                          color: "#856404",            // dark yellow text
-                          padding: "4px 8px",
-                          borderRadius: "6px",
-                          textAlign: "center"
-                        })
-                        .appendTo(container);
-                      return;
+                    dataField: "DocumentExpDate",
+                    caption: "Expiry On",
+                    dataType: "date",
+                    format: "dd/MM/yyyy",
+                    cellTemplate: function(container, options) {
+                        const rawValue = options.data.DocumentExpDate;
+                        if (!rawValue) return container.append("<div class='text-muted'>No Date</div>");
+                        const expDate = new Date(rawValue);
+                        const today = new Date();
+                        const expired = expDate < today;
+                        $("<div>").text(expDate.toLocaleDateString('en-GB')).css({
+                            backgroundColor: expired ? "#f8d7da" : "#d4edda",
+                            color: expired ? "#721c24" : "#155724",
+                            padding: "4px 8px",
+                            borderRadius: "6px"
+                        }).appendTo(container);
                     }
-
-                    const expDate = new Date(rawValue);
-                    const today = new Date();
-
-                    const isExpired = expDate < today;
-                    const bgColor = isExpired ? "#f8d7da" : "#d4edda"; // red/green
-                    const color = isExpired ? "#721c24" : "#155724";   // text color
-
-                    const formattedDate = expDate.toLocaleDateString('en-GB');
-
-                    $("<div>")
-                      .text(formattedDate)
-                      .css({
-                        backgroundColor: bgColor,
-                        color: color,
-                        padding: "4px 8px",
-                        borderRadius: "6px",
-                        textAlign: "center"
-                      })
-                      .appendTo(container);
-                  }
                 },
-
-
                 { dataField: "DocumentExpDateAr", caption: "Expiry (Hijri)", dataType: "date" },
                 { dataField: "DocumentNotificationDate", caption: "Notify On", dataType: "date" },
-                {
-                    dataField: "DocumentStatusRemarks",
-                    caption: "Status Remarks"
-                },
-                {
-                    caption: "Download",
-                    cellTemplate: function (container, options) {
-                        $("<a>")
-                            .text("Download")
-                            .attr("href", options.data.FileUrl) // Your DB field with blob URL
-                            .attr("target", "_blank")
-                            .addClass("dx-link")
-                            .appendTo(container);
-                    }
-                }
-            ],
-            onRowUpdating: onGridRowUpdating
-        });
-    });
+                
 
+            ]
+        });
+
+        
+    });
 
     function loadInitialDocumentNo() {
         $.get("/api/LedgerDocumentsF/GetNewDocumentNo", function (data) {
             $("#DocumentNo").dxTextBox("instance").option("value", data);
         });
     }
+
+
         function onFileSelected(e) {
         const file = e.value[0]; // DevExtreme passes file(s) in e.value
         if (file) {
@@ -685,8 +558,9 @@
 
         const formData = new FormData();
         formData.append("File", file);
-        formData.append("DocumentNo", $("#DocumentNo").dxTextBox("instance").option("value"));
+        formData.append("DocumentNo", $("#DocumentNo").dxSelectBox("instance").option("value"));
         formData.append("DocumentType", $("#DocType").dxSelectBox("instance").option("value"));
+        formData.append("LedgerNo", $("#LedgerNo").dxTextBox("instance").option("value"));
         formData.append("DocumentRefNo", $("#ReferenceNo").dxTextBox("instance").option("value"));
         formData.append("DocumentRemarks", $("#Remarks").dxTextBox("instance").option("value"));
         formData.append("DocumentExpDate", formatDateForServer($("#DocumentExpiryDate").dxDateBox("instance").option("value")));
@@ -694,7 +568,7 @@
         formData.append("NotificationDate", formatDateForServer($("#NotificationDate").dxDateBox("instance").option("value")));
 
         $.ajax({
-           url: `/api/LedgerDocumentsF/AddDocumentsEntry?folderId=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&modal=true&isMaster=${title}`,
+           url: `/api/LedgerDocumentsF/AddDocumentsEntry?folderId=${encodeURIComponent(referenceNo)}&moduleType=${encodeURIComponent(moduleType)}&isMaster=${encodeURIComponent(title)}`,
             type: "POST",
             data: formData,
             contentType: false,
@@ -772,85 +646,104 @@
             $("#ReferenceNo").dxTextBox("instance").option("value", refNo);
         });
 
-    let selectedFile = null;
-    const dropZone = document.getElementById('dropZone');
-    const fileInput = document.getElementById('fileUploader');
-    const preview = document.getElementById('preview');
-    const dropText = document.getElementById('dropZoneText');
-    const uploadIcon = document.getElementById('uploadIcon');
-    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+          let selectedFiles = [];
 
-    // Click to browse
-    dropZone.addEventListener('click', () => fileInput.click());
+    function setupDragDrop() {
+        const dropZone = document.getElementById("dropZone");
+        const uploader = document.getElementById("fileUploader");
+        const preview = document.getElementById("preview");
 
-    // File selection via browse
-    fileInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file) handleFile(file);
-    });
-
-    // Drag effects
-    dropZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropZone.classList.add('hover');
-    });
-
-    dropZone.addEventListener('dragleave', () => {
-        dropZone.classList.remove('hover');
-    });
-
-    // Drop file handler
-    dropZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropZone.classList.remove('hover');
-
-        const file = e.dataTransfer.files[0];
-        if (file) handleFile(file);
-    });
-
-    function handleFile(file) {
-        if (file.size > MAX_FILE_SIZE) {
-            DevExpress.ui.notify("File size exceeds 5MB limit.", "error", 2000);
+        if (!dropZone || !uploader || !preview) {
+            console.error("DropZone, FileUploader, or Preview not found");
             return;
         }
-        selectedFile = file;
-        // ✅ Clear existing content
-        preview.innerHTML = "";
 
-        // ✅ Hide text and icon
-        dropText.style.display = "none";
-        uploadIcon.style.display = "none";
+        dropZone.addEventListener("click", () => uploader.click());
 
-        // Show image preview
-        if (file.type.startsWith('image/')) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const img = document.createElement('img');
-                img.src = e.target.result;
-                img.style.maxHeight = '120px';
-                img.style.maxWidth = '100%';
-                preview.appendChild(img);
-            };
-            reader.readAsDataURL(file);
-        } else {
-            // Show icon + file name
-            const fileInfo = document.createElement('div');
-            fileInfo.style.display = 'flex';
-            fileInfo.style.alignItems = 'center';
+        dropZone.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            dropZone.classList.add("drag-over");
+        });
 
-            const icon = document.createElement('i');
-            icon.className = 'dx-icon dx-icon-file';
-            icon.style.marginRight = '5px';
+        dropZone.addEventListener("dragleave", () => {
+            dropZone.classList.remove("drag-over");
+        });
 
-            const fileName = document.createElement('span');
-            fileName.textContent = file.name;
+        dropZone.addEventListener("drop", (e) => {
+            e.preventDefault();
+            dropZone.classList.remove("drag-over");
+            const files = Array.from(e.dataTransfer.files);
+            handleFiles(files);
+        });
 
-            fileInfo.appendChild(icon);
-            fileInfo.appendChild(fileName);
-            preview.appendChild(fileInfo);
+        uploader.addEventListener("change", (e) => {
+            const files = Array.from(e.target.files);
+            handleFiles(files);
+            uploader.value = ""; // Reset input to allow same file re-selection
+        });
+
+        function handleFiles(files) {
+            files.forEach(file => {
+                if (!file || !file.name) return;
+
+                
+
+                selectedFiles.push(file);
+                showFilePreview(file);
+                uploadDocument(file);
+            });
         }
 
-        // Optional: Store file or base64 for upload
+        function showFilePreview(file) {
+            const fileDiv = document.createElement("div");
+            fileDiv.style.marginTop = "6px";
+            fileDiv.style.fontSize = "14px";
+            fileDiv.textContent = `📎 ${file.name}`;
+            preview.appendChild(fileDiv);
+        }
+    }
+
+    // Call setup on page load
+    $(function () {
+        setupDragDrop();
+    });
+
+        function uploadDocument(file) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const referenceNo = urlParams.get("ReferenceNo");
+        const moduleType = urlParams.get("ModuleType");
+        const isMaster = urlParams.get("isMaster"); // ← avoid relying on 'title' string here
+
+        const formData = new FormData();
+        formData.append("File", file);
+            console.log("Uploading file:", file.name);
+    console.log("DocumentNo:", $("#DocumentNo").dxTextBox("instance")?.option("value"));
+
+        formData.append("DocumentNo", $("#DocumentNo").dxTextBox("instance").option("value")); // ✅ Fixed
+        formData.append("DocumentType", $("#DocType")?.val() || "1"); // fallback if missing
+        formData.append("LedgerNo", $("#LedgerNo").dxTextBox("instance").option("value") || referenceNo);
+        formData.append("DocumentRefNo", $("#ReferenceNo").dxTextBox("instance").option("value") || referenceNo);
+        formData.append("DocumentRemarks", $("#Remarks")?.val() || "Uploaded via drag-drop");
+        formData.append("DocumentExpDate", $("#DocumentExpiryDate")?.val() || null);
+        formData.append("HijriExpDate", $("#HijriExpiryDate")?.val() || null);
+        formData.append("NotificationDate", $("#NotificationDate")?.val() || null);
+
+        $.ajax({
+            url: `/api/LedgerDocumentsF/AddDocumentsEntry?folderId=${encodeURIComponent(referenceNo)}&moduleType=${encodeURIComponent(moduleType)}&isMaster=${encodeURIComponent(isMaster)}`,
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function () {
+                DevExpress.ui.notify("Document uploaded successfully", "success", 2000);
+                $("#documentsGrid").dxDataGrid("instance").refresh();
+                loadInitialDocumentNo(); // optional refresh
+            },
+            error: function (xhr) {
+                console.error("Upload error:", xhr);
+                DevExpress.ui.notify("Upload failed", "error", 2000);
+            }
+        });
     }
 
     $(document).ready(function () {
@@ -883,5 +776,7 @@
         
 
     });
+
+            
 
 </script>

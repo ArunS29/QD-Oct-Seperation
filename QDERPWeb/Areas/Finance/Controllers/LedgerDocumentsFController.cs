@@ -89,7 +89,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> AddDocumentsEntry(string folderId, string module, string isMaster)
+        public async Task<IActionResult> AddDocumentsEntry(string folderId, string moduleType, string isMaster)
         {
             try
             {
@@ -124,7 +124,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 string CleanFolderId(string val) => string.IsNullOrWhiteSpace(val) ? "unknown" : val.Trim().Replace(" ", "_");
 
                 area = Clean(area);
-                module = Clean(module);
+                moduleType = Clean(moduleType);
                 folderId = CleanFolderId(folderId);
                 tenantName = Clean(tenantName);
 
@@ -168,11 +168,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     }
 
 
-                    filePathInBlob = $"transaction_documents/{area}/year{year}/{month}/{module}/{folderId}/{fileName}";
+                    filePathInBlob = $"transaction_documents/{area}/year{year}/{month}/{moduleType}/{folderId}/{fileName}";
                 }
                 else
                 {
-                    filePathInBlob = $"master_documents/{area}/{module}/{folderId}/{fileName}";
+                    filePathInBlob = $"master_documents/{area}/{moduleType}/{folderId}/{fileName}";
                 }
 
                 // Upload file
@@ -252,7 +252,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetDocuments(string module)
+        public async Task<IActionResult> GetDocuments(string folderId, string module)
         {
             try
             {
@@ -263,30 +263,25 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 if (string.IsNullOrWhiteSpace(tenantName))
                     return Unauthorized("Tenant name not found in session.");
 
-                if (string.IsNullOrWhiteSpace(module))
-                    return BadRequest("Module parameter is required.");
+                if (string.IsNullOrWhiteSpace(module) || string.IsNullOrWhiteSpace(folderId))
+                    return BadRequest("Both module and folderId are required.");
 
-                string area = "UnknownArea";
+                // Azure Blob configuration
+                var connectionString = _configuration.GetConnectionString("AzureBlobStorage");
+                var containerName = "client-files";
+                if (string.IsNullOrWhiteSpace(connectionString) || string.IsNullOrWhiteSpace(containerName))
+                    return StatusCode(500, "Azure Blob configuration is missing.");
 
-                var referer = Request.Headers["Referer"].ToString();
-                if (!string.IsNullOrWhiteSpace(referer) && Uri.IsWellFormedUriString(referer, UriKind.Absolute))
-                {
-                    var refererUri = new Uri(referer);
-                    var pathSegments = refererUri.AbsolutePath.Trim('/').Split('/', StringSplitOptions.RemoveEmptyEntries);
+                var blobHelper = new AzureBlobHelper(connectionString, containerName);
 
-                    if (pathSegments.Length >= 3)
-                    {
-                        area = pathSegments[1];
-                    }
-                }
+                // Normalize inputs for matching
+                var normalizedModule = module.Replace(" ", "_").Trim();
+                var normalizedFolderId = folderId.Trim();
 
-                area = area.Replace(" ", "_");
-                module = module.Replace(" ", "_");
-                tenantName = tenantName.Replace(" ", "_");
-
-                var documents = await dbContext.Tbl20116LedgerDocuments
+                var matchingDocs = await dbContext.Tbl20116LedgerDocuments
                     .Where(d => !string.IsNullOrEmpty(d.AzurePath) &&
-                                EF.Functions.Like(d.AzurePath, $"%{area}%{module}%"))
+                                d.AzurePath.Contains(normalizedModule) &&
+                                d.AzurePath.Contains(normalizedFolderId))
                     .Select(d => new
                     {
                         d.DocumentNo,
@@ -297,11 +292,26 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         d.DocumentExpDateAr,
                         d.DocumentNotificationDate,
                         d.DocumentStatus,
-                        d.DocumentStatusRemarks
+                        d.DocumentStatusRemarks,
+                        d.AzurePath
                     })
                     .ToListAsync();
 
-                return Json(documents);
+                var result = matchingDocs.Select(doc => new
+                {
+                    doc.DocumentNo,
+                    doc.DocumentType,
+                    doc.DocumentRefNo,
+                    doc.DocumentRemarks,
+                    doc.DocumentExpDate,
+                    doc.DocumentExpDateAr,
+                    doc.DocumentNotificationDate,
+                    doc.DocumentStatus,
+                    doc.DocumentStatusRemarks,
+                    FileUrl = blobHelper.GetBlobSasUrl(doc.AzurePath)
+                });
+
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -309,7 +319,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
-
 
         [HttpPost]
         public async Task<IActionResult> UpdateDocumentEntries([FromBody] List<Tbl20116LedgerDocument> documents)
