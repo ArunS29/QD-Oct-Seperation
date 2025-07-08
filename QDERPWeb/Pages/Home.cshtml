@@ -1,9 +1,12 @@
 ﻿@page
 @model QD.ERP.Web.Pages.Shared.HomeModel
-@{
-}
+
+
 @{
     var tenantName = HttpContext.Session.GetString("TenantName") ?? "";
+    var defaultCompanyID = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+
+
 }
 <!DOCTYPE html>
 <html lang="en">
