@@ -1,5 +1,6 @@
 ﻿@page
 @using DevExtreme.AspNet.Mvc
+<link rel="stylesheet" href="~/css/animationCardVAT.css" />
 <style>
 	.overlay {
 		display: none;
@@ -34,7 +35,7 @@
 		width: 100%; /* Adjust to fit the container */
 		overflow-x: auto; /* Enable horizontal scrolling */
 		white-space: nowrap; /* Prevent wrapping of headings */
-		overflow-y:hidden;
+		overflow-y: hidden;
 	}
 
 		.dx-datagrid-headers .dx-row > td {
@@ -55,6 +56,7 @@
 		overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
 		width: 100%;
 	}
+
 	.close-btn {
 		position: absolute;
 		top: 10px;
@@ -153,17 +155,18 @@
 		}
 
 	.mainContainer {
-			width: 97%;
-			overflow:hidden;
+		width: 97%;
+		overflow: hidden;
 	}
 
 	.dx-fieldset.horizontal-container {
-		margin-top:10px;
+		margin-top: 10px;
 	}
-	 .dx-datagrid .dx-header-row .dx-datagrid-text-content {
-        white-space: normal !important;
-        text-align: center;
-    }
+
+	.dx-datagrid .dx-header-row .dx-datagrid-text-content {
+		white-space: normal !important;
+		text-align: center;
+	}
 
 	.custom-submenu {
 		display: none;
@@ -233,430 +236,15 @@
 	.has-submenu:hover .submenu {
 		display: block;
 	}
-
-	.dashboard {
-		display: flex;
-		gap: 20px;
-		align-items: stretch;
-	}
-
-	.card {
-		flex: 1;
-		padding: 15px;
-		border-radius: 12px;
-		color: white;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-		height: 110px;
-	}
-
-		.card h1 {
-			margin: 0;
-			font-size: 20px;
-			font-weight: 600;
-		}
-
-		.card p {
-			margin: 4px 0;
-			font-size: 14px;
-		}
-
-		.card .amount {
-			font-size: 26px;
-			margin: 5px 0;
-			font-weight: bold;
-		}
-
-		.card .percent {
-			font-size: 14px;
-			display: flex;
-			align-items: center;
-		}
-
-
-	.tabs {
-		display: flex;
-		justify-content: space-between;
-		margin-bottom: 12px;
-	}
-
-	.tab-text {
-		flex: 1;
-		text-align: center;
-		cursor: pointer;
-		font-weight: bold;
-		padding: 2px 0;
-		border-radius: 6px;
-		transition: background 0.3s ease;
-	}
-
-		.tab-text.active {
-			background: rgba(255, 255, 255, 0.9);
-			color: #333;
-		}
-
-	.tab-content {
-		display: none;
-		text-align: center;
-		animation: fadeSlideIn 0.4s ease;
-	}
-
-		.tab-content.active {
-			display: block;
-		}
-
-	h4 {
-		margin-bottom: 4px;
-		font-size: 16px;
-	}
-
-	.count {
-		font-size: 28px;
-		font-weight: bold;
-		margin: 4px 0;
-	}
-
-		.count.bounce {
-			animation: bounceIn 0.4s ease;
-		}
-
-	.trend {
-		font-size: 14px;
-		margin-bottom: 8px;
-	}
-
-	.message {
-		font-size: 14px;
-		font-weight: 500;
-		margin-top: 6px;
-	}
-
-	/* Backgrounds per tab */
-	.today-bg {
-		background: linear-gradient(270deg, #fb8c00, #ffe0b2); /* deep orange to light peach-orange */
-		background-size: 400% 400%;
-		animation: gradientPulse 6s ease infinite;
-	}
-
-
-	.week-bg {
-		background: linear-gradient(270deg, #009688, #4db6ac);
-		background-size: 400% 400%;
-		animation: gradientPulse 6s ease infinite;
-	}
-
-	.month-bg {
-		background: linear-gradient(270deg, #ad1457, #f8bbd0); /* dark pink to light pink */
-		background-size: 400% 400%;
-		animation: gradientPulse 6s ease infinite;
-	}
-
-
-	/* Keyframes */
-	@@keyframes fadeSlideIn {
-		from
-
-	{
-		opacity: 0;
-		transform: translateY(10px);
-	}
-
-	to {
-		opacity: 1;
-		transform: translateY(0);
-	}
-
-	}
-
-	@@keyframes bounceIn {
-		0%
-
-	{
-		transform: scale(0.9);
-		opacity: 0;
-	}
-
-	50% {
-		transform: scale(1.05);
-		opacity: 1;
-	}
-
-	100% {
-		transform: scale(1);
-	}
-
-	}
-
-	@@keyframes gradientPulse {
-		0%
-
-	{
-		background-position: 0% 50%;
-	}
-
-	50% {
-		background-position: 100% 50%;
-	}
-
-	100% {
-		background-position: 0% 50%;
-	}
-
-	}
-
-	.card.purple {
-		background: linear-gradient(135deg, #6a1b9a, #e1bee7); /* dark to light purple */
-		position: relative;
-		overflow: hidden;
-		color: white; /* Optional for readability */
-	}
-
-
-	.card:hover {
-		transform: translateY(-6px);
-		box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
-	}
-
-	h1 {
-		font-size: 42px;
-		margin: 10px 0 5px;
-	}
-
-	h3 {
-		font-size: 14px;
-		font-weight: 500;
-		margin: 0;
-	}
-
-	/* Count animation bounce */
-	h1.bounce {
-		animation: bounceIn 0.5s ease;
-	}
-
-	@@keyframes bounceIn {
-		0%
-
-	{
-		transform: scale(0.9);
-		opacity: 0;
-	}
-
-	50% {
-		transform: scale(1.05);
-		opacity: 1;
-	}
-
-	100% {
-		transform: scale(1);
-	}
-
-	}
-
-	/* Sparkle effect (optional) */
-	.sparkle::after {
-		content: '✨';
-		position: absolute;
-		top: 10px;
-		right: 15px;
-		font-size: 18px;
-		animation: sparkle 1.8s infinite ease-in-out;
-	}
-
-	@@keyframes sparkle {
-		0%, 100%
-
-	{
-		transform: scale(0.8) rotate(0deg);
-		opacity: 0.8;
-	}
-
-	50% {
-		transform: scale(1.2) rotate(30deg);
-		opacity: 1;
-	}
-
-	}
-		.card.green
-
-	{
-		background: linear-gradient(135deg, #2e7d32, #a5d6a7); /* dark green to light green */
-		/* color: white; /* Optional: ensures text is readable */ */
-	}
-
-	
-
-	.card:hover {
-		transform: translateY(-6px);
-		box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
-	}
-
-	h4 {
-		font-size: 13px;
-		margin-bottom: 1px;
-		font-weight: 500;
-		text-transform: capitalize;
-		letter-spacing: 1px;
-	}
-
-	h1 {
-		font-size: 36px;
-		margin: 4px 0;
-		font-weight: 700;
-		animation: bounceIn 0.4s ease;
-	}
-
-	h2 {
-		font-size: 14px;
-		margin-top: 8px;
-		opacity: 0;
-		animation: fadeIn 1s forwards;
-		animation-delay: 0.5s;
-	}
-
-	/* Animations */
-	@@keyframes bounceIn {
-		0%
-
-	{
-		transform: scale(0.9);
-		opacity: 0;
-	}
-
-	50% {
-		transform: scale(1.05);
-		opacity: 1;
-	}
-
-	100% {
-		transform: scale(1);
-	}
-
-	}
-
-	@@keyframes fadeIn {
-		to
-
-	{
-		opacity: 1;
-	}
-
-	}
-
-	/* Optional shine effect */
-	/*  .shine::before {
-		content: '';
-		position: absolute;
-		top: 0;
-		left: -75%;
-		width: 50%;
-		height: 100%;
-		background: linear-gradient( 120deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.6) 50%, rgba(255, 255, 255, 0.05) 100% );
-		transform: skewX(-25deg);
-		animation: shineMove 2.5s infinite ease-in-out;
-		pointer-events: none;
-		z-index: 1;
-	} 
-
-	 @@keyframes shineMove {
-		0% {
-			left: -75%;
-		}
-
-		100% {
-			left: 125%;
-		}
-	} */ 
-
-	.card.compact {
-		padding: 14px 16px;
-		min-height: unset;
-	}
-
-	.pink {
-		background: linear-gradient(135deg, #ec407a, #f48fb1);
-		background-size: 400% 400%;
-		animation: gradientPulse 6s ease infinite;
-	}
-
-	/* Text Styles */
-	.card.compact h4 {
-		font-size: 14px;
-		font-weight: 500;
-		letter-spacing: 0.5px;
-		margin-bottom: 4px;
-	}
-
-	.card.compact h2 {
-		font-size: 18px;
-		font-weight: 600;
-		margin-top: 2px;
-	}
-
-	/* Animations */
-	.fade-in {
-		animation: fadeIn 0.8s ease forwards;
-		opacity: 0;
-	}
-
-	.title-slide {
-		animation: titleSlide 0.9s ease forwards;
-		opacity: 0;
-	}
-
-	@@keyframes fadeIn {
-		to
-
-	{
-		opacity: 1;
-	}
-
-	}
-
-	@@keyframes titleSlide {
-		0%
-
-	{
-		opacity: 0;
-		transform: translateY(8px);
-	}
-
-	100% {
-		opacity: 1;
-		transform: translateY(0);
-	}
-
-	}
-
-	.blue {
-		background: linear-gradient(135deg, #6a11cb, #2575fc) !important; /* soft blue tones */
-		background-size: 400% 400%;
-		animation: gradientPulse 6s ease infinite;
-	}
-
-	@@keyframes gradientPulse {
-		0% {
-			background-position: 0% 50%;
-		}
-
-		50% {
-			background-position: 100% 50%;
-		}
-
-		100% {
-			background-position: 0% 50%;
-		}
-	}
 </style>
 
-<div class="dashboard" style="display: flex; align-items: center; padding: 10px;width:65%">
+<div class="title">
 	<input id="formId" value="frm20162VATInvoiceMasterView" type="hidden" />
 
 	<div class="card blue shine compact">
 		<h2 class="title-slide">VAT Invoice Register</h2>
 		<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
-		<h6 class="fade-in">QuickDice ERP Solutions</h6>
+		<h6 class="fade-in">Quick Dice ERP Solutions</h6>
 
 	</div>
 
@@ -690,7 +278,7 @@
 	</div>
 
 	<div class="card green shine">
-	<h1 id="invoiceCount">0</h1>
+		<h1 id="invoiceCount">0</h1>
 
 		<h3>Today's Invoices</h3>
 	</div>
@@ -701,7 +289,7 @@
 		<h4>Total Turnover</h4>
 		<h1 id="turnover">0</h1>
 		<h3>for this period</h3>
-</div>
+	</div>
 </div>
 
 <div class="Head">
@@ -781,13 +369,13 @@
 
 
 
-		@(Html.DevExtreme().CheckBox()
-    .ID("chkUseEffectiveDate")
-    .Text(new JS("formatMessage('Use Effective Date')"))
-    .Value(false)
-    .ElementAttr("class", "mt-4 ml-4"))
-</div>
-<div class="dx-field ledgerResult">
+	@(Html.DevExtreme().CheckBox()
+		.ID("chkUseEffectiveDate")
+		.Text(new JS("formatMessage('Use Effective Date')"))
+		.Value(false)
+		.ElementAttr("class", "mt-4 ml-4"))
+									   </div>
+									   <div class="dx-field ledgerResult">
 	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201607vatinvoiceRegisterMainView>()
 		.ID("dataGrid")
 		.RemoteOperations(false)
@@ -805,12 +393,12 @@
 				subColumns.AddFor(m => m.InvoiceDate).Caption(new JS("formatMessage('Invoice Date')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
 				subColumns.AddFor(m => m.InvoiceEffectiveDate).Caption(new JS("formatMessage('Invoice Effective Date')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
 				subColumns.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('Account Head')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				@* subColumns.AddFor(m => m.InvoiceStatus).Caption(new JS("formatMessage('Invoice Status')")).DataField("InvoiceStatus").Alignment(HorizontalAlignment.Center).Visible(true); *@
+																																							@* subColumns.AddFor(m => m.InvoiceStatus).Caption(new JS("formatMessage('Invoice Status')")).DataField("InvoiceStatus").Alignment(HorizontalAlignment.Center).Visible(true); *@
 				subColumns.AddFor(m => m.InvoiceStatus)
-		.Caption(new JS("formatMessage('Invoice Status')"))
-		.Alignment(HorizontalAlignment.Center)
-		.Visible(true)
-		.CellTemplate(new JS("invoiceStatusCellTemplate"));
+			.Caption(new JS("formatMessage('Invoice Status')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(true)
+			.CellTemplate(new JS("invoiceStatusCellTemplate"));
 
 			});
 
@@ -835,7 +423,7 @@
 		return '';
 		}
 		");
-			
+
 
 
 
@@ -1166,14 +754,14 @@
 		.Height(680) // <<< fixed height
 		.ColumnAutoWidth(true)
 		.Width("98%")
-	@* 	.WordWrapEnabled(true) *@
+				  	@* 	.WordWrapEnabled(true) *@
 		//.OnCellClick("function(e) {handleCellClick(e);}")
 		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
 		.ColumnFixing(fixing => fixing.Enabled(true))
 		.HeaderFilter(filter => filter.Visible(false))
-		@* .Paging(p => p.Enabled(true).PageSize(15))    // enable paging with 15 rows per page
+												   	@* .Paging(p => p.Enabled(true).PageSize(15))    // enable paging with 15 rows per page
 		.Pager(pager => pager
 		.Visible(true)                            // show pager UI (page numbers etc)
 		.ShowPageSizeSelector(true)              // allow user to change page size
@@ -1293,14 +881,14 @@
 			.StorageKey("gridContainerState");
 		})
 		.OnInitialized("function(e) { loadGridState(); }")
-		@* .Paging(p => p.Enabled(true).PageSize(20)) // Enable paging with page size
+													   	@* .Paging(p => p.Enabled(true).PageSize(20)) // Enable paging with page size
 		.Pager(p => p
 		.ShowPageSizeSelector(true)
 		.AllowedPageSizes(new[] { 10, 20, 50, 100 })
 		.ShowInfo(true)
 		.Visible(true)
 		) *@
-		
+
 		.OnCellPrepared("invoiceStatusCellPrepared")
 
 
@@ -1555,7 +1143,7 @@
 			data: { InvoiceNo: invoiceNo },
 			success: function (response) {
 				console.log("Clone success:", response);
-				
+
 			},
 			error: function (xhr) {
 				let message = xhr.responseJSON?.message || "Unknown error";
@@ -1594,7 +1182,7 @@
 		else if (response.IsPosted === true) {
 		DevExpress.ui.dialog.custom({
 			title: "Cancel/Amend Confirmation",
-	        message: "You are about to Cancel/Amend this VAT Invoice.<br>This will create a new CREDIT NOTE for Invoice Amendment.<br>Click Yes if you would like to continue.",
+			message: "You are about to Cancel/Amend this VAT Invoice.<br>This will create a new CREDIT NOTE for Invoice Amendment.<br>Click Yes if you would like to continue.",
 				buttons: [
 				{ text: "Yes", onClick: () => true },
 				{ text: "No", onClick: () => false }
@@ -1623,7 +1211,7 @@
 		});
 	}
 
-	
+
 
 
 
@@ -1950,8 +1538,26 @@
 		// Debug log (optional)
 		console.log("Styled row for InvoiceStatus:", status);
 	}
+	$(function () {
+		$("#VATInvoiceRegister").dxTextBox({
+			text: formatMessage("VAT Invoice Register"),
+			readOnly: true,
+			onContentReady: function(e) {
+						$(e.element).addClass("dx-textbox-heading");
+				}
 
+		});
+	});
+	$(function () {
+		$("#QuickDiceERPSolutions").dxTextBox({
+			text: formatMessage("QuickDice ERP Solutions"),
+			readOnly: true,
+			onContentReady: function(e) {
+						$(e.element).addClass("dx-textbox-heading");
+				}
+
+		});
+	});
 
 </script>
 
-	

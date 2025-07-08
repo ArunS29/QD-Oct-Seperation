@@ -3,6 +3,10 @@
 @{
 }
 <style>
+	
+	.titleCard-toggle1 {
+		display: none;
+	}
     .dx-datagrid-headers {
         /* border: 1px solid #686868 !important; */
         width: 100%; /* Adjust to fit the container */
@@ -5606,44 +5610,60 @@
 
 
 	$("#btnSubmit").on("click", function () {
-		var $btn = $(this);
-		$btn.prop('disabled', true);
-		const SubmitButton = $("#btnSubmit").dxButton("instance");
-		SubmitButton.option("disabled", true);
-		var QuoteNo = $('#txtQuotationNo').dxTextBox("instance").option("value");
-		
-		if (!QuoteNo) {
-			DevExpress.ui.notify("QuoteNo number is required!", "error", 2000);
-			return;
-		}
+  const $btn = $(this);
+  $btn.prop("disabled", true);
 
-		DevExpress.ui.dialog.custom({
-			title: "Confirm Submission",
-			message: "Are you sure you want to submit Quotation ?",
-			buttons: [
-				{ text: "Yes", onClick: () => true },
-				{ text: "No", onClick: () => false }
-			],
-			showTitle: true
-		}).show().done(function (dialogResult) {
-			if (dialogResult) {
-				$.ajax({
-					type: "POST",
-					url: `/api/AddNewQuotation/SubmitQuotation?QuoteNo=${encodeURIComponent(QuoteNo)}`,
-					contentType: "application/json",
-					success: function (response) {
-						//disableEditing();
-						DevExpress.ui.dialog.alert("Quotation has been submitted for Approval.", "Submit Successful");
-						// Update UI elements as needed
-					},
-					error: function (xhr, status, error) {
-						$btn.prop('disabled', false);
-						DevExpress.ui.notify("Submission failed.", "error", 2000);
-					}
-				});
-			}
-		});
-	});
+  const submitBtn = $("#btnSubmit").dxButton("instance");
+  submitBtn.option("disabled", true);
+
+  const quoteNo = $('#txtQuotationNo').dxTextBox("instance").option("value");
+  if (!quoteNo) {
+    DevExpress.ui.notify("Quote number is required!", "error", 2000);
+    $btn.prop("disabled", false);
+    submitBtn.option("disabled", false);
+    return;
+  }
+
+  DevExpress.ui.dialog.custom({
+    title: "Confirm Submission",
+    message: "Are you sure you want to submit the quotation?",
+    buttons: [
+      { text: "Yes", onClick: () => true },
+      { text: "No", onClick: () => false }
+    ],
+    showTitle: true
+  }).show().done(dialogResult => {
+    if (!dialogResult) {
+      $btn.prop("disabled", false);
+      submitBtn.option("disabled", false);
+      return;
+    }
+
+    $.ajax({
+      type: "POST",
+      url: `/api/AddNewQuotation/SubmitQuotation?QuoteNo=${encodeURIComponent(quoteNo)}`,
+      contentType: "application/json",
+      success: function (response) {
+        DevExpress.ui.dialog.alert("Quotation has been submitted for approval.", "Submit Successful")
+          .done(() => {
+            const preparedByBox = $("#ddPreparedby").dxDropDownBox("instance");
+            if (preparedByBox && response.VoucherApprovedBy) {
+              preparedByBox.option("value", response.VoucherApprovedBy);
+              preparedByBox.getDataSource().reload();  // refresh the dropdown datasource :contentReference[oaicite:1]{index=1}
+              preparedByBox.repaint();                // re-render the UI :contentReference[oaicite:2]{index=2}
+            }
+            // Optionally: location.reload();
+          });
+      },
+      error: function () {
+        $btn.prop("disabled", false);
+        submitBtn.option("disabled", false);
+        DevExpress.ui.notify("Submission failed.", "error", 2000);
+      }
+    });
+  });
+});
+
 
 
 
@@ -5692,39 +5712,45 @@
 		}
 	});
 	function proceedWithVerification() {
-		const VerifyButton = $("#btnVerify").dxButton("instance");
-		VerifyButton.option("disabled", true);
+  const verifyButton = $("#btnVerify").dxButton("instance");
+  verifyButton.option("disabled", true);
 
-		var QuoteNo = $('#txtQuotationNo').dxTextBox("instance").option("value");
+  const quoteNo = $('#txtQuotationNo').dxTextBox("instance").option("value");
+  if (!quoteNo) {
+    DevExpress.ui.notify("Quotation number is required!", "error", 2000);
+    verifyButton.option("disabled", false);
+    return;
+  }
 
-		if (!QuoteNo) {
-			DevExpress.ui.notify("Quote No is required!", "error", 2000);
-			return;
-		}
+  $.ajax({
+    type: "POST",
+    url: `/api/AddNewQuotation/VerifyQuotation?quoteNo=${encodeURIComponent(quoteNo)}`,
+    contentType: "application/json",
+    success: function (response) {
+      if (response?.message) {
+        const verifiedBy = response.VerifiedBy;
+        const approvedByBox = $("#ddVerifiedby").dxDropDownBox("instance");
 
-		$.ajax({
-			type: "POST",
-			url: `/api/AddNewQuotation/VerifyQuotation?QuoteNo=${encodeURIComponent(QuoteNo)}`,
-			contentType: "application/json",
-			success: function (response) {
-				if (response && response.message) {
-					DevExpress.ui.dialog.alert(
-						response.message,
-						"Verified"
-					);
-				} else {
-					DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
-				}
-			},
-			error: function (xhr, status, error) {
-				VerifyButton.option("disabled", false);
-				let errorMessage = xhr.responseJSON && xhr.responseJSON.message
-					? xhr.responseJSON.message
-					: "An error occurred.";
-				DevExpress.ui.notify(errorMessage, "error", 2000);
-			}
-		});
-	}
+        if (approvedByBox) {
+          approvedByBox.option("value", verifiedBy);
+          approvedByBox.getDataSource().reload(); // refresh data
+          approvedByBox.repaint();              // update display text
+        }
+
+        DevExpress.ui.dialog.alert(response.message, "Verified");
+      } else {
+        DevExpress.ui.notify("Update failed: Unable to apply changes!", "error", 2000);
+        verifyButton.option("disabled", false);
+      }
+    },
+    error: function (xhr) {
+      verifyButton.option("disabled", false);
+      const msg = xhr.responseJSON?.message || "An error occurred.";
+      DevExpress.ui.notify(msg, "error", 2000);
+    }
+  });
+}
+
 
 
 
@@ -5769,42 +5795,55 @@
 
 
 	function proceedWithApproval() {
-			const VerifyButton = $("#btnApprove").dxButton("instance");
-		VerifyButton.option("disabled", true);
+    const approveBtn = $("#btnApprove").dxButton("instance");
+    approveBtn.option("disabled", true);
 
-		var QuoteNo = $('#txtQuotationNo').dxTextBox("instance").option("value");
+    const quoteNo = $('#txtQuotationNo').dxTextBox("instance").option("value");
+    if (!quoteNo) {
+        DevExpress.ui.notify("Quote No is required!", "error", 2000);
+        approveBtn.option("disabled", false);
+        return;
+    }
 
-		if (!QuoteNo) {
-			DevExpress.ui.notify("Quote No is required!", "error", 2000);
-			return;
-		}
+    $.ajax({
+        type: "POST",
+        url: `/api/AddNewQuotation/ApproveQuotation?QuoteNo=${encodeURIComponent(quoteNo)}`,
+        contentType: "application/json",
+        success: function(response) {
+            if (response && response.Message) {
+                // ✅ Update dropdown only on successful approval
+                if (response.VoucherApprovedBy) {
+                    const approvedByBox = $("#ddApprovedby").dxDropDownBox("instance");
+                    if (approvedByBox) {
+                        approvedByBox.option("value", response.VoucherApprovedBy);
+                        approvedByBox.getDataSource().reload();    // reload data source :contentReference[oaicite:1]{index=1}
+                        approvedByBox.repaint();                   // ensure display updates :contentReference[oaicite:2]{index=2}
+                    }
+                }
 
-		$.ajax({
-			type: "POST",
-			url: `/api/AddNewQuotation/ApproveQuotation?QuoteNo=${encodeURIComponent(QuoteNo)}`,
-			contentType: "application/json",
-			success: function (response) {
-				if (response && response.Message) {
-					DevExpress.ui.dialog.alert(response.Message, "Approved").done(() => {
-								hideAllButtonsExcept([
-							"btnPrint",
-							"ddButtonLayout",
-							"btnBack",
-							"btnAttach"
-						]);
-					});
-				} else {
-					DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
-				}
-			},
-			error: function (xhr, status, error) {
-				let errorMessage = (xhr.responseJSON && xhr.responseJSON.Message)
-					? xhr.responseJSON.Message
-					: "An error occurred.";
-				DevExpress.ui.notify(errorMessage, "error", 2000);
-			}
-		});
-	}
+                DevExpress.ui.dialog.alert(response.Message, "Approved")
+                    .done(() => {
+                        hideAllButtonsExcept([
+                            "btnPrint",
+                            "ddButtonLayout",
+                            "btnBack",
+                            "btnAttach"
+                        ]);
+                      
+                    });
+            } else {
+                DevExpress.ui.notify("Update failed: Unable to apply changes!", "error", 2000);
+                approveBtn.option("disabled", false);
+            }
+        },
+        error: function(xhr) {
+            approveBtn.option("disabled", false);
+            const msg = xhr.responseJSON?.Message || "An error occurred.";
+            DevExpress.ui.notify(msg, "error", 2000);
+        }
+    });
+}
+
 
 	function hideAllButtonsExcept(exceptions) {
 			const allButtonIds = [

@@ -18,7 +18,11 @@
 
 
 <link rel="stylesheet" href="~/css/Style.css" />
-
+<style>
+    .titleCard-toggle1{
+        display:none;
+    }
+</style>
 
 <div  id="mainFooter" class="footer-fixed">
     @await Html.PartialAsync("_Formfooter")
@@ -395,7 +399,7 @@ buttons.Add()
                 </div>
 
                 <!-- Third Row -->
-                <div class="row w-100" style="margin-top: 8px;">
+                <div class="row w-100 align-items-center" style="margin-top: 8px;">
                     <div class="form-group col-11">
                         @(Html.DevExtreme().TextArea()
                             .Label(new JS("formatMessage('Narration')"))
@@ -403,13 +407,11 @@ buttons.Add()
                             .ID("txtEntryNarration")
                             .Placeholder("")
                             .Value("")
-                            .Height(40)
-                             .TabIndex(8)
-                            .MaxLength(111500)
+                            .TabIndex(8)
                             .ElementAttr(new { @class = "light-theme-input" })
                             )
                     </div>
-                    <div class="form-group plusBtn col-1">
+                    <div class="form-group plusBtn col-1 mt-0 h-100">
                         @(Html.DevExtreme().Button()
                             .ID("btnVoucherEntry")
                             .Text(new JS("formatMessage('ADD')"))
@@ -866,8 +868,8 @@ buttons.Add()
                     .Label(new JS("formatMessage('Bank Payment')"))
                     .LabelMode(EditorLabelMode.Floating)
                     .ID("VoucherType")
-                    .DataSource(new[] { "Bank Payment" })
-                    .Value(new JS("formatMessage('Bank Payment')"))
+                    .DataSource(new[] { "Cash Payment" })
+                    .Value(new JS("formatMessage('Cash Payment')"))
                     .Width("100%")
                     .Disabled(true)
                         .ElementAttr(new { @class = "custom-disabled-selectbox" })

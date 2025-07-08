@@ -8,9 +8,12 @@
 	/* Column headers */
 	#dataGrid .dx-datagrid-headers .dx-row > td {
 		background-color: var(--header-color) !important;
-		border-bottom: 1px solid #dee2e6;
+		border-bottom: 1px solid var(--header-color);
 		color: #343a40;
 		font-weight: 600;
+	}
+	.dx-datagrid{
+		border-color:var(--header-color) !important;
 	}
 	/* Zebra rows & hover */
 	#dataGrid .dx-data-row:nth-child(even) {
@@ -174,7 +177,10 @@
 		background-color: #909ead00;
 		/* display:none; */
 	}
-
+	.dx-datagrid .font-times {
+        font-family: 'Times New Roman', Times, serif !important;
+		font-weight:bold;
+    }
 	.no-border-input {
 		border: none !important;
 		outline: none !important;
@@ -615,7 +621,7 @@
 				.LoadMode(DataSourceLoadMode.Raw)
 				.Key("AccountId")
 				)
-				.LabelMode(EditorLabelMode.Outside)
+				.LabelMode(EditorLabelMode.Floating)
 				.Label(new JS("formatMessage('Select Ledger Account')"))
 				.ID("accountDropDownBox")
 				.ShowClearButton(true)
@@ -667,7 +673,7 @@ buttons.Add()
 				)
 		@* @(Html.DevExtreme().DropDownBox()
 		.ID("accountDropDownBox")
-		.LabelMode(EditorLabelMode.Outside)
+		.LabelMode(EditorLabelMode.Floating)
 		.Label("Select a Ledger Account")
 		.ValueExpr("AccountId")
 		.InputAttr("aria-label", "Owner")
@@ -729,7 +735,7 @@ buttons.Add()
 		@(Html.DevExtreme().DateBox()
 				.ID("frmdateBox")
 				.Label(new JS("formatMessage('Start Date')"))
-				.LabelMode(EditorLabelMode.Outside)
+				.LabelMode(EditorLabelMode.Floating)
 				.InputAttr("aria-label", "Date")
 				.Type(DateBoxType.Date)
 				.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
@@ -741,7 +747,7 @@ buttons.Add()
 		@(Html.DevExtreme().DateBox()
 				.ID("todateBox")
 				.Label(new JS("formatMessage('End Date')"))
-				.LabelMode(EditorLabelMode.Outside)
+				.LabelMode(EditorLabelMode.Floating)
 				.InputAttr("aria-label", "Time")
 				.Type(DateBoxType.Date)
 				.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
@@ -754,7 +760,7 @@ buttons.Add()
 				.Icon("smalliconslayout")
 				.Width(250)
 				.SplitButton(true) // This enables main-button vs arrow split behavior
-				.ElementAttr("class", "button-alignment-down")
+				  .ElementAttr(new { @class = "button-alignment-down", style = "margin-top: 5px;" }) 
 				.TabIndex(4)
 				.OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }") // MAIN button click
 				.DropDownOptions(options => options.Width(230))
@@ -927,7 +933,7 @@ buttons.Add()
 
 						/* … unchanged hidden columns … */
 						columns.AddFor(m => m.ReferenceNote).Caption(new JS("formatMessage('ReferenceNote')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.AccountHeadArabic).Caption(new JS("formatMessage('AccountHeadArabic')")).Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.AccountHeadArabic).Caption(new JS("formatMessage('AccountHeadArabic')")).Alignment(HorizontalAlignment.Left).Visible(false).CssClass("font-times");;
 						columns.AddFor(m => m.BillPaidTo).Caption(new JS("formatMessage('BillPaidTo')")).Alignment(HorizontalAlignment.Left).Visible(false);
 						columns.AddFor(m => m.BillDate).Caption(new JS("formatMessage('BillDate')")).Alignment(HorizontalAlignment.Left).Visible(false);
 						columns.AddFor(m => m.BillNo).Caption(new JS("formatMessage('BillNo')")).Alignment(HorizontalAlignment.Left).Visible(false);
@@ -1055,7 +1061,7 @@ buttons.Add()
 								{
 									columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')"));
 									columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')")).Width(400);
-									columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')"));
+									columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')")).CssClass("font-times");
 									columns.Add().DataField("MasterGroup").Caption(new JS("formatMessage('Master Group')"));
 									columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Group')"));
 									columns.Add().DataField("ReferenceNo").Caption(new JS("formatMessage('ReferenceNo')"));
@@ -1075,6 +1081,7 @@ buttons.Add()
 									columns.Add().DataField("IsSalaryPayable").Caption(new JS("formatMessage('Is Salary Payable')")).Alignment(HorizontalAlignment.Left).Visible(false);
 									columns.Add().DataField("Expr1").Caption(new JS("formatMessage('Expr1')")).Alignment(HorizontalAlignment.Left).Visible(false);
 								})
+
 										)
 }
 

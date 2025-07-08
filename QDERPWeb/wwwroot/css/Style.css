@@ -263,8 +263,8 @@ td {
         left: 15px;
         right: 45px;
         height: 2px;
-        width: 80%;
-        background: #2a5298; /* deep blue or change to gold etc. */
+        width: 100%;
+        background: var(--title-background-color);
         transition: width 0.6s ease-in-out;
     }
 
@@ -274,7 +274,7 @@ td {
 
 .card-title-icon i {
     font-size: 22px;
-    color: #2a5298;
+    color: var(--title-background-color);
     padding-left: 20px;
 }
 

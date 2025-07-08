@@ -21,7 +21,11 @@
 <!-- SweetAlert2 JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-
+<style>
+    .titleCard-toggle1{
+        display:none;
+    }
+</style>
 
 <div  id="mainFooter" class="footer-fixed">
     @await Html.PartialAsync("_Formfooter")
@@ -768,11 +772,11 @@ buttons.Add()
                 <div class="form-group" style="display: flex; flex-wrap: wrap; gap: 10px;">
                     <div style="flex: 1 1 220px; min-width: 200px;">
                         @(Html.DevExtreme().SelectBox()
-                                                .Label(new JS("formatMessage('Cash Receipt')"))
+                                                .Label(new JS("formatMessage('Bank Receipt')"))
                                                 .LabelMode(EditorLabelMode.Floating)
                                                 .ID("VoucherType")
-                                                .DataSource(new[] { "Cash Receipts" })
-                                                .Value(new JS("formatMessage('Cash Receipts')"))
+                                                .DataSource(new[] { "Bank Receipts" })
+                                                .Value(new JS("formatMessage('Bank Receipts')"))
                                                 .Width("100%")
                                                 .Disabled(true))
                     </div>
@@ -3456,4 +3460,23 @@ function onBaseCurrencyInit(e) {
 
              }
     }
+
+
+    
+  $(function () {
+
+        setTimeout(function () {
+            const showIfHasValue = (editorId, sectionId) => {
+                const editor = DevExpress.ui.dxTextBox.getInstance(document.getElementById(editorId));
+                if (editor && editor.option("value")) {
+                    document.getElementById(sectionId).style.display = "flex"; // restore flex
+                }
+            };
+
+            showIfHasValue("VerifiedBytext", "verifiedBySection");
+            showIfHasValue("ApprovedBytext", "approvedBySection");
+            showIfHasValue("VerifiedOnDate", "verifiedOnSection");
+            showIfHasValue("ApprovedOntext", "approvedOnSection");
+        }, 300); // wait a bit to ensure DevExtreme is ready
+    });
 </script>
