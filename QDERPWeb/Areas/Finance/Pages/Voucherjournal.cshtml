@@ -11,6 +11,41 @@
 </style>
 <!-- SweetAlert2 JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+    .popup-content {
+        text-align: center;
+        padding: 20px;
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .success-icon-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .success-icon {
+        background-color: #4CAF50;
+        color: white;
+        font-size: 36px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        animation: pop 0.4s ease;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .popup-message {
+        font-size: 16px;
+        font-weight: 500;
+    }
+
+    
+</style>
 
 
 <div class="content-container-top" >
@@ -921,6 +956,15 @@ buttons.Add()
         <i class="fas fa-trash-alt" style="margin-right: 8px;"></i><div id="DeleteAllLineEntries" class="no-border-input"></div>
     </li>
 </ul>
+<!-- This should be before your script or not inside partial that loads later -->
+<div id="successPopup" style="display:none;">
+    <div class="popup-content">
+        <div class="success-icon-wrapper">
+            <div class="success-icon">&#10003;</div>
+        </div>
+        <div id="popupMessage" class="popup-message"></div>
+    </div>
+</div>
 
 <div id="popupContainer">
     @(Html.DevExtreme().Popup()
@@ -1386,7 +1430,22 @@ buttons.Add()
                     var successMessage = action === "SaveVoucher"
                         ? "Voucher saved successfully with matching Debit and Credit amounts."
                         : "Voucher updated successfully!";
-                    DevExpress.ui.notify(successMessage, "success", 2000);
+                     Swal.fire({
+                    title: 'Success!',
+                    text: successMessage,
+                    icon: 'success',
+                    showConfirmButton: true,
+                    timer: 2000,
+                    background: '#f0fff5',
+                    customClass: {
+                        popup: 'swal2-border-radius'
+                    },
+                    didOpen: () => {
+                        // Optional animation
+                        Swal.showLoading();
+                        setTimeout(() => Swal.close(), 2000);
+                    }
+                });
                        disableFields();
                      // Enable after save
                   $("#btnPrint").dxButton("instance").option("disabled", false);
@@ -1503,7 +1562,13 @@ buttons.Add()
                     var successMessage = action === "SaveVoucher"
                         ? "Voucher saved successfully with matching Debit and Credit amounts."
                         : "Voucher updated successfully!";
-                    DevExpress.ui.notify(successMessage, "success", 2000);
+                    $("#popupMessage").text(successMessage);
+                    const popupInstance = $("#successPopup").dxPopup("instance");
+                    popupInstance.show();
+
+                    setTimeout(() => {
+                        popupInstance.hide();
+                    }, 2000); // Auto-close after 2 seconds
                     setTimeout(function () {
                         window.history.back(); // Navigate to the previous page
                     }, 2000);
@@ -1716,6 +1781,33 @@ buttons.Add()
                 }
             });
         }
+        $("#successPopup").dxPopup({
+                width: 300,
+                height: 200,
+                showTitle: false,
+                visible: false,
+                closeOnOutsideClick: true,
+                animation: {
+                    show: {
+                        type: "fade",
+                        duration: 400,
+                        from: 0,
+                        to: 1
+                    },
+                    hide: {
+                        type: "fade",
+                        duration: 400,
+                        from: 1,
+                        to: 0
+                    }
+                },
+                shading: true,
+                position: {
+                    at: "center",
+                    my: "center",
+                    of: window
+                }
+        });
 
 
         //    function onVoucherNoChanged(e) {
