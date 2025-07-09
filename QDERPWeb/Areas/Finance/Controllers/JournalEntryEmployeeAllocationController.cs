@@ -76,32 +76,31 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
-        [HttpPost]
-        public IActionResult Delete(List<int> rowKeys)
+        [HttpGet]
+        public IActionResult GetEmployeeAllocationsBydatagrid(long voucherEntryId)
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                try
-                {
-                    foreach (var id in rowKeys)
-                    {
-                        var item = dbContext.Tbl20129JournalRegisterEmployeeAllocations.Find(id);
-                        if (item != null)
-                        {
-                            dbContext.Tbl20129JournalRegisterEmployeeAllocations.Remove(item);
-                        }
-                    }
-                    dbContext.SaveChanges();
-                    return Json(new { success = true });
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError($"Error in Delete: {ex.Message}");
-                    return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
-                }
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
             }
 
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
+            var result = (from alloc in dbContext.Tbl20104EmployeeAllocationMasters
+                          join unit in dbContext.Tbl101Employees
+                              on alloc.EmployeeNo equals unit.EmployeeId into gj
+                          from unit in gj.DefaultIfEmpty()
+                          where alloc.VoucherEntryId == voucherEntryId
+                          select new
+                          {
+                              EmployeeAllocationId = alloc.EmployeeAllocationId,
+                              DrCr = alloc.EmpAllocDrCr,
+                              EmployeeName = unit != null ? unit.EmployeeName : "",
+                              EmployeeNo = alloc.EmployeeNo,
+                              EffectiveDate = alloc.EffectiveDate,
+                              VoucherAmount = alloc.AmountAllocated,
+                              Remarks = alloc.CostAllocRemarks
+                          }).ToList();
+
+            return Json(result);
         }
     }
 }
