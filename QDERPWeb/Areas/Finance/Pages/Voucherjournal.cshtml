@@ -48,7 +48,7 @@
 </style>
 
 
-<div class="content-container-top" style="background-color:#909ead00;">
+<div class="content-container-top" >
     <div class="dx-card-container">
         <div class="dx-card-header minimal-header">
             <div class="card-title-icon">
@@ -778,6 +778,9 @@ buttons.Add()
                 </div>
             </div>
         </div>
+<div class="footer-fixed">
+    @await Html.PartialAsync("_Formfooter")
+</div>
     </div>
 
 
@@ -822,9 +825,7 @@ buttons.Add()
 <input type="file" id="fileInput" style="display: none;">
 
 
-<div class="footer-fixed">
-    @await Html.PartialAsync("_Formfooter")
-</div>
+
 
 
 

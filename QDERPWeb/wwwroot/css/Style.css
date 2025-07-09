@@ -10,7 +10,9 @@
     transform: translateY(100%);
     transition: all 0.2s ease-in-out;
 }
-
+/*.titleCard-toggle1{
+    display:none!important;
+}*/
 .overlay {
     display: none;
     position: fixed;
@@ -101,7 +103,7 @@ td {
         position: relative;
     } */
 
-.footer-fixed {
+/*.footer-fixed {
     position: fixed;
     bottom: 0;
     left: 0px;
@@ -109,7 +111,7 @@ td {
     height: 60px;
     background: #ffffff;
     z-index: 9999;
-}
+}*/
 /* Red background for the Attachment button */
 .btn-attachment-red .dx-button-content {
     background-color: #e74c3c !important; /* bright red */
@@ -412,6 +414,7 @@ td {
     }
 }
 
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -422,3 +425,24 @@ td {
     }
 }
 
+.footer-fixed {
+    width: -webkit-fill-available;
+    position: fixed;
+    bottom: 0;
+    /* left: 0px; */
+    /* right: 0; */
+    height: 60px;
+    background: #ffffff;
+    z-index: 9999;
+}
+.content-container-top {
+    position: relative;
+    background-color: #909ead00;
+}
+
+
+
+.content-container-top {
+    overflow-y: hidden;
+    height: 100vh;
+}

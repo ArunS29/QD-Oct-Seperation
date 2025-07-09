@@ -305,12 +305,10 @@
 </style> *@
 
 
-<div  id="mainFooter" class="footer-fixed">
-    @await Html.PartialAsync("_Formfooter")
-</div>
 
 
-<div class="content-container-top" style="background-color:#909ead00;">
+
+<div class="content-container-top">
     <div class="dx-card-container">
         <div class="dx-card-header minimal-header">
             <div class="card-title-icon">
@@ -319,7 +317,7 @@
             <h3 class="card-title-text">Cash Receipt</h3>
         </div>
         <div class="dx-card-body">
-            <div class="form-container" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; position: relative; padding: 0 15px; overflow-x: hidden;">
+            <div class="form-container" style="flex-wrap: wrap; align-items: flex-end; position: relative; padding: 0 15px; overflow-x: hidden;">
                 <!-- Top Row -->
                 <div style="display: flex; gap: 10px; align-items: flex-end; flex-wrap: nowrap; width: 100%;">
                     <div class="form-group" style="flex: 1 1 25px;">
@@ -403,22 +401,11 @@
                                                 .ContentTemplate(new TemplateName("PaymentAmountContentTemplate"))
                                                 )
                     </div>
-                    <div class="form-group" style="flex: 1 1 400px;">
-                        @(Html.DevExtreme().TextArea()
-                                                .ID("Narration")
-                                                .Value("")
-                                                .Label(new JS("formatMessage('Narration')"))
-                                                .LabelMode(EditorLabelMode.Floating)
-                                                .Height(40)
-                                                .MaxLength(111500)
-                                                .ElementAttr(new { @class = "light-theme-input" })
-                                                .TabIndex(4)
-                                                )
-                    </div>
+                
                 </div>
 
                 <!-- Second Row -->
-                <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; margin-top: 10px;">
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; margin-top: 15px;">
                     <div class="form-group">
                         @(
                                                 Html.DevExtreme().SelectBox()
@@ -715,8 +702,28 @@ buttons.Add()
                                                 .ElementAttr(new { @class = "white-box" })
                                                 )
                     </div>
-                    <div class="form-group plusBtn" style="flex: 1 1 30px;">
-                        @(Html.DevExtreme().Button()
+    
+
+
+
+
+                </div>
+                <!--Third Rpw-->
+                 <div class="row w-100 align-items-center" style="margin-top: 8px;">
+                    <div class="form-group col-11">
+              @(Html.DevExtreme().TextArea()
+                                                .ID("Narration")
+                                                .Value("")
+                                                .Label(new JS("formatMessage('Narration')"))
+                                                .LabelMode(EditorLabelMode.Floating)
+                                                .Height(40)
+                                                .MaxLength(111500)
+                                                .ElementAttr(new { @class = "light-theme-input" })
+                                                .TabIndex(4)
+                                                )
+                    </div> 
+                              <div class="form-group plusBtn col-1 mt-0 h-100">
+                              @(Html.DevExtreme().Button()
                                                 .ID("btnaddCostAllocation")
                                                 .Text(new JS("formatMessage('ADD')"))
                                                 .Height(40)
@@ -726,13 +733,10 @@ buttons.Add()
                                                 .ElementAttr(new { @class = "custom-ui-button" })
                                                 .OnClick("function() { addVoucherEntry(); }")
                                                 )
-                    </div>
-
-
-
-
-                </div>
+                              </div>
+             </div>
             </div>
+            
         </div>
 
 
@@ -995,52 +999,43 @@ buttons.Add()
         <div class="dx-card-body">
             <div class="form-container" style="display: flex; flex-direction: column; gap: 20px; padding: 0 15px;">
 
-                <!-- Row 1: Cheque No, Popup, Voucher Narration, Attachment -->
-                <div class="form-group" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end;">
-                    <div style="flex: 0 0 320px; min-width: 300px; display: flex; gap: 5px; align-items: flex-end;">
-                        <div style="flex-grow: 1;">
+               <!-- Row 1: Cheque No, Popup, Voucher Narration, Attachment -->
+                   <div class="row w-100 align-items-center" style="margin-top: 8px;">
+                    <div class="form-group col-4">
                             @(Html.DevExtreme().TextBox()
                                                         .Label(new JS("formatMessage('Cheque No/Reference No')"))
                                                         .ID("ChequeNoReferenceNo")
                                                         .Value(null)
+                                                        .TabIndex(11)
                                                         .LabelMode(EditorLabelMode.Floating)
                                                         .Width("100%")
-                                                        .TabIndex(12)
                                                         .ElementAttr(new { @class = "light-theme-input" }))
                         </div>
-                       
-                    </div>
 
-                    <div style="flex: 1 1 300px; min-width: 280px;">
+                  
+
+                    <div class="form-group col-4">
                         @(Html.DevExtreme().TextBox()
                                                 .Label(new JS("formatMessage('Voucher Narration')"))
                                                 .LabelMode(EditorLabelMode.Floating)
                                                 .ID("VoucherNarration")
                                                 .Value(null)
-                                                .Height(60)
-                                                .Width("630px")
-                                                .TabIndex(13)
+                                                .TabIndex(12)
+                                                
                                                 .ElementAttr(new { @class = "light-theme-input" }))
                     </div>
-                    <div style=" margin-right: 8px;">
+                    <div class="form-group col-4">
                         @(Html.DevExtreme().TextBox()
                                                 .Label(new JS("formatMessage('Remarks')"))
                                                 .LabelMode(EditorLabelMode.Floating)
                                                 .ID("Remarks")
                                                 .Value(null)
-                                                .Width("550px")
-                                                .TabIndex(14)
+                                                .TabIndex(13)
+                                                
                                                 .ElementAttr(new { @class = "light-theme-input" }))
                     </div>
 
-                    <div style="flex-shrink: 0;">
-                        @(Html.DevExtreme().Button()
-                                                .ID("btnAttachment")
-                                                .Icon("fa fa-paperclip")
-                                                .TabIndex(15)
-                                                .ElementAttr("class", "custom-popup-button custom-icon-color")
-                                                .OnClick("onAttachButtonClick"))
-                    </div>
+                 
                 </div>
 
 
@@ -1113,7 +1108,10 @@ buttons.Add()
                 </div>
             </div>
         </div>
-
+<div  id="mainFooter" class="footer-fixed">
+    @await Html.PartialAsync("_Formfooter")
+</div>
+ </div>
         <!-- Drop Down Grid Template -->
         @using (Html.DevExtreme().NamedTemplate("ReceivingAccountDropdownContentTemplate"))
         {

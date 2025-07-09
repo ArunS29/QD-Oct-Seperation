@@ -39,7 +39,7 @@
 	</div>
 </div> *@
 <div class="dx-card-body">
-	<div class="form-container" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; position: relative; padding: 0 15px; overflow-x: hidden;">
+	<div class="form-container" style="display: flex; flex-wrap: wrap;align-items: flex-end; position: relative; padding: 0 15px; overflow-x: hidden;">
 		<!-- Top Row -->
 		<div style="display: flex; gap: 10px; align-items: flex-end; flex-wrap: nowrap; width: 100%;">
 			<div class="form-group" style="flex: 1 1 25px;">
@@ -131,18 +131,7 @@
 						.Step(1)
 						)
 		</div>
-		<div class="form-group" style="flex: 1 1 400px;">
-			@(
-						Html.DevExtreme().TextArea()
-						.Label(new JS("formatMessage('Narration')"))
-						.LabelMode(EditorLabelMode.Floating)
-						.ID("txtEntryNarration")
-						.Value("")
-						.Height(40)
-						.Placeholder(new JS("formatMessage('Enter your comments here...')"))
-						.MaxLength(500)
-						)
-		</div>
+	
 	</div>
 	
 
@@ -305,6 +294,7 @@ buttons.Add()
 													.Width(1000)
 													)
 										.TabIndex(1)
+										 .DropDownOptions(o => o.Width(1000))
 										.OnKeyDown("onKeyDown")
 										.OnValueChanged("onSupplierNameChanged")
 										.ContentTemplate(new TemplateName("SupplierNameContentTemplate"))
@@ -557,8 +547,25 @@ buttons.Add()
 						)
 
 		</div>
-		<div class="form-group plusBtn" style="flex: 1 1 30px;">
-			@(Html.DevExtreme().Button()
+
+	</div>
+
+	 <!-- Third Row -->
+                <div class="row w-100 align-items-center" style="margin-top: 8px;">
+                    <div class="form-group col-11">
+					@(
+						Html.DevExtreme().TextArea()
+						.Label(new JS("formatMessage('Narration')"))
+						.LabelMode(EditorLabelMode.Floating)
+						.ID("txtEntryNarration")
+						.Value("")
+						.Height(40)
+						.Placeholder(new JS("formatMessage('Enter your comments here...')"))
+						.MaxLength(500)
+						)
+					</div> 
+					 <div class="form-group plusBtn col-1 mt-0 h-100">
+						 @(Html.DevExtreme().Button()
 						.ID("btnVoucherEntry")
 						.Text(new JS("formatMessage('ADD')"))
 						.Height(70)
@@ -566,8 +573,9 @@ buttons.Add()
 						.Icon("plus")
 						.OnClick("function() { addVoucherEntry(); }")
 						)
-		</div>
-	</div>
+					 </div>
+						
+				</div>
 	</div>
 
 </div>
@@ -883,50 +891,54 @@ buttons.Add()
 			<!-- Row 3: VoucherType, Verified By, Approved By, Dates -->
 			<div class="form-group" style="display: flex;flex-wrap: wrap;gap: 10px;width: 1160px;">
 				<div style="flex: 1 1 200px; min-width: 180px;">
-					@(Html.DevExtreme().CheckBox()
-										.Text(new JS("formatMessage('Verified By')"))
-										.ID("VerifiedBy")
-										.ReadOnly(true))
-					@(Html.DevExtreme().TextBox()
-										.ID("VerifiedBytext")
-										.Value(null)
-										.Disabled(true)
-										.Width("100%")
-										.ElementAttr(new { @class = "custom-disabled-textbox" }))
-																			 				</div>
-				<div style="flex: 1 1 200px; min-width: 180px;">
-					@(Html.DevExtreme().CheckBox()
-										.Text(new JS("formatMessage('Approved By')"))
-										.ID("ApprovedBy")
-										.ReadOnly(true))
-					@(Html.DevExtreme().TextBox()
-										.ID("ApprovedBytext")
-										.Value(null)
-										.Disabled(true)
-										.Width("100%")
-										.ElementAttr(new { @class = "custom-disabled-textbox" }))
-				</div>
-				<div style="flex: 1 1 200px; min-width: 180px;">
-					@(Html.DevExtreme().TextBox()
-										.Label(new JS("formatMessage('Verified On')"))
-										.LabelMode(EditorLabelMode.Floating)
-										.ID("VerifiedOnDate")
-										.Value(null)
-										.Disabled(true)
-										.Width("100%")
-										.ElementAttr(new { @class = "custom-disabled-textbox" }))
-				</div>
+					<div id="verifiedSection" style="display: none; flex: 1 1 200px; min-width: 180px;">
+    @(Html.DevExtreme().CheckBox()
+        .Text(new JS("formatMessage('Verified By')"))
+        .ID("VerifiedBy")
+        .ReadOnly(true))
+    @(Html.DevExtreme().TextBox()
+        .ID("VerifiedBytext")
+        .Value(null)
+        .Disabled(true)
+        .Width("100%")
+        .ElementAttr(new { @class = "custom-disabled-textbox" }))
+</div>
 
-				<div style="flex: 1 1 200px; min-width: 180px;">
-					@(Html.DevExtreme().TextBox()
-										.Label(new JS("formatMessage('Approved On')"))
-										.LabelMode(EditorLabelMode.Floating)
-										.ID("ApprovedOntext")
-										.Value(null)
-										.Disabled(true)
-										.Width("100%")
-										.ElementAttr(new { @class = "custom-disabled-textbox" }))
-				</div>
+<div id="verifiedOnSection" style="display: none; flex: 1 1 200px; min-width: 180px;">
+    @(Html.DevExtreme().TextBox()
+        .Label(new JS("formatMessage('Verified On')"))
+        .LabelMode(EditorLabelMode.Floating)
+        .ID("VerifiedOnDate")
+        .Value(null)
+        .Disabled(true)
+        .Width("100%")
+        .ElementAttr(new { @class = "custom-disabled-textbox" }))
+</div>
+
+<div id="approvedSection" style="display: none; flex: 1 1 200px; min-width: 180px;">
+    @(Html.DevExtreme().CheckBox()
+        .Text(new JS("formatMessage('Approved By')"))
+        .ID("ApprovedBy")
+        .ReadOnly(true))
+    @(Html.DevExtreme().TextBox()
+        .ID("ApprovedBytext")
+        .Value(null)
+        .Disabled(true)
+        .Width("100%")
+        .ElementAttr(new { @class = "custom-disabled-textbox" }))
+</div>
+
+<div id="approvedOnSection" style="display: none; flex: 1 1 200px; min-width: 180px;">
+    @(Html.DevExtreme().TextBox()
+        .Label(new JS("formatMessage('Approved On')"))
+        .LabelMode(EditorLabelMode.Floating)
+        .ID("ApprovedOntext")
+        .Value(null)
+        .Disabled(true)
+        .Width("100%")
+        .ElementAttr(new { @class = "custom-disabled-textbox" }))
+</div>
+
 				<div style="flex: 1 1 200px; min-width: 180px;">
 					@(
 										Html.DevExtreme().TextBox()
@@ -3861,4 +3873,8 @@ $(function () {
 		const title = "Ledger Documents";
 		openModal(url, title);
 	}
+	$(document).ready(function () {
+    $("#verifiedSection, #verifiedOnSection, #approvedSection, #approvedOnSection").hide();
+});
+
 </script>

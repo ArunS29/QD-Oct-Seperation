@@ -487,6 +487,7 @@
         font-size: 1.4rem;
         color: #000;
     }
+
 </style>
 
 <div class="title" id="kpiCarousel">
@@ -798,7 +799,7 @@ buttons.Add()
 
 
 
-	<div class="dx-field ledgerResult">
+	<div class="dx-field ledgerResult"style="height:70%;">
 		<!-- Toolbar for Column Chooser and Filter -->
 		@(
 					Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.StProAccountLedgerResult>()
@@ -934,8 +935,9 @@ buttons.Add()
 						/* … unchanged hidden columns … */
 						columns.AddFor(m => m.ReferenceNote).Caption(new JS("formatMessage('ReferenceNote')")).Alignment(HorizontalAlignment.Left).Visible(false);
 						columns.AddFor(m => m.AccountHeadArabic).Caption(new JS("formatMessage('AccountHeadArabic')")).Alignment(HorizontalAlignment.Left).Visible(false).CssClass("font-times");;
-						columns.AddFor(m => m.BillPaidTo).Caption(new JS("formatMessage('BillPaidTo')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.BillDate).Caption(new JS("formatMessage('BillDate')")).Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.BillPaidTo).Caption(new JS("formatMessage('BillPaidTo')")).Alignment(HorizontalAlignment.Center).Visible(false).Format(format => format.Type(Format.ShortDate)
+					.Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
+						columns.AddFor(m => m.BillDate).Caption(new JS("formatMessage('BillDate')")).Alignment(HorizontalAlignment.Center).Visible(false);
 						columns.AddFor(m => m.BillNo).Caption(new JS("formatMessage('BillNo')")).Alignment(HorizontalAlignment.Left).Visible(false);
 						columns.AddFor(m => m.VoucherModifiedOn).Caption(new JS("formatMessage('VoucherModifiedOn')")).Alignment(HorizontalAlignment.Left).Visible(false);
 						columns.AddFor(m => m.VoucherModifiedBy).Caption(new JS("formatMessage('VoucherModifiedBy')")).Alignment(HorizontalAlignment.Left).Visible(false);
@@ -947,19 +949,25 @@ buttons.Add()
 						columns.AddFor(m => m.DrCr).Caption(new JS("formatMessage('DrCr')")).Alignment(HorizontalAlignment.Left).Visible(false);
 						columns.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('AccountHead')")).Alignment(HorizontalAlignment.Left).Visible(false);
 						columns.AddFor(m => m.VoucherEntryNo).Caption(new JS("formatMessage('VoucherEntryNo')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.VoucherApprovedOn).Caption(new JS("formatMessage('VoucherApprovedOn')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.VoucherVerifiedOn).Caption(new JS("formatMessage('VoucherVerifiedOn')")).Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.VoucherApprovedOn)
+						.Caption(new JS("formatMessage('VoucherApprovedOn')")).
+						Alignment(HorizontalAlignment.Center).Visible(false).Format(format => format.Type(Format.ShortDate)
+					.Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
+						
+					columns.AddFor(m => m.VoucherVerifiedOn).Caption(new JS("formatMessage('VoucherVerifiedOn')")).
+						Alignment(HorizontalAlignment.Center).Visible(false).Format(format => format.Type(Format.ShortDate)
+					.Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
 						columns.AddFor(m => m.VoucherVerifiedBy).Caption(new JS("formatMessage('VoucherVerifiedBy')")).Alignment(HorizontalAlignment.Left).Visible(false);
 	
     
-    columns.AddFor(m => m.VoucherNarration)
-    .Caption(new JS("formatMessage('Narration')"))
-    .CellTemplate(@<text>
-        <div title="<%- data.VoucherNarration %>" class="narration-cell">
-            <%- data.VoucherNarration %>
-        </div>
-    </text>)
-    .Visible(true);
+  columns.AddFor(m => m.VoucherNarration)
+.Caption(new JS("formatMessage('Narration')"))
+.CellTemplate(@<text>
+    <div title="<%- data.VoucherNarration %>" class="narration-cell max-lines-1">
+        <%- data.VoucherNarration %>
+    </div>
+</text>)
+.Visible(true);
 
 
 					})
@@ -969,10 +977,11 @@ buttons.Add()
 				.OnToolbarPreparing("onToolbarPreparing")
 				.WordWrapEnabled(false)
 				.AllowColumnReordering(true)
+				.ColumnResizingMode(ColumnResizingMode.Widget)
 				.AllowColumnResizing(true)
 				.ColumnFixing(f => f.Enabled(true))
 				.HeaderFilter(f => f.Visible(false))
-				.Height(577)
+				.Height("100%")
 				.ColumnAutoWidth(true)
 				.FilterRow(f => f.Visible(false))
 				.Grouping(g => g.AutoExpandAll(false))
@@ -2376,4 +2385,21 @@ function showNarrationOrRemarkModal(field, value) {
 
         $(".narration-cell").addClass(classToAdd);
     }
+	function sortColumnChooserAlphabetically() {
+    setTimeout(() => {
+        const $container = $(".dx-datagrid-column-chooser .dx-scrollview-content .dx-treeview-node-container");
+        if ($container.length) {
+            const $nodes = $container.children(".dx-treeview-node");
+
+            const sorted = $nodes.sort((a, b) => {
+                const textA = $(a).text().trim().toUpperCase();
+                const textB = $(b).text().trim().toUpperCase();
+                return textA.localeCompare(textB);
+            });
+
+            $container.empty().append(sorted);
+        }
+    }, 200); // allow DOM to render
+}
+
 </script>
