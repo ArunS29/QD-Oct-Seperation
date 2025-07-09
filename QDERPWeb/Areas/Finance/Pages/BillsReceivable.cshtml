@@ -27,6 +27,7 @@
             <div id="BillsReceivable" class="no-border-title"></div>
         </div>
     </div> *@
+<div class="content-container-top">
 <div class="title" id="kpiCarousel">
     <div class="titleCard-cards">
 
@@ -147,7 +148,7 @@
                     band.AddFor(m => m.AccountHead)
                 .Caption(new JS("formatMessage('Ledger Account')"))
                 .Alignment(HorizontalAlignment.Left)
-                .Width(200) // Fixed width, change to auto for dynamic sizing
+                .Width(220) // Fixed width, change to auto for dynamic sizing
                 .GroupIndex(0); // Group by this column
 
                     band.AddFor(m => m.ReferenceNo)
@@ -157,13 +158,13 @@
                 <%- data.ReferenceNo %>
             </a>
         </text>)
-            .Width(150); // Fixed width, change to auto for dynamic sizing
+            .Width(140); // Fixed width, change to auto for dynamic sizing
 
                     // Voucher Reference No column
                     band.AddFor(m => m.VoucherRefNo)
             .Caption(new JS("formatMessage('Voucher Ref No')"))
             .Alignment(HorizontalAlignment.Center)
-            .Width(160); // Fixed width, change to auto for dynamic sizing
+            .Width(140); // Fixed width, change to auto for dynamic sizing
 
                     band.AddFor(m => m.VoucherDate)
             .Caption(new JS("formatMessage('Voucher Date')"))
@@ -171,7 +172,7 @@
             .Format(format => format
             .Type(Format.ShortDate)
             .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"))
-            .Width(160); // Fixed width, change to auto for dynamic sizing
+            .Width(140); // Fixed width, change to auto for dynamic sizing
 
                     // Invoice Due Date column
                     band.AddFor(m => m.InvoiceDueDate)
@@ -180,7 +181,7 @@
             .Format(format => format
             .Type(Format.ShortDate)
             .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"))
-            .Width(160); // Fixed width, change to auto for dynamic sizing
+            .Width(140); // Fixed width, change to auto for dynamic sizing
                 });
 
                     // Grid Band: Amount
@@ -202,7 +203,7 @@
         });
         }
         ")
-                .Width(160); // Fixed width, change to auto for dynamic sizing
+                .Width(140); // Fixed width, change to auto for dynamic sizing
 
                 // Paid Amount column
                     band.AddFor(m => m.Received)
@@ -258,8 +259,9 @@
             .AllowColumnReordering(true)
             .AllowColumnResizing(true)
             .ColumnFixing(fixing => fixing.Enabled(true))
-            .HeaderFilter(filter => filter.Visible(true))
-            .Height(660)
+            .HeaderFilter(filter => filter.Visible(false))
+            .Height("65vh")
+                .ColumnResizingMode(ColumnResizingMode.Widget)
             .ColumnAutoWidth(true) // Auto resize columns based on content
             .WordWrapEnabled(true)
             .FilterRow(filterRow => filterRow.Visible(false))
@@ -381,6 +383,7 @@
             .OnContextMenuPreparing("onContextMenuPreparing")
             )
 
+</div>
 </div>
 </div>
 

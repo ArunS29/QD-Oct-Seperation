@@ -19,10 +19,17 @@
         gap: 10px; /* Adds spacing between buttons */
         justify-content: start; /* Aligns buttons to the left */
         align-items: center; /* Vertically centers the buttons */
-        margin: 15px;
-        margin-top: 0px;
+        margin: 0px 10px 0px 10px;
+    }
+    .menuBtn{
+        border: 1px solid #ddd;
+        padding: 3px;
+        border-radius: 4px;
     }
 
+    .menuBtn:hover {
+            border: 1px solid #337ab7;
+    }
     .button-alignment-down .menuReports {
         margin-top: 23px;
     }
@@ -227,7 +234,7 @@
     </div>
 
 
-<div class="btn-container">
+<div class="btn-container menuBtn">
     @(Html.DevExtreme().Menu()
         .ID("menuReports")
         .DataSource(new[] {
