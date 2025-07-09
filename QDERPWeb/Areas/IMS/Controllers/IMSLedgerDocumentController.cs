@@ -14,16 +14,18 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class LedgerDocuments1Controller : Controller
+    public class IMSLedgerDocumentController : Controller
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
-        private readonly ILogger<LedgerDocuments1Controller> _logger;
+        private readonly ILogger<IMSLedgerDocumentController> _logger;
 
-        public LedgerDocuments1Controller(ILogger<LedgerDocuments1Controller> logger, TenantDbContextHelper tenantDbContextHelper)
+        public IMSLedgerDocumentController(ILogger<IMSLedgerDocumentController> logger, TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
+
+
 
         [HttpGet]
         public async Task<IActionResult> GetDocumentTypes(DataSourceLoadOptions loadOptions)
@@ -99,17 +101,17 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             try
             {
-                    // ✅ Convert DocumentExpDate to Hijri (Arabic) format
-                    if (documentDetails.DocumentExpDate.HasValue)
-                    {
-                        HijriCalendar hijriCalendar = new HijriCalendar();
-                        DateTime expDate = documentDetails.DocumentExpDate.Value;
+                    //// ✅ Convert DocumentExpDate to Hijri (Arabic) format
+                    //if (documentDetails.DocumentExpDate.HasValue)
+                    //{
+                    //    HijriCalendar hijriCalendar = new HijriCalendar();
+                    //    DateTime expDate = documentDetails.DocumentExpDate.Value;
 
-                        string hijriDate = $"{hijriCalendar.GetYear(expDate)}/{hijriCalendar.GetMonth(expDate):D2}/{hijriCalendar.GetDayOfMonth(expDate):D2}";
+                    //    string hijriDate = $"{hijriCalendar.GetYear(expDate)}/{hijriCalendar.GetMonth(expDate):D2}/{hijriCalendar.GetDayOfMonth(expDate):D2}";
 
-                        // ✅ Set Arabic date field
-                        documentDetails.DocumentExpDateAr = hijriDate;
-                    }
+                    //    // ✅ Set Arabic date field
+                    //    documentDetails.DocumentExpDateAr = hijriDate;
+                    //}
 
                     // Add to DB
                     dbContext.Tbl20116LedgerDocuments.Add(documentDetails);
@@ -145,7 +147,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 _logger.LogError($"Error in GetProject: {ex.Message}");
                 return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
             }
-            }
+         }
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
