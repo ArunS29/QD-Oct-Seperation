@@ -1908,3 +1908,14 @@ ADD IsEnableReceiptWorkflow BIT CONSTRAINT DF_tbl901CompanyDetails02_IsEnableRec
 ALTER TABLE Aicon.tbl901CompanyDetails02
 ADD CONSTRAINT DF_tbl901CompanyDetails02_IsAllowUnlockPO DEFAULT 1 FOR IsAllowUnlockPO;
 
+Alter VIEW [Aicon].[qry201VoucherEntryScreenDisplay]  
+AS  
+SELECT     VoucherEntryNo, VoucherNo, AccountHead, VoucherAmount, DrCr, AddedBy, AddedOn, EntryNarration,   
+                      CASE WHEN DrCr = 'Dr' THEN VoucherAmount ELSE 0 END AS DrAmount, CASE WHEN DrCr = 'Cr' THEN VoucherAmount ELSE 0 END AS CrAmount,   
+                      CASE WHEN DrCr = 'Dr' THEN VoucherAmount ELSE - VoucherAmount END AS VoucherAmountFormatted, SysRemarks,Type  
+FROM         Aicon.tbl201VoucherEntry
+
+
+ALTER TABLE dbo.Tbl20116LedgerDocuments 
+        ADD AzurePath VARCHAR(MAX) NULL; 
+ 
