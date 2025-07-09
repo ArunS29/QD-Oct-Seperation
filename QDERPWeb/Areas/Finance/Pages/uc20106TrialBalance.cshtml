@@ -3,158 +3,177 @@
 @{
     ViewData["Title"] = "Trial Balance";
 }
+<!-- Include Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-3d@1.0.0/dist/chartjs-plugin-3d.min.js"></script>
+
+
 <style>
     .limited-footer .btn-container {
         display: none !important;
     }
 
 
-    .dx-fieldset.horizontal-container {
-        display: flex;
-        align-items: center;
-        gap: 8px; /* Reduce spacing between controls */
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
     }
 
-    .dx-field {
-        margin: 0; /* Remove default margins */
-        padding: 5px; /* Reduce spacing */
+    .container {
+        display: flex;
+        /* flex-direction: column; */
+        height: 100vh; /* Fill full screen height */
+        /* width: 100%; */
+        overflow: hidden;
     }
 
-    .dx-field-4 {
+    .horizontal-container {
         display: flex;
-        flex-direction: column;
-        gap: 5px; /* Reduce space between checkboxes and dropdown */
-        align-content:center;
+        flex-wrap: wrap;
+        gap: 15px;
+        padding: 10px 15px;
     }
 
     #pivotGridContainer {
-        flex-grow: 1;
-        width: 100%;
-        min-height: 400px;
-        max-height: 600px;
+        flex: 1; /* Let PivotGrid grow to fill remaining space */
         overflow: auto;
-        padding: 5px; /* Reduce padding */
     }
 
-    .dx-pivotgrid-container {
-        font-size: 13px; /* Slightly reduce font size */
-        border-radius: 6px; /* Adjust border-radius */
+    .dx-field {
+        min-width: 200px;
+        flex: 1;
     }
 
-    .dx-pivotgrid-row, .dx-pivotgrid-column {
-        padding: 5px; /* Reduce padding */
-        border-bottom: 1px solid #ddd;
+    /* Optional tweak for small screens */
+    @@media (max-width: 768px) {
+        .horizontal-container
+
+    {
+        flex-direction: column;
     }
 
-    .dx-pivotgrid-cell {
-        padding: 6px; /* Reduce cell padding */
-    }
-
-        .dx-pivotgrid-cell:hover {
-            background-color: #f5f5f5;
-        }
-
-    .mainContainer {
+    .dx-field {
         width: 100%;
     }
+
+    }
+
+   
 </style>
-<div class="title">
-    <div class="header-container">
-        <div id="TrialBalance" class="no-border-input"></div>
-    </div>
-</div>
 
 
-<div class="container" style="display: flex; flex-direction: column; gap: 20px;width:100%;">
 
-    <div class="Head">
-        <div>
-            @await Html.PartialAsync("UCTRIALBALANCEFOOTER")
-        </div>
-    </div>
+<div class="container-fluid d-flex flex-column vh-100 px-3 py-2">
+
+    <!-- Optional: Load Panel -->
     <div id="loadPanel"></div>
-    <!-- Input Controls in One Line -->
-    <div class="dx-fieldset horizontal-container">
-        <div class="dx-field">
-            <!-- SelectBox for Account Group -->
-            @(Html.DevExtreme().SelectBox()
-                .ID("requestedBy")
-                .DataSource(d => d.Mvc().Controller("TrialBalance").LoadAction("GetUser").LoadMode(DataSourceLoadMode.Raw))
-                .Width(300)
-                .ElementAttr("class", "button-alignment-down")
-                .Label("Select Cost Allocation Group")
-                .LabelMode(EditorLabelMode.Outside)
-                .SearchEnabled(true)
-                .DisplayExpr("AccountGroup")
-                .Value(null)
-                .ShowClearButton(true)
-                .OnValueChanged("onRequestedByChanged")
-                )
+
+    <!-- Filter Row: Fullscreen Top Section -->
+    <div class="row g-3 align-items-end mb-2">
+
+        <!-- SelectBox -->
+        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+            @(
+                Html.DevExtreme().SelectBox()
+                    .ID("requestedBy")
+                    .DataSource(d => d.Mvc().Controller("TrialBalance").LoadAction("GetUser").LoadMode(DataSourceLoadMode.Raw))
+                    .Width("100%")
+                    .ElementAttr("class", "w-100")
+                    .Label("Select Cost Allocation Group")
+                    .LabelMode(EditorLabelMode.Floating)
+                    .SearchEnabled(true)
+                    .DisplayExpr("AccountGroup")
+                    .Value(null)
+                    .ShowClearButton(true)
+                    .OnValueChanged("onRequestedByChanged")
+            )
         </div>
 
-        <div class="dx-field">
-            <!-- Start Date Picker -->
+        <!-- Start Date -->
+        <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6">
             @(Html.DevExtreme().DateBox()
                 .ID("frmdateBox")
                 .Label("Start Date")
-                .LabelMode(EditorLabelMode.Outside)
-                .InputAttr("aria-label", "Date")
+                .LabelMode(EditorLabelMode.Floating)
                 .Type(DateBoxType.Date)
-                .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
-                .DisplayFormat("dd-MMM-yyyy")
-                .TabIndex(2)
-                )
+                .Value(DateTime.Now.Date.AddDays(1 - DateTime.Now.Day))
+                .DisplayFormat("dd-MMM-yyyy"))
         </div>
 
-        <div class="dx-field">
-            <!-- End Date Picker -->
+        <!-- End Date -->
+        <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6">
             @(Html.DevExtreme().DateBox()
                 .ID("todateBox")
                 .Label("End Date")
-                .LabelMode(EditorLabelMode.Outside)
-                .InputAttr("aria-label", "Date")
+                .LabelMode(EditorLabelMode.Floating)
                 .Type(DateBoxType.Date)
-                .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
-                .DisplayFormat("dd-MMM-yyyy")
-                .TabIndex(3)
-                )
+                .Value(DateTime.Now.Date)
+                .DisplayFormat("dd-MMM-yyyy"))
         </div>
-        <!-- Dropdown Button to Show Records -->
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddBtnShowRecords")
-            .Text("Show Records")
-            .Icon("smalliconslayout")
-            .Width(180)
-            .ElementAttr("class", "button-alignment-down")
-            .TabIndex(4)
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text("This Year Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
 
-                items.Add().Text("This Month Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+        <!-- Dropdown Button -->
+        <div class="col-xl-4 col-lg-4 col-md-8 col-sm-12">
+            @(Html.DevExtreme().DropDownButton()
+                .ID("ddBtnShowRecords")
+                .Text("Show Records")
+                .Icon("smalliconslayout")
+                @* .SplitButton(true) *@
+                .OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }")
+                .DropDownOptions(options => options.Width(230))
+                .Items(items => {
+                    items.Add().Text("Show Records").Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
+                    items.Add().Text("This Year Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+                    items.Add().Text("This Month Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+                    items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+                    items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+                    items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
+                }))
+        </div>
 
-                items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
-
-                items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-
-                items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
-            })
+        <!-- Effective Date & Toggle Chart (Grouped) -->
+        <div class="col-xl-2 col-lg-3 col-md-6 col-sm-12 d-flex gap-2 align-items-center">
+            @(
+                Html.DevExtreme().CheckBox()
+                    .ID("useEffectiveDate")
+                    .Text("Use Effective Date")
+                    .Value(true)
             )
-        <div class="dx-field dx-field-4" id="check">
-            <!-- Use Effective Date Checkbox -->
-            @(Html.DevExtreme().CheckBox()
-                .ID("useEffectiveDate")
-                .Text("Use Effective Date")
-                .Value(true)
-                )
+            <button id="toggleChartBtn" class="btn btn-primary">Hide Chart</button>
         </div>
     </div>
 
-    <!-- Pivot Grid (Will Always Appear Below Filters) -->
-    <div id="pivotGridContainer" style="width: 100%;"></div>
+    <!-- Scrollable Chart + Grid Area -->
+    <div class="flex-grow-1 overflow-auto">
+        <!-- Chart Container -->
+        <div id="pivotChartContainer" style="height: 300px;"></div>
 
+        <!-- Pivot Grid Container -->
+        <div id="pivotGridContainer" style="height: calc(100vh - 420px);"></div>
+    </div>
+
+    <!-- Optional Fullscreen Chart Modal -->
+    <div class="modal fade" id="chartModal" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Pivot Chart</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="modalChartContainer" style="height: 600px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+    <!-- Header -->
+    <div class="footer-fixed">
+        @await Html.PartialAsync("UCTRIALBALANCEFOOTER")
+    </div>
+
+
 
 
 
@@ -337,7 +356,7 @@
             }
         });
     }
-    function initializePivotGrid(data) {
+     function initializePivotGrid(data) {
         var pivotGrid = $("#pivotGridContainer").dxPivotGrid({
             dataSource: {
                 store: {
@@ -345,30 +364,18 @@
                     data: data
                 },
                 fields: [
-                    // { dataField: "AccountGroup", area: "row", caption: "Account Group" },
                     { dataField: "MasterGroup", area: "row", caption: "Master Group" },
                     { dataField: "LedgerNo", area: "row", caption: "Ledger No" },
-                    // { dataField: "Category", area: "row", caption: "Category" },
-                    //{ dataField: "VoucherNo", area: "column", caption: "Voucher No" },
-                   // { dataField: "VoucherDate", area: "column", caption: "Voucher Date", dataType: "date", format: "shortDate" },
-                    //{ dataField: "VoucherEntryNo", area: "column", caption: "Voucher Entry No" },
                     { dataField: "DrCr", area: "column", caption: "Dr Cr" },
                     { dataField: "VoucherType", area: "column", caption: "Voucher Type" },
                     { dataField: "DrAmount", area: "data", caption: "Debit Amount", summaryType: "sum" },
                     { dataField: "CrAmount", area: "data", caption: "Credit Amount", summaryType: "sum" },
                     { dataField: "VoucherAmountFormatted", area: "data", caption: "Voucher Amount", summaryType: "sum" },
-                    //{ dataField: "VoucherNarration", area: "column", caption: "Voucher Narration" },
-                    //{ dataField: "EntryNarration", area: "column", caption: "Entry Narration" },
-                    //{ dataField: "SysRemarks", area: "column", caption: "System Remarks" },
-                    //{ dataField: "VoucherRefNo", area: "column", caption: "Voucher Ref No" },
-                    //{ dataField: "Transactions", area: "data", caption: "Transactions", summaryType: "count" },
-                    { dataField: "OpeningBalance", area: "data", caption: "Opening Balance", summaryType: "sum" },
-                    //{ dataField: "MonthYear", area: "column", caption: "Month Year" },
-                    //{ dataField: "MonthNumber", area: "column", caption: "Month Number" }
+                    { dataField: "OpeningBalance", area: "data", caption: "Opening Balance", summaryType: "sum" }
                 ]
             },
             width: "100%",
-            height: $(window).height() - 50,
+            height: "100%",
             allowSortingBySummary: true,
             allowSorting: true,
             allowFiltering: true,
@@ -402,24 +409,47 @@
             showRowGrandTotals: true
         }).dxPivotGrid("instance");
 
-        // Expand only "AccountGroup" rows
+        // ✅ Chart Setup (non-intrusive)
+        var chart = $("#pivotChartContainer").dxChart({
+            commonSeriesSettings: {
+                type: "bar"
+            },
+            tooltip: {
+                enabled: true
+            },
+            legend: {
+                visible: true
+            },
+            export: {
+                enabled: true
+            }
+        }).dxChart("instance");
+
+        // ✅ Bind Chart to PivotGrid
+        pivotGrid.bindChart(chart, {
+            dataFieldsDisplayMode: "splitPanes", // also try: "singleAxis"
+            alternateDataFields: false
+        });
+
+        // ✅ Expand rows (your logic preserved)
         setTimeout(function () {
             var dataSource = pivotGrid.getDataSource();
             var accountGroups = dataSource.getData().rows;
-
             accountGroups.forEach(function (group) {
                 if (group.text) {
                     dataSource.expandHeaderItem("row", [group.text]);
                 }
             });
-        }, 100); // Delay ensures grid is rendered first
+        }, 100);
 
-        // Adjust grid height on window resize
+        // ✅ Adjust height on resize
         $(window).resize(function () {
-            pivotGrid.option("height", $(window).height() - 50);
+            var height = $(window).height() - 50;
+            pivotGrid.option("height", height);
+            chart.option("height", height);
         });
 
-        // Custom styles
+        // ✅ Custom styles
         $(".dx-pivotgrid-container").css({
             "font-size": "14px",
             "border-radius": "8px"
@@ -436,6 +466,7 @@
             $(this).css("background-color", "");
         });
     }
+
 
 
     $("#btnShowRowTotals").on("click", function (e) {
@@ -499,6 +530,22 @@
 
 
     });
+     
+
+    $("#toggleChartBtn").on("click", function () {
+    const chartContainer = $("#pivotChartContainer");
+    if (chartContainer.is(":visible")) {
+        chartContainer.hide();
+        $(this).text("Show Chart");
+    } else {
+        chartContainer.show();
+        $(this).text("Hide Chart");
+    }
+
+    // Resize grid
+    const newHeight = chartContainer.is(":visible") ? "calc(100vh - 460px)" : "calc(100vh - 160px)";
+    $("#pivotGridContainer").css("height", newHeight);
+});
 
 </script>
 
