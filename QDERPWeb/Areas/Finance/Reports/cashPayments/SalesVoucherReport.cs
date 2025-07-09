@@ -37,9 +37,41 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
             SetReportParameters(voucherNo, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb, username);
             LoadReportData(voucherNo);
             LoadSubreport(voucherNo);
-
+            this.BeforePrint += Report_BeforePrint;
 
         }
+
+
+
+        private void Report_BeforePrint(object sender, CancelEventArgs e)
+        {
+            string currentAccountHead = GetCurrentColumnValue("AccountHeadName")?.ToString();
+            string voucherNo = GetCurrentColumnValue("VoucherNo")?.ToString();
+
+            if (string.IsNullOrWhiteSpace(currentAccountHead) || string.IsNullOrWhiteSpace(voucherNo))
+            {
+                xrSubreport1.Visible = false;
+                return;
+            }
+
+            if (_accountHeadsWithCostAllocations.Contains(currentAccountHead) &&
+                _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out _))
+            {
+                var subReport = new subCostReport();
+                subReport.LoadData(voucherNo, currentAccountHead, tenant.ConnectionString);
+                xrSubreport1.ReportSource = subReport;
+                xrSubreport1.Visible = true;
+            }
+            else
+            {
+                xrSubreport1.Visible = false;
+            }
+        }
+
+
+
+        private HashSet<string> _accountHeadsWithCostAllocations = new HashSet<string>();
+
         private void LoadSubreport(string voucherNo)
         {
             if (string.IsNullOrWhiteSpace(voucherNo)) return;
@@ -47,11 +79,28 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out _))
                 throw new Exception("Unable to retrieve tenant context.");
 
-            var subReport = new subCostReport();
-            subReport.LoadData(voucherNo, tenant.ConnectionString);
+            DataTable dt = new DataTable();
 
-            // ✅ Set the subreport directly
-            xrSubreport1.ReportSource = subReport;
+            using (var conn = new SqlConnection(tenant.ConnectionString))
+            {
+                string query = "SELECT DISTINCT AccountHeadName FROM qry201RptVoucherWithCost WHERE VoucherNo = @VoucherNo";
+
+                using (var cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@VoucherNo", voucherNo);
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(dt);
+                }
+            }
+
+            foreach (DataRow row in dt.Rows)
+            {
+                string accountHead = row["AccountHeadName"]?.ToString();
+                if (!string.IsNullOrWhiteSpace(accountHead))
+                {
+                    _accountHeadsWithCostAllocations.Add(accountHead);
+                }
+            }
         }
 
 

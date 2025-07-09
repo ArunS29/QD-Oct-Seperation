@@ -47,7 +47,8 @@
     }
 
     .row {
-        margin-top: 3%; /* only works in flex layout */
+        margin-left: 1%;
+        margin-top: 1%;
     }
 
     .floating-dropdown-form {
@@ -73,6 +74,9 @@
         box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
+    .dx-checkbox.dx-state-readonly{
+        color: var(--title-background-color);
+    }
 </style>
 <div class="dx-card-header minimal-header">
     <div class="card-title-icon">
@@ -85,29 +89,36 @@
 <div class="container-fluid">
     <div class="d-flex align-items-center flex-wrap" style="margin-left:20px">
         <div class="form-group me-3">
-            <label for="VoucherNo" class="form-label">Journal Reference No</label>
+            @* <label for="VoucherNo" class="form-label"></label> *@
             @(Html.DevExtreme().TextBox()
                 .ID("VoucherNo")
                 .Placeholder("Generating...")
                 .ReadOnly(true)
+                        .LabelMode(EditorLabelMode.Floating)
+                        .Label("Journal Reference No")
                 )
         </div>
 
         <div class="form-group me-3">
-            <label for="VoucherDate" class="form-label">Voucher Date</label>
+            @* <label for="VoucherDate" class="form-label">Voucher Date</label> *@
             @(Html.DevExtreme().DateBox()
                 .ID("VoucherDate")
                 .Value(DateTime.Now)
+                        .LabelMode(EditorLabelMode.Floating)
+                        .Label("Voucher Date")
+
                 .DisplayFormat("dd-MMM-yyyy") // Example: 31-Aug-2024
                 .UseMaskBehavior(true) // Ensures proper date input handling
                 )
         </div>
 
         <div class="form-group me-3">
-            <label for="EffectiveDate" class="form-label">Effective Date</label>
+            @* <label for="EffectiveDate" class="form-label">Effective Date</label> *@
             @(Html.DevExtreme().DateBox()
                 .ID("EffectiveDate")
                 .Value(DateTime.Now)
+                        .LabelMode(EditorLabelMode.Floating)
+                        .Label("Effective Date")
                 .DisplayFormat("dd-MMM-yyyy") // Example: 31-Aug-2024
                 .UseMaskBehavior(true)
                 )
@@ -187,9 +198,11 @@
                         }
         </div>
         <div class="form-group flex-grow-1">
-            <label for="VoucherNarration" class="form-label">Voucher Narration</label>
+            @* <label for="VoucherNarration" class="form-label">Voucher Narration</label> *@
             @(Html.DevExtreme().TextArea()
                         .ID("VoucherNarration")
+                        .LabelMode(EditorLabelMode.Floating)
+                        .Label("Voucher Narration")
                         .Width(1390)
                         )
         </div>
@@ -456,16 +469,17 @@
         </div>
 
         <!-- Post Journal Button -->
-        <div class="col-md-2 col-sm-6 d-flex align-items-end justify-content-center">
+        <div class="col-md-2 col-sm-6 d-flex align-items-end justify-content-center" style="height:100px!important;">
             @(Html.DevExtreme().Button()
                         .ID("btnPostJournal")
                         .Template(@<text>
                 <div class="text-center" style="line-height: 1;">
-                    <span class="fa-stack fa-lg">
-                        <i class="fa fa-file fa-stack-2x"></i>
-                        <i class="fa fa-cog fa-stack-1x" style="color: #3366cc; top: 2px;"></i>
-                    </span>
-                    <div style="font-size: 13px;">Post the Journal</div>
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="var(--title-background-color)" viewBox="0 0 512 512">
+                            <path d="M128 64c0-35.3 28.7-64 64-64L352 0l0 128c0 17.7 14.3 32 32 32l128 0 0 288c0 35.3-28.7 64-64 64l-256 0c-35.3 0-64-28.7-64-64l0-112 174.1 0-39 39c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l80-80c9.4-9.4 9.4-24.6 0-33.9l-80-80c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l39 39L128 288l0-224zm0 224l0 48L24 336c-13.3 0-24-10.7-24-24s10.7-24 24-24l104 0zM512 128l-128 0L384 0 512 128z" />
+                        </svg>
+                        <div style="font-size: 13px; margin-top: 4px;">Post the Journal</div>
+                    </div>
                 </div>
             </text>)
                         .Height(80)
@@ -473,6 +487,7 @@
                         .OnClick("onPostJournalClick")
                         )
         </div>
+
     </div>
 
 

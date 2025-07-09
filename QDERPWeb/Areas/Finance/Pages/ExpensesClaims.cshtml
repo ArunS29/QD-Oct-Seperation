@@ -422,11 +422,12 @@
 
     </div>
 </div>
-<div>
-    @await Html.PartialAsync("_ExpenseClaimFooter")
-</div>
+
 
 <div class="content-container-top">
+    <div>
+        @await Html.PartialAsync("_ExpenseClaimFooter")
+    </div>
     <div class="context-menu" id="contextMenu">
         <div class="context-menu-item">
             <div class="menu-item">
@@ -443,7 +444,7 @@
             </div>
         </div>
     </div>
-</div>
+
 
 
     <div class="horizontal-container">
@@ -535,7 +536,7 @@
             })
             )
     </div>
-    <div class="dx-field ledgerResult">
+    <div class="dx-field ledgerResult" style="height:70%;">
         @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.sp20105ExpenseClaimViewResult>() // Replace with your model
                 .ID("dataGrid")
                 .RemoteOperations(false)
@@ -724,7 +725,7 @@ columns.Add()
         </text>).Visible(true).AllowEditing(false);
 
                 })
-            .Height(600)
+            .Height("100%")
             .Grouping(grouping => grouping.AutoExpandAll(true)) // Optional
             .GroupPanel(groupPanel => groupPanel.Visible(false))
             .Scrolling(scrolling => scrolling
@@ -859,7 +860,8 @@ columns.Add()
                 })
             )
     }
-</div>
+    </div>
+
 
 <script type="text/javascript">
     let accheadname, accheadid
