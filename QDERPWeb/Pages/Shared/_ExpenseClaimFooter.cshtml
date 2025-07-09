@@ -221,7 +221,7 @@
             .Width("100%")
             .Text(new JS("formatMessage('Column Chooser')"))
             .ElementAttr(new { style = "display: none;" })
-            .OnClick("showColumnChooser")
+                .OnClick("toggleColumnChooser")
             )
     </div>
     
@@ -649,6 +649,26 @@
                 dataGrid.showColumnChooser();
             }
         }
+   let columnChooserVisible = false;
+
+    function toggleColumnChooser() {
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+        if (!columnChooserVisible) {
+            dataGrid.showColumnChooser(); // Show the chooser
+            columnChooserVisible = true;
+
+            // Optional: Reset flag when the chooser is closed by the user
+            setTimeout(() => {
+                $(".dx-datagrid-column-chooser").on("click", ".dx-overlay-content", function () {
+                    columnChooserVisible = false;
+                });
+            }, 500);
+        } else {
+            $(".dx-datagrid-column-chooser .dx-overlay-content").closest(".dx-overlay").hide(); // Force-hide
+            columnChooserVisible = false;
+        }
+    }
 
 
 

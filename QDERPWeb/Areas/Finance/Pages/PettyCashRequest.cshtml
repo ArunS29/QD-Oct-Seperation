@@ -214,8 +214,8 @@
     </div>
     <h3 class="card-title-text">Petty Cash Request</h3>
 </div>
-    <div class="horizontal-container">
-        <div class="form-group">
+<div class="row w-100 align-items-center" style="margin-top: 8px;">
+    <div class="form-group col-md-2 col-sm-6">
             @(Html.DevExtreme().TextBox()
                 .Label("Claim Reference No:")
                 .LabelMode(EditorLabelMode.Outside)
@@ -225,7 +225,7 @@
                 .ValidationRules(rules => { rules.AddRequired().Message("VoucherNo is required"); })
                 )
         </div>
-        <div class="form-group">
+    <div class="form-group col-md-2 col-sm-6">
             @(Html.DevExtreme().DateBox()
                 .Label("Claim Date:")
                 .ID("claimerdate")
@@ -235,7 +235,7 @@
                 .Value(DateTime.Now)
                 )
         </div>
-        <div class="form-group">
+    <div class="form-group col-md-2 col-sm-6">
             @(Html.DevExtreme().DateBox()
                 .Label("Effective Date:")
                 .ID("claimerEffectiveDate")
@@ -245,22 +245,22 @@
                 .Value(DateTime.Now)
                 )
         </div>
-        <div class="form-group">
+    <div class="form-group col-md-5 col-sm-6">
             @(Html.DevExtreme().TextArea()
                 .Label("Claim Remarks:")
                 .LabelMode(EditorLabelMode.Outside)
                 .ID("txtEntryNarration")
                 .Value("Petty Cash Request for the month of ")
                 .Height(100)
-                .Width(720)
+              
                 
                 .MaxLength(500)
                 )
         </div>
     </div>
 
-    <div class="dx-fieldset horizontal-container">
-        <div class="form-group">
+<div class="row w-100 align-items-center" style="margin-top: 8px;">
+    <div class="form-group col-md-4 col-sm-6">
             @(Html.DevExtreme().DropDownBox()
                 .DataSource(d => d.WebApi()
                 .Controller("CostAllocation")
@@ -282,14 +282,14 @@
 
                 .OnInput("dropDownBoxOnInput")
                 .OnOpened("onclaimOpened")
-                .Width(440)
+                
                 .TabIndex(1)
                 .DropDownOptions(o => o.Width(1000))
                 .OnKeyDown("onKeyDown")
                 .ContentTemplate(new TemplateName("PaymentAmountContentTemplate"))
                 )
         </div>
-        <div class="form-group">
+    <div class="form-group col-md-2 col-sm-6">
             @(
                 Html.DevExtreme().SelectBox()
                 .Label("Priority:")
@@ -469,10 +469,14 @@
             .OnRowRemoving("onexpenserowremoving")
             )
     </div>
-    <div class="dx-card-body">
-        <div class="form-container">
-        <div class="form-container1">
-                <div>
+<div class="dx-card-body">
+    <div class="container-fluid">
+
+        <!-- First Row -->
+        <div class="row gx-3 gy-3">
+
+            <!-- Type of Claim -->
+            <div class="form-group col-md-3 col-sm-6">
                 @(Html.DevExtreme().SelectBox()
                                 .Label("Type of Claim:")
                                 .ID("ClaimType")
@@ -480,56 +484,107 @@
                                 .DataSource(new[] { "Petty Cash Request" })
                                 .Value("Petty Cash Request")
                                 .Disabled(true)
-                                .Width(200))
-                </div>
-                <div>
+                             
+                                )
+            </div>
+
+            <!-- Payment Type -->
+            <div class="form-group col-md-3 col-sm-6">
                 @(Html.DevExtreme().RadioGroup()
                                 .ID("radioGroup")
                                 .Items(new[] { "Cash Payment", "Bank Payment" })
                                 .Value(null)
                                 .Layout(Orientation.Horizontal)
-                                .OnValueChanged("onRadioGroupValueChanged"))
-                </div>
-                <div>
-                <label for="GenerateVoucher">Generated Voucher</label>
+                                .OnValueChanged("onRadioGroupValueChanged")
+                                )
+            </div>
+
+            <!-- Generated Voucher -->
+            <div class="form-group col-md-3 col-sm-6">
+                <label for="GenerateVoucher" class="form-label">Generated Voucher</label>
                 @(Html.DevExtreme().TextBox()
                                 .ID("GenerateVoucher")
                                 .Value(null)
-                                .ReadOnly(true))
-                </div>
-            <div>
-                    <label for="AccountHead">Payment Accounts:</label>
-                    @(Html.DevExtreme().DropDownBox()
-                                        .LabelMode(EditorLabelMode.Outside)
-                                        .ID("ddAccountHead")
-                                        .ShowClearButton(true)
-                                        .AcceptCustomValue(true)
-                                        .OpenOnFieldClick(false)
-                                        .ValueChangeEvent("input")
-                                        .HoverStateEnabled(true)
-                                        .ValueExpr("AccountId")
-                                        .DisplayExpr("AccountHead")
-                                        .OnInput("dropDownBoxOnInput")
-                                        .OnOpened("onPaymentOpened")
-                                        .Width(200)
-                                        .TabIndex(1)
-                                        .DropDownOptions(o => o.Width(1000))
-                                        .OnKeyDown("onKeyDown")
-                                        .ContentTemplate(new TemplateName("AccountHeadContentTemplate")))
+                                .ReadOnly(true)
+                                )
             </div>
-            <div>
+
+            <!-- Payment Accounts -->
+            <div class="form-group col-md-3 col-sm-6">
+                <label for="AccountHead" class="form-label">Payment Accounts:</label>
+                @(Html.DevExtreme().DropDownBox()
+                                .LabelMode(EditorLabelMode.Outside)
+                                .ID("ddAccountHead")
+                                .ShowClearButton(true)
+                                .AcceptCustomValue(true)
+                                .OpenOnFieldClick(false)
+                                .ValueChangeEvent("input")
+                                .HoverStateEnabled(true)
+                                .ValueExpr("AccountId")
+                                .DisplayExpr("AccountHead")
+                                .OnInput("dropDownBoxOnInput")
+                                .OnOpened("onPaymentOpened")
+                        
+                                .TabIndex(1)
+                                .DropDownOptions(o => o.Width(1000))
+                                .OnKeyDown("onKeyDown")
+                                .ContentTemplate(new TemplateName("AccountHeadContentTemplate"))
+                                )
+            </div>
+
+            <!-- Pay Button -->
+            <div class="form-group col-md-3 col-sm-6 d-flex align-items-end">
                 @(Html.DevExtreme().Button()
                                 .ID("btnPaytheClaim")
                                 .Text("Pay the Claim")
                                 .Icon("money")
                                 .ElementAttr(new { @class = "bold-button" })
                                 .Height(50)
-                                .Width(150)
-                                .OnClick("generateVoucherNo"))
+                          
+                                .OnClick("generateVoucherNo")
+                                )
             </div>
         </div>
+
+        <!-- Second Row -->
+        <div class="row gx-3 gy-3 mt-2">
+
+            <!-- Submitted -->
+            <div class="form-group col-md-3 col-sm-6">
+                <label class="form-label">Submitted By:</label>
+                @(Html.DevExtreme().TextBox().ID("SubmittedBytext").Value(null).Disabled(true).Width(100))
+                <label class="form-label mt-2">Submitted On:</label>
+                @(Html.DevExtreme().TextBox().ID("SubmittedOnDate").Value(null).Disabled(true).Width(100))
+            </div>
+
+            <!-- Approved -->
+            <div class="form-group col-md-3 col-sm-6">
+                <label class="form-label">Approved By:</label>
+                @(Html.DevExtreme().TextBox().ID("ApprovedBytext").Value(null).Disabled(true).Width(100))
+                <label class="form-label mt-2">Approved On:</label>
+                @(Html.DevExtreme().TextBox().ID("ApprovedOntext").Value(null).Disabled(true).Width(100))
+            </div>
+
+            <!-- Verified -->
+            <div class="form-group col-md-3 col-sm-6">
+                <label class="form-label">Verified By:</label>
+                @(Html.DevExtreme().TextBox().ID("VerifiedBytext").Value(null).Disabled(true).Width(100))
+                <label class="form-label mt-2">Verified On:</label>
+                @(Html.DevExtreme().TextBox().ID("VerifiedOntext").Value(null).Disabled(true).Width(100))
+            </div>
+
+            <!-- Paid -->
+            <div class="form-group col-md-3 col-sm-6">
+                <label class="form-label">Paid By:</label>
+                @(Html.DevExtreme().TextBox().ID("paidBytext").Value(null).Disabled(true).Width(100))
+                <label class="form-label mt-2">Paid On:</label>
+                @(Html.DevExtreme().TextBox().ID("paidOntext").Value(null).Disabled(true).Width(100))
+            </div>
+
         </div>
     </div>
+</div>
+
 
    
 
