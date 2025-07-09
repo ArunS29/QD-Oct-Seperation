@@ -333,7 +333,7 @@
         const supplierContactSlNo = (urlParams.get("SupplierContactSlNo") || "").split(/[?&]/)[0];
         const supplierCode = (urlParams.get("supplierCode") || "").split(/[?&]/)[0];
         const supplierName = (urlParams.get("supplierName") || "").split(/[?&]/)[0];
-
+      
         // Bind hidden and visible values
         $("#txtSupplierHidden").dxTextBox("instance").option("value", supplierContactSlNo);
         $("#txtSupplierCode").dxTextBox("instance").option("value", supplierCode);
@@ -359,7 +359,7 @@
                             value: data.SupplierCode,
                             readOnly: true
                         });
-                    $("#txtSupplierName").dxTextBox("instance").option("value", data.SupplierName);
+                    //$("#txtSupplierName").dxTextBox("instance").option("value", data.SupplierName);
                     $("#contactPerson").dxTextBox("instance").option("value", data.ContactPerson);
                     $("#title").dxTextBox("instance").option("value", data.ContactPersonTitle);
                     $("#mobile1").dxTextBox("instance").option("value", data.ContactMobile1);

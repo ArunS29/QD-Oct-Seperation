@@ -1060,18 +1060,29 @@
         if (e.target === "content" && e.row) {
             let SupplierContactSlNo = e.row.data.SupplierContactSlNo;
             let SupplierCode = e.row.data.SupplierCode;
+                 let supplierName = $('#txtSupplierName').dxTextBox("instance").option("value") || "";
+                  let encodedSupplierName = encodeURIComponent(supplierName);
             e.items = [
+                    {
+                        text: "Add Contact Details",
+                        onItemClick: function () {
+                            let tenantName = window.tenantName || "defaultTenant";
+                            let url = `/${tenantName}/IMS/SupplierContactList?supplierCode=${encodeURIComponent(SupplierCode)}&supplierName=${encodeURIComponent(supplierName)}`;
+                            let title = `Edit Client - ${SupplierContactSlNo}`;
+                            openModal(url, title);
+                        }
+                    },
                 {
-                    text: "Client Edit",
+                    text: "Edit Contact Details",
                     onItemClick: function () {
                         let tenantName = window.tenantName || "defaultTenant";
-                        let url = `/${tenantName}/IMS/SupplierContactList?SupplierContactSlNo=${SupplierContactSlNo}`;
+                         let url = `/${tenantName}/IMS/SupplierContactList?SupplierContactSlNo=${SupplierContactSlNo}&supplierName=${encodedSupplierName}`
                         let title = `Edit Client - ${SupplierContactSlNo}`;
                         openModal(url, title);
                     }
                 },
                 {
-                    text: "Delete",
+                    text: "Delete Contact Details",
                     onItemClick: function () {
                         DevExpress.ui.dialog.confirm("Are you sure you want to delete this contact?", "Confirm Delete")
                             .done(function (dialogResult) {
@@ -1190,7 +1201,7 @@
     });
 
             function addAttachFiles(){
-                          const url = `/${tenantName}/IMS/LedgerDocuments1`;
+                              const url = `/${tenantName}/IMS/IMSLedgerDocument`;
                         const title = "";
                             openModal(url, title);
                     }
