@@ -110,6 +110,7 @@
         <div id="DepreciationMaster" class="no-border-input"></div>
     </div>
 </div> *@
+
 <div class="title" id="kpiCarousel">
     <div class="titleCard-cards">
 
@@ -348,8 +349,9 @@
             .AllowColumnReordering(true)
             .AllowColumnResizing(true)
             .ColumnFixing(fixing => fixing.Enabled(true))
-            .HeaderFilter(filter => filter.Visible(true))
-            .Height(401)
+            .HeaderFilter(filter => filter.Visible(false))
+            .Height("65vh")
+            .ColumnResizingMode(ColumnResizingMode.Widget)
             .Width("100%")
             .ColumnAutoWidth(true) // Important: allows columns to overflow and scroll
             .Scrolling(scrolling => scrolling
