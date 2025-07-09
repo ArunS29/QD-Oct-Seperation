@@ -629,7 +629,7 @@
                     .ID("BillsReceivablePopup")
                     .Title("Finance Module: Receivables / Payables")
                     .Width("90%")
-                    .Height(500)
+                    .Height(600)
                     .Visible(false)
                     .ShowCloseButton(true)
                     .ResizeEnabled(true)
@@ -4049,30 +4049,41 @@ function fetchUpdatedData(voucherEntryNo) {
         // Triggered when a key is pressed in the DropDownBox
         console.log("Key down in currency dropdown:", e.event.key);
     }
-    function onCurrencySelectionChanged(e) {
-        const selectedKey = e.selectedRowKeys[0];
-        const dropDown = $("#ddCurrency").dxDropDownBox("instance");
+    function onCurrencySelectionChanged(e) { 
+        debugger;
+            const selectedKey = e.selectedRowKeys[0];
+            const dropDown = $("#ddCurrency").dxDropDownBox("instance");
 
-        if (selectedKey) {
-             dropDown.option("value", selectedKey); // Set DropDownBox value
+            if (selectedKey) {
+                dropDown.option("value", selectedKey); // Set DropDownBox value
 
-        const selectedRow = e.selectedRowsData[0];
+                const selectedRow = e.selectedRowsData[0];
 
-        // ✅ Set ExchangeRate in NumberBox
-        if (selectedRow && selectedRow.ExchangeRate !== undefined) {
-            $("#txtCurrencyRate").dxNumberBox("instance").option("value", selectedRow.ExchangeRate);
-        }
-            if (dropDown.option("opened")) {
-                dropDown.close();
-            }
+                if (selectedRow && selectedRow.ExchangeRate !== undefined) {
+                    const numberBox = $("#txtCurrencyRate").dxNumberBox("instance");
 
-            
+                    // ✅ Check for Bahraini Dinar and update format dynamically
+                    if (selectedRow.CurrencyName === "Bahraini Dinar") {
+                        numberBox.option("format", "#,##0.000");
+                    } else {
+                        numberBox.option("format", "#,##0.00");
+                    }
+
+                    // Set the value after format is applied
+                    numberBox.option("value", selectedRow.ExchangeRate);
+                }
+
+                if (dropDown.option("opened")) {
+                    dropDown.close();
+                }
+
                 console.log("Selected Currency:", selectedRow.CurrencyExchangeId);
-        } else {
-            DevExpress.ui.notify("Please select a currency", "warning", 2000);
-        }
+            } else {
+                DevExpress.ui.notify("Please select a currency", "warning", 2000);
+            }
     }
-            function onBaseCurrencySelectionChanged(e) {
+
+    function onBaseCurrencySelectionChanged(e) {
         const selectedKey = e.selectedRowKeys[0];
         const dropDown = $("#ddlBaseCurrency").dxDropDownBox("instance");
 

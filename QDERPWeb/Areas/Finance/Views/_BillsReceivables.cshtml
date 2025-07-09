@@ -1,7 +1,6 @@
 ﻿@page
 @model QD.ERP.Web.Areas.Finance.Views._BillsReceivablesModel
 @{
-    
     string voucherNo = ViewBag.VoucherNo;
     string drCr = ViewBag.DrCr;
     string accountHead = ViewBag.AccountHead;
@@ -9,68 +8,76 @@
     long voucherEntryNo = ViewBag.VoucherEntryNo;
     double? voucherAmountParsed = null;
 
-    // Try parsing the voucherAmount to a nullable double
+    // Try parsing the voucherAmount
     if (!string.IsNullOrEmpty(voucherAmount))
     {
         double parsedAmount;
         if (double.TryParse(voucherAmount, out parsedAmount))
         {
-            voucherAmountParsed = parsedAmount;
+            voucherAmountParsed = Math.Round(parsedAmount, 2);
         }
     }
 
-    // If voucherAmountParsed is not null, ensure it's formatted to 2 decimal places
-    if (voucherAmountParsed.HasValue)
+    // Determine Reference Type and Voucher Type
+    string referenceType = "New Reference";
+    string voucherType = "";
+
+    if (!string.IsNullOrEmpty(voucherNo))
     {
-        // Format the amount to 2 decimal places and then parse it back to double
-        voucherAmountParsed = Math.Round(voucherAmountParsed.Value, 2);
+        if (voucherNo.Contains("CP") || voucherNo.Contains("BP"))
+        {
+            referenceType = "Against Reference";
+            voucherType = "Purchases";
+        }
+        else if (voucherNo.Contains("CR") || voucherNo.Contains("BR"))
+        {
+            referenceType = "Against Reference";
+            voucherType = "Sales";
+        }
     }
 }
-<div class="content-container-top" class="background">
+<div class="content-container-top" style="background-color:#909ead00;" ">
 <div class="title">
     <div class="header-container">
         <div class="title">Bills Receivables / Receivables </div>
     </div>
 </div>
-    <div class="dx-fieldset horizontal-container" style="margin-bottom:0px">
-        <div class="form-group">
-                    <label for="SalesInvoiceNo">Voucher Entry ID:</label>
+    <div class="row w-100 align-items-center" style="margin-top: 8px;">
+        <div class="form-group col-3">
+                    
                     @(
                         Html.DevExtreme().TextBox()
+                        .Label("Voucher Entry ID :")
+                        .LabelMode(EditorLabelMode.Floating)
                         .ID("VoucherNoId")
                         .Value(voucherNo)
                         //.OnValueChanged("onVoucherNoChanged")
                         .Disabled(true)
                         )
-                </div>
-            
+        </div>
 
-            
-                <div class="form-group" style="width:300px">
-                    <label for="PaymentAccount" class="">Payment Account:</label>
+
+
+        <div class="form-group col-4">
+                    
                     @(Html.DevExtreme().SelectBox()
                     .ID("PaymentNameDropdown")
                     .DataSource(new[] { accountHead }) // Only the selected AccountHead
+                        .Label("Payment Account:")
+                        .LabelMode(EditorLabelMode.Floating)
                     .Value(accountHead) // Pre-selected value
                     .Disabled(true) // Make the dropdown read-onlyr
 
                     )
 
-                </div>
+        </div>
 
 
-        <div class="form-group button-alignment-down" style="width:5%">
-                @(Html.DevExtreme().Button()
-                    .ID("btnAddPaymentAccount")
-                    .Icon("plus")
-                    .Disabled(true)
-                    )
-            </div>
-            
-                <div class="form-group">
-                    <label for="Amount" >Amount</label>
+        <div class="form-group col-3">
                     @(Html.DevExtreme().NumberBox()
                         .ID("AmountId")
+                        .Label("Amount:")
+                        .LabelMode(EditorLabelMode.Floating)
                         .Value(voucherAmountParsed)
                         .ShowSpinButtons(true)
                        
@@ -78,80 +85,108 @@
                         .Disabled(true)
                         )
 
-                </div>
-            
-           
-                <div class="form-group" style=" width:50px" >
-                    <label for="DrCr" class="">DrCr</label>
+        </div>
+
+
+        <div class="form-group col-2">
+                   
                     @(
                         Html.DevExtreme().SelectBox()
                         .ID("DrCrId")
+                        .Label("DrCr:")
+                        .LabelMode(EditorLabelMode.Floating)
                         .DataSource(new[] { drCr })
                         .Value(drCr)
                         .Placeholder("Select Transaction Type")
                         .Width(90)
                         .Disabled(true)
                         )
-                </div>
+        </div>
 
            
         
     </div>
   
 
-    <div class="dx-fieldset horizontal-container" >
-        <div class="form-group" style="width:250px" >
+    <div class="row w-100 align-items-center" style="margin-top: 8px;">
+        <div class="form-group col-3">
             
-                <label for="Reference">Reference:</label>
+                
             
             @(
                 Html.DevExtreme().SelectBox()
                 .ID("Reference")
+                .Label("Reference:")
+                .LabelMode(EditorLabelMode.Floating)
                 .DataSource(new[] { "New Reference", "Against Reference" })
-                .Value("Against Reference")
+                .Value(referenceType)
                 .Placeholder("Select Transaction Type")
                 
                 )
         </div>
-        <div class="form-group" style="width:300px">
-            <label for="AccountHead">Reference No:</label>
+        <div class="form-group col-4">
             @(Html.DevExtreme().DropDownBox()
-                .DataSource(new[] {
-            new { AccountId = "2024-00088", AccountHead = "Account 2024-00088" },
-            new { AccountId = "2024-00089", AccountHead = "Account 2024-00089" }
-            })
-                .ValidationRules(rules =>
-                {
-                    rules.AddRequired().Message("Account Head is required");
-                })
-                .LabelMode(EditorLabelMode.Outside)
-                .ID("ReferenceAcountHead")
-                .ShowClearButton(true)
-                .AcceptCustomValue(true)
-                .OpenOnFieldClick(false)
-                .ValueChangeEvent("input")
-                .HoverStateEnabled(true)
-                .ValueExpr("AccountId")
-                .DisplayExpr("AccountHead")
-                .Value("2024-00088")
-                .TabIndex(1)
-                .DropDownOptions(o => o.Width(1000))
-                .ContentTemplate(new TemplateName("ReferenceNoContentTemplate"))
-                )
+                        .ID("ReferenceAcountHead")
+                        .Label("Reference No:")
+                        .LabelMode(EditorLabelMode.Floating)
+                        .ShowClearButton(true)
+                        .AcceptCustomValue(true)
+                        .ValueExpr("ReferenceNo")
+                        .DisplayExpr("ReferenceNo")
+                        .Value("")
+                        .DataSource(d => d.WebApi()
+                        .Controller("BillsReceivable")
+                        .LoadAction("GetSubLedgerReceivables")
+                        .LoadParams(new { voucherType = voucherType })
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("ReferenceNo")
+                        )
+                        .DropDownOptions(o => o.Width(1000))
+                        .ContentTemplate(@<text>
+            @(Html.DevExtreme().DataGrid()
+                                .ID("ReferenceGrid")
+                                .DataSource(d => d.WebApi()
+                                .Controller("BillsReceivable")
+                                .LoadAction("GetSubLedgerReceivables")
+                                .LoadParams(new { voucherType = voucherType })
+                                .LoadMode(DataSourceLoadMode.Raw)
+                                .Key("ReferenceNo")
+                                )
+                                .ShowBorders(true)
+                                .Selection(s => s.Mode(SelectionMode.Single))
+                                .HoverStateEnabled(true)
+                                .Paging(p => p.Enabled(false))
+                                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                .Columns(columns =>
+                                {
+                                    columns.Add().DataField("ReferenceNo").Caption("Reference No");
+                                    columns.Add().DataField("ReceivableAmount").Caption("Receivable Amount");
+                                    columns.Add().DataField("Received").Caption("Received");
+                                    columns.Add().DataField("Balance").Caption("Balance");
+                                    columns.Add().DataField("RetentionAmount").Caption("Retention Amount");
+                                    columns.Add().DataField("BalanceDueWithOutRetention").Caption("Balance Due Without Retention");
+                                })
+                                )
+            </text>)
+                        )
+            <div style="display:flex;">
+                @(Html.DevExtreme().CheckBox()
+                                .ID("IsVerified1")
+                                
+                                )
 
+                <label for="Amount">Show Retained Value</label>
+            </div>
         </div>
-        <div class="form-group">
-            @(Html.DevExtreme().Button()
-                .ID("btnAddAHead")
-                .Icon("plus")
-                )
-        </div>
+       
 
-        <div class="form-group">
-            <label for="Amount2">Amount</label>
+        <div class="form-group col-3">
+            
             @(
                 Html.DevExtreme().NumberBox()
                 .ID("txtAmount2")
+                .Label("Amount:")
+                .LabelMode(EditorLabelMode.Floating)
                 .Value(null)
                 .ValidationRules(rules =>
                 {
@@ -170,7 +205,7 @@
                 )
 
         </div>
-        <div class="form-group button-alignment-down">
+        <div class="form-group col-2">
             @(Html.DevExtreme().Button()
                 .ID("btnBillsVoucherEntry")
                 .Text("ADD")
@@ -180,30 +215,24 @@
                 .OnClick("function() { addBillsPayableReceivable(); }")
                 )
         </div>
-        <div style="display:flex;" class="button-alignment-down">
-        @(Html.DevExtreme().CheckBox()
-            .ID("IsVerified1")
-            )
-
-            <label for="Amount">Show Retained Value</label>
-    </div>
+       
     </div>
 
     <div class="dx-field ledgerResult" >
         @(
             Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl201SubLedgerMaster>()
-            .ID("dataGrid2")
+            .ID("ReceivabledataGrid")
             .KeyExpr("ReferenceNo")
             .RemoteOperations(false)
             .OnInitialized("dataGridInitialized")
             .OnContextMenuPreparing("onContextMenuPreparing")
             .Columns(columns =>
             {
-                columns.AddFor(m => m.SubLedgerId).Caption("Sub Ledger Id").Alignment(HorizontalAlignment.Center).Width(100);
-                columns.AddFor(m => m.DrCr).Caption("DrCr").Alignment(HorizontalAlignment.Center).Width(100);
-                columns.AddFor(m => m.ReferenceType).Caption("Reference Type").Alignment(HorizontalAlignment.Left).Width(100);
-                columns.AddFor(m => m.ReferenceNo).Caption("Reference No").Alignment(HorizontalAlignment.Center).Width(100);
-                columns.AddFor(m => m.Amount).Caption("Amount").Alignment(HorizontalAlignment.Right).Width(100).CustomizeText(@"
+                columns.AddFor(m => m.SubLedgerId).Caption("Sub Ledger Id").Alignment(HorizontalAlignment.Center);
+                columns.AddFor(m => m.DrCr).Caption("DrCr").Alignment(HorizontalAlignment.Center);
+                columns.AddFor(m => m.ReferenceType).Caption("Reference Type").Alignment(HorizontalAlignment.Left);
+                columns.AddFor(m => m.ReferenceNo).Caption("Reference No").Alignment(HorizontalAlignment.Center);
+                columns.AddFor(m => m.Amount).Caption("Amount").Alignment(HorizontalAlignment.Right).CustomizeText(@"
         function(e) {
         if(e.value === null || e.value === undefined) {
         return ''; // Return empty string for null values
@@ -214,7 +243,7 @@
         });
         }
         ");
-                columns.AddFor(m => m.RetentionAmount).Caption("Retention Amount").Alignment(HorizontalAlignment.Center).Width(100);
+                columns.AddFor(m => m.RetentionAmount).Caption("Retention Amount").Alignment(HorizontalAlignment.Center);
 
 
             })
@@ -222,8 +251,8 @@
             .AllowColumnReordering(true) // Enable column reordering
             .AllowColumnResizing(true)   // Enable column resizing
             .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
-            .HeaderFilter(filter => filter.Visible(true))
-            .Height(250)
+            .HeaderFilter(filter => filter.Visible(false))
+            .Height(150)
             .ColumnAutoWidth(true)
             .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
             .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
@@ -234,56 +263,10 @@
     <div>
         @await Html.PartialAsync("_BPRFooter")
     </div>
-    </div>
-    
-   
-
-
-    <!-- Drop Down Account Head Grid Template -->
-            @using (Html.DevExtreme().NamedTemplate("ReferenceNoContentTemplate"))
-            {
-                @(Html.DevExtreme().DataGrid()
-                        .ID("accounthead-datagrid")
-                        .DataSource(d => d.WebApi()
-                        //.Controller("PurchaseVoucher")
-                        //.LoadAction("GetAccountHead")
-                        .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("AccountId")
-                        )
-                        .WordWrapEnabled(true)
-                        .ShowBorders(true)
-                        .SearchPanel(sp => sp.HighlightSearchText(true))
-                        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                        .OnSelectionChanged("dataGridEPRAccountHeadSelectionChanged")
-                        .OnInitialized("dataGridEPRAccountHeadInitialized")
-                        .HeaderFilter(p => p.Visible(true))
-                        .ShowBorders(true)
-                        .HoverStateEnabled(true)
-                        .Paging(p => p.PageSize(15))
-                        .FilterRow(f => f.Visible(true))
-                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                        .Height(345)
-                        .Width(300)
-                        .Selection(s => s.Mode(SelectionMode.Single))
-                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                        .Columns(columns =>
-                        {
-                            columns.Add().DataField("AccountId");
-                            columns.Add().DataField("AccountHead");
-                            columns.Add().DataField("AccountHeadArabic");
-                            columns.Add().DataField("IsLedgerObselete").Alignment(HorizontalAlignment.Center)
-                        .CellTemplate(@<text>
-        <div class="dx-icon">
-            <%= data.IsLedgerObselete ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-        </div>
-    </text>);
-
-                        })
-                    )
-            }
-
    
 </div>
+ 
+ 
        
 <script>
 
@@ -377,7 +360,7 @@
                 DevExpress.ui.notify("BillsPayable/Receivable details saved succfully!", "success", 2000);
 
                 console.log(response.data);
-                $("#dataGrid2").dxDataGrid("instance").option("dataSource", response.data);
+                $("#ReceivabledataGrid").dxDataGrid("instance").option("dataSource", response.data);
 
             },
             error: function (xhr, status, error) {
