@@ -3321,7 +3321,9 @@ var dictionary = {
         "Today's Invoices": "Today's Invoices",
         "New Vouchers": "New Vouchers",
         "Vouchers Verified": "Vouchers Verified",
-        "Tax Summary Report-Debit Notes":"Tax Summary Report-Debit Notes",
+        "Tax Summary Report-Debit Notes": "Tax Summary Report-Debit Notes",
+        "Add New Depreciation Doc": "Add New Depreciation Doc",
+        "Depreciation Report":"Depreciation Report",
     },
     ar: {
         "Tax Summary Report – Debit Notes": "تقرير ملخص الضريبة - إشعارات الخصم",

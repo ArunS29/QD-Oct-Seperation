@@ -165,14 +165,7 @@
         .OnClick("onBackButtonClick")
         .ElementAttr(new { @class = "dx-button-custom btn-back" }))
 
-    @(Html.DevExtreme().Button()
-        .ID("btnDelete")
-        .Text(new JS("formatMessage('Delete')"))
-        .Icon("close")
-        .Width(180)
-        .Hint("Click to delete")
-        .OnClick("onDeleteButtonClick")
-        .ElementAttr(new { @class = "dx-button-custom btn-delete" }))
+  
 
     @(Html.DevExtreme().Button()
         .ID("btnAttach")
@@ -197,24 +190,14 @@
             items.Add().Text("Preview Format 2").Icon("textdocument");
         })
         .OnItemClick("handlePreviewClick"))
-
     @(Html.DevExtreme().Button()
-        .ID("btnSave")
-        .Text(new JS("formatMessage('Save')"))
-        .Icon("save")
-        .Width(180)
-        .OnClick("onAttachmentButtonClick")
-        .ElementAttr(new { @class = "dx-button-custom btn-attach" }))
-
-    @(Html.DevExtreme().Button()
-        .ID("btnSaveAndClose")
-        .Text(new JS("formatMessage('Save & Close')"))
-        .Icon("save")
+        .ID("btnDelete")
+        .Text("Delete")
+        .Icon("close")
         .Width(180)
         .Hint("Click to delete")
         .OnClick("onDeleteButtonClick")
         .ElementAttr(new { @class = "dx-button-custom btn-delete" }))
-
 
     @(Html.DevExtreme().Button()
         .ID("btnVerify")

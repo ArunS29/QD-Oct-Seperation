@@ -1207,6 +1207,7 @@ ContactRemarks:clientRemarks,
   const clientCode = e.row.data.ClientCode;
 
         e.items = [
+
             {
                 text: "Edit Client Status Report",
                 onItemClick: function () {
@@ -1273,6 +1274,15 @@ ContactRemarks:clientRemarks,
 
 
         e.items = [
+         {
+                    text: "Add Client Status Report",
+                onItemClick: function () {
+                    let tenantName = window.tenantName || "defaultTenant";
+                    let url = `/${tenantName}/IMS/ClientContactList?clientCode=${encodeURIComponent(clientCode)}&clientName=${encodedClientName}`;
+                    let title = `Edit Client - ${clientCode}`;
+                    openModal(url, title);
+                }
+            },
             {
                     text: "Edit Client Status Report",
                 onItemClick: function () {
