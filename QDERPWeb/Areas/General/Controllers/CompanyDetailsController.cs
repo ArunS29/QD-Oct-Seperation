@@ -107,11 +107,11 @@ namespace QD.ERP.Web.Areas.General.Controllers
             public string CompanyAddress1 { get; set; }
             public string CompanyAddress2 { get; set; }
 
-            [Required]
+           // [Required]
             public string CompanyCity { get; set; }
             public string CompanyPhone { get; set; }
 
-            [Required]
+           // [Required]
             public string CompanyNameShort { get; set; }
             public string CompanyFax { get; set; }
             public string EmailAddress { get; set; }
@@ -122,15 +122,15 @@ namespace QD.ERP.Web.Areas.General.Controllers
             public string ProductName { get; set; }
             public string CompanySlogan { get; set; }
 
-            [Required]
+            //[Required]
             public string CompanyVatno { get; set; }
             public string SellerGroupVatnumber { get; set; }
             public string CompanyTin { get; set; }
 
-            [Required]
+          //  [Required]
             public string SellerOtherIdtype { get; set; }
 
-            [Required]
+          //  [Required]
             public string SellerOtherSellerId { get; set; }
             public string SellerBuildingNumber { get; set; }
             public string SellerAdditionalNumber { get; set; }
@@ -138,7 +138,7 @@ namespace QD.ERP.Web.Areas.General.Controllers
             public string SellerProvinceAr { get; set; }
             public string SellerPostalCode { get; set; }
 
-            [Required]
+          //  [Required]
             public string SellerNeighborhood { get; set; }
             public string SellerNeighborhoodAr { get; set; }
             public string SellerCountryCode { get; set; }
