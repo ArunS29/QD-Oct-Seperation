@@ -423,3 +423,6 @@ td {
     overflow-y: hidden;
     height: 100vh;
 }
+.dx-textarea {
+    padding-top: 10px !important;
+}

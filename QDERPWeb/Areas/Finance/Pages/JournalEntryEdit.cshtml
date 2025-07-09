@@ -77,6 +77,10 @@
     .dx-checkbox.dx-state-readonly{
         color: var(--title-background-color);
     }
+
+    .dx-button{
+        height:100% !important;
+    }
 </style>
 <div class="dx-card-header minimal-header">
     <div class="card-title-icon">
@@ -327,7 +331,8 @@
                     columns.Add().DataField("TotalEqpAllocted").Caption("Total Equipment Allocated").Format("currency").Width(180).Alignment(HorizontalAlignment.Right).Visible(false);
                 })
             .DataSource(new List<object>())
-            .AllowColumnReordering(true)
+                .AllowColumnReordering(true)
+                .ColumnResizingMode(ColumnResizingMode.Widget)
             .AllowColumnResizing(true)
             .Height(300)
             .ColumnAutoWidth(true)

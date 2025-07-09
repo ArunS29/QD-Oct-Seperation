@@ -530,7 +530,8 @@ buttons.Add()
 
                         })
                     .Selection(selection => selection.Mode(SelectionMode.Single))
-                    .AllowColumnReordering(true) // Enable column reordering
+                    .AllowColumnReordering(true)
+				.ColumnResizingMode(ColumnResizingMode.Widget)
                     .AllowColumnResizing(true)   // Enable column resizing
                     .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
                                                                   //.HeaderFilter(filter => filter.Visible(true))

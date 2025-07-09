@@ -28,8 +28,8 @@
     <div class="dx-card-body">
         <div class="form-container" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; position: relative; padding: 0 15px; overflow-x: hidden;">
             <!-- Top Row -->
-            <div style="display: flex; gap: 10px; align-items: flex-end; flex-wrap: nowrap; width: 100%;">
-                <div class="form-group" style="flex: 1 1 25px;">
+            <div class="row w-100 align-items-center" style="margin-top: 8px;">
+                  <div class="form-group col-md-2 col-sm-6">
                     @(Html.DevExtreme().TextBox()
                                         .Label(new JS("formatMessage('Voucher No')"))
                                         .LabelMode(EditorLabelMode.Floating)
@@ -42,7 +42,7 @@
                                         )
 
                 </div>
-                <div class="form-group" style="flex: 1 1 35px;">
+                 <div class="form-group col-md-2 col-sm-6">
                     @(Html.DevExtreme().DateBox()
                                         .Label(new JS("formatMessage('Voucher Date')"))
                                         .ID("VoucherDate")
@@ -56,7 +56,7 @@
                                         .ShowClearButton(true)
                                         )
                 </div>
-                <div class="form-group" style="flex: 1 1 35px;">
+                <div class="form-group col-md-2 col-sm-6">
                     @(Html.DevExtreme().DateBox()
                                         .Label(new JS("formatMessage('Effective Date')"))
                                         .ID("EffectiveDate")
@@ -72,7 +72,7 @@
                 </div>
 
                 
-                <div class="form-group" style="flex: 1 1 35px;">
+                <div class="form-group col-md-2 col-sm-6">
                     @(Html.DevExtreme().SelectBox()
                                         .Label(new JS("formatMessage('VoucherType')"))
                                         .LabelMode(EditorLabelMode.Floating)
@@ -82,7 +82,7 @@
                                         .Disabled(true)
                                         )
                 </div>
-                <div class="form-group" style="flex: 1 1 35px;">
+                 <div class="form-group col-md-2 col-sm-6">
                     @(Html.DevExtreme().TextBox()
                                         .Label(new JS("formatMessage('Temporary No')"))
                                         .LabelMode(EditorLabelMode.Floating)
@@ -92,25 +92,13 @@
                                         .ReadOnly(true)
                                         )
                 </div>
-                <div class="form-group" style="flex: 1 1 400px;">
-                    @(
-                                        Html.DevExtreme().TextArea()
-                                        .Label(new JS("formatMessage('Narration')"))
-                                        .LabelMode(EditorLabelMode.Floating)
-                                        .ID("txtEntryNarration")
-                                        .Value("")
-                                        .Height(40)
-                                       .TabIndex(2)
-                                        .Placeholder(new JS("formatMessage('Enter your comments here...')"))
-                                        .MaxLength(500)
-                                        )
-                </div>
+
             </div>
 
 
             <!-- Second Row -->
-            <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; margin-top: 10px;">
-                <div class="form-group">
+             <div class="row w-100 align-items-center" style="margin-top: 8px;">
+                <div class="form-group col-md-1 col-sm-6">
                     @(
                                         Html.DevExtreme().SelectBox()
                                         .Label(new JS("formatMessage('Dr/Cr')"))
@@ -120,14 +108,13 @@
                                         .Value("Dr")
                                         .TabIndex(3)
                                         .Placeholder(new JS("formatMessage('Select Transaction Type')"))
-                                        .Width(100)
+                                      
                                         )
 
                 </div>
-                <!-- Container for Account Head & Buttons -->
-                <div style="display: flex; align-items: flex-end; gap: 5px; min-width: 100px;">
+               
                     <!-- DropDownBox: Flex-grow to fill available space -->
-                    <div class="form-group">
+                     <div class="form-group col-md-4 col-sm-6">
                         @(Html.DevExtreme().DropDownBox()
                                                 .Label(new JS("formatMessage('Account Head')"))
                                                 .DataSource(d => d.WebApi()
@@ -147,7 +134,7 @@
                                                 .DisplayExpr("AccountHead")
                                                 .OnInput("dropDownBoxOnInput")
                                                 .OnOpened("onOpened")
-                                                .Width(500)
+                                               
                                                 .TabIndex(4)
                                                 .DropDownOptions(o => o.Width(1000))
                                                 .OnKeyDown("onKeyDown")
@@ -183,50 +170,10 @@ buttons.Add()
 
                                                 )
                     </div>
-                    <!-- Add Button -->
-                    <div class="form-group" style="flex-shrink: 0;">
-                        
-                        <!-- DevExtreme Popup -->
-                        @(Html.DevExtreme().Popup()
-                                                .ID("ledgerAccountPopup")
-                                                .Width("93%")
-                                                .Height("85%")
-                                                .Title("Add Ledger Account")
-                                                .ShowTitle(true)
-                                                .CloseOnOutsideClick(true)
-                                                .Visible(false)
-                                                .ResizeEnabled(true)
-                                                .ContentTemplate(@<text>
-                            <div id="popupContent" class="background" style="width:100%; height:100%;">
-                                <iframe id="ledgerAccountFrame" class="background" style="width:100%; height:100%; border:none;"></iframe>
-                            </div>
-                        </text>)
-                                                )
-                    </div>
-                    <!-- Edit Button -->
-
-                    <div class="form-group" style="flex-shrink: 0;">
-
-                      
-                        @(Html.DevExtreme().Popup()
-                                                .ID("ledgerEditAccountPopup")
-                                                .Width("93%")
-                                                .Height("85%")
-                                                .Title("Edit Ledger Account")
-                                                .ShowTitle(true)
-                                                .CloseOnOutsideClick(true)
-                                                .Visible(false)  // Hidden by default
-                                                .ResizeEnabled(true)
-                                                .ContentTemplate(@<text>
-                            <div id="popupContent" style="width:100%; height:100%;">
-                                <iframe id="ledgerEditAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
-                            </div>
-                        </text>)
-                                                )
-                    </div>
+                  
                     
 
-                    <div class="form-group" style="flex: 1 1 90px;">
+                    <div class="form-group col-md-2 col-sm-6">
                         @(
                                                 Html.DevExtreme().NumberBox()
                                                 .Label(new JS("formatMessage('Amount')"))
@@ -246,7 +193,7 @@ buttons.Add()
 
                                                 )
                     </div>
-                    <div class="form-group">
+                     <div class="form-group col-md-2 col-sm-6">
                         @(Html.DevExtreme().DropDownBox()
                                                 .Label("Base Currency")
                                                 .DataSource(d => d.WebApi()
@@ -270,7 +217,7 @@ buttons.Add()
                                                 .DisplayExpr("CurrencyName")
                                                 .OnInput("dropDownBoxOnInput") // Reuse or define separate handler if needed
                                                 .OnOpened("onOpened")
-                                                .Width(155)
+                                                
                                                 // Different tabindex to separate from the first
                                                 .DropDownOptions(o => o.Width(700))
                                                 .OnKeyDown("onKeyDown")
@@ -280,7 +227,7 @@ buttons.Add()
                                                 .ContentTemplate(new TemplateName("BaseCurrencyContentTemplate"))
 
                                                 )
-                    </div>
+                
 
                     @using (Html.DevExtreme().NamedTemplate("BaseCurrencyContentTemplate"))
                     {
@@ -313,7 +260,7 @@ buttons.Add()
                                             )
                                         }
                 </div>
-                <div class="form-group">
+               <div class="form-group col-md-2 col-sm-6">
                     @(Html.DevExtreme().DropDownBox()
                                         .Label("Convertion Currency")
                                         .DataSource(d => d.WebApi()
@@ -337,7 +284,7 @@ buttons.Add()
                                         .DisplayExpr("CurrencyName")
                                         .OnInput("dropDownBoxOnInput")
                                         .OnOpened("onOpened")
-                                        .Width(210)
+                                        
                                         .TabIndex(6)
                                         .DropDownOptions(o => o.Width(700))
                                         .OnKeyDown("onKeyDown")
@@ -375,7 +322,7 @@ buttons.Add()
                                             )
                                         }
                 </div>
-                <div class="form-group" style="flex: 1 1 70px;">
+                 <div class="form-group col-md-1 col-sm-6">
                     @(Html.DevExtreme().NumberBox()
                             .Label("CVR")
                             .LabelMode(EditorLabelMode.Floating)
@@ -394,7 +341,67 @@ buttons.Add()
                             )
 
                 </div>
-                <div class="form-group plusBtn" style="flex: 1 1 30px;">
+                
+            </div>
+
+              <!-- Add Button -->
+
+      
+      <!-- DevExtreme Popup -->
+      @(Html.DevExtreme().Popup()
+                              .ID("ledgerAccountPopup")
+                              .Width("93%")
+                              .Height("85%")
+                              .Title("Add Ledger Account")
+                              .ShowTitle(true)
+                              .CloseOnOutsideClick(true)
+                              .Visible(false)
+                              .ResizeEnabled(true)
+                              .ContentTemplate(@<text>
+          <div id="popupContent" class="background" style="width:100%; height:100%;">
+              <iframe id="ledgerAccountFrame" class="background" style="width:100%; height:100%; border:none;"></iframe>
+          </div>
+      </text>)
+                              )
+
+  <!-- Edit Button -->
+
+
+
+    
+      @(Html.DevExtreme().Popup()
+                              .ID("ledgerEditAccountPopup")
+                              .Width("93%")
+                              .Height("85%")
+                              .Title("Edit Ledger Account")
+                              .ShowTitle(true)
+                              .CloseOnOutsideClick(true)
+                              .Visible(false)  // Hidden by default
+                              .ResizeEnabled(true)
+                              .ContentTemplate(@<text>
+          <div id="popupContent" style="width:100%; height:100%;">
+              <iframe id="ledgerEditAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
+          </div>
+      </text>)
+                              )
+
+
+            <div class="row w-100 align-items-center" style="margin-top: 8px;">
+                    <div class="form-group col-11">
+                      
+                    @(
+                                        Html.DevExtreme().TextArea()
+                                        .Label(new JS("formatMessage('Narration')"))
+                                        .LabelMode(EditorLabelMode.Floating)
+                                        .ID("txtEntryNarration")
+                                        .Value("")
+                                        .Height(40)
+                                       .TabIndex(2)
+                                        .Placeholder(new JS("formatMessage('Enter your comments here...')"))
+                                        .MaxLength(500)
+                                        )
+                    </div>
+                    <div class="form-group plusBtn col-1 mt-0 h-100">
                     @(Html.DevExtreme().Button()
                                         .ID("btnVoucherEntry")
                                         .Text(new JS("formatMessage('Add')"))
@@ -405,10 +412,13 @@ buttons.Add()
                                         .OnClick("function() { addVoucherEntry(); }")
                                         )
                 </div>
+            </div>   
+                        
             </div>
+
         </div>
 
-    </div>
+
 
     <div class="dx-card-body">
         <div class="dx-field ledgerResult">
@@ -500,11 +510,12 @@ buttons.Add()
 
                         })
                         .AllowColumnReordering(true)
+				.ColumnResizingMode(ColumnResizingMode.Widget)
                         .AllowColumnResizing(true)
                         .ColumnChooser(c => c.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
 
                         .ColumnFixing(fixing => fixing.Enabled(true))
-                        .HeaderFilter(filter => filter.Visible(true))
+                        .HeaderFilter(filter => filter.Visible(false))
                         .Height(250)
                         .ColumnAutoWidth(true)
                         .FilterRow(filterRow => filterRow.Visible(false))
@@ -649,31 +660,31 @@ buttons.Add()
         <div class="form-container" style="display: flex; flex-direction: column; gap: 20px; padding: 0 15px;">
 
             <!-- Row 1: Cheque No, Popup, Voucher Narration, Attachment -->
-            <div class="form-group" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end;">
+           <div class="row w-100 align-items-end g-2">
 
-                <div style="display: flex; gap: 8px; align-items: flex-end;">
+                     <div class="col-md-6">
 
-                    <div class="form-group">
+                    
                         @(
                                                 Html.DevExtreme().TextBox()
                                                 .Label(new JS("formatMessage('Remarks')"))
                                                 .LabelMode(EditorLabelMode.Floating)
                                                 .ID("Remarks")
                                                 .Value(null)
-                                                .Width("750")
+                                               
                                                 .Height("30px")
                                                 .TabIndex(9)
                                                 )
                     </div>
 
-                    <div class="form-group">
+                     <div class="col-md-6">
                         @(
                                                 Html.DevExtreme().TextBox()
                                                 .Label(new JS("formatMessage('Voucher Narration')"))
                                                 .LabelMode(EditorLabelMode.Floating)
                                                 .ID("VoucherNarration")
                                                 .Value(null)
-                                                .Width("750")
+                                                
                                                 .Height("30px")
                                                 .TabIndex(10)
                                                 )
@@ -746,7 +757,9 @@ buttons.Add()
 <div class="footer-fixed">
     @await Html.PartialAsync("_Formfooter")
 </div>
-    </div>
+
+
+
 
 
 
