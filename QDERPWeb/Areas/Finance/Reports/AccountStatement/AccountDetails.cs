@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using DevExpress.XtraReports.UI;
 using DevExpress.DataAccess.Sql;
@@ -251,7 +251,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             string[] pictureBoxNames =
             {
         "xrPictureBox2", "xrPictureBox3", "xrPictureBox4",
-        "xrPictureBox5", "xrPictureBox6", "xrPictureBox7"
+        "xrPictureBox5", "xrPictureBox6", "xrPictureBox7","xrPictureBox11","xrPictureBox12"
     };
 
             foreach (string name in pictureBoxNames)
@@ -274,6 +274,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports
         new { Label = "xrLabel5", Picture = "xrPictureBox6" },
                 new { Label = "xrLabel14", Picture = "xrPictureBox5" },
                 new { Label = "xrLabel9", Picture = "xrPictureBox4" },
+                new { Label = "xrLabel6", Picture = "xrPictureBox11" },
+                new { Label = "xrLabel8", Picture = "xrPictureBox12" },
 
 
     };

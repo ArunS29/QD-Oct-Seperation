@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using DevExpress.DataAccess.Sql;
 using DevExpress.DataAccess.ConnectionParameters;
@@ -45,7 +45,7 @@ namespace QD.ERP.Web.Reports
             string accountId, DateTime frmDate, DateTime toDate,
             string tenantName, string company_Name, string company_address,
             Image logoImage, string Company_Name_Ar, string company_address_arb, string username)
-        {
+                {
             AddOrUpdateParameter("AccountID", accountId ?? "", typeof(string));
             AddOrUpdateParameter("StartDate", frmDate == DateTime.MinValue ? DateTime.Today : frmDate, typeof(DateTime));
             AddOrUpdateParameter("EndDate", toDate == DateTime.MinValue ? DateTime.Today : toDate, typeof(DateTime));
