@@ -14,7 +14,6 @@ namespace QD.ERP.Web.Service
 
         public async Task InvokeAsync(HttpContext context)
         {
-            // Get tenant from route (adjust key as per your route setup)
             var routeTenant = context.GetRouteValue("tenantName")?.ToString();
             var cookieTenant = context.Request.Cookies["CurrentTenant"];
 
@@ -34,5 +33,6 @@ namespace QD.ERP.Web.Service
 
             await _next(context);
         }
+
     }
 }
