@@ -31,6 +31,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 try
                 {
+                    var company = dbContext.Tbl901CompanyDetails
+                   .FirstOrDefault();
                     var query = dbContext.Qry201SubLedgerPayablesMasters.Select(i => new
                     {
                         i.AccountHeadNo,
@@ -44,10 +46,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         i.InvoiceDueDate,
                         i.NoOfDaysCreditPeriod,
                         i.OverdueDays,
-
-
-
-                
                         i.PayableAmount,
                        
                         i.VoucherNarration,
@@ -85,6 +83,10 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         i.PurchaseOrderNo,
                         i.MaterialReceiptNo,
                         i.Expr1,
+                        i.ConvertedInvoiceAmountBeforeRetention,
+                        i.ConvertedBalance,
+                        i.ConvertedPaid,
+                        company.CurrencyImage
 
                     });
 

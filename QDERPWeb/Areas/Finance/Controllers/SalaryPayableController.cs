@@ -26,6 +26,8 @@ namespace QDWEB.Areas.Finance.Controllers
             {
                 try
                 {
+                    var company = dbContext.Tbl901CompanyDetails
+                    .FirstOrDefault();
                     var vouchers = dbContext.Qry20196SalaryPayableByDateReports.Select(v => new
                     {
                         v.EmployeeNo,
@@ -35,6 +37,10 @@ namespace QDWEB.Areas.Finance.Controllers
                         v.MonthOf,
                         v.PayableAmount,
                         v.Balance,
+                        v.ConvertedPaid,
+                        v.ConvertedPayableAmount,
+                        v.ConvertedBalance,
+                        company.CurrencyImage
                     }).ToList();
 
                     return Json(vouchers);

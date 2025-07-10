@@ -31,6 +31,9 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 try
                 {
+
+                    var company = dbContext.Tbl901CompanyDetails
+                    .FirstOrDefault();
                     var query = dbContext.Qry20105BillsReceivableAgeingViews.Select(i => new
                     {
                         i.AccountHeadNo,
@@ -49,7 +52,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         i.Less90to180,
                         i.Less180to365,
                         i.More365,
-                        i.OverdueDays
+                        i.OverdueDays,
+                        i.ConvertedReceivableAmount,
+                        i.ConvertedReceived,
+                        i.ConvertedBalance,
+                        company.CurrencyImage
+
                     });
 
                     if (filterType == "WithBalance")
