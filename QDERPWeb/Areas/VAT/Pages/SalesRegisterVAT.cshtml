@@ -237,6 +237,8 @@
 		display: block;
 	}
 </style>
+<div class="content-container-top">
+
 
 <div class="title">
 	<input id="formId" value="frm20162VATInvoiceMasterView" type="hidden" />
@@ -277,19 +279,22 @@
 		</div>
 	</div>
 
-	<div class="card green shine">
-		<h1 id="invoiceCount">0</h1>
+		<div class="card green shine">
+			<h4>Total Turnover</h4>
+			<h1 id="invoiceAmount">0.00 SAR</h1>
+			<h3>for this period</h3>
+			
+		</div>
 
-		<h3>Today's Invoices</h3>
-	</div>
 
 
 
 	<div class="card purple sparkle">
-		<h4>Total Turnover</h4>
+			<h2 class="title-slide">Total Invoices</h2>
 		<h1 id="turnover">0</h1>
-		<h3>for this period</h3>
-	</div>
+		
+
+		</div>
 </div>
 
 <div class="Head">
@@ -751,7 +756,7 @@
 			});
 			});
 		})
-		.Height(680) // <<< fixed height
+		.Height("65vh") // <<< fixed height
 		.ColumnAutoWidth(true)
 		.Width("98%")
 				  	@* 	.WordWrapEnabled(true) *@
@@ -918,7 +923,7 @@
 	<button id="nextPage" onclick="ddBtnShowRecords_click(null, currentPage + 1)">&#x3E;</button>
 
 </div>
-
+</div>
 @* <div id="testSvgPreview" style="width:100px; height:100px; border:1px solid #ccc;"></div> *@
 
 <script>
@@ -980,7 +985,7 @@
 	}
 
 	// Animate to 46.2 K
-	countUpTurnover("46.2");
+	countUpTurnover("0");
 
 	  const card = document.getElementById('mainCard');
 	const counts = [8, 15, 5];
@@ -1409,6 +1414,7 @@
 				currentPage = Number(data.currentPage);
 				var grid = $("#dataGrid").dxDataGrid("instance");
 				grid.option("dataSource", data.data);
+				 updateInvoiceAmountCard(data.data);
 				console.log("SalesRegisterGrid",data.data)
 				if (data.data && data.data.length > 0) {
 					VoucherAmountFormatted = data.data[data.data.length - 1].VoucherAmountFormatted;
@@ -1427,12 +1433,56 @@
 				} else {
 					$("#previousPage").prop("disabled", false);
 				}
+					const animatedCount = data.data.length;
+	animateInvoiceCardCount(animatedCount);
+
+	let periodLabel = "Invoices";
+
+	switch (duration) {
+		case 'today': periodLabel = "Today's Invoices"; break;
+		case 'yesterday': periodLabel = "Yesterday's Invoices"; break;
+		case 'week': periodLabel = "This Week's Invoices"; break;
+		case 'tillmonth':
+		case 'fullmonth': periodLabel = "This Month's Invoices"; break;
+		case 'tillyear':
+		case 'fullyear': periodLabel = "This Year's Invoices"; break;
+		case 'lastmonth': periodLabel = "Last Month's Invoices"; break;
+		case 'lastyear': periodLabel = "Last Year's Invoices"; break;
+		default: periodLabel = "Invoices";
+	}
+
+	$("#invoicePeriodLabel").text(periodLabel);
+
+					$("#turnover").text(thisMonthInvoices.length);
+	$("#invoicePeriodLabel").text("This Month's Invoices");
+
 			},
 			error: function () {
 				DevExpress.ui.notify("Error while loading data", "error", 2000);
 			}
 		});
 	}
+		function animateInvoiceCardCount(target) {
+		const el = document.getElementById("turnover");
+		let current = 0;
+
+		if (!el) return;
+
+		el.classList.remove('bounce');
+
+		const interval = setInterval(() => {
+			current++;
+			if (current >= target) {
+				el.textContent = target;
+				el.classList.add('bounce');
+				clearInterval(interval);
+			} else {
+				el.textContent = current;
+			}
+		}, 20); // speed of animation
+	}
+
+
 	function formatDate(date) {
 		var d = new Date(date),
 			month = '' + (d.getMonth() + 1),
@@ -1538,6 +1588,24 @@
 		// Debug log (optional)
 		console.log("Styled row for InvoiceStatus:", status);
 	}
+		function updateInvoiceAmountCard(data) {
+		let total = 0;
+		if (Array.isArray(data)) {
+			total = data.reduce((sum, item) => {
+				const value = parseFloat(item.TotalInvoiceAmount);
+				return sum + (isNaN(value) ? 0 : value);
+			}, 0);
+		}
+
+		const formatted = total.toLocaleString(undefined, {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
+		});
+
+		// ✅ Update the card content
+		$("#invoiceAmount").text(formatted + " SAR");
+	}
+
 	$(function () {
 		$("#VATInvoiceRegister").dxTextBox({
 			text: formatMessage("VAT Invoice Register"),

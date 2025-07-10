@@ -230,10 +230,11 @@
                     columns.Add().DataField("EmployeeName").Caption(new JS("formatMessage('EmployeeName')")).GroupIndex(0);
                     columns.Add().DataField("EmployeeNo").Caption(new JS("formatMessage('Employee No')")).Width(120);
                     columns.Add().DataField("EmployeeName").Caption(new JS("formatMessage('Employee Name')")).Width(150);
-                    columns.Add().DataField("NationalId").Caption(new JS("formatMessage('National ID')")).Width(120);
+                    columns.Add().DataField("NationalId").Caption(new JS("formatMessage('National ID')")).Alignment(HorizontalAlignment.Center).Width(120);
                     columns.Add()
                     .DataField("ReferenceNo")
                     .Caption(new JS("formatMessage('Reference No')"))
+                    .Alignment(HorizontalAlignment.Center)
                     .Width(120)
                     .CellTemplate(@"
             <a href='/Finance/SalesVoucher?VoucherNo=<%- data.ReferenceNo %>' target='_blank'>
@@ -241,7 +242,7 @@
             </a>
             ");
 
-                    columns.Add().DataField("MonthOf").Caption(new JS("formatMessage('Month Of')")).Width(120);
+                    columns.Add().DataField("MonthOf").Caption(new JS("formatMessage('Month Of')")).Alignment(HorizontalAlignment.Center).Width(120);
 
                     // Payable Amount
                     columns.Add()
@@ -584,4 +585,17 @@
 
         });
     }
+            $(function () {
+        const dateBox = $("#EffectiveDate").dxDateBox("instance");
+
+        // When focus/typing starts, change to dd-MM-yyyy
+        $("#EffectiveDate").on("focusin", function () {
+            dateBox.option("displayFormat", "dd-MM-yyyy");
+        });
+
+        // When focus/typing ends, change back to dd-MMM-yyyy
+        $("#EffectiveDate").on("focusout", function () {
+            dateBox.option("displayFormat", "dd-MMM-yyyy");
+        });
+    });
     </script>
