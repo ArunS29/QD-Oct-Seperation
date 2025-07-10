@@ -85,6 +85,28 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         {
             return RedirectToPage("/pulse/DocumentViewer", new { reportName = "XtraReportAgeingreportsummary" });
         }
+        [HttpGet]
+        public IActionResult GetSubLedgerReceivables(string voucherType)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+            var result = dbContext.Qry201SubLedgerReceivablesMasters
+                .Where(x => x.VoucherType == voucherType)
+                .Select(x => new
+                {
+                    x.ReferenceNo,
+                    x.ReceivableAmount,
+                    x.Received,
+                    x.Balance,
+                    x.RetentionAmount,
+                    x.BalanceDueWithOutRetention
+                })
+                .ToList();
+
+            return Json(result);
+        }
+
     }
 }
 

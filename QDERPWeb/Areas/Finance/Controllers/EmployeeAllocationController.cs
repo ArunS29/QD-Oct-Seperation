@@ -45,7 +45,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 			var data = dbContext.Tbl101Employees
                 .Select(c => new
                 {
-                    EmployeeNo = c.EmployeeId,
+                    c.EmployeeId,
                     c.EmployeeName,
                     c.NationalId
 
