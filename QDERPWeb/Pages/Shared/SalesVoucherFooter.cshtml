@@ -157,7 +157,22 @@
         .Hint("Click to save and close")
         .ElementAttr(new { @class = "dx-button-custom btn-save-close" })
         )
-
+    @(Html.DevExtreme().Button()
+        .ID("btnBack")
+        .Text(new JS("formatMessage('Back')"))
+        .Icon("arrowleft")
+        .Hint("Click to back")
+        .OnClick("onBackButtonClick")
+        .ElementAttr(new { @class = "dx-button-custom btn-back" })
+        )
+    @(Html.DevExtreme().Button()
+        .ID("btnAttach")
+        .Text(new JS("formatMessage('Attach')"))
+        .Icon("link")
+        .Hint("Click to Attach")
+        .OnClick("onAttachmentButtonClick")
+        .ElementAttr(new { @class = "dx-button-custom btn-attach" })
+        )
     @(Html.DevExtreme().DropDownButton()
         .ID("btnPreview2")
         .Text(new JS("formatMessage('Preview')"))
@@ -176,13 +191,8 @@
         )
 
 
-
-
-
-
-
     @(Html.DevExtreme().Button()
-        .ID("btnPrint")
+        .ID("btnPrints")
         .Text(new JS("formatMessage('Print')"))
         .Icon("print")
         .Hint("Click to print")
@@ -197,14 +207,7 @@
         .OnClick("onDeleteButtonClick")
         .ElementAttr(new { @class = "dx-button-custom btn-delete" }) // Apply custom CSS class
         )
-    @(Html.DevExtreme().Button()
-        .ID("btnBack")
-        .Text(new JS("formatMessage('Back')"))
-        .Icon("arrowleft")
-        .Hint("Click to back")
-        .OnClick("onBackButtonClick")
-        .ElementAttr(new { @class = "dx-button-custom btn-back" })
-        )
+  
     @(Html.DevExtreme().Button()
         .ID("btnVerify")
         .Text(new JS("formatMessage('Verify')"))
@@ -223,17 +226,10 @@
         .ElementAttr(new { @class = "dx-button-custom btn-approve" })
 
         )
-    @(Html.DevExtreme().Button()
-        .ID("btnAttach")
-        .Text(new JS("formatMessage('Attach')"))
-        .Icon("link")
-        .Hint("Click to Attach")
-        .OnClick("onAttachmentButtonClick")
-        .ElementAttr(new { @class = "dx-button-custom btn-attach" })
-        )
+    
     <div class="btn-container">
         @(Html.DevExtreme().Button()
-            .ID("btnColumnChooser")
+            .ID("btnColumnChoosers")
             .Icon("columnchooser")
              
             .Hint("Click to column chooser")
@@ -281,7 +277,7 @@
                         "btnSave": { "Visible": true, "Enabled": true },
                         "btnSaveAndClose": { "Visible": false, "Enabled": false },
                         "btnPreview1": { "Visible": true, "Enabled": true },
-                        "btnPrint": { "Visible": true, "Enabled": true },
+                        "btnPrints": { "Visible": true, "Enabled": true },
                         "btnDelete": { "Visible": false, "Enabled": false },
                         "btnBack": { "Visible": false, "Enabled": false },
                         "btnVerify": { "Visible": true, "Enabled": true },
@@ -733,7 +729,7 @@
         $('input, select, textarea').prop('disabled', true);
 
         $('.dx-button').each(function () {
-            const allowedButtons = ['btnBack', 'btnPrint', 'btnAttach', 'btnAttachment', 'btnEditAHead', 'btnAddAHead', 'btncostBack'];
+            const allowedButtons = ['btnBack', 'btnPrints', 'btnAttach', 'btnAttachment', 'btnEditAHead', 'btnAddAHead', 'btncostBack'];
             if (!allowedButtons.includes($(this).attr('id'))) {
                 $(this).dxButton('option', 'disabled', true);
             }
@@ -1093,9 +1089,10 @@
 
             var voucherTypeBox = $("#VoucherType").dxSelectBox("instance"); // or dxTextBox
             var voucherType = voucherTypeBox.option("value");
+            const isMaster = false;
             console.log(voucherType)
-            const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&modal=true`;
-            const title = "Ledger Documents";
+            const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&modal=true&isMaster=${isMaster}`;
+            const title = "Transaction Documents";
             openModal(url, title);
     }
 

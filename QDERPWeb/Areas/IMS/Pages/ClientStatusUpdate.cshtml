@@ -118,17 +118,17 @@
             .Disabled(true)
             .Label(new JS("formatMessage('Status ID')"))
             .Value("-1")
-            .ReadOnly(true)
+             .ReadOnly(true)
             .LabelMode(EditorLabelMode.Outside)
             .TabIndex(1)
             )
 
         @(Html.DevExtreme().DropDownBox()
             .DataSource(d => d.WebApi()
-            .Controller("ClientStatusUpdate")
-            .LoadAction("GetClient")
+                .Controller("AddNewClientRequest")
+                .LoadAction("GetClientDetails")
             .LoadMode(DataSourceLoadMode.Raw)
-            .Key("StatusCode")
+                .Key("ClientCode")
             )
             .Label(new JS("formatMessage('Client')"))
             .LabelMode(EditorLabelMode.Outside)
@@ -139,8 +139,8 @@
             .OpenOnFieldClick(false)//
             .ValueChangeEvent("input")
             .HoverStateEnabled(true)
-            .ValueExpr("StatusCode")
-            .DisplayExpr("Status")
+                .ValueExpr("ClientCode")
+                .DisplayExpr("ClientName")
             .OnInput("dropDownBoxOnInput")
             .OnOpened("onOpened")
             .TabIndex(1)
@@ -235,8 +235,7 @@
             .LabelMode(EditorLabelMode.Outside)
             .Type(DateBoxType.Date)
             .DisplayFormat("dd-MMM-yyyy")
-            .Value(DateTime.Now)
-            )
+              )
     </div>
     <div class="toolbar-buttons">
         @(Html.DevExtreme().Button().ID("btnSave").Text(new JS("formatMessage('Save')")).Icon("save").OnClick("saveOrUpdateClientStatus"))
@@ -328,10 +327,14 @@
         const urlParams = new URLSearchParams(window.location.search);
         const clientStatusNo = (urlParams.get("clientStatusNo") || "").split(/[?&]/)[0];
         const clientCodes = (urlParams.get("clientCode") || "").split(/[?&]/)[0];
-       
+         $("#GetClientDropDown").dxDropDownBox("instance").option("value", clientCodes);
+        getReportedBy();
 
-        $("#statusId").dxTextBox("instance").option("value", clientStatusNo);
-        $("#GetClientDropDown").dxDropDownBox("instance").option("value", clientCodes);
+         const statusBox = $("#statusId").dxNumberBox("instance");
+    if (statusBox) {
+      statusBox.option("value", clientStatusNo || -1);
+    }
+       
 
 
         if (clientStatusNo) {
@@ -363,7 +366,23 @@
         });
     }
 
+  function  getReportedBy() {
+        $.ajax({
+            type: "GET",
+            url: "/api/ClientStatusUpdate/GetReportedByvalue",
+            success: function (data) {
+                const userName = data.userName ?? data;
 
+      if (userName) {
+        $("#reportedBy").dxTextBox("instance")
+          .option("value", userName);
+      }
+            },
+            error: function (xhr) {
+                console.log("ReportedBy fetch failed:", xhr.responseText);
+            }
+        });
+    }
     $(function () {
         $("#ClientStatusUpdate").dxTextBox({
             text: formatMessage("Client Status Update"),
@@ -379,7 +398,13 @@
     }
 
     function onSaveAndClose() {
-        const clientStatusNo = $("#statusId").dxTextBox("instance").option("value");
+           const statusValue = $("#GetStatusDropDown").dxDropDownBox("instance").option("value");
+
+        // ✅ Check if Status is selected
+        if (!statusValue) {
+              DevExpress.ui.notify("Status is required", "error", 2000);
+            return;
+        }
 
         const data = {
             ClientCode: String($("#GetClientDropDown").dxDropDownBox("instance").option("value")),
@@ -390,9 +415,10 @@
             FollowupOn: $("#followUpOn").dxDateBox("instance").option("value")
         };
 
-        if (clientStatusNo) {
-            data.ClientStatusNo = parseInt(clientStatusNo);
-        }
+             // Only include ClientStatusNo if it's a valid number greater than 0 (i.e. update)
+         if (!isNaN(parsedStatusNo) && parsedStatusNo > 0) {
+             data.ClientStatusNo = parsedStatusNo;
+         }
 
         $.ajax({
             url: '/api/ClientStatusUpdate/SaveOrUpdateClientStatusUpdate',
@@ -518,7 +544,15 @@
     }
     //save
     function saveOrUpdateClientStatus() {
-        const clientStatusNo = $("#statusId").dxTextBox("instance").option("value");
+          const clientStatusNo = $("#statusId").dxTextBox("instance").option("value");
+      const parsedStatusNo = parseInt(clientStatusNo);
+            const statusValue = $("#GetStatusDropDown").dxDropDownBox("instance").option("value");
+
+      // ✅ Check if Status is selected
+      if (!statusValue) {
+            DevExpress.ui.notify("Status is required", "error", 2000);
+          return;
+      }
 
         const data = {
             ClientCode: String($("#GetClientDropDown").dxDropDownBox("instance").option("value")),
@@ -528,11 +562,10 @@
             Status: $("#GetStatusDropDown").dxDropDownBox("instance").option("value"),
             FollowupOn: $("#followUpOn").dxDateBox("instance").option("value")
         };
-
-        // Only include ClientStatusNo if it's an update
-        if (clientStatusNo) {
-            data.ClientStatusNo = parseInt(clientStatusNo);
-        }
+    // Only include ClientStatusNo if it's a valid number greater than 0 (i.e. update)
+       if (!isNaN(parsedStatusNo) && parsedStatusNo > 0) {
+           data.ClientStatusNo = parsedStatusNo;
+       }
 
         $.ajax({
             url: '/api/ClientStatusUpdate/SaveOrUpdateClientStatusUpdate',
@@ -541,6 +574,7 @@
             data: JSON.stringify(data),
             success: function (res) {
                 if (res.success) {
+                      console.log("statusNo",res.lastClientStatusNo);
                     DevExpress.ui.notify(res.message, "success", 2000);
 
                     $("#statusId").dxTextBox("instance").option("value", res.lastClientStatusNo);
@@ -552,12 +586,7 @@
                         }
                     }
 
-                    // Close modal after a small delay to ensure grid refresh completes
-                    setTimeout(() => {
-                        if (window.parent && typeof window.parent.closeModal === "function") {
-                            window.parent.closeModal();
-                        }
-                    }, 500);
+                
 
                 } else {
                     DevExpress.ui.notify(res.message, "error", 3000);

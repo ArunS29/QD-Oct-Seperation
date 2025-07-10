@@ -52,4 +52,10 @@ public partial class Qry20196SalaryPayableByDateReport
     public string EmployeeReferenceId { get; set; }
 
     public decimal? GosiSalary { get; set; }
+    public decimal? ConvertedPayableAmount { get; set; }
+    public decimal? ConvertedPaid { get; set; }
+    public decimal? ConvertedBalance { get; set; }
+    public string CurrencyName { get; set; }
+    public string TransactionCurrencySymbol { get; set; }
+    public string CurrencyImage { get; set; }
 }

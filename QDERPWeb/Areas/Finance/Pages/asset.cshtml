@@ -13,7 +13,6 @@
     /* Ensure tab text is styled properly */
     .dx-tabpanel .dx-tab {
         color: black !important; /* Set the tab text color to black */
-        font-weight: bold; /* Optionally make the text bold */
         font-size: 14px; /* Adjust font size for better visibility */
         padding: 10px 15px; /* Increase padding for better appearance */
     }
@@ -33,7 +32,6 @@
 
 
     .form-container1 {
-        margin: 15px;
         width:100%;
 
         padding: 5px; /* Optional: Add some padding inside the border */
@@ -47,22 +45,22 @@
     .form-row {
         display: flex;
         gap: 10px;
-        padding:10px;    
-        margin-bottom: 15px;
+        padding: 0px 10px;
         width:100%;
     }
 
     
     .form-label {
-        color: black;
+        color: var(--title-background-color);
         padding: 5px;
-        font-weight: bold;
         width: 200px;
         text-align: Left;
         display: flex;
         align-items: center;
     }   
-
+    label{
+        font-weight:700;
+    }
     .dx-textbox .dx-texteditor-input,
     .dx-numberbox .dx-texteditor-input,
     .dx-selectbox .dx-texteditor-input {
@@ -73,6 +71,9 @@
         width: 100%;
     }
 
+    .dx-texteditor-input{
+        border:1px solid #ddd;
+    }
     .footer-buttons .row {
         margin-top: 20px; /* Add some space between the form and footer */
     }
@@ -90,8 +91,34 @@
         width: 100%;
     }
 
+    .form-inline-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        align-items: flex-start;
+    }
 
+    .form-inline-group {
+        display: flex;
+        flex-direction: column;
+        min-width: 200px;
+    }
 
+        .form-inline-group label {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+    .form-inline-location {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+    }
+
+    .form-label {
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
     .button-group{
         align-items: center;
         justify-content: center;
@@ -109,241 +136,187 @@
         width:100%;
         overflow-x: hidden;
     }
+    .titleCard-toggle1 {
+        display: none;
+    }
 
+    .outline-container{
+        color: var(--title-background-color);
+        padding: 10px;
+    }
 </style>
 
-    <div class="title">
-        <div class="header-container">
-            <div id="assetregister" class="no-border-title"></div>
-        </div>
+<div class="dx-card-header minimal-header">
+    <div class="card-title-icon">
+        <i class="fas fa-file-invoice-dollar"></i>
     </div>
+    <h3 class="card-title-text">Asset Register</h3>
+</div>
 <div class="form-container1">
 
-    <div class="col-md-12">
-        <div class="outline-container p-3">
+    <div class="outline-container">
 
-            <div class="row">
+        <!-- 🔹 First Row -->
+        <div class="form-inline-row">
 
-                <!-- Asset Ledger No Field -->
-                <div class="col-md-2">
-                    <div class="form-label">
-                        <label for="AssetLedgerNo">Asset Ledger No</label>
-                    </div>
-                    @(Html.DevExtreme().TextBox().ID("txtacctledno").Value("").ReadOnly(true).ValidationRules(rules =>
-            {
-                rules.AddRequired().Message("Asset Ledger No is required");
-            }))
-                </div>
+            <!-- Asset Ledger No -->
+            <div class="form-inline-group" style="min-width: 150px;">
+                <label for="AssetLedgerNo">Asset Ledger No</label>
+                @(Html.DevExtreme().TextBox()
+                    .ID("txtacctledno")
+                    .Value("")
+                    .ReadOnly(true)
+                    .ValidationRules(rules =>
+                    {
+                        rules.AddRequired().Message("Asset Ledger No is required");
+                    })
+                    )
+            </div>
 
-
-
-                <!-- Asset Category Dropdown -->
-                <div class="col-md-3">
-                    <div class="form-label">
-                        <label for="AssetCategory">Asset Category</label>
-                    </div>
-                    <div class="form-group-row">
-
-                        @(Html.DevExtreme().SelectBox()
-                            .ID("ddassetCategory")
-                            .LabelMode(EditorLabelMode.Outside)
-                            .ValueExpr("AssetCategoryCode")
-                            .DisplayExpr("AssetCategory")
-                            .Placeholder("🔍 Select Asset Category") // 👈 Add placeholder here
-                            .InputAttr("aria-label", "Owner")
-                            .DataSource(d => d.WebApi()
-                            .Controller("assetview")
-                            .LoadAction("GetAssetCategoriesByCode")
-                            .LoadMode(DataSourceLoadMode.Raw)
-                            .Key("AssetCategory"))
-                            .SearchEnabled(true)
-                            .ShowClearButton(true)
-                            .TabIndex(1)
-                            .Width("100%")
-                            .ValidationRules(rules =>
-                            {
-                                rules.AddRequired().Message("Asset Category is required");
-                            })
-                            )
-
-
-                        @(Html.DevExtreme().Button().ID("btnAddAccount").Icon("plus").ElementAttr("class", "button-alignment-down button-group").OnClick("redirectToAssetCategoryView"))
-                    </div>
-                </div>
-
-                <!-- Add this CSS to ensure the button and dropdown are on the same row -->
-                <style>
-                    .form-group-row {
-                        display: flex;
-                        align-items: center;
-                        justify-content: space-between;
-                    }
-
-                        .form-group-row .dx-selectbox, .form-group-row .dx-button {
-                            margin-right: 10px; /* Space between dropdown and button */
-                        }
-                </style>
-
-
-                <!-- Purchased Asset Value Field -->
-                <div class="col-md-2">
-                    <div class="form-label">
-                        <label for="PurchasedAssetValue" style="width: 100%; display: block;">Purchased Asset Value</label>
-                    </div>
-                    @(
-                        Html.DevExtreme().NumberBox()
-                        .ID("PurchasedAssetValue")
-                        .Value(0)
-                        .Min(0)
-                        .Max(1000000)
-                        .ShowSpinButtons(true)
-                        .Format("#,##0")
-                        .Step(1)
-                        .Width("100%")
-                         .ValidationRules(rules =>
-  {
-      rules.AddRequired().Message("Asset Category is required");
-  })
-                        )
-                </div>
-
-
-
-                <!-- Plate No Field -->
-                <div class="col-md-2">
-                    <div class="form-label">
-                        <label for="PlateNo">Plate No</label>
-                    </div>
-                    @(
-                        Html.DevExtreme().TextBox()
-                        .ID("txtplatno")
-                        .Value("")
-                        )
-                </div>
-
-                <!-- Property No (Property Modules) Dropdown -->
-                <div class="col-md-3">
-                    <div class="form-label">
-                        <label for="PropertyNo">Property No(Modules)</label>
-                    </div>
-                    @(Html.DevExtreme().DropDownBox()
+            <!-- Asset Category + Button -->
+            <div class="form-inline-group" style="min-width: 280px;">
+                <label for="AssetCategory">Asset Category</label>
+                <div class="form-inline-location">
+                    @(Html.DevExtreme().SelectBox()
+                        .ID("ddassetCategory")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ValueExpr("AssetCategoryCode")
+                        .DisplayExpr("AssetCategory")
+                        .Placeholder("🔍 Select Asset Category")
+                        .InputAttr("aria-label", "Owner")
                         .DataSource(d => d.WebApi()
                         .Controller("assetview")
-                        .LoadAction("GetPropertDetails")
+                        .LoadAction("GetAssetCategoriesByCode")
                         .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("PropertyNo")
-                        )
-                        .LabelMode(EditorLabelMode.Outside)
-                        // .Label("Select a Ledger Account")
-                        .ID("ddlpropertyno")
+                        .Key("AssetCategory"))
+                        .SearchEnabled(true)
                         .ShowClearButton(true)
-                        .AcceptCustomValue(true)
-                        .OpenOnFieldClick(false)
-                        .ValueChangeEvent("input")
-                        .HoverStateEnabled(true)
-                        .ValueExpr("PropertyNo")
-                        .DisplayExpr("AccountHead")
-                        .OnInput("dropDownBoxOnInput")
-                        .OnOpened("onOpened")
-                        .Width(300)
                         .TabIndex(1)
-                        .DropDownOptions(o => o
-                        .Width(1000) // Set the desired width for the dropdown content
+                        .Width(200)
+                        .ValidationRules(rules =>
+                        {
+                            rules.AddRequired().Message("Asset Category is required");
+                        })
                         )
-                        .OnKeyDown("onKeyDown")
-                        // .OnValueChanged("dropDownBoxValueChanged")
-                        .ContentTemplate(new TemplateName("LedgerContentTemplate"))
+
+                    @(Html.DevExtreme().Button()
+                        .ID("btnAddAccount")
+                        .Icon("plus")
+                        .OnClick("redirectToAssetCategoryView")
+                        .Height(38)
                         )
-
-                </div>
-
-            </div>
-
-
-            <div class="col-md-12">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="row">
-                            <!-- Asset Description Field -->
-                            <div class="col-md-12">
-                                <div class="form-label">
-                                    <label for="AssetDescription">Asset Description</label>
-                                </div>
-                                @(
-                                    Html.DevExtreme().TextBox()
-                                    .ID("txtAssetDescription")
-                                    // .Value("")
-                                    )
-                            </div>
-
-
-                            <div class="col-md-12">
-                                <div class="form-label">
-                                    <label for="Assetlocation">Asset Location</label>
-                                </div>
-                                <div class="row align-items-center">
-                                    <div class="col-md-11" style="padding-right:0px">
-                                        @(Html.DevExtreme().SelectBox()
-                                            .ID("ddlassetlocation")
-                                            .LabelMode(EditorLabelMode.Outside)
-                                            .ValueExpr("AssetLocationCode")
-                                            .InputAttr("aria-label", "Owner")
-                                            .DisplayExpr("AssetLocation")
-                                            .DataSource(d => d.WebApi()
-                                            .Controller("Assetview")
-                                            .LoadAction("GetddlAssetlocation")
-                                            .LoadMode(DataSourceLoadMode.Raw)
-                                            .Key("AssetLocation")
-                                            )
-                                            .SearchEnabled(true)
-                                            .ShowClearButton(true)
-                                            .TabIndex(1)
-                                            )
-                                    </div>
-                                    <div class="col-md-1">
-                                        @(Html.DevExtreme().Button()
-                                            .ID("btnAddAccount1")
-                                            .Icon("plus")
-                                          
-                                            .ElementAttr("class", "button-alignment-down button-group")
-                                            .OnClick("redirectToAssetLocationMaster") // Corrected JavaScript function for Asset Location
-                                            )
-                                    </div>
-                                </div>
-                            </div>
-
-
-                        </div>
-
-
-                    </div>
-
-                    <div class="col-md-6">
-                        <!-- Asset Specification Field -->
-                        <div class="col-md-12">
-                            <div class="form-label">
-                                <label for="AssetSpecification">Asset Specification</label>
-                            </div>
-                            @(
-                                Html.DevExtreme().TextArea().Height(120)
-                                .ID("txtspecifications")
-                                //.Value("")
-                                .InputAttr("style", "overflow-y: auto; resize: none;")
-                                )
-                        </div>
-
-
-                    </div>
-
                 </div>
             </div>
 
+            <!-- Purchased Asset Value -->
+            <div class="form-inline-group" style="min-width: 200px;">
+                <label for="PurchasedAssetValue">Purchased Asset Value</label>
+                @(Html.DevExtreme().NumberBox()
+                    .ID("PurchasedAssetValue")
+                    .Value(0)
+                    .Min(0)
+                    .Max(1000000)
+                    .ShowSpinButtons(true)
+                    .Format("#,##0")
+                    .Step(1)
+                    .ValidationRules(rules =>
+                    {
+                        rules.AddRequired().Message("Purchased Value is required");
+                    })
+                    )
+            </div>
 
+            <!-- Plate No -->
+            <div class="form-inline-group" style="min-width: 150px;">
+                <label for="PlateNo">Plate No</label>
+                @(Html.DevExtreme().TextBox()
+                    .ID("txtplatno")
+                    .Value("")
+                    )
+            </div>
 
-
-            <div class="row">
+            <!-- Property No (Modules) -->
+            <div class="form-inline-group" style="min-width: 300px;">
+                <label for="PropertyNo">Property No (Modules)</label>
+                @(Html.DevExtreme().DropDownBox()
+                    .DataSource(d => d.WebApi()
+                    .Controller("assetview")
+                    .LoadAction("GetPropertDetails")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("PropertyNo"))
+                    .LabelMode(EditorLabelMode.Outside)
+                    .ID("ddlpropertyno")
+                    .ShowClearButton(true)
+                    .AcceptCustomValue(true)
+                    .OpenOnFieldClick(false)
+                    .ValueChangeEvent("input")
+                    .HoverStateEnabled(true)
+                    .ValueExpr("PropertyNo")
+                    .DisplayExpr("AccountHead")
+                    .OnInput("dropDownBoxOnInput")
+                    .OnOpened("onOpened")
+                    .Width(300)
+                    .TabIndex(1)
+                    .DropDownOptions(o => o.Width(1000))
+                    .ContentTemplate(new TemplateName("LedgerContentTemplate"))
+                    )
             </div>
         </div>
+
+        <!-- 🔹 Second Row -->
+        <div class="form-inline-row">
+
+            <!-- Asset Description -->
+            <div class="form-inline-group">
+                <label for="AssetDescription">Asset Description</label>
+                @(Html.DevExtreme().TextBox()
+                    .ID("txtAssetDescription")
+                    .Width(200)
+                    )
+            </div>
+
+            <!-- Asset Location -->
+            <div class="form-inline-group">
+                <label for="Assetlocation">Asset Location</label>
+                <div class="form-inline-location">
+                    @(Html.DevExtreme().SelectBox()
+                        .ID("ddlassetlocation")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ValueExpr("AssetLocationCode")
+                        .InputAttr("aria-label", "Owner")
+                        .DisplayExpr("AssetLocation")
+                        .DataSource(d => d.WebApi()
+                        .Controller("Assetview")
+                        .LoadAction("GetddlAssetlocation")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("AssetLocation"))
+                        .SearchEnabled(true)
+                        .ShowClearButton(true)
+                        .Width(200)
+                        .TabIndex(1)
+                        )
+
+                    @(Html.DevExtreme().Button()
+                        .ID("btnAddAccount1")
+                        .Icon("plus")
+                        .OnClick("redirectToAssetLocationMaster")
+                        .Height(38)
+                        )
+                </div>
+            </div>
+
+            <!-- Asset Specification -->
+            <div class="form-inline-group">
+                <label for="AssetSpecification">Asset Specification</label>
+                @(Html.DevExtreme().TextArea()
+                    .ID("txtspecifications")
+                    .Height(120)
+                    .Width(300)
+                    .InputAttr("style", "overflow-y: auto; resize: none;")
+                    )
+            </div>
+        </div>
+
     </div>
 
 
@@ -1005,16 +978,16 @@
         <div class="footer-buttons">
             <div class="col-md-12">
                 <div class="row">
-                    <div class="col-md-2">
+                    <div class="col-md-1">
                         @(Html.DevExtreme().Button().ID("btnUpdate").Text("Update").Icon("refresh").OnClick("updateAsset"))
                     </div>
                     @*<div class="col-md-2">
                     @(Html.DevExtreme().Button().ID("btnSaveClose").Text("Save & Close").Icon("check").OnClick("function() { saveAndClose(); }"))
                     </div> *@
-                    <div class="col-md-2">
+                    <div class="col-md-1">
         @(Html.DevExtreme().Button().ID("btDelete").Text("Save & Close").Icon("save").OnClick("onSaveAndClose"))
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-1">
         @(Html.DevExtreme().Button().ID("btnBack").Text("Back").Icon("arrowleft").OnClick("goBackToAssetView"))
                     </div>
                 </div>

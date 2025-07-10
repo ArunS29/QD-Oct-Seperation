@@ -113,6 +113,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 {
                     try
                     {
+                        var company = dbContext.Tbl901CompanyDetails
+                .FirstOrDefault();
                         var result = await dbContext.Qry20106CostAnalyses
                             .AsNoTracking()
                             .Where(x => (!startDate.HasValue || x.VoucherDate >= startDate.Value)
@@ -159,6 +161,10 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 item.BranchName,
                                 item.VoucherNarration,
                                 item.VoucherRefNo,
+                                item.ConvertedIncome,
+                                item.ConvertedExpenses,
+                                item.ConvertedCostAmount,
+                                company.CurrencyImage
                             })
                             .ToListAsync();
 

@@ -386,9 +386,9 @@
 
     </div>
 </div>
-<div>
+<div style="margin-top:10px;">
     @await Html.PartialAsync("FooterChartOfCostCenters")
-</div>
+</divn>
 @* <div id="popupContainer"></div> *@
 
 <div class="dx-field ledgerResult">
@@ -497,8 +497,9 @@
         .AllowColumnReordering(true)
         .AllowColumnResizing(true)
         .ColumnFixing(fixing => fixing.Enabled(true))
-        .HeaderFilter(filter => filter.Visible(true))
-        .Height(665)
+        .HeaderFilter(filter => filter.Visible(false))
+        .ColumnResizingMode(ColumnResizingMode.Widget)
+        .Height("68vh")
         .ColumnAutoWidth(true)
         .FilterRow(filterRow => filterRow.Visible(false))
         .Grouping(grouping => grouping.AutoExpandAll(true))

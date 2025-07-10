@@ -3321,9 +3321,18 @@ var dictionary = {
         "Today's Invoices": "Today's Invoices",
         "New Vouchers": "New Vouchers",
         "Vouchers Verified": "Vouchers Verified",
-        "Tax Summary Report-Debit Notes":"Tax Summary Report-Debit Notes",
+        "Tax Summary Report-Debit Notes": "Tax Summary Report-Debit Notes",
+        "Add New Depreciation Doc": "Add New Depreciation Doc",
+        "Depreciation Report": "Depreciation Report",
+        "Supplier Ledger Name": "Supplier Ledger Name",
+        "Contact Person Title": "Contact Person Title",
+        "Expected VAT Rate":"Expected VAT Rate"
+
     },
     ar: {
+        "Expected VAT Rate": "نسبة ضريبة القيمة المضافة المتوقعة",
+        "Supplier Ledger Name": "اسم دفتر المورد",
+        "Contact Person Title": "لقب جهة الاتصال",
         "Tax Summary Report – Debit Notes": "تقرير ملخص الضريبة - إشعارات الخصم",
         "for this period": "لهذه الفترة",
         "Total Turnover": "إجمالي المبيعات",

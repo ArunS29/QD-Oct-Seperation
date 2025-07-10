@@ -20,297 +20,13 @@
 </style>
 <!-- SweetAlert2 JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-@* <style type="text/css">
-    .overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5); /* Transparent background */
-
-        z-index: 1000;
-    }
-
-    .titleCard-toggle {
-        display: none !important;
-    }
-    .overlay-content {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 100%;
-        height: 80%;
-        background: #909ead00;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-        border-radius: 8px;
-        overflow: hidden;
-    }
-
-    #overlay-frame {
-        width: 100%;
-        height: 100%;
-    }
-
-    .mainContainer {
-        overflow-x: hidden;
-    }
-
-    .close-btn {
-        position: absolute;
-        top: 10px;
-        right: 20px;
-        font-size: 30px;
-        cursor: pointer;
-    }
-
-    .context-menu {
-        display: none;
-        position: absolute;
-        background-color: white;
-        border: 1px solid #ccc;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        list-style: none;
-        padding: 8px 0;
-        z-index: 1000;
-    }
-
-        .context-menu li {
-            padding: 8px 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-        }
-
-            .context-menu li:hover {
-                background-color: #f0f0f0;
-            }
-
-    td {
-        padding: 5px;
-    }
-
-    .custom-popup-button {
- 
-        width: 60px !important;
-        background-color: var(--title-background-color);
-    }
-
-    /* .content-container {
-                    height: calc(100vh - 60px);
-                    overflow-y: auto;
-                    z-index: 1;
-                    position: relative;
-                } */
-
-    .footer-fixed {
-        position: fixed;
-        bottom: 0;
-        left: 0px;
-        right: 0;
-        height: 60px;
-        background: #ffffff;
-        z-index: 9999;
-    }
-    /* Red background for the Attachment button */
-    .btn-attachment-red .dx-button-content {
-        background-color: #e74c3c !important; /* bright red */
-        color: white !important;
-        border: none !important;
-        border-radius: 4px;
-    }
-
-    .btn-attachment-red .dx-icon {
-        color: white !important;
-    }
-
-    .d-flex {
-        display: flex;
-    }
-
-    .align-items-end {
-        align-items: flex-end;
-    }
-
-    .gap-1 > * + * {
-        margin-left: 0px;
-    }
-
-    .centered-button .dx-button-content {
-        justify-content: center !important;
-    }
 
 
 
-    .custom-ui-button {
-        background: #f5f5f5 !important;
-        color: white !important;
-        border: none !important;
-        border-radius: 8px;
-        padding: 8px 16px;
-        font-weight: 600;
-        box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
-        position: relative;
-        overflow: hidden;
-        transition: background 0.3s ease, transform 0.2s ease;
-    }
-
-        .custom-ui-button:hover {
-            transform: translateY(-2px);
-        }
-
-        .custom-ui-button:active {
-            transform: scale(0.97);
-        }
-
-        .custom-ui-button .dx-icon,
-        .custom-ui-button .dx-button-text {
-            color: black !important;
-        }
-
-    .white-box .dx-texteditor-input-container {
-        background-color: white !important; /* Entire textbox area */
-        /* border-radius: 4px; */
-    }
-
-    .white-box .dx-numberbox {
-        background-color: white !important;
-    }
-
-    .white-box .dx-texteditor-input {
-        background-color: white !important;
-    }
-
-    .white-dropdownbox .dx-texteditor-input-container {
-        background-color: white !important;
-        /* border-radius: 4px; */
-    }
-
-    .white-dropdownbox .dx-texteditor-input {
-        background-color: white !important;
-    }
-
-    .white-dropdownbox .dx-texteditor-input-container:hover {
-        /* border: 1px solid #ccc; */
-        /* box-shadow: 0 0 4px rgba(0, 0, 0, 0.1); */
-    }
 
 
 
-    .custom-icon-color .dx-icon.fa-paperclip {
-        color: red !important;
-    }
-
-    /* Shared style for all DevExtreme editors */
-    .light-theme-input .dx-texteditor-input-container {
-        background-color: rgba(255, 255, 255, 0.95) !important; /* Semi-transparent white */
-        border: 1px solid #ccc !important; /* Light gray border */
-        /* border-radius: 6px; */
-        transition: all 0.2s ease-in-out;
-    }
-
-    /* Input text style */
-    .light-theme-input .dx-texteditor-input {
-        background-color: transparent !important;
-        color: #333 !important;
-        font-family: 'Segoe UI', sans-serif;
-    }
-
-    /* Hover and focus effect */
-    .light-theme-input .dx-texteditor-input-container:hover,
-    .light-theme-input .dx-texteditor.dx-state-focused .dx-texteditor-input-container {
-        /* border-color: #999 !important; */
-        box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Optional: remove outline when focused */
-    .light-theme-input .dx-texteditor.dx-state-focused {
-        outline: none;
-    }
-
-    .minimal-header {
-        display: flex;
-        margin-right: 18px;
-        align-items: center;
-        gap: 10px;
-        padding: 15px 10px;
-        position: relative;
-        overflow: hidden;
-        transform: translateY(-10px);
-        transition: opacity 0.5s ease, transform 0.5s ease;
-    }
-
-        .minimal-header.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Underline animation on load */
-        .minimal-header::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 15px;
-            right: 45px;
-            height: 2px;
-            width: 80%;
-            background: #2a5298; /* deep blue or change to gold etc. */
-            transition: width 0.6s ease-in-out;
-        }
-
-        .minimal-header.visible::after {
-            width: 100%;
-        }
-
-    .card-title-icon i {
-        font-size: 22px;
-        color: #2a5298;
-        padding-left: 20px;
-    }
-
-
-    .card-title-text {
-        font-size: 24px;
-        font-weight: 700;
-        letter-spacing: 0.5px;
-        margin: 0;
-        font-family: 'Segoe UI', sans-serif;
-        color: #2a5298;
-    }
-
-    /* Background color for the disabled SelectBox */
-    .custom-disabled-selectbox .dx-dropdowneditor-input-wrapper,
-    .custom-disabled-selectbox .dx-texteditor-input {
-        background-color: #f5f5f5 !important;
-        color: black !important;
-    }
-
-    /* Label color */
-    .dx-field-label {
-        color: black !important;
-    }
-    /* Target the disabled textbox wrapper and input */
-    .custom-disabled-textbox .dx-texteditor-input {
-        background-color: #f5f5f5 !important;
-        color: black !important;
-    }
-
-    /* Optional: label color */
-    .dx-field-label {
-        color: black !important;
-    }
-
-</style> *@
-
-
-<div  id="mainFooter" class="footer-fixed">
-    @await Html.PartialAsync("_Formfooter")
-</div>
-
-
-<div class="content-container-top" style="background-color:#909ead00;">
+<div class="content-container-top">
     <div class="dx-card-container">
         <div class="dx-card-header minimal-header">
             <div class="card-title-icon">
@@ -319,10 +35,10 @@
             <h3 class="card-title-text">Cash Receipt</h3>
         </div>
         <div class="dx-card-body">
-            <div class="form-container" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; position: relative; padding: 0 15px; overflow-x: hidden;">
+            <div class="form-container" style="flex-wrap: wrap; align-items: flex-end; position: relative; padding: 0 15px; overflow-x: hidden;">
                 <!-- Top Row -->
-                <div style="display: flex; gap: 10px; align-items: flex-end; flex-wrap: nowrap; width: 100%;">
-                    <div class="form-group" style="flex: 1 1 25px;">
+                 <div class="row w-100 align-items-center" style="margin-top: 8px;">
+                  <div class="form-group col-md-1 col-sm-6">
                         @(
                                                 Html.DevExtreme().TextBox()
                                                 .Label(new JS("formatMessage('Voucher No')"))
@@ -340,7 +56,7 @@
                                                 })
                                                 )
                     </div>
-                    <div class="form-group" style="flex: 1 1 35px;">
+                    <div class="form-group col-md-2 col-sm-6">
                         @(Html.DevExtreme().DateBox()
                                                 .Label(new JS("formatMessage('Voucher Date')"))
                                                 .ID("VoucherDate")
@@ -354,7 +70,7 @@
                                                 .TabIndex(1)
                                                 )
                     </div>
-                    <div class="form-group" style="flex: 1 1 35px;">
+                    <div class="form-group col-md-2 col-sm-6">
                         @(Html.DevExtreme().DateBox()
                                                 .Label(new JS("formatMessage('Effective Date')"))
                                                 .ID("VoucherEffectiveDate")
@@ -367,7 +83,7 @@
                                                 .TabIndex(2)
                                                 )
                     </div>
-                    <div class="form-group" style="flex: 1 1 170px;">
+                   <div class="form-group col-md-7 col-sm-6">
 
                         @(Html.DevExtreme().DropDownBox()
                                                 .Label(new JS("formatMessage('Receiving Account')"))
@@ -403,23 +119,12 @@
                                                 .ContentTemplate(new TemplateName("PaymentAmountContentTemplate"))
                                                 )
                     </div>
-                    <div class="form-group" style="flex: 1 1 400px;">
-                        @(Html.DevExtreme().TextArea()
-                                                .ID("Narration")
-                                                .Value("")
-                                                .Label(new JS("formatMessage('Narration')"))
-                                                .LabelMode(EditorLabelMode.Floating)
-                                                .Height(40)
-                                                .MaxLength(111500)
-                                                .ElementAttr(new { @class = "light-theme-input" })
-                                                .TabIndex(4)
-                                                )
-                    </div>
+                
                 </div>
 
                 <!-- Second Row -->
-                <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; margin-top: 10px;">
-                    <div class="form-group">
+                  <div class="row w-100 align-items-center" style="margin-top: 8px;">
+                      <div class="form-group col-md-1 col-sm-6">
                         @(
                                                 Html.DevExtreme().SelectBox()
                                                 .LabelMode(EditorLabelMode.Floating)
@@ -429,7 +134,7 @@
                                                 .Value("Cr")
                                                 .OnValueChanged("onVoucherDrCrValueChanged")
                                                 .Placeholder("Select Transaction Type")
-                                                .Width(80)
+                                               
                                                 .ElementAttr(new { @class = "custom-disabled-selectbox" })
                                                 .TabIndex(5)
                                                 .ReadOnly(false)
@@ -437,10 +142,9 @@
 
                                                   
                     </div>
-                    <!-- Container for Account Head & Buttons -->
-                    <div style="display: flex; align-items: flex-end; gap: 5px; min-width: 100px;">
+                   
                         <!-- DropDownBox: Flex-grow to fill available space -->
-                        <div class="form-group" style="flex-grow: 1;">
+                        <div class="form-group col-md-4 col-sm-6">
                             @(Html.DevExtreme().DropDownBox()
                                                         .Label(new JS("formatMessage('Account Head')"))
                                                         .DataSource(d => d.WebApi()
@@ -469,7 +173,7 @@
                                                         .OnInput("dropDownBoxOnInput")
                                                         .OnClosed("onDropDownBoxClosed")
                                                         .OnOpened("onOpened")
-                                                        .Width(454)
+                                                        
                                                         .TabIndex(6)
                                                         .DropDownOptions(o => o
                                                         .Width(1000)
@@ -507,55 +211,17 @@ buttons.Add()
     })
                                                         )
                         </div>
-                        <!-- Add Button -->
-                        <div class="form-group" style="flex-shrink: 0;">
-                           
-                            <!-- DevExtreme Popup -->
-                            @(Html.DevExtreme().Popup()
-                                                        .ID("ledgerAccountPopup")
-                                                        .Width("93%")
-                                                        .Height("85%")
-                                                        .Title("Add Ledger Account")
-                                                        .ShowTitle(true)
-                                                        .CloseOnOutsideClick(true)
-                                                        .Visible(false)
-                                                        .ResizeEnabled(true)
-                                                        .ContentTemplate(@<text>
-                                <div id="popupContent" class="background" style="width:100%; height:100%;">
-                                    <iframe id="ledgerAccountFrame" class="background" style="width:100%; height:100%; border:none;"></iframe>
-                                </div>
-                            </text>)
-                                                        )
-                        </div>
-
-                        <!-- Edit Button -->
-                        <div class="form-group" style="flex-shrink: 0;">
-                         
-                            @(Html.DevExtreme().Popup()
-                                                        .ID("ledgerEditAccountPopup")
-                                                        .Width("93%")
-                                                        .Height("85%")
-                                                        .Title("Edit Ledger Account")
-                                                        .ShowTitle(true)
-                                                        .CloseOnOutsideClick(true)
-                                                        .Visible(false)  // Hidden by default
-                                                        .ResizeEnabled(true)
-                                                        .ContentTemplate(@<text>
-                                <div id="popupContent" style="width:100%; height:100%;">
-                                    <iframe id="ledgerEditAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
-                                </div>
-                            </text>)
-                                                        )
-                        </div>
+                    
+                        
 
 
-                    </div>
-                    <div class="form-group">
+                  
+                    <div class="form-group col-md-2 col-sm-6">
                         @(Html.DevExtreme().NumberBox()
                                                 .Label(new JS("formatMessage('Amount')"))
                                                 .LabelMode(EditorLabelMode.Floating)
                                                 .ID("Amount")
-                                               .Width(150)
+                                         
                                                 .Value(0)
                                                 .ValidationRules(rules =>
                                                 {
@@ -571,7 +237,7 @@ buttons.Add()
 
                                                 )
                     </div>
-                    <div class="form-group">
+                    <div class="form-group col-md-2 col-sm-6">
                         @(Html.DevExtreme().DropDownBox()
                                                 .Label(new JS("formatMessage('Base Currency')"))
                                                 .DataSource(d => d.WebApi()
@@ -599,7 +265,7 @@ buttons.Add()
                                                 .DropDownOptions(o => o.Width(700))
                                                 .ReadOnly(true)
                                                 .ElementAttr(new { @class = "custom-disabled-selectbox" })
-                                                .Width(150)
+                                                
                                                 .ReadOnly(true)
                                                 .ContentTemplate(new TemplateName("BaseCurrencyContentTemplate"))
                                                 )
@@ -635,7 +301,7 @@ buttons.Add()
                                                     )
                                                 }
                     </div>
-                    <div class="form-group" style="flex: 1 1 50px;">
+                    <div class="form-group col-md-2 col-sm-6">
                         @(Html.DevExtreme().DropDownBox()
                                                 .Label(new JS("formatMessage('Convertion Currency')"))
                                                 .DataSource(d => d.WebApi()
@@ -697,7 +363,7 @@ buttons.Add()
                                                 }
 
                     </div>
-                    <div class="form-group" style="flex: 1 1 70px;">
+                    <div class="form-group col-md-1 col-sm-6">
                         @(Html.DevExtreme().NumberBox()
                                                 .Label("CVR")
                                                 .LabelMode(EditorLabelMode.Floating)
@@ -715,8 +381,70 @@ buttons.Add()
                                                 .ElementAttr(new { @class = "white-box" })
                                                 )
                     </div>
-                    <div class="form-group plusBtn" style="flex: 1 1 30px;">
-                        @(Html.DevExtreme().Button()
+    
+
+
+
+
+                </div>
+
+                           
+                            <!-- DevExtreme Popup -->
+                            @(Html.DevExtreme().Popup()
+                                                        .ID("ledgerAccountPopup")
+                                                        .Width("93%")
+                                                        .Height("85%")
+                                                        .Title("Add Ledger Account")
+                                                        .ShowTitle(true)
+                                                        .CloseOnOutsideClick(true)
+                                                        .Visible(false)
+                                                        .ResizeEnabled(true)
+                                                        .ContentTemplate(@<text>
+                                <div id="popupContent" class="background" style="width:100%; height:100%;">
+                                    <iframe id="ledgerAccountFrame" class="background" style="width:100%; height:100%; border:none;"></iframe>
+                                </div>
+                            </text>)
+                                                        )
+                        
+
+                        <!-- Edit Button -->
+                       
+                         
+                            @(Html.DevExtreme().Popup()
+                                                        .ID("ledgerEditAccountPopup")
+                                                        .Width("93%")
+                                                        .Height("85%")
+                                                        .Title("Edit Ledger Account")
+                                                        .ShowTitle(true)
+                                                        .CloseOnOutsideClick(true)
+                                                        .Visible(false)  // Hidden by default
+                                                        .ResizeEnabled(true)
+                                                        .ContentTemplate(@<text>
+                                <div id="popupContent" style="width:100%; height:100%;">
+                                    <iframe id="ledgerEditAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
+                                </div>
+                            </text>)
+                                                        )
+                        
+
+
+
+                <!--Third Rpw-->
+                 <div class="row w-100 align-items-center" style="margin-top: 8px;">
+                    <div class="form-group col-11">
+              @(Html.DevExtreme().TextArea()
+                                                .ID("Narration")
+                                                .Value("")
+                                                .Label(new JS("formatMessage('Narration')"))
+                                                .LabelMode(EditorLabelMode.Floating)
+                                                .Height(40)
+                                                .MaxLength(111500)
+                                                .ElementAttr(new { @class = "light-theme-input" })
+                                                .TabIndex(4)
+                                                )
+                    </div> 
+                              <div class="form-group plusBtn col-1 mt-0 h-100">
+                              @(Html.DevExtreme().Button()
                                                 .ID("btnaddCostAllocation")
                                                 .Text(new JS("formatMessage('ADD')"))
                                                 .Height(40)
@@ -726,13 +454,10 @@ buttons.Add()
                                                 .ElementAttr(new { @class = "custom-ui-button" })
                                                 .OnClick("function() { addVoucherEntry(); }")
                                                 )
-                    </div>
-
-
-
-
-                </div>
+                              </div>
+             </div>
             </div>
+            
         </div>
 
 
@@ -995,52 +720,43 @@ buttons.Add()
         <div class="dx-card-body">
             <div class="form-container" style="display: flex; flex-direction: column; gap: 20px; padding: 0 15px;">
 
-                <!-- Row 1: Cheque No, Popup, Voucher Narration, Attachment -->
-                <div class="form-group" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end;">
-                    <div style="flex: 0 0 320px; min-width: 300px; display: flex; gap: 5px; align-items: flex-end;">
-                        <div style="flex-grow: 1;">
+               <!-- Row 1: Cheque No, Popup, Voucher Narration, Attachment -->
+                   <div class="row w-100 align-items-center" style="margin-top: 8px;">
+                    <div class="form-group col-4">
                             @(Html.DevExtreme().TextBox()
                                                         .Label(new JS("formatMessage('Cheque No/Reference No')"))
                                                         .ID("ChequeNoReferenceNo")
                                                         .Value(null)
+                                                        .TabIndex(11)
                                                         .LabelMode(EditorLabelMode.Floating)
                                                         .Width("100%")
-                                                        .TabIndex(12)
                                                         .ElementAttr(new { @class = "light-theme-input" }))
                         </div>
-                       
-                    </div>
 
-                    <div style="flex: 1 1 300px; min-width: 280px;">
+                  
+
+                    <div class="form-group col-4">
                         @(Html.DevExtreme().TextBox()
                                                 .Label(new JS("formatMessage('Voucher Narration')"))
                                                 .LabelMode(EditorLabelMode.Floating)
                                                 .ID("VoucherNarration")
                                                 .Value(null)
-                                                .Height(60)
-                                                .Width("630px")
-                                                .TabIndex(13)
+                                                .TabIndex(12)
+                                                
                                                 .ElementAttr(new { @class = "light-theme-input" }))
                     </div>
-                    <div style=" margin-right: 8px;">
+                    <div class="form-group col-4">
                         @(Html.DevExtreme().TextBox()
                                                 .Label(new JS("formatMessage('Remarks')"))
                                                 .LabelMode(EditorLabelMode.Floating)
                                                 .ID("Remarks")
                                                 .Value(null)
-                                                .Width("550px")
-                                                .TabIndex(14)
+                                                .TabIndex(13)
+                                                
                                                 .ElementAttr(new { @class = "light-theme-input" }))
                     </div>
 
-                    <div style="flex-shrink: 0;">
-                        @(Html.DevExtreme().Button()
-                                                .ID("btnAttachment")
-                                                .Icon("fa fa-paperclip")
-                                                .TabIndex(15)
-                                                .ElementAttr("class", "custom-popup-button custom-icon-color")
-                                                .OnClick("onAttachButtonClick"))
-                    </div>
+                 
                 </div>
 
 
@@ -1113,7 +829,10 @@ buttons.Add()
                 </div>
             </div>
         </div>
-
+<div  id="mainFooter" class="footer-fixed">
+    @await Html.PartialAsync("_Formfooter")
+</div>
+ </div>
         <!-- Drop Down Grid Template -->
         @using (Html.DevExtreme().NamedTemplate("ReceivingAccountDropdownContentTemplate"))
         {

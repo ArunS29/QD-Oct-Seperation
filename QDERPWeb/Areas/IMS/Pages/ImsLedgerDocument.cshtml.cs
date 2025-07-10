@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace QD.ERP.Web.Areas.IMS.Pages
 {
-    public class LedgerDocumentsModel : PageModel
+    public class IMSLedgerDocumentsModel : PageModel
     {
         public void OnGet()
         {

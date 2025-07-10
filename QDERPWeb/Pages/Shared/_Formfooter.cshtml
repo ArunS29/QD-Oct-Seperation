@@ -139,6 +139,23 @@
     }
 </style>
 <div class="dx-fieldset horizontal-container">
+
+    @(Html.DevExtreme().Button()
+        .ID("btnSave")
+        .Text("Save")
+        .Icon("save")
+        .Width(180)
+        .Hint("Click to save")
+        .ElementAttr(new { @class = "dx-button-custom btn-save" }))
+
+    @(Html.DevExtreme().Button()
+        .ID("btnSaveAndClose")
+        .Text("Save & Close")
+        .Icon("save")
+        .Width(180)
+        .Hint("Click to save and close")
+        .ElementAttr(new { @class = "dx-button-custom btn-save-close" }))
+
     @(Html.DevExtreme().Button()
         .ID("btnBack")
         .Text(new JS("formatMessage('Back')"))
@@ -148,14 +165,7 @@
         .OnClick("onBackButtonClick")
         .ElementAttr(new { @class = "dx-button-custom btn-back" }))
 
-    @(Html.DevExtreme().Button()
-        .ID("btnDelete")
-        .Text(new JS("formatMessage('Delete')"))
-        .Icon("close")
-        .Width(180)
-        .Hint("Click to delete")
-        .OnClick("onDeleteButtonClick")
-        .ElementAttr(new { @class = "dx-button-custom btn-delete" }))
+  
 
     @(Html.DevExtreme().Button()
         .ID("btnAttach")
@@ -180,22 +190,14 @@
             items.Add().Text("Preview Format 2").Icon("textdocument");
         })
         .OnItemClick("handlePreviewClick"))
-
     @(Html.DevExtreme().Button()
-        .ID("btnSave")
-        .Text(new JS("formatMessage('Save')"))
-        .Icon("save")
+        .ID("btnDelete")
+        .Text("Delete")
+        .Icon("close")
         .Width(180)
-        .Hint("Click to save")
-        .ElementAttr(new { @class = "dx-button-custom btn-save" }))
-
-    @(Html.DevExtreme().Button()
-        .ID("btnSaveAndClose")
-        .Text(new JS("formatMessage('Save & Close')"))
-        .Icon("save")
-        .Width(180)
-        .Hint("Click to save and close")
-        .ElementAttr(new { @class = "dx-button-custom btn-save-close" }))
+        .Hint("Click to delete")
+        .OnClick("onDeleteButtonClick")
+        .ElementAttr(new { @class = "dx-button-custom btn-delete" }))
 
     @(Html.DevExtreme().Button()
         .ID("btnVerify")
@@ -1113,9 +1115,10 @@
 
         var voucherTypeBox = $("#VoucherType").dxSelectBox("instance"); // or dxTextBox
         var voucherType = voucherTypeBox.option("value");
+        const isMaster = false;
         console.log(voucherType)
-        const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&modal=true`;
-        const title = "Ledger Documents";
+        const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&modal=true&isMaster=${isMaster}`;
+        const title = "Transaction Documents";
         openModal(url, title);
 }
 

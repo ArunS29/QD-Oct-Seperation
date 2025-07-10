@@ -48,4 +48,9 @@ public partial class Qry20136VoucherMasterList
     public DateTime? AuditVerifiedOn { get; set; }
 
     public bool IsAuditVerified { get; set; }
+    public decimal? ConvertedDrAmount { get; set; }
+    public decimal? ConvertedCrAmount { get; set; }
+    public string CurrencyName { get; set; }
+    public string TransactionCurrencySymbol { get; set; }
+    public string CurrencyImage { get; set; }
 }

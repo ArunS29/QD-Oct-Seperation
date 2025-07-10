@@ -748,13 +748,14 @@
         var isVisible = dataGrid.option("groupPanel.visible");
         dataGrid.option("groupPanel.visible", !isVisible);
     }
-      function showColumnChooser() {
+        function showColumnChooser() {
         const dataGrid = $("#dataGrid").dxDataGrid("instance");
-
         if (dataGrid) {
-            dataGrid.showColumnChooser(); // that's all you need
+            dataGrid.showColumnChooser();
+            sortColumnChooserAlphabetically(); // Sort after opening
         }
     }
+
 
 
 

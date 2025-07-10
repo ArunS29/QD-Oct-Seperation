@@ -107,11 +107,11 @@ namespace QD.ERP.Web.Areas.General.Controllers
             public string CompanyAddress1 { get; set; }
             public string CompanyAddress2 { get; set; }
 
-            [Required]
+           // [Required]
             public string CompanyCity { get; set; }
             public string CompanyPhone { get; set; }
 
-            [Required]
+           // [Required]
             public string CompanyNameShort { get; set; }
             public string CompanyFax { get; set; }
             public string EmailAddress { get; set; }
@@ -122,15 +122,15 @@ namespace QD.ERP.Web.Areas.General.Controllers
             public string ProductName { get; set; }
             public string CompanySlogan { get; set; }
 
-            [Required]
+            //[Required]
             public string CompanyVatno { get; set; }
             public string SellerGroupVatnumber { get; set; }
             public string CompanyTin { get; set; }
 
-            [Required]
+          //  [Required]
             public string SellerOtherIdtype { get; set; }
 
-            [Required]
+          //  [Required]
             public string SellerOtherSellerId { get; set; }
             public string SellerBuildingNumber { get; set; }
             public string SellerAdditionalNumber { get; set; }
@@ -138,7 +138,7 @@ namespace QD.ERP.Web.Areas.General.Controllers
             public string SellerProvinceAr { get; set; }
             public string SellerPostalCode { get; set; }
 
-            [Required]
+          //  [Required]
             public string SellerNeighborhood { get; set; }
             public string SellerNeighborhoodAr { get; set; }
             public string SellerCountryCode { get; set; }
@@ -170,91 +170,96 @@ namespace QD.ERP.Web.Areas.General.Controllers
         }
 
 
+        // 1. Get all company IDs (or short names as key, as you prefer)
         [HttpGet]
-        public async Task<IActionResult> GetAllCompanyDetails1(DataSourceLoadOptions loadOptions)
+        public IActionResult GetAllCompanyIds()
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { message = "Invalid tenant context." });
+
+            var companyIds = dbContext.Tbl901CompanyDetails
+                .OrderBy(c => c.CompanyId) // or any other sort order
+                .Select(c => c.CompanyId)  // or use CompanyNameShort if that's your key
+                .ToList();
+
+            return Ok(companyIds);
+        }
+
+        // 2. Get details by ID (now supports ?companyId=)
+        [HttpGet]
+        public async Task<IActionResult> GetAllCompanyDetails1([FromQuery] int? companyId, DataSourceLoadOptions loadOptions)
         {
             try
             {
-                // Get tenant name from session
                 string tenantName = HttpContext.Session.GetString("TenantName");
 
                 if (string.IsNullOrEmpty(tenantName))
-                {
                     return Unauthorized(new { message = "Tenant name not found in session.", success = false });
-                }
 
                 if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                {
                     return Unauthorized(new { message = "Invalid tenant context.", success = false });
-                }
 
                 var matchingCompanyQuery = dbContext.Tbl901CompanyDetails
-                    .AsNoTracking()
-                   // .Where(c => c.CompanyNameShort == tenantName)
-                    .Select(c => new
-                    {
-                        c.CompanyId,
-                        c.CompanyAddress1Ar,
-                        c.CompanyNameAr,
-                        c.CompanyFullAddressAr,
-                        c.CompanyAddress2Ar,
-                        c.CompanyName,
-                        c.CompanyCityAr,
-                        c.SellerNeighborhoodAr,
-                        c.CompanyAddress1,
-                        c.CompanyAddress2,
-                        c.CompanyCity,
-                        c.CompanyPhone,
-                        c.CompanyNameShort,
-                        c.CompanyFax,
-                        c.SellerCountryCode,
-                        c.CompanyVatno,
-                        c.SellerBuildingNumber,
-                        c.SellerAdditionalNumber,
-                        c.SellerProvince,
-                        c.SellerProvinceAr,
-                        c.SellerPostalCode,
-                        c.SellerNeighborhood,
-                        c.EmailAddress,
-                        c.Website,
-                        c.CurrencyAbbr,
-                        c.CompanyFullAddress,
-                        c.ProductName,
-                        c.CompanySlogan,
-                        c.CompanyShortNameAr,
-                        c.SellerGroupVatnumber,
-                        c.CompanyTin,
-                        c.SellerOtherIdtype,
-                        c.SellerOtherSellerId,
-                        CompanyLogo = c.CompanyLogo != null ? Convert.ToBase64String(c.CompanyLogo) : null,
-                        CompanySeal = c.CompanySeal != null ? Convert.ToBase64String(c.CompanySeal) : null,
+                    .AsNoTracking();
 
-                        c.AuditorName,
-                        c.AuditorFaxNo,
-                        c.AuditorAddress,
-                        c.ErpdatabaseLocation,
-                        c.Erpdmslocation,
-                        c.ErpAutoBackupLocation,
-                        c.BillsReceivableLocation,
-                        c.BackupOperatorEmail,
-                        c.OnlineBackupLocation,
-                        c.IsSendSuccessEmail,
-                        c.IsSendFailedEmail,
-                        c.IsOnlineBackup,
-                        c.IsBackupDatabaseOnly,
-                        LetterHead=c.LetterHead !=null ? Convert.ToBase64String(c.LetterHead) :null,
+                if (companyId.HasValue)
+                    matchingCompanyQuery = matchingCompanyQuery.Where(c => c.CompanyId == companyId.Value);
 
+                // ---- All your select as before (unchanged) ----
+                var projection = matchingCompanyQuery.Select(c => new
+                {
+                    c.CompanyId,
+                    c.CompanyAddress1Ar,
+                    c.CompanyNameAr,
+                    c.CompanyFullAddressAr,
+                    c.CompanyAddress2Ar,
+                    c.CompanyName,
+                    c.CompanyCityAr,
+                    c.SellerNeighborhoodAr,
+                    c.CompanyAddress1,
+                    c.CompanyAddress2,
+                    c.CompanyCity,
+                    c.CompanyPhone,
+                    c.CompanyNameShort,
+                    c.CompanyFax,
+                    c.SellerCountryCode,
+                    c.CompanyVatno,
+                    c.SellerBuildingNumber,
+                    c.SellerAdditionalNumber,
+                    c.SellerProvince,
+                    c.SellerProvinceAr,
+                    c.SellerPostalCode,
+                    c.SellerNeighborhood,
+                    c.EmailAddress,
+                    c.Website,
+                    c.CurrencyAbbr,
+                    c.CompanyFullAddress,
+                    c.ProductName,
+                    c.CompanySlogan,
+                    c.CompanyShortNameAr,
+                    c.SellerGroupVatnumber,
+                    c.CompanyTin,
+                    c.SellerOtherIdtype,
+                    c.SellerOtherSellerId,
+                    CompanyLogo = c.CompanyLogo != null ? Convert.ToBase64String(c.CompanyLogo) : null,
+                    CompanySeal = c.CompanySeal != null ? Convert.ToBase64String(c.CompanySeal) : null,
+                    c.AuditorName,
+                    c.AuditorFaxNo,
+                    c.AuditorAddress,
+                    c.ErpdatabaseLocation,
+                    c.Erpdmslocation,
+                    c.ErpAutoBackupLocation,
+                    c.BillsReceivableLocation,
+                    c.BackupOperatorEmail,
+                    c.OnlineBackupLocation,
+                    c.IsSendSuccessEmail,
+                    c.IsSendFailedEmail,
+                    c.IsOnlineBackup,
+                    c.IsBackupDatabaseOnly,
+                    LetterHead = c.LetterHead != null ? Convert.ToBase64String(c.LetterHead) : null,
+                });
 
-                    });
-
-                //// ✅ Check existence *before* sending to DataSourceLoader
-                //if (!await matchingCompanyQuery.AnyAsync())
-                //{
-                //    return NotFound(new { success = false, message = $"Company with short name '{tenantName}' not found." });
-                //}
-
-                // ✅ Pass IQueryable directly
-                var result = await DataSourceLoader.LoadAsync(matchingCompanyQuery, loadOptions);
+                var result = await DataSourceLoader.LoadAsync(projection, loadOptions);
                 return new JsonResult(result);
             }
             catch (Exception ex)
@@ -266,7 +271,6 @@ namespace QD.ERP.Web.Areas.General.Controllers
 
 
 
-        
         [HttpPost]
         public async Task<IActionResult> UpdateCompanyDetails([FromBody] CompanyUpdateModel updatedCompany)
         {
@@ -362,6 +366,8 @@ namespace QD.ERP.Web.Areas.General.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+       
+        
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
