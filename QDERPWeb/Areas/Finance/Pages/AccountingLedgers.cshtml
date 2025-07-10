@@ -625,7 +625,7 @@
 				.LabelMode(EditorLabelMode.Floating)
 				.Label(new JS("formatMessage('Select Ledger Account')"))
 				.ID("accountDropDownBox")
-				.ShowClearButton(true)
+				.ShowClearButton(false)
 				.AcceptCustomValue(true)
 				.OpenOnFieldClick(false)
 				.ValueChangeEvent("input")
@@ -982,6 +982,12 @@ buttons.Add()
 				.ColumnFixing(f => f.Enabled(true))
 				.HeaderFilter(f => f.Visible(false))
 				.Height("100%")
+				.SearchPanel(s => s
+    .Visible(false) // start hidden
+    .Width(240)
+    .Placeholder("Search...")
+)
+
 				.ColumnAutoWidth(true)
 				.FilterRow(f => f.Visible(false))
 				.Grouping(g => g.AutoExpandAll(false))
@@ -2400,6 +2406,15 @@ function showNarrationOrRemarkModal(field, value) {
             $container.empty().append(sorted);
         }
     }, 200); // allow DOM to render
+}
+function dropDownBoxValueChanged(e) {
+    const hasValue = !!e.value;
+
+    // Get DropDownBox instance
+    const dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
+
+    // Toggle clear button based on value
+    dropDownBox.option("showClearButton", hasValue);
 }
 
 </script>

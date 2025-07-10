@@ -72,6 +72,30 @@
         color: black;
         font-family: "Inter", Helvetica, Arial, sans-serif;
     }
+
+
+    #dataGrid .debit-pill, #dataGrid .credit-pill, #dataGrid .received-pill {
+        display: inline-block;
+        padding: 2px 10px;
+        border-radius: 14px;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+    }
+
+    #dataGrid .debit-pill {
+        background: rgba(255, 77, 79, .15);
+        color: #ff4d4f;
+    }
+
+    #dataGrid .credit-pill {
+        background: rgba(82, 196, 26, .15);
+        color: #52c41a;
+    }
+
+    #dataGrid .received-pill {
+        background: rgba(255, 193, 7, 0.15); /* Light yellow background */
+        color: #ffc107; /* Bootstrap yellow */
+    }
 </style>
 
 
@@ -204,8 +228,9 @@
     </text>);
                 band.AddFor(m => m.VoucherDate).Caption(new JS("formatMessage('Voucher Date')")).Alignment(HorizontalAlignment.Center).Width(130)
     .Format(format => format.Type(Format.ShortDate).Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
-                band.AddFor(m => m.VoucherRefNo).Caption(new JS("formatMessage('Voucher Ref No')")).Alignment(HorizontalAlignment.Center).Width(130);
-                band.AddFor(m => m.InvoiceAmountBeforeRetention).Caption(new JS("formatMessage('Invoice Amount')")).Alignment(HorizontalAlignment.Right).Width(130)
+                band.AddFor(m => m.VoucherRefNo).Caption(new JS("formatMessage('Voucher Ref No')")).Alignment(HorizontalAlignment.Center);
+                band.AddFor(m => m.InvoiceAmountBeforeRetention).Caption(new JS("formatMessage('Trans Invoice Amount')"))
+    .Alignment(HorizontalAlignment.Right)
     .CustomizeText(@"
     function(e) {
     if (e.value === null || e.value === undefined) {
@@ -218,8 +243,69 @@
     });
     return '(' + formattedValue + ')';
     }
-    ");
-                band.AddFor(m => m.Paid).Caption(new JS("formatMessage('Paid')")).Alignment(HorizontalAlignment.Right).Width(130)
+        ").CellTemplate(@<text>
+                             <div class="credit-pill">
+                                 <span style="color: black; font-weight: bold;"><%- data.TransactionCurrencySymbol %></span>
+                                 <%- data.InvoiceAmountBeforeRetention != null ? data.ReceivableAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
+                             </div>
+                         </text>
+                    ).Visible(false).Width(130);
+
+
+
+                    @*         band.AddFor(m => m.ConvertedInvoiceAmountBeforeRetention).Caption(new JS("formatMessage('Invoice Amount')"))
+            .Alignment(HorizontalAlignment.Right)
+            .CustomizeText(@"
+        function(e) {
+        if (e.value === null || e.value === undefined) {
+        return '';
+        }
+        let positiveValue = Math.abs(e.value);
+        let formattedValue = positiveValue.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        return '(' + formattedValue + ')';
+        }
+        ").HeaderCellTemplate(@<text>
+                                   <div class="invoice-header" style="font-weight: bold;">
+                                       <%= column.caption %>
+                                   </div>
+                               </text>)
+            .CellTemplate(@<text>
+                               <div class="credit-pill">
+                                   <%- data.ConvertedInvoiceAmountBeforeRetention.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+                               </div>
+                           </text>);
+ *@
+                    band.AddFor(m => m.ConvertedInvoiceAmountBeforeRetention)
+                    .Caption(new JS("formatMessage('Invoice Amount')"))
+                    .Alignment(HorizontalAlignment.Right)
+                    .HeaderCellTemplate(@<text>
+                                     <div class='invoice-header' style='font-weight: bold;'>
+                                         <%= column.caption %>
+                                     </div>
+                                 </text>
+        )
+                    .CellTemplate(@<text>
+                               <%
+                               var val = data.ConvertedInvoiceAmountBeforeRetention;
+                               if (val !== null && val !== undefined) {
+                               let positive = Math.abs(val);
+                               let formatted = positive.toLocaleString(undefined, {
+                               minimumFractionDigits: 2,
+                               maximumFractionDigits: 2
+                               });
+                               %>
+                               <div class="credit-pill">(<%- formatted %>)</div>
+                               <%
+                               }
+                               %>
+                           </text>).Width(130);
+
+
+
+                band.AddFor(m => m.Paid).Caption(new JS("formatMessage('Trans Paid')")).Alignment(HorizontalAlignment.Right)
     .CustomizeText(@"
     function(e) {
     if (e.value === null || e.value === undefined) {
@@ -230,8 +316,39 @@
     maximumFractionDigits: 2
     });
     }
-    ");
-                band.AddFor(m => m.Balance).Caption(new JS("formatMessage('Balance')")).Alignment(HorizontalAlignment.Right).Width(130)
+        ").CellTemplate(@<text>
+                             <div class="received-pill">
+                                 <span style="color: black; font-weight: bold;"><%- data.TransactionCurrencySymbol %></span>
+                                 <%- data.Paid != null ? data.Received.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
+                             </div>
+                                 </text>) .Visible(false).Width(130);
+
+
+            band.AddFor(m => m.ConvertedPaid).Caption(new JS("formatMessage('Paid')")).Alignment(HorizontalAlignment.Right)
+          
+            .HeaderCellTemplate(@<text>
+                                   <div class="received-header" style="font-weight: bold;">
+                                       <%= column.caption %>
+                                   </div>
+                               </text>)
+            .CellTemplate(@<text>
+                               <%
+                               var val = data.ConvertedPaid;
+                               if (val !== null && val !== undefined) {
+                               let positive = Math.abs(val);
+                               let formatted = positive.toLocaleString(undefined, {
+                               minimumFractionDigits: 2,
+                               maximumFractionDigits: 2
+                               });
+                               %>
+                               <div class="received-pill"><%- formatted %></div>
+                               <%
+                               }
+                               %>
+                                   </text>).Width(130);
+
+
+                band.AddFor(m => m.Balance).Caption(new JS("formatMessage('Trans Balance')")).Alignment(HorizontalAlignment.Right)
     .CustomizeText(@"
     function(e) {
     if (e.value === null || e.value === undefined) {
@@ -244,8 +361,42 @@
     });
     return '(' + formattedValue + ')';
     }
-    ");
-                    band.AddFor(m => m.InvoiceDueDate).Caption(new JS("formatMessage('Invoice Due Date')")).Alignment(HorizontalAlignment.Center).Width(130)
+    ")
+            .CellTemplate(@<text>
+                               <div class="debit-pill">
+                                   <span style="color: black; font-weight: bold;"><%- data.TransactionCurrencySymbol %></span>
+                                   <%- data.Balance != null ? data.Balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
+                               </div>
+                                   </text>) .Visible(false).Width(130);
+
+
+
+            band.AddFor(m => m.ConvertedBalance).Caption(new JS("formatMessage('Balance')")).Alignment(HorizontalAlignment.Right)
+           
+            .HeaderCellTemplate(@<text>
+                                     <div class="balance-header" style="font-weight: bold;">
+                                         <%= column.caption %>
+                                     </div>
+                                 </text>)
+            .CellTemplate(@<text>
+                               <%
+                               var val = data.ConvertedBalance;
+                               if (val !== null && val !== undefined) {
+                               let positive = Math.abs(val);
+                               let formatted = positive.toLocaleString(undefined, {
+                               minimumFractionDigits: 2,
+                               maximumFractionDigits: 2
+                               });
+                               %>
+                               <div class="debit-pill">(<%- formatted %>)</div>
+                               <%
+                               }
+                               %>
+                                   </text>
+        ).Width(130);
+
+
+                        band.AddFor(m => m.InvoiceDueDate).Caption(new JS("formatMessage('Invoice Due Date')")).Alignment(HorizontalAlignment.Center).Width(130)
     .Format(format => format.Type(Format.ShortDate).Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
                     band.AddFor(m => m.NoOfDaysCreditPeriod).Caption(new JS("formatMessage('No Of Days Credit Period')")).Alignment(HorizontalAlignment.Center).Width(130);
                     band.AddFor(m => m.OverdueDays).Caption(new JS("formatMessage('Over due Days')")).Alignment(HorizontalAlignment.Center).Width(130);
@@ -285,8 +436,6 @@
                 columns.Add().DataField("PurchaseOrderNo").Caption(new JS("formatMessage('Purchase Order No')")).Alignment(HorizontalAlignment.Left).Visible(false);
                 columns.Add().DataField("MaterialReceiptNo").Caption(new JS("formatMessage('Material Receipt No')")).Alignment(HorizontalAlignment.Left).Visible(false);
                 columns.Add().DataField("Expr1").Caption(new JS("formatMessage('Expr1')")).Alignment(HorizontalAlignment.Left).Visible(false);
-
-
 
             });
             })
@@ -418,6 +567,8 @@
             });
         })
         .OnInitialized("dataGridInitialized")
+        .OnOptionChanged("handleGridOptionChanged")
+
         
         )
 
@@ -487,6 +638,75 @@
             });
             dataGrid.refresh();
         }
+    }
+
+        function handleGridOptionChanged(e) {
+        if (e.name === "columns" || e.name === "visible") {
+            // Columns changed, so re-inject SVG
+            injectHeaderSVG(); // slight delay to wait for DOM re-render
+        }
+    }
+    function injectHeaderSVG() {
+         debugger;
+           let gridElement = $('#dataGrid');
+    let dataGrid = gridElement.dxDataGrid("instance");
+    if (!dataGrid) return;
+
+    // Get grouped data (with .items containing groups)
+    let groupedData = dataGrid.getDataSource()?.items();
+    if (!groupedData || groupedData.length === 0) return;
+
+    // Get the first row from the first group
+    let firstGroup = groupedData[0];
+    let firstRowInGroup = firstGroup?.items?.[0];
+
+    let svgIcon = firstRowInGroup?.CurrencyImage;
+        if (!svgIcon) return;
+
+        svgIcon = svgIcon.replace(/<svg\b([^>]*)>/, `<svg width="12" height="12" $1>`);
+
+        gridElement.find(".dx-header-row td").each(function () {
+
+            const $cell = $(this);
+            const dataField = $cell.attr("data-field");  // 👈 This is key
+
+                const $debitHeader = $(".invoice-header");
+                const debitText = $debitHeader.data("original-text") || $debitHeader.text().trim();
+                $debitHeader.data("original-text", debitText); // Save original once
+
+                $debitHeader.html(`
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+                        ${svgIcon}
+                        <span style="font-weight: bold;">${debitText}</span>
+                    </div>
+                `);
+
+                // 👉 Credit
+                const $creditHeader = $(".received-header");
+                const creditText = $creditHeader.data("original-text") || $creditHeader.text().trim();
+                $creditHeader.data("original-text", creditText);
+
+                $creditHeader.html(`
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+                        ${svgIcon}
+                        <span style="font-weight: bold;">${creditText}</span>
+                    </div>
+                `);
+
+
+                const $balanceHeader = $(".balance-header");
+                const balanceText = $balanceHeader.data("original-text") || $balanceHeader.text().trim();
+                $balanceHeader.data("original-text", balanceText);
+
+                $balanceHeader.html(`
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+                        ${svgIcon}
+                        <span style="font-weight: bold;">${balanceText}</span>
+                    </div>
+                `);
+
+
+        });
     }
 
 
