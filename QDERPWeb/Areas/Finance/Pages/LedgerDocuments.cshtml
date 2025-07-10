@@ -97,7 +97,7 @@
         left: 50%;
         transform: translate(-50%, -50%);
         width: 100%;
-        height: 80%;
+        height: 100%;
         background: #fff;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
         border-radius: 8px;
@@ -358,85 +358,68 @@
 
 
 
-<div class="form-wrapper">
+<div style="display: flex; flex-direction: column; height: 100vh; padding-right: 10px; padding-left: 10px;">
+
+    <!-- Header -->
     <div class="dx-card-container">
         <div class="dx-card-header minimal-header">
             <div class="card-title-icon">
-                <i class="fas fas fa-folder"></i>
+                <i class="fas fa-folder"></i>
             </div>
             <h3 class="card-title-text" id="documentTitle"></h3>
         </div>
     </div>
-   
-    <!-- Left Column -->
 
-    <div>
-        <div class="form-wrapper">
-            <div class="form-row">
+    <!-- Main Scrollable Content -->
+    <div style="flex: 1; overflow-y: auto; padding-right: 5px;">
+        <div class="form-row" style="margin: 10px;">
 
-               
-                <!-- Row: Left side (Inputs + DropZone) and Right side (Preview) -->
-                <div style="display: flex; gap: 20px; align-items: flex-start;">
-                    <div style="flex: 1;">
+            <!-- Two Column Section -->
+            <div style="display: flex; gap: 10px; align-items: flex-start; flex-wrap: wrap;">
 
-                    <!-- Left Column -->
-                        <div style="margin-bottom: 3px;">
-                       
-                            @(Html.DevExtreme().TextBox()
-                                .ID("LedgerNo")
-                                .Label("Folder ID")
-                                .LabelMode(EditorLabelMode.Outside)
-                                .Width("100%")
-                                .ReadOnly(true))
-                        </div>   
-
-                        <div style="margin-bottom: 3px;">
-                            @(Html.DevExtreme().TextBox()
-                                .ID("ReferenceNo")
-                                .Label("Reference No")
-                                .LabelMode(EditorLabelMode.Outside)
-                                .MaxLength(25) // This restricts input to 25 characters
-                                .Width("100%")
-                                .ElementAttr("autocomplete", "off")) 
-
-                        </div>
-
-                        <!-- DropZone -->
-                        <div class="drop-zone" id="dropZone"
-                                style="height: 250px; border: 2px dashed #aaa; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                            <i class="dx-icon dx-icon-upload" style="font-size: 36px; color: #6c757d;"></i>
-                            <p style="margin: 10px 0; font-weight: 500;">Drag & drop files here or click to browse</p>
-                            <input type="file" id="fileUploader" multiple style="display:none;" />
-                        </div>
+                <!-- Left Column -->
+                <div style="flex: 1; min-width: 300px;">
+                    <div style="margin-bottom: 10px;">
+                        @(Html.DevExtreme().TextBox()
+                            .ID("LedgerNo")
+                            .Label("Folder ID")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .Width("100%")
+                            .ReadOnly(true))
                     </div>
-               
-                    <!-- Right Column: Preview -->
-                    <div id="preview"
-                         style="flex: 1; min-height: 400px; border: 1px solid #ccc; padding: 10px; background-color: #f9f9f9; overflow-y: auto;">
-                        <!-- File previews will appear here -->
+
+                    <div style="margin-bottom: 10px;">
+                        @(Html.DevExtreme().TextBox()
+                            .ID("ReferenceNo")
+                            .Label("Reference No")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .MaxLength(25)
+                            .Width("100%")
+                            .ElementAttr("autocomplete", "off"))
+                    </div>
+
+                    <!-- DropZone -->
+                    <div class="drop-zone" id="dropZone"
+                         style="height: 230px; border: 2px dashed #aaa; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                        <i class="dx-icon dx-icon-upload" style="font-size: 36px; color: #6c757d;"></i>
+                        <p style="margin: 10px 0; font-weight: 500;">Drag & drop files here or click to browse</p>
+                        <input type="file" id="fileUploader" multiple style="display:none;" />
                     </div>
                 </div>
-            </div>
-            <!-- Documents Grid -->
-            <div class="dx-field ledgerResult" style="margin-top: 20px;">
-                <div style="overflow-x: auto;">
-                    <div id="documentsGrid"></div>
+
+                <!-- Right Column: Preview -->
+                <div id="preview"
+                     style="flex: 1; min-width: 300px; min-height: 350px; border: 1px solid #ccc; padding: 10px; background-color: #f9f9f9; overflow-y: auto;">
+                    <!-- File previews will appear here -->
                 </div>
             </div>
         </div>
 
-        
-    <!-- Bottom Buttons -->
-    <div class="bottom-buttons">
-        <div class="right-buttons">
-            @* @(Html.DevExtreme().Button() *@
-            @*     .Text("Show All Documents") *@
-            @*     .Type(ButtonType.Normal) *@
-            @*     .Icon("fas fa-folder-open") *@
-            @*     .Width(250) *@
-            @*     .OnClick("showAllDocuments") *@
-            @*     .ElementAttr(new { @class = "icon-button-ledgerother" })) *@
-
+        <!-- Documents Grid -->
+        <div class="dx-field ledgerResult" style="margin-top: 10px;">
+            <div id="documentsGrid"></div>
+        </div>
+        <div style="margin-top: 10px; padding-bottom: 10px; text-align: right;">
             @(Html.DevExtreme().Button()
                 .Text("Back")
                 .Icon("fas fa-arrow-left")
@@ -446,10 +429,11 @@
                 .ElementAttr(new { @class = "icon-button-ledgerother" }))
         </div>
     </div>
+
+    <!-- Bottom Button -->
     
-    
- </div>
 </div>
+
 
 <script>
 
@@ -460,7 +444,7 @@
 
     var title = (isMaster === "true") ? "Master Documents" : "Transaction Documents";
     document.getElementById("documentTitle").textContent = title + " - " + moduleType;
-
+    let currentEditRowIndex = -1;
 
     $(function () {
         const urlParams = new URLSearchParams(window.location.search);
@@ -471,44 +455,57 @@
             dataSource: DevExpress.data.AspNet.createStore({
                 key: "DocumentNo",
                 loadUrl: `/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(referenceNo)}&module=${encodeURIComponent(moduleType)}`,
-                updateUrl: "/api/LedgerDocumentsF/UpdateDocumentEntry"
+                updateUrl: "/api/LedgerDocumentsF/UpdateDocumentEntry",
+                deleteUrl: "/api/LedgerDocumentsF/DeleteDocumentEntry",  // ✅ Use this, not `removeUrl`
+                updateMethod: "PUT",
+                deleteMethod: "DELETE",
+
+                onBeforeSend: function (method, ajaxOptions) {
+                    if (method === "update") {
+                        const payload = JSON.parse(ajaxOptions.data.values);
+                        payload.DocumentNo = ajaxOptions.data.key;
+
+                        ajaxOptions.data = JSON.stringify(payload);
+                        ajaxOptions.contentType = "application/json";
+                    } else if (method === "delete") {
+                        ajaxOptions.contentType = "application/json";
+                        ajaxOptions.data = JSON.stringify({ key: ajaxOptions.data.key });
+                    }
+                }
+
             }),
-            height: 350,
+
+            height: 250,
             showBorders: true,
             columnAutoWidth: true,
-            paging: { enabled: false },
+            paging: { enabled: true },
             scrolling: { mode: "virtual" },
 
             editing: {
                 mode: "row",
                 allowUpdating: true,
                 allowDeleting: true,
-                useIcons: false 
+                useIcons: true 
             },
-
-            onCellValueChanged: function (e) {
-                if (e.column.dataField === "DocumentExpDate" && e.value) {
-                    const gregDate = new Date(e.value);
-                    const hijriDate = convertToHijri(gregDate);
-                    e.component.cellValue(e.rowIndex, "DocumentExpDateAr", hijriDate);
-                }
+            
+            onEditingStart: function (e) {
+                currentEditRowIndex = e.rowIndex;
             },
 
             columns: [
                 { dataField: "DocumentNo", caption: "Doc No", allowEditing: false },
 
-                {
+                    {
                     dataField: "FileUrl",
                     caption: "Document",
+                    allowEditing: false,
                     cellTemplate: function (container, options) {
                         const fileUrl = options.value;
                         if (typeof fileUrl === "string" && fileUrl.startsWith("http")) {
                             const fileName = decodeURIComponent(fileUrl.split('/').pop().split('?')[0]);
-                            $("<a>")
+                            $("<span>")
                                 .text(fileName)
-                                .attr("href", fileUrl)
-                                .attr("target", "_blank")
-                                .addClass("dx-link")
+                                .css({ color: "#007bff", fontWeight: "500" }) // Optional styling
                                 .appendTo(container);
                         } else {
                             container.append("<div>-</div>");
@@ -516,7 +513,44 @@
                     }
                 },
 
-                { dataField: "DocumentType", caption: "Document Type" },
+
+                {
+                    dataField: "DocumentType",
+                    caption: "Document Type",
+                    editorType: "dxSelectBox",
+                    editCellTemplate: function (cellElement, cellInfo) {
+                        const $selectBox = $("<div>").appendTo(cellElement).dxSelectBox({
+                            dataSource: DevExpress.data.AspNet.createStore({
+                                key: "DocumentTypeId",  // or "DocumentTypeId" based on your API
+                                loadUrl: "/api/LedgerDocumentsF/GetDocumentTypes"
+                            }),
+                            value: cellInfo.value,
+                            valueExpr: "DocumentTypeId",
+                            displayExpr: "DocumentType",
+                            showClearButton: true,
+                            showDropDownButton: true,
+                            buttons: [
+                                "dropDown",
+                                    {
+                                    name: "add",
+                                    location: "after",
+                                    options: {
+                                        icon: "plus",
+                                        stylingMode: "text",
+                                        onClick: function () {
+                                            // 👇 Call your existing modal open method
+                                            onAddDocType();
+                                        }
+                                    }
+                                }
+                            ],
+                            onValueChanged: function (e) {
+                                cellInfo.setValue(e.value);
+                            }
+                        });
+                    }
+                },
+
 
                 {
                     dataField: "DocumentRefNo",
@@ -546,8 +580,9 @@
                         openOnFieldClick: true,
                         onKeyDown: function (e) {
                             e.event.preventDefault();
-                        }
+                        },
                     },
+
                     format: "dd/MM/yyyy",
                     cellTemplate: function (container, options) {
                         const rawValue = options.data.DocumentExpDate;
@@ -567,16 +602,16 @@
                         }).appendTo(container);
                     }
                 },
-
                 {
                     dataField: "DocumentExpDateAr",
                     caption: "Expiry (Hijri)",
-                    allowEditing: false,
-                    cellTemplate: function (container, options) {
-                        container.append(`<div style="padding: 4px 6px;">${options.value}</div>`);
+                    allowEditing: true,
+                    editorType: "dxTextBox",
+                    editorOptions: {
+                        readOnly: true,
+                        stylingMode: "outlined"
                     }
                 },
-
                 {
                     dataField: "DocumentNotificationDate",
                     caption: "Notify On",
@@ -595,7 +630,8 @@
 
                 {
                     caption: "Actions",
-                    width: 200,
+                    width: 80,
+                    
                     cellTemplate: function (container, options) {
                         const rowData = options.data;
                         const grid = $("#documentsGrid").dxDataGrid("instance");
@@ -622,69 +658,49 @@
                             .css({ marginRight: "10px", fontSize: "18px" })
                             .appendTo(container);
 
-                        // Edit
-                        $("<a>")
-                            .attr("href", "javascript:void(0)")
-                            .attr("title", "Edit")
-                            .addClass("dx-link")
-                            .html('<i class="fas fa-edit"></i>')
-                            .css({ marginRight: "10px", fontSize: "18px" })
-                            .on("click", function () {
-                                grid.editRow(options.rowIndex);
-                                openPreviewDialog(rowData);
-                            })
-                            .appendTo(container);
-
-                        // Save
-                        $("<a>")
-                            .attr("href", "javascript:void(0)")
-                            .attr("title", "Save")
-                            .addClass("dx-link")
-                            .html('<i class="fas fa-save"></i>')
-                            .css({ marginRight: "10px", fontSize: "18px" })
-                            .on("click", function () {
-                                grid.saveEditData();
-                            })
-                            .appendTo(container);
-
-                        // Delete
-                        $("<a>")
-                            .attr("href", "javascript:void(0)")
-                            .attr("title", "Delete")
-                            .addClass("dx-link")
-                            .html('<i class="fas fa-trash-alt"></i>')
-                            .css({ fontSize: "18px" })
-                            .on("click", function () {
-                                DevExpress.ui.dialog.confirm("Are you sure you want to delete this document?", "Confirm Delete")
-                                    .done(function (dialogResult) {
-                                        if (dialogResult) {
-                                            deleteDocument(rowData.DocumentNo);
-                                        }
-                                    });
-                            })
-                            .appendTo(container);
                     }
                 }
-            ]
+            ],
+            onCellValueChanged: function (e) {
+                if (e.column.dataField === "DocumentExpDate" && e.value) {
+                    const hijriDate = convertToHijri(new Date(e.value));
+                    e.component.cellValue(e.rowIndex, "DocumentExpDateAr", hijriDate); 
+                }
+            },
+
+            onRowUpdating: function (e) {
+                e.newData = { ...e.oldData, ...e.newData };
+                if (e.newData.DocumentExpDate && !e.newData.DocumentExpDateAr) {
+                    const hijriDate = convertToHijri(new Date(e.newData.DocumentExpDate));
+                    e.newData.DocumentExpDateAr = hijriDate; 
+                }
+            }
+
+
+
         });
     });
 
-   
 
-    //hijri date calculate convertor
-        function convertToHijri(gregDate) {
-            try {
-                return new Intl.DateTimeFormat('en-TN-u-ca-islamic', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric'
-                }).format(gregDate);
-            } catch (e) {
-                console.warn("Hijri conversion failed:", e);
-                return "";
-            }
+
+        // ✅ Hijri conversion using Intl
+    function convertToHijri(gregDate) {
+        try {
+            const formatter = new Intl.DateTimeFormat('en-TN-u-ca-islamic', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+            const parts = formatter.formatToParts(gregDate);
+            const year = parts.find(p => p.type === 'year')?.value;
+            const month = parts.find(p => p.type === 'month')?.value;
+            const day = parts.find(p => p.type === 'day')?.value;
+            return `${year}/${month}/${day}`;
+        } catch (e) {
+            console.warn("Hijri conversion failed:", e);
+            return "";
         }
-
+    }
 
     
     function onAddDocType(){
@@ -896,12 +912,11 @@
     }
 
 
-
-    function openPreviewDialog(document) {
+        function openPreviewDialog(doc) {
         const preview = document.getElementById("preview");
         preview.innerHTML = "";
 
-        const url = document.FileUrl;
+        const url = doc.FileUrl;
         if (!url) {
             preview.innerHTML = "<div>No file available</div>";
             return;
@@ -911,50 +926,43 @@
         const ext = fileName.split('.').pop().toLowerCase();
         const isImage = ["jpg", "jpeg", "png", "gif", "bmp", "webp"].includes(ext);
         const isPdf = ext === "pdf";
+        const isOffice = ["doc", "docx", "xls", "xlsx", "ppt", "pptx"].includes(ext);
 
         let previewContent = "";
 
         if (isImage) {
-            previewContent = `<img src="${url}" alt="${fileName}" style="max-width: 100%; max-height: 400px; border: 1px solid #ccc; padding: 5px;" />`;
+            previewContent = `<img src="${url}" alt="${fileName}" style="max-width: 100%; max-height: 330px;" />`;
         } else if (isPdf) {
-            previewContent = `<embed src="${url}" type="application/pdf" width="100%" height="400px" style="border: 1px solid #ccc;" />`;
+            previewContent = `<embed src="${url}#toolbar=0&navpanes=0&scrollbar=0" type="application/pdf" width="100%" height="400px" />`;
+        } else if (isOffice) {
+            // Use Microsoft Office Web Viewer (requires file to be publicly accessible)
+            previewContent = `
+                <iframe
+                    src="https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(url)}"
+                    width="100%"
+                    height="400px"
+                    frameborder="0">
+                </iframe>`;
         } else {
             previewContent = `<div>No preview available for .${ext} files</div>`;
         }
 
-        // Format Expiry Date
-        const expDate = document.DocumentExpDate
-            ? new Date(document.DocumentExpDate).toLocaleDateString('en-GB')
+        const expDate = doc.DocumentExpDate
+            ? new Date(doc.DocumentExpDate).toLocaleDateString('en-GB')
             : "-";
 
         preview.innerHTML = `
-            <div style="padding: 15px; border: 1px solid #ccc; background: #f9f9f9; border-radius: 6px;">
-                <div style="margin-bottom: 15px;">
+            <div style="padding: 10px; background: #fdfdfd;">
+                <div style="margin-bottom: 10px;">
                     ${previewContent}
                 </div>
-            <div class="mt-3 pt-2 border-top text-secondary small">
-                <div class="mb-2 d-block w-100"><strong class="text-dark d-inline-block me-2">File Name:</strong> <span class="d-inline-block">${fileName}</span></div>
-                <div class="mb-2 d-block w-100"><strong class="text-dark d-inline-block me-2">Expiry Date:</strong> <span class="d-inline-block">${expDate}</span></div>
-                <div class="mb-2 d-block w-100"><strong class="text-dark d-inline-block me-2">Size:</strong> <span class="d-inline-block" id="fileSizeText">Fetching...</span></div>
-            </div>
+                <div class="d-flex align-items-center gap-3 text-secondary" style="font-size: 14px;">
+                    <span><i class="fas fa-file-alt text-primary me-1"></i> ${fileName}</span>
+                    <span><i class="fas fa-calendar-alt text-danger me-1"></i> ${expDate}</span>
+                </div>
 
             </div>
         `;
-
-        // Fetch file size via HEAD request
-        fetch(url, { method: 'HEAD' })
-            .then(res => {
-                const size = res.headers.get("content-length");
-                if (size) {
-                    const kb = (parseInt(size) / 1024).toFixed(2);
-                    document.getElementById("fileSizeText").textContent = `${kb} KB`;
-                } else {
-                    document.getElementById("fileSizeText").textContent = "Unknown";
-                }
-            })
-            .catch(() => {
-                document.getElementById("fileSizeText").textContent = "Unavailable";
-            });
     }
 
 

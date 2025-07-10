@@ -11,7 +11,7 @@ public class AzureBlobHelper
 {
     private readonly string _connectionString;
     private readonly string _containerName;
-
+    
     public AzureBlobHelper(string connectionString, string containerName)
     {
         if (string.IsNullOrWhiteSpace(connectionString))
@@ -86,4 +86,36 @@ public class AzureBlobHelper
 
         return blobClient.GenerateSasUri(sasBuilder).ToString();
     }
+
+    public async Task<bool> DeleteFileFromAzureAsync(string azurePath)
+    {
+        if (string.IsNullOrWhiteSpace(azurePath) || !Uri.IsWellFormedUriString(azurePath, UriKind.Absolute))
+        {
+            // log and fail silently
+            Console.WriteLine("Invalid or malformed AzurePath: " + azurePath);
+            return false;
+        }
+
+        try
+        {
+            var uri = new Uri(azurePath);
+            string containerName = uri.Segments[1].TrimEnd('/'); // e.g., "client-files"
+            string blobPath = string.Join("", uri.Segments.Skip(2)); // skip "/" and container
+
+            var blobServiceClient = new BlobServiceClient(_connectionString);
+            var containerClient = blobServiceClient.GetBlobContainerClient(containerName);
+            var blobClient = containerClient.GetBlobClient(blobPath);
+
+            var result = await blobClient.DeleteIfExistsAsync();
+            return result.Value;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Azure deletion failed: " + ex.Message);
+            return false;
+        }
+    }
+
+
+
 }

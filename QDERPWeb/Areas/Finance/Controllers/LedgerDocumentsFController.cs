@@ -1,4 +1,5 @@
-﻿using DevExpress.Office.Drawing;
+﻿using Azure.Storage.Blobs;
+using DevExpress.Office.Drawing;
 using DevExpress.XtraRichEdit.Import.Html;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
@@ -306,46 +307,59 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in GetDocuments: {ex}");
+                _logger.LogError($"Error in GetDocuments: {ex}");   
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> UpdateDocumentEntries([FromBody] List<Tbl20116LedgerDocument> documents)
+        [HttpPut]
+        public async Task<IActionResult> UpdateDocumentEntry([FromBody] Tbl20116LedgerDocument doc)
         {
             try
             {
-                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                    return Unauthorized("Invalid tenant context.");
+
+                var existing = await dbContext.Tbl20116LedgerDocuments
+                    .FirstOrDefaultAsync(d => d.DocumentNo == doc.DocumentNo);
+
+                if (existing == null)
+                    return NotFound($"Document with DocumentNo {doc.DocumentNo} not found.");
+
+                // Update
+                existing.DocumentType = doc.DocumentType;
+                existing.DocumentRefNo = doc.DocumentRefNo;
+                existing.DocumentRemarks = doc.DocumentRemarks;
+                existing.DocumentExpDate = doc.DocumentExpDate;
+                existing.DocumentExpDateAr = doc.DocumentExpDateAr;
+                existing.DocumentNotificationDate = doc.DocumentNotificationDate;
+                existing.ModifiedBy = User?.Identity?.Name ?? "system";
+                existing.ModifiedOn = DateTime.UtcNow;
+
+                await dbContext.SaveChangesAsync();
+
+                // ✅ Optional: Return file URL from AzurePath
+                var blobHelper = new AzureBlobHelper(
+                    _configuration.GetConnectionString("AzureBlobStorage"),
+                    "client-files"
+                );
+                string fileUrl = blobHelper.GetBlobSasUrl(existing.AzurePath);
+
+                return Ok(new
                 {
-                    foreach (var doc in documents)
-                    {
-                        var existing = await dbContext.Tbl20116LedgerDocuments
-                            .FirstOrDefaultAsync(d => d.DocumentNo == doc.DocumentNo);
-
-                        if (existing != null)
-                        {
-                            existing.DocumentType = doc.DocumentType;
-                            existing.DocumentRefNo = doc.DocumentRefNo;
-                            existing.DocumentRemarks = doc.DocumentRemarks;
-                            existing.DocumentExpDate = doc.DocumentExpDate;
-                            existing.DocumentExpDateAr = doc.DocumentExpDateAr;
-                            existing.DocumentNotificationDate = doc.DocumentNotificationDate;
-                        }
-                    }
-
-                    await dbContext.SaveChangesAsync();
-                    return Ok(new { success = true });
-                }
-
-                return Unauthorized(new { success = false });
+                    success = true,
+                    message = "Document updated successfully.",
+                    fileUrl
+                });
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in GetProject: {ex.Message}");
-                return StatusCode(500, new { message = "An error occurred while fetching the data.", ex });
+                _logger.LogError(ex, "Error in UpdateDocumentEntry");
+                return StatusCode(500, new { success = false, message = "Error updating document", ex.Message });
             }
         }
+
+
         [HttpGet]
         public IActionResult GetAllDocuments()
         {
@@ -384,6 +398,40 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Ok(result);
         }
+
+       
+        [HttpDelete]
+        public async Task<IActionResult> DeleteDocumentEntry([FromBody] DocumentDeleteRequest request)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                return Unauthorized("Invalid tenant context.");
+
+            var doc = await dbContext.Tbl20116LedgerDocuments
+                        .FirstOrDefaultAsync(d => d.DocumentNo == request.key);
+
+            if (doc == null)
+                return NotFound("Document not found.");
+
+            // Delete file from Azure Blob if it exists
+            if (!string.IsNullOrEmpty(doc.AzurePath))
+            {
+                // Safe delete
+                var blobHelper = new AzureBlobHelper(_configuration.GetConnectionString("AzureBlobStorage"), "client-files");
+                await blobHelper.DeleteFileFromAzureAsync(doc.AzurePath);
+            }
+
+
+            dbContext.Tbl20116LedgerDocuments.Remove(doc);
+            await dbContext.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        public class DocumentDeleteRequest
+        {
+            public string key { get; set; }
+        }
+
 
     }
 }
