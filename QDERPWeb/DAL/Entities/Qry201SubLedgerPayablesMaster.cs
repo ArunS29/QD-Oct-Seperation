@@ -96,4 +96,11 @@ public partial class Qry201SubLedgerPayablesMaster
     public string MaterialReceiptNo { get; set; }
 
     public string Expr1 { get; set; }
+    public decimal? ConvertedInvoiceAmountBeforeRetention { get; set; }
+    public decimal? ConvertedPaid { get; set; }
+    public decimal? ConvertedBalance { get; set; }
+    public string CurrencyImage { get; set; }
+    public string CurrencyName { get; set; }
+    public string TransactionCurrencySymbol { get; set; }
+
 }

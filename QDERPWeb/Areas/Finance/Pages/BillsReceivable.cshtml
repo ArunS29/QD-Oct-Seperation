@@ -12,6 +12,30 @@
     #dataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
         background-color: var(--header-color);
     }
+
+    #dataGrid .debit-pill, #dataGrid .credit-pill, #dataGrid .received-pill {
+        display: inline-block;
+        padding: 2px 10px;
+        border-radius: 14px;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+    }
+
+    #dataGrid .debit-pill {
+        background: rgba(255, 77, 79, .15);
+        color: #ff4d4f;
+    }
+
+    #dataGrid .credit-pill {
+        background: rgba(82, 196, 26, .15);
+        color: #52c41a;
+    }
+
+    #dataGrid .received-pill {
+        background: rgba(255, 193, 7, 0.15); /* Light yellow background */
+        color: #ffc107; /* Bootstrap yellow */
+    }
+
 </style>
 
 <div class="container-fluid"></div>
@@ -189,7 +213,7 @@
             {
                 // Receivable Amount column
                     band.AddFor(m => m.ReceivableAmount)
-                .Caption(new JS("formatMessage('Invoice Amount')"))
+                .Caption(new JS("formatMessage('Trans Invoice Amount')"))
                 .Alignment(HorizontalAlignment.Right)
                 .CustomizeText(@"
         function(e) {
@@ -203,11 +227,54 @@
         });
         }
         ")
+                    .CellTemplate(@<text>
+                                       <div class="credit-pill">
+                                           <span style="color: black; font-weight: bold;"><%- data.TransactionCurrencySymbol %></span>
+                                           <%- data.Received != null ? data.ReceivableAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
+                                       </div>
+                                   </text>) .Visible(false)
                 .Width(140); // Fixed width, change to auto for dynamic sizing
+
+                        band.AddFor(m => m.ConvertedReceivableAmount)
+                    .Caption(new JS("formatMessage('Invoice Amount')"))
+                    .Alignment(HorizontalAlignment.Right)
+                    @* .CustomizeText(@"
+                function(e) {
+                if (e.value === null || e.value === undefined) {
+                return ''; // Return empty string for null values
+                }
+                let positiveValue = Math.abs(e.value); // Ensure positive values
+                return positiveValue.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+                });
+                }
+                ") *@
+                    .HeaderCellTemplate(@<text>
+                                             <div class="invoice-header" style="font-weight: bold;">
+                                                 <%= column.caption %>
+                                             </div>
+                                         </text>)
+                    .CellTemplate(@<text>
+                                       <%
+                                       var val = data.ConvertedReceivableAmount;
+                                       if (val !== null && val !== undefined) {
+                                       let positive = Math.abs(val);
+                                       let formatted = positive.toLocaleString(undefined, {
+                                       minimumFractionDigits: 2,
+                                       maximumFractionDigits: 2
+                                       });
+                                       %>
+                                       <div class="credit-pill"><%- formatted %></div>
+                                       <%
+                                       }
+                                       %>
+                                   </text>)
+                    .Width(160); // Fixed width, change to auto for dynamic sizing
 
                 // Paid Amount column
                     band.AddFor(m => m.Received)
-                .Caption(new JS("formatMessage('Received')"))
+                .Caption(new JS("formatMessage('Trans Received')"))
                 .Alignment(HorizontalAlignment.Right)
                 .CustomizeText(@"
         function(e) {
@@ -222,11 +289,56 @@
         return '(' + formattedValue + ')'; // Add parentheses around the value
         }
         ")
+                    .CellTemplate(@<text>
+                                       <div class="received-pill">
+                                           <span style="color: black; font-weight: bold;"><%- data.TransactionCurrencySymbol %></span>
+                                           <%- data.Received != null ? data.Received.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
+                                       </div>
+                                   </text>) .Visible(false)
                 .Width(140); // Fixed width, change to auto for dynamic sizing
+
+
+                        band.AddFor(m => m.ConvertedReceived)
+                    .Caption(new JS("formatMessage('Received')"))
+                    .Alignment(HorizontalAlignment.Right)
+                   @*  .CustomizeText(@"
+                function(e) {
+                if (e.value === null || e.value === undefined) {
+                return ''; // Return empty string for null values
+                }
+                let positiveValue = Math.abs(e.value); // Convert to positive
+                let formattedValue = positiveValue.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+                });
+                return '(' + formattedValue + ')'; // Add parentheses around the value
+                }
+                ") *@
+                    .HeaderCellTemplate(@<text>
+                                             <div class="received-header" style="font-weight: bold;">
+                                                 <%= column.caption %>
+                                             </div>
+                                         </text>)
+                    .CellTemplate(@<text>
+                                       <%
+                                       var val = data.ConvertedReceived;
+                                       if (val !== null && val !== undefined) {
+                                       let positive = Math.abs(val);
+                                       let formatted = positive.toLocaleString(undefined, {
+                                       minimumFractionDigits: 2,
+                                       maximumFractionDigits: 2
+                                       });
+                                       %>
+                                       <div class="received-pill">(<%- formatted %>)</div>
+                                       <%
+                                       }
+                                       %>
+                                   </text>)
+                    .Width(140); // Fixed width, change to auto for dynamic sizing
 
                 // Balance Amount column
                     band.AddFor(m => m.Balance)
-                .Caption(new JS("formatMessage('Balance')"))
+                .Caption(new JS("formatMessage('Trans Balance')"))
                 .Alignment(HorizontalAlignment.Right)
                 .CustomizeText(@"
         function(e) {
@@ -240,7 +352,50 @@
         });
         }
         ")
+                    .CellTemplate(@<text>
+                                       <div class="debit-pill">
+                                           <span style="color: black; font-weight: bold;"><%- data.TransactionCurrencySymbol %></span>
+                                           <%- data.Received != null ? data.Balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
+                                       </div>
+                                   </text>) .Visible(false)
                 .Width(160); // Fixed width, change to auto for dynamic sizing
+
+                        band.AddFor(m => m.ConvertedBalance)
+                    .Caption(new JS("formatMessage('Balance')"))
+                    .Alignment(HorizontalAlignment.Right)
+                 @*    .CustomizeText(@"
+                function(e) {
+                if (e.value === null || e.value === undefined) {
+                return ''; // Return empty string for null values
+                }
+                let positiveValue = Math.abs(e.value); // Ensure positive values
+                return positiveValue.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+                });
+                }
+                ") *@
+                    .HeaderCellTemplate(@<text>
+                                             <div class="balance-header" style="font-weight: bold;">
+                                                 <%= column.caption %>
+                                             </div>
+                                         </text>)
+                    .CellTemplate(@<text>
+                                       <%
+                                       var val = data.ConvertedBalance;
+                                       if (val !== null && val !== undefined) {
+                                       let positive = Math.abs(val);
+                                       let formatted = positive.toLocaleString(undefined, {
+                                       minimumFractionDigits: 2,
+                                       maximumFractionDigits: 2
+                                       });
+                                       %>
+                                       <div class="debit-pill"><%- formatted %></div>
+                                       <%
+                                       }
+                                       %>
+                                   </text>)
+                    .Width(160); // Fixed width, change to auto for dynamic sizing
 
                     band.AddFor(m => m.OverdueDays)
                 .Alignment(HorizontalAlignment.Center)
@@ -381,6 +536,8 @@
             })
             .OnInitialized("dataGridInitialized")
             .OnContextMenuPreparing("onContextMenuPreparing")
+                .OnOptionChanged("handleGridOptionChanged")
+
             )
 
 </div>
@@ -471,6 +628,75 @@
         window.open(`/${tenantName}/Finance/api/BillsReceivable/GenerateAgeingreportsummaryReport`, '_blank');
     }
    
+
+    function handleGridOptionChanged(e) {
+        if (e.name === "columns" || e.name === "visible") {
+            // Columns changed, so re-inject SVG
+            injectHeaderSVG(); // slight delay to wait for DOM re-render
+        }
+    }
+    function injectHeaderSVG() {
+         debugger;
+           let gridElement = $('#dataGrid');
+    let dataGrid = gridElement.dxDataGrid("instance");
+    if (!dataGrid) return;
+
+    // Get grouped data (with .items containing groups)
+    let groupedData = dataGrid.getDataSource()?.items();
+    if (!groupedData || groupedData.length === 0) return;
+
+    // Get the first row from the first group
+    let firstGroup = groupedData[0];
+    let firstRowInGroup = firstGroup?.items?.[0];
+
+    let svgIcon = firstRowInGroup?.CurrencyImage;
+        if (!svgIcon) return;
+
+        svgIcon = svgIcon.replace(/<svg\b([^>]*)>/, `<svg width="12" height="12" $1>`);
+
+        gridElement.find(".dx-header-row td").each(function () {
+           
+            const $cell = $(this);
+            const dataField = $cell.attr("data-field");  // 👈 This is key
+
+                const $debitHeader = $(".invoice-header");
+                const debitText = $debitHeader.data("original-text") || $debitHeader.text().trim();
+                $debitHeader.data("original-text", debitText); // Save original once
+
+                $debitHeader.html(`
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+                        ${svgIcon}
+                        <span style="font-weight: bold;">${debitText}</span>
+                    </div>
+                `);
+               
+                // 👉 Credit
+                const $creditHeader = $(".received-header");
+                const creditText = $creditHeader.data("original-text") || $creditHeader.text().trim();
+                $creditHeader.data("original-text", creditText);
+
+                $creditHeader.html(`
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+                        ${svgIcon}
+                        <span style="font-weight: bold;">${creditText}</span>
+                    </div>
+                `);
+
+             
+                const $balanceHeader = $(".balance-header");
+                const balanceText = $balanceHeader.data("original-text") || $balanceHeader.text().trim();
+                $balanceHeader.data("original-text", balanceText);
+
+                $balanceHeader.html(`
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+                        ${svgIcon}
+                        <span style="font-weight: bold;">${balanceText}</span>
+                    </div>
+                `);
+
+
+        });
+    }
 
 
 </script>
