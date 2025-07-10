@@ -432,7 +432,7 @@
             </div>
         </div>
     </div>
-</div>
+
 
 
 
@@ -559,7 +559,7 @@
         })
         )
 </div>
-<div class="dx-field ledgerResult">
+<div class="dx-field ledgerResult"style="height:68%;">
     @(
             Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.sp20201JournalRegisterViewResult>() // Replace with your model
             .ID("dataGrid")
@@ -622,7 +622,7 @@
                 columns.AddFor(m => m.PostedVoucherNo).Caption(new JS("formatMessage('Posted Voucher No')")).Alignment(HorizontalAlignment.Center).Visible(true);
             })
         .Width("100%")
-        .Height(600)
+        .Height("100%")
         .Scrolling(scrolling => scrolling
         .Mode(GridScrollingMode.Virtual) // Enables virtual scrolling
         .UseNative(false)                // Optional: false for custom scrollbars
@@ -634,7 +634,8 @@
         //.WordWrapEnabled(true)
         .ColumnAutoWidth(true)
         .WordWrapEnabled(true)
-        .AllowColumnReordering(true) // Enable column reordering
+                .AllowColumnReordering(true)
+                .ColumnResizingMode(ColumnResizingMode.Widget)
         .AllowColumnResizing(true)   // Enable column resizing
         .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
         .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
@@ -653,7 +654,7 @@
     })) *@
         )
 </div>
-
+</div>
 
 
 <script type="text/javascript">

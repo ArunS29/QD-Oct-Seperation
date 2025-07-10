@@ -143,6 +143,11 @@
                 .LabelMode(EditorLabelMode.Outside)
                 .ID("txtCategoryCode")
                 .Value(null)
+                        .ValidationRules(rules =>
+                        {
+                            rules.AddRequired()
+                            .Message(new JS("formatMessage('Client Category Code is required')"));
+                        })
                 )
         </div>
     </div>
@@ -441,20 +446,17 @@
         var clientCategory = $("#txtClientCategory").dxTextBox("instance").option("value");
         var categoryCode = $("#txtCategoryCode").dxTextBox("instance").option("value");
 
-        // Get the branch name validator instance
+    
+        var categoryCodevalidator = $("#txtCategoryCode").dxValidator("instance");
         var clientCategoryvalidator = $("#txtClientCategory").dxValidator("instance");
-
-        // Validate the branch name input
+        var categoryCodevalidation = categoryCodevalidator.validate();
         var clientCategoryvalidation = clientCategoryvalidator.validate();
 
-        // If the branch name is valid, proceed with the AJAX request
-        if (clientCategoryvalidation.isValid) {
+        if (clientCategoryvalidation.isValid && categoryCodevalidation.isValid) {
 
-            // Get the data array from the grid's data source
             var existingBranches = $("#gridContainer").dxDataGrid("instance").getDataSource().items();
 
-            // Check if the branch name already exists in the grid data
-            var duplicate = existingBranches.some(function (item) {
+                  var duplicate = existingBranches.some(function (item) {
                 return item.ClientCategory && clientCategory &&
                     item.ClientCategory.toLowerCase() === clientCategory.toLowerCase();
             });

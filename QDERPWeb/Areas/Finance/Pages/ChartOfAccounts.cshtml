@@ -358,7 +358,7 @@
     </div>
 </div>
 
-<div>
+<div style="margin-top:10px">
     @await Html.PartialAsync("chartofaccountsFooter")
 </div>
 <div id="popupContainer"></div>
@@ -932,7 +932,8 @@
         .Mode(GridEditMode.Batch)        // ✅ Ensure inline cell editing is enabled
         .AllowUpdating(true) // ✅ Enable editing
         )
-        .Height(665)
+        .ColumnResizingMode(ColumnResizingMode.Widget)
+        .Height("68vh")
                      // .Paging(p => p.PageSize(10))
         .ColumnAutoWidth(true)
         .AllowColumnReordering(true)

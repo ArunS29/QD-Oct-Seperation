@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 using QD.ERP.Web.Areas.Finance.Reports.cashPayments;
 using QD.ERP.Web.Service;
 using Svg;
-using System.Drawing.Printing;
+
 
 
 
@@ -39,7 +39,45 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
             LoadSubreport(voucherNo);
 
 
+            // ✅ Hook BeforePrint event here
+            xrSubreport1.BeforePrint += xrSubreport1_BeforePrint;
+
+
         }
+
+
+
+        private void xrSubreport1_BeforePrint(object sender, EventArgs e)
+        {
+            string currentAccountHead = GetCurrentColumnValue("AccountHeadName")?.ToString();
+            string voucherNo = GetCurrentColumnValue("VoucherNo")?.ToString();
+
+            if (string.IsNullOrWhiteSpace(currentAccountHead) || string.IsNullOrWhiteSpace(voucherNo))
+            {
+                xrSubreport1.Visible = false;
+                return;
+            }
+
+            if (_accountHeadsWithCostAllocations.Contains(currentAccountHead) &&
+                _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out _))
+            {
+                var subReport = new subCostReport();
+
+
+                subReport.LoadData(voucherNo, currentAccountHead, tenant.ConnectionString);
+                xrSubreport1.ReportSource = subReport;
+                xrSubreport1.Visible = true;
+            }
+            else
+            {
+                xrSubreport1.Visible = false;
+            }
+        }
+
+
+
+        private HashSet<string> _accountHeadsWithCostAllocations = new HashSet<string>();
+
         private void LoadSubreport(string voucherNo)
         {
             if (string.IsNullOrWhiteSpace(voucherNo)) return;
@@ -47,12 +85,30 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out _))
                 throw new Exception("Unable to retrieve tenant context.");
 
-            var subReport = new subCostReport();
-            subReport.LoadData(voucherNo, tenant.ConnectionString);
+            DataTable dt = new DataTable();
 
-           
-            xrSubreport1.ReportSource = subReport;
+            using (var conn = new SqlConnection(tenant.ConnectionString))
+            {
+                string query = "SELECT DISTINCT AccountHeadName FROM qry201RptVoucherWithCost WHERE VoucherNo = @VoucherNo";
+
+                using (var cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@VoucherNo", voucherNo);
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(dt);
+                }
+            }
+
+            foreach (DataRow row in dt.Rows)
+            {
+                string accountHead = row["AccountHeadName"]?.ToString();
+                if (!string.IsNullOrWhiteSpace(accountHead))
+                {
+                    _accountHeadsWithCostAllocations.Add(accountHead);
+                }
+            }
         }
+
 
 
         private void SetReportParameters(string voucherNo, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb, string username)

@@ -1082,12 +1082,54 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public long VoucherEntryId { get; set; }
         public string VoucherNo { get; set; }
     }
+    public class PropertyAllocationDto
+    {
+        public byte PropertyAllocationId { get; set; }
+        public string PropertyAllocDrCr { get; set; }
+        public string PropertyNo { get; set; }
+        public DateTime EffectiveDate { get; set; }
+        public decimal AmountAllocated { get; set; }
+        public string PropertyAllocRemarks { get; set; }
+        public long VoucherEntryId { get; set; }
+        public string VoucherNo { get; set; }
+
+        public string LedgerAccountNo { get; set; }
+    }
+    public class EmployeeAllocationDto
+    {
+        public byte EmployeeAllocationId { get; set; }
+        public string EmpAllocDrCr { get; set; }
+        public string EmployeeNo { get; set; }
+        public DateTime EffectiveDate { get; set; }
+        public decimal AmountAllocated { get; set; }
+        public string CostAllocRemarks { get; set; }
+        public long VoucherEntryId { get; set; }
+        public string VoucherNo { get; set; }
+
+        public string LedgerAccountNo { get; set; }
+    }
     public class UpdateCostAllocationFieldsDto
     {
         public int CostAllocationId { get; set; }
         public decimal VoucherAmount { get; set; }
         public string CostAllocRemarks { get; set; }
         public string CostAllocationUnitId { get; set; }
+        public DateTime EffectiveDate { get; set; }
+    }
+    public class UpdatePropertyAllocationFieldsDto
+    {
+        public int PropertyAllocationId { get; set; }
+        public decimal VoucherAmount { get; set; }
+        public string PropertyAllocRemarks { get; set; }
+        public string PropertyNo { get; set; }
+        public DateTime EffectiveDate { get; set; }
+    }
+    public class UpdateEmployeeAllocationFieldsDto
+    {
+        public int EmployeeAllocationId { get; set; }
+        public decimal VoucherAmount { get; set; }
+        public string CostAllocRemarks { get; set; }
+        public string EmployeeNo { get; set; }
         public DateTime EffectiveDate { get; set; }
     }
     public class VoucherDeleteRequest

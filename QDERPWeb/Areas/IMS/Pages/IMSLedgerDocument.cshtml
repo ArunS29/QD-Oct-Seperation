@@ -67,7 +67,7 @@
 </style>
 <div class="title">
     <div class="header-container">
-        <div id="LedgerDocuments1" class="no-border-title"></div>
+        <div id="IMSLedgerDocument" class="no-border-title"></div>
     </div>
 </div>
 <div class="my-3" style="max-width:2000px;">
@@ -94,7 +94,7 @@
                         @(Html.DevExtreme().DropDownBox()
                             .Label(new JS("formatMessage('Type of the Document Attached:')"))
                             .DataSource(d => d.WebApi()
-                            .Controller("LedgerDocuments1")
+                            .Controller("IMSLedgerDocument")
                             .LoadAction("GetDocumentTypes")
                             .LoadMode(DataSourceLoadMode.Raw)
                             .Key("DocumentTypeId")
@@ -128,16 +128,10 @@
                             .ID("btnAddAHead")
                             .Icon("plus")
                             .Width("100%")
-                            @*       .OnClick("redirecttoledgersubgrou") *@
+                           .OnClick("redirecttoDocumentTypes") 
                             )
                     </div>
-                    @*  <div class="col-6 col-md-1 mt-4">
-                    @(Html.DevExtreme().Button()
-                    .ID("btnEditAHead")
-                    .Icon("edit")
-                    .Width("100%")
-                    )
-                    </div> *@
+                   
                 </div>
 
                 <!-- Second Row -->
@@ -185,15 +179,9 @@
                             .DisplayFormat("dd-MMM-yyyy")
                             .ID("expiryId")
                             .ShowClearButton(true)
-                            .Value(DateTime.Now)
                             .Width("100%")
                             .OnValueChanged("onExpiryDateChanged")
-                            @*  .OnValueChanged(@<text>
-                        function(e) {
-                        var notificationBox = $("#@notificationId").dxDateBox("instance");
-                        notificationBox.option("value", e.value);
-                        }
-                        </text>)  *@
+                    
                             .ValidationRules(rules =>
                             {
                                 rules.AddRequired()
@@ -218,8 +206,7 @@
                             .DisplayFormat("dd-MMM-yyyy")
                             .ID("notificationId")
                             .ShowClearButton(true)
-                            .Value(DateTime.Now)
-                            .Width("100%")
+                             .Width("100%")
                             .ValidationRules(rules =>
                             {
                                 rules.AddRequired()
@@ -238,10 +225,7 @@
                     </div>
                 </div>
 
-                <!-- Third Row - Button -->
-                @*   <div class="row">
-
-                </div> *@
+              
             </div>
         </div>
         <div class="col-12">
@@ -265,7 +249,7 @@
                            .Caption(new JS("formatMessage('Document Type')"))
                             .Lookup(lookup => lookup
                             .DataSource(d => d.WebApi()
-                            .Controller("LedgerDocuments1")
+                            .Controller("IMSLedgerDocument")
                             .LoadAction("GetDocumentTypes")
                             .LoadMode(DataSourceLoadMode.Raw)
                             .Key("DocumentTypeId")
@@ -331,7 +315,7 @@
 
                 .ID("accountpaymentamount-datagrid")
                 .DataSource(d => d.WebApi()
-                .Controller("LedgerDocuments1")
+                .Controller("IMSLedgerDocument")
                 .LoadAction("GetDocumentTypes")
                 .LoadMode(DataSourceLoadMode.Raw)
                 .Key("DocumentTypeId")
@@ -369,49 +353,66 @@
 <!-- DataGrid -->
 <script>
     $(function () {
-        // Trigger the AJAX request to get the new document number
+       
         $.ajax({
-            url: "/api/LedgerDocuments1/GetNewDocumentNo", // Your API endpoint
+            url: "/api/IMSLedgerDocument/GetNewDocumentNo", // Your API endpoint
             type: 'GET',
             success: function (data) {
-                // Set the value in the DocumentNo TextBox once the new number is retrieved
                 $("#DocumentNo").dxTextBox("instance").option("value", data);
 
-                // Proceed with other actions after setting the document number
-                // For example, you can call other functions here that need to run after this
-                console.log("Document No has been set:", data);
+                  console.log("Document No has been set:", data);
 
-                // If there are any other actions that depend on this document number, place them here.
-                // e.g., Enable/Disable form elements, further API calls, etc.
             },
             error: function (xhr, status, error) {
                 console.error("Error loading Document No:", error);
-                // Optionally, handle error (e.g., show an alert)
+              
             }
         });
     });
-    function onExpiryDateChanged(e) {
+               function onExpiryDateChanged(e) {
         const selectedDate = e.value;
+
+        // ✅ Set Notification Date (Gregorian)
         const notificationDateBox = DevExpress.ui.dxDateBox.getInstance(document.getElementById("notificationId"));
         if (notificationDateBox) {
             notificationDateBox.option("value", selectedDate);
         }
+
+        // ✅ Convert to Hijri (Um Al-Qura calendar)
+        const hijriFormatter = new Intl.DateTimeFormat('en-SA-u-ca-islamic', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+
+        const formattedHijri = hijriFormatter.format(selectedDate); // e.g., "09/17/1447"
+
+        // ✅ Reformat from MM/DD/YYYY to DD-MM-YYYY
+        const parts = formattedHijri.split('/');
+        const hijriDisplay = `${parts[1]}-${parts[0]}-${parts[2]}`; // => "17-09-1447"
+
+        // ✅ Set Hijri date to the TextBox
+        const hijriTextBox = DevExpress.ui.dxTextBox.getInstance(document.getElementById("ExpiryDate"));
+        if (hijriTextBox) {
+            hijriTextBox.option("value", hijriDisplay);
+        }
     }
 
 
+
     function addVoucherEntry() {
-        // Ensure the validator instances are initialized properly
-        // var accountMasterDropDownBoxValidator = $("#accountMasterDropDownBox").dxValidator("instance");
-        // var expiryIdValidator = $("#expiryId").dxDateBox("instance").dxValidator("instance");  // Correct instance reference
-        // var notificationIdValidator = $("#notificationId").dxDateBox("instance").dxValidator("instance");  // Correct instance reference
+        
+        var accountMasterDropDownBoxValidator = $("#accountMasterDropDownBox").dxValidator("instance");
+        var expiryIdValidator = $("#expiryId").dxValidator("instance");  // Correct instance reference
+        var notificationIdValidator = $("#notificationId").dxValidator("instance");  // Correct instance reference
 
-        // // Validate input fields
-        // var accountMasterDropDownBoxValidation = accountMasterDropDownBoxValidator.validate();
-        // var expiryIdValidation = expiryIdValidator.validate();
-        // var notificationIdValidation = notificationIdValidator.validate();
+        // Validate input fields
+        var accountMasterDropDownBoxValidation = accountMasterDropDownBoxValidator.validate();
+        var expiryIdValidation = expiryIdValidator.validate();
+        var notificationIdValidation = notificationIdValidator.validate();
 
-        // if (accountMasterDropDownBoxValidation.isValid && expiryIdValidation.isValid && notificationIdValidation.isValid) {
-        // Prepare the ViewModel (VM) for the API call
+        if (accountMasterDropDownBoxValidation.isValid && expiryIdValidation.isValid && notificationIdValidation.isValid) {
+     
         var VM = {
             "DocumentNo": $("#DocumentNo").dxTextBox("instance").option("value"),
             "DocumentType": $("#accountMasterDropDownBox").dxDropDownBox("instance").option("value"),
@@ -436,7 +437,7 @@
         // Make the AJAX POST request
         $.ajax({
             type: "POST",
-            url: `/api/LedgerDocuments1/AddDocumentsEntry?DocumentType=${encodeURIComponent(documentType)}`,
+            url: `/api/IMSLedgerDocument/AddDocumentsEntry?DocumentType=${encodeURIComponent(documentType)}`,
             contentType: "application/json",
             data: JSON.stringify(VM),
             dataType: "json",
@@ -482,9 +483,9 @@
                 DevExpress.ui.notify("Error occurred while updating data: " + error, "error", 2000);
             }
         });
-        // } else {
-        //     DevExpress.ui.notify("Please fill in the required details!", "error", 2000);
-        // }
+        } else {
+            DevExpress.ui.notify("Please fill in the required details!", "error", 2000);
+        }
     }
     // Function to reset form fields
     function resetFormFields() {
@@ -499,18 +500,14 @@
     function fetchNewDocumentNo() {
        
         $.ajax({
-            url: "/api/LedgerDocuments1/GetNewDocumentNo", // Your API endpoint
+            url: "/api/IMSLedgerDocument/GetNewDocumentNo", // Your API endpoint
             type: 'GET',
             success: function (data) {
                 // Set the value in the DocumentNo TextBox once the new number is retrieved
                 $("#DocumentNo").dxTextBox("instance").option("value", data);
 
-                // Proceed with other actions after setting the document number
-                // For example, you can call other functions here that need to run after this
                 console.log("Document No has been set:", data);
 
-                // If there are any other actions that depend on this document number, place them here.
-                // e.g., Enable/Disable form elements, further API calls, etc.
             },
             error: function (xhr, status, error) {
                 console.error("Error loading Document No:", error);
@@ -540,7 +537,7 @@
 
         // Send updated data to API
         $.ajax({
-            url: "/api/LedgerDocuments1/UpdateDocumentEntries", // your Web API endpoint
+            url: "/api/IMSLedgerDocument/UpdateDocumentEntries", // your Web API endpoint
             type: "POST",
             contentType: "application/json",
             data: JSON.stringify(allRows), // or selectedRows
@@ -587,7 +584,7 @@
         console.log("Key pressed:", event.key);
     }
              $(function () {
-                $("#LedgerDocuments1").dxTextBox({
+                $("#IMSLedgerDocument").dxTextBox({
                     text:formatMessage("Ledger Documents"),
                     readOnly: true,
                     onContentReady: function(e) {
@@ -598,4 +595,9 @@
                 function Goback() {
         window.parent.closeModal(); // This closes the current window/tab
     }
+    function redirecttoDocumentTypes(){
+                        const url = `/${tenantName}/IMS/DocumentTypes`;
+                 const title = "";
+                      openModal(url, title);
+              }
 </script>

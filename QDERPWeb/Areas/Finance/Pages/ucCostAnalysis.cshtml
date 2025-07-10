@@ -5,11 +5,7 @@
 
 <style>
     #pivotGridContainer {
-        flex-grow: 1; /* Allow the pivot grid to grow and fill available space */
-        width: 100%; /* Ensure the grid stretches to full width */
-        min-height: 400px; /* Set a minimum height to avoid small grid sizes */
-        max-height: 600px; /* Optional, set a max height to control grid overflow */
-        overflow: auto; /* Add scrollbars if the content overflows */
+        overflow: hidden;
     }
 
     .dx-field {
@@ -19,7 +15,8 @@
     }
 
     #check {
-        margin: 50px;
+        display: flex;
+        gap: 10px;
     }
     /* Ensure the fourth column contains both "Use Effective Date" & "Show Records" */
     .dx-field-4 {
@@ -40,6 +37,7 @@
         width: 100%;
     }
 </style>
+<div class="content-container-top">
 <div class="title" id="kpiCarousel">
     <div class="titleCard-cards">
 
@@ -111,7 +109,7 @@
         <div id="costAnalysis" class="no-border-input"></div>
     </div>
 </div> *@
-<div class="Head">
+<div class="Head" style="margin-top:10px">
   
         @await Html.PartialAsync("_GridFooterUCCA")
     
@@ -164,7 +162,7 @@
             )
     </div>
 
-    <div class="dx-field dx-field-4" id="check">
+    <div id="check">
         <!-- Use Effective Date Checkbox -->
         @(Html.DevExtreme().CheckBox()
             .ID("useEffectiveDate")
@@ -208,7 +206,7 @@
                     .LoadMode(DataSourceLoadMode.Raw))
                 .ShowBorders(true)
                 .SearchPanel(sp => sp.HighlightSearchText(true).Visible(true))
-                .FilterRow(f => f.Visible(true))
+                .FilterRow(f => f.Visible(false))
                 .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                 .Selection(s => s.Mode(SelectionMode.Single))
                 .HoverStateEnabled(true)
@@ -228,6 +226,7 @@
 
 
 <div class="ledgerResult" id="pivotGridContainer"></div>
+</div>
 
 <script type="text/javascript">
     let pivotData = [];
@@ -440,7 +439,7 @@
             },
 
             width: "98%",
-            height: $(window).height() - 50,
+            height: "60vh",
             allowSortingBySummary: true,
             allowSorting: true,
             allowFiltering: true,

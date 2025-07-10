@@ -1214,21 +1214,23 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                string tenantName = HttpContext.Session.GetString("TenantName");
+              
 
-                if (string.IsNullOrWhiteSpace(tenantName))
-                    return BadRequest(new { message = "Session expired or tenant name missing.", success = false });
+                string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                byte defaultCompanyByte = 0; // or any default value you want
 
-                // Step 1: Get CompanyId
-                var company = await dbContext.Tbl901CompanyDetails
-                    .Where(c => c.CompanyNameShort == tenantName)
-                    .Select(c => new { c.CompanyId })
-                    .FirstOrDefaultAsync();
+                if (!string.IsNullOrEmpty(defaultCompanyString))
+                {
+                    // Safest way (avoids exceptions):
+                    byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                    // Now defaultCompanyByte holds the parsed value, or 0 if parsing failed.
+                }
 
-                if (company == null)
-                    return NotFound(new { message = "Company not found.", success = false });
+                // Now use defaultCompanyByte as needed
 
-                byte companyId = company.CompanyId;
+
+
+                byte companyId = defaultCompanyByte;
 
                 // Step 2: Get NoOfDigitsInVouchers
                 var companyConfig = await dbContext.Tbl901CompanyDetails02s
@@ -1297,21 +1299,22 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                string tenantName = HttpContext.Session.GetString("TenantName");
 
-                if (string.IsNullOrWhiteSpace(tenantName))
-                    return BadRequest(new { message = "Session expired or tenant name missing.", success = false });
+                string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                byte defaultCompanyByte = 0; // or any default value you want
 
-                // Step 1: Get CompanyId
-                var company = await dbContext.Tbl901CompanyDetails
-                    .Where(c => c.CompanyNameShort == tenantName)
-                    .Select(c => new { c.CompanyId })
-                    .FirstOrDefaultAsync();
+                if (!string.IsNullOrEmpty(defaultCompanyString))
+                {
+                    // Safest way (avoids exceptions):
+                    byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                    // Now defaultCompanyByte holds the parsed value, or 0 if parsing failed.
+                }
 
-                if (company == null)
-                    return NotFound(new { message = "Company not found.", success = false });
+                // Now use defaultCompanyByte as needed
 
-                byte companyId = company.CompanyId;
+
+
+                byte companyId = defaultCompanyByte;
 
                 // Step 2: Get NoOfDigitsInVouchers
                 var companyConfig = await dbContext.Tbl901CompanyDetails02s

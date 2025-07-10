@@ -359,8 +359,9 @@
 
     </div>
 </div>
+<div class="content-container-top">
 
-<div class="card" style="margin: 20px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
+@* <div class="card" style="margin: 20px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);"> *@
 
     <div class="card-body" style="padding: 20px;  border-radius: 5px;">
         <div class="dx-fieldset horizontal-container" style="margin-bottom: 0px">
@@ -411,7 +412,7 @@
                 })
                 )
         </div>
-        <div class="dx-field ledgerResult">
+        <div class="dx-field ledgerResult"style="height:70%;">
             @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry20121ExpenseClaimForm>()
                 .ID("dataGrid")
                 .KeyExpr("ClaimRefNo")
@@ -531,7 +532,7 @@
                 .AllowColumnResizing(true)
                 .ColumnFixing(fixing => fixing.Enabled(true))
                 .HeaderFilter(filter => filter.Visible(true))
-                .Height(300)
+                .Height("100%")
                 .ColumnAutoWidth(true)
                 .FilterRow(filterRow => filterRow.Visible(false))
                 .ShowBorders(true)
@@ -545,6 +546,8 @@
         </div>
     </div>
 
+
+</div>
     <script>
         function ddBtnShowRecords_click(filterType) {
             const dataGrid = $("#dataGrid").dxDataGrid("instance");

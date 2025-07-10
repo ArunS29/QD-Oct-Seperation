@@ -109,7 +109,8 @@
                 .Label(new JS("formatMessage('Supplier Code')"))
                 .Width("100%")
                 .LabelMode(EditorLabelMode.Outside)
-                .ElementAttr("class", "white-bg"))
+                .ElementAttr("class", "white-bg")
+                        .ReadOnly(true))
 
         </div>
         <div class="form-field">
@@ -314,6 +315,7 @@
             .ID("btnBack")
             .Text(new JS("formatMessage('Back')"))
             .Icon("arrowleft")
+                .OnClick("Goback")
             .Type(ButtonType.Default)
             .StylingMode(ButtonStylingMode.Outlined)
             .ElementAttr("class", "black-text")
@@ -333,7 +335,7 @@
         const supplierContactSlNo = (urlParams.get("SupplierContactSlNo") || "").split(/[?&]/)[0];
         const supplierCode = (urlParams.get("supplierCode") || "").split(/[?&]/)[0];
         const supplierName = (urlParams.get("supplierName") || "").split(/[?&]/)[0];
-
+      
         // Bind hidden and visible values
         $("#txtSupplierHidden").dxTextBox("instance").option("value", supplierContactSlNo);
         $("#txtSupplierCode").dxTextBox("instance").option("value", supplierCode);
@@ -359,7 +361,7 @@
                             value: data.SupplierCode,
                             readOnly: true
                         });
-                    $("#txtSupplierName").dxTextBox("instance").option("value", data.SupplierName);
+                    //$("#txtSupplierName").dxTextBox("instance").option("value", data.SupplierName);
                     $("#contactPerson").dxTextBox("instance").option("value", data.ContactPerson);
                     $("#title").dxTextBox("instance").option("value", data.ContactPersonTitle);
                     $("#mobile1").dxTextBox("instance").option("value", data.ContactMobile1);
@@ -464,5 +466,7 @@
             }
         });
     }
-
+    function Goback() {
+        window.parent.closeModal();
+    }
 </script>

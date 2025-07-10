@@ -192,6 +192,25 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        [HttpGet]
+        public IActionResult GetReportedByvalue()
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                _logger.LogWarning("GetReportrdByvalue failed: Invalid tenant context.");
+                return Unauthorized("Invalid tenant.");
+            }
+
+            var userName = HttpContext.Session.GetString("UserName");
+            if (string.IsNullOrEmpty(userName))
+            {
+                _logger.LogWarning("GetReportrdByvalue failed: UserName is missing in session.");
+                return Unauthorized("User is not logged in.");
+            }
+
+            _logger.LogInformation("Returning UserName: {UserName}", userName);
+            return Ok(userName);
+        }
 
     }
 }

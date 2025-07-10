@@ -5,9 +5,6 @@
     .dx-datagrid .dx-row {
         border-bottom: 1px solid #ccc;
     }
-
-
-
     .horizontal-container {
         display: flex;
         gap: 10px;
@@ -98,6 +95,7 @@
             <div id="SalaryPayableByDate" class="no-border-input"></div>
         </div>
     </div> *@
+<div class="content-container-top">
 <div class="title" id="kpiCarousel">
     <div class="titleCard-cards">
 
@@ -163,10 +161,10 @@
     </div>
 </div>
 
-<div class="mt-4">
+<div class="">
         @await Html.PartialAsync("SalaryPayableFooter")
 </div>
-<div class="d-flex align-items-center mb-3" style="margin-left: 1em;">
+<div class="d-flex align-items-center" style="margin-left: 1em;">
 
             <div class="me-3">
                 @(Html.DevExtreme().DateBox()
@@ -307,20 +305,17 @@
                 .AllowColumnReordering(true)
                 .AllowColumnResizing(true)
                 .ColumnFixing(fixing => fixing.Enabled(true))
-                .HeaderFilter(filter => filter.Visible(true))
-                .Height(660)
+                .HeaderFilter(filter => filter.Visible(false))
+                .Height("65vh")
+                .ColumnResizingMode(ColumnResizingMode.Widget)
                 .ColumnAutoWidth(true)
                 .FilterRow(filterRow => filterRow.Visible(false))
                 .GroupPanel(groupPanel => groupPanel.Visible(false))
                 .ShowBorders(true)
                 .Width("100%"))
         </div>
-
-
-
-
-        
         <div id="voucherPopup"></div>
+        </div>
 
 
 

@@ -365,7 +365,7 @@
         <div id="Static" class="titleCard-card vibrant-pink">
             <div class="value-block">
 
-                <h2>Accounting Ledger</h2>
+                <h2>Expenses Claim</h2>
                 <h6>Quick Dice ERP Solutions</h6>
 
             </div>
@@ -422,11 +422,12 @@
 
     </div>
 </div>
-<div>
-    @await Html.PartialAsync("_ExpenseClaimFooter")
-</div>
+
 
 <div class="content-container-top">
+    <div>
+        @await Html.PartialAsync("_ExpenseClaimFooter")
+    </div>
     <div class="context-menu" id="contextMenu">
         <div class="context-menu-item">
             <div class="menu-item">
@@ -443,10 +444,10 @@
             </div>
         </div>
     </div>
-</div>
 
 
-    <div class="dx-fieldset horizontal-container ">
+
+    <div class="horizontal-container">
 
         
 
@@ -535,7 +536,7 @@
             })
             )
     </div>
-    <div class="dx-field ledgerResult">
+    <div class="dx-field ledgerResult" style="height:70%;">
         @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.sp20105ExpenseClaimViewResult>() // Replace with your model
                 .ID("dataGrid")
                 .RemoteOperations(false)
@@ -724,7 +725,7 @@ columns.Add()
         </text>).Visible(true).AllowEditing(false);
 
                 })
-            .Height(600)
+            .Height("100%")
             .Grouping(grouping => grouping.AutoExpandAll(true)) // Optional
             .GroupPanel(groupPanel => groupPanel.Visible(false))
             .Scrolling(scrolling => scrolling
@@ -734,7 +735,8 @@ columns.Add()
             .Paging(paging => paging.Enabled(false))
 
             .ColumnAutoWidth(true)
-            .AllowColumnReordering(true) // Enable column reordering
+                .AllowColumnReordering(true)
+                .ColumnResizingMode(ColumnResizingMode.Widget)
             .AllowColumnResizing(true)   // Enable column resizing
             .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
             .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
@@ -747,7 +749,7 @@ columns.Add()
             
             .ShowBorders(true)
             .Editing(editing => editing.Mode(GridEditMode.Cell).AllowAdding(false).AllowUpdating(true))
-            .ColumnChooser(c => c.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+                .ColumnChooser(c => c.Enabled(false).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.DragAndDrop))
             
 
             .Summary(s => s
@@ -859,7 +861,8 @@ columns.Add()
                 })
             )
     }
-</div>
+    </div>
+
 
 <script type="text/javascript">
     let accheadname, accheadid

@@ -390,8 +390,28 @@
 				columns.Add().Caption(new JS("formatMessage('Quotation')")).Columns(band =>
 	         {
 				band.AddFor(m => m.NoOfQuotations).Caption(new JS("formatMessage('No of Quotation')")).Alignment(HorizontalAlignment.Center);
-				band.AddFor(m => m.NetQuotedAmount).Caption(new JS("formatMessage('Net Quoted Amount')")).Alignment(HorizontalAlignment.Center);
-				band.AddFor(m => m.NetQuotedWithTax).Caption(new JS("formatMessage('Net Quoted With Tax')")).Alignment(HorizontalAlignment.Center);
+				band.AddFor(m => m.NetQuotedAmount).Caption(new JS("formatMessage('Net Quoted Amount')")).Alignment(HorizontalAlignment.Center).CustomizeText(@"
+		function(e) {
+		if (e.value === null || e.value === undefined) {
+		return ''; // Return empty string for null/undefined
+		}
+		return Number(e.value).toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
+				band.AddFor(m => m.NetQuotedWithTax).Caption(new JS("formatMessage('Net Quoted With Tax')")).Alignment(HorizontalAlignment.Center).CustomizeText(@"
+		function(e) {
+		if (e.value === null || e.value === undefined) {
+		return ''; // Return empty string for null/undefined
+		}
+		return Number(e.value).toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
 
 			});
 
@@ -459,8 +479,10 @@
 				columns.AddFor(m => m.ProjectSubUnitName).Caption("Requesting Project Unit").Visible(false);
 				columns.AddFor(m => m.CancelledBy).Caption("CancelledBy").Visible(false);
 				columns.AddFor(m => m.CancelledOn).Caption("CancelledOn").Format("dd-MMM-yyyy").Visible(false);
+			columns.AddFor(m => m.ExpectedVatrate).Caption("Expected VAT Rate").Visible(false);
 
 			})
+
 		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
 		.OnToolbarPreparing("onToolbarPreparing")
 		.ColumnChooser(cc => cc.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
@@ -482,6 +504,7 @@
 		.ShowBorders(true)
 		.ShowRowLines(true)
 		.OnContextMenuPreparing("onContextMenuPreparing")
+
 		.Paging(p => p.PageSize(10)) // Set desired page size (e.g., 10 rows per page)
 .Pager(pager =>
 {
@@ -490,6 +513,18 @@
     pager.ShowNavigationButtons(true);
     pager.Visible(true);
 })
+		.Summary(summary =>
+		{
+			summary.GroupItems(items =>
+			{
+				items.Add().Column("RequestEnquiry")
+			.SummaryType(SummaryType.Count)
+			.ShowInGroupFooter(false) // set true if you want it at footer
+			.DisplayFormat("{0}");
+			});
+		})
+
+
 
 		)
 </div>

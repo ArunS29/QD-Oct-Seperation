@@ -22,8 +22,6 @@
         margin: 15px;
     }
 
-    S
-
     .dx-selectbox .dx-texteditor-input {
         text-align: center; /* Centers the text inside the input */
     }
@@ -78,9 +76,9 @@
 
 
     <div class="content-container-top">
-        <div class="container-fluid"></div>
-        <div id="FinanceManagementDashboard" class="card-header no-border-input"></div>
-    </div>
+        @* <div class="container-fluid"></div> *@
+        @* <div id="FinanceManagementDashboard" class="card-header no-border-input"></div> *@
+    
 <div class="title" id="kpiCarousel">
     <div class="titleCard-cards">
 
@@ -152,7 +150,7 @@
             <div id="BillsPayable" class="no-border-title"></div>
         </div>
     </div> *@
-<div class="card-footer" style="display: flex;justify-content: space-between;">
+    <div class="card-footer" style="display: flex;justify-content: space-between;margin: 10px 0px;">
     @await Html.PartialAsync("_GridFooter2")
     <div class="form-group col-md-6" id="Btnchange" style=" padding-bottom: 10px;  text-align: right;padding-right: 30px;">
         <div>
@@ -195,21 +193,19 @@
                 // Grid Band: Bills Payable
                 columns.Add().Caption(new JS("formatMessage('Bills Payable')")).Columns(band =>
             {
-                band.AddFor(m => m.AccountHeadNo).Caption(new JS("formatMessage('Account Head No')")).Alignment(HorizontalAlignment.Center).Width(150);
+                band.AddFor(m => m.AccountHeadNo).Caption(new JS("formatMessage('Account Head No')")).Alignment(HorizontalAlignment.Center).Width(130);
                 band.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('Ledger Account')")).Alignment(HorizontalAlignment.Left).Width(250);
                 band.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('Ledger Account')")).Alignment(HorizontalAlignment.Left).Width(250).GroupIndex(0); // Group by this column
-
-                band.AddFor(m => m.ReferenceNo).Caption(new JS("formatMessage('Reference No')")).Alignment(HorizontalAlignment.Center)
+                band.AddFor(m => m.ReferenceNo).Caption(new JS("formatMessage('Reference No')")).Alignment(HorizontalAlignment.Center).Width(130)
             .CellTemplate(@<text>
         <a href="/<%= tenantName %>/Finance/PurchaseVoucher?argsledno=<%= data.ReferenceNo %>" target="_blank" style="color: #0398fc; text-decoration: underline;">
             <%= data.ReferenceNo %>
         </a>
     </text>);
-                band.AddFor(m => m.VoucherDate).Caption(new JS("formatMessage('Voucher Date')")).Alignment(HorizontalAlignment.Center)
+                band.AddFor(m => m.VoucherDate).Caption(new JS("formatMessage('Voucher Date')")).Alignment(HorizontalAlignment.Center).Width(130)
     .Format(format => format.Type(Format.ShortDate).Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
-                band.AddFor(m => m.VoucherRefNo).Caption(new JS("formatMessage('Voucher Ref No')")).Alignment(HorizontalAlignment.Center);
-                band.AddFor(m => m.InvoiceAmountBeforeRetention).Caption(new JS("formatMessage('Invoice Amount')"))
-    .Alignment(HorizontalAlignment.Right)
+                band.AddFor(m => m.VoucherRefNo).Caption(new JS("formatMessage('Voucher Ref No')")).Alignment(HorizontalAlignment.Center).Width(130);
+                band.AddFor(m => m.InvoiceAmountBeforeRetention).Caption(new JS("formatMessage('Invoice Amount')")).Alignment(HorizontalAlignment.Right).Width(130)
     .CustomizeText(@"
     function(e) {
     if (e.value === null || e.value === undefined) {
@@ -223,7 +219,7 @@
     return '(' + formattedValue + ')';
     }
     ");
-                band.AddFor(m => m.Paid).Caption(new JS("formatMessage('Paid')")).Alignment(HorizontalAlignment.Right)
+                band.AddFor(m => m.Paid).Caption(new JS("formatMessage('Paid')")).Alignment(HorizontalAlignment.Right).Width(130)
     .CustomizeText(@"
     function(e) {
     if (e.value === null || e.value === undefined) {
@@ -235,7 +231,7 @@
     });
     }
     ");
-                band.AddFor(m => m.Balance).Caption(new JS("formatMessage('Balance')")).Alignment(HorizontalAlignment.Right)
+                band.AddFor(m => m.Balance).Caption(new JS("formatMessage('Balance')")).Alignment(HorizontalAlignment.Right).Width(130)
     .CustomizeText(@"
     function(e) {
     if (e.value === null || e.value === undefined) {
@@ -249,10 +245,10 @@
     return '(' + formattedValue + ')';
     }
     ");
-                band.AddFor(m => m.InvoiceDueDate).Caption(new JS("formatMessage('Invoice Due Date')")).Alignment(HorizontalAlignment.Center).Width("100%")
+                    band.AddFor(m => m.InvoiceDueDate).Caption(new JS("formatMessage('Invoice Due Date')")).Alignment(HorizontalAlignment.Center).Width(130)
     .Format(format => format.Type(Format.ShortDate).Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
-                band.AddFor(m => m.NoOfDaysCreditPeriod).Caption(new JS("formatMessage('No Of Days Credit Period')")).Alignment(HorizontalAlignment.Center).Width("100%");
-                band.AddFor(m => m.OverdueDays).Caption(new JS("formatMessage('Over due Days')")).Alignment(HorizontalAlignment.Center).Width("100%");
+                    band.AddFor(m => m.NoOfDaysCreditPeriod).Caption(new JS("formatMessage('No Of Days Credit Period')")).Alignment(HorizontalAlignment.Center).Width(130);
+                    band.AddFor(m => m.OverdueDays).Caption(new JS("formatMessage('Over due Days')")).Alignment(HorizontalAlignment.Center).Width(130);
 
 
                 columns.Add().DataField("PayableAmount").Caption(new JS("formatMessage('Payable Amount')")).Alignment(HorizontalAlignment.Left).Visible(false);
@@ -306,8 +302,9 @@
         .ColumnChooser(c => c.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
 
         .ColumnFixing(fixing => fixing.Enabled(true))
-        .HeaderFilter(filter => filter.Visible(true))
-        .Height(660)
+        .HeaderFilter(filter => filter.Visible(false))
+        .Height("65vh")
+        .ColumnResizingMode(ColumnResizingMode.Widget)
         .ColumnAutoWidth(true)
         .WordWrapEnabled(true)
         .FilterRow(filterRow => filterRow.Visible(false))
@@ -425,7 +422,7 @@
         )
 
     </div>
-
+</div>
 
     
 
