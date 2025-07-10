@@ -386,9 +386,9 @@ body {
     cursor: pointer;
 }
 
-/* .ledgerResult {
+.ledgerResult {
     margin: 15px !important;
-} */
+}
 
 #rowHeightMenu {
     position: absolute;
