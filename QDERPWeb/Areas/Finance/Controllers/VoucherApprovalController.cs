@@ -34,6 +34,10 @@ namespace QDWEB.Areas.Finance.Controllers
                         var typesList = voucherTypes.Split(',').ToList();
                         query = query.Where(v => typesList.Contains(v.VoucherType));
                     }
+                 //   var companyNameShort = HttpContext.Session.GetString("TenantName");
+
+                    var company = dbContext.Tbl901CompanyDetails
+                    .FirstOrDefault();
 
                     var data = query.Select(v => new
                     {
@@ -52,7 +56,8 @@ namespace QDWEB.Areas.Finance.Controllers
                         v.VoucherApprovedOn,
                         v.VoucherType,
                         v.DebitAmount,
-                        v.CreditAmount
+                        v.CreditAmount,
+                        company.CurrencyImage
                     }).ToList();
 
                     return Json(data);
@@ -82,8 +87,39 @@ namespace QDWEB.Areas.Finance.Controllers
                         var typesList = voucherTypes.Split(',').ToList();
                         vouchers = vouchers.Where(v => v.VoucherDate.Date >= startDate && v.VoucherDate.Date <= endDate && typesList.Contains(v.VoucherType));
                     }
+                    //   var companyNameShort = HttpContext.Session.GetString("TenantName");
 
-                    return Ok(vouchers.ToList());
+                    var company = dbContext.Tbl901CompanyDetails
+                    .FirstOrDefault();
+                    string CurrencyImage = company.CurrencyImage;
+
+
+                    var voucherslist = vouchers
+    .Select(v => new
+    {
+        v.VoucherNo,
+        VoucherDate = v.VoucherDate.ToString("dd-MMM-yyyy"),
+        v.VoucherEffectiveDate,
+        v.VoucherRefNo,
+        v.VoucherNarration,
+        v.VoucherEnteredBy,
+        v.VoucherEnteredOn,
+        v.IsVerified,
+        v.VoucherVerifiedBy,
+        v.VoucherVerifiedOn,
+        v.IsApproved,
+        v.VoucherApprovedBy,
+        v.VoucherApprovedOn,
+        v.VoucherType,
+        v.DebitAmount,
+        v.CreditAmount,
+        v.ConvertedCrAmount,
+        v.ConvertedDrAmount,
+        company.CurrencyImage
+
+    });
+
+                    return Ok(voucherslist.ToList());
                 }
                 catch (Exception ex)
                 {

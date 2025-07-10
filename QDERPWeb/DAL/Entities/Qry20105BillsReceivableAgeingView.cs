@@ -78,4 +78,13 @@ public partial class Qry20105BillsReceivableAgeingView
     public string AccountsContactMobile { get; set; }
 
     public string AccountsContactTitle { get; set; }
+
+    public decimal? ConvertedReceivableAmount { get; set; }
+    public decimal? ConvertedReceived { get; set; }
+    public decimal? ConvertedBalance { get; set; }
+    public string CurrencyName { get; set; }
+    public string TransactionCurrencySymbol { get; set; }
+    public string CurrencyImage { get; set; }
+    
+
 }

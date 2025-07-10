@@ -82,4 +82,8 @@ public partial class Qry20106CostAnalysis
     public string VoucherNarration { get; set; }
 
     public string VoucherRefNo { get; set; }
+    public decimal? ConvertedExpenses { get; set; }
+    public decimal? ConvertedIncome { get; set; }
+    public decimal? ConvertedCostAmount { get; set; }
+    public string CurrencyImage { get; set; }
 }

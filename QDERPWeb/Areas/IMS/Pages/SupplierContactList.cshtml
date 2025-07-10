@@ -109,7 +109,8 @@
                 .Label(new JS("formatMessage('Supplier Code')"))
                 .Width("100%")
                 .LabelMode(EditorLabelMode.Outside)
-                .ElementAttr("class", "white-bg"))
+                .ElementAttr("class", "white-bg")
+                        .ReadOnly(true))
 
         </div>
         <div class="form-field">
@@ -314,6 +315,7 @@
             .ID("btnBack")
             .Text(new JS("formatMessage('Back')"))
             .Icon("arrowleft")
+                .OnClick("Goback")
             .Type(ButtonType.Default)
             .StylingMode(ButtonStylingMode.Outlined)
             .ElementAttr("class", "black-text")
@@ -464,5 +466,7 @@
             }
         });
     }
-
+    function Goback() {
+        window.parent.closeModal();
+    }
 </script>

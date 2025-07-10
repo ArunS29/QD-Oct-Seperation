@@ -139,12 +139,33 @@
         text-align: center;
         font-weight: bold;
     }
+
+    #dataGrid .debit-pill, #dataGrid .credit-pill {
+        display: inline-block;
+        padding: 2px 10px;
+        border-radius: 14px;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+    }
+
+    #dataGrid .debit-pill {
+        background: rgba(255, 77, 79, .15);
+        color: #ff4d4f;
+    }
+
+    #dataGrid .credit-pill {
+        background: rgba(82, 196, 26, .15);
+        color: #52c41a;
+    }
 </style>
 @* <div class="title">
     <div class="header-container">
         <div id="VoucherVerification" class="no-border-input"></div>
     </div>
 </div> *@
+
+
+<div class="content-container-top">
 <div class="title" id="kpiCarousel">
     <div class="titleCard-cards">
 
@@ -209,11 +230,8 @@
 
     </div>
 </div>
-
-
-<div class="content-container-top" style="background-color:#909ead00;">
 <input id="formId" value="VoucherApproval" type="hidden" />
-    <div>
+    <div style="margin: 10px 0px;">
         @await Html.PartialAsync("GridFooterApproval")
     </div>
 
@@ -302,17 +320,69 @@
         <div class="headerBolder">Effective On</div>
     </text>);
 
-                columns.Add().DataField("DebitAmount").Caption(new JS("formatMessage('Debit')")).Width(100).Alignment(HorizontalAlignment.Right)
+                    columns.AddFor(m => m.ConvertedDrAmount)
+                    .Caption(new JS("formatMessage('Debit')"))
+                    .Alignment(HorizontalAlignment.Right)
+                    .HeaderCellTemplate(@<text>
+                                             <div class="credit-header" style="font-weight: bold;">
+                                                 <%= column.caption %>
+                                             </div>
+                                         </text>)
+                    .CellTemplate(@<text>
+                                       <div class="debit-pill">
+                                           <%- data.ConvertedDrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+                                       </div>
+                                   </text>)
+                    .Visible(true);
+
+                    /* Credit */
+                    columns.AddFor(m => m.ConvertedCrAmount)
+                    .Caption(new JS("formatMessage('Credit')"))
+                    .Alignment(HorizontalAlignment.Right)
+                    .HeaderCellTemplate(@<text>
+                                             <div class="debit-header" style="font-weight: bold;">
+                                                 <%= column.caption %>
+                                             </div>
+                                         </text>)
+                    .CellTemplate(@<text>
+                                       <div class="credit-pill">
+                                           <%- data.ConvertedCrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+                                       </div>
+                                   </text>)
+                    .Visible(true);
+
+                    columns.AddFor(m => m.CreditAmount)
+                    .Caption("Trans Credit")
+                    .Alignment(HorizontalAlignment.Right)
+                    .CellTemplate(@<text>
+                                       <div class="credit-pill">
+                                           <span style="color: black; font-weight: bold;"><%- data.TransactionCurrencySymbol %></span>
+                                           <%- data.CrAmount != null ? data.CrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
+                                       </div>
+                                   </text>)
+                    .Visible(false);
+                    columns.AddFor(m => m.DebitAmount)
+                    .Caption("Trans Debit")
+                    .Alignment(HorizontalAlignment.Right)
+                    .CellTemplate(@<text>
+                                       <div class="debit-pill">
+                                           <span style="color: black; font-weight: bold;"><%- data.TransactionCurrencySymbol %></span>
+                                           <%- data.DrAmount != null ? data.DrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
+                                       </div>
+                                   </text>)
+                    .Visible(false);
+
+         @*        columns.Add().DataField("DebitAmount").Caption(new JS("formatMessage('Trans Debit')")).Width(100).Alignment(HorizontalAlignment.Right)
             .CustomizeText("function(e) { return e.value ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2 }) : ''; }").Visible(true)
             .HeaderCellTemplate(@<text>
         <div class="headerBolder">Debit</div>
     </text>);
 
-                columns.Add().DataField("CreditAmount").Caption(new JS("formatMessage('Credit')")).Width(100).Alignment(HorizontalAlignment.Right)
+                columns.Add().DataField("CreditAmount").Caption(new JS("formatMessage('Trans Credit')")).Width(100).Alignment(HorizontalAlignment.Right)
             .CustomizeText("function(e) { return e.value ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2 }) : ''; }").Visible(true)
             .HeaderCellTemplate(@<text>
         <div class="headerBolder">Credit</div>
-    </text>);
+    </text>); *@
 
                 columns.Add().DataField("VoucherEnteredBy").Caption(new JS("formatMessage('Entered By')")).Width(120).Visible(true)
             .HeaderCellTemplate(@<text>
@@ -447,8 +517,9 @@
         .AllowColumnResizing(true)
         .ColumnFixing(fixing => fixing.Enabled(true))
         .ColumnAutoWidth(true)
-        .HeaderFilter(filter => filter.Visible(true))
-        .Height(600)
+        .HeaderFilter(filter => filter.Visible(false))
+        .ColumnResizingMode(ColumnResizingMode.Widget)
+        .Height("60vh")
         .Width("100%")
         .Paging(paging => paging.Enabled(false))
         .Scrolling(scrolling => scrolling.Mode(GridScrollingMode.Virtual))
@@ -458,6 +529,7 @@
         .GroupPanel(groupPanel => groupPanel.Visible(false))
         .OnRowPrepared("onRowPrepared")
         .OnCellPrepared("onCellPrepared")
+        .OnOptionChanged("handleGridOptionChanged")
 
         )
 </div>
@@ -1008,6 +1080,59 @@
                     }
                 });
             });
+    }
+
+
+      function handleGridOptionChanged(e) {
+        if (e.name === "columns" || e.name === "visible") {
+            // Columns changed, so re-inject SVG
+            injectHeaderSVG(); // slight delay to wait for DOM re-render
+        }
+    }
+    function injectHeaderSVG() {
+        debugger;
+        let gridElement = $('#dataGrid');
+        let dataGrid = gridElement.dxDataGrid("instance");
+        if (!dataGrid) return;
+
+        let dataSource = dataGrid.option("dataSource");
+        if (!dataSource || dataSource.length === 0) return;
+
+        let svgIcon = dataSource[0].CurrencyImage;
+        if (!svgIcon) return;
+
+        svgIcon = svgIcon.replace(/<svg\b([^>]*)>/, `<svg width="12" height="12" $1>`);
+
+        gridElement.find(".dx-header-row td").each(function () {
+                debugger;
+            const $cell = $(this);
+            const dataField = $cell.attr("data-field");  // 👈 This is key
+
+                const $debitHeader = $(".debit-header");
+                const debitText = $debitHeader.data("original-text") || $debitHeader.text().trim();
+                $debitHeader.data("original-text", debitText); // Save original once
+
+                $debitHeader.html(`
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+                        ${svgIcon}
+                        <span style="font-weight: bold;">${debitText}</span>
+                    </div>
+                `);
+                debugger;
+                // 👉 Credit
+                const $creditHeader = $(".credit-header");
+                const creditText = $creditHeader.data("original-text") || $creditHeader.text().trim();
+                $creditHeader.data("original-text", creditText);
+
+                $creditHeader.html(`
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+                        ${svgIcon}
+                        <span style="font-weight: bold;">${creditText}</span>
+                    </div>
+                `);
+
+               
+        });
     }
 
 
