@@ -5,43 +5,19 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<link rel="stylesheet" href="~/css/Style.css" />
+
 <style>
-    .displayFlex {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        margin-bottom: 5px;
-    }
-
-    .form-label-inline {
-        margin-right: 5px;
-        font-weight: 500;
-    }
-
-    .form-group {
-        margin-bottom: 10px;
-    }
-
     .dx-button-mode-contained.dx-button-default .dx-icon {
         color: var(--title-background-color);
     }
 
     .form-container {
-        display: flex;
-        gap: 10px;
-        padding: 0px 20px;
-    }
-
-    .titleCard-toggle1 {
-        display: none;
-    }
-    .form-container1{
-        display: flex;
-        width: 100%;
-        gap: 10px;
-        align-items: center;
-        justify-content: space-between;
+        padding: 5px;
+        border-radius: 8px;
+        background-color: white;
+        max-width: 900px;
+        margin: auto;
+        color: black;
     }
 
     table {
@@ -96,14 +72,14 @@
 
     /* .narration-cell a { */
     /*     a {
-                        position: absolute;
-                        right: 70px;
-                        top: 8px;
-                        color: white;
-                        text-decoration: underline;
-                        font-size: 14px;
-                        cursor: pointer;
-                    } */
+                            position: absolute;
+                            right: 70px;
+                            top: 8px;
+                            color: white;
+                            text-decoration: underline;
+                            font-size: 14px;
+                            cursor: pointer;
+                        } */
 
     .highlight {
         background-color: #ffffb3;
@@ -208,572 +184,597 @@
     }
 </style>
 
-<div class="dx-card-header minimal-header">
-    <div class="card-title-icon">
-        <i class="fas fa-file-invoice-dollar"></i>
+<div class="title">
+    <div class="header-container">
+        <div id="ExpensesClaimRequest" class="no-border-title"></div>
     </div>
-    <h3 class="card-title-text">Petty Cash Request</h3>
 </div>
-<div class="row w-100 align-items-center" style="margin-top: 8px;">
-    <div class="form-group col-md-2 col-sm-6">
+
+<div class="content-container">
+    <div class="dx-fieldset horizontal-container">
+        <div class="form-group">
             @(Html.DevExtreme().TextBox()
-                .Label("Claim Reference No:")
-                .LabelMode(EditorLabelMode.Outside)
-                .ID("VoucherNo")
-                .Value("")
-                .ReadOnly(true)
-                .ValidationRules(rules => { rules.AddRequired().Message("VoucherNo is required"); })
-                )
+                        .Label("Claim Reference No:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ID("VoucherNo")
+                        .Value("")
+                        .ReadOnly(true)
+                        .ValidationRules(rules => { rules.AddRequired().Message("VoucherNo is required"); })
+                        )
         </div>
-    <div class="form-group col-md-2 col-sm-6">
+        <div class="form-group">
             @(Html.DevExtreme().DateBox()
-                .Label("Claim Date:")
-                .ID("claimerdate")
-                .LabelMode(EditorLabelMode.Outside)
-                .Type(DateBoxType.Date)
-                .DisplayFormat("dd-MMM-yyyy")
-                .Value(DateTime.Now)
-                )
+                        .Label("Claim Date:")
+                        .ID("claimerdate")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Type(DateBoxType.Date)
+                        .DisplayFormat("dd-MMM-yyyy")
+                        .Value(DateTime.Now)
+                        )
         </div>
-    <div class="form-group col-md-2 col-sm-6">
+        <div class="form-group">
             @(Html.DevExtreme().DateBox()
-                .Label("Effective Date:")
-                .ID("claimerEffectiveDate")
-                .LabelMode(EditorLabelMode.Outside)
-                .Type(DateBoxType.Date)
-                .DisplayFormat("dd-MMM-yyyy")
-                .Value(DateTime.Now)
-                )
+                        .Label("Effective Date:")
+                        .ID("claimerEffectiveDate")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Type(DateBoxType.Date)
+                        .DisplayFormat("dd-MMM-yyyy")
+                        .Value(DateTime.Now)
+                        )
         </div>
-    <div class="form-group col-md-5 col-sm-6">
+        <div class="form-group">
             @(Html.DevExtreme().TextArea()
-                .Label("Claim Remarks:")
-                .LabelMode(EditorLabelMode.Outside)
-                .ID("txtEntryNarration")
-                .Value("Petty Cash Request for the month of ")
-                .Height(100)
-              
-                
-                .MaxLength(500)
-                )
+                        .Label("Claim Remarks:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ID("txtEntryNarration")
+                        .Value("Petty Cash Request for the month of ")
+                        .Height(100)
+                        .Width(720)
+
+                        .MaxLength(500)
+                        )
         </div>
     </div>
 
-<div class="row w-100 align-items-center" style="margin-top: 8px;">
-    <div class="form-group col-md-4 col-sm-6">
+    <div class="dx-fieldset horizontal-container">
+        <div class="form-group">
             @(Html.DevExtreme().DropDownBox()
-                .DataSource(d => d.WebApi()
-                .Controller("CostAllocation")
-                .LoadAction("GetCostAllocationUnits")
-                .LoadMode(DataSourceLoadMode.Raw)
-                .Key("CostAllocationUnitId")
-                )
-                .Label("Claimed for Project/Jobs:")
-                .LabelMode(EditorLabelMode.Outside)
-                .ID("accountDropDownBox")
-                .ShowClearButton(true)
-                .AcceptCustomValue(true)
-                .OpenOnFieldClick(false)
-                .ValueChangeEvent("change") // Detects changes in the dropdown
-                .HoverStateEnabled(true)
+                        .DataSource(d => d.WebApi()
+                        .Controller("CostAllocation")
+                        .LoadAction("GetCostAllocationUnits")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("CostAllocationUnitId")
+                        )
+                        .Label("Claimed for Project/Jobs:")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ID("accountDropDownBox")
+                        .ShowClearButton(true)
+                        .AcceptCustomValue(true)
+                        .OpenOnFieldClick(false)
+                        .ValueChangeEvent("change") // Detects changes in the dropdown
+                        .HoverStateEnabled(true)
 
-                .ValueExpr("CostAllocationUnitId")
-                .DisplayExpr("CostAllocationUnit")
+                        .ValueExpr("CostAllocationUnitId")
+                        .DisplayExpr("CostAllocationUnit")
 
-                .OnInput("dropDownBoxOnInput")
-                .OnOpened("onclaimOpened")
-                
-                .TabIndex(1)
-                .DropDownOptions(o => o.Width(1000))
-                .OnKeyDown("onKeyDown")
-                .ContentTemplate(new TemplateName("PaymentAmountContentTemplate"))
-                )
+                        .OnInput("dropDownBoxOnInput")
+                        .OnOpened("onclaimOpened")
+                        .Width(440)
+                        .TabIndex(1)
+                        .DropDownOptions(o => o.Width(1000))
+                        .OnKeyDown("onKeyDown")
+                        .ContentTemplate(new TemplateName("PaymentAmountContentTemplate"))
+                        )
         </div>
-    <div class="form-group col-md-2 col-sm-6">
+        <div class="form-group">
             @(
-                Html.DevExtreme().SelectBox()
-                .Label("Priority:")
-                .ID("Priorityclaim")
-                .LabelMode(EditorLabelMode.Outside)
-                .DataSource(new[] { "Critical", "High", "Medium", "Low" })
-                .Value(null)
-                )
+                        Html.DevExtreme().SelectBox()
+                        .Label("Priority:")
+                        .ID("Priorityclaim")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .DataSource(new[] { "Critical", "High", "Medium", "Low" })
+                        .Value(null)
+                        )
         </div>
     </div>
 
     <div class="dx-field ledgerResult">
         @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl20103ExpenseClaimChild>()
-            .ID("dataGrid")
-            .Columns(columns =>
-            {
-                columns.AddFor(m => m.ClaimChildNo).Caption("Child No").Visible(false).AllowEditing(false);
-                columns.AddFor(m => m.ExpenseDescription).Caption("Expense Description").Visible(true);
-                columns.AddFor(m => m.BillRefNo).Caption("Bill Ref No");
-                columns.AddFor(m => m.BillDate).Caption("Bill Date").AllowEditing(true).CellTemplate(@<text>
-            <span>
-                <%- data.BillDate ? DevExpress.localization.formatDate(new Date(data.BillDate), "dd-MMM-yyyy") : '' %>
-            </span>
-        </text>)
-            // Edit Mode
-            .EditCellTemplate(@<text>
-            @(Html.DevExtreme().DateBox()
-            .Type(DateBoxType.Date)
-            .Value(new JS("data.BillDate")) // Default to today
-            .OnValueChanged("setEffectiveDate") // Pass full data object
-            .DisplayFormat("dd-MMM-yyyy")
-            )
-        </text>);
-                columns.AddFor(m => m.ClaimedAmount)
-            .Caption("Claimed Amount")
-            .Alignment(HorizontalAlignment.Right)
-            .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }") // ✅ Fix: Prevent undefined error
-            .AllowEditing(true).EditCellTemplate(@<text>
-            @(Html.DevExtreme().NumberBox()
-            .ID("claimedAmountEditor")
-            .Value(new JS("data.ClaimedAmount"))
-            .Min(0)
-            .ShowSpinButtons(false)
-            .OnValueChanged("onClaimedAmountChanged")
-            .Format("#,##0.00")
-            )
-        </text>);
-                columns.AddFor(m => m.ApprovedAmount)
-            .Caption("Approved Amount")
-            .AllowEditing(true)
-            .Alignment(HorizontalAlignment.Right)
-            .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }").EditCellTemplate(@<text>
-            @(Html.DevExtreme().NumberBox()
-            .ID("approvedAmountEditor")
-            .Value(new JS("data.ApprovedAmount"))
-            .Min(0)
-            .ShowSpinButtons(false)
-            .OnValueChanged("onApprovedAmountChanged")
-            .Format("#,##0.00")
-            )
-        </text>);
-                columns.Add().Caption("Action").Width(120)
-            .CellTemplate(@<text>
-            <div class="dropdown-wrapper">
-                @(Html.DevExtreme().Button()
-                .Icon("card")
-                .Type(ButtonType.Default)
-                .OnClick("onCardClick"))
+                .ID("dataGrid")
+                .Columns(columns =>
+                {
+                    columns.AddFor(m => m.ClaimChildNo).Caption("Child No").Visible(false).AllowEditing(false);
+                    columns.AddFor(m => m.ExpenseDescription).Caption("Expense Description").Visible(true);
+                    columns.AddFor(m => m.BillRefNo).Caption("Bill Ref No");
+                    columns.AddFor(m => m.BillDate).Caption("Bill Date").AllowEditing(true).CellTemplate(@<text>
+                                                                                                              <span>
+                                                                                                                  <%- data.BillDate ? DevExpress.localization.formatDate(new Date(data.BillDate), "dd-MMM-yyyy") : '' %>
+                                                                                                              </span>
+                                                                                                          </text>)
+                    // Edit Mode
+                    .EditCellTemplate(@<text>
+                @(Html.DevExtreme().DateBox()
+                            .Type(DateBoxType.Date)
+                            .Value(new JS("data.BillDate")) // Default to today
+                            .OnValueChanged("setEffectiveDate") // Pass full data object
+                            .DisplayFormat("dd-MMM-yyyy")
+                            )
+            </text>);
+                    columns.AddFor(m => m.ClaimedAmount)
+                    .Caption("Claimed Amount")
+                    .Alignment(HorizontalAlignment.Right)
+                    .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }") // ✅ Fix: Prevent undefined error
+                    .AllowEditing(true).EditCellTemplate(@<text>
+                @(Html.DevExtreme().NumberBox()
+                            .ID("claimedAmountEditor")
+                            .Value(new JS("data.ClaimedAmount"))
+                            .Min(0)
+                            .ShowSpinButtons(false)
+                            .OnValueChanged("onClaimedAmountChanged")
+                            .Format("#,##0.00")
+                            )
+            </text>);
+                    columns.AddFor(m => m.ApprovedAmount)
+                    .Caption("Approved Amount")
+                    .AllowEditing(true)
+                    .Alignment(HorizontalAlignment.Right)
+                    .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }").EditCellTemplate(@<text>
+                @(Html.DevExtreme().NumberBox()
+                            .ID("approvedAmountEditor")
+                            .Value(new JS("data.ApprovedAmount"))
+                            .Min(0)
+                            .ShowSpinButtons(false)
+                            .OnValueChanged("onApprovedAmountChanged")
+                            .Format("#,##0.00")
+                            )
+            </text>);
+                    columns.Add().Caption("Action").Width(120)
+                    .CellTemplate(@<text>
+                                       <div class="dropdown-wrapper">
+                    @(Html.DevExtreme().Button()
+                                    .Icon("card")
+                                    .Type(ButtonType.Default)
+                                    .OnClick("onCardClick"))
             </div>
         </text>).Alignment(HorizontalAlignment.Center);
 
-                columns.AddFor(m => m.AccountId).DataField("AccountHead").Caption("Account Ledger").Width(300)
-            .CellTemplate(@<text>
-            <span>
-                <% if (data.AccountHead) { %>
-                <%= data.AccountHead %>
-                <% } else { %>
-                <span style="color: black;">&lt;select Account Ledger&gt;</span>
-                <% } %>
-            </span>
-        </text>)
-        // Edit Mode
-        .EditCellTemplate(@<text>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                @(Html.DevExtreme().DropDownBox()
-                .DataSource(d => d.WebApi().Controller("VoucherEntryCashReceipts")
-                .LoadAction("GetEditAccountHead")
-                .LoadMode(DataSourceLoadMode.Raw)
-                .Key("AccountId"))
-                .LabelMode(EditorLabelMode.Outside)
-                .ID("accountDropDownBoxEdit")
-                .ShowClearButton(false)
-                .AcceptCustomValue(true)
-                .OpenOnFieldClick(false)
-                .HoverStateEnabled(true)
-                .OnValueChanged("gridLedger_valueChanged")
-                .ValueExpr("AccountId")
-                .DisplayExpr("AccountHead")
-                .Placeholder("Select AccountHead")
-                .Width(350)
-                .DropDownOptions(o => o.Width(800))
-                .Value(new JS("data.AccountId"))
-                .ContentTemplate(new TemplateName("ReceivingAccountDropdownContentTemplate"))
-                )
+                    columns.AddFor(m => m.AccountId).DataField("AccountHead").Caption("Account Ledger").Width(300)
+                    .CellTemplate(@<text>
+                                       <span>
+                                           <% if (data.AccountHead) { %>
+                                           <%= data.AccountHead %>
+                                           <% } else { %>
+                                           <span style="color: black;">&lt;select Account Ledger&gt;</span>
+                                           <% } %>
+                                       </span>
+                                   </text>)
+                    // Edit Mode
+                    .EditCellTemplate(@<text>
+                                           <div style="display: flex; justify-content: space-between; align-items: center;">
+                    @(Html.DevExtreme().DropDownBox()
+                                    .DataSource(d => d.WebApi().Controller("VoucherEntryCashReceipts")
+                                    .LoadAction("GetEditAccountHead")
+                                    .LoadMode(DataSourceLoadMode.Raw)
+                                    .Key("AccountId"))
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .ID("accountDropDownBoxEdit")
+                                    .ShowClearButton(false)
+                                    .AcceptCustomValue(true)
+                                    .OpenOnFieldClick(false)
+                                    .HoverStateEnabled(true)
+                                    .OnValueChanged("gridLedger_valueChanged")
+                                    .ValueExpr("AccountId")
+                                    .DisplayExpr("AccountHead")
+                                    .Placeholder("Select AccountHead")
+                                    .Width(350)
+                                    .DropDownOptions(o => o.Width(800))
+                                    .Value(new JS("data.AccountId"))
+                                    .ContentTemplate(new TemplateName("ReceivingAccountDropdownContentTemplate"))
+                                    )
 
 
             </div>
 
-        </text>);
+                    </text>);
 
 
 
-                columns.AddFor(m => m.CostCenterCode).DataField("CostAllocationUnit").Caption("Cost Center Code").Width(300)
-            .CellTemplate(@<text>
-            <span>
-                <% if (data.CostAllocationUnit) { %>
-                <%= data.CostAllocationUnit %>
-                <% } else { %>
-                <span style="color: black;">&lt;select Cost Center&gt;</span>
-                <% } %>
-            </span>
-        </text>)
-        // Edit Mode
-        .EditCellTemplate(@<text>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                @(Html.DevExtreme().DropDownBox()
-                .DataSource(d => d.WebApi().Controller("ExpenseClaim")
-                .LoadAction("GetEditCostCenter")
-                .LoadMode(DataSourceLoadMode.Raw)
-                .Key("CostAllocationUnitId"))
-                .LabelMode(EditorLabelMode.Outside)
-                .ID("CostDropDownBoxEdit")
-                .ShowClearButton(false)
-                .AcceptCustomValue(true)
-                .OpenOnFieldClick(false)
-                .HoverStateEnabled(true)
-                .OnValueChanged("gridCost_valueChanged")
-                .ValueExpr("CostAllocationUnitId")
-                .DisplayExpr("CostAllocationUnit")
-                .Placeholder("Select Cost Center")
-                .Width(350)
-                .DropDownOptions(o => o.Width(800))
-                .Value(new JS("data.CostCenterCode"))
-                .ContentTemplate(new TemplateName("CostDropdownContentTemplate"))
+                    columns.AddFor(m => m.CostCenterCode).DataField("CostAllocationUnit").Caption("Cost Center Code").Width(300)
+                    .CellTemplate(@<text>
+                                       <span>
+                                           <% if (data.CostAllocationUnit) { %>
+                                           <%= data.CostAllocationUnit %>
+                                           <% } else { %>
+                                           <span style="color: black;">&lt;select Cost Center&gt;</span>
+                                           <% } %>
+                                       </span>
+                                   </text>)
+                    // Edit Mode
+                    .EditCellTemplate(@<text>
+                                           <div style="display: flex; justify-content: space-between; align-items: center;">
+                    @(Html.DevExtreme().DropDownBox()
+                                    .DataSource(d => d.WebApi().Controller("ExpenseClaim")
+                                    .LoadAction("GetEditCostCenter")
+                                    .LoadMode(DataSourceLoadMode.Raw)
+                                    .Key("CostAllocationUnitId"))
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .ID("CostDropDownBoxEdit")
+                                    .ShowClearButton(false)
+                                    .AcceptCustomValue(true)
+                                    .OpenOnFieldClick(false)
+                                    .HoverStateEnabled(true)
+                                    .OnValueChanged("gridCost_valueChanged")
+                                    .ValueExpr("CostAllocationUnitId")
+                                    .DisplayExpr("CostAllocationUnit")
+                                    .Placeholder("Select Cost Center")
+                                    .Width(350)
+                                    .DropDownOptions(o => o.Width(800))
+                                    .Value(new JS("data.CostCenterCode"))
+                                    .ContentTemplate(new TemplateName("CostDropdownContentTemplate"))
+                                    )
+
+
+                </div>
+
+            </text>);
+                })
+                .AllowColumnReordering(true)
+                .AllowColumnResizing(true)
+                .ColumnFixing(fixing => fixing.Enabled(true))
+                .Height(250)
+                .Width("100%")
+                .ColumnAutoWidth(true)
+                .ShowBorders(true)
+                .RowAlternationEnabled(true)
+                .Editing(editing => editing
+                .Mode(GridEditMode.Cell)
+                .AllowUpdating(true)
+                .AllowDeleting(true)
+                .UseIcons(true)
+
                 )
-
-
-            </div>
-
-        </text>);
-            })
-            .AllowColumnReordering(true)
-            .AllowColumnResizing(true)
-            .ColumnFixing(fixing => fixing.Enabled(true))
-            .Height(250)
-            .Width("100%")
-            .ColumnAutoWidth(true)
-            .ShowBorders(true)
-            .RowAlternationEnabled(true)
-            .Editing(editing => editing
-            .Mode(GridEditMode.Cell)
-            .AllowUpdating(true)
-            .AllowDeleting(true)
-            .UseIcons(true)
-
-            )
-            .Summary(summary =>
-            {
-                summary.TotalItems(totalItems =>
+                .Summary(summary =>
                 {
-                    totalItems.Add().Column("ClaimedAmount").SummaryType(SummaryType.Sum)
-                .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-                    totalItems.Add().Column("ApprovedAmount").SummaryType(SummaryType.Sum)
-                .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-                });
-            })
-            .OnRowRemoving("onexpenserowremoving")
-            )
+                    summary.TotalItems(totalItems =>
+                    {
+                        totalItems.Add().Column("ClaimedAmount").SummaryType(SummaryType.Sum)
+                    .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+                        totalItems.Add().Column("ApprovedAmount").SummaryType(SummaryType.Sum)
+                    .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+                    });
+                })
+                .OnRowRemoving("onexpenserowremoving")
+                )
     </div>
-<div class="dx-card-body">
-    <div class="container-fluid">
+    <div class="container">
+        <div class="row g-2">
 
-        <!-- First Row -->
-        <div class="row gx-3 gy-3">
+            <div class="col-md-2">
+                <div class="row">
+                    <div class="displayFlex">
+                        @(Html.DevExtreme().CheckBox()
+                                                .ID("IsSubmitted").Disabled(true)
+                                                ) < span style = "margin-left:5px" > Submitted By:</ span >
+                        @(Html.DevExtreme().TextBox()
+                                                .ID("SubmittedBytext")
+                                                .Value(null)
+                                                .Disabled(true)
+                                                .Width(120))
+                    </div>
+                    <div style="margin-left:25px" class="displayFlex">
+                        Submitted On:<span id="SubmittedOn"></span>
+                        @(Html.DevExtreme().TextBox()
+                                                .ID("SubmittedOnDate")
+                                                .Value(null)
+                                                .Disabled(true)
+                                                .Width(120))
+                    </div>
+                </div>
 
-            <!-- Type of Claim -->
-            <div class="form-group col-md-3 col-sm-6">
-                @(Html.DevExtreme().SelectBox()
-                                .Label("Type of Claim:")
-                                .ID("ClaimType")
-                                .LabelMode(EditorLabelMode.Outside)
-                                .DataSource(new[] { "Petty Cash Request" })
-                                .Value("Petty Cash Request")
-                                .Disabled(true)
-                             
-                                )
+                <div class="displayFlex">
+                    @(Html.DevExtreme().CheckBox()
+                                        .ID("IsApproved").Disabled(true)
+                                        ) < span style = "margin-left:5px" > Approved By:</ span >
+                    @(Html.DevExtreme().TextBox()
+                                        .ID("ApprovedBytext")
+                                        .Value(null)
+                                        .Disabled(true)
+                                        .Width(120))
+                </div>
+                <div style="margin-left:25px" class="displayFlex">
+                    Approved On:<span id="ApprovedOn"></span>
+                    @(Html.DevExtreme().TextBox()
+                                        .ID("ApprovedOntext")
+                                        .Value(null)
+                                        .Disabled(true)
+                                        .Width(120))
+                </div>
+
+            </div>
+            <div class="col-md-2">
+                <div class="row">
+                    <div class="displayFlex">
+                        @(Html.DevExtreme().CheckBox().Disabled(true)
+                                                .ID("IsVerified")
+                                                ) < span style = "margin-left:5px" > Verified By:</ span >
+                        @(Html.DevExtreme().TextBox()
+                                                .ID("VerifiedBytext")
+                                                .Value(null)
+                                                .Disabled(true)
+                                                .Width(120))
+                    </div>
+                    <div style="margin-left:25px" class="displayFlex">
+                        Verified On:<span id="VerifiedOn"></span>
+                        @(Html.DevExtreme().TextBox()
+                                                .ID("VerifiedOntext")
+                                                .Value(null)
+                                                .Disabled(true)
+                                                .Width(120))
+                    </div>
+                </div>
+                <div class="row g-2">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @(
+                                                        Html.DevExtreme().SelectBox()
+                                                        .Label("Type of Claim:")
+                                                        .ID("ClaimType")
+                                                        .LabelMode(EditorLabelMode.Outside)
+                                                        .DataSource(new[] { "Petty Cash Request" })
+                                                        .Value("Petty Cash Request")
+                                                        .Disabled(true)
+                                                        .Width(200)
+
+                                                        )
+
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group" style="margin-left:65px;margin-top:24px">
+                            @* <label for="ClaimRefNo">Claim Reference No</label> *@
+
+                            @(
+                                                        Html.DevExtreme().TextBox()
+                                                        .ID("Voucher")
+                                                        .Value(null)
+                                                                     //.OnValueChanged("onVoucherNoChanged")
+                                                        .ReadOnly(true)
+                                                        .Width(120)
+                                                        )
+
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div>
+            <div class="col-md-1">
+                <div class="form-group" style="padding-top: 30px;">
+                    <!-- Radio Group --> @(Html.DevExtreme().RadioGroup()
+                                        .ID("radioGroup")
+                                        .Items(new[] { "Cash Payment", "Bank Payment" }) // Static items
+                                        .Value(null) // Default selected value
+                                        .Layout(Orientation.Horizontal)
+                                        .OnValueChanged("onRadioGroupValueChanged") // Attach JavaScript function
+                                        )
+
+                    <div id="paymentOptions" style="margin-bottom: 20px;"></div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="SalesInvoiceNo"></label>
+                            @(
+                                                        Html.DevExtreme().TextBox()
+                                                        .ID("GenerateVoucher")
+                                                        .Value(null)
+
+                                                        .ReadOnly(true)
+                                                        )
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="displayFlex">
+                            @(Html.DevExtreme().CheckBox().Disabled(true)
+                                                        .ID("IsPaid")
+                                                        ) < span style = "margin-left:5px" > Paid By:</ span >
+                            @(Html.DevExtreme().TextBox()
+                                                        .ID("paidBytext")
+                                                        .Value(null)
+                                                        .Disabled(true)
+                                                        .Width(120))
+                        </div>
+                        <div style="margin-left:25px" class="displayFlex">
+                            Paid On:<span id="PaidOn"></span>
+                            @(Html.DevExtreme().TextBox()
+                                                        .ID("paidOntext")
+                                                        .Value(null)
+                                                        .Disabled(true)
+                                                        .Width(120))
+                        </div>
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="AccountHead">PaymentAccounts :</label>
+                    @(Html.DevExtreme().DropDownBox()
+
+
+                                        .LabelMode(EditorLabelMode.Outside)
+                                        .ID("ddAccountHead")
+                                        .ShowClearButton(true)
+                                        .AcceptCustomValue(true)
+                                        .OpenOnFieldClick(false)
+                                        .ValueChangeEvent("input")
+                                        .HoverStateEnabled(true)
+                                        .ValueExpr("AccountId")
+                                        .DisplayExpr("AccountHead")
+                                        .OnInput("dropDownBoxOnInput")
+                                        .OnOpened("onPaymentOpened")
+                                        .Width(200)
+                                        .TabIndex(1)
+                                        .DropDownOptions(o => o
+                                        .Width(1000)
+                                        )
+                                        .OnKeyDown("onKeyDown")
+                                                                //.OnValueChanged("dropDownBoxValueChanged")
+                                        .ContentTemplate(new TemplateName("AccountHeadContentTemplate"))
+                                        )
+                </div>
+
+
+            </div>
+            <div class="col-md-3">
+                <div class="form-group" style="padding-top:40px;">
+
+                    @(Html.DevExtreme().Button()
+                                        .ID("btnPaytheClaim")
+                                        .Text("Pay the Claim")
+                                        .Icon("money")
+                                        .ElementAttr(new { @class = "bold-button" })
+                                        .Height(100)
+                                        .Width(100)
+                                        .OnClick("generateVoucherNo")
+                                        )
+                </div>
             </div>
 
-            <!-- Payment Type -->
-            <div class="form-group col-md-3 col-sm-6">
-                @(Html.DevExtreme().RadioGroup()
-                                .ID("radioGroup")
-                                .Items(new[] { "Cash Payment", "Bank Payment" })
-                                .Value(null)
-                                .Layout(Orientation.Horizontal)
-                                .OnValueChanged("onRadioGroupValueChanged")
-                                )
-            </div>
-
-            <!-- Generated Voucher -->
-            <div class="form-group col-md-3 col-sm-6">
-                <label for="GenerateVoucher" class="form-label">Generated Voucher</label>
-                @(Html.DevExtreme().TextBox()
-                                .ID("GenerateVoucher")
-                                .Value(null)
-                                .ReadOnly(true)
-                                )
-            </div>
-
-            <!-- Payment Accounts -->
-            <div class="form-group col-md-3 col-sm-6">
-                <label for="AccountHead" class="form-label">Payment Accounts:</label>
-                @(Html.DevExtreme().DropDownBox()
-                                .LabelMode(EditorLabelMode.Outside)
-                                .ID("ddAccountHead")
-                                .ShowClearButton(true)
-                                .AcceptCustomValue(true)
-                                .OpenOnFieldClick(false)
-                                .ValueChangeEvent("input")
-                                .HoverStateEnabled(true)
-                                .ValueExpr("AccountId")
-                                .DisplayExpr("AccountHead")
-                                .OnInput("dropDownBoxOnInput")
-                                .OnOpened("onPaymentOpened")
-                        
-                                .TabIndex(1)
-                                .DropDownOptions(o => o.Width(1000))
-                                .OnKeyDown("onKeyDown")
-                                .ContentTemplate(new TemplateName("AccountHeadContentTemplate"))
-                                )
-            </div>
-
-            <!-- Pay Button -->
-            <div class="form-group col-md-3 col-sm-6 d-flex align-items-end">
-                @(Html.DevExtreme().Button()
-                                .ID("btnPaytheClaim")
-                                .Text("Pay the Claim")
-                                .Icon("money")
-                                .ElementAttr(new { @class = "bold-button" })
-                                .Height(50)
-                          
-                                .OnClick("generateVoucherNo")
-                                )
-            </div>
         </div>
 
-        <!-- Second Row -->
-        <div class="row gx-3 gy-3 mt-2">
-
-            <!-- Submitted -->
-            <div class="form-group col-md-3 col-sm-6">
-                <label class="form-label">Submitted By:</label>
-                @(Html.DevExtreme().TextBox().ID("SubmittedBytext").Value(null).Disabled(true).Width(100))
-                <label class="form-label mt-2">Submitted On:</label>
-                @(Html.DevExtreme().TextBox().ID("SubmittedOnDate").Value(null).Disabled(true).Width(100))
-            </div>
-
-            <!-- Approved -->
-            <div class="form-group col-md-3 col-sm-6">
-                <label class="form-label">Approved By:</label>
-                @(Html.DevExtreme().TextBox().ID("ApprovedBytext").Value(null).Disabled(true).Width(100))
-                <label class="form-label mt-2">Approved On:</label>
-                @(Html.DevExtreme().TextBox().ID("ApprovedOntext").Value(null).Disabled(true).Width(100))
-            </div>
-
-            <!-- Verified -->
-            <div class="form-group col-md-3 col-sm-6">
-                <label class="form-label">Verified By:</label>
-                @(Html.DevExtreme().TextBox().ID("VerifiedBytext").Value(null).Disabled(true).Width(100))
-                <label class="form-label mt-2">Verified On:</label>
-                @(Html.DevExtreme().TextBox().ID("VerifiedOntext").Value(null).Disabled(true).Width(100))
-            </div>
-
-            <!-- Paid -->
-            <div class="form-group col-md-3 col-sm-6">
-                <label class="form-label">Paid By:</label>
-                @(Html.DevExtreme().TextBox().ID("paidBytext").Value(null).Disabled(true).Width(100))
-                <label class="form-label mt-2">Paid On:</label>
-                @(Html.DevExtreme().TextBox().ID("paidOntext").Value(null).Disabled(true).Width(100))
-            </div>
-
-        </div>
     </div>
-</div>
-
-
-   
-
-
-
     <input id="formId" value="ExpenseClaimEdit" type="hidden" />
-<div class="footer-fixed">
+    <div>
         @await Html.PartialAsync("_ExpenseFooter")
     </div>
-
+</div>
 @using (Html.DevExtreme().NamedTemplate("AccountHeadContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                    .ID("accounthead-datagrid")
+                        .ID("accounthead-datagrid")
 
-                    .WordWrapEnabled(true)
-                    .ShowBorders(true)
-                    .SearchPanel(sp => sp.HighlightSearchText(true))
-                    .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                    .OnSelectionChanged("dataGridAccountHeadSelectionChanged")
-                    .OnInitialized("dataGridAccountHeadInitialized")
-                    .HeaderFilter(p => p.Visible(true))
-                    .ShowBorders(true)
-                    .HoverStateEnabled(true)
-                    .Paging(p => p.PageSize(15))
-                    .FilterRow(f => f.Visible(true))
-                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                    .Height(345)
-                    .Selection(s => s.Mode(SelectionMode.Single))
-                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                    .Columns(columns =>
-                    {
-                        columns.Add().DataField("AccountId");
-                        columns.Add().DataField("AccountHead");
+                        .WordWrapEnabled(true)
+                        .ShowBorders(true)
+                        .SearchPanel(sp => sp.HighlightSearchText(true))
+                        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                        .OnSelectionChanged("dataGridAccountHeadSelectionChanged")
+                        .OnInitialized("dataGridAccountHeadInitialized")
+                        .HeaderFilter(p => p.Visible(true))
+                        .ShowBorders(true)
+                        .HoverStateEnabled(true)
+                        .Paging(p => p.PageSize(15))
+                        .FilterRow(f => f.Visible(true))
+                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                        .Height(345)
+                        .Selection(s => s.Mode(SelectionMode.Single))
+                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                        .Columns(columns =>
+                        {
+                            columns.Add().DataField("AccountId");
+                            columns.Add().DataField("AccountHead");
 
 
-                    })
-                )
+                        })
+                    )
 }
 @using (Html.DevExtreme().NamedTemplate("AccountHeadContentTemplate1"))
 {
     @(Html.DevExtreme().DataGrid()
-                    .ID("accounthead-datagrid1")
-                    .DataSource(d => d.WebApi()
-                    .Controller("PurchaseVoucher")
-                    .LoadAction("GetAccountHead")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                    .Key("AccountId")
-                    )
-                    .WordWrapEnabled(true)
-                    .ShowBorders(true)
-                    .SearchPanel(sp => sp.HighlightSearchText(true))
-                    .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                    .OnSelectionChanged("dataGridAccountHeadSelectionChanged1")
-                    .OnInitialized("dataGridAccountHeadInitialized1")
-                    .HeaderFilter(p => p.Visible(true))
-                    .ShowBorders(true)
-                    .HoverStateEnabled(true)
-                    .Paging(p => p.PageSize(15))
-                    .FilterRow(f => f.Visible(true))
-                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                    .Height(345)
-                    .Selection(s => s.Mode(SelectionMode.Single))
-                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                    .Columns(columns =>
-                    {
-                        columns.Add().DataField("AccountId");
-                        columns.Add().DataField("AccountHead");
-                        columns.Add().DataField("AccountHeadArabic");
-                        columns.Add().DataField("IsLedgerObselete").Alignment(HorizontalAlignment.Center)
-                    .CellTemplate(@<text>
-    <div class="dx-icon">
-        <%= data.IsLedgerObselete ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-    </div>
-</text>);
-
-                    })
-                )
-}
-<!-- Drop Down Grid Template -->
-@using (Html.DevExtreme().NamedTemplate("PaymentAmountContentTemplate"))
-{
-    @(
-                            Html.DevExtreme().DataGrid()
-                            .ID("suppliername-datagrid")
-                            .DataSource(d => d.WebApi()
-                            .Controller("CostAllocation")
-                            .LoadAction("GetCostAllocationUnits")
-                            .LoadMode(DataSourceLoadMode.Raw)
-                            .Key("CostAllocationUnitId")
-                            )
-                            .WordWrapEnabled(true)
-                            .ShowBorders(true)
-                            .SearchPanel(sp => sp.HighlightSearchText(true))
-                            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                            .OnSelectionChanged("dataGridSelectionChanged")
-
-                            .OnInitialized("dataGridInitialized")
-                            .HeaderFilter(p => p.Visible(true))
-                            .ShowBorders(true)
-                            .HoverStateEnabled(true)
-                            .Paging(p => p.PageSize(15))
-                            .FilterRow(f => f.Visible(true))
-                            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                            .Height(345)
-                            .Selection(s => s.Mode(SelectionMode.Single))
-                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-
-
-                            .Columns(columns =>
-                            {
-                                columns.Add().DataField("CostAllocationUnitId");
-                                columns.Add().DataField("CostAllocationUnit")
-
-
-
-                        .Alignment(HorizontalAlignment.Center);
-
-
-                            })
-
-                        )
-}
-<!-- Drop Down Grid Template -->
-@using (Html.DevExtreme().NamedTemplate("ReceivingAccountDropdownContentTemplate"))
-{
-    @(
-                        Html.DevExtreme().DataGrid()
-                        .ID("accountDropDownBoxeditGrid")
+                        .ID("accounthead-datagrid1")
                         .DataSource(d => d.WebApi()
-                        .Controller("VoucherEntryCashReceipts")
-                        .LoadAction("GetEditAccountHead")
+                        .Controller("PurchaseVoucher")
+                        .LoadAction("GetAccountHead")
                         .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("AccountHead")
+                        .Key("AccountId")
                         )
                         .WordWrapEnabled(true)
                         .ShowBorders(true)
                         .SearchPanel(sp => sp.HighlightSearchText(true))
                         .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-
-                        .SelectedRowKeys(new JS(@"component.option(""value"")"))
-                        .OnSelectionChanged(@<text>
-    function(selectedItems) {
-    var keys = selectedItems.selectedRowKeys;
-    component.option("value", keys);
-    console.log(keys);
-    }
-</text>)
-
-
-                    .HeaderFilter(p => p.Visible(true))
-                    .ShowBorders(true)
-                    .HoverStateEnabled(true)
-                    .Paging(p => p.PageSize(15))
-                    .FilterRow(f => f.Visible(true))
-                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                    .Height(345)
-                    .Selection(s => s.Mode(SelectionMode.Single))
-                    .Columns(columns =>
-                    {
-                        columns.Add().Caption("Account ID").DataField("AccountId");
-                        columns.Add().Caption("Account").DataField("AccountHead");
-                        columns.Add().Caption("Account Group").DataField("AccountGroup");
-                        columns.Add().Caption("AccountHead Arabic").DataField("AccountHeadArabic");
-                        columns.Add().Caption("Reference No").DataField("ReferenceNo");
-                        columns.Add().DataField("IsLedgerObselete")
-
-
-                            .Alignment(HorizontalAlignment.Center)
-                            .CellTemplate(@<text>
+                        .OnSelectionChanged("dataGridAccountHeadSelectionChanged1")
+                        .OnInitialized("dataGridAccountHeadInitialized1")
+                        .HeaderFilter(p => p.Visible(true))
+                        .ShowBorders(true)
+                        .HoverStateEnabled(true)
+                        .Paging(p => p.PageSize(15))
+                        .FilterRow(f => f.Visible(true))
+                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                        .Height(345)
+                        .Selection(s => s.Mode(SelectionMode.Single))
+                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                        .Columns(columns =>
+                        {
+                            columns.Add().DataField("AccountId");
+                            columns.Add().DataField("AccountHead");
+                            columns.Add().DataField("AccountHeadArabic");
+                            columns.Add().DataField("IsLedgerObselete").Alignment(HorizontalAlignment.Center)
+                        .CellTemplate(@<text>
     <div class="dx-icon">
-        <%= data.IsLedgerObselete ? '<i style="color:red" class="fa fa-toggle-on"></i>' : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
+        <%= data.IsLedgerObselete ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
     </div>
 </text>);
 
-                    })
-                            .OnRowPrepared("onAccountHeadRowPrepared")
-                        )
+                        })
+                    )
 }
-@using (Html.DevExtreme().NamedTemplate("CostDropdownContentTemplate"))
+<!-- Drop Down Grid Template -->
+@using (Html.DevExtreme().NamedTemplate("PaymentAmountContentTemplate"))
+{
+    @(
+                                Html.DevExtreme().DataGrid()
+                                .ID("suppliername-datagrid")
+                                .DataSource(d => d.WebApi()
+                                .Controller("CostAllocation")
+                                .LoadAction("GetCostAllocationUnits")
+                                .LoadMode(DataSourceLoadMode.Raw)
+                                .Key("CostAllocationUnitId")
+                                )
+                                .WordWrapEnabled(true)
+                                .ShowBorders(true)
+                                .SearchPanel(sp => sp.HighlightSearchText(true))
+                                .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                                .OnSelectionChanged("dataGridSelectionChanged")
+
+                                .OnInitialized("dataGridInitialized")
+                                .HeaderFilter(p => p.Visible(true))
+                                .ShowBorders(true)
+                                .HoverStateEnabled(true)
+                                .Paging(p => p.PageSize(15))
+                                .FilterRow(f => f.Visible(true))
+                                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                .Height(345)
+                                .Selection(s => s.Mode(SelectionMode.Single))
+                            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+
+
+                                .Columns(columns =>
+                                {
+                                    columns.Add().DataField("CostAllocationUnitId");
+                                    columns.Add().DataField("CostAllocationUnit")
+
+
+
+                            .Alignment(HorizontalAlignment.Center);
+
+
+                                })
+
+                            )
+}
+<!-- Drop Down Grid Template -->
+@using (Html.DevExtreme().NamedTemplate("ReceivingAccountDropdownContentTemplate"))
 {
     @(
                             Html.DevExtreme().DataGrid()
-                            .ID("CostDropDownBoxeditGrid")
+                            .ID("accountDropDownBoxeditGrid")
                             .DataSource(d => d.WebApi()
-                            .Controller("ExpenseClaim")
-                            .LoadAction("GetEditCostCenter")
+                            .Controller("VoucherEntryCashReceipts")
+                            .LoadAction("GetEditAccountHead")
                             .LoadMode(DataSourceLoadMode.Raw)
-                            .Key("CostAllocationUnit")
+                            .Key("AccountHead")
                             )
                             .WordWrapEnabled(true)
                             .ShowBorders(true)
@@ -790,7 +791,7 @@
 </text>)
 
 
-                        .HeaderFilter(p => p.Visible(true))
+                    .HeaderFilter(p => p.Visible(true))
                         .ShowBorders(true)
                         .HoverStateEnabled(true)
                         .Paging(p => p.PageSize(15))
@@ -800,16 +801,71 @@
                         .Selection(s => s.Mode(SelectionMode.Single))
                         .Columns(columns =>
                         {
-                            columns.Add().DataField("CostAllocationUnitId").Visible(false);
-                            columns.Add().Caption("Cost for Projects/Jobs").DataField("CostAllocationUnit");
+                            columns.Add().Caption("Account ID").DataField("AccountId");
+                            columns.Add().Caption("Account").DataField("AccountHead");
+                            columns.Add().Caption("Account Group").DataField("AccountGroup");
+                            columns.Add().Caption("AccountHead Arabic").DataField("AccountHeadArabic");
+                            columns.Add().Caption("Reference No").DataField("ReferenceNo");
+                            columns.Add().DataField("IsLedgerObselete")
 
 
-
-
+                                .Alignment(HorizontalAlignment.Center)
+                                .CellTemplate(@<text>
+    <div class="dx-icon">
+        <%= data.IsLedgerObselete ? '<i style="color:red" class="fa fa-toggle-on"></i>' : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
+    </div>
+</text>);
 
                         })
-
+                                .OnRowPrepared("onAccountHeadRowPrepared")
                             )
+}
+@using (Html.DevExtreme().NamedTemplate("CostDropdownContentTemplate"))
+{
+    @(
+                                Html.DevExtreme().DataGrid()
+                                .ID("CostDropDownBoxeditGrid")
+                                .DataSource(d => d.WebApi()
+                                .Controller("ExpenseClaim")
+                                .LoadAction("GetEditCostCenter")
+                                .LoadMode(DataSourceLoadMode.Raw)
+                                .Key("CostAllocationUnit")
+                                )
+                                .WordWrapEnabled(true)
+                                .ShowBorders(true)
+                                .SearchPanel(sp => sp.HighlightSearchText(true))
+                                .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+
+                                .SelectedRowKeys(new JS(@"component.option(""value"")"))
+                                .OnSelectionChanged(@<text>
+    function(selectedItems) {
+    var keys = selectedItems.selectedRowKeys;
+    component.option("value", keys);
+    console.log(keys);
+    }
+</text>)
+
+
+                        .HeaderFilter(p => p.Visible(true))
+                            .ShowBorders(true)
+                            .HoverStateEnabled(true)
+                            .Paging(p => p.PageSize(15))
+                            .FilterRow(f => f.Visible(true))
+                            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                            .Height(345)
+                            .Selection(s => s.Mode(SelectionMode.Single))
+                            .Columns(columns =>
+                            {
+                                columns.Add().DataField("CostAllocationUnitId").Visible(false);
+                                columns.Add().Caption("Cost for Projects/Jobs").DataField("CostAllocationUnit");
+
+
+
+
+
+                            })
+
+                                )
 }
 
 <div id="cardPopover"></div>
@@ -2059,24 +2115,6 @@
 
                 }
             });
-        }
-
-        function onAttachmentButtonClick() {
-            // Get Voucher No safely
-            const voucherNoBox = $("#VoucherNo").dxTextBox("instance");
-            const voucherNo = voucherNoBox ? voucherNoBox.option("value") : null;
-
-
-            var voucherType ="Petty CashRequest"
-            // Log and build URL
-            console.log("Voucher No:", voucherNo);
-            console.log("Voucher Type:", voucherType);
-
-            const isMaster = false;
-            const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&modal=true&isMaster=${isMaster}`;
-            const title = "Transaction Documents";
-
-            openModal(url, title);
         }
 
 </script>
