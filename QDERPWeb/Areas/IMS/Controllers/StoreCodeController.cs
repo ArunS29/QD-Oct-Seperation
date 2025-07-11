@@ -54,24 +54,29 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             {
                 try
                 {
-                    
-
+                    // Check if record exists by StoreId (for update)
                     var existing = await dbContext.Tbl60001storeMasters
-                        .FirstOrDefaultAsync(x => x.StoreId == model.StoreId
-);
+                        .FirstOrDefaultAsync(x => x.StoreId == model.StoreId);
 
-                    if (existing != null)
+                    // 🔍 If it's a new record (insert)
+                    if (existing == null)
                     {
-                        existing.StoreId = model.StoreId;
-                        existing.StoreName = model.StoreName;
-                        existing.CostAllocationUnitId = model.CostAllocationUnitId;
+                        // Check if StoreName already exists (case-insensitive)
+                        bool isDuplicateName = await dbContext.Tbl60001storeMasters
+                            .AnyAsync(x => x.StoreName.ToLower() == model.StoreName.ToLower());
 
+                        if (isDuplicateName)
+                        {
+                            return BadRequest(new { success = false, message = "This StoreName is already in the database. Please check again." });
+                        }
+
+                        dbContext.Tbl60001storeMasters.Add(model);
                     }
                     else
                     {
-                        
-
-                        dbContext.Tbl60001storeMasters.Add(model);
+                        // 🔁 Update logic
+                        existing.StoreName = model.StoreName;
+                        existing.CostAllocationUnitId = model.CostAllocationUnitId;
                     }
 
                     await dbContext.SaveChangesAsync();
@@ -87,6 +92,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             return Unauthorized(new { success = false, message = "Invalid tenant" });
         }
+
         [HttpGet]
         public async Task<IActionResult> GetStoreData()
         {

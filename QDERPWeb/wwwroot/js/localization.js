@@ -3461,9 +3461,11 @@ var dictionary = {
         "Inventory Group": "Inventory Group",
         "Requesting Person": "Requesting Person",
         "Project Sub Unit": "Project Sub Unit",
+        "Cost Center Code:(Finance Modules)":"Cost Center Code:(Finance Modules)",
 
     },
     ar: {
+        "Cost Center Code:(Finance Modules)": "رمز مركز التكلفة (وحدات المالية)",
         "Request Status Id": "معرّف حالة الطلب",
         "Request Status": "حالة الطلب",
         "Inventory Group Id": "معرّف مجموعة المخزون",
