@@ -326,3 +326,39 @@ $(function () {
     // Inject the SVG into the DropDownButton
     $('#rowHeightProperties .dx-button-content').prepend(svgIcon);
 });
+function refreshGrid() {
+    const grid = $("#dataGrid").dxDataGrid("instance");
+    grid.refresh();
+}
+function loadGridState() {
+    var form = $('#formId').val();
+    // Call the API to get the grid state
+    $.ajax({
+        url: `/api/Utility/LoadLayout`, // Adjust to your actual API endpoint
+        method: 'GET',
+        data: {
+            form: form
+        },
+        success: function (response) {
+            // Get the DataGrid instance
+            var dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+            // Load the state into the DataGrid
+            if (response) {
+                try {
+                    // Parse the JSON string from the file
+                    const layout = JSON.parse(response);
+
+                    // Restore the grid state
+                    dataGrid.state(layout);
+                } catch (error) {
+                    console.error("Error parsing JSON:", error);
+                    alert("Failed to load layout. Please ensure the JSON is valid.");
+                }
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error("Error loading grid state:", error);
+        }
+    });
+}
