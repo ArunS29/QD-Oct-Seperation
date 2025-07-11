@@ -909,8 +909,12 @@ function loadContactListGrid(clientCode) {
             ddbInstance.close();
         }
 
-        // 3. Call generateNextClientCode with the full ClientCode (e.g., "SW-0004")
-        generateNextClientCode(categoryCode);
+       
+         const clientCodeParam = new URLSearchParams(window.location.search).get("clientCode");
+
+    if (!clientCodeParam) {
+         generateNextClientCode(categoryCode); // Only in Add mode
+    }
     }
 }
 

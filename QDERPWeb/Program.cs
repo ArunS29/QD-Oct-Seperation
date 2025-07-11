@@ -273,8 +273,9 @@ if (!app.Environment.IsDevelopment())
 //}
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-//app.UseMiddleware<TenantSessionMiddleware>();
+app.UseMiddleware<TenantSessionMiddleware>();
 app.UseMiddleware<TokenValidationMiddleware>();
+app.UseMiddleware<TokenRenewalMiddleware>();
 app.UseMultitenancy<Tenant>();
 app.UseAuthentication();
 app.UseAuthorization();

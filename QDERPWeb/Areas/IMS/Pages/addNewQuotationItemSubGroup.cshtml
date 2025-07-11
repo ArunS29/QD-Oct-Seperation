@@ -189,7 +189,7 @@
                 .Icon("plus")
                 .Height(40)
                 .Width(120)
-                .OnClick("function() { adddivmaster(); }")
+                .OnClick("adddivmaster")
                 )
         </div>
     </div>
@@ -202,6 +202,14 @@
 
 
 <script type="text/javascript">
+    // $(document).ready(function () {
+    //         const urlParams = new URLSearchParams(window.location.search);
+    //         const mprnos = urlParams.get('Mprno');
+    //         const mprno = mprnos ? mprnos.split("?")[0] : null;
+
+    // $("#mprNo").dxTextBox("instance").option("value",mprno);
+    // });
+    
     $(function () {
         // Initialize the first SelectBox with validation
         $("#costCenterComboBox").dxSelectBox({
@@ -614,7 +622,7 @@
 
     function adddivmaster() {
         
-
+        debugger;
         var GroupCode = $("#costCenterComboBox").dxSelectBox("instance").option("value");
         var GroupName = $("#costCenterMaster1").dxSelectBox("instance").option("value");
         var QuotationNo = $("#quotationNo").dxTextBox("instance").option("value");
