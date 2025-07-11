@@ -283,7 +283,7 @@
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
                 .ID("rowHeightProperties")
-                .Icon("rowproperties") // fallback to standard icon if "rowproperties" not working
+                .Icon("") // fallback to standard icon if "rowproperties" not working
                 .Width(50)
                 .Text(new JS("formatMessage('Set Row Height')"))
                 .DropDownOptions(options => options.Width(230))
