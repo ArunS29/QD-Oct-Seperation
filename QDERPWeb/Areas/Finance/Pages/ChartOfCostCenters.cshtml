@@ -510,7 +510,7 @@
         .OnContextMenuPreparing("onContextMenuPreparing") // Handle right-click event
         .OnRowPrepared("onRowPrepared")       // Handle row appearance dynamically
         .OnCellPrepared("oncellPrepared")
-        .ColumnChooser(c => c.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+        .ColumnChooser(c => c.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
         .Paging(paging => paging.Enabled(true))
         .Scrolling(scrolling => scrolling
         .Mode(GridScrollingMode.Virtual) // or "infinite" for endless scroll

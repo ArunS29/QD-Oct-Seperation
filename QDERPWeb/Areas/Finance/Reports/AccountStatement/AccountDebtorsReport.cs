@@ -1,4 +1,4 @@
-﻿using DevExpress.DataAccess.ConnectionParameters;
+using DevExpress.DataAccess.ConnectionParameters;
 using DevExpress.DataAccess.Sql;
 using DevExpress.XtraReports.UI;
 using QD.ERP.Web.Service;

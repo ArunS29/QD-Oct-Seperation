@@ -1,4 +1,5 @@
-﻿using DevExpress.Office.Drawing;
+﻿using Azure.Storage.Blobs;
+using DevExpress.Office.Drawing;
 using DevExpress.XtraRichEdit.Import.Html;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
@@ -54,38 +55,49 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
-        public async Task<IActionResult> GetNewDocumentNo()
+        [HttpGet]
+        public async Task<IActionResult> GetNewDocumentNos(int count)
         {
+            if (count <= 0 || count > 10)
+                return BadRequest(new { message = "Invalid count requested." });
+
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 try
                 {
-                    // First, retrieve all documents from the database
                     var documents = await dbContext.Tbl20116LedgerDocuments
                         .Where(x => !string.IsNullOrEmpty(x.DocumentNo))
                         .Select(x => x.DocumentNo)
                         .ToListAsync();
 
-                    // Now, filter and find the highest numeric DocumentNo in memory
-                    var highestNo = documents
-                        .Where(docNo => int.TryParse(docNo, out _)) // Filter only numeric DocumentNos
-                        .Select(docNo => int.Parse(docNo))
-                        .Max(); // Get the highest numeric DocumentNo
+                    var numericNos = documents
+                        .Select(docNo => int.TryParse(docNo, out var num) ? num : (int?)null)
+                        .Where(num => num.HasValue)
+                        .Select(num => num.Value)
+                        .ToList();
 
-                    int nextNumber = highestNo + 1;
+                    int startNo = numericNos.Any() ? numericNos.Max() + 1 : 1;
 
-                    var nextDocNo = $"{nextNumber}"; // Example: 24
-                    return Ok(nextDocNo);
+                    var newDocNos = Enumerable.Range(startNo, count)
+                                              .Select(n => n.ToString())
+                                              .ToList();
+
+                    return Ok(newDocNos);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"Error in GetNewDocumentNo: {ex.Message}");
-                    return StatusCode(500, new { message = "An error occurred while generating the document number.", error = ex.Message });
+                    _logger.LogError($"Error in GetNewDocumentNos: {ex.Message}");
+                    return StatusCode(500, new
+                    {
+                        message = "An error occurred while generating document numbers.",
+                        error = ex.Message
+                    });
                 }
             }
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
 
 
         [HttpPost]
@@ -101,25 +113,21 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     return Unauthorized("Tenant name not found in session.");
 
                 var form = await Request.ReadFormAsync();
-                var file = form.Files.FirstOrDefault();
-                if (file == null || file.Length == 0)
-                    return BadRequest(new { success = false, message = "No file uploaded." });
+                var files = form.Files;
+                if (files == null || files.Count == 0)
+                    return BadRequest(new { success = false, message = "No files uploaded." });
 
+                // Read and split DocumentNos
+                var docNosRaw = form["DocumentNo"].ToString(); // e.g., "101,102"
+                var docNos = docNosRaw.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
+                if (docNos.Count != files.Count)
+                    return BadRequest("Document number count does not match file count.");
+
+                // Parse area from referer
                 var referer = Request.Headers["Referer"].ToString();
                 Uri? refererUri = !string.IsNullOrWhiteSpace(referer) ? new Uri(referer) : null;
+                string area = refererUri?.AbsolutePath.Trim('/').Split('/', StringSplitOptions.RemoveEmptyEntries).ElementAtOrDefault(1) ?? "UnknownArea";
 
-                string area = "UnknownArea";
-
-                if (refererUri != null)
-                {
-                    var pathSegments = refererUri.AbsolutePath.Trim('/').Split('/', StringSplitOptions.RemoveEmptyEntries);
-                    if (pathSegments.Length >= 3)
-                    {
-                        area = pathSegments[1];
-                    }
-                }
-
-                // Clean up values
                 string Clean(string val) => string.IsNullOrWhiteSpace(val) ? "unknown" : val.Trim().Replace(" ", "_").ToLower();
                 string CleanFolderId(string val) => string.IsNullOrWhiteSpace(val) ? "unknown" : val.Trim().Replace(" ", "_");
 
@@ -128,125 +136,109 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 folderId = CleanFolderId(folderId);
                 tenantName = Clean(tenantName);
 
-                // Fallback for Razor Pages/controller-based naming
-                var routeData = HttpContext.GetRouteData();
-                var formName = routeData.Values["page"]?.ToString() ??
-                               routeData.Values["controller"]?.ToString() ??
-                               "UnknownForm";
-                formName = formName.Replace(" ", "_");
-
-                // Construct full file name
-                var fileName = $"{form["DocumentNo"]}_{Path.GetFileName(file.FileName)}";
-
-                // Determine file path in blob
-                string filePathInBlob;
                 string isMasterNormalized = isMaster?.Trim().ToLower();
                 string documentType = (isMasterNormalized == "true" || isMasterNormalized == "master documents")
                     ? "Master Documents"
                     : "Transaction Documents";
 
+                // Get voucher date if transaction document
+                DateTime? voucherDate = null;
                 if (documentType == "Transaction Documents")
                 {
-                    // Get VoucherDate from Tbl201VoucherEntries using folderId (which is VoucherNo)
-                    DateTime? voucherDate = await dbContext.Tbl201VoucherEntries
+                    DateTime? task1 = await dbContext.Tbl201VoucherEntries
                         .Where(v => v.VoucherNo == folderId)
-                        .Select(v => (DateTime?)v.AddedOn) // cast to nullable
+                        .Select(v => (DateTime?)v.AddedOn)
                         .FirstOrDefaultAsync();
 
-                    int year;
-                    string month;
+                    DateTime? task2 = await dbContext.Tbl20102ExpenseClaimMasters
+                        .Where(c => c.ClaimRefNo == folderId)
+                        .Select(c => (DateTime?)c.ClaimCreatedOn)
+                        .FirstOrDefaultAsync();
 
-                    if (voucherDate.HasValue && voucherDate.Value != DateTime.MinValue)
+                    voucherDate = task1 ?? task2;
+
+                }
+
+
+                int year = voucherDate?.Year ?? DateTime.Now.Year;
+                string month = (voucherDate?.Month ?? DateTime.Now.Month).ToString("00");
+
+                var uploadedDocs = new List<Tbl20116LedgerDocument>();
+                var blobHelper = new AzureBlobHelper(_configuration.GetConnectionString("AzureBlobStorage"), "client-files");
+
+                for (int i = 0; i < files.Count; i++)
+                {
+                    var file = files[i];
+                    var docNo = docNos[i];
+
+                    var fileName = $"{docNo}_{Path.GetFileName(file.FileName)}";
+                    string blobPath = (documentType == "Transaction Documents")
+                        ? $"transaction_documents/{area}/year{year}/{month}/{moduleType}/{folderId}/{fileName}"
+                        : $"master_documents/{area}/{moduleType}/{folderId}/{fileName}";
+
+                    var azurePath = await blobHelper.UploadFileAsync(file, blobPath, tenantName);
+
+                    DateTime today = DateTime.Today;
+
+                    // Try parse DocumentExpDate, or set default (1 month later)
+                    DateTime? expDate = DateTime.TryParse(form["DocumentExpDate"], out var d)
+                        ? d
+                        : today.AddMonths(1);
+
+                    // Notification date: Try parse or fallback to 7 days before expiry
+                    DateTime? notificationDate = DateTime.TryParse(form["NotificationDate"], out var nd)
+                        ? nd
+                        : expDate?.AddDays(-7);
+
+                    // Hijri date (converted from expDate)
+                    string? hijriDate = null;
+                    if (expDate.HasValue)
                     {
-                        year = voucherDate.Value.Year;
-                        month = voucherDate.Value.Month.ToString("00");
+                        var hijri = new HijriCalendar();
+                        hijriDate = $"{hijri.GetYear(expDate.Value)}/{hijri.GetMonth(expDate.Value):D2}/{hijri.GetDayOfMonth(expDate.Value):D2}";
                     }
-                    else
+
+                    // Create document object
+                    var document = new Tbl20116LedgerDocument
                     {
-                        year = DateTime.Now.Year;
-                        month = DateTime.Now.Month.ToString("00");
-                    }
+                        DocumentNo = docNo,
+                        DocumentType = short.TryParse(form["DocumentType"], out var docType) ? docType : (short?)null,
+                        DocumentRefNo = form["DocumentRefNo"],
+                        DocumentRemarks = form["DocumentRemarks"],
+                        DocumentExpDate = expDate,
+                        DocumentNotificationDate = notificationDate,
+                        DocumentExpDateAr = hijriDate,
+                        AzurePath = azurePath,
+                        DocumentStatus = 1,
+                        DocumentStatusRemarks = "Active",
+                        AddedBy = User.Identity?.Name ?? "system",
+                        AddedOn = DateTime.UtcNow
+                    };
 
-
-                    filePathInBlob = $"transaction_documents/{area}/year{year}/{month}/{moduleType}/{folderId}/{fileName}";
-                }
-                else
-                {
-                    filePathInBlob = $"master_documents/{area}/{moduleType}/{folderId}/{fileName}";
-                }
-
-                // Upload file
-                var blobHelper = new AzureBlobHelper(
-                    _configuration.GetConnectionString("AzureBlobStorage"),
-                    "client-files"
-                );
-                var blobPath = await blobHelper.UploadFileAsync(file, filePathInBlob, tenantName);
-
-                // Optional Hijri date conversion
-                DateTime? expDate = DateTime.TryParse(form["DocumentExpDate"], out var d) ? d : null;
-                string? hijriDate = null;
-
-                if (expDate.HasValue)
-                {
-                    HijriCalendar hijri = new HijriCalendar();
-                    hijriDate = $"{hijri.GetYear(expDate.Value)}/{hijri.GetMonth(expDate.Value):D2}/{hijri.GetDayOfMonth(expDate.Value):D2}";
+                    dbContext.Tbl20116LedgerDocuments.Add(document);
+                    uploadedDocs.Add(document);
                 }
 
-                // Save document details
-                var documentDetails = new Tbl20116LedgerDocument
-                {
-                    DocumentNo = form["DocumentNo"],
-                    DocumentType = short.TryParse(form["DocumentType"], out var docType) ? docType : (short?)null,
-                    DocumentRefNo = form["DocumentRefNo"],
-                    DocumentRemarks = form["DocumentRemarks"],
-                    DocumentExpDate = expDate,
-                    DocumentNotificationDate = DateTime.TryParse(form["NotificationDate"], out var nd) ? nd : null,
-                    DocumentExpDateAr = hijriDate,
-                    AzurePath = blobPath,
-                    DocumentStatus = 1,
-                    DocumentStatusRemarks = "Active",
-                    AddedBy = User.Identity.Name,
-                    AddedOn = DateTime.UtcNow,
-                };
-
-                dbContext.Tbl20116LedgerDocuments.Add(documentDetails);
                 await dbContext.SaveChangesAsync();
-
-                // Return documents expiring this month
-                var currentMonth = DateTime.Now.Month;
-                var currentYear = DateTime.Now.Year;
-
-                var filteredList = await dbContext.Tbl20116LedgerDocuments
-                    .Where(p => p.DocumentExpDate.HasValue &&
-                                p.DocumentExpDate.Value.Month == currentMonth &&
-                                p.DocumentExpDate.Value.Year == currentYear)
-                    .Select(i => new
-                    {
-                        i.DocumentNo,
-                        i.DocumentType,
-                        i.DocumentRefNo,
-                        i.DocumentRemarks,
-                        i.DocumentExpDate,
-                        i.DocumentExpDateAr,
-                        i.DocumentNotificationDate
-                    })
-                    .ToListAsync();
 
                 return Ok(new
                 {
                     success = true,
-                    message = "Document saved and uploaded successfully.",
-                    data = filteredList
+                    message = $"{uploadedDocs.Count} document(s) uploaded successfully.",
+                    uploaded = uploadedDocs.Select(d => new
+                    {
+                        d.DocumentNo,
+                        d.DocumentRefNo,
+                        d.DocumentType,
+                        d.DocumentExpDate,
+                        d.AzurePath
+                    })
                 });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new
-                {
-                    success = false,
-                    message = "Internal server error.",
-                    error = ex.Message
-                });
+                _logger.LogError(ex, "Error in AddDocumentsEntry");
+                return StatusCode(500, new { success = false, message = ex.Message });
             }
         }
 
@@ -315,46 +307,59 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in GetDocuments: {ex}");
+                _logger.LogError($"Error in GetDocuments: {ex}");   
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> UpdateDocumentEntries([FromBody] List<Tbl20116LedgerDocument> documents)
+        [HttpPut]
+        public async Task<IActionResult> UpdateDocumentEntry([FromBody] Tbl20116LedgerDocument doc)
         {
             try
             {
-                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                    return Unauthorized("Invalid tenant context.");
+
+                var existing = await dbContext.Tbl20116LedgerDocuments
+                    .FirstOrDefaultAsync(d => d.DocumentNo == doc.DocumentNo);
+
+                if (existing == null)
+                    return NotFound($"Document with DocumentNo {doc.DocumentNo} not found.");
+
+                // Update
+                existing.DocumentType = doc.DocumentType;
+                existing.DocumentRefNo = doc.DocumentRefNo;
+                existing.DocumentRemarks = doc.DocumentRemarks;
+                existing.DocumentExpDate = doc.DocumentExpDate;
+                existing.DocumentExpDateAr = doc.DocumentExpDateAr;
+                existing.DocumentNotificationDate = doc.DocumentNotificationDate;
+                existing.ModifiedBy = User?.Identity?.Name ?? "system";
+                existing.ModifiedOn = DateTime.UtcNow;
+
+                await dbContext.SaveChangesAsync();
+
+                // ✅ Optional: Return file URL from AzurePath
+                var blobHelper = new AzureBlobHelper(
+                    _configuration.GetConnectionString("AzureBlobStorage"),
+                    "client-files"
+                );
+                string fileUrl = blobHelper.GetBlobSasUrl(existing.AzurePath);
+
+                return Ok(new
                 {
-                    foreach (var doc in documents)
-                    {
-                        var existing = await dbContext.Tbl20116LedgerDocuments
-                            .FirstOrDefaultAsync(d => d.DocumentNo == doc.DocumentNo);
-
-                        if (existing != null)
-                        {
-                            existing.DocumentType = doc.DocumentType;
-                            existing.DocumentRefNo = doc.DocumentRefNo;
-                            existing.DocumentRemarks = doc.DocumentRemarks;
-                            existing.DocumentExpDate = doc.DocumentExpDate;
-                            existing.DocumentExpDateAr = doc.DocumentExpDateAr;
-                            existing.DocumentNotificationDate = doc.DocumentNotificationDate;
-                        }
-                    }
-
-                    await dbContext.SaveChangesAsync();
-                    return Ok(new { success = true });
-                }
-
-                return Unauthorized(new { success = false });
+                    success = true,
+                    message = "Document updated successfully.",
+                    fileUrl
+                });
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in GetProject: {ex.Message}");
-                return StatusCode(500, new { message = "An error occurred while fetching the data.", ex });
+                _logger.LogError(ex, "Error in UpdateDocumentEntry");
+                return StatusCode(500, new { success = false, message = "Error updating document", ex.Message });
             }
         }
+
+
         [HttpGet]
         public IActionResult GetAllDocuments()
         {
@@ -393,6 +398,40 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Ok(result);
         }
+
+       
+        [HttpDelete]
+        public async Task<IActionResult> DeleteDocumentEntry([FromBody] DocumentDeleteRequest request)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                return Unauthorized("Invalid tenant context.");
+
+            var doc = await dbContext.Tbl20116LedgerDocuments
+                        .FirstOrDefaultAsync(d => d.DocumentNo == request.key);
+
+            if (doc == null)
+                return NotFound("Document not found.");
+
+            // Delete file from Azure Blob if it exists
+            if (!string.IsNullOrEmpty(doc.AzurePath))
+            {
+                // Safe delete
+                var blobHelper = new AzureBlobHelper(_configuration.GetConnectionString("AzureBlobStorage"), "client-files");
+                await blobHelper.DeleteFileFromAzureAsync(doc.AzurePath);
+            }
+
+
+            dbContext.Tbl20116LedgerDocuments.Remove(doc);
+            await dbContext.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        public class DocumentDeleteRequest
+        {
+            public string key { get; set; }
+        }
+
 
     }
 }

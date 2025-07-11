@@ -941,7 +941,7 @@
         .ColumnFixing(fixing => fixing.Enabled(true))
         .FilterRow(filterRow => filterRow.Visible(false))
         .GroupPanel(groupPanel => groupPanel.Visible(false))
-        .ColumnChooser(c => c.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+        .ColumnChooser(c => c.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
     @* .HeaderFilter(hf => hf.Visible(true)) *@
         .OnCellPrepared("onCellPrepared")
         .Paging(paging => paging.Enabled(true))

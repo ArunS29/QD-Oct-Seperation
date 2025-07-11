@@ -2635,6 +2635,115 @@
 			  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null,revaccheadid=null,InvoiceCurrencyExchangeId=null,TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
 			  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",IsDirectApproval=true,IsDirectVerify=true;
 
+
+
+	$(document).ready(function () {
+		const urlParams = new URLSearchParams(window.location.search);
+		const receiptNo = urlParams.get("receiptNo");
+		const poNo = urlParams.get("poNo");
+		const purchaseVoucherNo = urlParams.get("invoiceNo");
+		const mode = urlParams.get("mode");
+
+		// Only set InvoiceNo from integration if all params are present
+		if (receiptNo && poNo && purchaseVoucherNo && mode === "create") {
+			$("#InvoiceNo").dxTextBox("instance").option("value", purchaseVoucherNo);
+			// ... (your integration logic for loading data)
+		} else {
+			if (IsCurrent !== "true") {
+			// Default: get new voucher number from API
+			$.ajax({
+				url: "/api/VATModule/GetNewPurchaseVoucherNo",
+				type: "GET",
+				success: function (data) {
+					const invoiceBox = $("#InvoiceNo").dxTextBox("instance");
+						InvoiceOPenToSave(data);
+					if (invoiceBox) {
+						invoiceBox.option("value", data || "");
+					}
+				},
+				error: function (xhr, status, error) {
+					DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+				}
+			});
+			}
+		}
+	});
+
+		function InvoiceOPenToSave(data) {
+			var InvoiceMaster = {
+							// First Card (Left side)
+
+							PurchaseVoucherNo: data,
+							PurchaseVoucherDate: $("#InvoiceDate").dxDateBox("instance").option("value") || null,
+							PurchaseBillNo: $("#SupplierInvoiceNo").dxDropDownBox("instance").option("value") || null,
+							PurchaseEffectiveDate: $("#SupplyDate").dxDateBox("instance").option("value") || null,
+						 //   PurchaseTaxCategoryCode: $("#VATInvoiceType").dxTextBox("instance").option("value") || null,
+							PurchaseOrderNo: $("#VATInvoiceType").dxTextBox("instance").option("value") || null,
+							PurchaseOrderDate: $("#OrderDate").dxDateBox("instance").option("value") || null,
+							PurchaseBillDate: $("#OrderDate").dxDateBox("instance").option("value") || null,
+							MaterialReceiptNo: $("#MaterialReceipt").dxTextBox("instance").option("value") || null,
+							PurchaseDeliveryDate: $("#SupplyDates").dxDateBox("instance").option("value") || null,
+
+							// Second Card (Right side)
+							SupplierCode: accheadid || null,
+							 SupplierName: $("#ddclientname").dxDropDownBox("instance").option("value") || null,
+							  SupplierGroupVatnumber: $("#GroupVATNo").dxTextBox("instance").option("value") || null,
+							   SupplierVatnumber: $("#ClientVATNo").dxTextBox("instance").option("value") || null,
+							  SupplierNameAr: $("#ClientNameArabic").dxTextBox("instance").option("value") || null,
+							  SupplierOtherIdtype: $("#OtherIDType").dxDropDownBox("instance").option("value") || null,
+							  SupplierOtherId: $("#ClientOtherID").dxTextBox("instance").option("value") || null,
+							  //SupplierAddressStreet: $("#ClientAddressDetails").dxDropDownBox("instance").option("value") || null,
+							 //PurchasePeriod: $("#InvoiceCounterValue").dxTextBox("instance").option("value") || null,
+							 SupplierAddressStreet:$("#StreetName").dxTextBox("instance").option("value")|| null,
+							SupplierAddressStreetAr:$("#StreetNameArabic").dxTextBox("instance").option("value")|| null,
+					SupplierAdditionalStreet:$("#AdditionalAddress").dxTextBox("instance").option("value")|| null,
+					SupplierAdditionalStreetAr:$("#AdditionalAddressArabic").dxTextBox("instance").option("value")|| null,
+						SupplierBuildingNumber:$("#BuildingNumber").dxTextBox("instance").option("value")|| null,
+						SupplierCity:$("#ClientCity").dxTextBox("instance").option("value")|| null,
+						SupplierCityAr:$("#ClientCityArabic").dxTextBox("instance").option("value")|| null,
+						SupplierAdditionalNumber:$("#AdditionalNumber").dxTextBox("instance").option("value")|| null,
+					SupplierProvince:$("#Province").dxTextBox("instance").option("value")|| null,
+					SupplierProvinceAr:$("#ProvinceArabic").dxTextBox("instance").option("value")|| null,
+					SupplierPostalCode:$("#PostalCode").dxTextBox("instance").option("value")|| null,
+					SupplierNeighborhood:$("#District").dxTextBox("instance").option("value")||null,
+					SupplierNeighborhoodAr:$("#DistrictArabic").dxTextBox("instance").option("value")||null,
+					InvoiceCounterValue: $("#InvoiceCounterValue").dxTextBox("instance").option("value")||null,
+					ReferenceNo: $("#UUID").dxTextBox("instance").option("value") || null,
+
+
+							// 	//OtherDetails
+					PurchaseDueDate:$("#InvoiceDueDate").dxDateBox("instance").option("value")|| null,
+					PurchaseEffectiveDate:$("#EffectiveDate").dxDateBox("instance").option("value")|| null,
+					//InventoryEffectiveDate: $("#InventoryEffectiveDate").dxDateBox("instance").option("value")|| null,
+					SupplierInvRecdBy:$("#SubmittedBytext").dxTextBox("instance").option("value")|| null,
+					PurchaseLedgerAccountNo:revaccheadid|| null,
+					CostCenterCode: $("#ddlGoodsGroup1").dxDropDownBox("instance").option("value")|| null,
+					RemarksInEn: $("#txtInvoiceNotes").dxTextArea("instance").option("value")|| null,
+					RemarksInAr: $("#txtNotesinArabic").dxTextArea("instance").option("value")|| null,
+
+
+					AdvanceText: $("#LessAdvance").dxTextBox("instance").option("value")|| null,
+					AdvanceAmount: $("#currencyexchangerate3").dxNumberBox("instance").option("value")|| null,
+					RetentionText: $("#LessOtherDeductions").dxTextBox("instance").option("value")|| null,
+					RetentionAmount: $("#currencyexchangerate4").dxNumberBox("instance").option("value")|| null,
+					CompanyId: $("#CompanyDivision").dxDropDownBox("instance").option("value")|| null,
+					//DeliveryNoteNos: $("#ddlDivision").dxTextBox("instance").option("value")|| null,
+					//ClientGrnreferenceNo:$("#ddlinvoicesubmittedon").dxTextBox("instance").option("value")|| null,
+					SupplierNameAr: $("#ddlSupplierArabicName").dxDropDownBox("instance").option("value")|| null
+
+					};
+
+					console.log("InvoiceMaster:", InvoiceMaster);
+					$.ajax({
+						type: "POST",
+							url: `/api/VoucherMaster/UpdatePurchaseMasterDetails`,
+						contentType: "application/json",
+						data: JSON.stringify(InvoiceMaster),
+						success: function () {
+						}
+
+					});
+				}
 	//View e-Invoice
 
 			$(document).ready(function () {
@@ -3810,36 +3919,6 @@
 		// 	}
 		// });
 
-$(document).ready(function () {
-    const urlParams = new URLSearchParams(window.location.search);
-    const receiptNo = urlParams.get("receiptNo");
-    const poNo = urlParams.get("poNo");
-    const purchaseVoucherNo = urlParams.get("invoiceNo");
-    const mode = urlParams.get("mode");
-
-    // Only set InvoiceNo from integration if all params are present
-    if (receiptNo && poNo && purchaseVoucherNo && mode === "create") {
-        $("#InvoiceNo").dxTextBox("instance").option("value", purchaseVoucherNo);
-        // ... (your integration logic for loading data)
-    } else {
-		if (IsCurrent !== "true") {
-        // Default: get new voucher number from API
-        $.ajax({
-            url: "/api/VATModule/GetNewPurchaseVoucherNo",
-            type: "GET",
-            success: function (data) {
-                const invoiceBox = $("#InvoiceNo").dxTextBox("instance");
-                if (invoiceBox) {
-                    invoiceBox.option("value", data || "");
-                }
-            },
-            error: function (xhr, status, error) {
-                DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
-            }
-        });
-		}
-    }
-});
 
 
 		  function PaymentMeansdataGridSelectionChanged(e) {

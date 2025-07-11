@@ -1757,7 +1757,68 @@
 
 			  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null;
 
+					$(document).ready(function () {
+			if (IsCurrent !== "true") {
+				$.ajax({
+					url: "/api/VATModule/GetNewDebitNoteNoApi",
+					type: "GET",
+					success: function (data) {
+						console.log("Success:", data);
+						InvoiceOPenToSave(data);
+						const invoiceBox = $("#DebitNoteNo").dxTextBox("instance");
+						if (invoiceBox) {
+							invoiceBox.option("value", data || "");
+						} else {
+							console.warn("Invoice TextBox not initialized.");
+						}
+					},
+					error: function (xhr, status, error) {
+						console.error("Error loading Payment Accounts:", error);
+						DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+					}
+				});
+			}
+		});
 	
+
+			function InvoiceOPenToSave(data) {
+			
+
+	    var InvoiceMaster = {
+		DebitNoteNo:data,
+		DebitNoteDate: $("#CreditNoteIssuedDateTime").dxDateBox("instance").option("value") || null,
+		PurchaseVoucherNo: $("#VATPurchaseVoucherNo").dxDropDownBox("instance").option("value") || null,
+		SupplierBillNo:$("#SupplierInvoiceNo").dxTextBox("instance").option("value") || null,
+		SupplierCode: supplierid,
+		SupplierBillDate: $("#InvoiceDate").dxDateBox("instance").option("value") || null,
+		//SupplierNameAr:$("#ddlSupplierNameArabic").dxDropDownBox("instance").option("value"),
+		ReferenceNo:$("#txtReferenceNo").dxTextBox("instance").option("value") || null,
+		InvoicePeriod:$("#txtInvoicePeriod").dxTextBox("instance").option("value") || null,
+		ItemReturns:$("#ddItemsReturnfromstore").dxDropDownBox("instance").option("value")||null,
+		DebitNoteEffectiveDate:$("#EffectiveDate").dxDateBox("instance").option("value") || null,
+	// 	//PaymentMeansTypeCode: paymentmeanstypecode,
+		RevenueAccount:$("#ddPurchaseAccount").dxDropDownBox("instance").option("value")||null,
+		CostCenterCode:$("#ddlCostCenterAccount").dxDropDownBox("instance").option("value")||null,
+		DebitNoteRemarks:$("#txtInvoiceNotes").dxTextArea("instance").option("value") || null,
+		DebitNoteRemarksAr:$("#txtNotesinArabic").dxTextArea("instance").option("value") || null,
+		BranchCode:$("#ddlDivision").dxDropDownBox("instance").option("value")||null,
+		CompanyId:$("#ddlDebitNoteDivision").dxDropDownBox("instance").option("value")||null
+	};
+
+			console.log("InvoiceMaster:", InvoiceMaster);
+
+
+			$.ajax({
+				type: "POST",
+				url: `/api/VoucherMaster/UpdateDebitNoteMasterDetails`,
+				contentType: "application/json",
+				data: JSON.stringify(InvoiceMaster),
+				success: function () {
+				}
+
+			});
+		}
+
 		$(function () {
 					$("#DebitNoteEditForm").dxTextBox({
 						text: formatMessage("New e-Invoice Debit Note"),
@@ -5408,28 +5469,7 @@
 		
 
 		
-		$(document).ready(function () {
-			if (IsCurrent !== "true") {
-				$.ajax({
-					url: "/api/VATModule/GetNewDebitNoteNoApi",
-					type: "GET",
-					success: function (data) {
-						console.log("Success:", data);
 
-						const invoiceBox = $("#DebitNoteNo").dxTextBox("instance");
-						if (invoiceBox) {
-							invoiceBox.option("value", data || "");
-						} else {
-							console.warn("Invoice TextBox not initialized.");
-						}
-					},
-					error: function (xhr, status, error) {
-						console.error("Error loading Payment Accounts:", error);
-						DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
-					}
-				});
-			}
-		});
 
 
 		$("#btnBack").on("click", function (e) {

@@ -891,6 +891,7 @@
                 .ID("btnAttach")
                 .Text("Add & Attach Files")
                 .Icon("attach") // use a clip icon or custom one
+                .OnClick("onAttachmentButton")
                 .Type(ButtonType.Default)
                 .StylingMode(ButtonStylingMode.Contained)
                 .Width(220)
@@ -948,7 +949,7 @@
                 .Height(600)
                 .WordWrapEnabled(true)
                 .OnCellClick("function(e) {handleCellClick(e);}")
-                .ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+                .ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
                 .AllowColumnReordering(true)
                 .AllowColumnResizing(true)
                 .ColumnFixing(fixing => fixing.Enabled(true))
@@ -1013,7 +1014,7 @@
                     .ColumnChooser(columnChooser => columnChooser
                     .Enabled(true)
                     .Title(new JS("formatMessage('Show/Hide Column')"))
-                    .Mode(GridColumnChooserMode.Select))
+                    .Mode(GridColumnChooserMode.DragAndDrop))
                     .AllowColumnReordering(true)
                     .AllowColumnResizing(true)
                     .ColumnFixing(fixing => fixing.Enabled(true))

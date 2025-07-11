@@ -1,12 +1,10 @@
-﻿using System;
-using System.Drawing;
-using System.IO;
-using System.Text;
-using DevExpress.DataAccess.ConnectionParameters;
+﻿using DevExpress.DataAccess.ConnectionParameters;
 using DevExpress.DataAccess.Sql;
 using DevExpress.XtraPrinting;
 using DevExpress.XtraReports.UI;
 using Svg;
+using System.Drawing;
+using System.Text;
 
 namespace QD.ERP.Web.Reports
 {
@@ -206,7 +204,7 @@ namespace QD.ERP.Web.Reports
             }
         }
 
-       
+
 
         /// <summary>
         /// Ensures the currency bitmap is always flush against the amount’s visible text
@@ -218,14 +216,15 @@ namespace QD.ERP.Web.Reports
         {
             var pairs = new[]
             {
-                 new { Label = "xrLabel5", Picture = "xrPictureBox7" },
-                        new { Label = "xrLabel9", Picture = "xrPictureBox8" },
+                 new { Label = "xrLabel5", Picture = "xrPictureBox12" },
+                        new { Label = "xrLabel9", Picture = "xrPictureBox11" },
         new { Label = "xrLabel22", Picture = "xrPictureBox2" },
         new { Label = "xrLabel23", Picture = "xrPictureBox3" },
         new { Label = "xrLabel7", Picture = "xrPictureBox6" },
                 new { Label = "xrLabel8", Picture = "xrPictureBox5" },
                         new { Label = "xrLabel11", Picture = "xrPictureBox4" },
-                       
+                             new { Label = "xrLabel8", Picture = "xrPictureBox8" },
+
 
     };
 
@@ -280,7 +279,7 @@ namespace QD.ERP.Web.Reports
         private void SetCurrencyImageNull()
         {
             string[] pics = { "xrPictureBox2", "xrPictureBox3", "xrPictureBox4",
-                              "xrPictureBox5", "xrPictureBox6", "xrPictureBox7" };
+                              "xrPictureBox5", "xrPictureBox6", "xrPictureBox7","xrPictureBox11" };
 
             foreach (var n in pics)
                 if (FindControl(n, true) is XRPictureBox pb)

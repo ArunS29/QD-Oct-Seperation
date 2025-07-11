@@ -907,7 +907,7 @@ buttons.Add()
 				// ✅ Enable Column Chooser
 				.ColumnChooser(c => c
 				.Enabled(true) // Enable column chooser
-				.Mode(GridColumnChooserMode.Select) // Set mode to selection
+				.Mode(GridColumnChooserMode.DragAndDrop) // Set mode to selection
 				)
 				.Columns(columns =>
 				{
@@ -971,7 +971,7 @@ buttons.Add()
 				.SelectedRowKeys(new JS("getSelectedRowKeys()"))
 				.ColumnChooser(c => c
 				.Enabled(true) // Enable column chooser
-				.Mode(GridColumnChooserMode.Select) // Set mode to selection
+				.Mode(GridColumnChooserMode.DragAndDrop) // Set mode to selection
 				)
 				.Columns(columns =>
 				{
@@ -3645,7 +3645,7 @@ buttons.Add()
 			var voucherType = voucherTypeBox.option("value");
 			const isMaster = false;
 			console.log(voucherType)
-			const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&modal=true&isMaster=${isMaster}`;
+			const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&modal=true`;
 			const title = "Transaction Documents";
 			openModal(url, title);
 	}

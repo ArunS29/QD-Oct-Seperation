@@ -20,30 +20,58 @@
     </div>
 <div class="btn-container">
     @(Html.DevExtreme().DropDownButton()
-        .ID("rowHeightProperties")
-        .Icon("rowproperties") // fallback to standard icon if "rowproperties" not working
-        .Width(50)
-        .Text(new JS("formatMessage('Set Row Height')"))
-        .DropDownOptions(options => options.Width(230))
-        .Items(items =>
-        {
-            items.Add().Text(new JS("formatMessage('Short')"))
-                .Icon("chevrondown")
+            .ID("rowHeightProperties")
+            .Icon("") // fallback to standard icon if "rowproperties" not working
+            .Width(50)
+            .Text(new JS("formatMessage('Set Row Height')"))
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add()
+                .Text("Short (1 Line)")
+                .Template(@<text>
+                               <svg width="20" height="20" viewBox="0 0 20 20">
+                                   <rect x="2" y="9" width="16" height="2" fill="var(--title-background-color)" />
+                               </svg> Short
+                           </text>)
                 .OnClick("function() { ChangeRowHeight('30'); }");
 
-            items.Add().Text(new JS("formatMessage('Medium')"))
-                .Icon("lock")
-                .OnClick("function() { ChangeRowHeight('40'); }");
-
-            items.Add().Text(new JS("formatMessage('Tall')"))
-                .Icon("edit")
+                items.Add()
+                .Text("Medium (2 Lines)")
+                .Template(@<text>
+                               <svg width="20" height="20" viewBox="0 0 20 20">
+                                   <rect x="2" y="6" width="16" height="2" fill="var(--title-background-color)" />
+                                   <rect x="2" y="12" width="16" height="2" fill="var(--title-background-color)" />
+                               </svg> Medium
+                           </text>)
                 .OnClick("function() { ChangeRowHeight('60'); }");
 
-            items.Add().Text(new JS("formatMessage('Extra Tall')"))
-                .Icon("folder")
-                .OnClick("function() { ChangeRowHeight('70'); }");
-        })
-        .ShowArrowIcon(false)
+                items.Add()
+                .Text("Tall (4 Lines)")
+                .Template(@<text>
+                               <svg width="20" height="20" viewBox="0 0 20 20">
+                                   <rect x="2" y="4" width="16" height="2" fill="var(--title-background-color)" />
+                                   <rect x="2" y="8" width="16" height="2" fill="var(--title-background-color)" />
+                                   <rect x="2" y="12" width="16" height="2" fill="var(--title-background-color)" />
+                                   <rect x="2" y="16" width="16" height="2" fill="var(--title-background-color)" />
+                               </svg> Tall
+                           </text>)
+                .OnClick("function() { ChangeRowHeight('90'); }");
+
+                items.Add()
+                .Text("Extra Tall (8 Lines)")
+                .Template(@<text>
+            <svg width="20" height="20" viewBox="0 0 20 20">
+                @for (var i = 1; i <= 8; i++)
+                        {
+                            var y = 1 + (i - 1) * 2;
+                            <text><rect x="2" y="@y" width="16" height="1" fill="var(--title-background-color)" /></text>
+                        }
+            </svg> Extra Tall
+        </text>)
+                .OnClick("function() { ChangeRowHeight('130'); }");
+            })
+            .ShowArrowIcon(false)
     )
 </div>
     <div class="btn-container">
@@ -102,201 +130,8 @@
 </div>
 
 <script>
-        // Hide context menu on click outside
-           let isHeaderFilterEnabled = false;
-
-           function toggleHeaderFilter() {
-               var dataGrid = $("#dataGrid").dxDataGrid("instance");
-
-               isHeaderFilterEnabled = !isHeaderFilterEnabled;
-               dataGrid.option("headerFilter.visible", isHeaderFilterEnabled); // Toggle the header filter visibility
-           }
-           $(document).on("click", function () {
-               var contextMenu = $("#contextMenu");
-               contextMenu.hide();
-               var $submenu = $('#submenuContainer');
-               $submenu.hide(); // Hide the submenu popup
-           });
-
-           // Handle the file selection
-           $("#loadLayoutInput").on("change", function (event) {
-               const dataGrid = $("#dataGrid").dxDataGrid("instance");
-               const file = event.target.files[0];
-
-               if (file) {
-                   const reader = new FileReader();
-
-                   reader.onload = function (e) {
-                       try {
-                           // Parse the JSON string from the file
-                           const layout = JSON.parse(e.target.result);
-
-                           // Restore the grid state
-                           dataGrid.state(layout);
-                       } catch (error) {
-                           console.error("Error parsing JSON:", error);
-                           alert("Failed to load layout. Please ensure the file is valid JSON.");
-                       }
-                   };
-
-                   // Read the file as text
-                   reader.readAsText(file);
-               }
-           });
-           function saveLayoutClick(e) {
-               var grid = $("#dataGrid").dxDataGrid("instance");
-               var layout = grid.state();
-               const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
-               //console.log(layoutJson);
-               // Create a Blob from the JSON string
-               const blob = new Blob([layoutJson], { type: "application/json" });
-               // Create a URL for the Blob
-               const url = URL.createObjectURL(blob);
-               // Create a link element
-               const a = document.createElement("a");
-               a.href = url;
-               a.download = "grid-layout.json"; // Set the file name for download
-               // Append the link to the body (needed for Firefox)
-               document.body.appendChild(a);
-               // Programmatically click the link to trigger the download
-               a.click();
-               // Clean up by removing the link and revoking the Object URL
-               document.body.removeChild(a);
-               URL.revokeObjectURL(url);
-               //DevExpress.ui.notify("Layout", "success", 600);
-           }
-           function openLayoutClick(e) {
-               // Create an input element dynamically
-               const input = document.createElement("input");
-               input.type = "file";
-               input.accept = "application/json";
-
-               // When a file is selected
-               input.addEventListener("change", function (event) {
-                   const file = event.target.files[0];
-                   if (!file) return;
-
-                   const reader = new FileReader();
-                   reader.onload = function (e) {
-                       try {
-                           const layout = JSON.parse(e.target.result);
-                           const grid = $("#dataGrid").dxDataGrid("instance");
-                           grid.state(layout);
-                           //DevExpress.ui.notify("Layout applied successfully!", "success", 600);
-                       } catch (error) {
-                           DevExpress.ui.notify("Invalid layout file!", "error", 600);
-                       }
-                   };
-
-                   reader.readAsText(file);
-               });
-
-               // Trigger the file input click event
-               input.click();
-           }
-
-           function loadGridState() {
-               var form = $('#formId').val();
-               // Call the API to get the grid state
-               $.ajax({
-                   url: `/api/Utility/LoadLayout`, // Adjust to your actual API endpoint
-                   method: 'GET',
-                   data: {
-                       form: form
-                   },
-                   success: function (response) {
-                       // Get the DataGrid instance
-                       var dataGrid = $("#dataGrid").dxDataGrid("instance");
-
-                       // Load the state into the DataGrid
-                       if (response) {
-                           try {
-                               // Parse the JSON string from the file
-                               const layout = JSON.parse(response);
-
-                               // Restore the grid state
-                               dataGrid.state(layout);
-                           } catch (error) {
-                               console.error("Error parsing JSON:", error);
-                               alert("Failed to load layout. Please ensure the JSON is valid.");
-                           }
-                       }
-                   },
-                   error: function (xhr, status, error) {
-                       console.error("Error loading grid state:", error);
-                   }
-               });
-           }
-           function setDefaultLayoutClick(e) {
-               var grid = $("#dataGrid").dxDataGrid("instance");
-               var form = $('#formId').val();
-               var layout = grid.state();
-               const layoutJson = JSON.stringify(layout, null, 2);
-               console.log(layoutJson);
-
-               $.ajax({
-                   url: '/api/Utility/SaveLayout',  // API endpoint
-                   type: 'POST',
-                   data: {
-                       layout: layoutJson,
-                       form: form
-                   },
-                   success: function (data) {
-                       DevExpress.ui.notify("Layout saved successfully", "success", 2000);
-                   },
-                   error: function () {
-                       DevExpress.ui.notify("Error while saving data", "error", 2000);
-                   }
-               });
-           }
-           function resetLayoutClick(e) {
-               var grid = $("#dataGrid").dxDataGrid("instance");
-               var form = $('#formId').val();
-               $.ajax({
-                   url: '/api/Utility/SaveLayout',  // API endpoint
-                   type: 'POST',
-                   data: {
-                       layout: null,
-                       form: form
-                   },
-                   success: function (data) {
-                       DevExpress.ui.notify("Layout reset successfull", "success", 2000);
-                       grid.state({});
-                   },
-                   error: function () {
-                       DevExpress.ui.notify("Error while saving data", "error", 2000);
-                   }
-               });
-           }
-          // Footer Filter row button click event
-        function toggleFilterRow() {
-            var grid = $("#dataGrid").dxDataGrid("instance");
-            var currentVisibility = grid.option("filterRow.visible");
-
-            grid.option("filterRow.visible", !currentVisibility); // Toggle FilterRow visibility
-        }
-          // Footer Group Pannel button click event
-        function toggleGroupPanel() {
-            var dataGrid = $("#dataGrid").dxDataGrid("instance");
-            var isVisible = dataGrid.option("groupPanel.visible");
-            dataGrid.option("groupPanel.visible", !isVisible);
-        }
-            function showColumnChooser() {
-            var dataGrid = $("#dataGrid").dxDataGrid("instance");
-            var isColumnChooserVisible = dataGrid.option("columnChooser.enabled");
-
-            if (isColumnChooserVisible) {
-                dataGrid.option("columnChooser.enabled", false); // Disable the column chooser
-            } else {
-                dataGrid.option("columnChooser.enabled", true); // Enable the column chooser
-                dataGrid.showColumnChooser(); // Show the column chooser
-            }
-        }
-         function ChangeRowHeight(newHeight) {
-            // Update the row height
-            $("#dataGrid .dx-data-row").css("height", newHeight + "px");
-            closeSubmenu();
-        }
+        
+  
         function showSubmenu(e) {
             e.event.stopPropagation();
             var $submenu = $('#submenuContainer');
@@ -336,9 +171,7 @@
 
             window.location.href = url;
         }
-        function printFun() {
-            exportDataGridToPDF('dataGrid');
-        }
+  
         function AddPurchaseOrder(){
             window.location.href = `/${tenantName}/IMS/AddNewPurchaseOrder`;
         }

@@ -2571,7 +2571,87 @@
 		});
 
 
+			$(document).ready(function () {
+			if (IsCurrent !== "true") {
+				$.ajax({
+					url: "/api/VATModule/GetVATProformaInvoiceNo",
+					type: "GET",
+					success: function (data) {
+						console.log("Success:", data);
+						InvoiceOPenToSave(data);
+						const invoiceBox = $("#InvoiceNo").dxTextBox("instance");
+						if (invoiceBox) {
+							InvoiceOPenToSave(data);
+							invoiceBox.option("value", data || "");
+						} else {
+							console.warn("Invoice TextBox not initialized.");
+						}
+					},
+					error: function (xhr, status, error) {
+						console.error("Error loading Payment Accounts:", error);
+						DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+					}
+				});
+			}
+		});
 
+		function InvoiceOPenToSave(data) {
+			var InvoiceMaster = {
+					ProformaInvoiceNo:data,
+					ProformaInvoiceDate: $("#InvoiceIssuedDateTime").dxDateBox("instance").option("value")|| null,
+					BuyerName: $("#ddclientname").dxDropDownBox("instance").option("value")|| null,
+					BuyerNameAr: $("#ddlClientNameAr").dxDropDownBox("instance").option("value")|| null,
+					InvoiceEffectiveDate: $("#SupplyDate").dxDateBox("instance").option("value")|| null,
+				 //   Pono: $("#PONo").dxTextBox("instance").option("value")|| null,
+					Podate: $("#PODate").dxDateBox("instance").option("value")|| null,
+					TaxCategoryId: $("#ddlCategoryId").dxDropDownBox("instance").option("value")|| null,
+				   ReferenceNo: $("#ProjectDeptContractNo").dxTextBox("instance").option("value")|| null,
+					DeliveryNoteNos:$("#DeliveryNotes").dxTextBox("instance").option("value")|| null,
+					DeliveryNotes:$("#SESReference").dxTextBox("instance").option("value")|| null,
+					InvoiceDueDate:$("#InvoiceDueDate").dxDateBox("instance").option("value")|| null,
+				   InvoiceEffectiveDate:$("#EffectiveDate").dxDateBox("instance").option("value")|| null,
+				   InvoiceStartDate:$("#InvoiceStartDate").dxDateBox("instance").option("value")|| null,
+				   InvoiceEndDate:$("#InvoiceEndDate").dxDateBox("instance").option("value")|| null,
+				   RevenueAccount:$("#ddlGoodsGroup2").dxDropDownBox("instance").option("value")|| null,
+				   CostCenterCode:$("#ddlGoodsGroup1").dxDropDownBox("instance").option("value")|| null,
+				   RemarksInEn:$("#txtInvoiceNotes").dxTextArea("instance").option("value")|| null,
+				   RemarksInAr:$("#txtNotesinArabic").dxTextArea("instance").option("value")|| null,
+				  // Currency:$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value")|| null,
+				   ExchangeRate:$("#currencyexchangerate").dxNumberBox("instance").option("value")|| null,
+				   AdvanceText:$("#LessAdvance").dxTextBox("instance").option("value")|| null,
+				   AdvanceAmount:$("#currencyexchangerate3").dxNumberBox("instance").option("value")|| null,
+				   AdvanceTextAr:$("#LessAdvanceAr").dxTextBox("instance").option("value")|| null,
+				   RetentionText:$("#LessRetention").dxTextBox("instance").option("value")|| null,
+				   RetentionAmount:$("#currencyexchangerate5").dxNumberBox("instance").option("value")|| null,
+					   RetentionTextAr:$("#LessAdvanceAr2").dxTextBox("instance").option("value")|| null,
+					   CompanyId:$("#ddlbranch").dxDropDownBox("instance").option("value")|| null,
+					   InvoiceSalesPerson:$("#ddlSalesPerson").dxDropDownBox("instance").option("value")|| null,
+					   InvoiceSubmittedOn:$("#InvoiceSubmittesOn").dxDateBox("instance").option("value")|| null,
+					   InvoiceSubmittedBy:$("#InvoiceSubmittedBy").dxTextBox("instance").option("value")|| null,
+					   InvoicePreparedBy:$("#ddlGoodsGroup9").dxDropDownBox("instance").option("value")|| null,
+					   InvoiceCheckedBy:$("#ddlGoodsGroup10").dxDropDownBox("instance").option("value")|| null,
+					   InvoiceApprovedBy:$("#ddlGoodsGroup11").dxDropDownBox("instance").option("value")|| null,
+
+
+							//TypeOfInvoice: $("#OtherIDType").dxDropDownBox("instance").option("value")|| null,
+					QuotationNo: $("#QuotationNo").dxTextBox("instance").option("value")|| null,
+					//Pono: $("#ProjectDeptContractNo").dxTextBox("instance").option("value")|| null,
+					 ClientCode: accheadid|| null
+
+
+				};
+
+					console.log("InvoiceMaster:", InvoiceMaster);
+					$.ajax({
+						type: "POST",
+							url: `/api/VoucherMaster/UpdateProformaInvoiceMasterDetails`,
+						contentType: "application/json",
+						data: JSON.stringify(InvoiceMaster),
+						success: function () {
+						}
+
+					});
+				}
 
 	//View e-Invoice
 
@@ -3758,28 +3838,7 @@
 			});
 		}
 
-		$(document).ready(function () {
-			if (IsCurrent !== "true") {
-				$.ajax({
-					url: "/api/VATModule/GetVATProformaInvoiceNo",
-					type: "GET",
-					success: function (data) {
-						console.log("Success:", data);
-
-						const invoiceBox = $("#InvoiceNo").dxTextBox("instance");
-						if (invoiceBox) {
-							invoiceBox.option("value", data || "");
-						} else {
-							console.warn("Invoice TextBox not initialized.");
-						}
-					},
-					error: function (xhr, status, error) {
-						console.error("Error loading Payment Accounts:", error);
-						DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
-					}
-				});
-			}
-		});
+	
 
 
 
