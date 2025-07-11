@@ -2421,6 +2421,22 @@
 		function dataGridInitialized14(e) {
 			dataGrid = e.component;
 		}
+
+			   // This function is called by the modal (child window)
+		function refreshSupplierCategoryDropDown() {
+				const dropDownInstance = $("#ddGetModeOfRequest").dxDropDownBox("instance");
+			if (dropDownInstance) {
+				dropDownInstance.getDataSource().reload();
+			}
+		}
+
+
+
+
+
+
+
+
 		let Approved=null;
 		$(document).ready(function () {
 			const urlParams = new URLSearchParams(window.location.search);
@@ -2711,8 +2727,9 @@
 											hint: "Add new item",
 
 											onClick: function () {
+													 const mprNo = $("#txtRequestNo").dxTextBox("instance").option("value"); 
 
-												let url = `/${tenantName}/IMS/addNewQuotationItemSubGroup`; // Update this route if needed
+													let url = `/${tenantName}/IMS/addNewQuotationItemSubGroup?Mprno=${encodeURIComponent(mprNo)}`; 
 
 											   openModal(url, "");
 
@@ -3312,7 +3329,9 @@
 				icon: "plus",
 				hint: "Add new item",
 				onClick: function () {
-					let url = `/${tenantName}/IMS/addNewQuotationItemSubGroup`;
+			    const mprNo = $("#txtRequestNo").dxTextBox("instance").option("value"); 
+
+				let url = `/${tenantName}/IMS/addNewQuotationItemSubGroup?Mprno=${encodeURIComponent(mprNo)}`;
 					openModal(url, "");
 				},
 				width: 60,
@@ -7192,11 +7211,40 @@ $("#btnAddNew").on("click", function (e) {
 					const url = `/${tenantName}/IMS/ClientLeadMaster`;
 				  const title = "";
 					  openModal(url, title);
-				  } function AddContactName(){
-						const url = `/${tenantName}/IMS/ClientLeadMaster`;
-				 const title = "";
-					  openModal(url, title);
-			  }
+				  }
+			
+
+					  function AddContactName() {
+		var dropDownBox = $('#GetProjectDropDown').dxDropDownBox('instance');
+		var selectedValue = dropDownBox.option('value'); // clientCode
+
+		if (!selectedValue) {
+			DevExpress.ui.notify('Please select a client.', 'warning', 2000);
+			return;
+		}
+
+		// Get the full item directly from dataSource using selected value
+		var dataSource = dropDownBox.getDataSource();
+
+		dataSource.load().done(function (data) {
+			var selectedItem = data.find(x => x.ClientCode === selectedValue);
+
+			if (!selectedItem || !selectedItem.ClientName) {
+				DevExpress.ui.notify('Client details not found.', 'error', 2000);
+				return;
+			}
+
+			var clientCode = selectedValue;
+			var clientName = selectedItem.ClientName;
+
+			var url = '/' + tenantName + '/IMS/QuotationClientContactList?clientCode=' +
+				encodeURIComponent(clientCode) + '&clientName=' +
+				encodeURIComponent(clientName);
+
+			openModal(url, '');
+		});
+	}
+
 				   $(function () {
 		$("#ClientRequestMasterForm").dxTextBox({
 		text: formatMessage("Client Request"),

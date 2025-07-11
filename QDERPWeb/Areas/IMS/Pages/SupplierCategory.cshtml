@@ -213,9 +213,6 @@
 
 <script type="text/javascript">
 
-    // function btnbackbt() {
-    //      window.parent.closeModal(); 
-    //  }
          function btnbackbt() {
         // Optional: confirm before closing
         DevExpress.ui.dialog.confirm("Do you want to go back and refresh the list?", "Back").done(function (result) {
@@ -495,7 +492,7 @@
           var CategoryCodevalidation = CategoryCodevalidator.validate();
 
         // If the branch name is valid, proceed with the AJAX request
-        if (supplierCategoryvalidation.isValid && CategoryCodevalidation.isValid {
+        if (supplierCategoryvalidation.isValid && CategoryCodevalidation.isValid) {
 
             // Get the data array from the grid's data source
             var existingBranches = $("#gridContainer").dxDataGrid("instance").getDataSource().items();

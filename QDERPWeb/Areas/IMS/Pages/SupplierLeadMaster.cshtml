@@ -143,6 +143,7 @@
     .mainContainer {
         margin-top: 1em;
         width: 100%;
+        overflow-y:auto;
     }
 
     .playIcon {
@@ -791,8 +792,11 @@
                 ddbInstance.close();
             }
 
-            // 3. Call generateNextClientCode with the full ClientCode (e.g., "SW-0004")
-            generateNextSupplierCode(categoryCode);
+               const supplierCodeParam = new URLSearchParams(window.location.search).get("supplierCode");
+
+    if (!supplierCodeParam) {
+        generateNextSupplierCode(categoryCode); // Only in Add mode
+    }
         }
     }
     function generateNextSupplierCode(categoryCode) {
