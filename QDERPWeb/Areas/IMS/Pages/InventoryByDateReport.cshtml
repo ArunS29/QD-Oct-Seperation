@@ -225,7 +225,7 @@
 	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry66004inventoryTransByDateWtFullDetail>()
 			.ID("dataGrid")
 			.DataSource(new JS("[]"))
-			.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+			.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
 			.Height(680)
 			.ShowBorders(true)
 			.ShowRowLines(true)
