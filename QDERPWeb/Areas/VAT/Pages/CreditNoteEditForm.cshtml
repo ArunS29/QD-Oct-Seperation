@@ -3112,6 +3112,99 @@
 
 			  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null;
 
+	 $(document).ready(function () {
+		$.ajax({
+			url: "/api/VATModule/CreateNewInvoiceCounter",
+			type: 'POST',
+			success: function (data) {
+				console.log("Success:", data);
+				
+			   $("#InvoiceCounterValue").dxTextBox("instance").option("value", data);
+			},
+			error: function (xhr, status, error) {
+				console.error("Error loading Payment Accounts:", error);
+				DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+			}
+		});
+	});
+
+		function InvoiceOPenToSave(data) {
+			if (revaccheadid == null) {
+				revaccheadid = "L00343";
+			}
+			
+		    var InvoiceMaster = {
+			CreditNoteNo: $('#CreditNoteNo').dxTextBox("instance").option("value"),
+			CreditNoteDate: $("#CreditNoteDate").dxDateBox("instance").option("value"),
+			//InvoiceEffectiveDate: $("#CreditNoteIssuedDateTime").dxDateBox("instance").option("value"),
+			InvoiceSupplyDate: $("#SupplyDate").dxDateBox("instance").option("value"),
+			//PaymentMeansTypeCode: paymentmeanstypecode,
+		   /// InvoiceTypeCode: $("#VATInvoiceType").dxDropDownBox("instance").option("value")
+			// InvoiceTypeCodeSubType: $("#VATInvoiceSubType").dxDropDownBox("instance").option("value"),
+			// InvoiceTransactionCode: $("#InvoiceTransactionsCode").dxDropDownBox("instance").option("value"),
+			 ClientCode: accid,
+			 BuyerName: $("#ddclientname").dxTextBox("instance").option("value")||null,
+			 BuyerNameAr: $("#ClientNameArabic").dxTextBox("instance").option("value")||null,
+			 SellerGroupVatnumber: $("#GroupVATNo").dxTextBox("instance").option("value")||null,
+			 BuyerVatnumber: $("#ClientVATNo").dxTextBox("instance").option("value")||null,
+			// BuyerOtherIdtype: $("#OtherIDType").dxTextBox("instance").option("value"),
+			 BuyerOtherId: $("#ClientOtherID").dxTextBox("instance").option("value")||null,
+		     InvoiceCounterValue: $("#InvoiceCounterValue").dxTextBox("instance").option("value")||null,
+			// InvoiceNo: $("#InvoiceNo").dxTextBox("instance").option("value")|| null,
+
+			 InvoiceEffectiveDate:$("#EffectiveDate").dxDateBox("instance").option("value")|| null,
+			InvoiceStartDate: $("#InvoiceStartDate").dxDateBox("instance").option("value")|| null,
+			InvoiceEndDate:$("#InvoiceEndDate").dxDateBox("instance").option("value")|| null,
+			RevenueAccount:revaccheadid|| null,
+			CostCenterCode: $("#ddlCostCenterAccount").dxDropDownBox("instance").option("value")|| null,
+			RemarksInEn: $("#txtInvoiceNotes").dxTextArea("instance").option("value")|| null,
+			RemarksInAr: $("#txtNotesinArabic").dxTextArea("instance").option("value")|| null,
+
+
+				//Deduction&CurrencyDetails
+		//	InvoiceCurrencyCode: InvoiceCurrencyExchangeId|| null,
+			//TaxCurrencyCode: TaxCurrencyExchangeId|| null,
+			ExchangeRate:$("#currencyexchangerate").dxNumberBox("instance").option("value")|| null,
+			AdvanceText:$("#LessAdvance").dxTextBox("instance").option("value")|| null,
+			AdvanceAmount:$("#currencyexchangerate3").dxNumberBox("instance").option("value")|| null,
+			AdvanceTextAr:$("#LessAdvanceAr").dxTextBox("instance").option("value")|| null,
+			OtherDeductionText:$("#LessOtherDeductions").dxTextBox("instance").option("value")|| null,
+			OtherDeductionAmount:$("#currencyexchangerate4").dxNumberBox("instance").option("value")|| null,
+			OtherDeductionTextAr:$("#LessAdvanceAr1").dxTextBox("instance").option("value")|| null,
+			RetentionText:$("#LessRetention").dxTextBox("instance").option("value")|| null,
+			RetentionAmount:$("#currencyexchangerate5").dxNumberBox("instance").option("value")|| null,
+			RetentionTextAr:$("#LessAdvanceAr2").dxTextBox("instance").option("value")|| null,
+
+				//SalesOrderNo: $("#OurSalesOrderNo").dxDropDownBox("instance").option("value")|| null,
+			Pono: $("#ClientPONo").dxTextBox("instance").option("value")|| null,
+			ReferenceNo: $("#ProjectRef").dxTextBox("instance").option("value")|| null,
+			
+
+			//Branch/DivisionDetails
+			BranchCode: branchcode|| null,
+			InvoiceSalesPerson: salespersoncode|| null,
+			CompanyId:companyid|| null,
+			 SellerName:$("#OurCompanyRegisteredName").dxTextBox("instance").option("value")|| null,
+			  SellerGroupVatnumber:$("#OurGroupVATNo").dxTextBox("instance").option("value")|| null,
+			  SellerVATNumber:$("#OurVATNo").dxTextBox("instance").option("value")|| null,
+			  SellerNameAr:$("#OurCompanyNameinArabic").dxTextBox("instance").option("value")|| null,
+			   SellerOtherIdtype:SellerOtherIdtype|| null,
+			   SellerOtherSellerId:$("#OtherID1").dxTextBox("instance").option("value")|| null,
+		};
+
+			console.log("InvoiceMaster:", InvoiceMaster);
+
+			$.ajax({
+				type: "POST",
+				url: `/api/VoucherMaster/UpdateCreditNoteMasterDetails`,
+				contentType: "application/json",
+				data: JSON.stringify(InvoiceMaster),
+				success: function () {
+				}
+
+			});
+		}
+
 		//View e-Invoice
 
 			$(document).ready(function () {
@@ -4132,27 +4225,6 @@ openModal(url, title);
 
 		});
 
-		$(document).ready(function () {
-			if (IsCurrent !== "true" && IsAmend !=="true") {
-				
-			$.ajax({
-			url: "/api/VATModule/GetVATCreditNoteNo",
-				type: 'GET',
-				success: function (data) {
-					console.log("Success:", data);
-					
-				$("#CreditNoteNo").dxTextBox("instance").option("value", data);
-				CrNoteNo=data;
-		
-				
-				},
-				error: function (xhr, status, error) {
-					console.error("Error loading Payment Accounts:", error);
-					DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
-				}
-			});
-			}
-		});
 
 
 			// Fetch dropdown data (same API can be used if needed)
@@ -6237,7 +6309,6 @@ openModal(url, title);
 		}
 	}
 
-
 	$("#btnSave").on("click", function (e) {
 		debugger;
 		var clientnameValidator = $("#ddclientname").dxValidator("instance");
@@ -6252,7 +6323,6 @@ openModal(url, title);
 	revaccheadid="L00343"
 }
 		
-
 		var InvoiceMaster = {
 			CreditNoteNo: $('#CreditNoteNo').dxTextBox("instance").option("value"),
 			CreditNoteDate: $("#CreditNoteDate").dxDateBox("instance").option("value"),
@@ -6405,21 +6475,7 @@ openModal(url, title);
 
 
 
-	 $(document).ready(function () {
-		$.ajax({
-			url: "/api/VATModule/CreateNewInvoiceCounter",
-			type: 'POST',
-			success: function (data) {
-				console.log("Success:", data);
-
-			   $("#InvoiceCounterValue").dxTextBox("instance").option("value", data);
-			},
-			error: function (xhr, status, error) {
-				console.error("Error loading Payment Accounts:", error);
-				DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
-			}
-		});
-	});
+	
 
 	$("#btnSaveAndClose").on("click", function (e) {
 		debugger;
@@ -6581,6 +6637,29 @@ openModal(url, title);
 
 	 });
 
+
+	 $(document).ready(function () {
+			if (IsCurrent !== "true" && IsAmend !=="true") {
+				
+			$.ajax({
+			url: "/api/VATModule/GetVATCreditNoteNo",
+				type: 'GET',
+				success: function (data) {
+					console.log("Success:", data);
+					
+				$("#CreditNoteNo").dxTextBox("instance").option("value", data);
+                InvoiceOPenToSave(data)
+				CrNoteNo=data;
+		
+				
+				},
+				error: function (xhr, status, error) {
+					console.error("Error loading Payment Accounts:", error);
+					DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+				}
+			});
+			}
+		});
 
 	function VATPercentage(newValue, rowIndex,TaxSlabCode) {
 			let grid = $("#B2BdataGrid").dxDataGrid("instance");
