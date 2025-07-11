@@ -5054,11 +5054,11 @@ function syncSupVATNumbers(e) {
         function GoToAttachment() {
         var sAccountID = $('#txtAccountId').dxTextBox("instance").option("value");
         var module = "Ledger Account";
-        var isMaster = "true"; // Already a string
+        var isMaster = true;
 
-       
 
-        window.location.href = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(sAccountID)}&ModuleType=${encodeURIComponent(module)}&isMaster=${isMaster}`;
+
+            window.location.href = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(sAccountID)}&ModuleType=${encodeURIComponent(module)}&isMaster=${encodeURIComponent(isMaster)}`;
     }
 
      function onPostButtonClick(e) {

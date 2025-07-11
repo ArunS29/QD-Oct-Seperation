@@ -3368,17 +3368,18 @@ buttons.Add()
         });
     }
 
-    function onAttachmentButtonClick() {
-        var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
-        var voucherNo = voucherNoBox.option("value");
+        function onAttachmentButtonClick() {
+                var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
+                var voucherNo = voucherNoBox.option("value");
 
-        var voucherTypeBox = $("#VoucherType").dxSelectBox("instance"); // or dxTextBox
-        var voucherType = voucherTypeBox.option("value");
-        console.log(voucherType)
-        const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&modal=true`;
-        const title = "Transaction Documents";
-        openModal(url, title);
-    }
+                var voucherTypeBox = $("#VoucherType").dxSelectBox("instance"); // or dxTextBox
+                var voucherType = voucherTypeBox.option("value");
+                const isMaster = false;
+                console.log(voucherType)
+                    const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&modal=true`;
+                const title = "Transaction Documents";
+                openModal(url, title);
+        }
     function onBaseCurrencyInit(e) {
     const dropDown = e.component;
 
