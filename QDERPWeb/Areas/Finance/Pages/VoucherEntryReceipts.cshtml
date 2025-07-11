@@ -545,7 +545,7 @@ buttons.Add()
                                     columns.AddFor(m => m.SysRemarks).Caption(new JS("formatMessage('Remarks')")).Width(300);
                                 })
                                 .Selection(selection => selection.Mode(SelectionMode.Single))
-                                                                                              //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
+                                                                                              //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.DragAndDrop))
                                 .AllowColumnReordering(true) // Enable column reordering
                                 .AllowColumnResizing(true)   // Enable column resizing
                                 .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)

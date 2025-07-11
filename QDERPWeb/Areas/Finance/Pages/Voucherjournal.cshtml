@@ -547,7 +547,7 @@ buttons.Add()
                         .AllowColumnReordering(true)
 				.ColumnResizingMode(ColumnResizingMode.Widget)
                         .AllowColumnResizing(true)
-                        .ColumnChooser(c => c.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+                        .ColumnChooser(c => c.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
 
                         .ColumnFixing(fixing => fixing.Enabled(true))
                         .HeaderFilter(filter => filter.Visible(false))
@@ -891,7 +891,7 @@ buttons.Add()
 
 
                     })
-        .ColumnChooser(c => c.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+        .ColumnChooser(c => c.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
         .OnRowPrepared("onRowPrepared")
 
                 )

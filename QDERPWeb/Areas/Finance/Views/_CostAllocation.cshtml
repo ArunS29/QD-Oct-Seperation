@@ -406,7 +406,7 @@
                                     columns.AddFor(m => m.CostAllocRemarks).Caption("Remarks").DataField("Remarks").AllowEditing(true);
 
                     })
-                //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
+                //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.DragAndDrop))
                 .AllowColumnReordering(true) // Enable column reordering
                 .AllowColumnResizing(true)   // Enable column resizing
                 .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)

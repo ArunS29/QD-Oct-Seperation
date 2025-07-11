@@ -447,7 +447,7 @@
                     columns.AddFor(m => m.SupplierContactSlNo).Caption(new JS("formatMessage('Supplier ContactSlNo')")).Alignment(HorizontalAlignment.Center).Visible(false);
                     columns.AddFor(m => m.SupplierCode).Caption(new JS("formatMessage('Supplier Code')")).Alignment(HorizontalAlignment.Center).Visible(false);
                     })
-                    //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser").Mode(GridColumnChooserMode.Select))
+                    //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser").Mode(GridColumnChooserMode.DragAndDrop))
                     .AllowColumnReordering(true) // Enable column reordering
                     .AllowColumnResizing(true)   // Enable column resizing
                     .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
