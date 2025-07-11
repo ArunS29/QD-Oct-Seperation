@@ -4223,4 +4223,10 @@ function showMainFooter() {
             showIfHasValue("ApprovedOntext", "approvedOnSection");
         }, 300); // wait a bit to ensure DevExtreme is ready
     });
+         function onReferenceDropdownOpened(e) {
+            const grid = $("#ReferenceGrid").dxDataGrid("instance");
+            if (grid) {
+                grid.getDataSource().reload();
+            }
+        }
 </script>

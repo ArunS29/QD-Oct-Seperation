@@ -708,7 +708,7 @@ buttons.Add()
 		.ID("BillsReceivablePopup")
 		.Title("Finance Module: Receivables / Payables")
 		.Width("90%")
-		.Height(500)
+		.Height(600)
 		.Visible(false)
 		.ShowCloseButton(true)
 		.ResizeEnabled(true)
@@ -2357,47 +2357,47 @@ buttons.Add()
 				openEmployeeAllocationPopup(params);
 			}
 		};
-		window.editBillsReceivable = function () {
-			let rowIndex = document.getElementById("contextMenu").dataset.rowIndex;
-			let dataGrid = $("#dataGrid").dxDataGrid("instance");
+		 window.editBillsReceivable = function () {
+				 let rowIndex = document.getElementById("contextMenu").dataset.rowIndex;
+				 let dataGrid = $("#dataGrid").dxDataGrid("instance");
 
-			if (!rowIndex || rowIndex < 0) {
-				console.error("Invalid row index detected.");
-				return;
-			}
+				 if (!rowIndex || rowIndex < 0) {
+					 console.error("Invalid row index detected.");
+					 return;
+				 }
+				 
+				 let visibleRows = dataGrid.getVisibleRows(); // Get all visible rows
+				 let rowData = visibleRows[rowIndex]?.data; // Fetch the correct row's data
 
-			let visibleRows = dataGrid.getVisibleRows(); // Get all visible rows
-			let rowData = visibleRows[rowIndex]?.data; // Fetch the correct row's data
+				 if (!rowData || !rowData.VoucherEntryNo) {
+					 console.error("No valid row selected for Cost Allocation.");
+					 return;
+				 }
 
-			if (!rowData || !rowData.VoucherEntryNo) {
-				console.error("No valid row selected for Cost Allocation.");
-				return;
-			}
+				 let drCr = rowData.DrCr;
+				 let accountHead = rowData.AccountHead;
+				 let amount = drCr === "Cr" ? rowData.CrAmount : rowData.DrAmount;
+				 let voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+				 let accountid = paymentaccheadId;
 
-			let drCr = rowData.DrCr;
-			let accountHead = rowData.AccountHead;
-			let amount = drCr === "Cr" ? rowData.CrAmount : rowData.DrAmount;
-			let voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+				 // Selecting VoucherEntryNo based on DrCr value
+				 let voucherEntryNo = drCr === "Cr" ? rowData.VoucherEntryNo : rowData.VoucherEntryNo;
 
-			// Selecting VoucherEntryNo based on DrCr value
-			let voucherEntryNo = drCr === "Cr" ? rowData.VoucherEntryNo : rowData.VoucherEntryNo;
+				 let popupId = `BillsReceivablePopup-${voucherEntryNo}`;
+				 let params = {
+					 VoucherNo: voucherNo, // Keep VoucherEntryNo as VoucherNo
+					 VoucherEntryNo: voucherEntryNo, // Pass Dr/Cr-specific row's VoucherEntryNo
+					 DrCr: drCr,
+					 AccountHead: accountHead,
+					 VoucherAmount: amount,
+					 AccountID: accountid
+				 };
+     
+    
+					 openBillsReceivablePopup(params);
+    
 
-			let popupId = `BillsReceivablePopup-${voucherEntryNo}`;
-			let params = {
-				VoucherNo: voucherNo, // Keep VoucherEntryNo as VoucherNo
-				VoucherEntryNo: voucherEntryNo, // Pass Dr/Cr-specific row's VoucherEntryNo
-				DrCr: drCr,
-				AccountHead: accountHead,
-				VoucherAmount: amount
-			};
-			
-			if (openedPopups[popupId]) {
-				openedPopups[popupId].show();
-			} else {
-				openBillsReceivablePopup(params);
-			}
-
-		};
+		 };
 		window.editSalaryPayable = function () {
 			let rowIndex = document.getElementById("contextMenu").dataset.rowIndex;
 			let dataGrid = $("#dataGrid").dxDataGrid("instance");
@@ -3649,6 +3649,13 @@ buttons.Add()
 			const title = "Transaction Documents";
 			openModal(url, title);
 	}
+	function onReferenceDropdownOpened(e) {
+        const grid = $("#ReferenceGrid").dxDataGrid("instance");
+        if (grid) {
+            grid.getDataSource().reload();
+        }
+    }
+	
 </script>
 
 
