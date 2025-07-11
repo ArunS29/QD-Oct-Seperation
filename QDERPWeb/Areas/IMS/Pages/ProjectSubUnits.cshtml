@@ -255,14 +255,15 @@
         
        
         function addSignatoryToGrid() {
-            // Validate fields using the Validator components
-            // const nameValidationResult = $("#SignatoryName").dxValidator("instance").validate();
-            // const positionValidationResult = $("#SignatoryPosition").dxValidator("instance").validate();
 
-            // if (!nameValidationResult.isValid || !positionValidationResult.isValid) {
-            //     DevExpress.ui.notify("Please fill all required fields.", "warning", 2000);
-            //     return;
-            // }
+        var ProjectSubUnitvalidator = $("#txtProjectSubUnit").dxValidator("instance");
+   
+
+    var ProjectSubUnitvalidation = ProjectSubUnitvalidator.validate();
+    
+
+    // If the branch name is valid, proceed with the AJAX request
+    if (ProjectSubUnitvalidation.isValid) {
 
             const data = {
             ProjectSubUnitName: $("#txtProjectSubUnit").dxTextBox("instance").option("value"),
@@ -284,6 +285,10 @@
                     DevExpress.ui.notify("Failed to save signatory.", "error", 2000);
                 }
             });
+              } else {
+            // If validation fails, show a notification
+            DevExpress.ui.notify(formatMessage('Please fill required details!'), "error", 2000);
+        }
         }
 
 
