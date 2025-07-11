@@ -3455,9 +3455,21 @@ var dictionary = {
         "Project Sub Unit Name": "Project Sub Unit Name",
         "Location": "Location",
         "Division": "Division",
+        "Request Status Id": "Request Status Id",
+        "Request Status": "Request Status",
+        "Inventory Group Id": "Inventory Group Id",
+        "Inventory Group": "Inventory Group",
+        "Requesting Person": "Requesting Person",
+        "Project Sub Unit": "Project Sub Unit",
 
     },
     ar: {
+        "Request Status Id": "معرّف حالة الطلب",
+        "Request Status": "حالة الطلب",
+        "Inventory Group Id": "معرّف مجموعة المخزون",
+        "Inventory Group": "مجموعة المخزون",
+        "Requesting Person": "الشخص الذي قدّم الطلب",
+        "Project Sub Unit": "الوحدة الفرعية للمشروع",
         "Location": "الموقع",
         "Division": "القسم",
 
