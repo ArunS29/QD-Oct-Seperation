@@ -1919,3 +1919,188 @@ FROM         Aicon.tbl201VoucherEntry
 ALTER TABLE dbo.Tbl20116LedgerDocuments 
         ADD AzurePath VARCHAR(MAX) NULL; 
  
+
+
+ -- currency convertion salary & bills rec,pay 
+
+ Alter view [Aicon].[qry20136VoucherMasterList] as SELECT Aicon.tbl201VoucherMaster.VoucherNo, Aicon.tbl201VoucherMaster.VoucherDate, Aicon.tbl201VoucherMaster.VoucherRefNo, Aicon.tbl201VoucherMaster.VoucherNarration, Aicon.tbl201VoucherMaster.VoucherEnteredBy, Aicon.tbl201VoucherMaster.VoucherEnteredOn, 
+             ISNULL(Aicon.tbl201VoucherMaster.IsVerified, 0) AS IsVerified, Aicon.tbl201VoucherMaster.VoucherVerifiedBy, Aicon.tbl201VoucherMaster.VoucherVerifiedOn, ISNULL(Aicon.tbl201VoucherMaster.IsApproved, 0) AS IsApproved, Aicon.tbl201VoucherMaster.VoucherApprovedBy, 
+             Aicon.tbl201VoucherMaster.VoucherApprovedOn, Aicon.tbl201VoucherMaster.VoucherType, Aicon.tbl201VoucherMaster.VoucherEffectiveDate, Aicon.tbl201VoucherMaster.VoucherModifiedBy, Aicon.tbl201VoucherMaster.VoucherModifiedOn, Aicon.qry20138VoucherTotalMaster.DebitAmount, 
+             Aicon.qry20138VoucherTotalMaster.CreditAmount, Aicon.qry20138VoucherTotalMaster.DebitAmount * ISNULL(Aicon.tbl201VoucherMaster.CurrencyRate, 1) AS ConvertedDrAmount, Aicon.qry20138VoucherTotalMaster.CreditAmount * ISNULL(Aicon.tbl201VoucherMaster.CurrencyRate, 1) 
+             AS ConvertedCrAmount, Aicon.tbl201VoucherMaster.AuditVerifiedBy, Aicon.tbl201VoucherMaster.AuditVerifiedOn, ISNULL(Aicon.tbl201VoucherMaster.IsAuditVerified, 0) AS IsAuditVerified, cex.CurrencyName, cex.CurrencySymbole AS TransactionCurrencySymbol, 
+             cex.CurrencyImage
+FROM   Aicon.tbl201VoucherMaster INNER JOIN
+             Aicon.qry20138VoucherTotalMaster ON Aicon.tbl201VoucherMaster.VoucherNo = Aicon.qry20138VoucherTotalMaster.VoucherNo LEFT OUTER JOIN
+             Aicon.tbl20169CurrencyExchange AS cex ON Aicon.tbl201VoucherMaster.Currencyid = cex.CurrencyExchangeID
+WHERE (Aicon.tbl201VoucherMaster.VoucherNo NOT LIKE 'SYS-PL-%')
+
+
+
+
+
+
+
+Alter view [Aicon].[qry201SubLedgerPayablesMaster] as
+SELECT Aicon.qry201SubLedgerPayables.AccountHeadNo, Aicon.qry201SubLedgerPayables.AccountHead,
+Aicon.qry201SubLedgerPayables.ReferenceNo,
+Aicon.tbl201VoucherMaster.VoucherDate, 
+Aicon.tbl201VoucherMaster.VoucherRefNo, 
+Aicon.qry201SubLedgerPayables.PayableAmount, 
+             Aicon.qry201SubLedgerPayables.Paid, 
+			 Aicon.qry201SubLedgerPayables.Balance, 
+			 Aicon.qry201SubLedgerPayablesWtRetention.InvoiceAmountBeforeRetention * ISNULL(Aicon.tbl201VoucherMaster.CurrencyRate, 1) AS ConvertedInvoiceAmountBeforeRetention, 
+			 Aicon.qry201SubLedgerPayables.Paid * ISNULL(Aicon.tbl201VoucherMaster.CurrencyRate, 1) AS ConvertedPaid, 
+		     Aicon.qry201SubLedgerPayables.Balance * ISNULL(Aicon.tbl201VoucherMaster.CurrencyRate, 1) AS ConvertedBalance, 
+			 Aicon.tbl201VoucherMaster.CurrencyRate,
+			 Aicon.tbl201VoucherMaster.VoucherNarration,
+			 Aicon.tbl201AccountGroups.AccountGroup, DATEADD(dd, DATEDIFF(dd, 0, Aicon.tbl201VoucherMaster.InvoiceDueDate), 0) AS InvoiceDueDate, 
+             Aicon.tbl201ChartOfAccounts.NoOfDaysCreditPeriod, DATEDIFF(dd, Aicon.tbl201VoucherMaster.InvoiceDueDate, GETDATE()) AS OverdueDays, Aicon.tbl201VoucherMaster.VoucherEffectiveDate, Aicon.tbl201VoucherMaster.InvoiceSubmittedDate, Aicon.tbl201VoucherMaster.VoucherType, 
+             Aicon.tbl201ChartOfAccounts.BankAccountNo, Aicon.tbl201ChartOfAccounts.BankIBAN, Aicon.tbl201ChartOfAccounts.BankName, Aicon.tbl201ChartOfAccounts.BankBranch, Aicon.tbl201ChartOfAccounts.LedgerRemarks, Aicon.tbl201ChartOfAccounts.AccountHeadArabic, 
+             Aicon.tbl201AccountGroups.AccountGroupID, Aicon.tbl201ChartOfAccounts.AccountBranch, Aicon.tbl201ChartOfAccounts.SalesPersonCode, Aicon.tbl20115CompanyBranch.BranchName, Aicon.qry201_707VATPurchaseRegisterMainView.CostCenterCode, 
+             Aicon.qry201_707VATPurchaseRegisterMainView.CostAllocationUnit, Aicon.qry201_707VATPurchaseRegisterMainView.CostAllocationGroup, Aicon.qry201_707VATPurchaseRegisterMainView.CostAllocationMasterGroup, Aicon.tbl201ChartOfAccounts.AccountSubGroup, 
+             Aicon.tbl20123LedgerSubGroups.SubGroupName, Aicon.tbl201ChartOfAccounts.BankAccountName, Aicon.qry201SubLedgerPayables.RetentionAmount, Aicon.qry201SubLedgerPayablesWtRetention.InvoiceAmountBeforeRetention, 
+             Aicon.qry201SubLedgerPayablesWtRetention.TotalPayableAmount, Aicon.qry201SubLedgerPayablesWtRetention.BalanceDueWithOutRetention, Aicon.qry201SubLedgerPayablesWtRetention.RetentionPayable, Aicon.qry201SubLedgerPayablesWtRetention.BalanceDueWithRetention, 
+             Aicon.tbl201VoucherMaster.ReferenceNote, Aicon.qry201_707VATPurchaseRegisterMainView.PurchaseBillNo, Aicon.qry201_707VATPurchaseRegisterMainView.PurchaseBillDate, Aicon.qry201_707VATPurchaseRegisterMainView.PurchaseOrderNo, 
+             Aicon.qry201_707VATPurchaseRegisterMainView.MaterialReceiptNo, Aicon.qry201_707VATPurchaseRegisterMainView.ReferenceNo AS Expr1,cex.CurrencyName,
+             cex.CurrencySymbole AS TransactionCurrencySymbol
+FROM   Aicon.qry201SubLedgerPayables LEFT OUTER JOIN
+             Aicon.qry201SubLedgerPayablesWtRetention ON Aicon.qry201SubLedgerPayables.ReferenceNo = Aicon.qry201SubLedgerPayablesWtRetention.ReferenceNo LEFT OUTER JOIN
+             Aicon.tbl20123LedgerSubGroups RIGHT OUTER JOIN
+             Aicon.tbl201AccountGroups INNER JOIN
+             Aicon.tbl201ChartOfAccounts ON Aicon.tbl201AccountGroups.AccountGroupID = Aicon.tbl201ChartOfAccounts.AccountGroupID ON Aicon.tbl20123LedgerSubGroups.LedgerSubGroupCode = Aicon.tbl201ChartOfAccounts.AccountSubGroup LEFT OUTER JOIN
+             Aicon.tbl20115CompanyBranch ON Aicon.tbl201ChartOfAccounts.AccountBranch = Aicon.tbl20115CompanyBranch.BranchCode ON Aicon.qry201SubLedgerPayables.AccountHeadNo = Aicon.tbl201ChartOfAccounts.AccountID LEFT OUTER JOIN
+             Aicon.qry201_707VATPurchaseRegisterMainView RIGHT OUTER JOIN
+             Aicon.tbl201VoucherMaster ON Aicon.qry201_707VATPurchaseRegisterMainView.PurchaseVoucherNo = Aicon.tbl201VoucherMaster.VoucherNo ON Aicon.qry201SubLedgerPayables.ReferenceNo = Aicon.tbl201VoucherMaster.VoucherNo
+			 LEFT JOIN 
+             Aicon.tbl20169CurrencyExchange cex ON Aicon.tbl201VoucherMaster.CurrencyId = cex.CurrencyExchangeID
+WHERE (Aicon.tbl201AccountGroups.AccountGroupID = 'A003')
+
+
+Alter view Aicon.qry201SubLedgerReceivablesMaster as
+SELECT Aicon.qry201SubLedgerReceivables.AccountHeadNo, Aicon.qry201SubLedgerReceivables.AccountHead, Aicon.qry201SubLedgerReceivables.ReferenceNo, Aicon.tbl201VoucherMaster.VoucherDate, Aicon.tbl201VoucherMaster.VoucherRefNo, Aicon.tbl201VoucherMaster.VoucherNarration, 
+             Aicon.qry201SubLedgerReceivables.ReceivableAmount, Aicon.qry201SubLedgerReceivables.Received, Aicon.qry201SubLedgerReceivables.Balance, Aicon.tbl201AccountGroups.AccountGroup, DATEADD(dd, DATEDIFF(dd, 0, Aicon.tbl201VoucherMaster.InvoiceDueDate), 0) 
+             AS InvoiceDueDate, Aicon.tbl201ChartOfAccounts.SalesPersonCode, Aicon.tbl20101SalesPersonMaster.SalesPersonName, Aicon.tbl201ChartOfAccounts.NoOfDaysCreditPeriod, DATEDIFF(dd, Aicon.tbl201VoucherMaster.InvoiceDueDate, GETDATE()) AS OverdueDays, 
+             Aicon.tbl201VoucherMaster.VoucherType, Aicon.tbl201AccountGroups.AccountGroupID, Aicon.tbl201VoucherMaster.VoucherEffectiveDate, Aicon.tbl201ChartOfAccounts.AccountBranch, Aicon.qry201_607VATInvoiceRegisterMainView.CostAllocationUnit, 
+             Aicon.qry201_607VATInvoiceRegisterMainView.CostAllocationGroup, Aicon.qry201_607VATInvoiceRegisterMainView.CostAllocationMasterGroup, Aicon.qry201_607VATInvoiceRegisterMainView.VATRegistrationNo, Aicon.qry201_607VATInvoiceRegisterMainView.BillingName, 
+             Aicon.qry201_607VATInvoiceRegisterMainView.CompanyBranch, Aicon.qry201SubLedgerReceivables.TransactionDateCr, Aicon.tbl20115CompanyBranch.BranchName AS DivisionName, Aicon.qry201_607VATInvoiceRegisterMainView.SalesPersonName AS Inv_SalesMan, 
+             Aicon.tbl20123LedgerSubGroups.SubGroupName, Aicon.tbl20123LedgerSubGroups.LedgerSubGroupCode, DATEADD(month, DATEDIFF(month, 0, ISNULL(Aicon.tbl201VoucherMaster.VoucherEffectiveDate, Aicon.tbl201VoucherMaster.VoucherDate)), 0) AS VoucherEffectiveMonth, 
+             Aicon.qry201_607VATInvoiceRegisterMainView.BranchCode, Aicon.qry201_607VATInvoiceRegisterMainView.BranchName, Aicon.qry201SubLedgerReceivablesWtRetention.InvoiceAmountBeforeRetention, Aicon.qry201SubLedgerReceivablesWtRetention.TotalReceivableAmount, 
+             Aicon.qry201SubLedgerReceivablesWtRetention.BalanceDueWithOutRetention, Aicon.qry201SubLedgerReceivablesWtRetention.RetentionReceivable, Aicon.qry201SubLedgerReceivablesWtRetention.BalanceDueWithRetention, Aicon.qry201SubLedgerReceivables.RetentionAmount, 
+             Aicon.qry201_607VATInvoiceRegisterMainView.SOSReferenceNo AS SESReferenceNo, Aicon.qry201_607VATInvoiceRegisterMainView.ReferenceNo AS ProjectOrContractNo,Aicon.tbl201VoucherMaster.CurrencyRate,
+			 cex.CurrencyName,
+             cex.CurrencySymbole AS TransactionCurrencySymbol
+FROM   Aicon.qry201SubLedgerReceivablesWtRetention RIGHT OUTER JOIN
+             Aicon.qry201SubLedgerReceivables ON Aicon.qry201SubLedgerReceivablesWtRetention.ReferenceNo = Aicon.qry201SubLedgerReceivables.ReferenceNo LEFT OUTER JOIN
+             Aicon.tbl201AccountGroups RIGHT OUTER JOIN
+             Aicon.tbl20123LedgerSubGroups RIGHT OUTER JOIN
+             Aicon.tbl201ChartOfAccounts ON Aicon.tbl20123LedgerSubGroups.LedgerSubGroupCode = Aicon.tbl201ChartOfAccounts.AccountSubGroup LEFT OUTER JOIN
+             Aicon.tbl20115CompanyBranch ON Aicon.tbl201ChartOfAccounts.AccountBranch = Aicon.tbl20115CompanyBranch.BranchCode LEFT OUTER JOIN
+             Aicon.tbl20101SalesPersonMaster ON Aicon.tbl201ChartOfAccounts.SalesPersonCode = Aicon.tbl20101SalesPersonMaster.SalesPersonCode ON Aicon.tbl201AccountGroups.AccountGroupID = Aicon.tbl201ChartOfAccounts.AccountGroupID ON 
+             Aicon.qry201SubLedgerReceivables.AccountHeadNo = Aicon.tbl201ChartOfAccounts.AccountID LEFT OUTER JOIN
+             Aicon.qry201_607VATInvoiceRegisterMainView RIGHT OUTER JOIN
+             Aicon.tbl201VoucherMaster ON Aicon.qry201_607VATInvoiceRegisterMainView.InvoiceNo = Aicon.tbl201VoucherMaster.VoucherNo ON Aicon.qry201SubLedgerReceivables.ReferenceNo = Aicon.tbl201VoucherMaster.VoucherNo
+			     LEFT JOIN 
+             Aicon.tbl20169CurrencyExchange cex ON Aicon.tbl201VoucherMaster.CurrencyId = cex.CurrencyExchangeID
+WHERE (Aicon.tbl201ChartOfAccounts.AccountGroupID = 'A011')
+
+	 --[qry20196SalaryPayableByDateReport]
+			 Alter view [Aicon].[qry20196SalaryPayableByDateReport] as
+			 SELECT Aicon.qry20195SalaryPayableByDateBalance.EmployeeNo, Aicon.qry101EmployeeViewMaster.EmployeeName, Aicon.qry20195SalaryPayableByDateBalance.ReferenceNo,
+			 Aicon.qry20195SalaryPayableByDateBalance.PayableAmount,
+			 Aicon.qry20195SalaryPayableByDateBalance.Paid, 
+             Aicon.qry20195SalaryPayableByDateBalance.Balance, 
+			 Aicon.qry20195SalaryPayableByDateBalance.PayableAmount * ISNULL(Aicon.tbl201VoucherMaster.CurrencyRate, 1)ConvertedPayableAmount,
+			 Aicon.qry20195SalaryPayableByDateBalance.Paid * ISNULL(Aicon.tbl201VoucherMaster.CurrencyRate, 1) ConvertedPaid, 
+             Aicon.qry20195SalaryPayableByDateBalance.Balance * ISNULL(Aicon.tbl201VoucherMaster.CurrencyRate, 1)ConvertedBalance, 
+			 DATEADD(dd, DATEDIFF(dd, 0, Aicon.tbl201VoucherMaster.VoucherDate), 0) AS VoucherDate, DATEADD(dd, DATEDIFF(dd, 0, Aicon.tbl201VoucherMaster.VoucherEffectiveDate), 0) AS VoucherEffectiveDate, DATENAME(m, 
+             Aicon.tbl201VoucherMaster.VoucherEffectiveDate) + ' ' + CAST(DATEPART(yyyy, Aicon.tbl201VoucherMaster.VoucherEffectiveDate) AS varchar) AS MonthOf, Aicon.qry101EmployeeViewMaster.CategoryTitle, Aicon.qry101EmployeeViewMaster.WorkSite, 
+             Aicon.qry101EmployeeViewMaster.ContactMobile, Aicon.qry101EmployeeViewMaster.NationalID, Aicon.qry101EmployeeViewMaster.AgencyName, Aicon.qry101EmployeeViewMaster.BankAccountNo, Aicon.qry101EmployeeViewMaster.BankName, 
+             Aicon.qry101EmployeeViewMaster.EmployeeGroup, Aicon.qry101EmployeeViewMaster.JobTitle, Aicon.qry101EmployeeViewMaster.CostCentreTitle, Aicon.qry101EmployeeViewMaster.Department, Aicon.qry101EmployeeViewMaster.CordinatorName, 
+             Aicon.qry101EmployeeViewMaster.EmployeeReferenceID, Aicon.qry101EmployeeViewMaster.GosiSalary,cex.CurrencyName,
+             cex.CurrencySymbole AS TransactionCurrencySymbol
+FROM   Aicon.qry20195SalaryPayableByDateBalance LEFT OUTER JOIN
+             Aicon.tbl201VoucherMaster ON Aicon.qry20195SalaryPayableByDateBalance.ReferenceNo = Aicon.tbl201VoucherMaster.VoucherNo LEFT OUTER JOIN
+             Aicon.qry101EmployeeViewMaster ON Aicon.qry20195SalaryPayableByDateBalance.EmployeeNo = Aicon.qry101EmployeeViewMaster.EmployeeID
+			     LEFT JOIN 
+             Aicon.tbl20169CurrencyExchange cex ON Aicon.tbl201VoucherMaster.CurrencyId = cex.CurrencyExchangeID
+
+			Alter view [Aicon].[qry20104BillsReceivableAgeing] as SELECT AccountHeadNo, AccountHead, ReferenceNo, VoucherDate, VoucherRefNo, VoucherNarration, ReceivableAmount, Received, Balance, AccountGroup, InvoiceDueDate, ISNULL(DATEDIFF(dd, InvoiceDueDate, GETDATE()), 0) AS OverdueDays, SalesPersonName, Inv_SalesMan, 
+             CostAllocationUnit, CostAllocationGroup, CostAllocationMasterGroup, CompanyBranch, DivisionName, SubGroupName, LedgerSubGroupCode,CurrencyRate,CurrencyName,TransactionCurrencySymbol
+FROM   Aicon.qry201SubLedgerReceivablesMaster
+WHERE (Balance <> 0)
+
+
+	
+
+
+			 
+
+Alter view [Aicon].[qry20105BillsReceivableAgeingView] as SELECT Aicon.qry20104BillsReceivableAgeing.AccountHeadNo, Aicon.qry20104BillsReceivableAgeing.AccountHead, Aicon.qry20104BillsReceivableAgeing.ReferenceNo, Aicon.qry20104BillsReceivableAgeing.VoucherDate, Aicon.qry20104BillsReceivableAgeing.VoucherRefNo, 
+             Aicon.qry20104BillsReceivableAgeing.VoucherNarration,
+			 Aicon.qry20104BillsReceivableAgeing.ReceivableAmount,
+			 Aicon.qry20104BillsReceivableAgeing.ReceivableAmount * ISNULL(Aicon.qry20104BillsReceivableAgeing.CurrencyRate, 1) AS ConvertedReceivableAmount, 
+			 Aicon.qry20104BillsReceivableAgeing.Received * ISNULL(Aicon.qry20104BillsReceivableAgeing.CurrencyRate, 1) AS ConvertedReceived, 
+		     Aicon.qry20104BillsReceivableAgeing.Balance * ISNULL(Aicon.qry20104BillsReceivableAgeing.CurrencyRate, 1) AS ConvertedBalance, 
+			 Aicon.qry20104BillsReceivableAgeing.Received, 
+			 Aicon.qry20104BillsReceivableAgeing.Balance,
+			 Aicon.qry20104BillsReceivableAgeing.AccountGroup, 
+             Aicon.qry20104BillsReceivableAgeing.InvoiceDueDate,
+			 Aicon.qry20104BillsReceivableAgeing.OverdueDays, CASE WHEN OverdueDays <= 0 THEN Balance ELSE 0 END AS NotOverdue, CASE WHEN OverdueDays > 0 THEN (CASE WHEN OverdueDays <= 30 THEN Balance ELSE 0 END) 
+             ELSE 0 END AS Less30, CASE WHEN OverdueDays > 30 THEN (CASE WHEN OverdueDays <= 60 THEN Balance ELSE 0 END) ELSE 0 END AS Less30to60, CASE WHEN OverdueDays > 60 THEN (CASE WHEN OverdueDays <= 90 THEN Balance ELSE 0 END) ELSE 0 END AS Less60to90, 
+             CASE WHEN OverdueDays > 90 THEN (CASE WHEN OverdueDays <= 180 THEN Balance ELSE 0 END) ELSE 0 END AS Less90to180, CASE WHEN OverdueDays > 180 THEN Balance ELSE 0 END AS More180, 
+             CASE WHEN OverdueDays > 180 THEN (CASE WHEN OverdueDays <= 365 THEN Balance ELSE 0 END) ELSE 0 END AS Less180to365, CASE WHEN OverdueDays > 365 THEN Balance ELSE 0 END AS More365, Aicon.qry20104BillsReceivableAgeing.SalesPersonName, 
+             Aicon.qry20104BillsReceivableAgeing.Inv_SalesMan, Aicon.qry20104BillsReceivableAgeing.CostAllocationUnit, Aicon.qry20104BillsReceivableAgeing.CostAllocationGroup, Aicon.qry20104BillsReceivableAgeing.CostAllocationMasterGroup, 
+             Aicon.qry20104BillsReceivableAgeing.CompanyBranch, Aicon.qry20104BillsReceivableAgeing.DivisionName, Aicon.qry20104BillsReceivableAgeing.SubGroupName, Aicon.qry20104BillsReceivableAgeing.LedgerSubGroupCode, Aicon.tbl201ChartOfAccounts.AccountHeadArabic, 
+             Aicon.tbl201ChartOfAccounts.VATRegistrationNo, Aicon.tbl201ChartOfAccounts.ClientOtherID, Aicon.tbl201ChartOfAccounts.NoOfDaysCreditPeriod, Aicon.tbl201ChartOfAccounts.AccountsContactName, Aicon.tbl201ChartOfAccounts.AccountsContactMobile, 
+             Aicon.tbl201ChartOfAccounts.AccountsContactTitle,
+			   Aicon.qry20104BillsReceivableAgeing.CurrencyName,Aicon.qry20104BillsReceivableAgeing.TransactionCurrencySymbol
+FROM   Aicon.qry20104BillsReceivableAgeing LEFT OUTER JOIN
+             Aicon.tbl201ChartOfAccounts ON Aicon.qry20104BillsReceivableAgeing.AccountHeadNo = Aicon.tbl201ChartOfAccounts.AccountID
+
+
+--UC Cost analysis
+
+
+
+Alter view dbo.qry20101CostAllocatedMaster as
+SELECT dbo.tbl201CostAllocationMaster.CostAllocationID, dbo.tbl201CostAllocationMaster.VoucherEntryID, dbo.tbl201CostAllocationMaster.CostAllocationUnitID, dbo.tbl201CostAllocationMaster.CostAllocDrCr, dbo.tbl201CostAllocationMaster.AmountAllocated, dbo.tbl201CostAllocationMaster.AmountAllocated * ISNULL(dbo.tbl201VoucherMaster.CurrencyRate, 1) AS ConvertedAmountAllocated, 
+             dbo.tbl201CostAllocationMaster.EffectiveDate, dbo.tbl201CostAllocationMaster.CostAllocRemarks, dbo.tbl201CostAllocationUnits.CostAllocationUnit, dbo.tbl201CostAllocationUnits.CostAllocationGroup, dbo.tbl201CostAllocationUnits.CostAllocationMasterGroup, 
+             dbo.tbl201CostAllocationUnits.IsDisabled, dbo.tbl201ChartOfAccounts.AccountHead, dbo.tbl201AccountGroups.AccountGroup, dbo.tbl201MasterGroup.MasterGroup, dbo.tbl201ChartOfAccounts.AccountID, dbo.tbl201CostAllocationMaster.VoucherNo, 
+             dbo.tbl201VoucherMaster.VoucherType, dbo.tbl201CostAllocationUnits.CostCenterIncharge, dbo.tbl201VoucherEntry.EntryNarration, dbo.tbl201VoucherEntry.SysRemarks, dbo.tbl201VoucherMaster.VoucherDate, dbo.tbl201VoucherEntry.DrCr, 
+             dbo.tbl201CostAllocationUnits.ProjectMasterCode, dbo.tbl201CostAllocationUnits.BranchCode, dbo.tbl20115CompanyBranch.BranchName, dbo.tbl201VoucherMaster.VoucherEffectiveDate, dbo.tbl201VoucherMaster.VoucherNarration, dbo.tbl201VoucherMaster.VoucherRefNo
+FROM   dbo.tbl20115CompanyBranch RIGHT OUTER JOIN
+             dbo.tbl201CostAllocationUnits ON dbo.tbl20115CompanyBranch.BranchCode = dbo.tbl201CostAllocationUnits.BranchCode RIGHT OUTER JOIN
+             dbo.tbl201VoucherEntry LEFT OUTER JOIN
+             dbo.tbl201VoucherMaster ON dbo.tbl201VoucherEntry.VoucherNo = dbo.tbl201VoucherMaster.VoucherNo LEFT OUTER JOIN
+             dbo.tbl201AccountGroups LEFT OUTER JOIN
+             dbo.tbl201MasterGroup ON dbo.tbl201AccountGroups.AccountGroupUnder = dbo.tbl201MasterGroup.MasterGroupID RIGHT OUTER JOIN
+             dbo.tbl201ChartOfAccounts ON dbo.tbl201AccountGroups.AccountGroupID = dbo.tbl201ChartOfAccounts.AccountGroupID ON dbo.tbl201VoucherEntry.AccountHead = dbo.tbl201ChartOfAccounts.AccountID RIGHT OUTER JOIN
+             dbo.tbl201CostAllocationMaster ON dbo.tbl201VoucherEntry.VoucherEntryNo = dbo.tbl201CostAllocationMaster.VoucherEntryID ON dbo.tbl201CostAllocationUnits.CostAllocationUnitID = dbo.tbl201CostAllocationMaster.CostAllocationUnitID
+
+
+			 
+Alter view dbo.qry20102CostAllocatedMasterView as 
+SELECT CostAllocationID, VoucherEntryID, CostAllocationUnitID, DrCr AS CostAllocDrCr, AmountAllocated,ConvertedAmountAllocated,EffectiveDate, CostAllocRemarks, CostAllocationUnit, CostAllocationGroup, CostAllocationMasterGroup, IsDisabled, AccountHead, AccountGroup, MasterGroup, 
+             CASE WHEN DrCr = 'Dr' THEN - AmountAllocated ELSE 0 END AS Expenses, 
+			 CASE WHEN DrCr = 'Cr' THEN AmountAllocated ELSE 0 END AS Income, 
+			 CASE WHEN DrCr = 'Dr' THEN - ConvertedAmountAllocated ELSE 0 END AS ConvertedExpenses, 
+			 CASE WHEN DrCr = 'Cr' THEN ConvertedAmountAllocated ELSE 0 END AS ConvertedIncome,
+			  CASE WHEN DrCr = 'Cr' THEN ConvertedAmountAllocated ELSE - ConvertedAmountAllocated END AS ConvertedCostAmount,
+			 CASE WHEN DrCr = 'Cr' THEN 'Income' ELSE 'Expenses' END AS PL, 
+             CASE WHEN DrCr = 'Cr' THEN AmountAllocated ELSE - AmountAllocated END AS CostAmount
+			 , AccountID, VoucherNo, VoucherType, CostCenterIncharge, EntryNarration, SysRemarks, DATEADD(dd, DATEDIFF(dd, 0, VoucherDate), 0) AS VoucherDate, ProjectMasterCode, 
+             BranchCode, BranchName, DATEADD(dd, DATEDIFF(dd, 0, VoucherEffectiveDate), 0) AS VoucherEffectiveDate, DATEADD(dd, DATEDIFF(dd, 0, EffectiveDate), 0) AS AllocationEffectiveDate, VoucherNarration, VoucherRefNo
+FROM   dbo.qry20101CostAllocatedMaster
+
+
+--Qry20106CostAnalyses
+Alter view [dbo].[qry20106CostAnalysis] as 
+SELECT CostAllocationID, VoucherEntryID, CostAllocationUnitID, CostAllocDrCr, AmountAllocated, DATEADD(dd, DATEDIFF(dd, 0, VoucherEffectiveDate), 0) AS EffectiveDate, CostAllocRemarks, CostAllocationUnit, CostAllocationGroup, CostAllocationMasterGroup, IsDisabled, 
+             AccountHead, AccountGroup, MasterGroup, Expenses, Income, PL, CostAmount, AccountID, VoucherNo, VoucherType, VoucherType + '::' + VoucherNo AS VoucherTypeAndNo, CostCenterIncharge, EntryNarration, SysRemarks, DATEADD(dd, DATEDIFF(dd, 0, VoucherDate), 0) 
+             AS VoucherDate, DATEADD(month, DATEDIFF(month, 0, VoucherDate), 0) AS VoucherMonth, DATEADD(year, DATEDIFF(year, 0, VoucherDate), 0) AS VoucherYear, DATEADD(month, DATEDIFF(month, 0, VoucherEffectiveDate), 0) AS EffectiveMonth, DATEADD(year, DATEDIFF(year, 
+             0, VoucherEffectiveDate), 0) AS EffectiveYear, DATEADD(dd, DATEDIFF(dd, 0, AllocationEffectiveDate), 0) AS AllocationEffectiveDate, DATEADD(month, DATEDIFF(month, 0, AllocationEffectiveDate), 0) AS AllocationEffectiveMonth, DATEADD(year, DATEDIFF(year, 0, 
+             AllocationEffectiveDate), 0) AS AllocationEffectiveYear, ProjectMasterCode, BranchCode, BranchName, VoucherNarration, VoucherRefNo,ConvertedIncome,ConvertedExpenses,ConvertedCostAmount
+FROM   dbo.qry20102CostAllocatedMasterView
+
+
+

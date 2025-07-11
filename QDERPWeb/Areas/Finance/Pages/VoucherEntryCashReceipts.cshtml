@@ -1134,7 +1134,44 @@ buttons.Add()
         let acchead, spentry, accheadid, accheadname, vno, paymentaccheadname, paymentaccheadId, isUpdatingCell = false, verifiedby, griddatacount, employeeval, empName, refno, accgroup, IsEdit = false, accgroupid, accheadar, vouentryid,
             IsNotification = false, storedAccountHead, IsObeselete = false,IsDrCr=false;
 
-        function addVoucherEntry() {
+
+            
+function addVoucherEntry() {
+    debugger;
+    var dataGrid = $("#dataGrid").dxDataGrid("instance"); // Get the DataGrid instance
+    var rowCount = dataGrid.getVisibleRows().length; // Get the number of rows in the grid
+    var griddatacount = rowCount;
+    var voucherNo = ""; // Declare with var (or let), and initialize properly
+
+    if (griddatacount === 0) {
+        // Fetch new voucher number via AJAX
+        $.ajax({
+            type: "GET",
+             url: "/api/VoucherEntryCashReceipts/GetNewBRVoucherNo",
+            success: function (response) {
+                if (!response || response.success === false) {
+                    DevExpress.ui.dialog.alert("Failed to fetch Voucher Number: " + (response.message || "Unknown error"), "Error");
+                    return;
+                }
+
+                // Assuming response is the voucher number as a raw string
+                voucherNo = response;
+                $("#VoucherNo").dxTextBox("instance").option("value", voucherNo);
+
+                // Call the remaining logic using the retrieved voucher number
+                continueVoucherEntryWithVoucherNo(voucherNo);
+            },
+            error: function (xhr, status, error) {
+                DevExpress.ui.dialog.alert("Error retrieving voucher number: " + error, "Error");
+            }
+        });
+    } else {
+        // If rows exist, reuse the existing voucher number from the text box
+        voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+        continueVoucherEntryWithVoucherNo(voucherNo);
+    }
+}
+        function continueVoucherEntryWithVoucherNo(voucherNo) {
            
             var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
 
