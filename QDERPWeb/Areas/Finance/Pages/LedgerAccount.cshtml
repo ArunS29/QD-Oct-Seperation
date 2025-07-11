@@ -24,27 +24,6 @@
         display: none;
     }
 
-    /* .button-group {
-        margin-left: 1px !important;
-    }
-
-    .button-alignment-up {
-        margin-top: 25px !important;
-    }
-
-    .button-alignment-down {
-        margin-top: 0px !important;
-    } */
-
-    /*     .dx-editor-outlined .dx-label span {
-                    font-weight:bold !important;
-                    } */
-
-    /* .custom-textbox input {
-        font-weight: bold !important;
-        color: black !important; /* Use !important to override DevExtreme styles */
-      
-    }
 
     .custom-textbox1 input {
         border: 3px solid #282222;
@@ -290,6 +269,15 @@
     .background{
     background-color:white!important;
     }
+
+    .dx-tab.dx-tab-selected .dx-icon, .dx-tab.dx-tab-selected .dx-tab-text {
+        color: white;
+    }
+
+    .dx-fieldset{
+        margin:0px !important;
+    }
+
         </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
@@ -431,196 +419,157 @@
         <!-- Tab Content -->
         <div class="dx-fieldset" style="background-color:white;">
             <div id="tab-content-1" class="tab-content" style="display: none;">
-                <div>
-                    <table width="100%" style="font-size:14px; margin-top:10px;margin-bottom:10px;" cellpadding="5">
-                        <tr>
-                            <td>
-                                <div id="OpeningBalance" class="no-border-input"></div>
-                            </td>
-                            <td>
-                                @(
-                                    Html.DevExtreme().NumberBox()
-                                    .ID("txtOpeningBalance")
-                                    .Value(0)
-                                    .Min(0.00)
-                                    .Format(format => format.Type("fixedPoint").Precision(2))
-                                    .Width("100%")// Initial value
-                                    @*  .Min(0)              // Minimum value
-                                .Max(1000)  *@              // Maximum value
-                                    .Step(1)             // Increment step
-                                    .ShowSpinButtons(true) // Show spin buttons for up/down
-                                                           //.Format("fixedPoint")  // Format as fixed-point (number with decimals)
-                                                           //.FormatOptions(options => options.Precision(2))  // 2 decimal places
-                                    .InputAttr(new { style = "text-align: right; color:darkred; font-weight:bold;" }) //.OnValueChanged("onValueChangedHandler") // Optional JS function for value change
-                                    )
-                            </td>
-                            <td>
-                                @(Html.DevExtreme().DropDownBox()
-                                    .DataSource(d => d.WebApi()
-                                    .Controller("AccountLedgerMaster")
-                                    .LoadAction("getCreditDebit")
-                                    .LoadMode(DataSourceLoadMode.Raw)
-                                    .Key("OpeningBalanceDrCr")
-                                    )
-                                    .ID("ddlCreditDebit")
-                                    .ShowClearButton(true)
-                                    .AcceptCustomValue(false)
-                                    .OpenOnFieldClick(false)
-                                    .ValueChangeEvent("input")
-                                    .HoverStateEnabled(true)
-                                    .ValueExpr("OpeningBalanceDrCr")
-                                    .DisplayExpr("OpeningBalanceDrCr")
-                                    .OnInput("DrCrOnInput")
-                                    .OnOpened("onOpenedDrCr")
-                                    .Width("100%")
-                                    .TabIndex(4)
-                                    .DropDownOptions(o => o
-                                    .Width("100%") // Set the desired width for the dropdown content*@
-                                    )
-                                    .OnKeyDown("DrCrKeyDown")
-                                    .OnValueChanged("DrCrValueChanged")
-                                    .ContentTemplate(new TemplateName("DrCrContentTemplate"))
-                                    )
-                            </td>
-                            <td>
-                                @(Html.DevExtreme().Button()
-                                    .ID("btnPost")
-                                    .Icon("datausage")
-                                    .Text(new JS("formatMessage('Post')"))
-                                    .Width("100%")
-                                    .OnClick("onPostButtonClick")
-                                    )
-                            </td>
-                            <td>
-                                @(Html.DevExtreme().Button()
-                                    .ID("btnOpeningBills")
-                                    .Icon("contentlayout")
-                                    .Text(new JS("formatMessage('Opening Bills')"))
-                                    .Width("100%")
-                                    .Disabled(false)
-                                    )
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div id="DefaultEntry" class="no-border-input"></div>
-                            </td>
-                            <td colspan="2">
-                                @(Html.DevExtreme().CheckBox()
-                                    .ID("chkDefaultEntry")
-                                    .Text(new JS("formatMessage('Choose if you want this to be Default Entry in vouchers')"))
-                                    .Value(false)
-                                    // .Disabled(true)
-                                    .ElementAttr("style", "font-style:italic;font-weight:bold;")
-                                    )
-                            </td>
-                            <td>
-                                <div id="VoucherNoAbbr" class="no-border-input"></div>
-                            </td>
-                            <td>
-                                @(Html.DevExtreme().TextBox()
-                                    .ID("txtVoucherNoAbbr")
-                                    .InputAttr("aria-label", "Text")
-                                    .Width("100%")
-                                    .MaxLength(3)
-                                    )
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div id="MaintainBillEntry" class="no-border-input"></div>
-                            </td>
-                            <td colspan="2">
-                                @(Html.DevExtreme().CheckBox()
-                                    .ID("chkMaintainBillEntry")
-                                    .Text(new JS("formatMessage('Choose if you want to Maintain Billwise Details')"))
-                                    .Value(false)
-                                    //.Disabled(true)
-                                    .ElementAttr("style", "font-style:italic;font-weight:bold;")
-                                    )
-                            </td>
-                            <td>
-                                <div id="NoDays" class="no-border-input"></div>
-                            </td>
-                            <td>
-                                @(Html.DevExtreme().NumberBox()
-                                    .ID("txtNoDays")
-                                    .Value(0)
-                                    .Min(0)
-                                    .Step(1)             // Increment step
-                                    .ShowSpinButtons(true) // Show spin buttons for up/down
-                                    .Format("fixedpoint")
-                                    .InputAttr(new { style = "text-align: left; color:darkblack; font-weight:bold;" })
-                                    )
-                            </td>
-                        </tr>
+                <div class="container-fluid p-3 rounded border shadow-sm">
+                    <!-- Opening Balance Section -->
+                    <div class="row g-2 align-items-center mb-2">
+                        <div class="col-md-2 fw-bold">Opening Balance</div>
+                        <div class="col-md-2">
+                            @(Html.DevExtreme().NumberBox()
+                                                        .ID("txtOpeningBalance")
+                                                        .Value(0)
+                                                        .Min(0.00)
+                                                        .Format(f => f.Type("fixedPoint").Precision(2))
+                                                        .Width("100%")
+                                                        .Step(1)
+                                                        .ShowSpinButtons(true)
+                                                        .InputAttr(new { style = "text-align: right; color:darkred; font-weight:bold;" }))
+                        </div>
+                        <div class="col-md-3">
+                            @(Html.DevExtreme().DropDownBox()
+                                                        .DataSource(d => d.WebApi()
+                                                        .Controller("AccountLedgerMaster")
+                                                        .LoadAction("getCreditDebit")
+                                                        .LoadMode(DataSourceLoadMode.Raw)
+                                                        .Key("OpeningBalanceDrCr"))
+                                                        .ID("ddlCreditDebit")
+                                                        .Label("Dr/Cr")
+                                                        .LabelMode(EditorLabelMode.Floating)
+                                                        .ShowClearButton(true)
+                                                        .AcceptCustomValue(false)
+                                                        .OpenOnFieldClick(false)
+                                                        .ValueChangeEvent("input")
+                                                        .HoverStateEnabled(true)
+                                                        .ValueExpr("OpeningBalanceDrCr")
+                                                        .DisplayExpr("OpeningBalanceDrCr")
+                                                        .OnInput("DrCrOnInput")
+                                                        .OnOpened("onOpenedDrCr")
+                                                        .Width("100%")
+                                                        .TabIndex(4)
+                                                        .DropDownOptions(o => o.Width("100%"))
+                                                        .OnKeyDown("DrCrKeyDown")
+                                                        .OnValueChanged("DrCrValueChanged")
+                                                        .ContentTemplate(new TemplateName("DrCrContentTemplate")))
+                        </div>
+                        <div class="col-md-2">
+                            @(Html.DevExtreme().Button()
+                                                        .ID("btnPost")
+                                                        .Icon("datausage")
+                                                        .Text(new JS("formatMessage('Post')"))
+                                                        .Width("100%")
+                                                        .OnClick("onPostButtonClick"))
+                        </div>
+                        <div class="col-md-3">
+                            @(Html.DevExtreme().Button()
+                                                        .ID("btnOpeningBills")
+                                                        .Icon("contentlayout")
+                                                        .Text(new JS("formatMessage('Opening Bills')"))
+                                                        .Width("100%")
+                                                        .Disabled(false))
+                        </div>
+                    </div>
 
-                        <tr>
-                            <td>
-                                <div id="EmployeeDBEntry" class="no-border-input"></div>
-                            </td>
-                            <td colspan="4">
-                                @(Html.DevExtreme().CheckBox()
-                                    .ID("chkEmployeeDBEntry")
-                                    .Text(new JS("formatMessage('Choose if you want this account to link with Employee Database')"))
-                                    .Value(false)
-                                    //.Disabled(true)
-                                    .ElementAttr("style", "font-style:italic;font-weight:bold;")
-                                    )
-                            </td>
-                        </tr>
+                    <!-- Default Entry Section -->
+                    <div class="row g-2 align-items-center mb-2">
+                        <div class="col-md-6">
+                            @(Html.DevExtreme().CheckBox()
+                                                        .ID("chkDefaultEntry")
+                                                        .Text(new JS("formatMessage('Choose if you want this to be Default Entry in vouchers')"))
+                                                        .Value(false)
+                                                        .ElementAttr("style", "font-style:italic;font-weight:bold;"))
+                        </div>
+                        <div class="col-md-2 fw-bold">Voucher Abbr</div>
+                        <div class="col-md-4">
+                            @(Html.DevExtreme().TextBox()
+                                                        .ID("txtVoucherNoAbbr")
+                                                        .InputAttr("aria-label", "Text")
+                                                        .Width("100%")
+                                                        .MaxLength(3))
+                        </div>
+                    </div>
 
-                        <tr>
-                            <td>
-                                <div id="PropertyDBEntry" class="no-border-input"></div>
-                            </td>
-                            <td colspan="4">
-                                @(Html.DevExtreme().CheckBox()
-                                    .ID("chkPropertyDBEntry")
-                                    .Text(new JS("formatMessage('Choose if you want this account to link with Property Database')"))
-                                    .Value(false)
-                                    //.Disabled(true)
-                                    .ElementAttr("style", "font-style:italic;font-weight:bold;")
-                                    )
-                            </td>
-                        </tr>
+                    <!-- Maintain Bill Entry Section -->
+                    <div class="row g-2 align-items-center mb-2">
+                        <div class="col-md-6">
+                            @(Html.DevExtreme().CheckBox()
+                                                        .ID("chkMaintainBillEntry")
+                                                        .Text(new JS("formatMessage('Choose if you want to Maintain Billwise Details')"))
+                                                        .Value(false)
+                                                        .ElementAttr("style", "font-style:italic;font-weight:bold;"))
+                        </div>
+                        <div class="col-md-2 fw-bold">No. of Days</div>
+                        <div class="col-md-4">
+                            @(Html.DevExtreme().NumberBox()
+                                                        .ID("txtNoDays")
+                                                        .Value(0)
+                                                        .Min(0)
+                                                        .Step(1)
+                                                        .ShowSpinButtons(true)
+                                                        .Format("fixedpoint")
+                                                        .InputAttr(new { style = "text-align: left; color: black; font-weight:bold;" }))
+                        </div>
+                    </div>
 
-                        <tr>
-                            <td>
-                                <div id="LoanAccountEntry" class="no-border-input"></div>
-                            </td>
-                            <td colspan="4">
-                                @(
-                                    Html.DevExtreme().CheckBox()
-                                    .ID("chkLoanAccountEntry")
-                                    .Text(new JS("formatMessage('Choose if you want this account to link with Employees Salary Advance')"))
-                                    .Value(false)
-                                    //.Disabled(true)
-                                    .ElementAttr("style", "font-style:italic;font-weight:bold;")
-                                    )
-                            </td>
-                        </tr>
+                    <!-- Employee DB Entry -->
+                    <div class="row mb-2">
+                        <div class="col">
+                            @(Html.DevExtreme().CheckBox()
+                                                        .ID("chkEmployeeDBEntry")
+                                                        .Text(new JS("formatMessage('Choose if you want this account to link with Employee Database')"))
+                                                        .Value(false)
+                                                        .ElementAttr("style", "font-style:italic;font-weight:bold;"))
+                        </div>
+                    </div>
 
-                        <tr>
-                            <td>
-                            </td>
-                            <td >
-                                <div id="LedgerActive" class="no-border-input"></div>
-                            </td>
-                            <td>
-                                @(Html.DevExtreme().Switch()
-                                    .ID("schLedgerActive")
-                                    .Value(false)  // Set initial state to "on"
-                                    .SwitchedOffText("No") // Text to display when the toggle is on
-                                    .SwitchedOnText("Yes") // Text to display when the toggle is off
-                                    .Width(100) // Width of the toggle switch
-                                    )
-                            </td>
-                        </tr>
+                    <!-- Property DB Entry -->
+                    <div class="row mb-2">
+                        <div class="col">
+                            @(Html.DevExtreme().CheckBox()
+                                                        .ID("chkPropertyDBEntry")
+                                                        .Text(new JS("formatMessage('Choose if you want this account to link with Property Database')"))
+                                                        .Value(false)
+                                                        .ElementAttr("style", "font-style:italic;font-weight:bold;"))
+                        </div>
+                    </div>
 
-                    </table>
+                    <!-- Loan Account Entry -->
+                    <div class="row mb-2">
+                        <div class="col">
+                            @(Html.DevExtreme().CheckBox()
+                                                        .ID("chkLoanAccountEntry")
+                                                        .Text(new JS("formatMessage('Choose if you want this account to link with Employees Salary Advance')"))
+                                                        .Value(false)
+                                                        .ElementAttr("style", "font-style:italic;font-weight:bold;"))
+                        </div>
+                    </div>
+
+                    <!-- Ledger Active Switch -->
+                    <div class="row g-2 align-items-center mb-1">
+                        <div  id="LedgerActive" class="col-md-2 fw-bold"></div>
+                        <div class="col-md-2">
+                            @(Html.DevExtreme().Switch()
+                                                        .ID("schLedgerActive")
+                                                        .Value(false)  // Set initial state to "on"
+                                                        .SwitchedOffText("No") // Text to display when the toggle is on
+                                                        .SwitchedOnText("Yes") // Text to display when the toggle is off
+                                                        .Width(100) // Width of the toggle switch
+                                                        )
+                        </div>
+                    </div>
                 </div>
             </div>
+
+
+
 
             <div id="tab-content-2" class="tab-content" style="display: none;">
                 <div>
