@@ -202,13 +202,13 @@
 
 
 <script type="text/javascript">
-    // $(document).ready(function () {
-    //         const urlParams = new URLSearchParams(window.location.search);
-    //         const mprnos = urlParams.get('Mprno');
-    //         const mprno = mprnos ? mprnos.split("?")[0] : null;
+    $(document).ready(function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const mprnos = urlParams.get('Mprno');
+            const mprno = mprnos ? mprnos.split("?")[0] : null;
 
-    // $("#mprNo").dxTextBox("instance").option("value",mprno);
-    // });
+    $("#mprNo").dxTextBox("instance").option("value",mprno);
+    });
     
     $(function () {
         // Initialize the first SelectBox with validation

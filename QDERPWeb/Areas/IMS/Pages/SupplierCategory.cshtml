@@ -215,7 +215,7 @@
 
          function btnbackbt() {
         // Optional: confirm before closing
-        DevExpress.ui.dialog.confirm("Do you want to go back and refresh the list?", "Back").done(function (result) {
+        DevExpress.ui.dialog.confirm("Do you want to go back?", "Back").done(function (result) {
             if (result) {
                 // Call parent to refresh dropdown
                 if (window.parent && typeof window.parent.refreshSupplierCategoryDropDown === "function") {
