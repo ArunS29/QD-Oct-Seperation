@@ -23,12 +23,15 @@
             color: white !important; /* Set selected tab text color */
         }
 
-    /* Add a gray border around the tab panel */
+   
     .dx-tabpanel {
         /*  border: 2px solid gray;  Set the border color to gray */
         /* border-radius: 5px;  Optionally, add rounded corners to the border */
     }
-
+                   
+    .dx-textarea{
+             padding-top: 0px !important;
+    }
 
 
     .form-container1 {
@@ -160,11 +163,12 @@
         <div class="form-inline-row">
 
             <!-- Asset Ledger No -->
-            <div class="form-inline-group" style="min-width: 150px;">
-                <label for="AssetLedgerNo">Asset Ledger No</label>
+            <div class="form-inline-group">
                 @(Html.DevExtreme().TextBox()
                     .ID("txtacctledno")
                     .Value("")
+                    .Label(new JS("formatMessage('Asset Ledger No')"))
+                    .LabelMode(EditorLabelMode.Floating)
                     .ReadOnly(true)
                     .ValidationRules(rules =>
                     {
@@ -174,14 +178,14 @@
             </div>
 
             <!-- Asset Category + Button -->
-            <div class="form-inline-group" style="min-width: 280px;">
-                <label for="AssetCategory">Asset Category</label>
+            <div class="form-inline-group" style="min-width: 200px;">
                 <div class="form-inline-location">
                     @(Html.DevExtreme().SelectBox()
                         .ID("ddassetCategory")
-                        .LabelMode(EditorLabelMode.Outside)
                         .ValueExpr("AssetCategoryCode")
                         .DisplayExpr("AssetCategory")
+                         .Label(new JS("formatMessage('Asset Category')"))
+                         .LabelMode(EditorLabelMode.Floating)
                         .Placeholder("🔍 Select Asset Category")
                         .InputAttr("aria-label", "Owner")
                         .DataSource(d => d.WebApi()
@@ -197,22 +201,28 @@
                         {
                             rules.AddRequired().Message("Asset Category is required");
                         })
-                        )
-
-                    @(Html.DevExtreme().Button()
-                        .ID("btnAddAccount")
+                         .Buttons(buttons =>
+                        {
+                        buttons.Add()
+                        .Name("btnAddAccount")
+                        .Location(TextEditorButtonLocation.After)
+                        .Widget(w => w.Button()
+                        .Type(ButtonType.Default)
                         .Icon("plus")
-                        .OnClick("redirectToAssetCategoryView")
-                        .Height(38)
-                        )
+                        .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                        .OnClick("redirectToAssetCategoryView"));
+                        buttons.Add()
+                        .Name("dropDown");
+                            }))
                 </div>
             </div>
 
             <!-- Purchased Asset Value -->
-            <div class="form-inline-group" style="min-width: 200px;">
-                <label for="PurchasedAssetValue">Purchased Asset Value</label>
+            <div class="form-inline-group" style="min-width: 300px;">
                 @(Html.DevExtreme().NumberBox()
                     .ID("PurchasedAssetValue")
+                         .Label(new JS("formatMessage('Purchased Asset Value')"))
+                         .LabelMode(EditorLabelMode.Floating)
                     .Value(0)
                     .Min(0)
                     .Max(1000000)
@@ -227,9 +237,10 @@
             </div>
 
             <!-- Plate No -->
-            <div class="form-inline-group" style="min-width: 150px;">
-                <label for="PlateNo">Plate No</label>
+            <div class="form-inline-group" style="min-width: 300px;">
                 @(Html.DevExtreme().TextBox()
+                     .Label(new JS("formatMessage('Plate No')"))
+                         .LabelMode(EditorLabelMode.Floating)
                     .ID("txtplatno")
                     .Value("")
                     )
@@ -237,14 +248,14 @@
 
             <!-- Property No (Modules) -->
             <div class="form-inline-group" style="min-width: 300px;">
-                <label for="PropertyNo">Property No (Modules)</label>
                 @(Html.DevExtreme().DropDownBox()
                     .DataSource(d => d.WebApi()
                     .Controller("assetview")
                     .LoadAction("GetPropertDetails")
                     .LoadMode(DataSourceLoadMode.Raw)
                     .Key("PropertyNo"))
-                    .LabelMode(EditorLabelMode.Outside)
+                    .Label(new JS("formatMessage('Property No (Modules)')"))
+                    .LabelMode(EditorLabelMode.Floating)
                     .ID("ddlpropertyno")
                     .ShowClearButton(true)
                     .AcceptCustomValue(true)
@@ -264,12 +275,13 @@
         </div>
 
         <!-- 🔹 Second Row -->
-        <div class="form-inline-row">
+        <div class="form-inline-row" style="align-items:end;">
 
             <!-- Asset Description -->
             <div class="form-inline-group">
-                <label for="AssetDescription">Asset Description</label>
                 @(Html.DevExtreme().TextBox()
+                     .Label(new JS("formatMessage('Asset Description')"))
+                         .LabelMode(EditorLabelMode.Floating)
                     .ID("txtAssetDescription")
                     .Width(200)
                     )
@@ -277,11 +289,13 @@
 
             <!-- Asset Location -->
             <div class="form-inline-group">
-                <label for="Assetlocation">Asset Location</label>
+                <label for="Assetlocation"></label>
                 <div class="form-inline-location">
                     @(Html.DevExtreme().SelectBox()
                         .ID("ddlassetlocation")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .Label(new JS("formatMessage('Asset Location')"))
+                        .LabelMode(EditorLabelMode.Floating)
+                        .Placeholder("🔍 Select Asset Location")
                         .ValueExpr("AssetLocationCode")
                         .InputAttr("aria-label", "Owner")
                         .DisplayExpr("AssetLocation")
@@ -294,33 +308,38 @@
                         .ShowClearButton(true)
                         .Width(200)
                         .TabIndex(1)
-                        )
-
-                    @(Html.DevExtreme().Button()
-                        .ID("btnAddAccount1")
+                        .Buttons(buttons =>
+                        {
+                        buttons.Add()
+                        .Name("btnAddAccount1")
+                        .Location(TextEditorButtonLocation.After)
+                        .Widget(w => w.Button()
+                        .Type(ButtonType.Default)
                         .Icon("plus")
-                        .OnClick("redirectToAssetLocationMaster")
-                        .Height(38)
-                        )
+                        .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                        .OnClick("redirectToAssetLocationMaster"));
+                        buttons.Add()
+                        .Name("dropDown");
+                            }))
+                        
                 </div>
             </div>
 
             <!-- Asset Specification -->
             <div class="form-inline-group">
-                <label for="AssetSpecification">Asset Specification</label>
                 @(Html.DevExtreme().TextArea()
                     .ID("txtspecifications")
-                    .Height(120)
+                    .Label(new JS("formatMessage('Asset Specification')"))
+                    .LabelMode(EditorLabelMode.Floating)
                     .Width(300)
-                    .InputAttr("style", "overflow-y: auto; resize: none;")
                     )
+
             </div>
         </div>
-
     </div>
 
 
-    <div class="form-container">
+    <div class="form-container" style="padding:10px;">
 
         <!-- Tab Menu -->
         @(
@@ -328,8 +347,8 @@
                 .Items(item =>
                 {
                     item.Add()
-                .Title("Asset Details")
                 .Text("Asset Details")
+                 .Title(new JS("formatMessage('Asset Details')"))
                 .Template(@<text>
 
 
@@ -337,13 +356,14 @@
                 <div class="form-row">
                     <div class="col-md-3">
                         <div class="form-label">
-                            <label for="PurchasedDate">Purchased Date</label>
-                        </div>
+                        </div>     
 @*                         @(Html.DevExtreme().DateBox().ID("txtPurchasedDate").DisplayFormat("dd-MMM-yyyy").Value(""))
  *@
                         @(Html.DevExtreme().DateBox()
                                                 .ID("txtPurchasedDate")
                                                 .DisplayFormat("dd-MMM-yyyy")
+                                                     .Label(new JS("formatMessage('Purchased Date')"))
+     .LabelMode(EditorLabelMode.Floating)
                                                 .ShowClearButton(true)
                                                 .Value((DateTime?)null) // Use nullable DateTime
                                                 )
@@ -352,17 +372,18 @@
 
                     <div class="col-md-3">
                         <div class="form-label">
-                            <label for="PurchasedFrom">Purchased From</label>
                         </div>
-                        @Html.DevExtreme().TextBox().ID("txtPurchasedFrom").Value("")
+                        @(Html.DevExtreme().TextBox()     .Label(new JS("formatMessage('Purchased From')"))
+     .LabelMode(EditorLabelMode.Floating).ID("txtPurchasedFrom").Value(""))
                     </div>
 
                     <div class="col-md-3">
                         <div class="form-label">
-                            <label for="PurchasedAs">Purchased As</label>
                         </div>
                         @(Html.DevExtreme().SelectBox()
                         .ID("ddlPurchasedAs")
+                             .Label(new JS("formatMessage('Purchased As')"))
+     .LabelMode(EditorLabelMode.Floating)
                         .DataSource(new List<object>
                         {
                         new { Value = 1, Text = "As New" },
@@ -383,9 +404,9 @@
 
                     <div class="col-md-3">
                         <div class="form-label">
-                            <label for="CurrentCondition">Current Condition</label>
                         </div>
-                        @Html.DevExtreme().SelectBox().ID("txtCurrentCondition").Items(new List<string> { "Excellent Condition", "Good Condition","Under Repair", "Ready to Scrap","Not Used anymore","To be repaired" }).Value("1")
+                        @(Html.DevExtreme().SelectBox().ID("txtCurrentCondition")     .Label(new JS("formatMessage('Current Condition')"))
+     .LabelMode(EditorLabelMode.Floating).Items(new List<string> { "Excellent Condition", "Good Condition","Under Repair", "Ready to Scrap","Not Used anymore","To be repaired" }).Value("1"))
                     </div>
                 </div>
 
@@ -393,30 +414,29 @@
                 <div class="form-row">
                     <div class="col-md-3">
                         <div class="form-label">
-                            <label for="Brand">Brand</label>
                         </div>
-                        @Html.DevExtreme().TextBox().ID("txtBrand").Value("")
+                         @(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Brand')"))
+                         .LabelMode(EditorLabelMode.Floating).ID("txtBrand").Value(""))
                     </div>
 
                     <div class="col-md-3">
                         <div class="form-label">
-                            <label for="Model">Model</label>
                         </div>
-                        @Html.DevExtreme().TextBox().ID("txtModel").Value("")
+                         @(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Model')"))
+                         .LabelMode(EditorLabelMode.Floating).ID("txtModel").Value(""))
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-label">
+                        </div>
+                        @(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Year')"))
+                         .LabelMode(EditorLabelMode.Floating).ID("txtYear").Value(""))
                     </div>
 
                     <div class="col-md-3">
                         <div class="form-label">
-                            <label for="Year">Year</label>
                         </div>
-                        @Html.DevExtreme().TextBox().ID("txtYear").Value("")
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="form-label">
-                            <label for="Type">Type</label>
-                        </div>
-                        @Html.DevExtreme().TextBox().ID("txtAssetType").Value("")
+                        @(Html.DevExtreme().TextBox()     .Label(new JS("formatMessage('Type')"))
+     .LabelMode(EditorLabelMode.Floating).ID("txtAssetType").Value(""))
                     </div>
                 </div>
 
@@ -424,59 +444,46 @@
                 <div class="form-row">
                     <div class="col-md-3">
                         <div class="form-label">
-                            <label for="FMV">FMV (Fair Market Value)</label>
                         </div>
-                        @Html.DevExtreme().NumberBox().ID("txtFMV").Value(0)
+                        @(Html.DevExtreme().NumberBox()     .Label(new JS("formatMessage('FMV (Fair Market Value)')"))
+     .LabelMode(EditorLabelMode.Floating).ID("txtFMV").Value(0))
                     </div>
 
                     <div class="col-md-3">
                         <div class="form-label">
-                            <label for="BMW">BMV Numbers</label>
                         </div>
-                        @Html.DevExtreme().NumberBox().ID("txtBMV").Value(0)
+                        @(Html.DevExtreme().NumberBox().Label(new JS("formatMessage('BMV Numbers')"))
+     .LabelMode(EditorLabelMode.Floating).ID("txtBMV").Value(0))
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3" >
                 <div class="form-label">
-                    @Html.DevExtreme().CheckBox().ID("Ispropertychk") <label for="IsPropertyFinanced"> Is Property Financed?</label>
+                    @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Is Property Financed?')"))
+     .ID("Ispropertychk"))
                 </div>
             </div>
 
             <div class="form-container">
-                <div class="form-row">
-                    <div class="col-md-4">
-                        <div class="form-label">
-                            <label for="FinanceBy">Finance By</label>
-                        </div>
-                        @Html.DevExtreme().TextBox().ID("txtFinanceBy").Value("")
+                  <div class="form-row">
+                        @(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Finance By')"))
+                            .LabelMode(EditorLabelMode.Floating)  .Width("25%").ID("txtFinanceBy").Value(""))
+
+                        @(Html.DevExtreme().DateBox().ID("txtStartDate") .Label(new JS("formatMessage('Start Date')"))
+                            .LabelMode(EditorLabelMode.Floating) .Width("25%").DisplayFormat("dd-MMM-yyyy").ShowClearButton(true).Value((DateTime?)null))
+
+                        @(Html.DevExtreme().DateBox().ID("txtEndDate") .Label(new JS("formatMessage('End Date')"))
+                            .LabelMode(EditorLabelMode.Floating).Value("") .Width("25%").DisplayFormat("dd-MMM-yyyy").ShowClearButton(true).Value((DateTime?)null))
                     </div>
 
+                <div class="form-row" style="align-items:end;">
                     <div class="col-md-3">
-                        <div class="form-label">
-                            <label for="StartDate">Start Date</label>
-                        </div>
-                        @(Html.DevExtreme().DateBox().ID("txtStartDate").DisplayFormat("dd-MMM-yyyy").ShowClearButton(true).Value((DateTime?)null))
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="form-label">
-                            <label for="EndDate">End Date</label>
-                        </div>
-                        @(Html.DevExtreme().DateBox().ID("txtEndDate").Value("").DisplayFormat("dd-MMM-yyyy").ShowClearButton(true).Value((DateTime?)null))
-                    </div>
-                    <div class="col-md-3">
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="col-md-3">
-                        <div class="form-label">
-                            <label for="NoOfInstallments">No of Installments</label>
-                        </div>
+                       
                         @(
                         Html.DevExtreme().NumberBox()
                         .ID("txtNoOfInstallments")
+                        .Label(new JS("formatMessage('No of Installments')"))
+                        .LabelMode(EditorLabelMode.Floating)
                         .Value(0)
                         // .Max(1000000)
                         .ShowSpinButtons(true)
@@ -487,12 +494,12 @@
                         )
                     </div>
 
-                    <div class="col-md-2">
-                        <div class="form-label">
-                            <label for="Downpayment">Down Payment</label>
-                        </div>
+                    <div class="col-md-3">
+                        
                         @(
                         Html.DevExtreme().NumberBox()
+                             .Label(new JS("formatMessage('Down Payment')"))
+     .LabelMode(EditorLabelMode.Floating)
                         .ID("txtDownpayment")
                         .Value(0)
                         .Max(1000000)
@@ -505,12 +512,11 @@
                     </div>
 
                     <div class="col-md-2">
-                        <div class="form-label">
-                            <label for="MonthlyInstallment">Monthly Installment</label>
-                        </div>
                         @(
                         Html.DevExtreme().NumberBox()
                         .ID("txtMonthlyInstallment")
+                             .Label(new JS("formatMessage('Monthly Installment')"))
+     .LabelMode(EditorLabelMode.Floating)
                         .Value(0)
                         .Max(1000000)
                         .ShowSpinButtons(true)
@@ -522,11 +528,10 @@
                     </div>
 
                     <div class="col-md-2">
-                        <div class="form-label">
-                            <label for="FinalPayment">Final Payment</label>
-                        </div>
                         @(
                         Html.DevExtreme().NumberBox()
+                             .Label(new JS("formatMessage('Final Payment')"))
+     .LabelMode(EditorLabelMode.Floating)
                         .ID("txtFinalPayment")
                         .Value(0)
                         .Max(1000000)
@@ -537,15 +542,13 @@
 
                         )
                     </div>
-                    <div class="col-md-1">
-                    </div>
                     <div class="col-md-2">
                         <div class="form-group">
                             @(Html.DevExtreme().Button()
                             .ID("btnpaymentshedule")
                             .Text("Payment Shedule")
-                            .Height(70)
-                            .Width(178)
+                            .Height(100)
+                            .Width(238)
                             .Icon("plus")
                             .OnClick("function() {  }")
                             )
@@ -556,42 +559,22 @@
                 </div>
 
             </div>
-            <div class="form-container">
-                <div class="form-row">
-                    <div class="col-md-6">
-                        <div class="form-label">
-                            <label for="StartDate">Entered By</label>
-                        </div>
-                        @Html.DevExtreme().TextBox().ID("txtenteredby").Value(null).ReadOnly(true)
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-label">
-                            <label for="StartDate">Modified By</label>
-                        </div>
-                        @Html.DevExtreme().TextBox().ID("txtmodifiedby").Value(null).ReadOnly(true)
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="col-md-6">
-                        <div class="form-label">
-                            <label for="StartDate">Entered on</label>
-                        </div>
-                        @Html.DevExtreme().TextBox().ID("txtenteredon").Value(null).ReadOnly(true)
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-label">
-                            <label for="StartDate">Modified on</label>
-                        </div>
-                        @Html.DevExtreme().TextBox().ID("txtmodifiedon").Value(null).ReadOnly(true)
-                    </div>
-                </div>
+           <div class="form-container" style="display:flex; gap:10px; padding:10px;">
+                @(Html.DevExtreme().TextBox().ID("txtenteredby").Width("25%")
+                    .Label(new JS("formatMessage('Entered By')"))
+                    .LabelMode(EditorLabelMode.Floating).Value(null).Width("25%").ReadOnly(true))
+                @(Html.DevExtreme().TextBox().ID("txtmodifiedby")
+                    .Label(new JS("formatMessage('Modified By')"))
+                    .LabelMode(EditorLabelMode.Floating).Value(null).Width("25%").ReadOnly(true))
+                @(Html.DevExtreme().TextBox().ID("txtenteredon")
+                    .Label(new JS("formatMessage('Entered on')"))
+                    .LabelMode(EditorLabelMode.Floating).Value(null).Width("23%").ReadOnly(true))
+                @(Html.DevExtreme().TextBox().ID("txtmodifiedon")
+                    .Label(new JS("formatMessage('Modified on')"))
+                    .LabelMode(EditorLabelMode.Floating).Value(null).Width("25%").ReadOnly(true))
             </div>
         </text>);
-
-
-
-
-                    item.Add().Title("Depreciation").Text("Depreciation").Template(@<text>
+                    item.Add().Text("Depreciation").Title(new JS("formatMessage('Depreciation')")).Template(@<text>
 
 
             <div class="form-container">
@@ -599,13 +582,11 @@
 
                 <!-- Card 1: General Account Group Information -->
                 <div class="form-row" style="display: flex; align-items: flex-end; gap: 10px; width: 100%;">
-
-
                     <div class="form-group">
-                        <label for="VoucherType">Depreciation Method:</label>
-                        @(
-                        Html.DevExtreme().SelectBox()
+                        @(Html.DevExtreme().SelectBox()
                         .ID("txtDepreciationMethod")
+                             .Label(new JS("formatMessage('Depreciation Method:')"))
+     .LabelMode(EditorLabelMode.Floating)
                         .DataSource(new[] { "Straight Line Method" })
                         .Value("Straight Line Method")
                         .Width(520)
@@ -616,10 +597,11 @@
 
                     <!-- Scarp Value -->
                     <div class="form-group">
-                        <label for="AmountinSAR" class="button-alignment-down">Scarp Value</label>
                         @(Html.DevExtreme().NumberBox()
                         .ID("txtScarpValue")
-                        .Width(150)
+                             .Label(new JS("formatMessage('Scarp Value')"))
+     .LabelMode(EditorLabelMode.Floating)
+                        .Width(250)
                         .Value(0)
                         .ShowSpinButtons(true)
                         @*  // .Min(0).Max(1000) *@
@@ -628,10 +610,11 @@
 
                     <!-- Life in years -->
                     <div class="form-group">
-                        <label for="AmountinSAR" class="button-alignment-down">Life in years</label>
                         @(Html.DevExtreme().NumberBox()
                         .ID("txtLifeinyears")
-                        .Width(100)
+                             .Label(new JS("formatMessage('Life in years')"))
+     .LabelMode(EditorLabelMode.Floating)
+                        .Width(250)
                         .Value(0)
                         .ShowSpinButtons(true)
                         .Min(0)
@@ -641,10 +624,11 @@
 
                     <!-- Dep.Percentage -->
                     <div class="form-group">
-                        <label for="AmountinSAR" class="button-alignment-down">Dep.Percentage(%)</label>
                         @(Html.DevExtreme().NumberBox()
                         .ID("txtDepPercentage")
-                        .Width(100)
+                             .Label(new JS("formatMessage('Dep.Percentage(%)')"))
+     .LabelMode(EditorLabelMode.Floating)
+                        .Width(250)
                         .Value(0.0)
                         .ShowSpinButtons(true)
                         .Min(0.0)
@@ -678,17 +662,17 @@
                         .RemoteOperations(false)
                         .Columns(columns =>
                         {
-                    columns.AddFor(m => m.DepreciationDocNo).Caption("Depreciation Doc No").Visible(true);
-                    columns.AddFor(m => m.DeprStartDate).Caption("Depr Start Date").Visible(true);
-                        columns.AddFor(m => m.DeprEndDate).Caption("Depr End Date").Visible(true);
-                    columns.AddFor(m => m.OpeningBalance).Caption("Opening Balance").Visible(true);
-                        columns.AddFor(m => m.DebitTransaction).Caption("Debit Transaction").Visible(true);
-                        columns.AddFor(m => m.CreditTransaction).Caption("Credit Transaction").Visible(true);
-                        columns.AddFor(m => m.ClosingBalance).Caption("Closing Balance").Visible(true);
-                        columns.AddFor(m => m.DepreciatedPercentage).Caption("Depreciated Percentage").Visible(true);
-                    columns.AddFor(m => m.DepreciationAmount).Caption("Depreciation Amount").Visible(true);
-                        columns.AddFor(m => m.AccumulatedAdjusted).Caption("Accumulated Adjusted").Visible(true);
-                    columns.AddFor(m => m.BookValueAsOnDate).Caption("Book Value As On Date").Visible(true);
+                    columns.AddFor(m => m.DepreciationDocNo) .Caption(new JS("formatMessage('Depreciation Doc No')")) .Visible(true);
+                    columns.AddFor(m => m.DeprStartDate).Caption(new JS("formatMessage('Depr Start Date')")).Visible(true);
+                        columns.AddFor(m => m.DeprEndDate).Caption(new JS("formatMessage('Depr End Date')")).Visible(true);
+                    columns.AddFor(m => m.OpeningBalance).Caption(new JS("formatMessage('Opening Balance')")).Visible(true);
+                        columns.AddFor(m => m.DebitTransaction).Caption(new JS("formatMessage('Debit Transaction')")).Visible(true);
+                        columns.AddFor(m => m.CreditTransaction).Caption(new JS("formatMessage('Credit Transaction')")).Visible(true);
+                        columns.AddFor(m => m.ClosingBalance).Caption(new JS("formatMessage('Closing Balance')")).Visible(true);
+                        columns.AddFor(m => m.DepreciatedPercentage).Caption(new JS("formatMessage('Depreciated Percentage')")).Visible(true);
+                    columns.AddFor(m => m.DepreciationAmount).Caption(new JS("formatMessage('Depreciation Amount')")).Visible(true);
+                        columns.AddFor(m => m.AccumulatedAdjusted).Caption(new JS("formatMessage('Accumulated Adjusted')")).Visible(true);
+                    columns.AddFor(m => m.BookValueAsOnDate).Caption(new JS("formatMessage('Book Value As On Date')")).Visible(true);
                         })
                         .AllowColumnReordering(true) // Enable column reordering
                         .AllowColumnResizing(true)   // Enable column resizing
@@ -740,9 +724,8 @@
         </text>);
 
 
-                    item.Add().Text("Documents").Title("Documents").Template(@<text>
+                    item.Add().Title(new JS("formatMessage('Documents')"))      .Text(new JS("formatMessage('Documents')")).Template(@<text>
             <div class="form-container">
-
                 @* <div class="form-group" style="display: flex; justify-content: flex-end; width: 100%;">
                     @(Html.DevExtreme().Button()
                     .ID("docbtnAttach")
@@ -756,7 +739,7 @@
                 </div> *@
 
 
-                <div class="form-group" style="display: flex; justify-content: flex-end; width: 100%;">
+                <div class="form-group" style="display: flex; justify-content: flex-end; width: 100%; margin-top:10px; padding:10px;">
                     @(Html.DevExtreme().Button()
                     .ID("docbtnAttach")
                     .Text("Add & Attach Files")
@@ -766,11 +749,7 @@
                     .OnClick("redirectToAssetDocuments")
                     )
                 </div>
-
-
-
-                <div class="dx-field ledgerResult" style="padding:10px;">
-
+                <div class="dx-field ledgerResult">
                         @(
                         Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl20108AssetDocument>()
 
@@ -782,12 +761,12 @@
                         columns.AddFor(m => m.DocumentNo).Caption("Doc No");
 
 
-                    columns.AddFor(m => m.DocumentType).Caption("DocumentType").Visible(true);;
-                    columns.AddFor(m => m.DocumentRefNo).Caption("Document Ref.No").Visible(true);;
-                        columns.AddFor(m => m.DocumentRemarks).Caption("Document Remarks").Visible(true);;
-                    columns.AddFor(m => m.DocumentExpDate).Caption("Expiry On").Visible(true);;
-                    columns.AddFor(m => m.DocumentExpDateAr).Caption("Expiry Arabic").Visible(true);;
-                    columns.AddFor(m => m).Caption("Notify On").Visible(true);;
+                    columns.AddFor(m => m.DocumentType).Caption(new JS("formatMessage('DocumentType')")).Visible(true);;
+                    columns.AddFor(m => m.DocumentRefNo).Caption(new JS("formatMessage('Document Ref.No')")).Visible(true);;
+                    columns.AddFor(m => m.DocumentRemarks).Caption(new JS("formatMessage('Document Remarks')")).Visible(true);;
+                    columns.AddFor(m => m.DocumentExpDate).Caption(new JS("formatMessage('Expiry On')")).Visible(true);;
+                    columns.AddFor(m => m.DocumentExpDateAr).Caption(new JS("formatMessage('Expiry Arabic')")).Visible(true);;
+                    columns.AddFor(m => m).Caption(new JS("formatMessage('Notify On')")).Visible(true);;
                         })
                         //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
                         .AllowColumnReordering(true) // Enable column reordering
@@ -801,54 +780,43 @@
                         .ShowBorders(true)
                         .Width("100%")
                         )
-                    </div>
-               
-
-
+                 </div>
             </div>
         </text>);
-
-
-
-                    item.Add().Text("Maintenance").Title("Maintenance").Template(@<text>
-
+                    item.Add().Title(new JS("formatMessage('Maintenance')")).Text("Maintenance").Template(@<text>
             <div class="form-container">
-
                 <div class="form-row" style="display: flex; align-items: flex-end; gap: 10px; width: 100%;">
-
                     <!-- Depreciation Method    style="display: flex; align-items: flex-end; gap: 10px; width: 100%;"-->
                     <div class="form-group">
-
-                        <label for="" class="button-alignment-down">Latest Meter Reading:</label>
                         @(Html.DevExtreme().NumberBox()
                         .ID("txtMaintenanceReading")
-                      //  .Width(350)
+                        .Label(new JS("formatMessage('Latest Meter Reading:')"))
+                        .LabelMode(EditorLabelMode.Floating)
+                        .Width(350)
                         .Value(0)
                         .ShowSpinButtons(true)
-                        .Min(0)//                        .Max(1000)
+                        .Min(0)                   
                         .Step(1))
                     </div>
                     <div class="form-group">
-                        <label for="maintenanceTypes" class="button-alignment-down">Select Maintenance Type:</label>
+                        <label for="maintenanceTypes" class="button-alignment-down"></label>
                         @(Html.DevExtreme().SelectBox()
                         .ID("ddlMaintenanceTypes")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .Label(new JS("formatMessage('Select Maintenance Type:')"))
+                        .LabelMode(EditorLabelMode.Floating)
                         .ValueExpr("AssetMaintenanceTypeId")
                         .DisplayExpr("AssetMaintenanceType")
                         .DataSource(d => d.WebApi()
                         .Controller("assetview")
                         .LoadAction("GetddlAssetMaintanence")
                         .LoadMode(DataSourceLoadMode.Raw)
-
                         )
                         .SearchEnabled(true)
                         .ShowClearButton(true)
                         .Placeholder("Select Maintenance Type")
-                      //  .Width(400)
+                        .Width(400)
                         )
                     </div>
-
-
                     <div class="form-group" style="display: flex; justify-content: flex-end; width: 100%;">
                         @(Html.DevExtreme().Button()
                         .ID("btnMaintenance")
@@ -859,7 +827,6 @@
                         .OnClick("redirectassetmaintanence")
                         )
                     </div>
-
                     <!-- Add Scheduled Types Button -->
                     <div class="form-group">
                         @(Html.DevExtreme().Button()
@@ -872,18 +839,11 @@
                         )
                     </div>
                 </div>
-
-        
-
                  <div class="dx-field ledgerResult" style="padding:10px;">
-
-                        @(
-                        Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl20111AssetMaintenanceMaster>()
-
+                        @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl20111AssetMaintenanceMaster>()
                         .ID("maintenanceGrid")
                     .KeyExpr("MaintenanceRefNo")
                     .RemoteOperations(false)
-
                     .DataSource(new JS("maintenanceDataSource") )
                         .Columns(columns =>
                         {
@@ -898,13 +858,12 @@
                     .DisplayExpr("AssetMaintenanceType")
                     );
 
-                        columns.AddFor(m => m.MaintenanceReading).Caption("Maintenance Reading");
-                        columns.AddFor(m => m.MaintenanceDate).Caption("Maintenance Scheduled On").Format("dd-MMM-yyyy");
-                        columns.AddFor(m => m.ReminderDate).Caption("Reminder Date").Format("dd-MMM-yyyy"); 
-                        columns.AddFor(m => m.IsMaintenanceDone).Caption("Maintenance Done?");
-
-                        columns.AddFor(m => m.ActualMaintenanceDoneOn).Caption("ActualMaintenanceDoneOn").Format("dd-MMM-yyyy"); 
-                        columns.AddFor(m => m.MaintenanceRemarks).Caption("Remarks");
+                        columns.AddFor(m => m.MaintenanceReading).Caption(new JS("formatMessage('Maintenance Reading')"));
+                        columns.AddFor(m => m.MaintenanceDate).Caption(new JS("formatMessage('Maintenance Scheduled On')")).Format("dd-MMM-yyyy");
+                        columns.AddFor(m => m.ReminderDate).Caption(new JS("formatMessage('Reminder Date')")).Format("dd-MMM-yyyy"); 
+                        columns.AddFor(m => m.IsMaintenanceDone).Caption(new JS("formatMessage('Maintenance Done?')"));
+                        columns.AddFor(m => m.ActualMaintenanceDoneOn).Caption(new JS("formatMessage('ActualMaintenanceDoneOn')")).Format("dd-MMM-yyyy"); 
+                        columns.AddFor(m => m.MaintenanceRemarks).Caption(new JS("formatMessage('Remarks')"));
                       
                         })
                         //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
@@ -985,10 +944,10 @@
                     @(Html.DevExtreme().Button().ID("btnSaveClose").Text("Save & Close").Icon("check").OnClick("function() { saveAndClose(); }"))
                     </div> *@
                     <div class="col-md-1">
-        @(Html.DevExtreme().Button().ID("btDelete").Text("Save & Close").Icon("save").OnClick("onSaveAndClose"))
+                      @(Html.DevExtreme().Button().ID("btDelete").Text("Save & Close").Icon("save").OnClick("onSaveAndClose"))
                     </div>
                     <div class="col-md-1">
-        @(Html.DevExtreme().Button().ID("btnBack").Text("Back").Icon("arrowleft").OnClick("goBackToAssetView"))
+                      @(Html.DevExtreme().Button().ID("btnBack").Text("Back").Icon("arrowleft").OnClick("goBackToAssetView"))
                     </div>
                 </div>
             </div>
@@ -1028,8 +987,6 @@
                 {
                     columns.Add().DataField("PropertyNo");
                     columns.Add().DataField("PropertyDescription");
-
-
                     columns.Add().DataField("PlateNo");
                     columns.Add().DataField("Brand");
                     columns.Add().DataField("Capacity");
@@ -1062,8 +1019,8 @@
 
         $("#" + elementId).dxDropDownBox({
             dataSource: DevExpress.data.AspNet.createStore({
-                key: "AssetMaintenanceTypeId",
-                loadUrl: "/api/AssetView/GetEditMaintenance"
+            key: "AssetMaintenanceTypeId",
+            loadUrl: "/api/AssetView/GetEditMaintenance"
             }),
             value: value,
             valueExpr: "AssetMaintenanceTypeId",
