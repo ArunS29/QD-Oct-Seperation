@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using DevExpress.XtraReports.UI;
 using DevExpress.DataAccess.Sql;
 using DevExpress.DataAccess.ConnectionParameters;

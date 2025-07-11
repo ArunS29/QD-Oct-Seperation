@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using DevExpress.XtraReports.UI;
 using DevExpress.DataAccess.Sql;
@@ -287,6 +287,7 @@ namespace QD.ERP.Web.Reports
                                         new { Label = "xrLabel22", Picture = "xrPictureBox2" },
 
                         new { Label = "xrLabel7", Picture = "xrPictureBox5" },
+                        new { Label = "xrLabel5", Picture = "xrPictureBox7" },
 
                 new { Label = "xrLabel8", Picture = "xrPictureBox4" },
 

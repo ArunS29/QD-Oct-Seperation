@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using DevExpress.XtraReports.UI;
 using DevExpress.DataAccess.Sql;
@@ -322,5 +322,11 @@ namespace QD.ERP.Web.Reports
             }
         }
 
+        private void xrLabel6_BeforePrint(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+
+
+
+        }
     }
 }

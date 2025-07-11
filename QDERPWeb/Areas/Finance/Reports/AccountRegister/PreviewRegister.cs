@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using DevExpress.DataAccess.Sql;
 using DevExpress.XtraReports.UI;
