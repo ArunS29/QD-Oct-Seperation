@@ -146,7 +146,7 @@
             <td colspan="4">
                 @(Html.DevExtreme().TextBox()
                                 .Label(new JS("formatMessage('Detailed Description / Specification:')"))
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .ID("DetailedDescription")
                 @*     .Height("100% !important") *@
                                 .Height(120)
@@ -159,7 +159,7 @@
                 @(Html.DevExtreme().TextBox()
                                 .ID("Remarks")
                                 .Label("Remarks:")
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 )
             </td>
         </tr>

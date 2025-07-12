@@ -96,7 +96,7 @@
                 Html.DevExtreme().TextBox()
                 .ID("txtSalesPersonName")
                 .Label(new JS("formatMessage('Type a new SalesPerson/ Project Manager & Add to the Existing List')"))
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .Value(null)
                 .ValidationRules(rules =>
                 {
@@ -113,7 +113,7 @@
             @(
                 Html.DevExtreme().DropDownBox()
                 .Label(new JS("formatMessage('User Code')"))
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .ID("DDlUserId") // Set the ID for the SelectBox
                 .DataSource(d => d.WebApi()
                 .Controller("Master")
@@ -145,7 +145,7 @@
         @(
             Html.DevExtreme().TextBox()
             .Label(new JS("formatMessage('Email Address')"))
-            .LabelMode(EditorLabelMode.Outside)
+            .LabelMode(EditorLabelMode.Floating)
             .ID("txtEmailAddress")
             .OnChange("validateEmail")
             .Value(null)
@@ -204,7 +204,7 @@
             @(
                 Html.DevExtreme().TextBox()
                 .Label(new JS("formatMessage('Contact Number')"))
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .ID("txtSalesPersonContactNo")
                 //.OnChange("validateContactNumber")
                 .Value(null)
@@ -218,7 +218,7 @@
             @(
                 Html.DevExtreme().TextBox()
                 .Label(new JS("formatMessage('SalesPerson/ Project Manager Code')"))
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .ID("txtSalesPersonCode")
                 .Value(null)
                 .ValidationRules(rules =>

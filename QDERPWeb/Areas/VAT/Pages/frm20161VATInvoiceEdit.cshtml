@@ -562,8 +562,8 @@
 					<!-- First Card (Left Side) -->
 					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 							<tr>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice No')")).ID("InvoiceNo").Disabled(true).LabelMode(EditorLabelMode.Outside).Width(210))</td>
-							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Date')")).ID("InvoiceDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).Disabled(true).LabelMode(EditorLabelMode.Outside).Width(250))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice No')")).ID("InvoiceNo").Disabled(true).LabelMode(EditorLabelMode.Floating).Width(210))</td>
+							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Date')")).ID("InvoiceDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).Disabled(true).LabelMode(EditorLabelMode.Floating).Width(250))</td>
 							<td>
 								<div style="display: flex; align-items: end;">
 									@(Html.DevExtreme().DropDownBox()
@@ -572,7 +572,7 @@
 																		.LoadAction("GetClientCode")
 																		.LoadMode(DataSourceLoadMode.Raw)
 																		.Key("AccountId"))
-																		.LabelMode(EditorLabelMode.Outside)
+																		.LabelMode(EditorLabelMode.Floating)
 																		.ID("ddclientcode")
 																		.ValidationRules(rules =>
 																		{
@@ -658,7 +658,7 @@
 																		.LoadAction("GetClientCode")
 																		.LoadMode(DataSourceLoadMode.Raw)
 																		.Key("ClientName"))
-																		.LabelMode(EditorLabelMode.Outside)
+																		.LabelMode(EditorLabelMode.Floating)
 																		.ID("ddclientname")
 																		.ValidationRules(rules =>
 																		{
@@ -695,7 +695,7 @@
 								@(Html.DevExtreme().TextBox()
 															.ID("GroupVATNo")
 															.Label(new JS("formatMessage('Group VAT No')"))
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.MaxLength(15)
 															.Mask("300000000010000") // 15 digits
 															.MaskChar("_") // Optional: makes it more readable
@@ -707,7 +707,7 @@
 								@(Html.DevExtreme().TextBox()
 															.ID("ClientVATNo")
 															.Label(new JS("formatMessage('Client VAT No')"))
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.MaxLength(15)
 															.Mask("300000000000003") // 15 digits
 															.MaskChar("_") // Optional: makes it more readable
@@ -722,20 +722,20 @@
 																			.ID("InvoiceIssuedDateTime")
 																			.Type(DateBoxType.DateTime) // Enables both date and time selection
 																			.DisplayFormat(new JS("'dd-MMM-yyyy hh:mm:ss a'"))
-																			.LabelMode(EditorLabelMode.Outside)
+																			.LabelMode(EditorLabelMode.Floating)
 																			.Value(DateTime.Now)
 																			.Disabled(true)
 																			.Width(210)
 																			
 																			)
 								</td>
-								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Supply Date')")).ID("SupplyDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside).Width(250))</td>
+								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Supply Date')")).ID("SupplyDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Floating).Width(250))</td>
 
 							<td>
 								@(Html.DevExtreme().DropDownBox()
 															.Label(new JS("formatMessage('Other ID Type')"))
 															.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetVATInvoiceMaster").LoadMode(DataSourceLoadMode.Raw).Key("BuyerOtherIdtype"))
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.ID("OtherIDType")
 															.ShowClearButton(true)
 															.AcceptCustomValue(true)
@@ -753,7 +753,7 @@
 															.ContentTemplate(new TemplateName("ClientNameContent"))
 															)
 							</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Other ID')")).ID("ClientOtherID").LabelMode(EditorLabelMode.Outside).Width(205))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Other ID')")).ID("ClientOtherID").LabelMode(EditorLabelMode.Floating).Width(205))</td>
 							<td>
 								@(Html.DevExtreme().DropDownBox()
 															.ID("ClientAddressDetails")
@@ -761,7 +761,7 @@
 															.ShowClearButton(true)
 															.AcceptCustomValue(true)
 															
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.DropDownOptions(o => o.Width(650).Height(550))
 															.OpenOnFieldClick(true)
 															.Width("100%")
@@ -777,21 +777,21 @@
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Address - Street Name:')"))
 													.ID("StreetName")
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.Width("100%"))
 												</td>
 												<td>
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Address - Street Name: (Arabic)')"))
 													.ID("StreetNameArabic")
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.Width("100%"))
 												</td>
 												<td>
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Building Number:')"))
 													.ID("BuildingNumber")
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.Width("100%"))
 												</td>
 											</tr>
@@ -800,21 +800,21 @@
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Address - Additional Address:')"))
 													.ID("AdditionalAddress")
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.Width("100%"))
 												</td>
 												<td>
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Address - Additional Address: (Arabic)')"))
 													.ID("AdditionalAddressArabic")
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.Width("100%"))
 												</td>
 												<td>
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Additional Number:')"))
 													.ID("AdditionalNumber")
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.Width("100%"))
 												</td>
 
@@ -825,21 +825,21 @@
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Client City:')"))
 													.ID("ClientCity")
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.Width("100%"))
 												</td>
 												<td>
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Client City: (Arabic)')"))
 													.ID("ClientCityArabic")
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.Width("100%"))
 												</td>
 												<td>
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Postal Code:')"))
 													.ID("PostalCode")
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.Width("100%"))
 												</td>
 											</tr>
@@ -849,14 +849,14 @@
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Province / State:')"))
 													.ID("Province")
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.Width("100%"))
 												</td>
 												<td>
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Province / State: (Arabic)')"))
 													.ID("ProvinceArabic")
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.Width("100%"))
 												</td>
 
@@ -865,7 +865,7 @@
 													@(Html.DevExtreme().DropDownBox()
 													.Label(new JS("formatMessage('Country Code:')"))
 													.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("Getcountrycode").LoadMode(DataSourceLoadMode.Raw).Key("CountryCodeAlpha2"))
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.ID("CountryCodeNumeric")
 													.ShowClearButton(true)
 													.AcceptCustomValue(true)
@@ -890,14 +890,14 @@
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('District / Neighborhood:')"))
 													.ID("District")
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.Width("100%"))
 												</td>
 												<td colspan="2">
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('District / Neighborhood: (Arabic)')"))
 													.ID("DistrictArabic")
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.Width("100%"))
 												</td>
 
@@ -910,7 +910,7 @@
 								</text>)
 															)
 							</td>
-	                     	<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name in Arabic')")).ID("ClientNameArabic").LabelMode(EditorLabelMode.Outside).Width("100%"))</td>
+	                     	<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name in Arabic')")).ID("ClientNameArabic").LabelMode(EditorLabelMode.Floating).Width("100%"))</td>
 
 							</tr>
 							<tr>
@@ -924,7 +924,7 @@
 																.LoadMode(DataSourceLoadMode.Raw)
 																.Key("InvoiceSubTypeCode"))
 																.AcceptCustomValue(true)
-																.LabelMode(EditorLabelMode.Outside)
+																.LabelMode(EditorLabelMode.Floating)
 																.OpenOnFieldClick(false)
 																.ValueChangeEvent("input")
 																.HoverStateEnabled(true)
@@ -946,7 +946,7 @@
 																			.OpenOnFieldClick(false)
 																			.ValueChangeEvent("input")
 																			.HoverStateEnabled(true)
-																			.LabelMode(EditorLabelMode.Outside)
+																			.LabelMode(EditorLabelMode.Floating)
 																			.Value("Payment to bank account")
 																			.ValueExpr("PaymentMeansTypeCode")
 																			.DisplayExpr("PaymentMeansType")
@@ -972,7 +972,7 @@
 																			.AcceptCustomValue(true)
 																			.OpenOnFieldClick(false)
 																			.ValueChangeEvent("input")
-																			.LabelMode(EditorLabelMode.Outside)
+																			.LabelMode(EditorLabelMode.Floating)
 																			.HoverStateEnabled(true)
 																			.Value("Tax Invoice") // Ensure this matches an actual key value
 																			.ValueExpr("InvoiceType") // Ensure the value is mapped correctly
@@ -989,7 +989,7 @@
 																			.Value("0100000") // Default selected value
 																			.ValueExpr("ID")
 																			.DisplayExpr("ID")
-																			.LabelMode(EditorLabelMode.Outside)
+																			.LabelMode(EditorLabelMode.Floating)
 																			.AcceptCustomValue(true)
 																			.OpenOnFieldClick(false)
 																			.ValueChangeEvent("input")
@@ -1010,8 +1010,8 @@
 																			
 
 								</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Counter Value')")).ID("InvoiceCounterValue").LabelMode(EditorLabelMode.Outside).Disabled(true).Width(230))</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('UUID')")).ID("UUID").LabelMode(EditorLabelMode.Outside).Disabled(true).Width(230))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Counter Value')")).ID("InvoiceCounterValue").LabelMode(EditorLabelMode.Floating).Disabled(true).Width(230))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('UUID')")).ID("UUID").LabelMode(EditorLabelMode.Floating).Disabled(true).Width(230))</td>
 							</tr>
 							<tr>
 								
@@ -1031,12 +1031,12 @@
 				
 					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 						<tr>
-							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Due Date')")).ID("InvoiceDueDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside))</td>
-							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Effective Date')")).ID("EffectiveDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside))</td>
+							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Due Date')")).ID("InvoiceDueDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Floating))</td>
+							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Effective Date')")).ID("EffectiveDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Floating))</td>
 
 						
-							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Start Date')")).ID("InvoiceStartDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").LabelMode(EditorLabelMode.Outside))</td>
-						<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice End Date')")).ID("InvoiceEndDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").LabelMode(EditorLabelMode.Outside))</td>
+							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Start Date')")).ID("InvoiceStartDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").LabelMode(EditorLabelMode.Floating))</td>
+						<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice End Date')")).ID("InvoiceEndDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").LabelMode(EditorLabelMode.Floating))</td>
 
 							<td>
 								@* @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Revenue Account')")).ID("RevenueAccount")
@@ -1055,7 +1055,7 @@
 															.Message(new JS("formatMessage('Revenue Account should be entered')"));
 														})
 
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.ID("ddlGoodsGroup2")
 															.Value("")
 															.ShowClearButton(true)
@@ -1088,7 +1088,7 @@
 								<div style="flex: 1;">
 									@(Html.DevExtreme().TextArea()
 																			.Label(new JS("formatMessage('Invoice Notes')"))
-																			.LabelMode(EditorLabelMode.Outside)
+																			.LabelMode(EditorLabelMode.Floating)
 																			.ID("txtInvoiceNotes")
 																			.Value("")
 																			.Width("100%")
@@ -1125,7 +1125,7 @@
 							<div style="display: flex; gap: 4px; align-items: end;">
 								@(Html.DevExtreme().TextArea()
 																.Label(new JS("formatMessage('Notes in Arabic')"))
-																.LabelMode(EditorLabelMode.Outside)
+																.LabelMode(EditorLabelMode.Floating)
 																.ID("txtNotesinArabic")
 																.Value("")
 																.Height(40)
@@ -1155,7 +1155,7 @@
 														.LoadMode(DataSourceLoadMode.Raw)
 														.Key("CostAllocationUnitId")
 														)
-														.LabelMode(EditorLabelMode.Outside)
+														.LabelMode(EditorLabelMode.Floating)
 														.ID("ddlGoodsGroup1")
 														.ShowClearButton(true)
 														.Value("ADMIN-0001")
@@ -1194,7 +1194,7 @@
 							<tr>
 								<td colspan="2">
 								@* 	@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Our Sales Order No')")).ID("OurSalesOrderNo")
-																			.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")).LabelMode(EditorLabelMode.Outside)) *@
+																			.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")).LabelMode(EditorLabelMode.Floating)) *@
 
 									@(Html.DevExtreme().DropDownBox()
 																			.Label(new JS("formatMessage('Our Sales Order No')"))
@@ -1204,7 +1204,7 @@
 																			.LoadParams(new { accheadid = new JS("accheadid") }) // Fix: ensure `accheadid` is a proper parameter key																			.LoadMode(DataSourceLoadMode.Raw)
 																			.Key("ClientCode")
 																			)
-																			.LabelMode(EditorLabelMode.Outside)
+																			.LabelMode(EditorLabelMode.Floating)
 																			.ID("OurSalesOrderNo")
 																			.ShowClearButton(true)
 																			.AcceptCustomValue(true)
@@ -1229,10 +1229,10 @@
 							</tr>
 							<tr>
 
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client PO No')")).ID("ClientPONo").LabelMode(EditorLabelMode.Outside))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client PO No')")).ID("ClientPONo").LabelMode(EditorLabelMode.Floating))</td>
 							
 
-								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('PO Date')")).ID("PODate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").LabelMode(EditorLabelMode.Outside))</td>
+								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('PO Date')")).ID("PODate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").LabelMode(EditorLabelMode.Floating))</td>
 							</tr>
 
 						</table>
@@ -1244,13 +1244,13 @@
 							<tr>
 
 								
-								<td colspan="2">@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Project Ref./Contract No')")).ID("ProjectRef").LabelMode(EditorLabelMode.Outside))</td>
+								<td colspan="2">@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Project Ref./Contract No')")).ID("ProjectRef").LabelMode(EditorLabelMode.Floating))</td>
 							</tr>
 							<tr>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('SES Reference')")).ID("SESReference").LabelMode(EditorLabelMode.Outside))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('SES Reference')")).ID("SESReference").LabelMode(EditorLabelMode.Floating))</td>
 							
 
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Payment Terms')")).ID("PaymentTerms").LabelMode(EditorLabelMode.Outside))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Payment Terms')")).ID("PaymentTerms").LabelMode(EditorLabelMode.Floating))</td>
 							</tr>
 
 						</table>
@@ -1263,13 +1263,13 @@
 							</tr>
 							<tr>					
 
-								<td colspan="2">@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Quotation No')")).ID("QuotationNo").LabelMode(EditorLabelMode.Outside))</td>
+								<td colspan="2">@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Quotation No')")).ID("QuotationNo").LabelMode(EditorLabelMode.Floating))</td>
 
 							</tr>
 							<tr>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Delivery Notes')")).ID("DeliveryNotes").LabelMode(EditorLabelMode.Outside))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Delivery Notes')")).ID("DeliveryNotes").LabelMode(EditorLabelMode.Floating))</td>
 							
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client GRN Reference')")).ID("ClientGRNReference").LabelMode(EditorLabelMode.Outside))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client GRN Reference')")).ID("ClientGRNReference").LabelMode(EditorLabelMode.Floating))</td>
 							</tr>
 
 						</table>
@@ -1293,7 +1293,7 @@
 																				.LoadAction("GetInvoiceCurrency")
 																				.LoadMode(DataSourceLoadMode.Raw)
 																				.Key("CurrencyExchangeId"))
-																				.LabelMode(EditorLabelMode.Outside)
+																				.LabelMode(EditorLabelMode.Floating)
 																				.ID("ddlGoodsGroup3")
 																				.ShowClearButton(true)
 																				.Value("Saudi Arabian Riyals")
@@ -1329,7 +1329,7 @@
 																				.LoadAction("GetTaxCurrency")
 																				.LoadMode(DataSourceLoadMode.Raw)
 																				.Key("CurrencyExchangeId"))
-																				.LabelMode(EditorLabelMode.Outside)
+																				.LabelMode(EditorLabelMode.Floating)
 																				.ID("ddlGoodsGroup4")
 																				.Disabled(true)
 																				.ShowClearButton(true)
@@ -1364,7 +1364,7 @@
 									@(Html.DevExtreme().NumberBox()
 																			.ID("currencyexchangerate")
 																			.Label(new JS("formatMessage('Currency Exchange Rate:')"))
-																			.LabelMode(EditorLabelMode.Outside)
+																			.LabelMode(EditorLabelMode.Floating)
 																			.Min(1)
 																			.Step(1)
 																			.ShowSpinButtons(true)
@@ -1412,7 +1412,7 @@
 									@(
 																			Html.DevExtreme().TextBox()
 																			.Label(new JS("formatMessage('')"))
-																			.LabelMode(EditorLabelMode.Outside)
+																			.LabelMode(EditorLabelMode.Floating)
 																			.ID("LessAdvanceAr")
 																			.Value("اقب المسبق")
 																			.Width("100%")
@@ -1456,7 +1456,7 @@
 									@(
 																			Html.DevExtreme().TextBox()
 																			.Label(new JS("formatMessage('')"))
-																			.LabelMode(EditorLabelMode.Outside)
+																			.LabelMode(EditorLabelMode.Floating)
 																			.ID("LessAdvanceAr1")
 																			.Value("ناقص قيمة الخصومات الأخرى")
 																			.Width("100%")
@@ -1499,7 +1499,7 @@
 									@(
 																			Html.DevExtreme().TextBox()
 																			.Label(new JS("formatMessage('')"))
-																			.LabelMode(EditorLabelMode.Outside)
+																			.LabelMode(EditorLabelMode.Floating)
 																			.ID("LessAdvanceAr2")
 																			.Value("احتفاظ أقل")
 																			.Width("100%")
@@ -1520,7 +1520,7 @@
 
 									@(Html.DevExtreme().TextBox()
 																			//.Label(new JS("formatMessage('Verified By')"))
-																			.LabelMode(EditorLabelMode.Outside)
+																			.LabelMode(EditorLabelMode.Floating)
 																			.ID("VerifiedBytext")
 																			.Value(null) // Default value
 																			.Disabled(true)
@@ -1529,7 +1529,7 @@
 
 									@(Html.DevExtreme().TextBox()
 																			.Label(new JS("formatMessage('Verified On')"))
-																			.LabelMode(EditorLabelMode.Outside)
+																			.LabelMode(EditorLabelMode.Floating)
 																			.ID("VerifiedOnDate")
 																			.Value(null) // Default value
 																			.Disabled(true)
@@ -1546,7 +1546,7 @@
 																			)
 									@(Html.DevExtreme().TextBox()
 																			//.Label(new JS("formatMessage('Approved By')"))
-																			.LabelMode(EditorLabelMode.Outside)
+																			.LabelMode(EditorLabelMode.Floating)
 																			.ID("ApprovedBytext")
 																			.Value(null) // Default value
 																			.Disabled(true)
@@ -1555,7 +1555,7 @@
 																			)
 									@(Html.DevExtreme().TextBox()
 																			.Label(new JS("formatMessage('Approved On')"))
-																			.LabelMode(EditorLabelMode.Outside)
+																			.LabelMode(EditorLabelMode.Floating)
 																			.ID("ApprovedOntext")
 																			.Value(null) // Default value
 																			.Disabled(true)
@@ -1575,7 +1575,7 @@
 									@(Html.DevExtreme().DropDownBox()
 																			.Label(new JS("formatMessage('Division')"))
 																			.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetDivision").LoadMode(DataSourceLoadMode.Raw).Key("BranchCode"))
-																			.LabelMode(EditorLabelMode.Outside)
+																			.LabelMode(EditorLabelMode.Floating)
 																			.ID("ddlDivision")
 																			.ShowClearButton(true)
 																			.AcceptCustomValue(true)
@@ -1604,7 +1604,7 @@
 
 																)
 
-																.LabelMode(EditorLabelMode.Outside)
+																.LabelMode(EditorLabelMode.Floating)
 																.ID("ddlGoodsGroup7")
 																.ShowClearButton(true)
 																.AcceptCustomValue(true)
@@ -1626,9 +1626,9 @@
 																.Width("95%")
 																)
 							</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Group VAT No')")).ID("OurGroupVATNo").LabelMode(EditorLabelMode.Outside).Width("95%"))</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our VAT No')")).ID("OurVATNo").LabelMode(EditorLabelMode.Outside).Width("95%"))</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Other ID')")).ID("OtherID1").LabelMode(EditorLabelMode.Outside).Width("95%"))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Group VAT No')")).ID("OurGroupVATNo").LabelMode(EditorLabelMode.Floating).Width("95%"))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our VAT No')")).ID("OurVATNo").LabelMode(EditorLabelMode.Floating).Width("95%"))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Other ID')")).ID("OtherID1").LabelMode(EditorLabelMode.Floating).Width("95%"))</td>
 							<td>
 								@* @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Other ID Type')")).ID("OtherIDType1")
 								.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType"))) *@
@@ -1641,7 +1641,7 @@
 																.LoadMode(DataSourceLoadMode.Raw)
 																.Key("SellerOtherIdtype")
 																)
-																.LabelMode(EditorLabelMode.Outside)
+																.LabelMode(EditorLabelMode.Floating)
 																.ID("ddlGoodsGroup8")
 																.ShowClearButton(true)
 																.AcceptCustomValue(false)
@@ -1673,7 +1673,7 @@
 																@(Html.DevExtreme().DropDownBox()
 																					.Label(new JS("formatMessage('Sales Person/Co-ordinator')"))
 																					.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetSalesPerson").LoadMode(DataSourceLoadMode.Raw).Key("SalesPersonCode"))
-																					.LabelMode(EditorLabelMode.Outside)
+																					.LabelMode(EditorLabelMode.Floating)
 																					.ID("ddlSalesPerson")
 																					.ShowClearButton(true)
 																					.AcceptCustomValue(true)
@@ -1696,8 +1696,8 @@
 																			)
 								</div>
 							</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Company Registered Name')")).ID("OurCompanyRegisteredName").LabelMode(EditorLabelMode.Outside).Width("100%"))</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Company Name in Arabic')")).ID("OurCompanyNameinArabic").LabelMode(EditorLabelMode.Outside).Width("100%"))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Company Registered Name')")).ID("OurCompanyRegisteredName").LabelMode(EditorLabelMode.Floating).Width("100%"))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Company Name in Arabic')")).ID("OurCompanyNameinArabic").LabelMode(EditorLabelMode.Floating).Width("100%"))</td>
 							
 							<td>
 								@(Html.DevExtreme().DateBox()
@@ -1705,7 +1705,7 @@
 															.Type(DateBoxType.Date)
 															.DisplayFormat("dd-MMM-yyyy")
 															.Label(new JS("formatMessage('Invoice Submitted On:')"))
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.ShowClearButton(true)
 															.Width("90%"))
 							</td>
@@ -1723,7 +1723,7 @@
 
 										@(Html.DevExtreme().TextBox()
 																		.Label(new JS("formatMessage('Invoice Submitted By')"))
-																				.LabelMode(EditorLabelMode.Outside)
+																				.LabelMode(EditorLabelMode.Floating)
 																				.Width("100%")
 																				.ID("SubmittedBytext")
 																				.Value(null)
@@ -1747,7 +1747,7 @@
 																			.LoadMode(DataSourceLoadMode.Raw)
 																			.Key("InvoiceType"))
 																			.DropDownOptions(o => o.Width(600).Height(600))
-																			.LabelMode(EditorLabelMode.Outside)
+																			.LabelMode(EditorLabelMode.Floating)
 																			.ContentTemplate(@<text>
 									<div class="address-form-container">
 
@@ -1758,21 +1758,21 @@
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Address - Street Name:')"))
 													.ID("OurStreetName")
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.Width("100%"))
 												</td>
 												<td>
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Address - Street Name: (Arabic)')"))
 													.ID("OurStreetNameArabic")
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.Width("100%"))
 												</td>
 												<td>
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Building Number:')"))
 													.ID("OurBuildingNumber")
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.Width("100%"))
 												</td>
 											</tr>
@@ -1781,21 +1781,21 @@
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Address - Additional Address:')"))
 													.ID("OurAdditionalAddress")
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.Width("100%"))
 												</td>
 												<td>
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Address - Additional Address: (Arabic)')"))
 													.ID("OurAdditionalAddressArabic")
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.Width("100%"))
 												</td>
 												<td>
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Additional Number:')"))
 													.ID("OurAdditionalNumber")
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.Width("100%"))
 												</td>
 
@@ -1806,21 +1806,21 @@
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Client City:')"))
 													.ID("OurClientCity")
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.Width("100%"))
 												</td>
 												<td>
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Client City: (Arabic)')"))
 													.ID("OurClientCityArabic")
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.Width("100%"))
 												</td>
 												<td>
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Postal Code:')"))
 													.ID("OurPostalCode")
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.Width("100%"))
 												</td>
 											</tr>
@@ -1830,14 +1830,14 @@
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Province / State:')"))
 													.ID("OurProvince")
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.Width("100%"))
 												</td>
 												<td>
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Province / State: (Arabic)')"))
 													.ID("OurProvinceArabic")
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.Width("100%"))
 												</td>
 
@@ -1845,7 +1845,7 @@
 													@(Html.DevExtreme().SelectBox()
 													.ID("OurCountryCode")
 													.Label(new JS("formatMessage('Country Code:')"))
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.Items(new[] { "US", "UK", "IN", "SA", "UAE" })
 													.Value("IN")
 													.SearchEnabled(true)
@@ -1858,14 +1858,14 @@
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('District / Neighborhood:')"))
 													.ID("OurDistrict")
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.Width("100%"))
 												</td>
 												<td colspan="2">
 													@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('District / Neighborhood: (Arabic)')"))
 													.ID("OurDistrictArabic")
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.Width("100%"))
 												</td>
 
@@ -1886,7 +1886,7 @@
 								@(Html.DevExtreme().TextBox()
 															.Label(new JS("formatMessage('Our Group VAT No')"))
 															.ID("OurGroupVATNo")
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															)
 							</td>
 
@@ -1894,7 +1894,7 @@
 								@(Html.DevExtreme().TextBox()
 															.Label(new JS("formatMessage('Our VAT No')"))
 															.ID("OurVATNo")
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															)
 							</td>
 
@@ -1902,7 +1902,7 @@
 								@(Html.DevExtreme().TextBox()
 															.Label(new JS("formatMessage('Our Company Name in Arabic')"))
 															.ID("OurCompanyNameinArabic")
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															)
 							</td>
 						</tr>
@@ -1930,7 +1930,7 @@
 																			.LoadAction("GetAllSignatories")
 																			.LoadMode(DataSourceLoadMode.Raw)
 																			.Key("SignatoryID"))
-																			.LabelMode(EditorLabelMode.Outside)
+																			.LabelMode(EditorLabelMode.Floating)
 																			.ID("ddlGoodsGroup9")
 																			.ShowClearButton(true)
 																			.AcceptCustomValue(true)
@@ -1959,7 +1959,7 @@
 																			.LoadAction("GetAllSignatories")
 																			.LoadMode(DataSourceLoadMode.Raw)
 																			.Key("SignatoryID"))
-																			.LabelMode(EditorLabelMode.Outside)
+																			.LabelMode(EditorLabelMode.Floating)
 																			.ID("ddlGoodsGroup10")
 																			.ShowClearButton(true)
 																			.AcceptCustomValue(true)
@@ -1988,7 +1988,7 @@
 																			.LoadAction("GetAllSignatories")
 																			.LoadMode(DataSourceLoadMode.Raw)
 																			.Key("SignatoryID"))
-																			.LabelMode(EditorLabelMode.Outside)
+																			.LabelMode(EditorLabelMode.Floating)
 																			.ID("ddlGoodsGroup11")
 																			.ShowClearButton(true)
 																			.AcceptCustomValue(true)
@@ -2137,7 +2137,7 @@
 					.LoadAction("GetGoodsAndServices")
 					.LoadMode(DataSourceLoadMode.Raw)
 					.Key("Gscode"))
-					.LabelMode(EditorLabelMode.Outside)
+					.LabelMode(EditorLabelMode.Floating)
 					.ID("accountDropDownBoxEdit")
 					.ShowClearButton(false)
 					.AcceptCustomValue(true)
@@ -2183,7 +2183,7 @@
 
 				.DisplayExpr("UnitDesc")
 				.Value(new JS("cellInfo.value"))
-				.LabelMode(EditorLabelMode.Outside)
+				.LabelMode(EditorLabelMode.Floating)
 				.OpenOnFieldClick(true)
 				.ShowClearButton(true)
 				.Width(200)
@@ -2242,7 +2242,7 @@
 					.LoadAction("GetVatTaxSlabs")
 					.LoadMode(DataSourceLoadMode.Raw)
 					.Key("TaxSlabCode"))
-					.LabelMode(EditorLabelMode.Outside)
+					.LabelMode(EditorLabelMode.Floating)
 					.ID("TaxSlabDropDownBoxEdit")
 					.ShowClearButton(false)
 					.AcceptCustomValue(true)

@@ -148,7 +148,7 @@
                 @(Html.DevExtreme().TextArea()
                     .ID("NewStockServicesGroups")
                     .Label(new JS("formatMessage('Type a New Stock or Services Group & Add to the Eisting List:')"))
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .ValidationRules(rules =>
                     {
                         rules.AddRequired()
@@ -165,7 +165,7 @@
                     .ID("StockServicesGroups")
                     .Label(new JS("formatMessage('Stock / Service Group (In Arabic):')"))
                     .Width("100%")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .ValidationRules(rules =>
                     {
                         rules.AddRequired()
@@ -189,7 +189,7 @@
             <td>
                 @(Html.DevExtreme().TextBox()
                     .ID("GroupCode")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .Label(new JS("formatMessage('Group Code *')"))
                     .ValidationRules(rules =>
                     {
@@ -201,7 +201,7 @@
             <td>
                 @(Html.DevExtreme().TextBox()
                     .ID("Category")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .Label(new JS("formatMessage('Category')"))
                     .ValidationRules(rules =>
                     {
@@ -220,7 +220,7 @@
                     .ValueExpr("InventoryMasterGroupId")
                     .DisplayExpr("InventoryMasterGroup") // selected item shows only the name
                     
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .Label(new JS("formatMessage('Inventory Master Groups')"))
 
                     .ValidationRules(rules =>
@@ -240,7 +240,7 @@
             <td>
                 @(Html.DevExtreme().SelectBox()
                     .ID("InventoryLedgerAccount")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .Label(new JS("formatMessage('Inventory Ledger Account')"))
                     .DataSource(d => d.Mvc()
                     .Controller("StockInventory")
@@ -261,7 +261,7 @@
             <td>
                 @(Html.DevExtreme().SelectBox()
                     .ID("CostLedgerAccount")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .Label(new JS("formatMessage('Cost Ledger Account')"))
                     .DataSource(d => d.Mvc()
                     .Controller("StockInventory") // Replace with your actual controller name

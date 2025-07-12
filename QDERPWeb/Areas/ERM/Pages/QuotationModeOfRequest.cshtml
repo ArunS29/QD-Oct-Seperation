@@ -109,7 +109,7 @@
             @(Html.DevExtreme().TextBox()
                 .ID("txtModeOfRequest")
                 .Label(new JS("formatMessage('Type new Quotation Mode of Request & Add to the Existing List:')"))
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .ValidationRules(rules =>
                 {
                     rules.AddRequired().Message("Mode of Request is required");

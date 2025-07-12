@@ -275,7 +275,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("MaterialReceiptNo")
                         .Label("Material Receipt No:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Value("AIC-MR-2025-00001")
                         .ReadOnly(true)
                         .Width("100%"))
@@ -284,7 +284,7 @@
                         @(Html.DevExtreme().DateBox()
                         .ID("ReceiptDate")
                         .Label("Receipt Date")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Value(DateTime.Now)
                         .DisplayFormat("dd-MMM-yyyy")
                         .Width("100%"))
@@ -293,14 +293,14 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("SupplierDeliveryNoteNo")
                         .Label("Supplier Delivery Note No:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
                     </div>
                     <div style="flex: 2; display:flex; align-items:end;">
                         @(Html.DevExtreme().SelectBox()
                         .ID("SupplierName")
                         .Label("Supplier Name:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .DataSource(new[] { "Supplier A", "Supplier B" })
                         .SearchEnabled(true)
                         .ShowClearButton(true)
@@ -319,21 +319,21 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("MaterialRequestNo")
                         .Label("Material Request No:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
                     </div>
                     <div style="flex: 1;">
                         @(Html.DevExtreme().TextBox()
                         .ID("SupplierQuotationNo")
                         .Label("Supplier Quotation No:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
                     </div>
                     <div style="flex: 1;">
                         @(Html.DevExtreme().SelectBox()
                         .ID("JobCode")
                         .Label("Job Code:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .DataSource(new[] { "Job 001", "Job 002" }) // Replace accordingly
                         .Width("100%"))
                     </div>
@@ -341,7 +341,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("ClientName")
                         .Label("Client Name:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
                     </div>
                 </div>
@@ -352,21 +352,21 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("RFQNo")
                         .Label("RFQ No:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
                     </div>
                     <div style="flex: 1;">
                         @(Html.DevExtreme().TextBox()
                         .ID("PurchaseOrderNo")
                         .Label("Purchase Order No:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
                     </div>
                     <div style="flex: 1;">
                         @(Html.DevExtreme().SelectBox()
                         .ID("SalesPerson")
                         .Label("Sales Person:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .DataSource(new[] { "John", "Ali", "Sara" })
                         .Width("100%"))
                     </div>
@@ -374,7 +374,7 @@
                         @(Html.DevExtreme().SelectBox()
                         .ID("ItemsReceived")
                         .Label("Items Received In Store:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .DataSource(new[] { "Yes", "No" })
                         .Width("100%"))
                     </div>
@@ -382,7 +382,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("Project")
                         .Label("Project:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
                     </div>
                 </div>
@@ -401,7 +401,7 @@
                             @(Html.DevExtreme().SelectBox()
                             .ID("Signatory")
                             .Label("Signatory:")
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .DataSource(new[] { "Manager", "Director", "Supervisor" }) // Example values
                             .ShowClearButton(true)
                             .ShowDropDownButton(true)
@@ -426,7 +426,7 @@
                         @(Html.DevExtreme().TextArea()
                         .ID("RemarksNotes")
                         .Label("Remarks / Notes:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .ElementAttr("style", "height: 100px !important;")
                         .Width("100%"))
                     </div>
@@ -440,21 +440,21 @@
                     @(Html.DevExtreme().SelectBox()
                     .ID("CompanyBranchDivision")
                     .Label("Company Branch/Division")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .Width("30%"))
                 </div>
                 <div>
                     @(Html.DevExtreme().SelectBox()
                     .ID("InventoryGroupMaster")
                     .Label("Inventory Group Master:*")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .Width("30%"))
                 </div>
                 <div>
                     @(Html.DevExtreme().SelectBox()
                     .ID("MaterialRecievedType")
                     .Label("Material Recieved Type")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .Width("30%"))
                 </div>
             </div>

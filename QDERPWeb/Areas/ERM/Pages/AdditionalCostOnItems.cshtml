@@ -119,21 +119,21 @@
         <td>
             @(Html.DevExtreme().TextBox()
                 .ID("QuotationNo")
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .Label(new JS("formatMessage('Quotation No')")))
         </td>
 
         <td>
             @(Html.DevExtreme().TextBox()
                 .ID("StockCode")
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .Label(new JS("formatMessage('Stock Item Code:')")))
         </td>
 
         <td>
             @(Html.DevExtreme().TextBox()
                 .ID("StockDescription")
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .Label(new JS("formatMessage('Stock Description:')")))
         </td>
         <td >
@@ -141,7 +141,7 @@
                 .ID("Quantity")
                 .ShowSpinButtons(true)
                 .Width("100%")
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .Label(new JS("formatMessage('Quantity')")))
         </td>
         <td>
@@ -149,7 +149,7 @@
                 .ID("CostPrice")
                 .Width("100%")
                 .Format("#,##0.00")
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .Label(new JS("formatMessage('Cost Price')")))
         </td>
     </tr>
@@ -164,7 +164,7 @@
                 .ValueExpr("Value")
                 .SearchEnabled(true)
                 .Placeholder("Select Cost Item")
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .Label(new JS("formatMessage('Cost Item:')")))
         </td>
 
@@ -172,7 +172,7 @@
             @(Html.DevExtreme().NumberBox()
                 .ID("Percentage")
                 .Min(0).Max(100).Format("#0.00")
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .Label(new JS("formatMessage('Percentage (%)')")))
         </td>
 
@@ -181,14 +181,14 @@
                 .ID("ItemQty")
                 .Min(1)
                 .ShowSpinButtons(true)
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .Label(new JS("formatMessage('Quantity')")))
         </td>
         <td>
             @(Html.DevExtreme().NumberBox()
                 .ID("CostAmount")
                 .Format("#,##0.00")
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .Label(new JS("formatMessage('Cost Amount:')")))
         </td>
 
@@ -197,7 +197,7 @@
                 .ID("TotalCost")
                 .Format("#,##0.00")
                 .Width("70%")
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .Label(new JS("formatMessage('Total Cost:')")))
      
             @(Html.DevExtreme().Button()

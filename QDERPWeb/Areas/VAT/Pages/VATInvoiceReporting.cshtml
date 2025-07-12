@@ -112,7 +112,7 @@
             @(Html.DevExtreme().DateBox()
                 .ID("frmdateBox")
                
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .InputAttr("aria-label", "Date")
                 .Type(DateBoxType.Date)
                 .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
@@ -126,7 +126,7 @@
             @(Html.DevExtreme().DateBox()
                 .ID("todateBox")
             
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .InputAttr("aria-label", "Date")
                 .Type(DateBoxType.Date)
                 .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
