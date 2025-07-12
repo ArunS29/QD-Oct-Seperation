@@ -195,7 +195,7 @@
                 .Type(DateBoxType.Date)
                 .DisplayFormat("dd-MMM-yyyy")
                 .Value(DateTime.Now)
-                )
+                .ElementAttr("class", "dynamicFormatDateBox"))
         </div>
         <div class="form-group">
             @(Html.DevExtreme().DateBox()
@@ -205,7 +205,7 @@
                 .Type(DateBoxType.Date)
                 .DisplayFormat("dd-MMM-yyyy")
                 .Value(DateTime.Now)
-                )
+                .ElementAttr("class", "dynamicFormatDateBox"))
         </div>
         <div class="form-group">
             @(Html.DevExtreme().TextArea()
@@ -287,6 +287,7 @@
             .Value(new JS("data.BillDate")) // Default to today
             .OnValueChanged("setEffectiveDate") // Pass full data object
             .DisplayFormat("dd-MMM-yyyy")
+            .ElementAttr("class", "dynamicFormatDateBox")
             )
         </text>);
                 columns.AddFor(m => m.ClaimedAmount)

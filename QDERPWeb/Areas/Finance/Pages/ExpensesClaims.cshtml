@@ -490,6 +490,7 @@
             .Type(DateBoxType.Date)
             .DisplayFormat("dd-MMM-yyyy")
             .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+            .ElementAttr("class", "dynamicFormatDateBox")
             )
         @(Html.DevExtreme().DateBox()
             .ID("endDate")
@@ -499,6 +500,7 @@
             .Type(DateBoxType.Date)
             .DisplayFormat("dd-MMM-yyyy")
             .Value(DateTime.Now)
+            .ElementAttr("class", "dynamicFormatDateBox")
             )
         @(Html.DevExtreme().Button()
             .ID("ExpenseSubmission")
@@ -659,6 +661,7 @@ columns.Add()
             .Value(new JS("data.ClaimDate ? new Date(data.ClaimDate) : new Date()")) // Default to today
             .OnValueChanged("setEffectiveDate") // Pass full data object
             .DisplayFormat("dd-MMM-yyyy")
+            .ElementAttr("class", "dynamicFormatDateBox")
             )
         </text>); 
                     

@@ -63,7 +63,7 @@
             .LabelMode(EditorLabelMode.Floating)
             .Type(DateBoxType.Date)
             .DisplayFormat("dd-MMM-yyyy")
-            .ElementAttr(new { @class = "light-theme-input" })
+			.ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
             .Value(DateTime.Now)
 						.TabIndex(1)
 
@@ -82,7 +82,7 @@
 						.TabIndex(2)
 
             .DisplayFormat("dd-MMM-yyyy")
-            .ElementAttr(new { @class = "light-theme-input" })
+			.ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
             .Value(DateTime.Now)
         )
     </div>
@@ -105,10 +105,10 @@
                 .InputAttr("aria-label", "Date")
                 .LabelMode(EditorLabelMode.Floating)
                 .Type(DateBoxType.Date)
-			.TabIndex(4)
+				.TabIndex(4)
 
                 .DisplayFormat("dd-MMM-yyyy")
-                .ElementAttr(new { @class = "light-theme-input" })
+				.ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
                 .Value(DateTime.Now)
             )
         </div>
@@ -121,7 +121,7 @@
             .ID("InvoiceDueDate")
             .InputAttr("aria-label", "Date")
             .LabelMode(EditorLabelMode.Floating)
-            .ElementAttr(new { @class = "light-theme-input" })
+			.ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
             .Type(DateBoxType.Date)
 			.TabIndex(5)
             .DisplayFormat("dd-MMM-yyyy")
