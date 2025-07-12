@@ -561,6 +561,7 @@
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
+<div class="content-container-top">
 <div class=" title dashboard" style="display: flex; align-items: center;margin-top: 10px;width:55%">
 @* <input id="formId" value="frm201LedgerAccount1" type="hidden" /> *@
 
@@ -590,7 +591,7 @@
 
 </div>
 
-<div class="dx-fieldset horizontal-container">
+<div class="horizontal-container">
     @(Html.DevExtreme().DateBox()
         .ID("frmdateBox")
         .Label(new JS("formatMessage('From Date')"))
@@ -636,8 +637,8 @@
 </div>
 
 <div class="containerLedgerAccount">
-    <div class="content-container-top">
-        <div class="dx-fieldset horizontal-container">
+    
+        <div class="horizontal-container">
             @(Html.DevExtreme().Tabs()
                         .Items(items =>
                         {
