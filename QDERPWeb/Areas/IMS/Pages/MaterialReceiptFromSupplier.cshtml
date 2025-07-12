@@ -280,7 +280,7 @@
 						@(Html.DevExtreme().TextBox()
 						.ID("txtMaterialReceiptNo")
 						.Label(new JS("formatMessage('Material Recipts No:')"))
-						.LabelMode(EditorLabelMode.Outside)
+						.LabelMode(EditorLabelMode.Floating)
 						.ReadOnly(true)
 						.Width("100%"))
 					</div>
@@ -289,7 +289,7 @@
 						.ID("ReceiptDate")
 				       .DisplayFormat("dd-MMM-yyyy")
 						.Label(new JS("formatMessage('Receipt Date')"))
-						.LabelMode(EditorLabelMode.Outside)
+						.LabelMode(EditorLabelMode.Floating)
 						.Value(DateTime.Now)
 						.Width("100%"))
 					</div>
@@ -297,7 +297,7 @@
 						@(Html.DevExtreme().TextBox()
 						.ID("SupplierDeliveryNoteNo")
 						.Label(new JS("formatMessage('Supplier Delivery Note No:')"))
-						.LabelMode(EditorLabelMode.Outside)
+						.LabelMode(EditorLabelMode.Floating)
 						.Width("100%"))
 					</div>
 					<div style="flex: 2; display:flex; align-items:end;">
@@ -310,7 +310,7 @@
 						.Key("SupplierCode")
 
 						)
-						.LabelMode(EditorLabelMode.Outside)
+						.LabelMode(EditorLabelMode.Floating)
 						.ID("GetProjectDropDown")
 						.OpenOnFieldClick(false)//
 						.ValueChangeEvent("input")
@@ -361,21 +361,21 @@
 						@(Html.DevExtreme().TextBox()
 						.ID("MaterialRequestNo")
 						.Label(new JS("formatMessage('Material Request No:')"))
-						.LabelMode(EditorLabelMode.Outside)
+						.LabelMode(EditorLabelMode.Floating)
 						.Width("100%"))
 					</div>
 					<div style="flex: 1;">
 						@(Html.DevExtreme().TextBox()
 						.ID("SupplierQuotationNo")
 						.Label(new JS("formatMessage('Supplier Quotation No:')"))
-						.LabelMode(EditorLabelMode.Outside)
+						.LabelMode(EditorLabelMode.Floating)
 						.Width("100%"))
 					</div>
 					<div style="flex: 1;">
 						@(Html.DevExtreme().TextBox()
 						.ID("txtjobCode")
 						.Label(new JS("formatMessage('Job Code:')"))
-						.LabelMode(EditorLabelMode.Outside)
+						.LabelMode(EditorLabelMode.Floating)
 						.Width("100%"))
 					</div>
 					<div style="flex: 2;">
@@ -388,7 +388,7 @@
 						.Key("ClientCode")
 
 						)
-						.LabelMode(EditorLabelMode.Outside)
+						.LabelMode(EditorLabelMode.Floating)
 						.ID("ddClient")
 						.OpenOnFieldClick(false)//
 						.ValueChangeEvent("input")
@@ -413,14 +413,14 @@
 						@(Html.DevExtreme().TextBox()
 						.ID("RFQNo")
 						.Label(new JS("formatMessage('RFQ No')"))
-						.LabelMode(EditorLabelMode.Outside)
+						.LabelMode(EditorLabelMode.Floating)
 						.Width("100%"))
 					</div>
 					<div style="flex: 1;">
 						@(Html.DevExtreme().TextBox()
 						.ID("PurchaseOrderNo")
 						.Label(new JS("formatMessage('Purchase Order No:')"))
-						.LabelMode(EditorLabelMode.Outside)
+						.LabelMode(EditorLabelMode.Floating)
 						.Width("100%"))
 					</div>
 					<div style="flex: 1;">
@@ -433,7 +433,7 @@
 						.Key("SalesPersonCode")
 
 						)
-						.LabelMode(EditorLabelMode.Outside)
+						.LabelMode(EditorLabelMode.Floating)
 						.ID("ddSalesPerson")
 						.OpenOnFieldClick(false)//
 						.ValueChangeEvent("input")
@@ -461,7 +461,7 @@
 						.Key("StoreId")
 
 						)
-						.LabelMode(EditorLabelMode.Outside)
+						.LabelMode(EditorLabelMode.Floating)
 						.ID("ddStore")
 						.OpenOnFieldClick(false)//
 						.ValueChangeEvent("input")
@@ -487,7 +487,7 @@
 						.Key("ProjectId")
 
 						)
-						.LabelMode(EditorLabelMode.Outside)
+						.LabelMode(EditorLabelMode.Floating)
 						.ID("ddProject")
 						.OpenOnFieldClick(false)//
 						.ValueChangeEvent("input")
@@ -525,7 +525,7 @@
 							.Key("SignatoryId")
 
 							)
-							.LabelMode(EditorLabelMode.Outside)
+							.LabelMode(EditorLabelMode.Floating)
 							.ID("ddSignatory")
 							.OpenOnFieldClick(false)//
 							.ValueChangeEvent("input")
@@ -561,7 +561,7 @@
 						@(Html.DevExtreme().TextArea()
 						.ID("RemarksNotes")
 						.Label(new JS("formatMessage('Remarks / Notes:')"))
-						.LabelMode(EditorLabelMode.Outside)
+						.LabelMode(EditorLabelMode.Floating)
 						.ElementAttr("style", "height: 100px !important;")
 						.Width("100%"))
 					</div>
@@ -581,7 +581,7 @@
 					.Key("CompanyId")
 
 					)
-					.LabelMode(EditorLabelMode.Outside)
+					.LabelMode(EditorLabelMode.Floating)
 					.ID("ddCompany")
 					.OpenOnFieldClick(false)//
 					.ValueChangeEvent("input")
@@ -607,7 +607,7 @@
 					.Key("InventoryMasterGroupId")
 
 					)
-					.LabelMode(EditorLabelMode.Outside)
+					.LabelMode(EditorLabelMode.Floating)
 					.ID("ddInventory")
 					.OpenOnFieldClick(false)//
 					.ValueChangeEvent("input")
@@ -633,7 +633,7 @@
 					.Key("ReceiptTypeCode")
 
 					)
-					.LabelMode(EditorLabelMode.Outside)
+					.LabelMode(EditorLabelMode.Floating)
 					.ID("ddRecivedType")
 					.OpenOnFieldClick(false)//
 					.ValueChangeEvent("input")
@@ -708,7 +708,7 @@
 			.LoadAction("GetGoodsAndServices")
 			.LoadMode(DataSourceLoadMode.Raw)
 			.Key("Gscode"))
-			.LabelMode(EditorLabelMode.Outside)
+			.LabelMode(EditorLabelMode.Floating)
 			.ID("accountDropDownBoxEdit")
 			.ShowClearButton(false)
 			.AcceptCustomValue(true)
@@ -754,7 +754,7 @@
 
 		.DisplayExpr("UnitDesc")
 		.Value(new JS("cellInfo.value"))
-		.LabelMode(EditorLabelMode.Outside)
+		.LabelMode(EditorLabelMode.Floating)
 		.OpenOnFieldClick(true)
 		.ShowClearButton(true)
 		.Width(200)
@@ -805,7 +805,7 @@
 			.LoadAction("GetVatTaxSlabs")
 			.LoadMode(DataSourceLoadMode.Raw)
 			.Key("TaxSlabCode"))
-			.LabelMode(EditorLabelMode.Outside)
+			.LabelMode(EditorLabelMode.Floating)
 			.ID("TaxSlabDropDownBoxEdit")
 			.ShowClearButton(false)
 			.AcceptCustomValue(true)

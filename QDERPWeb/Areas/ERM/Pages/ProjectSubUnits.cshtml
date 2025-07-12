@@ -112,7 +112,7 @@
             @(Html.DevExtreme().TextBox()
                 .ID("txtProjectSubUnit")
                 .Label(new JS("formatMessage('Type new Project Sub Unit & Add to the Existing List:')"))
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .ValidationRules(rules =>
                 {
                     rules.AddRequired().Message("Project Sub Unit is required");

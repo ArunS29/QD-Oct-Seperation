@@ -131,7 +131,7 @@
         <td colspan="4">
                 @(Html.DevExtreme().TextBox()
                     .Label(new JS("formatMessage('Detailed Description / Specification:')"))
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .ID("DetailedDescription")
                 @*     .Height("100% !important") *@
                     .Width("100%")
@@ -144,7 +144,7 @@
                 <div style="display: flex; align-items: end;gap:10px;">
             @(Html.DevExtreme().TextBox()
                 .Label(new JS("formatMessage('Detailed Description / Specification (In Arabic):')"))
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .ID("DetailedDescriptionArabic")
                 .Height(100)
                 .Width("98%")
@@ -164,21 +164,21 @@
                 @(Html.DevExtreme().DateBox()
                     .ID("ServiceStartDate")
                     .Label("Service Start Date:")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     )
             </td>
             <td>
                 @(Html.DevExtreme().DateBox()
                     .ID("ServiceEndDate")
                     .Label("Service End Date:")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     )
             </td>
             <td>
                 @(Html.DevExtreme().DateBox()
                     .ID("ExpiryDate")
                     .Label("Expiry Date:")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .Width("100%")
                     )
             </td>
@@ -189,7 +189,7 @@
                 .ID("CostAllocationEmployees")
                 .Placeholder("Select Employees")
                 .Label("Cost Allocation for Employees:")
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .Width("100%")
             )
         </td>
@@ -198,7 +198,7 @@
                 .ID("CostAllocationProperty")
                 .Placeholder("Select Property/Equipments")
                 .Label("Cost Allocation for Property/Equipments:")
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .Width("100%")
             )
         </td>
@@ -206,7 +206,7 @@
                 @(Html.DevExtreme().TextBox()
                     .ID("BatchLotNo")
                     .Label("Batch/Lot No:")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .Width("100%")
                     )
             </td>
@@ -219,7 +219,7 @@
             @(Html.DevExtreme().TextBox()
                 .ID("DiscountText")
                 .Label("Discount Text:")
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                     .Width("100%")
             )
         </td>
@@ -234,7 +234,7 @@
                     @(Html.DevExtreme().TextBox()
                         .ID("DiscountTextArabic")
                         .Label("Discount Text: (Arabic)")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
                     
@@ -244,7 +244,7 @@
                 @(Html.DevExtreme().TextBox()
                     .ID("Remarks")
                     .Label("Remarks:")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     )
             </td>
              @(Html.DevExtreme().Button()

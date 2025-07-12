@@ -203,7 +203,7 @@
 						.ValueExpr("ClientCode")
 						.DisplayExpr("ClientName")
 						.Label(new JS("formatMessage('Client Name:')"))
-						.LabelMode(EditorLabelMode.Outside)
+						.LabelMode(EditorLabelMode.Floating)
 						.Width(470)
 						.ContentTemplate(new TemplateName("DeliveryClientNameTemplate")))
 
@@ -213,7 +213,7 @@
 			@(Html.DevExtreme().DropDownBox()
 						.ID("salesOrderDropdown")
 						.Label(new JS("formatMessage('Sales Order #:')"))
-						.LabelMode(EditorLabelMode.Outside)
+						.LabelMode(EditorLabelMode.Floating)
 						.DataSource(d => d.Mvc()
 						.Controller("DeliveryNote")
 						.LoadAction("GetSalesOrders")

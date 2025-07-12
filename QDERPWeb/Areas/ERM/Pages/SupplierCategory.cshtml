@@ -149,7 +149,7 @@
         @(
             Html.DevExtreme().TextBox()
             .Label(new JS("formatMessage('Type a New Supplier Category & Add to the Existing List:')"))
-            .LabelMode(EditorLabelMode.Outside)
+            .LabelMode(EditorLabelMode.Floating)
             .ID("txtSupplierCategory")
             .Value(null)
             .ValidationRules(rules =>
@@ -166,7 +166,7 @@
             @(
                 Html.DevExtreme().TextBox()
                 .Label(new JS("formatMessage('Supplier Category Code:')"))
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .ID("txtCategoryCode")
                 .Value(null)
                 )

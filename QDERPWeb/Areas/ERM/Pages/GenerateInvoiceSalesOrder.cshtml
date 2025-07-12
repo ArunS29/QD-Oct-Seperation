@@ -207,10 +207,10 @@
 						)
 						.ValueExpr("ClientCode")
 						.DisplayExpr("ClientName")
-						.LabelMode(EditorLabelMode.Outside)
+						.LabelMode(EditorLabelMode.Floating)
 						.ContentTemplate(new TemplateName("DeliveryClientNameTemplate"))
 						.Label(new JS("formatMessage('Client Name:')"))
-						.LabelMode(EditorLabelMode.Outside)
+						.LabelMode(EditorLabelMode.Floating)
 						.Width(470))
 		</div>
 
@@ -218,7 +218,7 @@
 			@(Html.DevExtreme().DropDownBox()
 						.ID("salesOrderDropdown")
 						.Label(new JS("formatMessage('Sales Order #:')"))
-						.LabelMode(EditorLabelMode.Outside)
+						.LabelMode(EditorLabelMode.Floating)
 						.DataSource(d => d.Mvc()
 						.Controller("DeliveryNote1")
 						.LoadAction("GetDeliveryNotesWithDetail") // You will create this API
@@ -227,7 +227,7 @@
 						)
 						.ValueExpr("SalesOrderNo")
 						.DisplayExpr("SalesOrderNo")
-						.LabelMode(EditorLabelMode.Outside)
+						.LabelMode(EditorLabelMode.Floating)
 						.ContentTemplate(new TemplateName("DeliverySalesOrderNoTemplate"))
 						.Width(470))
 		</div>

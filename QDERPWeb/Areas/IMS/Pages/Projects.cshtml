@@ -97,7 +97,7 @@
             @(Html.DevExtreme().TextBox()
                 .ID("txtPrjCode")
                 .Label(new JS("formatMessage('Project Code:')"))
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .Width("100%")
                 .ValidationRules(rules =>
                 {
@@ -116,7 +116,7 @@
                 .Key("ProjectGroupCode")
                 )
                 .Label(new JS("formatMessage('Project Group')"))
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .ID("GetProjectDropDown")
                 .Width(400)
                 @*  .ShowClearButton(true)
@@ -154,7 +154,7 @@
     <div class="row mb-3">
         <div class="col-md-6" style="display:flex; align-items:end;">
             @(Html.DevExtreme().TextBox().ID("txtProjectDescription").Label(new JS("formatMessage('Project Description:')"))
-                .LabelMode(EditorLabelMode.Outside).Width("100%").ValidationRules(rules =>
+                .LabelMode(EditorLabelMode.Floating).Width("100%").ValidationRules(rules =>
                 {
                     rules.AddRequired().Message("Project Description is required");
                 }))
@@ -174,7 +174,7 @@
         @(Html.DevExtreme().DropDownBox()
             .ID("ddCostAllocation")
             .Label("Signatory User ID:")
-            .LabelMode(EditorLabelMode.Outside)
+            .LabelMode(EditorLabelMode.Floating)
             .ShowClearButton(true)
             .OpenOnFieldClick(true)
             .AcceptCustomValue(false)
