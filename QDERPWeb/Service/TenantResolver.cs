@@ -100,6 +100,14 @@ namespace QD.ERP.Web.Service
                     tenant.DefaultcompanyID = companyInfo.CompanyId.ToString();
                     tenant.DefaultcompanyName = companyInfo.CompanyName;
                     tenant.CompanyTextColor = companyInfo.CompanyTextColor.ToString();
+                    tenant.currencytype = companyInfo.CurrencyType.ToString();
+
+                    var currency = tenantDbContext
+                    .Tbl20169CurrencyExchanges    // or whatever your DbSet is called
+                    .FirstOrDefault(c => c.CurrencyMasterCode == companyInfo.CurrencyType);
+
+                    tenant.currencyID = currency.CurrencyExchangeId.ToString();
+                    tenant.baseCurrencyname = currency.CurrencyName.ToString();
                 }
             }
 
