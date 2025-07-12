@@ -1071,7 +1071,7 @@ buttons.Add()
 								.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 							.Height(400)
 
-								.ColumnChooser(c => c.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+								.ColumnChooser(c => c.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
 								.Selection(s => s.Mode(SelectionMode.Single))
 								.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 								.Columns(columns =>

@@ -1769,9 +1769,15 @@ buttons.Add()
                 }
             }
 
+function addVoucherEntry() {
+    debugger;
+    var dataGrid = $("#dataGrid").dxDataGrid("instance"); // Get the DataGrid instance
+    var rowCount = dataGrid.getVisibleRows().length; // Get the number of rows in the grid
+    var griddatacount = rowCount;
+    var voucherNo = ""; // Declare with var (or let), and initialize properly
 
-    function addVoucherEntry() {
-        // First, fetch the new voucher number
+    if (griddatacount === 0) {
+        // Fetch new voucher number via AJAX
         $.ajax({
             type: "GET",
             url: "/api/VoucherMaster/GetNewCPVoucherNo", // Replace with your actual controller route
@@ -1781,20 +1787,24 @@ buttons.Add()
                     return;
                 }
 
-                const voucherNo = response; // You returned `strNewReceiptNo` as raw JSON
+                // Assuming response is the voucher number as a raw string
+                voucherNo = response;
                 $("#VoucherNo").dxTextBox("instance").option("value", voucherNo);
 
-                // Proceed with the rest of addVoucherEntry logic here...
-                // Move the remaining code into this success callback so voucherNo is used correctly
-
-                // ✅ Your original logic should now come here
+                // Call the remaining logic using the retrieved voucher number
                 continueVoucherEntryWithVoucherNo(voucherNo);
             },
             error: function (xhr, status, error) {
                 DevExpress.ui.dialog.alert("Error retrieving voucher number: " + error, "Error");
             }
         });
+    } else {
+        // If rows exist, reuse the existing voucher number from the text box
+        voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+        continueVoucherEntryWithVoucherNo(voucherNo);
     }
+}
+
 
     function continueVoucherEntryWithVoucherNo(voucherNo) {
        var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");

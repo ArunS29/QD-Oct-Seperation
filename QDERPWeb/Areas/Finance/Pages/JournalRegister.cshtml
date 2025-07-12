@@ -645,7 +645,7 @@
     .AllowAdding(false)     // Disable adding new records
     .AllowDeleting(false)   // Disable deleting records
     .UseIcons(true))        // Enable edit icons (like pencil) *@
-        .ColumnChooser(c => c.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+        .ColumnChooser(c => c.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
         .ShowBorders(true)
         @*  .Summary(s => s
     .TotalItems(totalItems =>

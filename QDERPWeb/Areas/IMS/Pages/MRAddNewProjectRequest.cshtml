@@ -419,6 +419,7 @@
 														.ShowClearButton(true)
 														.SearchEnabled(true)
 														.Width("100%")
+														.Disabled(true)
 														)
 
 						</td>
@@ -6955,7 +6956,11 @@
 				dropDownBox.open(); // Forces it to open on load
 				dropDownBox.close(); // Forces it to open on load
 			});
-
+			  function AddProject(){
+				const url = `/${tenantName}/IMS/Projects`;
+				const title = "";
+					openModal(url, title);
+			}
 			 function AddPreparedBy(){
 					const url = `/${tenantName}/IMS/Signatories`;
 				  const title = "";

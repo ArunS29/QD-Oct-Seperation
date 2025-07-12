@@ -461,7 +461,7 @@
             .ColumnChooser(columnChooser => columnChooser
             .Enabled(true)
             .Title(new JS("formatMessage('Show/Hide Column')"))
-            .Mode(GridColumnChooserMode.Select)
+            .Mode(GridColumnChooserMode.DragAndDrop)
             )
             .Columns(columns =>
             {
@@ -475,7 +475,7 @@
                     
                 
             })
-            //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
+            //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.DragAndDrop))
             .AllowColumnReordering(true) // Enable column reordering
             .AllowColumnResizing(true)   // Enable column resizing
             .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
@@ -909,8 +909,12 @@ function loadContactListGrid(clientCode) {
             ddbInstance.close();
         }
 
-        // 3. Call generateNextClientCode with the full ClientCode (e.g., "SW-0004")
-        generateNextClientCode(categoryCode);
+       
+         const clientCodeParam = new URLSearchParams(window.location.search).get("clientCode");
+
+    if (!clientCodeParam) {
+         generateNextClientCode(categoryCode); // Only in Add mode
+    }
     }
 }
 

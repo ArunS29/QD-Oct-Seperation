@@ -407,7 +407,7 @@
             .CustomizeText(@"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
             });
         })
-        .ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
+        .ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.DragAndDrop))
 
         .AllowColumnReordering(true)
         .AllowColumnResizing(true)

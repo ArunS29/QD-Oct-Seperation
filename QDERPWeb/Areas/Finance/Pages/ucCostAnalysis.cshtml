@@ -36,6 +36,67 @@
     .mainContainer {
         width: 100%;
     }
+
+/* 
+    #pivotGridContainer .debit-pill, #pivotGridContainer .credit-pill, #pivotGridContainer .received-pill {
+        display: inline-block;
+        padding: 2px 10px;
+        border-radius: 14px;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+    }
+
+    #pivotGridContainer .debit-pill {
+        background: rgba(255, 77, 79, .15);
+        color: #ff4d4f;
+    }
+
+    #pivotGridContainer .credit-pill {
+        background: rgba(82, 196, 26, .15);
+        color: #52c41a;
+    }
+
+    #pivotGridContainer .received-pill {
+        background: rgba(255, 193, 7, 0.15); 
+        color: #ffc107;
+    } */
+
+    .credit-pill {
+        background: rgba(82, 196, 26, 0.15);
+        color: #52c41a;
+        display: inline-block;
+        padding: 2px 10px;
+        border-radius: 14px;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        width: 100%;
+        text-align: right;
+    }
+
+    .debit-pill {
+        background: rgba(255, 77, 79, 0.15);
+        color: #ff4d4f;
+        display: inline-block;
+        padding: 2px 10px;
+        border-radius: 14px;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        width: 100%;
+        text-align: right;
+    }
+
+    .received-pill {
+        background: rgba(255, 193, 7, 0.15);
+        color: #ffc107;
+        display: inline-block;
+        padding: 2px 10px;
+        border-radius: 14px;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        width: 100%;
+        text-align: right;
+    }
+
 </style>
 <div class="content-container-top">
 <div class="title" id="kpiCarousel">
@@ -318,9 +379,11 @@
                 accountGroup: "" // include this if your API expects it
             },
             success: function (data) {
+                debugger;
                 if (Array.isArray(data)) {
                     pivotData = data; // Set global
                     initializePivotGrid(data);
+                   console.log("pivotdata",data)
                 } else {
                     console.error("Unexpected response format", data);
                 }
@@ -410,6 +473,7 @@
                 accountGroup: slectedaccount
             },
             success: function (data) {
+              
                 initializePivotGrid(data);
                 console.log("response", data)
             },
@@ -419,7 +483,182 @@
         });
     }
 
-    function initializePivotGrid(data) {
+    // function initializePivotGrid(data) {
+    //     $("#pivotGridContainer").dxPivotGrid({
+    //         dataSource: {
+    //             fields: [
+    //                 { dataField: "CostAllocationMasterGroup", area: "row", caption: "Cost Master", expanded: true },
+    //                 { dataField: "CostAllocationGroup", area: "row", caption: "Cost Center Group", expanded: true },
+    //                 { dataField: "CostAllocationUnit", area: "row", caption: "Cost Unit", expanded: true },
+    //                 { dataField: "PL", area: "column", caption: "Income / Expense" },
+    //                 { dataField: "VoucherTypeAndNo", area: "filter", caption: "Voucher No", visible: true },
+    //                 { dataField: "Income", area: "data", summaryType: "sum", caption: "Test Income", format: { type: "fixedPoint", precision: 3 }, customizeText: customFormatter,visible:false },
+    //                 {
+    //     dataField: "ConvertdIncome",
+    //     area: "data",
+    //     caption: "Income",
+    //     format: { type: "fixedPoint", precision: 3 },
+    //     summaryType: "sum",
+
+    //     headerCellTemplate: function(container, header) {
+    //         $("<div>")
+    //             .addClass("credit-header")
+    //             .css("font-weight", "bold")
+    //             .text(header.caption)
+    //             .appendTo(container);
+    //     },
+
+    //     cellTemplate: function(container, options) {
+    //             var val = options.data?.ConvertdIncome;
+    //             if (val !== null && val !== undefined) {
+    //                 var positive = Math.abs(val);
+    //                 var formatted = positive.toLocaleString(undefined, {
+    //                     minimumFractionDigits: 2,
+    //                     maximumFractionDigits: 2
+    //                 });
+
+    //                    $(e.cellElement).empty();
+    //     $('<span class="credit-pill">')
+    //         .text(formatted)
+    //         .appendTo(e.cellElement);
+
+    //           }
+                
+    //       }
+    // },
+    //         {
+    //         dataField: "ConvertedExpenses",
+    //         area: "data",
+    //         caption: "Expenses",
+    //         format: { type: "fixedPoint", precision: 3 },
+    //         summaryType: "sum",
+
+    //         headerCellTemplate: function(container, header) {
+    //             $("<div>")
+    //                 .addClass("debit-header")
+    //                 .css("font-weight", "bold")
+    //                 .text(header.caption)
+    //                 .appendTo(container);
+    //         },
+
+    //         cellTemplate: function(container, options) {
+    //             var val = options.data?.ConvertedExpenses;
+    //             if (val !== null && val !== undefined) {
+    //                 var positive = Math.abs(val);
+    //                 var formatted = positive.toLocaleString(undefined, {
+    //                     minimumFractionDigits: 2,
+    //                     maximumFractionDigits: 2
+    //                 });
+
+    //                 $("<div>")
+    //                     .addClass("debit-pill")
+    //                     .text(formatted)
+    //                     .appendTo(container);
+    //             }
+    //         }
+    //     },
+    //      {
+    //         dataField: "ConvertedCostAmount",
+    //         area: "data",
+    //         caption: "Grand Total",
+    //         format: { type: "fixedPoint", precision: 3 },
+    //         summaryType: "sum",
+
+    //         headerCellTemplate: function(container, header) {
+    //             $("<div>")
+    //                 .addClass("received-header")
+    //                 .css("font-weight", "bold")
+    //                 .text(header.caption)
+    //                 .appendTo(container);
+    //         },
+
+    //         cellTemplate: function(container, options) {
+    //             var val = options.data?.ConvertedCostAmount;
+    //             if (val !== null && val !== undefined) {
+    //                 var positive = Math.abs(val);
+    //                 var formatted = positive.toLocaleString(undefined, {
+    //                     minimumFractionDigits: 2,
+    //                     maximumFractionDigits: 2
+    //                 });
+
+    //                 $("<div>")
+    //                     .addClass("received-pill")
+    //                     .text(formatted)
+    //                     .appendTo(container);
+    //             }
+    //         }
+    //     },
+    //                 // Expenses
+    //                 { dataField: "ConvertedExpenses", area: "data", summaryType: "sum", caption: "Trans Expenses", format: { type: "fixedPoint", precision: 3 }, customizeText: customFormatter,visible:false },
+    //                 // Grand Total
+    //                 { dataField: "CostAmount", area: "data", summaryType: "sum", caption: "Trans Grand Total", format: { type: "fixedPoint", precision: 3 }, customizeText: customFormatter,visible:false }
+
+    //             ],
+    //             store: data
+    //         },
+
+    //         width: "98%",
+    //         height: $(window).height() - 50,
+    //         allowSortingBySummary: true,
+    //         allowSorting: true,
+    //         allowFiltering: true,
+    //         allowExpandAll: true,
+    //         showBorders: true,
+    //         showColumnHeaders: true,
+    //         columnAutoWidth: true,
+    //         allowColumnResizing: true,
+    //         rowHeaderLayout: "tree",
+    //         wordWrapEnabled: true,
+
+    //         fieldChooser: {
+    //             enabled: true,
+    //             allowSearch: true
+    //         },
+    //         scrolling: {
+    //             mode: "virtual"
+    //         },
+    //         fieldPanel: {
+    //             visible: true,
+    //             allowFieldDragging: true,
+    //             showRowFields: true,
+    //             showColumnFields: true,
+    //             showDataFields: true,
+    //             showFilterFields: true
+    //         },
+    //         showColumnTotals: false,
+    //         showColumnGrandTotals: false,
+    //         showDataHeaders: true,
+    //         showRowTotals: false,
+    //         showRowGrandTotals: false,
+    //         onOptionChanged: handleGridOptionChanged
+    //     });
+
+
+    //     $(window).resize(function () {
+    //         $("#pivotGridContainer").dxPivotGrid("instance").option("height", $(window).height() - 50);
+    //     });
+
+    //     $(".dx-pivotgrid-container").css({
+    //         "font-size": "14px",
+    //         "border-radius": "8px"
+    //     });
+
+    //     $(".dx-pivotgrid-row, .dx-pivotgrid-column").css({
+    //         "padding": "10px",
+    //         "border-bottom": "1px solid #ddd"
+    //     });
+
+    //     $(".dx-pivotgrid-cell").hover(function () {
+    //         $(this).css("background-color", "#f5f5f5");
+    //     }, function () {
+    //         $(this).css("background-color", "");
+    //     });
+
+
+    // }
+
+
+        function initializePivotGrid(data) {
         $("#pivotGridContainer").dxPivotGrid({
             dataSource: {
                 fields: [
@@ -428,12 +667,34 @@
                     { dataField: "CostAllocationUnit", area: "row", caption: "Cost Unit", expanded: true },
                     { dataField: "PL", area: "column", caption: "Income / Expense" },
                     { dataField: "VoucherTypeAndNo", area: "filter", caption: "Voucher No", visible: true },
-                    { dataField: "Income", area: "data", summaryType: "sum", caption: "Income", format: { type: "fixedPoint", precision: 3 }, customizeText: customFormatter },
-                    // Expenses
-                    { dataField: "Expenses", area: "data", summaryType: "sum", caption: "Expenses", format: { type: "fixedPoint", precision: 3 }, customizeText: customFormatter },
-                    // Grand Total
-                    { dataField: "CostAmount", area: "data", summaryType: "sum", caption: "Grand Total", format: { type: "fixedPoint", precision: 3 }, customizeText: customFormatter }
 
+                    // Hidden fields
+                    { dataField: "Income", area: "data", summaryType: "sum", caption: "Test Income", format: { type: "fixedPoint", precision: 3 }, customizeText: customFormatter, visible: false },
+                    { dataField: "ConvertedExpenses", area: "data", summaryType: "sum", caption: "Trans Expenses", format: { type: "fixedPoint", precision: 3 }, customizeText: customFormatter, visible: false },
+                    { dataField: "CostAmount", area: "data", summaryType: "sum", caption: "Trans Grand Total", format: { type: "fixedPoint", precision: 3 }, customizeText: customFormatter, visible: false },
+
+                    // Main fields to show
+                    {
+                        dataField: "ConvertdIncome",
+                        area: "data",
+                        caption: "Income",
+                        summaryType: "sum",
+                        format: { type: "fixedPoint", precision: 3 }
+                    },
+                    {
+                        dataField: "ConvertedExpenses",
+                        area: "data",
+                        caption: "Expenses",
+                        summaryType: "sum",
+                        format: { type: "fixedPoint", precision: 3 }
+                    },
+                    {
+                        dataField: "ConvertedCostAmount",
+                        area: "data",
+                        caption: "Grand Total",
+                        summaryType: "sum",
+                        format: { type: "fixedPoint", precision: 3 }
+                    }
                 ],
                 store: data
             },
@@ -470,9 +731,40 @@
             showColumnGrandTotals: false,
             showDataHeaders: true,
             showRowTotals: false,
-            showRowGrandTotals: false
-        });
+            showRowGrandTotals: false,
+            onOptionChanged: handleGridOptionChanged,
 
+            // ✅ Cell rendering here
+              onCellPrepared: function (e) {
+        if (e.area === "data" && typeof e.cell.value === "number") {
+            debugger;
+            const val = Math.abs(e.cell.value);
+            const formatted = val.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+
+            // fallback if columnPath is undefined
+            let columnName = e.cell.columnPath?.[0]?.toLowerCase() || "";
+
+            let cssClass = "";
+            if (columnName.includes("Income")) {
+                cssClass = "credit-pill";
+            } else if (columnName.includes("Expense")) {
+                cssClass = "debit-pill";
+            } else if (columnName.includes("Grand") || columnName.includes("total") || columnName.includes("cost")) {
+                cssClass = "received-pill";
+            }
+
+            $(e.cellElement).empty();
+            $("<span>")
+                .addClass(cssClass)
+                .text(formatted)
+                .appendTo(e.cellElement);
+        }
+    }
+
+        });
 
         $(window).resize(function () {
             $("#pivotGridContainer").dxPivotGrid("instance").option("height", $(window).height() - 50);
@@ -493,9 +785,8 @@
         }, function () {
             $(this).css("background-color", "");
         });
-
-
     }
+
 
     function onDifferencesItemClick(e) {
         const selectedText = e.itemData.text;
@@ -792,6 +1083,76 @@
     }
     
             
+
+    function handleGridOptionChanged(e) {
+        if (e.name === "columns" || e.name === "visible") {
+            // Columns changed, so re-inject SVG
+            injectHeaderSVG(); // slight delay to wait for DOM re-render
+        }
+    }
+    function injectHeaderSVG() {
+         debugger;
+           let gridElement = $('#pivotGridContainer');
+    let dataGrid = gridElement.dxDataGrid("instance");
+    if (!dataGrid) return;
+
+    // Get grouped data (with .items containing groups)
+    let groupedData = dataGrid.getDataSource()?.items();
+    if (!groupedData || groupedData.length === 0) return;
+
+    // Get the first row from the first group
+    let firstGroup = groupedData[0];
+    let firstRowInGroup = firstGroup?.items?.[0];
+
+    let svgIcon = firstRowInGroup?.CurrencyImage;
+        if (!svgIcon) return;
+
+        svgIcon = svgIcon.replace(/<svg\b([^>]*)>/, `<svg width="12" height="12" $1>`);
+
+        gridElement.find(".dx-header-row td").each(function () {
+
+            const $cell = $(this);
+            const dataField = $cell.attr("data-field");  // 👈 This is key
+
+                const $debitHeader = $(".credit-header");
+                const debitText = $debitHeader.data("original-text") || $debitHeader.text().trim();
+                $debitHeader.data("original-text", debitText); // Save original once
+
+                $debitHeader.html(`
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+                        ${svgIcon}
+                        <span style="font-weight: bold;">${debitText}</span>
+                    </div>
+                `);
+
+                // 👉 Credit
+                const $creditHeader = $(".received-header");
+                const creditText = $creditHeader.data("original-text") || $creditHeader.text().trim();
+                $creditHeader.data("original-text", creditText);
+
+                $creditHeader.html(`
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+                        ${svgIcon}
+                        <span style="font-weight: bold;">${creditText}</span>
+                    </div>
+                `);
+
+
+                const $balanceHeader = $(".debit-header");
+                const balanceText = $balanceHeader.data("original-text") || $balanceHeader.text().trim();
+                $balanceHeader.data("original-text", balanceText);
+
+                $balanceHeader.html(`
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+                        ${svgIcon}
+                        <span style="font-weight: bold;">${balanceText}</span>
+                    </div>
+                `);
+
+
+        });
+    }
+
 
 </script>
 

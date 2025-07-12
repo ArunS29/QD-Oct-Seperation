@@ -98,7 +98,7 @@
         .FilterRow(f => f.Visible(false))
         .HeaderFilter(h => h.Visible(false))
         .ColumnAutoWidth(true)
-        .ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
+        .ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.DragAndDrop))
         .OnCellClick("onUserIdCellClick")
         .Columns(columns =>
         {

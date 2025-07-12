@@ -176,7 +176,7 @@
 	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry65315storeStockBalanceMaster>()
 		.ID("dataGrid")
 		.DataSource(d => d.Mvc().Controller("StockInventory").LoadAction("GetStockData"))
-		.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+		.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
 		.ShowBorders(true)
 		.ShowColumnLines(true)
 		.ShowRowLines(true)

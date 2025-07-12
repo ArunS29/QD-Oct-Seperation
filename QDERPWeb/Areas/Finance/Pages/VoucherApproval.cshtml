@@ -514,7 +514,7 @@
     }");
             });
         })
-        .ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
+        .ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.DragAndDrop))
         .AllowColumnReordering(true)
         .AllowColumnResizing(true)
         .ColumnFixing(fixing => fixing.Enabled(true))

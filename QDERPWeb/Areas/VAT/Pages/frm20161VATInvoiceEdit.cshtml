@@ -4940,18 +4940,52 @@
 				}));
 			});
 		}
+				$(document).ready(function () {
+				const urlParams = new URLSearchParams(window.location.search);
+				const invoiceNoFromUrl = urlParams.get("invoiceNo");
+				const isCreateMode = urlParams.get("mode") === "create";
+
+				const invoiceBox = $("#InvoiceNo").dxTextBox("instance");
+
+				if (isCreateMode && invoiceNoFromUrl) {
+					// ✅ If URL has invoiceNo (from GenerateVATInvoice button)
+					if (invoiceBox) {
+						invoiceBox.option("value", invoiceNoFromUrl);
+					}
+				} else {
+					// 🔄 Otherwise, get default auto-generated invoice from API
+					if (IsCurrent !== "true") {
+						$.ajax({
+							url: "/api/VATModule/GetVATInvoiceNo",
+							type: "GET",
+							success: function (data) {
+								if (invoiceBox) {
+									
+									InvoiceOPenToSave(data)
+									invoiceBox.option("value", data || "");
+								} else {
+									console.warn("Invoice TextBox not initialized.");
+								}
+							},
+							error: function (xhr, status, error) {
+								console.error("Error fetching invoice number:", error);
+								DevExpress.ui.dialog.alert("Failed to load invoice number.", "Error");
+							}
+						});
+					}
+				}
+			});
 
 
-			$(document).ready(function () {
+			function InvoiceOPenToSave(data) {
 			if (revaccheadid == null) {
 				revaccheadid = "L00343";
 			}
-
-				let InVoiceNo = InvNo;
+			debugger;
 			
 			var InvoiceMaster = {
 
-				InvoiceNo: InvNo,
+					InvoiceNo: data,
 				InvoiceDate: $("#InvoiceDate").dxDateBox("instance").option("value") || null,
 				InvoiceDateWtTime: $("#InvoiceIssuedDateTime").dxDateBox("instance").option("value") || null,
 				InvoiceDeliveryDate: $("#SupplyDate").dxDateBox("instance").option("value") || null,
@@ -5056,43 +5090,9 @@
 				}
 
 			});
-		});
+		}
 
-		$(document).ready(function () {
-			const urlParams = new URLSearchParams(window.location.search);
-			const invoiceNoFromUrl = urlParams.get("invoiceNo");
-			const isCreateMode = urlParams.get("mode") === "create";
-
-			const invoiceBox = $("#InvoiceNo").dxTextBox("instance");
-
-			if (isCreateMode && invoiceNoFromUrl) {
-				// ✅ If URL has invoiceNo (from GenerateVATInvoice button)
-				if (invoiceBox) {
-					invoiceBox.option("value", invoiceNoFromUrl);
-				}
-			} else {
-				// 🔄 Otherwise, get default auto-generated invoice from API
-				if (IsCurrent !== "true") {
-					$.ajax({
-						url: "/api/VATModule/GetVATInvoiceNo",
-						type: "GET",
-						success: function (data) {
-							if (invoiceBox) {
-								InvNo=data;
-								
-								invoiceBox.option("value", data || "");
-							} else {
-								console.warn("Invoice TextBox not initialized.");
-							}
-						},
-						error: function (xhr, status, error) {
-							console.error("Error fetching invoice number:", error);
-							DevExpress.ui.dialog.alert("Failed to load invoice number.", "Error");
-						}
-					});
-				}
-			}
-		});
+	
 
 
 
@@ -6898,6 +6898,10 @@
 			};
 		}
 	}
+
+	   
+
+
 
 		$("#btnSave").on("click", function (e) {
 

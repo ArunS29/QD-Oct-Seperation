@@ -29,7 +29,7 @@
 
                     <div class="form-group">
                         <label>User ID:</label>
-                        @(Html.DevExtreme().TextBox().ID("UserId").Width("100%"))
+                        @(Html.DevExtreme().TextBox().ID("UserId").Width("100%").ReadOnly(true))
                     </div>
 
                     <div class="form-group">
@@ -1803,7 +1803,7 @@
          // Function to validate email format
         function validateEmail() {
             // Get the email value from the DevExtreme TextBox
-            const email = $("#UserId").dxTextBox("instance").option("value");
+            const email = $("#username").dxTextBox("instance").option("value");
 
             // Create a temporary input element to validate the email
             const tempInput = document.createElement("input");
@@ -1820,7 +1820,7 @@
                 });
 
                 // Clear the email input field
-                $("#UserId").dxTextBox("instance").option("value", "");
+               // $("#UserId").dxTextBox("instance").option("value", "");
             } else {
                 DevExpress.ui.notify({
                     message: formatMessage("Your Email ID is valid"),

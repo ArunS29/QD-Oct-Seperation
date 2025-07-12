@@ -227,7 +227,7 @@
 	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry65403storeStockBalanceMasterByDate>()
 		.ID("dataGrid")
 		.DataSource(new JS("[]"))
-		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
 		.ShowBorders(true)
 		.ShowColumnLines(true)
 		.ShowRowLines(true)

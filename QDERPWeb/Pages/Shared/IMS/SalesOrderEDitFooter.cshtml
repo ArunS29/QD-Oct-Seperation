@@ -10,7 +10,7 @@
             .DropDownOptions(options => options.Width(230))
             .Items(items =>
             {
-                items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu");
+                items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("").OnClick("showSubmenu");
                 items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
                 items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
                 items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
@@ -168,8 +168,8 @@
 </div>
 
 <script>
-    // Hide context menu on click outside
-       let isHeaderFilterEnabled = false;
+    
+       
 
        function toggleHeaderFilter() {
            var dataGrid = $("#itemGrid").dxDataGrid("instance");

@@ -907,7 +907,7 @@ buttons.Add()
 				// ✅ Enable Column Chooser
 				.ColumnChooser(c => c
 				.Enabled(true) // Enable column chooser
-				.Mode(GridColumnChooserMode.Select) // Set mode to selection
+				.Mode(GridColumnChooserMode.DragAndDrop) // Set mode to selection
 				)
 				.Columns(columns =>
 				{
@@ -971,7 +971,7 @@ buttons.Add()
 				.SelectedRowKeys(new JS("getSelectedRowKeys()"))
 				.ColumnChooser(c => c
 				.Enabled(true) // Enable column chooser
-				.Mode(GridColumnChooserMode.Select) // Set mode to selection
+				.Mode(GridColumnChooserMode.DragAndDrop) // Set mode to selection
 				)
 				.Columns(columns =>
 				{
