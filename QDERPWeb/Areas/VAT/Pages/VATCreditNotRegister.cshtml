@@ -71,21 +71,6 @@
 		white-space: nowrap; /* Prevent wrapping of headings */
 		overflow:hidden;
 	}
-
-		.dx-datagrid-headers .dx-row > td {
-			border: 1px solid #686868 !important;
-			text-align: center !important;
-			/* 	width:1000px; */
-		}
-
-	.dx-datagrid .dx-header-row .dx-datagrid-text-content {
-		font-size: 12px !important;
-		white-space: nowrap !important; /* Prevent wrapping of text */
-		text-align: center !important;
-		font-weight: bold;
-		color: black;
-	}
-
 	.ledgerResult {
 		overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
 		width: 100%;
@@ -268,7 +253,7 @@
 	</div>
 </div>
 
-<div class="dx-fieldset horizontal-container">
+<div class="horizontal-container">
 	@(Html.DevExtreme().DateBox()
 		.ID("frmdateBox")
 		.Label(new JS("formatMessage('Start Date')"))
@@ -297,7 +282,7 @@
 		.Text(new JS("formatMessage('Show Records')"))
 		.Icon("smalliconslayout")
 		.Width(180)
-		.ElementAttr("class", "button-alignment-down")
+		
 		.TabIndex(4)
 		.DropDownOptions(options => options.Width(230))
 		.Items(items =>
@@ -708,8 +693,9 @@
 		.Mode(GridEditMode.Row)
 		.AllowUpdating(true)
 		) *@
-		.Height(680) // <<< fixed height
+		.Height("60vh") // <<< fixed height
 		.ColumnAutoWidth(true)
+		.ColumnResizingMode(ColumnResizingMode.Widget)
 		.Width("98%")
 		@* .WordWrapEnabled(true) *@
 		.OnCellClick("function(e) {handleCellClick(e);}")
