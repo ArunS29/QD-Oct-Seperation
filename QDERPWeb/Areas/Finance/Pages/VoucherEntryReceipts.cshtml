@@ -6,7 +6,11 @@
 @model Form.Areas.Finance.Pages.VoucherEntryReceiptsModel
 @{
     ViewData["Title"] = "Receipt Voucher Details";
-
+        // pull your session value (“2”) into baseCurrencyIdnew
+    var sessionID = HttpContext.Session.GetString("currencyID");
+    int baseCurrencyIdnew = 0;
+    if (!string.IsNullOrEmpty(sessionID))
+        int.TryParse(sessionID, out baseCurrencyIdnew);
 }
 
 <link rel="stylesheet" href="~/css/Style.css" />
@@ -240,70 +244,29 @@ buttons.Add()
 
                                                 )
                     </div>
-                    <div class="form-group col-md-2 col-sm-6">
-                        @(Html.DevExtreme().DropDownBox()
-                                                .Label(new JS("formatMessage('Base Currency')"))
-                                                .DataSource(d => d.WebApi()
-                                                .Controller("Utility")
-                                                .LoadAction("GetCurrencyList")
-                                                .LoadMode(DataSourceLoadMode.Raw)
-                                                .Key("CurrencyExchangeId")
-                                                )
-                                                .ValidationRules(rules =>
-                                                {
-                                                    rules.AddRequired()
-                                                    .Message("Please select a base currency.");
-                                                })
-                                                .LabelMode(EditorLabelMode.Floating)
-                                                .ID("ddlBaseCurrency")
-                                                .ShowClearButton(true)
-                                                .AcceptCustomValue(false)
-                                                .OpenOnFieldClick(true)
-                                                .Value(1)
-                                                .ValueExpr("CurrencyExchangeId")
-                                                .DisplayExpr("CurrencyName")
-                                                .OnInput("dropDownBoxOnInput")
-                                                .OnOpened("onOpened")
-                                                .TabIndex(8)
-                                                .DropDownOptions(o => o.Width(700))
-                                                .ReadOnly(true)
-                                                .ElementAttr(new { @class = "custom-disabled-selectbox" })
-                                               
-                                                .ReadOnly(true)
-                                                .ContentTemplate(new TemplateName("BaseCurrencyContentTemplate"))
-                                                )
-
-
-                        @using (Html.DevExtreme().NamedTemplate("BaseCurrencyContentTemplate"))
-                        {
-                            @(Html.DevExtreme().DataGrid()
-                                                    .ID("basecurrency-datagrid")
-                                                    .DataSource(d => d.WebApi()
-                                                    .Controller("Utility")
-                                                    .LoadAction("GetCurrencyList")
-                                                    .LoadMode(DataSourceLoadMode.Raw)
-                                                    .Key("CurrencyExchangeId")
-                                                    )
-                                                    .WordWrapEnabled(true)
-                                                    .ShowBorders(true)
-                                                    .Selection(sl => sl.Mode(SelectionMode.Single))
-                                                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                                                    .SearchPanel(sp => sp.HighlightSearchText(true).Visible(true))
-                                                    .OnSelectionChanged("onBaseCurrencySelectionChanged") // Define this JS function
-                                                    .Paging(p => p.PageSize(10))
-                                                    .Height(300)
-                                                    .Columns(columns =>
-                                                    {
-                                                        columns.Add().DataField("CurrencyExchangeId").Caption(new JS("formatMessage('ID')")).Visible(true);
-                                                        columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency Name')"));
-                                                        columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Symbol')"));
-                                                        columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('Exchange Rate')"));
-                                                        columns.Add().DataField("CurrencyMasterCode").Caption(new JS("formatMessage('unicode')")).DataType(GridColumnDataType.Boolean);
-                                                        columns.Add().DataField("CurrencyPoints").Caption(new JS("formatMessage('point')")).DataType(GridColumnDataType.Boolean);
-                                                    })
-                                                    )
-                                                }
-                    </div>
+                                     <div class="form-group col-md-2 col-sm-6">
+    @(Html.DevExtreme().DropDownBox()
+        .ID("ddlBaseCurrency")
+        .DataSource(d => d.WebApi()
+            .Controller("Utility")
+            .LoadAction("GetCurrencyList")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("CurrencyExchangeId")
+        )
+        .ValueExpr("CurrencyExchangeId")
+        .DisplayExpr("CurrencyName")
+        // now use your renamed variable
+        .Value(baseCurrencyIdnew)
+        .Label(new JS("formatMessage('Base Currency')"))
+        .LabelMode(EditorLabelMode.Floating)
+        .ValidationRules(rules => rules.AddRequired().Message("Please select a base currency."))
+        .ShowClearButton(true)
+        .AcceptCustomValue(false)
+        .DropDownOptions(o => o.Width(300))
+        .ReadOnly(true)
+        .ElementAttr(new { @class = "custom-disabled-selectbox" })
+    )
+</div>
                     <div class="form-group col-md-2 col-sm-6">
                         @(Html.DevExtreme().DropDownBox()
                                                 .Label(new JS("formatMessage('Convertion Currency')"))
@@ -323,12 +286,12 @@ buttons.Add()
                                                 .ShowClearButton(true)
                                                 .AcceptCustomValue(false)
                                                 .OpenOnFieldClick(true)
-                                                
+                                                .Value(baseCurrencyIdnew)
                                                 .ValueExpr("CurrencyExchangeId")
                                                 .DisplayExpr("CurrencyName")
                                                 .OnInput("dropDownBoxOnInput")
                                                 .OnOpened("onOpened")
-                                                .OnInitialized("onBaseCurrencyInit")
+                                                //.OnInitialized("onBaseCurrencyInit")
                                                 .TabIndex(9)
                                                 .DropDownOptions(o => o.Width(700))
                                                 .ElementAttr(new { @class = "light-theme-input" })
