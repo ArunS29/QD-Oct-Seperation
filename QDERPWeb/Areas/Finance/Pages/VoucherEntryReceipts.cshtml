@@ -775,13 +775,15 @@ buttons.Add()
                 <div class="form-group" style="display: flex; flex-wrap: wrap; gap: 10px;">
                     <div style="flex: 1 1 220px; min-width: 200px;">
                         @(Html.DevExtreme().SelectBox()
-                                                .Label(new JS("formatMessage('Bank Receipt')"))
-                                                .LabelMode(EditorLabelMode.Floating)
-                                                .ID("VoucherType")
-                                                .DataSource(new[] { "Bank Receipts" })
-                                                .Value(new JS("formatMessage('Bank Receipts')"))
-                                                .Width("100%")
-                                                .Disabled(true))
+                    .Label(new JS("formatMessage('Bank Receipt')"))
+                    .LabelMode(EditorLabelMode.Floating)
+                    .ID("VoucherType")
+                    .DataSource(new[] { "Bank Receipts" })
+                    .Value("Bank Receipts")
+                    .Width("100%")
+                    .Disabled(true)
+                        .ElementAttr(new { @class = "custom-disabled-selectbox" })
+                    )
                     </div>
 
                     <div style="flex: 1 1 200px; min-width: 180px;">
@@ -1503,68 +1505,56 @@ function addVoucherEntry() {
                         var latestEntry = filteredData.length > 0 ? filteredData[filteredData.length - 1] : null;
                         console.log(latestEntry);
                         
-                         if (accheadname && accheadname.startsWith("Cost")) {
-
-     const params = {
-         VoucherNo: encodeURIComponent(voucherNo),
-         VoucherEntryNo: encodeURIComponent(latestEntry.VoucherEntryNo),
-         AccountHead: encodeURIComponent(accheadname),
-         VoucherAmount: encodeURIComponent(amount),
-         DrCr: encodeURIComponent(sbDrCr)
-
-     };
-     openCostAllocationPopup(params); // Open DevExtreme Popup with dynamic content
- }
- else if (accheadname) {
+                     if (accheadname) {
 
 
-     // Function to check allocation
-     function checkAllocation(url, successCallback) {
-         $.ajax({
-             type: "GET",
-             url: url,
-             data: {
-                 AccountHead: accheadname,
-                 AccountID: accheadid
-             },
-             success: function (response) {
-                 if (response.isAllocated) {
-                     const params = {
-                         VoucherNo: encodeURIComponent(voucherNo),
-                         VoucherEntryNo: encodeURIComponent(latestEntry.VoucherEntryNo),
-                         AccountHead: encodeURIComponent(accheadname),
-                         VoucherAmount: encodeURIComponent(amount),
-                         DrCr: encodeURIComponent(sbDrCr),
-                         AccountID: encodeURIComponent(accheadid)
-                     };
-                     successCallback(params);
-                 }
-             },
-             error: function (xhr, status, error) {
-                 console.error(`Error checking allocation: ${error}`);
-             }
-         });
-     }
+     
+                         function checkAllocation(url, successCallback) {
+                             $.ajax({
+                                 type: "GET",
+                                 url: url,
+                                 data: {
+                                     AccountHead: accheadname,
+                                     AccountID: accheadid
+                                 },
+                                 success: function (response) {
+                                     if (response.isAllocated) {
+                                         const params = {
+                                             VoucherNo: encodeURIComponent(voucherNo),
+                                             VoucherEntryNo: encodeURIComponent(latestEntry.VoucherEntryNo),
+                                             AccountHead: encodeURIComponent(accheadname),
+                                             VoucherAmount: encodeURIComponent(amount),
+                                             DrCr: encodeURIComponent(sbDrCr),
+                                             AccountID: encodeURIComponent(accheadid)
+                                         };
+                                         successCallback(params);
+                                     }
+                                 },
+                                 error: function (xhr, status, error) {
+                                     console.error(`Error checking allocation: ${error}`);
+                                 }
+                             });
+                         }
+                         checkAllocation(`/api/VoucherEntryReceipts/CheckCostAllocation`, openCostAllocationPopup);
+                         // Check Property Allocation
+                         checkAllocation(`/api/VoucherEntryCashReceipts/CheckPropertyAllocation`, openPropertyAllocationPopup);
 
-     // Check Property Allocation
-     checkAllocation(`/api/VoucherEntryCashReceipts/CheckPropertyAllocation`, openPropertyAllocationPopup);
+                         // Check Employee Allocation
+                         checkAllocation(`/api/VoucherEntryCashReceipts/CheckEmployeeAllocation`, openEmployeeAllocationPopup);
 
-     // Check Employee Allocation
-     checkAllocation(`/api/VoucherEntryCashReceipts/CheckEmployeeAllocation`, openEmployeeAllocationPopup);
+                         checkAllocation(`/api/VoucherEntryReceipts/CheckIsMaintainBillByBill`, openBillsReceivablePopup);
+                     }
 
-     checkAllocation(`/api/VoucherEntryReceipts/CheckIsMaintainBillByBill`, openBillsReceivablePopup);
- }
-
-                        var button = $("#btnSave").dxButton("instance");
-                        button.option("text", "Update");
+                                            var button = $("#btnSave").dxButton("instance");
+                                            button.option("text", "Update");
                     },
-                    error: function (xhr, status, error) {
-                        alert("Error occurred while updating data: " + error);
-                    }
+                                        error: function (xhr, status, error) {
+                                            alert("Error occurred while updating data: " + error);
+                                        }
                 });
-            }
+             }
             
-        }
+            }
             
             
             
@@ -2545,6 +2535,7 @@ function addVoucherEntry() {
             let accountHead = rowData.AccountHead;
             let amount = drCr === "Cr" ? rowData.CrAmount : rowData.DrAmount;
             let voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+            let accountid = accheadid;
 
             // Selecting VoucherEntryNo based on DrCr value
             let voucherEntryNo = drCr === "Cr" ? rowData.VoucherEntryNo : rowData.VoucherEntryNo;
@@ -2555,14 +2546,13 @@ function addVoucherEntry() {
                 VoucherEntryNo: voucherEntryNo, // Pass Dr/Cr-specific row's VoucherEntryNo
                 DrCr: drCr,
                 AccountHead: accountHead,
-                VoucherAmount: amount
+                VoucherAmount: amount,
+                AccountID: accountid
             };
             
-            if (openedPopups[popupId]) {
-                openedPopups[popupId].show();
-            } else {
+           
                 openBillsReceivablePopup(params);
-            }
+           
 
         };
 
@@ -2694,6 +2684,32 @@ function addVoucherEntry() {
                    
                     popupInstance.show();
                
+            },
+            error: function (xhr, status, error) {
+                console.error("Error loading Cost Allocation view:", error);
+                alert("Failed to load cost allocation details.");
+            }
+        });
+    }
+    function openPropertyAllocationPopup(params) {
+    
+        const queryString = Object.keys(params)
+            .map(key => `${key}=${params[key]}`)
+            .join('&');
+
+        $.ajax({
+            url: `/api/VoucherEntryReceipts/PropertyAllocation?${queryString}`,
+            type: "GET",
+            dataType: "html",
+            success: function (data) {
+                 // Create and store the popup instance
+                    let popupInstance = $("#PropertyAllocationPopup").dxPopup("instance");
+                    popupInstance.option("contentTemplate", function () {
+                        return $("<div>").html(data);
+                    });
+
+                
+                    popupInstance.show();
             },
             error: function (xhr, status, error) {
                 console.error("Error loading Cost Allocation view:", error);
@@ -3524,6 +3540,15 @@ function onBaseCurrencyInit(e) {
         }, 300); // wait a bit to ensure DevExtreme is ready
     });
 
+    function onReferenceDropdownOpened(e) {
+        const grid = $("#ReferenceGrid").dxDataGrid("instance");
+        if (grid) {
+            grid.getDataSource().reload();
+        }
+    }
+    
+
+
         function onAttachmentButtonClick() {
             var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
             var voucherNo = voucherNoBox.option("value");
@@ -3536,4 +3561,5 @@ function onBaseCurrencyInit(e) {
             const title = "Transaction Documents";
             openModal(url, title);
         }
+
 </script>

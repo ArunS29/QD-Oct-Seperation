@@ -4,6 +4,7 @@
     string voucherNo = ViewBag.VoucherNo;
     string drCr = ViewBag.DrCr;
     string accountHead = ViewBag.AccountHead;
+    string accountId = ViewBag.AccountId;
     string voucherAmount = ViewBag.VoucherAmount;
     long voucherEntryNo = ViewBag.VoucherEntryNo;
     double? voucherAmountParsed = null;
@@ -19,8 +20,10 @@
     }
 
     // Determine Reference Type and Voucher Type
-    string referenceType = "New Reference";
-    string voucherType = "";
+    string referenceType = "Against Reference";
+    string voucherType = "Sales";
+    bool hideRetentionAmount = false;
+    bool isPayable = false;
 
     if (!string.IsNullOrEmpty(voucherNo))
     {
@@ -28,15 +31,26 @@
         {
             referenceType = "Against Reference";
             voucherType = "Purchases";
+            hideRetentionAmount = true; // Hide Retention Amount for Purchases
+            isPayable = true;
         }
         else if (voucherNo.Contains("CR") || voucherNo.Contains("BR"))
         {
             referenceType = "Against Reference";
             voucherType = "Sales";
+            hideRetentionAmount = true; // Hide Retention Amount for Sales
+            isPayable = false;
+        }
+        else if (voucherNo.Contains("PUR"))
+        {
+            referenceType = "Against Reference";
+            voucherType = "Purchases";
+            hideRetentionAmount = false; // Hide Retention Amount for Sales
+            isPayable = true;
         }
     }
 }
-<div class="content-container-top" style="background-color:#909ead00;" ">
+<div class="content-container-top" style="background-color:#909ead00;" >
 <div class="title">
     <div class="header-container">
         <div class="title">Bills Receivables / Receivables </div>
@@ -134,21 +148,28 @@
                         .ValueExpr("ReferenceNo")
                         .DisplayExpr("ReferenceNo")
                         .Value("")
+                        .ValidationRules(rules =>
+                        {
+                            rules.AddRequired()
+                            .Message("Reference No Head is required");
+                        })
                         .DataSource(d => d.WebApi()
                         .Controller("BillsReceivable")
                         .LoadAction("GetSubLedgerReceivables")
-                        .LoadParams(new { voucherType = voucherType })
+                        .LoadParams(new { voucherType = voucherType, accountId = accountId, isPayable = isPayable })
                         .LoadMode(DataSourceLoadMode.Raw)
                         .Key("ReferenceNo")
                         )
                         .DropDownOptions(o => o.Width(1000))
+                        
                         .ContentTemplate(@<text>
-            @(Html.DevExtreme().DataGrid()
+                @(Html.DevExtreme().DataGrid()
                                 .ID("ReferenceGrid")
+                                .Height(300) 
                                 .DataSource(d => d.WebApi()
                                 .Controller("BillsReceivable")
                                 .LoadAction("GetSubLedgerReceivables")
-                                .LoadParams(new { voucherType = voucherType })
+                                .LoadParams(new { voucherType = voucherType, accountId = accountId, isPayable = isPayable })
                                 .LoadMode(DataSourceLoadMode.Raw)
                                 .Key("ReferenceNo")
                                 )
@@ -156,22 +177,25 @@
                                 .Selection(s => s.Mode(SelectionMode.Single))
                                 .HoverStateEnabled(true)
                                 .Paging(p => p.Enabled(false))
-                                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                .Scrolling(s => s.Mode(GridScrollingMode.Virtual)) 
                                 .Columns(columns =>
                                 {
                                     columns.Add().DataField("ReferenceNo").Caption("Reference No");
-                                    columns.Add().DataField("ReceivableAmount").Caption("Receivable Amount");
-                                    columns.Add().DataField("Received").Caption("Received");
-                                    columns.Add().DataField("Balance").Caption("Balance");
-                                    columns.Add().DataField("RetentionAmount").Caption("Retention Amount");
-                                    columns.Add().DataField("BalanceDueWithOutRetention").Caption("Balance Due Without Retention");
+                                    columns.Add().DataField("ReceivableAmount").Caption("Receivable Amount").Format(format => format.Type(Format.FixedPoint).Precision(2)).CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
+                                    columns.Add().DataField("Received").Caption("Received").Format(format => format.Type(Format.FixedPoint).Precision(2)).CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
+                                    columns.Add().DataField("Balance").Caption("Balance").Format(format => format.Type(Format.FixedPoint).Precision(2)).CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
+                                    columns.Add().DataField("RetentionAmount").Caption("Retention Amount").Format(format => format.Type(Format.FixedPoint).Precision(2)).CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
+                                    columns.Add().DataField("BalanceDueWithOutRetention").Caption("Balance Due Without Retention").Format(format => format.Type(Format.FixedPoint).Precision(2)).CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
                                 })
+                                .OnSelectionChanged("onReferenceGridSelectionChanged")
                                 )
             </text>)
+
                         )
+
             <div style="display:flex;">
                 @(Html.DevExtreme().CheckBox()
-                                .ID("IsVerified1")
+                                .ID("Retainedcheck")
                                 
                                 )
 
@@ -187,14 +211,15 @@
                 .ID("txtAmount2")
                 .Label("Amount:")
                 .LabelMode(EditorLabelMode.Floating)
-                .Value(null)
-                .ValidationRules(rules =>
-                {
-                    rules.AddRequired()
-                    .Message("Amount is required");
-                })
+                .Value(0)
+                        .ValidationRules(rules =>
+                        {
+                            rules.AddRequired()
+                            .Message("Voucher Amount Cannot be Zero Or Negative");
+                            rules.AddRange().Min(0).Message("Voucher Amount Cannot be Zero Or Negative");
+                        })
                 .Min(0)
-                .Placeholder("0.00")
+               
                 .Format("#,##0.00")
                 .InputAttr(new
                 {
@@ -213,6 +238,7 @@
                 .Width(150)
                 .Icon("plus")
                 .OnClick("function() { addBillsPayableReceivable(); }")
+                .Disabled(!hideRetentionAmount)
                 )
         </div>
        
@@ -225,14 +251,15 @@
             .KeyExpr("ReferenceNo")
             .RemoteOperations(false)
             .OnInitialized("dataGridInitialized")
-            .OnContextMenuPreparing("onContextMenuPreparing")
+            
             .Columns(columns =>
             {
-                columns.AddFor(m => m.SubLedgerId).Caption("Sub Ledger Id").Alignment(HorizontalAlignment.Center);
-                columns.AddFor(m => m.DrCr).Caption("DrCr").Alignment(HorizontalAlignment.Center);
-                columns.AddFor(m => m.ReferenceType).Caption("Reference Type").Alignment(HorizontalAlignment.Left);
-                columns.AddFor(m => m.ReferenceNo).Caption("Reference No").Alignment(HorizontalAlignment.Center);
-                columns.AddFor(m => m.Amount).Caption("Amount").Alignment(HorizontalAlignment.Right).CustomizeText(@"
+                columns.AddFor(m => m.SubLedgerId).Caption("ledgerid").Alignment(HorizontalAlignment.Center).AllowEditing(false).Visible(false);
+                columns.AddFor(m => m.VoucherEntryNo).Caption("#").Alignment(HorizontalAlignment.Center).AllowEditing(false);
+                columns.AddFor(m => m.DrCr).Caption("DrCr").Alignment(HorizontalAlignment.Center).AllowEditing(false);
+                columns.AddFor(m => m.ReferenceType).Caption("Reference Type").Alignment(HorizontalAlignment.Left).AllowEditing(false);
+                columns.AddFor(m => m.ReferenceNo).Caption("Reference No").Alignment(HorizontalAlignment.Center).AllowEditing(false);
+                columns.AddFor(m => m.Amount).Caption("Amount").Alignment(HorizontalAlignment.Right).AllowEditing(false).CustomizeText(@"
         function(e) {
         if(e.value === null || e.value === undefined) {
         return ''; // Return empty string for null values
@@ -243,21 +270,48 @@
         });
         }
         ");
-                columns.AddFor(m => m.RetentionAmount).Caption("Retention Amount").Alignment(HorizontalAlignment.Center);
+                columns.AddFor(m => m.RetentionAmount).Caption("Retention Amount").Alignment(HorizontalAlignment.Center).Visible(!hideRetentionAmount).CustomizeText(@"
+                function(e) {
+                if(e.value === null || e.value === undefined) {
+                return ''; // Return empty string for null values
+                }
+                return e.value.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+                });
+                }
+                ").AllowEditing(true); 
 
 
             })
-            //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.DragAndDrop))
+                .Summary(summary =>
+                {
+                    summary.TotalItems(items =>
+                    {
+                        items.Add().Column("Amount").SummaryType(SummaryType.Sum)
+                    .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+                    });
+                })
+                
+            //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
             .AllowColumnReordering(true) // Enable column reordering
             .AllowColumnResizing(true)   // Enable column resizing
             .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
             .HeaderFilter(filter => filter.Visible(false))
-            .Height(150)
+            .Height(250)
             .ColumnAutoWidth(true)
             .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
             .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
             .ShowBorders(true)
             .Width("100%")
+                .Editing(editing => editing
+                .Mode(GridEditMode.Cell)
+                .AllowUpdating(true)
+                .AllowDeleting(true)
+                .UseIcons(true)
+                )
+                
+
             )
     </div>
     <div>
@@ -332,74 +386,105 @@
     }
 
     function addBillsPayableReceivable() {
+        const voucherEntryNo = '@voucherEntryNo';
+        const VoucherNo = '@voucherNo';
+        const accountId = '@accountId';
+        const drCr = $("#DrCrId").dxSelectBox("instance").option("value");
+        const referenceType = $("#Reference").dxSelectBox("instance").option("value");
+        const referenceNo = $("#ReferenceAcountHead").dxDropDownBox("instance").option("value");
+        const amount = $("#txtAmount2").dxNumberBox("instance").option("value");
 
-        var DrCr = $("#DrCrId").dxSelectBox("instance").option("value");
-        var ReferenceType = $("#Reference").dxSelectBox("instance").option("value");
-        var ReferenceNo = $("#ReferenceAcountHead").dxDropDownBox("instance").option("value");
-        var Amount = $("#txtAmount2").dxNumberBox("instance").option("value");
+        var referenceValidator = $("#ReferenceAcountHead").dxValidator("instance");
 
-        if (!DrCr || !ReferenceType || !ReferenceNo || !Amount) {
-            alert("Please fill in all required fields before submitting.");
-            return;
-        }
+        var AmtValidator = $("#txtAmount2").dxValidator("instance");
 
-        var VE = {
-            "DrCr": DrCr,
-            "ReferenceType": ReferenceType,
-            "ReferenceNo": ReferenceNo,
-            "Amount": Amount,
-        };
+        var referenceValidation = referenceValidator.validate();
 
-        $.ajax({
-            type: "POST",
-            url: "/Finance/api/BillsPayableReceivable/AddBillsPayableReceivable",
-            contentType: "application/json",
-            data: JSON.stringify(VE),
-            dataType: "json",
-            success: function (response) {
-                DevExpress.ui.notify("BillsPayable/Receivable details saved succfully!", "success", 2000);
-
-                console.log(response.data);
-                $("#ReceivabledataGrid").dxDataGrid("instance").option("dataSource", response.data);
-
-            },
-            error: function (xhr, status, error) {
-                alert("Error occurred while updating data: " + error);
-            }
-        });
-    }
-
-    $("#btnUpdateAndClose").on("click", function (e) {
-        e.preventDefault();
-
-        var VM = {
-            "VoucherNo": $("#VoucherNoId").dxTextBox("instance").option("value"),
-            "DrCr": $("#DrCrId").dxSelectBox("instance").option("value"),
-            "ReferenceType": $("#Reference").dxSelectBox("instance").option("value"),
-            "ReferenceNo": $("#ReferenceAcountHead").dxDropDownBox("instance").option("value"),
-            "Amount": $("#txtAmount2").dxNumberBox("instance").option("value")
-        };
+        var AmtValidation = AmtValidator.validate();
+      if (referenceValidation.isValid && AmtValidation.isValid && amount != "0.00") {
 
         $.ajax({
+            url: "/api/BillsReceivable/AddSubLedgerEntry",
             type: "POST",
-            url: "/Finance/api/BillsPayableReceivable/UpdateBillsPayableReceivable",
             contentType: "application/json",
-            data: JSON.stringify(VM),
-            dataType: "json",
+            data: JSON.stringify({
+                voucherEntryNo: voucherEntryNo,
+                drCr: drCr,
+                referenceType: referenceType,
+                referenceNo: referenceNo,
+                amount: amount,
+                accountId: accountId,accountId,
+                VoucherNo: VoucherNo
+            }),
             success: function (response) {
                 if (response.success) {
-                    alert("Data Updated successfully..");
+                   debugger;
+                   const voucherNo = '@voucherEntryNo';
 
+                   var accountGrid = $("#ReferenceGrid").dxDataGrid("instance");
+
+                    // Unselect the selected row
+                    accountGrid.clearSelection();
+
+                        setTimeout(function () {
+                    // Refresh Receivable DataGrid
+                    const grid = $("#ReceivabledataGrid").dxDataGrid("instance");
+                    $.get("/api/BillsReceivable/GetSubLedgerByVoucher", { voucherNo: voucherNo }, function (data) {
+                        grid.option("dataSource", data);
+                        setTimeout(function () {
+                           const totalAmountUsed = grid.getTotalSummaryValue("Amount") || 0;
+                                    const amountIdValue = $("#AmountId").dxNumberBox("instance").option("value") || 0;
+
+                                    const backButton = $("#btnBackERP").dxButton("instance");
+
+                                    if (totalAmountUsed == amountIdValue ) {
+                                        // Equal (within floating point tolerance) → Enable button
+                                        backButton.option("disabled", false);
+                                    } else {
+                                        // Not equal → Disable button
+                                        backButton.option("disabled", true);
+                                    }
+                        }, 500);
+                    });
+                    
+                    // Refresh DropDownBox and its data source
+                    const referenceBox = $("#ReferenceAcountHead").dxDropDownBox("instance");
+                    
+
+                    referenceBox.option("dataSource", newDataSource);
+                    referenceBox.option("value", null);
+                }, 500); // Delay of 500 milliseconds
+
+                
+                    const amtBox = $("#txtAmount2").dxNumberBox("instance");
+                    amtBox.option("value", null); // Clear the amount field
+
+                    // ✅ Reset validator UI states
+                    referenceValidator.reset();
+                    AmtValidator.reset();
+
+                    
+                         DevExpress.ui.notify("Subledger entry added.", "success", 2000);
                 } else {
-                    alert("Update failed: " + response.message);
+                    DevExpress.ui.notify(response.message || "Error adding entry.", "error", 3000);
                 }
             },
-            error: function (xhr, status, error) {
-                alert("Error occurred while updating data: " + error);
+            error: function (xhr) {
+                DevExpress.ui.notify("Server error occurred.", "error", 3000);
             }
         });
+      } else {
 
-    });
+           DevExpress.ui.dialog.alert(
+                    "Cannot continue saving with errors,please clear the errors and continue.",
+                    "Clear Errors"
+           );
+
+      }
+    }
+    
+
+  
 
     $("#btnBackERP").on("click", function (e) {
         e.preventDefault();
@@ -486,6 +571,206 @@
             ];
         }
     }
+    function onReferenceGridSelectionChanged(e) {
+        if (e.selectedRowsData.length > 0) {
+            const selectedRow = e.selectedRowsData[0];
+            const selectedReference = selectedRow.ReferenceNo;
+
+            // Check if Retainedcheck checkbox is checked
+            const retainedCheckBox = $("#Retainedcheck").dxCheckBox("instance");
+            const isRetainedChecked = retainedCheckBox.option("value");
+
+            // Compute rowBalance based on checkbox
+            let rowBalance = selectedRow.Balance || 0;
+            const retentionAmount = selectedRow.BalanceDueWithOutRetention || 0;
+
+            if (isRetainedChecked) {
+                rowBalance = retentionAmount;
+            }
+
+            // Set ReferenceNo in DropDownBox
+            const dropDownBox = $("#ReferenceAcountHead").dxDropDownBox("instance");
+            dropDownBox.option("value", selectedReference);
+            dropDownBox.close();
+
+            // Get the original voucher amount from AmountId
+            const amountIdInstance = $("#AmountId").dxNumberBox("instance");
+            const originalAmount = amountIdInstance.option("value") || 0;
+
+            // Get the total already used from DataGrid summary
+            const receivableGrid = $("#ReceivabledataGrid").dxDataGrid("instance");
+            const totalAmountUsed = receivableGrid.getTotalSummaryValue("Amount") || 0;
+
+            // Calculate available amount
+            const availableAmount = originalAmount - totalAmountUsed;
+
+            // Decide what value to set in txtAmount2
+            const finalAmountToSet = availableAmount < rowBalance ? availableAmount : rowBalance;
+
+            // Set value in txtAmount2
+            const txtAmount2Instance = $("#txtAmount2").dxNumberBox("instance");
+            txtAmount2Instance.option("value", finalAmountToSet);
+        }
+    }
 
 
+
+
+    $(document).ready(function () {
+
+         var voucherNo = '@voucherEntryNo';
+
+        if (voucherNo) {
+            $.ajax({
+                url: '/api/BillsReceivable/GetSubLedgerByVoucher',
+                type: 'GET',
+                data: { voucherNo: voucherNo },
+                success: function (data) {
+                    const grid = $("#ReceivabledataGrid").dxDataGrid("instance");
+                    grid.option("dataSource", data);
+                },
+                error: function (xhr, status, error) {
+                    console.warn("Error loading subledger data:", error);
+                }
+            });
+        }
+    });
+
+    function onReferenceDropdownOpened(e) {
+        const grid = $("#ReferenceGrid").dxDataGrid("instance");
+        if (grid) {
+            grid.getDataSource().reload();
+        }
+    }
+
+    $("#btnUpdateAndClose").on("click", function (e) {
+        e.preventDefault();
+
+        // Get DataGrid instance
+        const dataGrid = $("#ReceivabledataGrid").dxDataGrid("instance");
+
+        // Get all rows from the grid
+        const gridData = dataGrid.getDataSource().items();
+
+        // Calculate total of Amount column
+        let totalGridAmount = 0;
+        gridData.forEach(item => {
+            totalGridAmount += parseFloat(item.Amount || 0);
+        });
+
+        // Get AmountId NumberBox value
+        const numberBox = $("#AmountId").dxNumberBox("instance");
+        const amountBoxValue = parseFloat(numberBox.option("value") || 0);
+
+        // Compare total
+        if (Math.abs(totalGridAmount - amountBoxValue) > 0.01) {
+            // Show error alert if they don't match
+            DevExpress.ui.dialog.alert("Ledger Amount does not match with the Bill Allocated Amount", "Validation Error");
+            return;
+        }
+      let Allocations = gridData.map(row => ({
+        SubLedgerId: row.SubLedgerId || 0, // 0 if it's a new record
+        VoucherEntryNo: row.VoucherEntryNo || null,
+        DrCr: row.DrCr ,
+        ReferenceType: row.ReferenceType,
+        ReferenceNo: row.ReferenceNo,
+        Amount: row.Amount,
+        RetentionAmount: row.RetentionAmount || null
+        
+      }));
+
+        // If valid, send grid data to controller
+        $.ajax({
+            url: '/api/BillsReceivable/UpdateSubLedgerEntries', // Replace with your actual controller action
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(Allocations),
+            success: function (response) {
+                   DevExpress.ui.dialog.alert("Bills Receivable Updated successful!", "Success").then(function () {
+                        let popupInstance = $("#BillsReceivablePopup").dxPopup("instance");
+                        popupInstance.hide();
+                    });
+
+                // Optionally close popup or reload
+            },
+            error: function (xhr, status, error) {
+                DevExpress.ui.dialog.alert("Update failed. Please try again.", "Error");
+            }
+        });
+    });
+    $(document).ready(function () {
+        const dataGrid = $("#ReceivabledataGrid").dxDataGrid("instance");
+
+        dataGrid.option("onRowRemoving", function (e) {
+            const data = e.data;
+
+            if (!data || !data.VoucherEntryNo || data.Amount === undefined) {
+                DevExpress.ui.dialog.alert("Invalid data for deletion.", "Error");
+                e.cancel = true;
+                return;
+            }
+
+            e.cancel = true; // Prevent auto-delete before confirmation
+
+            
+                    $.ajax({
+                        url: '/api/BillsReceivable/DeleteSubLedgerEntry',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            voucherEntryNo: data.VoucherEntryNo,
+                            amount: data.Amount
+                        }),
+                        success: function (response) {
+                            if (response.success) {
+                                    const voucherNo = '@voucherEntryNo';
+
+                                
+
+                                 setTimeout(function () {
+                                     // Refresh Receivable DataGrid
+                                     const grid = $("#ReceivabledataGrid").dxDataGrid("instance");
+                                     $.get("/api/BillsReceivable/GetSubLedgerByVoucher", { voucherNo: voucherNo }, function (data) {
+                                         grid.option("dataSource", data);
+                                     });
+                                 }, 500);
+                                DevExpress.ui.dialog.alert("Row deleted successfully.", "Success");
+                            } else {
+                                DevExpress.ui.dialog.alert(response.message || "Failed to delete.", "Error");
+                            }
+                        },
+                        error: function () {
+                            DevExpress.ui.dialog.alert("Server error during deletion.", "Error");
+                        }
+                    });
+                
+        });
+        dataGrid.option("onRowPrepared", function (e) {
+                if (e.rowType === "data") {
+                    // Apply light orange background to data rows
+                    e.rowElement.css("background-color", "#fff3e0");
+                }
+        });
+    });
+
+    $(document).ready(function () {
+        const isPayable = '@isPayable';
+
+        $("#ReferenceAcountHead").dxDropDownBox("instance").on("opened", function () {
+            const grid = $("#ReferenceGrid").dxDataGrid("instance");
+            if (!grid) return;
+
+            // ✅ Reload data
+            grid.getDataSource().reload();
+
+            // ✅ Update captions dynamically
+            if (isPayable) {
+                grid.columnOption("ReceivableAmount", "caption", "Payable Amount");
+                grid.columnOption("Received", "caption", "Paid");
+            } else {
+                grid.columnOption("ReceivableAmount", "caption", "Receivable Amount");
+                grid.columnOption("Received", "caption", "Received");
+            }
+        });
+    });
 </script>
