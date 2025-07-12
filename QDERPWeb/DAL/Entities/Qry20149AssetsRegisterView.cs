@@ -158,4 +158,15 @@ public partial class Qry20149AssetsRegisterView
     public string EquipmentCurrentOperators { get; set; }
 
     public string EquipmentCapacity { get; set; }
+    public decimal? ConvertedTotalDebit { get; set; }
+    public decimal? ConvertedTotalCredit { get; set; }
+    public decimal? ConvertedClosingBalance { get; set; }
+    public decimal? ConvertedDepreciatedAmount { get; set; }
+    public decimal? ConvertedBookValue { get; set; }
+    public string CurrencyImage { get; set; }
+    public string CurrencyName { get; set; }
+    public string TransactionCurrencySymbol { get; set; }
+
+
+
 }

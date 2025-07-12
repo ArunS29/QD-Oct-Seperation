@@ -143,10 +143,9 @@
                             .ID("txtStoreName")
                         .Label(new JS("formatMessage('Type a newStore & Add to the Existing List')"))
                             .LabelMode(EditorLabelMode.Outside)
-                           @*   .ValidationRules(rules =>
-                             {
-                                 rules.AddRequired().Message("Signatory Name is required");
-                             }) *@
+                             .ValidationRules(rules => {
+        rules.AddRequired().Message("Store Name is required");
+    })
                             )
                     </div>
 
@@ -155,10 +154,9 @@
                         .ID("txtStoreCode")
                         .Label(new JS("formatMessage('Store Code')"))
                             .LabelMode(EditorLabelMode.Outside)
-                           @*  .ValidationRules(rules =>
-                            {
-                                rules.AddRequired().Message("Signatory Position is required");
-                            }) *@
+                          .ValidationRules(rules => {
+        rules.AddRequired().Message("Store Code is required");
+    })
                             )
                     </div>
 
@@ -169,7 +167,7 @@
                             <div style="flex: 1;">
                                 @(Html.DevExtreme().DropDownBox()
                                     .ID("ddCostcenter")
-                                    .Label(new JS("formatMessage('Type a newStore & Add to the Existing List')"))
+                                    .Label(new JS("formatMessage('Cost Center Code:(Finance Modules)')"))
                                     .LabelMode(EditorLabelMode.Outside)
                                     .ShowClearButton(true)
                                     .OpenOnFieldClick(true)
@@ -372,19 +370,21 @@
     
   
     function addStoreToGrid() {
-        // Validate fields using the Validator components
-        //const nameValidationResult = $("#SignatoryName").dxValidator("instance").validate();
-        //const positionValidationResult = $("#SignatoryPosition").dxValidator("instance").validate();
+               var StoreCodevalidator = $("#txtStoreCode").dxValidator("instance");
+               var StoreNameValidator = $("#txtStoreName").dxValidator("instance");
 
-        // if (!nameValidationResult.isValid || !positionValidationResult.isValid) {
-        //     DevExpress.ui.notify("Please fill all required fields.", "warning", 2000);
-        //     return;
-        // }
+
+             var StoreCodevalidation = StoreCodevalidator.validate();
+             var StoreNameValidation = StoreNameValidator.validate();
+
+
+
+    // If the branch name is valid, proceed with the AJAX request
+    if (StoreCodevalidation.isValid && StoreNameValidation.isValid) {
 
         const data = {
             StoreId: $("#txtStoreCode").dxTextBox("instance").option("value"),
             StoreName: $("#txtStoreName").dxTextBox("instance").option("value"),
-          
             CostAllocationUnitId: $("#ddCostcenter").dxDropDownBox("instance").option("value")
            
         };
@@ -397,11 +397,20 @@
             success: function () {
                 DevExpress.ui.notify("Story saved successfully!", "success", 2000);
                 $("#StoryGrid").dxDataGrid("instance").refresh();
+
+                $("#txtStoreCode").dxTextBox("instance").option("value",""),
+                $("#txtStoreName").dxTextBox("instance").option("value",""),
+                 $("#ddCostcenter").dxDropDownBox("instance").option("value","")
             },
-            error: function () {
-                DevExpress.ui.notify("Failed to save Story.", "error", 2000);
+            error: function (xhr) {
+                const msg = xhr.responseJSON?.message || "Failed to save.";
+                DevExpress.ui.notify(msg, "error", 3000); // ✅ Shows backend message
             }
         });
+        } else {
+            // If validation fails, show a notification
+            DevExpress.ui.notify(formatMessage('Please fill required details!'), "error", 2000);
+        }
     }
 
 

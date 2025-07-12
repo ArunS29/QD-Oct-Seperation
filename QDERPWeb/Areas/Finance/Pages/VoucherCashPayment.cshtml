@@ -69,8 +69,8 @@
                             .DisplayFormat("dd-MMM-yyyy")
                             .Value(DateTime.Now)
                             .OnValueChanged("onVoucherDateChanged")
-                            .ElementAttr(new { @class = "light-theme-input" })
-                             .TabIndex(1)
+                            .ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
+                            .TabIndex(1)
                             )
                     </div>
 
@@ -83,8 +83,8 @@
                             .Type(DateBoxType.Date)
                             .DisplayFormat("dd-MMM-yyyy")
                             .Value(DateTime.Now)
-                            .ElementAttr(new { @class = "light-theme-input" })
-                             .TabIndex(2)
+                            .ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
+                            .TabIndex(2)
                             )
                     </div>
 
@@ -821,8 +821,8 @@ buttons.Add()
                         .Type(DateBoxType.Date)
                         .DisplayFormat("dd-MMM-yyyy")
                         .Value("")
-                         .TabIndex(18)
-                            .ElementAttr(new { @class = "light-theme-input" })
+                        .TabIndex(18)
+                        .ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
                         )
                 </div>
 
@@ -4272,4 +4272,10 @@ function showMainFooter() {
             showIfHasValue("ApprovedOntext", "approvedOnSection");
         }, 300); // wait a bit to ensure DevExtreme is ready
     });
+    function onReferenceDropdownOpened(e) {
+        const grid = $("#ReferenceGrid").dxDataGrid("instance");
+        if (grid) {
+            grid.getDataSource().reload();
+        }
+    }
 </script>
