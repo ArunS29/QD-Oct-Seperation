@@ -2103,58 +2103,60 @@ FROM   Aicon.qry20102CostAllocatedMasterView
 
 
 --Asset Register Currency Conversion
-Alter table dbo.tbl20105AssetMaster add ConversionCurrencyID int,CurrencyRate decimal(18,2),BaseCurrencyID int
+Alter table Aicon.tbl20105AssetMaster add ConversionCurrencyID int,CurrencyRate decimal(18,2),BaseCurrencyID int
 
 
-ALter view dbo.qry20148AssetRegister as
-			 SELECT dbo.tbl20105AssetMaster.AssetLedgerNo, dbo.tbl20105AssetMaster.AssetDescription, dbo.tbl20105AssetMaster.Specifications, dbo.tbl20105AssetMaster.Brand, dbo.tbl20105AssetMaster.PlateNo, dbo.tbl20105AssetMaster.Model, dbo.tbl20105AssetMaster.Year, 
-             dbo.tbl20105AssetMaster.Ownership, dbo.tbl20105AssetMaster.PurchaseDate, dbo.tbl20105AssetMaster.PurchasedAs, dbo.tbl20105AssetMaster.IsFinanced, dbo.tbl20105AssetMaster.FinancedFrom, dbo.tbl20105AssetMaster.ValueOfProperty, 
-             dbo.tbl20105AssetMaster.InitialDownPayment, dbo.tbl20105AssetMaster.InitialDocCharges, dbo.tbl20105AssetMaster.MonthlyInstallment, dbo.tbl20105AssetMaster.NoOfInstallments, dbo.tbl20105AssetMaster.InstallmentStartDate, dbo.tbl20105AssetMaster.InstallmentEndDate, 
-             dbo.tbl20105AssetMaster.FinalInstallment, dbo.tbl20105AssetMaster.DepreciationMethod, dbo.tbl20105AssetMaster.LifeSpanOfProperty, dbo.tbl20105AssetMaster.ScrapValueOfProperty, dbo.tbl20105AssetMaster.AddedBy, dbo.tbl20105AssetMaster.AddedOn, 
-             dbo.tbl20105AssetMaster.ModifiedBy, dbo.tbl20105AssetMaster.ModifiedOn, dbo.tbl20105AssetMaster.IsDiscontinued, dbo.tbl20105AssetMaster.DiscontinuedOn, dbo.tbl20105AssetMaster.DiscontinuedRemarks, dbo.tbl20106AssetCategories.AssetCategory, 
-             dbo.tbl20107AssetLocations.AssetLocation, dbo.tbl20106AssetCategories.DepreciationLedgerNo, dbo.tbl20106AssetCategories.AccumDepLedgerNo, dbo.tbl20105AssetMaster.AssetLocation AS Expr1, dbo.tbl20105AssetMaster.PurchasedFrom, 
-             dbo.tbl20105AssetMaster.CurrentCondition, dbo.tbl20105AssetMaster.PurchasedAs2, dbo.tbl20105AssetMaster.FinancedBy, dbo.tbl20105AssetMaster.CurrentReading, dbo.tbl20105AssetMaster.DepPercentage, dbo.tbl20105AssetMaster.AssetType, dbo.tbl20105AssetMaster.FMV, 
-             dbo.tbl20105AssetMaster.BMV, dbo.tbl20105AssetMaster.PropertyNo,dbo.tbl20105AssetMaster.CurrencyRate
-FROM   dbo.tbl20105AssetMaster LEFT OUTER JOIN
-             dbo.tbl20106AssetCategories ON dbo.tbl20105AssetMaster.AssetCategory = dbo.tbl20106AssetCategories.AssetCategoryCode LEFT OUTER JOIN
-             dbo.tbl20107AssetLocations ON dbo.tbl20105AssetMaster.AssetLocation = dbo.tbl20107AssetLocations.AssetLocationCode
+ALter view Aicon.qry20148AssetRegister as
+			 SELECT Aicon.tbl20105AssetMaster.AssetLedgerNo, Aicon.tbl20105AssetMaster.AssetDescription, Aicon.tbl20105AssetMaster.Specifications, Aicon.tbl20105AssetMaster.Brand, Aicon.tbl20105AssetMaster.PlateNo, Aicon.tbl20105AssetMaster.Model, Aicon.tbl20105AssetMaster.Year, 
+             Aicon.tbl20105AssetMaster.Ownership, Aicon.tbl20105AssetMaster.PurchaseDate, Aicon.tbl20105AssetMaster.PurchasedAs, Aicon.tbl20105AssetMaster.IsFinanced, Aicon.tbl20105AssetMaster.FinancedFrom, Aicon.tbl20105AssetMaster.ValueOfProperty, 
+             Aicon.tbl20105AssetMaster.InitialDownPayment, Aicon.tbl20105AssetMaster.InitialDocCharges, Aicon.tbl20105AssetMaster.MonthlyInstallment, Aicon.tbl20105AssetMaster.NoOfInstallments, Aicon.tbl20105AssetMaster.InstallmentStartDate, Aicon.tbl20105AssetMaster.InstallmentEndDate, 
+             Aicon.tbl20105AssetMaster.FinalInstallment, Aicon.tbl20105AssetMaster.DepreciationMethod, Aicon.tbl20105AssetMaster.LifeSpanOfProperty, Aicon.tbl20105AssetMaster.ScrapValueOfProperty, Aicon.tbl20105AssetMaster.AddedBy, Aicon.tbl20105AssetMaster.AddedOn, 
+             Aicon.tbl20105AssetMaster.ModifiedBy, Aicon.tbl20105AssetMaster.ModifiedOn, Aicon.tbl20105AssetMaster.IsDiscontinued, Aicon.tbl20105AssetMaster.DiscontinuedOn, Aicon.tbl20105AssetMaster.DiscontinuedRemarks, Aicon.tbl20106AssetCategories.AssetCategory, 
+             Aicon.tbl20107AssetLocations.AssetLocation, Aicon.tbl20106AssetCategories.DepreciationLedgerNo, Aicon.tbl20106AssetCategories.AccumDepLedgerNo, Aicon.tbl20105AssetMaster.AssetLocation AS Expr1, Aicon.tbl20105AssetMaster.PurchasedFrom, 
+             Aicon.tbl20105AssetMaster.CurrentCondition, Aicon.tbl20105AssetMaster.PurchasedAs2, Aicon.tbl20105AssetMaster.FinancedBy, Aicon.tbl20105AssetMaster.CurrentReading, Aicon.tbl20105AssetMaster.DepPercentage, Aicon.tbl20105AssetMaster.AssetType, Aicon.tbl20105AssetMaster.FMV, 
+             Aicon.tbl20105AssetMaster.BMV, Aicon.tbl20105AssetMaster.PropertyNo,Aicon.tbl20105AssetMaster.CurrencyRate
+FROM   Aicon.tbl20105AssetMaster LEFT OUTER JOIN
+             Aicon.tbl20106AssetCategories ON Aicon.tbl20105AssetMaster.AssetCategory = Aicon.tbl20106AssetCategories.AssetCategoryCode LEFT OUTER JOIN
+             Aicon.tbl20107AssetLocations ON Aicon.tbl20105AssetMaster.AssetLocation = Aicon.tbl20107AssetLocations.AssetLocationCode
 
 
-ALter view dbo.qry20149AssetsRegisterView as
-SELECT dbo.qry20147AssetLedgers.MasterGroupID, dbo.qry20147AssetLedgers.MasterGroup, dbo.qry20147AssetLedgers.AccountGroup, dbo.qry20147AssetLedgers.AccountID, dbo.qry20147AssetLedgers.AccountHead, dbo.qry20148AssetRegister.AssetLedgerNo, 
-             dbo.qry20148AssetRegister.AssetDescription, dbo.qry20148AssetRegister.Specifications, dbo.qry20148AssetRegister.Brand, dbo.qry20148AssetRegister.PlateNo, dbo.qry20148AssetRegister.Model, dbo.qry20148AssetRegister.Year, dbo.qry20148AssetRegister.Ownership, 
-             dbo.qry20148AssetRegister.PurchaseDate, dbo.qry20148AssetRegister.PurchasedAs, dbo.qry20148AssetRegister.IsFinanced, dbo.qry20148AssetRegister.FinancedFrom, dbo.qry20148AssetRegister.ValueOfProperty, dbo.qry20148AssetRegister.InitialDownPayment, 
-             dbo.qry20148AssetRegister.InitialDocCharges, dbo.qry20148AssetRegister.MonthlyInstallment, dbo.qry20148AssetRegister.NoOfInstallments, dbo.qry20148AssetRegister.InstallmentStartDate, dbo.qry20148AssetRegister.InstallmentEndDate, 
-             dbo.qry20148AssetRegister.FinalInstallment, dbo.qry20148AssetRegister.DepreciationMethod, dbo.qry20148AssetRegister.LifeSpanOfProperty, dbo.qry20148AssetRegister.ScrapValueOfProperty, dbo.qry20148AssetRegister.AddedBy, dbo.qry20148AssetRegister.AddedOn, 
-             dbo.qry20148AssetRegister.ModifiedBy, dbo.qry20148AssetRegister.ModifiedOn, dbo.qry20148AssetRegister.IsDiscontinued, dbo.qry20148AssetRegister.DiscontinuedOn, dbo.qry20148AssetRegister.DiscontinuedRemarks, dbo.qry20148AssetRegister.AssetCategory, 
-             dbo.qry20148AssetRegister.AssetLocation, dbo.qry20150AssetDepreciation.ValueAfterScrap, dbo.qry20150AssetDepreciation.MonthlyDepreciation, dbo.qry20150AssetDepreciation.YearlyDepreciation, dbo.qry20150AssetDepreciation.NoOfMonthsOld, 
-             dbo.qry20150AssetDepreciation.DepAsOnDate, dbo.qry20150AssetDepreciation.CurrentValueOfAsset, dbo.qry201_203DepreciationTransMaster02.OpeningTotal, 
-			 dbo.qry201_203DepreciationTransMaster02.TotalDebit,
-			 dbo.qry201_203DepreciationTransMaster02.TotalDebit * ISNULL(dbo.qry20148AssetRegister.CurrencyRate, 1) as ConvertedTotalDebit,
-			 dbo.qry201_203DepreciationTransMaster02.TotalCredit,
-			 dbo.qry201_203DepreciationTransMaster02.TotalCredit * ISNULL(dbo.qry20148AssetRegister.CurrencyRate, 1) as ConvertedTotalCredit,
-             dbo.qry201_203DepreciationTransMaster02.ClosingBalance, 
-			 dbo.qry201_203DepreciationTransMaster02.ClosingBalance * ISNULL(dbo.qry20148AssetRegister.CurrencyRate, 1) as ConvertedClosingBalance,
-			 dbo.qry201_203DepreciationTransMaster02.DepreciationPercentage, 
-			 dbo.qry201_203DepreciationTransMaster02.TotalDepreciatedAmount, 
-			 dbo.qry201_203DepreciationTransMaster02.TotalDepreciatedAmount * ISNULL(dbo.qry20148AssetRegister.CurrencyRate, 1) as ConvertedDepreciatedAmount,
-			 dbo.qry201_203DepreciationTransMaster02.CalculatedDepreciationAmount, 
-             dbo.qry201_203DepreciationTransMaster02.FinalDepreciationAmount, 
-			dbo.qry201_203DepreciationTransMaster02.AccumulatedDepreciationTotal, 
-			dbo.qry201_203DepreciationTransMaster02.BookValue, 
-			dbo.qry201_203DepreciationTransMaster02.BookValue * ISNULL(dbo.qry20148AssetRegister.CurrencyRate, 1) as ConvertedBookValue,
-			dbo.qry20148AssetRegister.DepreciationLedgerNo, 
-             dbo.qry20148AssetRegister.AccumDepLedgerNo, dbo.qry20148AssetRegister.PurchasedFrom, dbo.qry20148AssetRegister.CurrentCondition, dbo.qry20148AssetRegister.PurchasedAs2, dbo.qry20148AssetRegister.FinancedBy, dbo.qry20148AssetRegister.CurrentReading, 
-             dbo.qry20148AssetRegister.AssetType, dbo.qry20148AssetRegister.FMV, dbo.qry20148AssetRegister.BMV, dbo.qry20148AssetRegister.PropertyNo, dbo.qry201_203DepreciationTransMaster02.NetBookValue, dbo.qry40102PropertyMasterView2.ChassisNo AS EquipmentSerialNo, 
-             dbo.qry40102PropertyMasterView2.Location AS EquipmentLocationDelivered, dbo.qry40102PropertyMasterView2.CurrentStatus AS EquipmentCurrentStatus, dbo.qry40102PropertyMasterView2.MobilizedTo AS EquipmentMobilizedTo, 
-             dbo.qry40102PropertyMasterView2.ClientSite AS EquipmentClientSite, dbo.qry40102PropertyMasterView2.ClientRatePerHour AS EquipmentClientRatePerHour, dbo.qry40102PropertyMasterView2.PropertyCertification AS EquipmentCertification, 
-             dbo.qry40102PropertyMasterView2.PropertyPWAS AS EquipmentPWAS, dbo.qry40102PropertyMasterView2.PropertyAttachment AS EquipmentAttachments, dbo.qry40102PropertyMasterView2.EquipmentOperatorName AS EquipmentCurrentOperators, 
-             dbo.qry40102PropertyMasterView2.Capacity AS EquipmentCapacity
-FROM   dbo.qry40102PropertyMasterView2 RIGHT OUTER JOIN
-             dbo.qry20148AssetRegister ON dbo.qry40102PropertyMasterView2.PropertyNo = dbo.qry20148AssetRegister.PropertyNo RIGHT OUTER JOIN
-             dbo.qry20147AssetLedgers LEFT OUTER JOIN
-             dbo.qry201_203DepreciationTransMaster02 ON dbo.qry20147AssetLedgers.AccountID = dbo.qry201_203DepreciationTransMaster02.AccountHead LEFT OUTER JOIN
-             dbo.qry20150AssetDepreciation ON dbo.qry20147AssetLedgers.AccountID = dbo.qry20150AssetDepreciation.AssetLedgerNo ON dbo.qry20148AssetRegister.AssetLedgerNo = dbo.qry20147AssetLedgers.AccountID
+ALter view Aicon.qry20149AssetsRegisterView as
+SELECT Aicon.qry20147AssetLedgers.MasterGroupID, Aicon.qry20147AssetLedgers.MasterGroup, Aicon.qry20147AssetLedgers.AccountGroup, Aicon.qry20147AssetLedgers.AccountID, Aicon.qry20147AssetLedgers.AccountHead, Aicon.qry20148AssetRegister.AssetLedgerNo, 
+             Aicon.qry20148AssetRegister.AssetDescription, Aicon.qry20148AssetRegister.Specifications, Aicon.qry20148AssetRegister.Brand, Aicon.qry20148AssetRegister.PlateNo, Aicon.qry20148AssetRegister.Model, Aicon.qry20148AssetRegister.Year, Aicon.qry20148AssetRegister.Ownership, 
+             Aicon.qry20148AssetRegister.PurchaseDate, Aicon.qry20148AssetRegister.PurchasedAs, Aicon.qry20148AssetRegister.IsFinanced, Aicon.qry20148AssetRegister.FinancedFrom, Aicon.qry20148AssetRegister.ValueOfProperty, Aicon.qry20148AssetRegister.InitialDownPayment, 
+             Aicon.qry20148AssetRegister.InitialDocCharges, Aicon.qry20148AssetRegister.MonthlyInstallment, Aicon.qry20148AssetRegister.NoOfInstallments, Aicon.qry20148AssetRegister.InstallmentStartDate, Aicon.qry20148AssetRegister.InstallmentEndDate, 
+             Aicon.qry20148AssetRegister.FinalInstallment, Aicon.qry20148AssetRegister.DepreciationMethod, Aicon.qry20148AssetRegister.LifeSpanOfProperty, Aicon.qry20148AssetRegister.ScrapValueOfProperty, Aicon.qry20148AssetRegister.AddedBy, Aicon.qry20148AssetRegister.AddedOn, 
+             Aicon.qry20148AssetRegister.ModifiedBy, Aicon.qry20148AssetRegister.ModifiedOn, Aicon.qry20148AssetRegister.IsDiscontinued, Aicon.qry20148AssetRegister.DiscontinuedOn, Aicon.qry20148AssetRegister.DiscontinuedRemarks, Aicon.qry20148AssetRegister.AssetCategory, 
+             Aicon.qry20148AssetRegister.AssetLocation, Aicon.qry20150AssetDepreciation.ValueAfterScrap, Aicon.qry20150AssetDepreciation.MonthlyDepreciation, Aicon.qry20150AssetDepreciation.YearlyDepreciation, Aicon.qry20150AssetDepreciation.NoOfMonthsOld, 
+             Aicon.qry20150AssetDepreciation.DepAsOnDate, Aicon.qry20150AssetDepreciation.CurrentValueOfAsset, Aicon.qry201_203DepreciationTransMaster02.OpeningTotal, 
+			 Aicon.qry201_203DepreciationTransMaster02.TotalDebit,
+			 Aicon.qry201_203DepreciationTransMaster02.TotalDebit * ISNULL(Aicon.qry20148AssetRegister.CurrencyRate, 1) as ConvertedTotalDebit,
+			 Aicon.qry201_203DepreciationTransMaster02.TotalCredit,
+			 Aicon.qry201_203DepreciationTransMaster02.TotalCredit * ISNULL(Aicon.qry20148AssetRegister.CurrencyRate, 1) as ConvertedTotalCredit,
+             Aicon.qry201_203DepreciationTransMaster02.ClosingBalance, 
+			 Aicon.qry201_203DepreciationTransMaster02.ClosingBalance * ISNULL(Aicon.qry20148AssetRegister.CurrencyRate, 1) as ConvertedClosingBalance,
+			 Aicon.qry201_203DepreciationTransMaster02.DepreciationPercentage, 
+			 Aicon.qry201_203DepreciationTransMaster02.TotalDepreciatedAmount, 
+			 Aicon.qry201_203DepreciationTransMaster02.TotalDepreciatedAmount * ISNULL(Aicon.qry20148AssetRegister.CurrencyRate, 1) as ConvertedDepreciatedAmount,
+			 Aicon.qry201_203DepreciationTransMaster02.CalculatedDepreciationAmount, 
+             Aicon.qry201_203DepreciationTransMaster02.FinalDepreciationAmount, 
+			Aicon.qry201_203DepreciationTransMaster02.AccumulatedDepreciationTotal, 
+			Aicon.qry201_203DepreciationTransMaster02.BookValue, 
+			Aicon.qry201_203DepreciationTransMaster02.BookValue * ISNULL(Aicon.qry20148AssetRegister.CurrencyRate, 1) as ConverteAiconokValue,
+			Aicon.qry20148AssetRegister.DepreciationLedgerNo, 
+             Aicon.qry20148AssetRegister.AccumDepLedgerNo, Aicon.qry20148AssetRegister.PurchasedFrom, Aicon.qry20148AssetRegister.CurrentCondition, Aicon.qry20148AssetRegister.PurchasedAs2, Aicon.qry20148AssetRegister.FinancedBy, Aicon.qry20148AssetRegister.CurrentReading, 
+             Aicon.qry20148AssetRegister.AssetType, Aicon.qry20148AssetRegister.FMV, Aicon.qry20148AssetRegister.BMV, Aicon.qry20148AssetRegister.PropertyNo, Aicon.qry201_203DepreciationTransMaster02.NetBookValue, Aicon.qry40102PropertyMasterView2.ChassisNo AS EquipmentSerialNo, 
+             Aicon.qry40102PropertyMasterView2.Location AS EquipmentLocationDelivered, Aicon.qry40102PropertyMasterView2.CurrentStatus AS EquipmentCurrentStatus, Aicon.qry40102PropertyMasterView2.MobilizedTo AS EquipmentMobilizedTo, 
+             Aicon.qry40102PropertyMasterView2.ClientSite AS EquipmentClientSite, Aicon.qry40102PropertyMasterView2.ClientRatePerHour AS EquipmentClientRatePerHour, Aicon.qry40102PropertyMasterView2.PropertyCertification AS EquipmentCertification, 
+             Aicon.qry40102PropertyMasterView2.PropertyPWAS AS EquipmentPWAS, Aicon.qry40102PropertyMasterView2.PropertyAttachment AS EquipmentAttachments, Aicon.qry40102PropertyMasterView2.EquipmentOperatorName AS EquipmentCurrentOperators, 
+             Aicon.qry40102PropertyMasterView2.Capacity AS EquipmentCapacity
+FROM   Aicon.qry40102PropertyMasterView2 RIGHT OUTER JOIN
+             Aicon.qry20148AssetRegister ON Aicon.qry40102PropertyMasterView2.PropertyNo = Aicon.qry20148AssetRegister.PropertyNo RIGHT OUTER JOIN
+             Aicon.qry20147AssetLedgers LEFT OUTER JOIN
+             Aicon.qry201_203DepreciationTransMaster02 ON Aicon.qry20147AssetLedgers.AccountID = Aicon.qry201_203DepreciationTransMaster02.AccountHead LEFT OUTER JOIN
+             Aicon.qry20150AssetDepreciation ON Aicon.qry20147AssetLedgers.AccountID = Aicon.qry20150AssetDepreciation.AssetLedgerNo ON Aicon.qry20148AssetRegister.AssetLedgerNo = Aicon.qry20147AssetLedgers.AccountID
+
+
 
 
 
