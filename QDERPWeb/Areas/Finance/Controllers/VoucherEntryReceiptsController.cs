@@ -2933,8 +2933,19 @@ namespace Form.Areas.Finance.Controllers
                     foreach (var petty in newlist)
                     {
                         pettycashid = petty.AccountHead;
+
+                        // Check if petty.AccountHead is in Tbl201ChartsofAccounts with AccountGroupId 'A003'
+                        bool isValidAccountHead = dbContext.Tbl201ChartOfAccounts
+                            .Any(c => c.AccountId == pettycashid && c.AccountGroupId == "A003");
+
+                        if (!isValidAccountHead)
+                        {
+                            Console.WriteLine($"AccountHead {pettycashid} is not under AccountGroupId A003");
+                            continue; // Skip this record
+                        }
+
                         var existingSubLedger = dbContext.Tbl201SubLedgerMasters
-.FirstOrDefault(x => x.VoucherEntryNo == petty.VoucherEntryNo && x.DrCr == petty.DrCr);
+                       .FirstOrDefault(x => x.VoucherEntryNo == petty.VoucherEntryNo && x.DrCr == petty.DrCr);
                         if (existingSubLedger == null)
                         {
                             subLedgerMaster.VoucherNo = petty.VoucherNo;
@@ -3199,6 +3210,17 @@ namespace Form.Areas.Finance.Controllers
                     {
                         NewId = petty.AccountHead;
                         NewCrMinusAmt = (int)petty.CrAmount;
+
+                        // Check if petty.AccountHead is in Tbl201ChartsofAccounts with AccountGroupId 'A003'
+                        bool isValidAccountHead = dbContext.Tbl201ChartOfAccounts
+                            .Any(c => c.AccountId == NewId && c.AccountGroupId == "A003");
+
+                        if (!isValidAccountHead)
+                        {
+                            Console.WriteLine($"AccountHead {NewId} is not under AccountGroupId A003");
+                            continue; // Skip this record
+                        }
+
                         var existingSubLedger = dbContext.Tbl201SubLedgerMasters
 .FirstOrDefault(x => x.VoucherEntryNo == petty.VoucherEntryNo && x.DrCr == petty.DrCr);
                         if (existingSubLedger == null)
