@@ -1500,7 +1500,7 @@ SELECT     VoucherEntryNo, VoucherNo, AccountHead, VoucherAmount, DrCr, AddedBy,
 FROM         Aicon.tbl201VoucherEntry
 
 
-ALTER TABLE dbo.Tbl20116LedgerDocuments 
+ALTER TABLE Aicon.Tbl20116LedgerDocuments 
         ADD AzurePath VARCHAR(MAX) NULL; 
  
 
@@ -1742,7 +1742,7 @@ FROM   Aicon.qry40102PropertyMasterView2 RIGHT OUTER JOIN
 
 
 
-             CREATE OR ALTER FUNCTION dbo.fn_GetDefaultCompanyDetails()
+             CREATE OR ALTER FUNCTION Aicon.fn_GetDefaultCompanyDetails()
 RETURNS TABLE
 AS
 RETURN
@@ -1752,7 +1752,7 @@ RETURN
         -- 1) grab the raw setting
         SELECT TOP (1)
             DefaultCompanyId
-        FROM dbo.tbl901CompanyDetails
+        FROM Aicon.tbl901CompanyDetails
         -- you could filter here if it’s per-user, per-tenant, etc.
     ),
     NormSelector AS
@@ -1774,7 +1774,7 @@ RETURN
             DefaultCompanyId,
             currencytype,
             ROW_NUMBER() OVER (ORDER BY CompanyId) AS rn
-        FROM dbo.tbl901CompanyDetails
+        FROM Aicon.tbl901CompanyDetails
     )
     -- 4) pick out exactly the Nth row
     SELECT
@@ -1789,7 +1789,7 @@ GO
 
 
 
-  ALTER PROCEDURE [dbo].[StProAccountLedger]    
+  ALTER PROCEDURE [Aicon].[StProAccountLedger]    
 
     @ParamAccountNo VARCHAR(50),    
 
@@ -1820,7 +1820,7 @@ BEGIN
   
     SELECT  @BaseCurrencyCode = CurrencyType       
   
-    FROM dbo.fn_GetDefaultCompanyDetails();    
+    FROM Aicon.fn_GetDefaultCompanyDetails();    
  
     -- Get Base Currency Details 
 
@@ -1848,7 +1848,7 @@ BEGIN
 	'' AS ReferenceNote, @BaseCurrencyCode AS CurrencyType, 1 AS ExchangeRate, @BaseCurrencyImage AS CurrencyImage, @BaseCurrencySymbole AS CurrencySymbole, @BaseCurrencyNote AS CurrencyNote, 
 	@BaseCurrencyDisplayCode AS CurrencyCode, NULL AS CurrencyName, NULL AS TransactionCurrencySymbol
 
-    FROM dbo.qry201MainVoucherEntriesWithMaster   
+    FROM Aicon.qry201MainVoucherEntriesWithMaster   
 
     WHERE AccountHead = @ParamAccountNo  
 
@@ -1874,15 +1874,15 @@ BEGIN
 
     SELECT q.VoucherNo, q.VoucherDate, q.VoucherRefNo, q.VoucherNarration, q.VoucherEnteredBy, q.VoucherEnteredOn, q.VoucherVerifiedBy, q.VoucherVerifiedOn, q.VoucherApprovedBy, q.VoucherApprovedOn, q.VoucherEntryNo, q.AccountHead, q.AccountHeadName, q.DrCr, q.DrAmount, q.CrAmount, q.VoucherAmountFormatted, q.VoucherAmountFormatted * ISNULL(q.CurrencyRate, 1) AS ConvertedAmount, q.DrAmount * ISNULL(q.CurrencyRate, 1) AS ConvertedDrAmount, q.CrAmount * ISNULL(q.CurrencyRate, 1) AS ConvertedCrAmount, q.EntryNarration, ag.AccountGroup, mg.MasterGroup, q.VoucherType, q.SysRemarks, q.VoucherModifiedBy, q.VoucherModifiedOn, q.BillNo, q.BillDate, q.BillPaidTo, q.BillRemarks, q.VoucherEffectiveDate, q.AccountHeadArabic, q.ReferenceNote, @BaseCurrencyCode AS CurrencyType, q.CurrencyRate AS ExchangeRate, @BaseCurrencyImage AS CurrencyImage, @BaseCurrencySymbole AS CurrencySymbole, @BaseCurrencyNote AS CurrencyNote, @BaseCurrencyDisplayCode AS CurrencyCode, cex.CurrencyName, cex.CurrencySymbole AS TransactionCurrencySymbol
  
-    FROM dbo.qry201MainVoucherEntriesWithMaster q 
+    FROM Aicon.qry201MainVoucherEntriesWithMaster q 
 
-    INNER JOIN dbo.tbl201ChartOfAccounts ca ON ca.AccountID = q.AccountHead 
+    INNER JOIN Aicon.tbl201ChartOfAccounts ca ON ca.AccountID = q.AccountHead 
 
-    LEFT JOIN dbo.tbl201AccountGroups ag ON ca.AccountGroupID = ag.AccountGroupID 
+    LEFT JOIN Aicon.tbl201AccountGroups ag ON ca.AccountGroupID = ag.AccountGroupID 
 
-    LEFT JOIN dbo.tbl201MasterGroup mg ON ag.AccountGroupUnder = mg.MasterGroupID 
+    LEFT JOIN Aicon.tbl201MasterGroup mg ON ag.AccountGroupUnder = mg.MasterGroupID 
 
-    LEFT JOIN dbo.tbl20169CurrencyExchange cex ON q.CurrencyId = cex.CurrencyExchangeID
+    LEFT JOIN Aicon.tbl20169CurrencyExchange cex ON q.CurrencyId = cex.CurrencyExchangeID
 
     WHERE q.AccountHead = @ParamAccountNo  
 
@@ -1894,7 +1894,7 @@ END
   
   
   
-CREATE PROCEDURE [dbo].[StProAccountLedgerByVoucherType]       
+ALter  PROCEDURE [Aicon].[StProAccountLedgerByVoucherType]       
     @VoucherType VARCHAR(50),       
     @StartDate DATETIME,      
     @EndDate DATETIME      
@@ -1916,7 +1916,7 @@ BEGIN
   
     SELECT  @BaseCurrencyCode = CurrencyType       
   
-    FROM dbo.fn_GetDefaultCompanyDetails();      
+    FROM Aicon.fn_GetDefaultCompanyDetails();      
   
   
   
@@ -1928,7 +1928,7 @@ BEGIN
         @BaseCurrencySymbole = CurrencySymbole,      
         @BaseCurrencyNote = CurrencyNote,      
         @BaseCurrencyDisplayCode = CurrencyCode      
-    FROM dbo.tbl20169CurrencyExchange       
+    FROM Aicon.tbl20169CurrencyExchange       
   
     WHERE CurrencyMasterCode = @BaseCurrencyCode;      
   
@@ -1942,11 +1942,11 @@ BEGIN
    CurrencySymbole, @BaseCurrencyNote AS CurrencyNote, @BaseCurrencyDisplayCode AS CurrencyCode
        
   
-        FROM dbo.tbl201MasterGroup mg    
-        RIGHT OUTER JOIN dbo.tbl201AccountGroups ag ON mg.MasterGroupID = ag.AccountGroupUnder    
-        RIGHT OUTER JOIN dbo.tbl201ChartOfAccounts ca ON ag.AccountGroupID = ca.AccountGroupID    
-        RIGHT OUTER JOIN dbo.qry201MainVoucherEntriesWithMaster q ON ca.AccountID = q.AccountHead    
-LEFT JOIN dbo.tbl20169CurrencyExchange cex ON cex.CurrencyExchangeId = q.Currencyid   
+        FROM Aicon.tbl201MasterGroup mg    
+        RIGHT OUTER JOIN Aicon.tbl201AccountGroups ag ON mg.MasterGroupID = ag.AccountGroupUnder    
+        RIGHT OUTER JOIN Aicon.tbl201ChartOfAccounts ca ON ag.AccountGroupID = ca.AccountGroupID    
+        RIGHT OUTER JOIN Aicon.qry201MainVoucherEntriesWithMaster q ON ca.AccountID = q.AccountHead    
+LEFT JOIN Aicon.tbl20169CurrencyExchange cex ON cex.CurrencyExchangeId = q.Currencyid   
     
   
         WHERE     
@@ -1961,11 +1961,11 @@ LEFT JOIN dbo.tbl20169CurrencyExchange cex ON cex.CurrencyExchangeId = q.Currenc
 	   * ISNULL(q.CurrencyRate, 1) AS ConvertedDrAmount, q.CrAmount * ISNULL(q.CurrencyRate, 1) AS ConvertedCrAmount, q.CurrencyRate AS ExchangeRate, @BaseCurrencyCode AS CurrencyType, @BaseCurrencyImage AS CurrencyImage,
 	   @BaseCurrencySymbole AS CurrencySymbole, @BaseCurrencyNote AS CurrencyNote, @BaseCurrencyDisplayCode AS CurrencyCode
 	   
-        FROM dbo.tbl201MasterGroup mg    
-        RIGHT OUTER JOIN dbo.tbl201AccountGroups ag ON mg.MasterGroupID = ag.AccountGroupUnder    
-        RIGHT OUTER JOIN dbo.tbl201ChartOfAccounts ca ON ag.AccountGroupID = ca.AccountGroupID    
-        RIGHT OUTER JOIN dbo.qry201MainVoucherEntriesWithMaster q ON ca.AccountID = q.AccountHead    
-LEFT JOIN dbo.tbl20169CurrencyExchange cex ON cex.CurrencyExchangeId = q.Currencyid   
+        FROM Aicon.tbl201MasterGroup mg    
+        RIGHT OUTER JOIN Aicon.tbl201AccountGroups ag ON mg.MasterGroupID = ag.AccountGroupUnder    
+        RIGHT OUTER JOIN Aicon.tbl201ChartOfAccounts ca ON ag.AccountGroupID = ca.AccountGroupID    
+        RIGHT OUTER JOIN Aicon.qry201MainVoucherEntriesWithMaster q ON ca.AccountID = q.AccountHead    
+LEFT JOIN Aicon.tbl20169CurrencyExchange cex ON cex.CurrencyExchangeId = q.Currencyid   
   
         WHERE     
             q.VoucherDate BETWEEN @StartDate AND DATEADD(SECOND, 86399, @EndDate)    
