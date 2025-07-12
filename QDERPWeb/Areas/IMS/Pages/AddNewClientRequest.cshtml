@@ -7345,5 +7345,13 @@ $(document).ready(function () {
 		console.log('End permission handling');
 	});
 
+function onUploadButtonClick() {
+    const requestNo = $('#txtRequestNo').dxTextBox("instance").option("value");
+    if (!requestNo) {
+        DevExpress.ui.notify("Request No is required.", "error", 2000);
+        return;
+    }
+    window.location.href = `/${tenantName}/IMS/InventoryListToUpload?requestNo=${encodeURIComponent(requestNo)}`;
+}
 
 </script>
