@@ -90,4 +90,8 @@ public partial class Tbl20105AssetMaster
     public decimal? Bmv { get; set; }
 
     public string PropertyNo { get; set; }
+
+    public int? ConversionCurrencyID { get; set; }
+    public int? BaseCurrencyID { get; set; }
+    public Decimal? CurrencyRate { get; set; }
 }
