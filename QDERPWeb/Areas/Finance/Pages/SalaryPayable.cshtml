@@ -198,7 +198,8 @@
                     .LabelMode(EditorLabelMode.Outside)
                     .Type(DateBoxType.Date)
                     .DisplayFormat("dd-MMM-yyyy")
-                    .Value(DateTime.Now))
+                    .Value(DateTime.Now)
+                    .ElementAttr("class", "dynamicFormatDateBox"))
             </div>
 
             <div style="margin-top:25px;">
@@ -585,17 +586,5 @@
 
         });
     }
-            $(function () {
-        const dateBox = $("#EffectiveDate").dxDateBox("instance");
-
-        // When focus/typing starts, change to dd-MM-yyyy
-        $("#EffectiveDate").on("focusin", function () {
-            dateBox.option("displayFormat", "dd-MM-yyyy");
-        });
-
-        // When focus/typing ends, change back to dd-MMM-yyyy
-        $("#EffectiveDate").on("focusout", function () {
-            dateBox.option("displayFormat", "dd-MMM-yyyy");
-        });
-    });
+        
     </script>

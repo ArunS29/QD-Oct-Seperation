@@ -354,6 +354,14 @@
         font-size: 1rem; /* Optional: make the icon larger */
     }
     
+    .custom-preview-btn i,
+    .custom-download-btn i {
+        font-size: 16px;
+        margin-right: 6px;
+        color: #007bff;
+        cursor: pointer;
+    }
+
 </style>
 
 
@@ -375,7 +383,7 @@
         <div class="form-row" style="margin: 10px;">
 
             <!-- Two Column Section -->
-            <div style="display: flex; gap: 10px; align-items: flex-start; flex-wrap: wrap;">
+            <div style="display: flex; gap: 10px; align-items: flex-start; flex-wrap: wrap; height:400px;">
 
                 <!-- Left Column -->
                 <div style="flex: 1; min-width: 300px;">
@@ -400,7 +408,7 @@
 
                     <!-- DropZone -->
                     <div class="drop-zone" id="dropZone"
-                         style="height: 230px; border: 2px dashed #aaa; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                         style="height: 250px; border: 2px dashed #aaa; display: flex; flex-direction: column; align-items: center; justify-content: center;">
                         <i class="dx-icon dx-icon-upload" style="font-size: 36px; color: #6c757d;"></i>
                         <p style="margin: 10px 0; font-weight: 500;">Drag & drop files here or click to browse</p>
                         <input type="file" id="fileUploader" multiple style="display:none;" />
@@ -409,7 +417,7 @@
 
                 <!-- Right Column: Preview -->
                 <div id="preview"
-                     style="flex: 1; min-width: 300px; min-height: 350px; border: 1px solid #ccc; padding: 10px; background-color: #f9f9f9; overflow-y: auto;">
+                     style="flex: 1; min-width: 350px; min-height: 390px; border: 1px solid #ccc; padding: 10px; background-color: #f9f9f9; overflow-y: auto;">
                     <!-- File previews will appear here -->
                 </div>
             </div>
@@ -476,6 +484,7 @@
             }),
 
             height: 250,
+            width: "100%",
             showBorders: true,
             columnAutoWidth: true,
             paging: { enabled: true },
@@ -513,10 +522,10 @@
                     }
                 },
 
-
                 {
                     dataField: "DocumentType",
                     caption: "Document Type",
+
                     editorType: "dxSelectBox",
                     editCellTemplate: function (cellElement, cellInfo) {
                         const $selectBox = $("<div>").appendTo(cellElement).dxSelectBox({
@@ -531,14 +540,13 @@
                             showDropDownButton: true,
                             buttons: [
                                 "dropDown",
-                                    {
+                                {
                                     name: "add",
                                     location: "after",
                                     options: {
                                         icon: "plus",
                                         stylingMode: "text",
                                         onClick: function () {
-                                            // 👇 Call your existing modal open method
                                             onAddDocType();
                                         }
                                     }
@@ -629,44 +637,61 @@
                 },
 
                 {
-                    caption: "Actions",
-                    width: 80,
-                    
-                    cellTemplate: function (container, options) {
-                        const rowData = options.data;
-                        const grid = $("#documentsGrid").dxDataGrid("instance");
-
-                        // Preview
-                        $("<a>")
-                            .attr("href", "javascript:void(0)")
-                            .attr("title", "Preview")
-                            .addClass("dx-link")
-                            .html('<i class="fas fa-eye"></i>')
-                            .css({ marginRight: "10px", fontSize: "18px" })
-                            .on("click", function () {
-                                openPreviewDialog(rowData);
-                            })
-                            .appendTo(container);
-
-                        // Download
-                        $("<a>")
-                            .attr("href", rowData.FileUrl)
-                            .attr("download", "")
-                            .attr("title", "Download")
-                            .addClass("dx-link")
-                            .html('<i class="dx-icon dx-icon-download"></i>')
-                            .css({ marginRight: "10px", fontSize: "18px" })
-                            .appendTo(container);
-
+                type: "buttons",
+                caption: "Actions",
+                width: 180,
+                buttons: [
+                    {
+                        name: "edit", // built-in edit
+                        hint: "Edit"
+                    },
+                    {
+                        name: "delete", // built-in delete
+                        hint: "Delete"
+                    },
+                    {
+                        hint: "Preview",
+                        icon: "fas fa-eye", // Font Awesome
+                        onClick: function (e) {
+                            e.event.stopPropagation(); // prevent row click
+                            openPreviewDialog(e.row.data);
+                        },
+                        visible: function (e) {
+                            return !e.row.isEditing;
+                        },
+                        cssClass: "custom-preview-btn"
+                    },
+                    {
+                        hint: "Download",
+                        icon: "dx-icon-download",
+                        onClick: function (e) {
+                            e.event.stopPropagation(); // prevent row click
+                            const fileUrl = e.row.data.FileUrl;
+                            if (fileUrl) {
+                                const a = document.createElement("a");
+                                a.href = fileUrl;
+                                a.download = "";
+                                a.click();
+                            }
+                        },
+                        visible: function (e) {
+                            return !e.row.isEditing;
+                        },
+                        cssClass: "custom-download-btn"
                     }
-                }
+                ]
+            }
+
+
             ],
             onCellValueChanged: function (e) {
                 if (e.column.dataField === "DocumentExpDate" && e.value) {
                     const hijriDate = convertToHijri(new Date(e.value));
-                    e.component.cellValue(e.rowIndex, "DocumentExpDateAr", hijriDate); 
+                    e.component.cellValue(e.rowIndex, "DocumentExpDateAr", hijriDate);
                 }
             },
+
+
 
             onRowUpdating: function (e) {
                 e.newData = { ...e.oldData, ...e.newData };
@@ -931,7 +956,7 @@
         let previewContent = "";
 
         if (isImage) {
-            previewContent = `<img src="${url}" alt="${fileName}" style="max-width: 100%; max-height: 330px;" />`;
+            previewContent = `<img src="${url}" alt="${fileName}" style="max-width: 100%; max-height: 300px;" />`;
         } else if (isPdf) {
             previewContent = `<embed src="${url}#toolbar=0&navpanes=0&scrollbar=0" type="application/pdf" width="100%" height="400px" />`;
         } else if (isOffice) {
@@ -940,7 +965,7 @@
                 <iframe
                     src="https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(url)}"
                     width="100%"
-                    height="400px"
+                    height="380px"
                     frameborder="0">
                 </iframe>`;
         } else {
