@@ -89,6 +89,40 @@
         word-break: break-word;
     }
 
+    #dataGrid .debit-pill, #dataGrid .credit-pill, #dataGrid .closing-pill, #dataGrid .depreciation-pill, #dataGrid .book-pill {
+        display: inline-block;
+        padding: 2px 10px;
+        border-radius: 14px;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+    }
+
+    #dataGrid .debit-pill {
+        background: rgba(255, 77, 79, .15);
+        color: #ff4d4f;
+    }
+
+    #dataGrid .closing-pill {
+        background: rgba(255, 77, 79, .15);
+        color: #ff4d4f;
+    }
+
+
+    #dataGrid .credit-pill {
+        background: rgba(82, 196, 26, .15);
+        color: #52c41a;
+    }
+
+    #dataGrid .depreciation-pill {
+        background: rgba(255, 193, 7, 0.15); /* Light yellow background */
+        color: #ffc107; /* Bootstrap yellow */
+    }
+
+    #dataGrid .book-pill {
+        background: rgba(255, 193, 7, 0.15); /* Light yellow background */
+        color: #ffc107; /* Bootstrap yellow */
+    }
+
 </style>
 <div class="content-container-top">
 <div class="title" id="kpiCarousel">
@@ -181,7 +215,7 @@
             columns.AddFor(m => m.AddedBy).Caption("Added By").Visible(false);
             columns.AddFor(m => m.AddedOn).Caption("Added On").Visible(false);
             columns.AddFor(m => m.AssetDescription).Caption("Asset Description").Visible(false);
-            columns.AddFor(m => m.AccumDepLedgerNo).Caption("Accum Dep Ledger No").Visible(false);
+            //columns.AddFor(m => m.AccumDepLedgerNo).Caption("Accum Dep Ledger No").Visible(false);
             columns.AddFor(m => m.AssetType).Caption("Asset Type").Visible(false);
             columns.AddFor(m => m.BMV).Caption("BMV").Visible(false);
             columns.AddFor(m => m.CalculatedDepreciationAmount).Caption("Calculated Depreciation Amount").Visible(false);
@@ -215,23 +249,158 @@
                 group.Add().DataField("LifeSpanOfProperty").Caption(new JS("formatMessage('LifeSpanOfProperty')")).Alignment(HorizontalAlignment.Right);
                 group.Add().DataField("DepreciationPercentage").Caption(new JS("formatMessage('Depreciation')")).Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
                 group.Add().DataField("OpeningTotal").Caption(new JS("formatMessage('OpeningTotal')")).Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
-                group.Add().DataField("TotalDebit").Caption(new JS("formatMessage('TotalDebit')")).Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
+                group.Add().DataField("TotalDebit").Caption(new JS("formatMessage('Trans TotalDebit')")).Alignment(HorizontalAlignment.Right)
+                .CellTemplate(@<text>                                                                                                                                                                                                    
+                    <div class="debit-pill">                                                                                                                                                                                         
+                        <span style="color: black; font-weight: bold;"><%- data.TransactionCurrencySymbol %></span>
 
-                group.Add().DataField("TotalCredit").Caption(new JS("formatMessage('TotalCredit')")).Alignment(HorizontalAlignment.Right) // Ensure right alignment
-    .CustomizeText(@"
-    function(e) {
-    let value = e.value || 0; // Get the value
-    let formattedValue = Math.abs(value).toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-    });
-    // Append 'Cr' only for negative values
-    return value < 0 ? formattedValue + 'Cr' : formattedValue;
-    }");
+                            <%- data.TotalDebit != null ? data.TotalDebit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
+                            </div>
+                         </text>                                                                                                                                                                                                                                
+                    ).Visible(false);
 
-                group.Add().DataField("ClosingBalance").Caption(new JS("formatMessage('ClosingBalance')")).Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
-                group.Add().DataField("TotalDepreciatedAmount").Caption(new JS("formatMessage('TotalDepreciated')")).Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
-                group.Add().DataField("NetBookValue").Caption(new JS("formatMessage('NetBookValue')")).Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
+                        group.Add().DataField("ConvertedTotalDebit").Caption(new JS("formatMessage('TotalDebit')")).Alignment(HorizontalAlignment.Right)
+                 .HeaderCellTemplate(@<text>
+                                     <div class='debit-header' style='font-weight: bold;'>
+                                         <%= column.caption %>
+                                     </div>
+                                 </text>
+        )
+                    .CellTemplate(@<text>
+                                       <%
+                                       var val = data.ConvertedTotalDebit;
+                                       let displayValue;
+                                       if (val !== null && val !== undefined) {
+                                       let positive = Math.abs(val);
+                                       displayValue = positive.toLocaleString(undefined, {
+                                       minimumFractionDigits: 2,
+                                       maximumFractionDigits: 2
+                                       });
+                                       } else {
+                                       displayValue = "0.00";
+                                       }
+                                       %>
+                                       <div class="debit-pill">(<%- displayValue %>)</div>
+                                   </text>);
+                        
+
+      group.Add()
+    .DataField("TotalCredit")
+    .Caption(new JS("formatMessage('Tras TotalCredit')"))
+    .Alignment(HorizontalAlignment.Right)
+                    .CellTemplate(@<text>
+                                       <div class="credit-pill">
+                                           <span style="color: black; font-weight: bold;"><%- data.TransactionCurrencySymbol %></span>
+
+                            <%- data.TotalDebit != null ? data.ReceivableAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
+                        </div>
+                    </text>
+                    )
+    .Visible(false); // Make it visible to test output
+
+
+
+               group.Add()
+    .DataField("ConvertedTotalCredit")
+    .Caption(new JS("formatMessage('TotalCredit')"))
+    .Alignment(HorizontalAlignment.Right)
+    .HeaderCellTemplate(@<text>
+                                             <div class='credit-header' style='font-weight: bold;'>
+            <%= column.caption %>
+        </div>
+    </text>)
+                    .CellTemplate(@<text>
+                                       <%
+                                       var val = data.ConvertedTotalCredit;
+                                       let displayValue;
+                                       if (val !== null && val !== undefined) {
+                                       let positive = Math.abs(val);
+                                       displayValue = positive.toLocaleString(undefined, {
+                                       minimumFractionDigits: 2,
+                                       maximumFractionDigits: 2
+                                       });
+                                       } else {
+                                       displayValue = "0.00";
+                                       }
+                                       %>
+                                       <div class="credit-pill">(<%- displayValue %>)</div>
+                                   </text>);
+                        
+
+
+
+                group.Add().DataField("ClosingBalance").Caption(new JS("formatMessage('Trans ClosingBalance')")).Alignment(HorizontalAlignment.Right)
+                .CellTemplate(@<text>                                                                                                                                                                                                    
+                    <div class="closing-pill">                                                                                                                                                                                         
+                        <span style="color: black; font-weight: bold;"><%- data.TransactionCurrencySymbol %></span>
+
+                            <%- data.ClosingBalance != null ? data.ClosingBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
+                            </div>
+                         </text>                                                                                                                                                                                                                                
+
+                    ).Visible(false);
+
+                      group.Add().DataField("ConvertedClosingBalance").Caption(new JS("formatMessage('ClosingBalance')")).Alignment(HorizontalAlignment.Right)
+                      .HeaderCellTemplate(@<text>
+                                     <div class='closing-header' style='font-weight: bold;'>
+                                         <%= column.caption %>
+                                     </div>
+                                 </text>
+        )
+                    .CellTemplate(@<text>
+                                       <div class="closing-pill">
+                                           <%- data.ConvertedClosingBalance != null ? data.ConvertedClosingBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
+                                       </div>
+                                   </text>)
+                                   .Visible(true);
+
+                        group.Add().DataField("TotalDepreciatedAmount").Caption(new JS("formatMessage('Trans TotalDepreciated')")).Alignment(HorizontalAlignment.Right)
+                        .CellTemplate(@<text>
+                                       <div class="depreciation-pill">
+                                          <span style="color: black; font-weight: bold;"><%- data.TransactionCurrencySymbol %></span>
+
+                            <%- data.TotalDepreciatedAmount != null ? data.TotalDepreciatedAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
+                        </div>
+                    </text>
+                    ).Visible(false);
+                   
+
+                        group.Add().DataField("ConvertedDepreciatedAmount").Caption(new JS("formatMessage('TotalDepreciated')")).Alignment(HorizontalAlignment.Right)
+                    .HeaderCellTemplate(@<text>
+                                             <div class='depreciation-header' style='font-weight: bold;'>
+                                                 <%= column.caption %>
+                                             </div>
+                                         </text>
+                    )
+                    .CellTemplate(@<text>
+                                       <div class="depreciation-pill">
+                                           <%- data.ConvertedDepreciatedAmount != null ? data.ConvertedDepreciatedAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
+                                       </div>
+                                   </text>);
+
+                group.Add().DataField("NetBookValue").Caption(new JS("formatMessage('Trans NetBookValue')")).Alignment(HorizontalAlignment.Right)
+                .CellTemplate(@<text>
+                                 <div class="book-pill">
+                                      <span style="color: black; font-weight: bold;"><%- data.TransactionCurrencySymbol %></span>
+
+                            <%- data.NetBookValue != null ? data.NetBookValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
+                        </div>
+                    </text>
+
+                    ).Visible(false);
+
+                group.Add().DataField("ConvertedNetBookValue").Caption(new JS("formatMessage('NetBookValue')")).Alignment(HorizontalAlignment.Right)
+                    .HeaderCellTemplate(@<text>
+                                             <div class='book-header' style='font-weight: bold;'>
+                                                 <%= column.caption %>
+                                             </div>
+                                         </text>
+                    )
+                    .CellTemplate(@<text>
+                                       <div class="book-pill">
+                                           <%- data.ConvertedNetBookValue != null ? data.ConvertedNetBookValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
+                                       </div>
+                                   </text>);
             });
 
             columns.Add().Caption(new JS("formatMessage('Specifications')")).Columns(group =>
@@ -430,6 +599,7 @@
         .ShowBorders(true)
         .OnInitialized("onGridInitialized")
         .OnOptionChanged("onGridOptionChanged")
+        .OnOptionChanged("handleGridOptionChanged")
 
         .Width("100%")
         )
@@ -629,6 +799,104 @@
     }
      function NewDepreciation() {
         window.location.href = `/${tenantName}/Finance/CreateDepreciation`;
+    }
+
+
+        function handleGridOptionChanged(e) {
+        if (e.name === "columns" || e.name === "visible") {
+            // Columns changed, so re-inject SVG
+            injectHeaderSVG(); // slight delay to wait for DOM re-render
+        }
+    }
+    function injectHeaderSVG() {
+         debugger;
+           let gridElement = $('#dataGrid');
+    let dataGrid = gridElement.dxDataGrid("instance");
+    if (!dataGrid) return;
+
+    // Get grouped data (with .items containing groups)
+    let groupedData = dataGrid.getDataSource()?.items();
+    if (!groupedData || groupedData.length === 0) return;
+
+    // Get the first row from the first group
+    let firstGroup = groupedData[0];
+    let firstRowInGroup = firstGroup?.items?.[0];
+
+    let svgIcon = firstRowInGroup?.CurrencyImage;
+        if (!svgIcon) return;
+
+        svgIcon = svgIcon.replace(/<svg\b([^>]*)>/, `<svg width="12" height="12" $1>`);
+
+        gridElement.find(".dx-header-row td").each(function () {
+
+            const $cell = $(this);
+            const dataField = $cell.attr("data-field");  // 👈 This is key
+
+                const $debitHeader = $(".debit-header");
+                const debitText = $debitHeader.data("original-text") || $debitHeader.text().trim();
+                $debitHeader.data("original-text", debitText); // Save original once
+
+                $debitHeader.html(`
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+                        ${svgIcon}
+                        <span style="font-weight: bold;">${debitText}</span>
+                    </div>
+                `);
+
+                // 👉 Credit
+                const $creditHeader = $(".credit-header");
+                const creditText = $creditHeader.data("original-text") || $creditHeader.text().trim();
+                $creditHeader.data("original-text", creditText);
+
+                $creditHeader.html(`
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+                        ${svgIcon}
+                        <span style="font-weight: bold;">${creditText}</span>
+                    </div>
+                `);
+
+
+                const $closingHeader = $(".closing-header");
+                const closingText = $closingHeader.data("original-text") || $closingHeader.text().trim();
+                $closingHeader.data("original-text", closingText);
+
+                $closingHeader.html(`
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+                        ${svgIcon}
+                        <span style="font-weight: bold;">${closingText}</span>
+                    </div>
+                `);
+
+
+
+
+                const $depreciationHeader = $(".depreciation-header");
+                const depreciationText = $depreciationHeader.data("original-text") || $depreciationHeader.text().trim();
+                $depreciationHeader.data("original-text", depreciationText);
+
+                $depreciationHeader.html(`
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+                        ${svgIcon}
+                        <span style="font-weight: bold;">${depreciationText}</span>
+                    </div>
+                `);
+
+
+
+
+                const $bookHeader = $(".book-header");
+                const bookText = $bookHeader.data("original-text") || $bookHeader.text().trim();
+                $bookHeader.data("original-text", bookText);
+
+                $bookHeader.html(`
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+                        ${svgIcon}
+                        <span style="font-weight: bold;">${bookText}</span>
+                    </div>
+                `);
+
+
+        });
     }
 </script>
 

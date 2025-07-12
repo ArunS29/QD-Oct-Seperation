@@ -2060,26 +2060,24 @@ FROM   Aicon.qry20104BillsReceivableAgeing LEFT OUTER JOIN
 
 --UC Cost analysis
 
-
-
-Alter view dbo.qry20101CostAllocatedMaster as
-SELECT dbo.tbl201CostAllocationMaster.CostAllocationID, dbo.tbl201CostAllocationMaster.VoucherEntryID, dbo.tbl201CostAllocationMaster.CostAllocationUnitID, dbo.tbl201CostAllocationMaster.CostAllocDrCr, dbo.tbl201CostAllocationMaster.AmountAllocated, dbo.tbl201CostAllocationMaster.AmountAllocated * ISNULL(dbo.tbl201VoucherMaster.CurrencyRate, 1) AS ConvertedAmountAllocated, 
-             dbo.tbl201CostAllocationMaster.EffectiveDate, dbo.tbl201CostAllocationMaster.CostAllocRemarks, dbo.tbl201CostAllocationUnits.CostAllocationUnit, dbo.tbl201CostAllocationUnits.CostAllocationGroup, dbo.tbl201CostAllocationUnits.CostAllocationMasterGroup, 
-             dbo.tbl201CostAllocationUnits.IsDisabled, dbo.tbl201ChartOfAccounts.AccountHead, dbo.tbl201AccountGroups.AccountGroup, dbo.tbl201MasterGroup.MasterGroup, dbo.tbl201ChartOfAccounts.AccountID, dbo.tbl201CostAllocationMaster.VoucherNo, 
-             dbo.tbl201VoucherMaster.VoucherType, dbo.tbl201CostAllocationUnits.CostCenterIncharge, dbo.tbl201VoucherEntry.EntryNarration, dbo.tbl201VoucherEntry.SysRemarks, dbo.tbl201VoucherMaster.VoucherDate, dbo.tbl201VoucherEntry.DrCr, 
-             dbo.tbl201CostAllocationUnits.ProjectMasterCode, dbo.tbl201CostAllocationUnits.BranchCode, dbo.tbl20115CompanyBranch.BranchName, dbo.tbl201VoucherMaster.VoucherEffectiveDate, dbo.tbl201VoucherMaster.VoucherNarration, dbo.tbl201VoucherMaster.VoucherRefNo
-FROM   dbo.tbl20115CompanyBranch RIGHT OUTER JOIN
-             dbo.tbl201CostAllocationUnits ON dbo.tbl20115CompanyBranch.BranchCode = dbo.tbl201CostAllocationUnits.BranchCode RIGHT OUTER JOIN
-             dbo.tbl201VoucherEntry LEFT OUTER JOIN
-             dbo.tbl201VoucherMaster ON dbo.tbl201VoucherEntry.VoucherNo = dbo.tbl201VoucherMaster.VoucherNo LEFT OUTER JOIN
-             dbo.tbl201AccountGroups LEFT OUTER JOIN
-             dbo.tbl201MasterGroup ON dbo.tbl201AccountGroups.AccountGroupUnder = dbo.tbl201MasterGroup.MasterGroupID RIGHT OUTER JOIN
-             dbo.tbl201ChartOfAccounts ON dbo.tbl201AccountGroups.AccountGroupID = dbo.tbl201ChartOfAccounts.AccountGroupID ON dbo.tbl201VoucherEntry.AccountHead = dbo.tbl201ChartOfAccounts.AccountID RIGHT OUTER JOIN
-             dbo.tbl201CostAllocationMaster ON dbo.tbl201VoucherEntry.VoucherEntryNo = dbo.tbl201CostAllocationMaster.VoucherEntryID ON dbo.tbl201CostAllocationUnits.CostAllocationUnitID = dbo.tbl201CostAllocationMaster.CostAllocationUnitID
-
-
+Alter view Aicon.qry20101CostAllocatedMaster as
+SELECT Aicon.tbl201CostAllocationMaster.CostAllocationID, Aicon.tbl201CostAllocationMaster.VoucherEntryID, Aicon.tbl201CostAllocationMaster.CostAllocationUnitID, Aicon.tbl201CostAllocationMaster.CostAllocDrCr, Aicon.tbl201CostAllocationMaster.AmountAllocated, Aicon.tbl201CostAllocationMaster.AmountAllocated * ISNULL(Aicon.tbl201VoucherMaster.CurrencyRate, 1) AS ConvertedAmountAllocated, 
+             Aicon.tbl201CostAllocationMaster.EffectiveDate, Aicon.tbl201CostAllocationMaster.CostAllocRemarks, Aicon.tbl201CostAllocationUnits.CostAllocationUnit, Aicon.tbl201CostAllocationUnits.CostAllocationGroup, Aicon.tbl201CostAllocationUnits.CostAllocationMasterGroup, 
+             Aicon.tbl201CostAllocationUnits.IsDisabled, Aicon.tbl201ChartOfAccounts.AccountHead, Aicon.tbl201AccountGroups.AccountGroup, Aicon.tbl201MasterGroup.MasterGroup, Aicon.tbl201ChartOfAccounts.AccountID, Aicon.tbl201CostAllocationMaster.VoucherNo, 
+             Aicon.tbl201VoucherMaster.VoucherType, Aicon.tbl201CostAllocationUnits.CostCenterIncharge, Aicon.tbl201VoucherEntry.EntryNarration, Aicon.tbl201VoucherEntry.SysRemarks, Aicon.tbl201VoucherMaster.VoucherDate, Aicon.tbl201VoucherEntry.DrCr, 
+             Aicon.tbl201CostAllocationUnits.ProjectMasterCode, Aicon.tbl201CostAllocationUnits.BranchCode, Aicon.tbl20115CompanyBranch.BranchName, Aicon.tbl201VoucherMaster.VoucherEffectiveDate, Aicon.tbl201VoucherMaster.VoucherNarration, Aicon.tbl201VoucherMaster.VoucherRefNo
+FROM   Aicon.tbl20115CompanyBranch RIGHT OUTER JOIN
+             Aicon.tbl201CostAllocationUnits ON Aicon.tbl20115CompanyBranch.BranchCode = Aicon.tbl201CostAllocationUnits.BranchCode RIGHT OUTER JOIN
+             Aicon.tbl201VoucherEntry LEFT OUTER JOIN
+             Aicon.tbl201VoucherMaster ON Aicon.tbl201VoucherEntry.VoucherNo = Aicon.tbl201VoucherMaster.VoucherNo LEFT OUTER JOIN
+             Aicon.tbl201AccountGroups LEFT OUTER JOIN
+             Aicon.tbl201MasterGroup ON Aicon.tbl201AccountGroups.AccountGroupUnder = Aicon.tbl201MasterGroup.MasterGroupID RIGHT OUTER JOIN
+             Aicon.tbl201ChartOfAccounts ON Aicon.tbl201AccountGroups.AccountGroupID = Aicon.tbl201ChartOfAccounts.AccountGroupID ON Aicon.tbl201VoucherEntry.AccountHead = Aicon.tbl201ChartOfAccounts.AccountID RIGHT OUTER JOIN
+             Aicon.tbl201CostAllocationMaster ON Aicon.tbl201VoucherEntry.VoucherEntryNo = Aicon.tbl201CostAllocationMaster.VoucherEntryID ON Aicon.tbl201CostAllocationUnits.CostAllocationUnitID = Aicon.tbl201CostAllocationMaster.CostAllocationUnitID
+ 
+ 
 			 
-Alter view dbo.qry20102CostAllocatedMasterView as 
+Alter view Aicon.qry20102CostAllocatedMasterView as 
 SELECT CostAllocationID, VoucherEntryID, CostAllocationUnitID, DrCr AS CostAllocDrCr, AmountAllocated,ConvertedAmountAllocated,EffectiveDate, CostAllocRemarks, CostAllocationUnit, CostAllocationGroup, CostAllocationMasterGroup, IsDisabled, AccountHead, AccountGroup, MasterGroup, 
              CASE WHEN DrCr = 'Dr' THEN - AmountAllocated ELSE 0 END AS Expenses, 
 			 CASE WHEN DrCr = 'Cr' THEN AmountAllocated ELSE 0 END AS Income, 
@@ -2090,17 +2088,80 @@ SELECT CostAllocationID, VoucherEntryID, CostAllocationUnitID, DrCr AS CostAlloc
              CASE WHEN DrCr = 'Cr' THEN AmountAllocated ELSE - AmountAllocated END AS CostAmount
 			 , AccountID, VoucherNo, VoucherType, CostCenterIncharge, EntryNarration, SysRemarks, DATEADD(dd, DATEDIFF(dd, 0, VoucherDate), 0) AS VoucherDate, ProjectMasterCode, 
              BranchCode, BranchName, DATEADD(dd, DATEDIFF(dd, 0, VoucherEffectiveDate), 0) AS VoucherEffectiveDate, DATEADD(dd, DATEDIFF(dd, 0, EffectiveDate), 0) AS AllocationEffectiveDate, VoucherNarration, VoucherRefNo
-FROM   dbo.qry20101CostAllocatedMaster
-
-
+FROM   Aicon.qry20101CostAllocatedMaster
+ 
+ 
 --Qry20106CostAnalyses
-Alter view [dbo].[qry20106CostAnalysis] as 
+Alter view [Aicon].[qry20106CostAnalysis] as 
 SELECT CostAllocationID, VoucherEntryID, CostAllocationUnitID, CostAllocDrCr, AmountAllocated, DATEADD(dd, DATEDIFF(dd, 0, VoucherEffectiveDate), 0) AS EffectiveDate, CostAllocRemarks, CostAllocationUnit, CostAllocationGroup, CostAllocationMasterGroup, IsDisabled, 
              AccountHead, AccountGroup, MasterGroup, Expenses, Income, PL, CostAmount, AccountID, VoucherNo, VoucherType, VoucherType + '::' + VoucherNo AS VoucherTypeAndNo, CostCenterIncharge, EntryNarration, SysRemarks, DATEADD(dd, DATEDIFF(dd, 0, VoucherDate), 0) 
              AS VoucherDate, DATEADD(month, DATEDIFF(month, 0, VoucherDate), 0) AS VoucherMonth, DATEADD(year, DATEDIFF(year, 0, VoucherDate), 0) AS VoucherYear, DATEADD(month, DATEDIFF(month, 0, VoucherEffectiveDate), 0) AS EffectiveMonth, DATEADD(year, DATEDIFF(year, 
              0, VoucherEffectiveDate), 0) AS EffectiveYear, DATEADD(dd, DATEDIFF(dd, 0, AllocationEffectiveDate), 0) AS AllocationEffectiveDate, DATEADD(month, DATEDIFF(month, 0, AllocationEffectiveDate), 0) AS AllocationEffectiveMonth, DATEADD(year, DATEDIFF(year, 0, 
              AllocationEffectiveDate), 0) AS AllocationEffectiveYear, ProjectMasterCode, BranchCode, BranchName, VoucherNarration, VoucherRefNo,ConvertedIncome,ConvertedExpenses,ConvertedCostAmount
-FROM   dbo.qry20102CostAllocatedMasterView
+FROM   Aicon.qry20102CostAllocatedMasterView
+
+
+
+--Asset Register Currency Conversion
+Alter table Aicon.tbl20105AssetMaster add ConversionCurrencyID int,CurrencyRate decimal(18,2),BaseCurrencyID int
+
+
+ALter view Aicon.qry20148AssetRegister as
+			 SELECT Aicon.tbl20105AssetMaster.AssetLedgerNo, Aicon.tbl20105AssetMaster.AssetDescription, Aicon.tbl20105AssetMaster.Specifications, Aicon.tbl20105AssetMaster.Brand, Aicon.tbl20105AssetMaster.PlateNo, Aicon.tbl20105AssetMaster.Model, Aicon.tbl20105AssetMaster.Year, 
+             Aicon.tbl20105AssetMaster.Ownership, Aicon.tbl20105AssetMaster.PurchaseDate, Aicon.tbl20105AssetMaster.PurchasedAs, Aicon.tbl20105AssetMaster.IsFinanced, Aicon.tbl20105AssetMaster.FinancedFrom, Aicon.tbl20105AssetMaster.ValueOfProperty, 
+             Aicon.tbl20105AssetMaster.InitialDownPayment, Aicon.tbl20105AssetMaster.InitialDocCharges, Aicon.tbl20105AssetMaster.MonthlyInstallment, Aicon.tbl20105AssetMaster.NoOfInstallments, Aicon.tbl20105AssetMaster.InstallmentStartDate, Aicon.tbl20105AssetMaster.InstallmentEndDate, 
+             Aicon.tbl20105AssetMaster.FinalInstallment, Aicon.tbl20105AssetMaster.DepreciationMethod, Aicon.tbl20105AssetMaster.LifeSpanOfProperty, Aicon.tbl20105AssetMaster.ScrapValueOfProperty, Aicon.tbl20105AssetMaster.AddedBy, Aicon.tbl20105AssetMaster.AddedOn, 
+             Aicon.tbl20105AssetMaster.ModifiedBy, Aicon.tbl20105AssetMaster.ModifiedOn, Aicon.tbl20105AssetMaster.IsDiscontinued, Aicon.tbl20105AssetMaster.DiscontinuedOn, Aicon.tbl20105AssetMaster.DiscontinuedRemarks, Aicon.tbl20106AssetCategories.AssetCategory, 
+             Aicon.tbl20107AssetLocations.AssetLocation, Aicon.tbl20106AssetCategories.DepreciationLedgerNo, Aicon.tbl20106AssetCategories.AccumDepLedgerNo, Aicon.tbl20105AssetMaster.AssetLocation AS Expr1, Aicon.tbl20105AssetMaster.PurchasedFrom, 
+             Aicon.tbl20105AssetMaster.CurrentCondition, Aicon.tbl20105AssetMaster.PurchasedAs2, Aicon.tbl20105AssetMaster.FinancedBy, Aicon.tbl20105AssetMaster.CurrentReading, Aicon.tbl20105AssetMaster.DepPercentage, Aicon.tbl20105AssetMaster.AssetType, Aicon.tbl20105AssetMaster.FMV, 
+             Aicon.tbl20105AssetMaster.BMV, Aicon.tbl20105AssetMaster.PropertyNo,Aicon.tbl20105AssetMaster.CurrencyRate
+FROM   Aicon.tbl20105AssetMaster LEFT OUTER JOIN
+             Aicon.tbl20106AssetCategories ON Aicon.tbl20105AssetMaster.AssetCategory = Aicon.tbl20106AssetCategories.AssetCategoryCode LEFT OUTER JOIN
+             Aicon.tbl20107AssetLocations ON Aicon.tbl20105AssetMaster.AssetLocation = Aicon.tbl20107AssetLocations.AssetLocationCode
+
+
+ALter view Aicon.qry20149AssetsRegisterView as
+SELECT Aicon.qry20147AssetLedgers.MasterGroupID, Aicon.qry20147AssetLedgers.MasterGroup, Aicon.qry20147AssetLedgers.AccountGroup, Aicon.qry20147AssetLedgers.AccountID, Aicon.qry20147AssetLedgers.AccountHead, Aicon.qry20148AssetRegister.AssetLedgerNo, 
+             Aicon.qry20148AssetRegister.AssetDescription, Aicon.qry20148AssetRegister.Specifications, Aicon.qry20148AssetRegister.Brand, Aicon.qry20148AssetRegister.PlateNo, Aicon.qry20148AssetRegister.Model, Aicon.qry20148AssetRegister.Year, Aicon.qry20148AssetRegister.Ownership, 
+             Aicon.qry20148AssetRegister.PurchaseDate, Aicon.qry20148AssetRegister.PurchasedAs, Aicon.qry20148AssetRegister.IsFinanced, Aicon.qry20148AssetRegister.FinancedFrom, Aicon.qry20148AssetRegister.ValueOfProperty, Aicon.qry20148AssetRegister.InitialDownPayment, 
+             Aicon.qry20148AssetRegister.InitialDocCharges, Aicon.qry20148AssetRegister.MonthlyInstallment, Aicon.qry20148AssetRegister.NoOfInstallments, Aicon.qry20148AssetRegister.InstallmentStartDate, Aicon.qry20148AssetRegister.InstallmentEndDate, 
+             Aicon.qry20148AssetRegister.FinalInstallment, Aicon.qry20148AssetRegister.DepreciationMethod, Aicon.qry20148AssetRegister.LifeSpanOfProperty, Aicon.qry20148AssetRegister.ScrapValueOfProperty, Aicon.qry20148AssetRegister.AddedBy, Aicon.qry20148AssetRegister.AddedOn, 
+             Aicon.qry20148AssetRegister.ModifiedBy, Aicon.qry20148AssetRegister.ModifiedOn, Aicon.qry20148AssetRegister.IsDiscontinued, Aicon.qry20148AssetRegister.DiscontinuedOn, Aicon.qry20148AssetRegister.DiscontinuedRemarks, Aicon.qry20148AssetRegister.AssetCategory, 
+             Aicon.qry20148AssetRegister.AssetLocation, Aicon.qry20150AssetDepreciation.ValueAfterScrap, Aicon.qry20150AssetDepreciation.MonthlyDepreciation, Aicon.qry20150AssetDepreciation.YearlyDepreciation, Aicon.qry20150AssetDepreciation.NoOfMonthsOld, 
+             Aicon.qry20150AssetDepreciation.DepAsOnDate, Aicon.qry20150AssetDepreciation.CurrentValueOfAsset, Aicon.qry201_203DepreciationTransMaster02.OpeningTotal, 
+			 Aicon.qry201_203DepreciationTransMaster02.TotalDebit,
+			 Aicon.qry201_203DepreciationTransMaster02.TotalDebit * ISNULL(Aicon.qry20148AssetRegister.CurrencyRate, 1) as ConvertedTotalDebit,
+			 Aicon.qry201_203DepreciationTransMaster02.TotalCredit,
+			 Aicon.qry201_203DepreciationTransMaster02.TotalCredit * ISNULL(Aicon.qry20148AssetRegister.CurrencyRate, 1) as ConvertedTotalCredit,
+             Aicon.qry201_203DepreciationTransMaster02.ClosingBalance, 
+			 Aicon.qry201_203DepreciationTransMaster02.ClosingBalance * ISNULL(Aicon.qry20148AssetRegister.CurrencyRate, 1) as ConvertedClosingBalance,
+			 Aicon.qry201_203DepreciationTransMaster02.DepreciationPercentage, 
+			 Aicon.qry201_203DepreciationTransMaster02.TotalDepreciatedAmount, 
+			 Aicon.qry201_203DepreciationTransMaster02.TotalDepreciatedAmount * ISNULL(Aicon.qry20148AssetRegister.CurrencyRate, 1) as ConvertedDepreciatedAmount,
+			 Aicon.qry201_203DepreciationTransMaster02.CalculatedDepreciationAmount, 
+             Aicon.qry201_203DepreciationTransMaster02.FinalDepreciationAmount, 
+			Aicon.qry201_203DepreciationTransMaster02.AccumulatedDepreciationTotal, 
+			Aicon.qry201_203DepreciationTransMaster02.BookValue, 
+			Aicon.qry201_203DepreciationTransMaster02.BookValue * ISNULL(Aicon.qry20148AssetRegister.CurrencyRate, 1) as ConverteAiconokValue,
+			Aicon.qry20148AssetRegister.DepreciationLedgerNo, 
+             Aicon.qry20148AssetRegister.AccumDepLedgerNo, Aicon.qry20148AssetRegister.PurchasedFrom, Aicon.qry20148AssetRegister.CurrentCondition, Aicon.qry20148AssetRegister.PurchasedAs2, Aicon.qry20148AssetRegister.FinancedBy, Aicon.qry20148AssetRegister.CurrentReading, 
+             Aicon.qry20148AssetRegister.AssetType, Aicon.qry20148AssetRegister.FMV, Aicon.qry20148AssetRegister.BMV, Aicon.qry20148AssetRegister.PropertyNo, Aicon.qry201_203DepreciationTransMaster02.NetBookValue, Aicon.qry40102PropertyMasterView2.ChassisNo AS EquipmentSerialNo, 
+             Aicon.qry40102PropertyMasterView2.Location AS EquipmentLocationDelivered, Aicon.qry40102PropertyMasterView2.CurrentStatus AS EquipmentCurrentStatus, Aicon.qry40102PropertyMasterView2.MobilizedTo AS EquipmentMobilizedTo, 
+             Aicon.qry40102PropertyMasterView2.ClientSite AS EquipmentClientSite, Aicon.qry40102PropertyMasterView2.ClientRatePerHour AS EquipmentClientRatePerHour, Aicon.qry40102PropertyMasterView2.PropertyCertification AS EquipmentCertification, 
+             Aicon.qry40102PropertyMasterView2.PropertyPWAS AS EquipmentPWAS, Aicon.qry40102PropertyMasterView2.PropertyAttachment AS EquipmentAttachments, Aicon.qry40102PropertyMasterView2.EquipmentOperatorName AS EquipmentCurrentOperators, 
+             Aicon.qry40102PropertyMasterView2.Capacity AS EquipmentCapacity
+FROM   Aicon.qry40102PropertyMasterView2 RIGHT OUTER JOIN
+             Aicon.qry20148AssetRegister ON Aicon.qry40102PropertyMasterView2.PropertyNo = Aicon.qry20148AssetRegister.PropertyNo RIGHT OUTER JOIN
+             Aicon.qry20147AssetLedgers LEFT OUTER JOIN
+             Aicon.qry201_203DepreciationTransMaster02 ON Aicon.qry20147AssetLedgers.AccountID = Aicon.qry201_203DepreciationTransMaster02.AccountHead LEFT OUTER JOIN
+             Aicon.qry20150AssetDepreciation ON Aicon.qry20147AssetLedgers.AccountID = Aicon.qry20150AssetDepreciation.AssetLedgerNo ON Aicon.qry20148AssetRegister.AssetLedgerNo = Aicon.qry20147AssetLedgers.AccountID
+
+
+
+
+
+
+
 
 
 

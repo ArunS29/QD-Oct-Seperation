@@ -335,6 +335,142 @@
                     )
 
             </div>
+
+            
+                 @*  <div class="form-group col-md-2 col-sm-6"> *@
+                         <div class="form-inline-group">
+                        @(Html.DevExtreme().DropDownBox()
+                            .Label(new JS("formatMessage('Base Currency')"))
+                            .DataSource(d => d.WebApi().Controller("Utility").LoadAction("GetCurrencyList").LoadMode(DataSourceLoadMode.Raw).Key("CurrencyExchangeId"))
+                            .ValidationRules(rules => rules.AddRequired().Message("Please select a base currency."))
+                            .LabelMode(EditorLabelMode.Floating)
+                            .ID("ddlBaseCurrency")
+                            .ShowClearButton(true)
+                            .AcceptCustomValue(false)
+                            .OpenOnFieldClick(true)
+                            .Value(1)
+                            .ValueExpr("CurrencyExchangeId")
+                            .DisplayExpr("CurrencyName")
+                            .OnInput("dropDownBoxOnInput")
+                            .OnOpened("onOpened")
+                            .TabIndex(0)
+                            .DropDownOptions(o => o.Width(700))
+                            .ReadOnly(true)
+                            .ElementAttr(new { @class = "custom-disabled-selectbox" })
+                            .ContentTemplate(new TemplateName("BaseCurrencyContentTemplate"))
+                            
+                            )
+                        @using (Html.DevExtreme().NamedTemplate("BaseCurrencyContentTemplate"))
+                        {
+                            @(Html.DevExtreme().DataGrid()
+                                .ID("basecurrency-datagrid")
+                                .DataSource(d => d.WebApi()
+                                .Controller("Utility")
+                                .LoadAction("GetCurrencyList")
+                                .LoadMode(DataSourceLoadMode.Raw)
+                                .Key("CurrencyExchangeId")
+                                )
+
+                                .WordWrapEnabled(true)
+                                .ShowBorders(true)
+                                .Selection(sl => sl.Mode(SelectionMode.Single))
+                                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                .SearchPanel(sp => sp.HighlightSearchText(true).Visible(true))
+                                .OnSelectionChanged("onBaseCurrencySelectionChanged") // Define this JS function
+                                .Height(300)
+                                .Columns(columns =>
+                                {
+                                    columns.Add().DataField("CurrencyExchangeId").Caption(new JS("formatMessage('ID')")).Visible(true);
+                                    columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency Name')"));
+                                    columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Symbol')"));
+                                    columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('Exchange Rate')"));
+                                    columns.Add().DataField("CurrencyMasterCode").Caption(new JS("formatMessage('unicode')")).DataType(GridColumnDataType.Boolean);
+                                    columns.Add().DataField("CurrencyPoints").Caption(new JS("formatMessage('point')")).DataType(GridColumnDataType.Boolean);
+
+                                })
+                                )
+                        }
+
+
+                    </div>
+
+                 @*  <div class="form-group col-md-2 col-sm-6"> *@
+                         <div class="form-inline-group">
+                        @(Html.DevExtreme().DropDownBox()
+                            .Label(new JS("formatMessage('Convertion Currency')"))
+                            .DataSource(d => d.WebApi().Controller("Utility").LoadAction("GetCurrencyList").LoadMode(DataSourceLoadMode.Raw).Key("CurrencyExchangeId"))
+                            .ValidationRules(rules => rules.AddRequired().Message("Please select a currency."))
+                            .LabelMode(EditorLabelMode.Floating)
+                            .ID("ddCurrency")
+                            .ShowClearButton(false)
+                            .AcceptCustomValue(false)
+                            .OpenOnFieldClick(true)
+                              .TabIndex(6)
+                            .ValueExpr("CurrencyExchangeId")
+                            .DisplayExpr("CurrencyName")
+                            .OnInput("dropDownBoxOnInput")
+                            .OnOpened("onOpened")
+                            
+                            .DropDownOptions(o => o.Width(700))
+                            .ElementAttr(new { @class = "light-theme-input" })
+                            .ContentTemplate(new TemplateName("CurrencyContentTemplate"))
+                            .OnInitialized("onBaseCurrencyInit")
+                            )
+                        @using (Html.DevExtreme().NamedTemplate("CurrencyContentTemplate"))
+                        {
+                            @(Html.DevExtreme().DataGrid()
+                                                    .ID("currency-datagrid")
+                                                    .DataSource(d => d.WebApi()
+                                                    .Controller("Utility")
+                                                    .LoadAction("GetCurrencyList")
+                                                    .LoadMode(DataSourceLoadMode.Raw)
+                                                    .Key("CurrencyExchangeId")
+                                                    )
+                                                    .WordWrapEnabled(true)
+                                                    .ShowBorders(true)
+                                                    .Selection(sl => sl.Mode(SelectionMode.Single))
+                                                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                                    .SearchPanel(sp => sp.HighlightSearchText(true).Visible(true))
+                                                    .OnSelectionChanged("onCurrencySelectionChanged")
+                                                    .Paging(p => p.PageSize(10))
+                                                    .Height(300)
+                                                    .Columns(columns =>
+                                                    {
+                                                        columns.Add().DataField("CurrencyExchangeId").Caption(new JS("formatMessage('ID')")).Visible(true);
+                                                        columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency Name')"));
+                                                        columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Symbol')"));
+                                                        columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('Exchange Rate')"));
+                                                        columns.Add().DataField("CurrencyMasterCode").Caption(new JS("formatMessage('code')")).DataType(GridColumnDataType.Boolean);
+                                                        columns.Add().DataField("CurrencyPoints").Caption(new JS("formatMessage('point')")).DataType(GridColumnDataType.Boolean);
+
+                                                    })
+                                                    )
+                         }
+
+
+                    </div>
+
+                  @* <div class="form-group col-md-1 col-sm-6"> *@
+                          <div class="form-inline-group">
+                        @(Html.DevExtreme().NumberBox()
+                            .Label("CVR")
+                            .LabelMode(EditorLabelMode.Floating)
+                            .ID("txtCurrencyRate")
+                            .Value(1)
+                            .Min(0)
+                             .TabIndex(7)
+                            .Format("#,##0.00")
+                            .InputAttr(new
+                            {
+                                style = "font-family: Cambria; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;",
+                                type = "number",
+                                step = "0.01"
+                            })
+                            .ElementAttr(new { @class = "white-box" })
+                            )
+                    </div>
+
+
         </div>
     </div>
 
@@ -1815,7 +1951,11 @@
             "DepreciationMethod": $("#txtDepreciationMethod").dxSelectBox("instance").option("value"),
             "DepPercentage": $("#txtDepPercentage").dxNumberBox("instance").option("value"),
         "CurrentReading": String($("#txtMaintenanceReading").dxNumberBox("instance").option("value") || ""),
-        "LifeSpanOfProperty":$("#txtLifeinyears").dxNumberBox("instance").option("value")
+        "LifeSpanOfProperty":$("#txtLifeinyears").dxNumberBox("instance").option("value"),
+        "ConversionCurrencyID":$("#ddCurrency").dxDropDownBox("instance").option("value"),
+        "BaseCurrencyID":$("#ddlBaseCurrency").dxDropDownBox("instance").option("value"),
+        "CurrencyRate":$("#txtCurrencyRate").dxNumberBox("instance").option("value")
+
           
         };
 
@@ -1999,5 +2139,66 @@ function onDeleteMaintenanceSchedule(MaintenanceRefNo) {
             DevExpress.ui.notify("Updated", "success", 2000);
             $("#maintenanceGrid").dxDataGrid("instance").refresh();
         });
+    }
+
+        function onCurrencySelectionChanged(e) {
+        const selectedKey = e.selectedRowKeys[0];
+        const dropDown = $("#ddCurrency").dxDropDownBox("instance");
+
+        if (selectedKey) {
+             dropDown.option("value", selectedKey); // Set DropDownBox value
+
+        const selectedRow = e.selectedRowsData[0];
+
+        // ✅ Set ExchangeRate in NumberBox
+        if (selectedRow && selectedRow.ExchangeRate !== undefined) {
+            $("#txtCurrencyRate").dxNumberBox("instance").option("value", selectedRow.ExchangeRate);
+        }
+            if (dropDown.option("opened")) {
+                dropDown.close();
+            }
+
+            
+                console.log("Selected Currency:", selectedRow.CurrencyExchangeId);
+        } else {
+            DevExpress.ui.notify("Please select a currency", "warning", 2000);
+        }
+    }
+
+     function onBaseCurrencyInit(e) {
+            const dropDown = e.component;
+
+            // Delay to ensure dataSource is ready
+            setTimeout(() => {
+                const ds = dropDown.getDataSource();
+                if (!ds) return;
+
+                // Skip if already has value
+                if (dropDown.option("value")) return;
+
+                ds.load().done(items => {
+                    if (items && items.length > 0) {
+                        dropDown.option("value", items[0].CurrencyExchangeId);
+                    }
+                });
+            }, 200); // 100ms is usually enough
+        }
+
+
+           function onBaseCurrencySelectionChanged(e) {
+        const selectedKey = e.selectedRowKeys[0];
+        const dropDown = $("#ddlBaseCurrency").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            dropDown.option("value", selectedKey); // This should bind the selected CurrencyID to the DropDownBox
+            if (dropDown.option("opened")) {
+                dropDown.close();
+            }
+
+            const selectedRow = e.selectedRowsData[0];
+            console.log("Selected Currency:", selectedRow.CurrencyName);
+        } else {
+            DevExpress.ui.notify("Please select a currency", "warning", 2000);
+        }
     }
 </script>
