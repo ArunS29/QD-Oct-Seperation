@@ -238,7 +238,7 @@
             },
             columns: [
                 { dataField: "AssetCategoryCode", caption: "Asset Category Code", width: 100, editorOptions: { readOnly: true } },
-                    { dataField: "AssetCategory", caption: "Asset Category",allowSearch: true },
+                    { dataField: "AssetCategory", caption: "Asset Category"},
                     {
                         type: "buttons",
                         width: 100,
@@ -296,11 +296,7 @@
                 allowedPageSizes: [5, 10, 20],
                 showInfo: true
             },
-                 searchPanel: {
-            visible: true,
-            width: 240,
-            placeholder: 'Search...'
-        },
+            
             filterRow: {
                 visible: false,
                 applyFilter: "auto"

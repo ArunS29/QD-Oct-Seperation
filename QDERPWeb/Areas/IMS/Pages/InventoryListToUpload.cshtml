@@ -18,6 +18,9 @@
 		z-index: 1000;
 	}
 
+	.titleCard-toggle1{
+		display:none;
+	}
 	.overlay-content {
 		position: absolute;
 		top: 50%;
@@ -92,31 +95,51 @@
 		<tr>
 			<td style="display: flex; align-items:end;">
 				
-					@(Html.DevExtreme().DropDownBox()
-								.Label("Stock Group")
-								.LabelMode(EditorLabelMode.Outside)
-								.Width("100%")
-								)
+				
+
+				@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+									.Label(new JS("formatMessage('Stock Group')"))
+									.AcceptCustomValue(true)
+									.DataSource(d => d.WebApi()
+									.Controller("InventoryUpload")
+									.LoadAction("GetStock")
+									.LoadMode(DataSourceLoadMode.Raw)
+									.Key("GsgroupId"))
+									.LabelMode(EditorLabelMode.Floating)
+									.ID("StockGroup")
+									.Width(900)
+									.OpenOnFieldClick(false)
+									.HoverStateEnabled(true)
+									.ValueExpr("GsgroupId")
+									.DisplayExpr("GsgroupName")
+									.TabIndex(1)
+									.Width("100%")
+									.ContentTemplate(new TemplateName("GetProjectContentTemplate"))
+									.ValidationRules(rules =>
+									{
+										rules.AddRequired()
+										.Message(new JS("formatMessage('Client Name should be entered')"));
+									})
+									)
+
 					@(Html.DevExtreme().Button()
-								.Icon("plus")
-								.Width(45))
+						.Icon("plus")
+						.Width(45))
 					
 				
 			</td>
 			<td>
-				
 					@(Html.DevExtreme().TextBox()
-										.Label("Vat Purchase No.")
-										.LabelMode(EditorLabelMode.Outside)
-										.Width("100%")
-										)
-					
+							.Label("Vat Purchase No.")
+							.LabelMode(EditorLabelMode.Floating)
+							.Width("100%")
+							)
 			</td>
 			<td>
 
 				@(Html.DevExtreme().TextBox()
 								.Label("Proforma Invoice No.")
-								.LabelMode(EditorLabelMode.Outside)
+								.LabelMode(EditorLabelMode.Floating)
 								.Width("100%")
 								)
 
@@ -125,7 +148,7 @@
 
 				@(Html.DevExtreme().TextBox()
 								.Label("Invoice No.")
-								.LabelMode(EditorLabelMode.Outside)
+								.LabelMode(EditorLabelMode.Floating)
 								.Width("100%")
 								)
 
@@ -134,29 +157,27 @@
 
 				@(Html.DevExtreme().TextBox()
 								.Label("Request No.")
-								.LabelMode(EditorLabelMode.Outside)
+								.ID("txtRequestNo")
+								.LabelMode(EditorLabelMode.Floating)
 								.Width("100%")
 								)
 
-			</td>
-			
-		</tr>
-	</table>
-   <table>
-		<tr>
-			<td>
-				@(Html.DevExtreme().DataGrid()
-								.DataSource(new[] { new { } })
+							</td>
+						</tr>
+					</table>
+					<table>
+						<tr>
+							<td>
+								@(Html.DevExtreme().DataGrid()
+								.ID("Datagrid")
 								.ShowBorders(true)
 								.ColumnAutoWidth(true)
 								.ShowColumnLines(true)
 								.ShowRowLines(true)
 								.AllowColumnResizing(true) // Enable column resizing
-								.ColumnResizingMode(ColumnResizingMode.NextColumn) // Optional: can be "Widget" or "NextColumn"
-								.AllowColumnReordering(true) // Optional: allow dragging columns
 								.ColumnChooser(chooser => chooser
 								.Enabled(true)
-								.Mode(GridColumnChooserMode.Select) // You can also use "DragAndDrop"
+								.Mode(GridColumnChooserMode.DragAndDrop) // You can also use "DragAndDrop"
 								)
 								.Paging(p => p.Enabled(false))
 								.Columns(columns =>
@@ -167,18 +188,24 @@
 									.Alignment(HorizontalAlignment.Center)
 									.Columns(sub =>
 									{
-										sub.Add().DataField("SINO").Caption("SI NO").Visible(true).Alignment(HorizontalAlignment.Center);
+										sub.Add().DataField("sno").Caption("SI NO").Visible(true).Alignment(HorizontalAlignment.Center);
 										sub.Add().DataField("GSCode").Caption("GS Code").Visible(true).Alignment(HorizontalAlignment.Center);
 										sub.Add().DataField("GSDescription").Caption("GS Description").Visible(true).Alignment(HorizontalAlignment.Center);
 										sub.Add().DataField("GSUoM").Caption("GSUoM").Visible(true).Alignment(HorizontalAlignment.Center);
-										sub.Add().DataField("Quanti").Caption("Quanti").Visible(true).Alignment(HorizontalAlignment.Center);
+										sub.Add().DataField("RequestQty").Caption("Quantity").Visible(true).Alignment(HorizontalAlignment.Center);
 										sub.Add().DataField("UnitPrice").Caption("Unit Price").Visible(true).Alignment(HorizontalAlignment.Center);
 										sub.Add().DataField("PlanNo").Caption("Plan No").Visible(true).Alignment(HorizontalAlignment.Center);
 										sub.Add().DataField("Manufacturer").Caption("Manufacturer").Visible(true).Alignment(HorizontalAlignment.Center);
 										sub.Add().DataField("DeliveryPeriod").Caption("Delivery Period").Visible(true).Alignment(HorizontalAlignment.Center);
 										sub.Add().DataField("Remarks").Caption("Remarks").Visible(true).Alignment(HorizontalAlignment.Center);
-										sub.Add().DataField("GSUoMDesc").Caption("GSUoM Desc").Visible(true).Alignment(HorizontalAlignment.Center);
-										sub.Add().DataField("Item").Caption("Item").Visible(true).Alignment(HorizontalAlignment.Center);
+										sub.Add().DataField("GsuomDesc").Caption("GSUoM Desc").Visible(true).Alignment(HorizontalAlignment.Center);
+										sub.Add().DataField("ItemSize").Caption("Item Size").Visible(true).Alignment(HorizontalAlignment.Center);
+										sub.Add().DataField("ItemPartNo").Caption("Item Part NO").Visible(true).Alignment(HorizontalAlignment.Center);
+										sub.Add().DataField("ItemBrand").Caption("Item Brand").Visible(true).Alignment(HorizontalAlignment.Center);
+										sub.Add().DataField("ItemColor").Caption("Item Color").Visible(true).Alignment(HorizontalAlignment.Center);
+										sub.Add().DataField("ItemDimension").Caption("Item Dimension").Visible(true).Alignment(HorizontalAlignment.Center);
+										sub.Add().DataField("ItemThickness").Caption("Item Thickness").Visible(true).Alignment(HorizontalAlignment.Center);
+										sub.Add().DataField("GsdescriptionAr").Caption("GS Description Ar").Visible(true).Alignment(HorizontalAlignment.Center);
 									});
 								})
 								.Width("100%")
@@ -186,22 +213,213 @@
 								)
 			</td>
 		</tr>
-
 	</table>
 </div>
+<div class="action-buttons" style="display:flex;">
+		@(Html.DevExtreme().Button()
+			.Text(new JS("formatMessage('Back')"))
+			.ID("backBtn")
+			.Icon("arrowleft")
+			.OnClick("Goback")
+			.Width(120))
+
+		@(Html.DevExtreme().Button()
+			.Text(new JS("formatMessage('Paste From Excel')"))
+			.ID("Pasteetoexcel")
+			.Icon("file")
+			.OnClick("PastefromExcel")
+			.Width(250))
+
+		@(Html.DevExtreme().DropDownButton()
+			.ID("uploadDropdownButton")
+			.Text("Upload Items")
+			.Icon("upload")
+			.DropDownOptions(opt => opt.Width(320))
+			.Items(i => {
+				i.Add().Text("Upload item to Material Requests").Icon("upload").OnClick("uploadItemsToMaterialRequests");
+				i.Add().Text("Upload Invoice").Icon("download");
+				i.Add().Text("Upload Items to Performa Invoice").Icon("trash");
+				i.Add().Text("Upload Items to VAT Purchase Voucher").Icon("trash");
+			}))
+
+	</div>
+	@using (Html.DevExtreme().NamedTemplate("GetProjectContentTemplate"))
+				{
+					@(Html.DevExtreme().DataGrid()
+							.ID("GetProject-datagrid")
+							.DataSource(d => d.WebApi()
+							.Controller("InventoryUpload")
+							.LoadAction("GetStock")
+							.LoadMode(DataSourceLoadMode.Raw)
+							.Key("GsgroupId"))
+							.WordWrapEnabled(true)
+							.ShowBorders(true)
+							.Selection(sl => sl.Mode(SelectionMode.Single))
+							.OnSelectionChanged("dataGridSelectionChanged1")
+							.OnInitialized("dataGridInitialized1")
+							.HeaderFilter(p => p.Visible(true))
+							.ShowBorders(true)
+							.HoverStateEnabled(true)
+							.Paging(p => p.PageSize(15))
+							//.FilterRow(f => f.Visible(true))//
+							.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+							.Height(345)
+							.Selection(s => s.Mode(SelectionMode.Single))
+							.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+							.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true).Width(235))
+							.Columns(columns =>
+							{
+								columns.Add().DataField("GsgroupName");
+
+							})
+							)
+						}
+
+<input style="display:none;" type="file" id="excel-file" accept=".xlsx, .xls" />
 
 <script>
 
+	async function uploadItemsToMaterialRequests() {
+    debugger;
+
+    // Step 1: Validate Stock Group
+    const stockGroupId = $("#StockGroup").dxDropDownBox("instance").option("value");
+    if (!stockGroupId) {
+        DevExpress.ui.notify("Please Select Stock Group before Uploading...", "error", 3000);
+        return;
+    }
+
+    // Step 2: Get selected GSGroupId (you may rename based on your actual control)
+    const selectedGSGroupId = $("#txtGSGroup").dxSelectBox("instance").option("value");
+    if (!selectedGSGroupId) {
+        DevExpress.ui.notify("Please select a valid GS Group.", "error", 3000);
+        return;
+    }
+
+    // Step 3: Fetch GSGroupCode from server
+    let GSGroupCode = null;
+    try {
+        GSGroupCode = await $.get(`/api/InventoryUpload/GetGSGroupCode?gsgroupId=${selectedGSGroupId}`);
+    } catch (err) {
+        const message = err?.responseText || "Failed to get GSGroupCode.";
+        DevExpress.ui.notify(message, "error", 3000);
+        console.error("GSGroupCode fetch error:", err);
+        return;
+    }
+
+    // Step 4: Get items from the DataGrid
+    const grid = $("#Datagrid").dxDataGrid("instance");
+    const items = grid?.getDataSource().items() ?? [];
+    if (items.length === 0) {
+        DevExpress.ui.notify("No items to upload.", "error", 3000);
+        return;
+    }
+
+    // Step 5: Get Request No from textbox
+    const requestNo = $("#txtRequestNo").dxTextBox("instance").option("value");
+    if (!requestNo) {
+        DevExpress.ui.notify("Request No is required.", "error", 3000);
+        return;
+    }
+
+    // Step 6: Call UploadStock API
+    try {
+        const result = await $.ajax({
+            url: "/api/InventoryUpload/UploadStock",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+                GSGroupCode: GSGroupCode,
+                RequestNo: requestNo,
+                Items: items
+            })
+        });
+
+        if (result && result.success) {
+            DevExpress.ui.notify("Stock List has been Updated Successfully.", "success", 3000);
+            grid.refresh();
+
+            // Step 7: Redirect after 1 second
+            setTimeout(() => {
+                window.location.href = `/Utility/AddNewClientRequest?requestNo=${encodeURIComponent(requestNo)}`;
+            }, 1000);
+        } else {
+            DevExpress.ui.notify(result.message || "Upload failed.", "error", 3000);
+        }
+    } catch (error) {
+        DevExpress.ui.notify("Upload failed: " + (error.responseText || error.statusText), "error", 3000);
+    }
+}
+			$(document).ready(function () {
+			// Get requestNo from query string
+			const params = new URLSearchParams(window.location.search);
+			const requestNo = params.get("requestNo");
+
+			if (requestNo) {
+				// Set the value in the DevExtreme TextBox
+				$("#txtRequestNo").dxTextBox("instance").option("value", requestNo);
+				// Optionally, make it read-only
+				$("#txtRequestNo").dxTextBox("instance").option("readOnly", true);
+			}
+		});
+		function dataGridSelectionChanged1(e) {
+			const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+			const ddbInstance = $("#StockGroup").dxDropDownBox("instance");
+
+			if (selectedKey) {
+				ddbInstance.option("value", selectedKey);
+				if (ddbInstance.option("opened")) {
+					ddbInstance.close();
+				}
+			}
+		}
+		function dataGridInitialized1(e) {
+			dataGrid = e.component;
+		}
+
+
+	function Goback(){
+		parent.history.back();
+	}
 
 	$(function () {
 		 $("#InventoryListsToUpload").dxTextBox({
-			 text:formatMessage("Inventory List To Upload"),
-					readOnly: true,
-					onContentReady: function(e) {
-						$(e.element).addClass("dx-textbox-heading");
-					}
+			text:formatMessage("Inventory List To Upload"),
+			readOnly: true,
+			onContentReady: function(e) {
+			$(e.element).addClass("dx-textbox-heading");
+			}
 		 });
 	});
 
+       function PastefromExcel() {
+        document.getElementById('excel-file').click();
+    }
+
+    document.getElementById('excel-file').addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const jsonData = XLSX.utils.sheet_to_json(firstSheet, { defval: '' });
+
+            const dataGrid = $("#Datagrid").dxDataGrid("instance");
+            if (dataGrid) {
+                dataGrid.option("dataSource", jsonData);
+            } else {
+                DevExpress.ui.notify("Grid not found", "error", 3000);
+            }
+        };
+
+        reader.readAsArrayBuffer(file);
+    });
 	
 </script>
+<script src="https://cdn3.devexpress.com/jslib/23.2.4/js/dx.all.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>

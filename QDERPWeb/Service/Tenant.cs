@@ -12,5 +12,9 @@
         public string DefaultcompanyID { get; set; }
         public string DefaultcompanyName { get; set; }
         public string? CompanyTextColor { get; set; }
+        public string currencytype { get; set; }
+        public string currencyID { get; set; }
+
+        public string baseCurrencyname { get; set; }
     }
 }

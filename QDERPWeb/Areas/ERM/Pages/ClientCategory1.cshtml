@@ -123,7 +123,7 @@
         @(
             Html.DevExtreme().TextBox()
             .Label(new JS("formatMessage('Type a New Client & Add to the Existing List:')"))
-            .LabelMode(EditorLabelMode.Outside)
+            .LabelMode(EditorLabelMode.Floating)
             .ID("txtClientCategory")
             .Value(null)
             .ValidationRules(rules =>
@@ -140,7 +140,7 @@
             @(
                 Html.DevExtreme().TextBox()
                 .Label(new JS("formatMessage('Client Category Code:')"))
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .ID("txtCategoryCode")
                 .Value(null)
                 )

@@ -99,7 +99,8 @@
                 .LabelMode(EditorLabelMode.Floating)
                 .Type(DateBoxType.Date)
                 .Value(DateTime.Now.Date.AddDays(1 - DateTime.Now.Day))
-                .DisplayFormat("dd-MMM-yyyy"))
+                .DisplayFormat("dd-MMM-yyyy")
+                .ElementAttr("class", "dynamicFormatDateBox"))
         </div>
 
         <!-- End Date -->
@@ -110,7 +111,8 @@
                 .LabelMode(EditorLabelMode.Floating)
                 .Type(DateBoxType.Date)
                 .Value(DateTime.Now.Date)
-                .DisplayFormat("dd-MMM-yyyy"))
+                .DisplayFormat("dd-MMM-yyyy")
+                .ElementAttr("class", "dynamicFormatDateBox"))
         </div>
 
         <!-- Dropdown Button -->
@@ -546,6 +548,8 @@
     const newHeight = chartContainer.is(":visible") ? "calc(100vh - 460px)" : "calc(100vh - 160px)";
     $("#pivotGridContainer").css("height", newHeight);
 });
+
+    
 
 </script>
 

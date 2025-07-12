@@ -196,7 +196,7 @@
                         @(Html.DevExtreme().TextBox()
                             .ID("StockNoItemCode")
                             .Label(new JS("formatMessage('Stock No / Item Code')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .ReadOnly(true)
                             .OnValueChanged("onGscodeChanged")
                             .Width("90%"))
@@ -213,7 +213,7 @@
                                 .LoadAction("GetStockGroups")
                                 )
                                 .Label(new JS("formatMessage('Stock Group')"))
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Width("90%")
                                 .OnValueChanged("onStockGroupChange")
                                 )
@@ -230,7 +230,7 @@
                         @(Html.DevExtreme().TextBox()
                             .ID("ItemName")
                             .Label(new JS("formatMessage('Item Name / Description')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .Width("100%"))
                     </td>
                 </tr>
@@ -246,7 +246,7 @@
                                 .LoadAction("GetStores")
                                 )
                                 .Label(new JS("formatMessage('Item Store')"))
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Width("90%")
                                 )
 
@@ -270,7 +270,7 @@
                                 .LoadAction("GetItemClassifications")
                                 )
                                 .Label(new JS("formatMessage('Item Classification')"))
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Width("90%")
                                 )
 
@@ -295,7 +295,7 @@
                         @(Html.DevExtreme().TextBox()
                             .ID("ItemNameArabic")
                             .Label(new JS("formatMessage('Item Name / Description (In Arabic)')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .Width("100%"))
                 </tr>
             </table>
@@ -489,7 +489,7 @@
                             <td colspan="6">
                             @(Html.DevExtreme().TextArea()
                                 .ID("DetailedDescription")
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%"))
                             </td>
                         </tr>
@@ -511,7 +511,7 @@
                                     .LoadAction("GetUnitCodes")
                                     )
                                     .Label(new JS("formatMessage('Unit of Measure : *')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .Width("140")
                                     )
                                 @(Html.DevExtreme().Button()
@@ -528,7 +528,7 @@
                             @(Html.DevExtreme().NumberBox()
                                 .ID("PackingUnit")
                                 .Value(1)
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Label(new JS("formatMessage('Packing Unit : ')")))
                             </td>
 
@@ -537,7 +537,7 @@
                                 .ID("ItemSize")
                                 .SearchEnabled(true)
                                 .AcceptCustomValue(true) 
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Label(new JS("formatMessage('Item Size : ')"))
                                 )
                             </td>
@@ -548,7 +548,7 @@
                                 .ID("ItemThickness")
                                 .SearchEnabled(true)
                                 .AcceptCustomValue(true) 
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Label(new JS("formatMessage('Item Thickness : ')"))
                                 )
                             </td>
@@ -558,7 +558,7 @@
                                 .ID("ItemDimension")
                                 .SearchEnabled(true)
                                 .AcceptCustomValue(true) 
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Label(new JS("formatMessage('Item Dimension : ')"))
                                 )
                             </td>
@@ -566,7 +566,7 @@
                             <td>
                             @(Html.DevExtreme().TextBox()
                                 .ID("ActualSize")
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Label(new JS("formatMessage('Act. Size : ')"))
                                 )
                             </td>
@@ -585,7 +585,7 @@
                                 .ID("OpeningBalance")
                                 .Value(0.00)
                                 .Format("#,##0.00")
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Width("80%")
                                 .Label(new JS("formatMessage('Opening Balance : ')")))
                             @(Html.DevExtreme().Button()
@@ -601,7 +601,7 @@
                             @(Html.DevExtreme().NumberBox()
                                 .ID("CostPrice")
                                 .Value(0)
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Label(new JS("formatMessage('Cost Price : ')")))
                             </td>
 
@@ -609,7 +609,7 @@
                             @(Html.DevExtreme().NumberBox()
                                 .ID("ExFactoryPrice")
                                 .Value(0)
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Label(new JS("formatMessage('Ex-Factory Price : ')")))
                             </td>
                         </tr>
@@ -618,7 +618,7 @@
                             @(Html.DevExtreme().NumberBox()
                                 .ID("SellingPrice")
                                 .Value(0)
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Label(new JS("formatMessage('Selling Price : ')")))
                             </td>
 
@@ -626,7 +626,7 @@
                             @(Html.DevExtreme().NumberBox()
                                 .ID("MinSellingPrice")
                                 .Value(0)
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Label(new JS("formatMessage('Min Selling Price : ')")))
                             </td>
 
@@ -634,7 +634,7 @@
                             @(Html.DevExtreme().NumberBox()
                                 .ID("MaxSellingPrice")
                                 .Value(0)
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Label(new JS("formatMessage('Max Selling Price : ')")))
                             </td>
                         </tr>
@@ -669,7 +669,7 @@
                             @(Html.DevExtreme().TextArea()
                                 .ID("ArabicDescription")
                                 .Width("100%")
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 )
 
                             </td>
@@ -681,13 +681,13 @@
                             @(Html.DevExtreme().TextBox()
                                 .ID("ItemPartNo")
                                 .Label(new JS("formatMessage('Item Part No : ')"))
-                                .LabelMode(EditorLabelMode.Outside))
+                                .LabelMode(EditorLabelMode.Floating))
                             </td>
                             <td>
                             @(Html.DevExtreme().TextBox()
                                 .ID("ItemHSCode")
                                 .Label(new JS("formatMessage('Item HS Code : ')"))
-                                .LabelMode(EditorLabelMode.Outside))
+                                .LabelMode(EditorLabelMode.Floating))
                             </td>
                             
                         </tr>
@@ -697,7 +697,7 @@
                                 .ID("ItemColor")                                
                                 .AcceptCustomValue(true) 
                                 .Label(new JS("formatMessage('Item Color : ')"))
-                                .LabelMode(EditorLabelMode.Outside))
+                                .LabelMode(EditorLabelMode.Floating))
                             </td>
 
 
@@ -708,7 +708,7 @@
                                 .SearchEnabled(true)
                                 .AcceptCustomValue(true)
                                 .Label(new JS("formatMessage('Item Brand : ')"))
-                                .LabelMode(EditorLabelMode.Outside))
+                                .LabelMode(EditorLabelMode.Floating))
                             </td>
                         </tr>
                         <tr class="flex-row">
@@ -719,7 +719,7 @@
                                     .SearchEnabled(true)
                                     .AcceptCustomValue(true)
                                     .Label(new JS("formatMessage('Item Make / Manufacturer : ')"))
-                                    .LabelMode(EditorLabelMode.Outside))
+                                    .LabelMode(EditorLabelMode.Floating))
                             </td>
 
 
@@ -728,7 +728,7 @@
                             @(Html.DevExtreme().TextBox()
                                 .ID("CountryOfOrigin")
                                 .Label(new JS("formatMessage('Country Of Origin : ')"))
-                                .LabelMode(EditorLabelMode.Outside))
+                                .LabelMode(EditorLabelMode.Floating))
                             </td>
 
                         </tr>
@@ -1037,7 +1037,7 @@
                                     .NumberBox()
                                     .ID("MinQty")
                                     .Label(new JS("formatMessage('Minimum Quantity')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .Width(350)
                                     .ShowSpinButtons(true))
                             </td>
@@ -1046,7 +1046,7 @@
                                     .NumberBox()
                                     .ID("MaxQty")
                                     .Label(new JS("formatMessage('Maximum Quantity')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .Width(350)
                                     .ShowSpinButtons(true))
                             </td>
@@ -1055,7 +1055,7 @@
                                     .NumberBox()
                                     .ID("ReorderLevel")
                                     .Label(new JS("formatMessage('Reorder Level')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .Width(350)
                                     .ShowSpinButtons(true))
                             </td>
@@ -1064,7 +1064,7 @@
                                     .NumberBox()
                                     .ID("ReorderQty")
                                     .Label(new JS("formatMessage('Reorder Quantity/EOQ')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .Width(350)
                                     .ShowSpinButtons(true))
                             </td>
@@ -1073,7 +1073,7 @@
                                     .NumberBox()
                                     .ID("ReorderLeadTime")
                                     .Label(new JS("formatMessage('Reorder Lead Time')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .Width(350)
                                     .ShowSpinButtons(true))
                             </td>

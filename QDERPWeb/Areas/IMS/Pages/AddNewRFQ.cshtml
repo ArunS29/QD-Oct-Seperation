@@ -222,7 +222,7 @@
 							@(Html.DevExtreme().TextBox()
 								.Label(new JS("formatMessage('Request No')"))
 								.ID("RFQNo")
-								.LabelMode(EditorLabelMode.Outside)
+								.LabelMode(EditorLabelMode.Floating)
 								.Width("100%")
 								)
                     </div>
@@ -232,7 +232,7 @@
 						.Value(DateTime.Now)
 						.DisplayFormat("dd-MMM-yyyy")
                         .Label(new JS("formatMessage('RFQ Date')"))
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .StylingMode(EditorStylingMode.Outlined)
                         .Width("100%"))
                     </div>
@@ -245,7 +245,7 @@
                                                     .LoadMode(DataSourceLoadMode.Raw)
                                                    .Key("SupplierCode")
                                                 )
-                                         .LabelMode(EditorLabelMode.Outside)
+                                         .LabelMode(EditorLabelMode.Floating)
                                               .ID("GetProjectDropDown")
      .Width(900)
      @*  .ShowClearButton(true)
@@ -295,7 +295,7 @@
                             @(Html.DevExtreme().TextBox()
                             .ID("RequestNo")
 						.Label(new JS("formatMessage('Request / Enquiry No:')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .Width("100%"))
                         </div>
                     </div>
@@ -307,14 +307,14 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("ProjectRef")
 						.Label(new JS("formatMessage('Project Ref:')"))
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
                     </div>
                     <div class="col-md-3" style="  display: flex; align-items: flex-end;">
                         @(Html.DevExtreme().TextBox()
                         .ID("AttentionTo")
 						.Label(new JS("formatMessage('Attention To:')"))
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("calc(100% - 40px)"))
                         @(Html.DevExtreme().Button()
                         .ID("AddAttention")
@@ -327,7 +327,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("SupplierEmail")
 						.Label(new JS("formatMessage('Supplier Email:')"))
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Mode(TextBoxMode.Email)
                         .Width("100%"))
                     </div>
@@ -335,7 +335,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("SupplierContact")
 						.Label(new JS("formatMessage('Supplier Contact No:')"))
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
                     </div>
                   
@@ -347,7 +347,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("SupplierQuoteNo")
 						.Label(new JS("formatMessage('Supplier Quote No:')"))
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
                     </div>
                     <div class="col-md-3">
@@ -355,7 +355,7 @@
                         .ID("SupplierQuoteDate")
 													.DisplayFormat("dd-MMM-yyyy")
 						.Label(new JS("formatMessage('Supplier Quote Date:')"))
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
                     </div>
                     <div class="col-md-3">
@@ -367,7 +367,7 @@
 													.LoadMode(DataSourceLoadMode.Raw)
 													.Key("TypeOfRequestId")
 													)
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.ID("SalesPerson")
 													.Width(900)
 																@*  .ShowClearButton(true)
@@ -395,7 +395,7 @@
 														.LoadMode(DataSourceLoadMode.Raw)
 														.Key("ProjectId")
 														)
-														.LabelMode(EditorLabelMode.Outside)
+														.LabelMode(EditorLabelMode.Floating)
 														.ID("ddProject")
 														.Width(900)
 														@*  .ShowClearButton(true)
@@ -432,7 +432,7 @@
                             .ID("Subject")
                             .Value("Quotation for Materials")
 													.Label(new JS("formatMessage('RFQ Subject:')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .Width("100%")
                         )
                         <div class="d-flex gap-1 mt-1">
@@ -451,7 +451,7 @@
 							.ID("QuoteIntro")
 							.Height(80)
 							.Label(new JS("formatMessage('RFQ Remarks:')"))
-							.LabelMode(EditorLabelMode.Outside)
+							.LabelMode(EditorLabelMode.Floating)
 							.Width("100%")
 							.RtlEnabled(true) // Enables right-to-left text direction
 							.Spellcheck(true) // Enables browser-based spell checking
@@ -480,7 +480,7 @@
                             .ID("QuoteSummary")
                             .ElementAttr("style", "height: 160px ! important;")
 							.Label(new JS("formatMessage('RFQ Summary:')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .Width("100%")
                         )
                         <div class="d-flex gap-1 mt-1">
@@ -521,7 +521,7 @@
 													.LoadMode(DataSourceLoadMode.Raw)
 													.Key("SignatoryId")
 													)
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.ID("ddSignatory")
 													.Width(600)
 													@*  .ShowClearButton(true)
@@ -570,7 +570,7 @@
 													.LoadMode(DataSourceLoadMode.Raw)
 													.Key("CompanyId")
 													)
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.ID("ddCompany")
 												
 													@*  .ShowClearButton(true)
@@ -600,7 +600,7 @@
 													.LoadMode(DataSourceLoadMode.Raw)
 													.Key("InventoryMasterGroupId")
 													)
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.ID("ddInventoryGroup")
 													
 													@*  .ShowClearButton(true)
@@ -681,7 +681,7 @@
 					.LoadAction("GetGoodsAndServices")
 					.LoadMode(DataSourceLoadMode.Raw)
 					.Key("Gscode"))
-					.LabelMode(EditorLabelMode.Outside)
+					.LabelMode(EditorLabelMode.Floating)
 					.ID("accountDropDownBoxEdit")
 					.ShowClearButton(false)
 					.AcceptCustomValue(true)
@@ -727,7 +727,7 @@
 
 				.DisplayExpr("UnitDesc")
 				.Value(new JS("cellInfo.value"))
-				.LabelMode(EditorLabelMode.Outside)
+				.LabelMode(EditorLabelMode.Floating)
 				.OpenOnFieldClick(true)
 				.ShowClearButton(true)
 				.Width(200)
@@ -778,7 +778,7 @@
 					.LoadAction("GetVatTaxSlabs")
 					.LoadMode(DataSourceLoadMode.Raw)
 					.Key("TaxSlabCode"))
-					.LabelMode(EditorLabelMode.Outside)
+					.LabelMode(EditorLabelMode.Floating)
 					.ID("TaxSlabDropDownBoxEdit")
 					.ShowClearButton(false)
 					.AcceptCustomValue(true)

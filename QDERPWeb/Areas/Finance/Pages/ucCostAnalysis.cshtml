@@ -206,7 +206,7 @@
             .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
             .DisplayFormat("dd-MMM-yyyy")
             .TabIndex(2)
-            )
+            .ElementAttr("class", "dynamicFormatDateBox"))
     </div>
 
     <div class="dx-field">
@@ -220,7 +220,7 @@
             .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
             .DisplayFormat("dd-MMM-yyyy")
             .TabIndex(3)
-            )
+            .ElementAttr("class", "dynamicFormatDateBox"))
     </div>
 
     <div id="check">
@@ -1081,32 +1081,7 @@
             return value.toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 });
         }
     }
-            $(function () {
-        const dateBox = $("#frmdateBox").dxDateBox("instance");
-
-        // When focus/typing starts, change to dd-MM-yyyy
-        $("#frmdateBox").on("focusin", function () {
-            dateBox.option("displayFormat", "dd-MM-yyyy");
-        });
-
-        // When focus/typing ends, change back to dd-MMM-yyyy
-        $("#frmdateBox").on("focusout", function () {
-            dateBox.option("displayFormat", "dd-MMM-yyyy");
-        });
-    });
-        $(function () {
-        const dateBox = $("#todateBox").dxDateBox("instance");
-
-        // When focus/typing starts, change to dd-MM-yyyy
-        $("#todateBox").on("focusin", function () {
-            dateBox.option("displayFormat", "dd-MM-yyyy");
-        });
-
-        // When focus/typing ends, change back to dd-MMM-yyyy
-        $("#todateBox").on("focusout", function () {
-            dateBox.option("displayFormat", "dd-MMM-yyyy");
-        });
-    });
+    
             
 
     function handleGridOptionChanged(e) {

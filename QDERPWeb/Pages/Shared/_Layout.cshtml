@@ -132,18 +132,19 @@
 
     <style>
         /* Container for sidebar (assumes #sidebar2 exists) */
-        .sidebar3div{
+        .sidebar3div {
             width: 100vw;
             background-color: transparent;
             display: none;
         }
 
-        .sidebar2div{
+        .sidebar2div {
             display: flex;
             align-items: center;
             justify-content: center;
             background-color: var(--title-background-color);
         }
+
         #sidebar2 {
             display: none;
             padding: 10px;
@@ -169,7 +170,7 @@
             transition: background 0.2s ease, transform 0.1s ease;
             cursor: pointer;
         }
-        
+
             .submenu-item:hover {
                 background-color: #e8f0fe;
                 transform: translateX(2px);
@@ -222,8 +223,8 @@
             transition: all 0.3s ease;
         }
 
-        .backgroundWhite{
-            background-color:white !important;
+        .backgroundWhite {
+            background-color: white !important;
         }
 
         * {
@@ -266,6 +267,49 @@
             --sidebar-width: 256px;
         }
 
+        .dx-datagrid-search-panel input {
+            border-radius: 25px !important;
+            border: 1px solid var(--title-background-color) !important;
+            padding: 10px 30px !important;
+            background-color: var(--background-color-1) !important;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            font-size: 14px;
+            transition: 0.3s ease;
+        }
+
+            .dx-datagrid-search-panel input:focus {
+                border-color: #007bff !important;
+                background-color: #ffffff !important;
+                outline: none;
+                box-shadow: 0 0 6px rgba(0, 123, 255, 0.5);
+            }
+
+        /* Optional: customize search icon inside the panel */
+        .dx-icon-search {
+            color: #007bff !important;
+        }
+
+        .dx-datagrid-header-panel .dx-toolbar {
+            margin: 5px 0px;
+        }
+
+        .dx-datagrid-search-panel {
+            float: right;
+            margin-right: 10px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .dx-datagrid .dx-datagrid-header-panel .dx-toolbar {
+            background: white;
+        }
+
+        .dx-datagrid-headers .dx-header-row > td {
+            border-right: 1px solid var(--title-background-color) !important;
+        }
+
+        .dx-datagrid-headers .dx-header-row > td:last-child {
+            border-right: none !important;
+        }
         .title {
             /* display: none; */
             display: flex;
@@ -284,8 +328,8 @@
             transition: all 0.3s ease;
             margin: 0;
             display: flex;
-            height:100vh;
-            overflow:hidden;
+            height: 100vh;
+            overflow: hidden;
         }
 
         .color-btn {
@@ -307,13 +351,14 @@
         }
 
         #dataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
-            background-color: var(--header-color);
-            /* border: none; */
+            /* background-color: var(--header-color); */
+            /* border: 1px solid var(--title-background-color); */
             border-radius: 0px;
         }
 
         .dx-datagrid-header-panel {
-            background-color: var(--header-color) !important;
+            /* background-color: var(--header-color) !important; */
+            background-color: white;
         }
 
         .submenu-item.disabled {
@@ -402,13 +447,13 @@
             width: 55px;
         }
 
-            .menu-item.active {
-                background-color: white;
-                color: white;
-                font-weight: bold;
-                border-radius: 10px 0px 0px 10px;
-                width: 215px;
-            }
+        .menu-item.active {
+            background-color: white;
+            color: white;
+            font-weight: bold;
+            border-radius: 10px 0px 0px 10px;
+            width: 215px;
+        }
 
         #main-content.blur {
             filter: blur(4px);
@@ -510,9 +555,9 @@
             transition: left 0.3s ease; /* Smooth transition */
         }
 
-            /* .toggle-btn:hover { */
-            /*     background-color: var(--hover-bg-color); */
-            /* } */
+        /* .toggle-btn:hover { */
+        /*     background-color: var(--hover-bg-color); */
+        /* } */
 
         /* Sidebar 2 styles */
         .sidebar2 {
@@ -1211,7 +1256,7 @@
             margin-bottom: 4px;
         }
 
-       
+
         User icon
         .dropdown .fa-user.img {
             color: darkgreen;
@@ -1255,9 +1300,9 @@
             justify-content: center;
         }
 
-            .titleCard-toggle:hover {
-                color: #000;
-            }
+        .titleCard-toggle:hover {
+            color: #000;
+        }
 
         .titleCard-carousel.collapsed {
             max-height: 0;
@@ -1292,7 +1337,7 @@
 </head>
 <body>
     <!-- Modal Structure -->
-            
+
     <div id="customModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -1326,9 +1371,9 @@
             </div>
             <div class="image">
                 <div class="companyName">
-                  <span style="color:@Tenant?.Value?.CompanyTextColor">
-    @($"{Tenant?.Value?.DefaultcompanyName}, {Tenant?.Value?.CompanyNameShort}")
-</span>
+                    <span style="color:@Tenant?.Value?.CompanyTextColor">
+                        @($"{Tenant?.Value?.DefaultcompanyName}, {Tenant?.Value?.CompanyNameShort}")
+                    </span>
 
                 </div>
 
@@ -1798,7 +1843,7 @@
                 </div>
             </div>
         </div>
-
+      
         <!-- Main container to hold sidebars and content -->
         <div class="container">
             <!-- Sidebar 1 Section -->
@@ -1864,13 +1909,13 @@
             </div>
             <div class="sidebar2div">
                 <div id="sidebar2" class="sidebar2">
-            </div>
+                </div>
             </div>
             <div class="sidebar3div" id="sidebar3div" onclick="hideSidebars()">
                 <div id="sidebar3" class="sidebar3"></div>
             </div>
 
-            
+
 
             <!-- Breadcrumb above Sidebar 2 -->
 
@@ -3036,7 +3081,7 @@
                                          <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/ProformaInvoiceMasterView">
                                             <i class="fas fa-align-justify"></i>
                                             <div class="text">${formatMessage("Proforma Invoices")}</div>
-                                        </a>`; 
+                                        </a>`;
                     }
 
             function showEquipmentRentalSubmenu() {
@@ -4167,7 +4212,38 @@
                     icon.classList.add("fa-chevron-up");
             }
         }
+        $(function () {
+            $(".dynamicFormatDateBox").each(function () {
+                const $dateBoxDiv = $(this); // this is the outer container (e.g., <div class="dynamicFormatDateBox">)
+                const instance = $dateBoxDiv.dxDateBox("instance");
 
+                if (instance) {
+                    const $input = $dateBoxDiv.find("input");
+
+                    $input.on("focusin", function () {
+                        instance.option("displayFormat", "dd-MM-yyyy");
+                    });
+
+                    $input.on("focusout", function () {
+                        instance.option("displayFormat", "dd-MMM-yyyy");
+                    });
+                }
+            });
+        });
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const grid = $("#dataGrid").dxDataGrid("instance");
+            if (grid) {
+                grid.option("searchPanel", {
+                    visible: true,
+                    width: 300,
+                    placeholder: "Search anything...",
+                    highlightSearchText: true,
+                    highlightCaseSensitive: false
+                });
+            }
+        });
 
     </script>
 </body>

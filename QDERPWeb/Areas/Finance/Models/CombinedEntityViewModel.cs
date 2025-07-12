@@ -1136,7 +1136,21 @@ namespace QD.ERP.Web.Areas.Finance.Models
     {
         public string VoucherNo { get; set; }
     }
-
+    public class SubLedgerDto
+    {
+        public long VoucherEntryNo { get; set; }
+        public string DrCr { get; set; }
+        public string ReferenceType { get; set; }
+        public string ReferenceNo { get; set; }
+        public decimal Amount { get; set; }
+        public string accountId { get; set; }
+        public string VoucherNo { get; set; }
+    }
+    public class DeleteSubLedgerDto
+    {
+        public long VoucherEntryNo { get; set; }
+        public decimal Amount { get; set; }
+    }
 
 
 }

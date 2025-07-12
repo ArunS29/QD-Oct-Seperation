@@ -198,7 +198,7 @@
 
                 <!-- Asset Ledger No Field -->
                 <div class="col-md-2">
-                    @(Html.DevExtreme().TextBox().ID("txtSupplierCode").Label(new JS("formatMessage('Supplier Name')")).LabelMode(EditorLabelMode.Outside).Value("").ReadOnly(true)
+                    @(Html.DevExtreme().TextBox().ID("txtSupplierCode").Label(new JS("formatMessage('Supplier Name')")).LabelMode(EditorLabelMode.Floating).Value("").ReadOnly(true)
             .ValidationRules(r => r.AddRequired().Message("Supplier Code is required.")))
                 </div>
                 <!-- Asset Category Dropdown -->
@@ -206,14 +206,14 @@
                     <div class="form-group-row" style="align-items:end;">
         @(Html.DevExtreme().DropDownBox()
             .Label(new JS("formatMessage('Supplier Category')"))
-            .LabelMode(EditorLabelMode.Outside)
+            .LabelMode(EditorLabelMode.Floating)
             .DataSource(d => d.WebApi()
             .Controller("ERSupplierMaster")
             .LoadAction("GetSupplierCategory")
             .LoadMode(DataSourceLoadMode.Raw)
             .Key("CategoryCode")
             )
-            .LabelMode(EditorLabelMode.Outside)
+            .LabelMode(EditorLabelMode.Floating)
             .ID("GetSupplierCategoryDropDown")
             .Width(900)
             @*.ShowClearButton(true)
@@ -258,7 +258,7 @@
                             <div class="col-md-12">
         @( Html.DevExtreme().TextBox()
             .Label(new JS("formatMessage('Supplier Code')"))
-            .LabelMode(EditorLabelMode.Outside)
+            .LabelMode(EditorLabelMode.Floating)
             .ID("txtSupplierName")
             .ValidationRules(r => r.AddRequired().Message("Supplier Name is required."))
             // .Value("")
@@ -294,7 +294,7 @@
                         .LoadMode(DataSourceLoadMode.Raw)
                         .Key("AccountId")
                         )
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Label(new JS("formatMessage('Supplier Ledger No')"))
                         .ID("GetSupplierLedgerNoDropDown")
                         .Width(900)
@@ -328,50 +328,50 @@
                 <div class="form-row">
                     <div class="col-md-12">
                         @(Html.DevExtreme().TextArea().ID("SupplierAddress").Height(70).Label(new JS("formatMessage('Client Address')"))
-                        .LabelMode(EditorLabelMode.Outside) )
+                        .LabelMode(EditorLabelMode.Floating) )
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="col-md-6">
                         @(Html.DevExtreme().TextBox().ID("SupplierPerson").Label(new JS("formatMessage('Contact Person')"))
-                        .LabelMode(EditorLabelMode.Outside))
+                        .LabelMode(EditorLabelMode.Floating))
                     </div>
                     <div class="col-md-6">
                         @(Html.DevExtreme().TextBox().ID("Title").Label(new JS("formatMessage('Title')"))
-                        .LabelMode(EditorLabelMode.Outside))
+                        .LabelMode(EditorLabelMode.Floating))
                     </div>
 
                 </div>
                 <div class="form-row">
                     <div class="col-md-6">
                         @(Html.DevExtreme().TextBox().ID("MobileNumber1").Label(new JS("formatMessage('Mobile Number (1)')"))
-                        .LabelMode(EditorLabelMode.Outside))
+                        .LabelMode(EditorLabelMode.Floating))
                     </div>
                     <div class="col-md-6">
                         @(Html.DevExtreme().TextBox().ID("PhoneNumber1").Label(new JS("formatMessage('Phone No (1)')"))
-                        .LabelMode(EditorLabelMode.Outside))
+                        .LabelMode(EditorLabelMode.Floating))
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="col-md-6">
                         @(Html.DevExtreme().TextBox().ID("MobileNumber2").Label(new JS("formatMessage('Mobile Number (2)')"))
-                        .LabelMode(EditorLabelMode.Outside))
+                        .LabelMode(EditorLabelMode.Floating))
                     </div>
                     <div class="col-md-6">
                         @(Html.DevExtreme().TextBox().ID("PhoneNumber2").Label(new JS("formatMessage('Phone No (2)')"))
-                        .LabelMode(EditorLabelMode.Outside))
+                        .LabelMode(EditorLabelMode.Floating))
                     </div>
 
                 </div>
                 <div class="form-row">
                     <div class="col-md-6">
                         @(Html.DevExtreme().TextBox().ID("FaxNumber").Label(new JS("formatMessage('Fax No')"))
-                        .LabelMode(EditorLabelMode.Outside))
+                        .LabelMode(EditorLabelMode.Floating))
                     </div>
                     <div class="col-md-6">
                         @(Html.DevExtreme().TextBox().ID("Email").Label(new JS("formatMessage('Email')"))
-                        .LabelMode(EditorLabelMode.Outside))
+                        .LabelMode(EditorLabelMode.Floating))
                     </div>
                 </div>
 
@@ -380,7 +380,7 @@
 
                     <div class="col-md-12">
                         @(Html.DevExtreme().TextArea().ID("Remarks").Height(60).Label(new JS("formatMessage('Remarks')"))
-                        .LabelMode(EditorLabelMode.Outside))
+                        .LabelMode(EditorLabelMode.Floating))
                     </div>
                 </div>
             </div>

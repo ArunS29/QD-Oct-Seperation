@@ -6,7 +6,11 @@
 @model QD.ERP.Web.Areas.Finance.Pages.VoucherEntryCashReceiptsModel
 @{
     ViewData["Title"] = "Receipt Voucher Details";
-
+        // pull your session value (“2”) into baseCurrencyIdnew
+    var sessionID = HttpContext.Session.GetString("currencyID");
+    int baseCurrencyIdnew = 0;
+    if (!string.IsNullOrEmpty(sessionID))
+        int.TryParse(sessionID, out baseCurrencyIdnew);
 }
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 <!-- SweetAlert2 CSS -->
@@ -66,7 +70,7 @@
                                                 .Type(DateBoxType.Date)
                                                 .DisplayFormat("dd-MMM-yyyy")
                                                 .Value(DateTime.Now)
-                                                .ElementAttr(new { @class = "light-theme-input" })
+                                                .ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
                                                 .TabIndex(1)
                                                 )
                     </div>
@@ -79,7 +83,7 @@
                                                 .Type(DateBoxType.Date)
                                                 .DisplayFormat("dd-MMM-yyyy")
                                                 .Value(DateTime.Now)
-                                                .ElementAttr(new { @class = "light-theme-input" })
+                                                .ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
                                                 .TabIndex(2)
                                                 )
                     </div>
@@ -237,70 +241,29 @@ buttons.Add()
 
                                                 )
                     </div>
-                    <div class="form-group col-md-2 col-sm-6">
-                        @(Html.DevExtreme().DropDownBox()
-                                                .Label(new JS("formatMessage('Base Currency')"))
-                                                .DataSource(d => d.WebApi()
-                                                .Controller("Utility")
-                                                .LoadAction("GetCurrencyList")
-                                                .LoadMode(DataSourceLoadMode.Raw)
-                                                .Key("CurrencyExchangeId")
-                                                )
-                                                .ValidationRules(rules =>
-                                                {
-                                                    rules.AddRequired()
-                                                    .Message("Please select a base currency.");
-                                                })
-                                                .LabelMode(EditorLabelMode.Floating)
-                                                .ID("ddlBaseCurrency")
-                                                .ShowClearButton(true)
-                                                .AcceptCustomValue(false)
-                                                .OpenOnFieldClick(true)
-                                                .Value(1)
-                                                .ValueExpr("CurrencyExchangeId")
-                                                .DisplayExpr("CurrencyName")
-                                                .OnInput("dropDownBoxOnInput")
-                                                .OnOpened("onOpened")
-                                                .TabIndex(8)
-                                                .DropDownOptions(o => o.Width(700))
-                                                .ReadOnly(true)
-                                                .ElementAttr(new { @class = "custom-disabled-selectbox" })
-                                                
-                                                .ReadOnly(true)
-                                                .ContentTemplate(new TemplateName("BaseCurrencyContentTemplate"))
-                                                )
-
-
-                        @using (Html.DevExtreme().NamedTemplate("BaseCurrencyContentTemplate"))
-                        {
-                            @(Html.DevExtreme().DataGrid()
-                                                    .ID("basecurrency-datagrid")
-                                                    .DataSource(d => d.WebApi()
-                                                    .Controller("Utility")
-                                                    .LoadAction("GetCurrencyList")
-                                                    .LoadMode(DataSourceLoadMode.Raw)
-                                                    .Key("CurrencyExchangeId")
-                                                    )
-                                                    .WordWrapEnabled(true)
-                                                    .ShowBorders(true)
-                                                    .Selection(sl => sl.Mode(SelectionMode.Single))
-                                                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                                                    .SearchPanel(sp => sp.HighlightSearchText(true).Visible(true))
-                                                    .OnSelectionChanged("onBaseCurrencySelectionChanged") // Define this JS function
-                                                    .Paging(p => p.PageSize(10))
-                                                    .Height(300)
-                                                    .Columns(columns =>
-                                                    {
-                                                        columns.Add().DataField("CurrencyExchangeId").Caption(new JS("formatMessage('ID')")).Visible(true);
-                                                        columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency Name')"));
-                                                        columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Symbol')"));
-                                                        columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('Exchange Rate')"));
-                                                        columns.Add().DataField("CurrencyMasterCode").Caption(new JS("formatMessage('unicode')")).DataType(GridColumnDataType.Boolean);
-                                                        columns.Add().DataField("CurrencyPoints").Caption(new JS("formatMessage('point')")).DataType(GridColumnDataType.Boolean);
-                                                    })
-                                                    )
-                                                }
-                    </div>
+                                 <div class="form-group col-md-2 col-sm-6">
+    @(Html.DevExtreme().DropDownBox()
+        .ID("ddlBaseCurrency")
+        .DataSource(d => d.WebApi()
+            .Controller("Utility")
+            .LoadAction("GetCurrencyList")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("CurrencyExchangeId")
+        )
+        .ValueExpr("CurrencyExchangeId")
+        .DisplayExpr("CurrencyName")
+        // now use your renamed variable
+        .Value(baseCurrencyIdnew)
+        .Label(new JS("formatMessage('Base Currency')"))
+        .LabelMode(EditorLabelMode.Floating)
+        .ValidationRules(rules => rules.AddRequired().Message("Please select a base currency."))
+        .ShowClearButton(true)
+        .AcceptCustomValue(false)
+        .DropDownOptions(o => o.Width(300))
+        .ReadOnly(true)
+        .ElementAttr(new { @class = "custom-disabled-selectbox" })
+    )
+</div>
                     <div class="form-group col-md-2 col-sm-6">
                         @(Html.DevExtreme().DropDownBox()
                                                 .Label(new JS("formatMessage('Convertion Currency')"))
@@ -320,12 +283,12 @@ buttons.Add()
                                                 .ShowClearButton(true)
                                                 .AcceptCustomValue(false)
                                                 .OpenOnFieldClick(true)
-                                                .Value(1)
+                                                .Value(baseCurrencyIdnew)
                                                 .ValueExpr("CurrencyExchangeId")
                                                 .DisplayExpr("CurrencyName")
                                                 .OnInput("dropDownBoxOnInput")
                                                 .OnOpened("onOpened")
-                                                .OnInitialized("onBaseCurrencyInit")
+                                                //.OnInitialized("onBaseCurrencyInit")
                                                 .TabIndex(9)
                                                 .DropDownOptions(o => o.Width(700))
                                                 .ElementAttr(new { @class = "light-theme-input" })
@@ -766,13 +729,15 @@ buttons.Add()
                 <div class="form-group" style="display: flex; flex-wrap: wrap; gap: 10px;">
                     <div style="flex: 1 1 220px; min-width: 200px;">
                         @(Html.DevExtreme().SelectBox()
-                                                .Label(new JS("formatMessage('Cash Receipt')"))
-                                                .LabelMode(EditorLabelMode.Floating)
-                                                .ID("VoucherType")
-                                                .DataSource(new[] { "Cash Receipts" })
-                                                .Value(new JS("formatMessage('Cash Receipts')"))
-                                                .Width("100%")
-                                                .Disabled(true))
+                        .Label(new JS("formatMessage('Cash Receipt')"))
+                        .LabelMode(EditorLabelMode.Floating)
+                        .ID("VoucherType")
+                        .DataSource(new[] { "Cash Receipts" })
+                        .Value("Cash Receipts")
+                        .Width("100%")
+                        .Disabled(true)
+                            .ElementAttr(new { @class = "custom-disabled-selectbox" })
+                        )
                     </div>
 
                     <div style="flex: 1 1 200px; min-width: 180px;">
@@ -2540,47 +2505,47 @@ function addVoucherEntry() {
                     openEmployeeAllocationPopup(params);
                 }
             };
-            window.editBillsReceivable = function () {
-                let rowIndex = document.getElementById("contextMenu").dataset.rowIndex;
-                let dataGrid = $("#dataGrid").dxDataGrid("instance");
+             window.editBillsReceivable = function () {
+                 let rowIndex = document.getElementById("contextMenu").dataset.rowIndex;
+                 let dataGrid = $("#dataGrid").dxDataGrid("instance");
 
-                if (!rowIndex || rowIndex < 0) {
-                    console.error("Invalid row index detected.");
-                    return;
-                }
+                 if (!rowIndex || rowIndex < 0) {
+                     console.error("Invalid row index detected.");
+                     return;
+                 }
 
-                let visibleRows = dataGrid.getVisibleRows(); // Get all visible rows
-                let rowData = visibleRows[rowIndex]?.data; // Fetch the correct row's data
+                 let visibleRows = dataGrid.getVisibleRows(); // Get all visible rows
+                 let rowData = visibleRows[rowIndex]?.data; // Fetch the correct row's data
 
-                if (!rowData || !rowData.VoucherEntryNo) {
-                    console.error("No valid row selected for Cost Allocation.");
-                    return;
-                }
+                 if (!rowData || !rowData.VoucherEntryNo) {
+                     console.error("No valid row selected for Cost Allocation.");
+                     return;
+                 }
 
-                let drCr = rowData.DrCr;
-                let accountHead = rowData.AccountHead;
-                let amount = drCr === "Cr" ? rowData.CrAmount : rowData.DrAmount;
-                let voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+                 let drCr = rowData.DrCr;
+                 let accountHead = rowData.AccountHead;
+                 let amount = drCr === "Cr" ? rowData.CrAmount : rowData.DrAmount;
+                 let voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+                 let accountid = accheadid;
 
-                // Selecting VoucherEntryNo based on DrCr value
-                let voucherEntryNo = drCr === "Cr" ? rowData.VoucherEntryNo : rowData.VoucherEntryNo;
+                 // Selecting VoucherEntryNo based on DrCr value
+                 let voucherEntryNo = drCr === "Cr" ? rowData.VoucherEntryNo : rowData.VoucherEntryNo;
 
-                let popupId = `BillsReceivablePopup-${voucherEntryNo}`;
-                let params = {
-                    VoucherNo: voucherNo, // Keep VoucherEntryNo as VoucherNo
-                    VoucherEntryNo: voucherEntryNo, // Pass Dr/Cr-specific row's VoucherEntryNo
-                    DrCr: drCr,
-                    AccountHead: accountHead,
-                    VoucherAmount: amount
-                };
+                 let popupId = `BillsReceivablePopup-${voucherEntryNo}`;
+                 let params = {
+                     VoucherNo: voucherNo, // Keep VoucherEntryNo as VoucherNo
+                     VoucherEntryNo: voucherEntryNo, // Pass Dr/Cr-specific row's VoucherEntryNo
+                     DrCr: drCr,
+                     AccountHead: accountHead,
+                     VoucherAmount: amount,
+                     AccountID: accountid
+                 };
+     
+    
+                     openBillsReceivablePopup(params);
+    
 
-                if (openedPopups[popupId]) {
-                    openedPopups[popupId].show();
-                } else {
-                    openBillsReceivablePopup(params);
-                }
-
-            };
+             };
 
         });
 
@@ -3538,4 +3503,28 @@ function onBaseCurrencyInit(e) {
             showIfHasValue("ApprovedOntext", "approvedOnSection");
         }, 300); // wait a bit to ensure DevExtreme is ready
     });
+
+    
+    function onReferenceDropdownOpened(e) {
+        const grid = $("#ReferenceGrid").dxDataGrid("instance");
+        if (grid) {
+            grid.getDataSource().reload();
+        }
+    }
+
+
+        function onAttachmentButtonClick() {
+            var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
+            var voucherNo = voucherNoBox.option("value");
+
+            var voucherTypeBox = $("#VoucherType").dxSelectBox("instance"); // or dxTextBox
+            var voucherType = voucherTypeBox.option("value");
+            const isMaster = false;
+            console.log(voucherType)
+            const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&modal=true`;
+            const title = "Transaction Documents";
+            openModal(url, title);
+        }
+        
+
 </script>

@@ -3,6 +3,7 @@ using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using QD.ERP.Web.Areas.Finance.Controllers;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.Areas.Finance.Views;
@@ -821,7 +822,7 @@ namespace Form.Areas.Finance.Controllers
             ViewBag.AccountID = accountId;
             return PartialView("~/Areas/Finance/Views/_EmployeeAllocation.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
         }
-        public IActionResult BillsReceivable(string voucherNo, string accountHead, string voucherAmount, string drCr, long voucherEntryNo)
+        public IActionResult BillsReceivable(string voucherNo, string accountHead, string voucherAmount, string drCr, long voucherEntryNo,string accountId)
         {
             // Log or debug the incoming parameters
             ViewBag.VoucherNo = voucherNo;
@@ -829,6 +830,7 @@ namespace Form.Areas.Finance.Controllers
             ViewBag.VoucherAmount = voucherAmount;
             ViewBag.DrCr = drCr;
             ViewBag.VoucherEntryNo = voucherEntryNo;
+            ViewBag.AccountID = accountId;
 
             return PartialView("~/Areas/Finance/Views/_BillsReceivables.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
         }
@@ -2724,7 +2726,7 @@ namespace Form.Areas.Finance.Controllers
                             subLedgerMaster.Amount = petty.DrAmount;
                             subLedgerMaster.DrCr = petty.DrCr;
                             subLedgerMaster.RetentionAmount = 0;
-                            subLedgerMaster.RetentionDueDate = DateTime.Now;
+                            subLedgerMaster.RetentionDueDate = null;
                             subLedgerMaster.AddedBy = UserName;
                             subLedgerMaster.AddedOn = DateTime.Now;
 
@@ -2940,10 +2942,10 @@ namespace Form.Areas.Finance.Controllers
                             subLedgerMaster.ReferenceType = "New Reference";
                             subLedgerMaster.ReferenceNo = petty.VoucherNo;
                             subLedgerMaster.AccountNo = petty.AccountHead;
-                            subLedgerMaster.Amount = petty.DrAmount;
+                            subLedgerMaster.Amount = petty.CrAmount;
                             subLedgerMaster.DrCr = petty.DrCr;
                             subLedgerMaster.RetentionAmount = 0;
-                            subLedgerMaster.RetentionDueDate = DateTime.Now;
+                            subLedgerMaster.RetentionDueDate = null;
                             subLedgerMaster.AddedBy = UserName;
                             subLedgerMaster.AddedOn = DateTime.Now;
 
@@ -3206,7 +3208,7 @@ namespace Form.Areas.Finance.Controllers
                             subLedgerMaster.ReferenceType = "New Reference";
                             subLedgerMaster.ReferenceNo = petty.VoucherNo;
                             subLedgerMaster.AccountNo = petty.AccountHead;
-                            subLedgerMaster.Amount = petty.DrAmount;
+                            subLedgerMaster.Amount = petty.CrAmount;
                             subLedgerMaster.DrCr = petty.DrCr;
                             subLedgerMaster.RetentionAmount = 0;
                             subLedgerMaster.RetentionDueDate = DateTime.Now;

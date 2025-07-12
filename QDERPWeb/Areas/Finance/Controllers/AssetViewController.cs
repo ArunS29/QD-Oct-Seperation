@@ -31,12 +31,100 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 try
                 {
+                    var company = dbContext.Tbl901CompanyDetails
+           .FirstOrDefault();
                     var ledgerData = dbContext.Qry20149AssetsRegisterViews
                     .FromSqlRaw("SELECT * FROM qry20149AssetsRegisterView")
                     .AsQueryable();
 
+                    var result = ledgerData.Select(item => new
+                    {
+                        item.AccountGroup,
+                        item.AccountHead,
+                        item.AccountId,
+                        item.AccumDepLedgerNo,
+                        item.AccumulatedDepreciationTotal,
+                        item.AddedBy,
+                        item.AddedOn,
+                        item.AssetCategory,
+                        item.AssetDescription,
+                        item.AssetLedgerNo,
+                        item.AssetLocation,
+                        item.AssetType,
+                        item.Bmv,
+                        item.BookValue,
+                        item.Brand,
+                        item.CalculatedDepreciationAmount,
+                        item.ClosingBalance,
+                        item.ConvertedBookValue,
+                        item.ConvertedClosingBalance,
+                        item.ConvertedDepreciatedAmount,
+                        item.ConvertedTotalCredit,
+                        item.ConvertedTotalDebit,
+                        item.CurrentCondition,
+                        item.CurrentReading,
+                        item.CurrentValueOfAsset,
+                        item.DepAsOnDate,
+                        item.DepreciationLedgerNo,
+                        item.DepreciationMethod,
+                        item.DepreciationPercentage,
+                        item.DiscontinuedOn,
+                        item.DiscontinuedRemarks,
+                        item.EquipmentAttachments,
+                        item.EquipmentCapacity,
+                        item.EquipmentCertification,
+                        item.EquipmentClientRatePerHour,
+                        item.EquipmentClientSite,
+                        item.EquipmentCurrentOperators,
+                        item.EquipmentCurrentStatus,
+                        item.EquipmentLocationDelivered,
+                        item.EquipmentMobilizedTo,
+                        item.EquipmentPwas,
+                        item.EquipmentSerialNo,
+                        item.FinalDepreciationAmount,
+                        item.FinalInstallment,
+                        item.FinancedBy,
+                        item.FinancedFrom,
+                        item.Fmv,
+                        item.InitialDocCharges,
+                        item.InitialDownPayment,
+                        item.InstallmentEndDate,
+                        item.InstallmentStartDate,
+                        item.IsDiscontinued,
+                        item.IsFinanced,
+                        item.LifeSpanOfProperty,
+                        item.MasterGroup,
+                        item.MasterGroupId,
+                        item.Model,
+                        item.ModifiedBy,
+                        item.ModifiedOn,
+                        item.MonthlyDepreciation,
+                        item.MonthlyInstallment,
+                        item.NetBookValue,
+                        item.NoOfInstallments,
+                        item.NoOfMonthsOld,
+                        item.OpeningTotal,
+                        item.Ownership,
+                        item.PlateNo,
+                        item.PropertyNo,
+                        item.PurchasedAs,
+                        item.PurchasedAs2,
+                        item.PurchaseDate,
+                        item.PurchasedFrom,
+                        item.ScrapValueOfProperty,
+                        item.Specifications,
+                        item.TotalCredit,
+                        item.TotalDebit,
+                        item.TotalDepreciatedAmount,
+                        //item.TransactionCurrencySymbol,
+                        item.ValueAfterScrap,
+                        item.ValueOfProperty,
+                        item.Year,
+                        item.YearlyDepreciation,
+                        company.CurrencyImage
+                    });
 
-                    return Json(await DataSourceLoader.LoadAsync(ledgerData, loadOptions)); // ✅ No ToListAsync() here
+                    return Json(await DataSourceLoader.LoadAsync(result, loadOptions)); // ✅ No ToListAsync() here
                 }
                 catch (Exception ex)
                 {
@@ -171,6 +259,10 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     existingAsset.FinancedBy = updatedAsset.FinancedBy;
                     existingAsset.DepPercentage = updatedAsset.DepPercentage;
                     existingAsset.PropertyNo = updatedAsset.PropertyNo;
+                    existingAsset.ConversionCurrencyID = updatedAsset.ConversionCurrencyID;
+                    existingAsset.BaseCurrencyID = updatedAsset.BaseCurrencyID; 
+                    existingAsset.CurrencyRate = updatedAsset.CurrencyRate;
+
 
                     existingAsset.ModifiedBy = "Admin"; // Replace with actual current user
                     existingAsset.ModifiedOn = DateTime.Now;

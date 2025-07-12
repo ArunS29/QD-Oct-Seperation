@@ -111,7 +111,7 @@
             @(Html.DevExtreme().TextBox()
                 .ID("txtJobOrderStatus")
                         .Label(new JS("formatMessage('Type new Job Order Status Master && Add to the Existing List:')"))
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .ValidationRules(rules =>
                 {
                             rules.AddRequired().Message("Job Order Status is required");

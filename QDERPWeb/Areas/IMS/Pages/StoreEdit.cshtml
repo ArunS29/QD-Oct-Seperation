@@ -142,7 +142,7 @@
                         @(Html.DevExtreme().TextBox()
                             .ID("txtStoreName")
                         .Label(new JS("formatMessage('Type a newStore & Add to the Existing List')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                              .ValidationRules(rules => {
         rules.AddRequired().Message("Store Name is required");
     })
@@ -153,7 +153,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("txtStoreCode")
                         .Label(new JS("formatMessage('Store Code')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                           .ValidationRules(rules => {
         rules.AddRequired().Message("Store Code is required");
     })
@@ -168,7 +168,7 @@
                                 @(Html.DevExtreme().DropDownBox()
                                     .ID("ddCostcenter")
                                     .Label(new JS("formatMessage('Cost Center Code:(Finance Modules)')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .ShowClearButton(true)
                                     .OpenOnFieldClick(true)
                                     .AcceptCustomValue(false)

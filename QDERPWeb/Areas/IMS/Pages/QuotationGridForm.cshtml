@@ -84,7 +84,7 @@
                 @(Html.DevExtreme().NumberBox()
                     .ID("ItemCost")
                       .Label("Items Cost Price:")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .Value(1.00)
                     .Format("#,##0.00")
                     .Width("100%"))
@@ -93,7 +93,7 @@
         <div class="calc-row">
             <div class="calc-input">
                 @(Html.DevExtreme().TextBox().ID("OtherCharges").Width("100%").Label("All Other Charges:")
-                                .LabelMode(EditorLabelMode.Outside))
+                                .LabelMode(EditorLabelMode.Floating))
             </div>
             <div class="add-btn">
                 @(Html.DevExtreme().Button().Icon("plus").Text("Add").Type(ButtonType.Default))
@@ -104,7 +104,7 @@
             <div class="calc-input">
                 @(Html.DevExtreme().NumberBox()
                         .ID("TotalCost").Label("Total Cost of the Item:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Value(1.00)
                         .Format("#,##0.00")
                         .Width("100%")
@@ -134,7 +134,7 @@
                 @(Html.DevExtreme().NumberBox()
                         .ID("UnitPriceProfit")
                         .Label("Unit Price with Profit:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Value(1.00)
                         .Format("#,##0.00")
                         .Width("100%"))
@@ -146,7 +146,7 @@
                 @(Html.DevExtreme().NumberBox()
                         .ID("QuotedPrice")
                         .Label("Quoted Item Total Price:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Value(1.00)
                         .Format("#,##0.00")
                         .Width("100%"))
@@ -158,7 +158,7 @@
                 @(Html.DevExtreme().NumberBox()
                                 .ID("Discount")
                                 .Label("Discount on the Items:")
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Value(0.00)
                                 .Format("#,##0.00")
                                 .Width("100%"))
@@ -171,7 +171,7 @@
                                 .ID("ProfitLoss")
                                 .Value(0.00)
                                 .Label("Item Profit / Loss:")
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Format("#,##0.00")
                                 .Width("100%")
                                 .ElementAttr("class", "loss-box"))

@@ -85,7 +85,7 @@
     <div class="row mb-2">
         <div class="col-md-12">
             @(Html.DevExtreme().TextBox().ID("txtGroup").Label(new JS("formatMessage('Type a New Projects Group & Add to the Existing List:')"))
-                .LabelMode(EditorLabelMode.Outside).Width("50%").ValidationRules(rules =>
+                .LabelMode(EditorLabelMode.Floating).Width("50%").ValidationRules(rules =>
                 {
                     rules.AddRequired().Message("Project Group is required");
                 }))
@@ -95,7 +95,7 @@
     <div class="row mb-3">
         <div class="col-md-6" style="display:flex; align-items:end;">
             @(Html.DevExtreme().TextBox().ID("txtGroupArabic").Label(new JS("formatMessage('Projects Group (In Arabic):')"))
-                .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                .LabelMode(EditorLabelMode.Floating).Width("100%"))
 
                 <div>
                 @(Html.DevExtreme().Button()
@@ -111,7 +111,7 @@
     </div>
     <div style="display:flex; align-items:end;" >
             @(Html.DevExtreme().TextBox().ID("txtGroupCode").Label(new JS("formatMessage('Group Code:')"))
-            .LabelMode(EditorLabelMode.Outside).Width("30%").ValidationRules(rules =>
+            .LabelMode(EditorLabelMode.Floating).Width("30%").ValidationRules(rules =>
             {
                 rules.AddRequired().Message("Group Code is required");
             }))

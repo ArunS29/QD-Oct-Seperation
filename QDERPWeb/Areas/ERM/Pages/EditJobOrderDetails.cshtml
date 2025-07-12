@@ -282,7 +282,7 @@
                         .ID("Joboreder1")
                         .Value("") // leave it blank initially
                         .Label("Job Order No:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .ReadOnly(false)
                         .Width("100%")
                         )
@@ -294,7 +294,7 @@
                         .ID("deliveryNoteDate1")
                         .Value(DateTime.Now)
                         .Label("Job Order Date:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
                     </div>
@@ -302,7 +302,7 @@
                         @(Html.DevExtreme().DropDownBox()
                         .ID("GetProjectDropDown1")
                         .Label(new JS("formatMessage('Client Name:')"))
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .ValueExpr("ClientCode")
                         .DisplayExpr("ClientName")
                         .Width("100%")
@@ -332,7 +332,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("clientPOnumber1")
                         .Label("Work Order/Sales Order No:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
 
@@ -341,7 +341,7 @@
                       
                         @(Html.DevExtreme().DropDownBox()
                         .Label("Job Order Status")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .ID("ddGetSalesPerson")
                         .Width(900)
                         .OpenOnFieldClick(false)//
@@ -364,7 +364,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("ClientPODate")
                         .Label("Client PO Date:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
                         @(Html.DevExtreme().Button()
@@ -387,7 +387,7 @@
                         .ID("CompanyName")
                         .Label("Company Branch")
                         .ValueExpr("CompanyId")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
                         @(Html.DevExtreme().CheckBox()
@@ -400,7 +400,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("SalesOrderNo")
                         .Label("Sales Order No:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("40%")
                         )   
 
@@ -490,73 +490,73 @@
                             <tr>
                                 <td>
                                     @(Html.DevExtreme().SelectBox().ID("Type").Width("100%").Label(new JS("formatMessage('Type:')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         )
                                 </td>
                                 <td>
                                     @(Html.DevExtreme().TextBox().ID("Operator").Width("100%").Label(new JS("formatMessage('Operator:')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         )
                                 </td>
                                 <td>
                                     @(Html.DevExtreme().TextBox().ID("ModelNo").Width("100%").Label(new JS("formatMessage('Model No:')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         )
                                 </td>
                                 <td>
                                     @(Html.DevExtreme().TextBox().ID("ClientWorkOrderNo").Width("100%").Label(new JS("formatMessage('Client Work Order No:')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         )
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     @(Html.DevExtreme().TextBox().ID("Size").Width("100%").Label(new JS("formatMessage('Size:')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         )
                                 </td>
                                 <td>
                                     @(Html.DevExtreme().TextBox().ID("Material").Width("100%").Label(new JS("formatMessage('Material:')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         )
                                 </td>
                                 <td>
                                     @(Html.DevExtreme().TextBox().ID("TagNo").Width("100%").Label(new JS("formatMessage('Tag No:')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         )
                                 </td>
                                 <td>
                                     @(Html.DevExtreme().TextBox().ID("ClientProject").Width("100%").Label(new JS("formatMessage('Client Project:')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         )
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     @(Html.DevExtreme().TextBox().ID("Class").Width("100%").Label(new JS("formatMessage('Class:')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         )
                                 </td>
                                 <td>
                                     @(Html.DevExtreme().TextBox().ID("Make").Width("100%").Label(new JS("formatMessage('Make:')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         )
                                 </td>
                                 <td>
                                     @(Html.DevExtreme().TextBox().ID("SerialNo").Width("100%").Label(new JS("formatMessage('Serial No:')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         )
                                 </td>
                                 <td>
                                     @(Html.DevExtreme().TextArea().ID("valuetype").Placeholder(new JS("formatMessage('Manual Valves')")).Width("100%").Label(new JS("formatMessage('Valve Type:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     )
                                 </td>
                             </tr>
                         </table>
                         <div style="margin-top: 10px;">
                             @(Html.DevExtreme().TextArea().ID("JobOrderDescription").Width("100%").ElementAttr("style", "  height: 400px ! important;").Label(new JS("formatMessage('Job Order Description (Detailed)')"))
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 )
                         </div>
                         <div class="joborder-footer">
@@ -631,7 +631,7 @@
                                 @(Html.DevExtreme().DateBox()
                                     .ID("observationDate")
                                     .Label(new JS("formatMessage('Observation Date:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
 
                                     .ElementAttr("id", "observationDate")
                                     .Width("100%"))
@@ -643,7 +643,7 @@
                                 @(Html.DevExtreme().TextArea()
                                     .ID("remarks")
                                     .Label(new JS("formatMessage('Initial Observation Remarks:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .ElementAttr(new { id = "remarks", style = "height: 150px !important;" })
                                     .Width("100%"))
                             </div>
@@ -654,7 +654,7 @@
                                 @(Html.DevExtreme().TextBox()
                                     .ID("preparedBy")
                                     .Label(new JS("formatMessage('Observation Prepared By:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
 
                                     .ElementAttr("id", "preparedBy")
                                     .Width("100%"))
@@ -663,7 +663,7 @@
                                 @(Html.DevExtreme().DateBox()
                                     .ID("preparedOn")
                                     .Label(new JS("formatMessage('Prepared On:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
 
                                     .ElementAttr("id", "preparedOn")
                                     .Width("100%"))
@@ -675,7 +675,7 @@
                                 @(Html.DevExtreme().TextBox()
                                     .ID("approvedBy")
                                     .Label(new JS("formatMessage('Observation Approved By:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
 
                                     .ElementAttr("id", "approvedBy")
                                     .Width("100%"))
@@ -684,7 +684,7 @@
                                 @(Html.DevExtreme().DateBox()
                                     .ID("approvedOn")
                                     .Label(new JS("formatMessage('Approved On:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .ElementAttr("id", "approvedOn")
                                     .Width("100%"))
                             </div>
@@ -758,7 +758,7 @@
                             <div class="form-group">
                                 @(Html.DevExtreme().DateBox()
                                     .Label(new JS("formatMessage('Inspection Date:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .ID("inspectionDate")
                                     .Width("100%"))
                             </div>
@@ -769,14 +769,14 @@
                                 @(Html.DevExtreme().TextBox()
                                     .ID("preTested")
                                     .Label(new JS("formatMessage('Pre-Tested:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .Width("100%"))
                             </div>
                             <div class="form-group">
                                 @(Html.DevExtreme().TextBox()
                                     .ID("scope")
                                     .Label(new JS("formatMessage('Scope:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .Width("100%"))
                             </div>
                         </div>
@@ -787,7 +787,7 @@
                                     .ID("inspectionRemarks")
                                     .Height(100)
                                     .Label(new JS("formatMessage('Inspection Remarks:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .Width("100%"))
                             </div>
                         </div>
@@ -797,28 +797,28 @@
                                 @(Html.DevExtreme().TextBox()
                                     .ID("preparedBy1")
                                     .Label(new JS("formatMessage('Inspection Report Prepared By:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .Width("100%"))
                             </div>
                             <div class="form-group">
                                 @(Html.DevExtreme().DateBox()
                                     .ID("preparedOn1")
                                     .Label(new JS("formatMessage('Prepared On:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .Width("100%"))
                             </div>
                             <div class="form-group">
                                 @(Html.DevExtreme().TextBox()
                                     .ID("approvedBy1")
                                     .Label(new JS("formatMessage('Inspection Report Approved By:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .Width("100%"))
                             </div>
                             <div class="form-group">
                                 @(Html.DevExtreme().DateBox()
                                     .ID("approvedOn1")
                                     .Label(new JS("formatMessage('Approved On:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .Width("100%"))
                             </div>
                         </div>
@@ -894,13 +894,13 @@
                         <div class="form-row">
                             <div class="form-group">
                                 @(Html.DevExtreme().DateBox().ID("repairReportDate").Label(new JS("formatMessage('Repair Report Date:')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                    .LabelMode(EditorLabelMode.Floating).Width("100%"))
                             </div>
                             <div class="form-group">
                                 @(Html.DevExtreme().SelectBox()
                                     .ID("standard")
                                     .Label(new JS("formatMessage('Standard:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .Items(new[] { "API", "ISO", "DIN" })
                                     .Placeholder("Select Standard")
                                     .Width("100%"))
@@ -910,45 +910,45 @@
                         <div class="form-row">
                             <div class="form-group">
                                 @(Html.DevExtreme().SelectBox().ID("shell").Label(new JS("formatMessage('Shell:')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                    .LabelMode(EditorLabelMode.Floating).Width("100%"))
                             </div>
                             <div class="form-group">
                                 @(Html.DevExtreme().SelectBox().ID("backSeat").Label(new JS("formatMessage('Back Seat:')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                    .LabelMode(EditorLabelMode.Floating).Width("100%"))
                             </div>
                             <div class="form-group">
                                 @(Html.DevExtreme().SelectBox().ID("media").Label(new JS("formatMessage('Media:')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                    .LabelMode(EditorLabelMode.Floating).Width("100%"))
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
                                 @(Html.DevExtreme().SelectBox().ID("seatHP").Label(new JS("formatMessage('Seat(HP):')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                    .LabelMode(EditorLabelMode.Floating).Width("100%"))
                             </div>
                             <div class="form-group">
                                 @(Html.DevExtreme().SelectBox().ID("seatLP").Label(new JS("formatMessage('Seat (LP):')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                    .LabelMode(EditorLabelMode.Floating).Width("100%"))
                             </div>
                             <div class="form-group">
                                 @(Html.DevExtreme().SelectBox().ID("shellTime").Label(new JS("formatMessage('Shell Time:')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                    .LabelMode(EditorLabelMode.Floating).Width("100%"))
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
                                 @(Html.DevExtreme().SelectBox().ID("result").Label(new JS("formatMessage('Result:')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                    .LabelMode(EditorLabelMode.Floating).Width("100%"))
                             </div>
                             <div class="form-group">
                                 @(Html.DevExtreme().SelectBox().ID("seatLeakage").Label(new JS("formatMessage('Seat Leakage Class:')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                    .LabelMode(EditorLabelMode.Floating).Width("100%"))
                             </div>
                             <div class="form-group">
                                 @(Html.DevExtreme().SelectBox().ID("seatTime").Label(new JS("formatMessage('Seat Time :')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                    .LabelMode(EditorLabelMode.Floating).Width("100%"))
                             </div>
                         </div>
                     </fieldset>
@@ -958,21 +958,21 @@
                         <div class="form-row">
                             <div class="form-group">
                                 @(Html.DevExtreme().TextBox().ID("preparedBy3").Label(new JS("formatMessage('Repair Report Prepared By:')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                    .LabelMode(EditorLabelMode.Floating).Width("100%"))
                             </div>
                             <div class="form-group">
                                 @(Html.DevExtreme().TextBox().ID("preparedByPosition").Label(new JS("formatMessage('Prepared By (Position):')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                    .LabelMode(EditorLabelMode.Floating).Width("100%"))
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group">
                                 @(Html.DevExtreme().TextBox().ID("witnessedBy").Label(new JS("formatMessage('Repair Report Witnessed By:')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                    .LabelMode(EditorLabelMode.Floating).Width("100%"))
                             </div>
                             <div class="form-group">
                                 @(Html.DevExtreme().TextBox().ID("witnessedByPosition").Label(new JS("formatMessage('Witnessed By (Position):')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                    .LabelMode(EditorLabelMode.Floating).Width("100%"))
                             </div>
                         </div>
                     </fieldset>
@@ -1046,7 +1046,7 @@
                         <div class="form-row">
                             <div class="form-group">
                                 @(Html.DevExtreme().DateBox().ID("dispatchDate").Label(new JS("formatMessage('Dispatch Report Date:')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                    .LabelMode(EditorLabelMode.Floating).Width("100%"))
                             </div>
                         </div>
 
@@ -1055,7 +1055,7 @@
                                 @(Html.DevExtreme().TextArea()
                                     .ID("dispatchRemarks")
                                     .Label(new JS("formatMessage('Dispatch Remarks:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .Height(100)
                                     .Width("100%")
                                     .MaxLength(500))
@@ -1065,22 +1065,22 @@
                         <div class="form-row">
                             <div class="form-group">
                                 @(Html.DevExtreme().TextBox().ID("preparedBytx").Label(new JS("formatMessage('Dispatch Report Prepared By:')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                    .LabelMode(EditorLabelMode.Floating).Width("100%"))
                             </div>
                             <div class="form-group">
                                 @(Html.DevExtreme().DateBox().ID("preparedOntx").Label(new JS("formatMessage('Prepared On:')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                    .LabelMode(EditorLabelMode.Floating).Width("100%"))
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
                                 @(Html.DevExtreme().TextBox().ID("approvedBytx").Label(new JS("formatMessage('Dispatch Report Approved By:')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                    .LabelMode(EditorLabelMode.Floating).Width("100%"))
                             </div>
                             <div class="form-group">
                                 @(Html.DevExtreme().DateBox().ID("approvedOntx").Label(new JS("formatMessage('Approved On:')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                    .LabelMode(EditorLabelMode.Floating).Width("100%"))
                             </div>
                         </div>
                     </fieldset>
