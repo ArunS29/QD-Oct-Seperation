@@ -113,7 +113,7 @@
 
                 .DisplayFormat("dd-MMM-yyyy") // Example: 31-Aug-2024
                 .UseMaskBehavior(true) // Ensures proper date input handling
-                )
+                .ElementAttr("class", "dynamicFormatDateBox"))
         </div>
 
         <div class="form-group me-3">
@@ -125,7 +125,7 @@
                         .Label("Effective Date")
                 .DisplayFormat("dd-MMM-yyyy") // Example: 31-Aug-2024
                 .UseMaskBehavior(true)
-                )
+                .ElementAttr("class", "dynamicFormatDateBox"))
         </div>
 
        
@@ -2152,5 +2152,18 @@
         }
     }
 
+    function onAttachmentButtonClick() {
+        var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
+        var voucherNo = voucherNoBox.option("value");
+
+        
+        var voucherType = "journal register entry"
+        
+        const isMaster = false;
+        console.log(voucherType)
+        const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&modal=true`;
+        const title = "Transaction Documents";
+        openModal(url, title);
+    }
         
 </script>

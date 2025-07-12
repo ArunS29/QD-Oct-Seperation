@@ -575,7 +575,7 @@
 		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
 		.DisplayFormat("dd-MMM-yyyy")
 		.TabIndex(2)
-		)
+		.ElementAttr("class", "dynamicFormatDateBox"))
 
 
 	@(Html.DevExtreme().DateBox()
@@ -587,7 +587,7 @@
 		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
 		.DisplayFormat("dd-MMM-yyyy")
 		.TabIndex(3)
-		)
+		.ElementAttr("class", "dynamicFormatDateBox"))
 	@(Html.DevExtreme().DropDownButton()
 		.ID("ddBtnShowRecords")
 		.Text(new JS("formatMessage('Show Records')"))

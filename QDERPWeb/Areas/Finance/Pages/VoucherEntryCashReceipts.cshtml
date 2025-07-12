@@ -66,7 +66,7 @@
                                                 .Type(DateBoxType.Date)
                                                 .DisplayFormat("dd-MMM-yyyy")
                                                 .Value(DateTime.Now)
-                                                .ElementAttr(new { @class = "light-theme-input" })
+                                                .ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
                                                 .TabIndex(1)
                                                 )
                     </div>
@@ -79,7 +79,7 @@
                                                 .Type(DateBoxType.Date)
                                                 .DisplayFormat("dd-MMM-yyyy")
                                                 .Value(DateTime.Now)
-                                                .ElementAttr(new { @class = "light-theme-input" })
+                                                .ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
                                                 .TabIndex(2)
                                                 )
                     </div>
@@ -3501,4 +3501,18 @@ function onBaseCurrencyInit(e) {
             showIfHasValue("ApprovedOntext", "approvedOnSection");
         }, 300); // wait a bit to ensure DevExtreme is ready
     });
+
+        function onAttachmentButtonClick() {
+            var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
+            var voucherNo = voucherNoBox.option("value");
+
+            var voucherTypeBox = $("#VoucherType").dxSelectBox("instance"); // or dxTextBox
+            var voucherType = voucherTypeBox.option("value");
+            const isMaster = false;
+            console.log(voucherType)
+            const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&modal=true`;
+            const title = "Transaction Documents";
+            openModal(url, title);
+        }
+        
 </script>

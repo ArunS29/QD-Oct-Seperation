@@ -155,7 +155,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         .Select(c => (DateTime?)c.ClaimCreatedOn)
                         .FirstOrDefaultAsync();
 
-                    voucherDate = task1 ?? task2;
+                    DateTime? task3 = await dbContext.Tbl20126JournalRegisterMasters
+                        .Where(c => c.JournalRefNo == folderId)
+                        .Select(c => (DateTime?)c.JournalEntryDate)
+                        .FirstOrDefaultAsync();
+
+                    voucherDate = task1 ?? task2 ?? task3;
 
                 }
 

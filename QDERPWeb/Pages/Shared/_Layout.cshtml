@@ -4166,6 +4166,25 @@ overflow:hidden;
                     icon.classList.add("fa-chevron-up");
             }
         }
+        $(function () {
+            $(".dynamicFormatDateBox").each(function () {
+                const $dateBoxDiv = $(this); // this is the outer container (e.g., <div class="dynamicFormatDateBox">)
+                const instance = $dateBoxDiv.dxDateBox("instance");
+
+                if (instance) {
+                    const $input = $dateBoxDiv.find("input");
+
+                    $input.on("focusin", function () {
+                        instance.option("displayFormat", "dd-MM-yyyy");
+                    });
+
+                    $input.on("focusout", function () {
+                        instance.option("displayFormat", "dd-MMM-yyyy");
+                    });
+                }
+            });
+        });
+
 
 
     </script>
