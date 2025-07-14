@@ -243,7 +243,7 @@
             .DropDownOptions(options => options.Width(230))
             .Items(items =>
             {
-                items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu");
+                items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("").OnClick("showSubmenu");
                 items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
                 items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
                 items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
@@ -254,31 +254,59 @@
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
-                .ID("rowHeightProperties")
-                .Icon("") // fallback to standard icon if "rowproperties" not working
-                .Width(50)
-                .Text(new JS("formatMessage('Set Row Height')"))
-                .DropDownOptions(options => options.Width(230))
-                .Items(items =>
+    .ID("rowHeightProperties")
+    .Icon("") // fallback to standard icon if "rowproperties" not working
+    .Width(50)
+    .Text(new JS("formatMessage('Set Row Height')"))
+    .DropDownOptions(options => options.Width(230))
+    .Items(items =>
+    {
+        items.Add()
+        .Text("Short (1 Line)")
+        .Template(@<text>
+                       <svg width="20" height="20" viewBox="0 0 20 20">
+                           <rect x="2" y="9" width="16" height="2" fill="var(--title-background-color)" />
+                       </svg> Short
+                   </text>)
+        .OnClick("function() { ChangeRowHeight('30'); }");
+
+        items.Add()
+        .Text("Medium (2 Lines)")
+        .Template(@<text>
+                       <svg width="20" height="20" viewBox="0 0 20 20">
+                           <rect x="2" y="6" width="16" height="2" fill="var(--title-background-color)" />
+                           <rect x="2" y="12" width="16" height="2" fill="var(--title-background-color)" />
+                       </svg> Medium
+                   </text>)
+        .OnClick("function() { ChangeRowHeight('60'); }");
+
+        items.Add()
+        .Text("Tall (4 Lines)")
+        .Template(@<text>
+                       <svg width="20" height="20" viewBox="0 0 20 20">
+                           <rect x="2" y="4" width="16" height="2" fill="var(--title-background-color)" />
+                           <rect x="2" y="8" width="16" height="2" fill="var(--title-background-color)" />
+                           <rect x="2" y="12" width="16" height="2" fill="var(--title-background-color)" />
+                           <rect x="2" y="16" width="16" height="2" fill="var(--title-background-color)" />
+                       </svg> Tall
+                   </text>)
+        .OnClick("function() { ChangeRowHeight('90'); }");
+
+        items.Add()
+        .Text("Extra Tall (8 Lines)")
+        .Template(@<text>
+    <svg width="20" height="20" viewBox="0 0 20 20">
+        @for (var i = 1; i <= 8; i++)
                 {
-                    items.Add().Text(new JS("formatMessage('Short')"))
-                    .Icon("chevrondown")
-                    .OnClick("function() { ChangeRowHeight('30'); }");
-
-                    items.Add().Text(new JS("formatMessage('Medium')"))
-                    .Icon("lock")
-                    .OnClick("function() { ChangeRowHeight('40'); }");
-
-                    items.Add().Text(new JS("formatMessage('Tall')"))
-                    .Icon("edit")
-                    .OnClick("function() { ChangeRowHeight('60'); }");
-
-                    items.Add().Text(new JS("formatMessage('Extra Tall')"))
-                    .Icon("folder")
-                    .OnClick("function() { ChangeRowHeight('70'); }");
-                })
-                .ShowArrowIcon(false)
-                )
+                    var y = 1 + (i - 1) * 2;
+                    <text><rect x="2" y="@y" width="16" height="1" fill="var(--title-background-color)" /></text>
+                }
+    </svg> Extra Tall
+</text>)
+        .OnClick("function() { ChangeRowHeight('130'); }");
+    })
+    .ShowArrowIcon(false)
+)
     </div>
 
   
