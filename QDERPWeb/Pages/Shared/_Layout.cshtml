@@ -147,10 +147,10 @@
 
         #sidebar2 {
             display: none;
-            padding: 10px;
+            padding: 10px 10px 0px 10px;
             background-color: white;
             /* border-right: 1px solid #ccc; */
-            width: 250px;
+            width: 285px;
             box-sizing: border-box;
             overflow-y: scroll !important;
             height: 95vh;
@@ -2882,176 +2882,104 @@
                                         </a>
                                         `;
                     }
-                function showFinanceSubmenu() {
-                    const sidebar2 = document.getElementById('sidebar2');
+                    function showFinanceSubmenu() {
+                        const sidebar2 = document.getElementById('sidebar2');
 
-                    // Finance Dashboard submenu items
-                    const financeDashboardItems = [
-                        { key: "My Dashboard", icon: "fas fa-tachometer-alt", href: `/${tenantName}/Finance/Index` },
-                        { key: "Voucher Verification", icon: "fas fa-check-double", href: `/${tenantName}/Finance/VoucherApproval` },
-                        { key: "Bills Receivable", icon: "fas fa-file-invoice-dollar", href: `/${tenantName}/Finance/BillsReceivable` },
-                        { key: "Bills Payable", icon: "fas fa-money-check-alt", href: `/${tenantName}/Finance/BillsPayable` },
-                        { key: "Cost Analysis", icon: "fas fa-chart-pie", href: `/${tenantName}/Finance/ucCostAnalysis` },
-                        { key: "Salary Payable", icon: "fas fa-wallet", href: `/${tenantName}/Finance/SalaryPayable` },
-                        { key: "Chart Of Accounts", icon: "fas fa-book", href: `/${tenantName}/Finance/ChartOfAccounts` },
-                        { key: "Chart of Cost Centers", icon: "fas fa-project-diagram", href: `/${tenantName}/Finance/ChartOfCostCenters` },
-                        { key: "Financial Reports", icon: "fas fa-balance-scale", href: `/${tenantName}/Finance/uc20106TrialBalance` },
-                        { key: "Asset Register", icon: "fas fa-boxes", href: `/${tenantName}/Finance/AssetView` }
-                    ];
+                        const submenus = [
+                            {
+                                id: "financeDashboardSubmenu",
+                                title: "Finance Dashboard",
+                                icon: "fas fa-book-open",
+                                items: [
+                                    { key: "My Dashboard", label: "My Dashboard", icon: "fas fa-tachometer-alt", href: `/${tenantName}/Finance/Index` },
+                                    { key: "Voucher Verification", label: "Voucher Verification", icon: "fas fa-check-double", href: `/${tenantName}/Finance/VoucherApproval` },
+                                    { key: "Chart Of Accounts", label: "Chart Of Accounts", icon: "fas fa-book", href: `/${tenantName}/Finance/ChartOfAccounts` },
+                                    { key: "Chart of Cost Centers", label: "Chart of Cost Centers", icon: "fas fa-project-diagram", href: `/${tenantName}/Finance/ChartOfCostCenters` }
+                                ]
+                            },
+                            {
+                                id: "registersSubmenu",
+                                title: "Registers",
+                                icon: "fas fa-clipboard-list",
+                                items: [
+                                    { key: "Accounting Ledgers", label: "Accounting Ledgers", icon: "fas fa-book", href: `/${tenantName}/Finance/AccountingLedgers` },
+                                    { key: "Accounting Register", label: "Accounting Register", icon: "fas fa-book", href: `/${tenantName}/Finance/AccountingRegister` },
+                                    { key: "Journal Register", label: "Journal Register", icon: "fas fa-newspaper", href: `/${tenantName}/Finance/JournalRegister` },
+                                    { key: "Asset Register", label: "Asset Register", icon: "fas fa-boxes", href: `/${tenantName}/Finance/AssetView` },
+                                    { key: "Expenses Claims", label: "Expenses Claims", icon: "fas fa-file-invoice-dollar", href: `/${tenantName}/Finance/ExpensesClaims` }
+                                ]
+                            },
+                            {
+                                id: "transactionsSubmenu",
+                                title: "Transactions",
+                                icon: "fas fa-exchange-alt",
+                                items: [
+                                    { key: "Voucher CashPayment", label: "Cash Payment Voucher", icon: "fas fa-money-bill-wave", href: `/${tenantName}/Finance/VoucherCashPayment` },
+                                    { key: "Voucher BankPayment", label: "Bank Payment Voucher", icon: "fas fa-university", href: `/${tenantName}/Finance/VoucherBankPayment` },
+                                    { key: "Voucher CashReceipts", label: "Cash Receipt Voucher", icon: "fas fa-dollar-sign", href: `/${tenantName}/Finance/VoucherEntryCashReceipts` },
+                                    { key: "Voucher BankPayment", label: "Bank Receipt Voucher", icon: "fas fa-receipt", href: `/${tenantName}/Finance/VoucherEntryReceipts` },
+                                    { key: "Voucher Sales", label: "Sales Voucher", icon: "fas fa-tags", href: `/${tenantName}/Finance/salesVoucher` },
+                                    { key: "Purchase Voucher", label: "Purchase Voucher", icon: "fas fa-shopping-cart", href: `/${tenantName}/Finance/purchasevoucher` },
+                                    { key: "Voucher journal", label: "Journal Voucher", icon: "fas fa-book-open", href: `/${tenantName}/Finance/Voucherjournal` }
+                                ]
+                            },
+                            {
+                                id: "reportsSubmenu",
+                                title: "Reports",
+                                icon: "fas fa-chart-bar",
+                                items: [
+                                    { key: "Financial Reports", label: "Financial Reports", icon: "fas fa-balance-scale", href: `/${tenantName}/Finance/uc20106TrialBalance` },
+                                    { key: "Bills Receivable", label: "Bills Receivable", icon: "fas fa-file-invoice-dollar", href: `/${tenantName}/Finance/BillsReceivable` },
+                                    { key: "Bills Payable", label: "Bills Payable", icon: "fas fa-money-check-alt", href: `/${tenantName}/Finance/BillsPayable` },
+                                    { key: "Salary Payable", label: "Salary Payable", icon: "fas fa-wallet", href: `/${tenantName}/Finance/SalaryPayable` }
+                                ]
+                            },
+                            {
+                                id: "costAccountingSubmenu",
+                                title: "Cost Accounting",
+                                icon: "fas fa-calculator",
+                                items: [
+                                    { key: "Cost Analysis", label: "Cost Analysis", icon: "fas fa-chart-pie", href: `/${tenantName}/Finance/ucCostAnalysis` },
+                                    { key: "Cost Reporting by Branch", label: "Cost Reporting by Branch", icon: "fas fa-sitemap", href: `/${tenantName}/Finance/CostReportingByBranch` }
+                                ]
+                            }
+                        ];
 
-                    // Other finance menu items
-                    const financeMenuItems = [
-                        {
-                            key: "Accounting Ledgers",
-                            href: `/${tenantName}/Finance/AccountingLedgers`,
-                            icon: "fas fa-book",
-                            label: "Accounting Ledgers",
-                            hideOnClick: true
-                        },
-                        {
-                            key: "Accounting Register",
-                            href: `/${tenantName}/Finance/AccountingRegister`,
-                            icon: "fas fa-book",
-                            label: "Accounting Register",
-                            hideOnClick: true
-                        },
-                        {
-                            key: "Chart Of Accounts",
-                            href: `/${tenantName}/Finance/ChartOfAccounts`,
-                            icon: "fas fa-chart-pie",
-                            label: "Chart Of Accounts",
-                            hideOnClick: true
-                        },
-                        {
-                            key: "Chart of Cost Centers",
-                            href: `/${tenantName}/Finance/ChartOfCostCenters`,
-                            icon: "fas fa-chart-pie",
-                            label: "Chart of Cost Centers",
-                            hideOnClick: true
-                        },
-                        {
-                            key: "Voucher BankPayment",
-                            href: `/${tenantName}/Finance/VoucherBankPayment`,
-                            icon: "fas fa-university",
-                            label: "Bank Payment",
-                            hideOnClick: true
-                        },
-                        {
-                            key: "Voucher CashPayment",
-                            href: `/${tenantName}/Finance/VoucherCashPayment`,
-                            icon: "fas fa-money-bill-wave",
-                            label: "Cash Payment",
-                            hideOnClick: false
-                        },
-                        {
-                            key: "Voucher CashReceipts",
-                            href: `/${tenantName}/Finance/VoucherEntryCashReceipts`,
-                            icon: "fas fa-dollar-sign",
-                            label: "Cash Receipt",
-                            hideOnClick: false
-                        },
-                        {
-                            key: "Voucher BankPayment",
-                            href: `/${tenantName}/Finance/VoucherEntryReceipts`,
-                            icon: "fas fa-receipt",
-                            label: "Bank Receipt",
-                            hideOnClick: false
-                        },
-                        {
-                            key: "Voucher Sales",
-                            href: `/${tenantName}/Finance/salesVoucher`,
-                            icon: "fas fa-tags",
-                            label: "Sales Voucher",
-                            hideOnClick: false
-                        },
-                        {
-                            key: "Purchase Voucher",
-                            href: `/${tenantName}/Finance/purchasevoucher`,
-                            icon: "fas fa-shopping-cart",
-                            label: "Purchase Voucher",
-                            hideOnClick: false
-                        },
-                        {
-                            key: "Expenses Claims",
-                            href: `/${tenantName}/Finance/ExpensesClaims`,
-                            icon: "fas fa-file-invoice-dollar",
-                            label: "Expense Claim",
-                            hideOnClick: false
-                        },
-                        {
-                            key: "Voucher journal",
-                            href: `/${tenantName}/Finance/Voucherjournal`,
-                            icon: "fas fa-book-open",
-                            label: "Journal Voucher",
-                            hideOnClick: false
-                        },
-                        {
-                            key: "Journal Register",
-                            href: `/${tenantName}/Finance/JournalRegister`,
-                            icon: "fas fa-newspaper",
-                            label: "Journal Register",
-                            hideOnClick: false
-                        }
-                    ];
+                        const access = (window.financeMenuAccess || []).reduce((acc, x) => {
+                            acc[x.ItemDescription] = x;
+                            return acc;
+                        }, {});
 
-                    // Access config from backend
-                    const access = (window.financeMenuAccess || []).reduce((acc, x) => {
-                        acc[x.ItemDescription] = x;
-                        return acc;
-                    }, {});
+                        let sidebarHtml = "";
 
-                    // Build Finance Dashboard submenu
-                    let dashboardHtml = `
-                        <div class="submenu-item" onclick="toggleSubmenu('financeDashboardSubmenu')" role="button" aria-expanded="false">
-                            <i class="fas fa-book-open"></i>
-                            <div class="text">${formatMessage("Finance Dashboard")}</div>
-                        </div>
-                        <div id="financeDashboardSubmenu" class="nested-submenu" style="display: none; margin-left: 30px;">
-                    `;
+                        submenus.forEach(menu => {
+                            sidebarHtml += `
+                                <div class="submenu-item" onclick="toggleSubmenu('${menu.id}')" role="button" aria-expanded="false">
+                                    <i class="${menu.icon}"></i>
+                                    <div class="text">${formatMessage(menu.title)}</div>
+                                </div>
+                                <div id="${menu.id}" class="nested-submenu" style="display: none; margin-left: 30px;">
+                            `;
 
-                    financeDashboardItems.forEach(item => {
-                        const perm = access[item.key];
-                        if (!perm || !perm.ItemVisible) return;
-                        dashboardHtml += `
-                            <a class="submenu-item${!perm.ItemEnabled ? ' disabled' : ''}"
-                               ${perm.ItemEnabled ? 'onclick="hideSidebars()"' : 'onclick="return false;"'}
-                               href="${perm.ItemEnabled ? item.href : '#'}"
-                               style="${!perm.ItemEnabled ? 'pointer-events:none;opacity:0.5;cursor:not-allowed;' : ''}">
-                                <i class="${item.icon}"></i>
-                                <div class="text">${formatMessage(item.key)}</div>
-                            </a>
-                        `;
-                    });
-                    dashboardHtml += '</div>';
+                            menu.items.forEach(item => {
+                                const perm = access[item.key];
+                                if (!perm || !perm.ItemVisible) return;
+                                sidebarHtml += `
+                                    <a class="submenu-item${!perm.ItemEnabled ? ' disabled' : ''}"
+                                       ${perm.ItemEnabled ? 'onclick="hideSidebars()"' : 'onclick="return false;"'}
+                                       href="${perm.ItemEnabled ? item.href : '#'}"
+                                       style="${!perm.ItemEnabled ? 'pointer-events:none;opacity:0.5;cursor:not-allowed;' : ''}">
+                                        <i class="${item.icon}"></i>
+                                        <div class="text">${formatMessage(item.label)}</div>
+                                    </a>
+                                `;
+                            });
 
-                    // Build other finance menu items
-                    const filteredMenuItems = financeMenuItems
-                        .filter(item => {
-                            const menuConfig = access[item.key];
-                            return menuConfig ? menuConfig.ItemVisible : false;
-                        })
-                        .map(item => {
-                            const menuConfig = access[item.key];
-                            return {
-                                ...item,
-                                enabled: menuConfig ? menuConfig.ItemEnabled : false
-                            };
+                            sidebarHtml += '</div>';
                         });
 
-                    let otherMenusHtml = filteredMenuItems.map(item => `
-                        <a class="submenu-item${!item.enabled ? ' disabled' : ''}"
-                           ${item.enabled ? (item.hideOnClick ? 'onclick="hideSidebars()"' : '') : 'onclick="return false;"'}
-                           href="${item.enabled ? item.href : '#'}"
-                           style="${!item.enabled ? 'pointer-events:none;opacity:0.5;cursor:not-allowed;' : ''}">
-                            <i class="${item.icon}"></i>
-                            <div class="text">${formatMessage(item.label)}</div>
-                        </a>
-                    `).join('');
-
-                    sidebar2.innerHTML = dashboardHtml + otherMenusHtml;
-                }
-
-
+                        sidebar2.innerHTML = sidebarHtml;
+                    }
 
                     function showVATModuleSubmenu() {
                         const sidebar2 = document.getElementById('sidebar2');
@@ -3234,28 +3162,16 @@
             sidebar2.innerHTML = dashboardHtml + otherMenusHtml;
         }
 
-
-
-                // Function to toggle visibility of nested submenus
-                function toggleSubmenu(submenuId) {
-                    const submenu = document.getElementById(submenuId);
-                    if (submenu.style.display === 'none') {
-                        submenu.style.display = 'block';
-                    } else {
-                        submenu.style.display = 'none';
-                    }
+                function toggleSubmenu(id) {
+                    const allSubmenus = document.querySelectorAll(".nested-submenu");
+                    allSubmenus.forEach(submenu => {
+                        if (submenu.id === id) {
+                            submenu.style.display = submenu.style.display === "none" ? "block" : "none";
+                        } else {
+                            submenu.style.display = "none";
+                        }
+                    });
                 }
-
-                // Function to toggle visibility of nested submenus
-                function toggleSubmenu(submenuId) {
-                    const submenu = document.getElementById(submenuId);
-                    if (submenu.style.display === 'none') {
-                        submenu.style.display = 'block';
-                    } else {
-                        submenu.style.display = 'none';
-                    }
-                }
-
 
                 function loadAccountLedger() {
                     // Set the iframe source to load Accounting Ledgers content
