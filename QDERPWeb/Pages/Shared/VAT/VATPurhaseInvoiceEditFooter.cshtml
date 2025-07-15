@@ -185,6 +185,18 @@
         margin-left: 8px; /* optional spacing between icon and text */
     }
 
+    .dx-dropdownbutton .dx-icon {
+        font-size: 18px;
+        margin-right: 8px;
+    }
+
+    .dx-dropdownbutton .dx-item-content {
+        padding: 8px 12px;
+    }
+
+    .bold-button .dx-button-text {
+        font-weight: bold;
+    }
 
     /* .btn-containerIvoiceEdit .dx-button { */
     /*     width: 40px !important; /* Small width for just the icon */ */
@@ -215,6 +227,8 @@
         white-space: normal;
     }
 </style>
+<input type="file" id="fileUploadSingle" style="display: none;" />
+<input type="file" id="fileUploadMultiple" multiple style="display: none;" />
 
 <div class="dx-fieldset horizontal-container" style="width:1000px;background-color:transparent;gap:18px">
 
@@ -330,13 +344,20 @@
             )
     </div>
     <div class="btn-containers">
-        @(Html.DevExtreme().Button()
-            .ID("btnAttach")
-            .Text(new JS("formatMessage('Attach')"))
-            .Icon("link")
-            //.OnClick("onAttachButtonClick")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-            )
+        @(Html.DevExtreme().DropDownButton()
+                .ID("btnAttach")
+                .Text(new JS("formatMessage('Attach')"))
+                .Icon("link")
+                .ElementAttr(new { @class = "bold-button" }) // your custom class
+                 .DropDownOptions(options => options.Width(230))
+                .Items(i =>
+                {
+                    i.Add().Text(new JS("formatMessage('Attachments')")).Icon("attach").OnClick("onAttachmentsClick");
+                    i.Add().Text(new JS("formatMessage('Attach Multiple Files')")).Icon("attach").OnClick("onAttachMultipleFilesClick");
+                })
+                
+                )
+
     </div>
 
     <div class="btn-containers">
@@ -1587,7 +1608,17 @@
                     return "Saved";
                 }
             }
+        function onAttachmentsClick(e) {
+        document.getElementById("fileUploadSingle").click();
+    }
 
+               function onAttachMultipleFilesClick() {
+        document.getElementById("fileUploadMultiple").click(); // Hidden input
+    }
 
+                function onAttachMultipleFilesClick() {
+        var url = `/${tenantName}/VAT/DocumentPurchaseAttachment`;
+        window.location.href = url;
+    }
 
 </script>
