@@ -692,7 +692,6 @@
 							.Label(new JS("formatMessage('Quote Submitted By:')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .Width("100%")
-                            .Disabled(true)
                             )
 
                             <div class="row mt-3">
@@ -724,7 +723,6 @@
 									.Label(new JS("formatMessage('Transportation Scope:')"))
 									.LabelMode(EditorLabelMode.Floating)
 									.Width("100%")
-									.Disabled(true)
 									)
                                 </div>
                                
@@ -1299,7 +1297,7 @@
                         .ShowBorders(true)
                         .HoverStateEnabled(true)
                         .Paging(p => p.PageSize(15))
-                        .FilterRow(f => f.Visible(true))//
+                        .FilterRow(f => f.Visible(false))
                         .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                         .Height(345)
                         .Selection(s => s.Mode(SelectionMode.Single))
@@ -2574,6 +2572,41 @@
 				e.data.LineOrderNo = rowData.length + 1; // Auto-generate SNo
 
 			},
+			summary: {
+    totalItems: [
+        {
+            column: "QuotedDiscount",
+            summaryType: "sum",
+            displayFormat: "{0}",
+			 valueFormat: { type: "fixedPoint", precision: 2 }
+        },
+        {
+            column: "LineTaxAmount",
+            summaryType: "sum",
+            displayFormat: "{0}",
+             valueFormat: { type: "fixedPoint", precision: 2 }
+        },
+        {
+            column: "LineTotalWithTax",
+            summaryType: "sum",
+            displayFormat: "{0}",
+             valueFormat: { type: "fixedPoint", precision: 2 }
+        },
+		{
+            column: "TotalCostOfItem",
+            summaryType: "sum",
+            displayFormat: "{0}",
+             valueFormat: { type: "fixedPoint", precision: 2 }
+        },
+		{
+            column: "ItemProfitOrLoss",
+            summaryType: "sum",
+            displayFormat: "{0}",
+            valueFormat: { type: "fixedPoint", precision: 2 }
+        }
+    ]
+},
+
 
 			columnAutoWidth: true,
 
@@ -3266,7 +3299,40 @@
 				e.data.LineOrderNo = rowData.length + 1; // Auto-generate SNo
 
 			},
-
+						summary: {
+    totalItems: [
+        {
+            column: "QuotedDiscount",
+            summaryType: "sum",
+            displayFormat: "{0}",
+             valueFormat: { type: "fixedPoint", precision: 2 }
+        },
+        {
+            column: "LineTaxAmount",
+            summaryType: "sum",
+            displayFormat: "{0}",
+             valueFormat: { type: "fixedPoint", precision: 2 }
+        },
+        {
+            column: "LineTotalWithTax",
+            summaryType: "sum",
+            displayFormat: "{0}",
+            valueFormat: { type: "fixedPoint", precision: 2 }
+        },
+		{
+            column: "TotalCostOfItem",
+            summaryType: "sum",
+            displayFormat: "{0}",
+             valueFormat: { type: "fixedPoint", precision: 2 }
+        },
+		{
+            column: "ItemProfitOrLoss",
+            summaryType: "sum",
+            displayFormat: "{0}",
+             valueFormat: { type: "fixedPoint", precision: 2 }
+        }
+    ]
+},
 			columnAutoWidth: true,
 
 			showBorders: true,
