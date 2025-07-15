@@ -146,6 +146,9 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
             }
         }
 
+        private void incomeStatements_Bymonth__BeforePrint(object sender, CancelEventArgs e)
+        {
 
+        }
     }
 }

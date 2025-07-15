@@ -1,13 +1,11 @@
-﻿using System;
-using System.Drawing;
+﻿using DevExpress.DataAccess.ConnectionParameters;
 using DevExpress.DataAccess.Sql;
-using DevExpress.DataAccess.ConnectionParameters;
+using DevExpress.XtraPrinting; // Make sure this is included for TenantDbContextHelper
 using DevExpress.XtraReports.UI;
-using QD.ERP.Web.Service;
 using Microsoft.Data.SqlClient;
 using Svg;
+using System.Drawing;
 using System.Text;
-using DevExpress.XtraPrinting; // Make sure this is included for TenantDbContextHelper
 
 namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.summary_Report
 {
@@ -25,7 +23,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.summary_Report
             Image logoImage,
             string companyNameAr,
             string companyAddressAr,
-            TenantDbContextHelper tenantDbContextHelper,string username)
+            TenantDbContextHelper tenantDbContextHelper, string username)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             InitializeComponent();
@@ -37,13 +35,13 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.summary_Report
         public CostcenterBydate()
         {
             InitializeComponent();
-            SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "","");
+            SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "", "");
         }
 
         private void SetReportParameters(
             string requestedBy, DateTime frmDate, DateTime toDate,
             string tenantName, string companyName, string companyAddress,
-            Image logoImage, string companyNameAr, string companyAddressAr,string username)
+            Image logoImage, string companyNameAr, string companyAddressAr, string username)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
