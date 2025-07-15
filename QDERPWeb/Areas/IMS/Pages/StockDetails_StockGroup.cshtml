@@ -142,12 +142,11 @@
 </div>
 <div class="maindiv">
     <table class="form-table">
-       
         <tr>
             <td>
                 @(Html.DevExtreme().TextArea()
                     .ID("NewStockServicesGroups")
-                    .Label(new JS("formatMessage('Type a New Stock or Services Group & Add to the Eisting List:')"))
+                    .Label(new JS("formatMessage('Type a New Stock or Services Group & Add to the Existing List:')"))
                     .LabelMode(EditorLabelMode.Floating)
                     .ValidationRules(rules =>
                     {
@@ -160,17 +159,12 @@
         </tr>
 
         <tr>
-            <td style="display: flex;">
+            <td style="display: flex; align-items:end;">
                 @(Html.DevExtreme().TextArea()
                     .ID("StockServicesGroups")
                     .Label(new JS("formatMessage('Stock / Service Group (In Arabic):')"))
                     .Width("100%")
                     .LabelMode(EditorLabelMode.Floating)
-                    .ValidationRules(rules =>
-                    {
-                        rules.AddRequired()
-                        .Message(new JS("formatMessage('It should be entered')"));
-                    })
                     )
                 @(Html.DevExtreme().Button()
                     .ID("convertToArabic1")
@@ -203,16 +197,12 @@
                     .ID("Category")
                     .LabelMode(EditorLabelMode.Floating)
                     .Label(new JS("formatMessage('Category')"))
-                    .ValidationRules(rules =>
-                    {
-                        rules.AddRequired()
-                        .Message(new JS("formatMessage('It should be entered')"));
-                    })
                     )
             </td>
             <td>
                 @(Html.DevExtreme().SelectBox()
                     .ID("InventoryMasterGroups")
+                    .SearchEnabled(true)
                     .DataSource(ds => ds.WebApi()
                     .Controller("StockInventory")
                     .LoadAction("GetInventoryMasterGroups")
@@ -240,6 +230,7 @@
             <td>
                 @(Html.DevExtreme().SelectBox()
                     .ID("InventoryLedgerAccount")
+                     .SearchEnabled(true)
                     .LabelMode(EditorLabelMode.Floating)
                     .Label(new JS("formatMessage('Inventory Ledger Account')"))
                     .DataSource(d => d.Mvc()
@@ -249,11 +240,6 @@
                     .DisplayExpr("DisplayText") 
                     .ValueExpr("AccountId")   
                     .Width(370)
-                    .ValidationRules(rules =>
-                    {
-                        rules.AddRequired()
-                        .Message(new JS("formatMessage('It should be entered')"));
-                    })
                     )
             </td>
 
@@ -262,6 +248,7 @@
                 @(Html.DevExtreme().SelectBox()
                     .ID("CostLedgerAccount")
                     .LabelMode(EditorLabelMode.Floating)
+                                .SearchEnabled(true)
                     .Label(new JS("formatMessage('Cost Ledger Account')"))
                     .DataSource(d => d.Mvc()
                     .Controller("StockInventory") // Replace with your actual controller name
@@ -269,11 +256,6 @@
                     )
                     .DisplayExpr("DisplayText") // Shows "AccountHead | AccountGroup"
                     .ValueExpr("AccountId")     // Submits AccountId
-                    .ValidationRules(rules =>
-                    {
-                        rules.AddRequired()
-                        .Message(new JS("formatMessage('It should be entered')"));
-                    })
                     )
             </td>
 
@@ -283,7 +265,7 @@
 
                     @(Html.DevExtreme().CheckBox()
                         .ID("ServicesGroup")
-                        .Value(false))
+                        .Value(true))
                     <label id="ChoosetheGroupisServicesGroup" class="item-discontinued-label">Choose the Group is Services Group ?</label>
                 </div>
 
