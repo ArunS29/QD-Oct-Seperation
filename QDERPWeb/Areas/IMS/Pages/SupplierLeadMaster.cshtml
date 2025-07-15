@@ -1152,11 +1152,14 @@
 
     // This function is called by the modal (child window)
     function refreshSupplierCategoryDropDown() {
-        const dropDownInstance = $("#GetSupplierCategoryDropDown").dxDropDownBox("instance");
-        if (dropDownInstance) {
-            dropDownInstance.getDataSource().reload();
+                const dropdown = $("#GetSupplierCategoryDropDown").dxDropDownBox("instance");
+            if (dropdown) {
+                const ds = dropdown.getDataSource();
+                ds.reload().done(() => {
+                    dropdown.repaint();
+                });
+            }
         }
-    }
 
     function redirectToSupplierContact() {
         let url = `/${tenantName}/IMS/SupplierContactList`;
@@ -1229,11 +1232,11 @@
 
             if (e.value) {
                 // When switched ON, update text and apply red color
-                    textBoxInstance.option("value", "Local Supplier:");
+                            textBoxInstance.option("value", "International Supplier:");
                 $("#LedgerActive .dx-texteditor-input").css("color", "red");
             } else {
                 // When switched OFF, update text and reset color
-                textBoxInstance.option("value", "International Supplier:");
+                    textBoxInstance.option("value", "Local Supplier:");
                 $("#LedgerActive .dx-texteditor-input").css("color", "black");
             }
         });

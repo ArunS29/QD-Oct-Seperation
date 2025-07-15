@@ -12,6 +12,7 @@ using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
 using SkiaSharp;
 using System.Dynamic;
+using System.Linq;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 
@@ -783,6 +784,41 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Error in DeleteChildById: {ex.Message}");
+                return StatusCode(500, new { success = false, message = "Internal server error." });
+            }
+        }
+        [HttpDelete]
+        public async Task<IActionResult> DeleteMultipleChildren([FromBody] List<int> childIds)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant context." });
+            }
+
+            if (childIds == null || !childIds.Any())
+            {
+                return BadRequest(new { success = false, message = "No child IDs provided." });
+            }
+
+            try
+            {
+                var childrenToDelete = await dbContext.Tbl60602purchaseRequestChildren
+                    .Where(x => childIds.Contains((int)x.MprchildSlNo))
+                    .ToListAsync();
+
+                if (!childrenToDelete.Any())
+                {
+                    return NotFound(new { success = false, message = "No matching child records found." });
+                }
+
+                dbContext.Tbl60602purchaseRequestChildren.RemoveRange(childrenToDelete);
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Selected child rows deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in DeleteMultipleChildren: {ex.Message}");
                 return StatusCode(500, new { success = false, message = "Internal server error." });
             }
         }

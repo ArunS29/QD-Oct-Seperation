@@ -419,7 +419,7 @@
 														.ShowClearButton(true)
 														.SearchEnabled(true)
 														.Width("100%")
-														.Disabled(true)
+														.ReadOnly(true)
 														)
 
 						</td>
@@ -435,7 +435,7 @@
 														)
 						</td>
 						<td style="display: flex; align-items: end; width:100%;" colspan="2">
-							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true).AcceptCustomValue(true)
+							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 														.Label(new JS("formatMessage('Client Name:')"))
 														.DataSource(d => d.WebApi()
 														.Controller("AddNewClientRequest")
@@ -485,7 +485,7 @@
 					</tr>
 					<tr style="display: flex; gap: 10px;align-items:end; width:100%;">
 						<td style="display: flex; align-items:end;width:100%;" colspan="2">
-							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true).AcceptCustomValue(true)
+							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 														.Label(new JS("formatMessage('Store Code:')"))
 														.DataSource(d => d.WebApi()
 														.Controller("StoreCode")
@@ -522,7 +522,7 @@
 
 						</td>
 						<td style="display: flex; align-items:end;width:100%;" colspan="2">
-							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true).AcceptCustomValue(true)
+							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 														.Label(new JS("formatMessage('Department Requested By:')"))
 														.ID("ddDep")
 														.DataSource(d => d.WebApi()
@@ -1452,7 +1452,7 @@
 					.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
 					.OnSelectionChanged("dataGridSelectionChanged1")
 					.OnInitialized("dataGridInitialized1")
-					.HeaderFilter(p => p.Visible(true))
+					.HeaderFilter(p => p.Visible(false))
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
@@ -1488,7 +1488,7 @@
 					.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
 					.OnSelectionChanged("dataGridSelectionChanged2")
 					.OnInitialized("dataGridInitialized2")
-					.HeaderFilter(p => p.Visible(true))
+					.HeaderFilter(p => p.Visible(false))
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
@@ -6111,7 +6111,10 @@
 
 					data[index2] = temp;
 					console.log("Swapped Data:", data);
-
+										 // ✅ Reassign LineOrderNo sequentially
+		data.forEach((row, idx) => {
+		row.LineOrderNo = idx + 1;
+	});
 					// Get the DataGrid instance and update the data source
 					var dataGrid1 = $("#B2BdataGrid").dxDataGrid("instance");
 					var dataGrid = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource", data);
