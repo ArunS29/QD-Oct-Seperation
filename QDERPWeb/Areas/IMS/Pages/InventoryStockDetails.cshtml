@@ -188,7 +188,6 @@
 </div>
 <div class="containerInventoryStock">
 
-    <div class="content-container-top">
         <div class="dx-fieldset horizontal-container">
             <table class="form-tablee">
                 <tr>
@@ -207,13 +206,13 @@
                                 .ID("StockGroup")
                                 .DisplayExpr("GsgroupName")
                                 .ValueExpr("GsgroupId")
-
                                 .DataSource(d => d.WebApi()
                                 .Controller("StockInventory")
                                 .LoadAction("GetStockGroups")
                                 )
                                 .Label(new JS("formatMessage('Stock Group')"))
                                 .LabelMode(EditorLabelMode.Floating)
+                                .SearchEnabled(true)
                                 .Width("90%")
                                 .OnValueChanged("onStockGroupChange")
                                 )
@@ -241,6 +240,7 @@
                                 .ID("ItemStore")
                                 .DisplayExpr("StoreName")
                                 .ValueExpr("StoreId")
+                                .SearchEnabled(true)
                                 .DataSource(d => d.WebApi()
                                 .Controller("StockInventory")
                                 .LoadAction("GetStores")
@@ -265,6 +265,7 @@
                                 .ID("ItemClassification")
                                 .DisplayExpr("StockClassification")
                                 .ValueExpr("StockClassId")
+                                                .SearchEnabled(true)
                                 .DataSource(d => d.WebApi()
                                 .Controller("StockInventory")
                                 .LoadAction("GetItemClassifications")
@@ -379,7 +380,7 @@
 
         <!-- Tab Content -->
         <div class="dx-fieldset">
-            <div id="tab-content-1" class="tab-content" ">
+            <div id="tab-content-1" class="tab-content" >
 
 
             <div id="tab1-content">
@@ -505,8 +506,10 @@
                                 @(Html.DevExtreme().SelectBox()
                                     .ID("UnitOfMeasure")
                                     .DisplayExpr("UnitType")
+                                                                .SearchEnabled(true)
                                     .ValueExpr("UnitCode")
                                     .DataSource(d => d.WebApi()
+
                                     .Controller("StockInventory")
                                     .LoadAction("GetUnitCodes")
                                     )
@@ -1109,9 +1112,6 @@
                     </tr>
 
                 </table>
-
-
-
                 <div class="dx-field ledgerResult" style="margin-bottom: 100px">
                     <table style="width:100%; margin-top: 15px;">
                         <tr>
@@ -2421,13 +2421,6 @@
         @await Html.PartialAsync("~/Pages/Shared/IMS/StockEditFooter.cshtml")
         </div>
         </div>
-
-        
-
-       
-    </div>
-
-    
 <script>
 
             function onTabSelectionChanged(e) {
