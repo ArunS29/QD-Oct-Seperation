@@ -3,7 +3,10 @@
 @using DevExtreme.AspNet.Mvc;
 @using DevExtreme.AspNet.Data;
 @{
-  
+    var currentYear = DateTime.Now.Year;
+    var currentMonth = DateTime.Now.Month;
+    var firstDateOfYear = new DateTime(currentYear, 1, 1);
+    var lastDateOfCurrentMonth = new DateTime(currentYear, currentMonth, DateTime.DaysInMonth(currentYear, currentMonth));
 }
 
 <link rel="stylesheet" href="~/css/animationCardFinance.css" />
@@ -187,24 +190,24 @@
 
 
             @(Html.DevExtreme().DateBox()
-                .Label(new JS("formatMessage('VoucherDate')"))
+               
                 .ID("VoucherDate")
                 .InputAttr("aria-label", "Date")
                 .LabelMode(EditorLabelMode.Outside)
                 .Type(DateBoxType.Date)
                 .DisplayFormat("dd-MMM-yyyy")
-                .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+                .Value(firstDateOfYear)
                 )
 
 
             @(Html.DevExtreme().DateBox()
-                .Label(new JS("formatMessage('EffectiveDate')"))
+               
                 .ID("EffectiveDate")
                 .InputAttr("aria-label", "Effective Date")
                 .LabelMode(EditorLabelMode.Outside)
                 .Type(DateBoxType.Date)
                 .DisplayFormat("dd-MMM-yyyy")
-                .Value(DateTime.Now))
+                .Value(lastDateOfCurrentMonth))
 
 
             @(Html.DevExtreme().DropDownButton()
@@ -231,70 +234,7 @@
                 )
         </div>
         <div class="dx-field ledgerResult">
-          @*   @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201205depreciationMasterView>()
-                .ID("DepreciationdataGrid")
-                .KeyExpr("ClaimRefNo")
-                .RemoteOperations(false)
-                .DataSource(ds => ds.Mvc()
-                .Controller("DepreciationMaster")
-                .LoadAction("GetExpenseClaims"))
-                    
-
-                   
-                .Columns(columns =>
-                {
-
-                        columns.Add().Caption(new JS("formatMessage('Depreciation Register Details')")).Columns(band =>
-                    {
-
-                        band.Add().DataField("Postedon").Caption("Posted")
-                    .CellTemplate(@<text>
-                <input type="checkbox" class="row-checkbox" data-claimrefno="<%= data.ClaimRefNo %>" onclick="highlightRow(this)" />
-            </text>);
-
-                        band.Add().DataField("JournalVoucherNo").Caption(new JS("formatMessage('Voucher No')"));
-                        band.Add().DataField("DepreciationDocNo").Caption(new JS("formatMessage('Depreciation Doc No')"));
-                        band.Add().DataField("DeprStartDate").Caption(new JS("formatMessage('Start Date')")).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy");
-                        band.Add().DataField("DeprEndDate").Caption(new JS("formatMessage('End Date')")).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy");
-
-
-                    });
-                    columns.Add().Caption("No of Assets").Columns(band =>
-                    {
-
-                        band.Add().DataField("NoOfAssets").Caption("No of Assets");
-
-                    });
-                        columns.Add().Caption(new JS("formatMessage('Depreciation Amount')")).Columns(band =>
-                    {
-
-                        band.Add().DataField("AssetOpeningBalance").Caption(new JS("formatMessage('Opening Balance')")).DataType(GridColumnDataType.Number).Format("#,##0.00");
-                        band.Add().DataField("AssetTotalDebitTrans").Caption(new JS("formatMessage('Debit Transactions')")).DataType(GridColumnDataType.Number).Format("#,##0.00");
-                        band.Add().DataField("AssetTotalCreditTrans").Caption(new JS("formatMessage('Credit Transactions')")).DataType(GridColumnDataType.Number).Format("#,##0.00");
-                        band.Add().DataField("AssetClosingBalance").Caption(new JS("formatMessage('Closing Balance')")).DataType(GridColumnDataType.Number).Format("#,##0.00");
-                        band.Add().DataField("AccumulatedOpeningBalance").Caption(new JS("formatMessage('Accumulated Opening Balance')")).DataType(GridColumnDataType.Number).Format("#,##0.00");
-                        band.Add().DataField("TotalDepreciationAmount").Caption(new JS("formatMessage('Total Depreciation Amount')")).DataType(GridColumnDataType.Number).Format("#,##0.00");
-                        band.Add().DataField("AccumulatedTotalBalance").Caption(new JS("formatMessage('Accumulated Closing Balance')")).DataType(GridColumnDataType.Number).Format("#,##0.00");
-                        band.Add().DataField("TotalBookValue").Caption(new JS("formatMessage('Total Book Value')")).DataType(GridColumnDataType.Number).Format("#,##0.00");
-
-                    });
-                })
-
-                
-
-                .Paging(paging => paging.Enabled(false))
-                .AllowColumnReordering(true)
-                .AllowColumnResizing(true)
-                .ColumnFixing(fixing => fixing.Enabled(true))
-                .HeaderFilter(filter => filter.Visible(true))
-                .Height(401)
-                .ColumnAutoWidth(true)
-                .FilterRow(filterRow => filterRow.Visible(false))
-                // Group Panel Configuration
-                .GroupPanel(groupPanel => groupPanel.Visible(false))
-                .Grouping(grouping => grouping.AutoExpandAll(true))
-                .ShowBorders(true)
-                .Width("100%")) *@
+          
 
     @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201205depreciationMasterView>()
         .ID("DepreciationdataGrid")
@@ -362,6 +302,23 @@
             .FilterRow(filterRow => filterRow.Visible(false))
             .GroupPanel(groupPanel => groupPanel.Visible(false))
             .Grouping(grouping => grouping.AutoExpandAll(true))
+            .Summary(summary => summary
+            .TotalItems(items =>
+            {
+                items.Add()
+                .Column("DepreciationDocNo")
+                .SummaryType(SummaryType.Count)
+                .DisplayFormat("Count: {0}")
+                .Alignment(HorizontalAlignment.Right);
+
+                items.Add()
+                .Column("TotalDepreciationAmount")
+                .SummaryType(SummaryType.Sum)
+                .ValueFormat("#,##0.00")
+                .DisplayFormat("{0}")
+                .Alignment(HorizontalAlignment.Right);
+            })
+            )
             .ShowBorders(true)
             .OnRowPrepared("onDepreciationRowPrepared")
             .OnContextMenuPreparing("onDepreciationContextMenuPreparing")

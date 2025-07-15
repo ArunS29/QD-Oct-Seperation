@@ -585,6 +585,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 try
                 {
+                    var addedBy = HttpContext.Session.GetString("UserName") ?? "System";
+                    var addedOn = DateTime.Now;
                     var existingAccount = dbContext.Tbl201ChartOfAccounts
                         .FirstOrDefault(a => a.AccountId == chartAccount.AccountId);
 
@@ -671,13 +673,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         existingAccount.BillingContactPersonTitle = chartAccount.BillingContactPersonTitle;
                         existingAccount.BillingBankAccount = chartAccount.BillingBankAccount;
                         existingAccount.SupplierAddress = chartAccount.SupplierAddress;
-                        existingAccount.RecordModifiedBy = chartAccount.RecordModifiedBy;
-                        existingAccount.RecordModifiedOn = chartAccount.RecordModifiedOn;
+                        existingAccount.RecordModifiedBy = addedBy;
+                        existingAccount.RecordModifiedOn = addedOn;
 
 
                         dbContext.Tbl201ChartOfAccounts.Update(existingAccount);
                         dbContext.SaveChanges();
-                        return Json(new { success = true, message = "Ledger account updated successfully" });
+                        return Json(new { success = true, modifiedby = existingAccount.RecordModifiedBy, modifiedon = existingAccount.RecordModifiedOn?.ToString("yyyy-MM-dd"), message = "Ledger account updated successfully" });
                     }
                     else
                     {
@@ -766,8 +768,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             BillingContactPersonTitle = chartAccount.BillingContactPersonTitle,
                             BillingBankAccount = chartAccount.BillingBankAccount,
                             SupplierAddress = chartAccount.SupplierAddress,
-                            RecordCreatedBy = chartAccount.RecordCreatedBy,
-                            RecordCreatedOn = chartAccount.RecordCreatedOn
+                            RecordCreatedBy = addedBy,
+                            RecordCreatedOn = addedOn
                         };
 
 
@@ -783,7 +785,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         dbContext.Tbl201ChartOfAccounts.Add(newAccount);
                         dbContext.Tbl20105AssetMasters.Add(newAssetMaster);
                         dbContext.SaveChanges();
-                        return Json(new { success = true, message = "Account Ledger Information Saved Successfully" });
+                        return Json(new { success = true, createdBy = newAccount.RecordCreatedBy, createdon= newAccount.RecordCreatedOn?.ToString("yyyy-MM-dd"), message = "Account Ledger Information Saved Successfully" });
                     }
                 }
                 catch (Exception ex)
