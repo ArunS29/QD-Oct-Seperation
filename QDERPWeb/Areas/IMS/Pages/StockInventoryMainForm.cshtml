@@ -61,7 +61,7 @@
         background: #fff;
         border-radius: 8px;
         box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-        width: 200px;
+        width: 210px;
         display: none;
         flex-direction: column;
         padding: 5px 0;
@@ -163,13 +163,13 @@
 </div>
 <div class="context-menuInvoice" id="contextMenu">
     <div class="context-menu-itemInvoice" onclick="viewRecord()">
-        <i class="dx-icon-search"></i> View
+        <i class="dx-icon-search"></i> View Stock Item Details
     </div>
     <div class="context-menu-itemInvoice" onclick="editRecord()">
-        <i class="dx-icon-edit"></i> Edit
+        <i class="dx-icon-edit"></i> Edit Stock Item
     </div>
     <div class="context-menu-itemInvoice" onclick="deleteRecord()">
-        <i class="dx-icon-trash"></i> Delete
+        <i class="dx-icon-trash"></i> Delete Stock Item
     </div>
 </div>
     <div class="dx-field ledgerResult" >
@@ -186,11 +186,7 @@
             .Width(120);
         columns.AddFor(m => m.Gsdescrpition)
                 .Caption(new JS("formatMessage('Description')"))
-            .Width(280);
-        columns.AddFor(m => m.GsgroupName)
-                .Caption(new JS("formatMessage('Stock Group')"))
-            .Width(180)
-            .GroupIndex(0);
+            .Width(280); columns.AddFor(m => m.GsgroupName).Caption(new JS("formatMessage('Stock Group')")).Width(180).Visible(true).GroupIndex(0);
         columns.AddFor(m => m.ItemPartNo)
                 .Caption(new JS("formatMessage('Item Part No')"))
             .Width(150);
@@ -201,32 +197,99 @@
                 .Caption(new JS("formatMessage('Selling Price')"))
             .Format("fixedPoint")
             .Alignment(HorizontalAlignment.Right)
-            .Width(120);
+            .Width(120).CustomizeText(@"
+        function(e) {
+        if (e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null/undefined
+        }
+        return Number(e.value).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        }
+        ");
         columns.AddFor(m => m.CostPrice)
                 .Caption(new JS("formatMessage('Cost Price')"))
             .Format("fixedPoint")
             .Alignment(HorizontalAlignment.Right)
-            .Width(120);
+            .Width(120).CustomizeText(@"
+        function(e) {
+        if (e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null/undefined
+        }
+        return Number(e.value).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        }
+        "); 
         columns.AddFor(m => m.OpeningBalance)
                 .Caption(new JS("formatMessage('Opening Balance')"))
             .Format("fixedPoint")
             .Alignment(HorizontalAlignment.Right)
-            .Width(120);
+            .Width(120).CustomizeText(@"
+        function(e) {
+        if (e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null/undefined
+        }
+        return Number(e.value).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        }
+        ");
         columns.AddFor(m => m.TotalReceived)
                 .Caption(new JS("formatMessage('Received')"))
             .Format("fixedPoint")
             .Alignment(HorizontalAlignment.Right)
-            .Width(120);
+            .Width(120).CustomizeText(@"
+        function(e) {
+        if (e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null/undefined
+        }
+        return Number(e.value).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        }
+        ");
         columns.AddFor(m => m.TotalIssues)
                 .Caption(new JS("formatMessage('Issues')"))
             .Format("fixedPoint")
             .Alignment(HorizontalAlignment.Right)
-            .Width(120);
+            .Width(120).CustomizeText(@"
+        function(e) {
+        if (e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null/undefined
+        }
+        return Number(e.value).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        }
+        ");
         columns.AddFor(m => m.ClosingBalance)
                 .Caption(new JS("formatMessage('Closing Balance')"))
             .Format("fixedPoint")
             .Alignment(HorizontalAlignment.Right)
-            .Width(120);
+            .Width(120).CellTemplate(new JS(@"
+        function(cellElement, cellInfo) {
+        if (cellInfo.value === null || cellInfo.value === undefined) {
+        cellElement.text('');
+        return;
+        }
+
+        const formatted = Number(cellInfo.value).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+
+        cellElement.text(formatted);
+
+        if (cellInfo.value < 0) {
+        cellElement.css('color', 'red');
+        }}"));
+        
         columns.AddFor(m => m.MaxQty)
                 .Caption(new JS("formatMessage('Inventory Value (FIFO)')"))
             .Format("fixedPoint")
@@ -246,13 +309,76 @@
     .WordWrapEnabled(true)
     .FilterRow(f => f.Visible(false))
     .Grouping(g => g.AutoExpandAll(true))
-    .GroupPanel(gp => gp.Visible(false))
+    .GroupPanel(gp => gp.Visible(true)) 
     .ShowBorders(true)
     
     .Height("100%")
     .Width("100%")
-)
+        .Summary(s => s // Add this Summary configuration
+        .TotalItems(totalItems =>
+        {
+        totalItems.AddFor(m => m.OpeningBalance)
+        .SummaryType(SummaryType.Sum)
+        .DisplayFormat("Total: {0}")
+            .Alignment(HorizontalAlignment.Right).CustomizeText(@"
+        function(e) {
+        if (e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null/undefined
+        }
+        return Number(e.value).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        }
+        ");
 
+            totalItems.AddFor(m => m.TotalReceived)
+        .SummaryType(SummaryType.Sum)
+        .DisplayFormat("Total: {0}")
+            .Alignment(HorizontalAlignment.Right).CustomizeText(@"
+        function(e) {
+        if (e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null/undefined
+        }
+        return Number(e.value).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        }
+        ");
+
+            totalItems.AddFor(m => m.TotalIssues)
+        .SummaryType(SummaryType.Sum)
+        .DisplayFormat("Total: {0}")
+            .Alignment(HorizontalAlignment.Right).CustomizeText(@"
+        function(e) {
+        if (e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null/undefined
+        }
+        return Number(e.value).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        }
+        ");
+
+            totalItems.AddFor(m => m.ClosingBalance)
+        .SummaryType(SummaryType.Sum)
+        .DisplayFormat("Total: {0}")
+            .Alignment(HorizontalAlignment.Right).CustomizeText(@"
+        function(e) {
+        if (e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null/undefined
+        }
+        return Number(e.value).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        }
+        ");
+        })
+)
+)
     </div>
 
 <script>

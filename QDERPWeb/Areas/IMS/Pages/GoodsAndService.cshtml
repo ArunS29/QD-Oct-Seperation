@@ -155,6 +155,7 @@
         <div class="col" style="display:flex;align-items:end;justify-content:center; width:25%;">
           
             @(Html.DevExtreme().DropDownBox()
+                        .Label(new JS("formatMessage('Unit of Measure:')"))
                 .DataSource(d => d.WebApi()
                 .Controller("GoodsandServices")
                 .LoadAction("GetUnitofMeasure")
@@ -190,7 +191,7 @@
                 {
                     @class = "icon-button"
                 })
-                .OnClick("function() { redirectToVATMasterModule(); }") // ✅ Call separate function
+                .OnClick("Unitofmeasure") // ✅ Call separate function
                 )
 
     </div>
@@ -736,7 +737,10 @@ function bindGoodsAndServiceData() {
 $(function () {
     bindGoodsAndServiceData();
 });
-
+function Unitofmeasure(){
+        window.location.href=`/${tenantName}/IMS/UnitOfMeasure`;
+       
+}
 // If your modal loads content via AJAX, make sure to call bindGoodsAndServiceData() after the modal content is loaded.// After modal content is loaded:
 
 </script>

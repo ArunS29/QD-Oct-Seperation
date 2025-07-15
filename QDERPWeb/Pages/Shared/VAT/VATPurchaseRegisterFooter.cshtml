@@ -539,170 +539,6 @@
             openModal(url, title);
         }
 
-     function exportGridToPDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF('l', 'mm', 'a4'); // 'l' for landscape, 'mm' for millimeters, 'a4' for A4 size
-
-        // Get the instance of the DataGrid
-        var dataGrid = $("#dataGrid").dxDataGrid("instance");
-
-        // Extract headers
-        var headers = dataGrid.getVisibleColumns().map(column => column.caption);
-
-        // Extract data and calculate sums
-        var creditSum = 0;
-        var debitSum = 0;
-        var data = dataGrid.getVisibleRows().map(row => {
-            return dataGrid.getVisibleColumns().map(column => {
-                let value = row.data[column.dataField];
-                if (column.dataType === 'date' && value) {
-                    // Format date as dd-MMM-yyyy
-                    let date = new Date(value);
-                    let day = String(date.getDate()).padStart(2, '0');
-                    let month = date.toLocaleString('default', { month: 'short' });
-                    let year = date.getFullYear();
-                    return `${day}-${month}-${year}`;
-                }
-                if (column.dataField === 'CrAmount') {
-                    creditSum += value || 0;
-                }
-                if (column.dataField === 'DrAmount') {
-                    debitSum += value || 0;
-                }
-                return value;
-            });
-        });
-
-        // Generate PDF
-        doc.autoTable({
-            head: [headers],
-            body: data,
-            styles: { overflow: 'linebreak' },
-            theme: 'grid',
-            tableWidth: 'auto', // Adjust table width to fit the page
-            columnStyles: {
-                0: { cellWidth: 'wrap' }, // Adjust the first column width
-                // Add more column styles if needed
-            },
-            margin: { top: 10, right: 10, bottom: 30, left: 10 }, // Adjust margins if needed
-            didDrawPage: function (data) {
-                // Remove the "DataGrid Export" text
-                // doc.setFontSize(10);
-                // doc.text('DataGrid Export', data.settings.margin.left, 10);
-
-                // Add footer
-                var pageCount = doc.internal.getNumberOfPages();
-                doc.setFontSize(8);
-                doc.text(`Page ${data.pageNumber} of ${pageCount}`, data.settings.margin.left, doc.internal.pageSize.height - 20);
-
-                // Add sum of credit and debit, and row count
-                doc.text(`Total Rows: ${dataGrid.getVisibleRows().length}`, data.settings.margin.left, doc.internal.pageSize.height - 15);
-                doc.text(`Total Credit: ${creditSum.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, data.settings.margin.left + 50, doc.internal.pageSize.height - 15);
-                doc.text(`Total Debit: ${debitSum.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, data.settings.margin.left + 150, doc.internal.pageSize.height - 15);
-            }
-        });
-
-        // Open PDF in a new window
-        var string = doc.output('datauristring');
-        var newWindow = window.open();
-        newWindow.document.write('<iframe width="100%" height="100%" src="' + string + '"></iframe>');
-    }
-
-
-
-        // Hide context menu on click outside
-        
-
-        function toggleHeaderFilter() {
-            var dataGrid = $("#dataGrid").dxDataGrid("instance");
-
-            isHeaderFilterEnabled = !isHeaderFilterEnabled;
-            dataGrid.option("headerFilter.visible", isHeaderFilterEnabled); // Toggle the header filter visibility
-        }
-        $(document).on("click", function () {
-            var contextMenu = $("#contextMenu");
-            contextMenu.hide();
-            var $submenu = $('#submenuContainer');
-            $submenu.hide(); // Hide the submenu popup
-        });
-
-        // Handle the file selection
-        $("#loadLayoutInput").on("change", function (event) {
-            const dataGrid = $("#dataGrid").dxDataGrid("instance");
-            const file = event.target.files[0];
-
-            if (file) {
-                const reader = new FileReader();
-
-                reader.onload = function (e) {
-                    try {
-                        // Parse the JSON string from the file
-                        const layout = JSON.parse(e.target.result);
-
-                        // Restore the grid state
-                        dataGrid.state(layout);
-                    } catch (error) {
-                        console.error("Error parsing JSON:", error);
-                        alert("Failed to load layout. Please ensure the file is valid JSON.");
-                    }
-                };
-
-                // Read the file as text
-                reader.readAsText(file);
-            }
-        });
-        function saveLayoutClick(e) {
-            var grid = $("#dataGrid").dxDataGrid("instance");
-            var layout = grid.state();
-            const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
-            //console.log(layoutJson);
-            // Create a Blob from the JSON string
-            const blob = new Blob([layoutJson], { type: "application/json" });
-            // Create a URL for the Blob
-            const url = URL.createObjectURL(blob);
-            // Create a link element
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "grid-layout.json"; // Set the file name for download
-            // Append the link to the body (needed for Firefox)
-            document.body.appendChild(a);
-            // Programmatically click the link to trigger the download
-            a.click();
-            // Clean up by removing the link and revoking the Object URL
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            //DevExpress.ui.notify("Layout", "success", 600);
-        }
-        function openLayoutClick(e) {
-            // Create an input element dynamically
-            const input = document.createElement("input");
-            input.type = "file";
-            input.accept = "application/json";
-
-            // When a file is selected
-            input.addEventListener("change", function (event) {
-                const file = event.target.files[0];
-                if (!file) return;
-
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    try {
-                        const layout = JSON.parse(e.target.result);
-                        const grid = $("#dataGrid").dxDataGrid("instance");
-                        grid.state(layout);
-                        //DevExpress.ui.notify("Layout applied successfully!", "success", 600);
-                    } catch (error) {
-                        DevExpress.ui.notify("Invalid layout file!", "error", 600);
-                    }
-                };
-
-                reader.readAsText(file);
-            });
-
-            // Trigger the file input click event
-            input.click();
-        }
-
         function loadGridState() {
             var form = $('#formId').val();
             // Call the API to get the grid state
@@ -736,40 +572,6 @@
             });
         }
 
-          function setDefaultLayoutClick(e) {
-        const grid = $("#dataGrid").dxDataGrid("instance");
-        const form = $('#formId').val();
-
-        if (!grid) {
-            DevExpress.ui.notify("Grid not found", "error", 2000);
-            return;
-        }
-
-        const layout = grid.state();
-     //   const layoutJson = JSON.stringify(layout, null, 2); // JSON string
-        const layoutJson = convertLayoutToXml(layout); // Optional: to get XML string
-
-       // console.log("JSON Layout:", layoutJson);
-        console.log("XML Layout:", layoutJson); // Comment if not needed
-
-        $.ajax({
-            url: '/api/Utility/SaveLayout',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                layout: layoutJson, // or use layoutXml if backend expects XML
-                form: form
-            }),
-            success: function (data) {
-                DevExpress.ui.notify("Layout saved successfully", "success", 2000);
-            },
-            error: function (xhr) {
-                console.error("SaveLayout error:", xhr.responseText);
-                DevExpress.ui.notify("Error while saving data", "error", 2000);
-            }
-        });
-    }
-
       function convertLayoutToXml(layout) {
         let xml = `<XtraSerializer version="1.0" application="View">\n`;
         xml += `  <property name="columns">\n`;
@@ -787,61 +589,7 @@
     }
 
 
-              function resetLayoutClick(e) {
-           var grid = $("#dataGrid").dxDataGrid("instance");
-           var form = $('#formId').val();
-
-           const layout = grid.state();
-    //   const layoutJson = JSON.stringify(layout, null, 2); // JSON string
-       const layoutJson = convertLayoutToXml(layout); // Optional: to get XML string
-
-      // console.log("JSON Layout:", layoutJson);
-       console.log("XML Layout:", layoutJson); // Comment if not needed
-
-       $.ajax({
-           url: '/api/Utility/SaveLayout',
-           type: 'POST',
-           contentType: 'application/json',
-           data: JSON.stringify({
-               layout: layoutJson, // or use layoutXml if backend expects XML
-               form: form
-           }),
-               success: function (data) {
-                   DevExpress.ui.notify("Layout reset successfull", "success", 2000);
-                   grid.state({});
-               },
-               error: function () {
-                   DevExpress.ui.notify("Error while saving data", "error", 2000);
-               }
-           });
-       }
-        // Footer Group Pannel button click event
-        function toggleGroupPanel() {
-            var dataGrid = $("#dataGrid").dxDataGrid("instance");
-            var isVisible = dataGrid.option("groupPanel.visible");
-            dataGrid.option("groupPanel.visible", !isVisible);
-        }
-        function showColumnChooser() {
-            var dataGrid = $("#dataGrid").dxDataGrid("instance");
-            var isColumnChooserVisible = dataGrid.option("columnChooser.enabled");
-
-            if (isColumnChooserVisible) {
-                dataGrid.option("columnChooser.enabled", false); // Disable the column chooser
-            } else {
-                dataGrid.option("columnChooser.enabled", true); // Enable the column chooser
-                dataGrid.showColumnChooser(); // Show the column chooser
-            }
-        }
-
-
-
-        // Footer Filter row button click event
-        function toggleFilterRow() {
-            var grid = $("#dataGrid").dxDataGrid("instance");
-            var currentVisibility = grid.option("filterRow.visible");
-
-            grid.option("filterRow.visible", !currentVisibility); // Toggle FilterRow visibility
-        }
+     
 
         // Footer Recipits button event
         function addRecipitsButton_click(e) {
@@ -1019,28 +767,6 @@
 
 
 
-
-        function ChangeRowHeight(newHeight) {
-            // Update the row height
-            $("#dataGrid .dx-data-row").css("height", newHeight + "px");
-            closeSubmenu();
-        }
-        function showSubmenu(e) {
-            e.event.stopPropagation();
-            var $submenu = $('#submenuContainer');
-            var $target = $(e.event.target).closest('.dx-item-content');
-            var offset = $target.offset();
-            var elementWidth = $target.outerWidth();
-
-            // Position submenu with a slight margin (e.g., 5px)
-            $submenu.css({
-                'width': 180,
-                'position': 'absolute',
-                'top': offset.top,
-                'left': offset.left + elementWidth + 5, // Add margin
-                'display': 'block'
-            });
-        }
 
         function closeSubmenu() {
             $("#submenuContainer").hide();
@@ -1703,5 +1429,21 @@
                     return "Saved";
                 }
             }
+              function showSubmenu(e) {
+            e.event.stopPropagation();
+            var $submenu = $('#submenuContainer');
+            var $target = $(e.event.target).closest('.dx-item-content');
+            var offset = $target.offset();
+            var elementWidth = $target.outerWidth();
+
+            // Position submenu with a slight margin (e.g., 5px)
+            $submenu.css({
+                'width': 180,
+                'position': 'absolute',
+                'top': offset.top,
+                'left': offset.left + elementWidth + 5, // Add margin
+                'display': 'block'
+            });
+        }
 
 </script>

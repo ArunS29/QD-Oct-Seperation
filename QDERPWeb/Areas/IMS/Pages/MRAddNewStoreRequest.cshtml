@@ -1448,7 +1448,7 @@
 					.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
 					.OnSelectionChanged("dataGridSelectionChanged1")
 					.OnInitialized("dataGridInitialized1")
-					.HeaderFilter(p => p.Visible(true))
+					.HeaderFilter(p => p.Visible(false))
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
@@ -6026,7 +6026,10 @@
 
 		data[index2] = temp;
 		console.log("Swapped Data:", data);
-
+						 // ✅ Reassign LineOrderNo sequentially
+	data.forEach((row, idx) => {
+	row.LineOrderNo = idx + 1;
+});
 		// Get the DataGrid instance and update the data source
 		var dataGrid1 = $("#B2BdataGrid").dxDataGrid("instance");
 		var dataGrid = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource", data);

@@ -1287,6 +1287,31 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
             return Json(new { success = false, message = "Unable to get tenant context." });
         }
+        [HttpDelete]
+        public IActionResult DeleteUOM(byte key)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var record = dbContext.Tbl40111PropertyUnitCodes.FirstOrDefault(x => x.UnitCode == key);
+                    if (record == null)
+                        return NotFound();
+
+                    dbContext.Tbl40111PropertyUnitCodes.Remove(record);
+                    dbContext.SaveChanges();
+                    return Ok();
+                }
+
+                return Unauthorized(new { success = false, message = "Invalid tenant" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in Delete: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while Deleting the data.", error = ex.Message });
+
+            }
+        }
 
         [HttpGet]
         public IActionResult GetVatTaxSlabs()

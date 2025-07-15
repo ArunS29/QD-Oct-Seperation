@@ -172,7 +172,6 @@
     .titleCard-toggle1 {
         display: none;
     }
-
    
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
@@ -188,7 +187,6 @@
 </div>
 <div class="containerInventoryStock">
 
-    <div class="content-container-top">
         <div class="dx-fieldset horizontal-container">
             <table class="form-tablee">
                 <tr>
@@ -207,13 +205,13 @@
                                 .ID("StockGroup")
                                 .DisplayExpr("GsgroupName")
                                 .ValueExpr("GsgroupId")
-
                                 .DataSource(d => d.WebApi()
                                 .Controller("StockInventory")
                                 .LoadAction("GetStockGroups")
                                 )
                                 .Label(new JS("formatMessage('Stock Group')"))
                                 .LabelMode(EditorLabelMode.Floating)
+                                .SearchEnabled(true)
                                 .Width("90%")
                                 .OnValueChanged("onStockGroupChange")
                                 )
@@ -222,7 +220,7 @@
                             .Icon("plus")
                             .Width(32)
                             .ElementAttr("class", "inline-icon")
-                                .OnClick("StockGroup")
+                            .OnClick("StockGroup")
                             )
                         </div>
                     </td>
@@ -241,6 +239,7 @@
                                 .ID("ItemStore")
                                 .DisplayExpr("StoreName")
                                 .ValueExpr("StoreId")
+                                .SearchEnabled(true)
                                 .DataSource(d => d.WebApi()
                                 .Controller("StockInventory")
                                 .LoadAction("GetStores")
@@ -265,6 +264,7 @@
                                 .ID("ItemClassification")
                                 .DisplayExpr("StockClassification")
                                 .ValueExpr("StockClassId")
+                                                .SearchEnabled(true)
                                 .DataSource(d => d.WebApi()
                                 .Controller("StockInventory")
                                 .LoadAction("GetItemClassifications")
@@ -379,7 +379,7 @@
 
         <!-- Tab Content -->
         <div class="dx-fieldset">
-            <div id="tab-content-1" class="tab-content" ">
+            <div id="tab-content-1" class="tab-content" >
 
 
             <div id="tab1-content">
@@ -501,12 +501,14 @@
                         <tr class="flex-row">
 
                             <td>
-                                <div style="display:flex;">
+                                <div style="display:flex; align-items:end;">
                                 @(Html.DevExtreme().SelectBox()
                                     .ID("UnitOfMeasure")
                                     .DisplayExpr("UnitType")
+                                                                .SearchEnabled(true)
                                     .ValueExpr("UnitCode")
                                     .DataSource(d => d.WebApi()
+
                                     .Controller("StockInventory")
                                     .LoadAction("GetUnitCodes")
                                     )
@@ -889,11 +891,7 @@
                     }
 
                     /* Ensure text in grid headers is always centered */
-                    .dx-datagrid .dx-header-row .dx-datagrid-text-content {
-                        white-space: normal !important;
-                        text-align: center !important;
-                    }
-
+                    
                     /* Ensure column headers text aligns to center */
                     .dx-datagrid-headers .dx-datagrid-table .dx-row > td {
                         text-align: center !important;
@@ -977,17 +975,6 @@
                             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important; /* Softer focus effect */
                             border-color: #508ae1 !important;
                         }
-
-                    #dataGrid .dx-header-row .dx-datagrid-text-content {
-                        font-weight: bold;
-                        color: black;
-                    }
-
-
-                    .dx-datagrid-header-panel {
-                        background-color: #909ead00;
-                        /* display:none; */
-                    }
 
                     .no-border-input {
                         border: none !important;
@@ -1109,9 +1096,6 @@
                     </tr>
 
                 </table>
-
-
-
                 <div class="dx-field ledgerResult" style="margin-bottom: 100px">
                     <table style="width:100%; margin-top: 15px;">
                         <tr>
@@ -2021,10 +2005,7 @@
                     }
 
                     /* Ensure text in grid headers is always centered */
-                    .dx-datagrid .dx-header-row .dx-datagrid-text-content {
-                        white-space: normal !important;
-                        text-align: center !important;
-                    }
+                
 
                     /* Ensure column headers text aligns to center */
                     .dx-datagrid-headers .dx-datagrid-table .dx-row > td {
@@ -2109,17 +2090,6 @@
                             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important; /* Softer focus effect */
                             border-color: #508ae1 !important;
                         }
-
-                    #dataGrid .dx-header-row .dx-datagrid-text-content {
-                        font-weight: bold;
-                        color: black;
-                    }
-
-
-                    .dx-datagrid-header-panel {
-                        background-color: #909ead00;
-                        /* display:none; */
-                    }
 
                     .no-border-input {
                         border: none !important;
@@ -2421,13 +2391,6 @@
         @await Html.PartialAsync("~/Pages/Shared/IMS/StockEditFooter.cshtml")
         </div>
         </div>
-
-        
-
-       
-    </div>
-
-    
 <script>
 
             function onTabSelectionChanged(e) {

@@ -222,7 +222,7 @@
       });
 
     $(document).on("click", "#btnBack", function () {
-        window.history.back();
+        window.parent.closeModal();
     });
 
       $(function () {
@@ -272,20 +272,20 @@
     //img
     let businessCard1Base64 = "";
     function addSignatoryToGrid() {
-        // Validate fields using the Validator components
-        // const nameValidationResult = $("#SignatoryName").dxValidator("instance").validate();
-        // const positionValidationResult = $("#SignatoryPosition").dxValidator("instance").validate();
+       var TypeOfRequestvalidator = $("#txtTypeOfRequest").dxValidator("instance");
 
-        // if (!nameValidationResult.isValid || !positionValidationResult.isValid) {
-        //     DevExpress.ui.notify("Please fill all required fields.", "warning", 2000);
-        //     return;
-        // }
+
+    var TypeOfRequestvalidation = TypeOfRequestvalidator.validate();
+
+
+    // If the branch name is valid, proceed with the AJAX request
+    if (TypeOfRequestvalidation.isValid) {
 
         const data = {
             TypeOfRequest: $("#txtTypeOfRequest").dxTextBox("instance").option("value"),
             TermsCategory: $("#txtTermsCategory").dxTextBox("instance").option("value")
-                         
-           
+
+
         };
 
         $.ajax({
@@ -296,11 +296,26 @@
             success: function () {
                 DevExpress.ui.notify("Quotation Type Of Request saved successfully!", "success", 2000);
                 $("#TypeOfRequestGrid").dxDataGrid("instance").refresh();
+                 // ✅ Clear the TextBoxes
+            $("#txtTypeOfRequest").dxTextBox("instance").option("value", "");
+            $("#txtTermsCategory").dxTextBox("instance").option("value", "");
+
+          setTimeout(() => {
+        if (window.parent && typeof window.parent.refreshTypeOfRequestDropDown === "function") {
+            window.parent.refreshTypeOfRequestDropDown();
+        }
+    }, 300);
+
+
             },
             error: function () {
                 DevExpress.ui.notify("Failed to save signatory.", "error", 2000);
             }
         });
+          } else {
+            // If validation fails, show a notification
+            DevExpress.ui.notify(formatMessage('Please fill required details!'), "error", 2000);
+        }
     }
 
 
@@ -327,6 +342,11 @@
             success: function () {
                 DevExpress.ui.notify("Data Updated Successfully!", "success", 1500);
                 $("#TypeOfRequestGrid").dxDataGrid("instance").refresh();
+                   setTimeout(() => {
+        if (window.parent && typeof window.parent.refreshTypeOfRequestDropDown === "function") {
+            window.parent.refreshTypeOfRequestDropDown();
+        }
+    }, 300);
             },
             error: function () {
                 DevExpress.ui.notify("Failed to save.", "error", 1500);
@@ -348,6 +368,12 @@
                     // Refresh the grid after delete
                     grid.refresh();
                     DevExpress.ui.notify("Deleted successfully", "success", 2000);
+                    //Refresh parent dropdown  
+                    setTimeout(() => {
+        if (window.parent && typeof window.parent.refreshTypeOfRequestDropDown === "function") {
+            window.parent.refreshTypeOfRequestDropDown();
+        }
+    }, 300);
                 },
                 error: function () {
                     DevExpress.ui.notify("Delete failed", "error", 2000);
