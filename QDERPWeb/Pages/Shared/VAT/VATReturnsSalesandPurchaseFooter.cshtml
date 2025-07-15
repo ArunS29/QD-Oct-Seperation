@@ -1,12 +1,6 @@
 ﻿<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style type="text/css">
-    #dataGrid .dx-datagrid-headers .dx-datagrid-action {
-        text-align: center !important;
-    }
-
-    #dataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
-        text-align: center !important;
-    }
+    
     /* Button Styling */
     .dx-button {
         background-color: #909ead00 !important;
@@ -60,9 +54,7 @@
         margin-left: 1px !important;
     }
 
-    .dx-datagrid .dx-row {
-        margin-bottom: 50px;
-    }
+    
     /* Custom styles for context menu */
     .context-menu {
         display: none;
@@ -90,85 +82,6 @@
     }
 
 
-    .btn-container {
-        display: inline-block;
-        position: relative;
-        overflow: hidden;
-    }
-
-        /* Initially hide the button text and set a fixed small width */
-        .btn-container .dx-button {
-            width: 40px !important; /* Small width for icons */
-            transition: width 0.3s ease-in-out;
-        }
-
-
-        /* Show full text when hovered */
-        .btn-container:hover .dx-button {
-            width: 200px !important; /* Expand to fit text */
-        }
-
-        /* Initially hide text */
-        .btn-container .dx-button .dx-button-text {
-            display: none;
-        }
-
-        /* Show text on hover */
-        .btn-container:hover .dx-button .dx-button-text {
-            display: inline-block;
-        }
-
-        /* Ensure dropdown button behaves similarly */
-        .btn-container .dx-dropdownbutton {
-            width: 55px !important;
-            transition: width 0.3s ease-in-out;
-        }
-
-        .btn-container:hover .dx-dropdownbutton {
-            width: 180px !important; /* Adjust as needed */
-        }
-
-        .btn-container .dx-dropdownbutton .dx-button-text {
-            display: none;
-        }
-
-        .btn-container:hover .dx-dropdownbutton .dx-button-text {
-            display: inline-block;
-        }
-
-
-        .btn-container .dx-button {
-            width: 40px !important; /* Small width for just the icon */
-            transition: width 0.3s ease-in-out;
-            overflow: hidden;
-            padding-left: 0 !important;
-            padding-right: 0 !important;
-            text-align: center;
-        }
-
-        /* On hover, expand the button */
-
-        .btn-container:hover .dx-button {
-            width: 200px !important;
-        }
-
-        /* Keep the icon always visible */
-
-        .btn-container .dx-button .dx-icon {
-            display: inline-block !important;
-        }
-
-        /* Initially hide text */
-
-        .btn-container .dx-button .dx-button-text {
-            display: none;
-        }
-
-    /* Show text on hover */
-    .btn-containerIvoiceEdit:hover .dx-button .dx-button-text {
-        display: inline-block;
-        margin-left: 8px; /* optional spacing between icon and text */
-    }
 
     .modal-content {
         position: absolute;
@@ -240,7 +153,7 @@
                 .Icon("print")
                 .Text(new JS("formatMessage('Print')"))
                 .ElementAttr(new { style = "display: none;" })
-                .Width(50)
+                .Width("100%")
                 .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
                 )
     </div>
