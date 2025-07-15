@@ -1090,6 +1090,7 @@
                             .Icon("cart") // You can change to your preferred icon
                             .Width(300)
                             .DisplayExpr("text")
+                            .OnButtonClick("ViewStockMovementNavigation")
                             )
 
                         </td>
@@ -1171,7 +1172,7 @@
                         console.error("Grid not initialized");
                         return;
                       }
-
+                      
                       const dataStore = new DevExpress.data.CustomStore({
                         load: function () {
                           console.log("Calling API for GsCode:", gscode);
@@ -1199,7 +1200,10 @@
                     function printReport() {
                         alert("Print report clicked");
                     }
+                   function ViewStockMovementNavigation(){
+                      window.location.href =`/${tenantName}/IMS/StockMovementReport`;
 
+                   }
 
                 </script>
                 </div>
