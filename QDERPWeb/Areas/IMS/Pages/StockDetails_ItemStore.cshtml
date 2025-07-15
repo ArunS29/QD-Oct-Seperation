@@ -22,10 +22,7 @@
         font-weight: bold;
     }
 
-    .dx-datagrid .dx-header-row .dx-datagrid-text-content {
-        white-space: normal !important;
-        text-align: center !important;
-    }
+    
 
     .dx-datagrid-headers .dx-datagrid-table .dx-row > td {
         text-align: center !important;
@@ -110,15 +107,6 @@
             border-color: #508ae1 !important;
         }
 
-    #dataGrid .dx-header-row .dx-datagrid-text-content {
-        font-weight: bold;
-        color: black;
-    }
-
-    .dx-datagrid-header-panel {
-        background-color: #909ead00;
-    }
-
     .no-border-input {
         border: none !important;
         outline: none !important;
@@ -190,9 +178,10 @@
     <div class="store-master-container">
 
         <div class="form-row">
-            <label id="StoreNameq" class="form-label"></label>
             @(Html.DevExtreme().TextBox()
                 .ID("StoreName")
+                        .Label(new JS("formatMessage('Store Name')"))
+                .LabelMode(EditorLabelMode.Floating)
                 .Width("75%")
                 .Name("StoreName")
                 .Placeholder("Enter Store Name")
@@ -205,9 +194,10 @@
 
         <div class="form-row multi-column" style="display:flex; gap:30px;">
             <div>
-                <label id="StoreIdq" for="StoreId" class="form-label">Store Code</label>
                 @(Html.DevExtreme().TextBox()
                     .ID("StoreId")
+                    .Label(new JS("formatMessage('Cost Center Code(Store Code)')"))
+                    .LabelMode(EditorLabelMode.Floating)
                     .Name("StoreId")
                     .Placeholder("Enter Store Code")
                     .ValidationRules(rules =>
@@ -218,11 +208,12 @@
             </div>
 
             <div>
-                <label id="CostCenterq" for="CostCenter" class="form-label">Cost Center</label>
                 <div style="display:flex; align-items:center; gap:20px;">
                     @(Html.DevExtreme().SelectBox()
                         .ID("CostCenter")
                         .Width("70%")
+                        .Label(new JS("formatMessage('Cost Center Code(Finance Module)')"))
+                        .LabelMode(EditorLabelMode.Floating)
                         .Name("CostAllocationUnitId")
                         .Placeholder("Select Cost Center")
                         .DisplayExpr("CostAllocationUnit")
@@ -373,17 +364,4 @@
             });
         }
     });
-         $(function () {
-              $("#StoreNameq").text(
-               formatMessage("Store Name"));
-                });
-                $(function () {
-                  $("#CostCenterq").text(
-                   formatMessage("Cost Center"));
-                });
-                $(function () {
-                  $("#StoreIdq").text(
-                   formatMessage("Store ID"));
-                });
-
 </script>
