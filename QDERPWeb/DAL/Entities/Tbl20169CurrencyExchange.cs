@@ -24,4 +24,7 @@ public partial class Tbl20169CurrencyExchange
     public string CurrencyPoints { get; set; }
 
     public string CurrencyMasterCode { get; set; }
+    public string CurrencyImage { get; set; } // assuming XML is mapped as string
+    public string CurrencySymbole { get; set; }
+
 }
