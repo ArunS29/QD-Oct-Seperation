@@ -334,17 +334,20 @@
                 success: function () {
                     DevExpress.ui.notify("Data Updated Successfully!", "success", 1500);
                     $("#SignatoryGrid").dxDataGrid("instance").refresh();
-                     setTimeout(() => {
+                        setTimeout(() => {
         if (window.parent && typeof window.parent.refreshModeOfRequestDropDown === "function") {
             window.parent.refreshModeOfRequestDropDown();
         }
+    }, 300);
+
                 },
                 error: function () {
                     DevExpress.ui.notify("Failed to save.", "error", 1500);
                 }
             });
         }
-    function onDeleteButtonClick(e) {
+
+        function onDeleteButtonClick(e) {
         e.event.preventDefault(); // prevent default delete
 
         var grid = $("#SignatoryGrid").dxDataGrid("instance");
@@ -355,20 +358,21 @@
                 url: '/api/QuotationModeOfRequestf/Delete?key=' + key,
                 type: 'DELETE',
                 success: function () {
-                    // Refresh the grid after delete
                     grid.refresh();
                     DevExpress.ui.notify("Deleted successfully", "success", 2000);
-                     setTimeout(() => {
-        if (window.parent && typeof window.parent.refreshModeOfRequestDropDown === "function") {
-            window.parent.refreshModeOfRequestDropDown();
-        }
-                },
+                    setTimeout(() => {
+                        if (window.parent && typeof window.parent.refreshModeOfRequestDropDown === "function") {
+                            window.parent.refreshModeOfRequestDropDown();
+                        }
+                    }, 300); // ✅ Properly closed
+                }, // ✅ This comma was missing in your version!
                 error: function () {
                     DevExpress.ui.notify("Delete failed", "error", 2000);
                 }
             });
         }
     }
+
     $(function () {
             $("#QuotationModeofRequest").dxTextBox({
                 text: formatMessage("Quotation Mode of Request"),
